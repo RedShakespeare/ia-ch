@@ -4,9 +4,10 @@ set -xue
 
 root_dir=$PWD
 
-mkdir -p build
+rm -rf build
+mkdir build
 cd build
 cmake ..
-make -j 4 ia
+make -j 4 install
 
 cd $root_dir

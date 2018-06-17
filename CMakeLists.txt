@@ -520,8 +520,6 @@ endif()
 # ------------------------------------------------------------------------------
 set(CMAKE_INSTALL_PREFIX target)
 
-install(TARGETS ia       DESTINATION ia)
-install(TARGETS ia-debug DESTINATION ia-debug)
+install(TARGETS ia DESTINATION ia)
 
 install(DIRECTORY res DESTINATION ia)
-install(DIRECTORY res DESTINATION ia-debug)

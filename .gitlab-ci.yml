@@ -1,9 +1,13 @@
 image: gcc
 
 before_script:
-        - apt update && apt install -y cmake libsdl2-2.0-0 libsdl2-dev libsdl2-image-dev libsdl2-mixer-dev
+        - apt-get update && apt-get install -y cmake libsdl2-2.0-0 libsdl2-dev libsdl2-image-dev libsdl2-mixer-dev
 
 ia:
         stage: build
         script:
                 - ./build-release.sh
+        artifacts:
+                paths:
+                - build/target/ia
+                name: "ia-${CI_COMMIT_SHA:0:7}-$(date +%Y-%m-%d)"
