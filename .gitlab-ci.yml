@@ -3,7 +3,7 @@ image: gcc
 before_script:
         - apt update && apt install -y cmake libsdl2-2.0-0 libsdl2-dev libsdl2-image-dev libsdl2-mixer-dev
 
-ia
+ia:
         stage: build
         script:
                 - ./build-release.sh
