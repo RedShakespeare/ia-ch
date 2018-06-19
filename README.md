@@ -16,14 +16,15 @@ Clone the IA repository on Github:
 Infra Arcana is built with [CMake](https://cmake.org/), which is a build system generator. CMake can generate GNU Makefiles, Code::Blocks projects, Visual Studio solutions, etc for many different platforms. Look for an online tutorial on how to use CMake (some pointers are given below).
 
 ### Unix/Linux/macOS
-You need CMake, build tools (e.g. GNU Make + gcc), as well as SDL2, SDL2-image, and SDL2-mixer. These are the required SDL packages (retrieve them with apt-get for Ubuntu and Linux Mint):
+You need CMake, build tools (e.g. GNU Make + gcc), as well as SDL2, SDL2-image, and SDL2-mixer. These are the required SDL packages (can be retrived with apt for Debian/Ubuntu/Mint):
 
     libsdl2-2.0-0 libsdl2-dev libsdl2-image-dev libsdl2-mixer-dev
 
 Hint for building:
 
     cd <ia directory>
-    mkdir build && cd build
+    mkdir build
+    cd build
     cmake ../
     make ia
 
