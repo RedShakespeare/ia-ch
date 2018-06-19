@@ -280,7 +280,7 @@ if(CMAKE_COMPILER_IS_GNUCXX OR(CMAKE_C_COMPILER_ID MATCHES "Clang") OR(CMAKE_CXX
     -fno-exceptions
     -Wunused
     -Wnull-dereference
-    -O0
+    -Og
     -g
     )
 
