@@ -8,6 +8,6 @@ rm -rf build
 mkdir build
 cd build
 cmake ..
-cmake --build . --target install -- -j 4
+VERBOSE=1 cmake --build . --target install -- -j4
 
 cd $root_dir
