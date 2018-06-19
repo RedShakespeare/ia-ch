@@ -327,8 +327,10 @@ if(WIN32)
   if(CMAKE_COMPILER_IS_GNUCXX OR(CMAKE_C_COMPILER_ID MATCHES "Clang") OR(CMAKE_CXX_COMPILER_ID MATCHES "Clang"))
     target_link_libraries(ia -mwindows)
   endif()
+
   if(CMAKE_COMPILER_IS_GNUCXX)
     target_link_libraries(ia -static-libgcc -static-libstdc++)
+    target_link_libraries(ia-debug -static-libgcc -static-libstdc++)
   endif()
 endif()
 
