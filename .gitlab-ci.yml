@@ -21,8 +21,8 @@ build-windows:
         script:
                 - apt-get update && apt-get install -y mingw-w64
                 - ./build-release-windows-cross-compile.sh
-                - mv build/target/ia ia-windows-x64-${CI_COMMIT_SHA:0:7}-$(date +%Y-%m-%d)
+                - mv build/target/ia "ia windows x64 ${CI_COMMIT_SHA:0:7} $(date +%Y-%m-%d)"
         artifacts:
                 paths:
-                - ia-windows-x64-${CI_COMMIT_SHA:0:7}-$(date +%Y-%m-%d)
-                name: "ia-windows-x64-${CI_COMMIT_SHA:0:7}-$(date +%Y-%m-%d)"
+                - "ia windows x64 ${CI_COMMIT_SHA:0:7} $(date +%Y-%m-%d)"
+                name: "ia windows x64 ${CI_COMMIT_SHA:0:7} $(date +%Y-%m-%d)"
