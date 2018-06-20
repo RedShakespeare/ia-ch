@@ -288,6 +288,8 @@ void EventSnakeEmerge::emerge_p_bucket(
         const Array2<bool>& blocked,
         std::vector<P>& out) const
 {
+        ASSERT(blocked.rect().is_pos_inside(p));
+
         const auto fov = fov::run(p, blocked);
 
         const R r = allowed_emerge_rect(p);
