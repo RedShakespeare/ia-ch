@@ -111,6 +111,7 @@ void Mon::act()
         if (!map::is_pos_inside_outer_walls(pos))
         {
                 TRACE << "Monster outside map" << std::endl;
+
                 ASSERT(false);
         }
 
@@ -120,8 +121,11 @@ void Mon::act()
             !is_player_leader &&
             static_cast<Mon*>(leader_)->leader_)
         {
-                TRACE << "Two (or more) steps of leader is never allowed"
+                TRACE << "Monster with name '"
+                      << name_a()
+                      << "' has a leader, which also has a leader (not allowed)"
                       << std::endl;
+
                 ASSERT(false);
         }
 #endif // NDEBUG
