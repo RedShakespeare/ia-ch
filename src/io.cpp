@@ -3,22 +3,23 @@
 #include <vector>
 #include <iostream>
 
-#include "init.hpp"
-#include "item.hpp"
-#include "status_lines.hpp"
-#include "marker.hpp"
-#include "map.hpp"
 #include "actor.hpp"
-#include "actor_player.hpp"
 #include "actor_mon.hpp"
-#include "msg_log.hpp"
+#include "actor_player.hpp"
 #include "attack.hpp"
-#include "inventory.hpp"
-#include "sdl_base.hpp"
-#include "text_format.hpp"
-#include "config.hpp"
 #include "colors.hpp"
+#include "config.hpp"
+#include "init.hpp"
+#include "inventory.hpp"
+#include "item.hpp"
+#include "map.hpp"
+#include "marker.hpp"
+#include "msg_log.hpp"
 #include "rl_utils.hpp"
+#include "sdl_base.hpp"
+#include "status_lines.hpp"
+#include "text_format.hpp"
+#include "version.hpp"
 #include "viewport.hpp"
 
 // -----------------------------------------------------------------------------
@@ -88,7 +89,20 @@ static void init_window(const PxPos dims)
 {
         TRACE << "Initializing window" << std::endl;
 
-        const std::string title = "IA " + version_str;
+        std::string title = "IA ";
+
+        if (version_info::version_str.empty())
+        {
+                title +=
+                        "build " +
+                        version_info::git_commit_hash_str +
+                        ", " +
+                        version_info::date_str;
+        }
+        else
+        {
+                title += version_info::version_str;
+        }
 
         if (sdl_window_)
         {
@@ -923,13 +937,6 @@ void init()
         // is enabled
         if (!config::is_fullscreen())
         {
-                // Put an upper limit on the initial screen size
-                // const PxPos init_dims(
-                //         std::min(resolution.value.x, 1280),
-                //         std::min(resolution.value.y, 720));
-
-                // panels::init(io::px_to_gui_coords(init_dims));
-
                 panels::init(io::min_screen_gui_dims());
 
                 screen_px_dims = panel_px_dims(Panel::screen);

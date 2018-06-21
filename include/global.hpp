@@ -12,10 +12,6 @@
 // -----------------------------------------------------------------------------
 const size_t player_name_max_len = 14;
 
-const std::string version_str = "v19.2";
-
-const std::string date_str = __DATE__;
-
 // TODO: Create paths.hpp and define all paths there
 const std::string gfx_path = "res/gfx";
 

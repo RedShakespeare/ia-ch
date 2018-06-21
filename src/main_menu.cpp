@@ -2,23 +2,24 @@
 
 #include <string>
 
-#include "init.hpp"
-#include "colors.hpp"
-#include "io.hpp"
-#include "panel.hpp"
-#include "saving.hpp"
-#include "highscore.hpp"
-#include "manual.hpp"
-#include "popup.hpp"
-#include "text_format.hpp"
-#include "audio.hpp"
-#include "game_time.hpp"
-#include "map_travel.hpp"
 #include "actor.hpp"
 #include "actor_player.hpp"
-#include "map.hpp"
+#include "audio.hpp"
+#include "colors.hpp"
 #include "create_character.hpp"
 #include "game.hpp"
+#include "game_time.hpp"
+#include "highscore.hpp"
+#include "init.hpp"
+#include "io.hpp"
+#include "manual.hpp"
+#include "map.hpp"
+#include "map_travel.hpp"
+#include "panel.hpp"
+#include "popup.hpp"
+#include "saving.hpp"
+#include "text_format.hpp"
+#include "version.hpp"
 
 // -----------------------------------------------------------------------------
 // Private
@@ -382,9 +383,29 @@ void MainMenuState::draw()
                 }
         }
 
+        std::string info_str = "";
+
+        if (version_info::version_str.empty())
+        {
+                info_str = "Build " + version_info::git_commit_hash_str;
+        }
+        else
+        {
+                info_str =
+                        version_info::version_str +
+                        " (" +
+                        version_info::git_commit_hash_str +
+                        ")";
+        }
+
+        info_str +=
+                ", " +
+                version_info::date_str +
+                " " +
+                version_info::copyright_str;
+
         io::draw_text_center(
-                version_str + " - " + date_str +
-                " (c) 2011-2017 Martin Tornqvist",
+                info_str,
                 Panel::screen,
                 P(panels::get_center_x(Panel::screen),
                   panels::get_y1(Panel::screen)),

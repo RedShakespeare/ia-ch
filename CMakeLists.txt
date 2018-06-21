@@ -5,6 +5,15 @@ cmake_minimum_required(VERSION 3.0)
 
 project(ia)
 
+# ------------------------------------------------------------------------------
+# Retrieve abbreviated git commit
+# ------------------------------------------------------------------------------
+execute_process(
+  COMMAND git log -1 --format=%h
+  WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
+  OUTPUT_VARIABLE GIT_COMMIT_HASH
+  OUTPUT_STRIP_TRAILING_WHITESPACE
+)
 
 # ------------------------------------------------------------------------------
 # Source files
@@ -102,6 +111,7 @@ set(SRC
   include/status_lines.hpp
   include/text_format.hpp
   include/throwing.hpp
+  include/version.hpp
   include/viewport.hpp
   include/wham.hpp
   include/xml.hpp
@@ -210,6 +220,7 @@ set(SRC
   src/status_lines.cpp
   src/text_format.cpp
   src/throwing.cpp
+  src/version.cpp
   src/viewport.cpp
   src/wham.cpp
   src/xml.cpp
@@ -308,6 +319,8 @@ target_compile_options(ia-debug PUBLIC
     ${COMMON_COMPILE_FLAGS}
     ${DEBUG_COMPILE_FLAGS}
     )
+
+add_definitions( -DGIT_COMMIT_HASH=${GIT_COMMIT_HASH} )
 
 set(COMMON_INCLUDE_DIRS
     include
