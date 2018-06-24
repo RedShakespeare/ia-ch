@@ -48,9 +48,9 @@ std::vector<P> to_vec(const Array2<bool>& a,
         // Reserve space for worst case of push-backs
         result.reserve(area_to_parse.area());
 
-        for (int x = area_to_parse.p0.x; x < area_to_parse.p1.x; ++x)
+        for (int x = area_to_parse.p0.x; x <= area_to_parse.p1.x; ++x)
         {
-                for (int y = area_to_parse.p0.y; y < area_to_parse.p1.y; ++y)
+                for (int y = area_to_parse.p0.y; y <= area_to_parse.p1.y; ++y)
                 {
                         if (a.at(x, y) == value_to_store)
                         {
