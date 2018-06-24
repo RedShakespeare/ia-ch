@@ -360,6 +360,11 @@ static void draw_render_array()
                 {
                         const P map_pos = P(x, y);
 
+                        if (!map::is_pos_inside_map(map_pos))
+                        {
+                                continue;
+                        }
+
                         const P view_pos = viewport::to_view_pos(map_pos);
 
                         auto& render_data = render_array_.at(map_pos);

@@ -41,16 +41,6 @@ void focus_on(const P map_pos)
 
         p0_.x = map_pos.x - (map_view_dims.x / 2);
         p0_.y = map_pos.y - (map_view_dims.y / 2);
-
-        set_constr_in_range(
-                0,
-                p0_.x,
-                map::w() - map_view_dims.x);
-
-        set_constr_in_range(
-                0,
-                p0_.y,
-                map::h() - map_view_dims.y);
 }
 
 bool is_in_view(const P map_pos)
