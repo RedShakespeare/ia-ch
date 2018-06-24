@@ -1566,11 +1566,21 @@ void PropRegenerates::on_std_turn()
 
 PropActResult PropCorpseRises::on_act()
 {
-        const int rise_one_in_n = 6;
+        if (!owner_->is_corpse() || map::actor_at_pos(owner_->pos))
+        {
+                return PropActResult();
+        }
 
-        if (!owner_->is_corpse() ||
-            !rnd::one_in(rise_one_in_n) ||
-            map::actor_at_pos(owner_->pos))
+        if (nr_turns_until_allow_rise_ > 0)
+        {
+                --nr_turns_until_allow_rise_;
+
+                return PropActResult();
+        }
+
+        const int rise_one_in_n = 9;
+
+        if (!rnd::one_in(rise_one_in_n))
         {
                 return PropActResult();
         }
@@ -1636,7 +1646,7 @@ void PropSpawnsZombiePartsOnDestroyed::on_destroyed()
         // more often prevent spawning
         const bool is_very_destroyed = (owner_->hp() <= -8);
 
-        const int summon_one_in_n = 4;
+        const int summon_one_in_n = 5;
 
         if (is_very_destroyed || !rnd::one_in(summon_one_in_n))
         {

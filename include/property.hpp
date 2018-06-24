@@ -1284,7 +1284,8 @@ class PropCorpseRises: public Prop
 public:
         PropCorpseRises() :
                 Prop(PropId::corpse_rises),
-                has_risen_(false) {}
+                has_risen_(false),
+                nr_turns_until_allow_rise_(2) {}
 
         PropActResult on_act() override;
 
@@ -1292,6 +1293,7 @@ public:
 
 private:
         bool has_risen_;
+        int nr_turns_until_allow_rise_;
 };
 
 class PropSpawnsZombiePartsOnDestroyed: public Prop
