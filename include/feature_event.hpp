@@ -80,10 +80,10 @@ private:
 
         Array2<bool> blocked_cells(const R& r) const;
 
-        void emerge_p_bucket(
+        std::vector<P> emerge_p_bucket(
                 const P& p,
                 const Array2<bool>& blocked,
-                std::vector<P>& out) const;
+                const R& allowed_area) const;
 
         const Range allowed_emerge_dist_range =
                 Range(2, fov_radi_int - 1);

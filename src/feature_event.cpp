@@ -243,17 +243,23 @@ bool EventSnakeEmerge::try_find_p()
 
         auto p_bucket = to_vec(blocked, false, blocked.rect());
 
-        rnd::shuffle(p_bucket);
+        if (p_bucket.empty())
+        {
+                return false;
+        }
 
-        std::vector<P> emerge_bucket;
+        rnd::shuffle(p_bucket);
 
         for (const P& p : p_bucket)
         {
-                emerge_p_bucket(p, blocked, emerge_bucket);
+                const R r = allowed_emerge_rect(p);
+
+                const auto emerge_bucket = emerge_p_bucket(p, blocked, r);
 
                 if (emerge_bucket.size() >= min_nr_snakes_)
                 {
                         pos_ = p;
+
                         return true;
                 }
         }
@@ -283,20 +289,27 @@ bool EventSnakeEmerge::is_ok_feature_at(const P& p) const
                 id == FeatureId::rubble_low;
 }
 
-void EventSnakeEmerge::emerge_p_bucket(
+std::vector<P> EventSnakeEmerge::emerge_p_bucket(
         const P& p,
         const Array2<bool>& blocked,
-        std::vector<P>& out) const
+        const R& allowed_area) const
 {
-        ASSERT(blocked.rect().is_pos_inside(p));
+        if (!allowed_area.is_pos_inside(p))
+        {
+                ASSERT(false);
+
+                return {};
+        }
 
         const auto fov = fov::run(p, blocked);
 
-        const R r = allowed_emerge_rect(p);
+        std::vector<P> result;
 
-        for (int x = r.p0.x; x <= r.p1.x; ++x)
+        result.reserve(allowed_area.w() * allowed_area.h());
+
+        for (int x = allowed_area.p0.x; x <= allowed_area.p1.x; ++x)
         {
-                for (int y = r.p0.y; y <= r.p1.y; ++y)
+                for (int y = allowed_area.p0.y; y <= allowed_area.p1.y; ++y)
                 {
                         const P tgt_p(x, y);
 
@@ -306,15 +319,17 @@ void EventSnakeEmerge::emerge_p_bucket(
                             !fov.at(x, y).is_blocked_hard &&
                             king_dist(p, tgt_p) >= min_d)
                         {
-                                out.push_back(tgt_p);
+                                result.push_back(tgt_p);
                         }
                 }
         }
+
+        return result;
 }
 
 Array2<bool> EventSnakeEmerge::blocked_cells(const R& r) const
 {
-        Array2<bool> result(r.dims());
+        Array2<bool> result(map::dims());
 
         for (int x = r.p0.x; x <= r.p1.x; ++x)
         {
@@ -347,9 +362,7 @@ void EventSnakeEmerge::on_new_turn()
 
         const auto blocked = blocked_cells(r);
 
-        std::vector<P> tgt_bucket;
-
-        emerge_p_bucket(pos_, blocked, tgt_bucket);
+        auto tgt_bucket = emerge_p_bucket(pos_, blocked, r);
 
         if (tgt_bucket.size() < min_nr_snakes_)
         {

@@ -262,6 +262,16 @@ void act()
                         .make_aware_of_player();
         }
 
+        // Apply permanent paralysis resistance, to avoid getting stuck
+        if (!map::player->has_prop(PropId::r_para))
+        {
+                auto prop = new PropRPara();
+
+                prop->set_indefinite();
+
+                properties.apply(prop);
+        }
+
         // Occasionally apply rFear to avoid getting stuck
         if (rnd::one_in(7))
         {
@@ -365,7 +375,7 @@ void act()
 
         // Occasionally run an explosion around the player (code exercise, and
         // to avoid getting stuck)
-        if (rnd::one_in(100))
+        if (rnd::one_in(500))
         {
                 explosion::run(map::player->pos, ExplType::expl);
 
