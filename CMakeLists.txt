@@ -86,6 +86,7 @@ set(SRC
   include/map_travel.hpp
   include/mapgen.hpp
   include/marker.hpp
+  include/minimap.hpp
   include/msg_log.hpp
   include/panel.hpp
   include/pickup.hpp
@@ -195,6 +196,7 @@ set(SRC
   src/mapgen_sub_rooms.cpp
   src/mapgen_utils.cpp
   src/marker.cpp
+  src/minimap.cpp
   src/msg_log.cpp
   src/panel.cpp
   src/pickup.cpp

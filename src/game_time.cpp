@@ -2,26 +2,26 @@
 
 #include <vector>
 
-#include "init.hpp"
-#include "feature_rigid.hpp"
-#include "feature_mob.hpp"
-#include "actor_player.hpp"
 #include "actor_mon.hpp"
-#include "map.hpp"
-#include "map_controller.hpp"
-#include "populate_monsters.hpp"
+#include "actor_player.hpp"
+#include "audio.hpp"
+#include "feature_mob.hpp"
+#include "feature_rigid.hpp"
+#include "init.hpp"
 #include "inventory.hpp"
 #include "inventory_handling.hpp"
-#include "player_bon.hpp"
-#include "audio.hpp"
-#include "map_parsing.hpp"
 #include "io.hpp"
-#include "map_travel.hpp"
 #include "item.hpp"
-#include "saving.hpp"
+#include "map.hpp"
+#include "map_controller.hpp"
+#include "map_parsing.hpp"
+#include "map_travel.hpp"
 #include "msg_log.hpp"
+#include "player_bon.hpp"
+#include "populate_monsters.hpp"
 #include "property_data.hpp"
 #include "property_handler.hpp"
+#include "saving.hpp"
 
 // -----------------------------------------------------------------------------
 // Private

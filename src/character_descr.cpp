@@ -322,9 +322,7 @@ void CharacterDescr::update()
 
         case SDLK_SPACE:
         case SDLK_ESCAPE:
-                //
                 // Exit screen
-                //
                 states::pop();
                 break;
 

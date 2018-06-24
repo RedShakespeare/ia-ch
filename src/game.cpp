@@ -31,6 +31,7 @@
 #include "map_travel.hpp"
 #include "mapgen.hpp"
 #include "marker.hpp"
+#include "minimap.hpp"
 #include "msg_log.hpp"
 #include "panel.hpp"
 #include "pickup.hpp"
@@ -277,18 +278,14 @@ void handle_player_input(const InputData& input)
     case '?':
     case SDLK_F1:
     {
-        std::unique_ptr<State> browse_manual_state(new BrowseManual);
-
-        states::push(std::move(browse_manual_state));
+        states::push(std::make_unique<BrowseManual>());
     }
     break;
 
     // Options
     case '=':
     {
-        std::unique_ptr<State> config_state(new ConfigState);
-
-        states::push(std::move(config_state));
+        states::push(std::make_unique<ConfigState>());
     }
     break;
 
@@ -365,10 +362,9 @@ void handle_player_input(const InputData& input)
                             }
                         }
 
-                        std::unique_ptr<State> aim_state(
-                            new Aiming(map::player->pos, *wpn));
-
-                        states::push(std::move(aim_state));
+                        states::push(
+                                std::make_unique<Aiming>(
+                                        map::player->pos, *wpn));
                     }
                     // Not enough ammo loaded - auto reload?
                     else if (config::is_ranged_wpn_auto_reload())
@@ -411,10 +407,7 @@ void handle_player_input(const InputData& input)
             game::win_game();
 
             // Go to postmortem state
-            std::unique_ptr<State> postmortem_state(
-                new PostmortemMenu(IsWin::yes));
-
-            states::push(std::move(postmortem_state));
+            states::push(std::make_unique<PostmortemMenu>(IsWin::yes));
 
             return;
         }
@@ -426,30 +419,21 @@ void handle_player_input(const InputData& input)
     // Inventory screen
     case 'i':
     {
-        std::unique_ptr<State> browse_inv(
-                std::make_unique<BrowseInv>());
-
-        states::push(std::move(browse_inv));
+        states::push(std::make_unique<BrowseInv>());
     }
     break;
 
     // Apply item
     case 'a':
     {
-        std::unique_ptr<State> apply_state(
-                std::make_unique<Apply>());
-
-        states::push(std::move(apply_state));
+        states::push(std::make_unique<Apply>());
     }
     break;
 
     // Drop item
     case 'd':
     {
-            std::unique_ptr<State> drop_state(
-                    std::make_unique<Drop>());
-
-            states::push(std::move(drop_state));
+            states::push(std::make_unique<Drop>());
     }
     break;
 
@@ -577,10 +561,9 @@ void handle_player_input(const InputData& input)
 
         if (explosive)
         {
-            std::unique_ptr<State> throwing_explosive(
-                new ThrowingExplosive(map::player->pos, *explosive));
-
-            states::push(std::move(throwing_explosive));
+            states::push(
+                    std::make_unique<ThrowingExplosive>(
+                            map::player->pos, *explosive));
         }
         else // Not holding explosive - run throwing attack instead
         {
@@ -600,35 +583,20 @@ void handle_player_input(const InputData& input)
 
             if (is_allowed)
             {
-                    std::unique_ptr<State> throwing(
-                            std::make_unique<Throwing>(
-                                    map::player->pos, *thrown_item));
-
-                states::push(std::move(throwing));
+                states::push(
+                        std::make_unique<Throwing>(
+                                map::player->pos, *thrown_item));
             }
         }
     }
     break;
-
-    // Select item for throwing
-    // case 'T':
-    // {
-    //     std::unique_ptr<State> select_throw(new SelectThrow);
-
-    //     states::push(std::move(select_throw));
-    // }
-    // break;
 
     // View
     case 'v':
     {
         if (map::player->properties().allow_see())
         {
-            auto view_state =
-                    std::make_unique<Viewing>(
-                            map::player->pos);
-
-            states::push(std::move(view_state));
+            states::push(std::make_unique<Viewing>(map::player->pos));
         }
         else // Cannot see
         {
@@ -647,26 +615,26 @@ void handle_player_input(const InputData& input)
     // Cast spell / use power
     case 'x':
     {
-        std::unique_ptr<State> browse_spell_state(new BrowseSpell);
-
-        states::push(std::move(browse_spell_state));
+        states::push(std::make_unique<BrowseSpell>());
     }
     break;
 
     // Character info
     case '@':
     {
-        std::unique_ptr<State> char_descr_state(new CharacterDescr);
-
-        states::push(std::move(char_descr_state));
+        states::push(std::make_unique<CharacterDescr>());
     }
     break;
 
     case 'm':
     {
-        std::unique_ptr<State> msg_history_state(new MsgHistoryState);
+        states::push(std::make_unique<ViewMinimap>());
+    }
+    break;
 
-        states::push(std::move(msg_history_state));
+    case 'M':
+    {
+        states::push(std::make_unique<MsgHistoryState>());
     }
     break;
 
@@ -713,16 +681,12 @@ void handle_player_input(const InputData& input)
         if (choice == 0)
         {
             // Options
-            std::unique_ptr<State> config_state(new ConfigState);
-
-            states::push(std::move(config_state));
+            states::push(std::make_unique<ConfigState>());
         }
         else if (choice == 1)
         {
             // Manual
-            std::unique_ptr<State> browse_manual_state(new BrowseManual);
-
-            states::push(std::move(browse_manual_state));
+            states::push(std::make_unique<BrowseManual>());
         }
         else if (choice == 2)
         {
@@ -924,9 +888,7 @@ void incr_player_xp(const int xp_gained,
 
             if ((clvl_ % 2) == 0)
             {
-                std::unique_ptr<State> trait_state(new PickTraitState);
-
-                states::push(std::move(trait_state));
+                states::push(std::make_unique<PickTraitState>());
             }
         }
 
@@ -1172,6 +1134,10 @@ void GameState::on_start()
 
         map_builder->build();
 
+        draw_map::clear();
+
+        minimap::clear();
+
         map::update_vision();
 
         if (map_control::controller)
@@ -1273,10 +1239,7 @@ void GameState::update()
         // Go to postmortem menu
         states::pop();
 
-        std::unique_ptr<State> postmortem_state(
-            new PostmortemMenu(IsWin::no));
-
-        states::push(std::move(postmortem_state));
+        states::push(std::make_unique<PostmortemMenu>(IsWin::no));
 
         return;
     }

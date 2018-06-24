@@ -7,8 +7,8 @@
 
 #include <vector>
 
-#include "game_time.hpp"
 #include "config.hpp"
+#include "game_time.hpp"
 #include "gfx.hpp"
 #include "panel.hpp"
 
@@ -40,26 +40,6 @@ struct InputData
         bool is_shift_held, is_ctrl_held;
 };
 
-struct PxPos
-{
-        PxPos() {}
-
-        PxPos(int x, int y) :
-                value(P(x, y)) {}
-
-        P value = P();
-};
-
-struct PxRect
-{
-        PxRect() {}
-
-        PxRect(int x0, int y0, int x1, int y1) :
-                value(x0, y0, x1, y1) {}
-
-        R value = R();
-};
-
 namespace io
 {
 
@@ -81,21 +61,21 @@ int gui_to_px_coords_y(const int value);
 int map_to_px_coords_x(const int value);
 int map_to_px_coords_y(const int value);
 
-PxPos gui_to_px_coords(const P pos);
-PxPos gui_to_px_coords(const int x, const int y);
+P gui_to_px_coords(const P pos);
+P gui_to_px_coords(const int x, const int y);
 
-PxPos map_to_px_coords(const P pos);
-PxPos map_to_px_coords(const int x, const int y);
+P map_to_px_coords(const P pos);
+P map_to_px_coords(const int x, const int y);
 
-P px_to_gui_coords(const PxPos px_pos);
+P px_to_gui_coords(const P px_pos);
 
-P px_to_map_coords(const PxPos px_pos);
+P px_to_map_coords(const P px_pos);
 
 P gui_to_map_coords(const P gui_pos);
 
 // Returns a screen pixel position, relative to a cell position in a panel
-PxPos gui_to_px_coords(const Panel panel, const P offset);
-PxPos map_to_px_coords(const Panel panel, const P offset);
+P gui_to_px_coords(const Panel panel, const P offset);
+P map_to_px_coords(const Panel panel, const P offset);
 
 void draw_symbol(
         const TileId tile,
@@ -164,9 +144,12 @@ void cover_area(
         const P dims,
         const Color& color = colors::black());
 
-void draw_rectangle_solid(
-        const PxPos px_pos,
-        const PxPos px_dims,
+void draw_rectangle(
+        const R& px_rect,
+        const Color& color);
+
+void draw_rectangle_filled(
+        const R& px_rect,
         const Color& color);
 
 void draw_blast_at_cells(

@@ -4,21 +4,22 @@
 
 #include <list>
 
+#include "actor_factory.hpp"
+#include "actor_mon.hpp"
+#include "actor_player.hpp"
+#include "draw_map.hpp"
+#include "feature_rigid.hpp"
+#include "io.hpp"
 #include "map.hpp"
 #include "map_builder.hpp"
 #include "map_controller.hpp"
-#include "draw_map.hpp"
 #include "mapgen.hpp"
-#include "populate_items.hpp"
-#include "io.hpp"
+#include "minimap.hpp"
 #include "msg_log.hpp"
-#include "feature_rigid.hpp"
-#include "saving.hpp"
-#include "actor_factory.hpp"
-#include "actor_player.hpp"
-#include "actor_mon.hpp"
+#include "populate_items.hpp"
 #include "property.hpp"
 #include "property_handler.hpp"
+#include "saving.hpp"
 
 // -----------------------------------------------------------------------------
 // Private
@@ -132,6 +133,8 @@ void go_to_nxt()
         io::update_screen();
 
         draw_map::clear();
+
+        minimap::clear();
 
         map_list.erase(map_list.begin());
 

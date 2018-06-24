@@ -436,29 +436,39 @@ static void draw_life_bar(const Actor& actor)
 
         const P view_pos = viewport::to_view_pos(map_pos);
 
-        PxPos px_pos = io::map_to_px_coords(
+        P px_pos = io::map_to_px_coords(
                 Panel::map,
                 view_pos);
 
-        px_pos.value.y -= 2;
+        px_pos.y -= 2;
 
-        const int x0_green = px_pos.value.x + 1;
+        const int x0_green = px_pos.x + 1;
 
         const int x0_red = x0_green + w_green;
 
         if (w_green > 0)
         {
-                io::draw_rectangle_solid(
-                        PxPos(x0_green, px_pos.value.y),
-                        {w_green, 2},
+                const P px_p0_green(x0_green, px_pos.y);
+
+                const R px_rect_green(
+                        px_p0_green,
+                        px_p0_green + P(w_green, 2) - 1);
+
+                io::draw_rectangle_filled(
+                        px_rect_green,
                         colors::light_green());
         }
 
         if (w_red > 0)
         {
-                io::draw_rectangle_solid(
-                        PxPos(x0_red, px_pos.value.y),
-                        {w_red, 2},
+                const P px_p0_red(x0_red, px_pos.y);
+
+                const R px_rect_red(
+                        px_p0_red,
+                        px_p0_red + P(w_red, 2) - 1);
+
+                io::draw_rectangle_filled(
+                        px_rect_red,
                         colors::light_red());
         }
 }

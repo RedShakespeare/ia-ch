@@ -2,19 +2,19 @@
 
 #include <climits>
 
-#include "init.hpp"
-#include "rl_utils.hpp"
+#include "actor_factory.hpp"
+#include "actor_player.hpp"
 #include "feature.hpp"
 #include "feature_mob.hpp"
-#include "actor_factory.hpp"
-#include "item_factory.hpp"
-#include "game_time.hpp"
-#include "io.hpp"
-#include "mapgen.hpp"
-#include "item.hpp"
 #include "feature_rigid.hpp"
+#include "game_time.hpp"
+#include "init.hpp"
+#include "io.hpp"
+#include "item.hpp"
+#include "item_factory.hpp"
+#include "mapgen.hpp"
+#include "rl_utils.hpp"
 #include "saving.hpp"
-#include "actor_player.hpp"
 
 #ifndef NDEBUG
 #include "sdl_base.hpp"
@@ -75,6 +75,8 @@ Array2<Cell> cells(0, 0);
 
 Array2<bool> light(0, 0);
 Array2<bool> dark(0, 0);
+
+Array2<Color> minimap(0, 0);
 
 std::vector<Room*> room_list;
 

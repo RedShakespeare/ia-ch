@@ -94,6 +94,11 @@ public:
                 return P(x + x_offset, y + y_offset);
         }
 
+        P with_offsets(const P& offsets) const
+        {
+                return P(x + offsets.x, y + offsets.y);
+        }
+
         P with_x_offset(const int offset) const
         {
                 return P(x + offset, y);

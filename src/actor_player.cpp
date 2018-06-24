@@ -29,6 +29,7 @@
 #include "item_scroll.hpp"
 #include "map.hpp"
 #include "map_parsing.hpp"
+#include "minimap.hpp"
 #include "msg_log.hpp"
 #include "player_bon.hpp"
 #include "player_spells.hpp"
@@ -2207,6 +2208,8 @@ void Player::update_fov()
             }
         }
     }
+
+    minimap::update();
 }
 
 void Player::fov_hack()

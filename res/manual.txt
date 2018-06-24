@@ -24,7 +24,8 @@ Gameplay commands:
    g         Pick up item
    G         Unload or pick up ammunition from the ground
    i         Browse inventory
-   m         Display message history
+   m         View minimap
+   M         Display message history
    N         Make some noise (to lure monsters)
    r         Reload wielded firearm
    s         Wait (and search) for a few turns

@@ -644,7 +644,7 @@ void BrowseInv::draw()
         const size_t nr_slots = (size_t)SlotId::END;
 
         io::draw_text_center(
-                "Browsing inventory",
+                "Browsing inventory " + info_screen_tip,
                 Panel::screen,
                 P(panels::get_center_x(Panel::screen), 0),
                 colors::title());
@@ -879,7 +879,7 @@ void Apply::draw()
         const int browser_y = browser_.y();
 
         io::draw_text_center(
-                "Apply which item?",
+                "Apply which item? " + info_screen_tip,
                 Panel::screen,
                 P(panels::get_center_x(Panel::screen), 0),
                 colors::title());
@@ -1015,7 +1015,7 @@ void Drop::draw()
         io::clear_screen();
 
         io::draw_text_center(
-                "Drop which item?",
+                "Drop which item? " + info_screen_tip,
                 Panel::screen,
                 P(panels::get_center_x(Panel::screen), 0),
                 colors::title());
@@ -1275,7 +1275,7 @@ void Equip::draw()
         // An item is available
 
         io::draw_text_center(
-                heading,
+                heading + info_screen_tip,
                 Panel::screen,
                 P(panels::get_center_x(Panel::screen), 0),
                 colors::title());
@@ -1470,7 +1470,7 @@ void SelectThrow::on_start()
 void SelectThrow::draw()
 {
         io::draw_text_center(
-                "Throw which item?",
+                "Throw which item? " + info_screen_tip,
                 Panel::screen,
                 P(panels::get_center_x(Panel::screen), 0),
                 colors::title());
@@ -1679,7 +1679,7 @@ void SelectIdentify::draw()
         const int browser_y = browser_.y();
 
         io::draw_text_center(
-                "Identify which item?",
+                "Identify which item? " + info_screen_tip,
                 Panel::screen,
                 P(panels::get_center_x(Panel::screen), 0),
                 colors::title());

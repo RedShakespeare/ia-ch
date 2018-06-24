@@ -55,7 +55,7 @@ static bool is_inited()
         return sdl_window_;
 }
 
-static void init_screen_surface(const PxPos dims)
+static void init_screen_surface(const P px_dims)
 {
         TRACE << "Initializing screen surface" << std::endl;
 
@@ -66,8 +66,8 @@ static void init_screen_surface(const PxPos dims)
 
         screen_srf_ = SDL_CreateRGBSurface(
                 0,
-                dims.value.x,
-                dims.value.y,
+                px_dims.x,
+                px_dims.y,
                 screen_bpp,
                 0x00FF0000,
                 0x0000FF00,
@@ -85,7 +85,7 @@ static void init_screen_surface(const PxPos dims)
         }
 }
 
-static void init_window(const PxPos dims)
+static void init_window(const P px_dims)
 {
         TRACE << "Initializing window" << std::endl;
 
@@ -117,8 +117,8 @@ static void init_window(const PxPos dims)
                         title.c_str(),
                         SDL_WINDOWPOS_CENTERED,
                         SDL_WINDOWPOS_CENTERED,
-                        dims.value.x,
-                        dims.value.y,
+                        px_dims.x,
+                        px_dims.y,
                         SDL_WINDOW_FULLSCREEN_DESKTOP);
         }
         else // Windowed mode
@@ -129,8 +129,8 @@ static void init_window(const PxPos dims)
                         title.c_str(),
                         SDL_WINDOWPOS_CENTERED,
                         SDL_WINDOWPOS_CENTERED,
-                        dims.value.x,
-                        dims.value.y,
+                        px_dims.x,
+                        px_dims.y,
                         SDL_WINDOW_SHOWN | SDL_WINDOW_RESIZABLE);
         }
 
@@ -143,7 +143,7 @@ static void init_window(const PxPos dims)
         }
 }
 
-static void init_renderer(const PxPos dims)
+static void init_renderer(const P px_dims)
 {
         TRACE << "Initializing renderer" << std::endl;
 
@@ -169,15 +169,15 @@ static void init_renderer(const PxPos dims)
 
         SDL_RenderSetLogicalSize(
                 sdl_renderer_,
-                dims.value.x,
-                dims.value.y);
+                px_dims.x,
+                px_dims.y);
 
         // SDL_RenderSetIntegerScale(sdl_renderer_, SDL_TRUE);
 
         SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "0");
 }
 
-static void init_screen_texture(const PxPos dims)
+static void init_screen_texture(const P px_dims)
 {
         TRACE << "Initializing screen texture" << std::endl;
 
@@ -190,8 +190,8 @@ static void init_screen_texture(const PxPos dims)
                 sdl_renderer_,
                 SDL_PIXELFORMAT_ARGB8888,
                 SDL_TEXTUREACCESS_STREAMING,
-                dims.value.x,
-                dims.value.y);
+                px_dims.x,
+                px_dims.y);
 
         if (!screen_texture_)
         {
@@ -204,7 +204,7 @@ static void init_screen_texture(const PxPos dims)
         }
 }
 
-static PxPos get_resolution()
+static P get_resolution()
 {
         // TODO: Make an option for this (native resolution or stretched when
         // running fullscreen)
@@ -227,7 +227,7 @@ static PxPos get_resolution()
                 PANIC;
         }
 
-        return PxPos(dm.w, dm.h);
+        return P(dm.w, dm.h);
 }
 
 static bool is_window_maximized()
@@ -362,12 +362,12 @@ static void put_px32(
         *(Uint32*)p = px;
 }
 
-static void blit_surface(SDL_Surface& srf, const PxPos pos)
+static void blit_surface(SDL_Surface& srf, const P px_pos)
 {
         SDL_Rect dst_rect;
 
-        dst_rect.x = pos.value.x;
-        dst_rect.y = pos.value.y;
+        dst_rect.x = px_pos.x;
+        dst_rect.y = px_pos.y;
         dst_rect.w = srf.w;
         dst_rect.h = srf.h;
 
@@ -376,7 +376,7 @@ static void blit_surface(SDL_Surface& srf, const PxPos pos)
 
 static void load_contour(const std::vector<P>& source_px_data,
                          std::vector<P>& dest_px_data,
-                         const PxPos cell_px_dims)
+                         const P cell_px_dims)
 {
         for (const P source_px_pos : source_px_data)
         {
@@ -389,11 +389,11 @@ static void load_contour(const std::vector<P>& source_px_data,
                         std::max(0, source_px_pos.y - size);
 
                 const int px_x1 =
-                        std::min(cell_px_dims.value.x - 1,
+                        std::min(cell_px_dims.x - 1,
                                  source_px_pos.x + size);
 
                 const int px_y1 =
-                        std::min(cell_px_dims.value.y - 1,
+                        std::min(cell_px_dims.y - 1,
                                  source_px_pos.y + size);
 
                 for (int px_x = px_x0; px_x <= px_x1; ++px_x)
@@ -465,7 +465,7 @@ static void load_font()
                 255,
                 255);
 
-        const PxPos cell_px_dims(
+        const P cell_px_dims(
                 config::gui_cell_px_w(),
                 config::gui_cell_px_h());
 
@@ -477,17 +477,13 @@ static void load_font()
 
                         px_data.clear();
 
-                        const int sheet_x0 =
-                                x * cell_px_dims.value.x;
+                        const int sheet_x0 = x * cell_px_dims.x;
 
-                        const int sheet_y0 =
-                                y * cell_px_dims.value.y;
+                        const int sheet_y0 = y * cell_px_dims.y;
 
-                        const int sheet_x1 =
-                                sheet_x0 + cell_px_dims.value.x - 1;
+                        const int sheet_x1 = sheet_x0 + cell_px_dims.x - 1;
 
-                        const int sheet_y1 =
-                                sheet_y0 + cell_px_dims.value.y - 1;
+                        const int sheet_y1 = sheet_y0 + cell_px_dims.y - 1;
 
                         for (int sheet_x = sheet_x0;
                              sheet_x <= sheet_x1;
@@ -536,7 +532,7 @@ static void load_tiles()
 {
         TRACE_FUNC_BEGIN;
 
-        const PxPos cell_px_dims(
+        const P cell_px_dims(
                 config::map_cell_px_w(),
                 config::map_cell_px_h());
 
@@ -562,8 +558,8 @@ static void load_tiles()
                 }
 
                 // Verify width and height of loaded image
-                if ((tile_srf_tmp->w != cell_px_dims.value.x) ||
-                    (tile_srf_tmp->h != cell_px_dims.value.y))
+                if ((tile_srf_tmp->w != cell_px_dims.x) ||
+                    (tile_srf_tmp->h != cell_px_dims.y))
                 {
                         TRACE_ERROR_RELEASE
                                 << "Tile image at \""
@@ -573,9 +569,9 @@ static void load_tiles()
                                 << "x"
                                 << tile_srf_tmp->h
                                 << ", expected: "
-                                << cell_px_dims.value.x
+                                << cell_px_dims.x
                                 << "x"
-                                << cell_px_dims.value.y
+                                << cell_px_dims.y
                                 << std::endl;
 
                         PANIC;
@@ -588,9 +584,9 @@ static void load_tiles()
 
                 px_data.clear();
 
-                for (int x = 0; x < cell_px_dims.value.x; ++x)
+                for (int x = 0; x < cell_px_dims.x; ++x)
                 {
-                        for (int y = 0; y < cell_px_dims.value.y; ++y)
+                        for (int y = 0; y < cell_px_dims.y; ++y)
                         {
                                 const auto current_px =
                                         px(*tile_srf_tmp, x, y);
@@ -618,7 +614,7 @@ static void load_tiles()
 
 static void put_pixels_on_screen(
         const std::vector<P> px_data,
-        const PxPos pos,
+        const P px_pos,
         const Color& color)
 {
         const auto sdl_color = color.sdl_color();
@@ -631,54 +627,54 @@ static void put_pixels_on_screen(
 
         for (const auto p_relative : px_data)
         {
-                const int screen_px_x = pos.value.x + p_relative.x;
-                const int screen_px_y = pos.value.y + p_relative.y;
+                const int screen_px_x = px_pos.x + p_relative.x;
+                const int screen_px_y = px_pos.y + p_relative.y;
 
-                put_px_ptr_(*screen_srf_,
-                            screen_px_x,
-                            screen_px_y,
-                            px_color);
+                put_px_ptr_(
+                        *screen_srf_,
+                        screen_px_x,
+                        screen_px_y,
+                        px_color);
         }
 }
 
 static void put_pixels_on_screen(
         const TileId tile,
-        const PxPos pos,
+        const P px_pos,
         const Color& color)
 {
         const auto& pixel_data = tile_px_data_[(size_t)tile];
 
-        put_pixels_on_screen(pixel_data, pos, color);
+        put_pixels_on_screen(pixel_data, px_pos, color);
 }
 
 static void put_pixels_on_screen(
         const char character,
-        const PxPos pos,
+        const P px_pos,
         const Color& color)
 {
         const P sheet_pos(gfx::character_pos(character));
 
         const auto& pixel_data = font_px_data_[sheet_pos.x][sheet_pos.y];
 
-        put_pixels_on_screen(pixel_data, pos, color);
+        put_pixels_on_screen(pixel_data, px_pos, color);
 }
 
 static void draw_character(
         const char character,
-        const PxPos pos,
+        const P px_pos,
         const Color& color,
         const bool draw_bg = true,
         const Color& bg_color = Color(0, 0, 0))
 {
         if (draw_bg)
         {
-                const PxPos cell_dims(
+                const P cell_dims(
                         config::gui_cell_px_w(),
                         config::gui_cell_px_h());
 
-                io::draw_rectangle_solid(
-                        pos,
-                        cell_dims,
+                io::draw_rectangle_filled(
+                        {px_pos, px_pos + cell_dims - 1},
                         bg_color);
         }
 
@@ -693,46 +689,30 @@ static void draw_character(
 
                 put_pixels_on_screen(
                         contour_px_data,
-                        pos,
+                        px_pos,
                         sdl_color_black);
         }
 
         put_pixels_on_screen(
                 character,
-                pos,
-                color);
-}
-
-static void cover_area(const PxRect area, const Color& color)
-{
-        const PxPos px_pos(
-                area.value.p0.x,
-                area.value.p0.y);
-
-        const PxPos px_dims(
-                area.value.w(),
-                area.value.h());
-
-        io::draw_rectangle_solid(
                 px_pos,
-                px_dims,
                 color);
 }
 
-static PxRect gui_to_px_rect(const R rect)
+static R gui_to_px_rect(const R rect)
 {
-        PxRect px_rect;
-
         const int gui_cell_px_w = config::gui_cell_px_w();
         const int gui_cell_px_h = config::gui_cell_px_h();
 
-        px_rect.value = rect.scaled_up(
+        R px_rect;
+
+        px_rect = rect.scaled_up(
                 gui_cell_px_w,
                 gui_cell_px_h);
 
         // We must include ALL pixels in the given gui area
-        px_rect.value.p1 =
-                px_rect.value.p1.with_offsets(
+        px_rect.p1 =
+                px_rect.p1.with_offsets(
                         gui_cell_px_w - 1,
                         gui_cell_px_h - 1);
 
@@ -749,14 +729,14 @@ static int panel_px_h(const Panel panel)
         return io::gui_to_px_coords_y(panels::get_h(panel));
 }
 
-static PxPos panel_px_dims(const Panel panel)
+static P panel_px_dims(const Panel panel)
 {
         return io::gui_to_px_coords(panels::get_dims(panel));
 }
 
 static void draw_text(
         const std::string& str,
-        PxPos pos,
+        P px_pos,
         const Color& color,
         const bool draw_bg,
         const Color& bg_color)
@@ -766,8 +746,8 @@ static void draw_text(
                 return;
         }
 
-        if ((pos.value.y < 0) ||
-            (pos.value.y >= panel_px_h(Panel::screen)))
+        if ((px_pos.y < 0) ||
+            (px_pos.y >= panel_px_h(Panel::screen)))
         {
                 return;
         }
@@ -783,7 +763,7 @@ static void draw_text(
         const auto sdl_color_gray = colors::gray();
 
         const int screen_px_w = panel_px_w(Panel::screen);
-        const int msg_px_x1 = pos.value.x + msg_px_w - 1;
+        const int msg_px_x1 = px_pos.x + msg_px_w - 1;
         const bool msg_w_fit_on_screen = msg_px_x1 < screen_px_w;
 
         // X position to start drawing dots instead when the message does not
@@ -792,20 +772,20 @@ static void draw_text(
 
         for (size_t i = 0; i < msg_w; ++i)
         {
-                if (pos.value.x < 0 || pos.value.x >= screen_px_w)
+                if (px_pos.x < 0 || px_pos.x >= screen_px_w)
                 {
                         return;
                 }
 
                 const bool draw_dots =
                         !msg_w_fit_on_screen &&
-                        (pos.value.x >= px_x_dots);
+                        (px_pos.x >= px_x_dots);
 
                 if (draw_dots)
                 {
                         draw_character(
                                 '.',
-                                pos,
+                                px_pos,
                                 sdl_color_gray,
                                 draw_bg,
                                 bg_color);
@@ -814,31 +794,31 @@ static void draw_text(
                 {
                         draw_character(
                                 str[i],
-                                pos,
+                                px_pos,
                                 sdl_color,
                                 draw_bg,
                                 sdl_bg_color);
                 }
 
-                pos.value.x += cell_px_w;
+                px_pos.x += cell_px_w;
         }
 }
 
-static PxPos get_window_px_dims()
+static P get_window_px_dims()
 {
-        PxPos px_dims;
+        P px_dims;
 
         SDL_GetWindowSize(
                 sdl_window_,
-                &px_dims.value.x,
-                &px_dims.value.y);
+                &px_dims.x,
+                &px_dims.y);
 
         return px_dims;
 }
 
 static P get_window_gui_dims()
 {
-        const PxPos px_dims = get_window_px_dims();
+        const P px_dims = get_window_px_dims();
 
         return io::px_to_gui_coords(px_dims);
 }
@@ -850,12 +830,12 @@ static void try_set_window_gui_cells(P new_gui_dims)
         new_gui_dims.x = std::max(new_gui_dims.x, min_gui_dims.x);
         new_gui_dims.y = std::max(new_gui_dims.y, min_gui_dims.y);
 
-        const PxPos new_px_dims = io::gui_to_px_coords(new_gui_dims);
+        const P new_px_dims = io::gui_to_px_coords(new_gui_dims);
 
         SDL_SetWindowSize(
                 sdl_window_,
-                new_px_dims.value.x,
-                new_px_dims.value.y);
+                new_px_dims.x,
+                new_px_dims.y);
 }
 
 static void resize_window_to_nearest_gui_cells()
@@ -867,23 +847,22 @@ static void resize_window_to_nearest_gui_cells()
         gui_dims.x = std::max(gui_dims.x, min_gui_dims.x);
         gui_dims.y = std::max(gui_dims.y, min_gui_dims.y);
 
-        PxPos px_dims;
+        const P px_dims(
+                gui_dims.scaled_up(
+                        config::gui_cell_px_w(),
+                        config::gui_cell_px_h()));
 
-        px_dims.value = gui_dims.scaled_up(
-                config::gui_cell_px_w(),
-                config::gui_cell_px_h());
-
-        SDL_SetWindowSize(sdl_window_, px_dims.value.x, px_dims.value.y);
+        SDL_SetWindowSize(sdl_window_, px_dims.x, px_dims.y);
 }
 
 static void on_window_resized()
 {
-        PxPos new_px_dims = get_window_px_dims();
+        P new_px_dims = get_window_px_dims();
 
         TRACE << "New window size: "
-              << new_px_dims.value.x
+              << new_px_dims.x
               << ", "
-              << new_px_dims.value.y
+              << new_px_dims.y
               << std::endl;
 
         panels::init(io::px_to_gui_coords(new_px_dims));
@@ -913,9 +892,9 @@ void init()
 
         cleanup();
 
-        const PxPos resolution = get_resolution();
+        const P resolution = get_resolution();
 
-        PxPos screen_px_dims;
+        P screen_px_dims;
 
         if (config::is_fullscreen())
         {
@@ -1137,73 +1116,61 @@ int map_to_px_coords_y(const int value)
         return value * config::map_cell_px_h();
 }
 
-PxPos gui_to_px_coords(const P pos)
+P gui_to_px_coords(const P pos)
 {
-        PxPos px_pos;
-
-        px_pos.value.x = gui_to_px_coords_x(pos.x);
-        px_pos.value.y = gui_to_px_coords_y(pos.y);
-
-        return px_pos;
+        return P(gui_to_px_coords_x(pos.x),
+                 gui_to_px_coords_y(pos.y));
 }
 
-PxPos gui_to_px_coords(const int x, const int y)
+P gui_to_px_coords(const int x, const int y)
 {
         return gui_to_px_coords(P(x, y));
 }
 
-PxPos map_to_px_coords(const P pos)
+P map_to_px_coords(const P pos)
 {
-        PxPos px_pos;
-
-        px_pos.value.x = map_to_px_coords_x(pos.x);
-        px_pos.value.y = map_to_px_coords_y(pos.y);
-
-        return px_pos;
+        return P(map_to_px_coords_x(pos.x),
+                 map_to_px_coords_y(pos.y));
 }
 
-PxPos map_to_px_coords(const int x, const int y)
+P map_to_px_coords(const int x, const int y)
 {
         return map_to_px_coords(P(x, y));
 }
 
-P px_to_gui_coords(const PxPos px_pos)
+P px_to_gui_coords(const P px_pos)
 {
-        return P(px_pos.value.x / config::gui_cell_px_w(),
-                 px_pos.value.y / config::gui_cell_px_h());
+        return P(px_pos.x / config::gui_cell_px_w(),
+                 px_pos.y / config::gui_cell_px_h());
 }
 
-P px_to_map_coords(const PxPos px_pos)
+P px_to_map_coords(const P px_pos)
 {
-        return P(px_pos.value.x / config::map_cell_px_w(),
-                 px_pos.value.y / config::map_cell_px_h());
+        return P(px_pos.x / config::map_cell_px_w(),
+                 px_pos.y / config::map_cell_px_h());
 }
 
 P gui_to_map_coords(const P gui_pos)
 {
-        const PxPos px_coords = gui_to_px_coords(gui_pos);
+        const P px_coords = gui_to_px_coords(gui_pos);
 
         return px_to_map_coords(px_coords);
 }
 
-PxPos gui_to_px_coords(const Panel panel, const P offset)
+P gui_to_px_coords(const Panel panel, const P offset)
 {
         const P pos = panels::get_area(panel).p0 + offset;
 
         return gui_to_px_coords(pos);
 }
 
-PxPos map_to_px_coords(const Panel panel, const P offset)
+P map_to_px_coords(const Panel panel, const P offset)
 {
-        const PxPos px_p0 = gui_to_px_coords(panels::get_area(panel).p0);
+        const P px_p0 = gui_to_px_coords(panels::get_area(panel).p0);
 
-        const PxPos px_offset = map_to_px_coords(offset);
+        const P px_offset = map_to_px_coords(offset);
 
-        PxPos pos;
-
-        pos.value = px_p0.value + px_offset.value;
-
-        return pos;
+        return px_p0 + px_offset;
 }
 
 void draw_tile(
@@ -1219,17 +1186,16 @@ void draw_tile(
                 return;
         }
 
-        const PxPos px_pos = map_to_px_coords(panel, pos);
+        const P px_pos = map_to_px_coords(panel, pos);
 
         if (draw_bg)
         {
-                const PxPos cell_dims(
+                const P cell_dims(
                         config::map_cell_px_w(),
                         config::map_cell_px_h());
 
-                draw_rectangle_solid(
-                        px_pos,
-                        cell_dims,
+                draw_rectangle_filled(
+                        {px_pos, px_pos + cell_dims - 1},
                         bg_color);
         }
 
@@ -1265,7 +1231,7 @@ void draw_character(
                 return;
         }
 
-        const PxPos px_pos = gui_to_px_coords(panel, pos);
+        const P px_pos = gui_to_px_coords(panel, pos);
 
         const auto sdl_color = color.sdl_color();
 
@@ -1292,7 +1258,7 @@ void draw_text(
                 return;
         }
 
-        PxPos px_pos = gui_to_px_coords(panel, pos);
+        P px_pos = gui_to_px_coords(panel, pos);
 
         draw_text(
                 str,
@@ -1320,7 +1286,7 @@ void draw_text_center(
         const int len_half = len / 2;
         const int x_pos_left = pos.x - len_half;
 
-        PxPos px_pos = gui_to_px_coords(
+        P px_pos = gui_to_px_coords(
                 panel,
                 P(x_pos_left, pos.y));
 
@@ -1331,7 +1297,7 @@ void draw_text_center(
                         (config::gui_cell_px_w() / 2) :
                         0;
 
-                px_pos.value += P(pixel_x_adj, 0);
+                px_pos += P(pixel_x_adj, 0);
         }
 
         draw_text(
@@ -1357,7 +1323,7 @@ void draw_text_right(
 
         const int x_pos_left = pos.x - str.size() + 1;
 
-        PxPos px_pos = gui_to_px_coords(
+        P px_pos = gui_to_px_coords(
                 panel,
                 P(x_pos_left, pos.y));
 
@@ -1369,18 +1335,50 @@ void draw_text_right(
                 bg_color);
 }
 
-void draw_rectangle_solid(
-        const PxPos pos,
-        const PxPos dims,
+void draw_rectangle(
+        const R& px_rect,
+        const Color& color)
+{
+        draw_rectangle_filled(
+                R(px_rect.p0.x,
+                  px_rect.p0.y,
+                  px_rect.p1.x,
+                  px_rect.p0.y),
+                color);
+
+        draw_rectangle_filled(
+                R(px_rect.p0.x,
+                  px_rect.p1.y,
+                  px_rect.p1.x,
+                  px_rect.p1.y),
+                color);
+
+        draw_rectangle_filled(
+                R(px_rect.p0.x,
+                  px_rect.p0.y,
+                  px_rect.p0.x,
+                  px_rect.p1.y),
+                color);
+
+        draw_rectangle_filled(
+                R(px_rect.p1.x,
+                  px_rect.p0.y,
+                  px_rect.p1.x,
+                  px_rect.p1.y),
+                color);
+}
+
+void draw_rectangle_filled(
+        const R& px_rect,
         const Color& color)
 {
         if (is_inited() && panels::is_valid())
         {
                 SDL_Rect sdl_rect = {
-                        (Sint16)pos.value.x,
-                        (Sint16)pos.value.y,
-                        (Uint16)dims.value.x,
-                        (Uint16)dims.value.y
+                        (Sint16)px_rect.p0.x,
+                        (Sint16)px_rect.p0.y,
+                        (Uint16)px_rect.w(),
+                        (Uint16)px_rect.h()
                 };
 
                 const SDL_Color& sdl_color = color.sdl_color();
@@ -1401,9 +1399,9 @@ void cover_panel(const Panel panel, const Color& color)
                 return;
         }
 
-        const PxRect px_area = gui_to_px_rect(panels::get_area(panel));
+        const R px_area = gui_to_px_rect(panels::get_area(panel));
 
-        cover_area(px_area, color);
+        draw_rectangle_filled(px_area, color);
 }
 
 void cover_area(
@@ -1415,9 +1413,9 @@ void cover_area(
 
         const R screen_area = area.with_offset(panel_p0);
 
-        const PxRect px_area = gui_to_px_rect(screen_area);
+        const R px_area = gui_to_px_rect(screen_area);
 
-        cover_area(px_area, color);
+        draw_rectangle_filled(px_area, color);
 }
 
 void cover_area(
@@ -1439,7 +1437,7 @@ void cover_cell(const Panel panel, const P offset)
 
 void draw_box(const R& border, const Color& color)
 {
-        const PxRect outer_px_border = gui_to_px_rect(border);
+        const R outer_px_border = gui_to_px_rect(border);
 
         const int gui_cell_w = config::gui_cell_px_w();
         const int gui_cell_h = config::gui_cell_px_h();
@@ -1447,29 +1445,25 @@ void draw_box(const R& border, const Color& color)
         const int x_offset = gui_cell_w / 2;
         const int y_offset = gui_cell_h / 2;
 
-        const int x0 = outer_px_border.value.p0.x + x_offset;
-        const int y0 = outer_px_border.value.p0.y + y_offset;
-        const int x1 = outer_px_border.value.p1.x - x_offset;
-        const int y1 = outer_px_border.value.p1.y - y_offset;
+        const int x0 = outer_px_border.p0.x + x_offset;
+        const int y0 = outer_px_border.p0.y + y_offset;
+        const int x1 = outer_px_border.p1.x - x_offset;
+        const int y1 = outer_px_border.p1.y - y_offset;
 
-        draw_rectangle_solid(
-                PxPos(x0, y0),
-                {x1 - x0 + 1, 2},
+        draw_rectangle_filled(
+                R(x0, y0, x1, y0),
                 color);
 
-        draw_rectangle_solid(
-                PxPos(x0, y1),
-                {x1 - x0 + 1, 2},
+        draw_rectangle_filled(
+                R(x0, y1, x1, y1),
                 color);
 
-        draw_rectangle_solid(
-                PxPos(x0, y0),
-                {2, y1 - y0 + 1},
+        draw_rectangle_filled(
+                R(x0, y0, x0, y1),
                 color);
 
-        draw_rectangle_solid(
-                PxPos(x1, y0),
-                {2, y1 - y0 + 1},
+        draw_rectangle_filled(
+                R(x1, y0, x1, y1),
                 color);
 
         // Vertical bars
@@ -1588,9 +1582,9 @@ void draw_main_menu_logo()
 
                 const int logo_px_h = main_menu_logo_srf_->w;
 
-                const PxPos pos((screen_px_w - logo_px_h) / 2, 0);
+                const P px_pos((screen_px_w - logo_px_h) / 2, 0);
 
-                blit_surface(*main_menu_logo_srf_, pos);
+                blit_surface(*main_menu_logo_srf_, px_pos);
         }
 }
 
@@ -1598,7 +1592,7 @@ void draw_skull(const P pos)
 {
         if (is_inited() && panels::is_valid())
         {
-                const PxPos px_pos(
+                const P px_pos(
                         pos.x * config::map_cell_px_w(),
                         pos.y * config::map_cell_px_h());
 
