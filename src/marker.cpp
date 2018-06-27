@@ -31,7 +31,7 @@ StateId MarkerState::id()
 
 void MarkerState::on_start()
 {
-        marker_render_data_.resize(map::dims());
+        marker_render_data_.resize(viewport::get_map_view_dims());
 
         pos_ = map::player->pos;
 
@@ -74,7 +74,7 @@ void MarkerState::draw()
                         pos_,
                         true, // Stop at target
                         INT_MAX, // Travel limit
-                        false); // Allow outside map
+                        true); // Allow outside map
 
         // Remove origin position
         if (!line.empty())
@@ -92,7 +92,12 @@ void MarkerState::draw()
         {
                 for (size_t i = 0; i < line.size(); ++i)
                 {
-                        const P& p(line[i]);
+                        const P& p = line[i];
+
+                        if (!map::is_pos_inside_map(p))
+                        {
+                                break;
+                        }
 
                         const Cell& c = map::cells.at(p);
 
@@ -230,12 +235,17 @@ void MarkerState::draw_marker(
         const int red_from_king_dist,
         const int red_from_idx)
 {
-        for (size_t i = 0; i < map::nr_cells(); ++i)
-        {
-                auto& d = marker_render_data_.at(i);
+        const P map_view_dims = viewport::get_map_view_dims();
 
-                d.tile  = TileId::END;
-                d.character = 0;
+        for (int x = 0; x < map_view_dims.x; ++x)
+        {
+                for (int y = 0; y < map_view_dims.y; ++y)
+                {
+                        auto& d = marker_render_data_.at(x, y);
+
+                        d.tile  = TileId::END;
+                        d.character = 0;
+                }
         }
 
         Color color = colors::light_green();
@@ -284,7 +294,9 @@ void MarkerState::draw_marker(
 
                 if ((int)line_idx < tail_size_int)
                 {
-                        auto& d = marker_render_data_.at(line_pos);
+                        const P view_pos = viewport::to_view_pos(line_pos);
+
+                        auto& d = marker_render_data_.at(view_pos);
 
                         d.tile = TileId::aim_marker_line;
 
@@ -298,7 +310,7 @@ void MarkerState::draw_marker(
                                 d.tile,
                                 d.character,
                                 Panel::map,
-                                viewport::to_view_pos(line_pos),
+                                view_pos,
                                 d.color,
                                 true, // Draw background color
                                 d.color_bg);
@@ -313,7 +325,9 @@ void MarkerState::draw_marker(
 
         if (viewport::is_in_view(head_pos))
         {
-                auto& d = marker_render_data_.at(head_pos);
+                const P view_pos = viewport::to_view_pos(head_pos);
+
+                auto& d = marker_render_data_.at(view_pos);
 
                 d.tile = TileId::aim_marker_head;
 
@@ -338,7 +352,12 @@ void MarkerState::move(const Dir dir)
 {
         const P new_pos(pos_ + dir_utils::offset(dir));
 
-        if (map::is_pos_inside_map(new_pos))
+        // We limit the distance from the player that the marker can be moved to
+        // (mostly just to avoid segfaults or weird integer wraparound behavior)
+        // The limit is an arbitrary big number, larger than any map should be
+        const int max_dist_from_player = 300;
+
+        if (king_dist(map::player->pos, new_pos) <= max_dist_from_player)
         {
                 pos_ = new_pos;
 
@@ -396,6 +415,7 @@ void MarkerState::try_go_to_closest_enemy()
 void Viewing::on_moved()
 {
         msg_log::clear();
+
         look::print_location_info_msgs(pos_);
 
         const auto* const actor = map::actor_at_pos(pos_);
@@ -683,20 +703,24 @@ void ThrowingExplosive::on_draw()
                 {
                         const P p(x, y);
 
-                        if (!viewport::is_in_view(p))
+                        if (!viewport::is_in_view(p) ||
+                            !map::is_pos_inside_map(p) ||
+                            !map::cells.at(p).is_explored)
                         {
                                 continue;
                         }
 
                         const auto& render_d = draw_map::get_drawn_cell(x, y);
 
+                        const P view_pos = viewport::to_view_pos(p);
+
                         const auto& marker_render_d =
-                                marker_render_data_.at(x, y);
+                                marker_render_data_.at(view_pos);
 
                         // Draw overlay if the cell contains either a map
                         // symbol, or a marker symbol
-                        if (render_d.character != 0 ||
-                            marker_render_d.character != 0)
+                        if ((render_d.character != 0) ||
+                            (marker_render_d.character != 0))
                         {
                                 const bool has_marker =
                                         marker_render_d.character != 0;
@@ -710,7 +734,7 @@ void ThrowingExplosive::on_draw()
                                         d.tile,
                                         d.character,
                                         Panel::map,
-                                        viewport::to_view_pos(p),
+                                        view_pos,
                                         d.color,
                                         true, // Draw background color
                                         color_bg);
@@ -824,6 +848,7 @@ void CtrlTele::handle_input(const InputData& input)
 
                         const bool is_tele_success =
                                 roll_ok &&
+                                blocked_.rect().is_pos_inside(pos_) &&
                                 !blocked_.at(pos_);
 
                         const P tgt_p(pos_);

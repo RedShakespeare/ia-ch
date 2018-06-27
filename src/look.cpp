@@ -25,9 +25,6 @@
 // -----------------------------------------------------------------------------
 // private
 // -----------------------------------------------------------------------------
-namespace
-{
-
 static std::string get_mon_memory_turns_descr(const Actor& actor)
 {
         std::string str = "";
@@ -232,8 +229,6 @@ static std::string get_mon_shock_descr(const Actor& actor)
         return str;
 }
 
-} // namespace
-
 // -----------------------------------------------------------------------------
 // View actor description
 // -----------------------------------------------------------------------------
@@ -411,50 +406,49 @@ void ViewActorDescr::on_start()
 
         auto print_val = [&](const int val,
                              const P& p,
-                             const bool is_sum)
+                             const bool is_sum) {
+                Color color;
+
+                std::string str;
+
+                if (is_sum)
                 {
-                        Color color;
+                        str = std::to_string(val) + "%";
 
-                        std::string str;
-
-                        if (is_sum)
+                        color = colors::light_white();
+                }
+                else // Not sum
+                {
+                        if (val == val_undefined)
                         {
-                                str = std::to_string(val) + "%";
+                                color = colors::dark_gray();
 
-                                color = colors::light_white();
+                                str = "N/A";
                         }
-                        else // Not sum
+                        else // Value is set
                         {
-                                if (val == val_undefined)
+                                color = colors::white();
+
+                                str = std::to_string(val);
+
+                                if (val >= 0)
                                 {
-                                        color = colors::dark_gray();
-
-                                        str = "N/A";
+                                        str.insert(begin(str), '+');
                                 }
-                                else // Value is set
-                                {
-                                        color = colors::white();
 
-                                        str = std::to_string(val);
+                                str += "%";
 
-                                        if (val >= 0)
-                                        {
-                                                str.insert(begin(str), '+');
-                                        }
+                                color = colors::white();
 
-                                        str += "%";
-
-                                        color = colors::white();
-
-                                        color =
-                                        (val < 0) ? colors::msg_bad() :
-                                        (val == 0) ? colors::white() :
-                                        colors::msg_good();
-                                }
+                                color =
+                                (val < 0) ? colors::msg_bad() :
+                                (val == 0) ? colors::white() :
+                                colors::msg_good();
                         }
+                }
 
-                        put_text(str, p, color);
-                };
+                put_text(str, p, color);
+        };
 
         const int hit_chances_y0 = p.y;
 
@@ -724,9 +718,16 @@ namespace look
 
 void print_location_info_msgs(const P& pos)
 {
-        const Cell& cell = map::cells.at(pos);
+        Cell* cell = nullptr;
 
-        const bool is_cell_seen = cell.is_seen_by_player;
+        bool is_cell_seen = false;
+
+        if (map::is_pos_inside_map(pos))
+        {
+                cell = &map::cells.at(pos);
+
+                is_cell_seen = cell->is_seen_by_player;
+        }
 
         const std::string i_see_here_str = "I see here:";
 
@@ -735,7 +736,7 @@ void print_location_info_msgs(const P& pos)
                 msg_log::add(i_see_here_str);
 
                 // Describe rigid
-                std::string str = cell.rigid->name(Article::a);
+                std::string str = cell->rigid->name(Article::a);
 
                 str = text_format::first_to_upper(str);
 
@@ -761,7 +762,7 @@ void print_location_info_msgs(const P& pos)
                 }
 
                 // Describe item
-                Item* item = cell.item;
+                Item* item = cell->item;
 
                 if (item)
                 {

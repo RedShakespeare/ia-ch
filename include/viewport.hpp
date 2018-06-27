@@ -7,6 +7,8 @@ class R;
 namespace viewport
 {
 
+P get_map_view_dims();
+
 R get_map_view_area();
 
 void focus_on(const P map_pos);

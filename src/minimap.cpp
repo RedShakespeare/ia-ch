@@ -1,5 +1,7 @@
 #include "minimap.hpp"
 
+#include <climits>
+
 #include "actor_player.hpp"
 #include "feature_door.hpp"
 #include "feature_rigid.hpp"
@@ -20,13 +22,49 @@ static int get_px_w_per_cell()
         return 6;
 }
 
-static R get_minimap_px_rect()
+static R get_map_area_explored()
 {
-        const int px_w_per_cell = get_px_w_per_cell();
+        // Find the most top left and bottom right map cells explored
+        R area_explored(INT_MAX, INT_MAX, 0, 0);
 
         const P& map_dims = minimap_.dims();
 
-        const P minimap_px_dims = map_dims.scaled_up(px_w_per_cell);
+        for (int x = 0; x < map_dims.x; ++x)
+        {
+                for (int y = 0; y < map_dims.y; ++y)
+                {
+                        if (map::cells.at(x, y).is_explored)
+                        {
+                                area_explored.p0.x = std::min(
+                                        area_explored.p0.x,
+                                        x);
+
+                                area_explored.p0.y = std::min(
+                                        area_explored.p0.y,
+                                        y);
+
+                                area_explored.p1.x = std::max(
+                                        area_explored.p1.x,
+                                        x);
+
+                                area_explored.p1.y = std::max(
+                                        area_explored.p1.y,
+                                        y);
+                        }
+                }
+        }
+
+        return area_explored;
+}
+
+static R get_minimap_px_rect_on_screen(const R& map_area_explored)
+{
+        const int px_w_per_cell = get_px_w_per_cell();
+
+        const P minimap_px_dims =
+                map_area_explored
+                .dims()
+                .scaled_up(px_w_per_cell);
 
         const P screen_px_dims =
                 io::gui_to_px_coords(
@@ -56,16 +94,19 @@ void ViewMinimap::draw()
 
         const int px_w_per_cell = get_px_w_per_cell();
 
-        const P map_dims = minimap_.dims();
+        const R area_explored = get_map_area_explored();
 
-        const auto minimap_px_rect = get_minimap_px_rect();
+        const R minimap_px_rect = get_minimap_px_rect_on_screen(area_explored);
 
-        for (int x = 0; x < map_dims.x; ++x)
+        for (int x = area_explored.p0.x; x <= area_explored.p1.x; ++x)
         {
-                for (int y = 0; y < map_dims.y; ++y)
+                for (int y = area_explored.p0.y; y <= area_explored.p1.y; ++y)
                 {
+                        const P pos_relative_to_explored_area =
+                                P(x, y) - area_explored.p0;
+
                         const P px_pos =
-                                P(x, y)
+                                pos_relative_to_explored_area
                                 .scaled_up(px_w_per_cell)
                                 .with_offsets(minimap_px_rect.p0);
 
@@ -87,12 +128,6 @@ void ViewMinimap::draw()
                         io::draw_rectangle_filled(cell_px_rect, color);
                 }
         }
-
-        const R border_px_rect(
-                minimap_px_rect.p0 - 1,
-                minimap_px_rect.p1 + 1);
-
-        io::draw_rectangle(border_px_rect, colors::dark_gray());
 }
 
 void ViewMinimap::update()

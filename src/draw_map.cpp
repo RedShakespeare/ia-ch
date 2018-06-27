@@ -360,18 +360,15 @@ static void draw_render_array()
                 {
                         const P map_pos = P(x, y);
 
+                        const P view_pos = viewport::to_view_pos(map_pos);
+
                         if (!map::is_pos_inside_map(map_pos))
                         {
                                 continue;
                         }
 
-                        const P view_pos = viewport::to_view_pos(map_pos);
-
                         auto& render_data = render_array_.at(map_pos);
 
-                        // NOTE: It can happen that text is drawn on the map
-                        // even in tiles mode - for example exclamation marks on
-                        // cells with known, unseen actors
                         if (config::is_tiles_mode() &&
                             (render_data.tile != TileId::END))
                         {

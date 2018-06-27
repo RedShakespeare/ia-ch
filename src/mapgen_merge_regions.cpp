@@ -17,13 +17,11 @@ void merge_regions(Region regions[3][3])
     const int idx_w_min = 1;
     const int idx_w_max = 2;
 
-    const int idx_h_min = 2;
-    const int idx_h_max = 3;
+    const int idx_h_min = 1;
+    const int idx_h_max = 2;
 
-    //
     // Set up merge candidates (we don't care if the regions are free for now,
     // since we'll have to check that later before each merge anyway)
-    //
 
     // The elements of this vector corresponds to sets of region indexes
     std::vector<R> merge_idx_bucket;
@@ -59,9 +57,7 @@ void merge_regions(Region regions[3][3])
         }
     }
 
-    //
     // Make merges
-    //
 
     auto is_regions_free = [&regions](const R& r)
     {
@@ -103,9 +99,7 @@ void merge_regions(Region regions[3][3])
             continue;
         }
 
-        //
         // OK, we can make a merge here
-        //
 
         TRACE << "Merging regions: "
               << "(" << idx_r.p0.x << ", " << idx_r.p0.y << ")"
