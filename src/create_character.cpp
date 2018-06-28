@@ -1,17 +1,17 @@
 #include "create_character.hpp"
 
-#include "io.hpp"
-#include "panel.hpp"
-#include "global.hpp"
 #include "actor_player.hpp"
 #include "browser.hpp"
-#include "text_format.hpp"
-#include "map.hpp"
 #include "game.hpp"
-#include "msg_log.hpp"
+#include "global.hpp"
 #include "init.hpp"
-#include "popup.hpp"
+#include "io.hpp"
+#include "map.hpp"
 #include "map_travel.hpp"
+#include "msg_log.hpp"
+#include "panel.hpp"
+#include "popup.hpp"
+#include "text_format.hpp"
 
 // -----------------------------------------------------------------------------
 // New game state
@@ -33,16 +33,10 @@ StateId NewGameState::id()
 
 void NewGameState::on_pushed()
 {
-        std::unique_ptr<State> game_state(
-                new GameState(GameEntryMode::new_game));
-
-        std::unique_ptr<State> name_state(new EnterNameState);
-
-        std::unique_ptr<State> bg_state(new PickBgState);
-
-        states::push(std::move(game_state));
-        states::push(std::move(name_state));
-        states::push(std::move(bg_state));
+        states::push(std::make_unique<GameState>(GameEntryMode::new_game));
+        states::push(std::make_unique<EnterNameState>());
+        states::push(std::make_unique<PickTraitState>());
+        states::push(std::make_unique<PickBgState>());
 }
 
 void NewGameState::on_resume()
@@ -281,6 +275,14 @@ void PickTraitState::update()
         }
         break;
 
+        case MenuAction::esc:
+        {
+                if (states::contains_state(StateId::pick_name))
+                {
+                        states::pop_until(StateId::menu);
+                }
+        }
+
         default:
                 break;
         }
@@ -292,8 +294,12 @@ void PickTraitState::draw()
 
         if (screen_mode_ == TraitScreenMode::pick_new)
         {
-                title = "Which trait do you gain? "
-                        "[TAB] to view unavailable traits";
+                title =
+                        states::contains_state(StateId::pick_name)
+                        ? "Which extra trait do you start with?"
+                        : "Which trait do you gain?";
+
+                title += " [TAB] to view unavailable traits";
         }
         else // Viewing unavailable traits
         {

@@ -27,9 +27,8 @@ void try_sprain_player()
         }
 
         const int sprain_one_in_n =
-                player_bon::traits[(size_t)Trait::tough]
-                ? 10
-                : 4;
+                player_bon::has_trait(Trait::rugged) ? 12 :
+                player_bon::has_trait(Trait::tough) ? 8 : 4;
 
         if (rnd::one_in(sprain_one_in_n))
         {

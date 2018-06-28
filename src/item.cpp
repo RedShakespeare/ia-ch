@@ -111,7 +111,17 @@ Dice Item::melee_dmg(const Actor* const attacker) const
 
         if (attacker == map::player)
         {
-                if (player_bon::traits[(size_t)Trait::melee_fighter])
+                if (player_bon::has_trait(Trait::adept_melee))
+                {
+                        ++dice.plus;
+                }
+
+                if (player_bon::has_trait(Trait::expert_melee))
+                {
+                        ++dice.plus;
+                }
+
+                if (player_bon::has_trait(Trait::master_melee))
                 {
                         ++dice.plus;
                 }

@@ -232,7 +232,12 @@ void Door::on_hit(const int dmg,
 
                     if (player_bon::traits[(size_t)Trait::tough])
                     {
-                        destr_chance_pct += 25;
+                        destr_chance_pct += 15;
+                    }
+
+                    if (player_bon::traits[(size_t)Trait::rugged])
+                    {
+                        destr_chance_pct += 15;
                     }
 
                     if (actor->has_prop(PropId::frenzied))

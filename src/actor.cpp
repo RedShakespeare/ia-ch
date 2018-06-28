@@ -206,6 +206,11 @@ int Actor::speed_pct() const
         {
             speed += 10;
         }
+
+        if (player_bon::traits[(size_t)Trait::lithe])
+        {
+            speed += 10;
+        }
     }
 
     const int min_speed = 10;
@@ -303,9 +308,19 @@ void Actor::on_std_turn_common()
 
         if (is_player())
         {
+            if (player_bon::traits[(size_t)Trait::stout_spirit])
+            {
+                regen_spi_n_turns -= 4;
+            }
+
             if (player_bon::traits[(size_t)Trait::strong_spirit])
             {
-                regen_spi_n_turns -= 8;
+                regen_spi_n_turns -= 4;
+            }
+
+            if (player_bon::traits[(size_t)Trait::mighty_spirit])
+            {
+                regen_spi_n_turns -= 4;
             }
         }
         else // Is monster

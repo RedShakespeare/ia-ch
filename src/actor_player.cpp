@@ -364,7 +364,12 @@ int Player::shock_resistance(const ShockSrc shock_src) const
 
     if (player_bon::traits[(size_t)Trait::cool_headed])
     {
-        res += 25;
+        res += 20;
+    }
+
+    if (player_bon::traits[(size_t)Trait::courageous])
+    {
+        res += 20;
     }
 
     if (player_bon::traits[(size_t)Trait::fearless])
@@ -1363,7 +1368,15 @@ void Player::on_std_turn()
     }
 
     // Spell resistance
-    int nr_turns_to_recharge_spell_shield = 125 + rnd::range(0, 25);
+    const int spell_shield_turns_base = 125 + rnd::range(0, 25);
+
+    const int spell_shield_turns_bon =
+            player_bon::has_trait(Trait::mighty_spirit) ? 100 :
+            player_bon::has_trait(Trait::strong_spirit) ? 50 : 0;
+
+    int nr_turns_to_recharge_spell_shield = std::max(
+            1,
+            spell_shield_turns_base - spell_shield_turns_bon);
 
     // Halved number of turns due to the Talisman of Reflection?
     if (inv_->has_item_in_backpack(ItemId::refl_talisman))
@@ -1378,7 +1391,7 @@ void Player::on_std_turn()
         nr_turns_until_rspell_ = nr_turns_to_recharge_spell_shield;
     }
     // Spell resistance not currently active
-    else if (player_bon::traits[(size_t)Trait::strong_spirit])
+    else if (player_bon::has_trait(Trait::stout_spirit))
     {
         if (nr_turns_until_rspell_ <= 0)
         {

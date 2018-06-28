@@ -23,16 +23,22 @@ static bool is_trait_blocked_for_bg(const Trait trait, const Bg bg)
 {
         switch (trait)
         {
-        case Trait::melee_fighter:
+        case Trait::adept_melee:
+        case Trait::expert_melee:
+        case Trait::master_melee:
         case Trait::cool_headed:
+        case Trait::courageous:
         case Trait::ravenous:
         case Trait::foul:
         case Trait::toxic:
         case Trait::indomitable_fury:
         case Trait::vigilant:
         case Trait::self_aware:
+        case Trait::stout_spirit:
         case Trait::strong_spirit:
+        case Trait::mighty_spirit:
         case Trait::stealthy:
+        case Trait::imperceptible:
         case Trait::silent:
         case Trait::vicious:
         case Trait::treasure_hunter:
@@ -49,20 +55,20 @@ static bool is_trait_blocked_for_bg(const Trait trait, const Bg bg)
         case Trait::greater_alter:
         case Trait::absorb:
         case Trait::tough:
+        case Trait::rugged:
         case Trait::thick_skinned:
         case Trait::resistant:
         case Trait::strong_backed:
         case Trait::dexterous:
+        case Trait::lithe:
         case Trait::fearless:
+        case Trait::fast_shooter:
+        case Trait::steady_aimer:
                 break;
 
-        case Trait::marksman:
-                return bg == Bg::ghoul;
-
-        case Trait::steady_aimer:
-                return bg == Bg::ghoul;
-
-        case Trait::fast_shooter:
+        case Trait::adept_marksman:
+        case Trait::expert_marksman:
+        case Trait::master_marksman:
                 return bg == Bg::ghoul;
 
         case Trait::healer:
@@ -152,11 +158,20 @@ std::string trait_title(const Trait id)
 {
         switch (id)
         {
-        case Trait::melee_fighter:
-                return "Melee Fighter";
+        case Trait::adept_melee:
+                return "Adept Melee Fighter";
+
+        case Trait::expert_melee:
+                return "Expert Melee Fighter";
+
+        case Trait::master_melee:
+                return "Master Melee Fighter";
 
         case Trait::cool_headed:
                 return "Cool-headed";
+
+        case Trait::courageous:
+                return "Courageous";
 
         case Trait::lesser_invoc:
                 return "Lesser Invocation";
@@ -194,14 +209,23 @@ std::string trait_title(const Trait id)
         case Trait::dexterous:
                 return "Dexterous";
 
+        case Trait::lithe:
+                return "Lithe";
+
         case Trait::fearless:
                 return "Fearless";
 
         case Trait::healer:
                 return "Healer";
 
-        case Trait::marksman:
-                return "Marksman";
+        case Trait::adept_marksman:
+                return "Adept Marksman";
+
+        case Trait::expert_marksman:
+                return "Expert Marksman";
+
+        case Trait::master_marksman:
+                return "Master Marksman";
 
         case Trait::steady_aimer:
                 return "Steady Aimer";
@@ -221,11 +245,20 @@ std::string trait_title(const Trait id)
         case Trait::self_aware:
                 return "Self-aware";
 
+        case Trait::stout_spirit:
+                return "Stout Spirit";
+
         case Trait::strong_spirit:
                 return "Strong Spirit";
 
+        case Trait::mighty_spirit:
+                return "Mighty Spirit";
+
         case Trait::stealthy:
                 return "Stealthy";
+
+        case Trait::imperceptible:
+                return "Imperceptible";
 
         case Trait::silent:
                 return "Silent";
@@ -238,6 +271,9 @@ std::string trait_title(const Trait id)
 
         case Trait::tough:
                 return "Tough";
+
+        case Trait::rugged:
+                return "Rugged";
 
         case Trait::thick_skinned:
                 return "Thick Skinned";
@@ -328,11 +364,11 @@ std::vector<ColoredString> bg_descr(const Bg id)
                 put("");
                 put("Can dispel magic traps");
                 put("");
-                put("+2 Spirit Points (in addition to \"Strong Spirit\")");
+                put("+2 Spirit Points (in addition to \"Stout Spirit\")");
                 put("");
                 put("-2 Hit Points");
                 put("");
-                put_trait(Trait::strong_spirit);
+                put_trait(Trait::stout_spirit);
                 break;
 
         case Bg::rogue:
@@ -358,11 +394,13 @@ std::vector<ColoredString> bg_descr(const Bg id)
                 put("");
                 put("Maintains armor twice as long before it breaks");
                 put("");
-                put_trait(Trait::marksman);
+                put_trait(Trait::adept_marksman);
                 put("");
-                put_trait(Trait::melee_fighter);
+                put_trait(Trait::adept_melee);
                 put("");
                 put_trait(Trait::tough);
+                put("");
+                put_trait(Trait::healer);
                 break;
 
         case Bg::END:
@@ -377,14 +415,18 @@ std::string trait_descr(const Trait id)
 {
         switch (id)
         {
-        case Trait::melee_fighter:
+        case Trait::adept_melee:
+        case Trait::expert_melee:
+        case Trait::master_melee:
                 return
-                        "+20% hit chance, +10% attack speed, and +1 damage "
+                        "+10% hit chance, +10% attack speed, and +1 damage "
                         "with melee attacks";
 
-        case Trait::marksman:
+        case Trait::adept_marksman:
+        case Trait::expert_marksman:
+        case Trait::master_marksman:
                 return
-                        "+20% hit chance and +10% attack speed with firearms "
+                        "+10% hit chance and +10% attack speed with firearms "
                         "and thrown weapons, +50% reload speed";
 
         case Trait::steady_aimer:
@@ -398,8 +440,9 @@ std::string trait_descr(const Trait id)
                         "+100% firing speed (not applicable to thrown weapons)";
 
         case Trait::cool_headed:
+        case Trait::courageous:
                 return
-                        "+25% shock resistance";
+                        "+20% shock resistance";
 
         case Trait::lesser_invoc:
                 return
@@ -462,6 +505,7 @@ std::string trait_descr(const Trait id)
                         "traits, or the Spell Shield spell)";
 
         case Trait::tough:
+        case Trait::rugged:
                 return
                         "+4 Hit Points, less likely to sprain when kicking, "
                         "more likely to succeed with object interactions "
@@ -481,6 +525,7 @@ std::string trait_descr(const Trait id)
                         "+50% carry weight limit";
 
         case Trait::dexterous:
+        case Trait::lithe:
                 return
                         "+10% speed, +20% chance to evade attacks";
 
@@ -514,14 +559,29 @@ std::string trait_descr(const Trait id)
                         "You cannot become confused, the number of remaining "
                         "turns for status effects are displayed";
 
+        case Trait::stout_spirit:
+                return
+                        "+2 Spirit Points, increased Spirit regeneration rate, "
+                        "you can defy harmful spells (it takes 125-150 turns "
+                        "to regain spell resistance after a spell is blocked)";
+
         case Trait::strong_spirit:
                 return
-                        "+4 Spirit Points, increased Spirit regeneration rate, "
-                        "you can block harmful spells (it takes a certain "
-                        "number of turns to regain spell resistance after a "
-                        "spell is blocked)";
+                        "+2 Spirit Points, increased Spirit regeneration rate,"
+                        "it takes 75-100 turns to regain spell resistance "
+                        "after a spell is blocked";
+
+        case Trait::mighty_spirit:
+                return
+                        "+2 Spirit Points, increased Spirit regeneration rate,"
+                        "it takes 25-50 turns to regain spell resistance "
+                        "after a spell is blocked";
 
         case Trait::stealthy:
+                return
+                        "You are more likely to avoid detection";
+
+        case Trait::imperceptible:
                 return
                         "You are more likely to avoid detection";
 
@@ -598,10 +658,26 @@ void trait_prereqs(const Trait trait,
 
         switch (trait)
         {
-        case Trait::melee_fighter:
+        case Trait::adept_melee:
                 break;
 
-        case Trait::marksman:
+        case Trait::expert_melee:
+                traits_out.push_back(Trait::adept_melee);
+                break;
+
+        case Trait::master_melee:
+                traits_out.push_back(Trait::expert_melee);
+                break;
+
+        case Trait::adept_marksman:
+                break;
+
+        case Trait::expert_marksman:
+                traits_out.push_back(Trait::adept_marksman);
+                break;
+
+        case Trait::master_marksman:
+                traits_out.push_back(Trait::expert_marksman);
                 break;
 
         case Trait::steady_aimer:
@@ -609,12 +685,16 @@ void trait_prereqs(const Trait trait,
                 break;
 
         case Trait::fast_shooter:
-                traits_out.push_back(Trait::marksman);
+                traits_out.push_back(Trait::expert_marksman);
                 traits_out.push_back(Trait::dexterous);
                 bg_out = Bg::war_vet;
                 break;
 
         case Trait::cool_headed:
+                break;
+
+        case Trait::courageous:
+                traits_out.push_back(Trait::cool_headed);
                 break;
 
         case Trait::lesser_invoc:
@@ -680,6 +760,10 @@ void trait_prereqs(const Trait trait,
         case Trait::tough:
                 break;
 
+        case Trait::rugged:
+                traits_out.push_back(Trait::tough);
+                break;
+
         case Trait::resistant:
                 traits_out.push_back(Trait::tough);
                 break;
@@ -693,6 +777,10 @@ void trait_prereqs(const Trait trait,
                 break;
 
         case Trait::dexterous:
+                break;
+
+        case Trait::lithe:
+                traits_out.push_back(Trait::dexterous);
                 break;
 
         case Trait::fearless:
@@ -715,14 +803,27 @@ void trait_prereqs(const Trait trait,
                 break;
 
         case Trait::self_aware:
-                traits_out.push_back(Trait::strong_spirit);
+                traits_out.push_back(Trait::stout_spirit);
                 traits_out.push_back(Trait::cool_headed);
                 break;
 
+        case Trait::stout_spirit:
+                break;
+
         case Trait::strong_spirit:
+                traits_out.push_back(Trait::stout_spirit);
+                break;
+
+        case Trait::mighty_spirit:
+                traits_out.push_back(Trait::strong_spirit);
                 break;
 
         case Trait::stealthy:
+                break;
+
+        case Trait::imperceptible:
+                traits_out.push_back(Trait::stealthy);
+                bg_out = Bg::rogue;
                 break;
 
         case Trait::silent:
@@ -742,13 +843,14 @@ void trait_prereqs(const Trait trait,
         case Trait::undead_bane:
                 traits_out.push_back(Trait::tough);
                 traits_out.push_back(Trait::fearless);
+                traits_out.push_back(Trait::stout_spirit);
                 break;
 
         case Trait::elec_incl:
                 break;
 
         case Trait::ravenous:
-                traits_out.push_back(Trait::melee_fighter);
+                traits_out.push_back(Trait::adept_melee);
                 bg_out = Bg::ghoul;
                 break;
 
@@ -762,7 +864,7 @@ void trait_prereqs(const Trait trait,
                 break;
 
         case Trait::indomitable_fury:
-                traits_out.push_back(Trait::melee_fighter);
+                traits_out.push_back(Trait::adept_melee);
                 traits_out.push_back(Trait::tough);
                 bg_out = Bg::ghoul;
                 break;
@@ -963,8 +1065,10 @@ void pick_bg(const Bg bg)
 
         case Bg::occultist:
         {
-                pick_trait(Trait::strong_spirit);
+                pick_trait(Trait::stout_spirit);
+
                 map::player->change_max_spi(2, Verbosity::silent);
+
                 map::player->change_max_hp(-2, Verbosity::silent);
         }
         break;
@@ -977,9 +1081,10 @@ void pick_bg(const Bg bg)
 
         case Bg::war_vet:
         {
-                pick_trait(Trait::marksman);
-                pick_trait(Trait::melee_fighter);
+                pick_trait(Trait::adept_marksman);
+                pick_trait(Trait::adept_melee);
                 pick_trait(Trait::tough);
+                pick_trait(Trait::healer);
         }
         break;
 
@@ -1052,29 +1157,23 @@ void pick_trait(const Trait id)
         break;
 
         case Trait::tough:
+        case Trait::rugged:
         {
                 const int hp_incr = 4;
 
-                map::player->change_max_hp(hp_incr,
-                                           Verbosity::silent);
+                map::player->change_max_hp(
+                        hp_incr,
+                        Verbosity::silent);
 
-                map::player->restore_hp(hp_incr,
-                                        false, // Not allowed above max
-                                        Verbosity::silent);
+                map::player->restore_hp(
+                        hp_incr,
+                        false, // Not allowed above max
+                        Verbosity::silent);
         }
         break;
 
-        case Trait::strong_spirit:
+        case Trait::stout_spirit:
         {
-                const int spi_incr = 4;
-
-                map::player->change_max_spi(spi_incr,
-                                            Verbosity::silent);
-
-                map::player->restore_spi(spi_incr,
-                                         false, // Not allowed above max
-                                         Verbosity::silent);
-
                 auto prop = new PropRSpell();
 
                 prop->set_indefinite();
@@ -1083,6 +1182,21 @@ void pick_trait(const Trait id)
                         prop,
                         PropSrc::intr,
                         true,
+                        Verbosity::silent);
+        }
+        // Fallthrough
+        case Trait::strong_spirit:
+        case Trait::mighty_spirit:
+        {
+                const int spi_incr = 2;
+
+                map::player->change_max_spi(
+                        spi_incr,
+                        Verbosity::silent);
+
+                map::player->restore_spi(
+                        spi_incr,
+                        false, // Not allowed above max
                         Verbosity::silent);
         }
         break;

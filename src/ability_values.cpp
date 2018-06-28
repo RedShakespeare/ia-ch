@@ -54,9 +54,19 @@ int AbilityValues::val(const AbilityId id,
                 {
                         ret += 60;
 
-                        if (player_bon::traits[(size_t)Trait::melee_fighter])
+                        if (player_bon::traits[(size_t)Trait::adept_melee])
                         {
-                                ret += 20;
+                                ret += 10;
+                        }
+
+                        if (player_bon::traits[(size_t)Trait::expert_melee])
+                        {
+                                ret += 10;
+                        }
+
+                        if (player_bon::traits[(size_t)Trait::master_melee])
+                        {
+                                ret += 10;
                         }
                 }
                 break;
@@ -65,9 +75,19 @@ int AbilityValues::val(const AbilityId id,
                 {
                         ret += 70;
 
-                        if (player_bon::traits[(size_t)Trait::marksman])
+                        if (player_bon::traits[(size_t)Trait::adept_marksman])
                         {
-                                ret += 20;
+                                ret += 10;
+                        }
+
+                        if (player_bon::traits[(size_t)Trait::expert_marksman])
+                        {
+                                ret += 10;
+                        }
+
+                        if (player_bon::traits[(size_t)Trait::expert_marksman])
+                        {
+                                ret += 10;
                         }
 
                         if (player_bon::bg() == Bg::ghoul)
@@ -81,7 +101,12 @@ int AbilityValues::val(const AbilityId id,
                 {
                         if (player_bon::traits[(size_t)Trait::dexterous])
                         {
-                                ret += 20;
+                                ret += 15;
+                        }
+
+                        if (player_bon::traits[(size_t)Trait::lithe])
+                        {
+                                ret += 15;
                         }
                 }
                 break;
@@ -90,7 +115,12 @@ int AbilityValues::val(const AbilityId id,
                 {
                         if (player_bon::traits[(size_t)Trait::stealthy])
                         {
-                                ret += 80;
+                                ret += 45;
+                        }
+
+                        if (player_bon::traits[(size_t)Trait::imperceptible])
+                        {
+                                ret += 45;
                         }
                 }
                 break;

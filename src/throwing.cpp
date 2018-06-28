@@ -113,7 +113,17 @@ void throw_item(Actor& actor_throwing,
 
         if (&actor_throwing == map::player)
         {
-                if (player_bon::traits[(size_t)Trait::marksman])
+                if (player_bon::traits[(size_t)Trait::adept_marksman])
+                {
+                        speed_pct_diff += 10;
+                }
+
+                if (player_bon::traits[(size_t)Trait::expert_marksman])
+                {
+                        speed_pct_diff += 10;
+                }
+
+                if (player_bon::traits[(size_t)Trait::master_marksman])
                 {
                         speed_pct_diff += 10;
                 }

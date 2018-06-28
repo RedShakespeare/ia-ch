@@ -233,7 +233,7 @@ void handle_player_input(const InputData& input)
     case '5':
     case '.':
     {
-        if (player_bon::traits[(size_t)Trait::steady_aimer])
+        if (player_bon::has_trait(Trait::steady_aimer))
         {
             Prop* aiming = new PropAiming();
 
@@ -886,10 +886,7 @@ void incr_player_xp(const int xp_gained,
                                          Verbosity::silent);
             }
 
-            if ((clvl_ % 2) == 0)
-            {
-                states::push(std::make_unique<PickTraitState>());
-            }
+            states::push(std::make_unique<PickTraitState>());
         }
 
         xp_pct_ -= 100;
