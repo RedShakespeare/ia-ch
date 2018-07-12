@@ -402,7 +402,7 @@ void populate_std_lvl()
 {
         TRACE_FUNC_BEGIN;
 
-        const int nr_groups_to_spawn = rnd::range(4, 6);
+        const int nr_groups_to_spawn = rnd::range(5, 7);
 
         int nr_groups_spawned = 0;
 
