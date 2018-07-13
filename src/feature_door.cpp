@@ -178,12 +178,14 @@ void Door::on_hit(const int dmg,
                     if (map::is_pos_seen_by_player(pos_))
                     {
                         const std::string a =
-                            is_secret_ ?
-                            "A " : "The ";
+                                is_secret_
+                                ? "A "
+                                : "The ";
 
-                        msg_log::add(a +
-                                     base_name_short() +
-                                     " is blown to pieces!");
+                        msg_log::add(
+                                a +
+                                base_name_short() +
+                                " is blown to pieces!");
                     }
 
                     map::put(new RubbleLow(pos_));
@@ -270,15 +272,17 @@ void Door::on_hit(const int dmg,
                             {
                                 if (is_secret_)
                                 {
-                                    msg_log::add("A " +
-                                                 base_name_short() +
-                                                 " crashes open!");
+                                    msg_log::add(
+                                            "A " +
+                                            base_name_short() +
+                                            " crashes open!");
                                 }
                                 else
                                 {
-                                    msg_log::add("The " +
-                                                 base_name_short() +
-                                                 " crashes open!");
+                                    msg_log::add(
+                                            "The " +
+                                            base_name_short() +
+                                            " crashes open!");
                                 }
                             }
                             else // Cell not seen
@@ -355,15 +359,17 @@ void Door::on_hit(const int dmg,
 
                         if (map::player->can_see_actor(*actor))
                         {
-                            msg_log::add("The " +
-                                         base_name_short() +
-                                         " crashes open!");
+                            msg_log::add(
+                                    "The " +
+                                    base_name_short() +
+                                    " crashes open!");
                         }
                         else if (is_cell_seen)
                         {
-                            msg_log::add("A " +
-                                         base_name_short() +
-                                         " crashes open!");
+                            msg_log::add(
+                                    "A " +
+                                    base_name_short() +
+                                    " crashes open!");
                         }
 
                         map::put(new RubbleLow(pos_));
@@ -393,10 +399,11 @@ void Door::on_hit(const int dmg,
                     is_cell_seen &&
                     !is_secret_)
                 {
-                    msg_log::add("It seems futile.",
-                                 colors::msg_note(),
-                                 false,
-                                 MorePromptOnMsg::yes);
+                    msg_log::add(
+                            "It seems futile.",
+                            colors::msg_note(),
+                            false,
+                            MorePromptOnMsg::yes);
                 }
             }
             break; // metal
@@ -532,8 +539,9 @@ std::string Door::name(const Article article) const
     if (burn_state_ == BurnState::burning)
     {
         a =
-            article == Article::a ?
-            "a " : "the ";
+            (article == Article::a)
+            ? "a "
+            : "the ";
 
         mod = "burning ";
     }
@@ -543,8 +551,9 @@ std::string Door::name(const Article article) const
         if (a.empty())
         {
             a =
-                article == Article::a ?
-                "an " : "the ";
+                (article == Article::a)
+                ? "an "
+                : "the ";
         }
 
         mod += "open " ;
@@ -553,8 +562,9 @@ std::string Door::name(const Article article) const
     if (a.empty())
     {
         a =
-            article == Article::a ?
-            "a " : "the ";
+            (article == Article::a)
+            ? "a "
+            : "the ";
     }
 
     return a + mod + base_name();
@@ -675,16 +685,18 @@ void Door::bump(Actor& actor_bumping)
             TRACE << "Player bumped into secret door, "
                   << "with vision in cell" << std::endl;
 
-            msg_log::add(feature_data::data(FeatureId::wall).
-                         msg_on_player_blocked);
+            msg_log::add(
+                    feature_data::data(FeatureId::wall).
+                    msg_on_player_blocked);
         }
         else // Not seen by player
         {
             TRACE << "Player bumped into secret door, "
                   << "without vision in cell" << std::endl;
 
-            msg_log::add(feature_data::data(FeatureId::wall).
-                         msg_on_player_blocked_blind);
+            msg_log::add(
+                    feature_data::data(FeatureId::wall).
+                    msg_on_player_blocked_blind);
         }
 
         return;
@@ -819,15 +831,17 @@ void Door::try_close(Actor* actor_trying)
             {
                 if (tryer_is_blind)
                 {
-                    msg_log::add("Something is blocking the " +
-                                 base_name_short() +
-                                 ".");
+                    msg_log::add(
+                            "Something is blocking the " +
+                            base_name_short() +
+                            ".");
                 }
                 else // Can see
                 {
-                    msg_log::add("The " +
-                                 base_name_short() +
-                                 " is blocked.");
+                    msg_log::add(
+                            "The " +
+                            base_name_short() +
+                            " is blocked.");
                 }
             }
         }
@@ -877,10 +891,11 @@ void Door::try_close(Actor* actor_trying)
                             text_format::first_to_upper(
                                 actor_trying->name_the());
 
-                        msg_log::add(actor_name_the +
-                                     "fumbles, but manages to close a " +
-                                     base_name_short() +
-                                     ".");
+                        msg_log::add(
+                                actor_name_the +
+                                "fumbles, but manages to close a " +
+                                base_name_short() +
+                                ".");
                     }
                 }
             }
@@ -888,9 +903,10 @@ void Door::try_close(Actor* actor_trying)
             {
                 if (is_player)
                 {
-                    msg_log::add("I fumble blindly with a " +
-                                 base_name_short() +
-                                 ", and fail to close it.");
+                    msg_log::add(
+                            "I fumble blindly with a " +
+                            base_name_short() +
+                            ", and fail to close it.");
                 }
                 else // Monster failing to close
                 {
@@ -900,10 +916,11 @@ void Door::try_close(Actor* actor_trying)
                             text_format::first_to_upper(
                                 actor_trying->name_the());
 
-                        msg_log::add(actor_name_the +
-                                     " fumbles blindly, and fails to close a " +
-                                     base_name_short() +
-                                     ".");
+                        msg_log::add(
+                                actor_name_the +
+                                " fumbles blindly, and fails to close a " +
+                                base_name_short() +
+                                ".");
                     }
                 }
             }
@@ -929,9 +946,10 @@ void Door::try_close(Actor* actor_trying)
 
                 snd.run();
 
-                msg_log::add("I close the " +
-                             base_name_short() +
-                             ".");
+                msg_log::add(
+                        "I close the " +
+                        base_name_short() +
+                        ".");
             }
             else // Is a monster closing
             {
@@ -951,10 +969,11 @@ void Door::try_close(Actor* actor_trying)
                         text_format::first_to_upper(
                             actor_trying->name_the());
 
-                    msg_log::add(actor_name_the +
-                                 " closes a " +
-                                 base_name_short() +
-                                 ".");
+                    msg_log::add(
+                            actor_name_the +
+                            " closes a " +
+                            base_name_short() +
+                            ".");
                 }
             }
         }
@@ -1010,9 +1029,10 @@ void Door::try_open(Actor* actor_trying)
 
         if (is_player)
         {
-            msg_log::add("The " +
-                         base_name_short() +
-                         " seems to be stuck.");
+            msg_log::add(
+                    "The " +
+                    base_name_short() +
+                    " seems to be stuck.");
         }
     }
     else // Not stuck
@@ -1043,9 +1063,10 @@ void Door::try_open(Actor* actor_trying)
 
                 snd.run();
 
-                msg_log::add("I open the " +
-                             base_name_short() +
-                             ".");
+                msg_log::add(
+                        "I open the " +
+                        base_name_short() +
+                        ".");
             }
             else // Is monster
             {
@@ -1065,16 +1086,18 @@ void Door::try_open(Actor* actor_trying)
                         text_format::first_to_upper(
                             actor_trying->name_the());
 
-                    msg_log::add(actor_name_the +
-                                 " opens a " +
-                                 base_name_short() +
-                                 ".");
+                    msg_log::add(
+                            actor_name_the +
+                            " opens a " +
+                            base_name_short() +
+                            ".");
                 }
                 else if (player_see_door)
                 {
-                    msg_log::add("I see a " +
-                                 base_name_short() +
-                                 " opening.");
+                    msg_log::add(
+                            "I see a " +
+                            base_name_short() +
+                            " opening.");
                 }
             }
         }
@@ -1099,9 +1122,10 @@ void Door::try_open(Actor* actor_trying)
 
                     snd.run();
 
-                    msg_log::add("I fumble with a " +
-                                 base_name_short() +
-                                 ", but finally manage to open it.");
+                    msg_log::add(
+                            "I fumble with a " +
+                            base_name_short() +
+                            ", but finally manage to open it.");
                 }
                 else // Is monster
                 {
@@ -1121,16 +1145,18 @@ void Door::try_open(Actor* actor_trying)
                             text_format::first_to_upper(
                                 actor_trying->name_the());
 
-                        msg_log::add(actor_name_the +
-                                     "fumbles, but manages to open a " +
-                                     base_name_short() +
-                                     ".");
+                        msg_log::add(
+                                actor_name_the +
+                                "fumbles, but manages to open a " +
+                                base_name_short() +
+                                ".");
                     }
                     else if (player_see_door)
                     {
-                        msg_log::add("I see a " +
-                                     base_name_short() +
-                                     " open awkwardly.");
+                        msg_log::add(
+                                "I see a " +
+                                base_name_short() +
+                                " open awkwardly.");
                     }
                 }
             }
@@ -1150,9 +1176,10 @@ void Door::try_open(Actor* actor_trying)
 
                     snd.run();
 
-                    msg_log::add("I fumble blindly with a " +
-                                 base_name_short() +
-                                 ", and fail to open it.");
+                    msg_log::add(
+                            "I fumble blindly with a " +
+                            base_name_short() +
+                            ", and fail to open it.");
                 }
                 else // Is monster
                 {
@@ -1175,10 +1202,11 @@ void Door::try_open(Actor* actor_trying)
                             text_format::first_to_upper(
                                 actor_trying->name_the());
 
-                        msg_log::add(actor_name_the +
-                                     " fumbles blindly, and fails to open a " +
-                                     base_name_short() +
-                                     ".");
+                        msg_log::add(
+                                actor_name_the +
+                                " fumbles blindly, and fails to open a " +
+                                base_name_short() +
+                                ".");
                     }
                 }
 

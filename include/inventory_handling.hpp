@@ -144,8 +144,9 @@ private:
 class SelectIdentify: public InvState
 {
 public:
-        SelectIdentify() :
+        SelectIdentify(std::vector<ItemType> item_types_allowed = {}) :
                 InvState(),
+                item_types_allowed_(item_types_allowed),
                 filtered_slots_(),
                 filtered_backpack_indexes_() {}
 
@@ -156,6 +157,7 @@ public:
         void update() override;
 
 private:
+        const std::vector<ItemType> item_types_allowed_;
         std::vector<SlotId> filtered_slots_;
         std::vector<size_t> filtered_backpack_indexes_;
 };

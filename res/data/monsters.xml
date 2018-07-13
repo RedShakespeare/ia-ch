@@ -314,6 +314,7 @@
             <property>corpse_rises</property>
             <property>spawns_zombie_parts_on_destroyed</property>
             <property>darkvision</property>
+            <property>r_acid</property>
         </properties>
 
         <ai>
@@ -932,6 +933,8 @@
         <spells>
             <spell skill="basic" percent_chance="5">darkbolt</spell>
             <spell skill="basic" percent_chance="5">enfeeble</spell>
+            <spell skill="basic" percent_chance="5">slow</spell>
+            <spell skill="basic" percent_chance="5">terrify</spell>
             <spell skill="basic" percent_chance="5">knockback</spell>
         </spells>
 
@@ -1103,20 +1106,24 @@
             <spell skill="expert">summon</spell>
             <spell skill="expert">pestilence</spell>
             <spell skill="expert">darkbolt</spell>
-            <spell skill="expert">deafen</spell>
             <spell skill="expert">spell_shield</spell>
-            <spell skill="basic">enfeeble</spell>
+            <spell skill="expert">aura_of_decay</spell>
+            <spell skill="expert" percent_chance="75">deafen</spell>
+            <spell skill="expert" percent_chance="75">enfeeble</spell>
+            <spell skill="expert" percent_chance="75">slow</spell>
+            <spell skill="expert" percent_chance="75">terrify</spell>
+            <spell skill="basic">slow_time</spell>
         </spells>
 
         <ai>
-            <erratic_move_percent>5</erratic_move_percent>
+            <erratic_move_percent>75</erratic_move_percent>
             <turns_aware>999</turns_aware>
             <ranged_cooldown_turns>0</ranged_cooldown_turns>
             <looks>true</looks>
             <avoids_blocking_friend>false</avoids_blocking_friend>
             <attacks>false</attacks>
             <paths_to_target_when_aware>true</paths_to_target_when_aware>
-            <moves_to_target_when_los>true</moves_to_target_when_los>
+            <moves_to_target_when_los>false</moves_to_target_when_los>
             <moves_to_lair>false</moves_to_lair>
             <moves_to_leader>true</moves_to_leader>
             <moves_randomly_when_unaware>true</moves_randomly_when_unaware>
@@ -1375,9 +1382,12 @@
         <spells>
             <spell skill="basic">heal</spell>
             <spell skill="basic">darkbolt</spell>
-            <spell skill="basic">enfeeble</spell>
             <spell skill="basic">knockback</spell>
             <spell skill="basic">spell_shield</spell>
+            <spell skill="basic" percent_chance="25">aura_of_decay</spell>
+            <spell skill="basic" percent_chance="75">enfeeble</spell>
+            <spell skill="basic" percent_chance="75">slow</spell>
+            <spell skill="basic" percent_chance="75">terrify</spell>
             <spell skill="basic" percent_chance="50">teleport</spell>
             <spell skill="basic" percent_chance="50">summon</spell>
             <spell skill="basic" percent_chance="50">pestilence</spell>
@@ -1467,9 +1477,12 @@
         <spells>
             <spell skill="expert">heal</spell>
             <spell skill="expert">darkbolt</spell>
-            <spell skill="basic">enfeeble</spell>
             <spell skill="expert">knockback</spell>
             <spell skill="expert">spell_shield</spell>
+            <spell skill="expert" percent_chance="25">aura_of_decay</spell>
+            <spell skill="expert" percent_chance="75">enfeeble</spell>
+            <spell skill="expert" percent_chance="75">slow</spell>
+            <spell skill="expert" percent_chance="75">terrify</spell>
             <spell skill="expert" percent_chance="50">teleport</spell>
             <spell skill="expert" percent_chance="50">summon</spell>
             <spell skill="expert" percent_chance="50">pestilence</spell>
@@ -1559,9 +1572,12 @@
         <spells>
             <spell skill="master">heal</spell>
             <spell skill="master">darkbolt</spell>
-            <spell skill="expert">enfeeble</spell>
             <spell skill="master">knockback</spell>
             <spell skill="master">spell_shield</spell>
+            <spell skill="master" percent_chance="25">aura_of_decay</spell>
+            <spell skill="master" percent_chance="75">enfeeble</spell>
+            <spell skill="master" percent_chance="75">slow</spell>
+            <spell skill="master" percent_chance="75">terrify</spell>
             <spell skill="master" percent_chance="50">teleport</spell>
             <spell skill="master" percent_chance="50">summon</spell>
             <spell skill="master" percent_chance="50">pestilence</spell>
@@ -4598,6 +4614,7 @@
 
         <spells>
             <spell skill="expert">disease</spell>
+            <spell skill="expert" percent_chance="25">aura_of_decay</spell>
         </spells>
 
         <ai>
@@ -4778,7 +4795,9 @@
             <spell skill="expert">disease</spell>
             <spell skill="expert">spell_shield</spell>
             <spell skill="expert">burn</spell>
-            <spell skill="basic">enfeeble</spell>
+            <spell skill="expert">aura_of_decay</spell>
+            <spell skill="expert" percent_chance="75">enfeeble</spell>
+            <spell skill="expert" percent_chance="75">terrify</spell>
         </spells>
 
         <ai>
@@ -4875,7 +4894,9 @@
             <spell skill="expert">disease</spell>
             <spell skill="expert">spell_shield</spell>
             <spell skill="expert">burn</spell>
-            <spell skill="basic">enfeeble</spell>
+            <spell skill="expert">aura_of_decay</spell>
+            <spell skill="expert" percent_chance="75">enfeeble</spell>
+            <spell skill="expert" percent_chance="75">terrify</spell>
         </spells>
 
         <ai>
@@ -6683,9 +6704,12 @@
         </attacks>
 
         <spells>
-            <spell skill="expert">enfeeble</spell>
-            <spell skill="expert">disease</spell>
-            <spell skill="expert">spell_shield</spell>
+            <spell skill="master" percent_chance="75">enfeeble</spell>
+            <spell skill="master" percent_chance="75">terrify</spell>
+            <spell skill="master">disease</spell>
+            <spell skill="master">spell_shield</spell>
+            <spell skill="master">aura_of_decay</spell>
+            <spell skill="expert">burn</spell>
         </spells>
 
         <properties>
@@ -6785,7 +6809,11 @@
             <spell skill="master">pestilence</spell>
             <spell skill="master">spell_shield</spell>
             <spell skill="master">disease</spell>
-            <spell skill="expert">enfeeble</spell>
+            <spell skill="master">enfeeble</spell>
+            <spell skill="master">slow</spell>
+            <spell skill="master">terrify</spell>
+            <spell skill="master">slow_time</spell>
+            <spell skill="master">aura_of_decay</spell>
         </spells>
 
         <properties>

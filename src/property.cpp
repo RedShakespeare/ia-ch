@@ -2,23 +2,24 @@
 
 #include <algorithm>
 
-#include "property_data.hpp"
-#include "property_factory.hpp"
 #include "actor.hpp"
+#include "actor_factory.hpp"
 #include "actor_mon.hpp"
 #include "actor_player.hpp"
-#include "actor_factory.hpp"
+#include "explosion.hpp"
+#include "feature_rigid.hpp"
+#include "game_time.hpp"
+#include "io.hpp"
+#include "item_factory.hpp"
+#include "knockback.hpp"
+#include "line_calc.hpp"
 #include "map.hpp"
 #include "map_parsing.hpp"
-#include "feature_rigid.hpp"
-#include "text_format.hpp"
 #include "msg_log.hpp"
+#include "property_data.hpp"
+#include "property_factory.hpp"
 #include "saving.hpp"
-#include "explosion.hpp"
-#include "game_time.hpp"
-#include "line_calc.hpp"
-#include "knockback.hpp"
-#include "item_factory.hpp"
+#include "text_format.hpp"
 
 // -----------------------------------------------------------------------------
 // Property base class
@@ -70,35 +71,7 @@ void PropBlessed::bless_adjacent() const
                         continue;
                 }
 
-                Fountain* const fountain = static_cast<Fountain*>(rigid);
-
-                if (!fountain->has_drinks_left())
-                {
-                        continue;
-                }
-
-                const auto effect = fountain->effect();
-
-                const bool is_bad_effect =
-                        effect > FountainEffect::START_OF_BAD_EFFECTS;
-
-                if (!is_bad_effect)
-                {
-                        continue;
-                }
-
-                fountain->set_effect(FountainEffect::refreshing);
-
-                if (cell.is_seen_by_player)
-                {
-                        const std::string name_the =
-                                text_format::first_to_lower(
-                                        fountain->name(Article::the));
-
-                        msg_log::add("The water in "
-                                     + name_the +
-                                     " seems clearer.");
-                }
+                static_cast<Fountain*>(rigid)->bless();
         }
 }
 
@@ -151,38 +124,7 @@ void PropCursed::curse_adjacent() const
                         continue;
                 }
 
-                Fountain* const fountain = static_cast<Fountain*>(rigid);
-
-                if (!fountain->has_drinks_left())
-                {
-                        continue;
-                }
-
-                const auto effect = fountain->effect();
-
-                const bool is_good_effect =
-                        effect < FountainEffect::START_OF_BAD_EFFECTS;
-
-                if (!is_good_effect)
-                {
-                        continue;
-                }
-
-                const int min = (int)FountainEffect::START_OF_BAD_EFFECTS + 1;
-                const int max = (int)FountainEffect::END - 1;
-
-                fountain->set_effect((FountainEffect)rnd::range(min, max));
-
-                if (cell.is_seen_by_player)
-                {
-                        std::string name_the =
-                                text_format::first_to_lower(
-                                        fountain->name(Article::the));
-
-                        msg_log::add("The water in " +
-                                     name_the +
-                                     " seems murkier.");
-                }
+                static_cast<Fountain*>(rigid)->curse();
         }
 }
 
@@ -774,8 +716,9 @@ PropEnded PropConfused::affect_move_dir(const P& actor_pos, Dir& dir)
 
         Array2<bool> blocked(map::dims());
 
-        const R area_check_blocked(actor_pos - P(1, 1),
-                                   actor_pos + P(1, 1));
+        const R area_check_blocked(
+                actor_pos - P(1, 1),
+                actor_pos + P(1, 1));
 
         map_parsers::BlocksActor(*owner_, ParseActors::yes)
                 .run(blocked,
@@ -1217,9 +1160,10 @@ PropEnded PropBurrowing::on_tick()
 {
         const P& p = owner_->pos;
 
-        map::cells.at(p).rigid->hit(1, // Doesn't matter
-                                        DmgType::physical,
-                                        DmgMethod::forced);
+        map::cells.at(p).rigid->hit(
+                1, // Doesn't matter
+                DmgType::physical,
+                DmgMethod::forced);
 
         return PropEnded::no;
 }
@@ -1841,6 +1785,132 @@ PropActResult PropSpeaksCurses::on_act()
         return PropActResult();
 }
 
+void PropAuraOfDecay::save() const
+{
+        saving::put_int(dmg_range_.min);
+        saving::put_int(dmg_range_.max);
+}
+
+void PropAuraOfDecay::load()
+{
+        dmg_range_.min = saving::get_int();
+        dmg_range_.max = saving::get_int();
+}
+
+// PropEnded PropAuraOfDecay::on_tick()
+void PropAuraOfDecay::on_std_turn()
+{
+        run_effect_on_actors();
+
+        run_effect_on_env();
+
+        // return PropEnded::no;
+}
+
+void PropAuraOfDecay::run_effect_on_actors() const
+{
+        for (auto* const actor : game_time::actors)
+        {
+                const auto actor_state = actor->state();
+
+                if (actor == owner_ ||
+                    actor_state == ActorState::destroyed ||
+                    !actor->pos.is_adjacent(owner_->pos))
+                {
+                        continue;
+                }
+
+                const bool player_see_target =
+                        map::player->can_see_actor(*actor);
+
+                if (player_see_target)
+                {
+                        print_msg_actor_hit(*actor);
+                }
+
+                actor->hit(dmg_range_.roll(), DmgType::pure);
+        }
+}
+
+void PropAuraOfDecay::run_effect_on_env() const
+{
+        for (const P& d : dir_utils::dir_list)
+        {
+                const P p = owner_->pos + d;
+
+                if (!map::is_pos_inside_outer_walls(p))
+                {
+                        continue;
+                }
+
+                auto& cell = map::cells.at(p);
+
+                auto* const rigid = cell.rigid;
+
+                const auto id = rigid->id();
+
+                if ((id == FeatureId::wall ||
+                     id == FeatureId::rubble_high ||
+                     id == FeatureId::door) &&
+                    rnd::one_in(200))
+                {
+                        if (cell.is_seen_by_player)
+                        {
+                                const std::string name =
+                                        text_format::first_to_upper(
+                                                rigid->name(Article::the));
+
+                                msg_log::add(name + " collapses!");
+
+                                msg_log::more_prompt();
+                        }
+
+                        rigid->hit(
+                                1, // Doesn't actually matter
+                                DmgType::physical,
+                                DmgMethod::forced);
+                }
+                else if (id == FeatureId::floor &&
+                         rnd::one_in(100))
+                {
+                        map::put(new RubbleLow(p));
+                }
+                else if (id == FeatureId::grass &&
+                         rnd::one_in(10))
+                {
+                        static_cast<Grass*>(rigid)->type_ = GrassType::withered;
+                }
+                else if (id == FeatureId::fountain)
+                {
+                        static_cast<Fountain*>(rigid)->curse();
+                }
+        }
+}
+
+void PropAuraOfDecay::print_msg_actor_hit(const Actor& actor) const
+{
+        if (actor.is_player())
+        {
+                msg_log::add("I am decaying!", colors::msg_bad());
+        }
+        else // Monster is hit
+        {
+                const std::string actor_name =
+                        (actor.state() == ActorState::alive)
+                        ? actor.name_the()
+                        : actor.corpse_name_the();
+
+                const Color msg_color =
+                        (map::player->is_leader_of(&actor))
+                        ? colors::text()
+                        : colors::msg_good();
+
+                msg_log::add(
+                        text_format::first_to_upper(actor_name) + " decays!",
+                        msg_color);
+        }
+}
+
 PropActResult PropMajorClaphamSummon::on_act()
 {
         if (owner_->is_player())
@@ -1912,4 +1982,98 @@ PropActResult PropMajorClaphamSummon::on_act()
         game_time::tick();
 
         return PropActResult(DidAction::yes, PropEnded::yes);
+}
+
+void PropMagicSearching::save() const
+{
+        saving::put_int(range_);
+
+        saving::put_bool(allow_reveal_items_);
+}
+
+void PropMagicSearching::load()
+{
+        range_ = saving::get_int();
+
+        allow_reveal_items_ = saving::get_bool();
+}
+
+PropEnded PropMagicSearching::on_tick()
+{
+        ASSERT(owner_->is_player());
+
+        const int orig_x = map::player->pos.x;
+        const int orig_y = map::player->pos.y;
+
+        const int x0 = std::max(
+                0,
+                orig_x - range_);
+
+        const int y0 = std::max(
+                0,
+                orig_y - range_);
+
+        const int x1 = std::min(
+                map::w() - 1,
+                orig_x + range_);
+
+        const int y1 = std::min(
+                map::h() - 1,
+                orig_y + range_);
+
+        for (int y = y0; y <= y1; ++y)
+        {
+                for (int x = x0; x <= x1; ++x)
+                {
+                        auto& cell = map::cells.at(x, y);
+
+                        auto* const f = cell.rigid;
+
+                        const auto id = f->id();
+
+                        if ((id == FeatureId::trap) ||
+                            (id == FeatureId::door) ||
+                            (id == FeatureId::monolith) ||
+                            (id == FeatureId::stairs))
+                        {
+                                f->reveal(Verbosity::silent);
+
+                                cell.is_seen_by_player = true;
+
+                                cell.is_explored = true;
+                        }
+
+                        if (allow_reveal_items_ && cell.item)
+                        {
+                                cell.is_seen_by_player = true;
+
+                                cell.is_explored = true;
+                        }
+                }
+        }
+
+        const int det_mon_multiplier = 20;
+
+        for (Actor* actor : game_time::actors)
+        {
+                const P& p = actor->pos;
+
+                if (actor->is_player() ||
+                    !actor->is_alive() ||
+                    (king_dist(map::player->pos, p) > range_))
+                {
+                        continue;
+                }
+
+                static_cast<Mon*>(actor)->set_player_aware_of_me(
+                        det_mon_multiplier);
+        }
+
+        states::draw();
+
+        map::player->update_fov();
+
+        states::draw();
+
+        return PropEnded::no;
 }

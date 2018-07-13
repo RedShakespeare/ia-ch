@@ -78,12 +78,12 @@ void init();
 void draw();
 
 void add(const std::string& str,
-         const Color& color_id = colors::text(),
+         const Color& color = colors::text(),
          const bool interrupt_all_player_actions = false,
          const MorePromptOnMsg add_more_prompt_on_msg = MorePromptOnMsg::no);
 
 // NOTE: This function can safely be called at any time. If there is content in
-// the log, a "more" prompt will be done, and the log is cleared. If the log
+// the log, a "more" prompt will be run, and the log is cleared. If the log
 // happens to be empty, nothing is done.
 void more_prompt();
 

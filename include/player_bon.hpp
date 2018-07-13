@@ -8,6 +8,8 @@
 
 #include "global.hpp"
 
+// TODO: Use (c++) classes/polymorphism instead of many switch statements
+
 struct ActorData;
 
 enum class Trait
@@ -28,7 +30,7 @@ enum class Trait
         silent,
         lithe,
         vigilant,
-        treasure_hunter, // TODO: Should probably be a Rogue ability instead
+        treasure_hunter,
         self_aware,
         healer,
         rapid_recoverer,
@@ -36,6 +38,7 @@ enum class Trait
         stout_spirit,
         strong_spirit,
         mighty_spirit,
+        absorb,
         tough,
         rugged,
         thick_skinned,
@@ -50,19 +53,6 @@ enum class Trait
         toxic,
         indomitable_fury,
 
-        // Unique for Occultist
-        lesser_invoc,
-        greater_invoc,
-        lesser_summoning,
-        greater_summoning,
-        lesser_clairv,
-        greater_clairv,
-        lesser_ench,
-        greater_ench,
-        lesser_alter,
-        greater_alter,
-        absorb,
-
         // Unique for Rogue
         vicious,
 
@@ -76,7 +66,11 @@ enum class Trait
 enum class Bg
 {
         ghoul,
-        occultist,
+        occultist_alter,
+        occultist_clairv,
+        occultist_ench,
+        occultist_invoc,
+        // occultist_summon,
         rogue,
         war_vet,
         END
@@ -95,19 +89,23 @@ void load();
 
 std::vector<Bg> pickable_bgs();
 
-void unpicked_traits_for_bg(const Bg bg,
-                            std::vector<Trait>& traits_can_be_picked_out,
-                            std::vector<Trait>& traits_prereqs_not_met_out);
+void unpicked_traits_for_bg(
+        const Bg bg,
+        std::vector<Trait>& traits_can_be_picked_out,
+        std::vector<Trait>& traits_prereqs_not_met_out);
 
-void trait_prereqs(const Trait id,
-                   const Bg bg,
-                   std::vector<Trait>& traits_out,
-                   Bg& bg_out,
-                   int& clvl_out);
+void trait_prereqs(
+        const Trait id,
+        const Bg bg,
+        std::vector<Trait>& traits_out,
+        Bg& bg_out,
+        int& clvl_out);
 
 Bg bg();
 
 bool has_trait(const Trait id);
+
+bool is_occultist();
 
 std::string trait_title(const Trait id);
 std::string trait_descr(const Trait id);
@@ -124,6 +122,8 @@ std::string all_picked_traits_titles_line();
 void pick_trait(const Trait id);
 
 void pick_bg(const Bg bg);
+
+void on_player_gained_lvl(const int new_lvl);
 
 void set_all_traits_to_picked();
 

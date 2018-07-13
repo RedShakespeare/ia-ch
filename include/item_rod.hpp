@@ -8,8 +8,8 @@ class Rod: public Item
 {
 public:
     Rod(ItemData* const item_data) :
-        Item                    (item_data),
-        nr_charge_turns_left_   (0) {}
+        Item(item_data),
+        nr_charge_turns_left_(0) {}
 
     virtual ~Rod() {}
 

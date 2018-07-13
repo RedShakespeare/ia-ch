@@ -49,6 +49,8 @@ enum class PropId
     frenzied,
     blessed,
     cursed,
+    divert_attacks,
+    magic_searching,
     entangled,
     tele_ctrl,
     spell_reflect,
@@ -64,8 +66,9 @@ enum class PropId
     corpse_rises,
     spawns_zombie_parts_on_destroyed,
     breeds,
-    confuses_adjacent,
+    confuses_adjacent, // "Strange color" confusing player when seen
     speaks_curses,
+    aura_of_decay, // Damages adjacent hostile creatures
 
     // Properties describing the actors body and/or method of moving around
     flying,
@@ -79,7 +82,7 @@ enum class PropId
     disabled_melee,
     disabled_ranged,
 
-    // Special (for supporting very specific game mechanics)
+    // Properties for supporting very specific game mechanics
     descend,
     zuul_possess_priest,
     possessed_by_zuul,
@@ -136,6 +139,8 @@ const std::unordered_map<std::string, PropId> str_to_prop_id_map = {
     {"frenzied", PropId::frenzied},
     {"blessed", PropId::blessed},
     {"cursed", PropId::cursed},
+    {"divert_attacks", PropId::divert_attacks},
+    {"magic_searching", PropId::magic_searching},
     {"entangled", PropId::entangled},
     {"tele_ctrl", PropId::tele_ctrl},
     {"spell_reflect", PropId::spell_reflect},
@@ -154,6 +159,7 @@ const std::unordered_map<std::string, PropId> str_to_prop_id_map = {
     {"breeds", PropId::breeds},
     {"confuses_adjacent", PropId::confuses_adjacent},
     {"speaks_curses", PropId::speaks_curses},
+    {"aura of decay", PropId::aura_of_decay},
     {"flying", PropId::flying},
     {"ethereal", PropId::ethereal},
     {"ooze", PropId::ooze},

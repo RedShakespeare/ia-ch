@@ -15,7 +15,30 @@
 // -----------------------------------------------------------------------------
 // Private
 // -----------------------------------------------------------------------------
-static void make_for_player_occultist()
+static void learn_spell_player(const SpellId spell)
+{
+        player_spells::learn_spell(spell, Verbosity::silent);
+
+        // Also identify and "find" the corresponding scroll
+        for (auto& d : item_data::data)
+        {
+                if (d.spell_cast_from_scroll == spell)
+                {
+                        std::unique_ptr<Item> temp_scroll(
+                                item_factory::make(d.id));
+
+                        temp_scroll->identify(Verbosity::silent);
+
+                        game::incr_player_xp(
+                                temp_scroll->data().xp_on_found,
+                                Verbosity::silent);
+
+                        temp_scroll->data().is_found = true;
+                }
+        }
+}
+
+static void make_for_player_occultist_common()
 {
         auto& inv = map::player->inv();
 
@@ -48,29 +71,6 @@ static void make_for_player_occultist()
 
         inv.put_in_backpack(spirit_pot);
 
-        player_spells::learn_spell(SpellId::darkbolt, Verbosity::silent);
-        player_spells::learn_spell(SpellId::searching, Verbosity::silent);
-
-        const std::vector<ItemId> scrolls_identified =
-        {
-                ItemId::scroll_darkbolt,
-                ItemId::scroll_searching
-        };
-
-        for (auto scroll_id : scrolls_identified)
-        {
-                std::unique_ptr<Item> temp_scroll(
-                        item_factory::make(scroll_id));
-
-                temp_scroll->identify(Verbosity::silent);
-
-                game::incr_player_xp(
-                        temp_scroll->data().xp_on_found,
-                        Verbosity::silent);
-
-                temp_scroll->data().is_found = true;
-        }
-
         map::player->set_unarmed_wpn(
                 static_cast<Wpn*>(
                         item_factory::make(ItemId::player_punch)));
@@ -80,6 +80,35 @@ static void make_for_player_occultist()
         inv.put_in_backpack(item_factory::make(ItemId::medical_bag));
         inv.put_in_backpack(item_factory::make(ItemId::lantern));
 }
+
+static void make_for_player_occultist_alter()
+{
+        learn_spell_player(SpellId::slow_time);
+        learn_spell_player(SpellId::divert_attacks);
+}
+
+static void make_for_player_occultist_clairv()
+{
+        learn_spell_player(SpellId::searching);
+        learn_spell_player(SpellId::identify);
+}
+
+static void make_for_player_occultist_ench()
+{
+        learn_spell_player(SpellId::terrify);
+        learn_spell_player(SpellId::heal);
+}
+
+static void make_for_player_occultist_invoc()
+{
+        learn_spell_player(SpellId::darkbolt);
+        learn_spell_player(SpellId::aura_of_decay);
+}
+
+// static void make_for_player_occultist_summon()
+// {
+//         learn_spell_player(SpellId::summon);
+// }
 
 static void make_for_player_rogue()
 {
@@ -191,11 +220,45 @@ static void make_for_player()
 
         switch (bg)
         {
-        case Bg::occultist:
+        case Bg::occultist_alter:
         {
-                make_for_player_occultist();
+                make_for_player_occultist_common();
+
+                make_for_player_occultist_alter();
         }
         break;
+
+        case Bg::occultist_clairv:
+        {
+                make_for_player_occultist_common();
+
+                make_for_player_occultist_clairv();
+        }
+        break;
+
+        case Bg::occultist_ench:
+        {
+                make_for_player_occultist_common();
+
+                make_for_player_occultist_ench();
+        }
+        break;
+
+        case Bg::occultist_invoc:
+        {
+                make_for_player_occultist_common();
+
+                make_for_player_occultist_invoc();
+        }
+        break;
+
+        // case Bg::occultist_summon:
+        // {
+        //         make_for_player_occultist_common();
+
+        //         make_for_player_occultist_summon();
+        // }
+        // break;
 
         case Bg::rogue:
         {

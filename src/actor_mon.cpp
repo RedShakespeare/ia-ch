@@ -269,7 +269,7 @@ void Mon::act()
                 }
         }
 
-        if (rnd::coin_toss())
+        if (rnd::fraction(3, 4))
         {
                 const bool did_cast = ai::action::try_cast_random_spell(*this);
 
@@ -766,6 +766,25 @@ void Mon::move(Dir dir)
         last_dir_moved_ = dir;
 
         const P target_p(pos + dir_utils::offset(dir));
+
+        // Sanity check - monsters should never attempt to move into a blocked
+        // cell (if they do try this, it's probably an AI bug)
+#ifndef NDEBUG
+        if (target_p != pos)
+        {
+                Array2<bool> blocked(map::dims());
+
+                const bool is_blocked =
+                        map_parsers::BlocksActor(*this, ParseActors::yes)
+                        .cell(target_p);
+
+        if (is_blocked)
+        {
+                ASSERT(false);
+        }
+        // ASSERT(!is_blocked);
+        }
+#endif // NDEBUG
 
         if ((dir != Dir::center) &&
             map::is_pos_inside_outer_walls(target_p))

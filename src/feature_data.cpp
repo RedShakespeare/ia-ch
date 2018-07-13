@@ -683,6 +683,26 @@ void init_data_list()
     d.is_los_passable = false;
     add_to_list_and_reset(d);
 
+    d.id = FeatureId::force_field;
+    d.make_obj = [](const P & p)
+    {
+        return new ForceField(p);
+    };
+    d.character = '#';
+    d.tile = TileId::square_checkered;
+    d.move_rules.reset();
+    d.is_sound_passable = true;
+    d.is_projectile_passable = false;
+    d.is_los_passable = true;
+    d.is_smoke_passable = false;
+    d.can_have_blood = false;
+    d.can_have_gore = false;
+    d.can_have_rigid = false;
+    d.can_have_item = false;
+    d.is_bottomless = false;
+    d.matl_type = Matl::metal;
+    add_to_list_and_reset(d);
+
     d.id = FeatureId::event_wall_crumble;
     d.make_obj = [](const P & p)
     {

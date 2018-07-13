@@ -298,7 +298,7 @@ ItemData::ItemData() :
     tile(TileId::END),
     main_att_mode(AttMode::none),
     spell_cast_from_scroll(SpellId::END),
-    land_on_hard_snd_msg("Ihearathuddingsound."),
+    land_on_hard_snd_msg("I hear a thudding sound."),
     land_on_hard_sfx(SfxId::END),
     is_carry_shocking(false),
     is_equiped_shocking(false),
@@ -1520,6 +1520,11 @@ void init()
     data[(size_t)d.id] = d;
 
     reset_data(d, ItemType::scroll);
+    d.id = ItemId::scroll_aura_of_decay;
+    d.spell_cast_from_scroll = SpellId::aura_of_decay;
+    data[(size_t)d.id] = d;
+
+    reset_data(d, ItemType::scroll);
     d.id = ItemId::scroll_mayhem;
     d.spell_cast_from_scroll = SpellId::mayhem;
     data[(size_t)d.id] = d;
@@ -1537,6 +1542,16 @@ void init()
     reset_data(d, ItemType::scroll);
     d.id = ItemId::scroll_enfeeble;
     d.spell_cast_from_scroll = SpellId::enfeeble;
+    data[(size_t)d.id] = d;
+
+    reset_data(d, ItemType::scroll);
+    d.id = ItemId::scroll_slow;
+    d.spell_cast_from_scroll = SpellId::slow;
+    data[(size_t)d.id] = d;
+
+    reset_data(d, ItemType::scroll);
+    d.id = ItemId::scroll_terrify;
+    d.spell_cast_from_scroll = SpellId::terrify;
     data[(size_t)d.id] = d;
 
     reset_data(d, ItemType::scroll);
@@ -1597,6 +1612,21 @@ void init()
     reset_data(d, ItemType::scroll);
     d.id = ItemId::scroll_see_invis;
     d.spell_cast_from_scroll = SpellId::see_invis;
+    data[(size_t)d.id] = d;
+
+    reset_data(d, ItemType::scroll);
+    d.id = ItemId::scroll_divert_attacks;
+    d.spell_cast_from_scroll = SpellId::divert_attacks;
+    data[(size_t)d.id] = d;
+
+    reset_data(d, ItemType::scroll);
+    d.id = ItemId::scroll_force_field;
+    d.spell_cast_from_scroll = SpellId::force_field;
+    data[(size_t)d.id] = d;
+
+    reset_data(d, ItemType::scroll);
+    d.id = ItemId::scroll_slow_time;
+    d.spell_cast_from_scroll = SpellId::slow_time;
     data[(size_t)d.id] = d;
 
     reset_data(d, ItemType::scroll);

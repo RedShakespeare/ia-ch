@@ -96,69 +96,84 @@ bool handle_closed_blocking_door(Mon& mon, std::vector<P> path)
 
         Feature* const f = map::cells.at(p).rigid;
 
-        if (f->id() == FeatureId::door)
+        if ((f->id() != FeatureId::door) || f->can_move(mon))
         {
-                Door* const door = static_cast<Door*>(f);
+                return false;
+        }
 
-                if (!door->can_move(mon))
+        // This is a door which is blocking the monster
+
+        Door* const door = static_cast<Door*>(f);
+
+        // There should never be a path past metal doors
+        ASSERT(door->type() != DoorType::metal);
+
+        if (door->type() == DoorType::metal)
+        {
+                return false;
+        }
+
+        const bool is_stuck = door->is_stuck();
+
+        const bool mon_can_bash = mon.data().can_bash_doors;
+
+        const bool mon_can_open = mon.data().can_open_doors;
+
+        // There should never be a path past a door if the monster can neither
+        // bash nor open
+        ASSERT(mon_can_bash || mon_can_open);
+
+        if (!mon_can_bash && !mon_can_open)
+        {
+                return false;
+        }
+
+        // Open the door?
+        if (mon_can_open && !is_stuck)
+        {
+                door->try_open(&mon);
+
+                return true;
+        }
+
+        // Bash the door?
+        if (mon_can_bash && (is_stuck || !mon_can_open))
+        {
+                // When bashing doors, give the bashing monster some bonus
+                // awareness time (because monsters trying to bash down doors is
+                // a pretty central part of the game, and they should not give
+                // up so easily)
+                if (!mon.is_actor_my_leader(map::player) &&
+                    rnd::fraction(3, 5))
                 {
-                        ASSERT(door->type() != DoorType::metal);
-
-                        const bool is_stuck = door->is_stuck();
-
-                        const bool mon_can_bash = mon.data().can_bash_doors;
-
-                        const bool mon_can_open = mon.data().can_open_doors;
-
-                        // Open the door?
-                        if (mon_can_open &&
-                            !is_stuck)
-                        {
-                                door->try_open(&mon);
-
-                                return true;
-                        }
-
-                        // Bash the door?
-                        if (mon_can_bash &&
-                            (is_stuck || !mon_can_open))
-                        {
-                                // When bashing doors, give the bashing monster
-                                // some bonus awareness time (because monsters
-                                // trying to bash down doors is a pretty central
-                                // part of the game, and they should not give up
-                                // so easily)
-                                if (!mon.is_actor_my_leader(map::player) &&
-                                    rnd::fraction(3, 5))
-                                {
-                                        ++mon.aware_of_player_counter_;
-                                }
-
-                                if (map::player->can_see_actor(mon))
-                                {
-                                        const std::string mon_name_the =
-                                                text_format::first_to_upper(
-                                                        mon.name_the());
-
-                                        const std::string door_name =
-                                                door->base_name_short();
-
-                                        msg_log::add(mon_name_the +
-                                                     " bashes at the " +
-                                                     door_name +
-                                                     "!");
-                                }
-
-                                door->hit(1, // Doesn't matter
-                                          DmgType::physical,
-                                          DmgMethod::blunt,
-                                          &mon);
-
-                                game_time::tick();
-
-                                return true;
-                        }
+                        ++mon.aware_of_player_counter_;
                 }
+
+                if (map::player->can_see_actor(mon))
+                {
+                        const std::string mon_name_the =
+                                text_format::first_to_upper(
+                                        mon.name_the());
+
+                        const std::string door_name =
+                                door->base_name_short();
+
+                        msg_log::add(
+                                mon_name_the +
+                                " bashes at the " +
+                                door_name +
+                                "!");
+                }
+
+                door->hit(
+                        1, // Doesn't matter
+                        DmgType::physical,
+                        DmgMethod::blunt,
+                        &mon);
+
+                game_time::tick();
+
+                return true;
         }
 
         return false;
@@ -735,9 +750,10 @@ std::vector<P> find_path_to_target(Mon& mon)
         if (!mon.is_target_seen_)
         {
                 LosResult los_result =
-                        fov::check_cell(mon.pos,
-                                        target.pos,
-                                        blocked);
+                        fov::check_cell(
+                                mon.pos,
+                                target.pos,
+                                blocked);
 
                 if (!los_result.is_blocked_hard &&
                     !los_result.is_blocked_by_drk)
@@ -748,47 +764,59 @@ std::vector<P> find_path_to_target(Mon& mon)
 
         // Monster does not have LOS to target - alright, let's go!
 
-        for (size_t i = 0; i < blocked.length(); ++i)
+        // NOTE: Only actors adjacent to the monster are considered to be
+        // blokcing the path
+        auto blocked_parser = map_parsers::BlocksActor(mon, ParseActors::no);
+
+        for (int x = 0; x < map::w(); ++x)
         {
-                blocked.at(i) = false;
-
-                const auto* const f = map::cells.at(i).rigid;
-
-                if (f->can_move(mon))
+                for (int y = 0; y < map::h(); ++y)
                 {
-                        continue;
-                }
+                        const P p(x, y);
 
-                if (f->id() == FeatureId::door)
-                {
-                        const auto* const door =
-                                static_cast<const Door*>(f);
+                        blocked.at(p) = false;
 
-                        // Metal doors are always blocking
-                        if (door->type() == DoorType::metal)
-                        {
-                                blocked.at(i) = true;
-
-                                continue;
-                        }
-
-                        // Not a metal door
-
-                        // TODO: What about a monster that can open doors but
-                        // not bash, and the door is stuck?
-
-                        // Consider non-metal doors as free if monster can open
-                        // or bash
-                        const ActorData& d = mon.data();
-
-                        if (d.can_open_doors || d.can_bash_doors)
+                        if (!blocked_parser.cell(p))
                         {
                                 continue;
                         }
-                }
 
-                // Not a door (e.g. a wall)
-                blocked.at(i) = true;
+                        // This cell is blocked
+
+                        const auto* const f = map::cells.at(p).rigid;
+
+                        if (f->id() == FeatureId::door)
+                        {
+                                const auto* const door =
+                                        static_cast<const Door*>(f);
+
+                                // Metal doors are always blocking
+                                if (door->type() == DoorType::metal)
+                                {
+                                        blocked.at(p) = true;
+
+                                        continue;
+                                }
+
+                                // Not a metal door
+
+                                // TODO: What about a monster that can open
+                                // doors but not bash, and the door is stuck?
+
+                                // Do not run the path through the door if the
+                                // monster can neither open it or bash it
+                                const ActorData& d = mon.data();
+
+                                if (!d.can_open_doors && !d.can_bash_doors)
+                                {
+                                        blocked.at(p) = true;
+                                }
+                        }
+                        else // Not a door (e.g. a wall)
+                        {
+                                blocked.at(p) = true;
+                        }
+                }
         }
 
         // Append living adjacent actors to the blocking array

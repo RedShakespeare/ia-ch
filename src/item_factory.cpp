@@ -1,14 +1,14 @@
 #include "item_factory.hpp"
 
+#include "drop.hpp"
+#include "game_time.hpp"
 #include "init.hpp"
-#include "item_scroll.hpp"
+#include "item_artifact.hpp"
+#include "item_data.hpp"
+#include "item_device.hpp"
 #include "item_potion.hpp"
 #include "item_rod.hpp"
-#include "item_artifact.hpp"
-#include "drop.hpp"
-#include "item_device.hpp"
-#include "item_data.hpp"
-#include "game_time.hpp"
+#include "item_scroll.hpp"
 
 namespace item_factory
 {
@@ -18,6 +18,9 @@ Item* make(const ItemId item_id, const int nr_items)
     Item* r = nullptr;
 
     ItemData* d = &item_data::data[(size_t)item_id];
+
+    // Sanity check
+    ASSERT(d->id == item_id);
 
     switch (item_id)
     {
@@ -164,10 +167,13 @@ Item* make(const ItemId item_id, const int nr_items)
         r = new GasMask(d);
         break;
 
+    case ItemId::scroll_aura_of_decay:
     case ItemId::scroll_mayhem:
     case ItemId::scroll_telep:
     case ItemId::scroll_pest:
     case ItemId::scroll_enfeeble:
+    case ItemId::scroll_slow:
+    case ItemId::scroll_terrify:
     case ItemId::scroll_searching:
     case ItemId::scroll_bless:
     case ItemId::scroll_darkbolt:
@@ -180,6 +186,9 @@ Item* make(const ItemId item_id, const int nr_items)
     case ItemId::scroll_transmut:
     case ItemId::scroll_heal:
     case ItemId::scroll_see_invis:
+    case ItemId::scroll_divert_attacks:
+    case ItemId::scroll_force_field:
+    case ItemId::scroll_slow_time:
     case ItemId::scroll_spell_shield:
         r = new Scroll(d);
         break;

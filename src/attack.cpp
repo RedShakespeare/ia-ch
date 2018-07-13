@@ -694,6 +694,14 @@ static Feature* get_feature_blocking_projectile(const P& pos)
                 return rigid;
         }
 
+        for (auto* const mob : game_time::mobs)
+        {
+                if (!mob->is_projectile_passable())
+                {
+                        return mob;
+                }
+        }
+
         return nullptr;
 }
 

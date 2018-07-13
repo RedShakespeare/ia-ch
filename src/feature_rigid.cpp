@@ -596,7 +596,7 @@ void Wall::on_hit(const int dmg,
         const P p(pos_);
         map::put(new RubbleLow(p));
 
-        // NOTE: object is now deleted!
+        // NOTE: Object is now deleted!
 
         if (rnd::one_in(4))
         {
@@ -3451,6 +3451,71 @@ void Fountain::bump(Actor& actor_bumping)
     {
         msg_log::add("The fountain is dried-up.");
     }
+}
+
+void Fountain::bless()
+{
+        if (!has_drinks_left())
+        {
+                return;
+        }
+
+        const bool is_bad_effect =
+                fountain_effect_ >
+                FountainEffect::START_OF_BAD_EFFECTS;
+
+        if (!is_bad_effect)
+        {
+                return;
+        }
+
+        fountain_effect_ = FountainEffect::refreshing;
+
+        if (map::cells.at(pos_).is_seen_by_player)
+        {
+                const std::string name_the =
+                        text_format::first_to_lower(
+                                name(Article::the));
+
+                msg_log::add(
+                        "The water in "
+                        + name_the +
+                        " seems clearer.");
+        }
+}
+
+void Fountain::curse()
+{
+        if (!has_drinks_left())
+        {
+                return;
+        }
+
+        const bool is_good_effect =
+                fountain_effect_ <
+                FountainEffect::START_OF_BAD_EFFECTS;
+
+        if (!is_good_effect)
+        {
+                return;
+        }
+
+        const int min = (int)FountainEffect::START_OF_BAD_EFFECTS + 1;
+        const int max = (int)FountainEffect::END - 1;
+
+        fountain_effect_ = (FountainEffect)rnd::range(min, max);
+
+        if (map::cells.at(pos_).is_seen_by_player)
+        {
+                std::string name_the =
+                        text_format::first_to_lower(
+                                name(Article::the));
+
+                msg_log::add(
+                        "The water in " +
+                        name_the +
+                        " seems murkier.");
+        }
 }
 
 // -----------------------------------------------------------------------------

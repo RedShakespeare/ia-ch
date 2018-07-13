@@ -381,7 +381,7 @@ int Player::shock_resistance(const ShockSrc shock_src) const
     {
     case ShockSrc::use_strange_item:
     case ShockSrc::cast_intr_spell:
-        if (player_bon::bg() == Bg::occultist)
+        if (player_bon::is_occultist())
         {
             res += 50;
         }
@@ -1734,8 +1734,11 @@ void Player::move(Dir dir)
                                     : "it";
 
                             msg_log::add(
-                                    "Attacking " + mon_name +
-                                    " with " + wpn_name + ".",
+                                    "Attacking " +
+                                    mon_name +
+                                    " with " +
+                                    wpn_name +
+                                    ".",
                                     colors::light_white());
 
                             msg_log::add(

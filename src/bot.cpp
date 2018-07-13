@@ -375,7 +375,7 @@ void act()
 
         // Occasionally run an explosion around the player (code exercise, and
         // to avoid getting stuck)
-        if (rnd::one_in(500))
+        if (rnd::one_in(1000))
         {
                 explosion::run(map::player->pos, ExplType::expl);
 

@@ -8,6 +8,7 @@
 #include "drop.hpp"
 #include "explosion.hpp"
 #include "feature_door.hpp"
+#include "feature_mob.hpp"
 #include "feature_trap.hpp"
 #include "fov.hpp"
 #include "game.hpp"
@@ -351,7 +352,8 @@ void Actor::teleport(const ShouldCtrlTele ctrl_tele)
 
         const size_t len = map::nr_cells();
 
-        // Consider all doors, except for metal doors, to be free
+        // Allow teleporting past non-metal doors for the player, and past any
+        // door for monsters
         for (size_t i = 0; i < len; ++i)
         {
                 const auto* const r = map::cells.at(i).rigid;
@@ -360,13 +362,20 @@ void Actor::teleport(const ShouldCtrlTele ctrl_tele)
                 {
                         const auto* const door = static_cast<const Door*>(r);
 
-                        // * For the player, only metal doors block the flood
-                        // * For monsters, no doors block the flood
                         if ((door->type() != DoorType::metal) ||
                             !is_player())
                         {
                                 blocks_flood.at(i) = false;
                         }
+                }
+        }
+
+        // Allow teleporting past Force Fields, since they are temporary
+        for (const auto* const mob : game_time::mobs)
+        {
+                if (mob->id() == FeatureId::force_field)
+                {
+                        blocks_flood.at(mob->pos()) = false;
                 }
         }
 

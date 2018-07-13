@@ -1133,6 +1133,10 @@ public:
         fountain_effect_ = effect;
     }
 
+    void bless();
+
+    void curse();
+
 private:
     Color color_default() const override;
 

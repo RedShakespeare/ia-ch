@@ -95,6 +95,12 @@ Prop* make(const PropId id)
         case PropId::cursed:
                 return new PropCursed();
 
+        case PropId::divert_attacks:
+                return new PropDivertAttacks();
+
+        case PropId::magic_searching:
+                return new PropMagicSearching();
+
         case PropId::entangled:
                 return new PropEntangled();
 
@@ -214,6 +220,9 @@ Prop* make(const PropId id)
 
         case PropId::speaks_curses:
                 return new PropSpeaksCurses();
+
+        case PropId::aura_of_decay:
+                return new PropAuraOfDecay();
 
         case PropId::spawns_zombie_parts_on_destroyed:
                 return new PropSpawnsZombiePartsOnDestroyed();

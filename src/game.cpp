@@ -867,24 +867,30 @@ void incr_player_xp(const int xp_gained,
             {
                 const int hp_gained = 1;
 
-                map::player->change_max_hp(hp_gained,
-                                           Verbosity::silent);
+                map::player->change_max_hp(
+                        hp_gained,
+                        Verbosity::silent);
 
-                map::player->restore_hp(hp_gained,
-                                        false,
-                                        Verbosity::silent);
+                map::player->restore_hp(
+                        hp_gained,
+                        false,
+                        Verbosity::silent);
             }
 
             {
                 const int spi_gained = 1;
 
-                map::player->change_max_spi(spi_gained,
-                                            Verbosity::silent);
+                map::player->change_max_spi(
+                        spi_gained,
+                        Verbosity::silent);
 
-                map::player->restore_spi(spi_gained,
-                                         false,
-                                         Verbosity::silent);
+                map::player->restore_spi(
+                        spi_gained,
+                        false,
+                        Verbosity::silent);
             }
+
+            player_bon::on_player_gained_lvl(clvl_);
 
             states::push(std::make_unique<PickTraitState>());
         }

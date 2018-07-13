@@ -1619,19 +1619,41 @@ void SelectIdentify::on_start()
 
         inv.sort_backpack();
 
+        auto is_allowed_item_type = [](
+                const ItemType item_type,
+                const std::vector<ItemType>& allowed_item_types) {
+
+                if (allowed_item_types.empty())
+                {
+                        return true;
+                }
+                else
+                {
+                        const auto result = std::find(
+                                begin(allowed_item_types),
+                                end(allowed_item_types),
+                                item_type);
+
+                        return result != end(allowed_item_types);
+                }
+        };
+
         // Filter slots
         for (InvSlot& slot : inv.slots_)
         {
                 const Item* const item = slot.item;
 
-                if (item)
+                if (!item)
                 {
-                        const ItemData& d = item->data();
+                        continue;
+                }
 
-                        if (!d.is_identified)
-                        {
-                                filtered_slots_.push_back(slot.id);
-                        }
+                const ItemData& d = item->data();
+
+                if (!d.is_identified &&
+                    is_allowed_item_type(d.type, item_types_allowed_))
+                {
+                        filtered_slots_.push_back(slot.id);
                 }
         }
 
@@ -1640,14 +1662,12 @@ void SelectIdentify::on_start()
         {
                 const Item* const item = inv.backpack_[i];
 
-                if (item->id() != ItemId::potion_insight)
-                {
-                        const ItemData& d = item->data();
+                const ItemData& d = item->data();
 
-                        if (!d.is_identified)
-                        {
-                                filtered_backpack_indexes_.push_back(i);
-                        }
+                if (!d.is_identified &&
+                    is_allowed_item_type(d.type, item_types_allowed_))
+                {
+                        filtered_backpack_indexes_.push_back(i);
                 }
         }
 
@@ -1660,16 +1680,16 @@ void SelectIdentify::on_start()
                 // Nothing to identify, exit screen
                 states::pop();
 
-                msg_log::add("I carry no unknown objects.");
-
-                return;
+                msg_log::add("There is nothing to identify.");
         }
+        else
+        {
+                browser_.reset(
+                        list_size,
+                        panels::get_h(Panel::item_menu));
 
-        browser_.reset(
-                list_size,
-                panels::get_h(Panel::item_menu));
-
-        audio::play(SfxId::backpack);
+                audio::play(SfxId::backpack);
+        }
 }
 
 void SelectIdentify::draw()
@@ -1679,7 +1699,7 @@ void SelectIdentify::draw()
         const int browser_y = browser_.y();
 
         io::draw_text_center(
-                "Identify which item? " + info_screen_tip,
+                "Identify which item?",
                 Panel::screen,
                 P(panels::get_center_x(Panel::screen), 0),
                 colors::title());

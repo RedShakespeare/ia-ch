@@ -1,18 +1,18 @@
 #include "player_bon.hpp"
 
-#include "init.hpp"
-#include "text_format.hpp"
 #include "actor_player.hpp"
+#include "create_character.hpp"
 #include "game.hpp"
-#include "item_factory.hpp"
+#include "init.hpp"
 #include "inventory.hpp"
-#include "player_spells.hpp"
+#include "item_factory.hpp"
 #include "map.hpp"
 #include "map_parsing.hpp"
-#include "create_character.hpp"
-#include "saving.hpp"
+#include "player_spells.hpp"
 #include "property.hpp"
 #include "property_handler.hpp"
+#include "saving.hpp"
+#include "text_format.hpp"
 
 // -----------------------------------------------------------------------------
 // Private
@@ -43,16 +43,6 @@ static bool is_trait_blocked_for_bg(const Trait trait, const Bg bg)
         case Trait::vicious:
         case Trait::treasure_hunter:
         case Trait::undead_bane:
-        case Trait::lesser_invoc:
-        case Trait::greater_invoc:
-        case Trait::lesser_summoning:
-        case Trait::greater_summoning:
-        case Trait::lesser_clairv:
-        case Trait::greater_clairv:
-        case Trait::lesser_ench:
-        case Trait::greater_ench:
-        case Trait::lesser_alter:
-        case Trait::greater_alter:
         case Trait::absorb:
         case Trait::tough:
         case Trait::rugged:
@@ -136,8 +126,20 @@ std::string bg_title(const Bg id)
         case Bg::ghoul:
                 return "Ghoul";
 
-        case Bg::occultist:
-                return "Occultist";
+        case Bg::occultist_alter:
+                return "Occultist (Alteration)";
+
+        case Bg::occultist_clairv:
+                return "Occultist (Clairvoyance)";
+
+        case Bg::occultist_ench:
+                return "Occultist (Enchantment)";
+
+        case Bg::occultist_invoc:
+                return "Occultist (Invocation)";
+
+        // case Bg::occultist_summon:
+        //         return "Occultist (Summoning)";
 
         case Bg::rogue:
                 return "Rogue";
@@ -172,36 +174,6 @@ std::string trait_title(const Trait id)
 
         case Trait::courageous:
                 return "Courageous";
-
-        case Trait::lesser_invoc:
-                return "Lesser Invocation";
-
-        case Trait::greater_invoc:
-                return "Greater Invocation";
-
-        case Trait::lesser_summoning:
-                return "Lesser Summoning";
-
-        case Trait::greater_summoning:
-                return "Greater Summoning";
-
-        case Trait::lesser_clairv:
-                return "Lesser Clairvoyance";
-
-        case Trait::greater_clairv:
-                return "Greater Clairvoyance";
-
-        case Trait::lesser_ench:
-                return "Lesser Enchantment";
-
-        case Trait::greater_ench:
-                return "Greater Enchantment";
-
-        case Trait::lesser_alter:
-                return "Lesser Alteration";
-
-        case Trait::greater_alter:
-                return "Greater Alteration";
 
         case Trait::absorb:
                 return "Absorption";
@@ -324,6 +296,24 @@ std::vector<ColoredString> bg_descr(const Bg id)
                 descr.push_back({trait_descr(id), colors::gray()});
         };
 
+        auto put_occultist_common_description = [&descr, put, put_trait]() {
+                put("-50% shock taken from casting spells, and from carrying, "
+                    "using or identifying strange items (e.g. drinking a "
+                    "potion or carrying a disturbing artifact)");
+                put("");
+                put("Can dispel magic traps");
+                put("");
+                put("+2 Spirit Points (in addition to \"Stout Spirit\")");
+                put("");
+                put("-2 Hit Points");
+                put("");
+                put_trait(Trait::stout_spirit);
+        };
+
+        const std::string occultist_spell_improve_str =
+                "at character levels 4 and 8, all spells belonging to the "
+                "occultist's domain are cast with greater power";
+
         switch (id)
         {
         case Bg::ghoul:
@@ -331,9 +321,8 @@ std::vector<ColoredString> bg_descr(const Bg id)
                     "equipment - heals by feeding on corpses (press '5' or '.' "
                     "while standing on a corpse)");
                 put("");
-                put("Can incite Frenzy");
-                put("");
-                put("Does not become Weakened when Frenzy ends");
+                put("Can incite Frenzy at will, and does not become Weakened "
+                    "when Frenzy ends");
                 put("");
                 put("+10% speed");
                 put("");
@@ -352,24 +341,44 @@ std::vector<ColoredString> bg_descr(const Bg id)
                 put("All Ghouls are allied");
                 break;
 
-        case Bg::occultist:
-                put("Has access to traits which allows casting more powerful "
-                    "versions of spells");
+        case Bg::occultist_alter:
+                put("Specializes in spells related to manipulating matter, "
+                    "energy, and time - "
+                    + occultist_spell_improve_str);
                 put("");
-                put("Starts with a few known spells");
-                put("");
-                put("-50% shock taken from casting spells, and from carrying, "
-                    "using or identifying strange items (e.g. drinking a "
-                    "potion or carrying a disturbing artifact)");
-                put("");
-                put("Can dispel magic traps");
-                put("");
-                put("+2 Spirit Points (in addition to \"Stout Spirit\")");
-                put("");
-                put("-2 Hit Points");
-                put("");
-                put_trait(Trait::stout_spirit);
+                put_occultist_common_description();
                 break;
+
+        case Bg::occultist_clairv:
+                put("Specializes in spells related to detection and learning - "
+                    + occultist_spell_improve_str);
+                put("");
+                put_occultist_common_description();
+                break;
+
+        case Bg::occultist_ench:
+                put("Specializes in spells related to aiding, debilitating, "
+                    "entrancing, and beguiling - "
+                    + occultist_spell_improve_str);
+                put("");
+                put_occultist_common_description();
+                break;
+
+        case Bg::occultist_invoc:
+                put("Specializes in spells related to channeling destructive "
+                    "powers - "
+                    + occultist_spell_improve_str);
+                put("");
+                put_occultist_common_description();
+                break;
+
+        // case Bg::occultist_summon:
+        //         put("Specializes in spells related to bringing forth "
+        //             "creatures - "
+        //             + occultist_spell_improve_str);
+        //         put("");
+        //         put_occultist_common_description();
+        //         break;
 
         case Bg::rogue:
                 put("Shock received passively over time is reduced by 25%");
@@ -433,7 +442,7 @@ std::string trait_descr(const Trait id)
                 return
                         "Standing still gives ranged attacks maximum damage "
                         "and +10% hit chance on the following turn, unless "
-                        "you take damage";
+                        "damage is taken";
 
         case Trait::fast_shooter:
                 return
@@ -443,60 +452,6 @@ std::string trait_descr(const Trait id)
         case Trait::courageous:
                 return
                         "+20% shock resistance";
-
-        case Trait::lesser_invoc:
-                return
-                        "Attack spells are cast at expert level (Darkbolt, "
-                        "Azathoth's Wrath, Mayhem)";
-
-        case Trait::greater_invoc:
-                return
-                        "Attack spells are cast at master level (Darkbolt, "
-                        "Azathoth's Wrath, Mayhem)";
-
-        case Trait::lesser_summoning:
-                return
-                        "Summoning spells are cast at expert level "
-                        "(Summon Creature, Pestilence)";
-
-        case Trait::greater_summoning:
-                return
-                        "Summoning spells are cast at master level "
-                        "(Summon Creature, Pestilence)";
-
-        case Trait::lesser_clairv:
-                return
-                        "Spells related to detection and information are cast "
-                        "at expert level (Searching, See Invisible)";
-
-        case Trait::greater_clairv:
-                return
-                        "Spells related to detection and information are cast "
-                        "at master level (Searching, See Invisible)";
-
-        case Trait::lesser_ench:
-                return
-                        "Spells related to bestowing properties, aiding, or "
-                        "debilitating are cast at expert level (Resistance, "
-                        "Light, Bless, Healing, Enfeeble, Spell Shield)";
-
-        case Trait::greater_ench:
-                return
-                        "Spells related to bestowing properties, aiding, or "
-                        "debilitating are cast at master level (Resistance, "
-                        "Light, Bless, Healing, Enfeeble, Spell Shield)";
-
-        case Trait::lesser_alter:
-                return
-                        "Spells related to moving, shifting, or changing the "
-                        "nature of things are cast at expert level (Teleport, "
-                        "Animate Weapons, Opening, Transmutation)";
-
-        case Trait::greater_alter:
-                return
-                        "Spells related to moving, shifting, or changing the "
-                        "nature of things are cast at master level (Teleport, "
-                        "Animate Weapons, Opening, Transmutation)";
 
         case Trait::absorb:
                 return
@@ -644,11 +599,12 @@ std::string trait_descr(const Trait id)
         return "";
 }
 
-void trait_prereqs(const Trait trait,
-                   const Bg bg,
-                   std::vector<Trait>& traits_out,
-                   Bg& bg_out,
-                   int& clvl_out)
+void trait_prereqs(
+        const Trait trait,
+        const Bg bg,
+        std::vector<Trait>& traits_out,
+        Bg& bg_out,
+        int& clvl_out)
 {
         traits_out.clear();
 
@@ -697,64 +653,8 @@ void trait_prereqs(const Trait trait,
                 traits_out.push_back(Trait::cool_headed);
                 break;
 
-        case Trait::lesser_invoc:
-                bg_out = Bg::occultist;
-                clvl_out = 3;
-                break;
-
-        case Trait::greater_invoc:
-                traits_out.push_back(Trait::lesser_invoc);
-                bg_out = Bg::occultist;
-                clvl_out = 6;
-                break;
-
-        case Trait::lesser_summoning:
-                bg_out = Bg::occultist;
-                clvl_out = 3;
-                break;
-
-        case Trait::greater_summoning:
-                traits_out.push_back(Trait::lesser_summoning);
-                bg_out = Bg::occultist;
-                clvl_out = 6;
-                break;
-
-        case Trait::lesser_clairv:
-                bg_out = Bg::occultist;
-                clvl_out = 3;
-                break;
-
-        case Trait::greater_clairv:
-                traits_out.push_back(Trait::lesser_clairv);
-                bg_out = Bg::occultist;
-                clvl_out = 6;
-                break;
-
-        case Trait::lesser_ench:
-                bg_out = Bg::occultist;
-                clvl_out = 3;
-                break;
-
-        case Trait::greater_ench:
-                traits_out.push_back(Trait::lesser_ench);
-                bg_out = Bg::occultist;
-                clvl_out = 6;
-                break;
-
-        case Trait::lesser_alter:
-                bg_out = Bg::occultist;
-                clvl_out = 3;
-                break;
-
-        case Trait::greater_alter:
-                traits_out.push_back(Trait::lesser_alter);
-                bg_out = Bg::occultist;
-                clvl_out = 6;
-                break;
-
         case Trait::absorb:
                 traits_out.push_back(Trait::strong_spirit);
-                bg_out = Bg::occultist;
                 break;
 
         case Trait::tough:
@@ -910,6 +810,16 @@ bool has_trait(const Trait id)
         return traits[(size_t)id];
 }
 
+bool is_occultist()
+{
+        return
+                (bg_ == Bg::occultist_alter) ||
+                (bg_ == Bg::occultist_clairv) ||
+                (bg_ == Bg::occultist_ench) ||
+                (bg_ == Bg::occultist_invoc);
+                // (bg_ == Bg::occultist_summon);
+}
+
 std::vector<Bg> pickable_bgs()
 {
         std::vector<Bg> ret;
@@ -930,9 +840,10 @@ std::vector<Bg> pickable_bgs()
         return ret;
 }
 
-void unpicked_traits_for_bg(const Bg bg,
-                            std::vector<Trait>& traits_can_be_picked_out,
-                            std::vector<Trait>& traits_prereqs_not_met_out)
+void unpicked_traits_for_bg(
+        const Bg bg,
+        std::vector<Trait>& traits_can_be_picked_out,
+        std::vector<Trait>& traits_prereqs_not_met_out)
 {
         for (size_t i = 0; i < (size_t)Trait::END; ++i)
         {
@@ -1063,7 +974,11 @@ void pick_bg(const Bg bg)
         }
         break;
 
-        case Bg::occultist:
+        case Bg::occultist_alter:
+        case Bg::occultist_clairv:
+        case Bg::occultist_ench:
+        case Bg::occultist_invoc:
+        // case Bg::occultist_summon:
         {
                 pick_trait(Trait::stout_spirit);
 
@@ -1093,6 +1008,128 @@ void pick_bg(const Bg bg)
         }
 }
 
+void on_player_gained_lvl(const int new_lvl)
+{
+        auto is_occultist_spell_incr_lvl = [](const int new_lvl) {
+                return ((new_lvl == 4) || (new_lvl == 8));
+        };
+
+        switch (bg_)
+        {
+        case Bg::ghoul:
+                break;
+
+        case Bg::occultist_alter:
+                if (is_occultist_spell_incr_lvl(new_lvl))
+                {
+                        player_spells::incr_spell_skill(
+                                SpellId::anim_wpns);
+
+                        // NOTE: This could perhaps be considered an
+                        // Enchanetment spell, but the way the spell description
+                        // is phrased, it sounds a lot more like Alteration
+                        player_spells::incr_spell_skill(
+                                SpellId::bless);
+
+                        player_spells::incr_spell_skill(
+                                SpellId::light);
+
+                        player_spells::incr_spell_skill(
+                                SpellId::opening);
+
+                        player_spells::incr_spell_skill(
+                                SpellId::divert_attacks);
+
+                        player_spells::incr_spell_skill(
+                                SpellId::slow_time);
+
+                        player_spells::incr_spell_skill(
+                                SpellId::teleport);
+
+                        player_spells::incr_spell_skill(
+                                SpellId::transmut);
+
+                        player_spells::incr_spell_skill(
+                                SpellId::force_field);
+                }
+                break;
+
+        case Bg::occultist_clairv:
+                if (is_occultist_spell_incr_lvl(new_lvl))
+                {
+                        player_spells::incr_spell_skill(
+                                SpellId::searching);
+
+                        player_spells::incr_spell_skill(
+                                SpellId::identify);
+
+                        player_spells::incr_spell_skill(
+                                SpellId::see_invis);
+                }
+                break;
+
+        case Bg::occultist_ench:
+                if (is_occultist_spell_incr_lvl(new_lvl))
+                {
+                        player_spells::incr_spell_skill(
+                                SpellId::enfeeble);
+
+                        player_spells::incr_spell_skill(
+                                SpellId::slow);
+
+                        player_spells::incr_spell_skill(
+                                SpellId::terrify);
+
+                        player_spells::incr_spell_skill(
+                                SpellId::heal);
+
+                        player_spells::incr_spell_skill(
+                                SpellId::res);
+
+                        player_spells::incr_spell_skill(
+                                SpellId::spell_shield);
+                }
+                break;
+
+        case Bg::occultist_invoc:
+                if (is_occultist_spell_incr_lvl(new_lvl))
+                {
+                        player_spells::incr_spell_skill(
+                                SpellId::darkbolt);
+
+                        player_spells::incr_spell_skill(
+                                SpellId::aura_of_decay);
+
+                        player_spells::incr_spell_skill(
+                                SpellId::aza_wrath);
+
+                        player_spells::incr_spell_skill(
+                                SpellId::mayhem);
+                }
+                break;
+
+        // case Bg::occultist_summon:
+        //         if (is_occultist_spell_incr_lvl(new_lvl))
+        //         {
+        //                 player_spells::incr_spell_skill(
+        //                         SpellId::pestilence);
+
+        //                 player_spells::incr_spell_skill(
+        //                         SpellId::summon);
+        //         }
+        //         break;
+
+        case Bg::rogue:
+                break;
+
+        case Bg::war_vet:
+                break;
+
+        case Bg::END:
+                break;
+        }
+}
+
 void set_all_traits_to_picked()
 {
         for (int i = 0; i < (int)Trait::END; ++i)
@@ -1109,53 +1146,6 @@ void pick_trait(const Trait id)
 
         switch (id)
         {
-        case Trait::lesser_invoc:
-        case Trait::greater_invoc:
-        {
-                player_spells::incr_spell_skill(SpellId::darkbolt);
-                player_spells::incr_spell_skill(SpellId::aza_wrath);
-                player_spells::incr_spell_skill(SpellId::mayhem);
-        }
-        break;
-
-        case Trait::lesser_summoning:
-        case Trait::greater_summoning:
-        {
-                player_spells::incr_spell_skill(SpellId::summon);
-                player_spells::incr_spell_skill(SpellId::pestilence);
-        }
-        break;
-
-        case Trait::lesser_clairv:
-        case Trait::greater_clairv:
-        {
-                player_spells::incr_spell_skill(SpellId::searching);
-                player_spells::incr_spell_skill(SpellId::see_invis);
-        }
-        break;
-
-        case Trait::lesser_ench:
-        case Trait::greater_ench:
-        {
-                player_spells::incr_spell_skill(SpellId::heal);
-                player_spells::incr_spell_skill(SpellId::res);
-                player_spells::incr_spell_skill(SpellId::light);
-                player_spells::incr_spell_skill(SpellId::bless);
-                player_spells::incr_spell_skill(SpellId::enfeeble);
-                player_spells::incr_spell_skill(SpellId::spell_shield);
-        }
-        break;
-
-        case Trait::lesser_alter:
-        case Trait::greater_alter:
-        {
-                player_spells::incr_spell_skill(SpellId::teleport);
-                player_spells::incr_spell_skill(SpellId::opening);
-                player_spells::incr_spell_skill(SpellId::anim_wpns);
-                player_spells::incr_spell_skill(SpellId::transmut);
-        }
-        break;
-
         case Trait::tough:
         case Trait::rugged:
         {

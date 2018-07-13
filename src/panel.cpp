@@ -186,7 +186,7 @@ void init(const P max_gui_dims)
                 Panel::create_char_menu,
                 1,
                 2,
-                25,
+                27,
                 get_y1(Panel::screen));
 
         set_panel_area(

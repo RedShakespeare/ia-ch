@@ -340,10 +340,11 @@ void Trap::bump(Actor& actor_bumping)
 
                                 states::draw();
 
-                                msg_log::add("I avoid " +
-                                             trap_name_a +
-                                             ".",
-                                             colors::msg_good());
+                                msg_log::add(
+                                        "I avoid " +
+                                        trap_name_a +
+                                        ".",
+                                        colors::msg_good());
                         }
                 }
                 else // Failed to avoid
@@ -433,11 +434,12 @@ void Trap::disarm()
                 }
         }
 
-        const bool is_occultist = player_bon::bg() == Bg::occultist;
+        const bool is_occultist = player_bon::is_occultist();
 
         if (is_magical() && !is_occultist)
         {
                 msg_log::add("I do not know how to dispel magic traps.");
+
                 return;
         }
 
@@ -459,7 +461,8 @@ void Trap::disarm()
 
         set_constr_in_range(1, disarm_num, disarm_den - 1);
 
-        const bool is_disarmed = is_auto_succeed ||
+        const bool is_disarmed =
+                is_auto_succeed ||
                 rnd::fraction(disarm_num, disarm_den);
 
         if (is_disarmed)

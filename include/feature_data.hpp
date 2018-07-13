@@ -48,6 +48,7 @@ enum class FeatureId
         lit_flare,
         trap,
         smoke,
+        force_field,
         event_wall_crumble,
         event_snake_emerge,
         event_rat_cave_discovery,

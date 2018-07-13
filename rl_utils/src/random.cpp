@@ -5,6 +5,50 @@ int Dice::roll() const
     return rnd::dice(rolls, sides) + plus;
 }
 
+std::string Dice::str() const
+{
+        const std::string rolls_str = std::to_string(rolls);
+
+        const std::string sides_str = std::to_string(sides);
+
+        const std::string plus_str = str_plus();
+
+        return rolls_str + "d" + sides_str + plus_str;
+}
+
+std::string Dice::str_plus() const
+{
+        return
+                (plus == 0) ? "" :
+                (plus > 0) ?
+                ("+" + std::to_string(plus)) :
+                ("-" + std::to_string(plus));
+}
+
+std::string Dice::str_avg() const
+{
+        const double val = avg();
+
+        double rounded = roundf(val * 100.0) / 100.0;
+
+        std::ostringstream ss;
+
+        ss << std::fixed << std::setprecision(1) << rounded;
+
+        return ss.str();
+}
+
+std::string Range::str() const
+{
+        const int min_actual = std::min(min, max);
+        const int max_actual = std::max(min, max);
+
+        return
+                std::to_string(min_actual) +
+                "-" +
+                std::to_string(max_actual);
+}
+
 int Range::roll() const
 {
     return rnd::range(min, max);

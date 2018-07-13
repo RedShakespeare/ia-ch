@@ -364,8 +364,8 @@ static void init_data_list()
         d.msg_start_mon = "slows down.";
         d.msg_end_player = "Everything around me seems to slow down.";
         d.msg_end_mon = "speeds up.";
-        d.msg_res_player = "I resist slowness.";
-        d.msg_res_mon = "resists slowness.";
+        d.msg_res_player = "I resist slowing.";
+        d.msg_res_mon = "resists slowing.";
         d.is_making_mon_aware = true;
         d.allow_display_turns = true;
         d.allow_test_on_bot = true;
@@ -589,6 +589,32 @@ static void init_data_list()
         d.alignment = PropAlignment::bad;
         add(d);
 
+        d.id = PropId::divert_attacks;
+        d.std_rnd_turns = Range(5, 9);
+        d.name = "Divert Attacks";
+        d.name_short = "Divert";
+        d.descr = "+75% chance to evade attacks";
+        d.msg_start_player = "I feel unassailable.";
+        d.msg_end_player = "I feel more vulnerable.";
+        d.allow_display_turns = true;
+        d.allow_test_on_bot = true;
+        d.alignment = PropAlignment::good;
+        add(d);
+
+        d.id = PropId::magic_searching;
+        d.std_rnd_turns = Range(20, 60);
+        d.name = "Magic Searching";
+        d.name_short = "Searching";
+        d.descr =
+                "Magically detects objects and creatures in the surrounding "
+                "area";
+        d.msg_start_player = "Hidden secrets are revealed to me.";
+        d.msg_end_player = "I can no longer see hidden things.";
+        d.allow_display_turns = true;
+        d.allow_test_on_bot = true;
+        d.alignment = PropAlignment::good;
+        add(d);
+
         d.id = PropId::entangled;
         d.name = "Entangled";
         d.name_short = "Entgld";
@@ -713,6 +739,21 @@ static void init_data_list()
         d.alignment = PropAlignment::bad;
         add(d);
 
+        d.id = PropId::aura_of_decay;
+        d.std_rnd_turns = Range(6, 12);
+        d.name = "Aura of Decay";
+        d.name_short = "Decay";
+        d.descr = "Adjacent creatures take damage";
+        d.msg_start_player = "Withering surrounds me.";
+        d.msg_start_mon = "appears to exude death and decay.";
+        d.msg_end_player = "The decay subsides.";
+        d.msg_end_mon = "no longer exudes decay.";
+        d.is_making_mon_aware = true;
+        d.allow_display_turns = true;
+        d.allow_test_on_bot = true;
+        d.alignment = PropAlignment::good;
+        add(d);
+
         d.id = PropId::vortex;
         add(d);
 
@@ -768,8 +809,7 @@ static void init_data_list()
         d.name_short = "Ethereal";
         d.name = "Ethereal";
         d.descr =
-                "Can pass through solid objects, and is harder to hit with all "
-                "attacks";
+                "Can pass through solid objects, +50% chance to evade attacks";
         d.allow_display_turns = false;
         d.allow_test_on_bot = false;
         d.alignment = PropAlignment::neutral;

@@ -44,17 +44,27 @@ void draw()
                 colors::light_sepia(),
                 draw_text_bg);
 
-        y += 1;
+        ++y;
 
         // Player class
-        io::draw_text(
-                player_bon::bg_title(player_bon::bg()),
-                panel,
-                P(x0, y),
-                colors::light_sepia(),
-                draw_text_bg);
+        {
+                const auto class_lines =
+                        text_format::split(
+                                player_bon::bg_title(player_bon::bg()),
+                                x1 - x0 + 1);
 
-        y += 1;
+                for (const std::string& line : class_lines)
+                {
+                        io::draw_text(
+                                line,
+                                panel,
+                                P(x0, y),
+                                colors::light_sepia(),
+                                draw_text_bg);
+
+                        ++y;
+                }
+        }
 
         // Character level and experience
         {
@@ -79,7 +89,7 @@ void draw()
                         draw_text_bg);
         }
 
-        y += 1;
+        ++y;
 
         // Dungeon level
         {
@@ -100,7 +110,7 @@ void draw()
                         draw_text_bg);
         }
 
-        y += 1;
+        ++y;
 
         // Hit points
         {
@@ -124,7 +134,7 @@ void draw()
                         draw_text_bg);
         }
 
-        y += 1;
+        ++y;
 
         // Spirit
         {
@@ -148,7 +158,7 @@ void draw()
                         draw_text_bg);
         }
 
-        y += 1;
+        ++y;
 
         // Shock
         {
@@ -177,7 +187,7 @@ void draw()
                         draw_text_bg);
         }
 
-        y += 1;
+        ++y;
 
         // Insanity
         {
@@ -238,7 +248,7 @@ void draw()
                         draw_text_bg);
         }
 
-        y += 1;
+        ++y;
 
         // Medical supplies
         {
@@ -270,7 +280,7 @@ void draw()
                         draw_text_bg);
         }
 
-        y += 1;
+        ++y;
 
         // Armor
         {
@@ -292,7 +302,7 @@ void draw()
                         draw_text_bg);
         }
 
-        y += 1;
+        ++y;
 
         // Encumbrance
         {
@@ -341,7 +351,7 @@ void draw()
                                 name.color,
                                 draw_text_bg);
 
-                        y += 1;
+                        ++y;
                 }
         }
 

@@ -88,6 +88,8 @@ void MarkerState::draw()
 
         int red_from_idx = -1;
 
+        auto blocked_parser = map_parsers::BlocksProjectiles();
+
         if (show_blocked())
         {
                 for (size_t i = 0; i < line.size(); ++i)
@@ -101,8 +103,7 @@ void MarkerState::draw()
 
                         const Cell& c = map::cells.at(p);
 
-                        if (c.is_seen_by_player &&
-                            !c.rigid->is_projectile_passable())
+                        if (c.is_seen_by_player && blocked_parser.cell(p))
                         {
                                 red_from_idx = i;
                                 break;

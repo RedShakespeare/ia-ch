@@ -2,18 +2,26 @@
 v20.0 - *** WORK IN PROGRESS ***
 --------------------------------------------------------------
 Gameplay
-* Strange Colors only cause confusion while the player is adjacent to them
-* Death Fiends now do a more sensible amount of damage (and the part of their description which said their attack "means almost certain death" has been removed)
+* The Occultist traits to improve spells (such as Lesser/Greater Invocation, Summoning, etc) have been removed - instead there are now multiple Occultist backgrounds to choose from, which get free upgrades at certain levels for spells belonging to their respective domains
+* Added spell "Slow Time" (+100% speed)
+* Added spell "Divert Attacks" (+75% chance to evade attacks)
+* Added spell "Force Field" (creates a temporary translucent barrier around the caster, which blocks movement and normal projectiles)
+* Added spell "Aura of Decay" (damages adjacent creatures, but can also have other minor effects)
+* The spell "Enfeeble" now only causes Weakening (instead of a bunch of different things)
+* Added spells "Slow" and "Terrify"
+* The "Searching" spell lasts multiple turns, but detects in a smaller area (and never across the whole map)
 * Removed some traits
-* Added more monsters
-* Removed the Phantasm, Wraith, and Byakhee monsters
-* When Ghosts attack, it says they are "reaching" for the player instead of "clawing" - the old "reach" effect which they did in addition to their normal attack has been removed
+* Added new monsters
 * Deep Ones can throw a net which entangles the victim (instead of throwing a spear), and they usually spawn in much smaller numbers than before
 * Spiders become aware of the player when the player gets stuck in a spider web
 * Spiders can use pathfinding to move to their target
+* Removed the Phantasm, Wraith, and Byakhee monsters
+* When Ghosts attack, it says they are "reaching" for the player instead of "clawing" - the old "reach" effect which they did in addition to their normal attack has been removed
+* Strange Colors only cause confusion while the player is adjacent to them
+* Death Fiends now do a more sensible amount of damage (and the part of their description which said their attack "means almost certain death" has been removed)
 * Improved check for if Phobia of open places should trigger (for example it no longer triggers while standing in smoke)
 * Changed the standard map size
-* Maps built from templates are randomly flipped and rotated
+* Some maps built from templates (such as the "Egypt" level)  are randomly flipped and rotated, for more variety
 
 Interface
 * The interface has a new layout, and there is a scrolling viewport centered on the player

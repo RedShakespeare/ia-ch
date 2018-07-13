@@ -608,25 +608,20 @@ void PotionInsight::quaff_impl(Actor& actor)
 {
     (void)actor;
 
-    //
+    identify(Verbosity::verbose);
+
     // Run identify selection menu
-    //
+
     // NOTE: We push this state BEFORE giving any XP (directly or via
-    //       identifying stuff), because if the player gains a new level in
-    //       the process, the trait selection should occur first
-    //
-    std::unique_ptr<State> select_identify(
-        new SelectIdentify);
+    // identifying stuff), because if the player gains a new level in the
+    // process, the trait selection should occur first
+    states::push(std::make_unique<SelectIdentify>());
 
-    states::push(std::move(select_identify));
-
-    // Insight gives some extra XP, to avoid making them worthless if the player
-    // identifies all items)
+    // Insight gives some extra XP, to avoid making the potion worthless if the
+    // player identifies all items)
     msg_log::add("I feel insightful.");
 
     game::incr_player_xp(5);
-
-    identify(Verbosity::verbose);
 
     msg_log::more_prompt();
 }

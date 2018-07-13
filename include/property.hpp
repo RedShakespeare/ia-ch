@@ -379,6 +379,7 @@ public:
                 Prop(PropId::flying) {}
 };
 
+// TODO: Kill actor inside wall or over chasm (unless flying) when ethereal ends
 class PropEthereal: public Prop
 {
 public:
@@ -446,8 +447,10 @@ public:
                 {
                         return 10;
                 }
-
-                return 0;
+                else
+                {
+                        return 0;
+                }
         }
 
         void on_hit() override;
@@ -589,6 +592,57 @@ public:
 
 private:
         void curse_adjacent() const;
+};
+
+class PropDivertAttacks: public Prop
+{
+public:
+        PropDivertAttacks() :
+                Prop(PropId::divert_attacks) {}
+
+        int ability_mod(const AbilityId ability) const override
+        {
+                (void)ability;
+
+                if (ability == AbilityId::dodging)
+                {
+                        return 75;
+                }
+                else
+                {
+                        return 0;
+                }
+        }
+};
+
+class PropMagicSearching: public Prop
+{
+public:
+        PropMagicSearching() :
+                Prop(PropId::magic_searching),
+                range_(1),
+                allow_reveal_items_(false) {}
+
+        void save() const override;
+
+        void load() override;
+
+        PropEnded on_tick() override;
+
+        void set_range(const int range)
+        {
+                range_ = range;
+        }
+
+        void set_allow_reveal_items()
+        {
+                allow_reveal_items_ = true;
+        }
+
+private:
+        int range_;
+
+        bool allow_reveal_items_;
 };
 
 class PropEntangled: public Prop
@@ -894,8 +948,10 @@ public:
                 {
                         return -999;
                 }
-
-                return 0;
+                else
+                {
+                        return 0;
+                }
         }
 
         bool allow_act() const override
@@ -930,8 +986,10 @@ public:
                 {
                         return -999;
                 }
-
-                return 0;
+                else
+                {
+                        return 0;
+                }
         }
 
         bool allow_act() const override
@@ -1019,8 +1077,10 @@ public:
                 {
                         return 10;
                 }
-
-                return 0;
+                else
+                {
+                        return 0;
+                }
         }
 };
 
@@ -1330,6 +1390,36 @@ public:
                 Prop(PropId::speaks_curses) {}
 
         PropActResult on_act() override;
+};
+
+class PropAuraOfDecay: public Prop
+{
+public:
+        PropAuraOfDecay() :
+                Prop(PropId::aura_of_decay),
+                dmg_range_(1, 3) {}
+
+        void save() const override;
+
+        void load() override;
+
+        // PropEnded on_tick() override;
+
+        void on_std_turn() override;
+
+        void set_dmg_range(const Range& dmg_range)
+        {
+                dmg_range_ = dmg_range;
+        }
+
+private:
+        void run_effect_on_actors() const;
+
+        void run_effect_on_env() const;
+
+        void print_msg_actor_hit(const Actor& actor) const;
+
+        Range dmg_range_;
 };
 
 class PropMajorClaphamSummon: public Prop

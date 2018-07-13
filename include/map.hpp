@@ -120,7 +120,7 @@ Mob* first_mob_at_pos(const P& pos);
 
 void actor_cells(const std::vector<Actor*>& actors, std::vector<P>& out);
 
-Array2<Actor*> get_actor_array();
+Array2< std::vector<Actor*> > get_actor_array();
 
 Actor* random_closest_actor(const P& c, const std::vector<Actor*>& actors);
 

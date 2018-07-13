@@ -349,15 +349,15 @@ void actor_cells(const std::vector<Actor*>& actors, std::vector<P>& out)
         }
 }
 
-Array2<Actor*> get_actor_array()
+Array2< std::vector<Actor*> > get_actor_array()
 {
-        Array2<Actor*> a(dims());
+        Array2< std::vector<Actor*> > a(dims());
 
         for (Actor* actor : game_time::actors)
         {
                 const P& p = actor->pos;
 
-                a.at(p) = actor;
+                a.at(p).push_back(actor);
         }
 
         return a;
