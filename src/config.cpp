@@ -929,26 +929,4 @@ void ConfigState::draw()
                 Panel::screen,
                 P(1, 20),
                 colors::white());
-
-        str =
-                "NOTE: Tile set requires a resolution 1280x720 or higher. "
-                "Using text mode for smaller resolutions is recommended "
-                "(fonts of different sizes are available).";
-
-        const auto lines = text_format::split(
-                str,
-                79); // TODO: Set from standard value
-
-        int y = panels::get_y1(Panel::screen) - lines.size() + 1;
-
-        for (const std::string& line : lines)
-        {
-                io::draw_text(
-                        line,
-                        Panel::screen,
-                        P(1, y),
-                        colors::gray());
-
-                ++y;
-        }
 }
