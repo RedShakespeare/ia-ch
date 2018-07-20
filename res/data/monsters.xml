@@ -2148,7 +2148,7 @@
             <allow_generated_description>true</allow_generated_description>
             <wary_message>seems aggravated.</wary_message>
             <aware_message_seen>hisses.</aware_message_seen>
-            <aware_message_hidden>hissing.</aware_message_hidden>
+            <aware_message_hidden>I hear hissing.</aware_message_hidden>
             <spell_message></spell_message>
         </text>
 
