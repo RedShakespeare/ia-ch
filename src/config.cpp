@@ -45,6 +45,7 @@ static bool is_ranged_wpn_meleee_prompt_ = false;
 static bool is_ranged_wpn_auto_reload_ = false;
 static bool is_intro_lvl_skipped_ = false;
 static bool is_any_key_confirm_more_ = false;
+static bool always_warn_new_mon_ = false;
 static int delay_projectile_draw_ = -1;
 static int delay_shotgun_ = -1;
 static int delay_explosion_ = -1;
@@ -157,6 +158,7 @@ static void set_default_variables()
         is_text_mode_wall_full_square_ = true;
         is_intro_lvl_skipped_ = false;
         is_any_key_confirm_more_ = false;
+        always_warn_new_mon_ = true;
         is_light_explosive_prompt_ = false;
         is_drink_malign_pot_prompt_ = false;
         is_ranged_wpn_meleee_prompt_ = true;
@@ -305,31 +307,37 @@ static void player_sets_option(const MenuBrowser& browser)
         }
         break;
 
-        case 9: // Print warning when lighting explovies
+        case 9: // Always warn when a new monster appears
+        {
+                always_warn_new_mon_ = !always_warn_new_mon_;
+        }
+        break;
+
+        case 10: // Print warning when lighting explovies
         {
                 is_light_explosive_prompt_ = !is_light_explosive_prompt_;
         }
         break;
 
-        case 10: // Print warning when drinking known malign potions
+        case 11: // Print warning when drinking known malign potions
         {
                 is_drink_malign_pot_prompt_ = !is_drink_malign_pot_prompt_;
         }
         break;
 
-        case 11: // Print warning when melee attacking with ranged weapons
+        case 12: // Print warning when melee attacking with ranged weapons
         {
                 is_ranged_wpn_meleee_prompt_ = !is_ranged_wpn_meleee_prompt_;
         }
         break;
 
-        case 12: // Ranged weapon auto reload
+        case 13: // Ranged weapon auto reload
         {
                 is_ranged_wpn_auto_reload_ = !is_ranged_wpn_auto_reload_;
         }
         break;
 
-        case 13: // Projectile delay
+        case 14: // Projectile delay
         {
                 const P p(opt_values_x_pos_, opt_y0_ + browser.y());
 
@@ -348,7 +356,7 @@ static void player_sets_option(const MenuBrowser& browser)
         }
         break;
 
-        case 14: // Shotgun delay
+        case 15: // Shotgun delay
         {
                 const P p(opt_values_x_pos_, opt_y0_ + browser.y());
 
@@ -367,7 +375,7 @@ static void player_sets_option(const MenuBrowser& browser)
         }
         break;
 
-        case 15: // Explosion delay
+        case 16: // Explosion delay
         {
                 const P p(opt_values_x_pos_, opt_y0_ + browser.y());
 
@@ -386,7 +394,7 @@ static void player_sets_option(const MenuBrowser& browser)
         }
         break;
 
-        case 16: // Reset to defaults
+        case 17: // Reset to defaults
         {
                 set_default_variables();
 
@@ -455,6 +463,9 @@ static void set_variables_from_lines(std::vector<std::string>& lines)
         lines.erase(begin(lines));
 
         is_any_key_confirm_more_ = lines.front() == "1";
+        lines.erase(begin(lines));
+
+        always_warn_new_mon_ = lines.front() == "1";
         lines.erase(begin(lines));
 
         is_light_explosive_prompt_ = lines.front() == "1";
@@ -528,6 +539,7 @@ static std::vector<std::string> lines_from_variables()
         lines.push_back(is_text_mode_wall_full_square_ ? "1" : "0");
         lines.push_back(is_intro_lvl_skipped_ ? "1" : "0");
         lines.push_back(is_any_key_confirm_more_ ? "1" : "0");
+        lines.push_back(always_warn_new_mon_ ? "1" : "0");
         lines.push_back(is_light_explosive_prompt_ ? "1" : "0");
         lines.push_back(is_drink_malign_pot_prompt_ ? "1" : "0");
         lines.push_back(is_ranged_wpn_meleee_prompt_ ? "1" : "0");
@@ -668,6 +680,11 @@ bool is_any_key_confirm_more()
         return is_any_key_confirm_more_;
 }
 
+bool always_warn_new_mon()
+{
+        return always_warn_new_mon_;
+}
+
 int delay_projectile_draw()
 {
         return delay_projectile_draw_;
@@ -712,7 +729,7 @@ void set_fullscreen(const bool value)
 // -----------------------------------------------------------------------------
 ConfigState::ConfigState() :
         State(),
-        browser_(17)
+        browser_(18)
 {
 
 }
@@ -822,6 +839,11 @@ void ConfigState::draw()
                 {
                         "Any key confirms \"-More-\" prompts",
                         config::is_any_key_confirm_more_ ? "Yes" : "No"
+                },
+
+                {
+                        "Always warn when new monster is seen",
+                        config::always_warn_new_mon_ ? "Yes" : "No"
                 },
 
                 {

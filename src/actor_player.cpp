@@ -913,17 +913,19 @@ void Player::on_actor_turn()
     // Set current temporary shock from darkness etc
     update_tmp_shock();
 
-    if (active_medical_bag_ ||
-        (handle_armor_countdown_ > 0) ||
-        (wait_turns_left > 0) ||
-        (quick_move_dir_ != Dir::END))
+    auto is_busy = [this]() {
+            return
+                    active_medical_bag_ ||
+                    (handle_armor_countdown_ > 0) ||
+                    (wait_turns_left > 0) ||
+                    (quick_move_dir_ != Dir::END);
+    };
+
+    if (is_busy() && is_seeing_burning_feature())
     {
-        if (is_seeing_burning_feature())
-        {
             msg_log::add(msg_fire_prevent_cmd,
                          colors::text(),
                          true);
-        }
     }
 
     Array2<int> vigilant_flood(map::dims());
@@ -948,6 +950,10 @@ void Player::on_actor_turn()
         vigilant_flood = floodfill(pos, blocks_sound, d);
     }
 
+    bool is_old_actor_seen = false;
+
+    Actor* actor_to_warn_about = nullptr;
+
     for (Actor* actor : game_time::actors)
     {
         // Not a hostile, living monster?
@@ -968,21 +974,17 @@ void Player::on_actor_turn()
 
             if (mon.is_msg_mon_in_view_printed_)
             {
-                continue;
+                    is_old_actor_seen = true;
             }
 
-            if (active_medical_bag_ ||
-                (handle_armor_countdown_ > 0) ||
-                (wait_turns_left > 0) ||
-                (quick_move_dir_ != Dir::END))
+            if (is_busy() ||
+                (config::always_warn_new_mon() && !is_old_actor_seen))
             {
-                const std::string name_a =
-                    text_format::first_to_upper(
-                        actor->name_a());
-
-                msg_log::add(name_a + " comes into my view.",
-                             colors::text(),
-                             true);
+                    actor_to_warn_about = actor;
+            }
+            else
+            {
+                    actor_to_warn_about = nullptr;
             }
 
             mon.is_msg_mon_in_view_printed_ = true;
@@ -1050,14 +1052,28 @@ void Player::on_actor_turn()
 
                     const std::string mon_name = mon.name_a();
 
-                    msg_log::add("I spot " + mon_name + "!",
-                                 colors::msg_note(),
-                                 true,
-                                 MorePromptOnMsg::yes);
+                    msg_log::add(
+                            "I spot " + mon_name + "!",
+                            colors::msg_note(),
+                            true,
+                            MorePromptOnMsg::yes);
                 }
             }
         }
     } // actor loop
+
+    if (actor_to_warn_about)
+    {
+            const std::string name_a =
+                    text_format::first_to_upper(
+                            actor_to_warn_about->name_a());
+
+            msg_log::add(
+                    name_a + " is in my view.",
+                    colors::text(),
+                    true,
+                    MorePromptOnMsg::yes);
+    }
 
     mon_feeling();
 

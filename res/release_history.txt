@@ -34,6 +34,7 @@ Interface
 * Dropping items is now done from a separate inventory screen, accessed by pressing "d" (which is a more conventional method than the old way of pressing shift+enter)
 * Changed command for disarming traps to "D" (instead of "d")
 * Reworked the tile for Deep Ones
+* Added an option to always warn when a new monster is seen (and no other monster was already seen)
 
 --------------------------------------------------------------
 v19.2 (November 6, 2017)
