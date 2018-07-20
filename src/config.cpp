@@ -156,7 +156,7 @@ static void set_default_variables()
         is_tiles_wall_full_square_ = false;
         is_text_mode_wall_full_square_ = true;
         is_intro_lvl_skipped_ = false;
-        is_any_key_confirm_more_ = true;
+        is_any_key_confirm_more_ = false;
         is_light_explosive_prompt_ = false;
         is_drink_malign_pot_prompt_ = false;
         is_ranged_wpn_meleee_prompt_ = true;
