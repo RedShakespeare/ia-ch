@@ -6,7 +6,7 @@ Gameplay
 * Added spell "Slow Time" (+100% speed)
 * Added spell "Divert Attacks" (+75% chance to evade attacks)
 * Added spell "Force Field" (creates a temporary translucent barrier around the caster, which blocks movement and normal projectiles)
-* Added spell "Aura of Decay" (damages adjacent creatures, but can also have other minor effects)
+* Added spell "Aura of Decay" (damages nearby creatures, but can also have other minor effects)
 * Added spell "Identify" (identifies manuscripts when cast at lowest skill level, and identifies more item types at higher levels)
 * The spell "Enfeeble" now only causes Weakening (instead of a bunch of different things)
 * Added spells "Slow" and "Terrify"

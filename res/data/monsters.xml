@@ -1107,7 +1107,6 @@
             <spell skill="expert">pestilence</spell>
             <spell skill="expert">darkbolt</spell>
             <spell skill="expert">spell_shield</spell>
-            <spell skill="expert">aura_of_decay</spell>
             <spell skill="expert" percent_chance="75">deafen</spell>
             <spell skill="expert" percent_chance="75">enfeeble</spell>
             <spell skill="expert" percent_chance="75">slow</spell>
@@ -1384,7 +1383,6 @@
             <spell skill="basic">darkbolt</spell>
             <spell skill="basic">knockback</spell>
             <spell skill="basic">spell_shield</spell>
-            <spell skill="basic" percent_chance="25">aura_of_decay</spell>
             <spell skill="basic" percent_chance="75">enfeeble</spell>
             <spell skill="basic" percent_chance="75">slow</spell>
             <spell skill="basic" percent_chance="75">terrify</spell>
@@ -1479,7 +1477,6 @@
             <spell skill="expert">darkbolt</spell>
             <spell skill="expert">knockback</spell>
             <spell skill="expert">spell_shield</spell>
-            <spell skill="expert" percent_chance="25">aura_of_decay</spell>
             <spell skill="expert" percent_chance="75">enfeeble</spell>
             <spell skill="expert" percent_chance="75">slow</spell>
             <spell skill="expert" percent_chance="75">terrify</spell>
@@ -1574,7 +1571,6 @@
             <spell skill="master">darkbolt</spell>
             <spell skill="master">knockback</spell>
             <spell skill="master">spell_shield</spell>
-            <spell skill="master" percent_chance="25">aura_of_decay</spell>
             <spell skill="master" percent_chance="75">enfeeble</spell>
             <spell skill="master" percent_chance="75">slow</spell>
             <spell skill="master" percent_chance="75">terrify</spell>
@@ -6813,7 +6809,6 @@
             <spell skill="master">slow</spell>
             <spell skill="master">terrify</spell>
             <spell skill="master">slow_time</spell>
-            <spell skill="master">aura_of_decay</spell>
         </spells>
 
         <properties>

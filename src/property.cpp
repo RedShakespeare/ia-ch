@@ -1797,14 +1797,16 @@ void PropAuraOfDecay::load()
         dmg_range_.max = saving::get_int();
 }
 
-// PropEnded PropAuraOfDecay::on_tick()
+int PropAuraOfDecay::range() const
+{
+        return expl_std_radi;
+}
+
 void PropAuraOfDecay::on_std_turn()
 {
         run_effect_on_actors();
 
         run_effect_on_env();
-
-        // return PropEnded::no;
 }
 
 void PropAuraOfDecay::run_effect_on_actors() const
@@ -1815,7 +1817,7 @@ void PropAuraOfDecay::run_effect_on_actors() const
 
                 if (actor == owner_ ||
                     actor_state == ActorState::destroyed ||
-                    !actor->pos.is_adjacent(owner_->pos))
+                    king_dist(owner_->pos, actor->pos) > range())
                 {
                         continue;
                 }
@@ -1852,7 +1854,7 @@ void PropAuraOfDecay::run_effect_on_env() const
                 if ((id == FeatureId::wall ||
                      id == FeatureId::rubble_high ||
                      id == FeatureId::door) &&
-                    rnd::one_in(200))
+                    rnd::one_in(250))
                 {
                         if (cell.is_seen_by_player)
                         {

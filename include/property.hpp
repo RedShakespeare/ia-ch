@@ -1397,7 +1397,7 @@ class PropAuraOfDecay: public Prop
 public:
         PropAuraOfDecay() :
                 Prop(PropId::aura_of_decay),
-                dmg_range_(1, 3) {}
+                dmg_range_(1, 2) {}
 
         void save() const override;
 
@@ -1413,6 +1413,8 @@ public:
         }
 
 private:
+        int range() const;
+
         void run_effect_on_actors() const;
 
         void run_effect_on_env() const;
