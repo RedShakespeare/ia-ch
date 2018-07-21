@@ -2646,7 +2646,7 @@ void SpellSlow::run_effect(
                         continue;
                 }
 
-                auto* const prop = new PropWeakened();
+                auto* const prop = new PropSlowed();
 
                 prop->set_duration(duration);
 
