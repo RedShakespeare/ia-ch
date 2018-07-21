@@ -7,9 +7,11 @@ Gameplay
 * Added spell "Divert Attacks" (+75% chance to evade attacks)
 * Added spell "Force Field" (creates a temporary translucent barrier around the caster, which blocks movement and normal projectiles)
 * Added spell "Aura of Decay" (damages adjacent creatures, but can also have other minor effects)
+* Added spell "Identify" (identifies manuscripts when cast at lowest skill level, and identifies more item types at higher levels)
 * The spell "Enfeeble" now only causes Weakening (instead of a bunch of different things)
 * Added spells "Slow" and "Terrify"
 * The "Searching" spell lasts multiple turns, but detects in a smaller area (and never across the whole map)
+* Spells cast from manuscripts are always cast at least at "expert" level)
 * Removed some traits
 * Added new monsters
 * Deep Ones can throw a net which entangles the victim (instead of throwing a spear), and they usually spawn in much smaller numbers than before
@@ -26,10 +28,11 @@ Gameplay
 Interface
 * The interface has a new layout, and there is a scrolling viewport centered on the player
 * The tiles are 24x24 pixels, instead of 16x24
+* The font size is no longer locked to the tile size (for example a smaller font can be used)
 * The window can be resized
 * Added a minimap accessed with "m"
 * Moved the message history command from "m" to "M"
-* Thrown item is selected via an inventory slot again, instead of by pressing "T" - but selecting thrown weapon is still a free action (does not end the turn), and you can still select the same item that you are simultaneously wielding
+* Thrown item is selected via an inventory slot again (instead of by pressing "T") - but selecting thrown weapon is still a free action (does not end the turn), and you can still select the same item that you are simultaneously wielding
 * Many monster descriptions have been completely rewritten (thanks Renan Nunes)
 * Dropping items is now done from a separate inventory screen, accessed by pressing "d" (which is a more conventional method than the old way of pressing shift+enter)
 * Changed command for disarming traps to "D" (instead of "d")

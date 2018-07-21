@@ -197,7 +197,7 @@ Range Spell::spi_cost(const SpellSkill skill, Actor* const caster) const
 
 void Spell::cast(Actor* const caster,
                  const SpellSkill skill,
-                 const IsIntrinsic intrinsic) const
+                 const SpellSrc spell_src) const
 {
         TRACE_FUNC_BEGIN;
 
@@ -210,7 +210,7 @@ void Spell::cast(Actor* const caster,
 
         // NOTE: If this is a non-intrinsic cast (e.g. from a scroll), then we
         // assume that the caller has made all checks themselves
-        if ((intrinsic == IsIntrinsic::yes) &&
+        if ((spell_src == SpellSrc::learned) &&
             (!properties.allow_cast_intr_spell_absolute(Verbosity::verbose) ||
              !properties.allow_speak(Verbosity::verbose)))
         {
@@ -224,7 +224,7 @@ void Spell::cast(Actor* const caster,
                 TRACE << "Player casting spell" << std::endl;
 
                 const ShockSrc shock_src =
-                        (intrinsic == IsIntrinsic::yes) ?
+                        (spell_src == SpellSrc::learned) ?
                         ShockSrc::cast_intr_spell :
                         ShockSrc::use_strange_item;
 
@@ -234,7 +234,7 @@ void Spell::cast(Actor* const caster,
 
                 // Make sound if noisy - casting from scrolls is always noisy
                 if (is_noisy(skill) ||
-                    (intrinsic == IsIntrinsic::no))
+                    (spell_src == SpellSrc::manuscript))
                 {
                         Snd snd("",
                                 SfxId::spell_generic,
@@ -253,7 +253,7 @@ void Spell::cast(Actor* const caster,
 
                 // Make sound if noisy - casting from scrolls is always noisy
                 if (is_noisy(skill) ||
-                    (intrinsic == IsIntrinsic::no))
+                    (spell_src == SpellSrc::manuscript))
                 {
                         Mon* const mon = static_cast<Mon*>(caster);
 
@@ -275,9 +275,9 @@ void Spell::cast(Actor* const caster,
                                 else // Cannot see monster
                                 {
                                         mon_name =
-                                                mon->data().is_humanoid ?
-                                                "Someone" :
-                                                "Something";
+                                                mon->data().is_humanoid
+                                                ? "Someone"
+                                                : "Something";
                                 }
 
                                 spell_msg = mon_name + " " + spell_msg;
@@ -297,7 +297,7 @@ void Spell::cast(Actor* const caster,
 
         bool allow_cast = true;
 
-        if (intrinsic == IsIntrinsic::yes)
+        if (spell_src != SpellSrc::manuscript)
         {
                 const Range cost = spi_cost(skill, caster);
 
@@ -309,8 +309,7 @@ void Spell::cast(Actor* const caster,
                                 Verbosity::verbose);
         }
 
-        if (allow_cast &&
-            caster->is_alive())
+        if (allow_cast && caster->is_alive())
         {
                 run_effect(caster, skill);
         }
@@ -355,11 +354,11 @@ void Spell::on_resist(Actor& target) const
 }
 
 std::vector<std::string> Spell::descr(const SpellSkill skill,
-                                      const IsIntrinsic is_intrinsic) const
+                                      const SpellSrc spell_src) const
 {
         auto ret = descr_specific(skill);
 
-        if (is_intrinsic == IsIntrinsic::yes)
+        if (spell_src != SpellSrc::manuscript)
         {
                 if (is_noisy(skill))
                 {
@@ -392,11 +391,15 @@ std::vector<std::string> Spell::descr(const SpellSkill skill,
                         break;
                 }
 
+                if (spell_src == SpellSrc::manuscript)
+                {
+                        skill_str += " (casting from Manuscript)";
+                }
+
                 ret.push_back("Skill level: " + skill_str);
         }
 
         return ret;
-
 }
 
 int Spell::shock_value() const

@@ -124,12 +124,6 @@ enum class SpellShock
         severe
 };
 
-enum class IsIntrinsic
-{
-        no,
-        yes
-};
-
 class Spell;
 
 namespace spell_factory
@@ -148,7 +142,7 @@ public:
 
         void cast(Actor* const caster,
                   const SpellSkill skill,
-                  const IsIntrinsic intrinsic) const;
+                  const SpellSrc spell_src) const;
 
         virtual bool allow_mon_cast_now(Mon& mon) const
         {
@@ -175,7 +169,7 @@ public:
         }
 
         std::vector<std::string> descr(const SpellSkill skill,
-                                       const IsIntrinsic is_intrinsic) const;
+                                       const SpellSrc spell_src) const;
 
         Range spi_cost(const SpellSkill skill,
                        Actor* const caster = nullptr) const;

@@ -76,7 +76,7 @@ bool try_cast_random_spell(Mon& mon)
 
                         cooldown = spell.spell->mon_cooldown();
 
-                        spell.spell->cast(&mon, spell.skill, IsIntrinsic::yes);
+                        spell.spell->cast(&mon, spell.skill, SpellSrc::learned);
 
                         return true;
                 }

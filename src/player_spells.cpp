@@ -124,7 +124,7 @@ static void try_cast(const SpellOpt& spell_opt)
 
         if (map::player->is_alive())
         {
-                spell->cast(map::player, skill, IsIntrinsic::yes);
+                spell->cast(map::player, skill, SpellSrc::learned);
         }
 }
 
@@ -438,7 +438,7 @@ void BrowseSpell::draw()
                         const auto skill = map::player->spell_skill(id);
 
                         const auto descr =
-                                spell->descr(skill, IsIntrinsic::yes);
+                                spell->descr(skill, SpellSrc::learned);
 
                         std::vector<ColoredString> lines;
 
