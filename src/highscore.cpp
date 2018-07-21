@@ -5,14 +5,141 @@
 #include <fstream>
 #include <vector>
 
-#include "init.hpp"
-#include "highscore.hpp"
 #include "actor_player.hpp"
 #include "game.hpp"
-#include "map.hpp"
-#include "popup.hpp"
+#include "highscore.hpp"
+#include "init.hpp"
 #include "io.hpp"
+#include "map.hpp"
 #include "panel.hpp"
+#include "popup.hpp"
+
+// -----------------------------------------------------------------------------
+// Private
+// -----------------------------------------------------------------------------
+static const int top_more_y_ = 1;
+
+static const int entries_y0_ = top_more_y_ + 1;
+
+static int get_bottom_more_y()
+{
+        return panels::get_h(Panel::screen) - 1;
+}
+
+static int get_max_nr_entries_on_screen()
+{
+        return get_bottom_more_y() - entries_y0_;
+}
+
+static void sort_entries(std::vector<HighscoreEntry>& entries)
+{
+        sort(
+                entries.begin(),
+                entries.end(),
+                [](const HighscoreEntry & e1, const HighscoreEntry & e2)
+                {
+                        return e1.score() > e2.score();
+                });
+}
+
+static void write_file(std::vector<HighscoreEntry>& entries)
+{
+        std::ofstream file;
+
+        file.open("res/data/highscores", std::ios::trunc);
+
+        for (const auto entry : entries)
+        {
+                const std::string win_str =
+                        (entry.is_win() == IsWin::yes) ?
+                        "1" :
+                        "0";
+
+                file << entry.game_summary_file_path() << std::endl;
+                file << win_str << std::endl;
+                file << entry.date() << std::endl;
+                file << entry.name() << std::endl;
+                file << entry.xp() << std::endl;
+                file << entry.lvl() << std::endl;
+                file << entry.dlvl() << std::endl;
+                file << entry.turn_count() << std::endl;
+                file << entry.ins() << std::endl;
+                file << (int)entry.bg() << std::endl;
+        }
+}
+
+static std::vector<HighscoreEntry> read_highscores_file()
+{
+        TRACE_FUNC_BEGIN;
+
+        std::vector<HighscoreEntry> entries;
+
+        std::ifstream file;
+
+        file.open("res/data/highscores");
+
+        if (!file.is_open())
+        {
+                return entries;
+        }
+
+        std::string line = "";
+
+        while (getline(file, line))
+        {
+                const std::string game_summary_file = line;
+
+                getline(file, line);
+
+                IsWin is_win =
+                        (line[0] == '1')
+                        ? IsWin::yes
+                        : IsWin::no;
+
+                getline(file, line);
+                const std::string date_and_time = line;
+
+                getline(file, line);
+                const std::string name = line;
+
+                getline(file, line);
+                const int xp = to_int(line);
+
+                getline(file, line);
+                const int lvl = to_int(line);
+
+                getline(file, line);
+                const int dlvl = to_int(line);
+
+                getline(file, line);
+                const int turn_count = to_int(line);
+
+                getline(file, line);
+                const int ins = to_int(line);
+
+                getline(file, line);
+                Bg bg = (Bg)to_int(line);
+
+                entries.push_back(
+                        HighscoreEntry(
+                                game_summary_file,
+                                date_and_time,
+                                name,
+                                xp,
+                                lvl,
+                                dlvl,
+                                turn_count,
+                                ins,
+                                is_win,
+                                bg));
+        }
+
+        file.close();
+
+        TRACE_FUNC_END;
+
+        return entries;
+}
 
 // -----------------------------------------------------------------------------
 // Highscore entry
@@ -86,120 +213,6 @@ int HighscoreEntry::score() const
 namespace highscore
 {
 
-namespace
-{
-
-void sort_entries(std::vector<HighscoreEntry>& entries)
-{
-        auto cmp = [](const HighscoreEntry & e1, const HighscoreEntry & e2)
-                {
-                        return e1.score() > e2.score();
-                };
-
-        sort(entries.begin(), entries.end(), cmp);
-}
-
-void write_file(std::vector<HighscoreEntry>& entries)
-{
-        std::ofstream file;
-
-        file.open("res/data/highscores", std::ios::trunc);
-
-        for (const auto entry : entries)
-        {
-                const std::string win_str =
-                        (entry.is_win() == IsWin::yes) ?
-                        "1" :
-                        "0";
-
-                file << entry.game_summary_file_path() << std::endl;
-                file << win_str << std::endl;
-                file << entry.date() << std::endl;
-                file << entry.name() << std::endl;
-                file << entry.xp() << std::endl;
-                file << entry.lvl() << std::endl;
-                file << entry.dlvl() << std::endl;
-                file << entry.turn_count() << std::endl;
-                file << entry.ins() << std::endl;
-                file << (int)entry.bg() << std::endl;
-        }
-}
-
-std::vector<HighscoreEntry> read_file()
-{
-        TRACE_FUNC_BEGIN;
-
-        std::vector<HighscoreEntry> entries;
-
-        std::ifstream file;
-
-        file.open("res/data/highscores");
-
-        if (!file.is_open())
-        {
-                return entries;
-        }
-
-        std::string line = "";
-
-        while (getline(file, line))
-        {
-                const std::string game_summary_file = line;
-
-                getline(file, line);
-
-                IsWin is_win =
-                        (line[0] == '1') ?
-                        IsWin::yes :
-                        IsWin::no;
-
-                getline(file, line);
-                const std::string date_and_time = line;
-
-                getline(file, line);
-                const std::string name = line;
-
-                getline(file, line);
-                const int xp = to_int(line);
-
-                getline(file, line);
-                const int lvl = to_int(line);
-
-                getline(file, line);
-                const int dlvl = to_int(line);
-
-                getline(file, line);
-                const int turn_count = to_int(line);
-
-                getline(file, line);
-                const int ins = to_int(line);
-
-                getline(file, line);
-                Bg bg = (Bg)to_int(line);
-
-                entries.push_back(
-                        HighscoreEntry(
-                                game_summary_file,
-                                date_and_time,
-                                name,
-                                xp,
-                                lvl,
-                                dlvl,
-                                turn_count,
-                                ins,
-                                is_win,
-                                bg));
-        }
-
-        file.close();
-
-        TRACE_FUNC_END;
-
-        return entries;
-}
-
-} // namespace
-
 void init()
 {
 
@@ -248,7 +261,7 @@ void append_entry_to_highscores_file(const HighscoreEntry& entry)
 
 std::vector<HighscoreEntry> entries_sorted()
 {
-        auto entries = read_file();
+        auto entries = read_highscores_file();
 
         if (!entries.empty())
         {
@@ -263,25 +276,6 @@ std::vector<HighscoreEntry> entries_sorted()
 // -----------------------------------------------------------------------------
 // Browse highscore
 // -----------------------------------------------------------------------------
-namespace
-{
-
-const int top_more_y_ = 1;
-
-const int entries_y0_ = top_more_y_ + 1;
-
-int get_bottom_more_y()
-{
-        return panels::get_h(Panel::screen) - 1;
-}
-
-int get_max_nr_entries_on_screen()
-{
-        return get_bottom_more_y() - entries_y0_;
-}
-
-} // namespace
-
 StateId BrowseHighscore::id()
 {
         return StateId::highscore;
@@ -289,9 +283,9 @@ StateId BrowseHighscore::id()
 
 void BrowseHighscore::on_start()
 {
-        entries_ = highscore::read_file();
+        entries_ = read_highscores_file();
 
-        highscore::sort_entries(entries_);
+        sort_entries(entries_);
 
         browser_.reset(entries_.size(), get_max_nr_entries_on_screen());
 }
@@ -442,10 +436,8 @@ void BrowseHighscore::update()
                 const std::string file_path =
                         entry_marked.game_summary_file_path();
 
-                auto state = std::unique_ptr<BrowseHighscoreEntry>(
-                        new BrowseHighscoreEntry(file_path));
-
-                states::push(std::move(state));
+                states::push(
+                        std::make_unique<BrowseHighscoreEntry>(file_path));
         }
         break;
 

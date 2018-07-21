@@ -274,10 +274,13 @@ void PostmortemMenu::on_start()
         const std::vector< std::vector<Msg> >& msg_history =
                 msg_log::history();
 
-        int history_element =
-                std::max(0, (int)msg_history.size() - 20);
+        const int max_nr_messages_to_show = 20;
 
-        for (size_t history_line_idx = history_element;
+        int history_start_idx = std::max(
+                0,
+                (int)msg_history.size() - max_nr_messages_to_show);
+
+        for (size_t history_line_idx = history_start_idx;
              history_line_idx < msg_history.size();
              ++history_line_idx)
         {
@@ -299,13 +302,6 @@ void PostmortemMenu::on_start()
         }
 
         info_lines_.push_back({"", color_info});
-
-        TRACE << "Drawing the final map" << std::endl;
-
-        info_lines_.push_back(
-                ColoredString(
-                        "The final moment:",
-                        color_heading));
 
         // Also dump the lines to a memorial file
         make_memorial_file(game_summary_file_path);
@@ -349,9 +345,6 @@ void PostmortemMenu::draw()
 
         if (config::is_tiles_mode())
         {
-                // TODO: Reimplement
-                // io::draw_skull(P(27, 2));
-
                 io::draw_box(panels::get_area(Panel::screen));
 
                 menu_pos =
@@ -448,35 +441,6 @@ void PostmortemMenu::make_memorial_file(const std::string path) const
                 file << line.str << std::endl;
         }
 
-        // Add text map to file
-        for (int y = 0; y < map::h(); ++y)
-        {
-                std::string map_line;
-
-                for (int x = 0; x < map::w(); ++x)
-                {
-                        char c = draw_map::get_drawn_cell(x, y).character;
-
-                        // Printable ASCII character?
-                        if (c < 32 || c > 126)
-                        {
-                                // Nope - well, this is pretty difficult to
-                                // handle in a good way as things are now. The
-                                // current strategy is to show the symbol as a
-                                // wall then (it's probably a wall, rubble, or a
-                                // statue).
-
-                                // TODO: Perhaps text mode should strictly use
-                                // only printable basic ASCII symbols?
-                                c = '#';
-                        }
-
-                        map_line += c;
-                }
-
-                file << map_line << std::endl;
-        }
-
         file.close();
 }
 
@@ -501,43 +465,29 @@ void PostmortemMenu::update()
 
                         init::init_session();
 
-                        std::unique_ptr<State> new_game_state(
-                                new NewGameState);
-
-                        states::push(std::move(new_game_state));
+                        states::push(std::make_unique<NewGameState>());
 
                         audio::fade_out_music();
-
-                        return;
                 }
                 break;
 
                 case 1:
                 {
-                        std::unique_ptr<State> postmortem_info(
-                                new PostmortemInfo());
-
-                        states::push(std::move(postmortem_info));
+                        states::push(std::make_unique<PostmortemInfo>());
                 }
                 break;
 
                 // Show highscores
                 case 2:
                 {
-                        std::unique_ptr<State> browse_highscore_state(
-                                new BrowseHighscore);
-
-                        states::push(std::move(browse_highscore_state));
+                        states::push(std::make_unique<BrowseHighscore>());
                 }
                 break;
 
                 // Display message history
                 case 3:
                 {
-                        std::unique_ptr<State> msg_history_state(
-                                new MsgHistoryState);
-
-                        states::push(std::move(msg_history_state));
+                        states::push(std::make_unique<MsgHistoryState>());
                 }
                 break;
 
@@ -546,8 +496,6 @@ void PostmortemMenu::update()
                 {
                         // Exit screen
                         states::pop();
-
-                        return;
                 }
                 break;
 
@@ -556,8 +504,6 @@ void PostmortemMenu::update()
                 {
                         // Bye!
                         states::pop_all();
-
-                        return;
                 }
                 break;
                 }
@@ -582,47 +528,21 @@ void PostmortemInfo::draw()
 
         draw_interface();
 
-        const int nr_info_lines = (int)info_lines_.size();
-
-        const int nr_lines_tot = nr_info_lines + map::h();
+        const int nr_lines = (int)info_lines_.size();
 
         int screen_y = 1;
 
         for (int i = top_idx_;
-             (i < nr_lines_tot) && ((i - top_idx_) < max_nr_lines_on_screen());
+             (i < nr_lines) && ((i - top_idx_) < max_nr_lines_on_screen());
              ++i)
         {
-                const bool is_info_lines = i < nr_info_lines;
+                const auto& line = info_lines_[i];
 
-                if (is_info_lines)
-                {
-                        io::draw_text(info_lines_[i].str,
-                                      Panel::screen,
-                                      P(0, screen_y),
-                                      info_lines_[i].color);
-                }
-                else // Map lines
-                {
-                        const int map_y = i - nr_info_lines;
-
-                        ASSERT(map_y >= 0);
-                        ASSERT(map_y < map::h());
-
-                        for (int x = 0; x < map::w(); ++x)
-                        {
-                                const CellRenderData& d =
-                                        draw_map::get_drawn_cell(x, map_y);
-
-                                io::draw_symbol(
-                                        d.tile,
-                                        d.character,
-                                        Panel::screen,
-                                        P(x, screen_y),
-                                        d.color,
-                                        true, // Draw background color
-                                        d.color_bg);
-                        }
-                }
+                io::draw_text(
+                        line.str,
+                        Panel::screen,
+                        P(0, screen_y),
+                        line.color);
 
                 ++screen_y;
         }
@@ -634,7 +554,7 @@ void PostmortemInfo::update()
 {
         const int line_jump = 3;
 
-        const int nr_lines_tot = info_lines_.size() + map::h();
+        const int nr_lines = info_lines_.size();
 
         const auto input = io::get(false);
 
@@ -645,14 +565,14 @@ void PostmortemInfo::update()
         case 'j':
                 top_idx_ += line_jump;
 
-                if (nr_lines_tot <= max_nr_lines_on_screen())
+                if (nr_lines <= max_nr_lines_on_screen())
                 {
                         top_idx_ = 0;
                 }
                 else
                 {
                         top_idx_ = std::min(
-                                nr_lines_tot - max_nr_lines_on_screen(),
+                                nr_lines - max_nr_lines_on_screen(),
                                 top_idx_);
                 }
                 break;
