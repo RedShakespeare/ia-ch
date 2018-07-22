@@ -180,8 +180,6 @@ protected:
 
         virtual std::string disarm_msg() const = 0;
 
-        virtual std::string disarm_fail_msg() const = 0;
-
         P pos_;
 
         TrapId type_;
@@ -214,11 +212,6 @@ protected:
         std::string disarm_msg() const override
         {
                 return "I disarm a trap.";
-        }
-
-        std::string disarm_fail_msg() const override
-        {
-                return "I fail to disarm a trap.";
         }
 };
 
@@ -541,12 +534,14 @@ protected:
 
         virtual ~MagicTrapImpl() {}
 
+        TrapPlacementValid on_place() override;
+
         virtual std::string name(const Article article) const override
         {
                 std::string name =
-                        (article == Article::a) ?
-                        "a" :
-                        "the";
+                        (article == Article::a)
+                        ? "a"
+                        : "the";
 
                 name += " strange shape";
 
@@ -571,11 +566,6 @@ protected:
         std::string disarm_msg() const override
         {
                 return "I dispel a magic trap.";
-        }
-
-        std::string disarm_fail_msg() const override
-        {
-                return "I fail to dispel a magic trap.";
         }
 
         Range nr_turns_range_to_trigger() const override
@@ -635,9 +625,9 @@ private:
         std::string name(const Article article) const override
         {
                 std::string name =
-                        (article == Article::a) ?
-                        "a" :
-                        "the";
+                        (article == Article::a)
+                        ? "a"
+                        : "the";
 
                 name += " spider web";
 
@@ -667,11 +657,6 @@ private:
         std::string disarm_msg() const override
         {
                 return "I tear down a spider web.";
-        }
-
-        std::string disarm_fail_msg() const override
-        {
-                return "I fail to tear down a spider web.";
         }
 };
 

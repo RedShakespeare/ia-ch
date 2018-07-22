@@ -2,28 +2,29 @@
 
 #include <algorithm>
 
-#include "init.hpp"
-#include "feature_data.hpp"
-#include "actor_player.hpp"
-#include "msg_log.hpp"
-#include "map.hpp"
-#include "item.hpp"
-#include "drop.hpp"
-#include "postmortem.hpp"
-#include "explosion.hpp"
-#include "popup.hpp"
-#include "actor_mon.hpp"
-#include "inventory.hpp"
-#include "sound.hpp"
 #include "actor_factory.hpp"
-#include "io.hpp"
-#include "player_bon.hpp"
-#include "item_factory.hpp"
+#include "actor_mon.hpp"
+#include "actor_player.hpp"
 #include "attack.hpp"
-#include "text_format.hpp"
+#include "drop.hpp"
+#include "explosion.hpp"
+#include "feature_data.hpp"
+#include "init.hpp"
+#include "inventory.hpp"
+#include "io.hpp"
+#include "item.hpp"
+#include "item_factory.hpp"
+#include "map.hpp"
+#include "map_parsing.hpp"
+#include "msg_log.hpp"
+#include "player_bon.hpp"
+#include "popup.hpp"
+#include "postmortem.hpp"
 #include "property.hpp"
 #include "property_data.hpp"
 #include "property_handler.hpp"
+#include "sound.hpp"
+#include "text_format.hpp"
 
 // -----------------------------------------------------------------------------
 // Trap
@@ -53,21 +54,20 @@ Trap::Trap(const P& feature_pos,
                 return;
         }
 
-        auto try_place_trap_or_discard = [&](const TrapId trap_id)
+        auto try_place_trap_or_discard = [&](const TrapId trap_id) {
+                auto* impl = make_trap_impl_from_id(trap_id);
+
+                auto valid = impl->on_place();
+
+                if (valid == TrapPlacementValid::yes)
                 {
-                        auto* impl = make_trap_impl_from_id(trap_id);
-
-                        auto valid = impl->on_place();
-
-                        if (valid == TrapPlacementValid::yes)
-                        {
-                                trap_impl_ = impl;
-                        }
-                        else // Placement not valid
-                        {
-                                delete impl;
-                        }
-                };
+                        trap_impl_ = impl;
+                }
+                else // Placement not valid
+                {
+                        delete impl;
+                }
+        };
 
         if (id == TrapId::any)
         {
@@ -304,107 +304,28 @@ void Trap::bump(Actor& actor_bumping)
         const ActorData& d = actor_bumping.data();
 
         if (actor_bumping.has_prop(PropId::ethereal) ||
-            actor_bumping.has_prop(PropId::flying))
+            actor_bumping.has_prop(PropId::flying) ||
+            (d.actor_size < ActorSize::humanoid) ||
+            d.is_spider)
         {
                 TRACE_FUNC_END_VERBOSE;
+
                 return;
         }
 
-        const bool actor_can_see = actor_bumping.properties().allow_see();
-
-        const std::string trap_name_a = trap_impl_->name(Article::a);
-
-        // TODO: Reimplement something affecting chance of success, e.g.
-        // dexterous traits
-
-        const int dodge_skill = 50;
-
-        if (actor_bumping.is_player())
+        if (!actor_bumping.is_player())
         {
-                TRACE_VERBOSE << "Player bumping" << std::endl;
+                Mon* const mon = static_cast<Mon*>(&actor_bumping);
 
-                int avoid_skill = 30 + dodge_skill;
-
-                if (is_hidden_)
-                {
-                        avoid_skill = std::max(10, avoid_skill / 2);
-                }
-
-                const auto result = ability_roll::roll(avoid_skill);
-
-                if (result >= ActionResult::success)
-                {
-                        if (!is_hidden_ && actor_can_see)
-                        {
-                                map::player->update_fov();
-
-                                states::draw();
-
-                                msg_log::add(
-                                        "I avoid " +
-                                        trap_name_a +
-                                        ".",
-                                        colors::msg_good());
-                        }
-                }
-                else // Failed to avoid
-                {
-                        trigger_start(&actor_bumping);
-                }
-        }
-        else // Is a monster
-        {
-                TRACE_VERBOSE << "Monster bumping trap" << std::endl;
-
-                if (d.actor_size < ActorSize::humanoid || d.is_spider)
+                if (mon->aware_of_player_counter_ <= 0)
                 {
                         TRACE_FUNC_END_VERBOSE;
 
                         return;
                 }
-
-                TRACE_VERBOSE << "Humanoid monster bumping"
-                              << std::endl;
-
-                Mon* const mon = static_cast<Mon*>(&actor_bumping);
-
-                if (mon->aware_of_player_counter_ > 0)
-                {
-                        TRACE_VERBOSE << "Monster can trigger trap"
-                                      << std::endl;
-
-                        const bool is_actor_seen_by_player =
-                                map::player->can_see_actor(
-                                        actor_bumping);
-
-                        const int avoid_skill = 60 + dodge_skill;
-
-                        const auto result = ability_roll::roll(avoid_skill);
-
-                        if (result >= ActionResult::success)
-                        {
-                                if (is_hidden_ || !is_actor_seen_by_player)
-                                {
-                                        TRACE_FUNC_END_VERBOSE;
-
-                                        return;
-                                }
-
-                                const std::string actor_name_the =
-                                        text_format::first_to_upper(
-                                                actor_bumping.name_the());
-
-                                msg_log::add(actor_name_the +
-                                             " avoids " +
-                                             trap_name_a +
-                                             ".");
-                        }
-                        else // Failed to avoid
-                        {
-                                trigger_start(&actor_bumping);
-                        }
-                }
         }
+
+        trigger_start(&actor_bumping);
 
         TRACE_FUNC_END_VERBOSE;
 }
@@ -421,19 +342,6 @@ void Trap::disarm()
                 return;
         }
 
-        // Spider webs are automatically destroyed if wielding machete
-        bool is_auto_succeed = false;
-
-        if (type() == TrapId::web)
-        {
-                Item* item = map::player->inv().item_in_slot(SlotId::wpn);
-
-                if (item && (item->id() == ItemId::machete))
-                {
-                        is_auto_succeed = true;
-                }
-        }
-
         const bool is_occultist = player_bon::is_occultist();
 
         if (is_magical() && !is_occultist)
@@ -443,57 +351,11 @@ void Trap::disarm()
                 return;
         }
 
-        const bool is_blessed = map::player->has_prop(PropId::blessed);
-        const bool is_cursed = map::player->has_prop(PropId::cursed);
+        msg_log::add(trap_impl_->disarm_msg());
 
-        int disarm_num = 6;
-        const int disarm_den = 10;
-
-        if (is_blessed)
-        {
-                disarm_num += 3;
-        }
-
-        if (is_cursed)
-        {
-                disarm_num -= 3;
-        }
-
-        set_constr_in_range(1, disarm_num, disarm_den - 1);
-
-        const bool is_disarmed =
-                is_auto_succeed ||
-                rnd::fraction(disarm_num, disarm_den);
-
-        if (is_disarmed)
-        {
-                msg_log::add(trap_impl_->disarm_msg());
-        }
-        else // Not disarmed
-        {
-                msg_log::add(trap_impl_->disarm_fail_msg());
-
-                states::draw();
-
-                const int trigger_one_in_n =
-                        is_blessed
-                        ? 9
-                        : is_cursed ? 2 : 6;
-
-                if (rnd::one_in(trigger_one_in_n))
-                {
-                        map::player->pos = pos_;
-
-                        trigger_trap(map::player);
-                }
-        }
+        destroy();
 
         game_time::tick();
-
-        if (is_disarmed)
-        {
-                destroy();
-        }
 }
 
 void Trap::destroy()
@@ -643,9 +505,28 @@ Matl Trap::matl() const
 // -----------------------------------------------------------------------------
 // Trap implementations
 // -----------------------------------------------------------------------------
+TrapPlacementValid MagicTrapImpl::on_place()
+{
+        // Do not allow placing magic traps next to blocking features
+        // (non-Occultist characters cannot disarm them)
+        for (const P& d : dir_utils::dir_list)
+        {
+                const P p(pos_ + d);
+
+                const auto* const f = map::cells.at(p).rigid;
+
+                if (!f->can_move_common())
+                {
+                        return TrapPlacementValid::no;
+                }
+        }
+
+        return TrapPlacementValid::yes;
+}
+
 TrapDart::TrapDart(P pos, Trap* const base_trap) :
         MechTrapImpl(pos, TrapId::dart, base_trap),
-        is_poisoned_(map::dlvl >= dlvl_harder_traps && rnd::one_in(3)),
+        is_poisoned_((map::dlvl >= dlvl_harder_traps) && rnd::one_in(3)),
         dart_origin_(),
         is_dart_origin_destroyed_(false) {}
 
