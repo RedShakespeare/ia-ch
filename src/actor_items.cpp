@@ -81,10 +81,11 @@ static void make_for_player_occultist_common()
         inv.put_in_backpack(item_factory::make(ItemId::lantern));
 }
 
-static void make_for_player_occultist_alter()
+static void make_for_player_occultist_transmut()
 {
         learn_spell_player(SpellId::slow_time);
         learn_spell_player(SpellId::divert_attacks);
+        learn_spell_player(SpellId::transmut);
 }
 
 static void make_for_player_occultist_clairv()
@@ -220,14 +221,6 @@ static void make_for_player()
 
         switch (bg)
         {
-        case Bg::occultist_alter:
-        {
-                make_for_player_occultist_common();
-
-                make_for_player_occultist_alter();
-        }
-        break;
-
         case Bg::occultist_clairv:
         {
                 make_for_player_occultist_common();
@@ -259,6 +252,14 @@ static void make_for_player()
         //         make_for_player_occultist_summon();
         // }
         // break;
+
+        case Bg::occultist_transmut:
+        {
+                make_for_player_occultist_common();
+
+                make_for_player_occultist_transmut();
+        }
+        break;
 
         case Bg::rogue:
         {

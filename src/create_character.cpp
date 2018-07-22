@@ -71,9 +71,6 @@ void PickBgState::on_start()
         browser_.reset(
                 bgs_.size(),
                 panels::get_h(Panel::create_char_menu));
-
-        // Let the browser start at Rogue, to recommend it as the default choice
-        browser_.set_y((int)Bg::rogue);
 }
 
 void PickBgState::update()

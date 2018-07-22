@@ -8,8 +8,6 @@
 
 #include "global.hpp"
 
-// TODO: Use (c++) classes/polymorphism instead of many switch statements
-
 struct ActorData;
 
 enum class Trait
@@ -66,10 +64,10 @@ enum class Trait
 enum class Bg
 {
         ghoul,
-        occultist_alter,
         occultist_clairv,
         occultist_ench,
         occultist_invoc,
+        occultist_transmut,
         // occultist_summon,
         rogue,
         war_vet,

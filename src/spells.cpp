@@ -3423,9 +3423,9 @@ void SpellTransmut::run_effect(
         const bool is_stackable_before = item_before->data().is_stackable;
 
         const int nr_items_before =
-                is_stackable_before ?
-                item_before->nr_items_ :
-                1;
+                is_stackable_before
+                ? item_before->nr_items_
+                : 1;
 
         const auto item_type_before = item_before->data().type;
 
@@ -3451,10 +3451,11 @@ void SpellTransmut::run_effect(
 
         if (cell.is_seen_by_player)
         {
-                msg_log::add(item_name_before + " disappears.",
-                             colors::text(),
-                             false,
-                             MorePromptOnMsg::yes);
+                msg_log::add(
+                        item_name_before + " disappears.",
+                        colors::text(),
+                        false,
+                        MorePromptOnMsg::yes);
         }
 
         // Determine which item(s) to spawn, if any

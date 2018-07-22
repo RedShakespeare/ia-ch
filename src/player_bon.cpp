@@ -123,23 +123,23 @@ std::string bg_title(const Bg id)
 {
         switch (id)
         {
-        case Bg::ghoul:
-                return "Ghoul";
-
-        case Bg::occultist_alter:
-                return "Occultist (Alteration)";
-
         case Bg::occultist_clairv:
-                return "Occultist (Clairvoyance)";
+                return "Clairvoyant";
 
         case Bg::occultist_ench:
-                return "Occultist (Enchantment)";
+                return "Enchanter";
 
         case Bg::occultist_invoc:
-                return "Occultist (Invocation)";
+                return "Invoker";
 
         // case Bg::occultist_summon:
-        //         return "Occultist (Summoning)";
+        //         return "Summoner";
+
+        case Bg::occultist_transmut:
+                return "Transmuter";
+
+        case Bg::ghoul:
+                return "Ghoul";
 
         case Bg::rogue:
                 return "Rogue";
@@ -153,7 +153,7 @@ std::string bg_title(const Bg id)
 
         ASSERT(false);
 
-        return "[BG TITLE MISSING]";
+        return "";
 }
 
 std::string trait_title(const Trait id)
@@ -280,7 +280,7 @@ std::string trait_title(const Trait id)
 
         ASSERT(false);
 
-        return "[TRAIT TITLE MISSING]";
+        return "";
 }
 
 std::vector<ColoredString> bg_descr(const Bg id)
@@ -316,39 +316,6 @@ std::vector<ColoredString> bg_descr(const Bg id)
 
         switch (id)
         {
-        case Bg::ghoul:
-                put("Does not regenerate Hit Points and cannot use medical "
-                    "equipment - heals by feeding on corpses (press '5' or '.' "
-                    "while standing on a corpse)");
-                put("");
-                put("Can incite Frenzy at will, and does not become Weakened "
-                    "when Frenzy ends");
-                put("");
-                put("+10% speed");
-                put("");
-                put("+6 Hit Points");
-                put("");
-                put("Is immune to Disease and Infections");
-                put("");
-                put("Does not get sprains");
-                put("");
-                put("Can see in darkness");
-                put("");
-                put("-50% shock taken from seeing monsters");
-                put("");
-                put("-15% hit chance with firearms and thrown weapons");
-                put("");
-                put("All Ghouls are allied");
-                break;
-
-        case Bg::occultist_alter:
-                put("Specializes in spells related to manipulating matter, "
-                    "energy, and time - "
-                    + occultist_spell_improve_str);
-                put("");
-                put_occultist_common_description();
-                break;
-
         case Bg::occultist_clairv:
                 put("Specializes in spells related to detection and learning - "
                     + occultist_spell_improve_str);
@@ -379,6 +346,39 @@ std::vector<ColoredString> bg_descr(const Bg id)
         //         put("");
         //         put_occultist_common_description();
         //         break;
+
+        case Bg::occultist_transmut:
+                put("Specializes in spells related to manipulating matter, "
+                    "energy, and time - "
+                    + occultist_spell_improve_str);
+                put("");
+                put_occultist_common_description();
+                break;
+
+        case Bg::ghoul:
+                put("Does not regenerate Hit Points and cannot use medical "
+                    "equipment - heals by feeding on corpses (press '5' or '.' "
+                    "while standing on a corpse)");
+                put("");
+                put("Can incite Frenzy at will, and does not become Weakened "
+                    "when Frenzy ends");
+                put("");
+                put("+10% speed");
+                put("");
+                put("+6 Hit Points");
+                put("");
+                put("Is immune to Disease and Infections");
+                put("");
+                put("Does not get sprains");
+                put("");
+                put("Can see in darkness");
+                put("");
+                put("-50% shock taken from seeing monsters");
+                put("");
+                put("-15% hit chance with firearms and thrown weapons");
+                put("");
+                put("All Ghouls are allied");
+                break;
 
         case Bg::rogue:
                 put("Shock received passively over time is reduced by 25%");
@@ -813,10 +813,10 @@ bool has_trait(const Trait id)
 bool is_occultist()
 {
         return
-                (bg_ == Bg::occultist_alter) ||
                 (bg_ == Bg::occultist_clairv) ||
                 (bg_ == Bg::occultist_ench) ||
-                (bg_ == Bg::occultist_invoc);
+                (bg_ == Bg::occultist_invoc) ||
+                (bg_ == Bg::occultist_transmut);
                 // (bg_ == Bg::occultist_summon);
 }
 
@@ -945,6 +945,20 @@ void pick_bg(const Bg bg)
 
         switch (bg_)
         {
+        case Bg::occultist_clairv:
+        case Bg::occultist_ench:
+        case Bg::occultist_invoc:
+        // case Bg::occultist_summon:
+        case Bg::occultist_transmut:
+        {
+                pick_trait(Trait::stout_spirit);
+
+                map::player->change_max_spi(2, Verbosity::silent);
+
+                map::player->change_max_hp(-2, Verbosity::silent);
+        }
+        break;
+
         case Bg::ghoul:
         {
                 auto prop_r_disease = new PropRDisease();
@@ -971,20 +985,6 @@ void pick_bg(const Bg bg)
                                            Verbosity::silent);
 
                 map::player->change_max_hp(6, Verbosity::silent);
-        }
-        break;
-
-        case Bg::occultist_alter:
-        case Bg::occultist_clairv:
-        case Bg::occultist_ench:
-        case Bg::occultist_invoc:
-        // case Bg::occultist_summon:
-        {
-                pick_trait(Trait::stout_spirit);
-
-                map::player->change_max_spi(2, Verbosity::silent);
-
-                map::player->change_max_hp(-2, Verbosity::silent);
         }
         break;
 
@@ -1016,44 +1016,6 @@ void on_player_gained_lvl(const int new_lvl)
 
         switch (bg_)
         {
-        case Bg::ghoul:
-                break;
-
-        case Bg::occultist_alter:
-                if (is_occultist_spell_incr_lvl(new_lvl))
-                {
-                        player_spells::incr_spell_skill(
-                                SpellId::anim_wpns);
-
-                        // NOTE: This could perhaps be considered an
-                        // Enchanetment spell, but the way the spell description
-                        // is phrased, it sounds a lot more like Alteration
-                        player_spells::incr_spell_skill(
-                                SpellId::bless);
-
-                        player_spells::incr_spell_skill(
-                                SpellId::light);
-
-                        player_spells::incr_spell_skill(
-                                SpellId::opening);
-
-                        player_spells::incr_spell_skill(
-                                SpellId::divert_attacks);
-
-                        player_spells::incr_spell_skill(
-                                SpellId::slow_time);
-
-                        player_spells::incr_spell_skill(
-                                SpellId::teleport);
-
-                        player_spells::incr_spell_skill(
-                                SpellId::transmut);
-
-                        player_spells::incr_spell_skill(
-                                SpellId::force_field);
-                }
-                break;
-
         case Bg::occultist_clairv:
                 if (is_occultist_spell_incr_lvl(new_lvl))
                 {
@@ -1118,6 +1080,44 @@ void on_player_gained_lvl(const int new_lvl)
         //                         SpellId::summon);
         //         }
         //         break;
+
+        case Bg::occultist_transmut:
+                if (is_occultist_spell_incr_lvl(new_lvl))
+                {
+                        player_spells::incr_spell_skill(
+                                SpellId::anim_wpns);
+
+                        // NOTE: This could perhaps be considered an
+                        // Enchanetment spell, but the way the spell description
+                        // is phrased, it sounds a lot more like Alteration
+                        player_spells::incr_spell_skill(
+                                SpellId::bless);
+
+                        player_spells::incr_spell_skill(
+                                SpellId::light);
+
+                        player_spells::incr_spell_skill(
+                                SpellId::opening);
+
+                        player_spells::incr_spell_skill(
+                                SpellId::divert_attacks);
+
+                        player_spells::incr_spell_skill(
+                                SpellId::slow_time);
+
+                        player_spells::incr_spell_skill(
+                                SpellId::teleport);
+
+                        player_spells::incr_spell_skill(
+                                SpellId::transmut);
+
+                        player_spells::incr_spell_skill(
+                                SpellId::force_field);
+                }
+                break;
+
+        case Bg::ghoul:
+                break;
 
         case Bg::rogue:
                 break;

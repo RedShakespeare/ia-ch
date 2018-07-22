@@ -361,18 +361,20 @@ void BrowseHighscore::draw()
                 const std::string dlvl = std::to_string(entry.dlvl());
                 const std::string turns = std::to_string(entry.turn_count());
                 const std::string ins = std::to_string(entry.ins());
+
                 const std::string win =
-                        (entry.is_win() == IsWin::yes) ?
-                        "Yes" :
-                        "No";
+                        (entry.is_win() == IsWin::yes)
+                        ? "Yes"
+                        : "No";
+
                 const std::string score = std::to_string(entry.score());
 
                 const bool is_idx_marked = browser_y == i;
 
                 const Color& color =
-                        is_idx_marked ?
-                        colors::menu_highlight():
-                        colors::menu_dark();
+                        is_idx_marked
+                        ? colors::menu_highlight()
+                        : colors::menu_dark();
 
                 io::draw_text(date, panel, P(x_date, y), color);
                 io::draw_text(name, panel, P(x_name, y), color);
