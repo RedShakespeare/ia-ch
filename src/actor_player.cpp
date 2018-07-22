@@ -1057,6 +1057,12 @@ void Player::on_actor_turn()
                             colors::msg_note(),
                             true,
                             MorePromptOnMsg::yes);
+
+                    mon.is_msg_mon_in_view_printed_ = true;
+
+                    is_old_actor_seen = true;
+
+                    actor_to_warn_about = nullptr;
                 }
             }
         }
