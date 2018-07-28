@@ -4315,7 +4315,7 @@
         </audio>
 
         <attributes>
-            <hit_points>32</hit_points>
+            <hit_points>40</hit_points>
             <spirit>20</spirit>
             <speed_percent>100</speed_percent>
             <shock_level>frightening</shock_level>
