@@ -9,37 +9,36 @@
 
 enum class LevelTemplId
 {
-    intro_forest,
-    egypt,
-    leng,
-    rat_cave,
-    boss_level,
-    trapez_level,
-    END
+        egypt,
+        high_priest,
+        intro_forest,
+        rat_cave,
+        trapez,
+        END
 };
 
 struct RoomTempl
 {
-    RoomTempl() :
-            symbols(P(0, 0)),
-            type((RoomType)0),
-            base_templ_idx(0) {}
+        RoomTempl() :
+                symbols(P(0, 0)),
+                type((RoomType)0),
+                base_templ_idx(0) {}
 
-    Array2<char> symbols;
+        Array2<char> symbols;
 
-    RoomType type;
+        RoomType type;
 
-    // Eeach template in the data file is automatically rotated/flipped, to
-    // create variants - this is the index of the origin template from the file
-    // (i.e. there will be many templates with index 0, then index 1, etc)
-    size_t base_templ_idx;
+        // Each template in the data file is rotated/flipped to create variants
+        // - this is the index of the origin template from the file (i.e. there
+        // will be many templates with index 0, then index 1, etc)
+        size_t base_templ_idx;
 };
 
 enum class RoomTemplStatus
 {
-    unused,
-    placed, // Plcaed on the map
-    used    // Included in a map which was not discarded
+        unused,
+        placed, // Plcaed on the map
+        used    // Included in a map which was not discarded
 };
 
 namespace map_templates

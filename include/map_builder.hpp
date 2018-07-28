@@ -176,7 +176,7 @@ public:
 private:
         LevelTemplId template_id() const override
         {
-                return LevelTemplId::boss_level;
+                return LevelTemplId::high_priest;
         }
 
         bool allow_transform_template() const override
@@ -205,7 +205,7 @@ public:
 private:
         LevelTemplId template_id() const override
         {
-                return LevelTemplId::trapez_level;
+                return LevelTemplId::trapez;
         }
 
         void handle_template_pos(const P& p, const char c) override;
