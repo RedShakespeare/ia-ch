@@ -1077,7 +1077,7 @@
         </audio>
 
         <attributes>
-            <hit_points>22</hit_points>
+            <hit_points>24</hit_points>
             <spirit>60</spirit>
             <speed_percent>100</speed_percent>
             <shock_level>terrifying</shock_level>
@@ -1354,7 +1354,7 @@
         </audio>
 
         <attributes>
-            <hit_points>6</hit_points>
+            <hit_points>14</hit_points>
             <spirit>30</spirit>
             <speed_percent>100</speed_percent>
             <shock_level>none</shock_level>
@@ -1449,7 +1449,7 @@
         </audio>
 
         <attributes>
-            <hit_points>22</hit_points>
+            <hit_points>30</hit_points>
             <spirit>40</spirit>
             <speed_percent>100</speed_percent>
             <shock_level>none</shock_level>
@@ -1543,7 +1543,7 @@
         </audio>
 
         <attributes>
-            <hit_points>40</hit_points>
+            <hit_points>60</hit_points>
             <spirit>50</spirit>
             <speed_percent>100</speed_percent>
             <shock_level>none</shock_level>
