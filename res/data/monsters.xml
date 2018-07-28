@@ -1358,7 +1358,7 @@
             <spirit>30</spirit>
             <speed_percent>100</speed_percent>
             <shock_level>none</shock_level>
-            <melee>50</melee>
+            <melee>60</melee>
             <ranged>0</ranged>
             <dodging>10</dodging>
             <stealth>0</stealth>
