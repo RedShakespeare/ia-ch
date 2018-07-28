@@ -1,14 +1,15 @@
 #include "map_controller.hpp"
 
-#include "global.hpp"
-#include "rl_utils.hpp"
-#include "msg_log.hpp"
-#include "feature_rigid.hpp"
-#include "actor_factory.hpp"
-#include "game_time.hpp"
 #include "actor.hpp"
+#include "actor_factory.hpp"
 #include "actor_mon.hpp"
+#include "feature_rigid.hpp"
+#include "game_time.hpp"
+#include "global.hpp"
 #include "map.hpp"
+#include "msg_log.hpp"
+#include "populate_monsters.hpp"
+#include "rl_utils.hpp"
 
 // -----------------------------------------------------------------------------
 // MapController
@@ -17,6 +18,15 @@
 // TODO: For standard level 'on_start':
 // audio::try_play_amb(1)
 
+void MapControllerStd::on_std_turn()
+{
+        const int spawn_n_turns = 275;
+
+        if (game_time::turn_nr() % spawn_n_turns == 0)
+        {
+                populate_mon::make_random_group();
+        }
+}
 
 void MapControllerBoss::on_start()
 {

@@ -6,24 +6,10 @@
 
 #include "map_builder.hpp"
 
-enum class AllowSpawnMonOverTime
-{
-        no,
-        yes
-};
-
-struct MapData
-{
-        MapType type = MapType::std;
-
-        AllowSpawnMonOverTime allow_spawn_mon_over_time =
-                AllowSpawnMonOverTime::yes;
-};
-
 namespace map_travel
 {
 
-extern std::vector<MapData> map_list;
+extern std::vector<MapType> map_list;
 
 void init();
 
@@ -33,8 +19,6 @@ void load();
 void try_use_down_stairs();
 
 void go_to_nxt();
-
-MapData current_map_data();
 
 } // map_travel
 

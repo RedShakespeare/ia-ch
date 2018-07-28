@@ -149,7 +149,7 @@ std::unique_ptr<MapBuilder> make(const MapType map_type)
 {
         switch (map_type)
         {
-        case MapType::intro:
+        case MapType::intro_forest:
                 return std::make_unique<MapBuilderIntroForest>();
 
         case MapType::std:
@@ -161,7 +161,7 @@ std::unique_ptr<MapBuilder> make(const MapType map_type)
         case MapType::rat_cave:
                 return std::make_unique<MapBuilderRatCave>();
 
-        case MapType::boss:
+        case MapType::high_priest:
                 return std::make_unique<MapBuilderBoss>();
 
         case MapType::trapez:

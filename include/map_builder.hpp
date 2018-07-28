@@ -11,11 +11,11 @@ class MapController;
 
 enum class MapType
 {
-        intro,
-        std,
         egypt,
+        high_priest,
+        intro_forest,
         rat_cave,
-        boss,
+        std,
         trapez
 };
 
@@ -85,6 +85,8 @@ public:
 
 private:
         bool build_specific() override;
+
+        std::unique_ptr<MapController> map_controller() const override;
 };
 
 // -----------------------------------------------------------------------------

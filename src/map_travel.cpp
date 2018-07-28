@@ -50,63 +50,39 @@ static void trigger_insanity_sympts_for_descent()
 namespace map_travel
 {
 
-std::vector<MapData> map_list;
+std::vector<MapType> map_list;
 
 void init()
 {
         // Forest + dungeon + boss + trapezohedron
         const size_t nr_lvl_tot = dlvl_last + 3;
 
-        {
-                MapData map_data = {
-                        MapType::std,
-                        AllowSpawnMonOverTime::yes
-                };
-
-                map_list = std::vector<MapData>(nr_lvl_tot, map_data);
-        }
+        map_list = std::vector<MapType>(nr_lvl_tot, MapType::std);
 
         // Forest intro level
-        map_list[0] = {
-                MapType::intro,
-                AllowSpawnMonOverTime::no
-        };
+        map_list[0] = MapType::intro_forest;
 
         // Occasionally set rats-in-the-walls level as intro to late game
         if (rnd::one_in(5))
         {
-                map_list[dlvl_first_late_game - 1] = {
-                        MapType::rat_cave,
-                        AllowSpawnMonOverTime::no
-                };
+                map_list[dlvl_first_late_game - 1] = MapType::rat_cave;
         }
 
         // "Pharaoh chamber" is the first late game level
-        map_list[dlvl_first_late_game] = {
-                MapType::egypt,
-                AllowSpawnMonOverTime::no
-        };
+        map_list[dlvl_first_late_game] = MapType::egypt;
 
-        map_list[dlvl_last + 1] = {
-                MapType::boss,
-                AllowSpawnMonOverTime::no
-        };
+        map_list[dlvl_last + 1] = MapType::high_priest;
 
-        map_list[dlvl_last + 2] = {
-                MapType::trapez,
-                AllowSpawnMonOverTime::no
-        };
+        map_list[dlvl_last + 2] = MapType::trapez;
 }
 
 void save()
 {
         saving::put_int(map_list.size());
 
-        for (const auto& map_data : map_list)
+        for (const MapType type : map_list)
         {
-                saving::put_int((int)map_data.type);
-
-                saving::put_int((int)map_data.allow_spawn_mon_over_time);
+                saving::put_int((int)type);
         }
 }
 
@@ -116,12 +92,9 @@ void load()
 
         map_list.resize((size_t)nr_maps);
 
-        for (auto& map_data : map_list)
+        for (auto& type : map_list)
         {
-                map_data.type = (MapType)saving::get_int();
-
-                map_data.allow_spawn_mon_over_time =
-                        (AllowSpawnMonOverTime)saving::get_int();
+                type = (MapType)saving::get_int();
         }
 }
 
@@ -138,11 +111,11 @@ void go_to_nxt()
 
         map_list.erase(map_list.begin());
 
-        const auto& map_data = map_list.front();
+        const MapType map_type = map_list.front();
 
         ++map::dlvl;
 
-        const auto map_builder = map_builder::make(map_data.type);
+        const auto map_builder = map_builder::make(map_type);
 
         map_builder->build();
 
@@ -170,8 +143,9 @@ void go_to_nxt()
 
         map::player->on_new_dlvl_reached();
 
-        game::add_history_event("Reached dungeon level " +
-                                std::to_string(map::dlvl));
+        game::add_history_event(
+                "Reached dungeon level " +
+                std::to_string(map::dlvl));
 
         trigger_insanity_sympts_for_descent();
 
@@ -181,11 +155,6 @@ void go_to_nxt()
         }
 
         TRACE_FUNC_END;
-}
-
-MapData current_map_data()
-{
-        return map_list.front();
 }
 
 } // map_travel

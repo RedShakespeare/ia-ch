@@ -18,6 +18,15 @@ public:
         virtual void on_std_turn() {}
 };
 
+class MapControllerStd: public MapController
+{
+public:
+        MapControllerStd() :
+                MapController() {}
+
+        void on_std_turn() override;
+};
+
 class MapControllerBoss: public MapController
 {
 public:

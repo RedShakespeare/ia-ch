@@ -632,3 +632,8 @@ bool MapBuilderStd::build_specific()
 
         return mapgen::is_map_valid;
 }
+
+std::unique_ptr<MapController> MapBuilderStd::map_controller() const
+{
+        return std::make_unique<MapControllerStd>();
+}

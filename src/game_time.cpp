@@ -18,7 +18,6 @@
 #include "map_travel.hpp"
 #include "msg_log.hpp"
 #include "player_bon.hpp"
-#include "populate_monsters.hpp"
 #include "property_data.hpp"
 #include "property_handler.hpp"
 #include "saving.hpp"
@@ -108,11 +107,6 @@ static void run_std_turn_events()
                 }
         } // Actor loop
 
-        if (map_control::controller)
-        {
-                map_control::controller->on_std_turn();
-        }
-
         // Allow already burning features to damage stuff, spread fire, etc
         for (auto& cell : map::cells)
         {
@@ -136,17 +130,9 @@ static void run_std_turn_events()
                 f->on_new_turn();
         }
 
-        // Spawn more monsters?
-        const auto map_data = map_travel::current_map_data();
-
-        if (map_data.allow_spawn_mon_over_time == AllowSpawnMonOverTime::yes)
+        if (map_control::controller)
         {
-                const int spawn_n_turns = 275;
-
-                if (turn_nr_ % spawn_n_turns == 0)
-                {
-                        populate_mon::make_random_group();
-                }
+                map_control::controller->on_std_turn();
         }
 
         // Run new turn events on all player items

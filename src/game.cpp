@@ -1133,7 +1133,7 @@ void GameState::on_start()
     }
     else
     {
-        const auto map_builder = map_builder::make(MapType::intro);
+        const auto map_builder = map_builder::make(MapType::intro_forest);
 
         map_builder->build();
 
