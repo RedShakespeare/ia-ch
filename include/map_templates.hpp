@@ -9,6 +9,7 @@
 
 enum class LevelTemplId
 {
+        deep_one_lair,
         egypt,
         high_priest,
         intro_forest,

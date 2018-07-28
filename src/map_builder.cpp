@@ -149,6 +149,9 @@ std::unique_ptr<MapBuilder> make(const MapType map_type)
 {
         switch (map_type)
         {
+        case MapType::deep_one_lair:
+                return std::make_unique<MapBuilderDeepOneLair>();
+
         case MapType::intro_forest:
                 return std::make_unique<MapBuilderIntroForest>();
 

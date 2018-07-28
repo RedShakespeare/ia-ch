@@ -1,22 +1,116 @@
 #include "map_builder.hpp"
 
-#include "feature_rigid.hpp"
-#include "feature_door.hpp"
-#include "feature_monolith.hpp"
-#include "map.hpp"
-#include "map_controller.hpp"
 #include "actor_factory.hpp"
 #include "actor_mon.hpp"
 #include "actor_player.hpp"
-#include "highscore.hpp"
-#include "populate_items.hpp"
-#include "game_time.hpp"
+#include "feature_door.hpp"
+#include "feature_door.hpp"
 #include "feature_event.hpp"
-#include "property.hpp"
+#include "feature_monolith.hpp"
+#include "feature_rigid.hpp"
+#include "game_time.hpp"
+#include "highscore.hpp"
 #include "item_factory.hpp"
+#include "map.hpp"
+#include "map_controller.hpp"
+#include "populate_items.hpp"
+#include "property.hpp"
 
 // -----------------------------------------------------------------------------
-// MapBuilderIntro
+// MapBuilderDeepOneLair
+// -----------------------------------------------------------------------------
+void MapBuilderDeepOneLair::handle_template_pos(const P& p, const char c)
+{
+        switch (c)
+        {
+        case '@':
+        case '.':
+        case 'd':
+        case '%':
+        case '1': // TOOD: Should be whirlpool
+        case '2': // TOOD: Should be whirlpool
+        case 'w': // TOOD: Should be whirlpool
+        case 'B': // TODO: Should be boss
+        {
+                map::put(new Floor(p));
+
+                if (c == '@')
+                {
+                        map::player->pos = p;
+                }
+                else if (c == 'd')
+                {
+                        actor_factory::make(ActorId::deep_one, p);
+                }
+                else if (c == '%')
+                {
+                        map::make_blood(p);
+                        map::make_gore(p);
+                }
+        }
+        break;
+
+        case '&':
+        {
+                map::put(new Bones(p));
+        }
+        break;
+
+        case '#':
+        {
+                auto* wall = new Wall(p);
+
+                wall->type_ = WallType::cave;
+
+                map::put(wall);
+        }
+        break;
+
+        case '~':
+        {
+                // TODO: Should be deep liquid:
+                auto* water = new LiquidShallow(p);
+
+                water->type_ = LiquidType::water;
+
+                map::put(water);
+        }
+        break;
+
+        case 'x':
+        {
+                Door* const door =
+                        new Door(p,
+                                 nullptr,
+                                 DoorType::gate,
+                                 DoorSpawnState::closed);
+
+                map::put(door);
+        }
+        break;
+
+        case '>':
+        {
+                map::put(new Stairs(p));
+        }
+        break;
+
+        case '|':
+        {
+                map::put(new Monolith(p));
+        }
+        break;
+
+        case ':':
+        {
+                map::put(new Stalagmite(p));
+        }
+        break;
+        }
+}
+
+// -----------------------------------------------------------------------------
+// MapBuilderIntroForest
 // -----------------------------------------------------------------------------
 void MapBuilderIntroForest::handle_template_pos(const P&p, const char c)
 {

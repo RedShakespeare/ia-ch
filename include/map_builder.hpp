@@ -11,6 +11,7 @@ class MapController;
 
 enum class MapType
 {
+        deep_one_lair,
         egypt,
         high_priest,
         intro_forest,
@@ -87,6 +88,31 @@ private:
         bool build_specific() override;
 
         std::unique_ptr<MapController> map_controller() const override;
+};
+
+// -----------------------------------------------------------------------------
+// MapBuilderDeepOneLair
+// -----------------------------------------------------------------------------
+class MapBuilderDeepOneLair: public MapBuilderTemplateLevel
+{
+public:
+        MapBuilderDeepOneLair() :
+                MapBuilderTemplateLevel() {}
+
+        ~MapBuilderDeepOneLair() {}
+
+private:
+        LevelTemplId template_id() const override
+        {
+                return LevelTemplId::deep_one_lair;
+        }
+
+        bool allow_transform_template() const override
+        {
+                return true;
+        }
+
+        void handle_template_pos(const P& p, const char c) override;
 };
 
 // -----------------------------------------------------------------------------

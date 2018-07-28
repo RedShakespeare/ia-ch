@@ -59,10 +59,18 @@ void init()
 
         map_list = std::vector<MapType>(nr_lvl_tot, MapType::std);
 
-        // Forest intro level
         map_list[0] = MapType::intro_forest;
 
-        // Occasionally set rats-in-the-walls level as intro to late game
+        // if (rnd::coin_toss())
+        // {
+        //         const int deep_one_lvl_nr =
+        //                 rnd::range(
+        //                         dlvl_first_mid_game,
+        //                         dlvl_last_mid_game);
+
+        //         map_list[deep_one_lvl_nr] = MapType::deep_one_lair;
+        // }
+
         if (rnd::one_in(5))
         {
                 map_list[dlvl_first_late_game - 1] = MapType::rat_cave;
