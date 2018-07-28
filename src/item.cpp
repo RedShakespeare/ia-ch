@@ -1048,11 +1048,14 @@ void RavenPeck::on_melee_hit(Actor& actor_hit, const int dmg)
                 return;
         }
 
-        auto const prop = new PropBlind();
+        if (rnd::coin_toss())
+        {
+                auto const prop = new PropBlind();
 
-        prop->set_duration(2);
+                prop->set_duration(2);
 
-        actor_hit.apply_prop(prop);
+                actor_hit.apply_prop(prop);
+        }
 }
 
 // -----------------------------------------------------------------------------

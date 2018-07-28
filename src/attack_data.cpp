@@ -166,8 +166,11 @@ MeleeAttData::MeleeAttData(Actor* const attacker,
         }
 
         state_mod =
-                is_big_att_bon ? 50 :
-                is_small_att_bon ? 20 : 0;
+                is_big_att_bon
+                ? 50
+                : is_small_att_bon
+                ? 20
+                : 0;
 
         // Lower hit chance if attacker cannot see target (e.g. attacking
         // invisible creature)

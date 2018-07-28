@@ -21,6 +21,7 @@ Gameplay
 * When Ghosts attack, it says they are "reaching" for the player instead of "clawing" - the old "reach" effect which they did in addition to their normal attack has been removed
 * Strange Colors only cause confusion while the player is adjacent to them
 * Death Fiends now do a more sensible amount of damage (and the part of their description which said their attack "means almost certain death" has been removed)
+* Ravens only have 50% chance to cause blindness on a melee hit (instead of 100% chance)
 * Improved check for if Phobia of open places should trigger (for example it no longer triggers while standing in smoke)
 * Changed the standard map size
 * Some maps built from templates (such as the "Egypt" level)  are randomly flipped and rotated, for more variety
