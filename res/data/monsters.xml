@@ -1001,7 +1001,7 @@
             <shock_level>unsettling</shock_level>
             <melee>50</melee>
             <ranged>60</ranged>
-            <dodging>0</dodging>
+            <dodging>10</dodging>
             <stealth>0</stealth>
             <searching>0</searching>
             <can_open_doors>true</can_open_doors>
@@ -1360,7 +1360,7 @@
             <shock_level>none</shock_level>
             <melee>50</melee>
             <ranged>0</ranged>
-            <dodging>0</dodging>
+            <dodging>10</dodging>
             <stealth>0</stealth>
             <searching>0</searching>
             <can_open_doors>true</can_open_doors>
@@ -1455,7 +1455,7 @@
             <shock_level>none</shock_level>
             <melee>60</melee>
             <ranged>0</ranged>
-            <dodging>0</dodging>
+            <dodging>10</dodging>
             <stealth>0</stealth>
             <searching>0</searching>
             <can_open_doors>true</can_open_doors>
@@ -1549,7 +1549,7 @@
             <shock_level>none</shock_level>
             <melee>70</melee>
             <ranged>0</ranged>
-            <dodging>0</dodging>
+            <dodging>10</dodging>
             <stealth>0</stealth>
             <searching>0</searching>
             <can_open_doors>true</can_open_doors>
