@@ -1787,14 +1787,12 @@ PropActResult PropSpeaksCurses::on_act()
 
 void PropAuraOfDecay::save() const
 {
-        saving::put_int(dmg_range_.min);
-        saving::put_int(dmg_range_.max);
+        saving::put_int(dmg_);
 }
 
 void PropAuraOfDecay::load()
 {
-        dmg_range_.min = saving::get_int();
-        dmg_range_.max = saving::get_int();
+        dmg_ = saving::get_int();
 }
 
 int PropAuraOfDecay::range() const
@@ -1830,7 +1828,7 @@ void PropAuraOfDecay::run_effect_on_actors() const
                         print_msg_actor_hit(*actor);
                 }
 
-                actor->hit(dmg_range_.roll(), DmgType::pure);
+                actor->hit(dmg_, DmgType::pure);
         }
 }
 
@@ -1895,22 +1893,22 @@ void PropAuraOfDecay::print_msg_actor_hit(const Actor& actor) const
         {
                 msg_log::add("I am decaying!", colors::msg_bad());
         }
-        else // Monster is hit
-        {
-                const std::string actor_name =
-                        (actor.state() == ActorState::alive)
-                        ? actor.name_the()
-                        : actor.corpse_name_the();
+        // else // Monster is hit
+        // {
+        //         const std::string actor_name =
+        //                 (actor.state() == ActorState::alive)
+        //                 ? actor.name_the()
+        //                 : actor.corpse_name_the();
 
-                const Color msg_color =
-                        (map::player->is_leader_of(&actor))
-                        ? colors::text()
-                        : colors::msg_good();
+        //         const Color msg_color =
+        //                 (map::player->is_leader_of(&actor))
+        //                 ? colors::text()
+        //                 : colors::msg_good();
 
-                msg_log::add(
-                        text_format::first_to_upper(actor_name) + " decays!",
-                        msg_color);
-        }
+        //         msg_log::add(
+        //                 text_format::first_to_upper(actor_name) + " decays!",
+        //                 msg_color);
+        // }
 }
 
 PropActResult PropMajorClaphamSummon::on_act()

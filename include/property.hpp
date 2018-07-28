@@ -1397,7 +1397,7 @@ class PropAuraOfDecay: public Prop
 public:
         PropAuraOfDecay() :
                 Prop(PropId::aura_of_decay),
-                dmg_range_(1, 2) {}
+                dmg_(1) {}
 
         void save() const override;
 
@@ -1407,9 +1407,9 @@ public:
 
         void on_std_turn() override;
 
-        void set_dmg_range(const Range& dmg_range)
+        void set_dmg(const int dmg)
         {
-                dmg_range_ = dmg_range;
+                dmg_ = dmg;
         }
 
 private:
@@ -1421,7 +1421,7 @@ private:
 
         void print_msg_actor_hit(const Actor& actor) const;
 
-        Range dmg_range_;
+        int dmg_;
 };
 
 class PropMajorClaphamSummon: public Prop

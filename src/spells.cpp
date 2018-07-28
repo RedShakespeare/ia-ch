@@ -450,14 +450,7 @@ void SpellAuraOfDecay::run_effect(
         Actor* const caster,
         const SpellSkill skill) const
 {
-        // Skill  damage     avg
-        // -----------------------
-        // 0      1  - 2     1.5
-        // 1      2  - 3     2.5
-        // 2      3  - 4     3.5
-        Range dmg_range(
-                1 + (int)skill * 1,
-                2 + (int)skill * 1);
+        const int dmg = 1 + (int)skill;
 
         Range duration_range;
         duration_range.min = 20 * ((int)skill + 1);
@@ -467,7 +460,7 @@ void SpellAuraOfDecay::run_effect(
 
         prop->set_duration(duration_range.roll());
 
-        prop->set_dmg_range(dmg_range);
+        prop->set_dmg(dmg);
 
         caster->apply_prop(prop);
 }
@@ -481,13 +474,11 @@ std::vector<std::string> SpellAuraOfDecay::descr_specific(
                 "The caster exudes death and decay. Creatures within a "
                 "distance of two moves take damage each standard turn.");
 
-        Range dmg_range(
-                1 + (int)skill * 1,
-                2 + (int)skill * 1);
+        const int dmg = 1 + (int)skill;
 
         descr.push_back(
                 "The spell does " +
-                dmg_range.str() +
+                std::to_string(dmg) +
                 " damage per creature.");
 
         Range duration_range;
