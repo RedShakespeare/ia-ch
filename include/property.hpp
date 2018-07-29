@@ -679,6 +679,7 @@ public:
         bool affect_actor_color(Color& color) const override
         {
                 color = colors::light_red();
+
                 return true;
         }
 
@@ -1431,6 +1432,24 @@ public:
                 Prop(PropId::major_clapham_summon) {}
 
         PropActResult on_act() override;
+};
+
+class PropSwimming: public Prop
+{
+public:
+        PropSwimming() :
+                Prop(PropId::swimming) {}
+
+        bool allow_read_absolute(const Verbosity verbosity) const override;
+
+        bool affect_actor_color(Color& color) const override
+        {
+                color = colors::light_blue();
+
+                return true;
+        }
+
+        bool allow_attack_ranged(const Verbosity verbosity) const override;
 };
 
 #endif // PROPERTY_HPP

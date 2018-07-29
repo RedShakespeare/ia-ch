@@ -80,92 +80,86 @@ void run(Actor& defender,
                 }
 
                 TRACE_FUNC_END;
+
                 return;
         }
-        else // Target cell is not blocked or is bottomless
+
+        const bool player_see_defender =
+                is_defender_player ?
+                true :
+                map::player->can_see_actor(defender);
+
+        if (verbosity == Verbosity::verbose &&
+            player_see_defender)
         {
-                const bool player_see_defender =
-                        is_defender_player ?
-                        true :
-                        map::player->can_see_actor(defender);
-
-                if (verbosity == Verbosity::verbose &&
-                    player_see_defender)
+                if (is_defender_player)
                 {
-                        if (is_defender_player)
-                        {
-                                msg_log::add("I am knocked back!");
-                        }
-                        else
-                        {
-                                const std::string name_the =
-                                        text_format::first_to_upper(
-                                                defender.name_the());
-
-                                msg_log::add(name_the + " is knocked back!");
-                        }
+                        msg_log::add("I am knocked back!");
                 }
-
-                auto prop = new PropParalyzed();
-
-                prop->set_duration(1 + paralyze_extra_turns);
-
-                defender.apply_prop(prop);
-
-                defender.pos = new_pos;
-
-                if (is_cell_bottomless &&
-                    !defender.has_prop(PropId::flying)  &&
-                    player_see_defender)
+                else
                 {
-                        if (is_defender_player)
-                        {
-                                msg_log::add("I plummet down the depths!",
-                                             colors::msg_bad());
-                        }
-                        else
-                        {
-                                const std::string name_the =
-                                        text_format::first_to_upper(
-                                                defender.name_the());
+                        const std::string name_the =
+                                text_format::first_to_upper(
+                                        defender.name_the());
 
-                                msg_log::add(name_the +
-                                             " plummets down the depths.",
-                                             colors::msg_good());
-                        }
-
-                        defender.die(true, false, false);
-
-                        TRACE_FUNC_END;
-                        return;
-                }
-
-                // Bump features
-                std::vector<Mob*> mobs;
-
-                game_time::mobs_at_pos(defender.pos, mobs);
-
-                for (Mob* const mob : mobs)
-                {
-                        mob->bump(defender);
-                }
-
-                if (!defender.is_alive())
-                {
-                        TRACE_FUNC_END;
-                        return;
-                }
-
-                Rigid* const f = map::cells.at(defender.pos).rigid;
-
-                f->bump(defender);
-
-                if (!defender.is_alive())
-                {
-                        TRACE_FUNC_END;
-                        return;
+                        msg_log::add(name_the + " is knocked back!");
                 }
         }
+
+        auto prop = new PropParalyzed();
+
+        prop->set_duration(1 + paralyze_extra_turns);
+
+        defender.apply_prop(prop);
+
+        // Leave current cell
+        map::cells.at(defender.pos).rigid->on_leave(defender);
+
+        defender.pos = new_pos;
+
+        if (is_cell_bottomless &&
+            !defender.has_prop(PropId::flying)  &&
+            player_see_defender)
+        {
+                if (is_defender_player)
+                {
+                        msg_log::add("I plummet down the depths!",
+                                     colors::msg_bad());
+                }
+                else
+                {
+                        const std::string name_the =
+                                text_format::first_to_upper(
+                                        defender.name_the());
+
+                        msg_log::add(name_the +
+                                     " plummets down the depths.",
+                                     colors::msg_good());
+                }
+
+                defender.die(true, false, false);
+
+                TRACE_FUNC_END;
+                return;
+        }
+
+        // Bump target cell
+        std::vector<Mob*> mobs;
+
+        game_time::mobs_at_pos(defender.pos, mobs);
+
+        for (Mob* const mob : mobs)
+        {
+                mob->bump(defender);
+        }
+
+        if (!defender.is_alive())
+        {
+                TRACE_FUNC_END;
+                return;
+        }
+
+        map::cells.at(defender.pos).rigid->bump(defender);
 
         TRACE_FUNC_END;
 }

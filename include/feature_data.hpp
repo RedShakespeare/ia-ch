@@ -119,7 +119,6 @@ struct FeatureData
         Matl matl_type;
         std::string msg_on_player_blocked;
         std::string msg_on_player_blocked_blind;
-        int dodge_modifier;
         int shock_when_adjacent;
         FeaturePlacement auto_spawn_placement;
 };

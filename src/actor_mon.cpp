@@ -789,9 +789,12 @@ void Mon::move(Dir dir)
         if ((dir != Dir::center) &&
             map::is_pos_inside_outer_walls(target_p))
         {
+                // Leave current cell (e.g. stop swimming)
+                map::cells.at(pos).rigid->on_leave(*this);
+
                 pos = target_p;
 
-                // Bump features in target cell (i.e. to trigger traps)
+                // Bump features in target cell (e.g. to trigger traps)
                 std::vector<Mob*> mobs;
                 game_time::mobs_at_pos(pos, mobs);
 

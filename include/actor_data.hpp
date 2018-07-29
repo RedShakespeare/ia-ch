@@ -259,9 +259,11 @@ struct ActorData
         bool allow_generated_descr;
         int nr_kills;
         bool has_player_seen;
-        bool can_open_doors, can_bash_doors;
-        // NOTE: Knockback may also be prevented by other soucres, e.g. if
-        // the monster is ethereal
+        bool can_open_doors;
+        bool can_bash_doors;
+        bool can_swim;
+        // NOTE: Knockback may also be prevented by other soucres, e.g. if the
+        // monster is ethereal
         bool prevent_knockback;
         int nr_left_allowed_to_spawn;
         bool is_unique;

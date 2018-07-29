@@ -501,6 +501,9 @@ void Actor::teleport(P p, const Array2<bool>& blocked)
         }
     }
 
+    // Leave current cell
+    map::cells.at(pos).rigid->on_leave(*this);
+
     // Update actor position to new position
     pos = p;
 

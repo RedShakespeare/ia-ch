@@ -43,6 +43,7 @@ static void run_std_turn_events()
         {
                 map::player->properties().end_prop_silent(PropId::nailed);
                 map::player->properties().end_prop_silent(PropId::entangled);
+                map::player->properties().end_prop_silent(PropId::swimming);
 
                 msg_log::add("I sink downwards!",
                              colors::white(),

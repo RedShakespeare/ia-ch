@@ -66,10 +66,11 @@ void MapBuilderDeepOneLair::handle_template_pos(const P& p, const char c)
         }
         break;
 
+        // TODO: There should probably also be shallow liquid - perhaps on the
+        // edge of the deep liquid?
         case '~':
         {
-                // TODO: Should be deep liquid:
-                auto* water = new LiquidShallow(p);
+                auto* water = new LiquidDeep(p);
 
                 water->type_ = LiquidType::water;
 

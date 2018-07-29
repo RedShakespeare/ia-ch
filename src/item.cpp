@@ -1589,6 +1589,13 @@ ConsumeItem Explosive::activate(Actor* const actor)
                 return ConsumeItem::no;
         }
 
+        if (map::player->has_prop(PropId::swimming))
+        {
+                msg_log::add("Not while swimming.");
+
+                return ConsumeItem::no;
+        }
+
         const Explosive* const held_explosive = map::player->active_explosive_;
 
         if (held_explosive)

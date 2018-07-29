@@ -449,18 +449,10 @@ bool Door::can_move_common() const
 
 bool Door::can_move(const Actor& actor) const
 {
-    if (is_open_)
-    {
-        return true;
-    }
-
-    if (actor.has_prop(PropId::ethereal) ||
-        actor.has_prop(PropId::ooze))
-    {
-        return true;
-    }
-
-    return is_open_;
+        return
+                is_open_ ||
+                actor.has_prop(PropId::ethereal) ||
+                actor.has_prop(PropId::ooze);
 }
 
 bool Door::is_los_passable() const

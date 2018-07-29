@@ -1700,7 +1700,7 @@ void Player::move(Dir dir)
 
     const P tgt(pos + dir_utils::offset(dir));
 
-    // Attacking, bumping stuff, staggering from encumbrance, etc?
+    // Attacking, bumping stuff, staggering from encumbrance, etc
     if (dir != Dir::center)
     {
         // Check if map features are blocking (used later)
@@ -1860,6 +1860,8 @@ void Player::move(Dir dir)
 
                 mon->pos = pos;
             }
+
+            map::cells.at(pos).rigid->on_leave(*this);
 
             pos = tgt;
 

@@ -324,6 +324,9 @@ static void dump_attributes(xml::Element* attrib_e, ActorData& data)
         data.can_bash_doors = xml::get_text_bool(
                 xml::first_child(attrib_e, "can_bash_doors"));
 
+        data.can_swim = xml::get_text_bool(
+                xml::first_child(attrib_e, "can_swim"));
+
         data.actor_size = str_to_actor_size_map.at(
                 xml::get_text_str(xml::first_child(attrib_e, "size")));
 

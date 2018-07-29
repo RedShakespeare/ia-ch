@@ -905,8 +905,7 @@ bool PropBurning::allow_cast_intr_spell_chance(const Verbosity verbosity) const
 
 bool PropBurning::allow_attack_ranged(const Verbosity verbosity) const
 {
-        if (owner_->is_player() &&
-            (verbosity == Verbosity::verbose))
+        if (owner_->is_player() && (verbosity == Verbosity::verbose))
         {
                 msg_log::add("Not while burning.");
         }
@@ -2076,4 +2075,24 @@ PropEnded PropMagicSearching::on_tick()
         states::draw();
 
         return PropEnded::no;
+}
+
+bool PropSwimming::allow_read_absolute(const Verbosity verbosity) const
+{
+        if (owner_->is_player() && verbosity == Verbosity::verbose)
+        {
+                msg_log::add("I cannot read this while swimming.");
+        }
+
+        return false;
+}
+
+bool PropSwimming::allow_attack_ranged(const Verbosity verbosity) const
+{
+        if (owner_->is_player() && (verbosity == Verbosity::verbose))
+        {
+                msg_log::add("Not while swimming.");
+        }
+
+        return false;
 }
