@@ -31,23 +31,6 @@ const std::unordered_map<LevelTemplId, std::string> level_id_to_filename =
         {LevelTemplId::trapez, "trapez.txt"}
 };
 
-const std::unordered_map<std::string, RoomType> name_to_room_type =
-{
-        {"plain", RoomType::plain},
-        {"human", RoomType::human},
-        {"ritual", RoomType::ritual},
-        {"jail", RoomType::jail},
-        {"spider", RoomType::spider},
-        {"snake_pit", RoomType::snake_pit},
-        {"crypt", RoomType::crypt},
-        {"monster", RoomType::monster},
-        {"flooded", RoomType::flooded},
-        {"muddy", RoomType::muddy},
-        {"cave", RoomType::cave},
-        {"chasm", RoomType::chasm},
-        {"forest", RoomType::forest}
-};
-
 // Checks if this line has non-whitespace characters, and is not commented out
 static bool line_has_content(const std::string& line)
 {
@@ -259,9 +242,10 @@ static void load_room_templates()
                                                 type_pos,
                                                 line.size() - type_pos);
 
-                                auto type_it = name_to_room_type.find(type_str);
+                                auto type_it = str_to_room_type_map
+                                        .find(type_str);
 
-                                if (type_it == name_to_room_type.end())
+                                if (type_it == str_to_room_type_map.end())
                                 {
                                         TRACE_ERROR_RELEASE
                                                 << "Unrecognized room: "

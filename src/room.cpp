@@ -42,7 +42,7 @@ static void add_to_room_bucket(const RoomType type, const size_t nr)
 // RoomType doesn't have to be an instance of the corresponding Room child class
 // (it could be for example a TemplateRoom object with RoomType "ritual", in
 // that case we still want the same chance to make it dark).
-static int base_pct_chance_drk(const RoomType room_type)
+static int base_pct_chance_dark(const RoomType room_type)
 {
         switch (room_type)
         {
@@ -70,10 +70,10 @@ static int base_pct_chance_drk(const RoomType room_type)
         case RoomType::monster:
                 return 80;
 
-        case RoomType::flooded:
+        case RoomType::damp:
                 return 25;
 
-        case RoomType::muddy:
+        case RoomType::pool:
                 return 25;
 
         case RoomType::cave:
@@ -116,8 +116,8 @@ void init_room_bucket()
                 add_to_room_bucket(RoomType::ritual, 1);
                 add_to_room_bucket(RoomType::crypt, rnd::range(2, 3));
                 add_to_room_bucket(RoomType::monster, 1);
-                add_to_room_bucket(RoomType::flooded, rnd::range(1, 2));
-                add_to_room_bucket(RoomType::muddy, rnd::range(1, 2));
+                add_to_room_bucket(RoomType::damp, rnd::range(1, 2));
+                add_to_room_bucket(RoomType::pool, rnd::range(1, 2));
                 add_to_room_bucket(RoomType::snake_pit, rnd::one_in(3) ? 1 : 0);
 
                 const size_t nr_plain_rooms = room_bucket_.size() * 2;
@@ -133,8 +133,8 @@ void init_room_bucket()
                 add_to_room_bucket(RoomType::snake_pit, 1);
                 add_to_room_bucket(RoomType::crypt, 4);
                 add_to_room_bucket(RoomType::monster, 2);
-                add_to_room_bucket(RoomType::flooded, rnd::range(1, 3));
-                add_to_room_bucket(RoomType::muddy, rnd::range(1, 3));
+                add_to_room_bucket(RoomType::damp, rnd::range(1, 3));
+                add_to_room_bucket(RoomType::pool, rnd::range(1, 3));
                 add_to_room_bucket(RoomType::cave, 2);
                 add_to_room_bucket(RoomType::chasm, 1);
                 add_to_room_bucket(RoomType::forest, 2);
@@ -148,8 +148,8 @@ void init_room_bucket()
                 add_to_room_bucket(RoomType::monster, 1);
                 add_to_room_bucket(RoomType::spider, 1);
                 add_to_room_bucket(RoomType::snake_pit, 1);
-                add_to_room_bucket(RoomType::flooded, rnd::range(2, 4));
-                add_to_room_bucket(RoomType::muddy, rnd::range(1, 3));
+                add_to_room_bucket(RoomType::damp, rnd::range(1, 3));
+                add_to_room_bucket(RoomType::pool, rnd::range(1, 3));
                 add_to_room_bucket(RoomType::chasm, 2);
                 add_to_room_bucket(RoomType::forest, 2);
 
@@ -176,8 +176,11 @@ Room* make(const RoomType type, const R& r)
         case RoomType::crypt:
                 return new CryptRoom(r);
 
-        case RoomType::flooded:
-                return new FloodedRoom(r);
+        case RoomType::damp:
+                return new DampRoom(r);
+
+        case RoomType::pool:
+                return new PoolRoom(r);
 
         case RoomType::human:
                 return new HumanRoom(r);
@@ -190,9 +193,6 @@ Room* make(const RoomType type, const R& r)
 
         case RoomType::snake_pit:
                 return new SnakePitRoom(r);
-
-        case RoomType::muddy:
-                return new MuddyRoom(r);
 
         case RoomType::plain:
                 return new PlainRoom(r);
@@ -293,7 +293,27 @@ Room::Room(R r, RoomType type) :
         type_(type),
         is_sub_room_(false) {}
 
-void Room::make_drk() const
+std::vector<P> Room::positions_in_room() const
+{
+        std::vector<P> positions;
+
+        positions.reserve(r_.w() * r_.h());
+
+        for (int x = r_.p0.x; x <= r_.p1.x; ++x)
+        {
+                for (int y = r_.p0.y; y <= r_.p1.y; ++y)
+                {
+                        if (map::room_map.at(x, y) == this)
+                        {
+                                positions.push_back(P(x, y));
+                        }
+                }
+        }
+
+        return positions;
+}
+
+void Room::make_dark() const
 {
         for (size_t i = 0; i < map::nr_cells(); ++i)
         {
@@ -306,7 +326,7 @@ void Room::make_drk() const
         // Also make sub rooms dark
         for (Room* const sub_room : sub_rooms_)
         {
-                sub_room->make_drk();
+                sub_room->make_dark();
         }
 }
 
@@ -349,7 +369,7 @@ void StdRoom::on_post_connect(Array2<bool>& door_proposals)
 
         if (!has_light_source)
         {
-                int pct_chance_dark = base_pct_chance_drk(type_) - 15;
+                int pct_chance_dark = base_pct_chance_dark(type_) - 15;
 
                 // Increase chance with deeper dungeon levels
                 pct_chance_dark += map::dlvl;
@@ -358,7 +378,7 @@ void StdRoom::on_post_connect(Array2<bool>& door_proposals)
 
                 if (rnd::percent(pct_chance_dark))
                 {
-                        make_drk();
+                        make_dark();
                 }
         }
 }
@@ -776,15 +796,9 @@ void SpiderRoom::on_pre_connect_hook(Array2<bool>& door_proposals)
 {
         (void)door_proposals;
 
-        // Early game : Always reshape by cutting corners
-        // Mid    -   : "Flip a coin"
-        // Late   -   : Always reshape by cavifying
-        const bool is_early =
-                map::dlvl <= dlvl_last_early_game;
+        const bool is_early = map::dlvl <= dlvl_last_early_game;
 
-        const bool is_mid =
-                !is_early &&
-                (map::dlvl <= dlvl_last_mid_game);
+        const bool is_mid = !is_early && (map::dlvl <= dlvl_last_mid_game);
 
         if (is_early || (is_mid && rnd::coin_toss()))
         {
@@ -1100,9 +1114,9 @@ void MonsterRoom::on_post_connect_hook(Array2<bool>& door_proposals)
 }
 
 // -----------------------------------------------------------------------------
-// Flooded room
+// Damp room
 // -----------------------------------------------------------------------------
-std::vector<RoomAutoFeatureRule> FloodedRoom::auto_features_allowed() const
+std::vector<RoomAutoFeatureRule> DampRoom::auto_features_allowed() const
 {
         return
         {
@@ -1110,24 +1124,18 @@ std::vector<RoomAutoFeatureRule> FloodedRoom::auto_features_allowed() const
         };
 }
 
-bool FloodedRoom::is_allowed() const
+bool DampRoom::is_allowed() const
 {
         return true;
 }
 
-void FloodedRoom::on_pre_connect_hook(Array2<bool>& door_proposals)
+void DampRoom::on_pre_connect_hook(Array2<bool>& door_proposals)
 {
         (void)door_proposals;
 
-        // Early game : Always reshape by cutting corners
-        // Mid    -   : "Flip a coin"
-        // Late   -   : Always reshape by cavifying
-        const bool is_early =
-                map::dlvl <= dlvl_last_early_game;
+        const bool is_early = map::dlvl <= dlvl_last_early_game;
 
-        const bool is_mid =
-                !is_early &&
-                (map::dlvl <= dlvl_last_mid_game);
+        const bool is_mid = !is_early && (map::dlvl <= dlvl_last_mid_game);
 
         if (is_early || (is_mid && rnd::coin_toss()))
         {
@@ -1147,42 +1155,21 @@ void FloodedRoom::on_pre_connect_hook(Array2<bool>& door_proposals)
         }
 }
 
-void FloodedRoom::on_post_connect_hook(Array2<bool>& door_proposals)
+void DampRoom::on_post_connect_hook(Array2<bool>& door_proposals)
 {
         (void)door_proposals;
-
-#ifndef NDEBUG
-        // Sanity check (some features should not exist in this room)
-        for (int x = r_.p0.x; x <= r_.p1.x; ++x)
-        {
-                for (int y = r_.p0.y; y <= r_.p1.y; ++y)
-                {
-                        if (map::room_map.at(x, y) == this)
-                        {
-                                const auto id = map::cells.at(x, y).rigid->id();
-
-                                if (id == FeatureId::chest ||
-                                    id == FeatureId::tomb ||
-                                    id == FeatureId::cabinet ||
-                                    id == FeatureId::fountain)
-                                {
-                                        TRACE << "Illegal feature found in room"
-                                              << std::endl;
-
-                                        ASSERT(false);
-                                }
-                        }
-                }
-        }
-#endif // NDEBUG
 
         Array2<bool> blocked(map::dims());
 
         map_parsers::BlocksMoveCommon(ParseActors::no)
                 .run(blocked, blocked.rect());
 
-        const int liquid_one_in_n =
-                rnd::range(2, 5);
+        const int liquid_one_in_n = rnd::range(2, 5);
+
+        const auto liquid_type =
+                rnd::fraction(3, 4)
+                ? LiquidType::water
+                : LiquidType::mud;
 
         for (int x = r_.p0.x; x <= r_.p1.x; ++x)
         {
@@ -1192,10 +1179,9 @@ void FloodedRoom::on_post_connect_hook(Array2<bool>& door_proposals)
                             map::room_map.at(x, y) == this &&
                             rnd::one_in(liquid_one_in_n))
                         {
-                                LiquidShallow* const liquid =
-                                        new LiquidShallow(P(x, y));
+                                auto* const liquid = new LiquidShallow(P(x, y));
 
-                                liquid->type_ = LiquidType::water;
+                                liquid->type_ = liquid_type;
 
                                 map::put(liquid);
                         }
@@ -1204,36 +1190,32 @@ void FloodedRoom::on_post_connect_hook(Array2<bool>& door_proposals)
 }
 
 // -----------------------------------------------------------------------------
-// Muddy room
+// Pool room
 // -----------------------------------------------------------------------------
-std::vector<RoomAutoFeatureRule> MuddyRoom::auto_features_allowed() const
+std::vector<RoomAutoFeatureRule> PoolRoom::auto_features_allowed() const
 {
         return
         {
-                {FeatureId::vines, rnd::coin_toss() ? rnd::range(1, 8) : 0}
+                {FeatureId::vines, rnd::coin_toss() ? rnd::range(2, 8) : 0}
         };
 }
 
-bool MuddyRoom::is_allowed() const
+bool PoolRoom::is_allowed() const
 {
-        return true;
+        return r_.min_dim() >= 5;
 }
 
-void MuddyRoom::on_pre_connect_hook(Array2<bool>& door_proposals)
+void PoolRoom::on_pre_connect_hook(Array2<bool>& door_proposals)
 {
         (void)door_proposals;
 
-        // Early game : Always reshape by cutting corners
-        // Mid    -   : "Flip a coin"
-        // Late   -   : Always reshape by cavifying
-        const bool is_early =
-                map::dlvl <= dlvl_last_early_game;
+        const bool is_early = map::dlvl <= dlvl_last_early_game;
 
-        const bool is_mid =
-                !is_early &&
-                (map::dlvl <= dlvl_last_mid_game);
+        const bool is_mid = !is_early && (map::dlvl <= dlvl_last_mid_game);
 
-        if (is_early || (is_mid && rnd::coin_toss()))
+        if (is_early ||
+            (is_mid && rnd::coin_toss()) ||
+            is_sub_room_)
         {
                 if (rnd::coin_toss())
                 {
@@ -1251,7 +1233,7 @@ void MuddyRoom::on_pre_connect_hook(Array2<bool>& door_proposals)
         }
 }
 
-void MuddyRoom::on_post_connect_hook(Array2<bool>& door_proposals)
+void PoolRoom::on_post_connect_hook(Array2<bool>& door_proposals)
 {
         (void)door_proposals;
 
@@ -1260,21 +1242,126 @@ void MuddyRoom::on_post_connect_hook(Array2<bool>& door_proposals)
         map_parsers::BlocksMoveCommon(ParseActors::no)
                 .run(blocked, blocked.rect());
 
-        const int liquid_one_in_n =
-                rnd::range(7, 11);
+        std::vector<P> origin_bucket;
 
-        for (int x = r_.p0.x; x <= r_.p1.x; ++x)
+        origin_bucket.reserve(r_.w() * r_.h());
+
+        for (int x = 0; x < blocked.w(); ++x)
         {
-                for (int y = r_.p0.y; y <= r_.p1.y; ++y)
+                for (int y = 0; y < blocked.w(); ++y)
                 {
-                        if (!blocked.at(x, y) &&
-                            map::room_map.at(x, y) == this &&
-                            rnd::one_in(liquid_one_in_n))
+                        if (blocked.at(x, y))
                         {
-                                LiquidShallow* const liquid =
-                                        new LiquidShallow(P(x, y));
+                                continue;
+                        }
 
-                                liquid->type_ = LiquidType::mud;
+                        if (map::room_map.at(x, y) == this)
+                        {
+                                origin_bucket.push_back(P(x, y));
+                        }
+                        else
+                        {
+                                blocked.at(x, y) = true;
+                        }
+                }
+        }
+
+        if (origin_bucket.empty())
+        {
+                // There are no free room positions
+                ASSERT(false);
+
+                return;
+        }
+
+        const P origin = rnd::element(origin_bucket);
+
+        const int flood_travel_limit = 12;
+
+        const bool allow_diagonal_flood = true;
+
+        const auto flood =
+                floodfill(
+                        origin,
+                        blocked,
+                        flood_travel_limit,
+                        P(-1, -1), // Target cell
+                        allow_diagonal_flood);
+
+        auto should_put_liquid = [](
+                const P& pos,
+                const Array2<int>& flood,
+                const P& origin) {
+
+                return (flood.at(pos)) > 0 || (pos == origin);
+        };
+
+        // Do not place any liquid if we cannot place at least a certain amount
+        {
+                const int min_nr_liquid_cells = 9;
+
+                int nr_liquid_cells = 0;
+
+                for (int x = 0; x < flood.w(); ++x)
+                {
+                        for (int y = 0; y < flood.w(); ++y)
+                        {
+                                if (should_put_liquid(P(x, y), flood, origin))
+                                {
+                                        ++nr_liquid_cells;
+                                }
+                        }
+                }
+
+                if (nr_liquid_cells < min_nr_liquid_cells)
+                {
+                        return;
+                }
+        }
+
+        // OK, we can place liquid
+
+        bool is_natural_pool = false;
+
+        if (map::dlvl >= dlvl_first_late_game)
+        {
+                is_natural_pool = true;
+        }
+        else if (map::dlvl >= dlvl_first_mid_game)
+        {
+                is_natural_pool = rnd::coin_toss();
+        }
+        else
+        {
+                is_natural_pool = rnd::fraction(1, 4);
+        }
+
+        for (int x = 0; x < flood.w(); ++x)
+        {
+                for (int y = 0; y < flood.w(); ++y)
+                {
+                        const P p(x, y);
+
+                        if (!should_put_liquid(p, flood, origin))
+                        {
+                                continue;
+                        }
+
+                        if (!is_natural_pool ||
+                            (flood.at(p) < (flood_travel_limit / 2)) ||
+                            rnd::coin_toss())
+                        {
+                                auto* const liquid = new LiquidDeep(p);
+
+                                liquid->type_ = LiquidType::water;
+
+                                map::put(liquid);
+                        }
+                        else if (rnd::fraction(2, 3))
+                        {
+                                auto* const liquid = new LiquidShallow(p);
+
+                                liquid->type_ = LiquidType::water;
 
                                 map::put(liquid);
                         }

@@ -2020,7 +2020,7 @@
             <searching>0</searching>
             <can_open_doors>false</can_open_doors>
             <can_bash_doors>false</can_bash_doors>
-            <can_swim>true</can_swim>
+            <can_swim>false</can_swim>
             <size>floor</size>
             <always_prevent_knockback>false</always_prevent_knockback>
             <rat/>
@@ -5061,8 +5061,7 @@
             <group_size weight="70">few</group_size>
             <group_size weight="10">pack</group_size>
             <group_size weight="1">swarm</group_size>
-            <native_room>flooded</native_room>
-            <native_room>muddy</native_room>
+            <native_room>damp</native_room>
         </spawning>
     </monster>
 
@@ -5697,8 +5696,7 @@
             <group_size weight="1">alone</group_size>
             <group_size weight="3">few</group_size>
             <native_room>plain</native_room>
-            <native_room>flooded</native_room>
-            <native_room>muddy</native_room>
+            <native_room>damp</native_room>
             <native_room>chasm</native_room>
         </spawning>
     </monster>
@@ -5792,8 +5790,7 @@
             <group_size weight="1">alone</group_size>
             <group_size weight="3">few</group_size>
             <native_room>plain</native_room>
-            <native_room>flooded</native_room>
-            <native_room>muddy</native_room>
+            <native_room>damp</native_room>
             <native_room>chasm</native_room>
         </spawning>
     </monster>
@@ -5888,8 +5885,7 @@
             <group_size weight="1">alone</group_size>
             <group_size weight="3">few</group_size>
             <native_room>plain</native_room>
-            <native_room>flooded</native_room>
-            <native_room>muddy</native_room>
+            <native_room>damp</native_room>
             <native_room>chasm</native_room>
         </spawning>
     </monster>
@@ -5984,8 +5980,7 @@
             <group_size weight="1">alone</group_size>
             <group_size weight="3">few</group_size>
             <native_room>plain</native_room>
-            <native_room>flooded</native_room>
-            <native_room>muddy</native_room>
+            <native_room>damp</native_room>
             <native_room>chasm</native_room>
         </spawning>
     </monster>
@@ -6083,8 +6078,7 @@
             <nr_allowed_to_spawn>-1</nr_allowed_to_spawn>
             <group_size>alone</group_size>
             <native_room>plain</native_room>
-            <native_room>flooded</native_room>
-            <native_room>muddy</native_room>
+            <native_room>damp</native_room>
             <native_room>chasm</native_room>
         </spawning>
     </monster>
@@ -6351,8 +6345,7 @@
             <nr_allowed_to_spawn>-1</nr_allowed_to_spawn>
             <group_size>alone</group_size>
             <native_room>plain</native_room>
-            <native_room>flooded</native_room>
-            <native_room>muddy</native_room>
+            <native_room>damp</native_room>
             <native_room>jail</native_room>
             <native_room>chasm</native_room>
         </spawning>
@@ -6533,8 +6526,7 @@
             <nr_allowed_to_spawn>-1</nr_allowed_to_spawn>
             <group_size>few</group_size>
             <native_room>cave</native_room>
-            <native_room>flooded</native_room>
-            <native_room>muddy</native_room>
+            <native_room>damp</native_room>
             <native_room>forest</native_room>
             <native_room>chasm</native_room>
         </spawning>
@@ -6712,8 +6704,7 @@
             <group_size weight="1">few</group_size>
             <group_size weight="4">pack</group_size>
             <native_room>cave</native_room>
-            <native_room>flooded</native_room>
-            <native_room>muddy</native_room>
+            <native_room>damp</native_room>
             <native_room>forest</native_room>
             <native_room>chasm</native_room>
         </spawning>

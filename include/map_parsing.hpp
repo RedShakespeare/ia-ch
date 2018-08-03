@@ -249,6 +249,27 @@ private:
         std::vector<FeatureId> features_;
 };
 
+class AnyAdjIsAnyOfFeatures : public MapParser
+{
+public:
+        AnyAdjIsAnyOfFeatures(const std::vector<FeatureId>& features) :
+                MapParser(ParseCells::yes,
+                          ParseMobs::no,
+                          ParseActors::no),
+                features_(features) {}
+
+        AnyAdjIsAnyOfFeatures(const FeatureId id) :
+                MapParser(ParseCells::yes,
+                          ParseMobs::no,
+                          ParseActors::no),
+                features_(std::vector<FeatureId> {id}) {}
+
+private:
+        bool parse(const Cell& c, const P& pos) const override;
+
+        std::vector<FeatureId> features_;
+};
+
 class AllAdjIsFeature : public MapParser
 {
 public:

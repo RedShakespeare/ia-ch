@@ -72,8 +72,8 @@ static Fraction get_chance_for_trapped_room(const RoomType type)
         case RoomType::snake_pit:
         case RoomType::forest:
         case RoomType::plain:
-        case RoomType::flooded:
-        case RoomType::muddy:
+        case RoomType::damp:
+        case RoomType::pool:
         case RoomType::cave:
         case RoomType::jail:
         case RoomType::END_OF_STD_ROOMS:

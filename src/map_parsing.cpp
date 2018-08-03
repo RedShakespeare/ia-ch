@@ -293,6 +293,31 @@ bool IsAnyOfFeatures::parse(const Cell& c, const P& pos) const
         return false;
 }
 
+bool AnyAdjIsAnyOfFeatures::parse(const Cell& c, const P& pos) const
+{
+        (void)c;
+
+        if (!map::is_pos_inside_outer_walls(pos))
+        {
+                return false;
+        }
+
+        for (const auto& d : dir_utils::dir_list_w_center)
+        {
+                const auto current_id = map::cells.at(pos + d).rigid->id();
+
+                for (auto f : features_)
+                {
+                        if (f == current_id)
+                        {
+                                return true;
+                        }
+                }
+        }
+
+        return false;
+}
+
 bool AllAdjIsFeature::parse(const Cell& c, const P& pos) const
 {
         (void)c;
@@ -317,10 +342,7 @@ bool AllAdjIsAnyOfFeatures::parse(const Cell& c, const P& pos) const
 {
         (void)c;
 
-        if (pos.x <= 0 ||
-            pos.x >= map::w() - 1 ||
-            pos.y <= 0 ||
-            pos.y >= map::h() - 1)
+        if (!map::is_pos_inside_outer_walls(pos))
         {
                 return false;
         }
@@ -336,6 +358,7 @@ bool AllAdjIsAnyOfFeatures::parse(const Cell& c, const P& pos) const
                         if (f == current_id)
                         {
                                 is_match = true;
+
                                 break;
                         }
                 }

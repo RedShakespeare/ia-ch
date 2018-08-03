@@ -30,6 +30,7 @@ void decorate()
 
                 // Moss grown walls
                 Wall* const wall = static_cast<Wall*>(cell.rigid);
+
                 wall->set_random_is_moss_grown();
 
                 // Convert some walls to cave
@@ -37,13 +38,13 @@ void decorate()
 
                 if (map::dlvl >= dlvl_first_late_game)
                 {
-                    // If this is late game - convert all walls to cave
+                    // Late game - convert all walls to cave
                     should_convert_to_cave_wall = true;
                 }
-                else // Not late game
+                else if (map::dlvl >= dlvl_first_mid_game)
                 {
-                    // Convert walls with no adjacent floor or with adjacent
-                    // cave floor to cave
+                    // Mid game - convert walls with no adjacent floor or with
+                    // adjacent cave floor to cave
                     bool has_adj_floor = false;
                     bool has_adj_cave_floor = false;
 

@@ -543,8 +543,8 @@ std::string trait_descr(const Trait id)
         case Trait::silent:
                 return
                         "All your melee attacks are silent, and creatures are "
-                        "not alerted when you open or close doors, or wade "
-                        "through liquid";
+                        "not alerted when you open or close doors, wade, or "
+                        "swim ";
 
         case Trait::vicious:
                 return

@@ -71,8 +71,8 @@ void make_sub_rooms()
                 // Determine the rectangle (p0, p1) of the inner room's walls
 
                 // NOTE: The rectangle of the OUTER room is different - there it
-                //       only represents the floor area of that room (this is
-                //       how room areas are normally represented).
+                // only represents the floor area of that room (this is how room
+                // areas are normally represented).
 
                 const P walls_d(rnd::range(walls_min_d.x, walls_max_d.x),
                                 rnd::range(walls_min_d.y, walls_max_d.y));
@@ -192,6 +192,7 @@ void make_sub_rooms()
                     // Not possible to place an entrance to the inner room,
                     // Discard this map!
                     is_map_valid = false;
+
                     return;
                 }
 
