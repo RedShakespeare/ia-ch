@@ -71,7 +71,7 @@ static void find_stair_path()
 {
         Array2<bool> blocked(map::dims());
 
-        map_parsers::BlocksMoveCommon(ParseActors::no)
+        map_parsers::BlocksActor(*map::player, ParseActors::no)
                 .run(blocked, blocked.rect());
 
         P stair_p(-1, -1);

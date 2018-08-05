@@ -35,7 +35,6 @@ static void reset_data(FeatureData& d)
         d.can_have_corpse = true;
         d.can_have_rigid = true;
         d.can_have_item = true;
-        d.is_bottomless = false;
         d.matl_type = Matl::stone;
         d.msg_on_player_blocked = "The way is blocked.";
         d.msg_on_player_blocked_blind = "I bump into something.";
@@ -60,7 +59,7 @@ static void init_data_list()
         };
         d.character = '.';
         d.tile = TileId::floor;
-        d.move_rules.set_can_move_common();
+        d.move_rules.set_walkable();
         d.matl_type = Matl::stone;
         d.can_have_gore = true;
         add_to_list_and_reset(d);
@@ -70,7 +69,7 @@ static void init_data_list()
         d.make_obj = [](const P & p) {
                 return new Bridge(p);
         };
-        d.move_rules.set_can_move_common();
+        d.move_rules.set_walkable();
         d.matl_type = Matl::wood;
         add_to_list_and_reset(d);
 
@@ -119,7 +118,7 @@ static void init_data_list()
         };
         d.character = '.';
         d.tile = TileId::floor;
-        d.move_rules.set_can_move_common();
+        d.move_rules.set_walkable();
         d.matl_type = Matl::plant;
         d.can_have_gore = true;
         add_to_list_and_reset(d);
@@ -130,7 +129,7 @@ static void init_data_list()
         };
         d.character = '"';
         d.tile = TileId::bush;
-        d.move_rules.set_can_move_common();
+        d.move_rules.set_walkable();
         d.is_los_passable = false;
         d.matl_type = Matl::plant;
         add_to_list_and_reset(d);
@@ -141,7 +140,7 @@ static void init_data_list()
         };
         d.character = '"';
         d.tile = TileId::vines;
-        d.move_rules.set_can_move_common();
+        d.move_rules.set_walkable();
         d.is_los_passable = false;
         d.can_have_blood = false;
         d.can_have_gore = false;
@@ -155,7 +154,7 @@ static void init_data_list()
         };
         d.character = '"';
         d.tile = TileId::chains;
-        d.move_rules.set_can_move_common();
+        d.move_rules.set_walkable();
         d.is_los_passable = true;
         d.is_projectile_passable = true;
         d.can_have_blood = true;
@@ -264,7 +263,7 @@ static void init_data_list()
         };
         d.character = '~';
         d.tile = TileId::water1;
-        d.move_rules.set_can_move_common();
+        d.move_rules.set_walkable();
         d.can_have_blood = false;
         d.can_have_gore = false;
         d.can_have_rigid = false;
@@ -277,10 +276,10 @@ static void init_data_list()
         };
         d.character = '~';
         d.tile = TileId::water1;
+        d.can_have_item = false;
         d.can_have_blood = false;
         d.can_have_gore = false;
         d.can_have_rigid = false;
-        d.move_rules.set_can_move_common();
         d.matl_type = Matl::fluid;
         add_to_list_and_reset(d);
 
@@ -292,11 +291,11 @@ static void init_data_list()
         d.tile = TileId::floor;
         d.move_rules.set_prop_can_move(PropId::ethereal);
         d.move_rules.set_prop_can_move(PropId::flying);
+        d.can_have_item = false;
         d.can_have_blood = false;
         d.can_have_gore = false;
         d.can_have_corpse = false;
         d.can_have_rigid = false;
-        d.is_bottomless = true;
         d.msg_on_player_blocked = "A chasm lies in my way.";
         d.msg_on_player_blocked_blind =
                 "I realize I am standing on the edge of a chasm.";
@@ -347,7 +346,7 @@ static void init_data_list()
         d.character = '.';
         d.tile = TileId::floor;
         d.can_have_rigid = false;
-        d.move_rules.set_can_move_common();
+        d.move_rules.set_walkable();
         d.matl_type = Matl::cloth;
         add_to_list_and_reset(d);
 
@@ -377,7 +376,7 @@ static void init_data_list()
         };
         d.character = ',';
         d.tile = TileId::rubble_low;
-        d.move_rules.set_can_move_common();
+        d.move_rules.set_walkable();
         d.matl_type = Matl::stone;
         d.auto_spawn_placement = FeaturePlacement::either;
         add_to_list_and_reset(d);
@@ -388,7 +387,7 @@ static void init_data_list()
         };
         d.character = '&';
         d.tile = TileId::corpse2;
-        d.move_rules.set_can_move_common();
+        d.move_rules.set_walkable();
         d.matl_type = Matl::stone;
         d.auto_spawn_placement = FeaturePlacement::either;
         add_to_list_and_reset(d);
@@ -576,7 +575,7 @@ static void init_data_list()
         d.make_obj = [](const P & p) {
                 return new Trap(p);
         };
-        d.move_rules.set_can_move_common();
+        d.move_rules.set_walkable();
         d.can_have_rigid = false;
         add_to_list_and_reset(d);
 
@@ -586,7 +585,7 @@ static void init_data_list()
         };
         d.character = '/';
         d.tile = TileId::dynamite_lit;
-        d.move_rules.set_can_move_common();
+        d.move_rules.set_walkable();
         d.can_have_blood = false;
         d.can_have_gore = false;
         d.can_have_corpse = false;
@@ -599,7 +598,7 @@ static void init_data_list()
         };
         d.character = '/';
         d.tile = TileId::flare_lit;
-        d.move_rules.set_can_move_common();
+        d.move_rules.set_walkable();
         add_to_list_and_reset(d);
 
         d.id = FeatureId::smoke;
@@ -608,7 +607,7 @@ static void init_data_list()
         };
         d.character = '*';
         d.tile = TileId::smoke;
-        d.move_rules.set_can_move_common();
+        d.move_rules.set_walkable();
         d.is_los_passable = false;
         add_to_list_and_reset(d);
 
@@ -627,7 +626,6 @@ static void init_data_list()
         d.can_have_gore = false;
         d.can_have_rigid = false;
         d.can_have_item = false;
-        d.is_bottomless = false;
         d.matl_type = Matl::metal;
         add_to_list_and_reset(d);
 
@@ -635,21 +633,21 @@ static void init_data_list()
         d.make_obj = [](const P & p) {
                 return new EventWallCrumble(p);
         };
-        d.move_rules.set_can_move_common();
+        d.move_rules.set_walkable();
         add_to_list_and_reset(d);
 
         d.id = FeatureId::event_snake_emerge;
         d.make_obj = [](const P & p) {
                 return new EventSnakeEmerge(p);
         };
-        d.move_rules.set_can_move_common();
+        d.move_rules.set_walkable();
         add_to_list_and_reset(d);
 
         d.id = FeatureId::event_rat_cave_discovery;
         d.make_obj = [](const P & p) {
                 return new EventRatsInTheWallsDiscovery(p);
         };
-        d.move_rules.set_can_move_common();
+        d.move_rules.set_walkable();
         add_to_list_and_reset(d);
 }
 
@@ -658,13 +656,13 @@ static void init_data_list()
 // -----------------------------------------------------------------------------
 bool MoveRules::can_move(const Actor& actor) const
 {
-        if (can_move_common_)
+        if (is_walkable_)
         {
                 return true;
         }
 
-        // This feature blocks normal movement, check if any property overrides
-        // this (e.g. flying)
+        // This feature blocks walking, check if any property overrides this
+        // (e.g. flying)
 
         for (const auto id : props_allow_move_)
         {

@@ -369,18 +369,25 @@ bool MapBuilderStd::build_specific()
         // ---------------------------------------------------------------------
         Array2<bool> blocked(map::dims());
 
-        map_parsers::BlocksMoveCommon(ParseActors::no)
+        map_parsers::BlocksWalking(ParseActors::no)
                 .run(blocked, blocked.rect());
 
-        // Consider stairs and doors as non-blocking
-        for (size_t i = 0; i < map::nr_cells(); ++i)
-        {
-                const FeatureId id = map::cells.at(i).rigid->id();
+        const std::vector<FeatureId> free_features = {
+                FeatureId::door,
+                FeatureId::liquid_deep,
+                FeatureId::stairs
+        };
 
-                if (id == FeatureId::stairs ||
-                    id == FeatureId::door)
+        for (int x = 0; x < blocked.w(); ++x)
+        {
+                for (int y = 0; y < blocked.h(); ++y)
                 {
-                        blocked.at(i) = false;
+                        const P p(x, y);
+
+                        if (map_parsers::IsAnyOfFeatures(free_features).cell(p))
+                        {
+                                blocked.at(p) = false;
+                        }
                 }
         }
 

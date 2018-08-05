@@ -59,7 +59,8 @@ void init()
 
         map_list = std::vector<MapType>(nr_lvl_tot, MapType::std);
 
-        map_list[0] = MapType::intro_forest;
+        // TODO: Remove this line
+        map_list[1] = MapType::deep_one_lair;
 
         // if (rnd::coin_toss())
         // {

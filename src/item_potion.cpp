@@ -1,26 +1,26 @@
 #include "item_potion.hpp"
 
+#include "actor_mon.hpp"
+#include "actor_player.hpp"
+#include "audio.hpp"
+#include "feature_rigid.hpp"
+#include "game.hpp"
+#include "game_time.hpp"
 #include "init.hpp"
+#include "inventory.hpp"
+#include "io.hpp"
+#include "item_factory.hpp"
+#include "item_scroll.hpp"
+#include "map.hpp"
+#include "map_parsing.hpp"
+#include "msg_log.hpp"
+#include "player_spells.hpp"
 #include "property.hpp"
 #include "property_data.hpp"
 #include "property_handler.hpp"
-#include "actor_player.hpp"
-#include "msg_log.hpp"
-#include "map.hpp"
-#include "actor_mon.hpp"
-#include "player_spells.hpp"
-#include "item_scroll.hpp"
-#include "game_time.hpp"
-#include "audio.hpp"
-#include "io.hpp"
-#include "inventory.hpp"
-#include "map_parsing.hpp"
-#include "feature_rigid.hpp"
-#include "item_factory.hpp"
-#include "saving.hpp"
-#include "game.hpp"
-#include "text_format.hpp"
 #include "query.hpp"
+#include "saving.hpp"
+#include "text_format.hpp"
 
 Potion::Potion(ItemData* const item_data) :
     Item(item_data),
@@ -213,51 +213,47 @@ void Potion::on_actor_turn_in_inv(const InvType inv_type)
 
 void Potion::on_collide(const P& pos, Actor* const actor)
 {
-    const auto& cell = map::cells.at(pos);
-
-    if (!cell.rigid->is_bottomless() || actor)
-    {
-        // Render and print message
-        const bool player_see_cell = cell.is_seen_by_player;
-
-        if (player_see_cell)
-        {
-            if (actor)
-            {
-                if (actor->is_alive())
-                {
-                    const std::string actor_name =
-                        map::player->can_see_actor(*actor) ?
-                        actor->name_the() :
-                        "it";
-
-                    msg_log::add("The potion shatters on " + actor_name + ".");
-                }
-            }
-            else // No actor here
-            {
-                msg_log::add("The potion shatters on " +
-                             cell.rigid->name(Article::the) + ".");
-            }
-        }
+        const auto& cell = map::cells.at(pos);
 
         if (actor)
         {
-            // If the blow from the bottle didn't kill the actor, apply effect
-            if (actor->is_alive())
-            {
-                collide_hook(pos, actor);
+                ASSERT(actor->is_alive());
 
-                if (actor->is_alive() &&
-                    !data_->is_identified &&
-                    player_see_cell)
+                auto* const mon = static_cast<Mon*>(actor);
+
+                if (mon->player_aware_of_me_counter_ > 0)
                 {
-                    // This did not identify the potion
-                    msg_log::add("It had no apparent effect...");
+                        const std::string actor_name =
+                                map::player->can_see_actor(*actor)
+                                ? actor->name_the()
+                                : "it";
+
+                        msg_log::add(
+                                "The potion shatters on " +
+                                actor_name +
+                                ".");
+
+                        mon->set_player_aware_of_me();
                 }
-            }
+
+                collide_hook(pos, actor);
         }
-    }
+        else if (cell.is_seen_by_player)
+        {
+                const std::vector<FeatureId> deep_features = {
+                        FeatureId::chasm,
+                        FeatureId::liquid_deep
+                };
+
+                if (!map_parsers::IsAnyOfFeatures(deep_features)
+                    .cell(pos))
+                {
+                        msg_log::add(
+                                "The potion shatters on " +
+                                cell.rigid->name(Article::the) +
+                                ".");
+                }
+        }
 }
 
 std::string Potion::name_inf() const

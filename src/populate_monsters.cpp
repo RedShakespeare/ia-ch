@@ -169,6 +169,7 @@ static bool make_random_group_for_room(
                         MonRoamingAllowed::yes);
 
                 TRACE_FUNC_END_VERBOSE;
+
                 return true;
         }
 }
@@ -184,16 +185,18 @@ static void make_random_group_at(
                 valid_auto_spawn_monsters(nr_lvls_out_of_depth_allowed,
                                           allow_spawn_unique);
 
-        if (!id_bucket.empty())
+        if (id_bucket.empty())
         {
-                const auto id = rnd::element(id_bucket);
-
-                populate_mon::make_group_at(
-                        id,
-                        sorted_free_cells,
-                        &blocked_out,
-                        is_roaming_allowed);
+                return;
         }
+
+        const auto id = rnd::element(id_bucket);
+
+        populate_mon::make_group_at(
+                id,
+                sorted_free_cells,
+                &blocked_out,
+                is_roaming_allowed);
 }
 
 // -----------------------------------------------------------------------------
@@ -253,7 +256,7 @@ void make_group_at(
         {
                 const P& p = sorted_free_cells[i];
 
-                if (blocked_out != nullptr)
+                if (blocked_out)
                 {
                         ASSERT(!blocked_out->at(p));
                 }
@@ -280,7 +283,7 @@ void make_group_at(
                         }
                 }
 
-                if (blocked_out != nullptr)
+                if (blocked_out)
                 {
                         blocked_out->at(p) = true;
                 }
@@ -320,7 +323,7 @@ std::vector<P> make_sorted_free_cells(
         return out;
 }
 
-void make_random_group()
+void spawn_for_repopulate_over_time()
 {
         TRACE_FUNC_BEGIN;
 
@@ -331,7 +334,7 @@ void make_random_group()
 
         Array2<bool> blocked(map::dims());
 
-        map_parsers::BlocksMoveCommon(ParseActors::yes)
+        map_parsers::BlocksWalking(ParseActors::yes)
                 .run(blocked, blocked.rect());
 
         const P& player_pos = map::player->pos;
@@ -373,30 +376,38 @@ void make_random_group()
                 }
         }
 
-        if (!free_cells_vector.empty())
+        if (free_cells_vector.empty())
         {
-                const P origin = rnd::element(free_cells_vector);
+                TRACE_FUNC_END;
 
-                free_cells_vector = make_sorted_free_cells(origin, blocked);
+                return;
+        }
 
-                if (!free_cells_vector.empty())
-                {
-                        if (map::cells.at(origin).is_explored)
-                        {
-                                const int nr_ood = random_out_of_depth();
+        const P origin = rnd::element(free_cells_vector);
 
-                                make_random_group_at(
-                                        free_cells_vector,
-                                        blocked,
-                                        nr_ood,
-                                        MonRoamingAllowed::yes,
-                                        AllowSpawnUniqueMon::no);
-                        }
-                }
+        free_cells_vector = make_sorted_free_cells(origin, blocked);
+
+        if (free_cells_vector.empty())
+        {
+                TRACE_FUNC_END;
+
+                return;
+        }
+
+        if (map::cells.at(origin).is_explored)
+        {
+                const int nr_ood = random_out_of_depth();
+
+                make_random_group_at(
+                        free_cells_vector,
+                        blocked,
+                        nr_ood,
+                        MonRoamingAllowed::yes,
+                        AllowSpawnUniqueMon::no);
         }
 
         TRACE_FUNC_END;
-} // make_random_group
+} // spawn_for_repopulate_over_time
 
 void populate_std_lvl()
 {
@@ -408,21 +419,27 @@ void populate_std_lvl()
 
         Array2<bool> blocked(map::dims());
 
-        map_parsers::BlocksMoveCommon(ParseActors::yes)
+        map_parsers::BlocksWalking(ParseActors::yes)
                 .run(blocked, blocked.rect());
 
         const P& player_p = map::player->pos;
 
-        const auto flood = floodfill(player_p, blocked);
-
-        for (size_t i = 0; i < map::nr_cells(); ++i)
         {
-                const int v = flood.at(i);
+                Array2<bool> blocks_los(map::dims());
 
-                if ((v > 0) &&
-                    (v < min_dist_to_player))
+                map_parsers::BlocksLos()
+                        .run(blocks_los, blocks_los.rect());
+
+                const auto flood = floodfill(player_p, blocks_los);
+
+                for (size_t i = 0; i < map::nr_cells(); ++i)
                 {
-                        blocked.at(i) = true;
+                        const int v = flood.at(i);
+
+                        if ((v > 0) && (v < min_dist_to_player))
+                        {
+                                blocked.at(i) = true;
+                        }
                 }
         }
 
@@ -515,13 +532,9 @@ void populate_std_lvl()
 
                 // After attempting to populate a non-plain themed room,
                 // mark that area as forbidden
-                for (int y = room->r_.p0.y;
-                     y <= room->r_.p1.y;
-                     ++y)
+                for (int y = room->r_.p0.y; y <= room->r_.p1.y; ++y)
                 {
-                        for (int x = room->r_.p0.x;
-                             x <= room->r_.p1.x;
-                             ++x)
+                        for (int x = room->r_.p0.x; x <= room->r_.p1.x; ++x)
                         {
                                 if (map::room_map.at(x, y) == room)
                                 {
@@ -529,7 +542,6 @@ void populate_std_lvl()
                                 }
                         }
                 }
-
         }
 
         // Second, place groups randomly in plain-themed areas until no more

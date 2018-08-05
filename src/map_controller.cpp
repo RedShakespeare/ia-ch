@@ -24,7 +24,7 @@ void MapControllerStd::on_std_turn()
 
         if (game_time::turn_nr() % spawn_n_turns == 0)
         {
-                populate_mon::make_random_group();
+                populate_mon::spawn_for_repopulate_over_time();
         }
 }
 

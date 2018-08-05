@@ -208,7 +208,7 @@ static void set_light()
                 if (map::cells.at(i).is_seen_by_player &&
                     map::light.at(i) &&
                     f->is_los_passable() &&
-                    !f->is_bottomless())
+                    (f->id() != FeatureId::chasm))
                 {
                         auto& color = render_array_.at(i).color;
 

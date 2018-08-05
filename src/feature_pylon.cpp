@@ -279,9 +279,10 @@ void PylonBurning::on_new_turn_activated()
 
         for (size_t i = 0; i < map::nr_cells(); ++i)
         {
-                const auto r = map::cells.at(i).rigid;
+                const auto f = map::cells.at(i).rigid;
 
-                if (r->is_bottomless())
+                if (f->id() == FeatureId::chasm ||
+                    f->id() == FeatureId::liquid_deep)
                 {
                         blocks_flood.at(i) = true;
                 }
@@ -293,7 +294,7 @@ void PylonBurning::on_new_turn_activated()
                 // is destroyed, then it will seem like the fire is rushing in.
                 // It's questionable if this is a good behavior or not, but
                 // keeping it like this for now...
-                else if (r->id() == FeatureId::door)
+                else if (f->id() == FeatureId::door)
                 {
                         blocks_flood.at(i) = false;
                 }

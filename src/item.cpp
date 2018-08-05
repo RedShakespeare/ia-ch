@@ -41,17 +41,11 @@ Item::Item(ItemData* item_data) :
 Item& Item::operator=(const Item& other)
 {
         nr_items_ = other.nr_items_;
-
         data_ = other.data_;
-
         actor_carrying_ = other.actor_carrying_;
-
         carrier_props_ = other.carrier_props_;
-
         carrier_spells_ = other.carrier_spells_;
-
         melee_base_dmg_ = other.melee_base_dmg_;
-
         ranged_base_dmg_ = other.ranged_base_dmg_;
 
         return *this;
@@ -1698,9 +1692,10 @@ void Dynamite::on_player_paralyzed()
 
         const P& p = map::player->pos;
 
-        auto* const f = map::cells.at(p).rigid;
+        const auto f_id = map::cells.at(p).rigid->id();
 
-        if (!f->is_bottomless())
+        if (f_id != FeatureId::chasm &&
+            f_id != FeatureId::liquid_deep)
         {
                 game_time::add_mob(new LitDynamite(p, fuse_turns_));
         }
@@ -1852,9 +1847,11 @@ void Flare::on_player_paralyzed()
         map::player->active_explosive_ = nullptr;
 
         const P& p = map::player->pos;
-        auto* const f = map::cells.at(p).rigid;
 
-        if (!f->is_bottomless())
+        const auto f_id = map::cells.at(p).rigid->id();
+
+        if (f_id != FeatureId::chasm &&
+            f_id != FeatureId::liquid_deep)
         {
                 game_time::add_mob(new LitFlare(p, fuse_turns_));
         }
@@ -1903,9 +1900,11 @@ void SmokeGrenade::on_player_paralyzed()
         map::player->active_explosive_ = nullptr;
 
         const P& p = map::player->pos;
-        auto* const f = map::cells.at(p).rigid;
 
-        if (!f->is_bottomless())
+        const auto f_id = map::cells.at(p).rigid->id();
+
+        if (f_id != FeatureId::chasm &&
+            f_id != FeatureId::liquid_deep)
         {
                 explosion::run_smoke_explosion_at(map::player->pos);
         }

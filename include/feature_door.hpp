@@ -68,7 +68,7 @@ public:
 
     void bump(Actor& actor_bumping) override;
 
-    bool can_move_common() const override;
+    bool is_walkable() const override;
 
     bool can_move(const Actor& actor) const override;
 

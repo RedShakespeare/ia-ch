@@ -51,7 +51,7 @@ public:
                  const R& area_to_parse_cells,
                  const MapParseMode write_rule = MapParseMode::overwrite);
 
-        bool cell(const P& pos);
+        bool cell(const P& pos) const;
 
         virtual bool parse(const Cell& c, const P& pos) const
         {
@@ -102,10 +102,10 @@ private:
         bool parse(const Mob& f) const override;
 };
 
-class BlocksMoveCommon : public MapParser
+class BlocksWalking : public MapParser
 {
 public:
-        BlocksMoveCommon(ParseActors parse_actors) :
+        BlocksWalking(ParseActors parse_actors) :
                 MapParser(ParseCells::yes,
                           ParseMobs::yes,
                           parse_actors) {}
@@ -196,21 +196,6 @@ public:
 
 private:
         bool parse(const Cell& c, const P& pos) const override;
-};
-
-class IsFeature : public MapParser
-{
-public:
-        IsFeature(const FeatureId id) :
-                MapParser(ParseCells::yes,
-                          ParseMobs::no,
-                          ParseActors::no),
-                feature_(id) {}
-
-private:
-        bool parse(const Cell& c, const P& pos) const override;
-
-        const FeatureId feature_;
 };
 
 class IsNotFeature : public MapParser

@@ -108,13 +108,12 @@ void make_metal_doors_and_levers()
                 return;
         }
 
-        const std::vector<int> nr_doors_weights =
-                {
-                        8,  // 0 doors
-                        3,  // 1 -
-                        2,  // 2 -
-                        1,  // 3 -
-                };
+        const std::vector<int> nr_doors_weights = {
+                8,  // 0 doors
+                3,  // 1 -
+                2,  // 2 -
+                1,  // 3 -
+        };
 
         const int nr_doors = rnd::weighted_choice(nr_doors_weights);
 
@@ -172,15 +171,25 @@ void make_metal_doors_and_levers()
 
                 Array2<bool> blocks_player(map::dims());
 
-                map_parsers::BlocksMoveCommon(ParseActors::no)
+                map_parsers::BlocksWalking(ParseActors::no)
                         .run(blocks_player, blocks_player.rect());
 
-                // Do not consider doors blocking when floodfilling from player
-                for (size_t i = 0; i < map::nr_cells(); ++i)
+                const std::vector<FeatureId> free_features = {
+                        FeatureId::door,
+                        FeatureId::liquid_deep
+                };
+
+                for (int x = 0; x < blocks_player.w(); ++x)
                 {
-                        if (map::cells.at(i).rigid->id() == FeatureId::door)
+                        for (int y = 0; y < blocks_player.h(); ++y)
                         {
-                                blocks_player.at(i) = false;
+                                const P p(x, y);
+
+                                if (map_parsers::IsAnyOfFeatures(free_features)
+                                    .cell(p))
+                                {
+                                        blocks_player.at(p) = false;
+                                }
                         }
                 }
 
@@ -190,19 +199,15 @@ void make_metal_doors_and_levers()
                 // Cells blocking the player from reaching the levers
                 Array2<bool> blocks_reaching_levers(map::dims());
 
-                map_parsers::BlocksMoveCommon(ParseActors::no)
+                map_parsers::BlocksWalking(ParseActors::no)
                         .run(blocks_reaching_levers,
                              blocks_reaching_levers.rect());
 
-                // Consider all metal doors to be blocking the player from the
-                // levers, and consider all non-metal doors to be free
                 for (size_t i = 0; i < map::nr_cells(); ++i)
                 {
                         const auto* r = map::cells.at(i).rigid;
 
-                        const bool is_door = r->id() == FeatureId::door;
-
-                        if (is_door)
+                        if (r->id() == FeatureId::door)
                         {
                                 const auto* const door =
                                         static_cast<const Door*>(r);
@@ -211,6 +216,10 @@ void make_metal_doors_and_levers()
                                         door->type() == DoorType::metal;
 
                                 blocks_reaching_levers.at(i) = is_metal;
+                        }
+                        else if (r->id() == FeatureId::liquid_deep)
+                        {
+                                blocks_reaching_levers.at(i) = false;
                         }
                 }
 

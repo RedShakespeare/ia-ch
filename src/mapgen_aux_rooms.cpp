@@ -130,12 +130,12 @@ void make_aux_rooms(Region regions[3][3])
 
     Array2<bool> floor_cells(map::dims());
 
+    // Get blocked cells
+    map_parsers::BlocksWalking(ParseActors::no)
+            .run(floor_cells, floor_cells.rect());
+
     // TODO: It would be better with a parse predicate that checks for free
     // cells immediately
-
-    // Get blocked cells
-    map_parsers::BlocksMoveCommon(ParseActors::no)
-            .run(floor_cells, floor_cells.rect());
 
     // Flip the values so that we get free cells
     for (auto& is_floor : floor_cells)

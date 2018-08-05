@@ -20,7 +20,7 @@ std::vector<P> make_sorted_free_cells(
         const P& origin,
         const Array2<bool>& blocked);
 
-void make_random_group();
+void spawn_for_repopulate_over_time();
 
 void populate_std_lvl();
 

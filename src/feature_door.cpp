@@ -442,7 +442,7 @@ WasDestroyed Door::on_finished_burning()
     return WasDestroyed::yes;
 }
 
-bool Door::can_move_common() const
+bool Door::is_walkable() const
 {
     return is_open_;
 }

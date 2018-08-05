@@ -103,8 +103,7 @@ void MapParser::run(Array2<bool>& out,
 
 } // run
 
-
-bool MapParser::cell(const P& pos)
+bool MapParser::cell(const P& pos) const
 {
         ASSERT(parse_cells_ == ParseCells::yes ||
                parse_mobs_ == ParseMobs::yes ||
@@ -182,19 +181,19 @@ bool BlocksLos::parse(const Mob& f) const
         return !f.is_los_passable();
 }
 
-bool BlocksMoveCommon::parse(const Cell& c, const P& pos) const
+bool BlocksWalking::parse(const Cell& c, const P& pos) const
 {
         return
                 !map::is_pos_inside_outer_walls(pos) ||
-                !c.rigid->can_move_common();
+                !c.rigid->is_walkable();
 }
 
-bool BlocksMoveCommon::parse(const Mob& f) const
+bool BlocksWalking::parse(const Mob& f) const
 {
-        return !f.can_move_common();
+        return !f.is_walkable();
 }
 
-bool BlocksMoveCommon::parse(const Actor& a) const
+bool BlocksWalking::parse(const Actor& a) const
 {
         return a.is_alive();
 }
@@ -264,13 +263,6 @@ bool BlocksRigid::parse(const Cell& c, const P& pos)  const
                 !c.rigid->can_have_rigid();
 }
 
-bool IsFeature::parse(const Cell& c, const P& pos) const
-{
-        (void)pos;
-
-        return c.rigid->id() == feature_;
-}
-
 bool IsNotFeature::parse(const Cell& c, const P& pos) const
 {
         (void)pos;
@@ -304,14 +296,16 @@ bool AnyAdjIsAnyOfFeatures::parse(const Cell& c, const P& pos) const
 
         for (const auto& d : dir_utils::dir_list_w_center)
         {
-                const auto current_id = map::cells.at(pos + d).rigid->id();
+                const auto id_here = map::cells.at(pos + d).rigid->id();
 
-                for (auto f : features_)
+                const auto search_result =
+                        std::find(begin(features_),
+                                  end(features_),
+                                  id_here);
+
+                if (search_result != end(features_))
                 {
-                        if (f == current_id)
-                        {
-                                return true;
-                        }
+                        return true;
                 }
         }
 

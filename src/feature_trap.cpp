@@ -515,7 +515,7 @@ TrapPlacementValid MagicTrapImpl::on_place()
 
                 const auto* const f = map::cells.at(p).rigid;
 
-                if (!f->can_move_common())
+                if (!f->is_walkable())
                 {
                         return TrapPlacementValid::no;
                 }

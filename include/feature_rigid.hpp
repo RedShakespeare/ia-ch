@@ -421,7 +421,7 @@ public:
         TileId top_wall_tile() const;
 
         void set_rnd_common_wall();
-        void set_random_is_moss_grown();
+        void set_moss_grown();
 
         WallType type_;
         bool is_mossy_;

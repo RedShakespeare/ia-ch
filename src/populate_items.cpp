@@ -55,17 +55,12 @@ static Array2<bool> make_blocked_map()
         map_parsers::BlocksItems()
                 .run(result, result.rect());
 
-        for (size_t i = 0; i < map::nr_cells(); ++i)
-        {
-                // Shallow liquids doesn't block items, but let's not
-                // spawn there...
-                const FeatureId id = map::cells.at(i).rigid->id();
-
-                if (id == FeatureId::liquid_shallow)
-                {
-                        result.at(i) = true;
-                }
-        }
+        // Shallow liquid doesn't block items, but let's not spawn there...
+        map_parsers::IsAnyOfFeatures(
+                FeatureId::liquid_shallow)
+                .run(result,
+                     result.rect(),
+                     MapParseMode::append);
 
         const P& player_p = map::player->pos;
 

@@ -93,7 +93,10 @@ void player_throw_lit_explosive(const P& aim_cell)
                 }
         }
 
-        if (!map::cells.at(end_pos).rigid->is_bottomless())
+        const auto f_id = map::cells.at(end_pos).rigid->id();
+
+        if (f_id != FeatureId::chasm &&
+            f_id != FeatureId::liquid_deep)
         {
                 explosive->on_thrown_ignited_landing(end_pos);
         }
@@ -253,7 +256,7 @@ void throw_item(Actor& actor_throwing,
                                                         *actor_here)
                                                 ? text_format::first_to_upper(
                                                         actor_here->name_the())
-                                                : "It";
+                                                : "An unseen creature";
 
                                         msg_log::add(defender_name + " is hit.",
                                                      colors::msg_good());

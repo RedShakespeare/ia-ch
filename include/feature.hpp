@@ -33,13 +33,12 @@ public:
         virtual void bump(Actor& actor_bumping);
         virtual void on_leave(Actor& actor_leaving);
         virtual void on_new_turn() {}
-        virtual bool can_move_common() const;
+        virtual bool is_walkable() const;
         virtual bool can_move(const Actor& actor) const;
         virtual bool is_sound_passable() const;
         virtual bool is_los_passable() const;
         virtual bool is_projectile_passable() const;
         virtual bool is_smoke_passable() const;
-        virtual bool is_bottomless() const;
         virtual char character() const;
         virtual TileId tile() const;
         virtual bool can_have_corpse() const;

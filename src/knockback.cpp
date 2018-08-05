@@ -3,21 +3,22 @@
 #include <algorithm>
 #include <vector>
 
-#include "attack.hpp"
+#include "actor_mon.hpp"
 #include "actor_player.hpp"
-#include "map.hpp"
-#include "msg_log.hpp"
+#include "attack.hpp"
 #include "config.hpp"
-#include "game_time.hpp"
-#include "io.hpp"
-#include "map_parsing.hpp"
-#include "sdl_base.hpp"
+#include "feature_mob.hpp"
 #include "feature_rigid.hpp"
 #include "feature_trap.hpp"
-#include "feature_mob.hpp"
-#include "text_format.hpp"
+#include "game_time.hpp"
+#include "io.hpp"
+#include "map.hpp"
+#include "map_parsing.hpp"
+#include "msg_log.hpp"
 #include "property.hpp"
 #include "property_data.hpp"
+#include "sdl_base.hpp"
+#include "text_format.hpp"
 
 namespace knockback
 {
@@ -55,21 +56,29 @@ void run(Actor& defender,
 
         const P new_pos = defender.pos + d;
 
-        const bool is_cell_blocked =
-                map_parsers::BlocksActor(defender, ParseActors::yes)
+        const bool defender_can_move_through_cell =
+                !map_parsers::BlocksActor(defender, ParseActors::yes)
                 .cell(new_pos);
 
-        const bool is_cell_bottomless =
-                map::cells.at(new_pos).rigid->is_bottomless();
+        const std::vector<FeatureId> deep_features = {
+                FeatureId::chasm,
+                FeatureId::liquid_deep
+        };
 
-        if (is_cell_blocked && !is_cell_bottomless)
+        const bool is_cell_deep =
+                map_parsers::IsAnyOfFeatures(deep_features)
+                .cell(new_pos);
+
+        auto& tgt_cell = map::cells.at(new_pos);
+
+        if (!defender_can_move_through_cell && !is_cell_deep)
         {
                 // Defender nailed to a wall from a spike gun?
                 if (is_spike_gun)
                 {
-                        Rigid* const f = map::cells.at(new_pos).rigid;
-
-                        if (!f->is_los_passable())
+                        // TODO: Wouldn't it be better to check if the cell is
+                        // blocking projectiles?
+                        if (!tgt_cell.rigid->is_los_passable())
                         {
                                 auto prop = new PropNailed();
 
@@ -84,13 +93,29 @@ void run(Actor& defender,
                 return;
         }
 
-        const bool player_see_defender =
-                is_defender_player ?
-                true :
-                map::player->can_see_actor(defender);
+        // TODO: Paralyzation and "knocked back" message should probably occur
+        // even if the defender is just knocked into a wall
 
-        if (verbosity == Verbosity::verbose &&
-            player_see_defender)
+        const bool player_can_see_defender =
+                is_defender_player
+                ? true
+                : map::player->can_see_actor(defender);
+
+        bool player_is_aware_of_defender = true;
+
+        if (!is_defender_player)
+        {
+                const auto* const mon = static_cast<const Mon*>(&defender);
+
+                player_is_aware_of_defender = mon->aware_of_player_counter_ > 0;
+        }
+
+        std::string defender_name =
+                player_can_see_defender
+                ? text_format::first_to_upper(defender.name_the())
+                : "It";
+
+        if ((verbosity == Verbosity::verbose) && player_is_aware_of_defender)
         {
                 if (is_defender_player)
                 {
@@ -98,11 +123,7 @@ void run(Actor& defender,
                 }
                 else
                 {
-                        const std::string name_the =
-                                text_format::first_to_upper(
-                                        defender.name_the());
-
-                        msg_log::add(name_the + " is knocked back!");
+                        msg_log::add(defender_name + " is knocked back!");
                 }
         }
 
@@ -113,28 +134,24 @@ void run(Actor& defender,
         defender.apply_prop(prop);
 
         // Leave current cell
-        map::cells.at(defender.pos).rigid->on_leave(defender);
+        tgt_cell.rigid->on_leave(defender);
 
         defender.pos = new_pos;
 
-        if (is_cell_bottomless &&
-            !defender.has_prop(PropId::flying)  &&
-            player_see_defender)
+        if (is_cell_deep && !defender_can_move_through_cell)
         {
                 if (is_defender_player)
                 {
-                        msg_log::add("I plummet down the depths!",
-                                     colors::msg_bad());
+                        msg_log::add(
+                                "I perish in the depths!",
+                                colors::msg_bad());
                 }
-                else
+                else if (player_is_aware_of_defender &&
+                         tgt_cell.is_seen_by_player)
                 {
-                        const std::string name_the =
-                                text_format::first_to_upper(
-                                        defender.name_the());
-
-                        msg_log::add(name_the +
-                                     " plummets down the depths.",
-                                     colors::msg_good());
+                        msg_log::add(
+                                defender_name + " perishes in the depths.",
+                                colors::msg_good());
                 }
 
                 defender.die(true, false, false);

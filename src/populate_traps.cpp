@@ -99,7 +99,7 @@ void populate_std_lvl()
 
         Array2<bool> blocked(map::dims());
 
-        map_parsers::BlocksMoveCommon(ParseActors::no)
+        map_parsers::BlocksWalking(ParseActors::no)
                 .run(blocked, blocked.rect());
 
         const P& player_p = map::player->pos;

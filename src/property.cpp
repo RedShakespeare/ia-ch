@@ -1309,12 +1309,17 @@ void PropSplitsOnDeath::on_death()
 
         // Do not allow splitting if HP is reduced to this point (if the monster
         // is killed "hard" enough, it doesn't split)
-        const bool is_very_destroyed = owner_->hp() <= (actor_max_hp * (-5));
+        const bool is_very_destroyed =
+                owner_->hp() <=
+                (actor_max_hp * (-5));
 
         const P pos = owner_->pos;
 
+        const auto f_id = map::cells.at(pos).rigid->id();
+
         if (is_very_destroyed ||
-            map::cells.at(pos).rigid->is_bottomless() ||
+            f_id == FeatureId::chasm ||
+            f_id == FeatureId::liquid_deep ||
             (game_time::actors.size() >= max_nr_actors_on_map))
         {
                 return;
@@ -1417,15 +1422,24 @@ void PropAltersEnv::on_std_turn()
 
         Array2<bool> blocked(map::dims());
 
-        map_parsers::BlocksMoveCommon(ParseActors::no)
+        map_parsers::BlocksWalking(ParseActors::no)
                 .run(blocked, blocked.rect());
 
-        // Do not consider doors blocking
-        for (size_t i = 0; i < map::nr_cells(); ++i)
+        const std::vector<FeatureId> free_features = {
+                FeatureId::door,
+                FeatureId::liquid_deep,
+        };
+
+        for (int x = 0; x < blocked.w(); ++x)
         {
-                if (map::cells.at(i).rigid->id() == FeatureId::door)
+                for (int y = 0; y < blocked.h(); ++y)
                 {
-                        blocked.at(i) = false;
+                        const P p(x, y);
+
+                        if (map_parsers::IsAnyOfFeatures(free_features).cell(p))
+                        {
+                                blocked.at(p) = false;
+                        }
                 }
         }
 
@@ -1571,7 +1585,10 @@ void PropSpawnsZombiePartsOnDestroyed::on_destroyed()
 {
         const P& pos = owner_->pos;
 
-        if (map::cells.at(pos).rigid->is_bottomless())
+        const auto f_id = map::cells.at(pos).rigid->id();
+
+        if (f_id == FeatureId::chasm ||
+            f_id == FeatureId::liquid_deep)
         {
                 return;
         }
@@ -1598,12 +1615,11 @@ void PropSpawnsZombiePartsOnDestroyed::on_destroyed()
 
         ActorId id_to_spawn = ActorId::END;
 
-        const std::vector<int> weights =
-                {
-                        25,     // Hand
-                        25,     // Intestines
-                        1       // Floating skull
-                };
+        const std::vector<int> weights = {
+                25,     // Hand
+                25,     // Intestines
+                1       // Floating skull
+        };
 
         const int mon_choice = rnd::weighted_choice(weights);
 

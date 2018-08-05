@@ -4,7 +4,6 @@
 #include <functional>
 
 #include "gfx.hpp"
-#include "map_patterns.hpp"
 #include "property_data.hpp"
 #include "global.hpp"
 
@@ -56,6 +55,13 @@ enum class FeatureId
         END
 };
 
+enum class FeaturePlacement
+{
+        adj_to_walls,
+        away_from_walls,
+        either
+};
+
 class Actor;
 
 class MoveRules
@@ -70,7 +76,7 @@ public:
 
         void reset()
         {
-                can_move_common_ = false;
+                is_walkable_ = false;
 
                 props_allow_move_.clear();
         }
@@ -80,20 +86,20 @@ public:
                 props_allow_move_.push_back(id);
         }
 
-        void set_can_move_common()
+        void set_walkable()
         {
-                can_move_common_ = true;
+                is_walkable_ = true;
         }
 
-        bool can_move_common() const
+        bool is_walkable() const
         {
-                return can_move_common_;
+                return is_walkable_;
         }
 
         bool can_move(const Actor& actor) const;
 
 private:
-        bool can_move_common_;
+        bool is_walkable_;
         std::vector<PropId> props_allow_move_;
 };
 
@@ -115,7 +121,6 @@ struct FeatureData
         bool can_have_corpse;
         bool can_have_rigid;
         bool can_have_item;
-        bool is_bottomless;
         Matl matl_type;
         std::string msg_on_player_blocked;
         std::string msg_on_player_blocked_blind;
@@ -132,4 +137,4 @@ const FeatureData& data(const FeatureId id);
 
 } // feature_data
 
-#endif
+#endif // FEATURE_DATA_HPP

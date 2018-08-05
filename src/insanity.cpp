@@ -486,20 +486,17 @@ void InsPhobiaDeep::on_new_player_turn(const std::vector<Actor*>& seen_foes)
                 return;
         }
 
-        for (const P& d : dir_utils::dir_list)
+        const std::vector<FeatureId> deep_features = {
+                FeatureId::chasm,
+                FeatureId::liquid_deep
+        };
+
+        if (map_parsers::AnyAdjIsAnyOfFeatures(deep_features)
+            .cell(map::player->pos))
         {
-                const P p(map::player->pos + d);
-
-                if (!map::cells.at(p).rigid->is_bottomless())
-                {
-                        continue;
-                }
-
                 msg_log::add("I am plagued by my phobia of deep places!");
 
                 map::player->apply_prop(new PropTerrified());
-
-                break;
         }
 }
 

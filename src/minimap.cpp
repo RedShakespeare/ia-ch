@@ -167,7 +167,7 @@ void update()
 
         Array2<bool> blocked(map::dims());
 
-        map_parsers::BlocksMoveCommon(ParseActors::no)
+        map_parsers::BlocksWalking(ParseActors::no)
                 .run(blocked, blocked.rect());
 
         for (size_t i = 0; i < map::nr_cells(); ++i)
@@ -197,6 +197,10 @@ void update()
                          !static_cast<const Door*>(feature)->is_secret())
                 {
                         cell = colors::light_white();
+                }
+                else if (feature_id == FeatureId::liquid_deep)
+                {
+                        cell = colors::blue();
                 }
                 else if (blocked.at(i))
                 {

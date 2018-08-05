@@ -183,16 +183,10 @@ void Rigid::on_new_turn()
         {
             const P p(dir_utils::rnd_adj_pos(pos_, true));
 
-            if (map::is_pos_inside_map(p))
+            if (map::is_pos_inside_map(p) &&
+               !map_parsers::BlocksProjectiles().cell(p))
             {
-                const bool blocks =
-                    map_parsers::BlocksMoveCommon(ParseActors::no)
-                    .cell(p);
-
-                if (!blocks)
-                {
-                    game_time::add_mob(new Smoke(p, 10));
-                }
+                game_time::add_mob(new Smoke(p, 10));
             }
         }
     }
@@ -270,8 +264,9 @@ void Rigid::hit(const int dmg,
          (dmg_method == DmgMethod::slashing)))
     {
         const bool is_blocking =
-            !can_move_common() &&
-            (id() != FeatureId::stairs);
+            !is_walkable() &&
+            (id() != FeatureId::stairs) &&
+            (id() != FeatureId::liquid_deep);
 
         if (is_blocking)
         {
@@ -798,9 +793,9 @@ void Wall::set_rnd_common_wall()
     }
 }
 
-void Wall::set_random_is_moss_grown()
+void Wall::set_moss_grown()
 {
-    is_mossy_ = rnd::one_in(40);
+    is_mossy_ = true;
 }
 
 // -----------------------------------------------------------------------------
@@ -1548,7 +1543,6 @@ void Chasm::on_hit(const int dmg,
     (void)actor;
 }
 
-
 std::string Chasm::name(const Article article) const
 {
         std::string ret = (article == Article::a)
@@ -2267,15 +2261,16 @@ void Brazier::on_hit(const int dmg,
 
         // NOTE: "this" is now deleted!
 
-        Rigid* const dst_rigid = map::cells.at(dst_pos).rigid;
+        const auto* const tgt_f = map::cells.at(dst_pos).rigid;
 
-        if (!dst_rigid->data().is_bottomless)
+        if (tgt_f->id() != FeatureId::chasm &&
+            tgt_f->id() != FeatureId::liquid_deep)
         {
             P expl_pos;
 
             int expl_d = 0;
 
-            if (dst_rigid->is_projectile_passable())
+            if (tgt_f->is_projectile_passable())
             {
                 expl_pos = dst_pos;
                 expl_d = -1;
@@ -2288,12 +2283,13 @@ void Brazier::on_hit(const int dmg,
 
             // TODO: Emit sound from explosion center
 
-            explosion::run(expl_pos,
-                           ExplType::apply_prop,
-                           EmitExplSnd::no,
-                           expl_d,
-                           ExplExclCenter::no,
-                           {new PropBurning()});
+            explosion::run(
+                    expl_pos,
+                    ExplType::apply_prop,
+                    EmitExplSnd::no,
+                    expl_d,
+                    ExplExclCenter::no,
+                    {new PropBurning()});
         }
 
         map::update_vision();

@@ -138,7 +138,7 @@ void connect_rooms()
 
                 Array2<bool> blocked(map::dims());
 
-                map_parsers::BlocksMoveCommon(ParseActors::no).
+                map_parsers::BlocksWalking(ParseActors::no).
                         run(blocked, blocked.rect());
 
                 // Do not consider doors blocking

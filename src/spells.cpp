@@ -978,7 +978,7 @@ void SpellMayhem::run_effect(
                 {
                         const Rigid* const f = map::cells.at(x, y).rigid;
 
-                        if (!f->can_move_common())
+                        if (!f->is_walkable())
                         {
                                 continue;
                         }
@@ -1073,7 +1073,7 @@ void SpellMayhem::run_effect(
 
                                         const auto& cell = map::cells.at(p_adj);
 
-                                        if (cell.rigid->can_move_common())
+                                        if (cell.rigid->is_walkable())
                                         {
                                                 is_adj_to_walkable_cell = true;
                                         }
@@ -2143,13 +2143,23 @@ void SpellForceField::run_effect(
 
         const auto actors = map::get_actor_array();
 
-        auto blocked_parser = map_parsers::BlocksMoveCommon(ParseActors::yes);
+        const auto blocked_parser =
+                map_parsers::BlocksWalking(ParseActors::yes);
+
+        const std::vector<FeatureId> specific_allowed_features = {
+                FeatureId::liquid_deep,
+                FeatureId::chasm
+        };
+
+        const auto specific_allowed_features_parser =
+                map_parsers::IsAnyOfFeatures(specific_allowed_features);
 
         for (const auto& d : dir_utils::dir_list)
         {
                 const P p = caster->pos + d;
 
-                if (blocked_parser.cell(p))
+                if (blocked_parser.cell(p) &&
+                    !specific_allowed_features_parser.cell(p))
                 {
                         continue;
                 }

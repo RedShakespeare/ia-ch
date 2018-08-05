@@ -123,13 +123,15 @@ Item* drop_item_on_map(const P& intended_pos, Item& item)
         ASSERT(map::is_pos_inside_outer_walls(intended_pos));
 
         // If target cell is bottomless, just destroy the item
-        const auto* const tgt_rigid = map::cells.at(intended_pos).rigid;
+        const auto* const tgt_f = map::cells.at(intended_pos).rigid;
 
-        if (tgt_rigid->is_bottomless())
+        if (tgt_f->id() == FeatureId::chasm ||
+            tgt_f->id() == FeatureId::liquid_deep)
         {
                 delete &item;
 
                 TRACE_FUNC_END_VERBOSE;
+
                 return nullptr;
         }
 
@@ -142,9 +144,7 @@ Item* drop_item_on_map(const P& intended_pos, Item& item)
         {
                 Rigid* const f = map::cells.at(i).rigid;
 
-                free_cell_array.at(i) =
-                        f->can_have_item() &&
-                        !f->is_bottomless();
+                free_cell_array.at(i) = f->can_have_item();
         }
 
         auto free_cells = to_vec(

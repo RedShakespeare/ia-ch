@@ -193,7 +193,12 @@ void MapBuilderIntroForest::handle_template_pos(const P&p, const char c)
                 if (!rigid)
                 {
                         Wall* const wall = new Wall(p);
-                        wall->set_random_is_moss_grown();
+
+                        if (rnd::one_in(20))
+                        {
+                                wall->set_moss_grown();
+                        }
+
                         map::put(wall);
                 }
         }

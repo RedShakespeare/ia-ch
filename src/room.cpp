@@ -95,6 +95,167 @@ static int base_pct_chance_dark(const RoomType room_type)
         return 0;
 }
 
+static int walk_blockers_in_dir(const Dir dir, const P& pos)
+{
+        int nr_blockers = 0;
+
+        switch (dir)
+        {
+        case Dir::right:
+                for (int dy = -1; dy <= 1; ++dy)
+                {
+                        const auto* const f =
+                                map::cells.at(pos.x + 1, pos.y + dy).rigid;
+
+                        if (!f->is_walkable())
+                        {
+                                nr_blockers += 1;
+                        }
+                }
+                break;
+
+        case Dir::down:
+                for (int dx = -1; dx <= 1; ++dx)
+                {
+                        const auto* const f =
+                                map::cells.at(pos.x + dx, pos.y + 1).rigid;
+
+                        if (!f->is_walkable())
+                        {
+                                nr_blockers += 1;
+                        }
+                }
+                break;
+
+        case Dir::left:
+                for (int dy = -1; dy <= 1; ++dy)
+                {
+                        const auto* const f =
+                                map::cells.at(pos.x - 1, pos.y + dy).rigid;
+
+                        if (!f->is_walkable())
+                        {
+                                nr_blockers += 1;
+                        }
+                }
+                break;
+
+        case Dir::up:
+                for (int dx = -1; dx <= 1; ++dx)
+                {
+                        const auto* const f =
+                                map::cells.at(pos.x + dx, pos.y - 1).rigid;
+
+                        if (!f->is_walkable())
+                        {
+                                nr_blockers += 1;
+                        }
+                }
+                break;
+
+        case Dir::down_left:
+        case Dir::down_right:
+        case Dir::up_left:
+        case Dir::up_right:
+        case Dir::center:
+        case Dir::END:
+                break;
+        }
+
+        return nr_blockers;
+} // walk_blockers_in_dir
+
+static void get_positions_in_room_relative_to_walls(
+        const Room& room,
+        std::vector<P>& adj_to_walls,
+        std::vector<P>& away_from_walls)
+{
+        TRACE_FUNC_BEGIN_VERBOSE;
+
+        adj_to_walls.clear();
+
+        away_from_walls.clear();
+
+        std::vector<P> pos_bucket;
+
+        pos_bucket.clear();
+
+        const R& r = room.r_;
+
+        for (int x = r.p0.x; x <= r.p1.x; ++x)
+        {
+                for (int y = r.p0.y; y <= r.p1.y; ++y)
+                {
+                        if (map::room_map.at(x, y) != &room)
+                        {
+                                continue;
+                        }
+
+                        auto* const f = map::cells.at(x, y).rigid;
+
+                        if (f->is_walkable() && f->can_have_rigid())
+                        {
+                                pos_bucket.push_back(P(x, y));
+                        }
+                }
+        }
+
+        for (P& pos : pos_bucket)
+        {
+                const int nr_r = walk_blockers_in_dir(Dir::right, pos);
+                const int nr_d = walk_blockers_in_dir(Dir::down, pos);
+                const int nr_l = walk_blockers_in_dir(Dir::left, pos);
+                const int nr_u = walk_blockers_in_dir(Dir::up, pos);
+
+                const bool is_zero_all_dir =
+                        nr_r == 0 &&
+                        nr_d == 0 &&
+                        nr_l == 0 &&
+                        nr_u == 0;
+
+                if (is_zero_all_dir)
+                {
+                        away_from_walls.push_back(pos);
+                        continue;
+                }
+
+                bool is_door_adjacent = false;
+
+                for (int dx = -1; dx <= 1; ++dx)
+                {
+                        for (int dy = -1; dy <= 1; ++dy)
+                        {
+                                const auto* const f =
+                                        map::cells.at(pos.x + dx, pos.y + dy)
+                                        .rigid;
+
+                                if (f->id() == FeatureId::door)
+                                {
+                                        is_door_adjacent = true;
+                                }
+                        }
+                }
+
+                if (is_door_adjacent)
+                {
+                        continue;
+                }
+
+                if ((nr_r == 3 && nr_u == 1 && nr_d == 1 && nr_l == 0) ||
+                    (nr_r == 1 && nr_u == 3 && nr_d == 0 && nr_l == 1) ||
+                    (nr_r == 1 && nr_u == 0 && nr_d == 3 && nr_l == 1) ||
+                    (nr_r == 0 && nr_u == 1 && nr_d == 1 && nr_l == 3))
+                {
+                        adj_to_walls.push_back(pos);
+
+                        continue;
+                }
+
+        }
+
+        TRACE_FUNC_END_VERBOSE;
+} // cells_in_room
+
 // -----------------------------------------------------------------------------
 // Room factory
 // -----------------------------------------------------------------------------
@@ -117,7 +278,7 @@ void init_room_bucket()
                 add_to_room_bucket(RoomType::crypt, rnd::range(2, 3));
                 add_to_room_bucket(RoomType::monster, 1);
                 add_to_room_bucket(RoomType::damp, rnd::range(1, 2));
-                add_to_room_bucket(RoomType::pool, rnd::range(1, 2));
+                add_to_room_bucket(RoomType::pool, rnd::range(2, 3));
                 add_to_room_bucket(RoomType::snake_pit, rnd::one_in(3) ? 1 : 0);
 
                 const size_t nr_plain_rooms = room_bucket_.size() * 2;
@@ -134,7 +295,7 @@ void init_room_bucket()
                 add_to_room_bucket(RoomType::crypt, 4);
                 add_to_room_bucket(RoomType::monster, 2);
                 add_to_room_bucket(RoomType::damp, rnd::range(1, 3));
-                add_to_room_bucket(RoomType::pool, rnd::range(1, 3));
+                add_to_room_bucket(RoomType::pool, rnd::range(2, 3));
                 add_to_room_bucket(RoomType::cave, 2);
                 add_to_room_bucket(RoomType::chasm, 1);
                 add_to_room_bucket(RoomType::forest, 2);
@@ -149,7 +310,7 @@ void init_room_bucket()
                 add_to_room_bucket(RoomType::spider, 1);
                 add_to_room_bucket(RoomType::snake_pit, 1);
                 add_to_room_bucket(RoomType::damp, rnd::range(1, 3));
-                add_to_room_bucket(RoomType::pool, rnd::range(1, 3));
+                add_to_room_bucket(RoomType::pool, rnd::range(2, 3));
                 add_to_room_bucket(RoomType::chasm, 2);
                 add_to_room_bucket(RoomType::forest, 2);
 
@@ -469,9 +630,10 @@ void StdRoom::place_auto_features()
         std::vector<P> adj_to_walls_bucket;
         std::vector<P> away_from_walls_bucket;
 
-        map_patterns::cells_in_room(*this,
-                                    adj_to_walls_bucket,
-                                    away_from_walls_bucket);
+        get_positions_in_room_relative_to_walls(
+                *this,
+                adj_to_walls_bucket,
+                away_from_walls_bucket);
 
         while (!feature_bucket.empty())
         {
@@ -620,7 +782,7 @@ void HumanRoom::on_post_connect_hook(Array2<bool>& door_proposals)
         {
                 Array2<bool> blocked(map::dims());
 
-                map_parsers::BlocksMoveCommon(ParseActors::no)
+                map_parsers::BlocksWalking(ParseActors::no)
                         .run(blocked, blocked.rect());
 
                 for (int x = r_.p0.x + 1; x <= r_.p1.x - 1; ++x)
@@ -715,7 +877,7 @@ void RitualRoom::on_post_connect_hook(Array2<bool>& door_proposals)
 
         Array2<bool> blocked(map::dims());
 
-        map_parsers::BlocksMoveCommon(ParseActors::no)
+        map_parsers::BlocksWalking(ParseActors::no)
                 .run(blocked, blocked.rect());
 
         const int bloody_chamber_pct = 60;
@@ -914,7 +1076,7 @@ void SnakePitRoom::on_post_connect_hook(Array2<bool>& door_proposals)
 
         Array2<bool> blocked(map::dims());
 
-        map_parsers::BlocksMoveCommon(ParseActors::yes)
+        map_parsers::BlocksWalking(ParseActors::yes)
                 .run(blocked,
                      blocked.rect(),
                      MapParseMode::overwrite);
@@ -1081,7 +1243,7 @@ void MonsterRoom::on_post_connect_hook(Array2<bool>& door_proposals)
 
         Array2<bool> blocked(map::dims());
 
-        map_parsers::BlocksMoveCommon(ParseActors::no)
+        map_parsers::BlocksWalking(ParseActors::no)
                 .run(blocked, blocked.rect());
 
         int nr_blood_put = 0;
@@ -1161,7 +1323,7 @@ void DampRoom::on_post_connect_hook(Array2<bool>& door_proposals)
 
         Array2<bool> blocked(map::dims());
 
-        map_parsers::BlocksMoveCommon(ParseActors::no)
+        map_parsers::BlocksWalking(ParseActors::no)
                 .run(blocked, blocked.rect());
 
         const int liquid_one_in_n = rnd::range(2, 5);
@@ -1239,7 +1401,7 @@ void PoolRoom::on_post_connect_hook(Array2<bool>& door_proposals)
 
         Array2<bool> blocked(map::dims());
 
-        map_parsers::BlocksMoveCommon(ParseActors::no)
+        map_parsers::BlocksWalking(ParseActors::no)
                 .run(blocked, blocked.rect());
 
         std::vector<P> origin_bucket;
@@ -1430,7 +1592,7 @@ void ForestRoom::on_post_connect_hook(Array2<bool>& door_proposals)
 
         Array2<bool> blocked(map::dims());
 
-        map_parsers::BlocksMoveCommon(ParseActors::no)
+        map_parsers::BlocksWalking(ParseActors::no)
                 .run(blocked, blocked.rect());
 
         // Do not consider doors blocking
@@ -1525,7 +1687,7 @@ void ChasmRoom::on_post_connect_hook(Array2<bool>& door_proposals)
 
         Array2<bool> blocked(map::dims());
 
-        map_parsers::BlocksMoveCommon(ParseActors::no)
+        map_parsers::BlocksWalking(ParseActors::no)
                 .run(blocked, blocked.rect());
 
         for (size_t i = 0; i < map::nr_cells(); ++i)

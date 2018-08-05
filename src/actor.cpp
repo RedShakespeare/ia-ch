@@ -909,8 +909,11 @@ ActorDied Actor::hit(int dmg,
 
     if (hp() <= 0)
     {
+        const auto f_id = map::cells.at(pos).rigid->id();
+
         const bool is_on_bottomless =
-            map::cells.at(pos).rigid->is_bottomless();
+                f_id == FeatureId::chasm ||
+                f_id == FeatureId::liquid_deep;
 
         // Destroy the corpse if the killing blow damage is either:
         //
@@ -997,8 +1000,11 @@ ActorDied Actor::hit_spi(const int dmg, const Verbosity verbosity)
             }
         }
 
+        const auto f_id = map::cells.at(pos).rigid->id();
+
         const bool is_on_bottomless =
-            map::cells.at(pos).rigid->is_bottomless();
+            f_id == FeatureId::chasm ||
+            f_id == FeatureId::liquid_deep;
 
         const bool is_destroyed =
             !data_->can_leave_corpse ||
@@ -1121,7 +1127,7 @@ void Actor::die(const bool is_destroyed,
         properties_->end_prop_silent(PropId::wound);
 
         // If player died due to falling down a chasm, go to next level
-        if (map::cells.at(pos).rigid->is_bottomless())
+        if (map::cells.at(pos).rigid->id() == FeatureId::chasm)
         {
             map_travel::go_to_nxt();
         }

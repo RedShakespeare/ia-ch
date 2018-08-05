@@ -49,9 +49,9 @@ void Feature::reveal(const Verbosity verbosity)
         (void)verbosity;
 }
 
-bool Feature::can_move_common() const
+bool Feature::is_walkable() const
 {
-        return data().move_rules.can_move_common();
+        return data().move_rules.is_walkable();
 }
 
 bool Feature::can_move(const Actor& actor) const
@@ -88,11 +88,6 @@ bool Feature::is_projectile_passable() const
 bool Feature::is_smoke_passable() const
 {
         return data().is_smoke_passable;
-}
-
-bool Feature::is_bottomless() const
-{
-        return data().is_bottomless;
 }
 
 char Feature::character() const

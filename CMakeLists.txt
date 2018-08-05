@@ -81,7 +81,6 @@ set(SRC
   include/map_builder.hpp
   include/map_controller.hpp
   include/map_parsing.hpp
-  include/map_patterns.hpp
   include/map_templates.hpp
   include/map_travel.hpp
   include/mapgen.hpp
@@ -180,7 +179,6 @@ set(SRC
   src/map_builder_std.cpp
   src/map_controller.cpp
   src/map_parsing.cpp
-  src/map_patterns.cpp
   src/map_templates.cpp
   src/map_travel.cpp
   src/mapgen_aux_rooms.cpp

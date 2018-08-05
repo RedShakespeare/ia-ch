@@ -3,197 +3,233 @@
 #include "feature_rigid.hpp"
 #include "map_parsing.hpp"
 
-namespace mapgen
+// -----------------------------------------------------------------------------
+// Private
+// -----------------------------------------------------------------------------
+static void decorate_walls()
 {
-
-void decorate()
-{
-    Array2<bool> blocked(map::dims());
-
-    map_parsers::BlocksMoveCommon(ParseActors::no).
-        run(blocked, blocked.rect());
-
-    for (int x = 0; x < map::w(); ++x)
-    {
-            for (int y = 0; y < map::h(); ++y)
+        for (int x = 0; x < map::w(); ++x)
         {
-            Cell& cell = map::cells.at(x, y);
-
-            if (cell.rigid->id() == FeatureId::wall)
-            {
-                // Convert some walls to high rubble
-                if (rnd::one_in(10))
+                for (int y = 0; y < map::h(); ++y)
                 {
-                    map::put(new RubbleHigh(P(x, y)));
-                    continue;
-                }
+                        Cell& cell = map::cells.at(x, y);
 
-                // Moss grown walls
-                Wall* const wall = static_cast<Wall*>(cell.rigid);
-
-                wall->set_random_is_moss_grown();
-
-                // Convert some walls to cave
-                bool should_convert_to_cave_wall = false;
-
-                if (map::dlvl >= dlvl_first_late_game)
-                {
-                    // Late game - convert all walls to cave
-                    should_convert_to_cave_wall = true;
-                }
-                else if (map::dlvl >= dlvl_first_mid_game)
-                {
-                    // Mid game - convert walls with no adjacent floor or with
-                    // adjacent cave floor to cave
-                    bool has_adj_floor = false;
-                    bool has_adj_cave_floor = false;
-
-                    for (const P& d : dir_utils::dir_list)
-                    {
-                        const P p_adj(P(x, y) + d);
-
-                        if (!map::is_pos_inside_map(p_adj))
+                        if (cell.rigid->id() != FeatureId::wall)
                         {
-                            continue;
+                                continue;
                         }
 
-                        auto& adj_cell = map::cells.at(p_adj);
+                        Wall* const wall = static_cast<Wall*>(cell.rigid);
 
-                        const auto adj_id = adj_cell.rigid->id();
-
-                        // TODO: Traps count as floor here - otherwise walls
-                        // that are only adjacent to traps would be converted to
-                        // cave walls, which would spoil the presence of the
-                        // trap, and just be weird in general. This works for
-                        // now, but it should probably be handled better.
-                        // Currently, traps are the only rigid that can "mimic"
-                        // floor, but if some other feature like that is added,
-                        // it could be a problem.
-
-                        if (adj_id == FeatureId::floor ||
-                            adj_id == FeatureId::carpet ||
-                            adj_id == FeatureId::trap)
+                        if (rnd::one_in(10))
                         {
-                            has_adj_floor = true;
+                                map::put(new RubbleHigh(P(x, y)));
+                        }
+                        else
+                        {
+                                wall->set_rnd_common_wall();
 
-                            // TODO: Currently, traps always prevents converting
-                            // adjacent walls to cave wall - even if the trap
-                            // mimics cave floor
-
-                            // Cave floor?
-                            if (adj_id == FeatureId::floor)
-                            {
-                                auto* adj_floor =
-                                    static_cast<Floor*>(adj_cell.rigid);
-
-                                if (adj_floor->type_ == FloorType::cave)
+                                if (rnd::one_in(40))
                                 {
-                                    has_adj_cave_floor = true;
-
-                                    // break;
+                                        wall->set_moss_grown();
                                 }
-                            }
                         }
-                    }
-
-                    should_convert_to_cave_wall =
-                        !has_adj_floor ||
-                        has_adj_cave_floor;
-
-                } // else
-
-                if (should_convert_to_cave_wall)
-                {
-                    wall->type_ = WallType::cave;
                 }
-                else // Should not convert to cave wall
-                {
-                    wall->set_rnd_common_wall();
-                }
+        }
+}
 
-            } // if wall
+static bool is_cave_floor(const P& p)
+{
+        const auto& f = *map::cells.at(p).rigid;
 
-        } // y loop
+        // TODO: Consider traps mimicking cave floor
 
-    } // x loop
-
-    for (int x = 1; x < map::w() - 1; ++x)
-    {
-        for (int y = 1; y < map::h() - 1; ++y)
+        if (f.id() == FeatureId::floor)
         {
-            const P p(x, y);
+                auto* floor = static_cast<const Floor*>(&f);
 
-            const auto& cell = map::cells.at(x, y);
-
-            if (cell.rigid->id() == FeatureId::floor)
-            {
-
-                // Randomly put low rubble
-                if (rnd::one_in(100))
+                if (floor->type_ == FloorType::cave)
                 {
-                    map::put(new RubbleLow(p));
+                        return true;
+                }
+        }
+
+        return false;
+}
+
+static bool should_convert_wall_to_cave_early_game(const P& p)
+{
+        return map_parsers::AllAdjIsFeature(FeatureId::wall).cell(p);
+}
+
+static bool should_convert_wall_to_cave_mid_game(const P& p)
+{
+        const std::vector<FeatureId> features_for_cave = {
+                FeatureId::bones,
+                FeatureId::bush,
+                FeatureId::chasm,
+                FeatureId::cocoon,
+                FeatureId::grass,
+                FeatureId::liquid_deep,
+                FeatureId::liquid_shallow,
+                FeatureId::rubble_high,
+                FeatureId::rubble_low,
+                FeatureId::stalagmite,
+                FeatureId::tree,
+                FeatureId::vines,
+                FeatureId::wall
+        };
+
+        const bool all_adj_are_features_for_cave =
+                map_parsers::AllAdjIsAnyOfFeatures(
+                        features_for_cave)
+                .cell(p);
+
+        bool is_adj_to_cave_floor = false;
+
+        for (const P& d : dir_utils::dir_list)
+        {
+                const P p_adj(p + d);
+
+                if (!map::is_pos_inside_map(p_adj))
+                {
+                        continue;
                 }
 
-                // Randomly put vines
-                if (rnd::one_in(150))
+                if (is_cave_floor(p_adj))
                 {
-                    for (const P& d : dir_utils::dir_list_w_center)
-                    {
-                        const P adj_p(p + d);
+                        is_adj_to_cave_floor = true;
 
-                        const bool is_floor =
-                                map::cells.at(adj_p).rigid->id() ==
-                                FeatureId::floor;
-
-                        if (is_floor &&
-                            rnd::one_in(3))
-                        {
-                            map::put(new Vines(adj_p));
-                        }
-                    }
+                        break;
                 }
-            }
-            // Not floor
-            else if (cell.rigid->id() == FeatureId::wall)
-            {
-                // Convert some walls to grates
-                if (rnd::one_in(6))
+        }
+
+        return all_adj_are_features_for_cave || is_adj_to_cave_floor;
+}
+
+static bool should_convert_wall_to_cave(const P& p)
+{
+        if (map::dlvl <= dlvl_last_early_game)
+        {
+                return should_convert_wall_to_cave_early_game(p);
+        }
+        else if (map::dlvl <= dlvl_last_mid_game)
+        {
+                return should_convert_wall_to_cave_mid_game(p);
+        }
+        else
+        {
+                return true;
+        }
+}
+
+static void convert_walls_to_cave()
+{
+        for (int x = 0; x < map::w(); ++x)
+        {
+                for (int y = 0; y < map::h(); ++y)
                 {
-                    bool is_allowed = true;
+                        const P p(x, y);
 
-                    // Never allow two grates next to each other
-                    for (int dx = -1; dx <= 1; ++dx)
-                    {
-                        for (int dy = -1; dy <= 1; ++dy)
+                        auto& f = *map::cells.at(p).rigid;
+
+                        if ((f.id() != FeatureId::wall) ||
+                            !should_convert_wall_to_cave(p))
                         {
-                            const P p_adj(p + P(dx, dy));
-
-                            auto adj_id = map::cells.at(p_adj).rigid->id();
-
-                            if (adj_id == FeatureId::grate)
-                            {
-                                is_allowed = false;
-
-                                break;
-                            }
+                                continue;
                         }
 
-                        if (!is_allowed)
-                        {
-                            break;
-                        }
-                    }
+                        auto* const wall = static_cast<Wall*>(&f);
 
-                    if (is_allowed)
-                    {
+                        wall->type_ = WallType::cave;
+                }
+        }
+}
+
+static void decorate_floor()
+{
+        for (int x = 1; x < map::w() - 1; ++x)
+        {
+                for (int y = 1; y < map::h() - 1; ++y)
+                {
+                        const P p(x, y);
+
+                        const auto& cell = map::cells.at(x, y);
+
+                        if (cell.rigid->id() != FeatureId::floor)
+                        {
+                                continue;
+                        }
+
+                        if (rnd::one_in(100))
+                        {
+                                map::put(new RubbleLow(p));
+                        }
+
+                        if (rnd::one_in(150))
+                        {
+                                for (const P& d : dir_utils::dir_list_w_center)
+                                {
+                                        const P adj_p(p + d);
+
+                                        const auto& adj_id =
+                                                map::cells.at(adj_p).rigid
+                                                ->id();
+
+                                        const bool adj_is_floor =
+                                                adj_id == FeatureId::floor;
+
+                                        if (adj_is_floor && rnd::one_in(3))
+                                        {
+                                                map::put(new Vines(adj_p));
+                                        }
+                                }
+                        }
+                }
+        }
+}
+
+static void make_grates()
+{
+        Array2<bool> blocked(map::dims());
+
+        // TODO: This prevents placing grates next to deep liquid
+        map_parsers::BlocksWalking(ParseActors::no).
+                run(blocked, blocked.rect());
+
+        auto is_free = [&](const P& p) {
+                return !blocked.at(p);
+        };
+
+        for (int x = 1; x < map::w() - 1; ++x)
+        {
+                for (int y = 1; y < map::h() - 1; ++y)
+                {
+                        const P p(x, y);
+
+                        const int convert_to_grate_one_in_n = 6;
+
+                        if ((map::cells.at(p).rigid->id() != FeatureId::wall) ||
+                            !rnd::one_in(convert_to_grate_one_in_n))
+                        {
+                                continue;
+                        }
+
+                        // TODO: Why are adjacent grates not allowed?
+                        const bool is_adj_to_grate =
+                                map_parsers::AnyAdjIsAnyOfFeatures(
+                                        FeatureId::grate)
+                                .cell(p);
+
+                        if (is_adj_to_grate)
+                        {
+                                continue;
+                        }
+
                         const P adj_hor_1 = p.with_x_offset(-1);
                         const P adj_hor_2 = p.with_x_offset(1);
                         const P adj_ver_1 = p.with_y_offset(1);
                         const P adj_ver_2 = p.with_y_offset(-1);
-
-                        auto is_free = [&](const P& p) {
-                            return !blocked.at(p);
-                        };
 
                         const bool is_free_hor_1 = is_free(adj_hor_1);
                         const bool is_free_hor_2 = is_free(adj_hor_2);
@@ -201,30 +237,45 @@ void decorate()
                         const bool is_free_ver_2 = is_free(adj_ver_2);
 
                         const bool is_blocked_hor =
-                            !is_free_hor_1 && !is_free_hor_2;
+                                !is_free_hor_1 &&
+                                !is_free_hor_2;
 
                         const bool is_free_hor =
-                            is_free_hor_1 && is_free_hor_2;
+                                is_free_hor_1 &&
+                                is_free_hor_2;
 
                         const bool is_blocked_ver =
-                            !is_free_ver_1 && !is_free_ver_2;
+                                !is_free_ver_1 &&
+                                !is_free_ver_2;
 
                         const bool is_free_ver =
-                            is_free_ver_1 && is_free_ver_2;
+                                is_free_ver_1 &&
+                                is_free_ver_2;
 
-                        is_allowed =
-                            (is_blocked_hor && is_free_ver) ||
-                            (is_free_hor && is_blocked_ver);
-                    }
-
-                    if (is_allowed)
-                    {
-                        map::put(new Grate(p));
-                    }
+                        if ((is_blocked_hor && is_free_ver) ||
+                            (is_free_hor && is_blocked_ver))
+                        {
+                                map::put(new Grate(p));
+                        }
                 }
-            }
         }
-    }
+}
+
+// -----------------------------------------------------------------------------
+// mapgen
+// -----------------------------------------------------------------------------
+namespace mapgen
+{
+
+void decorate()
+{
+        decorate_floor();
+
+        decorate_walls();
+
+        convert_walls_to_cave();
+
+        make_grates();
 }
 
 } // mapgen

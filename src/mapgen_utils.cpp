@@ -1082,17 +1082,16 @@ Array2<bool> allowed_stair_cells()
         Array2<bool> result(map::dims());
 
         // Mark cells as free if all adjacent feature types are allowed
-        std::vector<FeatureId> feat_ids_ok
-        {
+        std::vector<FeatureId> feat_ids_ok = {
                 FeatureId::floor,
-                        FeatureId::carpet,
-                        FeatureId::grass,
-                        FeatureId::bush,
-                        FeatureId::rubble_low,
-                        FeatureId::vines,
-                        FeatureId::chains,
-                        FeatureId::trap
-                        };
+                FeatureId::carpet,
+                FeatureId::grass,
+                FeatureId::bush,
+                FeatureId::rubble_low,
+                FeatureId::vines,
+                FeatureId::chains,
+                FeatureId::trap
+        };
 
         map_parsers::AllAdjIsAnyOfFeatures(feat_ids_ok)
                 .run(result, result.rect());
@@ -1192,26 +1191,50 @@ P make_stairs_at_random_pos()
         TRACE << "Sorting the allowed cells vector "
               << "(" << pos_bucket.size() << " cells)" << std:: endl;
 
-        Array2<bool> blocks_move(map::dims());
+        Array2<bool> blocks_player(map::dims());
 
-        map_parsers::BlocksMoveCommon(ParseActors::no)
-                .run(blocks_move, blocks_move.rect());
+        map_parsers::BlocksWalking(ParseActors::no)
+                .run(blocks_player, blocks_player.rect());
 
-        for (size_t i = 0; i < map::nr_cells(); ++i)
+        const std::vector<FeatureId> free_features = {
+                FeatureId::door,
+                FeatureId::liquid_deep,
+        };
+
+        for (int x = 0; x < blocks_player.w(); ++x)
         {
-                if (map::cells.at(i).rigid->id() == FeatureId::door)
+                for (int y = 0; y < blocks_player.h(); ++y)
                 {
-                        blocks_move.at(i) = false;
+                        const P p(x, y);
+
+                        if (map_parsers::IsAnyOfFeatures(free_features).cell(p))
+                        {
+                                blocks_player.at(p) = false;
+                        }
                 }
         }
 
-        const auto flood = floodfill(map::player->pos, blocks_move);
+        const auto flood = floodfill(map::player->pos, blocks_player);
 
         std::sort(pos_bucket.begin(),
                   pos_bucket.end(),
                   [flood](const P& p1, const P& p2)
                   {
-                          return flood.at(p1) < flood.at(p2);
+                          // If any of the two positions are unreached by the
+                          // flood, assume this is furthest - otherwise compare
+                          // which position is nearest on the flood
+                          if (flood.at(p1) == 0)
+                          {
+                                  return false;
+                          }
+                          else if (flood.at(p2) == 0)
+                          {
+                                  return true;
+                          }
+                          else
+                          {
+                                  return flood.at(p1) < flood.at(p2);
+                          }
                   });
 
         TRACE << "Picking one of the furthest cells" << std:: endl;
@@ -1233,9 +1256,11 @@ P make_stairs_at_random_pos()
         const P stairs_pos(pos_bucket[cell_idx]);
 
         TRACE << "Spawning stairs at chosen cell" << std:: endl;
+
         map::put(new Stairs(stairs_pos));
 
         TRACE_FUNC_END;
+
         return stairs_pos;
 }
 
@@ -1243,22 +1268,36 @@ void reveal_doors_on_path_to_stairs(const P& stairs_pos)
 {
         TRACE_FUNC_BEGIN;
 
-        Array2<bool> blocked(map::dims());
+        Array2<bool> blocks_player(map::dims());
 
-        map_parsers::BlocksMoveCommon(ParseActors::no)
-                .run(blocked, blocked.rect());
+        map_parsers::BlocksWalking(ParseActors::no)
+                .run(blocks_player, blocks_player.rect());
 
-        blocked.at(stairs_pos) = false;
+        blocks_player.at(stairs_pos) = false;
 
-        for (size_t i = 0; i < map::nr_cells(); ++i)
+        const std::vector<FeatureId> free_features =
         {
-                if (map::cells.at(i).rigid->id() == FeatureId::door)
+                FeatureId::door,
+                FeatureId::liquid_deep
+        };
+
+        for (int x = 0; x < blocks_player.w(); ++x)
+        {
+                for (int y = 0; y < blocks_player.h(); ++y)
                 {
-                        blocked.at(i) = false;
+                        const P p(x, y);
+
+                        if (map_parsers::IsAnyOfFeatures(free_features).cell(p))
+                        {
+                                blocks_player.at(p) = false;
+                        }
                 }
         }
 
-        const auto path = pathfind(map::player->pos, stairs_pos, blocked);
+        const auto path = pathfind(
+                map::player->pos,
+                stairs_pos,
+                blocks_player);
 
         ASSERT(!path.empty());
 

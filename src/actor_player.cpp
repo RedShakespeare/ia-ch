@@ -2229,20 +2229,16 @@ void Player::update_fov()
     {
         for (int y = 0; y < map::h(); ++y)
         {
-            const bool is_blocking =
-                map_parsers::BlocksMoveCommon(ParseActors::no)
-                .cell(P(x, y));
-
             const bool allow_explore =
                 !map::dark.at(x, y) ||
-                is_blocking ||
+                map_parsers::BlocksLos().cell(P(x, y)) ||
+                map_parsers::BlocksWalking(ParseActors::no ).cell(P(x, y)) ||
                 has_darkvision;
 
             Cell& cell = map::cells.at(x, y);
 
             // Do not explore dark floor cells
-            if (cell.is_seen_by_player &&
-                allow_explore)
+            if (cell.is_seen_by_player && allow_explore)
             {
                 cell.is_explored = true;
             }
@@ -2261,8 +2257,27 @@ void Player::fov_hack()
 
     Array2<bool> blocked(map::dims());
 
-    map_parsers::BlocksMoveCommon(ParseActors::no)
+    map_parsers::BlocksWalking(ParseActors::no)
             .run(blocked, blocked.rect());
+
+        const std::vector<FeatureId> free_features =
+        {
+                FeatureId::liquid_deep,
+                FeatureId::chasm
+        };
+
+        for (int x = 0; x < blocked.w(); ++x)
+        {
+                for (int y = 0; y < blocked.h(); ++y)
+                {
+                        const P p(x, y);
+
+                        if (map_parsers::IsAnyOfFeatures(free_features).cell(p))
+                        {
+                                blocked.at(p) = false;
+                        }
+                }
+        }
 
     const bool has_darkvision = has_prop(PropId::darkvision);
 
@@ -2278,7 +2293,8 @@ void Player::fov_hack()
                 {
                     const P p_adj(p + d);
 
-                    if (map::is_pos_inside_map(p_adj))
+                    if (map::is_pos_inside_map(p_adj) &&
+                        map::cells.at(p_adj).is_seen_by_player)
                     {
                         const bool allow_explore =
                                 (!map::dark.at(p_adj) ||
@@ -2286,8 +2302,7 @@ void Player::fov_hack()
                                  has_darkvision) &&
                                 !blocked.at(p_adj);
 
-                        if (map::cells.at(p_adj).is_seen_by_player &&
-                            allow_explore)
+                        if (allow_explore)
                         {
                             Cell& cell = map::cells.at(x, y);
 
