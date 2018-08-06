@@ -1433,7 +1433,7 @@ void LiquidDeep::bump(Actor& actor_bumping)
     {
         auto* const waiting = new PropWaiting();
 
-        waiting->set_duration(2);
+        waiting->set_duration(1);
 
         actor_bumping.apply_prop(waiting);
     }
