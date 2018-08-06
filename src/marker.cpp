@@ -731,12 +731,17 @@ void ThrowingExplosive::on_draw()
                                         ? marker_render_d
                                         : render_d;
 
+                                const Color color_fg =
+                                        has_marker
+                                        ? d.color
+                                        : colors::orange();
+
                                 io::draw_symbol(
                                         d.tile,
                                         d.character,
                                         Panel::map,
                                         view_pos,
-                                        d.color,
+                                        color_fg,
                                         true, // Draw background color
                                         color_bg);
                         }
