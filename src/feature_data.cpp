@@ -262,7 +262,7 @@ static void init_data_list()
                 return new LiquidShallow(p);
         };
         d.character = '~';
-        d.tile = TileId::water1;
+        d.tile = TileId::water;
         d.move_rules.set_walkable();
         d.can_have_blood = false;
         d.can_have_gore = false;
@@ -275,7 +275,7 @@ static void init_data_list()
                 return new LiquidDeep(p);
         };
         d.character = '~';
-        d.tile = TileId::water1;
+        d.tile = TileId::water;
         d.can_have_item = false;
         d.can_have_blood = false;
         d.can_have_gore = false;
