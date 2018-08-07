@@ -1407,69 +1407,80 @@ Color LiquidShallow::color_bg_default() const
 // Deep liquid
 // -----------------------------------------------------------------------------
 LiquidDeep::LiquidDeep(const P& p) :
-    Rigid(p),
-    type_(LiquidType::water) {}
+        Rigid(p),
+        type_(LiquidType::water) {}
 
 void LiquidDeep::on_hit(const int dmg,
                         const DmgType dmg_type,
                         const DmgMethod dmg_method,
                         Actor* const actor)
 {
-    (void)dmg;
-    (void)dmg_type;
-    (void)dmg_method;
-    (void)actor;
+        (void)dmg;
+        (void)dmg_type;
+        (void)dmg_method;
+        (void)actor;
 }
 
 void LiquidDeep::bump(Actor& actor_bumping)
 {
-    const bool must_swim =
-            !actor_bumping.has_prop(PropId::ethereal) &&
-            !actor_bumping.has_prop(PropId::flying);
+        const bool must_swim =
+                !actor_bumping.has_prop(PropId::ethereal) &&
+                !actor_bumping.has_prop(PropId::flying);
 
-    const bool is_amphibian = actor_bumping.data().is_amphibian;
+        const bool is_amphibian = actor_bumping.data().is_amphibian;
 
-    if (must_swim && !is_amphibian)
-    {
-        auto* const waiting = new PropWaiting();
-
-        waiting->set_duration(1);
-
-        actor_bumping.apply_prop(waiting);
-    }
-
-    if (actor_bumping.is_player())
-    {
-        const std::string type_str =
-                (type_ == LiquidType::water)
-                ? "water"
-                : "mud";
-
-        msg_log::add("I swim through the " + type_str + ".");
-
-        // Make a sound, unless the player is Silent
-        if (!player_bon::traits[(size_t)Trait::silent])
+        if (must_swim && !is_amphibian)
         {
-            Snd snd("",
-                    SfxId::END,
-                    IgnoreMsgIfOriginSeen::no,
-                    actor_bumping.pos,
-                    &actor_bumping,
-                    SndVol::low,
-                    AlertsMon::yes);
+                auto* const waiting = new PropWaiting();
 
-            snd_emit::run(snd);
+                waiting->set_duration(1);
+
+                actor_bumping.apply_prop(waiting);
         }
-    }
 
-    if (must_swim && !actor_bumping.has_prop(PropId::swimming))
-    {
-            auto* const swimming = new PropSwimming();
+        if (must_swim && actor_bumping.is_player())
+        {
+                const std::string type_str =
+                        (type_ == LiquidType::water)
+                        ? "water"
+                        : "mud";
 
-            swimming->set_indefinite();
+                msg_log::add("I swim through the " + type_str + ".");
 
-            actor_bumping.properties().apply(swimming);
-    }
+                // Make a sound, unless the player is Silent
+                if (!player_bon::traits[(size_t)Trait::silent])
+                {
+                        Snd snd("",
+                                SfxId::END,
+                                IgnoreMsgIfOriginSeen::no,
+                                actor_bumping.pos,
+                                &actor_bumping,
+                                SndVol::low,
+                                AlertsMon::yes);
+
+                        snd_emit::run(snd);
+                }
+
+                if (map::player->active_explosive_)
+                {
+                        const std::string expl_name =
+                                map::player->active_explosive_->name(
+                                        ItemRefType::plain);
+
+                        msg_log::add("The " + expl_name + " is extinguished.");
+
+                        map::player->active_explosive_ = nullptr;
+                }
+        }
+
+        if (must_swim && !actor_bumping.has_prop(PropId::swimming))
+        {
+                auto* const swimming = new PropSwimming();
+
+                swimming->set_indefinite();
+
+                actor_bumping.properties().apply(swimming);
+        }
 }
 
 void LiquidDeep::on_leave(Actor &actor_leaving)
@@ -1479,43 +1490,43 @@ void LiquidDeep::on_leave(Actor &actor_leaving)
 
 std::string LiquidDeep::name(const Article article) const
 {
-    std::string ret = "";
+        std::string ret = "";
 
-    if (article == Article::the)
-    {
-            ret += "the ";
-    }
+        if (article == Article::the)
+        {
+                ret += "the ";
+        }
 
-    ret += "deep ";
+        ret += "deep ";
 
-    switch (type_)
-    {
-    case LiquidType::water:
-        ret += "water";
-        break;
+        switch (type_)
+        {
+        case LiquidType::water:
+                ret += "water";
+                break;
 
-    case LiquidType::mud:
-        ret += "mud";
-        break;
-    }
+        case LiquidType::mud:
+                ret += "mud";
+                break;
+        }
 
-    return ret;
+        return ret;
 }
 
 Color LiquidDeep::color_default() const
 {
-    switch (type_)
-    {
-    case LiquidType::water:
-        return colors::blue();
-        break;
+        switch (type_)
+        {
+        case LiquidType::water:
+                return colors::blue();
+                break;
 
-    case LiquidType::mud:
-        return colors::dark_brown();
-        break;
-    }
+        case LiquidType::mud:
+                return colors::dark_brown();
+                break;
+        }
 
-    return colors::yellow();
+        return colors::yellow();
 }
 
 bool LiquidDeep::can_move(const Actor& actor) const
