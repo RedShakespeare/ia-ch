@@ -22,6 +22,7 @@ set(SRC
   include/ability_values.hpp
   include/actor.hpp
   include/actor_data.hpp
+  include/actor_death.hpp
   include/actor_factory.hpp
   include/actor_items.hpp
   include/actor_mon.hpp
@@ -109,6 +110,7 @@ set(SRC
   include/spells.hpp
   include/state.hpp
   include/status_lines.hpp
+  include/teleport.hpp
   include/text_format.hpp
   include/throwing.hpp
   include/version.hpp
@@ -119,6 +121,7 @@ set(SRC
   src/ability_values.cpp
   src/actor.cpp
   src/actor_data.cpp
+  src/actor_death.cpp
   src/actor_factory.cpp
   src/actor_items.cpp
   src/actor_mon.cpp
@@ -218,6 +221,7 @@ set(SRC
   src/spells.cpp
   src/state.cpp
   src/status_lines.cpp
+  src/teleport.cpp
   src/text_format.cpp
   src/throwing.cpp
   src/version.cpp

@@ -8,16 +8,12 @@ struct InputData;
 
 enum class BinaryAnswer
 {
-    no,
-    yes,
-    special
+        no,
+        yes,
+        special
 };
 
-enum class AllowCenter
-{
-    no,
-    yes
-};
+enum class AllowCenter {no ,yes};
 
 namespace query
 {
@@ -45,4 +41,4 @@ int number(const P& pos,
 
 } // query
 
-#endif
+#endif // QUERY_HPP

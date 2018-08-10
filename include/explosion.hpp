@@ -11,27 +11,15 @@ class Prop;
 
 enum class ExplType
 {
-    expl,
-    apply_prop
+        expl,
+        apply_prop
 };
 
-enum class EmitExplSnd
-{
-    no,
-    yes
-};
+enum class EmitExplSnd {no ,yes};
 
-enum class ExplExclCenter
-{
-    no,
-    yes
-};
+enum class ExplExclCenter {no ,yes};
 
-enum class ExplIsGas
-{
-    no,
-    yes
-};
+enum class ExplIsGas {no ,yes};
 
 namespace explosion
 {

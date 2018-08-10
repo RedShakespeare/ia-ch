@@ -2,6 +2,7 @@
 
 #include "init.hpp"
 
+#include "actor_death.hpp"
 #include "actor_items.hpp"
 #include "actor_mon.hpp"
 #include "actor_player.hpp"
@@ -341,223 +342,6 @@ void Actor::on_std_turn_common()
     }
 
     on_std_turn();
-}
-
-void Actor::teleport(const ShouldCtrlTele ctrl_tele)
-{
-        Array2<bool> blocks_flood(map::dims());
-
-        map_parsers::BlocksActor(*this, ParseActors::no)
-                .run(blocks_flood, blocks_flood.rect());
-
-        const size_t len = map::nr_cells();
-
-        // Allow teleporting past non-metal doors for the player, and past any
-        // door for monsters
-        for (size_t i = 0; i < len; ++i)
-        {
-                const auto* const r = map::cells.at(i).rigid;
-
-                if (r->id() == FeatureId::door)
-                {
-                        const auto* const door = static_cast<const Door*>(r);
-
-                        if ((door->type() != DoorType::metal) ||
-                            !is_player())
-                        {
-                                blocks_flood.at(i) = false;
-                        }
-                }
-        }
-
-        // Allow teleporting past Force Fields, since they are temporary
-        for (const auto* const mob : game_time::mobs)
-        {
-                if (mob->id() == FeatureId::force_field)
-                {
-                        blocks_flood.at(mob->pos()) = false;
-                }
-        }
-
-        const auto flood = floodfill(pos, blocks_flood);
-
-        Array2<bool> blocked(map::dims());
-
-        map_parsers::BlocksActor(*this, ParseActors::yes)
-                .run(blocked, blocked.rect());
-
-        for (size_t i = 0; i < len; ++i)
-        {
-                if (flood.at(i) <= 0)
-                {
-                        blocked.at(i) = true;
-                }
-        }
-
-        // Make sure we do not teleport to the position we are standing in
-        blocked.at(pos) = false;
-
-        // Teleport control?
-        const bool can_actor_use_tele_ctrl =
-                is_player() &&
-                properties_->has_prop(PropId::tele_ctrl) &&
-                !properties_->has_prop(PropId::confused);
-
-        if ((ctrl_tele == ShouldCtrlTele::always) ||
-            ((ctrl_tele == ShouldCtrlTele::if_tele_ctrl_prop) &&
-             can_actor_use_tele_ctrl))
-        {
-                auto tele_ctrl_state = std::unique_ptr<State>(
-                        new CtrlTele(pos, blocked));
-
-                states::push(std::move(tele_ctrl_state));
-
-                return;
-        }
-
-        // Teleport randomly
-        const auto pos_bucket = to_vec(blocked, false, blocked.rect());
-
-        if (pos_bucket.empty())
-        {
-                return;
-        }
-
-        const P tgt_pos = rnd::element(pos_bucket);
-
-        teleport(tgt_pos, blocked);
-}
-
-void Actor::teleport(P p, const Array2<bool>& blocked)
-{
-    if (!is_player() &&
-        map::player->can_see_actor(*this))
-    {
-        const std::string actor_name_the =
-            text_format::first_to_upper(
-                name_the());
-
-        msg_log::add(actor_name_the + mon_disappear_msg);
-    }
-
-    if (!is_player())
-    {
-        static_cast<Mon*>(this)->player_aware_of_me_counter_ = 0;
-    }
-
-    properties_->end_prop_silent(PropId::entangled);
-
-    // Hostile void travelers "intercepts" players teleporting, and calls the
-    // player to them
-    bool is_affected_by_void_traveler = false;
-
-    if (is_player())
-    {
-        for (Actor* const actor : game_time::actors)
-        {
-            const auto actor_id = actor->id();
-
-            const bool is_void_traveler =
-                (actor_id == ActorId::void_traveler) ||
-                (actor_id == ActorId::elder_void_traveler);
-
-            if (is_void_traveler &&
-                (actor->state() == ActorState::alive) &&
-                actor->properties().allow_act() &&
-                !actor->is_actor_my_leader(map::player) &&
-                (static_cast<Mon*>(actor)->aware_of_player_counter_ > 0))
-            {
-                std::vector<P> p_bucket;
-
-                for (const P& d : dir_utils::dir_list)
-                {
-                    const P adj_p(actor->pos + d);
-
-                    if (!blocked.at(adj_p))
-                    {
-                        p_bucket.push_back(adj_p);
-                    }
-                }
-
-                if (!p_bucket.empty())
-                {
-                    // Set new teleport destination
-                    p = rnd::element(p_bucket);
-
-                    const std::string actor_name_a =
-                        text_format::first_to_upper(
-                            actor->name_a());
-
-                    msg_log::add(actor_name_a +
-                                 " intercepts my teleportation!");
-
-                    static_cast<Mon*>(actor)->become_aware_player(false);
-
-                    is_affected_by_void_traveler = true;
-
-                    break;
-                }
-            }
-        }
-    }
-
-    // Leave current cell
-    map::cells.at(pos).rigid->on_leave(*this);
-
-    // Update actor position to new position
-    pos = p;
-
-    map::update_vision();
-
-    // When the player teleports, remove awareness for all monsters not seeing
-    // the player after the teleport
-    if (is_player())
-    {
-        Array2<bool> blocks_los(map::dims());
-
-        const R r = fov::get_fov_rect(pos);
-
-        map_parsers::BlocksLos()
-                .run(blocks_los,
-                     r,
-                     MapParseMode::overwrite);
-
-        for (auto* const actor : game_time::actors)
-        {
-            if (actor == map::player)
-            {
-                continue;
-            }
-
-            auto* const mon = static_cast<Mon*>(actor);
-
-            if (!mon->can_see_actor(*this, blocks_los))
-            {
-                mon->aware_of_player_counter_ = 0;
-            }
-        }
-    }
-
-    const auto player_seen_actors = map::player->seen_actors();
-
-    for (Actor* const actor : player_seen_actors)
-    {
-        static_cast<Mon*>(actor)->set_player_aware_of_me();
-    }
-
-    if (is_player() &&
-        (!properties_->has_prop(PropId::tele_ctrl) ||
-         properties_->has_prop(PropId::confused) ||
-         is_affected_by_void_traveler))
-    {
-        msg_log::add("I suddenly find myself in a different location!");
-
-        auto prop = new PropConfused();
-
-        prop->set_duration(8);
-
-        properties_->apply(prop);
-    }
 }
 
 TileId Actor::tile() const
@@ -931,16 +715,30 @@ ActorDied Actor::hit(int dmg,
 
         const int dmg_threshold_absolute = 14;
 
-        const bool is_destroyed =
-            !data_->can_leave_corpse ||
-            is_on_bottomless ||
-            has_prop(PropId::summoned) ||
-            (dmg >= dmg_threshold_relative) ||
-            (dmg >= dmg_threshold_absolute);
+        const auto is_destroyed =
+                (!data_->can_leave_corpse ||
+                 is_on_bottomless ||
+                 has_prop(PropId::summoned) ||
+                 (dmg >= dmg_threshold_relative) ||
+                 (dmg >= dmg_threshold_absolute))
+                ? IsDestroyed::yes
+                : IsDestroyed::no;
 
-        die(is_destroyed,       // Is destroyed
-            !is_on_bottomless,  // Allow gore
-            !is_on_bottomless); // Allow dropping items
+        const auto allow_gore =
+                is_on_bottomless
+                ? AllowGore::yes
+                : AllowGore::no;
+
+        const auto allow_drop_items =
+                is_on_bottomless
+                ? AllowDropItems::yes
+                : AllowDropItems::no;
+
+        kill_actor(
+                *this,
+                is_destroyed,
+                allow_gore,
+                allow_drop_items);
 
         return ActorDied::yes;
     }
@@ -1006,12 +804,18 @@ ActorDied Actor::hit_spi(const int dmg, const Verbosity verbosity)
             f_id == FeatureId::chasm ||
             f_id == FeatureId::liquid_deep;
 
-        const bool is_destroyed =
-            !data_->can_leave_corpse ||
-            is_on_bottomless ||
-            has_prop(PropId::summoned);
+        const auto is_destroyed =
+                (!data_->can_leave_corpse ||
+                 is_on_bottomless ||
+                 has_prop(PropId::summoned))
+                ? IsDestroyed::yes
+                : IsDestroyed::no;
 
-        die(is_destroyed, false, true);
+        kill_actor(
+                *this,
+                is_destroyed,
+                AllowGore::no,
+                AllowDropItems::yes);
 
         return ActorDied::yes;
     }
@@ -1092,172 +896,6 @@ int Actor::hit_armor(int dmg)
     dmg -= ap;
 
     return dmg;
-}
-
-void Actor::die(const bool is_destroyed,
-                const bool allow_gore,
-                const bool allow_drop_items)
-{
-    TRACE_FUNC_BEGIN_VERBOSE;
-
-    // Save player with Talisman of Resurrection? (If died by physical damage)
-    if (is_player() &&
-        (map::player->ins() < 100) &&
-        (spi() > 0) &&
-        inv_->has_item_in_backpack(ItemId::resurrect_talisman))
-    {
-        inv_->decr_item_type_in_backpack(ItemId::resurrect_talisman);
-
-        msg_log::more_prompt();
-
-        io::clear_screen();
-
-        io::update_screen();
-
-        const std::string msg =
-            "Strange emptiness surrounds me. An eternity passes as I lay "
-            "frozen in a world of shadows. Suddenly I awake!";
-
-        popup::msg(msg, "Dead");
-
-        restore_hp(999,
-                   false,
-                   Verbosity::silent);
-
-        properties_->end_prop_silent(PropId::wound);
-
-        // If player died due to falling down a chasm, go to next level
-        if (map::cells.at(pos).rigid->id() == FeatureId::chasm)
-        {
-            map_travel::go_to_nxt();
-        }
-
-        msg_log::add("I LIVE AGAIN!");
-
-        game::add_history_event("I was brought back from the dead.");
-
-        map::player->incr_shock(ShockLvl::mind_shattering,
-                                ShockSrc::misc);
-
-        return;
-    }
-
-    ASSERT(data_->can_leave_corpse || is_destroyed);
-
-    // Check all monsters and unset this actor as leader
-    for (Actor* other : game_time::actors)
-    {
-        if (other != this &&
-            !other->is_player() &&
-            is_leader_of(other))
-        {
-            static_cast<Mon*>(other)->leader_ = nullptr;
-        }
-    }
-
-    if (!is_player())
-    {
-        // If this monster is player's target, unset the target
-        if (map::player->tgt_ == this)
-        {
-            map::player->tgt_ = nullptr;
-        }
-
-        TRACE_VERBOSE << "Printing death message" << std::endl;
-
-        if (map::player->can_see_actor(*this))
-        {
-            const std::string msg = death_msg();
-
-            if (!msg.empty())
-            {
-                msg_log::add(msg);
-            }
-        }
-    }
-
-    if (is_destroyed)
-    {
-        destroy();
-    }
-    else // Not destroyed
-    {
-        state_ = ActorState::corpse;
-    }
-
-    if (!is_player())
-    {
-        // This is a monster
-
-        if (is_humanoid())
-        {
-            TRACE_VERBOSE << "Emitting death sound" << std::endl;
-
-            Snd snd("I hear agonized screaming.",
-                    SfxId::END,
-                    IgnoreMsgIfOriginSeen::yes,
-                    pos,
-                    this,
-                    SndVol::high,
-                    AlertsMon::no);
-
-            snd.run();
-        }
-    }
-
-    if (is_destroyed)
-    {
-            if (data_->can_bleed && allow_gore)
-            {
-                    map::make_gore(pos);
-                    map::make_blood(pos);
-            }
-    }
-    else // Not destroyed
-    {
-            if (!is_player())
-            {
-                    P new_pos;
-
-                    auto* feature_here = map::cells.at(pos).rigid;
-
-                    // TODO: this should be decided with a floodfill instead
-                    if (!feature_here->can_have_corpse())
-                    {
-                            for (const P& d : dir_utils::dir_list_w_center)
-                            {
-                                    new_pos = pos + d;
-
-                                    feature_here = map::cells.at(new_pos).rigid;
-
-                                    if (feature_here->can_have_corpse())
-                                    {
-                                            pos.set(new_pos);
-
-                                            break;
-                                    }
-                            }
-                    }
-            }
-    }
-
-    on_death();
-
-    properties_->on_death();
-
-    if (!is_player())
-    {
-        if (allow_drop_items)
-        {
-            item_drop::drop_all_characters_items(*this);
-        }
-
-        game::on_mon_killed(*this);
-
-        static_cast<Mon*>(this)->leader_ = nullptr;
-    }
-
-    TRACE_FUNC_END_VERBOSE;
 }
 
 void Actor::destroy()

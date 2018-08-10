@@ -3,6 +3,7 @@
 #include <algorithm>
 
 #include "actor.hpp"
+#include "actor_death.hpp"
 #include "actor_factory.hpp"
 #include "actor_mon.hpp"
 #include "actor_player.hpp"
@@ -19,6 +20,7 @@
 #include "property_data.hpp"
 #include "property_factory.hpp"
 #include "saving.hpp"
+#include "teleport.hpp"
 #include "text_format.hpp"
 
 // -----------------------------------------------------------------------------
@@ -585,7 +587,11 @@ void PropWound::on_more(const Prop& new_prop)
                         msg_log::add("I die from my wounds!");
                 }
 
-                owner_->die(false, false, true);
+                kill_actor(
+                        *owner_,
+                        IsDestroyed::no,
+                        AllowGore::no,
+                        AllowDropItems::yes);
         }
 }
 
@@ -1369,8 +1375,7 @@ PropActResult PropCorpseEater::on_act()
 {
         auto did_action = DidAction::no;
 
-        if (owner_->is_alive() &&
-            rnd::coin_toss())
+        if (owner_->is_alive() && rnd::coin_toss())
         {
                 did_action = owner_->try_eat_corpse();
 
@@ -1389,10 +1394,9 @@ PropActResult PropTeleports::on_act()
 
         const int teleport_one_in_n = 12;
 
-        if (owner_->is_alive() &&
-            rnd::one_in(teleport_one_in_n))
+        if (owner_->is_alive() && rnd::one_in(teleport_one_in_n))
         {
-                owner_->teleport();
+                teleport(*owner_);
 
                 game_time::tick();
 

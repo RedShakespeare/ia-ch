@@ -29,11 +29,7 @@ struct DmgResistData
         std::string msg_resist_mon;
 };
 
-enum class PropEnded
-{
-        no,
-        yes
-};
+enum class PropEnded {no ,yes};
 
 struct PropActResult
 {

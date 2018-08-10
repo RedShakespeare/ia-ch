@@ -20,6 +20,7 @@
 #include "property.hpp"
 #include "property_data.hpp"
 #include "saving.hpp"
+#include "teleport.hpp"
 #include "text_format.hpp"
 
 // -----------------------------------------------------------------------------
@@ -352,7 +353,7 @@ ConsumeItem DeviceTranslocator::run_effect()
                                 std::vector<P> {actor->pos},
                                 colors::yellow());
 
-                        actor->teleport();
+                        teleport(*actor);
                 }
         }
 

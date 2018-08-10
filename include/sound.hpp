@@ -13,17 +13,9 @@ enum class SndVol
         high
 };
 
-enum class AlertsMon
-{
-        no,
-        yes
-};
+enum class AlertsMon {no ,yes};
 
-enum class IgnoreMsgIfOriginSeen
-{
-        no,
-        yes
-};
+enum class IgnoreMsgIfOriginSeen {no ,yes};
 
 class SndHeardEffect
 {

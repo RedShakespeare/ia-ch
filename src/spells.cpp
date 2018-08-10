@@ -27,6 +27,7 @@
 #include "property_data.hpp"
 #include "property_handler.hpp"
 #include "sdl_base.hpp"
+#include "teleport.hpp"
 #include "text_format.hpp"
 #include "viewport.hpp"
 
@@ -2289,7 +2290,7 @@ void SpellTeleport::run_effect(
                 should_ctrl = ShouldCtrlTele::always;
         }
 
-        caster->teleport(should_ctrl);
+        teleport(*caster, should_ctrl);
 }
 
 bool SpellTeleport::allow_mon_cast_now(Mon& mon) const

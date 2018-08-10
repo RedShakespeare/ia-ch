@@ -15,11 +15,7 @@
 class PropHandler;
 class Inventory;
 
-enum class ActorDied
-{
-        no,
-        yes
-};
+enum class ActorDied {no ,yes};
 
 class Actor
 {
@@ -93,10 +89,6 @@ public:
 
         void change_max_spi(const int change,
                             const Verbosity verbosity = Verbosity::verbose);
-
-        void die(const bool is_destroyed,
-                 const bool allow_gore,
-                 const bool allow_drop_items);
 
         void destroy();
 
@@ -197,12 +189,6 @@ public:
                 (void)light;
         }
 
-        void teleport(
-                const ShouldCtrlTele ctrl_tele =
-                ShouldCtrlTele::if_tele_ctrl_prop);
-
-        void teleport(P p, const Array2<bool>& blocked);
-
         bool is_alive() const
         {
                 return state_ == ActorState::alive;
@@ -223,16 +209,16 @@ public:
 
         bool is_player() const;
 
+        std::string death_msg() const;
+
+        // TODO: This will be removed
+        virtual void on_death() {}
+
         P pos;
 
         int delay_;
 
 protected:
-        // TODO: This will be removed
-        virtual void on_death() {}
-
-        std::string death_msg() const;
-
         // Damages worn armor, and returns damage after armor absorbs damage
         int hit_armor(int dmg);
 

@@ -15,29 +15,13 @@ enum class BurnState
         has_burned
 };
 
-enum class WasDestroyed
-{
-        no,
-        yes
-};
+enum class WasDestroyed {no ,yes};
 
-enum class DidTriggerTrap
-{
-        no,
-        yes
-};
+enum class DidTriggerTrap {no ,yes};
 
-enum class DidOpen
-{
-        no,
-        yes
-};
+enum class DidOpen {no ,yes};
 
-enum class DidClose
-{
-        no,
-        yes
-};
+enum class DidClose {no ,yes};
 
 class ItemContainer
 {

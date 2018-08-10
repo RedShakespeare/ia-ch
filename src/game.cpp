@@ -46,6 +46,7 @@
 #include "saving.hpp"
 #include "sdl_base.hpp"
 #include "status_lines.hpp"
+#include "teleport.hpp"
 #include "text_format.hpp"
 #include "throwing.hpp"
 #include "viewport.hpp"
@@ -762,7 +763,7 @@ void handle_player_input(const InputData& input)
 
     case SDLK_F7:
     {
-        map::player->teleport();
+        teleport(*map::player);
     }
     break;
 

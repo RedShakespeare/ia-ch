@@ -5,27 +5,28 @@
 #include <algorithm>
 #include <vector>
 
+#include "actor.hpp"
+#include "actor_factory.hpp"
+#include "actor_mon.hpp"
+#include "actor_mon.hpp"
+#include "actor_player.hpp"
+#include "attack.hpp"
+#include "explosion.hpp"
+#include "feature.hpp"
+#include "feature_door.hpp"
+#include "game_time.hpp"
+#include "inventory.hpp"
+#include "io.hpp"
+#include "item_factory.hpp"
+#include "map.hpp"
+#include "map_parsing.hpp"
+#include "map_travel.hpp"
 #include "property.hpp"
 #include "property_data.hpp"
-#include "property_handler.hpp"
 #include "property_factory.hpp"
-#include "actor.hpp"
-#include "actor_mon.hpp"
-#include "feature.hpp"
-#include "map.hpp"
-#include "actor_player.hpp"
-#include "actor_factory.hpp"
-#include "attack.hpp"
-#include "feature_door.hpp"
-#include "inventory.hpp"
-#include "actor_mon.hpp"
-#include "map_parsing.hpp"
-#include "game_time.hpp"
-#include "map_travel.hpp"
-#include "explosion.hpp"
-#include "io.hpp"
+#include "property_handler.hpp"
 #include "sdl_base.hpp"
-#include "item_factory.hpp"
+#include "teleport.hpp"
 
 // -----------------------------------------------------------------------------
 // Private
@@ -298,7 +299,7 @@ void act()
         // Occasionally teleport (to avoid getting stuck)
         if (rnd::one_in(200))
         {
-                map::player->teleport();
+                teleport(*map::player);
         }
 
         // Occasionally send a TAB command to attack nearby monsters

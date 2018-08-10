@@ -18,23 +18,11 @@ enum class MapParseMode
         append
 };
 
-enum class ParseCells
-{
-        no,
-        yes
-};
+enum class ParseCells {no ,yes};
 
-enum class ParseMobs
-{
-        no,
-        yes
-};
+enum class ParseMobs {no ,yes};
 
-enum class ParseActors
-{
-        no,
-        yes
-};
+enum class ParseActors {no ,yes};
 
 namespace map_parsers
 {

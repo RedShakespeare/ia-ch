@@ -133,11 +133,7 @@ enum class Verbosity
         verbose,
 };
 
-enum class UpdateScreen
-{
-        no,
-        yes
-};
+enum class UpdateScreen {no, yes};
 
 enum class InvType
 {
@@ -145,23 +141,11 @@ enum class InvType
         backpack
 };
 
-enum class DidAction
-{
-        yes,
-        no
-};
+enum class DidAction {no ,yes};
 
-enum class PassTime
-{
-        yes,
-        no
-};
+enum class PassTime {no ,yes};
 
-enum class ConsumeItem
-{
-        yes,
-        no
-};
+enum class ConsumeItem {no ,yes};
 
 enum class ItemRefType
 {
@@ -256,11 +240,7 @@ enum class AttMode
         ranged
 };
 
-enum class AllowWound
-{
-        no,
-        yes
-};
+enum class AllowWound {no ,yes};
 
 enum class ShockLvl
 {
@@ -288,11 +268,7 @@ const std::unordered_map<ShockLvl, std::string> shock_lvl_to_str_map = {
         {ShockLvl::mind_shattering, "mind_shattering"}
 };
 
-enum class MonRoamingAllowed
-{
-        no,
-        yes
-};
+enum class MonRoamingAllowed {no ,yes};
 
 enum class GameEntryMode
 {
@@ -300,11 +276,7 @@ enum class GameEntryMode
         load_game
 };
 
-enum class IsWin
-{
-        no,
-        yes
-};
+enum class IsWin {no ,yes};
 
 enum class SpawnRate
 {
@@ -342,11 +314,7 @@ enum class Axis
         ver
 };
 
-enum class IsSubRoom
-{
-        no,
-        yes
-};
+enum class IsSubRoom {no ,yes};
 
 enum class LgtSize
 {
@@ -355,11 +323,7 @@ enum class LgtSize
         fov
 };
 
-enum class MorePromptOnMsg
-{
-        no,
-        yes
-};
+enum class MorePromptOnMsg {no ,yes};
 
 struct ColoredString
 {

@@ -24,6 +24,7 @@
 #include "property_data.hpp"
 #include "property_handler.hpp"
 #include "sound.hpp"
+#include "teleport.hpp"
 #include "text_format.hpp"
 
 // -----------------------------------------------------------------------------
@@ -956,7 +957,7 @@ void TrapTeleport::trigger()
                 }
         }
 
-        actor_here->teleport();
+        teleport(*actor_here);
 
         TRACE_FUNC_END_VERBOSE;
 }

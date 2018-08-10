@@ -3,6 +3,7 @@
 #include <string>
 #include <cmath>
 
+#include "actor_death.hpp"
 #include "actor_factory.hpp"
 #include "actor_mon.hpp"
 #include "attack.hpp"
@@ -492,7 +493,12 @@ void Player::incr_insanity()
 
         popup::msg(msg, "Insane!", SfxId::insanity_rise);
 
-        die(true, false, false);
+        kill_actor(
+                *this,
+                IsDestroyed::yes,
+                AllowGore::no,
+                AllowDropItems::no);
+
         return;
     }
 

@@ -29,11 +29,7 @@ enum class TrapId
         any
 };
 
-enum class TrapPlacementValid
-{
-        no,
-        yes
-};
+enum class TrapPlacementValid {no ,yes};
 
 class Trap: public Rigid
 {

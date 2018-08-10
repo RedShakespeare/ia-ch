@@ -16,11 +16,7 @@
 // -----------------------------------------------------------------------------
 // Private
 // -----------------------------------------------------------------------------
-enum class AllowSpawnUniqueMon
-{
-        no,
-        yes
-};
+enum class AllowSpawnUniqueMon {no ,yes};
 
 static const int min_dist_to_player = fov_radi_int + 4;
 

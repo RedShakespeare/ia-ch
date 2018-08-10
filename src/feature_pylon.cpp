@@ -1,14 +1,15 @@
 #include "feature_pylon.hpp"
 
-#include "map_parsing.hpp"
-#include "game_time.hpp"
 #include "actor.hpp"
-#include "map.hpp"
-#include "random.hpp"
-#include "msg_log.hpp"
-#include "sound.hpp"
+#include "game_time.hpp"
 #include "knockback.hpp"
+#include "map.hpp"
+#include "map_parsing.hpp"
+#include "msg_log.hpp"
 #include "property.hpp"
+#include "random.hpp"
+#include "sound.hpp"
+#include "teleport.hpp"
 
 // -----------------------------------------------------------------------------
 // Pylon
@@ -426,7 +427,7 @@ void PylonTeleport::on_new_turn_activated()
 
         for (auto actor : actors)
         {
-                actor->teleport();
+                teleport(*actor);
         }
 }
 

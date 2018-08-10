@@ -3,6 +3,7 @@
 #include <algorithm>
 #include <vector>
 
+#include "actor_death.hpp"
 #include "actor_mon.hpp"
 #include "actor_player.hpp"
 #include "attack.hpp"
@@ -154,9 +155,14 @@ void run(Actor& defender,
                                 colors::msg_good());
                 }
 
-                defender.die(true, false, false);
+                kill_actor(
+                        defender,
+                        IsDestroyed::yes,
+                        AllowGore::no,
+                        AllowDropItems::no);
 
                 TRACE_FUNC_END;
+
                 return;
         }
 

@@ -3,22 +3,23 @@
 #include <vector>
 #include <cstring>
 
-#include "io.hpp"
-#include "inventory_handling.hpp"
 #include "actor_player.hpp"
 #include "attack.hpp"
 #include "attack_data.hpp"
-#include "msg_log.hpp"
-#include "look.hpp"
-#include "throwing.hpp"
-#include "map.hpp"
+#include "config.hpp"
+#include "draw_map.hpp"
+#include "explosion.hpp"
+#include "feature_rigid.hpp"
+#include "inventory_handling.hpp"
+#include "io.hpp"
 #include "item_factory.hpp"
 #include "line_calc.hpp"
-#include "config.hpp"
-#include "feature_rigid.hpp"
-#include "explosion.hpp"
+#include "look.hpp"
+#include "map.hpp"
 #include "map_parsing.hpp"
-#include "draw_map.hpp"
+#include "msg_log.hpp"
+#include "teleport.hpp"
+#include "throwing.hpp"
 #include "viewport.hpp"
 
 // -----------------------------------------------------------------------------
@@ -866,7 +867,7 @@ void CtrlTele::handle_input(const InputData& input)
                         if (is_tele_success)
                         {
                                 // Teleport to this exact destination
-                                map::player->teleport(tgt_p, blocked_);
+                                teleport(*map::player, tgt_p, blocked_);
                         }
                         else // Failed to teleport (blocked or roll failed)
                         {
@@ -877,7 +878,7 @@ void CtrlTele::handle_input(const InputData& input)
 
                                 // Run a randomized teleport with teleport
                                 // control disabled
-                                map::player->teleport(ShouldCtrlTele::never);
+                                teleport(*map::player, ShouldCtrlTele::never);
                         }
                 }
         }

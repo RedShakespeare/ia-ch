@@ -429,9 +429,9 @@ std::string Item::name(const ItemRefType ref_type,
         }
 
         const auto& names_used =
-                data_->is_identified ?
-                data_->base_name :
-                data_->base_name_un_id;
+                data_->is_identified
+                ? data_->base_name
+                : data_->base_name_un_id;
 
         const std::string base_name = names_used.names[(size_t)ref_type_used];
 
