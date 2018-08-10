@@ -36,14 +36,14 @@ static std::string get_mon_memory_turns_descr(const Actor& actor)
                 return "";
         }
 
-        const std::string name_a = actor.name_a();
+        const std::string name_a = text_format::first_to_upper(actor.name_a());
 
         if (nr_turns_aware < 50)
         {
                 const std::string nr_turns_aware_str =
                         std::to_string(nr_turns_aware);
 
-                str =
+                return
                         name_a +
                         " will remember hostile creatures for at least " +
                         nr_turns_aware_str +
@@ -51,12 +51,10 @@ static std::string get_mon_memory_turns_descr(const Actor& actor)
         }
         else // Very high number of turns awareness
         {
-                str =
+                return
                         name_a +
                         " remembers hostile creatures for a very long time.";
         }
-
-        return str;
 }
 
 static std::string get_mon_dlvl_descr(const Actor& actor)
@@ -76,7 +74,7 @@ static std::string get_mon_dlvl_descr(const Actor& actor)
 
         if (d.is_unique)
         {
-                str =
+                return
                         d.name_the +
                         " usually dwells beneath level " +
                         dlvl_str +
@@ -84,13 +82,11 @@ static std::string get_mon_dlvl_descr(const Actor& actor)
         }
         else // Not unique
         {
-                str =
+                return
                         "They usually dwell beneath level " +
                         dlvl_str +
                         ".";
         }
-
-        return str;
 }
 
 static std::string mon_speed_type_to_str(const Actor& actor)
@@ -140,8 +136,7 @@ static std::string get_mon_speed_descr(const Actor& actor)
 
         if (d.is_unique)
         {
-                str =
-                        " " +
+                return
                         d.name_the +
                         " appears to move " +
                         speed_type_str +
@@ -149,18 +144,17 @@ static std::string get_mon_speed_descr(const Actor& actor)
         }
         else // Not unique
         {
-                str =
-                        " They appear to move " +
+                return
+                        "They appear to move " +
                         speed_type_str +
                         ".";
         }
-
-        return str;
 }
 
-static void mon_shock_lvl_to_str(const Actor& actor,
-                                 std::string& shock_str_out,
-                                 std::string& punct_str_out)
+static void mon_shock_lvl_to_str(
+        const Actor& actor,
+        std::string& shock_str_out,
+        std::string& punct_str_out)
 {
         shock_str_out = "";
         punct_str_out = "";
@@ -210,7 +204,7 @@ static std::string get_mon_shock_descr(const Actor& actor)
 
         if (actor.data().is_unique)
         {
-                str +=
+                return
                         actor.name_the() +
                         " is " +
                         shock_str +
@@ -219,14 +213,12 @@ static std::string get_mon_shock_descr(const Actor& actor)
         }
         else // Not unique
         {
-                str +=
+                return
                         "They are " +
                         shock_str +
                         " to behold" +
                         shock_punct_str;
         }
-
-        return str;
 }
 
 // -----------------------------------------------------------------------------
@@ -247,7 +239,10 @@ void ViewActorDescr::on_start()
         {
                 const std::string auto_descr = auto_description_str();
 
-                descr += auto_descr;
+                if (!auto_descr.empty())
+                {
+                        descr += " " + auto_descr;
+                }
         }
 
         const auto descr_lines =
@@ -268,6 +263,7 @@ void ViewActorDescr::on_start()
         for (const std::string& s : descr_lines)
         {
                 put_text(s, p, colors::light_white());
+
                 ++p.y;
         }
 
@@ -276,13 +272,12 @@ void ViewActorDescr::on_start()
         // Hit chances
         const std::string indent = "   ";
 
-        const std::vector<std::string> sections =
-                {
-                        "Chance to hit monster",
-                        indent + "Melee",
-                        indent + "Ranged weapon",
-                        indent + "Throwing",
-                };
+        const std::vector<std::string> sections = {
+                "Chance to hit monster",
+                indent + "Melee",
+                indent + "Ranged weapon",
+                indent + "Throwing",
+        };
 
         P p_section(p);
 
@@ -356,15 +351,14 @@ void ViewActorDescr::on_start()
 
         }
 
-        const std::vector<std::string> labels =
-                {
-                        "Skill",
-                        "Weapon",
-                        "Dodging",
-                        "Range",
-                        "Monster state",
-                        "Total*"
-                };
+        const std::vector<std::string> labels = {
+                "Skill",
+                "Weapon",
+                "Dodging",
+                "Range",
+                "Monster state",
+                "Total*"
+        };
 
         const int val_undefined = INT_MAX;
 
