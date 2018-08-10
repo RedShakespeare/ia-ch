@@ -1041,7 +1041,7 @@ void Drop::draw()
                                 y,
                                 key,
                                 is_marked,
-                                ItemRefAttInf::thrown);
+                                ItemRefAttInf::wpn_main_att_mode);
                 }
                 else // This index is in backpack
                 {
@@ -1053,7 +1053,7 @@ void Drop::draw()
                                 y,
                                 key,
                                 is_marked,
-                                ItemRefAttInf::thrown);
+                                ItemRefAttInf::wpn_main_att_mode);
                 }
 
                 ++key;
