@@ -159,10 +159,8 @@ Dice Item::thrown_dmg(const Actor* const attacker) const
 {
         Dice dice;
 
-        const bool is_melee_wpn = data_->type == ItemType::melee_wpn;
-
         // Melee weapons do throw damage based on their melee damage
-        if (is_melee_wpn)
+        if (data_->type == ItemType::melee_wpn)
         {
                 dice = melee_base_dmg_;
 
@@ -341,14 +339,53 @@ std::string Item::name(const ItemRefType ref_type,
                 nr_str = std::to_string(nr_items_);
         }
 
-        std::string dmg_str = "";
+        std::string dmg_str =
+                this->dmg_str(
+                        att_inf,
+                        ItemRefDmg::average_and_melee_plus);
 
-        std::string hit_str;
+        std::string hit_str = hit_mod_str(att_inf);
+
+        std::string inf_str = "";
+
+        if (inf == ItemRefInf::yes)
+        {
+                inf_str = name_inf_str();
+        }
+
+        const auto& names_used =
+                data_->is_identified
+                ? data_->base_name
+                : data_->base_name_un_id;
+
+        const std::string base_name = names_used.names[(size_t)ref_type_used];
+
+        std::string full_name;
+
+        text_format::append_with_space(full_name, nr_str);
+        text_format::append_with_space(full_name, base_name);
+        text_format::append_with_space(full_name, dmg_str);
+        text_format::append_with_space(full_name, hit_str);
+        text_format::append_with_space(full_name, inf_str);
+
+        ASSERT(!full_name.empty());
+
+        return full_name;
+}
+
+std::string Item::hit_mod_str(const ItemRefAttInf att_inf) const
+{
+        auto get_hit_mod_str = [](const int hit_mod) {
+                return
+                        ((hit_mod >= 0) ? "+" : "") +
+                        std::to_string(hit_mod) +
+                        "%";
+        };
 
         ItemRefAttInf att_inf_used = att_inf;
 
-        // If caller requested attack info depending on main attack mode,
-        // setup the attack info used to a specific type
+        // If caller requested attack info depending on main attack mode, set
+        // the attack info used to a specific type
         if (att_inf == ItemRefAttInf::wpn_main_att_mode)
         {
                 switch (data_->main_att_mode)
@@ -371,79 +408,26 @@ std::string Item::name(const ItemRefType ref_type,
                 }
         }
 
-        dmg_str = this->dmg_str(att_inf, ItemRefDmg::average_and_melee_plus);
-
         switch (att_inf_used)
         {
         case ItemRefAttInf::melee:
-        {
-                const int hit_int = data_->melee.hit_chance_mod;
-
-                hit_str =
-                        ((hit_int >= 0) ? "+" : "") +
-                        std::to_string(hit_int) + "%";
-        }
-        break;
+                return get_hit_mod_str(data_->melee.hit_chance_mod);
 
         case ItemRefAttInf::ranged:
-        {
-                const int hit_int = data_->ranged.hit_chance_mod;
-
-                hit_str =
-                        ((hit_int >= 0) ? "+" : "") +
-                        std::to_string(hit_int) + "%";
-        }
-        break;
+                return get_hit_mod_str(data_->ranged.hit_chance_mod);
 
         case ItemRefAttInf::thrown:
-        {
-                const int hit_int = data_->ranged.throw_hit_chance_mod;
-
-                hit_str =
-                        ((hit_int >= 0) ? "+" : "") +
-                        std::to_string(hit_int) + "%";
-        }
-        break;
+                return get_hit_mod_str(data_->ranged.throw_hit_chance_mod);
 
         case ItemRefAttInf::none:
-        {
-        }
-        break;
+                return "";
 
         case ItemRefAttInf::wpn_main_att_mode:
-        {
-                TRACE << "Bad attack info type: "
-                      << (int)att_inf_used
-                      << std::endl;
-
                 ASSERT(false);
-        }
-        break;
-        } // Attack info switch
-
-        std::string inf_str = "";
-
-        if (inf == ItemRefInf::yes)
-        {
-                inf_str = name_inf();
+                break;
         }
 
-        const auto& names_used =
-                data_->is_identified
-                ? data_->base_name
-                : data_->base_name_un_id;
-
-        const std::string base_name = names_used.names[(size_t)ref_type_used];
-
-        const std::string ret =
-                nr_str + (nr_str.empty() ? "" : " ") + base_name +
-                (dmg_str.empty() ? "" : " ") + dmg_str +
-                (hit_str.empty() ? "" : " ") + hit_str +
-                (inf_str.empty() ? "" : " ") + inf_str;
-
-        ASSERT(!ret.empty());
-
-        return ret;
+        return "";
 }
 
 std::string Item::dmg_str(const ItemRefAttInf att_inf,
@@ -458,8 +442,8 @@ std::string Item::dmg_str(const ItemRefAttInf att_inf,
 
         ItemRefAttInf att_inf_used = att_inf;
 
-        // If caller requested attack info depending on main attack mode,
-        // setup the attack info used to a specific type
+        // If caller requested attack info depending on main attack mode, set
+        // the attack info used to a specific type
         if (att_inf == ItemRefAttInf::wpn_main_att_mode)
         {
                 switch (data_->main_att_mode)
@@ -504,12 +488,8 @@ std::string Item::dmg_str(const ItemRefAttInf att_inf,
                         {
                                 dmg_str = str_avg;
 
-                                // Get damage if not used by an actor (no skill
-                                // bonus, etc)
-                                const Dice dmg_dice_raw = melee_dmg(nullptr);
-
                                 const std::string str_plus =
-                                        dmg_dice_raw.str_plus();
+                                        melee_base_dmg_.str_plus();
 
                                 if (!str_plus.empty())
                                 {
@@ -563,18 +543,44 @@ std::string Item::dmg_str(const ItemRefAttInf att_inf,
                     ((data_->main_att_mode == AttMode::melee) &&
                      (melee_base_dmg_.max() > 0)))
                 {
-                        // NOTE: "dmg" will return melee damage if this is a
-                        // melee weapon
+                        // NOTE: "thrown_dmg" will return melee damage if this
+                        // is primarily a melee weapon
                         const Dice dmg_dice = thrown_dmg(map::player);
 
-                        if ((dmg_value == ItemRefDmg::average) ||
-                            (dmg_value == ItemRefDmg::average_and_melee_plus))
+                        const std::string str_avg = dmg_dice.str_avg();
+
+                        switch (dmg_value)
+                        {
+                        case ItemRefDmg::average:
                         {
                                 dmg_str = dmg_dice.str_avg();
                         }
-                        else
+                        break;
+
+                        case ItemRefDmg::average_and_melee_plus:
+                        {
+                                dmg_str = str_avg;
+
+                                if (data_->main_att_mode == AttMode::melee)
+                                {
+                                        const std::string str_plus =
+                                                melee_base_dmg_.str_plus();
+
+                                        if (!str_plus.empty())
+                                        {
+                                                dmg_str +=
+                                                        " {" + str_plus + "}";
+
+                                        }
+                                }
+                        }
+                        break;
+
+                        case ItemRefDmg::dice:
                         {
                                 dmg_str = dmg_dice.str();
+                        }
+                        break;
                         }
                 }
         }
@@ -725,7 +731,7 @@ void Armor::hit(const int dmg)
         }
 }
 
-std::string Armor::name_inf() const
+std::string Armor::name_inf_str() const
 {
         const int ap = armor_points();
 
@@ -842,7 +848,7 @@ void Wpn::set_random_melee_plus()
         melee_base_dmg_.plus = rnd::weighted_choice(weights);
 }
 
-std::string Wpn::name_inf() const
+std::string Wpn::name_inf_str() const
 {
         if (data_->ranged.is_ranged_wpn &&
             !data_->ranged.has_infinite_ammo)

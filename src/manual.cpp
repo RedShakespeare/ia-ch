@@ -12,7 +12,7 @@
 // Private
 // -----------------------------------------------------------------------------
 static const int manual_text_x0 = 1;
-static const int manual_text_x1 = 79; // TODO: Set from standard value
+static const int manual_text_x1 = 78; // TODO: Set from standard value
 static const int manual_text_w = manual_text_x1 - manual_text_x0 + 1;
 
 static std::vector<std::string> read_manual_file()

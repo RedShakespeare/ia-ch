@@ -173,7 +173,7 @@ void Scroll::identify(const Verbosity verbosity)
         }
 }
 
-std::string Scroll::name_inf() const
+std::string Scroll::name_inf_str() const
 {
         return (data_->is_tried && !data_->is_identified) ? "{Tried}" : "";
 }

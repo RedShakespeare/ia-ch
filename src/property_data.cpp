@@ -181,7 +181,7 @@ static void init_data_list()
         add(d);
 
         d.id = PropId::r_spell;
-        d.name = "Spell Resistance";
+        d.name = "Spell resistance";
         d.name_short = "rSpell";
         d.descr = "Cannot be affected by harmful spells";
         d.msg_start_player = "I defy harmful spells!";

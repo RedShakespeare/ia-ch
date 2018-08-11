@@ -159,7 +159,7 @@ void InvState::draw_slot(
         const int y,
         const char key,
         const bool is_marked,
-        const ItemRefAttInf att_info) const
+        const ItemRefAttInf att_inf) const
 {
         // Draw key
         const Color color =
@@ -210,7 +210,7 @@ void InvState::draw_slot(
                         item->name(
                                 ItemRefType::plural,
                                 ItemRefInf::yes,
-                                att_info);
+                                att_inf);
 
                 ASSERT(!item_name.empty());
 
@@ -246,7 +246,7 @@ void InvState::draw_slot(
 
         if (is_marked)
         {
-                draw_detailed_item_descr(item);
+                draw_detailed_item_descr(item, att_inf);
         }
 }
 
@@ -313,7 +313,9 @@ void InvState::draw_backpack_item(
 
         if (is_marked)
         {
-                draw_detailed_item_descr(item);
+                draw_detailed_item_descr(
+                        item,
+                        att_info);
         }
 }
 
@@ -398,7 +400,9 @@ void InvState::draw_weight_pct_and_dots(
                 dots_color);
 }
 
-void InvState::draw_detailed_item_descr(const Item* const item) const
+void InvState::draw_detailed_item_descr(
+        const Item* const item,
+        const ItemRefAttInf att_inf) const
 {
         std::vector<ColoredString> lines;
 
@@ -437,12 +441,14 @@ void InvState::draw_detailed_item_descr(const Item* const item) const
                 if (d.allow_display_dmg)
                 {
                         const std::string dmg_str =
-                                item->dmg_str(ItemRefAttInf::wpn_main_att_mode,
-                                              ItemRefDmg::dice);
+                                item->dmg_str(
+                                        att_inf,
+                                        ItemRefDmg::dice);
 
                         const std::string dmg_str_avg =
-                                item->dmg_str(ItemRefAttInf::wpn_main_att_mode,
-                                              ItemRefDmg::average);
+                                item->dmg_str(
+                                        att_inf,
+                                        ItemRefDmg::average);
 
                         if (!dmg_str.empty() && !dmg_str_avg.empty())
                         {
@@ -453,6 +459,18 @@ void InvState::draw_detailed_item_descr(const Item* const item) const
                                                 " (average " +
                                                 dmg_str_avg +
                                                 ")",
+                                                colors::light_white()));
+                        }
+
+                        const std::string hit_mod_str =
+                                item->hit_mod_str(att_inf);
+
+                        if (!hit_mod_str.empty())
+                        {
+                                lines.push_back(
+                                        ColoredString(
+                                                "Hit chance modifier: " +
+                                                hit_mod_str,
                                                 colors::light_white()));
                         }
                 }
@@ -661,12 +679,19 @@ void BrowseInv::draw()
 
                 if (i < (int)nr_slots)
                 {
+                        const auto slot_id = (SlotId)i;
+
+                        const auto att_inf =
+                                (slot_id == SlotId::thrown)
+                                ? ItemRefAttInf::thrown
+                                : ItemRefAttInf::wpn_main_att_mode;
+
                         draw_slot(
-                                (SlotId)i,
+                                slot_id,
                                 y,
                                 key,
                                 is_marked,
-                                ItemRefAttInf::wpn_main_att_mode);
+                                att_inf);
                 }
                 else // This index is in backpack
                 {
@@ -1470,7 +1495,7 @@ void SelectThrow::on_start()
 void SelectThrow::draw()
 {
         io::draw_text_center(
-                "Throw which item? " + info_screen_tip,
+                "Use which item for throwing? " + info_screen_tip,
                 Panel::screen,
                 P(panels::get_center_x(Panel::screen), 0),
                 colors::title());

@@ -72,36 +72,62 @@ Certain things can be interacted with by moving into them (i.e. by "bumping" the
 --------------------------------------------------------------------------------
 The interface
 --------------------------------------------------------------------------------
-On the right hand side of the screen, information is listed about your character and progress. The following is an example of what these lines can look like:
+On the right hand side of the screen, information is listed about your character and your carried equipment. The following is an example of what these lines can look like:
 
-   Level    1 (60%)
-   Depth         2
-   Health     9/16
-   Spirit      8/8
-   Shock       45%
-   Insanity    12%
+   Level       1 (60%) : Character level, and progress towards next level
+                         This progress is called experience, or "XP"
 
-   Lantern     100
-   Med. Suppl.  24
-   Armor         3
-   Weight      40%
+   Depth             2 : Current floor (or "dungeon level")
 
-   Blind
-   Diseased
+   Health         9/16 : Current and maximum Hit Points
+                         See "Hit Points, Wounds and healing" for more info
 
-From top to bottom, these lines represents:
-   * Character level, and your progress towards next level (experience)
-   * Current floor (or "dungeon level")
-   * Current and maximum Hit Points (see "Hit Points, Wounds and healing")
-   * Current and maximum Spirit Points (see "Spirit and spell casting")
-   * Your level of shock or stress (see "Insanity")
-   * Your level of insanity (see "Insanity")
-   * Remaining number of turns that your Electric Lantern can be used for
-   * Remaining Medical Bag Supplies (see "Hit Points, Wounds and healing")
-   * Armor Points (each point reduces physical damage taken by 1)
-   * Encumbrance from carrying items (from 100% you move at half speed, and
-     from 125% you cannot move at all)
-   * Properties currently affecting you
+   Spirit          8/8 : Current and maximum Spirit Points
+                         See "Spirit and spell casting" for more info
+
+   Shock           45% : Your level of shock or stress
+                         See "Insanity" for more info
+
+   Insanity        12% : Your level of insanity
+                         See "Insanity" for more info
+
+   Wpn    8.0 {+1} +0% : Your currently wielded weapon
+
+                         "8.0" is your average damage with this weapon
+                         (including skills affecting the damage)
+
+                         "{+1}" means that this weapon does one extra point of
+                         damage compared to normal weapons of the same kind
+
+                         "+0%" is this weapon's hit chance modifier (the total
+                         hit chance is affected by several other factors, such
+                         as your character's skill)
+
+   Alt     8.5 +0% 4/7 : Your prepared (alternative) weapon
+                         The weapon in this example is a firearm, "4/7" is the
+                         weapon's loaded and maximum ammunition
+
+   Thrown 4.0 +10% (6) : Weapon selected for throwing
+                         In this example, a stack of throwing knives have been
+                         selected, "(6)" is the number of items remaining in
+                         the stack
+
+   Lantern         100 : Remaining number of turns that your Electric Lantern
+                         can be used for
+
+   Med. Suppl.      24 : Remaining Medical Bag Supplies
+                         See "Hit Points, Wounds and healing" for more info
+
+   Armor             3 : Armor Points
+                         Each point reduces physical damage taken by 1
+
+   Weight          40% : Encumbrance from carrying items
+                         From 100% you move at half speed, and from 125% you
+                         cannot move at all
+
+   Blind               : You are currently blind
+
+   Diseased            : You are currently diseased
 
 The properties at the bottom can be temporary properties (e.g. from spells), permanent intrinsic properties (printed in capital letters, e.g. "CURSED"), or properties granted by wearing or wielding items.
 

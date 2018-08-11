@@ -153,7 +153,7 @@ void Rod::identify(const Verbosity verbosity)
     }
 }
 
-std::string Rod::name_inf() const
+std::string Rod::name_inf_str() const
 {
     if (data_->is_identified)
     {

@@ -256,7 +256,7 @@ void Potion::on_collide(const P& pos, Actor* const actor)
         }
 }
 
-std::string Potion::name_inf() const
+std::string Potion::name_inf_str() const
 {
     std::string str = "";
 

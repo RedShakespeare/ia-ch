@@ -24,6 +24,8 @@ public:
         return colors::violet();
     }
 
+    std::string name_inf_str() const override final;
+
     void on_std_turn_in_inv(const InvType inv_type) override final;
 
     std::vector<std::string> descr() const override final;
@@ -41,8 +43,6 @@ protected:
     {
         return 250;
     }
-
-    std::string name_inf() const override final;
 
     void set_max_charge_turns_left();
 

@@ -678,28 +678,16 @@ std::string ViewActorDescr::auto_description_str() const
 {
         std::string str = "";
 
-        auto append = [](std::string& base, const std::string& addition) {
-
-                if (!base.empty() && !addition.empty())
-                {
-                        base += " ";
-                }
-
-                base += addition;
-        };
-
-        append(str, get_mon_dlvl_descr(actor_));
-
-        append(str, get_mon_speed_descr(actor_));
-
-        append(str, get_mon_memory_turns_descr(actor_));
+        text_format::append_with_space(str, get_mon_dlvl_descr(actor_));
+        text_format::append_with_space(str, get_mon_speed_descr(actor_));
+        text_format::append_with_space(str, get_mon_memory_turns_descr(actor_));
 
         if (actor_.data().is_undead)
         {
-                append(str, "This creature is undead.");
+                text_format::append_with_space(str, "This creature is undead.");
         }
 
-        append(str, get_mon_shock_descr(actor_));
+        text_format::append_with_space(str, get_mon_shock_descr(actor_));
 
         return str;
 }

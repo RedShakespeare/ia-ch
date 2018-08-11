@@ -68,7 +68,7 @@ class HornOfMalice: public Item
 public:
     HornOfMalice(ItemData* const item_data);
 
-    std::string name_inf() const override;
+    std::string name_inf_str() const override;
 
     void save() override;
 
@@ -98,7 +98,7 @@ class HornOfBanishment: public Item
 public:
     HornOfBanishment(ItemData* const item_data);
 
-    std::string name_inf() const override;
+    std::string name_inf_str() const override;
 
     void save() override;
 
@@ -121,7 +121,7 @@ public:
 
     ConsumeItem activate(Actor* const actor) override;
 
-    std::string name_inf() const override;
+    std::string name_inf_str() const override;
 
     void save() override;
 

@@ -8,474 +8,478 @@
 
 enum class PotionAlignment
 {
-    good,
-    bad
+        good,
+        bad
 };
 
 class Potion: public Item
 {
 public:
-    Potion(ItemData* const item_data);
+        Potion(ItemData* const item_data);
 
-    virtual ~Potion() {}
+        virtual ~Potion() {}
 
-    void save() override;
+        void save() override;
 
-    void load() override;
+        void load() override;
 
-    ConsumeItem activate(Actor* const actor) override final;
+        Color interface_color() const override final
+        {
+                return colors::light_blue();
+        }
 
-    Color interface_color() const override final
-    {
-        return colors::light_blue();
-    }
+        std::string name_inf_str() const override final;
 
-    std::vector<std::string> descr() const override final;
+        ConsumeItem activate(Actor* const actor) override final;
 
-    void on_player_reached_new_dlvl() override final;
+        std::vector<std::string> descr() const override final;
 
-    void on_actor_turn_in_inv(const InvType inv_type) override;
+        void on_player_reached_new_dlvl() override final;
 
-    void on_collide(const P& pos, Actor* actor);
+        void on_actor_turn_in_inv(const InvType inv_type) override;
 
-    void identify(const Verbosity verbosity) override final;
+        void on_collide(const P& pos, Actor* actor);
 
-    virtual const std::string real_name() const = 0;
+        void identify(const Verbosity verbosity) override final;
+
+        virtual const std::string real_name() const = 0;
 
 protected:
-    virtual std::string descr_identified() const = 0;
+        virtual std::string descr_identified() const = 0;
 
-    virtual PotionAlignment alignment() const = 0;
+        virtual PotionAlignment alignment() const = 0;
 
-    virtual void collide_hook(const P& pos, Actor* const actor) = 0;
+        virtual void collide_hook(const P& pos, Actor* const actor) = 0;
 
-    virtual void quaff_impl(Actor& actor) = 0;
-
-    std::string name_inf() const override final;
+        virtual void quaff_impl(Actor& actor) = 0;
 
 private:
-    std::string alignment_str() const;
+        std::string alignment_str() const;
 
-    int alignment_feeling_dlvl_countdown_;
-    int alignment_feeling_turn_countdown_;
+        int alignment_feeling_dlvl_countdown_;
+        int alignment_feeling_turn_countdown_;
 };
 
 class PotionVitality: public Potion
 {
 public:
-    PotionVitality(ItemData* const item_data) :
-        Potion(item_data) {}
-    ~PotionVitality() {}
+        PotionVitality(ItemData* const item_data) :
+                Potion(item_data) {}
+        ~PotionVitality() {}
 
-    void quaff_impl(Actor& actor) override;
+        void quaff_impl(Actor& actor) override;
 
-    const std::string real_name() const override
-    {
-        return "Vitality";
-    }
+        const std::string real_name() const override
+        {
+                return "Vitality";
+        }
 
 private:
-    std::string descr_identified() const override
-    {
-        return
-            "This elixir heals all wounds and cures blindness, poisoning, "
-            "infections, disease, weakening, and life sapping. It can even "
-            "temporarily raise the consumers condition past normal levels.";
-    }
+        std::string descr_identified() const override
+        {
+                return
+                        "This elixir heals all wounds and cures blindness, "
+                        "poisoning, infections, disease, weakening, and life "
+                        "sapping. It can even temporarily raise the consumers "
+                        "condition past normal levels.";
+        }
 
-    PotionAlignment alignment() const override
-    {
-        return PotionAlignment::good;
-    }
+        PotionAlignment alignment() const override
+        {
+                return PotionAlignment::good;
+        }
 
-    void collide_hook(const P& pos, Actor* const actor) override;
+        void collide_hook(const P& pos, Actor* const actor) override;
 };
 
 class PotionSpirit: public Potion
 {
 public:
-    PotionSpirit(ItemData* const item_data) :
-        Potion(item_data) {}
-    ~PotionSpirit() {}
+        PotionSpirit(ItemData* const item_data) :
+                Potion(item_data) {}
+        ~PotionSpirit() {}
 
-    void quaff_impl(Actor& actor) override;
+        void quaff_impl(Actor& actor) override;
 
-    const std::string real_name() const override
-    {
-        return "Spirit";
-    }
+        const std::string real_name() const override
+        {
+                return "Spirit";
+        }
 
 private:
-    std::string descr_identified() const override
-    {
-        return "Restores the spirit, and cures spirit sapping.";
-    }
+        std::string descr_identified() const override
+        {
+                return "Restores the spirit, and cures spirit sapping.";
+        }
 
-    PotionAlignment alignment() const override
-    {
-        return PotionAlignment::good;
-    }
+        PotionAlignment alignment() const override
+        {
+                return PotionAlignment::good;
+        }
 
-    void collide_hook(const P& pos, Actor* const actor) override;
+        void collide_hook(const P& pos, Actor* const actor) override;
 };
 
 class PotionBlindness: public Potion
 {
 public:
-    PotionBlindness(ItemData* const item_data) :
-        Potion(item_data) {}
-    ~PotionBlindness() {}
+        PotionBlindness(ItemData* const item_data) :
+                Potion(item_data) {}
+        ~PotionBlindness() {}
 
-    void quaff_impl(Actor& actor) override;
+        void quaff_impl(Actor& actor) override;
 
-    const std::string real_name() const override
-    {
-        return "Blindness";
-    }
+        const std::string real_name() const override
+        {
+                return "Blindness";
+        }
 
 private:
-    std::string descr_identified() const override
-    {
-        return "Causes temporary loss of vision.";
-    }
+        std::string descr_identified() const override
+        {
+                return "Causes temporary loss of vision.";
+        }
 
-    PotionAlignment alignment() const override
-    {
-        return PotionAlignment::bad;
-    }
+        PotionAlignment alignment() const override
+        {
+                return PotionAlignment::bad;
+        }
 
-    void collide_hook(const P& pos, Actor* const actor) override;
+        void collide_hook(const P& pos, Actor* const actor) override;
 };
 
 class PotionParal: public Potion
 {
 public:
-    PotionParal(ItemData* const item_data) :
-        Potion(item_data) {}
-    ~PotionParal() {}
+        PotionParal(ItemData* const item_data) :
+                Potion(item_data) {}
+        ~PotionParal() {}
 
-    void quaff_impl(Actor& actor) override;
+        void quaff_impl(Actor& actor) override;
 
-    const std::string real_name() const override
-    {
-        return "Paralyzation";
-    }
+        const std::string real_name() const override
+        {
+                return "Paralyzation";
+        }
 
 private:
-    std::string descr_identified() const override
-    {
-        return "Causes paralysis.";
-    }
+        std::string descr_identified() const override
+        {
+                return "Causes paralysis.";
+        }
 
-    PotionAlignment alignment() const override
-    {
-        return PotionAlignment::bad;
-    }
+        PotionAlignment alignment() const override
+        {
+                return PotionAlignment::bad;
+        }
 
-    void collide_hook(const P& pos, Actor* const actor) override;
+        void collide_hook(const P& pos, Actor* const actor) override;
 };
 
 class PotionDisease: public Potion
 {
 public:
-    PotionDisease(ItemData* const item_data) :
-        Potion(item_data) {}
-    ~PotionDisease() {}
+        PotionDisease(ItemData* const item_data) :
+                Potion(item_data) {}
+        ~PotionDisease() {}
 
-    void quaff_impl(Actor& actor) override;
+        void quaff_impl(Actor& actor) override;
 
-    const std::string real_name() const override
-    {
-        return "Disease";
-    }
+        const std::string real_name() const override
+        {
+                return "Disease";
+        }
 
 private:
-    std::string descr_identified() const override
-    {
-        return "This foul liquid causes a horrible disease.";
-    }
+        std::string descr_identified() const override
+        {
+                return "This foul liquid causes a horrible disease.";
+        }
 
-    PotionAlignment alignment() const override
-    {
-        return PotionAlignment::bad;
-    }
+        PotionAlignment alignment() const override
+        {
+                return PotionAlignment::bad;
+        }
 
-    void collide_hook(const P& pos, Actor* const actor) override
-    {
-        (void)pos;
-        (void)actor;
-    }
+        void collide_hook(const P& pos, Actor* const actor) override
+        {
+                (void)pos;
+                (void)actor;
+        }
 };
 
 class PotionConf: public Potion
 {
 public:
-    PotionConf(ItemData* const item_data) :
-        Potion(item_data) {}
-    ~PotionConf() {}
-    void quaff_impl(Actor& actor) override;
+        PotionConf(ItemData* const item_data) :
+                Potion(item_data) {}
+        ~PotionConf() {}
+        void quaff_impl(Actor& actor) override;
 
-    const std::string real_name() const override
-    {
-        return "Confusion";
-    }
+        const std::string real_name() const override
+        {
+                return "Confusion";
+        }
 
 private:
-    std::string descr_identified() const override
-    {
-        return "Causes confusion.";
-    }
+        std::string descr_identified() const override
+        {
+                return "Causes confusion.";
+        }
 
-    PotionAlignment alignment() const override
-    {
-        return PotionAlignment::bad;
-    }
+        PotionAlignment alignment() const override
+        {
+                return PotionAlignment::bad;
+        }
 
-    void collide_hook(const P& pos, Actor* const actor) override;
+        void collide_hook(const P& pos, Actor* const actor) override;
 };
 
 class PotionFortitude: public Potion
 {
 public:
-    PotionFortitude(ItemData* const item_data) :
-        Potion(item_data) {}
+        PotionFortitude(ItemData* const item_data) :
+                Potion(item_data) {}
 
-    ~PotionFortitude() {}
+        ~PotionFortitude() {}
 
-    void quaff_impl(Actor& actor) override;
+        void quaff_impl(Actor& actor) override;
 
-    const std::string real_name() const override
-    {
-        return "Fortitude";
-    }
+        const std::string real_name() const override
+        {
+                return "Fortitude";
+        }
 
 private:
-    std::string descr_identified() const override
-    {
-        return
-            "Gives the consumer complete peace of mind, and cures mind "
-            "sapping.";
-    }
+        std::string descr_identified() const override
+        {
+                return
+                        "Gives the consumer complete peace of mind, and cures "
+                        "mind sapping.";
+        }
 
-    PotionAlignment alignment() const override
-    {
-        return PotionAlignment::good;
-    }
+        PotionAlignment alignment() const override
+        {
+                return PotionAlignment::good;
+        }
 
-    void collide_hook(const P& pos, Actor* const actor) override;
+        void collide_hook(const P& pos, Actor* const actor) override;
 };
 
 class PotionPoison: public Potion
 {
 public:
-    PotionPoison(ItemData* const item_data) :
-        Potion(item_data) {}
-    ~PotionPoison() {}
+        PotionPoison(ItemData* const item_data) :
+                Potion(item_data) {}
+        ~PotionPoison() {}
 
-    void quaff_impl(Actor& actor) override;
+        void quaff_impl(Actor& actor) override;
 
-    const std::string real_name() const override
-    {
-        return "Poison";
-    }
+        const std::string real_name() const override
+        {
+                return "Poison";
+        }
 
 private:
-    std::string descr_identified() const override
-    {
-        return "A deadly brew.";
-    }
+        std::string descr_identified() const override
+        {
+                return "A deadly brew.";
+        }
 
-    PotionAlignment alignment() const override
-    {
-        return PotionAlignment::bad;
-    }
+        PotionAlignment alignment() const override
+        {
+                return PotionAlignment::bad;
+        }
 
-    void collide_hook(const P& pos, Actor* const actor) override;
+        void collide_hook(const P& pos, Actor* const actor) override;
 };
 
 class PotionInsight: public Potion
 {
 public:
-    PotionInsight(ItemData* const item_data) :
-        Potion(item_data) {}
-    ~PotionInsight() {}
+        PotionInsight(ItemData* const item_data) :
+                Potion(item_data) {}
+        ~PotionInsight() {}
 
-    void quaff_impl(Actor& actor) override;
+        void quaff_impl(Actor& actor) override;
 
-    const std::string real_name() const override
-    {
-        return "Insight";
-    }
+        const std::string real_name() const override
+        {
+                return "Insight";
+        }
 
 private:
-    std::string descr_identified() const override
-    {
-        return "This strange concoction causes a sudden flash of intuition.";
-    }
+        std::string descr_identified() const override
+        {
+                return
+                        "This strange concoction causes a sudden flash of "
+                        "intuition.";
+        }
 
-    PotionAlignment alignment() const override
-    {
-        return PotionAlignment::good;
-    }
+        PotionAlignment alignment() const override
+        {
+                return PotionAlignment::good;
+        }
 
-    void collide_hook(const P& pos, Actor* const actor) override
-    {
-        (void)pos;
-        (void)actor;
-    }
+        void collide_hook(const P& pos, Actor* const actor) override
+        {
+                (void)pos;
+                (void)actor;
+        }
 };
 
 
 class PotionRFire: public Potion
 {
 public:
-    PotionRFire(ItemData* const item_data) :
-        Potion(item_data) {}
-    ~PotionRFire() {}
+        PotionRFire(ItemData* const item_data) :
+                Potion(item_data) {}
+        ~PotionRFire() {}
 
-    void quaff_impl(Actor& actor) override;
+        void quaff_impl(Actor& actor) override;
 
-    const std::string real_name() const override
-    {
-        return "Fire Resistance";
-    }
+        const std::string real_name() const override
+        {
+                return "Fire Resistance";
+        }
 
 private:
-    std::string descr_identified() const override
-    {
-        return "Protects the consumer from fire.";
-    }
+        std::string descr_identified() const override
+        {
+                return "Protects the consumer from fire.";
+        }
 
-    PotionAlignment alignment() const override
-    {
-        return PotionAlignment::good;
-    }
+        PotionAlignment alignment() const override
+        {
+                return PotionAlignment::good;
+        }
 
-    void collide_hook(const P& pos, Actor* const actor) override;
+        void collide_hook(const P& pos, Actor* const actor) override;
 };
 
 class PotionCuring: public Potion
 {
 public:
-    PotionCuring(ItemData* const item_data) :
-        Potion(item_data) {}
-    ~PotionCuring() {}
+        PotionCuring(ItemData* const item_data) :
+                Potion(item_data) {}
+        ~PotionCuring() {}
 
-    void quaff_impl(Actor& actor) override;
+        void quaff_impl(Actor& actor) override;
 
-    const std::string real_name() const override
-    {
-        return "Curing";
-    }
+        const std::string real_name() const override
+        {
+                return "Curing";
+        }
 
 private:
-    std::string descr_identified() const override
-    {
-        return
-            "Cures blindness, poisoning, infections, disease, weakening, "
-            "and life sapping, and restores the consumers health by a small "
-            "amount.";
-    }
+        std::string descr_identified() const override
+        {
+                return
+                        "Cures blindness, poisoning, infections, disease, "
+                        "weakening, and life sapping, and restores the "
+                        "consumers health by a small amount.";
+        }
 
-    PotionAlignment alignment() const override
-    {
-        return PotionAlignment::good;
-    }
+        PotionAlignment alignment() const override
+        {
+                return PotionAlignment::good;
+        }
 
-    void collide_hook(const P& pos, Actor* const actor) override;
+        void collide_hook(const P& pos, Actor* const actor) override;
 };
 
 class PotionRElec: public Potion
 {
 public:
-    PotionRElec(ItemData* const item_data) :
-        Potion(item_data) {}
-    ~PotionRElec() {}
+        PotionRElec(ItemData* const item_data) :
+                Potion(item_data) {}
+        ~PotionRElec() {}
 
-    void quaff_impl(Actor& actor) override;
+        void quaff_impl(Actor& actor) override;
 
-    const std::string real_name() const override
-    {
-        return "Insulation";
-    }
+        const std::string real_name() const override
+        {
+                return "Insulation";
+        }
 
 private:
-    std::string descr_identified() const override
-    {
-        return "Protects the consumer from electricity.";
-    }
+        std::string descr_identified() const override
+        {
+                return "Protects the consumer from electricity.";
+        }
 
-    PotionAlignment alignment() const override
-    {
-        return PotionAlignment::good;
-    }
+        PotionAlignment alignment() const override
+        {
+                return PotionAlignment::good;
+        }
 
-    void collide_hook(const P& pos, Actor* const actor) override;
+        void collide_hook(const P& pos, Actor* const actor) override;
 };
 
 class PotionDescent: public Potion
 {
 public:
-    PotionDescent(ItemData* const item_data) :
-        Potion(item_data) {}
-    ~PotionDescent() {}
+        PotionDescent(ItemData* const item_data) :
+                Potion(item_data) {}
+        ~PotionDescent() {}
 
-    void quaff_impl(Actor& actor) override;
+        void quaff_impl(Actor& actor) override;
 
-    const std::string real_name() const override
-    {
-        return "Descent";
-    }
+        const std::string real_name() const override
+        {
+                return "Descent";
+        }
 
 private:
-    std::string descr_identified() const override
-    {
-        return "A bizarre liquid that causes the consumer to dematerialize and "
-                "sink through the ground.";
-    }
+        std::string descr_identified() const override
+        {
+                return "A bizarre liquid that causes the consumer to "
+                        "dematerialize and sink through the ground.";
+        }
 
-    // TODO: Not sure about the alignment for this one...
-    PotionAlignment alignment() const override
-    {
-        return PotionAlignment::good;
-    }
+        // TODO: Not sure about the alignment for this one...
+        PotionAlignment alignment() const override
+        {
+                return PotionAlignment::good;
+        }
 
-    void collide_hook(const P& pos, Actor* const actor) override
-    {
-        (void)pos;
-        (void)actor;
-    }
+        void collide_hook(const P& pos, Actor* const actor) override
+        {
+                (void)pos;
+                (void)actor;
+        }
 };
 
 // TODO: Should be called "Potion of Cloaking"
 class PotionInvis: public Potion
 {
 public:
-    PotionInvis(ItemData* const item_data) :
-        Potion(item_data) {}
-    ~PotionInvis() {}
+        PotionInvis(ItemData* const item_data) :
+                Potion(item_data) {}
+        ~PotionInvis() {}
 
-    void quaff_impl(Actor& actor) override;
+        void quaff_impl(Actor& actor) override;
 
-    const std::string real_name() const override
-    {
-        return "Invisibility";
-    }
+        const std::string real_name() const override
+        {
+                return "Invisibility";
+        }
 
 private:
-    std::string descr_identified() const override
-    {
-        return
-            "Makes the consumer invisible to normal vision for a brief time. "
-            "Attacking or casting spells immediately reveals the consumer.";
-    }
+        std::string descr_identified() const override
+        {
+                return
+                        "Makes the consumer invisible to normal vision for a "
+                        "brief time. Attacking or casting spells immediately "
+                        "reveals the consumer.";
+        }
 
-    PotionAlignment alignment() const override
-    {
-        return PotionAlignment::good;
-    }
+        PotionAlignment alignment() const override
+        {
+                return PotionAlignment::good;
+        }
 
-    void collide_hook(const P& pos, Actor* const actor) override;
+        void collide_hook(const P& pos, Actor* const actor) override;
 };
 
 namespace potion_handling
@@ -483,9 +487,9 @@ namespace potion_handling
 
 struct PotionLook
 {
-    std::string name_plain;
-    std::string name_a;
-    Color color;
+        std::string name_plain;
+        std::string name_a;
+        Color color;
 };
 
 void init();

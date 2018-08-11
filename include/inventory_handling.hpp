@@ -50,7 +50,9 @@ protected:
 
         // void draw_item_symbol(const Item& item, const P& p) const;
 
-        void draw_detailed_item_descr(const Item* const item) const;
+        void draw_detailed_item_descr(
+                const Item* const item,
+                const ItemRefAttInf att_inf) const;
 };
 
 class BrowseInv: public InvState

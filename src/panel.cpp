@@ -151,7 +151,7 @@ void init(const P max_gui_dims)
         }
 
         // (Finalized later)
-        set_panel_area(Panel::player_stats, 0, 0, 16, max_gui_dims.y - 1);
+        set_panel_area(Panel::player_stats, 0, 0, 21, max_gui_dims.y - 1);
 
         // (Finalized later)
         set_panel_area(Panel::log_border, 0, 0, 0, 3);

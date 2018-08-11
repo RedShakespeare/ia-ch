@@ -877,8 +877,9 @@ void init()
         "Commonly associated with deception, stealth, and treachery. Many "
         "assassinations have been carried out with the use of a dagger.",
 
-        "Attacking an unaware opponent with a dagger does +300% damage "
-        "(in addition to the normal +50% damage from stealth attacks).",
+        "Melee attacks performed with a dagger against an unaware opponent "
+        "does +300% damage (in addition to the normal +50% damage from stealth "
+        "attacks).",
 
         "Melee attacks with daggers are silent."
     };

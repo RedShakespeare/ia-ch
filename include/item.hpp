@@ -50,8 +50,16 @@ public:
 
         virtual std::vector<std::string> descr() const;
 
+        std::string hit_mod_str(const ItemRefAttInf att_inf) const;
+
         std::string dmg_str(const ItemRefAttInf att_inf,
                             const ItemRefDmg dmg_value) const;
+
+        // E.g. "{Off}" for Lanterns, or "4/7" for Pistols
+        virtual std::string name_inf_str() const
+        {
+                return "";
+        }
 
         virtual void identify(const Verbosity verbosity)
         {
@@ -177,12 +185,6 @@ public:
         Dice ranged_base_dmg_;
 
 protected:
-        // E.g. "{Off}" for Lanterns, or "4/7" for Pistols
-        virtual std::string name_inf() const
-        {
-                return "";
-        }
-
         virtual void on_pickup_hook() {}
 
         virtual void on_equip_hook(const Verbosity verbosity)
@@ -231,6 +233,8 @@ public:
                 return colors::gray();
         }
 
+        std::string name_inf_str() const override;
+
         int armor_points() const;
 
         int durability() const
@@ -251,8 +255,6 @@ public:
         void hit(const int dmg);
 
 protected:
-        std::string name_inf() const override;
-
         int dur_;
 };
 
@@ -300,6 +302,8 @@ public:
                 return colors::gray();
         }
 
+        std::string name_inf_str() const override;
+
         void set_random_melee_plus();
 
         const ItemData& ammo_data()
@@ -310,8 +314,6 @@ public:
         int ammo_loaded_;
 
 protected:
-        std::string name_inf() const override;
-
         ItemData* ammo_data_;
 };
 
@@ -449,7 +451,10 @@ public:
 
         ~AmmoMag() {}
 
-        int ammo_;
+        std::string name_inf_str() const override
+        {
+                return "{" + std::to_string(ammo_) + "}";
+        }
 
         void set_full_ammo();
 
@@ -457,11 +462,7 @@ public:
 
         void load() override;
 
-protected:
-        std::string name_inf() const override
-        {
-                return "{" + std::to_string(ammo_) + "}";
-        }
+        int ammo_;
 };
 
 enum class MedBagAction
@@ -482,6 +483,16 @@ public:
 
         void load() override;
 
+        Color interface_color() const override
+        {
+                return colors::green();
+        }
+
+        std::string name_inf_str() const override
+        {
+                return "{" + std::to_string(nr_supplies_) + "}";
+        }
+
         void on_pickup_hook() override;
 
         ConsumeItem activate(Actor* const actor) override;
@@ -492,11 +503,6 @@ public:
 
         void finish_current_action();
 
-        Color interface_color() const override
-        {
-                return colors::green();
-        }
-
         int nr_supplies_;
 
 protected:
@@ -505,11 +511,6 @@ protected:
         int tot_suppl_for_action(const MedBagAction action) const;
 
         int tot_turns_for_action(const MedBagAction action) const;
-
-        std::string name_inf() const override
-        {
-                return "{" + std::to_string(nr_supplies_) + "}";
-        }
 
         int nr_turns_left_action_;
 
@@ -535,6 +536,11 @@ public:
                 Headwear        (item_data),
                 nr_turns_left_  (60) {}
 
+        std::string name_inf_str() const override
+        {
+                return "{" + std::to_string(nr_turns_left_) + "}";
+        }
+
         void on_equip_hook(const Verbosity verbosity) override;
 
         void on_unequip_hook() override;
@@ -542,11 +548,6 @@ public:
         void decr_turns_left(Inventory& carrier_inv);
 
 protected:
-        std::string name_inf() const override
-        {
-                return "{" + std::to_string(nr_turns_left_) + "}";
-        }
-
         int nr_turns_left_;
 };
 

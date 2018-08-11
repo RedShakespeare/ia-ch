@@ -4,11 +4,12 @@
 
 #include <algorithm>
 
-namespace
-{
+// -----------------------------------------------------------------------------
+// Private
+// -----------------------------------------------------------------------------
 
 // Reads and removes the first word of the string.
-std::string read_and_remove_word(std::string& line)
+static std::string read_and_remove_word(std::string& line)
 {
         std::string str = "";
 
@@ -29,16 +30,17 @@ std::string read_and_remove_word(std::string& line)
         return str;
 }
 
-bool is_word_fit(const std::string& current_string,
-                 const std::string& word_to_fit,
-                 const size_t max_w)
+static bool is_word_fit(
+        const std::string& current_string,
+        const std::string& word_to_fit,
+        const size_t max_w)
 {
         return (current_string.size() + word_to_fit.size() + 1) <= max_w;
 }
 
-} // namespace
-
-
+// -----------------------------------------------------------------------------
+// text_format
+// -----------------------------------------------------------------------------
 namespace text_format
 {
 
@@ -117,9 +119,10 @@ std::vector<std::string> space_separated_list(const std::string& line)
         return result;
 }
 
-std::string replace_all(const std::string& line,
-                        const std::string& from,
-                        const std::string& to)
+std::string replace_all(
+        const std::string& line,
+        const std::string& from,
+        const std::string& to)
 {
         std::string result;
 
@@ -143,9 +146,10 @@ std::string replace_all(const std::string& line,
         return result;
 }
 
-std::string pad_before_to(const std::string& str,
-                          const size_t tot_w,
-                          const char c)
+std::string pad_before(
+        const std::string& str,
+        const size_t tot_w,
+        const char c)
 {
         std::string result = str;
 
@@ -157,9 +161,10 @@ std::string pad_before_to(const std::string& str,
         return result;
 }
 
-std::string pad_after_to(const std::string& str,
-                         const size_t tot_w,
-                         const char c)
+std::string pad_after(
+        const std::string& str,
+        const size_t tot_w,
+        const char c)
 {
         std::string result = str;
 
@@ -202,6 +207,18 @@ std::string all_to_upper(const std::string& str)
         transform(begin(result), end(result), begin(result), ::toupper);
 
         return result;
+}
+
+void append_with_space(
+        std::string& base_str,
+        const std::string& addition)
+{
+        if (!base_str.empty() && !addition.empty())
+        {
+                base_str += " ";
+        }
+
+        base_str += addition;
 }
 
 } // text_format

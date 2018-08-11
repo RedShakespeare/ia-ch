@@ -100,7 +100,7 @@ HornOfMalice::HornOfMalice(ItemData* const item_data) :
 
 }
 
-std::string HornOfMalice::name_inf() const
+std::string HornOfMalice::name_inf_str() const
 {
     return "{" + std::to_string(charges_) + "}";
 }
@@ -175,7 +175,7 @@ HornOfBanishment::HornOfBanishment(ItemData* const item_data) :
 
 }
 
-std::string HornOfBanishment::name_inf() const
+std::string HornOfBanishment::name_inf_str() const
 {
     return "{" + std::to_string(charges_) + "}";
 }
@@ -233,7 +233,7 @@ Clockwork::Clockwork(ItemData* const item_data) :
 
 }
 
-std::string Clockwork::name_inf() const
+std::string Clockwork::name_inf_str() const
 {
     return "{" + std::to_string(charges_) + "}";
 }

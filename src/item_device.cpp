@@ -253,7 +253,7 @@ ConsumeItem StrangeDevice::activate(Actor* const actor)
         return consumed;
 }
 
-std::string StrangeDevice::name_inf() const
+std::string StrangeDevice::name_inf_str() const
 {
         if (data_->is_identified)
         {
@@ -405,7 +405,7 @@ DeviceLantern::DeviceLantern(ItemData* const item_data) :
         nr_turns_left_(100),
         is_activated_(false) {}
 
-std::string DeviceLantern::name_inf() const
+std::string DeviceLantern::name_inf_str() const
 {
         std::string inf = "{" + std::to_string(nr_turns_left_);
 

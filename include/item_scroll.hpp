@@ -9,28 +9,27 @@ class Spell;
 class Scroll: public Item
 {
 public:
-    Scroll(ItemData* const item_data) :
-        Item(item_data) {}
+        Scroll(ItemData* const item_data) :
+                Item(item_data) {}
 
-    ~Scroll() {}
+        ~Scroll() {}
 
-    Color interface_color() const override
-    {
-        return colors::magenta();
-    }
+        Color interface_color() const override
+        {
+                return colors::magenta();
+        }
 
-    ConsumeItem activate(Actor* const actor) override;
+        std::string name_inf_str() const override;
 
-    const std::string real_name() const;
+        ConsumeItem activate(Actor* const actor) override;
 
-    std::vector<std::string> descr() const override;
+        const std::string real_name() const;
 
-    void identify(const Verbosity verbosity) override;
+        std::vector<std::string> descr() const override;
 
-    Spell* make_spell() const;
+        void identify(const Verbosity verbosity) override;
 
-protected:
-    std::string name_inf() const override;
+        Spell* make_spell() const;
 };
 
 namespace scroll_handling
@@ -43,4 +42,4 @@ void load();
 
 } // scroll_handling
 
-#endif
+#endif // ITEM_SCROLL_HPP
