@@ -726,13 +726,13 @@ ActorDied Actor::hit(int dmg,
 
         const auto allow_gore =
                 is_on_bottomless
-                ? AllowGore::yes
-                : AllowGore::no;
+                ? AllowGore::no
+                : AllowGore::yes;
 
         const auto allow_drop_items =
                 is_on_bottomless
-                ? AllowDropItems::yes
-                : AllowDropItems::no;
+                ? AllowDropItems::no
+                : AllowDropItems::yes;
 
         kill_actor(
                 *this,
