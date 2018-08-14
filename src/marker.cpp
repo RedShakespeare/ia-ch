@@ -464,7 +464,7 @@ void Viewing::handle_input(const InputData& input)
 // -----------------------------------------------------------------------------
 void Aiming::on_moved()
 {
-        look::print_location_info_msgs(pos_);
+        look::print_living_actor_info_msg(pos_);
 
         const bool is_in_range =
                 king_dist(origin_, pos_) < red_from_king_dist();
@@ -577,7 +577,7 @@ int Aiming::red_from_king_dist() const
 // -----------------------------------------------------------------------------
 void Throwing::on_moved()
 {
-        look::print_location_info_msgs(pos_);
+        look::print_living_actor_info_msg(pos_);
 
         const bool is_in_range =
                 king_dist(origin_, pos_) < red_from_king_dist();

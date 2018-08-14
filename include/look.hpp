@@ -64,6 +64,8 @@ namespace look
 
 void print_location_info_msgs(const P& pos);
 
+void print_living_actor_info_msg(const P& pos);
+
 } // look
 
 #endif // LOOK_HPP

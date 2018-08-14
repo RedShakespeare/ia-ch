@@ -1053,6 +1053,10 @@ void clear_screen()
 
 P min_screen_gui_dims()
 {
+        // Use the maximum of:
+        // * The hard minimum required number of gui cells
+        // * The minimum required resolution, converted to gui cells, rounded up
+
         // Hard minimum required gui cells
         const int hard_min_gui_cells_x = 80;
         const int hard_min_gui_cells_y = 25;
@@ -1063,10 +1067,6 @@ P min_screen_gui_dims()
 
         const int gui_cell_w = config::gui_cell_px_w();
         const int gui_cell_h = config::gui_cell_px_h();
-
-        // Use the maximum of:
-        // * The minimum required resolution, converted to gui cells, rounded up
-        // * The hard minimum required number of gui cells
 
         int min_gui_cells_x = (min_res_w + gui_cell_w - 1) / gui_cell_w;
         int min_gui_cells_y = (min_res_h + gui_cell_h - 1) / gui_cell_h;

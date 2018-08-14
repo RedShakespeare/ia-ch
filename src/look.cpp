@@ -711,12 +711,8 @@ void print_location_info_msgs(const P& pos)
                 is_cell_seen = cell->is_seen_by_player;
         }
 
-        const std::string i_see_here_str = "I see here:";
-
         if (is_cell_seen)
         {
-                msg_log::add(i_see_here_str);
-
                 // Describe rigid
                 std::string str = cell->rigid->name(Article::a);
 
@@ -770,43 +766,41 @@ void print_location_info_msgs(const P& pos)
 
         }
 
-        // Describe living actor
-        Actor* actor = map::actor_at_pos(pos);
-
-        if (actor &&
-            !actor->is_player() &&
-            actor->is_alive())
-        {
-                if (map::player->can_see_actor(*actor))
-                {
-                        if (!is_cell_seen)
-                        {
-                                // The player only sees the actor but not the
-                                // cell (e.g. through infravision) - print the
-                                // initial "I see here" message
-                                msg_log::add(i_see_here_str);
-                        }
-
-                        const std::string str =
-                                text_format::first_to_upper(
-                                        actor->name_a());
-
-                        msg_log::add(str + ".");
-                }
-                else // Cannot see actor
-                {
-                        const Mon* const mon = static_cast<Mon*>(actor);
-
-                        if (mon->player_aware_of_me_counter_ > 0)
-                        {
-                                msg_log::add("There is a creature here.");
-                        }
-                }
-        }
+        print_living_actor_info_msg(pos);
 
         if (!is_cell_seen)
         {
                 msg_log::add("I have no vision here.");
+        }
+}
+
+void print_living_actor_info_msg(const P& pos)
+{
+        Actor* actor = map::actor_at_pos(pos);
+
+        if (!actor ||
+            actor->is_player() ||
+            !actor->is_alive())
+        {
+                return;
+        }
+
+        if (map::player->can_see_actor(*actor))
+        {
+                const std::string str =
+                        text_format::first_to_upper(
+                                actor->name_a());
+
+                msg_log::add(str + ".");
+        }
+        else // Cannot see actor
+        {
+                const Mon* const mon = static_cast<Mon*>(actor);
+
+                if (mon->player_aware_of_me_counter_ > 0)
+                {
+                        msg_log::add("There is a creature here.");
+                }
         }
 }
 
