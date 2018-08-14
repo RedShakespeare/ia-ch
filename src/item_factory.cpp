@@ -182,7 +182,7 @@ Item* make(const ItemId item_id, const int nr_items)
     case ItemId::scroll_res:
     case ItemId::scroll_summon_mon:
     case ItemId::scroll_light:
-    case ItemId::scroll_anim_wpns:
+    case ItemId::scroll_spectral_wpns:
     case ItemId::scroll_transmut:
     case ItemId::scroll_heal:
     case ItemId::scroll_see_invis:

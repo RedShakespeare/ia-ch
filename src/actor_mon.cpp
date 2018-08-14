@@ -1441,43 +1441,38 @@ Color StrangeColor::color() const
         return color;
 }
 
-AnimatedWpn::AnimatedWpn() :
-        Mon(),
-        nr_turns_until_drop_(rnd::range(225, 250)) {}
+SpectralWpn::SpectralWpn() :
+        Mon() {}
 
-void AnimatedWpn::on_death()
-{
-        inv_->remove_item_in_slot(SlotId::wpn,
-                                  true); // Delete the item
-}
-
-std::string AnimatedWpn::name_the() const
+std::string SpectralWpn::name_the() const
 {
         Item* item = inv_->item_in_slot(SlotId::wpn);
 
         ASSERT(item);
 
-        const std::string name = item->name(ItemRefType::plain,
-                                            ItemRefInf::yes,
-                                            ItemRefAttInf::none);
+        const std::string name = item->name(
+                ItemRefType::plain,
+                ItemRefInf::yes,
+                ItemRefAttInf::none);
 
-        return "The floating " + name;
+        return "The Spectral " + name;
 }
 
-std::string AnimatedWpn::name_a() const
+std::string SpectralWpn::name_a() const
 {
         Item* item = inv_->item_in_slot(SlotId::wpn);
 
         ASSERT(item);
 
-        const std::string name = item->name(ItemRefType::plain,
-                                            ItemRefInf::yes,
-                                            ItemRefAttInf::none);
+        const std::string name = item->name(
+                ItemRefType::plain,
+                ItemRefInf::yes,
+                ItemRefAttInf::none);
 
-        return "A floating " + name;
+        return "A Spectral " + name;
 }
 
-char AnimatedWpn::character() const
+char SpectralWpn::character() const
 {
         Item* item = inv_->item_in_slot(SlotId::wpn);
 
@@ -1486,16 +1481,7 @@ char AnimatedWpn::character() const
         return item->character();
 }
 
-Color AnimatedWpn::color() const
-{
-        Item* item = inv_->item_in_slot(SlotId::wpn);
-
-        ASSERT(item);
-
-        return item->color();
-}
-
-TileId AnimatedWpn::tile() const
+TileId SpectralWpn::tile() const
 {
         Item* item = inv_->item_in_slot(SlotId::wpn);
 
@@ -1504,7 +1490,7 @@ TileId AnimatedWpn::tile() const
         return item->tile();
 }
 
-std::string AnimatedWpn::descr() const
+std::string SpectralWpn::descr() const
 {
         Item* item = inv_->item_in_slot(SlotId::wpn);
 
@@ -1519,62 +1505,6 @@ std::string AnimatedWpn::descr() const
         str += ", floating through the air as if wielded by an invisible hand.";
 
         return str;
-}
-
-void AnimatedWpn::on_std_turn_hook()
-{
-        if (!is_alive())
-        {
-                return;
-        }
-
-        if (nr_turns_until_drop_ <= 0)
-        {
-                drop();
-        }
-        else // Not yet time to die
-        {
-                --nr_turns_until_drop_;
-        }
-}
-
-void AnimatedWpn::drop()
-{
-        if (map::player->can_see_actor(*this))
-        {
-                Item* item = inv_->item_in_slot(SlotId::wpn);
-
-                ASSERT(item);
-
-                if (item)
-                {
-                        const std::string name =
-                                item->name(ItemRefType::plain,
-                                           ItemRefInf::yes,
-                                           ItemRefAttInf::none);
-
-                        std::string msg =
-                                "The " +
-                                name +
-                                " suddenly becomes lifeless and drops down.";
-
-                        msg_log::add(msg);
-                }
-        }
-
-        state_ = ActorState::destroyed;
-
-        Item* item =
-                inv_->remove_item_in_slot(
-                        SlotId::wpn,
-                        false); // Do not delete the item
-
-        ASSERT(item);
-
-        if (item)
-        {
-                item_drop::drop_item_on_map(pos, *item);
-        }
 }
 
 std::string get_cultist_phrase()

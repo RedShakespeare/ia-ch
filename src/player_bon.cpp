@@ -522,13 +522,13 @@ std::string trait_descr(const Trait id)
 
         case Trait::strong_spirit:
                 return
-                        "+2 Spirit Points, increased Spirit regeneration rate,"
+                        "+2 Spirit Points, increased Spirit regeneration rate, "
                         "it takes 75-100 turns to regain spell resistance "
                         "after a spell is blocked";
 
         case Trait::mighty_spirit:
                 return
-                        "+2 Spirit Points, increased Spirit regeneration rate,"
+                        "+2 Spirit Points, increased Spirit regeneration rate, "
                         "it takes 25-50 turns to regain spell resistance "
                         "after a spell is blocked";
 
@@ -1084,9 +1084,6 @@ void on_player_gained_lvl(const int new_lvl)
         case Bg::occultist_transmut:
                 if (is_occultist_spell_incr_lvl(new_lvl))
                 {
-                        player_spells::incr_spell_skill(
-                                SpellId::anim_wpns);
-
                         // NOTE: This could perhaps be considered an
                         // Enchanetment spell, but the way the spell description
                         // is phrased, it sounds a lot more like Alteration

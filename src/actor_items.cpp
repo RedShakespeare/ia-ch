@@ -355,8 +355,7 @@ static void make_item_set_firearm(Actor& actor)
         // If we are on an early dungeon level, lean heavily towards pistols
         const bool is_low_dlvl = map::dlvl < 4;
 
-        std::vector<int> weights =
-        {
+        std::vector<int> weights = {
                 (is_low_dlvl ? 20 : 6), // Pistol
                 3,                      // Pump shotgun
                 3,                      // Sawed-off shotgun
@@ -478,8 +477,7 @@ static void make_item_set_priest_dagger(Actor& actor)
 {
         Item* item = item_factory::make(ItemId::dagger);
 
-        const std::vector<int> weights =
-        {
+        const std::vector<int> weights = {
                 6,
                 3,
                 1

@@ -33,8 +33,8 @@ static Actor* make_actor_from_id(const ActorId id)
         case ActorId::strange_color:
                 return new StrangeColor();
 
-        case ActorId::animated_wpn:
-                return new AnimatedWpn();
+        case ActorId::spectral_wpn:
+                return new SpectralWpn();
 
         default:
                 break;

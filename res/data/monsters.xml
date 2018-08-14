@@ -6352,9 +6352,9 @@
     </monster>
 
     <!--************************************************************-->
-    <!-- animated_wpn -->
+    <!-- spectral_wpn -->
     <!--************************************************************-->
-    <monster id="animated_wpn">
+    <monster id="spectral_wpn">
         <text>
             <name_a></name_a>
             <name_the></name_the>
@@ -6372,7 +6372,7 @@
         <graphics>
             <tile>none</tile>
             <character>X</character>
-            <color>yellow</color>
+            <color>light_blue</color>
         </graphics>
 
         <audio>
@@ -6381,21 +6381,21 @@
         </audio>
 
         <attributes>
-            <hit_points>22</hit_points>
-            <spirit>40</spirit>
-            <speed_percent>120</speed_percent>
+            <hit_points>4</hit_points>
+            <spirit>12</spirit>
+            <speed_percent>100</speed_percent>
             <shock_level>unsettling</shock_level>
-            <melee>60</melee>
+            <melee>100</melee>
             <ranged>0</ranged>
-            <dodging>20</dodging>
+            <dodging>30</dodging>
             <stealth>0</stealth>
             <searching>0</searching>
             <can_open_doors>false</can_open_doors>
-            <can_bash_doors>true</can_bash_doors>
+            <can_bash_doors>false</can_bash_doors>
             <can_swim>false</can_swim>
             <size>humanoid</size>
             <always_prevent_knockback>false</always_prevent_knockback>
-            <can_bleed>true</can_bleed>
+            <can_bleed>false</can_bleed>
             <can_leave_corpse>false</can_leave_corpse>
             <prioritize_destroying_corpse>false</prioritize_destroying_corpse>
         </attributes>

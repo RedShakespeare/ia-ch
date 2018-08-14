@@ -86,7 +86,7 @@ enum class ActorId
         chthonian,
         hunting_horror,
         sentry_drone,
-        animated_wpn,
+        spectral_wpn,
         mold,
         gas_spore,
         tentacles,

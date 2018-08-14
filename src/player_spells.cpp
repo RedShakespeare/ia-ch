@@ -226,12 +226,6 @@ void learn_spell(const SpellId id, const Verbosity verbosity)
         }
 
         learned_spells_.push_back(spell);
-
-        // HACK: If this is Animate Wepaons, also learn Subdue Weapons
-        if (id == SpellId::anim_wpns)
-        {
-                learn_spell(SpellId::subdue_wpns, Verbosity::silent);
-        }
 }
 
 void incr_spell_skill(const SpellId id)

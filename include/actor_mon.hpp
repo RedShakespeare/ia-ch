@@ -195,14 +195,12 @@ public:
         Color color() const override;
 };
 
-class AnimatedWpn: public Mon
+class SpectralWpn: public Mon
 {
 public:
-        AnimatedWpn();
+        SpectralWpn();
 
-        ~AnimatedWpn() {}
-
-        void on_death() override;
+        ~SpectralWpn() {}
 
         std::string name_the() const override;
 
@@ -210,18 +208,9 @@ public:
 
         char character() const override;
 
-        Color color() const override;
-
         TileId tile() const override;
 
         std::string descr() const override;
-
-        void on_std_turn_hook() override;
-
-        void drop();
-
-private:
-        int nr_turns_until_drop_;
 };
 
 std::string get_cultist_phrase();

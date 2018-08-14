@@ -80,11 +80,8 @@ Spell* make_spell_from_id(const SpellId spell_id)
         case SpellId::pestilence:
                 return new SpellPestilence();
 
-        case SpellId::anim_wpns:
-                return new SpellAnimWpns();
-
-        case SpellId::subdue_wpns:
-                return new SpellSubdueWpns();
+        case SpellId::spectral_wpns:
+                return new SpellSpectralWpns();
 
         case SpellId::searching:
                 return new SpellSearching();
@@ -1273,209 +1270,130 @@ bool SpellPestilence::allow_mon_cast_now(Mon& mon) const
 // -----------------------------------------------------------------------------
 // Animate weapons
 // -----------------------------------------------------------------------------
-void SpellAnimWpns::run_effect(
+void SpellSpectralWpns::run_effect(
         Actor* const caster,
         const SpellSkill skill) const
 {
+        TRACE_FUNC_BEGIN;
+
         if (!caster->is_player())
         {
+                TRACE_FUNC_END;
+
                 return;
         }
 
-        // TODO: Is this really necessary? Also there is a bug here, because the
-        // 'actor_array' includes dead actors, so weapons on top of corpses
-        // cannot be animated
-        const auto actor_array = map::get_actor_array();
+        auto is_melee_wpn = [](const Item* const item) {
+                return item && item->data().type == ItemType::melee_wpn;
+        };
 
-        std::vector<P> positions_to_anim;
+        std::vector<const Item*> weapons;
 
+        for (const auto& slot : caster->inv().slots_)
         {
-                std::vector<P> anim_pos_bucket;
-
-                for (int x = 0; x < map::w(); ++x)
+                if (is_melee_wpn(slot.item))
                 {
-                        for (int y = 0; y < map::h(); ++y)
-                        {
-                                Cell& cell = map::cells.at(x, y);
-
-                                Item* const item = cell.item;
-
-                                const auto actors_here = actor_array.at(x, y);
-
-                                bool is_living_actor_here = false;
-
-                                for (const auto* const actor : actors_here)
-                                {
-                                        if (actor->state() == ActorState::alive)
-                                        {
-                                                is_living_actor_here = true;
-
-                                                break;
-                                        }
-                                }
-
-                                if (!cell.is_seen_by_player ||
-                                    is_living_actor_here ||
-                                    !item ||
-                                    (item->data().type != ItemType::melee_wpn))
-                                {
-                                        continue;
-                                }
-
-                                // OK, we have an item here that we can animate
-                                anim_pos_bucket.push_back(P(x, y));
-                        }
-                }
-
-                if (anim_pos_bucket.empty())
-                {
-                        msg_log::add(
-                                "The dust and gravel on the ground starts "
-                                "shooting in all directions.");
-
-                        return;
-                }
-
-                if (skill == SpellSkill::basic)
-                {
-                        // Animate one random weapon
-                        positions_to_anim.push_back(
-                                rnd::element(anim_pos_bucket));
-                }
-                else // Skill is higher than basic
-                {
-                        // Animate all possible weapons
-                        positions_to_anim = anim_pos_bucket;
+                        weapons.push_back(slot.item);
                 }
         }
 
-        for (const P& p : positions_to_anim)
+        for (const auto& item : caster->inv().backpack_)
         {
+                if (is_melee_wpn(item))
+                {
+                        weapons.push_back(item);
+                }
+        }
+
+        for (const Item* const item : weapons)
+        {
+                Item* new_item = item_factory::make(item->id());
+
+                new_item->melee_base_dmg_ = new_item->melee_base_dmg_;
+
+                auto spectral_wpn_init = [new_item, skill](Mon* const mon) {
+
+                        ASSERT(!mon->inv().item_in_slot(SlotId::wpn));
+
+                        mon->inv().put_in_slot(
+                                SlotId::wpn,
+                                new_item,
+                                Verbosity::silent);
+
+                        mon->apply_prop(new PropSummoned());
+
+                        auto prop_waiting = new PropWaiting();
+
+                        prop_waiting->set_duration(1);
+
+                        mon->apply_prop(prop_waiting);
+
+                        if (skill >= SpellSkill::expert)
+                        {
+                                auto prop = new PropSeeInvis();
+
+                                prop->set_indefinite();
+
+                                mon->properties().apply(
+                                        prop,
+                                        PropSrc::intr,
+                                        true,
+                                        Verbosity::silent);
+                        }
+
+                        if (skill == SpellSkill::master)
+                        {
+                                auto prop = new PropHasted();
+
+                                prop->set_indefinite();
+
+                                mon->properties().apply(
+                                        prop,
+                                        PropSrc::intr,
+                                        true,
+                                        Verbosity::silent);
+                        }
+
+                        if (map::player->can_see_actor(*mon))
+                        {
+                                msg_log::add(mon->name_a() + " appears!");
+                        }
+                };
+
                 const auto summoned =
                         actor_factory::spawn(
-                                p,
-                                { ActorId::animated_wpn},
+                                caster->pos,
+                                {ActorId::spectral_wpn},
                                 map::rect())
-                        .set_leader(map::player);
-
-                if (summoned.monsters.empty())
-                {
-                        return;
-                }
-
-                Mon* const anim_wpn = summoned.monsters[0];
-
-                Cell& cell = map::cells.at(p);
-
-                Item* const item = cell.item;
-
-                cell.item = nullptr;
-
-                Inventory& inv = anim_wpn->inv();
-
-                ASSERT(!inv.item_in_slot(SlotId::wpn));
-
-                inv.put_in_slot(SlotId::wpn,
-                                item,
-                                Verbosity::silent);
-
-                const std::string item_name =
-                        item->name(ItemRefType::plain,
-                                   ItemRefInf::yes,
-                                   ItemRefAttInf::none);
-
-                msg_log::add("The " + item_name + " rises into thin air!");
-
-                if (skill == SpellSkill::master)
-                {
-                        auto prop_see_invis = new PropSeeInvis();
-
-                        prop_see_invis->set_indefinite();
-
-                        anim_wpn->properties().apply(
-                                prop_see_invis,
-                                PropSrc::intr,
-                                true,
-                                Verbosity::silent);
-                }
-
-                auto prop_waiting = new PropWaiting();
-
-                prop_waiting->set_duration(2);
-
-                anim_wpn->apply_prop(prop_waiting);
+                        .set_leader(caster)
+                        .for_each(spectral_wpn_init);
         }
+
+        TRACE_FUNC_END;
 }
 
-std::vector<std::string> SpellAnimWpns::descr_specific(
+std::vector<std::string> SpellSpectralWpns::descr_specific(
         const SpellSkill skill) const
 {
         std::vector<std::string> descr;
 
         descr.push_back(
-                "Infuses lifeless weapons with a spirit of their own, causing "
-                "them to rise up into the air and protect their master (for a "
-                "while). It is only possible to animate basic melee weapons "
-                "however - \"modern\" mechanisms such as pistols or machine "
-                "guns are far too complex.");
+                "Conjures ghostly copies of all carried weapons, which will "
+                "float through the air and protect their master. The weapons "
+                "almost always hit their target, but they quickly "
+                "dematerialize when damaged. It is only possible to create "
+                "copies of basic melee weapons - \"modern\" mechanisms such as "
+                "pistols or machine guns are far too complex.");
 
-        if (skill == SpellSkill::basic)
-        {
-                descr.push_back("Animates one visible weapon.");
-        }
-        else // Skill is higher than basic
-        {
-                descr.push_back("Animates all visible weapons.");
-        }
-
-        if (skill == SpellSkill::master)
+        if (skill >= SpellSkill::expert)
         {
                 descr.push_back("The weapons can see invisible creatures.");
         }
 
-        return descr;
-}
-
-// -----------------------------------------------------------------------------
-// Subdue Animated weapons
-// -----------------------------------------------------------------------------
-void SpellSubdueWpns::run_effect(
-        Actor* const caster,
-        const SpellSkill skill) const
-{
-        (void)skill;
-
-        if (!caster->is_player())
+        if (skill == SpellSkill::master)
         {
-                return;
+                descr.push_back("The weapons are hasted.");
         }
-
-        // Drop all seen animated weapons
-
-        for (auto* const actor : game_time::actors)
-        {
-                if ((actor->id() != ActorId::animated_wpn) ||
-                    !map::player->can_see_actor(*actor))
-                {
-                        continue;
-                }
-
-                auto* anim_wpn = static_cast<AnimatedWpn*>(actor);
-
-                anim_wpn->drop();
-        }
-}
-
-std::vector<std::string> SpellSubdueWpns::descr_specific(
-        const SpellSkill skill) const
-{
-        (void)skill;
-
-        std::vector<std::string> descr;
-
-        descr.push_back(
-                "Causes all visible Animated Weapons to become lifeless, and "
-                "drop down to the ground again.");
 
         return descr;
 }

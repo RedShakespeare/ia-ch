@@ -27,7 +27,7 @@ enum class SpellId
         terrify,
 
         // Player only
-        anim_wpns,
+        spectral_wpns, // TODO: Enable for monsters
         aza_wrath,
         bless,
         divert_attacks,
@@ -54,7 +54,6 @@ enum class SpellId
 
         // Spells from special sources
         pharaoh_staff, // From the Staff of the Pharaohs artifact
-        subdue_wpns, // Learned at the same time as Animate Weapons
 
         END
 };
@@ -62,7 +61,7 @@ enum class SpellId
 const std::unordered_map<std::string, SpellId> str_to_spell_id_map =
 {
         {"aura_of_decay", SpellId::aura_of_decay},
-        {"anim_wpns", SpellId::anim_wpns},
+        {"spectral_wpns", SpellId::spectral_wpns},
         {"aza_wrath", SpellId::aza_wrath},
         {"bless", SpellId::bless},
         {"burn", SpellId::burn},
@@ -88,7 +87,6 @@ const std::unordered_map<std::string, SpellId> str_to_spell_id_map =
         {"slow", SpellId::slow},
         {"slow_time", SpellId::slow_time},
         {"spell_shield", SpellId::spell_shield},
-        {"subdue_wpns", SpellId::subdue_wpns},
         {"summon", SpellId::summon},
         {"summon_tentacles", SpellId::summon_tentacles},
         {"teleport", SpellId::teleport},
@@ -631,10 +629,10 @@ private:
         }
 };
 
-class SpellAnimWpns: public Spell
+class SpellSpectralWpns: public Spell
 {
 public:
-        SpellAnimWpns() : Spell() {}
+        SpellSpectralWpns() : Spell() {}
 
         bool mon_can_learn() const override
         {
@@ -648,12 +646,12 @@ public:
 
         std::string name() const override
         {
-                return "Animate Weapons";
+                return "Spectral Weapons";
         }
 
         SpellId id() const override
         {
-                return SpellId::anim_wpns;
+                return SpellId::spectral_wpns;
         }
 
         SpellShock shock_type() const override
@@ -674,65 +672,6 @@ private:
                 (void)skill;
 
                 return 6;
-        }
-
-        bool is_noisy(const SpellSkill skill) const override
-        {
-                (void)skill;
-
-                return true;
-        }
-};
-
-class SpellSubdueWpns : public Spell
-{
-public:
-        SpellSubdueWpns() {}
-        ~SpellSubdueWpns() {}
-
-        virtual bool mon_can_learn() const override
-        {
-                return false;
-        }
-
-        virtual bool player_can_learn() const override
-        {
-                return true;
-        }
-
-        virtual std::string name() const override
-        {
-                return "Subdue Weapons";
-        }
-
-        virtual SpellId id() const override
-        {
-                return SpellId::subdue_wpns;
-        }
-
-        bool can_be_improved_with_skill() const override
-        {
-                return false;
-        }
-
-        virtual SpellShock shock_type() const override
-        {
-                return SpellShock::mild;
-        }
-
-        std::vector<std::string> descr_specific(
-                const SpellSkill skill) const override;
-
-        void run_effect(
-            Actor* const caster,
-            const SpellSkill skill) const override;
-
-protected:
-        virtual int max_spi_cost(const SpellSkill skill) const override
-        {
-                (void)skill;
-
-                return 2;
         }
 
         bool is_noisy(const SpellSkill skill) const override

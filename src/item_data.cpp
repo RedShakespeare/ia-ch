@@ -1596,8 +1596,8 @@ void init()
     data[(size_t)d.id] = d;
 
     reset_data(d, ItemType::scroll);
-    d.id = ItemId::scroll_anim_wpns;
-    d.spell_cast_from_scroll = SpellId::anim_wpns;
+    d.id = ItemId::scroll_spectral_wpns;
+    d.spell_cast_from_scroll = SpellId::spectral_wpns;
     data[(size_t)d.id] = d;
 
     reset_data(d, ItemType::scroll);

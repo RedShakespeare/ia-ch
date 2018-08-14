@@ -105,15 +105,12 @@ enum class ItemId
 
         // Scrolls
         scroll_aura_of_decay,
-        scroll_anim_wpns,
         scroll_aza_wrath,
         scroll_bless,
         scroll_darkbolt,
         scroll_divert_attacks,
-        scroll_force_field,
         scroll_enfeeble,
-        scroll_slow,
-        scroll_terrify,
+        scroll_force_field,
         scroll_heal,
         scroll_light,
         scroll_mayhem,
@@ -122,10 +119,13 @@ enum class ItemId
         scroll_res,
         scroll_searching,
         scroll_see_invis,
+        scroll_slow,
         scroll_slow_time,
+        scroll_spectral_wpns,
         scroll_spell_shield,
         scroll_summon_mon,
         scroll_telep,
+        scroll_terrify,
         scroll_transmut,
 
         // Potions
