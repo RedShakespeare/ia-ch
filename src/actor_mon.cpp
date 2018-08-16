@@ -1444,6 +1444,13 @@ Color StrangeColor::color() const
 SpectralWpn::SpectralWpn() :
         Mon() {}
 
+void SpectralWpn::on_death()
+{
+        inv_->remove_item_in_slot(
+                SlotId::wpn,
+                true); // Delete the item
+}
+
 std::string SpectralWpn::name_the() const
 {
         Item* item = inv_->item_in_slot(SlotId::wpn);

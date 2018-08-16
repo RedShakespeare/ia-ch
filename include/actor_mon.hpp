@@ -202,6 +202,8 @@ public:
 
         ~SpectralWpn() {}
 
+        void on_death() override;
+
         std::string name_the() const override;
 
         std::string name_a() const override;
