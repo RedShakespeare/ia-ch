@@ -204,17 +204,8 @@ static void init_screen_texture(const P px_dims)
         }
 }
 
-static P get_resolution()
+static P get_native_resolution()
 {
-        // TODO: Make an option for this (native resolution or stretched when
-        // running fullscreen)
-        if (config::is_fullscreen())
-        {
-                const P min_gui_dims = io::min_screen_gui_dims();
-
-                return io::gui_to_px_coords(min_gui_dims);
-        }
-
         SDL_DisplayMode dm;
 
         if (SDL_GetDesktopDisplayMode(0, &dm) != 0)
@@ -892,12 +883,15 @@ void init()
 
         cleanup();
 
-        const P resolution = get_resolution();
-
         P screen_px_dims;
 
         if (config::is_fullscreen())
         {
+                // TODO: Make an option for using native resolution or strech
+                // when running fullscreen
+                const P resolution = io::gui_to_px_coords(
+                        io::min_screen_gui_dims());
+
                 panels::init(io::px_to_gui_coords(resolution));
 
                 screen_px_dims = panel_px_dims(Panel::screen);
@@ -916,7 +910,54 @@ void init()
         // is enabled
         if (!config::is_fullscreen())
         {
-                panels::init(io::min_screen_gui_dims());
+                const auto desired_gui_dims = P(96, 30);
+
+                const auto min_gui_dims = io::min_screen_gui_dims();
+
+                const auto desired_res = gui_to_px_coords(
+                        desired_gui_dims);
+
+                const auto native_res = get_native_resolution();
+
+                TRACE << "Minimum required GUI dimensions: "
+                      << min_gui_dims.x
+                      << ","
+                      << min_gui_dims.y
+                      << std::endl;
+
+                TRACE << "Desired GUI dimensions: "
+                      << desired_gui_dims.x
+                      << ","
+                      << desired_gui_dims.y
+                      << std::endl;
+
+                TRACE << "Desired resolution: "
+                      << desired_res.x
+                      << ","
+                      << desired_res.y
+                      << std::endl;
+
+                TRACE << "Native resolution: "
+                      << native_res.x
+                      << ","
+                      << native_res.y
+                      << std::endl;
+
+                const auto screen_gui_dims_used =
+                        ((desired_res.x <= native_res.x) &&
+                         (desired_res.y <= native_res.y))
+                        ? desired_gui_dims
+                        : min_gui_dims;
+
+                TRACE << "Max number of GUI cells used (based on desired and "
+                      << "native resolution): "
+                      << std::endl
+                      << screen_gui_dims_used.x
+                      << ","
+                      << screen_gui_dims_used.y
+                      << std::endl;
+
+                panels::init(screen_gui_dims_used);
 
                 screen_px_dims = panel_px_dims(Panel::screen);
 
