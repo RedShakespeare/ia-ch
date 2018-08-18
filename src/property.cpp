@@ -1688,7 +1688,7 @@ void PropSpawnsZombiePartsOnDestroyed::on_destroyed()
 
 void PropBreeds::on_std_turn()
 {
-        const int spawn_new_one_in_n = 50;
+        const int spawn_new_one_in_n = 75;
 
         if (owner_->is_player() ||
             !owner_->is_alive() ||
