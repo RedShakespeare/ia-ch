@@ -15,28 +15,27 @@
 #include "property_factory.hpp"
 
 // -----------------------------------------------------------------------------
-// Character description
+// Private
 // -----------------------------------------------------------------------------
-StateId CharacterDescr::id()
+static const std::string offset = "   ";
+
+// TODO: Magic number, this should be based on the minimum required
+// window width instead (e.g. 3/4 of this width)
+static const int max_w_descr = 60;
+
+static Color clr_heading()
 {
-        return StateId::descript;
+        return colors::light_white();
 }
 
-void CharacterDescr::on_start()
+static Color color_text_dark()
 {
-        lines_.clear();
+        return colors::gray();
+}
 
-        const std::string offset = "   ";
-
-        // TODO: Magic number, this should be based on the minimum required
-        // window width instead (e.g. 3/4 of this width)
-        const int max_w_descr = 60;
-
-        const Color& clr_heading = colors::light_white();
-
-        const Color& color_text_dark = colors::gray();
-
-        lines_.push_back(ColoredString("Current properties", clr_heading));
+static void add_properties_descr(std::vector<ColoredString>& lines)
+{
+        lines.push_back(ColoredString("Current properties", clr_heading()));
 
         const auto prop_list =
                 map::player->properties()
@@ -44,11 +43,11 @@ void CharacterDescr::on_start()
 
         if (prop_list.empty())
         {
-                lines_.push_back(
+                lines.push_back(
                         ColoredString(offset + "None",
                                       colors::text()));
 
-                lines_.push_back(ColoredString("", colors::text()));
+                lines.push_back(ColoredString("", colors::text()));
         }
         else // Has properties
         {
@@ -56,7 +55,7 @@ void CharacterDescr::on_start()
                 {
                         const auto& title = e.title;
 
-                        lines_.push_back(
+                        lines.push_back(
                                 ColoredString(offset + title.str,
                                               title.color));
 
@@ -65,24 +64,25 @@ void CharacterDescr::on_start()
 
                         for (const auto& descr_line : descr_formatted)
                         {
-                                lines_.push_back(
+                                lines.push_back(
                                         ColoredString(offset + descr_line,
-                                                      color_text_dark));
+                                                      color_text_dark()));
                         }
 
-                        lines_.push_back(ColoredString("", colors::text()));
+                        lines.push_back(ColoredString("", colors::text()));
                 }
         }
+}
 
-        lines_.push_back(
-                ColoredString("Mental disorders",
-                              clr_heading));
+static void add_insanity_descr(std::vector<ColoredString>& lines)
+{
+        lines.push_back(ColoredString("Mental disorders", clr_heading()));
 
         const std::vector<const InsSympt*> sympts = insanity::active_sympts();
 
         if (sympts.empty())
         {
-                lines_.push_back(
+                lines.push_back(
                         ColoredString(offset + "None",
                                       colors::text()));
         }
@@ -94,65 +94,49 @@ void CharacterDescr::on_start()
 
                         if (!sympt_descr.empty())
                         {
-                                lines_.push_back(
+                                lines.push_back(
                                         ColoredString(offset + sympt_descr,
                                                       colors::text()));
                         }
                 }
         }
 
-        lines_.push_back(ColoredString("", colors::text()));
+        lines.push_back(ColoredString("", colors::text()));
+}
 
-        lines_.push_back(
+static void add_potion_descr(std::vector<ColoredString>& lines)
+{
+        lines.push_back(
                 ColoredString("Potion knowledge",
-                              clr_heading));
+                              clr_heading()));
 
         std::vector<ColoredString> potion_list;
-        std::vector<ColoredString> manuscript_list;
 
         for (int i = 0; i < (int)ItemId::END; ++i)
         {
                 const ItemData& d = item_data::data[i];
 
-                if (d.is_tried || d.is_identified)
+                if ((d.type != ItemType::potion) ||
+                    (!d.is_tried &&
+                     !d.is_identified))
                 {
-                        if (d.type == ItemType::potion)
-                        {
-                                Item* item = item_factory::make(d.id);
-
-                                const std::string name =
-                                        item->name(ItemRefType::plain);
-
-                                potion_list.push_back(
-                                        ColoredString(offset + name, d.color));
-
-                                delete item;
-                        }
-                        else if (d.type == ItemType::scroll)
-                        {
-                                Item* item = item_factory::make(d.id);
-
-                                const std::string name =
-                                        item->name(ItemRefType::plain);
-
-                                manuscript_list.push_back(
-                                        ColoredString(offset + name,
-                                                      item->interface_color()));
-
-                                delete item;
-                        }
+                        continue;
                 }
-        }
 
-        auto str_and_clr_sort = [](const ColoredString& e1,
-                                   const ColoredString& e2)
-        {
-                return e1.str < e2.str;
-        };
+                Item* item = item_factory::make(d.id);
+
+                const std::string name =
+                        item->name(ItemRefType::plain);
+
+                potion_list.push_back(
+                        ColoredString(offset + name, d.color));
+
+                delete item;
+        }
 
         if (potion_list.empty())
         {
-                lines_.push_back(
+                lines.push_back(
                         ColoredString(offset + "No known potions",
                                       colors::text()));
         }
@@ -160,24 +144,52 @@ void CharacterDescr::on_start()
         {
                 sort(potion_list.begin(),
                      potion_list.end(),
-                     str_and_clr_sort);
+                     [](const ColoredString& e1,
+                        const ColoredString& e2) {
+                             return e1.str < e2.str;
+                     });
 
                 for (ColoredString& e : potion_list)
                 {
-                        lines_.push_back(e);
+                        lines.push_back(e);
                 }
         }
 
-        lines_.push_back(ColoredString("", colors::text()));
+        lines.push_back(ColoredString("", colors::text()));
+}
 
+static void add_scroll_descr(std::vector<ColoredString>& lines)
+{
+        lines.push_back(ColoredString("Manuscript knowledge", clr_heading()));
 
-        lines_.push_back(
-                ColoredString("Manuscript knowledge",
-                              clr_heading));
+        std::vector<ColoredString> manuscript_list;
+
+        for (int i = 0; i < (int)ItemId::END; ++i)
+        {
+                const ItemData& d = item_data::data[i];
+
+                if ((d.type != ItemType::scroll) ||
+                    (!d.is_tried &&
+                     !d.is_identified))
+                {
+                        continue;
+                }
+
+                Item* item = item_factory::make(d.id);
+
+                const std::string name =
+                        item->name(ItemRefType::plain);
+
+                manuscript_list.push_back(
+                        ColoredString(offset + name,
+                                      item->interface_color()));
+
+                delete item;
+        }
 
         if (manuscript_list.empty())
         {
-                lines_.push_back(
+                lines.push_back(
                         ColoredString(offset + "No known manuscripts",
                                       colors::text()));
         }
@@ -185,19 +197,61 @@ void CharacterDescr::on_start()
         {
                 sort(manuscript_list.begin(),
                      manuscript_list.end(),
-                     str_and_clr_sort);
+                     [](const ColoredString& e1,
+                        const ColoredString& e2) {
+                             return e1.str < e2.str;
+                     });
 
                 for (ColoredString& e : manuscript_list)
                 {
-                        lines_.push_back(e);
+                        lines.push_back(e);
                 }
         }
 
-        lines_.push_back(ColoredString("", colors::text()));
+        lines.push_back(ColoredString("", colors::text()));
+}
 
-        lines_.push_back(
+static void add_traits_descr(std::vector<ColoredString>& lines)
+{
+        lines.push_back(ColoredString("Traits gained", clr_heading()));
+
+        for (size_t i = 0; i < (size_t)Trait::END; ++i)
+        {
+                if (player_bon::traits[i])
+                {
+                        const Trait trait = Trait(i);
+
+                        const std::string title =
+                                player_bon::trait_title(trait);
+
+                        const std::string descr =
+                                player_bon::trait_descr(trait);
+
+                        lines.push_back(
+                                ColoredString(offset + title,
+                                              colors::text()));
+
+                        const auto descr_lines =
+                                text_format::split(descr,
+                                                   max_w_descr);
+
+                        for (const std::string& descr_line : descr_lines)
+                        {
+                                lines.push_back(
+                                        ColoredString(offset + descr_line,
+                                                      color_text_dark()));
+                        }
+
+                        lines.push_back(ColoredString("", colors::text()));
+                }
+        }
+}
+
+static void add_history_descr(std::vector<ColoredString>& lines)
+{
+        lines.push_back(
                 ColoredString("History of " + map::player->name_the(),
-                              clr_heading));
+                              clr_heading()));
 
         const std::vector<HistoryEvent>& events = game::history();
 
@@ -220,47 +274,37 @@ void CharacterDescr::on_start()
 
                 ev_str += " " + event.msg;
 
-                lines_.push_back(
+                lines.push_back(
                         ColoredString(offset + ev_str,
                                       colors::text()));
         }
 
-        lines_.push_back(ColoredString("", colors::text()));
+        lines.push_back(ColoredString("", colors::text()));
+}
 
-        lines_.push_back(
-                ColoredString("Traits gained",
-                              clr_heading));
+// -----------------------------------------------------------------------------
+// Character description
+// -----------------------------------------------------------------------------
+StateId CharacterDescr::id()
+{
+        return StateId::descript;
+}
 
-        for (size_t i = 0; i < (size_t)Trait::END; ++i)
-        {
-                if (player_bon::traits[i])
-                {
-                        const Trait trait = Trait(i);
+void CharacterDescr::on_start()
+{
+        lines_.clear();
 
-                        const std::string title =
-                                player_bon::trait_title(trait);
+        add_properties_descr(lines_);
 
-                        const std::string descr =
-                                player_bon::trait_descr(trait);
+        add_insanity_descr(lines_);
 
-                        lines_.push_back(
-                                ColoredString(offset + title,
-                                              colors::text()));
+        add_potion_descr(lines_);
 
-                        const auto descr_lines =
-                                text_format::split(descr,
-                                                   max_w_descr);
+        add_scroll_descr(lines_);
 
-                        for (const std::string& descr_line : descr_lines)
-                        {
-                                lines_.push_back(
-                                        ColoredString(offset + descr_line,
-                                                      color_text_dark));
-                        }
+        add_traits_descr(lines_);
 
-                        lines_.push_back(ColoredString("", colors::text()));
-                }
-        }
+        add_history_descr(lines_);
 }
 
 void CharacterDescr::draw()
