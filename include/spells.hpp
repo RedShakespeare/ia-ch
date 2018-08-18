@@ -1291,7 +1291,7 @@ private:
         {
                 (void)skill;
 
-                return false;
+                return true;
         }
 };
 
