@@ -714,62 +714,33 @@ std::vector<PropTextListEntry> PropHandler::property_names_and_descr() const
 
         for (const auto& prop : props_)
         {
-                const std::string name_long = prop->name();
+                std::string name = prop->name();
 
-                std::string name_short = prop->name_short();
-
-                if (name_long.empty() && name_short.empty())
+                if (name.empty())
                 {
                         continue;
                 }
 
-                if (!name_short.empty())
+                const int turns_left  = prop->nr_turns_left_;
+
+                const bool is_indefinite =
+                        prop->duration_mode_ ==
+                        PropDurationMode::indefinite;
+
+                const bool is_intr = prop->src() == PropSrc::intr;
+
+                // Player can see number of turns left on own properties with
+                // Self-aware?
+                if ((is_indefinite || is_intr) &&
+                    owner_->is_player() &&
+                    player_bon::has_trait(Trait::self_aware) &&
+                    prop->allow_display_turns())
                 {
-                        const int turns_left  = prop->nr_turns_left_;
+                        // See NOTE in 'props_line' above.
+                        const int turns_displayed =
+                                turns_left + 1;
 
-                        const bool is_indefinite =
-                                prop->duration_mode_ ==
-                                PropDurationMode::indefinite;
-
-                        const bool is_intr = prop->src() == PropSrc::intr;
-
-                        if (is_indefinite && is_intr)
-                        {
-                                // Indefinite intrinsic properties are printed
-                                // in upper case
-                                name_short =
-                                        text_format::all_to_upper(name_short);
-                        }
-                        else // Not indefinite
-                        {
-                                // Player can see number of turns left on own
-                                // properties with Self-aware?
-                                if (owner_->is_player() &&
-                                    player_bon::has_trait(Trait::self_aware) &&
-                                    prop->allow_display_turns())
-                                {
-                                        // See NOTE in 'props_line' above.
-                                        const int turns_displayed =
-                                                turns_left + 1;
-
-                                        name_short +=
-                                                ":" +
-                                                std::to_string(turns_displayed);
-                                }
-                        }
-                }
-
-                std::string title;
-
-                if (!name_long.empty())
-                {
-                        title = name_long;
-                }
-
-                if (!name_short.empty() &&
-                    name_short != name_long)
-                {
-                        title += " (" + name_short + ")";
+                        name += ":" + std::to_string(turns_displayed);
                 }
 
                 const PropAlignment alignment = prop->alignment();
@@ -797,7 +768,7 @@ std::vector<PropTextListEntry> PropHandler::property_names_and_descr() const
 
                 auto& entry = list[new_size - 1];
 
-                entry.title.str = title;
+                entry.title.str = name;
 
                 entry.title.color = color;
 

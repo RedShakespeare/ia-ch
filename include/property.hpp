@@ -766,7 +766,7 @@ public:
 
         std::string name_short() const override
         {
-                return "Wound(" + std::to_string(nr_wounds_) + ")";
+                return "Wounded(" + std::to_string(nr_wounds_) + ")";
         }
 
         int ability_mod(const AbilityId ability) const override;
@@ -802,7 +802,7 @@ public:
 
         std::string name_short() const override
         {
-                return "hp(" + std::to_string(nr_drained_) + ")";
+                return "Life Sapped(" + std::to_string(nr_drained_) + ")";
         }
 
         void on_more(const Prop& new_prop) override;
@@ -824,7 +824,7 @@ public:
 
         std::string name_short() const override
         {
-                return "spi(" + std::to_string(nr_drained_) + ")";
+                return "Spirit Sapped(" + std::to_string(nr_drained_) + ")";
         }
 
         void on_more(const Prop& new_prop) override;
@@ -846,7 +846,7 @@ public:
 
         std::string name_short() const override
         {
-                return "shock(" + std::to_string(nr_drained_) + "%)";
+                return "Mind Sapped(" + std::to_string(nr_drained_) + "%)";
         }
 
         void on_more(const Prop& new_prop) override;
