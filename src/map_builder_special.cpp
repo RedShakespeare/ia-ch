@@ -19,6 +19,13 @@
 // -----------------------------------------------------------------------------
 // MapBuilderDeepOneLair
 // -----------------------------------------------------------------------------
+MapBuilderDeepOneLair::MapBuilderDeepOneLair() :
+        MapBuilderTemplateLevel(),
+        passage_symbol_('1' + rnd::range(0, 1))
+{
+
+}
+
 void MapBuilderDeepOneLair::handle_template_pos(const P& p, const char c)
 {
         switch (c)
@@ -26,10 +33,7 @@ void MapBuilderDeepOneLair::handle_template_pos(const P& p, const char c)
         case '@':
         case '.':
         case 'd':
-        case '%':
-        case '1': // TOOD: Should be whirlpool
-        case '2': // TOOD: Should be whirlpool
-        case 'w': // TOOD: Should be whirlpool
+        case '%': // TODO: Just put random blood/gore on the level instead?
         case 'B': // TODO: Should be boss
         {
                 map::put(new Floor(p));
@@ -50,24 +54,43 @@ void MapBuilderDeepOneLair::handle_template_pos(const P& p, const char c)
         }
         break;
 
-        case '&':
+        case '&': // TODO: Just put random bones on the level instead?
         {
                 map::put(new Bones(p));
         }
         break;
 
         case '#':
+        case '1':
+        case '2':
         {
-                auto* wall = new Wall(p);
+                Rigid* f;
 
-                wall->type_ = WallType::cave;
+                if (c == passage_symbol_)
+                {
+                        f = new Floor(p);
+                }
+                else
+                {
+                        f = new Wall(p);
 
-                map::put(wall);
+                        static_cast<Wall*>(f)->type_ = WallType::cave;
+                }
+
+                map::put(f);
         }
         break;
 
-        // TODO: There should probably also be shallow liquid - perhaps on the
-        // edge of the deep liquid?
+        case '*':
+        {
+                auto* water = new LiquidShallow(p);
+
+                water->type_ = LiquidType::water;
+
+                map::put(water);
+        }
+        break;
+
         case '~':
         {
                 auto* water = new LiquidDeep(p);
@@ -99,6 +122,12 @@ void MapBuilderDeepOneLair::handle_template_pos(const P& p, const char c)
         case '|':
         {
                 map::put(new Monolith(p));
+        }
+        break;
+
+        case '-':
+        {
+                map::put(new Altar(p));
         }
         break;
 
@@ -490,8 +519,7 @@ void MapBuilderRatCave::handle_template_pos(const P& p, const char c)
         case 'r':
         case '1':
         {
-                if (c == '&' ||
-                    ((c == ',' || c == 'r') && rnd::coin_toss()))
+                if ((c == '&') || ((c == ',' || c == 'r') && rnd::coin_toss()))
                 {
                         map::put(new Bones(p));
                 }
@@ -506,7 +534,7 @@ void MapBuilderRatCave::handle_template_pos(const P& p, const char c)
                 }
                 else if (c == '1')
                 {
-                        // TODO: Should be handled by map controller
+                        // TODO: Should be handled by map controller instead
                         game_time::add_mob(
                                 new EventRatsInTheWallsDiscovery(p));
                 }
@@ -529,7 +557,11 @@ void MapBuilderRatCave::handle_template_pos(const P& p, const char c)
 
                         prop->set_indefinite();
 
-                        actor->apply_prop(prop);
+                        actor->properties().apply(
+                                prop,
+                                PropSrc::intr,
+                                false,
+                                Verbosity::silent);
                 }
         }
         break;

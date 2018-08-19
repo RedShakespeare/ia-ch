@@ -48,6 +48,7 @@ void Cell::reset()
 
         is_seen_by_player = false;
 
+        // Init player los as if all cells have walls
         player_los.is_blocked_hard = true;
 
         player_los.is_blocked_by_drk = false;
@@ -137,7 +138,13 @@ void reset(const P& dims)
 
         dims_ = dims;
 
-        cells.resize(dims_);
+        cells.resize_no_init(dims);
+
+        for (auto& cell : cells)
+        {
+                cell.reset();
+        }
+
         light.resize(dims_);
         dark.resize(dims_);
         room_map.resize(dims_);

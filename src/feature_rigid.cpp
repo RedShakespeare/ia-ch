@@ -1196,8 +1196,7 @@ void Stairs::bump(Actor& actor_bumping)
 {
     if (actor_bumping.is_player())
     {
-        const std::vector<std::string> choices
-        {
+        const std::vector<std::string> choices {
             "Descend",
             "Save and quit",
             "Cancel"
@@ -1354,7 +1353,7 @@ std::string LiquidShallow::name(const Article article) const
         ret += "the ";
     }
 
-    ret += "a pool of ";
+    ret += "shallow ";
 
     switch (type_)
     {

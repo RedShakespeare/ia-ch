@@ -59,17 +59,17 @@ void init()
 
         map_list = std::vector<MapType>(nr_lvl_tot, MapType::std);
 
-        // if (rnd::coin_toss())
-        // {
-        //         const int deep_one_lvl_nr =
-        //                 rnd::range(
-        //                         dlvl_first_mid_game,
-        //                         dlvl_last_mid_game);
+        if (rnd::one_in(3))
+        {
+                const int deep_one_lvl_nr =
+                        rnd::range(
+                                dlvl_first_mid_game,
+                                dlvl_last_mid_game - 1);
 
-        //         map_list[deep_one_lvl_nr] = MapType::deep_one_lair;
-        // }
+                map_list[deep_one_lvl_nr] = MapType::deep_one_lair;
+        }
 
-        if (rnd::one_in(5))
+        if (rnd::one_in(8))
         {
                 map_list[dlvl_first_late_game - 1] = MapType::rat_cave;
         }

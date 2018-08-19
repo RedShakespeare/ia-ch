@@ -138,6 +138,22 @@ public:
                 resize(P(w, h), value);
         }
 
+        void resize_no_init(const P& dims)
+        {
+                dims_ = dims;
+
+                const size_t len = length();
+
+                delete[] data_;
+
+                data_ = nullptr;
+
+                if (len > 0)
+                {
+                        data_ = new T[len];
+                }
+        }
+
         void rotate_cw()
         {
                 const P my_dims(dims());
@@ -253,22 +269,6 @@ public:
         }
 
 private:
-        void resize_no_init(const P& dims)
-        {
-                dims_ = dims;
-
-                const size_t len = length();
-
-                delete[] data_;
-
-                data_ = nullptr;
-
-                if (len > 0)
-                {
-                        data_ = new T[len];
-                }
-        }
-
         T& get_element_ref(const P& p) const
         {
                 const size_t idx = pos_to_idx(p);

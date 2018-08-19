@@ -96,8 +96,7 @@ private:
 class MapBuilderDeepOneLair: public MapBuilderTemplateLevel
 {
 public:
-        MapBuilderDeepOneLair() :
-                MapBuilderTemplateLevel() {}
+        MapBuilderDeepOneLair();
 
         ~MapBuilderDeepOneLair() {}
 
@@ -113,6 +112,8 @@ private:
         }
 
         void handle_template_pos(const P& p, const char c) override;
+
+        const char passage_symbol_;
 };
 
 // -----------------------------------------------------------------------------
