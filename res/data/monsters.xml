@@ -53,7 +53,6 @@
             <max_dungeon_level>-1</max_dungeon_level>
             <auto_spawn>false</auto_spawn>
             <can_be_summoned_by_monster>false</can_be_summoned_by_monster>
-            <is_unique>false</is_unique>
             <nr_allowed_to_spawn>-1</nr_allowed_to_spawn>
             <group_size>alone</group_size>
         </spawning>
@@ -145,7 +144,6 @@
             <max_dungeon_level>19</max_dungeon_level>
             <auto_spawn>true</auto_spawn>
             <can_be_summoned_by_monster>false</can_be_summoned_by_monster>
-            <is_unique>false</is_unique>
             <nr_allowed_to_spawn>-1</nr_allowed_to_spawn>
             <group_size weight="20">alone</group_size>
             <group_size weight="70">few</group_size>
@@ -239,7 +237,6 @@
             <max_dungeon_level>19</max_dungeon_level>
             <auto_spawn>true</auto_spawn>
             <can_be_summoned_by_monster>false</can_be_summoned_by_monster>
-            <is_unique>false</is_unique>
             <nr_allowed_to_spawn>-1</nr_allowed_to_spawn>
             <group_size weight="20">alone</group_size>
             <group_size weight="70">few</group_size>
@@ -340,7 +337,6 @@
             <max_dungeon_level>19</max_dungeon_level>
             <auto_spawn>true</auto_spawn>
             <can_be_summoned_by_monster>false</can_be_summoned_by_monster>
-            <is_unique>false</is_unique>
             <nr_allowed_to_spawn>-1</nr_allowed_to_spawn>
             <group_size weight="3">alone</group_size>
             <group_size weight="1">few</group_size>
@@ -5008,7 +5004,7 @@
         <attributes>
             <hit_points>30</hit_points>
             <spirit>12</spirit>
-            <speed_percent>90</speed_percent>
+            <speed_percent>100</speed_percent>
             <shock_level>frightening</shock_level>
             <melee>70</melee>
             <ranged>80</ranged>
