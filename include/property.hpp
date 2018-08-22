@@ -647,6 +647,8 @@ public:
         PropEntangled() :
                 Prop(PropId::entangled) {}
 
+        PropEnded on_tick() override;
+
         void on_applied() override;
 
         PropEnded affect_move_dir(const P& actor_pos, Dir& dir) override;
@@ -936,6 +938,8 @@ class PropParalyzed: public Prop
 public:
         PropParalyzed() :
                 Prop(PropId::paralyzed) {}
+
+        PropEnded on_tick() override;
 
         void on_applied() override;
 

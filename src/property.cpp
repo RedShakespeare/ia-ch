@@ -130,6 +130,31 @@ void PropCursed::curse_adjacent() const
         }
 }
 
+PropEnded PropEntangled::on_tick()
+{
+        if (!owner_->has_prop(PropId::swimming))
+        {
+                return PropEnded::no;
+        }
+
+        if (owner_->is_player())
+        {
+                msg_log::add("I am drowning!", colors::msg_bad());
+        }
+        else if (map::player->can_see_actor(*owner_))
+        {
+                const auto name_the =
+                        text_format::first_to_upper(
+                                owner_->name_the());
+
+                msg_log::add(name_the + " is drowning.", colors::msg_good());
+        }
+
+        owner_->hit(1, DmgType::physical);
+
+        return PropEnded::no;
+}
+
 void PropEntangled::on_applied()
 {
         try_player_end_with_machete();
@@ -953,6 +978,31 @@ bool PropBlind::allow_read_absolute(const Verbosity verbosity) const
 bool PropBlind::should_update_vision_on_toggled() const
 {
         return owner_->is_player();
+}
+
+PropEnded PropParalyzed::on_tick()
+{
+        if (!owner_->has_prop(PropId::swimming))
+        {
+                return PropEnded::no;
+        }
+
+        if (owner_->is_player())
+        {
+                msg_log::add("I am drowning!", colors::msg_bad());
+        }
+        else if (map::player->can_see_actor(*owner_))
+        {
+                const auto name_the =
+                        text_format::first_to_upper(
+                                owner_->name_the());
+
+                msg_log::add(name_the + " is drowning.", colors::msg_good());
+        }
+
+        owner_->hit(1, DmgType::physical);
+
+        return PropEnded::no;
 }
 
 void PropParalyzed::on_applied()
