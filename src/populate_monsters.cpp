@@ -421,12 +421,17 @@ void populate_std_lvl()
         const P& player_p = map::player->pos;
 
         {
-                Array2<bool> blocks_los(map::dims());
+                // Checking which cells projectiles can travel through, as a
+                // general way of blocking cells within a certain number of
+                // steps to the player (We cannot just check for cells blocking
+                // walking, as that could for example spawn monsters on the
+                // other side of water very close to the player)
+                Array2<bool> blocks_projectiles(map::dims());
 
-                map_parsers::BlocksLos()
-                        .run(blocks_los, blocks_los.rect());
+                map_parsers::BlocksProjectiles()
+                        .run(blocks_projectiles, blocks_projectiles.rect());
 
-                const auto flood = floodfill(player_p, blocks_los);
+                const auto flood = floodfill(player_p, blocks_projectiles);
 
                 for (size_t i = 0; i < map::nr_cells(); ++i)
                 {
