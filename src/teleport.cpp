@@ -287,4 +287,8 @@ void teleport(Actor& actor, P p, const Array2<bool>& blocked)
         {
                 confuse_player();
         }
+
+        // Bump the target feature, so that we for example start swimming if
+        // teleporting into water
+        map::cells.at(p).rigid->bump(actor);
 }
