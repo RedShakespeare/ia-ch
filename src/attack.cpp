@@ -776,7 +776,7 @@ static void hit_actor_with_projectile(const Projectile& projectile, Wpn& wpn)
 
         if (att_data.attacker == map::player)
         {
-                static_cast<Mon*>(att_data.defender)-> set_player_aware_of_me();
+                static_cast<Mon*>(att_data.defender)->set_player_aware_of_me();
         }
 
         auto died = ActorDied::no;

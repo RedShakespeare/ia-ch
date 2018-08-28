@@ -67,6 +67,7 @@ static std::unordered_map<std::string, ActorId> str_to_actor_id_map = {
         {"khephren", ActorId::khephren},
         {"nitokris", ActorId::nitokris},
         {"deep_one", ActorId::deep_one},
+        {"niduza", ActorId::niduza},
         {"ape", ActorId::ape},
         {"keziah_mason", ActorId::keziah_mason},
         {"brown_jenkin", ActorId::brown_jenkin},

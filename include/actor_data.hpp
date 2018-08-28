@@ -72,6 +72,7 @@ enum class ActorId
         khephren,
         nitokris,
         deep_one,
+        niduza,
         ape,
         worm_mass,
         mind_worms,

@@ -25,6 +25,8 @@ int AbilityValues::val(const AbilityId id,
 
         if (actor.is_player())
         {
+                // TODO: This should probably also be included for monsters,
+                // especially if they should be able to wear armor
                 for (const InvSlot& slot : actor.inv().slots_)
                 {
                         if (!slot.item)

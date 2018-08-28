@@ -34,7 +34,7 @@ void MapBuilderDeepOneLair::handle_template_pos(const P& p, const char c)
         case '.':
         case 'd':
         case '%': // TODO: Just put random blood/gore on the level instead?
-        case 'B': // TODO: Should be boss
+        case 'B':
         {
                 map::put(new Floor(p));
 
@@ -45,6 +45,10 @@ void MapBuilderDeepOneLair::handle_template_pos(const P& p, const char c)
                 else if (c == 'd')
                 {
                         actor_factory::make(ActorId::deep_one, p);
+                }
+                else if (c == 'B')
+                {
+                        actor_factory::make(ActorId::niduza, p);
                 }
                 else if (c == '%')
                 {
@@ -137,6 +141,11 @@ void MapBuilderDeepOneLair::handle_template_pos(const P& p, const char c)
         }
         break;
         }
+}
+
+void MapBuilderDeepOneLair::on_template_built()
+{
+        populate_items::make_items_on_floor();
 }
 
 // -----------------------------------------------------------------------------
