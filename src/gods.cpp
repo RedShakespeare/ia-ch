@@ -53,7 +53,6 @@ static const std::vector<God> god_list_ =
         {"Lythalia", "The Forest-Goddess"},
         {"Mnomquah", "The Lord of the Black Lake"},
         {"Mordiggian", "The Great Ghoul"},
-        {"Mormo", "The Thousand-Faced Moon"},
         {"Mynoghra", "The She-Daemon of the Shadows"},
         {"Ngirrthlu", "The Wolf-Thing"},
         {"Northot", "The Forgotten God"},

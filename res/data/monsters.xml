@@ -88,7 +88,7 @@
 
         <attributes>
             <hit_points>14</hit_points>
-            <spirit>0</spirit>
+            <spirit>14</spirit>
             <speed_percent>100</speed_percent>
             <shock_level>frightening</shock_level>
             <melee>60</melee>
@@ -186,7 +186,7 @@
 
         <attributes>
             <hit_points>14</hit_points>
-            <spirit>0</spirit>
+            <spirit>14</spirit>
             <speed_percent>100</speed_percent>
             <shock_level>frightening</shock_level>
             <melee>60</melee>
@@ -279,7 +279,7 @@
 
         <attributes>
             <hit_points>30</hit_points>
-            <spirit>0</spirit>
+            <spirit>30</spirit>
             <speed_percent>60</speed_percent>
             <shock_level>frightening</shock_level>
             <melee>60</melee>
@@ -973,6 +973,92 @@
         </spawning>
     </monster>
 
+    <!--************************************************************-->
+    <!-- zealot -->
+    <!--************************************************************-->
+    <monster id="zealot">
+        <text>
+            <name_a>a Zealot</name_a>
+            <name_the>the Zealot</name_the>
+            <corpse_name_a>a Zealot corpse</corpse_name_a>
+            <corpse_name_the>the Zealot corpse</corpse_name_the>
+            <description>Beckoned by The Thousand-Faced Moon into laying its mind bare for the occult, the psyche of this hierophant was ravaged by scores of entities from fiendish realities. They had it gouge out its eyes and tongue, and left it a husk of former humanity. Now it lumbers about aimlessly, brandishing a spiked mace with which it flays itself in mockery of physical anguish.</description>
+            <allow_generated_description>true</allow_generated_description>
+            <wary_message>looks wary.</wary_message>
+            <aware_message_seen>screams in agony.</aware_message_seen>
+            <aware_message_hidden>I hear a harrowing scream.</aware_message_hidden>
+            <spell_message>mutters incantations.</spell_message>
+        </text>
+
+        <graphics>
+            <tile>cultist_spiked_mace</tile>
+            <character>P</character>
+            <color>light_red</color>
+        </graphics>
+
+        <audio>
+            <aware_sfx_seen></aware_sfx_seen>
+            <aware_sfx_hidden></aware_sfx_hidden>
+        </audio>
+
+        <attributes>
+            <hit_points>40</hit_points>
+            <spirit>30</spirit>
+            <speed_percent>100</speed_percent>
+            <shock_level>unsettling</shock_level>
+            <melee>60</melee>
+            <ranged>60</ranged>
+            <dodging>10</dodging>
+            <stealth>0</stealth>
+            <searching>0</searching>
+            <can_open_doors>true</can_open_doors>
+            <can_bash_doors>true</can_bash_doors>
+            <can_swim>true</can_swim>
+            <size>humanoid</size>
+            <always_prevent_knockback>false</always_prevent_knockback>
+            <humanoid/>
+            <can_bleed>true</can_bleed>
+            <can_leave_corpse>true</can_leave_corpse>
+            <prioritize_destroying_corpse>false</prioritize_destroying_corpse>
+        </attributes>
+
+        <items>
+            <item_set>zealot_spiked_mace</item_set>
+            <item_set percent_chance="20">minor_treasure</item_set>
+        </items>
+
+        <properties>
+            <property>r_blind</property>
+        </properties>
+        
+        <ai>
+            <erratic_move_percent>10</erratic_move_percent>
+            <turns_aware>16</turns_aware>
+            <ranged_cooldown_turns>0</ranged_cooldown_turns>
+            <looks>false</looks>
+            <avoids_blocking_friend>true</avoids_blocking_friend>
+            <attacks>true</attacks>
+            <paths_to_target_when_aware>true</paths_to_target_when_aware>
+            <moves_to_target_when_los>true</moves_to_target_when_los>
+            <moves_to_lair>false</moves_to_lair>
+            <moves_to_leader>true</moves_to_leader>
+            <moves_randomly_when_unaware>true</moves_randomly_when_unaware>
+        </ai>
+
+        <spawning>
+            <min_dungeon_level>2</min_dungeon_level>
+            <max_dungeon_level>19</max_dungeon_level>
+            <auto_spawn>true</auto_spawn>
+            <can_be_summoned_by_monster>false</can_be_summoned_by_monster>
+            <nr_allowed_to_spawn>-1</nr_allowed_to_spawn>
+            <group_size>alone</group_size>
+            <native_room>plain</native_room>
+            <native_room>human</native_room>
+            <native_room>ritual</native_room>
+            <native_room>jail</native_room>
+        </spawning>
+    </monster>
+    
     <!--************************************************************-->
     <!-- bog_tcher -->
     <!--************************************************************-->
@@ -2620,7 +2706,7 @@
             <description>Zuul the Gatekeeper of Gozer is a demigod and minion of Gozer. It was worshiped by the Sumerians and Hittites in 6000 BC, along with Gozer.</description>
             <allow_generated_description>false</allow_generated_description>
             <wary_message>looks wary.</wary_message>
-            <aware_message_seen>Zuul the Gatekeeper snarls.</aware_message_seen>
+            <aware_message_seen>snarls.</aware_message_seen>
             <aware_message_hidden>I hear a snarl.</aware_message_hidden>
             <spell_message></spell_message>
         </text>
@@ -2711,7 +2797,7 @@
             <description>An amalgam of crustacean, insect and fungi whose droning voice resembles a swarm of maddened hornets. It employs an irregular set of appendages as limbs and is capable of making use of advanced technology.</description>
             <allow_generated_description>true</allow_generated_description>
             <wary_message>looks wary.</wary_message>
-            <aware_message_seen>the Mi-go speaks in a droning voice.</aware_message_seen>
+            <aware_message_seen>speaks in a droning voice.</aware_message_seen>
             <aware_message_hidden>I hear a droning voice.</aware_message_hidden>
             <spell_message>speaks incantations in a droning voice.</spell_message>
         </text>
@@ -2808,7 +2894,7 @@
             <description>Part of a higher echelon of the Mi-Go, the buzz of this creature's commanding tone dims that of its insectoid wings. A protective bio-mechanical suit is fused to its carapace.</description>
             <allow_generated_description>true</allow_generated_description>
             <wary_message>looks wary.</wary_message>
-            <aware_message_seen>the Mi-go Commander speaks in a droning voice.</aware_message_seen>
+            <aware_message_seen>speaks in a droning voice.</aware_message_seen>
             <aware_message_hidden>I hear a droning voice.</aware_message_hidden>
             <spell_message>speaks incantations in a droning voice.</spell_message>
         </text>
@@ -2905,7 +2991,7 @@
             <description>Flying polyps are a horrible elder race of half polypous, utterly alien entities. They are only partly material and have the power of aerial motion, despite the absence of wings. Their senses does not include sight, but what senses they have can penetrate all material obstructions. They are invulnerable to normal means of damage, though they can be destroyed by certain forms of electrical energy.</description>
             <allow_generated_description>true</allow_generated_description>
             <wary_message>looks wary.</wary_message>
-            <aware_message_seen>the Flying Polyp makes shrill whistling sounds.</aware_message_seen>
+            <aware_message_seen>makes shrill whistling sounds.</aware_message_seen>
             <aware_message_hidden>I hear a shrill whistling.</aware_message_hidden>
             <spell_message></spell_message>
         </text>
@@ -2957,6 +3043,7 @@
             <property>r_fear</property>
             <property>r_conf</property>
             <property>r_disease</property>
+            <property>r_blind</property>
             <property>invis</property>
             <property>see_invis</property>
             <property>flying</property>
@@ -3001,7 +3088,7 @@
             <description>Flying polyps are a horrible elder race of half polypous, utterly alien entities. They are only partly material and have the power of aerial motion, despite the absence of wings. Their senses does not include sight, but what senses they have can penetrate all material obstructions. They are invulnerable to normal means of damage, though they can be destroyed by certain forms of electrical energy.</description>
             <allow_generated_description>true</allow_generated_description>
             <wary_message>looks wary.</wary_message>
-            <aware_message_seen>the Greater Polyp makes shrill whistling sounds.</aware_message_seen>
+            <aware_message_seen>makes shrill whistling sounds.</aware_message_seen>
             <aware_message_hidden>I hear a shrill whistling.</aware_message_hidden>
             <spell_message></spell_message>
         </text>
@@ -3053,6 +3140,7 @@
             <property>r_fear</property>
             <property>r_conf</property>
             <property>r_disease</property>
+            <property>r_blind</property>
             <property>invis</property>
             <property>see_invis</property>
             <property>flying</property>
@@ -3361,7 +3449,7 @@
             <description>A gaunt, bipedal predator bearing canine features. Dried blood mottles its snout and its claws are filthy with sodden earth and chunks of flesh.</description>
             <allow_generated_description>true</allow_generated_description>
             <wary_message>looks wary.</wary_message>
-            <aware_message_seen>the Ghoul growls.</aware_message_seen>
+            <aware_message_seen>growls.</aware_message_seen>
             <aware_message_hidden>I hear a chilling howl.</aware_message_hidden>
             <spell_message></spell_message>
         </text>
@@ -3632,7 +3720,7 @@
             <description>A large wolf with eyes full of cunning.</description>
             <allow_generated_description>true</allow_generated_description>
             <wary_message>looks wary.</wary_message>
-            <aware_message_seen>the Wolf snarls.</aware_message_seen>
+            <aware_message_seen>snarls.</aware_message_seen>
             <aware_message_hidden>I hear a chilling howl.</aware_message_hidden>
             <spell_message></spell_message>
         </text>
@@ -5159,7 +5247,7 @@
             <description>An extremely aggressive species of great ape. Their pale skin and excellent night vision indicates that they adapted to subterranean life a very long time ago.</description>
             <allow_generated_description>true</allow_generated_description>
             <wary_message>looks wary.</wary_message>
-            <aware_message_seen>the Carnivorous Ape howls.</aware_message_seen>
+            <aware_message_seen>howls.</aware_message_seen>
             <aware_message_hidden>I hear a beast howling.</aware_message_hidden>
             <spell_message></spell_message>
         </text>

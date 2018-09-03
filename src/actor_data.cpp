@@ -25,6 +25,7 @@ static std::unordered_map<std::string, ActorId> str_to_actor_id_map = {
         {"thing", ActorId::thing},
         {"floating_skull", ActorId::floating_skull},
         {"cultist", ActorId::cultist},
+        {"zealot", ActorId::zealot},
         {"cultist_priest", ActorId::cultist_priest},
         {"cultist_wizard", ActorId::cultist_wizard},
         {"cultist_arch_wizard", ActorId::cultist_arch_wizard},

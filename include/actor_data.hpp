@@ -28,6 +28,7 @@ enum class ActorId
         thing,
         floating_skull,
         cultist,
+        zealot,
         bog_tcher,
         keziah_mason,
         brown_jenkin,

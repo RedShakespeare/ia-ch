@@ -473,6 +473,15 @@ static void make_item_set_spike_gun(Actor& actor)
         }
 }
 
+static void make_item_set_zealot_spiked_mace(Actor& actor)
+{
+        Item* item = item_factory::make(ItemId::spiked_mace);
+
+        item->melee_base_dmg_.plus = 0;
+
+        actor.inv().put_in_slot(SlotId::wpn, item, Verbosity::silent);
+}
+
 static void make_item_set_priest_dagger(Actor& actor)
 {
         Item* item = item_factory::make(ItemId::dagger);
@@ -557,6 +566,10 @@ static void make_monster_item_sets(Actor& actor)
 
                         case ItemSetId::spike_gun:
                                 make_item_set_spike_gun(actor);
+                                break;
+
+                        case ItemSetId::zealot_spiked_mace:
+                                make_item_set_zealot_spiked_mace(actor);
                                 break;
 
                         case ItemSetId::priest_dagger:

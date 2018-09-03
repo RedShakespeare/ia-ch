@@ -3,7 +3,8 @@
 
 class Actor;
 
-namespace actor_items {
+namespace actor_items
+{
 
 void make_for_actor(Actor& actor);
 
