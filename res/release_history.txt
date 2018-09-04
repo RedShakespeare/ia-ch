@@ -13,13 +13,13 @@ Gameplay
 * The "Searching" spell lasts multiple turns, but detects in a smaller area (and never across the whole map)
 * Spells cast from manuscripts are always cast at least at "expert" level
 * Removed some player traits
-* Added more monsters
+* Added new monsters
+* Removed some redundant monsters
 * Deep Ones can throw a net which entangles the victim (instead of throwing a spear)
 * Deep Ones usually spawn in much smaller numbers than before
 * Deep Ones are not delayed when moving through liquids
 * Spiders become aware of the player when the player gets stuck in a spider web
 * Spiders can use pathfinding to move to their target
-* Removed the Phantasm, Wraith, and Byakhee monsters
 * When Ghosts attack, it says they are "reaching" for the player instead of "clawing" - the old "reach" effect which they did in addition to their normal attack has been removed
 * Strange Colors only cause confusion while the player is adjacent to them
 * Death Fiends now do a more sensible amount of damage (and the part of their description which said their attack "means almost certain death" has been removed)
