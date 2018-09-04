@@ -18,7 +18,6 @@
 static std::unordered_map<std::string, ActorId> str_to_actor_id_map = {
         {"player", ActorId::player},
         {"zombie", ActorId::zombie},
-        {"zombie_axe", ActorId::zombie_axe},
         {"bloated_zombie", ActorId::bloated_zombie},
         {"crawling_intestines", ActorId::crawling_intestines},
         {"crawling_hand", ActorId::crawling_hand},

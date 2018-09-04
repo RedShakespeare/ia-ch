@@ -19,7 +19,6 @@ enum class ActorId
 {
         player,
         zombie,
-        zombie_axe,
         bloated_zombie,
         major_clapham_lee,
         dean_halsey,

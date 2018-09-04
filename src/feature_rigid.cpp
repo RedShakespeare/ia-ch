@@ -2853,13 +2853,11 @@ DidTriggerTrap Tomb::trigger_trap(Actor* const actor)
 
     case TombTrait::other_undead:
     {
-        std::vector<ActorId> mon_bucket =
-        {
-            ActorId::mummy,
-            ActorId::croc_head_mummy,
-            ActorId::zombie,
-            ActorId::zombie_axe,
-            ActorId::floating_skull
+        std::vector<ActorId> mon_bucket = {
+                ActorId::mummy,
+                ActorId::croc_head_mummy,
+                ActorId::zombie,
+                ActorId::floating_skull
         };
 
         id_to_spawn = rnd::element(mon_bucket);

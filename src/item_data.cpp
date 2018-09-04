@@ -1222,12 +1222,6 @@ void init()
     d.melee.dmg_method = DmgMethod::blunt;
     data[(size_t)d.id] = d;
 
-    reset_data(d, ItemType::melee_wpn_intr);
-    d.id = ItemId::intr_zombie_axe;
-    d.melee.att_msgs = {"", "chops me with a rusty axe"};
-    d.melee.dmg_method = DmgMethod::slashing;
-    data[(size_t)d.id] = d;
-
     reset_data(d, ItemType::ranged_wpn_intr);
     d.id = ItemId::intr_acid_spit;
     d.ranged.att_msgs = {"", "spits acid pus at me"};

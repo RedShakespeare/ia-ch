@@ -56,7 +56,6 @@ Item* make(const ItemId item_id, const int nr_items)
     case ItemId::intr_claw:
     case ItemId::intr_strike:
     case ItemId::intr_punch:
-    case ItemId::intr_zombie_axe:
     case ItemId::intr_acid_spit:
     case ItemId::intr_fire_breath:
     case ItemId::intr_energy_breath:

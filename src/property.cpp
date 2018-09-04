@@ -2019,14 +2019,19 @@ PropActResult PropMajorClaphamSummon::on_act()
 
         const std::vector<ActorId> possible_random_id_choices = {
                 ActorId::zombie,
-                ActorId::zombie_axe,
                 ActorId::bloated_zombie
+        };
+
+        const std::vector<int> weights = {
+                3,
+                1
         };
 
         for (int i = 0; i < nr_of_extra_spawns; ++i)
         {
-                ids_to_summon.push_back(
-                        rnd::element(possible_random_id_choices));
+                const int idx = rnd::weighted_choice(weights);
+
+                ids_to_summon.push_back(possible_random_id_choices[idx]);
         }
 
         auto spawned =

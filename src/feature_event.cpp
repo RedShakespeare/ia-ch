@@ -190,8 +190,7 @@ void EventWallCrumble::on_new_turn()
         }
 
         spawn_bucket.push_back({ActorId::zombie, 4});
-        spawn_bucket.push_back({ActorId::zombie_axe, 3});
-        spawn_bucket.push_back({ActorId::bloated_zombie, 2});
+        spawn_bucket.push_back({ActorId::bloated_zombie, 1});
 
         const auto spawn_data = rnd::element(spawn_bucket);
 
