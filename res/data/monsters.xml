@@ -4510,7 +4510,7 @@
             <name_the>the Giant Locust</name_the>
             <corpse_name_a>a Giant Locust corpse</corpse_name_a>
             <corpse_name_the>the Giant Locust corpse</corpse_name_the>
-            <description>A huge swarming insect. They breed rapidly.</description>
+            <description>A huge swarming insect.</description>
             <allow_generated_description>true</allow_generated_description>
             <wary_message>seems disturbed.</wary_message>
             <aware_message_seen></aware_message_seen>
