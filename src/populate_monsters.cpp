@@ -235,7 +235,7 @@ void make_group_at(
                 break;
 
         case MonGroupSize::swarm:
-                max_nr_in_group = rnd::range(7, 9);
+                max_nr_in_group = rnd::range(9, 11);
                 break;
 
         default:

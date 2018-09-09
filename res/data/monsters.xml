@@ -4556,7 +4556,6 @@
         </attacks>
 
         <properties>
-            <property>breeds</property>
             <property>darkvision</property>
             <property>flying</property>
         </properties>
@@ -4581,8 +4580,7 @@
             <auto_spawn>true</auto_spawn>
             <can_be_summoned_by_monster>false</can_be_summoned_by_monster>
             <nr_allowed_to_spawn>-1</nr_allowed_to_spawn>
-            <group_size weight="1">pack</group_size>
-            <group_size weight="4">swarm</group_size>
+            <group_size>swarm</group_size>
             <native_room>plain</native_room>
         </spawning>
     </monster>
