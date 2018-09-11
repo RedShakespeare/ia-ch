@@ -795,7 +795,7 @@ static void draw_text(
         }
 }
 
-static P get_window_px_dims()
+static P get_sdl_window_px_dims()
 {
         P px_dims;
 
@@ -807,9 +807,9 @@ static P get_window_px_dims()
         return px_dims;
 }
 
-static P get_window_gui_dims()
+static P get_sdl_window_gui_dims()
 {
-        const P px_dims = get_window_px_dims();
+        const P px_dims = get_sdl_window_px_dims();
 
         return io::px_to_gui_coords(px_dims);
 }
@@ -829,26 +829,12 @@ static void try_set_window_gui_cells(P new_gui_dims)
                 new_px_dims.y);
 }
 
-static void resize_window_to_nearest_gui_cells()
-{
-        P gui_dims = get_window_gui_dims();
-
-        const P min_gui_dims = io::min_screen_gui_dims();
-
-        gui_dims.x = std::max(gui_dims.x, min_gui_dims.x);
-        gui_dims.y = std::max(gui_dims.y, min_gui_dims.y);
-
-        const P px_dims(
-                gui_dims.scaled_up(
-                        config::gui_cell_px_w(),
-                        config::gui_cell_px_h()));
-
-        SDL_SetWindowSize(sdl_window_, px_dims.x, px_dims.y);
-}
-
 static void on_window_resized()
 {
-        P new_px_dims = get_window_px_dims();
+        P new_px_dims = get_sdl_window_px_dims();
+
+        config::set_screen_px_w(new_px_dims.x);
+        config::set_screen_px_h(new_px_dims.y);
 
         TRACE << "New window size: "
               << new_px_dims.x
@@ -910,14 +896,15 @@ void init()
         // is enabled
         if (!config::is_fullscreen())
         {
-                const auto desired_gui_dims = P(96, 30);
+                const P min_gui_dims = io::min_screen_gui_dims();
 
-                const auto min_gui_dims = io::min_screen_gui_dims();
+                const P config_res =
+                        P(config::screen_px_w(),
+                          config::screen_px_h());
 
-                const auto desired_res = gui_to_px_coords(
-                        desired_gui_dims);
+                const P config_gui_dims = px_to_gui_coords(config_res);
 
-                const auto native_res = get_native_resolution();
+                const P native_res = get_native_resolution();
 
                 TRACE << "Minimum required GUI dimensions: "
                       << min_gui_dims.x
@@ -925,16 +912,16 @@ void init()
                       << min_gui_dims.y
                       << std::endl;
 
-                TRACE << "Desired GUI dimensions: "
-                      << desired_gui_dims.x
+                TRACE << "Config GUI dimensions: "
+                      << config_gui_dims.x
                       << ","
-                      << desired_gui_dims.y
+                      << config_gui_dims.y
                       << std::endl;
 
-                TRACE << "Desired resolution: "
-                      << desired_res.x
+                TRACE << "Config resolution: "
+                      << config_res.x
                       << ","
-                      << desired_res.y
+                      << config_res.y
                       << std::endl;
 
                 TRACE << "Native resolution: "
@@ -944,9 +931,9 @@ void init()
                       << std::endl;
 
                 const auto screen_gui_dims_used =
-                        ((desired_res.x <= native_res.x) &&
-                         (desired_res.y <= native_res.y))
-                        ? desired_gui_dims
+                        ((config_res.x <= native_res.x) &&
+                         (config_res.y <= native_res.y))
+                        ? config_gui_dims
                         : min_gui_dims;
 
                 TRACE << "Max number of GUI cells used (based on desired and "
@@ -959,7 +946,11 @@ void init()
 
                 panels::init(screen_gui_dims_used);
 
-                screen_px_dims = panel_px_dims(Panel::screen);
+                const P screen_panel_px_dims = panel_px_dims(Panel::screen);
+
+                screen_px_dims =
+                        P(std::max(screen_panel_px_dims.x, config_res.x),
+                          std::max(screen_panel_px_dims.y, config_res.y));
 
                 init_window(screen_px_dims);
         }
@@ -1976,7 +1967,7 @@ InputData get(const bool is_o_return)
                                         continue;
                                 }
 
-                                P gui_dims = get_window_gui_dims();
+                                P gui_dims = get_sdl_window_gui_dims();
 
                                 if (c == '+')
                                 {
@@ -2051,8 +2042,6 @@ InputData get(const bool is_o_return)
         // Adjust window size to nearest gui cells?
         if (!config::is_fullscreen() && is_window_resized)
         {
-                resize_window_to_nearest_gui_cells();
-
                 on_window_resized();
 
                 clear_events();

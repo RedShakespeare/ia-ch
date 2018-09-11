@@ -5,12 +5,12 @@
 #include <fstream>
 #include <SDL_image.h>
 
+#include "audio.hpp"
 #include "browser.hpp"
-#include "query.hpp"
 #include "io.hpp"
 #include "panel.hpp"
+#include "query.hpp"
 #include "sdl_base.hpp"
-#include "audio.hpp"
 #include "text_format.hpp"
 
 // -----------------------------------------------------------------------------
@@ -54,6 +54,8 @@ static bool is_bot_playing_ = false;
 static bool is_audio_enabled_ = false;
 static bool is_amb_audio_enabled_ = false;
 static bool is_tiles_mode_ = false;
+static int screen_px_w_ = -1;
+static int screen_px_h_ = -1;
 static int gui_cell_px_w_ = -1;
 static int gui_cell_px_h_ = -1;
 static int map_cell_px_w_ = -1;
@@ -152,6 +154,12 @@ static void set_default_variables()
         font_name_ = "12x24.png";
 
         update_render_dims();
+
+        const int default_nr_gui_cells_x = 96;
+        const int default_nr_gui_cells_y = 30;
+
+        screen_px_w_ = gui_cell_px_w_ * default_nr_gui_cells_x;
+        screen_px_h_ = gui_cell_px_h_ * default_nr_gui_cells_y;
 
         is_fullscreen_ = false;
         is_tiles_wall_full_square_ = false;
@@ -442,6 +450,12 @@ static void set_variables_from_lines(std::vector<std::string>& lines)
         is_amb_audio_enabled_ = lines.front() == "1";
         lines.erase(begin(lines));
 
+        screen_px_w_ = to_int(lines.front());
+        lines.erase(begin(lines));
+
+        screen_px_h_ = to_int(lines.front());
+        lines.erase(begin(lines));
+
         is_tiles_mode_ = lines.front() == "1";
         lines.erase(begin(lines));
 
@@ -532,6 +546,8 @@ static std::vector<std::string> lines_from_variables()
         lines.clear();
         lines.push_back(is_audio_enabled_ ? "1" : "0");
         lines.push_back(is_amb_audio_enabled_ ? "1" : "0");
+        lines.push_back(std::to_string(screen_px_w_));
+        lines.push_back(std::to_string(screen_px_h_));
         lines.push_back(is_tiles_mode_ ? "1" : "0");
         lines.push_back(font_name_);
         lines.push_back(is_fullscreen_ ? "1" : "0");
@@ -598,6 +614,34 @@ std::string font_name()
 bool is_fullscreen()
 {
         return is_fullscreen_;
+}
+
+void set_screen_px_w(const int w)
+{
+        screen_px_w_ = w;
+
+        const auto lines = lines_from_variables();
+
+        write_lines_to_file(lines);
+}
+
+void set_screen_px_h(const int h)
+{
+        screen_px_h_ = h;
+
+        const auto lines = lines_from_variables();
+
+        write_lines_to_file(lines);
+}
+
+int screen_px_w()
+{
+        return screen_px_w_;
+}
+
+int screen_px_h()
+{
+        return screen_px_h_;
 }
 
 int gui_cell_px_w()
