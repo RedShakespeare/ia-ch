@@ -474,6 +474,9 @@ static void dump_spawning(xml::Element* spawn_e, ActorData& data)
         data.spawn_max_dlvl = xml::get_text_int(
                 xml::first_child(spawn_e, "max_dungeon_level"));
 
+        data.spawn_weight = xml::get_text_int(
+                xml::first_child(spawn_e, "spawn_weight"));
+
         data.is_auto_spawn_allowed = xml::get_text_bool(
                 xml::first_child(spawn_e, "auto_spawn"));
 
@@ -637,6 +640,7 @@ void ActorData::reset()
         ranged_cooldown_turns = 0;
         spawn_min_dlvl = -1;
         spawn_max_dlvl = -1;
+        spawn_weight = 100;
         actor_size = ActorSize::humanoid;
         allow_generated_descr = true;
         nr_kills = 0;

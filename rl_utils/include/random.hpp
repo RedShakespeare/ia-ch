@@ -149,6 +149,13 @@ struct Fraction
         int num, den;
 };
 
+template <typename T>
+struct WeightedItems
+{
+        std::vector<T> items;
+        std::vector<int> weights;
+};
+
 //------------------------------------------------------------------------------
 // Random number generation
 //------------------------------------------------------------------------------
@@ -181,6 +188,18 @@ int range_binom(const int v1, const int v2, const double p);
 bool percent(const int pct_chance);
 
 int weighted_choice(const std::vector<int> weights);
+
+template <typename T>
+T weighted_choice(const WeightedItems<T>& weighted_items)
+{
+        ASSERT(weighted_items.items.size() == weighted_items.weights.size());
+
+        ASSERT(weighted_items.items.size() > 0);
+
+        const size_t idx = weighted_choice(weighted_items.weights);
+
+        return weighted_items.items[idx];
+}
 
 template <typename T>
 T element(const std::vector<T>& v)

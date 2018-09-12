@@ -256,6 +256,7 @@ struct ActorData
         int nr_turns_aware;
         int ranged_cooldown_turns;
         int spawn_min_dlvl, spawn_max_dlvl;
+        int spawn_weight;
         ActorSize actor_size;
         bool allow_generated_descr;
         int nr_kills;

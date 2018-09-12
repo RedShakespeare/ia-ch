@@ -51,6 +51,7 @@
         <spawning>
             <min_dungeon_level>-1</min_dungeon_level>
             <max_dungeon_level>-1</max_dungeon_level>
+            <spawn_weight>100</spawn_weight>
             <auto_spawn>false</auto_spawn>
             <can_be_summoned_by_monster>false</can_be_summoned_by_monster>
             <nr_allowed_to_spawn>-1</nr_allowed_to_spawn>
@@ -142,6 +143,7 @@
         <spawning>
             <min_dungeon_level>1</min_dungeon_level>
             <max_dungeon_level>19</max_dungeon_level>
+            <spawn_weight>100</spawn_weight>
             <auto_spawn>true</auto_spawn>
             <can_be_summoned_by_monster>false</can_be_summoned_by_monster>
             <nr_allowed_to_spawn>-1</nr_allowed_to_spawn>
@@ -242,6 +244,7 @@
         <spawning>
             <min_dungeon_level>3</min_dungeon_level>
             <max_dungeon_level>19</max_dungeon_level>
+            <spawn_weight>100</spawn_weight>
             <auto_spawn>true</auto_spawn>
             <can_be_summoned_by_monster>false</can_be_summoned_by_monster>
             <nr_allowed_to_spawn>-1</nr_allowed_to_spawn>
@@ -335,6 +338,7 @@
         <spawning>
             <min_dungeon_level>4</min_dungeon_level>
             <max_dungeon_level>-1</max_dungeon_level>
+            <spawn_weight>100</spawn_weight>
             <auto_spawn>true</auto_spawn>
             <can_be_summoned_by_monster>false</can_be_summoned_by_monster>
             <unique/>
@@ -426,6 +430,7 @@
         <spawning>
             <min_dungeon_level>4</min_dungeon_level>
             <max_dungeon_level>-1</max_dungeon_level>
+            <spawn_weight>100</spawn_weight>
             <auto_spawn>false</auto_spawn>
             <can_be_summoned_by_monster>false</can_be_summoned_by_monster>
             <unique/>
@@ -513,6 +518,7 @@
         <spawning>
             <min_dungeon_level>2</min_dungeon_level>
             <max_dungeon_level>4</max_dungeon_level>
+            <spawn_weight>100</spawn_weight>
             <auto_spawn>true</auto_spawn>
             <can_be_summoned_by_monster>false</can_be_summoned_by_monster>
             <nr_allowed_to_spawn>-1</nr_allowed_to_spawn>
@@ -598,6 +604,7 @@
         <spawning>
             <min_dungeon_level>2</min_dungeon_level>
             <max_dungeon_level>4</max_dungeon_level>
+            <spawn_weight>100</spawn_weight>
             <auto_spawn>true</auto_spawn>
             <can_be_summoned_by_monster>false</can_be_summoned_by_monster>
             <nr_allowed_to_spawn>-1</nr_allowed_to_spawn>
@@ -688,6 +695,7 @@
         <spawning>
             <min_dungeon_level>8</min_dungeon_level>
             <max_dungeon_level>9</max_dungeon_level>
+            <spawn_weight>1</spawn_weight>
             <auto_spawn>true</auto_spawn>
             <can_be_summoned_by_monster>false</can_be_summoned_by_monster>
             <unique/>
@@ -778,6 +786,7 @@
         <spawning>
             <min_dungeon_level>3</min_dungeon_level>
             <max_dungeon_level>9</max_dungeon_level>
+            <spawn_weight>100</spawn_weight>
             <auto_spawn>true</auto_spawn>
             <can_be_summoned_by_monster>true</can_be_summoned_by_monster>
             <nr_allowed_to_spawn>-1</nr_allowed_to_spawn>
@@ -869,6 +878,7 @@
         <spawning>
             <min_dungeon_level>1</min_dungeon_level>
             <max_dungeon_level>19</max_dungeon_level>
+            <spawn_weight>100</spawn_weight>
             <auto_spawn>true</auto_spawn>
             <can_be_summoned_by_monster>false</can_be_summoned_by_monster>
             <nr_allowed_to_spawn>-1</nr_allowed_to_spawn>
@@ -955,6 +965,7 @@
         <spawning>
             <min_dungeon_level>2</min_dungeon_level>
             <max_dungeon_level>19</max_dungeon_level>
+            <spawn_weight>50</spawn_weight>
             <auto_spawn>true</auto_spawn>
             <can_be_summoned_by_monster>false</can_be_summoned_by_monster>
             <nr_allowed_to_spawn>-1</nr_allowed_to_spawn>
@@ -1037,6 +1048,7 @@
         <spawning>
             <min_dungeon_level>4</min_dungeon_level>
             <max_dungeon_level>7</max_dungeon_level>
+            <spawn_weight>100</spawn_weight>
             <auto_spawn>true</auto_spawn>
             <can_be_summoned_by_monster>false</can_be_summoned_by_monster>
             <nr_allowed_to_spawn>-1</nr_allowed_to_spawn>
@@ -1132,7 +1144,8 @@
 
         <spawning>
             <min_dungeon_level>3</min_dungeon_level>
-            <max_dungeon_level>-1</max_dungeon_level>
+            <max_dungeon_level>16</max_dungeon_level>
+            <spawn_weight>100</spawn_weight>
             <auto_spawn>true</auto_spawn>
             <can_be_summoned_by_monster>false</can_be_summoned_by_monster>
             <unique/>
@@ -1229,6 +1242,7 @@
         <spawning>
             <min_dungeon_level>3</min_dungeon_level>
             <max_dungeon_level>-1</max_dungeon_level>
+            <spawn_weight>100</spawn_weight>
             <auto_spawn>false</auto_spawn>
             <can_be_summoned_by_monster>false</can_be_summoned_by_monster>
             <unique/>
@@ -1316,6 +1330,7 @@
         <spawning>
             <min_dungeon_level>16</min_dungeon_level>
             <max_dungeon_level>-1</max_dungeon_level>
+            <spawn_weight>100</spawn_weight>
             <auto_spawn>true</auto_spawn>
             <can_be_summoned_by_monster>true</can_be_summoned_by_monster>
             <nr_allowed_to_spawn>-1</nr_allowed_to_spawn>
@@ -1413,6 +1428,7 @@
         <spawning>
             <min_dungeon_level>3</min_dungeon_level>
             <max_dungeon_level>19</max_dungeon_level>
+            <spawn_weight>100</spawn_weight>
             <auto_spawn>true</auto_spawn>
             <can_be_summoned_by_monster>false</can_be_summoned_by_monster>
             <nr_allowed_to_spawn>-1</nr_allowed_to_spawn>
@@ -1508,6 +1524,7 @@
         <spawning>
             <min_dungeon_level>10</min_dungeon_level>
             <max_dungeon_level>24</max_dungeon_level>
+            <spawn_weight>100</spawn_weight>
             <auto_spawn>true</auto_spawn>
             <can_be_summoned_by_monster>false</can_be_summoned_by_monster>
             <nr_allowed_to_spawn>-1</nr_allowed_to_spawn>
@@ -1603,6 +1620,7 @@
         <spawning>
             <min_dungeon_level>20</min_dungeon_level>
             <max_dungeon_level>29</max_dungeon_level>
+            <spawn_weight>100</spawn_weight>
             <auto_spawn>true</auto_spawn>
             <can_be_summoned_by_monster>false</can_be_summoned_by_monster>
             <nr_allowed_to_spawn>-1</nr_allowed_to_spawn>
@@ -1692,6 +1710,7 @@
         <spawning>
             <min_dungeon_level>8</min_dungeon_level>
             <max_dungeon_level>18</max_dungeon_level>
+            <spawn_weight>100</spawn_weight>
             <auto_spawn>true</auto_spawn>
             <can_be_summoned_by_monster>true</can_be_summoned_by_monster>
             <nr_allowed_to_spawn>-1</nr_allowed_to_spawn>
@@ -1780,6 +1799,7 @@
         <spawning>
             <min_dungeon_level>8</min_dungeon_level>
             <max_dungeon_level>18</max_dungeon_level>
+            <spawn_weight>100</spawn_weight>
             <auto_spawn>true</auto_spawn>
             <can_be_summoned_by_monster>true</can_be_summoned_by_monster>
             <nr_allowed_to_spawn>-1</nr_allowed_to_spawn>
@@ -1868,6 +1888,7 @@
         <spawning>
             <min_dungeon_level>8</min_dungeon_level>
             <max_dungeon_level>18</max_dungeon_level>
+            <spawn_weight>100</spawn_weight>
             <auto_spawn>true</auto_spawn>
             <can_be_summoned_by_monster>true</can_be_summoned_by_monster>
             <nr_allowed_to_spawn>-1</nr_allowed_to_spawn>
@@ -1956,6 +1977,7 @@
         <spawning>
             <min_dungeon_level>4</min_dungeon_level>
             <max_dungeon_level>19</max_dungeon_level>
+            <spawn_weight>50</spawn_weight>
             <auto_spawn>true</auto_spawn>
             <can_be_summoned_by_monster>false</can_be_summoned_by_monster>
             <nr_allowed_to_spawn>-1</nr_allowed_to_spawn>
@@ -2046,6 +2068,7 @@
         <spawning>
             <min_dungeon_level>1</min_dungeon_level>
             <max_dungeon_level>6</max_dungeon_level>
+            <spawn_weight>100</spawn_weight>
             <auto_spawn>false</auto_spawn>
             <can_be_summoned_by_monster>false</can_be_summoned_by_monster>
             <nr_allowed_to_spawn>-1</nr_allowed_to_spawn>
@@ -2131,6 +2154,7 @@
         <spawning>
             <min_dungeon_level>1</min_dungeon_level>
             <max_dungeon_level>3</max_dungeon_level>
+            <spawn_weight>100</spawn_weight>
             <auto_spawn>true</auto_spawn>
             <can_be_summoned_by_monster>true</can_be_summoned_by_monster>
             <nr_allowed_to_spawn>-1</nr_allowed_to_spawn>
@@ -2222,6 +2246,7 @@
         <spawning>
             <min_dungeon_level>1</min_dungeon_level>
             <max_dungeon_level>9</max_dungeon_level>
+            <spawn_weight>100</spawn_weight>
             <auto_spawn>true</auto_spawn>
             <can_be_summoned_by_monster>true</can_be_summoned_by_monster>
             <nr_allowed_to_spawn>-1</nr_allowed_to_spawn>
@@ -2314,6 +2339,7 @@
         <spawning>
             <min_dungeon_level>1</min_dungeon_level>
             <max_dungeon_level>9</max_dungeon_level>
+            <spawn_weight>100</spawn_weight>
             <auto_spawn>true</auto_spawn>
             <can_be_summoned_by_monster>true</can_be_summoned_by_monster>
             <nr_allowed_to_spawn>-1</nr_allowed_to_spawn>
@@ -2403,6 +2429,7 @@
         <spawning>
             <min_dungeon_level>1</min_dungeon_level>
             <max_dungeon_level>9</max_dungeon_level>
+            <spawn_weight>100</spawn_weight>
             <auto_spawn>true</auto_spawn>
             <can_be_summoned_by_monster>true</can_be_summoned_by_monster>
             <nr_allowed_to_spawn>-1</nr_allowed_to_spawn>
@@ -2497,6 +2524,7 @@
         <spawning>
             <min_dungeon_level>8</min_dungeon_level>
             <max_dungeon_level>27</max_dungeon_level>
+            <spawn_weight>100</spawn_weight>
             <auto_spawn>true</auto_spawn>
             <can_be_summoned_by_monster>true</can_be_summoned_by_monster>
             <nr_allowed_to_spawn>-1</nr_allowed_to_spawn>
@@ -2590,6 +2618,7 @@
         <spawning>
             <min_dungeon_level>15</min_dungeon_level>
             <max_dungeon_level>28</max_dungeon_level>
+            <spawn_weight>100</spawn_weight>
             <auto_spawn>true</auto_spawn>
             <can_be_summoned_by_monster>true</can_be_summoned_by_monster>
             <nr_allowed_to_spawn>-1</nr_allowed_to_spawn>
@@ -2679,6 +2708,7 @@
         <spawning>
             <min_dungeon_level>13</min_dungeon_level>
             <max_dungeon_level>999</max_dungeon_level>
+            <spawn_weight>25</spawn_weight>
             <auto_spawn>true</auto_spawn>
             <can_be_summoned_by_monster>false</can_be_summoned_by_monster>
             <unique/>
@@ -2777,6 +2807,7 @@
         <spawning>
             <min_dungeon_level>6</min_dungeon_level>
             <max_dungeon_level>24</max_dungeon_level>
+            <spawn_weight>100</spawn_weight>
             <auto_spawn>true</auto_spawn>
             <can_be_summoned_by_monster>false</can_be_summoned_by_monster>
             <nr_allowed_to_spawn>-1</nr_allowed_to_spawn>
@@ -2875,6 +2906,7 @@
         <spawning>
             <min_dungeon_level>12</min_dungeon_level>
             <max_dungeon_level>28</max_dungeon_level>
+            <spawn_weight>100</spawn_weight>
             <auto_spawn>true</auto_spawn>
             <can_be_summoned_by_monster>false</can_be_summoned_by_monster>
             <nr_allowed_to_spawn>-1</nr_allowed_to_spawn>
@@ -2973,6 +3005,7 @@
         <spawning>
             <min_dungeon_level>5</min_dungeon_level>
             <max_dungeon_level>19</max_dungeon_level>
+            <spawn_weight>100</spawn_weight>
             <auto_spawn>true</auto_spawn>
             <can_be_summoned_by_monster>false</can_be_summoned_by_monster>
             <nr_allowed_to_spawn>-1</nr_allowed_to_spawn>
@@ -3070,6 +3103,7 @@
         <spawning>
             <min_dungeon_level>10</min_dungeon_level>
             <max_dungeon_level>27</max_dungeon_level>
+            <spawn_weight>100</spawn_weight>
             <auto_spawn>true</auto_spawn>
             <can_be_summoned_by_monster>false</can_be_summoned_by_monster>
             <nr_allowed_to_spawn>-1</nr_allowed_to_spawn>
@@ -3158,6 +3192,7 @@
         <spawning>
             <min_dungeon_level>3</min_dungeon_level>
             <max_dungeon_level>24</max_dungeon_level>
+            <spawn_weight>100</spawn_weight>
             <auto_spawn>true</auto_spawn>
             <can_be_summoned_by_monster>false</can_be_summoned_by_monster>
             <nr_allowed_to_spawn>-1</nr_allowed_to_spawn>
@@ -3246,6 +3281,7 @@
         <spawning>
             <min_dungeon_level>3</min_dungeon_level>
             <max_dungeon_level>24</max_dungeon_level>
+            <spawn_weight>100</spawn_weight>
             <auto_spawn>true</auto_spawn>
             <can_be_summoned_by_monster>false</can_be_summoned_by_monster>
             <nr_allowed_to_spawn>-1</nr_allowed_to_spawn>
@@ -3334,6 +3370,7 @@
         <spawning>
             <min_dungeon_level>3</min_dungeon_level>
             <max_dungeon_level>24</max_dungeon_level>
+            <spawn_weight>100</spawn_weight>
             <auto_spawn>true</auto_spawn>
             <can_be_summoned_by_monster>false</can_be_summoned_by_monster>
             <nr_allowed_to_spawn>-1</nr_allowed_to_spawn>
@@ -3424,6 +3461,7 @@
         <spawning>
             <min_dungeon_level>6</min_dungeon_level>
             <max_dungeon_level>19</max_dungeon_level>
+            <spawn_weight>100</spawn_weight>
             <auto_spawn>true</auto_spawn>
             <can_be_summoned_by_monster>false</can_be_summoned_by_monster>
             <nr_allowed_to_spawn>-1</nr_allowed_to_spawn>
@@ -3517,6 +3555,7 @@
         <spawning>
             <min_dungeon_level>3</min_dungeon_level>
             <max_dungeon_level>8</max_dungeon_level>
+            <spawn_weight>25</spawn_weight>
             <auto_spawn>true</auto_spawn>
             <can_be_summoned_by_monster>false</can_be_summoned_by_monster>
             <nr_allowed_to_spawn>-1</nr_allowed_to_spawn>
@@ -3605,6 +3644,7 @@
         <spawning>
             <min_dungeon_level>4</min_dungeon_level>
             <max_dungeon_level>9</max_dungeon_level>
+            <spawn_weight>50</spawn_weight>
             <auto_spawn>true</auto_spawn>
             <can_be_summoned_by_monster>false</can_be_summoned_by_monster>
             <nr_allowed_to_spawn>-1</nr_allowed_to_spawn>
@@ -3690,14 +3730,15 @@
 
         <spawning>
             <min_dungeon_level>0</min_dungeon_level>
-            <max_dungeon_level>2</max_dungeon_level>
+            <max_dungeon_level>3</max_dungeon_level>
+            <spawn_weight>500</spawn_weight>
             <auto_spawn>true</auto_spawn>
             <can_be_summoned_by_monster>true</can_be_summoned_by_monster>
             <nr_allowed_to_spawn>-1</nr_allowed_to_spawn>
-            <group_size weight="1">few</group_size>
-            <group_size weight="2">pack</group_size>
+            <group_size>pack</group_size>
             <native_room>plain</native_room>
             <native_room>forest</native_room>
+            <native_room>monster</native_room>
         </spawning>
     </monster>
 
@@ -3784,6 +3825,7 @@
         <spawning>
             <min_dungeon_level>3</min_dungeon_level>
             <max_dungeon_level>8</max_dungeon_level>
+            <spawn_weight>100</spawn_weight>
             <auto_spawn>true</auto_spawn>
             <can_be_summoned_by_monster>false</can_be_summoned_by_monster>
             <nr_allowed_to_spawn>-1</nr_allowed_to_spawn>
@@ -3868,6 +3910,7 @@
         <spawning>
             <min_dungeon_level>10</min_dungeon_level>
             <max_dungeon_level>19</max_dungeon_level>
+            <spawn_weight>100</spawn_weight>
             <auto_spawn>true</auto_spawn>
             <can_be_summoned_by_monster>false</can_be_summoned_by_monster>
             <nr_allowed_to_spawn>-1</nr_allowed_to_spawn>
@@ -3962,6 +4005,7 @@
         <spawning>
             <min_dungeon_level>20</min_dungeon_level>
             <max_dungeon_level>28</max_dungeon_level>
+            <spawn_weight>100</spawn_weight>
             <auto_spawn>true</auto_spawn>
             <can_be_summoned_by_monster>false</can_be_summoned_by_monster>
             <nr_allowed_to_spawn>-1</nr_allowed_to_spawn>
@@ -4049,6 +4093,7 @@
         <spawning>
             <min_dungeon_level>1</min_dungeon_level>
             <max_dungeon_level>9</max_dungeon_level>
+            <spawn_weight>100</spawn_weight>
             <auto_spawn>true</auto_spawn>
             <can_be_summoned_by_monster>true</can_be_summoned_by_monster>
             <nr_allowed_to_spawn>-1</nr_allowed_to_spawn>
@@ -4136,6 +4181,7 @@
         <spawning>
             <min_dungeon_level>4</min_dungeon_level>
             <max_dungeon_level>19</max_dungeon_level>
+            <spawn_weight>100</spawn_weight>
             <auto_spawn>true</auto_spawn>
             <can_be_summoned_by_monster>true</can_be_summoned_by_monster>
             <nr_allowed_to_spawn>-1</nr_allowed_to_spawn>
@@ -4224,6 +4270,7 @@
         <spawning>
             <min_dungeon_level>6</min_dungeon_level>
             <max_dungeon_level>19</max_dungeon_level>
+            <spawn_weight>100</spawn_weight>
             <auto_spawn>true</auto_spawn>
             <can_be_summoned_by_monster>true</can_be_summoned_by_monster>
             <nr_allowed_to_spawn>-1</nr_allowed_to_spawn>
@@ -4313,6 +4360,7 @@
         <spawning>
             <min_dungeon_level>20</min_dungeon_level>
             <max_dungeon_level>999</max_dungeon_level>
+            <spawn_weight>100</spawn_weight>
             <auto_spawn>true</auto_spawn>
             <can_be_summoned_by_monster>false</can_be_summoned_by_monster>
             <unique/>
@@ -4406,6 +4454,7 @@
         <spawning>
             <min_dungeon_level>12</min_dungeon_level>
             <max_dungeon_level>24</max_dungeon_level>
+            <spawn_weight>100</spawn_weight>
             <auto_spawn>true</auto_spawn>
             <can_be_summoned_by_monster>true</can_be_summoned_by_monster>
             <nr_allowed_to_spawn>-1</nr_allowed_to_spawn>
@@ -4492,6 +4541,7 @@
         <spawning>
             <min_dungeon_level>8</min_dungeon_level>
             <max_dungeon_level>19</max_dungeon_level>
+            <spawn_weight>100</spawn_weight>
             <auto_spawn>true</auto_spawn>
             <can_be_summoned_by_monster>false</can_be_summoned_by_monster>
             <nr_allowed_to_spawn>-1</nr_allowed_to_spawn>
@@ -4577,6 +4627,7 @@
         <spawning>
             <min_dungeon_level>7</min_dungeon_level>
             <max_dungeon_level>19</max_dungeon_level>
+            <spawn_weight>25</spawn_weight>
             <auto_spawn>true</auto_spawn>
             <can_be_summoned_by_monster>false</can_be_summoned_by_monster>
             <nr_allowed_to_spawn>-1</nr_allowed_to_spawn>
@@ -4671,6 +4722,7 @@
         <spawning>
             <min_dungeon_level>10</min_dungeon_level>
             <max_dungeon_level>-1</max_dungeon_level>
+            <spawn_weight>100</spawn_weight>
             <auto_spawn>true</auto_spawn>
             <can_be_summoned_by_monster>false</can_be_summoned_by_monster>
             <nr_allowed_to_spawn>-1</nr_allowed_to_spawn>
@@ -4753,6 +4805,7 @@
         <spawning>
             <min_dungeon_level>14</min_dungeon_level>
             <max_dungeon_level>27</max_dungeon_level>
+            <spawn_weight>100</spawn_weight>
             <auto_spawn>true</auto_spawn>
             <can_be_summoned_by_monster>false</can_be_summoned_by_monster>
             <nr_allowed_to_spawn>-1</nr_allowed_to_spawn>
@@ -4856,6 +4909,7 @@
         <spawning>
             <min_dungeon_level>-1</min_dungeon_level>
             <max_dungeon_level>-1</max_dungeon_level>
+            <spawn_weight>100</spawn_weight>
             <auto_spawn>false</auto_spawn>
             <can_be_summoned_by_monster>false</can_be_summoned_by_monster>
             <unique/>
@@ -4956,6 +5010,7 @@
         <spawning>
             <min_dungeon_level>11</min_dungeon_level>
             <max_dungeon_level>-1</max_dungeon_level>
+            <spawn_weight>100</spawn_weight>
             <auto_spawn>true</auto_spawn>
             <can_be_summoned_by_monster>false</can_be_summoned_by_monster>
             <unique/>
@@ -5043,6 +5098,7 @@
         <spawning>
             <min_dungeon_level>6</min_dungeon_level>
             <max_dungeon_level>19</max_dungeon_level>
+            <spawn_weight>100</spawn_weight>
             <auto_spawn>true</auto_spawn>
             <can_be_summoned_by_monster>false</can_be_summoned_by_monster>
             <nr_allowed_to_spawn>-1</nr_allowed_to_spawn>
@@ -5133,6 +5189,7 @@
         <spawning>
             <min_dungeon_level>0</min_dungeon_level>
             <max_dungeon_level>0</max_dungeon_level>
+            <spawn_weight>100</spawn_weight>
             <auto_spawn>false</auto_spawn>
             <can_be_summoned_by_monster>false</can_be_summoned_by_monster>
             <nr_allowed_to_spawn>-1</nr_allowed_to_spawn>
@@ -5216,6 +5273,7 @@
         <spawning>
             <min_dungeon_level>20</min_dungeon_level>
             <max_dungeon_level>-1</max_dungeon_level>
+            <spawn_weight>100</spawn_weight>
             <auto_spawn>true</auto_spawn>
             <can_be_summoned_by_monster>false</can_be_summoned_by_monster>
             <nr_allowed_to_spawn>-1</nr_allowed_to_spawn>
@@ -5303,6 +5361,7 @@
         <spawning>
             <min_dungeon_level>1</min_dungeon_level>
             <max_dungeon_level>9</max_dungeon_level>
+            <spawn_weight>100</spawn_weight>
             <auto_spawn>true</auto_spawn>
             <can_be_summoned_by_monster>true</can_be_summoned_by_monster>
             <nr_allowed_to_spawn>-1</nr_allowed_to_spawn>
@@ -5392,6 +5451,7 @@
         <spawning>
             <min_dungeon_level>6</min_dungeon_level>
             <max_dungeon_level>19</max_dungeon_level>
+            <spawn_weight>100</spawn_weight>
             <auto_spawn>true</auto_spawn>
             <can_be_summoned_by_monster>true</can_be_summoned_by_monster>
             <nr_allowed_to_spawn>-1</nr_allowed_to_spawn>
@@ -5486,6 +5546,7 @@
         <spawning>
             <min_dungeon_level>4</min_dungeon_level>
             <max_dungeon_level>14</max_dungeon_level>
+            <spawn_weight>100</spawn_weight>
             <auto_spawn>true</auto_spawn>
             <can_be_summoned_by_monster>true</can_be_summoned_by_monster>
             <nr_allowed_to_spawn>-1</nr_allowed_to_spawn>
@@ -5579,6 +5640,7 @@
         <spawning>
             <min_dungeon_level>8</min_dungeon_level>
             <max_dungeon_level>27</max_dungeon_level>
+            <spawn_weight>100</spawn_weight>
             <auto_spawn>true</auto_spawn>
             <can_be_summoned_by_monster>true</can_be_summoned_by_monster>
             <nr_allowed_to_spawn>-1</nr_allowed_to_spawn>
@@ -5673,6 +5735,7 @@
         <spawning>
             <min_dungeon_level>15</min_dungeon_level>
             <max_dungeon_level>-1</max_dungeon_level>
+            <spawn_weight>100</spawn_weight>
             <auto_spawn>true</auto_spawn>
             <can_be_summoned_by_monster>true</can_be_summoned_by_monster>
             <nr_allowed_to_spawn>-1</nr_allowed_to_spawn>
@@ -5765,6 +5828,7 @@
         <spawning>
             <min_dungeon_level>2</min_dungeon_level>
             <max_dungeon_level>3</max_dungeon_level>
+            <spawn_weight>100</spawn_weight>
             <auto_spawn>true</auto_spawn>
             <can_be_summoned_by_monster>true</can_be_summoned_by_monster>
             <nr_allowed_to_spawn>-1</nr_allowed_to_spawn>
@@ -5859,6 +5923,7 @@
         <spawning>
             <min_dungeon_level>4</min_dungeon_level>
             <max_dungeon_level>6</max_dungeon_level>
+            <spawn_weight>100</spawn_weight>
             <auto_spawn>true</auto_spawn>
             <can_be_summoned_by_monster>false</can_be_summoned_by_monster>
             <nr_allowed_to_spawn>-1</nr_allowed_to_spawn>
@@ -5954,6 +6019,7 @@
         <spawning>
             <min_dungeon_level>5</min_dungeon_level>
             <max_dungeon_level>7</max_dungeon_level>
+            <spawn_weight>100</spawn_weight>
             <auto_spawn>true</auto_spawn>
             <can_be_summoned_by_monster>true</can_be_summoned_by_monster>
             <nr_allowed_to_spawn>-1</nr_allowed_to_spawn>
@@ -6049,6 +6115,7 @@
         <spawning>
             <min_dungeon_level>7</min_dungeon_level>
             <max_dungeon_level>9</max_dungeon_level>
+            <spawn_weight>100</spawn_weight>
             <auto_spawn>true</auto_spawn>
             <can_be_summoned_by_monster>true</can_be_summoned_by_monster>
             <nr_allowed_to_spawn>-1</nr_allowed_to_spawn>
@@ -6148,6 +6215,7 @@
         <spawning>
             <min_dungeon_level>14</min_dungeon_level>
             <max_dungeon_level>24</max_dungeon_level>
+            <spawn_weight>100</spawn_weight>
             <auto_spawn>true</auto_spawn>
             <can_be_summoned_by_monster>false</can_be_summoned_by_monster>
             <nr_allowed_to_spawn>-1</nr_allowed_to_spawn>
@@ -6235,6 +6303,7 @@
         <spawning>
             <min_dungeon_level>15</min_dungeon_level>
             <max_dungeon_level>-1</max_dungeon_level>
+            <spawn_weight>100</spawn_weight>
             <auto_spawn>true</auto_spawn>
             <can_be_summoned_by_monster>false</can_be_summoned_by_monster>
             <nr_allowed_to_spawn>-1</nr_allowed_to_spawn>
@@ -6323,6 +6392,7 @@
         <spawning>
             <min_dungeon_level>24</min_dungeon_level>
             <max_dungeon_level>999</max_dungeon_level>
+            <spawn_weight>100</spawn_weight>
             <auto_spawn>true</auto_spawn>
             <can_be_summoned_by_monster>false</can_be_summoned_by_monster>
             <nr_allowed_to_spawn>-1</nr_allowed_to_spawn>
@@ -6415,6 +6485,7 @@
         <spawning>
             <min_dungeon_level>10</min_dungeon_level>
             <max_dungeon_level>14</max_dungeon_level>
+            <spawn_weight>100</spawn_weight>
             <auto_spawn>true</auto_spawn>
             <can_be_summoned_by_monster>false</can_be_summoned_by_monster>
             <nr_allowed_to_spawn>-1</nr_allowed_to_spawn>
@@ -6505,6 +6576,7 @@
         <spawning>
             <min_dungeon_level>-1</min_dungeon_level>
             <max_dungeon_level>-1</max_dungeon_level>
+            <spawn_weight>100</spawn_weight>
             <auto_spawn>false</auto_spawn>
             <can_be_summoned_by_monster>false</can_be_summoned_by_monster>
             <nr_allowed_to_spawn>-1</nr_allowed_to_spawn>
@@ -6596,6 +6668,7 @@
         <spawning>
             <min_dungeon_level>3</min_dungeon_level>
             <max_dungeon_level>8</max_dungeon_level>
+            <spawn_weight>100</spawn_weight>
             <auto_spawn>true</auto_spawn>
             <can_be_summoned_by_monster>false</can_be_summoned_by_monster>
             <nr_allowed_to_spawn>-1</nr_allowed_to_spawn>
@@ -6684,6 +6757,7 @@
         <spawning>
             <min_dungeon_level>3</min_dungeon_level>
             <max_dungeon_level>8</max_dungeon_level>
+            <spawn_weight>100</spawn_weight>
             <auto_spawn>false</auto_spawn>
             <can_be_summoned_by_monster>false</can_be_summoned_by_monster>
             <nr_allowed_to_spawn>-1</nr_allowed_to_spawn>
@@ -6773,6 +6847,7 @@
         <spawning>
             <min_dungeon_level>2</min_dungeon_level>
             <max_dungeon_level>7</max_dungeon_level>
+            <spawn_weight>25</spawn_weight>
             <auto_spawn>true</auto_spawn>
             <can_be_summoned_by_monster>false</can_be_summoned_by_monster>
             <nr_allowed_to_spawn>-1</nr_allowed_to_spawn>
@@ -6875,6 +6950,7 @@
         <spawning>
             <min_dungeon_level>24</min_dungeon_level>
             <max_dungeon_level>28</max_dungeon_level>
+            <spawn_weight>100</spawn_weight>
             <auto_spawn>true</auto_spawn>
             <can_be_summoned_by_monster>false</can_be_summoned_by_monster>
             <nr_allowed_to_spawn>-1</nr_allowed_to_spawn>
@@ -6977,6 +7053,7 @@
         <spawning>
             <min_dungeon_level>-1</min_dungeon_level>
             <max_dungeon_level>-1</max_dungeon_level>
+            <spawn_weight>100</spawn_weight>
             <auto_spawn>false</auto_spawn>
             <can_be_summoned_by_monster>false</can_be_summoned_by_monster>
             <unique/>
@@ -7061,6 +7138,7 @@
         <spawning>
             <min_dungeon_level>-1</min_dungeon_level>
             <max_dungeon_level>-1</max_dungeon_level>
+            <spawn_weight>100</spawn_weight>
             <auto_spawn>false</auto_spawn>
             <can_be_summoned_by_monster>false</can_be_summoned_by_monster>
             <unique/>
@@ -7145,6 +7223,7 @@
         <spawning>
             <min_dungeon_level>-1</min_dungeon_level>
             <max_dungeon_level>-1</max_dungeon_level>
+            <spawn_weight>100</spawn_weight>
             <auto_spawn>false</auto_spawn>
             <can_be_summoned_by_monster>false</can_be_summoned_by_monster>
             <unique/>
@@ -7232,6 +7311,7 @@
         <spawning>
             <min_dungeon_level>-1</min_dungeon_level>
             <max_dungeon_level>-1</max_dungeon_level>
+            <spawn_weight>100</spawn_weight>
             <auto_spawn>false</auto_spawn>
             <can_be_summoned_by_monster>false</can_be_summoned_by_monster>
             <unique/>

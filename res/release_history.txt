@@ -25,6 +25,7 @@ Gameplay
 * Death Fiends now do a more sensible amount of damage (and the part of their description which said their attack "means almost certain death" has been removed)
 * Ravens only have 50% chance to cause blindness on a melee hit (instead of 100% chance)
 * Locusts no longer 'breed'
+* There is now a setting for how common each monster should be - some monsters are now rarer or more common than before
 * Improved check for if Phobia of open places should trigger (for example it no longer triggers while standing in smoke)
 * Traps are always triggered when bumped, and always removed when disarmed
 * Magic traps cannot be placed in blocking positions

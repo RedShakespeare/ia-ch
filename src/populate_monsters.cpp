@@ -11,6 +11,7 @@
 #include "init.hpp"
 #include "map.hpp"
 #include "map_parsing.hpp"
+#include "rl_utils.hpp"
 #include "room.hpp"
 
 // -----------------------------------------------------------------------------
@@ -32,11 +33,11 @@ static int random_out_of_depth()
         return nr_levels;
 }
 
-static std::vector<ActorId> valid_auto_spawn_monsters(
+static WeightedItems<ActorId> valid_auto_spawn_monsters(
         const int nr_lvls_out_of_depth,
         const AllowSpawnUniqueMon allow_spawn_unique)
 {
-        std::vector<ActorId> ret;
+        WeightedItems<ActorId> weighted_ids;
 
         const int effective_dlvl =
                 constr_in_range(
@@ -92,10 +93,12 @@ static std::vector<ActorId> valid_auto_spawn_monsters(
                         continue;
                 }
 
-                ret.push_back(d.id);
+                weighted_ids.items.push_back(d.id);
+
+                weighted_ids.weights.push_back(d.spawn_weight);
         }
 
-        return ret;
+        return weighted_ids;
 }
 
 static bool make_random_group_for_room(
@@ -108,47 +111,49 @@ static bool make_random_group_for_room(
         const int nr_lvls_out_of_depth_allowed = random_out_of_depth();
 
         auto id_bucket =
-                valid_auto_spawn_monsters(nr_lvls_out_of_depth_allowed,
-                                          AllowSpawnUniqueMon::yes);
+                valid_auto_spawn_monsters(
+                        nr_lvls_out_of_depth_allowed,
+                        AllowSpawnUniqueMon::yes);
 
         // Remove monsters which do not belong in this room
-        for (size_t i = 0; i < id_bucket.size(); ++i)
+        for (size_t i = 0; i < id_bucket.items.size(); ++i)
         {
                 // Ocassionally allow any monster type, to mix things up a bit
                 const int allow_any_one_in_n = 20;
 
-                if (!rnd::one_in(allow_any_one_in_n))
+                if (rnd::one_in(allow_any_one_in_n))
                 {
-                        bool is_native = false;
-
-                        const auto id = id_bucket[i];
-
-                        const ActorData& d = actor_data::data[(size_t)id];
-
-                        for (const auto native_room_type : d.native_rooms)
-                        {
-                                if (native_room_type == room_type)
-                                {
-                                        is_native = true;
-
-                                        break;
-                                }
-                        }
-
-                        if (!is_native)
-                        {
-                                id_bucket.erase(id_bucket.begin() + i);
-
-                                --i;
-                        }
+                        // Any monster type allowed - keep the monster
+                        continue;
                 }
+
+                const auto id = id_bucket.items[i];
+
+                const ActorData& d = actor_data::data[(size_t)id];
+
+                if (std::find(begin(d.native_rooms),
+                              end(d.native_rooms),
+                              room_type)
+                    != end(d.native_rooms))
+                {
+                        // Monster is native to room - keep the monster
+                        continue;
+                }
+
+                // Monster not allowed - erase it
+                id_bucket.items.erase(id_bucket.items.begin() + i);
+
+                id_bucket.weights.erase(id_bucket.weights.begin() + i);
+
+                --i;
         }
 
-        if (id_bucket.empty())
+        if (id_bucket.items.empty())
         {
                 TRACE_VERBOSE
                         << "Found no valid monsters to spawn at room type ("
-                        << std::to_string(int(room_type)) + ")" << std::endl;
+                        << std::to_string(int(room_type)) + ")"
+                        << std::endl;
 
                 TRACE_FUNC_END_VERBOSE;
 
@@ -156,7 +161,7 @@ static bool make_random_group_for_room(
         }
         else // Found valid monster IDs
         {
-                const auto id = rnd::element(id_bucket);
+                const auto id = rnd::weighted_choice(id_bucket);
 
                 populate_mon::make_group_at(
                         id,
@@ -178,15 +183,16 @@ static void make_random_group_at(
         const AllowSpawnUniqueMon allow_spawn_unique)
 {
         const auto id_bucket =
-                valid_auto_spawn_monsters(nr_lvls_out_of_depth_allowed,
-                                          allow_spawn_unique);
+                valid_auto_spawn_monsters(
+                        nr_lvls_out_of_depth_allowed,
+                        allow_spawn_unique);
 
-        if (id_bucket.empty())
+        if (id_bucket.items.empty())
         {
                 return;
         }
 
-        const auto id = rnd::element(id_bucket);
+        const auto id = rnd::weighted_choice(id_bucket);
 
         populate_mon::make_group_at(
                 id,
