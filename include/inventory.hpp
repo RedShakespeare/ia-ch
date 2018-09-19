@@ -84,9 +84,9 @@ public:
 
         bool has_item_in_slot(SlotId id) const;
 
-        bool has_ammo_for_firearm_in_inventory();
+        bool has_ammo_for_firearm_in_inventory() const;
 
-        Item* item_in_backpack(const ItemId id);
+        Item* item_in_backpack(const ItemId id) const;
 
         int backpack_idx(const ItemId item_id) const;
 
@@ -116,12 +116,10 @@ public:
 
         int intrinsics_size() const
         {
-                return intrinsics_.size();
+                return intrinsics.size();
         }
 
         Item* intrinsic_in_element(const int idx) const;
-
-        Item* last_item_in_backpack();
 
         bool has_item_in_backpack(const ItemId id) const;
 
@@ -131,11 +129,11 @@ public:
 
         int total_item_weight() const;
 
-        InvSlot slots_[(size_t)SlotId::END];
+        InvSlot slots[(size_t)SlotId::END];
 
-        std::vector<Item*> backpack_;
+        std::vector<Item*> backpack;
 
-        std::vector<Item*> intrinsics_;
+        std::vector<Item*> intrinsics;
 
 private:
         // Puts the item in the slot, and prints messages

@@ -36,9 +36,7 @@ static std::vector<SpellOpt> spells_avail()
                                        nullptr));
         }
 
-        Inventory& inv = map::player->inv();
-
-        for (auto& slot : inv.slots_)
+        for (auto& slot : map::player->inv.slots)
         {
                 if (!slot.item)
                 {
@@ -57,7 +55,7 @@ static std::vector<SpellOpt> spells_avail()
                 }
         }
 
-        for (Item* item : inv.backpack_)
+        for (Item* item : map::player->inv.backpack)
         {
                 const std::vector<Spell*>& carrier_spells =
                         item->carrier_spells();
@@ -78,10 +76,11 @@ static void try_cast(const SpellOpt& spell_opt)
 {
         ASSERT(spell_opt.spell);
 
-        const auto& props = map::player->properties();
+        const auto& props = map::player->properties;
 
         bool allow_cast =
-                props.allow_cast_intr_spell_absolute(Verbosity::verbose);
+                props.allow_cast_intr_spell_absolute(
+                        Verbosity::verbose);
 
         if (allow_cast &&
             (spell_opt.src == SpellSrc::learned))
@@ -104,7 +103,7 @@ static void try_cast(const SpellOpt& spell_opt)
 
         const Range spi_cost_range = spell->spi_cost(skill, map::player);
 
-        if (spi_cost_range.max >= map::player->spi())
+        if (spi_cost_range.max >= map::player->sp)
         {
                 msg_log::add(
                         "Low spirit, try casting spell anyway? [y/n]",
@@ -294,7 +293,7 @@ void BrowseSpell::draw()
         io::draw_text_center(
                 "Use which power?",
                 Panel::screen,
-                P(panels::get_center_x(Panel::screen), 0),
+                P(panels::center_x(Panel::screen), 0),
                 colors::title());
 
         P p(0, 1);

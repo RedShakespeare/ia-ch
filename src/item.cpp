@@ -2,26 +2,27 @@
 
 #include "item.hpp"
 
-#include "map.hpp"
-#include "game_time.hpp"
-#include "map_parsing.hpp"
-#include "property.hpp"
-#include "property_handler.hpp"
-#include "msg_log.hpp"
+#include "actor_factory.hpp"
+#include "actor_hit.hpp"
+#include "actor_player.hpp"
 #include "explosion.hpp"
-#include "io.hpp"
-#include "query.hpp"
-#include "item_factory.hpp"
 #include "feature_mob.hpp"
 #include "feature_rigid.hpp"
-#include "item_data.hpp"
-#include "saving.hpp"
-#include "actor_factory.hpp"
 #include "game.hpp"
-#include "player_bon.hpp"
-#include "text_format.hpp"
+#include "game_time.hpp"
 #include "global.hpp"
-#include "actor_player.hpp"
+#include "io.hpp"
+#include "item_data.hpp"
+#include "item_factory.hpp"
+#include "map.hpp"
+#include "map_parsing.hpp"
+#include "msg_log.hpp"
+#include "player_bon.hpp"
+#include "property.hpp"
+#include "property_handler.hpp"
+#include "query.hpp"
+#include "saving.hpp"
+#include "text_format.hpp"
 
 // -----------------------------------------------------------------------------
 // Item
@@ -136,7 +137,7 @@ Dice Item::melee_dmg(const Actor* const attacker) const
         }
 
         // Bonus damage from being frenzied?
-        if (attacker && attacker->has_prop(PropId::frenzied))
+        if (attacker && attacker->properties.has(PropId::frenzied))
         {
                 ++dice.plus;
         }
@@ -212,7 +213,7 @@ ItemAttProp Item::prop_applied_intr_attack(const Actor* const attacker) const
 {
         if (attacker)
         {
-                const auto& intr_attacks = attacker->data().intr_attacks;
+                const auto& intr_attacks = attacker->data->intr_attacks;
 
                 for (const auto& att : intr_attacks)
                 {
@@ -613,17 +614,18 @@ void Item::add_carrier_prop(Prop* const prop, const Verbosity verbosity)
         ASSERT(actor_carrying_);
         ASSERT(prop);
 
-        actor_carrying_->properties()
-                .add_prop_from_equipped_item(this,
-                                             prop,
-                                             verbosity);
+        actor_carrying_->properties
+                .add_prop_from_equipped_item(
+                        this,
+                        prop,
+                        verbosity);
 }
 
 void Item::clear_carrier_props()
 {
         ASSERT(actor_carrying_);
 
-        actor_carrying_->properties().remove_props_for_item(this);
+        actor_carrying_->properties.remove_props_for_item(this);
 }
 
 void Item::add_carrier_spell(Spell* const spell)
@@ -882,7 +884,7 @@ void SpikedMace::on_melee_hit(Actor& actor_hit, const int dmg)
 
                 prop->set_duration(2);
 
-                actor_hit.apply_prop(prop);
+                actor_hit.properties.apply(prop);
         }
 }
 
@@ -906,14 +908,14 @@ void PlayerGhoulClaw::on_melee_hit(Actor& actor_hit, const int dmg)
         // should be a pretty good rule for this. We should NOT check if the
         // monster can leave a corpse however, since some monsters such as
         // Worms don't leave a corpse, and you SHOULD be able to feed on those.
-        const ActorData& d = actor_hit.data();
+        const ActorData& d = *actor_hit.data;
 
-        const bool is_ethereal = actor_hit.has_prop(PropId::ethereal);
+        const bool is_ethereal = actor_hit.properties.has(PropId::ethereal);
 
         const bool is_hp_missing =
-                map::player->hp() < map::player->hp_max(true);
+                map::player->hp < actor::max_hp(*map::player);
 
-        const bool is_wounded = map::player->properties().prop(PropId::wound);
+        const bool is_wounded = map::player->properties.has(PropId::wound);
 
         const bool is_feed_needed = is_hp_missing || is_wounded;
 
@@ -937,24 +939,23 @@ void PlayerGhoulClaw::on_melee_hit(Actor& actor_hit, const int dmg)
                 map::player->on_feed();
         }
 
-        if (actor_hit.state() == ActorState::alive)
+        if (actor_hit.is_alive())
         {
                 // Poison victim from Ghoul Toxic trait?
-                if (player_bon::traits[(size_t)Trait::toxic] &&
-                    rnd::one_in(4))
+                if (player_bon::has_trait(Trait::toxic) && rnd::one_in(4))
                 {
                         Prop* const poison = new PropPoisoned();
 
-                        actor_hit.apply_prop(poison);
+                        actor_hit.properties.apply(poison);
                 }
 
                 // Terrify victim from Ghoul Indomitable Fury trait?
-                if (player_bon::traits[(size_t)Trait::indomitable_fury] &&
-                    map::player->has_prop(PropId::frenzied))
+                if (player_bon::has_trait(Trait::indomitable_fury) &&
+                    map::player->properties.has(PropId::frenzied))
                 {
                         Prop* const fear = new PropTerrified();
 
-                        actor_hit.apply_prop(fear);
+                        actor_hit.properties.apply(fear);
                 }
         }
 }
@@ -964,9 +965,9 @@ void PlayerGhoulClaw::on_melee_kill(Actor& actor_killed)
         // TODO: See TODO note in melee hit hook for Ghoul claw concerning
         // "constructed monsters".
 
-        const ActorData& d = actor_killed.data();
+        const ActorData& d = *actor_killed.data;
 
-        const bool is_ethereal = actor_killed.has_prop(PropId::ethereal);
+        const bool is_ethereal = actor_killed.properties.has(PropId::ethereal);
 
         if (player_bon::traits[(size_t)Trait::foul] &&
             !is_ethereal &&
@@ -988,11 +989,9 @@ void PlayerGhoulClaw::on_melee_kill(Actor& actor_killed)
 // -----------------------------------------------------------------------------
 void ZombieDust::on_ranged_hit(Actor& actor_hit)
 {
-        if (actor_hit.state() == ActorState::alive &&
-            !actor_hit.data().is_undead)
+        if (actor_hit.is_alive() && !actor_hit.data->is_undead)
         {
-                actor_hit.apply_prop(
-                        new PropParalyzed());
+                actor_hit.properties.apply(new PropParalyzed());
         }
 }
 
@@ -1039,8 +1038,8 @@ void RavenPeck::on_melee_hit(Actor& actor_hit, const int dmg)
         }
 
         // Gas mask and Asbestos suit protects against blindness
-        Item* const head_item = actor_hit.inv().item_in_slot(SlotId::head);
-        Item* const body_item = actor_hit.inv().item_in_slot(SlotId::body);
+        Item* const head_item = actor_hit.inv.item_in_slot(SlotId::head);
+        Item* const body_item = actor_hit.inv.item_in_slot(SlotId::body);
 
         if ((head_item && head_item->id() == ItemId::gas_mask) ||
             (body_item && body_item->id() == ItemId::armor_asb_suit))
@@ -1054,7 +1053,7 @@ void RavenPeck::on_melee_hit(Actor& actor_hit, const int dmg)
 
                 prop->set_duration(2);
 
-                actor_hit.apply_prop(prop);
+                actor_hit.properties.apply(prop);
         }
 }
 
@@ -1089,8 +1088,8 @@ void MindLeechSting::on_melee_hit(Actor& actor_hit, const int dmg)
         auto* const mon = actor_carrying_;
 
         if (map::player->ins() >= 50 ||
-            map::player->has_prop(PropId::confused) ||
-            map::player->has_prop(PropId::frenzied))
+            map::player->properties.has(PropId::confused) ||
+            map::player->properties.has(PropId::frenzied))
         {
                 const bool player_see_mon = map::player->can_see_actor(*mon);
 
@@ -1102,13 +1101,13 @@ void MindLeechSting::on_melee_hit(Actor& actor_hit, const int dmg)
                         msg_log::add(mon_name_the + " looks shocked!");
                 }
 
-                mon->hit(rnd::dice(3, 5), DmgType::pure);
+                actor::hit(*mon, rnd::dice(3, 5), DmgType::pure);
 
                 if (mon->is_alive())
                 {
-                        mon->apply_prop(new PropConfused());
+                        mon->properties.apply(new PropConfused());
 
-                        mon->apply_prop(new PropTerrified());
+                        mon->properties.apply(new PropTerrified());
                 }
         }
         else // Player mind can be eaten
@@ -1117,14 +1116,14 @@ void MindLeechSting::on_melee_hit(Actor& actor_hit, const int dmg)
 
                 prop_mind_sap->set_indefinite();
 
-                map::player->apply_prop(prop_mind_sap);
+                map::player->properties.apply(prop_mind_sap);
 
                 // Make the monster pause, so things don't get too crazy
                 auto prop_waiting = new PropWaiting();
 
                 prop_waiting->set_duration(2);
 
-                mon->apply_prop(prop_waiting);
+                mon->properties.apply(prop_waiting);
         }
 }
 
@@ -1145,20 +1144,20 @@ void SpiritLeechSting::on_melee_hit(Actor& actor_hit, const int dmg)
 
         prop_spi_sap->set_indefinite();
 
-        map::player->apply_prop(prop_spi_sap);
+        map::player->properties.apply(prop_spi_sap);
 
         auto* const mon = actor_carrying_;
 
-        mon->change_max_spi(1, Verbosity::silent);
+        mon->change_max_sp(1, Verbosity::silent);
 
-        mon->restore_spi(1, false, Verbosity::silent);
+        mon->restore_sp(1, false, Verbosity::silent);
 
         // Make the monster pause, so things don't get too crazy
         auto prop_waiting = new PropWaiting();
 
         prop_waiting->set_duration(2);
 
-        mon->apply_prop(prop_waiting);
+        mon->properties.apply(prop_waiting);
 }
 
 // -----------------------------------------------------------------------------
@@ -1178,7 +1177,7 @@ void LifeLeechSting::on_melee_hit(Actor& actor_hit, const int dmg)
 
         prop_hp_sap->set_indefinite();
 
-        map::player->apply_prop(prop_hp_sap);
+        map::player->properties.apply(prop_hp_sap);
 
         auto* const mon = actor_carrying_;
 
@@ -1191,7 +1190,7 @@ void LifeLeechSting::on_melee_hit(Actor& actor_hit, const int dmg)
 
         prop_waiting->set_duration(2);
 
-        mon->apply_prop(prop_waiting);
+        mon->properties.apply(prop_waiting);
 }
 
 // -----------------------------------------------------------------------------
@@ -1207,8 +1206,8 @@ void DustEngulf::on_melee_hit(Actor& actor_hit, const int dmg)
         }
 
         // Gas mask and Asbestos suit protects against blindness
-        Item* const head_item = actor_hit.inv().item_in_slot(SlotId::head);
-        Item* const body_item = actor_hit.inv().item_in_slot(SlotId::body);
+        Item* const head_item = actor_hit.inv.item_in_slot(SlotId::head);
+        Item* const body_item = actor_hit.inv.item_in_slot(SlotId::body);
 
         if ((head_item && head_item->id() == ItemId::gas_mask) ||
             (body_item && body_item->id() == ItemId::armor_asb_suit))
@@ -1218,7 +1217,7 @@ void DustEngulf::on_melee_hit(Actor& actor_hit, const int dmg)
 
         Prop* const prop = new PropBlind();
 
-        actor_hit.apply_prop(prop);
+        actor_hit.properties.apply(prop);
 }
 
 // -----------------------------------------------------------------------------
@@ -1232,8 +1231,8 @@ void SnakeVenomSpit::on_ranged_hit(Actor& actor_hit)
         }
 
         // Gas mask and Asbestos suit protects against blindness
-        Item* const head_item = actor_hit.inv().item_in_slot(SlotId::head);
-        Item* const body_item = actor_hit.inv().item_in_slot(SlotId::body);
+        Item* const head_item = actor_hit.inv.item_in_slot(SlotId::head);
+        Item* const body_item = actor_hit.inv.item_in_slot(SlotId::body);
 
         if ((head_item && head_item->id() == ItemId::gas_mask) ||
             (body_item && body_item->id() == ItemId::armor_asb_suit))
@@ -1245,7 +1244,7 @@ void SnakeVenomSpit::on_ranged_hit(Actor& actor_hit)
 
         prop->set_duration(7);
 
-        actor_hit.apply_prop(prop);
+        actor_hit.properties.apply(prop);
 }
 
 // -----------------------------------------------------------------------------
@@ -1299,10 +1298,8 @@ void MedicalBag::on_pickup_hook()
                 return;
         }
 
-        auto& inv = actor_carrying_->inv();
-
         // Check for existing medical bag in inventory
-        for (Item* const other : inv.backpack_)
+        for (Item* const other : actor_carrying_->inv.backpack)
         {
                 if ((other != this) &&
                     (other->id() == id()))
@@ -1310,7 +1307,8 @@ void MedicalBag::on_pickup_hook()
                         static_cast<MedicalBag*>(other)->nr_supplies_ +=
                                 nr_supplies_;
 
-                        inv.remove_item_in_backpack_with_ptr(this, true);
+                        actor_carrying_->inv
+                                .remove_item_in_backpack_with_ptr(this, true);
 
                         return;
                 }
@@ -1329,7 +1327,7 @@ ConsumeItem MedicalBag::activate(Actor* const actor)
 
                 return ConsumeItem::no;
         }
-        else if (map::player->has_prop(PropId::poisoned))
+        else if (map::player->properties.has(PropId::poisoned))
         {
                 msg_log::add("Not while poisoned.");
 
@@ -1417,13 +1415,13 @@ ConsumeItem MedicalBag::activate(Actor* const actor)
 MedBagAction MedicalBag::choose_action() const
 {
         // Infection?
-        if (map::player->has_prop(PropId::infected))
+        if (map::player->properties.has(PropId::infected))
         {
                 return MedBagAction::sanitize_infection;
         }
 
         // Wound?
-        if (map::player->has_prop(PropId::wound))
+        if (map::player->properties.has(PropId::wound))
         {
                 return MedBagAction::treat_wound;
         }
@@ -1456,7 +1454,7 @@ void MedicalBag::finish_current_action()
         case MedBagAction::treat_wound:
         {
                 Prop* const wound_prop =
-                        map::player->properties().prop(PropId::wound);
+                        map::player->properties.prop(PropId::wound);
 
                 ASSERT(wound_prop);
 
@@ -1468,7 +1466,7 @@ void MedicalBag::finish_current_action()
 
         case MedBagAction::sanitize_infection:
         {
-                map::player->properties().end_prop(PropId::infected);
+                map::player->properties.end_prop(PropId::infected);
         }
         break;
 
@@ -1483,7 +1481,7 @@ void MedicalBag::finish_current_action()
 
         if (nr_supplies_ <= 0)
         {
-                map::player->inv().remove_item_in_backpack_with_ptr(this, true);
+                map::player->inv.remove_item_in_backpack_with_ptr(this, true);
 
                 game::add_history_event("Ran out of medical supplies.");
         }
@@ -1582,14 +1580,14 @@ ConsumeItem Explosive::activate(Actor* const actor)
 {
         (void)actor;
 
-        if (map::player->has_prop(PropId::burning))
+        if (map::player->properties.has(PropId::burning))
         {
                 msg_log::add("Not while burning.");
 
                 return ConsumeItem::no;
         }
 
-        if (map::player->has_prop(PropId::swimming))
+        if (map::player->properties.has(PropId::swimming))
         {
                 msg_log::add("Not while swimming.");
 

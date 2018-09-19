@@ -36,13 +36,11 @@ void run(Actor& defender,
 
         const bool is_defender_player = defender.is_player();
 
-        const auto& defender_data = defender.data();
-
-        if (defender_data.prevent_knockback ||
-            (defender_data.actor_size >= ActorSize::giant) ||
-            defender.has_prop(PropId::entangled) ||
-            defender.has_prop(PropId::ethereal) ||
-            defender.has_prop(PropId::ooze) ||
+        if (defender.data->prevent_knockback ||
+            (defender.data->actor_size >= ActorSize::giant) ||
+            defender.properties.has(PropId::entangled) ||
+            defender.properties.has(PropId::ethereal) ||
+            defender.properties.has(PropId::ooze) ||
             // Do not knock back player if bot is playing
             (is_defender_player && config::is_bot_playing()))
         {
@@ -85,7 +83,7 @@ void run(Actor& defender,
 
                                 prop->set_indefinite();
 
-                                defender.apply_prop(prop);
+                                defender.properties.apply(prop);
                         }
                 }
 
@@ -132,7 +130,7 @@ void run(Actor& defender,
 
         prop->set_duration(1 + paralyze_extra_turns);
 
-        defender.apply_prop(prop);
+        defender.properties.apply(prop);
 
         // Leave current cell
         tgt_cell.rigid->on_leave(defender);
@@ -155,7 +153,7 @@ void run(Actor& defender,
                                 colors::msg_good());
                 }
 
-                kill_actor(
+                actor::kill(
                         defender,
                         IsDestroyed::yes,
                         AllowGore::no,

@@ -38,14 +38,14 @@ static void add_properties_descr(std::vector<ColoredString>& lines)
         lines.push_back(ColoredString("Current properties", clr_heading()));
 
         const auto prop_list =
-                map::player->properties()
-                .property_names_and_descr();
+                map::player->properties.property_names_and_descr();
 
         if (prop_list.empty())
         {
                 lines.push_back(
-                        ColoredString(offset + "None",
-                                      colors::text()));
+                        ColoredString(
+                                offset + "None",
+                                colors::text()));
 
                 lines.push_back(ColoredString("", colors::text()));
         }

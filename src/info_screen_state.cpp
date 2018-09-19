@@ -5,15 +5,15 @@
 
 int InfoScreenState::max_nr_lines_on_screen() const
 {
-        return panels::get_h(Panel::screen) - 2;
+        return panels::h(Panel::screen) - 2;
 }
 
 void InfoScreenState::draw_interface() const
 {
-        // const int screen_w = panels::get_w(Panel::screen);
-        const int screen_h = panels::get_h(Panel::screen);
+        // const int screen_w = panels::w(Panel::screen);
+        const int screen_h = panels::h(Panel::screen);
 
-        const int screen_center_x = panels::get_center_x(Panel::screen);
+        const int screen_center_x = panels::center_x(Panel::screen);
 
         // if (config::is_tiles_mode())
         // {

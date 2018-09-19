@@ -1,0 +1,361 @@
+#include "actor_hit.hpp"
+
+#include "actor.hpp"
+#include "actor_death.hpp"
+#include "actor_player.hpp"
+#include "feature_rigid.hpp"
+#include "map.hpp"
+#include "msg_log.hpp"
+#include "text_format.hpp"
+
+// -----------------------------------------------------------------------------
+// Private
+// -----------------------------------------------------------------------------
+static int hit_armor(Actor& actor, int dmg)
+{
+        // NOTE: We retrieve armor points BEFORE damaging the armor, since it
+        // should reduce damage taken even if it gets damaged or destroyed
+        const int ap = actor.armor_points();
+
+        // Danage worn armor
+        if (actor.data->is_humanoid)
+        {
+                auto* const item = actor.inv.item_in_slot(SlotId::body);
+
+                if (item)
+                {
+                        TRACE_VERBOSE << "Has armor, running hit on armor"
+                                      << std::endl;
+
+                        Armor* const armor = static_cast<Armor*>(item);
+
+                        armor->hit(dmg);
+
+                        if (armor->is_destroyed())
+                        {
+                                TRACE << "Armor was destroyed" << std::endl;
+
+                                if (actor.is_player())
+                                {
+                                        const std::string armor_name =
+                                                armor->name(ItemRefType::plain,
+                                                            ItemRefInf::none);
+
+                                        msg_log::add(
+                                                "My " +
+                                                armor_name +
+                                                " is torn apart!",
+                                                colors::msg_note());
+                                }
+
+                                actor.inv.remove_item_in_slot(
+                                        SlotId::body, true);
+                        }
+                }
+        }
+
+        // Reduce damage by the total ap value - the new damage value may be
+        // negative, this is the callers resonsibility to handle
+        dmg -= ap;
+
+        return dmg;
+}
+
+
+// -----------------------------------------------------------------------------
+// actor
+// -----------------------------------------------------------------------------
+namespace actor
+{
+
+ActorDied hit(
+        Actor& actor,
+        int dmg,
+        const DmgType dmg_type,
+        const DmgMethod method,
+        const AllowWound allow_wound)
+{
+        if (actor.state == ActorState::destroyed)
+        {
+                TRACE_FUNC_END_VERBOSE;
+
+                return ActorDied::no;
+        }
+
+        // Damage type is "light", and actor is not light sensitive?
+        if (dmg_type == DmgType::light &&
+            !actor.properties.has(PropId::light_sensitive))
+        {
+                return ActorDied::no;
+        }
+
+
+
+        if (actor.is_player())
+        {
+                map::player->interrupt_actions();
+        }
+
+        const int hp_pct_before = (actor.hp * 100) / max_hp(actor);
+
+        // Damage to corpses
+        if (actor.is_corpse() && !actor.is_player())
+        {
+                ASSERT(actor.data->can_leave_corpse);
+
+                // Chance to destroy is X in Y, where
+                // X = damage dealt * 4
+                // Y = maximum actor hit points
+
+                const int den = max_hp(actor);
+
+                const int num = std::min(dmg * 4, den);
+
+                if (rnd::fraction(num, den))
+                {
+                        if ((method == DmgMethod::kicking) ||
+                            (method == DmgMethod::blunt) ||
+                            (method == DmgMethod::slashing) ||
+                            (method == DmgMethod::piercing))
+                        {
+                                Snd snd("*Crack!*",
+                                        SfxId::hit_corpse_break,
+                                        IgnoreMsgIfOriginSeen::yes,
+                                        actor.pos,
+                                        nullptr,
+                                        SndVol::low,
+                                        AlertsMon::yes);
+
+                                snd.run();
+                        }
+
+                        actor.destroy();
+
+                        if (actor.data->is_humanoid)
+                        {
+                                map::make_gore(actor.pos);
+                        }
+
+                        if (map::cells.at(actor.pos).is_seen_by_player)
+                        {
+                                msg_log::add(
+                                        text_format::first_to_upper(
+                                                actor.data->corpse_name_the) +
+                                        " is destroyed.");
+                        }
+                }
+                else // Not destroyed
+                {
+                        if ((method == DmgMethod::kicking) ||
+                            (method == DmgMethod::blunt) ||
+                            (method == DmgMethod::slashing) ||
+                            (method == DmgMethod::piercing))
+                        {
+                                const std::string msg =
+                                        ((method == DmgMethod::blunt) ||
+                                         (method == DmgMethod::kicking))
+                                        ? "*Thud!*"
+                                        : "*Chop!*";
+
+                                Snd snd(msg,
+                                        SfxId::hit_medium,
+                                        IgnoreMsgIfOriginSeen::yes,
+                                        actor.pos,
+                                        nullptr,
+                                        SndVol::low,
+                                        AlertsMon::yes);
+
+                                snd.run();
+                        }
+                }
+
+                return ActorDied::no;
+        }
+
+        if (dmg_type == DmgType::spirit)
+        {
+                return hit_sp(actor, dmg);
+        }
+
+        // Property resists damage?
+        const auto verbosity =
+                actor.is_alive()
+                ? Verbosity::verbose
+                : Verbosity::silent;
+
+        const bool is_dmg_resisted =
+                actor.properties.is_resisting_dmg(dmg_type, verbosity);
+
+        if (is_dmg_resisted)
+        {
+                return ActorDied::no;
+        }
+
+        // TODO: Perhaps allow zero damage?
+        dmg = std::max(1, dmg);
+
+        if (dmg_type == DmgType::physical)
+        {
+                dmg = hit_armor(actor, dmg);
+        }
+
+        // Fire/electricity damage reduction from the Resistant trait?
+        if (((dmg_type == DmgType::fire) ||
+             (dmg_type == DmgType::electric)) &&
+            actor.is_player() &&
+            player_bon::traits[(size_t)Trait::resistant])
+        {
+                dmg /= 2;
+        }
+
+        dmg = std::max(1, dmg);
+
+        actor.on_hit(dmg, dmg_type, method, allow_wound);
+
+        actor.properties.on_hit();
+
+        // TODO: Perhaps allow zero damage?
+        dmg = std::max(1, dmg);
+
+        if (!(actor.is_player() && config::is_bot_playing()))
+        {
+                actor.hp -= dmg;
+        }
+
+        if (actor.hp <= 0)
+        {
+                const auto f_id = map::cells.at(actor.pos).rigid->id();
+
+                const bool is_on_bottomless =
+                        (f_id == FeatureId::chasm) ||
+                        (f_id == FeatureId::liquid_deep);
+
+                // Destroy the corpse if the killing blow damage is either:
+                //
+                // * Above a threshold relative to maximum hit points, or
+                // * Above a fixed value threshold
+                //
+                // The purpose of the first case is to make it likely that small
+                // creatures like rats are destroyed.
+                //
+                // The purpose of the second point is that powerful attacks like
+                // explosions should always destroy the corpse, even if the
+                // creature has a very high pool of hit points.
+
+                const int dmg_threshold_relative = (max_hp(actor) * 3) / 2;
+
+                const int dmg_threshold_absolute = 14;
+
+                const auto is_destroyed =
+                        (!actor.data->can_leave_corpse ||
+                         is_on_bottomless ||
+                         actor.properties.has(PropId::summoned) ||
+                         (dmg >= dmg_threshold_relative) ||
+                         (dmg >= dmg_threshold_absolute))
+                        ? IsDestroyed::yes
+                        : IsDestroyed::no;
+
+                const auto allow_gore =
+                        is_on_bottomless
+                        ? AllowGore::no
+                        : AllowGore::yes;
+
+                const auto allow_drop_items =
+                        is_on_bottomless
+                        ? AllowDropItems::no
+                        : AllowDropItems::yes;
+
+                kill(actor,
+                     is_destroyed,
+                     allow_gore,
+                     allow_drop_items);
+
+                return ActorDied::yes;
+        }
+        else // HP is greater than 0
+        {
+                const int hp_pct_after = (actor.hp * 100) / max_hp(actor);
+
+                const int hp_warn_lvl = 25;
+
+                if (actor.is_player() &&
+                    (hp_pct_before > hp_warn_lvl) &&
+                    (hp_pct_after <= hp_warn_lvl))
+                {
+                        msg_log::add(
+                                "-LOW HP WARNING!-",
+                                colors::msg_bad(),
+                                true,
+                                MorePromptOnMsg::yes);
+                }
+
+                return ActorDied::no;
+        }
+}
+
+ActorDied hit_sp(
+        Actor& actor,
+        const int dmg,
+        const Verbosity verbosity)
+{
+        if (verbosity == Verbosity::verbose)
+        {
+                if (actor.is_player())
+                {
+                        msg_log::add(
+                                "My spirit is drained!",
+                                colors::msg_bad());
+                }
+        }
+
+        actor.properties.on_hit();
+
+        if (!actor.is_player() || !config::is_bot_playing())
+        {
+                actor.sp = std::max(0, actor.sp - dmg);
+        }
+
+        if (actor.sp > 0)
+        {
+                return ActorDied::no;
+        }
+
+        // Spirit is zero or lower
+
+        if (actor.is_player())
+        {
+                msg_log::add(
+                        "All my spirit is depleted, I am devoid of life!",
+                        colors::msg_bad());
+        }
+        else if (map::player->can_see_actor(actor))
+        {
+                const std::string actor_name_the =
+                        text_format::first_to_upper(
+                                actor.name_the());
+
+                msg_log::add(actor_name_the + " has no spirit left!");
+        }
+
+        const auto f_id = map::cells.at(actor.pos).rigid->id();
+
+        const bool is_on_bottomless =
+                (f_id == FeatureId::chasm) ||
+                (f_id == FeatureId::liquid_deep);
+
+        const auto is_destroyed =
+                (!actor.data->can_leave_corpse ||
+                 is_on_bottomless ||
+                 actor.properties.has(PropId::summoned))
+                ? IsDestroyed::yes
+                : IsDestroyed::no;
+
+        kill(actor,
+             is_destroyed,
+             AllowGore::no,
+             AllowDropItems::yes);
+
+        return ActorDied::yes;
+}
+
+} // actor

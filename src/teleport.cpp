@@ -27,8 +27,8 @@ static bool is_void_traveler_affecting_player_teleport(const Actor& actor)
 
         return
                 is_void_traveler &&
-                (actor.state() == ActorState::alive) &&
-                actor.properties().allow_act() &&
+                (actor.state == ActorState::alive) &&
+                actor.properties.allow_act() &&
                 !actor.is_actor_my_leader(map::player) &&
                 (static_cast<const Mon&>(actor).aware_of_player_counter_ > 0);
 }
@@ -56,7 +56,7 @@ static void make_all_mon_not_seeing_player_unaware()
 {
         Array2<bool> blocks_los(map::dims());
 
-        const R r = fov::get_fov_rect(map::player->pos);
+        const R r = fov::fov_rect(map::player->pos);
 
         map_parsers::BlocksLos()
                 .run(blocks_los,
@@ -97,7 +97,7 @@ static void confuse_player()
 
         prop->set_duration(8);
 
-        map::player->properties().apply(prop);
+        map::player->properties.apply(prop);
 }
 
 static bool should_player_ctrl_tele(const ShouldCtrlTele ctrl_tele)
@@ -105,15 +105,25 @@ static bool should_player_ctrl_tele(const ShouldCtrlTele ctrl_tele)
         switch (ctrl_tele)
         {
         case ShouldCtrlTele::always:
+        {
                 return true;
+        }
 
         case ShouldCtrlTele::never:
+        {
                 return false;
+        }
 
         case ShouldCtrlTele::if_tele_ctrl_prop:
-                return
-                        map::player->has_prop(PropId::tele_ctrl) &&
-                        !map::player->has_prop(PropId::confused);
+        {
+                const bool has_tele_ctrl =
+                        map::player->properties.has(PropId::tele_ctrl);
+
+                const bool is_confused =
+                        map::player->properties.has(PropId::confused);
+
+                return has_tele_ctrl && !is_confused;
+        }
         }
 
         ASSERT(false);
@@ -219,7 +229,7 @@ void teleport(Actor& actor, P p, const Array2<bool>& blocked)
                 static_cast<Mon&>(actor).player_aware_of_me_counter_ = 0;
         }
 
-        actor.properties().end_prop_silent(PropId::entangled);
+        actor.properties.end_prop_silent(PropId::entangled);
 
         // Hostile void travelers "intercepts" players teleporting, and calls
         // the player to them
@@ -280,9 +290,13 @@ void teleport(Actor& actor, P p, const Array2<bool>& blocked)
 
         make_player_aware_of_all_seen_mon();
 
+        const bool has_tele_ctrl = actor.properties.has(PropId::tele_ctrl);
+
+        const bool is_confused = actor.properties.has(PropId::confused);
+
         if (actor.is_player() &&
-            (!actor.has_prop(PropId::tele_ctrl) ||
-             actor.has_prop(PropId::confused) ||
+            (!has_tele_ctrl ||
+             is_confused ||
              is_affected_by_void_traveler))
         {
                 confuse_player();

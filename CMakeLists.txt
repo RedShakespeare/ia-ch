@@ -24,6 +24,7 @@ set(SRC
   include/actor_data.hpp
   include/actor_death.hpp
   include/actor_factory.hpp
+  include/actor_hit.hpp
   include/actor_items.hpp
   include/actor_mon.hpp
   include/actor_player.hpp
@@ -123,6 +124,7 @@ set(SRC
   src/actor_data.cpp
   src/actor_death.cpp
   src/actor_factory.cpp
+  src/actor_hit.cpp
   src/actor_items.cpp
   src/actor_mon.cpp
   src/actor_player.cpp

@@ -151,7 +151,7 @@ void Mon::act()
         // Pick a target
         std::vector<Actor*> target_bucket;
 
-        if (has_prop(PropId::conflict))
+        if (properties.has(PropId::conflict))
         {
                 target_bucket = seen_actors();
 
@@ -222,7 +222,7 @@ void Mon::act()
         // ---------------------------------------------------------------------
         // Property actions (e.g. Zombie rising, Vortex pulling, ...)
         // ---------------------------------------------------------------------
-        if (properties().on_act() == DidAction::yes)
+        if (properties.on_act() == DidAction::yes)
         {
                 return;
         }
@@ -234,7 +234,7 @@ void Mon::act()
         // NOTE: Monsters try to detect the player visually on standard turns,
         // otherwise very fast monsters are much better at finding the player
 
-        if (data_->ai[(size_t)AiId::avoids_blocking_friend] &&
+        if (data->ai[(size_t)AiId::avoids_blocking_friend] &&
             !is_player_leader &&
             (target_ == map::player) &&
             is_target_seen_ &&
@@ -257,7 +257,7 @@ void Mon::act()
                 }
         }
 
-        if (data_->ai[(size_t)AiId::attacks] &&
+        if (data->ai[(size_t)AiId::attacks] &&
             target_ &&
             is_target_seen_)
         {
@@ -279,10 +279,10 @@ void Mon::act()
                 }
         }
 
-        int erratic_move_pct = (int)data_->erratic_move_pct;
+        int erratic_move_pct = (int)data->erratic_move_pct;
 
         // Never move erratically if frenzied
-        if (has_prop(PropId::frenzied))
+        if (properties.has(PropId::frenzied))
         {
                 erratic_move_pct = 0;
         }
@@ -294,7 +294,7 @@ void Mon::act()
         }
 
         // Move more erratically if confused
-        if (has_prop(PropId::confused) &&
+        if (properties.has(PropId::confused) &&
             (erratic_move_pct > 0))
         {
                 erratic_move_pct += 50;
@@ -303,7 +303,7 @@ void Mon::act()
         set_constr_in_range(0, erratic_move_pct, 95);
 
         // Occasionally move erratically
-        if (data_->ai[(size_t)AiId::moves_randomly_when_unaware] &&
+        if (data->ai[(size_t)AiId::moves_randomly_when_unaware] &&
             rnd::percent(erratic_move_pct))
         {
                 if (ai::action::move_to_random_adj_cell(*this))
@@ -312,9 +312,9 @@ void Mon::act()
                 }
         }
 
-        const bool is_terrified = has_prop(PropId::terrified);
+        const bool is_terrified = properties.has(PropId::terrified);
 
-        if (data_->ai[(size_t)AiId::moves_to_target_when_los] &&
+        if (data->ai[(size_t)AiId::moves_to_target_when_los] &&
             !is_terrified)
         {
                 if (ai::action::move_to_target_simple(*this))
@@ -325,7 +325,7 @@ void Mon::act()
 
         std::vector<P> path;
 
-        if ((data_->ai[(size_t)AiId::paths_to_target_when_aware] ||
+        if ((data->ai[(size_t)AiId::paths_to_target_when_aware] ||
              is_player_leader) &&
             !is_terrified)
         {
@@ -342,7 +342,7 @@ void Mon::act()
                 return;
         }
 
-        if ((data_->ai[(size_t)AiId::moves_to_leader] ||
+        if ((data->ai[(size_t)AiId::moves_to_leader] ||
              is_player_leader) &&
             !is_terrified)
         {
@@ -354,11 +354,11 @@ void Mon::act()
                 }
         }
 
-        if (data_->ai[(size_t)AiId::moves_to_lair]  &&
+        if (data->ai[(size_t)AiId::moves_to_lair]  &&
             !is_player_leader &&
             (!target_ || target_->is_player()))
         {
-                if (ai::action::step_to_lair_if_los(*this, lair_pos_))
+                if (ai::action::step_to_lair_if_los(*this, lair_pos))
                 {
                         return;
                 }
@@ -367,7 +367,7 @@ void Mon::act()
                         // Try to use pathfinder to travel to lair
                         path = ai::info::find_path_to_lair_if_no_los(
                                 *this,
-                                lair_pos_);
+                                lair_pos);
 
                         if (ai::action::step_path(*this, path))
                         {
@@ -377,7 +377,7 @@ void Mon::act()
         }
 
         // When unaware, move randomly
-        if (data_->ai[(size_t)AiId::moves_randomly_when_unaware] &&
+        if (data->ai[(size_t)AiId::moves_randomly_when_unaware] &&
             (!is_player_leader || rnd::one_in(8)))
         {
                 if (ai::action::move_to_random_adj_cell(*this))
@@ -405,7 +405,7 @@ std::vector<Actor*> Mon::unseen_foes_aware_of() const
                 map_parsers::BlocksActor(*this, ParseActors::no)
                         .run(blocked, blocked.rect());
 
-                unblock_passable_doors(data(), blocked);
+                unblock_passable_doors(*data, blocked);
 
                 const auto flood = floodfill(pos, blocked);
 
@@ -497,7 +497,7 @@ bool Mon::is_actor_seeable(const Actor& other,
         }
 
         // Monster is blind?
-        if (!properties_->allow_see())
+        if (!properties.allow_see())
         {
                 return false;
         }
@@ -513,17 +513,17 @@ bool Mon::is_actor_seeable(const Actor& other,
                 return false;
         }
 
-        const bool can_see_invis = has_prop(PropId::see_invis);
+        const bool can_see_invis = properties.has(PropId::see_invis);
 
         // Actor is invisible, and monster cannot see invisible?
-        if ((other.has_prop(PropId::invis) ||
-             other.has_prop(PropId::cloaked)) &&
+        if ((other.properties.has(PropId::invis) ||
+             other.properties.has(PropId::cloaked)) &&
             !can_see_invis)
         {
                 return false;
         }
 
-        bool has_darkvision = has_prop(PropId::darkvision);
+        bool has_darkvision = properties.has(PropId::darkvision);
 
         const bool can_see_other_in_drk =
                 can_see_invis ||
@@ -624,7 +624,7 @@ std::vector<Actor*> Mon::seeable_foes() const
 
         Array2<bool> blocked_los(map::dims());
 
-        const R fov_rect = fov::get_fov_rect(pos);
+        const R fov_rect = fov::fov_rect(pos);
 
         map_parsers::BlocksLos()
                 .run(blocked_los,
@@ -689,7 +689,7 @@ void Mon::make_leader_aware_silent() const
         Mon* const leader_mon = static_cast<Mon*>(leader_);
 
         leader_mon->aware_of_player_counter_ =
-                std::max(leader_mon->data().nr_turns_aware,
+                std::max(leader_mon->data->nr_turns_aware,
                          leader_mon->aware_of_player_counter_);
 }
 
@@ -709,7 +709,7 @@ void Mon::on_std_turn()
         // Monsters try to detect the player visually on standard turns,
         // otherwise very fast monsters are much better at finding the player
         if (is_alive() &&
-            data_->ai[(size_t)AiId::looks] &&
+            data->ai[(size_t)AiId::looks] &&
             (leader_ != map::player) &&
             (!target_ || target_->is_player()))
         {
@@ -722,17 +722,18 @@ void Mon::on_std_turn()
 
                         prop->set_duration(1);
 
-                        apply_prop(prop);
+                        properties.apply(prop);
                 }
         }
 
         on_std_turn_hook();
 }
 
-void Mon::on_hit(int& dmg,
-                 const DmgType dmg_type,
-                 const DmgMethod method,
-                 const AllowWound allow_wound)
+void Mon::on_hit(
+        int& dmg,
+        const DmgType dmg_type,
+        const DmgMethod method,
+        const AllowWound allow_wound)
 {
         (void)dmg;
         (void)dmg_type;
@@ -740,8 +741,9 @@ void Mon::on_hit(int& dmg,
         (void)allow_wound;
 
         aware_of_player_counter_ =
-                std::max(data_->nr_turns_aware,
-                         aware_of_player_counter_);
+                std::max(
+                        data->nr_turns_aware,
+                        aware_of_player_counter_);
 }
 
 void Mon::move(Dir dir)
@@ -760,7 +762,7 @@ void Mon::move(Dir dir)
         }
 #endif // NDEBUG
 
-        properties().affect_move_dir(pos, dir);
+        properties.affect_move_dir(pos, dir);
 
         // Movement direction is stored for AI purposes
         last_dir_moved_ = dir;
@@ -811,19 +813,19 @@ void Mon::move(Dir dir)
 
 Color Mon::color() const
 {
-        if (state_ != ActorState::alive)
+        if (state != ActorState::alive)
         {
-                return data_->color;
+                return data->color;
         }
 
         Color tmp_color;
 
-        if (properties_->affect_actor_color(tmp_color))
+        if (properties.affect_actor_color(tmp_color))
         {
                 return tmp_color;
         }
 
-        return data_->color;
+        return data->color;
 }
 
 SpellSkill Mon::spell_skill(const SpellId id) const
@@ -845,7 +847,7 @@ SpellSkill Mon::spell_skill(const SpellId id) const
 
 void Mon::hear_sound(const Snd& snd)
 {
-        if (has_prop(PropId::deaf))
+        if (properties.has(PropId::deaf))
         {
                 return;
         }
@@ -854,7 +856,7 @@ void Mon::hear_sound(const Snd& snd)
 
         // The monster may have become deaf through the sound callback (e.g.
         // from the Horn of Deafening artifact)
-        if (has_prop(PropId::deaf))
+        if (properties.has(PropId::deaf))
         {
                 return;
         }
@@ -874,7 +876,7 @@ void Mon::hear_sound(const Snd& snd)
 
                         prop->set_duration(1);
 
-                        apply_prop(prop);
+                        properties.apply(prop);
                 }
         }
 }
@@ -884,9 +886,9 @@ void Mon::speak_phrase(const AlertsMon alerts_others)
         const bool is_seen_by_player = map::player->can_see_actor(*this);
 
         std::string msg =
-                is_seen_by_player ?
-                aware_msg_mon_seen() :
-                aware_msg_mon_hidden();
+                is_seen_by_player
+                ? aware_msg_mon_seen()
+                : aware_msg_mon_hidden();
 
         msg = text_format::first_to_upper(msg);
 
@@ -909,12 +911,12 @@ void Mon::speak_phrase(const AlertsMon alerts_others)
 
 std::string Mon::aware_msg_mon_seen() const
 {
-        if (data_->use_cultist_aware_msg_mon_seen)
+        if (data->use_cultist_aware_msg_mon_seen)
         {
                 return get_cultist_aware_msg_seen(*this);
         }
 
-        std::string msg_end = data_->aware_msg_mon_seen;
+        std::string msg_end = data->aware_msg_mon_seen;
 
         if (msg_end.empty())
         {
@@ -928,12 +930,12 @@ std::string Mon::aware_msg_mon_seen() const
 
 std::string Mon::aware_msg_mon_hidden() const
 {
-        if (data_->use_cultist_aware_msg_mon_hidden)
+        if (data->use_cultist_aware_msg_mon_hidden)
         {
                 return get_cultist_aware_msg_hidden();
         }
 
-        return data_->aware_msg_mon_hidden;
+        return data->aware_msg_mon_hidden;
 }
 
 void Mon::become_aware_player(const bool is_from_seeing,
@@ -944,7 +946,7 @@ void Mon::become_aware_player(const bool is_from_seeing,
                 return;
         }
 
-        const int nr_turns = data_->nr_turns_aware * factor;
+        const int nr_turns = data->nr_turns_aware * factor;
 
         const int aware_counter_before = aware_of_player_counter_;
 
@@ -977,7 +979,7 @@ void Mon::become_wary_player()
         }
 
         // NOTE: Reusing aware duration to determine number of wary turns
-        const int nr_turns = data_->nr_turns_aware;
+        const int nr_turns = data->nr_turns_aware;
 
         const int wary_counter_before = wary_of_player_counter_;
 
@@ -1012,14 +1014,14 @@ void Mon::print_player_see_mon_become_aware_msg() const
 
 void Mon::print_player_see_mon_become_wary_msg() const
 {
-        if (data_->wary_msg.empty())
+        if (data->wary_msg.empty())
         {
                 return;
         }
 
         std::string msg = text_format::first_to_upper(name_the());
 
-        msg += " " + data_->wary_msg;
+        msg += " " + data->wary_msg;
 
         msg += "(";
         msg += dir_utils::compass_dir_name(map::player->pos, pos);
@@ -1043,7 +1045,7 @@ void Mon::set_player_aware_of_me(int duration_factor)
 
 DidAction Mon::try_attack(Actor& defender)
 {
-        if (state_ != ActorState::alive ||
+        if (state != ActorState::alive ||
             ((aware_of_player_counter_ <= 0) &&
              (leader_ != map::player)))
         {
@@ -1090,13 +1092,13 @@ DidAction Mon::try_attack(Actor& defender)
                         return DidAction::no;
                 }
 
-                if (data_->ranged_cooldown_turns > 0)
+                if (data->ranged_cooldown_turns > 0)
                 {
                         auto prop = new PropDisabledRanged();
 
-                        prop->set_duration(data_->ranged_cooldown_turns);
+                        prop->set_duration(data->ranged_cooldown_turns);
 
-                        properties_->apply(prop);
+                        properties.apply(prop);
                 }
 
                 const auto did_attack =
@@ -1144,7 +1146,7 @@ AiAvailAttacksData Mon::avail_attacks(Actor& defender) const
 {
         AiAvailAttacksData result;
 
-        if (!properties_->allow_attack(Verbosity::silent))
+        if (!properties.allow_attack(Verbosity::silent))
         {
                 return result;
         }
@@ -1153,7 +1155,7 @@ AiAvailAttacksData Mon::avail_attacks(Actor& defender) const
 
         if (result.is_melee)
         {
-                if (!properties_->allow_attack_melee(Verbosity::silent))
+                if (!properties.allow_attack_melee(Verbosity::silent))
                 {
                         return result;
                 }
@@ -1169,7 +1171,7 @@ AiAvailAttacksData Mon::avail_attacks(Actor& defender) const
         }
         else // Ranged attack
         {
-                if (!properties_->allow_attack_ranged(Verbosity::silent))
+                if (!properties.allow_attack_ranged(Verbosity::silent))
                 {
                         return result;
                 }
@@ -1191,7 +1193,7 @@ AiAvailAttacksData Mon::avail_attacks(Actor& defender) const
 
 Wpn* Mon::avail_wielded_melee() const
 {
-        Item* const item = inv_->item_in_slot(SlotId::wpn);
+        Item* const item = inv.item_in_slot(SlotId::wpn);
 
         if (item)
         {
@@ -1208,7 +1210,7 @@ Wpn* Mon::avail_wielded_melee() const
 
 Wpn* Mon::avail_wielded_ranged() const
 {
-        Item* const item = inv_->item_in_slot(SlotId::wpn);
+        Item* const item = inv.item_in_slot(SlotId::wpn);
 
         if (item)
         {
@@ -1227,7 +1229,7 @@ std::vector<Wpn*> Mon::avail_intr_melee() const
 {
         std::vector<Wpn*> result;
 
-        for (Item* const item : inv_->intrinsics_)
+        for (Item* const item : inv.intrinsics)
         {
                 auto* wpn = static_cast<Wpn*>(item);
 
@@ -1244,7 +1246,7 @@ std::vector<Wpn*> Mon::avail_intr_ranged() const
 {
         std::vector<Wpn*> result;
 
-        for (Item* const item : inv_->intrinsics_)
+        for (Item* const item : inv.intrinsics)
         {
                 auto* const wpn = static_cast<Wpn*>(item);
 
@@ -1265,7 +1267,7 @@ bool Mon::should_reload(const Wpn& wpn) const
         return
                 (wpn.ammo_loaded_ == 0) &&
                 !wpn.data().ranged.has_infinite_ammo &&
-                inv_->has_ammo_for_firearm_in_inventory();
+                inv.has_ammo_for_firearm_in_inventory();
 }
 
 AiAttData Mon::choose_attack(const AiAvailAttacksData& avail_attacks) const
@@ -1358,7 +1360,7 @@ DidAction Khephren::on_act()
                 return DidAction::no;
         }
 
-        const R fov_rect = fov::get_fov_rect(pos);
+        const R fov_rect = fov::fov_rect(pos);
 
         Array2<bool> blocked(map::dims());
 
@@ -1394,7 +1396,7 @@ DidAction Khephren::on_act()
 
                         prop->set_indefinite();
 
-                        mon->apply_prop(prop);
+                        mon->properties.apply(prop);
                 });
 
         has_summoned_locusts = true;
@@ -1414,7 +1416,7 @@ DidAction Ape::on_act()
 
         if ((frenzy_cooldown_ <= 0) &&
             target_ &&
-            (hp() <= (hp_max(true) / 2)))
+            (hp <= (actor::max_hp(*this) / 2)))
         {
                 frenzy_cooldown_ = 30;
 
@@ -1422,7 +1424,7 @@ DidAction Ape::on_act()
 
                 prop->set_duration(rnd::range(4, 6));
 
-                properties_->apply(prop);
+                properties.apply(prop);
         }
 
         return DidAction::no;
@@ -1446,14 +1448,14 @@ SpectralWpn::SpectralWpn() :
 
 void SpectralWpn::on_death()
 {
-        inv_->remove_item_in_slot(
+        inv.remove_item_in_slot(
                 SlotId::wpn,
                 true); // Delete the item
 }
 
 std::string SpectralWpn::name_the() const
 {
-        Item* item = inv_->item_in_slot(SlotId::wpn);
+        Item* item = inv.item_in_slot(SlotId::wpn);
 
         ASSERT(item);
 
@@ -1467,7 +1469,7 @@ std::string SpectralWpn::name_the() const
 
 std::string SpectralWpn::name_a() const
 {
-        Item* item = inv_->item_in_slot(SlotId::wpn);
+        Item* item = inv.item_in_slot(SlotId::wpn);
 
         ASSERT(item);
 
@@ -1481,7 +1483,7 @@ std::string SpectralWpn::name_a() const
 
 char SpectralWpn::character() const
 {
-        Item* item = inv_->item_in_slot(SlotId::wpn);
+        Item* item = inv.item_in_slot(SlotId::wpn);
 
         ASSERT(item);
 
@@ -1490,7 +1492,7 @@ char SpectralWpn::character() const
 
 TileId SpectralWpn::tile() const
 {
-        Item* item = inv_->item_in_slot(SlotId::wpn);
+        Item* item = inv.item_in_slot(SlotId::wpn);
 
         ASSERT(item);
 
@@ -1499,13 +1501,14 @@ TileId SpectralWpn::tile() const
 
 std::string SpectralWpn::descr() const
 {
-        Item* item = inv_->item_in_slot(SlotId::wpn);
+        Item* item = inv.item_in_slot(SlotId::wpn);
 
         ASSERT(item);
 
-        std::string str = item->name(ItemRefType::a,
-                                     ItemRefInf::yes,
-                                     ItemRefAttInf::none);
+        std::string str = item->name(
+                ItemRefType::a,
+                ItemRefInf::yes,
+                ItemRefAttInf::none);
 
         str = text_format::first_to_upper(str);
 

@@ -11,7 +11,7 @@
 namespace fov
 {
 
-R get_fov_rect(const P& p)
+R fov_rect(const P& p)
 {
         const int radi = fov_radi_int;
 
@@ -122,7 +122,7 @@ Array2<LosResult> run(const P& p0, const Array2<bool>& hard_blocked)
                 los.is_blocked_by_drk = false;
         }
 
-        const R r = get_fov_rect(p0);
+        const R r = fov_rect(p0);
 
         for (int x = r.p0.x; x <= r.p1.x; ++x)
         {

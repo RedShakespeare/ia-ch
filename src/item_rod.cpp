@@ -1,24 +1,25 @@
 #include "item_rod.hpp"
 
-#include "init.hpp"
-#include "saving.hpp"
-#include "item_data.hpp"
-#include "msg_log.hpp"
-#include "map.hpp"
-#include "game_time.hpp"
-#include "game.hpp"
-#include "item_factory.hpp"
-#include "fov.hpp"
+#include "actor_hit.hpp"
 #include "actor_mon.hpp"
-#include "io.hpp"
-#include "feature_rigid.hpp"
-#include "saving.hpp"
-#include "text_format.hpp"
-#include "knockback.hpp"
 #include "actor_player.hpp"
+#include "feature_rigid.hpp"
+#include "fov.hpp"
+#include "game.hpp"
+#include "game_time.hpp"
+#include "init.hpp"
+#include "io.hpp"
+#include "item_data.hpp"
+#include "item_factory.hpp"
+#include "knockback.hpp"
+#include "map.hpp"
+#include "msg_log.hpp"
 #include "property.hpp"
 #include "property_data.hpp"
 #include "property_handler.hpp"
+#include "saving.hpp"
+#include "saving.hpp"
+#include "text_format.hpp"
 
 void Rod::save()
 {
@@ -191,7 +192,7 @@ void RodCuring::run_effect()
 
     for (PropId prop_id : props_can_heal)
     {
-        if (player.properties().end_prop(prop_id))
+        if (player.properties.end_prop(prop_id))
         {
             is_something_healed = true;
         }
@@ -241,7 +242,7 @@ void RodBless::run_effect()
 
     prop->set_duration(nr_turns);
 
-    map::player->apply_prop(prop);
+    map::player->properties.apply(prop);
 
     identify(Verbosity::verbose);
 }
@@ -313,8 +314,7 @@ void RodShockwave::run_effect()
             msg_log::add(msg);
         }
 
-        actor->hit(rnd::dice(1, 6),
-                   DmgType::physical);
+        actor::hit(*actor, rnd::dice(1, 6), DmgType::physical);
 
         // Surived the damage? Knock the monster back
         if (actor->is_alive())

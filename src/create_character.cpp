@@ -70,7 +70,7 @@ void PickBgState::on_start()
 
         browser_.reset(
                 bgs_.size(),
-                panels::get_h(Panel::create_char_menu));
+                panels::h(Panel::create_char_menu));
 }
 
 void PickBgState::update()
@@ -114,7 +114,7 @@ void PickBgState::update()
 
 void PickBgState::draw()
 {
-        const int screen_center_x = panels::get_center_x(Panel::screen);
+        const int screen_center_x = panels::center_x(Panel::screen);
 
         io::draw_text_center(
                 "What is your background?",
@@ -171,7 +171,7 @@ void PickBgState::draw()
 
                 const auto formatted_lines = text_format::split(
                         descr_entry.str,
-                        panels::get_w(Panel::create_char_descr));
+                        panels::w(Panel::create_char_descr));
 
                 for (const std::string& line : formatted_lines)
                 {
@@ -219,7 +219,7 @@ void PickTraitState::on_start()
                 traits_avail_,
                 traits_unavail_);
 
-        const int choices_h = panels::get_h(Panel::create_char_menu);
+        const int choices_h = panels::h(Panel::create_char_menu);
 
         browser_traits_avail_.reset(traits_avail_.size(), choices_h);
 
@@ -305,7 +305,7 @@ void PickTraitState::draw()
                 title += " [TAB] to view available traits";
         }
 
-        const int screen_center_x = panels::get_center_x(Panel::screen);
+        const int screen_center_x = panels::center_x(Panel::screen);
 
         io::draw_text_center(
                 title,
@@ -416,7 +416,7 @@ void PickTraitState::draw()
         const auto formatted_descr =
                 text_format::split(
                         descr,
-                        panels::get_w(Panel::create_char_descr));
+                        panels::w(Panel::create_char_descr));
 
         for (const std::string& str : formatted_descr)
         {
@@ -556,7 +556,7 @@ void EnterNameState::update()
 {
         if (config::is_bot_playing())
         {
-                ActorData& d = map::player->data();
+                ActorData& d = *map::player->data;
 
                 d.name_a = d.name_the = "Bot";
 
@@ -584,7 +584,7 @@ void EnterNameState::update()
                         config::set_default_player_name(current_str_);
                 }
 
-                ActorData& d = map::player->data();
+                ActorData& d = *map::player->data;
 
                 d.name_a = d.name_the = current_str_;
 
@@ -622,7 +622,7 @@ void EnterNameState::update()
 
 void EnterNameState::draw()
 {
-        const int screen_center_x = panels::get_center_x(Panel::screen);
+        const int screen_center_x = panels::center_x(Panel::screen);
 
         io::draw_text_center(
                 "What is your name?",

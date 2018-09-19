@@ -3,6 +3,7 @@
 #include <algorithm>
 
 #include "actor_factory.hpp"
+#include "actor_hit.hpp"
 #include "actor_mon.hpp"
 #include "actor_player.hpp"
 #include "attack.hpp"
@@ -257,7 +258,7 @@ void Trap::trigger_start(const Actor* actor)
 
                         if (actor == map::player)
                         {
-                                if (map::player->has_prop(PropId::deaf))
+                                if (map::player->properties.has(PropId::deaf))
                                 {
                                         msg_log::add(
                                                 "I feel the ground shifting "
@@ -302,10 +303,10 @@ void Trap::bump(Actor& actor_bumping)
 {
         TRACE_FUNC_BEGIN_VERBOSE;
 
-        const ActorData& d = actor_bumping.data();
+        const ActorData& d = *actor_bumping.data;
 
-        if (actor_bumping.has_prop(PropId::ethereal) ||
-            actor_bumping.has_prop(PropId::flying) ||
+        if (actor_bumping.properties.has(PropId::ethereal) ||
+            actor_bumping.properties.has(PropId::flying) ||
             (d.actor_size < ActorSize::humanoid) ||
             d.is_spider)
         {
@@ -918,7 +919,7 @@ void TrapTeleport::trigger()
 
         const bool is_player = actor_here->is_player();
 
-        const bool can_see = actor_here->properties().allow_see();
+        const bool can_see = actor_here->properties.allow_see();
 
         const bool player_sees_actor = map::player->can_see_actor(*actor_here);
 
@@ -988,7 +989,7 @@ void TrapSummonMon::trigger()
                 return;
         }
 
-        const bool can_see = actor_here->properties().allow_see();
+        const bool can_see = actor_here->properties.allow_see();
         TRACE_VERBOSE << "Actor can see: " << can_see << std::endl;
 
         const std::string actor_name = actor_here->name_the();
@@ -1051,13 +1052,13 @@ void TrapSummonMon::trigger()
 
                                 prop_summoned->set_indefinite();
 
-                                mon->apply_prop(prop_summoned);
+                                mon->properties.apply(prop_summoned);
 
                                 auto prop_waiting = new PropWaiting();
 
                                 prop_waiting->set_duration(2);
 
-                                mon->apply_prop(prop_waiting);
+                                mon->properties.apply(prop_waiting);
 
                                 if (map::player->can_see_actor(*mon))
                                 {
@@ -1097,11 +1098,13 @@ void TrapSpiDrain::trigger()
         if (!is_player)
         {
                 TRACE_VERBOSE << "Not triggered by player" << std::endl;
+
                 TRACE_FUNC_END_VERBOSE;
+
                 return;
         }
 
-        const bool can_see = actor_here->properties().allow_see();
+        const bool can_see = actor_here->properties.allow_see();
 
         TRACE_VERBOSE << "Actor can see: " << can_see << std::endl;
 
@@ -1130,13 +1133,11 @@ void TrapSpiDrain::trigger()
         TRACE << "Draining player spirit" << std::endl;
 
         // Never let spirit draining traps insta-kill the player
-        const int player_spi = map::player->spi();
+        const int sp_drained = map::player->sp - 1;
 
-        const int spi_drained = player_spi - 1;
-
-        if (spi_drained > 0)
+        if (sp_drained > 0)
         {
-                map::player->hit_spi(spi_drained);
+                actor::hit_sp(*map::player, sp_drained);
         }
         else
         {
@@ -1238,7 +1239,7 @@ void TrapWeb::trigger()
 
         if (actor_here->is_player())
         {
-                if (actor_here->properties().allow_see())
+                if (actor_here->properties.allow_see())
                 {
                         msg_log::add(
                                 "I am entangled in a spider web!");
@@ -1266,7 +1267,7 @@ void TrapWeb::trigger()
 
         entangled->set_indefinite();
 
-        actor_here->properties().apply(
+        actor_here->properties.apply(
                 entangled,
                 PropSrc::intr,
                 false,
@@ -1277,7 +1278,7 @@ void TrapWeb::trigger()
         {
                 for (Actor* const actor : game_time::actors)
                 {
-                        if (actor->is_player() || !actor->data().is_spider)
+                        if (actor->is_player() || !actor->data->is_spider)
                         {
                                 continue;
                         }

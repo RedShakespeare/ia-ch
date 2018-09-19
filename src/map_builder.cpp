@@ -57,7 +57,7 @@ void MapBuilder::build()
         {
                 Actor* const actor = game_time::actors[i];
 
-                const auto& allies = actor->data().starting_allies;
+                const auto& allies = actor->data->starting_allies;
 
                 if (allies.empty())
                 {

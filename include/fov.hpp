@@ -17,7 +17,7 @@ struct LosResult
 namespace fov
 {
 
-R get_fov_rect(const P& p);
+R fov_rect(const P& p);
 
 bool is_in_fov_range(const P& p0, const P& p1);
 

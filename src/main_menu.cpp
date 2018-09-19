@@ -233,13 +233,13 @@ StateId MainMenuState::id()
 
 void MainMenuState::draw()
 {
-        const int screen_center_x = panels::get_center_x(Panel::screen);
+        const int screen_center_x = panels::center_x(Panel::screen);
 
         io::clear_screen();
 
         if (config::is_tiles_mode())
         {
-                io::draw_box(panels::get_area(Panel::screen));
+                io::draw_box(panels::area(Panel::screen));
         }
 
         if (config::is_tiles_mode())
@@ -308,7 +308,7 @@ void MainMenuState::draw()
 #endif // NDEBUG
         };
 
-        const P screen_dims = panels::get_dims(Panel::screen);
+        const P screen_dims = panels::dims(Panel::screen);
 
         // NOTE: The main menu logo is 311 pixels high, we place the main meny
         // at least at this height, plus a little more
@@ -407,8 +407,8 @@ void MainMenuState::draw()
         io::draw_text_center(
                 info_str,
                 Panel::screen,
-                P(panels::get_center_x(Panel::screen),
-                  panels::get_y1(Panel::screen)),
+                P(panels::center_x(Panel::screen),
+                  panels::y1(Panel::screen)),
                 colors::dark_gray());
 
         io::update_screen();

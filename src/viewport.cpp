@@ -18,7 +18,7 @@ namespace viewport
 
 P get_map_view_dims()
 {
-        const P gui_coord_dims = panels::get_dims(Panel::map);
+        const P gui_coord_dims = panels::dims(Panel::map);
 
         P map_coord_dims = io::gui_to_map_coords(gui_coord_dims);
 

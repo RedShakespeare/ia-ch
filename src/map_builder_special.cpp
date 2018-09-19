@@ -566,7 +566,7 @@ void MapBuilderRatCave::handle_template_pos(const P& p, const char c)
 
                         prop->set_indefinite();
 
-                        actor->properties().apply(
+                        actor->properties.apply(
                                 prop,
                                 PropSrc::intr,
                                 false,

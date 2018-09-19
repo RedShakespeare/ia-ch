@@ -68,7 +68,7 @@ static R get_minimap_px_rect_on_screen(const R& map_area_explored)
 
         const P screen_px_dims =
                 io::gui_to_px_coords(
-                        panels::get_dims(Panel::screen));
+                        panels::dims(Panel::screen));
 
         const P minimap_p0(
                 screen_px_dims.x / 2 - minimap_px_dims.x / 2,
@@ -89,7 +89,7 @@ void ViewMinimap::draw()
         io::draw_text_center(
                 "Viewing minimap " + info_screen_tip,
                 Panel::screen,
-                P(panels::get_center_x(Panel::screen), 0),
+                P(panels::center_x(Panel::screen), 0),
                 colors::title());
 
         const int px_w_per_cell = get_px_w_per_cell();

@@ -87,12 +87,12 @@ public:
 
         virtual SfxId aware_sfx_mon_seen() const
         {
-                return data_->aware_sfx_mon_seen;
+                return data->aware_sfx_mon_seen;
         }
 
         virtual SfxId aware_sfx_mon_hidden() const
         {
-                return data_->aware_sfx_mon_hidden;
+                return data->aware_sfx_mon_hidden;
         }
 
         void speak_phrase(const AlertsMon alerts_others);

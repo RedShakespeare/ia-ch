@@ -4,6 +4,7 @@
 #include <vector>
 
 #include "actor_factory.hpp"
+#include "actor_hit.hpp"
 #include "actor_mon.hpp"
 #include "actor_player.hpp"
 #include "audio.hpp"
@@ -161,7 +162,7 @@ ConsumeItem StrangeDevice::activate(Actor* const actor)
                 {
                         msg_log::add(hurt_msg, colors::msg_bad());
 
-                        actor->hit(rnd::range(1, 3), DmgType::electric);
+                        actor::hit(*actor, rnd::range(1, 3), DmgType::electric);
                 }
 
                 is_warning =
@@ -180,7 +181,7 @@ ConsumeItem StrangeDevice::activate(Actor* const actor)
                 {
                         msg_log::add(hurt_msg, colors::msg_bad());
 
-                        actor->hit(1, DmgType::electric);
+                        actor::hit(*actor, 1, DmgType::electric);
                 }
 
                 is_warning =
@@ -317,13 +318,14 @@ ConsumeItem DeviceRejuvenator::run_effect()
 
         for (PropId prop_id : props_can_heal)
         {
-                map::player->properties().end_prop(prop_id);
+                map::player->properties.end_prop(prop_id);
         }
 
         map::player->restore_hp(999);
 
-        map::player->incr_shock(ShockLvl::mind_shattering,
-                                ShockSrc::use_strange_item);
+        map::player->incr_shock(
+                ShockLvl::mind_shattering,
+                ShockSrc::use_strange_item);
 
         return ConsumeItem::no;
 }
@@ -390,8 +392,7 @@ ConsumeItem DeviceDeafening::run_effect()
                         continue;
                 }
 
-                actor->apply_prop(
-                        new PropDeaf());
+                actor->properties.apply(new PropDeaf());
         }
 
         return ConsumeItem::no;
@@ -447,9 +448,7 @@ void DeviceLantern::on_pickup_hook()
         ASSERT(actor_carrying_);
 
         // Check for existing electric lantern in inventory
-        Inventory& inv = actor_carrying_->inv();
-
-        for (Item* const other : inv.backpack_)
+        for (Item* const other : actor_carrying_->inv.backpack)
         {
                 if ((other == this) || (other->id() != id()))
                 {
@@ -460,7 +459,8 @@ void DeviceLantern::on_pickup_hook()
 
                 other_lantern->nr_turns_left_ += nr_turns_left_;
 
-                inv.remove_item_in_backpack_with_ptr(this, true);
+                actor_carrying_->inv
+                        .remove_item_in_backpack_with_ptr(this, true);
 
                 return;
         }
@@ -511,14 +511,14 @@ void DeviceLantern::on_std_turn_in_inv(const InvType inv_type)
                 game::add_history_event("My Electric Lantern expired.");
 
                 // NOTE: The this deletes the object
-                map::player->inv().remove_item_in_backpack_with_ptr(this, true);
+                map::player->inv.remove_item_in_backpack_with_ptr(this, true);
         }
 }
 
 LgtSize DeviceLantern::lgt_size() const
 {
         return
-                is_activated_ ?
-                LgtSize::fov :
-                LgtSize::none;
+                is_activated_
+                ? LgtSize::fov
+                : LgtSize::none;
 }

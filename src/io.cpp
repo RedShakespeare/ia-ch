@@ -25,26 +25,26 @@
 // -----------------------------------------------------------------------------
 // Private
 // -----------------------------------------------------------------------------
-static SDL_Window* sdl_window_ = nullptr;
-static SDL_Renderer* sdl_renderer_ = nullptr;
+static SDL_Window* sdl_window = nullptr;
+static SDL_Renderer* sdl_renderer = nullptr;
 
 // Bytes per pixel
-static int bpp_ = -1;
+static int bpp = -1;
 
-static SDL_Surface* screen_srf_ = nullptr;
-static SDL_Texture* screen_texture_ = nullptr;
+static SDL_Surface* screen_srf = nullptr;
+static SDL_Texture* screen_texture = nullptr;
 
-static SDL_Surface* main_menu_logo_srf_ = nullptr;
-static SDL_Surface* skull_srf_ = nullptr;
+static SDL_Surface* main_menu_logo_srf = nullptr;
+static SDL_Surface* skull_srf = nullptr;
 
-static const size_t font_nr_x_ = 16;
-static const size_t font_nr_y_ = 7;
+static const size_t font_nr_x = 16;
+static const size_t font_nr_y = 7;
 
-static std::vector<P> tile_px_data_[(size_t)TileId::END];
-static std::vector<P> font_px_data_[font_nr_x_][font_nr_y_];
+static std::vector<P> tile_px_data[(size_t)TileId::END];
+static std::vector<P> font_px_data[font_nr_x][font_nr_y];
 
-static std::vector<P> tile_contour_px_data_[(size_t)TileId::END];
-static std::vector<P> font_contour_px_data_[font_nr_x_][font_nr_y_];
+static std::vector<P> tile_contour_px_data[(size_t)TileId::END];
+static std::vector<P> font_contour_px_data[font_nr_x][font_nr_y];
 
 static const SDL_Color sdl_color_black = {0, 0, 0, 0};
 
@@ -52,19 +52,19 @@ static SDL_Event sdl_event_;
 
 static bool is_inited()
 {
-        return sdl_window_;
+        return sdl_window;
 }
 
 static void init_screen_surface(const P px_dims)
 {
         TRACE << "Initializing screen surface" << std::endl;
 
-        if (screen_srf_)
+        if (screen_srf)
         {
-                SDL_FreeSurface(screen_srf_);
+                SDL_FreeSurface(screen_srf);
         }
 
-        screen_srf_ = SDL_CreateRGBSurface(
+        screen_srf = SDL_CreateRGBSurface(
                 0,
                 px_dims.x,
                 px_dims.y,
@@ -74,7 +74,7 @@ static void init_screen_surface(const P px_dims)
                 0x000000FF,
                 0xFF000000);
 
-        if (!screen_srf_)
+        if (!screen_srf)
         {
                 TRACE_ERROR_RELEASE << "Failed to create screen surface"
                                     << std::endl
@@ -104,16 +104,16 @@ static void init_window(const P px_dims)
                 title += version_info::version_str;
         }
 
-        if (sdl_window_)
+        if (sdl_window)
         {
-                SDL_DestroyWindow(sdl_window_);
+                SDL_DestroyWindow(sdl_window);
         }
 
         if (config::is_fullscreen())
         {
                 TRACE << "Fullscreen mode" << std::endl;
 
-                sdl_window_ = SDL_CreateWindow(
+                sdl_window = SDL_CreateWindow(
                         title.c_str(),
                         SDL_WINDOWPOS_CENTERED,
                         SDL_WINDOWPOS_CENTERED,
@@ -125,7 +125,7 @@ static void init_window(const P px_dims)
         {
                 TRACE << "Windowed mode" << std::endl;
 
-                sdl_window_ = SDL_CreateWindow(
+                sdl_window = SDL_CreateWindow(
                         title.c_str(),
                         SDL_WINDOWPOS_CENTERED,
                         SDL_WINDOWPOS_CENTERED,
@@ -134,7 +134,7 @@ static void init_window(const P px_dims)
                         SDL_WINDOW_SHOWN | SDL_WINDOW_RESIZABLE);
         }
 
-        if (!sdl_window_)
+        if (!sdl_window)
         {
                 TRACE << "Failed to create window"
                       << std::endl
@@ -147,17 +147,17 @@ static void init_renderer(const P px_dims)
 {
         TRACE << "Initializing renderer" << std::endl;
 
-        if (sdl_renderer_)
+        if (sdl_renderer)
         {
-                SDL_DestroyRenderer(sdl_renderer_);
+                SDL_DestroyRenderer(sdl_renderer);
         }
 
-        sdl_renderer_ = SDL_CreateRenderer(
-                sdl_window_,
+        sdl_renderer = SDL_CreateRenderer(
+                sdl_window,
                 -1,
                 SDL_RENDERER_SOFTWARE);
 
-        if (!sdl_renderer_)
+        if (!sdl_renderer)
         {
                 TRACE << "Failed to create SDL renderer"
                       << std::endl
@@ -168,7 +168,7 @@ static void init_renderer(const P px_dims)
         }
 
         SDL_RenderSetLogicalSize(
-                sdl_renderer_,
+                sdl_renderer,
                 px_dims.x,
                 px_dims.y);
 
@@ -181,19 +181,19 @@ static void init_screen_texture(const P px_dims)
 {
         TRACE << "Initializing screen texture" << std::endl;
 
-        if (screen_texture_)
+        if (screen_texture)
         {
-                SDL_DestroyTexture(screen_texture_);
+                SDL_DestroyTexture(screen_texture);
         }
 
-        screen_texture_ = SDL_CreateTexture(
-                sdl_renderer_,
+        screen_texture = SDL_CreateTexture(
+                sdl_renderer,
                 SDL_PIXELFORMAT_ARGB8888,
                 SDL_TEXTUREACCESS_STREAMING,
                 px_dims.x,
                 px_dims.y);
 
-        if (!screen_texture_)
+        if (!screen_texture)
         {
                 TRACE_ERROR_RELEASE << "Failed to create screen texture"
                                     << std::endl
@@ -204,7 +204,7 @@ static void init_screen_texture(const P px_dims)
         }
 }
 
-static P get_native_resolution()
+static P native_resolution_from_sdl()
 {
         SDL_DisplayMode dm;
 
@@ -232,7 +232,7 @@ static bool is_window_maximized()
         //
         // Is this an SDL bug?
         //
-        return SDL_GetWindowFlags(sdl_window_) & SDL_WINDOW_MAXIMIZED;
+        return SDL_GetWindowFlags(sdl_window) & SDL_WINDOW_MAXIMIZED;
 }
 
 // Pointer to function used for writing pixels on the screen (there are
@@ -251,9 +251,9 @@ static Uint32 px(const SDL_Surface& srf,
         Uint8* p =
                 (Uint8*)srf.pixels +
                 (pixel_y * srf.pitch) +
-                (pixel_x * bpp_);
+                (pixel_x * bpp);
 
-        switch (bpp_)
+        switch (bpp)
         {
         case 1:
                 return *p;
@@ -292,7 +292,7 @@ static void put_px8(
         Uint8* const p =
                 (Uint8*)srf.pixels +
                 (pixel_y * srf.pitch) +
-                (pixel_x * bpp_);
+                (pixel_x * bpp);
 
         *p = px;
 }
@@ -307,7 +307,7 @@ static void put_px16(
         Uint8* const p =
                 (Uint8*)srf.pixels +
                 (pixel_y * srf.pitch) +
-                (pixel_x * bpp_);
+                (pixel_x * bpp);
 
         *(Uint16*)p = px;
 }
@@ -322,7 +322,7 @@ static void put_px24(
         Uint8* const p =
                 (Uint8*)srf.pixels +
                 (pixel_y * srf.pitch) +
-                (pixel_x * bpp_);
+                (pixel_x * bpp);
 
         if (SDL_BYTEORDER == SDL_BIG_ENDIAN)
         {
@@ -348,7 +348,7 @@ static void put_px32(
         Uint8* const p =
                 (Uint8*)srf.pixels +
                 (pixel_y * srf.pitch) +
-                (pixel_x * bpp_);
+                (pixel_x * bpp);
 
         *(Uint32*)p = px;
 }
@@ -362,7 +362,7 @@ static void blit_surface(SDL_Surface& srf, const P px_pos)
         dst_rect.w = srf.w;
         dst_rect.h = srf.h;
 
-        SDL_BlitSurface(&srf, nullptr, screen_srf_, &dst_rect);
+        SDL_BlitSurface(&srf, nullptr, screen_srf, &dst_rect);
 }
 
 static void load_contour(const std::vector<P>& source_px_data,
@@ -418,8 +418,8 @@ static void load_images()
 
         ASSERT(tmp_srf && "Failed to load main menu logo image");
 
-        main_menu_logo_srf_ =
-                SDL_ConvertSurface(tmp_srf, screen_srf_->format, 0);
+        main_menu_logo_srf =
+                SDL_ConvertSurface(tmp_srf, screen_srf->format, 0);
 
         SDL_FreeSurface(tmp_srf);
 
@@ -428,7 +428,7 @@ static void load_images()
 
         ASSERT(tmp_srf && "Failed to load skull image");
 
-        skull_srf_ = SDL_ConvertSurface(tmp_srf, screen_srf_->format, 0);
+        skull_srf = SDL_ConvertSurface(tmp_srf, screen_srf->format, 0);
 
         SDL_FreeSurface(tmp_srf);
 
@@ -460,11 +460,11 @@ static void load_font()
                 config::gui_cell_px_w(),
                 config::gui_cell_px_h());
 
-        for (int x = 0; x < (int)font_nr_x_; ++x)
+        for (int x = 0; x < (int)font_nr_x; ++x)
         {
-                for (int y = 0; y < (int)font_nr_y_; ++y)
+                for (int y = 0; y < (int)font_nr_y; ++y)
                 {
-                        auto& px_data = font_px_data_[x][y];
+                        auto& px_data = font_px_data[x][y];
 
                         px_data.clear();
 
@@ -509,7 +509,7 @@ static void load_font()
 
                         load_contour(
                                 px_data,
-                                font_contour_px_data_[x][y],
+                                font_contour_px_data[x][y],
                                 cell_px_dims);
                 }
         }
@@ -571,7 +571,7 @@ static void load_tiles()
                 const Uint32 img_color =
                         SDL_MapRGB(tile_srf_tmp->format, 255, 255, 255);
 
-                auto& px_data = tile_px_data_[i];
+                auto& px_data = tile_px_data[i];
 
                 px_data.clear();
 
@@ -594,7 +594,7 @@ static void load_tiles()
 
                 load_contour(
                         px_data,
-                        tile_contour_px_data_[i],
+                        tile_contour_px_data[i],
                         cell_px_dims);
 
                 SDL_FreeSurface(tile_srf_tmp);
@@ -611,7 +611,7 @@ static void put_pixels_on_screen(
         const auto sdl_color = color.sdl_color();
 
         const int px_color = SDL_MapRGB(
-                screen_srf_->format,
+                screen_srf->format,
                 sdl_color.r,
                 sdl_color.g,
                 sdl_color.b);
@@ -622,7 +622,7 @@ static void put_pixels_on_screen(
                 const int screen_px_y = px_pos.y + p_relative.y;
 
                 put_px_ptr_(
-                        *screen_srf_,
+                        *screen_srf,
                         screen_px_x,
                         screen_px_y,
                         px_color);
@@ -634,7 +634,7 @@ static void put_pixels_on_screen(
         const P px_pos,
         const Color& color)
 {
-        const auto& pixel_data = tile_px_data_[(size_t)tile];
+        const auto& pixel_data = tile_px_data[(size_t)tile];
 
         put_pixels_on_screen(pixel_data, px_pos, color);
 }
@@ -646,7 +646,7 @@ static void put_pixels_on_screen(
 {
         const P sheet_pos(gfx::character_pos(character));
 
-        const auto& pixel_data = font_px_data_[sheet_pos.x][sheet_pos.y];
+        const auto& pixel_data = font_px_data[sheet_pos.x][sheet_pos.y];
 
         put_pixels_on_screen(pixel_data, px_pos, color);
 }
@@ -676,7 +676,7 @@ static void draw_character(
                 const P char_pos(gfx::character_pos(character));
 
                 const auto& contour_px_data =
-                        font_contour_px_data_[char_pos.x][char_pos.y];
+                        font_contour_px_data[char_pos.x][char_pos.y];
 
                 put_pixels_on_screen(
                         contour_px_data,
@@ -712,17 +712,17 @@ static R gui_to_px_rect(const R rect)
 
 static int panel_px_w(const Panel panel)
 {
-        return io::gui_to_px_coords_x(panels::get_w(panel));
+        return io::gui_to_px_coords_x(panels::w(panel));
 }
 
 static int panel_px_h(const Panel panel)
 {
-        return io::gui_to_px_coords_y(panels::get_h(panel));
+        return io::gui_to_px_coords_y(panels::h(panel));
 }
 
 static P panel_px_dims(const Panel panel)
 {
-        return io::gui_to_px_coords(panels::get_dims(panel));
+        return io::gui_to_px_coords(panels::dims(panel));
 }
 
 static void draw_text(
@@ -795,21 +795,21 @@ static void draw_text(
         }
 }
 
-static P get_sdl_window_px_dims()
+static P sdl_window_px_dims()
 {
         P px_dims;
 
         SDL_GetWindowSize(
-                sdl_window_,
+                sdl_window,
                 &px_dims.x,
                 &px_dims.y);
 
         return px_dims;
 }
 
-static P get_sdl_window_gui_dims()
+static P sdl_window_gui_dims()
 {
-        const P px_dims = get_sdl_window_px_dims();
+        const P px_dims = sdl_window_px_dims();
 
         return io::px_to_gui_coords(px_dims);
 }
@@ -824,14 +824,14 @@ static void try_set_window_gui_cells(P new_gui_dims)
         const P new_px_dims = io::gui_to_px_coords(new_gui_dims);
 
         SDL_SetWindowSize(
-                sdl_window_,
+                sdl_window,
                 new_px_dims.x,
                 new_px_dims.y);
 }
 
 static void on_window_resized()
 {
-        P new_px_dims = get_sdl_window_px_dims();
+        P new_px_dims = sdl_window_px_dims();
 
         config::set_screen_px_w(new_px_dims.x);
         config::set_screen_px_h(new_px_dims.y);
@@ -884,7 +884,7 @@ void init()
 
                 init_window(screen_px_dims);
 
-                if (!sdl_window_)
+                if (!sdl_window)
                 {
                         // Fullscreen failed, fall back on windowed mode instead
                         config::set_fullscreen(false);
@@ -904,7 +904,7 @@ void init()
 
                 const P config_gui_dims = px_to_gui_coords(config_res);
 
-                const P native_res = get_native_resolution();
+                const P native_res = native_resolution_from_sdl();
 
                 TRACE << "Minimum required GUI dimensions: "
                       << min_gui_dims.x
@@ -955,7 +955,7 @@ void init()
                 init_window(screen_px_dims);
         }
 
-        if (!sdl_window_)
+        if (!sdl_window)
         {
                 TRACE_ERROR_RELEASE << "Failed to set up window"
                                     << std::endl
@@ -967,11 +967,11 @@ void init()
 
         init_screen_surface(screen_px_dims);
 
-        bpp_ = screen_srf_->format->BytesPerPixel;
+        bpp = screen_srf->format->BytesPerPixel;
 
-        TRACE << "bpp: " << bpp_ << std::endl;
+        TRACE << "bpp: " << bpp << std::endl;
 
-        switch (bpp_)
+        switch (bpp)
         {
         case 1:
                 put_px_ptr_ = &put_px8;
@@ -990,7 +990,7 @@ void init()
                 break;
 
         default:
-                TRACE_ERROR_RELEASE << "Invalid bpp: " << bpp_ << std::endl;
+                TRACE_ERROR_RELEASE << "Invalid bpp: " << bpp << std::endl;
 
                 PANIC;
         }
@@ -1013,40 +1013,40 @@ void cleanup()
 {
         TRACE_FUNC_BEGIN;
 
-        if (sdl_renderer_)
+        if (sdl_renderer)
         {
-                SDL_DestroyRenderer(sdl_renderer_);
-                sdl_renderer_ = nullptr;
+                SDL_DestroyRenderer(sdl_renderer);
+                sdl_renderer = nullptr;
         }
 
-        if (sdl_window_)
+        if (sdl_window)
         {
-                SDL_DestroyWindow(sdl_window_);
-                sdl_window_ = nullptr;
+                SDL_DestroyWindow(sdl_window);
+                sdl_window = nullptr;
         }
 
-        if (screen_texture_)
+        if (screen_texture)
         {
-                SDL_DestroyTexture(screen_texture_);
-                screen_texture_ = nullptr;
+                SDL_DestroyTexture(screen_texture);
+                screen_texture = nullptr;
         }
 
-        if (screen_srf_)
+        if (screen_srf)
         {
-                SDL_FreeSurface(screen_srf_);
-                screen_srf_ = nullptr;
+                SDL_FreeSurface(screen_srf);
+                screen_srf = nullptr;
         }
 
-        if (main_menu_logo_srf_)
+        if (main_menu_logo_srf)
         {
-                SDL_FreeSurface(main_menu_logo_srf_);
-                main_menu_logo_srf_ = nullptr;
+                SDL_FreeSurface(main_menu_logo_srf);
+                main_menu_logo_srf = nullptr;
         }
 
-        if (skull_srf_)
+        if (skull_srf)
         {
-                SDL_FreeSurface(skull_srf_);
-                skull_srf_ = nullptr;
+                SDL_FreeSurface(skull_srf);
+                skull_srf = nullptr;
         }
 
         TRACE_FUNC_END;
@@ -1057,18 +1057,18 @@ void update_screen()
         if (is_inited())
         {
                 SDL_UpdateTexture(
-                        screen_texture_,
+                        screen_texture,
                         nullptr,
-                        screen_srf_->pixels,
-                        screen_srf_->pitch);
+                        screen_srf->pixels,
+                        screen_srf->pitch);
 
                 SDL_RenderCopy(
-                        sdl_renderer_,
-                        screen_texture_,
+                        sdl_renderer,
+                        screen_texture,
                         nullptr,
                         nullptr);
 
-                SDL_RenderPresent(sdl_renderer_);
+                SDL_RenderPresent(sdl_renderer);
         }
 }
 
@@ -1077,9 +1077,9 @@ void clear_screen()
         if (is_inited())
         {
                 SDL_FillRect(
-                        screen_srf_,
+                        screen_srf,
                         nullptr,
-                        SDL_MapRGB(screen_srf_->format, 0, 0, 0));
+                        SDL_MapRGB(screen_srf->format, 0, 0, 0));
         }
 }
 
@@ -1191,14 +1191,14 @@ P gui_to_map_coords(const P gui_pos)
 
 P gui_to_px_coords(const Panel panel, const P offset)
 {
-        const P pos = panels::get_area(panel).p0 + offset;
+        const P pos = panels::area(panel).p0 + offset;
 
         return gui_to_px_coords(pos);
 }
 
 P map_to_px_coords(const Panel panel, const P offset)
 {
-        const P px_p0 = gui_to_px_coords(panels::get_area(panel).p0);
+        const P px_p0 = gui_to_px_coords(panels::area(panel).p0);
 
         const P px_offset = map_to_px_coords(offset);
 
@@ -1236,7 +1236,7 @@ void draw_tile(
             (bg_color != colors::black()))
         {
                 const auto& contour_px_data =
-                        tile_contour_px_data_[(size_t)tile];
+                        tile_contour_px_data[(size_t)tile];
 
                 put_pixels_on_screen(
                         contour_px_data,
@@ -1415,9 +1415,9 @@ void draw_rectangle_filled(
 
                 const SDL_Color& sdl_color = color.sdl_color();
 
-                SDL_FillRect(screen_srf_,
+                SDL_FillRect(screen_srf,
                              &sdl_rect,
-                             SDL_MapRGB(screen_srf_->format,
+                             SDL_MapRGB(screen_srf->format,
                                         sdl_color.r,
                                         sdl_color.g,
                                         sdl_color.b));
@@ -1431,7 +1431,7 @@ void cover_panel(const Panel panel, const Color& color)
                 return;
         }
 
-        const R px_area = gui_to_px_rect(panels::get_area(panel));
+        const R px_area = gui_to_px_rect(panels::area(panel));
 
         draw_rectangle_filled(px_area, color);
 }
@@ -1441,7 +1441,7 @@ void cover_area(
         const R area,
         const Color& color)
 {
-        const P panel_p0 = panels::get_p0(panel);
+        const P panel_p0 = panels::p0(panel);
 
         const R screen_area = area.with_offset(panel_p0);
 
@@ -1589,7 +1589,7 @@ void draw_descr_box(const std::vector<ColoredString>& lines)
                 const auto formatted =
                         text_format::split(
                                 line.str,
-                                panels::get_w(Panel::item_descr));
+                                panels::w(Panel::item_descr));
 
                 for (const auto& formatted_line : formatted)
                 {
@@ -1612,11 +1612,11 @@ void draw_main_menu_logo()
         {
                 const int screen_px_w = panel_px_w(Panel::screen);
 
-                const int logo_px_h = main_menu_logo_srf_->w;
+                const int logo_px_h = main_menu_logo_srf->w;
 
                 const P px_pos((screen_px_w - logo_px_h) / 2, 0);
 
-                blit_surface(*main_menu_logo_srf_, px_pos);
+                blit_surface(*main_menu_logo_srf, px_pos);
         }
 }
 
@@ -1628,7 +1628,7 @@ void draw_skull(const P pos)
                         pos.x * config::map_cell_px_w(),
                         pos.y * config::map_cell_px_h());
 
-                blit_surface(*skull_srf_, px_pos);
+                blit_surface(*skull_srf, px_pos);
         }
 }
 
@@ -1967,7 +1967,7 @@ InputData get(const bool is_o_return)
                                         continue;
                                 }
 
-                                P gui_dims = get_sdl_window_gui_dims();
+                                P gui_dims = sdl_window_gui_dims();
 
                                 if (c == '+')
                                 {

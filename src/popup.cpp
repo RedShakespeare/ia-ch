@@ -16,12 +16,12 @@ static const int text_w_default = 39;
 
 static int get_x0(const int width)
 {
-        return panels::get_center_x(Panel::screen) - (width / 2);
+        return panels::center_x(Panel::screen) - (width / 2);
 }
 
 static int get_box_y0(const int box_h)
 {
-        return panels::get_center_y(Panel::screen) - (box_h / 2) - 1;
+        return panels::center_y(Panel::screen) - (box_h / 2) - 1;
 }
 
 static int get_box_w(const int text_w)
@@ -97,7 +97,7 @@ static void draw_menu_popup(
                 io::draw_text_center(
                         title,
                         Panel::screen,
-                        P(panels::get_center_x(Panel::screen), y),
+                        P(panels::center_x(Panel::screen), y),
                         colors::title(),
                         false, // Do not draw background color
                         colors::black(),
@@ -115,7 +115,7 @@ static void draw_menu_popup(
                         io::draw_text_center(
                                 line,
                                 Panel::screen,
-                                P(panels::get_center_x(Panel::screen), y),
+                                P(panels::center_x(Panel::screen), y),
                                 colors::white(),
                                 false, // Do not draw background color
                                 colors::black(),
@@ -149,7 +149,7 @@ static void draw_menu_popup(
                 io::draw_text_center(
                         choices[i],
                         Panel::screen,
-                        P(panels::get_center_x(Panel::screen), y),
+                        P(panels::center_x(Panel::screen), y),
                         color,
                         false, // Do not draw background color
                         colors::black(),
@@ -192,7 +192,7 @@ void msg(const std::string& msg,
                 io::draw_text_center(
                         title,
                         Panel::screen,
-                        P(panels::get_center_x(Panel::screen), y),
+                        P(panels::center_x(Panel::screen), y),
                         colors::title(),
                         false, // Do not draw background color
                         colors::black(),
@@ -210,7 +210,7 @@ void msg(const std::string& msg,
                         io::draw_text_center(
                                 line,
                                 Panel::screen,
-                                P(panels::get_center_x(Panel::screen), y),
+                                P(panels::center_x(Panel::screen), y),
                                 colors::white(),
                                 false, // Do not draw background color
                                 colors::black(),
@@ -237,7 +237,7 @@ void msg(const std::string& msg,
         io::draw_text_center(
                 confirm_info_str_no_space,
                 Panel::screen,
-                P(panels::get_center_x(Panel::screen), y),
+                P(panels::center_x(Panel::screen), y),
                 colors::menu_dark(),
                 false); // Do not draw background color
 

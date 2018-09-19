@@ -1,34 +1,49 @@
 #include "wham.hpp"
 
-#include "init.hpp"
-#include "game_time.hpp"
-#include "feature_rigid.hpp"
+#include "actor_hit.hpp"
 #include "actor_player.hpp"
-#include "map.hpp"
-#include "msg_log.hpp"
-#include "query.hpp"
-#include "io.hpp"
-#include "map_parsing.hpp"
-#include "text_format.hpp"
-#include "item_factory.hpp"
 #include "feature_door.hpp"
+#include "feature_rigid.hpp"
+#include "game_time.hpp"
+#include "init.hpp"
+#include "io.hpp"
+#include "item_factory.hpp"
+#include "map.hpp"
+#include "map_parsing.hpp"
+#include "msg_log.hpp"
 #include "property_data.hpp"
 #include "property_handler.hpp"
+#include "query.hpp"
+#include "text_format.hpp"
 
 namespace wham
 {
 
 void try_sprain_player()
 {
-        if ((player_bon::bg() == Bg::ghoul) ||
-            map::player->has_prop(PropId::frenzied))
+        const bool is_frenzied =  map::player->properties.has(PropId::frenzied);
+
+        const bool is_player_ghoul = player_bon::bg() == Bg::ghoul;
+
+        if (is_player_ghoul || is_frenzied)
         {
                 return;
         }
 
-        const int sprain_one_in_n =
-                player_bon::has_trait(Trait::rugged) ? 12 :
-                player_bon::has_trait(Trait::tough) ? 8 : 4;
+        int sprain_one_in_n;
+
+        if (player_bon::has_trait(Trait::rugged))
+        {
+                sprain_one_in_n = 12;
+        }
+        else if (player_bon::has_trait(Trait::tough))
+        {
+                sprain_one_in_n = 8;
+        }
+        else
+        {
+                sprain_one_in_n = 4;
+        }
 
         if (rnd::one_in(sprain_one_in_n))
         {
@@ -36,7 +51,7 @@ void try_sprain_player()
 
                 const int dmg = rnd::range(1, 2);
 
-                map::player->hit(dmg, DmgType::pure);
+                actor::hit(*map::player, dmg, DmgType::pure);
         }
 }
 
@@ -81,7 +96,7 @@ void run()
                         TRACE << "Actor found at kick pos" << std::endl;
 
                         const bool melee_allowed =
-                                map::player->properties().allow_attack_melee(
+                                map::player->properties.allow_attack_melee(
                                         Verbosity::verbose);
 
                         if (melee_allowed)
@@ -101,7 +116,7 @@ void run()
                                 try_sprain_player();
 
                                 // Attacking ends cloaking
-                                map::player->properties().end_prop(
+                                map::player->properties.end_prop(
                                         PropId::cloaked);
 
                                 game_time::tick();
@@ -121,11 +136,11 @@ void run()
         for (Actor* const actor : game_time::actors)
         {
                 if ((actor->pos == att_pos) &&
-                    (actor->state() == ActorState::corpse))
+                    (actor->state == ActorState::corpse))
                 {
                         corpse = actor;
 
-                        if (actor->data().prio_corpse_bash)
+                        if (actor->data->prio_corpse_bash)
                         {
                                 break;
                         }
@@ -137,7 +152,7 @@ void run()
                         static_cast<Wpn*>(
                                 item_factory::make(ItemId::player_kick)));
 
-        const auto* wpn = map::player->inv().item_in_slot(SlotId::wpn);
+        const auto* wpn = map::player->inv.item_in_slot(SlotId::wpn);
 
         if (!wpn)
         {
@@ -153,7 +168,7 @@ void run()
 
                 std::string corpse_name =
                         is_seeing_cell
-                        ? corpse->corpse_name_the()
+                        ? corpse->data->corpse_name_the
                         : "a corpse";
 
                 corpse_name = text_format::first_to_lower(corpse_name);
@@ -179,23 +194,25 @@ void run()
 
                 const int dmg = dmg_dice.roll();
 
-                corpse->hit(dmg,
-                            DmgType::physical,
-                            wpn_used_att_corpse->data().melee.dmg_method);
+                actor::hit(
+                        *corpse,
+                        dmg,
+                        DmgType::physical,
+                        wpn_used_att_corpse->data().melee.dmg_method);
 
                 if (wpn_used_att_corpse == kick_wpn.get())
                 {
                         try_sprain_player();
                 }
 
-                if (corpse->state() == ActorState::destroyed)
+                if (corpse->state == ActorState::destroyed)
                 {
                         std::vector<Actor*> corpses_here;
 
                         for (auto* const actor : game_time::actors)
                         {
                                 if ((actor->pos == att_pos) &&
-                                    (actor->state() == ActorState::corpse))
+                                    (actor->state == ActorState::corpse))
                                 {
                                         corpses_here.push_back(actor);
                                 }
@@ -210,14 +227,14 @@ void run()
                         {
                                 const std::string name =
                                         text_format::first_to_upper(
-                                                corpse->corpse_name_a());
+                                                corpse->data->corpse_name_a);
 
                                 msg_log::add(name + ".");
                         }
                 }
 
                 // Attacking ends cloaking
-                map::player->properties().end_prop(PropId::cloaked);
+                map::player->properties.end_prop(PropId::cloaked);
 
                 game_time::tick();
 
@@ -296,7 +313,7 @@ void run()
                         map::player);
 
                 // Attacking ends cloaking
-                map::player->properties().end_prop(PropId::cloaked);
+                map::player->properties.end_prop(PropId::cloaked);
 
                 game_time::tick();
         }

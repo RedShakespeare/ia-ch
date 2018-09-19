@@ -13,23 +13,22 @@
 // -----------------------------------------------------------------------------
 // Private
 // -----------------------------------------------------------------------------
-static std::vector<Msg> lines_[2];
+static std::vector<Msg> lines[2];
 
-static const size_t history_capacity_ = 200;
+static const size_t history_capacity = 200;
 
-static size_t history_size_ = 0;
+static size_t history_size = 0;
+static size_t history_count = 0;
 
-static size_t history_count_ = 0;
+static std::vector<Msg> history[history_capacity];
 
-static std::vector<Msg> history_[history_capacity_];
-
-static const std::string more_str_ = "-More-";
+static const std::string more_str = "-More-";
 
 static const int repeat_str_len = 4;
 
-static const int space_reserved_for_more_prompt = more_str_.size() + 1;
+static const int space_reserved_for_more_prompt = more_str.size() + 1;
 
-static bool is_waiting_more_pompt_ = false;
+static bool is_waiting_more_pompt = false;
 
 static int x_after_msg(const Msg* const msg)
 {
@@ -63,7 +62,7 @@ static int worst_case_msg_w_for_line_nr(
 static int msg_area_w_avail_for_text_part()
 {
         const int w_avail =
-                panels::get_w(Panel::log)
+                panels::w(Panel::log)
                 - repeat_str_len
                 - space_reserved_for_more_prompt;
 
@@ -137,11 +136,11 @@ static void draw_more_prompt()
         int more_x0 = 0;
 
         int line_nr =
-                lines_[1].empty()
+                lines[1].empty()
                 ? 0
                 : 1;
 
-        const auto& line = lines_[(size_t)line_nr];
+        const auto& line = lines[(size_t)line_nr];
 
         if (!line.empty())
         {
@@ -155,9 +154,9 @@ static void draw_more_prompt()
                 // text MUST fit on the line (handled when adding messages).
                 if (line_nr == 0)
                 {
-                        const int more_x1 = more_x0 + (int)more_str_.size() - 1;
+                        const int more_x1 = more_x0 + (int)more_str.size() - 1;
 
-                        if (more_x1 >= panels::get_w(Panel::log))
+                        if (more_x1 >= panels::w(Panel::log))
                         {
                                 more_x0 = 0;
                                 line_nr = 1;
@@ -165,11 +164,11 @@ static void draw_more_prompt()
                 }
         }
 
-        ASSERT((more_x0 + (int)more_str_.size()) <=
-               (panels::get_w(Panel::log)));
+        ASSERT((more_x0 + (int)more_str.size()) <=
+               (panels::w(Panel::log)));
 
         io::draw_text(
-                more_str_,
+                more_str,
                 Panel::log,
                 P(more_x0, line_nr),
                 colors::black(),
@@ -185,15 +184,15 @@ namespace msg_log
 
 void init()
 {
-        for (std::vector<Msg>& line : lines_)
+        for (std::vector<Msg>& line : lines)
         {
                 line.clear();
         }
 
-        history_size_   = 0;
-        history_count_  = 0;
+        history_size = 0;
+        history_count = 0;
 
-        is_waiting_more_pompt_ = false;
+        is_waiting_more_pompt = false;
 }
 
 void draw()
@@ -202,22 +201,22 @@ void draw()
                 Panel::log_border,
                 colors::extra_dark_gray());
 
-        io::draw_box(panels::get_area(Panel::log_border));
+        io::draw_box(panels::area(Panel::log_border));
 
         const int nr_lines_with_content =
-                lines_[0].empty() ? 0 :
-                lines_[1].empty() ? 1 : 2;
+                lines[0].empty() ? 0 :
+                lines[1].empty() ? 1 : 2;
 
         for (int i = 0; i < nr_lines_with_content; ++i)
         {
                 const int y_pos = i;
 
-                const auto& line = lines_[i];
+                const auto& line = lines[i];
 
                 draw_line(line, Panel::log, P(0, y_pos));
         }
 
-        if (is_waiting_more_pompt_)
+        if (is_waiting_more_pompt)
         {
                 draw_more_prompt();
         }
@@ -225,18 +224,18 @@ void draw()
 
 void clear()
 {
-        for (std::vector<Msg>& line : lines_)
+        for (std::vector<Msg>& line : lines)
         {
                 if (!line.empty())
                 {
                         // Add cleared line to history
-                        history_[history_count_ % history_capacity_] = line;
+                        ::history[history_count % history_capacity] = line;
 
-                        ++history_count_;
+                        ++history_count;
 
-                        if (history_size_ < history_capacity_)
+                        if (history_size < history_capacity)
                         {
-                                ++history_size_;
+                                ++history_size;
                         }
 
                         line.clear();
@@ -266,7 +265,7 @@ void add(const std::string& str,
         // If frenzied, change the message
         // NOTE: This is done through a recursive call - the reason for this is
         // is to allow the parameter string to be a const reference.
-        if (map::player->has_prop(PropId::frenzied) &&
+        if (map::player->properties.has(PropId::frenzied) &&
             allow_convert_to_frenzied_str(str))
         {
                 const std::string frenzied_str =
@@ -285,7 +284,7 @@ void add(const std::string& str,
         // a "more" prompt if the next empty line is the second line), split the
         // message into multiple sub-messages through recursive calls.
         const int next_empty_line_nr =
-                (lines_[0].empty() || !lines_[1].empty())
+                (lines[0].empty() || !lines[1].empty())
                 ? 0
                 : 1;
 
@@ -294,7 +293,7 @@ void add(const std::string& str,
                         next_empty_line_nr,
                         str);
 
-        if (worst_case_msg_w > panels::get_w(Panel::log))
+        if (worst_case_msg_w > panels::w(Panel::log))
         {
                 int w_avail = msg_area_w_avail_for_text_part();
 
@@ -345,15 +344,15 @@ void add(const std::string& str,
         }
 
         int current_line_nr =
-                lines_[1].empty()
+                lines[1].empty()
                 ? 0
                 : 1;
 
         Msg* prev_msg = nullptr;
 
-        if (!lines_[current_line_nr].empty())
+        if (!lines[current_line_nr].empty())
         {
-                prev_msg = &lines_[current_line_nr].back();
+                prev_msg = &lines[current_line_nr].back();
         }
 
         bool is_repeated = false;
@@ -382,7 +381,7 @@ void add(const std::string& str,
 
                 const int worst_case_msg_x1 = msg_x0 + worst_case_msg_w - 1;
 
-                if (worst_case_msg_x1 >= panels::get_w(Panel::log))
+                if (worst_case_msg_x1 >= panels::w(Panel::log))
                 {
                         if (current_line_nr == 0)
                         {
@@ -398,7 +397,7 @@ void add(const std::string& str,
                         msg_x0 = 0;
                 }
 
-                lines_[current_line_nr].push_back(
+                lines[current_line_nr].push_back(
                         Msg(str, color, msg_x0));
         }
 
@@ -425,18 +424,18 @@ void add(const std::string& str,
 void more_prompt()
 {
         // If the current log is empty, do nothing
-        if (lines_[0].empty())
+        if (lines[0].empty())
         {
                 return;
         }
 
-        is_waiting_more_pompt_ = true;
+        is_waiting_more_pompt = true;
 
         states::draw();
 
         query::wait_for_msg_more();
 
-        is_waiting_more_pompt_ = false;
+        is_waiting_more_pompt = false;
 
         clear();
 }
@@ -448,13 +447,13 @@ void add_line_to_history(const std::string& line_to_add)
                 colors::white(),
                 0);
 
-        history_[history_count_ % history_capacity_] = {msg};
+        ::history[history_count % history_capacity] = {msg};
 
-        ++history_count_;
+        ++history_count;
 
-        if (history_size_ < history_capacity_)
+        if (history_size < history_capacity)
         {
-                ++history_size_;
+                ++history_size;
         }
 }
 
@@ -462,18 +461,18 @@ const std::vector< std::vector<Msg> > history()
 {
         std::vector< std::vector<Msg> > ret;
 
-        ret.reserve(history_size_);
+        ret.reserve(history_size);
 
         size_t start = 0;
 
-        if (history_count_ >= history_capacity_)
+        if (history_count >= history_capacity)
         {
-                start = history_count_ - history_capacity_;
+                start = history_count - history_capacity;
         }
 
-        for (size_t i = start; i < history_count_; ++i)
+        for (size_t i = start; i < history_count; ++i)
         {
-                const auto& line = history_[i % history_capacity_];
+                const auto& line = ::history[i % history_capacity];
 
                 ret.push_back(line);
         }

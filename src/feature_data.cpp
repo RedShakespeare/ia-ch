@@ -666,7 +666,7 @@ bool MoveRules::can_move(const Actor& actor) const
 
         for (const auto id : props_allow_move_)
         {
-                if (actor.properties().has_prop(id))
+                if (actor.properties.has(id))
                 {
                         return true;
                 }

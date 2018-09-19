@@ -4,6 +4,7 @@
 
 #include "actor.hpp"
 #include "actor_data.hpp"
+#include "actor_hit.hpp"
 #include "actor_mon.hpp"
 #include "actor_player.hpp"
 #include "attack_data.hpp"
@@ -60,9 +61,10 @@ void player_throw_lit_explosive(const P& aim_cell)
                 }
         }
 
-        const P end_pos(path.empty()
-                        ? P()
-                        : path.back());
+        const P end_pos =
+                path.empty()
+                ? P()
+                : path.back();
 
         msg_log::add(explosive->str_on_player_throw());
 
@@ -208,7 +210,7 @@ void throw_item(Actor& actor_throwing,
 
                 if (actor_here &&
                     ((pos == tgt_pos) ||
-                     (actor_here->data().actor_size >= ActorSize::humanoid)))
+                     (actor_here->data->actor_size >= ActorSize::humanoid)))
                 {
                         att_data = ThrowAttData(&actor_throwing,
                                                 tgt_pos,
@@ -264,10 +266,12 @@ void throw_item(Actor& actor_throwing,
 
                                 if (att_data.dmg > 0)
                                 {
-                                        actor_here->hit(att_data.dmg,
-                                                        DmgType::physical,
-                                                        DmgMethod::END,
-                                                        AllowWound::yes);
+                                        actor::hit(
+                                                *actor_here,
+                                                att_data.dmg,
+                                                DmgType::physical,
+                                                DmgMethod::END,
+                                                AllowWound::yes);
                                 }
 
                                 item_thrown.on_ranged_hit(*actor_here);
@@ -292,7 +296,7 @@ void throw_item(Actor& actor_throwing,
                                         delete &item_thrown;
 
                                         // Attacking ends cloaking
-                                        actor_throwing.properties()
+                                        actor_throwing.properties
                                                 .end_prop(PropId::cloaked);
 
                                         game_time::tick(speed_pct_diff);
@@ -363,7 +367,7 @@ void throw_item(Actor& actor_throwing,
                 delete &item_thrown;
 
                 // Attacking ends cloaking
-                actor_throwing.properties().end_prop(PropId::cloaked);
+                actor_throwing.properties.end_prop(PropId::cloaked);
 
                 game_time::tick(speed_pct_diff);
 
@@ -449,7 +453,7 @@ void throw_item(Actor& actor_throwing,
         }
 
         // Attacking ends cloaking
-        actor_throwing.properties().end_prop(PropId::cloaked);
+        actor_throwing.properties.end_prop(PropId::cloaked);
 
         game_time::tick(speed_pct_diff);
 }

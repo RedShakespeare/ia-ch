@@ -27,31 +27,31 @@ void init(P max_gui_dims);
 
 bool is_valid();
 
-R get_area(const Panel panel);
+R area(const Panel panel);
 
-P get_dims(const Panel panel);
+P dims(const Panel panel);
 
-P get_p0(const Panel panel);
+P p0(const Panel panel);
 
-P get_p1(const Panel panel);
+P p1(const Panel panel);
 
-int get_x0(const Panel panel);
+int x0(const Panel panel);
 
-int get_y0(const Panel panel);
+int y0(const Panel panel);
 
-int get_x1(const Panel panel);
+int x1(const Panel panel);
 
-int get_y1(const Panel panel);
+int y1(const Panel panel);
 
-int get_w(const Panel panel);
+int w(const Panel panel);
 
-int get_h(const Panel panel);
+int h(const Panel panel);
 
-int get_center_x(const Panel panel);
+int center_x(const Panel panel);
 
-int get_center_y(const Panel panel);
+int center_y(const Panel panel);
 
-P get_center(const Panel panel);
+P center(const Panel panel);
 
 } // panels
 

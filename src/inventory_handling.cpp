@@ -29,21 +29,19 @@ static bool run_drop_query(const InvType inv_type, const size_t idx)
 {
         TRACE_FUNC_BEGIN;
 
-        Inventory& inv = map::player->inv();
-
         Item* item = nullptr;
 
         if (inv_type == InvType::slots)
         {
                 ASSERT(idx < (int)SlotId::END);
 
-                item = inv.slots_[idx].item;
+                item = map::player->inv.slots[idx].item;
         }
         else // Backpack
         {
-                ASSERT(idx < inv.backpack_.size());
+                ASSERT(idx < map::player->inv.backpack.size());
 
-                item = inv.backpack_[idx];
+                item = map::player->inv.backpack[idx];
         }
 
         if (!item)
@@ -182,9 +180,7 @@ void InvState::draw_slot(
         p.x += 3;
 
         // Draw slot label
-        const auto& inv = map::player->inv();
-
-        const InvSlot& slot = inv.slots_[(size_t)id];
+        const InvSlot& slot = map::player->inv.slots[(size_t)id];
 
         const std::string slot_name = slot.name;
 
@@ -278,9 +274,7 @@ void InvState::draw_backpack_item(
         p.x += 3;
 
         // Draw item
-        auto& inv = map::player->inv();
-
-        const Item* const item = inv.backpack_[backpack_idx];
+        const Item* const item = map::player->inv.backpack[backpack_idx];
 
         // draw_item_symbol(*item, p);
 
@@ -326,8 +320,7 @@ void InvState::draw_weight_pct_and_dots(
         const Color& item_name_color,
         const bool is_marked) const
 {
-        const int weight_carried_tot =
-                map::player->inv().total_item_weight();
+        const int weight_carried_tot = map::player->inv.total_item_weight();
 
         int item_weight_pct = 0;
 
@@ -338,7 +331,7 @@ void InvState::draw_weight_pct_and_dots(
 
         std::string weight_str = std::to_string(item_weight_pct) + "%";
 
-        int weight_x = panels::get_w(Panel::item_menu) - weight_str.size();
+        int weight_x = panels::w(Panel::item_menu) - weight_str.size();
 
         ASSERT(item_weight_pct >= 0 && item_weight_pct <= 100);
 
@@ -361,7 +354,7 @@ void InvState::draw_weight_pct_and_dots(
         {
                 // No weight percent is displayed
                 weight_str = "";
-                weight_x = panels::get_w(Panel::item_menu);
+                weight_x = panels::w(Panel::item_menu);
         }
 
         int dots_x = item_pos.x + item_name_len;
@@ -568,7 +561,7 @@ void InvState::draw_detailed_item_descr(
                 lines.push_back(ColoredString(weight_str, colors::green()));
 
                 const int weight_carried_tot =
-                        map::player->inv().total_item_weight();
+                        map::player->inv.total_item_weight();
 
                 int weight_pct = 0;
 
@@ -602,14 +595,13 @@ void InvState::draw_detailed_item_descr(
 
 void InvState::activate(const size_t backpack_idx)
 {
-        Inventory& player_inv = map::player->inv();
-        Item* item = player_inv.backpack_[backpack_idx];
+        Item* item = map::player->inv.backpack[backpack_idx];
 
         auto result = item->activate(map::player);
 
         if (result == ConsumeItem::yes)
         {
-                player_inv.decr_item_in_backpack(backpack_idx);
+                map::player->inv.decr_item_in_backpack(backpack_idx);
         }
 }
 
@@ -618,19 +610,17 @@ void InvState::activate(const size_t backpack_idx)
 // -----------------------------------------------------------------------------
 void BrowseInv::on_start()
 {
-        Inventory& inv = map::player->inv();
-
-        inv.sort_backpack();
+        map::player->inv.sort_backpack();
 
         const int list_size =
                 (int)SlotId::END +
-                (int)inv.backpack_.size();
+                (int)map::player->inv.backpack.size();
 
         browser_.reset(
                 list_size,
-                panels::get_h(Panel::item_menu));
+                panels::h(Panel::item_menu));
 
-        inv.sort_backpack();
+        map::player->inv.sort_backpack();
 
         audio::play(SfxId::backpack);
 }
@@ -641,16 +631,14 @@ void BrowseInv::on_resume()
         // the inventory may have been affected by the other state(s), so we
         // need to reset the browser.
 
-        Inventory& inv = map::player->inv();
-
         const int list_size =
                 (int)SlotId::END +
-                (int)inv.backpack_.size();
+                (int)map::player->inv.backpack.size();
 
         // (The browser will also set the y pos to the nearest valid point)
         browser_.reset(
                 list_size,
-                panels::get_h(Panel::item_menu));
+                panels::h(Panel::item_menu));
 }
 
 void BrowseInv::draw()
@@ -664,7 +652,7 @@ void BrowseInv::draw()
         io::draw_text_center(
                 "Browsing inventory " + info_screen_tip,
                 Panel::screen,
-                P(panels::get_center_x(Panel::screen), 0),
+                P(panels::center_x(Panel::screen), 0),
                 colors::title());
 
         const Range idx_range_shown = browser_.range_shown();
@@ -725,15 +713,13 @@ void BrowseInv::draw()
                 io::draw_text(
                         "(More - Page Down)",
                         Panel::item_menu,
-                        P(0, panels::get_h(Panel::item_menu)),
+                        P(0, panels::h(Panel::item_menu)),
                         colors::light_white());
         }
 }
 
 void BrowseInv::update()
 {
-        Inventory& inv = map::player->inv();
-
         auto inv_type = [&]() {
                 if (browser_.y() < (int)SlotId::END)
                 {
@@ -760,7 +746,7 @@ void BrowseInv::update()
                 {
                         const size_t browser_y = browser_.y();
 
-                        InvSlot& slot = inv.slots_[browser_y];
+                        InvSlot& slot = map::player->inv.slots[browser_y];
 
                         if (slot.item)
                         {
@@ -776,19 +762,19 @@ void BrowseInv::update()
                                 }
                                 else if (slot.id == SlotId::thrown)
                                 {
-                                        auto& slot = inv.slots_[
+                                        auto& slot = map::player->inv.slots[
                                                 (size_t)SlotId::thrown];
 
                                         auto* item = slot.item;
 
                                         slot.item = nullptr;
 
-                                        inv.print_unequip_message(
+                                        map::player->inv.print_unequip_message(
                                                 slot.id, *item);
                                 }
                                 else
                                 {
-                                        inv.unequip_slot(slot.id);
+                                        map::player->inv.unequip_slot(slot.id);
                                 }
 
                                 if (slot.id != SlotId::thrown)
@@ -851,11 +837,9 @@ void BrowseInv::update()
 // -----------------------------------------------------------------------------
 void Apply::on_start()
 {
-        auto& inv = map::player->inv();
+        map::player->inv.sort_backpack();
 
-        inv.sort_backpack();
-
-        auto& backpack = inv.backpack_;
+        auto& backpack = map::player->inv.backpack;
 
         filtered_backpack_indexes_.clear();
 
@@ -885,7 +869,7 @@ void Apply::on_start()
 
         browser_.reset(
                 filtered_backpack_indexes_.size(),
-                panels::get_h(Panel::item_menu));
+                panels::h(Panel::item_menu));
 
         audio::play(SfxId::backpack);
 }
@@ -906,7 +890,7 @@ void Apply::draw()
         io::draw_text_center(
                 "Apply which item? " + info_screen_tip,
                 Panel::screen,
-                P(panels::get_center_x(Panel::screen), 0),
+                P(panels::center_x(Panel::screen), 0),
                 colors::title());
 
         const Range idx_range_shown = browser_.range_shown();
@@ -948,7 +932,7 @@ void Apply::draw()
                 io::draw_text(
                         "(More - Page Down)",
                         Panel::item_menu,
-                        P(0, panels::get_h(Panel::item_menu)),
+                        P(0, panels::h(Panel::item_menu)),
                         colors::light_white());
         }
 }
@@ -999,12 +983,10 @@ void Apply::update()
 // -----------------------------------------------------------------------------
 void Drop::on_start()
 {
-        auto& inv = map::player->inv();
-
-        inv.sort_backpack();
+        map::player->inv.sort_backpack();
 
         // Filter slots
-        for (InvSlot& slot : inv.slots_)
+        for (InvSlot& slot : map::player->inv.slots)
         {
                 const Item* const item = slot.item;
 
@@ -1016,7 +998,7 @@ void Drop::on_start()
 
         const int list_size =
                 (int)filtered_slots_.size() +
-                (int)inv.backpack_.size();
+                (int)map::player->inv.backpack.size();
 
         if (list_size == 0)
         {
@@ -1030,7 +1012,7 @@ void Drop::on_start()
 
         browser_.reset(
                 list_size,
-                panels::get_h(Panel::item_menu));
+                panels::h(Panel::item_menu));
 
         audio::play(SfxId::backpack);
 }
@@ -1042,7 +1024,7 @@ void Drop::draw()
         io::draw_text_center(
                 "Drop which item? " + info_screen_tip,
                 Panel::screen,
-                P(panels::get_center_x(Panel::screen), 0),
+                P(panels::center_x(Panel::screen), 0),
                 colors::title());
 
         const int browser_y = browser_.y();
@@ -1101,7 +1083,7 @@ void Drop::draw()
                 io::draw_text(
                         "(More - Page Down)",
                         Panel::item_menu,
-                        P(0, panels::get_h(Panel::item_menu)),
+                        P(0, panels::h(Panel::item_menu)),
                         colors::light_white());
         }
 }
@@ -1179,12 +1161,10 @@ void Drop::update()
 // -----------------------------------------------------------------------------
 void Equip::on_start()
 {
-        auto& inv = map::player->inv();
-
-        inv.sort_backpack();
+        map::player->inv.sort_backpack();
 
         // Filter backpack
-        const auto& backpack = inv.backpack_;
+        const auto& backpack = map::player->inv.backpack;
 
         filtered_backpack_indexes_.clear();
 
@@ -1237,7 +1217,7 @@ void Equip::on_start()
 
         browser_.reset(
                 filtered_backpack_indexes_.size(),
-                panels::get_h(Panel::item_menu));
+                panels::h(Panel::item_menu));
 
         browser_.set_y(0);
 }
@@ -1302,10 +1282,8 @@ void Equip::draw()
         io::draw_text_center(
                 heading + info_screen_tip,
                 Panel::screen,
-                P(panels::get_center_x(Panel::screen), 0),
+                P(panels::center_x(Panel::screen), 0),
                 colors::title());
-
-        auto& inv = map::player->inv();
 
         const int browser_y = browser_.y();
 
@@ -1322,7 +1300,7 @@ void Equip::draw()
                 const size_t backpack_idx =
                         filtered_backpack_indexes_[i];
 
-                Item* const item = inv.backpack_[backpack_idx];
+                Item* const item = map::player->inv.backpack[backpack_idx];
 
                 const ItemData& d = item->data();
 
@@ -1363,7 +1341,7 @@ void Equip::draw()
         {
                 io::draw_text("(More - Page Down)",
                               Panel::item_menu,
-                              P(0, panels::get_h(Panel::item_menu)),
+                              P(0, panels::h(Panel::item_menu)),
                               colors::light_white());
         }
 }
@@ -1382,8 +1360,6 @@ void Equip::update()
                 return;
         }
 
-        auto& inv = map::player->inv();
-
         const MenuAction action =
                 browser_.read(input, MenuInputMode::scrolling_and_letters);
 
@@ -1399,7 +1375,7 @@ void Equip::update()
 
                 if (slot_id == SlotId::body)
                 {
-                        if (map::player->has_prop(PropId::burning))
+                        if (map::player->properties.has(PropId::burning))
                         {
                                 msg_log::add("Not while burning.");
 
@@ -1415,7 +1391,7 @@ void Equip::update()
                 else // Not the body slot
                 {
                         // Equip the item immediately
-                        inv.equip_backpack_item(idx, slot_id);
+                        map::player->inv.equip_backpack_item(idx, slot_id);
                 }
 
                 game_time::tick();
@@ -1434,12 +1410,10 @@ void Equip::update()
 // -----------------------------------------------------------------------------
 void SelectThrow::on_start()
 {
-        auto& inv = map::player->inv();
-
-        inv.sort_backpack();
+        map::player->inv.sort_backpack();
 
         // Filter slots
-        for (InvSlot& slot : inv.slots_)
+        for (InvSlot& slot : map::player->inv.slots)
         {
                 const Item* const item = slot.item;
 
@@ -1455,7 +1429,7 @@ void SelectThrow::on_start()
         }
 
         // Filter backpack
-        const auto& backpack = inv.backpack_;
+        const auto& backpack = map::player->inv.backpack;
 
         filtered_backpack_indexes_.clear();
 
@@ -1487,7 +1461,7 @@ void SelectThrow::on_start()
 
         browser_.reset(
                 list_size,
-                panels::get_h(Panel::item_menu));
+                panels::h(Panel::item_menu));
 
         audio::play(SfxId::backpack);
 }
@@ -1497,7 +1471,7 @@ void SelectThrow::draw()
         io::draw_text_center(
                 "Use which item for throwing? " + info_screen_tip,
                 Panel::screen,
-                P(panels::get_center_x(Panel::screen), 0),
+                P(panels::center_x(Panel::screen), 0),
                 colors::title());
 
         const int browser_y = browser_.y();
@@ -1559,7 +1533,7 @@ void SelectThrow::draw()
                 io::draw_text(
                         "(More - Page Down)",
                         Panel::item_menu,
-                        P(0, panels::get_h(Panel::item_menu)),
+                        P(0, panels::h(Panel::item_menu)),
                         colors::light_white());
         }
 }
@@ -1576,8 +1550,6 @@ void SelectThrow::update()
                 ? InvType::slots
                 : InvType::backpack;
 
-        Inventory& inv = map::player->inv();
-
         Item* item;
 
         // Index relative to the current inventory part (slots/backpack)
@@ -1589,7 +1561,7 @@ void SelectThrow::update()
 
                 relative_inv_idx = (size_t)slot_id_marked;
 
-                InvSlot& slot = inv.slots_[relative_inv_idx];
+                InvSlot& slot = map::player->inv.slots[relative_inv_idx];
 
                 item = slot.item;
         }
@@ -1601,7 +1573,7 @@ void SelectThrow::update()
                 relative_inv_idx =
                         filtered_backpack_indexes_[relative_browser_idx];
 
-                item = inv.backpack_[relative_inv_idx];
+                item = map::player->inv.backpack[relative_inv_idx];
         }
 
         switch (action)
@@ -1610,11 +1582,12 @@ void SelectThrow::update()
         {
                 states::pop_until(StateId::game);
 
-                auto& throwing_slot = inv.slots_[(size_t)SlotId::thrown];
+                auto& throwing_slot =
+                        map::player->inv.slots[(size_t)SlotId::thrown];
 
                 throwing_slot.item = item;
 
-                inv.print_equip_message(SlotId::thrown, *item);
+                map::player->inv.print_equip_message(SlotId::thrown, *item);
 
                 return;
         }
@@ -1640,9 +1613,7 @@ void SelectThrow::update()
 // -----------------------------------------------------------------------------
 void SelectIdentify::on_start()
 {
-        auto& inv = map::player->inv();
-
-        inv.sort_backpack();
+        map::player->inv.sort_backpack();
 
         auto is_allowed_item_type = [](
                 const ItemType item_type,
@@ -1664,7 +1635,7 @@ void SelectIdentify::on_start()
         };
 
         // Filter slots
-        for (InvSlot& slot : inv.slots_)
+        for (InvSlot& slot : map::player->inv.slots)
         {
                 const Item* const item = slot.item;
 
@@ -1683,9 +1654,9 @@ void SelectIdentify::on_start()
         }
 
         // Filter backpack
-        for (size_t i = 0; i < inv.backpack_.size(); ++i)
+        for (size_t i = 0; i < map::player->inv.backpack.size(); ++i)
         {
-                const Item* const item = inv.backpack_[i];
+                const Item* const item = map::player->inv.backpack[i];
 
                 const ItemData& d = item->data();
 
@@ -1711,7 +1682,7 @@ void SelectIdentify::on_start()
         {
                 browser_.reset(
                         list_size,
-                        panels::get_h(Panel::item_menu));
+                        panels::h(Panel::item_menu));
 
                 audio::play(SfxId::backpack);
         }
@@ -1726,7 +1697,7 @@ void SelectIdentify::draw()
         io::draw_text_center(
                 "Identify which item?",
                 Panel::screen,
-                P(panels::get_center_x(Panel::screen), 0),
+                P(panels::center_x(Panel::screen), 0),
                 colors::title());
 
         const Range idx_range_shown = browser_.range_shown();
@@ -1784,7 +1755,7 @@ void SelectIdentify::draw()
                 io::draw_text(
                         "(More - Page Down)",
                         Panel::item_menu,
-                        P(0, panels::get_h(Panel::item_menu)),
+                        P(0, panels::h(Panel::item_menu)),
                         colors::light_white());
         }
 }
@@ -1806,8 +1777,6 @@ void SelectIdentify::update()
                         ? InvType::slots
                         : InvType::backpack;
 
-                Inventory& inv = map::player->inv();
-
                 Item* item_to_identify;
 
                 if (inv_type_marked == InvType::slots)
@@ -1815,7 +1784,9 @@ void SelectIdentify::update()
                         const SlotId slot_id_marked =
                                 filtered_slots_[browser_.y()];
 
-                        InvSlot& slot = inv.slots_[(size_t)slot_id_marked];
+                        InvSlot& slot =
+                                map::player->inv.slots[
+                                        (size_t)slot_id_marked];
 
                         item_to_identify = slot.item;
                 }
@@ -1828,7 +1799,9 @@ void SelectIdentify::update()
                                 filtered_backpack_indexes_[
                                         relative_browser_idx];
 
-                        item_to_identify = inv.backpack_[backpack_idx_marked];
+                        item_to_identify =
+                                map::player->inv.backpack[
+                                        backpack_idx_marked];
                 }
 
                 // Exit screen

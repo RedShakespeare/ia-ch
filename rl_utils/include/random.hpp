@@ -152,8 +152,8 @@ struct Fraction
 template <typename T>
 struct WeightedItems
 {
-        std::vector<T> items;
-        std::vector<int> weights;
+        std::vector<T> items = {};
+        std::vector<int> weights = {};
 };
 
 //------------------------------------------------------------------------------

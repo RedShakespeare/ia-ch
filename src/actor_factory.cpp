@@ -110,7 +110,7 @@ MonSpawnResult& MonSpawnResult::make_aware_of_player()
 {
         std::for_each(begin(monsters), end(monsters), [](auto mon)
         {
-                mon->aware_of_player_counter_ = mon->data().nr_turns_aware;
+                mon->aware_of_player_counter_ = mon->data->nr_turns_aware;
         });
 
         return *this;
@@ -126,18 +126,16 @@ Actor* make(const ActorId id, const P& pos)
 {
         Actor* const actor = make_actor_from_id(id);
 
-        actor->init(pos, actor_data::data[(size_t)id]);
+        actor::init_actor(*actor, pos, actor_data::data[(size_t)id]);
 
-        auto& data = actor->data();
-
-        if (data.nr_left_allowed_to_spawn > 0)
+        if (actor->data->nr_left_allowed_to_spawn > 0)
         {
-                --data.nr_left_allowed_to_spawn;
+                --actor->data->nr_left_allowed_to_spawn;
         }
 
         game_time::add_actor(actor);
 
-        actor->properties().on_placed();
+        actor->properties.on_placed();
 
         return actor;
 }

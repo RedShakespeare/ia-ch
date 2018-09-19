@@ -219,7 +219,7 @@ void Door::on_hit(const int dmg,
 
             const bool is_cell_seen = map::is_pos_seen_by_player(pos_);
 
-            const bool is_weak = actor->has_prop(PropId::weakened);
+            const bool is_weak = actor->properties.has(PropId::weakened);
 
             switch (type_)
             {
@@ -242,7 +242,7 @@ void Door::on_hit(const int dmg,
                         destr_chance_pct += 15;
                     }
 
-                    if (actor->has_prop(PropId::frenzied))
+                    if (actor->properties.has(PropId::frenzied))
                     {
                         destr_chance_pct += 30;
                     }
@@ -451,8 +451,8 @@ bool Door::can_move(const Actor& actor) const
 {
         return
                 is_open_ ||
-                actor.has_prop(PropId::ethereal) ||
-                actor.has_prop(PropId::ooze);
+                actor.properties.has(PropId::ethereal) ||
+                actor.properties.has(PropId::ooze);
 }
 
 bool Door::is_los_passable() const
@@ -721,7 +721,7 @@ bool Door::try_jam(Actor* actor_trying)
 {
     const bool is_player = actor_trying == map::player;
 
-    const bool tryer_is_blind = !actor_trying->properties().allow_see();
+    const bool tryer_is_blind = !actor_trying->properties.allow_see();
 
     if (is_secret_ || is_open_)
     {
@@ -754,7 +754,7 @@ void Door::try_close(Actor* actor_trying)
 {
     const bool is_player = actor_trying == map::player;
 
-    const bool tryer_is_blind = !actor_trying->properties().allow_see();
+    const bool tryer_is_blind = !actor_trying->properties.allow_see();
 
     if (is_player &&
         type_ == DoorType::metal)
@@ -805,7 +805,7 @@ void Door::try_close(Actor* actor_trying)
 
         for (Actor* actor : game_time::actors)
         {
-            if ((actor->state() != ActorState::destroyed) &&
+            if ((actor->state != ActorState::destroyed) &&
                 (actor->pos == pos_))
             {
                 is_blocked_by_actor = true;
@@ -1031,7 +1031,7 @@ void Door::try_open(Actor* actor_trying)
     {
         TRACE << "Is not stuck" << std::endl;
 
-        const bool tryer_can_see = actor_trying->properties().allow_see();
+        const bool tryer_can_see = actor_trying->properties.allow_see();
 
         if (tryer_can_see)
         {

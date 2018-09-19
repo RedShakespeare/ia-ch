@@ -345,10 +345,10 @@ void PostmortemMenu::draw()
 
         if (config::is_tiles_mode())
         {
-                io::draw_box(panels::get_area(Panel::screen));
+                io::draw_box(panels::area(Panel::screen));
 
                 menu_pos =
-                        panels::get_center(Panel::screen)
+                        panels::center(Panel::screen)
                         .with_offsets(-9, -4);
         }
         else // Text mode
@@ -360,9 +360,9 @@ void PostmortemMenu::draw()
                 const int ascii_graveyard_h =
                         ascii_graveyard_lines_.size();
 
-                const int screen_center_x = panels::get_center_x(Panel::screen);
+                const int screen_center_x = panels::center_x(Panel::screen);
 
-                const int screen_h = panels::get_h(Panel::screen);
+                const int screen_h = panels::h(Panel::screen);
 
                 const int ascii_graveyard_x0 =
                         screen_center_x - (ascii_graveyard_w / 2);

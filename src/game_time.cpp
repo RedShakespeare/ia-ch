@@ -41,9 +41,9 @@ static void run_std_turn_events()
 {
         if (game_time::is_magic_descend_nxt_std_turn)
         {
-                map::player->properties().end_prop_silent(PropId::nailed);
-                map::player->properties().end_prop_silent(PropId::entangled);
-                map::player->properties().end_prop_silent(PropId::swimming);
+                map::player->properties.end_prop_silent(PropId::nailed);
+                map::player->properties.end_prop_silent(PropId::entangled);
+                map::player->properties.end_prop_silent(PropId::swimming);
 
                 msg_log::add("I sink downwards!",
                              colors::white(),
@@ -65,7 +65,7 @@ static void run_std_turn_events()
                 Actor* const actor = game_time::actors[i];
 
                 // Delete destroyed actors
-                if (actor->state() == ActorState::destroyed)
+                if (actor->state == ActorState::destroyed)
                 {
                         if (actor == map::player)
                         {
@@ -102,7 +102,7 @@ static void run_std_turn_events()
                         actor->on_std_turn_common();
 
                         // NOTE: This may spawn new monsters, see NOTE above.
-                        actor->properties().on_std_turn();
+                        actor->properties.on_std_turn();
 
                         ++i;
                 }
@@ -137,14 +137,12 @@ static void run_std_turn_events()
         }
 
         // Run new turn events on all player items
-        auto& player_inv = map::player->inv();
-
-        for (Item* const item : player_inv.backpack_)
+        for (Item* const item : map::player->inv.backpack)
         {
                 item->on_std_turn_in_inv(InvType::backpack);
         }
 
-        for (InvSlot& slot : player_inv.slots_)
+        for (InvSlot& slot : map::player->inv.slots)
         {
                 if (slot.item)
                 {
@@ -154,7 +152,7 @@ static void run_std_turn_events()
 
         snd_emit::reset_nr_snd_msg_printed_current_turn();
 
-        if ((map::dlvl > 0) && !map::player->has_prop(PropId::deaf))
+        if ((map::dlvl > 0) && !map::player->properties.has(PropId::deaf))
         {
                 const int play_one_in_n = 250;
 
@@ -173,7 +171,7 @@ static  void run_atomic_turn_events()
 
                 if (rigid->data().matl_type == Matl::fluid)
                 {
-                        actor->properties().end_prop(PropId::burning);
+                        actor->properties.end_prop(PropId::burning);
                 }
         }
 
@@ -332,10 +330,10 @@ void tick(const int speed_pct_diff)
                 // infinite number of actions
                 delay_to_set = std::max(1, delay_to_set);
 
-                actor->delay_ = delay_to_set;
+                actor->delay = delay_to_set;
         }
 
-        actor->properties().on_turn_end();
+        actor->properties.on_turn_end();
 
         // Find next actor who can act
         while (true)
@@ -371,21 +369,21 @@ void tick(const int speed_pct_diff)
 
                 actor = current_actor();
 
-                ASSERT(actor->delay_ >= 0);
+                ASSERT(actor->delay >= 0);
 
-                if (actor->delay_ == 0)
+                if (actor->delay == 0)
                 {
                         // Actor is ready to go
                         break;
                 }
 
                 // Actor is still waiting
-                --actor->delay_;
+                --actor->delay;
         }
 
         run_atomic_turn_events();
 
-        current_actor()->properties().on_turn_begin();
+        current_actor()->properties.on_turn_begin();
 
         current_actor()->on_actor_turn();
 }

@@ -953,7 +953,7 @@ void pick_bg(const Bg bg)
         {
                 pick_trait(Trait::stout_spirit);
 
-                map::player->change_max_spi(2, Verbosity::silent);
+                map::player->change_max_sp(2, Verbosity::silent);
 
                 map::player->change_max_hp(-2, Verbosity::silent);
         }
@@ -965,7 +965,7 @@ void pick_bg(const Bg bg)
 
                 prop_r_disease->set_indefinite();
 
-                map::player->properties().apply(
+                map::player->properties.apply(
                         prop_r_disease,
                         PropSrc::intr,
                         true,
@@ -975,7 +975,7 @@ void pick_bg(const Bg bg)
 
                 prop_darkvis->set_indefinite();
 
-                map::player->properties().apply(
+                map::player->properties.apply(
                         prop_darkvis,
                         PropSrc::intr,
                         true,
@@ -1165,7 +1165,7 @@ void pick_trait(const Trait id)
 
                 prop->set_indefinite();
 
-                map::player->properties().apply(
+                map::player->properties.apply(
                         prop,
                         PropSrc::intr,
                         true,
@@ -1177,11 +1177,11 @@ void pick_trait(const Trait id)
         {
                 const int spi_incr = 2;
 
-                map::player->change_max_spi(
+                map::player->change_max_sp(
                         spi_incr,
                         Verbosity::silent);
 
-                map::player->restore_spi(
+                map::player->restore_sp(
                         spi_incr,
                         false, // Not allowed above max
                         Verbosity::silent);
@@ -1194,7 +1194,7 @@ void pick_trait(const Trait id)
 
                 prop->set_indefinite();
 
-                map::player->properties().apply(
+                map::player->properties.apply(
                         prop,
                         PropSrc::intr,
                         true,
@@ -1208,7 +1208,7 @@ void pick_trait(const Trait id)
 
                 prop->set_indefinite();
 
-                map::player->properties().apply(
+                map::player->properties.apply(
                         prop,
                         PropSrc::intr,
                         true,
@@ -1222,7 +1222,7 @@ void pick_trait(const Trait id)
 
                 prop->set_indefinite();
 
-                map::player->properties().apply(
+                map::player->properties.apply(
                         prop,
                         PropSrc::intr,
                         true,
@@ -1236,7 +1236,7 @@ void pick_trait(const Trait id)
 
                 prop->set_indefinite();
 
-                map::player->properties().apply(
+                map::player->properties.apply(
                         prop,
                         PropSrc::intr,
                         true,

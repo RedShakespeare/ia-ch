@@ -1,19 +1,20 @@
 #include "explosion.hpp"
 
-#include "io.hpp"
-#include "map.hpp"
-#include "msg_log.hpp"
-#include "map_parsing.hpp"
-#include "sdl_base.hpp"
-#include "line_calc.hpp"
+#include "actor_hit.hpp"
 #include "actor_player.hpp"
-#include "sdl_base.hpp"
-#include "player_bon.hpp"
-#include "feature_rigid.hpp"
 #include "feature_mob.hpp"
+#include "feature_rigid.hpp"
 #include "game.hpp"
+#include "io.hpp"
+#include "line_calc.hpp"
+#include "map.hpp"
+#include "map_parsing.hpp"
+#include "msg_log.hpp"
+#include "player_bon.hpp"
 #include "property.hpp"
 #include "property_factory.hpp"
+#include "sdl_base.hpp"
+#include "sdl_base.hpp"
 #include "viewport.hpp"
 
 // -----------------------------------------------------------------------------
@@ -177,7 +178,7 @@ static void apply_explosion_on_pos(
                                 colors::msg_bad());
                 }
 
-                living_actor->hit(dmg, DmgType::physical);
+                actor::hit(*living_actor, dmg, DmgType::physical);
 
                 if (living_actor->is_alive() && living_actor->is_player())
                 {
@@ -190,7 +191,7 @@ static void apply_explosion_on_pos(
         // Damage dead actors
         for (Actor* corpse : corpses_here)
         {
-                corpse->hit(dmg, DmgType::physical);
+                actor::hit(*corpse, dmg, DmgType::physical);
         }
 
         // Add smoke
@@ -213,7 +214,7 @@ static void apply_explosion_property_on_pos(
         {
                 if (is_gas == ExplIsGas::yes)
                 {
-                        if (living_actor->has_prop(PropId::r_breath))
+                        if (living_actor->properties.has(PropId::r_breath))
                         {
                                 should_apply_on_living_actor = false;
                         }
@@ -223,7 +224,7 @@ static void apply_explosion_property_on_pos(
                                 // Do not apply effect if wearing Gas Mask, and
                                 // this is a gas explosion
                                 const Item* const head_item =
-                                        map::player->inv().item_in_slot(
+                                        map::player->inv.item_in_slot(
                                                 SlotId::head);
 
                                 if ((is_gas == ExplIsGas::yes) &&
@@ -246,7 +247,7 @@ static void apply_explosion_property_on_pos(
 
                 prop_cpy->set_duration(property->nr_turns_left());
 
-                living_actor->apply_prop(prop_cpy);
+                living_actor->properties.apply(prop_cpy);
         }
 
         // If property is burning, also apply it to corpses and the
@@ -267,7 +268,7 @@ static void apply_explosion_property_on_pos(
 
                         prop_cpy->set_duration(property->nr_turns_left());
 
-                        corpse->properties().apply(prop_cpy);
+                        corpse->properties.apply(prop_cpy);
                 }
         }
 }

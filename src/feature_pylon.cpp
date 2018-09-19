@@ -231,7 +231,7 @@ std::vector<Actor*> PylonImpl::living_actors_reached() const
         for (auto* const actor : game_time::actors)
         {
                 // Actor is dead?
-                if (actor->state() != ActorState::alive)
+                if (actor->state != ActorState::alive)
                 {
                         continue;
                 }
@@ -339,7 +339,7 @@ void PylonBurning::on_new_turn_activated()
 
         for (auto actor : actors)
         {
-                actor->apply_prop(new PropBurning());
+                actor->properties.apply(new PropBurning());
         }
 }
 
@@ -361,7 +361,7 @@ void PylonInvis::on_new_turn_activated()
 
         for (auto actor : actors)
         {
-                actor->apply_prop(new PropInvisible());
+                actor->properties.apply(new PropInvisible());
         }
 }
 
@@ -383,7 +383,7 @@ void PylonSlow::on_new_turn_activated()
 
         for (auto actor : actors)
         {
-                actor->apply_prop(new PropSlowed());
+                actor->properties.apply(new PropSlowed());
         }
 }
 
@@ -449,6 +449,6 @@ void PylonTerrify::on_new_turn_activated()
 
         for (auto actor : actors)
         {
-                actor->apply_prop(new PropTerrified());
+                actor->properties.apply(new PropTerrified());
         }
 }

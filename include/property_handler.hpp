@@ -69,7 +69,7 @@ public:
         void remove_props_for_item(const Item* const item);
 
         // Fast method for checking if a certain property id is applied
-        bool has_prop(const PropId id) const
+        bool has(const PropId id) const
         {
                 return prop_count_cache_[(size_t)id] > 0;
         }
@@ -167,7 +167,7 @@ private:
         std::vector< std::unique_ptr<Prop> > props_;
 
         // This array is only used as an optimization when requesting which
-        // properties are currently active (see the "has_prop()" method above).
+        // properties are currently active (see the "has()" method above).
         int prop_count_cache_[(size_t)PropId::END];
 
         Actor* owner_;

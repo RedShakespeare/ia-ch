@@ -58,9 +58,9 @@ static void finalize_screen_dims()
         }
 
         TRACE << "Screen GUI size was set to: "
-              << panels::get_w(Panel::screen)
+              << panels::w(Panel::screen)
               << ", "
-              << panels::get_h(Panel::screen)
+              << panels::h(Panel::screen)
               << std::endl;
 }
 
@@ -156,9 +156,9 @@ void init(const P max_gui_dims)
         // (Finalized later)
         set_panel_area(Panel::log_border, 0, 0, 0, 3);
 
-        const int map_panel_w = max_gui_dims.x - get_w(Panel::player_stats);
+        const int map_panel_w = max_gui_dims.x - w(Panel::player_stats);
 
-        const int map_panel_h = max_gui_dims.y - get_h(Panel::log_border);
+        const int map_panel_h = max_gui_dims.y - h(Panel::log_border);
 
         set_panel_area(
                 Panel::map,
@@ -167,18 +167,18 @@ void init(const P max_gui_dims)
                 map_panel_w - 1,
                 map_panel_h - 1);
 
-        set_x0(Panel::player_stats, get_x1(Panel::map) + 1);
+        set_x0(Panel::player_stats, x1(Panel::map) + 1);
 
-        set_w(Panel::log_border, get_w(Panel::map));
+        set_w(Panel::log_border, w(Panel::map));
 
-        set_y0(Panel::log_border, get_y1(Panel::map) + 1);
+        set_y0(Panel::log_border, y1(Panel::map) + 1);
 
         set_panel_area(
                 Panel::log,
-                get_x0(Panel::log_border) + 1,
-                get_y0(Panel::log_border) + 1,
-                get_x1(Panel::log_border) - 1,
-                get_y1(Panel::log_border) - 1);
+                x0(Panel::log_border) + 1,
+                y0(Panel::log_border) + 1,
+                x1(Panel::log_border) - 1,
+                y1(Panel::log_border) - 1);
 
         finalize_screen_dims();
 
@@ -187,28 +187,28 @@ void init(const P max_gui_dims)
                 1,
                 2,
                 25,
-                get_y1(Panel::screen));
+                y1(Panel::screen));
 
         set_panel_area(
                 Panel::create_char_descr,
-                get_x1(Panel::create_char_menu) + 2,
+                x1(Panel::create_char_menu) + 2,
                 2,
-                get_x1(Panel::screen) - 1,
-                get_y1(Panel::screen));
+                x1(Panel::screen) - 1,
+                y1(Panel::screen));
 
         set_panel_area(
                 Panel::item_menu,
                 1,
                 1,
                 44,
-                get_y1(Panel::screen) - 1);
+                y1(Panel::screen) - 1);
 
         set_panel_area(
                 Panel::item_descr,
-                get_x1(Panel::item_menu) + 2,
+                x1(Panel::item_menu) + 2,
                 1,
-                get_x1(Panel::screen),
-                get_y1(Panel::screen) - 1);
+                x1(Panel::screen),
+                y1(Panel::screen) - 1);
 
         validate_panels(max_gui_dims);
 
@@ -220,79 +220,73 @@ bool is_valid()
         return is_valid_;
 }
 
-R get_area(const Panel panel)
+R area(const Panel panel)
 {
         return panels_[(size_t)panel];
 }
 
-P get_dims(const Panel panel)
+P dims(const Panel panel)
 {
-        return get_area(panel).dims();
+        return area(panel).dims();
 }
 
-P get_p0(const Panel panel)
+P p0(const Panel panel)
 {
-        return get_area(panel).p0;
+        return area(panel).p0;
 }
 
-P get_p1(const Panel panel)
+P p1(const Panel panel)
 {
-        return get_area(panel).p1;
+        return area(panel).p1;
 }
 
-int get_x0(const Panel panel)
+int x0(const Panel panel)
 {
-        return get_area(panel).p0.x;
+        return area(panel).p0.x;
 }
 
-int get_y0(const Panel panel)
+int y0(const Panel panel)
 {
-        return get_area(panel).p0.y;
+        return area(panel).p0.y;
 }
 
-int get_x1(const Panel panel)
+int x1(const Panel panel)
 {
-        return get_area(panel).p1.x;
+        return area(panel).p1.x;
 }
 
-int get_y1(const Panel panel)
+int y1(const Panel panel)
 {
-        return get_area(panel).p1.y;
+        return area(panel).p1.y;
 }
 
-int get_w(const Panel panel)
+int w(const Panel panel)
 {
-        return get_area(panel).w();
+        return area(panel).w();
 }
 
-int get_h(const Panel panel)
+int h(const Panel panel)
 {
-        return get_area(panel).h();
+        return area(panel).h();
 }
 
-P get_center(const Panel panel)
+P center(const Panel panel)
 {
         const P center(
-                get_center_x(panel),
-                get_center_y(panel));
+                center_x(panel),
+                center_y(panel));
 
         return center;
 }
 
-int get_center_x(const Panel panel)
+int center_x(const Panel panel)
 {
-        const int x0 = get_x0(panel);
-        const int x1 = get_x1(panel);
-
-        return (x1 - x0) / 2;
+        return (x1(panel) - x0(panel)) / 2;
 }
 
-int get_center_y(const Panel panel)
+int center_y(const Panel panel)
 {
-        const int y0 = get_y0(panel);
-        const int y1 = get_y1(panel);
-
-        return (y1 - y0) / 2;
+        return (y1(panel) - y0(panel)) / 2;
 }
 
 } // panels

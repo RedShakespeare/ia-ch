@@ -18,14 +18,14 @@ static bool try_use_talisman_of_resurrection(Actor& actor)
 {
         // Player has the Talisman of Resurrection, and died of physical damage?
         if (!actor.is_player() ||
-            !actor.inv().has_item_in_backpack(ItemId::resurrect_talisman) ||
+            !actor.inv.has_item_in_backpack(ItemId::resurrect_talisman) ||
             (map::player->ins() >= 100) ||
-            (actor.spi() <= 0))
+            (actor.sp <= 0))
         {
                 return false;
         }
 
-        actor.inv().decr_item_type_in_backpack(ItemId::resurrect_talisman);
+        actor.inv.decr_item_type_in_backpack(ItemId::resurrect_talisman);
 
         msg_log::more_prompt();
 
@@ -44,7 +44,7 @@ static bool try_use_talisman_of_resurrection(Actor& actor)
                 false,
                 Verbosity::silent);
 
-        actor.properties().end_prop_silent(PropId::wound);
+        actor.properties.end_prop_silent(PropId::wound);
 
         // If player died due to falling down a chasm, go to next level
         if (map::cells.at(actor.pos).rigid->id() == FeatureId::chasm)
@@ -109,11 +109,13 @@ static void print_mon_death_msg(Actor& actor)
 }
 
 // -----------------------------------------------------------------------------
-// kill_actor
+// actor
 // -----------------------------------------------------------------------------
+namespace actor
+{
 
 // TODO: Split into smaller functions
-void kill_actor(
+void kill(
         Actor& actor,
         const IsDestroyed is_destroyed,
         const AllowGore allow_gore,
@@ -129,7 +131,7 @@ void kill_actor(
                 return;
         }
 
-        ASSERT(actor.data().can_leave_corpse ||
+        ASSERT(actor.data->can_leave_corpse ||
                (is_destroyed == IsDestroyed::yes));
 
         unset_actor_as_leader_for_all_mon(actor);
@@ -153,14 +155,14 @@ void kill_actor(
         }
         else // Not destroyed
         {
-                actor.set_state(ActorState::corpse);
+                actor.state = ActorState::corpse;
         }
 
         if (!actor.is_player())
         {
                 // This is a monster
 
-                if (actor.is_humanoid())
+                if (actor.data->is_humanoid)
                 {
                         TRACE_VERBOSE << "Emitting death sound" << std::endl;
 
@@ -178,7 +180,7 @@ void kill_actor(
 
         if (is_destroyed == IsDestroyed::yes)
         {
-                if (actor.data().can_bleed && (allow_gore == AllowGore::yes))
+                if (actor.data->can_bleed && (allow_gore == AllowGore::yes))
                 {
                         map::make_gore(actor.pos);
                         map::make_blood(actor.pos);
@@ -194,7 +196,7 @@ void kill_actor(
 
         actor.on_death();
 
-        actor.properties().on_death();
+        actor.properties.on_death();
 
         if (!actor.is_player())
         {
@@ -210,3 +212,5 @@ void kill_actor(
 
         TRACE_FUNC_END_VERBOSE;
 }
+
+} // actor

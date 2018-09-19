@@ -5,6 +5,7 @@
 #include "actor.hpp"
 #include "actor_death.hpp"
 #include "actor_factory.hpp"
+#include "actor_hit.hpp"
 #include "actor_mon.hpp"
 #include "actor_player.hpp"
 #include "explosion.hpp"
@@ -43,7 +44,7 @@ Prop::Prop(PropId id) :
 // -----------------------------------------------------------------------------
 void PropBlessed::on_applied()
 {
-        owner_->properties().end_prop_silent(PropId::cursed);
+        owner_->properties.end_prop_silent(PropId::cursed);
 
         bless_adjacent();
 }
@@ -79,7 +80,7 @@ void PropBlessed::bless_adjacent() const
 
 void PropCursed::on_applied()
 {
-        owner_->properties().end_prop_silent(PropId::blessed);
+        owner_->properties.end_prop_silent(PropId::blessed);
 
         curse_adjacent();
 
@@ -132,7 +133,7 @@ void PropCursed::curse_adjacent() const
 
 PropEnded PropEntangled::on_tick()
 {
-        if (!owner_->has_prop(PropId::swimming))
+        if (!owner_->properties.has(PropId::swimming))
         {
                 return PropEnded::no;
         }
@@ -150,7 +151,7 @@ PropEnded PropEntangled::on_tick()
                 msg_log::add(name_the + " is drowning.", colors::msg_good());
         }
 
-        owner_->hit(1, DmgType::physical);
+        actor::hit(*owner_, 1, DmgType::physical);
 
         return PropEnded::no;
 }
@@ -197,7 +198,7 @@ PropEnded PropEntangled::affect_move_dir(const P& actor_pos, Dir& dir)
 
         if (rnd::one_in(8))
         {
-                owner_->properties().end_prop(id());
+                owner_->properties.end_prop(id());
 
                 return PropEnded::yes;
         }
@@ -212,13 +213,13 @@ bool PropEntangled::try_player_end_with_machete()
                 return false;
         }
 
-        Item* item = owner_->inv().item_in_slot(SlotId::wpn);
+        Item* item = owner_->inv.item_in_slot(SlotId::wpn);
 
         if (item && (item->id() == ItemId::machete))
         {
                 msg_log::add("I cut myself free with my Machete.");
 
-                owner_->properties().end_prop_silent(id());
+                owner_->properties.end_prop_silent(id());
 
                 return true;
         }
@@ -228,23 +229,23 @@ bool PropEntangled::try_player_end_with_machete()
 
 void PropSlowed::on_applied()
 {
-        owner_->properties().end_prop_silent(PropId::hasted);
+        owner_->properties.end_prop_silent(PropId::hasted);
 }
 
 void PropHasted::on_applied()
 {
-        owner_->properties().end_prop_silent(PropId::slowed);
+        owner_->properties.end_prop_silent(PropId::slowed);
 }
 
 void PropSummoned::on_end()
 {
-        owner_->set_state(ActorState::destroyed);
+        owner_->state = ActorState::destroyed;
 }
 
 PropEnded PropInfected::on_tick()
 {
 #ifndef NDEBUG
-        ASSERT(!owner_->properties().has_prop(PropId::diseased));
+        ASSERT(!owner_->properties.has(PropId::diseased));
 #endif // NDEBUG
 
         if (map::player->active_medical_bag_)
@@ -265,9 +266,7 @@ PropEnded PropInfected::on_tick()
 
         if (apply_disease)
         {
-                PropHandler& properties = owner_->properties();
-
-                owner_->properties().end_prop_silent(id());
+                owner_->properties.end_prop_silent(id());
 
                 // NOTE: This property is now deleted
 
@@ -275,7 +274,7 @@ PropEnded PropInfected::on_tick()
 
                 prop_diseased->set_indefinite();
 
-                properties.apply(prop_diseased);
+                owner_->properties.apply(prop_diseased);
 
                 msg_log::more_prompt();
 
@@ -293,7 +292,7 @@ int PropDiseased::affect_max_hp(const int hp_max) const
 void PropDiseased::on_applied()
 {
         // End infection
-        owner_->properties().end_prop_silent(PropId::infected);
+        owner_->properties.end_prop_silent(PropId::infected);
 
         // If this is a permanent disease that the player caught, log it as a
         // historic event
@@ -307,7 +306,7 @@ void PropDiseased::on_applied()
 void PropDiseased::on_end()
 {
 #ifndef NDEBUG
-        ASSERT(!owner_->properties().has_prop(PropId::infected));
+        ASSERT(!owner_->properties.has(PropId::infected));
 #endif // NDEBUG
 
         // If this is a permanent disease that the player caught, log it as a
@@ -322,7 +321,7 @@ void PropDiseased::on_end()
 bool PropDiseased::is_resisting_other_prop(const PropId prop_id) const
 {
 #ifndef NDEBUG
-        ASSERT(!owner_->properties().has_prop(PropId::infected));
+        ASSERT(!owner_->properties.has(PropId::infected));
 #endif // NDEBUG
 
         // Getting infected while already diseased is just annoying
@@ -349,7 +348,7 @@ void PropZuulPossessPriest::on_placed()
         // actor is killed, Zuul will be allowed to spawn infinitely (this is
         // handled elsewhere).
 
-        const int nr_left_allowed = owner_->data().nr_left_allowed_to_spawn;
+        const int nr_left_allowed = owner_->data->nr_left_allowed_to_spawn;
 
         ASSERT(nr_left_allowed <= 0);
 
@@ -357,17 +356,18 @@ void PropZuulPossessPriest::on_placed()
 
         if (should_possess)
         {
-                owner_->set_state(ActorState::destroyed);
+                owner_->state = ActorState::destroyed;
 
                 Actor* actor =
-                        actor_factory::make(ActorId::cultist_priest,
-                                            owner_->pos);
+                        actor_factory::make(
+                                ActorId::cultist_priest,
+                                owner_->pos);
 
                 auto* prop = new PropPossessedByZuul();
 
                 prop->set_indefinite();
 
-                actor->properties().apply(
+                actor->properties.apply(
                         prop,
                         PropSrc::intr,
                         true,
@@ -393,7 +393,7 @@ void PropPossessedByZuul::on_death()
                 msg_log::add(name1 + " was possessed by " + name2 + "!");
         }
 
-        owner_->set_state(ActorState::destroyed);
+        owner_->state = ActorState::destroyed;
 
         const P& pos = owner_->pos;
 
@@ -432,7 +432,7 @@ PropEnded PropPoisoned::on_tick()
                         }
                 }
 
-                owner_->hit(1, DmgType::pure);
+                actor::hit(*owner_, 1, DmgType::pure);
         }
 
         return PropEnded::no;
@@ -440,7 +440,7 @@ PropEnded PropPoisoned::on_tick()
 
 void PropAiming::on_hit()
 {
-        owner_->properties().end_prop(id());
+        owner_->properties.end_prop(id());
 }
 
 bool PropTerrified::allow_attack_melee(const Verbosity verbosity) const
@@ -503,7 +503,7 @@ PropEnded PropNailed::affect_move_dir(const P& actor_pos, Dir& dir)
                 }
         }
 
-        owner_->hit(rnd::dice(1, 3), DmgType::physical);
+        actor::hit(*owner_, rnd::dice(1, 3), DmgType::physical);
 
         if (!owner_->is_alive() ||
             !rnd::one_in(4))
@@ -595,7 +595,7 @@ void PropWound::heal_one_wound()
         else // This was the last wound
         {
                 // End self
-                owner_->properties().end_prop(id());
+                owner_->properties.end_prop(id());
         }
 }
 
@@ -612,7 +612,7 @@ void PropWound::on_more(const Prop& new_prop)
                         msg_log::add("I die from my wounds!");
                 }
 
-                kill_actor(
+                actor::kill(
                         *owner_,
                         IsDestroyed::no,
                         AllowGore::no,
@@ -851,10 +851,10 @@ bool PropFrenzied::is_resisting_other_prop(const PropId prop_id) const
 
 void PropFrenzied::on_applied()
 {
-        owner_->properties().end_prop_silent(PropId::confused);
-        owner_->properties().end_prop_silent(PropId::fainted);
-        owner_->properties().end_prop_silent(PropId::terrified);
-        owner_->properties().end_prop_silent(PropId::weakened);
+        owner_->properties.end_prop_silent(PropId::confused);
+        owner_->properties.end_prop_silent(PropId::fainted);
+        owner_->properties.end_prop_silent(PropId::terrified);
+        owner_->properties.end_prop_silent(PropId::weakened);
 }
 
 void PropFrenzied::on_end()
@@ -864,7 +864,7 @@ void PropFrenzied::on_end()
         if (owner_->is_player() &&
             (player_bon::bg() != Bg::ghoul))
         {
-                owner_->apply_prop(new PropWeakened());
+                owner_->properties.apply(new PropWeakened());
         }
 }
 
@@ -897,7 +897,7 @@ PropEnded PropBurning::on_tick()
                 msg_log::add("AAAARGH IT BURNS!!!", colors::light_red());
         }
 
-        owner_->hit(rnd::dice(1, 3), DmgType::fire);
+        actor::hit(*owner_, rnd::dice(1, 3), DmgType::fire);
 
         return PropEnded::no;
 }
@@ -947,14 +947,14 @@ bool PropBurning::allow_attack_ranged(const Verbosity verbosity) const
 PropActResult PropRecloaks::on_act()
 {
         if (owner_->is_alive() &&
-            !owner_->has_prop(PropId::cloaked) &&
+            !owner_->properties.has(PropId::cloaked) &&
             rnd::one_in(20))
         {
                 auto prop_cloaked = new PropCloaked();
 
                 prop_cloaked->set_indefinite();
 
-                owner_->apply_prop(prop_cloaked);
+                owner_->properties.apply(prop_cloaked);
 
                 game_time::tick();
 
@@ -982,7 +982,7 @@ bool PropBlind::should_update_vision_on_toggled() const
 
 PropEnded PropParalyzed::on_tick()
 {
-        if (!owner_->has_prop(PropId::swimming))
+        if (!owner_->properties.has(PropId::swimming))
         {
                 return PropEnded::no;
         }
@@ -1000,7 +1000,7 @@ PropEnded PropParalyzed::on_tick()
                 msg_log::add(name_the + " is drowning.", colors::msg_good());
         }
 
-        owner_->hit(1, DmgType::physical);
+        actor::hit(*owner_, 1, DmgType::physical);
 
         return PropEnded::no;
 }
@@ -1027,13 +1027,13 @@ bool PropFainted::should_update_vision_on_toggled() const
 
 PropEnded PropFlared::on_tick()
 {
-        owner_->hit(1, DmgType::fire);
+        actor::hit(*owner_, 1, DmgType::fire);
 
         if (nr_turns_left_ <= 1)
         {
-                owner_->apply_prop(new PropBurning());
+                owner_->properties.apply(new PropBurning());
 
-                owner_->properties().end_prop(id());
+                owner_->properties.end_prop(id());
 
                 return PropEnded::yes;
         }
@@ -1074,7 +1074,7 @@ bool PropRConf::is_resisting_other_prop(const PropId prop_id) const
 
 void PropRConf::on_applied()
 {
-        owner_->properties().end_prop_silent(PropId::confused);
+        owner_->properties.end_prop_silent(PropId::confused);
 }
 
 bool PropRFear::is_resisting_other_prop(const PropId prop_id) const
@@ -1084,7 +1084,7 @@ bool PropRFear::is_resisting_other_prop(const PropId prop_id) const
 
 void PropRFear::on_applied()
 {
-        owner_->properties().end_prop_silent(PropId::terrified);
+        owner_->properties.end_prop_silent(PropId::terrified);
 
         if (owner_->is_player() &&
             duration_mode_ == PropDurationMode::indefinite)
@@ -1100,7 +1100,7 @@ bool PropRSlow::is_resisting_other_prop(const PropId prop_id) const
 
 void PropRSlow::on_applied()
 {
-        owner_->properties().end_prop_silent(PropId::slowed);
+        owner_->properties.end_prop_silent(PropId::slowed);
 }
 
 bool PropRPhys::is_resisting_other_prop(const PropId prop_id) const
@@ -1134,7 +1134,7 @@ bool PropRFire::is_resisting_other_prop(const PropId prop_id) const
 
 void PropRFire::on_applied()
 {
-        owner_->properties().end_prop_silent(PropId::burning);
+        owner_->properties.end_prop_silent(PropId::burning);
 }
 
 DmgResistData PropRFire::is_resisting_dmg(const DmgType dmg_type) const
@@ -1157,7 +1157,7 @@ bool PropRPoison::is_resisting_other_prop(const PropId prop_id) const
 
 void PropRPoison::on_applied()
 {
-        owner_->properties().end_prop_silent(PropId::poisoned);
+        owner_->properties.end_prop_silent(PropId::poisoned);
 }
 
 bool PropRSleep::is_resisting_other_prop(const PropId prop_id) const
@@ -1167,7 +1167,7 @@ bool PropRSleep::is_resisting_other_prop(const PropId prop_id) const
 
 void PropRSleep::on_applied()
 {
-        owner_->properties().end_prop_silent(PropId::fainted);
+        owner_->properties.end_prop_silent(PropId::fainted);
 }
 
 bool PropRDisease::is_resisting_other_prop(const PropId prop_id) const
@@ -1177,8 +1177,8 @@ bool PropRDisease::is_resisting_other_prop(const PropId prop_id) const
 
 void PropRDisease::on_applied()
 {
-        owner_->properties().end_prop_silent(PropId::diseased);
-        owner_->properties().end_prop_silent(PropId::infected);
+        owner_->properties.end_prop_silent(PropId::diseased);
+        owner_->properties.end_prop_silent(PropId::infected);
 }
 
 bool PropRBlind::is_resisting_other_prop(const PropId prop_id) const
@@ -1188,7 +1188,7 @@ bool PropRBlind::is_resisting_other_prop(const PropId prop_id) const
 
 void PropRBlind::on_applied()
 {
-        owner_->properties().end_prop_silent(PropId::blind);
+        owner_->properties.end_prop_silent(PropId::blind);
 }
 
 bool PropRPara::is_resisting_other_prop(const PropId prop_id) const
@@ -1198,7 +1198,7 @@ bool PropRPara::is_resisting_other_prop(const PropId prop_id) const
 
 void PropRPara::on_applied()
 {
-        owner_->properties().end_prop_silent(PropId::paralyzed);
+        owner_->properties.end_prop_silent(PropId::paralyzed);
 }
 
 bool PropSeeInvis::is_resisting_other_prop(const PropId prop_id) const
@@ -1208,7 +1208,7 @@ bool PropSeeInvis::is_resisting_other_prop(const PropId prop_id) const
 
 void PropSeeInvis::on_applied()
 {
-        owner_->properties().end_prop_silent(PropId::blind);
+        owner_->properties.end_prop_silent(PropId::blind);
 }
 
 PropEnded PropBurrowing::on_tick()
@@ -1300,7 +1300,7 @@ PropActResult PropVortex::on_act()
 
         Array2<bool> blocked_los(map::dims());
 
-        const R fov_rect = fov::get_fov_rect(mon->pos);
+        const R fov_rect = fov::fov_rect(mon->pos);
 
         map_parsers::BlocksLos()
                 .run(blocked_los,
@@ -1361,12 +1361,12 @@ void PropSplitsOnDeath::on_death()
                 return;
         }
 
-        const int actor_max_hp = owner_->hp_max(true);
+        const int actor_max_hp = actor::max_hp(*owner_);
 
         // Do not allow splitting if HP is reduced to this point (if the monster
         // is killed "hard" enough, it doesn't split)
         const bool is_very_destroyed =
-                owner_->hp() <=
+                owner_->hp <=
                 (actor_max_hp * (-5));
 
         const P pos = owner_->pos;
@@ -1393,20 +1393,20 @@ void PropSplitsOnDeath::on_death()
 
                         prop_waiting->set_duration(1);
 
-                        mon->apply_prop(prop_waiting);
+                        mon->properties.apply(prop_waiting);
 
                         // The new actors should usually not also split
                         if (rnd::fraction(4, 5))
                         {
-                                mon->properties().end_prop(
+                                mon->properties.end_prop(
                                         PropId::splits_on_death);
                         }
 
                         // If the original actor is burning, the spawned actors
                         // should too
-                        if (owner_->has_prop(PropId::burning))
+                        if (owner_->properties.has(PropId::burning))
                         {
-                                mon->properties().apply(
+                                mon->properties.apply(
                                         new PropBurning(),
                                         PropSrc::intr,
                                         false, // Do not force effect
@@ -1569,7 +1569,7 @@ void PropAltersEnv::on_std_turn()
 void PropRegenerates::on_std_turn()
 {
         if (owner_->is_alive() &&
-            !owner_->has_prop(PropId::burning))
+            !owner_->properties.has(PropId::burning))
         {
                 owner_->restore_hp(2, false, Verbosity::silent);
         }
@@ -1596,17 +1596,19 @@ PropActResult PropCorpseRises::on_act()
                 return PropActResult();
         }
 
-        owner_->set_state(ActorState::alive);
+        owner_->state = ActorState::alive;
 
-        owner_->set_hp(owner_->hp_max(true) / 2);
+        owner_->hp = actor::max_hp(*owner_) / 2;
 
-        --owner_->data().nr_kills;
+        --owner_->data->nr_kills;
 
         if (map::cells.at(owner_->pos).is_seen_by_player)
         {
+                ASSERT(!owner_->data->corpse_name_the.empty());
+
                 const std::string name =
                         text_format::first_to_upper(
-                                owner_->corpse_name_the());
+                                owner_->data->corpse_name_the);
 
                 msg_log::add(
                         name +
@@ -1658,7 +1660,7 @@ void PropSpawnsZombiePartsOnDestroyed::on_destroyed()
         // Spawning zombie part monsters is only allowed if the monster is not
         // destroyed "too hard". This also reward heavy weapons, since they will
         // more often prevent spawning
-        const bool is_very_destroyed = (owner_->hp() <= -8);
+        const bool is_very_destroyed = (owner_->hp <= -8);
 
         const int summon_one_in_n = 5;
 
@@ -1732,7 +1734,7 @@ void PropSpawnsZombiePartsOnDestroyed::on_destroyed()
 
                         waiting->set_duration(1);
 
-                        mon->apply_prop(waiting);
+                        mon->properties.apply(waiting);
                 });
 }
 
@@ -1742,7 +1744,7 @@ void PropBreeds::on_std_turn()
 
         if (owner_->is_player() ||
             !owner_->is_alive() ||
-            owner_->has_prop(PropId::burning) ||
+            owner_->properties.has(PropId::burning) ||
             (game_time::actors.size() >= max_nr_actors_on_map) ||
             !rnd::one_in(spawn_new_one_in_n))
         {
@@ -1764,7 +1766,7 @@ void PropBreeds::on_std_turn()
 
                         prop_waiting->set_duration(2);
 
-                        mon->apply_prop(prop_waiting);
+                        mon->properties.apply(prop_waiting);
                 });
 
         if (mon->aware_of_player_counter_ > 0)
@@ -1782,7 +1784,7 @@ void PropConfusesAdjacent::on_std_turn()
                 return;
         }
 
-        if (!map::player->properties().has_prop(PropId::confused))
+        if (!map::player->properties.has(PropId::confused))
         {
                 const std::string msg =
                         text_format::first_to_upper(owner_->name_the()) +
@@ -1795,7 +1797,7 @@ void PropConfusesAdjacent::on_std_turn()
 
         prop_confusd->set_duration(rnd::range(8, 12));
 
-        map::player->apply_prop(prop_confusd);
+        map::player->properties.apply(prop_confusd);
 }
 
 PropActResult PropSpeaksCurses::on_act()
@@ -1816,7 +1818,7 @@ PropActResult PropSpeaksCurses::on_act()
 
         Array2<bool> blocked_los(map::dims());
 
-        const R fov_rect = fov::get_fov_rect(mon->pos);
+        const R fov_rect = fov::fov_rect(mon->pos);
 
         map_parsers::BlocksLos()
                 .run(blocked_los,
@@ -1844,7 +1846,7 @@ PropActResult PropSpeaksCurses::on_act()
 
                 snd_emit::run(snd);
 
-                map::player->apply_prop(new PropCursed());
+                map::player->properties.apply(new PropCursed());
 
                 game_time::tick();
 
@@ -1880,10 +1882,8 @@ void PropAuraOfDecay::run_effect_on_actors() const
 {
         for (auto* const actor : game_time::actors)
         {
-                const auto actor_state = actor->state();
-
                 if (actor == owner_ ||
-                    actor_state == ActorState::destroyed ||
+                    actor->state == ActorState::destroyed ||
                     king_dist(owner_->pos, actor->pos) > range())
                 {
                         continue;
@@ -1897,7 +1897,7 @@ void PropAuraOfDecay::run_effect_on_actors() const
                         print_msg_actor_hit(*actor);
                 }
 
-                actor->hit(dmg_, DmgType::pure);
+                actor::hit(*actor, dmg_, DmgType::pure);
         }
 }
 
@@ -1997,7 +1997,7 @@ PropActResult PropMajorClaphamSummon::on_act()
 
         Array2<bool> blocked_los(map::dims());
 
-        const R fov_rect = fov::get_fov_rect(mon->pos);
+        const R fov_rect = fov::fov_rect(mon->pos);
 
         map_parsers::BlocksLos()
                 .run(blocked_los,
@@ -2044,14 +2044,14 @@ PropActResult PropMajorClaphamSummon::on_act()
 
                         prop_summoned->set_indefinite();
 
-                        mon->apply_prop(prop_summoned);
+                        mon->properties.apply(prop_summoned);
 
                         mon->is_player_feeling_msg_allowed_ = false;
                 });
 
         map::player->incr_shock(ShockLvl::terrifying, ShockSrc::misc);
 
-        mon->properties().end_prop(id());
+        mon->properties.end_prop(id());
 
         game_time::tick();
 

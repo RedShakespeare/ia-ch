@@ -31,7 +31,7 @@ static void trigger_insanity_sympts_for_descent()
         {
                 msg_log::add("I am plagued by my phobia of deep places!");
 
-                map::player->apply_prop(new PropTerrified());
+                map::player->properties.apply(new PropTerrified());
         }
 
         // Babbling
@@ -125,11 +125,11 @@ void go_to_nxt()
 
         map_builder->build();
 
-        if (map::player->has_prop(PropId::descend))
+        if (map::player->properties.has(PropId::descend))
         {
                 msg_log::add("My sinking feeling disappears.");
 
-                map::player->properties().end_prop_silent(PropId::descend);
+                map::player->properties.end_prop_silent(PropId::descend);
         }
 
         game_time::is_magic_descend_nxt_std_turn = false;

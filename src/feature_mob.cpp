@@ -39,18 +39,17 @@ void Smoke::on_new_turn()
 
                 bool is_blind_prot = false;
 
-                bool is_breath_prot =
-                        actor->properties().has_prop(PropId::r_breath);
+                bool is_breath_prot = actor->properties.has(PropId::r_breath);
 
                 if (is_player)
                 {
-                        auto& inv = map::player->inv();
-
                         auto* const player_head_item =
-                                inv.slots_[(size_t)SlotId::head].item;
+                                map::player->inv
+                                .slots[(size_t)SlotId::head].item;
 
                         auto* const player_body_item =
-                                inv.slots_[(size_t)SlotId::body].item;
+                                map::player->inv
+                                .slots[(size_t)SlotId::body].item;
 
                         if (player_head_item &&
                             (player_head_item->data().id == ItemId::gas_mask))
@@ -61,7 +60,7 @@ void Smoke::on_new_turn()
 
                                 // This may destroy the gasmask
                                 static_cast<GasMask*>(player_head_item)
-                                        ->decr_turns_left(inv);
+                                        ->decr_turns_left(map::player->inv);
                         }
 
                         if (player_body_item &&
@@ -87,7 +86,7 @@ void Smoke::on_new_turn()
 
                         prop->set_duration(rnd::range(1, 3));
 
-                        actor->apply_prop(prop);
+                        actor->properties.apply(prop);
                 }
 
                 // Coughing?
@@ -102,15 +101,16 @@ void Smoke::on_new_turn()
                         }
                         else // Is monster
                         {
-                                if (actor->is_humanoid())
+                                if (actor->data->is_humanoid)
                                 {
                                         snd_msg = "I hear coughing.";
                                 }
                         }
 
                         const auto alerts =
-                                is_player ?
-                                AlertsMon::yes : AlertsMon::no;
+                                is_player
+                                ? AlertsMon::yes
+                                : AlertsMon::no;
 
                         Snd snd(snd_msg,
                                 SfxId::END,

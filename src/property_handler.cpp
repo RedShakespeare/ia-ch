@@ -24,7 +24,7 @@ PropHandler::PropHandler(Actor* owner) :
 
 void PropHandler::apply_natural_props_from_actor_data()
 {
-        const ActorData& d = owner_->data();
+        const ActorData& d = *owner_->data;
 
         // Add natural properties
         for (size_t i = 0; i < (size_t)PropId::END; ++i)
@@ -309,7 +309,7 @@ void PropHandler::add_prop_from_equipped_item(const Item* const item,
 
 Prop* PropHandler::prop(const PropId id) const
 {
-        if (has_prop(id))
+        if (has(id))
         {
                 for (auto& prop : props_)
                 {
@@ -393,7 +393,7 @@ void PropHandler::on_prop_end(Prop* const prop)
         }
 
         // Print end message if this is the last active property of this type
-        if ((owner_->state() == ActorState::alive) &&
+        if ((owner_->state == ActorState::alive) &&
             prop_count_cache_[(size_t)prop->id_] == 0)
         {
                 if (owner_->is_player())
@@ -581,7 +581,7 @@ bool PropHandler::is_temporary_negative_prop(const Prop& prop) const
 {
         const auto id = prop.id_;
 
-        const bool is_natural_prop = owner_->data().natural_props[(size_t)id];
+        const bool is_natural_prop = owner_->data->natural_props[(size_t)id];
 
         return
                 !is_natural_prop &&
@@ -593,7 +593,7 @@ std::vector<PropTextListEntry> PropHandler::property_names_temporary_negative()
 {
         ASSERT(owner_ != map::player);
 
-        auto prop_list = owner_->properties().property_names_and_descr();
+        auto prop_list = owner_->properties.property_names_and_descr();
 
         // Remove all non-negative properties (we should not show temporary
         // spell resistance for example), and all natural properties (properties

@@ -1,30 +1,31 @@
 #include "attack.hpp"
 
-#include "attack_data.hpp"
-#include "rl_utils.hpp"
-#include "init.hpp"
-#include "item.hpp"
-#include "game_time.hpp"
 #include "actor.hpp"
+#include "actor_hit.hpp"
 #include "actor_mon.hpp"
 #include "actor_player.hpp"
-#include "map.hpp"
-#include "feature_trap.hpp"
-#include "feature_rigid.hpp"
+#include "attack_data.hpp"
+#include "drop.hpp"
 #include "feature_mob.hpp"
-#include "player_bon.hpp"
+#include "feature_rigid.hpp"
+#include "feature_trap.hpp"
+#include "game_time.hpp"
+#include "init.hpp"
+#include "io.hpp"
+#include "item.hpp"
+#include "knockback.hpp"
+#include "line_calc.hpp"
+#include "map.hpp"
 #include "map_parsing.hpp"
 #include "msg_log.hpp"
-#include "line_calc.hpp"
-#include "io.hpp"
-#include "sdl_base.hpp"
-#include "knockback.hpp"
-#include "drop.hpp"
-#include "text_format.hpp"
+#include "player_bon.hpp"
 #include "property.hpp"
 #include "property_data.hpp"
-#include "property_handler.hpp"
 #include "property_factory.hpp"
+#include "property_handler.hpp"
+#include "rl_utils.hpp"
+#include "sdl_base.hpp"
+#include "text_format.hpp"
 #include "viewport.hpp"
 
 // -----------------------------------------------------------------------------
@@ -77,12 +78,12 @@ static void mi_go_gun_drain_player_hp(const Wpn& wpn)
                 wpn.name(ItemRefType::plain,
                          ItemRefInf::none);
 
-        msg_log::add("The " +
-                     wpn_name +
-                     " draws power from my life force!",
-                     colors::msg_bad());
+        msg_log::add(
+                "The " + wpn_name + " draws power from my life force!",
+                colors::msg_bad());
 
-        map::player->hit(
+        actor::hit(
+                *map::player,
                 mi_go_gun_hp_drained,
                 DmgType::pure,
                 DmgMethod::forced,
@@ -729,37 +730,36 @@ static void try_apply_attack_property_on_actor(
         Actor& actor,
         const DmgType& dmg_type)
 {
-        if (att_prop.prop &&
-            rnd::percent(att_prop.pct_chance_to_apply))
+        if (!att_prop.prop || !rnd::percent(att_prop.pct_chance_to_apply))
         {
-                auto& properties = actor.properties();
+                return;
+        }
 
-                const bool is_resisting_dmg =
-                        properties.is_resisting_dmg(
-                                dmg_type,
-                                Verbosity::silent);
+        const bool is_resisting_dmg =
+                actor.properties.is_resisting_dmg(
+                        dmg_type,
+                        Verbosity::silent);
 
-                if (!is_resisting_dmg)
+        if (!is_resisting_dmg)
+        {
+                auto* const prop_cpy =
+                        property_factory::make(
+                                att_prop.prop->id());
+
+                const auto duration_mode =
+                        att_prop.prop->duration_mode();
+
+                if (duration_mode == PropDurationMode::specific)
                 {
-                        auto* const prop_cpy =
-                                property_factory::make(
-                                        att_prop.prop->id());
-
-                        const auto duration_mode =
-                                att_prop.prop->duration_mode();
-
-                        if (duration_mode == PropDurationMode::specific)
-                        {
-                                prop_cpy->set_duration(
-                                        att_prop.prop->nr_turns_left());
-                        }
-                        else if (duration_mode == PropDurationMode::indefinite)
-                        {
-                                prop_cpy->set_indefinite();
-                        }
-
-                        properties.apply(prop_cpy);
+                        prop_cpy->set_duration(
+                                att_prop.prop->nr_turns_left());
                 }
+                else if (duration_mode == PropDurationMode::indefinite)
+                {
+                        prop_cpy->set_indefinite();
+                }
+
+                actor.properties.apply(prop_cpy);
         }
 }
 
@@ -783,7 +783,8 @@ static void hit_actor_with_projectile(const Projectile& projectile, Wpn& wpn)
 
         if (att_data.dmg > 0)
         {
-                died = projectile.actor_hit->hit(
+                died = actor::hit(
+                        *projectile.actor_hit,
                         att_data.dmg,
                         wpn.data().ranged.dmg_type,
                         DmgMethod::END,
@@ -1381,14 +1382,15 @@ void melee(Actor* const attacker,
 
                 const auto dmg_type = wpn.data().melee.dmg_type;
 
-                defender.hit(
+                actor::hit(
+                        defender,
                         att_data.dmg,
                         dmg_type,
                         DmgMethod::END,
                         allow_wound);
 
                 // TODO: Why is light damage included here?
-                if (defender.data().can_bleed &&
+                if (defender.data->can_bleed &&
                     (dmg_type == DmgType::physical ||
                      dmg_type == DmgType::pure ||
                      dmg_type == DmgType::light))
@@ -1422,15 +1424,13 @@ void melee(Actor* const attacker,
                 }
         }
 
-        auto& player_inv = map::player->inv();
-
         const bool is_crit_fail =
                 att_data.att_result == ActionResult::fail_critical;
 
-        const bool player_cursed = map::player->has_prop(PropId::cursed);
+        const bool player_cursed = map::player->properties.has(PropId::cursed);
 
         const bool is_wielding_wpn =
-                player_inv.item_in_slot(SlotId::wpn) == &wpn;
+                map::player->inv.item_in_slot(SlotId::wpn) == &wpn;
 
         // If player is cursed and the attack critically fails, occasionally
         // break the weapon
@@ -1446,7 +1446,8 @@ void melee(Actor* const attacker,
         if (break_weapon)
         {
                 Item* const item =
-                        player_inv.remove_item_in_slot(SlotId::wpn, false);
+                        map::player->inv
+                        .remove_item_in_slot(SlotId::wpn, false);
 
                 ASSERT(item);
 
@@ -1503,7 +1504,7 @@ void melee(Actor* const attacker,
                 }
 
                 // Attacking ends cloaking
-                attacker->properties().end_prop(PropId::cloaked);
+                attacker->properties.end_prop(PropId::cloaked);
 
                 game_time::tick(speed_pct_diff);
         }
@@ -1559,7 +1560,7 @@ DidAction ranged(Actor* const attacker,
         if ((did_attack == DidAction::yes) && attacker)
         {
                 // Attacking ends cloaking
-                attacker->properties().end_prop(PropId::cloaked);
+                attacker->properties.end_prop(PropId::cloaked);
 
                 if (!attacker->is_player())
                 {

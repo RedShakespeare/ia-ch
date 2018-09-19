@@ -4,8 +4,8 @@
 #include <memory>
 #include <vector>
 
-#include "rl_utils.hpp"
 #include "map_templates.hpp"
+#include "rl_utils.hpp"
 
 class MapController;
 
@@ -26,8 +26,6 @@ enum class MapType
 class MapBuilder
 {
 public:
-        MapBuilder() {}
-
         virtual ~MapBuilder() {}
 
         void build();
@@ -44,10 +42,6 @@ private:
 class MapBuilderTemplateLevel: public MapBuilder
 {
 public:
-        MapBuilderTemplateLevel() :
-                MapBuilder(),
-                template_(P(0, 0)) {}
-
         virtual ~MapBuilderTemplateLevel() {}
 
 protected:
@@ -70,7 +64,7 @@ private:
 
         virtual void on_template_built() {}
 
-        Array2<char> template_;
+        Array2<char> template_ {P(0, 0)};
 };
 
 // -----------------------------------------------------------------------------
@@ -79,9 +73,6 @@ private:
 class MapBuilderStd: public MapBuilder
 {
 public:
-        MapBuilderStd() :
-                MapBuilder() {}
-
         ~MapBuilderStd() {}
 
 private:
@@ -125,8 +116,7 @@ class MapBuilderIntroForest: public MapBuilderTemplateLevel
 {
 public:
         MapBuilderIntroForest() :
-                MapBuilderTemplateLevel(),
-                possible_grave_positions_() {}
+                MapBuilderTemplateLevel() {}
 
         ~MapBuilderIntroForest() {}
 
@@ -145,7 +135,7 @@ private:
 
         void on_template_built() override;
 
-        std::vector<P> possible_grave_positions_;
+        std::vector<P> possible_grave_positions_ {};
 };
 
 // -----------------------------------------------------------------------------

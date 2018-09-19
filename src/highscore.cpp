@@ -23,7 +23,7 @@ static const int entries_y0_ = top_more_y_ + 1;
 
 static int get_bottom_more_y()
 {
-        return panels::get_h(Panel::screen) - 1;
+        return panels::h(Panel::screen) - 1;
 }
 
 static int get_max_nr_entries_on_screen()
@@ -305,7 +305,7 @@ void BrowseHighscore::draw()
         io::draw_text_center(
                 title,
                 panel,
-                P(panels::get_center_x(Panel::screen), 0),
+                P(panels::center_x(Panel::screen), 0),
                 colors::title(),
                 false, // Do not draw background color
                 colors::black(),

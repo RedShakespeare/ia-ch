@@ -29,7 +29,7 @@ static std::string get_mon_memory_turns_descr(const Actor& actor)
 {
         std::string str = "";
 
-        const int nr_turns_aware = actor.data().nr_turns_aware;
+        const int nr_turns_aware = actor.data->nr_turns_aware;
 
         if (nr_turns_aware <= 0)
         {
@@ -61,7 +61,7 @@ static std::string get_mon_dlvl_descr(const Actor& actor)
 {
         std::string str = "";
 
-        const auto& d = actor.data();
+        const auto& d = *actor.data;
 
         const int dlvl = d.spawn_min_dlvl;
 
@@ -91,7 +91,7 @@ static std::string get_mon_dlvl_descr(const Actor& actor)
 
 static std::string mon_speed_type_to_str(const Actor& actor)
 {
-        const auto& d = actor.data();
+        const auto& d = *actor.data;
 
         if (d.speed_pct > (int)ActorSpeed::fast)
         {
@@ -125,7 +125,7 @@ static std::string get_mon_speed_descr(const Actor& actor)
 {
         std::string str = "";
 
-        const auto& d = actor.data();
+        const auto& d = *actor.data;
 
         const std::string speed_type_str = mon_speed_type_to_str(actor);
 
@@ -159,7 +159,7 @@ static void mon_shock_lvl_to_str(
         shock_str_out = "";
         punct_str_out = "";
 
-        switch (actor.data().mon_shock_lvl)
+        switch (actor.data->mon_shock_lvl)
         {
         case ShockLvl::unsettling:
                 shock_str_out = "unsettling";
@@ -202,7 +202,7 @@ static std::string get_mon_shock_descr(const Actor& actor)
                 return str;
         }
 
-        if (actor.data().is_unique)
+        if (actor.data->is_unique)
         {
                 return
                         actor.name_the() +
@@ -235,7 +235,7 @@ void ViewActorDescr::on_start()
         std::string descr = actor_.descr();
 
         // Auto-description.
-        if (actor_.data().allow_generated_descr)
+        if (actor_.data->allow_generated_descr)
         {
                 const std::string auto_descr = auto_description_str();
 
@@ -248,7 +248,7 @@ void ViewActorDescr::on_start()
         const auto descr_lines =
                 text_format::split(
                         descr,
-                        panels::get_x1(Panel::screen));
+                        panels::x1(Panel::screen));
 
         const size_t nr_descr_lines = descr_lines.size();
 
@@ -257,7 +257,7 @@ void ViewActorDescr::on_start()
         io::cover_area(
                 Panel::screen,
                 p,
-                P(panels::get_w(Panel::screen), nr_descr_lines));
+                P(panels::w(Panel::screen), nr_descr_lines));
 
         // Add the description
         for (const std::string& s : descr_lines)
@@ -298,9 +298,8 @@ void ViewActorDescr::on_start()
 
         p.x = 24;
 
-        auto& player_inv = map::player->inv();
-
-        const Item* player_wpn_item = player_inv.item_in_slot(SlotId::wpn);
+        const Item* player_wpn_item =
+                map::player->inv.item_in_slot(SlotId::wpn);
 
         const Wpn* player_wpn = nullptr;
 
@@ -339,7 +338,8 @@ void ViewActorDescr::on_start()
 
         std::unique_ptr<const ThrowAttData> player_throwing;
 
-        auto* player_thrown_item = player_inv.item_in_slot(SlotId::thrown);
+        auto* player_thrown_item =
+                map::player->inv.item_in_slot(SlotId::thrown);
 
         if (player_thrown_item)
         {
@@ -510,8 +510,7 @@ void ViewActorDescr::on_start()
         p.y += 1;
 
         auto prop_list =
-                actor_.properties()
-                .property_names_temporary_negative();
+                actor_.properties.property_names_temporary_negative();
 
         // Remove all non-negative properties (we should not show temporary
         // spell resistance for example), and all natural properties (properties
@@ -523,7 +522,7 @@ void ViewActorDescr::on_start()
                 const auto id = prop->id();
 
                 const bool is_natural_prop =
-                        actor_.data().natural_props[(size_t)id];
+                        actor_.data->natural_props[(size_t)id];
 
                 if (is_natural_prop ||
                     (prop->duration_mode() == PropDurationMode::indefinite) ||
@@ -547,7 +546,7 @@ void ViewActorDescr::on_start()
         }
         else // Has properties
         {
-                const int max_w_descr = (panels::get_x1(Panel::screen) * 3) / 4;
+                const int max_w_descr = (panels::x1(Panel::screen) * 3) / 4;
 
                 for (const auto& e : prop_list)
                 {
@@ -682,7 +681,7 @@ std::string ViewActorDescr::auto_description_str() const
         text_format::append_with_space(str, get_mon_speed_descr(actor_));
         text_format::append_with_space(str, get_mon_memory_turns_descr(actor_));
 
-        if (actor_.data().is_undead)
+        if (actor_.data->is_undead)
         {
                 text_format::append_with_space(str, "This creature is undead.");
         }
@@ -757,8 +756,10 @@ void print_location_info_msgs(const P& pos)
                 {
                         if (actor->is_corpse() && actor->pos == pos)
                         {
+                                ASSERT(!actor->data->corpse_name_a.empty());
+
                                 str = text_format::first_to_upper(
-                                        actor->corpse_name_a());
+                                        actor->data->corpse_name_a);
 
                                 msg_log::add(str + ".");
                         }

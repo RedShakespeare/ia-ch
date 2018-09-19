@@ -154,9 +154,9 @@ static void set_dead_actors()
 
                 if (!map::cells.at(p).is_seen_by_player ||
                     !actor->is_corpse() ||
-                    actor->data().character == 0 ||
-                    actor->data().character == ' ' ||
-                    actor->data().tile == TileId::END)
+                    actor->data->character == 0 ||
+                    actor->data->character == ' ' ||
+                    actor->data->tile == TileId::END)
                 {
                         continue;
                 }
@@ -270,7 +270,7 @@ static void set_living_seen_monster(const Mon& mon,
                 else // Monster is aware of player
                 {
                         const bool has_temporary_negative_prop =
-                                mon.properties()
+                                mon.properties
                                 .has_temporary_negative_prop_mon();
 
                         if (has_temporary_negative_prop)
@@ -397,9 +397,9 @@ static void draw_render_array()
 
 static int lifebar_length(const Actor& actor)
 {
-        const int actor_hp = std::max(0, actor.hp());
+        const int actor_hp = std::max(0, actor.hp);
 
-        const int actor_hp_max = actor.hp_max(true);
+        const int actor_hp_max = actor::max_hp(actor);
 
         if (actor_hp < actor_hp_max)
         {
@@ -497,7 +497,7 @@ static void draw_player_character()
                 return;
         }
 
-        Item* item = map::player->inv().item_in_slot(SlotId::wpn);
+        Item* item = map::player->inv.item_in_slot(SlotId::wpn);
 
         const bool is_ghoul = player_bon::bg() == Bg::ghoul;
 
@@ -509,8 +509,7 @@ static void draw_player_character()
 
         if (item)
         {
-                uses_ranged_wpn =
-                        item->data().ranged.is_ranged_wpn;
+                uses_ranged_wpn = item->data().ranged.is_ranged_wpn;
         }
 
         const TileId tile =

@@ -210,7 +210,7 @@ void act()
                 return;
         }
 
-        auto& inv = map::player->inv();
+        auto& inv = map::player->inv;
 
         // Use an Incinerator as ranged weapon
         {
@@ -218,9 +218,9 @@ void act()
 
                 if (!wpn_item || wpn_item->data().ranged.is_ranged_wpn)
                 {
-                        delete inv.slots_[(size_t)SlotId::wpn].item;
+                        delete inv.slots[(size_t)SlotId::wpn].item;
 
-                        inv.slots_[(size_t)SlotId::wpn].item = nullptr;
+                        inv.slots[(size_t)SlotId::wpn].item = nullptr;
 
                         inv.put_in_slot(
                                 SlotId::wpn,
@@ -231,7 +231,7 @@ void act()
 
         // If no armor, occasionally equip an asbesthos suite (helps not getting
         // stuck on e.g. Energy Hounds)
-        if (!inv.slots_[(size_t)SlotId::body].item &&
+        if (!inv.slots[(size_t)SlotId::body].item &&
             rnd::one_in(20))
         {
                 inv.put_in_slot(
@@ -239,8 +239,6 @@ void act()
                         item_factory::make(ItemId::armor_asb_suit),
                         Verbosity::silent);
         }
-
-        PropHandler& properties = map::player->properties();
 
         // Keep an allied Mi-go around (to help getting out of sticky
         // situations, and for some allied monster code exercise)
@@ -264,13 +262,13 @@ void act()
         }
 
         // Apply permanent paralysis resistance, to avoid getting stuck
-        if (!map::player->has_prop(PropId::r_para))
+        if (!map::player->properties.has(PropId::r_para))
         {
                 auto prop = new PropRPara();
 
                 prop->set_indefinite();
 
-                properties.apply(prop);
+                map::player->properties.apply(prop);
         }
 
         // Occasionally apply rFear to avoid getting stuck
@@ -280,7 +278,7 @@ void act()
 
                 prop->set_duration(4);
 
-                properties.apply(prop);
+                map::player->properties.apply(prop);
         }
 
         // Occasionally apply Burning to a random actor (to avoid getting stuck)
@@ -292,7 +290,7 @@ void act()
 
                 if (actor != map::player)
                 {
-                        actor->apply_prop(new PropBurning());
+                        actor->properties.apply(new PropBurning());
                 }
         }
 
@@ -321,9 +319,7 @@ void act()
         // Occasionally fire at a random position
         if (rnd::one_in(5))
         {
-                auto& inv = map::player->inv();
-
-                auto* wpn_item = inv.item_in_slot(SlotId::wpn);
+                auto* wpn_item = map::player->inv.item_in_slot(SlotId::wpn);
 
                 if (wpn_item && wpn_item->data().ranged.is_ranged_wpn)
                 {
@@ -356,7 +352,7 @@ void act()
 
                 prop->set_duration(5);
 
-                properties.apply(prop);
+                map::player->properties.apply(prop);
         }
 
         // Occasionally swap weapon (just some code exercise)
@@ -409,7 +405,7 @@ void act()
         }
 
         // If we are terrified, wait in place
-        if (map::player->has_prop(PropId::terrified))
+        if (map::player->properties.has(PropId::terrified))
         {
                 if (walk_to_adj_cell(map::player->pos))
                 {

@@ -67,11 +67,9 @@ ConsumeItem Scroll::activate(Actor* const actor)
 {
         TRACE_FUNC_BEGIN;
 
-        auto& properties = actor->properties();
-
         // Check properties which NEVER allows reading or speaking
-        if (!properties.allow_read_absolute(Verbosity::verbose) ||
-            !properties.allow_speak(Verbosity::verbose))
+        if (!actor->properties.allow_read_absolute(Verbosity::verbose) ||
+            !actor->properties.allow_speak(Verbosity::verbose))
         {
                 return ConsumeItem::no;
         }
@@ -110,7 +108,7 @@ ConsumeItem Scroll::activate(Actor* const actor)
         const std::string crumble_str = "The Manuscript crumbles to dust.";
 
         // Check properties which MAY allow reading, with a random chance
-        if (!properties.allow_read_chance(Verbosity::verbose))
+        if (!actor->properties.allow_read_chance(Verbosity::verbose))
         {
                 msg_log::add(crumble_str);
 

@@ -240,7 +240,7 @@ void handle_player_input(const InputData& input)
 
             aiming->set_duration(1);
 
-            map::player->properties().apply(aiming);
+            map::player->properties.apply(aiming);
         }
 
         map::player->move(Dir::center);
@@ -293,7 +293,7 @@ void handle_player_input(const InputData& input)
     // Reload
     case 'r':
     {
-        Item* const wpn = map::player->inv().item_in_slot(SlotId::wpn);
+        Item* const wpn = map::player->inv.item_in_slot(SlotId::wpn);
 
         reload::try_reload(*map::player, wpn);
     }
@@ -330,13 +330,13 @@ void handle_player_input(const InputData& input)
     // Aim/fire
     case 'f':
     {
-        const bool is_allowed =
-            map::player->properties().
-            allow_attack_ranged(Verbosity::verbose);
+            const bool is_allowed =
+                    map::player->properties
+                    .allow_attack_ranged(Verbosity::verbose);
 
         if (is_allowed)
         {
-            auto* const item = map::player->inv().item_in_slot(SlotId::wpn);
+            auto* const item = map::player->inv.item_in_slot(SlotId::wpn);
 
             if (item)
             {
@@ -354,7 +354,7 @@ void handle_player_input(const InputData& input)
                         // TODO: This doesn't belong here - refactor
                         if (wpn->data().id == ItemId::mi_go_gun)
                         {
-                            if (map::player->hp() <= mi_go_gun_hp_drained)
+                            if (map::player->hp <= mi_go_gun_hp_drained)
                             {
                                 msg_log::add(
                                     "I don't have enough health to fire it.");
@@ -441,11 +441,9 @@ void handle_player_input(const InputData& input)
     // Swap to prepared weapon
     case 'z':
     {
-        Inventory& inv = map::player->inv();
+        Item* const wielded = map::player->inv.item_in_slot(SlotId::wpn);
 
-        Item* const wielded = inv.item_in_slot(SlotId::wpn);
-
-        Item* const alt = inv.item_in_slot(SlotId::wpn_alt);
+        Item* const alt = map::player->inv.item_in_slot(SlotId::wpn_alt);
 
         if (wielded || alt)
         {
@@ -495,7 +493,7 @@ void handle_player_input(const InputData& input)
                              ".");
             }
 
-            inv.swap_wielded_and_prepared();
+            map::player->inv.swap_wielded_and_prepared();
 
             if (!is_instant)
             {
@@ -520,15 +518,15 @@ void handle_player_input(const InputData& input)
         {
             msg_log::add(msg_mon_prevent_cmd);
         }
-        else if (!map::player->properties().allow_see())
+        else if (!map::player->properties.allow_see())
         {
             msg_log::add("Not while blind.");
         }
-        else if (map::player->has_prop(PropId::poisoned))
+        else if (map::player->properties.has(PropId::poisoned))
         {
             msg_log::add("Not while poisoned.");
         }
-        else if (map::player->has_prop(PropId::confused))
+        else if (map::player->properties.has(PropId::confused))
         {
             msg_log::add("Not while confused.");
         }
@@ -569,7 +567,7 @@ void handle_player_input(const InputData& input)
         else // Not holding explosive - run throwing attack instead
         {
             auto* const thrown_item =
-                map::player->inv().item_in_slot(SlotId::thrown);
+                map::player->inv.item_in_slot(SlotId::thrown);
 
             if (!thrown_item)
             {
@@ -579,8 +577,8 @@ void handle_player_input(const InputData& input)
             }
 
             const bool is_allowed =
-                map::player->properties().
-                allow_attack_ranged(Verbosity::verbose);
+                    map::player->properties
+                    .allow_attack_ranged(Verbosity::verbose);
 
             if (is_allowed)
             {
@@ -595,7 +593,7 @@ void handle_player_input(const InputData& input)
     // View
     case 'v':
     {
-        if (map::player->properties().allow_see())
+        if (map::player->properties.allow_see())
         {
             states::push(std::make_unique<Viewing>(map::player->pos));
         }
@@ -769,8 +767,7 @@ void handle_player_input(const InputData& input)
 
     case SDLK_F8:
     {
-        map::player->apply_prop(
-            new PropInfected());
+        map::player->properties.apply(new PropInfected());
     }
     break;
 
@@ -881,11 +878,11 @@ void incr_player_xp(const int xp_gained,
             {
                 const int spi_gained = 1;
 
-                map::player->change_max_spi(
+                map::player->change_max_sp(
                         spi_gained,
                         Verbosity::silent);
 
-                map::player->restore_spi(
+                map::player->restore_sp(
                         spi_gained,
                         false,
                         Verbosity::silent);
@@ -938,7 +935,7 @@ void win_game()
 
         const int x0 = padding;
 
-        const int max_w = panels::get_w(Panel::screen) - (padding * 2);
+        const int max_w = panels::w(Panel::screen) - (padding * 2);
 
         const int line_delay = 50;
 
@@ -970,8 +967,8 @@ void win_game()
 
         ++y;
 
-        const int screen_w = panels::get_w(Panel::screen);
-        const int screen_h = panels::get_h(Panel::screen);
+        const int screen_w = panels::w(Panel::screen);
+        const int screen_h = panels::h(Panel::screen);
 
         io::draw_text_center(
                 "[space/esc/enter] to continue",
@@ -989,7 +986,7 @@ void win_game()
 
 void on_mon_seen(Actor& actor)
 {
-    auto& d = actor.data();
+    auto& d = *actor.data;
 
     if (!d.has_player_seen)
     {
@@ -1047,7 +1044,7 @@ void on_mon_seen(Actor& actor)
 
 void on_mon_killed(Actor& actor)
 {
-    ActorData& d = actor.data();
+    ActorData& d = *actor.data;
 
     d.nr_kills += 1;
 
@@ -1096,9 +1093,10 @@ void GameState::on_start()
         // Character creation may have affected maximum hp and spi (either
         // positively or negatively), so here we need to (re)set the current hp
         // and spi to the maximum values
-        map::player->set_hp_and_spi_to_max();
+        map::player->hp = actor::max_hp(*map::player);
+        map::player->sp = actor::max_sp(*map::player);
 
-        map::player->data().ability_values.reset();
+        map::player->data->ability_values.reset();
 
         actor_items::make_for_actor(*map::player);
 
@@ -1186,9 +1184,9 @@ void GameState::update()
         // Let the current actor act
         Actor* actor = game_time::current_actor();
 
-        const bool allow_act = actor->properties().allow_act();
+        const bool allow_act = actor->properties.allow_act();
 
-        const bool is_gibbed = actor->state() == ActorState::destroyed;
+        const bool is_gibbed = actor->state == ActorState::destroyed;
 
         if (allow_act && !is_gibbed)
         {
@@ -1212,7 +1210,7 @@ void GameState::update()
         // We have quit the current game, or the player is dead?
         if (!map::player ||
             !states::contains_state(StateId::game) ||
-            (map::player->state() != ActorState::alive))
+            !map::player->is_alive())
         {
             break;
         }
@@ -1227,7 +1225,7 @@ void GameState::update()
     }
 
     // Player is dead?
-    if (map::player && (map::player->state() != ActorState::alive))
+    if (map::player && !map::player->is_alive())
     {
         TRACE << "Player died" << std::endl;
 

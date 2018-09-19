@@ -20,14 +20,14 @@ int AbilityValues::val(const AbilityId id,
 
         if (is_affected_by_props)
         {
-                ret += actor.properties().ability_mod(id);
+                ret += actor.properties.ability_mod(id);
         }
 
         if (actor.is_player())
         {
                 // TODO: This should probably also be included for monsters,
                 // especially if they should be able to wear armor
-                for (const InvSlot& slot : actor.inv().slots_)
+                for (const InvSlot& slot : actor.inv.slots)
                 {
                         if (!slot.item)
                         {
@@ -167,18 +167,16 @@ namespace ability_roll
 
 ActionResult roll(const int skill_value)
 {
-        /*
-          Example:
-          ------------
-          Skill value = 50
+        // Example:
+        // ------------
+        // Skill value = 50
 
-          1 -   2     Critical success
-          3 -  25     Big success
-          26 -  50     Normal success
-          51 -  75     Normal fail
-          76 -  98     Big fail
-          99 - 100     Critical fail
-        */
+        //  1 -   2     Critical success
+        //  3 -  25     Big success
+        // 26 -  50     Normal success
+        // 51 -  75     Normal fail
+        // 76 -  98     Big fail
+        // 99 - 100     Critical fail
 
         const int succ_cri_lmt = 2;
         const int succ_big_lmt = ceil((double)skill_value / 2.0);
@@ -189,10 +187,9 @@ ActionResult roll(const int skill_value)
 
         const int roll = rnd::range(1, 100);
 
-        // NOTE: We check critical success and fail first, since they should
-        //       be completely unaffected by skill values - they can always
-        //       happen, and always have the same chance to happen, regardless
-        //       of skills
+        // NOTE: We check critical success and fail first, since they should be
+        // completely unaffected by skill values - they can always happen, and
+        // always have the same chance to happen, regardless of skills
         if (roll <= succ_cri_lmt)
         {
                 return ActionResult::success_critical;
@@ -218,7 +215,6 @@ ActionResult roll(const int skill_value)
                 return ActionResult::fail;
         }
 
-        // Sanity check:
         ASSERT(roll <= fail_big_lmt);
 
         return ActionResult::fail_big;

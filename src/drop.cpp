@@ -20,7 +20,7 @@ namespace item_drop
 
 void drop_all_characters_items(Actor& actor)
 {
-        actor.inv().drop_all_non_intrinsic(actor.pos);
+        actor.inv.drop_all_non_intrinsic(actor.pos);
 }
 
 void drop_item_from_inv(Actor& actor,
@@ -28,21 +28,19 @@ void drop_item_from_inv(Actor& actor,
                         const size_t idx,
                         const int nr_items_to_drop)
 {
-        Inventory& inv = actor.inv();
-
         Item* item_to_drop = nullptr;
 
         if (inv_type == InvType::slots)
         {
                 ASSERT(idx != (size_t)SlotId::END);
 
-                item_to_drop = inv.slots_[idx].item;
+                item_to_drop = actor.inv.slots[idx].item;
         }
         else // Backpack item
         {
-                ASSERT(idx < inv.backpack_.size());
+                ASSERT(idx < actor.inv.backpack.size());
 
-                item_to_drop = inv.backpack_[idx];
+                item_to_drop = actor.inv.backpack[idx];
         }
 
         if (!item_to_drop)
@@ -69,7 +67,7 @@ void drop_item_from_inv(Actor& actor,
         {
                 item_ref = item_to_drop->name(ItemRefType::plural);
 
-                item_to_drop = inv.remove_item(item_to_drop, false);
+                item_to_drop = actor.inv.remove_item(item_to_drop, false);
         }
         else // Only some items are dropped from a stack
         {
@@ -96,10 +94,11 @@ void drop_item_from_inv(Actor& actor,
         // Print message
         if (&actor == map::player)
         {
-                msg_log::add("I drop " + item_ref + ".",
-                             colors::text(),
-                             false,
-                             MorePromptOnMsg::yes);
+                msg_log::add(
+                        "I drop " + item_ref + ".",
+                        colors::text(),
+                        false,
+                        MorePromptOnMsg::yes);
         }
         else // Monster is dropping item
         {

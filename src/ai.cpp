@@ -23,7 +23,7 @@ bool try_cast_random_spell(Mon& mon)
 {
         if (!mon.is_alive() ||
             mon.spells_.empty() ||
-            !mon.properties().allow_cast_intr_spell_absolute(Verbosity::silent))
+            !mon.properties.allow_cast_intr_spell_absolute(Verbosity::silent))
         {
                 return false;
         }
@@ -40,20 +40,16 @@ bool try_cast_random_spell(Mon& mon)
                         continue;
                 }
 
-                const int current_spi = mon.spi();
-
                 const int spell_max_spi =
                         spell.spell->spi_cost(spell.skill, &mon).max;
 
-                const int current_hp = mon.hp();
+                const int max_hp = actor::max_hp(mon);
 
-                const int max_hp = mon.hp_max(true);
-
-                const bool has_spi = spell_max_spi < current_spi;
+                const bool has_spi = spell_max_spi < mon.sp;
 
                 const bool is_hostile_player = !map::player->is_leader_of(&mon);
 
-                const bool is_low_hp = current_hp < (max_hp / 3);
+                const bool is_low_hp = mon.hp < (max_hp / 3);
 
                 // Only cast the spell if monster has enough spirit - or
                 // sometimes try anyway if the monster has low HP and is
@@ -115,9 +111,9 @@ bool handle_closed_blocking_door(Mon& mon, std::vector<P> path)
 
         const bool is_stuck = door->is_stuck();
 
-        const bool mon_can_bash = mon.data().can_bash_doors;
+        const bool mon_can_bash = mon.data->can_bash_doors;
 
-        const bool mon_can_open = mon.data().can_open_doors;
+        const bool mon_can_open = mon.data->can_open_doors;
 
         // There should never be a path past a door if the monster can neither
         // bash nor open
@@ -429,8 +425,9 @@ bool move_to_random_adj_cell(Mon& mon)
         if (last_dir_travelled != Dir::center &&
             last_dir_travelled != Dir::END)
         {
-                const P target_p(mon.pos +
-                                 dir_utils::offset(last_dir_travelled));
+                const P target_p(
+                        mon.pos +
+                        dir_utils::offset(last_dir_travelled));
 
                 if (!blocked.at(target_p) &&
                     is_pos_inside(target_p, area_allowed))
@@ -522,7 +519,7 @@ bool step_to_lair_if_los(Mon& mon, const P& lair_p)
         {
                 Array2<bool> blocked(map::dims());
 
-                const R area_check_blocked = fov::get_fov_rect(mon.pos);
+                const R area_check_blocked = fov::fov_rect(mon.pos);
 
                 map_parsers::BlocksLos()
                         .run(blocked,
@@ -588,7 +585,12 @@ bool look(Mon& mon)
         {
                 if (actor->is_player())
                 {
-                        const auto result = actor->roll_sneak(mon);
+                        SneakData sneak_data;
+
+                        sneak_data.actor_sneaking = actor;
+                        sneak_data.actor_searching = &mon;
+
+                        const auto result = actor::roll_sneak(sneak_data);
 
                         const bool is_non_critical_fail =
                                 (result == ActionResult::fail) ||
@@ -642,7 +644,7 @@ std::vector<P> find_path_to_lair_if_no_los(Mon& mon, const P& lair_p)
 
         Array2<bool> blocked(map::dims());
 
-        const R fov_lmt = fov::get_fov_rect(mon.pos);
+        const R fov_lmt = fov::fov_rect(mon.pos);
 
         map_parsers::BlocksLos()
                 .run(blocked,
@@ -686,7 +688,7 @@ std::vector<P> find_path_to_leader(Mon& mon)
 
         Array2<bool> blocked(map::dims());
 
-        const R fov_lmt = fov::get_fov_rect(mon.pos);
+        const R fov_lmt = fov::fov_rect(mon.pos);
 
         map_parsers::BlocksLos()
                 .run(blocked,
@@ -805,9 +807,8 @@ std::vector<P> find_path_to_target(Mon& mon)
 
                                 // Do not run the path through the door if the
                                 // monster can neither open it or bash it
-                                const ActorData& d = mon.data();
-
-                                if (!d.can_open_doors && !d.can_bash_doors)
+                                if (!mon.data->can_open_doors &&
+                                    !mon.data->can_bash_doors)
                                 {
                                         blocked.at(p) = true;
                                 }

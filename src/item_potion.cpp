@@ -46,7 +46,7 @@ ConsumeItem Potion::activate(Actor* const actor)
 {
     ASSERT(actor);
 
-    if (!actor->properties().allow_eat(Verbosity::verbose))
+    if (!actor->properties.allow_eat(Verbosity::verbose))
     {
         return ConsumeItem::no;
     }
@@ -289,13 +289,12 @@ void PotionVitality::quaff_impl(Actor& actor)
 
     for (PropId prop_id : props_can_heal)
     {
-        actor.properties().end_prop(prop_id);
+        actor.properties.end_prop(prop_id);
     }
 
     // HP is always restored at least up to maximum hp, but can go beyond
-    const int hp = actor.hp();
-    const int hp_max = actor.hp_max(true);
-    const int hp_restored = std::max(20, hp_max - hp);
+    const int hp_max = actor::max_hp(actor);
+    const int hp_restored = std::max(20, hp_max - actor.hp);
 
     actor.restore_hp(hp_restored, true);
 
@@ -317,14 +316,13 @@ void PotionVitality::collide_hook(const P& pos, Actor* const actor)
 
 void PotionSpirit::quaff_impl(Actor& actor)
 {
-    actor.properties().end_prop(PropId::spi_sap);
+    actor.properties.end_prop(PropId::spi_sap);
 
-    // SPI is always restored at least up to maximum spi, but can go beyond
-    const int spi = actor.spi();
-    const int spi_max = actor.spi_max();
-    const int spi_restored = std::max(10, spi_max - spi);
+    // Spirit is always restored at least up to maximum spi, but can go beyond
+    const int sp_max = actor::max_sp(actor);
+    const int sp_restored = std::max(10, sp_max - actor.sp);
 
-    actor.restore_spi(spi_restored, true);
+    actor.restore_sp(sp_restored, true);
 
     if (map::player->can_see_actor(actor))
     {
@@ -344,7 +342,7 @@ void PotionSpirit::collide_hook(const P& pos, Actor* const actor)
 
 void PotionBlindness::quaff_impl(Actor& actor)
 {
-    actor.apply_prop(new PropBlind());
+    actor.properties.apply(new PropBlind());
 
     if (map::player->can_see_actor(actor))
     {
@@ -364,7 +362,7 @@ void PotionBlindness::collide_hook(const P& pos, Actor* const actor)
 
 void PotionParal::quaff_impl(Actor& actor)
 {
-    actor.apply_prop(new PropParalyzed());
+    actor.properties.apply(new PropParalyzed());
 
     if (map::player->can_see_actor(actor))
     {
@@ -385,7 +383,7 @@ void PotionParal::collide_hook(const P& pos, Actor* const actor)
 
 void PotionDisease::quaff_impl(Actor& actor)
 {
-    actor.apply_prop(new PropDiseased());
+    actor.properties.apply(new PropDiseased());
 
     if (map::player->can_see_actor(actor))
     {
@@ -395,7 +393,7 @@ void PotionDisease::quaff_impl(Actor& actor)
 
 void PotionConf::quaff_impl(Actor& actor)
 {
-    actor.apply_prop(new PropConfused());
+    actor.properties.apply(new PropConfused());
 
     if (map::player->can_see_actor(actor))
     {
@@ -427,14 +425,12 @@ void PotionFortitude::quaff_impl(Actor& actor)
 
     prop_r_sleep->set_duration(duration);
 
-    PropHandler& properties = actor.properties();
+    actor.properties.apply(prop_r_fear);
+    actor.properties.apply(prop_r_conf);
+    actor.properties.apply(prop_r_sleep);
 
-    properties.apply(prop_r_fear);
-    properties.apply(prop_r_conf);
-    properties.apply(prop_r_sleep);
-
-    properties.end_prop(PropId::frenzied);
-    properties.end_prop(PropId::mind_sap);
+    actor.properties.end_prop(PropId::frenzied);
+    actor.properties.end_prop(PropId::mind_sap);
 
     // Remove a random insanity symptom if this is the player
     if (actor.is_player())
@@ -490,7 +486,7 @@ void PotionPoison::quaff_impl(Actor& actor)
 
     prop->set_duration(poison_dmg_n_turn * dmg_range.roll());
 
-    actor.apply_prop(prop);
+    actor.properties.apply(prop);
 
     if (map::player->can_see_actor(actor))
     {
@@ -510,7 +506,7 @@ void PotionPoison::collide_hook(const P& pos, Actor* const actor)
 
 void PotionRFire::quaff_impl(Actor& actor)
 {
-    actor.apply_prop(new PropRFire());
+    actor.properties.apply(new PropRFire());
 
     if (map::player->can_see_actor(actor))
     {
@@ -544,7 +540,7 @@ void PotionCuring::quaff_impl(Actor& actor)
 
     for (PropId prop_id : props_can_heal)
     {
-        if (actor.properties().end_prop(prop_id))
+        if (actor.properties.end_prop(prop_id))
         {
             is_noticable = true;
         }
@@ -582,7 +578,7 @@ void PotionCuring::collide_hook(const P& pos, Actor* const actor)
 
 void PotionRElec::quaff_impl(Actor& actor)
 {
-    actor.apply_prop(new PropRElec());
+    actor.properties.apply(new PropRElec());
 
     if (map::player->can_see_actor(actor))
     {
@@ -629,9 +625,9 @@ void PotionDescent::quaff_impl(Actor& actor)
 
     if (map::dlvl < (dlvl_last - 1))
     {
-        if (!map::player->has_prop(PropId::descend))
+        if (!map::player->properties.has(PropId::descend))
         {
-            map::player->apply_prop(new PropDescend());
+            map::player->properties.apply(new PropDescend());
         }
     }
     else // Dungeon level is near the end
@@ -645,7 +641,7 @@ void PotionDescent::quaff_impl(Actor& actor)
 
 void PotionInvis::quaff_impl(Actor& actor)
 {
-    actor.apply_prop(new PropCloaked());
+    actor.properties.apply(new PropCloaked());
 
     if (map::player->can_see_actor(actor))
     {

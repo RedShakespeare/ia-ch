@@ -32,9 +32,6 @@ enum class StateId
 class State
 {
 public:
-        State() :
-                has_started_(false) {}
-
         virtual ~State() {}
 
         // Executed immediately when the state is pushed.
@@ -89,7 +86,7 @@ public:
         virtual StateId id() = 0;
 
 private:
-        bool has_started_;
+        bool has_started_ {false};
 };
 
 namespace states

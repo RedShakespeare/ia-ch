@@ -47,22 +47,29 @@
 // -----------------------------------------------------------------------------
 static void print_aware_invis_mon_msg(const Mon& mon)
 {
-    const ActorData& d = mon.data();
+        std::string mon_ref;
 
-    const std::string mon_ref =
-        d.is_ghost ? "some foul entity" :
-        d.is_humanoid ? "someone" :
-        "a creature";
+        if (mon.data->is_ghost)
+        {
+                mon_ref = "some foul entity";
+        }
+        else if (mon.data->is_humanoid)
+        {
+                mon_ref = "someone";
+        }
+        else
+        {
+                mon_ref = "a creature";
+        }
 
-    msg_log::add(
-        "There is " + mon_ref + " here!",
-        colors::msg_note(),
-        false,
-        MorePromptOnMsg::yes);
+        msg_log::add(
+                "There is " + mon_ref + " here!",
+                colors::msg_note(),
+                false,
+                MorePromptOnMsg::yes);
 }
 
-static const std::vector<std::string> item_feeling_messages_
-{
+static const std::vector<std::string> item_feeling_messages_ = {
         "I feel like I should examine this place thoroughly.",
         "I feel like there is something of great interest here.",
         "I sense an object of great power here."
@@ -98,14 +105,14 @@ Player::~Player()
 
 void Player::save() const
 {
-    properties_->save();
+    properties.save();
 
     saving::put_int(ins_);
     saving::put_int((int)shock_);
-    saving::put_int(hp_);
-    saving::put_int(hp_max_);
-    saving::put_int(spi_);
-    saving::put_int(spi_max_);
+    saving::put_int(hp);
+    saving::put_int(base_max_hp);
+    saving::put_int(sp);
+    saving::put_int(base_max_sp);
     saving::put_int(pos.x);
     saving::put_int(pos.y);
     saving::put_int(nr_turns_until_rspell_);
@@ -116,7 +123,7 @@ void Player::save() const
 
     for (int i = 0; i < (int)AbilityId::END; ++i)
     {
-        const int v = data_->ability_values.raw_val(AbilityId(i));
+        const int v = data->ability_values.raw_val(AbilityId(i));
 
         saving::put_int(v);
     }
@@ -124,14 +131,14 @@ void Player::save() const
 
 void Player::load()
 {
-    properties_->load();
+    properties.load();
 
     ins_ = saving::get_int();
     shock_ = double(saving::get_int());
-    hp_ = saving::get_int();
-    hp_max_ = saving::get_int();
-    spi_ = saving::get_int();
-    spi_max_ = saving::get_int();
+    hp = saving::get_int();
+    base_max_hp = saving::get_int();
+    sp = saving::get_int();
+    base_max_sp = saving::get_int();
     pos.x = saving::get_int();
     pos.y = saving::get_int();
     nr_turns_until_rspell_ = saving::get_int();
@@ -153,7 +160,7 @@ void Player::load()
     {
         const int v = saving::get_int();
 
-        data_->ability_values.set_val(AbilityId(i), v);
+        data->ability_values.set_val(AbilityId(i), v);
     }
 }
 
@@ -179,7 +186,7 @@ bool Player::can_see_actor(const Actor& other) const
     }
 
     // Player is blind?
-    if (!properties_->allow_see())
+    if (!properties.allow_see())
     {
         return false;
     }
@@ -192,18 +199,18 @@ bool Player::can_see_actor(const Actor& other) const
         return false;
     }
 
-    const bool can_see_invis = has_prop(PropId::see_invis);
+    const bool can_see_invis = properties.has(PropId::see_invis);
 
     // Monster is invisible, and player cannot see invisible?
-    if ((other.has_prop(PropId::invis) ||
-         other.has_prop(PropId::cloaked)) &&
+    if ((other.properties.has(PropId::invis) ||
+         other.properties.has(PropId::cloaked)) &&
         !can_see_invis)
     {
         return false;
     }
 
     // Blocked by darkness, and not seeing monster with infravision?
-    const bool has_darkvision = properties_->has_prop(PropId::darkvision);
+    const bool has_darkvision = properties.has(PropId::darkvision);
 
     const bool can_see_other_in_drk =
         can_see_invis ||
@@ -280,10 +287,10 @@ void Player::on_hit(int& dmg,
     // Ghoul trait Indomitable Fury makes player immune to Wounds while Frenzied
     const bool is_ghoul_resist_wound =
         player_bon::traits[(size_t)Trait::indomitable_fury] &&
-        properties_->has_prop(PropId::frenzied);
+        properties.has(PropId::frenzied);
 
     if (allow_wound == AllowWound::yes &&
-        (hp() - dmg) > 0 &&
+        (hp - dmg) > 0 &&
         is_enough_dmg_for_wound &&
         is_physical &&
         !is_ghoul_resist_wound &&
@@ -295,9 +302,9 @@ void Player::on_hit(int& dmg,
 
         auto nr_wounds = [&]()
         {
-            if (properties_->has_prop(PropId::wound))
+            if (properties.has(PropId::wound))
             {
-                const Prop* const prop = properties_->prop(PropId::wound);
+                const Prop* const prop = properties.prop(PropId::wound);
 
                 const PropWound* const wound =
                     static_cast<const PropWound*>(prop);
@@ -310,7 +317,7 @@ void Player::on_hit(int& dmg,
 
         const int nr_wounds_before = nr_wounds();
 
-        properties_->apply(prop);
+        properties.apply(prop);
 
         const int nr_wounds_after = nr_wounds();
 
@@ -336,7 +343,7 @@ void Player::on_hit(int& dmg,
 
 int Player::enc_percent() const
 {
-    const int total_w = inv_->total_item_weight();
+    const int total_w = inv.total_item_weight();
     const int max_w = carry_weight_lmt();
 
     return (int)(((double)total_w / (double)max_w) * 100.0);
@@ -351,7 +358,7 @@ int Player::carry_weight_lmt() const
         carry_weight_mod += 50;
     }
 
-    if (has_prop(PropId::weakened))
+    if (properties.has(PropId::weakened))
     {
         carry_weight_mod -= 15;
     }
@@ -493,7 +500,7 @@ void Player::incr_insanity()
 
         popup::msg(msg, "Insane!", SfxId::insanity_rise);
 
-        kill_actor(
+        actor::kill(
                 *this,
                 IsDestroyed::yes,
                 AllowGore::no,
@@ -569,7 +576,7 @@ void Player::on_new_dlvl_reached()
 
     item_feeling();
 
-    for (auto& slot: inv_->slots_)
+    for (auto& slot: inv.slots)
     {
         if (slot.item)
         {
@@ -577,7 +584,7 @@ void Player::on_new_dlvl_reached()
         }
     }
 
-    for (auto* const item: inv_->backpack_)
+    for (auto* const item: inv.backpack)
     {
         item->on_player_reached_new_dlvl();
     }
@@ -607,7 +614,7 @@ void Player::mon_feeling()
         // Print monster feeling for new monsters spawned during the level?
         // (We do the actual printing once, after the loop, so that we don't
         // print something silly like "A chill runs down my spine (x2)")
-        if (mon->data().is_unique &&
+        if (mon->data->is_unique &&
             mon->is_player_feeling_msg_allowed_)
         {
             print_unique_mon_feeling = true;
@@ -627,7 +634,7 @@ void Player::mon_feeling()
 
         // This message only makes sense if the player is fearful
         if (!player_bon::traits[(size_t)Trait::fearless] &&
-            !has_prop(PropId::frenzied))
+            !properties.has(PropId::frenzied))
         {
             msg_bucket.push_back("I feel anxious.");
         }
@@ -657,12 +664,12 @@ void Player::act()
         return;
     }
 
-    if (properties().on_act() == DidAction::yes)
+    if (properties.on_act() == DidAction::yes)
     {
         return;
     }
 
-    if (tgt_ && (tgt_->state() != ActorState::alive))
+    if (tgt_ && (tgt_->state != ActorState::alive))
     {
         tgt_ = nullptr;
     }
@@ -684,10 +691,11 @@ void Player::act()
             // Putting on armor?
             if (armor_putting_on_backpack_idx_ >= 0)
             {
-                ASSERT(!inv_->slots_[(size_t)SlotId::body].item);
+                ASSERT(!inv.slots[(size_t)SlotId::body].item);
 
-                inv_->equip_backpack_item(armor_putting_on_backpack_idx_,
-                                          SlotId::body);
+                inv.equip_backpack_item(
+                        armor_putting_on_backpack_idx_,
+                        SlotId::body);
 
                 armor_putting_on_backpack_idx_ = -1;
             }
@@ -703,9 +711,9 @@ void Player::act()
             }
             else // Taking off armor
             {
-                ASSERT(inv_->slots_[(size_t)SlotId::body].item);
+                ASSERT(inv.slots[(size_t)SlotId::body].item);
 
-                inv_->unequip_slot(SlotId::body);
+                inv.unequip_slot(SlotId::body);
             }
         }
         else // Not done handling armor yet
@@ -880,7 +888,7 @@ void Player::act()
 
 bool Player::is_seeing_burning_feature() const
 {
-    const R fov_r = fov::get_fov_rect(pos);
+    const R fov_r = fov::fov_rect(pos);
 
     bool is_fire_found = false;
 
@@ -1002,11 +1010,11 @@ void Player::on_actor_turn()
             const bool is_cell_seen = map::cells.at(mon.pos).is_seen_by_player;
 
             const bool is_mon_invis =
-                mon.has_prop(PropId::invis) ||
-                mon.has_prop(PropId::cloaked);
+                mon.properties.has(PropId::invis) ||
+                mon.properties.has(PropId::cloaked);
 
             const bool can_player_see_invis =
-                has_prop(PropId::see_invis);
+                properties.has(PropId::see_invis);
 
             // NOTE: We only run the flodofill within a limited area, so ANY
             // cell reached by the flood is considered as within distance
@@ -1049,7 +1057,12 @@ void Player::on_actor_turn()
                 // Monster cannot be discovered with Vigilant
                 else if (is_cell_seen)
                 {
-                    sneak_result = mon.roll_sneak(*this);
+                        SneakData sneak_data;
+
+                        sneak_data.actor_sneaking = &mon;
+                        sneak_data.actor_searching = this;
+
+                        sneak_result = actor::roll_sneak(sneak_data);
                 }
 
                 if (sneak_result <= ActionResult::fail)
@@ -1100,7 +1113,7 @@ void Player::on_actor_turn()
 
     add_shock_from_seen_monsters();
 
-    if (properties_->allow_act())
+    if (properties.allow_act())
     {
         // Passive shock taken over time
         double passive_shock_taken = 0.1075;
@@ -1117,7 +1130,7 @@ void Player::on_actor_turn()
 
         double item_shock_taken = 0.0;
 
-        for (auto& slot : inv_->slots_)
+        for (auto& slot : inv.slots)
         {
             if (slot.item)
             {
@@ -1133,7 +1146,7 @@ void Player::on_actor_turn()
             }
         }
 
-        for (const Item* const item : inv_->backpack_)
+        for (const Item* const item : inv.backpack)
         {
             if (item->data().is_carry_shocking)
             {
@@ -1150,14 +1163,14 @@ void Player::on_actor_turn()
     }
 
     // Run new turn events on all items
-    auto& inv = map::player->inv();
+    auto& inv = map::player->inv;
 
-    for (Item* const item : inv.backpack_)
+    for (Item* const item : inv.backpack)
     {
         item->on_actor_turn_in_inv(InvType::backpack);
     }
 
-    for (InvSlot& slot : inv.slots_)
+    for (InvSlot& slot : inv.slots)
     {
         if (slot.item)
         {
@@ -1209,7 +1222,7 @@ void Player::on_actor_turn()
 
 void Player::add_shock_from_seen_monsters()
 {
-    if (!properties_->allow_see())
+    if (!properties.allow_see())
     {
         return;
     }
@@ -1236,7 +1249,7 @@ void Player::add_shock_from_seen_monsters()
 
         if (can_see_actor(*mon))
         {
-            shock_lvl = mon->data().mon_shock_lvl;
+            shock_lvl = mon->data->mon_shock_lvl;
         }
         else // Monster cannot be seen
         {
@@ -1313,7 +1326,7 @@ void Player::update_tmp_shock()
         shock_tmp_min = (double)shock_from_obsession;
     }
 
-    if (properties_->allow_see())
+    if (properties.allow_see())
     {
         // Shock reduction from light?
         if (map::light.at(pos))
@@ -1346,7 +1359,7 @@ void Player::update_tmp_shock()
         }
     }
     // Is blind
-    else if (!has_prop(PropId::fainted))
+    else if (!properties.has(PropId::fainted))
     {
         shock_tmp_ += shock_taken_after_mods(30.0, ShockSrc::misc);
     }
@@ -1368,7 +1381,7 @@ int Player::shock_tot() const
 
     int result = (int)shock_tot_db;
 
-    result = properties_->affect_shock(result);
+    result = properties.affect_shock(result);
 
     return result;
 }
@@ -1386,8 +1399,8 @@ void Player::on_std_turn()
 {
 #ifndef NDEBUG
     // Sanity check: Disease and infection should not be active at the same time
-    ASSERT(!properties_->has_prop(PropId::diseased) ||
-           !properties_->has_prop(PropId::infected));
+    ASSERT(!properties.has(PropId::diseased) ||
+           !properties.has(PropId::infected));
 #endif // NDEBUG
 
     if (!is_alive())
@@ -1407,14 +1420,14 @@ void Player::on_std_turn()
             spell_shield_turns_base - spell_shield_turns_bon);
 
     // Halved number of turns due to the Talisman of Reflection?
-    if (inv_->has_item_in_backpack(ItemId::refl_talisman))
+    if (inv.has_item_in_backpack(ItemId::refl_talisman))
     {
         nr_turns_to_recharge_spell_shield /= 2;
     }
 
     // If we already have spell resistance (e.g. due to the Spell Shield spell),
     // then always (re)set the cooldown to max number of turns
-    if (properties_->has_prop(PropId::r_spell))
+    if (properties.has(PropId::r_spell))
     {
         nr_turns_until_rspell_ = nr_turns_to_recharge_spell_shield;
     }
@@ -1432,7 +1445,7 @@ void Player::on_std_turn()
 
                 prop->set_indefinite();
 
-                properties_->apply(prop);
+                properties.apply(prop);
 
                 msg_log::more_prompt();
             }
@@ -1440,7 +1453,7 @@ void Player::on_std_turn()
             nr_turns_until_rspell_ = nr_turns_to_recharge_spell_shield;
         }
 
-        if (!properties_->has_prop(PropId::r_spell) &&
+        if (!properties.has(PropId::r_spell) &&
             (nr_turns_until_rspell_ > 0))
         {
             // Spell resistance is in cooldown state, decrement number of
@@ -1455,7 +1468,7 @@ void Player::on_std_turn()
     }
 
     // Regenerate Hit Points
-    if (!has_prop(PropId::poisoned) &&
+    if (!properties.has(PropId::poisoned) &&
         player_bon::bg() != Bg::ghoul)
     {
         int nr_turns_per_hp;
@@ -1473,9 +1486,9 @@ void Player::on_std_turn()
         // Wounds affect hp regen?
         int nr_wounds = 0;
 
-        if (properties_->has_prop(PropId::wound))
+        if (properties.has(PropId::wound))
         {
-            Prop* const prop = properties_->prop(PropId::wound);
+            Prop* const prop = properties.prop(PropId::wound);
 
             nr_wounds = static_cast<PropWound*>(prop)->nr_wounds();
         }
@@ -1489,7 +1502,7 @@ void Player::on_std_turn()
             ((nr_wounds * 4) / wound_effect_div);
 
         // Items affect hp regen?
-        for (const auto& slot : inv_->slots_)
+        for (const auto& slot : inv.slots)
         {
             if (slot.item)
             {
@@ -1497,7 +1510,7 @@ void Player::on_std_turn()
             }
         }
 
-        for (const Item* const item : inv_->backpack_)
+        for (const Item* const item : inv.backpack)
         {
             nr_turns_per_hp += item->hp_regen_change(InvType::backpack);
         }
@@ -1505,14 +1518,13 @@ void Player::on_std_turn()
         nr_turns_per_hp = std::max(1, nr_turns_per_hp);
 
         const int turn = game_time::turn_nr();
-        const int current_hp = hp();
-        const int max_hp = hp_max(true);
+        const int max_hp = actor::max_hp(*this);
 
-        if ((current_hp < max_hp) &&
+        if ((hp < max_hp) &&
             ((turn % nr_turns_per_hp) == 0) &&
             turn > 1)
         {
-            ++hp_;
+            ++hp;
         }
     }
 
@@ -1522,8 +1534,8 @@ void Player::on_std_turn()
     const int player_search_skill =
         map::player->ability(AbilityId::searching, true);
 
-    if (!has_prop(PropId::confused) &&
-        properties_->allow_see())
+    if (!properties.has(PropId::confused) &&
+        properties.allow_see())
     {
         for (size_t i = 0; i < map::cells.length(); ++i)
         {
@@ -1586,7 +1598,7 @@ void Player::interrupt_actions()
     {
         bool should_continue = true;
 
-        if (has_prop(PropId::burning))
+        if (properties.has(PropId::burning))
         {
             should_continue = false;
         }
@@ -1601,7 +1613,7 @@ void Player::interrupt_actions()
             if (armor_putting_on_backpack_idx_ >= 0)
             {
                 auto* const item =
-                        inv_->backpack_[armor_putting_on_backpack_idx_];
+                        inv.backpack[armor_putting_on_backpack_idx_];
 
                 const std::string armor_name =
                     item->name(ItemRefType::a, ItemRefInf::yes);
@@ -1612,7 +1624,7 @@ void Player::interrupt_actions()
             }
             else // Taking off armor, or dropping from armor slot
             {
-                auto* const item = inv_->item_in_slot(SlotId::body);
+                auto* const item = inv.item_in_slot(SlotId::body);
 
                 ASSERT(item);
 
@@ -1657,7 +1669,7 @@ void Player::hear_sound(const Snd& snd,
 {
     (void)is_origin_seen_by_player;
 
-    if (has_prop(PropId::deaf))
+    if (properties.has(PropId::deaf))
     {
         return;
     }
@@ -1702,7 +1714,7 @@ void Player::move(Dir dir)
 
     const Dir intended_dir = dir;
 
-    properties_->affect_move_dir(pos, dir);
+    properties.affect_move_dir(pos, dir);
 
     const P tgt(pos + dir_utils::offset(dir));
 
@@ -1740,9 +1752,9 @@ void Player::move(Dir dir)
 
             if (is_aware_of_mon)
             {
-                if (properties_->allow_attack_melee(Verbosity::verbose))
+                if (properties.allow_attack_melee(Verbosity::verbose))
                 {
-                    Item* const wpn_item = inv_->item_in_slot(SlotId::wpn);
+                    Item* const wpn_item = inv.item_in_slot(SlotId::wpn);
 
                     if (wpn_item)
                     {
@@ -1824,7 +1836,7 @@ void Player::move(Dir dir)
             // Encumbrance, wounds, or spraining affecting movement
             const int enc = enc_percent();
 
-            Prop* const wound_prop = properties_->prop(PropId::wound);
+            Prop* const wound_prop = properties.prop(PropId::wound);
 
             int nr_wounds = 0;
 
@@ -1848,7 +1860,7 @@ void Player::move(Dir dir)
             {
                 msg_log::add("I stagger.", colors::msg_note());
 
-                properties_->apply(new PropWaiting());
+                properties.apply(new PropWaiting());
             }
 
             // Displace allied monster
@@ -1899,11 +1911,11 @@ void Player::move(Dir dir)
             for (auto* const actor : game_time::actors)
             {
                 if ((actor->pos == pos) &&
-                    (actor->state() == ActorState::corpse))
+                    (actor->state == ActorState::corpse))
                 {
                     const std::string name =
                         text_format::first_to_upper(
-                            actor->corpse_name_a());
+                            actor->data->corpse_name_a);
 
                     msg_log::add(name + ".");
                 }
@@ -1969,17 +1981,22 @@ Color Player::color() const
 
     Color tmp_color;
 
-    if (properties_->affect_actor_color(tmp_color))
+    if (properties.affect_actor_color(tmp_color))
     {
         return tmp_color;
     }
 
-    const auto* const lantern = inv_->item_in_backpack(ItemId::lantern);
+    const auto* const lantern_item = inv.item_in_backpack(ItemId::lantern);
 
-    if (lantern &&
-        static_cast<const DeviceLantern*>(lantern)->is_activated_)
+    if (lantern_item)
     {
-        return colors::yellow();
+            const auto* const lantern =
+                    static_cast<const DeviceLantern*>(lantern_item);
+
+            if (lantern->is_activated_)
+            {
+                    return colors::yellow();
+            }
     }
 
     if (shock_tot() >= 75)
@@ -1987,13 +2004,13 @@ Color Player::color() const
         return colors::magenta();
     }
 
-    if (has_prop(PropId::invis) ||
-        has_prop(PropId::cloaked))
+    if (properties.has(PropId::invis) ||
+        properties.has(PropId::cloaked))
     {
         return colors::gray();
     }
 
-    return data_->color;
+    return data->color;
 }
 
 SpellSkill Player::spell_skill(const SpellId id) const
@@ -2004,7 +2021,7 @@ SpellSkill Player::spell_skill(const SpellId id) const
 void Player::auto_melee()
 {
     if (tgt_ &&
-        tgt_->state() == ActorState::alive &&
+        tgt_->state == ActorState::alive &&
         is_pos_adj(pos, tgt_->pos, false) &&
         can_see_actor(*tgt_))
     {
@@ -2032,7 +2049,7 @@ void Player::kick_mon(Actor& defender)
 {
     Wpn* kick_wpn = nullptr;
 
-    const ActorData& d = defender.data();
+    const ActorData& d = *defender.data;
 
     // TODO: This is REALLY hacky, it should be done another way. Why even have
     // a "stomp" attack?? Why not just kick them as well?
@@ -2086,7 +2103,7 @@ void Player::add_light_hook(Array2<bool>& light_map) const
 
     if (lgt_size != LgtSize::fov)
     {
-        for (Item* const item : inv_->backpack_)
+        for (Item* const item : inv.backpack)
         {
             LgtSize item_lgt_size = item->lgt_size();
 
@@ -2103,7 +2120,7 @@ void Player::add_light_hook(Array2<bool>& light_map) const
     {
          Array2<bool> hard_blocked(map::dims());
 
-         const R fov_lmt = fov::get_fov_rect(pos);
+         const R fov_lmt = fov::fov_rect(pos);
 
         map_parsers::BlocksLos()
             .run(hard_blocked,
@@ -2151,13 +2168,13 @@ void Player::update_fov()
         cell.player_los.is_blocked_by_drk = false;
     }
 
-    const bool has_darkvision = has_prop(PropId::darkvision);
+    const bool has_darkvision = properties.has(PropId::darkvision);
 
-    if (properties_->allow_see())
+    if (properties.allow_see())
     {
          Array2<bool> hard_blocked(map::dims());
 
-         const R fov_lmt = fov::get_fov_rect(pos);
+         const R fov_lmt = fov::fov_rect(pos);
 
         map_parsers::BlocksLos()
             .run(hard_blocked,
@@ -2285,7 +2302,7 @@ void Player::fov_hack()
                 }
         }
 
-    const bool has_darkvision = has_prop(PropId::darkvision);
+    const bool has_darkvision = properties.has(PropId::darkvision);
 
     for (int x = 0; x < map::w(); ++x)
     {

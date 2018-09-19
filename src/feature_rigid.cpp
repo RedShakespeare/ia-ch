@@ -2,29 +2,30 @@
 
 #include <string>
 
-#include "init.hpp"
-#include "msg_log.hpp"
-#include "io.hpp"
-#include "popup.hpp"
-#include "map.hpp"
-#include "map_travel.hpp"
-#include "saving.hpp"
-#include "item_factory.hpp"
-#include "map_parsing.hpp"
-#include "feature_mob.hpp"
+#include "actor_factory.hpp"
+#include "actor_hit.hpp"
+#include "actor_mon.hpp"
+#include "actor_player.hpp"
 #include "drop.hpp"
 #include "explosion.hpp"
-#include "actor_factory.hpp"
-#include "actor_mon.hpp"
-#include "query.hpp"
+#include "feature_mob.hpp"
+#include "init.hpp"
+#include "io.hpp"
+#include "item_factory.hpp"
+#include "map.hpp"
+#include "map_parsing.hpp"
+#include "map_travel.hpp"
+#include "msg_log.hpp"
 #include "pickup.hpp"
-#include "sound.hpp"
-#include "wham.hpp"
-#include "text_format.hpp"
-#include "actor_player.hpp"
+#include "popup.hpp"
 #include "property.hpp"
 #include "property_data.hpp"
 #include "property_handler.hpp"
+#include "query.hpp"
+#include "saving.hpp"
+#include "sound.hpp"
+#include "text_format.hpp"
+#include "wham.hpp"
 
 // -----------------------------------------------------------------------------
 // Rigid
@@ -66,12 +67,13 @@ void Rigid::on_new_turn()
                         text_format::first_to_upper(
                             actor.name_the());
 
-                    msg_log::add(name_the + " is scorched by flames.",
-                                 colors::msg_good());
+                    msg_log::add(
+                            name_the + " is scorched by flames.",
+                            colors::msg_good());
                 }
             }
 
-            actor.hit(1, DmgType::fire);
+            actor::hit(actor, 1, DmgType::fire);
         };
 
         // TODO: Hit dead actors
@@ -85,8 +87,7 @@ void Rigid::on_new_turn()
             // fire damage
             if (rnd::one_in(4))
             {
-                auto& properties = actor->properties();
-                properties.apply(new PropBurning());
+                actor->properties.apply(new PropBurning());
             }
             else
             {
@@ -96,39 +97,39 @@ void Rigid::on_new_turn()
 
         // Finished burning?
         int finish_burning_one_in_n = 1;
-        int hit_adjacent_one_in_n   = 1;
+        int hit_adjacent_one_in_n = 1;
 
         switch (matl())
         {
         case Matl::fluid:
         case Matl::empty:
             finish_burning_one_in_n = 1;
-            hit_adjacent_one_in_n   = 1;
+            hit_adjacent_one_in_n = 1;
             break;
 
         case Matl::stone:
             finish_burning_one_in_n = 14;
-            hit_adjacent_one_in_n   = 10;
+            hit_adjacent_one_in_n = 10;
             break;
 
         case Matl::metal:
             finish_burning_one_in_n = 14;
-            hit_adjacent_one_in_n   = 10;
+            hit_adjacent_one_in_n = 10;
             break;
 
         case Matl::plant:
             finish_burning_one_in_n = 30;
-            hit_adjacent_one_in_n   = 10;
+            hit_adjacent_one_in_n = 10;
             break;
 
         case Matl::wood:
             finish_burning_one_in_n = 40;
-            hit_adjacent_one_in_n   = 10;
+            hit_adjacent_one_in_n = 10;
             break;
 
         case Matl::cloth:
             finish_burning_one_in_n = 20;
-            hit_adjacent_one_in_n   = 8;
+            hit_adjacent_one_in_n = 8;
             break;
         }
 
@@ -1040,7 +1041,7 @@ void Statue::on_hit(const int dmg,
     {
         ASSERT(actor);
 
-        if (actor->has_prop(PropId::weakened))
+        if (actor->properties.has(PropId::weakened))
         {
             msg_log::add("It wiggles a bit.");
             return;
@@ -1074,7 +1075,7 @@ void Statue::on_hit(const int dmg,
 
         if (actor_behind && actor_behind->is_alive())
         {
-            if (!actor_behind->has_prop(PropId::ethereal))
+            if (!actor_behind->properties.has(PropId::ethereal))
             {
                 if (actor_behind == map::player)
                 {
@@ -1085,7 +1086,7 @@ void Statue::on_hit(const int dmg,
                     msg_log::add("It falls on " + actor_behind->name_a() + ".");
                 }
 
-                actor_behind->hit(rnd::dice(3, 5), DmgType::physical);
+                actor::hit(*actor_behind, rnd::dice(3, 5), DmgType::physical);
             }
         }
 
@@ -1310,14 +1311,14 @@ void LiquidShallow::on_hit(const int dmg,
 
 void LiquidShallow::bump(Actor& actor_bumping)
 {
-    if (actor_bumping.has_prop(PropId::ethereal) ||
-        actor_bumping.has_prop(PropId::flying) ||
-        actor_bumping.data().is_amphibian)
+    if (actor_bumping.properties.has(PropId::ethereal) ||
+        actor_bumping.properties.has(PropId::flying) ||
+        actor_bumping.data->is_amphibian)
     {
         return;
     }
 
-    actor_bumping.apply_prop(new PropWaiting());
+    actor_bumping.properties.apply(new PropWaiting());
 
     if (actor_bumping.is_player())
     {
@@ -1423,10 +1424,10 @@ void LiquidDeep::on_hit(const int dmg,
 void LiquidDeep::bump(Actor& actor_bumping)
 {
         const bool must_swim =
-                !actor_bumping.has_prop(PropId::ethereal) &&
-                !actor_bumping.has_prop(PropId::flying);
+                !actor_bumping.properties.has(PropId::ethereal) &&
+                !actor_bumping.properties.has(PropId::flying);
 
-        const bool is_amphibian = actor_bumping.data().is_amphibian;
+        const bool is_amphibian = actor_bumping.data->is_amphibian;
 
         if (must_swim && !is_amphibian)
         {
@@ -1434,7 +1435,7 @@ void LiquidDeep::bump(Actor& actor_bumping)
 
                 waiting->set_duration(1);
 
-                actor_bumping.apply_prop(waiting);
+                actor_bumping.properties.apply(waiting);
         }
 
         if (must_swim && actor_bumping.is_player())
@@ -1472,19 +1473,19 @@ void LiquidDeep::bump(Actor& actor_bumping)
                 }
         }
 
-        if (must_swim && !actor_bumping.has_prop(PropId::swimming))
+        if (must_swim && !actor_bumping.properties.has(PropId::swimming))
         {
                 auto* const swimming = new PropSwimming();
 
                 swimming->set_indefinite();
 
-                actor_bumping.properties().apply(swimming);
+                actor_bumping.properties.apply(swimming);
         }
 }
 
 void LiquidDeep::on_leave(Actor &actor_leaving)
 {
-        actor_leaving.properties().end_prop(PropId::swimming);
+        actor_leaving.properties.end_prop(PropId::swimming);
 }
 
 std::string LiquidDeep::name(const Article article) const
@@ -1531,9 +1532,9 @@ Color LiquidDeep::color_default() const
 bool LiquidDeep::can_move(const Actor& actor) const
 {
         return
-                actor.data().can_swim ||
-                actor.has_prop(PropId::flying) ||
-                actor.has_prop(PropId::ethereal);
+                actor.data->can_swim ||
+                actor.properties.has(PropId::flying) ||
+                actor.properties.has(PropId::ethereal);
 }
 
 // -----------------------------------------------------------------------------
@@ -2036,9 +2037,9 @@ Color Chains::color_bg_default() const
 
 void Chains::bump(Actor& actor_bumping)
 {
-    if (actor_bumping.data().actor_size > ActorSize::floor &&
-        !actor_bumping.has_prop(PropId::ethereal) &&
-        !actor_bumping.has_prop(PropId::ooze))
+    if (actor_bumping.data->actor_size > ActorSize::floor &&
+        !actor_bumping.properties.has(PropId::ethereal) &&
+        !actor_bumping.properties.has(PropId::ooze))
     {
         std::string msg;
 
@@ -2237,7 +2238,7 @@ void Brazier::on_hit(const int dmg,
     {
         ASSERT(actor);
 
-        if (actor->has_prop(PropId::weakened))
+        if (actor->properties.has(PropId::weakened))
         {
             msg_log::add("It wiggles a bit.");
             return;
@@ -2464,7 +2465,7 @@ void ItemContainer::open(const P& feature_pos,
             {
                 audio::play(SfxId::pickup);
 
-                map::player->inv().put_in_backpack(item);
+                map::player->inv.put_in_backpack(item);
             }
             else if (answer == BinaryAnswer::no)
             {
@@ -2483,7 +2484,7 @@ void ItemContainer::open(const P& feature_pos,
 
                 Ammo* const spawned_ammo = item_pickup::unload_ranged_wpn(*wpn);
 
-                map::player->inv().put_in_backpack(spawned_ammo);
+                map::player->inv.put_in_backpack(spawned_ammo);
 
                 item_drop::drop_item_on_map(feature_pos, *wpn);
             }
@@ -2721,7 +2722,7 @@ void Tomb::bump(Actor& actor_bumping)
             {
                 msg_log::add("I attempt to push the lid.");
 
-                if (actor_bumping.has_prop(PropId::weakened))
+                if (actor_bumping.properties.has(PropId::weakened))
                 {
                     msg_log::add("It seems futile.");
                 }
@@ -2967,7 +2968,7 @@ DidTriggerTrap Tomb::trigger_trap(Actor* const actor)
 
     case TombTrait::cursed:
     {
-        map::player->apply_prop(new PropCursed());
+        map::player->properties.apply(new PropCursed());
 
         did_trigger_trap = DidTriggerTrap::yes;
     }
@@ -2988,11 +2989,11 @@ DidTriggerTrap Tomb::trigger_trap(Actor* const actor)
 
                 prop->set_duration(1);
 
-                mon->apply_prop(prop);
+                mon->properties.apply(prop);
 
                 if (appearance_ == TombAppearance::marvelous)
                 {
-                        mon->change_max_hp(mon->hp(), Verbosity::silent);
+                        mon->change_max_hp(mon->hp, Verbosity::silent);
 
                         mon->restore_hp(999, false, Verbosity::silent);
                 }
@@ -3160,7 +3161,7 @@ void Chest::hit(const int dmg,
 
                     msg_log::add("I kick the lid.");
 
-                    if (actor->has_prop(PropId::weakened) ||
+                    if (actor->properties.has(PropId::weakened) ||
                         (matl_ == ChestMatl::iron))
                     {
                         wham::try_sprain_player();
@@ -3169,8 +3170,9 @@ void Chest::hit(const int dmg,
                     }
                     else // Chest can be bashed open
                     {
-                        if (!actor->has_prop(PropId::blessed) &&
-                            (actor->has_prop(PropId::cursed) || rnd::one_in(3)))
+                        if (!actor->properties.has(PropId::blessed) &&
+                            (actor->properties.has(PropId::cursed) ||
+                             rnd::one_in(3)))
                         {
                             item_container_.destroy_single_fragile();
                         }
@@ -3388,7 +3390,7 @@ void Fountain::bump(Actor& actor_bumping)
 
     if (has_drinks_left_)
     {
-        PropHandler& properties = map::player->properties();
+        PropHandler& properties = map::player->properties;
 
         if (!map::cells.at(pos_).is_seen_by_player)
         {
@@ -3428,7 +3430,7 @@ void Fountain::bump(Actor& actor_bumping)
         {
             msg_log::add("It's very refreshing.");
             map::player->restore_hp(1, false, Verbosity::silent);
-            map::player->restore_spi(1, false, Verbosity::silent);
+            map::player->restore_sp(1, false, Verbosity::silent);
             map::player->restore_shock(5, true);
         }
         break;
@@ -4003,8 +4005,7 @@ void Cocoon::bump(Actor& actor_bumping)
         {
             if (insanity::has_sympt(InsSymptId::phobia_spider))
             {
-                map::player->apply_prop(
-                    new PropTerrified());
+                map::player->properties.apply(new PropTerrified());
             }
 
             if (is_open_)

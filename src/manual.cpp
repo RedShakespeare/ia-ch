@@ -58,7 +58,7 @@ static std::vector<std::string> format_lines(
                         const auto split_line = text_format::split(
                                 raw_line,
                                 manual_text_w
-                                /* panels::get_w(Panel::screen) */);
+                                /* panels::w(Panel::screen) */);
 
                         for (const auto& line : split_line)
                         {
@@ -135,7 +135,7 @@ void BrowseManual::draw()
         io::draw_text_center(
                 "Browsing manual",
                 Panel::screen,
-                P(panels::get_center_x(Panel::screen), 0),
+                P(panels::center_x(Panel::screen), 0),
                 colors::title(),
                 true, // Draw background color
                 colors::black(),

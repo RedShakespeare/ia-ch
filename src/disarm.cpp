@@ -15,15 +15,14 @@ namespace disarm
 
 void player_disarm()
 {
-        // TODO: Disarming should be allowed while blind
-        if (!map::player->properties().allow_see())
+        if (!map::player->properties.allow_see())
         {
                 msg_log::add("Not while blind.");
 
                 return;
         }
 
-        if (map::player->has_prop(PropId::entangled))
+        if (map::player->properties.has(PropId::entangled))
         {
                 msg_log::add("Not while entangled.");
 

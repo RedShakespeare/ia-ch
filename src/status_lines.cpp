@@ -25,7 +25,7 @@ static const int text_x0 = 1;
 
 static int text_x1()
 {
-        return panels::get_w(panel) - 2;
+        return panels::w(panel) - 2;
 }
 
 static Color label_color()
@@ -121,9 +121,9 @@ static void draw_hp(int& y)
                 draw_text_bg);
 
         const std::string str =
-                std::to_string(map::player->hp()) +
+                std::to_string(map::player->hp) +
                 "/" +
-                std::to_string(map::player->hp_max(true));
+                std::to_string(actor::max_hp(*map::player));
 
         io::draw_text_right(
                 str,
@@ -145,9 +145,9 @@ static void draw_sp(int& y)
                 draw_text_bg);
 
         const std::string str =
-                std::to_string(map::player->spi()) +
+                std::to_string(map::player->sp) +
                 "/" +
-                std::to_string(map::player->spi_max());
+                std::to_string(actor::max_sp(*map::player));
 
         io::draw_text_right(
                 str,
@@ -218,7 +218,7 @@ static void draw_wielded_wpn(int& y)
                 label_color(),
                 draw_text_bg);
 
-        const Item* wpn = map::player->inv().item_in_slot(SlotId::wpn);
+        const Item* wpn = map::player->inv.item_in_slot(SlotId::wpn);
 
         if (!wpn)
         {
@@ -264,7 +264,7 @@ static void draw_alt_wpn(int& y)
                 label_color(),
                 draw_text_bg);
 
-        const Item* wpn = map::player->inv().item_in_slot(SlotId::wpn_alt);
+        const Item* wpn = map::player->inv.item_in_slot(SlotId::wpn_alt);
 
         if (!wpn)
         {
@@ -311,7 +311,7 @@ static void draw_thrown_item(int& y)
                 draw_text_bg);
 
         auto* const thrown_item =
-                map::player->inv().item_in_slot(SlotId::thrown);
+                map::player->inv.item_in_slot(SlotId::thrown);
 
         if (map::player->active_explosive_)
         {
@@ -390,7 +390,7 @@ static void draw_lantern(int& y)
                 draw_text_bg);
 
         const Item* const item =
-                map::player->inv().item_in_backpack(ItemId::lantern);
+                map::player->inv.item_in_backpack(ItemId::lantern);
 
         Color color = colors::white();
 
@@ -432,7 +432,7 @@ static void draw_med_suppl(int& y)
         std::string suppl_str = "-";
 
         const Item* const item =
-                map::player->inv().item_in_backpack(ItemId::medical_bag);
+                map::player->inv.item_in_backpack(ItemId::medical_bag);
 
         if (item)
         {
@@ -505,11 +505,11 @@ static void draw_encumbrance(int& y)
 static void draw_properties(int& y)
 {
         const auto property_names =
-                map::player->properties().property_names_short();
+                map::player->properties.property_names_short();
 
         for (const auto& name : property_names)
         {
-                if (y >= panels::get_y1(panel))
+                if (y >= panels::y1(panel))
                 {
                         break;
                 }
@@ -535,7 +535,7 @@ void draw()
 {
         io::cover_panel(panel, colors::extra_dark_gray());
 
-        io::draw_box(panels::get_area(panel));
+        io::draw_box(panels::area(panel));
 
         int y = 1;
 
@@ -573,7 +573,7 @@ void draw()
         // // "T:" + current turn number
         // const int total_turn_info_w = turn_nr_str.size() + 2;
 
-        // p.x = panels::get_x1(panel) - total_turn_info_w + 1;
+        // p.x = panels::x1(panel) - total_turn_info_w + 1;
 
         // io::draw_text("T", panel, p, colors::dark_gray(), colors::black());
 

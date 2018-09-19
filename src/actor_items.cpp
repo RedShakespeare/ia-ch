@@ -40,7 +40,7 @@ static void learn_spell_player(const SpellId spell)
 
 static void make_for_player_occultist_common()
 {
-        auto& inv = map::player->inv();
+        auto& inv = map::player->inv;
 
         inv.put_in_slot(
                 SlotId::wpn,
@@ -113,7 +113,7 @@ static void make_for_player_occultist_invoc()
 
 static void make_for_player_rogue()
 {
-        auto& inv = map::player->inv();
+        auto& inv = map::player->inv;
 
         auto* const dagger = item_factory::make(ItemId::dagger);
 
@@ -162,12 +162,12 @@ static void make_for_player_rogue()
 
         inv.put_in_backpack(throwing_knives);
 
-        inv.slots_[(size_t)SlotId::thrown].item = throwing_knives;
+        inv.slots[(size_t)SlotId::thrown].item = throwing_knives;
 }
 
 static void make_for_player_war_vet()
 {
-        auto& inv = map::player->inv();
+        auto& inv = map::player->inv;
 
         inv.put_in_slot(
                 SlotId::wpn,
@@ -205,7 +205,7 @@ static void make_for_player_war_vet()
 
         inv.put_in_backpack(throwing_knives);
 
-        inv.slots_[(size_t)SlotId::thrown].item = throwing_knives;
+        inv.slots[(size_t)SlotId::thrown].item = throwing_knives;
 }
 
 static void make_for_player_ghoul()
@@ -293,7 +293,7 @@ static void make_random_item_to_backpack(Actor& actor,
 
                 Item* item = item_factory::make(item_id);
 
-                actor.inv().put_in_backpack(item);
+                actor.inv.put_in_backpack(item);
         }
 }
 
@@ -350,7 +350,7 @@ static void make_item_set_supreme_treasure(Actor& actor)
 
 static void make_item_set_firearm(Actor& actor)
 {
-        Inventory& inv = actor.inv();
+        Inventory& inv = actor.inv;
 
         // If we are on an early dungeon level, lean heavily towards pistols
         const bool is_low_dlvl = map::dlvl < 4;
@@ -450,7 +450,7 @@ static void make_item_set_firearm(Actor& actor)
 
 static void make_item_set_spike_gun(Actor& actor)
 {
-        Inventory& inv = actor.inv();
+        Inventory& inv = actor.inv;
 
         {
                 Item* item = item_factory::make(ItemId::spike_gun);
@@ -479,7 +479,7 @@ static void make_item_set_zealot_spiked_mace(Actor& actor)
 
         item->melee_base_dmg_.plus = 0;
 
-        actor.inv().put_in_slot(SlotId::wpn, item, Verbosity::silent);
+        actor.inv.put_in_slot(SlotId::wpn, item, Verbosity::silent);
 }
 
 static void make_item_set_priest_dagger(Actor& actor)
@@ -494,12 +494,12 @@ static void make_item_set_priest_dagger(Actor& actor)
 
         item->melee_base_dmg_.plus = rnd::weighted_choice(weights) + 1;
 
-        actor.inv().put_in_slot(SlotId::wpn, item, Verbosity::silent);
+        actor.inv.put_in_slot(SlotId::wpn, item, Verbosity::silent);
 }
 
 static void make_item_set_mi_go_gun(Actor& actor)
 {
-        actor.inv().put_in_slot(
+        actor.inv.put_in_slot(
                 SlotId::wpn,
                 item_factory::make(ItemId::mi_go_gun),
                 Verbosity::silent);
@@ -507,7 +507,7 @@ static void make_item_set_mi_go_gun(Actor& actor)
 
 static void make_item_set_mi_go_armor(Actor& actor)
 {
-        actor.inv().put_in_slot(
+        actor.inv.put_in_slot(
                 SlotId::body,
                 item_factory::make(ItemId::armor_mi_go),
                 Verbosity::silent);
@@ -515,7 +515,7 @@ static void make_item_set_mi_go_armor(Actor& actor)
 
 static void make_item_set_high_priest_guard_war_vet(Actor& actor)
 {
-        actor.inv().put_in_slot(
+        actor.inv.put_in_slot(
                 SlotId::wpn,
                 item_factory::make(ItemId::machine_gun),
                 Verbosity::silent);
@@ -527,7 +527,7 @@ static void make_item_set_high_priest_guard_rogue(Actor& actor)
 
         item->melee_base_dmg_.plus = 1;
 
-        actor.inv().put_in_slot(
+        actor.inv.put_in_slot(
                 SlotId::wpn,
                 item,
                 Verbosity::silent);
@@ -535,7 +535,7 @@ static void make_item_set_high_priest_guard_rogue(Actor& actor)
 
 static void make_monster_item_sets(Actor& actor)
 {
-        for (const ActorItemSetData& item_set : actor.data().item_sets)
+        for (const ActorItemSetData& item_set : actor.data->item_sets)
         {
                 if (!rnd::percent(item_set.pct_chance_to_spawn))
                 {
@@ -598,7 +598,7 @@ static void make_monster_item_sets(Actor& actor)
 
 static void make_monster_intr_attacks(Actor& actor)
 {
-        for (auto& intr_attack : actor.data().intr_attacks)
+        for (auto& intr_attack : actor.data->intr_attacks)
         {
                 auto* item = item_factory::make(intr_attack.item_id);
 
@@ -611,7 +611,7 @@ static void make_monster_intr_attacks(Actor& actor)
                 item->melee_base_dmg_ = dice;
                 item->ranged_base_dmg_ = dice;
 
-                actor.inv().put_in_intrinsics(item);
+                actor.inv.put_in_intrinsics(item);
         }
 }
 
@@ -626,7 +626,7 @@ static void make_monster_spells(Actor& actor)
 
         Mon* const mon = static_cast<Mon*>(&actor);
 
-        for (auto& spell_data : actor.data().spells)
+        for (auto& spell_data : actor.data->spells)
         {
                 if (!rnd::percent(spell_data.pct_chance_to_know))
                 {

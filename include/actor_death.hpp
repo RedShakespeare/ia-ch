@@ -9,10 +9,15 @@ enum class AllowGore {no, yes};
 
 enum class AllowDropItems{no, yes};
 
-void kill_actor(
+namespace actor
+{
+
+void kill(
         Actor& actor,
         const IsDestroyed is_destroyed,
         const AllowGore allow_gore,
         const AllowDropItems allow_drop_items);
+
+} // actor
 
 #endif // ACTOR_DIE_HPP

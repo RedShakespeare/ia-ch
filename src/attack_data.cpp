@@ -13,8 +13,9 @@
 // -----------------------------------------------------------------------------
 // Private
 // -----------------------------------------------------------------------------
-static bool is_defender_aware_of_attack(const Actor* const attacker,
-                                        const Actor& defender)
+static bool is_defender_aware_of_attack(
+        const Actor* const attacker,
+        const Actor& defender)
 {
         bool is_aware = false;
 
@@ -45,9 +46,11 @@ static bool is_defender_aware_of_attack(const Actor* const attacker,
 // -----------------------------------------------------------------------------
 // Attack data
 // -----------------------------------------------------------------------------
-AttData::AttData(Actor* const attacker,
-                 Actor* const defender,
-                 const Item& att_item) :
+AttData::AttData(
+        Actor* const attacker,
+        Actor* const defender,
+        const Item& att_item) :
+
         attacker(attacker),
         defender(defender),
         skill_mod(0),
@@ -57,20 +60,21 @@ AttData::AttData(Actor* const attacker,
         hit_chance_tot(0),
         att_result(ActionResult::fail),
         dmg(0),
-        is_intrinsic_att(att_item.data().type == ItemType::melee_wpn_intr ||
-                         att_item.data().type == ItemType::ranged_wpn_intr) {}
+        is_intrinsic_att(
+                (att_item.data().type == ItemType::melee_wpn_intr) ||
+                (att_item.data().type == ItemType::ranged_wpn_intr)) {}
 
-MeleeAttData::MeleeAttData(Actor* const attacker,
-                           Actor& defender,
-                           const Wpn& wpn) :
+MeleeAttData::MeleeAttData(
+        Actor* const attacker,
+        Actor& defender,
+        const Wpn& wpn) :
+
         AttData(attacker, &defender, wpn),
         is_backstab(false),
         is_weak_attack(false)
 {
         const bool is_defender_aware =
                 is_defender_aware_of_attack(attacker, defender);
-
-        const ActorData& defender_data = defender.data();
 
         // Determine attack result
         skill_mod =
@@ -91,7 +95,7 @@ MeleeAttData::MeleeAttData(Actor* const attacker,
         if (defender.is_player())
         {
                 const auto* const item =
-                        defender.inv().item_in_slot(SlotId::wpn);
+                        defender.inv.item_in_slot(SlotId::wpn);
 
                 if (item && (item->id() == ItemId::pitch_fork))
                 {
@@ -138,18 +142,18 @@ MeleeAttData::MeleeAttData(Actor* const attacker,
         {
                 // Check if attacker gets a bonus due to a defender property.
 
-                if (defender.has_prop(PropId::paralyzed) ||
-                    defender.has_prop(PropId::nailed) ||
-                    defender.has_prop(PropId::fainted) ||
-                    defender.has_prop(PropId::entangled))
+                if (defender.properties.has(PropId::paralyzed) ||
+                    defender.properties.has(PropId::nailed) ||
+                    defender.properties.has(PropId::fainted) ||
+                    defender.properties.has(PropId::entangled))
                 {
                         // Give big attack bonus if defender is completely
                         // unable to fight.
                         is_big_att_bon = true;
                 }
-                else if (defender.has_prop(PropId::confused) ||
-                         defender.has_prop(PropId::slowed) ||
-                         defender.has_prop(PropId::burning))
+                else if (defender.properties.has(PropId::confused) ||
+                         defender.properties.has(PropId::slowed) ||
+                         defender.properties.has(PropId::burning))
                 {
                         // Give small attack bonus if defender has problems
                         // fighting
@@ -160,7 +164,7 @@ MeleeAttData::MeleeAttData(Actor* const attacker,
         // Give small attack bonus if defender cannot see.
         if (!is_big_att_bon &&
             !is_small_att_bon &&
-            !defender.properties().allow_see())
+            !defender.properties.allow_see())
         {
                 is_small_att_bon = true;
         }
@@ -183,10 +187,10 @@ MeleeAttData::MeleeAttData(Actor* const attacker,
         // Undead bonus applies)
         const bool apply_undead_bane_bon =
                 (attacker == map::player) &&
-                player_bon::gets_undead_bane_bon(defender_data);
+                player_bon::gets_undead_bane_bon(*defender.data);
 
         const bool apply_ethereal_defender_pen =
-                defender.has_prop(PropId::ethereal) &&
+                defender.properties.has(PropId::ethereal) &&
                 !apply_undead_bane_bon;
 
         if (apply_ethereal_defender_pen)
@@ -225,7 +229,7 @@ MeleeAttData::MeleeAttData(Actor* const attacker,
                 }
         }
 
-        if (attacker && attacker->has_prop(PropId::weakened))
+        if (attacker && attacker->properties.has(PropId::weakened))
         {
                 // Weak attack (halved damage)
                 dmg /= 2;
@@ -264,11 +268,13 @@ MeleeAttData::MeleeAttData(Actor* const attacker,
         }
 }
 
-RangedAttData::RangedAttData(Actor* const attacker,
-                             const P& attacker_origin,
-                             const P& aim_pos,
-                             const P& current_pos,
-                             const Wpn& wpn) :
+RangedAttData::RangedAttData(
+        Actor* const attacker,
+        const P& attacker_origin,
+        const P& aim_pos,
+        const P& current_pos,
+        const Wpn& wpn) :
+
         AttData(attacker, nullptr, wpn),
         aim_pos(aim_pos),
         aim_lvl((ActorSize)0),
@@ -287,7 +293,7 @@ RangedAttData::RangedAttData(Actor* const attacker,
 
                 if (actor_aimed_at)
                 {
-                        aim_lvl = actor_aimed_at->data().actor_size;
+                        aim_lvl = actor_aimed_at->data->actor_size;
                 }
                 else // No actor aimed at
                 {
@@ -296,9 +302,9 @@ RangedAttData::RangedAttData(Actor* const attacker,
                                 cell(aim_pos);
 
                         aim_lvl =
-                                is_cell_blocked ?
-                                ActorSize::humanoid :
-                                ActorSize::floor;
+                                is_cell_blocked
+                                ? ActorSize::humanoid
+                                : ActorSize::floor;
                 }
         }
 
@@ -308,14 +314,12 @@ RangedAttData::RangedAttData(Actor* const attacker,
         {
                 TRACE_VERBOSE << "Defender found" << std::endl;
 
-                const ActorData& defender_data = defender->data();
-
                 const P& def_pos(defender->pos);
 
                 skill_mod =
-                        attacker ?
-                        attacker->ability(AbilityId::ranged, true) :
-                        50;
+                        attacker
+                        ? attacker->ability(AbilityId::ranged, true)
+                        : 50;
 
                 wpn_mod = wpn.data().ranged.hit_chance_mod;
 
@@ -338,15 +342,19 @@ RangedAttData::RangedAttData(Actor* const attacker,
                 if (allow_positive_doge ||
                     (dodging_ability < 0))
                 {
-                        dodging_mod =
-                                -defender->ability(AbilityId::dodging, true);
+                        const int defender_dodging =
+                                defender->ability(
+                                        AbilityId::dodging,
+                                        true);
+
+                        dodging_mod = -defender_dodging;
                 }
 
                 const int dist_to_tgt = king_dist(attacker_origin, def_pos);
 
                 dist_mod = 15 - (dist_to_tgt * 5);
 
-                defender_size = defender_data.actor_size;
+                defender_size = defender->data->actor_size;
 
                 state_mod = 0;
 
@@ -367,8 +375,7 @@ RangedAttData::RangedAttData(Actor* const attacker,
 
                                 Array2<bool> hard_blocked_los(map::dims());
 
-                                const R fov_rect =
-                                        fov::get_fov_rect(attacker->pos);
+                                const R fov_rect = fov::fov_rect(attacker->pos);
 
                                 map_parsers::BlocksLos()
                                         .run(hard_blocked_los,
@@ -376,8 +383,9 @@ RangedAttData::RangedAttData(Actor* const attacker,
                                              MapParseMode::overwrite);
 
                                 can_attacker_see_tgt =
-                                        mon->can_see_actor(*defender,
-                                                           hard_blocked_los);
+                                        mon->can_see_actor(
+                                                *defender,
+                                                hard_blocked_los);
                         }
 
                         if (!can_attacker_see_tgt)
@@ -399,10 +407,10 @@ RangedAttData::RangedAttData(Actor* const attacker,
 
                 const bool apply_undead_bane_bon =
                         (attacker == map::player) &&
-                        player_bon::gets_undead_bane_bon(defender_data);
+                        player_bon::gets_undead_bane_bon(*defender->data);
 
                 const bool apply_ethereal_defender_pen =
-                        defender->has_prop(PropId::ethereal) &&
+                        defender->properties.has(PropId::ethereal) &&
                         !apply_undead_bane_bon;
 
                 if (apply_ethereal_defender_pen)
@@ -430,21 +438,22 @@ RangedAttData::RangedAttData(Actor* const attacker,
                         if (attacker == map::player)
                         {
                                 player_has_aim_bon =
-                                        attacker->has_prop(PropId::aiming);
+                                        attacker->properties
+                                        .has(PropId::aiming);
                         }
 
                         Dice dmg_dice = wpn.ranged_dmg(attacker);
 
                         if ((attacker == map::player) &&
-                            player_bon::gets_undead_bane_bon(defender_data))
+                            player_bon::gets_undead_bane_bon(*defender->data))
                         {
                                 dmg_dice.plus += 2;
                         }
 
                         dmg =
-                                player_has_aim_bon ?
-                                dmg_dice.max() :
-                                dmg_dice.roll();
+                                player_has_aim_bon
+                                ? dmg_dice.max()
+                                : dmg_dice.roll();
 
                         // Outside effective range limit?
                         if (!wpn.is_in_effective_range_lmt(attacker_origin,
@@ -459,10 +468,12 @@ RangedAttData::RangedAttData(Actor* const attacker,
         }
 }
 
-ThrowAttData::ThrowAttData(Actor* const attacker,
-                           const P& aim_pos,
-                           const P& current_pos,
-                           const Item& item) :
+ThrowAttData::ThrowAttData(
+        Actor* const attacker,
+        const P& aim_pos,
+        const P& current_pos,
+        const Item& item) :
+
         AttData(attacker, nullptr, item),
         aim_lvl((ActorSize)0),
         defender_size((ActorSize)0),
@@ -473,7 +484,7 @@ ThrowAttData::ThrowAttData(Actor* const attacker,
         // Determine aim level
         if (actor_aimed_at)
         {
-                aim_lvl = actor_aimed_at->data().actor_size;
+                aim_lvl = actor_aimed_at->data->actor_size;
         }
         else // Not aiming at actor
         {
@@ -493,12 +504,10 @@ ThrowAttData::ThrowAttData(Actor* const attacker,
         {
                 TRACE_VERBOSE << "Defender found" << std::endl;
 
-                const ActorData& defender_data = defender->data();
-
                 skill_mod =
-                        attacker ?
-                        attacker->ability(AbilityId::ranged, true) :
-                        50;
+                        attacker
+                        ? attacker->ability(AbilityId::ranged, true)
+                        : 50;
 
                 wpn_mod = item.data().ranged.throw_hit_chance_mod;
 
@@ -521,8 +530,10 @@ ThrowAttData::ThrowAttData(Actor* const attacker,
                 if (allow_positive_doge ||
                     (dodging_ability < 0))
                 {
-                        dodging_mod =
-                                -defender->ability(AbilityId::dodging, true);
+                        const int defender_dodging =
+                                defender->ability(AbilityId::dodging, true);;
+
+                        dodging_mod = -defender_dodging;
                 }
 
                 const P& att_pos(attacker->pos);
@@ -536,7 +547,7 @@ ThrowAttData::ThrowAttData(Actor* const attacker,
 
                 dist_mod = 15 - (dist_to_tgt * 5);
 
-                defender_size = defender_data.actor_size;
+                defender_size = defender->data->actor_size;
 
                 state_mod = 0;
 
@@ -568,10 +579,10 @@ ThrowAttData::ThrowAttData(Actor* const attacker,
 
                 const bool apply_undead_bane_bon =
                         (attacker == map::player) &&
-                        player_bon::gets_undead_bane_bon(defender_data);
+                        player_bon::gets_undead_bane_bon(*defender->data);
 
                 const bool apply_ethereal_defender_pen =
-                        defender->has_prop(PropId::ethereal) &&
+                        defender->properties.has(PropId::ethereal) &&
                         !apply_undead_bane_bon;
 
                 if (apply_ethereal_defender_pen)
@@ -599,7 +610,8 @@ ThrowAttData::ThrowAttData(Actor* const attacker,
                         if (attacker == map::player)
                         {
                                 player_has_aim_bon =
-                                        attacker->has_prop(PropId::aiming);
+                                        attacker->properties
+                                        .has(PropId::aiming);
                         }
 
                         Dice dmg_dice = item.thrown_dmg(attacker);
@@ -610,9 +622,9 @@ ThrowAttData::ThrowAttData(Actor* const attacker,
                         }
 
                         dmg =
-                                player_has_aim_bon ?
-                                dmg_dice.max() :
-                                dmg_dice.roll();
+                                player_has_aim_bon
+                                ? dmg_dice.max()
+                                : dmg_dice.roll();
 
                         // Outside effective range limit?
                         if (!item.is_in_effective_range_lmt(attacker->pos,
