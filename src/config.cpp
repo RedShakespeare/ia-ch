@@ -173,7 +173,7 @@ static void set_default_variables()
         is_ranged_wpn_auto_reload_ = false;
         delay_projectile_draw_ = 20;
         delay_shotgun_ = 75;
-        delay_explosion_ = 225;
+        delay_explosion_ = 300;
         default_player_name_ = "";
 
         TRACE_FUNC_END;
