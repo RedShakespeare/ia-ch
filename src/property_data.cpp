@@ -649,7 +649,7 @@ static void init_data_list()
         d.msg_start_player = "I am out of sight!";
         d.msg_start_mon = "is out of sight!";
         d.msg_end_player = "I am visible.";
-        d.msg_end_mon = "is visible.";
+        d.msg_end_mon = "";
         d.allow_display_turns = true;
         d.update_vision_on_toggled = true;
         d.allow_test_on_bot = true;
@@ -666,7 +666,7 @@ static void init_data_list()
         d.msg_start_player = "I am out of sight!";
         d.msg_start_mon = "is out of sight!";
         d.msg_end_player = "I am visible.";
-        d.msg_end_mon = "is visible.";
+        d.msg_end_mon = "";
         d.allow_display_turns = true;
         d.update_vision_on_toggled = true;
         d.allow_test_on_bot = true;
