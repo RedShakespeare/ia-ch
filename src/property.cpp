@@ -1469,11 +1469,6 @@ PropActResult PropCorruptsEnvColor::on_act()
 
 void PropAltersEnv::on_std_turn()
 {
-        if (rnd::one_in(4))
-        {
-                return;
-        }
-
         Array2<bool> blocked(map::dims());
 
         map_parsers::BlocksWalking(ParseActors::no)
