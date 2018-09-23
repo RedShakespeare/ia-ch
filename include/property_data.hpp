@@ -69,9 +69,6 @@ enum class PropId
         confuses_adjacent, // "Strange color" confusing player when seen
         speaks_curses,
         aura_of_decay, // Damages adjacent hostile creatures
-        hp_sap,
-        spi_sap,
-        mind_sap,
 
         // Properties describing the actors body and/or method of moving around
         flying,
@@ -98,6 +95,9 @@ enum class PropId
         clockwork_hasted, // For the Arcane Clockwork artifact
         summoned,
         swimming,
+        hp_sap,
+        spi_sap,
+        mind_sap,
 
         END
 };

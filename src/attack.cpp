@@ -1382,6 +1382,8 @@ void melee(Actor* const attacker,
 
                 const auto dmg_type = wpn.data().melee.dmg_type;
 
+                TRACE << "Melee damage: " << att_data.dmg << std::endl;
+
                 actor::hit(
                         defender,
                         att_data.dmg,

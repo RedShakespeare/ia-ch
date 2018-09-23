@@ -45,6 +45,7 @@ enum class SpellId
         frenzy,
 
         // Monsters only
+        force_bolt,
         burn,
         deafen,
         disease,
@@ -65,6 +66,7 @@ const std::unordered_map<std::string, SpellId> str_to_spell_id_map =
         {"aza_wrath", SpellId::aza_wrath},
         {"bless", SpellId::bless},
         {"burn", SpellId::burn},
+        {"force_bolt", SpellId::force_bolt},
         {"darkbolt", SpellId::darkbolt},
         {"deafen", SpellId::deafen},
         {"disease", SpellId::disease},
@@ -399,12 +401,106 @@ private:
         }
 };
 
-class SpellDarkbolt: public Spell
+class BoltImpl
 {
 public:
-        SpellDarkbolt() : Spell() {}
+        virtual ~BoltImpl() {}
 
-        bool allow_mon_cast_now(Mon& mon) const override;
+        virtual Range damage(
+                const SpellSkill skill,
+                const Actor& caster) const = 0;
+
+        virtual void on_hit(Actor& actor_hit, const SpellSkill skill) const = 0;
+
+        virtual std::string hit_msg_ending() const = 0;
+
+        virtual int mon_cooldown() const = 0;
+
+        virtual bool mon_can_learn() const = 0;
+
+        virtual bool player_can_learn() const = 0;
+
+        virtual std::string name() const = 0;
+
+        virtual SpellId id() const = 0;
+
+        virtual std::vector<std::string> descr_specific(
+                const SpellSkill skill) const = 0;
+
+        virtual int max_spi_cost(const SpellSkill skill) const = 0;
+};
+
+class ForceBolt: public BoltImpl
+{
+public:
+        ForceBolt() : BoltImpl() {}
+
+        Range damage(
+                const SpellSkill skill,
+                const Actor& caster) const override;
+
+        void on_hit(Actor& actor_hit, const SpellSkill skill) const override
+        {
+                (void)actor_hit;
+                (void)skill;
+        }
+
+        std::string hit_msg_ending() const override
+        {
+                return "struck by a bolt!";
+        }
+
+        int mon_cooldown() const override
+        {
+                return 3;
+        }
+
+        bool mon_can_learn() const override
+        {
+                return true;
+        }
+
+        bool player_can_learn() const override
+        {
+                return false;
+        }
+
+        std::string name() const override
+        {
+                return "Force Bolt";
+        }
+
+        SpellId id() const override
+        {
+                return SpellId::force_bolt;
+        }
+
+        std::vector<std::string> descr_specific(
+                const SpellSkill skill) const override;
+
+        int max_spi_cost(const SpellSkill skill) const override
+        {
+                (void)skill;
+
+                return 2;
+        }
+};
+
+class Darkbolt: public BoltImpl
+{
+public:
+        Darkbolt() : BoltImpl() {}
+
+        Range damage(
+                const SpellSkill skill,
+                const Actor& caster) const override;
+
+        void on_hit(Actor& actor_hit, const SpellSkill skill) const override;
+
+        std::string hit_msg_ending() const override
+        {
+                return "struck by a blast!";
+        }
 
         int mon_cooldown() const override
         {
@@ -431,13 +527,61 @@ public:
                 return SpellId::darkbolt;
         }
 
+        std::vector<std::string> descr_specific(
+                const SpellSkill skill) const override;
+
+        int max_spi_cost(const SpellSkill skill) const override
+        {
+                (void)skill;
+
+                return 4;
+        }
+};
+
+class SpellBolt: public Spell
+{
+public:
+        SpellBolt(BoltImpl* impl) :
+                Spell(),
+                impl_(impl) {}
+
+        bool allow_mon_cast_now(Mon& mon) const override;
+
+        int mon_cooldown() const override
+        {
+                return impl_->mon_cooldown();
+        }
+
+        bool mon_can_learn() const override
+        {
+                return impl_->mon_can_learn();
+        }
+
+        bool player_can_learn() const override
+        {
+                return impl_->player_can_learn();
+        }
+
+        std::string name() const override
+        {
+                return impl_->name();
+        }
+
+        SpellId id() const override
+        {
+                return impl_->id();
+        }
+
         SpellShock shock_type() const override
         {
                 return SpellShock::mild;
         }
 
         std::vector<std::string> descr_specific(
-                const SpellSkill skill) const override;
+                const SpellSkill skill) const override
+        {
+                return impl_->descr_specific(skill);
+        }
 
         void run_effect(
             Actor* const caster,
@@ -446,9 +590,7 @@ public:
 private:
         int max_spi_cost(const SpellSkill skill) const override
         {
-                (void)skill;
-
-                return 4;
+                return impl_->max_spi_cost(skill);
         }
 
         bool is_noisy(const SpellSkill skill) const override
@@ -457,6 +599,8 @@ private:
 
                 return true;
         }
+
+        std::unique_ptr<BoltImpl> impl_;
 };
 
 class SpellAzaWrath: public Spell

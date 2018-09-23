@@ -92,6 +92,8 @@ static std::unordered_map<std::string, ActorId> str_to_actor_id_map = {
         {"tentacles", ActorId::tentacles},
         {"warping_aberrance", ActorId::warping_aberrance},
         {"death_fiend", ActorId::death_fiend},
+        {"khaga_offspring", ActorId::khaga_offspring},
+        {"khaga", ActorId::khaga},
         {"the_high_priest", ActorId::the_high_priest},
         {"high_priest_guard_war_vet", ActorId::high_priest_guard_war_vet},
         {"high_priest_guard_rogue", ActorId::high_priest_guard_rogue},

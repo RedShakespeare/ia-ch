@@ -239,7 +239,7 @@ MeleeAttData::MeleeAttData(
                 is_weak_attack = true;
         }
         // Attacker not weakened, or not an actor attacking (e.g. a trap)
-        else  if (attacker && !is_defender_aware)
+        else if (attacker && !is_defender_aware)
         {
                 TRACE << "Melee attack is backstab" << std::endl;
 
@@ -256,8 +256,7 @@ MeleeAttData::MeleeAttData(
                 // +300% damage if attacking with a dagger
                 const auto id = wpn.data().id;
 
-                if ((id == ItemId::dagger) ||
-                    (id == ItemId::spirit_dagger))
+                if ((id == ItemId::dagger) || (id == ItemId::spirit_dagger))
                 {
                         dmg_pct += 300;
                 }

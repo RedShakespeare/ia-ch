@@ -948,7 +948,7 @@ PropActResult PropRecloaks::on_act()
 {
         if (owner_->is_alive() &&
             !owner_->properties.has(PropId::cloaked) &&
-            rnd::one_in(20))
+            rnd::one_in(8))
         {
                 auto prop_cloaked = new PropCloaked();
 

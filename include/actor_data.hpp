@@ -93,6 +93,8 @@ enum class ActorId
         tentacles,
         warping_aberrance,
         death_fiend,
+        khaga_offspring,
+        khaga,
         the_high_priest,
         high_priest_guard_war_vet,
         high_priest_guard_rogue,

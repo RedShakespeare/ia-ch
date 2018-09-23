@@ -54,8 +54,11 @@ Spell* make_spell_from_id(const SpellId spell_id)
         case SpellId::disease:
                 return new SpellDisease();
 
+        case SpellId::force_bolt:
+                return new SpellBolt(new ForceBolt);
+
         case SpellId::darkbolt:
-                return new SpellDarkbolt();
+                return new SpellBolt(new Darkbolt);
 
         case SpellId::aza_wrath:
                 return new SpellAzaWrath();
@@ -503,9 +506,118 @@ bool SpellAuraOfDecay::allow_mon_cast_now(Mon& mon) const
 }
 
 // -----------------------------------------------------------------------------
-// Darkbolt
+// Bolt spells
 // -----------------------------------------------------------------------------
-void SpellDarkbolt::run_effect(
+Range ForceBolt::damage(const SpellSkill skill,
+                        const Actor& caster) const
+{
+        (void)caster;
+
+        switch (skill)
+        {
+        case SpellSkill::basic:
+                return Range(3, 4);
+
+        case SpellSkill::expert:
+                return Range(5, 7);
+
+        case SpellSkill::master:
+                return Range(9, 12);
+        }
+
+        ASSERT(false);
+
+        return Range(1, 1);
+}
+
+std::vector<std::string> ForceBolt::descr_specific(const SpellSkill skill) const
+{
+        (void)skill;
+
+        return {};
+}
+
+Range Darkbolt::damage(const SpellSkill skill, const Actor& caster) const
+{
+        Range dmg;
+
+        switch (skill)
+        {
+        case SpellSkill::basic:
+                dmg = Range(4, 9);
+                break;
+
+        case SpellSkill::expert:
+                dmg = Range(7, 14);
+                break;
+
+        case SpellSkill::master:
+                dmg = Range(10, 19);
+                break;
+        }
+
+        if (!caster.is_player())
+        {
+                const int mon_dmg_pct = 75;
+
+                dmg.min = (dmg.min * mon_dmg_pct) / 100;
+                dmg.max = (dmg.max * mon_dmg_pct) / 100;
+        }
+
+        return dmg;
+}
+
+std::vector<std::string> Darkbolt::descr_specific(
+        const SpellSkill skill) const
+{
+        std::vector<std::string> descr;
+
+        descr.push_back(
+                "Siphons power from some infernal dimension, which is focused "
+                "into a bolt hurled towards a target with great force. The "
+                "conjured bolt has some will on its own - the caster cannot "
+                "determine exactly which creature will be struck.");
+
+        const auto dmg_range = damage(skill, *map::player);
+
+        descr.push_back("The impact does " + dmg_range.str() + " damage.");
+
+        if (skill == SpellSkill::master)
+        {
+                descr.push_back("The target is paralyzed, and set aflame.");
+        }
+        else // Not master
+        {
+                descr.push_back("The target is paralyzed.");
+        }
+
+        return descr;
+}
+
+void Darkbolt::on_hit(Actor& actor_hit, const SpellSkill skill) const
+{
+        if (!actor_hit.is_alive())
+        {
+                return;
+        }
+
+        auto prop = new PropParalyzed();
+
+        prop->set_duration(rnd::range(1, 2));
+
+        actor_hit.properties.apply(prop);
+
+        if (skill == SpellSkill::master)
+        {
+                auto prop = new PropBurning();
+
+                prop->set_duration(rnd::range(2, 3));
+
+                actor_hit.properties.apply(prop);
+        }
+}
+
+void SpellBolt::run_effect(
         Actor* const caster,
         const SpellSkill skill) const
 {
@@ -552,10 +664,11 @@ void SpellDarkbolt::run_effect(
                 {
                         if (map::player->can_see_actor(*target))
                         {
-                                msg_log::add(spell_reflect_msg,
-                                             colors::text(),
-                                             false,
-                                             MorePromptOnMsg::yes);
+                                msg_log::add(
+                                        spell_reflect_msg,
+                                        colors::text(),
+                                        false,
+                                        MorePromptOnMsg::yes);
                         }
 
                         // Run effect with the target as caster instead
@@ -574,10 +687,11 @@ void SpellDarkbolt::run_effect(
 
                 const auto flood = floodfill(caster->pos, blocked);
 
-                const auto path = pathfind_with_flood(
-                        caster->pos,
-                        target->pos,
-                        flood);
+                const auto path =
+                        pathfind_with_flood(
+                                caster->pos,
+                                target->pos,
+                                flood);
 
                 if (!path.empty())
                 {
@@ -619,8 +733,7 @@ void SpellDarkbolt::run_effect(
 
         const bool player_see_tgt = map::player->can_see_actor(*target);
 
-        if (player_see_tgt ||
-            player_see_cell)
+        if (player_see_tgt || player_see_cell)
         {
                 io::draw_blast_at_cells({target->pos}, colors::magenta());
 
@@ -648,27 +761,14 @@ void SpellDarkbolt::run_effect(
                         }
                 }
 
-                msg_log::add(str_begin + " struck by a blast!", msg_clr);
+                msg_log::add(
+                        str_begin +
+                        " " +
+                        impl_->hit_msg_ending(),
+                        msg_clr);
         }
 
-        // Skill  damage     avg
-        // -----------------------
-        // 0       4  - 9     6.5
-        // 1       7  - 14   10.5
-        // 2      10  - 19   14.5
-        Range dmg_range(
-                4 + (int)skill * 3,
-                9 + (int)skill * 5);
-
-        // If a monster is casting, do reduced damage to avoid instantly killing
-        // the player
-        if (!caster->is_player())
-        {
-                const int mon_dmg_pct = 75;
-
-                dmg_range.min = (dmg_range.min * mon_dmg_pct) / 100;
-                dmg_range.max = (dmg_range.max * mon_dmg_pct) / 100;
-        }
+        const auto dmg_range = impl_->damage(skill, *caster);
 
         actor::hit(
                 *target,
@@ -677,24 +777,7 @@ void SpellDarkbolt::run_effect(
                 DmgMethod::END,
                 AllowWound::no);
 
-        if (target->is_alive())
-        {
-                auto prop = new PropParalyzed();
-
-                prop->set_duration(rnd::range(1, 2));
-
-                target->properties.apply(prop);
-        }
-
-        if ((skill == SpellSkill::master) &&
-            target->is_alive())
-        {
-                auto prop = new PropBurning();
-
-                prop->set_duration(rnd::range(2, 3));
-
-                target->properties.apply(prop);
-        }
+        impl_->on_hit(*target, skill);
 
         Snd snd("",
                 SfxId::END,
@@ -707,36 +790,7 @@ void SpellDarkbolt::run_effect(
         snd_emit::run(snd);
 }
 
-std::vector<std::string> SpellDarkbolt::descr_specific(
-        const SpellSkill skill) const
-{
-        std::vector<std::string> descr;
-
-        descr.push_back(
-                "Siphons power from some infernal dimension, which is focused "
-                "into a bolt hurled towards a target with great force. The "
-                "conjured bolt has some will on its own - the caster cannot "
-                "determine exactly which creature will be struck.");
-
-        const Range dmg_range(
-                4 + (int)skill * 3,
-                9 + (int)skill * 5);
-
-        descr.push_back("The impact does " + dmg_range.str() + " damage.");
-
-        if (skill == SpellSkill::master)
-        {
-                descr.push_back("The target is paralyzed, and set aflame.");
-        }
-        else // Not master
-        {
-                descr.push_back("The target is paralyzed.");
-        }
-
-        return descr;
-}
-
-bool SpellDarkbolt::allow_mon_cast_now(Mon& mon) const
+bool SpellBolt::allow_mon_cast_now(Mon& mon) const
 {
         // NOTE: Monsters with master spell skill level COULD cast this spell
         // without LOS to the player, but we do not allow the AI to do this,

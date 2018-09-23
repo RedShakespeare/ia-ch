@@ -229,7 +229,13 @@ void learn_spell(const SpellId id, const Verbosity verbosity)
 
 void incr_spell_skill(const SpellId id)
 {
+        TRACE << "Increasing spell skill for spell id: "
+              << (int)id
+              << std::endl;
+
         auto& skill = spell_skills_[(size_t)id];
+
+        TRACE << "skill before: " << (int)skill << std::endl;
 
         if (skill == SpellSkill::basic)
         {
@@ -239,6 +245,8 @@ void incr_spell_skill(const SpellId id)
         {
                 skill = SpellSkill::master;
         }
+
+        TRACE << "skill after: " << (int)skill << std::endl;
 }
 
 SpellSkill spell_skill(const SpellId id)
