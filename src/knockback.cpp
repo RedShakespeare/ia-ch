@@ -133,7 +133,7 @@ void run(Actor& defender,
         defender.properties.apply(prop);
 
         // Leave current cell
-        tgt_cell.rigid->on_leave(defender);
+        map::cells.at(defender.pos).rigid->on_leave(defender);
 
         defender.pos = new_pos;
 
