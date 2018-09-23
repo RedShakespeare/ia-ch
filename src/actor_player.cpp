@@ -1005,7 +1005,10 @@ void Player::on_actor_turn()
         }
         else // Monster is not seen
         {
-            mon.is_msg_mon_in_view_printed_ = false;
+            if (mon.player_aware_of_me_counter_ <= 0)
+            {
+                mon.is_msg_mon_in_view_printed_ = false;
+            }
 
             const bool is_cell_seen = map::cells.at(mon.pos).is_seen_by_player;
 
