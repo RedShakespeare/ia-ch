@@ -1469,7 +1469,7 @@ PropActResult PropCorruptsEnvColor::on_act()
 
 void PropAltersEnv::on_std_turn()
 {
-        if (!rnd::one_in(4))
+        if (rnd::one_in(4))
         {
                 return;
         }
@@ -1526,7 +1526,9 @@ void PropAltersEnv::on_std_turn()
         {
                 for (int y = y0; y <= y1; ++y)
                 {
-                        if (has_actor.at(x, y) || !rnd::one_in(6))
+                        if (has_actor.at(x, y) ||
+                            map::cells.at(x, y).item ||
+                            !rnd::one_in(6))
                         {
                                 continue;
                         }
@@ -1538,16 +1540,9 @@ void PropAltersEnv::on_std_turn()
 
                         if (current_id == FeatureId::wall)
                         {
-                                blocked.at(x, y) = true;
+                                map::put(new Floor(pos));
 
-                                if (map_parsers::is_map_connected(blocked))
-                                {
-                                        map::put(new Floor(pos));
-                                }
-                                else
-                                {
-                                        blocked.at(x, y) = false;
-                                }
+                                blocked.at(x, y) = false;
                         }
                         else if (current_id == FeatureId::floor)
                         {
