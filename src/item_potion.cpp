@@ -30,7 +30,7 @@ Potion::Potion(ItemData* const item_data) :
 
 }
 
-void Potion::save()
+void Potion::save() const
 {
     saving::put_int(alignment_feeling_dlvl_countdown_);
     saving::put_int(alignment_feeling_turn_countdown_);

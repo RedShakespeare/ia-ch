@@ -105,7 +105,7 @@ std::string HornOfMalice::name_inf_str() const
         return "{" + std::to_string(charges_) + "}";
 }
 
-void HornOfMalice::save()
+void HornOfMalice::save() const
 {
         saving::put_int(charges_);
 }
@@ -180,7 +180,7 @@ std::string HornOfBanishment::name_inf_str() const
         return "{" + std::to_string(charges_) + "}";
 }
 
-void HornOfBanishment::save()
+void HornOfBanishment::save() const
 {
         saving::put_int(charges_);
 }
@@ -238,7 +238,7 @@ std::string Clockwork::name_inf_str() const
         return "{" + std::to_string(charges_) + "}";
 }
 
-void Clockwork::save()
+void Clockwork::save() const
 {
         saving::put_int(charges_);
 }

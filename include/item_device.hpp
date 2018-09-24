@@ -39,7 +39,7 @@ public:
 
         virtual std::string name_inf_str() const override;
 
-        virtual void save() override;
+        virtual void save() const override;
         virtual void load() override;
 
         Condition condition_;
@@ -164,7 +164,7 @@ public:
 
         LgtSize lgt_size() const override;
 
-        void save() override;
+        void save() const override;
         void load() override;
 
         int nr_turns_left_;

@@ -70,7 +70,7 @@ public:
 
     std::string name_inf_str() const override;
 
-    void save() override;
+    void save() const override;
 
     void load() override;
 
@@ -100,7 +100,7 @@ public:
 
     std::string name_inf_str() const override;
 
-    void save() override;
+    void save() const override;
 
     void load() override;
 
@@ -123,7 +123,7 @@ public:
 
     std::string name_inf_str() const override;
 
-    void save() override;
+    void save() const override;
 
     void load() override;
 

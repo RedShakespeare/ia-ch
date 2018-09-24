@@ -649,10 +649,10 @@ void Item::clear_carrier_spells()
 // Armor
 // -----------------------------------------------------------------------------
 Armor::Armor(ItemData* const item_data) :
-        Item    (item_data),
-        dur_    (rnd::range(80, 100)) {}
+        Item(item_data),
+        dur_(rnd::range(80, 100)) {}
 
-void Armor::save()
+void Armor::save() const
 {
         saving::put_int(dur_);
 }
@@ -795,7 +795,7 @@ Wpn::Wpn(ItemData* const item_data) :
         }
 }
 
-void Wpn::save()
+void Wpn::save() const
 {
         saving::put_int(melee_base_dmg_.rolls);
         saving::put_int(melee_base_dmg_.sides);
@@ -1255,7 +1255,7 @@ AmmoMag::AmmoMag(ItemData* const item_data) : Ammo(item_data)
         set_full_ammo();
 }
 
-void AmmoMag::save()
+void AmmoMag::save() const
 {
         saving::put_int(ammo_);
 }
@@ -1279,7 +1279,7 @@ MedicalBag::MedicalBag(ItemData* const item_data) :
         nr_turns_left_action_(-1),
         current_action_(MedBagAction::END) {}
 
-void MedicalBag::save()
+void MedicalBag::save() const
 {
         saving::put_int(nr_supplies_);
 }

@@ -21,7 +21,7 @@
 #include "saving.hpp"
 #include "text_format.hpp"
 
-void Rod::save()
+void Rod::save() const
 {
     saving::put_int(nr_charge_turns_left_);
 }

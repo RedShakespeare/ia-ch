@@ -19,7 +19,7 @@ public:
 
         virtual ~Potion() {}
 
-        void save() override;
+        void save() const override;
 
         void load() override;
 

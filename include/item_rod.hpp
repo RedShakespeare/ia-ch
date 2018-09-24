@@ -13,7 +13,7 @@ public:
 
     virtual ~Rod() {}
 
-    void save() override final;
+    void save() const override final;
 
     void load() override final;
 

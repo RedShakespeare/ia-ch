@@ -61,7 +61,7 @@ StrangeDevice::StrangeDevice(ItemData* const item_data) :
         Device(item_data),
         condition_(rnd::coin_toss() ? Condition::fine : Condition::shoddy) {}
 
-void StrangeDevice::save()
+void StrangeDevice::save() const
 {
         saving::put_int(int(condition_));
 }
@@ -431,7 +431,7 @@ ConsumeItem DeviceLantern::activate(Actor* const actor)
         return ConsumeItem::no;
 }
 
-void DeviceLantern::save()
+void DeviceLantern::save() const
 {
         saving::put_int(nr_turns_left_);
         saving::put_bool(is_activated_);

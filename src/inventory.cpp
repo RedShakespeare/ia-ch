@@ -55,8 +55,20 @@ Inventory::~Inventory()
 
 void Inventory::save() const
 {
+        // Index into slots or backpack, containing the thrown item
+        int thrown_item_idx = -1;
+
+        bool is_thrown_item_in_slots = false;
+
         for (const InvSlot& slot : slots)
         {
+                // NOTE: The thrown slot never owns the actual item, it is
+                // located somewhere else
+                if (slot.id == SlotId::thrown)
+                {
+                        continue;
+                }
+
                 Item* const item = slot.item;
 
                 if (item)
@@ -65,6 +77,15 @@ void Inventory::save() const
                         saving::put_int(item->nr_items_);
 
                         item->save();
+
+                        if (item == item_in_slot(SlotId::thrown))
+                        {
+                                ASSERT(thrown_item_idx == -1);
+
+                                thrown_item_idx = (int)slot.id;
+
+                                is_thrown_item_in_slots = true;
+                        }
                 }
                 else // No item in this slot
                 {
@@ -74,19 +95,41 @@ void Inventory::save() const
 
         saving::put_int(backpack.size());
 
-        for (Item* item : backpack)
+        for (size_t i = 0; i < backpack.size(); ++i)
         {
+                const auto* const item = backpack[i];
+
                 saving::put_int(int(item->id()));
                 saving::put_int(item->nr_items_);
 
                 item->save();
+
+                if (item == item_in_slot(SlotId::thrown))
+                {
+                        ASSERT(thrown_item_idx == -1);
+
+                        thrown_item_idx = i;
+
+                        is_thrown_item_in_slots = false;
+                }
         }
+
+        // Store selected thrown item
+        saving::put_int(thrown_item_idx);
+        saving::put_bool(is_thrown_item_in_slots);
 }
 
 void Inventory::load()
 {
         for (InvSlot& slot : slots)
         {
+                // NOTE: The thrown slot never owns the actual item, it is
+                // located somewhere else
+                if (slot.id == SlotId::thrown)
+                {
+                        continue;
+                }
+
                 // Any previous item is destroyed
                 Item* item = slot.item;
 
@@ -94,11 +137,11 @@ void Inventory::load()
 
                 slot.item = nullptr;
 
-                const ItemId id = (ItemId)saving::get_int();
+                const ItemId item_id = (ItemId)saving::get_int();
 
-                if (id != ItemId::END)
+                if (item_id != ItemId::END)
                 {
-                        item = item_factory::make(id);
+                        item = item_factory::make(item_id);
 
                         item->nr_items_ = saving::get_int();
 
@@ -139,6 +182,22 @@ void Inventory::load()
                 ASSERT(owning_actor_);
 
                 item->on_pickup(*owning_actor_);
+        }
+
+        // Set thrown item
+        slots[(size_t)SlotId::thrown].item = nullptr;
+
+        const int thrown_item_idx = saving::get_int();
+        const bool is_thrown_item_in_slots = saving::get_bool();
+
+        if (thrown_item_idx != -1)
+        {
+                Item* const thrown_item =
+                        is_thrown_item_in_slots
+                        ? slots[(size_t)thrown_item_idx].item
+                        : backpack[(size_t)thrown_item_idx];
+
+                slots[(size_t)SlotId::thrown].item = thrown_item;
         }
 }
 
@@ -849,17 +908,19 @@ int Inventory::total_item_weight() const
 {
         int weight = 0;
 
-        for (size_t i = 0; i < (size_t)SlotId::END; ++i)
+        for (const auto& slot : slots)
         {
-                if (slots[i].item)
+                // NOTE: The thrown slot never owns the actual item, it is
+                // located somewhere else
+                if (slot.item && (slot.id != SlotId::thrown))
                 {
-                        weight += slots[i].item->weight();
+                        weight += slot.item->weight();
                 }
         }
 
-        for (size_t i = 0; i < backpack.size(); ++i)
+        for (const auto item : backpack)
         {
-                weight += backpack[i]->weight();
+                weight += item->weight();
         }
 
         return weight;

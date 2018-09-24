@@ -578,7 +578,9 @@ void Player::on_new_dlvl_reached()
 
     for (auto& slot: inv.slots)
     {
-        if (slot.item)
+        // NOTE: The thrown slot never owns the actual item, it is located
+        // somewhere else
+        if (slot.item && (slot.id != SlotId::thrown))
         {
             slot.item->on_player_reached_new_dlvl();
         }
@@ -1135,7 +1137,9 @@ void Player::on_actor_turn()
 
         for (auto& slot : inv.slots)
         {
-            if (slot.item)
+            // NOTE: The thrown slot never owns the actual item, it is located
+            // somewhere else
+            if (slot.item && (slot.id != SlotId::thrown))
             {
                 const ItemData& d = slot.item->data();
 
@@ -1175,7 +1179,9 @@ void Player::on_actor_turn()
 
     for (InvSlot& slot : inv.slots)
     {
-        if (slot.item)
+        // NOTE: The thrown slot never owns the actual item, it is located
+        // somewhere else
+        if (slot.item  && (slot.id != SlotId::thrown))
         {
             slot.item->on_actor_turn_in_inv(InvType::slots);
         }
@@ -1507,7 +1513,9 @@ void Player::on_std_turn()
         // Items affect hp regen?
         for (const auto& slot : inv.slots)
         {
-            if (slot.item)
+            // NOTE: The thrown slot never owns the actual item, it is located
+            // somewhere else
+            if (slot.item && (slot.id != SlotId::thrown))
             {
                 nr_turns_per_hp += slot.item->hp_regen_change(InvType::slots);
             }

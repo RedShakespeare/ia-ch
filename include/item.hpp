@@ -66,7 +66,7 @@ public:
                 (void)verbosity;
         }
 
-        virtual void save() {}
+        virtual void save() const {}
 
         virtual void load() {}
 
@@ -225,7 +225,7 @@ public:
 
         ~Armor() {}
 
-        void save() override;
+        void save() const override;
         void load() override;
 
         Color interface_color() const override
@@ -292,7 +292,7 @@ public:
 
         Wpn& operator=(const Wpn& other) = delete;
 
-        void save() override;
+        void save() const override;
         void load() override;
 
         Color color() const override;
@@ -458,7 +458,7 @@ public:
 
         void set_full_ammo();
 
-        void save() override;
+        void save() const override;
 
         void load() override;
 
@@ -479,7 +479,7 @@ public:
 
         ~MedicalBag() {}
 
-        void save() override;
+        void save() const override;
 
         void load() override;
 
