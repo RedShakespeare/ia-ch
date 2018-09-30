@@ -1,8 +1,8 @@
 #include "text_format.hpp"
 
-#include "init.hpp"
-
 #include <algorithm>
+
+#include "init.hpp"
 
 // -----------------------------------------------------------------------------
 // Private
@@ -46,25 +46,19 @@ namespace text_format
 
 std::vector<std::string> split(std::string line, const int max_w)
 {
-        std::vector<std::string> result;
-
         if (line.empty())
         {
-                return result;
+                return {};
         }
 
         std::string current_word = read_and_remove_word(line);
 
         if (line.empty())
         {
-                result = {current_word};
-
-                return result;
+                return {current_word};
         }
 
-        result.resize(1);
-
-        result[0] = "";
+        std::vector<std::string> result = {""};
 
         size_t current_row_idx = 0;
 
@@ -72,13 +66,10 @@ std::vector<std::string> split(std::string line, const int max_w)
         {
                 if (!is_word_fit(result[current_row_idx], current_word, max_w))
                 {
-                        // Current word did not fit on current line, make a new
-                        // line
+                        // Word did not fit on current line, make a new line
                         ++current_row_idx;
 
-                        result.resize(current_row_idx + 1);
-
-                        result[current_row_idx] = "";
+                        result.push_back("");
                 }
 
                 // If this is not the first word on the current line, add a

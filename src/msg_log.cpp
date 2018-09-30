@@ -248,9 +248,15 @@ void add(const std::string& str,
          const bool interrupt_all_player_actions,
          const MorePromptOnMsg add_more_prompt_on_msg)
 {
+        TRACE_FUNC_BEGIN;
+
         ASSERT(!str.empty());
 
-#ifndef NDEBUG
+        if (str.empty())
+        {
+                return;
+        }
+
         if (str[0] == ' ')
         {
                 TRACE << "Message starts with space: \""
@@ -259,8 +265,9 @@ void add(const std::string& str,
                       << std::endl;
 
                 ASSERT(false);
+
+                return;
         }
-#endif // NDEBUG
 
         // If frenzied, change the message
         // NOTE: This is done through a recursive call - the reason for this is
@@ -275,6 +282,8 @@ void add(const std::string& str,
                     color,
                     interrupt_all_player_actions,
                     add_more_prompt_on_msg);
+
+                TRACE_FUNC_END;
 
                 return;
         }
@@ -339,6 +348,8 @@ void add(const std::string& str,
                             interrupt_actions_current_line,
                             add_more_prompt_current_line);
                 }
+
+                TRACE_FUNC_END;
 
                 return;
         }
@@ -419,6 +430,8 @@ void add(const std::string& str,
         // Some actions are always interrupted by messages, regardless of the
         // "interrupt_all_player_actions" parameter
         map::player->on_log_msg_printed();
+
+        TRACE_FUNC_END;
 }
 
 void more_prompt()

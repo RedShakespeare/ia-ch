@@ -284,7 +284,12 @@ void LitFlare::add_light(Array2<bool>& light) const
                      R(p0, p1),
                      MapParseMode::overwrite);
 
-        const auto light_fov = fov::run(pos_, hard_blocked);
+        FovMap fov_map;
+        fov_map.hard_blocked = &hard_blocked;
+        fov_map.light = &map::light;
+        fov_map.dark = &map::dark;
+
+        const auto light_fov = fov::run(pos_, fov_map);
 
         for (int y = p0.y; y <= p1.y; ++y)
         {

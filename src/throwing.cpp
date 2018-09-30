@@ -114,6 +114,8 @@ void throw_item(Actor& actor_throwing,
                 const P& tgt_pos,
                 Item& item_thrown)
 {
+        TRACE_FUNC_BEGIN;
+
         int speed_pct_diff = 0;
 
         if (&actor_throwing == map::player)
@@ -134,10 +136,13 @@ void throw_item(Actor& actor_throwing,
                 }
         }
 
-        ThrowAttData att_data(&actor_throwing,
-                              tgt_pos,
-                              actor_throwing.pos,
-                              item_thrown);
+        ThrowAttData att_data(
+                &actor_throwing,
+                tgt_pos,
+                actor_throwing.pos,
+                item_thrown);
+
+        TRACE << "Calculating throwing path" << std::endl;
 
         const auto path =
                 line_calc::calc_new_line(
@@ -147,6 +152,8 @@ void throw_item(Actor& actor_throwing,
                         999,
                         false);
 
+        TRACE << "Throwing path size: " << path.size() << std::endl;
+
         const ItemData& item_thrown_data = item_thrown.data();
 
         const std::string item_name_a = item_thrown.name(ItemRefType::a);
@@ -154,6 +161,7 @@ void throw_item(Actor& actor_throwing,
         if (&actor_throwing == map::player)
         {
                 msg_log::clear();
+
                 msg_log::add("I throw " + item_name_a + ".");
         }
         else // Monster throwing
@@ -301,6 +309,8 @@ void throw_item(Actor& actor_throwing,
 
                                         game_time::tick(speed_pct_diff);
 
+                                        TRACE_FUNC_END;
+
                                         return;
                                 }
 
@@ -370,6 +380,8 @@ void throw_item(Actor& actor_throwing,
                 actor_throwing.properties.end_prop(PropId::cloaked);
 
                 game_time::tick(speed_pct_diff);
+
+                TRACE_FUNC_END;
 
                 return;
         }
@@ -456,6 +468,8 @@ void throw_item(Actor& actor_throwing,
         actor_throwing.properties.end_prop(PropId::cloaked);
 
         game_time::tick(speed_pct_diff);
+
+        TRACE_FUNC_END;
 }
 
 } // throwing

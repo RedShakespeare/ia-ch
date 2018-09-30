@@ -1300,7 +1300,7 @@ PropActResult PropVortex::on_act()
 
         Array2<bool> blocked_los(map::dims());
 
-        const R fov_rect = fov::fov_rect(mon->pos);
+        const R fov_rect = fov::fov_rect(mon->pos, blocked_los.dims());
 
         map_parsers::BlocksLos()
                 .run(blocked_los,
@@ -1808,7 +1808,7 @@ PropActResult PropSpeaksCurses::on_act()
 
         Array2<bool> blocked_los(map::dims());
 
-        const R fov_rect = fov::fov_rect(mon->pos);
+        const R fov_rect = fov::fov_rect(mon->pos, blocked_los.dims());
 
         map_parsers::BlocksLos()
                 .run(blocked_los,
@@ -1987,7 +1987,7 @@ PropActResult PropMajorClaphamSummon::on_act()
 
         Array2<bool> blocked_los(map::dims());
 
-        const R fov_rect = fov::fov_rect(mon->pos);
+        const R fov_rect = fov::fov_rect(mon->pos, blocked_los.dims());
 
         map_parsers::BlocksLos()
                 .run(blocked_los,

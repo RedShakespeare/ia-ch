@@ -2100,11 +2100,10 @@ void RiverRoom::on_pre_connect(Array2<bool>& door_proposals)
 
                 for (int c_other : c_built)
                 {
-                        const Range r = Range(c_other - min_d,
-                                              c_other + min_d);
-
-                        const bool is_in_range =
-                                is_val_in_range(bridge_n, r);
+                        const bool is_in_range = Range(
+                                c_other - min_d,
+                                c_other + min_d)
+                                .is_in_range(bridge_n);
 
                         if (is_in_range)
                         {

@@ -1,7 +1,7 @@
 #ifndef SDL_BASE_HPP
 #define SDL_BASE_HPP
 
-#include <SDL.h>
+#include "SDL.h"
 
 // TODO: This can probably be merged with the io namespace
 

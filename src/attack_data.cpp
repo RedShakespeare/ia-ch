@@ -374,7 +374,10 @@ RangedAttData::RangedAttData(
 
                                 Array2<bool> hard_blocked_los(map::dims());
 
-                                const R fov_rect = fov::fov_rect(attacker->pos);
+                                const R fov_rect =
+                                        fov::fov_rect(
+                                                attacker->pos,
+                                                hard_blocked_los.dims());
 
                                 map_parsers::BlocksLos()
                                         .run(hard_blocked_los,

@@ -3,7 +3,7 @@
 #include "init.hpp"
 
 #include <fstream>
-#include <SDL_image.h>
+#include "SDL_image.h"
 
 #include "audio.hpp"
 #include "browser.hpp"

@@ -3,7 +3,7 @@
 
 #include <string>
 
-#include <SDL_video.h>
+#include "SDL_video.h"
 
 //-----------------------------------------------------------------------------
 // Color

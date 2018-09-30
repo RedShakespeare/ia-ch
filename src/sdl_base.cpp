@@ -2,22 +2,17 @@
 
 #include <iostream>
 
-#include <SDL_image.h>
-#include <SDL_mixer.h>
+#include "SDL_image.h"
+#include "SDL_mixer.h"
 
 #include "init.hpp"
 #include "config.hpp"
 #include "game_time.hpp"
 
+static bool is_inited = false;
+
 namespace sdl_base
 {
-
-namespace
-{
-
-bool is_inited = false;
-
-}
 
 void init()
 {
@@ -93,20 +88,22 @@ void cleanup()
 
 void sleep(const Uint32 duration)
 {
-        if (is_inited && !config::is_bot_playing())
+        if (config::is_bot_playing())
         {
-                if (duration == 1)
-                {
-                        SDL_Delay(duration);
-                }
-                else // Duration longer than 1 ms
-                {
-                        const Uint32 wait_until = SDL_GetTicks() + duration;
+                return;
+        }
 
-                        while (SDL_GetTicks() < wait_until)
-                        {
-                                SDL_PumpEvents();
-                        }
+        if (duration == 1)
+        {
+                SDL_Delay(duration);
+        }
+        else // Duration longer than 1 ms
+        {
+                const Uint32 wait_until = SDL_GetTicks() + duration;
+
+                while (SDL_GetTicks() < wait_until)
+                {
+                        SDL_PumpEvents();
                 }
         }
 }

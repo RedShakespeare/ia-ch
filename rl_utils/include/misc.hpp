@@ -51,8 +51,6 @@ int king_dist(const P& p0, const P& p1);
 // |x1 - x0| + |y1 - y0|.
 int taxi_dist(const P& p0, const P& p1);
 
-bool is_val_in_range(const int v, const Range range);
-
 int to_int(const std::string& in);
 
 #endif // RL_UTILS_MISC_HPP

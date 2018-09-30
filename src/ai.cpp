@@ -519,14 +519,20 @@ bool step_to_lair_if_los(Mon& mon, const P& lair_p)
         {
                 Array2<bool> blocked(map::dims());
 
-                const R area_check_blocked = fov::fov_rect(mon.pos);
+                const R area_check_blocked =
+                        fov::fov_rect(mon.pos, blocked.dims());
 
                 map_parsers::BlocksLos()
                         .run(blocked,
                              area_check_blocked,
                              MapParseMode::overwrite);
 
-                const LosResult los = fov::check_cell(mon.pos, lair_p, blocked);
+                FovMap fov_map;
+                fov_map.hard_blocked = &blocked;
+                fov_map.light = &map::light;
+                fov_map.dark = &map::dark;
+
+                const LosResult los = fov::check_cell(mon.pos, lair_p, fov_map);
 
                 if (!los.is_blocked_hard)
                 {
@@ -644,14 +650,19 @@ std::vector<P> find_path_to_lair_if_no_los(Mon& mon, const P& lair_p)
 
         Array2<bool> blocked(map::dims());
 
-        const R fov_lmt = fov::fov_rect(mon.pos);
+        const R fov_lmt = fov::fov_rect(mon.pos, blocked.dims());
 
         map_parsers::BlocksLos()
                 .run(blocked,
                      fov_lmt,
                      MapParseMode::overwrite);
 
-        const LosResult los = fov::check_cell(mon.pos, lair_p, blocked);
+        FovMap fov_map;
+        fov_map.hard_blocked = &blocked;
+        fov_map.dark = &map::dark;
+        fov_map.light = &map::light;
+
+        const LosResult los = fov::check_cell(mon.pos, lair_p, fov_map);
 
         if (!los.is_blocked_hard)
         {
@@ -688,17 +699,19 @@ std::vector<P> find_path_to_leader(Mon& mon)
 
         Array2<bool> blocked(map::dims());
 
-        const R fov_lmt = fov::fov_rect(mon.pos);
+        const R fov_lmt = fov::fov_rect(mon.pos, blocked.dims());
 
         map_parsers::BlocksLos()
                 .run(blocked,
                      fov_lmt,
                      MapParseMode::overwrite);
 
-        const LosResult los =
-                fov::check_cell(mon.pos,
-                                leader->pos,
-                                blocked);
+        FovMap fov_map;
+        fov_map.hard_blocked = &blocked;
+        fov_map.dark = &map::dark;
+        fov_map.light = &map::light;
+
+        const LosResult los = fov::check_cell(mon.pos, leader->pos, fov_map);
 
         if (!los.is_blocked_hard)
         {
@@ -749,13 +762,18 @@ std::vector<P> find_path_to_target(Mon& mon)
                      R(los_x0, los_y0, los_x1, los_y1),
                      MapParseMode::overwrite);
 
+        FovMap fov_map;
+        fov_map.hard_blocked = &blocked;
+        fov_map.light = &map::light;
+        fov_map.dark = &map::dark;
+
         if (!mon.is_target_seen_)
         {
                 LosResult los_result =
                         fov::check_cell(
                                 mon.pos,
                                 target.pos,
-                                blocked);
+                                fov_map);
 
                 if (!los_result.is_blocked_hard &&
                     !los_result.is_blocked_by_drk)

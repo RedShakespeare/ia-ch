@@ -502,10 +502,13 @@ bool Mon::is_actor_seeable(const Actor& other,
                 return false;
         }
 
+        FovMap fov_map;
+        fov_map.hard_blocked = &hard_blocked_los;
+        fov_map.light = &map::light;
+        fov_map.dark = &map::dark;
+
         const LosResult los =
-                fov::check_cell(pos,
-                                other.pos,
-                                hard_blocked_los);
+                fov::check_cell(pos, other.pos, fov_map);
 
         // LOS blocked hard (e.g. a wall or smoke)?
         if (los.is_blocked_hard)
@@ -624,7 +627,7 @@ std::vector<Actor*> Mon::seeable_foes() const
 
         Array2<bool> blocked_los(map::dims());
 
-        const R fov_rect = fov::fov_rect(pos);
+        const R fov_rect = fov::fov_rect(pos, blocked_los.dims());
 
         map_parsers::BlocksLos()
                 .run(blocked_los,
@@ -1360,9 +1363,9 @@ DidAction Khephren::on_act()
                 return DidAction::no;
         }
 
-        const R fov_rect = fov::fov_rect(pos);
-
         Array2<bool> blocked(map::dims());
+
+        const R fov_rect = fov::fov_rect(pos, blocked.dims());
 
         map_parsers::BlocksLos()
                 .run(blocked,

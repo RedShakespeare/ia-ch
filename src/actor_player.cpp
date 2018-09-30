@@ -890,7 +890,7 @@ void Player::act()
 
 bool Player::is_seeing_burning_feature() const
 {
-    const R fov_r = fov::fov_rect(pos);
+    const R fov_r = fov::fov_rect(pos, map::dims());
 
     bool is_fire_found = false;
 
@@ -2131,14 +2131,19 @@ void Player::add_light_hook(Array2<bool>& light_map) const
     {
          Array2<bool> hard_blocked(map::dims());
 
-         const R fov_lmt = fov::fov_rect(pos);
+         const R fov_lmt = fov::fov_rect(pos, hard_blocked.dims());
 
         map_parsers::BlocksLos()
             .run(hard_blocked,
                  fov_lmt,
                  MapParseMode::overwrite);
 
-        const auto player_fov = fov::run(pos, hard_blocked);
+        FovMap fov_map;
+        fov_map.hard_blocked = &hard_blocked;
+        fov_map.light = &map::light;
+        fov_map.dark = &map::dark;
+
+        const auto player_fov = fov::run(pos, fov_map);
 
         for (int x = fov_lmt.p0.x; x <= fov_lmt.p1.x; ++x)
         {
@@ -2185,14 +2190,19 @@ void Player::update_fov()
     {
          Array2<bool> hard_blocked(map::dims());
 
-         const R fov_lmt = fov::fov_rect(pos);
+         const R fov_lmt = fov::fov_rect(pos, hard_blocked.dims());
 
         map_parsers::BlocksLos()
             .run(hard_blocked,
                  fov_lmt,
                  MapParseMode::overwrite);
 
-        const auto player_fov = fov::run(pos, hard_blocked);
+        FovMap fov_map;
+        fov_map.hard_blocked = &hard_blocked;
+        fov_map.light = &map::light;
+        fov_map.dark = &map::dark;
+
+        const auto player_fov = fov::run(pos, fov_map);
 
         for (int x = fov_lmt.p0.x; x <= fov_lmt.p1.x; ++x)
         {

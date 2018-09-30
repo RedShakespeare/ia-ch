@@ -146,11 +146,6 @@ bool is_pos_adj(const P& pos1,
         return true;
 }
 
-bool is_val_in_range(const int V, const Range range)
-{
-        return range.is_in_range(V);
-}
-
 int to_int(const std::string& in)
 {
         int _nr;

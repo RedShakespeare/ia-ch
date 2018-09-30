@@ -50,11 +50,6 @@ static const SDL_Color sdl_color_black = {0, 0, 0, 0};
 
 static SDL_Event sdl_event_;
 
-static bool is_inited()
-{
-        return sdl_window;
-}
-
 static void init_screen_surface(const P px_dims)
 {
         TRACE << "Initializing screen surface" << std::endl;
@@ -732,7 +727,7 @@ static void draw_text(
         const bool draw_bg,
         const Color& bg_color)
 {
-        if (!is_inited() || !panels::is_valid())
+        if (!panels::is_valid())
         {
                 return;
         }
@@ -1054,33 +1049,27 @@ void cleanup()
 
 void update_screen()
 {
-        if (is_inited())
-        {
-                SDL_UpdateTexture(
-                        screen_texture,
-                        nullptr,
-                        screen_srf->pixels,
-                        screen_srf->pitch);
+        SDL_UpdateTexture(
+                screen_texture,
+                nullptr,
+                screen_srf->pixels,
+                screen_srf->pitch);
 
-                SDL_RenderCopy(
-                        sdl_renderer,
-                        screen_texture,
-                        nullptr,
-                        nullptr);
+        SDL_RenderCopy(
+                sdl_renderer,
+                screen_texture,
+                nullptr,
+                nullptr);
 
-                SDL_RenderPresent(sdl_renderer);
-        }
+        SDL_RenderPresent(sdl_renderer);
 }
 
 void clear_screen()
 {
-        if (is_inited())
-        {
-                SDL_FillRect(
-                        screen_srf,
-                        nullptr,
-                        SDL_MapRGB(screen_srf->format, 0, 0, 0));
-        }
+        SDL_FillRect(
+                screen_srf,
+                nullptr,
+                SDL_MapRGB(screen_srf->format, 0, 0, 0));
 }
 
 P min_screen_gui_dims()
@@ -1213,7 +1202,7 @@ void draw_tile(
         const bool draw_bg,
         const Color& bg_color)
 {
-        if (!is_inited() || !panels::is_valid())
+        if (!panels::is_valid())
         {
                 return;
         }
@@ -1258,7 +1247,7 @@ void draw_character(
         const bool draw_bg,
         const Color& bg_color)
 {
-        if (!is_inited() || !panels::is_valid())
+        if (!panels::is_valid())
         {
                 return;
         }
@@ -1285,7 +1274,7 @@ void draw_text(
         const bool draw_bg,
         const Color& bg_color)
 {
-        if (!is_inited() || !panels::is_valid())
+        if (!panels::is_valid())
         {
                 return;
         }
@@ -1309,7 +1298,7 @@ void draw_text_center(
         const Color& bg_color,
         const bool is_pixel_pos_adj_allowed)
 {
-        if (!is_inited() || !panels::is_valid())
+        if (!panels::is_valid())
         {
                 return;
         }
@@ -1348,7 +1337,7 @@ void draw_text_right(
         const bool draw_bg,
         const Color& bg_color)
 {
-        if (!is_inited() || !panels::is_valid())
+        if (!panels::is_valid())
         {
                 return;
         }
@@ -1404,29 +1393,31 @@ void draw_rectangle_filled(
         const R& px_rect,
         const Color& color)
 {
-        if (is_inited() && panels::is_valid())
+        if (!panels::is_valid())
         {
-                SDL_Rect sdl_rect = {
-                        (Sint16)px_rect.p0.x,
-                        (Sint16)px_rect.p0.y,
-                        (Uint16)px_rect.w(),
-                        (Uint16)px_rect.h()
-                };
-
-                const SDL_Color& sdl_color = color.sdl_color();
-
-                SDL_FillRect(screen_srf,
-                             &sdl_rect,
-                             SDL_MapRGB(screen_srf->format,
-                                        sdl_color.r,
-                                        sdl_color.g,
-                                        sdl_color.b));
+                return;
         }
+
+        SDL_Rect sdl_rect = {
+                (Sint16)px_rect.p0.x,
+                (Sint16)px_rect.p0.y,
+                (Uint16)px_rect.w(),
+                (Uint16)px_rect.h()
+        };
+
+        const SDL_Color& sdl_color = color.sdl_color();
+
+        SDL_FillRect(screen_srf,
+                     &sdl_rect,
+                     SDL_MapRGB(screen_srf->format,
+                                sdl_color.r,
+                                sdl_color.g,
+                                sdl_color.b));
 }
 
 void cover_panel(const Panel panel, const Color& color)
 {
-        if (!is_inited() || !panels::is_valid())
+        if (!panels::is_valid())
         {
                 return;
         }
@@ -1608,35 +1599,39 @@ void draw_descr_box(const std::vector<ColoredString>& lines)
 
 void draw_main_menu_logo()
 {
-        if (is_inited() && panels::is_valid())
+        if (!panels::is_valid())
         {
-                const int screen_px_w = panel_px_w(Panel::screen);
-
-                const int logo_px_h = main_menu_logo_srf->w;
-
-                const P px_pos((screen_px_w - logo_px_h) / 2, 0);
-
-                blit_surface(*main_menu_logo_srf, px_pos);
+                return;
         }
+
+        const int screen_px_w = panel_px_w(Panel::screen);
+
+        const int logo_px_h = main_menu_logo_srf->w;
+
+        const P px_pos((screen_px_w - logo_px_h) / 2, 0);
+
+        blit_surface(*main_menu_logo_srf, px_pos);
 }
 
 void draw_skull(const P pos)
 {
-        if (is_inited() && panels::is_valid())
+        if (!panels::is_valid())
         {
-                const P px_pos(
-                        pos.x * config::map_cell_px_w(),
-                        pos.y * config::map_cell_px_h());
-
-                blit_surface(*skull_srf, px_pos);
+                return;
         }
+
+        const P px_pos(
+                pos.x * config::map_cell_px_w(),
+                pos.y * config::map_cell_px_h());
+
+        blit_surface(*skull_srf, px_pos);
 }
 
 void draw_blast_at_cells(const std::vector<P>& positions, const Color& color)
 {
         TRACE_FUNC_BEGIN;
 
-        if (!is_inited() || !panels::is_valid())
+        if (!panels::is_valid())
         {
                 TRACE_FUNC_END;
 
@@ -1689,39 +1684,43 @@ void draw_blast_at_cells(const std::vector<P>& positions, const Color& color)
 void draw_blast_at_seen_cells(const std::vector<P>& positions,
                               const Color& color)
 {
-        if (is_inited() && panels::is_valid())
+        if (!panels::is_valid())
         {
-                std::vector<P> positions_with_vision;
+                return;
+        }
 
-                for (const P p : positions)
-                {
-                        if (map::cells.at(p).is_seen_by_player)
-                        {
-                                positions_with_vision.push_back(p);
-                        }
-                }
+        std::vector<P> positions_with_vision;
 
-                if (!positions_with_vision.empty())
+        for (const P p : positions)
+        {
+                if (map::cells.at(p).is_seen_by_player)
                 {
-                        io::draw_blast_at_cells(positions_with_vision, color);
+                        positions_with_vision.push_back(p);
                 }
+        }
+
+        if (!positions_with_vision.empty())
+        {
+                io::draw_blast_at_cells(positions_with_vision, color);
         }
 }
 
 void draw_blast_at_seen_actors(const std::vector<Actor*>& actors,
                                const Color& color)
 {
-        if (is_inited() && panels::is_valid())
+        if (!panels::is_valid())
         {
-                std::vector<P> positions;
-
-                for (Actor* const actor : actors)
-                {
-                        positions.push_back(actor->pos);
-                }
-
-                draw_blast_at_seen_cells(positions, color);
+                return;
         }
+
+        std::vector<P> positions;
+
+        for (Actor* const actor : actors)
+        {
+                positions.push_back(actor->pos);
+        }
+
+        draw_blast_at_seen_cells(positions, color);
 }
 
 void draw_symbol(
@@ -1762,20 +1761,12 @@ void flush_input()
 
 void clear_events()
 {
-        if (is_inited())
-        {
-                while (SDL_PollEvent(&sdl_event_)) {}
-        }
+        while (SDL_PollEvent(&sdl_event_)) {}
 }
 
 InputData get(const bool is_o_return)
 {
         InputData ret = InputData();
-
-        if (!is_inited())
-        {
-                return ret;
-        }
 
         SDL_StartTextInput();
 

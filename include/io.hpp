@@ -1,9 +1,9 @@
 #ifndef IO_HPP
 #define IO_HPP
 
-#include <SDL.h>
-#include <SDL_video.h>
-#include <SDL_image.h>
+#include "SDL.h"
+#include "SDL_video.h"
+#include "SDL_image.h"
 
 #include <vector>
 

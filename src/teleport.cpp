@@ -56,7 +56,7 @@ static void make_all_mon_not_seeing_player_unaware()
 {
         Array2<bool> blocks_los(map::dims());
 
-        const R r = fov::fov_rect(map::player->pos);
+        const R r = fov::fov_rect(map::player->pos, blocks_los.dims());
 
         map_parsers::BlocksLos()
                 .run(blocks_los,

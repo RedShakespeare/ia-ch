@@ -1,6 +1,6 @@
 #include "colors.hpp"
 
-#include <SDL_video.h>
+#include "SDL_video.h"
 #include <vector>
 
 #include "rl_utils.hpp"

@@ -294,16 +294,16 @@ void add_actor(Actor* actor)
         // ASSERT(map::is_pos_inside_map(actor->pos));
 
 #ifndef NDEBUG
-        for (Actor* const old_actor : actors)
+        for (Actor* const existing_actor : actors)
         {
-                ASSERT(actor != old_actor);
+                ASSERT(actor != existing_actor);
 
-                if (actor->is_alive() && old_actor->is_alive())
+                if (actor->is_alive() && existing_actor->is_alive())
                 {
                         const P& new_actor_p = actor->pos;
-                        const P& old_actor_p = old_actor->pos;
+                        const P& existing_actor_p = existing_actor->pos;
 
-                        ASSERT(new_actor_p != old_actor_p);
+                        ASSERT(new_actor_p != existing_actor_p);
                 }
         }
 #endif // NDEBUG

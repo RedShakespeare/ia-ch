@@ -300,7 +300,12 @@ std::vector<P> EventSnakeEmerge::emerge_p_bucket(
                 return {};
         }
 
-        const auto fov = fov::run(p, blocked);
+        FovMap fov_map;
+        fov_map.hard_blocked = &blocked;
+        fov_map.light = &map::light;
+        fov_map.dark = &map::dark;
+
+        const auto fov = fov::run(p, fov_map);
 
         std::vector<P> result;
 

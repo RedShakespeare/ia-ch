@@ -6,20 +6,19 @@
 #include <vector>
 
 #include "line_calc.hpp"
-#include "map.hpp"
 
 namespace fov
 {
 
-R fov_rect(const P& p)
+R fov_rect(const P& p, const P& map_dims)
 {
         const int radi = fov_radi_int;
 
         const P p0(std::max(0, p.x - radi),
                    std::max(0, p.y - radi));
 
-        const P p1(std::min(map::w() - 1, p.x + radi),
-                   std::min(map::h() - 1, p.y + radi));
+        const P p1(std::min(map_dims.x - 1, p.x + radi),
+                   std::min(map_dims.y - 1, p.y + radi));
 
         return R(p0, p1);
 }
@@ -32,8 +31,12 @@ bool is_in_fov_range(const P& p0, const P& p1)
 LosResult check_cell(
         const P& p0,
         const P& p1,
-        const Array2<bool>& hard_blocked)
+        const FovMap& map)
 {
+        ASSERT(map.hard_blocked);
+        ASSERT(map.dark);
+        ASSERT(map.light);
+
         LosResult los_result;
 
         // Assume we are blocked initially
@@ -41,7 +44,8 @@ LosResult check_cell(
 
         los_result.is_blocked_by_drk = false;
 
-        if (!is_in_fov_range(p0, p1) || !map::is_pos_inside_map(p1))
+        if (!is_in_fov_range(p0, p1) ||
+            !map.hard_blocked->rect().is_pos_inside(p1))
         {
                 // Target too far away, return the hard blocked result
                 return los_result;
@@ -60,7 +64,7 @@ LosResult check_cell(
 
         const std::vector<P>& path_deltas = *path_deltas_ptr;
 
-        const bool tgt_is_lgt = map::light.at(p1);
+        const bool tgt_is_lgt = map.light->at(p1);
 
         // Ok, target is in range and we have a line - let's go
         los_result.is_blocked_hard = false;
@@ -81,13 +85,13 @@ LosResult check_cell(
                         pre_p.set(p0 + path_deltas[i - 1]);
 
                         const bool prev_cell_dark =
-                                map::dark.at(pre_p);
+                                map.dark->at(pre_p);
 
                         const bool current_cell_light =
-                                map::light.at(current_p);
+                                map.light->at(current_p);
 
                         const bool current_cell_dark =
-                                map::dark.at(current_p);
+                                map.dark->at(current_p);
 
                         if (!tgt_is_lgt &&
                             !current_cell_light &&
@@ -102,7 +106,7 @@ LosResult check_cell(
                         break;
                 }
 
-                if ((i > 0) && hard_blocked.at(current_p))
+                if ((i > 0) && map.hard_blocked->at(current_p))
                 {
                         los_result.is_blocked_hard = true;
                         break;
@@ -112,9 +116,13 @@ LosResult check_cell(
         return los_result;
 }
 
-Array2<LosResult> run(const P& p0, const Array2<bool>& hard_blocked)
+Array2<LosResult> run(const P& p0, const FovMap& map)
 {
-        Array2<LosResult> result(hard_blocked.dims());
+        ASSERT(map.hard_blocked);
+        ASSERT(map.dark);
+        ASSERT(map.light);
+
+        Array2<LosResult> result(map.hard_blocked->dims());
 
         for (auto& los : result)
         {
@@ -122,17 +130,13 @@ Array2<LosResult> run(const P& p0, const Array2<bool>& hard_blocked)
                 los.is_blocked_by_drk = false;
         }
 
-        const R r = fov_rect(p0);
+        const auto r = fov_rect(p0, map.hard_blocked->dims());
 
         for (int x = r.p0.x; x <= r.p1.x; ++x)
         {
                 for (int y = r.p0.y; y <= r.p1.y; ++y)
                 {
-                        result.at(x, y) =
-                                check_cell(
-                                        p0,
-                                        {x, y},
-                                        hard_blocked);
+                        result.at(x, y) = check_cell(p0, P(x, y), map);
                 }
         }
 
