@@ -12,9 +12,9 @@ Gameplay
 * The spell "Enfeeble" now only causes Weakening (instead of a bunch of different things)
 * The "Searching" spell lasts multiple turns, but detects in a smaller area (and never across the whole map)
 * Spells cast from manuscripts are always cast at least at "expert" level
+* Added a new "Strange Device"
 * Removed some player traits
-* Added new monsters
-* Removed some redundant monsters
+* Added more monsters, and removed some redundant monsters
 * Deep Ones can throw a net which entangles the victim (instead of throwing a spear)
 * Deep Ones usually spawn in much smaller numbers than before
 * Deep Ones are not delayed when moving through liquids

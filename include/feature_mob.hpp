@@ -69,8 +69,6 @@ public:
                 return FeatureId::force_field;
         }
 
-        void bump(Actor& actor_bumping) override;
-
         void on_new_turn() override;
 
         std::string name(const Article article)  const override;

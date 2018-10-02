@@ -618,9 +618,9 @@ static void init_data_list()
         d.character = '#';
         d.tile = TileId::square_checkered;
         d.move_rules.reset();
-        d.is_sound_passable = true;
+        d.is_sound_passable = false;
         d.is_projectile_passable = false;
-        d.is_los_passable = true;
+        d.is_los_passable = false;
         d.is_smoke_passable = false;
         d.can_have_blood = false;
         d.can_have_gore = false;

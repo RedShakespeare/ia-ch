@@ -1084,9 +1084,9 @@ void on_player_gained_lvl(const int new_lvl)
         case Bg::occultist_transmut:
                 if (is_occultist_spell_incr_lvl(new_lvl))
                 {
-                        // NOTE: This could perhaps be considered an
-                        // Enchanetment spell, but the way the spell description
-                        // is phrased, it sounds a lot more like Alteration
+                        // NOTE: This could perhaps be considered an enchantment
+                        // spell, but the way the spell description is phrased,
+                        // it sounds a lot more like alteration
                         player_spells::incr_spell_skill(
                                 SpellId::bless);
 
@@ -1107,9 +1107,6 @@ void on_player_gained_lvl(const int new_lvl)
 
                         player_spells::incr_spell_skill(
                                 SpellId::transmut);
-
-                        player_spells::incr_spell_skill(
-                                SpellId::force_field);
                 }
                 break;
 

@@ -9,7 +9,6 @@
 #include "actor_player.hpp"
 #include "explosion.hpp"
 #include "feature_door.hpp"
-#include "feature_mob.hpp"
 #include "game.hpp"
 #include "init.hpp"
 #include "inventory.hpp"
@@ -131,9 +130,6 @@ Spell* make_spell_from_id(const SpellId spell_id)
 
         case SpellId::divert_attacks:
                 return new SpellDivertAttacks();
-
-        case SpellId::force_field:
-                return new SpellForceField();
 
         case SpellId::identify:
                 return new SpellIdentify();
@@ -2086,90 +2082,6 @@ std::vector<std::string> SpellDivertAttacks::descr_specific(
                 "Melee and ranged attacks made against the caster are slightly "
                 "diverted away, making it extremely difficult to achieve a "
                 "successful hit.");
-
-        Range duration_range;
-        duration_range.min = 4 + (int)skill * 4;
-        duration_range.max = duration_range.min * 2;
-
-        descr.push_back(
-                "The spell lasts " +
-                duration_range.str() +
-                " turns.");
-
-        return descr;
-}
-
-// -----------------------------------------------------------------------------
-// Force Field
-// -----------------------------------------------------------------------------
-int SpellForceField::max_spi_cost(const SpellSkill skill) const
-{
-        (void)skill;
-
-        return 4;
-}
-
-void SpellForceField::run_effect(
-        Actor* const caster,
-        const SpellSkill skill) const
-{
-        Range duration_range;
-        duration_range.min = 4 + (int)skill * 4;
-        duration_range.max = duration_range.min * 2;
-
-        const int duration = duration_range.roll();
-
-        const auto actors = map::get_actor_array();
-
-        const auto blocked_parser =
-                map_parsers::BlocksWalking(ParseActors::yes);
-
-        const std::vector<FeatureId> specific_allowed_features = {
-                FeatureId::liquid_deep,
-                FeatureId::chasm
-        };
-
-        const auto specific_allowed_features_parser =
-                map_parsers::IsAnyOfFeatures(specific_allowed_features);
-
-        for (const auto& d : dir_utils::dir_list)
-        {
-                const P p = caster->pos + d;
-
-                if (blocked_parser.cell(p) &&
-                    !specific_allowed_features_parser.cell(p))
-                {
-                        continue;
-                }
-
-                auto actors_here = actors.at(p);
-
-                // Destroy corpses in cells with force fields
-                for (auto* const actor : actors_here)
-                {
-                        actor->destroy();
-
-                        map::make_blood(p);
-                        map::make_gore(p);
-                }
-
-                game_time::add_mob(new ForceField(p, duration));
-        }
-}
-
-std::vector<std::string> SpellForceField::descr_specific(
-        const SpellSkill skill) const
-{
-        std::vector<std::string> descr;
-
-        descr.push_back(
-                "Creates a temporary translucent barrier around the caster, "
-                "which blocks movement and ordinary projectiles. Magical "
-                "attacks can pass the barrier however.");
-
-        descr.push_back(
-                "Any part of the barrier can be removed by the caster who "
-                "created it.");
 
         Range duration_range;
         duration_range.min = 4 + (int)skill * 4;

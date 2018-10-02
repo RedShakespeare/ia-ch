@@ -8,6 +8,7 @@
 #include "actor_mon.hpp"
 #include "actor_player.hpp"
 #include "audio.hpp"
+#include "feature_mob.hpp"
 #include "feature_rigid.hpp"
 #include "game.hpp"
 #include "game_time.hpp"
@@ -393,6 +394,57 @@ ConsumeItem DeviceDeafening::run_effect()
                 }
 
                 actor->properties.apply(new PropDeaf());
+        }
+
+        return ConsumeItem::no;
+}
+
+// -----------------------------------------------------------------------------
+// Force Field
+// -----------------------------------------------------------------------------
+ConsumeItem DeviceForceField::run_effect()
+{
+        msg_log::add("The air thickens around me.");
+
+        Range duration_range(85, 100);
+
+        const int duration = duration_range.roll();
+
+        const auto actors = map::get_actor_array();
+
+        const auto blocked_parser =
+                map_parsers::BlocksWalking(ParseActors::yes);
+
+        const std::vector<FeatureId> specific_allowed_features = {
+                FeatureId::liquid_deep,
+                FeatureId::chasm
+        };
+
+        const auto specific_allowed_features_parser =
+                map_parsers::IsAnyOfFeatures(specific_allowed_features);
+
+        for (const auto& d : dir_utils::dir_list)
+        {
+                const P p = map::player->pos + d;
+
+                if (blocked_parser.cell(p) &&
+                    !specific_allowed_features_parser.cell(p))
+                {
+                        continue;
+                }
+
+                auto actors_here = actors.at(p);
+
+                // Destroy corpses in cells with force fields
+                for (auto* const actor : actors_here)
+                {
+                        actor->destroy();
+
+                        map::make_blood(p);
+                        map::make_gore(p);
+                }
+
+                game_time::add_mob(new ForceField(p, duration));
         }
 
         return ConsumeItem::no;

@@ -156,32 +156,6 @@ Color Smoke::color() const
 // -----------------------------------------------------------------------------
 // Force Field
 // -----------------------------------------------------------------------------
-void ForceField::bump(Actor& actor_bumping)
-{
-        // TODO: Only destroy the force field if it's the actor who created it -
-        // for now, only the player can create force fields though
-
-        if (!actor_bumping.is_player())
-        {
-                return;
-        }
-
-        std::string msg = "I remove ";
-
-        msg +=
-                map::cells.at(pos_).is_seen_by_player
-                ? "the "
-                : "a ";
-
-        msg += name(Article::the) + ".";
-
-        msg_log::add(msg);
-
-        game_time::erase_mob(this, true);
-
-        game_time::tick();
-}
-
 void ForceField::on_new_turn()
 {
         // If not permanent, count down turns left and possibly erase self
@@ -212,7 +186,7 @@ std::string ForceField::name(const Article article)  const
 
 Color ForceField::color() const
 {
-        return colors::dark_violet();
+        return colors::orange();
 }
 
 // -----------------------------------------------------------------------------

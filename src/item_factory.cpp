@@ -186,7 +186,6 @@ Item* make(const ItemId item_id, const int nr_items)
     case ItemId::scroll_heal:
     case ItemId::scroll_see_invis:
     case ItemId::scroll_divert_attacks:
-    case ItemId::scroll_force_field:
     case ItemId::scroll_slow_time:
     case ItemId::scroll_spell_shield:
         r = new Scroll(d);
@@ -262,6 +261,10 @@ Item* make(const ItemId item_id, const int nr_items)
 
     case ItemId::device_deafening:
         r = new DeviceDeafening(d);
+        break;
+
+    case ItemId::device_force_field:
+        r = new DeviceForceField(d);
         break;
 
     case ItemId::lantern:

@@ -147,6 +147,28 @@ private:
         ConsumeItem run_effect() override;
 };
 
+class DeviceForceField : public StrangeDevice
+{
+public:
+        DeviceForceField(ItemData* const item_data) :
+                StrangeDevice(item_data) {}
+
+        ~DeviceForceField() override {}
+
+private:
+        std::string descr_identified() const override
+        {
+                return
+                        "When activated, this device constructs a temporary "
+                        "opaque barrier around the user, blocking all "
+                        "physical matter. The barrier can only be created in "
+                        "empty spaces (i.e. not in spaces occupied by "
+                        "creatures, walls, etc).";
+        }
+
+        ConsumeItem run_effect() override;
+};
+
 class DeviceLantern : public Device
 {
 public:

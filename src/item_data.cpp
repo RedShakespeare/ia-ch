@@ -1615,11 +1615,6 @@ void init()
     data[(size_t)d.id] = d;
 
     reset_data(d, ItemType::scroll);
-    d.id = ItemId::scroll_force_field;
-    d.spell_cast_from_scroll = SpellId::force_field;
-    data[(size_t)d.id] = d;
-
-    reset_data(d, ItemType::scroll);
     d.id = ItemId::scroll_slow_time;
     d.spell_cast_from_scroll = SpellId::slow_time;
     data[(size_t)d.id] = d;
@@ -1736,6 +1731,18 @@ void init()
     d.base_name =
     {
         "Deafening Device", "Deafening Devices", "a Deafening Device"
+    };
+    d.color = colors::gray();
+    d.native_containers.push_back(FeatureId::chest);
+    d.native_containers.push_back(FeatureId::tomb);
+    d.native_containers.push_back(FeatureId::cocoon);
+    data[(size_t)d.id] = d;
+
+    reset_data(d, ItemType::device);
+    d.id = ItemId::device_force_field;
+    d.base_name =
+    {
+        "Force Field Device", "Force Field Devices", "a Force Field Device"
     };
     d.color = colors::gray();
     d.native_containers.push_back(FeatureId::chest);

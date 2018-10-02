@@ -103,13 +103,13 @@ enum class ItemId
         gas_mask,
 
         // Scrolls
+        // NOTE: There is no scroll for the identify spell - this is on purpose
         scroll_aura_of_decay,
         scroll_aza_wrath,
         scroll_bless,
         scroll_darkbolt,
         scroll_divert_attacks,
         scroll_enfeeble,
-        scroll_force_field,
         scroll_heal,
         scroll_light,
         scroll_mayhem,
@@ -145,6 +145,7 @@ enum class ItemId
         // Strange Devices
         device_blaster,
         device_deafening,
+        device_force_field,
         device_rejuvenator,
         device_sentry_drone,
         device_translocator,

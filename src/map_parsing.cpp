@@ -234,6 +234,11 @@ bool BlocksSound::parse(const Cell& c, const P& pos)  const
                 !c.rigid->is_sound_passable();
 }
 
+bool BlocksSound::parse(const Mob& f)  const
+{
+        return !f.is_sound_passable();
+}
+
 bool LivingActorsAdjToPos::parse(const Actor& a) const
 {
         if (!a.is_alive())

@@ -139,11 +139,12 @@ class BlocksSound : public MapParser
 public:
         BlocksSound() :
                 MapParser(ParseCells::yes,
-                          ParseMobs::no,
+                          ParseMobs::yes,
                           ParseActors::no) {}
 
 private:
         bool parse(const Cell& c, const P& pos) const override;
+        bool parse(const Mob& f) const override;
 };
 
 class LivingActorsAdjToPos : public MapParser

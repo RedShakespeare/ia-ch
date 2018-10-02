@@ -31,7 +31,6 @@ enum class SpellId
         aza_wrath,
         bless,
         divert_attacks,
-        force_field, // TODO: Enable for mosters
         identify,
         light,
         mayhem,
@@ -72,7 +71,6 @@ const std::unordered_map<std::string, SpellId> str_to_spell_id_map =
         {"disease", SpellId::disease},
         {"divert_attacks", SpellId::divert_attacks},
         {"enfeeble", SpellId::enfeeble},
-        {"force_field", SpellId::force_field},
         {"frenzy", SpellId::frenzy},
         {"heal", SpellId::heal},
         {"identify", SpellId::identify},
@@ -1536,54 +1534,6 @@ private:
                 (void)skill;
 
                 return false;
-        }
-};
-
-class SpellForceField: public Spell
-{
-public:
-        SpellForceField() : Spell() {}
-
-        bool mon_can_learn() const override
-        {
-                return false;
-        }
-
-        bool player_can_learn() const override
-        {
-                return true;
-        }
-
-        std::string name() const override
-        {
-                return "Force Field";
-        }
-
-        SpellId id() const override
-        {
-                return SpellId::force_field;
-        }
-
-        SpellShock shock_type() const override
-        {
-                return SpellShock::mild;
-        }
-
-        std::vector<std::string> descr_specific(
-                const SpellSkill skill) const override;
-
-        void run_effect(
-            Actor* const caster,
-            const SpellSkill skill) const override;
-
-private:
-        int max_spi_cost(const SpellSkill skill) const override;
-
-        bool is_noisy(const SpellSkill skill) const override
-        {
-                (void)skill;
-
-                return true;
         }
 };
 
