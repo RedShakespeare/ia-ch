@@ -229,7 +229,8 @@ void play(const SfxId sfx,
           const int vol_pct_tot,
           const int vol_pct_l)
 {
-        if ((sfx == SfxId::AMB_START) ||
+        if (audio_chunks_.empty() ||
+            (sfx == SfxId::AMB_START) ||
             (sfx == SfxId::END) ||
             config::is_bot_playing())
         {
@@ -237,7 +238,8 @@ void play(const SfxId sfx,
         }
 
         // Is this an ambient sound which has not yet been loaded?
-        if (((int)sfx > (int)SfxId::AMB_START) && !audio_chunks_[(size_t)sfx])
+        if (((int)sfx > (int)SfxId::AMB_START) &&
+            !audio_chunks_[(size_t)sfx])
         {
                 load(sfx, amb_sfx_filename(sfx));
         }
@@ -250,7 +252,8 @@ void play(const SfxId sfx,
 
         const size_t ms_diff = ms_now - ms_last;
 
-        if ((free_channel >= 0) && (ms_diff >= min_ms_between_same_sfx))
+        if ((free_channel >= 0) &&
+            (ms_diff >= min_ms_between_same_sfx))
         {
                 current_channel_ = free_channel;
 
@@ -336,6 +339,7 @@ void try_play_amb(const int one_in_n_chance_to_play)
         // already loaded (only the action sound effects are pre-loaded)
 
         if (!config::is_amb_audio_enabled() ||
+            audio_chunks_.empty() ||
             !rnd::one_in(one_in_n_chance_to_play))
         {
                 return;
@@ -362,14 +366,16 @@ void try_play_amb(const int one_in_n_chance_to_play)
 
 void play_music(const MusId mus)
 {
-        // Only play if not already playing music
-        if (!Mix_PlayingMusic())
+        // NOTE: We do not play if already playing  music
+        if (mus_chunks_.empty() || Mix_PlayingMusic())
         {
-                auto* const chunk = mus_chunks_[(size_t)mus];
-
-                // Loop forever
-                Mix_PlayMusic(chunk, -1);
+                return;
         }
+
+        auto* const chunk = mus_chunks_[(size_t)mus];
+
+        // Loop forever
+        Mix_PlayMusic(chunk, -1);
 }
 
 void fade_out_music()
