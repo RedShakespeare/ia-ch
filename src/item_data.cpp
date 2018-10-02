@@ -141,7 +141,7 @@ static void reset_data(ItemData& d, ItemType const item_type)
             "is unclear."
         };
         d.value = ItemValue::minor_treasure;
-        d.chance_to_incl_in_spawn_list = 40;
+        d.chance_to_incl_in_spawn_list = 30;
         d.weight = ItemWeight::none;
         d.is_identified = false;
         d.xp_on_found = 10;
