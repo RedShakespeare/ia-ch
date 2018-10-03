@@ -32,8 +32,7 @@
 
 #else // Debug mode
 
-#define ASSERT(check)                                                   \
-    do_not_call::assert_impl(check, #check, __FILE__, __LINE__, __func__)
+#define ASSERT(check) assert_impl(check, #check, __FILE__, __LINE__, __func__)
 
 #define TRACE if (TRACE_LVL < 1) ; else         \
         std::cerr                               \
@@ -74,16 +73,12 @@
 // Custom assert
 // NOTE: Never call this function directly, use the "ASSERT" macro above
 //------------------------------------------------------------------------------
-namespace do_not_call
-{
-
-void assert_impl(const bool check,
-                 const char* check_str,
-                 const char* file,
-                 const int line,
-                 const char* func);
-
-} // do_not_call
+void assert_impl(
+        const bool check,
+        const char* check_str,
+        const char* file,
+        const int line,
+        const char* func);
 
 #include <vector>
 #include <string>

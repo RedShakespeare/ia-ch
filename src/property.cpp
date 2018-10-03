@@ -266,7 +266,9 @@ PropEnded PropInfected::on_tick()
 
         if (apply_disease)
         {
-                owner_->properties.end_prop_silent(id());
+                auto* const owner = owner_;
+
+                owner->properties.end_prop_silent(id());
 
                 // NOTE: This property is now deleted
 
@@ -274,7 +276,7 @@ PropEnded PropInfected::on_tick()
 
                 prop_diseased->set_indefinite();
 
-                owner_->properties.apply(prop_diseased);
+                owner->properties.apply(prop_diseased);
 
                 msg_log::more_prompt();
 

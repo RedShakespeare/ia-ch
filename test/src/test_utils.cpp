@@ -1,0 +1,52 @@
+#include "test_utils.hpp"
+
+#include "feature_rigid.hpp"
+#include "init.hpp"
+#include "map.hpp"
+
+static void put_floor_and_walls_on_map()
+{
+        for (int x = 0; x < map::w(); ++x)
+        {
+                for (int y = 0; y < map::h(); ++y)
+                {
+                        const bool is_on_edge =
+                                (x == 0) ||
+                                (y == 0) ||
+                                (x == (map::w() - 1)) ||
+                                (y == (map::h() - 1));
+
+                        if (is_on_edge)
+                        {
+                                map::put(new Wall({x, y}));
+                        }
+                        else
+                        {
+                                map::put(new Floor({x, y}));
+                        }
+                }
+        }
+}
+
+namespace test_utils
+{
+
+void init_all()
+{
+        init::init_io();
+        init::init_game();
+        init::init_session();
+
+        map::reset({100, 100});
+
+        put_floor_and_walls_on_map();
+}
+
+void cleanup_all()
+{
+        init::cleanup_session();
+        init::cleanup_game();
+        init::cleanup_io();
+}
+
+} // test_utils

@@ -8,6 +8,7 @@
 #include "item_factory.hpp"
 #include "line_calc.hpp"
 #include "map.hpp"
+#include "test_utils.hpp"
 #include "throwing.hpp"
 
 TEST_CASE("Throw weapon at wall")
@@ -21,13 +22,10 @@ TEST_CASE("Throw weapon at wall")
         // . <- Floor --- Weapon should land here  (5,  9)
         // @ <- Floor --- Origin position          (5, 10)
 
-        init::init_io();
-        init::init_game();
-        init::init_session();
-
-        map::reset({20, 20});
+        test_utils::init_all();
 
         map::put(new Floor(P(5, 7)));
+        map::put(new Wall(P(5, 8)));
         map::put(new Floor(P(5, 9)));
         map::put(new Floor(P(5, 10)));
         map::player->pos = P(5, 10);
@@ -38,7 +36,5 @@ TEST_CASE("Throw weapon at wall")
 
         REQUIRE(map::cells.at(5, 9).item == item);
 
-        init::cleanup_session();
-        init::cleanup_game();
-        init::cleanup_io();
+        test_utils::cleanup_all();
 }

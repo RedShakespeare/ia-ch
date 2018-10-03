@@ -261,10 +261,13 @@ SET(SRC
         src/main.cpp
         )
 
-# Adding tests should be convenient - using evil globbing here
+# Adding tests should be convenient - making an exception to use globbing here
 file(GLOB TEST_SRC
         ${COMMON_SRC}
-        test/src/*.cpp)
+        test/src/*.cpp
+        test/test_cases/src/*.cpp
+        test/include/*.hpp
+        )
 
 # ------------------------------------------------------------------------------
 # Icon (on Windows)
@@ -363,6 +366,7 @@ target_include_directories(ia-debug PUBLIC
 
 target_include_directories(ia-test PUBLIC
         ${COMMON_INCLUDE_DIRS}
+        test/include
         test/Catch2-v2.4.0/include
         )
 
