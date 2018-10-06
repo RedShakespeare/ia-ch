@@ -27,7 +27,7 @@ TEST_CASE("Explosions damage walls")
         map::put(new Floor(origin));
 
         // Run enough explosions to guarantee destroying adjacent walls
-        for (int i = 0; i < 1000; ++i)
+        for (int i = 0; i < 100; ++i)
         {
                 explosion::run(origin, ExplType::expl);
         }
@@ -105,7 +105,7 @@ TEST_CASE("Explosions at map edge")
         REQUIRE(map::cells.at(x - 1, y    ).rigid->id() == FeatureId::wall);
         REQUIRE(map::cells.at(x    , y - 1).rigid->id() == FeatureId::wall);
 
-        for (int i = 0; i < 1000; ++i)
+        for (int i = 0; i < 100; ++i)
         {
                 explosion::run(P(x, y), ExplType::expl);
         }
@@ -126,7 +126,7 @@ TEST_CASE("Explosions at map edge")
         REQUIRE(map::cells.at(x + 1, y    ).rigid->id() == FeatureId::wall);
         REQUIRE(map::cells.at(x    , y + 1).rigid->id() == FeatureId::wall);
 
-        for (int i = 0; i < 1000; ++i)
+        for (int i = 0; i < 100; ++i)
         {
                 explosion::run(P(x, y), ExplType::expl);
         }
@@ -161,7 +161,7 @@ TEST_CASE("Explosions damage corpses")
 
         const P origin(5, 7);
 
-        for (int i = 0; i < 1000; ++i)
+        for (int i = 0; i < 100; ++i)
         {
                 explosion::run(origin, ExplType::expl);
         }

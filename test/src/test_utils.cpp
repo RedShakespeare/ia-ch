@@ -1,5 +1,6 @@
 #include "test_utils.hpp"
 
+#include "actor_player.hpp"
 #include "feature_rigid.hpp"
 #include "init.hpp"
 #include "map.hpp"
@@ -40,6 +41,8 @@ void init_all()
         map::reset({100, 100});
 
         put_floor_and_walls_on_map();
+
+        map::player->pos = map::rect().center();
 }
 
 void cleanup_all()
