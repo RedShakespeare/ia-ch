@@ -4456,7 +4456,7 @@
             <max_dungeon_level>24</max_dungeon_level>
             <spawn_weight>100</spawn_weight>
             <auto_spawn>true</auto_spawn>
-            <can_be_summoned_by_monster>true</can_be_summoned_by_monster>
+            <can_be_summoned_by_monster>false</can_be_summoned_by_monster>
             <nr_allowed_to_spawn>-1</nr_allowed_to_spawn>
             <group_size>alone</group_size>
             <native_room>plain</native_room>
