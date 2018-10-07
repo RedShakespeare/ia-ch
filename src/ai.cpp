@@ -807,29 +807,43 @@ std::vector<P> find_path_to_target(Mon& mon)
 
                         if (f->id() == FeatureId::door)
                         {
+                                // NOTE: The door is guaranteed to be closed,
+                                // since this point is only reached for features
+                                // considered blocking by the map parser
+
                                 const auto* const door =
                                         static_cast<const Door*>(f);
 
-                                // Metal doors are always blocking
+                                bool should_door_block = false;
+
                                 if (door->type() == DoorType::metal)
                                 {
-                                        blocked.at(p) = true;
-
-                                        continue;
+                                        // Metal door
+                                        should_door_block = true;
+                                }
+                                else if (door->is_stuck())
+                                {
+                                        // Stuck non-metal door
+                                        if (!mon.data->can_bash_doors)
+                                        {
+                                                should_door_block = true;
+                                        }
+                                }
+                                else
+                                {
+                                        // Non-stuck, non-metal door
+                                        if (!mon.data->can_bash_doors &&
+                                            !mon.data->can_open_doors)
+                                        {
+                                                should_door_block = true;
+                                        }
                                 }
 
-                                // Not a metal door
-
-                                // TODO: What about a monster that can open
-                                // doors but not bash, and the door is stuck?
-
-                                // Do not run the path through the door if the
-                                // monster can neither open it or bash it
-                                if (!mon.data->can_open_doors &&
-                                    !mon.data->can_bash_doors)
+                                if (should_door_block)
                                 {
                                         blocked.at(p) = true;
                                 }
+
                         }
                         else // Not a door (e.g. a wall)
                         {
