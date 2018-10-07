@@ -4,14 +4,15 @@
 #include <chrono>
 #endif // NDEBUG
 
-#include "map.hpp"
-#include "map_templates.hpp"
-#include "map_controller.hpp"
+#include "actor.hpp"
+#include "actor_factory.hpp"
+#include "actor_mon.hpp"
+#include "actor_player.hpp"
 #include "game_time.hpp"
 #include "gods.hpp"
-#include "actor.hpp"
-#include "actor_mon.hpp"
-#include "actor_factory.hpp"
+#include "map.hpp"
+#include "map_controller.hpp"
+#include "map_templates.hpp"
 #include "mapgen.hpp"
 
 // -----------------------------------------------------------------------------
@@ -123,6 +124,9 @@ bool MapBuilderTemplateLevel::build_specific()
         const P templ_dims = template_.dims();
 
         map::reset(templ_dims);
+
+        // Move away the player, to avoid placing monsters on the player
+        map::player->pos.set(0, 0);
 
         for (int x = 0; x < templ_dims.x; ++x)
         {
