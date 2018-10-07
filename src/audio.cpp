@@ -231,8 +231,7 @@ void play(const SfxId sfx,
 {
         if (audio_chunks_.empty() ||
             (sfx == SfxId::AMB_START) ||
-            (sfx == SfxId::END) ||
-            config::is_bot_playing())
+            (sfx == SfxId::END))
         {
                 return;
         }
