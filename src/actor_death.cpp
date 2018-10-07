@@ -83,19 +83,6 @@ static void move_actor_to_pos_can_have_corpse(Actor& actor)
         }
 }
 
-static void unset_actor_as_leader_for_all_mon(Actor& actor)
-{
-        for (Actor* other : game_time::actors)
-        {
-                if ((other != &actor) &&
-                    !other->is_player() &&
-                    actor.is_leader_of(other))
-                {
-                        static_cast<Mon*>(other)->leader_ = nullptr;
-                }
-        }
-}
-
 static void print_mon_death_msg(Actor& actor)
 {
         TRACE_VERBOSE << "Printing death message" << std::endl;
@@ -211,6 +198,19 @@ void kill(
         }
 
         TRACE_FUNC_END_VERBOSE;
+}
+
+void unset_actor_as_leader_for_all_mon(Actor& actor)
+{
+        for (Actor* other : game_time::actors)
+        {
+                if ((other != &actor) &&
+                    !other->is_player() &&
+                    actor.is_leader_of(other))
+                {
+                        static_cast<Mon*>(other)->leader_ = nullptr;
+                }
+        }
 }
 
 } // actor

@@ -240,6 +240,8 @@ void PropHasted::on_applied()
 void PropSummoned::on_end()
 {
         owner_->state = ActorState::destroyed;
+
+        actor::unset_actor_as_leader_for_all_mon(*owner_);
 }
 
 PropEnded PropInfected::on_tick()
@@ -1745,7 +1747,10 @@ void PropBreeds::on_std_turn()
 
         auto* const mon = static_cast<Mon*>(owner_);
 
-        Actor* const leader_of_spawned_mon = mon->leader_ ? mon->leader_ : mon;
+        Actor* const leader_of_spawned_mon =
+                mon->leader_
+                ? mon->leader_
+                : mon;
 
         const auto area_allowed = R(mon->pos - 1, mon->pos + 1);
 
