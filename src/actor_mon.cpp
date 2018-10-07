@@ -117,16 +117,35 @@ void Mon::act()
 
         // Sanity check - verify that monster's leader does not have a leader
         // (never allowed)
-        if (leader_ &&
-            !is_player_leader &&
-            static_cast<Mon*>(leader_)->leader_)
+        if (leader_ && !is_player_leader)
         {
-                TRACE << "Monster with name '"
-                      << name_a()
-                      << "' has a leader, which also has a leader (not allowed)"
-                      << std::endl;
+                const auto* const leader_mon = static_cast<Mon*>(leader_);
 
-                ASSERT(false);
+                const auto* const leader_leader = leader_mon->leader_;
+
+                if (leader_leader)
+                {
+                        TRACE << "Monster with name '"
+                              << name_a()
+                              << "' has a leader with name '"
+                              << leader_->name_a()
+                              << "', which also has a leader (not allowed!), "
+                              << "with name '"
+                              << leader_leader->name_a()
+                              << "'"
+                              << std::endl
+                              << "Monster is summoned?: "
+                              << properties.has(PropId::summoned)
+                              << std::endl
+                              << "Leader is summoned?: "
+                              << leader_->properties.has(PropId::summoned)
+                              << std::endl
+                              << "Leader's leader is summoned?: "
+                              << leader_leader->properties.has(PropId::summoned)
+                              << std::endl;
+
+                        ASSERT(false);
+                }
         }
 #endif // NDEBUG
 
@@ -783,11 +802,7 @@ void Mon::move(Dir dir)
                         map_parsers::BlocksActor(*this, ParseActors::yes)
                         .cell(target_p);
 
-        if (is_blocked)
-        {
-                ASSERT(false);
-        }
-        // ASSERT(!is_blocked);
+                ASSERT(!is_blocked);
         }
 #endif // NDEBUG
 
