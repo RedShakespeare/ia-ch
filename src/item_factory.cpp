@@ -437,11 +437,11 @@ void set_item_randomized_properties(Item* item)
     {
         DeviceLantern* const lantern = static_cast<DeviceLantern*>(item);
 
-        const int duration_max = lantern->nr_turns_left_;
+        const int duration_max = lantern->nr_turns_left;
 
         const int duration_min = duration_max / 2;
 
-        lantern->nr_turns_left_ = rnd::range(duration_min, duration_max);
+        lantern->nr_turns_left = rnd::range(duration_min, duration_max);
     }
 }
 

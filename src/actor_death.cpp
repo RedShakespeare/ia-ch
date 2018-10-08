@@ -189,7 +189,7 @@ void kill(
         {
                 if (allow_drop_items == AllowDropItems::yes)
                 {
-                        item_drop::drop_all_characters_items(actor);
+                        actor.inv.drop_all_non_intrinsic(actor.pos);
                 }
 
                 game::on_mon_killed(actor);

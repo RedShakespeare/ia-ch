@@ -401,13 +401,13 @@ static void draw_lantern(int& y)
                 const DeviceLantern* const lantern =
                         static_cast<const DeviceLantern*>(item);
 
-                if (lantern->is_activated_)
+                if (lantern->is_activated)
                 {
 
                         color = colors::yellow();
                 }
 
-                lantern_str = std::to_string(lantern->nr_turns_left_);
+                lantern_str = std::to_string(lantern->nr_turns_left);
         }
 
         io::draw_text_right(

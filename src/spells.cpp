@@ -2973,9 +2973,10 @@ void SpellSummonTentacles::run_effect(
         }
 
         const auto summoned =
-                actor_factory::spawn(caster->pos,
-                                     {ActorId::tentacles},
-                                     map::rect())
+                actor_factory::spawn(
+                        caster->pos,
+                        {ActorId::tentacles},
+                        map::rect())
                 .make_aware_of_player()
                 .set_leader(leader)
                 .for_each([](Mon* const mon)

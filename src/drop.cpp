@@ -18,15 +18,11 @@
 namespace item_drop
 {
 
-void drop_all_characters_items(Actor& actor)
-{
-        actor.inv.drop_all_non_intrinsic(actor.pos);
-}
-
-void drop_item_from_inv(Actor& actor,
-                        const InvType inv_type,
-                        const size_t idx,
-                        const int nr_items_to_drop)
+void drop_item_from_inv(
+        Actor& actor,
+        const InvType inv_type,
+        const size_t idx,
+        const int nr_items_to_drop)
 {
         Item* item_to_drop = nullptr;
 

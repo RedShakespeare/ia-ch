@@ -60,16 +60,16 @@ void Device::identify(const Verbosity verbosity)
 // -----------------------------------------------------------------------------
 StrangeDevice::StrangeDevice(ItemData* const item_data) :
         Device(item_data),
-        condition_(rnd::coin_toss() ? Condition::fine : Condition::shoddy) {}
+        condition(rnd::coin_toss() ? Condition::fine : Condition::shoddy) {}
 
 void StrangeDevice::save() const
 {
-        saving::put_int(int(condition_));
+        saving::put_int(int(condition));
 }
 
 void StrangeDevice::load()
 {
-        condition_ = Condition(saving::get_int());
+        condition = Condition(saving::get_int());
 }
 
 std::vector<std::string> StrangeDevice::descr() const
@@ -82,7 +82,7 @@ std::vector<std::string> StrangeDevice::descr() const
 
                 std::string cond_str = "It seems ";
 
-                switch (condition_)
+                switch (condition)
                 {
                 case Condition::fine:
                         cond_str += "to be in fine condition.";
@@ -148,7 +148,7 @@ ConsumeItem StrangeDevice::activate(Actor* const actor)
 
         const int rnd = rnd::range(1, max);
 
-        switch (condition_)
+        switch (condition)
         {
         case Condition::breaking:
         {
@@ -222,7 +222,7 @@ ConsumeItem StrangeDevice::activate(Actor* const actor)
         {
                 if (is_cond_degrade)
                 {
-                        if (condition_ == Condition::breaking)
+                        if (condition == Condition::breaking)
                         {
                                 msg_log::add("The " + item_name + " breaks!");
 
@@ -237,7 +237,7 @@ ConsumeItem StrangeDevice::activate(Actor* const actor)
 
                                 msg_log::add("I seem to have damaged it.");
 
-                                condition_ = Condition(int(condition_) - 1);
+                                condition = (Condition)((int)condition - 1);
                         }
                 }
 
@@ -259,7 +259,7 @@ std::string StrangeDevice::name_inf_str() const
 {
         if (data_->is_identified)
         {
-                switch (condition_)
+                switch (condition)
                 {
                 case Condition::breaking:
                         return "{breaking}";
@@ -455,14 +455,14 @@ ConsumeItem DeviceForceField::run_effect()
 // -----------------------------------------------------------------------------
 DeviceLantern::DeviceLantern(ItemData* const item_data) :
         Device(item_data),
-        nr_turns_left_(100),
-        is_activated_(false) {}
+        nr_turns_left(100),
+        is_activated(false) {}
 
 std::string DeviceLantern::name_inf_str() const
 {
-        std::string inf = "{" + std::to_string(nr_turns_left_);
+        std::string inf = "{" + std::to_string(nr_turns_left);
 
-        if (is_activated_)
+        if (is_activated)
         {
                 inf += ", Lit";
         }
@@ -485,14 +485,14 @@ ConsumeItem DeviceLantern::activate(Actor* const actor)
 
 void DeviceLantern::save() const
 {
-        saving::put_int(nr_turns_left_);
-        saving::put_bool(is_activated_);
+        saving::put_int(nr_turns_left);
+        saving::put_bool(is_activated);
 }
 
 void DeviceLantern::load()
 {
-        nr_turns_left_ = saving::get_int();
-        is_activated_ = saving::get_bool();
+        nr_turns_left = saving::get_int();
+        is_activated = saving::get_bool();
 }
 
 void DeviceLantern::on_pickup_hook()
@@ -509,7 +509,7 @@ void DeviceLantern::on_pickup_hook()
 
                 auto* other_lantern = static_cast<DeviceLantern*>(other);
 
-                other_lantern->nr_turns_left_ += nr_turns_left_;
+                other_lantern->nr_turns_left += nr_turns_left;
 
                 actor_carrying_->inv
                         .remove_item_in_backpack_with_ptr(this, true);
@@ -521,18 +521,18 @@ void DeviceLantern::on_pickup_hook()
 void DeviceLantern::toggle()
 {
         const std::string toggle_str =
-                is_activated_
+                is_activated
                 ? "I turn off"
                 : "I turn on";
 
         msg_log::add(toggle_str + " an Electric Lantern.");
 
-        is_activated_ = !is_activated_;
+        is_activated = !is_activated;
 
         // Discourage flipping on and off frequently
-        if (is_activated_ && (nr_turns_left_ >= 4))
+        if (is_activated && (nr_turns_left >= 4))
         {
-                nr_turns_left_ -= 2;
+                nr_turns_left -= 2;
         }
 
         audio::play(SfxId::lantern);
@@ -542,7 +542,7 @@ void DeviceLantern::on_std_turn_in_inv(const InvType inv_type)
 {
         (void)inv_type;
 
-        if (!is_activated_)
+        if (!is_activated)
         {
                 return;
         }
@@ -550,10 +550,10 @@ void DeviceLantern::on_std_turn_in_inv(const InvType inv_type)
         if (!(player_bon::has_trait(Trait::elec_incl) &&
               ((game_time::turn_nr() % 2) == 0)))
         {
-                --nr_turns_left_;
+                --nr_turns_left;
         }
 
-        if (nr_turns_left_ <= 0)
+        if (nr_turns_left <= 0)
         {
                 msg_log::add("My Electric Lantern has expired.",
                              colors::msg_note(),
@@ -570,7 +570,7 @@ void DeviceLantern::on_std_turn_in_inv(const InvType inv_type)
 LgtSize DeviceLantern::lgt_size() const
 {
         return
-                is_activated_
+                is_activated
                 ? LgtSize::fov
                 : LgtSize::none;
 }

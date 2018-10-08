@@ -528,7 +528,8 @@ void MapBuilderRatCave::handle_template_pos(const P& p, const char c)
         case 'r':
         case '1':
         {
-                if ((c == '&') || ((c == ',' || c == 'r') && rnd::coin_toss()))
+                if ((c == '&') ||
+                    ((c == ',' || c == 'r') && rnd::coin_toss()))
                 {
                         map::put(new Bones(p));
                 }

@@ -42,7 +42,7 @@ public:
         virtual void save() const override;
         virtual void load() override;
 
-        Condition condition_;
+        Condition condition;
 
 private:
         virtual std::string descr_identified() const = 0;
@@ -189,8 +189,8 @@ public:
         void save() const override;
         void load() override;
 
-        int nr_turns_left_;
-        bool is_activated_;
+        int nr_turns_left;
+        bool is_activated;
 
 private:
         void toggle();
