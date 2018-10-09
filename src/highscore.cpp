@@ -65,6 +65,7 @@ static void write_file(std::vector<HighscoreEntry>& entries)
                 file << entry.turn_count() << std::endl;
                 file << entry.ins() << std::endl;
                 file << (int)entry.bg() << std::endl;
+                file << (int)entry.occultist_domain() << std::endl;
         }
 }
 
@@ -118,7 +119,10 @@ static std::vector<HighscoreEntry> read_highscores_file()
                 const int ins = to_int(line);
 
                 getline(file, line);
-                Bg bg = (Bg)to_int(line);
+                const auto bg = (Bg)to_int(line);
+
+                getline(file, line);
+                const auto occultist_domain = (OccultistDomain)to_int(line);
 
                 entries.push_back(
                         HighscoreEntry(
@@ -131,7 +135,8 @@ static std::vector<HighscoreEntry> read_highscores_file()
                                 turn_count,
                                 ins,
                                 is_win,
-                                bg));
+                                bg,
+                                occultist_domain));
         }
 
         file.close();
@@ -154,7 +159,8 @@ HighscoreEntry::HighscoreEntry(
         int turn_count,
         int player_insanity,
         IsWin is_win,
-        Bg player_bg) :
+        Bg player_bg,
+        OccultistDomain player_occultist_domain) :
 
         game_summary_file_path_(game_summary_file_path),
         date_(date),
@@ -165,9 +171,11 @@ HighscoreEntry::HighscoreEntry(
         turn_count_(turn_count),
         ins_(player_insanity),
         is_win_(is_win),
-        bg_(player_bg) {}
+        bg_(player_bg),
+        player_occultist_domain_(player_occultist_domain)
+{
 
-HighscoreEntry::~HighscoreEntry() {}
+}
 
 int HighscoreEntry::score() const
 {
@@ -239,7 +247,8 @@ HighscoreEntry make_entry_from_current_game_data(
                 game_time::turn_nr(),
                 map::player->ins(),
                 is_win,
-                player_bon::bg());
+                player_bon::bg(),
+                player_bon::occultist_domain());
 
         return entry;
 }
@@ -356,7 +365,19 @@ void BrowseHighscore::draw()
 
                 const std::string date = entry.date();
                 const std::string name = entry.name();
-                const std::string bg = player_bon::bg_title(entry.bg());
+
+                std::string bg_title;
+
+                if (entry.bg() == Bg::occultist)
+                {
+                        bg_title = player_bon::occultist_domain_title(
+                                entry.occultist_domain());
+                }
+                else
+                {
+                        bg_title = player_bon::bg_title(entry.bg());
+                }
+
                 const std::string lvl = std::to_string(entry.lvl());
                 const std::string dlvl = std::to_string(entry.dlvl());
                 const std::string turns = std::to_string(entry.turn_count());
@@ -378,7 +399,7 @@ void BrowseHighscore::draw()
 
                 io::draw_text(date, panel, P(x_date, y), color);
                 io::draw_text(name, panel, P(x_name, y), color);
-                io::draw_text(bg, panel, P(x_bg, y), color);
+                io::draw_text(bg_title, panel, P(x_bg, y), color);
                 io::draw_text(lvl, panel, P(x_lvl, y), color);
                 io::draw_text(dlvl, panel, P(x_dlvl, y), color);
                 io::draw_text(turns, panel, P(x_turns, y), color);

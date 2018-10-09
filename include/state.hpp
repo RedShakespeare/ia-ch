@@ -21,6 +21,7 @@ enum class StateId
         new_game,
         new_level,
         pick_background,
+        pick_background_occultist,
         pick_name,
         pick_trait,
         postmortem_info,

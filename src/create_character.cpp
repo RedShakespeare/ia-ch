@@ -16,21 +16,6 @@
 // -----------------------------------------------------------------------------
 // New game state
 // -----------------------------------------------------------------------------
-NewGameState::NewGameState()
-{
-
-}
-
-NewGameState::~NewGameState()
-{
-
-}
-
-StateId NewGameState::id()
-{
-        return StateId::new_game;
-}
-
 void NewGameState::on_pushed()
 {
         states::push(std::make_unique<GameState>(GameEntryMode::new_game));
@@ -47,23 +32,6 @@ void NewGameState::on_resume()
 // -----------------------------------------------------------------------------
 // Pick background state
 // -----------------------------------------------------------------------------
-PickBgState::PickBgState() :
-        State(),
-        browser_()
-{
-
-}
-
-PickBgState::~PickBgState()
-{
-
-}
-
-StateId PickBgState::id()
-{
-        return StateId::pick_background;
-}
-
 void PickBgState::on_start()
 {
         bgs_ = player_bon::pickable_bgs();
@@ -86,18 +54,26 @@ void PickBgState::update()
 
         const auto input = io::get(false);
 
-        const MenuAction action =
-                browser_.read(input, MenuInputMode::scrolling_and_letters);
+        const auto action =
+                browser_.read(
+                        input,
+                        MenuInputMode::scrolling_and_letters);
 
         switch (action)
         {
         case MenuAction::selected:
         {
-                const Bg bg = bgs_[browser_.y()];
+                const auto bg = bgs_[browser_.y()];
 
                 player_bon::pick_bg(bg);
 
                 states::pop();
+
+                // Occultists also pick a domain
+                if (bg == Bg::occultist)
+                {
+                        states::push(std::make_unique<PickOccultistState>());
+                }
         }
         break;
 
@@ -127,12 +103,12 @@ void PickBgState::draw()
 
         int y = 0;
 
-        const Bg bg_marked = bgs_[browser_.y()];
+        const auto bg_marked = bgs_[browser_.y()];
 
         // Backgrounds
         std::string key_str = "a) ";
 
-        for (const Bg bg : bgs_)
+        for (const auto bg : bgs_)
         {
                 const std::string bg_name = player_bon::bg_title(bg);
                 const bool is_marked = bg == bg_marked;
@@ -187,32 +163,135 @@ void PickBgState::draw()
 }
 
 // -----------------------------------------------------------------------------
+// Pick occultist state
+// -----------------------------------------------------------------------------
+void PickOccultistState::on_start()
+{
+        domains_ = player_bon::pickable_occultist_domains();
+
+        browser_.reset(
+                domains_.size(),
+                panels::h(Panel::create_char_menu));
+}
+
+void PickOccultistState::update()
+{
+        if (config::is_bot_playing())
+        {
+                player_bon::pick_occultist_domain(rnd::element(domains_));
+
+                states::pop();
+
+                return;
+        }
+
+        const auto input = io::get(false);
+
+        const auto action =
+                browser_.read(
+                        input,
+                        MenuInputMode::scrolling_and_letters);
+
+        switch (action)
+        {
+        case MenuAction::selected:
+        {
+                const auto domain = domains_[browser_.y()];
+
+                player_bon::pick_occultist_domain(domain);
+
+                states::pop();
+        }
+        break;
+
+        case MenuAction::esc:
+        {
+                states::pop_until(StateId::menu);
+        }
+        break;
+
+        default:
+                break;
+        }
+}
+
+void PickOccultistState::draw()
+{
+        const int screen_center_x = panels::center_x(Panel::screen);
+
+        io::draw_text_center(
+                "What is your domain?",
+                Panel::screen,
+                P(screen_center_x, 0),
+                colors::title(),
+                false, // Do not draw background color
+                colors::black(),
+                true); // Allow pixel-level adjustment
+
+        int y = 0;
+
+        const auto domain_marked = domains_[browser_.y()];
+
+        // Domains
+        std::string key_str = "a) ";
+
+        for (const auto domain : domains_)
+        {
+                const std::string domain_name =
+                        player_bon::occultist_domain_title(domain);
+
+                const bool is_marked = domain == domain_marked;
+
+                const auto& draw_color =
+                        is_marked ?
+                        colors::menu_highlight() :
+                        colors::menu_dark();
+
+                io::draw_text(
+                        key_str + domain_name,
+                        Panel::create_char_menu,
+                        P(0, y),
+                        draw_color);
+
+                ++y;
+
+                ++key_str[0];
+        }
+
+        // Description
+        y = 0;
+
+        const auto descr = player_bon::occultist_domain_descr(domain_marked);
+
+        ASSERT(!descr.empty());
+
+        if (descr.empty())
+        {
+                return;
+        }
+
+        const auto formatted_lines = text_format::split(
+                descr,
+                panels::w(Panel::create_char_descr));
+
+        for (const std::string& line : formatted_lines)
+        {
+                io::draw_text(
+                        line,
+                        Panel::create_char_descr,
+                        P(0, y),
+                        colors::white());
+
+                ++y;
+        }
+}
+
+// -----------------------------------------------------------------------------
 // Pick trait state
 // -----------------------------------------------------------------------------
-PickTraitState::PickTraitState() :
-        State(),
-        browser_traits_avail_(),
-        browser_traits_unavail_(),
-        traits_avail_(),
-        traits_unavail_(),
-        screen_mode_(TraitScreenMode::pick_new)
-{
-
-}
-
-PickTraitState::~PickTraitState()
-{
-
-}
-
-StateId PickTraitState::id()
-{
-        return StateId::pick_trait;
-}
-
 void PickTraitState::on_start()
 {
-        const Bg player_bg = player_bon::bg();
+        const auto player_bg = player_bon::bg();
 
         player_bon::unpicked_traits_for_bg(
                 player_bg,
@@ -241,21 +320,22 @@ void PickTraitState::update()
         if (input.key == SDLK_TAB)
         {
                 screen_mode_ =
-                        screen_mode_ == TraitScreenMode::pick_new ?
-                        TraitScreenMode::view_unavail :
-                        TraitScreenMode::pick_new;
+                        (screen_mode_ == TraitScreenMode::pick_new)
+                        ? TraitScreenMode::view_unavail
+                        : TraitScreenMode::pick_new;
 
                 return;
         }
 
         MenuBrowser& browser =
-                (screen_mode_ == TraitScreenMode::pick_new) ?
-                browser_traits_avail_ :
-                browser_traits_unavail_;
+                (screen_mode_ == TraitScreenMode::pick_new)
+                ? browser_traits_avail_
+                : browser_traits_unavail_;
 
-        const MenuAction action =
-                browser.read(input,
-                             MenuInputMode::scrolling_and_letters);
+        const auto action =
+                browser.read(
+                        input,
+                        MenuInputMode::scrolling_and_letters);
 
         switch (action)
         {
@@ -337,7 +417,7 @@ void PickTraitState::draw()
 
         const Trait trait_marked = traits->at(browser_y);
 
-        const Bg player_bg = player_bon::bg();
+        const auto player_bg = player_bon::bg();
 
         // Traits
         int y = 0;
@@ -528,23 +608,6 @@ void PickTraitState::draw()
 // -----------------------------------------------------------------------------
 // Enter name state
 // -----------------------------------------------------------------------------
-EnterNameState::EnterNameState() :
-        State(),
-        current_str_()
-{
-
-}
-
-EnterNameState::~EnterNameState()
-{
-
-}
-
-StateId EnterNameState::id()
-{
-        return StateId::pick_name;
-}
-
 void EnterNameState::on_start()
 {
         const std::string default_name = config::default_player_name();

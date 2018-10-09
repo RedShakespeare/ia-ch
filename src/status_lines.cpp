@@ -47,9 +47,24 @@ static void draw_player_name(int& y)
 
 static void draw_player_class(int& y)
 {
+        std::string bg_title;
+
+        const auto bg = player_bon::bg();
+
+        if (bg == Bg::occultist)
+        {
+                const auto domain = player_bon::occultist_domain();
+
+                bg_title = player_bon::occultist_domain_title(domain);
+        }
+        else
+        {
+                bg_title = player_bon::bg_title(bg);
+        }
+
         const auto class_lines =
                 text_format::split(
-                        player_bon::bg_title(player_bon::bg()),
+                        bg_title,
                         text_x1() - text_x0 + 1);
 
         for (const std::string& line : class_lines)

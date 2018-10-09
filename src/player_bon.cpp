@@ -17,7 +17,9 @@
 // -----------------------------------------------------------------------------
 // Private
 // -----------------------------------------------------------------------------
-static Bg bg_ = Bg::END;
+static Bg current_bg = Bg::END;
+
+static OccultistDomain current_occultist_domain = OccultistDomain::END;
 
 static bool is_trait_blocked_for_bg(const Trait trait, const Bg bg)
 {
@@ -91,17 +93,21 @@ bool traits[(size_t)Trait::END];
 
 void init()
 {
+        current_bg = Bg::END;
+
+        current_occultist_domain = OccultistDomain::END;
+
         for (size_t i = 0; i < (size_t)Trait::END; ++i)
         {
                 traits[i] = false;
         }
-
-        bg_ = Bg::END;
 }
 
 void save()
 {
-        saving::put_int((int)bg_);
+        saving::put_int((int)current_bg);
+
+        saving::put_int((int)current_occultist_domain);
 
         for (size_t i = 0; i < (size_t)Trait::END; ++i)
         {
@@ -111,7 +117,9 @@ void save()
 
 void load()
 {
-        bg_ = Bg(saving::get_int());
+        current_bg = (Bg)saving::get_int();
+
+        current_occultist_domain = (OccultistDomain)saving::get_int();
 
         for (size_t i = 0; i < (size_t)Trait::END; ++i)
         {
@@ -123,20 +131,8 @@ std::string bg_title(const Bg id)
 {
         switch (id)
         {
-        case Bg::occultist_clairv:
-                return "Clairvoyant";
-
-        case Bg::occultist_ench:
-                return "Enchanter";
-
-        case Bg::occultist_invoc:
-                return "Invoker";
-
-        // case Bg::occultist_summon:
-        //         return "Summoner";
-
-        case Bg::occultist_transmut:
-                return "Transmuter";
+        case Bg::occultist:
+                return "Occultist";
 
         case Bg::ghoul:
                 return "Ghoul";
@@ -148,6 +144,34 @@ std::string bg_title(const Bg id)
                 return "War Veteran";
 
         case Bg::END:
+                break;
+        }
+
+        ASSERT(false);
+
+        return "";
+}
+
+std::string occultist_domain_title(const OccultistDomain domain)
+{
+        switch (domain)
+        {
+        case OccultistDomain::clairvoyant:
+                return "Clairvoyant";
+
+        case OccultistDomain::enchanter:
+                return "Enchanter";
+
+        case OccultistDomain::invoker:
+                return "Invoker";
+
+        // case OccultistDomain::summoner:
+        //         return "Summoner";
+
+        case OccultistDomain::transmuter:
+                return "Transmuter";
+
+        case OccultistDomain::END:
                 break;
         }
 
@@ -296,7 +320,15 @@ std::vector<ColoredString> bg_descr(const Bg id)
                 descr.push_back({trait_descr(id), colors::gray()});
         };
 
-        auto put_occultist_common_description = [&descr, put, put_trait]() {
+        switch (id)
+        {
+        case Bg::occultist:
+                put("Specializes in a spell domain (selected at character "
+                    "creation). "
+                    "At character levels 4 and 8, all spells belonging to the "
+                    "chosen domain are cast with greater power. "
+                    "This choice also determines starting spells.");
+                put("");
                 put("-50% shock taken from casting spells, and from carrying, "
                     "using or identifying strange items (e.g. drinking a "
                     "potion or carrying a disturbing artifact)");
@@ -308,51 +340,6 @@ std::vector<ColoredString> bg_descr(const Bg id)
                 put("-2 Hit Points");
                 put("");
                 put_trait(Trait::stout_spirit);
-        };
-
-        const std::string occultist_spell_improve_str =
-                "at character levels 4 and 8, all spells belonging to the "
-                "occultist's domain are cast with greater power";
-
-        switch (id)
-        {
-        case Bg::occultist_clairv:
-                put("Specializes in spells related to detection and learning - "
-                    + occultist_spell_improve_str);
-                put("");
-                put_occultist_common_description();
-                break;
-
-        case Bg::occultist_ench:
-                put("Specializes in spells related to aiding, debilitating, "
-                    "entrancing, and beguiling - "
-                    + occultist_spell_improve_str);
-                put("");
-                put_occultist_common_description();
-                break;
-
-        case Bg::occultist_invoc:
-                put("Specializes in spells related to channeling destructive "
-                    "powers - "
-                    + occultist_spell_improve_str);
-                put("");
-                put_occultist_common_description();
-                break;
-
-        // case Bg::occultist_summon:
-        //         put("Specializes in spells related to bringing forth "
-        //             "creatures - "
-        //             + occultist_spell_improve_str);
-        //         put("");
-        //         put_occultist_common_description();
-        //         break;
-
-        case Bg::occultist_transmut:
-                put("Specializes in spells related to manipulating matter, "
-                    "energy, and time - "
-                    + occultist_spell_improve_str);
-                put("");
-                put_occultist_common_description();
                 break;
 
         case Bg::ghoul:
@@ -418,6 +405,38 @@ std::vector<ColoredString> bg_descr(const Bg id)
         }
 
         return descr;
+}
+
+std::string occultist_domain_descr(const OccultistDomain domain)
+{
+        switch (domain)
+        {
+        case OccultistDomain::clairvoyant:
+                return
+                        "Specializes in spells related to detection and "
+                        "learning.";
+
+        case OccultistDomain::enchanter:
+                return
+                        "Specializes in spells related to aiding, "
+                        "debilitating, entrancing, and beguiling.";
+
+        case OccultistDomain::invoker:
+                return
+                        "Specializes in spells related to channeling "
+                        "destructive powers.";
+
+        case OccultistDomain::transmuter:
+                return
+                        "Specializes in spells related to manipulating matter, "
+                        "energy, and time.";
+
+        case OccultistDomain::END:
+                ASSERT(false);
+                break;
+        }
+
+        return "";
 }
 
 std::string trait_descr(const Trait id)
@@ -802,22 +821,17 @@ void trait_prereqs(
 
 Bg bg()
 {
-        return bg_;
+        return current_bg;
+}
+
+OccultistDomain occultist_domain()
+{
+        return current_occultist_domain;
 }
 
 bool has_trait(const Trait id)
 {
         return traits[(size_t)id];
-}
-
-bool is_occultist()
-{
-        return
-                (bg_ == Bg::occultist_clairv) ||
-                (bg_ == Bg::occultist_ench) ||
-                (bg_ == Bg::occultist_invoc) ||
-                (bg_ == Bg::occultist_transmut);
-                // (bg_ == Bg::occultist_summon);
 }
 
 std::vector<Bg> pickable_bgs()
@@ -826,14 +840,36 @@ std::vector<Bg> pickable_bgs()
 
         for (int i = 0; i < (int)Bg::END; ++i)
         {
-                ret.push_back(Bg(i));
+                ret.push_back((Bg)i);
         }
 
         // Sort lexicographically
-        sort(ret.begin(), ret.end(), [](const Bg & bg1, const Bg & bg2)
+        sort(ret.begin(), ret.end(), [](const Bg bg1, const Bg bg2)
         {
                 const std::string str1 = bg_title(bg1);
                 const std::string str2 = bg_title(bg2);
+                return str1 < str2;
+        });
+
+        return ret;
+}
+
+std::vector<OccultistDomain> pickable_occultist_domains()
+{
+        std::vector<OccultistDomain> ret;
+
+        for (int i = 0; i < (int)OccultistDomain::END; ++i)
+        {
+                ret.push_back((OccultistDomain)i);
+        }
+
+        // Sort lexicographically
+        sort(ret.begin(), ret.end(), [](
+                const OccultistDomain bg1,
+                const OccultistDomain bg2)
+        {
+                const std::string str1 = occultist_domain_title(bg1);
+                const std::string str2 = occultist_domain_title(bg2);
                 return str1 < str2;
         });
 
@@ -882,7 +918,7 @@ void unpicked_traits_for_bg(
                         clvl_prereq);
 
                 const bool is_bg_ok =
-                        (bg_ == bg_prereq) ||
+                        (current_bg == bg_prereq) ||
                         (bg_prereq == Bg::END);
 
                 if (!is_bg_ok)
@@ -941,15 +977,11 @@ void pick_bg(const Bg bg)
 {
         ASSERT(bg != Bg::END);
 
-        bg_ = bg;
+        current_bg = bg;
 
-        switch (bg_)
+        switch (current_bg)
         {
-        case Bg::occultist_clairv:
-        case Bg::occultist_ench:
-        case Bg::occultist_invoc:
-        // case Bg::occultist_summon:
-        case Bg::occultist_transmut:
+        case Bg::occultist:
         {
                 pick_trait(Trait::stout_spirit);
 
@@ -1008,119 +1040,121 @@ void pick_bg(const Bg bg)
         }
 }
 
+void pick_occultist_domain(const OccultistDomain domain)
+{
+        ASSERT(domain != OccultistDomain::END);
+
+        current_occultist_domain = domain;
+}
+
 void on_player_gained_lvl(const int new_lvl)
 {
-        auto is_occultist_spell_incr_lvl = [](const int new_lvl) {
-                return ((new_lvl == 4) || (new_lvl == 8));
-        };
-
-        switch (bg_)
+        if (current_bg == Bg::occultist)
         {
-        case Bg::occultist_clairv:
-                if (is_occultist_spell_incr_lvl(new_lvl))
+                auto is_occultist_spell_incr_lvl = [](const int new_lvl) {
+                        return ((new_lvl == 4) || (new_lvl == 8));
+                };
+
+                switch (current_occultist_domain)
                 {
-                        player_spells::incr_spell_skill(
-                                SpellId::searching);
+                case OccultistDomain::clairvoyant:
+                        if (is_occultist_spell_incr_lvl(new_lvl))
+                        {
+                                player_spells::incr_spell_skill(
+                                        SpellId::searching);
 
-                        player_spells::incr_spell_skill(
-                                SpellId::identify);
+                                player_spells::incr_spell_skill(
+                                        SpellId::identify);
 
-                        player_spells::incr_spell_skill(
-                                SpellId::see_invis);
+                                player_spells::incr_spell_skill(
+                                        SpellId::see_invis);
+                        }
+                        break;
+
+                case OccultistDomain::enchanter:
+                        if (is_occultist_spell_incr_lvl(new_lvl))
+                        {
+                                player_spells::incr_spell_skill(
+                                        SpellId::enfeeble);
+
+                                player_spells::incr_spell_skill(
+                                        SpellId::slow);
+
+                                player_spells::incr_spell_skill(
+                                        SpellId::terrify);
+
+                                player_spells::incr_spell_skill(
+                                        SpellId::heal);
+
+                                player_spells::incr_spell_skill(
+                                        SpellId::res);
+
+                                player_spells::incr_spell_skill(
+                                        SpellId::spell_shield);
+                        }
+                        break;
+
+                case OccultistDomain::invoker:
+                        if (is_occultist_spell_incr_lvl(new_lvl))
+                        {
+                                player_spells::incr_spell_skill(
+                                        SpellId::darkbolt);
+
+                                player_spells::incr_spell_skill(
+                                        SpellId::aura_of_decay);
+
+                                player_spells::incr_spell_skill(
+                                        SpellId::aza_wrath);
+
+                                player_spells::incr_spell_skill(
+                                        SpellId::mayhem);
+                        }
+                        break;
+
+                        // case OccultistDomain::summoner:
+                        //         if (is_occultist_spell_incr_lvl(new_lvl))
+                        //         {
+                        //                 player_spells::incr_spell_skill(
+                        //                         SpellId::pestilence);
+
+                        //                 player_spells::incr_spell_skill(
+                        //                         SpellId::summon);
+                        //         }
+                        //         break;
+
+                case OccultistDomain::transmuter:
+                        if (is_occultist_spell_incr_lvl(new_lvl))
+                        {
+                                // NOTE: This could perhaps be considered an
+                                // enchantment spell, but the way the spell
+                                // description is phrased, it sounds a lot more
+                                // like alteration
+                                player_spells::incr_spell_skill(
+                                        SpellId::bless);
+
+                                player_spells::incr_spell_skill(
+                                        SpellId::light);
+
+                                player_spells::incr_spell_skill(
+                                        SpellId::opening);
+
+                                player_spells::incr_spell_skill(
+                                        SpellId::divert_attacks);
+
+                                player_spells::incr_spell_skill(
+                                        SpellId::slow_time);
+
+                                player_spells::incr_spell_skill(
+                                        SpellId::teleport);
+
+                                player_spells::incr_spell_skill(
+                                        SpellId::transmut);
+                        }
+                        break;
+
+                case OccultistDomain::END:
+                        break;
                 }
-                break;
-
-        case Bg::occultist_ench:
-                if (is_occultist_spell_incr_lvl(new_lvl))
-                {
-                        player_spells::incr_spell_skill(
-                                SpellId::enfeeble);
-
-                        player_spells::incr_spell_skill(
-                                SpellId::slow);
-
-                        player_spells::incr_spell_skill(
-                                SpellId::terrify);
-
-                        player_spells::incr_spell_skill(
-                                SpellId::heal);
-
-                        player_spells::incr_spell_skill(
-                                SpellId::res);
-
-                        player_spells::incr_spell_skill(
-                                SpellId::spell_shield);
-                }
-                break;
-
-        case Bg::occultist_invoc:
-                if (is_occultist_spell_incr_lvl(new_lvl))
-                {
-                        player_spells::incr_spell_skill(
-                                SpellId::darkbolt);
-
-                        player_spells::incr_spell_skill(
-                                SpellId::aura_of_decay);
-
-                        player_spells::incr_spell_skill(
-                                SpellId::aza_wrath);
-
-                        player_spells::incr_spell_skill(
-                                SpellId::mayhem);
-                }
-                break;
-
-        // case Bg::occultist_summon:
-        //         if (is_occultist_spell_incr_lvl(new_lvl))
-        //         {
-        //                 player_spells::incr_spell_skill(
-        //                         SpellId::pestilence);
-
-        //                 player_spells::incr_spell_skill(
-        //                         SpellId::summon);
-        //         }
-        //         break;
-
-        case Bg::occultist_transmut:
-                if (is_occultist_spell_incr_lvl(new_lvl))
-                {
-                        // NOTE: This could perhaps be considered an enchantment
-                        // spell, but the way the spell description is phrased,
-                        // it sounds a lot more like alteration
-                        player_spells::incr_spell_skill(
-                                SpellId::bless);
-
-                        player_spells::incr_spell_skill(
-                                SpellId::light);
-
-                        player_spells::incr_spell_skill(
-                                SpellId::opening);
-
-                        player_spells::incr_spell_skill(
-                                SpellId::divert_attacks);
-
-                        player_spells::incr_spell_skill(
-                                SpellId::slow_time);
-
-                        player_spells::incr_spell_skill(
-                                SpellId::teleport);
-
-                        player_spells::incr_spell_skill(
-                                SpellId::transmut);
-                }
-                break;
-
-        case Bg::ghoul:
-                break;
-
-        case Bg::rogue:
-                break;
-
-        case Bg::war_vet:
-                break;
-
-        case Bg::END:
-                break;
         }
 }
 

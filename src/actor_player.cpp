@@ -389,7 +389,7 @@ int Player::shock_resistance(const ShockSrc shock_src) const
     {
     case ShockSrc::use_strange_item:
     case ShockSrc::cast_intr_spell:
-        if (player_bon::is_occultist())
+        if (player_bon::bg() == Bg::occultist)
         {
             res += 50;
         }

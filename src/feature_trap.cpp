@@ -344,9 +344,7 @@ void Trap::disarm()
                 return;
         }
 
-        const bool is_occultist = player_bon::is_occultist();
-
-        if (is_magical() && !is_occultist)
+        if (is_magical() && (player_bon::bg() != Bg::occultist))
         {
                 msg_log::add("I do not know how to dispel magic traps.");
 

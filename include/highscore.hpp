@@ -23,9 +23,10 @@ public:
                 int turn_count,
                 int player_insanity,
                 IsWin is_win,
-                Bg player_bg);
+                Bg player_bg,
+                OccultistDomain player_occultist_domain);
 
-        ~HighscoreEntry();
+        ~HighscoreEntry() {}
 
         int score() const;
 
@@ -79,6 +80,11 @@ public:
                 return bg_;
         }
 
+        OccultistDomain occultist_domain() const
+        {
+                return player_occultist_domain_;
+        }
+
 private:
         std::string game_summary_file_path_;
         std::string date_;
@@ -90,6 +96,7 @@ private:
         int ins_;
         IsWin is_win_;
         Bg bg_;
+        OccultistDomain player_occultist_domain_;
 };
 
 namespace highscore

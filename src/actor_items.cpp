@@ -217,71 +217,55 @@ static void make_for_player_ghoul()
 
 static void make_for_player()
 {
-        const Bg bg = player_bon::bg();
-
-        switch (bg)
+        switch (player_bon::bg())
         {
-        case Bg::occultist_clairv:
-        {
+        case Bg::occultist:
                 make_for_player_occultist_common();
 
-                make_for_player_occultist_clairv();
-        }
-        break;
+                switch (player_bon::occultist_domain())
+                {
+                case OccultistDomain::clairvoyant:
+                        make_for_player_occultist_clairv();
+                        break;
 
-        case Bg::occultist_ench:
-        {
-                make_for_player_occultist_common();
+                case OccultistDomain::enchanter:
+                        make_for_player_occultist_ench();
+                        break;
 
-                make_for_player_occultist_ench();
-        }
-        break;
+                case OccultistDomain::invoker:
+                        make_for_player_occultist_invoc();
+                        break;
 
-        case Bg::occultist_invoc:
-        {
-                make_for_player_occultist_common();
+                        // case OccultistDomain::summoner:
+                        //         make_for_player_occultist_summoner();
+                        //         break;
 
-                make_for_player_occultist_invoc();
-        }
-        break;
+                case OccultistDomain::transmuter:
+                        make_for_player_occultist_transmut();
+                        break;
 
-        // case Bg::occultist_summon:
-        // {
-        //         make_for_player_occultist_common();
+                case OccultistDomain::END:
+                        ASSERT(false);
+                        break;
 
-        //         make_for_player_occultist_summon();
-        // }
-        // break;
-
-        case Bg::occultist_transmut:
-        {
-                make_for_player_occultist_common();
-
-                make_for_player_occultist_transmut();
-        }
-        break;
+                } // Occultist domain switch
+                break;
 
         case Bg::rogue:
-        {
                 make_for_player_rogue();
-        }
-        break;
+                break;
 
         case Bg::war_vet:
-        {
                 make_for_player_war_vet();
-        }
-        break;
+                break;
 
         case Bg::ghoul:
-        {
                 make_for_player_ghoul();
-        }
-        break;
+                break;
 
         case Bg::END:
                 break;
-        }
+        } // Background switch
 }
 
 static void make_random_item_to_backpack(Actor& actor,

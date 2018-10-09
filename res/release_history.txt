@@ -6,7 +6,7 @@ Gameplay
 * Some maps built from templates (such as the "Egypt" level)  are randomly flipped and rotated, for more variety
 * Added more special levels
 * Added swimming
-* The Occultist traits to improve spells (such as Lesser/Greater Invocation, Summoning, etc) have been removed - instead there are now multiple Occultist backgrounds to choose from, which get free upgrades at certain levels for spells belonging to their respective domains
+* The Occultist traits to improve spells (such as Lesser/Greater Invocation, Summoning, etc) have been removed - instead there are now multiple Occultist domains to choose from at character creation, which get free upgrades at certain levels for spells belonging to their respective domains
 * Added more spells
 * The spell "Animate Weapons" has been changed to "Spectral Weapons" - instead of animating weapons on the floor, it summons a living copy of each melee weapon in your inventory (which will simply disappear after a while, without dropping any weapons on the floor)
 * The spell "Enfeeble" now only causes Weakening (instead of a bunch of different things)

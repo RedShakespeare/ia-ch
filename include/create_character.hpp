@@ -7,87 +7,103 @@
 
 enum class TraitScreenMode
 {
-    pick_new,
-    view_unavail
+        pick_new,
+        view_unavail
 };
 
 class NewGameState: public State
 {
 public:
-    NewGameState();
+        void on_pushed() override;
 
-    ~NewGameState();
+        void on_resume() override;
 
-    void on_pushed() override;
-
-    void on_resume() override;
-
-    StateId id() override;
+        StateId id() override
+        {
+                return StateId::new_game;
+        }
 };
 
 class PickBgState: public State
 {
 public:
-    PickBgState();
+        void on_start() override;
 
-    ~PickBgState();
+        void update() override;
 
-    void on_start() override;
+        void draw() override;
 
-    void update() override;
-
-    void draw() override;
-
-    StateId id() override;
+        StateId id() override
+        {
+                return StateId::pick_background;
+        }
 
 private:
-    MenuBrowser browser_;
+        MenuBrowser browser_ {};
 
-    std::vector<Bg> bgs_;
+        std::vector<Bg> bgs_ {};
+};
+
+class PickOccultistState: public State
+{
+public:
+        void on_start() override;
+
+        void update() override;
+
+        void draw() override;
+
+        StateId id() override
+        {
+                return StateId::pick_background_occultist;
+        }
+
+private:
+        MenuBrowser browser_ {};
+
+        std::vector<OccultistDomain> domains_ {};
 };
 
 class PickTraitState: public State
 {
 public:
-    PickTraitState();
+        void on_start() override;
 
-    ~PickTraitState();
+        void update() override;
 
-    void on_start() override;
+        void draw() override;
 
-    void update() override;
-
-    void draw() override;
-
-    StateId id() override;
+        StateId id() override
+        {
+                return StateId::pick_trait;
+        }
 
 private:
-    MenuBrowser browser_traits_avail_;
-    MenuBrowser browser_traits_unavail_;
+        MenuBrowser browser_traits_avail_ {};
+        MenuBrowser browser_traits_unavail_ {};
 
-    std::vector<Trait> traits_avail_;
-    std::vector<Trait> traits_unavail_;
+        std::vector<Trait> traits_avail_ {};
+        std::vector<Trait> traits_unavail_ {};
 
-    TraitScreenMode screen_mode_;
+        TraitScreenMode screen_mode_ {TraitScreenMode::pick_new};
 };
 
 class EnterNameState: public State
 {
 public:
-    EnterNameState();
+        void on_start() override;
 
-    ~EnterNameState();
+        void update() override;
 
-    void on_start() override;
+        void draw() override;
 
-    void update() override;
-
-    void draw() override;
-
-    StateId id() override;
+        StateId id() override
+        {
+                return StateId::pick_name;
+        }
 
 private:
-    std::string current_str_;
+        std::string current_str_ {};
 };
 
 #endif // CREATE_CHARACTER_HPP

@@ -96,9 +96,20 @@ void PostmortemMenu::on_start()
 
         const std::string name = highscore_entry.name();
 
-        const std::string bg = player_bon::bg_title(highscore_entry.bg());
+        std::string bg_title;
 
-        info_lines_.push_back({name + " (" + bg + ")", color_heading});
+        if (highscore_entry.bg() == Bg::occultist)
+        {
+                const auto domain = highscore_entry.occultist_domain();
+
+                bg_title = player_bon::occultist_domain_title(domain);
+        }
+        else
+        {
+                bg_title = player_bon::bg_title(highscore_entry.bg());
+        }
+
+        info_lines_.push_back({name + " (" + bg_title + ")", color_heading});
 
         const int dlvl = highscore_entry.dlvl();
 
