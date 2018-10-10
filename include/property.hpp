@@ -590,11 +590,11 @@ private:
         void curse_adjacent() const;
 };
 
-class PropDivertAttacks: public Prop
+class PropPremonition: public Prop
 {
 public:
-        PropDivertAttacks() :
-                Prop(PropId::divert_attacks) {}
+        PropPremonition() :
+                Prop(PropId::premonition) {}
 
         int ability_mod(const AbilityId ability) const override
         {

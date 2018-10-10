@@ -95,8 +95,8 @@ Prop* make(const PropId id)
         case PropId::cursed:
                 return new PropCursed();
 
-        case PropId::divert_attacks:
-                return new PropDivertAttacks();
+        case PropId::premonition:
+                return new PropPremonition();
 
         case PropId::magic_searching:
                 return new PropMagicSearching();

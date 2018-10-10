@@ -589,10 +589,10 @@ static void init_data_list()
         d.alignment = PropAlignment::bad;
         add(d);
 
-        d.id = PropId::divert_attacks;
+        d.id = PropId::premonition;
         d.std_rnd_turns = Range(5, 9);
-        d.name = "Divert Attacks";
-        d.name_short = "Divert Attacks";
+        d.name = "Premonition";
+        d.name_short = "Premonition";
         d.descr = "+75% chance to evade attacks";
         d.msg_start_player = "I feel unassailable.";
         d.msg_end_player = "I feel more vulnerable.";

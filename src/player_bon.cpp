@@ -1068,6 +1068,9 @@ void on_player_gained_lvl(const int new_lvl)
 
                                 player_spells::incr_spell_skill(
                                         SpellId::see_invis);
+
+                                player_spells::incr_spell_skill(
+                                        SpellId::premonition);
                         }
                         break;
 
@@ -1137,9 +1140,6 @@ void on_player_gained_lvl(const int new_lvl)
 
                                 player_spells::incr_spell_skill(
                                         SpellId::opening);
-
-                                player_spells::incr_spell_skill(
-                                        SpellId::divert_attacks);
 
                                 player_spells::incr_spell_skill(
                                         SpellId::slow_time);

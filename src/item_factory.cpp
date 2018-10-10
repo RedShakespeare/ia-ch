@@ -185,7 +185,7 @@ Item* make(const ItemId item_id, const int nr_items)
     case ItemId::scroll_transmut:
     case ItemId::scroll_heal:
     case ItemId::scroll_see_invis:
-    case ItemId::scroll_divert_attacks:
+    case ItemId::scroll_premonition:
     case ItemId::scroll_slow_time:
     case ItemId::scroll_spell_shield:
         r = new Scroll(d);

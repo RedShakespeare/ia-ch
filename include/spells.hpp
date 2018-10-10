@@ -30,7 +30,7 @@ enum class SpellId
         spectral_wpns, // TODO: Enable for monsters
         aza_wrath,
         bless,
-        divert_attacks,
+        premonition,
         identify,
         light,
         mayhem,
@@ -69,7 +69,7 @@ const std::unordered_map<std::string, SpellId> str_to_spell_id_map =
         {"darkbolt", SpellId::darkbolt},
         {"deafen", SpellId::deafen},
         {"disease", SpellId::disease},
-        {"divert_attacks", SpellId::divert_attacks},
+        {"premonition", SpellId::premonition},
         {"enfeeble", SpellId::enfeeble},
         {"frenzy", SpellId::frenzy},
         {"heal", SpellId::heal},
@@ -1489,10 +1489,10 @@ private:
         }
 };
 
-class SpellDivertAttacks: public Spell
+class SpellPremonition: public Spell
 {
 public:
-        SpellDivertAttacks() : Spell() {}
+        SpellPremonition() : Spell() {}
 
         bool mon_can_learn() const override
         {
@@ -1506,12 +1506,12 @@ public:
 
         std::string name() const override
         {
-                return "Divert Attacks";
+                return "Premonition";
         }
 
         SpellId id() const override
         {
-                return SpellId::divert_attacks;
+                return SpellId::premonition;
         }
 
         SpellShock shock_type() const override

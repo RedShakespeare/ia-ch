@@ -1610,8 +1610,8 @@ void init()
     data[(size_t)d.id] = d;
 
     reset_data(d, ItemType::scroll);
-    d.id = ItemId::scroll_divert_attacks;
-    d.spell_cast_from_scroll = SpellId::divert_attacks;
+    d.id = ItemId::scroll_premonition;
+    d.spell_cast_from_scroll = SpellId::premonition;
     data[(size_t)d.id] = d;
 
     reset_data(d, ItemType::scroll);

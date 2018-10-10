@@ -128,8 +128,8 @@ Spell* make_spell_from_id(const SpellId spell_id)
         case SpellId::slow_time:
                 return new SpellSlowTime();
 
-        case SpellId::divert_attacks:
-                return new SpellDivertAttacks();
+        case SpellId::premonition:
+                return new SpellPremonition();
 
         case SpellId::identify:
                 return new SpellIdentify();
@@ -2049,16 +2049,16 @@ bool SpellSlowTime::allow_mon_cast_now(Mon& mon) const
 }
 
 // -----------------------------------------------------------------------------
-// Divert Attacks
+// Premonition
 // -----------------------------------------------------------------------------
-int SpellDivertAttacks::max_spi_cost(const SpellSkill skill) const
+int SpellPremonition::max_spi_cost(const SpellSkill skill) const
 {
         (void)skill;
 
         return 7;
 }
 
-void SpellDivertAttacks::run_effect(
+void SpellPremonition::run_effect(
         Actor* const caster,
         const SpellSkill skill) const
 {
@@ -2066,22 +2066,22 @@ void SpellDivertAttacks::run_effect(
         duration_range.min = 4 + (int)skill * 4;
         duration_range.max = duration_range.min * 2;
 
-        auto prop = new PropDivertAttacks();
+        auto prop = new PropPremonition();
 
         prop->set_duration(duration_range.roll());
 
         caster->properties.apply(prop);
 }
 
-std::vector<std::string> SpellDivertAttacks::descr_specific(
+std::vector<std::string> SpellPremonition::descr_specific(
         const SpellSkill skill) const
 {
         std::vector<std::string> descr;
 
         descr.push_back(
-                "Melee and ranged attacks made against the caster are slightly "
-                "diverted away, making it extremely difficult to achieve a "
-                "successful hit.");
+                "Grants foresight of attacks against the caster, "
+                "making it extremely difficult for assailants to achieve a "
+                "succesful hit.");
 
         Range duration_range;
         duration_range.min = 4 + (int)skill * 4;
