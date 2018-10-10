@@ -121,7 +121,9 @@ std::string trait_descr(const Trait id);
 
 std::string bg_title(const Bg id);
 
-std::string occultist_domain_title(const OccultistDomain domain);
+std::string spell_domain_title(const OccultistDomain domain);
+
+std::string occultist_profession_title(const OccultistDomain domain);
 
 // NOTE: The string vector returned is not formatted. Each line still needs to
 // be formatted by the caller. The reason for using a vector instead of a string

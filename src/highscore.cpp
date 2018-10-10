@@ -370,7 +370,7 @@ void BrowseHighscore::draw()
 
                 if (entry.bg() == Bg::occultist)
                 {
-                        bg_title = player_bon::occultist_domain_title(
+                        bg_title = player_bon::occultist_profession_title(
                                 entry.occultist_domain());
                 }
                 else

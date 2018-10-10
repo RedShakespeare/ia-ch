@@ -220,7 +220,7 @@ void PickOccultistState::draw()
         const int screen_center_x = panels::center_x(Panel::screen);
 
         io::draw_text_center(
-                "What is your domain?",
+                "What is your spell domain?",
                 Panel::screen,
                 P(screen_center_x, 0),
                 colors::title(),
@@ -238,14 +238,14 @@ void PickOccultistState::draw()
         for (const auto domain : domains_)
         {
                 const std::string domain_name =
-                        player_bon::occultist_domain_title(domain);
+                        player_bon::spell_domain_title(domain);
 
                 const bool is_marked = domain == domain_marked;
 
                 const auto& draw_color =
-                        is_marked ?
-                        colors::menu_highlight() :
-                        colors::menu_dark();
+                        is_marked
+                        ? colors::menu_highlight()
+                        : colors::menu_dark();
 
                 io::draw_text(
                         key_str + domain_name,

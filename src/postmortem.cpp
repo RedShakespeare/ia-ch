@@ -102,7 +102,7 @@ void PostmortemMenu::on_start()
         {
                 const auto domain = highscore_entry.occultist_domain();
 
-                bg_title = player_bon::occultist_domain_title(domain);
+                bg_title = player_bon::occultist_profession_title(domain);
         }
         else
         {

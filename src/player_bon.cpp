@@ -152,7 +152,35 @@ std::string bg_title(const Bg id)
         return "";
 }
 
-std::string occultist_domain_title(const OccultistDomain domain)
+std::string spell_domain_title(const OccultistDomain domain)
+{
+        switch (domain)
+        {
+        case OccultistDomain::clairvoyant:
+                return "Clairvoyance";
+
+        case OccultistDomain::enchanter:
+                return "Enchantment";
+
+        case OccultistDomain::invoker:
+                return "Invocation";
+
+        // case OccultistDomain::summoner:
+        //         return "Summoning";
+
+        case OccultistDomain::transmuter:
+                return "Transmutation";
+
+        case OccultistDomain::END:
+                break;
+        }
+
+        ASSERT(false);
+
+        return "";
+}
+
+std::string occultist_profession_title(const OccultistDomain domain)
 {
         switch (domain)
         {
@@ -413,23 +441,20 @@ std::string occultist_domain_descr(const OccultistDomain domain)
         {
         case OccultistDomain::clairvoyant:
                 return
-                        "Specializes in spells related to detection and "
-                        "learning.";
+                        "Specialize in detection and learning.";
 
         case OccultistDomain::enchanter:
                 return
-                        "Specializes in spells related to aiding, "
-                        "debilitating, entrancing, and beguiling.";
+                        "Specialize in aiding, debilitating, entrancing, and "
+                        "beguiling.";
 
         case OccultistDomain::invoker:
                 return
-                        "Specializes in spells related to channeling "
-                        "destructive powers.";
+                        "Specialize in channeling destructive powers.";
 
         case OccultistDomain::transmuter:
                 return
-                        "Specializes in spells related to manipulating matter, "
-                        "energy, and time.";
+                        "Specialize in manipulating matter, energy, and time.";
 
         case OccultistDomain::END:
                 ASSERT(false);
@@ -865,11 +890,11 @@ std::vector<OccultistDomain> pickable_occultist_domains()
 
         // Sort lexicographically
         sort(ret.begin(), ret.end(), [](
-                const OccultistDomain bg1,
-                const OccultistDomain bg2)
+                const OccultistDomain domain_1,
+                const OccultistDomain domain_2)
         {
-                const std::string str1 = occultist_domain_title(bg1);
-                const std::string str2 = occultist_domain_title(bg2);
+                const std::string str1 = spell_domain_title(domain_1);
+                const std::string str2 = spell_domain_title(domain_2);
                 return str1 < str2;
         });
 

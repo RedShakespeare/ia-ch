@@ -55,7 +55,7 @@ static void draw_player_class(int& y)
         {
                 const auto domain = player_bon::occultist_domain();
 
-                bg_title = player_bon::occultist_domain_title(domain);
+                bg_title = player_bon::occultist_profession_title(domain);
         }
         else
         {
