@@ -4,6 +4,17 @@
 #include "config.hpp"
 #include "audio.hpp"
 
+// -----------------------------------------------------------------------------
+// Private
+// -----------------------------------------------------------------------------
+static int nr_menu_keys_avail()
+{
+        return (int)std::distance(std::begin(menu_keys), std::end(menu_keys));
+}
+
+// -----------------------------------------------------------------------------
+// MenuBrowser
+// -----------------------------------------------------------------------------
 MenuBrowser::MenuBrowser(const int nr_items, const int list_h) :
         nr_items_(0),
         y_(0),
@@ -54,43 +65,6 @@ MenuAction MenuBrowser::read(
                 return MenuAction::moved;
         }
 
-        if (mode == MenuInputMode::scrolling_and_letters)
-        {
-                char c = input.key;
-
-                const bool is_lower_case_letter = (c >= 'a') && (c <= 'z');
-                const bool is_upper_case_letter = (c >= 'A') && (c <= 'Z');
-
-                // First, if this is an upper case letter, convert to lower case
-                if (is_upper_case_letter)
-                {
-                        c = c - 'A' + 'a';
-                }
-
-                // Is a letter between a and z pressed?
-                const char last_letter = 'a' + nr_items_shown() - 1;
-
-                if (c >= 'a' && c <= last_letter)
-                {
-                        const int top = top_idx_shown();
-                        const int idx = top + c - 'a';
-
-                        set_y(idx);
-
-                        audio::play(SfxId::menu_select);
-
-                        return MenuAction::selected;
-                }
-
-                // If this is a letter (lower or upper case), we don't want to
-                // handle input in any other way for this keypress (if it was
-                // outside the range of indexes, then nothing should happen)
-                if (is_lower_case_letter || is_upper_case_letter)
-                {
-                        return MenuAction::none;
-                }
-        }
-
         if (input.key == SDLK_RETURN)
         {
                 audio::play(SfxId::menu_select);
@@ -106,6 +80,41 @@ MenuAction MenuBrowser::read(
         if (input.key == SDLK_ESCAPE)
         {
                 return MenuAction::esc;
+        }
+
+        if (mode == MenuInputMode::scrolling_and_letters)
+        {
+                const char c = input.key;
+
+                const auto find_result =
+                        std::find(
+                                std::begin(menu_keys),
+                                std::end(menu_keys),
+                                c);
+
+                if (find_result == std::end(menu_keys))
+                {
+                        // Not a valid menu key, ever
+                        return MenuAction::none;
+                }
+
+                const auto relative_idx =
+                        (int)std::distance(std::begin(menu_keys), find_result);
+
+                if (relative_idx >= nr_items_shown())
+                {
+                        // The key is not in the range of shown items
+                        return MenuAction::none;
+                }
+
+                // OK, the user did select an item
+                const int global_idx = top_idx_shown() + relative_idx;
+
+                set_y(global_idx);
+
+                audio::play(SfxId::menu_select);
+
+                return MenuAction::selected;
         }
 
         return MenuAction::none;
@@ -203,14 +212,15 @@ void MenuBrowser::set_y_nearest_valid()
 
 int MenuBrowser::nr_items_shown() const
 {
-        // Shown ranged defined?
         if (list_h_ >= 0)
         {
+                // The list height has been defined
                 return range_shown_.len();
         }
-        else // List height undefined (i.e. showing all)
+        else
         {
-                // Just return total number of items
+                // List height undefined (i.e. showing all) - just return total
+                // number of items
                 return nr_items_;
         }
 }
@@ -271,7 +281,12 @@ bool MenuBrowser::is_on_btm_page() const
 void MenuBrowser::reset(const int nr_items, const int list_h)
 {
         nr_items_ = nr_items;
-        list_h_ = list_h;
+
+        // The size of the list viewable on screen is capped to the global
+        // number of menu selection keys available (note that the client asks
+        // the browser how many items should actually be drawn, so this capping
+        // should be reflected for all clients).
+        list_h_ = std::min(list_h, nr_menu_keys_avail());
 
         set_y_nearest_valid();
 

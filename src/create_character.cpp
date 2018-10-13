@@ -106,10 +106,10 @@ void PickBgState::draw()
         const auto bg_marked = bgs_[browser_.y()];
 
         // Backgrounds
-        std::string key_str = "a) ";
-
         for (const auto bg : bgs_)
         {
+                const auto key_str = menu_keys[y] + std::string{") "};
+
                 const std::string bg_name = player_bon::bg_title(bg);
                 const bool is_marked = bg == bg_marked;
 
@@ -125,8 +125,6 @@ void PickBgState::draw()
                         draw_color);
 
                 ++y;
-
-                ++key_str[0];
         }
 
         // Description
@@ -233,10 +231,10 @@ void PickOccultistState::draw()
         const auto domain_marked = domains_[browser_.y()];
 
         // Domains
-        std::string key_str = "a) ";
-
         for (const auto domain : domains_)
         {
+                const auto key_str = menu_keys[y] + std::string{") "};
+
                 const std::string domain_name =
                         player_bon::spell_domain_title(domain);
 
@@ -254,8 +252,6 @@ void PickOccultistState::draw()
                         draw_color);
 
                 ++y;
-
-                ++key_str[0];
         }
 
         // Description
@@ -419,15 +415,15 @@ void PickTraitState::draw()
 
         const auto player_bg = player_bon::bg();
 
-        // Traits
         int y = 0;
 
         const Range idx_range_shown = browser->range_shown();
 
-        std::string key_str = "a) ";
-
+        // Traits
         for (int i = idx_range_shown.min; i <= idx_range_shown.max; ++i)
         {
+                const auto key_str = menu_keys[y] + std::string{") "};
+
                 const Trait trait = traits->at(i);
 
                 std::string trait_name = player_bon::trait_title(trait);
@@ -466,7 +462,6 @@ void PickTraitState::draw()
                         color);
 
                 ++y;
-                ++key_str[0];
         }
 
         // Draw "more" labels

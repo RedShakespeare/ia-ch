@@ -143,12 +143,12 @@ void BrowseManual::draw()
 
         const int nr_pages = pages_.size();
 
-        std::string key_str = "a) ";
-
         const int labels_y0 = 1;
 
         for (int idx = 0; idx < (int)nr_pages; ++idx)
         {
+                const auto key_str = menu_keys[idx] + std::string{") "};
+
                 const bool is_marked = browser_.y() == idx;
 
                 const Color& draw_color =
@@ -160,12 +160,11 @@ void BrowseManual::draw()
 
                 const int y = labels_y0 + idx;
 
-                io::draw_text(key_str + page.title,
-                              Panel::screen,
-                              P(manual_text_x0, y),
-                              draw_color);
-
-                ++key_str[0];
+                io::draw_text(
+                        key_str + page.title,
+                        Panel::screen,
+                        P(manual_text_x0, y),
+                        draw_color);
         }
 }
 

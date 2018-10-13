@@ -659,10 +659,10 @@ void BrowseInv::draw()
 
         int y = 0;
 
-        char key = 'a';
-
         for (int i = idx_range_shown.min; i <= idx_range_shown.max; ++i)
         {
+                const char key = menu_keys[y];
+
                 const bool is_marked = browser_y == i;
 
                 if (i < (int)nr_slots)
@@ -692,8 +692,6 @@ void BrowseInv::draw()
                                 is_marked,
                                 ItemRefAttInf::wpn_main_att_mode);
                 }
-
-                ++key;
 
                 ++y;
         }
@@ -897,10 +895,10 @@ void Apply::draw()
 
         int y = 0;
 
-        char key = 'a';
-
         for (int i = idx_range_shown.min; i <= idx_range_shown.max; ++i)
         {
+                const char key = menu_keys[y];
+
                 const bool is_marked = browser_y == i;
 
                 const size_t backpack_idx = filtered_backpack_indexes_[i];
@@ -911,8 +909,6 @@ void Apply::draw()
                         key,
                         is_marked,
                         ItemRefAttInf::wpn_main_att_mode);
-
-                ++key;
 
                 ++y;
         }
@@ -1033,10 +1029,10 @@ void Drop::draw()
 
         int y = 0;
 
-        char key = 'a';
-
         for (int i = idx_range_shown.min; i <= idx_range_shown.max; ++i)
         {
+                const char key = menu_keys[y];
+
                 const bool is_marked = browser_y == i;
 
                 if (i < (int)filtered_slots_.size())
@@ -1062,8 +1058,6 @@ void Drop::draw()
                                 is_marked,
                                 ItemRefAttInf::wpn_main_att_mode);
                 }
-
-                ++key;
 
                 ++y;
         }
@@ -1291,10 +1285,10 @@ void Equip::draw()
 
         int y = 0;
 
-        char key = 'a';
-
         for (int i = idx_range_shown.min; i <= idx_range_shown.max; ++i)
         {
+                const char key = menu_keys[y];
+
                 const bool is_marked = browser_y == i;
 
                 const size_t backpack_idx =
@@ -1322,8 +1316,6 @@ void Equip::draw()
                         key,
                         is_marked,
                         att_inf);
-
-                ++key;
 
                 ++y;
         }
@@ -1480,10 +1472,10 @@ void SelectThrow::draw()
 
         int y = 0;
 
-        char key = 'a';
-
         for (int i = idx_range_shown.min; i <= idx_range_shown.max; ++i)
         {
+                const char key = menu_keys[y];
+
                 const bool is_marked = browser_y == i;
 
                 if (i < (int)filtered_slots_.size())
@@ -1512,8 +1504,6 @@ void SelectThrow::draw()
                                 is_marked,
                                 ItemRefAttInf::thrown);
                 }
-
-                ++key;
 
                 ++y;
         }
@@ -1704,10 +1694,10 @@ void SelectIdentify::draw()
 
         int y = 0;
 
-        char key = 'a';
-
         for (int i = idx_range_shown.min; i <= idx_range_shown.max; ++i)
         {
+                const char key = menu_keys[y];
+
                 const bool is_marked = browser_y == i;
 
                 if (i < (int)filtered_slots_.size())
@@ -1734,8 +1724,6 @@ void SelectIdentify::draw()
                                 is_marked,
                                 ItemRefAttInf::wpn_main_att_mode);
                 }
-
-                ++key;
 
                 ++y;
         }
