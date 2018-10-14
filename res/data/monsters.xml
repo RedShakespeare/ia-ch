@@ -6519,7 +6519,7 @@
             <name_the>the Khaga</name_the>
             <corpse_name_a></corpse_name_a>
             <corpse_name_the></corpse_name_the>
-            <description>Shifting in and out of sight, this creature resembles a piece of cloth sailing through the aether, seemingly folding time-space along with its dreamy soar. Atop its craned neck rests an oblong orb with which it conjures deadly bolts to heave onto any threat.</description>
+            <description>A vast, fully matured Khaga, the flight of this cryptic being conceals it from ordinary eyesight. It wails a disarmingly beautiful mantra which dissonates with the roar of the bolts it summons from its orb-like head.</description>
             <allow_generated_description>true</allow_generated_description>
             <wary_message>looks wary.</wary_message>
             <aware_message_seen></aware_message_seen>
