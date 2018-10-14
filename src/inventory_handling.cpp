@@ -223,21 +223,25 @@ void InvState::draw_slot(
                         p,
                         color_item);
 
-                draw_weight_pct_and_dots(
-                        p,
-                        item_name.size(),
-                        *item,
-                        color_item,
-                        is_marked);
+                if (slot.id != SlotId::thrown)
+                {
+                        draw_weight_pct_and_dots(
+                                p,
+                                item_name.size(),
+                                *item,
+                                color_item,
+                                is_marked);
+                }
         }
         else // No item in this slot
         {
                 p.x += 2;
 
-                io::draw_text("<empty>",
-                              Panel::item_menu,
-                              p,
-                              color);
+                io::draw_text(
+                        "<empty>",
+                        Panel::item_menu,
+                        p,
+                        color);
         }
 
         if (is_marked)
