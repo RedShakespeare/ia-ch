@@ -1070,7 +1070,7 @@
             <name_the>Keziah Mason</name_the>
             <corpse_name_a>the corpse of Keziah Mason</corpse_name_a>
             <corpse_name_the>the corpse of Keziah Mason</corpse_name_the>
-            <description>During the Salem witch trials of 1692 an old woman by the name of Keziah Mason was arrested for her suspicious behavior and seeming insight into other worlds. In her testimony to the judge, she confessed to having signed her name in the Black Book of Azathoth, and of her secret name of Nahab. She later disappeared mysteriously from Salem. She is described as having a "bent back, long nose, and shrivelled chin" and has a "croaking voice". She has an animal familiar; the rat Brown Jenkin, which she trusts to carry messages between her and the devil. She feeds this creature on her blood.</description>
+            <description>A shrivelled hag who croaks of deviltry and possesses knowledge beyond the ken of a sane mind. She reigns over the myriad man-rat hybrids crawling within the dungeon, humoring her most cherished like a child: not once does she deny it the black blood that flows inside her veins.</description>
             <allow_generated_description>true</allow_generated_description>
             <wary_message>looks wary.</wary_message>
             <aware_message_seen>chortles in a croaking voice.</aware_message_seen>
