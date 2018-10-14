@@ -351,23 +351,31 @@ void Spell::on_resist(Actor& target) const
         }
 }
 
-std::vector<std::string> Spell::descr(const SpellSkill skill,
-                                      const SpellSrc spell_src) const
+std::vector<std::string> Spell::descr(
+        const SpellSkill skill,
+        const SpellSrc spell_src) const
 {
-        auto ret = descr_specific(skill);
+        auto lines = descr_specific(skill);
 
         if (spell_src != SpellSrc::manuscript)
         {
                 if (is_noisy(skill))
                 {
-                        ret.push_back(
+                        lines.push_back(
                                 "Casting this spell requires making sounds.");
                 }
                 else // The spell is silent
                 {
-                        ret.push_back(
+                        lines.push_back(
                                 "This spell can be cast silently.");
                 }
+        }
+
+        const std::string domain_str = domain_descr();
+
+        if (!domain_str.empty())
+        {
+                lines.push_back(domain_str);
         }
 
         if (can_be_improved_with_skill())
@@ -394,10 +402,27 @@ std::vector<std::string> Spell::descr(const SpellSkill skill,
                         skill_str += " (casting from Manuscript)";
                 }
 
-                ret.push_back("Skill level: " + skill_str);
+                lines.push_back("Skill level: " + skill_str);
         }
 
-        return ret;
+        return lines;
+}
+
+std::string Spell::domain_descr() const
+{
+        const auto my_domain = domain();
+
+        if (my_domain == OccultistDomain::END)
+        {
+                return "";
+        }
+        else
+        {
+                const std::string domain_title =
+                        player_bon::spell_domain_title(domain());
+
+                return "Spell domain: " + domain_title;
+        }
 }
 
 int Spell::shock_value() const

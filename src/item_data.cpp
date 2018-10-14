@@ -144,6 +144,7 @@ static void reset_data(ItemData& d, ItemType const item_type)
         d.chance_to_incl_in_spawn_list = 30;
         d.weight = ItemWeight::none;
         d.is_identified = false;
+        d.is_spell_domain_known = false;
         d.xp_on_found = 10;
         d.character = '?';
         d.color = colors::white();
@@ -289,6 +290,7 @@ ItemData::ItemData() :
     is_stackable(true),
     is_identified(true),
     is_alignment_known(true),
+    is_spell_domain_known(true),
     is_tried(false),
     is_found(false),
     xp_on_found(0),
@@ -2125,6 +2127,7 @@ void save()
 
         saving::put_bool(d.is_identified);
         saving::put_bool(d.is_alignment_known);
+        saving::put_bool(d.is_spell_domain_known);
         saving::put_bool(d.is_tried);
         saving::put_bool(d.is_found);
         saving::put_bool(d.allow_spawn);
@@ -2139,6 +2142,7 @@ void load()
 
         d.is_identified = saving::get_bool();
         d.is_alignment_known = saving::get_bool();
+        d.is_spell_domain_known = saving::get_bool();
         d.is_tried = saving::get_bool();
         d.is_found = saving::get_bool();
         d.allow_spawn = saving::get_bool();

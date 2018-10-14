@@ -39,6 +39,16 @@ void PickBgState::on_start()
         browser_.reset(
                 bgs_.size(),
                 panels::h(Panel::create_char_menu));
+
+        // Set the marker on war veteran, to recommend it as a default choice
+        // for new players
+        const auto war_vet_pos =
+                std::find(std::begin(bgs_), std::end(bgs_), Bg::war_vet);
+
+        const auto idx =
+                (int)std::distance(std::begin(bgs_), war_vet_pos);
+
+        browser_.set_y(idx);
 }
 
 void PickBgState::update()

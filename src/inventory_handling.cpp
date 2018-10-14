@@ -137,6 +137,18 @@ static bool run_drop_query(const InvType inv_type, const size_t idx)
         return false;
 }
 
+static void cap_str_to_menu_x1(
+        std::string& str,
+        const int str_x0)
+{
+        const int name_max_len = panels::x1(Panel::item_menu) - str_x0;
+
+        if ((int)str.length() > name_max_len)
+        {
+                str.erase(name_max_len, std::string::npos);
+        }
+}
+
 // -----------------------------------------------------------------------------
 // Abstract inventory screen state
 // -----------------------------------------------------------------------------
@@ -217,6 +229,8 @@ void InvState::draw_slot(
                         ? colors::light_white()
                         : item->interface_color();
 
+                cap_str_to_menu_x1(item_name, p.x);
+
                 io::draw_text(
                         item_name,
                         Panel::item_menu,
@@ -290,6 +304,8 @@ void InvState::draw_backpack_item(
                 att_info);
 
         item_name = text_format::first_to_upper(item_name);
+
+        cap_str_to_menu_x1(item_name, p.x);
 
         const Color color_item =
                 is_marked

@@ -161,16 +161,22 @@ public:
 
         virtual SpellId id() const = 0;
 
+        virtual OccultistDomain domain() const = 0;
+
         virtual bool can_be_improved_with_skill() const
         {
                 return true;
         }
 
-        std::vector<std::string> descr(const SpellSkill skill,
-                                       const SpellSrc spell_src) const;
+        std::vector<std::string> descr(
+                const SpellSkill skill,
+                const SpellSrc spell_src) const;
 
-        Range spi_cost(const SpellSkill skill,
-                       Actor* const caster = nullptr) const;
+        std::string domain_descr() const;
+
+        Range spi_cost(
+                const SpellSkill skill,
+                Actor* const caster = nullptr) const;
 
         int shock_value() const;
 
@@ -208,6 +214,11 @@ public:
         SpellId id() const override
         {
                 return SpellId::enfeeble;
+        }
+
+        OccultistDomain domain() const override
+        {
+                return OccultistDomain::enchanter;
         }
 
         SpellShock shock_type() const override
@@ -262,6 +273,11 @@ public:
                 return SpellId::slow;
         }
 
+        OccultistDomain domain() const override
+        {
+                return OccultistDomain::enchanter;
+        }
+
         SpellShock shock_type() const override
         {
                 return SpellShock::mild;
@@ -312,6 +328,11 @@ public:
         SpellId id() const override
         {
                 return SpellId::terrify;
+        }
+
+        OccultistDomain domain() const override
+        {
+                return OccultistDomain::enchanter;
         }
 
         SpellShock shock_type() const override
@@ -374,6 +395,11 @@ public:
         SpellId id() const override
         {
                 return SpellId::aura_of_decay;
+        }
+
+        OccultistDomain domain() const override
+        {
+                return OccultistDomain::invoker;
         }
 
         SpellShock shock_type() const override
@@ -570,6 +596,11 @@ public:
                 return impl_->id();
         }
 
+        OccultistDomain domain() const override
+        {
+                return OccultistDomain::invoker;
+        }
+
         SpellShock shock_type() const override
         {
                 return SpellShock::mild;
@@ -633,6 +664,11 @@ public:
                 return SpellId::aza_wrath;
         }
 
+        OccultistDomain domain() const override
+        {
+                return OccultistDomain::invoker;
+        }
+
         SpellShock shock_type() const override
         {
                 return SpellShock::disturbing;
@@ -686,6 +722,11 @@ public:
         SpellId id() const override
         {
                 return SpellId::mayhem;
+        }
+
+        OccultistDomain domain() const override
+        {
+                return OccultistDomain::invoker;
         }
 
         SpellShock shock_type() const override
@@ -743,6 +784,11 @@ public:
                 return SpellId::pestilence;
         }
 
+        OccultistDomain domain() const override
+        {
+                return OccultistDomain::END;
+        }
+
         SpellShock shock_type() const override
         {
                 return SpellShock::disturbing;
@@ -794,6 +840,11 @@ public:
         SpellId id() const override
         {
                 return SpellId::spectral_wpns;
+        }
+
+        OccultistDomain domain() const override
+        {
+                return OccultistDomain::END;
         }
 
         SpellShock shock_type() const override
@@ -850,6 +901,11 @@ public:
         virtual SpellId id() const override
         {
                 return SpellId::pharaoh_staff;
+        }
+
+        OccultistDomain domain() const override
+        {
+                return OccultistDomain::END;
         }
 
         bool can_be_improved_with_skill() const override
@@ -910,6 +966,11 @@ public:
                 return SpellId::searching;
         }
 
+        OccultistDomain domain() const override
+        {
+                return OccultistDomain::clairvoyant;
+        }
+
         SpellShock shock_type() const override
         {
                 return SpellShock::mild;
@@ -958,6 +1019,11 @@ public:
                 return SpellId::opening;
         }
 
+        OccultistDomain domain() const override
+        {
+                return OccultistDomain::transmuter;
+        }
+
         SpellShock shock_type() const override
         {
                 return SpellShock::mild;
@@ -1004,6 +1070,11 @@ public:
         SpellId id() const override
         {
                 return SpellId::frenzy;
+        }
+
+        OccultistDomain domain() const override
+        {
+                return OccultistDomain::END;
         }
 
         bool can_be_improved_with_skill() const override
@@ -1064,6 +1135,14 @@ public:
                 return SpellId::bless;
         }
 
+        OccultistDomain domain() const override
+        {
+                // NOTE: This could perhaps be considered an enchantment spell,
+                // but the way the spell description is phrased, it sounds a lot
+                // more like alteration
+                return OccultistDomain::transmuter;
+        }
+
         SpellShock shock_type() const override
         {
                 return SpellShock::mild;
@@ -1117,6 +1196,11 @@ public:
                 return SpellId::transmut;
         }
 
+        OccultistDomain domain() const override
+        {
+                return OccultistDomain::transmuter;
+        }
+
         SpellShock shock_type() const override
         {
                 return SpellShock::mild;
@@ -1167,6 +1251,11 @@ public:
         SpellId id() const override
         {
                 return SpellId::light;
+        }
+
+        OccultistDomain domain() const override
+        {
+                return OccultistDomain::transmuter;
         }
 
         SpellShock shock_type() const override
@@ -1227,6 +1316,11 @@ public:
         SpellId id() const override
         {
                 return SpellId::knockback;
+        }
+
+        OccultistDomain domain() const override
+        {
+                return OccultistDomain::END;
         }
 
         SpellShock shock_type() const override
@@ -1294,6 +1388,11 @@ public:
                 return SpellId::teleport;
         }
 
+        OccultistDomain domain() const override
+        {
+                return OccultistDomain::transmuter;
+        }
+
         SpellShock shock_type() const override
         {
                 return SpellShock::disturbing;
@@ -1352,6 +1451,11 @@ public:
         SpellId id() const override
         {
                 return SpellId::see_invis;
+        }
+
+        OccultistDomain domain() const override
+        {
+                return OccultistDomain::clairvoyant;
         }
 
         SpellShock shock_type() const override
@@ -1414,6 +1518,11 @@ public:
                 return SpellId::spell_shield;
         }
 
+        OccultistDomain domain() const override
+        {
+                return OccultistDomain::enchanter;
+        }
+
         SpellShock shock_type() const override
         {
                 return SpellShock::mild;
@@ -1466,6 +1575,11 @@ public:
                 return SpellId::slow_time;
         }
 
+        OccultistDomain domain() const override
+        {
+                return OccultistDomain::transmuter;
+        }
+
         SpellShock shock_type() const override
         {
                 return SpellShock::mild;
@@ -1514,6 +1628,11 @@ public:
                 return SpellId::premonition;
         }
 
+        OccultistDomain domain() const override
+        {
+                return OccultistDomain::clairvoyant;
+        }
+
         SpellShock shock_type() const override
         {
                 return SpellShock::mild;
@@ -1560,6 +1679,11 @@ public:
         SpellId id() const override
         {
                 return SpellId::identify;
+        }
+
+        OccultistDomain domain() const override
+        {
+                return OccultistDomain::clairvoyant;
         }
 
         SpellShock shock_type() const override
@@ -1615,6 +1739,11 @@ public:
         SpellId id() const override
         {
                 return SpellId::res;
+        }
+
+        OccultistDomain domain() const override
+        {
+                return OccultistDomain::enchanter;
         }
 
         SpellShock shock_type() const override
@@ -1675,6 +1804,11 @@ public:
         SpellId id() const override
         {
                 return SpellId::disease;
+        }
+
+        OccultistDomain domain() const override
+        {
+                return OccultistDomain::END;
         }
 
         SpellShock shock_type() const override
@@ -1742,6 +1876,11 @@ public:
                 return SpellId::summon;
         }
 
+        OccultistDomain domain() const override
+        {
+                return OccultistDomain::END;
+        }
+
         SpellShock shock_type() const override
         {
                 return SpellShock::disturbing;
@@ -1800,6 +1939,11 @@ public:
         SpellId id() const override
         {
                 return SpellId::summon_tentacles;
+        }
+
+        OccultistDomain domain() const override
+        {
+                return OccultistDomain::END;
         }
 
         SpellShock shock_type() const override
@@ -1867,6 +2011,11 @@ public:
                 return SpellId::heal;
         }
 
+        OccultistDomain domain() const override
+        {
+                return OccultistDomain::enchanter;
+        }
+
         SpellShock shock_type() const override
         {
                 return SpellShock::mild;
@@ -1925,6 +2074,11 @@ public:
         SpellId id() const override
         {
                 return SpellId::mi_go_hypno;
+        }
+
+        OccultistDomain domain() const override
+        {
+                return OccultistDomain::END;
         }
 
         SpellShock shock_type() const override
@@ -1992,6 +2146,11 @@ public:
                 return SpellId::burn;
         }
 
+        OccultistDomain domain() const override
+        {
+                return OccultistDomain::END;
+        }
+
         SpellShock shock_type() const override
         {
                 return SpellShock::disturbing;
@@ -2055,6 +2214,11 @@ public:
         SpellId id() const override
         {
                 return SpellId::deafen;
+        }
+
+        OccultistDomain domain() const override
+        {
+                return OccultistDomain::END;
         }
 
         SpellShock shock_type() const override

@@ -9,10 +9,13 @@ class Spell;
 class Scroll: public Item
 {
 public:
-        Scroll(ItemData* const item_data) :
-                Item(item_data) {}
+        Scroll(ItemData* const item_data);
 
         ~Scroll() {}
+
+        void save() const override;
+
+        void load() override;
 
         Color interface_color() const override
         {
@@ -27,9 +30,17 @@ public:
 
         std::vector<std::string> descr() const override;
 
+        void on_player_reached_new_dlvl() override final;
+
+        void on_actor_turn_in_inv(const InvType inv_type) override;
+
         void identify(const Verbosity verbosity) override;
 
         Spell* make_spell() const;
+
+private:
+        int domain_feeling_dlvl_countdown_;
+        int domain_feeling_turn_countdown_;
 };
 
 namespace scroll_handling

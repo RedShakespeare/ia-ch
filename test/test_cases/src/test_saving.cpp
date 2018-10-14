@@ -25,7 +25,7 @@ TEST_CASE("Saving and loading the game")
 
                 // Item data
                 item_data::data[(size_t)ItemId::scroll_telep]
-                        .is_tried = true;
+                        .is_spell_domain_known = true;
 
                 item_data::data[(size_t)ItemId::scroll_opening]
                         .is_identified = true;
@@ -177,22 +177,22 @@ TEST_CASE("Saving and loading the game")
 
                 // Item data
                 REQUIRE(item_data::data[(size_t)ItemId::scroll_telep]
-                      .is_tried);
+                        .is_spell_domain_known);
 
                 REQUIRE(!item_data::data[(size_t)ItemId::scroll_telep]
-                      .is_identified);
+                        .is_identified);
 
                 REQUIRE(item_data::data[(size_t)ItemId::scroll_opening]
-                      .is_identified);
+                        .is_identified);
 
                 REQUIRE(!item_data::data[(size_t)ItemId::scroll_opening]
-                      .is_tried);
+                        .is_spell_domain_known);
 
                 REQUIRE(!item_data::data[(size_t)ItemId::scroll_searching]
-                      .is_tried);
+                        .is_spell_domain_known);
 
                 REQUIRE(!item_data::data[(size_t)ItemId::scroll_searching]
-                      .is_identified);
+                        .is_identified);
 
                 // Bonus
                 REQUIRE(player_bon::bg() == Bg::rogue);
@@ -207,13 +207,13 @@ TEST_CASE("Saving and loading the game")
                 REQUIRE(inv.backpack.size() == 6);
 
                 REQUIRE(inv.item_in_slot(SlotId::wpn)->data().id ==
-                      ItemId::mi_go_gun);
+                        ItemId::mi_go_gun);
 
                 REQUIRE(map::player->unarmed_wpn().id() ==
                         ItemId::player_punch);
 
                 REQUIRE(inv.item_in_slot(SlotId::body)->data().id ==
-                      ItemId::armor_asb_suit);
+                        ItemId::armor_asb_suit);
 
                 int nr_mag_with_1 = 0;
                 int nr_mag_with_2 = 0;
@@ -279,7 +279,7 @@ TEST_CASE("Saving and loading the game")
 
                 // Check max HP (affected by disease)
                 REQUIRE(actor::max_hp(*map::player) ==
-                      (player_max_hp_before_load + 5) / 2);
+                        (player_max_hp_before_load + 5) / 2);
 
                 // map
                 REQUIRE(map::dlvl == 7);

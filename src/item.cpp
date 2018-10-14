@@ -300,12 +300,10 @@ void Item::on_removed_from_inv()
 
 void Item::on_player_found()
 {
-        if ((data_->xp_on_found > 0) &&
-            !data_->is_found)
+        if ((data_->xp_on_found > 0) && !data_->is_found)
         {
                 const std::string item_name =
-                        name(ItemRefType::a,
-                             ItemRefInf::none);
+                        name(ItemRefType::a, ItemRefInf::yes);
 
                 msg_log::more_prompt();
 
@@ -319,9 +317,10 @@ void Item::on_player_found()
         data_->is_found = true;
 }
 
-std::string Item::name(const ItemRefType ref_type,
-                       const ItemRefInf inf,
-                       const ItemRefAttInf att_inf) const
+std::string Item::name(
+        const ItemRefType ref_type,
+        const ItemRefInf inf,
+        const ItemRefAttInf att_inf) const
 {
         ItemRefType ref_type_used = ref_type;
 

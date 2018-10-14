@@ -2,18 +2,19 @@
 
 #include <string>
 
-#include "init.hpp"
 #include "actor_player.hpp"
-#include "map.hpp"
-#include "player_bon.hpp"
-#include "msg_log.hpp"
+#include "game.hpp"
+#include "init.hpp"
 #include "inventory.hpp"
-#include "player_spells.hpp"
 #include "io.hpp"
 #include "item_factory.hpp"
-#include "saving.hpp"
-#include "game.hpp"
+#include "map.hpp"
+#include "msg_log.hpp"
+#include "player_bon.hpp"
+#include "player_spells.hpp"
 #include "property_handler.hpp"
+#include "saving.hpp"
+#include "text_format.hpp"
 
 // -----------------------------------------------------------------------------
 // Private
@@ -32,25 +33,41 @@ static SpellSkill get_player_skill_for_scroll(SpellId spell_id)
 // -----------------------------------------------------------------------------
 // Scroll
 // -----------------------------------------------------------------------------
+Scroll::Scroll(ItemData* const item_data) :
+        Item(item_data),
+        domain_feeling_dlvl_countdown_(rnd::range(1, 3)),
+        domain_feeling_turn_countdown_(rnd::range(100, 200))
+{
+
+}
+
+void Scroll::save() const
+{
+        saving::put_int(domain_feeling_dlvl_countdown_);
+        saving::put_int(domain_feeling_turn_countdown_);
+}
+
+void Scroll::load()
+{
+        domain_feeling_dlvl_countdown_ = saving::get_int();
+        domain_feeling_turn_countdown_ = saving::get_int();
+}
+
 const std::string Scroll::real_name() const
 {
-        Spell* spell =
-                spell_factory::make_spell_from_id(
-                        data_->spell_cast_from_scroll);
+        const std::unique_ptr<const Spell> spell(make_spell());
 
         const std::string scroll_name = spell->name();
-
-        delete spell;
 
         return scroll_name;
 }
 
 std::vector<std::string> Scroll::descr() const
 {
+        const std::unique_ptr<const Spell> spell(make_spell());
+
         if (data_->is_identified)
         {
-                const std::unique_ptr<Spell> spell(make_spell());
-
                 const auto skill = get_player_skill_for_scroll(spell->id());
 
                 const auto descr = spell->descr(skill, SpellSrc::manuscript);
@@ -59,7 +76,92 @@ std::vector<std::string> Scroll::descr() const
         }
         else // Not identified
         {
-                return data_->base_descr;
+                auto lines = data_->base_descr;
+
+                if (data_->is_spell_domain_known)
+                {
+                        const std::string domain_str = spell->domain_descr();
+
+                        if (!domain_str.empty())
+                        {
+                                lines.push_back(domain_str);
+                        }
+                }
+
+                return lines;
+        }
+}
+
+void Scroll::on_player_reached_new_dlvl()
+{
+        auto& d = data();
+
+        if (d.is_spell_domain_known ||
+            d.is_identified ||
+            (domain_feeling_dlvl_countdown_ <= 0))
+        {
+                return;
+        }
+
+        --domain_feeling_dlvl_countdown_;
+}
+
+void Scroll::on_actor_turn_in_inv(const InvType inv_type)
+{
+        (void)inv_type;
+
+        if (actor_carrying_ != map::player)
+        {
+                return;
+        }
+
+        auto& d = data();
+
+        if (d.is_spell_domain_known ||
+            d.is_identified ||
+            (domain_feeling_dlvl_countdown_ > 0))
+        {
+                return;
+        }
+
+        ASSERT(domain_feeling_turn_countdown_ > 0);
+
+        --domain_feeling_turn_countdown_;
+
+        if (domain_feeling_turn_countdown_ <= 0)
+        {
+                TRACE << "Scroll domain discovered" << std::endl;
+
+                const std::string name_plural =
+                        d.base_name_un_id.names[(size_t)ItemRefType::plural];
+
+                const std::unique_ptr<const Spell> spell(make_spell());
+
+                const auto domain = spell->domain();
+
+                if (domain != OccultistDomain::END)
+                {
+                        const std::string domain_str =
+                                text_format::first_to_lower(
+                                        player_bon::spell_domain_title(
+                                                spell->domain()));
+
+                        if (!domain_str.empty())
+                        {
+                                msg_log::add(
+                                        std::string(
+                                                "I feel like " +
+                                                name_plural  +
+                                                " belong to the " +
+                                                domain_str +
+                                                " domain."),
+                                        colors::text(),
+                                        false,
+                                        MorePromptOnMsg::yes);
+                        }
+                }
+
+                d.is_spell_domain_known = true;
         }
 }
 
@@ -101,8 +203,6 @@ ConsumeItem Scroll::activate(Actor* const actor)
                 msg_log::add(
                         "I recite the forbidden incantations on the "
                         "manuscript...");
-
-                data_->is_tried = true;
         }
 
         const std::string crumble_str = "The Manuscript crumbles to dust.";
@@ -119,7 +219,7 @@ ConsumeItem Scroll::activate(Actor* const actor)
 
         // OK, we are fully allowed to read the scroll - cast the spell
 
-        const std::unique_ptr<Spell> spell(make_spell());
+        const std::unique_ptr<const Spell> spell(make_spell());
 
         const SpellId id = spell->id();
 
@@ -173,7 +273,23 @@ void Scroll::identify(const Verbosity verbosity)
 
 std::string Scroll::name_inf_str() const
 {
-        return (data_->is_tried && !data_->is_identified) ? "{Tried}" : "";
+        if (data_->is_spell_domain_known && !data_->is_identified)
+        {
+                const std::unique_ptr<const Spell> spell(make_spell());
+
+                const auto domain = spell->domain();
+
+                if (domain != OccultistDomain::END)
+                {
+                        const auto domain_title =
+                                player_bon::spell_domain_title(
+                                        spell->domain());
+
+                        return "{" + domain_title + "}";
+                }
+        }
+
+        return "";
 }
 
 namespace scroll_handling
@@ -270,13 +386,11 @@ void init()
                         false_names_.erase(false_names_.begin() + idx);
 
                         // True name
-                        const Scroll* const scroll =
+                        const std::unique_ptr<const Scroll> scroll(
                                 static_cast<const Scroll*>(
-                                        item_factory::make(d.id, 1));
+                                        item_factory::make(d.id, 1)));
 
                         const std::string real_type_name = scroll->real_name();
-
-                        delete scroll;
 
                         const std::string real_name =
                                 "Manuscript of " + real_type_name;

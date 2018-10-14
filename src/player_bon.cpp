@@ -12,6 +12,7 @@
 #include "property.hpp"
 #include "property_handler.hpp"
 #include "saving.hpp"
+#include "spells.hpp"
 #include "text_format.hpp"
 
 // -----------------------------------------------------------------------------
@@ -1076,109 +1077,27 @@ void on_player_gained_lvl(const int new_lvl)
 {
         if (current_bg == Bg::occultist)
         {
-                auto is_occultist_spell_incr_lvl = [](const int new_lvl) {
-                        return ((new_lvl == 4) || (new_lvl == 8));
-                };
+                const bool is_occultist_spell_incr_lvl =
+                        (new_lvl == 4) ||
+                        (new_lvl == 8);
 
-                switch (current_occultist_domain)
+                if (is_occultist_spell_incr_lvl)
                 {
-                case OccultistDomain::clairvoyant:
-                        if (is_occultist_spell_incr_lvl(new_lvl))
+                        for (int spell_id = 0;
+                             spell_id < (int)SpellId::END;
+                             ++spell_id)
                         {
-                                player_spells::incr_spell_skill(
-                                        SpellId::searching);
+                                const std::unique_ptr<Spell> spell(
+                                        spell_factory::make_spell_from_id(
+                                                (SpellId)spell_id));
 
-                                player_spells::incr_spell_skill(
-                                        SpellId::identify);
-
-                                player_spells::incr_spell_skill(
-                                        SpellId::see_invis);
-
-                                player_spells::incr_spell_skill(
-                                        SpellId::premonition);
+                                if (spell->player_can_learn() &&
+                                    spell->domain() == current_occultist_domain)
+                                {
+                                        player_spells::incr_spell_skill(
+                                                (SpellId)spell_id);
+                                }
                         }
-                        break;
-
-                case OccultistDomain::enchanter:
-                        if (is_occultist_spell_incr_lvl(new_lvl))
-                        {
-                                player_spells::incr_spell_skill(
-                                        SpellId::enfeeble);
-
-                                player_spells::incr_spell_skill(
-                                        SpellId::slow);
-
-                                player_spells::incr_spell_skill(
-                                        SpellId::terrify);
-
-                                player_spells::incr_spell_skill(
-                                        SpellId::heal);
-
-                                player_spells::incr_spell_skill(
-                                        SpellId::res);
-
-                                player_spells::incr_spell_skill(
-                                        SpellId::spell_shield);
-                        }
-                        break;
-
-                case OccultistDomain::invoker:
-                        if (is_occultist_spell_incr_lvl(new_lvl))
-                        {
-                                player_spells::incr_spell_skill(
-                                        SpellId::darkbolt);
-
-                                player_spells::incr_spell_skill(
-                                        SpellId::aura_of_decay);
-
-                                player_spells::incr_spell_skill(
-                                        SpellId::aza_wrath);
-
-                                player_spells::incr_spell_skill(
-                                        SpellId::mayhem);
-                        }
-                        break;
-
-                        // case OccultistDomain::summoner:
-                        //         if (is_occultist_spell_incr_lvl(new_lvl))
-                        //         {
-                        //                 player_spells::incr_spell_skill(
-                        //                         SpellId::pestilence);
-
-                        //                 player_spells::incr_spell_skill(
-                        //                         SpellId::summon);
-                        //         }
-                        //         break;
-
-                case OccultistDomain::transmuter:
-                        if (is_occultist_spell_incr_lvl(new_lvl))
-                        {
-                                // NOTE: This could perhaps be considered an
-                                // enchantment spell, but the way the spell
-                                // description is phrased, it sounds a lot more
-                                // like alteration
-                                player_spells::incr_spell_skill(
-                                        SpellId::bless);
-
-                                player_spells::incr_spell_skill(
-                                        SpellId::light);
-
-                                player_spells::incr_spell_skill(
-                                        SpellId::opening);
-
-                                player_spells::incr_spell_skill(
-                                        SpellId::slow_time);
-
-                                player_spells::incr_spell_skill(
-                                        SpellId::teleport);
-
-                                player_spells::incr_spell_skill(
-                                        SpellId::transmut);
-                        }
-                        break;
-
-                case OccultistDomain::END:
-                        break;
                 }
         }
 }

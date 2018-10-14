@@ -200,14 +200,14 @@ void init(const P max_gui_dims)
                 Panel::item_menu,
                 1,
                 1,
-                44,
+                x1(Panel::screen) - 36,
                 y1(Panel::screen) - 1);
 
         set_panel_area(
                 Panel::item_descr,
                 x1(Panel::item_menu) + 2,
                 1,
-                x1(Panel::screen),
+                x1(Panel::screen) - 1,
                 y1(Panel::screen) - 1);
 
         validate_panels(max_gui_dims);
