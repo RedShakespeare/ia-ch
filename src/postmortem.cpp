@@ -337,7 +337,8 @@ void PostmortemMenu::on_start()
                 {
                         TRACE << "Failed to open ascii graveyard file"
                               << std::endl;
-                        ASSERT(false);
+
+                        PANIC;
                 }
 
                 file.close();

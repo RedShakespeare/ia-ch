@@ -24,10 +24,12 @@
 // -----------------------------------------------------------------------------
 // Private
 // -----------------------------------------------------------------------------
-static std::string current_quote_ = "";
+static std::string git_sha1_str = "";
+
+static std::string current_quote = "";
 
 // TODO: This should be loaded from a text file
-static const std::vector<std::string> quotes_ =
+static const std::vector<std::string> quotes =
 {
         "Happy is the tomb where no wizard hath lain and happy the town at night "
         "whose wizards are all ashes.",
@@ -349,7 +351,7 @@ void MainMenuState::draw()
         // "tiny" string on the last line (looks very ugly),
         while (quote_w != 0)
         {
-                quote_lines = text_format::split(current_quote_, quote_w);
+                quote_lines = text_format::split(current_quote, quote_w);
 
                 const size_t min_str_w_last_line = 20;
 
@@ -387,14 +389,14 @@ void MainMenuState::draw()
 
         if (version_info::version_str.empty())
         {
-                info_str = "Build " + version_info::git_commit_hash_str;
+                info_str = "Build " + git_sha1_str;
         }
         else
         {
                 info_str =
                         version_info::version_str +
                         " (" +
-                        version_info::git_commit_hash_str +
+                        git_sha1_str +
                         ")";
         }
 
@@ -530,7 +532,9 @@ void MainMenuState::update()
 
 void MainMenuState::on_start()
 {
-        current_quote_ = rnd::element(quotes_);
+        git_sha1_str = version_info::read_git_sha1_str_from_file();
+
+        current_quote = rnd::element(quotes);
 
         audio::play_music(MusId::cthulhiana_madness);
 }

@@ -6,16 +6,6 @@ cmake_minimum_required(VERSION 3.0)
 project(ia)
 
 # ------------------------------------------------------------------------------
-# Retrieve abbreviated git commit
-# ------------------------------------------------------------------------------
-execute_process(
-        COMMAND git log -1 --format=%h
-        WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
-        OUTPUT_VARIABLE GIT_COMMIT_HASH
-        OUTPUT_STRIP_TRAILING_WHITESPACE
-        )
-
-# ------------------------------------------------------------------------------
 # Source files
 # ------------------------------------------------------------------------------
 set(COMMON_SRC
@@ -348,8 +338,6 @@ target_compile_options(ia-test PUBLIC
         ${TEST_COMPILE_FLAGS}
         )
 
-add_definitions( -DGIT_COMMIT_HASH=${GIT_COMMIT_HASH} )
-
 set(COMMON_INCLUDE_DIRS
         include
         rl_utils/include
@@ -385,6 +373,16 @@ endif()
 
 # Copy all resource files to the build directory.
 file(COPY res DESTINATION .)
+
+# ------------------------------------------------------------------------------
+# Retrieve abbreviated git commit
+# ------------------------------------------------------------------------------
+execute_process(
+        COMMAND git log -1 --format=%h
+        WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
+        OUTPUT_STRIP_TRAILING_WHITESPACE
+        OUTPUT_FILE ${CMAKE_BINARY_DIR}/res/git-sha1.txt
+        )
 
 # ------------------------------------------------------------------------------
 # Dependencies
@@ -564,5 +562,5 @@ set(CMAKE_INSTALL_PREFIX target)
 install(TARGETS ia DESTINATION ia)
 install(TARGETS ia-debug DESTINATION ia-debug)
 
-install(DIRECTORY res DESTINATION ia)
-install(DIRECTORY res DESTINATION ia-debug)
+install(DIRECTORY ${CMAKE_BINARY_DIR}/res DESTINATION ia)
+install(DIRECTORY ${CMAKE_BINARY_DIR}/res DESTINATION ia-debug)

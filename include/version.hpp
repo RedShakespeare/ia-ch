@@ -12,7 +12,7 @@ extern const std::string copyright_str;
 
 extern const std::string date_str;
 
-extern const std::string git_commit_hash_str;
+extern const std::string read_git_sha1_str_from_file();
 
 } // version_info
 

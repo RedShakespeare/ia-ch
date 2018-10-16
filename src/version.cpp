@@ -1,5 +1,9 @@
 #include "version.hpp"
 
+#include <fstream>
+
+#include "rl_utils.hpp"
+
 #define STRINGIFY(x) #x
 #define TO_STRING(x) STRINGIFY(x)
 
@@ -14,6 +18,30 @@ const std::string copyright_str = "(c) 2011-2018 Martin Tornqvist";
 
 const std::string date_str = __DATE__;
 
-const std::string git_commit_hash_str = TO_STRING(GIT_COMMIT_HASH);
+const std::string read_git_sha1_str_from_file()
+{
+        const std::string sha1_file_path = "res/git-sha1.txt";
+
+        std::ifstream file(sha1_file_path);
+
+        if (!file.is_open())
+        {
+                TRACE << "Failed to open git sha1 file at "
+                      << sha1_file_path
+                      << std::endl;
+
+                PANIC;
+        }
+
+        std::string sha1 = "";
+
+        getline(file, sha1);
+
+        file.close();
+
+        ASSERT(!sha1.empty());
+
+        return sha1;
+}
 
 } // version_info

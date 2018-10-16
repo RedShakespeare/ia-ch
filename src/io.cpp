@@ -88,9 +88,12 @@ static void init_window(const P px_dims)
 
         if (version_info::version_str.empty())
         {
+                const auto git_sha1_str =
+                        version_info::read_git_sha1_str_from_file();
+
                 title +=
                         "build " +
-                        version_info::git_commit_hash_str +
+                        git_sha1_str +
                         ", " +
                         version_info::date_str;
         }
