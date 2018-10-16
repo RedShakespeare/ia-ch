@@ -1371,7 +1371,9 @@ void SpellSpectralWpns::run_effect(
 
         for (const auto& slot : caster->inv.slots)
         {
-                if (is_melee_wpn(slot.item))
+                // NOTE: The thrown slot never owns the actual item, it is
+                // located somewhere else
+                if ((slot.id != SlotId::thrown) && is_melee_wpn(slot.item))
                 {
                         weapons.push_back(slot.item);
                 }
