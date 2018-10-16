@@ -1761,8 +1761,7 @@ void init()
     };
     d.base_descr =
     {
-        "A portable light source. It is somewhat unreliable, as it tends to "
-        "malfunction."
+        "A portable light source."
     };
     d.spawn_std_range = Range(1, 10);
     d.chance_to_incl_in_spawn_list = 100;
