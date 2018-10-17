@@ -1,7 +1,6 @@
 #include "viewport.hpp"
 
 #include "io.hpp"
-#include "map.hpp"
 #include "panel.hpp"
 #include "rl_utils.hpp"
 
@@ -10,37 +9,39 @@
 // -----------------------------------------------------------------------------
 static P p0_;
 
+static P get_view_dims()
+{
+        return io::gui_to_map_coords(panels::dims(Panel::map));
+}
+
 // -----------------------------------------------------------------------------
 // viewport
 // -----------------------------------------------------------------------------
 namespace viewport
 {
 
-P get_map_view_dims()
-{
-        const P gui_coord_dims = panels::dims(Panel::map);
-
-        P map_coord_dims = io::gui_to_map_coords(gui_coord_dims);
-
-        map_coord_dims.x = std::min(map_coord_dims.x, map::w());
-        map_coord_dims.y = std::min(map_coord_dims.y, map::h());
-
-        return map_coord_dims;
-}
-
 R get_map_view_area()
 {
-        const P map_view_dims = get_map_view_dims();
+        P view_dims = get_view_dims();
 
-        return R(p0_, p0_ + map_view_dims - 1);
+        TRACE << "map_view_dims w: " << view_dims.x << std::endl;
+
+        const R map_area(p0_, p0_ + view_dims - 1);
+
+        TRACE << "map_area x0, x1: "
+              << map_area.p0.x
+              << ","
+              << map_area.p1.x
+              << std::endl;
+
+        return map_area;
 }
 
 void focus_on(const P map_pos)
 {
-        const P map_view_dims = get_map_view_dims();
+        const P view_dims = get_view_dims();
 
-        p0_.x = map_pos.x - (map_view_dims.x / 2);
-        p0_.y = map_pos.y - (map_view_dims.y / 2);
+        p0_ = map_pos - view_dims.scaled_down(2);
 }
 
 bool is_in_view(const P map_pos)

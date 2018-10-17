@@ -32,7 +32,8 @@ StateId MarkerState::id()
 
 void MarkerState::on_start()
 {
-        marker_render_data_.resize(viewport::get_map_view_dims());
+        marker_render_data_.resize(
+                viewport::get_map_view_area().dims());
 
         pos_ = map::player->pos;
 
@@ -237,7 +238,8 @@ void MarkerState::draw_marker(
         const int red_from_king_dist,
         const int red_from_idx)
 {
-        const P map_view_dims = viewport::get_map_view_dims();
+        const P map_view_dims =
+                viewport::get_map_view_area().dims();
 
         for (int x = 0; x < map_view_dims.x; ++x)
         {
