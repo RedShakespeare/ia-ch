@@ -3,6 +3,7 @@
 #include "actor.hpp"
 #include "actor_factory.hpp"
 #include "actor_mon.hpp"
+#include "actor_player.hpp"
 #include "feature_rigid.hpp"
 #include "game_time.hpp"
 #include "global.hpp"
@@ -14,9 +15,13 @@
 // -----------------------------------------------------------------------------
 // MapController
 // -----------------------------------------------------------------------------
-
-// TODO: For standard level 'on_start':
-// audio::try_play_amb(1)
+void MapControllerStd::on_start()
+{
+        if (!map::player->properties.has(PropId::deaf))
+        {
+                audio::try_play_amb(1);
+        }
+}
 
 void MapControllerStd::on_std_turn()
 {

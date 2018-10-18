@@ -1,6 +1,6 @@
 #include "audio.hpp"
 
-#include <time.h>
+#include <chrono>
 
 #include "SDL_mixer.h"
 
@@ -8,16 +8,30 @@
 #include "map.hpp"
 #include "io.hpp"
 
+using namespace std::chrono_literals;
+
+// -----------------------------------------------------------------------------
+// Private
+// -----------------------------------------------------------------------------
+static_assert(
+        std::is_integral<std::chrono::system_clock::rep>::value,
+        "Representation of ticks isn't an integral value.");
+
 static std::vector<Mix_Chunk*> audio_chunks_;
 
 static std::vector<Mix_Music*> mus_chunks_;
 
+// TODO: Also use std::chrono for sound effects?
 static size_t ms_at_sfx_played_[(size_t)SfxId::END];
 
 static int current_channel_ = 0;
-static int seconds_at_amb_played_ = -1;
+
+static const auto min_seconds_between_amb = 20s;
+
+static auto seconds_at_amb_played_ = 0s;
 
 static int nr_files_loaded_ = 0;
+
 
 static void load(const SfxId sfx, const std::string& filename)
 {
@@ -97,6 +111,9 @@ static std::string amb_sfx_filename(const SfxId sfx)
                 ".ogg";
 }
 
+// -----------------------------------------------------------------------------
+// audio
+// -----------------------------------------------------------------------------
 namespace audio
 {
 
@@ -218,7 +235,7 @@ void cleanup()
         mus_chunks_.clear();
 
         current_channel_ =  0;
-        seconds_at_amb_played_ = -1;
+        seconds_at_amb_played_ = 0s;
 
         nr_files_loaded_ = 0;
 
@@ -334,9 +351,6 @@ void play(const SfxId sfx,
 
 void try_play_amb(const int one_in_n_chance_to_play)
 {
-        // NOTE: The ambient sound effect will be loaded by play(), if not
-        // already loaded (only the action sound effects are pre-loaded)
-
         if (!config::is_amb_audio_enabled() ||
             audio_chunks_.empty() ||
             !rnd::one_in(one_in_n_chance_to_play))
@@ -344,10 +358,12 @@ void try_play_amb(const int one_in_n_chance_to_play)
                 return;
         }
 
-        const int seconds_now = time(nullptr);
-        const int time_req_between_amb_sfx = 25;
+        const auto seconds_now =
+                std::chrono::duration_cast<std::chrono::seconds>(
+                        std::chrono::system_clock::now()
+                        .time_since_epoch());
 
-        if ((seconds_now - time_req_between_amb_sfx) > seconds_at_amb_played_)
+        if ((seconds_now - seconds_at_amb_played_) > min_seconds_between_amb)
         {
                 seconds_at_amb_played_ = seconds_now;
 
@@ -359,6 +375,8 @@ void try_play_amb(const int one_in_n_chance_to_play)
 
                 const SfxId sfx = (SfxId)rnd::range(first_int, last_int);
 
+                // NOTE: The ambient sound effect will be loaded by 'play', if
+                // not already loaded (only action sound effects are pre-loaded)
                 play(sfx , vol_pct);
         }
 }

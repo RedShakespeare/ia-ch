@@ -24,6 +24,8 @@ public:
         MapControllerStd() :
                 MapController() {}
 
+        void on_start() override;
+
         void on_std_turn() override;
 };
 

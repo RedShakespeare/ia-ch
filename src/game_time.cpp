@@ -156,7 +156,7 @@ static void run_std_turn_events()
 
         if ((map::dlvl > 0) && !map::player->properties.has(PropId::deaf))
         {
-                const int play_one_in_n = 250;
+                const int play_one_in_n = 200;
 
                 audio::try_play_amb(play_one_in_n);
         }

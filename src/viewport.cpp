@@ -24,15 +24,7 @@ R get_map_view_area()
 {
         P view_dims = get_view_dims();
 
-        TRACE << "map_view_dims w: " << view_dims.x << std::endl;
-
         const R map_area(p0_, p0_ + view_dims - 1);
-
-        TRACE << "map_area x0, x1: "
-              << map_area.p0.x
-              << ","
-              << map_area.p1.x
-              << std::endl;
 
         return map_area;
 }
