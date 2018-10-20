@@ -143,10 +143,8 @@ void handle_player_input(const InputData& input)
     switch (input.key)
     {
 
-    // Movement
     case SDLK_RIGHT:
     case '6':
-    case 'l':
     {
         if (input.is_shift_held)
         {
@@ -165,7 +163,6 @@ void handle_player_input(const InputData& input)
 
     case SDLK_DOWN:
     case '2':
-    case 'j':
     {
         map::player->move(Dir::down);
         return;
@@ -174,7 +171,6 @@ void handle_player_input(const InputData& input)
 
     case SDLK_LEFT:
     case '4':
-    case 'h':
     {
         if (input.is_shift_held)
         {
@@ -193,7 +189,6 @@ void handle_player_input(const InputData& input)
 
     case SDLK_UP:
     case '8':
-    case 'k':
     {
         map::player->move(Dir::up);
     }
@@ -201,15 +196,13 @@ void handle_player_input(const InputData& input)
 
     case SDLK_PAGEUP:
     case '9':
-    case 'u':
-        {
-            map::player->move(Dir::up_right);
-        }
-        break;
+    {
+        map::player->move(Dir::up_right);
+    }
+    break;
 
     case SDLK_PAGEDOWN:
     case '3':
-    case 'n':
     {
         map::player->move(Dir::down_right);
     }
@@ -217,7 +210,6 @@ void handle_player_input(const InputData& input)
 
     case SDLK_END:
     case '1':
-    case 'b':
     {
         map::player->move(Dir::down_left);
     }
@@ -225,7 +217,6 @@ void handle_player_input(const InputData& input)
 
     case SDLK_HOME:
     case '7':
-    case 'y':
     {
         map::player->move(Dir::up_left);
     }
@@ -247,7 +238,6 @@ void handle_player_input(const InputData& input)
     }
     break;
 
-    // Wait
     case 's':
     {
         if (map::player->is_seeing_burning_feature())
@@ -275,7 +265,6 @@ void handle_player_input(const InputData& input)
     }
     break;
 
-    // Manual
     case '?':
     case SDLK_F1:
     {
@@ -283,14 +272,12 @@ void handle_player_input(const InputData& input)
     }
     break;
 
-    // Options
     case '=':
     {
         states::push(std::make_unique<ConfigState>());
     }
     break;
 
-    // Reload
     case 'r':
     {
         Item* const wpn = map::player->inv.item_in_slot(SlotId::wpn);
@@ -299,35 +286,30 @@ void handle_player_input(const InputData& input)
     }
     break;
 
-    // Kick
-    case 'w':
+    case 'k':
     {
         wham::run();
     }
     break;
 
-    // Close
     case 'c':
     {
         close_door::player_try_close_or_jam();
     }
     break;
 
-    // Disarm
     case 'D':
     {
         disarm::player_disarm();
     }
     break;
 
-    // Unload
-    case 'G':
+    case 'u':
     {
         item_pickup::try_unload_wpn_or_pickup_ammo();
     }
     break;
 
-    // Aim/fire
     case 'f':
     {
             const bool is_allowed =
@@ -390,7 +372,6 @@ void handle_player_input(const InputData& input)
     }
     break;
 
-    // Get
     case 'g':
     {
         const P& p = map::player->pos;
@@ -417,28 +398,24 @@ void handle_player_input(const InputData& input)
     }
     break;
 
-    // Inventory screen
     case 'i':
     {
         states::push(std::make_unique<BrowseInv>());
     }
     break;
 
-    // Apply item
     case 'a':
     {
         states::push(std::make_unique<Apply>());
     }
     break;
 
-    // Drop item
     case 'd':
     {
             states::push(std::make_unique<Drop>());
     }
     break;
 
-    // Swap to prepared weapon
     case 'z':
     {
         Item* const wielded = map::player->inv.item_in_slot(SlotId::wpn);
@@ -507,7 +484,6 @@ void handle_player_input(const InputData& input)
     }
     break;
 
-    // Auto-walk
     case 'e':
     {
         if (map::player->is_seeing_burning_feature())
@@ -553,7 +529,6 @@ void handle_player_input(const InputData& input)
     }
     break;
 
-    // Throw
     case 't':
     {
         const Item* explosive = map::player->active_explosive_;
@@ -590,8 +565,7 @@ void handle_player_input(const InputData& input)
     }
     break;
 
-    // View
-    case 'v':
+    case 'l':
     {
         if (map::player->properties.allow_see())
         {
@@ -604,21 +578,18 @@ void handle_player_input(const InputData& input)
     }
     break;
 
-    // Auto melee
     case SDLK_TAB:
     {
         map::player->auto_melee();
     }
     break;
 
-    // Cast spell / use power
     case 'x':
     {
         states::push(std::make_unique<BrowseSpell>());
     }
     break;
 
-    // Character info
     case '@':
     {
         states::push(std::make_unique<CharacterDescr>());
@@ -631,14 +602,13 @@ void handle_player_input(const InputData& input)
     }
     break;
 
-    case 'M':
+    case 'h':
     {
         states::push(std::make_unique<MsgHistoryState>());
     }
     break;
 
-    // Make noise
-    case 'N':
+    case 'n':
     {
         if (player_bon::bg() == Bg::ghoul)
         {
@@ -664,7 +634,6 @@ void handle_player_input(const InputData& input)
     }
     break;
 
-    // Menu
     case SDLK_ESCAPE:
     {
         const std::vector<std::string> choices
@@ -695,7 +664,6 @@ void handle_player_input(const InputData& input)
     }
     break;
 
-    // Quit
     case 'Q':
     {
         query_quit();

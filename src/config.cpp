@@ -785,7 +785,7 @@ StateId ConfigState::id()
 
 void ConfigState::update()
 {
-        const auto input = io::get(true);
+        const auto input = io::get();
 
         const MenuAction action =
                 browser_.read(input, MenuInputMode::scrolling);

@@ -183,8 +183,7 @@ void flush_input();
 void clear_events();
 // ----------------------------------------
 
-// TODO: "is_o_return" is very hacky...
-InputData get(const bool is_o_return);
+InputData get();
 
 } // io
 

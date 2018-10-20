@@ -486,7 +486,7 @@ void BrowseSpell::draw()
 
 void BrowseSpell::update()
 {
-        auto input = io::get(false);
+        auto input = io::get();
 
         const MenuAction action =
                 browser_.read(input,

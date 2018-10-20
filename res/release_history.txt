@@ -36,16 +36,16 @@ Interface
 * The tiles are 24x24 pixels, instead of 16x24
 * The font size is no longer locked to the tile size (for example a smaller font can be used)
 * The window can be resized
-* Added a minimap accessed with "m"
-* Moved the message history command from "m" to "M"
+* Removed "vi-keys" movement (h j k l y u b n)
+* Moved several gameplay commands to different keys, which are hopefully more intuitive (e.g. [k]ick, [u]nload)
+* Added a minimap, accessed with "m"
 * Thrown item is selected via an inventory slot again (instead of by pressing "T") - but selecting thrown weapon is still a free action (does not end the turn), and you can still select the same item that you are simultaneously wielding
 * Many monster descriptions have been completely rewritten (thanks Renan Nunes)
 * Dropping items is now done from a separate inventory screen, accessed by pressing "d" (which is a more conventional method than the old way of pressing shift+enter)
-* Changed command for disarming traps to "D" (instead of "d")
 * Reworked the tile for Deep Ones
 * Added an option to always warn when a new monster is seen (and no other monster was already seen)
 * While aiming firearms or thrown weapons, the game no longer prints info about map features, items, etc in the aiming location (only info about any monster seen there)
-* Many properties now have longer and more descriptive names on the map screen (e.g. "Fear Res." instead of rFear", or "Life Sapped(4)" instead of "HP(4)")
+* Many properties now have longer and more descriptive names on the map screen (e.g. "Fear Res." instead of rFear", or "LIFE SAPPED(4)" instead of "HP(4)")
 
 --------------------------------------------------------------
 v19.2 (November 6, 2017)

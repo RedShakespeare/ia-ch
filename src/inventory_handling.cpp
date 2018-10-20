@@ -749,7 +749,7 @@ void BrowseInv::update()
                 }
         };
 
-        const auto input = io::get(false);
+        const auto input = io::get();
 
         const MenuAction action =
                 browser_.read(input, MenuInputMode::scrolling_and_letters);
@@ -955,7 +955,7 @@ void Apply::draw()
 
 void Apply::update()
 {
-        auto input = io::get(false);
+        auto input = io::get();
 
         const MenuAction action =
                 browser_.read(input,
@@ -1104,7 +1104,7 @@ void Drop::draw()
 
 void Drop::update()
 {
-        const auto input = io::get(false);
+        const auto input = io::get();
 
         const MenuAction action =
                 browser_.read(input, MenuInputMode::scrolling_and_letters);
@@ -1360,7 +1360,7 @@ void Equip::draw()
 
 void Equip::update()
 {
-        const auto input = io::get(false);
+        const auto input = io::get();
 
         if (filtered_backpack_indexes_.empty() ||
             (input.key == SDLK_SPACE) ||
@@ -1550,7 +1550,7 @@ void SelectThrow::draw()
 
 void SelectThrow::update()
 {
-        const auto input = io::get(false);
+        const auto input = io::get();
 
         const MenuAction action =
                 browser_.read(input, MenuInputMode::scrolling_and_letters);
@@ -1770,7 +1770,7 @@ void SelectIdentify::draw()
 
 void SelectIdentify::update()
 {
-        const auto input = io::get(false);
+        const auto input = io::get();
 
         const MenuAction action =
                 browser_.read(input,

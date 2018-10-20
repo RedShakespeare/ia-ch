@@ -26,7 +26,7 @@ void wait_for_key_press()
     {
         io::update_screen();
 
-        io::get(true);
+        io::get();
     }
 }
 
@@ -39,7 +39,7 @@ BinaryAnswer yes_or_no(char key_for_special_event)
 
     io::update_screen();
 
-    auto d = io::get(false);
+    auto d = io::get();
 
     while (d.key != 'y' &&
            d.key != 'n' &&
@@ -47,7 +47,7 @@ BinaryAnswer yes_or_no(char key_for_special_event)
            d.key != SDLK_SPACE &&
            (d.key != key_for_special_event || key_for_special_event == -1))
     {
-        d = io::get(false);
+        d = io::get();
     }
 
     if (d.key == key_for_special_event &&
@@ -75,7 +75,7 @@ InputData letter(const bool accept_enter)
 
     while (true)
     {
-        const auto d = io::get(false);
+        const auto d = io::get();
 
         if ((accept_enter && d.key == SDLK_RETURN) ||
             d.key == SDLK_ESCAPE ||
@@ -124,7 +124,7 @@ int number(const P& pos,
                d.key != SDLK_ESCAPE &&
                d.key != SDLK_BACKSPACE)
         {
-            d = io::get(true);
+            d = io::get();
         }
 
         if (d.key == SDLK_RETURN)
@@ -198,7 +198,7 @@ void wait_for_msg_more()
     {
         while (true)
         {
-            const auto d = io::get(true);
+            const auto d = io::get();
 
             if (d.key == SDLK_SPACE ||
                 d.key == SDLK_ESCAPE ||
@@ -222,7 +222,7 @@ void wait_for_confirm()
 
     while (true)
     {
-        const auto d = io::get(true);
+        const auto d = io::get();
 
         if (d.key == SDLK_SPACE ||
             d.key == SDLK_ESCAPE ||
@@ -244,14 +244,14 @@ Dir dir(const AllowCenter allow_center)
 
     while (true)
     {
-        const auto d = io::get(false);
+        const auto d = io::get();
 
         if (d.key == SDLK_SPACE || d.key == SDLK_ESCAPE)
         {
             return Dir::END;
         }
 
-        if (d.key == SDLK_RIGHT || d.key == '6' || d.key == 'l')
+        if (d.key == SDLK_RIGHT || d.key == '6')
         {
             if (d.is_shift_held)
             {
@@ -267,22 +267,22 @@ Dir dir(const AllowCenter allow_center)
             }
         }
 
-        if (d.key == SDLK_PAGEUP || d.key == '9' || d.key == 'u')
+        if (d.key == SDLK_PAGEUP || d.key == '9')
         {
             return Dir::up_right;
         }
 
-        if (d.key == SDLK_UP || d.key == '8' || d.key == 'k')
+        if (d.key == SDLK_UP || d.key == '8')
         {
             return Dir::up;
         }
 
-        if (d.key == SDLK_END || d.key == '7' || d.key == 'y')
+        if (d.key == SDLK_END || d.key == '7')
         {
             return Dir::up_left;
         }
 
-        if (d.key == SDLK_LEFT || d.key == '4' || d.key == 'h')
+        if (d.key == SDLK_LEFT || d.key == '4')
         {
             if (d.is_shift_held)
             {
@@ -298,22 +298,23 @@ Dir dir(const AllowCenter allow_center)
             }
         }
 
-        if (d.key == SDLK_END || d.key == '1' || d.key == 'b')
+        if (d.key == SDLK_END || d.key == '1')
         {
             return Dir::down_left;
         }
 
-        if (d.key == SDLK_DOWN || d.key == '2' || d.key == 'j')
+        if (d.key == SDLK_DOWN || d.key == '2')
         {
             return Dir::down;
         }
 
-        if (d.key == SDLK_PAGEDOWN || d.key == '3' || d.key == 'n')
+        if (d.key == SDLK_PAGEDOWN || d.key == '3')
         {
             return Dir::down_right;
         }
 
-        if (allow_center == AllowCenter::yes && (d.key == '5' || d.key == '.'))
+        if ((allow_center == AllowCenter::yes) &&
+            ((d.key == '5') || (d.key == '.')))
         {
             return Dir::center;
         }

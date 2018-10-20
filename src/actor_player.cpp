@@ -882,7 +882,7 @@ void Player::act()
     }
     else // Not bot playing
     {
-        const InputData& input = io::get(false);
+        const InputData& input = io::get();
 
         game::handle_player_input(input);
     }

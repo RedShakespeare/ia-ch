@@ -62,7 +62,7 @@ void PickBgState::update()
                 return;
         }
 
-        const auto input = io::get(false);
+        const auto input = io::get();
 
         const auto action =
                 browser_.read(
@@ -193,7 +193,7 @@ void PickOccultistState::update()
                 return;
         }
 
-        const auto input = io::get(false);
+        const auto input = io::get();
 
         const auto action =
                 browser_.read(
@@ -320,7 +320,7 @@ void PickTraitState::update()
                 return;
         }
 
-        const auto input = io::get(false);
+        const auto input = io::get();
 
         // Switch trait screen mode?
         if (input.key == SDLK_TAB)
@@ -633,7 +633,7 @@ void EnterNameState::update()
                 return;
         }
 
-        const auto input = io::get(false);
+        const auto input = io::get();
 
         if (input.key == SDLK_ESCAPE)
         {

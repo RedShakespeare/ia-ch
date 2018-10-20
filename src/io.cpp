@@ -1767,7 +1767,7 @@ void clear_events()
         while (SDL_PollEvent(&sdl_event_)) {}
 }
 
-InputData get(const bool is_o_return)
+InputData get()
 {
         InputData ret = InputData();
 
@@ -1993,18 +1993,7 @@ InputData get(const bool is_o_return)
                                 continue;
                         }
 
-                        if ((c == 'o' || c == 'O') && is_o_return)
-                        {
-                                const bool is_shift_held = c == 'O';
-
-                                ret = InputData(
-                                        SDLK_RETURN,
-                                        is_shift_held,
-                                        false);
-
-                                is_done = true;
-                        }
-                        else if (c >= 33 && c < 126)
+                        if (c >= 33 && c < 126)
                         {
                                 // ASCII char entered
                                 // (Decimal unicode '!' = 33, '~' = 126)

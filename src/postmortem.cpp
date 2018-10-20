@@ -458,7 +458,7 @@ void PostmortemMenu::make_memorial_file(const std::string path) const
 
 void PostmortemMenu::update()
 {
-        const auto input = io::get(true);
+        const auto input = io::get();
 
         const MenuAction action =
                 browser_.read(input, MenuInputMode::scrolling);
@@ -568,13 +568,12 @@ void PostmortemInfo::update()
 
         const int nr_lines = info_lines_.size();
 
-        const auto input = io::get(false);
+        const auto input = io::get();
 
         switch (input.key)
         {
         case SDLK_DOWN:
         case '2':
-        case 'j':
                 top_idx_ += line_jump;
 
                 if (nr_lines <= max_nr_lines_on_screen())
@@ -591,7 +590,6 @@ void PostmortemInfo::update()
 
         case SDLK_UP:
         case '8':
-        case 'k':
                 top_idx_ = std::max(0, top_idx_ - line_jump);
                 break;
 

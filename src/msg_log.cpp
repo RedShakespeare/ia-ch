@@ -556,13 +556,12 @@ void MsgHistoryState::update()
 
         const int history_size = history_.size();
 
-        const auto input = io::get(false);
+        const auto input = io::get();
 
         switch (input.key)
         {
         case SDLK_DOWN:
         case '2':
-        case 'j':
         {
                 top_line_nr_ += line_jump;
 
@@ -576,7 +575,6 @@ void MsgHistoryState::update()
 
         case SDLK_UP:
         case '8':
-        case 'k':
         {
                 top_line_nr_ =
                         std::max(0, top_line_nr_ - line_jump);

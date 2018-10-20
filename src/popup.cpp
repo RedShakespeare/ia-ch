@@ -293,7 +293,7 @@ int menu(const std::string& msg,
 
         while (true)
         {
-                const auto input = io::get(true);
+                const auto input = io::get();
 
                 const MenuAction action =
                         browser.read(input, MenuInputMode::scrolling);

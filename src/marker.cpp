@@ -128,7 +128,7 @@ void MarkerState::update()
 
         if (!config::is_bot_playing())
         {
-                input = io::get(true);
+                input = io::get();
         }
 
         msg_log::clear();
@@ -139,7 +139,6 @@ void MarkerState::update()
                 // Direction input is handle by the base class
         case SDLK_RIGHT:
         case '6':
-        case 'l':
         {
                 if (input.is_shift_held)
                 {
@@ -158,7 +157,6 @@ void MarkerState::update()
 
         case SDLK_UP:
         case '8':
-        case 'k':
         {
                 move(Dir::up);
         }
@@ -166,7 +164,6 @@ void MarkerState::update()
 
         case SDLK_LEFT:
         case '4':
-        case 'h':
         {
                 if (input.is_shift_held)
                 {
@@ -185,7 +182,6 @@ void MarkerState::update()
 
         case SDLK_DOWN:
         case '2':
-        case 'j':
         {
                 move(Dir::down);
         }
@@ -193,7 +189,6 @@ void MarkerState::update()
 
         case SDLK_PAGEUP:
         case '9':
-        case 'u':
         {
                 move(Dir::up_right);
         }
@@ -201,7 +196,6 @@ void MarkerState::update()
 
         case SDLK_HOME:
         case '7':
-        case 'y':
         {
                 move(Dir::up_left);
         }
@@ -209,7 +203,6 @@ void MarkerState::update()
 
         case SDLK_END:
         case '1':
-        case 'b':
         {
                 move(Dir::down_left);
         }
@@ -217,7 +210,6 @@ void MarkerState::update()
 
         case SDLK_PAGEDOWN:
         case '3':
-        case 'n':
         {
                 move(Dir::down_right);
         }

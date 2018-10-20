@@ -419,7 +419,7 @@ void MainMenuState::draw()
 
 void MainMenuState::update()
 {
-        const auto input = io::get(true);
+        const auto input = io::get();
 
         const MenuAction action =
                 browser_.read(input, MenuInputMode::scrolling);

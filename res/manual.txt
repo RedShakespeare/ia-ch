@@ -1,6 +1,30 @@
 --------------------------------------------------------------------------------
 Command list
 --------------------------------------------------------------------------------
+Gameplay commands:
+   @         Character information
+   TAB       Melee attack adjacent monster
+   a         Inventory, only showing items that can be consumed or activated
+   c         Close door, or jam closed door with an iron spike
+   d         Drop item
+   D         Disarm trap
+   e         Move in a direction until interrupted
+   f         Aim/fire weapon
+   g         Pick up item
+   h         Message history
+   i         Inventory (wield, equip, remove, consume, or activate items)
+   k         Kick or strike objects, or destroy corpses
+   l         Look (describe things on the map)
+   m         Minimap
+   n         Make noise
+   r         Reload
+   s         Wait five turns
+   t         Throw
+   u         Unload and pick up ammunition from weapons on the ground
+   x         Cast spell
+   z         Swap to readied weapon
+   Q         Quit
+
 Menu and window commands:
    Esc       In-game menu
    ?, F1     This manual
@@ -9,31 +33,6 @@ Menu and window commands:
    Ctrl +/-  Change window height
    Space     Cancel, proceed
    Enter     Select something in a menu, confirm
-   o         Alternative Enter key (except in letter selection  menus)
-   Q         Quit   
-
-Gameplay commands:
-   @         Display character information
-   TAB       Melee attack adjacent known monster
-   a         Activate, read or consume an item
-   c         Close a door, or jam a closed door with an iron spike
-   d         Drop an item
-   D         Disarm trap
-   e         Auto move (move in some direction until interrupted)
-   f         Aim/fire wielded firearm
-   g         Pick up item
-   G         Unload or pick up ammunition from the ground
-   i         Browse inventory
-   m         View minimap
-   M         Display message history
-   N         Make some noise (to lure monsters)
-   r         Reload wielded firearm
-   s         Wait (and search) for a few turns
-   t         Throw a carried object, or throw held explosive
-   v         View descriptions of things on the map
-   w         Kick or strike objects, or destroy corpses
-   x         Cast spell
-   z         Swap to readied weapon
 
 --------------------------------------------------------------------------------
 Movement and interaction
@@ -56,17 +55,10 @@ You can also use the arrow keys for movement. To move diagonally using the arrow
 
 Page up, Page down, Home, and End can also be used for diagonal movement.
 
-Vi keys (or "Rogue keys") are also supported:
-
-   y k u
-    \|/
-   h-.-l
-    /|\
-   b j n
-
 Certain things can be interacted with by moving into them (i.e. by "bumping" them), for example:
-   * Move into enemies to attack them
+   * Move into enemies to melee attack them
    * Move into closed doors, chests, cabinets, etc to open them
+   * Move into opened chests, cabinets, etc to loot them
    * Move into fountains to drink from them
 
 --------------------------------------------------------------------------------

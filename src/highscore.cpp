@@ -440,11 +440,12 @@ void BrowseHighscore::update()
                 return;
         }
 
-        const auto input = io::get(false);
+        const auto input = io::get();
 
         const MenuAction action =
-                browser_.read(input,
-                              MenuInputMode::scrolling);
+                browser_.read(
+                        input,
+                        MenuInputMode::scrolling);
 
         switch (action)
         {
@@ -525,13 +526,12 @@ void BrowseHighscoreEntry::update()
 
         const int nr_lines_tot = lines_.size();
 
-        const auto input = io::get(false);
+        const auto input = io::get();
 
         switch (input.key)
         {
         case '2':
         case SDLK_DOWN:
-        case 'j':
                 top_idx_ += line_jump;
 
                 if (nr_lines_tot <= max_nr_lines_on_screen())
@@ -548,7 +548,6 @@ void BrowseHighscoreEntry::update()
 
         case '8':
         case SDLK_UP:
-        case 'k':
                 top_idx_ = std::max(0, top_idx_ - line_jump);
                 break;
 

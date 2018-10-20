@@ -38,16 +38,14 @@ MenuAction MenuBrowser::read(
         MenuInputMode mode)
 {
         if (input.key == SDLK_UP ||
-            input.key == '8' ||
-            (mode == MenuInputMode::scrolling && input.key == 'k'))
+            input.key == '8')
         {
                 move(VerDir::up);
                 return MenuAction::moved;
         }
 
         if (input.key == SDLK_DOWN ||
-            input.key == '2' ||
-            (mode == MenuInputMode::scrolling && input.key == 'j'))
+            input.key == '2')
         {
                 move(VerDir::down);
                 return MenuAction::moved;
