@@ -6,6 +6,7 @@
 #include "actor_death.hpp"
 #include "actor_factory.hpp"
 #include "actor_mon.hpp"
+#include "actor_move.hpp"
 #include "attack.hpp"
 #include "audio.hpp"
 #include "bot.hpp"
@@ -45,30 +46,6 @@
 // -----------------------------------------------------------------------------
 // Private
 // -----------------------------------------------------------------------------
-static void print_aware_invis_mon_msg(const Mon& mon)
-{
-        std::string mon_ref;
-
-        if (mon.data->is_ghost)
-        {
-                mon_ref = "some foul entity";
-        }
-        else if (mon.data->is_humanoid)
-        {
-                mon_ref = "someone";
-        }
-        else
-        {
-                mon_ref = "a creature";
-        }
-
-        msg_log::add(
-                "There is " + mon_ref + " here!",
-                colors::msg_note(),
-                false,
-                MorePromptOnMsg::yes);
-}
-
 static const std::vector<std::string> item_feeling_messages_ = {
         "I feel like I should examine this place thoroughly.",
         "I feel like there is something of great interest here.",
@@ -730,7 +707,7 @@ void Player::act()
     {
         --wait_turns_left;
 
-        move(Dir::center);
+        actor::move(*this, Dir::center);
 
         return;
     }
@@ -818,7 +795,7 @@ void Player::act()
 
         const auto adj_known_closed_doors_before = adj_known_closed_doors(pos);
 
-        move(quick_move_dir_);
+        actor::move(*this, quick_move_dir_);
 
         has_taken_quick_move_step_ = true;
 
@@ -1039,7 +1016,7 @@ void Player::on_actor_turn()
                     if (is_cell_seen)
                     {
                         // The monster must be invisible
-                        print_aware_invis_mon_msg(mon);
+                        actor::print_aware_invis_mon_msg(mon);
                     }
                     else // Became aware of a monster in an unseen cell
                     {
@@ -1716,268 +1693,6 @@ void Player::hear_sound(const Snd& snd,
     snd.on_heard(*this);
 }
 
-void Player::move(Dir dir)
-{
-    if (!is_alive())
-    {
-        return;
-    }
-
-    const Dir intended_dir = dir;
-
-    properties.affect_move_dir(pos, dir);
-
-    const P tgt(pos + dir_utils::offset(dir));
-
-    // Attacking, bumping stuff, staggering from encumbrance, etc
-    if (dir != Dir::center)
-    {
-        // Check if map features are blocking (used later)
-        Cell& cell = map::cells.at(tgt);
-
-        bool is_features_allow_move = cell.rigid->can_move(*this);
-
-        std::vector<Mob*> mobs;
-        game_time::mobs_at_pos(tgt, mobs);
-
-        if (is_features_allow_move)
-        {
-            for (auto* m : mobs)
-            {
-                if (!m->can_move(*this))
-                {
-                    is_features_allow_move = false;
-                    break;
-                }
-            }
-        }
-
-        Mon* const mon = static_cast<Mon*>(map::actor_at_pos(tgt));
-
-        // Hostile monster here?
-        if (mon && !is_leader_of(mon))
-        {
-            const bool can_see_mon = map::player->can_see_actor(*mon);
-
-            const bool is_aware_of_mon = mon->player_aware_of_me_counter_ > 0;
-
-            if (is_aware_of_mon)
-            {
-                if (properties.allow_attack_melee(Verbosity::verbose))
-                {
-                    Item* const wpn_item = inv.item_in_slot(SlotId::wpn);
-
-                    if (wpn_item)
-                    {
-                        Wpn* const wpn = static_cast<Wpn*>(wpn_item);
-
-                        // If this is also a ranged weapon, ask if player really
-                        // intended to use it as melee weapon
-                        if (wpn->data().ranged.is_ranged_wpn &&
-                            config::is_ranged_wpn_meleee_prompt())
-                        {
-                            const std::string wpn_name =
-                                wpn->name(ItemRefType::a);
-
-                            const std::string mon_name =
-                                    can_see_mon
-                                    ? mon->name_the()
-                                    : "it";
-
-                            msg_log::add(
-                                    "Attacking " +
-                                    mon_name +
-                                    " with " +
-                                    wpn_name +
-                                    ".",
-                                    colors::light_white());
-
-                            msg_log::add(
-                                    "Continue? [y/n]",
-                                    colors::light_white());
-
-                            if (query::yes_or_no() == BinaryAnswer::no)
-                            {
-                                msg_log::clear();
-
-                                return;
-                            }
-                        }
-
-                        attack::melee(this,
-                                      pos,
-                                      *mon,
-                                      *wpn);
-
-                        tgt_ = mon;
-
-                        return;
-                    }
-                    else // No melee weapon wielded
-                    {
-                        hand_att(*mon);
-                    }
-                }
-
-                return;
-            }
-            else // There is a monster here that player is unaware of
-            {
-                // If player is unaware of the monster, it should never be seen
-                // ASSERT(!can_see_mon);
-
-                if (is_features_allow_move)
-                {
-                    // Cell is not blocked, reveal monster here and return
-                    mon->set_player_aware_of_me();
-
-                    print_aware_invis_mon_msg(*mon);
-
-                    return;
-                }
-
-                // NOTE: The target is blocked by map features. Do NOT reveal
-                // the monster - just act like the monster isn't there, and let
-                // the code below handle the situation.
-            }
-        }
-
-        if (is_features_allow_move)
-        {
-            // Encumbrance, wounds, or spraining affecting movement
-            const int enc = enc_percent();
-
-            Prop* const wound_prop = properties.prop(PropId::wound);
-
-            int nr_wounds = 0;
-
-            if (wound_prop)
-            {
-                nr_wounds = static_cast<PropWound*>(wound_prop)->nr_wounds();
-            }
-
-            const int min_nr_wounds_for_stagger = 3;
-
-            // Cannot move at all due to encumbrance?
-            if (enc >= enc_immobile_lvl)
-            {
-                msg_log::add("I am too encumbered to move!");
-
-                return;
-            }
-            // Move at half speed due to encumbrance or wounds?
-            else if ((enc >= 100) ||
-                     (nr_wounds >= min_nr_wounds_for_stagger))
-            {
-                msg_log::add("I stagger.", colors::msg_note());
-
-                properties.apply(new PropWaiting());
-            }
-
-            // Displace allied monster
-            if (mon && is_leader_of(mon))
-            {
-                if (mon->player_aware_of_me_counter_ > 0)
-                {
-                    std::string mon_name =
-                        can_see_actor(*mon) ?
-                        mon->name_a() :
-                        "it";
-
-                    msg_log::add("I displace " + mon_name + ".");
-                }
-
-                mon->pos = pos;
-            }
-
-            map::cells.at(pos).rigid->on_leave(*this);
-
-            pos = tgt;
-
-            // Walking on item?
-            Item* const item = map::cells.at(pos).item;
-
-            if (item)
-            {
-                // Only print the item name if the item will not be "found" by
-                // stepping on it, otherwise there would be redundant messages,
-                // e.g. "A Muddy Potion." -> "I have found a Muddy Potion!"
-                if ((item->data().xp_on_found <= 0) ||
-                    item->data().is_found)
-                {
-                    std::string item_name =
-                        item->name(ItemRefType::plural,
-                                   ItemRefInf::yes,
-                                   ItemRefAttInf::wpn_main_att_mode);
-
-                    item_name = text_format::first_to_upper(item_name);
-
-                    msg_log::add(item_name + ".");
-                }
-
-                item->on_player_found();
-            }
-
-            // Print message if walking on corpses
-            for (auto* const actor : game_time::actors)
-            {
-                if ((actor->pos == pos) &&
-                    (actor->state == ActorState::corpse))
-                {
-                    const std::string name =
-                        text_format::first_to_upper(
-                            actor->data->corpse_name_a);
-
-                    msg_log::add(name + ".");
-                }
-            }
-        }
-
-        // NOTE: bump() prints block messages.
-        for (auto* mob : mobs)
-        {
-            mob->bump(*this);
-        }
-
-        map::cells.at(tgt).rigid->bump(*this);
-    }
-
-    // If position is at the destination now, it means that the player either:
-    // * did an actual move to another position, or
-    // * that player waited in the current position on purpose, or
-    // * that the player was stuck (e.g. in a spider web)
-    // In either case, the game time is ticked here (since no melee attack or
-    // other "time advancing" action has occurred)
-    if (pos == tgt)
-    {
-        // If the player intended to wait in the current position, perform
-        // "standing still" actions
-        if (intended_dir == Dir::center)
-        {
-            auto did_action = DidAction::no;
-
-            // Ghoul feed on corpses?
-            if (player_bon::bg() == Bg::ghoul)
-            {
-                    did_action = try_eat_corpse();
-            }
-
-            if (did_action == DidAction::no)
-            {
-                    // Reorganize pistol magazines?
-                    const auto my_seen_foes = seen_foes();
-
-                    if (my_seen_foes.empty())
-                    {
-                            reload::player_arrange_pistol_mags();
-                    }
-            }
-        }
-
-        game_time::tick();
-    }
-}
-
 Color Player::color() const
 {
     if (!is_alive())
@@ -2036,7 +1751,7 @@ void Player::auto_melee()
         is_pos_adj(pos, tgt_->pos, false) &&
         can_see_actor(*tgt_))
     {
-        move(dir_utils::dir(tgt_->pos - pos));
+            actor::move(*this, dir_utils::dir(tgt_->pos - pos));
         return;
     }
 
@@ -2050,7 +1765,9 @@ void Player::auto_melee()
             can_see_actor(*actor))
         {
             tgt_ = actor;
-            move(dir_utils::dir(d));
+
+            actor::move(*this, dir_utils::dir(d));
+
             return;
         }
     }

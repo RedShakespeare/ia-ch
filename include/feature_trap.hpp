@@ -68,7 +68,7 @@ public:
 
         std::string name(const Article article) const override;
 
-        void disarm() override;
+        void disarm();
 
         // Quietly destroys the trap, and either places rubble, or replaces it
         // with the mimic feature (depending on trap type)

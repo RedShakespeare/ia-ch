@@ -56,8 +56,6 @@ public:
 
         void act() override;
 
-        void move(Dir dir) override;
-
         virtual Color color() const override;
 
         SpellSkill spell_skill(const SpellId id) const override;

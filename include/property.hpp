@@ -3,12 +3,27 @@
 
 #include <string>
 
-#include "property_handler.hpp"
+#include "ability_values.hpp"
 #include "global.hpp"
+#include "property_data.hpp"
+
+class Item;
 
 // -----------------------------------------------------------------------------
 // Support types
 // -----------------------------------------------------------------------------
+enum class PropSrc
+{
+        // Properties applied by potions, spells, etc, or "natural" properties
+        // for monsters (e.g. flying), or player properties gained by traits
+        intr,
+
+        // Properties applied by items carried in inventory
+        inv,
+
+        END
+};
+
 enum class PropDurationMode
 {
         standard,

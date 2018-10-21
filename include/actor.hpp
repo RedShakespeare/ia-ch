@@ -4,17 +4,13 @@
 #include <string>
 #include <vector>
 
-#include "global.hpp"
-
 #include "actor_data.hpp"
 #include "config.hpp"
 #include "gfx.hpp"
+#include "global.hpp"
 #include "inventory.hpp"
 #include "property_handler.hpp"
 #include "sound.hpp"
-
-class PropHandler;
-class Inventory;
 
 struct SneakData
 {
@@ -62,8 +58,6 @@ public:
         void on_std_turn_common();
 
         virtual void act() {}
-
-        virtual void move(Dir dir) = 0;
 
         virtual void on_actor_turn() {}
         virtual void on_std_turn() {}
@@ -172,6 +166,8 @@ void init_actor(Actor& actor, const P& pos_, ActorData& data);
 // are actually hidden or not. It merely performs a skill check, taking various
 // conditions such as light/dark into concern.
 ActionResult roll_sneak(const SneakData& data);
+
+void print_aware_invis_mon_msg(const Mon& mon);
 
 } // actor
 

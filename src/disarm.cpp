@@ -29,57 +29,70 @@ void player_disarm()
                 return;
         }
 
-        if (map::player->enc_percent() >= 100)
+        msg_log::add(
+                "Which direction?" + cancel_info_str,
+                colors::light_white());
+
+        const auto input_dir = query::dir(AllowCenter::yes);
+
+        msg_log::clear();
+
+        if (input_dir == Dir::END)
         {
-                msg_log::add("Not while encumbered.");
+                ASSERT(false);
 
                 return;
         }
 
-        msg_log::add("Which direction?" +
-                     cancel_info_str, colors::light_white());
+        const auto pos = map::player->pos + dir_utils::offset(input_dir);
 
-
-        const Dir input_dir = query::dir(AllowCenter::no);
-
-        if (input_dir == Dir::END || input_dir == Dir::center)
+        if (!map::cells.at(pos).is_seen_by_player)
         {
-                // Invalid direction
-                msg_log::clear();
+                msg_log::add("I cannot see there.");
+
+                return;
         }
-        else // Valid direction
+
+        auto* const feature = map::cells.at(pos).rigid;
+
+        Trap* trap = nullptr;
+
+        if (feature->id() == FeatureId::trap)
         {
-                const P pos(map::player->pos + dir_utils::offset(input_dir));
-
-                // Abort if cell is unseen
-                if (!map::cells.at(pos).is_seen_by_player)
-                {
-                        msg_log::add("I cannot see there.");
-
-                        return;
-                }
-
-                msg_log::clear();
-
-                Actor* actor_on_trap = map::actor_at_pos(pos);
-
-                // Abort if trap blocked by monster
-                if (actor_on_trap)
-                {
-                        if (map::player->can_see_actor(*actor_on_trap))
-                        {
-                                msg_log::add("It's blocked.");
-                        }
-                        else
-                        {
-                                msg_log::add("Something is blocking it.");
-                        }
-                }
-                else // No actor on the trap
-                {
-                        map::cells.at(pos).rigid->disarm();
-                }
+                trap = static_cast<Trap*>(feature);
         }
+
+        if (!trap || trap->is_hidden())
+        {
+                msg_log::add(msg_disarm_no_trap);
+
+                states::draw();
+
+                return;
+        }
+
+        // There is a known and seen trap here
+
+        const auto* const actor_on_trap = map::actor_at_pos(pos);
+
+        if (actor_on_trap && !actor_on_trap->is_player())
+        {
+                if (map::player->can_see_actor(*actor_on_trap))
+                {
+                        msg_log::add("It's blocked.");
+                }
+                else
+                {
+                        msg_log::add("Something is blocking it.");
+                }
+
+                return;
+        }
+
+        trap->disarm();
+
+        game_time::tick();
+
 } // player_disarm
 
 } // disarm

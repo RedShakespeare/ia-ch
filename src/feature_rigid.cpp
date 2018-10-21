@@ -226,11 +226,6 @@ WasDestroyed Rigid::on_finished_burning()
     return WasDestroyed::no;
 }
 
-void Rigid::disarm()
-{
-    msg_log::add(msg_disarm_no_trap);
-}
-
 DidOpen Rigid::open(Actor* const actor_opening)
 {
     (void)actor_opening;

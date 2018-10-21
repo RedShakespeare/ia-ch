@@ -1,17 +1,18 @@
 #include "ai.hpp"
 
-#include "actor_player.hpp"
-#include "msg_log.hpp"
-#include "map.hpp"
-#include "feature_mob.hpp"
-#include "feature_door.hpp"
 #include "actor_mon.hpp"
-#include "line_calc.hpp"
-#include "map_parsing.hpp"
-#include "game_time.hpp"
+#include "actor_move.hpp"
+#include "actor_player.hpp"
+#include "feature_door.hpp"
+#include "feature_mob.hpp"
 #include "fov.hpp"
-#include "text_format.hpp"
+#include "game_time.hpp"
+#include "line_calc.hpp"
+#include "map.hpp"
+#include "map_parsing.hpp"
+#include "msg_log.hpp"
 #include "property_handler.hpp"
+#include "text_format.hpp"
 
 namespace ai
 {
@@ -385,7 +386,7 @@ bool make_room_for_friend(Mon& mon)
                                         {
                                                 const P offset = target_p - mon.pos;
 
-                                                mon.move(dir_utils::dir(offset));
+                                                actor::move(mon, dir_utils::dir(offset));
 
                                                 return true;
                                         }
@@ -464,7 +465,8 @@ bool move_to_random_adj_cell(Mon& mon)
         // Valid direction found?
         if (dir != Dir::END)
         {
-                mon.move(dir);
+                actor::move(mon, dir);
+
                 return true;
         }
 
@@ -491,7 +493,8 @@ bool move_to_target_simple(Mon& mon)
 
         if (!is_blocked)
         {
-                mon.move(dir_utils::dir(signs));
+                actor::move(mon, dir_utils::dir(signs));
+
                 return true;
         }
 
@@ -505,7 +508,7 @@ bool step_path(Mon& mon, std::vector<P>& path)
         {
                 const P delta = path.back() - mon.pos;
 
-                mon.move(dir_utils::dir(delta));
+                actor::move(mon, dir_utils::dir(delta));
 
                 return true;
         }
@@ -550,7 +553,8 @@ bool step_to_lair_if_los(Mon& mon, const P& lair_p)
                         }
                         else // Step is not blocked
                         {
-                                mon.move(dir_utils::dir(d));
+                                actor::move(mon, dir_utils::dir(d));
+
                                 return true;
                         }
                 }

@@ -417,10 +417,10 @@ void Viewing::on_moved()
         const auto* const actor = map::actor_at_pos(pos_);
 
         if (actor &&
-            actor != map::player &&
+            !actor->is_player() &&
             map::player->can_see_actor(*actor))
         {
-                msg_log::add("[v] for description");
+                msg_log::add("[l] for description");
         }
 
         msg_log::add(cancel_info_str_no_space);
@@ -428,7 +428,7 @@ void Viewing::on_moved()
 
 void Viewing::handle_input(const InputData& input)
 {
-        if (input.key == 'v')
+        if (input.key == 'l')
         {
                 auto* const actor = map::actor_at_pos(pos_);
 

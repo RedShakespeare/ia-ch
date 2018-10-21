@@ -30,7 +30,7 @@ int turn_nr();
 
 Actor* current_actor();
 
-void mobs_at_pos(const P& pos, std::vector<Mob*>& vector_ref);
+std::vector<Mob*> mobs_at_pos(const P& p);
 
 void add_mob(Mob* const f);
 

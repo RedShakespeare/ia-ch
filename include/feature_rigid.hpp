@@ -83,8 +83,6 @@ public:
 
         virtual DidClose close(Actor* const actor_closing);
 
-        virtual void disarm();
-
         virtual void on_lever_pulled(Lever* const lever)
         {
                 (void)lever;

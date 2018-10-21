@@ -768,67 +768,6 @@ void Mon::on_hit(
                         aware_of_player_counter_);
 }
 
-void Mon::move(Dir dir)
-{
-#ifndef NDEBUG
-        if (dir == Dir::END)
-        {
-                TRACE << "Illegal direction parameter" << std::endl;
-                ASSERT(false);
-        }
-
-        if (!map::is_pos_inside_outer_walls(pos))
-        {
-                TRACE << "Monster outside map" << std::endl;
-                ASSERT(false);
-        }
-#endif // NDEBUG
-
-        properties.affect_move_dir(pos, dir);
-
-        // Movement direction is stored for AI purposes
-        last_dir_moved_ = dir;
-
-        const P target_p(pos + dir_utils::offset(dir));
-
-        // Sanity check - monsters should never attempt to move into a blocked
-        // cell (if they do try this, it's probably an AI bug)
-#ifndef NDEBUG
-        if (target_p != pos)
-        {
-                Array2<bool> blocked(map::dims());
-
-                const bool is_blocked =
-                        map_parsers::BlocksActor(*this, ParseActors::yes)
-                        .cell(target_p);
-
-                ASSERT(!is_blocked);
-        }
-#endif // NDEBUG
-
-        if ((dir != Dir::center) &&
-            map::is_pos_inside_outer_walls(target_p))
-        {
-                // Leave current cell (e.g. stop swimming)
-                map::cells.at(pos).rigid->on_leave(*this);
-
-                pos = target_p;
-
-                // Bump features in target cell (e.g. to trigger traps)
-                std::vector<Mob*> mobs;
-                game_time::mobs_at_pos(pos, mobs);
-
-                for (auto* m : mobs)
-                {
-                        m->bump(*this);
-                }
-
-                map::cells.at(pos).rigid->bump(*this);
-        }
-
-        game_time::tick();
-}
-
 Color Mon::color() const
 {
         if (state != ActorState::alive)

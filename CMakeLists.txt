@@ -17,6 +17,7 @@ set(COMMON_SRC
         include/actor_hit.hpp
         include/actor_items.hpp
         include/actor_mon.hpp
+        include/actor_move.hpp
         include/actor_player.hpp
         include/ai.hpp
         include/attack.hpp
@@ -117,6 +118,7 @@ set(COMMON_SRC
         src/actor_hit.cpp
         src/actor_items.cpp
         src/actor_mon.cpp
+        src/actor_move.cpp
         src/actor_player.cpp
         src/ai.cpp
         src/attack.cpp

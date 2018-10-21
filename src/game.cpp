@@ -7,6 +7,7 @@
 #include "actor_factory.hpp"
 #include "actor_items.hpp"
 #include "actor_mon.hpp"
+#include "actor_move.hpp"
 #include "actor_player.hpp"
 #include "attack.hpp"
 #include "character_descr.hpp"
@@ -148,15 +149,15 @@ void handle_player_input(const InputData& input)
     {
         if (input.is_shift_held)
         {
-            map::player->move(Dir::up_right);
+            actor::move(*map::player, Dir::up_right);
         }
         else if (input.is_ctrl_held)
         {
-            map::player->move(Dir::down_right);
+            actor::move(*map::player, Dir::down_right);
         }
         else
         {
-            map::player->move(Dir::right);
+            actor::move(*map::player, Dir::right);
         }
     }
     break;
@@ -164,7 +165,7 @@ void handle_player_input(const InputData& input)
     case SDLK_DOWN:
     case '2':
     {
-        map::player->move(Dir::down);
+        actor::move(*map::player, Dir::down);
         return;
     }
     break;
@@ -174,15 +175,15 @@ void handle_player_input(const InputData& input)
     {
         if (input.is_shift_held)
         {
-            map::player->move(Dir::up_left);
+            actor::move(*map::player, Dir::up_left);
         }
         else if (input.is_ctrl_held)
         {
-            map::player->move(Dir::down_left);
+            actor::move(*map::player, Dir::down_left);
         }
         else
         {
-            map::player->move(Dir::left);
+            actor::move(*map::player, Dir::left);
         }
     }
     break;
@@ -190,35 +191,35 @@ void handle_player_input(const InputData& input)
     case SDLK_UP:
     case '8':
     {
-        map::player->move(Dir::up);
+        actor::move(*map::player, Dir::up);
     }
     break;
 
     case SDLK_PAGEUP:
     case '9':
     {
-        map::player->move(Dir::up_right);
+        actor::move(*map::player, Dir::up_right);
     }
     break;
 
     case SDLK_PAGEDOWN:
     case '3':
     {
-        map::player->move(Dir::down_right);
+        actor::move(*map::player, Dir::down_right);
     }
     break;
 
     case SDLK_END:
     case '1':
     {
-        map::player->move(Dir::down_left);
+        actor::move(*map::player, Dir::down_left);
     }
     break;
 
     case SDLK_HOME:
     case '7':
     {
-        map::player->move(Dir::up_left);
+        actor::move(*map::player, Dir::up_left);
     }
     break;
 
@@ -234,7 +235,7 @@ void handle_player_input(const InputData& input)
             map::player->properties.apply(aiming);
         }
 
-        map::player->move(Dir::center);
+        actor::move(*map::player, Dir::center);
     }
     break;
 
@@ -295,12 +296,6 @@ void handle_player_input(const InputData& input)
     case 'c':
     {
         close_door::player_try_close_or_jam();
-    }
-    break;
-
-    case 'D':
-    {
-        disarm::player_disarm();
     }
     break;
 
@@ -631,6 +626,12 @@ void handle_player_input(const InputData& input)
         snd_emit::run(snd);
 
         game_time::tick();
+    }
+    break;
+
+    case 'p':
+    {
+        disarm::player_disarm();
     }
     break;
 

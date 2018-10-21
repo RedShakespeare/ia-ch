@@ -165,9 +165,7 @@ void run(Actor& defender,
         }
 
         // Bump target cell
-        std::vector<Mob*> mobs;
-
-        game_time::mobs_at_pos(defender.pos, mobs);
+        const auto mobs = game_time::mobs_at_pos(defender.pos);
 
         for (Mob* const mob : mobs)
         {

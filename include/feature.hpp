@@ -23,10 +23,11 @@ public:
 
         const FeatureData& data() const;
 
-        virtual void hit(const int dmg,
-                         const DmgType dmg_type,
-                         const DmgMethod dmg_method,
-                         Actor* const actor);
+        virtual void hit(
+                const int dmg,
+                const DmgType dmg_type,
+                const DmgMethod dmg_method,
+                Actor* const actor);
 
         virtual void reveal(const Verbosity verbosity);
 

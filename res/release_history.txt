@@ -37,7 +37,7 @@ Interface
 * The font size is no longer locked to the tile size (for example a smaller font can be used)
 * The window can be resized
 * Removed "vi-keys" movement (h j k l y u b n)
-* Moved several gameplay commands to different keys, which are hopefully more intuitive (e.g. [k]ick, [u]nload)
+* Moved several gameplay commands to different keys, which are hopefully more intuitive (e.g. [k]ick, [u]nload), and all gameplay commands are now lowercase keys (except [Q]uit, to help avoid accidental quitting)
 * Added a minimap, accessed with "m"
 * Thrown item is selected via an inventory slot again (instead of by pressing "T") - but selecting thrown weapon is still a free action (does not end the turn), and you can still select the same item that you are simultaneously wielding
 * Many monster descriptions have been completely rewritten (thanks Renan Nunes)

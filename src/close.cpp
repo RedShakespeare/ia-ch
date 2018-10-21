@@ -1,6 +1,5 @@
 #include "close.hpp"
 
-#include "game_time.hpp"
 #include "feature.hpp"
 #include "actor.hpp"
 #include "actor_player.hpp"

@@ -7,7 +7,6 @@ Gameplay commands:
    a         Inventory, only showing items that can be consumed or activated
    c         Close door, or jam closed door with an iron spike
    d         Drop item
-   D         Disarm trap
    e         Move in a direction until interrupted
    f         Aim/fire weapon
    g         Pick up item
@@ -17,6 +16,7 @@ Gameplay commands:
    l         Look (describe things on the map)
    m         Minimap
    n         Make noise
+   p         Disarm trap
    r         Reload
    s         Wait five turns
    t         Throw

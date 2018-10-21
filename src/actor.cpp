@@ -770,4 +770,28 @@ ActionResult roll_sneak(const SneakData& data)
         return result;
 }
 
+void print_aware_invis_mon_msg(const Mon& mon)
+{
+        std::string mon_ref;
+
+        if (mon.data->is_ghost)
+        {
+                mon_ref = "some foul entity";
+        }
+        else if (mon.data->is_humanoid)
+        {
+                mon_ref = "someone";
+        }
+        else
+        {
+                mon_ref = "a creature";
+        }
+
+        msg_log::add(
+                "There is " + mon_ref + " here!",
+                colors::msg_note(),
+                false,
+                MorePromptOnMsg::yes);
+}
+
 } // actor

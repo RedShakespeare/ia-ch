@@ -30,7 +30,7 @@ static void msg_reload_fumble(const Actor& actor, const Item& ammo)
         {
                 msg_log::add("I fumble with " + ammo_name + ".");
         }
-        else //Is monster
+        else // Is monster
         {
                 if (map::player->can_see_actor(actor))
                 {
@@ -80,7 +80,7 @@ static void msg_reloaded(
                                 ").");
                 }
         }
-        else //Is monster
+        else // Is monster
         {
                 if (map::player->can_see_actor(actor))
                 {
@@ -330,50 +330,52 @@ void player_arrange_pistol_mags()
                         continue;
                 }
 
-                // NOTE: For min mag, we check for lesser OR EQUAL rounds loaded - this
-                // way, when several "least full mags" are found, the last one will be
-                // picked as THE max mag to use. The purpose of this is that we should
-                // try avoid picking the same mag as min and max (e.g. if we have two
-                // mags with 6 bullets each, then we want to move a bullet).
+                // NOTE: For min mag, we check for lesser OR EQUAL rounds
+                // loaded.  This way, when several "least full mags" are found,
+                // the last one will be picked as THE max mag to use. The
+                // purpose of this is that we should try avoid picking the same
+                // mag as min and max (e.g. if we have two mags with 6 bullets
+                // each, then we want to move a bullet).
                 if (mag->ammo_ <= min_mag_ammo)
                 {
-                        min_mag_ammo            = mag->ammo_;
-                        min_mag                 = mag;
-                        min_mag_backpack_idx    = i;
+                        min_mag_ammo = mag->ammo_;
+                        min_mag = mag;
+                        min_mag_backpack_idx = i;
                 }
 
                 // Use the first "most full mag" that we find, as the max mag
                 if (mag->ammo_ > max_mag_ammo)
                 {
-                        max_mag_ammo    = mag->ammo_;
-                        max_mag         = mag;
+                        max_mag_ammo = mag->ammo_;
+                        max_mag = mag;
                 }
         }
 
         if (!min_mag)
         {
-                //No least full mag exists, do nothing
+                // No least full mag exists, do nothing
                 return;
         }
 
-        //If wielded pistol is not fully loaded, move round from least full mag
-        if (
-                wielded_pistol &&
-                wielded_pistol->ammo_loaded_ < pistol_max_ammo)
+        // If wielded pistol is not fully loaded, move round from least full mag
+        if (wielded_pistol &&
+            wielded_pistol->ammo_loaded_ < pistol_max_ammo)
         {
                 --min_mag->ammo_;
                 ++wielded_pistol->ammo_loaded_;
 
                 const std::string name =
-                        wielded_pistol->name(ItemRefType::plain,
-                                             ItemRefInf::yes);
+                        wielded_pistol->name(
+                                ItemRefType::plain,
+                                ItemRefInf::yes);
 
-                msg_log::add("I move a round from a magazine to my " + name + ".");
+                msg_log::add(
+                        "I move a round from a magazine to my " +
+                        name +
+                        ".");
         }
-        //Otherwise, if two non-full mags exists, move from least to most full
-        else if (
-                max_mag &&
-                min_mag != max_mag)
+        // Otherwise, if two non-full mags exists, move from least to most full
+        else if (max_mag && (min_mag != max_mag))
         {
                 --min_mag->ammo_;
                 ++max_mag->ammo_;
@@ -389,4 +391,4 @@ void player_arrange_pistol_mags()
         }
 }
 
-} //reload
+} // reload

@@ -6,25 +6,13 @@
 
 #include "ability_values.hpp"
 #include "global.hpp"
+#include "property.hpp"
 #include "property_data.hpp"
 #include "rl_utils.hpp"
 
 class Actor;
 class Item;
-class Prop;
 class Wpn;
-
-enum class PropSrc
-{
-        // Properties applied by potions, spells, etc, or "natural" properties
-        // for monsters (e.g. flying), or player properties gained by traits
-        intr,
-
-        // Properties applied by items carried in inventory
-        inv,
-
-        END
-};
 
 struct PropTextListEntry
 {
@@ -48,23 +36,29 @@ public:
 
         ~PropHandler();
 
+        PropHandler(const PropHandler&) = delete;
+
+        PropHandler& operator=(const PropHandler&) = delete;
+
         void save() const;
 
         void load();
 
         // All properties must be added through this function (can also be done
         // via the other "apply" methods, which will then call "apply")
-        void apply(Prop* const prop,
-                   PropSrc src = PropSrc::intr,
-                   const bool force_effect = false,
-                   const Verbosity verbosity = Verbosity::verbose);
+        void apply(
+                Prop* const prop,
+                PropSrc src = PropSrc::intr,
+                const bool force_effect = false,
+                const Verbosity verbosity = Verbosity::verbose);
 
         void apply_natural_props_from_actor_data();
 
         // The following two methods are supposed to be called by items
-        void add_prop_from_equipped_item(const Item* const item,
-                                         Prop* const prop,
-                                         const Verbosity verbosity);
+        void add_prop_from_equipped_item(
+                const Item* const item,
+                Prop* const prop,
+                const Verbosity verbosity);
 
         void remove_props_for_item(const Item* const item);
 
@@ -142,8 +136,9 @@ public:
         // make sure to do this).
         DidAction on_act();
 
-        bool is_resisting_dmg(const DmgType dmg_type,
-                              const Verbosity verbosity) const;
+        bool is_resisting_dmg(
+                const DmgType dmg_type,
+                const Verbosity verbosity) const;
 
 private:
         void print_resist_msg(const Prop& prop);

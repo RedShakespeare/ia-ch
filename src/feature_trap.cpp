@@ -334,16 +334,6 @@ void Trap::bump(Actor& actor_bumping)
 
 void Trap::disarm()
 {
-        // Abort if trap is hidden
-        if (is_hidden())
-        {
-                msg_log::add(msg_disarm_no_trap);
-
-                states::draw();
-
-                return;
-        }
-
         if (is_magical() && (player_bon::bg() != Bg::occultist))
         {
                 msg_log::add("I do not know how to dispel magic traps.");
@@ -354,8 +344,6 @@ void Trap::disarm()
         msg_log::add(trap_impl_->disarm_msg());
 
         destroy();
-
-        game_time::tick();
 }
 
 void Trap::destroy()

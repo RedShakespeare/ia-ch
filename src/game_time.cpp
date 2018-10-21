@@ -240,17 +240,19 @@ int turn_nr()
         return turn_nr_;
 }
 
-void mobs_at_pos(const P& p, std::vector<Mob*>& vector_ref)
+std::vector<Mob*> mobs_at_pos(const P& p)
 {
-        vector_ref.clear();
+        std::vector<Mob*> mobs;
 
         for (auto* m : mobs)
         {
                 if (m->pos() == p)
                 {
-                        vector_ref.push_back(m);
+                        mobs.push_back(m);
                 }
         }
+
+        return mobs;
 }
 
 void add_mob(Mob* const f)
