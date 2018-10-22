@@ -633,7 +633,9 @@ void Throwing::handle_input(const InputData& input)
 
                         item_to_throw->clear_actor_carrying();
 
-                        map::player->inv.decr_item(inv_item_);
+                        inv_item_ = map::player->inv.decr_item(inv_item_);
+
+                        map::player->last_thrown_item_ = inv_item_;
 
                         states::pop();
 

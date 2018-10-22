@@ -25,7 +25,6 @@ Inventory::Inventory(Actor* const owning_actor) :
 
         set_slot(SlotId::wpn, "Wielded");
         set_slot(SlotId::wpn_alt, "Prepared");
-        set_slot(SlotId::thrown, "Thrown");
         set_slot(SlotId::body, "Body");
         set_slot(SlotId::head, "Head");
 }
@@ -36,7 +35,7 @@ Inventory::~Inventory()
         {
                 auto& slot = slots[i];
 
-                if (slot.item && slot.id != SlotId::thrown)
+                if (slot.item)
                 {
                         delete slot.item;
                 }
@@ -62,13 +61,6 @@ void Inventory::save() const
 
         for (const InvSlot& slot : slots)
         {
-                // NOTE: The thrown slot never owns the actual item, it is
-                // located somewhere else
-                if (slot.id == SlotId::thrown)
-                {
-                        continue;
-                }
-
                 Item* const item = slot.item;
 
                 if (item)
@@ -77,15 +69,6 @@ void Inventory::save() const
                         saving::put_int(item->nr_items_);
 
                         item->save();
-
-                        if (item == item_in_slot(SlotId::thrown))
-                        {
-                                ASSERT(thrown_item_idx == -1);
-
-                                thrown_item_idx = (int)slot.id;
-
-                                is_thrown_item_in_slots = true;
-                        }
                 }
                 else // No item in this slot
                 {
@@ -103,15 +86,6 @@ void Inventory::save() const
                 saving::put_int(item->nr_items_);
 
                 item->save();
-
-                if (item == item_in_slot(SlotId::thrown))
-                {
-                        ASSERT(thrown_item_idx == -1);
-
-                        thrown_item_idx = i;
-
-                        is_thrown_item_in_slots = false;
-                }
         }
 
         // Store selected thrown item
@@ -123,13 +97,6 @@ void Inventory::load()
 {
         for (InvSlot& slot : slots)
         {
-                // NOTE: The thrown slot never owns the actual item, it is
-                // located somewhere else
-                if (slot.id == SlotId::thrown)
-                {
-                        continue;
-                }
-
                 // Any previous item is destroyed
                 Item* item = slot.item;
 
@@ -182,22 +149,6 @@ void Inventory::load()
                 ASSERT(owning_actor_);
 
                 item->on_pickup(*owning_actor_);
-        }
-
-        // Set thrown item
-        slots[(size_t)SlotId::thrown].item = nullptr;
-
-        const int thrown_item_idx = saving::get_int();
-        const bool is_thrown_item_in_slots = saving::get_bool();
-
-        if (thrown_item_idx != -1)
-        {
-                Item* const thrown_item =
-                        is_thrown_item_in_slots
-                        ? slots[(size_t)thrown_item_idx].item
-                        : backpack[(size_t)thrown_item_idx];
-
-                slots[(size_t)SlotId::thrown].item = thrown_item;
         }
 }
 
@@ -259,17 +210,10 @@ bool Inventory::try_stack_in_backpack(Item* item)
 
                 backpack[i] = item;
 
-                if (owning_actor_ == map::player)
+                if (owning_actor_->is_player() &&
+                    (map::player->last_thrown_item_ == other))
                 {
-                        // If the old item was selected for throwing, then
-                        // select the new stack instead (the old pointer is
-                        // invalidated)
-                        auto& throwing_slot = slots[(size_t)SlotId::thrown];
-
-                        if (throwing_slot.item == other)
-                        {
-                                throwing_slot.item = item;
-                        }
+                        map::player->last_thrown_item_ = item;
                 }
 
                 return true;
@@ -352,30 +296,34 @@ bool Inventory::has_ammo_for_firearm_in_inventory() const
         return false;
 }
 
-void Inventory::decr_item_in_slot(SlotId slot_id)
+Item* Inventory::decr_item_in_slot(SlotId slot_id)
 {
-        Item* item = item_in_slot(slot_id);
-        bool stack = item->data().is_stackable;
-        bool delete_item = true;
+        auto& item = *item_in_slot(slot_id);
 
-        if (stack)
+        auto delete_item = true;
+
+        if (item.data().is_stackable)
         {
-                item->nr_items_ -= 1;
+                --item.nr_items_;
 
-                if (item->nr_items_ > 0)
-                {
-                        delete_item = false;
-                }
+                delete_item = item.nr_items_ <= 0;
         }
 
         if (delete_item)
         {
                 remove_item_in_slot(slot_id, true);
+
+                return nullptr;
+        }
+        else
+        {
+                return &item;
         }
 }
 
-Item* Inventory::remove_item_in_slot(const SlotId slot_id,
-                                     const bool delete_item)
+Item* Inventory::remove_item_in_slot(
+        const SlotId slot_id,
+        const bool delete_item)
 {
         ASSERT(slot_id != SlotId::END);
 
@@ -389,48 +337,6 @@ Item* Inventory::remove_item_in_slot(const SlotId slot_id,
         }
 
         slot.item = nullptr;
-
-        if (slot_id == SlotId::thrown)
-        {
-                // We are removing from the "thrown" slot - also remove the
-                // actual item (from another slot, or from the backpack,
-                // wherever it is)
-                for (auto it = begin(backpack);
-                     it != end(backpack);
-                     ++it)
-                {
-                        if (*it == item)
-                        {
-                                backpack.erase(it);
-
-                                break;
-                        }
-                }
-
-                for (size_t i = 0; i < (size_t)SlotId::END; ++i)
-                {
-                        auto& other_slot = slots[i];
-
-                        if (other_slot.id != SlotId::thrown &&
-                            other_slot.item == item)
-                        {
-                                other_slot.item = nullptr;
-
-                                break;
-                        }
-                }
-        }
-        else
-        {
-                // We are removing from another slot than the "thrown" slot -
-                // clear the "thrown" slot if it contains the item being removed
-                auto& thrown_slot = slots[(size_t)SlotId::thrown];
-
-                if (thrown_slot.item == item)
-                {
-                        thrown_slot.item = nullptr;
-                }
-        }
 
         item->on_unequip();
 
@@ -454,11 +360,10 @@ Item* Inventory::remove_item_in_backpack_with_idx(
 
         Item* item = backpack[idx];
 
-        auto& throwing_slot = slots[(size_t)SlotId::thrown];
-
-        if (item == throwing_slot.item)
+        if (owning_actor_->is_player() &&
+            (item == map::player->last_thrown_item_))
         {
-                throwing_slot.item = nullptr;
+                map::player->last_thrown_item_ = nullptr;
         }
 
         backpack.erase(begin(backpack) + idx);
@@ -525,24 +430,28 @@ Item* Inventory::remove_item_in_backpack_with_ptr(
         return nullptr;
 }
 
-void Inventory::decr_item_in_backpack(const size_t idx)
+Item* Inventory::decr_item_in_backpack(const size_t idx)
 {
-        Item* item = backpack[idx];
+        Item& item = *backpack[idx];
 
-        bool is_stackable = item->data().is_stackable;
+        bool delete_item = true;
 
-        bool should_delete_item = true;
-
-        if (is_stackable)
+        if (item.data().is_stackable)
         {
-                --item->nr_items_;
+                --item.nr_items_;
 
-                should_delete_item = (item->nr_items_ <= 0);
+                delete_item = item.nr_items_ <= 0;
         }
 
-        if (should_delete_item)
+        if (delete_item)
         {
                 remove_item_in_backpack_with_idx(idx, true);
+
+                return nullptr;
+        }
+        else
+        {
+                return &item;
         }
 }
 
@@ -553,21 +462,19 @@ void Inventory::decr_item_type_in_backpack(const ItemId id)
                 if (backpack[i]->data().id == id)
                 {
                         decr_item_in_backpack(i);
-
-                        return;
                 }
         }
 }
 
-void Inventory::decr_item(Item* const item)
+Item* Inventory::decr_item(Item* const item)
 {
         for (InvSlot& slot : slots)
         {
                 if (slot.item == item)
                 {
-                        decr_item_in_slot(slot.id);
+                        auto* const item = decr_item_in_slot(slot.id);
 
-                        return;
+                        return item;
                 }
         }
 
@@ -575,11 +482,13 @@ void Inventory::decr_item(Item* const item)
         {
                 if (backpack[i] == item)
                 {
-                        decr_item_in_backpack(i);
+                        auto* const item = decr_item_in_backpack(i);
 
-                        return;
+                        return item;
                 }
         }
+
+        return nullptr;
 }
 
 size_t Inventory::move_from_slot_to_backpack(const SlotId id)
@@ -827,13 +736,6 @@ void Inventory::print_equip_message(
                         " as a prepared weapon.";
                 break;
 
-        case SlotId::thrown:
-                msg =
-                        "I am now using " +
-                        name +
-                        " as my throwing weapon.";
-                break;
-
         case SlotId::body:
                 msg = "I am now wearing " + name + ".";
                 break;
@@ -879,13 +781,6 @@ void Inventory::print_unequip_message(
                 msg = "I put away my " + name + ".";
                 break;
 
-        case SlotId::thrown:
-                msg =
-                        "I am no longer using " +
-                        name +
-                        " as my throwing weapon.";
-                break;
-
         case SlotId::body:
                 msg = "I have taken off my " + name + ".";
                 break;
@@ -910,9 +805,7 @@ int Inventory::total_item_weight() const
 
         for (const auto& slot : slots)
         {
-                // NOTE: The thrown slot never owns the actual item, it is
-                // located somewhere else
-                if (slot.item && (slot.id != SlotId::thrown))
+                if (slot.item)
                 {
                         weight += slot.item->weight();
                 }

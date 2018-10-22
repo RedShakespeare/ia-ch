@@ -1,5 +1,5 @@
-#ifndef CMN_HPP
-#define CMN_HPP
+#ifndef GLOBAL_HPP
+#define GLOBAL_HPP
 
 #include <numeric>
 #include <string>
@@ -120,15 +120,6 @@ const std::string spell_reflect_msg = "The spell is reflected!";
 const std::string spell_reflect_self_msg = "There is a faint echo...";
 
 const std::string mon_disappear_msg = " suddenly disappears!";
-
-const char menu_keys[] =
-{
-        'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n',
-        'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z',
-
-        'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N',
-        'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z',
-};
 
 // -----------------------------------------------------------------------------
 // Types

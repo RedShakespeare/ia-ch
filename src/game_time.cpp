@@ -144,9 +144,7 @@ static void run_std_turn_events()
 
         for (InvSlot& slot : map::player->inv.slots)
         {
-                // NOTE: The thrown slot never owns the actual item, it is
-                // located somewhere else
-                if (slot.item && (slot.id != SlotId::thrown))
+                if (slot.item)
                 {
                         slot.item->on_std_turn_in_inv(InvType::slots);
                 }

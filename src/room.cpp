@@ -664,21 +664,22 @@ void StdRoom::place_auto_features()
                         map::put(static_cast<Rigid*>(d.make_obj(p)));
 
                         // Erase all adjacent positions
-                        auto is_adj = [&](const P& other_p)
-                                {
-                                        return is_pos_adj(p, other_p, true);
-                                };
+                        auto is_adj = [&](const P& other_p) {
+                                return is_pos_adj(p, other_p, true);
+                        };
 
                         adj_to_walls_bucket.erase(
-                                remove_if(begin(adj_to_walls_bucket),
-                                          end(adj_to_walls_bucket),
-                                          is_adj),
+                                std::remove_if(
+                                        std::begin(adj_to_walls_bucket),
+                                        std::end(adj_to_walls_bucket),
+                                        is_adj),
                                 end(adj_to_walls_bucket));
 
                         away_from_walls_bucket.erase(
-                                remove_if(begin(away_from_walls_bucket),
-                                          end(away_from_walls_bucket),
-                                          is_adj),
+                                std::remove_if(
+                                        std::begin(away_from_walls_bucket),
+                                        std::end(away_from_walls_bucket),
+                                        is_adj),
                                 end(away_from_walls_bucket));
                 }
         }

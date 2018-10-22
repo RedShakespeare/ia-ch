@@ -19,7 +19,7 @@ Gameplay commands:
    p         Disarm trap
    r         Reload
    s         Wait five turns
-   t         Throw
+   t         Throw item
    u         Unload and pick up ammunition from weapons on the ground
    x         Cast spell
    z         Swap to readied weapon
@@ -99,11 +99,6 @@ On the right hand side of the screen, information is listed about your character
                          The weapon in this example is a firearm, "4/7" is the
                          weapon's loaded and maximum ammunition
 
-   Thrown 4.0 +10% (6) : Weapon selected for throwing
-                         In this example, a stack of throwing knives have been
-                         selected, "(6)" is the number of items remaining in
-                         the stack
-
    Lantern         100 : Remaining number of turns that your Electric Lantern
                          can be used for
 
@@ -126,7 +121,7 @@ The properties at the bottom can be temporary properties (e.g. from spells), per
 --------------------------------------------------------------------------------
 Inventory handling
 --------------------------------------------------------------------------------
-The inventory can be accessed in three ways:
+The inventory can be accessed in four ways:
 
    (1) Pressing "i" opens a full view of your inventory
 Here, you can see all of your inventory slots (see below), and a complete list of your carried items. Selecting an inventory slot (with enter or a letter key), either puts away an existing item from the slot, or opens a list of items that you can equip in the slot.
@@ -134,7 +129,6 @@ Here, you can see all of your inventory slots (see below), and a complete list o
 To wear or wield items, they are placed in different inventory slots:
    * Wielded  - your currently used melee weapon or firearm
    * Prepared - the weapon to switch to when pressing "z"
-   * Thrown   - the item used for throwing attacks
    * Body     - item worn on your body (e.g. an armor or a jacket)
    * Head     - item worn on your head (e.g. a gas mask)
 
@@ -143,7 +137,8 @@ This is merely a convenience feature - you can just as well use items by selecti
 
    (3) Pressing "d" opens a list to select an item to drop
 
-The item equipped in your "thrown" slot can be thrown by pressing "t", aiming somewhere with the movement keys, and then pressing "t" again to throw it. Moving items to or from the "thrown" slot does not spend any time, and putting an item here will not remove it from it's actual location (so you can for example wield a machete, while also keeping it selected for throwing). This slot merely represents the choice of item which will be thrown.
+   (4) Pressing "t" opens a list to select an item to throw
+Selecting an item in this menu will show an aiming marker on the map, to select where to throw the chosen item. In the throwing menu, the item stack previously thrown from (if any) is shown at the top with the "t" key assigned (for convenience). If there is no stack previously thrown from, the "t" key is not assigned to any item.
 
 Note that explosives are not used like throwing weapons. Instead they are used by first igniting or priming the explosive, this is done by "activating" it (can be done from the "a" inventory screen, see above) - now you can see your character colored yellow as a warning that you are holding an ignited explosive. Press "t", and aim somewhere (in some cases the game will mark the area around your aim position to indicate the explosion size - be careful though, there may be unseen objects blocking the throw path). Press "t" again to throw the explosive toward the aim position.
 

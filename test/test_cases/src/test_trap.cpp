@@ -2,6 +2,7 @@
 
 #include "actor_factory.hpp"
 #include "actor_mon.hpp"
+#include "actor_move.hpp"
 #include "feature_rigid.hpp"
 #include "feature_trap.hpp"
 #include "map.hpp"
@@ -45,7 +46,7 @@ TEST_CASE("Spider web")
 
                 // Move the monster into the trap, and back again
                 mon->pos = pos_l;
-                mon->move(Dir::right);
+                actor::move(*mon, Dir::right);
 
                 // It should never be possible to move on the first try
                 REQUIRE(mon->pos == pos_r);
@@ -53,11 +54,11 @@ TEST_CASE("Spider web")
                 REQUIRE(mon->properties.has(PropId::entangled));
 
                 // This may or may not unstuck the monster
-                mon->move(Dir::left);
+                actor::move(*mon, Dir::left);
 
                 // If the move above did unstuck the monster, this command will
                 // move it one step to the left
-                mon->move(Dir::left);
+                actor::move(*mon, Dir::left);
 
                 if (mon->pos == pos_r)
                 {

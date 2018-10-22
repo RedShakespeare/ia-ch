@@ -536,25 +536,13 @@ void handle_player_input(const InputData& input)
         }
         else // Not holding explosive - run throwing attack instead
         {
-            auto* const thrown_item =
-                map::player->inv.item_in_slot(SlotId::thrown);
-
-            if (!thrown_item)
-            {
-                msg_log::add("No item selected for throwing (press [i]).");
-
-                return;
-            }
-
             const bool is_allowed =
                     map::player->properties
                     .allow_attack_ranged(Verbosity::verbose);
 
             if (is_allowed)
             {
-                states::push(
-                        std::make_unique<Throwing>(
-                                map::player->pos, *thrown_item));
+                states::push(std::make_unique<SelectThrow>());
             }
         }
     }

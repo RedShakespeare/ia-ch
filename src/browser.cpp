@@ -7,7 +7,7 @@
 // -----------------------------------------------------------------------------
 // Private
 // -----------------------------------------------------------------------------
-static int nr_menu_keys_avail()
+static int nr_menu_keys_avail(const std::vector<char>& menu_keys)
 {
         return (int)std::distance(std::begin(menu_keys), std::end(menu_keys));
 }
@@ -15,24 +15,6 @@ static int nr_menu_keys_avail()
 // -----------------------------------------------------------------------------
 // MenuBrowser
 // -----------------------------------------------------------------------------
-MenuBrowser::MenuBrowser(const int nr_items, const int list_h) :
-        nr_items_(0),
-        y_(0),
-        list_h_(-1),
-        range_shown_(Range(-1, -1))
-{
-        reset(nr_items, list_h);
-}
-
-MenuBrowser::MenuBrowser() :
-        nr_items_(0),
-        y_(0),
-        list_h_(-1),
-        range_shown_(Range(-1, -1))
-{
-
-}
-
 MenuAction MenuBrowser::read(
         const InputData& input,
         MenuInputMode mode)
@@ -86,18 +68,20 @@ MenuAction MenuBrowser::read(
 
                 const auto find_result =
                         std::find(
-                                std::begin(menu_keys),
-                                std::end(menu_keys),
+                                std::begin(menu_keys_),
+                                std::end(menu_keys_),
                                 c);
 
-                if (find_result == std::end(menu_keys))
+                if (find_result == std::end(menu_keys_))
                 {
                         // Not a valid menu key, ever
                         return MenuAction::none;
                 }
 
                 const auto relative_idx =
-                        (int)std::distance(std::begin(menu_keys), find_result);
+                        (int)std::distance(
+                                std::begin(menu_keys_),
+                                find_result);
 
                 if (relative_idx >= nr_items_shown())
                 {
@@ -284,7 +268,7 @@ void MenuBrowser::reset(const int nr_items, const int list_h)
         // number of menu selection keys available (note that the client asks
         // the browser how many items should actually be drawn, so this capping
         // should be reflected for all clients).
-        list_h_ = std::min(list_h, nr_menu_keys_avail());
+        list_h_ = std::min(list_h, nr_menu_keys_avail(menu_keys_));
 
         set_y_nearest_valid();
 

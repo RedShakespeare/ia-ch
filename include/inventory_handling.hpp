@@ -13,6 +13,13 @@ enum class InvScr
         none
 };
 
+struct FilteredInvEntry
+{
+        // Index relatie to slot list or relative to backpack list
+        size_t relative_idx {0};
+        bool is_slot {false};
+};
+
 class InvState: public State
 {
 public:
@@ -74,8 +81,7 @@ class Apply: public InvState
 {
 public:
         Apply() :
-                InvState(),
-                filtered_backpack_indexes_() {}
+                InvState() {}
 
         void on_start() override;
 
@@ -84,15 +90,14 @@ public:
         void update() override;
 
 private:
-        std::vector<size_t> filtered_backpack_indexes_;
+        std::vector<size_t> filtered_backpack_indexes_ {};
 };
 
 class Drop: public InvState
 {
 public:
         Drop() :
-                InvState(),
-                filtered_slots_() {}
+                InvState() {}
 
         void on_start() override;
 
@@ -101,7 +106,7 @@ public:
         void update() override;
 
 private:
-        std::vector<SlotId> filtered_slots_;
+        std::vector<SlotId> filtered_slots_ {};
 };
 
 class Equip: public InvState
@@ -109,7 +114,6 @@ class Equip: public InvState
 public:
         Equip(InvSlot& slot) :
                 InvState(),
-                filtered_backpack_indexes_(),
                 slot_to_equip_(slot) {}
 
         void on_start() override;
@@ -119,7 +123,7 @@ public:
         void update() override;
 
 private:
-        std::vector<size_t> filtered_backpack_indexes_;
+        std::vector<size_t> filtered_backpack_indexes_ {};
 
         InvSlot& slot_to_equip_;
 };
@@ -128,9 +132,7 @@ class SelectThrow: public InvState
 {
 public:
         SelectThrow() :
-                InvState(),
-                filtered_slots_(),
-                filtered_backpack_indexes_() {}
+                InvState() {}
 
         void on_start() override;
 
@@ -139,8 +141,7 @@ public:
         void update() override;
 
 private:
-        std::vector<SlotId> filtered_slots_;
-        std::vector<size_t> filtered_backpack_indexes_;
+        std::vector<FilteredInvEntry> filtered_inv_ {};
 };
 
 class SelectIdentify: public InvState
@@ -148,9 +149,7 @@ class SelectIdentify: public InvState
 public:
         SelectIdentify(std::vector<ItemType> item_types_allowed = {}) :
                 InvState(),
-                item_types_allowed_(item_types_allowed),
-                filtered_slots_(),
-                filtered_backpack_indexes_() {}
+                item_types_allowed_(item_types_allowed) {}
 
         void on_start() override;
 
@@ -160,8 +159,7 @@ public:
 
 private:
         const std::vector<ItemType> item_types_allowed_;
-        std::vector<SlotId> filtered_slots_;
-        std::vector<size_t> filtered_backpack_indexes_;
+        std::vector<FilteredInvEntry> filtered_inv_ {};
 };
 
 #endif // INV_HANDLING_HPP

@@ -56,23 +56,10 @@ static const std::vector<std::string> item_feeling_messages_ = {
 // Player
 // -----------------------------------------------------------------------------
 Player::Player() :
-    Actor(),
-    active_medical_bag_(nullptr),
-    handle_armor_countdown_(0),
-    armor_putting_on_backpack_idx_(-1),
-    is_dropping_armor_from_body_slot_(false),
-    active_explosive_(nullptr),
-    tgt_(nullptr),
-    wait_turns_left(-1),
-    ins_(0),
-    shock_(0.0),
-    shock_tmp_(0.0),
-    perm_shock_taken_current_turn_(0.0),
-    nr_turns_until_ins_(-1),
-    quick_move_dir_(Dir::END),
-    has_taken_quick_move_step_(false),
-    nr_turns_until_rspell_(-1),
-    unarmed_wpn_(nullptr) {}
+    Actor()
+{
+
+}
 
 Player::~Player()
 {
@@ -555,9 +542,7 @@ void Player::on_new_dlvl_reached()
 
     for (auto& slot: inv.slots)
     {
-        // NOTE: The thrown slot never owns the actual item, it is located
-        // somewhere else
-        if (slot.item && (slot.id != SlotId::thrown))
+        if (slot.item)
         {
             slot.item->on_player_reached_new_dlvl();
         }
@@ -1114,9 +1099,7 @@ void Player::on_actor_turn()
 
         for (auto& slot : inv.slots)
         {
-            // NOTE: The thrown slot never owns the actual item, it is located
-            // somewhere else
-            if (slot.item && (slot.id != SlotId::thrown))
+            if (slot.item)
             {
                 const ItemData& d = slot.item->data();
 
@@ -1156,9 +1139,7 @@ void Player::on_actor_turn()
 
     for (InvSlot& slot : inv.slots)
     {
-        // NOTE: The thrown slot never owns the actual item, it is located
-        // somewhere else
-        if (slot.item  && (slot.id != SlotId::thrown))
+        if (slot.item)
         {
             slot.item->on_actor_turn_in_inv(InvType::slots);
         }
@@ -1490,9 +1471,7 @@ void Player::on_std_turn()
         // Items affect hp regen?
         for (const auto& slot : inv.slots)
         {
-            // NOTE: The thrown slot never owns the actual item, it is located
-            // somewhere else
-            if (slot.item && (slot.id != SlotId::thrown))
+            if (slot.item)
             {
                 nr_turns_per_hp += slot.item->hp_regen_change(InvType::slots);
             }

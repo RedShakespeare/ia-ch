@@ -193,7 +193,7 @@ void flush_input() {}
 
 void clear_events() {}
 
-InputData get(const bool)
+InputData get()
 {
         InputData d = {};
 

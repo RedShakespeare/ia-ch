@@ -275,8 +275,7 @@ void ViewActorDescr::on_start()
         const std::vector<std::string> sections = {
                 "Chance to hit monster",
                 indent + "Melee",
-                indent + "Ranged weapon",
-                indent + "Throwing",
+                indent + "Ranged weapon"
         };
 
         P p_section(p);
@@ -321,34 +320,21 @@ void ViewActorDescr::on_start()
         if (player_wpn->data().melee.is_melee_wpn)
         {
                 player_melee.reset(
-                        new MeleeAttData(map::player,
-                                         actor_,
-                                         *player_wpn));
+                        new MeleeAttData(
+                                map::player,
+                                actor_,
+                                *player_wpn));
         }
 
         if (player_wpn->data().ranged.is_ranged_wpn)
         {
                 player_ranged.reset(
-                        new RangedAttData(map::player,
-                                          map::player->pos, // Origin
-                                          actor_.pos,       // Aim position
-                                          actor_.pos,       // Current position
-                                          *player_wpn));
-        }
-
-        std::unique_ptr<const ThrowAttData> player_throwing;
-
-        auto* player_thrown_item =
-                map::player->inv.item_in_slot(SlotId::thrown);
-
-        if (player_thrown_item)
-        {
-                player_throwing.reset(
-                        new ThrowAttData(map::player,
-                                         actor_.pos, // Aim position
-                                         actor_.pos, // Current position
-                                         *player_thrown_item));
-
+                        new RangedAttData(
+                                map::player,
+                                map::player->pos, // Origin
+                                actor_.pos,       // Aim position
+                                actor_.pos,       // Current position
+                                *player_wpn));
         }
 
         const std::vector<std::string> labels = {
@@ -384,18 +370,6 @@ void ViewActorDescr::on_start()
                 player_ranged_values.push_back(player_ranged->dist_mod);
                 player_ranged_values.push_back(player_ranged->state_mod);
                 player_ranged_values.push_back(player_ranged->hit_chance_tot);
-        }
-
-        std::vector<int> player_throw_values;
-
-        if (player_throwing)
-        {
-                player_throw_values.push_back(player_throwing->skill_mod);
-                player_throw_values.push_back(player_throwing->wpn_mod);
-                player_throw_values.push_back(player_throwing->dodging_mod);
-                player_throw_values.push_back(player_throwing->dist_mod);
-                player_throw_values.push_back(player_throwing->state_mod);
-                player_throw_values.push_back(player_throwing->hit_chance_tot);
         }
 
         auto print_val = [&](const int val,
@@ -474,16 +448,6 @@ void ViewActorDescr::on_start()
                 if (player_ranged)
                 {
                         print_val(player_ranged_values[i],
-                                  p,
-                                  is_sum);
-                }
-
-                ++p.y;
-
-                // Player throwing
-                if (player_throwing)
-                {
-                        print_val(player_throw_values[i],
                                   p,
                                   is_sum);
                 }

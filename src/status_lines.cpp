@@ -316,85 +316,6 @@ static void draw_alt_wpn(int& y)
         ++y;
 }
 
-static void draw_thrown_item(int& y)
-{
-        io::draw_text(
-                "Thrown",
-                panel,
-                P(text_x0, y),
-                label_color(),
-                draw_text_bg);
-
-        auto* const thrown_item =
-                map::player->inv.item_in_slot(SlotId::thrown);
-
-        if (map::player->active_explosive_)
-        {
-                io::draw_text_right(
-                        "(Explosive)",
-                        panel,
-                        P(text_x1(), y),
-                        colors::yellow(),
-                        draw_text_bg);
-        }
-        else if (thrown_item)
-        {
-                const std::string wpn_dmg_str =
-                        thrown_item->dmg_str(
-                                ItemRefAttInf::thrown,
-                                ItemRefDmg::average_and_melee_plus);
-
-                const std::string wpn_hit_mod_str =
-                        thrown_item->hit_mod_str(ItemRefAttInf::thrown);
-
-                const std::string wpn_inf_str =
-                        thrown_item->name_inf_str();
-
-                std::string wpn_str = "";
-
-                text_format::append_with_space(
-                        wpn_str, wpn_dmg_str);
-
-                text_format::append_with_space(
-                        wpn_str, wpn_hit_mod_str);
-
-                text_format::append_with_space(
-                        wpn_str, wpn_inf_str);
-
-                if (thrown_item->data().is_stackable)
-                {
-                        const int nr_items =
-                                thrown_item->nr_items_;
-
-                        const std::string nr_items_str =
-                                "(" +
-                                std::to_string(nr_items) +
-                                ")";
-
-                        text_format::append_with_space(
-                                wpn_str, nr_items_str);
-                }
-
-                io::draw_text_right(
-                        wpn_str,
-                        panel,
-                        P(text_x1(), y),
-                        colors::white(),
-                        draw_text_bg);
-        }
-        else
-        {
-                io::draw_text_right(
-                        "(None)",
-                        panel,
-                        P(text_x1(), y),
-                        colors::gray(),
-                        draw_text_bg);
-        }
-
-        ++y;
-}
-
 static void draw_lantern(int& y)
 {
         io::draw_text(
@@ -567,7 +488,6 @@ void draw()
 
         draw_wielded_wpn(y);
         draw_alt_wpn(y);
-        draw_thrown_item(y);
 
         ++y;
 

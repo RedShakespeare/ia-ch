@@ -147,7 +147,9 @@ void BrowseManual::draw()
 
         for (int idx = 0; idx < (int)nr_pages; ++idx)
         {
-                const auto key_str = menu_keys[idx] + std::string{") "};
+                const auto key_str =
+                        browser_.menu_keys()[idx] +
+                        std::string{") "};
 
                 const bool is_marked = browser_.y() == idx;
 

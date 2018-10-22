@@ -118,7 +118,9 @@ void PickBgState::draw()
         // Backgrounds
         for (const auto bg : bgs_)
         {
-                const auto key_str = menu_keys[y] + std::string{") "};
+                const auto key_str =
+                        browser_.menu_keys()[y] +
+                        std::string{") "};
 
                 const std::string bg_name = player_bon::bg_title(bg);
                 const bool is_marked = bg == bg_marked;
@@ -243,7 +245,9 @@ void PickOccultistState::draw()
         // Domains
         for (const auto domain : domains_)
         {
-                const auto key_str = menu_keys[y] + std::string{") "};
+                const auto key_str =
+                        browser_.menu_keys()[y] +
+                        std::string{") "};
 
                 const std::string domain_name =
                         player_bon::spell_domain_title(domain);
@@ -432,7 +436,9 @@ void PickTraitState::draw()
         // Traits
         for (int i = idx_range_shown.min; i <= idx_range_shown.max; ++i)
         {
-                const auto key_str = menu_keys[y] + std::string{") "};
+                const auto key_str =
+                        browser->menu_keys()[y] +
+                        std::string{") "};
 
                 const Trait trait = traits->at(i);
 
@@ -714,8 +720,9 @@ void EnterNameState::draw()
                 P(name_x0, y_name),
                 colors::menu_highlight());
 
-        R box_rect(P(name_x0 - 1, y_name - 1),
-                   P(name_x1 + 1, y_name + 1));
+        R box_rect(
+                P(name_x0 - 1, y_name - 1),
+                P(name_x1 + 1, y_name + 1));
 
         io::draw_box(box_rect);
 }

@@ -6,19 +6,19 @@
 #include <sstream>
 #include <iomanip>
 
-#include "item_scroll.hpp"
 #include "actor_player.hpp"
-#include "item_potion.hpp"
-#include "msg_log.hpp"
-#include "browser.hpp"
-#include "io.hpp"
-#include "drop.hpp"
-#include "query.hpp"
-#include "item_factory.hpp"
 #include "audio.hpp"
+#include "browser.hpp"
+#include "drop.hpp"
+#include "io.hpp"
+#include "item_factory.hpp"
+#include "item_potion.hpp"
+#include "item_scroll.hpp"
 #include "map.hpp"
-#include "text_format.hpp"
 #include "marker.hpp"
+#include "msg_log.hpp"
+#include "query.hpp"
+#include "text_format.hpp"
 
 // -----------------------------------------------------------------------------
 // Private
@@ -237,15 +237,12 @@ void InvState::draw_slot(
                         p,
                         color_item);
 
-                if (slot.id != SlotId::thrown)
-                {
-                        draw_weight_pct_and_dots(
-                                p,
-                                item_name.size(),
-                                *item,
-                                color_item,
-                                is_marked);
-                }
+                draw_weight_pct_and_dots(
+                        p,
+                        item_name.size(),
+                        *item,
+                        color_item,
+                        is_marked);
         }
         else // No item in this slot
         {
@@ -681,7 +678,7 @@ void BrowseInv::draw()
 
         for (int i = idx_range_shown.min; i <= idx_range_shown.max; ++i)
         {
-                const char key = menu_keys[y];
+                const char key = browser_.menu_keys()[y];
 
                 const bool is_marked = browser_y == i;
 
@@ -689,17 +686,12 @@ void BrowseInv::draw()
                 {
                         const auto slot_id = (SlotId)i;
 
-                        const auto att_inf =
-                                (slot_id == SlotId::thrown)
-                                ? ItemRefAttInf::thrown
-                                : ItemRefAttInf::wpn_main_att_mode;
-
                         draw_slot(
                                 slot_id,
                                 y,
                                 key,
                                 is_marked,
-                                att_inf);
+                                ItemRefAttInf::wpn_main_att_mode);
                 }
                 else // This index is in backpack
                 {
@@ -778,46 +770,18 @@ void BrowseInv::update()
                                         map::player->handle_armor_countdown_ =
                                                 nr_turns_to_handle_armor;
                                 }
-                                else if (slot.id == SlotId::thrown)
-                                {
-                                        auto& slot = map::player->inv.slots[
-                                                (size_t)SlotId::thrown];
-
-                                        auto* item = slot.item;
-
-                                        slot.item = nullptr;
-
-                                        map::player->inv.print_unequip_message(
-                                                slot.id, *item);
-                                }
                                 else
                                 {
                                         map::player->inv.unequip_slot(slot.id);
                                 }
 
-                                if (slot.id != SlotId::thrown)
-                                {
-                                        game_time::tick();
-                                }
+                                game_time::tick();
 
                                 return;
                         }
                         else // No item in slot
                         {
-                                std::unique_ptr<State> new_state;
-
-                                if (slot.id == SlotId::thrown)
-                                {
-                                        new_state =
-                                                std::make_unique<SelectThrow>();
-                                }
-                                else
-                                {
-                                        new_state =
-                                                std::make_unique<Equip>(slot);
-                                }
-
-                                states::push(std::move(new_state));
+                                states::push(std::make_unique<Equip>(slot));
                         }
                 }
                 else // In backpack inventory
@@ -917,7 +881,7 @@ void Apply::draw()
 
         for (int i = idx_range_shown.min; i <= idx_range_shown.max; ++i)
         {
-                const char key = menu_keys[y];
+                const char key = browser_.menu_keys()[y];
 
                 const bool is_marked = browser_y == i;
 
@@ -1006,7 +970,7 @@ void Drop::on_start()
         {
                 const Item* const item = slot.item;
 
-                if (item && slot.id != SlotId::thrown)
+                if (item)
                 {
                         filtered_slots_.push_back(slot.id);
                 }
@@ -1051,7 +1015,7 @@ void Drop::draw()
 
         for (int i = idx_range_shown.min; i <= idx_range_shown.max; ++i)
         {
-                const char key = menu_keys[y];
+                const char key = browser_.menu_keys()[y];
 
                 const bool is_marked = browser_y == i;
 
@@ -1205,11 +1169,6 @@ void Equip::on_start()
                         }
                         break;
 
-                case SlotId::thrown:
-                        // Special case - not handled by this class
-                        ASSERT(false);
-                        break;
-
                 case SlotId::body:
                         if (data.type == ItemType::armor)
                         {
@@ -1258,11 +1217,6 @@ void Equip::draw()
                         : "I carry no weapon to wield.";
                 break;
 
-        case SlotId::thrown:
-                // Special case - not handled by this class
-                ASSERT(false);
-                break;
-
         case SlotId::body:
                 heading =
                         has_item
@@ -1307,7 +1261,7 @@ void Equip::draw()
 
         for (int i = idx_range_shown.min; i <= idx_range_shown.max; ++i)
         {
-                const char key = menu_keys[y];
+                const char key = browser_.menu_keys()[y];
 
                 const bool is_marked = browser_y == i;
 
@@ -1435,15 +1389,17 @@ void SelectThrow::on_start()
 
                         if (d.ranged.is_throwable_wpn)
                         {
-                                filtered_slots_.push_back(slot.id);
+                                FilteredInvEntry entry;
+                                entry.relative_idx = (size_t)slot.id;
+                                entry.is_slot = true;
+
+                                filtered_inv_.push_back(entry);
                         }
                 }
         }
 
         // Filter backpack
         const auto& backpack = map::player->inv.backpack;
-
-        filtered_backpack_indexes_.clear();
 
         for (size_t i = 0; i < backpack.size(); ++i)
         {
@@ -1453,13 +1409,26 @@ void SelectThrow::on_start()
 
                 if (d.ranged.is_throwable_wpn)
                 {
-                        filtered_backpack_indexes_.push_back(i);
+                        FilteredInvEntry entry;
+                        entry.relative_idx = i;
+                        entry.is_slot = false;
+
+                        if (item == map::player->last_thrown_item_)
+                        {
+                                // Last thrown item - show it at the top
+                                filtered_inv_.insert(
+                                        std::begin(filtered_inv_),
+                                        entry);
+                        }
+                        else
+                        {
+                                // Not the last thrown item - append to bottom
+                                filtered_inv_.push_back(entry);
+                        }
                 }
         }
 
-        const int list_size =
-                (int)filtered_slots_.size() +
-                (int)filtered_backpack_indexes_.size();
+        const auto list_size = filtered_inv_.size();
 
         if (list_size == 0)
         {
@@ -1474,6 +1443,32 @@ void SelectThrow::on_start()
         browser_.reset(
                 list_size,
                 panels::h(Panel::item_menu));
+
+        // Set up custom menu keys - a specific key is always reserved for the
+        // last thrown item (if any), and never used for throwing any other item
+        auto custom_keys = browser_.menu_keys();
+
+        const char throw_key = 't';
+
+        {
+                const auto it =
+                        std::find(
+                                std::begin(custom_keys),
+                                std::end(custom_keys),
+                                throw_key);
+
+                if (it != std::end(custom_keys))
+                {
+                        custom_keys.erase(it);
+                }
+        }
+
+        if (map::player->last_thrown_item_)
+        {
+                custom_keys.insert(std::begin(custom_keys), throw_key);
+        }
+
+        browser_.set_custom_menu_keys(custom_keys);
 
         audio::play(SfxId::backpack);
 }
@@ -1494,13 +1489,15 @@ void SelectThrow::draw()
 
         for (int i = idx_range_shown.min; i <= idx_range_shown.max; ++i)
         {
-                const char key = menu_keys[y];
+                const char key = browser_.menu_keys()[y];
 
                 const bool is_marked = browser_y == i;
 
-                if (i < (int)filtered_slots_.size())
+                const auto& inv_entry = filtered_inv_[i];
+
+                if (inv_entry.is_slot)
                 {
-                        const SlotId slot_id = filtered_slots_[i];
+                        const auto slot_id = (SlotId)inv_entry.relative_idx;
 
                         draw_slot(
                                 slot_id,
@@ -1511,11 +1508,7 @@ void SelectThrow::draw()
                 }
                 else // This index is in backpack
                 {
-                        const size_t filtered_idx =
-                                i - (int)filtered_slots_.size();
-
-                        const size_t backpack_idx =
-                                filtered_backpack_indexes_[filtered_idx];
+                        const size_t backpack_idx = inv_entry.relative_idx;
 
                         draw_backpack_item(
                                 backpack_idx,
@@ -1555,49 +1548,31 @@ void SelectThrow::update()
         const MenuAction action =
                 browser_.read(input, MenuInputMode::scrolling_and_letters);
 
-        const auto inv_type_marked =
-                (browser_.y() < (int)filtered_slots_.size())
-                ? InvType::slots
-                : InvType::backpack;
+        const auto& inv_entry_marked = filtered_inv_[browser_.y()];
 
-        Item* item;
+        const auto& inv = map::player->inv;
 
-        // Index relative to the current inventory part (slots/backpack)
-        size_t relative_inv_idx;
+        Item* item = nullptr;
 
-        if (inv_type_marked == InvType::slots)
+        if (inv_entry_marked.is_slot)
         {
-                const SlotId slot_id_marked = filtered_slots_[browser_.y()];
-
-                relative_inv_idx = (size_t)slot_id_marked;
-
-                InvSlot& slot = map::player->inv.slots[relative_inv_idx];
-
-                item = slot.item;
+                item = inv.slots[inv_entry_marked.relative_idx].item;
         }
         else // Backpack item selected
         {
-                const size_t relative_browser_idx =
-                        browser_.y() - (int)filtered_slots_.size();
-
-                relative_inv_idx =
-                        filtered_backpack_indexes_[relative_browser_idx];
-
-                item = map::player->inv.backpack[relative_inv_idx];
+                item = inv.backpack[inv_entry_marked.relative_idx];
         }
 
         switch (action)
         {
         case MenuAction::selected:
         {
-                states::pop_until(StateId::game);
+                states::pop();
 
-                auto& throwing_slot =
-                        map::player->inv.slots[(size_t)SlotId::thrown];
-
-                throwing_slot.item = item;
-
-                map::player->inv.print_equip_message(SlotId::thrown, *item);
+                states::push(
+                        std::make_unique<Throwing>(
+                                map::player->pos,
+                                *item));
 
                 return;
         }
@@ -1659,7 +1634,11 @@ void SelectIdentify::on_start()
                 if (!d.is_identified &&
                     is_allowed_item_type(d.type, item_types_allowed_))
                 {
-                        filtered_slots_.push_back(slot.id);
+                        FilteredInvEntry entry;
+                        entry.relative_idx = (size_t)slot.id;
+                        entry.is_slot = true;
+
+                        filtered_inv_.push_back(entry);
                 }
         }
 
@@ -1673,13 +1652,15 @@ void SelectIdentify::on_start()
                 if (!d.is_identified &&
                     is_allowed_item_type(d.type, item_types_allowed_))
                 {
-                        filtered_backpack_indexes_.push_back(i);
+                        FilteredInvEntry entry;
+                        entry.relative_idx = i;
+                        entry.is_slot = false;
+
+                        filtered_inv_.push_back(entry);
                 }
         }
 
-        const int list_size =
-                (int)filtered_slots_.size() +
-                (int)filtered_backpack_indexes_.size();
+        const auto list_size = filtered_inv_.size();
 
         if (list_size == 0)
         {
@@ -1716,13 +1697,15 @@ void SelectIdentify::draw()
 
         for (int i = idx_range_shown.min; i <= idx_range_shown.max; ++i)
         {
-                const char key = menu_keys[y];
+                const char key = browser_.menu_keys()[y];
 
                 const bool is_marked = browser_y == i;
 
-                if (i < (int)filtered_slots_.size())
+                const auto& inv_entry = filtered_inv_[i];
+
+                if (inv_entry.is_slot)
                 {
-                        const SlotId slot_id = filtered_slots_[i];
+                        const auto slot_id = (SlotId)inv_entry.relative_idx;
 
                         draw_slot(
                                 slot_id,
@@ -1733,9 +1716,7 @@ void SelectIdentify::draw()
                 }
                 else // This index is in backpack
                 {
-                        const size_t backpack_idx =
-                                filtered_backpack_indexes_[
-                                        i - (int)filtered_slots_.size()];
+                        const size_t backpack_idx = inv_entry.relative_idx;
 
                         draw_backpack_item(
                                 backpack_idx,
@@ -1773,43 +1754,29 @@ void SelectIdentify::update()
         const auto input = io::get();
 
         const MenuAction action =
-                browser_.read(input,
-                              MenuInputMode::scrolling_and_letters);
+                browser_.read(
+                        input,
+                        MenuInputMode::scrolling_and_letters);
+
+        const auto& inv = map::player->inv;
 
         switch (action)
         {
         case MenuAction::selected:
         {
-                const auto inv_type_marked =
-                        (browser_.y() < (int)filtered_slots_.size())
-                        ? InvType::slots
-                        : InvType::backpack;
+                const auto& inv_entry_marked = filtered_inv_[browser_.y()];
 
                 Item* item_to_identify;
 
-                if (inv_type_marked == InvType::slots)
+                if (inv_entry_marked.is_slot)
                 {
-                        const SlotId slot_id_marked =
-                                filtered_slots_[browser_.y()];
-
-                        InvSlot& slot =
-                                map::player->inv.slots[
-                                        (size_t)slot_id_marked];
-
-                        item_to_identify = slot.item;
+                        item_to_identify =
+                                inv.slots[inv_entry_marked.relative_idx].item;
                 }
                 else // Backpack item selected
                 {
-                        const size_t relative_browser_idx =
-                                browser_.y() - (int)filtered_slots_.size();
-
-                        const size_t backpack_idx_marked =
-                                filtered_backpack_indexes_[
-                                        relative_browser_idx];
-
                         item_to_identify =
-                                map::player->inv.backpack[
-                                        backpack_idx_marked];
+                                inv.backpack[inv_entry_marked.relative_idx];
                 }
 
                 // Exit screen

@@ -15,7 +15,6 @@ enum class SlotId
 {
         wpn,
         wpn_alt,
-        thrown,
         body,
         head,
         END
@@ -62,9 +61,10 @@ public:
         // NOTE: The "put_in_*" functions should NEVER be called on items
         // already in the inventory. The purpose of these methods are to place
         // new/external items in the inventory
-        void put_in_slot(const SlotId id,
-                         Item* item,
-                         Verbosity verbosity);
+        void put_in_slot(
+                const SlotId id,
+                Item* item,
+                Verbosity verbosity);
 
         void put_in_backpack(Item* item);
 
@@ -92,19 +92,21 @@ public:
 
         Item* item_in_slot(const SlotId id) const;
 
-        void decr_item_in_slot(SlotId slot_id);
-
-        void decr_item_in_backpack(const size_t idx);
-
-        void decr_item(Item* const item);
+        // All "decr_..." functions which operates on a single item returns the
+        // decremented item stack if it still exists, otherwise returns nullptr
+        Item* decr_item_in_slot(SlotId slot_id);
+        Item* decr_item_in_backpack(const size_t idx);
+        Item* decr_item(Item* const item);
 
         void decr_item_type_in_backpack(const ItemId item_id);
 
-        Item* remove_item(Item* const item,
-                          const bool delete_item);
+        Item* remove_item(
+                Item* const item,
+                const bool delete_item);
 
-        Item* remove_item_in_slot(const SlotId slot_id,
-                                  const bool delete_item);
+        Item* remove_item_in_slot(
+                const SlotId slot_id,
+                const bool delete_item);
 
         Item* remove_item_in_backpack_with_idx(
                 const size_t idx,
