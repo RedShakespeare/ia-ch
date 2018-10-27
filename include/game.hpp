@@ -8,7 +8,6 @@
 #include "state.hpp"
 #include "time.hpp"
 
-struct InputData;
 class Actor;
 
 struct HistoryEvent
@@ -29,8 +28,6 @@ void init();
 void save();
 void load();
 
-void handle_player_input(const InputData& input);
-
 int clvl();
 int xp_pct();
 int xp_accumulated();
@@ -44,8 +41,9 @@ void win_game();
 
 void set_start_time_to_now();
 
-void incr_player_xp(const int xp_gained,
-                    const Verbosity verbosity = Verbosity::verbose);
+void incr_player_xp(
+        const int xp_gained,
+        const Verbosity verbosity = Verbosity::verbose);
 
 void incr_clvl();
 

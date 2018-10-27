@@ -34,30 +34,24 @@ Menu and window commands:
    Space     Cancel, proceed
    Enter     Select something in a menu, confirm
 
---------------------------------------------------------------------------------
-Movement and interaction
---------------------------------------------------------------------------------
-You can move in eight directions by using the numpad keys in this manner:
+You can move in eight directions by using the numpad keys:
 
    7 8 9
     \|/
-   4-5-6
+   4- -6
     /|\
    1 2 3
 
-The '5' key or period key (.) makes you wait for a turn.
+Alternatively, the arrow keys can also be used for moving in the cardinal directions, and  Page up, Page down, Home, and End can also be used for diagonal movement.
 
-You can also use the arrow keys for movement. To move diagonally using the arrow keys, hold shift or ctrl:
-   Shift + left  = up left
-   Shift + right = up right
-   Ctrl  + left  = down left
-   Ctrl  + right = down right
+Press '5' or period (.) to wait for one turn.
 
-Page up, Page down, Home, and End can also be used for diagonal movement.
-
+--------------------------------------------------------------------------------
+Environment interaction
+--------------------------------------------------------------------------------
 Certain things can be interacted with by moving into them (i.e. by "bumping" them), for example:
-   * Move into enemies to melee attack them
-   * Move into closed doors, chests, cabinets, etc to open them
+   * Move into monsters to melee attack them
+   * Move into closed doors, chests, cabinets, etc to attempt to open them
    * Move into opened chests, cabinets, etc to loot them
    * Move into fountains to drink from them
 

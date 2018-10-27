@@ -17,7 +17,7 @@
 #include "feature_mob.hpp"
 #include "feature_trap.hpp"
 #include "fov.hpp"
-#include "game.hpp"
+#include "game_commands.hpp"
 #include "init.hpp"
 #include "insanity.hpp"
 #include "inventory.hpp"
@@ -844,9 +844,11 @@ void Player::act()
     }
     else // Not bot playing
     {
-        const InputData& input = io::get();
+        const auto input = io::get();
 
-        game::handle_player_input(input);
+        const auto game_cmd = game_commands::to_cmd(input);
+
+        game_commands::handle(game_cmd);
     }
 }
 

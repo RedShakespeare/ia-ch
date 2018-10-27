@@ -10,6 +10,7 @@
 #include "draw_map.hpp"
 #include "explosion.hpp"
 #include "feature_rigid.hpp"
+#include "game_commands.hpp"
 #include "inventory_handling.hpp"
 #include "io.hpp"
 #include "item_factory.hpp"
@@ -131,96 +132,47 @@ void MarkerState::update()
                 input = io::get();
         }
 
+        const auto game_cmd = game_commands::to_cmd(input);
+
         msg_log::clear();
 
-        switch (input.key)
+        switch (game_cmd)
         {
+        case GameCmd::right:
+                move(Dir::right);
+                break;
 
-                // Direction input is handle by the base class
-        case SDLK_RIGHT:
-        case '6':
-        {
-                if (input.is_shift_held)
-                {
-                        move(Dir::up_right);
-                }
-                else if (input.is_ctrl_held)
-                {
-                        move(Dir::down_right);
-                }
-                else
-                {
-                        move(Dir::right);
-                }
-        }
-        break;
-
-        case SDLK_UP:
-        case '8':
-        {
-                move(Dir::up);
-        }
-        break;
-
-        case SDLK_LEFT:
-        case '4':
-        {
-                if (input.is_shift_held)
-                {
-                        move(Dir::up_left);
-                }
-                else if (input.is_ctrl_held)
-                {
-                        move(Dir::down_left);
-                }
-                else
-                {
-                        move(Dir::left);
-                }
-        }
-        break;
-
-        case SDLK_DOWN:
-        case '2':
-        {
+        case GameCmd::down:
                 move(Dir::down);
-        }
-        break;
+                break;
 
-        case SDLK_PAGEUP:
-        case '9':
-        {
+        case GameCmd::left:
+                move(Dir::left);
+                break;
+
+        case GameCmd::up:
+                move(Dir::up);
+                break;
+
+        case GameCmd::up_right:
                 move(Dir::up_right);
-        }
-        break;
+                break;
 
-        case SDLK_HOME:
-        case '7':
-        {
-                move(Dir::up_left);
-        }
-        break;
-
-        case SDLK_END:
-        case '1':
-        {
-                move(Dir::down_left);
-        }
-        break;
-
-        case SDLK_PAGEDOWN:
-        case '3':
-        {
+        case GameCmd::down_right:
                 move(Dir::down_right);
-        }
-        break;
+                break;
 
-        // Input other than direction keys is delegated
+        case GameCmd::up_left:
+                move(Dir::up_left);
+                break;
+
+        case GameCmd::down_left:
+                move(Dir::down_left);
+                break;
+
         default:
-        {
+                // Input not handled here - delegate to child classes
                 handle_input(input);
-        }
-        break;
         }
 }
 
@@ -428,7 +380,9 @@ void Viewing::on_moved()
 
 void Viewing::handle_input(const InputData& input)
 {
-        if (input.key == 'l')
+        const auto game_cmd = game_commands::to_cmd(input);
+
+        if (game_cmd == GameCmd::look)
         {
                 auto* const actor = map::actor_at_pos(pos_);
 
@@ -444,8 +398,7 @@ void Viewing::handle_input(const InputData& input)
                         states::push(std::move(view_actor_descr));
                 }
         }
-        else if (input.key == SDLK_SPACE ||
-                 input.key == SDLK_ESCAPE)
+        else if ((input.key == SDLK_SPACE) || (input.key == SDLK_ESCAPE))
         {
                 msg_log::clear();
 
@@ -489,29 +442,24 @@ void Aiming::on_moved()
 
 void Aiming::handle_input(const InputData& input)
 {
-        int key = input.key;
+        auto game_cmd = GameCmd::undefined;
 
-        // If the bot is playing, fire at a random position
         if (config::is_bot_playing())
         {
-                key = 'f';
+                // Bot is playing, fire at a random position
+                game_cmd = GameCmd::fire;
 
                 pos_.set(
                         rnd::range(0, map::w() - 1),
                         rnd::range(0, map::h() - 1));
         }
-
-        switch (key)
+        else
         {
-        case SDLK_ESCAPE:
-        case SDLK_SPACE:
-        {
-                states::pop();
+                // Human player
+                game_cmd = game_commands::to_cmd(input);
         }
-        break;
 
-        case 'f':
-        case SDLK_RETURN:
+        if ((game_cmd == GameCmd::fire) || (input.key == SDLK_RETURN))
         {
                 if (pos_ != map::player->pos)
                 {
@@ -530,7 +478,7 @@ void Aiming::handle_input(const InputData& input)
 
                         states::pop();
 
-                        // NOTE: This object is now destroyed!
+                        // NOTE: This object is now destroyed
 
                         attack::ranged(
                                 map::player,
@@ -539,10 +487,9 @@ void Aiming::handle_input(const InputData& input)
                                 *wpn);
                 }
         }
-        break;
-
-        default:
-                break;
+        else if ((input.key == SDLK_ESCAPE) || (input.key == SDLK_SPACE))
+        {
+                states::pop();
         }
 }
 
@@ -601,17 +548,9 @@ void Throwing::on_moved()
 
 void Throwing::handle_input(const InputData& input)
 {
-        switch (input.key)
-        {
-        case SDLK_ESCAPE:
-        case SDLK_SPACE:
-        {
-                states::pop();
-        }
-        break;
+        const auto game_cmd = game_commands::to_cmd(input);
 
-        case 't':
-        case SDLK_RETURN:
+        if ((game_cmd == GameCmd::throw_item) || (input.key == SDLK_SPACE))
         {
                 if (pos_ != map::player->pos)
                 {
@@ -648,10 +587,9 @@ void Throwing::handle_input(const InputData& input)
                                 *item_to_throw);
                 }
         }
-        break;
-
-        default:
-                break;
+        else if ((input.key == SDLK_ESCAPE) || (input.key == SDLK_SPACE))
+        {
+                states::pop();
         }
 }
 
@@ -755,17 +693,9 @@ void ThrowingExplosive::on_moved()
 
 void ThrowingExplosive::handle_input(const InputData& input)
 {
-        switch (input.key)
-        {
-        case SDLK_ESCAPE:
-        case SDLK_SPACE:
-        {
-                states::pop();
-        }
-        break;
+        const auto game_cmd = game_commands::to_cmd(input);
 
-        case 't':
-        case SDLK_RETURN:
+        if ((game_cmd == GameCmd::throw_item) || (input.key == SDLK_RETURN))
         {
                 msg_log::clear();
 
@@ -773,14 +703,13 @@ void ThrowingExplosive::handle_input(const InputData& input)
 
                 states::pop();
 
-                // NOTE: This object is now destroyed!
+                // NOTE: This object is now destroyed
 
                 throwing::player_throw_lit_explosive(pos);
         }
-        break;
-
-        default:
-                break;
+        else if ((input.key == SDLK_ESCAPE) || (input.key == SDLK_SPACE))
+        {
+                states::pop();
         }
 }
 
@@ -815,10 +744,11 @@ int CtrlTele::chance_of_success_pct(const P& tgt) const
 
 void CtrlTele::on_start_hook()
 {
-        msg_log::add("I have the power to control teleportation.",
-                     colors::white(),
-                     false,
-                     MorePromptOnMsg::yes);
+        msg_log::add(
+                "I have the power to control teleportation.",
+                colors::white(),
+                false,
+                MorePromptOnMsg::yes);
 }
 
 void CtrlTele::on_moved()
@@ -839,48 +769,38 @@ void CtrlTele::on_moved()
 
 void CtrlTele::handle_input(const InputData& input)
 {
-        switch (input.key)
+        if ((input.key == SDLK_RETURN) && (pos_ != map::player->pos))
         {
-        case SDLK_RETURN:
-        {
-                if (pos_ != map::player->pos)
+                const int chance = chance_of_success_pct(pos_);
+
+                const bool roll_ok = rnd::percent(chance);
+
+                const bool is_tele_success =
+                        roll_ok &&
+                        blocked_.rect().is_pos_inside(pos_) &&
+                        !blocked_.at(pos_);
+
+                const P tgt_p(pos_);
+
+                states::pop();
+
+                // NOTE: This object is now destroyed
+
+                if (is_tele_success)
                 {
-                        const int chance = chance_of_success_pct(pos_);
-
-                        const bool roll_ok = rnd::percent(chance);
-
-                        const bool is_tele_success =
-                                roll_ok &&
-                                blocked_.rect().is_pos_inside(pos_) &&
-                                !blocked_.at(pos_);
-
-                        const P tgt_p(pos_);
-
-                        states::pop();
-
-                        // NOTE: This object is now destroyed
-
-                        if (is_tele_success)
-                        {
-                                // Teleport to this exact destination
-                                teleport(*map::player, tgt_p, blocked_);
-                        }
-                        else // Failed to teleport (blocked or roll failed)
-                        {
-                                msg_log::add("I failed to go there...",
-                                             colors::white(),
-                                             false,
-                                             MorePromptOnMsg::yes);
-
-                                // Run a randomized teleport with teleport
-                                // control disabled
-                                teleport(*map::player, ShouldCtrlTele::never);
-                        }
+                        // Teleport to this exact destination
+                        teleport(*map::player, tgt_p, blocked_);
                 }
-        }
-        break;
+                else // Failed to teleport (blocked or roll failed)
+                {
+                        msg_log::add(
+                                "I failed to go there...",
+                                colors::white(),
+                                false,
+                                MorePromptOnMsg::yes);
 
-        default:
-                break;
+                        // Run a randomized teleport with no teleport control
+                        teleport(*map::player, ShouldCtrlTele::never);
+                }
         }
 }

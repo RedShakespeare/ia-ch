@@ -14,6 +14,7 @@
 #include "explosion.hpp"
 #include "feature.hpp"
 #include "feature_door.hpp"
+#include "game_commands.hpp"
 #include "game_time.hpp"
 #include "inventory.hpp"
 #include "io.hpp"
@@ -130,7 +131,9 @@ static bool walk_to_adj_cell(const P& p)
                 key = '0' + rnd::range(1, 9);
         }
 
-        game::handle_player_input(InputData(key));
+        const auto game_cmd = game_commands::to_cmd({key});
+
+        game_commands::handle(game_cmd);
 
         return map::player->pos == p;
 }
@@ -303,7 +306,7 @@ void act()
         // Occasionally send a TAB command to attack nearby monsters
         if (rnd::coin_toss())
         {
-                game::handle_player_input(InputData(SDLK_TAB));
+                game_commands::handle(GameCmd::auto_melee);
 
                 return;
         }
@@ -311,7 +314,7 @@ void act()
         // Occasionally send a 'wait 5 turns' command (just code exercise)
         if (rnd::one_in(50))
         {
-                game::handle_player_input(InputData('s'));
+                game_commands::handle(GameCmd::wait_long);
 
                 return;
         }
@@ -327,7 +330,7 @@ void act()
 
                         wpn->ammo_loaded_ = wpn->data().ranged.max_ammo;
 
-                        game::handle_player_input(InputData('f'));
+                        game_commands::handle(GameCmd::fire);
 
                         return;
                 }
@@ -358,7 +361,7 @@ void act()
         // Occasionally swap weapon (just some code exercise)
         if (rnd::one_in(50))
         {
-                game::handle_player_input(InputData('z'));
+                game_commands::handle(GameCmd::swap_weapon);
 
                 return;
         }
