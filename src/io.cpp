@@ -15,6 +15,7 @@
 #include "map.hpp"
 #include "marker.hpp"
 #include "msg_log.hpp"
+#include "paths.hpp"
 #include "rl_utils.hpp"
 #include "sdl_base.hpp"
 #include "status_lines.hpp"
@@ -30,6 +31,10 @@ static SDL_Renderer* sdl_renderer = nullptr;
 
 // Bytes per pixel
 static int bpp = -1;
+
+// TODO: This was in global.hpp. Why/where is this used? What is the difference
+// between this and 'bpp'???
+static const int screen_bpp = 32;
 
 static SDL_Surface* screen_srf = nullptr;
 static SDL_Texture* screen_texture = nullptr;
@@ -412,7 +417,7 @@ static void load_images()
         TRACE_FUNC_BEGIN;
 
         // Main menu logo
-        SDL_Surface* tmp_srf = IMG_Load(logo_img_path.c_str());
+        SDL_Surface* tmp_srf = IMG_Load(paths::logo_img_path.c_str());
 
         ASSERT(tmp_srf && "Failed to load main menu logo image");
 
@@ -422,7 +427,7 @@ static void load_images()
         SDL_FreeSurface(tmp_srf);
 
         // Skull
-        tmp_srf = IMG_Load(skull_img_path.c_str());
+        tmp_srf = IMG_Load(paths::skull_img_path.c_str());
 
         ASSERT(tmp_srf && "Failed to load skull image");
 
@@ -437,7 +442,10 @@ static void load_font()
 {
         TRACE_FUNC_BEGIN;
 
-        const std::string font_path = fonts_path + "/" + config::font_name();
+        const std::string font_path =
+                paths::fonts_path +
+                "/" +
+                config::font_name();
 
         SDL_Surface* const font_srf_tmp = IMG_Load(font_path.c_str());
 
@@ -532,7 +540,10 @@ static void load_tiles()
                 const std::string img_name = tile_id_to_str_map.at(id);
 
                 const std::string img_path =
-                        tiles_path + "/" + img_name + ".png";
+                        paths::tiles_path +
+                        "/" +
+                        img_name +
+                        ".png";
 
                 SDL_Surface* const tile_srf_tmp = IMG_Load(img_path.c_str());
 

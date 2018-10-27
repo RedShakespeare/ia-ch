@@ -1,14 +1,16 @@
 #include "disarm.hpp"
 
-#include "game_time.hpp"
-#include "msg_log.hpp"
-#include "io.hpp"
 #include "actor_player.hpp"
-#include "query.hpp"
-#include "map.hpp"
+#include "common_messages.hpp"
+#include "common_messages.hpp"
 #include "feature_trap.hpp"
+#include "game_time.hpp"
 #include "inventory.hpp"
+#include "io.hpp"
+#include "map.hpp"
+#include "msg_log.hpp"
 #include "property_factory.hpp"
+#include "query.hpp"
 
 namespace disarm
 {
@@ -30,7 +32,7 @@ void player_disarm()
         }
 
         msg_log::add(
-                "Which direction?" + cancel_info_str,
+                "Which direction?" + common_messages::cancel_info,
                 colors::light_white());
 
         const auto input_dir = query::dir(AllowCenter::yes);
@@ -64,7 +66,7 @@ void player_disarm()
 
         if (!trap || trap->is_hidden())
         {
-                msg_log::add(msg_disarm_no_trap);
+                msg_log::add(common_messages::disarm_no_trap);
 
                 states::draw();
 

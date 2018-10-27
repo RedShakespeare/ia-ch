@@ -5,12 +5,13 @@
 #include <math.h>
 #include <unordered_map>
 
-#include "xml.hpp"
-#include "saving.hpp"
-#include "item_data.hpp"
-#include "property_factory.hpp"
+#include "colors.hpp"
 #include "item_att_property.hpp"
+#include "item_data.hpp"
 #include "property.hpp"
+#include "property_factory.hpp"
+#include "saving.hpp"
+#include "xml.hpp"
 
 // -----------------------------------------------------------------------------
 // Private
@@ -98,6 +99,14 @@ static std::unordered_map<std::string, ActorId> str_to_actor_id_map = {
         {"high_priest_guard_war_vet", ActorId::high_priest_guard_war_vet},
         {"high_priest_guard_rogue", ActorId::high_priest_guard_rogue},
         {"high_priest_guard_ghoul", ActorId::high_priest_guard_ghoul}
+};
+
+const std::unordered_map<std::string, ShockLvl> str_to_shock_lvl_map = {
+        {"none", ShockLvl::none},
+        {"unsettling", ShockLvl::unsettling},
+        {"frightening", ShockLvl::frightening},
+        {"terrifying", ShockLvl::terrifying},
+        {"mind_shattering", ShockLvl::mind_shattering}
 };
 
 static ActorId get_id(xml::Element* mon_e)

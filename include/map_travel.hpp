@@ -6,6 +6,8 @@
 
 #include "map_builder.hpp"
 
+// TODO: Rename "map travel" to "dungeon"
+
 namespace map_travel
 {
 

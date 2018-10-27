@@ -9,6 +9,7 @@
 #include "global.hpp"
 
 struct ActorData;
+struct ColoredString;
 
 enum class Trait
 {

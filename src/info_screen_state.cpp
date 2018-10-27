@@ -1,5 +1,6 @@
 #include "info_screen_state.hpp"
 
+#include "common_messages.hpp"
 #include "io.hpp"
 #include "panel.hpp"
 
@@ -56,9 +57,9 @@ void InfoScreenState::draw_interface() const
                 colors::title());
 
         const std::string cmd_info =
-                (type() == InfoScreenType::scrolling) ?
-                info_screen_tip_scrollable :
-                info_screen_tip;
+                (type() == InfoScreenType::scrolling)
+                ? common_messages::info_screen_tip_scrollable
+                : common_messages::info_screen_tip;
 
         io::draw_text_center(
                 " " + cmd_info + " ",

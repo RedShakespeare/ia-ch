@@ -4,6 +4,7 @@
 #include <vector>
 #include <string>
 
+#include "colors.hpp"
 #include "feature_data.hpp"
 
 class Actor;

@@ -3,13 +3,15 @@
 #include <math.h>
 
 #include "actor_player.hpp"
+#include "colors.hpp"
+#include "map.hpp"
 #include "player_bon.hpp"
 #include "property_handler.hpp"
-#include "map.hpp"
 
-int AbilityValues::val(const AbilityId id,
-                       const bool is_affected_by_props,
-                       const Actor& actor) const
+int AbilityValues::val(
+        const AbilityId id,
+        const bool is_affected_by_props,
+        const Actor& actor) const
 {
         int ret = ability_list[(size_t)id];
 

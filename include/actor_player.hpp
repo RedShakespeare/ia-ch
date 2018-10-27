@@ -4,6 +4,7 @@
 #include <math.h>
 
 #include "actor.hpp"
+#include "colors.hpp"
 #include "global.hpp"
 #include "insanity.hpp"
 

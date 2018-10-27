@@ -8,6 +8,7 @@
 
 class Item;
 class Actor;
+struct P;
 
 enum class ItemId;
 

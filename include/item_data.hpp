@@ -206,6 +206,41 @@ const std::unordered_map<std::string, ItemId> str_to_intr_item_id_map =
         {"web_bola", ItemId::intr_web_bola},
 };
 
+struct ItemName
+{
+        ItemName(const std::string& name,
+                 const std::string& name_pl,
+                 const std::string& name_a)
+        {
+                names[(size_t)ItemRefType::plain] = name;
+                names[(size_t)ItemRefType::plural] = name_pl;
+                names[(size_t)ItemRefType::a] = name_a;
+        }
+
+        ItemName()
+        {
+                for (size_t i = 0; i < (size_t)ItemRefType::END; ++i)
+                {
+                        names[i] = "";
+                }
+        }
+
+        std::string names[(size_t)ItemRefType::END];
+};
+
+struct ItemAttMsgs
+{
+        ItemAttMsgs() :
+                player(""),
+                other("") {}
+
+        ItemAttMsgs(const std::string& player_, const std::string& other_) :
+                player(player_),
+                other(other_) {}
+
+        std::string player, other;
+};
+
 enum class ItemValue
 {
         normal,

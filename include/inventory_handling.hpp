@@ -5,6 +5,8 @@
 #include "state.hpp"
 #include "browser.hpp"
 
+class Color;
+
 enum class InvScr
 {
         inv,

@@ -1,14 +1,15 @@
 #include "close.hpp"
 
-#include "feature.hpp"
 #include "actor.hpp"
 #include "actor_player.hpp"
+#include "common_messages.hpp"
+#include "feature.hpp"
 #include "feature_door.hpp"
+#include "io.hpp"
 #include "map.hpp"
 #include "msg_log.hpp"
-#include "query.hpp"
-#include "io.hpp"
 #include "property_handler.hpp"
+#include "query.hpp"
 
 // -----------------------------------------------------------------------------
 // Private
@@ -96,7 +97,7 @@ void player_try_close_or_jam()
         msg_log::clear();
 
         msg_log::add(
-                "Which direction?" + cancel_info_str,
+                "Which direction?" + common_messages::cancel_info,
                 colors::light_white());
 
         const Dir input_dir = query::dir(AllowCenter::no);

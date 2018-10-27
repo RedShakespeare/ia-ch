@@ -3,6 +3,7 @@
 #include <climits>
 
 #include "actor_player.hpp"
+#include "common_messages.hpp"
 #include "feature_door.hpp"
 #include "feature_rigid.hpp"
 #include "io.hpp"
@@ -87,7 +88,7 @@ static R get_minimap_px_rect_on_screen(const R& map_area_explored)
 void ViewMinimap::draw()
 {
         io::draw_text_center(
-                "Viewing minimap " + info_screen_tip,
+                "Viewing minimap " + common_messages::info_screen_tip,
                 Panel::screen,
                 P(panels::center_x(Panel::screen), 0),
                 colors::title());

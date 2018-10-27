@@ -10,6 +10,7 @@
 #include "attack.hpp"
 #include "audio.hpp"
 #include "bot.hpp"
+#include "common_messages.hpp"
 #include "create_character.hpp"
 #include "drop.hpp"
 #include "explosion.hpp"
@@ -46,6 +47,8 @@
 // -----------------------------------------------------------------------------
 // Private
 // -----------------------------------------------------------------------------
+static const int min_dmg_to_wound = 5;
+
 static const std::vector<std::string> item_feeling_messages_ = {
         "I feel like I should examine this place thoroughly.",
         "I feel like there is something of great interest here.",
@@ -903,9 +906,10 @@ void Player::on_actor_turn()
 
     if (is_busy() && is_seeing_burning_feature())
     {
-            msg_log::add(msg_fire_prevent_cmd,
-                         colors::text(),
-                         true);
+            msg_log::add(
+                    common_messages::fire_prevent_cmd,
+                    colors::text(),
+                    true);
     }
 
     Array2<int> vigilant_flood(map::dims());

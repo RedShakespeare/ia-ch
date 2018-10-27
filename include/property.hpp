@@ -4,6 +4,7 @@
 #include <string>
 
 #include "ability_values.hpp"
+#include "colors.hpp"
 #include "global.hpp"
 #include "property_data.hpp"
 

@@ -1,13 +1,14 @@
 #include "popup.hpp"
 
+#include "audio.hpp"
+#include "browser.hpp"
+#include "common_messages.hpp"
 #include "config.hpp"
 #include "io.hpp"
-#include "panel.hpp"
-#include "text_format.hpp"
 #include "msg_log.hpp"
+#include "panel.hpp"
 #include "query.hpp"
-#include "browser.hpp"
-#include "audio.hpp"
+#include "text_format.hpp"
 
 // -----------------------------------------------------------------------------
 // Private
@@ -235,7 +236,7 @@ void msg(const std::string& msg,
         y += 2;
 
         io::draw_text_center(
-                confirm_info_str_no_space,
+                common_messages::confirm_info_no_space,
                 Panel::screen,
                 P(panels::center_x(Panel::screen), y),
                 colors::menu_dark(),
@@ -263,8 +264,9 @@ int menu(const std::string& msg,
         const int nr_msg_lines = (int)lines.size();
 
         const int nr_blank_lines =
-                ((nr_msg_lines == 0) && (title_h == 0)) ?
-                0 : 1;
+                ((nr_msg_lines == 0) && (title_h == 0))
+                ? 0
+                : 1;
 
         const int nr_choices = (int)choices.size();
 

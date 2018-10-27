@@ -3,9 +3,9 @@
 
 #include <string>
 
-#include "rl_utils.hpp"
+#include "colors.hpp"
 #include "info_screen_state.hpp"
-#include "global.hpp"
+#include "rl_utils.hpp"
 
 class Actor;
 
@@ -46,9 +46,10 @@ private:
                 return InfoScreenType::scrolling;
         }
 
-        void put_text(const std::string str,
-                      const P& p,
-                      const Color& color);
+        void put_text(
+                const std::string str,
+                const P& p,
+                const Color& color);
 
         std::string auto_description_str() const;
 

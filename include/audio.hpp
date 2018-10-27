@@ -206,6 +206,8 @@ enum class MusId
 namespace audio
 {
 
+const int allocated_channels = 16;
+
 void init();
 void cleanup();
 

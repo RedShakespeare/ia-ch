@@ -28,6 +28,7 @@ set(COMMON_SRC
         include/character_descr.hpp
         include/close.hpp
         include/colors.hpp
+        include/common_messages.hpp
         include/config.hpp
         include/create_character.hpp
         include/disarm.hpp
@@ -82,6 +83,7 @@ set(COMMON_SRC
         include/minimap.hpp
         include/msg_log.hpp
         include/panel.hpp
+        include/paths.hpp
         include/pickup.hpp
         include/player_bon.hpp
         include/player_spells.hpp
@@ -129,6 +131,7 @@ set(COMMON_SRC
         src/character_descr.cpp
         src/close.cpp
         src/colors.cpp
+        src/common_messages.cpp
         src/config.cpp
         src/create_character.cpp
         src/disarm.cpp
@@ -193,6 +196,7 @@ set(COMMON_SRC
         src/minimap.cpp
         src/msg_log.cpp
         src/panel.cpp
+        src/paths.cpp
         src/pickup.cpp
         src/player_bon.cpp
         src/player_spells.cpp

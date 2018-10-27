@@ -1,10 +1,11 @@
 #ifndef ITEM_HPP
 #define ITEM_HPP
 
+#include "colors.hpp"
 #include "gfx.hpp"
 #include "inventory_handling.hpp"
-#include "rl_utils.hpp"
 #include "item_att_property.hpp"
+#include "rl_utils.hpp"
 
 class ItemData;
 class Prop;

@@ -34,6 +34,8 @@
 namespace
 {
 
+static const int nr_cell_jumps_mg_projectiles = 2;
+
 struct Projectile
 {
         P pos {0, 0};

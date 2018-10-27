@@ -31,6 +31,16 @@
 #include "text_format.hpp"
 #include "viewport.hpp"
 
+// -----------------------------------------------------------------------------
+// Private
+// -----------------------------------------------------------------------------
+static const std::string spell_resist_msg = "The spell is resisted!";
+
+static const std::string spell_reflect_msg = "The spell is reflected!";
+
+// -----------------------------------------------------------------------------
+// spell_factory
+// -----------------------------------------------------------------------------
 namespace spell_factory
 {
 
@@ -145,11 +155,17 @@ Spell* make_spell_from_id(const SpellId spell_id)
 
 } // spell_factory
 
+// -----------------------------------------------------------------------------
+// BrowseSpell
+// -----------------------------------------------------------------------------
 StateId BrowseSpell::id()
 {
         return StateId::browse_spells;
 }
 
+// -----------------------------------------------------------------------------
+// Spell
+// -----------------------------------------------------------------------------
 Range Spell::spi_cost(const SpellSkill skill, Actor* const caster) const
 {
         int cost_max = max_spi_cost(skill);

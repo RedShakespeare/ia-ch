@@ -6,6 +6,7 @@
 #include "actor_player.hpp"
 #include "attack.hpp"
 #include "attack_data.hpp"
+#include "common_messages.hpp"
 #include "config.hpp"
 #include "draw_map.hpp"
 #include "explosion.hpp"
@@ -375,7 +376,7 @@ void Viewing::on_moved()
                 msg_log::add("[l] for description");
         }
 
-        msg_log::add(cancel_info_str_no_space);
+        msg_log::add(common_messages::cancel_info_no_space);
 }
 
 void Viewing::handle_input(const InputData& input)
@@ -437,7 +438,7 @@ void Aiming::on_moved()
                 }
         }
 
-        msg_log::add("[f] to fire" + cancel_info_str);
+        msg_log::add("[f] to fire" + common_messages::cancel_info);
 }
 
 void Aiming::handle_input(const InputData& input)
@@ -543,7 +544,7 @@ void Throwing::on_moved()
                 }
         }
 
-        msg_log::add("[t] to throw" + cancel_info_str);
+        msg_log::add("[t] to throw" + common_messages::cancel_info);
 }
 
 void Throwing::handle_input(const InputData& input)
@@ -688,7 +689,7 @@ void ThrowingExplosive::on_moved()
 {
         look::print_location_info_msgs(pos_);
 
-        msg_log::add("[t] to throw" + cancel_info_str);
+        msg_log::add("[t] to throw" + common_messages::cancel_info);
 }
 
 void ThrowingExplosive::handle_input(const InputData& input)

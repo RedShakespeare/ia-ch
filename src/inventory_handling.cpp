@@ -9,6 +9,8 @@
 #include "actor_player.hpp"
 #include "audio.hpp"
 #include "browser.hpp"
+#include "common_messages.hpp"
+#include "common_messages.hpp"
 #include "drop.hpp"
 #include "io.hpp"
 #include "item_factory.hpp"
@@ -23,6 +25,7 @@
 // -----------------------------------------------------------------------------
 // Private
 // -----------------------------------------------------------------------------
+static const int nr_turns_to_handle_armor = 7;
 
 // Index can mean Slot index or Backpack Index (both start from zero)
 static bool run_drop_query(const InvType inv_type, const size_t idx)
@@ -83,7 +86,7 @@ static bool run_drop_query(const InvType inv_type, const size_t idx)
                 const P done_inf_pos = nr_query_pos + P(max_digits + 2, 0);
 
                 io::draw_text(
-                        "[enter] to drop" + cancel_info_str,
+                        "[enter] to drop" + common_messages::cancel_info,
                         Panel::screen,
                         done_inf_pos,
                         colors::light_white());
@@ -667,7 +670,7 @@ void BrowseInv::draw()
         const size_t nr_slots = (size_t)SlotId::END;
 
         io::draw_text_center(
-                "Browsing inventory " + info_screen_tip,
+                "Browsing inventory " + common_messages::info_screen_tip,
                 Panel::screen,
                 P(panels::center_x(Panel::screen), 0),
                 colors::title());
@@ -870,7 +873,7 @@ void Apply::draw()
         const int browser_y = browser_.y();
 
         io::draw_text_center(
-                "Apply which item? " + info_screen_tip,
+                "Apply which item? " + common_messages::info_screen_tip,
                 Panel::screen,
                 P(panels::center_x(Panel::screen), 0),
                 colors::title());
@@ -1002,7 +1005,7 @@ void Drop::draw()
         io::clear_screen();
 
         io::draw_text_center(
-                "Drop which item? " + info_screen_tip,
+                "Drop which item? " + common_messages::info_screen_tip,
                 Panel::screen,
                 P(panels::center_x(Panel::screen), 0),
                 colors::title());
@@ -1237,7 +1240,7 @@ void Equip::draw()
 
         if (!has_item)
         {
-                io::draw_text(heading + any_key_info_str,
+                io::draw_text(heading + common_messages::any_key_info,
                               Panel::screen,
                               P(0, 0),
                               colors::light_white());
@@ -1248,7 +1251,7 @@ void Equip::draw()
         // An item is available
 
         io::draw_text_center(
-                heading + info_screen_tip,
+                heading + common_messages::info_screen_tip,
                 Panel::screen,
                 P(panels::center_x(Panel::screen), 0),
                 colors::title());
@@ -1476,7 +1479,9 @@ void SelectThrow::on_start()
 void SelectThrow::draw()
 {
         io::draw_text_center(
-                "Use which item for throwing? " + info_screen_tip,
+                std::string(
+                        "Use which item for throwing? " +
+                        common_messages::info_screen_tip),
                 Panel::screen,
                 P(panels::center_x(Panel::screen), 0),
                 colors::title());

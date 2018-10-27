@@ -62,11 +62,11 @@ static void load(const SfxId sfx, const std::string& filename)
 
 static int next_channel(const int from)
 {
-        ASSERT(from >= 0 && from < audio_allocated_channels);
+        ASSERT(from >= 0 && from < audio::allocated_channels);
 
         int ret = from + 1;
 
-        if (ret == audio_allocated_channels)
+        if (ret == audio::allocated_channels)
         {
                 ret = 0;
         }
@@ -76,11 +76,11 @@ static int next_channel(const int from)
 
 static int find_free_channel(const int from)
 {
-        ASSERT(from >= 0 && from < audio_allocated_channels);
+        ASSERT(from >= 0 && from < audio::allocated_channels);
 
         int ret = from;
 
-        for (int i = 0; i < audio_allocated_channels; ++i)
+        for (int i = 0; i < audio::allocated_channels; ++i)
         {
                 ret = next_channel(ret);
 

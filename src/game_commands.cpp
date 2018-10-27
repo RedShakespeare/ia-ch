@@ -7,6 +7,7 @@
 #include "actor_player.hpp"
 #include "character_descr.hpp"
 #include "close.hpp"
+#include "common_messages.hpp"
 #include "config.hpp"
 #include "disarm.hpp"
 #include "game_time.hpp"
@@ -196,8 +197,8 @@ static GameCmd to_cmd_default(const InputData& input)
                 return GameCmd::debug_f9;
 #endif // NDEBUG
 
-                // Undefined commands
         default:
+                // Undefined command
                 break;
 
         } // switch
@@ -207,7 +208,7 @@ static GameCmd to_cmd_default(const InputData& input)
 
 static GameCmd to_cmd_vi(const InputData& input)
 {
-        // Overriden keys
+        // Overriden keys for vi-mode
         switch (input.key)
         {
         case 'l':
@@ -356,11 +357,11 @@ void handle(const GameCmd cmd)
         {
                 if (map::player->is_seeing_burning_feature())
                 {
-                        msg_log::add(msg_fire_prevent_cmd);
+                        msg_log::add(common_messages::fire_prevent_cmd);
                 }
                 else if (!map::player->seen_foes().empty())
                 {
-                        msg_log::add(msg_mon_prevent_cmd);
+                        msg_log::add(common_messages::mon_prevent_cmd);
                 }
                 else // We are allowed to wait
                 {
@@ -599,11 +600,11 @@ void handle(const GameCmd cmd)
         {
                 if (map::player->is_seeing_burning_feature())
                 {
-                        msg_log::add(msg_fire_prevent_cmd);
+                        msg_log::add(common_messages::fire_prevent_cmd);
                 }
                 else if (!map::player->seen_foes().empty())
                 {
-                        msg_log::add(msg_mon_prevent_cmd);
+                        msg_log::add(common_messages::mon_prevent_cmd);
                 }
                 else if (!map::player->properties.allow_see())
                 {
@@ -619,8 +620,11 @@ void handle(const GameCmd cmd)
                 }
                 else // We are allowed to use auto-walk
                 {
-                        msg_log::add("Which direction?" + cancel_info_str,
-                                     colors::light_white());
+                        msg_log::add(
+                                std::string(
+                                        "Which direction?" +
+                                        common_messages::cancel_info),
+                                colors::light_white());
 
                         const Dir input_dir = query::dir(AllowCenter::no);
 

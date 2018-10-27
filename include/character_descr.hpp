@@ -1,8 +1,9 @@
 #ifndef CHARACTER_DESCR_HPP
 #define CHARACTER_DESCR_HPP
 
-#include "info_screen_state.hpp"
+#include "colors.hpp"
 #include "global.hpp"
+#include "info_screen_state.hpp"
 
 class CharacterDescr: public InfoScreenState
 {

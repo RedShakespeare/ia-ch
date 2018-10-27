@@ -5,9 +5,10 @@
 #include "SDL_image.h"
 #include "SDL_mixer.h"
 
-#include "init.hpp"
+#include "audio.hpp"
 #include "config.hpp"
 #include "game_time.hpp"
+#include "init.hpp"
 
 static bool is_inited = false;
 
@@ -63,7 +64,7 @@ void init()
                 ASSERT(false);
         }
 
-        Mix_AllocateChannels(audio_allocated_channels);
+        Mix_AllocateChannels(audio::allocated_channels);
 
         TRACE_FUNC_END;
 }

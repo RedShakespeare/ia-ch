@@ -47,6 +47,9 @@ private:
         bool is_defined_;
 };
 
+//-----------------------------------------------------------------------------
+// colors
+//-----------------------------------------------------------------------------
 namespace colors
 {
 
@@ -56,9 +59,7 @@ Color name_to_color(const std::string& name);
 
 std::string color_to_name(const Color& color);
 
-//-----------------------------------------------------------------------------
 // Available colors
-//-----------------------------------------------------------------------------
 Color black();
 Color extra_dark_gray();
 Color dark_gray();
@@ -92,9 +93,7 @@ Color teal();
 Color light_teal();
 Color dark_teal();
 
-//-----------------------------------------------------------------------------
 // GUI colors (using the colors above)
-//-----------------------------------------------------------------------------
 Color text();
 Color menu_highlight();
 Color menu_dark();
@@ -107,5 +106,27 @@ Color mon_allied_bg();
 Color mon_temp_property_bg();
 
 } // colors
+
+//-----------------------------------------------------------------------------
+// Colored string
+//-----------------------------------------------------------------------------
+struct ColoredString
+{
+        ColoredString() {}
+
+        ColoredString(const std::string& str, const Color& color) :
+                str(str),
+                color(color) {}
+
+        ColoredString& operator=(const ColoredString& other)
+        {
+                str = other.str;
+                color = other.color;
+                return *this;
+        }
+
+        std::string str {};
+        Color color {colors::white()};
+};
 
 #endif // COLORS_HPP

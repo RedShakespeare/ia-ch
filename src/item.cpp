@@ -5,6 +5,7 @@
 #include "actor_factory.hpp"
 #include "actor_hit.hpp"
 #include "actor_player.hpp"
+#include "common_messages.hpp"
 #include "explosion.hpp"
 #include "feature_mob.hpp"
 #include "feature_rigid.hpp"
@@ -1336,7 +1337,7 @@ ConsumeItem MedicalBag::activate(Actor* const actor)
         }
         else if (map::player->is_seeing_burning_feature())
         {
-                msg_log::add(msg_fire_prevent_cmd);
+                msg_log::add(common_messages::fire_prevent_cmd);
 
                 current_action_ = MedBagAction::END;
 
@@ -1344,7 +1345,7 @@ ConsumeItem MedicalBag::activate(Actor* const actor)
         }
         else if (!map::player->seen_foes().empty())
         {
-                msg_log::add(msg_mon_prevent_cmd);
+                msg_log::add(common_messages::mon_prevent_cmd);
 
                 current_action_ = MedBagAction::END;
 
