@@ -1,5 +1,5 @@
 --------------------------------------------------------------------------------
-Command list
+Command list (default keys)
 --------------------------------------------------------------------------------
 Gameplay commands:
    @         Character information
@@ -25,16 +25,17 @@ Gameplay commands:
    z         Swap to readied weapon
    Q         Quit
 
-Menu and window commands:
-   Esc       In-game menu
+General menu and window commands:
+   Esc       In-game menu, or cancel/proceed
    ?, F1     This manual
    =         Options
    +/-       Change window width
    Ctrl +/-  Change window height
-   Space     Cancel, proceed
+   Space     Cancel/proceed
    Enter     Select something in a menu, confirm
+   Up/Down   Scroll up/down in menus
 
-You can move in eight directions by using the numpad keys:
+Move in eight directions with the numpad keys:
 
    7 8 9
     \|/
@@ -44,12 +45,59 @@ You can move in eight directions by using the numpad keys:
 
 Alternatively, the arrow keys can also be used for moving in the cardinal directions, and  Page up, Page down, Home, and End can also be used for diagonal movement.
 
-Press '5' or period (.) to wait for one turn.
+Press '5' or period (.) to wait for one turn. This is also used for selecting your current position, for example when kicking (to destroy a corpse you are standing over) or when disarming traps.
+
+--------------------------------------------------------------------------------
+Command list (vi-keys)
+--------------------------------------------------------------------------------
+Gameplay commands:
+   @         Character information
+   TAB       Melee attack adjacent monster (same as moving into the monster)
+   a         Inventory, only showing items that can be consumed or activated
+   c         Close door, or jam closed door with an iron spike
+   d         Drop item
+   e         Move in a direction until interrupted
+   f         Aim/fire weapon
+   g         Pick up item
+   G         Unload and pick up ammunition from weapons on the ground
+   i         Inventory (wield, equip, remove, consume, or activate items)
+   m         Minimap
+   M         Message history
+   N         Make noise
+   p         Disarm trap
+   r         Reload
+   s         Wait five turns
+   t         Throw item
+   v         Look (describe things on the map)
+   w         Kick or strike objects, or destroy corpses
+   x         Cast spell
+   z         Swap to readied weapon
+   Q         Quit
+
+General menu and window commands:
+   Esc       In-game menu, or cancel/proceed
+   ?, F1     This manual
+   =         Options
+   +/-       Change window width
+   Ctrl +/-  Change window height
+   Space     Cancel/proceed
+   Enter     Select something in a menu, confirm
+   Up/Down   Scroll up/down in menus
+
+Move in eight directions by using the following keys (the so-called "vi-keys"):
+
+   y k u
+    \|/
+   h-.-l
+    /|\
+   b j n
+
+Press period (.) to wait for one turn. This is also used for selecting your current position, for example when kicking (to destroy a corpse you are standing over) or when disarming traps.
 
 --------------------------------------------------------------------------------
 Environment interaction
 --------------------------------------------------------------------------------
-Certain things can be interacted with by moving into them (i.e. by "bumping" them), for example:
+Many things in the game can be interacted with by moving into them (i.e. by "bumping" them), for example:
    * Move into monsters to melee attack them
    * Move into closed doors, chests, cabinets, etc to attempt to open them
    * Move into opened chests, cabinets, etc to loot them
@@ -161,7 +209,7 @@ Your Spirit Points are shown like this:
 
 You can learn spells by casting them from manuscripts. Casting spells "naturally" (without manuscripts) will drain some of your spirit.
 
-To cast intrinsic spells, press [x] to open a menu for selecting which spell to cast. In this menu you can see the Spirit cost per spell (the cost is a range of values, and the spirit drained is a random value in this range), and your skill level for each spell (Occultist characters can learn to cast spells at higher levels by picking certain traits).
+To cast intrinsic spells, press "x" to open a menu for selecting which spell to cast. In this menu you can see the Spirit cost per spell (the cost is a range of values, and the spirit drained is a random value in this range), and your skill level for each spell (Occultist characters can learn to cast spells at higher levels by picking certain traits).
 
 When casting a spell, you will get a warning if the spell could potentially drain all your remaining Spirit. You can then press y/n to attempt casting or abort. Casting the spell in this situation is a gamble with death.
 

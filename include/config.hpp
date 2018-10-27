@@ -13,6 +13,7 @@ void init();
 
 void set_fullscreen(const bool value);
 
+bool is_vi_keys();
 bool is_tiles_mode();
 std::string font_name();
 bool is_fullscreen();

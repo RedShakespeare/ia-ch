@@ -7,6 +7,7 @@
 #include "actor_player.hpp"
 #include "character_descr.hpp"
 #include "close.hpp"
+#include "config.hpp"
 #include "disarm.hpp"
 #include "game_time.hpp"
 #include "init.hpp"
@@ -51,13 +52,7 @@ static void query_quit()
         }
 }
 
-// -----------------------------------------------------------------------------
-// game_commands
-// -----------------------------------------------------------------------------
-namespace game_commands
-{
-
-GameCmd to_cmd(const InputData& input)
+static GameCmd to_cmd_default(const InputData& input)
 {
         switch (input.key)
         {
@@ -208,8 +203,78 @@ GameCmd to_cmd(const InputData& input)
         } // switch
 
         return GameCmd::undefined;
+} // to_cmd_default
 
-} // get_cmd
+static GameCmd to_cmd_vi(const InputData& input)
+{
+        // Overriden keys
+        switch (input.key)
+        {
+        case 'l':
+                return GameCmd::right;
+
+        case 'j':
+                return GameCmd::down;
+
+        case 'h':
+                return GameCmd::left;
+
+        case 'k':
+                return GameCmd::up;
+
+        case 'u':
+                return GameCmd::up_right;
+
+        case 'n':
+                return GameCmd::down_right;
+
+        case 'b':
+                return GameCmd::down_left;
+
+        case 'y':
+                return GameCmd::up_left;
+
+        case 'M':
+                return GameCmd::msg_history;
+
+        case 'w':
+                return GameCmd::kick;
+
+        case 'v':
+                return GameCmd::look;
+
+        case 'G':
+                return GameCmd::unload;
+
+        case 'N':
+                return GameCmd::make_noise;
+
+        default:
+                break;
+        }
+
+        // Input not overriden, delegate to default keys
+        return to_cmd_default(input);
+
+} // to_cmd_vi
+
+// -----------------------------------------------------------------------------
+// game_commands
+// -----------------------------------------------------------------------------
+namespace game_commands
+{
+
+GameCmd to_cmd(const InputData& input)
+{
+        if (config::is_vi_keys())
+        {
+                return to_cmd_vi(input);
+        }
+        else
+        {
+                return to_cmd_default(input);
+        }
+}
 
 void handle(const GameCmd cmd)
 {
@@ -220,7 +285,7 @@ void handle(const GameCmd cmd)
 
         case GameCmd::undefined:
         {
-
+                msg_log::add("Press [?] for help.");
         }
         break;
 

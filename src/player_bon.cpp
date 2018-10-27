@@ -373,8 +373,8 @@ std::vector<ColoredString> bg_descr(const Bg id)
 
         case Bg::ghoul:
                 put("Does not regenerate Hit Points and cannot use medical "
-                    "equipment - heals by feeding on corpses (press '5' or '.' "
-                    "while standing on a corpse)");
+                    "equipment - heals by feeding on corpses (feeding is done "
+                    "while waiting on a corpse)");
                 put("");
                 put("Can incite Frenzy at will, and does not become Weakened "
                     "when Frenzy ends");

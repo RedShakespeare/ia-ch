@@ -35,6 +35,7 @@ static const std::vector<std::string> font_image_names = {
 static const int opt_y0_ = 1;
 static const int opt_values_x_pos_ = 40;
 
+static bool is_vi_keys_ = false;
 static std::string font_name_ = "";
 static bool is_fullscreen_ = false;
 static bool is_tiles_wall_full_square_ = false;
@@ -148,8 +149,8 @@ static void set_default_variables()
 {
         TRACE_FUNC_BEGIN;
 
-        is_audio_enabled_ = true;
-        is_amb_audio_enabled_ = true;
+        is_vi_keys_ = false;
+
         is_tiles_mode_ = true;
         font_name_ = "12x24.png";
 
@@ -161,6 +162,8 @@ static void set_default_variables()
         screen_px_w_ = gui_cell_px_w_ * default_nr_gui_cells_x;
         screen_px_h_ = gui_cell_px_h_ * default_nr_gui_cells_y;
 
+        is_audio_enabled_ = true;
+        is_amb_audio_enabled_ = true;
         is_fullscreen_ = false;
         is_tiles_wall_full_square_ = false;
         is_text_mode_wall_full_square_ = true;
@@ -183,7 +186,13 @@ static void player_sets_option(const MenuBrowser& browser)
 {
         switch (browser.y())
         {
-        case 0: // Audio
+        case 0: // Vi-keys
+        {
+                is_vi_keys_ = !is_vi_keys_;
+        }
+        break;
+
+        case 1: // Audio
         {
                 is_audio_enabled_ = !is_audio_enabled_;
 
@@ -191,7 +200,7 @@ static void player_sets_option(const MenuBrowser& browser)
         }
         break;
 
-        case 1: // Ambient audio
+        case 2: // Ambient audio
         {
                 is_amb_audio_enabled_ = !is_amb_audio_enabled_;
 
@@ -199,7 +208,7 @@ static void player_sets_option(const MenuBrowser& browser)
         }
         break;
 
-        case 2: // Tiles mode
+        case 3: // Tiles mode
         {
                 is_tiles_mode_ = !is_tiles_mode_;
 
@@ -231,7 +240,7 @@ static void player_sets_option(const MenuBrowser& browser)
         }
         break;
 
-        case 3: // Font
+        case 4: // Font
         {
                 // Set next font
                 for (size_t i = 0; i < font_image_names.size(); ++i)
@@ -282,7 +291,7 @@ static void player_sets_option(const MenuBrowser& browser)
         }
         break;
 
-        case 4: // Fullscreen
+        case 5: // Fullscreen
         {
                 set_fullscreen(!is_fullscreen_);
 
@@ -290,62 +299,62 @@ static void player_sets_option(const MenuBrowser& browser)
         }
         break;
 
-        case 5: // Tiles mode wall symbol
+        case 6: // Tiles mode wall symbol
         {
                 is_tiles_wall_full_square_ = !is_tiles_wall_full_square_;
         }
         break;
 
-        case 6: // Text mode wall symbol
+        case 7: // Text mode wall symbol
         {
                 is_text_mode_wall_full_square_ =
                         !is_text_mode_wall_full_square_;
         }
         break;
 
-        case 7: // Skip intro level
+        case 8: // Skip intro level
         {
                 is_intro_lvl_skipped_ = !is_intro_lvl_skipped_;
         }
         break;
 
-        case 8: // Confirm "more" with any key
+        case 9: // Confirm "more" with any key
         {
                 is_any_key_confirm_more_ = !is_any_key_confirm_more_;
         }
         break;
 
-        case 9: // Always warn when a new monster appears
+        case 10: // Always warn when a new monster appears
         {
                 always_warn_new_mon_ = !always_warn_new_mon_;
         }
         break;
 
-        case 10: // Print warning when lighting explovies
+        case 11: // Print warning when lighting explovies
         {
                 is_light_explosive_prompt_ = !is_light_explosive_prompt_;
         }
         break;
 
-        case 11: // Print warning when drinking known malign potions
+        case 12: // Print warning when drinking known malign potions
         {
                 is_drink_malign_pot_prompt_ = !is_drink_malign_pot_prompt_;
         }
         break;
 
-        case 12: // Print warning when melee attacking with ranged weapons
+        case 13: // Print warning when melee attacking with ranged weapons
         {
                 is_ranged_wpn_meleee_prompt_ = !is_ranged_wpn_meleee_prompt_;
         }
         break;
 
-        case 13: // Ranged weapon auto reload
+        case 14: // Ranged weapon auto reload
         {
                 is_ranged_wpn_auto_reload_ = !is_ranged_wpn_auto_reload_;
         }
         break;
 
-        case 14: // Projectile delay
+        case 15: // Projectile delay
         {
                 const P p(opt_values_x_pos_, opt_y0_ + browser.y());
 
@@ -364,7 +373,7 @@ static void player_sets_option(const MenuBrowser& browser)
         }
         break;
 
-        case 15: // Shotgun delay
+        case 16: // Shotgun delay
         {
                 const P p(opt_values_x_pos_, opt_y0_ + browser.y());
 
@@ -383,7 +392,7 @@ static void player_sets_option(const MenuBrowser& browser)
         }
         break;
 
-        case 16: // Explosion delay
+        case 17: // Explosion delay
         {
                 const P p(opt_values_x_pos_, opt_y0_ + browser.y());
 
@@ -402,7 +411,7 @@ static void player_sets_option(const MenuBrowser& browser)
         }
         break;
 
-        case 17: // Reset to defaults
+        case 18: // Reset to defaults
         {
                 set_default_variables();
 
@@ -417,8 +426,10 @@ static void player_sets_option(const MenuBrowser& browser)
         break;
 
         default:
+        {
                 ASSERT(false);
-                break;
+        }
+        break;
         }
 }
 
@@ -443,6 +454,9 @@ static void read_file(std::vector<std::string>& lines)
 static void set_variables_from_lines(std::vector<std::string>& lines)
 {
         TRACE_FUNC_BEGIN;
+
+        is_vi_keys_ = lines.front() == "1";
+        lines.erase(begin(lines));
 
         is_audio_enabled_ = lines.front() == "1";
         lines.erase(begin(lines));
@@ -543,7 +557,7 @@ static std::vector<std::string> lines_from_variables()
 
         std::vector<std::string> lines;
 
-        lines.clear();
+        lines.push_back(is_vi_keys_ ? "1" : "0");
         lines.push_back(is_audio_enabled_ ? "1" : "0");
         lines.push_back(is_amb_audio_enabled_ ? "1" : "0");
         lines.push_back(std::to_string(screen_px_w_));
@@ -599,6 +613,11 @@ void init()
         }
 
         update_render_dims();
+}
+
+bool is_vi_keys()
+{
+        return is_vi_keys_;
 }
 
 bool is_tiles_mode()
@@ -664,14 +683,14 @@ int map_cell_px_h()
         return map_cell_px_h_;
 }
 
-bool is_text_mode_wall_full_square()
-{
-        return is_text_mode_wall_full_square_;
-}
-
 bool is_tiles_wall_full_square()
 {
         return is_tiles_wall_full_square_;
+}
+
+bool is_text_mode_wall_full_square()
+{
+        return is_text_mode_wall_full_square_;
 }
 
 bool is_audio_enabled()
@@ -773,7 +792,7 @@ void set_fullscreen(const bool value)
 // -----------------------------------------------------------------------------
 ConfigState::ConfigState() :
         State(),
-        browser_(18)
+        browser_(19)
 {
 
 }
@@ -838,18 +857,31 @@ void ConfigState::draw()
 
         const std::vector< std::pair< std::string, std::string > > labels = {
                 {
+                        "Input mode",
+                        config::is_vi_keys_
+                        ? "Vi-keys"
+                        : "Default"
+                },
+
+                {
                         "Enable audio",
-                        config::is_audio_enabled_ ? "Yes" : "No"
+                        config::is_audio_enabled_
+                        ? "Yes"
+                        : "No"
                 },
 
                 {
                         "Play ambient sounds",
-                        config::is_amb_audio_enabled_ ? "Yes" : "No"
+                        config::is_amb_audio_enabled_
+                        ? "Yes"
+                        : "No"
                 },
 
                 {
                         "Use tile set",
-                        config::is_tiles_mode_ ? "Yes" : "No"
+                        config::is_tiles_mode_
+                        ? "Yes"
+                        : "No"
                 },
 
                 {
@@ -858,56 +890,72 @@ void ConfigState::draw()
 
                 {
                         "Fullscreen",
-                        config::is_fullscreen_ ? "Yes" : "No"
+                        config::is_fullscreen_
+                        ? "Yes"
+                        : "No"
                 },
 
                 {
                         "Tiles mode wall symbol",
-                        config::is_tiles_wall_full_square_ ?
-                        "Full square" :
-                        "Pseudo-3D"
+                        config::is_tiles_wall_full_square_
+                        ? "Full square"
+                        : "Pseudo-3D"
                 },
 
                 {
                         "Text mode wall symbol",
-                        config::is_text_mode_wall_full_square_ ?
-                        "Full square" :
-                        "Hash sign"
+                        config::is_text_mode_wall_full_square_
+                        ? "Full square"
+                        : "Hash sign"
                 },
 
                 {
                         "Skip intro level",
-                        config::is_intro_lvl_skipped_ ? "Yes" : "No"
+                        config::is_intro_lvl_skipped_
+                        ? "Yes"
+                        : "No"
                 },
 
                 {
                         "Any key confirms \"-More-\" prompts",
-                        config::is_any_key_confirm_more_ ? "Yes" : "No"
+                        config::is_any_key_confirm_more_
+                        ? "Yes"
+                        : "No"
                 },
 
                 {
                         "Always warn when new monster is seen",
-                        config::always_warn_new_mon_ ? "Yes" : "No"
+                        config::always_warn_new_mon_
+                        ? "Yes"
+                        : "No"
                 },
 
                 {
                         "Warn when lighting explosives",
-                        config::is_light_explosive_prompt_ ? "Yes" : "No"
+                        config::is_light_explosive_prompt_
+                        ? "Yes"
+                        : "No"
                 },
 
                 {
                         "Warn when drinking malign potions",
-                        config::is_drink_malign_pot_prompt_ ? "Yes" : "No"
+                        config::is_drink_malign_pot_prompt_
+                        ? "Yes"
+                        : "No"
                 },
 
                 {
                         "Ranged weapon melee attack warning",
-                        config::is_ranged_wpn_meleee_prompt_ ? "Yes" : "No"
+                        config::is_ranged_wpn_meleee_prompt_
+                        ? "Yes"
+                        : "No"
                 },
 
                 {
                         "Ranged weapon auto reload",
-                        config::is_ranged_wpn_auto_reload_ ? "Yes" : "No"
+                        config::is_ranged_wpn_auto_reload_
+                        ? "Yes"
+                        : "No"
                 },
 
                 {
@@ -939,9 +987,9 @@ void ConfigState::draw()
                 const std::string& str_r = label.second;
 
                 const auto& color =
-                        browser_.y() == (int)i ?
-                        colors::menu_highlight() :
-                        colors::menu_dark();
+                        (browser_.y() == (int)i)
+                        ? colors::menu_highlight()
+                        : colors::menu_dark();
 
 
                 const int y = config::opt_y0_ + i;
@@ -971,6 +1019,6 @@ void ConfigState::draw()
         io::draw_text(
                 "[enter] to set option [space/esc] to exit",
                 Panel::screen,
-                P(1, 20),
+                P(1, 21),
                 colors::white());
 }
