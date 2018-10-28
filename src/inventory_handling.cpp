@@ -86,7 +86,7 @@ static bool run_drop_query(const InvType inv_type, const size_t idx)
                 const P done_inf_pos = nr_query_pos + P(max_digits + 2, 0);
 
                 io::draw_text(
-                        "[enter] to drop" + common_messages::cancel_info,
+                        "[enter] to drop " + common_messages::cancel_info,
                         Panel::screen,
                         done_inf_pos,
                         colors::light_white());
@@ -1240,7 +1240,7 @@ void Equip::draw()
 
         if (!has_item)
         {
-                io::draw_text(heading + common_messages::any_key_info,
+                io::draw_text(heading + " " + common_messages::any_key_info,
                               Panel::screen,
                               P(0, 0),
                               colors::light_white());
@@ -1251,7 +1251,7 @@ void Equip::draw()
         // An item is available
 
         io::draw_text_center(
-                heading + common_messages::info_screen_tip,
+                heading + " " + common_messages::info_screen_tip,
                 Panel::screen,
                 P(panels::center_x(Panel::screen), 0),
                 colors::title());

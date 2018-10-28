@@ -64,7 +64,7 @@ void run()
 
         // Choose direction
         msg_log::add(
-                "Which direction?" + common_messages::cancel_info,
+                "Which direction? " + common_messages::cancel_info,
                 colors::light_white());
 
         const Dir input_dir = query::dir(AllowCenter::yes);

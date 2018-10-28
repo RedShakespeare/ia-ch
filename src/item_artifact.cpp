@@ -164,6 +164,7 @@ void HornOfBanishmentHeard::run(Actor& actor) const
 
                         msg_log::add(
                                 name_the +
+                                " " +
                                 common_messages::mon_disappear);
                 }
 

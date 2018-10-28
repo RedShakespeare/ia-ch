@@ -373,10 +373,10 @@ void Viewing::on_moved()
             !actor->is_player() &&
             map::player->can_see_actor(*actor))
         {
-                msg_log::add("[l] for description");
+                msg_log::add("[l] for description", colors::light_white());
         }
 
-        msg_log::add(common_messages::cancel_info_no_space);
+        msg_log::add(common_messages::cancel_info, colors::light_white());
 }
 
 void Viewing::handle_input(const InputData& input)
@@ -434,11 +434,14 @@ void Aiming::on_moved()
 
                         msg_log::add(
                                 std::to_string(data.hit_chance_tot) +
-                                "% hit chance.");
+                                "% hit chance.",
+                                colors::light_white());
                 }
         }
 
-        msg_log::add("[f] to fire" + common_messages::cancel_info);
+        msg_log::add(
+                "[f] to fire " + common_messages::cancel_info,
+                colors::light_white());
 }
 
 void Aiming::handle_input(const InputData& input)
@@ -540,11 +543,14 @@ void Throwing::on_moved()
 
                         msg_log::add(
                                 std::to_string(data.hit_chance_tot) +
-                                "% hit chance.");
+                                "% hit chance.",
+                                colors::light_white());
                 }
         }
 
-        msg_log::add("[t] to throw" + common_messages::cancel_info);
+        msg_log::add(
+                "[t] to throw " + common_messages::cancel_info,
+                colors::light_white());
 }
 
 void Throwing::handle_input(const InputData& input)
@@ -689,7 +695,9 @@ void ThrowingExplosive::on_moved()
 {
         look::print_location_info_msgs(pos_);
 
-        msg_log::add("[t] to throw" + common_messages::cancel_info);
+        msg_log::add(
+                "[t] to throw " + common_messages::cancel_info,
+                colors::light_white());
 }
 
 void ThrowingExplosive::handle_input(const InputData& input)

@@ -622,7 +622,7 @@ void handle(const GameCmd cmd)
                 {
                         msg_log::add(
                                 std::string(
-                                        "Which direction?" +
+                                        "Which direction? " +
                                         common_messages::cancel_info),
                                 colors::light_white());
 

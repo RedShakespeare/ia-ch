@@ -97,7 +97,7 @@ void player_try_close_or_jam()
         msg_log::clear();
 
         msg_log::add(
-                "Which direction?" + common_messages::cancel_info,
+                "Which direction? " + common_messages::cancel_info,
                 colors::light_white());
 
         const Dir input_dir = query::dir(AllowCenter::no);

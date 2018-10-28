@@ -222,7 +222,10 @@ void teleport(Actor& actor, P p, const Array2<bool>& blocked)
                         text_format::first_to_upper(
                                 actor.name_the());
 
-                msg_log::add(actor_name_the + common_messages::mon_disappear);
+                msg_log::add(
+                        actor_name_the +
+                        " " +
+                        common_messages::mon_disappear);
         }
 
         if (!actor.is_player())

@@ -236,7 +236,7 @@ void msg(const std::string& msg,
         y += 2;
 
         io::draw_text_center(
-                common_messages::confirm_info_no_space,
+                common_messages::confirm_info,
                 Panel::screen,
                 P(panels::center_x(Panel::screen), y),
                 colors::menu_dark(),
