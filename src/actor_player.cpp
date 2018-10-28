@@ -10,7 +10,7 @@
 #include "attack.hpp"
 #include "audio.hpp"
 #include "bot.hpp"
-#include "common_messages.hpp"
+#include "common_text.hpp"
 #include "create_character.hpp"
 #include "drop.hpp"
 #include "explosion.hpp"
@@ -907,7 +907,7 @@ void Player::on_actor_turn()
     if (is_busy() && is_seeing_burning_feature())
     {
             msg_log::add(
-                    common_messages::fire_prevent_cmd,
+                    common_text::fire_prevent_cmd,
                     colors::text(),
                     true);
     }

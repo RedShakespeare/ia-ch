@@ -4,8 +4,8 @@
 #include "global.hpp"
 
 class Actor;
-class P;
 class Wpn;
+struct P;
 
 namespace attack
 {

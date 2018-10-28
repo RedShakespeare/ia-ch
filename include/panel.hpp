@@ -2,8 +2,8 @@
 #define PANEL_HPP
 
 struct PxPos;
-class R;
-class P;
+struct R;
+struct P;
 
 // TODO: Add *_border for other panels than log as well
 enum class Panel

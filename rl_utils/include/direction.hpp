@@ -4,7 +4,7 @@
 #include <vector>
 #include <string>
 
-class P;
+struct P;
 
 enum class Dir
 {

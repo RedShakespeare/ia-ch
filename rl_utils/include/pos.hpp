@@ -3,7 +3,7 @@
 
 #include "direction.hpp"
 
-class P
+struct P
 {
 public:
         P() :

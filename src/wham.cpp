@@ -2,7 +2,7 @@
 
 #include "actor_hit.hpp"
 #include "actor_player.hpp"
-#include "common_messages.hpp"
+#include "common_text.hpp"
 #include "feature_door.hpp"
 #include "feature_rigid.hpp"
 #include "game_time.hpp"
@@ -64,7 +64,7 @@ void run()
 
         // Choose direction
         msg_log::add(
-                "Which direction? " + common_messages::cancel_info,
+                "Which direction? " + common_text::cancel_hint,
                 colors::light_white());
 
         const Dir input_dir = query::dir(AllowCenter::yes);

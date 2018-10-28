@@ -2,7 +2,7 @@
 
 #include "audio.hpp"
 #include "browser.hpp"
-#include "common_messages.hpp"
+#include "common_text.hpp"
 #include "config.hpp"
 #include "io.hpp"
 #include "msg_log.hpp"
@@ -236,7 +236,7 @@ void msg(const std::string& msg,
         y += 2;
 
         io::draw_text_center(
-                common_messages::confirm_info,
+                common_text::confirm_hint,
                 Panel::screen,
                 P(panels::center_x(Panel::screen), y),
                 colors::menu_dark(),

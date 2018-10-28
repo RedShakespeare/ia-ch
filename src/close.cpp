@@ -2,7 +2,7 @@
 
 #include "actor.hpp"
 #include "actor_player.hpp"
-#include "common_messages.hpp"
+#include "common_text.hpp"
 #include "feature.hpp"
 #include "feature_door.hpp"
 #include "io.hpp"
@@ -97,7 +97,7 @@ void player_try_close_or_jam()
         msg_log::clear();
 
         msg_log::add(
-                "Which direction? " + common_messages::cancel_info,
+                "Which direction? " + common_text::cancel_hint,
                 colors::light_white());
 
         const Dir input_dir = query::dir(AllowCenter::no);

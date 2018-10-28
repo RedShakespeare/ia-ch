@@ -6,8 +6,8 @@
 
 class Actor;
 class Item;
-class P;
 class Wpn;
+struct P;
 
 class AttData
 {

@@ -1,8 +1,8 @@
 #ifndef VIEWPORT_HPP
 #define VIEWPORT_HPP
 
-class P;
-class R;
+struct P;
+struct R;
 
 namespace viewport
 {

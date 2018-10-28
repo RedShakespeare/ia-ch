@@ -9,8 +9,7 @@
 #include "actor_player.hpp"
 #include "audio.hpp"
 #include "browser.hpp"
-#include "common_messages.hpp"
-#include "common_messages.hpp"
+#include "common_text.hpp"
 #include "drop.hpp"
 #include "io.hpp"
 #include "item_factory.hpp"
@@ -86,7 +85,7 @@ static bool run_drop_query(const InvType inv_type, const size_t idx)
                 const P done_inf_pos = nr_query_pos + P(max_digits + 2, 0);
 
                 io::draw_text(
-                        "[enter] to drop " + common_messages::cancel_info,
+                        "[enter] to drop " + common_text::cancel_hint,
                         Panel::screen,
                         done_inf_pos,
                         colors::light_white());
@@ -670,7 +669,7 @@ void BrowseInv::draw()
         const size_t nr_slots = (size_t)SlotId::END;
 
         io::draw_text_center(
-                "Browsing inventory " + common_messages::info_screen_tip,
+                "Browsing inventory " + common_text::screen_exit_hint,
                 Panel::screen,
                 P(panels::center_x(Panel::screen), 0),
                 colors::title());
@@ -715,7 +714,7 @@ void BrowseInv::draw()
         if (!browser_.is_on_top_page())
         {
                 io::draw_text(
-                        "(More - Page Up)",
+                        common_text::next_page_up_hint,
                         Panel::item_menu,
                         P(0, -1),
                         colors::light_white());
@@ -724,7 +723,7 @@ void BrowseInv::draw()
         if (!browser_.is_on_btm_page())
         {
                 io::draw_text(
-                        "(More - Page Down)",
+                        common_text::next_page_down_hint,
                         Panel::item_menu,
                         P(0, panels::h(Panel::item_menu)),
                         colors::light_white());
@@ -873,7 +872,7 @@ void Apply::draw()
         const int browser_y = browser_.y();
 
         io::draw_text_center(
-                "Apply which item? " + common_messages::info_screen_tip,
+                "Apply which item? " + common_text::screen_exit_hint,
                 Panel::screen,
                 P(panels::center_x(Panel::screen), 0),
                 colors::title());
@@ -904,7 +903,7 @@ void Apply::draw()
         if (!browser_.is_on_top_page())
         {
                 io::draw_text(
-                        "(More - Page Up)",
+                        common_text::next_page_up_hint,
                         Panel::item_menu,
                         P(0, -1),
                         colors::light_white());
@@ -913,7 +912,7 @@ void Apply::draw()
         if (!browser_.is_on_btm_page())
         {
                 io::draw_text(
-                        "(More - Page Down)",
+                        common_text::next_page_down_hint,
                         Panel::item_menu,
                         P(0, panels::h(Panel::item_menu)),
                         colors::light_white());
@@ -1005,7 +1004,7 @@ void Drop::draw()
         io::clear_screen();
 
         io::draw_text_center(
-                "Drop which item? " + common_messages::info_screen_tip,
+                "Drop which item? " + common_text::screen_exit_hint,
                 Panel::screen,
                 P(panels::center_x(Panel::screen), 0),
                 colors::title());
@@ -1053,7 +1052,7 @@ void Drop::draw()
         if (!browser_.is_on_top_page())
         {
                 io::draw_text(
-                        "(More - Page Up)",
+                        common_text::next_page_up_hint,
                         Panel::item_menu,
                         P(0, -1),
                         colors::light_white());
@@ -1062,7 +1061,7 @@ void Drop::draw()
         if (!browser_.is_on_btm_page())
         {
                 io::draw_text(
-                        "(More - Page Down)",
+                        common_text::next_page_down_hint,
                         Panel::item_menu,
                         P(0, panels::h(Panel::item_menu)),
                         colors::light_white());
@@ -1240,7 +1239,7 @@ void Equip::draw()
 
         if (!has_item)
         {
-                io::draw_text(heading + " " + common_messages::any_key_info,
+                io::draw_text(heading + " " + common_text::any_key_hint,
                               Panel::screen,
                               P(0, 0),
                               colors::light_white());
@@ -1251,7 +1250,7 @@ void Equip::draw()
         // An item is available
 
         io::draw_text_center(
-                heading + " " + common_messages::info_screen_tip,
+                heading + " " + common_text::screen_exit_hint,
                 Panel::screen,
                 P(panels::center_x(Panel::screen), 0),
                 colors::title());
@@ -1300,18 +1299,20 @@ void Equip::draw()
         // Draw "more" labels
         if (!browser_.is_on_top_page())
         {
-                io::draw_text("(More - Page Up)",
-                              Panel::item_menu,
-                              P(0, -1),
-                              colors::light_white());
+                io::draw_text(
+                        common_text::next_page_up_hint,
+                        Panel::item_menu,
+                        P(0, -1),
+                        colors::light_white());
         }
 
         if (!browser_.is_on_btm_page())
         {
-                io::draw_text("(More - Page Down)",
-                              Panel::item_menu,
-                              P(0, panels::h(Panel::item_menu)),
-                              colors::light_white());
+                io::draw_text(
+                        common_text::next_page_down_hint,
+                        Panel::item_menu,
+                        P(0, panels::h(Panel::item_menu)),
+                        colors::light_white());
         }
 }
 
@@ -1480,8 +1481,8 @@ void SelectThrow::draw()
 {
         io::draw_text_center(
                 std::string(
-                        "Use which item for throwing? " +
-                        common_messages::info_screen_tip),
+                        "Throw which item? " +
+                        common_text::screen_exit_hint),
                 Panel::screen,
                 P(panels::center_x(Panel::screen), 0),
                 colors::title());
@@ -1530,7 +1531,7 @@ void SelectThrow::draw()
         if (!browser_.is_on_top_page())
         {
                 io::draw_text(
-                        "(More - Page Up)",
+                        common_text::next_page_up_hint,
                         Panel::item_menu,
                         P(0, -1),
                         colors::light_white());
@@ -1539,7 +1540,7 @@ void SelectThrow::draw()
         if (!browser_.is_on_btm_page())
         {
                 io::draw_text(
-                        "(More - Page Down)",
+                        common_text::next_page_down_hint,
                         Panel::item_menu,
                         P(0, panels::h(Panel::item_menu)),
                         colors::light_white());
@@ -1738,7 +1739,7 @@ void SelectIdentify::draw()
         if (!browser_.is_on_top_page())
         {
                 io::draw_text(
-                        "(More - Page Up)",
+                        common_text::next_page_up_hint,
                         Panel::item_menu,
                         P(0, -1),
                         colors::light_white());
@@ -1747,7 +1748,7 @@ void SelectIdentify::draw()
         if (!browser_.is_on_btm_page())
         {
                 io::draw_text(
-                        "(More - Page Down)",
+                        common_text::next_page_down_hint,
                         Panel::item_menu,
                         P(0, panels::h(Panel::item_menu)),
                         colors::light_white());

@@ -7,7 +7,7 @@
 #include "actor_player.hpp"
 #include "character_descr.hpp"
 #include "close.hpp"
-#include "common_messages.hpp"
+#include "common_text.hpp"
 #include "config.hpp"
 #include "disarm.hpp"
 #include "game_time.hpp"
@@ -357,11 +357,11 @@ void handle(const GameCmd cmd)
         {
                 if (map::player->is_seeing_burning_feature())
                 {
-                        msg_log::add(common_messages::fire_prevent_cmd);
+                        msg_log::add(common_text::fire_prevent_cmd);
                 }
                 else if (!map::player->seen_foes().empty())
                 {
-                        msg_log::add(common_messages::mon_prevent_cmd);
+                        msg_log::add(common_text::mon_prevent_cmd);
                 }
                 else // We are allowed to wait
                 {
@@ -600,11 +600,11 @@ void handle(const GameCmd cmd)
         {
                 if (map::player->is_seeing_burning_feature())
                 {
-                        msg_log::add(common_messages::fire_prevent_cmd);
+                        msg_log::add(common_text::fire_prevent_cmd);
                 }
                 else if (!map::player->seen_foes().empty())
                 {
-                        msg_log::add(common_messages::mon_prevent_cmd);
+                        msg_log::add(common_text::mon_prevent_cmd);
                 }
                 else if (!map::player->properties.allow_see())
                 {
@@ -623,7 +623,7 @@ void handle(const GameCmd cmd)
                         msg_log::add(
                                 std::string(
                                         "Which direction? " +
-                                        common_messages::cancel_info),
+                                        common_text::cancel_hint),
                                 colors::light_white());
 
                         const Dir input_dir = query::dir(AllowCenter::no);

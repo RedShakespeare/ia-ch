@@ -1,7 +1,7 @@
 #ifndef RL_UTILS_RECT_HPP
 #define RL_UTILS_RECT_HPP
 
-class R
+struct R
 {
 public:
         R() :

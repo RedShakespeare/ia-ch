@@ -2415,8 +2415,7 @@ void ItemContainer::init(const FeatureId feature_id,
     }
 }
 
-void ItemContainer::open(const P& feature_pos,
-                         Actor* const actor_opening)
+void ItemContainer::open(const P& feature_pos, Actor* const actor_opening)
 {
     if (actor_opening)
     {
@@ -2425,33 +2424,34 @@ void ItemContainer::open(const P& feature_pos,
             msg_log::clear();
 
             const std::string name =
-                item->name(ItemRefType::plural,
-                           ItemRefInf::yes,
-                           ItemRefAttInf::wpn_main_att_mode);
+                item->name(
+                        ItemRefType::plural,
+                        ItemRefInf::yes,
+                        ItemRefAttInf::wpn_main_att_mode);
 
-            msg_log::add("Pick up " + name + "? [y/n]");
+            msg_log::add("Pick up " + name + "? [y/n]", colors::light_white());
 
             const ItemData&  data = item->data();
 
             Wpn* wpn =
-                    data.ranged.is_ranged_wpn
-                    ? static_cast<Wpn*>(item)
-                    : nullptr;
+                data.ranged.is_ranged_wpn
+                ? static_cast<Wpn*>(item)
+                : nullptr;
 
             const bool is_unloadable_wpn =
                 wpn &&
-                wpn->ammo_loaded_ > 0 &&
+                (wpn->ammo_loaded_ > 0) &&
                 !data.ranged.has_infinite_ammo;
 
             if (is_unloadable_wpn)
             {
-                msg_log::add("Unload? [G]");
+                msg_log::add("Unload? [u]");
             }
 
             const BinaryAnswer answer =
                 query::yes_or_no(
                         is_unloadable_wpn
-                        ? 'G'
+                        ? 'u'
                         : -1);
 
             msg_log::clear();

@@ -1,8 +1,8 @@
 #include "disarm.hpp"
 
 #include "actor_player.hpp"
-#include "common_messages.hpp"
-#include "common_messages.hpp"
+#include "common_text.hpp"
+#include "common_text.hpp"
 #include "feature_trap.hpp"
 #include "game_time.hpp"
 #include "inventory.hpp"
@@ -32,7 +32,7 @@ void player_disarm()
         }
 
         msg_log::add(
-                "Which direction? " + common_messages::cancel_info,
+                "Which direction? " + common_text::cancel_hint,
                 colors::light_white());
 
         const auto input_dir = query::dir(AllowCenter::yes);
@@ -66,7 +66,7 @@ void player_disarm()
 
         if (!trap || trap->is_hidden())
         {
-                msg_log::add(common_messages::disarm_no_trap);
+                msg_log::add(common_text::disarm_no_trap);
 
                 states::draw();
 

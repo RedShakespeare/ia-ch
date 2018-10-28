@@ -4,7 +4,7 @@
 
 #include "actor_mon.hpp"
 #include "actor_player.hpp"
-#include "common_messages.hpp"
+#include "common_text.hpp"
 #include "feature_door.hpp"
 #include "feature_mob.hpp"
 #include "game_time.hpp"
@@ -225,7 +225,7 @@ void teleport(Actor& actor, P p, const Array2<bool>& blocked)
                 msg_log::add(
                         actor_name_the +
                         " " +
-                        common_messages::mon_disappear);
+                        common_text::mon_disappear);
         }
 
         if (!actor.is_player())

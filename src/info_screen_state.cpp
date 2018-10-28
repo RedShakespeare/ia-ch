@@ -1,6 +1,6 @@
 #include "info_screen_state.hpp"
 
-#include "common_messages.hpp"
+#include "common_text.hpp"
 #include "io.hpp"
 #include "panel.hpp"
 
@@ -58,8 +58,8 @@ void InfoScreenState::draw_interface() const
 
         const std::string cmd_info =
                 (type() == InfoScreenType::scrolling)
-                ? common_messages::info_screen_tip_scrollable
-                : common_messages::info_screen_tip;
+                ? common_text::scrollable_info_screen_hint
+                : common_text::screen_exit_hint;
 
         io::draw_text_center(
                 " " + cmd_info + " ",

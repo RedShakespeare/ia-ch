@@ -28,7 +28,7 @@ set(COMMON_SRC
         include/character_descr.hpp
         include/close.hpp
         include/colors.hpp
-        include/common_messages.hpp
+        include/common_text.hpp
         include/config.hpp
         include/create_character.hpp
         include/disarm.hpp
@@ -131,7 +131,7 @@ set(COMMON_SRC
         src/character_descr.cpp
         src/close.cpp
         src/colors.cpp
-        src/common_messages.cpp
+        src/common_text.cpp
         src/config.cpp
         src/create_character.cpp
         src/disarm.cpp

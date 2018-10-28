@@ -6,7 +6,7 @@
 #include "actor_player.hpp"
 #include "attack.hpp"
 #include "attack_data.hpp"
-#include "common_messages.hpp"
+#include "common_text.hpp"
 #include "config.hpp"
 #include "draw_map.hpp"
 #include "explosion.hpp"
@@ -373,10 +373,35 @@ void Viewing::on_moved()
             !actor->is_player() &&
             map::player->can_see_actor(*actor))
         {
-                msg_log::add("[l] for description", colors::light_white());
+                // TODO: This should not be specified here
+                const auto view_key =
+                        config::is_vi_keys()
+                        ? 'v'
+                        : 'l';
+
+                // In debug mode, confirm that this is actually the correct key,
+                // however see TODO above
+#ifndef NDEBUG
+                {
+                        InputData dummy_input;
+                        dummy_input.key = view_key;
+
+                        const auto game_cmd =
+                                game_commands::to_cmd(dummy_input);
+
+                        ASSERT(game_cmd == GameCmd::look);
+                }
+#endif // NDEBUG
+
+                const std::string msg =
+                        std::string("[") +
+                        view_key +
+                        std::string("] for description");
+
+                msg_log::add(msg, colors::light_white());
         }
 
-        msg_log::add(common_messages::cancel_info, colors::light_white());
+        msg_log::add(common_text::cancel_hint, colors::light_white());
 }
 
 void Viewing::handle_input(const InputData& input)
@@ -399,7 +424,7 @@ void Viewing::handle_input(const InputData& input)
                         states::push(std::move(view_actor_descr));
                 }
         }
-        else if ((input.key == SDLK_SPACE) || (input.key == SDLK_ESCAPE))
+        else if ((input.key == SDLK_ESCAPE) || (input.key == SDLK_SPACE))
         {
                 msg_log::clear();
 
@@ -439,9 +464,29 @@ void Aiming::on_moved()
                 }
         }
 
-        msg_log::add(
-                "[f] to fire " + common_messages::cancel_info,
-                colors::light_white());
+        // TODO: This should not be specified here
+        const auto fire_key = 'f';
+
+        // In debug mode, confirm that this is actually the correct key,
+        // however see TODO above
+#ifndef NDEBUG
+        {
+                InputData dummy_input;
+                dummy_input.key = fire_key;
+
+                const auto game_cmd = game_commands::to_cmd(dummy_input);
+
+                ASSERT(game_cmd == GameCmd::fire);
+        }
+#endif // NDEBUG
+
+        const std::string msg =
+                std::string("[") +
+                fire_key +
+                std::string("] to fire ") +
+                common_text::cancel_hint;
+
+        msg_log::add(msg, colors::light_white());
 }
 
 void Aiming::handle_input(const InputData& input)
@@ -548,16 +593,36 @@ void Throwing::on_moved()
                 }
         }
 
-        msg_log::add(
-                "[t] to throw " + common_messages::cancel_info,
-                colors::light_white());
+        // TODO: This should not be specified here
+        const auto throw_key = 't';
+
+        // In debug mode, confirm that this is actually the correct key,
+        // however see TODO above
+#ifndef NDEBUG
+        {
+                InputData dummy_input;
+                dummy_input.key = throw_key;
+
+                const auto game_cmd = game_commands::to_cmd(dummy_input);
+
+                ASSERT(game_cmd == GameCmd::throw_item);
+        }
+#endif // NDEBUG
+
+        const std::string msg =
+                std::string("[") +
+                throw_key +
+                std::string("] to throw ") +
+                common_text::cancel_hint;
+
+        msg_log::add(msg, colors::light_white());
 }
 
 void Throwing::handle_input(const InputData& input)
 {
         const auto game_cmd = game_commands::to_cmd(input);
 
-        if ((game_cmd == GameCmd::throw_item) || (input.key == SDLK_SPACE))
+        if ((game_cmd == GameCmd::throw_item) || (input.key == SDLK_RETURN))
         {
                 if (pos_ != map::player->pos)
                 {
@@ -695,9 +760,29 @@ void ThrowingExplosive::on_moved()
 {
         look::print_location_info_msgs(pos_);
 
-        msg_log::add(
-                "[t] to throw " + common_messages::cancel_info,
-                colors::light_white());
+        // TODO: This should not be specified here
+        const auto throw_key = 't';
+
+        // In debug mode, confirm that this is actually the correct key,
+        // however see TODO above
+#ifndef NDEBUG
+        {
+                InputData dummy_input;
+                dummy_input.key = throw_key;
+
+                const auto game_cmd = game_commands::to_cmd(dummy_input);
+
+                ASSERT(game_cmd == GameCmd::throw_item);
+        }
+#endif // NDEBUG
+
+        const std::string msg =
+                std::string("[") +
+                throw_key +
+                std::string("] to throw ") +
+                common_text::cancel_hint;
+
+        msg_log::add(msg, colors::light_white());
 }
 
 void ThrowingExplosive::handle_input(const InputData& input)
@@ -769,10 +854,12 @@ void CtrlTele::on_moved()
                 const int chance_pct = chance_of_success_pct(pos_);
 
                 msg_log::add(
-                        std::to_string(chance_pct) +
-                        "% chance of success.");
+                        std::to_string(chance_pct) + "% chance of success.",
+                        colors::light_white());
 
-                msg_log::add("[enter] to try teleporting here");
+                msg_log::add(
+                        "[enter] to try teleporting here",
+                        colors::light_white());
         }
 }
 

@@ -4,6 +4,8 @@
 #include <string>
 #include <unordered_map>
 
+struct P;
+
 // NOTE: When updating this, also update the two maps below
 enum class TileId
 {
@@ -552,8 +554,6 @@ const std::unordered_map<TileId, std::string> tile_id_to_str_map = {
         {TileId::zombie_unarmed, "zombie_unarmed"},
         {TileId::END, "none"}
 };
-
-class P;
 
 namespace gfx
 {

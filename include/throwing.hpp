@@ -4,14 +4,15 @@
 
 class Item;
 class Actor;
-class P;
+struct P;
 
 namespace throwing
 {
 
-void throw_item(Actor& actor_throwing,
-                const P& tgt_pos,
-                Item& item_thrown);
+void throw_item(
+        Actor& actor_throwing,
+        const P& tgt_pos,
+        Item& item_thrown);
 
 void player_throw_lit_explosive(const P& aim_cell);
 

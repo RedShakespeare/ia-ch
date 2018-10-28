@@ -19,50 +19,45 @@ MenuAction MenuBrowser::read(
         const InputData& input,
         MenuInputMode mode)
 {
-        if (input.key == SDLK_UP ||
-            input.key == '8')
+        if ((input.key == SDLK_UP) || (input.key == '8'))
         {
                 move(VerDir::up);
+
                 return MenuAction::moved;
         }
-
-        if (input.key == SDLK_DOWN ||
-            input.key == '2')
+        else if ((input.key == SDLK_DOWN) || (input.key == '2'))
         {
                 move(VerDir::down);
+
                 return MenuAction::moved;
         }
-
-        if (input.key == SDLK_PAGEUP)
+        else if ((input.key == SDLK_PAGEUP) || (input.key == '<'))
         {
                 move_page(VerDir::up);
+
                 return MenuAction::moved;
         }
-
-        if (input.key == SDLK_PAGEDOWN)
+        else if ((input.key == SDLK_PAGEDOWN) || (input.key == '>'))
         {
                 move_page(VerDir::down);
+
                 return MenuAction::moved;
         }
-
-        if (input.key == SDLK_RETURN)
+        else if (input.key == SDLK_RETURN)
         {
                 audio::play(SfxId::menu_select);
 
                 return MenuAction::selected;
         }
-
-        if (input.key == SDLK_SPACE)
+        else if (input.key == SDLK_SPACE)
         {
                 return MenuAction::space;
         }
-
-        if (input.key == SDLK_ESCAPE)
+        else if (input.key == SDLK_ESCAPE)
         {
                 return MenuAction::esc;
         }
-
-        if (mode == MenuInputMode::scrolling_and_letters)
+        else if (mode == MenuInputMode::scrolling_and_letters)
         {
                 const char c = input.key;
 
@@ -98,8 +93,10 @@ MenuAction MenuBrowser::read(
 
                 return MenuAction::selected;
         }
-
-        return MenuAction::none;
+        else
+        {
+                return MenuAction::none;
+        }
 }
 
 void MenuBrowser::move(const VerDir dir)

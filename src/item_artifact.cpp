@@ -6,7 +6,7 @@
 #include "actor_hit.hpp"
 #include "actor_mon.hpp"
 #include "actor_player.hpp"
-#include "common_messages.hpp"
+#include "common_text.hpp"
 #include "feature_rigid.hpp"
 #include "game.hpp"
 #include "game_time.hpp"
@@ -165,7 +165,7 @@ void HornOfBanishmentHeard::run(Actor& actor) const
                         msg_log::add(
                                 name_the +
                                 " " +
-                                common_messages::mon_disappear);
+                                common_text::mon_disappear);
                 }
 
                 actor.state = ActorState::destroyed;
