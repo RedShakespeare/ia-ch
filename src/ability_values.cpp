@@ -222,4 +222,9 @@ ActionResult roll(const int skill_value)
         return ActionResult::fail_big;
 }
 
+int hit_chance_pct_actual(const int value)
+{
+        return constr_in_range(2, value, 98);
+}
+
 } // ability_roll

@@ -9,22 +9,11 @@
 
 class Actor;
 
-struct ActorDescrText
-{
-        std::string str = {};
-
-        Color color = colors::black();
-
-        int x_pos = 0;
-};
-
 class ViewActorDescr: public InfoScreenState
 {
 public:
         ViewActorDescr(Actor& actor) :
                 InfoScreenState(),
-                lines_(),
-                top_idx_(0),
                 actor_(actor) {}
 
         void on_start() override;
@@ -36,26 +25,18 @@ public:
         StateId id() override;
 
 private:
-        std::string title() const override
-        {
-                return "Monster info";
-        }
+        std::string title() const override;
 
         InfoScreenType type() const override
         {
                 return InfoScreenType::scrolling;
         }
 
-        void put_text(
-                const std::string str,
-                const P& p,
-                const Color& color);
-
         std::string auto_description_str() const;
 
-        std::vector< std::vector<ActorDescrText> > lines_;
+        std::vector<ColoredString> lines_ {};
 
-        int top_idx_;
+        int top_idx_ {0};
 
         Actor& actor_;
 };

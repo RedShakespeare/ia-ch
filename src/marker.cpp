@@ -450,15 +450,19 @@ void Aiming::on_moved()
                     !actor->is_player() &&
                     map::player->can_see_actor(*actor))
                 {
-                        RangedAttData data(
+                        RangedAttData att_data(
                                 map::player,
                                 origin_,
-                                actor->pos,  // Aim position
-                                actor->pos,  // Current position
+                                actor->pos, // Aim position
+                                actor->pos, // Current position
                                 wpn_);
 
+                        const int hit_chance =
+                                ability_roll::hit_chance_pct_actual(
+                                        att_data.hit_chance_tot);
+
                         msg_log::add(
-                                std::to_string(data.hit_chance_tot) +
+                                std::to_string(hit_chance) +
                                 "% hit chance.",
                                 colors::light_white());
                 }
@@ -580,14 +584,18 @@ void Throwing::on_moved()
                     !actor->is_player() &&
                     map::player->can_see_actor(*actor))
                 {
-                        ThrowAttData data(
+                        ThrowAttData att_data(
                                 map::player,
-                                actor->pos,       // Aim position
-                                actor->pos,       // Current position
+                                actor->pos, // Aim position
+                                actor->pos, // Current position
                                 *inv_item_);
 
+                        const int hit_chance =
+                                ability_roll::hit_chance_pct_actual(
+                                        att_data.hit_chance_tot);
+
                         msg_log::add(
-                                std::to_string(data.hit_chance_tot) +
+                                std::to_string(hit_chance) +
                                 "% hit chance.",
                                 colors::light_white());
                 }

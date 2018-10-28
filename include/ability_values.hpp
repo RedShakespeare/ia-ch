@@ -85,6 +85,12 @@ namespace ability_roll
 
 ActionResult roll(const int skill_value);
 
+// Intended for presenting hit chance values to the player (when aiming etc).
+// The parameter value (which could for example be > 100% due to bonuses) is
+// clamped within the actual possible hit chance range, considering critical
+// hits and misses.
+int hit_chance_pct_actual(const int value);
+
 } // ability_roll
 
 #endif // ABILITY_VALUES_HPP

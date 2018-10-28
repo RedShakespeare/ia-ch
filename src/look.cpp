@@ -25,10 +25,15 @@
 // -----------------------------------------------------------------------------
 // private
 // -----------------------------------------------------------------------------
+static int mon_descr_x0 = 1;
+
+static int mon_descr_max_w()
+{
+        return panels::w(Panel::screen) - 2;
+}
+
 static std::string get_mon_memory_turns_descr(const Actor& actor)
 {
-        std::string str = "";
-
         const int nr_turns_aware = actor.data->nr_turns_aware;
 
         if (nr_turns_aware <= 0)
@@ -59,8 +64,6 @@ static std::string get_mon_memory_turns_descr(const Actor& actor)
 
 static std::string get_mon_dlvl_descr(const Actor& actor)
 {
-        std::string str = "";
-
         const auto& d = *actor.data;
 
         const int dlvl = d.spawn_min_dlvl;
@@ -123,15 +126,13 @@ static std::string mon_speed_type_to_str(const Actor& actor)
 
 static std::string get_mon_speed_descr(const Actor& actor)
 {
-        std::string str = "";
-
         const auto& d = *actor.data;
 
         const std::string speed_type_str = mon_speed_type_to_str(actor);
 
         if (speed_type_str.empty())
         {
-                return str;
+                return "";;
         }
 
         if (d.is_unique)
@@ -189,8 +190,6 @@ static void mon_shock_lvl_to_str(
 
 static std::string get_mon_shock_descr(const Actor& actor)
 {
-        std::string str = "";
-
         std::string shock_str = "";
 
         std::string shock_punct_str = "";
@@ -199,7 +198,7 @@ static std::string get_mon_shock_descr(const Actor& actor)
 
         if (shock_str.empty())
         {
-                return str;
+                return "";
         }
 
         if (actor.data->is_unique)
@@ -221,6 +220,36 @@ static std::string get_mon_shock_descr(const Actor& actor)
         }
 }
 
+static std::string get_melee_hit_chance_descr(Actor& actor)
+{
+        const Item* wielded_item = map::player->inv.item_in_slot(SlotId::wpn);
+
+        const auto* const player_wpn =
+                wielded_item
+                ? static_cast<const Wpn*>(wielded_item)
+                : &map::player->unarmed_wpn();
+
+        if (!player_wpn)
+        {
+                ASSERT(false);
+
+                return "";
+        }
+
+        const MeleeAttData att_data(map::player, actor, *player_wpn);
+
+        const int hit_chance =
+                ability_roll::hit_chance_pct_actual(
+                        att_data.hit_chance_tot);
+
+        return
+                "The chance to hit " +
+                actor.name_the() +
+                " in melee combat is currently " +
+                std::to_string(hit_chance) +
+                "%.";
+}
+
 // -----------------------------------------------------------------------------
 // View actor description
 // -----------------------------------------------------------------------------
@@ -231,250 +260,59 @@ StateId ViewActorDescr::id()
 
 void ViewActorDescr::on_start()
 {
-        // Fixed description.
-        std::string descr = actor_.descr();
+        // Fixed decription
+        const auto fixed_descr = actor_.descr();
 
-        // Auto-description.
-        if (actor_.data->allow_generated_descr)
         {
-                const std::string auto_descr = auto_description_str();
+                const auto fixed_lines =
+                        text_format::split(
+                                fixed_descr,
+                                mon_descr_max_w());
+
+                for (const auto& line : fixed_lines)
+                {
+                        lines_.push_back(
+                                ColoredString(
+                                        line,
+                                        colors::text()));
+                }
+        }
+
+        // Auto description
+        {
+                const auto auto_descr =
+                        actor_.data->allow_generated_descr
+                        ? auto_description_str()
+                        : "";
 
                 if (!auto_descr.empty())
                 {
-                        descr += " " + auto_descr;
-                }
-        }
+                        lines_.resize(lines_.size() + 1);
 
-        const auto descr_lines =
-                text_format::split(
-                        descr,
-                        panels::x1(Panel::screen));
+                        const auto auto_descr_lines =
+                                text_format::split(
+                                        auto_descr,
+                                        mon_descr_max_w());
 
-        const size_t nr_descr_lines = descr_lines.size();
-
-        P p(0, 0);
-
-        io::cover_area(
-                Panel::screen,
-                p,
-                P(panels::w(Panel::screen), nr_descr_lines));
-
-        // Add the description
-        for (const std::string& s : descr_lines)
-        {
-                put_text(s, p, colors::light_white());
-
-                ++p.y;
-        }
-
-        p.y += 2;
-
-        // Hit chances
-        const std::string indent = "   ";
-
-        const std::vector<std::string> sections = {
-                "Chance to hit monster",
-                indent + "Melee",
-                indent + "Ranged weapon"
-        };
-
-        P p_section(p);
-
-        for (const std::string& str : sections)
-        {
-                if (!str.empty())
-                {
-                        const Color& color =
-                                (str[0] == ' ') ?
-                                colors::gray() :
-                                colors::light_white();
-
-                        put_text(str, p_section, color);
-                }
-
-                ++p_section.y;
-        }
-
-        p.x = 24;
-
-        const Item* player_wpn_item =
-                map::player->inv.item_in_slot(SlotId::wpn);
-
-        const Wpn* player_wpn = nullptr;
-
-        if (player_wpn_item)
-        {
-                player_wpn = static_cast<const Wpn*>(player_wpn_item);
-        }
-        else
-        {
-                player_wpn = &map::player->unarmed_wpn();
-        }
-
-        ASSERT(player_wpn);
-
-        std::unique_ptr<const MeleeAttData> player_melee;
-
-        std::unique_ptr<const RangedAttData> player_ranged;
-
-        if (player_wpn->data().melee.is_melee_wpn)
-        {
-                player_melee.reset(
-                        new MeleeAttData(
-                                map::player,
-                                actor_,
-                                *player_wpn));
-        }
-
-        if (player_wpn->data().ranged.is_ranged_wpn)
-        {
-                player_ranged.reset(
-                        new RangedAttData(
-                                map::player,
-                                map::player->pos, // Origin
-                                actor_.pos,       // Aim position
-                                actor_.pos,       // Current position
-                                *player_wpn));
-        }
-
-        const std::vector<std::string> labels = {
-                "Skill",
-                "Weapon",
-                "Dodging",
-                "Range",
-                "Monster state",
-                "Total*"
-        };
-
-        const int val_undefined = INT_MAX;
-
-        std::vector<int> player_melee_values;
-
-        if (player_melee)
-        {
-                player_melee_values.push_back(player_melee->skill_mod);
-                player_melee_values.push_back(player_melee->wpn_mod);
-                player_melee_values.push_back(player_melee->dodging_mod);
-                player_melee_values.push_back(val_undefined);
-                player_melee_values.push_back(player_melee->state_mod);
-                player_melee_values.push_back(player_melee->hit_chance_tot);
-        }
-
-        std::vector<int> player_ranged_values;
-
-        if (player_ranged)
-        {
-                player_ranged_values.push_back(player_ranged->skill_mod);
-                player_ranged_values.push_back(player_ranged->wpn_mod);
-                player_ranged_values.push_back(player_ranged->dodging_mod);
-                player_ranged_values.push_back(player_ranged->dist_mod);
-                player_ranged_values.push_back(player_ranged->state_mod);
-                player_ranged_values.push_back(player_ranged->hit_chance_tot);
-        }
-
-        auto print_val = [&](const int val,
-                             const P& p,
-                             const bool is_sum) {
-                Color color;
-
-                std::string str;
-
-                if (is_sum)
-                {
-                        str = std::to_string(val) + "%";
-
-                        color = colors::light_white();
-                }
-                else // Not sum
-                {
-                        if (val == val_undefined)
+                        for (const auto& line : auto_descr_lines)
                         {
-                                color = colors::dark_gray();
-
-                                str = "N/A";
-                        }
-                        else // Value is set
-                        {
-                                color = colors::white();
-
-                                str = std::to_string(val);
-
-                                if (val >= 0)
-                                {
-                                        str.insert(begin(str), '+');
-                                }
-
-                                str += "%";
-
-                                color = colors::white();
-
-                                color =
-                                (val < 0) ? colors::msg_bad() :
-                                (val == 0) ? colors::white() :
-                                colors::msg_good();
+                                lines_.push_back(
+                                        ColoredString(
+                                                line,
+                                                colors::text()));
                         }
                 }
-
-                put_text(str, p, color);
-        };
-
-        const int hit_chances_y0 = p.y;
-
-        for (size_t i = 0; i < labels.size(); ++i)
-        {
-                const bool is_sum = i == (labels.size() - 1);
-
-                const Color label_color = colors::light_white();
-
-                const std::string& label = labels[i];
-
-                p.y = hit_chances_y0;
-
-                put_text(label, p, label_color);
-
-                ++p.y;
-
-                // Player melee
-                if (player_melee)
-                {
-                        print_val(player_melee_values[i],
-                                  p,
-                                  is_sum);
-                }
-
-                ++p.y;
-
-                // Player ranged
-                if (player_ranged)
-                {
-                        print_val(player_ranged_values[i],
-                                  p,
-                                  is_sum);
-                }
-
-                ++p.y;
-
-                p.x += label.size() + 2;
         }
 
-        p.x = 0;
+        // Add the full description
+        lines_.resize(lines_.size() + 1);
 
-        p.y += 1;
+        lines_.push_back(
+                ColoredString(
+                        "Current properties",
+                        colors::text()));
 
-        put_text(
-                " * Attacks can always critically fail or succeed "
-                "(2% chance each)",
-                p,
-                colors::gray());
-
-        p.y += 3;
-
-        put_text("Current properties", p, colors::light_white());
-
-        p.y += 1;
-
-        auto prop_list =
-                actor_.properties.property_names_temporary_negative();
+        auto prop_list = actor_.properties.property_names_temporary_negative();
 
         // Remove all non-negative properties (we should not show temporary
         // spell resistance for example), and all natural properties (properties
@@ -504,9 +342,10 @@ void ViewActorDescr::on_start()
 
         if (prop_list.empty())
         {
-                put_text( offset + "None", p, colors::white());
-
-                p.y += 1;
+                lines_.push_back(
+                        ColoredString(
+                                offset + "None",
+                                colors::text()));
         }
         else // Has properties
         {
@@ -516,24 +355,20 @@ void ViewActorDescr::on_start()
                 {
                         const auto& title = e.title;
 
-                        put_text(offset + title.str, p, e.title.color);
-
-                        p.y += 1;
+                        lines_.push_back({offset + title.str, e.title.color});
 
                         const auto descr_formatted =
-                                text_format::split(e.descr,
-                                                   max_w_descr);
+                                text_format::split(
+                                        e.descr,
+                                        max_w_descr);
 
                         for (const auto& descr_line : descr_formatted)
                         {
-                                put_text(offset + descr_line,
-                                         p,
-                                         colors::gray());
-
-                                p.y += 1;
+                                lines_.push_back(
+                                        ColoredString(
+                                                offset + descr_line,
+                                                colors::gray()));
                         }
-
-                        p.y += 1;
                 }
         }
 
@@ -543,6 +378,8 @@ void ViewActorDescr::on_start()
 
 void ViewActorDescr::draw()
 {
+        io::cover_panel(Panel::screen);
+
         draw_interface();
 
         const int nr_lines_tot = lines_.size();
@@ -557,14 +394,11 @@ void ViewActorDescr::draw()
         {
                 const auto& line = lines_[y];
 
-                for (const auto& text : line)
-                {
-                        io::draw_text(
-                                text.str,
-                                Panel::screen,
-                                P(text.x_pos, screen_y),
-                                text.color);
-                }
+                io::draw_text(
+                        line.str,
+                        Panel::screen,
+                        P(mon_descr_x0, screen_y),
+                        line.color);
 
                 ++screen_y;
         }
@@ -602,9 +436,7 @@ void ViewActorDescr::update()
 
         case SDLK_SPACE:
         case SDLK_ESCAPE:
-                //
                 // Exit screen
-                //
                 states::pop();
                 break;
 
@@ -613,32 +445,11 @@ void ViewActorDescr::update()
         }
 }
 
-void ViewActorDescr::put_text(const std::string str,
-                              const P& p,
-                              const Color& color)
-{
-        if (p.y >= (int)lines_.size())
-        {
-                lines_.resize(p.y + 1);
-        }
-
-        auto& line = lines_[p.y];
-
-        ActorDescrText text;
-
-        text.str = str;
-
-        text.color = color;
-
-        text.x_pos = p.x;
-
-        line.push_back(text);
-}
-
 std::string ViewActorDescr::auto_description_str() const
 {
         std::string str = "";
 
+        text_format::append_with_space(str, get_melee_hit_chance_descr(actor_));
         text_format::append_with_space(str, get_mon_dlvl_descr(actor_));
         text_format::append_with_space(str, get_mon_speed_descr(actor_));
         text_format::append_with_space(str, get_mon_memory_turns_descr(actor_));
@@ -651,6 +462,15 @@ std::string ViewActorDescr::auto_description_str() const
         text_format::append_with_space(str, get_mon_shock_descr(actor_));
 
         return str;
+}
+
+std::string ViewActorDescr::title() const
+{
+        const std::string mon_name =
+                text_format::first_to_upper(
+                        actor_.name_a());
+
+        return mon_name;
 }
 
 // -----------------------------------------------------------------------------
