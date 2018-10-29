@@ -54,11 +54,6 @@ Inventory::~Inventory()
 
 void Inventory::save() const
 {
-        // Index into slots or backpack, containing the thrown item
-        int thrown_item_idx = -1;
-
-        bool is_thrown_item_in_slots = false;
-
         for (const InvSlot& slot : slots)
         {
                 Item* const item = slot.item;
@@ -87,10 +82,6 @@ void Inventory::save() const
 
                 item->save();
         }
-
-        // Store selected thrown item
-        saving::put_int(thrown_item_idx);
-        saving::put_bool(is_thrown_item_in_slots);
 }
 
 void Inventory::load()

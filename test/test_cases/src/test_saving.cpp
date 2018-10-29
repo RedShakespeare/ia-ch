@@ -112,7 +112,7 @@ TEST_CASE("Saving and loading the game")
                 map::player->data->name_a = "TEST PLAYER";
                 map::player->data->name_the = "THIS IS OVERWRITTEN";
 
-                map::player->change_max_hp(5, Verbosity::silent);
+                map::player->base_max_hp = 456;
 
                 // map
                 map::dlvl = 7;
@@ -170,9 +170,6 @@ TEST_CASE("Saving and loading the game")
 
                 REQUIRE(saving::is_save_available());
 
-                const int player_max_hp_before_load =
-                        actor::max_hp(*map::player);
-
                 saving::load_game();
 
                 // Item data
@@ -193,6 +190,13 @@ TEST_CASE("Saving and loading the game")
 
                 REQUIRE(!item_data::data[(size_t)ItemId::scroll_searching]
                         .is_identified);
+
+                // Player
+                REQUIRE(map::player->data->name_a == "TEST PLAYER");
+                REQUIRE(map::player->data->name_the == "TEST PLAYER");
+
+                // Check max HP (affected by disease)
+                REQUIRE(actor::max_hp(*map::player) == 456 / 2);
 
                 // Bonus
                 REQUIRE(player_bon::bg() == Bg::rogue);
@@ -273,19 +277,12 @@ TEST_CASE("Saving and loading the game")
                 REQUIRE(is_sentry_device_found);
                 REQUIRE(is_lantern_found);
 
-                // Player
-                REQUIRE(map::player->data->name_a == "TEST PLAYER");
-                REQUIRE(map::player->data->name_the == "TEST PLAYER");
-
-                // Check max HP (affected by disease)
-                REQUIRE(actor::max_hp(*map::player) ==
-                        (player_max_hp_before_load + 5) / 2);
-
                 // map
                 REQUIRE(map::dlvl == 7);
 
                 // Actor data
-                REQUIRE(actor_data::data[(int)ActorId::END - 1].nr_kills == 123);
+                REQUIRE(actor_data::data[(int)ActorId::END - 1]
+                        .nr_kills == 123);
 
                 // Learned spells
                 REQUIRE(player_spells::is_spell_learned(SpellId::bless));

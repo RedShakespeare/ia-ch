@@ -90,7 +90,7 @@ void Player::save() const
 
     for (int i = 0; i < (int)AbilityId::END; ++i)
     {
-        const int v = data->ability_values.raw_val(AbilityId(i));
+        const int v = data->ability_values.raw_val((AbilityId)i);
 
         saving::put_int(v);
     }
@@ -110,14 +110,14 @@ void Player::load()
     pos.y = saving::get_int();
     nr_turns_until_rspell_ = saving::get_int();
 
-    ItemId unarmed_wpn_id = ItemId(saving::get_int());
+    const auto unarmed_wpn_id = (ItemId)saving::get_int();
 
     ASSERT(unarmed_wpn_id < ItemId::END);
 
     delete unarmed_wpn_;
     unarmed_wpn_ = nullptr;
 
-    Item* const unarmed_item = item_factory::make(unarmed_wpn_id);
+    auto* const unarmed_item = item_factory::make(unarmed_wpn_id);
 
     ASSERT(unarmed_item);
 
@@ -127,7 +127,7 @@ void Player::load()
     {
         const int v = saving::get_int();
 
-        data->ability_values.set_val(AbilityId(i), v);
+        data->ability_values.set_val((AbilityId)i, v);
     }
 }
 

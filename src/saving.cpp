@@ -262,7 +262,7 @@ std::string get_str()
 
         const std::string str = lines_.front();
 
-        lines_.erase(begin(lines_));
+        lines_.erase(std::begin(lines_));
 
         return str;
 }

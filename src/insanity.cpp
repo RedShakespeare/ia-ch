@@ -755,9 +755,9 @@ void save()
 {
         for (size_t i = 0; i < (size_t)InsSymptId::END; ++i)
         {
-                const InsSympt* const sympt = sympts_[i];
+                const auto* const sympt = sympts_[i];
 
-                saving::put_bool(sympt);
+                saving::put_bool(sympt != nullptr);
 
                 if (sympt)
                 {
@@ -774,7 +774,7 @@ void load()
 
                 if (has_symptom)
                 {
-                        InsSympt* const sympt = make_sympt(InsSymptId(i));
+                        auto* const sympt = make_sympt((InsSymptId)i);
 
                         sympts_[i] = sympt;
 
