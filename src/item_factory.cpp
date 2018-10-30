@@ -1,5 +1,6 @@
 #include "item_factory.hpp"
 
+#include "debug.hpp"
 #include "drop.hpp"
 #include "game_time.hpp"
 #include "init.hpp"

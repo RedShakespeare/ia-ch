@@ -1,18 +1,19 @@
 #include "feature_door.hpp"
 
-#include "init.hpp"
 #include "actor.hpp"
 #include "actor_player.hpp"
+#include "debug.hpp"
 #include "feature_data.hpp"
-#include "map.hpp"
-#include "msg_log.hpp"
-#include "postmortem.hpp"
-#include "player_bon.hpp"
-#include "map_parsing.hpp"
-#include "text_format.hpp"
 #include "game.hpp"
 #include "game_time.hpp"
+#include "init.hpp"
+#include "map.hpp"
+#include "map_parsing.hpp"
+#include "msg_log.hpp"
+#include "player_bon.hpp"
+#include "postmortem.hpp"
 #include "property_handler.hpp"
+#include "text_format.hpp"
 
 Door::Door(const P& feature_pos,
            const Wall* const mimic_feature,
@@ -715,6 +716,14 @@ void Door::reveal(const Verbosity verbosity)
     {
         msg_log::add("A secret is revealed.");
     }
+}
+
+void Door::set_secret()
+{
+        ASSERT(type_ != DoorType::gate);
+
+        is_open_ = false;
+        is_secret_ = true;
 }
 
 bool Door::try_jam(Actor* actor_trying)

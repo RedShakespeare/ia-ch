@@ -1,5 +1,7 @@
 #include "mapgen.hpp"
 
+#include "debug.hpp"
+
 namespace mapgen
 {
 

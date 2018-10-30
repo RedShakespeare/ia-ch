@@ -5,7 +5,9 @@
 #include <math.h>
 #include <vector>
 
+#include "debug.hpp"
 #include "line_calc.hpp"
+#include "misc.hpp"
 
 namespace fov
 {

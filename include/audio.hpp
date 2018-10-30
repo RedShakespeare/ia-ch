@@ -3,7 +3,7 @@
 
 #include <unordered_map>
 
-#include "rl_utils.hpp"
+#include "direction.hpp"
 
 enum class SfxId
 {

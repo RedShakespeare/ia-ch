@@ -2,7 +2,6 @@
 
 #include "io.hpp"
 #include "panel.hpp"
-#include "rl_utils.hpp"
 
 // -----------------------------------------------------------------------------
 // Private

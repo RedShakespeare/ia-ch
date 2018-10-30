@@ -1,5 +1,5 @@
-#ifndef RL_UTILS_ARRAY2_HPP
-#define RL_UTILS_ARRAY2_HPP
+#ifndef ARRAY2_HPP
+#define ARRAY2_HPP
 
 #include <functional>
 
@@ -11,23 +11,17 @@ template<typename T>
 class Array2
 {
 public:
-        Array2(const P& dims) :
-                data_(nullptr),
-                dims_()
+        Array2(const P& dims)
         {
                 resize(dims);
         }
 
-        Array2(const int w, const int h) :
-                data_(nullptr),
-                dims_()
+        Array2(const int w, const int h)
         {
                 resize(P(w, h));
         }
 
-        Array2(const Array2<T>& other) :
-                data_(nullptr),
-                dims_()
+        Array2(const Array2<T>& other)
         {
                 resize_no_init(other.dims_);
 
@@ -286,8 +280,8 @@ private:
                 return pos_to_idx(P(x, y));
         }
 
-        T* data_;
-        P dims_;
+        T* data_ {nullptr};
+        P dims_ {0, 0};
 };
 
-#endif // RL_UTILS_ARRAY2_HPP
+#endif // ARRAY2_HPP

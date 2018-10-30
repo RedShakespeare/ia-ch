@@ -9,11 +9,11 @@
 #include "line_calc.hpp"
 #include "map.hpp"
 #include "map_parsing.hpp"
+#include "misc.hpp"
 #include "msg_log.hpp"
 #include "player_bon.hpp"
 #include "property.hpp"
 #include "property_factory.hpp"
-#include "sdl_base.hpp"
 #include "sdl_base.hpp"
 #include "viewport.hpp"
 

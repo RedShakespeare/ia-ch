@@ -5,13 +5,15 @@
 #include "actor_factory.hpp"
 #include "actor_mon.hpp"
 #include "actor_player.hpp"
+#include "debug.hpp"
 #include "feature_trap.hpp"
 #include "flood.hpp"
 #include "game_time.hpp"
 #include "init.hpp"
 #include "map.hpp"
 #include "map_parsing.hpp"
-#include "rl_utils.hpp"
+#include "misc.hpp"
+#include "random.hpp"
 #include "room.hpp"
 
 // -----------------------------------------------------------------------------

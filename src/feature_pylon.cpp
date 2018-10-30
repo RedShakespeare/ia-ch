@@ -1,10 +1,12 @@
 #include "feature_pylon.hpp"
 
 #include "actor.hpp"
+#include "flood.hpp"
 #include "game_time.hpp"
 #include "knockback.hpp"
 #include "map.hpp"
 #include "map_parsing.hpp"
+#include "misc.hpp"
 #include "msg_log.hpp"
 #include "property.hpp"
 #include "random.hpp"

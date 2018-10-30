@@ -15,6 +15,7 @@
 #include "manual.hpp"
 #include "map.hpp"
 #include "map_travel.hpp"
+#include "misc.hpp"
 #include "panel.hpp"
 #include "popup.hpp"
 #include "saving.hpp"

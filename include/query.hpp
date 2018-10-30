@@ -1,8 +1,8 @@
 #ifndef QUERY_HPP
 #define QUERY_HPP
 
-#include "rl_utils.hpp"
 #include "colors.hpp"
+#include "direction.hpp"
 
 struct InputData;
 

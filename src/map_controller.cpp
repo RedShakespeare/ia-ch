@@ -10,7 +10,6 @@
 #include "map.hpp"
 #include "msg_log.hpp"
 #include "populate_monsters.hpp"
-#include "rl_utils.hpp"
 
 // -----------------------------------------------------------------------------
 // MapController

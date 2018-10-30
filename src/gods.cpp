@@ -1,7 +1,8 @@
 #include "gods.hpp"
 
 #include <vector>
-#include "rl_utils.hpp"
+
+#include "random.hpp"
 
 // -----------------------------------------------------------------------------
 // Private

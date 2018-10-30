@@ -4,7 +4,11 @@
 #include <vector>
 
 #include "actor_data.hpp"
-#include "rl_utils.hpp"
+
+struct P;
+
+template<typename T>
+class Array2;
 
 namespace populate_mon
 {

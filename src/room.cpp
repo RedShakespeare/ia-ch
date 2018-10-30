@@ -7,12 +7,14 @@
 #include "actor_factory.hpp"
 #include "actor_player.hpp"
 #include "feature_rigid.hpp"
+#include "flood.hpp"
 #include "game_time.hpp"
 #include "gods.hpp"
 #include "init.hpp"
 #include "map.hpp"
 #include "map_parsing.hpp"
 #include "mapgen.hpp"
+#include "misc.hpp"
 #include "populate_monsters.hpp"
 
 #ifndef NDEBUG

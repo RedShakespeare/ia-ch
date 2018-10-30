@@ -1,17 +1,18 @@
 #include "feature_event.hpp"
 
-#include "actor_player.hpp"
-#include "actor_mon.hpp"
-#include "map.hpp"
 #include "actor_factory.hpp"
-#include "msg_log.hpp"
-#include "io.hpp"
+#include "actor_mon.hpp"
+#include "actor_player.hpp"
 #include "feature_rigid.hpp"
-#include "popup.hpp"
-#include "sdl_base.hpp"
 #include "init.hpp"
+#include "io.hpp"
+#include "map.hpp"
+#include "misc.hpp"
+#include "msg_log.hpp"
+#include "popup.hpp"
 #include "property.hpp"
 #include "property_handler.hpp"
+#include "sdl_base.hpp"
 
 // -----------------------------------------------------------------------------
 // Event

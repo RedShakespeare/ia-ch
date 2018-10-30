@@ -9,12 +9,14 @@
 #include "actor_player.hpp"
 #include "feature_door.hpp"
 #include "feature_rigid.hpp"
+#include "flood.hpp"
 #include "game_time.hpp"
-#include "init.hpp"
 #include "init.hpp"
 #include "map.hpp"
 #include "map_parsing.hpp"
 #include "map_templates.hpp"
+#include "misc.hpp"
+#include "pathfind.hpp"
 
 #ifndef NDEBUG
 #include "io.hpp"
@@ -570,9 +572,10 @@ bool is_choke_point(const P& p,
         return true;
 }
 
-void make_pathfind_corridor(Room& room_0,
-                            Room& room_1,
-                            const Array2<bool>* const door_proposals)
+void make_pathfind_corridor(
+        Room& room_0,
+        Room& room_1,
+        const Array2<bool>* const door_proposals)
 {
         TRACE_FUNC_BEGIN_VERBOSE << "Making corridor between rooms "
                                  << &room_0 << " and " << &room_1
@@ -954,9 +957,10 @@ std::vector<P> rnd_walk(
         return result;
 }
 
-void make_explore_spawn_weights(const Array2<bool>& blocked,
-                                std::vector<P>& positions_out,
-                                std::vector<int>& weights_out)
+void make_explore_spawn_weights(
+        const Array2<bool>& blocked,
+        std::vector<P>& positions_out,
+        std::vector<int>& weights_out)
 {
         Array2<int> weight_map(map::dims());
 
@@ -1216,26 +1220,26 @@ P make_stairs_at_random_pos()
 
         const auto flood = floodfill(map::player->pos, blocks_player);
 
-        std::sort(pos_bucket.begin(),
-                  pos_bucket.end(),
-                  [flood](const P& p1, const P& p2)
-                  {
-                          // If any of the two positions are unreached by the
-                          // flood, assume this is furthest - otherwise compare
-                          // which position is nearest on the flood
-                          if (flood.at(p1) == 0)
-                          {
-                                  return false;
-                          }
-                          else if (flood.at(p2) == 0)
-                          {
-                                  return true;
-                          }
-                          else
-                          {
-                                  return flood.at(p1) < flood.at(p2);
-                          }
-                  });
+        std::sort(
+                std::begin(pos_bucket),
+                std::end(pos_bucket),
+                [flood](const P& p1, const P& p2) {
+                        // If any of the two positions are unreached by the
+                        // flood, assume this is furthest - otherwise compare
+                        // which position is nearest on the flood
+                        if (flood.at(p1) == 0)
+                        {
+                                return false;
+                        }
+                        else if (flood.at(p2) == 0)
+                        {
+                                return true;
+                        }
+                        else
+                        {
+                                return flood.at(p1) < flood.at(p2);
+                        }
+                });
 
         TRACE << "Picking one of the furthest cells" << std:: endl;
 

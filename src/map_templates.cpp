@@ -1,10 +1,12 @@
 #include "map_templates.hpp"
 
+#include <algorithm>
 #include <fstream>
 #include <unordered_map>
 #include <vector>
 
-#include "rl_utils.hpp"
+#include "debug.hpp"
+#include "random.hpp"
 #include "saving.hpp"
 
 // -----------------------------------------------------------------------------

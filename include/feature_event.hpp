@@ -4,6 +4,7 @@
 #include <vector>
 
 #include "feature_mob.hpp"
+#include "rect.hpp"
 
 class Event: public Mob
 {

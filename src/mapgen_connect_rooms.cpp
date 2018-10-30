@@ -1,5 +1,6 @@
 #include "mapgen.hpp"
 
+#include "debug.hpp"
 #include "map_parsing.hpp"
 #include "feature_rigid.hpp"
 

@@ -3,9 +3,10 @@
 
 #include <vector>
 
-#include "colors.hpp"
 #include "audio.hpp"
+#include "colors.hpp"
 #include "global.hpp"
+#include "rect.hpp"
 
 class Prop;
 
@@ -40,11 +41,9 @@ void run(const P& origin,
          const Color color_override = Color(),
          const ExplIsGas is_gas = ExplIsGas::no);
 
-void run_smoke_explosion_at(const P& origin,
-                            const int radi_change = 0);
+void run_smoke_explosion_at(const P& origin, const int radi_change = 0);
 
-R explosion_area(const P& c,
-                 const int radi);
+R explosion_area(const P& c, const int radi);
 
 } // explosion
 

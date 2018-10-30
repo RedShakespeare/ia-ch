@@ -10,6 +10,7 @@
 #include "io.hpp"
 #include "map.hpp"
 #include "map_parsing.hpp"
+#include "misc.hpp"
 #include "msg_log.hpp"
 #include "popup.hpp"
 #include "property.hpp"
@@ -562,9 +563,10 @@ void InsShadows::on_start_hook()
         const int nr_shadows_lower = 2;
 
         const int nr_shadows_upper =
-                constr_in_range(nr_shadows_lower,
-                                map::dlvl - 2,
-                                8);
+                constr_in_range(
+                        nr_shadows_lower,
+                        map::dlvl - 2,
+                        8);
 
         const size_t nr = rnd::range(nr_shadows_lower, nr_shadows_upper);
 

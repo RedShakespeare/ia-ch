@@ -2,11 +2,12 @@
 
 #include <cstring>
 
-#include "feature_door.hpp"
-#include "map_parsing.hpp"
-#include "game_time.hpp"
 #include "actor.hpp"
 #include "actor_player.hpp"
+#include "feature_door.hpp"
+#include "flood.hpp"
+#include "game_time.hpp"
+#include "map_parsing.hpp"
 
 static bool is_wall(const P& p)
 {

@@ -5,7 +5,8 @@
 
 #include "colors.hpp"
 #include "info_screen_state.hpp"
-#include "rl_utils.hpp"
+
+struct P;
 
 class Actor;
 

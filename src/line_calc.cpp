@@ -5,6 +5,7 @@
 
 #include "global.hpp"
 #include "map.hpp"
+#include "misc.hpp"
 
 // -----------------------------------------------------------------------------
 // Private

@@ -6,6 +6,7 @@
 #include "actor_mon.hpp"
 #include "actor_player.hpp"
 #include "feature_rigid.hpp"
+#include "flood.hpp"
 #include "game_time.hpp"
 #include "map.hpp"
 #include "map_parsing.hpp"
@@ -29,6 +30,7 @@ Snd::Snd(
         const AlertsMon alerting_mon,
         const MorePromptOnMsg add_more_prompt_on_msg,
         std::shared_ptr<SndHeardEffect> snd_heard_effect) :
+
         msg_(msg),
         sfx_(sfx),
         is_msg_ignored_if_origin_seen_(ignore_msg_if_origin_seen),
@@ -37,7 +39,10 @@ Snd::Snd(
         vol_(vol),
         is_alerting_mon_(alerting_mon),
         add_more_prompt_on_msg_(add_more_prompt_on_msg),
-        snd_heard_effect_(snd_heard_effect) {}
+        snd_heard_effect_(snd_heard_effect)
+{
+
+}
 
 Snd::~Snd()
 {

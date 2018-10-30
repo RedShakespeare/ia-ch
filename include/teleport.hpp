@@ -3,7 +3,7 @@
 
 #include "actor.hpp"
 #include "global.hpp"
-#include "rl_utils.hpp"
+#include "pos.hpp"
 
 void teleport(
         Actor& actor,

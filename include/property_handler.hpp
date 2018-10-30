@@ -5,11 +5,12 @@
 #include <string>
 
 #include "ability_values.hpp"
+#include "direction.hpp"
 #include "global.hpp"
 #include "property.hpp"
 #include "property_data.hpp"
-#include "rl_utils.hpp"
 
+struct P;
 class Actor;
 class Item;
 class Wpn;

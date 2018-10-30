@@ -17,8 +17,10 @@
 #include "item_factory.hpp"
 #include "map.hpp"
 #include "map_parsing.hpp"
+#include "misc.hpp"
 #include "msg_log.hpp"
 #include "player_bon.hpp"
+#include "pos.hpp"
 #include "property.hpp"
 #include "property_handler.hpp"
 #include "query.hpp"
@@ -1017,8 +1019,9 @@ void MiGoGun::specific_dmg_mod(Dice& dice,
 Incinerator::Incinerator(ItemData* const item_data) :
         Wpn(item_data) {}
 
-void Incinerator::on_projectile_blocked(const P prev_pos,
-                                        const P current_pos)
+void Incinerator::on_projectile_blocked(
+        const P& prev_pos,
+        const P& current_pos)
 {
         (void)current_pos;
 

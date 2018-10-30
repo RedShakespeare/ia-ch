@@ -1,13 +1,14 @@
 #include "config.hpp"
 
-#include "init.hpp"
-
-#include <fstream>
 #include "SDL_image.h"
+#include <fstream>
 
 #include "audio.hpp"
 #include "browser.hpp"
+#include "debug.hpp"
+#include "init.hpp"
 #include "io.hpp"
+#include "misc.hpp"
 #include "panel.hpp"
 #include "query.hpp"
 #include "sdl_base.hpp"

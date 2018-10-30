@@ -3,8 +3,8 @@
 
 #include <vector>
 
-#include "rl_utils.hpp"
 #include "global.hpp"
+#include "random.hpp"
 
 struct InputData;
 

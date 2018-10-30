@@ -5,9 +5,12 @@
 
 #include "ability_values.hpp"
 #include "colors.hpp"
+#include "debug.hpp"
+#include "direction.hpp"
 #include "global.hpp"
 #include "property_data.hpp"
 
+struct P;
 class Item;
 
 // -----------------------------------------------------------------------------

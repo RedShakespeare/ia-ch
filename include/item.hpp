@@ -5,7 +5,7 @@
 #include "gfx.hpp"
 #include "inventory_handling.hpp"
 #include "item_att_property.hpp"
-#include "rl_utils.hpp"
+#include "random.hpp"
 
 class ItemData;
 class Prop;
@@ -112,8 +112,9 @@ public:
 
         virtual void on_player_reached_new_dlvl() {}
 
-        virtual void on_projectile_blocked(const P prev_pos,
-                                           const P current_pos)
+        virtual void on_projectile_blocked(
+                const P& prev_pos,
+                const P& current_pos)
         {
                 (void)prev_pos;
                 (void)current_pos;
@@ -355,8 +356,9 @@ public:
         Incinerator(ItemData* const item_data);
         ~Incinerator() {}
 
-        void on_projectile_blocked(const P prev_pos,
-                                   const P current_pos);
+        void on_projectile_blocked(
+                const P& prev_pos,
+                const P& current_pos);
 };
 
 class MiGoGun: public Wpn
@@ -366,8 +368,9 @@ public:
         ~MiGoGun() {}
 
 protected:
-        void specific_dmg_mod(Dice& dice,
-                              const Actor* const actor) const override;
+        void specific_dmg_mod(
+                Dice& dice,
+                const Actor* const actor) const override;
 };
 
 class RavenPeck : public Wpn

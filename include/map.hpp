@@ -8,7 +8,7 @@
 #include "fov.hpp"
 #include "game.hpp"
 #include "item_data.hpp"
-#include "rl_utils.hpp"
+#include "pos.hpp"
 
 class Rigid;
 class Mob;
@@ -18,45 +18,45 @@ class Player;
 // used instead
 struct Cell
 {
-    Cell();
-    ~Cell();
+        Cell();
+        ~Cell();
 
-    void reset();
+        void reset();
 
-    bool is_explored, is_seen_by_player;
-    LosResult player_los; // Updated when player updates FOV
-    Item* item;
-    Rigid* rigid;
+        bool is_explored, is_seen_by_player;
+        LosResult player_los; // Updated when player updates FOV
+        Item* item;
+        Rigid* rigid;
 };
 
 struct ChokePointData
 {
-    ChokePointData() :
-        p(),
-        player_side(-1),
-        stairs_side(-1)
-    {
-        sides[0].resize(0);
-        sides[1].resize(0);
-    }
+        ChokePointData() :
+                p(),
+                player_side(-1),
+                stairs_side(-1)
+        {
+                sides[0].resize(0);
+                sides[1].resize(0);
+        }
 
-    ChokePointData& operator=(const ChokePointData& other)
-    {
-        p = other.p;
+        ChokePointData& operator=(const ChokePointData& other)
+        {
+                p = other.p;
 
-        sides[0] = other.sides[0];
-        sides[1] = other.sides[1];
+                sides[0] = other.sides[0];
+                sides[1] = other.sides[1];
 
-        return *this;
-    }
+                return *this;
+        }
 
-    P p;
+        P p;
 
-    // These shall only ever have a value of 0 or 1
-    int player_side;
-    int stairs_side;
+        // These shall only ever have a value of 0 or 1
+        int player_side;
+        int stairs_side;
 
-    std::vector<P> sides[2];
+        std::vector<P> sides[2];
 };
 
 namespace map

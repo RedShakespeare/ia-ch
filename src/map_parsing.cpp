@@ -3,12 +3,14 @@
 #include <algorithm>
 #include <climits>
 
+#include "actor_player.hpp"
+#include "feature_mob.hpp"
+#include "feature_rigid.hpp"
+#include "flood.hpp"
+#include "game_time.hpp"
 #include "init.hpp"
 #include "map.hpp"
-#include "actor_player.hpp"
-#include "game_time.hpp"
-#include "feature_rigid.hpp"
-#include "feature_mob.hpp"
+#include "misc.hpp"
 
 #ifndef NDEBUG
 #include "io.hpp"
@@ -61,7 +63,7 @@ void MapParser::run(Array2<bool>& out,
                 {
                         const P& p = mob->pos();
 
-                        if (is_pos_inside(p, area_to_parse_cells))
+                        if (area_to_parse_cells.is_pos_inside(p))
                         {
                                 const bool is_match = parse(*mob);
 
@@ -84,7 +86,7 @@ void MapParser::run(Array2<bool>& out,
                 {
                         const P& p = actor->pos;
 
-                        if (is_pos_inside(p, area_to_parse_cells))
+                        if (area_to_parse_cells.is_pos_inside(p))
                         {
                                 const bool is_match = parse(*actor);
 

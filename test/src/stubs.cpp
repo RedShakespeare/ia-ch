@@ -1,5 +1,7 @@
 #include "io.hpp"
 #include "panel.hpp"
+#include "pos.hpp"
+#include "rect.hpp"
 #include "sdl_base.hpp"
 
 // -----------------------------------------------------------------------------
@@ -243,75 +245,3 @@ void play_music(const MusId) {}
 void fade_out_music() {}
 
 } // audio
-
-// #include "SDL_image.h"
-// #include "SDL_mixer.h"
-
-// #include "rl_utils.hpp"
-
-// SDL_Surface* SDL_ConvertSurface(
-//         SDL_Surface* src,
-//         const SDL_PixelFormat* fmt,
-//         Uint32 flags)
-// {
-//         (void)src;
-//         (void)fmt;
-//         (void)flags;
-
-//         ASSERT(false);
-
-//         return nullptr;
-// }
-
-// void SDL_FreeSurface(SDL_Surface * surface)
-// {
-//         (void)surface;
-
-//         ASSERT(false);
-// }
-
-// extern  const char* SDL_GetError()
-// {
-//         ASSERT(false);
-
-//         return nullptr;
-// }
-
-// SDL_Surface* IMG_Load(const char* file)
-// {
-//         (void)file;
-
-//         ASSERT(false);
-
-//         return nullptr;
-// }
-
-// Uint32 SDL_MapRGB(
-//         const SDL_PixelFormat* format,
-//         Uint8 r,
-//         Uint8 g,
-//         Uint8 b)
-// {
-//         (void)format;
-//         (void)r;
-//         (void)g;
-//         (void)b;
-
-//         ASSERT(false);
-
-//         return 0;
-// }
-
-// void IMG_Quit()
-// {
-//         ASSERT(false);
-// }
-
-// int Mix_Playing(int channel)
-// {
-//         (void)channel;
-
-//         ASSERT(false);
-
-//         return 0;
-// }

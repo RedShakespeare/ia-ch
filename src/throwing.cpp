@@ -20,6 +20,7 @@
 #include "item_potion.hpp"
 #include "line_calc.hpp"
 #include "map.hpp"
+#include "misc.hpp"
 #include "msg_log.hpp"
 #include "player_bon.hpp"
 #include "property_data.hpp"

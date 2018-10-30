@@ -11,6 +11,7 @@
 #include "init.hpp"
 #include "io.hpp"
 #include "map.hpp"
+#include "misc.hpp"
 #include "panel.hpp"
 #include "popup.hpp"
 

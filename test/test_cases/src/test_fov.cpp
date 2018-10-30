@@ -1,8 +1,8 @@
 #include "catch.hpp"
 
+#include "array2.hpp"
 #include "fov.hpp"
 #include "line_calc.hpp"
-#include "rl_utils.hpp"
 
 TEST_CASE("fov")
 {

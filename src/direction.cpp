@@ -1,4 +1,8 @@
-#include "rl_utils.hpp"
+#include "direction.hpp"
+
+#include "debug.hpp"
+#include "pos.hpp"
+#include "random.hpp"
 
 namespace dir_utils
 {

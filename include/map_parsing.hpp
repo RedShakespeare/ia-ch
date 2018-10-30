@@ -5,10 +5,15 @@
 
 #include "config.hpp"
 #include "feature_data.hpp"
+#include "pos.hpp"
 
+struct R;
 struct Cell;
 class Mob;
 class Actor;
+
+template<typename T>
+class Array2;
 
 // NOTE: If append mode is used, the caller is responsible for initializing the
 // array (e.g. with a previous "overwrite" parse call)
@@ -81,9 +86,7 @@ class BlocksLos : public MapParser
 {
 public:
         BlocksLos() :
-                MapParser(ParseCells::yes,
-                          ParseMobs::yes,
-                          ParseActors::no) {}
+                MapParser(ParseCells::yes, ParseMobs::yes, ParseActors::no) {}
 
 private:
         bool parse(const Cell& c, const P& pos) const override;
@@ -94,9 +97,7 @@ class BlocksWalking : public MapParser
 {
 public:
         BlocksWalking(ParseActors parse_actors) :
-                MapParser(ParseCells::yes,
-                          ParseMobs::yes,
-                          parse_actors) {}
+                MapParser(ParseCells::yes, ParseMobs::yes, parse_actors) {}
 
 private:
         bool parse(const Cell& c, const P& pos) const override;
@@ -108,9 +109,7 @@ class BlocksActor : public MapParser
 {
 public:
         BlocksActor(const Actor& actor, ParseActors parse_actors) :
-                MapParser(ParseCells::yes,
-                          ParseMobs::yes,
-                          parse_actors),
+                MapParser(ParseCells::yes, ParseMobs::yes, parse_actors),
                 actor_(actor) {}
 
 private:
@@ -125,9 +124,7 @@ class BlocksProjectiles : public MapParser
 {
 public:
         BlocksProjectiles() :
-                MapParser(ParseCells::yes,
-                          ParseMobs::yes,
-                          ParseActors::no) {}
+                MapParser(ParseCells::yes, ParseMobs::yes, ParseActors::no) {}
 
 private:
         bool parse(const Cell& c, const P& pos) const override;
@@ -138,9 +135,7 @@ class BlocksSound : public MapParser
 {
 public:
         BlocksSound() :
-                MapParser(ParseCells::yes,
-                          ParseMobs::yes,
-                          ParseActors::no) {}
+                MapParser(ParseCells::yes, ParseMobs::yes, ParseActors::no) {}
 
 private:
         bool parse(const Cell& c, const P& pos) const override;
@@ -151,9 +146,7 @@ class LivingActorsAdjToPos : public MapParser
 {
 public:
         LivingActorsAdjToPos(const P& pos) :
-                MapParser(ParseCells::no,
-                          ParseMobs::no,
-                          ParseActors::yes),
+                MapParser(ParseCells::no, ParseMobs::no, ParseActors::yes),
                 pos_(pos) {}
 
 private:
@@ -166,9 +159,7 @@ class BlocksItems : public MapParser
 {
 public:
         BlocksItems() :
-                MapParser(ParseCells::yes,
-                          ParseMobs::yes,
-                          ParseActors::no) {}
+                MapParser(ParseCells::yes, ParseMobs::yes, ParseActors::no) {}
 
 private:
         bool parse(const Cell& c, const P& pos) const override;
@@ -179,9 +170,7 @@ class BlocksRigid : public MapParser
 {
 public:
         BlocksRigid() :
-                MapParser(ParseCells::yes,
-                          ParseMobs::no,
-                          ParseActors::no) {}
+                MapParser(ParseCells::yes, ParseMobs::no, ParseActors::no) {}
 
 private:
         bool parse(const Cell& c, const P& pos) const override;
@@ -191,9 +180,7 @@ class IsNotFeature : public MapParser
 {
 public:
         IsNotFeature(const FeatureId id) :
-                MapParser(ParseCells::yes,
-                          ParseMobs::no,
-                          ParseActors::no),
+                MapParser(ParseCells::yes, ParseMobs::no, ParseActors::no),
                 feature_(id) {}
 
 private:
@@ -206,15 +193,11 @@ class IsAnyOfFeatures : public MapParser
 {
 public:
         IsAnyOfFeatures(const std::vector<FeatureId>& features) :
-                MapParser(ParseCells::yes,
-                          ParseMobs::no,
-                          ParseActors::no),
+                MapParser(ParseCells::yes, ParseMobs::no, ParseActors::no),
                 features_(features) {}
 
         IsAnyOfFeatures(const FeatureId id) :
-                MapParser(ParseCells::yes,
-                          ParseMobs::no,
-                          ParseActors::no),
+                MapParser(ParseCells::yes, ParseMobs::no, ParseActors::no),
                 features_(std::vector<FeatureId> {id}) {}
 
 private:
@@ -227,15 +210,11 @@ class AnyAdjIsAnyOfFeatures : public MapParser
 {
 public:
         AnyAdjIsAnyOfFeatures(const std::vector<FeatureId>& features) :
-                MapParser(ParseCells::yes,
-                          ParseMobs::no,
-                          ParseActors::no),
+                MapParser(ParseCells::yes, ParseMobs::no, ParseActors::no),
                 features_(features) {}
 
         AnyAdjIsAnyOfFeatures(const FeatureId id) :
-                MapParser(ParseCells::yes,
-                          ParseMobs::no,
-                          ParseActors::no),
+                MapParser(ParseCells::yes, ParseMobs::no, ParseActors::no),
                 features_(std::vector<FeatureId> {id}) {}
 
 private:
@@ -248,9 +227,7 @@ class AllAdjIsFeature : public MapParser
 {
 public:
         AllAdjIsFeature(const FeatureId id) :
-                MapParser(ParseCells::yes,
-                          ParseMobs::no,
-                          ParseActors::no),
+                MapParser(ParseCells::yes, ParseMobs::no, ParseActors::no),
                 feature_(id) {}
 
 private:
@@ -263,15 +240,11 @@ class AllAdjIsAnyOfFeatures : public MapParser
 {
 public:
         AllAdjIsAnyOfFeatures(const std::vector<FeatureId>& features) :
-                MapParser(ParseCells::yes,
-                          ParseMobs::no,
-                          ParseActors::no),
+                MapParser(ParseCells::yes, ParseMobs::no, ParseActors::no),
                 features_(features) {}
 
         AllAdjIsAnyOfFeatures(const FeatureId id) :
-                MapParser(ParseCells::yes,
-                          ParseMobs::no,
-                          ParseActors::no),
+                MapParser(ParseCells::yes, ParseMobs::no, ParseActors::no),
                 features_(std::vector<FeatureId> {id}) {}
 
 private:
@@ -284,9 +257,7 @@ class AllAdjIsNotFeature : public MapParser
 {
 public:
         AllAdjIsNotFeature(const FeatureId id) :
-                MapParser(ParseCells::yes,
-                          ParseMobs::no,
-                          ParseActors::no),
+                MapParser(ParseCells::yes, ParseMobs::no, ParseActors::no),
                 feature_(id) {}
 
 private:
@@ -299,15 +270,11 @@ class AllAdjIsNoneOfFeatures : public MapParser
 {
 public:
         AllAdjIsNoneOfFeatures(const std::vector<FeatureId>& features) :
-                MapParser(ParseCells::yes,
-                          ParseMobs::no,
-                          ParseActors::no),
+                MapParser(ParseCells::yes, ParseMobs::no, ParseActors::no),
                 features_(features) {}
 
         AllAdjIsNoneOfFeatures(const FeatureId id) :
-                MapParser(ParseCells::yes,
-                          ParseMobs::no,
-                          ParseActors::no),
+                MapParser(ParseCells::yes, ParseMobs::no, ParseActors::no),
                 features_(std::vector<FeatureId> {id}) {}
 
 private:

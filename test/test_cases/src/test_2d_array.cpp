@@ -1,6 +1,6 @@
 #include "catch.hpp"
 
-#include "rl_utils.hpp"
+#include "array2.hpp"
 
 TEST_CASE("Dynamic 2d array")
 {

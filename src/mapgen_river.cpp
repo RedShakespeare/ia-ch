@@ -1,6 +1,9 @@
 #include "mapgen.hpp"
-#include "map.hpp"
+
+#include "debug.hpp"
 #include "feature_rigid.hpp"
+#include "map.hpp"
+#include "misc.hpp"
 
 namespace mapgen
 {
@@ -15,12 +18,14 @@ void reserve_river(Region regions[3][3])
 
         const int reserved_padding = 2;
 
-        auto init_room_rect = [&](int& len0,
-                                  int& len1,
-                                  int& breadth0,
-                                  int& breadth1,
-                                  const P & reg0,
-                                  const P & reg2) {
+        auto init_room_rect = [&](
+                int& len0,
+                int& len1,
+                int& breadth0,
+                int& breadth1,
+                const P & reg0,
+                const P & reg2) {
+
                 const R regions_tot_rect(regions[reg0.x][reg0.y].r.p0,
                                          regions[reg2.x][reg2.y].r.p1);
 
@@ -45,21 +50,23 @@ void reserve_river(Region regions[3][3])
 
         if (axis == Axis::hor)
         {
-                init_room_rect(room_rect.p0.x,
-                               room_rect.p1.x,
-                               room_rect.p0.y,
-                               room_rect.p1.y,
-                               P(0, 1),
-                               P(2, 1));
+                init_room_rect(
+                        room_rect.p0.x,
+                        room_rect.p1.x,
+                        room_rect.p0.y,
+                        room_rect.p1.y,
+                        P(0, 1),
+                        P(2, 1));
         }
         else // Vertical
         {
-                init_room_rect(room_rect.p0.y,
-                               room_rect.p1.y,
-                               room_rect.p0.x,
-                               room_rect.p1.x,
-                               P(1, 0),
-                               P(1, 2));
+                init_room_rect(
+                        room_rect.p0.y,
+                        room_rect.p1.y,
+                        room_rect.p0.x,
+                        room_rect.p1.x,
+                        P(1, 0),
+                        P(1, 2));
         }
 
         Room* const room = room_factory::make(RoomType::river, room_rect);
@@ -83,10 +90,11 @@ void reserve_river(Region regions[3][3])
 
         map::room_list.push_back(room);
 
-        auto make = [&](const int x0,
-                        const int x1,
-                        const int y0,
-                        const int y1) {
+        auto make = [&](
+                const int x0,
+                const int x1,
+                const int y0,
+                const int y1) {
 
                 TRACE_VERBOSE << "Reserving river space with floor cells "
                               <<  "x0: " << x0

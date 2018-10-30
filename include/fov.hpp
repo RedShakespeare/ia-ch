@@ -1,7 +1,7 @@
 #ifndef FOV_HPP
 #define FOV_HPP
 
-#include "rl_utils.hpp"
+#include "array2.hpp"
 #include "global.hpp"
 
 struct FovMap

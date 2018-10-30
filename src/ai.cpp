@@ -10,7 +10,9 @@
 #include "line_calc.hpp"
 #include "map.hpp"
 #include "map_parsing.hpp"
+#include "misc.hpp"
 #include "msg_log.hpp"
+#include "pathfind.hpp"
 #include "property_handler.hpp"
 #include "text_format.hpp"
 
@@ -199,7 +201,7 @@ bool is_pos_on_line(const P& p,
                   std::max(line_p0.x, line_p1.x),
                   std::max(line_p0.y, line_p1.y));
 
-        if (!is_pos_inside(p, r))
+        if (!r.is_pos_inside(p))
         {
                 return false;
         }

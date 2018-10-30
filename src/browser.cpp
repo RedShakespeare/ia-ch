@@ -1,8 +1,10 @@
 #include "browser.hpp"
 
-#include "io.hpp"
-#include "config.hpp"
+#include "array2.hpp"
 #include "audio.hpp"
+#include "config.hpp"
+#include "io.hpp"
+#include "misc.hpp"
 
 // -----------------------------------------------------------------------------
 // Private

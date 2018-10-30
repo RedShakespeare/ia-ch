@@ -1,6 +1,6 @@
 #include "catch.hpp"
 
-#include "rl_utils.hpp"
+#include "random.hpp"
 
 TEST_CASE("Range")
 {

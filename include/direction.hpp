@@ -1,5 +1,5 @@
-#ifndef RL_UTILS_DIRECTION_HPP
-#define RL_UTILS_DIRECTION_HPP
+#ifndef DIRECTION_HPP
+#define DIRECTION_HPP
 
 #include <vector>
 #include <string>
@@ -42,4 +42,4 @@ std::string compass_dir_name(const P& offs);
 
 } // dir_utils
 
-#endif // RL_UTILS_DIRECTION_HPP
+#endif // DIRECTION_HPP

@@ -6,8 +6,12 @@
 
 #include "colors.hpp"
 #include "feature_data.hpp"
+#include "pos.hpp"
 
 class Actor;
+
+template<typename T>
+class Array2;
 
 class Feature
 {

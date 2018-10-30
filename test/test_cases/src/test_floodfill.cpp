@@ -2,7 +2,8 @@
 
 #include <climits>
 
-#include "rl_utils.hpp"
+#include "array2.hpp"
+#include "flood.hpp"
 
 TEST_CASE("Floodfill")
 {

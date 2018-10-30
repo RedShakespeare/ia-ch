@@ -1,9 +1,11 @@
 #include "mapgen.hpp"
+
+#include "debug.hpp"
+#include "feature_event.hpp"
+#include "feature_rigid.hpp"
+#include "game_time.hpp"
 #include "map.hpp"
 #include "map_parsing.hpp"
-#include "feature_rigid.hpp"
-#include "feature_event.hpp"
-#include "game_time.hpp"
 
 // -----------------------------------------------------------------------------
 // Private
@@ -41,9 +43,11 @@ static void make_crumble_room(const R& room_area_incl_walls,
     }
 
     game_time::add_mob(
-        new EventWallCrumble(event_pos,
-                             wall_cells,
-                             inner_cells));
+            new EventWallCrumble(
+                    event_pos,
+                    wall_cells,
+                    inner_cells));
+
 } // make_crumble_room
 
 // NOTE: The positions and size can be outside map (e.g. negative positions).
@@ -58,7 +62,7 @@ static bool try_make_aux_room(
 
     const R aux_rect_with_border(aux_rect.p0 - 1, aux_rect.p1 + 1);
 
-    ASSERT(is_pos_inside(door_p, aux_rect_with_border));
+    ASSERT(aux_rect_with_border.is_pos_inside(door_p));
 
     if (map::is_area_inside_map(aux_rect_with_border))
     {

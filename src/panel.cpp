@@ -1,7 +1,9 @@
 #include "panel.hpp"
 
 #include "io.hpp"
-#include "rl_utils.hpp"
+
+#include "debug.hpp"
+#include "rect.hpp"
 
 // -----------------------------------------------------------------------------
 // Private

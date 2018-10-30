@@ -4,7 +4,6 @@
 #include "feature_rigid.hpp"
 #include "game_time.hpp"
 #include "map.hpp"
-#include "rl_utils.hpp"
 #include "test_utils.hpp"
 
 TEST_CASE("Test light map")

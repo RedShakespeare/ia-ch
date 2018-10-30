@@ -4,7 +4,6 @@
 #include <vector>
 
 #include "actor_data.hpp"
-#include "rl_utils.hpp"
 
 class Actor;
 class Mon;
@@ -25,9 +24,10 @@ public:
         template<typename Func>
         MonSpawnResult& for_each(Func const& lambda)
         {
-                std::for_each(begin(monsters),
-                              end(monsters),
-                              lambda);
+                std::for_each(
+                        std::begin(monsters),
+                        std::end(monsters),
+                        lambda);
 
                 return *this;
         }

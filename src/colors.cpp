@@ -1,9 +1,10 @@
 #include "colors.hpp"
 
 #include "SDL_video.h"
+#include <algorithm>
 #include <vector>
 
-#include "rl_utils.hpp"
+#include "debug.hpp"
 #include "xml.hpp"
 
 //-----------------------------------------------------------------------------
@@ -60,10 +61,11 @@ static SDL_Color rgb_hex_str_to_sdl_color(const std::string str)
 {
         if (str.size() != 6)
         {
-                TRACE_ERROR_RELEASE << "Invalid rgb hex string: '"
-                                    << str
-                                    << "'"
-                                    << std::endl;
+                TRACE_ERROR_RELEASE
+                        << "Invalid rgb hex string: '"
+                        << str
+                        << "'"
+                        << std::endl;
 
                 PANIC;
         }
@@ -82,9 +84,10 @@ static SDL_Color rgb_hex_str_to_sdl_color(const std::string str)
         return sdl_color;
 }
 
-static void load_color(xml::Element* colors_e,
-                       const std::string& name,
-                       SDL_Color& target_color)
+static void load_color(
+        xml::Element* colors_e,
+        const std::string& name,
+        SDL_Color& target_color)
 {
         for (auto e = xml::first_child(colors_e);
              e;
@@ -121,9 +124,10 @@ static void load_color(xml::Element* colors_e,
         }
 }
 
-static void load_gui_color(xml::Element* gui_e,
-                           const std::string type,
-                           SDL_Color& target_color)
+static void load_gui_color(
+        xml::Element* gui_e,
+        const std::string type,
+        SDL_Color& target_color)
 {
         for (auto e = xml::first_child(gui_e) ;
              e;

@@ -14,7 +14,6 @@
 #include "property.hpp"
 #include "query.hpp"
 #include "reload.hpp"
-#include "rl_utils.hpp"
 #include "text_format.hpp"
 
 // -----------------------------------------------------------------------------

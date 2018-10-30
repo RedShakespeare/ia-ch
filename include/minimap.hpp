@@ -2,7 +2,6 @@
 #define MINIMAP_HPP
 
 #include "colors.hpp"
-#include "rl_utils.hpp"
 #include "state.hpp"
 
 // -----------------------------------------------------------------------------

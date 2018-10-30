@@ -1,5 +1,12 @@
-#ifndef RL_UTILS_PATHFIND_HPP
-#define RL_UTILS_PATHFIND_HPP
+#ifndef PATHFIND_HPP
+#define PATHFIND_HPP
+
+#include <vector>
+
+struct P;
+
+template<typename T>
+class Array2;
 
 //------------------------------------------------------------------------------
 // The path goes from target to origin, not including the origin.
@@ -24,4 +31,4 @@ std::vector<P> pathfind_with_flood(
     const bool allow_diagonal = true,           // Cardinals only?
     const bool randomize_steps = false);        // See above
 
-#endif // RL_UTILS_PATHFIND_HPP
+#endif // PATHFIND_HPP

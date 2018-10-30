@@ -4,9 +4,9 @@
 #include <vector>
 #include <unordered_map>
 
-#include "rl_utils.hpp"
-#include "global.hpp"
 #include "feature_data.hpp"
+#include "global.hpp"
+#include "rect.hpp"
 
 // Room theming occurs both pre- and post-connect (before/after corridors).
 //
@@ -32,6 +32,9 @@
 
 struct FeatureDataT;
 class Room;
+
+template<typename T>
+class Array2;
 
 enum class RoomType
 {

@@ -3,7 +3,7 @@
 
 #include <vector>
 
-#include "rl_utils.hpp"
+struct P;
 
 namespace line_calc
 {

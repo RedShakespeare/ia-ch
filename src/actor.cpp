@@ -23,6 +23,7 @@
 #include "map_parsing.hpp"
 #include "map_travel.hpp"
 #include "marker.hpp"
+#include "misc.hpp"
 #include "msg_log.hpp"
 #include "popup.hpp"
 #include "property.hpp"

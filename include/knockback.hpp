@@ -2,8 +2,8 @@
 #define KNOCKBACK_HPP
 
 #include "global.hpp"
-#include "rl_utils.hpp"
 
+struct P;
 class Actor;
 
 namespace knockback

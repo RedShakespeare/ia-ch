@@ -1,7 +1,7 @@
 #ifndef ACTOR_MOVE_HPP
 #define ACTOR_MOVE_HPP
 
-#include "rl_utils.hpp"
+#include "direction.hpp"
 
 class Actor;
 

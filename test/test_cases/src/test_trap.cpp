@@ -6,9 +6,9 @@
 #include "feature_rigid.hpp"
 #include "feature_trap.hpp"
 #include "map.hpp"
+#include "pos.hpp"
 #include "property_data.hpp"
 #include "property_handler.hpp"
-#include "rl_utils.hpp"
 #include "test_utils.hpp"
 
 TEST_CASE("Spider web")

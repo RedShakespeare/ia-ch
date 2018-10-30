@@ -1,4 +1,8 @@
-#include "rl_utils.hpp"
+#include "pathfind.hpp"
+
+#include "debug.hpp"
+#include "flood.hpp"
+#include "random.hpp"
 
 std::vector<P> pathfind(
         const P& p0,

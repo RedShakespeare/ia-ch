@@ -4,6 +4,7 @@
 
 #include "actor_factory.hpp"
 #include "actor_player.hpp"
+#include "debug.hpp"
 #include "feature.hpp"
 #include "feature_mob.hpp"
 #include "feature_rigid.hpp"
@@ -13,7 +14,9 @@
 #include "item.hpp"
 #include "item_factory.hpp"
 #include "mapgen.hpp"
-#include "rl_utils.hpp"
+#include "misc.hpp"
+#include "pos.hpp"
+#include "random.hpp"
 #include "saving.hpp"
 
 #ifndef NDEBUG

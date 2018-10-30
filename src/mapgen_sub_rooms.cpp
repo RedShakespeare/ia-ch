@@ -1,6 +1,9 @@
 #include "mapgen.hpp"
-#include "map.hpp"
+
+#include "debug.hpp"
 #include "feature_rigid.hpp"
+#include "map.hpp"
+#include "misc.hpp"
 
 namespace mapgen
 {

@@ -4,8 +4,9 @@
 #include <memory>
 #include <vector>
 
+#include "array2.hpp"
 #include "map_templates.hpp"
-#include "rl_utils.hpp"
+#include "pos.hpp"
 
 class MapController;
 

@@ -20,6 +20,7 @@ set(COMMON_SRC
         include/actor_move.hpp
         include/actor_player.hpp
         include/ai.hpp
+        include/array2.hpp
         include/attack.hpp
         include/attack_data.hpp
         include/audio.hpp
@@ -31,6 +32,8 @@ set(COMMON_SRC
         include/common_text.hpp
         include/config.hpp
         include/create_character.hpp
+        include/debug.hpp
+        include/direction.hpp
         include/disarm.hpp
         include/draw_map.hpp
         include/drop.hpp
@@ -44,6 +47,7 @@ set(COMMON_SRC
         include/feature_pylon.hpp
         include/feature_rigid.hpp
         include/feature_trap.hpp
+        include/flood.hpp
         include/fov.hpp
         include/game.hpp
         include/game_commands.hpp
@@ -81,8 +85,10 @@ set(COMMON_SRC
         include/mapgen.hpp
         include/marker.hpp
         include/minimap.hpp
+        include/misc.hpp
         include/msg_log.hpp
         include/panel.hpp
+        include/pathfind.hpp
         include/paths.hpp
         include/pickup.hpp
         include/player_bon.hpp
@@ -91,12 +97,15 @@ set(COMMON_SRC
         include/populate_monsters.hpp
         include/populate_traps.hpp
         include/popup.hpp
+        include/pos.hpp
         include/postmortem.hpp
         include/property.hpp
         include/property_data.hpp
         include/property_factory.hpp
         include/property_handler.hpp
         include/query.hpp
+        include/random.hpp
+        include/rect.hpp
         include/reload.hpp
         include/room.hpp
         include/saving.hpp
@@ -108,11 +117,12 @@ set(COMMON_SRC
         include/teleport.hpp
         include/text_format.hpp
         include/throwing.hpp
+        include/time.hpp
         include/version.hpp
         include/viewport.hpp
         include/wham.hpp
         include/xml.hpp
-
+        
         src/ability_values.cpp
         src/actor.cpp
         src/actor_data.cpp
@@ -134,6 +144,8 @@ set(COMMON_SRC
         src/common_text.cpp
         src/config.cpp
         src/create_character.cpp
+        src/debug.cpp
+        src/direction.cpp
         src/disarm.cpp
         src/draw_map.cpp
         src/drop.cpp
@@ -147,6 +159,7 @@ set(COMMON_SRC
         src/feature_pylon.cpp
         src/feature_rigid.cpp
         src/feature_trap.cpp
+        src/flood.cpp
         src/fov.cpp
         src/game.cpp
         src/game_commands.cpp
@@ -194,8 +207,10 @@ set(COMMON_SRC
         src/mapgen_utils.cpp
         src/marker.cpp
         src/minimap.cpp
+        src/misc.cpp
         src/msg_log.cpp
         src/panel.cpp
+        src/pathfind.cpp
         src/paths.cpp
         src/pickup.cpp
         src/player_bon.cpp
@@ -204,12 +219,14 @@ set(COMMON_SRC
         src/populate_monsters.cpp
         src/populate_traps.cpp
         src/popup.cpp
+        src/pos.cpp
         src/postmortem.cpp
         src/property.cpp
         src/property_data.cpp
         src/property_factory.cpp
         src/property_handler.cpp
         src/query.cpp
+        src/random.cpp
         src/reload.cpp
         src/room.cpp
         src/saving.cpp
@@ -220,31 +237,12 @@ set(COMMON_SRC
         src/teleport.cpp
         src/text_format.cpp
         src/throwing.cpp
+        src/time.cpp
         src/version.cpp
         src/viewport.cpp
         src/wham.cpp
         src/xml.cpp
-
-        rl_utils/include/array2.hpp
-        rl_utils/include/direction.hpp
-        rl_utils/include/flood.hpp
-        rl_utils/include/misc.hpp
-        rl_utils/include/pathfind.hpp
-        rl_utils/include/pos.hpp
-        rl_utils/include/random.hpp
-        rl_utils/include/rect.hpp
-        rl_utils/include/rl_utils.hpp
-        rl_utils/include/time.hpp
-
-        rl_utils/src/direction.cpp
-        rl_utils/src/flood.cpp
-        rl_utils/src/misc.cpp
-        rl_utils/src/pathfind.cpp
-        rl_utils/src/pos.cpp
-        rl_utils/src/random.cpp
-        rl_utils/src/rl_utils.cpp
-        rl_utils/src/time.cpp
-
+        
         xml/tinyxml2/tinyxml2.h
         xml/tinyxml2/tinyxml2.cpp
         )
@@ -348,7 +346,6 @@ target_compile_options(ia-test PUBLIC
 
 set(COMMON_INCLUDE_DIRS
         include
-        rl_utils/include
         xml/tinyxml2
         )
 

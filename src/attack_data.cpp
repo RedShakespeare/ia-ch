@@ -3,12 +3,13 @@
 #include "actor.hpp"
 #include "actor_mon.hpp"
 #include "actor_player.hpp"
+#include "feature_rigid.hpp"
+#include "feature_trap.hpp"
 #include "item.hpp"
 #include "map.hpp"
 #include "map_parsing.hpp"
+#include "misc.hpp"
 #include "property.hpp"
-#include "feature_rigid.hpp"
-#include "feature_trap.hpp"
 
 // -----------------------------------------------------------------------------
 // Private

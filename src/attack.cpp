@@ -17,13 +17,13 @@
 #include "line_calc.hpp"
 #include "map.hpp"
 #include "map_parsing.hpp"
+#include "misc.hpp"
 #include "msg_log.hpp"
 #include "player_bon.hpp"
 #include "property.hpp"
 #include "property_data.hpp"
 #include "property_factory.hpp"
 #include "property_handler.hpp"
-#include "rl_utils.hpp"
 #include "sdl_base.hpp"
 #include "text_format.hpp"
 #include "viewport.hpp"
@@ -31,10 +31,10 @@
 // -----------------------------------------------------------------------------
 // Private
 // -----------------------------------------------------------------------------
+static const int nr_cell_jumps_mg_projectiles = 2;
+
 namespace
 {
-
-static const int nr_cell_jumps_mg_projectiles = 2;
 
 struct Projectile
 {

@@ -4,7 +4,9 @@
 
 #include "actor_player.hpp"
 #include "colors.hpp"
+#include "debug.hpp"
 #include "map.hpp"
+#include "misc.hpp"
 #include "player_bon.hpp"
 #include "property_handler.hpp"
 

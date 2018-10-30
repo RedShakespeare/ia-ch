@@ -3,9 +3,10 @@
 
 #include <vector>
 
+#include "array2.hpp"
 #include "global.hpp"
-#include "rl_utils.hpp"
 
+struct P;
 class Mon;
 
 namespace ai

@@ -53,12 +53,12 @@ void save()
         saving::put_int(clvl_);
         saving::put_int(xp_pct_);
         saving::put_int(xp_accum_);
-        saving::put_int(start_time_.year_);
-        saving::put_int(start_time_.month_);
-        saving::put_int(start_time_.day_);
-        saving::put_int(start_time_.hour_);
-        saving::put_int(start_time_.minute_);
-        saving::put_int(start_time_.second_);
+        saving::put_int(start_time_.year);
+        saving::put_int(start_time_.month);
+        saving::put_int(start_time_.day);
+        saving::put_int(start_time_.hour);
+        saving::put_int(start_time_.minute);
+        saving::put_int(start_time_.second);
 
         saving::put_int(history_events_.size());
 
@@ -74,12 +74,12 @@ void load()
         clvl_ = saving::get_int();
         xp_pct_ = saving::get_int();
         xp_accum_ = saving::get_int();
-        start_time_.year_ = saving::get_int();
-        start_time_.month_ = saving::get_int();
-        start_time_.day_ = saving::get_int();
-        start_time_.hour_ = saving::get_int();
-        start_time_.minute_ = saving::get_int();
-        start_time_.second_ = saving::get_int();
+        start_time_.year = saving::get_int();
+        start_time_.month = saving::get_int();
+        start_time_.day = saving::get_int();
+        start_time_.hour = saving::get_int();
+        start_time_.minute = saving::get_int();
+        start_time_.second = saving::get_int();
 
         const int nr_events = saving::get_int();
 

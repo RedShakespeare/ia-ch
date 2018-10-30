@@ -1,7 +1,11 @@
-#include "rl_utils.hpp"
+#include "misc.hpp"
 
 #include <climits>
 #include <sstream>
+#include <string>
+
+#include "array2.hpp"
+#include "rect.hpp"
 
 void set_constr_in_range(const int min, int& val, const int max)
 {

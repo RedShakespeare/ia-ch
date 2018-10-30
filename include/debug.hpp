@@ -1,5 +1,7 @@
-#ifndef RL_UTILS_HPP
-#define RL_UTILS_HPP
+#ifndef DEBUG_HPP
+#define DEBUG_HPP
+
+#include <iostream>
 
 //------------------------------------------------------------------------------
 // Trace level (use -D build flag to override)
@@ -21,6 +23,15 @@
 
 #define ASSERT(check)
 
+// For release mode, the TRACE functionality never do anything. The if/else here
+// is a trick to support writing e.g.:
+//
+// TRACE << "foo" << std::endl;
+//
+// ...which will be evaluated to:
+//
+// if (1) ; else std::cerr << "foo" << std::endl;
+//
 #define TRACE                     if (1) ; else std::cerr
 #define TRACE_FUNC_BEGIN          if (1) ; else std::cerr
 #define TRACE_FUNC_END            if (1) ; else std::cerr
@@ -80,26 +91,4 @@ void assert_impl(
         const int line,
         const char* func);
 
-#include <vector>
-#include <string>
-#include <iostream>
-#include <algorithm>
-#include <numeric>
-#include <cstdint>
-#include <functional>
-#include <random>
-#include <ctime>
-
-// RL Utils includes
-// NOTE: The user project only needs to include rl_utils.hpp (this file)
-#include "array2.hpp"
-#include "direction.hpp"
-#include "flood.hpp"
-#include "pathfind.hpp"
-#include "pos.hpp"
-#include "random.hpp"
-#include "rect.hpp"
-#include "misc.hpp"
-#include "time.hpp"
-
-#endif // RL_UTILS_HPP
+#endif // DEBUG_HPP

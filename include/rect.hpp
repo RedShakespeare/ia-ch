@@ -1,12 +1,12 @@
-#ifndef RL_UTILS_RECT_HPP
-#define RL_UTILS_RECT_HPP
+#ifndef RECT_HPP
+#define RECT_HPP
+
+#include "pos.hpp"
 
 struct R
 {
 public:
-        R() :
-                p0(P()),
-                p1(P()) {}
+        R() {}
 
         R(const P p0, const P p1) :
                 p0(p0),
@@ -86,8 +86,8 @@ public:
                         p1.scaled_up(x_factor, y_factor));
         }
 
-        P p0;
-        P p1;
+        P p0 {};
+        P p1 {};
 };
 
-#endif // RL_UTILS_RECT_HPP
+#endif // RECT_HPP

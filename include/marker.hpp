@@ -3,11 +3,11 @@
 
 #include <climits>
 
-#include "rl_utils.hpp"
-#include "global.hpp"
-#include "state.hpp"
+#include "array2.hpp"
 #include "game.hpp"
+#include "global.hpp"
 #include "io.hpp"
+#include "state.hpp"
 
 struct InputData;
 class Wpn;

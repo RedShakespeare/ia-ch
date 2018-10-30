@@ -1,9 +1,9 @@
 #ifndef DROP_HPP
 #define DROP_HPP
 
-#include "rl_utils.hpp"
 #include "global.hpp"
 
+struct P;
 class Item;
 class Actor;
 

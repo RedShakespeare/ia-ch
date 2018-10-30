@@ -1,5 +1,6 @@
 #include "mapgen.hpp"
 
+#include "debug.hpp"
 #include "room.hpp"
 #include "feature_rigid.hpp"
 #include "feature_door.hpp"

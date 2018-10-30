@@ -1,10 +1,11 @@
 #include "mapgen.hpp"
 
-#include "map_parsing.hpp"
-#include "feature_monolith.hpp"
-#include "game_time.hpp"
 #include "actor.hpp"
 #include "actor_player.hpp"
+#include "feature_monolith.hpp"
+#include "game_time.hpp"
+#include "map_parsing.hpp"
+#include "misc.hpp"
 
 namespace mapgen
 {

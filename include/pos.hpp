@@ -1,14 +1,12 @@
-#ifndef RL_UTILS_POS_HPP
-#define RL_UTILS_POS_HPP
+#ifndef POS_HPP
+#define POS_HPP
 
 #include "direction.hpp"
 
 struct P
 {
 public:
-        P() :
-                x(0),
-                y(0) {}
+        P() {}
 
         P(const int x, const int y) :
                 x(x),
@@ -206,14 +204,13 @@ public:
         // NOTE: This assumes that both x and y is -1, 0, or 1
         Dir to_dir();
 
-        int x, y;
+        int x {0};
+        int y {0};
 };
 
 struct PosVal
 {
-        PosVal() :
-                pos(P()),
-                val(-1) {}
+        PosVal() {}
 
         PosVal(const P pos_, const int val_) :
                 pos(pos_),
@@ -223,8 +220,8 @@ struct PosVal
                 pos(o.pos),
                 val(o.val) {}
 
-        P pos;
-        int val;
+        P pos {0, 0};
+        int val {-1};
 };
 
-#endif // RL_UTILS_POS_HPP
+#endif // POS_HPP

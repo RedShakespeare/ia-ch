@@ -19,6 +19,7 @@
 #include "look.hpp"
 #include "map.hpp"
 #include "map_parsing.hpp"
+#include "misc.hpp"
 #include "msg_log.hpp"
 #include "teleport.hpp"
 #include "throwing.hpp"

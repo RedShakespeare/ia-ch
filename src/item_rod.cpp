@@ -13,11 +13,11 @@
 #include "item_factory.hpp"
 #include "knockback.hpp"
 #include "map.hpp"
+#include "misc.hpp"
 #include "msg_log.hpp"
 #include "property.hpp"
 #include "property_data.hpp"
 #include "property_handler.hpp"
-#include "saving.hpp"
 #include "saving.hpp"
 #include "text_format.hpp"
 
@@ -293,10 +293,7 @@ void RodShockwave::run_effect()
 
         const P& other_pos = actor->pos;
 
-        const bool is_adj =
-            is_pos_adj(player_pos,
-                       other_pos,
-                       false);
+        const bool is_adj = is_pos_adj(player_pos, other_pos, false);
 
         if (!is_adj)
         {

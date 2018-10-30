@@ -17,6 +17,7 @@
 #include "line_calc.hpp"
 #include "map.hpp"
 #include "map_parsing.hpp"
+#include "misc.hpp"
 #include "msg_log.hpp"
 #include "property_data.hpp"
 #include "property_factory.hpp"

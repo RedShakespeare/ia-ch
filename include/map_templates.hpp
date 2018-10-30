@@ -4,7 +4,6 @@
 #include <string>
 
 #include "room.hpp"
-#include "rl_utils.hpp"
 #include "array2.hpp"
 
 enum class LevelTemplId

@@ -1,18 +1,16 @@
-#ifndef RL_UTILS_RANDOM_HPP
-#define RL_UTILS_RANDOM_HPP
+#ifndef RANDOM_HPP
+#define RANDOM_HPP
 
 #include <random>
 #include <algorithm>
 #include <string>
-#include <iomanip>
-#include <sstream>
+#include <vector>
+
+#include "debug.hpp"
 
 struct Dice
 {
-        Dice() :
-                rolls(0),
-                sides(0),
-                plus(0) {}
+        Dice() {}
 
         Dice(const int rolls, const int sides, const int plus = 0) :
                 rolls(rolls),
@@ -72,7 +70,9 @@ struct Dice
 
         std::string str_avg() const;
 
-        int rolls, sides, plus;
+        int rolls {0};
+        int sides {0};
+        int plus {0};
 };
 
 struct Range
@@ -218,9 +218,9 @@ size_t idx(const std::vector<T>& v)
 template <typename T>
 void shuffle(std::vector<T>& v)
 {
-        std::shuffle(begin(v), end(v), rng);
+        std::shuffle(std::begin(v), std::end(v), rng);
 }
 
 } // rnd
 
-#endif // RL_UTILS_RANDOM_HPP
+#endif // RANDOM_HPP

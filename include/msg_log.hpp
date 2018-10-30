@@ -5,7 +5,6 @@
 #include <vector>
 
 #include "colors.hpp"
-#include "rl_utils.hpp"
 #include "global.hpp"
 #include "info_screen_state.hpp"
 

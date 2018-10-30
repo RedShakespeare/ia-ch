@@ -5,8 +5,9 @@
 #include <fstream>
 #include <vector>
 
-#include "text_format.hpp"
+#include "debug.hpp"
 #include "io.hpp"
+#include "text_format.hpp"
 
 // -----------------------------------------------------------------------------
 // Private
@@ -23,8 +24,9 @@ static std::vector<std::string> read_manual_file()
 
         if (!file.is_open())
         {
-                TRACE_ERROR_RELEASE << "Could not open manual file"
-                                    << std::endl;
+                TRACE_ERROR_RELEASE
+                        << "Could not open manual file"
+                        << std::endl;
 
                 PANIC;
         }

@@ -3,16 +3,17 @@
 #include <algorithm>
 #include <string>
 
-#include "init.hpp"
-#include "game_time.hpp"
 #include "actor_player.hpp"
-#include "msg_log.hpp"
-#include "map.hpp"
-#include "inventory.hpp"
-#include "item_factory.hpp"
-#include "map_parsing.hpp"
 #include "feature_rigid.hpp"
+#include "game_time.hpp"
+#include "init.hpp"
+#include "inventory.hpp"
 #include "io.hpp"
+#include "item_factory.hpp"
+#include "map.hpp"
+#include "map_parsing.hpp"
+#include "misc.hpp"
+#include "msg_log.hpp"
 #include "text_format.hpp"
 
 namespace item_drop

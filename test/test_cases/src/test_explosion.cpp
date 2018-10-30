@@ -7,7 +7,6 @@
 #include "feature_rigid.hpp"
 #include "map.hpp"
 #include "property.hpp"
-#include "rl_utils.hpp"
 #include "test_utils.hpp"
 
 TEST_CASE("Explosions damage walls")

@@ -1,5 +1,7 @@
-#ifndef RL_UTILS_FLOOD_HPP
-#define RL_UTILS_FLOOD_HPP
+#ifndef FLOOD_HPP
+#define FLOOD_HPP
+
+#include "array2.hpp"
 
 Array2<int> floodfill(
         const P& p0,
@@ -8,4 +10,4 @@ Array2<int> floodfill(
         const P& p1 = P(-1, -1),
         const bool allow_diagonal = true);
 
-#endif // RL_UTILS_FLOOD_HPP
+#endif // FLOOD_HPP

@@ -16,6 +16,7 @@
 #include "map.hpp"
 #include "map_templates.hpp"
 #include "map_travel.hpp"
+#include "misc.hpp"
 #include "msg_log.hpp"
 #include "player_bon.hpp"
 #include "player_spells.hpp"

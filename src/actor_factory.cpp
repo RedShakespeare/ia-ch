@@ -6,13 +6,12 @@
 #include "actor_data.hpp"
 #include "actor_mon.hpp"
 #include "actor_player.hpp"
-#include "map.hpp"
-#include "io.hpp"
-#include "map_parsing.hpp"
-#include "actor.hpp"
 #include "feature_rigid.hpp"
 #include "init.hpp"
 #include "io.hpp"
+#include "map.hpp"
+#include "map_parsing.hpp"
+#include "misc.hpp"
 
 // -----------------------------------------------------------------------------
 // Private

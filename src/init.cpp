@@ -5,6 +5,7 @@
 #include "audio.hpp"
 #include "bot.hpp"
 #include "config.hpp"
+#include "debug.hpp"
 #include "draw_map.hpp"
 #include "game.hpp"
 #include "highscore.hpp"

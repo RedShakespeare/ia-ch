@@ -3,7 +3,7 @@
 
 #include <unordered_map>
 
-#include "rl_utils.hpp"
+#include "random.hpp"
 
 // NOTE: When updating this, also update the two maps below
 enum class PropId
