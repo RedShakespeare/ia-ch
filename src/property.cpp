@@ -180,8 +180,7 @@ PropEnded PropEntangled::affect_move_dir(const P& actor_pos, Dir& dir)
 
         if (owner_->is_player())
         {
-                msg_log::add("I struggle to tear free!",
-                             colors::msg_bad());
+                msg_log::add("I struggle to tear free!", colors::msg_bad());
         }
         else // Is monster
         {

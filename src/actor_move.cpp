@@ -283,7 +283,7 @@ static void move_player(Dir dir)
         {
                 on_player_waiting();
         }
-        else
+        else if (dir != Dir::center)
         {
                 move_player_non_center_direction(tgt);
         }
