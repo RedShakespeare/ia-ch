@@ -3,6 +3,7 @@
 #include "global.hpp"
 #include "line_calc.hpp"
 #include "map.hpp"
+#include "pos.hpp"
 
 TEST_CASE("Line calculation")
 {

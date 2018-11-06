@@ -6,6 +6,7 @@
 #include "explosion.hpp"
 #include "feature_rigid.hpp"
 #include "map.hpp"
+#include "misc.hpp"
 #include "property.hpp"
 #include "test_utils.hpp"
 

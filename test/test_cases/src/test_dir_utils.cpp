@@ -1,6 +1,7 @@
 #include "catch.hpp"
 
 #include "direction.hpp"
+#include "pos.hpp"
 
 TEST_CASE("Compass direction name")
 {

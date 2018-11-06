@@ -1,6 +1,7 @@
 #include "catch.hpp"
 
 #include "misc.hpp"
+#include "pos.hpp"
 
 TEST_CASE("King distance")
 {
