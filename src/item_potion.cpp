@@ -432,7 +432,8 @@ void PotionFortitude::quaff_impl(Actor& actor)
         // Remove a random insanity symptom if this is the player
         if (actor.is_player())
         {
-                const std::vector<const InsSympt*> sympts = insanity::active_sympts();
+                const std::vector<const InsSympt*> sympts =
+                        insanity::active_sympts();
 
                 if (!sympts.empty())
                 {

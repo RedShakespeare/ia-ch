@@ -172,7 +172,7 @@ static void set_default_variables()
         is_any_key_confirm_more_ = false;
         always_warn_new_mon_ = true;
         is_light_explosive_prompt_ = false;
-        is_drink_malign_pot_prompt_ = false;
+        is_drink_malign_pot_prompt_ = true;
         is_ranged_wpn_meleee_prompt_ = true;
         is_ranged_wpn_auto_reload_ = false;
         delay_projectile_draw_ = 20;
