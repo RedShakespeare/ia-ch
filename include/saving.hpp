@@ -1,5 +1,5 @@
-#ifndef SAVE_HANDLING_HPP
-#define SAVE_HANDLING_HPP
+#ifndef SAVING_HPP
+#define SAVING_HPP
 
 #include <string>
 
@@ -9,7 +9,10 @@ namespace saving
 void init();
 
 void save_game();
+
 void load_game();
+
+void erase_save();
 
 bool is_save_available();
 
@@ -19,9 +22,9 @@ void put_int(const int v);
 void put_bool(const bool v);
 
 std::string get_str();
-int         get_int();
-bool        get_bool();
+int get_int();
+bool get_bool();
 
-} //saving
+} // saving
 
-#endif
+#endif // SAVING_HPP

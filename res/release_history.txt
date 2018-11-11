@@ -26,12 +26,12 @@ Gameplay
 * Death Fiends now do a more sensible amount of damage (and the part of their description which said their attack "means almost certain death" has been removed)
 * Ravens only have 50% chance to cause blindness on a melee hit (instead of 100% chance)
 * Locusts no longer 'breed'
-* There is now a setting for how common each monster should be - some monsters are now rarer or more common than before
+* Some monsters are now rarer than others (previously all monsters which could spawn on a certain level had equal chance of spawning)
 * Improved check for if Phobia of open places should trigger (for example it no longer triggers while standing in smoke)
 * Traps are always triggered when bumped, and always removed when disarmed
 * Magic traps cannot be placed in blocking positions
 
-Interface
+User interface
 * The interface has a new layout, and there is a scrolling viewport centered on the player
 * The tiles are 24x24 pixels, instead of 16x24
 * The font size is no longer locked to the tile size (for example a smaller font can be used)
@@ -51,6 +51,9 @@ Interface
 * Added an option to always warn when a new monster is seen (and no other monster was already seen)
 * While aiming firearms or thrown weapons, the game no longer prints info about map features, items, etc in the aiming location (only info about any monster seen there)
 * Many properties now have longer and more descriptive names on the map screen (e.g. "Fear Res." instead of rFear", or "LIFE SAPPED(4)" instead of "HP(4)")
+
+Misc improvements
+* Save files are no longer erased when loading a game, only when dying, winning the game, or when actively quitting - this allows players to resume from a previous save file if the game has crashed
 
 --------------------------------------------------------------
 v19.2 (November 6, 2017)

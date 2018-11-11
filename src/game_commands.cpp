@@ -25,6 +25,7 @@
 #include "postmortem.hpp"
 #include "query.hpp"
 #include "reload.hpp"
+#include "saving.hpp"
 #include "state.hpp"
 #include "teleport.hpp"
 #include "wham.hpp"
@@ -47,6 +48,9 @@ static void query_quit()
 
         if (quit_choice == 0)
         {
+                // Choosing to quit the game deletes the save
+                saving::erase_save();
+
                 states::pop();
 
                 init::cleanup_session();
@@ -495,9 +499,11 @@ void handle(const GameCmd cmd)
                         game::add_history_event(
                                 "Beheld The Shining Trapezohedron!");
 
-                        states::pop();
-
                         game::win_game();
+
+                        saving::erase_save();
+
+                        states::pop();
 
                         states::push(
                                 std::make_unique<PostmortemMenu>(

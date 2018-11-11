@@ -12,4 +12,6 @@ const std::string images_path = gfx_path + "/images";
 const std::string logo_img_path = images_path + "/main_menu_logo.png";
 const std::string skull_img_path = images_path + "/skull.png";
 
+const std::string save_path = "res/data/save";
+
 } // paths

@@ -515,16 +515,16 @@ void GameState::update()
         {
                 TRACE << "Player died" << std::endl;
 
-                static_cast<Player*>(map::player)->wait_turns_left = -1;
-
                 audio::play(SfxId::death);
 
-                msg_log::add("-I AM DEAD!-",
-                             colors::msg_bad(),
-                             false,
-                             MorePromptOnMsg::yes);
+                msg_log::add(
+                        "-I AM DEAD!-",
+                        colors::msg_bad(),
+                        false,
+                        MorePromptOnMsg::yes);
 
-                // Go to postmortem menu
+                saving::erase_save();
+
                 states::pop();
 
                 states::push(std::make_unique<PostmortemMenu>(IsWin::no));

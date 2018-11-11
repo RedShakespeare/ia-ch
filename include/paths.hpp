@@ -15,6 +15,8 @@ extern const std::string images_path;
 extern const std::string logo_img_path;
 extern const std::string skull_img_path;
 
+extern const std::string save_path;
+
 } // paths
 
 #endif // PATHS_HPP

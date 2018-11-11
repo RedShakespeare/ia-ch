@@ -18,6 +18,7 @@
 #include "map_travel.hpp"
 #include "misc.hpp"
 #include "msg_log.hpp"
+#include "paths.hpp"
 #include "player_bon.hpp"
 #include "player_spells.hpp"
 #include "postmortem.hpp"
@@ -35,17 +36,17 @@ enum class SaveLoadState
         stopped
 };
 
-static SaveLoadState state_;
+static SaveLoadState state;
 
 #endif // NDEBUG
 
-static std::vector<std::string> lines_;
+static std::vector<std::string> lines;
 
 static void save_modules()
 {
         TRACE_FUNC_BEGIN;
 
-        ASSERT(lines_.empty());
+        ASSERT(lines.empty());
 
         saving::put_str(map::player->name_a());
 
@@ -72,7 +73,7 @@ static void load_modules()
 {
         TRACE_FUNC_BEGIN;
 
-        ASSERT(!lines_.empty());
+        ASSERT(!lines.empty());
 
         const std::string player_name = saving::get_str();
 
@@ -105,15 +106,16 @@ static void write_file()
 {
         std::ofstream file;
 
-        file.open("res/data/save", std::ios::trunc);
+        // Current file content is discarded
+        file.open(paths::save_path, std::ios::trunc);
 
         if (file.is_open())
         {
-                for (size_t i = 0; i < lines_.size(); ++i)
+                for (size_t i = 0; i < lines.size(); ++i)
                 {
-                        file << lines_[i];
+                        file << lines[i];
 
-                        if (i != lines_.size() - 1)
+                        if (i != lines.size() - 1)
                         {
                                 file << std::endl;
                         }
@@ -125,7 +127,7 @@ static void write_file()
 
 static void read_file()
 {
-        std::ifstream file("res/data/save");
+        std::ifstream file(paths::save_path);
 
         if (file.is_open())
         {
@@ -133,7 +135,7 @@ static void read_file()
 
                 while (getline(file, current_line))
                 {
-                        lines_.push_back(current_line);
+                        lines.push_back(current_line);
                 }
 
                 file.close();
@@ -152,20 +154,20 @@ namespace saving
 
 void init()
 {
-        lines_.clear();
+        lines.clear();
 
 #ifndef NDEBUG
-        state_ = SaveLoadState::stopped;
+        state = SaveLoadState::stopped;
 #endif // NDEBUG
 }
 
 void save_game()
 {
 #ifndef NDEBUG
-        ASSERT(state_ == SaveLoadState::stopped);
-        ASSERT(lines_.empty());
+        ASSERT(state == SaveLoadState::stopped);
+        ASSERT(lines.empty());
 
-        state_ = SaveLoadState::saving;
+        state = SaveLoadState::saving;
 #endif // NDEBUG
 
         // Tell all modules to append to the save lines (via this modules store
@@ -173,47 +175,51 @@ void save_game()
         save_modules();
 
 #ifndef NDEBUG
-        state_ = SaveLoadState::stopped;
+        state = SaveLoadState::stopped;
 #endif // NDEBUG
 
         // Write the save lines to the save file
         write_file();
 
-        lines_.clear();
+        lines.clear();
 }
 
 void load_game()
 {
 #ifndef NDEBUG
-        ASSERT(state_ == SaveLoadState::stopped);
-        ASSERT(lines_.empty());
+        ASSERT(state == SaveLoadState::stopped);
+        ASSERT(lines.empty());
 
-        state_ = SaveLoadState::loading;
+        state = SaveLoadState::loading;
 #endif // NDEBUG
 
         // Read the save file to the save lines
         read_file();
 
-        ASSERT(!lines_.empty());
+        ASSERT(!lines.empty());
 
         // Tell all modules to set up their state from the save lines (via the
         // read functions of this module)
         load_modules();
 
 #ifndef NDEBUG
-        state_ = SaveLoadState::stopped;
+        state = SaveLoadState::stopped;
 #endif // NDEBUG
 
-        // Save file corruption check
-        ASSERT(lines_.empty());
+        ASSERT(lines.empty());
+}
 
-        // Loading finished, write empty file to prevent reloading the game
+void erase_save()
+{
+        lines.clear();
+
+        // Write empty save file
         write_file();
 }
 
 bool is_save_available()
 {
-        std::ifstream file("res/data/save");
+        std::ifstream file(paths::save_path);
 
         if (file.good())
         {
@@ -227,6 +233,7 @@ bool is_save_available()
         else // Failed to open file
         {
                 file.close();
+
                 return false;
         }
 }
@@ -234,10 +241,10 @@ bool is_save_available()
 void put_str(const std::string str)
 {
 #ifndef NDEBUG
-        ASSERT(state_ == SaveLoadState::saving);
+        ASSERT(state == SaveLoadState::saving);
 #endif // NDEBUG
 
-        lines_.push_back(str);
+        lines.push_back(str);
 }
 
 void put_int(const int v)
@@ -255,15 +262,14 @@ void put_bool(const bool v)
 std::string get_str()
 {
 #ifndef NDEBUG
-        ASSERT(state_ == SaveLoadState::loading);
+        ASSERT(state == SaveLoadState::loading);
 #endif // NDEBUG
 
-        // Save file corruption check
-        ASSERT(!lines_.empty());
+        ASSERT(!lines.empty());
 
-        const std::string str = lines_.front();
+        const std::string str = lines.front();
 
-        lines_.erase(std::begin(lines_));
+        lines.erase(std::begin(lines));
 
         return str;
 }
