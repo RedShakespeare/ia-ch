@@ -25,6 +25,9 @@ const std::string confirm_hint =
 const std::string any_key_hint =
         "[any key] to continue";
 
+const std::string yes_or_no_hint =
+        "[y/n]";
+
 const std::string disarm_no_trap =
         "I find nothing there to disarm.";
 

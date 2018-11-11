@@ -3,20 +3,21 @@
 #include <vector>
 #include <algorithm>
 
-#include "init.hpp"
-#include "item_scroll.hpp"
 #include "actor_player.hpp"
-#include "msg_log.hpp"
 #include "browser.hpp"
-#include "io.hpp"
-#include "panel.hpp"
+#include "common_text.hpp"
+#include "init.hpp"
 #include "inventory.hpp"
+#include "io.hpp"
 #include "item_factory.hpp"
-#include "player_bon.hpp"
-#include "query.hpp"
+#include "item_scroll.hpp"
 #include "map.hpp"
-#include "saving.hpp"
+#include "msg_log.hpp"
+#include "panel.hpp"
+#include "player_bon.hpp"
 #include "property_handler.hpp"
+#include "query.hpp"
+#include "saving.hpp"
 
 // -----------------------------------------------------------------------------
 // Private
@@ -106,7 +107,9 @@ static void try_cast(const SpellOpt& spell_opt)
         if (spi_cost_range.max >= map::player->sp)
         {
                 msg_log::add(
-                        "Low spirit, try casting spell anyway? [y/n]",
+                        std::string(
+                                "Low spirit, try casting spell anyway? " +
+                                common_text::yes_or_no_hint),
                         colors::light_white());
 
                 if (query::yes_or_no() == BinaryAnswer::no)

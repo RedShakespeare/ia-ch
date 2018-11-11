@@ -7,6 +7,7 @@
 #include "actor_mon.hpp"
 #include "actor_player.hpp"
 #include "attack.hpp"
+#include "common_text.hpp"
 #include "drop.hpp"
 #include "explosion.hpp"
 #include "feature_data.hpp"
@@ -24,6 +25,7 @@
 #include "property.hpp"
 #include "property_data.hpp"
 #include "property_handler.hpp"
+#include "query.hpp"
 #include "sound.hpp"
 #include "teleport.hpp"
 #include "text_format.hpp"
@@ -36,9 +38,7 @@ Trap::Trap(const P& feature_pos,
            TrapId id) :
         Rigid(feature_pos),
         mimic_feature_(mimic_feature),
-        is_hidden_(true),
-        nr_turns_until_trigger_ (-1),
-        trap_impl_(nullptr)
+        is_hidden_(true)
 {
         ASSERT(id != TrapId::END);
 
@@ -297,6 +297,51 @@ void Trap::trigger_start(const Actor* actor)
         }
 
         TRACE_FUNC_END_VERBOSE;
+}
+
+AllowAction Trap::pre_bump(Actor& actor_bumping)
+{
+        if (!actor_bumping.is_player() ||
+            actor_bumping.properties.has(PropId::confused))
+        {
+                return AllowAction::yes;
+        }
+
+        if (map::cells.at(pos_).is_seen_by_player &&
+            !is_hidden_ &&
+            !actor_bumping.properties.has(PropId::ethereal) &&
+            !actor_bumping.properties.has(PropId::flying))
+        {
+                // The trap is known, and will be triggered by the player
+
+                const std::string name_the = name(Article::the);
+
+                msg_log::add(
+                        std::string(
+                                "Step into " +
+                                name_the +
+                                "? " +
+                                common_text::yes_or_no_hint),
+                        colors::light_white());
+
+                const auto query_result = query::yes_or_no();
+
+                msg_log::clear();
+
+                return
+                        (query_result == BinaryAnswer::no)
+                        ? AllowAction::no
+                        : AllowAction::yes;
+        }
+        else
+        {
+                // The trap is unknown, or will not be triggered by the player -
+                // delegate the question to the mimicked feature
+
+                const auto result = mimic_feature_->pre_bump(actor_bumping);
+
+                return result;
+        }
 }
 
 void Trap::bump(Actor& actor_bumping)

@@ -36,7 +36,6 @@ public:
                 std::vector<P>& walls,
                 std::vector<P>& inner);
 
-        //Spawn-by-id compliant ctor (do not use for normal cases):
         EventWallCrumble(const P& p) :
                 Event(p) {}
 
@@ -59,7 +58,6 @@ class EventSnakeEmerge: public Event
 public:
         EventSnakeEmerge();
 
-        //Spawn-by-id compliant ctor (do not use for normal cases):
         EventSnakeEmerge(const P& p) :
                 Event(p) {}
 

@@ -3,6 +3,7 @@
 #include "actor_mon.hpp"
 #include "actor_player.hpp"
 #include "audio.hpp"
+#include "common_text.hpp"
 #include "feature_rigid.hpp"
 #include "game.hpp"
 #include "game_time.hpp"
@@ -60,7 +61,13 @@ ConsumeItem Potion::activate(Actor* const actor)
                 {
                         const std::string name = this->name(ItemRefType::a);
 
-                        msg_log::add("Drink " + name + "? [y/n]");
+                        msg_log::add(
+                                std::string(
+                                        "Drink " +
+                                        name +
+                                        "? " +
+                                        common_text::yes_or_no_hint),
+                                colors::light_white());
 
                         auto result = query::yes_or_no();
 

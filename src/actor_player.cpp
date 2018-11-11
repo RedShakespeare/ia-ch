@@ -1613,7 +1613,9 @@ void Player::interrupt_actions()
 
             msg_log::add(msg, colors::light_white());
 
-            msg_log::add("Continue? [y/n]", colors::light_white());
+            msg_log::add(
+                    "Continue? " + common_text::yes_or_no_hint,
+                    colors::light_white());
 
             should_continue = (query::yes_or_no() == BinaryAnswer::yes);
 

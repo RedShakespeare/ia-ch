@@ -84,6 +84,12 @@ enum class InvType
         backpack
 };
 
+enum class AllowAction
+{
+        no,
+        yes
+};
+
 enum class DidAction
 {
         no,

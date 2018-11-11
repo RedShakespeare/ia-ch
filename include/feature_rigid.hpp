@@ -15,13 +15,29 @@ enum class BurnState
         has_burned
 };
 
-enum class WasDestroyed {no ,yes};
+enum class WasDestroyed
+{
+        no,
+        yes
+};
 
-enum class DidTriggerTrap {no ,yes};
+enum class DidTriggerTrap
+{
+        no,
+        yes
+};
 
-enum class DidOpen {no ,yes};
+enum class DidOpen
+{
+        no,
+        yes
+};
 
-enum class DidClose {no ,yes};
+enum class DidClose
+{
+        no,
+        yes
+};
 
 class ItemContainer
 {
@@ -52,16 +68,19 @@ public:
 
         virtual std::string name(const Article article) const override = 0;
 
+        virtual AllowAction pre_bump(Actor& actor_bumping) override;
+
         virtual void on_new_turn() override final;
 
         Color color() const override final;
 
         virtual Color color_bg() const override final;
 
-        virtual void hit(const int dmg,
-                         const DmgType dmg_type,
-                         const DmgMethod dmg_method,
-                         Actor* const actor = nullptr) override;
+        virtual void hit(
+                const int dmg,
+                const DmgType dmg_type,
+                const DmgMethod dmg_method,
+                Actor* const actor = nullptr) override;
 
         int shock_when_adj() const;
 
@@ -97,19 +116,20 @@ public:
 
         void corrupt_color();
 
-        ItemContainer item_container_;
+        ItemContainer item_container_ {};
 
-        BurnState burn_state_;
+        BurnState burn_state_ {BurnState::not_burned};
 
-        bool started_burning_this_turn_;
+        bool started_burning_this_turn_ {false};
 
 protected:
         virtual void on_new_turn_hook() {}
 
-        virtual void on_hit(const int dmg,
-                            const DmgType dmg_type,
-                            const DmgMethod dmg_method,
-                            Actor* const actor) = 0;
+        virtual void on_hit(
+                const int dmg,
+                const DmgType dmg_type,
+                const DmgMethod dmg_method,
+                Actor* const actor) = 0;
 
         virtual Color color_default() const = 0;
 
@@ -131,14 +151,14 @@ protected:
 
         virtual int base_shock_when_adj() const;
 
-        TileId gore_tile_;
-        char gore_character_;
+        TileId gore_tile_ {TileId::END};
+        char gore_character_ {0};
 
 private:
-        bool is_bloody_;
+        bool is_bloody_ {false};
 
         // Corrupted by a Strange Color monster
-        int nr_turns_color_corrupted_;
+        int nr_turns_color_corrupted_ {-1};
 };
 
 enum class FloorType
@@ -171,10 +191,11 @@ public:
 private:
         Color color_default() const override;
 
-        void on_hit(const int dmg,
-                    const DmgType dmg_type,
-                    const DmgMethod dmg_method,
-                    Actor* const actor) override;
+        void on_hit(
+                const int dmg,
+                const DmgType dmg_type,
+                const DmgMethod dmg_method,
+                Actor* const actor) override;
 };
 
 class Carpet: public Rigid
@@ -198,10 +219,11 @@ public:
 private:
         Color color_default() const override;
 
-        void on_hit(const int dmg,
-                    const DmgType dmg_type,
-                    const DmgMethod dmg_method,
-                    Actor* const actor) override;
+        void on_hit(
+                const int dmg,
+                const DmgType dmg_type,
+                const DmgMethod dmg_method,
+                Actor* const actor) override;
 };
 
 enum class GrassType
@@ -232,10 +254,11 @@ public:
 private:
         Color color_default() const override;
 
-        void on_hit(const int dmg,
-                    const DmgType dmg_type,
-                    const DmgMethod dmg_method,
-                    Actor* const actor) override;
+        void on_hit(
+                const int dmg,
+                const DmgType dmg_type,
+                const DmgMethod dmg_method,
+                Actor* const actor) override;
 };
 
 class Bush: public Rigid
@@ -260,10 +283,11 @@ public:
 private:
         Color color_default() const override;
 
-        void on_hit(const int dmg,
-                    const DmgType dmg_type,
-                    const DmgMethod dmg_method,
-                    Actor* const actor) override;
+        void on_hit(
+                const int dmg,
+                const DmgType dmg_type,
+                const DmgMethod dmg_method,
+                Actor* const actor) override;
 };
 
 class Vines: public Rigid
@@ -286,10 +310,11 @@ public:
 private:
         Color color_default() const override;
 
-        void on_hit(const int dmg,
-                    const DmgType dmg_type,
-                    const DmgMethod dmg_method,
-                    Actor* const actor) override;
+        void on_hit(
+                const int dmg,
+                const DmgType dmg_type,
+                const DmgMethod dmg_method,
+                Actor* const actor) override;
 };
 
 class Chains: public Rigid
@@ -315,10 +340,11 @@ private:
 
         Color color_bg_default() const override;
 
-        void on_hit(const int dmg,
-                    const DmgType dmg_type,
-                    const DmgMethod dmg_method,
-                    Actor* const actor) override;
+        void on_hit(
+                const int dmg,
+                const DmgType dmg_type,
+                const DmgMethod dmg_method,
+                Actor* const actor) override;
 };
 
 class Grate: public Rigid
@@ -340,10 +366,11 @@ public:
 private:
         Color color_default() const override;
 
-        void on_hit(const int dmg,
-                    const DmgType dmg_type,
-                    const DmgMethod dmg_method,
-                    Actor* const actor) override;
+        void on_hit(
+                const int dmg,
+                const DmgType dmg_type,
+                const DmgMethod dmg_method,
+                Actor* const actor) override;
 };
 
 class Brazier: public Rigid
@@ -365,10 +392,11 @@ public:
 private:
         Color color_default() const override;
 
-        void on_hit(const int dmg,
-                    const DmgType dmg_type,
-                    const DmgMethod dmg_method,
-                    Actor* const actor) override;
+        void on_hit(
+                const int dmg,
+                const DmgType dmg_type,
+                const DmgMethod dmg_method,
+                Actor* const actor) override;
 
         void add_light_hook(Array2<bool>& light) const override;
 };
@@ -414,10 +442,11 @@ public:
 private:
         Color color_default() const override;
 
-        void on_hit(const int dmg,
-                    const DmgType dmg_type,
-                    const DmgMethod dmg_method,
-                    Actor* const actor) override;
+        void on_hit(
+                const int dmg,
+                const DmgType dmg_type,
+                const DmgMethod dmg_method,
+                Actor* const actor) override;
 };
 
 class RubbleLow: public Rigid
@@ -439,10 +468,11 @@ public:
 private:
         Color color_default() const override;
 
-        void on_hit(const int dmg,
-                    const DmgType dmg_type,
-                    const DmgMethod dmg_method,
-                    Actor* const actor) override;
+        void on_hit(
+                const int dmg,
+                const DmgType dmg_type,
+                const DmgMethod dmg_method,
+                Actor* const actor) override;
 };
 
 class Bones: public Rigid
@@ -464,10 +494,11 @@ public:
 private:
         Color color_default() const override;
 
-        void on_hit(const int dmg,
-                    const DmgType dmg_type,
-                    const DmgMethod dmg_method,
-                    Actor* const actor) override;
+        void on_hit(
+                const int dmg,
+                const DmgType dmg_type,
+                const DmgMethod dmg_method,
+                Actor* const actor) override;
 };
 
 class RubbleHigh: public Rigid
@@ -489,10 +520,11 @@ public:
 private:
         Color color_default() const override;
 
-        void on_hit(const int dmg,
-                    const DmgType dmg_type,
-                    const DmgMethod dmg_method,
-                    Actor* const actor) override;
+        void on_hit(
+                const int dmg,
+                const DmgType dmg_type,
+                const DmgMethod dmg_method,
+                Actor* const actor) override;
 };
 
 class GraveStone: public Rigid
@@ -521,10 +553,11 @@ public:
 private:
         Color color_default() const override;
 
-        void on_hit(const int dmg,
-                    const DmgType dmg_type,
-                    const DmgMethod dmg_method,
-                    Actor* const actor) override;
+        void on_hit(
+                const int dmg,
+                const DmgType dmg_type,
+                const DmgMethod dmg_method,
+                Actor* const actor) override;
 
         std::string inscr_;
 };
@@ -548,10 +581,11 @@ public:
 private:
         Color color_default() const override;
 
-        void on_hit(const int dmg,
-                    const DmgType dmg_type,
-                    const DmgMethod dmg_method,
-                    Actor* const actor) override;
+        void on_hit(
+                const int dmg,
+                const DmgType dmg_type,
+                const DmgMethod dmg_method,
+                Actor* const actor) override;
 };
 
 enum class StatueType
@@ -581,10 +615,11 @@ public:
 private:
         Color color_default() const override;
 
-        void on_hit(const int dmg,
-                    const DmgType dmg_type,
-                    const DmgMethod dmg_method,
-                    Actor* const actor) override;
+        void on_hit(
+                const int dmg,
+                const DmgType dmg_type,
+                const DmgMethod dmg_method,
+                Actor* const actor) override;
 
         int base_shock_when_adj() const override;
 };
@@ -606,10 +641,11 @@ public:
 private:
         Color color_default() const override;
 
-        void on_hit(const int dmg,
-                    const DmgType dmg_type,
-                    const DmgMethod dmg_method,
-                    Actor* const actor) override;
+        void on_hit(
+                const int dmg,
+                const DmgType dmg_type,
+                const DmgMethod dmg_method,
+                Actor* const actor) override;
 };
 
 class Stairs: public Rigid
@@ -633,10 +669,11 @@ public:
 private:
         Color color_default() const override;
 
-        void on_hit(const int dmg,
-                    const DmgType dmg_type,
-                    const DmgMethod dmg_method,
-                    Actor* const actor) override;
+        void on_hit(
+                const int dmg,
+                const DmgType dmg_type,
+                const DmgMethod dmg_method,
+                Actor* const actor) override;
 };
 
 class Bridge : public Rigid
@@ -665,10 +702,11 @@ public:
 private:
         Color color_default() const override;
 
-        void on_hit(const int dmg,
-                    const DmgType dmg_type,
-                    const DmgMethod dmg_method,
-                    Actor* const actor) override;
+        void on_hit(
+                const int dmg,
+                const DmgType dmg_type,
+                const DmgMethod dmg_method,
+                Actor* const actor) override;
 
         Axis axis_;
 };
@@ -696,10 +734,11 @@ private:
 
         Color color_bg_default() const override;
 
-        void on_hit(const int dmg,
-                    const DmgType dmg_type,
-                    const DmgMethod dmg_method,
-                    Actor* const actor) override;
+        void on_hit(
+                const int dmg,
+                const DmgType dmg_type,
+                const DmgMethod dmg_method,
+                Actor* const actor) override;
 };
 
 class LiquidDeep: public Rigid
@@ -716,6 +755,8 @@ public:
 
         std::string name(const Article article) const override;
 
+        AllowAction pre_bump(Actor& actor_bumping) override;
+
         void bump(Actor& actor_bumping) override;
 
         void on_leave(Actor& actor_leaving) override;
@@ -727,10 +768,13 @@ public:
 private:
         Color color_default() const override;
 
-        void on_hit(const int dmg,
-                    const DmgType dmg_type,
-                    const DmgMethod dmg_method,
-                    Actor* const actor) override;
+        void on_hit(
+                const int dmg,
+                const DmgType dmg_type,
+                const DmgMethod dmg_method,
+                Actor* const actor) override;
+
+        bool must_swim_on_enter(const Actor& actor) const;
 };
 
 class Chasm: public Rigid
@@ -750,10 +794,11 @@ public:
 private:
         Color color_default() const override;
 
-        void on_hit(const int dmg,
-                    const DmgType dmg_type,
-                    const DmgMethod dmg_method,
-                    Actor* const actor) override;
+        void on_hit(
+                const int dmg,
+                const DmgType dmg_type,
+                const DmgMethod dmg_method,
+                Actor* const actor) override;
 };
 
 class Lever: public Rigid
@@ -807,10 +852,11 @@ public:
 private:
         Color color_default() const override;
 
-        void on_hit(const int dmg,
-                    const DmgType dmg_type,
-                    const DmgMethod dmg_method,
-                    Actor* const actor) override;
+        void on_hit(
+                const int dmg,
+                const DmgType dmg_type,
+                const DmgMethod dmg_method,
+                Actor* const actor) override;
 
         bool is_left_pos_;
 
@@ -836,10 +882,11 @@ public:
 private:
         Color color_default() const override;
 
-        void on_hit(const int dmg,
-                    const DmgType dmg_type,
-                    const DmgMethod dmg_method,
-                    Actor* const actor) override;
+        void on_hit(
+                const int dmg,
+                const DmgType dmg_type,
+                const DmgMethod dmg_method,
+                Actor* const actor) override;
 };
 
 class Tree: public Rigid
@@ -861,10 +908,11 @@ public:
 private:
         Color color_default() const override;
 
-        void on_hit(const int dmg,
-                    const DmgType dmg_type,
-                    const DmgMethod dmg_method,
-                    Actor* const actor) override;
+        void on_hit(
+                const int dmg,
+                const DmgType dmg_type,
+                const DmgMethod dmg_method,
+                Actor* const actor) override;
 };
 
 // NOTE: In some previous versions, it was possible to inspect the tomb and get
@@ -911,10 +959,11 @@ public:
 private:
         Color color_default() const override;
 
-        void on_hit(const int dmg,
-                    const DmgType dmg_type,
-                    const DmgMethod dmg_method,
-                    Actor* const actor) override;
+        void on_hit(
+                const int dmg,
+                const DmgType dmg_type,
+                const DmgMethod dmg_method,
+                Actor* const actor) override;
 
         DidTriggerTrap trigger_trap(Actor* const actor) override;
 
@@ -962,10 +1011,11 @@ public:
 private:
         Color color_default() const override;
 
-        void on_hit(const int dmg,
-                    const DmgType dmg_type,
-                    const DmgMethod dmg_method,
-                    Actor* const actor) override;
+        void on_hit(
+                const int dmg,
+                const DmgType dmg_type,
+                const DmgMethod dmg_method,
+                Actor* const actor) override;
 
         void player_loot();
 
@@ -997,10 +1047,11 @@ public:
 private:
         Color color_default() const override;
 
-        void on_hit(const int dmg,
-                    const DmgType dmg_type,
-                    const DmgMethod dmg_method,
-                    Actor* const actor) override;
+        void on_hit(
+                const int dmg,
+                const DmgType dmg_type,
+                const DmgMethod dmg_method,
+                Actor* const actor) override;
 
         void player_loot();
 
@@ -1028,10 +1079,11 @@ public:
 private:
         Color color_default() const override;
 
-        void on_hit(const int dmg,
-                    const DmgType dmg_type,
-                    const DmgMethod dmg_method,
-                    Actor* const actor) override;
+        void on_hit(
+                const int dmg,
+                const DmgType dmg_type,
+                const DmgMethod dmg_method,
+                Actor* const actor) override;
 
         void player_loot();
 
@@ -1059,10 +1111,11 @@ public:
 private:
         Color color_default() const override;
 
-        void on_hit(const int dmg,
-                    const DmgType dmg_type,
-                    const DmgMethod dmg_method,
-                    Actor* const actor) override;
+        void on_hit(
+                const int dmg,
+                const DmgType dmg_type,
+                const DmgMethod dmg_method,
+                Actor* const actor) override;
 
         void player_loot();
 
@@ -1125,10 +1178,11 @@ public:
 private:
         Color color_default() const override;
 
-        void on_hit(const int dmg,
-                    const DmgType dmg_type,
-                    const DmgMethod dmg_method,
-                    Actor* const actor) override;
+        void on_hit(
+                const int dmg,
+                const DmgType dmg_type,
+                const DmgMethod dmg_method,
+                Actor* const actor) override;
 
         FountainEffect fountain_effect_;
         bool has_drinks_left_;
@@ -1159,10 +1213,11 @@ public:
 private:
         Color color_default() const override;
 
-        void on_hit(const int dmg,
-                    const DmgType dmg_type,
-                    const DmgMethod dmg_method,
-                    Actor* const actor) override;
+        void on_hit(
+                const int dmg,
+                const DmgType dmg_type,
+                const DmgMethod dmg_method,
+                Actor* const actor) override;
 
         void player_loot();
 

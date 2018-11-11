@@ -1613,7 +1613,9 @@ ConsumeItem Explosive::activate(Actor* const actor)
         {
                 const std::string name = this->name(ItemRefType::a);
 
-                msg_log::add("Light " + name + "? [y/n]");
+                msg_log::add(
+                        "Light " + name + "? " + common_text::yes_or_no_hint,
+                        colors::light_white());
 
                 auto result = query::yes_or_no();
 

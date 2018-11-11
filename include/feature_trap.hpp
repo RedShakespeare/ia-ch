@@ -36,13 +36,8 @@ class Trap: public Rigid
 public:
         Trap(const P& p, Rigid* const mimic_feature, TrapId id);
 
-        // Spawn-by-id compliant ctor (do not use for normal cases):
         Trap(const P& p) :
-                Rigid(p),
-                mimic_feature_(nullptr),
-                is_hidden_(false),
-                nr_turns_until_trigger_(-1),
-                trap_impl_(nullptr) {}
+                Rigid(p) {}
 
         Trap() = delete;
 
@@ -59,6 +54,8 @@ public:
                 // implementation
                 return trap_impl_;
         }
+
+        AllowAction pre_bump(Actor& actor_bumping) override;
 
         void bump(Actor& actor_bumping) override;
 
@@ -121,12 +118,12 @@ private:
 
         void trigger_start(const Actor* actor);
 
-        Rigid* mimic_feature_;
-        bool is_hidden_;
-        int nr_turns_until_trigger_;
+        Rigid* mimic_feature_ {nullptr};
+        bool is_hidden_ {false};
+        int nr_turns_until_trigger_ {-1};
 
         // TODO: Should be a unique pointer
-        TrapImpl* trap_impl_;
+        TrapImpl* trap_impl_ {nullptr};
 };
 
 class TrapImpl

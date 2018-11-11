@@ -6,6 +6,7 @@
 #include "actor_hit.hpp"
 #include "actor_mon.hpp"
 #include "actor_player.hpp"
+#include "common_text.hpp"
 #include "drop.hpp"
 #include "explosion.hpp"
 #include "feature_mob.hpp"
@@ -31,14 +32,41 @@
 // Rigid
 // -----------------------------------------------------------------------------
 Rigid::Rigid(const P& p) :
-    Feature(p),
-    item_container_(),
-    burn_state_(BurnState::not_burned),
-    started_burning_this_turn_(false),
-    gore_tile_(TileId::END),
-    gore_character_(0),
-    is_bloody_(false),
-    nr_turns_color_corrupted_(-1) {}
+    Feature(p)
+{
+
+}
+
+AllowAction Rigid::pre_bump(Actor& actor_bumping)
+{
+        if (!actor_bumping.is_player() ||
+            actor_bumping.properties.has(PropId::confused))
+        {
+                return AllowAction::yes;
+        }
+
+        if ((burn_state_ == BurnState::burning) &&
+            !actor_bumping.properties.has(PropId::r_fire) &&
+            !actor_bumping.properties.has(PropId::flying) &&
+            can_move(actor_bumping) &&
+            map::cells.at(pos_).is_seen_by_player)
+        {
+                msg_log::add(
+                        "Step into the flames? " + common_text::yes_or_no_hint,
+                        colors::light_white());
+
+                const auto query_result = query::yes_or_no();
+
+                msg_log::clear();
+
+                return
+                        (query_result == BinaryAnswer::no)
+                        ? AllowAction::no
+                        : AllowAction::yes;
+        }
+
+        return AllowAction::yes;
+}
 
 void Rigid::on_new_turn()
 {
@@ -472,13 +500,14 @@ void Rigid::add_light(Array2<bool>& light) const
 // Floor
 // -----------------------------------------------------------------------------
 Floor::Floor(const P& p) :
-    Rigid   (p),
-    type_   (FloorType::common) {}
+    Rigid(p),
+    type_(FloorType::common) {}
 
-void Floor::on_hit(const int dmg,
-                   const DmgType dmg_type,
-                   const DmgMethod dmg_method,
-                   Actor* const actor)
+void Floor::on_hit(
+        const int dmg,
+        const DmgType dmg_type,
+        const DmgMethod dmg_method,
+        Actor* const actor)
 {
     (void)dmg;
 
@@ -902,10 +931,11 @@ Color RubbleLow::color_default() const
 Bones::Bones(const P& p) :
     Rigid(p) {}
 
-void Bones::on_hit(const int dmg,
-                   const DmgType dmg_type,
-                   const DmgMethod dmg_method,
-                   Actor* const actor)
+void Bones::on_hit(
+        const int dmg,
+        const DmgType dmg_type,
+        const DmgMethod dmg_method,
+        Actor* const actor)
 {
     (void)dmg;
     (void)dmg_type;
@@ -1405,10 +1435,11 @@ LiquidDeep::LiquidDeep(const P& p) :
         Rigid(p),
         type_(LiquidType::water) {}
 
-void LiquidDeep::on_hit(const int dmg,
-                        const DmgType dmg_type,
-                        const DmgMethod dmg_method,
-                        Actor* const actor)
+void LiquidDeep::on_hit(
+        const int dmg,
+        const DmgType dmg_type,
+        const DmgMethod dmg_method,
+        Actor* const actor)
 {
         (void)dmg;
         (void)dmg_type;
@@ -1416,11 +1447,55 @@ void LiquidDeep::on_hit(const int dmg,
         (void)actor;
 }
 
+bool LiquidDeep::must_swim_on_enter(const Actor& actor) const
+{
+        return
+                !actor.properties.has(PropId::ethereal) &&
+                !actor.properties.has(PropId::flying);
+}
+
+AllowAction LiquidDeep::pre_bump(Actor& actor_bumping)
+{
+        if (!actor_bumping.is_player() ||
+            actor_bumping.properties.has(PropId::confused))
+        {
+                return AllowAction::yes;
+        }
+
+        if (map::player->active_explosive_)
+        {
+                const std::string explosive_name =
+                        map::player->active_explosive_->name(
+                                ItemRefType::plain);
+
+                const std::string liquid_name_the = name(Article::the);
+
+                msg_log::add(
+                        std::string(
+                                "Swim through " +
+                                liquid_name_the +
+                                "? (The " +
+                                explosive_name +
+                                " will be extinguished) " +
+                                common_text::yes_or_no_hint),
+                        colors::light_white());
+
+                const auto result = query::yes_or_no();
+
+                msg_log::clear();
+
+                return
+                        (result == BinaryAnswer::no)
+                        ? AllowAction::no
+                        : AllowAction::yes;
+        }
+
+        return AllowAction::yes;
+}
+
 void LiquidDeep::bump(Actor& actor_bumping)
 {
-        const bool must_swim =
-                !actor_bumping.properties.has(PropId::ethereal) &&
-                !actor_bumping.properties.has(PropId::flying);
+        const bool must_swim = must_swim_on_enter(actor_bumping);
 
         const bool is_amphibian = actor_bumping.data->is_amphibian;
 
@@ -1435,14 +1510,10 @@ void LiquidDeep::bump(Actor& actor_bumping)
 
         if (must_swim && actor_bumping.is_player())
         {
-                const std::string type_str =
-                        (type_ == LiquidType::water)
-                        ? "water"
-                        : "mud";
+                const std::string liquid_name_the = name(Article::the);
 
-                msg_log::add("I swim through the " + type_str + ".");
+                msg_log::add("I swim through " + liquid_name_the + ".");
 
-                // Make a sound, unless the player is Silent
                 if (!player_bon::traits[(size_t)Trait::silent])
                 {
                         Snd snd("",
@@ -1538,10 +1609,11 @@ bool LiquidDeep::can_move(const Actor& actor) const
 Chasm::Chasm(const P& p) :
     Rigid(p) {}
 
-void Chasm::on_hit(const int dmg,
-                   const DmgType dmg_type,
-                   const DmgMethod dmg_method,
-                   Actor* const actor)
+void Chasm::on_hit(
+        const int dmg,
+        const DmgType dmg_type,
+        const DmgMethod dmg_method,
+        Actor* const actor)
 {
     (void)dmg;
     (void)dmg_type;
@@ -1571,10 +1643,11 @@ Lever::Lever(const P& p) :
     is_left_pos_(true),
     linked_feature_(nullptr)  {}
 
-void Lever::on_hit(const int dmg,
-                   const DmgType dmg_type,
-                   const DmgMethod dmg_method,
-                   Actor* const actor)
+void Lever::on_hit(
+        const int dmg,
+        const DmgType dmg_type,
+        const DmgMethod dmg_method,
+        Actor* const actor)
 {
     (void)dmg;
     (void)dmg_type;
@@ -1629,11 +1702,9 @@ void Lever::bump(Actor& actor_bumping)
         msg_log::clear();
 
         msg_log::add(
-                "There is a lever here.",
-                colors::light_white());
-
-        msg_log::add(
-                "Pull it? [y/n]",
+                std::string(
+                        "There is a lever here. Pull it? " +
+                        common_text::yes_or_no_hint),
                 colors::light_white());
 
         const auto answer = query::yes_or_no();
@@ -1690,10 +1761,11 @@ void Lever::toggle()
 Altar::Altar(const P& p) :
     Rigid(p) {}
 
-void Altar::on_hit(const int dmg,
-                   const DmgType dmg_type,
-                   const DmgMethod dmg_method,
-                   Actor* const actor)
+void Altar::on_hit(
+        const int dmg,
+        const DmgType dmg_type,
+        const DmgMethod dmg_method,
+        Actor* const actor)
 {
     (void)dmg;
     (void)dmg_type;
@@ -1774,10 +1846,11 @@ Grass::Grass(const P& p) :
     }
 }
 
-void Grass::on_hit(const int dmg,
-                   const DmgType dmg_type,
-                   const DmgMethod dmg_method,
-                   Actor* const actor)
+void Grass::on_hit(
+        const int dmg,
+        const DmgType dmg_type,
+        const DmgMethod dmg_method,
+        Actor* const actor)
 {
     (void)dmg;
 
@@ -1938,10 +2011,11 @@ Color Bush::color_default() const
 Vines::Vines(const P& p) :
     Rigid(p) {}
 
-void Vines::on_hit(const int dmg,
-                   const DmgType dmg_type,
-                   const DmgMethod dmg_method,
-                   Actor* const actor)
+void Vines::on_hit(
+        const int dmg,
+        const DmgType dmg_type,
+        const DmgMethod dmg_method,
+        Actor* const actor)
 {
     (void)dmg;
 
@@ -2081,10 +2155,11 @@ void Chains::on_hit(const int dmg,
 Grate::Grate(const P& p) :
     Rigid(p) {}
 
-void Grate::on_hit(const int dmg,
-                   const DmgType dmg_type,
-                   const DmgMethod dmg_method,
-                   Actor* const actor)
+void Grate::on_hit(
+        const int dmg,
+        const DmgType dmg_type,
+        const DmgMethod dmg_method,
+        Actor* const actor)
 {
     (void)dmg;
     (void)actor;
@@ -2429,7 +2504,9 @@ void ItemContainer::open(const P& feature_pos, Actor* const actor_opening)
                         ItemRefInf::yes,
                         ItemRefAttInf::wpn_main_att_mode);
 
-            msg_log::add("Pick up " + name + "? [y/n]", colors::light_white());
+            msg_log::add(
+                    "Pick up " + name + "? " + common_text::yes_or_no_hint,
+                    colors::light_white());
 
             const ItemData&  data = item->data();
 
@@ -3226,10 +3303,11 @@ void Chest::hit(const int dmg,
     } // Damage type
 }
 
-void Chest::on_hit(const int dmg,
-                   const DmgType dmg_type,
-                   const DmgMethod dmg_method,
-                   Actor* const actor)
+void Chest::on_hit(
+        const int dmg,
+        const DmgType dmg_type,
+        const DmgMethod dmg_method,
+        Actor* const actor)
 {
     (void)dmg;
     (void)dmg_type;
@@ -3392,11 +3470,9 @@ void Fountain::bump(Actor& actor_bumping)
             msg_log::clear();
 
             msg_log::add(
-                    "There is a fountain here.",
-                    colors::light_white());
-
-            msg_log::add(
-                    "Drink from it? [y/n]",
+                    std::string(
+                            "There is a fountain here. Drink from it? " +
+                            common_text::yes_or_no_hint),
                     colors::light_white());
 
             const auto answer = query::yes_or_no();
@@ -3973,10 +4049,11 @@ Cocoon::Cocoon(const P& p) :
     }
 }
 
-void Cocoon::on_hit(const int dmg,
-                    const DmgType dmg_type,
-                    const DmgMethod dmg_method,
-                    Actor* const actor)
+void Cocoon::on_hit(
+        const int dmg,
+        const DmgType dmg_type,
+        const DmgMethod dmg_method,
+        Actor* const actor)
 {
     (void)dmg;
     (void)dmg_type;

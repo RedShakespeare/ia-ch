@@ -4,6 +4,7 @@
 #include "actor_mon.hpp"
 #include "actor_player.hpp"
 #include "attack.hpp"
+#include "common_text.hpp"
 #include "feature_mob.hpp"
 #include "feature_rigid.hpp"
 #include "game_time.hpp"
@@ -33,7 +34,13 @@ static BinaryAnswer query_player_attack_mon_with_ranged_wpn(
                 : "it";
 
         msg_log::add(
-                "Attack " + mon_name + " with " + wpn_name + "? [y/n]",
+                std::string(
+                        "Attack " +
+                        mon_name +
+                        " with " +
+                        wpn_name +
+                        "? " +
+                        common_text::yes_or_no_hint),
                 colors::light_white());
 
         const auto answer = query::yes_or_no();
@@ -166,6 +173,25 @@ static bool is_player_staggering_from_wounds()
         return nr_wounds >= min_nr_wounds_for_stagger;
 }
 
+static AllowAction pre_bump_features(Actor& actor, const P& tgt)
+{
+        const auto mobs = game_time::mobs_at_pos(tgt);
+
+        for (auto* mob : mobs)
+        {
+                const auto result = mob->pre_bump(actor);
+
+                if (result == AllowAction::no)
+                {
+                        return result;
+                }
+        }
+
+        const auto result = map::cells.at(tgt).rigid->pre_bump(actor);
+
+        return result;
+}
+
 static void bump_features(Actor& actor, const P& tgt)
 {
         const auto mobs = game_time::mobs_at_pos(tgt);
@@ -208,25 +234,36 @@ static void move_player_non_center_direction(const P& tgt)
                 map_parsers::BlocksActor(player, ParseActors::no)
                 .cell(tgt);
 
-        Mon* const mon = static_cast<Mon*>(map::actor_at_pos(tgt));
+        auto* const mon = static_cast<Mon*>(map::actor_at_pos(tgt));
 
-        if (mon && !player.is_leader_of(mon))
+        const auto is_aware_of_mon =
+                mon &&
+                (mon->player_aware_of_me_counter_ > 0);
+
+        if (mon &&
+            !player.is_leader_of(mon) &&
+            is_aware_of_mon)
         {
-                const bool is_aware_of_mon =
-                        (mon->player_aware_of_me_counter_ > 0);
+                player_bump_known_hostile_mon(*mon);
 
-                if (is_aware_of_mon)
-                {
-                        player_bump_known_hostile_mon(*mon);
+                return;
+        }
 
-                        return;
-                }
-                else if (!is_features_blocking_move)
-                {
-                        player_bump_unkown_hostile_mon(*mon);
+        const auto pre_move_result = pre_bump_features(player, tgt);
 
-                        return;
-                }
+        if (pre_move_result == AllowAction::no)
+        {
+                return;
+        }
+
+        if (mon &&
+            !player.is_leader_of(mon) &&
+            !is_features_blocking_move &&
+            !is_aware_of_mon)
+        {
+                player_bump_unkown_hostile_mon(*mon);
+
+                return;
         }
 
         if (!is_features_blocking_move)
@@ -235,6 +272,9 @@ static void move_player_non_center_direction(const P& tgt)
 
                 if (enc >= enc_immobile_lvl)
                 {
+                        // TODO: Currently you can attempt to attack hidden
+                        // adjacent monsters "for free" while you are too
+                        // encumbered to move (very minor issue, but it's weird)
                         msg_log::add("I am too encumbered to move!");
 
                         return;
@@ -242,6 +282,8 @@ static void move_player_non_center_direction(const P& tgt)
                 else if ((enc >= 100) ||
                          is_player_staggering_from_wounds())
                 {
+                        // TODO: This probably sounds weird when also swimming
+                        // or wading
                         msg_log::add("I stagger.", colors::msg_note());
 
                         player.properties.apply(new PropWaiting());

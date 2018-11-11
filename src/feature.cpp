@@ -59,17 +59,6 @@ bool Feature::can_move(const Actor& actor) const
         return data().move_rules.can_move(actor);
 }
 
-void Feature::hit(const int dmg,
-                  const DmgType dmg_type,
-                  const DmgMethod dmg_method,
-                  Actor* const actor)
-{
-        (void)dmg;
-        (void)dmg_type;
-        (void)dmg_method;
-        (void)actor;
-}
-
 bool Feature::is_sound_passable() const
 {
         return data().is_sound_passable;

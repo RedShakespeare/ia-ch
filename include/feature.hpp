@@ -6,6 +6,7 @@
 
 #include "colors.hpp"
 #include "feature_data.hpp"
+#include "global.hpp"
 #include "pos.hpp"
 
 class Actor;
@@ -32,9 +33,22 @@ public:
                 const int dmg,
                 const DmgType dmg_type,
                 const DmgMethod dmg_method,
-                Actor* const actor);
+                Actor* const actor)
+        {
+                (void)dmg;
+                (void)dmg_type;
+                (void)dmg_method;
+                (void)actor;
+        }
 
         virtual void reveal(const Verbosity verbosity);
+
+        virtual AllowAction pre_bump(Actor& actor_bumping)
+        {
+                (void)actor_bumping;
+
+                return AllowAction::yes;
+        }
 
         virtual void bump(Actor& actor_bumping);
         virtual void on_leave(Actor& actor_leaving);

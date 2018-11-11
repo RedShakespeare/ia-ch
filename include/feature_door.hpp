@@ -33,7 +33,6 @@ public:
              // NOTE: For gates, this should never be any "secret" variant
              DoorSpawnState spawn_state = DoorSpawnState::any);
 
-        // Spawn-by-id compliant ctor (do not use for normal cases):
         Door(const P& feature_pos) :
                 Rigid(feature_pos) {}
 
