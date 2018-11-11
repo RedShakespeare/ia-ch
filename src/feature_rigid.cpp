@@ -1241,6 +1241,11 @@ void Stairs::bump(Actor& actor_bumping)
 
             msg_log::add("I descend the stairs.");
 
+            // Always auto-save the game when descending
+            // NOTE: We descend one dungeon level when loading the game, so
+            // auto-saving should be done BEFORE descending here
+            saving::save_game();
+
             map_travel::go_to_nxt();
             break;
 

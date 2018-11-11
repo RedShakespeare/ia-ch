@@ -53,7 +53,8 @@ User interface
 * Many properties now have longer and more descriptive names on the map screen (e.g. "Fear Res." instead of rFear", or "LIFE SAPPED(4)" instead of "HP(4)")
 
 Misc improvements
-* Save files are no longer erased when loading a game, only when dying, winning the game, or when actively quitting - this allows players to resume from a previous save file if the game has crashed
+* Save files are no longer erased when loading a saved game (only when dying, winning the game, or when actively quitting), this allows players to resume from a previous save file if the game has crashed
+* The game is auto-saved on each descent to a new dungeon level, so in the case of a crash, only the progress on the current dungeon level is lost
 
 --------------------------------------------------------------
 v19.2 (November 6, 2017)
