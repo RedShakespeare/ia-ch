@@ -86,14 +86,15 @@ MenuAction MenuBrowser::read(
                         return MenuAction::none;
                 }
 
-                // OK, the user did select an item
+                // OK, the key corresponds to an item in the currently shown
+                // part of the menu
                 const int global_idx = top_idx_shown() + relative_idx;
 
                 set_y(global_idx);
 
-                audio::play(SfxId::menu_select);
+                audio::play(SfxId::menu_browse);
 
-                return MenuAction::selected;
+                return MenuAction::moved;
         }
         else
         {
