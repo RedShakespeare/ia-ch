@@ -25,6 +25,10 @@ Gameplay commands:
    z         Swap to readied weapon
    Q         Quit
 
+Item shortcuts:
+   F2        Toggle Electric Lantern
+   F3        Use Medical Bag
+
 General menu and window commands:
    Esc       In-game menu, or cancel/proceed
    ?, F1     This manual
@@ -73,6 +77,10 @@ Gameplay commands:
    x         Cast spell
    z         Swap to readied weapon
    Q         Quit
+
+Item shortcuts:
+   F2        Toggle Electric Lantern
+   F3        Use Medical Bag
 
 General menu and window commands:
    Esc       In-game menu, or cancel/proceed
