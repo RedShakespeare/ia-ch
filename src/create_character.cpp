@@ -355,9 +355,30 @@ void PickTraitState::update()
                 {
                         const Trait trait = traits_avail_[browser.y()];
 
-                        player_bon::pick_trait(trait);
+                        const std::string name =
+                                player_bon::trait_title(trait);
 
-                        states::pop();
+                        bool should_pick_trait = true;
+
+                        if (!states::contains_state(StateId::pick_name))
+                        {
+                                states::draw();
+
+                                const auto result =
+                                        popup::menu(
+                                                "",
+                                                {"Yes", "No"},
+                                                "Gain trait \"" + name + "\"?");
+
+                                should_pick_trait = (result == 0);
+                        }
+
+                        if (should_pick_trait)
+                        {
+                                player_bon::pick_trait(trait);
+
+                                states::pop();
+                        }
                 }
         }
         break;

@@ -48,6 +48,7 @@ User interface
 * Dropping items is now done from a separate inventory screen, accessed by pressing "d" (which is a more conventional method than the old way of pressing shift+enter)
 * Reworked the tile for Deep Ones
 * The player is asked for confirmation before stepping into fire or traps, or before moving into deep liquid while holding a lit explosive (which will extinguish it)
+* The player is asked for confirmation when picking traits on gaining new character levels (but not when creating a new character)
 * Added an option to always warn when a new monster is seen (and no other monster was already seen)
 * While aiming firearms or thrown weapons, the game no longer prints info about map features, items, etc in the aiming location (only info about any monster seen there)
 * Many properties now have longer and more descriptive names on the map screen (e.g. "Fear Res." instead of rFear", or "LIFE SAPPED(4)" instead of "HP(4)")
