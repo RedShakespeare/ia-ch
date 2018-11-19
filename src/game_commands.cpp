@@ -105,12 +105,6 @@ static GameCmd to_cmd_default(const InputData& input)
         case SDLK_F1:
                 return GameCmd::manual;
 
-        case SDLK_F2:
-                return GameCmd::f2;
-
-        case SDLK_F3:
-                return GameCmd::f3;
-
         case '=':
                 return GameCmd::options;
 
@@ -182,29 +176,29 @@ static GameCmd to_cmd_default(const InputData& input)
 
                 // Some cheat commands enabled in debug builds
 #ifndef NDEBUG
-        // case SDLK_F2:
-        //         return GameCmd::f2;
+        case SDLK_F2:
+                return GameCmd::debug_f2;
 
-        // case SDLK_F3:
-        //         return GameCmd::f3;
+        case SDLK_F3:
+                return GameCmd::debug_f3;
 
         case SDLK_F4:
-                return GameCmd::f4;
+                return GameCmd::debug_f4;
 
         case SDLK_F5:
-                return GameCmd::f5;
+                return GameCmd::debug_f5;
 
         case SDLK_F6:
-                return GameCmd::f6;
+                return GameCmd::debug_f6;
 
         case SDLK_F7:
-                return GameCmd::f7;
+                return GameCmd::debug_f7;
 
         case SDLK_F8:
-                return GameCmd::f8;
+                return GameCmd::debug_f8;
 
         case SDLK_F9:
-                return GameCmd::f9;
+                return GameCmd::debug_f9;
 #endif // NDEBUG
 
         default:
@@ -790,85 +784,21 @@ void handle(const GameCmd cmd)
         }
         break;
 
-        case GameCmd::f2:
-        {
-                const auto& inv = map::player->inv;
-
-                Item* lantern = nullptr;
-
-                for (auto* const item : inv.backpack)
-                {
-                        if (item->id() == ItemId::lantern)
-                        {
-                                lantern = item;
-
-                                break;
-                        }
-                }
-
-                if (lantern)
-                {
-                        lantern->activate(map::player);
-                }
-                else
-                {
-                        const auto name =
-                                item_data::data[(size_t)ItemId::lantern]
-                                .base_name
-                                .names[(size_t)ItemRefType::plain];
-
-                        msg_log::add("I have no " + name + ".");
-                }
-        }
-        break;
-
-        case GameCmd::f3:
-        {
-                const auto& inv = map::player->inv;
-
-                Item* med_bag = nullptr;
-
-                for (auto* const item : inv.backpack)
-                {
-                        if (item->id() == ItemId::medical_bag)
-                        {
-                                med_bag = item;
-
-                                break;
-                        }
-                }
-
-                if (med_bag)
-                {
-                        med_bag->activate(map::player);
-                }
-                else
-                {
-                        const auto name =
-                                item_data::data[(size_t)ItemId::medical_bag]
-                                .base_name
-                                .names[(size_t)ItemRefType::plain];
-
-                        msg_log::add("I have no " + name + ".");
-                }
-        }
-        break;
-
         // Some cheat commands enabled in debug builds
 #ifndef NDEBUG
-        // case GameCmd::f2:
-        // {
-        //         map_travel::go_to_nxt();
-        // }
-        // break;
+        case GameCmd::debug_f2:
+        {
+                map_travel::go_to_nxt();
+        }
+        break;
 
-        // case GameCmd::f3:
-        // {
-        //         game::incr_player_xp(100, Verbosity::silent);
-        // }
-        // break;
+        case GameCmd::debug_f3:
+        {
+                game::incr_player_xp(100, Verbosity::silent);
+        }
+        break;
 
-        case GameCmd::f4:
+        case GameCmd::debug_f4:
         {
                 if (init::is_cheat_vision_enabled)
                 {
@@ -889,13 +819,13 @@ void handle(const GameCmd cmd)
         }
         break;
 
-        case GameCmd::f5:
+        case GameCmd::debug_f5:
         {
                 map::player->incr_shock(50, ShockSrc::misc);
         }
         break;
 
-        case GameCmd::f6:
+        case GameCmd::debug_f6:
         {
                 item_factory::make_item_on_floor(ItemId::gas_mask, map::player->pos);
 
@@ -911,19 +841,19 @@ void handle(const GameCmd cmd)
         }
         break;
 
-        case GameCmd::f7:
+        case GameCmd::debug_f7:
         {
                 teleport(*map::player);
         }
         break;
 
-        case GameCmd::f8:
+        case GameCmd::debug_f8:
         {
                 map::player->properties.apply(new PropInfected());
         }
         break;
 
-        case GameCmd::f9:
+        case GameCmd::debug_f9:
         {
                 const std::string query_str = "Summon monster id:";
 

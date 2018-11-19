@@ -41,17 +41,17 @@ enum class GameCmd
         options,
         game_menu,
         quit,
-        f2,
-        f3,
 
         // Debug commands
 #ifndef NDEBUG
-        f4,
-        f5,
-        f6,
-        f7,
-        f8,
-        f9,
+        debug_f2,
+        debug_f3,
+        debug_f4,
+        debug_f5,
+        debug_f6,
+        debug_f7,
+        debug_f8,
+        debug_f9,
 #endif  // NDEBUG
 };
 
