@@ -1353,7 +1353,7 @@ std::vector<std::string> SpellPestilence::descr_specific(
 
         if (skill == SpellSkill::master)
         {
-                descr.push_back("The rats are Hasted (+100% speed).");
+                descr.push_back("The rats are Hasted (moves faster).");
         }
 
         return descr;
@@ -2590,8 +2590,7 @@ std::vector<std::string> SpellSlow::descr_specific(
 
         std::vector<std::string> descr;
 
-        descr.push_back(
-                "Causes the spells victim's to move more slowly (-50% speed).");
+        descr.push_back("Causes the spells victim's to move more slowly.");
 
         if (skill == SpellSkill::basic)
         {

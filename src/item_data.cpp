@@ -1932,8 +1932,8 @@ void init()
     d.base_descr =
     {
         "A mainspring-powered clockwork of unreal quality and beauty. "
-        "When wound up, it causes the owner to move at triple speed for a "
-        "brief time.",
+        "When wound up, it causes the owner to move very swiftly for a brief "
+        "time.",
         "While carried, the owner is also protected from all sources of "
         "magical slowing."
     };

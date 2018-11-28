@@ -359,7 +359,7 @@ static void init_data_list()
         d.std_rnd_turns = Range(16, 24);
         d.name = "Slowed";
         d.name_short = "Slowed";
-        d.descr = "-50% speed";
+        d.descr = "Moves slower";
         d.msg_start_player = "Everything around me seems to speed up.";
         d.msg_start_mon = "slows down.";
         d.msg_end_player = "Everything around me seems to slow down.";
@@ -376,7 +376,7 @@ static void init_data_list()
         d.std_rnd_turns = Range(12, 16);
         d.name = "Hasted";
         d.name_short = "Hasted";
-        d.descr = "+100% speed";
+        d.descr = "Moves faster";
         d.msg_start_player = "Everything around me seems to slow down.";
         d.msg_start_mon = "speeds up.";
         d.msg_end_player = "Everything around me seems to speed up.";
@@ -391,7 +391,7 @@ static void init_data_list()
         d.std_rnd_turns = Range(7, 11);
         d.name = "Extra Hasted";
         d.name_short = "Extra Hasted";
-        d.descr = "+300% speed";
+        d.descr = "Moves very fast";
         d.msg_start_player = "Everything around me suddenly seems very still.";
         d.allow_display_turns = true;
         d.allow_test_on_bot = true;
@@ -547,7 +547,7 @@ static void init_data_list()
         d.name = "Frenzied";
         d.name_short = "Frenzied";
         d.descr =
-                "Cannot move away from seen enemies, +100% speed, +1 melee "
+                "Cannot move away from seen enemies, moves faster, +1 melee "
                 "damage, +10% melee hit chance, immune to confusion, fainting, "
                 "fear, and weakening, cannot read or cast spells, becomes "
                 "weakened when the frenzy ends";
