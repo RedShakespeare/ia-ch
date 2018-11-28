@@ -48,69 +48,9 @@ Actor::~Actor()
     }
 }
 
-int Actor::ability(const AbilityId id,
-                   const bool is_affected_by_props) const
+int Actor::ability(const AbilityId id, const bool is_affected_by_props) const
 {
     return data->ability_values.val(id, is_affected_by_props, *this);
-}
-
-int Actor::speed_pct() const
-{
-    // Paralyzed actors always act at normal speed (otherwise paralysis will
-    // barely affect super fast monsters at all)
-    if (properties.has(PropId::paralyzed))
-    {
-        return 100;
-    }
-
-    int speed = data->speed_pct;
-
-    // Speed modifications due to properties
-    if (properties.has(PropId::slowed))
-    {
-        speed -= 50;
-    }
-
-    if (properties.has(PropId::hasted))
-    {
-        speed += 100;
-    }
-
-    if (properties.has(PropId::frenzied))
-    {
-        speed += 100;
-    }
-
-    if (properties.has(PropId::clockwork_hasted))
-    {
-        speed += 2000;
-    }
-
-    // Speed bonus from background/traits?
-    if (is_player())
-    {
-        if (player_bon::bg() == Bg::ghoul)
-        {
-            // NOTE: Keep this the same as the Ghoul monster bonus
-            speed += 10;
-        }
-
-        if (player_bon::traits[(size_t)Trait::dexterous])
-        {
-            speed += 10;
-        }
-
-        if (player_bon::traits[(size_t)Trait::lithe])
-        {
-            speed += 10;
-        }
-    }
-
-    const int min_speed = 10;
-
-    speed = std::max(min_speed, speed);
-
-    return speed;
 }
 
 void Actor::on_std_turn_common()

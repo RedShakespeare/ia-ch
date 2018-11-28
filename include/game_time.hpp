@@ -24,7 +24,7 @@ void load();
 
 void add_actor(Actor* actor);
 
-void tick(const int speed_pct_diff = 0);
+void tick();
 
 int turn_nr();
 

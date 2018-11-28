@@ -94,34 +94,24 @@ static std::string get_mon_dlvl_descr(const Actor& actor)
 
 static std::string mon_speed_type_to_str(const Actor& actor)
 {
-        const auto& d = *actor.data;
-
-        if (d.speed_pct > (int)ActorSpeed::fast)
+        switch (actor.data->speed)
         {
+        case ActorSpeed::slow:
+                return "slowly";
+
+        case ActorSpeed::normal:
+                return "";
+
+        case ActorSpeed::fast:
+                return "fast";
+
+        case ActorSpeed::very_fast:
                 return "very swiftly";
         }
 
-        if (d.speed_pct > ((int)ActorSpeed::normal + 20))
-        {
-                return "fast";
-        }
+        ASSERT(false);
 
-        if (d.speed_pct > (int)ActorSpeed::normal)
-        {
-                return "somewhat fast";
-        }
-
-        if (d.speed_pct == (int)ActorSpeed::normal)
-        {
-                return "";
-        }
-
-        if (d.speed_pct >= (int)ActorSpeed::slow)
-        {
-                return "slowly";
-        }
-
-        return "sluggishly";
+        return "";
 }
 
 static std::string get_mon_speed_descr(const Actor& actor)

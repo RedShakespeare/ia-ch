@@ -101,12 +101,19 @@ static std::unordered_map<std::string, ActorId> str_to_actor_id_map = {
         {"high_priest_guard_ghoul", ActorId::high_priest_guard_ghoul}
 };
 
-const std::unordered_map<std::string, ShockLvl> str_to_shock_lvl_map = {
+static const std::unordered_map<std::string, ShockLvl> str_to_shock_lvl_map = {
         {"none", ShockLvl::none},
         {"unsettling", ShockLvl::unsettling},
         {"frightening", ShockLvl::frightening},
         {"terrifying", ShockLvl::terrifying},
         {"mind_shattering", ShockLvl::mind_shattering}
+};
+
+static const std::unordered_map<std::string, ActorSpeed> str_to_speed_map = {
+        {"slow", ActorSpeed::slow},
+        {"normal", ActorSpeed::normal},
+        {"fast", ActorSpeed::fast},
+        {"very_fast", ActorSpeed::very_fast}
 };
 
 static ActorId get_id(xml::Element* mon_e)
@@ -210,8 +217,9 @@ static void dump_attributes(xml::Element* attrib_e, ActorData& data)
         data.spi = xml::get_text_int(
                 xml::first_child(attrib_e, "spirit"));
 
-        data.speed_pct = xml::get_text_int(
-                xml::first_child(attrib_e, "speed_percent"));
+        data.speed = str_to_speed_map.at(
+                xml::get_text_str(
+                        xml::first_child(attrib_e, "speed")));
 
         data.mon_shock_lvl = str_to_shock_lvl_map.at(
                 xml::get_text_str(
@@ -631,7 +639,7 @@ void ActorData::reset()
         intr_attacks.clear();
         spells.clear();
         spi = 0;
-        speed_pct = (int)ActorSpeed::normal;
+        speed = ActorSpeed::normal;
 
         for (size_t i = 0; i < (size_t)PropId::END; ++i)
         {

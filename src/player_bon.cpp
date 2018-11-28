@@ -55,7 +55,6 @@ static bool is_trait_blocked_for_bg(const Trait trait, const Bg bg)
         case Trait::dexterous:
         case Trait::lithe:
         case Trait::fearless:
-        case Trait::fast_shooter:
         case Trait::steady_aimer:
                 break;
 
@@ -255,9 +254,6 @@ std::string trait_title(const Trait id)
         case Trait::steady_aimer:
                 return "Steady Aimer";
 
-        case Trait::fast_shooter:
-                return "Fast Shooter";
-
         case Trait::vigilant:
                 return "Vigilant";
 
@@ -379,8 +375,6 @@ std::vector<ColoredString> bg_descr(const Bg id)
                 put("Can incite Frenzy at will, and does not become Weakened "
                     "when Frenzy ends");
                 put("");
-                put("+10% speed");
-                put("");
                 put("+6 Hit Points");
                 put("");
                 put("Is immune to Disease and Infections");
@@ -473,25 +467,19 @@ std::string trait_descr(const Trait id)
         case Trait::expert_melee:
         case Trait::master_melee:
                 return
-                        "+10% hit chance, +10% attack speed, and +1 damage "
-                        "with melee attacks";
+                        "+10% hit chance and +1 damage with melee attacks";
 
         case Trait::adept_marksman:
         case Trait::expert_marksman:
         case Trait::master_marksman:
                 return
-                        "+10% hit chance and +10% attack speed with firearms "
-                        "and thrown weapons, +50% reload speed";
+                        "+10% hit chance with firearms and thrown weapons";
 
         case Trait::steady_aimer:
                 return
                         "Standing still gives ranged attacks maximum damage "
                         "and +10% hit chance on the following turn, unless "
                         "damage is taken";
-
-        case Trait::fast_shooter:
-                return
-                        "+100% firing speed (not applicable to thrown weapons)";
 
         case Trait::cool_headed:
         case Trait::courageous:
@@ -527,7 +515,7 @@ std::string trait_descr(const Trait id)
         case Trait::dexterous:
         case Trait::lithe:
                 return
-                        "+10% speed, +20% chance to evade attacks";
+                        "+25% chance to evade attacks";
 
         case Trait::fearless:
                 return
@@ -682,12 +670,6 @@ void trait_prereqs(
                 break;
 
         case Trait::steady_aimer:
-                bg_out = Bg::war_vet;
-                break;
-
-        case Trait::fast_shooter:
-                traits_out.push_back(Trait::expert_marksman);
-                traits_out.push_back(Trait::dexterous);
                 bg_out = Bg::war_vet;
                 break;
 

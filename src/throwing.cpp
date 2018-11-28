@@ -118,26 +118,6 @@ void throw_item(
 {
         TRACE_FUNC_BEGIN;
 
-        int speed_pct_diff = 0;
-
-        if (&actor_throwing == map::player)
-        {
-                if (player_bon::traits[(size_t)Trait::adept_marksman])
-                {
-                        speed_pct_diff += 10;
-                }
-
-                if (player_bon::traits[(size_t)Trait::expert_marksman])
-                {
-                        speed_pct_diff += 10;
-                }
-
-                if (player_bon::traits[(size_t)Trait::master_marksman])
-                {
-                        speed_pct_diff += 10;
-                }
-        }
-
         ThrowAttData att_data(
                 &actor_throwing,
                 tgt_pos,
@@ -309,7 +289,7 @@ void throw_item(
                                         actor_throwing.properties
                                                 .end_prop(PropId::cloaked);
 
-                                        game_time::tick(speed_pct_diff);
+                                        game_time::tick();
 
                                         TRACE_FUNC_END;
 
@@ -381,7 +361,7 @@ void throw_item(
                 // Attacking ends cloaking
                 actor_throwing.properties.end_prop(PropId::cloaked);
 
-                game_time::tick(speed_pct_diff);
+                game_time::tick();
 
                 TRACE_FUNC_END;
 
@@ -469,7 +449,7 @@ void throw_item(
         // Attacking ends cloaking
         actor_throwing.properties.end_prop(PropId::cloaked);
 
-        game_time::tick(speed_pct_diff);
+        game_time::tick();
 
         TRACE_FUNC_END;
 }

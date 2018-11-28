@@ -107,12 +107,12 @@ int AbilityValues::val(
                 {
                         if (player_bon::traits[(size_t)Trait::dexterous])
                         {
-                                ret += 15;
+                                ret += 25;
                         }
 
                         if (player_bon::traits[(size_t)Trait::lithe])
                         {
-                                ret += 15;
+                                ret += 25;
                         }
                 }
                 break;

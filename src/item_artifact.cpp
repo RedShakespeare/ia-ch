@@ -272,8 +272,9 @@ ConsumeItem Clockwork::activate(Actor* const actor)
 
         msg_log::add("I wind up the clockwork.");
 
-        map::player->incr_shock(ShockLvl::terrifying,
-                                ShockSrc::use_strange_item);
+        map::player->incr_shock(
+                ShockLvl::terrifying,
+                ShockSrc::use_strange_item);
 
         if (!map::player->is_alive())
         {

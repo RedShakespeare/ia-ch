@@ -166,12 +166,10 @@ struct ActorSpellData
 
 enum class ActorSpeed
 {
-        sluggish        = 30,
-        slow            = 80,
-        normal          = 100,
-        fast            = 150,
-        fastest         = 300,
-        END
+        slow,
+        normal,
+        fast,
+        very_fast,
 };
 
 enum class ActorSize
@@ -251,7 +249,7 @@ struct ActorData
         std::vector<ActorItemSetData> item_sets;
         std::vector<IntrAttData> intr_attacks;
         std::vector<ActorSpellData> spells;
-        int speed_pct;
+        ActorSpeed speed;
         AbilityValues ability_values;
         bool natural_props[(size_t)PropId::END];
         bool ai[(size_t)AiId::END];

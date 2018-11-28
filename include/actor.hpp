@@ -77,8 +77,6 @@ public:
                 return data->id;
         }
 
-        int speed_pct() const;
-
         int armor_points() const;
 
         virtual SpellSkill spell_skill(const SpellId id) const = 0;

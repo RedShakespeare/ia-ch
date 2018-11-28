@@ -237,6 +237,11 @@ void PropHasted::on_applied()
         owner_->properties.end_prop_silent(PropId::slowed);
 }
 
+void PropClockworkHasted::on_applied()
+{
+        owner_->properties.end_prop_silent(PropId::slowed);
+}
+
 void PropSummoned::on_end()
 {
         owner_->state = ActorState::destroyed;

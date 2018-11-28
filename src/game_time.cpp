@@ -27,7 +27,8 @@
 // -----------------------------------------------------------------------------
 static std::vector<ActorSpeed> turn_type_vector_;
 
-static const int ticks_per_turn_ = 20;
+// Smallest number divisible by both 2 (200% speed) and 3 (300% speed)
+static const int ticks_per_turn_ = 6;
 
 static int current_turn_type_pos_ = 0;
 
@@ -37,6 +38,82 @@ static int turn_nr_ = 0;
 
 static int std_turn_delay_ = ticks_per_turn_;
 
+static int speed_to_pct(const ActorSpeed speed)
+{
+        switch (speed)
+        {
+        case ActorSpeed::slow:
+                return 50;
+
+        case ActorSpeed::normal:
+                return 100;
+
+        case ActorSpeed::fast:
+                return 200;
+
+        case ActorSpeed::very_fast:
+                return 300;
+        }
+
+        ASSERT(false);
+
+        return 100;
+}
+
+static ActorSpeed incr_speed_category(ActorSpeed speed)
+{
+        if (speed < ActorSpeed::very_fast)
+        {
+                speed = (ActorSpeed)((int)speed + 1);
+        }
+
+        return speed;
+}
+
+static ActorSpeed decr_speed_category(ActorSpeed speed)
+{
+        if ((int)speed > 0)
+        {
+                speed = (ActorSpeed)((int)speed - 1);
+        }
+
+        return speed;
+}
+
+static ActorSpeed current_actor_speed(const Actor& actor)
+{
+        // Paralyzed actors always act at normal speed (otherwise paralysis will
+        // barely affect super fast monsters at all)
+        if (actor.properties.has(PropId::paralyzed))
+        {
+                return ActorSpeed::normal;
+        }
+
+        if (actor.properties.has(PropId::clockwork_hasted))
+        {
+                return ActorSpeed::very_fast;
+        }
+
+        auto speed = actor.data->speed;
+
+        if (actor.properties.has(PropId::slowed))
+        {
+                speed = decr_speed_category(speed);
+        }
+
+        if (actor.properties.has(PropId::hasted))
+        {
+                speed = incr_speed_category(speed);
+        }
+
+        if (actor.properties.has(PropId::frenzied))
+        {
+                speed = incr_speed_category(speed);
+        }
+
+        return speed;
+}
+
 static void run_std_turn_events()
 {
         if (game_time::is_magic_descend_nxt_std_turn)
@@ -45,10 +122,11 @@ static void run_std_turn_events()
                 map::player->properties.end_prop_silent(PropId::entangled);
                 map::player->properties.end_prop_silent(PropId::swimming);
 
-                msg_log::add("I sink downwards!",
-                             colors::white(),
-                             false,
-                             MorePromptOnMsg::yes);
+                msg_log::add(
+                        "I sink downwards!",
+                        colors::white(),
+                        false,
+                        MorePromptOnMsg::yes);
 
                 map_travel::go_to_nxt();
 
@@ -316,15 +394,14 @@ void reset_turn_type_and_actor_counters()
         current_turn_type_pos_ = current_actor_idx_ = 0;
 }
 
-void tick(const int speed_pct_diff)
+void tick()
 {
         auto* actor = current_actor();
 
         {
-                const int actor_speed_pct = actor->speed_pct();
+                const auto speed_category = current_actor_speed(*actor);
 
-                const int speed_pct =
-                        std::max(1, actor_speed_pct + speed_pct_diff);
+                const int speed_pct = speed_to_pct(speed_category);
 
                 int delay_to_set = (ticks_per_turn_ * 100) / speed_pct;
 

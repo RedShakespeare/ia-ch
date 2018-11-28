@@ -92,36 +92,6 @@ static void mi_go_gun_drain_player_hp(const Wpn& wpn)
                 AllowWound::no);
 }
 
-static int player_ranged_speed_pct_diff(const Wpn& wpn)
-{
-        int result = 0;
-
-        if (wpn.data().type == ItemType::ranged_wpn)
-        {
-                if (player_bon::has_trait(Trait::adept_marksman))
-                {
-                        result += 10;
-                }
-
-                if (player_bon::has_trait(Trait::expert_marksman))
-                {
-                        result += 10;
-                }
-
-                if (player_bon::has_trait(Trait::master_marksman))
-                {
-                        result += 10;
-                }
-
-                if (player_bon::has_trait(Trait::fast_shooter))
-                {
-                        result += 100;
-                }
-        }
-
-        return result;
-}
-
 static size_t nr_projectiles_for_ranged_weapon(const Wpn& wpn)
 {
         size_t nr_projectiles = 1;
@@ -1357,10 +1327,11 @@ static void fire_projectiles(
 namespace attack
 {
 
-void melee(Actor* const attacker,
-           const P& attacker_origin,
-           Actor& defender,
-           Wpn& wpn)
+void melee(
+        Actor* const attacker,
+        const P& attacker_origin,
+        Actor& defender,
+        Wpn& wpn)
 {
         map::update_vision();
 
@@ -1483,26 +1454,7 @@ void melee(Actor* const attacker,
                         static_cast<Mon&>(defender).become_aware_player(false);
                 }
 
-                int speed_pct_diff = 0;
-
-                if (attacker == map::player)
-                {
-                        if (player_bon::has_trait(Trait::adept_melee))
-                        {
-                                speed_pct_diff += 10;
-                        }
-
-                        if (player_bon::has_trait(Trait::expert_melee))
-                        {
-                                speed_pct_diff += 10;
-                        }
-
-                        if (player_bon::has_trait(Trait::master_melee))
-                        {
-                                speed_pct_diff += 10;
-                        }
-                }
-                else // Attacker is monster
+                if (attacker != map::player)
                 {
                         static_cast<Mon*>(attacker)->become_aware_player(false);
                 }
@@ -1510,14 +1462,15 @@ void melee(Actor* const attacker,
                 // Attacking ends cloaking
                 attacker->properties.end_prop(PropId::cloaked);
 
-                game_time::tick(speed_pct_diff);
+                game_time::tick();
         }
 } // melee
 
-DidAction ranged(Actor* const attacker,
-                 const P& origin,
-                 const P& aim_pos,
-                 Wpn& wpn)
+DidAction ranged(
+        Actor* const attacker,
+        const P& origin,
+        const P& aim_pos,
+        Wpn& wpn)
 {
         map::update_vision();
 
@@ -1571,14 +1524,7 @@ DidAction ranged(Actor* const attacker,
                         static_cast<Mon*>(attacker)->become_aware_player(false);
                 }
 
-                int speed_pct_diff = 0;
-
-                if (attacker->is_player())
-                {
-                        speed_pct_diff += player_ranged_speed_pct_diff(wpn);
-                }
-
-                game_time::tick(speed_pct_diff);
+                game_time::tick();
         }
 
         return did_attack;

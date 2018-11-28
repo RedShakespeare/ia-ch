@@ -203,7 +203,7 @@ TEST_CASE("Saving and loading the game")
 
                 REQUIRE(player_bon::traits[(size_t)Trait::healer]);
 
-                REQUIRE(!player_bon::traits[(size_t)Trait::fast_shooter]);
+                REQUIRE(!player_bon::traits[(size_t)Trait::vigilant]);
 
                 // Player inventory
                 const auto& inv  = map::player->inv;

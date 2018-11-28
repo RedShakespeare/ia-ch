@@ -56,7 +56,6 @@ enum class Trait
         vicious,
 
         // Unique for War veteran
-        fast_shooter,
         steady_aimer,
 
         END

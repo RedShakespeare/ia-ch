@@ -1063,6 +1063,8 @@ class PropClockworkHasted: public Prop
 public:
         PropClockworkHasted() :
                 Prop(PropId::clockwork_hasted) {}
+
+        void on_applied() override;
 };
 
 class PropSummoned: public Prop

@@ -220,32 +220,12 @@ void try_reload(Actor& actor, Item* const item_to_reload)
 
         const int fumble_pct = (k * is_blind) + (k * is_terrified);
 
-        int speed_pct_diff = 0;
-
         if (rnd::percent(fumble_pct))
         {
                 msg_reload_fumble(actor, *ammo_item);
         }
         else // Not fumbling
         {
-                if (actor.is_player())
-                {
-                        if (player_bon::traits[size_t(Trait::adept_marksman)])
-                        {
-                                speed_pct_diff = 50;
-                        }
-
-                        if (player_bon::traits[size_t(Trait::expert_marksman)])
-                        {
-                                speed_pct_diff = 50;
-                        }
-
-                        if (player_bon::traits[size_t(Trait::master_marksman)])
-                        {
-                                speed_pct_diff = 50;
-                        }
-                }
-
                 bool is_mag = ammo_item->data().type == ItemType::ammo_mag;
 
                 if (is_mag)
@@ -283,7 +263,7 @@ void try_reload(Actor& actor, Item* const item_to_reload)
                 }
         }
 
-        game_time::tick(speed_pct_diff);
+        game_time::tick();
 }
 
 void player_arrange_pistol_mags()
