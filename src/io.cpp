@@ -1780,7 +1780,7 @@ void clear_events()
 
 InputData get()
 {
-        InputData ret = InputData();
+        InputData input;
 
         SDL_StartTextInput();
 
@@ -1799,11 +1799,13 @@ InputData get()
                         continue;
                 }
 
-                const SDL_Keymod mod = SDL_GetModState();
+                {
+                        const SDL_Keymod mod = SDL_GetModState();
 
-                const bool is_shift_held = mod & KMOD_SHIFT;
-                const bool is_ctrl_held = mod & KMOD_CTRL;
-                const bool is_alt_held = mod & KMOD_ALT;
+                        input.is_shift_held = mod & KMOD_SHIFT;
+                        input.is_ctrl_held = mod & KMOD_CTRL;
+                        input.is_alt_held = mod & KMOD_ALT;
+                }
 
                 switch (sdl_event_.type)
                 {
@@ -1859,7 +1861,7 @@ InputData get()
 
                 case SDL_QUIT:
                 {
-                        ret = InputData(SDLK_ESCAPE);
+                        input.key = SDLK_ESCAPE;
 
                         is_done = true;
                 }
@@ -1867,27 +1869,24 @@ InputData get()
 
                 case SDL_KEYDOWN:
                 {
-                        const int key = sdl_event_.key.keysym.sym;
+                        const auto sdl_keysym = sdl_event_.key.keysym.sym;
 
                         // Do not return shift/control/alt as separate events
-                        if (key == SDLK_LSHIFT ||
-                            key == SDLK_RSHIFT ||
-                            key == SDLK_LCTRL ||
-                            key == SDLK_RCTRL ||
-                            key == SDLK_LALT ||
-                            key == SDLK_RALT)
+                        if (sdl_keysym == SDLK_LSHIFT ||
+                            sdl_keysym == SDLK_RSHIFT ||
+                            sdl_keysym == SDLK_LCTRL ||
+                            sdl_keysym == SDLK_RCTRL ||
+                            sdl_keysym == SDLK_LALT ||
+                            sdl_keysym == SDLK_RALT)
                         {
                                 continue;
                         }
 
-                        ret = InputData(
-                                key,
-                                is_shift_held,
-                                is_ctrl_held);
+                        input.key = sdl_keysym;
 
-                        if ((key >= SDLK_F1) && (key <= SDLK_F9))
+                        if ((input.key >= SDLK_F1) && (input.key <= SDLK_F9))
                         {
-                                // F keys
+                                // F input.keys
                                 is_done = true;
 
                                 continue;
@@ -1895,13 +1894,13 @@ InputData get()
 
                         // Not an F key
 
-                        switch (key)
+                        switch (input.key)
                         {
                         case SDLK_RETURN:
                         case SDLK_RETURN2:
                         case SDLK_KP_ENTER:
                         {
-                                if (is_alt_held)
+                                if (input.is_alt_held)
                                 {
                                         TRACE << "Alt-Enter pressed"
                                               << std::endl;
@@ -1928,7 +1927,7 @@ InputData get()
                                 }
                                 else // Alt is not held
                                 {
-                                        ret.key = SDLK_RETURN;
+                                        input.key = SDLK_RETURN;
 
                                         is_done = true;
                                 }
@@ -1949,6 +1948,16 @@ InputData get()
                         case SDLK_UP:
                         case SDLK_DOWN:
                         case SDLK_ESCAPE:
+                        case SDLK_KP_1:
+                        case SDLK_KP_2:
+                        case SDLK_KP_3:
+                        case SDLK_KP_4:
+                        case SDLK_KP_5:
+                        case SDLK_KP_6:
+                        case SDLK_KP_7:
+                        case SDLK_KP_8:
+                        case SDLK_KP_9:
+                        case SDLK_KP_0:
                                 is_done = true;
                                 break;
 
@@ -1976,7 +1985,7 @@ InputData get()
 
                                 if (c == '+')
                                 {
-                                        if (is_ctrl_held)
+                                        if (input.is_ctrl_held)
                                         {
                                                 ++gui_dims.y;
                                         }
@@ -1987,7 +1996,7 @@ InputData get()
                                 }
                                 else if (c == '-')
                                 {
-                                        if (is_ctrl_held)
+                                        if (input.is_ctrl_held)
                                         {
                                                 --gui_dims.y;
                                         }
@@ -2011,7 +2020,7 @@ InputData get()
 
                                 clear_events();
 
-                                ret = InputData((int)c);
+                                input.key = c;
 
                                 is_done = true;
                         }
@@ -2041,7 +2050,7 @@ InputData get()
                 clear_events();
         }
 
-        return ret;
+        return input;
 }
 
 } // io

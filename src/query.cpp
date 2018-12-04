@@ -41,56 +41,59 @@ BinaryAnswer yes_or_no(char key_for_special_event)
 
         io::update_screen();
 
-        auto d = io::get();
+        auto input = io::get();
 
-        while ((d.key != 'y') &&
-               (d.key != 'n') &&
-               (d.key != SDLK_ESCAPE) &&
-               (d.key != SDLK_SPACE) &&
-               ((d.key != key_for_special_event) ||
+        while ((input.key != 'y') &&
+               (input.key != 'n') &&
+               (input.key != SDLK_ESCAPE) &&
+               (input.key != SDLK_SPACE) &&
+               ((input.key != key_for_special_event) ||
                 (key_for_special_event == -1)))
         {
-                d = io::get();
+                input = io::get();
         }
 
-        if ((d.key == key_for_special_event) &&
+        if ((input.key == key_for_special_event) &&
             (key_for_special_event != -1))
         {
                 return BinaryAnswer::special;
         }
 
-        if (d.key == 'y')
-        {
-                return BinaryAnswer::yes;
-        }
-
-        return BinaryAnswer::no;
+        return
+                (input.key == 'y')
+                ? BinaryAnswer::yes
+                : BinaryAnswer::no;
 }
 
 InputData letter(const bool accept_enter)
 {
+        InputData input;
+
         if (!is_inited || config::is_bot_playing())
         {
-                return 'a';
+                input.key = 'a';
+
+                return input;
         }
 
         io::update_screen();
 
         while (true)
         {
-                const auto d = io::get();
+                input = io::get();
 
-                if ((accept_enter && (d.key == SDLK_RETURN)) ||
-                    (d.key == SDLK_ESCAPE) ||
-                    (d.key == SDLK_SPACE) ||
-                    ((d.key >= 'a') && (d.key <= 'z')) ||
-                    ((d.key >= 'A') && (d.key <= 'Z')))
+                if ((accept_enter && (input.key == SDLK_RETURN)) ||
+                    (input.key == SDLK_ESCAPE) ||
+                    (input.key == SDLK_SPACE) ||
+                    ((input.key >= 'a') && (input.key <= 'z')) ||
+                    ((input.key >= 'A') && (input.key <= 'Z')))
                 {
-                        return d;
+                        return input;
                 }
         }
 
-        return InputData();
+        // Unreachable
+        return input;
 }
 
 int number(
@@ -124,23 +127,39 @@ int number(
 
         while (true)
         {
-                InputData d;
+                InputData input;
 
-                while (((d.key < '0') || (d.key > '9')) &&
-                       (d.key != SDLK_RETURN) &&
-                       (d.key != SDLK_SPACE) &&
-                       (d.key != SDLK_ESCAPE) &&
-                       (d.key != SDLK_BACKSPACE))
+                while (((input.key < '0') || (input.key > '9')) &&
+                       (input.key != SDLK_RETURN) &&
+                       (input.key != SDLK_SPACE) &&
+                       (input.key != SDLK_ESCAPE) &&
+                       (input.key != SDLK_BACKSPACE))
                 {
-                        d = io::get();
+                        input = io::get();
+
+                        // Translate keypad keys to numbers
+                        switch (input.key)
+                        {
+                        case SDLK_KP_1: input.key = '1'; break;
+                        case SDLK_KP_2: input.key = '2'; break;
+                        case SDLK_KP_3: input.key = '3'; break;
+                        case SDLK_KP_4: input.key = '4'; break;
+                        case SDLK_KP_5: input.key = '5'; break;
+                        case SDLK_KP_6: input.key = '6'; break;
+                        case SDLK_KP_7: input.key = '7'; break;
+                        case SDLK_KP_8: input.key = '8'; break;
+                        case SDLK_KP_9: input.key = '9'; break;
+                        case SDLK_KP_0: input.key = '0'; break;
+                        default: break;
+                        }
                 }
 
-                if (d.key == SDLK_RETURN)
+                if (input.key == SDLK_RETURN)
                 {
                         return std::max(min, ret_num);
                 }
 
-                if ((d.key == SDLK_SPACE) || (d.key == SDLK_ESCAPE))
+                if ((input.key == SDLK_SPACE) || (input.key == SDLK_ESCAPE))
                 {
                         return
                                 cancel_returns_default
@@ -152,7 +171,7 @@ int number(
 
                 const int current_num_digits = ret_num_str.size();
 
-                if (d.key == SDLK_BACKSPACE)
+                if (input.key == SDLK_BACKSPACE)
                 {
                         ret_num = ret_num / 10;
 
@@ -176,7 +195,7 @@ int number(
 
                 if (current_num_digits < max_nr_digits)
                 {
-                        int current_digit = d.key - '0';
+                        int current_digit = input.key - '0';
 
                         ret_num = std::max(min, ret_num * 10 + current_digit);
 
@@ -219,12 +238,12 @@ void wait_for_msg_more()
         {
                 while (true)
                 {
-                        const auto d = io::get();
+                        const auto input = io::get();
 
-                        if ((d.key == SDLK_SPACE) ||
-                            (d.key == SDLK_ESCAPE) ||
-                            (d.key == SDLK_RETURN) ||
-                            (d.key == SDLK_TAB))
+                        if ((input.key == SDLK_SPACE) ||
+                            (input.key == SDLK_ESCAPE) ||
+                            (input.key == SDLK_RETURN) ||
+                            (input.key == SDLK_TAB))
                         {
                                 break;
                         }
@@ -243,11 +262,11 @@ void wait_for_confirm()
 
         while (true)
         {
-                const auto d = io::get();
+                const auto input = io::get();
 
-                if ((d.key == SDLK_SPACE) ||
-                    (d.key == SDLK_ESCAPE) ||
-                    (d.key == SDLK_RETURN))
+                if ((input.key == SDLK_SPACE) ||
+                    (input.key == SDLK_ESCAPE) ||
+                    (input.key == SDLK_RETURN))
                 {
                         break;
                 }

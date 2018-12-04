@@ -705,8 +705,6 @@ void Player::act()
     // Quick move
     if (quick_move_dir_ != Dir::END)
     {
-        const bool is_first_quick_move_step = !has_taken_quick_move_step_;
-
         const P target = pos + dir_utils::offset(quick_move_dir_);
 
         bool is_target_adj_to_unseen_cell = false;
@@ -727,11 +725,18 @@ void Player::act()
 
         const Cell& target_cell = map::cells.at(target);
 
+        // If this is not the first step of auto moving, stop before blocking
+        // features, fire, known traps, etc (otherwise if it's the first step,
+        // allow bumping features as with normal movement)
+        if (has_taken_quick_move_step_)
         {
-            bool should_abort = !target_cell.rigid->can_move(*this);
+            bool should_abort = false;
 
-            if (!should_abort &&
-                has_taken_quick_move_step_)
+            if (!target_cell.rigid->can_move(*this))
+            {
+                should_abort = true;
+            }
+            else
             {
                 const auto target_rigid_id = target_cell.rigid->id();
 
@@ -746,14 +751,14 @@ void Player::act()
                     (target_rigid_id == FeatureId::liquid_shallow) ||
                     (target_rigid_id == FeatureId::vines) ||
                     (target_cell.rigid->burn_state_ == BurnState::burning);
-            }
+                }
 
-            if (should_abort)
-            {
-                quick_move_dir_ = Dir::END;
+                if (should_abort)
+                {
+                    quick_move_dir_ = Dir::END;
 
-                return;
-            }
+                    return;
+                }
         }
 
         auto adj_known_closed_doors = [](const P& p)
@@ -796,45 +801,26 @@ void Player::act()
             return;
         }
 
-        bool should_abort = false;
+        const auto adj_known_closed_doors_after =
+            adj_known_closed_doors(pos);
 
-        if (map::dark.at(pos))
+        bool is_new_known_adj_closed_door = false;
+
+        for (const auto* const door_after : adj_known_closed_doors_after)
         {
-            should_abort = true;
-        }
+            is_new_known_adj_closed_door =
+                std::find(begin(adj_known_closed_doors_before),
+                          end(adj_known_closed_doors_before),
+                          door_after) ==
+                end(adj_known_closed_doors_before);
 
-        if (!should_abort)
-        {
-            const auto adj_known_closed_doors_after =
-                adj_known_closed_doors(pos);
-
-            bool is_new_known_adj_closed_door = false;
-
-            for (const auto* const door_after : adj_known_closed_doors_after)
+            if (is_new_known_adj_closed_door)
             {
-                is_new_known_adj_closed_door =
-                    std::find(begin(adj_known_closed_doors_before),
-                              end(adj_known_closed_doors_before),
-                              door_after) ==
-                    end(adj_known_closed_doors_before);
-
-                if (is_new_known_adj_closed_door)
-                {
-                    break;
-                }
-            }
-
-            if (!is_first_quick_move_step)
-            {
-                if (is_target_adj_to_unseen_cell ||
-                    is_new_known_adj_closed_door)
-                {
-                    should_abort = true;
-                }
+                break;
             }
         }
 
-        if (should_abort)
+        if (is_target_adj_to_unseen_cell || is_new_known_adj_closed_door)
         {
             quick_move_dir_ = Dir::END;
         }

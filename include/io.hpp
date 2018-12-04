@@ -24,20 +24,10 @@ struct CellRenderData
 
 struct InputData
 {
-        InputData() :
-                key(-1),
-                is_shift_held(false),
-                is_ctrl_held(false) {}
-
-        InputData(int key,
-                  bool is_shift_held = false,
-                  bool is_ctrl_held = false) :
-                key(key),
-                is_shift_held(is_shift_held),
-                is_ctrl_held(is_ctrl_held) {}
-
-        int key;
-        bool is_shift_held, is_ctrl_held;
+        int key {-1};
+        bool is_shift_held {false};
+        bool is_ctrl_held {false};
+        bool is_alt_held {false};
 };
 
 namespace io

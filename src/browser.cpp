@@ -21,13 +21,13 @@ MenuAction MenuBrowser::read(
         const InputData& input,
         MenuInputMode mode)
 {
-        if ((input.key == SDLK_UP) || (input.key == '8'))
+        if ((input.key == SDLK_UP) || (input.key == SDLK_KP_8))
         {
                 move(VerDir::up);
 
                 return MenuAction::moved;
         }
-        else if ((input.key == SDLK_DOWN) || (input.key == '2'))
+        else if ((input.key == SDLK_DOWN) || (input.key == SDLK_KP_2))
         {
                 move(VerDir::down);
 

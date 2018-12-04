@@ -2,12 +2,9 @@
 Command list (default keys)
 --------------------------------------------------------------------------------
 Gameplay commands:
-   @         Character information
-   TAB       Melee attack adjacent monster
    a         Inventory, only showing items that can be consumed or activated
    c         Close door, or jam closed door with an iron spike
    d         Drop item
-   e         Move in a direction until interrupted
    f         Aim/fire weapon
    g         Pick up item
    h         Message history
@@ -24,6 +21,9 @@ Gameplay commands:
    x         Cast spell
    z         Swap to readied weapon
    Q         Quit
+   @         Character information
+   Shift     Hold while pressing a move key to move until interrupted
+   Tab       Melee attack adjacent monster
 
 General menu and window commands:
    Esc       In-game menu, or cancel/proceed
@@ -51,8 +51,6 @@ Press '5' or period (.) to wait for one turn. This is also used for selecting yo
 Command list (vi-keys)
 --------------------------------------------------------------------------------
 Gameplay commands:
-   @         Character information
-   TAB       Melee attack adjacent monster (same as moving into the monster)
    a         Inventory, only showing items that can be consumed or activated
    c         Close door, or jam closed door with an iron spike
    d         Drop item
@@ -63,7 +61,7 @@ Gameplay commands:
    i         Inventory (wield, equip, remove, consume, or activate items)
    m         Minimap
    M         Message history
-   N         Make noise
+   o         Make noise
    p         Disarm trap
    r         Reload
    s         Wait five turns
@@ -73,6 +71,9 @@ Gameplay commands:
    x         Cast spell
    z         Swap to readied weapon
    Q         Quit
+   @         Character information
+   Shift     Hold while pressing a move key to move until interrupted
+   Tab       Melee attack adjacent monster (same as moving into the monster)
 
 General menu and window commands:
    Esc       In-game menu, or cancel/proceed
