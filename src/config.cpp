@@ -36,7 +36,7 @@ static const std::vector<std::string> font_image_names = {
 static const int opt_y0_ = 1;
 static const int opt_values_x_pos_ = 40;
 
-static bool is_vi_keys_ = false;
+static InputMode input_mode_ = InputMode::numpad;
 static std::string font_name_ = "";
 static bool is_fullscreen_ = false;
 static bool is_tiles_wall_full_square_ = false;
@@ -150,7 +150,7 @@ static void set_default_variables()
 {
         TRACE_FUNC_BEGIN;
 
-        is_vi_keys_ = false;
+        input_mode_ = InputMode::numpad;
 
         is_tiles_mode_ = true;
         font_name_ = "12x24.png";
@@ -187,9 +187,9 @@ static void player_sets_option(const MenuBrowser& browser)
 {
         switch (browser.y())
         {
-        case 0: // Vi-keys
+        case 0: // Input mode
         {
-                is_vi_keys_ = !is_vi_keys_;
+                input_mode_ = (InputMode)((input_mode_ + 1) % InputMode::END);
         }
         break;
 
@@ -456,7 +456,7 @@ static void set_variables_from_lines(std::vector<std::string>& lines)
 {
         TRACE_FUNC_BEGIN;
 
-        is_vi_keys_ = lines.front() == "1";
+        input_mode_ = (InputMode)to_int(lines.front());
         lines.erase(begin(lines));
 
         is_audio_enabled_ = lines.front() == "1";
@@ -558,7 +558,7 @@ static std::vector<std::string> lines_from_variables()
 
         std::vector<std::string> lines;
 
-        lines.push_back(is_vi_keys_ ? "1" : "0");
+        lines.push_back(std::to_string(input_mode_));
         lines.push_back(is_audio_enabled_ ? "1" : "0");
         lines.push_back(is_amb_audio_enabled_ ? "1" : "0");
         lines.push_back(std::to_string(screen_px_w_));
@@ -616,9 +616,9 @@ void init()
         update_render_dims();
 }
 
-bool is_vi_keys()
+InputMode input_mode()
 {
-        return is_vi_keys_;
+        return input_mode_;
 }
 
 bool is_tiles_mode()
@@ -856,12 +856,31 @@ void ConfigState::draw()
 
         std::string font_disp_name = config::font_name_;
 
+        std::string input_mode_value_str = "";
+
+        switch (config::input_mode_)
+        {
+        case InputMode::numpad:
+                input_mode_value_str = "Numpad (default)";
+                break;
+
+        case InputMode::arrow_keys:
+                input_mode_value_str = "Arrow keys + ctrl/shift";
+                break;
+
+        case InputMode::vi_keys:
+                input_mode_value_str = "Vi-keys";
+                break;
+
+        case InputMode::END:
+                PANIC;
+                break;
+        }
+
         const std::vector< std::pair< std::string, std::string > > labels = {
                 {
                         "Input mode",
-                        config::is_vi_keys_
-                        ? "Vi-keys"
-                        : "Default"
+                        input_mode_value_str
                 },
 
                 {

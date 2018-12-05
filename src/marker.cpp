@@ -376,7 +376,7 @@ void Viewing::on_moved()
         {
                 // TODO: This should not be specified here
                 const auto view_key =
-                        config::is_vi_keys()
+                        (config::input_mode() == InputMode::vi_keys)
                         ? 'v'
                         : 'l';
 

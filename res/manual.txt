@@ -1,5 +1,5 @@
 --------------------------------------------------------------------------------
-Command list (default keys)
+Command list for numpad movement (default keys)
 --------------------------------------------------------------------------------
 Gameplay commands:
    a         Inventory, only showing items that can be consumed or activated
@@ -33,7 +33,6 @@ General menu and window commands:
    Ctrl +/-  Change window height
    Space     Cancel/proceed
    Enter     Select something in a menu, confirm
-   Up/Down   Scroll up/down in menus
 
 Move in eight directions with the numpad keys:
 
@@ -43,12 +42,54 @@ Move in eight directions with the numpad keys:
     /|\
    1 2 3
 
-Alternatively, the arrow keys can also be used for moving in the cardinal directions, and  Page up, Page down, Home, and End can also be used for diagonal movement.
-
-Press '5' or period (.) to wait for one turn. This is also used for selecting your current position, for example when kicking (to destroy a corpse you are standing over) or when disarming traps.
+Press '5' to wait for one turn. This is also used for selecting your current position, for example when kicking (to destroy a corpse you are standing over) or when disarming traps.
 
 --------------------------------------------------------------------------------
-Command list (vi-keys)
+Command list for arrow keys + ctrl/shift
+--------------------------------------------------------------------------------
+Gameplay commands:
+   a         Inventory, only showing items that can be consumed or activated
+   c         Close door, or jam closed door with an iron spike
+   d         Drop item
+   f         Aim/fire weapon
+   g         Pick up item
+   h         Message history
+   i         Inventory (wield, equip, remove, consume, or activate items)
+   k         Kick or strike objects, or destroy corpses
+   l         Look (describe things on the map)
+   m         Minimap
+   n         Make noise
+   p         Disarm trap
+   r         Reload
+   s         Wait five turns
+   t         Throw item
+   u         Unload and pick up ammunition from weapons on the ground
+   x         Cast spell
+   z         Swap to readied weapon
+   Q         Quit
+   @         Character information
+   Alt       Hold while pressing a move key to move until interrupted
+   Tab       Melee attack adjacent monster
+
+General menu and window commands:
+   Esc       In-game menu, or cancel/proceed
+   ?, F1     This manual
+   =         Options
+   +/-       Change window width
+   Ctrl +/-  Change window height
+   Space     Cancel/proceed
+   Enter     Select something in a menu, confirm
+
+Use the arrow keys for movement. To move diagonally, hold shift or ctrl:
+   Shift + left  = up left
+   Shift + right = up right
+   Ctrl  + left  = down left
+   Ctrl  + right = down right
+
+Press period (.) to wait for one turn. This is also used for selecting your current position, for example when kicking (to destroy a corpse you are standing over) or when disarming traps.
+
+--------------------------------------------------------------------------------
+Command list for Vi-keys
 --------------------------------------------------------------------------------
 Gameplay commands:
    a         Inventory, only showing items that can be consumed or activated
@@ -83,13 +124,12 @@ General menu and window commands:
    Ctrl +/-  Change window height
    Space     Cancel/proceed
    Enter     Select something in a menu, confirm
-   Up/Down   Scroll up/down in menus
 
 Move in eight directions by using the following keys (the so-called "vi-keys"):
 
    y k u
     \|/
-   h-.-l
+   h- -l
     /|\
    b j n
 

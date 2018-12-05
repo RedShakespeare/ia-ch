@@ -6,6 +6,15 @@
 #include "state.hpp"
 #include "browser.hpp"
 
+enum InputMode
+{
+        numpad,
+        arrow_keys,
+        vi_keys,
+
+        END
+};
+
 namespace config
 {
 
@@ -13,7 +22,7 @@ void init();
 
 void set_fullscreen(const bool value);
 
-bool is_vi_keys();
+InputMode input_mode();
 bool is_tiles_mode();
 std::string font_name();
 bool is_fullscreen();
@@ -49,16 +58,16 @@ std::string default_player_name();
 class ConfigState: public State
 {
 public:
-    ConfigState();
+        ConfigState();
 
-    void update() override;
+        void update() override;
 
-    void draw() override;
+        void draw() override;
 
-    StateId id() override;
+        StateId id() override;
 
 private:
-    MenuBrowser browser_;
+        MenuBrowser browser_;
 };
 
 #endif // CONFIG_HPP

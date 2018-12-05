@@ -37,11 +37,10 @@ User interface
 * The tiles are 24x24 pixels, instead of 16x24
 * The font size is no longer locked to the tile size (for example a smaller font can be used)
 * The window can be resized
-* Added option for input mode - default keys (numpad) or vi-mode (h j k l y u b n)
-* For the default keys, several gameplay commands have been moved to different keys, which are hopefully more intuitive (e.g. [k]ick, [u]nload), and all gameplay commands are lowercase keys (except [Q]uit, to help avoid accidental quitting)
+* Added option for input mode, with three different modes - numpad (default), arrow keys + ctrl/shift (alternative for numpad-less keyboards), or Vi-keys (h j k l y u b n)
+* For the default keys (and arrow keys), several gameplay commands have been moved to different keys, which are hopefully more intuitive (e.g. [k]ick, [u]nload), and all gameplay commands are lowercase keys (except [Q]uit, to help avoid accidental quitting)
 * ">/<" can also be used in inventory screens to jump between pages (in addition to page up/page down)
-* Removed "shift/ctrl + direction" as an alternative method of moving diagonally
-* "Auto moving" is used by holding shift and pressing direction keys, instead of repeatedly pressing "e" + direction
+* "Auto moving" is used by holding a modifier key while pressing direction keys, instead of repeatedly pressing "e" + direction
 * Added a minimap, accessed with "m"
 * The "throw item" command ("t") always opens a menu to select throwing item, where the last thrown item is shown at the top with the "t" key assigned - in the throwing menu, this key is never assigned to any other item than the "last thrown item" (so you can for example safely spam throwing knives by repeatedly pressing the "t" key, without worrying about suddenly throwing another item)
 * Many monster descriptions have been completely rewritten (thanks Renan Nunes!)

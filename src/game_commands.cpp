@@ -105,7 +105,6 @@ static GameCmd to_cmd_default(const InputData& input)
                         return GameCmd::up;
                 }
 
-        case SDLK_PAGEUP:
         case SDLK_KP_9:
                 if (input.is_shift_held)
                 {
@@ -116,7 +115,6 @@ static GameCmd to_cmd_default(const InputData& input)
                         return GameCmd::up_right;
                 }
 
-        case SDLK_PAGEDOWN:
         case SDLK_KP_3:
                 if (input.is_shift_held)
                 {
@@ -127,7 +125,6 @@ static GameCmd to_cmd_default(const InputData& input)
                         return GameCmd::down_right;
                 }
 
-        case SDLK_END:
         case SDLK_KP_1:
                 if (input.is_shift_held)
                 {
@@ -138,7 +135,6 @@ static GameCmd to_cmd_default(const InputData& input)
                         return GameCmd::down_left;
                 }
 
-        case SDLK_HOME:
         case SDLK_KP_7:
                 if (input.is_shift_held)
                 {
@@ -262,6 +258,77 @@ static GameCmd to_cmd_default(const InputData& input)
         return GameCmd::undefined;
 } // to_cmd_default
 
+static GameCmd to_cmd_arrow_keys(const InputData& input)
+{
+        // Overriden keys for arrow keys mode
+        switch (input.key)
+        {
+        case SDLK_RIGHT:
+                if (input.is_shift_held)
+                {
+                        return
+                                input.is_alt_held
+                                ? GameCmd::auto_move_up_right
+                                : GameCmd::up_right;
+                }
+                else if (input.is_ctrl_held)
+                {
+                        return
+                                input.is_alt_held
+                                ? GameCmd::auto_move_down_right
+                                : GameCmd::down_right;
+                }
+                else
+                {
+                        return
+                                input.is_alt_held
+                                ? GameCmd::auto_move_right
+                                : GameCmd::right;
+                }
+
+        case SDLK_LEFT:
+                if (input.is_shift_held)
+                {
+                        return
+                                input.is_alt_held
+                                ? GameCmd::auto_move_up_left
+                                : GameCmd::up_left;
+                }
+                else if (input.is_ctrl_held)
+                {
+                        return
+                                input.is_alt_held
+                                ? GameCmd::auto_move_down_left
+                                : GameCmd::down_left;
+                }
+                else
+                {
+                        return
+                                input.is_alt_held
+                                ? GameCmd::auto_move_left
+                                : GameCmd::left;
+                }
+
+        case SDLK_DOWN:
+                return
+                        input.is_alt_held
+                        ? GameCmd::auto_move_down
+                        : GameCmd::down;
+
+        case SDLK_UP:
+                return
+                        input.is_alt_held
+                        ? GameCmd::auto_move_up
+                        : GameCmd::up;
+
+        default:
+                break;
+        }
+
+        // Input not overriden, delegate to default keys
+        return to_cmd_default(input);
+}
+
 static GameCmd to_cmd_vi(const InputData& input)
 {
         // Overriden keys for vi-mode
@@ -347,14 +414,24 @@ namespace game_commands
 
 GameCmd to_cmd(const InputData& input)
 {
-        if (config::is_vi_keys())
+        switch (config::input_mode())
         {
-                return to_cmd_vi(input);
-        }
-        else
-        {
+        case InputMode::numpad:
                 return to_cmd_default(input);
+
+        case InputMode::arrow_keys:
+                return to_cmd_arrow_keys(input);
+
+        case InputMode::vi_keys:
+                return to_cmd_vi(input);
+
+        case InputMode::END:
+                break;
         }
+
+        PANIC;
+
+        return (GameCmd)0;
 }
 
 void handle(const GameCmd cmd)
