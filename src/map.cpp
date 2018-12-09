@@ -54,7 +54,7 @@ void Cell::reset()
         // Init player los as if all cells have walls
         player_los.is_blocked_hard = true;
 
-        player_los.is_blocked_by_drk = false;
+        player_los.is_blocked_by_dark = false;
 
         delete rigid;
         rigid = nullptr;

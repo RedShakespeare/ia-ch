@@ -13,6 +13,7 @@ Gameplay
 * The spell "Enfeeble" now only causes Weakening (instead of a bunch of different things)
 * The "Searching" spell lasts multiple turns, but detects in a smaller area (and never across the whole map)
 * Spells cast from manuscripts are always cast at least at "expert" level
+* The Staff of the Pharaohs gives a passive ability to convert mummies, instead of granting a spell to summon mummies
 * Added a new "Strange Device"
 * Removed some player traits
 * Added more monsters, and removed some redundant monsters

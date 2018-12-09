@@ -1823,7 +1823,8 @@ void init()
     d.base_descr =
     {
         "Once wielded by long-forgotten kings in ancient times, this powerful "
-        "artifact grants the power to call up a loyal servant from the dead."
+        "artifact grants the power to command mummies. On each turn there is "
+        "10% chance that a mummy beholding the owner will become allied."
     };
     d.color = colors::magenta();
     d.weight = ItemWeight::medium;

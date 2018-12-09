@@ -171,15 +171,6 @@ public:
                 return carrier_props_;
         }
 
-        void add_carrier_spell(Spell* const spell);
-
-        void clear_carrier_spells();
-
-        const std::vector<Spell*>& carrier_spells() const
-        {
-                return carrier_spells_;
-        }
-
         int nr_items_;
 
         // Base damage (not including actor properties, player traits, etc)
@@ -215,9 +206,6 @@ private:
         // Properties to apply on owning actor (when e.g. wearing the item, or
         // just keeping it in the inventory)
         std::vector<Prop*> carrier_props_;
-
-        // Spells granted to the carrier
-        std::vector<Spell*> carrier_spells_;
 };
 
 class Armor: public Item

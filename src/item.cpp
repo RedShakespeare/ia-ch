@@ -36,8 +36,7 @@ Item::Item(ItemData* item_data) :
         ranged_base_dmg_(item_data->ranged.dmg),
         data_(item_data),
         actor_carrying_(nullptr),
-        carrier_props_(),
-        carrier_spells_()
+        carrier_props_()
 {
 
 }
@@ -48,7 +47,6 @@ Item& Item::operator=(const Item& other)
         data_ = other.data_;
         actor_carrying_ = other.actor_carrying_;
         carrier_props_ = other.carrier_props_;
-        carrier_spells_ = other.carrier_spells_;
         melee_base_dmg_ = other.melee_base_dmg_;
         ranged_base_dmg_ = other.ranged_base_dmg_;
 
@@ -60,11 +58,6 @@ Item::~Item()
         for (auto* prop : carrier_props_)
         {
                 delete prop;
-        }
-
-        for (auto* spell : carrier_spells_)
-        {
-                delete spell;
         }
 }
 
@@ -628,23 +621,6 @@ void Item::clear_carrier_props()
         ASSERT(actor_carrying_);
 
         actor_carrying_->properties.remove_props_for_item(this);
-}
-
-void Item::add_carrier_spell(Spell* const spell)
-{
-        ASSERT(spell);
-
-        carrier_spells_.push_back(spell);
-}
-
-void Item::clear_carrier_spells()
-{
-        for (Spell* const spell : carrier_spells_)
-        {
-                delete spell;
-        }
-
-        carrier_spells_.clear();
 }
 
 // -----------------------------------------------------------------------------

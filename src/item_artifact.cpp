@@ -8,10 +8,12 @@
 #include "actor_player.hpp"
 #include "common_text.hpp"
 #include "feature_rigid.hpp"
+#include "fov.hpp"
 #include "game.hpp"
 #include "game_time.hpp"
 #include "io.hpp"
 #include "map.hpp"
+#include "map_parsing.hpp"
 #include "msg_log.hpp"
 #include "property.hpp"
 #include "property_data.hpp"
@@ -24,9 +26,81 @@
 PharaohStaff::PharaohStaff(ItemData* const item_data) :
         Wpn(item_data)
 {
-        add_carrier_spell(new SpellPharaohStaff);
+
 }
 
+void PharaohStaff::on_std_turn_in_inv(const InvType inv_type)
+{
+        (void)inv_type;
+
+        if (actor_carrying() != map::player)
+        {
+                return;
+        }
+
+        Array2<bool> blocked_los(map::dims());
+
+        map_parsers::BlocksLos()
+                .run(blocked_los,
+                     fov::fov_rect(map::player->pos, map::dims()),
+                     MapParseMode::overwrite);
+
+        for (auto* const actor : game_time::actors)
+        {
+                if (actor->is_player() || !actor->is_alive())
+                {
+                        continue;
+                }
+
+                auto* const mon = static_cast<Mon*>(actor);
+
+                if (mon->aware_of_player_counter_ <= 0)
+                {
+                        continue;
+                }
+
+                const bool mon_see_player =
+                        mon->can_see_actor(*map::player, blocked_los);
+
+                if (!mon_see_player)
+                {
+                        continue;
+                }
+
+                on_mon_see_player_carrying(*mon);
+        }
+}
+
+void PharaohStaff::on_mon_see_player_carrying(Mon& mon) const
+{
+        // TODO: Consider an "is_mummy" actor data field
+        if (mon.id() != ActorId::mummy &&
+            mon.id() != ActorId::croc_head_mummy)
+        {
+                return;
+        }
+
+        if (mon.is_actor_my_leader(map::player))
+        {
+                return;
+        }
+
+        const int convert_pct_chance = 10;
+
+        if (rnd::percent(convert_pct_chance))
+        {
+                mon.leader_ = map::player;
+
+                if (map::player->can_see_actor(mon))
+                {
+                        const auto name_the =
+                                text_format::first_to_upper(
+                                        mon.name_the());
+
+                        msg_log::add(name_the + " bows before me.");
+                }
+        }
+}
 
 // -----------------------------------------------------------------------------
 // Talisman of Reflection

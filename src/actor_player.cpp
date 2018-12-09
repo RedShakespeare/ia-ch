@@ -181,18 +181,14 @@ bool Player::can_see_actor(const Actor& other) const
     // Blocked by darkness, and not seeing monster with infravision?
     const bool has_darkvision = properties.has(PropId::darkvision);
 
-    const bool can_see_other_in_drk =
-        can_see_invis ||
-        has_darkvision;
+    const bool can_see_other_in_drk = can_see_invis || has_darkvision;
 
-    if (cell.player_los.is_blocked_by_drk &&
-        !can_see_other_in_drk)
+    if (cell.player_los.is_blocked_by_dark && !can_see_other_in_drk)
     {
         return false;
     }
 
-    if (mon->is_sneaking() &&
-        !can_see_invis)
+    if (mon->is_sneaking() && !can_see_invis)
     {
         return false;
     }
@@ -1873,7 +1869,7 @@ void Player::update_fov()
 
         cell.player_los.is_blocked_hard = true;
 
-        cell.player_los.is_blocked_by_drk = false;
+        cell.player_los.is_blocked_by_dark = false;
     }
 
     const bool has_darkvision = properties.has(PropId::darkvision);
@@ -1906,7 +1902,7 @@ void Player::update_fov()
 
                 cell.is_seen_by_player =
                     !los.is_blocked_hard &&
-                    (!los.is_blocked_by_drk || has_darkvision);
+                    (!los.is_blocked_by_dark || has_darkvision);
 
                 cell.player_los = los;
 
@@ -1914,7 +1910,7 @@ void Player::update_fov()
                 // Sanity check - if the cell is ONLY blocked by darkness
                 // (i.e. not by a wall or other blocking feature), it should NOT
                 // be lit
-                if (!los.is_blocked_hard && los.is_blocked_by_drk)
+                if (!los.is_blocked_hard && los.is_blocked_by_dark)
                 {
                         ASSERT(!map::light.at(x, y));
                 }

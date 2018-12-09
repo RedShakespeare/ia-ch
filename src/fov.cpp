@@ -44,7 +44,7 @@ LosResult check_cell(
         // Assume we are blocked initially
         los_result.is_blocked_hard = true;
 
-        los_result.is_blocked_by_drk = false;
+        los_result.is_blocked_by_dark = false;
 
         if (!is_in_fov_range(p0, p1) ||
             !map.hard_blocked->rect().is_pos_inside(p1))
@@ -99,7 +99,7 @@ LosResult check_cell(
                             !current_cell_light &&
                             (current_cell_dark || prev_cell_dark))
                         {
-                                los_result.is_blocked_by_drk = true;
+                                los_result.is_blocked_by_dark = true;
                         }
                 }
 
@@ -129,7 +129,7 @@ Array2<LosResult> run(const P& p0, const FovMap& map)
         for (auto& los : result)
         {
                 los.is_blocked_hard = true;
-                los.is_blocked_by_drk = false;
+                los.is_blocked_by_dark = false;
         }
 
         const auto r = fov_rect(p0, map.hard_blocked->dims());

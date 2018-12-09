@@ -782,7 +782,7 @@ std::vector<P> find_path_to_target(Mon& mon)
                                 fov_map);
 
                 if (!los_result.is_blocked_hard &&
-                    !los_result.is_blocked_by_drk)
+                    !los_result.is_blocked_by_dark)
                 {
                         return {};
                 }

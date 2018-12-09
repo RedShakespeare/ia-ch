@@ -123,9 +123,6 @@ Spell* make_spell_from_id(const SpellId spell_id)
         case SpellId::res:
                 return new SpellRes();
 
-        case SpellId::pharaoh_staff:
-                return new SpellPharaohStaff();
-
         case SpellId::light:
                 return new SpellLight();
 
@@ -212,9 +209,10 @@ Range Spell::spi_cost(const SpellSkill skill, Actor* const caster) const
         return Range(cost_min, cost_max);
 }
 
-void Spell::cast(Actor* const caster,
-                 const SpellSkill skill,
-                 const SpellSrc spell_src) const
+void Spell::cast(
+        Actor* const caster,
+        const SpellSkill skill,
+        const SpellSrc spell_src) const
 {
         TRACE_FUNC_BEGIN;
 
@@ -250,8 +248,7 @@ void Spell::cast(Actor* const caster,
                 map::player->incr_shock((double)value, shock_src);
 
                 // Make sound if noisy - casting from scrolls is always noisy
-                if (is_noisy(skill) ||
-                    (spell_src == SpellSrc::manuscript))
+                if (is_noisy(skill) || (spell_src == SpellSrc::manuscript))
                 {
                         Snd snd("",
                                 SfxId::spell_generic,
@@ -314,7 +311,7 @@ void Spell::cast(Actor* const caster,
 
         bool allow_cast = true;
 
-        if (spell_src != SpellSrc::manuscript)
+        if (spell_src == SpellSrc::learned)
         {
                 const Range cost = spi_cost(skill, caster);
 
@@ -1495,105 +1492,6 @@ std::vector<std::string> SpellSpectralWpns::descr_specific(
         }
 
         return descr;
-}
-
-// -----------------------------------------------------------------------------
-// Pharaoh staff
-// -----------------------------------------------------------------------------
-void SpellPharaohStaff::run_effect(
-        Actor* const caster,
-        const SpellSkill skill) const
-{
-        (void)skill;
-
-        // First try to heal a friendly mummy (as per the spell description)
-        for (Actor* const actor : game_time::actors)
-        {
-                const auto actor_id = actor->data->id;
-
-                const bool is_actor_id_ok = actor_id == ActorId::mummy ||
-                        actor_id == ActorId::croc_head_mummy;
-
-                if (is_actor_id_ok && caster->is_leader_of(actor))
-                {
-                        actor->restore_hp(999);
-
-                        return;
-                }
-        }
-
-        // This point reached means no mummy controlled, summon a new one
-        Actor* leader = nullptr;
-
-        if (caster->is_player())
-        {
-                leader = caster;
-        }
-        else // Caster is monster
-        {
-                Actor* const caster_leader = static_cast<Mon*>(caster)->leader_;
-
-                leader =
-                        caster_leader ?
-                        caster_leader :
-                        caster;
-        }
-
-        const auto actor_id =
-                rnd::coin_toss() ?
-                ActorId::mummy :
-                ActorId::croc_head_mummy;
-
-        const auto summoned =
-                actor_factory::spawn(
-                        caster->pos,
-                        {actor_id},
-                        map::rect())
-                .make_aware_of_player()
-                .set_leader(leader)
-                .for_each([](Mon* const mon)
-                {
-                        mon->properties.apply(new PropSummoned());
-
-                        auto prop_waiting = new PropWaiting();
-
-                        prop_waiting->set_duration(2);
-
-                        mon->properties.apply(prop_waiting);
-
-                        if (map::player->can_see_actor(*mon))
-                        {
-                                msg_log::add(
-                                        text_format::first_to_upper(
-                                                mon->name_a()) +
-                                        " appears!");
-                        }
-                        else // Player cannot see monster
-                        {
-                                msg_log::add("I sense a new presence.");
-                        }
-                });
-}
-
-std::vector<std::string> SpellPharaohStaff::descr_specific(
-        const SpellSkill skill) const
-{
-        (void)skill;
-
-        const std::vector<std::string> descr = {
-                "Summons a loyal Mummy servant which will fight for the "
-                "caster.",
-
-                "If an allied Mummy is already present, this spell will "
-                "instead heal it."
-        };
-
-        return descr;
-}
-
-bool SpellPharaohStaff::allow_mon_cast_now(Mon& mon) const
-{
-        return mon.target_;
 }
 
 // -----------------------------------------------------------------------------

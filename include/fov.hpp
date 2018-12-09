@@ -14,12 +14,8 @@ struct FovMap
 
 struct LosResult
 {
-        LosResult() :
-                is_blocked_hard(false),
-                is_blocked_by_drk(false) {}
-
-        bool is_blocked_hard;
-        bool is_blocked_by_drk;
+        bool is_blocked_hard {false};
+        bool is_blocked_by_dark {false};
 };
 
 namespace fov

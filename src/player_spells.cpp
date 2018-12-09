@@ -26,65 +26,15 @@ static std::vector<Spell*> learned_spells_;
 
 static SpellSkill spell_skills_[(size_t)SpellId::END];
 
-static std::vector<SpellOpt> spells_avail()
+static void try_cast(Spell* const spell)
 {
-        std::vector<SpellOpt> ret;
-
-        for (Spell* const spell : learned_spells_)
-        {
-                ret.push_back(SpellOpt(spell,
-                                       SpellSrc::learned,
-                                       nullptr));
-        }
-
-        for (auto& slot : map::player->inv.slots)
-        {
-                if (!slot.item)
-                {
-                        continue;
-                }
-
-                const std::vector<Spell*>& carrier_spells =
-                        slot.item->carrier_spells();
-
-                for (Spell* spell : carrier_spells)
-                {
-                        ret.push_back(
-                                SpellOpt(spell,
-                                         SpellSrc::item,
-                                         slot.item));
-                }
-        }
-
-        for (Item* item : map::player->inv.backpack)
-        {
-                const std::vector<Spell*>& carrier_spells =
-                        item->carrier_spells();
-
-                for (Spell* spell : carrier_spells)
-                {
-                        ret.push_back(
-                                SpellOpt(spell,
-                                         SpellSrc::item,
-                                         item));
-                }
-        }
-
-        return ret;
-}
-
-static void try_cast(const SpellOpt& spell_opt)
-{
-        ASSERT(spell_opt.spell);
-
         const auto& props = map::player->properties;
 
         bool allow_cast =
                 props.allow_cast_intr_spell_absolute(
                         Verbosity::verbose);
 
-        if (allow_cast &&
-            (spell_opt.src == SpellSrc::learned))
+        if (allow_cast)
         {
                 allow_cast =
                         allow_cast &&
@@ -97,8 +47,6 @@ static void try_cast(const SpellOpt& spell_opt)
         }
 
         msg_log::clear();
-
-        Spell* const spell = spell_opt.spell;
 
         const SpellSkill skill = map::player->spell_skill(spell->id());
 
@@ -283,9 +231,7 @@ void set_spell_skill(const SpellId id, const SpellSkill val)
 // -----------------------------------------------------------------------------
 void BrowseSpell::on_start()
 {
-        spell_opts_ = spells_avail();
-
-        if (spell_opts_.empty())
+        if (learned_spells_.empty())
         {
                 // Exit screen
                 states::pop();
@@ -294,12 +240,12 @@ void BrowseSpell::on_start()
                 return;
         }
 
-        browser_.reset(spell_opts_.size());
+        browser_.reset(learned_spells_.size());
 }
 
 void BrowseSpell::draw()
 {
-        const int nr_spells = spell_opts_.size();
+        const int nr_spells = learned_spells_.size();
 
         io::draw_text_center(
                 "Use which power?",
@@ -317,11 +263,9 @@ void BrowseSpell::draw()
 
                 const bool is_idx_marked = browser_.is_at_idx(current_idx);
 
-                SpellOpt spell_opt = spell_opts_[i];
+                auto* const spell = learned_spells_[i];
 
-                Spell* const spell = spell_opt.spell;
-
-                std::string name = spell->name();
+                const auto name = spell->name();
 
                 const int spi_label_x = 24;
 
@@ -330,9 +274,9 @@ void BrowseSpell::draw()
                 p.x = 0;
 
                 const Color color =
-                        is_idx_marked ?
-                        colors::menu_highlight() :
-                        colors::menu_dark();
+                        is_idx_marked
+                        ? colors::menu_highlight()
+                        : colors::menu_dark();
 
                 io::draw_text(
                         key_str,
@@ -399,9 +343,7 @@ void BrowseSpell::draw()
                         p,
                         colors::white());
 
-                // Draw skill level if learned
-                if ((spell_opt.src == SpellSrc::learned) &&
-                    spell->can_be_improved_with_skill())
+                if (spell->can_be_improved_with_skill())
                 {
                         p.x = skill_label_x;
 
@@ -454,29 +396,6 @@ void BrowseSpell::draw()
                                                 colors::light_white()));
                         }
 
-                        switch (spell_opt.src)
-                        {
-                        case SpellSrc::item:
-                        {
-                                const std::string item_name =
-                                        spell_opt.src_item->name(
-                                                ItemRefType::plain,
-                                                ItemRefInf::none);
-
-                                lines.push_back(
-                                        ColoredString(
-                                                "Spell granted by " +
-                                                item_name +
-                                                ".",
-                                                colors::green()));
-                        }
-                        break;
-
-                        case SpellSrc::manuscript:
-                        case SpellSrc::learned:
-                                break;
-                        }
-
                         if (!lines.empty())
                         {
                                 io::draw_descr_box(lines);
@@ -492,19 +411,20 @@ void BrowseSpell::update()
         auto input = io::get();
 
         const MenuAction action =
-                browser_.read(input,
-                              MenuInputMode::scrolling_and_letters);
+                browser_.read(
+                        input,
+                        MenuInputMode::scrolling_and_letters);
 
         switch (action)
         {
         case MenuAction::selected:
         {
-                const auto spell_opt = spell_opts_[browser_.y()];
+                auto* const spell = learned_spells_[browser_.y()];
 
                 // Exit screen
                 states::pop();
 
-                try_cast(spell_opt);
+                try_cast(spell);
 
                 return;
         }

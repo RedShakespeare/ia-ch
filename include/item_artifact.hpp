@@ -10,7 +10,12 @@
 class PharaohStaff: public Wpn
 {
 public:
-    PharaohStaff(ItemData* const item_data);
+        PharaohStaff(ItemData* const item_data);
+
+        void on_std_turn_in_inv(const InvType inv_type) override;
+
+private:
+        void on_mon_see_player_carrying(Mon& mon) const;
 };
 
 // -----------------------------------------------------------------------------
@@ -19,12 +24,12 @@ public:
 class ReflTalisman: public Item
 {
 public:
-    ReflTalisman(ItemData* const item_data);
+        ReflTalisman(ItemData* const item_data);
 
 private:
-    void on_pickup_hook() override;
+        void on_pickup_hook() override;
 
-    void on_removed_from_inv_hook() override;
+        void on_removed_from_inv_hook() override;
 };
 
 // -----------------------------------------------------------------------------
@@ -33,7 +38,7 @@ private:
 class ResurrectTalisman: public Item
 {
 public:
-    ResurrectTalisman(ItemData* const item_data);
+        ResurrectTalisman(ItemData* const item_data);
 };
 
 // -----------------------------------------------------------------------------
@@ -42,12 +47,12 @@ public:
 class TeleCtrlTalisman: public Item
 {
 public:
-    TeleCtrlTalisman(ItemData* const item_data);
+        TeleCtrlTalisman(ItemData* const item_data);
 
 private:
-    void on_pickup_hook() override;
+        void on_pickup_hook() override;
 
-    void on_removed_from_inv_hook() override;
+        void on_removed_from_inv_hook() override;
 };
 
 // -----------------------------------------------------------------------------
@@ -56,28 +61,28 @@ private:
 class HornOfMaliceHeard: public SndHeardEffect
 {
 public:
-    HornOfMaliceHeard() {}
+        HornOfMaliceHeard() {}
 
-    ~HornOfMaliceHeard() {}
+        ~HornOfMaliceHeard() {}
 
-    void run(Actor& actor) const override;
+        void run(Actor& actor) const override;
 };
 
 class HornOfMalice: public Item
 {
 public:
-    HornOfMalice(ItemData* const item_data);
+        HornOfMalice(ItemData* const item_data);
 
-    std::string name_inf_str() const override;
+        std::string name_inf_str() const override;
 
-    void save() const override;
+        void save() const override;
 
-    void load() override;
+        void load() override;
 
-    ConsumeItem activate(Actor* const actor) override;
+        ConsumeItem activate(Actor* const actor) override;
 
 private:
-    int charges_;
+        int charges_;
 };
 
 // -----------------------------------------------------------------------------
@@ -86,28 +91,28 @@ private:
 class HornOfBanishmentHeard: public SndHeardEffect
 {
 public:
-    HornOfBanishmentHeard() {}
+        HornOfBanishmentHeard() {}
 
-    ~HornOfBanishmentHeard() {}
+        ~HornOfBanishmentHeard() {}
 
-    void run(Actor& actor) const override;
+        void run(Actor& actor) const override;
 };
 
 class HornOfBanishment: public Item
 {
 public:
-    HornOfBanishment(ItemData* const item_data);
+        HornOfBanishment(ItemData* const item_data);
 
-    std::string name_inf_str() const override;
+        std::string name_inf_str() const override;
 
-    void save() const override;
+        void save() const override;
 
-    void load() override;
+        void load() override;
 
-    ConsumeItem activate(Actor* const actor) override;
+        ConsumeItem activate(Actor* const actor) override;
 
 private:
-    int charges_;
+        int charges_;
 };
 
 
@@ -117,22 +122,22 @@ private:
 class Clockwork: public Item
 {
 public:
-    Clockwork(ItemData* const item_data);
+        Clockwork(ItemData* const item_data);
 
-    ConsumeItem activate(Actor* const actor) override;
+        ConsumeItem activate(Actor* const actor) override;
 
-    std::string name_inf_str() const override;
+        std::string name_inf_str() const override;
 
-    void save() const override;
+        void save() const override;
 
-    void load() override;
+        void load() override;
 
 private:
-    void on_pickup_hook() override;
+        void on_pickup_hook() override;
 
-    void on_removed_from_inv_hook() override;
+        void on_removed_from_inv_hook() override;
 
-    int charges_;
+        int charges_;
 };
 
 // -----------------------------------------------------------------------------
@@ -141,9 +146,9 @@ private:
 class SpiritDagger: public Wpn
 {
 public:
-    SpiritDagger(ItemData* const item_data);
+        SpiritDagger(ItemData* const item_data);
 
-    void on_melee_hit(Actor& actor_hit, const int dmg) override;
+        void on_melee_hit(Actor& actor_hit, const int dmg) override;
 };
 
 // -----------------------------------------------------------------------------
@@ -152,12 +157,12 @@ public:
 class OrbOfLife: public Item
 {
 public:
-    OrbOfLife(ItemData* const item_data);
+        OrbOfLife(ItemData* const item_data);
 
 private:
-    void on_pickup_hook() override;
+        void on_pickup_hook() override;
 
-    void on_removed_from_inv_hook() override;
+        void on_removed_from_inv_hook() override;
 };
 
 #endif // ITEM_ARTIFACT_HPP

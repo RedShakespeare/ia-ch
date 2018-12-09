@@ -466,8 +466,9 @@ std::vector<Actor*> Mon::unseen_foes_aware_of() const
         return result;
 }
 
-bool Mon::can_see_actor(const Actor& other,
-                        const Array2<bool>& hard_blocked_los) const
+bool Mon::can_see_actor(
+        const Actor& other,
+        const Array2<bool>& hard_blocked_los) const
 {
         const bool is_seeable = is_actor_seeable(other, hard_blocked_los);
 
@@ -480,13 +481,16 @@ bool Mon::can_see_actor(const Actor& other,
         {
                 // Monster is allied to player
 
-                // Player-allied monster looking at the player?
                 if (other.is_player())
                 {
+                        // Player-allied monster looking at the player
+
                         return true;
                 }
-                else // Player-allied monster looking at other monster
+                else
                 {
+                        // Player-allied monster looking at other monster
+
                         const auto* const other_mon =
                                 static_cast<const Mon*>(&other);
 
@@ -501,11 +505,11 @@ bool Mon::can_see_actor(const Actor& other,
         return true;
 }
 
-bool Mon::is_actor_seeable(const Actor& other,
-                           const Array2<bool>& hard_blocked_los) const
+bool Mon::is_actor_seeable(
+        const Actor& other,
+        const Array2<bool>& hard_blocked_los) const
 {
-        if ((this == &other) ||
-            (!other.is_alive()))
+        if ((this == &other) || (!other.is_alive()))
         {
                 return true;
         }
@@ -528,8 +532,7 @@ bool Mon::is_actor_seeable(const Actor& other,
         fov_map.light = &map::light;
         fov_map.dark = &map::dark;
 
-        const LosResult los =
-                fov::check_cell(pos, other.pos, fov_map);
+        const LosResult los = fov::check_cell(pos, other.pos, fov_map);
 
         // LOS blocked hard (e.g. a wall or smoke)?
         if (los.is_blocked_hard)
@@ -549,13 +552,10 @@ bool Mon::is_actor_seeable(const Actor& other,
 
         bool has_darkvision = properties.has(PropId::darkvision);
 
-        const bool can_see_other_in_drk =
-                can_see_invis ||
-                has_darkvision;
+        const bool can_see_other_in_dark = can_see_invis || has_darkvision;
 
         // Blocked by darkness, and not seeing actor with infravision?
-        if (los.is_blocked_by_drk &&
-            !can_see_other_in_drk)
+        if (los.is_blocked_by_dark && !can_see_other_in_dark)
         {
                 return false;
         }
@@ -570,10 +570,11 @@ std::vector<Actor*> Mon::seen_actors() const
 
         Array2<bool> blocked_los(map::dims());
 
-        R los_rect(std::max(0, pos.x - fov_radi_int),
-                   std::max(0, pos.y - fov_radi_int),
-                   std::min(map::w() - 1, pos.x + fov_radi_int),
-                   std::min(map::h() - 1, pos.y + fov_radi_int));
+        R los_rect(
+                std::max(0, pos.x - fov_radi_int),
+                std::max(0, pos.y - fov_radi_int),
+                std::min(map::w() - 1, pos.x + fov_radi_int),
+                std::min(map::h() - 1, pos.y + fov_radi_int));
 
         map_parsers::BlocksLos()
                 .run(blocked_los,

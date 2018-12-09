@@ -9,23 +9,6 @@
 
 class Spell;
 
-struct SpellOpt
-{
-        SpellOpt() :
-                spell(nullptr),
-                src((SpellSrc)0),
-                src_item(nullptr) {}
-
-        SpellOpt(Spell* spell, SpellSrc src, Item* src_item) :
-                spell(spell),
-                src(src),
-                src_item(src_item) {}
-
-        Spell* spell;
-        SpellSrc src;
-        Item* src_item;
-};
-
 namespace player_spells
 {
 
@@ -51,9 +34,7 @@ class BrowseSpell: public State
 {
 public:
         BrowseSpell() :
-                State(),
-                browser_(),
-                spell_opts_() {}
+                State() {}
 
         void on_start() override;
 
@@ -64,9 +45,7 @@ public:
         StateId id() override;
 
 private:
-        MenuBrowser browser_;
-
-        std::vector<SpellOpt> spell_opts_;
+        MenuBrowser browser_ {};
 };
 
 #endif // PLAYER_SPELLS_HPP

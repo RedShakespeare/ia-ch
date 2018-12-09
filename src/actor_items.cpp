@@ -9,8 +9,8 @@
 #include "item_factory.hpp"
 #include "item_rod.hpp"
 #include "map.hpp"
-#include "spells.hpp"
 #include "player_spells.hpp"
+#include "spells.hpp"
 
 // -----------------------------------------------------------------------------
 // Private

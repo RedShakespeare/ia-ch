@@ -52,9 +52,6 @@ enum class SpellId
         mi_go_hypno,
         summon_tentacles,
 
-        // Spells from special sources
-        pharaoh_staff, // From the Staff of the Pharaohs artifact
-
         END
 };
 
@@ -80,7 +77,6 @@ const std::unordered_map<std::string, SpellId> str_to_spell_id_map =
         {"mi_go_hypno", SpellId::mi_go_hypno},
         {"opening", SpellId::opening},
         {"pestilence", SpellId::pestilence},
-        {"pharaoh_staff", SpellId::pharaoh_staff},
         {"res", SpellId::res},
         {"searching", SpellId::searching},
         {"see_invis", SpellId::see_invis},
@@ -872,72 +868,6 @@ private:
                 (void)skill;
 
                 return true;
-        }
-};
-
-class SpellPharaohStaff : public Spell
-{
-public:
-        SpellPharaohStaff() {}
-        ~SpellPharaohStaff() {}
-
-        bool allow_mon_cast_now(Mon& mon) const override;
-
-        virtual bool mon_can_learn() const override
-        {
-                return false;
-        }
-
-        virtual bool player_can_learn() const override
-        {
-                return false;
-        }
-
-        virtual std::string name() const override
-        {
-                return "Summon Mummy Servant";
-        }
-
-        virtual SpellId id() const override
-        {
-                return SpellId::pharaoh_staff;
-        }
-
-        OccultistDomain domain() const override
-        {
-                return OccultistDomain::END;
-        }
-
-        bool can_be_improved_with_skill() const override
-        {
-                return false;
-        }
-
-        virtual SpellShock shock_type() const override
-        {
-                return SpellShock::disturbing;
-        }
-
-        std::vector<std::string> descr_specific(
-                const SpellSkill skill) const override;
-
-        void run_effect(
-            Actor* const caster,
-            const SpellSkill skill) const override;
-
-protected:
-        virtual int max_spi_cost(const SpellSkill skill) const override
-        {
-                (void)skill;
-
-                return 6;
-        }
-
-        bool is_noisy(const SpellSkill skill) const override
-        {
-                (void)skill;
-
-                return false;
         }
 };
 
