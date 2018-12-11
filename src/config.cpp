@@ -36,7 +36,7 @@ static const std::vector<std::string> font_image_names = {
 static const int opt_y0_ = 1;
 static const int opt_values_x_pos_ = 40;
 
-static InputMode input_mode_ = InputMode::numpad;
+static InputMode input_mode_ = InputMode::standard;
 static std::string font_name_ = "";
 static bool is_fullscreen_ = false;
 static bool is_tiles_wall_full_square_ = false;
@@ -150,7 +150,7 @@ static void set_default_variables()
 {
         TRACE_FUNC_BEGIN;
 
-        input_mode_ = InputMode::numpad;
+        input_mode_ = InputMode::standard;
 
         is_tiles_mode_ = true;
         font_name_ = "12x24.png";
@@ -860,12 +860,8 @@ void ConfigState::draw()
 
         switch (config::input_mode_)
         {
-        case InputMode::numpad:
-                input_mode_value_str = "Numpad (default)";
-                break;
-
-        case InputMode::arrow_keys:
-                input_mode_value_str = "Arrow keys + ctrl/shift";
+        case InputMode::standard:
+                input_mode_value_str = "Default (numpad or arrows)";
                 break;
 
         case InputMode::vi_keys:

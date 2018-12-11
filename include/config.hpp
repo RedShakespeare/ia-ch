@@ -8,8 +8,7 @@
 
 enum InputMode
 {
-        numpad,
-        arrow_keys,
+        standard,
         vi_keys,
 
         END

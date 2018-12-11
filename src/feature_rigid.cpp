@@ -294,8 +294,6 @@ void Rigid::hit(const int dmg,
 
         if (is_blocking)
         {
-            std::string msg;
-
             if (dmg_method == DmgMethod::kicking)
             {
                 const bool can_see_feature =
