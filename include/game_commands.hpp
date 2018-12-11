@@ -7,6 +7,8 @@ enum class GameCmd
 {
         undefined,
 
+        none,
+
         right,
         down,
         left,
