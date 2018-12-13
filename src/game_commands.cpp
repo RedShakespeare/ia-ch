@@ -320,7 +320,10 @@ GameCmd to_cmd(const InputData& input)
 
 void handle(const GameCmd cmd)
 {
-        msg_log::clear();
+        if (cmd != GameCmd::none)
+        {
+                msg_log::clear();
+        }
 
         switch (cmd)
         {

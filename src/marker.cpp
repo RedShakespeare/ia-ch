@@ -136,7 +136,10 @@ void MarkerState::update()
 
         const auto game_cmd = game_commands::to_cmd(input);
 
-        msg_log::clear();
+        if (game_cmd != GameCmd::none)
+        {
+                msg_log::clear();
+        }
 
         switch (game_cmd)
         {
