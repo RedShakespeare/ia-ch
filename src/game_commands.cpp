@@ -59,10 +59,10 @@ static void query_quit()
 
 static GameCmd to_cmd_default(const InputData& input)
 {
-        // TODO: When running on windows, with numlock enabled, each numpad key
-        // press yields two input events - one for the keypad key, and one as a
-        // number key. This seems to be due to a bug in SDL. As a workaround, we
-        // skip numerical keys here.
+        // When running on windows, with numlock enabled, each numpad key press
+        // yields two input events - one for the keypad key, and one as a
+        // number key. This seems to be due to a bug in SDL. As a workaround,
+        // we skip numerical keys here.
         if (input.key >= '0' && input.key <= '9')
         {
                 return GameCmd::none;
@@ -86,6 +86,7 @@ static GameCmd to_cmd_default(const InputData& input)
                 {
                         return GameCmd::right;
                 }
+                break;
 
         case SDLK_KP_4:
                 return GameCmd::left;
@@ -103,6 +104,7 @@ static GameCmd to_cmd_default(const InputData& input)
                 {
                         return GameCmd::left;
                 }
+                break;
 
         case SDLK_DOWN:
         case SDLK_KP_2:

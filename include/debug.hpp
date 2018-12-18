@@ -50,8 +50,7 @@
             << "DEBUG: "                        \
             << __FILE__ << ", "                 \
             << __LINE__ << ", "                 \
-            << __func__ << "():"                \
-            << std::endl
+            << __func__ << "(): "
 
 #define TRACE_FUNC_BEGIN if (TRACE_LVL < 1) ; else      \
         std::cerr                                       \

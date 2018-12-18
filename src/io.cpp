@@ -1792,19 +1792,17 @@ InputData get()
         {
                 sdl_base::sleep(1);
 
+                const SDL_Keymod mod = SDL_GetModState();
+
+                input.is_shift_held = mod & KMOD_SHIFT;
+                input.is_ctrl_held = mod & KMOD_CTRL;
+                input.is_alt_held = mod & KMOD_ALT;
+
                 const bool did_poll_event = SDL_PollEvent(&sdl_event_);
 
                 if (!did_poll_event)
                 {
                         continue;
-                }
-
-                {
-                        const SDL_Keymod mod = SDL_GetModState();
-
-                        input.is_shift_held = mod & KMOD_SHIFT;
-                        input.is_ctrl_held = mod & KMOD_CTRL;
-                        input.is_alt_held = mod & KMOD_ALT;
                 }
 
                 switch (sdl_event_.type)
@@ -1869,30 +1867,7 @@ InputData get()
 
                 case SDL_KEYDOWN:
                 {
-                        const auto sdl_keysym = sdl_event_.key.keysym.sym;
-
-                        // Do not return shift/control/alt as separate events
-                        if (sdl_keysym == SDLK_LSHIFT ||
-                            sdl_keysym == SDLK_RSHIFT ||
-                            sdl_keysym == SDLK_LCTRL ||
-                            sdl_keysym == SDLK_RCTRL ||
-                            sdl_keysym == SDLK_LALT ||
-                            sdl_keysym == SDLK_RALT)
-                        {
-                                continue;
-                        }
-
-                        input.key = sdl_keysym;
-
-                        if ((input.key >= SDLK_F1) && (input.key <= SDLK_F9))
-                        {
-                                // F input.keys
-                                is_done = true;
-
-                                continue;
-                        }
-
-                        // Not an F key
+                        input.key = sdl_event_.key.keysym.sym;
 
                         switch (input.key)
                         {
@@ -1934,6 +1909,16 @@ InputData get()
                         }
                         break; // case SDLK_KP_ENTER
 
+                        case SDLK_KP_6:
+                        case SDLK_KP_1:
+                        case SDLK_KP_2:
+                        case SDLK_KP_3:
+                        case SDLK_KP_4:
+                        case SDLK_KP_5:
+                        case SDLK_KP_7:
+                        case SDLK_KP_8:
+                        case SDLK_KP_9:
+                        case SDLK_KP_0:
                         case SDLK_SPACE:
                         case SDLK_BACKSPACE:
                         case SDLK_TAB:
@@ -1948,26 +1933,89 @@ InputData get()
                         case SDLK_UP:
                         case SDLK_DOWN:
                         case SDLK_ESCAPE:
-                        case SDLK_KP_1:
-                        case SDLK_KP_2:
-                        case SDLK_KP_3:
-                        case SDLK_KP_4:
-                        case SDLK_KP_5:
-                        case SDLK_KP_6:
-                        case SDLK_KP_7:
-                        case SDLK_KP_8:
-                        case SDLK_KP_9:
-                        case SDLK_KP_0:
+                        case SDLK_F1:
+                        case SDLK_F2:
+                        case SDLK_F3:
+                        case SDLK_F4:
+                        case SDLK_F5:
+                        case SDLK_F6:
+                        case SDLK_F7:
+                        case SDLK_F8:
+                        case SDLK_F9:
+                        {
                                 is_done = true;
-                                break;
-
-                        case SDLK_MENU:
-                        case SDLK_PAUSE:
-                        default:
-                                break;
                         }
+                        break;
+
+                        default:
+                        {
+                        }
+                        break;
+                        } // Key down switch
                 }
                 break; // case SDL_KEYDOWN
+
+                case SDL_KEYUP:
+                {
+                        const auto sdl_keysym = sdl_event_.key.keysym.sym;
+
+                        switch (sdl_keysym)
+                        {
+                        case SDLK_LSHIFT:
+                        case SDLK_RSHIFT:
+                        {
+                                // Shift released
+
+                                // On Windows, when the user presses
+                                // shift + a numpad key, a shift release event
+                                // can be received before the numpad key event,
+                                // which breaks shift + numpad combinations.
+                                // As a workaround, we check for "future"
+                                // numpad events here.
+                                SDL_Event sdl_event_tmp;
+
+                                while (SDL_PollEvent(&sdl_event_tmp))
+                                {
+                                        if (sdl_event_tmp.type != SDL_KEYDOWN)
+                                        {
+                                                continue;
+                                        }
+
+                                        switch (sdl_event_tmp.key.keysym.sym)
+                                        {
+                                        case SDLK_KP_0:
+                                        case SDLK_KP_1:
+                                        case SDLK_KP_2:
+                                        case SDLK_KP_3:
+                                        case SDLK_KP_4:
+                                        case SDLK_KP_5:
+                                        case SDLK_KP_6:
+                                        case SDLK_KP_7:
+                                        case SDLK_KP_8:
+                                        case SDLK_KP_9:
+                                        {
+                                                input.key = sdl_event_tmp.key.keysym.sym;
+
+                                                is_done = true;
+                                        }
+                                        break;
+
+                                        default:
+                                        {
+                                        }
+                                        break;
+                                        } // Key down switch
+                                } // while polling event
+                        }
+                        break;
+
+                        default:
+                        {
+                        }
+                        break;
+                        } // Key released switch
+                }
+                break; // case SDL_KEYUP
 
                 case SDL_TEXTINPUT:
                 {
