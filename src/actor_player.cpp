@@ -613,13 +613,13 @@ void Player::mon_feeling()
     }
 }
 
-void Player::set_quick_move(const Dir dir)
+void Player::set_auto_move(const Dir dir)
 {
     ASSERT(dir != Dir::END);
 
-    quick_move_dir_ = dir;
+    auto_move_dir_ = dir;
 
-    has_taken_quick_move_step_ = false;
+    has_taken_auto_move_step_ = false;
 }
 
 void Player::act()
@@ -699,9 +699,9 @@ void Player::act()
     }
 
     // Quick move
-    if (quick_move_dir_ != Dir::END)
+    if (auto_move_dir_ != Dir::END)
     {
-        const P target = pos + dir_utils::offset(quick_move_dir_);
+        const P target = pos + dir_utils::offset(auto_move_dir_);
 
         bool is_target_adj_to_unseen_cell = false;
 
@@ -724,7 +724,7 @@ void Player::act()
         // If this is not the first step of auto moving, stop before blocking
         // features, fire, known traps, etc (otherwise if it's the first step,
         // allow bumping features as with normal movement)
-        if (has_taken_quick_move_step_)
+        if (has_taken_auto_move_step_)
         {
             bool should_abort = false;
 
@@ -751,7 +751,7 @@ void Player::act()
 
                 if (should_abort)
                 {
-                    quick_move_dir_ = Dir::END;
+                    auto_move_dir_ = Dir::END;
 
                     return;
                 }
@@ -786,13 +786,13 @@ void Player::act()
 
         const auto adj_known_closed_doors_before = adj_known_closed_doors(pos);
 
-        actor::move(*this, quick_move_dir_);
+        actor::move(*this, auto_move_dir_);
 
-        has_taken_quick_move_step_ = true;
+        has_taken_auto_move_step_ = true;
 
         update_fov();
 
-        if (quick_move_dir_ == Dir::END)
+        if (auto_move_dir_ == Dir::END)
         {
             return;
         }
@@ -818,7 +818,7 @@ void Player::act()
 
         if (is_target_adj_to_unseen_cell || is_new_known_adj_closed_door)
         {
-            quick_move_dir_ = Dir::END;
+            auto_move_dir_ = Dir::END;
         }
 
         return;
@@ -885,7 +885,7 @@ void Player::on_actor_turn()
                     active_medical_bag_ ||
                     (handle_armor_countdown_ > 0) ||
                     (wait_turns_left > 0) ||
-                    (quick_move_dir_ != Dir::END);
+                    (auto_move_dir_ != Dir::END);
     };
 
     if (is_busy() && is_seeing_burning_feature())
@@ -996,7 +996,7 @@ void Player::on_actor_turn()
                     else // Became aware of a monster in an unseen cell
                     {
                         // Abort quick move
-                        quick_move_dir_ = Dir::END;
+                        auto_move_dir_ = Dir::END;
                     }
                 }
 
@@ -1538,7 +1538,7 @@ void Player::on_log_msg_printed()
     wait_turns_left = -1;
 
     // All messages abort quick move
-    quick_move_dir_ = Dir::END;
+    auto_move_dir_ = Dir::END;
 }
 
 void Player::interrupt_actions()
@@ -1618,7 +1618,7 @@ void Player::interrupt_actions()
     wait_turns_left = -1;
 
     // Abort quick move
-    quick_move_dir_ = Dir::END;
+    auto_move_dir_ = Dir::END;
 }
 
 void Player::hear_sound(const Snd& snd,

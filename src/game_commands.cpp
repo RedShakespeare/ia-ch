@@ -60,9 +60,9 @@ static void query_quit()
 static GameCmd to_cmd_default(const InputData& input)
 {
         // When running on windows, with numlock enabled, each numpad key press
-        // yields two input events - one for the keypad key, and one as a
-        // number key. This seems to be due to a bug in SDL. As a workaround,
-        // we skip numerical keys here.
+        // yields two input events - one for the keypad key, and one as a number
+        // key. This seems to be due to a bug in SDL (or maybe it's just how it
+        // works on windows). As a workaround, we skip numerical keys here.
         if (input.key >= '0' && input.key <= '9')
         {
                 return GameCmd::none;
@@ -71,7 +71,88 @@ static GameCmd to_cmd_default(const InputData& input)
         switch (input.key)
         {
         case SDLK_KP_6:
-                return GameCmd::right;
+                if (input.is_shift_held)
+                {
+                        return GameCmd::auto_move_right;
+                }
+                else
+                {
+                        return GameCmd::right;
+                }
+
+        case SDLK_KP_4:
+                if (input.is_shift_held)
+                {
+                        return GameCmd::auto_move_left;
+                }
+                else
+                {
+                        return GameCmd::left;
+                }
+
+        case SDLK_KP_2:
+                if (input.is_shift_held)
+                {
+                        return GameCmd::auto_move_down;
+                }
+                else
+                {
+                        return GameCmd::down;
+                }
+
+        case SDLK_KP_8:
+                if (input.is_shift_held)
+                {
+                        return GameCmd::auto_move_up;
+                }
+                else
+                {
+                        return GameCmd::up;
+                }
+
+        case SDLK_KP_9:
+                if (input.is_shift_held)
+                {
+                        return GameCmd::auto_move_up_right;
+                }
+                else
+                {
+                        return GameCmd::up_right;
+                }
+
+        case SDLK_KP_3:
+                if (input.is_shift_held)
+                {
+                        return GameCmd::auto_move_down_right;
+                }
+                else
+                {
+                        return GameCmd::down_right;
+                }
+
+        case SDLK_KP_1:
+                if (input.is_shift_held)
+                {
+                        return GameCmd::auto_move_down_left;
+                }
+                else
+                {
+                        return GameCmd::down_left;
+                }
+
+        case SDLK_KP_7:
+                if (input.is_shift_held)
+                {
+                        return GameCmd::auto_move_up_left;
+                }
+                else
+                {
+                        return GameCmd::up_left;
+                }
+
+        case SDLK_KP_5:
+        case '.':
+                return GameCmd::wait;
 
         case SDLK_RIGHT:
                 if (input.is_shift_held)
@@ -86,10 +167,6 @@ static GameCmd to_cmd_default(const InputData& input)
                 {
                         return GameCmd::right;
                 }
-                break;
-
-        case SDLK_KP_4:
-                return GameCmd::left;
 
         case SDLK_LEFT:
                 if (input.is_shift_held)
@@ -104,31 +181,12 @@ static GameCmd to_cmd_default(const InputData& input)
                 {
                         return GameCmd::left;
                 }
-                break;
 
         case SDLK_DOWN:
-        case SDLK_KP_2:
                 return GameCmd::down;
 
         case SDLK_UP:
-        case SDLK_KP_8:
                 return GameCmd::up;
-
-        case SDLK_KP_9:
-                return GameCmd::up_right;
-
-        case SDLK_KP_3:
-                return GameCmd::down_right;
-
-        case SDLK_KP_1:
-                return GameCmd::down_left;
-
-        case SDLK_KP_7:
-                return GameCmd::up_left;
-
-        case SDLK_KP_5:
-        case '.':
-                return GameCmd::wait;
 
         case 's':
                 return GameCmd::wait_long;
@@ -166,9 +224,6 @@ static GameCmd to_cmd_default(const InputData& input)
 
         case 'd':
                 return GameCmd::drop_item;
-
-        case 'e':
-                return GameCmd::auto_move;
 
         case 'z':
                 return GameCmd::swap_weapon;
@@ -250,26 +305,50 @@ static GameCmd to_cmd_vi(const InputData& input)
         case 'l':
                 return GameCmd::right;
 
+        case 'L':
+                return GameCmd::auto_move_right;
+
         case 'j':
                 return GameCmd::down;
+
+        case 'J':
+                return GameCmd::auto_move_down;
 
         case 'h':
                 return GameCmd::left;
 
+        case 'H':
+                return GameCmd::auto_move_left;
+
         case 'k':
                 return GameCmd::up;
+
+        case 'K':
+                return GameCmd::auto_move_up;
 
         case 'u':
                 return GameCmd::up_right;
 
+        case 'U':
+                return GameCmd::auto_move_up_right;
+
         case 'n':
                 return GameCmd::down_right;
+
+        case 'N':
+                return GameCmd::auto_move_down_right;
 
         case 'b':
                 return GameCmd::down_left;
 
+        case 'B':
+                return GameCmd::auto_move_down_left;
+
         case 'y':
                 return GameCmd::up_left;
+
+        case 'Y':
+                return GameCmd::auto_move_up_left;
 
         case 'M':
                 return GameCmd::msg_history;
@@ -646,7 +725,14 @@ void handle(const GameCmd cmd)
         }
         break;
 
-        case GameCmd::auto_move:
+        case GameCmd::auto_move_right:
+        case GameCmd::auto_move_down:
+        case GameCmd::auto_move_left:
+        case GameCmd::auto_move_up:
+        case GameCmd::auto_move_up_right:
+        case GameCmd::auto_move_down_right:
+        case GameCmd::auto_move_down_left:
+        case GameCmd::auto_move_up_left:
         {
                 if (map::player->is_seeing_burning_feature())
                 {
@@ -670,27 +756,48 @@ void handle(const GameCmd cmd)
                 }
                 else // We are allowed to use auto-move
                 {
-                        msg_log::add(
-                                std::string(
-                                        "Which direction? " +
-                                        common_text::cancel_hint),
-                                colors::light_white());
+                        auto dir = (Dir)0;
 
-                        const auto input_dir = query::dir(AllowCenter::no);
-
-                        msg_log::clear();
-
-                        if ((input_dir == Dir::END) ||
-                            (input_dir == Dir::center))
+                        switch (cmd)
                         {
-                                // Invalid direction
-                                io::update_screen();
+                        case GameCmd::auto_move_right:
+                                dir = Dir::right;
+                                break;
+
+                        case GameCmd::auto_move_down:
+                                dir = Dir::down;
+                                break;
+
+                        case GameCmd::auto_move_left:
+                                dir = Dir::left;
+                                break;
+
+                        case GameCmd::auto_move_up:
+                                dir = Dir::up;
+                                break;
+
+                        case GameCmd::auto_move_up_right:
+                                dir = Dir::up_right;
+                                break;
+
+                        case GameCmd::auto_move_down_right:
+                                dir = Dir::down_right;
+                                break;
+
+                        case GameCmd::auto_move_down_left:
+                                dir = Dir::down_left;
+                                break;
+
+                        case GameCmd::auto_move_up_left:
+                                dir = Dir::up_left;
+                                break;
+
+                        default:
+                                PANIC;
+                                break;
                         }
-                        else
-                        {
-                                // Valid direction
-                                map::player->set_quick_move(input_dir);
-                        }
+
+                        map::player->set_auto_move(dir);
                 }
         }
         break;

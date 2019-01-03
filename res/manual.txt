@@ -5,7 +5,6 @@ Gameplay commands:
    a         Inventory, only showing items that can be consumed or activated
    c         Close door, or jam closed door with an iron spike
    d         Drop item
-   e         Move in a direction until interrupted
    f         Aim/fire weapon
    g         Pick up item
    h         Message history
@@ -42,9 +41,11 @@ Move in eight directions with the numpad keys:
     /|\
    1 2 3
 
+If shift is held while pressing a movement key, you move in that direction until interrupted.
+
 Press '5' to wait for one turn. This is also used for selecting your current position, for example when kicking (to destroy a corpse you are standing over) or when disarming traps.
 
-Alternatively, the arrow keys can be used for moving. To move diagonally, hold shift or ctrl:
+As an alternative, for keyboards without a numpad (e.g. some laptop keyboards), the arrow keys can be used for moving. To move diagonally, hold shift or ctrl ("auto movement" is not supported in this context):
    Shift + left  = up left
    Shift + right = up right
    Ctrl  + left  = down left
@@ -56,7 +57,6 @@ Press '.' (period) to wait for one turn or to select your current position
    a         Inventory, only showing items that can be consumed or activated
    c         Close door, or jam closed door with an iron spike
    d         Drop item
-   e         Move in a direction until interrupted
    f         Aim/fire weapon
    g         Pick up item
    G         Unload and pick up ammunition from weapons on the ground
@@ -83,6 +83,8 @@ Use the "vi-keys" for movement:
    h- -l
     /|\
    b j n
+
+Hold shift while pressing any of the letters above to move until interrupted.
 
 Press '.' (period) to wait for one turn or to select your current position.
 

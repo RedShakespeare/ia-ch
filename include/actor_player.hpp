@@ -120,7 +120,7 @@ public:
 
         int carry_weight_lmt() const;
 
-        void set_quick_move(const Dir dir);
+        void set_auto_move(const Dir dir);
 
         bool is_leader_of(const Actor* const actor) const override;
         bool is_actor_my_leader(const Actor* const actor) const override;
@@ -174,8 +174,8 @@ private:
         void fov_hack();
 
         int nr_turns_until_ins_ {-1};
-        Dir quick_move_dir_ {Dir::END};
-        bool has_taken_quick_move_step_ {false};
+        Dir auto_move_dir_ {Dir::END};
+        bool has_taken_auto_move_step_ {false};
         int nr_turns_until_rspell_ {-1};
         Wpn* unarmed_wpn_ {nullptr};
 };
