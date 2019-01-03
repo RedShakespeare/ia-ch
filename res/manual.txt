@@ -22,6 +22,7 @@ Gameplay commands:
    z         Swap to readied weapon
    Q         Quit
    @         Character information
+   Shift     Hold while pressing a move key to move until interrupted
    Tab       Melee attack adjacent monster
 
 General menu and window commands:
@@ -40,8 +41,6 @@ Move in eight directions with the numpad keys:
    4- -6
     /|\
    1 2 3
-
-If shift is held while pressing a movement key, you move in that direction until interrupted.
 
 Press '5' to wait for one turn. This is also used for selecting your current position, for example when kicking (to destroy a corpse you are standing over) or when disarming traps.
 
@@ -74,6 +73,7 @@ Press '.' (period) to wait for one turn or to select your current position
    z         Swap to readied weapon
    Q         Quit
    @         Character information
+   Shift     Hold while pressing a move key to move until interrupted
    Tab       Melee attack adjacent monster (same as moving into the monster)
 
 Use the "vi-keys" for movement:
@@ -87,6 +87,8 @@ Use the "vi-keys" for movement:
 Hold shift while pressing any of the letters above to move until interrupted.
 
 Press '.' (period) to wait for one turn or to select your current position.
+
+The "k" and "j" keys can be used to scroll up and down in menus, and "l" selects the currently marked entry (as an alternative to the enter key).
 
 --------------------------------------------------------------------------------
 Environment interaction

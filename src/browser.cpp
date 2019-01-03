@@ -17,35 +17,43 @@ static int nr_menu_keys_avail(const std::vector<char>& menu_keys)
 // -----------------------------------------------------------------------------
 // MenuBrowser
 // -----------------------------------------------------------------------------
-MenuAction MenuBrowser::read(
-        const InputData& input,
-        MenuInputMode mode)
+MenuAction MenuBrowser::read(const InputData& input, MenuInputMode mode)
 {
-        if ((input.key == SDLK_UP) || (input.key == SDLK_KP_8))
+        // NOTE: j k l are reserved for browsing with vi keys (not included in
+        // the standard menu key letters)
+
+        if ((input.key == SDLK_UP) ||
+            (input.key == SDLK_KP_8) ||
+            (input.key == 'k'))
         {
                 move(VerDir::up);
 
                 return MenuAction::moved;
         }
-        else if ((input.key == SDLK_DOWN) || (input.key == SDLK_KP_2))
+        else if ((input.key == SDLK_DOWN) ||
+                 (input.key == SDLK_KP_2) ||
+                 (input.key == 'j'))
         {
                 move(VerDir::down);
 
                 return MenuAction::moved;
         }
-        else if ((input.key == SDLK_PAGEUP) || (input.key == '<'))
+        else if ((input.key == SDLK_PAGEUP) ||
+                 (input.key == '<'))
         {
                 move_page(VerDir::up);
 
                 return MenuAction::moved;
         }
-        else if ((input.key == SDLK_PAGEDOWN) || (input.key == '>'))
+        else if ((input.key == SDLK_PAGEDOWN) ||
+                 (input.key == '>'))
         {
                 move_page(VerDir::down);
 
                 return MenuAction::moved;
         }
-        else if (input.key == SDLK_RETURN)
+        else if ((input.key == SDLK_RETURN) ||
+                 (input.key == 'l'))
         {
                 audio::play(SfxId::menu_select);
 
@@ -74,6 +82,14 @@ MenuAction MenuBrowser::read(
                         // Not a valid menu key, ever
                         return MenuAction::none;
                 }
+
+#ifndef NDEBUG
+                // Should never be used as letters (reserved for browsing)
+                if ((c == 'j') || (c == 'k') || (c == 'l'))
+                {
+                        PANIC;
+                }
+#endif // NDEBUG
 
                 const auto relative_idx =
                         (int)std::distance(
