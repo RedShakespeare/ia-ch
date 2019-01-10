@@ -57,9 +57,10 @@ User interface
 * While aiming firearms or thrown weapons, the game no longer prints info about map features, items, etc in the aiming location (only info about any monster seen there)
 * Many properties now have longer and more descriptive names on the map screen (e.g. "Fear Res." instead of rFear", or "LIFE SAPPED(4)" instead of "HP(4)")
 
-Misc improvements
+Misc
 * Save files are no longer erased when loading a saved game (only when dying, winning the game, or when actively quitting), this allows players to resume from a previous save file if the game has crashed
 * The game is auto-saved on each descent to a new dungeon level, so in the case of a crash, only the progress on the current dungeon level is lost
+* Switched license to GNU Affero General Public License v3.0 or later, and added a reference to this license at the top of each Infra Arcana source code file, and a reference from the main menu
 
 --------------------------------------------------------------
 v19.2 (November 6, 2017)

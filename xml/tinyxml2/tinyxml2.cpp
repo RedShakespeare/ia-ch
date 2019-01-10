@@ -23,9 +23,10 @@ distribution.
 
 
 // -----------------------------------------------------------------------------
-// Martin Törnqvist: Some comments have been added to this code, to suppress
-// warnings regarding implicit fallthrough in a swtich statement - I have marked
-// these lines with my name.
+// Martin Törnqvist: Some comments have been added to the code in this source
+// file (tinyxml2.cpp) to suppress compiler warnings regarding implicit
+// fallthrough in a swtich statement - I have marked these lines with my name
+// (search for "Martin Törnqvist").
 // -----------------------------------------------------------------------------
 
 

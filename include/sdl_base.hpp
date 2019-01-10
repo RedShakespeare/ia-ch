@@ -1,3 +1,9 @@
+// =============================================================================
+// Copyright 2011-2019 Martin Törnqvist <m.tornq@gmail.com>
+//
+// SPDX-License-Identifier: AGPL-3.0-or-later
+// =============================================================================
+
 #ifndef SDL_BASE_HPP
 #define SDL_BASE_HPP
 

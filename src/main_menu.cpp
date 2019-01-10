@@ -1,3 +1,9 @@
+// =============================================================================
+// Copyright 2011-2019 Martin Törnqvist <m.tornq@gmail.com>
+//
+// SPDX-License-Identifier: AGPL-3.0-or-later
+// =============================================================================
+
 #include "main_menu.hpp"
 
 #include <string>
@@ -386,29 +392,41 @@ void MainMenuState::draw()
                 }
         }
 
-        std::string info_str = "";
-
-        if (version_info::version_str.empty())
         {
-                info_str = "Build " + git_sha1_str;
-        }
-        else
-        {
-                info_str =
-                        version_info::version_str +
-                        " (" +
-                        git_sha1_str +
-                        ")";
-        }
+                std::string str = "";
 
-        info_str +=
-                ", " +
-                version_info::date_str +
-                " " +
-                version_info::copyright_str;
+                if (version_info::version_str.empty())
+                {
+                        str = "Build " + git_sha1_str;
+                }
+                else
+                {
+                        str =
+                                version_info::version_str +
+                                " (" +
+                                git_sha1_str +
+                                ")";
+                }
+
+                str += ", " + version_info::date_str;
+
+                io::draw_text_right(
+                        " " + str + " ",
+                        Panel::screen,
+                        P(panels::x1(Panel::screen) - 1,
+                          panels::y0(Panel::screen)),
+                        colors::dark_gray());
+        }
 
         io::draw_text_center(
-                info_str,
+                " " + version_info::copyright_str + " ",
+                Panel::screen,
+                P(panels::center_x(Panel::screen),
+                  panels::y1(Panel::screen) - 1),
+                colors::dark_gray());
+
+        io::draw_text_center(
+                " " + version_info::license_str + " ",
                 Panel::screen,
                 P(panels::center_x(Panel::screen),
                   panels::y1(Panel::screen)),

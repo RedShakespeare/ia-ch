@@ -1,3 +1,9 @@
+// =============================================================================
+// Copyright 2011-2019 Martin Törnqvist <m.tornq@gmail.com>
+//
+// SPDX-License-Identifier: AGPL-3.0-or-later
+// =============================================================================
+
 #include "version.hpp"
 
 #include <fstream>
@@ -10,11 +16,15 @@
 namespace version_info
 {
 
-// This should be set when (and only when) building a tagged release. Use the
+// This shall be set when (and only when) building a tagged release. Use the
 // format "vMAJOR.MINOR".
 const std::string version_str = "";
 
-const std::string copyright_str = "(c) 2011-2018 Martin Tornqvist";
+const std::string copyright_str =
+        "(c) 2011-2019 Martin Tornqvist";
+
+const std::string license_str =
+        "Infra Arcana is free software, see LICENSE.txt.";
 
 const std::string date_str = __DATE__;
 

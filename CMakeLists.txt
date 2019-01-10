@@ -376,7 +376,8 @@ if(WIN32)
         endif()
 endif()
 
-# Copy all resource files to the build directory.
+# Copy license and resource files to the build directory.
+file(COPY LICENSE.txt DESTINATION .)
 file(COPY res DESTINATION .)
 
 # ------------------------------------------------------------------------------
@@ -566,6 +567,9 @@ set(CMAKE_INSTALL_PREFIX target)
 
 install(TARGETS ia DESTINATION ia)
 install(TARGETS ia-debug DESTINATION ia-debug)
+
+install(FILES ${CMAKE_BINARY_DIR}/LICENSE.txt DESTINATION ia)
+install(FILES ${CMAKE_BINARY_DIR}/LICENSE.txt DESTINATION ia-debug)
 
 install(DIRECTORY ${CMAKE_BINARY_DIR}/res DESTINATION ia)
 install(DIRECTORY ${CMAKE_BINARY_DIR}/res DESTINATION ia-debug)

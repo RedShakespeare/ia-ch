@@ -1,3 +1,9 @@
+// =============================================================================
+// Copyright 2011-2019 Martin Törnqvist <m.tornq@gmail.com>
+//
+// SPDX-License-Identifier: AGPL-3.0-or-later
+// =============================================================================
+
 #ifndef MAP_CONTROLLER_HPP
 #define MAP_CONTROLLER_HPP
 
