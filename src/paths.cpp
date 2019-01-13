@@ -9,15 +9,25 @@
 namespace paths
 {
 
-const std::string gfx_path = "res/gfx";
+const std::string gfx_dir = "gfx";
 
-const std::string fonts_path = gfx_path + "/fonts";
-const std::string tiles_path = gfx_path + "/tiles/24x24";
-const std::string images_path = gfx_path + "/images";
+const std::string fonts_dir = gfx_dir + "/fonts";
+const std::string tiles_dir = gfx_dir + "/tiles/24x24";
+const std::string images_dir = gfx_dir + "/images";
 
-const std::string logo_img_path = images_path + "/main_menu_logo.png";
-const std::string skull_img_path = images_path + "/skull.png";
+const std::string logo_img_path = images_dir + "/main_menu_logo.png";
+const std::string skull_img_path = images_dir + "/skull.png";
 
-const std::string save_path = "res/data/save";
+const std::string audio_dir = "audio";
+
+const std::string data_dir = "data";
+
+const std::string user_dir = "user";
+
+const std::string save_file_path = user_dir + "/save";
+
+const std::string config_file_path = user_dir + "/config";
+
+const std::string highscores_file_path = user_dir + "/highscores";
 
 } // paths

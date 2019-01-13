@@ -26,7 +26,7 @@ static std::vector<std::string> read_manual_file()
 {
         std::vector<std::string> lines;
 
-        std::ifstream file("res/manual.txt");
+        std::ifstream file("manual.txt");
 
         if (!file.is_open())
         {

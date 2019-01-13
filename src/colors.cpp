@@ -11,6 +11,7 @@
 #include <vector>
 
 #include "debug.hpp"
+#include "paths.hpp"
 #include "xml.hpp"
 
 //-----------------------------------------------------------------------------
@@ -169,7 +170,7 @@ static void load_colors()
 {
         tinyxml2::XMLDocument doc;
 
-        xml::load_file("res/data/colors.xml", doc);
+        xml::load_file(paths::data_dir + "/colors/colors.xml", doc);
 
         auto colors_e = xml::first_child(doc);
 
@@ -211,7 +212,7 @@ static void load_gui_colors()
 {
         tinyxml2::XMLDocument doc;
 
-        xml::load_file("res/data/colors_gui.xml", doc);
+        xml::load_file(paths::data_dir + "/colors/colors_gui.xml", doc);
 
         auto gui_e = xml::first_child(doc);
 

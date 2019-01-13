@@ -12,6 +12,7 @@
 #include <vector>
 
 #include "debug.hpp"
+#include "paths.hpp"
 #include "random.hpp"
 #include "saving.hpp"
 
@@ -91,7 +92,7 @@ static Array2<char> load_level_template(const LevelTemplId id)
 {
         const std::string filename = level_id_to_filename.at(id);
 
-        std::ifstream ifs("res/data/map/levels/" + filename);
+        std::ifstream ifs(paths::data_dir + "/map/levels/" + filename);
 
         ASSERT(!ifs.fail());
         ASSERT(ifs.is_open());
@@ -197,7 +198,7 @@ static void load_room_templates()
 
         room_templ_status_.clear();
 
-        std::ifstream ifs("res/data/map/rooms.txt");
+        std::ifstream ifs(paths::data_dir + "/map/rooms.txt");
 
         ASSERT(!ifs.fail());
         ASSERT(ifs.is_open());

@@ -11,22 +11,23 @@
 #include <vector>
 #include <string>
 
-#include "audio.hpp"
-#include "init.hpp"
-#include "io.hpp"
 #include "actor_player.hpp"
-#include "game.hpp"
-#include "map.hpp"
-#include "msg_log.hpp"
+#include "audio.hpp"
 #include "browser.hpp"
-#include "highscore.hpp"
-#include "player_bon.hpp"
-#include "text_format.hpp"
-#include "feature_rigid.hpp"
-#include "saving.hpp"
-#include "query.hpp"
 #include "create_character.hpp"
 #include "draw_map.hpp"
+#include "feature_rigid.hpp"
+#include "game.hpp"
+#include "highscore.hpp"
+#include "init.hpp"
+#include "io.hpp"
+#include "map.hpp"
+#include "msg_log.hpp"
+#include "paths.hpp"
+#include "player_bon.hpp"
+#include "query.hpp"
+#include "saving.hpp"
+#include "text_format.hpp"
 
 // -----------------------------------------------------------------------------
 // Private
@@ -62,7 +63,8 @@ void PostmortemMenu::on_start()
                 ".txt";
 
         const std::string game_summary_file_path =
-                "res/data/" +
+                paths::user_dir +
+                "/" +
                 game_summary_filename;
 
         // Highscore entry
@@ -330,7 +332,7 @@ void PostmortemMenu::on_start()
 
                 std::string current_line;
 
-                std::ifstream file("res/ascii_graveyard");
+                std::ifstream file(paths::data_dir + "/ascii_graveyard");
 
                 if (file.is_open())
                 {

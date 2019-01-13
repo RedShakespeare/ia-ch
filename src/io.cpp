@@ -449,7 +449,7 @@ static void load_font()
         TRACE_FUNC_BEGIN;
 
         const std::string font_path =
-                paths::fonts_path +
+                paths::fonts_dir +
                 "/" +
                 config::font_name();
 
@@ -546,7 +546,7 @@ static void load_tiles()
                 const std::string img_name = tile_id_to_str_map.at(id);
 
                 const std::string img_path =
-                        paths::tiles_path +
+                        paths::tiles_dir +
                         "/" +
                         img_name +
                         ".png";

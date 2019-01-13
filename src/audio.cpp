@@ -11,8 +11,9 @@
 #include "SDL_mixer.h"
 
 #include "init.hpp"
-#include "map.hpp"
 #include "io.hpp"
+#include "map.hpp"
+#include "paths.hpp"
 
 using namespace std::chrono_literals;
 
@@ -50,7 +51,7 @@ static void load(const SfxId sfx, const std::string& filename)
         // Read events, so that we don't freeze the game while we loading sounds
         SDL_PumpEvents();
 
-        const std::string file_rel_path = "res/audio/" + filename;
+        const std::string file_rel_path = paths::audio_dir +  "/" + filename;
 
         audio_chunks_[(size_t)sfx] = Mix_LoadWAV(file_rel_path.c_str());
 
@@ -211,8 +212,12 @@ void init()
         // Load music
         mus_chunks_.resize((size_t)MusId::END);
 
+        const std::string music_path =
+                paths::audio_dir +
+                "/musica_cthulhiana_fragment_madness.ogg";
+
         mus_chunks_[(size_t)MusId::cthulhiana_madness] =
-                Mix_LoadMUS("res/audio/musica_cthulhiana-fragment-madness.ogg");
+                Mix_LoadMUS(music_path.c_str());
 
         TRACE_FUNC_END;
 }

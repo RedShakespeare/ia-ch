@@ -14,6 +14,7 @@
 #include "colors.hpp"
 #include "item_att_property.hpp"
 #include "item_data.hpp"
+#include "paths.hpp"
 #include "property.hpp"
 #include "property_factory.hpp"
 #include "saving.hpp"
@@ -550,7 +551,7 @@ static void read_actor_definitions_xml()
 {
         xml::Doc doc;
 
-        xml::load_file("res/data/monsters.xml", doc);
+        xml::load_file(paths::data_dir + "/monsters.xml", doc);
 
         auto top_e = xml::first_child(doc);
 

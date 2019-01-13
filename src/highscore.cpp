@@ -19,6 +19,7 @@
 #include "map.hpp"
 #include "misc.hpp"
 #include "panel.hpp"
+#include "paths.hpp"
 #include "popup.hpp"
 
 // -----------------------------------------------------------------------------
@@ -53,7 +54,7 @@ static void write_file(std::vector<HighscoreEntry>& entries)
 {
         std::ofstream file;
 
-        file.open("res/data/highscores", std::ios::trunc);
+        file.open(paths::highscores_file_path, std::ios::trunc);
 
         for (const auto entry : entries)
         {
@@ -84,7 +85,7 @@ static std::vector<HighscoreEntry> read_highscores_file()
 
         std::ifstream file;
 
-        file.open("res/data/highscores");
+        file.open(paths::highscores_file_path);
 
         if (!file.is_open())
         {

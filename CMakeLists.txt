@@ -376,9 +376,9 @@ if(WIN32)
         endif()
 endif()
 
-# Copy license and resource files to the build directory.
-file(COPY LICENSE.txt DESTINATION .)
-file(COPY res DESTINATION .)
+# Copy installed files to the build directory.
+file(GLOB INSTALLED_FILES "installed_files/*")
+file(COPY ${INSTALLED_FILES} DESTINATION .)
 
 # ------------------------------------------------------------------------------
 # Retrieve abbreviated git commit
@@ -568,8 +568,5 @@ set(CMAKE_INSTALL_PREFIX target)
 install(TARGETS ia DESTINATION ia)
 install(TARGETS ia-debug DESTINATION ia-debug)
 
-install(FILES ${CMAKE_BINARY_DIR}/LICENSE.txt DESTINATION ia)
-install(FILES ${CMAKE_BINARY_DIR}/LICENSE.txt DESTINATION ia-debug)
-
-install(DIRECTORY ${CMAKE_BINARY_DIR}/res DESTINATION ia)
-install(DIRECTORY ${CMAKE_BINARY_DIR}/res DESTINATION ia-debug)
+install(DIRECTORY installed_files/ DESTINATION ia)
+install(DIRECTORY installed_files/ DESTINATION ia-debug)
