@@ -1,0 +1,664 @@
+--------------------------------------------------------------------------------
+GENERAL INFORMATION
+--------------------------------------------------------------------------------
+This file lists all audio files stored in the Infra Arcana source code
+repository (https://gitlab.com/martin-tornqvist/ia), and distributed with binary
+builds of the project. For each audio file, an attribution is included below
+(source, author, original title, license, and which significant changes have
+been made, if any).
+
+Most of the audio files have been downloaded from freesound.org. For these
+files, the author and license is specified according to the information found on
+the Freesound web page for each respective sound. If you know that this
+information is wrong (for example due to a false claim by a user on Freesound
+that they are the original author of a sound), please notify me of this
+(m.tornq@gmail.com), so that I can take action such as updating the attribution
+or removing the audio file.
+
+The following licenses are used, and referred to in the list below:
+
+CC0 1.0 Universal (CC0-1.0)
+https://creativecommons.org/publicdomain/zero/1.0
+
+Attribution 3.0 Unported (CC-BY-3.0)
+https://creativecommons.org/licenses/by/3.0
+
+Attribution-NonCommercial 3.0 Unported (CC-BY-NC-3.0)
+https://creativecommons.org/licenses/by-nc/3.0
+
+Sampling Plus 1.0
+https://creativecommons.org/licenses/sampling+/1.0
+
+--------------------------------------------------------------------------------
+AUDIO FILES INCLUDED IN INFRA ARCANA
+--------------------------------------------------------------------------------
+File:                amb_001.ogg
+Source:              https://freesound.org/people/Connum/sounds/17332/
+Author:              Connum (username on freesound.org)
+Original title:      atmo_dripstone cave.mp3
+License:             Attribution 3.0 Unported (CC-BY-3.0)
+
+File:                amb_002.ogg
+Source:              https://freesound.org/people/Quilt/sounds/37768/
+Author:              Quilt (username on freesound.org)
+Original title:      Mosquitmosphere 12.ogg
+License:             CC0 1.0 Universal (CC0-1.0)
+
+File:                amb_003.ogg
+Source:              https://freesound.org/people/Argitoth/sounds/38963/
+Author:              Argitoth (username on freesound.org)
+Original title:      archi_soundscape_cavern3.wav
+License:             CC0 1.0 Universal (CC0-1.0)
+
+File:                amb_004.ogg
+Source:              https://freesound.org/people/laurent/sounds/59280/
+Author:              laurent (username on freesound.org)
+Original title:      Late.wav
+License:             Attribution-NonCommercial 3.0 Unported (CC-BY-NC-3.0)
+
+File:                amb_005.ogg
+Source:              https://freesound.org/people/Sampleconstruct/sounds/60408/
+Author:              Sampleconstruct (username on freesound.org)
+Original title:      cavedrop.wav
+License:             Attribution 3.0 Unported (CC-BY-3.0)
+
+File:                amb_006.ogg
+Source:              https://freesound.org/people/kreutzkamp/sounds/60545/
+Author:              kreutzkamp (username on freesound.org)
+Original title:      cave023.aiff
+License:             CC0 1.0 Universal (CC0-1.0)
+
+File:                amb_007.ogg
+Source:              ???
+Author:              ???
+Original title:      ???
+License:             ???
+
+File:                amb_008.ogg
+Source:              ???
+Author:              ???
+Original title:      ???
+License:             ???
+
+File:                amb_009.ogg
+Source:              ???
+Author:              ???
+Original title:      ???
+License:             ???
+
+File:                amb_010.ogg
+Source:              ???
+Author:              ???
+Original title:      ???
+License:             ???
+
+File:                amb_011.ogg
+Source:              ???
+Author:              ???
+Original title:      ???
+License:             ???
+
+File:                amb_012.ogg
+Source:              ???
+Author:              ???
+Original title:      ???
+License:             ???
+
+File:                amb_013.ogg
+Source:              ???
+Author:              ???
+Original title:      ???
+License:             ???
+
+File:                amb_014.ogg
+Source:              Created for Infra Arcana
+Author:              ???
+Original title:      ???
+License:             ???
+
+File:                amb_015.ogg
+Source:              ???
+Author:              ???
+Original title:      ???
+License:             ???
+
+File:                amb_016.ogg
+Source:              ???
+Author:              ???
+Original title:      ???
+License:             ???
+
+File:                amb_017.ogg
+Source:              ???
+Author:              ???
+Original title:      ???
+License:             ???
+
+File:                amb_018.ogg
+Source:              ???
+Author:              ???
+Original title:      ???
+License:             ???
+
+File:                amb_019.ogg
+Source:              ???
+Author:              ???
+Original title:      ???
+License:             ???
+
+File:                amb_020.ogg
+Source:              ???
+Author:              ???
+Original title:      ???
+License:             ???
+
+File:                amb_021.ogg
+Source:              ???
+Author:              ???
+Original title:      ???
+License:             ???
+
+File:                amb_022.ogg
+Source:              Created for Infra Arcana
+Author:              ???
+Original title:      ???
+License:             ???
+
+File:                amb_023.ogg
+Source:              ???
+Author:              ???
+Original title:      ???
+License:             ???
+
+File:                amb_024.ogg
+Source:              ???
+Author:              ???
+Original title:      ???
+License:             ???
+
+File:                amb_025.ogg
+Source:              ???
+Author:              ???
+Original title:      ???
+License:             ???
+
+File:                amb_026.ogg
+Source:              ???
+Author:              ???
+Original title:      ???
+License:             ???
+
+File:                amb_027.ogg
+Source:              ???
+Author:              ???
+Original title:      ???
+License:             ???
+
+File:                amb_028.ogg
+Source:              ???
+Author:              ???
+Original title:      ???
+License:             ???
+
+File:                amb_029.ogg
+Source:              ???
+Author:              ???
+Original title:      ???
+License:             ???
+
+File:                amb_030.ogg
+Source:              ???
+Author:              ???
+Original title:      ???
+License:             ???
+
+File:                amb_031.ogg
+Source:              https://www.freesound.org/people/nicStage/sounds/1178
+Author:              nicStage (username on freesound.org)
+Original title:      guitar string ominous.wav
+License:             Attribution 3.0 Unported (CC-BY-3.0)
+
+File:                amb_032.ogg
+Source:              https://www.freesound.org/people/suonho/sounds/9691
+Author:              suonho (username on freesound.org)
+Original title:      suonho_ScienceFortressPack » suonho_StudioDelay-Low.wav
+License:             Attribution 3.0 Unported (CC-BY-3.0)
+
+File:                amb_033.ogg
+Source:              freesound.org (file no longer available)
+Author:              (Unknown)
+Original title:      (Unknown)
+License:             Attribution 3.0 Unported (CC-BY-3.0)
+
+File:                amb_034.ogg
+Source:              https://www.freesound.org/people/yewbic/sounds/33703
+Author:              yewbic (username on freesound.org)
+Original title:      ambience02.wav
+License:             CC0 1.0 Universal (CC0-1.0)
+
+File:                amb_035.ogg
+Source:              https://www.freesound.org/people/Robinhood76/sounds/98059
+Author:              Robinhood76 (username on freesound.org)
+Original title:      01804 strange appear.wav
+License:             Attribution-NonCommercial 3.0 Unported (CC-BY-NC-3.0)
+
+File:                amb_036.ogg
+Source:              ???
+Author:              ???
+Original title:      ???
+License:             ???
+
+File:                amb_037.ogg
+Source:              https://www.freesound.org/people/Robinhood76/sounds/148087
+Author:              Robinhood76 (username on freesound.org)
+Original title:      04711 Trailer hit - mystic metal.wav
+License:             Attribution-NonCommercial 3.0 Unported (CC-BY-NC-3.0)
+
+File:                amb_038.ogg
+Source:              ???
+Author:              ???
+Original title:      ???
+License:             ???
+
+File:                amb_039.ogg
+Source:              https://www.freesound.org/people/Jovica/sounds/6673
+Author:              Jovica (username on freesound.org)
+Original title:      SteamPipe 7 DarkPad G#1.wav
+License:             Attribution 3.0 Unported (CC-BY-3.0)
+
+File:                amb_040.ogg
+Source:              https://www.freesound.org/people/Jovica/sounds/6652
+Author:              Jovica (username on freesound.org)
+Original title:      SteamPipe 6 DreamPad E1.wav
+License:             Attribution 3.0 Unported (CC-BY-3.0)
+
+File:                amb_041.ogg
+Source:              https://www.freesound.org/people/Jovica/sounds/6702
+Author:              Jovica (username on freesound.org)
+Original title:      SteamPipe 9 Saturated Pad E3.wav
+License:             Attribution 3.0 Unported (CC-BY-3.0)
+
+File:                amb_042.ogg
+Source:              https://www.freesound.org/people/Jovica/sounds/6639
+Author:              Jovica (username on freesound.org)
+Original title:      SteamPipe 5 SteamPad E4.wav
+License:             Attribution 3.0 Unported (CC-BY-3.0)
+
+File:                amb_043.ogg
+Source:              https://www.freesound.org/people/Jovica/sounds/6617
+Author:              Jovica (username on freesound.org)
+Original title:      SteamPipe 4 Ambient Landscape C4.wav
+License:             Attribution 3.0 Unported (CC-BY-3.0)
+
+File:                amb_044.ogg
+Source:              https://www.freesound.org/people/Jovica/sounds/6603
+Author:              Jovica (username on freesound.org)
+Original title:      SteamPipe 3 GhostBlow C6.wav
+License:             Attribution 3.0 Unported (CC-BY-3.0)
+
+File:                amb_045.ogg
+Source:              https://www.freesound.org/people/Jovica/sounds/6596
+Author:              Jovica (username on freesound.org)
+Original title:      SteamPipe 2 Ambiance G#4.wav
+License:             Attribution 3.0 Unported (CC-BY-3.0)
+
+File:                amb_046.ogg
+Source:              https://www.freesound.org/people/Jovica/sounds/6578
+Author:              Jovica (username on freesound.org)
+Original title:      SteamPipe 1 Mechanical G#2.wav
+License:             Attribution 3.0 Unported (CC-BY-3.0)
+
+File:                amb_047.ogg
+Source:              https://www.freesound.org/people/qubodup/sounds/222517
+Author:              qubodup (username on freesound.org)
+Original title:      Dramatic Hit
+License:             CC0 1.0 Universal (CC0-1.0)
+
+File:                amb_048.ogg
+Source:              ???
+Author:              ???
+Original title:      ???
+License:             ???
+
+File:                amb_049.ogg
+Source:              ???
+Author:              ???
+Original title:      ???
+License:             ???
+
+File:                sfx_ape.ogg
+Source:              https://www.freesound.org/people/Mings/sounds/160380
+Author:              Mings (username on freesound.org)
+Original title:      Baboon
+License:             Attribution 3.0 Unported (CC-BY-3.0)
+Changes made:        Reduced speed and lowered pitch
+
+File:                sfx_backpack.ogg
+Source:              https://freesound.org/people/j1987/sounds/95560/
+Author:              j1987 (username on freesound.org)
+Original title:      backpack.wav
+License:             CC0 1.0 Universal (CC0-1.0)
+
+File:                sfx_bite.ogg
+Source:              https://www.freesound.org/people/CapsLok/sounds/181922
+Author:              CapsLok (username on freesound.org)
+Original title:      Crunchy Bites.wav
+License:             CC0 1.0 Universal (CC0-1.0)
+Changes made:        Cut most of the sound, lowered pitch
+
+File:                sfx_boss_voice1.ogg
+Source:              Created for Infra Arcana
+Author:              Martin Törnqvist
+License:             ???
+
+File:                sfx_boss_voice2.ogg
+Source:              Created for Infra Arcana
+Author:              Martin Törnqvist
+License:             ???
+
+File:                sfx_death.ogg
+Source:              https://www.freesound.org/people/Autistic%20Lucario/sounds/218887
+Author:              Autistic Lucario
+Original title:      Super shock
+License:             Attribution 3.0 Unported (CC-BY-3.0)
+
+File:                sfx_dog_snarl.ogg
+Source:              https://freesound.org/people/juskiddink/sounds/121565/
+Author:              juskiddink (username on freesound.org)
+Original title:      Dogs growling.wav
+License:             Attribution 3.0 Unported (CC-BY-3.0)
+Changes made:        Cut most of the sound
+
+File:                sfx_door_bang.ogg
+Source:              ???
+Author:              ???
+Original title:      ???
+License:             ???
+
+File:                sfx_door_break.ogg
+Source:              https://freesound.org/people/Eneasz/sounds/161873/
+Author:              Eneasz
+Original title:      wooden door smash open.wav
+License:             Attribution-NonCommercial 3.0 Unported (CC-BY-NC-3.0)
+
+File:                sfx_door_close.ogg
+Source:              ???
+Author:              ???
+Original title:      ???
+License:             ???
+
+File:                sfx_door_open.ogg
+Source:              ???
+Author:              ???
+Original title:      ???
+License:             ???
+
+File:                sfx_electric_lantern.ogg
+Source:              ???
+Author:              ???
+Original title:      ???
+License:             ???
+
+File:                sfx_explosion_molotov.ogg
+Source:              ???
+Author:              ???
+Original title:      ???
+License:             ???
+
+File:                sfx_explosion.ogg
+Source:              ???
+Author:              ???
+Original title:      ???
+License:             ???
+
+File:                sfx_gas.ogg
+Source:              https://freesound.org/people/jesabat/sounds/119741
+Author:              jesabat (username on freesound.org)
+Original title:      Steam Hiss.wav
+License:             Attribution 3.0 Unported (CC-BY-3.0)
+Changes made:        Cut most of the sound and applied early fade-out
+
+File:                sfx_flapping_wings.ogg
+Source:              ???
+Author:              ???
+Original title:      ???
+License:             ???
+
+File:                sfx_fountain_drink.ogg
+Source(1):           https://www.freesound.org/people/Abolla/sounds/213193
+Author(1):           Abolla (username on freesound.org)
+Original title(1):   BottleDrinking02.wav
+License(1):          Attribution-NonCommercial 3.0 Unported (CC-BY-NC-3.0)
+Source(2):           https://www.freesound.org/people/Pogotron/sounds/60851
+Author(2):           Pogotron (username on freesound.org)
+Original title(2):   Water Streaming #5.wav
+License(2):          Sampling Plus 1.0
+Changes made:        Mixed small samples of files 1 and 2 above
+
+File:                sfx_ghoul_growl.ogg
+Source:              ???
+Author:              ???
+Original title:      ???
+License:             ???
+
+File:                sfx_glop.ogg
+Source:              ???
+Author:              ???
+Original title:      ???
+License:             ???
+
+File:                sfx_hiss.ogg
+Source:              https://freesound.org/people/Kjell%20Persson/sounds/33458
+Author:              Kjell Persson
+Original title:      Boa Constrictor.wav
+License:             Attribution 3.0 Unported (CC-BY-3.0)
+Changes made:        Cut most of the sound
+
+File:                sfx_hit_corpse_break.ogg
+Source:              ???
+Author:              ???
+Original title:      ???
+License:             ???
+
+File:                sfx_hit_hard.ogg
+Source:              ???
+Author:              ???
+Original title:      ???
+License:             ???
+
+File:                sfx_hit_medium.ogg
+Source:              ???
+Author:              ???
+Original title:      ???
+License:             ???
+
+File:                sfx_hit_sharp.ogg
+Source:              ???
+Author:              ???
+Original title:      ???
+License:             ???
+
+File:                sfx_hit_small.ogg
+Source:              ???
+Author:              ???
+Original title:      ???
+License:             ???
+
+File:                sfx_insanity_rising.ogg
+Source:              ???
+Author:              ???
+Original title:      ???
+License:             ???
+
+File:                sfx_machine_gun_fire.ogg
+Source:              ???
+Author:              ???
+Original title:      ???
+License:             ???
+
+File:                sfx_machine_gun_reload.ogg
+Source:              ???
+Author:              ???
+Original title:      ???
+License:             ???
+
+File:                sfx_metal_clank.ogg
+Source:              ???
+Author:              ???
+Original title:      ???
+License:             ???
+
+File:                sfx_migo_gun.ogg
+Source:              https://www.freesound.org/people/TheHadnot/sounds/160880
+Author:              TheHadnot (username on freesound.org)
+Original title:      BFG Laser
+License:             CC0 1.0 Universal (CC0-1.0)
+
+File:                sfx_miss_heavy.ogg
+Source:              ???
+Author:              ???
+Original title:      ???
+License:             ???
+
+File:                sfx_miss_light.ogg
+Source:              ???
+Author:              ???
+Original title:      ???
+License:             ???
+
+File:                sfx_miss_medium.ogg
+Source:              ???
+Author:              ???
+Original title:      ???
+License:             ???
+
+File:                sfx_ooze_gurgle.ogg
+Source:              ???
+Author:              ???
+Original title:      ???
+License:             ???
+
+File:                sfx_pickup.ogg
+Source:              ???
+Author:              ???
+Original title:      ???
+License:             ???
+
+File:                sfx_pistol_fire.ogg
+Source:              ???
+Author:              ???
+Original title:      ???
+License:             ???
+
+File:                sfx_pistol_reload.ogg
+Source:              ???
+Author:              ???
+Original title:      ???
+License:             ???
+
+File:                sfx_potion_quaff.ogg
+Source:              ???
+Author:              ???
+Original title:      ???
+License:             ???
+
+File:                sfx_ricochet.ogg
+Source:              ???
+Author:              ???
+Original title:      ???
+License:             ???
+
+File:                sfx_shotgun_pump_fire.ogg
+Source:              ???
+Author:              ???
+Original title:      ???
+License:             ???
+
+File:                sfx_shotgun_reload.ogg
+Source:              ???
+Author:              ???
+Original title:      ???
+License:             ???
+
+File:                sfx_shotgun_sawed_off_fire.ogg
+Source:              ???
+Author:              ???
+Original title:      ???
+License:             ???
+
+File:                sfx_spell_generic.ogg
+Source:              ???
+Author:              ???
+Original title:      ???
+License:             ???
+
+File:                sfx_spike_gun.ogg
+Source:              https://www.freesound.org/people/jgeralyn/sounds/143644
+Author:              geralyn (username on freesound.org)
+Original title:      NailGun_Dad'sHouse_Jan2012.aif
+License:             Attribution 3.0 Unported (CC-BY-3.0)
+Changes made:        Cut parts of the sound and applies fade-out
+
+File:                sfx_tomb_open.ogg
+Source:              https://www.freesound.org/people/Timbre/sounds/109361
+Author:              Timbre (username on freesound.org)
+Original title:      brick becomes slab.wav
+License:             Attribution-NonCommercial 3.0 Unported (CC-BY-NC-3.0)
+
+File:                sfx_wolf_howl.ogg
+Source:              ???
+Author:              ???
+Original title:      ???
+License:             ???
+
+File:                sfx_zombie_growl.ogg
+Source:              ???
+Author:              ???
+Original title:      ???
+License:             ???
+
+File:                sfx_spell_shield_break.ogg
+Source:              https://freesound.org/people/Agaxly/sounds/233607
+Author:              Agaxly (username on freesound.org)
+Original title:      Breaking Glass #1.wav
+License:             CC0 1.0 Universal (CC0-1.0)
+
+File:                sfx_chains.ogg
+Source:              https://www.freesound.org/people/mshahen/sounds/267543
+Author:              mshahen (username on freesound.org)
+Original title:      chains.wav
+License:             Attribution 3.0 Unported (CC-BY-3.0)
+Changes made:        Cut most of the sound
+
+File:                sfx_menu_browse.ogg
+Source:              https://www.freesound.org/people/sandyrb/sounds/84346
+Author:              sandyrb (username on freesound.org)
+Original title:      SS BOOM 01.wav
+License:             Attribution 3.0 Unported (CC-BY-3.0)
+Changes made:        Cut part of the sound and applied fade-out
+
+File:                sfx_menu_select.ogg
+Source:              https://www.freesound.org/people/sandyrb/sounds/84346
+Author:              sandyrb (username on freesound.org)
+Original title:      SS BOOM 01.wav
+License:             Attribution 3.0 Unported (CC-BY-3.0)
+Changes made:        Cut part of the sound and applied fade-out
+
+File:                sfx_monolith.ogg
+Source:              https://freesound.org/people/Goup_1/sounds/195396
+Author:              Goup_1 (username on freesound.org)
+Original title:      Boom Kick
+License:             Attribution 3.0 Unported (CC-BY-3.0)
+
+File:                sfx_lever_pull.ogg
+Source:              https://www.freesound.org/people/Nicistarful/sounds/321867
+Author:              Nicistarful (username on freesound.org)
+Original title:      Fast Throttle Mechanic Lever
+License:             Attribution 3.0 Unported (CC-BY-3.0)
+Changes made:        Cut part of the sound, and increased the speed
+
+File:                musica_cthulhiana_fragment_madness.ogg
+Source:              ???
+Author:              ???
+Original title:      ???
+License:             ???
