@@ -286,16 +286,16 @@ std::string Potion::name_inf_str() const
 
 void PotionVitality::quaff_impl(Actor& actor)
 {
-        std::vector<PropId> props_can_heal =
-                {
-                        PropId::blind,
-                        PropId::poisoned,
-                        PropId::infected,
-                        PropId::diseased,
-                        PropId::weakened,
-                        PropId::hp_sap,
-                        PropId::wound
-                };
+        std::vector<PropId> props_can_heal = {
+                PropId::blind,
+                PropId::deaf,
+                PropId::poisoned,
+                PropId::infected,
+                PropId::diseased,
+                PropId::weakened,
+                PropId::hp_sap,
+                PropId::wound
+        };
 
         for (PropId prop_id : props_can_heal)
         {
@@ -537,15 +537,15 @@ void PotionRFire::collide_hook(const P& pos, Actor* const actor)
 
 void PotionCuring::quaff_impl(Actor& actor)
 {
-        std::vector<PropId> props_can_heal =
-                {
-                        PropId::blind,
-                        PropId::poisoned,
-                        PropId::infected,
-                        PropId::diseased,
-                        PropId::weakened,
-                        PropId::hp_sap
-                };
+        std::vector<PropId> props_can_heal = {
+                PropId::blind,
+                PropId::deaf,
+                PropId::poisoned,
+                PropId::infected,
+                PropId::diseased,
+                PropId::weakened,
+                PropId::hp_sap
+        };
 
         bool is_noticable = false;
 

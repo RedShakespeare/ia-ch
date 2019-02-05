@@ -875,7 +875,9 @@ class Altar: public Rigid
 {
 public:
         Altar(const P& p);
+
         Altar() = delete;
+
         ~Altar() {}
 
         FeatureId id() const override
@@ -885,6 +887,13 @@ public:
 
         std::string name(const Article article) const override;
 
+        void bump(Actor& actor_bumping) override;
+
+        void disable_pact()
+        {
+                can_offer_pact_ = false;
+        }
+
 private:
         Color color_default() const override;
 
@@ -893,6 +902,8 @@ private:
                 const DmgType dmg_type,
                 const DmgMethod dmg_method,
                 Actor* const actor) override;
+
+        bool can_offer_pact_ {true};
 };
 
 class Tree: public Rigid
@@ -1025,7 +1036,8 @@ private:
 
         void player_loot();
 
-        bool is_open_, is_locked_;
+        bool is_open_;
+        bool is_locked_;
 
         ChestMatl matl_;
 };

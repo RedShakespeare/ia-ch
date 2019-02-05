@@ -315,6 +315,7 @@ ConsumeItem DeviceRejuvenator::run_effect()
 
         std::vector<PropId> props_can_heal = {
                 PropId::blind,
+                PropId::deaf,
                 PropId::poisoned,
                 PropId::infected,
                 PropId::diseased,

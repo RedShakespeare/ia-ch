@@ -21,6 +21,24 @@ class Actor;
 class Item;
 class Wpn;
 
+enum class PropEndAllowCallEndHook
+{
+        no,
+        yes
+};
+
+enum class PropEndAllowMsg
+{
+        no,
+        yes
+};
+
+enum class PropEndAllowHistoricMsg
+{
+        no,
+        yes
+};
+
 struct PropTextListEntry
 {
         PropTextListEntry() :
@@ -33,6 +51,29 @@ struct PropTextListEntry
         std::string descr;
 
         const Prop* prop;
+};
+
+struct PropEndConfig
+{
+        PropEndConfig() {}
+
+        PropEndConfig(
+                PropEndAllowCallEndHook allow_end_hook,
+                PropEndAllowMsg allow_msg,
+                PropEndAllowHistoricMsg allow_historic_msg) :
+
+                allow_end_hook(allow_end_hook),
+                allow_msg(allow_msg),
+                allow_historic_msg(allow_historic_msg) {}
+
+        const PropEndAllowCallEndHook allow_end_hook {
+                PropEndAllowCallEndHook::yes};
+
+        const PropEndAllowMsg allow_msg = {
+                PropEndAllowMsg::yes};
+
+        const PropEndAllowHistoricMsg allow_historic_msg {
+                PropEndAllowHistoricMsg::yes};
 };
 
 // Each actor has an instance of this
@@ -77,9 +118,7 @@ public:
 
         Prop* prop(const PropId id) const;
 
-        bool end_prop(const PropId id);
-
-        bool end_prop_silent(const PropId id);
+        bool end_prop(const PropId id, const PropEndConfig& config = {});
 
         std::vector<ColoredString> property_names_short() const;
 
@@ -161,7 +200,7 @@ private:
         // on_end() property hook.
         // NOTE: It does NOT remove the property from the vector or decrement
         // the active property info. The caller is responsible for this.
-        void on_prop_end(Prop* const prop);
+        void on_prop_end(Prop* const prop, const PropEndConfig& end_config);
 
         void incr_prop_count(const PropId id);
         void decr_prop_count(const PropId id);

@@ -87,6 +87,7 @@ set(COMMON_SRC
         include/minimap.hpp
         include/misc.hpp
         include/msg_log.hpp
+        include/pact.hpp
         include/panel.hpp
         include/pathfind.hpp
         include/paths.hpp
@@ -209,6 +210,7 @@ set(COMMON_SRC
         src/minimap.cpp
         src/misc.cpp
         src/msg_log.cpp
+        src/pact.cpp
         src/panel.cpp
         src/pathfind.cpp
         src/paths.cpp
@@ -299,10 +301,14 @@ if(CMAKE_COMPILER_IS_GNUCXX OR(CMAKE_C_COMPILER_ID MATCHES "Clang") OR(CMAKE_CXX
                 -std=c++14
                 -fno-rtti
                 -Wpedantic
+                -pedantic-errors
                 -Wall
                 -Wextra
                 -Werror
                 -Wmissing-declarations
+                -Wunused
+                -Wuninitialized
+                -Wmaybe-uninitialized
                 )
 
         set(DEBUG_COMPILE_FLAGS
@@ -387,7 +393,7 @@ execute_process(
         COMMAND git log -1 --format=%h
         WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
         OUTPUT_STRIP_TRAILING_WHITESPACE
-        OUTPUT_FILE ${CMAKE_BINARY_DIR}/res/git-sha1.txt
+        OUTPUT_FILE ${CMAKE_BINARY_DIR}/data/git-sha1.txt
         )
 
 # ------------------------------------------------------------------------------

@@ -158,6 +158,8 @@ bool is_spell_learned(const SpellId id)
 
 void learn_spell(const SpellId id, const Verbosity verbosity)
 {
+        ASSERT(id != SpellId::END);
+
         if (is_spell_learned(id))
         {
                 // Spell already known
@@ -186,6 +188,8 @@ void learn_spell(const SpellId id, const Verbosity verbosity)
 
 void incr_spell_skill(const SpellId id)
 {
+        ASSERT(id != SpellId::END);
+
         TRACE << "Increasing spell skill for spell id: "
               << (int)id
               << std::endl;

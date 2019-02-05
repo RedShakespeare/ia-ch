@@ -589,13 +589,13 @@ static void make_monster_intr_attacks(Actor& actor)
 {
         for (auto& intr_attack : actor.data->intr_attacks)
         {
-                auto* item = item_factory::make(intr_attack.item_id);
+                auto* item = item_factory::make(intr_attack->item_id);
 
                 // Override damage with the damage in the intrinsic attack data
                 // (we always override both melee and ranged damage - this
                 // doesn't matter, since only one damage type will be used and
                 // the other will have no effect)
-                const auto dice = Dice(1, intr_attack.dmg);
+                const auto dice = Dice(1, intr_attack->dmg);
 
                 item->melee_base_dmg_ = dice;
                 item->ranged_base_dmg_ = dice;

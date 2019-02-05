@@ -381,7 +381,6 @@ public:
         bool is_resisting_other_prop(const PropId prop_id) const override;
 
         void on_applied() override;
-        void on_end() override;
 };
 
 class PropDescend: public Prop
@@ -608,8 +607,6 @@ public:
         void on_applied() override;
 
         void on_more(const Prop& new_prop) override;
-
-        void on_end() override;
 
 private:
         void curse_adjacent() const;

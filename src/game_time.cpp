@@ -124,9 +124,22 @@ static void run_std_turn_events()
 {
         if (game_time::is_magic_descend_nxt_std_turn)
         {
-                map::player->properties.end_prop_silent(PropId::nailed);
-                map::player->properties.end_prop_silent(PropId::entangled);
-                map::player->properties.end_prop_silent(PropId::swimming);
+                const PropEndConfig prop_end_config(
+                        PropEndAllowCallEndHook::no,
+                        PropEndAllowMsg::no,
+                        PropEndAllowHistoricMsg::no);
+
+                map::player->properties.end_prop(
+                        PropId::nailed,
+                        prop_end_config);
+
+                map::player->properties.end_prop(
+                        PropId::entangled,
+                        prop_end_config);
+
+                map::player->properties.end_prop(
+                        PropId::swimming,
+                        prop_end_config);
 
                 msg_log::add(
                         "I sink downwards!",

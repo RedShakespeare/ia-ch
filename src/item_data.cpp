@@ -344,7 +344,7 @@ ItemData::MeleeData::MeleeData() :
 
 ItemData::MeleeData::~MeleeData()
 {
-    delete prop_applied.prop;
+
 }
 
 ItemData::RangedData::RangedData() :
@@ -380,7 +380,7 @@ ItemData::RangedData::RangedData() :
 
 ItemData::RangedData::~RangedData()
 {
-    delete prop_applied.prop;
+
 }
 
 ItemData::ArmorData::ArmorData() :
@@ -2115,11 +2115,9 @@ void cleanup()
     {
         ItemData& d = data[i];
 
-        delete d.melee.prop_applied.prop;
-        d.melee.prop_applied = nullptr;
+        d.melee.prop_applied = ItemAttProp();
 
-        delete d.ranged.prop_applied.prop;
-        d.ranged.prop_applied = nullptr;
+        d.ranged.prop_applied = ItemAttProp();
     }
 
     TRACE_FUNC_END;

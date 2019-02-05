@@ -47,7 +47,6 @@ void run(Actor& defender,
             defender.properties.has(PropId::entangled) ||
             defender.properties.has(PropId::ethereal) ||
             defender.properties.has(PropId::ooze) ||
-            // Do not knock back player if bot is playing
             (is_defender_player && config::is_bot_playing()))
         {
                 // Defender is not knockable

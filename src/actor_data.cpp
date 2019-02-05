@@ -302,28 +302,27 @@ static void dump_attributes(xml::Element* attrib_e, ActorData& data)
                 xml::first_child(attrib_e, "prioritize_destroying_corpse"));
 }
 
-static void dump_intr_attack_property(xml::Element* property_e,
-                                      IntrAttData& attack_data)
+static void dump_intr_attack_property(
+        xml::Element* property_e,
+        IntrAttData& attack_data)
 {
         const auto prop_id =
                 str_to_prop_id_map.at(
                         xml::get_text_str(property_e));
 
-        ItemAttProp& attack_prop = attack_data.prop_applied;
-
-        attack_prop.prop = property_factory::make(prop_id);
+        attack_data.prop_applied.prop.reset(property_factory::make(prop_id));
 
         xml::try_get_attribute_int(
                 property_e,
                 "percent_chance",
-                attack_prop.pct_chance_to_apply);
+                attack_data.prop_applied.pct_chance_to_apply);
 
-        if ((attack_prop.pct_chance_to_apply <= 0) ||
-            (attack_prop.pct_chance_to_apply > 100))
+        if ((attack_data.prop_applied.pct_chance_to_apply <= 0) ||
+            (attack_data.prop_applied.pct_chance_to_apply > 100))
         {
                 TRACE_ERROR_RELEASE
                         << "Invalid attack property chance: "
-                        << attack_prop.pct_chance_to_apply
+                        << attack_data.prop_applied.pct_chance_to_apply
                         << std::endl;
 
                 PANIC;
@@ -333,7 +332,7 @@ static void dump_intr_attack_property(xml::Element* property_e,
 
         if (xml::try_get_attribute_int(property_e, "duration", duration))
         {
-                attack_prop.prop->set_duration(duration);
+                attack_data.prop_applied.prop->set_duration(duration);
         }
         else // Duration not specified as integer
         {
@@ -347,7 +346,8 @@ static void dump_intr_attack_property(xml::Element* property_e,
                 {
                         if (duration_str == "indefinite")
                         {
-                                attack_prop.prop->set_indefinite();
+                                attack_data.prop_applied.prop
+                                        ->set_indefinite();
                         }
                 }
         }
@@ -390,26 +390,26 @@ static void dump_intr_attacks(xml::Element* attacks_e, ActorData& data)
              attack_e;
              attack_e = xml::next_sibling(attack_e))
         {
-                IntrAttData attack_data;
+                auto attack_data = std::make_unique<IntrAttData>();
 
                 const std::string id_str =
                         xml::get_attribute_str(attack_e, "id");
 
-                attack_data.item_id = str_to_intr_item_id_map.at(id_str);
+                attack_data->item_id = str_to_intr_item_id_map.at(id_str);
 
                 auto e = xml::first_child(attack_e);
 
-                attack_data.dmg = xml::get_text_int(e);
+                attack_data->dmg = xml::get_text_int(e);
 
                 // Propertyies applied
                 for (e = xml::next_sibling(e);
                      e;
                      e = xml::next_sibling(e))
                 {
-                        dump_intr_attack_property(e, attack_data);
+                        dump_intr_attack_property(e, *attack_data.get());
                 }
 
-                data.intr_attacks.push_back(attack_data);
+                data.intr_attacks.push_back(std::move(attack_data));
         }
 }
 

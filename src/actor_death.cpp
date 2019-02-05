@@ -50,7 +50,13 @@ static bool try_use_talisman_of_resurrection(Actor& actor)
                 false,
                 Verbosity::silent);
 
-        actor.properties.end_prop_silent(PropId::wound);
+        actor.properties.end_prop(
+                PropId::wound,
+                PropEndConfig(
+                        PropEndAllowCallEndHook::no,
+                        PropEndAllowMsg::no,
+                        PropEndAllowHistoricMsg::no)
+                );
 
         // If player died due to falling down a chasm, go to next level
         if (map::cells.at(actor.pos).rigid->id() == FeatureId::chasm)

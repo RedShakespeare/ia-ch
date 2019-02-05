@@ -51,7 +51,13 @@ Prop::Prop(PropId id) :
 // -----------------------------------------------------------------------------
 void PropBlessed::on_applied()
 {
-        owner_->properties.end_prop_silent(PropId::cursed);
+        owner_->properties.end_prop(
+                PropId::cursed,
+                PropEndConfig(
+                        PropEndAllowCallEndHook::no,
+                        PropEndAllowMsg::no,
+                        PropEndAllowHistoricMsg::yes)
+                );
 
         bless_adjacent();
 }
@@ -87,16 +93,15 @@ void PropBlessed::bless_adjacent() const
 
 void PropCursed::on_applied()
 {
-        owner_->properties.end_prop_silent(PropId::blessed);
+        owner_->properties.end_prop(
+                PropId::blessed,
+                PropEndConfig(
+                        PropEndAllowCallEndHook::no,
+                        PropEndAllowMsg::no,
+                        PropEndAllowHistoricMsg::yes)
+                );
 
         curse_adjacent();
-
-        // If this is a permanent curse, log it as a historic event
-        if (owner_->is_player() &&
-            duration_mode_ == PropDurationMode::indefinite)
-        {
-                game::add_history_event("A terrible curse was put upon me.");
-        }
 }
 
 void PropCursed::on_more(const Prop& new_prop)
@@ -104,16 +109,6 @@ void PropCursed::on_more(const Prop& new_prop)
         (void)new_prop;
 
         curse_adjacent();
-}
-
-void PropCursed::on_end()
-{
-        // If this was a permanent curse, log it as a historic event
-        if (owner_->is_player() &&
-            duration_mode_ == PropDurationMode::indefinite)
-        {
-                game::add_history_event("A terrible curse was lifted from me.");
-        }
 }
 
 void PropCursed::curse_adjacent() const
@@ -225,7 +220,13 @@ bool PropEntangled::try_player_end_with_machete()
         {
                 msg_log::add("I cut myself free with my Machete.");
 
-                owner_->properties.end_prop_silent(id());
+                owner_->properties.end_prop(
+                        id(),
+                        PropEndConfig(
+                                PropEndAllowCallEndHook::no,
+                                PropEndAllowMsg::no,
+                                PropEndAllowHistoricMsg::yes)
+                        );
 
                 return true;
         }
@@ -235,17 +236,35 @@ bool PropEntangled::try_player_end_with_machete()
 
 void PropSlowed::on_applied()
 {
-        owner_->properties.end_prop_silent(PropId::hasted);
+        owner_->properties.end_prop(
+                PropId::hasted,
+                PropEndConfig(
+                        PropEndAllowCallEndHook::no,
+                        PropEndAllowMsg::no,
+                        PropEndAllowHistoricMsg::yes)
+                );
 }
 
 void PropHasted::on_applied()
 {
-        owner_->properties.end_prop_silent(PropId::slowed);
+        owner_->properties.end_prop(
+                PropId::slowed,
+                PropEndConfig(
+                        PropEndAllowCallEndHook::no,
+                        PropEndAllowMsg::no,
+                        PropEndAllowHistoricMsg::yes)
+                );
 }
 
 void PropClockworkHasted::on_applied()
 {
-        owner_->properties.end_prop_silent(PropId::slowed);
+        owner_->properties.end_prop(
+                PropId::slowed,
+                PropEndConfig(
+                        PropEndAllowCallEndHook::no,
+                        PropEndAllowMsg::no,
+                        PropEndAllowHistoricMsg::yes)
+                );
 }
 
 void PropSummoned::on_end()
@@ -281,7 +300,13 @@ PropEnded PropInfected::on_tick()
         {
                 auto* const owner = owner_;
 
-                owner->properties.end_prop_silent(id());
+                owner->properties.end_prop(
+                        id(),
+                        PropEndConfig(
+                                PropEndAllowCallEndHook::no,
+                                PropEndAllowMsg::no,
+                                PropEndAllowHistoricMsg::yes)
+                        );
 
                 // NOTE: This property is now deleted
 
@@ -307,30 +332,13 @@ int PropDiseased::affect_max_hp(const int hp_max) const
 void PropDiseased::on_applied()
 {
         // End infection
-        owner_->properties.end_prop_silent(PropId::infected);
-
-        // If this is a permanent disease that the player caught, log it as a
-        // historic event
-        if (owner_->is_player() &&
-            (duration_mode_ == PropDurationMode::indefinite))
-        {
-                game::add_history_event("Caught a horrible disease.");
-        }
-}
-
-void PropDiseased::on_end()
-{
-#ifndef NDEBUG
-        ASSERT(!owner_->properties.has(PropId::infected));
-#endif // NDEBUG
-
-        // If this is a permanent disease that the player caught, log it as a
-        // historic event
-        if (owner_->is_player() &&
-            (duration_mode_ == PropDurationMode::indefinite))
-        {
-                game::add_history_event("I was cured from a horrible disease.");
-        }
+        owner_->properties.end_prop(
+                PropId::infected,
+                PropEndConfig(
+                        PropEndAllowCallEndHook::no,
+                        PropEndAllowMsg::no,
+                        PropEndAllowHistoricMsg::yes)
+                );
 }
 
 bool PropDiseased::is_resisting_other_prop(const PropId prop_id) const
@@ -866,18 +874,22 @@ bool PropFrenzied::is_resisting_other_prop(const PropId prop_id) const
 
 void PropFrenzied::on_applied()
 {
-        owner_->properties.end_prop_silent(PropId::confused);
-        owner_->properties.end_prop_silent(PropId::fainted);
-        owner_->properties.end_prop_silent(PropId::terrified);
-        owner_->properties.end_prop_silent(PropId::weakened);
+        const PropEndConfig prop_end_config(
+                PropEndAllowCallEndHook::no,
+                PropEndAllowMsg::no,
+                PropEndAllowHistoricMsg::yes);
+
+        owner_->properties.end_prop(PropId::confused, prop_end_config);
+        owner_->properties.end_prop(PropId::fainted, prop_end_config);
+        owner_->properties.end_prop(PropId::terrified, prop_end_config);
+        owner_->properties.end_prop(PropId::weakened, prop_end_config);
 }
 
 void PropFrenzied::on_end()
 {
         // Only the player (except for Ghoul background) gets tired after a
         // frenzy (it looks weird for monsters)
-        if (owner_->is_player() &&
-            (player_bon::bg() != Bg::ghoul))
+        if (owner_->is_player() && (player_bon::bg() != Bg::ghoul))
         {
                 owner_->properties.apply(new PropWeakened());
         }
@@ -1089,7 +1101,13 @@ bool PropRConf::is_resisting_other_prop(const PropId prop_id) const
 
 void PropRConf::on_applied()
 {
-        owner_->properties.end_prop_silent(PropId::confused);
+        owner_->properties.end_prop(
+                PropId::confused,
+                PropEndConfig(
+                        PropEndAllowCallEndHook::no,
+                        PropEndAllowMsg::no,
+                        PropEndAllowHistoricMsg::yes)
+                );
 }
 
 bool PropRFear::is_resisting_other_prop(const PropId prop_id) const
@@ -1099,7 +1117,13 @@ bool PropRFear::is_resisting_other_prop(const PropId prop_id) const
 
 void PropRFear::on_applied()
 {
-        owner_->properties.end_prop_silent(PropId::terrified);
+        owner_->properties.end_prop(
+                PropId::terrified,
+                PropEndConfig(
+                        PropEndAllowCallEndHook::no,
+                        PropEndAllowMsg::no,
+                        PropEndAllowHistoricMsg::yes)
+                );
 
         if (owner_->is_player() &&
             duration_mode_ == PropDurationMode::indefinite)
@@ -1115,7 +1139,13 @@ bool PropRSlow::is_resisting_other_prop(const PropId prop_id) const
 
 void PropRSlow::on_applied()
 {
-        owner_->properties.end_prop_silent(PropId::slowed);
+        owner_->properties.end_prop(
+                PropId::slowed,
+                PropEndConfig(
+                        PropEndAllowCallEndHook::no,
+                        PropEndAllowMsg::no,
+                        PropEndAllowHistoricMsg::yes)
+                );
 }
 
 bool PropRPhys::is_resisting_other_prop(const PropId prop_id) const
@@ -1149,7 +1179,13 @@ bool PropRFire::is_resisting_other_prop(const PropId prop_id) const
 
 void PropRFire::on_applied()
 {
-        owner_->properties.end_prop_silent(PropId::burning);
+        owner_->properties.end_prop(
+                PropId::burning,
+                PropEndConfig(
+                        PropEndAllowCallEndHook::no,
+                        PropEndAllowMsg::no,
+                        PropEndAllowHistoricMsg::yes)
+                );
 }
 
 DmgResistData PropRFire::is_resisting_dmg(const DmgType dmg_type) const
@@ -1172,7 +1208,13 @@ bool PropRPoison::is_resisting_other_prop(const PropId prop_id) const
 
 void PropRPoison::on_applied()
 {
-        owner_->properties.end_prop_silent(PropId::poisoned);
+        owner_->properties.end_prop(
+                PropId::poisoned,
+                PropEndConfig(
+                        PropEndAllowCallEndHook::no,
+                        PropEndAllowMsg::no,
+                        PropEndAllowHistoricMsg::yes)
+                );
 }
 
 bool PropRSleep::is_resisting_other_prop(const PropId prop_id) const
@@ -1182,7 +1224,13 @@ bool PropRSleep::is_resisting_other_prop(const PropId prop_id) const
 
 void PropRSleep::on_applied()
 {
-        owner_->properties.end_prop_silent(PropId::fainted);
+        owner_->properties.end_prop(
+                PropId::fainted,
+                PropEndConfig(
+                        PropEndAllowCallEndHook::no,
+                        PropEndAllowMsg::no,
+                        PropEndAllowHistoricMsg::yes)
+                );
 }
 
 bool PropRDisease::is_resisting_other_prop(const PropId prop_id) const
@@ -1192,8 +1240,21 @@ bool PropRDisease::is_resisting_other_prop(const PropId prop_id) const
 
 void PropRDisease::on_applied()
 {
-        owner_->properties.end_prop_silent(PropId::diseased);
-        owner_->properties.end_prop_silent(PropId::infected);
+        owner_->properties.end_prop(
+                PropId::diseased,
+                PropEndConfig(
+                        PropEndAllowCallEndHook::no,
+                        PropEndAllowMsg::no,
+                        PropEndAllowHistoricMsg::yes)
+                );
+
+        owner_->properties.end_prop(
+                PropId::infected,
+                PropEndConfig(
+                        PropEndAllowCallEndHook::no,
+                        PropEndAllowMsg::no,
+                        PropEndAllowHistoricMsg::yes)
+                );
 }
 
 bool PropRBlind::is_resisting_other_prop(const PropId prop_id) const
@@ -1203,7 +1264,13 @@ bool PropRBlind::is_resisting_other_prop(const PropId prop_id) const
 
 void PropRBlind::on_applied()
 {
-        owner_->properties.end_prop_silent(PropId::blind);
+        owner_->properties.end_prop(
+                PropId::blind,
+                PropEndConfig(
+                        PropEndAllowCallEndHook::no,
+                        PropEndAllowMsg::no,
+                        PropEndAllowHistoricMsg::yes)
+                );
 }
 
 bool PropRPara::is_resisting_other_prop(const PropId prop_id) const
@@ -1213,7 +1280,13 @@ bool PropRPara::is_resisting_other_prop(const PropId prop_id) const
 
 void PropRPara::on_applied()
 {
-        owner_->properties.end_prop_silent(PropId::paralyzed);
+        owner_->properties.end_prop(
+                PropId::paralyzed,
+                PropEndConfig(
+                        PropEndAllowCallEndHook::no,
+                        PropEndAllowMsg::no,
+                        PropEndAllowHistoricMsg::yes)
+                );
 }
 
 bool PropSeeInvis::is_resisting_other_prop(const PropId prop_id) const
@@ -1223,7 +1296,13 @@ bool PropSeeInvis::is_resisting_other_prop(const PropId prop_id) const
 
 void PropSeeInvis::on_applied()
 {
-        owner_->properties.end_prop_silent(PropId::blind);
+        owner_->properties.end_prop(
+                PropId::blind,
+                PropEndConfig(
+                        PropEndAllowCallEndHook::no,
+                        PropEndAllowMsg::no,
+                        PropEndAllowHistoricMsg::yes)
+                );
 }
 
 PropEnded PropBurrowing::on_tick()

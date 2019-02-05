@@ -136,8 +136,8 @@ public:
         Dice ranged_dmg(const Actor* const attacker) const;
         Dice thrown_dmg(const Actor* const attacker) const;
 
-        ItemAttProp prop_applied_on_melee(const Actor* const attacker) const;
-        ItemAttProp prop_applied_on_ranged(const Actor* const attacker) const;
+        ItemAttProp& prop_applied_on_melee(const Actor* const attacker) const;
+        ItemAttProp& prop_applied_on_ranged(const Actor* const attacker) const;
 
         virtual void on_melee_kill(Actor& actor_killed)
         {
@@ -202,7 +202,8 @@ protected:
                 (void)actor;
         }
 
-        ItemAttProp prop_applied_intr_attack(const Actor* const attacker) const;
+        ItemAttProp* prop_applied_intr_attack(
+                const Actor* const attacker) const;
 
         ItemData* data_;
 

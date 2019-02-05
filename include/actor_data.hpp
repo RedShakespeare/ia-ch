@@ -7,19 +7,20 @@
 #ifndef ACTOR_DATA_HPP
 #define ACTOR_DATA_HPP
 
+#include <memory>
 #include <string>
-#include <vector>
 #include <unordered_map>
+#include <vector>
 
 #include "ability_values.hpp"
+#include "audio.hpp"
+#include "audio.hpp"
 #include "global.hpp"
-#include "property_data.hpp"
-#include "audio.hpp"
-#include "room.hpp"
-#include "spells.hpp"
-#include "audio.hpp"
 #include "item_att_property.hpp"
 #include "item_data.hpp"
+#include "property_data.hpp"
+#include "room.hpp"
+#include "spells.hpp"
 
 enum class ActorId
 {
@@ -151,23 +152,27 @@ struct MonGroupSpawnRule
 
 struct ActorItemSetData
 {
-        ItemSetId item_set_id = (ItemSetId)0;
-        int pct_chance_to_spawn = 100;
-        Range nr_spawned_range = {1, 1};
+        ItemSetId item_set_id {(ItemSetId)0};
+        int pct_chance_to_spawn {100};
+        Range nr_spawned_range {1, 1};
 };
 
 struct IntrAttData
 {
-        ItemId item_id = ItemId::END;
-        int dmg = 0;
-        ItemAttProp prop_applied = {};
+        IntrAttData() {}
+
+        ~IntrAttData() {}
+
+        ItemId item_id {ItemId::END};
+        int dmg {0};
+        ItemAttProp prop_applied {};
 };
 
 struct ActorSpellData
 {
-        SpellId spell_id = SpellId::END;
-        SpellSkill spell_skill = SpellSkill::basic;
-        int pct_chance_to_know = 100;
+        SpellId spell_id {SpellId::END};
+        SpellSkill spell_skill {SpellSkill::basic};
+        int pct_chance_to_know {100};
 };
 
 enum class ActorSpeed
@@ -253,7 +258,7 @@ struct ActorData
         int hp;
         int spi;
         std::vector<ActorItemSetData> item_sets;
-        std::vector<IntrAttData> intr_attacks;
+        std::vector<std::shared_ptr<IntrAttData>> intr_attacks;
         std::vector<ActorSpellData> spells;
         ActorSpeed speed;
         AbilityValues ability_values;

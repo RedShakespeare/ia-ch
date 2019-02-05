@@ -194,6 +194,7 @@ void init()
         load(SfxId::glop, "sfx_glop.ogg");
         load(SfxId::lever_pull, "sfx_lever_pull.ogg");
         load(SfxId::monolith, "sfx_monolith.ogg");
+        load(SfxId::thunder, "sfx_thunder.ogg");
 
         // User interface sounds
         load(SfxId::backpack, "sfx_backpack.ogg");

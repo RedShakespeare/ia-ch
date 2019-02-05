@@ -6,14 +6,15 @@
 
 #include "property_handler.hpp"
 
-#include "property.hpp"
-#include "property_factory.hpp"
 #include "actor.hpp"
 #include "actor_mon.hpp"
 #include "actor_player.hpp"
-#include "saving.hpp"
-#include "msg_log.hpp"
+#include "game.hpp"
 #include "map.hpp"
+#include "msg_log.hpp"
+#include "property.hpp"
+#include "property_factory.hpp"
+#include "saving.hpp"
 #include "text_format.hpp"
 
 // -----------------------------------------------------------------------------
@@ -140,10 +141,11 @@ void PropHandler::load()
         }
 }
 
-void PropHandler::apply(Prop* const prop,
-                        PropSrc src,
-                        const bool force_effect,
-                        const Verbosity verbosity)
+void PropHandler::apply(
+        Prop* const prop,
+        PropSrc src,
+        const bool force_effect,
+        const Verbosity verbosity)
 {
         prop->owner_ = owner_;
 
@@ -185,8 +187,7 @@ void PropHandler::apply(Prop* const prop,
 
         incr_prop_count(prop->id_);
 
-        if (verbosity == Verbosity::verbose &&
-            owner_->is_alive())
+        if ((verbosity == Verbosity::verbose) && owner_->is_alive())
         {
                 if (prop->should_update_vision_on_toggled())
                 {
@@ -197,6 +198,17 @@ void PropHandler::apply(Prop* const prop,
         }
 
         prop->on_applied();
+
+        if ((prop->duration_mode() == PropDurationMode::indefinite) &&
+            (owner_ == map::player))
+        {
+                const auto& msg = prop->data_.historic_msg_start_permanent;
+
+                if (!msg.empty())
+                {
+                        game::add_history_event(msg);
+                }
+        }
 
         return;
 }
@@ -268,42 +280,63 @@ void PropHandler::print_start_msg(const Prop& prop)
 
 bool PropHandler::try_apply_more_on_existing_intr_prop(const Prop& new_prop)
 {
+        // NOTE: If an existing property exists which the new property shall be
+        // merged with, we keep the old property object and discard the new one
+
         for (auto& old_prop : props_)
         {
-                if ((old_prop->src_ == PropSrc::intr) &&
-                    (new_prop.id_ == old_prop->id_))
+                if ((new_prop.id_ != old_prop->id_) ||
+                    (old_prop->src_ != PropSrc::intr))
                 {
-                        const int turns_left_old = old_prop->nr_turns_left_;
-                        const int turns_left_new = new_prop.nr_turns_left_;
-
-                        old_prop->on_more(new_prop);
-
-                        const bool is_turns_nr_indefinite =
-                                (turns_left_old < 0) ||
-                                (turns_left_new < 0);
-
-                        old_prop->nr_turns_left_ =
-                                is_turns_nr_indefinite ?
-                                -1 :
-                                std::max(turns_left_old, turns_left_new);
-
-                        if (new_prop.duration_mode_ ==
-                            PropDurationMode::indefinite)
-                        {
-                                old_prop->duration_mode_ =
-                                        PropDurationMode::indefinite;
-                        }
-
-                        return true;
+                        continue;
                 }
+
+                const bool old_is_permanent = old_prop->nr_turns_left_ < 0;
+                const bool new_is_permanent = new_prop.nr_turns_left_ < 0;
+
+                if (new_is_permanent)
+                {
+                        old_prop->nr_turns_left_ = -1;
+
+                        old_prop->duration_mode_ = PropDurationMode::indefinite;
+                }
+                else if (!old_is_permanent)
+                {
+                        // Both the old and new property are temporary, use the
+                        // longest duration of the two
+                        old_prop->nr_turns_left_ =
+                                std::max(
+                                        old_prop->nr_turns_left_,
+                                        new_prop.nr_turns_left_);
+                }
+
+                old_prop->on_more(new_prop);
+
+                if ((owner_ == map::player) &&
+                    !old_is_permanent &&
+                    new_is_permanent)
+                {
+                        // The property was temporary and became permanent, log
+                        // a historic event for applying a permanent property
+                        const auto& msg =
+                                old_prop->data_.historic_msg_start_permanent;
+
+                        if (!msg.empty())
+                        {
+                                game::add_history_event(msg);
+                        }
+                }
+
+                return true;
         }
 
         return false;
 }
 
-void PropHandler::add_prop_from_equipped_item(const Item* const item,
-                                              Prop* const prop,
-                                              const Verbosity verbosity)
+void PropHandler::add_prop_from_equipped_item(
+        const Item* const item,
+        Prop* const prop,
+        const Verbosity verbosity)
 {
         prop->item_applying_ = item;
 
@@ -348,7 +381,7 @@ void PropHandler::remove_props_for_item(const Item* const item)
 
                         decr_prop_count(moved_prop->id_);
 
-                        on_prop_end(moved_prop.get());
+                        on_prop_end(moved_prop.get(), PropEndConfig());
                 }
                 else // Property was not added by this item
                 {
@@ -391,7 +424,9 @@ void PropHandler::decr_prop_count(const PropId id)
         --v;
 }
 
-void PropHandler::on_prop_end(Prop* const prop)
+void PropHandler::on_prop_end(
+        Prop* const prop,
+        const PropEndConfig& end_config)
 {
         if (prop->should_update_vision_on_toggled())
         {
@@ -399,7 +434,8 @@ void PropHandler::on_prop_end(Prop* const prop)
         }
 
         // Print end message if this is the last active property of this type
-        if ((owner_->state == ActorState::alive) &&
+        if ((end_config.allow_msg == PropEndAllowMsg::yes) &&
+            (owner_->state == ActorState::alive) &&
             prop_count_cache_[(size_t)prop->id_] == 0)
         {
                 if (owner_->is_player())
@@ -428,34 +464,28 @@ void PropHandler::on_prop_end(Prop* const prop)
                 }
         }
 
-        prop->on_end();
-}
-
-bool PropHandler::end_prop(const PropId id)
-{
-        for (auto it = begin(props_); it != end(props_); ++it)
+        if (end_config.allow_end_hook == PropEndAllowCallEndHook::yes)
         {
-                Prop* const prop = it->get();
-
-                if ((prop->id_ == id) &&
-                    (prop->src_ == PropSrc::intr))
-                {
-                        auto moved_prop = std::move(*it);
-
-                        props_.erase(it);
-
-                        decr_prop_count(moved_prop->id_);
-
-                        on_prop_end(moved_prop.get());
-
-                        return true;
-                }
+                prop->on_end();
         }
 
-        return false;
+        if ((end_config.allow_historic_msg == PropEndAllowHistoricMsg::yes) &&
+            (owner_ == map::player) &&
+            (prop->duration_mode() == PropDurationMode::indefinite))
+        {
+                // A permanent property has ended, log a historic event
+                const auto& msg = prop->data_.historic_msg_end_permanent;
+
+                if (!msg.empty())
+                {
+                        game::add_history_event(msg);
+                }
+        }
 }
 
-bool PropHandler::end_prop_silent(const PropId id)
+bool PropHandler::end_prop(
+        const PropId id,
+        const PropEndConfig& prop_end_config)
 {
         for (auto it = begin(props_); it != end(props_); ++it)
         {
@@ -469,6 +499,8 @@ bool PropHandler::end_prop_silent(const PropId id)
                         props_.erase(it);
 
                         decr_prop_count(moved_prop->id_);
+
+                        on_prop_end(moved_prop.get(), prop_end_config);
 
                         return true;
                 }
@@ -540,7 +572,7 @@ void PropHandler::on_turn_end()
 
                         decr_prop_count(prop_moved->id_);
 
-                        on_prop_end(prop_moved.get());
+                        on_prop_end(prop_moved.get(), PropEndConfig());
                 }
                 else  // Property has not been removed
                 {

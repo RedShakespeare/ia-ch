@@ -76,12 +76,11 @@ static void draw_menu_popup(
         const std::vector<std::string>& lines,
         const std::vector<std::string>& choices,
         const size_t current_choice,
+        int text_w,
         const int text_x0,
         const int text_h,
         const std::string& title)
 {
-        int text_w = text_w_default;
-
         // If no message lines, set width to widest menu option or title with
         if (lines.empty())
         {
@@ -109,14 +108,14 @@ static void draw_menu_popup(
                         false, // Do not draw background color
                         colors::black(),
                         true); // Allow pixel-level adjustmet
+
+                ++y;
         }
 
         const bool show_msg_centered = lines.size() == 1;
 
         for (const std::string& line : lines)
         {
-                y++;
-
                 if (show_msg_centered)
                 {
                         io::draw_text_center(
@@ -139,11 +138,13 @@ static void draw_menu_popup(
                 }
 
                 msg_log::add_line_to_history(line);
+
+                ++y;
         }
 
         if (!lines.empty() || !title.empty())
         {
-                y += 2;
+                ++y;
         }
 
         for (size_t i = 0; i < choices.size(); ++i)
@@ -174,10 +175,11 @@ static void draw_menu_popup(
 namespace popup
 {
 
-void msg(const std::string& msg,
-         const std::string& title,
-         const SfxId sfx,
-         const int w_change)
+void msg(
+        const std::string& msg,
+        const std::string& title,
+        const SfxId sfx,
+        const int w_change)
 {
         const int text_w = text_w_default + w_change;
 
@@ -210,7 +212,7 @@ void msg(const std::string& msg,
 
         for (const std::string& line : lines)
         {
-                y++;
+                ++y;
 
                 if (show_msg_centered)
                 {
@@ -253,17 +255,21 @@ void msg(const std::string& msg,
         query::wait_for_confirm();
 }
 
-int menu(const std::string& msg,
-         const std::vector<std::string>& choices,
-         const std::string& title,
-         const SfxId sfx)
+int menu(
+        const std::string& msg,
+        const std::vector<std::string>& choices,
+        const std::string& title,
+        const int w_change,
+        const SfxId sfx)
 {
         if (config::is_bot_playing())
         {
                 return 0;
         }
 
-        const auto lines = text_format::split(msg, text_w_default);
+        const int text_w = text_w_default + w_change;
+
+        const auto lines = text_format::split(msg, text_w);
 
         const int title_h = title.empty() ? 0 : 1;
 
@@ -293,7 +299,8 @@ int menu(const std::string& msg,
                 lines,
                 choices,
                 browser.y(),
-                get_x0(text_w_default),
+                text_w,
+                get_x0(text_w),
                 text_h_tot,
                 title);
 
@@ -313,7 +320,8 @@ int menu(const std::string& msg,
                                 lines,
                                 choices,
                                 browser.y(),
-                                get_x0(text_w_default),
+                                text_w,
+                                get_x0(text_w),
                                 text_h_tot,
                                 title);
                         break;

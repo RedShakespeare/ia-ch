@@ -708,7 +708,7 @@ static void try_apply_attack_property_on_actor(
         Actor& actor,
         const DmgType& dmg_type)
 {
-        if (!att_prop.prop || !rnd::percent(att_prop.pct_chance_to_apply))
+        if (!rnd::percent(att_prop.pct_chance_to_apply))
         {
                 return;
         }
@@ -774,14 +774,17 @@ static void hit_actor_with_projectile(const Projectile& projectile, Wpn& wpn)
 
         if (died == ActorDied::no)
         {
-                ItemAttProp att_prop =
+                auto att_prop =
                         wpn.prop_applied_on_ranged(
                                 projectile.att_data->attacker);
 
-                try_apply_attack_property_on_actor(
-                        att_prop,
-                        *projectile.actor_hit,
-                        wpn.data().ranged.dmg_type);
+                if (att_prop.prop)
+                {
+                        try_apply_attack_property_on_actor(
+                                att_prop,
+                                *projectile.actor_hit,
+                                wpn.data().ranged.dmg_type);
+                }
 
                 // Knock-back?
                 if (wpn.data().ranged.knocks_back &&
@@ -1383,14 +1386,17 @@ void melee(
 
                 if (defender.is_alive())
                 {
-                        ItemAttProp att_prop =
+                        auto att_prop =
                                 wpn.prop_applied_on_melee(
                                         att_data.attacker);
 
-                        try_apply_attack_property_on_actor(
-                                att_prop,
-                                defender,
-                                wpn.data().ranged.dmg_type);
+                        if (att_prop.prop)
+                        {
+                                try_apply_attack_property_on_actor(
+                                        att_prop,
+                                        defender,
+                                        wpn.data().ranged.dmg_type);
+                        }
 
                         if (wpn.data().melee.knocks_back)
                         {
@@ -1534,6 +1540,7 @@ DidAction ranged(
         }
 
         return did_attack;
+
 } // ranged
 
 } // attack

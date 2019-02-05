@@ -657,6 +657,13 @@ Original title:      Fast Throttle Mechanic Lever
 License:             Attribution 3.0 Unported (CC-BY-3.0)
 Changes made:        Cut part of the sound, and increased the speed
 
+File:                sfx_thunder.ogg
+Source:              https://freesound.org/people/Kinoton/sounds/397952/
+Author:              Kinoton (username on freesound.org)
+Original title:      Thunder Clap And Rumble
+License:             CC0 1.0 Universal (CC0-1.0)
+Changes made:        Cut parts of the sound, and made some minor touches
+
 File:                musica_cthulhiana_fragment_madness.ogg
 Source:              ???
 Author:              ???

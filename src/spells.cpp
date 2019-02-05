@@ -2973,6 +2973,7 @@ void SpellHeal::run_effect(
         if (skill == SpellSkill::master)
         {
                 caster->properties.end_prop(PropId::blind);
+                caster->properties.end_prop(PropId::deaf);
                 caster->properties.end_prop(PropId::poisoned);
 
                 if (caster->is_player())
@@ -3022,7 +3023,7 @@ std::vector<std::string> SpellHeal::descr_specific(
         {
                 descr.push_back(
                         "Cures infections, disease, weakening, life sapping, "
-                        "blindness, and poisoning.");
+                        "blindness, deafness, and poisoning.");
 
                 descr.push_back(
                         "Heals one wound.");

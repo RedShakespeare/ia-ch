@@ -282,7 +282,7 @@ void init_room_bucket()
         {
                 add_to_room_bucket(RoomType::human, rnd::range(4, 5));
                 add_to_room_bucket(RoomType::jail, 1);
-                add_to_room_bucket(RoomType::ritual, 1);
+                add_to_room_bucket(RoomType::ritual, rnd::coin_toss() ? 1 : 0);
                 add_to_room_bucket(RoomType::crypt, rnd::range(2, 3));
                 add_to_room_bucket(RoomType::monster, 1);
                 add_to_room_bucket(RoomType::damp, rnd::range(1, 2));
@@ -297,7 +297,7 @@ void init_room_bucket()
         {
                 add_to_room_bucket(RoomType::human, rnd::range(2, 3));
                 add_to_room_bucket(RoomType::jail, rnd::range(1, 2));
-                add_to_room_bucket(RoomType::ritual, 1);
+                add_to_room_bucket(RoomType::ritual, rnd::coin_toss() ? 1 : 0);
                 add_to_room_bucket(RoomType::spider, rnd::range(1, 3));
                 add_to_room_bucket(RoomType::snake_pit, 1);
                 add_to_room_bucket(RoomType::crypt, 4);

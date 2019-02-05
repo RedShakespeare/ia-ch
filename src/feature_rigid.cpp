@@ -23,6 +23,7 @@
 #include "map_parsing.hpp"
 #include "map_travel.hpp"
 #include "msg_log.hpp"
+#include "pact.hpp"
 #include "pickup.hpp"
 #include "popup.hpp"
 #include "property.hpp"
@@ -1768,7 +1769,59 @@ void Lever::toggle()
 // Altar
 // -----------------------------------------------------------------------------
 Altar::Altar(const P& p) :
-    Rigid(p) {}
+        Rigid(p) {}
+
+void Altar::bump(Actor& actor_bumping)
+{
+        if (!actor_bumping.is_player())
+        {
+                return;
+        }
+
+        if (!map::cells.at(pos_).is_seen_by_player)
+        {
+                msg_log::clear();
+
+                msg_log::add(
+                        std::string(
+                                "There is an altar here. Approach it? " +
+                                common_text::yes_or_no_hint),
+                        colors::light_white());
+
+                const auto answer = query::yes_or_no();
+
+                if (answer == BinaryAnswer::no)
+                {
+                        msg_log::clear();
+
+                        return;
+                }
+        }
+
+        if (can_offer_pact_)
+        {
+                msg_log::add(
+                        "As I stand by the altar, a discarnate voice "
+                        "whispers...",
+                        colors::text(),
+                        false,
+                        MorePromptOnMsg::yes);
+
+                msg_log::clear();
+
+                states::draw();
+
+                pact::offer_pact_to_player();
+
+                can_offer_pact_ = false;
+
+                game_time::tick();
+        }
+        else
+        {
+                msg_log::add("The altar has a cold and silent aura about it.");
+        }
+}
 
 void Altar::on_hit(
         const int dmg,
@@ -1776,10 +1829,10 @@ void Altar::on_hit(
         const DmgMethod dmg_method,
         Actor* const actor)
 {
-    (void)dmg;
-    (void)dmg_type;
-    (void)dmg_method;
-    (void)actor;
+        (void)dmg;
+        (void)dmg_type;
+        (void)dmg_method;
+        (void)actor;
 }
 
 std::string Altar::name(const Article article) const
@@ -1788,12 +1841,15 @@ std::string Altar::name(const Article article) const
                 ? "an "
                 : "the ";
 
-    return ret + "altar";
+        return ret + "altar";
 }
 
 Color Altar::color_default() const
 {
-    return colors::white();
+        return
+                can_offer_pact_
+                ? colors::white()
+                : colors::gray();
 }
 
 // -----------------------------------------------------------------------------
@@ -3393,9 +3449,9 @@ Color Chest::color_default() const
 // Fountain
 // -----------------------------------------------------------------------------
 Fountain::Fountain(const P& p) :
-    Rigid               (p),
-    fountain_effect_    (FountainEffect::END),
-    has_drinks_left_    (true)
+    Rigid(p),
+    fountain_effect_(FountainEffect::END),
+    has_drinks_left_(true)
 {
     std::vector<int> weights =
     {

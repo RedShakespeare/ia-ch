@@ -392,34 +392,26 @@ void MainMenuState::draw()
                 }
         }
 
+
+        std::string build_str = "";
+
+        if (version_info::version_str.empty())
         {
-                std::string str = "";
-
-                if (version_info::version_str.empty())
-                {
-                        str = "Build " + git_sha1_str;
-                }
-                else
-                {
-                        str =
-                                version_info::version_str +
-                                " (" +
-                                git_sha1_str +
-                                ")";
-                }
-
-                str += ", " + version_info::date_str;
-
-                io::draw_text_right(
-                        " " + str + " ",
-                        Panel::screen,
-                        P(panels::x1(Panel::screen) - 1,
-                          panels::y0(Panel::screen)),
-                        colors::dark_gray());
+                build_str = "Build " + git_sha1_str;
+        }
+        else
+        {
+                build_str =
+                        version_info::version_str +
+                        " (" +
+                        git_sha1_str +
+                        ")";
         }
 
+        build_str += ", " + version_info::date_str;
+
         io::draw_text_center(
-                " " + version_info::copyright_str + " ",
+                version_info::copyright_str + "    " + build_str,
                 Panel::screen,
                 P(panels::center_x(Panel::screen),
                   panels::y1(Panel::screen) - 1),

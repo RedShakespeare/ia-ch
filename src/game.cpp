@@ -186,6 +186,18 @@ void incr_player_xp(const int xp_gained, const Verbosity verbosity)
         }
 }
 
+void decr_player_xp(int xp_lost)
+{
+        // XP should never be reduced below 0% (if this should happen, it is
+        // considered to be a bug)
+        ASSERT(xp_lost <= xp_pct_);
+
+        // If XP lost is greater than the current XP, be nice in release mode
+        xp_lost = std::min(xp_lost, xp_pct_);
+
+        xp_pct_ -= xp_lost;
+}
+
 void incr_clvl()
 {
         ++clvl_;

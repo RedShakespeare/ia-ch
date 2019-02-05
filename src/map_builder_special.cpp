@@ -297,7 +297,11 @@ void MapBuilderIntroForest::handle_template_pos(const P&p, const char c)
 
         case '-':
         {
-                map::put(new Altar(p));
+                auto* const altar = new Altar(p);
+
+                altar->disable_pact();
+
+                map::put(altar);
         }
         break;
 

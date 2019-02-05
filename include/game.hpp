@@ -51,6 +51,8 @@ void incr_player_xp(
         const int xp_gained,
         const Verbosity verbosity = Verbosity::verbose);
 
+void decr_player_xp(int xp_lost);
+
 void incr_clvl();
 
 void add_history_event(const std::string msg);

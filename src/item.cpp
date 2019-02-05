@@ -187,31 +187,31 @@ Dice Item::thrown_dmg(const Actor* const attacker) const
         return dice;
 }
 
-ItemAttProp Item::prop_applied_on_melee(const Actor* const attacker) const
+ItemAttProp& Item::prop_applied_on_melee(const Actor* const attacker) const
 {
         const auto intr = prop_applied_intr_attack(attacker);
 
-        if (intr.prop)
+        if (intr)
         {
-                return intr;
+                return *intr;
         }
 
         return data().melee.prop_applied;
 }
 
-ItemAttProp Item::prop_applied_on_ranged(const Actor* const attacker) const
+ItemAttProp& Item::prop_applied_on_ranged(const Actor* const attacker) const
 {
         const auto intr = prop_applied_intr_attack(attacker);
 
-        if (intr.prop)
+        if (intr)
         {
-                return intr;
+                return *intr;
         }
 
         return data().ranged.prop_applied;
 }
 
-ItemAttProp Item::prop_applied_intr_attack(const Actor* const attacker) const
+ItemAttProp* Item::prop_applied_intr_attack(const Actor* const attacker) const
 {
         if (attacker)
         {
@@ -219,14 +219,14 @@ ItemAttProp Item::prop_applied_intr_attack(const Actor* const attacker) const
 
                 for (const auto& att : intr_attacks)
                 {
-                        if (att.item_id == id())
+                        if (att->item_id == id())
                         {
-                                return att.prop_applied;
+                                return &att->prop_applied;
                         }
                 }
         }
 
-        return ItemAttProp();
+        return nullptr;
 }
 
 int Item::weight() const
