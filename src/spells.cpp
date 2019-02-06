@@ -468,16 +468,6 @@ int Spell::shock_value() const
                 break;
         }
 
-        // Blessed/cursed affects shock
-        if (map::player->properties.has(PropId::blessed))
-        {
-                value -= 2;
-        }
-        else if (map::player->properties.has(PropId::cursed))
-        {
-                value += 2;
-        }
-
         return value;
 }
 

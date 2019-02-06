@@ -573,11 +573,11 @@ std::string trait_descr(const Trait id)
 
         case Trait::stealthy:
                 return
-                        "You are more likely to avoid detection";
+                        "+45% chance to avoid detection (per monster and turn)";
 
         case Trait::imperceptible:
                 return
-                        "You are more likely to avoid detection";
+                        "+45% chance to avoid detection (per monster and turn)";
 
         case Trait::silent:
                 return

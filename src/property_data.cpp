@@ -513,7 +513,7 @@ static void init_data_list()
         d.std_rnd_turns = Range(50, 100);
         d.name = "Diseased";
         d.name_short = "Diseased";
-        d.descr = "Affected by a horrible disease, -50% Hit Points";
+        d.descr = "-50% maximum hit points";
         d.msg_start_player = "I am diseased!";
         d.msg_start_mon = "is diseased.";
         d.msg_end_player = "My disease is cured!";
@@ -581,8 +581,9 @@ static void init_data_list()
         d.name = "Blessed";
         d.name_short = "Blessed";
         d.descr =
-                "Is generally more lucky, most actions are easier to perform, "
-                "-2% shock from casting spells";
+                "+5% hit chance with melee and ranged attacks, +5% chance to "
+                "evade attacks, +5% chance to avoid detection, +5% chance to "
+                "detect hidden creatures and objects";
         d.msg_start_player = "I feel luckier.";
         d.msg_end_player = "I have normal luck.";
         d.historic_msg_start_permanent = "I received a great blessing.";
@@ -597,8 +598,9 @@ static void init_data_list()
         d.name = "Cursed";
         d.name_short = "Cursed";
         d.descr =
-                "Is generally more unlucky, and most actions are more "
-                "difficult to perform, +2% shock from casting spells";
+                "-5% hit chance with melee and ranged attacks, -5% chance to "
+                "evade attacks, -5% chance to avoid detection, -5% chance to "
+                "detect hidden creatures and objects";
         d.msg_start_player = "I feel misfortunate.";
         d.msg_end_player = "I feel more fortunate.";
         d.msg_res_player = "I resist misfortune.";

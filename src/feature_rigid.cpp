@@ -3307,9 +3307,7 @@ void Chest::hit(const int dmg,
                     }
                     else // Chest can be bashed open
                     {
-                        if (!actor->properties.has(PropId::blessed) &&
-                            (actor->properties.has(PropId::cursed) ||
-                             rnd::one_in(3)))
+                        if (rnd::one_in(3))
                         {
                             item_container_.destroy_single_fragile();
                         }
