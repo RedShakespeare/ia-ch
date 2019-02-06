@@ -265,10 +265,12 @@ void BrowseSpell::draw()
 
         P p(0, 1);
 
-        std::string key_str = "a) ";
-
         for (int i = 0; i < nr_spells; ++i)
         {
+                std::string key_str = "?) ";
+
+                key_str[0] = browser_.menu_keys()[i];
+
                 const int current_idx = i;
 
                 const bool is_idx_marked = browser_.is_at_idx(current_idx);
@@ -293,8 +295,6 @@ void BrowseSpell::draw()
                         Panel::item_menu,
                         p,
                         color);
-
-                ++key_str[0];
 
                 p.x = key_str.size();
 
