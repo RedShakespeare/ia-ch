@@ -168,9 +168,18 @@ TrapImpl* Trap::make_trap_impl_from_id(const TrapId trap_id)
         case TrapId::web:
                 return new TrapWeb(pos_, this); break;
 
-        default:
-                return nullptr;
+        case TrapId::slow:
+                return new TrapSlow(pos_, this);
+
+        case TrapId::curse:
+                return new TrapCurse(pos_, this);
+
+        case TrapId::END:
+        case TrapId::any:
+                break;
         }
+
+        return nullptr;
 }
 
 void Trap::on_hit(const int dmg,
@@ -1327,6 +1336,44 @@ void TrapWeb::trigger()
         }
 
         base_trap_->destroy();
+
+        TRACE_FUNC_END_VERBOSE;
+}
+
+void TrapSlow::trigger()
+{
+        TRACE_FUNC_BEGIN_VERBOSE;
+
+        Actor* const actor_here = map::actor_at_pos(pos_);
+
+        ASSERT(actor_here);
+
+        if (!actor_here)
+        {
+                // Should never happen
+                return;
+        }
+
+        actor_here->properties.apply(new PropSlowed());
+
+        TRACE_FUNC_END_VERBOSE;
+}
+
+void TrapCurse::trigger()
+{
+        TRACE_FUNC_BEGIN_VERBOSE;
+
+        Actor* const actor_here = map::actor_at_pos(pos_);
+
+        ASSERT(actor_here);
+
+        if (!actor_here)
+        {
+                // Should never happen
+                return;
+        }
+
+        actor_here->properties.apply(new PropCursed());
 
         TRACE_FUNC_END_VERBOSE;
 }

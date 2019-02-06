@@ -17,6 +17,7 @@ class TrapImpl;
 
 enum class TrapId
 {
+        // Mechanical traps
         blinding,
         deafening,
         dart,
@@ -28,14 +29,24 @@ enum class TrapId
         alarm,
         spear,
         web,
+
+        // Magical traps
         teleport,
         summon,
         spi_drain,
+        slow,
+        curse,
+
         END,
+
         any
 };
 
-enum class TrapPlacementValid {no ,yes};
+enum class TrapPlacementValid
+{
+        no,
+        yes
+};
 
 class Trap: public Rigid
 {
@@ -523,6 +534,59 @@ private:
         }
 };
 
+class TrapWeb: public MechTrapImpl
+{
+private:
+        friend class Trap;
+
+        TrapWeb(P pos, Trap* const base_trap) :
+                MechTrapImpl(pos, TrapId::web, base_trap) {}
+
+        void trigger() override;
+
+        Color color() const override
+        {
+                return colors::light_white();
+        }
+
+        std::string name(const Article article) const override
+        {
+                std::string name =
+                        (article == Article::a)
+                        ? "a"
+                        : "the";
+
+                name += " spider web";
+
+                return name;
+        }
+
+        char character() const override
+        {
+                return '*';
+        }
+
+        Range nr_turns_range_to_trigger() const override
+        {
+                return {0, 0};
+        }
+
+        bool is_magical() const override
+        {
+                return false;
+        }
+
+        TileId tile() const override
+        {
+                return TileId::web;
+        }
+
+        std::string disarm_msg() const override
+        {
+                return "I tear down a spider web.";
+        }
+};
+
 class MagicTrapImpl : public TrapImpl
 {
 protected:
@@ -606,57 +670,26 @@ private:
         void trigger() override;
 };
 
-class TrapWeb: public MechTrapImpl
+class TrapSlow: public MagicTrapImpl
 {
 private:
         friend class Trap;
 
-        TrapWeb(P pos, Trap* const base_trap) :
-                MechTrapImpl(pos, TrapId::web, base_trap) {}
+        TrapSlow(P pos, Trap* const base_trap) :
+                MagicTrapImpl(pos, TrapId::slow, base_trap) {}
 
         void trigger() override;
+};
 
-        Color color() const override
-        {
-                return colors::light_white();
-        }
+class TrapCurse: public MagicTrapImpl
+{
+private:
+        friend class Trap;
 
-        std::string name(const Article article) const override
-        {
-                std::string name =
-                        (article == Article::a)
-                        ? "a"
-                        : "the";
+        TrapCurse(P pos, Trap* const base_trap) :
+                MagicTrapImpl(pos, TrapId::curse, base_trap) {}
 
-                name += " spider web";
-
-                return name;
-        }
-
-        char character() const override
-        {
-                return '*';
-        }
-
-        Range nr_turns_range_to_trigger() const override
-        {
-                return {0, 0};
-        }
-
-        bool is_magical() const override
-        {
-                return false;
-        }
-
-        TileId tile() const override
-        {
-                return TileId::web;
-        }
-
-        std::string disarm_msg() const override
-        {
-                return "I tear down a spider web.";
-        }
+        void trigger() override;
 };
 
 #endif // FEATURE_TRAPS_HPP
