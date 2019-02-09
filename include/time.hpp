@@ -24,19 +24,19 @@ struct TimeData
         TimeData() {}
 
         TimeData(
-                int year,
-                int month,
-                int day,
-                int hour,
-                int minute,
-                int second) :
+                int year_val,
+                int month_val,
+                int day_val,
+                int hour_val,
+                int minute_val,
+                int second_val) :
 
-                year(year),
-                month(month),
-                day(day),
-                hour(hour),
-                minute(minute),
-                second(second) {}
+                year(year_val),
+                month(month_val),
+                day(day_val),
+                hour(hour_val),
+                minute(minute_val),
+                second(second_val) {}
 
         std::string time_str(
                 const TimeType lowest,

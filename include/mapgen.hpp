@@ -17,9 +17,9 @@ class Room;
 struct Region
 {
 public:
-        Region(const R& r) :
+        Region(const R& rect) :
                 main_room(nullptr),
-                r(r),
+                r(rect),
                 is_free(true) {}
 
         Region() :

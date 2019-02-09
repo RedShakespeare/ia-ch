@@ -327,48 +327,48 @@ void offer_pact_to_player()
 
                 if (toll_idx < (nr_tolls_to_offer - 1))
                 {
-                        std::string msg = "";
+                        std::string toll_msg = "";
 
                         if (toll_idx == 0)
                         {
                                 // This is the first toll offer
-                                msg = "Now you must consider the price. ";
+                                toll_msg = "Now you must consider the price. ";
                         }
                         else
                         {
                                 // This is not the first offer, adjust the
                                 // message as a reply to the previous choice
-                                msg =
+                                toll_msg =
                                         "As you wish, I shall give you "
                                         "another choice. ";
                         }
 
-                        msg += "When the time comes, ";
+                        toll_msg += "When the time comes, ";
 
-                        msg += toll->offer_msg();
+                        toll_msg += toll->offer_msg();
 
-                        const int choice = popup::menu(
-                                msg,
+                        const int toll_choice = popup::menu(
+                                toll_msg,
                                 {"Accept the toll", "Refuse"},
                                 "A dark pact", // Title,
                                 5, // Width change
                                 SfxId::END); // TODO: Play sound
 
-                        if (choice == 1)
+                        if (toll_choice == 1)
                         {
                                 is_accepted = false;
                         }
                 }
                 else
                 {
-                        std::string msg =
+                        std::string toll_msg =
                                 "Then the price shall be this: when the time "
                                 "comes, ";
 
-                        msg += toll->offer_msg();
+                        toll_msg += toll->offer_msg();
 
                         popup::msg(
-                                msg,
+                                toll_msg,
                                 "A dark pact", // Title
                                 SfxId::END, // TODO: Add sound effect
                                 5); // Width change

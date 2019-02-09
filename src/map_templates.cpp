@@ -279,8 +279,7 @@ static void load_room_templates()
                 }
 
                 // Is the current template done?
-                if (try_finalize &&
-                    !template_buffer.empty())
+                if (try_finalize && !template_buffer.empty())
                 {
                         // Not all lines in a template needs to be the same
                         // length, so find the length of the longest line
@@ -300,14 +299,12 @@ static void load_room_templates()
                                         max_len - buffer_line.size(),
                                         ' ');
 
-                                // Fill the template araray with the buffer
+                                // Fill the template array with the buffer
                                 // characters
-                                for (size_t line_idx = 0;
-                                     line_idx < max_len;
-                                     ++line_idx)
+                                for (size_t i = 0; i < max_len; ++i)
                                 {
-                                        templ.symbols.at(line_idx, buffer_idx) =
-                                                buffer_line[line_idx];
+                                        templ.symbols.at(i, buffer_idx) =
+                                                buffer_line[i];
                                 }
                         }
 

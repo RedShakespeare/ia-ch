@@ -54,17 +54,17 @@ struct DmgResistData
         std::string msg_resist_mon;
 };
 
-enum class PropEnded {no ,yes};
+enum class PropEnded
+{
+        no,
+        yes
+};
 
 struct PropActResult
 {
         PropActResult() :
                 did_action(DidAction::no),
                 prop_ended(PropEnded::no) {}
-
-        PropActResult(DidAction did_action, PropEnded prop_ended) :
-                did_action(did_action),
-                prop_ended(prop_ended) {}
 
         DidAction did_action;
         PropEnded prop_ended;

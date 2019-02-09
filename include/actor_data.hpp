@@ -142,9 +142,9 @@ struct MonGroupSpawnRule
                 group_size(MonGroupSize::alone),
                 weight(1) {}
 
-        MonGroupSpawnRule(MonGroupSize group_size, int weight) :
-                group_size(group_size),
-                weight(weight) {}
+        MonGroupSpawnRule(MonGroupSize group_size_type, int spawn_weight) :
+                group_size(group_size_type),
+                weight(spawn_weight) {}
 
         MonGroupSize group_size;
         int weight;

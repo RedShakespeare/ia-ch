@@ -58,13 +58,12 @@ struct PropEndConfig
         PropEndConfig() {}
 
         PropEndConfig(
-                PropEndAllowCallEndHook allow_end_hook,
-                PropEndAllowMsg allow_msg,
-                PropEndAllowHistoricMsg allow_historic_msg) :
-
-                allow_end_hook(allow_end_hook),
-                allow_msg(allow_msg),
-                allow_historic_msg(allow_historic_msg) {}
+                PropEndAllowCallEndHook end_hook_allowed,
+                PropEndAllowMsg msg_allowed,
+                PropEndAllowHistoricMsg historic_msg_allowed) :
+                allow_end_hook(end_hook_allowed),
+                allow_msg(msg_allowed),
+                allow_historic_msg(historic_msg_allowed) {}
 
         const PropEndAllowCallEndHook allow_end_hook {
                 PropEndAllowCallEndHook::yes};

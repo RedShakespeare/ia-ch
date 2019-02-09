@@ -356,13 +356,6 @@ void PylonBurning::on_new_turn_activated()
 // -----------------------------------------------------------------------------
 void PylonInvis::on_new_turn_activated()
 {
-        auto* const actor = rnd_reached_living_actor();
-
-        if (!actor)
-        {
-                return;
-        }
-
         // emit_trigger_snd();
 
         auto actors = living_actors_reached();
@@ -378,13 +371,6 @@ void PylonInvis::on_new_turn_activated()
 // -----------------------------------------------------------------------------
 void PylonSlow::on_new_turn_activated()
 {
-        auto* const actor = rnd_reached_living_actor();
-
-        if (!actor)
-        {
-                return;
-        }
-
         // emit_trigger_snd();
 
         auto actors = living_actors_reached();
@@ -445,13 +431,6 @@ void PylonTeleport::on_new_turn_activated()
 // -----------------------------------------------------------------------------
 void PylonTerrify::on_new_turn_activated()
 {
-        auto* const actor = rnd_reached_living_actor();
-
-        if (!actor)
-        {
-                return;
-        }
-
         // emit_trigger_snd();
 
         auto actors = living_actors_reached();

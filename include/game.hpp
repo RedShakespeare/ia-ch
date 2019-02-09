@@ -18,9 +18,9 @@ class Actor;
 
 struct HistoryEvent
 {
-        HistoryEvent(const std::string msg, const int turn) :
-                msg(msg),
-                turn(turn) {}
+        HistoryEvent(const std::string history_msg, const int turn_nr) :
+                msg(history_msg),
+                turn(turn_nr) {}
 
         const std::string msg;
         const int turn;

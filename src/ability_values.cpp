@@ -189,10 +189,15 @@ ActionResult roll(const int skill_value)
         // 99 - 100     Critical fail
 
         const int succ_cri_lmt = 2;
-        const int succ_big_lmt = ceil((double)skill_value / 2.0);
+
+        const int succ_big_lmt =
+                std::ceil((double)skill_value / 2.0);
+
         const int succ_nrm_lmt = skill_value;
-        const int fail_nrm_lmt = ceil(100.0 -
-                                      ((double)(100 - skill_value) / 2.0));
+
+        const int fail_nrm_lmt =
+                std::ceil(100.0 - ((double)(100 - skill_value) / 2.0));
+
         const int fail_big_lmt = 98;
 
         const int roll = rnd::range(1, 100);

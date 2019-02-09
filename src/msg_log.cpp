@@ -302,12 +302,13 @@ void add(const std::string& str,
                 ? 0
                 : 1;
 
-        const int worst_case_msg_w =
+        const bool should_split =
                 worst_case_msg_w_for_line_nr(
                         next_empty_line_nr,
-                        str);
+                        str)
+                > panels::w(Panel::log);
 
-        if (worst_case_msg_w > panels::w(Panel::log))
+        if (should_split)
         {
                 int w_avail = msg_area_w_avail_for_text_part();
 

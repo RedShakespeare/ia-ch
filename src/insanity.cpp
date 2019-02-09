@@ -829,12 +829,12 @@ void run_sympt()
 
         InsSympt* const sympt = sympt_bucket[bucket_idx];
 
-        sympt_bucket.erase(begin(sympt_bucket) + bucket_idx);
+        sympt_bucket.erase(std::begin(sympt_bucket) + bucket_idx);
 
         // Delete the remaining symptoms in the bucket
-        for (auto* const sympt : sympt_bucket)
+        for (auto* const other_sympt : sympt_bucket)
         {
-                delete sympt;
+                delete other_sympt;
         }
 
         // If the symptom is permanent (i.e. not a one-shot thing like

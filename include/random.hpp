@@ -18,10 +18,10 @@ struct Dice
 {
         Dice() {}
 
-        Dice(const int rolls, const int sides, const int plus = 0) :
-                rolls(rolls),
-                sides(sides),
-                plus(plus) {}
+        Dice(const int nr_rolls, const int nr_sides, const int nr_plus = 0) :
+                rolls(nr_rolls),
+                sides(nr_sides),
+                plus(nr_plus) {}
 
         Dice(const Dice& other) :
                 rolls(other.rolls),
@@ -87,9 +87,9 @@ struct Range
                 min(-1),
                 max(-1) {}
 
-        Range(const int min, const int max) :
-                min(min),
-                max(max) {}
+        Range(const int min_val, const int max_val) :
+                min(min_val),
+                max(max_val) {}
 
         Range(const Range& other) :
                 Range(other.min, other.max) {}
@@ -132,15 +132,9 @@ struct Fraction
                 num(-1),
                 den(-1) {}
 
-        Fraction(const int num, const int den) :
-                num(num),
-                den(den) {}
-
-        void set(const int num, const int den)
-        {
-                this->num = num;
-                this->den = den;
-        }
+        Fraction(const int numerator, const int denominator) :
+                num(numerator),
+                den(denominator) {}
 
         Fraction& operator=(const Fraction& other)
         {

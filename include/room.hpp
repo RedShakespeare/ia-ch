@@ -85,14 +85,16 @@ const std::unordered_map<std::string, RoomType> g_str_to_room_type_map = {
 struct RoomAutoFeatureRule
 {
         RoomAutoFeatureRule() :
-                feature_id(FeatureId::END),
+                id(FeatureId::END),
                 nr_allowed(0) {}
 
-        RoomAutoFeatureRule(const FeatureId id, const int nr_allowed) :
-                feature_id(id),
-                nr_allowed(nr_allowed) {}
+        RoomAutoFeatureRule(
+                const FeatureId feature_id,
+                const int nr_features_allowed) :
+                id(feature_id),
+                nr_allowed(nr_features_allowed) {}
 
-        FeatureId feature_id;
+        FeatureId id;
         int nr_allowed;
 };
 

@@ -19,12 +19,11 @@ namespace mapgen
 void make_monoliths()
 {
         // Determine number of Monoliths to place, by a weighted choice
-        std::vector<int> nr_weights =
-                {
-                        50, // 0 monolith(s)
-                        50, // 1 -
-                        1,  // 2 -
-                };
+        std::vector<int> nr_weights = {
+                50, // 0 monolith(s)
+                50, // 1 -
+                1,  // 2 -
+        };
 
         const int nr_monoliths = rnd::weighted_choice(nr_weights);
 
@@ -68,7 +67,7 @@ void make_monoliths()
                 spawn_weight_positions,
                 spawn_weights);
 
-        for (int i = 0; i < nr_monoliths; ++i)
+        for (int monolith_idx = 0; monolith_idx < nr_monoliths; ++monolith_idx)
         {
                 // Store non-blocked (false) cells in a vector
                 const auto p_bucket = to_vec(blocked, false, blocked.rect());
@@ -92,20 +91,23 @@ void make_monoliths()
 
                         blocked.at(p_adj) = true;
 
-                        for (size_t i = 0;
-                             i < spawn_weight_positions.size();
-                             ++i)
+                        for (size_t spawn_weight_idx = 0;
+                             spawn_weight_idx < spawn_weight_positions.size();
+                             ++spawn_weight_idx)
                         {
-                                if (spawn_weight_positions[i] != p_adj)
+                                if (spawn_weight_positions[spawn_weight_idx]
+                                    != p_adj)
                                 {
                                         continue;
                                 }
 
                                 spawn_weight_positions.erase(
-                                        begin(spawn_weight_positions) + i);
+                                        std::begin(spawn_weight_positions) +
+                                        spawn_weight_idx);
 
                                 spawn_weights.erase(
-                                        begin(spawn_weights) + i);
+                                        std::begin(spawn_weights) +
+                                        spawn_weight_idx);
                         }
                 }
 

@@ -456,10 +456,11 @@ DidAction Actor::try_eat_corpse()
                                         text_format::first_to_upper(
                                                 name_the());
 
-                                msg_log::add(actor_name_the +
-                                             " feeds on " +
-                                             corpse_name_the +
-                                             ".");
+                                msg_log::add(
+                                        actor_name_the +
+                                        " feeds on " +
+                                        corpse_name_the +
+                                        ".");
                         }
                 }
 
@@ -492,11 +493,11 @@ DidAction Actor::try_eat_corpse()
                         {
                                 msg_log::more_prompt();
 
-                                for (auto* const corpse : corpses_here)
+                                for (auto* const other_corpse : corpses_here)
                                 {
                                         const std::string name =
                                                 text_format::first_to_upper(
-                                                        corpse->m_data
+                                                        other_corpse->m_data
                                                         ->corpse_name_a);
 
                                         msg_log::add(name + ".");

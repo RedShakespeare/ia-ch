@@ -392,8 +392,6 @@ void BrowseSpell::draw()
 
                 if (is_idx_marked)
                 {
-                        const auto skill = map::g_player->spell_skill(id);
-
                         const auto descr =
                                 spell->descr(skill, SpellSrc::learned);
 

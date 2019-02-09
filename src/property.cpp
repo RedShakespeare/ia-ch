@@ -991,7 +991,12 @@ PropActResult PropRecloaks::on_act()
 
                 game_time::tick();
 
-                return PropActResult(DidAction::yes, PropEnded::no);
+                PropActResult result;
+
+                result.did_action = DidAction::yes;
+                result.prop_ended = PropEnded::no;
+
+                return result;
         }
 
         return PropActResult();
@@ -1438,7 +1443,12 @@ PropActResult PropVortex::on_act()
 
                 game_time::tick();
 
-                return PropActResult(DidAction::yes, PropEnded::no);
+                PropActResult result;
+
+                result.did_action = DidAction::yes;
+                result.prop_ended = PropEnded::no;
+
+                return result;
         }
 
         return PropActResult();
@@ -1535,7 +1545,12 @@ PropActResult PropCorpseEater::on_act()
                 }
         }
 
-        return PropActResult(did_action, PropEnded::no);
+        PropActResult result;
+
+        result.did_action = did_action;
+        result.prop_ended = PropEnded::no;
+
+        return result;
 }
 
 PropActResult PropTeleports::on_act()
@@ -1553,7 +1568,12 @@ PropActResult PropTeleports::on_act()
                 did_action = DidAction::yes;
         }
 
-        return PropActResult(did_action, PropEnded::no);
+        PropActResult result;
+
+        result.did_action = did_action;
+        result.prop_ended = PropEnded::no;
+
+        return result;
 }
 
 PropActResult PropCorruptsEnvColor::on_act()
@@ -1716,7 +1736,12 @@ PropActResult PropCorpseRises::on_act()
 
         m_has_risen = true;
 
-        return PropActResult(DidAction::yes, PropEnded::no);
+        PropActResult result;
+
+        result.did_action = DidAction::yes;
+        result.prop_ended = PropEnded::no;
+
+        return result;
 }
 
 void PropCorpseRises::on_death()
@@ -1853,13 +1878,13 @@ void PropBreeds::on_std_turn()
         auto summoned =
                 actor_factory::spawn_random_position({mon->id()}, area_allowed)
                 .set_leader(leader_of_spawned_mon)
-                .for_each([](Mon* const mon)
+                .for_each([](Mon* const spawned_mon)
                 {
                         auto prop_waiting = new PropWaiting();
 
                         prop_waiting->set_duration(2);
 
-                        mon->m_properties.apply(prop_waiting);
+                        spawned_mon->m_properties.apply(prop_waiting);
                 });
 
         if (mon->m_aware_of_player_counter > 0)
@@ -1920,7 +1945,8 @@ PropActResult PropSpeaksCurses::on_act()
 
         if (mon->can_see_actor(*map::g_player, blocked_los))
         {
-                const bool player_see_owner = map::g_player->can_see_actor(*mon);
+                const bool player_see_owner =
+                        map::g_player->can_see_actor(*mon);
 
                 std::string snd_msg =
                         player_see_owner ?
@@ -1943,7 +1969,12 @@ PropActResult PropSpeaksCurses::on_act()
 
                 game_time::tick();
 
-                return PropActResult(DidAction::yes, PropEnded::no);
+                PropActResult result;
+
+                result.did_action = DidAction::yes;
+                result.prop_ended = PropEnded::no;
+
+                return result;
         }
 
         return PropActResult();
@@ -2132,15 +2163,15 @@ PropActResult PropMajorClaphamSummon::on_act()
                 actor_factory::spawn(mon->m_pos, ids_to_summon, map::rect())
                 .make_aware_of_player()
                 .set_leader(mon)
-                .for_each([](Mon* const mon)
+                .for_each([](Mon* const spawned_mon)
                 {
                         auto prop_summoned = new PropSummoned();
 
                         prop_summoned->set_indefinite();
 
-                        mon->m_properties.apply(prop_summoned);
+                        spawned_mon->m_properties.apply(prop_summoned);
 
-                        mon->m_is_player_feeling_msg_allowed = false;
+                        spawned_mon->m_is_player_feeling_msg_allowed = false;
                 });
 
         map::g_player->incr_shock(ShockLvl::terrifying, ShockSrc::misc);
@@ -2149,7 +2180,12 @@ PropActResult PropMajorClaphamSummon::on_act()
 
         game_time::tick();
 
-        return PropActResult(DidAction::yes, PropEnded::yes);
+        PropActResult result;
+
+        result.did_action = DidAction::yes;
+        result.prop_ended = PropEnded::yes;
+
+        return result;
 }
 
 void PropMagicSearching::save() const

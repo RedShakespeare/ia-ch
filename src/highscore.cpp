@@ -195,12 +195,12 @@ int HighscoreEntry::score() const
         const double ins_db = (double)m_ins;
         const bool win = (m_is_win == IsWin::yes);
 
-        auto calc_turns_factor = [](const double turns_db) {
-                return std::max(1.0, 3.0 - (turns_db / 10000.0));
+        auto calc_turns_factor = [](const double nr_turns_db) {
+                return std::max(1.0, 3.0 - (nr_turns_db / 10000.0));
         };
 
-        auto calc_sanity_factor = [](const double ins_db) {
-                return 2.0 - (ins_db / 100.0);
+        auto calc_sanity_factor = [](const double nr_ins_db) {
+                return 2.0 - (nr_ins_db / 100.0);
         };
 
         const double xp_factor = 1.0 + xp_db;

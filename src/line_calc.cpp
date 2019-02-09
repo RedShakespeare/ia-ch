@@ -38,44 +38,45 @@ void init()
                 }
         }
 
-        double delta_x, delta_y, hypot;
-
         // delta_x corresponds to 'i - fov_w_int', and vice versa
         // So:
         // i = 0                => delta_x = -fov_w_int
         // i = fov_w_int * 2    => delta_x =  fov_w_int
 
-        const int r_int = g_fov_radi_int;
+        const int r = g_fov_radi_int;
 
-        for (int x = 0; x <= r_int * 2; ++x)
+        for (int x = 0; x <= r * 2; ++x)
         {
-                for (int y = 0; y <= r_int * 2; ++y)
+                for (int y = 0; y <= r * 2; ++y)
                 {
-                        delta_x = double(x);
-                        delta_x -= g_fov_radi_db;
-                        delta_y = double(y);
-                        delta_y -= g_fov_radi_db;
-                        hypot = sqrt((delta_x * delta_x) + (delta_y * delta_y));
-                        s_fov_abs_distances[x][y] = floor(hypot);
+                        const auto delta_x_db = (double)x - g_fov_radi_db;
+                        const auto delta_y_db = (double)y - g_fov_radi_db;
+
+                        const auto hypot_db = sqrt(
+                                (delta_x_db * delta_x_db) +
+                                (delta_y_db * delta_y_db));
+
+                        s_fov_abs_distances[x][y] = floor(hypot_db);
                 }
         }
 
         // Calculate FOV delta lines
-        for (int delta_x = -r_int; delta_x <= r_int; delta_x++)
+        for (int delta_x = -r; delta_x <= r; delta_x++)
         {
-                for (int delta_y = -r_int; delta_y <= r_int; delta_y++)
+                for (int delta_y = -r; delta_y <= r; delta_y++)
                 {
                         const P origin(0, 0);
                         const P target(P(delta_x, delta_y));
 
-                        s_fov_delta_lines[delta_x + r_int][delta_y + r_int] =
+                        s_fov_delta_lines[delta_x + r][delta_y + r] =
                                 calc_new_line(origin, target, true, 999, true);
                 }
         }
 }
 
-const std::vector<P>* fov_delta_line(const P& delta,
-                                     const double& max_dist_abs)
+const std::vector<P>* fov_delta_line(
+        const P& delta,
+        const double& max_dist_abs)
 {
         const int x = delta.x + g_fov_radi_int;
         const int y = delta.y + g_fov_radi_int;

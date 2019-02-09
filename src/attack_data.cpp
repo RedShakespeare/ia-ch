@@ -54,12 +54,11 @@ static bool is_defender_aware_of_attack(
 // Attack data
 // -----------------------------------------------------------------------------
 AttData::AttData(
-        Actor* const attacker,
-        Actor* const defender,
+        Actor* const the_attacker,
+        Actor* const the_defender,
         const Item& att_item) :
-
-        attacker(attacker),
-        defender(defender),
+        attacker(the_attacker),
+        defender(the_defender),
         skill_mod(0),
         wpn_mod(0),
         dodging_mod(0),
@@ -72,22 +71,21 @@ AttData::AttData(
                 (att_item.data().type == ItemType::ranged_wpn_intr)) {}
 
 MeleeAttData::MeleeAttData(
-        Actor* const attacker,
-        Actor& defender,
+        Actor* const the_attacker,
+        Actor& the_defender,
         const Wpn& wpn) :
-
-        AttData(attacker, &defender, wpn),
+        AttData(the_attacker, &the_defender, wpn),
         is_backstab(false),
         is_weak_attack(false)
 {
         const bool is_defender_aware =
-                is_defender_aware_of_attack(attacker, defender);
+                is_defender_aware_of_attack(attacker, *defender);
 
         // Determine attack result
         skill_mod =
-                attacker ?
-                attacker->ability(AbilityId::melee, true) :
-                50;
+                attacker
+                ? attacker->ability(AbilityId::melee, true)
+                : 50;
 
         wpn_mod = wpn.data().melee.hit_chance_mod;
 
@@ -96,13 +94,13 @@ MeleeAttData::MeleeAttData(
         const bool player_is_handling_armor =
                 map::g_player->m_handle_armor_countdown > 0;
 
-        const int dodging_ability = defender.ability(AbilityId::dodging, true);
+        const int dodging_ability = defender->ability(AbilityId::dodging, true);
 
         // Player gets melee dodging bonus from wielding a Pitchfork
-        if (defender.is_player())
+        if (defender->is_player())
         {
                 const auto* const item =
-                        defender.m_inv.item_in_slot(SlotId::wpn);
+                        defender->m_inv.item_in_slot(SlotId::wpn);
 
                 if (item && (item->id() == ItemId::pitch_fork))
                 {
@@ -112,7 +110,7 @@ MeleeAttData::MeleeAttData(
 
         const bool allow_positive_doge =
                 is_defender_aware &&
-                !(defender.is_player() &&
+                !(defender->is_player() &&
                   player_is_handling_armor);
 
         if (allow_positive_doge ||
@@ -130,7 +128,7 @@ MeleeAttData::MeleeAttData(
 
         if (attacker == map::g_player)
         {
-                can_attacker_see_tgt = map::g_player->can_see_actor(defender);
+                can_attacker_see_tgt = map::g_player->can_see_actor(*defender);
         }
 
         // Check for extra attack bonuses, such as defender being immobilized.
@@ -149,18 +147,18 @@ MeleeAttData::MeleeAttData(
         {
                 // Check if attacker gets a bonus due to a defender property.
 
-                if (defender.m_properties.has(PropId::paralyzed) ||
-                    defender.m_properties.has(PropId::nailed) ||
-                    defender.m_properties.has(PropId::fainted) ||
-                    defender.m_properties.has(PropId::entangled))
+                if (defender->m_properties.has(PropId::paralyzed) ||
+                    defender->m_properties.has(PropId::nailed) ||
+                    defender->m_properties.has(PropId::fainted) ||
+                    defender->m_properties.has(PropId::entangled))
                 {
                         // Give big attack bonus if defender is completely
                         // unable to fight.
                         is_big_att_bon = true;
                 }
-                else if (defender.m_properties.has(PropId::confused) ||
-                         defender.m_properties.has(PropId::slowed) ||
-                         defender.m_properties.has(PropId::burning))
+                else if (defender->m_properties.has(PropId::confused) ||
+                         defender->m_properties.has(PropId::slowed) ||
+                         defender->m_properties.has(PropId::burning))
                 {
                         // Give small attack bonus if defender has problems
                         // fighting
@@ -171,7 +169,7 @@ MeleeAttData::MeleeAttData(
         // Give small attack bonus if defender cannot see.
         if (!is_big_att_bon &&
             !is_small_att_bon &&
-            !defender.m_properties.allow_see())
+            !defender->m_properties.allow_see())
         {
                 is_small_att_bon = true;
         }
@@ -194,10 +192,10 @@ MeleeAttData::MeleeAttData(
         // Undead bonus applies)
         const bool apply_undead_bane_bon =
                 (attacker == map::g_player) &&
-                player_bon::gets_undead_bane_bon(*defender.m_data);
+                player_bon::gets_undead_bane_bon(*defender->m_data);
 
         const bool apply_ethereal_defender_pen =
-                defender.m_properties.has(PropId::ethereal) &&
+                defender->m_properties.has(PropId::ethereal) &&
                 !apply_undead_bane_bon;
 
         if (apply_ethereal_defender_pen)
@@ -275,14 +273,13 @@ MeleeAttData::MeleeAttData(
 }
 
 RangedAttData::RangedAttData(
-        Actor* const attacker,
+        Actor* const the_attacker,
         const P& attacker_origin,
-        const P& aim_pos,
+        const P& the_aim_pos,
         const P& current_pos,
         const Wpn& wpn) :
-
-        AttData(attacker, nullptr, wpn),
-        aim_pos(aim_pos),
+        AttData(the_attacker, nullptr, wpn),
+        aim_pos(the_aim_pos),
         aim_lvl((ActorSize)0),
         defender_size((ActorSize)0),
         dist_mod(0)
@@ -479,12 +476,11 @@ RangedAttData::RangedAttData(
 }
 
 ThrowAttData::ThrowAttData(
-        Actor* const attacker,
+        Actor* const the_attacker,
         const P& aim_pos,
         const P& current_pos,
         const Item& item) :
-
-        AttData(attacker, nullptr, item),
+        AttData(the_attacker, nullptr, item),
         aim_lvl((ActorSize)0),
         defender_size((ActorSize)0),
         dist_mod(0)
@@ -503,9 +499,9 @@ ThrowAttData::ThrowAttData(
                         .cell(current_pos);
 
                 aim_lvl =
-                        is_cell_blocked ?
-                        ActorSize::humanoid :
-                        ActorSize::floor;
+                        is_cell_blocked
+                        ? ActorSize::humanoid
+                        : ActorSize::floor;
         }
 
         defender = map::actor_at_pos(current_pos);

@@ -630,13 +630,13 @@ void PickTraitState::draw()
 
                 const int prereq_list_x = label.size() + 1;
 
-                for (const ColoredString& title : prereq_titles)
+                for (const ColoredString& prereq_title : prereq_titles)
                 {
                         io::draw_text(
-                                title.str,
+                                prereq_title.str,
                                 Panel::create_char_descr,
                                 P(prereq_list_x, y),
-                                title.color);
+                                prereq_title.color);
 
                         ++y;
                 }

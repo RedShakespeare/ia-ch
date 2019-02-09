@@ -124,7 +124,7 @@ void make_metal_doors_and_levers()
 
         const int nr_doors = rnd::weighted_choice(nr_doors_weights);
 
-        for (int i = 0; i < nr_doors; ++i)
+        for (int door_idx = 0; door_idx < nr_doors; ++door_idx)
         {
                 // Find all chokepoints with a door
                 std::vector<const ChokePointData*> chokepoint_bucket;
@@ -210,9 +210,11 @@ void make_metal_doors_and_levers()
                         .run(blocks_reaching_levers,
                              blocks_reaching_levers.rect());
 
-                for (size_t i = 0; i < map::nr_cells(); ++i)
+                for (size_t cell_idx = 0;
+                     cell_idx < map::nr_cells();
+                     ++cell_idx)
                 {
-                        const auto* r = map::g_cells.at(i).rigid;
+                        const auto* r = map::g_cells.at(cell_idx).rigid;
 
                         if (r->id() == FeatureId::door)
                         {
@@ -222,11 +224,11 @@ void make_metal_doors_and_levers()
                                 const bool is_metal =
                                         door->type() == DoorType::metal;
 
-                                blocks_reaching_levers.at(i) = is_metal;
+                                blocks_reaching_levers.at(cell_idx) = is_metal;
                         }
                         else if (r->id() == FeatureId::liquid_deep)
                         {
-                                blocks_reaching_levers.at(i) = false;
+                                blocks_reaching_levers.at(cell_idx) = false;
                         }
                 }
 
@@ -370,7 +372,7 @@ void make_metal_doors_and_levers()
                         auto put_lever_random_p =[](
                                 const std::vector<int>& weights,
                                 const std::vector<P>& positions,
-                                Door* const door) {
+                                Door* const linked_door) {
 
                                 const size_t lever_p_idx =
                                         rnd::weighted_choice(weights);
@@ -379,7 +381,7 @@ void make_metal_doors_and_levers()
 
                                 Lever* lever = new Lever(lever_1_p);
 
-                                lever->set_linked_feature(*door);
+                                lever->set_linked_feature(*linked_door);
 
                                 map::put(lever);
 

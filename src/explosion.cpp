@@ -355,11 +355,11 @@ void run(const P& origin,
 
         const int nr_outer = pos_lists.size();
 
-        for (int radi = 0; radi < nr_outer; ++radi)
+        for (int dist = 0; dist < nr_outer; ++dist)
         {
-                const std::vector<P>& positions_at_radi = pos_lists[radi];
+                const std::vector<P>& positions_at_dist = pos_lists[dist];
 
-                for (const P& pos : positions_at_radi)
+                for (const P& pos : positions_at_dist)
                 {
                         Actor* living_actor = living_actors.at(pos);
 
@@ -369,7 +369,7 @@ void run(const P& origin,
                         {
                                 apply_explosion_on_pos(
                                         pos,
-                                        radi,
+                                        dist,
                                         living_actor,
                                         corpses_here);
                         }

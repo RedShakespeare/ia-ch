@@ -232,11 +232,13 @@ void run()
                                 msg_log::more_prompt();
                         }
 
-                        for (auto* const corpse : corpses_here)
+                        for (auto* const other_corpse : corpses_here)
                         {
                                 const std::string name =
                                         text_format::first_to_upper(
-                                                corpse->m_data->corpse_name_a);
+                                                other_corpse
+                                                ->m_data
+                                                ->corpse_name_a);
 
                                 msg_log::add(name + ".");
                         }

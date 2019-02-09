@@ -232,10 +232,10 @@ Rigid* put(Rigid* const f)
                                 viewport::focus_on(p);
                         }
 
-                        for (auto& cell : g_cells)
+                        for (auto& shown_cell : g_cells)
                         {
-                                cell.is_seen_by_player =
-                                        cell.is_explored = true;
+                                shown_cell.is_seen_by_player = true;
+                                shown_cell.is_explored = true;
                         }
 
                         states::draw();

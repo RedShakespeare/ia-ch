@@ -634,7 +634,7 @@ void StdRoom::place_auto_features()
                 feature_bucket.insert(
                         std::end(feature_bucket),
                         rule.nr_allowed,
-                        rule.feature_id);
+                        rule.id);
         }
 
         std::vector<P> adj_to_walls_bucket;
@@ -1461,14 +1461,6 @@ void PoolRoom::on_post_connect_hook(Array2<bool>& door_proposals)
                         P(-1, -1), // Target cell
                         allow_diagonal_flood);
 
-        auto should_put_liquid = [](
-                const P& pos,
-                const Array2<int>& flood,
-                const P& origin) {
-
-                return (flood.at(pos)) > 0 || (pos == origin);
-        };
-
         // Do not place any liquid if we cannot place at least a certain amount
         {
                 const int min_nr_liquid_cells = 9;
@@ -1479,7 +1471,9 @@ void PoolRoom::on_post_connect_hook(Array2<bool>& door_proposals)
                 {
                         for (int y = 0; y < flood.w(); ++y)
                         {
-                                if (should_put_liquid(P(x, y), flood, origin))
+                                const P p(x, y);
+
+                                if ((flood.at(p) > 0) || (p == origin))
                                 {
                                         ++nr_liquid_cells;
                                 }
@@ -1515,7 +1509,7 @@ void PoolRoom::on_post_connect_hook(Array2<bool>& door_proposals)
                 {
                         const P p(x, y);
 
-                        if (!should_put_liquid(p, flood, origin))
+                        if ((flood.at(p) > 0) || (p == origin))
                         {
                                 continue;
                         }

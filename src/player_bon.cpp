@@ -348,9 +348,9 @@ std::vector<ColoredString> bg_descr(const Bg id)
                 descr.push_back({str, colors::white()});
         };
 
-        auto put_trait = [&descr](const Trait id) {
-                descr.push_back({trait_title(id), colors::white()});
-                descr.push_back({trait_descr(id), colors::gray()});
+        auto put_trait = [&descr](const Trait trait_id) {
+                descr.push_back({trait_title(trait_id), colors::white()});
+                descr.push_back({trait_descr(trait_id), colors::gray()});
         };
 
         switch (id)
@@ -810,11 +810,9 @@ void trait_prereqs(
 
         // Remove traits which are blocked for this background (prerequisites
         // are considered fulfilled)
-        for (auto it = begin(traits_out); it != end(traits_out); )
+        for (auto it = std::begin(traits_out); it != std::end(traits_out); )
         {
-                const Trait trait = *it;
-
-                if (is_trait_blocked_for_bg(trait, bg))
+                if (is_trait_blocked_for_bg(*it, bg))
                 {
                         it = traits_out.erase(it);
                 }

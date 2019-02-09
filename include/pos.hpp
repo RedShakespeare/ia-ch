@@ -14,9 +14,9 @@ struct P
 public:
         P() {}
 
-        P(const int x, const int y) :
-                x(x),
-                y(y) {}
+        P(const int x_val, const int y_val) :
+                x(x_val),
+                y(y_val) {}
 
         P(const P& p) :
                 x(p.x),

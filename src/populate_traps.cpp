@@ -52,27 +52,27 @@ static Fraction get_chance_for_trapped_room(const RoomType type)
         switch (type)
         {
         case RoomType::human:
-                chance.set(1, 3);
+                chance = {1, 3};
                 break;
 
         case RoomType::ritual:
-                chance.set(1, 4);
+                chance = {1, 4};
                 break;
 
         case RoomType::spider:
-                chance.set(2, 3);
+                chance = {2, 3};
                 break;
 
         case RoomType::crypt:
-                chance.set(3, 4);
+                chance = {3, 4};
                 break;
 
         case RoomType::monster:
-                chance.set(1, 4);
+                chance = {1, 4};
                 break;
 
         case RoomType::chasm:
-                chance.set(1, 4);
+                chance = {1, 4};
                 break;
 
         case RoomType::snake_pit:
@@ -125,7 +125,9 @@ void populate_std_lvl()
                         if (chance_for_trapped_room.num != -1 &&
                             chance_for_trapped_room.roll())
                         {
-                                TRACE_VERBOSE << "Trapping non-plain room"<< std::endl;
+                                TRACE_VERBOSE
+                                        << "Trapping non-plain room"
+                                        << std::endl;
 
                                 std::vector<P> trap_pos_bucket;
 

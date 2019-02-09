@@ -65,6 +65,24 @@ static const std::vector<std::string> item_feeling_messages_ = {
         "I sense an object of great power here."
 };
 
+static int nr_wounds(const PropHandler& properties)
+{
+        if (properties.has(PropId::wound))
+        {
+                const auto* const prop =
+                        properties.prop(PropId::wound);
+
+                const PropWound* const wound =
+                        static_cast<const PropWound*>(prop);
+
+                return wound->nr_wounds();
+        }
+        else
+        {
+                return 0;
+        }
+}
+
 // -----------------------------------------------------------------------------
 // Player
 // -----------------------------------------------------------------------------
@@ -242,10 +260,11 @@ std::vector<Actor*> Player::seen_foes() const
         return out;
 }
 
-void Player::on_hit(int& dmg,
-                    const DmgType dmg_type,
-                    const DmgMethod method,
-                    const AllowWound allow_wound)
+void Player::on_hit(
+        int& dmg,
+        const DmgType dmg_type,
+        const DmgMethod method,
+        const AllowWound allow_wound)
 {
         (void)method;
 
@@ -257,58 +276,47 @@ void Player::on_hit(int& dmg,
         const bool is_enough_dmg_for_wound = dmg >= s_min_dmg_to_wound;
         const bool is_physical = dmg_type == DmgType::physical;
 
-        // Ghoul trait Indomitable Fury makes player immune to Wounds while Frenzied
+        // Ghoul trait Indomitable Fury grants immunity to wounds while frenzied
         const bool is_ghoul_resist_wound =
                 player_bon::has_trait(Trait::indomitable_fury) &&
                 m_properties.has(PropId::frenzied);
 
-        if (allow_wound == AllowWound::yes &&
+        if ((allow_wound == AllowWound::yes) &&
             (m_hp - dmg) > 0 &&
             is_enough_dmg_for_wound &&
             is_physical &&
             !is_ghoul_resist_wound &&
             !config::is_bot_playing())
         {
-                Prop* const prop = new PropWound();
+                auto* const prop = new PropWound();
 
                 prop->set_indefinite();
 
-                auto nr_wounds = [&]()
-                        {
-                                if (m_properties.has(PropId::wound))
-                                {
-                                        const Prop* const prop = m_properties.prop(PropId::wound);
-
-                                        const PropWound* const wound =
-                                        static_cast<const PropWound*>(prop);
-
-                                        return wound->nr_wounds();
-                                }
-
-                                return 0;
-                        };
-
-                const int nr_wounds_before = nr_wounds();
+                const int nr_wounds_before = nr_wounds(m_properties);
 
                 m_properties.apply(prop);
 
-                const int nr_wounds_after = nr_wounds();
+                const int nr_wounds_after = nr_wounds(m_properties);
 
                 if (nr_wounds_after > nr_wounds_before)
                 {
                         if (insanity::has_sympt(InsSymptId::masoch))
                         {
-                                game::add_history_event("Experienced a very pleasant wound.");
+                                game::add_history_event(
+                                        "Experienced a very pleasant wound.");
 
                                 msg_log::add("Hehehe...");
 
                                 const double shock_restored = 10.0;
 
-                                m_shock = std::max(0.0, m_shock - shock_restored);
+                                m_shock = std::max(
+                                        0.0,
+                                        m_shock - shock_restored);
                         }
                         else // Not masochistic
                         {
-                                game::add_history_event("Sustained a severe wound.");
+                                game::add_history_event(
+                                        "Sustained a severe wound.");
                         }
                 }
         }

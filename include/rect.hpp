@@ -14,9 +14,9 @@ struct R
 public:
         R() {}
 
-        R(const P p0, const P p1) :
-                p0(p0),
-                p1(p1) {}
+        R(const P p0_val, const P p1_val) :
+                p0(p0_val),
+                p1(p1_val) {}
 
         R(const int x0, const int y0, const int x1, const int y1) :
                 p0(P(x0, y0)),

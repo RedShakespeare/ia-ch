@@ -633,19 +633,19 @@ void Darkbolt::on_hit(Actor& actor_hit, const SpellSkill skill) const
                 return;
         }
 
-        auto prop = new PropParalyzed();
+        auto paralyzed = new PropParalyzed();
 
-        prop->set_duration(rnd::range(1, 2));
+        paralyzed->set_duration(rnd::range(1, 2));
 
-        actor_hit.m_properties.apply(prop);
+        actor_hit.m_properties.apply(paralyzed);
 
         if (skill == SpellSkill::master)
         {
-                auto prop = new PropBurning();
+                auto burning = new PropBurning();
 
-                prop->set_duration(rnd::range(2, 3));
+                burning->set_duration(rnd::range(2, 3));
 
-                actor_hit.m_properties.apply(prop);
+                actor_hit.m_properties.apply(burning);
         }
 }
 

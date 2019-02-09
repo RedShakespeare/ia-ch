@@ -469,9 +469,9 @@ Item* Inventory::decr_item(Item* const item)
         {
                 if (slot.item == item)
                 {
-                        auto* const item = decr_item_in_slot(slot.id);
+                        auto* const item_after = decr_item_in_slot(slot.id);
 
-                        return item;
+                        return item_after;
                 }
         }
 
@@ -479,9 +479,9 @@ Item* Inventory::decr_item(Item* const item)
         {
                 if (m_backpack[i] == item)
                 {
-                        auto* const item = decr_item_in_backpack(i);
+                        auto* const item_after = decr_item_in_backpack(i);
 
-                        return item;
+                        return item_after;
                 }
         }
 

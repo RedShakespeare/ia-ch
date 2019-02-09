@@ -40,7 +40,7 @@ static bool try_use_talisman_of_resurrection(Actor& actor)
         io::update_screen();
 
         const std::string msg =
-                "Strange emptiness surrounds me. An eternity passes as  I lay "
+                "Strange emptiness surrounds me. An eternity passes as I lay "
                 "frozen in a world of shadows. Suddenly I awake!";
 
         popup::msg(msg, "Dead");
