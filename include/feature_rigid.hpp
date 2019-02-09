@@ -58,7 +58,7 @@ public:
 
         void destroy_single_fragile();
 
-        std::vector<Item*> items_;
+        std::vector<Item*> m_items;
 };
 
 class Rigid: public Feature
@@ -94,12 +94,12 @@ public:
 
         TileId gore_tile() const
         {
-                return gore_tile_;
+                return m_gore_tile;
         }
 
         char gore_character() const
         {
-                return gore_character_;
+                return m_gore_character;
         }
 
         void clear_gore();
@@ -117,16 +117,16 @@ public:
 
         void make_bloody()
         {
-                is_bloody_ = true;
+                m_is_bloody = true;
         }
 
         void corrupt_color();
 
-        ItemContainer item_container_ {};
+        ItemContainer m_item_container {};
 
-        BurnState burn_state_ {BurnState::not_burned};
+        BurnState m_burn_state {BurnState::not_burned};
 
-        bool started_burning_this_turn_ {false};
+        bool m_started_burning_this_turn {false};
 
 protected:
         virtual void on_new_turn_hook() {}
@@ -157,14 +157,14 @@ protected:
 
         virtual int base_shock_when_adj() const;
 
-        TileId gore_tile_ {TileId::END};
-        char gore_character_ {0};
+        TileId m_gore_tile {TileId::END};
+        char m_gore_character {0};
 
 private:
-        bool is_bloody_ {false};
+        bool m_is_bloody {false};
 
         // Corrupted by a Strange Color monster
-        int nr_turns_color_corrupted_ {-1};
+        int m_nr_turns_color_corrupted {-1};
 };
 
 enum class FloorType
@@ -192,7 +192,7 @@ public:
 
         std::string name(const Article article) const override;
 
-        FloorType type_;
+        FloorType m_type;
 
 private:
         Color color_default() const override;
@@ -255,7 +255,7 @@ public:
         TileId tile() const override;
         std::string name(const Article article) const override;
 
-        GrassType type_;
+        GrassType m_type;
 
 private:
         Color color_default() const override;
@@ -284,7 +284,7 @@ public:
         std::string name(const Article article) const override;
         WasDestroyed on_finished_burning() override;
 
-        GrassType type_;
+        GrassType m_type;
 
 private:
         Color color_default() const override;
@@ -439,8 +439,8 @@ public:
         void set_rnd_common_wall();
         void set_moss_grown();
 
-        WallType type_;
-        bool is_mossy_;
+        WallType m_type;
+        bool m_is_mossy;
 
         static bool is_wall_front_tile(const TileId tile);
         static bool is_wall_top_tile(const TileId tile);
@@ -551,7 +551,7 @@ public:
 
         void set_inscription(const std::string& str)
         {
-                inscr_ = str;
+                m_inscr = str;
         }
 
         void bump(Actor& actor_bumping) override;
@@ -565,7 +565,7 @@ private:
                 const DmgMethod dmg_method,
                 Actor* const actor) override;
 
-        std::string inscr_;
+        std::string m_inscr;
 };
 
 class ChurchBench: public Rigid
@@ -616,7 +616,7 @@ public:
 
         TileId tile() const override;
 
-        StatueType type_;
+        StatueType m_type;
 
 private:
         Color color_default() const override;
@@ -687,7 +687,7 @@ class Bridge : public Rigid
 public:
         Bridge(const P& p) :
                 Rigid(p),
-                axis_(Axis::hor) {}
+                m_axis(Axis::hor) {}
         Bridge() = delete;
         ~Bridge() {}
 
@@ -702,7 +702,7 @@ public:
 
         void set_axis(const Axis axis)
         {
-                axis_ = axis;
+                m_axis = axis;
         }
 
 private:
@@ -714,7 +714,7 @@ private:
                 const DmgMethod dmg_method,
                 Actor* const actor) override;
 
-        Axis axis_;
+        Axis m_axis;
 };
 
 class LiquidShallow: public Rigid
@@ -733,7 +733,7 @@ public:
 
         void bump(Actor& actor_bumping) override;
 
-        LiquidType type_;
+        LiquidType m_type;
 
 private:
         Color color_default() const override;
@@ -769,7 +769,7 @@ public:
 
         bool can_move(const Actor& actor) const override;
 
-        LiquidType type_;
+        LiquidType m_type;
 
 private:
         Color color_default() const override;
@@ -831,28 +831,28 @@ public:
 
         bool is_left_pos() const
         {
-                return is_left_pos_;
+                return m_is_left_pos;
         }
 
         bool is_linked_to(const Rigid& feature) const
         {
-                return linked_feature_ == &feature;
+                return m_linked_feature == &feature;
         }
 
         void set_linked_feature(Rigid& feature)
         {
-                linked_feature_ = &feature;
+                m_linked_feature = &feature;
         }
 
         void unlink()
         {
-                linked_feature_ = nullptr;
+                m_linked_feature = nullptr;
         }
 
         // Levers linked to the same feature
         void add_sibbling(Lever* const lever)
         {
-                sibblings_.push_back(lever);
+                m_sibblings.push_back(lever);
         }
 
 private:
@@ -864,11 +864,11 @@ private:
                 const DmgMethod dmg_method,
                 Actor* const actor) override;
 
-        bool is_left_pos_;
+        bool m_is_left_pos;
 
-        Rigid* linked_feature_;
+        Rigid* m_linked_feature;
 
-        std::vector<Lever*> sibblings_;
+        std::vector<Lever*> m_sibblings;
 };
 
 class Altar: public Rigid
@@ -891,7 +891,7 @@ public:
 
         void disable_pact()
         {
-                can_offer_pact_ = false;
+                m_can_offer_pact = false;
         }
 
 private:
@@ -903,7 +903,7 @@ private:
                 const DmgMethod dmg_method,
                 Actor* const actor) override;
 
-        bool can_offer_pact_ {true};
+        bool m_can_offer_pact {true};
 };
 
 class Tree: public Rigid
@@ -986,11 +986,12 @@ private:
 
         void player_loot();
 
-        bool is_open_, is_trait_known_;
+        bool m_is_open;
+        bool m_is_trait_known;
 
-        int push_lid_one_in_n_;
-        TombAppearance appearance_;
-        TombTrait trait_;
+        int m_push_lid_one_in_n;
+        TombAppearance m_appearance;
+        TombTrait m_trait;
 };
 
 enum class ChestMatl
@@ -1036,10 +1037,10 @@ private:
 
         void player_loot();
 
-        bool is_open_;
-        bool is_locked_;
+        bool m_is_open;
+        bool m_is_locked;
 
-        ChestMatl matl_;
+        ChestMatl m_matl;
 };
 
 class Cabinet: public Rigid
@@ -1073,7 +1074,7 @@ private:
 
         void player_loot();
 
-        bool is_open_;
+        bool m_is_open;
 };
 
 class Bookshelf: public Rigid
@@ -1105,7 +1106,7 @@ private:
 
         void player_loot();
 
-        bool is_looted_;
+        bool m_is_looted;
 };
 
 class AlchemistBench: public Rigid
@@ -1137,7 +1138,7 @@ private:
 
         void player_loot();
 
-        bool is_looted_;
+        bool m_is_looted;
 };
 
 enum class FountainEffect
@@ -1176,17 +1177,17 @@ public:
 
         bool has_drinks_left() const
         {
-                return has_drinks_left_;
+                return m_has_drinks_left;
         }
 
         FountainEffect effect() const
         {
-                return fountain_effect_;
+                return m_fountain_effect;
         }
 
         void set_effect(const FountainEffect effect)
         {
-                fountain_effect_ = effect;
+                m_fountain_effect = effect;
         }
 
         void bless();
@@ -1202,8 +1203,8 @@ private:
                 const DmgMethod dmg_method,
                 Actor* const actor) override;
 
-        FountainEffect fountain_effect_;
-        bool has_drinks_left_;
+        FountainEffect m_fountain_effect;
+        bool m_has_drinks_left;
 };
 
 class Cocoon: public Rigid
@@ -1241,8 +1242,8 @@ private:
 
         DidTriggerTrap trigger_trap(Actor* const actor) override;
 
-        bool is_trapped_;
-        bool is_open_;
+        bool m_is_trapped;
+        bool m_is_open;
 };
 
 #endif // FEATURE_RIGID_HPP

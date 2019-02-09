@@ -113,7 +113,8 @@ static const std::vector<God> god_list_ =
         {"Gozer", "The Destroyer"}
 };
 
-static int current_god_idx_ = 0;
+static int s_current_god_idx = 0;
+
 
 // -----------------------------------------------------------------------------
 // gods
@@ -123,14 +124,14 @@ namespace gods
 
 const God& current_god()
 {
-        return god_list_[current_god_idx_];
+        return god_list_[s_current_god_idx];
 }
 
 void set_random_god()
 {
         const int nr_gods = (int)god_list_.size();
 
-        current_god_idx_ = rnd::range(0, nr_gods - 1);
+        s_current_god_idx = rnd::range(0, nr_gods - 1);
 }
 
 } // gods

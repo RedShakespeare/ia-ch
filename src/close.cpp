@@ -25,7 +25,7 @@ static void player_try_close_or_jam_feature(Feature* const feature)
         if (feature->id() != FeatureId::door)
         {
                 const bool player_can_see =
-                        map::player->properties.allow_see();
+                        map::g_player->m_properties.allow_see();
 
                 if (player_can_see)
                 {
@@ -48,26 +48,26 @@ static void player_try_close_or_jam_feature(Feature* const feature)
         if (door->is_open())
         {
                 // Door is open, try to close it
-                door->try_close(map::player);
+                door->try_close(map::g_player);
         }
         else // Door is closed - try to jam it
         {
                 const bool has_spike =
-                        map::player->inv.has_item_in_backpack(
+                        map::g_player->m_inv.has_item_in_backpack(
                                 ItemId::iron_spike);
 
                 if (has_spike)
                 {
                         const bool did_spike_door =
-                                door->try_jam(map::player);
+                                door->try_jam(map::g_player);
 
                         if (did_spike_door)
                         {
-                                map::player->inv.decr_item_type_in_backpack(
+                                map::g_player->m_inv.decr_item_type_in_backpack(
                                         ItemId::iron_spike);
 
                                 const int nr_spikes_left =
-                                        map::player->inv
+                                        map::g_player->m_inv
                                         .item_stack_size_in_backpack(
                                                 ItemId::iron_spike);
 
@@ -103,7 +103,7 @@ void player_try_close_or_jam()
         msg_log::clear();
 
         msg_log::add(
-                "Which direction? " + common_text::cancel_hint,
+                "Which direction? " + common_text::g_cancel_hint,
                 colors::light_white());
 
         const Dir input_dir = query::dir(AllowCenter::no);
@@ -113,9 +113,9 @@ void player_try_close_or_jam()
         if ((input_dir != Dir::END) && (input_dir != Dir::center))
         {
                 // Valid direction
-                const P p(map::player->pos + dir_utils::offset(input_dir));
+                const P p(map::g_player->m_pos + dir_utils::offset(input_dir));
 
-                player_try_close_or_jam_feature(map::cells.at(p).rigid);
+                player_try_close_or_jam_feature(map::g_cells.at(p).rigid);
         }
 }
 

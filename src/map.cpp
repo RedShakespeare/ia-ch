@@ -33,7 +33,7 @@
 // -----------------------------------------------------------------------------
 // Private
 // -----------------------------------------------------------------------------
-static P dims_(0, 0);
+static P s_dims(0, 0);
 
 // -----------------------------------------------------------------------------
 // Cell
@@ -75,34 +75,34 @@ void Cell::reset()
 namespace map
 {
 
-Player* player = nullptr;
+Player* g_player = nullptr;
 
-int dlvl = 0;
+int g_dlvl = 0;
 
-Color wall_color;
+Color g_wall_color;
 
-Array2<Cell> cells(0, 0);
+Array2<Cell> g_cells(0, 0);
 
-Array2<bool> light(0, 0);
-Array2<bool> dark(0, 0);
+Array2<bool> g_light(0, 0);
+Array2<bool> g_dark(0, 0);
 
-Array2<Color> minimap(0, 0);
+Array2<Color> g_minimap(0, 0);
 
-std::vector<Room*> room_list;
+std::vector<Room*> g_room_list;
 
-Array2<Room*> room_map(0, 0);
+Array2<Room*> g_room_map(0, 0);
 
-std::vector<ChokePointData> choke_point_data;
+std::vector<ChokePointData> g_choke_point_data;
 
 void init()
 {
-        dlvl = 0;
+        g_dlvl = 0;
 
-        room_list.clear();
+        g_room_list.clear();
 
         Actor* actor = actor_factory::make(ActorId::player, {0, 0});
 
-        player = static_cast<Player*>(actor);
+        g_player = static_cast<Player*>(actor);
 }
 
 void cleanup()
@@ -110,17 +110,17 @@ void cleanup()
         reset(P(0, 0));
 
         // NOTE: The player object is deleted elsewhere
-        player = nullptr;
+        g_player = nullptr;
 }
 
 void save()
 {
-        saving::put_int(dlvl);
+        saving::put_int(g_dlvl);
 }
 
 void load()
 {
-        dlvl = saving::get_int();
+        g_dlvl = saving::get_int();
 }
 
 void reset(const P& dims)
@@ -131,32 +131,32 @@ void reset(const P& dims)
 
         game_time::reset_turn_type_and_actor_counters();
 
-        for (auto* room : room_list)
+        for (auto* room : g_room_list)
         {
                 delete room;
         }
 
-        room_list.clear();
+        g_room_list.clear();
 
-        choke_point_data.clear();
+        g_choke_point_data.clear();
 
-        for (auto& cell : cells)
+        for (auto& cell : g_cells)
         {
                 cell.reset();
         }
 
-        dims_ = dims;
+        s_dims = dims;
 
-        cells.resize_no_init(dims);
+        g_cells.resize_no_init(dims);
 
-        for (auto& cell : cells)
+        for (auto& cell : g_cells)
         {
                 cell.reset();
         }
 
-        light.resize(dims_);
-        dark.resize(dims_);
-        room_map.resize(dims_);
+        g_light.resize(s_dims);
+        g_dark.resize(s_dims);
+        g_room_map.resize(s_dims);
 
         for (int x = 0; x < w(); ++x)
         {
@@ -177,37 +177,37 @@ void reset(const P& dims)
                         colors::gray_brown(),
                 };
 
-                wall_color = rnd::element(wall_color_bucket);
+                g_wall_color = rnd::element(wall_color_bucket);
         }
         else // Standard wall color
         {
-                wall_color = colors::gray();
+                g_wall_color = colors::gray();
         }
 }
 
 int w()
 {
-        return dims_.x;
+        return s_dims.x;
 }
 
 int h()
 {
-        return dims_.y;
+        return s_dims.y;
 }
 
 P dims()
 {
-        return dims_;
+        return s_dims;
 }
 
 R rect()
 {
-        return R({0, 0}, dims_ - 1);
+        return R({0, 0}, s_dims - 1);
 }
 
 size_t nr_cells()
 {
-        return cells.length();
+        return g_cells.length();
 }
 
 Rigid* put(Rigid* const f)
@@ -216,14 +216,14 @@ Rigid* put(Rigid* const f)
 
         const P p = f->pos();
 
-        Cell& cell = cells.at(p);
+        Cell& cell = g_cells.at(p);
 
         delete cell.rigid;
 
         cell.rigid = f;
 
 #ifndef NDEBUG
-        if (init::is_demo_mapgen)
+        if (init::g_is_demo_mapgen)
         {
                 if (f->id() == FeatureId::floor)
                 {
@@ -232,7 +232,7 @@ Rigid* put(Rigid* const f)
                                 viewport::focus_on(p);
                         }
 
-                        for (auto& cell : cells)
+                        for (auto& cell : g_cells)
                         {
                                 cell.is_seen_by_player =
                                         cell.is_explored = true;
@@ -262,9 +262,9 @@ void update_vision()
 {
         game_time::update_light_map();
 
-        map::player->update_fov();
+        map::g_player->update_fov();
 
-        map::player->update_mon_awareness();
+        map::g_player->update_mon_awareness();
 
         states::draw();
 }
@@ -277,7 +277,7 @@ void make_blood(const P& origin)
                 {
                         const P c = origin + P(dx, dy);
 
-                        Rigid* const f = cells.at(c).rigid;
+                        Rigid* const f = g_cells.at(c).rigid;
 
                         if (f->can_have_blood())
                         {
@@ -300,7 +300,7 @@ void make_gore(const P& origin)
 
                         if (rnd::one_in(3))
                         {
-                                cells.at(c).rigid->try_put_gore();
+                                g_cells.at(c).rigid->try_put_gore();
                         }
                 }
         }
@@ -308,12 +308,12 @@ void make_gore(const P& origin)
 
 void delete_and_remove_room_from_list(Room* const room)
 {
-        for (size_t i = 0; i < room_list.size(); ++i)
+        for (size_t i = 0; i < g_room_list.size(); ++i)
         {
-                if (room_list[i] == room)
+                if (g_room_list[i] == room)
                 {
                         delete room;
-                        room_list.erase(room_list.begin() + i);
+                        g_room_list.erase(g_room_list.begin() + i);
                         return;
                 }
         }
@@ -325,14 +325,14 @@ bool is_pos_seen_by_player(const P& p)
 {
         ASSERT(is_pos_inside_map(p));
 
-        return cells.at(p).is_seen_by_player;
+        return g_cells.at(p).is_seen_by_player;
 }
 
 Actor* actor_at_pos(const P& pos, ActorState state)
 {
-        for (auto* const actor : game_time::actors)
+        for (auto* const actor : game_time::g_actors)
         {
-                if ((actor->pos == pos) && (actor->state == state))
+                if ((actor->m_pos == pos) && (actor->m_state == state))
                 {
                         return actor;
                 }
@@ -343,7 +343,7 @@ Actor* actor_at_pos(const P& pos, ActorState state)
 
 Mob* first_mob_at_pos(const P& pos)
 {
-        for (auto* const mob : game_time::mobs)
+        for (auto* const mob : game_time::g_mobs)
         {
                 if (mob->pos() == pos)
                 {
@@ -360,7 +360,7 @@ void actor_cells(const std::vector<Actor*>& actors, std::vector<P>& out)
 
         for (const auto* const a : actors)
         {
-                out.push_back(a->pos);
+                out.push_back(a->m_pos);
         }
 }
 
@@ -368,9 +368,9 @@ Array2< std::vector<Actor*> > get_actor_array()
 {
         Array2< std::vector<Actor*> > a(dims());
 
-        for (Actor* actor : game_time::actors)
+        for (Actor* actor : game_time::g_actors)
         {
-                const P& p = actor->pos;
+                const P& p = actor->m_pos;
 
                 a.at(p).push_back(actor);
         }
@@ -395,7 +395,7 @@ Actor* random_closest_actor(const P& c, const std::vector<Actor*>& actors)
 
         for (Actor* actor : actors)
         {
-                const int current_dist = king_dist(c, actor->pos);
+                const int current_dist = king_dist(c, actor->m_pos);
 
                 if (current_dist < dist_to_nearest)
                 {
@@ -410,7 +410,7 @@ Actor* random_closest_actor(const P& c, const std::vector<Actor*>& actors)
 
         for (Actor* actor : actors)
         {
-                if (king_dist(c, actor->pos) == dist_to_nearest)
+                if (king_dist(c, actor->m_pos) == dist_to_nearest)
                 {
                         closest_actors.push_back(actor);
                 }

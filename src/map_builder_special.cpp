@@ -27,7 +27,7 @@
 // -----------------------------------------------------------------------------
 MapBuilderDeepOneLair::MapBuilderDeepOneLair() :
         MapBuilderTemplateLevel(),
-        passage_symbol_('1' + rnd::range(0, 1))
+        m_passage_symbol('1' + rnd::range(0, 1))
 {
 
 }
@@ -46,7 +46,7 @@ void MapBuilderDeepOneLair::handle_template_pos(const P& p, const char c)
 
                 if (c == '@')
                 {
-                        map::player->pos = p;
+                        map::g_player->m_pos = p;
                 }
                 else if (c == 'd')
                 {
@@ -76,7 +76,7 @@ void MapBuilderDeepOneLair::handle_template_pos(const P& p, const char c)
         {
                 Rigid* f;
 
-                if (c == passage_symbol_)
+                if (c == m_passage_symbol)
                 {
                         f = new Floor(p);
                 }
@@ -84,7 +84,7 @@ void MapBuilderDeepOneLair::handle_template_pos(const P& p, const char c)
                 {
                         f = new Wall(p);
 
-                        static_cast<Wall*>(f)->type_ = WallType::cave;
+                        static_cast<Wall*>(f)->m_type = WallType::cave;
                 }
 
                 map::put(f);
@@ -95,7 +95,7 @@ void MapBuilderDeepOneLair::handle_template_pos(const P& p, const char c)
         {
                 auto* water = new LiquidShallow(p);
 
-                water->type_ = LiquidType::water;
+                water->m_type = LiquidType::water;
 
                 map::put(water);
         }
@@ -105,7 +105,7 @@ void MapBuilderDeepOneLair::handle_template_pos(const P& p, const char c)
         {
                 auto* water = new LiquidDeep(p);
 
-                water->type_ = LiquidType::water;
+                water->m_type = LiquidType::water;
 
                 map::put(water);
         }
@@ -166,13 +166,13 @@ void MapBuilderIntroForest::handle_template_pos(const P&p, const char c)
         {
                 Floor* const floor = new Floor(p);
 
-                floor->type_ = FloorType::stone_path;
+                floor->m_type = FloorType::stone_path;
 
                 map::put(floor);
 
                 if (c == '@')
                 {
-                        map::player->pos = p;
+                        map::g_player->m_pos = p;
                 }
         }
         break;
@@ -180,7 +180,7 @@ void MapBuilderIntroForest::handle_template_pos(const P&p, const char c)
         case '_':
         {
                 Grass* const grass = new Grass(p);
-                grass->type_ = GrassType::withered;
+                grass->m_type = GrassType::withered;
                 map::put(grass);
         }
         break;
@@ -209,7 +209,7 @@ void MapBuilderIntroForest::handle_template_pos(const P&p, const char c)
         {
                 bool is_door_adj = false;
 
-                for (const P& d : dir_utils::dir_list)
+                for (const P& d : dir_utils::g_dir_list)
                 {
                         const char adj_c = get_template().at(p + d);
 
@@ -251,7 +251,7 @@ void MapBuilderIntroForest::handle_template_pos(const P&p, const char c)
         case '&':
         {
                 // Store this position for placing player graves
-                possible_grave_positions_.push_back(p);
+                m_possible_grave_positions.push_back(p);
         }
         // fallthrough
         case ',':
@@ -271,7 +271,7 @@ void MapBuilderIntroForest::handle_template_pos(const P&p, const char c)
         {
                 auto liquid = new LiquidShallow(p);
 
-                liquid->type_ = LiquidType::water;
+                liquid->m_type = LiquidType::water;
 
                 map::put(liquid);
         }
@@ -362,8 +362,8 @@ void MapBuilderIntroForest::on_template_built()
         // NOTE: This assumes that the grave positions are added from left to
         // right when building the template. Here we iterate backwards over the
         // positions, starting with the highest score.
-        for (auto it = std::rbegin(possible_grave_positions_);
-             it != std::rend(possible_grave_positions_);
+        for (auto it = std::rbegin(m_possible_grave_positions);
+             it != std::rend(m_possible_grave_positions);
              ++it)
         {
                 const P& pos = *it;
@@ -412,7 +412,7 @@ void MapBuilderIntroForest::on_template_built()
 // -----------------------------------------------------------------------------
 MapBuilderEgypt::MapBuilderEgypt() :
         MapBuilderTemplateLevel(),
-        stair_symbol_('1' + rnd::range(0, 3))
+        m_stair_symbol('1' + rnd::range(0, 3))
 {
 
 }
@@ -433,10 +433,10 @@ void MapBuilderEgypt::handle_template_pos(const P&p, const char c)
         {
                 if (c == '@')
                 {
-                        map::player->pos = p;
+                        map::g_player->m_pos = p;
                 }
 
-                if (c == stair_symbol_)
+                if (c == m_stair_symbol)
                 {
                         map::put(new Stairs(p));
                 }
@@ -467,7 +467,7 @@ void MapBuilderEgypt::handle_template_pos(const P&p, const char c)
                         Actor* const actor =
                                 actor_factory::make(actor_id, p);
 
-                        static_cast<Mon*>(actor)->is_roaming_allowed_ =
+                        static_cast<Mon*>(actor)->m_is_roaming_allowed =
                                 MonRoamingAllowed::no;
                 }
         }
@@ -477,7 +477,7 @@ void MapBuilderEgypt::handle_template_pos(const P&p, const char c)
         {
                 Wall* wall = new Wall(p);
 
-                wall->type_ = WallType::egypt;
+                wall->m_type = WallType::egypt;
 
                 map::put(wall);
         }
@@ -511,7 +511,7 @@ void MapBuilderEgypt::handle_template_pos(const P&p, const char c)
         {
                 auto liquid = new LiquidShallow(p);
 
-                liquid->type_ = LiquidType::water;
+                liquid->m_type = LiquidType::water;
 
                 map::put(liquid);
         }
@@ -550,7 +550,7 @@ void MapBuilderRatCave::handle_template_pos(const P& p, const char c)
 
                 if (c == '@')
                 {
-                        map::player->pos = p;
+                        map::g_player->m_pos = p;
                 }
                 else if (c == '1')
                 {
@@ -577,7 +577,7 @@ void MapBuilderRatCave::handle_template_pos(const P& p, const char c)
 
                         prop->set_indefinite();
 
-                        actor->properties.apply(
+                        actor->m_properties.apply(
                                 prop,
                                 PropSrc::intr,
                                 false,
@@ -590,7 +590,7 @@ void MapBuilderRatCave::handle_template_pos(const P& p, const char c)
         {
                 auto* wall = new Wall(p);
 
-                wall->type_ = WallType::cave;
+                wall->m_type = WallType::cave;
 
                 map::put(wall);
         }
@@ -610,7 +610,7 @@ void MapBuilderRatCave::handle_template_pos(const P& p, const char c)
                 {
                         auto* wall = new Wall(p);
 
-                        wall->type_ = WallType::common;
+                        wall->m_type = WallType::common;
 
                         map::put(wall);
                 }
@@ -640,11 +640,11 @@ void MapBuilderRatCave::handle_template_pos(const P& p, const char c)
 void MapBuilderRatCave::on_template_built()
 {
         // Set all actors to non-roaming (they will be set to roaming later)
-        for (Actor* const actor : game_time::actors)
+        for (Actor* const actor : game_time::g_actors)
         {
                 if (!actor->is_player())
                 {
-                        static_cast<Mon*>(actor)->is_roaming_allowed_ =
+                        static_cast<Mon*>(actor)->m_is_roaming_allowed =
                                 MonRoamingAllowed::no;
                 }
         }
@@ -670,7 +670,7 @@ void MapBuilderBoss::handle_template_pos(const P& p, const char c)
 
                 if (c == '@')
                 {
-                        map::player->pos = p;
+                        map::g_player->m_pos = p;
                 }
                 else if (c == 'P')
                 {
@@ -699,7 +699,7 @@ void MapBuilderBoss::handle_template_pos(const P& p, const char c)
         {
                 Wall* const wall = new Wall(p);
 
-                wall->type_ = WallType::egypt;
+                wall->m_type = WallType::egypt;
 
                 map::put(wall);
         }
@@ -724,7 +724,7 @@ void MapBuilderBoss::on_template_built()
         // Make the High Priest leader of all other monsters
         Actor* high_priest = nullptr;
 
-        for (Actor* const actor : game_time::actors)
+        for (Actor* const actor : game_time::g_actors)
         {
                 if (actor->id() == ActorId::the_high_priest)
                 {
@@ -734,11 +734,11 @@ void MapBuilderBoss::on_template_built()
                 }
         }
 
-        for (Actor* const actor : game_time::actors)
+        for (Actor* const actor : game_time::g_actors)
         {
                 if (!actor->is_player() && (actor != high_priest))
                 {
-                        static_cast<Mon*>(actor)->leader_ = high_priest;
+                        static_cast<Mon*>(actor)->m_leader = high_priest;
                 }
         }
 }
@@ -753,7 +753,7 @@ std::unique_ptr<MapController> MapBuilderBoss::map_controller() const
 // -----------------------------------------------------------------------------
 void MapBuilderTrapez::handle_template_pos(const P& p, const char c)
 {
-        map::dark.at(p) = true;
+        map::g_dark.at(p) = true;
 
         switch (c)
         {
@@ -765,7 +765,7 @@ void MapBuilderTrapez::handle_template_pos(const P& p, const char c)
 
                 if (c == '@')
                 {
-                        map::player->pos = p;
+                        map::g_player->m_pos = p;
                 }
                 else if (c == 'o')
                 {
@@ -778,7 +778,7 @@ void MapBuilderTrapez::handle_template_pos(const P& p, const char c)
         {
                 Wall* const wall = new Wall(p);
 
-                wall->type_ = WallType::egypt;
+                wall->m_type = WallType::egypt;
 
                 map::put(wall);
         }

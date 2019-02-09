@@ -14,161 +14,167 @@
 // -----------------------------------------------------------------------------
 // Private
 // -----------------------------------------------------------------------------
-static void put_templ_features(const Array2<char>& templ,
-                               const P& p0)
+static void put_templ_features(
+        const Array2<char>& templ,
+        const P& p0)
 {
-    const P dims(templ.dims());
+        const P dims(templ.dims());
 
-    for (int templ_x = 0; templ_x < dims.x; ++templ_x)
-    {
-        for (int templ_y = 0; templ_y < dims.y; ++templ_y)
+        for (int templ_x = 0; templ_x < dims.x; ++templ_x)
         {
-            const P templ_p(templ_x, templ_y);
+                for (int templ_y = 0; templ_y < dims.y; ++templ_y)
+                {
+                        const P templ_p(templ_x, templ_y);
 
-            const P p(p0 + templ_p);
+                        const P p(p0 + templ_p);
 
-            const char c = templ.at(templ_p);
+                        const char c = templ.at(templ_p);
 
-            bool is_room_cell = true;
+                        bool is_room_cell = true;
 
-            switch (c)
-            {
-            case '.':
-            {
-                map::put(new Floor(p));
-            }
-            break;
+                        switch (c)
+                        {
+                        case '.':
+                        {
+                                map::put(new Floor(p));
+                        }
+                        break;
 
-            case '#':
-            {
-                map::put(new Wall(p));
+                        case '#':
+                        {
+                                map::put(new Wall(p));
 
-                is_room_cell = false;
-            }
-            break;
+                                is_room_cell = false;
+                        }
+                        break;
 
-            case '-':
-            {
-                map::put(new Altar(p));
-            }
-            break;
+                        case '-':
+                        {
+                                map::put(new Altar(p));
+                        }
+                        break;
 
-            case '~':
-            {
-                auto* liquid = new LiquidShallow(p);
+                        case '~':
+                        {
+                                auto* liquid = new LiquidShallow(p);
 
-                liquid->type_ = LiquidType::water;
+                                liquid->m_type = LiquidType::water;
 
-                map::put(liquid);
-            }
-            break;
+                                map::put(liquid);
+                        }
+                        break;
 
-            case '0':
-            {
-                map::put(new Brazier(p));
-            }
-            break;
+                        case '0':
+                        {
+                                map::put(new Brazier(p));
+                        }
+                        break;
 
-            case 'P':
-            {
-                map::put(new Statue(p));
-            }
-            break;
+                        case 'P':
+                        {
+                                map::put(new Statue(p));
+                        }
+                        break;
 
-            case '+':
-            {
-                Wall* mimic = new Wall(p);
+                        case '+':
+                        {
+                                Wall* mimic = new Wall(p);
 
-                map::put(new Door(p, mimic, DoorType::wood));
-            }
-            break;
+                                map::put(new Door(p, mimic, DoorType::wood));
+                        }
+                        break;
 
-            case 'x':
-            {
-                map::put(new Door(p, nullptr, DoorType::gate));
-            }
-            break;
+                        case 'x':
+                        {
+                                map::put(new Door(p, nullptr, DoorType::gate));
+                        }
+                        break;
 
-            case '=':
-            {
-                map::put(new Grate(p));
-            }
-            break;
+                        case '=':
+                        {
+                                map::put(new Grate(p));
+                        }
+                        break;
 
-            case '"':
-            {
-                map::put(new Vines(p));
-            }
-            break;
+                        case '"':
+                        {
+                                map::put(new Vines(p));
+                        }
+                        break;
 
-            case '*':
-            {
-                map::put(new Chains(p));
-            }
-            break;
+                        case '*':
+                        {
+                                map::put(new Chains(p));
+                        }
+                        break;
 
-            // (Space)
-            case ' ':
-            {
-                // Do nothing
+                        // (Space)
+                        case ' ':
+                        {
+                                // Do nothing
 
-                is_room_cell = false;
-            }
-            break;
+                                is_room_cell = false;
+                        }
+                        break;
 
-            default:
-            {
-                TRACE << "Illegal template character \"" << c << "\""
-                      << " (at template pos "
-                      << templ_x << ", " << templ_y << ")"
-                      << std::endl;
+                        default:
+                        {
+                                TRACE << "Illegal template character \""
+                                      << c
+                                      << "\""
+                                      << " (at template pos "
+                                      << templ_x
+                                      << ", "
+                                      << templ_y
+                                      << ")"
+                                      << std::endl;
 
-                // Release mode robustness: invalidate the map
-                mapgen::is_map_valid = false;
+                                // Release mode robustness: invalidate the map
+                                mapgen::g_is_map_valid = false;
 
-                ASSERT(false);
+                                ASSERT(false);
 
-                return;
-            }
-            break;
+                                return;
+                        }
+                        break;
 
-            } // switch
+                        } // switch
 
-            if (!is_room_cell)
-            {
-                map::room_map.at(p) = nullptr;
-            }
-        } // y loop
-    } // x loop
+                        if (!is_room_cell)
+                        {
+                                map::g_room_map.at(p) = nullptr;
+                        }
+                } // y loop
+        } // x loop
 }
 
 static Room* make_template_room(const RoomTempl& templ, Region& region)
 {
-    const P dims(templ.symbols.dims());
+        const P dims(templ.symbols.dims());
 
-    // Random position inside the region
-    const P p0(region.r.p0.x + rnd::range(0, region.r.w() - dims.x),
-               region.r.p0.y + rnd::range(0, region.r.h() - dims.y));
+        // Random position inside the region
+        const P p0(region.r.p0.x + rnd::range(0, region.r.w() - dims.x),
+                   region.r.p0.y + rnd::range(0, region.r.h() - dims.y));
 
-    const P p1(p0.x + dims.x - 1,
-               p0.y + dims.y - 1);
+        const P p1(p0.x + dims.x - 1,
+                   p0.y + dims.y - 1);
 
-    const R r(p0, p1);
+        const R r(p0, p1);
 
-    auto* room = new TemplateRoom(r, templ.type);
+        auto* room = new TemplateRoom(r, templ.type);
 
-    mapgen::register_room(*room);
+        mapgen::register_room(*room);
 
-    // Place features on the map based on the template
+        // Place features on the map based on the template
 
-    // NOTE: This must be done AFTER "register_room", since it may remove some
-    // of its cells from the global room map (e.g. untouched cells)
-    put_templ_features(templ.symbols, p0);
+        // NOTE: This must be done AFTER "register_room", since it may remove
+        // some of its cells from the global room map (e.g. untouched cells)
+        put_templ_features(templ.symbols, p0);
 
-    region.main_room = room;
-    region.is_free = false;
+        region.main_room = room;
+        region.is_free = false;
 
-    return room;
+        return room;
 
 } // make_template_room
 
@@ -180,67 +186,70 @@ namespace mapgen
 
 Room* make_room(Region& region)
 {
-    ASSERT(!region.main_room);
+        ASSERT(!region.main_room);
 
-    ASSERT(region.is_free);
+        ASSERT(region.is_free);
 
-    const int templ_room_one_in_n = 7;
+        const int templ_room_one_in_n = 7;
 
-    // Make a templated room?
-    if ((map::dlvl <= dlvl_last_mid_game) &&
-        rnd::one_in(templ_room_one_in_n))
-    {
-        const P max_dims(region.r.dims());
-
-        const auto* templ = map_templates::random_room_templ(max_dims);
-
-        if (templ)
+        // Make a templated room?
+        if ((map::g_dlvl <= g_dlvl_last_mid_game) &&
+            rnd::one_in(templ_room_one_in_n))
         {
-            auto& symbols = templ->symbols;
+                const P max_dims(region.r.dims());
 
-            if ((symbols.dims().x > max_dims.x) ||
-                (symbols.dims().y > max_dims.y))
-            {
-                ASSERT(false);
-            }
-            else
-            {
-                Room* const room = make_template_room(*templ, region);
+                const auto* templ = map_templates::random_room_templ(max_dims);
 
-                map_templates::on_base_room_template_placed(*templ);
+                if (templ)
+                {
+                        auto& symbols = templ->symbols;
 
-                return room;
-            }
+                        if ((symbols.dims().x > max_dims.x) ||
+                            (symbols.dims().y > max_dims.y))
+                        {
+                                ASSERT(false);
+                        }
+                        else
+                        {
+                                Room* const room =
+                                        make_template_room(*templ, region);
+
+                                map_templates::on_base_room_template_placed(
+                                        *templ);
+
+                                return room;
+                        }
+                }
+
+                // Failed to make a templated room - fine, make a normal
+                // procedural room
         }
 
-        // Failed to make a templated room - fine, make a normal procedural room
-    }
+        // Make a procedural room
 
-    // Make a procedural room
+        const R room_rect = region.rnd_room_rect();
 
-    const R room_rect = region.rnd_room_rect();
+        auto* room = room_factory::make_random_room(room_rect, IsSubRoom::no);
 
-    auto* room = room_factory::make_random_room(room_rect, IsSubRoom::no);
+        register_room(*room);
 
-    register_room(*room);
+        make_floor(*room);
 
-    make_floor(*room);
+        region.main_room = room;
+        region.is_free = false;
 
-    region.main_room = room;
-    region.is_free = false;
-
-    return room;
+        return room;
 }
 
 Room* make_room(const R& r, const IsSubRoom is_sub_room)
 {
-    auto* room = room_factory::make_random_room(r, is_sub_room);
+        auto* room = room_factory::make_random_room(r, is_sub_room);
 
-    register_room(*room);
+        register_room(*room);
 
-    make_floor(*room);
+        make_floor(*room);
 
-    return room;
+        return room;
 }
 
 } // mapgen

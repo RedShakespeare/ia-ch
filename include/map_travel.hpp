@@ -12,12 +12,8 @@
 
 #include "map_builder.hpp"
 
-// TODO: Rename "map travel" to "dungeon"
-
 namespace map_travel
 {
-
-extern std::vector<MapType> map_list;
 
 void init();
 

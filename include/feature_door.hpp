@@ -87,17 +87,17 @@ public:
 
         bool is_open() const
         {
-                return is_open_;
+                return m_is_open;
         }
 
         bool is_secret() const
         {
-                return is_secret_;
+                return m_is_secret;
         }
 
         bool is_stuck() const
         {
-                return is_stuck_;
+                return m_is_stuck;
         }
 
         Matl matl() const override;
@@ -108,8 +108,8 @@ public:
 
         void set_stuck()
         {
-                is_open_ = false;
-                is_stuck_ = true;
+                m_is_open = false;
+                m_is_stuck = true;
         }
 
         DidOpen open(Actor* const actor_opening) override;
@@ -125,12 +125,12 @@ public:
 
         const Wall* mimic() const
         {
-                return mimic_feature_;
+                return m_mimic_feature;
         }
 
         DoorType type() const
         {
-                return type_;
+                return m_type;
         }
 
 private:
@@ -142,15 +142,15 @@ private:
                 const DmgMethod dmg_method,
                 Actor* const actor) override;
 
-        const Wall* const mimic_feature_ {nullptr};
+        const Wall* const m_mimic_feature {nullptr};
 
-        int nr_spikes_ {0};
+        int m_nr_spikes {0};
 
-        bool is_open_ {false};
-        bool is_stuck_ {false};
-        bool is_secret_ {false};
+        bool m_is_open {false};
+        bool m_is_stuck {false};
+        bool m_is_secret {false};
 
-        DoorType type_ {DoorType::wood};
+        DoorType m_type {DoorType::wood};
 
 }; // Door
 

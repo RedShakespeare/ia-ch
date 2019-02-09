@@ -38,7 +38,7 @@ static void msg_reload_fumble(const Actor& actor, const Item& ammo)
         }
         else // Is monster
         {
-                if (map::player->can_see_actor(actor))
+                if (map::g_player->can_see_actor(actor))
                 {
                         const std::string name_the =
                                 text_format::first_to_upper(
@@ -69,7 +69,7 @@ static void msg_reloaded(
 
                         msg_log::add(
                                 "I reload my " + wpn_name +
-                                " (" + std::to_string(wpn.ammo_loaded_) +
+                                " (" + std::to_string(wpn.m_ammo_loaded) +
                                 "/" +
                                 std::to_string(wpn.data().ranged.max_ammo) +
                                 ").");
@@ -80,7 +80,7 @@ static void msg_reloaded(
 
                         msg_log::add(
                                 "I load " + ammo_name +
-                                " (" + std::to_string(wpn.ammo_loaded_) +
+                                " (" + std::to_string(wpn.m_ammo_loaded) +
                                 "/" +
                                 std::to_string(wpn.data().ranged.max_ammo) +
                                 ").");
@@ -88,7 +88,7 @@ static void msg_reloaded(
         }
         else // Is monster
         {
-                if (map::player->can_see_actor(actor))
+                if (map::g_player->can_see_actor(actor))
                 {
                         const std::string name_the =
                                 text_format::first_to_upper(
@@ -128,7 +128,7 @@ void try_reload(Actor& actor, Item* const item_to_reload)
                 return;
         }
 
-        const int ammo_loaded_before = wpn->ammo_loaded_;
+        const int ammo_loaded_before = wpn->m_ammo_loaded;
 
         if (ammo_loaded_before >= wpn_max_ammo)
         {
@@ -141,7 +141,7 @@ void try_reload(Actor& actor, Item* const item_to_reload)
 
         const ItemId ammo_item_id = wpn->data().ranged.ammo_item_id;
 
-        const ItemData& ammo_data = item_data::data[(size_t)ammo_item_id];
+        const ItemData& ammo_data = item_data::g_data[(size_t)ammo_item_id];
 
         const bool is_using_mag = ammo_data.type == ItemType::ammo_mag;
 
@@ -152,9 +152,9 @@ void try_reload(Actor& actor, Item* const item_to_reload)
         int max_mag_ammo = 0;
 
         // Find ammo in backpack to reload from
-        for (size_t i = 0; i < actor.inv.backpack.size(); ++i)
+        for (size_t i = 0; i < actor.m_inv.m_backpack.size(); ++i)
         {
-                Item* const item = actor.inv.backpack[i];
+                Item* const item = actor.m_inv.m_backpack[i];
 
                 if (item->id() == ammo_item_id)
                 {
@@ -165,7 +165,7 @@ void try_reload(Actor& actor, Item* const item_to_reload)
                                 const AmmoMag* const mag =
                                         static_cast<const AmmoMag*>(item);
 
-                                const int nr_ammo = mag->ammo_;
+                                const int nr_ammo = mag->m_ammo;
 
                                 if (nr_ammo > max_mag_ammo)
                                 {
@@ -218,9 +218,9 @@ void try_reload(Actor& actor, Item* const item_to_reload)
         }
 
         // Being blinded or terrified makes it harder to reload
-        const bool is_blind = !actor.properties.allow_see();
+        const bool is_blind = !actor.m_properties.allow_see();
 
-        const bool is_terrified = actor.properties.has(PropId::terrified);
+        const bool is_terrified = actor.m_properties.has(PropId::terrified);
 
         const int k = 48;
 
@@ -238,12 +238,12 @@ void try_reload(Actor& actor, Item* const item_to_reload)
                 {
                         AmmoMag* mag_item = static_cast<AmmoMag*>(ammo_item);
 
-                        wpn->ammo_loaded_ = mag_item->ammo_;
+                        wpn->m_ammo_loaded = mag_item->m_ammo;
 
                         msg_reloaded(actor, *wpn, *ammo_item);
 
                         // Destroy loaded mag
-                        actor.inv.remove_item_in_backpack_with_idx(
+                        actor.m_inv.remove_item_in_backpack_with_idx(
                                 ammo_backpack_idx,
                                 true);
 
@@ -254,18 +254,18 @@ void try_reload(Actor& actor, Item* const item_to_reload)
 
                                 mag_item = static_cast<AmmoMag*>(ammo_item);
 
-                                mag_item->ammo_ = ammo_loaded_before;
+                                mag_item->m_ammo = ammo_loaded_before;
 
-                                actor.inv.put_in_backpack(mag_item);
+                                actor.m_inv.put_in_backpack(mag_item);
                         }
                 }
                 else // Not using mag
                 {
-                        ++wpn->ammo_loaded_;
+                        ++wpn->m_ammo_loaded;
 
                         msg_reloaded(actor, *wpn, *ammo_item);
 
-                        actor.inv.decr_item_in_backpack(ammo_backpack_idx);
+                        actor.m_inv.decr_item_in_backpack(ammo_backpack_idx);
                 }
         }
 
@@ -274,11 +274,11 @@ void try_reload(Actor& actor, Item* const item_to_reload)
 
 void player_arrange_pistol_mags()
 {
-        Player& player = *map::player;
+        Player& player = *map::g_player;
 
         Wpn* wielded_pistol = nullptr;
 
-        Item* const wielded_item = player.inv.item_in_slot(SlotId::wpn);
+        Item* const wielded_item = player.m_inv.item_in_slot(SlotId::wpn);
 
         if (wielded_item && wielded_item->id() == ItemId::pistol)
         {
@@ -298,11 +298,11 @@ void player_arrange_pistol_mags()
         size_t min_mag_backpack_idx = 0;
 
         const int pistol_max_ammo =
-                item_data::data[(size_t)ItemId::pistol].ranged.max_ammo;
+                item_data::g_data[(size_t)ItemId::pistol].ranged.max_ammo;
 
-        for (size_t i = 0; i < player.inv.backpack.size(); ++i)
+        for (size_t i = 0; i < player.m_inv.m_backpack.size(); ++i)
         {
-                Item* const item = player.inv.backpack[i];
+                Item* const item = player.m_inv.m_backpack[i];
 
                 if (item->id() != ItemId::pistol_mag)
                 {
@@ -311,7 +311,7 @@ void player_arrange_pistol_mags()
 
                 AmmoMag* const mag = static_cast<AmmoMag*>(item);
 
-                if (mag->ammo_ == pistol_max_ammo)
+                if (mag->m_ammo == pistol_max_ammo)
                 {
                         continue;
                 }
@@ -322,17 +322,17 @@ void player_arrange_pistol_mags()
                 // purpose of this is that we should try avoid picking the same
                 // mag as min and max (e.g. if we have two mags with 6 bullets
                 // each, then we want to move a bullet).
-                if (mag->ammo_ <= min_mag_ammo)
+                if (mag->m_ammo <= min_mag_ammo)
                 {
-                        min_mag_ammo = mag->ammo_;
+                        min_mag_ammo = mag->m_ammo;
                         min_mag = mag;
                         min_mag_backpack_idx = i;
                 }
 
                 // Use the first "most full mag" that we find, as the max mag
-                if (mag->ammo_ > max_mag_ammo)
+                if (mag->m_ammo > max_mag_ammo)
                 {
-                        max_mag_ammo = mag->ammo_;
+                        max_mag_ammo = mag->m_ammo;
                         max_mag = mag;
                 }
         }
@@ -345,10 +345,10 @@ void player_arrange_pistol_mags()
 
         // If wielded pistol is not fully loaded, move round from least full mag
         if (wielded_pistol &&
-            wielded_pistol->ammo_loaded_ < pistol_max_ammo)
+            wielded_pistol->m_ammo_loaded < pistol_max_ammo)
         {
-                --min_mag->ammo_;
-                ++wielded_pistol->ammo_loaded_;
+                --min_mag->m_ammo;
+                ++wielded_pistol->m_ammo_loaded;
 
                 const std::string name =
                         wielded_pistol->name(
@@ -363,15 +363,15 @@ void player_arrange_pistol_mags()
         // Otherwise, if two non-full mags exists, move from least to most full
         else if (max_mag && (min_mag != max_mag))
         {
-                --min_mag->ammo_;
-                ++max_mag->ammo_;
+                --min_mag->m_ammo;
+                ++max_mag->m_ammo;
 
                 msg_log::add("I move a round from one magazine to another.");
         }
 
-        if (min_mag->ammo_ == 0)
+        if (min_mag->m_ammo == 0)
         {
-                player.inv.remove_item_in_backpack_with_idx(
+                player.m_inv.remove_item_in_backpack_with_idx(
                         min_mag_backpack_idx,
                         true);
         }

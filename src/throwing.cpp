@@ -40,15 +40,15 @@ namespace throwing
 
 void player_throw_lit_explosive(const P& aim_cell)
 {
-        ASSERT(map::player->active_explosive_);
+        ASSERT(map::g_player->m_active_explosive);
 
-        auto* const explosive = map::player->active_explosive_;
+        auto* const explosive = map::g_player->m_active_explosive;
 
         const int max_range = explosive->data().ranged.max_range;
 
         auto path =
                 line_calc::calc_new_line(
-                        map::player->pos,
+                        map::g_player->m_pos,
                         aim_cell,
                         true,
                         max_range,
@@ -59,7 +59,7 @@ void player_throw_lit_explosive(const P& aim_cell)
         {
                 const P p = path[i];
 
-                const auto* f = map::cells.at(p).rigid;
+                const auto* f = map::g_cells.at(p).rigid;
 
                 if (!f->is_projectile_passable())
                 {
@@ -84,7 +84,7 @@ void player_throw_lit_explosive(const P& aim_cell)
                 {
                         states::draw();
 
-                        if (map::cells.at(p).is_seen_by_player &&
+                        if (map::g_cells.at(p).is_seen_by_player &&
                             viewport::is_in_view(p))
                         {
                                 io::draw_symbol(
@@ -102,7 +102,7 @@ void player_throw_lit_explosive(const P& aim_cell)
                 }
         }
 
-        const auto f_id = map::cells.at(end_pos).rigid->id();
+        const auto f_id = map::g_cells.at(end_pos).rigid->id();
 
         if (f_id != FeatureId::chasm &&
             f_id != FeatureId::liquid_deep)
@@ -112,7 +112,7 @@ void player_throw_lit_explosive(const P& aim_cell)
 
         delete explosive;
 
-        map::player->active_explosive_ = nullptr;
+        map::g_player->m_active_explosive = nullptr;
 
         game_time::tick();
 }
@@ -127,14 +127,14 @@ void throw_item(
         ThrowAttData att_data(
                 &actor_throwing,
                 tgt_pos,
-                actor_throwing.pos,
+                actor_throwing.m_pos,
                 item_thrown);
 
         TRACE << "Calculating throwing path" << std::endl;
 
         const auto path =
                 line_calc::calc_new_line(
-                        actor_throwing.pos,
+                        actor_throwing.m_pos,
                         tgt_pos,
                         false,
                         999,
@@ -146,7 +146,7 @@ void throw_item(
 
         const std::string item_name_a = item_thrown.name(ItemRefType::a);
 
-        if (&actor_throwing == map::player)
+        if (&actor_throwing == map::g_player)
         {
                 msg_log::clear();
 
@@ -156,7 +156,7 @@ void throw_item(
         {
                 const P& p = path.front();
 
-                if (map::cells.at(p).is_seen_by_player)
+                if (map::g_cells.at(p).is_seen_by_player)
                 {
                         const std::string name_the =
                                 text_format::first_to_upper(
@@ -206,7 +206,7 @@ void throw_item(
 
                 if (actor_here &&
                     ((pos == tgt_pos) ||
-                     (actor_here->data->actor_size >= ActorSize::humanoid)))
+                     (actor_here->m_data->actor_size >= ActorSize::humanoid)))
                 {
                         att_data = ThrowAttData(&actor_throwing,
                                                 tgt_pos,
@@ -220,7 +220,7 @@ void throw_item(
                                         ItemType::potion;
 
                                 const bool player_see_cell =
-                                        map::cells.at(pos).is_seen_by_player;
+                                        map::g_cells.at(pos).is_seen_by_player;
 
                                 if (player_see_cell)
                                 {
@@ -250,7 +250,7 @@ void throw_item(
                                 if (player_see_cell)
                                 {
                                         const std::string defender_name =
-                                                map::player->can_see_actor(
+                                                map::g_player->can_see_actor(
                                                         *actor_here)
                                                 ? text_format::first_to_upper(
                                                         actor_here->name_the())
@@ -292,7 +292,7 @@ void throw_item(
                                         delete &item_thrown;
 
                                         // Attacking ends cloaking
-                                        actor_throwing.properties
+                                        actor_throwing.m_properties
                                                 .end_prop(PropId::cloaked);
 
                                         game_time::tick();
@@ -319,7 +319,7 @@ void throw_item(
                         }
                 } // if actor hit
 
-                const auto* feature_here = map::cells.at(pos).rigid;
+                const auto* feature_here = map::g_cells.at(pos).rigid;
 
                 if (!feature_here->is_projectile_passable())
                 {
@@ -329,7 +329,7 @@ void throw_item(
                         break;
                 }
 
-                if (map::cells.at(pos).is_seen_by_player &&
+                if (map::g_cells.at(pos).is_seen_by_player &&
                     viewport::is_in_view(pos))
                 {
                         io::draw_symbol(
@@ -365,7 +365,7 @@ void throw_item(
                 delete &item_thrown;
 
                 // Attacking ends cloaking
-                actor_throwing.properties.end_prop(PropId::cloaked);
+                actor_throwing.m_properties.end_prop(PropId::cloaked);
 
                 game_time::tick();
 
@@ -376,7 +376,7 @@ void throw_item(
 
         // Set a collision sound effect (this may not necessarily get executed)
         const AlertsMon alerts =
-                (&actor_throwing == map::player)
+                (&actor_throwing == map::g_player)
                 ? AlertsMon::yes
                 : AlertsMon::no;
 
@@ -439,10 +439,10 @@ void throw_item(
         if (!is_actor_hit)
         {
                 const Matl matl_at_last_pos =
-                        map::cells.at(pos).rigid->matl();
+                        map::g_cells.at(pos).rigid->matl();
 
                 const Matl matl_at_drop_pos =
-                        map::cells.at(drop_pos).rigid->matl();
+                        map::g_cells.at(drop_pos).rigid->matl();
 
                 if (is_noisy_matl(matl_at_last_pos) ||
                     is_noisy_matl(matl_at_drop_pos))
@@ -453,7 +453,7 @@ void throw_item(
         }
 
         // Attacking ends cloaking
-        actor_throwing.properties.end_prop(PropId::cloaked);
+        actor_throwing.m_properties.end_prop(PropId::cloaked);
 
         game_time::tick();
 

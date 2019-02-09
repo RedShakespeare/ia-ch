@@ -32,7 +32,7 @@ static BinaryAnswer query_player_attack_mon_with_ranged_wpn(
 {
         const std::string wpn_name = wpn.name(ItemRefType::a);
 
-        const bool can_see_mon = map::player->can_see_actor(mon);
+        const bool can_see_mon = map::g_player->can_see_actor(mon);
 
         const std::string mon_name =
                 can_see_mon
@@ -46,7 +46,7 @@ static BinaryAnswer query_player_attack_mon_with_ranged_wpn(
                         " with " +
                         wpn_name +
                         "? " +
-                        common_text::yes_or_no_hint),
+                        common_text::g_yes_or_no_hint),
                 colors::light_white());
 
         const auto answer = query::yes_or_no();
@@ -56,14 +56,14 @@ static BinaryAnswer query_player_attack_mon_with_ranged_wpn(
 
 static void player_bump_known_hostile_mon(Mon& mon)
 {
-        auto& player = *map::player;
+        auto& player = *map::g_player;
 
-        if (!player.properties.allow_attack_melee(Verbosity::verbose))
+        if (!player.m_properties.allow_attack_melee(Verbosity::verbose))
         {
                 return;
         }
 
-        Item* const wpn_item = player.inv.item_in_slot(SlotId::wpn);
+        Item* const wpn_item = player.m_inv.item_in_slot(SlotId::wpn);
 
         if (!wpn_item)
         {
@@ -92,11 +92,11 @@ static void player_bump_known_hostile_mon(Mon& mon)
 
         attack::melee(
                 &player,
-                player.pos,
+                player.m_pos,
                 mon,
                 wpn);
 
-        player.tgt_ = &mon;
+        player.m_tgt = &mon;
 }
 
 static void player_bump_unkown_hostile_mon(Mon& mon)
@@ -108,17 +108,17 @@ static void player_bump_unkown_hostile_mon(Mon& mon)
 
 static void player_bump_allied_mon(Mon& mon)
 {
-        if (mon.player_aware_of_me_counter_ > 0)
+        if (mon.m_player_aware_of_me_counter > 0)
         {
                 std::string mon_name =
-                        map::player->can_see_actor(mon)
+                        map::g_player->can_see_actor(mon)
                         ? mon.name_a()
                         : "it";
 
                 msg_log::add("I displace " + mon_name + ".");
         }
 
-        mon.pos = map::player->pos;
+        mon.m_pos = map::g_player->m_pos;
 }
 
 static void player_walk_on_item(Item* const item)
@@ -149,14 +149,14 @@ static void player_walk_on_item(Item* const item)
 
 static void print_corpses_at_player_msgs()
 {
-        for (auto* const actor : game_time::actors)
+        for (auto* const actor : game_time::g_actors)
         {
-                if ((actor->pos == map::player->pos) &&
-                    (actor->state == ActorState::corpse))
+                if ((actor->m_pos == map::g_player->m_pos) &&
+                    (actor->m_state == ActorState::corpse))
                 {
                         const std::string name =
                                 text_format::first_to_upper(
-                                        actor->data->corpse_name_a);
+                                        actor->m_data->corpse_name_a);
 
                         msg_log::add(name + ".");
                 }
@@ -165,7 +165,8 @@ static void print_corpses_at_player_msgs()
 
 static bool is_player_staggering_from_wounds()
 {
-        Prop* const wound_prop = map::player->properties.prop(PropId::wound);
+        Prop* const wound_prop =
+                map::g_player->m_properties.prop(PropId::wound);
 
         int nr_wounds = 0;
 
@@ -193,7 +194,7 @@ static AllowAction pre_bump_features(Actor& actor, const P& tgt)
                 }
         }
 
-        const auto result = map::cells.at(tgt).rigid->pre_bump(actor);
+        const auto result = map::g_cells.at(tgt).rigid->pre_bump(actor);
 
         return result;
 }
@@ -207,7 +208,7 @@ static void bump_features(Actor& actor, const P& tgt)
                 mob->bump(actor);
         }
 
-        map::cells.at(tgt).rigid->bump(actor);
+        map::g_cells.at(tgt).rigid->bump(actor);
 }
 
 static void on_player_waiting()
@@ -217,13 +218,13 @@ static void on_player_waiting()
         // Ghoul feed on corpses?
         if (player_bon::bg() == Bg::ghoul)
         {
-                did_action = map::player->try_eat_corpse();
+                did_action = map::g_player->try_eat_corpse();
         }
 
         if (did_action == DidAction::no)
         {
                 // Reorganize pistol magazines?
-                const auto seen_foes = map::player->seen_foes();
+                const auto seen_foes = map::g_player->seen_foes();
 
                 if (seen_foes.empty())
                 {
@@ -234,7 +235,7 @@ static void on_player_waiting()
 
 static void move_player_non_center_direction(const P& tgt)
 {
-        auto& player = *map::player;
+        auto& player = *map::g_player;
 
         const bool is_features_blocking_move =
                 map_parsers::BlocksActor(player, ParseActors::no)
@@ -244,7 +245,7 @@ static void move_player_non_center_direction(const P& tgt)
 
         const auto is_aware_of_mon =
                 mon &&
-                (mon->player_aware_of_me_counter_ > 0);
+                (mon->m_player_aware_of_me_counter > 0);
 
         if (mon &&
             !player.is_leader_of(mon) &&
@@ -276,7 +277,7 @@ static void move_player_non_center_direction(const P& tgt)
         {
                 const int enc = player.enc_percent();
 
-                if (enc >= enc_immobile_lvl)
+                if (enc >= g_enc_immobile_lvl)
                 {
                         // TODO: Currently you can attempt to attack hidden
                         // adjacent monsters "for free" while you are too
@@ -292,7 +293,7 @@ static void move_player_non_center_direction(const P& tgt)
                         // or wading
                         msg_log::add("I stagger.", colors::msg_note());
 
-                        player.properties.apply(new PropWaiting());
+                        player.m_properties.apply(new PropWaiting());
                 }
 
                 if (mon && player.is_leader_of(mon))
@@ -300,11 +301,11 @@ static void move_player_non_center_direction(const P& tgt)
                         player_bump_allied_mon(*mon);
                 }
 
-                map::cells.at(player.pos).rigid->on_leave(player);
+                map::g_cells.at(player.m_pos).rigid->on_leave(player);
 
-                player.pos = tgt;
+                player.m_pos = tgt;
 
-                player_walk_on_item(map::cells.at(player.pos).item);
+                player_walk_on_item(map::g_cells.at(player.m_pos).item);
 
                 print_corpses_at_player_msgs();
         }
@@ -314,7 +315,7 @@ static void move_player_non_center_direction(const P& tgt)
 
 static void move_player(Dir dir)
 {
-        auto& player = *map::player;
+        auto& player = *map::g_player;
 
         if (!player.is_alive())
         {
@@ -323,9 +324,9 @@ static void move_player(Dir dir)
 
         const auto intended_dir = dir;
 
-        player.properties.affect_move_dir(player.pos, dir);
+        player.m_properties.affect_move_dir(player.m_pos, dir);
 
-        const auto tgt = player.pos + dir_utils::offset(dir);
+        const auto tgt = player.m_pos + dir_utils::offset(dir);
 
         if (intended_dir == Dir::center)
         {
@@ -336,7 +337,7 @@ static void move_player(Dir dir)
                 move_player_non_center_direction(tgt);
         }
 
-        if (player.pos == tgt)
+        if (player.m_pos == tgt)
         {
                 // We are at the target position, this means that either:
                 // * the player moved to a different position, or
@@ -356,24 +357,24 @@ static void move_mon(Mon& mon, Dir dir)
                 ASSERT(false);
         }
 
-        if (!map::is_pos_inside_outer_walls(mon.pos))
+        if (!map::is_pos_inside_outer_walls(mon.m_pos))
         {
                 TRACE << "Monster outside map" << std::endl;
                 ASSERT(false);
         }
 #endif // NDEBUG
 
-        mon.properties.affect_move_dir(mon.pos, dir);
+        mon.m_properties.affect_move_dir(mon.m_pos, dir);
 
         // Movement direction is stored for AI purposes
-        mon.last_dir_moved_ = dir;
+        mon.m_last_dir_moved = dir;
 
-        const P target_p(mon.pos + dir_utils::offset(dir));
+        const P target_p(mon.m_pos + dir_utils::offset(dir));
 
         // Sanity check - monsters should never attempt to move into a blocked
         // cell (if they do try this, it's probably an AI bug)
 #ifndef NDEBUG
-        if (target_p != mon.pos)
+        if (target_p != mon.m_pos)
         {
                 Array2<bool> blocked(map::dims());
 
@@ -389,19 +390,19 @@ static void move_mon(Mon& mon, Dir dir)
             map::is_pos_inside_outer_walls(target_p))
         {
                 // Leave current cell (e.g. stop swimming)
-                map::cells.at(mon.pos).rigid->on_leave(mon);
+                map::g_cells.at(mon.m_pos).rigid->on_leave(mon);
 
-                mon.pos = target_p;
+                mon.m_pos = target_p;
 
                 // Bump features in target cell (e.g. to trigger traps)
-                const auto mobs = game_time::mobs_at_pos(mon.pos);
+                const auto mobs = game_time::mobs_at_pos(mon.m_pos);
 
                 for (auto* m : mobs)
                 {
                         m->bump(mon);
                 }
 
-                map::cells.at(mon.pos).rigid->bump(mon);
+                map::g_cells.at(mon.m_pos).rigid->bump(mon);
         }
 
         game_time::tick();

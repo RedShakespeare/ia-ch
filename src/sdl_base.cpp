@@ -16,7 +16,8 @@
 #include "game_time.hpp"
 #include "init.hpp"
 
-static bool is_inited = false;
+static bool s_is_inited = false;
+
 
 namespace sdl_base
 {
@@ -27,7 +28,7 @@ void init()
 
         cleanup();
 
-        is_inited = true;
+        s_is_inited = true;
 
         if (SDL_Init(SDL_INIT_EVERYTHING) == -1)
         {
@@ -70,19 +71,19 @@ void init()
                 ASSERT(false);
         }
 
-        Mix_AllocateChannels(audio::allocated_channels);
+        Mix_AllocateChannels(audio::g_allocated_channels);
 
         TRACE_FUNC_END;
 }
 
 void cleanup()
 {
-        if (!is_inited)
+        if (!s_is_inited)
         {
                 return;
         }
 
-        is_inited = false;
+        s_is_inited = false;
 
         IMG_Quit();
 

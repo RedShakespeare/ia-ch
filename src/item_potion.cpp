@@ -31,29 +31,29 @@
 
 Potion::Potion(ItemData* const item_data) :
         Item(item_data),
-        alignment_feeling_dlvl_countdown_(rnd::range(1, 3)),
-        alignment_feeling_turn_countdown_(rnd::range(100, 200))
+        m_alignment_feeling_dlvl_countdown(rnd::range(1, 3)),
+        m_alignment_feeling_turn_countdown(rnd::range(100, 200))
 {
 
 }
 
 void Potion::save() const
 {
-        saving::put_int(alignment_feeling_dlvl_countdown_);
-        saving::put_int(alignment_feeling_turn_countdown_);
+        saving::put_int(m_alignment_feeling_dlvl_countdown);
+        saving::put_int(m_alignment_feeling_turn_countdown);
 }
 
 void Potion::load()
 {
-        alignment_feeling_dlvl_countdown_ = saving::get_int();
-        alignment_feeling_turn_countdown_ = saving::get_int();
+        m_alignment_feeling_dlvl_countdown = saving::get_int();
+        m_alignment_feeling_turn_countdown = saving::get_int();
 }
 
 ConsumeItem Potion::activate(Actor* const actor)
 {
         ASSERT(actor);
 
-        if (!actor->properties.allow_eat(Verbosity::verbose))
+        if (!actor->m_properties.allow_eat(Verbosity::verbose))
         {
                 return ConsumeItem::no;
         }
@@ -62,7 +62,7 @@ ConsumeItem Potion::activate(Actor* const actor)
         {
                 // Really quaff a known malign potion?
                 if ((alignment() == PotionAlignment::bad) &&
-                    data_->is_alignment_known &&
+                    m_data->is_alignment_known &&
                     config::is_drink_malign_pot_prompt())
                 {
                         const std::string name = this->name(ItemRefType::a);
@@ -72,7 +72,7 @@ ConsumeItem Potion::activate(Actor* const actor)
                                         "Drink " +
                                         name +
                                         "? " +
-                                        common_text::yes_or_no_hint),
+                                        common_text::g_yes_or_no_hint),
                                 colors::light_white());
 
                         auto result = query::yes_or_no();
@@ -85,11 +85,11 @@ ConsumeItem Potion::activate(Actor* const actor)
                         }
                 }
 
-                data_->is_tried = true;
+                m_data->is_tried = true;
 
                 audio::play(SfxId::potion_quaff);
 
-                if (data_->is_identified)
+                if (m_data->is_identified)
                 {
                         const std::string potion_name =
                                 name(ItemRefType::a, ItemRefInf::none);
@@ -105,10 +105,10 @@ ConsumeItem Potion::activate(Actor* const actor)
                                 "I drink an unknown " + potion_name + "...");
                 }
 
-                map::player->incr_shock(ShockLvl::terrifying,
+                map::g_player->incr_shock(ShockLvl::terrifying,
                                         ShockSrc::use_strange_item);
 
-                if (!map::player->is_alive())
+                if (!map::g_player->is_alive())
                 {
                         return ConsumeItem::yes;
                 }
@@ -116,7 +116,7 @@ ConsumeItem Potion::activate(Actor* const actor)
 
         quaff_impl(*actor);
 
-        if (map::player->is_alive())
+        if (map::g_player->is_alive())
         {
                 game_time::tick();
         }
@@ -126,14 +126,14 @@ ConsumeItem Potion::activate(Actor* const actor)
 
 void Potion::identify(const Verbosity verbosity)
 {
-        if (data_->is_identified)
+        if (m_data->is_identified)
         {
                 return;
         }
 
-        data_->is_identified = true;
+        m_data->is_identified = true;
 
-        data_->is_alignment_known = true;
+        m_data->is_alignment_known = true;
 
         if (verbosity == Verbosity::verbose)
         {
@@ -148,13 +148,13 @@ void Potion::identify(const Verbosity verbosity)
 
 std::vector<std::string> Potion::descr() const
 {
-        if (data_->is_identified)
+        if (m_data->is_identified)
         {
                 return {descr_identified()};
         }
         else // Not identified
         {
-                return data_->base_descr;
+                return m_data->base_descr;
         }
 }
 
@@ -172,19 +172,19 @@ void Potion::on_player_reached_new_dlvl()
 
         if (d.is_alignment_known ||
             d.is_identified ||
-            (alignment_feeling_dlvl_countdown_ <= 0))
+            (m_alignment_feeling_dlvl_countdown <= 0))
         {
                 return;
         }
 
-        --alignment_feeling_dlvl_countdown_;
+        --m_alignment_feeling_dlvl_countdown;
 }
 
 void Potion::on_actor_turn_in_inv(const InvType inv_type)
 {
         (void)inv_type;
 
-        if (actor_carrying_ != map::player)
+        if (m_actor_carrying != map::g_player)
         {
                 return;
         }
@@ -193,16 +193,16 @@ void Potion::on_actor_turn_in_inv(const InvType inv_type)
 
         if (d.is_alignment_known ||
             d.is_identified ||
-            (alignment_feeling_dlvl_countdown_ > 0))
+            (m_alignment_feeling_dlvl_countdown > 0))
         {
                 return;
         }
 
-        ASSERT(alignment_feeling_turn_countdown_ > 0);
+        ASSERT(m_alignment_feeling_turn_countdown > 0);
 
-        --alignment_feeling_turn_countdown_;
+        --m_alignment_feeling_turn_countdown;
 
-        if (alignment_feeling_turn_countdown_ <= 0)
+        if (m_alignment_feeling_turn_countdown <= 0)
         {
                 TRACE << "Potion alignment discovered" << std::endl;
 
@@ -229,7 +229,7 @@ void Potion::on_actor_turn_in_inv(const InvType inv_type)
 
 void Potion::on_collide(const P& pos, Actor* const actor)
 {
-        const auto& cell = map::cells.at(pos);
+        const auto& cell = map::g_cells.at(pos);
 
         if (actor)
         {
@@ -237,10 +237,10 @@ void Potion::on_collide(const P& pos, Actor* const actor)
 
                 auto* const mon = static_cast<Mon*>(actor);
 
-                if (mon->player_aware_of_me_counter_ > 0)
+                if (mon->m_player_aware_of_me_counter > 0)
                 {
                         const std::string actor_name =
-                                map::player->can_see_actor(*actor)
+                                map::g_player->can_see_actor(*actor)
                                 ? actor->name_the()
                                 : "it";
 
@@ -299,16 +299,16 @@ void PotionVitality::quaff_impl(Actor& actor)
 
         for (PropId prop_id : props_can_heal)
         {
-                actor.properties.end_prop(prop_id);
+                actor.m_properties.end_prop(prop_id);
         }
 
-        // HP is always restored at least up to maximum hp, but can go beyond
+        // HP is always restored at least up to maximum, but can go beyond
         const int hp_max = actor::max_hp(actor);
-        const int hp_restored = std::max(20, hp_max - actor.hp);
+        const int hp_restored = std::max(20, hp_max - actor.m_hp);
 
         actor.restore_hp(hp_restored, true);
 
-        if (map::player->can_see_actor(actor))
+        if (map::g_player->can_see_actor(actor))
         {
                 identify(Verbosity::verbose);
         }
@@ -326,15 +326,16 @@ void PotionVitality::collide_hook(const P& pos, Actor* const actor)
 
 void PotionSpirit::quaff_impl(Actor& actor)
 {
-        actor.properties.end_prop(PropId::spi_sap);
+        actor.m_properties.end_prop(PropId::spi_sap);
 
-        // Spirit is always restored at least up to maximum spi, but can go beyond
+        // SP is always restored at least up to maximum, but can go beyond
         const int sp_max = actor::max_sp(actor);
-        const int sp_restored = std::max(10, sp_max - actor.sp);
+
+        const int sp_restored = std::max(10, sp_max - actor.m_sp);
 
         actor.restore_sp(sp_restored, true);
 
-        if (map::player->can_see_actor(actor))
+        if (map::g_player->can_see_actor(actor))
         {
                 identify(Verbosity::verbose);
         }
@@ -352,9 +353,9 @@ void PotionSpirit::collide_hook(const P& pos, Actor* const actor)
 
 void PotionBlindness::quaff_impl(Actor& actor)
 {
-        actor.properties.apply(new PropBlind());
+        actor.m_properties.apply(new PropBlind());
 
-        if (map::player->can_see_actor(actor))
+        if (map::g_player->can_see_actor(actor))
         {
                 identify(Verbosity::verbose);
         }
@@ -372,9 +373,9 @@ void PotionBlindness::collide_hook(const P& pos, Actor* const actor)
 
 void PotionParal::quaff_impl(Actor& actor)
 {
-        actor.properties.apply(new PropParalyzed());
+        actor.m_properties.apply(new PropParalyzed());
 
-        if (map::player->can_see_actor(actor))
+        if (map::g_player->can_see_actor(actor))
         {
                 identify(Verbosity::verbose);
         }
@@ -393,9 +394,9 @@ void PotionParal::collide_hook(const P& pos, Actor* const actor)
 
 void PotionDisease::quaff_impl(Actor& actor)
 {
-        actor.properties.apply(new PropDiseased());
+        actor.m_properties.apply(new PropDiseased());
 
-        if (map::player->can_see_actor(actor))
+        if (map::g_player->can_see_actor(actor))
         {
                 identify(Verbosity::verbose);
         }
@@ -403,9 +404,9 @@ void PotionDisease::quaff_impl(Actor& actor)
 
 void PotionConf::quaff_impl(Actor& actor)
 {
-        actor.properties.apply(new PropConfused());
+        actor.m_properties.apply(new PropConfused());
 
-        if (map::player->can_see_actor(actor))
+        if (map::g_player->can_see_actor(actor))
         {
                 identify(Verbosity::verbose);
         }
@@ -435,12 +436,12 @@ void PotionFortitude::quaff_impl(Actor& actor)
 
         prop_r_sleep->set_duration(duration);
 
-        actor.properties.apply(prop_r_fear);
-        actor.properties.apply(prop_r_conf);
-        actor.properties.apply(prop_r_sleep);
+        actor.m_properties.apply(prop_r_fear);
+        actor.m_properties.apply(prop_r_conf);
+        actor.m_properties.apply(prop_r_sleep);
 
-        actor.properties.end_prop(PropId::frenzied);
-        actor.properties.end_prop(PropId::mind_sap);
+        actor.m_properties.end_prop(PropId::frenzied);
+        actor.m_properties.end_prop(PropId::mind_sap);
 
         // Remove a random insanity symptom if this is the player
         if (actor.is_player())
@@ -457,12 +458,12 @@ void PotionFortitude::quaff_impl(Actor& actor)
                         insanity::end_sympt(id);
                 }
 
-                map::player->restore_shock(999, false);
+                map::g_player->restore_shock(999, false);
 
                 msg_log::add("I feel more at ease.");
         }
 
-        if (map::player->can_see_actor(actor))
+        if (map::g_player->can_see_actor(actor))
         {
                 identify(Verbosity::verbose);
         }
@@ -481,8 +482,8 @@ void PotionFortitude::collide_hook(const P& pos, Actor* const actor)
 void PotionPoison::quaff_impl(Actor& actor)
 {
         // NOTE: The maximum damage value here is lower than the lowest possible
-        //       starting HP - no (non-diseased) character should die from full HP
-        //       for quaffing this potion
+        // starting HP - no (non-diseased) character should die from full HP for
+        // quaffing this potion
         Range dmg_range(8, 11);
 
         // Let the poison do double damage against monsters - so it's more
@@ -495,11 +496,11 @@ void PotionPoison::quaff_impl(Actor& actor)
 
         auto prop = new PropPoisoned();
 
-        prop->set_duration(poison_dmg_n_turn * dmg_range.roll());
+        prop->set_duration(g_poison_dmg_n_turn * dmg_range.roll());
 
-        actor.properties.apply(prop);
+        actor.m_properties.apply(prop);
 
-        if (map::player->can_see_actor(actor))
+        if (map::g_player->can_see_actor(actor))
         {
                 identify(Verbosity::verbose);
         }
@@ -517,9 +518,9 @@ void PotionPoison::collide_hook(const P& pos, Actor* const actor)
 
 void PotionRFire::quaff_impl(Actor& actor)
 {
-        actor.properties.apply(new PropRFire());
+        actor.m_properties.apply(new PropRFire());
 
-        if (map::player->can_see_actor(actor))
+        if (map::g_player->can_see_actor(actor))
         {
                 identify(Verbosity::verbose);
         }
@@ -551,7 +552,7 @@ void PotionCuring::quaff_impl(Actor& actor)
 
         for (PropId prop_id : props_can_heal)
         {
-                if (actor.properties.end_prop(prop_id))
+                if (actor.m_properties.end_prop(prop_id))
                 {
                         is_noticable = true;
                 }
@@ -571,7 +572,7 @@ void PotionCuring::quaff_impl(Actor& actor)
         }
 
         if (is_noticable &&
-            map::player->can_see_actor(actor))
+            map::g_player->can_see_actor(actor))
         {
                 identify(Verbosity::verbose);
         }
@@ -589,9 +590,9 @@ void PotionCuring::collide_hook(const P& pos, Actor* const actor)
 
 void PotionRElec::quaff_impl(Actor& actor)
 {
-        actor.properties.apply(new PropRElec());
+        actor.m_properties.apply(new PropRElec());
 
-        if (map::player->can_see_actor(actor))
+        if (map::g_player->can_see_actor(actor))
         {
                 identify(Verbosity::verbose);
         }
@@ -620,8 +621,8 @@ void PotionInsight::quaff_impl(Actor& actor)
         // process, the trait selection should occur first
         states::push(std::make_unique<SelectIdentify>());
 
-        // Insight gives some extra XP, to avoid making the potion worthless if the
-        // player identifies all items)
+        // Insight gives some extra XP, to avoid making the potion worthless if
+        // the player identifies all items)
         msg_log::add("I feel insightful.");
 
         game::incr_player_xp(5);
@@ -634,11 +635,11 @@ void PotionDescent::quaff_impl(Actor& actor)
 {
         (void)actor;
 
-        if (map::dlvl < (dlvl_last - 1))
+        if (map::g_dlvl < (g_dlvl_last - 1))
         {
-                if (!map::player->properties.has(PropId::descend))
+                if (!map::g_player->m_properties.has(PropId::descend))
                 {
-                        map::player->properties.apply(new PropDescend());
+                        map::g_player->m_properties.apply(new PropDescend());
                 }
         }
         else // Dungeon level is near the end
@@ -652,9 +653,9 @@ void PotionDescent::quaff_impl(Actor& actor)
 
 void PotionInvis::quaff_impl(Actor& actor)
 {
-        actor.properties.apply(new PropCloaked());
+        actor.m_properties.apply(new PropCloaked());
 
-        if (map::player->can_see_actor(actor))
+        if (map::g_player->can_see_actor(actor))
         {
                 identify(Verbosity::verbose);
         }
@@ -711,7 +712,7 @@ void init()
                         {"Frothy",    "a Frothy",     colors::white()}
                 });
 
-        for (auto& d : item_data::data)
+        for (auto& d : item_data::g_data)
         {
                 if (d.type == ItemType::potion)
                 {
@@ -763,7 +764,7 @@ void save()
 {
         for (int i = 0; i < int(ItemId::END); ++i)
         {
-                ItemData& d = item_data::data[i];
+                ItemData& d = item_data::g_data[i];
 
                 if (d.type == ItemType::potion)
                 {
@@ -785,7 +786,7 @@ void load()
 {
         for (int i = 0; i < int(ItemId::END); ++i)
         {
-                ItemData& d = item_data::data[i];
+                ItemData& d = item_data::g_data[i];
 
                 if (d.type == ItemType::potion)
                 {

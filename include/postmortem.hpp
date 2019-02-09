@@ -30,11 +30,11 @@ public:
 private:
         void make_memorial_file(const std::string path) const;
 
-        MenuBrowser browser_;
+        MenuBrowser m_browser;
 
-        IsWin is_win_;
+        IsWin m_is_win;
 
-        std::vector<std::string> ascii_graveyard_lines_;
+        std::vector<std::string> m_ascii_graveyard_lines;
 };
 
 class PostmortemInfo: public InfoScreenState
@@ -42,7 +42,7 @@ class PostmortemInfo: public InfoScreenState
 public:
         PostmortemInfo() :
                 InfoScreenState(),
-                top_idx_(0) {}
+                m_top_idx(0) {}
 
         void draw() override;
 
@@ -61,7 +61,7 @@ private:
                 return InfoScreenType::scrolling;
         }
 
-        int top_idx_;
+        int m_top_idx;
 };
 
 #endif // POSTMORTEM_HPP

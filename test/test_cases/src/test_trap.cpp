@@ -48,16 +48,16 @@ TEST_CASE("Spider web")
                 Mon* const mon = static_cast<Mon*>(actor);
 
                 // Awareness > 0 required for triggering trap
-                mon->aware_of_player_counter_ = 42;
+                mon->m_aware_of_player_counter = 42;
 
                 // Move the monster into the trap, and back again
-                mon->pos = pos_l;
+                mon->m_pos = pos_l;
                 actor::move(*mon, Dir::right);
 
                 // It should never be possible to move on the first try
-                REQUIRE(mon->pos == pos_r);
+                REQUIRE(mon->m_pos == pos_r);
 
-                REQUIRE(mon->properties.has(PropId::entangled));
+                REQUIRE(mon->m_properties.has(PropId::entangled));
 
                 // This may or may not unstuck the monster
                 actor::move(*mon, Dir::left);
@@ -66,15 +66,15 @@ TEST_CASE("Spider web")
                 // move it one step to the left
                 actor::move(*mon, Dir::left);
 
-                if (mon->pos == pos_r)
+                if (mon->m_pos == pos_r)
                 {
                         tested_stuck = true;
                 }
-                else if (mon->pos == pos_l)
+                else if (mon->m_pos == pos_l)
                 {
                         tested_unstuck = true;
 
-                        REQUIRE(!mon->properties.has(PropId::entangled));
+                        REQUIRE(!mon->m_properties.has(PropId::entangled));
                 }
 
                 test_utils::cleanup_all();

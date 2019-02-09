@@ -11,7 +11,7 @@
 // -----------------------------------------------------------------------------
 static void add(PropData& d)
 {
-        property_data::data[(size_t)d.id] = d;
+        property_data::g_data[(size_t)d.id] = d;
 
         d = PropData();
 }
@@ -898,7 +898,8 @@ static void init_data_list()
 namespace property_data
 {
 
-PropData data[(size_t)PropId::END];
+PropData g_data[(size_t)PropId::END];
+
 
 void init()
 {

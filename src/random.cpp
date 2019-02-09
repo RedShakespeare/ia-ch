@@ -80,7 +80,7 @@ bool Fraction::roll() const
 namespace rnd
 {
 
-std::mt19937 rng;
+std::mt19937 g_rng;
 
 void seed()
 {
@@ -95,7 +95,7 @@ void seed()
 
 void seed(uint32_t seed)
 {
-        rng.seed(static_cast<std::mt19937::result_type>(seed));
+        g_rng.seed(static_cast<std::mt19937::result_type>(seed));
 }
 
 int range(const int v1, const int v2)
@@ -105,7 +105,7 @@ int range(const int v1, const int v2)
 
         std::uniform_int_distribution<int> dist(min, max);
 
-        return dist(rng);
+        return dist(g_rng);
 }
 
 int range_binom(const int v1, const int v2, const double p)
@@ -118,7 +118,7 @@ int range_binom(const int v1, const int v2, const double p)
         std::binomial_distribution<std::mt19937::result_type>
                 dist(upper_random_value, p);
 
-        const int random_value = dist(rng);
+        const int random_value = dist(g_rng);
 
         return min + random_value;
 }

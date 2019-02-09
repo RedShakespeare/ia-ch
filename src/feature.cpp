@@ -29,7 +29,7 @@ void Feature::bump(Actor& actor_bumping)
 {
         if (!can_move(actor_bumping) && actor_bumping.is_player())
         {
-                if (map::cells.at(pos_).is_seen_by_player)
+                if (map::g_cells.at(m_pos).is_seen_by_player)
                 {
                         msg_log::add(data().msg_on_player_blocked);
                 }

@@ -168,7 +168,7 @@ struct WeightedItems
 namespace rnd
 {
 
-extern std::mt19937 rng;
+extern std::mt19937 g_rng;
 
 void seed();
 
@@ -224,7 +224,7 @@ size_t idx(const std::vector<T>& v)
 template <typename T>
 void shuffle(std::vector<T>& v)
 {
-        std::shuffle(std::begin(v), std::end(v), rng);
+        std::shuffle(std::begin(v), std::end(v), g_rng);
 }
 
 } // rnd

@@ -54,7 +54,7 @@ TEST_CASE("Explosions damage walls")
                                 continue;
                         }
 
-                        const auto id = map::cells.at(p).rigid->id();
+                        const auto id = map::g_cells.at(p).rigid->id();
 
                         if (dist == 1)
                         {
@@ -106,20 +106,20 @@ TEST_CASE("Explosions at map edge")
 
         map::put(new Floor(P(x, y)));
 
-        REQUIRE(map::cells.at(x + 1, y    ).rigid->id() == FeatureId::wall);
-        REQUIRE(map::cells.at(x    , y + 1).rigid->id() == FeatureId::wall);
-        REQUIRE(map::cells.at(x - 1, y    ).rigid->id() == FeatureId::wall);
-        REQUIRE(map::cells.at(x    , y - 1).rigid->id() == FeatureId::wall);
+        REQUIRE(map::g_cells.at(x + 1, y    ).rigid->id() == FeatureId::wall);
+        REQUIRE(map::g_cells.at(x    , y + 1).rigid->id() == FeatureId::wall);
+        REQUIRE(map::g_cells.at(x - 1, y    ).rigid->id() == FeatureId::wall);
+        REQUIRE(map::g_cells.at(x    , y - 1).rigid->id() == FeatureId::wall);
 
         for (int i = 0; i < 100; ++i)
         {
                 explosion::run(P(x, y), ExplType::expl);
         }
 
-        REQUIRE(map::cells.at(x + 1, y    ).rigid->id() != FeatureId::wall);
-        REQUIRE(map::cells.at(x    , y + 1).rigid->id() != FeatureId::wall);
-        REQUIRE(map::cells.at(x - 1, y    ).rigid->id() == FeatureId::wall);
-        REQUIRE(map::cells.at(x    , y - 1).rigid->id() == FeatureId::wall);
+        REQUIRE(map::g_cells.at(x + 1, y    ).rigid->id() != FeatureId::wall);
+        REQUIRE(map::g_cells.at(x    , y + 1).rigid->id() != FeatureId::wall);
+        REQUIRE(map::g_cells.at(x - 1, y    ).rigid->id() == FeatureId::wall);
+        REQUIRE(map::g_cells.at(x    , y - 1).rigid->id() == FeatureId::wall);
 
         // South-east edge
         x = map::w() - 2;
@@ -127,20 +127,20 @@ TEST_CASE("Explosions at map edge")
 
         map::put(new Floor(P(x, y)));
 
-        REQUIRE(map::cells.at(x - 1, y    ).rigid->id() == FeatureId::wall);
-        REQUIRE(map::cells.at(x    , y - 1).rigid->id() == FeatureId::wall);
-        REQUIRE(map::cells.at(x + 1, y    ).rigid->id() == FeatureId::wall);
-        REQUIRE(map::cells.at(x    , y + 1).rigid->id() == FeatureId::wall);
+        REQUIRE(map::g_cells.at(x - 1, y    ).rigid->id() == FeatureId::wall);
+        REQUIRE(map::g_cells.at(x    , y - 1).rigid->id() == FeatureId::wall);
+        REQUIRE(map::g_cells.at(x + 1, y    ).rigid->id() == FeatureId::wall);
+        REQUIRE(map::g_cells.at(x    , y + 1).rigid->id() == FeatureId::wall);
 
         for (int i = 0; i < 100; ++i)
         {
                 explosion::run(P(x, y), ExplType::expl);
         }
 
-        REQUIRE(map::cells.at(x - 1, y    ).rigid->id() != FeatureId::wall);
-        REQUIRE(map::cells.at(x    , y - 1).rigid->id() != FeatureId::wall);
-        REQUIRE(map::cells.at(x + 1, y    ).rigid->id() == FeatureId::wall);
-        REQUIRE(map::cells.at(x    , y + 1).rigid->id() == FeatureId::wall);
+        REQUIRE(map::g_cells.at(x - 1, y    ).rigid->id() != FeatureId::wall);
+        REQUIRE(map::g_cells.at(x    , y - 1).rigid->id() != FeatureId::wall);
+        REQUIRE(map::g_cells.at(x + 1, y    ).rigid->id() == FeatureId::wall);
+        REQUIRE(map::g_cells.at(x    , y + 1).rigid->id() == FeatureId::wall);
 }
 
 
@@ -152,11 +152,11 @@ TEST_CASE("Explosions damage actors")
 
         Actor* a1 = actor_factory::make(ActorId::rat, origin.with_x_offset(1));
 
-        REQUIRE(a1->state == ActorState::alive);
+        REQUIRE(a1->m_state == ActorState::alive);
 
         explosion::run(origin, ExplType::expl);
 
-        REQUIRE(a1->state == ActorState::destroyed);
+        REQUIRE(a1->m_state == ActorState::destroyed);
 
         test_utils::cleanup_all();
 }
@@ -195,17 +195,17 @@ TEST_CASE("Explosions damage corpses")
 
         for (int i = 0; i < nr_corpses; ++i)
         {
-                REQUIRE(corpses[i]->state == ActorState::corpse);
+                REQUIRE(corpses[i]->m_state == ActorState::corpse);
         }
 
         explosion::run(origin, ExplType::expl);
 
         for (int i = 0; i < nr_corpses; ++i)
         {
-                REQUIRE(corpses[i]->state == ActorState::destroyed);
+                REQUIRE(corpses[i]->m_state == ActorState::destroyed);
         }
 
-        REQUIRE(a1->state == ActorState::destroyed);
+        REQUIRE(a1->m_state == ActorState::destroyed);
 
         test_utils::cleanup_all();
 }
@@ -254,11 +254,11 @@ TEST_CASE("Fire explosion applies burning to actors")
 
         for (int i = 0; i < nr_corpses; ++i)
         {
-                REQUIRE(corpses[i]->properties.has(PropId::burning));
+                REQUIRE(corpses[i]->m_properties.has(PropId::burning));
         }
 
-        REQUIRE(a1->properties.has(PropId::burning));
-        REQUIRE(a2->properties.has(PropId::burning));
+        REQUIRE(a1->m_properties.has(PropId::burning));
+        REQUIRE(a2->m_properties.has(PropId::burning));
 
         test_utils::cleanup_all();
 }

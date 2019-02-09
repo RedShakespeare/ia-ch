@@ -36,10 +36,10 @@ static bool is_void_traveler_affecting_player_teleport(const Actor& actor)
 
         return
                 is_void_traveler &&
-                (actor.state == ActorState::alive) &&
-                actor.properties.allow_act() &&
-                !actor.is_actor_my_leader(map::player) &&
-                (static_cast<const Mon&>(actor).aware_of_player_counter_ > 0);
+                (actor.m_state == ActorState::alive) &&
+                actor.m_properties.allow_act() &&
+                !actor.is_actor_my_leader(map::g_player) &&
+                (static_cast<const Mon&>(actor).m_aware_of_player_counter > 0);
 }
 
 static std::vector<P> get_free_positions_around_pos(
@@ -48,7 +48,7 @@ static std::vector<P> get_free_positions_around_pos(
 {
         std::vector<P> free_positions;
 
-        for (const P& d : dir_utils::dir_list)
+        for (const P& d : dir_utils::g_dir_list)
         {
                 const P adj_p(p + d);
 
@@ -65,32 +65,32 @@ static void make_all_mon_not_seeing_player_unaware()
 {
         Array2<bool> blocks_los(map::dims());
 
-        const R r = fov::fov_rect(map::player->pos, blocks_los.dims());
+        const R r = fov::fov_rect(map::g_player->m_pos, blocks_los.dims());
 
         map_parsers::BlocksLos()
                 .run(blocks_los,
                      r,
                      MapParseMode::overwrite);
 
-        for (auto* const other_actor : game_time::actors)
+        for (auto* const other_actor : game_time::g_actors)
         {
-                if (other_actor == map::player)
+                if (other_actor == map::g_player)
                 {
                         continue;
                 }
 
                 auto* const mon = static_cast<Mon*>(other_actor);
 
-                if (!mon->can_see_actor(*map::player, blocks_los))
+                if (!mon->can_see_actor(*map::g_player, blocks_los))
                 {
-                        mon->aware_of_player_counter_ = 0;
+                        mon->m_aware_of_player_counter = 0;
                 }
         }
 }
 
 static void make_player_aware_of_all_seen_mon()
 {
-        const auto player_seen_actors = map::player->seen_actors();
+        const auto player_seen_actors = map::g_player->seen_actors();
 
         for (Actor* const actor : player_seen_actors)
         {
@@ -106,7 +106,7 @@ static void confuse_player()
 
         prop->set_duration(8);
 
-        map::player->properties.apply(prop);
+        map::g_player->m_properties.apply(prop);
 }
 
 static bool should_player_ctrl_tele(const ShouldCtrlTele ctrl_tele)
@@ -126,10 +126,10 @@ static bool should_player_ctrl_tele(const ShouldCtrlTele ctrl_tele)
         case ShouldCtrlTele::if_tele_ctrl_prop:
         {
                 const bool has_tele_ctrl =
-                        map::player->properties.has(PropId::tele_ctrl);
+                        map::g_player->m_properties.has(PropId::tele_ctrl);
 
                 const bool is_confused =
-                        map::player->properties.has(PropId::confused);
+                        map::g_player->m_properties.has(PropId::confused);
 
                 return has_tele_ctrl && !is_confused;
         }
@@ -156,7 +156,7 @@ void teleport(Actor& actor, const ShouldCtrlTele ctrl_tele)
         // door for monsters
         for (size_t i = 0; i < len; ++i)
         {
-                const auto* const r = map::cells.at(i).rigid;
+                const auto* const r = map::g_cells.at(i).rigid;
 
                 if (r->id() == FeatureId::door)
                 {
@@ -171,7 +171,7 @@ void teleport(Actor& actor, const ShouldCtrlTele ctrl_tele)
         }
 
         // Allow teleporting past Force Fields, since they are temporary
-        for (const auto* const mob : game_time::mobs)
+        for (const auto* const mob : game_time::g_mobs)
         {
                 if (mob->id() == FeatureId::force_field)
                 {
@@ -179,7 +179,7 @@ void teleport(Actor& actor, const ShouldCtrlTele ctrl_tele)
                 }
         }
 
-        const auto flood = floodfill(actor.pos, blocks_flood);
+        const auto flood = floodfill(actor.m_pos, blocks_flood);
 
         Array2<bool> blocked(map::dims());
 
@@ -194,14 +194,14 @@ void teleport(Actor& actor, const ShouldCtrlTele ctrl_tele)
                 }
         }
 
-        blocked.at(actor.pos) = false;
+        blocked.at(actor.m_pos) = false;
 
         // Teleport control?
         if (actor.is_player() && should_player_ctrl_tele(ctrl_tele))
         {
                 auto tele_ctrl_state =
                         std::make_unique<CtrlTele>(
-                                actor.pos,
+                                actor.m_pos,
                                 blocked);
 
                 states::push(std::move(tele_ctrl_state));
@@ -224,7 +224,7 @@ void teleport(Actor& actor, const ShouldCtrlTele ctrl_tele)
 
 void teleport(Actor& actor, P p, const Array2<bool>& blocked)
 {
-        if (!actor.is_player() && map::player->can_see_actor(actor))
+        if (!actor.is_player() && map::g_player->can_see_actor(actor))
         {
                 const std::string actor_name_the =
                         text_format::first_to_upper(
@@ -233,15 +233,15 @@ void teleport(Actor& actor, P p, const Array2<bool>& blocked)
                 msg_log::add(
                         actor_name_the +
                         " " +
-                        common_text::mon_disappear);
+                        common_text::g_mon_disappear);
         }
 
         if (!actor.is_player())
         {
-                static_cast<Mon&>(actor).player_aware_of_me_counter_ = 0;
+                static_cast<Mon&>(actor).m_player_aware_of_me_counter = 0;
         }
 
-        actor.properties.end_prop(
+        actor.m_properties.end_prop(
                 PropId::entangled,
                 PropEndConfig(
                         PropEndAllowCallEndHook::no,
@@ -255,7 +255,7 @@ void teleport(Actor& actor, P p, const Array2<bool>& blocked)
 
         if (actor.is_player())
         {
-                for (Actor* const other_actor : game_time::actors)
+                for (Actor* const other_actor : game_time::g_actors)
                 {
                         if (!is_void_traveler_affecting_player_teleport(
                                     *other_actor))
@@ -265,7 +265,7 @@ void teleport(Actor& actor, P p, const Array2<bool>& blocked)
 
                         const std::vector<P> p_bucket =
                                 get_free_positions_around_pos(
-                                        other_actor->pos,
+                                        other_actor->m_pos,
                                         blocked);
 
                         if (p_bucket.empty())
@@ -294,10 +294,10 @@ void teleport(Actor& actor, P p, const Array2<bool>& blocked)
         }
 
         // Leave current cell
-        map::cells.at(actor.pos).rigid->on_leave(actor);
+        map::g_cells.at(actor.m_pos).rigid->on_leave(actor);
 
         // Update actor position to new position
-        actor.pos = p;
+        actor.m_pos = p;
 
         map::update_vision();
 
@@ -308,9 +308,9 @@ void teleport(Actor& actor, P p, const Array2<bool>& blocked)
 
         make_player_aware_of_all_seen_mon();
 
-        const bool has_tele_ctrl = actor.properties.has(PropId::tele_ctrl);
+        const bool has_tele_ctrl = actor.m_properties.has(PropId::tele_ctrl);
 
-        const bool is_confused = actor.properties.has(PropId::confused);
+        const bool is_confused = actor.m_properties.has(PropId::confused);
 
         if (actor.is_player() &&
             (!has_tele_ctrl ||
@@ -322,5 +322,5 @@ void teleport(Actor& actor, P p, const Array2<bool>& blocked)
 
         // Bump the target feature, so that we for example start swimming if
         // teleporting into water
-        map::cells.at(p).rigid->bump(actor);
+        map::g_cells.at(p).rigid->bump(actor);
 }

@@ -31,7 +31,8 @@
 // -----------------------------------------------------------------------------
 // private
 // -----------------------------------------------------------------------------
-static int mon_descr_x0 = 1;
+static int s_mon_descr_x0 = 1;
+
 
 static int mon_descr_max_w()
 {
@@ -40,7 +41,7 @@ static int mon_descr_max_w()
 
 static std::string get_mon_memory_turns_descr(const Actor& actor)
 {
-        const int nr_turns_aware = actor.data->nr_turns_aware;
+        const int nr_turns_aware = actor.m_data->nr_turns_aware;
 
         if (nr_turns_aware <= 0)
         {
@@ -70,11 +71,11 @@ static std::string get_mon_memory_turns_descr(const Actor& actor)
 
 static std::string get_mon_dlvl_descr(const Actor& actor)
 {
-        const auto& d = *actor.data;
+        const auto& d = *actor.m_data;
 
         const int dlvl = d.spawn_min_dlvl;
 
-        if ((dlvl <= 1) || (dlvl >= dlvl_last))
+        if ((dlvl <= 1) || (dlvl >= g_dlvl_last))
         {
                 return "";
         }
@@ -100,7 +101,7 @@ static std::string get_mon_dlvl_descr(const Actor& actor)
 
 static std::string mon_speed_type_to_str(const Actor& actor)
 {
-        switch (actor.data->speed)
+        switch (actor.m_data->speed)
         {
         case ActorSpeed::slow:
                 return "slowly";
@@ -122,7 +123,7 @@ static std::string mon_speed_type_to_str(const Actor& actor)
 
 static std::string get_mon_speed_descr(const Actor& actor)
 {
-        const auto& d = *actor.data;
+        const auto& d = *actor.m_data;
 
         const std::string speed_type_str = mon_speed_type_to_str(actor);
 
@@ -156,7 +157,7 @@ static void mon_shock_lvl_to_str(
         shock_str_out = "";
         punct_str_out = "";
 
-        switch (actor.data->mon_shock_lvl)
+        switch (actor.m_data->mon_shock_lvl)
         {
         case ShockLvl::unsettling:
                 shock_str_out = "unsettling";
@@ -197,7 +198,7 @@ static std::string get_mon_shock_descr(const Actor& actor)
                 return "";
         }
 
-        if (actor.data->is_unique)
+        if (actor.m_data->is_unique)
         {
                 return
                         actor.name_the() +
@@ -218,12 +219,13 @@ static std::string get_mon_shock_descr(const Actor& actor)
 
 static std::string get_melee_hit_chance_descr(Actor& actor)
 {
-        const Item* wielded_item = map::player->inv.item_in_slot(SlotId::wpn);
+        const Item* wielded_item =
+                map::g_player->m_inv.item_in_slot(SlotId::wpn);
 
         const auto* const player_wpn =
                 wielded_item
                 ? static_cast<const Wpn*>(wielded_item)
-                : &map::player->unarmed_wpn();
+                : &map::g_player->unarmed_wpn();
 
         if (!player_wpn)
         {
@@ -232,7 +234,7 @@ static std::string get_melee_hit_chance_descr(Actor& actor)
                 return "";
         }
 
-        const MeleeAttData att_data(map::player, actor, *player_wpn);
+        const MeleeAttData att_data(map::g_player, actor, *player_wpn);
 
         const int hit_chance =
                 ability_roll::hit_chance_pct_actual(
@@ -257,7 +259,7 @@ StateId ViewActorDescr::id()
 void ViewActorDescr::on_start()
 {
         // Fixed decription
-        const auto fixed_descr = actor_.descr();
+        const auto fixed_descr = m_actor.descr();
 
         {
                 const auto fixed_lines =
@@ -267,7 +269,7 @@ void ViewActorDescr::on_start()
 
                 for (const auto& line : fixed_lines)
                 {
-                        lines_.push_back(
+                        m_lines.push_back(
                                 ColoredString(
                                         line,
                                         colors::text()));
@@ -277,13 +279,13 @@ void ViewActorDescr::on_start()
         // Auto description
         {
                 const auto auto_descr =
-                        actor_.data->allow_generated_descr
+                        m_actor.m_data->allow_generated_descr
                         ? auto_description_str()
                         : "";
 
                 if (!auto_descr.empty())
                 {
-                        lines_.resize(lines_.size() + 1);
+                        m_lines.resize(m_lines.size() + 1);
 
                         const auto auto_descr_lines =
                                 text_format::split(
@@ -292,7 +294,7 @@ void ViewActorDescr::on_start()
 
                         for (const auto& line : auto_descr_lines)
                         {
-                                lines_.push_back(
+                                m_lines.push_back(
                                         ColoredString(
                                                 line,
                                                 colors::text()));
@@ -301,14 +303,14 @@ void ViewActorDescr::on_start()
         }
 
         // Add the full description
-        lines_.resize(lines_.size() + 1);
+        m_lines.resize(m_lines.size() + 1);
 
-        lines_.push_back(
+        m_lines.push_back(
                 ColoredString(
                         "Current properties",
                         colors::text()));
 
-        auto prop_list = actor_.properties.property_names_temporary_negative();
+        auto prop_list = m_actor.m_properties.property_names_temporary_negative();
 
         // Remove all non-negative properties (we should not show temporary
         // spell resistance for example), and all natural properties (properties
@@ -320,7 +322,7 @@ void ViewActorDescr::on_start()
                 const auto id = prop->id();
 
                 const bool is_natural_prop =
-                        actor_.data->natural_props[(size_t)id];
+                        m_actor.m_data->natural_props[(size_t)id];
 
                 if (is_natural_prop ||
                     (prop->duration_mode() == PropDurationMode::indefinite) ||
@@ -338,7 +340,7 @@ void ViewActorDescr::on_start()
 
         if (prop_list.empty())
         {
-                lines_.push_back(
+                m_lines.push_back(
                         ColoredString(
                                 offset + "None",
                                 colors::text()));
@@ -351,7 +353,7 @@ void ViewActorDescr::on_start()
                 {
                         const auto& title = e.title;
 
-                        lines_.push_back({offset + title.str, e.title.color});
+                        m_lines.push_back({offset + title.str, e.title.color});
 
                         const auto descr_formatted =
                                 text_format::split(
@@ -360,7 +362,7 @@ void ViewActorDescr::on_start()
 
                         for (const auto& descr_line : descr_formatted)
                         {
-                                lines_.push_back(
+                                m_lines.push_back(
                                         ColoredString(
                                                 offset + descr_line,
                                                 colors::gray()));
@@ -369,7 +371,7 @@ void ViewActorDescr::on_start()
         }
 
         // Add a single empty line at the end (looks better)
-        lines_.resize(lines_.size() + 1);
+        m_lines.resize(m_lines.size() + 1);
 }
 
 void ViewActorDescr::draw()
@@ -378,22 +380,22 @@ void ViewActorDescr::draw()
 
         draw_interface();
 
-        const int nr_lines_tot = lines_.size();
+        const int nr_lines_tot = m_lines.size();
 
         int btm_nr = std::min(
-                top_idx_ + max_nr_lines_on_screen() - 1,
+                m_top_idx + max_nr_lines_on_screen() - 1,
                 nr_lines_tot - 1);
 
         int screen_y = 1;
 
-        for (int y = top_idx_; y <= btm_nr; ++y)
+        for (int y = m_top_idx; y <= btm_nr; ++y)
         {
-                const auto& line = lines_[y];
+                const auto& line = m_lines[y];
 
                 io::draw_text(
                         line.str,
                         Panel::screen,
-                        P(mon_descr_x0, screen_y),
+                        P(s_mon_descr_x0, screen_y),
                         line.color);
 
                 ++screen_y;
@@ -403,7 +405,7 @@ void ViewActorDescr::draw()
 void ViewActorDescr::update()
 {
         const int line_jump = 3;
-        const int nr_lines_tot = lines_.size();
+        const int nr_lines_tot = m_lines.size();
 
         const auto input = io::get();
 
@@ -411,23 +413,23 @@ void ViewActorDescr::update()
         {
         case '2':
         case SDLK_DOWN:
-                top_idx_ += line_jump;
+                m_top_idx += line_jump;
 
                 if (nr_lines_tot <= max_nr_lines_on_screen())
                 {
-                        top_idx_ = 0;
+                        m_top_idx = 0;
                 }
                 else
                 {
-                        top_idx_ = std::min(
+                        m_top_idx = std::min(
                                 nr_lines_tot - max_nr_lines_on_screen(),
-                                top_idx_);
+                                m_top_idx);
                 }
                 break;
 
         case '8':
         case SDLK_UP:
-                top_idx_ = std::max(0, top_idx_ - line_jump);
+                m_top_idx = std::max(0, m_top_idx - line_jump);
                 break;
 
         case SDLK_SPACE:
@@ -445,17 +447,17 @@ std::string ViewActorDescr::auto_description_str() const
 {
         std::string str = "";
 
-        text_format::append_with_space(str, get_melee_hit_chance_descr(actor_));
-        text_format::append_with_space(str, get_mon_dlvl_descr(actor_));
-        text_format::append_with_space(str, get_mon_speed_descr(actor_));
-        text_format::append_with_space(str, get_mon_memory_turns_descr(actor_));
+        text_format::append_with_space(str, get_melee_hit_chance_descr(m_actor));
+        text_format::append_with_space(str, get_mon_dlvl_descr(m_actor));
+        text_format::append_with_space(str, get_mon_speed_descr(m_actor));
+        text_format::append_with_space(str, get_mon_memory_turns_descr(m_actor));
 
-        if (actor_.data->is_undead)
+        if (m_actor.m_data->is_undead)
         {
                 text_format::append_with_space(str, "This creature is undead.");
         }
 
-        text_format::append_with_space(str, get_mon_shock_descr(actor_));
+        text_format::append_with_space(str, get_mon_shock_descr(m_actor));
 
         return str;
 }
@@ -464,7 +466,7 @@ std::string ViewActorDescr::title() const
 {
         const std::string mon_name =
                 text_format::first_to_upper(
-                        actor_.name_a());
+                        m_actor.name_a());
 
         return mon_name;
 }
@@ -483,7 +485,7 @@ void print_location_info_msgs(const P& pos)
 
         if (map::is_pos_inside_map(pos))
         {
-                cell = &map::cells.at(pos);
+                cell = &map::g_cells.at(pos);
 
                 is_cell_seen = cell->is_seen_by_player;
         }
@@ -498,7 +500,7 @@ void print_location_info_msgs(const P& pos)
                 msg_log::add(str + ".");
 
                 // Describe mobile features
-                for (auto* mob : game_time::mobs)
+                for (auto* mob : game_time::g_mobs)
                 {
                         if (mob->pos() == pos)
                         {
@@ -511,7 +513,7 @@ void print_location_info_msgs(const P& pos)
                 }
 
                 // Describe darkness
-                if (map::dark.at(pos) && !map::light.at(pos))
+                if (map::g_dark.at(pos) && !map::g_light.at(pos))
                 {
                         msg_log::add("It is very dark here.");
                 }
@@ -530,14 +532,14 @@ void print_location_info_msgs(const P& pos)
                 }
 
                 // Describe dead actors
-                for (Actor* actor : game_time::actors)
+                for (Actor* actor : game_time::g_actors)
                 {
-                        if (actor->is_corpse() && actor->pos == pos)
+                        if (actor->is_corpse() && actor->m_pos == pos)
                         {
-                                ASSERT(!actor->data->corpse_name_a.empty());
+                                ASSERT(!actor->m_data->corpse_name_a.empty());
 
                                 str = text_format::first_to_upper(
-                                        actor->data->corpse_name_a);
+                                        actor->m_data->corpse_name_a);
 
                                 msg_log::add(str + ".");
                         }
@@ -564,7 +566,7 @@ void print_living_actor_info_msg(const P& pos)
                 return;
         }
 
-        if (map::player->can_see_actor(*actor))
+        if (map::g_player->can_see_actor(*actor))
         {
                 const std::string str =
                         text_format::first_to_upper(
@@ -576,7 +578,7 @@ void print_living_actor_info_msg(const P& pos)
         {
                 const Mon* const mon = static_cast<Mon*>(actor);
 
-                if (mon->player_aware_of_me_counter_ > 0)
+                if (mon->m_player_aware_of_me_counter > 0)
                 {
                         msg_log::add("There is a creature here.");
                 }

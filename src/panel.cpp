@@ -14,9 +14,10 @@
 // -----------------------------------------------------------------------------
 // Private
 // -----------------------------------------------------------------------------
-static R panels_[(size_t)Panel::END];
+static R s_panels[(size_t)Panel::END];
 
-static bool is_valid_;
+static bool s_is_valid;
+
 
 static void set_panel_area(
         const Panel panel,
@@ -25,12 +26,12 @@ static void set_panel_area(
         const int x1,
         const int y1)
 {
-        panels_[(size_t)panel] = {x0, y0, x1, y1};
+        s_panels[(size_t)panel] = {x0, y0, x1, y1};
 }
 
 static void set_x0(const Panel panel, int x)
 {
-        R& r =  panels_[(size_t)panel];
+        R& r =  s_panels[(size_t)panel];
 
         const int w = r.w();
 
@@ -40,7 +41,7 @@ static void set_x0(const Panel panel, int x)
 
 static void set_y0(const Panel panel, int y)
 {
-        R& r =  panels_[(size_t)panel];
+        R& r =  s_panels[(size_t)panel];
 
         const int h = r.h();
 
@@ -50,16 +51,16 @@ static void set_y0(const Panel panel, int y)
 
 static void set_w(const Panel panel, int w)
 {
-        R& r =  panels_[(size_t)panel];
+        R& r =  s_panels[(size_t)panel];
 
         r.p1.x = r.p0.x + w - 1;
 }
 
 static void finalize_screen_dims()
 {
-        R& screen = panels_[(size_t)Panel::screen];
+        R& screen = s_panels[(size_t)Panel::screen];
 
-        for (const R& panel : panels_)
+        for (const R& panel : s_panels)
         {
                 screen.p1.x = std::max(screen.p1.x, panel.p1.x);
                 screen.p1.y = std::max(screen.p1.y, panel.p1.y);
@@ -76,11 +77,11 @@ static void validate_panels(const P max_gui_dims)
 {
         TRACE_FUNC_BEGIN;
 
-        is_valid_ = true;
+        s_is_valid = true;
 
-        const R& screen = panels_[(size_t)Panel::screen];
+        const R& screen = s_panels[(size_t)Panel::screen];
 
-        for (const R& panel : panels_)
+        for (const R& panel : s_panels)
         {
                 if ((panel.p1.x >= max_gui_dims.x) ||
                     (panel.p1.y >= max_gui_dims.y) ||
@@ -100,7 +101,7 @@ static void validate_panels(const P max_gui_dims)
                               << panel.p0.y
                               << std::endl;
 
-                        is_valid_ = false;
+                        s_is_valid = false;
 
                         break;
                 }
@@ -120,11 +121,11 @@ static void validate_panels(const P max_gui_dims)
                       << min_gui_dims.y
                       << std::endl;
 
-                is_valid_ = false;
+                s_is_valid = false;
         }
 
 #ifndef NDEBUG
-        if (is_valid_)
+        if (s_is_valid)
         {
                 TRACE << "Panels OK" << std::endl;
         }
@@ -153,7 +154,7 @@ void init(const P max_gui_dims)
               << max_gui_dims.y
               << std::endl;
 
-        for (auto& panel : panels_)
+        for (auto& panel : s_panels)
         {
                 panel = R(0, 0, 0, 0);
         }
@@ -225,12 +226,12 @@ void init(const P max_gui_dims)
 
 bool is_valid()
 {
-        return is_valid_;
+        return s_is_valid;
 }
 
 R area(const Panel panel)
 {
-        return panels_[(size_t)panel];
+        return s_panels[(size_t)panel];
 }
 
 P dims(const Panel panel)

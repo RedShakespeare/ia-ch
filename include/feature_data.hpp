@@ -82,31 +82,31 @@ public:
 
         void reset()
         {
-                is_walkable_ = false;
+                m_is_walkable = false;
 
-                props_allow_move_.clear();
+                m_props_allow_move.clear();
         }
 
         void set_prop_can_move(const PropId id)
         {
-                props_allow_move_.push_back(id);
+                m_props_allow_move.push_back(id);
         }
 
         void set_walkable()
         {
-                is_walkable_ = true;
+                m_is_walkable = true;
         }
 
         bool is_walkable() const
         {
-                return is_walkable_;
+                return m_is_walkable;
         }
 
         bool can_move(const Actor& actor) const;
 
 private:
-        bool is_walkable_;
-        std::vector<PropId> props_allow_move_;
+        bool m_is_walkable;
+        std::vector<PropId> m_props_allow_move;
 };
 
 class Feature;

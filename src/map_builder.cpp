@@ -60,26 +60,26 @@ void MapBuilder::build()
         gods::set_random_god();
 
         // Spawn starting allies
-        for (size_t i = 0; i < game_time::actors.size(); ++i)
+        for (size_t i = 0; i < game_time::g_actors.size(); ++i)
         {
-                Actor* const actor = game_time::actors[i];
+                Actor* const actor = game_time::g_actors[i];
 
-                const auto& allies = actor->data->starting_allies;
+                const auto& allies = actor->m_data->starting_allies;
 
                 if (allies.empty())
                 {
                         continue;
                 }
 
-                actor_factory::spawn(actor->pos, allies, map::rect())
+                actor_factory::spawn(actor->m_pos, allies, map::rect())
                         .set_leader(actor)
                         .for_each([](Mon* mon)
                         {
-                                mon->is_player_feeling_msg_allowed_ = false;
+                                mon->m_is_player_feeling_msg_allowed = false;
                         });
         }
 
-        map_control::controller = map_controller();
+        map_control::g_controller = map_controller();
 
 #ifndef NDEBUG
         auto diff_time = std::chrono::steady_clock::now() - start_time;
@@ -107,32 +107,32 @@ std::unique_ptr<MapController> MapBuilder::map_controller() const
 // -----------------------------------------------------------------------------
 bool MapBuilderTemplateLevel::build_specific()
 {
-        template_ = map_templates::level_templ(template_id());
+        m_template = map_templates::level_templ(template_id());
 
         if (allow_transform_template())
         {
                 if (rnd::coin_toss())
                 {
-                        template_.rotate_cw();
+                        m_template.rotate_cw();
                 }
 
                 if (rnd::coin_toss())
                 {
-                        template_.flip_hor();
+                        m_template.flip_hor();
                 }
 
                 if (rnd::coin_toss())
                 {
-                        template_.flip_ver();
+                        m_template.flip_ver();
                 }
         }
 
-        const P templ_dims = template_.dims();
+        const P templ_dims = m_template.dims();
 
         map::reset(templ_dims);
 
         // Move away the player, to avoid placing monsters on the player
-        map::player->pos.set(0, 0);
+        map::g_player->m_pos.set(0, 0);
 
         for (int x = 0; x < templ_dims.x; ++x)
         {
@@ -140,7 +140,7 @@ bool MapBuilderTemplateLevel::build_specific()
                 {
                         const P p(x, y);
 
-                        handle_template_pos(p, template_.at(p));
+                        handle_template_pos(p, m_template.at(p));
                 }
         }
 

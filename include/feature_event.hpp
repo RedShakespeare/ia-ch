@@ -55,8 +55,8 @@ public:
         void on_new_turn() override;
 
 private:
-        std::vector<P> wall_cells_;
-        std::vector<P> inner_cells_;
+        std::vector<P> m_wall_cells;
+        std::vector<P> m_inner_cells;
 };
 
 class EventSnakeEmerge: public Event
@@ -91,9 +91,9 @@ private:
                 const R& allowed_area) const;
 
         const Range allowed_emerge_dist_range =
-                Range(2, fov_radi_int - 1);
+                Range(2, g_fov_radi_int - 1);
 
-        const size_t min_nr_snakes_ = 3;
+        const size_t m_min_nr_snakes = 3;
 };
 
 class EventRatsInTheWallsDiscovery: public Event

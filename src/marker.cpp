@@ -41,10 +41,10 @@ StateId MarkerState::id()
 
 void MarkerState::on_start()
 {
-        marker_render_data_.resize(
+        m_marker_render_data.resize(
                 viewport::get_map_view_area().dims());
 
-        pos_ = map::player->pos;
+        m_pos = map::g_player->m_pos;
 
         if (use_player_tgt())
         {
@@ -56,7 +56,7 @@ void MarkerState::on_start()
                         // If no target available, attempt to place marker at
                         // closest visible monster. This sets a new player
                         // target if successful.
-                        map::player->tgt_ = nullptr;
+                        map::g_player->m_tgt = nullptr;
 
                         try_go_to_closest_enemy();
                 }
@@ -74,15 +74,15 @@ void MarkerState::on_popped()
 
 void MarkerState::draw()
 {
-        if (!viewport::is_in_view(pos_))
+        if (!viewport::is_in_view(m_pos))
         {
-                viewport::focus_on(pos_);
+                viewport::focus_on(m_pos);
         }
 
         auto line =
                 line_calc::calc_new_line(
-                        origin_,
-                        pos_,
+                        m_origin,
+                        m_pos,
                         true, // Stop at target
                         INT_MAX, // Travel limit
                         true); // Allow outside map
@@ -112,7 +112,7 @@ void MarkerState::draw()
                                 break;
                         }
 
-                        const Cell& c = map::cells.at(p);
+                        const Cell& c = map::g_cells.at(p);
 
                         if (c.is_seen_by_player && blocked_parser.cell(p))
                         {
@@ -200,7 +200,7 @@ void MarkerState::draw_marker(
         {
                 for (int y = 0; y < map_view_dims.y; ++y)
                 {
-                        auto& d = marker_render_data_.at(x, y);
+                        auto& d = m_marker_render_data.at(x, y);
 
                         d.tile  = TileId::END;
                         d.character = 0;
@@ -223,7 +223,7 @@ void MarkerState::draw_marker(
                         continue;
                 }
 
-                const int dist = king_dist(origin_, line_pos);
+                const int dist = king_dist(m_origin, line_pos);
 
                 // Draw red due to index, or due to distance?
                 const bool red_by_idx =
@@ -255,7 +255,7 @@ void MarkerState::draw_marker(
                 {
                         const P view_pos = viewport::to_view_pos(line_pos);
 
-                        auto& d = marker_render_data_.at(view_pos);
+                        auto& d = m_marker_render_data.at(view_pos);
 
                         d.tile = TileId::aim_marker_line;
 
@@ -279,14 +279,14 @@ void MarkerState::draw_marker(
         // Draw the head
         const P& head_pos =
                 line.empty()
-                ? origin_
+                ? m_origin
                 : line.back();
 
         if (viewport::is_in_view(head_pos))
         {
                 const P view_pos = viewport::to_view_pos(head_pos);
 
-                auto& d = marker_render_data_.at(view_pos);
+                auto& d = m_marker_render_data.at(view_pos);
 
                 d.tile = TileId::aim_marker_head;
 
@@ -309,16 +309,16 @@ void MarkerState::draw_marker(
 
 void MarkerState::move(const Dir dir)
 {
-        const P new_pos(pos_ + dir_utils::offset(dir));
+        const P new_pos(m_pos + dir_utils::offset(dir));
 
         // We limit the distance from the player that the marker can be moved to
         // (mostly just to avoid segfaults or weird integer wraparound behavior)
         // The limit is an arbitrary big number, larger than any map should be
         const int max_dist_from_player = 300;
 
-        if (king_dist(map::player->pos, new_pos) <= max_dist_from_player)
+        if (king_dist(map::g_player->m_pos, new_pos) <= max_dist_from_player)
         {
-                pos_ = new_pos;
+                m_pos = new_pos;
 
                 on_moved();
         }
@@ -326,14 +326,14 @@ void MarkerState::move(const Dir dir)
 
 bool MarkerState::try_go_to_tgt()
 {
-        const Actor* const tgt = map::player->tgt_;
+        const Actor* const tgt = map::g_player->m_tgt;
 
         if (!tgt)
         {
                 return false;
         }
 
-        const auto seen_foes = map::player->seen_foes();
+        const auto seen_foes = map::g_player->seen_foes();
 
         if (!seen_foes.empty())
         {
@@ -341,7 +341,7 @@ bool MarkerState::try_go_to_tgt()
                 {
                         if (tgt == actor)
                         {
-                                pos_ = actor->pos;
+                                m_pos = actor->m_pos;
 
                                 return true;
                         }
@@ -353,7 +353,7 @@ bool MarkerState::try_go_to_tgt()
 
 void MarkerState::try_go_to_closest_enemy()
 {
-        const auto seen_foes = map::player->seen_foes();
+        const auto seen_foes = map::g_player->seen_foes();
 
         std::vector<P> seen_foes_cells;
 
@@ -362,9 +362,9 @@ void MarkerState::try_go_to_closest_enemy()
         // If player sees enemies, suggest one for targeting
         if (!seen_foes_cells.empty())
         {
-                pos_ = closest_pos(map::player->pos, seen_foes_cells);
+                m_pos = closest_pos(map::g_player->m_pos, seen_foes_cells);
 
-                map::player->tgt_ = map::actor_at_pos(pos_);
+                map::g_player->m_tgt = map::actor_at_pos(m_pos);
         }
 }
 
@@ -375,13 +375,13 @@ void Viewing::on_moved()
 {
         msg_log::clear();
 
-        look::print_location_info_msgs(pos_);
+        look::print_location_info_msgs(m_pos);
 
-        const auto* const actor = map::actor_at_pos(pos_);
+        const auto* const actor = map::actor_at_pos(m_pos);
 
         if (actor &&
             !actor->is_player() &&
-            map::player->can_see_actor(*actor))
+            map::g_player->can_see_actor(*actor))
         {
                 // TODO: This should not be specified here
                 const auto view_key =
@@ -411,7 +411,7 @@ void Viewing::on_moved()
                 msg_log::add(msg, colors::light_white());
         }
 
-        msg_log::add(common_text::cancel_hint, colors::light_white());
+        msg_log::add(common_text::g_cancel_hint, colors::light_white());
 }
 
 void Viewing::handle_input(const InputData& input)
@@ -420,11 +420,11 @@ void Viewing::handle_input(const InputData& input)
 
         if (game_cmd == GameCmd::look)
         {
-                auto* const actor = map::actor_at_pos(pos_);
+                auto* const actor = map::actor_at_pos(m_pos);
 
                 if (actor &&
-                    actor != map::player &&
-                    map::player->can_see_actor(*actor))
+                    actor != map::g_player &&
+                    map::g_player->can_see_actor(*actor))
                 {
                         msg_log::clear();
 
@@ -447,25 +447,25 @@ void Viewing::handle_input(const InputData& input)
 // -----------------------------------------------------------------------------
 void Aiming::on_moved()
 {
-        look::print_living_actor_info_msg(pos_);
+        look::print_living_actor_info_msg(m_pos);
 
         const bool is_in_range =
-                king_dist(origin_, pos_) < red_from_king_dist();
+                king_dist(m_origin, m_pos) < red_from_king_dist();
 
         if (is_in_range)
         {
-                auto* const actor = map::actor_at_pos(pos_);
+                auto* const actor = map::actor_at_pos(m_pos);
 
                 if (actor &&
                     !actor->is_player() &&
-                    map::player->can_see_actor(*actor))
+                    map::g_player->can_see_actor(*actor))
                 {
                         RangedAttData att_data(
-                                map::player,
-                                origin_,
-                                actor->pos, // Aim position
-                                actor->pos, // Current position
-                                wpn_);
+                                map::g_player,
+                                m_origin,
+                                actor->m_pos, // Aim position
+                                actor->m_pos, // Current position
+                                m_wpn);
 
                         const int hit_chance =
                                 ability_roll::hit_chance_pct_actual(
@@ -498,7 +498,7 @@ void Aiming::on_moved()
                 std::string("[") +
                 fire_key +
                 std::string("] to fire ") +
-                common_text::cancel_hint;
+                common_text::g_cancel_hint;
 
         msg_log::add(msg, colors::light_white());
 }
@@ -512,7 +512,7 @@ void Aiming::handle_input(const InputData& input)
                 // Bot is playing, fire at a random position
                 game_cmd = GameCmd::fire;
 
-                pos_.set(
+                m_pos.set(
                         rnd::range(0, map::w() - 1),
                         rnd::range(0, map::h() - 1));
         }
@@ -524,28 +524,28 @@ void Aiming::handle_input(const InputData& input)
 
         if ((game_cmd == GameCmd::fire) || (input.key == SDLK_RETURN))
         {
-                if (pos_ != map::player->pos)
+                if (m_pos != map::g_player->m_pos)
                 {
                         msg_log::clear();
 
-                        Actor* const actor = map::actor_at_pos(pos_);
+                        Actor* const actor = map::actor_at_pos(m_pos);
 
-                        if (actor && map::player->can_see_actor(*actor))
+                        if (actor && map::g_player->can_see_actor(*actor))
                         {
-                                map::player->tgt_ = actor;
+                                map::g_player->m_tgt = actor;
                         }
 
-                        const P pos = pos_;
+                        const P pos = m_pos;
 
-                        Wpn* const wpn = &wpn_;
+                        Wpn* const wpn = &m_wpn;
 
                         states::pop();
 
                         // NOTE: This object is now destroyed
 
                         attack::ranged(
-                                map::player,
-                                map::player->pos,
+                                map::g_player,
+                                map::g_player->m_pos,
                                 pos,
                                 *wpn);
                 }
@@ -558,7 +558,7 @@ void Aiming::handle_input(const InputData& input)
 
 int Aiming::orange_from_king_dist() const
 {
-        const int effective_range = wpn_.data().ranged.effective_range;
+        const int effective_range = m_wpn.data().ranged.effective_range;
 
         return
                 (effective_range < 0)
@@ -568,7 +568,7 @@ int Aiming::orange_from_king_dist() const
 
 int Aiming::red_from_king_dist() const
 {
-        const int max_range = wpn_.data().ranged.max_range;
+        const int max_range = m_wpn.data().ranged.max_range;
 
         return
                 (max_range < 0)
@@ -581,24 +581,24 @@ int Aiming::red_from_king_dist() const
 // -----------------------------------------------------------------------------
 void Throwing::on_moved()
 {
-        look::print_living_actor_info_msg(pos_);
+        look::print_living_actor_info_msg(m_pos);
 
         const bool is_in_range =
-                king_dist(origin_, pos_) < red_from_king_dist();
+                king_dist(m_origin, m_pos) < red_from_king_dist();
 
         if (is_in_range)
         {
-                auto* const actor = map::actor_at_pos(pos_);
+                auto* const actor = map::actor_at_pos(m_pos);
 
                 if (actor &&
                     !actor->is_player() &&
-                    map::player->can_see_actor(*actor))
+                    map::g_player->can_see_actor(*actor))
                 {
                         ThrowAttData att_data(
-                                map::player,
-                                actor->pos, // Aim position
-                                actor->pos, // Current position
-                                *inv_item_);
+                                map::g_player,
+                                actor->m_pos, // Aim position
+                                actor->m_pos, // Current position
+                                *m_inv_item);
 
                         const int hit_chance =
                                 ability_roll::hit_chance_pct_actual(
@@ -631,7 +631,7 @@ void Throwing::on_moved()
                 std::string("[") +
                 throw_key +
                 std::string("] to throw ") +
-                common_text::cancel_hint;
+                common_text::g_cancel_hint;
 
         msg_log::add(msg, colors::light_white());
 }
@@ -642,29 +642,29 @@ void Throwing::handle_input(const InputData& input)
 
         if ((game_cmd == GameCmd::throw_item) || (input.key == SDLK_RETURN))
         {
-                if (pos_ != map::player->pos)
+                if (m_pos != map::g_player->m_pos)
                 {
                         msg_log::clear();
 
-                        Actor* const actor = map::actor_at_pos(pos_);
+                        Actor* const actor = map::actor_at_pos(m_pos);
 
-                        if (actor && map::player->can_see_actor(*actor))
+                        if (actor && map::g_player->can_see_actor(*actor))
                         {
-                                map::player->tgt_ = actor;
+                                map::g_player->m_tgt = actor;
                         }
 
-                        const P pos = pos_;
+                        const P pos = m_pos;
 
                         Item* item_to_throw =
-                                item_factory::copy_item(*inv_item_);
+                                item_factory::copy_item(*m_inv_item);
 
-                        item_to_throw->nr_items_ = 1;
+                        item_to_throw->m_nr_items = 1;
 
                         item_to_throw->clear_actor_carrying();
 
-                        inv_item_ = map::player->inv.decr_item(inv_item_);
+                        m_inv_item = map::g_player->m_inv.decr_item(m_inv_item);
 
-                        map::player->last_thrown_item_ = inv_item_;
+                        map::g_player->m_last_thrown_item = m_inv_item;
 
                         states::pop();
 
@@ -672,7 +672,7 @@ void Throwing::handle_input(const InputData& input)
 
                         // Perform the actual throwing
                         throwing::throw_item(
-                                *map::player,
+                                *map::g_player,
                                 pos,
                                 *item_to_throw);
                 }
@@ -685,7 +685,7 @@ void Throwing::handle_input(const InputData& input)
 
 int Throwing::orange_from_king_dist() const
 {
-        const int effective_range = inv_item_->data().ranged.effective_range;
+        const int effective_range = m_inv_item->data().ranged.effective_range;
 
         return
                 (effective_range < 0)
@@ -695,7 +695,7 @@ int Throwing::orange_from_king_dist() const
 
 int Throwing::red_from_king_dist() const
 {
-        const int max_range = inv_item_->data().ranged.max_range;
+        const int max_range = m_inv_item->data().ranged.max_range;
 
         return
                 (max_range < 0)
@@ -708,7 +708,7 @@ int Throwing::red_from_king_dist() const
 // -----------------------------------------------------------------------------
 void ThrowingExplosive::on_draw()
 {
-        const ItemId id = explosive_.id();
+        const ItemId id = m_explosive.id();
 
         if (id != ItemId::dynamite &&
             id != ItemId::molotov &&
@@ -718,7 +718,7 @@ void ThrowingExplosive::on_draw()
         }
 
         const R expl_area =
-                explosion::explosion_area(pos_, expl_std_radi);
+                explosion::explosion_area(m_pos, g_expl_std_radi);
 
         const Color color_bg = colors::red().fraction(2.0);
 
@@ -731,7 +731,7 @@ void ThrowingExplosive::on_draw()
 
                         if (!viewport::is_in_view(p) ||
                             !map::is_pos_inside_map(p) ||
-                            !map::cells.at(p).is_explored)
+                            !map::g_cells.at(p).is_explored)
                         {
                                 continue;
                         }
@@ -741,7 +741,7 @@ void ThrowingExplosive::on_draw()
                         const P view_pos = viewport::to_view_pos(p);
 
                         const auto& marker_render_d =
-                                marker_render_data_.at(view_pos);
+                                m_marker_render_data.at(view_pos);
 
                         // Draw overlay if the cell contains either a map
                         // symbol, or a marker symbol
@@ -776,7 +776,7 @@ void ThrowingExplosive::on_draw()
 
 void ThrowingExplosive::on_moved()
 {
-        look::print_location_info_msgs(pos_);
+        look::print_location_info_msgs(m_pos);
 
         // TODO: This should not be specified here
         const auto throw_key = 't';
@@ -798,7 +798,7 @@ void ThrowingExplosive::on_moved()
                 std::string("[") +
                 throw_key +
                 std::string("] to throw ") +
-                common_text::cancel_hint;
+                common_text::g_cancel_hint;
 
         msg_log::add(msg, colors::light_white());
 }
@@ -811,7 +811,7 @@ void ThrowingExplosive::handle_input(const InputData& input)
         {
                 msg_log::clear();
 
-                const P pos = pos_;
+                const P pos = m_pos;
 
                 states::pop();
 
@@ -827,7 +827,7 @@ void ThrowingExplosive::handle_input(const InputData& input)
 
 int ThrowingExplosive::red_from_king_dist() const
 {
-        const int max_range = explosive_.data().ranged.max_range;
+        const int max_range = m_explosive.data().ranged.max_range;
 
         return
                 (max_range < 0)
@@ -840,14 +840,14 @@ int ThrowingExplosive::red_from_king_dist() const
 // -----------------------------------------------------------------------------
 CtrlTele::CtrlTele(const P& origin, const Array2<bool>& blocked) :
         MarkerState(origin),
-        blocked_(blocked)
+        m_blocked(blocked)
 {
 
 }
 
 int CtrlTele::chance_of_success_pct(const P& tgt) const
 {
-        const int dist = king_dist(map::player->pos, tgt);
+        const int dist = king_dist(map::g_player->m_pos, tgt);
 
         const int chance = constr_in_range(25, 100 - dist, 95);
 
@@ -865,11 +865,11 @@ void CtrlTele::on_start_hook()
 
 void CtrlTele::on_moved()
 {
-        look::print_location_info_msgs(pos_);
+        look::print_location_info_msgs(m_pos);
 
-        if (pos_ != map::player->pos)
+        if (m_pos != map::g_player->m_pos)
         {
-                const int chance_pct = chance_of_success_pct(pos_);
+                const int chance_pct = chance_of_success_pct(m_pos);
 
                 msg_log::add(
                         std::to_string(chance_pct) + "% chance of success.",
@@ -883,18 +883,18 @@ void CtrlTele::on_moved()
 
 void CtrlTele::handle_input(const InputData& input)
 {
-        if ((input.key == SDLK_RETURN) && (pos_ != map::player->pos))
+        if ((input.key == SDLK_RETURN) && (m_pos != map::g_player->m_pos))
         {
-                const int chance = chance_of_success_pct(pos_);
+                const int chance = chance_of_success_pct(m_pos);
 
                 const bool roll_ok = rnd::percent(chance);
 
                 const bool is_tele_success =
                         roll_ok &&
-                        blocked_.rect().is_pos_inside(pos_) &&
-                        !blocked_.at(pos_);
+                        m_blocked.rect().is_pos_inside(m_pos) &&
+                        !m_blocked.at(m_pos);
 
-                const P tgt_p(pos_);
+                const P tgt_p(m_pos);
 
                 states::pop();
 
@@ -903,7 +903,7 @@ void CtrlTele::handle_input(const InputData& input)
                 if (is_tele_success)
                 {
                         // Teleport to this exact destination
-                        teleport(*map::player, tgt_p, blocked_);
+                        teleport(*map::g_player, tgt_p, m_blocked);
                 }
                 else // Failed to teleport (blocked or roll failed)
                 {
@@ -914,7 +914,7 @@ void CtrlTele::handle_input(const InputData& input)
                                 MorePromptOnMsg::yes);
 
                         // Run a randomized teleport with no teleport control
-                        teleport(*map::player, ShouldCtrlTele::never);
+                        teleport(*map::g_player, ShouldCtrlTele::never);
                 }
         }
 }

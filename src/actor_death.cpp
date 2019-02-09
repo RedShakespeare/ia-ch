@@ -24,14 +24,14 @@ static bool try_use_talisman_of_resurrection(Actor& actor)
 {
         // Player has the Talisman of Resurrection, and died of physical damage?
         if (!actor.is_player() ||
-            !actor.inv.has_item_in_backpack(ItemId::resurrect_talisman) ||
-            (map::player->ins() >= 100) ||
-            (actor.sp <= 0))
+            !actor.m_inv.has_item_in_backpack(ItemId::resurrect_talisman) ||
+            (map::g_player->ins() >= 100) ||
+            (actor.m_sp <= 0))
         {
                 return false;
         }
 
-        actor.inv.decr_item_type_in_backpack(ItemId::resurrect_talisman);
+        actor.m_inv.decr_item_type_in_backpack(ItemId::resurrect_talisman);
 
         msg_log::more_prompt();
 
@@ -50,7 +50,7 @@ static bool try_use_talisman_of_resurrection(Actor& actor)
                 false,
                 Verbosity::silent);
 
-        actor.properties.end_prop(
+        actor.m_properties.end_prop(
                 PropId::wound,
                 PropEndConfig(
                         PropEndAllowCallEndHook::no,
@@ -59,7 +59,7 @@ static bool try_use_talisman_of_resurrection(Actor& actor)
                 );
 
         // If player died due to falling down a chasm, go to next level
-        if (map::cells.at(actor.pos).rigid->id() == FeatureId::chasm)
+        if (map::g_cells.at(actor.m_pos).rigid->id() == FeatureId::chasm)
         {
                 map_travel::go_to_nxt();
         }
@@ -68,7 +68,7 @@ static bool try_use_talisman_of_resurrection(Actor& actor)
 
         game::add_history_event("I was brought back from the dead.");
 
-        map::player->incr_shock(
+        map::g_player->incr_shock(
                 ShockLvl::mind_shattering,
                 ShockSrc::misc);
 
@@ -77,18 +77,18 @@ static bool try_use_talisman_of_resurrection(Actor& actor)
 
 static void move_actor_to_pos_can_have_corpse(Actor& actor)
 {
-        if (map::cells.at(actor.pos).rigid->can_have_corpse())
+        if (map::g_cells.at(actor.m_pos).rigid->can_have_corpse())
         {
                 return;
         }
 
-        for (const P& d : dir_utils::dir_list_w_center)
+        for (const P& d : dir_utils::g_dir_list_w_center)
         {
-                const P p = actor.pos + d;
+                const P p = actor.m_pos + d;
 
-                if (map::cells.at(p).rigid->can_have_corpse())
+                if (map::g_cells.at(p).rigid->can_have_corpse())
                 {
-                        actor.pos = p;
+                        actor.m_pos = p;
 
                         break;
                 }
@@ -130,19 +130,19 @@ void kill(
                 return;
         }
 
-        ASSERT(actor.data->can_leave_corpse ||
+        ASSERT(actor.m_data->can_leave_corpse ||
                (is_destroyed == IsDestroyed::yes));
 
         unset_actor_as_leader_for_all_mon(actor);
 
         if (!actor.is_player())
         {
-                if (map::player->tgt_ == &actor)
+                if (map::g_player->m_tgt == &actor)
                 {
-                        map::player->tgt_ = nullptr;
+                        map::g_player->m_tgt = nullptr;
                 }
 
-                if (map::player->can_see_actor(actor))
+                if (map::g_player->can_see_actor(actor))
                 {
                         print_mon_death_msg(actor);
                 }
@@ -154,21 +154,21 @@ void kill(
         }
         else // Not destroyed
         {
-                actor.state = ActorState::corpse;
+                actor.m_state = ActorState::corpse;
         }
 
         if (!actor.is_player())
         {
                 // This is a monster
 
-                if (actor.data->is_humanoid)
+                if (actor.m_data->is_humanoid)
                 {
                         TRACE_VERBOSE << "Emitting death sound" << std::endl;
 
                         Snd snd("I hear agonized screaming.",
                                 SfxId::END,
                                 IgnoreMsgIfOriginSeen::yes,
-                                actor.pos,
+                                actor.m_pos,
                                 &actor,
                                 SndVol::high,
                                 AlertsMon::no);
@@ -179,10 +179,10 @@ void kill(
 
         if (is_destroyed == IsDestroyed::yes)
         {
-                if (actor.data->can_bleed && (allow_gore == AllowGore::yes))
+                if (actor.m_data->can_bleed && (allow_gore == AllowGore::yes))
                 {
-                        map::make_gore(actor.pos);
-                        map::make_blood(actor.pos);
+                        map::make_gore(actor.m_pos);
+                        map::make_blood(actor.m_pos);
                 }
         }
         else // Not destroyed
@@ -195,18 +195,18 @@ void kill(
 
         actor.on_death();
 
-        actor.properties.on_death();
+        actor.m_properties.on_death();
 
         if (!actor.is_player())
         {
                 if (allow_drop_items == AllowDropItems::yes)
                 {
-                        actor.inv.drop_all_non_intrinsic(actor.pos);
+                        actor.m_inv.drop_all_non_intrinsic(actor.m_pos);
                 }
 
                 game::on_mon_killed(actor);
 
-                static_cast<Mon&>(actor).leader_ = nullptr;
+                static_cast<Mon&>(actor).m_leader = nullptr;
         }
 
         TRACE_FUNC_END_VERBOSE;
@@ -214,13 +214,13 @@ void kill(
 
 void unset_actor_as_leader_for_all_mon(Actor& actor)
 {
-        for (Actor* other : game_time::actors)
+        for (Actor* other : game_time::g_actors)
         {
                 if ((other != &actor) &&
                     !other->is_player() &&
                     actor.is_leader_of(other))
                 {
-                        static_cast<Mon*>(other)->leader_ = nullptr;
+                        static_cast<Mon*>(other)->m_leader = nullptr;
                 }
         }
 }

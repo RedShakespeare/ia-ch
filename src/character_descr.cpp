@@ -23,11 +23,12 @@
 // -----------------------------------------------------------------------------
 // Private
 // -----------------------------------------------------------------------------
-static const std::string offset = "   ";
+static const std::string s_offset = "   ";
 
 // TODO: Magic number, this should be based on the minimum required
 // window width instead (e.g. 3/4 of this width)
-static const int max_w_descr = 60;
+static const int s_max_w_descr = 60;
+
 
 static Color clr_heading()
 {
@@ -44,13 +45,13 @@ static void add_properties_descr(std::vector<ColoredString>& lines)
         lines.push_back(ColoredString("Current properties", clr_heading()));
 
         const auto prop_list =
-                map::player->properties.property_names_and_descr();
+                map::g_player->m_properties.property_names_and_descr();
 
         if (prop_list.empty())
         {
                 lines.push_back(
                         ColoredString(
-                                offset + "None",
+                                s_offset + "None",
                                 colors::text()));
 
                 lines.push_back(ColoredString("", colors::text()));
@@ -62,16 +63,16 @@ static void add_properties_descr(std::vector<ColoredString>& lines)
                         const auto& title = e.title;
 
                         lines.push_back(
-                                ColoredString(offset + title.str,
+                                ColoredString(s_offset + title.str,
                                               title.color));
 
                         const auto descr_formatted =
-                                text_format::split(e.descr, max_w_descr);
+                                text_format::split(e.descr, s_max_w_descr);
 
                         for (const auto& descr_line : descr_formatted)
                         {
                                 lines.push_back(
-                                        ColoredString(offset + descr_line,
+                                        ColoredString(s_offset + descr_line,
                                                       color_text_dark()));
                         }
 
@@ -89,7 +90,7 @@ static void add_insanity_descr(std::vector<ColoredString>& lines)
         if (sympts.empty())
         {
                 lines.push_back(
-                        ColoredString(offset + "None",
+                        ColoredString(s_offset + "None",
                                       colors::text()));
         }
         else // Has insanity symptoms
@@ -101,7 +102,7 @@ static void add_insanity_descr(std::vector<ColoredString>& lines)
                         if (!sympt_descr.empty())
                         {
                                 lines.push_back(
-                                        ColoredString(offset + sympt_descr,
+                                        ColoredString(s_offset + sympt_descr,
                                                       colors::text()));
                         }
                 }
@@ -120,7 +121,7 @@ static void add_potion_descr(std::vector<ColoredString>& lines)
 
         for (int i = 0; i < (int)ItemId::END; ++i)
         {
-                const ItemData& d = item_data::data[i];
+                const ItemData& d = item_data::g_data[i];
 
                 if ((d.type != ItemType::potion) ||
                     (!d.is_tried &&
@@ -135,7 +136,7 @@ static void add_potion_descr(std::vector<ColoredString>& lines)
                         item->name(ItemRefType::plain);
 
                 potion_list.push_back(
-                        ColoredString(offset + name, d.color));
+                        ColoredString(s_offset + name, d.color));
 
                 delete item;
         }
@@ -143,7 +144,7 @@ static void add_potion_descr(std::vector<ColoredString>& lines)
         if (potion_list.empty())
         {
                 lines.push_back(
-                        ColoredString(offset + "No known potions",
+                        ColoredString(s_offset + "No known potions",
                                       colors::text()));
         }
         else
@@ -172,7 +173,7 @@ static void add_scroll_descr(std::vector<ColoredString>& lines)
 
         for (int i = 0; i < (int)ItemId::END; ++i)
         {
-                const ItemData& d = item_data::data[i];
+                const ItemData& d = item_data::g_data[i];
 
                 if ((d.type != ItemType::scroll) ||
                     (!d.is_tried &&
@@ -187,7 +188,7 @@ static void add_scroll_descr(std::vector<ColoredString>& lines)
                         item->name(ItemRefType::plain);
 
                 manuscript_list.push_back(
-                        ColoredString(offset + name,
+                        ColoredString(s_offset + name,
                                       item->interface_color()));
 
                 delete item;
@@ -196,7 +197,7 @@ static void add_scroll_descr(std::vector<ColoredString>& lines)
         if (manuscript_list.empty())
         {
                 lines.push_back(
-                        ColoredString(offset + "No known manuscripts",
+                        ColoredString(s_offset + "No known manuscripts",
                                       colors::text()));
         }
         else
@@ -223,7 +224,7 @@ static void add_traits_descr(std::vector<ColoredString>& lines)
 
         for (size_t i = 0; i < (size_t)Trait::END; ++i)
         {
-                if (player_bon::traits[i])
+                if (player_bon::g_traits[i])
                 {
                         const Trait trait = Trait(i);
 
@@ -234,17 +235,16 @@ static void add_traits_descr(std::vector<ColoredString>& lines)
                                 player_bon::trait_descr(trait);
 
                         lines.push_back(
-                                ColoredString(offset + title,
+                                ColoredString(s_offset + title,
                                               colors::text()));
 
                         const auto descr_lines =
-                                text_format::split(descr,
-                                                   max_w_descr);
+                                text_format::split(descr, s_max_w_descr);
 
                         for (const std::string& descr_line : descr_lines)
                         {
                                 lines.push_back(
-                                        ColoredString(offset + descr_line,
+                                        ColoredString(s_offset + descr_line,
                                                       color_text_dark()));
                         }
 
@@ -256,7 +256,7 @@ static void add_traits_descr(std::vector<ColoredString>& lines)
 static void add_history_descr(std::vector<ColoredString>& lines)
 {
         lines.push_back(
-                ColoredString("History of " + map::player->name_the(),
+                ColoredString("History of " + map::g_player->name_the(),
                               clr_heading()));
 
         const std::vector<HistoryEvent>& events = game::history();
@@ -281,7 +281,7 @@ static void add_history_descr(std::vector<ColoredString>& lines)
                 ev_str += " " + event.msg;
 
                 lines.push_back(
-                        ColoredString(offset + ev_str,
+                        ColoredString(s_offset + ev_str,
                                       colors::text()));
         }
 
@@ -298,19 +298,19 @@ StateId CharacterDescr::id()
 
 void CharacterDescr::on_start()
 {
-        lines_.clear();
+        m_lines.clear();
 
-        add_properties_descr(lines_);
+        add_properties_descr(m_lines);
 
-        add_insanity_descr(lines_);
+        add_insanity_descr(m_lines);
 
-        add_potion_descr(lines_);
+        add_potion_descr(m_lines);
 
-        add_scroll_descr(lines_);
+        add_scroll_descr(m_lines);
 
-        add_traits_descr(lines_);
+        add_traits_descr(m_lines);
 
-        add_history_descr(lines_);
+        add_history_descr(m_lines);
 }
 
 void CharacterDescr::draw()
@@ -319,15 +319,15 @@ void CharacterDescr::draw()
 
         int y_pos = 1;
 
-        const int nr_lines_tot = lines_.size();
+        const int nr_lines_tot = m_lines.size();
 
         int btm_nr = std::min(
-                top_idx_ + max_nr_lines_on_screen() - 1,
+                m_top_idx + max_nr_lines_on_screen() - 1,
                 nr_lines_tot - 1);
 
-        for (int i = top_idx_; i <= btm_nr; ++i)
+        for (int i = m_top_idx; i <= btm_nr; ++i)
         {
-                const ColoredString& line = lines_[i];
+                const ColoredString& line = m_lines[i];
 
                 io::draw_text(line.str,
                               Panel::screen,
@@ -341,7 +341,7 @@ void CharacterDescr::draw()
 void CharacterDescr::update()
 {
         const int line_jump = 3;
-        const int nr_lines_tot = lines_.size();
+        const int nr_lines_tot = m_lines.size();
 
         const auto input = io::get();
 
@@ -349,23 +349,23 @@ void CharacterDescr::update()
         {
         case '2':
         case SDLK_DOWN:
-                top_idx_ += line_jump;
+                m_top_idx += line_jump;
 
                 if (nr_lines_tot <= max_nr_lines_on_screen())
                 {
-                        top_idx_ = 0;
+                        m_top_idx = 0;
                 }
                 else
                 {
-                        top_idx_ = std::min(
+                        m_top_idx = std::min(
                                 nr_lines_tot - max_nr_lines_on_screen(),
-                                top_idx_);
+                                m_top_idx);
                 }
                 break;
 
         case '8':
         case SDLK_UP:
-                top_idx_ = std::max(0, top_idx_ - line_jump);
+                m_top_idx = std::max(0, m_top_idx - line_jump);
                 break;
 
         case SDLK_SPACE:

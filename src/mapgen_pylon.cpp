@@ -19,7 +19,7 @@ namespace mapgen
 void make_pylons_and_levers()
 {
         // Never make Pylons late game (theme)
-        if (map::dlvl >= dlvl_first_late_game)
+        if (map::g_dlvl >= g_dlvl_first_late_game)
         {
                 return;
         }
@@ -40,9 +40,9 @@ void make_pylons_and_levers()
 
         blocked = map_parsers::expand(blocked, 2);
 
-        for (Actor* const actor : game_time::actors)
+        for (Actor* const actor : game_time::g_actors)
         {
-                blocked.at(actor->pos) = true;
+                blocked.at(actor->m_pos) = true;
         }
 
         for (int i = 0; i < nr_pylons; ++i)
@@ -122,9 +122,9 @@ void make_pylons_and_levers()
 
                 lever->set_linked_feature(*pylon);
 
-                map::cells.at(pylon_p).rigid = pylon;
+                map::g_cells.at(pylon_p).rigid = pylon;
 
-                map::cells.at(lever_p).rigid = lever;
+                map::g_cells.at(lever_p).rigid = lever;
 
                 // Don't place other pylons too near
                 {

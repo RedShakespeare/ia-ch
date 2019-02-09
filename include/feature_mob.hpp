@@ -34,11 +34,11 @@ class Smoke: public Mob
 public:
         Smoke(const P& feature_pos, const int nr_turns) :
                 Mob(feature_pos),
-                nr_turns_left_(nr_turns) {}
+                m_nr_turns_left(nr_turns) {}
 
         Smoke(const P& feature_pos) :
                 Mob(feature_pos),
-                nr_turns_left_(-1) {}
+                m_nr_turns_left(-1) {}
 
         ~Smoke() {}
 
@@ -54,7 +54,7 @@ public:
         void on_new_turn() override;
 
 protected:
-        int nr_turns_left_;
+        int m_nr_turns_left;
 };
 
 class ForceField: public Mob
@@ -62,11 +62,11 @@ class ForceField: public Mob
 public:
         ForceField(const P& feature_pos, const int nr_turns) :
                 Mob(feature_pos),
-                nr_turns_left_(nr_turns) {}
+                m_nr_turns_left(nr_turns) {}
 
         ForceField(const P& feature_pos) :
                 Mob(feature_pos),
-                nr_turns_left_(-1) {}
+                m_nr_turns_left(-1) {}
 
         ~ForceField() {}
 
@@ -82,7 +82,7 @@ public:
         Color color() const override;
 
 protected:
-        int nr_turns_left_;
+        int m_nr_turns_left;
 };
 
 class LitDynamite: public Mob
@@ -90,11 +90,11 @@ class LitDynamite: public Mob
 public:
         LitDynamite(const P& feature_pos, const int nr_turns) :
                 Mob(feature_pos),
-                nr_turns_left_(nr_turns) {}
+                m_nr_turns_left(nr_turns) {}
 
         LitDynamite(const P& feature_pos) :
                 Mob(feature_pos),
-                nr_turns_left_(-1) {}
+                m_nr_turns_left(-1) {}
 
         ~LitDynamite() {}
 
@@ -113,7 +113,7 @@ public:
         void on_new_turn() override;
 
 private:
-        int nr_turns_left_;
+        int m_nr_turns_left;
 };
 
 class LitFlare: public Mob
@@ -121,11 +121,11 @@ class LitFlare: public Mob
 public:
         LitFlare(const P& feature_pos, const int nr_turns) :
                 Mob(feature_pos),
-                nr_turns_left_(nr_turns) {}
+                m_nr_turns_left(nr_turns) {}
 
         LitFlare(const P& feature_pos) :
                 Mob(feature_pos),
-                nr_turns_left_(-1) {}
+                m_nr_turns_left(-1) {}
 
         ~LitFlare() {}
 
@@ -143,7 +143,7 @@ public:
         void add_light(Array2<bool>& light) const override;
 
 private:
-        int nr_turns_left_;
+        int m_nr_turns_left;
 };
 
 #endif // FEATURE_MOB_HPP

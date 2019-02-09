@@ -38,71 +38,71 @@ public:
 
         std::string game_summary_file_path() const
         {
-                return game_summary_file_path_;
+                return m_game_summary_file_path;
         }
 
         std::string date() const
         {
-                return date_;
+                return m_date;
         }
 
         std::string name() const
         {
-                return name_;
+                return m_name;
         }
 
         int xp() const
         {
-                return xp_;
+                return m_xp;
         }
 
         int lvl() const
         {
-                return lvl_;
+                return m_lvl;
         }
 
         int dlvl() const
         {
-                return dlvl_;
+                return m_dlvl;
         }
 
         int turn_count() const
         {
-                return turn_count_;
+                return m_turn_count;
         }
 
         int ins() const
         {
-                return ins_;
+                return m_ins;
         }
 
         IsWin is_win() const
         {
-                return is_win_;
+                return m_is_win;
         }
 
         Bg bg() const
         {
-                return bg_;
+                return m_bg;
         }
 
         OccultistDomain occultist_domain() const
         {
-                return player_occultist_domain_;
+                return m_player_occultist_domain;
         }
 
 private:
-        std::string game_summary_file_path_;
-        std::string date_;
-        std::string name_;
-        int xp_;
-        int lvl_;
-        int dlvl_;
-        int turn_count_;
-        int ins_;
-        IsWin is_win_;
-        Bg bg_;
-        OccultistDomain player_occultist_domain_;
+        std::string m_game_summary_file_path;
+        std::string m_date;
+        std::string m_name;
+        int m_xp;
+        int m_lvl;
+        int m_dlvl;
+        int m_turn_count;
+        int m_ins;
+        IsWin m_is_win;
+        Bg m_bg;
+        OccultistDomain m_player_occultist_domain;
 };
 
 namespace highscore
@@ -128,8 +128,8 @@ class BrowseHighscore: public State
 public:
         BrowseHighscore() :
                 State(),
-                entries_(),
-                browser_() {}
+                m_entries(),
+                m_browser() {}
 
         void on_start() override;
 
@@ -140,15 +140,15 @@ public:
         bool draw_overlayed() const override
         {
                 // If there are no entries, we draw an overlayed popup
-                return entries_.empty();
+                return m_entries.empty();
         }
 
         StateId id() override;
 
 private:
-        std::vector<HighscoreEntry> entries_;
+        std::vector<HighscoreEntry> m_entries;
 
-        MenuBrowser browser_;
+        MenuBrowser m_browser;
 };
 
 class BrowseHighscoreEntry: public InfoScreenState
@@ -177,11 +177,11 @@ private:
 
         void read_file();
 
-        const std::string file_path_;
+        const std::string m_file_path;
 
-        std::vector<std::string> lines_;
+        std::vector<std::string> m_lines;
 
-        int top_idx_;
+        int m_top_idx;
 };
 
 #endif // HIGHSCORE_HPP

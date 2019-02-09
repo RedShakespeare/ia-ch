@@ -45,9 +45,9 @@ public:
         }
 
 private:
-        MenuBrowser browser_ {};
+        MenuBrowser m_browser {};
 
-        std::vector<Bg> bgs_ {};
+        std::vector<Bg> m_bgs {};
 };
 
 class PickOccultistState: public State
@@ -65,9 +65,9 @@ public:
         }
 
 private:
-        MenuBrowser browser_ {};
+        MenuBrowser m_browser {};
 
-        std::vector<OccultistDomain> domains_ {};
+        std::vector<OccultistDomain> m_domains {};
 };
 
 class PickTraitState: public State
@@ -85,13 +85,13 @@ public:
         }
 
 private:
-        MenuBrowser browser_traits_avail_ {};
-        MenuBrowser browser_traits_unavail_ {};
+        MenuBrowser m_browser_traits_avail {};
+        MenuBrowser m_browser_traits_unavail {};
 
-        std::vector<Trait> traits_avail_ {};
-        std::vector<Trait> traits_unavail_ {};
+        std::vector<Trait> m_traits_avail {};
+        std::vector<Trait> m_traits_unavail {};
 
-        TraitScreenMode screen_mode_ {TraitScreenMode::pick_new};
+        TraitScreenMode m_screen_mode {TraitScreenMode::pick_new};
 };
 
 class EnterNameState: public State
@@ -109,7 +109,7 @@ public:
         }
 
 private:
-        std::string current_str_ {};
+        std::string m_current_str {};
 };
 
 #endif // CREATE_CHARACTER_HPP

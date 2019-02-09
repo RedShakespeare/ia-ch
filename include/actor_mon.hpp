@@ -91,12 +91,12 @@ public:
 
         virtual SfxId aware_sfx_mon_seen() const
         {
-                return data->aware_sfx_mon_seen;
+                return m_data->aware_sfx_mon_seen;
         }
 
         virtual SfxId aware_sfx_mon_hidden() const
         {
-                return data->aware_sfx_mon_hidden;
+                return m_data->aware_sfx_mon_hidden;
         }
 
         void speak_phrase(const AlertsMon alerts_others);
@@ -106,19 +106,19 @@ public:
 
         void add_spell(SpellSkill skill, Spell* const spell);
 
-        int wary_of_player_counter_;
-        int aware_of_player_counter_;
-        int player_aware_of_me_counter_;
-        bool is_msg_mon_in_view_printed_;
-        bool is_player_feeling_msg_allowed_;
-        Dir last_dir_moved_;
-        MonRoamingAllowed is_roaming_allowed_;
-        Actor* leader_;
-        Actor* target_;
-        bool is_target_seen_;
-        bool waiting_;
+        int m_wary_of_player_counter;
+        int m_aware_of_player_counter;
+        int m_player_aware_of_me_counter;
+        bool m_is_msg_mon_in_view_printed;
+        bool m_is_player_feeling_msg_allowed;
+        Dir m_last_dir_moved;
+        MonRoamingAllowed m_is_roaming_allowed;
+        Actor* m_leader;
+        Actor* m_target;
+        bool m_is_target_seen;
+        bool m_waiting;
 
-        std::vector<MonSpell> spells_;
+        std::vector<MonSpell> m_spells;
 
 protected:
         std::vector<Actor*> unseen_foes_aware_of() const;
@@ -126,8 +126,9 @@ protected:
         // Return value 'true' means it is possible to see the other actor (i.e.
         // it's not impossible due to invisibility, etc), but the actor may or
         // may not currently be seen due to (lack of) awareness
-        bool is_actor_seeable(const Actor& other,
-                              const Array2<bool>& hard_blocked_los) const;
+        bool is_actor_seeable(
+                const Actor& other,
+                const Array2<bool>& hard_blocked_los) const;
 
         void make_leader_aware_silent() const;
 
@@ -144,10 +145,11 @@ protected:
 
         bool should_reload(const Wpn& wpn) const;
 
-        virtual void on_hit(int& dmg,
-                            const DmgType dmg_type,
-                            const DmgMethod method,
-                            const AllowWound allow_wound) override;
+        virtual void on_hit(
+                int& dmg,
+                const DmgType dmg_type,
+                const DmgMethod method,
+                const AllowWound allow_wound) override;
 
         virtual DidAction on_act()
         {
@@ -165,14 +167,14 @@ class Ape: public Mon
 public:
         Ape() :
                 Mon(),
-                frenzy_cooldown_(0) {}
+                m_frenzy_cooldown(0) {}
 
         ~Ape() {}
 
 private:
         DidAction on_act() override;
 
-        int frenzy_cooldown_;
+        int m_frenzy_cooldown;
 };
 
 class Khephren: public Mon
@@ -180,13 +182,13 @@ class Khephren: public Mon
 public:
         Khephren() :
                 Mon(),
-                has_summoned_locusts(false) {}
+                m_has_summoned_locusts(false) {}
         ~Khephren() {}
 
 private:
         DidAction on_act() override;
 
-        bool has_summoned_locusts;
+        bool m_has_summoned_locusts;
 };
 
 class StrangeColor: public Mon

@@ -7,7 +7,6 @@
 #ifndef THROWING_HPP
 #define THROWING_HPP
 
-
 class Item;
 class Actor;
 struct P;

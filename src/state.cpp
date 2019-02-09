@@ -13,7 +13,8 @@
 // -----------------------------------------------------------------------------
 // Private
 // -----------------------------------------------------------------------------
-static std::vector< std::unique_ptr<State> > current_states;
+static std::vector< std::unique_ptr<State> > s_current_states;
+
 
 //-----------------------------------------------------------------------------
 // State keeping
@@ -34,17 +35,17 @@ void cleanup()
 {
         TRACE_FUNC_BEGIN;
 
-        current_states.resize(0);
+        s_current_states.resize(0);
 
         TRACE_FUNC_END;
 }
 
 void start()
 {
-        while (!current_states.empty() &&
-               !current_states.back()->has_started())
+        while (!s_current_states.empty() &&
+               !s_current_states.back()->has_started())
         {
-                auto& state = current_states.back();
+                auto& state = s_current_states.back();
 
                 state->set_started();
 
@@ -56,15 +57,15 @@ void start()
 
 void draw()
 {
-        if (current_states.empty())
+        if (s_current_states.empty())
         {
                 return;
         }
 
         // Find the first state from the end which is NOT drawn overlayed
-        auto draw_from = end(current_states);
+        auto draw_from = std::end(s_current_states);
 
-        while (draw_from != begin(current_states))
+        while (draw_from != std::begin(s_current_states))
         {
                 --draw_from;
 
@@ -80,7 +81,7 @@ void draw()
         }
 
         // Draw every state from this (non-overlayed) state onward
-        for ( ; draw_from != end(current_states); ++draw_from)
+        for ( ; draw_from != std::end(s_current_states); ++draw_from)
         {
                 const auto& state_ptr = *draw_from;
 
@@ -97,7 +98,7 @@ void draw()
 
 void on_window_resized()
 {
-        for (auto& state : current_states)
+        for (auto& state : s_current_states)
         {
                 state->on_window_resized();
         }
@@ -105,12 +106,12 @@ void on_window_resized()
 
 void update()
 {
-        if (current_states.empty())
+        if (s_current_states.empty())
         {
                 return;
         }
 
-        current_states.back()->update();
+        s_current_states.back()->update();
 }
 
 void push(std::unique_ptr<State> state)
@@ -118,14 +119,14 @@ void push(std::unique_ptr<State> state)
         TRACE_FUNC_BEGIN;
 
         // Pause the current state
-        if (!current_states.empty())
+        if (!s_current_states.empty())
         {
-                current_states.back()->on_pause();
+                s_current_states.back()->on_pause();
         }
 
-        current_states.push_back(std::move(state));
+        s_current_states.push_back(std::move(state));
 
-        current_states.back()->on_pushed();
+        s_current_states.back()->on_pushed();
 
         io::flush_input();
 
@@ -136,20 +137,20 @@ void pop()
 {
         TRACE_FUNC_BEGIN;
 
-        if (current_states.empty())
+        if (s_current_states.empty())
         {
                 TRACE_FUNC_END;
 
                 return;
         }
 
-        current_states.back()->on_popped();
+        s_current_states.back()->on_popped();
 
-        current_states.pop_back();
+        s_current_states.pop_back();
 
-        if (!current_states.empty())
+        if (!s_current_states.empty())
         {
-                current_states.back()->on_resume();
+                s_current_states.back()->on_resume();
         }
 
         io::flush_input();
@@ -161,11 +162,11 @@ void pop_all()
 {
         TRACE_FUNC_BEGIN;
 
-        while (!current_states.empty())
+        while (!s_current_states.empty())
         {
-                current_states.back()->on_popped();
+                s_current_states.back()->on_popped();
 
-                current_states.pop_back();
+                s_current_states.pop_back();
         }
 
         TRACE_FUNC_END;
@@ -173,7 +174,7 @@ void pop_all()
 
 bool contains_state(const StateId id)
 {
-        for (auto& state : current_states)
+        for (auto& state : s_current_states)
         {
                 if (state->id() == id)
                 {
@@ -195,7 +196,7 @@ void pop_until(const StateId id)
                 return;
         }
 
-        while (current_states.back().get()->id() != id)
+        while (s_current_states.back().get()->id() != id)
         {
                 pop();
         }
@@ -210,12 +211,12 @@ bool is_current_state(const State& state)
                 return false;
         }
 
-        return &state == current_states.back().get();
+        return &state == s_current_states.back().get();
 }
 
 bool is_empty()
 {
-        return current_states.empty();
+        return s_current_states.empty();
 }
 
 } // states

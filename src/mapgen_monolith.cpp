@@ -35,15 +35,15 @@ void make_monoliths()
 
         blocked = map_parsers::expand(blocked, blocked.rect());
 
-        for (Actor* const actor : game_time::actors)
+        for (Actor* const actor : game_time::g_actors)
         {
-                blocked.at(actor->pos) = true;
+                blocked.at(actor->m_pos) = true;
         }
 
         // Block the area around the player
-        const P& player_p = map::player->pos;
+        const P& player_p = map::g_player->m_pos;
 
-        const int r = fov_radi_int;
+        const int r = g_fov_radi_int;
 
         const R fov_r(
                 std::max(0, player_p.x - r),
@@ -83,10 +83,10 @@ void make_monoliths()
 
                 const P p = spawn_weight_positions[spawn_p_idx];
 
-                map::cells.at(p).rigid = new Monolith(p);
+                map::g_cells.at(p).rigid = new Monolith(p);
 
                 // Block this position and all adjacent positions
-                for (const P& d : dir_utils::cardinal_list_w_center)
+                for (const P& d : dir_utils::g_cardinal_list_w_center)
                 {
                         const P p_adj(p + d);
 

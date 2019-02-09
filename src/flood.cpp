@@ -36,8 +36,8 @@ Array2<int> floodfill(
 
         const auto& dirs =
                 allow_diagonal
-                ? dir_utils::dir_list
-                : dir_utils::cardinal_list;
+                ? dir_utils::g_dir_list
+                : dir_utils::g_cardinal_list;
 
         bool done = false;
 

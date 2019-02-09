@@ -26,9 +26,9 @@ void try_pick()
 {
         msg_log::clear();
 
-        const P& pos = map::player->pos;
+        const P& pos = map::g_player->m_pos;
 
-        Item* const item = map::cells.at(pos).item;
+        Item* const item = map::g_cells.at(pos).item;
 
         if (!item)
         {
@@ -45,9 +45,9 @@ void try_pick()
 
         // NOTE: This calls the items pickup hook, which may destroy the item
         // (e.g. combine with others)
-        map::player->inv.put_in_backpack(item);
+        map::g_player->m_inv.put_in_backpack(item);
 
-        map::cells.at(pos).item = nullptr;
+        map::g_cells.at(pos).item = nullptr;
 
         game_time::tick();
 }
@@ -56,7 +56,7 @@ Ammo* unload_ranged_wpn(Wpn& wpn)
 {
         ASSERT(!wpn.data().ranged.has_infinite_ammo);
 
-        const int nr_ammo_loaded = wpn.ammo_loaded_;
+        const int nr_ammo_loaded = wpn.m_ammo_loaded;
 
         if (nr_ammo_loaded == 0)
         {
@@ -65,29 +65,29 @@ Ammo* unload_ranged_wpn(Wpn& wpn)
 
         const ItemId ammo_id = wpn.data().ranged.ammo_item_id;
 
-        ItemData& ammo_data = item_data::data[(size_t)ammo_id];
+        ItemData& ammo_data = item_data::g_data[(size_t)ammo_id];
 
         Item* spawned_ammo = item_factory::make(ammo_id);
 
         if (ammo_data.type == ItemType::ammo_mag)
         {
                 // Unload a mag
-                static_cast<AmmoMag*>(spawned_ammo)->ammo_ = nr_ammo_loaded;
+                static_cast<AmmoMag*>(spawned_ammo)->m_ammo = nr_ammo_loaded;
         }
         else
         {
                 // Unload loose ammo
-                spawned_ammo->nr_items_ = nr_ammo_loaded;
+                spawned_ammo->m_nr_items = nr_ammo_loaded;
         }
 
-        wpn.ammo_loaded_ = 0;
+        wpn.m_ammo_loaded = 0;
 
         return static_cast<Ammo*>(spawned_ammo);
 }
 
 void try_unload_wpn_or_pickup_ammo()
 {
-        Item* item = map::cells.at(map::player->pos).item;
+        Item* item = map::g_cells.at(map::g_player->m_pos).item;
 
         if (!item)
         {
@@ -114,7 +114,7 @@ void try_unload_wpn_or_pickup_ammo()
 
                                 msg_log::add("I unload " + wpn_name + ".");
 
-                                map::player->inv.put_in_backpack(spawned_ammo);
+                                map::g_player->m_inv.put_in_backpack(spawned_ammo);
 
                                 game_time::tick();
 

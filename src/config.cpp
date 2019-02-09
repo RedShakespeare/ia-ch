@@ -40,35 +40,35 @@ static const std::vector<std::string> font_image_names = {
         "16x24_typewriter_v2.png",
 };
 
-static const int opt_y0_ = 1;
-static const int opt_values_x_pos_ = 40;
+static const int s_opt_y0 = 1;
+static const int s_opt_values_x_pos = 40;
 
-static InputMode input_mode_ = InputMode::standard;
-static std::string font_name_ = "";
-static bool is_fullscreen_ = false;
-static bool is_tiles_wall_full_square_ = false;
-static bool is_text_mode_wall_full_square_ = false;
-static bool is_light_explosive_prompt_ = false;
-static bool is_drink_malign_pot_prompt_ = false;
-static bool is_ranged_wpn_meleee_prompt_ = false;
-static bool is_ranged_wpn_auto_reload_ = false;
-static bool is_intro_lvl_skipped_ = false;
-static bool is_any_key_confirm_more_ = false;
-static bool always_warn_new_mon_ = false;
-static int delay_projectile_draw_ = -1;
-static int delay_shotgun_ = -1;
-static int delay_explosion_ = -1;
-static std::string default_player_name_ = "";
-static bool is_bot_playing_ = false;
-static bool is_audio_enabled_ = false;
-static bool is_amb_audio_enabled_ = false;
-static bool is_tiles_mode_ = false;
-static int screen_px_w_ = -1;
-static int screen_px_h_ = -1;
-static int gui_cell_px_w_ = -1;
-static int gui_cell_px_h_ = -1;
-static int map_cell_px_w_ = -1;
-static int map_cell_px_h_ = -1;
+static InputMode s_input_mode = InputMode::standard;
+static std::string s_font_name = "";
+static bool s_is_fullscreen = false;
+static bool s_is_tiles_wall_full_square = false;
+static bool s_is_text_mode_wall_full_square = false;
+static bool s_is_light_explosive_prompt = false;
+static bool s_is_drink_malign_pot_prompt = false;
+static bool s_is_ranged_wpn_meleee_prompt = false;
+static bool s_is_ranged_wpn_auto_reload = false;
+static bool s_is_intro_lvl_skipped = false;
+static bool s_is_any_key_confirm_more = false;
+static bool s_always_warn_new_mon = false;
+static int s_delay_projectile_draw = -1;
+static int s_delay_shotgun = -1;
+static int s_delay_explosion = -1;
+static std::string s_default_player_name = "";
+static bool s_is_bot_playing = false;
+static bool s_is_audio_enabled = false;
+static bool s_is_amb_audio_enabled = false;
+static bool s_is_tiles_mode = false;
+static int s_screen_px_w = -1;
+static int s_screen_px_h = -1;
+static int s_gui_cell_px_w = -1;
+static int s_gui_cell_px_h = -1;
+static int s_map_cell_px_w = -1;
+static int s_map_cell_px_h = -1;
 
 static P parse_dims_from_font_name(std::string font_name)
 {
@@ -120,34 +120,34 @@ static void update_render_dims()
 {
         TRACE_FUNC_BEGIN;
 
-        if (is_tiles_mode_)
+        if (s_is_tiles_mode)
         {
                 // TODO: Temporary solution
-                const P font_dims = parse_dims_from_font_name(font_name_);
+                const P font_dims = parse_dims_from_font_name(s_font_name);
 
-                gui_cell_px_w_ = font_dims.x;
-                gui_cell_px_h_ = font_dims.y;
-                map_cell_px_w_ = 24;
-                map_cell_px_h_ = 24;
+                s_gui_cell_px_w = font_dims.x;
+                s_gui_cell_px_h = font_dims.y;
+                s_map_cell_px_w = 24;
+                s_map_cell_px_h = 24;
         }
         else
         {
-                const P font_dims = parse_dims_from_font_name(font_name_);
+                const P font_dims = parse_dims_from_font_name(s_font_name);
 
-                gui_cell_px_w_ = map_cell_px_w_ = font_dims.x;
-                gui_cell_px_h_ = map_cell_px_h_ = font_dims.y;
+                s_gui_cell_px_w = s_map_cell_px_w = font_dims.x;
+                s_gui_cell_px_h = s_map_cell_px_h = font_dims.y;
         }
 
         TRACE << "GUI cell size: "
-              << gui_cell_px_w_
+              << s_gui_cell_px_w
               << ", "
-              << gui_cell_px_h_
+              << s_gui_cell_px_h
               << std::endl;
 
         TRACE << "Map cell size: "
-              << map_cell_px_w_
+              << s_map_cell_px_w
               << ", "
-              << map_cell_px_h_
+              << s_map_cell_px_h
               << std::endl;
 
         TRACE_FUNC_END;
@@ -157,35 +157,35 @@ static void set_default_variables()
 {
         TRACE_FUNC_BEGIN;
 
-        input_mode_ = InputMode::standard;
+        s_input_mode = InputMode::standard;
 
-        is_tiles_mode_ = true;
-        font_name_ = "12x24.png";
+        s_is_tiles_mode = true;
+        s_font_name = "12x24.png";
 
         update_render_dims();
 
         const int default_nr_gui_cells_x = 96;
         const int default_nr_gui_cells_y = 30;
 
-        screen_px_w_ = gui_cell_px_w_ * default_nr_gui_cells_x;
-        screen_px_h_ = gui_cell_px_h_ * default_nr_gui_cells_y;
+        s_screen_px_w = s_gui_cell_px_w * default_nr_gui_cells_x;
+        s_screen_px_h = s_gui_cell_px_h * default_nr_gui_cells_y;
 
-        is_audio_enabled_ = true;
-        is_amb_audio_enabled_ = true;
-        is_fullscreen_ = false;
-        is_tiles_wall_full_square_ = false;
-        is_text_mode_wall_full_square_ = true;
-        is_intro_lvl_skipped_ = false;
-        is_any_key_confirm_more_ = false;
-        always_warn_new_mon_ = true;
-        is_light_explosive_prompt_ = false;
-        is_drink_malign_pot_prompt_ = true;
-        is_ranged_wpn_meleee_prompt_ = true;
-        is_ranged_wpn_auto_reload_ = false;
-        delay_projectile_draw_ = 20;
-        delay_shotgun_ = 75;
-        delay_explosion_ = 300;
-        default_player_name_ = "";
+        s_is_audio_enabled = true;
+        s_is_amb_audio_enabled = true;
+        s_is_fullscreen = false;
+        s_is_tiles_wall_full_square = false;
+        s_is_text_mode_wall_full_square = true;
+        s_is_intro_lvl_skipped = false;
+        s_is_any_key_confirm_more = false;
+        s_always_warn_new_mon = true;
+        s_is_light_explosive_prompt = false;
+        s_is_drink_malign_pot_prompt = true;
+        s_is_ranged_wpn_meleee_prompt = true;
+        s_is_ranged_wpn_auto_reload = false;
+        s_delay_projectile_draw = 20;
+        s_delay_shotgun = 75;
+        s_delay_explosion = 300;
+        s_default_player_name = "";
 
         TRACE_FUNC_END;
 }
@@ -196,13 +196,13 @@ static void player_sets_option(const MenuBrowser& browser)
         {
         case 0: // Input mode
         {
-                input_mode_ = (InputMode)((input_mode_ + 1) % InputMode::END);
+                s_input_mode = (InputMode)((s_input_mode + 1) % InputMode::END);
         }
         break;
 
         case 1: // Audio
         {
-                is_audio_enabled_ = !is_audio_enabled_;
+                s_is_audio_enabled = !s_is_audio_enabled;
 
                 audio::init();
         }
@@ -210,7 +210,7 @@ static void player_sets_option(const MenuBrowser& browser)
 
         case 2: // Ambient audio
         {
-                is_amb_audio_enabled_ = !is_amb_audio_enabled_;
+                s_is_amb_audio_enabled = !s_is_amb_audio_enabled;
 
                 audio::init();
         }
@@ -218,13 +218,13 @@ static void player_sets_option(const MenuBrowser& browser)
 
         case 3: // Tiles mode
         {
-                is_tiles_mode_ = !is_tiles_mode_;
+                s_is_tiles_mode = !s_is_tiles_mode;
 
                 // If we do not have a font loaded with the same size as the
                 // tiles, use the first font with matching size
-                // if (is_tiles_mode_ &&
-                //     ((map_cell_px_w_ != tile_px_w) ||
-                //      (map_cell_px_h_ != tile_px_h)))
+                // if (s_is_tiles_mode &&
+                //     ((s_map_cell_px_w != tile_px_w) ||
+                //      (s_map_cell_px_h != tile_px_h)))
                 // {
                 //         for (const auto& font_name : font_image_names)
                 //         {
@@ -233,7 +233,7 @@ static void player_sets_option(const MenuBrowser& browser)
 
                 //                 if (font_dims == P(tile_px_w, tile_px_h))
                 //                 {
-                //                         font_name_ = font_name;
+                //                         s_font_name = font_name;
 
                 //                         break;
                 //                 }
@@ -253,9 +253,9 @@ static void player_sets_option(const MenuBrowser& browser)
                 // Set next font
                 for (size_t i = 0; i < font_image_names.size(); ++i)
                 {
-                        if (font_name_ == font_image_names[i])
+                        if (s_font_name == font_image_names[i])
                         {
-                                font_name_ =
+                                s_font_name =
                                         (i == (font_image_names.size() - 1)) ?
                                         font_image_names.front() :
                                         font_image_names[i + 1];
@@ -266,28 +266,28 @@ static void player_sets_option(const MenuBrowser& browser)
                 update_render_dims();
 
                 // In tiles mode, find a font with matching size
-                if (is_tiles_mode_)
+                if (s_is_tiles_mode)
                 {
                         // Find index of currently used font
                         size_t font_idx = 0;
 
                         for (; font_idx < font_image_names.size(); ++font_idx)
                         {
-                                if (font_name_ == font_image_names[font_idx])
+                                if (s_font_name == font_image_names[font_idx])
                                 {
                                         break;
                                 }
                         }
 
                         // Try fonts until a matching one is found
-                        // while ((map_cell_px_w_ != tile_px_w) ||
-                        //        (map_cell_px_h_ != tile_px_h))
+                        // while ((s_map_cell_px_w != tile_px_w) ||
+                        //        (s_map_cell_px_h != tile_px_h))
                         // {
                         //         font_idx =
                         //                 (font_idx + 1) %
                         //                 font_image_names.size();
 
-                        //         font_name_ = font_image_names[font_idx];
+                        //         s_font_name = font_image_names[font_idx];
 
                         //         update_render_dims();
                         // }
@@ -301,7 +301,7 @@ static void player_sets_option(const MenuBrowser& browser)
 
         case 5: // Fullscreen
         {
-                set_fullscreen(!is_fullscreen_);
+                set_fullscreen(!s_is_fullscreen);
 
                 io::on_fullscreen_toggled();
         }
@@ -309,112 +309,112 @@ static void player_sets_option(const MenuBrowser& browser)
 
         case 6: // Tiles mode wall symbol
         {
-                is_tiles_wall_full_square_ = !is_tiles_wall_full_square_;
+                s_is_tiles_wall_full_square = !s_is_tiles_wall_full_square;
         }
         break;
 
         case 7: // Text mode wall symbol
         {
-                is_text_mode_wall_full_square_ =
-                        !is_text_mode_wall_full_square_;
+                s_is_text_mode_wall_full_square =
+                        !s_is_text_mode_wall_full_square;
         }
         break;
 
         case 8: // Skip intro level
         {
-                is_intro_lvl_skipped_ = !is_intro_lvl_skipped_;
+                s_is_intro_lvl_skipped = !s_is_intro_lvl_skipped;
         }
         break;
 
         case 9: // Confirm "more" with any key
         {
-                is_any_key_confirm_more_ = !is_any_key_confirm_more_;
+                s_is_any_key_confirm_more = !s_is_any_key_confirm_more;
         }
         break;
 
         case 10: // Always warn when a new monster appears
         {
-                always_warn_new_mon_ = !always_warn_new_mon_;
+                s_always_warn_new_mon = !s_always_warn_new_mon;
         }
         break;
 
         case 11: // Print warning when lighting explovies
         {
-                is_light_explosive_prompt_ = !is_light_explosive_prompt_;
+                s_is_light_explosive_prompt = !s_is_light_explosive_prompt;
         }
         break;
 
         case 12: // Print warning when drinking known malign potions
         {
-                is_drink_malign_pot_prompt_ = !is_drink_malign_pot_prompt_;
+                s_is_drink_malign_pot_prompt = !s_is_drink_malign_pot_prompt;
         }
         break;
 
         case 13: // Print warning when melee attacking with ranged weapons
         {
-                is_ranged_wpn_meleee_prompt_ = !is_ranged_wpn_meleee_prompt_;
+                s_is_ranged_wpn_meleee_prompt = !s_is_ranged_wpn_meleee_prompt;
         }
         break;
 
         case 14: // Ranged weapon auto reload
         {
-                is_ranged_wpn_auto_reload_ = !is_ranged_wpn_auto_reload_;
+                s_is_ranged_wpn_auto_reload = !s_is_ranged_wpn_auto_reload;
         }
         break;
 
         case 15: // Projectile delay
         {
-                const P p(opt_values_x_pos_, opt_y0_ + browser.y());
+                const P p(s_opt_values_x_pos, s_opt_y0 + browser.y());
 
                 const int nr = query::number(
                         p,
                         colors::menu_highlight(),
                         1,
                         3,
-                        delay_projectile_draw_,
+                        s_delay_projectile_draw,
                         true);
 
                 if (nr != -1)
                 {
-                        delay_projectile_draw_ = nr;
+                        s_delay_projectile_draw = nr;
                 }
         }
         break;
 
         case 16: // Shotgun delay
         {
-                const P p(opt_values_x_pos_, opt_y0_ + browser.y());
+                const P p(s_opt_values_x_pos, s_opt_y0 + browser.y());
 
                 const int nr = query::number(
                         p,
                         colors::menu_highlight(),
                         1,
                         3,
-                        delay_shotgun_,
+                        s_delay_shotgun,
                         true);
 
                 if (nr != -1)
                 {
-                        delay_shotgun_ = nr;
+                        s_delay_shotgun = nr;
                 }
         }
         break;
 
         case 17: // Explosion delay
         {
-                const P p(opt_values_x_pos_, opt_y0_ + browser.y());
+                const P p(s_opt_values_x_pos, s_opt_y0 + browser.y());
 
                 const int nr = query::number(
                         p,
                         colors::menu_highlight(),
                         1,
                         3,
-                        delay_explosion_,
+                        s_delay_explosion,
                         true);
 
                 if (nr != -1)
                 {
-                        delay_explosion_ = nr;
+                        s_delay_explosion = nr;
                 }
         }
         break;
@@ -444,7 +444,7 @@ static void player_sets_option(const MenuBrowser& browser)
 static void read_file(std::vector<std::string>& lines)
 {
         std::ifstream file;
-        file.open(paths::config_file_path);
+        file.open(paths::g_config_file_path);
 
         if (file.is_open())
         {
@@ -463,75 +463,75 @@ static void set_variables_from_lines(std::vector<std::string>& lines)
 {
         TRACE_FUNC_BEGIN;
 
-        input_mode_ = (InputMode)to_int(lines.front());
+        s_input_mode = (InputMode)to_int(lines.front());
         lines.erase(begin(lines));
 
-        is_audio_enabled_ = lines.front() == "1";
+        s_is_audio_enabled = lines.front() == "1";
         lines.erase(begin(lines));
 
-        is_amb_audio_enabled_ = lines.front() == "1";
+        s_is_amb_audio_enabled = lines.front() == "1";
         lines.erase(begin(lines));
 
-        screen_px_w_ = to_int(lines.front());
+        s_screen_px_w = to_int(lines.front());
         lines.erase(begin(lines));
 
-        screen_px_h_ = to_int(lines.front());
+        s_screen_px_h = to_int(lines.front());
         lines.erase(begin(lines));
 
-        is_tiles_mode_ = lines.front() == "1";
+        s_is_tiles_mode = lines.front() == "1";
         lines.erase(begin(lines));
 
-        font_name_ = lines.front();
+        s_font_name = lines.front();
         lines.erase(begin(lines));
 
         update_render_dims();
 
-        is_fullscreen_ = lines.front() == "1";
+        s_is_fullscreen = lines.front() == "1";
         lines.erase(begin(lines));
 
-        is_tiles_wall_full_square_ = lines.front() == "1";
+        s_is_tiles_wall_full_square = lines.front() == "1";
         lines.erase(begin(lines));
 
-        is_text_mode_wall_full_square_ = lines.front() == "1";
+        s_is_text_mode_wall_full_square = lines.front() == "1";
         lines.erase(begin(lines));
 
-        is_intro_lvl_skipped_ = lines.front() == "1";
+        s_is_intro_lvl_skipped = lines.front() == "1";
         lines.erase(begin(lines));
 
-        is_any_key_confirm_more_ = lines.front() == "1";
+        s_is_any_key_confirm_more = lines.front() == "1";
         lines.erase(begin(lines));
 
-        always_warn_new_mon_ = lines.front() == "1";
+        s_always_warn_new_mon = lines.front() == "1";
         lines.erase(begin(lines));
 
-        is_light_explosive_prompt_ = lines.front() == "1";
+        s_is_light_explosive_prompt = lines.front() == "1";
         lines.erase(begin(lines));
 
-        is_drink_malign_pot_prompt_ = lines.front() == "1";
+        s_is_drink_malign_pot_prompt = lines.front() == "1";
         lines.erase(begin(lines));
 
-        is_ranged_wpn_meleee_prompt_ = lines.front() == "1";
+        s_is_ranged_wpn_meleee_prompt = lines.front() == "1";
         lines.erase(begin(lines));
 
-        is_ranged_wpn_auto_reload_ = lines.front() == "1";
+        s_is_ranged_wpn_auto_reload = lines.front() == "1";
         lines.erase(begin(lines));
 
-        delay_projectile_draw_ = to_int(lines.front());
+        s_delay_projectile_draw = to_int(lines.front());
         lines.erase(begin(lines));
 
-        delay_shotgun_ = to_int(lines.front());
+        s_delay_shotgun = to_int(lines.front());
         lines.erase(begin(lines));
 
-        delay_explosion_ = to_int(lines.front());
+        s_delay_explosion = to_int(lines.front());
         lines.erase(begin(lines));
 
-        default_player_name_ = "";
+        s_default_player_name = "";
 
         if (lines.front() == "1")
         {
                 lines.erase(begin(lines));
 
-                default_player_name_ = lines.front();
+                s_default_player_name = lines.front();
         }
 
         lines.erase(begin(lines));
@@ -544,7 +544,7 @@ static void set_variables_from_lines(std::vector<std::string>& lines)
 static void write_lines_to_file(const std::vector<std::string>& lines)
 {
         std::ofstream file;
-        file.open(paths::config_file_path, std::ios::trunc);
+        file.open(paths::g_config_file_path, std::ios::trunc);
 
         for (size_t i = 0; i < lines.size(); ++i)
         {
@@ -565,28 +565,28 @@ static std::vector<std::string> lines_from_variables()
 
         std::vector<std::string> lines;
 
-        lines.push_back(std::to_string(input_mode_));
-        lines.push_back(is_audio_enabled_ ? "1" : "0");
-        lines.push_back(is_amb_audio_enabled_ ? "1" : "0");
-        lines.push_back(std::to_string(screen_px_w_));
-        lines.push_back(std::to_string(screen_px_h_));
-        lines.push_back(is_tiles_mode_ ? "1" : "0");
-        lines.push_back(font_name_);
-        lines.push_back(is_fullscreen_ ? "1" : "0");
-        lines.push_back(is_tiles_wall_full_square_ ? "1" : "0");
-        lines.push_back(is_text_mode_wall_full_square_ ? "1" : "0");
-        lines.push_back(is_intro_lvl_skipped_ ? "1" : "0");
-        lines.push_back(is_any_key_confirm_more_ ? "1" : "0");
-        lines.push_back(always_warn_new_mon_ ? "1" : "0");
-        lines.push_back(is_light_explosive_prompt_ ? "1" : "0");
-        lines.push_back(is_drink_malign_pot_prompt_ ? "1" : "0");
-        lines.push_back(is_ranged_wpn_meleee_prompt_ ? "1" : "0");
-        lines.push_back(is_ranged_wpn_auto_reload_ ? "1" : "0");
-        lines.push_back(std::to_string(delay_projectile_draw_));
-        lines.push_back(std::to_string(delay_shotgun_));
-        lines.push_back(std::to_string(delay_explosion_));
+        lines.push_back(std::to_string(s_input_mode));
+        lines.push_back(s_is_audio_enabled ? "1" : "0");
+        lines.push_back(s_is_amb_audio_enabled ? "1" : "0");
+        lines.push_back(std::to_string(s_screen_px_w));
+        lines.push_back(std::to_string(s_screen_px_h));
+        lines.push_back(s_is_tiles_mode ? "1" : "0");
+        lines.push_back(s_font_name);
+        lines.push_back(s_is_fullscreen ? "1" : "0");
+        lines.push_back(s_is_tiles_wall_full_square ? "1" : "0");
+        lines.push_back(s_is_text_mode_wall_full_square ? "1" : "0");
+        lines.push_back(s_is_intro_lvl_skipped ? "1" : "0");
+        lines.push_back(s_is_any_key_confirm_more ? "1" : "0");
+        lines.push_back(s_always_warn_new_mon ? "1" : "0");
+        lines.push_back(s_is_light_explosive_prompt ? "1" : "0");
+        lines.push_back(s_is_drink_malign_pot_prompt ? "1" : "0");
+        lines.push_back(s_is_ranged_wpn_meleee_prompt ? "1" : "0");
+        lines.push_back(s_is_ranged_wpn_auto_reload ? "1" : "0");
+        lines.push_back(std::to_string(s_delay_projectile_draw));
+        lines.push_back(std::to_string(s_delay_shotgun));
+        lines.push_back(std::to_string(s_delay_explosion));
 
-        if (default_player_name_.empty())
+        if (s_default_player_name.empty())
         {
                 lines.push_back("0");
         }
@@ -594,7 +594,7 @@ static std::vector<std::string> lines_from_variables()
         {
                 lines.push_back("1");
 
-                lines.push_back(default_player_name_);
+                lines.push_back(s_default_player_name);
         }
 
         TRACE_FUNC_END;
@@ -604,8 +604,8 @@ static std::vector<std::string> lines_from_variables()
 
 void init()
 {
-        font_name_ = "";
-        is_bot_playing_ = false;
+        s_font_name = "";
+        s_is_bot_playing = false;
 
         set_default_variables();
 
@@ -625,27 +625,27 @@ void init()
 
 InputMode input_mode()
 {
-        return input_mode_;
+        return s_input_mode;
 }
 
 bool is_tiles_mode()
 {
-        return is_tiles_mode_;
+        return s_is_tiles_mode;
 }
 
 std::string font_name()
 {
-        return font_name_;
+        return s_font_name;
 }
 
 bool is_fullscreen()
 {
-        return is_fullscreen_;
+        return s_is_fullscreen;
 }
 
 void set_screen_px_w(const int w)
 {
-        screen_px_w_ = w;
+        s_screen_px_w = w;
 
         const auto lines = lines_from_variables();
 
@@ -654,7 +654,7 @@ void set_screen_px_w(const int w)
 
 void set_screen_px_h(const int h)
 {
-        screen_px_h_ = h;
+        s_screen_px_h = h;
 
         const auto lines = lines_from_variables();
 
@@ -663,116 +663,116 @@ void set_screen_px_h(const int h)
 
 int screen_px_w()
 {
-        return screen_px_w_;
+        return s_screen_px_w;
 }
 
 int screen_px_h()
 {
-        return screen_px_h_;
+        return s_screen_px_h;
 }
 
 int gui_cell_px_w()
 {
-        return gui_cell_px_w_;
+        return s_gui_cell_px_w;
 }
 
 int gui_cell_px_h()
 {
-        return gui_cell_px_h_;
+        return s_gui_cell_px_h;
 }
 
 int map_cell_px_w()
 {
-        return map_cell_px_w_;
+        return s_map_cell_px_w;
 }
 
 int map_cell_px_h()
 {
-        return map_cell_px_h_;
+        return s_map_cell_px_h;
 }
 
 bool is_tiles_wall_full_square()
 {
-        return is_tiles_wall_full_square_;
+        return s_is_tiles_wall_full_square;
 }
 
 bool is_text_mode_wall_full_square()
 {
-        return is_text_mode_wall_full_square_;
+        return s_is_text_mode_wall_full_square;
 }
 
 bool is_audio_enabled()
 {
-        return is_audio_enabled_;
+        return s_is_audio_enabled;
 }
 
 bool is_amb_audio_enabled()
 {
-        return is_amb_audio_enabled_;
+        return s_is_amb_audio_enabled;
 }
 
 bool is_bot_playing()
 {
-        return is_bot_playing_;
+        return s_is_bot_playing;
 }
 
 void toggle_bot_playing()
 {
-        is_bot_playing_ = !is_bot_playing_;
+        s_is_bot_playing = !s_is_bot_playing;
 }
 
 bool is_light_explosive_prompt()
 {
-        return is_light_explosive_prompt_;
+        return s_is_light_explosive_prompt;
 }
 
 bool is_drink_malign_pot_prompt()
 {
-        return is_drink_malign_pot_prompt_;
+        return s_is_drink_malign_pot_prompt;
 }
 
 bool is_ranged_wpn_meleee_prompt()
 {
-        return is_ranged_wpn_meleee_prompt_;
+        return s_is_ranged_wpn_meleee_prompt;
 }
 
 bool is_ranged_wpn_auto_reload()
 {
-        return is_ranged_wpn_auto_reload_;
+        return s_is_ranged_wpn_auto_reload;
 }
 
 bool is_intro_lvl_skipped()
 {
-        return is_intro_lvl_skipped_;
+        return s_is_intro_lvl_skipped;
 }
 
 bool is_any_key_confirm_more()
 {
-        return is_any_key_confirm_more_;
+        return s_is_any_key_confirm_more;
 }
 
 bool always_warn_new_mon()
 {
-        return always_warn_new_mon_;
+        return s_always_warn_new_mon;
 }
 
 int delay_projectile_draw()
 {
-        return delay_projectile_draw_;
+        return s_delay_projectile_draw;
 }
 int delay_shotgun()
 {
-        return delay_shotgun_;
+        return s_delay_shotgun;
 }
 
 int delay_explosion()
 {
-        return delay_explosion_;
+        return s_delay_explosion;
 }
 
 void set_default_player_name(const std::string& name)
 {
-        default_player_name_ = name;
+        s_default_player_name = name;
 
         const auto lines = lines_from_variables();
 
@@ -781,12 +781,12 @@ void set_default_player_name(const std::string& name)
 
 std::string default_player_name()
 {
-        return default_player_name_;
+        return s_default_player_name;
 }
 
 void set_fullscreen(const bool value)
 {
-        is_fullscreen_ = value;
+        s_is_fullscreen = value;
 
         const auto lines = lines_from_variables();
 
@@ -800,7 +800,7 @@ void set_fullscreen(const bool value)
 // -----------------------------------------------------------------------------
 ConfigState::ConfigState() :
         State(),
-        browser_(19)
+        m_browser(19)
 {
 
 }
@@ -815,7 +815,7 @@ void ConfigState::update()
         const auto input = io::get();
 
         const MenuAction action =
-                browser_.read(input, MenuInputMode::scrolling);
+                m_browser.read(input, MenuInputMode::scrolling);
 
         switch (action)
         {
@@ -834,7 +834,7 @@ void ConfigState::update()
 
         case MenuAction::selected:
         {
-                config::player_sets_option(browser_);
+                config::player_sets_option(m_browser);
 
                 const auto lines = config::lines_from_variables();
 
@@ -851,7 +851,7 @@ void ConfigState::update()
 
 void ConfigState::draw()
 {
-        const int x1 = config::opt_values_x_pos_;
+        const int x1 = config::s_opt_values_x_pos;
 
         std::string str = "";
 
@@ -861,11 +861,11 @@ void ConfigState::draw()
                 P(1, 0),
                 colors::white());
 
-        std::string font_disp_name = config::font_name_;
+        std::string font_disp_name = config::s_font_name;
 
         std::string input_mode_value_str = "";
 
-        switch (config::input_mode_)
+        switch (config::s_input_mode)
         {
         case InputMode::standard:
                 input_mode_value_str = "Default (numpad or arrows)";
@@ -888,21 +888,21 @@ void ConfigState::draw()
 
                 {
                         "Enable audio",
-                        config::is_audio_enabled_
+                        config::s_is_audio_enabled
                         ? "Yes"
                         : "No"
                 },
 
                 {
                         "Play ambient sounds",
-                        config::is_amb_audio_enabled_
+                        config::s_is_amb_audio_enabled
                         ? "Yes"
                         : "No"
                 },
 
                 {
                         "Use tile set",
-                        config::is_tiles_mode_
+                        config::s_is_tiles_mode
                         ? "Yes"
                         : "No"
                 },
@@ -913,87 +913,87 @@ void ConfigState::draw()
 
                 {
                         "Fullscreen",
-                        config::is_fullscreen_
+                        config::s_is_fullscreen
                         ? "Yes"
                         : "No"
                 },
 
                 {
                         "Tiles mode wall symbol",
-                        config::is_tiles_wall_full_square_
+                        config::s_is_tiles_wall_full_square
                         ? "Full square"
                         : "Pseudo-3D"
                 },
 
                 {
                         "Text mode wall symbol",
-                        config::is_text_mode_wall_full_square_
+                        config::s_is_text_mode_wall_full_square
                         ? "Full square"
                         : "Hash sign"
                 },
 
                 {
                         "Skip intro level",
-                        config::is_intro_lvl_skipped_
+                        config::s_is_intro_lvl_skipped
                         ? "Yes"
                         : "No"
                 },
 
                 {
                         "Any key confirms \"-More-\" prompts",
-                        config::is_any_key_confirm_more_
+                        config::s_is_any_key_confirm_more
                         ? "Yes"
                         : "No"
                 },
 
                 {
                         "Always warn when new monster is seen",
-                        config::always_warn_new_mon_
+                        config::s_always_warn_new_mon
                         ? "Yes"
                         : "No"
                 },
 
                 {
                         "Warn when lighting explosives",
-                        config::is_light_explosive_prompt_
+                        config::s_is_light_explosive_prompt
                         ? "Yes"
                         : "No"
                 },
 
                 {
                         "Warn when drinking malign potions",
-                        config::is_drink_malign_pot_prompt_
+                        config::s_is_drink_malign_pot_prompt
                         ? "Yes"
                         : "No"
                 },
 
                 {
                         "Ranged weapon melee attack warning",
-                        config::is_ranged_wpn_meleee_prompt_
+                        config::s_is_ranged_wpn_meleee_prompt
                         ? "Yes"
                         : "No"
                 },
 
                 {
                         "Ranged weapon auto reload",
-                        config::is_ranged_wpn_auto_reload_
+                        config::s_is_ranged_wpn_auto_reload
                         ? "Yes"
                         : "No"
                 },
 
                 {
                         "Projectile delay (ms)",
-                        std::to_string(config::delay_projectile_draw_)
+                        std::to_string(config::s_delay_projectile_draw)
                 },
 
                 {
                         "Shotgun delay (ms)",
-                        std::to_string(config::delay_shotgun_)
+                        std::to_string(config::s_delay_shotgun)
                 },
 
                 {
                         "Explosion delay (ms)",
-                        std::to_string(config::delay_explosion_)
+                        std::to_string(config::s_delay_explosion)
                 },
 
                 {
@@ -1010,12 +1010,12 @@ void ConfigState::draw()
                 const std::string& str_r = label.second;
 
                 const auto& color =
-                        (browser_.y() == (int)i)
+                        (m_browser.y() == (int)i)
                         ? colors::menu_highlight()
                         : colors::menu_dark();
 
 
-                const int y = config::opt_y0_ + i;
+                const int y = config::s_opt_y0 + i;
 
                 io::draw_text(
                         str_l,

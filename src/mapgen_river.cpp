@@ -32,8 +32,9 @@ void reserve_river(Region regions[3][3])
                 const P & reg0,
                 const P & reg2) {
 
-                const R regions_tot_rect(regions[reg0.x][reg0.y].r.p0,
-                                         regions[reg2.x][reg2.y].r.p1);
+                const R regions_tot_rect(
+                        regions[reg0.x][reg0.y].r.p0,
+                        regions[reg2.x][reg2.y].r.p1);
 
                 room_rect = regions_tot_rect;
 
@@ -79,7 +80,7 @@ void reserve_river(Region regions[3][3])
 
         RiverRoom* const river_room = static_cast<RiverRoom*>(room);
 
-        river_room->axis_ = axis;
+        river_room->m_axis = axis;
 
         river_region->main_room = room;
 
@@ -94,7 +95,7 @@ void reserve_river(Region regions[3][3])
                 regions[1][1] = regions[1][2] = *river_region;
         }
 
-        map::room_list.push_back(room);
+        map::g_room_list.push_back(room);
 
         auto make = [&](
                 const int x0,
@@ -116,7 +117,7 @@ void reserve_river(Region regions[3][3])
                                 // Just put floor for now, river feature will be
                                 // placed later
                                 map::put(new Floor(P(x, y)));
-                                map::room_map.at(x, y) = room;
+                                map::g_room_map.at(x, y) = room;
                         }
                 }
         };

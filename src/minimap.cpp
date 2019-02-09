@@ -40,7 +40,7 @@ static R get_map_area_explored()
         {
                 for (int y = 0; y < map_dims.y; ++y)
                 {
-                        if (map::cells.at(x, y).is_explored)
+                        if (map::g_cells.at(x, y).is_explored)
                         {
                                 area_explored.p0.x = std::min(
                                         area_explored.p0.x,
@@ -94,7 +94,7 @@ static R get_minimap_px_rect_on_screen(const R& map_area_explored)
 void ViewMinimap::draw()
 {
         io::draw_text_center(
-                "Viewing minimap " + common_text::screen_exit_hint,
+                "Viewing minimap " + common_text::g_screen_exit_hint,
                 Panel::screen,
                 P(panels::center_x(Panel::screen), 0),
                 colors::title());
@@ -123,7 +123,7 @@ void ViewMinimap::draw()
 
                         Color color;
 
-                        if (map::player->pos == P(x, y))
+                        if (map::g_player->m_pos == P(x, y))
                         {
                                 color = colors::light_green();
                         }
@@ -179,7 +179,7 @@ void update()
 
         for (size_t i = 0; i < map::nr_cells(); ++i)
         {
-                const auto& map_cell = map::cells.at(i);
+                const auto& map_cell = map::g_cells.at(i);
 
                 if (!map_cell.is_seen_by_player)
                 {

@@ -21,15 +21,15 @@ TEST_CASE("Properties from item applied and removed for actor")
 {
         test_utils::init_all();
 
-        auto& inv = map::player->inv;
+        auto& inv = map::g_player->m_inv;
 
-        InvSlot& body_slot = inv.slots[(size_t)SlotId::body];
+        InvSlot& body_slot = inv.m_slots[(size_t)SlotId::body];
 
         delete body_slot.item;
 
         body_slot.item = nullptr;
 
-        auto& props = map::player->properties;
+        auto& props = map::g_player->m_properties;
 
         for (size_t i = 0; i < (size_t)PropId::END; ++i)
         {
@@ -96,14 +96,14 @@ TEST_CASE("Properties from item applied and removed for actor")
 
         // Drop the asbeshos suit on the ground
         item_drop::drop_item_from_inv(
-                *map::player,
+                *map::g_player,
                 InvType::slots,
                 (int)SlotId::body,
                 1);
 
         REQUIRE(!body_slot.item);
 
-        Cell& cell = map::cells.at(map::player->pos);
+        Cell& cell = map::g_cells.at(map::g_player->m_pos);
         REQUIRE(cell.item);
 
         // Check that the properties are cleared
@@ -140,9 +140,9 @@ TEST_CASE("Properties from item applied and removed for actor")
         // Destroy the asbesthos suit by explosions
         for (int i = 0; i < 10; ++i)
         {
-                map::player->restore_hp(99999, true /* Restoring above max */);
+                map::g_player->restore_hp(99999, true /* Restoring above max */);
 
-                explosion::run(map::player->pos, ExplType::expl);
+                explosion::run(map::g_player->m_pos, ExplType::expl);
 
                 props.end_prop(PropId::wound);
         }

@@ -19,7 +19,7 @@ TEST_CASE("Infection triggers disease")
 {
         test_utils::init_all();
 
-        auto& properties = map::player->properties;
+        auto& properties = map::g_player->m_properties;
 
         properties.apply(new PropInfected());
 

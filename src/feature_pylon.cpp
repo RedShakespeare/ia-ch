@@ -24,9 +24,9 @@
 // -----------------------------------------------------------------------------
 Pylon::Pylon(const P& p, PylonId id) :
         Rigid(p),
-        pylon_impl_(nullptr),
-        is_activated_(false),
-        nr_turns_active_(0)
+        m_pylon_impl(nullptr),
+        m_is_activated(false),
+        m_nr_turns_active(0)
 {
         if (id == PylonId::any)
         {
@@ -40,7 +40,7 @@ Pylon::Pylon(const P& p, PylonId id) :
                 }
         }
 
-        pylon_impl_.reset(make_pylon_impl_from_id(id));
+        m_pylon_impl.reset(make_pylon_impl_from_id(id));
 }
 
 PylonImpl* Pylon::make_pylon_impl_from_id(const PylonId id)
@@ -48,22 +48,22 @@ PylonImpl* Pylon::make_pylon_impl_from_id(const PylonId id)
         switch(id)
         {
         case PylonId::burning:
-                return new PylonBurning(pos_, this);
+                return new PylonBurning(m_pos, this);
 
         case PylonId::invis:
-                return new PylonInvis(pos_, this);
+                return new PylonInvis(m_pos, this);
 
         case PylonId::slow:
-                return new PylonSlow(pos_, this);
+                return new PylonSlow(m_pos, this);
 
         case PylonId::knockback:
-                return new PylonKnockback(pos_, this);
+                return new PylonKnockback(m_pos, this);
 
         case PylonId::teleport:
-                return new PylonTeleport(pos_, this);
+                return new PylonTeleport(m_pos, this);
 
         case PylonId::terrify:
-                return new PylonTerrify(pos_, this);
+                return new PylonTerrify(m_pos, this);
 
         case PylonId::any:
         case PylonId::END:
@@ -81,11 +81,11 @@ std::string Pylon::name(const Article article) const
 {
         std::string str =
                 ((article == Article::a) ?
-                 (is_activated_ ? "an " : "a ") :
+                 (m_is_activated ? "an " : "a ") :
                  "the ");
 
         str +=
-                is_activated_ ?
+                m_is_activated ?
                 "activated " :
                 "deactivated ";
 
@@ -97,7 +97,7 @@ std::string Pylon::name(const Article article) const
 Color Pylon::color_default() const
 {
         return
-                is_activated_ ?
+                m_is_activated ?
                 colors::light_red() :
                 colors::gray();
 }
@@ -119,20 +119,20 @@ void Pylon::on_hit(const int dmg,
 
 void Pylon::on_new_turn_hook()
 {
-        if (!is_activated_)
+        if (!m_is_activated)
         {
                 return;
         }
 
-        pylon_impl_->on_new_turn_activated();
+        m_pylon_impl->on_new_turn_activated();
 
-        ++nr_turns_active_;
+        ++m_nr_turns_active;
 
         // After a being active for a while, deactivate the pylon by
         // toggling the linked lever
         const int max_nr_turns_active = 300;
 
-        if (nr_turns_active_ < max_nr_turns_active)
+        if (m_nr_turns_active < max_nr_turns_active)
         {
                 return;
         }
@@ -142,7 +142,7 @@ void Pylon::on_new_turn_hook()
 
         for (size_t i = 0; i < map::nr_cells(); ++i)
         {
-                auto* const rigid = map::cells.at(i).rigid;
+                auto* const rigid = map::g_cells.at(i).rigid;
 
                 if (!rigid || (rigid->id() != FeatureId::lever))
                 {
@@ -165,14 +165,14 @@ void Pylon::on_lever_pulled(Lever* const lever)
 {
         (void)lever;
 
-        is_activated_ = !is_activated_;
+        m_is_activated = !m_is_activated;
 
-        nr_turns_active_ = 0;
+        m_nr_turns_active = 0;
 
         const bool is_seen_by_player =
-                map::cells.at(pos_).is_seen_by_player;
+                map::g_cells.at(m_pos).is_seen_by_player;
 
-        if (is_activated_)
+        if (m_is_activated)
         {
                 std::string msg =
                         is_seen_by_player ?
@@ -184,7 +184,7 @@ void Pylon::on_lever_pulled(Lever* const lever)
                 Snd snd(msg,
                         SfxId::END, // TODO: Add a sound effect
                         IgnoreMsgIfOriginSeen::no,
-                        pos_,
+                        m_pos,
                         nullptr,
                         SndVol::low,
                         AlertsMon::no);
@@ -200,11 +200,11 @@ void Pylon::on_lever_pulled(Lever* const lever)
 
 void Pylon::add_light_hook(Array2<bool>& light) const
 {
-        if (is_activated_)
+        if (m_is_activated)
         {
-                for (const P& d : dir_utils::dir_list_w_center)
+                for (const P& d : dir_utils::g_dir_list_w_center)
                 {
-                        const P p(pos_ + d);
+                        const P p(m_pos + d);
 
                         light.at(p) = true;
                 }
@@ -217,14 +217,14 @@ void Pylon::add_light_hook(Array2<bool>& light) const
 // void PylonImpl::emit_trigger_snd() const
 // {
 //     const std::string msg =
-//         map::cells.at(pos_).is_seen_by_player ?
+//         map::g_cells.at(m_pos).is_seen_by_player ?
 //         "The pylon makes a buzzing sound." :
 //         "I hear a buzzing sound.";
 
 //     Snd snd(msg,
 //             SfxId::END, // TODO: Add a sound effect
 //             IgnoreMsgIfOriginSeen::no,
-//             pos_,
+//             m_pos,
 //             nullptr,
 //             SndVol::high,
 //             AlertsMon::no);
@@ -236,20 +236,20 @@ std::vector<Actor*> PylonImpl::living_actors_reached() const
 {
         std::vector<Actor*> actors;
 
-        for (auto* const actor : game_time::actors)
+        for (auto* const actor : game_time::g_actors)
         {
                 // Actor is dead?
-                if (actor->state != ActorState::alive)
+                if (actor->m_state != ActorState::alive)
                 {
                         continue;
                 }
 
-                const P& p = actor->pos;
+                const P& p = actor->m_pos;
 
                 const int d = 1;
 
                 // Actor is out of range?
-                if (king_dist(pos_, p) > d)
+                if (king_dist(m_pos, p) > d)
                 {
                         continue;
                 }
@@ -288,7 +288,7 @@ void PylonBurning::on_new_turn_activated()
 
         for (size_t i = 0; i < map::nr_cells(); ++i)
         {
-                const auto f = map::cells.at(i).rigid;
+                const auto f = map::g_cells.at(i).rigid;
 
                 if (f->id() == FeatureId::chasm ||
                     f->id() == FeatureId::liquid_deep)
@@ -309,7 +309,7 @@ void PylonBurning::on_new_turn_activated()
                 }
         }
 
-        const int nr_turns_active = pylon_->nr_turns_active();
+        const int nr_turns_active = m_pylon->nr_turns_active();
 
         const int nr_turns_per_flood_step = 10;
 
@@ -322,13 +322,13 @@ void PylonBurning::on_new_turn_activated()
                         flood_max_dist,
                         (nr_turns_active / nr_turns_per_flood_step) + 1);
 
-        const auto flood = floodfill(pos_, blocks_flood, flood_dist);
+        const auto flood = floodfill(m_pos, blocks_flood, flood_dist);
 
         for (size_t i = 0; i < map::nr_cells(); ++i)
         {
                 if (flood.at(i) > 0)
                 {
-                        map::cells.at(i).rigid->hit(
+                        map::g_cells.at(i).rigid->hit(
                                 1, // Doesn't matter
                                 DmgType::fire,
                                 DmgMethod::elemental);
@@ -347,7 +347,7 @@ void PylonBurning::on_new_turn_activated()
 
         for (auto actor : actors)
         {
-                actor->properties.apply(new PropBurning());
+                actor->m_properties.apply(new PropBurning());
         }
 }
 
@@ -369,7 +369,7 @@ void PylonInvis::on_new_turn_activated()
 
         for (auto actor : actors)
         {
-                actor->properties.apply(new PropInvisible());
+                actor->m_properties.apply(new PropInvisible());
         }
 }
 
@@ -391,7 +391,7 @@ void PylonSlow::on_new_turn_activated()
 
         for (auto actor : actors)
         {
-                actor->properties.apply(new PropSlowed());
+                actor->m_properties.apply(new PropSlowed());
         }
 }
 
@@ -411,11 +411,12 @@ void PylonKnockback::on_new_turn_activated()
 
         for (auto actor : actors)
         {
-                knockback::run(*actor,
-                               pos_,
-                               false, // Not spike gun
-                               Verbosity::verbose,
-                               2); // Extra paralyze turns
+                knockback::run(
+                        *actor,
+                        m_pos,
+                        false, // Not spike gun
+                        Verbosity::verbose,
+                        2); // Extra paralyze turns
         }
 }
 
@@ -457,6 +458,6 @@ void PylonTerrify::on_new_turn_activated()
 
         for (auto actor : actors)
         {
-                actor->properties.apply(new PropTerrified());
+                actor->m_properties.apply(new PropTerrified());
         }
 }

@@ -10,8 +10,8 @@
 namespace init
 {
 
-extern bool is_cheat_vision_enabled;
-extern bool is_demo_mapgen;
+extern bool g_is_cheat_vision_enabled;
+extern bool g_is_demo_mapgen;
 
 void init_io();
 void cleanup_io();

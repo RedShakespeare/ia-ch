@@ -21,7 +21,7 @@ int AbilityValues::val(
         const bool is_affected_by_props,
         const Actor& actor) const
 {
-        int ret = ability_list[(size_t)id];
+        int ret = m_ability_list[(size_t)id];
 
         if (actor.is_player())
         {
@@ -30,14 +30,14 @@ int AbilityValues::val(
 
         if (is_affected_by_props)
         {
-                ret += actor.properties.ability_mod(id);
+                ret += actor.m_properties.ability_mod(id);
         }
 
         if (actor.is_player())
         {
                 // TODO: This should probably also be included for monsters,
                 // especially if they should be able to wear armor
-                for (const InvSlot& slot : actor.inv.slots)
+                for (const InvSlot& slot : actor.m_inv.m_slots)
                 {
                         if (!slot.item)
                         {
@@ -66,17 +66,17 @@ int AbilityValues::val(
                 {
                         ret += 60;
 
-                        if (player_bon::traits[(size_t)Trait::adept_melee])
+                        if (player_bon::has_trait(Trait::adept_melee))
                         {
                                 ret += 10;
                         }
 
-                        if (player_bon::traits[(size_t)Trait::expert_melee])
+                        if (player_bon::has_trait(Trait::expert_melee))
                         {
                                 ret += 10;
                         }
 
-                        if (player_bon::traits[(size_t)Trait::master_melee])
+                        if (player_bon::g_traits[(size_t)Trait::master_melee])
                         {
                                 ret += 10;
                         }
@@ -87,17 +87,17 @@ int AbilityValues::val(
                 {
                         ret += 70;
 
-                        if (player_bon::traits[(size_t)Trait::adept_marksman])
+                        if (player_bon::has_trait(Trait::adept_marksman))
                         {
                                 ret += 10;
                         }
 
-                        if (player_bon::traits[(size_t)Trait::expert_marksman])
+                        if (player_bon::has_trait(Trait::expert_marksman))
                         {
                                 ret += 10;
                         }
 
-                        if (player_bon::traits[(size_t)Trait::expert_marksman])
+                        if (player_bon::has_trait(Trait::expert_marksman))
                         {
                                 ret += 10;
                         }
@@ -111,12 +111,12 @@ int AbilityValues::val(
 
                 case AbilityId::dodging:
                 {
-                        if (player_bon::traits[(size_t)Trait::dexterous])
+                        if (player_bon::has_trait(Trait::dexterous))
                         {
                                 ret += 25;
                         }
 
-                        if (player_bon::traits[(size_t)Trait::lithe])
+                        if (player_bon::has_trait(Trait::lithe))
                         {
                                 ret += 25;
                         }
@@ -125,12 +125,12 @@ int AbilityValues::val(
 
                 case AbilityId::stealth:
                 {
-                        if (player_bon::traits[(size_t)Trait::stealthy])
+                        if (player_bon::has_trait(Trait::stealthy))
                         {
                                 ret += 45;
                         }
 
-                        if (player_bon::traits[(size_t)Trait::imperceptible])
+                        if (player_bon::has_trait(Trait::imperceptible))
                         {
                                 ret += 45;
                         }
@@ -158,18 +158,18 @@ void AbilityValues::reset()
 {
         for (size_t i = 0; i < (size_t)AbilityId::END; ++i)
         {
-                ability_list[i] = 0;
+                m_ability_list[i] = 0;
         }
 }
 
 void AbilityValues::set_val(const AbilityId ability, const int val)
 {
-        ability_list[(size_t)ability] = val;
+        m_ability_list[(size_t)ability] = val;
 }
 
 void AbilityValues::change_val(const AbilityId ability, const int change)
 {
-        ability_list[(size_t)ability] += change;
+        m_ability_list[(size_t)ability] += change;
 }
 
 namespace ability_roll

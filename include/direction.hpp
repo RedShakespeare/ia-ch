@@ -29,10 +29,10 @@ enum class Dir
 namespace dir_utils
 {
 
-extern const std::vector<P> cardinal_list;
-extern const std::vector<P> cardinal_list_w_center;
-extern const std::vector<P> dir_list;
-extern const std::vector<P> dir_list_w_center;
+extern const std::vector<P> g_cardinal_list;
+extern const std::vector<P> g_cardinal_list_w_center;
+extern const std::vector<P> g_dir_list;
+extern const std::vector<P> g_dir_list_w_center;
 
 Dir dir(const P& offset_values);
 

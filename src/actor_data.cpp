@@ -189,7 +189,7 @@ static void dump_text(xml::Element* text_e, ActorData& data)
 
 static void dump_gfx(xml::Element* gfx_e, ActorData& data)
 {
-        data.tile = str_to_tile_id_map.at(
+        data.tile = g_str_to_tile_id_map.at(
                 xml::get_text_str(
                         xml::first_child(gfx_e, "tile")));
 
@@ -207,11 +207,11 @@ static void dump_gfx(xml::Element* gfx_e, ActorData& data)
 
 static void dump_audio(xml::Element* audio_e, ActorData& data)
 {
-        data.aware_sfx_mon_seen = str_to_sfx_id_map.at(
+        data.aware_sfx_mon_seen = g_str_to_sfx_id_map.at(
                 xml::get_text_str(
                         xml::first_child(audio_e, "aware_sfx_seen")));
 
-        data.aware_sfx_mon_hidden = str_to_sfx_id_map.at(
+        data.aware_sfx_mon_hidden = g_str_to_sfx_id_map.at(
                 xml::get_text_str(
                         xml::first_child(audio_e, "aware_sfx_hidden")));
 }
@@ -266,7 +266,7 @@ static void dump_attributes(xml::Element* attrib_e, ActorData& data)
         data.can_swim = xml::get_text_bool(
                 xml::first_child(attrib_e, "can_swim"));
 
-        data.actor_size = str_to_actor_size_map.at(
+        data.actor_size = g_str_to_actor_size_map.at(
                 xml::get_text_str(xml::first_child(attrib_e, "size")));
 
         data.prevent_knockback = xml::get_text_bool(
@@ -307,7 +307,7 @@ static void dump_intr_attack_property(
         IntrAttData& attack_data)
 {
         const auto prop_id =
-                str_to_prop_id_map.at(
+                g_str_to_prop_id_map.at(
                         xml::get_text_str(property_e));
 
         attack_data.prop_applied.prop.reset(property_factory::make(prop_id));
@@ -445,7 +445,7 @@ static void dump_properties(xml::Element* properties_e, ActorData& data)
              e;
              e = xml::next_sibling(e))
         {
-                const auto prop_id = str_to_prop_id_map.at(
+                const auto prop_id = g_str_to_prop_id_map.at(
                         xml::get_text_str(e));
 
                 data.natural_props[(size_t)prop_id] = true;
@@ -465,7 +465,7 @@ static void dump_ai(xml::Element* ai_e, ActorData& data)
 
         for (size_t i = 0; i < (size_t)AiId::END; ++i)
         {
-                const std::string ai_id_str = ai_id_to_str_map.at((AiId)i);
+                const std::string ai_id_str = g_ai_id_to_str_map.at((AiId)i);
 
                 data.ai[i] = xml::get_text_bool(
                         xml::first_child(ai_e, ai_id_str));
@@ -474,7 +474,7 @@ static void dump_ai(xml::Element* ai_e, ActorData& data)
 
 static void dump_group_size(xml::Element* group_e, ActorData& data)
 {
-        const auto group_size = str_to_group_size_map.at(
+        const auto group_size = g_str_to_group_size_map.at(
                 xml::get_text_str(group_e));
 
         int weight = 1;
@@ -486,7 +486,7 @@ static void dump_group_size(xml::Element* group_e, ActorData& data)
 
 static void dump_native_room(xml::Element* native_room_e, ActorData& data)
 {
-        const auto room_type = str_to_room_type_map.at(
+        const auto room_type = g_str_to_room_type_map.at(
                 xml::get_text_str(native_room_e));
 
         data.native_rooms.push_back(room_type);
@@ -551,7 +551,7 @@ static void read_actor_definitions_xml()
 {
         xml::Doc doc;
 
-        xml::load_file(paths::data_dir + "/monsters.xml", doc);
+        xml::load_file(paths::g_data_dir + "/monsters.xml", doc);
 
         auto top_e = xml::first_child(doc);
 
@@ -561,7 +561,7 @@ static void read_actor_definitions_xml()
         {
                 const ActorId id = get_id(mon_e);
 
-                ActorData& data = actor_data::data[(size_t)id];
+                ActorData& data = actor_data::g_data[(size_t)id];
 
                 data.reset();
 
@@ -711,7 +711,7 @@ void ActorData::reset()
 namespace actor_data
 {
 
-ActorData data[(size_t)ActorId::END];
+ActorData g_data[(size_t)ActorId::END];
 
 void init()
 {
@@ -726,7 +726,7 @@ void save()
 {
         for (int i = 0; i < (int)ActorId::END; ++i)
         {
-                const auto& d = data[i];
+                const auto& d = g_data[i];
 
                 saving::put_int(d.nr_left_allowed_to_spawn);
                 saving::put_int(d.nr_kills);
@@ -738,7 +738,7 @@ void load()
 {
         for (int i = 0; i < (int)ActorId::END; ++i)
         {
-                auto& d = data[i];
+                auto& d = g_data[i];
 
                 d.nr_left_allowed_to_spawn = saving::get_int();
                 d.nr_kills = saving::get_int();

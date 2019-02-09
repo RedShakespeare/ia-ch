@@ -426,7 +426,7 @@ class Item;
 namespace item_data
 {
 
-extern ItemData data[(size_t)ItemId::END];
+extern ItemData g_data[(size_t)ItemId::END];
 
 void init();
 void cleanup();

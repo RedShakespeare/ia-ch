@@ -37,13 +37,13 @@ void drop_item_from_inv(
         {
                 ASSERT(idx != (size_t)SlotId::END);
 
-                item_to_drop = actor.inv.slots[idx].item;
+                item_to_drop = actor.m_inv.m_slots[idx].item;
         }
         else // Backpack item
         {
-                ASSERT(idx < actor.inv.backpack.size());
+                ASSERT(idx < actor.m_inv.m_backpack.size());
 
-                item_to_drop = actor.inv.backpack[idx];
+                item_to_drop = actor.m_inv.m_backpack[idx];
         }
 
         if (!item_to_drop)
@@ -55,7 +55,7 @@ void drop_item_from_inv(
 
         const bool is_stackable = data.is_stackable;
 
-        const int nr_items_before_drop = item_to_drop->nr_items_;
+        const int nr_items_before_drop = item_to_drop->m_nr_items;
 
         const bool is_whole_stack_dropped =
                 !is_stackable ||
@@ -70,7 +70,7 @@ void drop_item_from_inv(
         {
                 item_ref = item_to_drop->name(ItemRefType::plural);
 
-                item_to_drop = actor.inv.remove_item(item_to_drop, false);
+                item_to_drop = actor.m_inv.remove_item(item_to_drop, false);
         }
         else // Only some items are dropped from a stack
         {
@@ -79,13 +79,13 @@ void drop_item_from_inv(
 
                 item_to_drop = item_factory::copy_item(*item_to_keep);
 
-                item_to_drop->nr_items_ = nr_items_to_drop;
+                item_to_drop->m_nr_items = nr_items_to_drop;
 
                 item_to_drop->on_removed_from_inv();
 
                 item_ref = item_to_drop->name(ItemRefType::plural);
 
-                item_to_keep->nr_items_ =
+                item_to_keep->m_nr_items =
                         nr_items_before_drop - nr_items_to_drop;
         }
 
@@ -95,7 +95,7 @@ void drop_item_from_inv(
         }
 
         // Print message
-        if (&actor == map::player)
+        if (&actor == map::g_player)
         {
                 msg_log::add(
                         "I drop " + item_ref + ".",
@@ -105,7 +105,7 @@ void drop_item_from_inv(
         }
         else // Monster is dropping item
         {
-                if (map::player->can_see_actor(actor))
+                if (map::g_player->can_see_actor(actor))
                 {
                         const std::string mon_name_the =
                                 text_format::first_to_upper(
@@ -115,7 +115,7 @@ void drop_item_from_inv(
                 }
         }
 
-        drop_item_on_map(actor.pos, *item_to_drop);
+        drop_item_on_map(actor.m_pos, *item_to_drop);
 }
 
 Item* drop_item_on_map(const P& intended_pos, Item& item)
@@ -125,7 +125,7 @@ Item* drop_item_on_map(const P& intended_pos, Item& item)
         ASSERT(map::is_pos_inside_outer_walls(intended_pos));
 
         // If target cell is bottomless, just destroy the item
-        const auto* const tgt_f = map::cells.at(intended_pos).rigid;
+        const auto* const tgt_f = map::g_cells.at(intended_pos).rigid;
 
         if (tgt_f->id() == FeatureId::chasm ||
             tgt_f->id() == FeatureId::liquid_deep)
@@ -144,7 +144,7 @@ Item* drop_item_on_map(const P& intended_pos, Item& item)
 
         for (size_t i = 0; i < len; ++i)
         {
-                Rigid* const f = map::cells.at(i).rigid;
+                Rigid* const f = map::g_cells.at(i).rigid;
 
                 free_cell_array.at(i) = f->can_have_item();
         }
@@ -208,7 +208,7 @@ Item* drop_item_on_map(const P& intended_pos, Item& item)
                                 }
 
                                 Item* item_on_floor =
-                                        map::cells.at(stack_p).item;
+                                        map::g_cells.at(stack_p).item;
 
                                 if (item_on_floor &&
                                     item_on_floor->data().id == item.data().id)
@@ -217,14 +217,14 @@ Item* drop_item_on_map(const P& intended_pos, Item& item)
                                                 << "Stacking item on floor"
                                                 << std::endl;
 
-                                        item.nr_items_ +=
-                                                item_on_floor->nr_items_;
+                                        item.m_nr_items +=
+                                                item_on_floor->m_nr_items;
 
                                         delete item_on_floor;
 
-                                        map::cells.at(stack_p).item = &item;
+                                        map::g_cells.at(stack_p).item = &item;
 
-                                        if (map::player->pos == stack_p)
+                                        if (map::g_player->m_pos == stack_p)
                                         {
                                                 item.on_player_found();
                                         }
@@ -239,12 +239,12 @@ Item* drop_item_on_map(const P& intended_pos, Item& item)
 
                 // Item has not been stacked at this distance
 
-                if (!map::cells.at(p).item)
+                if (!map::g_cells.at(p).item)
                 {
                         // Alright, this cell is empty, let's put the item here
-                        map::cells.at(p).item = &item;
+                        map::g_cells.at(p).item = &item;
 
-                        if (map::player->pos == p)
+                        if (map::g_player->m_pos == p)
                         {
                                 item.on_player_found();
                         }

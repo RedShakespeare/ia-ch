@@ -108,7 +108,7 @@ enum class PropId
         END
 };
 
-const std::unordered_map<std::string, PropId> str_to_prop_id_map = {
+const std::unordered_map<std::string, PropId> g_str_to_prop_id_map = {
         {"alters_environment", PropId::alters_env},
         {"aura of decay", PropId::aura_of_decay},
         {"blessed", PropId::blessed},
@@ -228,7 +228,7 @@ struct PropData
 namespace property_data
 {
 
-extern PropData data[(size_t)PropId::END];
+extern PropData g_data[(size_t)PropId::END];
 
 void init();
 

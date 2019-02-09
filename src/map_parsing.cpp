@@ -34,14 +34,14 @@ void MapParser::run(Array2<bool>& out,
                     const R& area_to_parse_cells,
                     const MapParseMode write_rule)
 {
-        ASSERT(parse_cells_ == ParseCells::yes ||
-               parse_mobs_ == ParseMobs::yes ||
-               parse_actors_ == ParseActors::yes);
+        ASSERT(m_parse_cells == ParseCells::yes ||
+               m_parse_mobs == ParseMobs::yes ||
+               m_parse_actors == ParseActors::yes);
 
         const bool allow_write_false =
                 write_rule == MapParseMode::overwrite;
 
-        if (parse_cells_ == ParseCells::yes)
+        if (m_parse_cells == ParseCells::yes)
         {
                 for (int x = area_to_parse_cells.p0.x;
                      x <= area_to_parse_cells.p1.x;
@@ -51,7 +51,7 @@ void MapParser::run(Array2<bool>& out,
                              y <= area_to_parse_cells.p1.y;
                              ++y)
                         {
-                                const auto& c = map::cells.at(x, y);
+                                const auto& c = map::g_cells.at(x, y);
 
                                 const bool is_match = parse(c, P(x, y));
 
@@ -63,9 +63,9 @@ void MapParser::run(Array2<bool>& out,
                 }
         }
 
-        if (parse_mobs_ == ParseMobs::yes)
+        if (m_parse_mobs == ParseMobs::yes)
         {
-                for (Mob* mob : game_time::mobs)
+                for (Mob* mob : game_time::g_mobs)
                 {
                         const P& p = mob->pos();
 
@@ -86,11 +86,11 @@ void MapParser::run(Array2<bool>& out,
                 }
         }
 
-        if (parse_actors_ == ParseActors::yes)
+        if (m_parse_actors == ParseActors::yes)
         {
-                for (Actor* actor : game_time::actors)
+                for (Actor* actor : game_time::g_actors)
                 {
-                        const P& p = actor->pos;
+                        const P& p = actor->m_pos;
 
                         if (area_to_parse_cells.is_pos_inside(p))
                         {
@@ -113,15 +113,15 @@ void MapParser::run(Array2<bool>& out,
 
 bool MapParser::cell(const P& pos) const
 {
-        ASSERT(parse_cells_ == ParseCells::yes ||
-               parse_mobs_ == ParseMobs::yes ||
-               parse_actors_ == ParseActors::yes);
+        ASSERT(m_parse_cells == ParseCells::yes ||
+               m_parse_mobs == ParseMobs::yes ||
+               m_parse_actors == ParseActors::yes);
 
         bool r = false;
 
-        if (parse_cells_ == ParseCells::yes)
+        if (m_parse_cells == ParseCells::yes)
         {
-                const auto& c = map::cells.at(pos);
+                const auto& c = map::g_cells.at(pos);
 
                 const bool is_match = parse(c, pos);
 
@@ -131,9 +131,9 @@ bool MapParser::cell(const P& pos) const
                 }
         }
 
-        if (parse_mobs_ == ParseMobs::yes)
+        if (m_parse_mobs == ParseMobs::yes)
         {
-                for (Mob* mob : game_time::mobs)
+                for (Mob* mob : game_time::g_mobs)
                 {
                         const P& mob_p = mob->pos();
 
@@ -150,11 +150,11 @@ bool MapParser::cell(const P& pos) const
                 }
         }
 
-        if (parse_actors_ == ParseActors::yes)
+        if (m_parse_actors == ParseActors::yes)
         {
-                for (Actor* actor : game_time::actors)
+                for (Actor* actor : game_time::g_actors)
                 {
-                        const P& actor_pos = actor->pos;
+                        const P& actor_pos = actor->m_pos;
 
                         if (actor_pos == pos)
                         {
@@ -210,12 +210,12 @@ bool BlocksActor::parse(const Cell& c, const P& pos) const
 {
         return
                 !map::is_pos_inside_outer_walls(pos) ||
-                !c.rigid->can_move(actor_);
+                !c.rigid->can_move(m_actor);
 }
 
 bool BlocksActor::parse(const Mob& f) const
 {
-        return !f.can_move(actor_);
+        return !f.can_move(m_actor);
 }
 
 bool BlocksActor::parse(const Actor& a) const
@@ -254,7 +254,7 @@ bool LivingActorsAdjToPos::parse(const Actor& a) const
                 return false;
         }
 
-        return is_pos_adj(pos_, a.pos, true);
+        return is_pos_adj(m_pos, a.m_pos, true);
 }
 
 bool BlocksItems::parse(const Cell& c, const P& pos)  const
@@ -280,14 +280,14 @@ bool IsNotFeature::parse(const Cell& c, const P& pos) const
 {
         (void)pos;
 
-        return c.rigid->id() != feature_;
+        return c.rigid->id() != m_feature;
 }
 
 bool IsAnyOfFeatures::parse(const Cell& c, const P& pos) const
 {
         (void)pos;
 
-        for (auto f : features_)
+        for (auto f : m_features)
         {
                 if (f == c.rigid->id())
                 {
@@ -307,16 +307,17 @@ bool AnyAdjIsAnyOfFeatures::parse(const Cell& c, const P& pos) const
                 return false;
         }
 
-        for (const auto& d : dir_utils::dir_list_w_center)
+        for (const auto& d : dir_utils::g_dir_list_w_center)
         {
-                const auto id_here = map::cells.at(pos + d).rigid->id();
+                const auto id_here = map::g_cells.at(pos + d).rigid->id();
 
                 const auto search_result =
-                        std::find(begin(features_),
-                                  end(features_),
-                                  id_here);
+                        std::find(
+                                std::begin(m_features),
+                                std::end(m_features),
+                                id_here);
 
-                if (search_result != end(features_))
+                if (search_result != std::end(m_features))
                 {
                         return true;
                 }
@@ -334,9 +335,9 @@ bool AllAdjIsFeature::parse(const Cell& c, const P& pos) const
                 return false;
         }
 
-        for (const auto& d : dir_utils::dir_list_w_center)
+        for (const auto& d : dir_utils::g_dir_list_w_center)
         {
-                if (map::cells.at(pos + d).rigid->id() != feature_)
+                if (map::g_cells.at(pos + d).rigid->id() != m_feature)
                 {
                         return false;
                 }
@@ -354,13 +355,13 @@ bool AllAdjIsAnyOfFeatures::parse(const Cell& c, const P& pos) const
                 return false;
         }
 
-        for (const auto& d : dir_utils::dir_list_w_center)
+        for (const auto& d : dir_utils::g_dir_list_w_center)
         {
-                const auto current_id = map::cells.at(pos + d).rigid->id();
+                const auto current_id = map::g_cells.at(pos + d).rigid->id();
 
                 bool is_match = false;
 
-                for (auto f : features_)
+                for (auto f : m_features)
                 {
                         if (f == current_id)
                         {
@@ -391,9 +392,9 @@ bool AllAdjIsNotFeature::parse(const Cell& c, const P& pos) const
                 return false;
         }
 
-        for (const auto& d : dir_utils::dir_list_w_center)
+        for (const auto& d : dir_utils::g_dir_list_w_center)
         {
-                if (map::cells.at(pos + d).rigid->id() == feature_)
+                if (map::g_cells.at(pos + d).rigid->id() == m_feature)
                 {
                         return false;
                 }
@@ -414,11 +415,11 @@ bool AllAdjIsNoneOfFeatures::parse(const Cell& c, const P& pos) const
                 return false;
         }
 
-        for (const auto& d : dir_utils::dir_list_w_center)
+        for (const auto& d : dir_utils::g_dir_list_w_center)
         {
-                const auto current_id = map::cells.at(pos + d).rigid->id();
+                const auto current_id = map::g_cells.at(pos + d).rigid->id();
 
-                for (auto f : features_)
+                for (auto f : m_features)
                 {
                         if (f == current_id)
                         {
@@ -669,7 +670,7 @@ bool is_map_connected(const Array2<bool>& blocked)
                             P(x, y) != origin)
                         {
 #ifndef NDEBUG
-                                if (init::is_demo_mapgen)
+                                if (init::g_is_demo_mapgen)
                                 {
                                         if (!viewport::is_in_view(P(x, y)))
                                         {
@@ -709,8 +710,8 @@ bool is_map_connected(const Array2<bool>& blocked)
 // -----------------------------------------------------------------------------
 bool IsCloserToPos::operator()(const P& p1, const P& p2)
 {
-        const int king_dist1 = king_dist(p_.x, p_.y, p1.x, p1.y);
-        const int king_dist2 = king_dist(p_.x, p_.y, p2.x, p2.y);
+        const int king_dist1 = king_dist(m_pos.x, m_pos.y, p1.x, p1.y);
+        const int king_dist2 = king_dist(m_pos.x, m_pos.y, p2.x, p2.y);
 
         return king_dist1 < king_dist2;
 }
@@ -720,8 +721,8 @@ bool IsCloserToPos::operator()(const P& p1, const P& p2)
 // -----------------------------------------------------------------------------
 bool IsFurtherFromPos::operator()(const P& p1, const P& p2)
 {
-        const int king_dist1 = king_dist(p_.x, p_.y, p1.x, p1.y);
-        const int king_dist2 = king_dist(p_.x, p_.y, p2.x, p2.y);
+        const int king_dist1 = king_dist(m_pos.x, m_pos.y, p1.x, p1.y);
+        const int king_dist2 = king_dist(m_pos.x, m_pos.y, p2.x, p2.y);
 
         return king_dist1 > king_dist2;
 }

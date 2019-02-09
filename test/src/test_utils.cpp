@@ -48,7 +48,7 @@ void init_all()
 
         put_floor_and_walls_on_map();
 
-        map::player->pos = map::rect().center();
+        map::g_player->m_pos = map::rect().center();
 }
 
 void cleanup_all()

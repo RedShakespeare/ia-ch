@@ -12,50 +12,51 @@
 // -----------------------------------------------------------------------------
 // Data
 // -----------------------------------------------------------------------------
-const size_t player_name_max_len = 14;
+const size_t g_player_name_max_len = 14;
 
 // NOTE:
 // Early = dlvl 1  - 9
 // Mid   = dlvl 10 - 19
 // Late  = dlvl 20 - 30
-const int dlvl_last_early_game = 9;
-const int dlvl_first_mid_game = dlvl_last_early_game + 1;
-const int dlvl_last_mid_game = 19;
-const int dlvl_first_late_game = dlvl_last_mid_game + 1;
-const int dlvl_last = 30;
+const int g_dlvl_last_early_game = 9;
+const int g_dlvl_first_mid_game = g_dlvl_last_early_game + 1;
+const int g_dlvl_last_mid_game = 19;
+const int g_dlvl_first_late_game = g_dlvl_last_mid_game + 1;
+const int g_dlvl_last = 30;
 
-const int dlvl_harder_traps = 6;
+const int g_dlvl_harder_traps = 6;
 
-const size_t ms_delay_player_unable_act = 7;
-const size_t min_ms_between_same_sfx = 60;
+const size_t g_ms_delay_player_unable_act = 7;
+const size_t g_min_ms_between_same_sfx = 60;
 
-const int fov_radi_int = 6;
-const int fov_w_int = (fov_radi_int * 2) + 1;
-const double fov_radi_db = (double)fov_radi_int;
+const int g_fov_radi_int = 6;
+const int g_fov_w_int = (g_fov_radi_int * 2) + 1;
+const double g_fov_radi_db = (double)g_fov_radi_int;
 
-const int dynamite_fuse_turns = 5;
-const int expl_std_radi = 2;
+const int g_dynamite_fuse_turns = 5;
+const int g_expl_std_radi = 2;
 
-const int enc_immobile_lvl = 125;
+const int g_enc_immobile_lvl = 125;
 
-const size_t nr_mg_projectiles = 5;
+const size_t g_nr_mg_projectiles = 5;
 
-const int mi_go_gun_hp_drained = 3;
+const int g_mi_go_gun_hp_drained = 3;
 
 // NOTE: Number of rolls is reduced by one for each step away from the center
-const int expl_dmg_rolls = 5;
-const int expl_dmg_sides = 6;
-const int expl_dmg_plus = 10;
-const int expl_max_dmg = (expl_dmg_rolls * expl_dmg_sides) + expl_dmg_plus;
+const int g_expl_dmg_rolls = 5;
+const int g_expl_dmg_sides = 6;
+const int g_expl_dmg_plus = 10;
+const int g_expl_max_dmg =
+        (g_expl_dmg_rolls * g_expl_dmg_sides) + g_expl_dmg_plus;
 
-const int poison_dmg_n_turn = 4;
+const int g_poison_dmg_n_turn = 4;
 
-const int shock_from_obsession = 30;
+const int g_shock_from_obsession = 30;
 
-const double shock_from_disturbing_items = 0.05;
+const double g_shock_from_disturbing_items = 0.05;
 
 // How many "units" of weight the player can carry, without trait modifiers etc
-const int player_carry_weight_base = 500;
+const int g_player_carry_weight_base = 500;
 
 // Value used for limiting spawning over time and "breeder" monsters. The actual
 // number of actors may sometimes go a bit above this number, e.g. due to a
@@ -63,7 +64,7 @@ const int player_carry_weight_base = 500;
 // Summoning spells does not check this number at all (because their effects
 // should not be arbitrarily limited by this) - so that may also push the number
 // of actors above the limit. This number is treated as a soft limit.
-const size_t max_nr_actors_on_map = 125;
+const size_t g_max_nr_actors_on_map = 125;
 
 // -----------------------------------------------------------------------------
 // Types

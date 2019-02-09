@@ -76,13 +76,13 @@ class Benefit
 {
 public:
         Benefit(BenefitId id) :
-                id_(id) {}
+                m_id(id) {}
 
         virtual ~Benefit() {}
 
         BenefitId id() const
         {
-                return id_;
+                return m_id;
         }
 
         virtual bool is_allowed_to_offer_now() const = 0;
@@ -92,7 +92,7 @@ public:
         virtual void run_effect() = 0;
 
 private:
-        const BenefitId id_;
+        const BenefitId m_id;
 };
 
 class Toll
@@ -104,7 +104,7 @@ public:
 
         TollId id() const
         {
-                return id_;
+                return m_id;
         }
 
         void on_player_reached_new_dlvl();
@@ -128,10 +128,10 @@ public:
         virtual void run_effect() = 0;
 
 private:
-        const TollId id_;
+        const TollId m_id;
 
-        int dlvl_countdown_;
-        int turn_countdown_;
+        int m_dlvl_countdown;
+        int m_turn_countdown;
 };
 
 class UpgradeSpell : public Benefit
@@ -148,7 +148,7 @@ public:
 private:
         std::vector<SpellId> find_spells_can_upgrade() const;
 
-        SpellId spell_id_;
+        SpellId m_spell_id;
 };
 
 class GainHp : public Benefit
@@ -213,7 +213,7 @@ public:
 private:
         std::vector<ItemId> find_allowed_item_ids() const;
 
-        ItemId item_id_;
+        ItemId m_item_id;
 };
 
 // class RechargeItem : public Benefit

@@ -66,7 +66,7 @@ enum class RoomType
         river
 };
 
-const std::unordered_map<std::string, RoomType> str_to_room_type_map = {
+const std::unordered_map<std::string, RoomType> g_str_to_room_type_map = {
         {"plain", RoomType::plain},
         {"human", RoomType::human},
         {"ritual", RoomType::ritual},
@@ -134,11 +134,11 @@ public:
                 return true;
         }
 
-        R r_;
-        const RoomType type_;
-        bool is_sub_room_;
-        std::vector<Room*> rooms_con_to_;
-        std::vector<Room*> sub_rooms_;
+        R m_r;
+        const RoomType m_type;
+        bool m_is_sub_room;
+        std::vector<Room*> m_rooms_con_to;
+        std::vector<Room*> m_sub_rooms;
 
 protected:
         void make_dark() const;
@@ -165,9 +165,10 @@ protected:
                 return {};
         }
 
-        P find_auto_feature_placement(const std::vector<P>& adj_to_walls,
-                                      const std::vector<P>& away_from_walls,
-                                      const FeatureId id) const;
+        P find_auto_feature_placement(
+                const std::vector<P>& adj_to_walls,
+                const std::vector<P>& away_from_walls,
+                const FeatureId id) const;
 
         void place_auto_features();
 
@@ -473,7 +474,7 @@ class RiverRoom: public Room
 public:
         RiverRoom(const R& r) :
                 Room(r, RoomType::river),
-                axis_(Axis::hor) {}
+                m_axis(Axis::hor) {}
 
         ~RiverRoom() {}
 
@@ -484,7 +485,7 @@ public:
                 (void)door_proposals;
         }
 
-        Axis axis_;
+        Axis m_axis;
 };
 
 #endif // ROOM_HPP

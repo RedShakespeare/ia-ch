@@ -31,18 +31,18 @@
 // -----------------------------------------------------------------------------
 // Private
 // -----------------------------------------------------------------------------
-static std::vector<ActorSpeed> turn_type_vector_;
+static std::vector<ActorSpeed> s_turn_type_vector;
 
 // Smallest number divisible by both 2 (200% speed) and 3 (300% speed)
-static const int ticks_per_turn_ = 6;
+static const int s_ticks_per_turn = 6;
 
-static int current_turn_type_pos_ = 0;
+static int s_current_turn_type_pos = 0;
 
-static size_t current_actor_idx_ = 0;
+static size_t s_current_actor_idx = 0;
 
-static int turn_nr_ = 0;
+static int s_turn_nr = 0;
 
-static int std_turn_delay_ = ticks_per_turn_;
+static int s_std_turn_delay = s_ticks_per_turn;
 
 static int speed_to_pct(const ActorSpeed speed)
 {
@@ -90,29 +90,29 @@ static ActorSpeed current_actor_speed(const Actor& actor)
 {
         // Paralyzed actors always act at normal speed (otherwise paralysis will
         // barely affect super fast monsters at all)
-        if (actor.properties.has(PropId::paralyzed))
+        if (actor.m_properties.has(PropId::paralyzed))
         {
                 return ActorSpeed::normal;
         }
 
-        if (actor.properties.has(PropId::clockwork_hasted))
+        if (actor.m_properties.has(PropId::clockwork_hasted))
         {
                 return ActorSpeed::very_fast;
         }
 
-        auto speed = actor.data->speed;
+        auto speed = actor.m_data->speed;
 
-        if (actor.properties.has(PropId::slowed))
+        if (actor.m_properties.has(PropId::slowed))
         {
                 speed = decr_speed_category(speed);
         }
 
-        if (actor.properties.has(PropId::hasted))
+        if (actor.m_properties.has(PropId::hasted))
         {
                 speed = incr_speed_category(speed);
         }
 
-        if (actor.properties.has(PropId::frenzied))
+        if (actor.m_properties.has(PropId::frenzied))
         {
                 speed = incr_speed_category(speed);
         }
@@ -122,22 +122,22 @@ static ActorSpeed current_actor_speed(const Actor& actor)
 
 static void run_std_turn_events()
 {
-        if (game_time::is_magic_descend_nxt_std_turn)
+        if (game_time::g_is_magic_descend_nxt_std_turn)
         {
                 const PropEndConfig prop_end_config(
                         PropEndAllowCallEndHook::no,
                         PropEndAllowMsg::no,
                         PropEndAllowHistoricMsg::no);
 
-                map::player->properties.end_prop(
+                map::g_player->m_properties.end_prop(
                         PropId::nailed,
                         prop_end_config);
 
-                map::player->properties.end_prop(
+                map::g_player->m_properties.end_prop(
                         PropId::entangled,
                         prop_end_config);
 
-                map::player->properties.end_prop(
+                map::g_player->m_properties.end_prop(
                         PropId::swimming,
                         prop_end_config);
 
@@ -152,35 +152,36 @@ static void run_std_turn_events()
                 return;
         }
 
-        ++turn_nr_;
+        ++s_turn_nr;
 
         // NOTE: Iteration must be done by index, since new monsters may be
         // spawned inside the loop when the standard turn hook is called (e.g.
         // from the 'breeding' property)
-        for (size_t i = 0; i < game_time::actors.size(); /* No increment */)
+        for (size_t i = 0; i < game_time::g_actors.size(); /* No increment */)
         {
-                Actor* const actor = game_time::actors[i];
+                Actor* const actor = game_time::g_actors[i];
 
                 // Delete destroyed actors
-                if (actor->state == ActorState::destroyed)
+                if (actor->m_state == ActorState::destroyed)
                 {
-                        if (actor == map::player)
+                        if (actor == map::g_player)
                         {
                                 return;
                         }
 
-                        if (map::player->tgt_ == actor)
+                        if (map::g_player->m_tgt == actor)
                         {
-                                map::player->tgt_ = nullptr;
+                                map::g_player->m_tgt = nullptr;
                         }
 
                         delete actor;
 
-                        game_time::actors.erase(game_time::actors.begin() + i);
+                        game_time::g_actors.erase(
+                                game_time::g_actors.begin() + i);
 
-                        if (current_actor_idx_ >= game_time::actors.size())
+                        if (s_current_actor_idx >= game_time::g_actors.size())
                         {
-                                current_actor_idx_ = 0;
+                                s_current_actor_idx = 0;
                         }
                 }
                 else  // Actor not destroyed
@@ -190,56 +191,56 @@ static void run_std_turn_events()
                                 // Count down monster awareness
                                 Mon* const mon = static_cast<Mon*>(actor);
 
-                                if (mon->player_aware_of_me_counter_ > 0)
+                                if (mon->m_player_aware_of_me_counter > 0)
                                 {
-                                        --mon->player_aware_of_me_counter_;
+                                        --mon->m_player_aware_of_me_counter;
                                 }
                         }
 
                         actor->on_std_turn_common();
 
                         // NOTE: This may spawn new monsters, see NOTE above.
-                        actor->properties.on_std_turn();
+                        actor->m_properties.on_std_turn();
 
                         ++i;
                 }
         } // Actor loop
 
         // Allow already burning features to damage stuff, spread fire, etc
-        for (auto& cell : map::cells)
+        for (auto& cell : map::g_cells)
         {
-                if (cell.rigid->burn_state_ == BurnState::burning)
+                if (cell.rigid->m_burn_state == BurnState::burning)
                 {
-                        cell.rigid->started_burning_this_turn_ = false;
+                        cell.rigid->m_started_burning_this_turn = false;
                 }
         }
 
         // New turn for rigids
-        for (auto& cell : map::cells)
+        for (auto& cell : map::g_cells)
         {
                 cell.rigid->on_new_turn();
         }
 
         // New turn for mobs
-        const std::vector<Mob*> mobs_cpy = game_time::mobs;
+        const std::vector<Mob*> mobs_cpy = game_time::g_mobs;
 
         for (auto* f : mobs_cpy)
         {
                 f->on_new_turn();
         }
 
-        if (map_control::controller)
+        if (map_control::g_controller)
         {
-                map_control::controller->on_std_turn();
+                map_control::g_controller->on_std_turn();
         }
 
         // Run new turn events on all player items
-        for (Item* const item : map::player->inv.backpack)
+        for (Item* const item : map::g_player->m_inv.m_backpack)
         {
                 item->on_std_turn_in_inv(InvType::backpack);
         }
 
-        for (InvSlot& slot : map::player->inv.slots)
+        for (InvSlot& slot : map::g_player->m_inv.m_slots)
         {
                 if (slot.item)
                 {
@@ -249,7 +250,7 @@ static void run_std_turn_events()
 
         snd_emit::reset_nr_snd_msg_printed_current_turn();
 
-        if ((map::dlvl > 0) && !map::player->properties.has(PropId::deaf))
+        if ((map::g_dlvl > 0) && !map::g_player->m_properties.has(PropId::deaf))
         {
                 const int play_one_in_n = 200;
 
@@ -260,15 +261,15 @@ static void run_std_turn_events()
 static  void run_atomic_turn_events()
 {
         // Stop burning for any actor standing in liquid
-        for (auto* const actor : game_time::actors)
+        for (auto* const actor : game_time::g_actors)
         {
-                const P& p = actor->pos;
+                const P& p = actor->m_pos;
 
-                const Rigid* const rigid = map::cells.at(p).rigid;
+                const Rigid* const rigid = map::g_cells.at(p).rigid;
 
                 if (rigid->data().matl_type == Matl::fluid)
                 {
-                        actor->properties.end_prop(PropId::burning);
+                        actor->m_properties.end_prop(PropId::burning);
                 }
         }
 
@@ -283,56 +284,58 @@ static  void run_atomic_turn_events()
 namespace game_time
 {
 
-std::vector<Actor*> actors;
-std::vector<Mob*>   mobs;
+std::vector<Actor*> g_actors;
+std::vector<Mob*> g_mobs;
 
-bool is_magic_descend_nxt_std_turn;
+bool g_is_magic_descend_nxt_std_turn;
+
 
 void init()
 {
-        current_turn_type_pos_ = 0;
-        current_actor_idx_ = 0;
-        turn_nr_ = 0;
-        std_turn_delay_ = ticks_per_turn_;
+        s_current_turn_type_pos = 0;
+        s_current_actor_idx = 0;
+        s_turn_nr = 0;
+        s_std_turn_delay = s_ticks_per_turn;
 
-        actors.clear();
-        mobs  .clear();
+        g_actors.clear();
 
-        is_magic_descend_nxt_std_turn = false;
+        g_mobs.clear();
+
+        g_is_magic_descend_nxt_std_turn = false;
 }
 
 void cleanup()
 {
-        for (Actor* a : actors)
+        for (Actor* a : g_actors)
         {
                 delete a;
         }
 
-        actors.clear();
+        g_actors.clear();
 
-        for (auto* f : mobs)
+        for (auto* f : g_mobs)
         {
                 delete f;
         }
 
-        mobs.clear();
+        g_mobs.clear();
 
-        is_magic_descend_nxt_std_turn = false;
+        g_is_magic_descend_nxt_std_turn = false;
 }
 
 void save()
 {
-        saving::put_int(turn_nr_);
+        saving::put_int(s_turn_nr);
 }
 
 void load()
 {
-        turn_nr_ = saving::get_int();
+        s_turn_nr = saving::get_int();
 }
 
 int turn_nr()
 {
-        return turn_nr_;
+        return s_turn_nr;
 }
 
 std::vector<Mob*> mobs_at_pos(const P& p)
@@ -352,12 +355,12 @@ std::vector<Mob*> mobs_at_pos(const P& p)
 
 void add_mob(Mob* const f)
 {
-        mobs.push_back(f);
+        g_mobs.push_back(f);
 }
 
 void erase_mob(Mob* const f, const bool destroy_object)
 {
-        for (auto it = mobs.begin(); it != mobs.end(); ++it)
+        for (auto it = g_mobs.begin(); it != g_mobs.end(); ++it)
         {
                 if (*it == f)
                 {
@@ -366,7 +369,7 @@ void erase_mob(Mob* const f, const bool destroy_object)
                                 delete f;
                         }
 
-                        mobs.erase(it);
+                        g_mobs.erase(it);
 
                         return;
                 }
@@ -377,40 +380,40 @@ void erase_mob(Mob* const f, const bool destroy_object)
 
 void erase_all_mobs()
 {
-        for (auto* m : mobs)
+        for (auto* m : g_mobs)
         {
                 delete m;
         }
 
-        mobs.clear();
+        g_mobs.clear();
 }
 
 void add_actor(Actor* actor)
 {
         // Sanity checks
-        // ASSERT(map::is_pos_inside_map(actor->pos));
+        // ASSERT(map::is_pos_inside_map(actor->m_pos));
 
 #ifndef NDEBUG
-        for (Actor* const existing_actor : actors)
+        for (Actor* const existing_actor : g_actors)
         {
                 ASSERT(actor != existing_actor);
 
                 if (actor->is_alive() && existing_actor->is_alive())
                 {
-                        const P& new_actor_p = actor->pos;
-                        const P& existing_actor_p = existing_actor->pos;
+                        const P& new_actor_p = actor->m_pos;
+                        const P& existing_actor_p = existing_actor->m_pos;
 
                         ASSERT(new_actor_p != existing_actor_p);
                 }
         }
 #endif // NDEBUG
 
-        actors.push_back(actor);
+        g_actors.push_back(actor);
 }
 
 void reset_turn_type_and_actor_counters()
 {
-        current_turn_type_pos_ = current_actor_idx_ = 0;
+        s_current_turn_type_pos = s_current_actor_idx = 0;
 }
 
 void tick()
@@ -422,31 +425,31 @@ void tick()
 
                 const int speed_pct = speed_to_pct(speed_category);
 
-                int delay_to_set = (ticks_per_turn_ * 100) / speed_pct;
+                int delay_to_set = (s_ticks_per_turn * 100) / speed_pct;
 
                 // Make sure the delay is at least 1, to never give an actor
                 // infinite number of actions
                 delay_to_set = std::max(1, delay_to_set);
 
-                actor->delay = delay_to_set;
+                actor->m_delay = delay_to_set;
         }
 
-        actor->properties.on_turn_end();
+        actor->m_properties.on_turn_end();
 
         // Find next actor who can act
         while (true)
         {
-                if (actors.empty())
+                if (g_actors.empty())
                 {
                         return;
                 }
 
-                ++current_actor_idx_;
+                ++s_current_actor_idx;
 
-                if (current_actor_idx_ == actors.size())
+                if (s_current_actor_idx == g_actors.size())
                 {
                         // New standard turn?
-                        if (std_turn_delay_ == 0)
+                        if (s_std_turn_delay == 0)
                         {
                                 // Increment the turn counter, and run standard
                                 // turn events
@@ -455,33 +458,33 @@ void tick()
                                 // will decrease the actor vector size.
                                 run_std_turn_events();
 
-                                std_turn_delay_ = ticks_per_turn_;
+                                s_std_turn_delay = s_ticks_per_turn;
                         }
                         else
                         {
-                                --std_turn_delay_;
+                                --s_std_turn_delay;
                         }
 
-                        current_actor_idx_ = 0;
+                        s_current_actor_idx = 0;
                 }
 
                 actor = current_actor();
 
-                ASSERT(actor->delay >= 0);
+                ASSERT(actor->m_delay >= 0);
 
-                if (actor->delay == 0)
+                if (actor->m_delay == 0)
                 {
                         // Actor is ready to go
                         break;
                 }
 
                 // Actor is still waiting
-                --actor->delay;
+                --actor->m_delay;
         }
 
         run_atomic_turn_events();
 
-        current_actor()->properties.on_turn_begin();
+        current_actor()->m_properties.on_turn_begin();
 
         current_actor()->on_actor_turn();
 }
@@ -490,32 +493,32 @@ void update_light_map()
 {
         Array2<bool> light_tmp(map::dims());
 
-        for (const auto* const a : actors)
+        for (const auto* const a : g_actors)
         {
                 a->add_light(light_tmp);
         }
 
-        for (const auto* const m : mobs)
+        for (const auto* const m : g_mobs)
         {
                 m->add_light(light_tmp);
         }
 
         for (size_t i = 0; i < map::nr_cells(); ++i)
         {
-                map::cells.at(i).rigid->add_light(light_tmp);
+                map::g_cells.at(i).rigid->add_light(light_tmp);
         }
 
         // Copy the temporary buffer to the real light map
-        memcpy(map::light.data(), light_tmp.data(), map::light.length());
+        memcpy(map::g_light.data(), light_tmp.data(), map::g_light.length());
 }
 
 Actor* current_actor()
 {
-        ASSERT(current_actor_idx_ < actors.size());
+        ASSERT(s_current_actor_idx < g_actors.size());
 
-        Actor* const actor = actors[current_actor_idx_];
+        Actor* const actor = g_actors[s_current_actor_idx];
 
-        ASSERT(map::is_pos_inside_map(actor->pos));
+        ASSERT(map::is_pos_inside_map(actor->m_pos));
 
         return actor;
 }

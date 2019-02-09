@@ -34,13 +34,13 @@ TEST_CASE("Throw weapon at wall")
         map::put(new Wall(P(5, 8)));
         map::put(new Floor(P(5, 9)));
         map::put(new Floor(P(5, 10)));
-        map::player->pos = P(5, 10);
+        map::g_player->m_pos = P(5, 10);
 
         Item* item = item_factory::make(ItemId::thr_knife);
 
-        throwing::throw_item(*(map::player), {5, 8}, *item);
+        throwing::throw_item(*(map::g_player), {5, 8}, *item);
 
-        REQUIRE(map::cells.at(5, 9).item == item);
+        REQUIRE(map::g_cells.at(5, 9).item == item);
 
         test_utils::cleanup_all();
 }

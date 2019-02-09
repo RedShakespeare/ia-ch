@@ -15,7 +15,8 @@
 // -----------------------------------------------------------------------------
 // Private
 // -----------------------------------------------------------------------------
-static bool is_inited = false;
+static bool s_is_inited = false;
+
 
 // -----------------------------------------------------------------------------
 // query
@@ -25,12 +26,12 @@ namespace query
 
 void init()
 {
-        is_inited = true;
+        s_is_inited = true;
 }
 
 void wait_for_key_press()
 {
-        if (is_inited && !config::is_bot_playing())
+        if (s_is_inited && !config::is_bot_playing())
         {
                 io::update_screen();
 
@@ -40,7 +41,7 @@ void wait_for_key_press()
 
 BinaryAnswer yes_or_no(char key_for_special_event)
 {
-        if (!is_inited || config::is_bot_playing())
+        if (!s_is_inited || config::is_bot_playing())
         {
                 return BinaryAnswer::yes;
         }
@@ -75,7 +76,7 @@ InputData letter(const bool accept_enter)
 {
         InputData input;
 
-        if (!is_inited || config::is_bot_playing())
+        if (!s_is_inited || config::is_bot_playing())
         {
                 input.key = 'a';
 
@@ -110,7 +111,7 @@ int number(
         const int default_value,
         const bool cancel_returns_default)
 {
-        if (!is_inited || config::is_bot_playing())
+        if (!s_is_inited || config::is_bot_playing())
         {
                 return 0;
         }
@@ -228,7 +229,7 @@ int number(
 
 void wait_for_msg_more()
 {
-        if (!is_inited || config::is_bot_playing())
+        if (!s_is_inited || config::is_bot_playing())
         {
                 return;
         }
@@ -259,7 +260,7 @@ void wait_for_msg_more()
 
 void wait_for_confirm()
 {
-        if (!is_inited || config::is_bot_playing())
+        if (!s_is_inited || config::is_bot_playing())
         {
                 return;
         }
@@ -281,7 +282,7 @@ void wait_for_confirm()
 
 Dir dir(const AllowCenter allow_center)
 {
-        if (!is_inited || config::is_bot_playing())
+        if (!s_is_inited || config::is_bot_playing())
         {
                 return Dir::END;
         }

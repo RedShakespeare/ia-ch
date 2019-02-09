@@ -125,7 +125,7 @@ static void draw(const std::vector< std::vector<P> >& pos_lists,
 
                         for (const P& pos : inner)
                         {
-                                const auto& cell = map::cells.at(pos);
+                                const auto& cell = map::g_cells.at(pos);
 
                                 if (cell.is_seen_by_player &&
                                     !blocked.at(pos) &&
@@ -159,14 +159,14 @@ static void apply_explosion_on_pos(
         Actor* living_actor,
         std::vector<Actor*> corpses_here)
 {
-        const int rolls = expl_dmg_rolls - current_radi;
+        const int rolls = g_expl_dmg_rolls - current_radi;
 
         const int dmg =
-                rnd::dice(rolls, expl_dmg_sides) +
-                expl_dmg_plus;
+                rnd::dice(rolls, g_expl_dmg_sides) +
+                g_expl_dmg_plus;
 
         // Damage environment
-        Cell& cell = map::cells.at(pos);
+        Cell& cell = map::g_cells.at(pos);
 
         cell.rigid->hit(
                 dmg,
@@ -220,17 +220,17 @@ static void apply_explosion_property_on_pos(
         {
                 if (is_gas == ExplIsGas::yes)
                 {
-                        if (living_actor->properties.has(PropId::r_breath))
+                        if (living_actor->m_properties.has(PropId::r_breath))
                         {
                                 should_apply_on_living_actor = false;
                         }
 
-                        if (living_actor == map::player)
+                        if (living_actor == map::g_player)
                         {
                                 // Do not apply effect if wearing Gas Mask, and
                                 // this is a gas explosion
                                 const Item* const head_item =
-                                        map::player->inv.item_in_slot(
+                                        map::g_player->m_inv.item_in_slot(
                                                 SlotId::head);
 
                                 if ((is_gas == ExplIsGas::yes) &&
@@ -253,14 +253,14 @@ static void apply_explosion_property_on_pos(
 
                 prop_cpy->set_duration(property->nr_turns_left());
 
-                living_actor->properties.apply(prop_cpy);
+                living_actor->m_properties.apply(prop_cpy);
         }
 
         // If property is burning, also apply it to corpses and the
         // environment
         if (property->id() == PropId::burning)
         {
-                Cell& cell = map::cells.at(pos);
+                Cell& cell = map::g_cells.at(pos);
 
                 cell.rigid->hit(1, // Doesn't matter
                                 DmgType::fire,
@@ -274,7 +274,7 @@ static void apply_explosion_property_on_pos(
 
                         prop_cpy->set_duration(property->nr_turns_left());
 
-                        corpse->properties.apply(prop_cpy);
+                        corpse->m_properties.apply(prop_cpy);
                 }
         }
 }
@@ -294,7 +294,7 @@ void run(const P& origin,
          const Color color_override,
          const ExplIsGas is_gas)
 {
-        const int radi = expl_std_radi + radi_change;
+        const int radi = g_expl_std_radi + radi_change;
 
         const R area = explosion_area(origin, radi);
 
@@ -339,9 +339,9 @@ void run(const P& origin,
                 corpses.at(i).clear();
         }
 
-        for (Actor* actor : game_time::actors)
+        for (Actor* actor : game_time::g_actors)
         {
-                const P& pos = actor->pos;
+                const P& pos = actor->m_pos;
 
                 if (actor->is_alive())
                 {
@@ -397,7 +397,7 @@ void run(const P& origin,
 
 void run_smoke_explosion_at(const P& origin, const int radi_change)
 {
-        const int radi = expl_std_radi + radi_change;
+        const int radi = g_expl_std_radi + radi_change;
 
         const R area = explosion_area(origin, radi);
 

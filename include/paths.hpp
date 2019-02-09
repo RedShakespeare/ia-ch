@@ -12,26 +12,26 @@
 namespace paths
 {
 
-extern const std::string gfx_dir;
+extern const std::string g_gfx_dir;
 
-extern const std::string fonts_dir;
-extern const std::string tiles_dir;
-extern const std::string images_dir;
+extern const std::string g_fonts_dir;
+extern const std::string g_tiles_dir;
+extern const std::string g_images_dir;
 
-extern const std::string logo_img_path;
-extern const std::string skull_img_path;
+extern const std::string g_logo_img_path;
+extern const std::string g_skull_img_path;
 
-extern const std::string audio_dir;
+extern const std::string g_audio_dir;
 
-extern const std::string data_dir;
+extern const std::string g_data_dir;
 
-extern const std::string user_dir;
+extern const std::string g_user_dir;
 
-extern const std::string save_file_path;
+extern const std::string g_save_file_path;
 
-extern const std::string config_file_path;
+extern const std::string g_config_file_path;
 
-extern const std::string highscores_file_path;
+extern const std::string g_highscores_file_path;
 
 } // paths
 

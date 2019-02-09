@@ -9,25 +9,25 @@
 namespace paths
 {
 
-const std::string gfx_dir = "gfx";
+const std::string g_gfx_dir = "gfx";
 
-const std::string fonts_dir = gfx_dir + "/fonts";
-const std::string tiles_dir = gfx_dir + "/tiles/24x24";
-const std::string images_dir = gfx_dir + "/images";
+const std::string g_fonts_dir = g_gfx_dir + "/fonts";
+const std::string g_tiles_dir = g_gfx_dir + "/tiles/24x24";
+const std::string g_images_dir = g_gfx_dir + "/images";
 
-const std::string logo_img_path = images_dir + "/main_menu_logo.png";
-const std::string skull_img_path = images_dir + "/skull.png";
+const std::string g_logo_img_path = g_images_dir + "/main_menu_logo.png";
+const std::string g_skull_img_path = g_images_dir + "/skull.png";
 
-const std::string audio_dir = "audio";
+const std::string g_audio_dir = "audio";
 
-const std::string data_dir = "data";
+const std::string g_data_dir = "data";
 
-const std::string user_dir = "user";
+const std::string g_user_dir = "user";
 
-const std::string save_file_path = user_dir + "/save";
+const std::string g_save_file_path = g_user_dir + "/save";
 
-const std::string config_file_path = user_dir + "/config";
+const std::string g_config_file_path = g_user_dir + "/config";
 
-const std::string highscores_file_path = user_dir + "/highscores";
+const std::string g_highscores_file_path = g_user_dir + "/highscores";
 
 } // paths

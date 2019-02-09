@@ -30,14 +30,15 @@
 // -----------------------------------------------------------------------------
 // Private
 // -----------------------------------------------------------------------------
-static const int player_max_clvl = 12;
+static const int s_player_max_clvl = 12;
 
-static int clvl_ = 0;
-static int xp_pct_ = 0;
-static int xp_accum_ = 0;
-static TimeData start_time_;
+static int s_clvl = 0;
+static int s_xp_pct = 0;
+static int s_xp_accum = 0;
+static TimeData s_start_time;
 
-static std::vector<HistoryEvent> history_events_;
+static std::vector<HistoryEvent> s_history_events;
+
 
 // -----------------------------------------------------------------------------
 // game
@@ -47,28 +48,28 @@ namespace game
 
 void init()
 {
-        clvl_ = 1;
-        xp_pct_ = 0;
-        xp_accum_ = 0;
+        s_clvl = 1;
+        s_xp_pct = 0;
+        s_xp_accum = 0;
 
-        history_events_.clear();
+        s_history_events.clear();
 }
 
 void save()
 {
-        saving::put_int(clvl_);
-        saving::put_int(xp_pct_);
-        saving::put_int(xp_accum_);
-        saving::put_int(start_time_.year);
-        saving::put_int(start_time_.month);
-        saving::put_int(start_time_.day);
-        saving::put_int(start_time_.hour);
-        saving::put_int(start_time_.minute);
-        saving::put_int(start_time_.second);
+        saving::put_int(s_clvl);
+        saving::put_int(s_xp_pct);
+        saving::put_int(s_xp_accum);
+        saving::put_int(s_start_time.year);
+        saving::put_int(s_start_time.month);
+        saving::put_int(s_start_time.day);
+        saving::put_int(s_start_time.hour);
+        saving::put_int(s_start_time.minute);
+        saving::put_int(s_start_time.second);
 
-        saving::put_int(history_events_.size());
+        saving::put_int(s_history_events.size());
 
-        for (const HistoryEvent& event : history_events_)
+        for (const HistoryEvent& event : s_history_events)
         {
                 saving::put_str(event.msg);
                 saving::put_int(event.turn);
@@ -77,15 +78,15 @@ void save()
 
 void load()
 {
-        clvl_ = saving::get_int();
-        xp_pct_ = saving::get_int();
-        xp_accum_ = saving::get_int();
-        start_time_.year = saving::get_int();
-        start_time_.month = saving::get_int();
-        start_time_.day = saving::get_int();
-        start_time_.hour = saving::get_int();
-        start_time_.minute = saving::get_int();
-        start_time_.second = saving::get_int();
+        s_clvl = saving::get_int();
+        s_xp_pct = saving::get_int();
+        s_xp_accum = saving::get_int();
+        s_start_time.year = saving::get_int();
+        s_start_time.month = saving::get_int();
+        s_start_time.day = saving::get_int();
+        s_start_time.hour = saving::get_int();
+        s_start_time.minute = saving::get_int();
+        s_start_time.second = saving::get_int();
 
         const int nr_events = saving::get_int();
 
@@ -94,33 +95,33 @@ void load()
                 const std::string msg = saving::get_str();
                 const int turn = saving::get_int();
 
-                history_events_.push_back({msg, turn});
+                s_history_events.push_back({msg, turn});
         }
 }
 
 int clvl()
 {
-        return clvl_;
+        return s_clvl;
 }
 
 int xp_pct()
 {
-        return xp_pct_;
+        return s_xp_pct;
 }
 
 int xp_accumulated()
 {
-        return xp_accum_;
+        return s_xp_accum;
 }
 
 TimeData start_time()
 {
-        return start_time_;
+        return s_start_time;
 }
 
 void incr_player_xp(const int xp_gained, const Verbosity verbosity)
 {
-        if (!map::player->is_alive())
+        if (!map::g_player->is_alive())
         {
                 return;
         }
@@ -130,20 +131,20 @@ void incr_player_xp(const int xp_gained, const Verbosity verbosity)
                 msg_log::add("(+" + std::to_string(xp_gained) + "% XP)");
         }
 
-        xp_pct_ += xp_gained;
+        s_xp_pct += xp_gained;
 
-        xp_accum_ += xp_gained;
+        s_xp_accum += xp_gained;
 
-        while (xp_pct_ >= 100)
+        while (s_xp_pct >= 100)
         {
-                if (clvl_ < player_max_clvl)
+                if (s_clvl < s_player_max_clvl)
                 {
-                        ++clvl_;
+                        ++s_clvl;
 
                         msg_log::add(
                                 std::string(
                                         "Welcome to level " +
-                                        std::to_string(clvl_) +
+                                        std::to_string(s_clvl) +
                                         "!"),
                                 colors::green(),
                                 false,
@@ -154,11 +155,11 @@ void incr_player_xp(const int xp_gained, const Verbosity verbosity)
                         {
                                 const int hp_gained = 1;
 
-                                map::player->change_max_hp(
+                                map::g_player->change_max_hp(
                                         hp_gained,
                                         Verbosity::silent);
 
-                                map::player->restore_hp(
+                                map::g_player->restore_hp(
                                         hp_gained,
                                         false,
                                         Verbosity::silent);
@@ -167,22 +168,22 @@ void incr_player_xp(const int xp_gained, const Verbosity verbosity)
                         {
                                 const int spi_gained = 1;
 
-                                map::player->change_max_sp(
+                                map::g_player->change_max_sp(
                                         spi_gained,
                                         Verbosity::silent);
 
-                                map::player->restore_sp(
+                                map::g_player->restore_sp(
                                         spi_gained,
                                         false,
                                         Verbosity::silent);
                         }
 
-                        player_bon::on_player_gained_lvl(clvl_);
+                        player_bon::on_player_gained_lvl(s_clvl);
 
                         states::push(std::make_unique<PickTraitState>());
                 }
 
-                xp_pct_ -= 100;
+                s_xp_pct -= 100;
         }
 }
 
@@ -190,17 +191,17 @@ void decr_player_xp(int xp_lost)
 {
         // XP should never be reduced below 0% (if this should happen, it is
         // considered to be a bug)
-        ASSERT(xp_lost <= xp_pct_);
+        ASSERT(xp_lost <= s_xp_pct);
 
         // If XP lost is greater than the current XP, be nice in release mode
-        xp_lost = std::min(xp_lost, xp_pct_);
+        xp_lost = std::min(xp_lost, s_xp_pct);
 
-        xp_pct_ -= xp_lost;
+        s_xp_pct -= xp_lost;
 }
 
 void incr_clvl()
 {
-        ++clvl_;
+        ++s_clvl;
 }
 
 void win_game()
@@ -286,7 +287,7 @@ void win_game()
 
 void on_mon_seen(Actor& actor)
 {
-        auto& d = *actor.data;
+        auto& d = *actor.m_data;
 
         if (!d.has_player_seen)
         {
@@ -332,20 +333,22 @@ void on_mon_seen(Actor& actor)
 
                         // We also cause some shock the first time
                         double shock_value =
-                                map::player->shock_lvl_to_value(
+                                map::g_player->shock_lvl_to_value(
                                         d.mon_shock_lvl);
 
                         // Dampen the progression a bit
                         shock_value = pow(shock_value, 0.9);
 
-                        map::player->incr_shock(shock_value, ShockSrc::see_mon);
+                        map::g_player->incr_shock(
+                                shock_value,
+                                ShockSrc::see_mon);
                 }
         }
 }
 
 void on_mon_killed(Actor& actor)
 {
-        ActorData& d = *actor.data;
+        ActorData& d = *actor.m_data;
 
         d.nr_kills += 1;
 
@@ -354,7 +357,8 @@ void on_mon_killed(Actor& actor)
         if (d.hp >= min_hp_for_sadism_bon &&
             insanity::has_sympt(InsSymptId::sadism))
         {
-                map::player->shock_ = std::max(0.0, map::player->shock_ - 3.0);
+                map::g_player->m_shock =
+                        std::max(0.0, map::g_player->m_shock - 3.0);
         }
 
         if (d.is_unique)
@@ -369,12 +373,12 @@ void add_history_event(const std::string msg)
 {
         const int turn_nr = game_time::turn_nr();
 
-        history_events_.push_back({msg, turn_nr});
+        s_history_events.push_back({msg, turn_nr});
 }
 
 const std::vector<HistoryEvent>& history()
 {
-        return history_events_;
+        return s_history_events;
 }
 
 } // game
@@ -389,17 +393,17 @@ StateId GameState::id()
 
 void GameState::on_start()
 {
-        if (entry_mode_ == GameEntryMode::new_game)
+        if (m_entry_mode == GameEntryMode::new_game)
         {
                 // Character creation may have affected maximum hp and spi
                 // (either positively or negatively), so here we need to (re)set
                 // the current hp and spi to the maximum values
-                map::player->hp = actor::max_hp(*map::player);
-                map::player->sp = actor::max_sp(*map::player);
+                map::g_player->m_hp = actor::max_hp(*map::g_player);
+                map::g_player->m_sp = actor::max_sp(*map::g_player);
 
-                map::player->data->ability_values.reset();
+                map::g_player->m_data->ability_values.reset();
 
-                actor_items::make_for_actor(*map::player);
+                actor_items::make_for_actor(*map::g_player);
 
                 game::add_history_event("Started journey");
 
@@ -429,7 +433,7 @@ void GameState::on_start()
         }
 
         if (config::is_intro_lvl_skipped() ||
-            (entry_mode_ == GameEntryMode::load_game))
+            (m_entry_mode == GameEntryMode::load_game))
         {
                 map_travel::go_to_nxt();
         }
@@ -446,13 +450,13 @@ void GameState::on_start()
 
                 map::update_vision();
 
-                if (map_control::controller)
+                if (map_control::g_controller)
                 {
-                        map_control::controller->on_start();
+                        map_control::g_controller->on_start();
                 }
         }
 
-        start_time_ = current_time();
+        s_start_time = current_time();
 }
 
 void GameState::draw()
@@ -460,11 +464,11 @@ void GameState::draw()
         if (states::is_current_state(*this))
         {
 #ifndef NDEBUG
-                if (!init::is_demo_mapgen)
+                if (!init::g_is_demo_mapgen)
                 {
 #endif // NDEBUG
 
-                        viewport::focus_on(map::player->pos);
+                        viewport::focus_on(map::g_player->m_pos);
 
 #ifndef NDEBUG
                 }
@@ -488,9 +492,9 @@ void GameState::update()
                 // Let the current actor act
                 Actor* actor = game_time::current_actor();
 
-                const bool allow_act = actor->properties.allow_act();
+                const bool allow_act = actor->m_properties.allow_act();
 
-                const bool is_gibbed = actor->state == ActorState::destroyed;
+                const bool is_gibbed = actor->m_state == ActorState::destroyed;
 
                 if (allow_act && !is_gibbed)
                 {
@@ -503,7 +507,7 @@ void GameState::update()
                 {
                         if (actor->is_player())
                         {
-                                sdl_base::sleep(ms_delay_player_unable_act);
+                                sdl_base::sleep(g_ms_delay_player_unable_act);
                         }
 
                         game_time::tick();
@@ -512,9 +516,9 @@ void GameState::update()
                 // NOTE: This state may have been popped at this point
 
                 // We have quit the current game, or the player is dead?
-                if (!map::player ||
+                if (!map::g_player ||
                     !states::contains_state(StateId::game) ||
-                    !map::player->is_alive())
+                    !map::g_player->is_alive())
                 {
                         break;
                 }
@@ -529,7 +533,7 @@ void GameState::update()
         }
 
         // Player is dead?
-        if (map::player && !map::player->is_alive())
+        if (map::g_player && !map::g_player->is_alive())
         {
                 TRACE << "Player died" << std::endl;
 

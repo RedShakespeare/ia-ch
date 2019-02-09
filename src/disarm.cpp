@@ -23,14 +23,14 @@ namespace disarm
 
 void player_disarm()
 {
-        if (!map::player->properties.allow_see())
+        if (!map::g_player->m_properties.allow_see())
         {
                 msg_log::add("Not while blind.");
 
                 return;
         }
 
-        if (map::player->properties.has(PropId::entangled))
+        if (map::g_player->m_properties.has(PropId::entangled))
         {
                 msg_log::add("Not while entangled.");
 
@@ -38,7 +38,7 @@ void player_disarm()
         }
 
         msg_log::add(
-                "Which direction? " + common_text::cancel_hint,
+                "Which direction? " + common_text::g_cancel_hint,
                 colors::light_white());
 
         const auto input_dir = query::dir(AllowCenter::yes);
@@ -52,16 +52,16 @@ void player_disarm()
                 return;
         }
 
-        const auto pos = map::player->pos + dir_utils::offset(input_dir);
+        const auto pos = map::g_player->m_pos + dir_utils::offset(input_dir);
 
-        if (!map::cells.at(pos).is_seen_by_player)
+        if (!map::g_cells.at(pos).is_seen_by_player)
         {
                 msg_log::add("I cannot see there.");
 
                 return;
         }
 
-        auto* const feature = map::cells.at(pos).rigid;
+        auto* const feature = map::g_cells.at(pos).rigid;
 
         Trap* trap = nullptr;
 
@@ -72,7 +72,7 @@ void player_disarm()
 
         if (!trap || trap->is_hidden())
         {
-                msg_log::add(common_text::disarm_no_trap);
+                msg_log::add(common_text::g_disarm_no_trap);
 
                 states::draw();
 
@@ -85,7 +85,7 @@ void player_disarm()
 
         if (actor_on_trap && !actor_on_trap->is_player())
         {
-                if (map::player->can_see_actor(*actor_on_trap))
+                if (map::g_player->can_see_actor(*actor_on_trap))
                 {
                         msg_log::add("It's blocked.");
                 }

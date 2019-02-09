@@ -33,7 +33,8 @@ namespace pact
 // -----------------------------------------------------------------------------
 // Private
 // -----------------------------------------------------------------------------
-static std::vector<std::unique_ptr<Toll>> waiting_tolls;
+static std::vector<std::unique_ptr<Toll>> s_waiting_tolls;
+
 
 static std::unique_ptr<Benefit> make_benefit(BenefitId id)
 {
@@ -224,14 +225,14 @@ void init()
 
 void cleanup()
 {
-        waiting_tolls.resize(0);
+        s_waiting_tolls.resize(0);
 }
 
 void save()
 {
-        saving::put_int(waiting_tolls.size());
+        saving::put_int(s_waiting_tolls.size());
 
-        for (const auto& toll : waiting_tolls)
+        for (const auto& toll : s_waiting_tolls)
         {
                 saving::put_int((int)toll->id());
         }
@@ -247,7 +248,7 @@ void load()
 
                 auto toll = make_toll((TollId)id);
 
-                waiting_tolls.push_back(std::move(toll));
+                s_waiting_tolls.push_back(std::move(toll));
         }
 }
 
@@ -377,9 +378,10 @@ void offer_pact_to_player()
                 {
                         auto it = std::begin(toll_bucket) + toll_idx;
 
-                        waiting_tolls.push_back(std::move(*it));
+                        s_waiting_tolls.push_back(std::move(*it));
 
-                        msg_log::add("Whispering voice: \"And so it is done!\"");
+                        msg_log::add(
+                                "Whispering voice: \"And so it is done!\"");
 
                         audio::play(SfxId::thunder);
 
@@ -387,14 +389,14 @@ void offer_pact_to_player()
                 }
         }
 
-        map::player->incr_shock(ShockLvl::terrifying, ShockSrc::misc);
+        map::g_player->incr_shock(ShockLvl::terrifying, ShockSrc::misc);
 
         return;
 }
 
 void on_player_reached_new_dlvl()
 {
-        for (auto& toll : waiting_tolls)
+        for (auto& toll : s_waiting_tolls)
         {
                 toll->on_player_reached_new_dlvl();
         }
@@ -402,8 +404,8 @@ void on_player_reached_new_dlvl()
 
 void on_player_turn()
 {
-        for (auto it = std::begin(waiting_tolls);
-             it != std::end(waiting_tolls);
+        for (auto it = std::begin(s_waiting_tolls);
+             it != std::end(s_waiting_tolls);
              /* No incremenet */)
         {
                 const auto& toll = *it;
@@ -412,7 +414,7 @@ void on_player_turn()
 
                 if (is_done == TollDone::yes)
                 {
-                        waiting_tolls.erase(it);
+                        s_waiting_tolls.erase(it);
                 }
                 else
                 {
@@ -425,33 +427,33 @@ void on_player_turn()
 // Toll
 // -----------------------------------------------------------------------------
 Toll::Toll(TollId id) :
-        id_(id),
-        dlvl_countdown_(rnd::range(1, 3)),
-        turn_countdown_(rnd::range(100, 300))
+        m_id(id),
+        m_dlvl_countdown(rnd::range(1, 3)),
+        m_turn_countdown(rnd::range(100, 300))
 {
 }
 
 void Toll::on_player_reached_new_dlvl()
 {
-        if (dlvl_countdown_ > 0)
+        if (m_dlvl_countdown > 0)
         {
-                --dlvl_countdown_;
+                --m_dlvl_countdown;
         }
 }
 
 TollDone Toll::on_player_turn()
 {
-        if (dlvl_countdown_ > 0)
+        if (m_dlvl_countdown > 0)
         {
                 return TollDone::no;
         }
 
-        if (turn_countdown_ > 0)
+        if (m_turn_countdown > 0)
         {
-                --turn_countdown_;
+                --m_turn_countdown;
         }
 
-        if ((turn_countdown_ <= 0) && is_allowed_to_apply_now())
+        if ((m_turn_countdown <= 0) && is_allowed_to_apply_now())
         {
                 std::string msg = "The time has come to pay your toll. ";
 
@@ -478,20 +480,20 @@ TollDone Toll::on_player_turn()
 // -----------------------------------------------------------------------------
 UpgradeSpell::UpgradeSpell(BenefitId id) :
         Benefit(id),
-        spell_id_(SpellId::END)
+        m_spell_id(SpellId::END)
 {
         const auto bucket = find_spells_can_upgrade();
 
         if (!bucket.empty())
         {
-                spell_id_ = rnd::element(bucket);
+                m_spell_id = rnd::element(bucket);
         }
 }
 
 std::string UpgradeSpell::offer_msg() const
 {
         const std::unique_ptr<Spell> spell(
-                spell_factory::make_spell_from_id(spell_id_));
+                spell_factory::make_spell_from_id(m_spell_id));
 
         const auto name = text_format::first_to_upper(spell->name());
 
@@ -504,12 +506,12 @@ std::string UpgradeSpell::offer_msg() const
 
 bool UpgradeSpell::is_allowed_to_offer_now() const
 {
-        return spell_id_ != SpellId::END;
+        return m_spell_id != SpellId::END;
 }
 
 void UpgradeSpell::run_effect()
 {
-        player_spells::incr_spell_skill(spell_id_);
+        player_spells::incr_spell_skill(m_spell_id);
 }
 
 std::vector<SpellId> UpgradeSpell::find_spells_can_upgrade() const
@@ -553,7 +555,7 @@ bool GainHp::is_allowed_to_offer_now() const
 
 void GainHp::run_effect()
 {
-        map::player->change_max_hp(2);
+        map::g_player->change_max_hp(2);
 }
 
 // -----------------------------------------------------------------------------
@@ -577,7 +579,7 @@ bool GainSp::is_allowed_to_offer_now() const
 
 void GainSp::run_effect()
 {
-        map::player->change_max_sp(2);
+        map::g_player->change_max_sp(2);
 }
 
 // -----------------------------------------------------------------------------
@@ -623,12 +625,12 @@ std::string RemoveInsanity::offer_msg() const
 
 bool RemoveInsanity::is_allowed_to_offer_now() const
 {
-        return map::player->ins_ >= 25;
+        return map::g_player->m_ins >= 25;
 }
 
 void RemoveInsanity::run_effect()
 {
-        map::player->ins_ -= 25;
+        map::g_player->m_ins -= 25;
 }
 
 // -----------------------------------------------------------------------------
@@ -636,13 +638,13 @@ void RemoveInsanity::run_effect()
 // -----------------------------------------------------------------------------
 GainItem::GainItem(BenefitId id) :
         Benefit(id),
-        item_id_(ItemId::END)
+        m_item_id(ItemId::END)
 {
         const auto item_ids = find_allowed_item_ids();
 
         if (!item_ids.empty())
         {
-                item_id_ = rnd::element(item_ids);
+                m_item_id = rnd::element(item_ids);
         }
 }
 
@@ -653,18 +655,18 @@ std::string GainItem::offer_msg() const
 
 bool GainItem::is_allowed_to_offer_now() const
 {
-        return item_id_ != ItemId::END;
+        return m_item_id != ItemId::END;
 }
 
 void GainItem::run_effect()
 {
-        auto* const item = item_factory::make(item_id_);
+        auto* const item = item_factory::make(m_item_id);
 
         const std::string name_a = item->name(ItemRefType::a);
 
         msg_log::add("I have received " + name_a + ".");
 
-        map::player->inv.put_in_backpack(item);
+        map::g_player->m_inv.put_in_backpack(item);
 }
 
 std::vector<ItemId> GainItem::find_allowed_item_ids() const
@@ -673,7 +675,7 @@ std::vector<ItemId> GainItem::find_allowed_item_ids() const
 
         for (size_t i = 0; i < (size_t)ItemId::END; ++i)
         {
-                const auto& d = item_data::data[i];
+                const auto& d = item_data::g_data[i];
 
                 if (d.allow_spawn && d.value >= ItemValue::supreme_treasure)
                 {
@@ -726,14 +728,14 @@ std::string Healed::offer_msg() const
 
 bool Healed::is_allowed_to_offer_now() const
 {
-        const auto& player = *map::player;
+        const auto& player = *map::g_player;
 
-        if (player.properties.has(PropId::poisoned) && (player.hp <= 6))
+        if (player.m_properties.has(PropId::poisoned) && (player.m_hp <= 6))
         {
                 return true;
         }
 
-        const auto* const prop = player.properties.prop(PropId::wound);
+        const auto* const prop = player.m_properties.prop(PropId::wound);
 
         if (prop)
         {
@@ -763,10 +765,10 @@ void Healed::run_effect()
 
         for (PropId prop_id : props_can_heal)
         {
-                map::player->properties.end_prop(prop_id);
+                map::g_player->m_properties.end_prop(prop_id);
         }
 
-        map::player->restore_hp(
+        map::g_player->restore_hp(
                 999,    // HP restored
                 false); // Not allowed above max
 }
@@ -783,7 +785,7 @@ Blessed::Blessed(BenefitId id) :
 std::string Blessed::offer_msg() const
 {
         std::string blessed_descr =
-                property_data::data[(size_t)PropId::blessed]
+                property_data::g_data[(size_t)PropId::blessed]
                 .descr;
 
         blessed_descr = text_format::first_to_lower(blessed_descr);
@@ -796,7 +798,7 @@ std::string Blessed::offer_msg() const
 
 bool Blessed::is_allowed_to_offer_now() const
 {
-        return !map::player->properties.has(PropId::blessed);
+        return !map::g_player->m_properties.has(PropId::blessed);
 }
 
 void Blessed::run_effect()
@@ -805,7 +807,7 @@ void Blessed::run_effect()
 
         blessed->set_indefinite();
 
-        map::player->properties.apply(blessed);
+        map::g_player->m_properties.apply(blessed);
 }
 
 // -----------------------------------------------------------------------------
@@ -826,7 +828,7 @@ std::string Hasted::offer_msg() const
 
 bool Hasted::is_allowed_to_offer_now() const
 {
-        return !map::player->properties.has(PropId::hasted);
+        return !map::g_player->m_properties.has(PropId::hasted);
 }
 
 void Hasted::run_effect()
@@ -835,7 +837,7 @@ void Hasted::run_effect()
 
         hasted->set_indefinite();
 
-        map::player->properties.apply(hasted);
+        map::g_player->m_properties.apply(hasted);
 }
 
 // -----------------------------------------------------------------------------
@@ -858,7 +860,7 @@ std::string HpReduced::offer_msg() const
 
 void HpReduced::run_effect()
 {
-        map::player->change_max_hp(-2);
+        map::g_player->change_max_hp(-2);
 }
 
 // -----------------------------------------------------------------------------
@@ -882,7 +884,7 @@ std::string SpReduced::offer_msg() const
 
 void SpReduced::run_effect()
 {
-        map::player->change_max_sp(-2);
+        map::g_player->change_max_sp(-2);
 }
 
 // -----------------------------------------------------------------------------
@@ -957,7 +959,7 @@ Slowed::Slowed(TollId id) :
 
 bool Slowed::is_allowed_to_offer_now() const
 {
-        const auto prop = map::player->properties.prop(PropId::slowed);
+        const auto prop = map::g_player->m_properties.prop(PropId::slowed);
 
         return !prop || (prop->duration_mode() != PropDurationMode::indefinite);
 }
@@ -980,9 +982,9 @@ void Slowed::run_effect()
 
         slowed->set_indefinite();
 
-        map::player->properties.apply(slowed);
+        map::g_player->m_properties.apply(slowed);
 
-        if (map::player->properties.has(PropId::r_slow))
+        if (map::g_player->m_properties.has(PropId::r_slow))
         {
                 msg_log::add("Whispering voice: \"How remarkable!\"");
         }
@@ -999,7 +1001,7 @@ Blind::Blind(TollId id) :
 
 bool Blind::is_allowed_to_offer_now() const
 {
-        const auto prop = map::player->properties.prop(PropId::blind);
+        const auto prop = map::g_player->m_properties.prop(PropId::blind);
 
         return !prop || (prop->duration_mode() != PropDurationMode::indefinite);
 }
@@ -1020,7 +1022,7 @@ void Blind::run_effect()
 
         blind->set_indefinite();
 
-        map::player->properties.apply(blind);
+        map::g_player->m_properties.apply(blind);
 }
 
 // -----------------------------------------------------------------------------
@@ -1034,7 +1036,7 @@ Deaf::Deaf(TollId id) :
 
 bool Deaf::is_allowed_to_offer_now() const
 {
-        const auto prop = map::player->properties.prop(PropId::deaf);
+        const auto prop = map::g_player->m_properties.prop(PropId::deaf);
 
         return !prop || (prop->duration_mode() != PropDurationMode::indefinite);
 }
@@ -1055,7 +1057,7 @@ void Deaf::run_effect()
 
         deaf->set_indefinite();
 
-        map::player->properties.apply(deaf);
+        map::g_player->m_properties.apply(deaf);
 }
 
 // -----------------------------------------------------------------------------
@@ -1069,7 +1071,7 @@ Cursed::Cursed(TollId id) :
 
 bool Cursed::is_allowed_to_offer_now() const
 {
-        const auto prop = map::player->properties.prop(PropId::cursed);
+        const auto prop = map::g_player->m_properties.prop(PropId::cursed);
 
         return !prop || (prop->duration_mode() != PropDurationMode::indefinite);
 }
@@ -1082,7 +1084,7 @@ std::vector<BenefitId> Cursed::benefits_not_allowed_with() const
 std::string Cursed::offer_msg() const
 {
         std::string cursed_descr =
-                property_data::data[(size_t)PropId::cursed]
+                property_data::g_data[(size_t)PropId::cursed]
                 .descr;
 
         cursed_descr = text_format::first_to_lower(cursed_descr);
@@ -1099,7 +1101,7 @@ void Cursed::run_effect()
 
         cursed->set_indefinite();
 
-        map::player->properties.apply(cursed);
+        map::g_player->m_properties.apply(cursed);
 }
 
 } // pact

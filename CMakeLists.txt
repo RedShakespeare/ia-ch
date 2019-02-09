@@ -291,9 +291,6 @@ add_executable(ia-test ${TEST_SRC})
 set_target_properties(ia-test PROPERTIES OUTPUT_NAME ia-test)
 add_test(IA-test ia-test)
 
-# TODO: Enable this flag:
-# -Wfloat-conversion
-
 # GNU gcc and Clang specific compiler flags
 if(CMAKE_COMPILER_IS_GNUCXX OR(CMAKE_C_COMPILER_ID MATCHES "Clang") OR(CMAKE_CXX_COMPILER_ID MATCHES "Clang"))
 
@@ -309,6 +306,9 @@ if(CMAKE_COMPILER_IS_GNUCXX OR(CMAKE_C_COMPILER_ID MATCHES "Clang") OR(CMAKE_CXX
                 -Wunused
                 -Wuninitialized
                 -Wmaybe-uninitialized
+                # TODO: Enable flag: -Weffc++
+                # TODO: Enable flag: -Wfloat-conversion
+                # TODO: Enable flag: -Wshadow
                 )
 
         set(DEBUG_COMPILE_FLAGS

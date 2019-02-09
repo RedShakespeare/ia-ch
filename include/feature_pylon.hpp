@@ -13,14 +13,14 @@
 
 enum class PylonId
 {
-    burning,
-    slow,
-    terrify,
-    invis,
-    knockback,
-    teleport,
-    END,
-    any
+        burning,
+        slow,
+        terrify,
+        invis,
+        knockback,
+        teleport,
+        END,
+        any
 };
 
 class PylonImpl;
@@ -31,45 +31,45 @@ class PylonImpl;
 class Pylon: public Rigid
 {
 public:
-    Pylon(const P& p, PylonId id);
+        Pylon(const P& p, PylonId id);
 
-    Pylon() = delete;
+        Pylon() = delete;
 
-    ~Pylon() {}
+        ~Pylon() {}
 
-    FeatureId id() const override
-    {
-        return FeatureId::pylon;
-    }
+        FeatureId id() const override
+        {
+                return FeatureId::pylon;
+        }
 
-    std::string name(const Article article) const override;
+        std::string name(const Article article) const override;
 
-    void on_hit(const int dmg,
-                const DmgType dmg_type,
-                const DmgMethod dmg_method,
-                Actor* const actor) override;
+        void on_hit(const int dmg,
+                    const DmgType dmg_type,
+                    const DmgMethod dmg_method,
+                    Actor* const actor) override;
 
-    void on_lever_pulled(Lever* const lever) override;
+        void on_lever_pulled(Lever* const lever) override;
 
-    void add_light_hook(Array2<bool>& light) const override;
+        void add_light_hook(Array2<bool>& light) const override;
 
-    int nr_turns_active() const
-    {
-        return nr_turns_active_;
-    }
+        int nr_turns_active() const
+        {
+                return m_nr_turns_active;
+        }
 
 private:
-    PylonImpl* make_pylon_impl_from_id(const PylonId id);
+        PylonImpl* make_pylon_impl_from_id(const PylonId id);
 
-    virtual void on_new_turn_hook() override;
+        virtual void on_new_turn_hook() override;
 
-    Color color_default() const override;
+        Color color_default() const override;
 
-    std::unique_ptr<PylonImpl> pylon_impl_;
+        std::unique_ptr<PylonImpl> m_pylon_impl;
 
-    bool is_activated_;
+        bool m_is_activated;
 
-    int nr_turns_active_;
+        int m_nr_turns_active;
 };
 
 // -----------------------------------------------------------------------------
@@ -78,76 +78,76 @@ private:
 class PylonImpl
 {
 public:
-    PylonImpl(P p, Pylon* pylon) :
-        pos_(p),
-        pylon_(pylon) {}
+        PylonImpl(P p, Pylon* pylon) :
+                m_pos(p),
+                m_pylon(pylon) {}
 
-    virtual void on_new_turn_activated() = 0;
+        virtual void on_new_turn_activated() = 0;
 
 protected:
-    // void emit_trigger_snd() const;
+        // void emit_trigger_snd() const;
 
-    std::vector<Actor*> living_actors_reached() const;
+        std::vector<Actor*> living_actors_reached() const;
 
-    Actor* rnd_reached_living_actor() const;
+        Actor* rnd_reached_living_actor() const;
 
-    P pos_;
+        P m_pos;
 
-    Pylon* const pylon_;
+        Pylon* const m_pylon;
 };
 
 class PylonBurning: public PylonImpl
 {
 public:
-    PylonBurning(P p, Pylon* pylon) :
-        PylonImpl(p, pylon) {}
+        PylonBurning(P p, Pylon* pylon) :
+                PylonImpl(p, pylon) {}
 
-    void on_new_turn_activated() override;
+        void on_new_turn_activated() override;
 };
 
 class PylonTerrify: public PylonImpl
 {
 public:
-    PylonTerrify(P p, Pylon* pylon) :
-        PylonImpl(p, pylon) {}
+        PylonTerrify(P p, Pylon* pylon) :
+                PylonImpl(p, pylon) {}
 
-    void on_new_turn_activated() override;
+        void on_new_turn_activated() override;
 };
 
 class PylonInvis: public PylonImpl
 {
 public:
-    PylonInvis(P p, Pylon* pylon) :
-        PylonImpl(p, pylon) {}
+        PylonInvis(P p, Pylon* pylon) :
+                PylonImpl(p, pylon) {}
 
-    void on_new_turn_activated() override;
+        void on_new_turn_activated() override;
 };
 
 class PylonSlow: public PylonImpl
 {
 public:
-    PylonSlow(P p, Pylon* pylon) :
-        PylonImpl(p, pylon) {}
+        PylonSlow(P p, Pylon* pylon) :
+                PylonImpl(p, pylon) {}
 
-    void on_new_turn_activated() override;
+        void on_new_turn_activated() override;
 };
 
 class PylonKnockback: public PylonImpl
 {
 public:
-    PylonKnockback(P p, Pylon* pylon) :
-        PylonImpl(p, pylon) {}
+        PylonKnockback(P p, Pylon* pylon) :
+                PylonImpl(p, pylon) {}
 
-    void on_new_turn_activated() override;
+        void on_new_turn_activated() override;
 };
 
 class PylonTeleport: public PylonImpl
 {
 public:
-    PylonTeleport(P p, Pylon* pylon) :
-        PylonImpl(p, pylon) {}
+        PylonTeleport(P p, Pylon* pylon) :
+                PylonImpl(p, pylon) {}
 
-    void on_new_turn_activated() override;
+        void on_new_turn_activated() override;
 };
 
 #endif // FEATURE_PYLON_HPP

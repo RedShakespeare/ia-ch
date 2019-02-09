@@ -118,14 +118,14 @@ enum class MonGroupSize
         swarm
 };
 
-const std::unordered_map<std::string, MonGroupSize> str_to_group_size_map = {
+const std::unordered_map<std::string, MonGroupSize> g_str_to_group_size_map = {
         {"alone", MonGroupSize::alone},
         {"few", MonGroupSize::few},
         {"pack", MonGroupSize::pack},
         {"swarm", MonGroupSize::swarm}
 };
 
-const std::unordered_map<MonGroupSize, std::string> group_size_to_str_map = {
+const std::unordered_map<MonGroupSize, std::string> g_group_size_to_str_map = {
         {MonGroupSize::alone, "alone"},
         {MonGroupSize::few, "few"},
         {MonGroupSize::pack, "pack"},
@@ -190,13 +190,13 @@ enum class ActorSize
         giant
 };
 
-const std::unordered_map<std::string, ActorSize> str_to_actor_size_map = {
+const std::unordered_map<std::string, ActorSize> g_str_to_actor_size_map = {
         {"floor", ActorSize::floor},
         {"humanoid", ActorSize::humanoid},
         {"giant", ActorSize::giant}
 };
 
-const std::unordered_map<ActorSize, std::string> actor_size_to_str_map = {
+const std::unordered_map<ActorSize, std::string> g_actor_size_to_str_map = {
         {ActorSize::floor, "floor"},
         {ActorSize::humanoid, "humanoid"},
         {ActorSize::giant, "giant"}
@@ -215,7 +215,7 @@ enum class AiId
         END
 };
 
-const std::unordered_map<std::string, AiId> str_to_ai_id_map = {
+const std::unordered_map<std::string, AiId> g_str_to_ai_id_map = {
         {"looks", AiId::looks},
         {"avoids_blocking_friend", AiId::avoids_blocking_friend},
         {"attacks", AiId::attacks},
@@ -226,7 +226,7 @@ const std::unordered_map<std::string, AiId> str_to_ai_id_map = {
         {"moves_randomly_when_unaware", AiId::moves_randomly_when_unaware}
 };
 
-const std::unordered_map<AiId, std::string> ai_id_to_str_map = {
+const std::unordered_map<AiId, std::string> g_ai_id_to_str_map = {
         {AiId::looks, "looks"},
         {AiId::avoids_blocking_friend, "avoids_blocking_friend"},
         {AiId::attacks, "attacks"},
@@ -314,7 +314,7 @@ struct ActorData
 namespace actor_data
 {
 
-extern ActorData data[(size_t)ActorId::END];
+extern ActorData g_data[(size_t)ActorId::END];
 
 void init();
 

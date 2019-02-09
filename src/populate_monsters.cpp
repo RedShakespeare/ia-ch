@@ -25,15 +25,20 @@
 // -----------------------------------------------------------------------------
 // Private
 // -----------------------------------------------------------------------------
-enum class AllowSpawnUniqueMon {no ,yes};
+enum class AllowSpawnUniqueMon
+{
+        no,
+        yes
+};
 
-static const int min_dist_to_player = fov_radi_int + 4;
+static const int s_min_dist_to_player = g_fov_radi_int + 4;
+
 
 static int random_out_of_depth()
 {
         int nr_levels = 0;
 
-        if ((map::dlvl > 0) && rnd::one_in(14))
+        if ((map::g_dlvl > 0) && rnd::one_in(14))
         {
                 nr_levels = 3;
         }
@@ -50,19 +55,19 @@ static WeightedItems<ActorId> valid_auto_spawn_monsters(
         const int effective_dlvl =
                 constr_in_range(
                         1,
-                        map::dlvl + nr_lvls_out_of_depth,
-                        dlvl_last);
+                        map::g_dlvl + nr_lvls_out_of_depth,
+                        g_dlvl_last);
 
         // Get list of actors currently on the level to help avoid spawning
         // multiple unique monsters of the same id
         bool spawned_ids[(size_t)ActorId::END] = {};
 
-        for (const auto* const actor : game_time::actors)
+        for (const auto* const actor : game_time::g_actors)
         {
                 spawned_ids[(size_t)actor->id()] = true;
         }
 
-        for (const auto& d : actor_data::data)
+        for (const auto& d : actor_data::g_data)
         {
                 if (d.id == ActorId::player)
                 {
@@ -137,7 +142,7 @@ static bool make_random_group_for_room(
 
                 const auto id = id_bucket.items[i];
 
-                const ActorData& d = actor_data::data[(size_t)id];
+                const ActorData& d = actor_data::g_data[(size_t)id];
 
                 if (std::find(begin(d.native_rooms),
                               end(d.native_rooms),
@@ -221,7 +226,7 @@ void make_group_at(
         Array2<bool>* const blocked_out,
         const MonRoamingAllowed is_roaming_allowed)
 {
-        const ActorData& d = actor_data::data[(size_t)id];
+        const ActorData& d = actor_data::g_data[(size_t)id];
 
         int max_nr_in_group = 1;
 
@@ -275,7 +280,7 @@ void make_group_at(
 
                 Mon* const mon = static_cast<Mon*>(actor);
 
-                mon->is_roaming_allowed_ = is_roaming_allowed;
+                mon->m_is_roaming_allowed = is_roaming_allowed;
 
                 if (i == 0)
                 {
@@ -287,9 +292,9 @@ void make_group_at(
                         // placed (e.g. Ghouls allied to a player Ghoul, or
                         // other special cases). If not, we assign the origin
                         // monster as leader of this group.
-                        if (!mon->leader_)
+                        if (!mon->m_leader)
                         {
-                                mon->leader_ = origin_actor;
+                                mon->m_leader = origin_actor;
                         }
                 }
 
@@ -337,7 +342,7 @@ void spawn_for_repopulate_over_time()
 {
         TRACE_FUNC_BEGIN;
 
-        if (game_time::actors.size() >= max_nr_actors_on_map)
+        if (game_time::g_actors.size() >= g_max_nr_actors_on_map)
         {
                 return;
         }
@@ -347,23 +352,23 @@ void spawn_for_repopulate_over_time()
         map_parsers::BlocksWalking(ParseActors::yes)
                 .run(blocked, blocked.rect());
 
-        const P& player_pos = map::player->pos;
+        const P& player_pos = map::g_player->m_pos;
 
         const int x0 = std::max(
                 0,
-                player_pos.x - min_dist_to_player);
+                player_pos.x - s_min_dist_to_player);
 
         const int y0 = std::max(
                 0,
-                player_pos.y - min_dist_to_player);
+                player_pos.y - s_min_dist_to_player);
 
         const int x1 = std::min(
                 map::w() - 1,
-                player_pos.x + min_dist_to_player);
+                player_pos.x + s_min_dist_to_player);
 
         const int y1 = std::min(
                 map::h() - 1,
-                player_pos.y + min_dist_to_player);
+                player_pos.y + s_min_dist_to_player);
 
         for (int x = x0; x <= x1; ++x)
         {
@@ -404,7 +409,7 @@ void spawn_for_repopulate_over_time()
                 return;
         }
 
-        if (map::cells.at(origin).is_explored)
+        if (map::g_cells.at(origin).is_explored)
         {
                 const int nr_ood = random_out_of_depth();
 
@@ -432,7 +437,7 @@ void populate_std_lvl()
         map_parsers::BlocksWalking(ParseActors::yes)
                 .run(blocked, blocked.rect());
 
-        const P& player_p = map::player->pos;
+        const P& player_p = map::g_player->m_pos;
 
         {
                 // Checking which cells projectiles can travel through, as a
@@ -451,7 +456,7 @@ void populate_std_lvl()
                 {
                         const int v = flood.at(i);
 
-                        if ((v > 0) && (v < min_dist_to_player))
+                        if ((v > 0) && (v < s_min_dist_to_player))
                         {
                                 blocked.at(i) = true;
                         }
@@ -461,10 +466,10 @@ void populate_std_lvl()
         blocked.at(player_p) = true;
 
         // First, attempt to populate all non-plain standard rooms
-        for (Room* const room : map::room_list)
+        for (Room* const room : map::g_room_list)
         {
-                if ((room->type_ == RoomType::plain) ||
-                    (room->type_ >= RoomType::END_OF_STD_ROOMS))
+                if ((room->m_type == RoomType::plain) ||
+                    (room->m_type >= RoomType::END_OF_STD_ROOMS))
                 {
                         continue;
                 }
@@ -472,8 +477,8 @@ void populate_std_lvl()
                 // TODO: This is not a good method to calculate the
                 // number of room cells (the room may be irregularly
                 // shaped), parse the room map instead
-                const int room_w = room->r_.p1.x - room->r_.p0.x + 1;
-                const int room_h = room->r_.p1.y - room->r_.p0.y + 1;
+                const int room_w = room->m_r.p1.x - room->m_r.p0.x + 1;
+                const int room_h = room->m_r.p1.y - room->m_r.p0.y + 1;
 
                 const int nr_cells_in_room = room_w * room_h;
 
@@ -488,16 +493,17 @@ void populate_std_lvl()
                         // Randomly pick a free position inside the room
                         std::vector<P> origin_bucket;
 
-                        for (int y = room->r_.p0.y;
-                             y <= room->r_.p1.y;
+                        for (int y = room->m_r.p0.y;
+                             y <= room->m_r.p1.y;
                              ++y)
                         {
-                                for (int x = room->r_.p0.x;
-                                     x <= room->r_.p1.x;
+                                for (int x = room->m_r.p0.x;
+                                     x <= room->m_r.p1.x;
                                      ++x)
                                 {
                                         const bool is_current_room =
-                                                map::room_map.at(x, y) == room;
+                                                map::g_room_map.at(x, y) ==
+                                                room;
 
                                         if (is_current_room &&
                                             !blocked.at(x, y))
@@ -527,7 +533,7 @@ void populate_std_lvl()
 
                                 const bool did_make_group =
                                         make_random_group_for_room(
-                                                room->type_,
+                                                room->m_type,
                                                 sorted_free_cells,
                                                 blocked);
 
@@ -547,11 +553,11 @@ void populate_std_lvl()
 
                 // After attempting to populate a non-plain themed room,
                 // mark that area as forbidden
-                for (int y = room->r_.p0.y; y <= room->r_.p1.y; ++y)
+                for (int y = room->m_r.p0.y; y <= room->m_r.p1.y; ++y)
                 {
-                        for (int x = room->r_.p0.x; x <= room->r_.p1.x; ++x)
+                        for (int x = room->m_r.p0.x; x <= room->m_r.p1.x; ++x)
                         {
-                                if (map::room_map.at(x, y) == room)
+                                if (map::g_room_map.at(x, y) == room)
                                 {
                                         blocked.at(x, y) = true;
                                 }
@@ -567,11 +573,11 @@ void populate_std_lvl()
         {
                 for (int x = 1; x < map::w() - 1; ++x)
                 {
-                        Room* const room = map::room_map.at(x, y);
+                        Room* const room = map::g_room_map.at(x, y);
 
                         if (!blocked.at(x, y) &&
                             room &&
-                            (room->type_ == RoomType::plain))
+                            (room->m_type == RoomType::plain))
                         {
                                 origin_bucket.push_back(P(x, y));
                         }

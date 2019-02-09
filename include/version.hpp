@@ -12,15 +12,12 @@
 namespace version_info
 {
 
-extern const std::string version_str;
+extern const std::string g_version_str;
+extern const std::string g_copyright_str;
+extern const std::string g_license_str;
+extern const std::string g_date_str;
 
-extern const std::string copyright_str;
-
-extern const std::string license_str;
-
-extern const std::string date_str;
-
-extern const std::string read_git_sha1_str_from_file();
+std::string read_git_sha1_str_from_file();
 
 } // version_info
 

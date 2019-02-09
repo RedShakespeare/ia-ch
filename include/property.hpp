@@ -86,83 +86,83 @@ public:
 
         PropId id() const
         {
-                return id_;
+                return m_id;
         }
 
         int nr_turns_left() const
         {
-                return nr_turns_left_;
+                return m_nr_turns_left;
         }
 
         void set_duration(const int nr_turns)
         {
                 ASSERT(nr_turns > 0);
 
-                duration_mode_ = PropDurationMode::specific;
+                m_duration_mode = PropDurationMode::specific;
 
-                nr_turns_left_ = nr_turns;
+                m_nr_turns_left = nr_turns;
         }
 
         void set_indefinite()
         {
-                duration_mode_ = PropDurationMode::indefinite;
+                m_duration_mode = PropDurationMode::indefinite;
 
-                nr_turns_left_ = -1;
+                m_nr_turns_left = -1;
         }
 
         virtual bool is_finished() const
         {
-                return nr_turns_left_ == 0;
+                return m_nr_turns_left == 0;
         }
 
         PropDurationMode duration_mode() const
         {
-                return duration_mode_;
+                return m_duration_mode;
         }
 
         PropSrc src() const
         {
-                return src_;
+                return m_src;
         }
 
         virtual PropAlignment alignment() const
         {
-                return data_.alignment;
+                return m_data.alignment;
         }
 
         virtual bool allow_display_turns() const
         {
-                return data_.allow_display_turns;
+                return m_data.allow_display_turns;
         }
 
         virtual bool is_making_mon_aware() const
         {
-                return data_.is_making_mon_aware;
+                return m_data.is_making_mon_aware;
         }
 
         virtual std::string name() const
         {
-                return data_.name;
+                return m_data.name;
         }
 
         virtual std::string name_short() const
         {
-                return data_.name_short;
+                return m_data.name_short;
         }
 
         std::string descr() const
         {
-                return data_.descr;
+                return m_data.descr;
         }
 
         virtual std::string msg_end_player() const
         {
-                return data_.msg_end_player;
+                return m_data.msg_end_player;
         }
 
         virtual bool should_update_vision_on_toggled() const
         {
-                return data_.update_vision_on_toggled;
+                return m_data.update_vision_on_toggled;
         }
 
         virtual bool allow_see() const
@@ -309,16 +309,16 @@ public:
 protected:
         friend class PropHandler;
 
-        const PropId id_;
-        const PropData& data_;
+        const PropId m_id;
+        const PropData& m_data;
 
-        int nr_turns_left_;
+        int m_nr_turns_left;
 
-        PropDurationMode duration_mode_;
+        PropDurationMode m_duration_mode;
 
-        Actor* owner_;
-        PropSrc src_;
-        const Item* item_applying_;
+        Actor* m_owner;
+        PropSrc m_src;
+        const Item* m_item_applying;
 };
 
 // -----------------------------------------------------------------------------
@@ -638,8 +638,8 @@ class PropMagicSearching: public Prop
 public:
         PropMagicSearching() :
                 Prop(PropId::magic_searching),
-                range_(1),
-                allow_reveal_items_(false) {}
+                m_range(1),
+                m_allow_reveal_items(false) {}
 
         void save() const override;
 
@@ -649,18 +649,18 @@ public:
 
         void set_range(const int range)
         {
-                range_ = range;
+                m_range = range;
         }
 
         void set_allow_reveal_items()
         {
-                allow_reveal_items_ = true;
+                m_allow_reveal_items = true;
         }
 
 private:
-        int range_;
+        int m_range;
 
-        bool allow_reveal_items_;
+        bool m_allow_reveal_items;
 };
 
 class PropEntangled: public Prop
@@ -744,11 +744,11 @@ class PropNailed: public Prop
 public:
         PropNailed() :
                 Prop(PropId::nailed),
-                nr_spikes_(1) {}
+                m_nr_spikes(1) {}
 
         std::string name_short() const override
         {
-                return "Nailed(" + std::to_string(nr_spikes_) + ")";
+                return "Nailed(" + std::to_string(m_nr_spikes) + ")";
         }
 
         PropEnded affect_move_dir(const P& actor_pos, Dir& dir) override;
@@ -757,16 +757,16 @@ public:
         {
                 (void)new_prop;
 
-                ++nr_spikes_;
+                ++m_nr_spikes;
         }
 
         bool is_finished() const override
         {
-                return nr_spikes_ <= 0;
+                return m_nr_spikes <= 0;
         }
 
 private:
-        int nr_spikes_;
+        int m_nr_spikes;
 };
 
 class PropWound: public Prop
@@ -774,7 +774,7 @@ class PropWound: public Prop
 public:
         PropWound() :
                 Prop(PropId::wound),
-                nr_wounds_(1) {}
+                m_nr_wounds(1) {}
 
         void save() const override;
 
@@ -783,14 +783,14 @@ public:
         std::string msg_end_player() const override
         {
                 return
-                        (nr_wounds_ > 1) ?
+                        (m_nr_wounds > 1) ?
                         "All my wounds are healed!" :
                         "A wound is healed!";
         }
 
         std::string name_short() const override
         {
-                return "Wounded(" + std::to_string(nr_wounds_) + ")";
+                return "Wounded(" + std::to_string(m_nr_wounds) + ")";
         }
 
         int ability_mod(const AbilityId ability) const override;
@@ -799,20 +799,20 @@ public:
 
         bool is_finished() const override
         {
-                return nr_wounds_ <= 0;
+                return m_nr_wounds <= 0;
         }
 
         int affect_max_hp(const int hp_max) const override;
 
         int nr_wounds() const
         {
-                return nr_wounds_;
+                return m_nr_wounds;
         }
 
         void heal_one_wound();
 
 private:
-        int nr_wounds_;
+        int m_nr_wounds;
 };
 
 class PropHpSap: public Prop
@@ -826,7 +826,7 @@ public:
 
         std::string name_short() const override
         {
-                return "Life Sapped(" + std::to_string(nr_drained_) + ")";
+                return "Life Sapped(" + std::to_string(m_nr_drained) + ")";
         }
 
         void on_more(const Prop& new_prop) override;
@@ -834,7 +834,7 @@ public:
         int affect_max_hp(const int hp_max) const override;
 
 private:
-        int nr_drained_;
+        int m_nr_drained;
 };
 
 class PropSpiSap: public Prop
@@ -848,7 +848,7 @@ public:
 
         std::string name_short() const override
         {
-                return "Spirit Sapped(" + std::to_string(nr_drained_) + ")";
+                return "Spirit Sapped(" + std::to_string(m_nr_drained) + ")";
         }
 
         void on_more(const Prop& new_prop) override;
@@ -856,7 +856,7 @@ public:
         int affect_max_spi(const int spi_max) const override;
 
 private:
-        int nr_drained_;
+        int m_nr_drained;
 };
 
 class PropMindSap: public Prop
@@ -870,7 +870,7 @@ public:
 
         std::string name_short() const override
         {
-                return "Mind Sapped(" + std::to_string(nr_drained_) + "%)";
+                return "Mind Sapped(" + std::to_string(m_nr_drained) + "%)";
         }
 
         void on_more(const Prop& new_prop) override;
@@ -878,7 +878,7 @@ public:
         int affect_shock(const int shock) const override;
 
 private:
-        int nr_drained_;
+        int m_nr_drained;
 };
 
 class PropWaiting: public Prop
@@ -1039,7 +1039,7 @@ public:
 
         void on_hit() override
         {
-                nr_turns_left_ = 0;
+                m_nr_turns_left = 0;
         }
 };
 
@@ -1369,16 +1369,16 @@ class PropCorpseRises: public Prop
 public:
         PropCorpseRises() :
                 Prop(PropId::corpse_rises),
-                has_risen_(false),
-                nr_turns_until_allow_rise_(2) {}
+                m_has_risen(false),
+                m_nr_turns_until_allow_rise(2) {}
 
         PropActResult on_act() override;
 
         void on_death() override;
 
 private:
-        bool has_risen_;
-        int nr_turns_until_allow_rise_;
+        bool m_has_risen;
+        int m_nr_turns_until_allow_rise;
 };
 
 class PropSpawnsZombiePartsOnDestroyed: public Prop
@@ -1422,7 +1422,7 @@ class PropAuraOfDecay: public Prop
 public:
         PropAuraOfDecay() :
                 Prop(PropId::aura_of_decay),
-                dmg_(1) {}
+                m_dmg(1) {}
 
         void save() const override;
 
@@ -1434,7 +1434,7 @@ public:
 
         void set_dmg(const int dmg)
         {
-                dmg_ = dmg;
+                m_dmg = dmg;
         }
 
 private:
@@ -1446,7 +1446,7 @@ private:
 
         void print_msg_actor_hit(const Actor& actor) const;
 
-        int dmg_;
+        int m_dmg;
 };
 
 class PropMajorClaphamSummon: public Prop

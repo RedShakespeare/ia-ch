@@ -34,10 +34,10 @@ void connect_rooms()
 
                 if (nr_tries_left == 0)
                 {
-                        mapgen::is_map_valid = false;
+                        mapgen::g_is_map_valid = false;
 
 #ifndef NDEBUG
-                        if (init::is_demo_mapgen)
+                        if (init::g_is_demo_mapgen)
                         {
                                 io::cover_panel(Panel::log);
                                 states::draw();
@@ -55,19 +55,19 @@ void connect_rooms()
                 }
 
                 auto rnd_room = []() {
-                        return rnd::element(map::room_list);
+                        return rnd::element(map::g_room_list);
                 };
 
                 // Standard rooms are connectable
                 auto is_connectable_room = [](const Room & r) {
-                        return r.type_ < RoomType::END_OF_STD_ROOMS;
+                        return r.m_type < RoomType::END_OF_STD_ROOMS;
                 };
 
                 Room* room0 = rnd_room();
 
                 // Room 0 must be a connectable room, or a corridor link
                 if (!is_connectable_room(*room0) &&
-                    room0->type_ != RoomType::corr_link)
+                    room0->m_type != RoomType::corr_link)
                 {
                         continue;
                 }
@@ -85,7 +85,7 @@ void connect_rooms()
                 }
 
                 // Do not allow two rooms to be connected twice
-                const auto& room0_connections = room0->rooms_con_to_;
+                const auto& room0_connections = room0->m_rooms_con_to;
 
                 if (find(room0_connections.begin(),
                          room0_connections.end(),
@@ -100,8 +100,8 @@ void connect_rooms()
                 // center points of those rooms.
                 bool is_other_room_in_way = false;
 
-                const P c0(room0->r_.center());
-                const P c1(room1->r_.center());
+                const P c0(room0->m_r.center());
+                const P c1(room1->m_r.center());
 
                 const int x0 = std::min(c0.x, c1.x);
                 const int y0 = std::min(c0.y, c1.y);
@@ -113,12 +113,12 @@ void connect_rooms()
                         for (int y = y0; y <= y1; ++y)
                         {
                                 const Room* const room_here =
-                                        map::room_map.at(x, y);
+                                        map::g_room_map.at(x, y);
 
                                 if (room_here &&
                                     room_here != room0 &&
                                     room_here != room1 &&
-                                    !room_here->is_sub_room_)
+                                    !room_here->m_is_sub_room)
                                 {
                                         is_other_room_in_way = true;
                                         break;
@@ -141,7 +141,7 @@ void connect_rooms()
                 make_pathfind_corridor(
                         *room0,
                         *room1,
-                        &door_proposals);
+                        &g_door_proposals);
 
                 Array2<bool> blocked(map::dims());
 
@@ -151,7 +151,7 @@ void connect_rooms()
                 // Do not consider doors blocking
                 for (size_t i = 0; i < map::nr_cells(); ++i)
                 {
-                        const auto id = map::cells.at(i).rigid->id();
+                        const auto id = map::g_cells.at(i).rigid->id();
 
                         if (id == FeatureId::door)
                         {

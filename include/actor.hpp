@@ -80,7 +80,7 @@ public:
 
         ActorId id() const
         {
-                return data->id;
+                return m_data->id;
         }
 
         int armor_points() const;
@@ -89,17 +89,17 @@ public:
 
         virtual std::string name_the() const
         {
-                return data->name_the;
+                return m_data->name_the;
         }
 
         virtual std::string name_a() const
         {
-                return data->name_a;
+                return m_data->name_a;
         }
 
         virtual std::string descr() const
         {
-                return data->descr;
+                return m_data->descr;
         }
 
         void add_light(Array2<bool>& light_map) const;
@@ -111,12 +111,12 @@ public:
 
         bool is_alive() const
         {
-                return state == ActorState::alive;
+                return m_state == ActorState::alive;
         }
 
         bool is_corpse() const
         {
-                return state == ActorState::corpse;
+                return m_state == ActorState::corpse;
         }
 
         virtual bool is_leader_of(const Actor* const actor) const = 0;
@@ -140,17 +140,17 @@ public:
 
         virtual void on_death() {}
 
-        P pos {};
-        ActorState state {ActorState::alive};
-        int hp {-1};
-        int base_max_hp {-1};
-        int sp {-1};
-        int base_max_sp {-1};
-        PropHandler properties {this};
-        Inventory inv {this};
-        ActorData* data {nullptr};
-        int delay {0};
-        P lair_pos {};
+        P m_pos {};
+        ActorState m_state {ActorState::alive};
+        int m_hp {-1};
+        int m_base_max_hp {-1};
+        int m_sp {-1};
+        int m_base_max_sp {-1};
+        PropHandler m_properties {this};
+        Inventory m_inv {this};
+        ActorData* m_data {nullptr};
+        int m_delay {0};
+        P m_lair_pos {};
 
 protected:
         // Damages worn armor, and returns damage after armor absorbs damage

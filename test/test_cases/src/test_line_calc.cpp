@@ -210,7 +210,7 @@ TEST_CASE("Get pre-calculated lines")
         delta_line =
                 line_calc::fov_delta_line(
                         P(3, 3),
-                        fov_radi_db);
+                        g_fov_radi_db);
 
         REQUIRE(delta_line->size() == 4);
         REQUIRE(delta_line->at(0) == P(0, 0));
@@ -221,7 +221,7 @@ TEST_CASE("Get pre-calculated lines")
         delta_line =
                 line_calc::fov_delta_line(
                         P(-3, 3),
-                        fov_radi_db);
+                        g_fov_radi_db);
 
         REQUIRE(delta_line->size() == 4);
         REQUIRE(delta_line->at(0) == P(0, 0));
@@ -232,7 +232,7 @@ TEST_CASE("Get pre-calculated lines")
         delta_line =
                 line_calc::fov_delta_line(
                         P(3, -3),
-                        fov_radi_db);
+                        g_fov_radi_db);
 
         REQUIRE(delta_line->size() == 4);
         REQUIRE(delta_line->at(0) == P(0, 0));
@@ -243,7 +243,7 @@ TEST_CASE("Get pre-calculated lines")
         delta_line =
                 line_calc::fov_delta_line(
                         P(-3, -3),
-                        fov_radi_db);
+                        g_fov_radi_db);
 
         REQUIRE(delta_line->size() == 4);
         REQUIRE(delta_line->at(0) == P(0, 0));

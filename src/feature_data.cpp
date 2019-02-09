@@ -23,7 +23,7 @@
 // -----------------------------------------------------------------------------
 // Private
 // -----------------------------------------------------------------------------
-static FeatureData data_[(size_t)FeatureId::END];
+static FeatureData s_data[(size_t)FeatureId::END];
 
 static void reset_data(FeatureData& d)
 {
@@ -49,7 +49,7 @@ static void reset_data(FeatureData& d)
 
 static void add_to_list_and_reset(FeatureData& d)
 {
-        data_[(size_t)d.id] = d;
+        s_data[(size_t)d.id] = d;
 
         reset_data(d);
 }
@@ -662,7 +662,7 @@ static void init_data_list()
 // -----------------------------------------------------------------------------
 bool MoveRules::can_move(const Actor& actor) const
 {
-        if (is_walkable_)
+        if (m_is_walkable)
         {
                 return true;
         }
@@ -670,9 +670,9 @@ bool MoveRules::can_move(const Actor& actor) const
         // This feature blocks walking, check if any property overrides this
         // (e.g. flying)
 
-        for (const auto id : props_allow_move_)
+        for (const auto id : m_props_allow_move)
         {
-                if (actor.properties.has(id))
+                if (actor.m_properties.has(id))
                 {
                         return true;
                 }
@@ -700,7 +700,7 @@ const FeatureData& data(const FeatureId id)
 {
         ASSERT(id != FeatureId::END);
 
-        return data_[int(id)];
+        return s_data[int(id)];
 }
 
 } // feature_data

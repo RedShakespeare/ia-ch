@@ -91,7 +91,7 @@ enum class OccultistDomain
 namespace player_bon
 {
 
-extern bool traits[(size_t)Trait::END];
+extern bool g_traits[(size_t)Trait::END];
 
 void init();
 

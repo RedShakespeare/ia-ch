@@ -19,21 +19,21 @@ namespace version_info
 
 // This shall be set when (and only when) building a tagged release. Use the
 // format "vMAJOR.MINOR".
-const std::string version_str = "";
+const std::string g_version_str = "";
 
-const std::string copyright_str =
+const std::string g_copyright_str =
         "(c) 2011-2019 Martin Tornqvist";
 
-const std::string license_str =
+const std::string g_license_str =
         "Infra Arcana is free software, see LICENSE.txt.";
 
-const std::string date_str = __DATE__;
+const std::string g_date_str = __DATE__;
 
-const std::string read_git_sha1_str_from_file()
+std::string read_git_sha1_str_from_file()
 {
         const std::string default_sha1 = "unknown_revision";
 
-        const std::string sha1_file_path = paths::data_dir + "/git-sha1.txt";
+        const std::string sha1_file_path = paths::g_data_dir + "/git-sha1.txt";
 
         std::ifstream file(sha1_file_path);
 

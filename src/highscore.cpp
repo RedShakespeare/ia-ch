@@ -25,9 +25,10 @@
 // -----------------------------------------------------------------------------
 // Private
 // -----------------------------------------------------------------------------
-static const int top_more_y_ = 1;
+static const int s_top_more_y = 1;
 
-static const int entries_y0_ = top_more_y_ + 1;
+static const int s_entries_y0 = s_top_more_y + 1;
+
 
 static int get_bottom_more_y()
 {
@@ -36,7 +37,7 @@ static int get_bottom_more_y()
 
 static int get_max_nr_entries_on_screen()
 {
-        return get_bottom_more_y() - entries_y0_;
+        return get_bottom_more_y() - s_entries_y0;
 }
 
 static void sort_entries(std::vector<HighscoreEntry>& entries)
@@ -54,7 +55,7 @@ static void write_file(std::vector<HighscoreEntry>& entries)
 {
         std::ofstream file;
 
-        file.open(paths::highscores_file_path, std::ios::trunc);
+        file.open(paths::g_highscores_file_path, std::ios::trunc);
 
         for (const auto entry : entries)
         {
@@ -85,7 +86,7 @@ static std::vector<HighscoreEntry> read_highscores_file()
 
         std::ifstream file;
 
-        file.open(paths::highscores_file_path);
+        file.open(paths::g_highscores_file_path);
 
         if (!file.is_open())
         {
@@ -170,29 +171,29 @@ HighscoreEntry::HighscoreEntry(
         Bg player_bg,
         OccultistDomain player_occultist_domain) :
 
-        game_summary_file_path_(game_summary_file_path),
-        date_(date),
-        name_(player_name),
-        xp_(player_xp),
-        lvl_(player_lvl),
-        dlvl_(player_dlvl),
-        turn_count_(turn_count),
-        ins_(player_insanity),
-        is_win_(is_win),
-        bg_(player_bg),
-        player_occultist_domain_(player_occultist_domain)
+        m_game_summary_file_path(game_summary_file_path),
+        m_date(date),
+        m_name(player_name),
+        m_xp(player_xp),
+        m_lvl(player_lvl),
+        m_dlvl(player_dlvl),
+        m_turn_count(turn_count),
+        m_ins(player_insanity),
+        m_is_win(is_win),
+        m_bg(player_bg),
+        m_player_occultist_domain(player_occultist_domain)
 {
 
 }
 
 int HighscoreEntry::score() const
 {
-        const double xp_db = (double)xp_;
-        const double dlvl_db = (double)dlvl_;
-        const double dlvl_last_db = (double)dlvl_last;
-        const double turns_db = (double)turn_count_;
-        const double ins_db = (double)ins_;
-        const bool win = (is_win_ == IsWin::yes);
+        const double xp_db = (double)m_xp;
+        const double dlvl_db = (double)m_dlvl;
+        const double dlvl_last_db = (double)g_dlvl_last;
+        const double turns_db = (double)m_turn_count;
+        const double ins_db = (double)m_ins;
+        const bool win = (m_is_win == IsWin::yes);
 
         auto calc_turns_factor = [](const double turns_db) {
                 return std::max(1.0, 3.0 - (turns_db / 10000.0));
@@ -248,12 +249,12 @@ HighscoreEntry make_entry_from_current_game_data(
         HighscoreEntry entry(
                 game_summary_file_path,
                 date,
-                map::player->name_a(),
+                map::g_player->name_a(),
                 game::xp_accumulated(),
                 game::clvl(),
-                map::dlvl,
+                map::g_dlvl,
                 game_time::turn_nr(),
-                map::player->ins(),
+                map::g_player->ins(),
                 is_win,
                 player_bon::bg(),
                 player_bon::occultist_domain());
@@ -300,16 +301,16 @@ StateId BrowseHighscore::id()
 
 void BrowseHighscore::on_start()
 {
-        entries_ = read_highscores_file();
+        m_entries = read_highscores_file();
 
-        sort_entries(entries_);
+        sort_entries(m_entries);
 
-        browser_.reset(entries_.size(), get_max_nr_entries_on_screen());
+        m_browser.reset(m_entries.size(), get_max_nr_entries_on_screen());
 }
 
 void BrowseHighscore::draw()
 {
-        if (entries_.empty())
+        if (m_entries.empty())
         {
                 return;
         }
@@ -334,7 +335,7 @@ void BrowseHighscore::draw()
 
         const int x_date = 1;
         const int x_name = x_date + 12;
-        const int x_bg = x_name + player_name_max_len + 1;
+        const int x_bg = x_name + g_player_name_max_len + 1;
         const int x_lvl = x_bg + 13;
         const int x_dlvl = x_lvl + 7;
         const int x_turns = x_dlvl + 7;
@@ -361,15 +362,15 @@ void BrowseHighscore::draw()
                         label_clr);
         }
 
-        const int browser_y = browser_.y();
+        const int browser_y = m_browser.y();
 
-        int y = entries_y0_;
+        int y = s_entries_y0;
 
-        const Range idx_range_shown = browser_.range_shown();
+        const Range idx_range_shown = m_browser.range_shown();
 
         for (int i = idx_range_shown.min; i <= idx_range_shown.max; ++i)
         {
-                const auto& entry = entries_[i];
+                const auto& entry = m_entries[i];
 
                 const std::string date = entry.date();
                 const std::string name = entry.name();
@@ -419,15 +420,15 @@ void BrowseHighscore::draw()
         }
 
         // Draw "more" labels
-        if (!browser_.is_on_top_page())
+        if (!m_browser.is_on_top_page())
         {
                 io::draw_text("(More - Page Up)",
                               Panel::screen,
-                              P(0, top_more_y_),
+                              P(0, s_top_more_y),
                               colors::light_white());
         }
 
-        if (!browser_.is_on_btm_page())
+        if (!m_browser.is_on_btm_page())
         {
                 io::draw_text("(More - Page Down)",
                               Panel::screen,
@@ -438,7 +439,7 @@ void BrowseHighscore::draw()
 
 void BrowseHighscore::update()
 {
-        if (entries_.empty())
+        if (m_entries.empty())
         {
                 popup::msg("No high score entries found.");
 
@@ -451,7 +452,7 @@ void BrowseHighscore::update()
         const auto input = io::get();
 
         const MenuAction action =
-                browser_.read(
+                m_browser.read(
                         input,
                         MenuInputMode::scrolling);
 
@@ -459,11 +460,11 @@ void BrowseHighscore::update()
         {
         case MenuAction::selected:
         {
-                const int browser_y = browser_.y();
+                const int browser_y = m_browser.y();
 
-                ASSERT(browser_y < (int)entries_.size());
+                ASSERT(browser_y < (int)m_entries.size());
 
-                const auto& entry_marked = entries_[browser_y];
+                const auto& entry_marked = m_entries[browser_y];
 
                 const std::string file_path =
                         entry_marked.game_summary_file_path();
@@ -491,9 +492,9 @@ void BrowseHighscore::update()
 // -----------------------------------------------------------------------------
 BrowseHighscoreEntry::BrowseHighscoreEntry(const std::string& file_path) :
         InfoScreenState(),
-        file_path_(file_path),
-        lines_(),
-        top_idx_(0) {}
+        m_file_path(file_path),
+        m_lines(),
+        m_top_idx(0) {}
 
 StateId BrowseHighscoreEntry::id()
 {
@@ -509,20 +510,22 @@ void BrowseHighscoreEntry::draw()
 {
         draw_interface();
 
-        const int nr_lines_tot = lines_.size();
+        const int nr_lines_tot = m_lines.size();
 
         int btm_nr =
-                std::min(top_idx_ + max_nr_lines_on_screen() - 1,
-                         nr_lines_tot - 1);
+                std::min(
+                        m_top_idx + max_nr_lines_on_screen() - 1,
+                        nr_lines_tot - 1);
 
         int screen_y = 1;
 
-        for (int i = top_idx_; i <= btm_nr; ++i)
+        for (int i = m_top_idx; i <= btm_nr; ++i)
         {
-                io::draw_text(lines_[i],
-                              Panel::screen,
-                              P(0, screen_y),
-                              colors::text());
+                io::draw_text(
+                        m_lines[i],
+                        Panel::screen,
+                        P(0, screen_y),
+                        colors::text());
 
                 ++screen_y;
         }
@@ -532,7 +535,7 @@ void BrowseHighscoreEntry::update()
 {
         const int line_jump = 3;
 
-        const int nr_lines_tot = lines_.size();
+        const int nr_lines_tot = m_lines.size();
 
         const auto input = io::get();
 
@@ -540,23 +543,23 @@ void BrowseHighscoreEntry::update()
         {
         case '2':
         case SDLK_DOWN:
-                top_idx_ += line_jump;
+                m_top_idx += line_jump;
 
                 if (nr_lines_tot <= max_nr_lines_on_screen())
                 {
-                        top_idx_ = 0;
+                        m_top_idx = 0;
                 }
                 else
                 {
-                        top_idx_ = std::min(
+                        m_top_idx = std::min(
                                 nr_lines_tot - max_nr_lines_on_screen(),
-                                top_idx_);
+                                m_top_idx);
                 }
                 break;
 
         case '8':
         case SDLK_UP:
-                top_idx_ = std::max(0, top_idx_ - line_jump);
+                m_top_idx = std::max(0, m_top_idx - line_jump);
                 break;
 
         case SDLK_SPACE:
@@ -572,14 +575,14 @@ void BrowseHighscoreEntry::update()
 
 void BrowseHighscoreEntry::read_file()
 {
-        lines_.clear();
+        m_lines.clear();
 
-        std::ifstream file(file_path_);
+        std::ifstream file(m_file_path);
 
         if (!file.is_open())
         {
                 popup::msg(
-                        "Path: \"" + file_path_ + "\"",
+                        "Path: \"" + m_file_path + "\"",
                         "Game summary file could not be opened",
                         SfxId::END,
                         20);
@@ -595,7 +598,7 @@ void BrowseHighscoreEntry::read_file()
 
         while (getline(file, current_line))
         {
-                lines_.push_back(current_line);
+                m_lines.push_back(current_line);
         }
 
         file.close();

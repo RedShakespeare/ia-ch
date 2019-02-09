@@ -40,10 +40,10 @@ namespace mapgen
 // This variable is checked at certain points to see if the current map has been
 // flagged as "failed". Setting 'is_map_valid' to false will generally stop map
 // generation, discard the map, and trigger generation of a new map.
-extern bool is_map_valid;
+extern bool g_is_map_valid;
 
 // All cells marked as true in this array will be considered for door placement
-extern Array2<bool> door_proposals;
+extern Array2<bool> g_door_proposals;
 
 // Standard dungeon level
 // TODO: Consider moving to MapBuilderStd

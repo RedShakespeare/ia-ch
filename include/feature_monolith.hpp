@@ -35,7 +35,7 @@ private:
 
     void activate();
 
-    bool is_activated_;
+    bool m_is_activated;
 };
 
 #endif // FEATURE_MONOLITH_HPP

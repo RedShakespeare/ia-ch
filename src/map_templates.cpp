@@ -19,16 +19,17 @@
 // -----------------------------------------------------------------------------
 // private
 // -----------------------------------------------------------------------------
-static std::vector< Array2<char> > level_templates_;
+static std::vector< Array2<char> > s_level_templates;
 
-static std::vector<RoomTempl> room_templates_;
+static std::vector<RoomTempl> s_room_templates;
 
-static std::vector<RoomTemplStatus> room_templ_status_;
+static std::vector<RoomTemplStatus> s_room_templ_status;
 
 // Space and tab
-static const std::string whitespace_chars = " \t";
+static const std::string s_whitespace_chars = " \t";
 
-static const char comment_symbol = '\'';
+static const char s_comment_symbol = '\'';
+
 
 const std::unordered_map<LevelTemplId, std::string> level_id_to_filename =
 {
@@ -44,7 +45,7 @@ const std::unordered_map<LevelTemplId, std::string> level_id_to_filename =
 static bool line_has_content(const std::string& line)
 {
         const size_t first_non_space =
-                line.find_first_not_of(whitespace_chars);
+                line.find_first_not_of(s_whitespace_chars);
 
         if (first_non_space == std::string::npos)
         {
@@ -53,7 +54,7 @@ static bool line_has_content(const std::string& line)
         }
 
 
-        if (line[first_non_space] == comment_symbol)
+        if (line[first_non_space] == s_comment_symbol)
         {
                 // Starts with comment character
                 return false;
@@ -65,7 +66,7 @@ static bool line_has_content(const std::string& line)
 static void trim_trailing_whitespace(std::string& line)
 {
         const size_t end_pos =
-                line.find_last_not_of(whitespace_chars);
+                line.find_last_not_of(s_whitespace_chars);
 
         line = line.substr(0, end_pos + 1);
 }
@@ -92,7 +93,7 @@ static Array2<char> load_level_template(const LevelTemplId id)
 {
         const std::string filename = level_id_to_filename.at(id);
 
-        std::ifstream ifs(paths::data_dir + "/map/levels/" + filename);
+        std::ifstream ifs(paths::g_data_dir + "/map/levels/" + filename);
 
         ASSERT(!ifs.fail());
         ASSERT(ifs.is_open());
@@ -132,15 +133,15 @@ static void load_level_templates()
 {
         TRACE_FUNC_BEGIN;
 
-        level_templates_.clear();
-        level_templates_.reserve((size_t)LevelTemplId::END);
+        s_level_templates.clear();
+        s_level_templates.reserve((size_t)LevelTemplId::END);
 
         for (int id = 0; id < (int)LevelTemplId::END; ++id)
         {
                 const auto templ = load_level_template((LevelTemplId)id);
 
-                level_templates_.insert(
-                        begin(level_templates_) + id,
+                s_level_templates.insert(
+                        begin(s_level_templates) + id,
                         templ);
         }
 
@@ -155,38 +156,38 @@ static void make_room_templ_variants(RoomTempl& templ)
         auto& symbols = templ.symbols;
 
         // "Up"
-        room_templates_.push_back(templ);
+        s_room_templates.push_back(templ);
 
         symbols.flip_hor();
 
-        room_templates_.push_back(templ);
+        s_room_templates.push_back(templ);
 
         // "Right"
         symbols.rotate_cw();
 
-        room_templates_.push_back(templ);
+        s_room_templates.push_back(templ);
 
         symbols.flip_ver();
 
-        room_templates_.push_back(templ);
+        s_room_templates.push_back(templ);
 
         // "Down"
         symbols.rotate_cw();
 
-        room_templates_.push_back(templ);
+        s_room_templates.push_back(templ);
 
         symbols.flip_hor();
 
-        room_templates_.push_back(templ);
+        s_room_templates.push_back(templ);
 
         // "Left"
         symbols.rotate_cw();
 
-        room_templates_.push_back(templ);
+        s_room_templates.push_back(templ);
 
         symbols.flip_ver();
 
-        room_templates_.push_back(templ);
+        s_room_templates.push_back(templ);
 
 } // make_room_templ_variants
 
@@ -194,11 +195,11 @@ static void load_room_templates()
 {
         TRACE_FUNC_BEGIN;
 
-        room_templates_.clear();
+        s_room_templates.clear();
 
-        room_templ_status_.clear();
+        s_room_templ_status.clear();
 
-        std::ifstream ifs(paths::data_dir + "/map/rooms.txt");
+        std::ifstream ifs(paths::g_data_dir + "/map/rooms.txt");
 
         ASSERT(!ifs.fail());
         ASSERT(ifs.is_open());
@@ -251,10 +252,10 @@ static void load_room_templates()
                                                 type_pos,
                                                 line.size() - type_pos);
 
-                                auto type_it = str_to_room_type_map
+                                auto type_it = g_str_to_room_type_map
                                         .find(type_str);
 
-                                if (type_it == str_to_room_type_map.end())
+                                if (type_it == g_str_to_room_type_map.end())
                                 {
                                         TRACE_ERROR_RELEASE
                                                 << "Unrecognized room: "
@@ -321,14 +322,14 @@ static void load_room_templates()
 
         } // for
 
-        room_templ_status_.resize(
+        s_room_templ_status.resize(
                 current_base_templ_idx,
                 RoomTemplStatus::unused);
 
         TRACE << "Number of room templates loaded from template file: "
               << current_base_templ_idx
               << std::endl
-              << "Total variants: " << room_templates_.size()
+              << "Total variants: " << s_room_templates.size()
               << std::endl;
 
         TRACE_FUNC_END;
@@ -355,7 +356,7 @@ void save()
 {
         TRACE_FUNC_BEGIN;
 
-        for (auto status : room_templ_status_)
+        for (auto status : s_room_templ_status)
         {
                 saving::put_int((int)status);
         }
@@ -367,9 +368,9 @@ void load()
 {
         TRACE_FUNC_BEGIN;
 
-        for (size_t i = 0; i < room_templ_status_.size(); ++i)
+        for (size_t i = 0; i < s_room_templ_status.size(); ++i)
         {
-                room_templ_status_[i] = (RoomTemplStatus)saving::get_int();
+                s_room_templ_status[i] = (RoomTemplStatus)saving::get_int();
         }
 
         TRACE_FUNC_END;
@@ -379,18 +380,18 @@ const Array2<char>& level_templ(LevelTemplId id)
 {
         ASSERT(id != LevelTemplId::END);
 
-        return level_templates_[(size_t)id];
+        return s_level_templates[(size_t)id];
 }
 
 RoomTempl* random_room_templ(const P& max_dims)
 {
-        ASSERT(!room_templates_.empty());
+        ASSERT(!s_room_templates.empty());
 
         std::vector<RoomTempl*> bucket;
 
-        for (auto& templ : room_templates_)
+        for (auto& templ : s_room_templates)
         {
-                const auto status = room_templ_status_[templ.base_templ_idx];
+                const auto status = s_room_templ_status[templ.base_templ_idx];
 
                 if (status != RoomTemplStatus::unused)
                 {
@@ -424,28 +425,29 @@ RoomTempl* random_room_templ(const P& max_dims)
 
 void clear_base_room_templates_used()
 {
-        std::fill(begin(room_templ_status_),
-                  end(room_templ_status_),
-                  RoomTemplStatus::unused);
+        std::fill(
+                std::begin(s_room_templ_status),
+                std::end(s_room_templ_status),
+                RoomTemplStatus::unused);
 }
 
 void on_base_room_template_placed(const RoomTempl& templ)
 {
-        ASSERT(templ.base_templ_idx < room_templ_status_.size());
+        ASSERT(templ.base_templ_idx < s_room_templ_status.size());
 
         ASSERT(
-                room_templ_status_[templ.base_templ_idx] ==
+                s_room_templ_status[templ.base_templ_idx] ==
                 RoomTemplStatus::unused);
 
-        room_templ_status_[templ.base_templ_idx] = RoomTemplStatus::placed;
+        s_room_templ_status[templ.base_templ_idx] = RoomTemplStatus::placed;
 }
 
 void on_map_discarded()
 {
         // "Placed" -> "unused"
-        for (size_t i = 0; i < room_templ_status_.size(); ++i)
+        for (size_t i = 0; i < s_room_templ_status.size(); ++i)
         {
-                auto& status = room_templ_status_[i];
+                auto& status = s_room_templ_status[i];
 
                 if (status == RoomTemplStatus::placed)
                 {
@@ -457,9 +459,9 @@ void on_map_discarded()
 void on_map_ok()
 {
         // "Placed" -> "used"
-        for (size_t i = 0; i < room_templ_status_.size(); ++i)
+        for (size_t i = 0; i < s_room_templ_status.size(); ++i)
         {
-                auto& status = room_templ_status_[i];
+                auto& status = s_room_templ_status[i];
 
                 if (status == RoomTemplStatus::placed)
                 {

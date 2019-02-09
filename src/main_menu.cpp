@@ -31,9 +31,10 @@
 // -----------------------------------------------------------------------------
 // Private
 // -----------------------------------------------------------------------------
-static std::string git_sha1_str = "";
+static std::string s_git_sha1_str = "";
 
-static std::string current_quote = "";
+static std::string s_current_quote = "";
+
 
 // TODO: This should be loaded from a text file
 static const std::vector<std::string> quotes =
@@ -222,9 +223,9 @@ static const std::vector<std::string> text_mode_logo_ =
 // -----------------------------------------------------------------------------
 MainMenuState::MainMenuState() :
 #ifdef NDEBUG
-        browser_ (MenuBrowser(6))
+        m_browser (MenuBrowser(6))
 #else // Debug mode
-        browser_ (MenuBrowser(7))
+        m_browser (MenuBrowser(7))
 #endif // NDEBUG
 {
 
@@ -334,7 +335,7 @@ void MainMenuState::draw()
                 const std::string label = labels[i];
 
                 const Color& color =
-                        browser_.is_at_idx(i) ?
+                        m_browser.is_at_idx(i) ?
                         colors::menu_highlight() :
                         colors::menu_dark();
 
@@ -358,7 +359,7 @@ void MainMenuState::draw()
         // "tiny" string on the last line (looks very ugly),
         while (quote_w != 0)
         {
-                quote_lines = text_format::split(current_quote, quote_w);
+                quote_lines = text_format::split(s_current_quote, quote_w);
 
                 const size_t min_str_w_last_line = 20;
 
@@ -395,30 +396,30 @@ void MainMenuState::draw()
 
         std::string build_str = "";
 
-        if (version_info::version_str.empty())
+        if (version_info::g_version_str.empty())
         {
-                build_str = "Build " + git_sha1_str;
+                build_str = "Build " + s_git_sha1_str;
         }
         else
         {
                 build_str =
-                        version_info::version_str +
+                        version_info::g_version_str +
                         " (" +
-                        git_sha1_str +
+                        s_git_sha1_str +
                         ")";
         }
 
-        build_str += ", " + version_info::date_str;
+        build_str += ", " + version_info::g_date_str;
 
         io::draw_text_center(
-                version_info::copyright_str + "    " + build_str,
+                version_info::g_copyright_str + "    " + build_str,
                 Panel::screen,
                 P(panels::center_x(Panel::screen),
                   panels::y1(Panel::screen) - 1),
                 colors::dark_gray());
 
         io::draw_text_center(
-                " " + version_info::license_str + " ",
+                " " + version_info::g_license_str + " ",
                 Panel::screen,
                 P(panels::center_x(Panel::screen),
                   panels::y1(Panel::screen)),
@@ -433,12 +434,12 @@ void MainMenuState::update()
         const auto input = io::get();
 
         const MenuAction action =
-                browser_.read(input, MenuInputMode::scrolling);
+                m_browser.read(input, MenuInputMode::scrolling);
 
         switch (action)
         {
         case MenuAction::selected:
-                switch (browser_.y())
+                switch (m_browser.y())
                 {
                 case 0: // New game
 #ifndef NDEBUG
@@ -446,7 +447,7 @@ void MainMenuState::update()
 #endif // NDEBUG
                 {
 #ifndef NDEBUG
-                        if (browser_.y() == 6)
+                        if (m_browser.y() == 6)
                         {
                                 config::toggle_bot_playing();
                         }
@@ -543,9 +544,9 @@ void MainMenuState::update()
 
 void MainMenuState::on_start()
 {
-        git_sha1_str = version_info::read_git_sha1_str_from_file();
+        s_git_sha1_str = version_info::read_git_sha1_str_from_file();
 
-        current_quote = rnd::element(quotes);
+        s_current_quote = rnd::element(quotes);
 
         audio::play_music(MusId::cthulhiana_madness);
 }

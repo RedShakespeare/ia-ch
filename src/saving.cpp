@@ -34,7 +34,6 @@
 // Private
 // -----------------------------------------------------------------------------
 #ifndef NDEBUG
-
 // Only used to verify that the put/get methods are not called at the wrong time
 enum class SaveLoadState
 {
@@ -43,27 +42,29 @@ enum class SaveLoadState
         stopped
 };
 
-static SaveLoadState state;
+static SaveLoadState s_state;
 
 #endif // NDEBUG
 
-static std::vector<std::string> lines;
+
+static std::vector<std::string> s_lines;
+
 
 static void save_modules()
 {
         TRACE_FUNC_BEGIN;
 
-        ASSERT(lines.empty());
+        ASSERT(s_lines.empty());
 
-        saving::put_str(map::player->name_a());
+        saving::put_str(map::g_player->name_a());
 
         game::save();
         scroll_handling::save();
         potion_handling::save();
         rod_handling::save();
         item_data::save();
-        map::player->inv.save();
-        map::player->save();
+        map::g_player->m_inv.save();
+        map::g_player->save();
         insanity::save();
         player_bon::save();
         map_travel::save();
@@ -81,23 +82,23 @@ static void load_modules()
 {
         TRACE_FUNC_BEGIN;
 
-        ASSERT(!lines.empty());
+        ASSERT(!s_lines.empty());
 
         const std::string player_name = saving::get_str();
 
         ASSERT(!player_name.empty());
 
-        map::player->data->name_a = player_name;
+        map::g_player->m_data->name_a = player_name;
 
-        map::player->data->name_the = player_name;
+        map::g_player->m_data->name_the = player_name;
 
         game::load();
         scroll_handling::load();
         potion_handling::load();
         rod_handling::load();
         item_data::load();
-        map::player->inv.load();
-        map::player->load();
+        map::g_player->m_inv.load();
+        map::g_player->load();
         insanity::load();
         player_bon::load();
         map_travel::load();
@@ -116,15 +117,15 @@ static void write_file()
         std::ofstream file;
 
         // Current file content is discarded
-        file.open(paths::save_file_path, std::ios::trunc);
+        file.open(paths::g_save_file_path, std::ios::trunc);
 
         if (file.is_open())
         {
-                for (size_t i = 0; i < lines.size(); ++i)
+                for (size_t i = 0; i < s_lines.size(); ++i)
                 {
-                        file << lines[i];
+                        file << s_lines[i];
 
-                        if (i != lines.size() - 1)
+                        if (i != s_lines.size() - 1)
                         {
                                 file << std::endl;
                         }
@@ -136,7 +137,7 @@ static void write_file()
 
 static void read_file()
 {
-        std::ifstream file(paths::save_file_path);
+        std::ifstream file(paths::g_save_file_path);
 
         if (file.is_open())
         {
@@ -144,7 +145,7 @@ static void read_file()
 
                 while (getline(file, current_line))
                 {
-                        lines.push_back(current_line);
+                        s_lines.push_back(current_line);
                 }
 
                 file.close();
@@ -163,20 +164,20 @@ namespace saving
 
 void init()
 {
-        lines.clear();
+        s_lines.clear();
 
 #ifndef NDEBUG
-        state = SaveLoadState::stopped;
+        s_state = SaveLoadState::stopped;
 #endif // NDEBUG
 }
 
 void save_game()
 {
 #ifndef NDEBUG
-        ASSERT(state == SaveLoadState::stopped);
-        ASSERT(lines.empty());
+        ASSERT(s_state == SaveLoadState::stopped);
+        ASSERT(s_lines.empty());
 
-        state = SaveLoadState::saving;
+        s_state = SaveLoadState::saving;
 #endif // NDEBUG
 
         // Tell all modules to append to the save lines (via this modules store
@@ -184,43 +185,43 @@ void save_game()
         save_modules();
 
 #ifndef NDEBUG
-        state = SaveLoadState::stopped;
+        s_state = SaveLoadState::stopped;
 #endif // NDEBUG
 
         // Write the save lines to the save file
         write_file();
 
-        lines.clear();
+        s_lines.clear();
 }
 
 void load_game()
 {
 #ifndef NDEBUG
-        ASSERT(state == SaveLoadState::stopped);
-        ASSERT(lines.empty());
+        ASSERT(s_state == SaveLoadState::stopped);
+        ASSERT(s_lines.empty());
 
-        state = SaveLoadState::loading;
+        s_state = SaveLoadState::loading;
 #endif // NDEBUG
 
         // Read the save file to the save lines
         read_file();
 
-        ASSERT(!lines.empty());
+        ASSERT(!s_lines.empty());
 
         // Tell all modules to set up their state from the save lines (via the
         // read functions of this module)
         load_modules();
 
 #ifndef NDEBUG
-        state = SaveLoadState::stopped;
+        s_state = SaveLoadState::stopped;
 #endif // NDEBUG
 
-        ASSERT(lines.empty());
+        ASSERT(s_lines.empty());
 }
 
 void erase_save()
 {
-        lines.clear();
+        s_lines.clear();
 
         // Write empty save file
         write_file();
@@ -228,7 +229,7 @@ void erase_save()
 
 bool is_save_available()
 {
-        std::ifstream file(paths::save_file_path);
+        std::ifstream file(paths::g_save_file_path);
 
         if (file.good())
         {
@@ -250,10 +251,10 @@ bool is_save_available()
 void put_str(const std::string str)
 {
 #ifndef NDEBUG
-        ASSERT(state == SaveLoadState::saving);
+        ASSERT(s_state == SaveLoadState::saving);
 #endif // NDEBUG
 
-        lines.push_back(str);
+        s_lines.push_back(str);
 }
 
 void put_int(const int v)
@@ -271,14 +272,14 @@ void put_bool(const bool v)
 std::string get_str()
 {
 #ifndef NDEBUG
-        ASSERT(state == SaveLoadState::loading);
+        ASSERT(s_state == SaveLoadState::loading);
 #endif // NDEBUG
 
-        ASSERT(!lines.empty());
+        ASSERT(!s_lines.empty());
 
-        const std::string str = lines.front();
+        const std::string str = s_lines.front();
 
-        lines.erase(std::begin(lines));
+        s_lines.erase(std::begin(s_lines));
 
         return str;
 }

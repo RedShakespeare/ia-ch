@@ -28,7 +28,7 @@ public:
     StateId id() override;
 
 private:
-    MenuBrowser browser_;
+    MenuBrowser m_browser;
 };
 
 #endif // MAIN_MENU_HPP

@@ -27,9 +27,9 @@ class MarkerState: public State
 public:
         MarkerState(const P& origin) :
                 State(),
-                marker_render_data_(P(0, 0)),
-                origin_(origin),
-                pos_() {}
+                m_marker_render_data(P(0, 0)),
+                m_origin(origin),
+                m_pos() {}
 
         virtual ~MarkerState() {}
 
@@ -87,11 +87,11 @@ protected:
         }
 
         // Necessary e.g. for marker states drawing overlayed graphics
-        Array2<CellRenderData> marker_render_data_;
+        Array2<CellRenderData> m_marker_render_data;
 
-        const P origin_;
+        const P m_origin;
 
-        P pos_;
+        P m_pos;
 
 private:
         void move(const Dir dir);
@@ -136,7 +136,7 @@ class Aiming: public MarkerState
 public:
         Aiming(const P& origin, Wpn& wpn) :
                 MarkerState(origin),
-                wpn_(wpn) {}
+                m_wpn(wpn) {}
 
         ~Aiming() {}
 
@@ -159,7 +159,7 @@ protected:
 
         int red_from_king_dist() const override;
 
-        Wpn& wpn_;
+        Wpn& m_wpn;
 };
 
 // -----------------------------------------------------------------------------
@@ -170,7 +170,7 @@ class Throwing: public MarkerState
 public:
         Throwing(const P& origin, Item& inv_item) :
                 MarkerState(origin),
-                inv_item_(&inv_item) {}
+                m_inv_item(&inv_item) {}
 
         ~Throwing() {}
 
@@ -193,7 +193,7 @@ protected:
 
         int red_from_king_dist() const override;
 
-        Item* inv_item_;
+        Item* m_inv_item;
 };
 
 // -----------------------------------------------------------------------------
@@ -204,7 +204,7 @@ class ThrowingExplosive: public MarkerState
 public:
         ThrowingExplosive(const P& origin, const Item& explosive) :
                 MarkerState(origin),
-                explosive_(explosive) {}
+                m_explosive(explosive) {}
 
         ~ThrowingExplosive() {}
 
@@ -227,7 +227,7 @@ protected:
 
         int red_from_king_dist() const override;
 
-        const Item& explosive_;
+        const Item& m_explosive;
 };
 
 // -----------------------------------------------------------------------------
@@ -250,7 +250,7 @@ protected:
 private:
         int chance_of_success_pct(const P& tgt) const;
 
-        Array2<bool> blocked_;
+        Array2<bool> m_blocked;
 };
 
 #endif // MARKER_HPP

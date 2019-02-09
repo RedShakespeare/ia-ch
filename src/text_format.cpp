@@ -19,7 +19,7 @@ static std::string read_and_remove_word(std::string& line)
 {
         std::string str = "";
 
-        for (auto it = begin(line); it != end(line); /* No increment */)
+        for (auto it = std::begin(line); it != std::end(line); )
         {
                 const char current_char = *it;
 
@@ -201,7 +201,11 @@ std::string all_to_upper(const std::string& str)
 {
         auto result = str;
 
-        transform(begin(result), end(result), begin(result), ::toupper);
+        transform(
+                std::begin(result),
+                std::end(result),
+                std::begin(result),
+                ::toupper);
 
         return result;
 }

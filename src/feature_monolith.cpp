@@ -17,7 +17,7 @@
 
 Monolith::Monolith(const P& p) :
         Rigid(p),
-        is_activated_(false) {}
+        m_is_activated(false) {}
 
 void Monolith::on_hit(
         const int dmg,
@@ -44,7 +44,7 @@ std::string Monolith::name(const Article article) const
 Color Monolith::color_default() const
 {
         return
-                is_activated_
+                m_is_activated
                 ? colors::gray()
                 : colors::light_cyan();
 }
@@ -56,7 +56,7 @@ void Monolith::bump(Actor& actor_bumping)
                 return;
         }
 
-        if (!map::player->properties.allow_see())
+        if (!map::g_player->m_properties.allow_see())
         {
                 msg_log::add("There is a carved rock here.");
 
@@ -65,7 +65,7 @@ void Monolith::bump(Actor& actor_bumping)
 
         msg_log::add("I recite the inscriptions on the Monolith...");
 
-        if (is_activated_)
+        if (m_is_activated)
         {
                 msg_log::add("Nothing happens.");
         }
@@ -83,9 +83,9 @@ void Monolith::activate()
 
         game::incr_player_xp(20);
 
-        is_activated_ = true;
+        m_is_activated = true;
 
-        map::player->incr_shock(
+        map::g_player->incr_shock(
                 ShockLvl::terrifying,
                 ShockSrc::misc);
 }

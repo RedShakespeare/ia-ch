@@ -19,7 +19,8 @@
 // -----------------------------------------------------------------------------
 // Private
 // -----------------------------------------------------------------------------
-static const int text_w_default = 39;
+static const int s_text_w_default = 39;
+
 
 static int get_x0(const int width)
 {
@@ -181,7 +182,7 @@ void msg(
         const SfxId sfx,
         const int w_change)
 {
-        const int text_w = text_w_default + w_change;
+        const int text_w = s_text_w_default + w_change;
 
         const auto lines = text_format::split(msg, text_w);
 
@@ -228,7 +229,7 @@ void msg(
                 else
                 {
                         const int text_x0 =
-                                get_x0(text_w_default) - ((w_change + 1) / 2);
+                                get_x0(s_text_w_default) - ((w_change + 1) / 2);
 
                         io::draw_text(
                                 line,
@@ -244,7 +245,7 @@ void msg(
         y += 2;
 
         io::draw_text_center(
-                common_text::confirm_hint,
+                common_text::g_confirm_hint,
                 Panel::screen,
                 P(panels::center_x(Panel::screen), y),
                 colors::menu_dark(),
@@ -267,7 +268,7 @@ int menu(
                 return 0;
         }
 
-        const int text_w = text_w_default + w_change;
+        const int text_w = s_text_w_default + w_change;
 
         const auto lines = text_format::split(msg, text_w);
 

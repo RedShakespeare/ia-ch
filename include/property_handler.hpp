@@ -113,7 +113,7 @@ public:
         // Fast method for checking if a certain property id is applied
         bool has(const PropId id) const
         {
-                return prop_count_cache_[(size_t)id] > 0;
+                return m_prop_count_cache[(size_t)id] > 0;
         }
 
         Prop* prop(const PropId id) const;
@@ -205,13 +205,13 @@ private:
         void incr_prop_count(const PropId id);
         void decr_prop_count(const PropId id);
 
-        std::vector< std::unique_ptr<Prop> > props_;
+        std::vector< std::unique_ptr<Prop> > m_props;
 
         // This array is only used as an optimization when requesting which
         // properties are currently active (see the "has()" method above).
-        int prop_count_cache_[(size_t)PropId::END];
+        int m_prop_count_cache[(size_t)PropId::END];
 
-        Actor* owner_;
+        Actor* m_owner;
 };
 
 #endif // PROPERTY_HANDLER_HPP

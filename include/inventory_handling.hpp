@@ -54,7 +54,7 @@ protected:
 
         void activate(const size_t backpack_idx);
 
-        MenuBrowser browser_;
+        MenuBrowser m_browser;
 
         void draw_weight_pct_and_dots(
                 const P item_pos,
@@ -98,7 +98,7 @@ public:
         void update() override;
 
 private:
-        std::vector<size_t> filtered_backpack_indexes_ {};
+        std::vector<size_t> m_filtered_backpack_indexes {};
 };
 
 class Drop: public InvState
@@ -114,7 +114,7 @@ public:
         void update() override;
 
 private:
-        std::vector<SlotId> filtered_slots_ {};
+        std::vector<SlotId> m_filtered_slots {};
 };
 
 class Equip: public InvState
@@ -122,7 +122,7 @@ class Equip: public InvState
 public:
         Equip(InvSlot& slot) :
                 InvState(),
-                slot_to_equip_(slot) {}
+                m_slot_to_equip(slot) {}
 
         void on_start() override;
 
@@ -131,9 +131,9 @@ public:
         void update() override;
 
 private:
-        std::vector<size_t> filtered_backpack_indexes_ {};
+        std::vector<size_t> m_filtered_backpack_indexes {};
 
-        InvSlot& slot_to_equip_;
+        InvSlot& m_slot_to_equip;
 };
 
 class SelectThrow: public InvState
@@ -149,7 +149,7 @@ public:
         void update() override;
 
 private:
-        std::vector<FilteredInvEntry> filtered_inv_ {};
+        std::vector<FilteredInvEntry> m_filtered_inv {};
 };
 
 class SelectIdentify: public InvState
@@ -157,7 +157,7 @@ class SelectIdentify: public InvState
 public:
         SelectIdentify(std::vector<ItemType> item_types_allowed = {}) :
                 InvState(),
-                item_types_allowed_(item_types_allowed) {}
+                m_item_types_allowed(item_types_allowed) {}
 
         void on_start() override;
 
@@ -166,8 +166,8 @@ public:
         void update() override;
 
 private:
-        const std::vector<ItemType> item_types_allowed_;
-        std::vector<FilteredInvEntry> filtered_inv_ {};
+        const std::vector<ItemType> m_item_types_allowed;
+        std::vector<FilteredInvEntry> m_filtered_inv {};
 };
 
 #endif // INV_HANDLING_HPP

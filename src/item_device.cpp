@@ -39,12 +39,12 @@ Device::Device(ItemData* const item_data) :
 
 void Device::identify(const Verbosity verbosity)
 {
-        if (data_->is_identified)
+        if (m_data->is_identified)
         {
                 return;
         }
 
-        data_->is_identified = true;
+        m_data->is_identified = true;
 
         if (verbosity == Verbosity::verbose)
         {
@@ -80,7 +80,7 @@ void StrangeDevice::load()
 
 std::vector<std::string> StrangeDevice::descr() const
 {
-        if (data_->is_identified)
+        if (m_data->is_identified)
         {
                 const std::string descr = descr_identified();
 
@@ -109,7 +109,7 @@ std::vector<std::string> StrangeDevice::descr() const
         }
         else // Not identified
         {
-                return data_->base_descr;
+                return m_data->base_descr;
         }
 }
 
@@ -117,7 +117,7 @@ ConsumeItem StrangeDevice::activate(Actor* const actor)
 {
         ASSERT(actor);
 
-        if (!data_->is_identified)
+        if (!m_data->is_identified)
         {
                 msg_log::add(
                         "This device is completely alien to me, ");
@@ -208,7 +208,7 @@ ConsumeItem StrangeDevice::activate(Actor* const actor)
         break;
         }
 
-        if (!map::player->is_alive())
+        if (!map::g_player->is_alive())
         {
                 return ConsumeItem::no;
         }
@@ -253,7 +253,7 @@ ConsumeItem StrangeDevice::activate(Actor* const actor)
                 }
         }
 
-        map::player->incr_shock(ShockLvl::terrifying,
+        map::g_player->incr_shock(ShockLvl::terrifying,
                                 ShockSrc::use_strange_item);
 
         game_time::tick();
@@ -263,7 +263,7 @@ ConsumeItem StrangeDevice::activate(Actor* const actor)
 
 std::string StrangeDevice::name_inf_str() const
 {
-        if (data_->is_identified)
+        if (m_data->is_identified)
         {
                 switch (condition)
                 {
@@ -286,7 +286,7 @@ std::string StrangeDevice::name_inf_str() const
 // -----------------------------------------------------------------------------
 ConsumeItem DeviceBlaster::run_effect()
 {
-        const auto tgt_bucket = map::player->seen_foes();
+        const auto tgt_bucket = map::g_player->seen_foes();
 
         if (tgt_bucket.empty())
         {
@@ -298,7 +298,7 @@ ConsumeItem DeviceBlaster::run_effect()
                         spell_factory::make_spell_from_id(SpellId::aza_wrath));
 
                 spell->cast(
-                        map::player,
+                        map::g_player,
                         SpellSkill::basic,
                         SpellSrc::item);
         }
@@ -326,12 +326,12 @@ ConsumeItem DeviceRejuvenator::run_effect()
 
         for (PropId prop_id : props_can_heal)
         {
-                map::player->properties.end_prop(prop_id);
+                map::g_player->m_properties.end_prop(prop_id);
         }
 
-        map::player->restore_hp(999);
+        map::g_player->restore_hp(999);
 
-        map::player->incr_shock(
+        map::g_player->incr_shock(
                 ShockLvl::mind_shattering,
                 ShockSrc::use_strange_item);
 
@@ -343,7 +343,7 @@ ConsumeItem DeviceRejuvenator::run_effect()
 // -----------------------------------------------------------------------------
 ConsumeItem DeviceTranslocator::run_effect()
 {
-        Player* const player = map::player;
+        Player* const player = map::g_player;
 
         const auto seen_foes = player->seen_foes();
 
@@ -360,7 +360,7 @@ ConsumeItem DeviceTranslocator::run_effect()
                                 " is teleported.");
 
                         io::draw_blast_at_cells(
-                                std::vector<P> {actor->pos},
+                                std::vector<P> {actor->m_pos},
                                 colors::yellow());
 
                         teleport(*actor);
@@ -377,11 +377,11 @@ ConsumeItem DeviceSentryDrone::run_effect()
 {
         msg_log::add("The Sentry Drone awakens!");
 
-        actor_factory::spawn(map::player->pos,
+        actor_factory::spawn(map::g_player->m_pos,
                              {ActorId::sentry_drone},
                              map::rect())
                 .make_aware_of_player()
-                .set_leader(map::player);
+                .set_leader(map::g_player);
 
         return ConsumeItem::yes;
 }
@@ -393,14 +393,14 @@ ConsumeItem DeviceDeafening::run_effect()
 {
         msg_log::add("The device emits a piercing resonance.");
 
-        for (Actor* const actor : game_time::actors)
+        for (Actor* const actor : game_time::g_actors)
         {
                 if (actor->is_player())
                 {
                         continue;
                 }
 
-                actor->properties.apply(new PropDeaf());
+                actor->m_properties.apply(new PropDeaf());
         }
 
         return ConsumeItem::no;
@@ -430,9 +430,9 @@ ConsumeItem DeviceForceField::run_effect()
         const auto specific_allowed_features_parser =
                 map_parsers::IsAnyOfFeatures(specific_allowed_features);
 
-        for (const auto& d : dir_utils::dir_list)
+        for (const auto& d : dir_utils::g_dir_list)
         {
-                const P p = map::player->pos + d;
+                const P p = map::g_player->m_pos + d;
 
                 if (blocked_parser.cell(p) &&
                     !specific_allowed_features_parser.cell(p))
@@ -504,10 +504,10 @@ void DeviceLantern::load()
 
 void DeviceLantern::on_pickup_hook()
 {
-        ASSERT(actor_carrying_);
+        ASSERT(m_actor_carrying);
 
         // Check for existing electric lantern in inventory
-        for (Item* const other : actor_carrying_->inv.backpack)
+        for (Item* const other : m_actor_carrying->m_inv.m_backpack)
         {
                 if ((other == this) || (other->id() != id()))
                 {
@@ -518,7 +518,7 @@ void DeviceLantern::on_pickup_hook()
 
                 other_lantern->nr_turns_left += nr_turns_left;
 
-                actor_carrying_->inv
+                m_actor_carrying->m_inv
                         .remove_item_in_backpack_with_ptr(this, true);
 
                 return;
@@ -570,7 +570,7 @@ void DeviceLantern::on_std_turn_in_inv(const InvType inv_type)
                 game::add_history_event("My Electric Lantern expired.");
 
                 // NOTE: The this deletes the object
-                map::player->inv.remove_item_in_backpack_with_ptr(this, true);
+                map::g_player->m_inv.remove_item_in_backpack_with_ptr(this, true);
         }
 }
 

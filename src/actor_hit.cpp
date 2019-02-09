@@ -24,9 +24,9 @@ static int hit_armor(Actor& actor, int dmg)
         const int ap = actor.armor_points();
 
         // Danage worn armor
-        if (actor.data->is_humanoid)
+        if (actor.m_data->is_humanoid)
         {
-                auto* const item = actor.inv.item_in_slot(SlotId::body);
+                auto* const item = actor.m_inv.item_in_slot(SlotId::body);
 
                 if (item)
                 {
@@ -54,7 +54,7 @@ static int hit_armor(Actor& actor, int dmg)
                                                 colors::msg_note());
                                 }
 
-                                actor.inv.remove_item_in_slot(
+                                actor.m_inv.remove_item_in_slot(
                                         SlotId::body, true);
                         }
                 }
@@ -81,7 +81,7 @@ ActorDied hit(
         const DmgMethod method,
         const AllowWound allow_wound)
 {
-        if (actor.state == ActorState::destroyed)
+        if (actor.m_state == ActorState::destroyed)
         {
                 TRACE_FUNC_END_VERBOSE;
 
@@ -90,7 +90,7 @@ ActorDied hit(
 
         // Damage type is "light", and actor is not light sensitive?
         if (dmg_type == DmgType::light &&
-            !actor.properties.has(PropId::light_sensitive))
+            !actor.m_properties.has(PropId::light_sensitive))
         {
                 return ActorDied::no;
         }
@@ -99,15 +99,15 @@ ActorDied hit(
 
         if (actor.is_player())
         {
-                map::player->interrupt_actions();
+                map::g_player->interrupt_actions();
         }
 
-        const int hp_pct_before = (actor.hp * 100) / max_hp(actor);
+        const int hp_pct_before = (actor.m_hp * 100) / max_hp(actor);
 
         // Damage to corpses
         if (actor.is_corpse() && !actor.is_player())
         {
-                ASSERT(actor.data->can_leave_corpse);
+                ASSERT(actor.m_data->can_leave_corpse);
 
                 // Chance to destroy is X in Y, where
                 // X = damage dealt * 4
@@ -127,7 +127,7 @@ ActorDied hit(
                                 Snd snd("*Crack!*",
                                         SfxId::hit_corpse_break,
                                         IgnoreMsgIfOriginSeen::yes,
-                                        actor.pos,
+                                        actor.m_pos,
                                         nullptr,
                                         SndVol::low,
                                         AlertsMon::yes);
@@ -137,16 +137,16 @@ ActorDied hit(
 
                         actor.destroy();
 
-                        if (actor.data->is_humanoid)
+                        if (actor.m_data->is_humanoid)
                         {
-                                map::make_gore(actor.pos);
+                                map::make_gore(actor.m_pos);
                         }
 
-                        if (map::cells.at(actor.pos).is_seen_by_player)
+                        if (map::g_cells.at(actor.m_pos).is_seen_by_player)
                         {
                                 msg_log::add(
                                         text_format::first_to_upper(
-                                                actor.data->corpse_name_the) +
+                                                actor.m_data->corpse_name_the) +
                                         " is destroyed.");
                         }
                 }
@@ -166,7 +166,7 @@ ActorDied hit(
                                 Snd snd(msg,
                                         SfxId::hit_medium,
                                         IgnoreMsgIfOriginSeen::yes,
-                                        actor.pos,
+                                        actor.m_pos,
                                         nullptr,
                                         SndVol::low,
                                         AlertsMon::yes);
@@ -190,7 +190,7 @@ ActorDied hit(
                 : Verbosity::silent;
 
         const bool is_dmg_resisted =
-                actor.properties.is_resisting_dmg(dmg_type, verbosity);
+                actor.m_properties.is_resisting_dmg(dmg_type, verbosity);
 
         if (is_dmg_resisted)
         {
@@ -209,7 +209,7 @@ ActorDied hit(
         if (((dmg_type == DmgType::fire) ||
              (dmg_type == DmgType::electric)) &&
             actor.is_player() &&
-            player_bon::traits[(size_t)Trait::resistant])
+            player_bon::g_traits[(size_t)Trait::resistant])
         {
                 dmg /= 2;
         }
@@ -218,19 +218,19 @@ ActorDied hit(
 
         actor.on_hit(dmg, dmg_type, method, allow_wound);
 
-        actor.properties.on_hit();
+        actor.m_properties.on_hit();
 
         // TODO: Perhaps allow zero damage?
         dmg = std::max(1, dmg);
 
         if (!(actor.is_player() && config::is_bot_playing()))
         {
-                actor.hp -= dmg;
+                actor.m_hp -= dmg;
         }
 
-        if (actor.hp <= 0)
+        if (actor.m_hp <= 0)
         {
-                const auto f_id = map::cells.at(actor.pos).rigid->id();
+                const auto f_id = map::g_cells.at(actor.m_pos).rigid->id();
 
                 const bool is_on_bottomless =
                         (f_id == FeatureId::chasm) ||
@@ -253,9 +253,9 @@ ActorDied hit(
                 const int dmg_threshold_absolute = 14;
 
                 const auto is_destroyed =
-                        (!actor.data->can_leave_corpse ||
+                        (!actor.m_data->can_leave_corpse ||
                          is_on_bottomless ||
-                         actor.properties.has(PropId::summoned) ||
+                         actor.m_properties.has(PropId::summoned) ||
                          (dmg >= dmg_threshold_relative) ||
                          (dmg >= dmg_threshold_absolute))
                         ? IsDestroyed::yes
@@ -280,7 +280,7 @@ ActorDied hit(
         }
         else // HP is greater than 0
         {
-                const int hp_pct_after = (actor.hp * 100) / max_hp(actor);
+                const int hp_pct_after = (actor.m_hp * 100) / max_hp(actor);
 
                 const int hp_warn_lvl = 25;
 
@@ -314,14 +314,14 @@ ActorDied hit_sp(
                 }
         }
 
-        actor.properties.on_hit();
+        actor.m_properties.on_hit();
 
         if (!actor.is_player() || !config::is_bot_playing())
         {
-                actor.sp = std::max(0, actor.sp - dmg);
+                actor.m_sp = std::max(0, actor.m_sp - dmg);
         }
 
-        if (actor.sp > 0)
+        if (actor.m_sp > 0)
         {
                 return ActorDied::no;
         }
@@ -334,7 +334,7 @@ ActorDied hit_sp(
                         "All my spirit is depleted, I am devoid of life!",
                         colors::msg_bad());
         }
-        else if (map::player->can_see_actor(actor))
+        else if (map::g_player->can_see_actor(actor))
         {
                 const std::string actor_name_the =
                         text_format::first_to_upper(
@@ -343,16 +343,16 @@ ActorDied hit_sp(
                 msg_log::add(actor_name_the + " has no spirit left!");
         }
 
-        const auto f_id = map::cells.at(actor.pos).rigid->id();
+        const auto f_id = map::g_cells.at(actor.m_pos).rigid->id();
 
         const bool is_on_bottomless =
                 (f_id == FeatureId::chasm) ||
                 (f_id == FeatureId::liquid_deep);
 
         const auto is_destroyed =
-                (!actor.data->can_leave_corpse ||
+                (!actor.m_data->can_leave_corpse ||
                  is_on_bottomless ||
-                 actor.properties.has(PropId::summoned))
+                 actor.m_properties.has(PropId::summoned))
                 ? IsDestroyed::yes
                 : IsDestroyed::no;
 

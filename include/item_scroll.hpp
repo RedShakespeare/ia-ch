@@ -45,8 +45,8 @@ public:
         Spell* make_spell() const;
 
 private:
-        int domain_feeling_dlvl_countdown_;
-        int domain_feeling_turn_countdown_;
+        int m_domain_feeling_dlvl_countdown;
+        int m_domain_feeling_turn_countdown;
 };
 
 namespace scroll_handling

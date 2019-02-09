@@ -48,9 +48,9 @@ public:
         void set_b(const uint8_t value);
 
 private:
-        SDL_Color sdl_color_;
+        SDL_Color m_sdl_color;
 
-        bool is_defined_;
+        bool m_is_defined;
 };
 
 //-----------------------------------------------------------------------------
@@ -120,9 +120,9 @@ struct ColoredString
 {
         ColoredString() {}
 
-        ColoredString(const std::string& str, const Color& color) :
-                str(str),
-                color(color) {}
+        ColoredString(const std::string& the_str, const Color& the_color) :
+                str(the_str),
+                color(the_color) {}
 
         ColoredString& operator=(const ColoredString& other)
         {

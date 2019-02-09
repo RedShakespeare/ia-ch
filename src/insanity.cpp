@@ -30,7 +30,7 @@
 // -----------------------------------------------------------------------------
 static bool is_player_standing_in_open_place()
 {
-        const P& pos = map::player->pos;
+        const P& pos = map::g_player->m_pos;
 
         const R r(pos - 1, pos + 1);
 
@@ -57,7 +57,7 @@ static bool is_player_standing_in_open_place()
 
 static bool is_player_standing_in_cramped_place()
 {
-        const P& pos = map::player->pos;
+        const P& pos = map::g_player->m_pos;
 
         const R r(pos - 1, pos + 1);
 
@@ -148,7 +148,7 @@ void InsSympt::on_end()
 
 bool InsScream::is_allowed() const
 {
-        return !map::player->properties.has(PropId::r_fear);
+        return !map::g_player->m_properties.has(PropId::r_fear);
 }
 
 void InsScream::on_start_hook()
@@ -156,8 +156,8 @@ void InsScream::on_start_hook()
         Snd snd("",
                 SfxId::END,
                 IgnoreMsgIfOriginSeen::yes,
-                map::player->pos,
-                map::player,
+                map::g_player->m_pos,
+                map::g_player,
                 SndVol::high,
                 AlertsMon::yes);
 
@@ -178,7 +178,7 @@ std::string InsScream::start_msg() const
 
 void InsBabbling::babble() const
 {
-        const std::string player_name = map::player->name_the();
+        const std::string player_name = map::g_player->name_the();
 
         for (int i = rnd::range(1, 3); i > 0; --i)
         {
@@ -188,8 +188,8 @@ void InsBabbling::babble() const
         Snd snd("",
                 SfxId::END,
                 IgnoreMsgIfOriginSeen::yes,
-                map::player->pos,
-                map::player,
+                map::g_player->m_pos,
+                map::g_player,
                 SndVol::low,
                 AlertsMon::yes);
 
@@ -220,7 +220,7 @@ bool InsFaint::is_allowed() const
 
 void InsFaint::on_start_hook()
 {
-        map::player->properties.apply(new PropFainted());
+        map::g_player->m_properties.apply(new PropFainted());
 }
 
 void InsLaugh::on_start_hook()
@@ -228,8 +228,8 @@ void InsLaugh::on_start_hook()
         Snd snd("",
                 SfxId::END,
                 IgnoreMsgIfOriginSeen::yes,
-                map::player->pos,
-                map::player,
+                map::g_player->m_pos,
+                map::g_player,
                 SndVol::low,
                 AlertsMon::yes);
 
@@ -239,7 +239,7 @@ void InsLaugh::on_start_hook()
 bool InsPhobiaRat::is_allowed() const
 {
         const bool has_phobia = insanity::has_sympt_type(InsSymptType::phobia);
-        const bool is_rfear = map::player->properties.has(PropId::r_fear);
+        const bool is_rfear = map::g_player->m_properties.has(PropId::r_fear);
 
         return !is_rfear && (!has_phobia || rnd::one_in(20));
 }
@@ -253,11 +253,11 @@ void InsPhobiaRat::on_new_player_turn(const std::vector<Actor*>& seen_foes)
 
         for (Actor* const actor : seen_foes)
         {
-                if (actor->data->is_rat)
+                if (actor->m_data->is_rat)
                 {
                         msg_log::add("I am plagued by my phobia of rats!");
 
-                        map::player->properties.apply(new PropTerrified());
+                        map::g_player->m_properties.apply(new PropTerrified());
 
                         break;
                 }
@@ -272,7 +272,7 @@ void InsPhobiaRat::on_permanent_rfear()
 bool InsPhobiaSpider::is_allowed() const
 {
         const bool has_phobia = insanity::has_sympt_type(InsSymptType::phobia);
-        const bool is_rfear = map::player->properties.has(PropId::r_fear);
+        const bool is_rfear = map::g_player->m_properties.has(PropId::r_fear);
 
         return !is_rfear && (!has_phobia || rnd::one_in(20));
 }
@@ -286,11 +286,11 @@ void InsPhobiaSpider::on_new_player_turn(const std::vector<Actor*>& seen_foes)
 
         for (Actor* const actor : seen_foes)
         {
-                if (actor->data->is_spider)
+                if (actor->m_data->is_spider)
                 {
                         msg_log::add("I am plagued by my phobia of spiders!");
 
-                        map::player->properties.apply(new PropTerrified());
+                        map::g_player->m_properties.apply(new PropTerrified());
 
                         break;
                 }
@@ -305,7 +305,7 @@ void InsPhobiaSpider::on_permanent_rfear()
 bool InsPhobiaReptileAndAmph::is_allowed() const
 {
         const bool has_phobia = insanity::has_sympt_type(InsSymptType::phobia);
-        const bool is_rfear = map::player->properties.has(PropId::r_fear);
+        const bool is_rfear = map::g_player->m_properties.has(PropId::r_fear);
 
         return !is_rfear && (!has_phobia || rnd::one_in(20));
 }
@@ -324,7 +324,7 @@ void InsPhobiaReptileAndAmph::on_new_player_turn(
 
         for (Actor* const actor : seen_foes)
         {
-                if (actor->data->is_reptile)
+                if (actor->m_data->is_reptile)
                 {
                         animal_str = "reptiles";
 
@@ -333,7 +333,7 @@ void InsPhobiaReptileAndAmph::on_new_player_turn(
                         break;
                 }
 
-                if (actor->data->is_amphibian)
+                if (actor->m_data->is_amphibian)
                 {
                         animal_str = "amphibians";
 
@@ -349,7 +349,7 @@ void InsPhobiaReptileAndAmph::on_new_player_turn(
                              animal_str +
                              "!");
 
-                map::player->properties.apply(new PropTerrified());
+                map::g_player->m_properties.apply(new PropTerrified());
         }
 }
 
@@ -361,7 +361,7 @@ void InsPhobiaReptileAndAmph::on_permanent_rfear()
 bool InsPhobiaCanine::is_allowed() const
 {
         const bool has_phobia = insanity::has_sympt_type(InsSymptType::phobia);
-        const bool is_rfear = map::player->properties.has(PropId::r_fear);
+        const bool is_rfear = map::g_player->m_properties.has(PropId::r_fear);
 
         return !is_rfear && (!has_phobia || rnd::one_in(20));
 }
@@ -375,11 +375,11 @@ void InsPhobiaCanine::on_new_player_turn(const std::vector<Actor*>& seen_foes)
 
         for (Actor* const actor : seen_foes)
         {
-                if (actor->data->is_canine)
+                if (actor->m_data->is_canine)
                 {
                         msg_log::add("I am plagued by my phobia of canines!");
 
-                        map::player->properties.apply(new PropTerrified());
+                        map::g_player->m_properties.apply(new PropTerrified());
 
                         break;
                 }
@@ -394,7 +394,7 @@ void InsPhobiaCanine::on_permanent_rfear()
 bool InsPhobiaDead::is_allowed() const
 {
         const bool has_phobia = insanity::has_sympt_type(InsSymptType::phobia);
-        const bool is_rfear = map::player->properties.has(PropId::r_fear);
+        const bool is_rfear = map::g_player->m_properties.has(PropId::r_fear);
 
         return !is_rfear && (!has_phobia || rnd::one_in(20));
 }
@@ -408,11 +408,11 @@ void InsPhobiaDead::on_new_player_turn(const std::vector<Actor*>& seen_foes)
 
         for (Actor* const actor : seen_foes)
         {
-                if (actor->data->is_undead)
+                if (actor->m_data->is_undead)
                 {
                         msg_log::add("I am plagued by my phobia of the dead!");
 
-                        map::player->properties.apply(new PropTerrified());
+                        map::g_player->m_properties.apply(new PropTerrified());
 
                         break;
                 }
@@ -427,7 +427,7 @@ void InsPhobiaDead::on_permanent_rfear()
 bool InsPhobiaOpen::is_allowed() const
 {
         const bool has_phobia = insanity::has_sympt_type(InsSymptType::phobia);
-        const bool is_rfear = map::player->properties.has(PropId::r_fear);
+        const bool is_rfear = map::g_player->m_properties.has(PropId::r_fear);
 
         return !is_rfear && (!has_phobia || rnd::one_in(20));
 }
@@ -440,7 +440,7 @@ void InsPhobiaOpen::on_new_player_turn(const std::vector<Actor*>& seen_foes)
         {
                 msg_log::add("I am plagued by my phobia of open places!");
 
-                map::player->properties.apply(new PropTerrified());
+                map::g_player->m_properties.apply(new PropTerrified());
         }
 }
 
@@ -453,7 +453,7 @@ bool InsPhobiaConfined::is_allowed() const
 {
         const bool has_phobia = insanity::has_sympt_type(InsSymptType::phobia);
 
-        const bool is_rfear = map::player->properties.has(PropId::r_fear);
+        const bool is_rfear = map::g_player->m_properties.has(PropId::r_fear);
 
         return !is_rfear && (!has_phobia || rnd::one_in(20));
 }
@@ -466,7 +466,7 @@ void InsPhobiaConfined::on_new_player_turn(const std::vector<Actor*>& seen_foes)
         {
                 msg_log::add("I am plagued by my phobia of confined places!");
 
-                map::player->properties.apply(new PropTerrified());
+                map::g_player->m_properties.apply(new PropTerrified());
         }
 }
 
@@ -479,7 +479,7 @@ bool InsPhobiaDeep::is_allowed() const
 {
         const bool has_phobia = insanity::has_sympt_type(InsSymptType::phobia);
 
-        const bool is_rfear = map::player->properties.has(PropId::r_fear);
+        const bool is_rfear = map::g_player->m_properties.has(PropId::r_fear);
 
         return !is_rfear && (!has_phobia || rnd::one_in(20));
 }
@@ -499,11 +499,11 @@ void InsPhobiaDeep::on_new_player_turn(const std::vector<Actor*>& seen_foes)
         };
 
         if (map_parsers::AnyAdjIsAnyOfFeatures(deep_features)
-            .cell(map::player->pos))
+            .cell(map::g_player->m_pos))
         {
                 msg_log::add("I am plagued by my phobia of deep places!");
 
-                map::player->properties.apply(new PropTerrified());
+                map::g_player->m_properties.apply(new PropTerrified());
         }
 }
 
@@ -515,7 +515,7 @@ void InsPhobiaDeep::on_permanent_rfear()
 bool InsPhobiaDark::is_allowed() const
 {
         const bool has_phobia = insanity::has_sympt_type(InsSymptType::phobia);
-        const bool is_rfear = map::player->properties.has(PropId::r_fear);
+        const bool is_rfear = map::g_player->m_properties.has(PropId::r_fear);
 
         return
                 (player_bon::bg() != Bg::ghoul) &&
@@ -529,15 +529,15 @@ void InsPhobiaDark::on_new_player_turn(const std::vector<Actor*>& seen_foes)
 
         if (rnd::one_in(10))
         {
-                const P p(map::player->pos);
-                const PropHandler& props = map::player->properties;
+                const P p(map::g_player->m_pos);
+                const PropHandler& props = map::g_player->m_properties;
 
                 if ((props.allow_act() && !props.allow_see()) ||
-                    (map::dark.at(p) && !map::light.at(p)))
+                    (map::g_dark.at(p) && !map::g_light.at(p)))
                 {
                         msg_log::add("I am plagued by my phobia of the dark!");
 
-                        map::player->properties.apply(
+                        map::g_player->m_properties.apply(
                                 new PropTerrified());
                 }
         }
@@ -571,13 +571,13 @@ void InsShadows::on_start_hook()
         const int nr_shadows_upper =
                 constr_in_range(
                         nr_shadows_lower,
-                        map::dlvl - 2,
+                        map::g_dlvl - 2,
                         8);
 
         const size_t nr = rnd::range(nr_shadows_lower, nr_shadows_upper);
 
         const auto summoned =
-                actor_factory::spawn(map::player->pos,
+                actor_factory::spawn(map::g_player->m_pos,
                                      {nr, ActorId::shadow},
                                      map::rect())
                 .make_aware_of_player()
@@ -587,14 +587,14 @@ void InsShadows::on_start_hook()
 
                         prop->set_duration(1);
 
-                        mon->properties.apply(prop);
+                        mon->m_properties.apply(prop);
 
-                        mon->player_aware_of_me_counter_ = 0;
+                        mon->m_player_aware_of_me_counter = 0;
                 });
 
         map::update_vision();
 
-        const auto player_seen_foes = map::player->seen_foes();
+        const auto player_seen_foes = map::g_player->seen_foes();
 
         for (Actor* const actor : player_seen_foes)
         {
@@ -616,7 +616,7 @@ void InsParanoia::on_start_hook()
 
         std::vector<ActorId> stalker_id(1, ActorId::invis_stalker);
 
-        const P& pos = map::player->pos;
+        const P& pos = map::g_player->m_pos;
 
         const auto summoned =
                 actor_factory::spawn(pos,
@@ -629,18 +629,18 @@ void InsParanoia::on_start_hook()
 
                         prop->set_duration(1);
 
-                        mon->properties.apply(prop);
+                        mon->m_properties.apply(prop);
                 });
 }
 
 bool InsConfusion::is_allowed() const
 {
-        return !map::player->properties.has(PropId::r_conf);
+        return !map::g_player->m_properties.has(PropId::r_conf);
 }
 
 void InsConfusion::on_start_hook()
 {
-        map::player->properties.apply(new PropConfused());
+        map::g_player->m_properties.apply(new PropConfused());
 }
 
 bool InsFrenzy::is_allowed() const
@@ -650,7 +650,7 @@ bool InsFrenzy::is_allowed() const
 
 void InsFrenzy::on_start_hook()
 {
-        map::player->properties.apply(new PropFrenzied());
+        map::g_player->m_properties.apply(new PropFrenzied());
 }
 
 

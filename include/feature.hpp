@@ -24,7 +24,7 @@ class Feature
 {
 public:
         Feature(const P& feature_pos) :
-                pos_(feature_pos) {}
+                m_pos(feature_pos) {}
 
         virtual ~Feature() {}
 
@@ -80,11 +80,11 @@ public:
 
         P pos() const
         {
-                return pos_;
+                return m_pos;
         }
 
 protected:
-        P pos_;
+        P m_pos;
 };
 
 #endif // FEATURE_HPP

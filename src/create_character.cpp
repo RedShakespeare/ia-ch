@@ -40,28 +40,28 @@ void NewGameState::on_resume()
 // -----------------------------------------------------------------------------
 void PickBgState::on_start()
 {
-        bgs_ = player_bon::pickable_bgs();
+        m_bgs = player_bon::pickable_bgs();
 
-        browser_.reset(
-                bgs_.size(),
+        m_browser.reset(
+                m_bgs.size(),
                 panels::h(Panel::create_char_menu));
 
         // Set the marker on war veteran, to recommend it as a default choice
         // for new players
         const auto war_vet_pos =
-                std::find(std::begin(bgs_), std::end(bgs_), Bg::war_vet);
+                std::find(std::begin(m_bgs), std::end(m_bgs), Bg::war_vet);
 
         const auto idx =
-                (int)std::distance(std::begin(bgs_), war_vet_pos);
+                (int)std::distance(std::begin(m_bgs), war_vet_pos);
 
-        browser_.set_y(idx);
+        m_browser.set_y(idx);
 }
 
 void PickBgState::update()
 {
         if (config::is_bot_playing())
         {
-                player_bon::pick_bg(rnd::element(bgs_));
+                player_bon::pick_bg(rnd::element(m_bgs));
 
                 states::pop();
 
@@ -71,7 +71,7 @@ void PickBgState::update()
         const auto input = io::get();
 
         const auto action =
-                browser_.read(
+                m_browser.read(
                         input,
                         MenuInputMode::scrolling_and_letters);
 
@@ -79,7 +79,7 @@ void PickBgState::update()
         {
         case MenuAction::selected:
         {
-                const auto bg = bgs_[browser_.y()];
+                const auto bg = m_bgs[m_browser.y()];
 
                 player_bon::pick_bg(bg);
 
@@ -119,13 +119,13 @@ void PickBgState::draw()
 
         int y = 0;
 
-        const auto bg_marked = bgs_[browser_.y()];
+        const auto bg_marked = m_bgs[m_browser.y()];
 
         // Backgrounds
-        for (const auto bg : bgs_)
+        for (const auto bg : m_bgs)
         {
                 const auto key_str =
-                        browser_.menu_keys()[y] +
+                        m_browser.menu_keys()[y] +
                         std::string{") "};
 
                 const std::string bg_name = player_bon::bg_title(bg);
@@ -183,10 +183,10 @@ void PickBgState::draw()
 // -----------------------------------------------------------------------------
 void PickOccultistState::on_start()
 {
-        domains_ = player_bon::pickable_occultist_domains();
+        m_domains = player_bon::pickable_occultist_domains();
 
-        browser_.reset(
-                domains_.size(),
+        m_browser.reset(
+                m_domains.size(),
                 panels::h(Panel::create_char_menu));
 }
 
@@ -194,7 +194,7 @@ void PickOccultistState::update()
 {
         if (config::is_bot_playing())
         {
-                player_bon::pick_occultist_domain(rnd::element(domains_));
+                player_bon::pick_occultist_domain(rnd::element(m_domains));
 
                 states::pop();
 
@@ -204,7 +204,7 @@ void PickOccultistState::update()
         const auto input = io::get();
 
         const auto action =
-                browser_.read(
+                m_browser.read(
                         input,
                         MenuInputMode::scrolling_and_letters);
 
@@ -212,7 +212,7 @@ void PickOccultistState::update()
         {
         case MenuAction::selected:
         {
-                const auto domain = domains_[browser_.y()];
+                const auto domain = m_domains[m_browser.y()];
 
                 player_bon::pick_occultist_domain(domain);
 
@@ -246,13 +246,13 @@ void PickOccultistState::draw()
 
         int y = 0;
 
-        const auto domain_marked = domains_[browser_.y()];
+        const auto domain_marked = m_domains[m_browser.y()];
 
         // Domains
-        for (const auto domain : domains_)
+        for (const auto domain : m_domains)
         {
                 const auto key_str =
-                        browser_.menu_keys()[y] +
+                        m_browser.menu_keys()[y] +
                         std::string{") "};
 
                 const std::string domain_name =
@@ -311,14 +311,14 @@ void PickTraitState::on_start()
 
         player_bon::unpicked_traits_for_bg(
                 player_bg,
-                traits_avail_,
-                traits_unavail_);
+                m_traits_avail,
+                m_traits_unavail);
 
         const int choices_h = panels::h(Panel::create_char_menu);
 
-        browser_traits_avail_.reset(traits_avail_.size(), choices_h);
+        m_browser_traits_avail.reset(m_traits_avail.size(), choices_h);
 
-        browser_traits_unavail_.reset(traits_unavail_.size(), choices_h);
+        m_browser_traits_unavail.reset(m_traits_unavail.size(), choices_h);
 }
 
 void PickTraitState::update()
@@ -335,8 +335,8 @@ void PickTraitState::update()
         // Switch trait screen mode?
         if (input.key == SDLK_TAB)
         {
-                screen_mode_ =
-                        (screen_mode_ == TraitScreenMode::pick_new)
+                m_screen_mode =
+                        (m_screen_mode == TraitScreenMode::pick_new)
                         ? TraitScreenMode::view_unavail
                         : TraitScreenMode::pick_new;
 
@@ -344,9 +344,9 @@ void PickTraitState::update()
         }
 
         MenuBrowser& browser =
-                (screen_mode_ == TraitScreenMode::pick_new)
-                ? browser_traits_avail_
-                : browser_traits_unavail_;
+                (m_screen_mode == TraitScreenMode::pick_new)
+                ? m_browser_traits_avail
+                : m_browser_traits_unavail;
 
         const auto action =
                 browser.read(
@@ -357,9 +357,9 @@ void PickTraitState::update()
         {
         case MenuAction::selected:
         {
-                if (screen_mode_ == TraitScreenMode::pick_new)
+                if (m_screen_mode == TraitScreenMode::pick_new)
                 {
-                        const Trait trait = traits_avail_[browser.y()];
+                        const Trait trait = m_traits_avail[browser.y()];
 
                         const std::string name =
                                 player_bon::trait_title(trait);
@@ -406,7 +406,7 @@ void PickTraitState::draw()
 {
         std::string title;
 
-        if (screen_mode_ == TraitScreenMode::pick_new)
+        if (m_screen_mode == TraitScreenMode::pick_new)
         {
                 title =
                         states::contains_state(StateId::pick_name)
@@ -437,17 +437,17 @@ void PickTraitState::draw()
 
         std::vector<Trait>* traits;
 
-        if (screen_mode_ == TraitScreenMode::pick_new)
+        if (m_screen_mode == TraitScreenMode::pick_new)
         {
-                browser = &browser_traits_avail_;
+                browser = &m_browser_traits_avail;
 
-                traits = &traits_avail_;
+                traits = &m_traits_avail;
         }
         else // Viewing unavailable traits
         {
-                browser = &browser_traits_unavail_;
+                browser = &m_browser_traits_unavail;
 
-                traits = &traits_unavail_;
+                traits = &m_traits_unavail;
         }
 
         const int browser_y = browser->y();
@@ -475,7 +475,7 @@ void PickTraitState::draw()
 
                 Color color = colors::light_magenta();
 
-                if (screen_mode_ == TraitScreenMode::pick_new)
+                if (m_screen_mode == TraitScreenMode::pick_new)
                 {
                         if (is_idx_marked)
                         {
@@ -599,7 +599,7 @@ void PickTraitState::draw()
                 for (Trait prereq_trait : trait_marked_prereqs)
                 {
                         const bool is_picked =
-                                player_bon::traits[(size_t)prereq_trait];
+                                player_bon::has_trait(prereq_trait);
 
                         const auto& color =
                                 is_picked ?
@@ -616,9 +616,9 @@ void PickTraitState::draw()
                 if (trait_marked_clvl_prereq != -1)
                 {
                         const Color& color =
-                                (game::clvl() >= trait_marked_clvl_prereq) ?
-                                clr_prereq_ok :
-                                clr_prereq_not_ok;
+                                (game::clvl() >= trait_marked_clvl_prereq)
+                                ? clr_prereq_ok
+                                : clr_prereq_not_ok;
 
                         const std::string clvl_title =
                                 "Character level " +
@@ -650,14 +650,14 @@ void EnterNameState::on_start()
 {
         const std::string default_name = config::default_player_name();
 
-        current_str_ = default_name;
+        m_current_str = default_name;
 }
 
 void EnterNameState::update()
 {
         if (config::is_bot_playing())
         {
-                ActorData& d = *map::player->data;
+                ActorData& d = *map::g_player->m_data;
 
                 d.name_a = d.name_the = "Bot";
 
@@ -676,29 +676,29 @@ void EnterNameState::update()
 
         if (input.key == SDLK_RETURN)
         {
-                if (current_str_.empty())
+                if (m_current_str.empty())
                 {
-                        current_str_ = "Player";
+                        m_current_str = "Player";
                 }
                 else // Player has entered a string
                 {
-                        config::set_default_player_name(current_str_);
+                        config::set_default_player_name(m_current_str);
                 }
 
-                ActorData& d = *map::player->data;
+                ActorData& d = *map::g_player->m_data;
 
-                d.name_a = d.name_the = current_str_;
+                d.name_a = d.name_the = m_current_str;
 
                 states::pop();
 
                 return;
         }
 
-        if (current_str_.size() < player_name_max_len)
+        if (m_current_str.size() < g_player_name_max_len)
         {
                 if (input.key == SDLK_SPACE)
                 {
-                        current_str_.push_back(' ');
+                        m_current_str.push_back(' ');
 
                         return;
                 }
@@ -706,17 +706,17 @@ void EnterNameState::update()
                          (input.key >= 'A' && input.key <= 'Z') ||
                          (input.key >= '0' && input.key <= '9'))
                 {
-                        current_str_.push_back(input.key);
+                        m_current_str.push_back(input.key);
 
                         return;
                 }
         }
 
-        if (!current_str_.empty())
+        if (!m_current_str.empty())
         {
                 if (input.key == SDLK_BACKSPACE)
                 {
-                        current_str_.erase(current_str_.end() - 1);
+                        m_current_str.erase(m_current_str.end() - 1);
                 }
         }
 }
@@ -734,12 +734,12 @@ void EnterNameState::draw()
         const int y_name = 3;
 
         const std::string name_str =
-                (current_str_.size() < player_name_max_len) ?
-                current_str_ + "_" :
-                current_str_;
+                (m_current_str.size() < g_player_name_max_len) ?
+                m_current_str + "_" :
+                m_current_str;
 
-        const size_t name_x0 = screen_center_x - (player_name_max_len / 2);
-        const size_t name_x1 = name_x0 + player_name_max_len - 1;
+        const size_t name_x0 = screen_center_x - (g_player_name_max_len / 2);
+        const size_t name_x1 = name_x0 + g_player_name_max_len - 1;
 
         io::draw_text(
                 name_str,

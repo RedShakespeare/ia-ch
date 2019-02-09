@@ -24,9 +24,10 @@
 // -----------------------------------------------------------------------------
 // Private
 // -----------------------------------------------------------------------------
-static Bg current_bg = Bg::END;
+static Bg s_current_bg = Bg::END;
 
-static OccultistDomain current_occultist_domain = OccultistDomain::END;
+static OccultistDomain s_current_occultist_domain = OccultistDomain::END;
+
 
 static bool is_trait_blocked_for_bg(const Trait trait, const Bg bg)
 {
@@ -95,41 +96,42 @@ static bool is_trait_blocked_for_bg(const Trait trait, const Bg bg)
 namespace player_bon
 {
 
-bool traits[(size_t)Trait::END];
+bool g_traits[(size_t)Trait::END];
+
 
 void init()
 {
-        current_bg = Bg::END;
+        s_current_bg = Bg::END;
 
-        current_occultist_domain = OccultistDomain::END;
+        s_current_occultist_domain = OccultistDomain::END;
 
         for (size_t i = 0; i < (size_t)Trait::END; ++i)
         {
-                traits[i] = false;
+                g_traits[i] = false;
         }
 }
 
 void save()
 {
-        saving::put_int((int)current_bg);
+        saving::put_int((int)s_current_bg);
 
-        saving::put_int((int)current_occultist_domain);
+        saving::put_int((int)s_current_occultist_domain);
 
         for (size_t i = 0; i < (size_t)Trait::END; ++i)
         {
-                saving::put_bool(traits[i]);
+                saving::put_bool(g_traits[i]);
         }
 }
 
 void load()
 {
-        current_bg = (Bg)saving::get_int();
+        s_current_bg = (Bg)saving::get_int();
 
-        current_occultist_domain = (OccultistDomain)saving::get_int();
+        s_current_occultist_domain = (OccultistDomain)saving::get_int();
 
         for (size_t i = 0; i < (size_t)Trait::END; ++i)
         {
-                traits[i] = saving::get_bool();
+                g_traits[i] = saving::get_bool();
         }
 }
 
@@ -835,17 +837,17 @@ void trait_prereqs(
 
 Bg bg()
 {
-        return current_bg;
+        return s_current_bg;
 }
 
 OccultistDomain occultist_domain()
 {
-        return current_occultist_domain;
+        return s_current_occultist_domain;
 }
 
 bool has_trait(const Trait id)
 {
-        return traits[(size_t)id];
+        return g_traits[(size_t)id];
 }
 
 std::vector<Bg> pickable_bgs()
@@ -898,7 +900,7 @@ void unpicked_traits_for_bg(
         for (size_t i = 0; i < (size_t)Trait::END; ++i)
         {
                 // Already picked?
-                if (traits[i])
+                if (g_traits[i])
                 {
                         continue;
                 }
@@ -932,7 +934,7 @@ void unpicked_traits_for_bg(
                         clvl_prereq);
 
                 const bool is_bg_ok =
-                        (current_bg == bg_prereq) ||
+                        (s_current_bg == bg_prereq) ||
                         (bg_prereq == Bg::END);
 
                 if (!is_bg_ok)
@@ -944,7 +946,7 @@ void unpicked_traits_for_bg(
 
                 for (const auto& prereq : trait_prereq_list)
                 {
-                        if (!traits[(size_t)prereq])
+                        if (!g_traits[(size_t)prereq])
                         {
                                 is_trait_prereqs_ok = false;
 
@@ -991,17 +993,17 @@ void pick_bg(const Bg bg)
 {
         ASSERT(bg != Bg::END);
 
-        current_bg = bg;
+        s_current_bg = bg;
 
-        switch (current_bg)
+        switch (s_current_bg)
         {
         case Bg::occultist:
         {
                 pick_trait(Trait::stout_spirit);
 
-                map::player->change_max_sp(2, Verbosity::silent);
+                map::g_player->change_max_sp(2, Verbosity::silent);
 
-                map::player->change_max_hp(-2, Verbosity::silent);
+                map::g_player->change_max_hp(-2, Verbosity::silent);
         }
         break;
 
@@ -1011,7 +1013,7 @@ void pick_bg(const Bg bg)
 
                 prop_r_disease->set_indefinite();
 
-                map::player->properties.apply(
+                map::g_player->m_properties.apply(
                         prop_r_disease,
                         PropSrc::intr,
                         true,
@@ -1021,7 +1023,7 @@ void pick_bg(const Bg bg)
 
                 prop_darkvis->set_indefinite();
 
-                map::player->properties.apply(
+                map::g_player->m_properties.apply(
                         prop_darkvis,
                         PropSrc::intr,
                         true,
@@ -1030,7 +1032,7 @@ void pick_bg(const Bg bg)
                 player_spells::learn_spell(SpellId::frenzy,
                                            Verbosity::silent);
 
-                map::player->change_max_hp(6, Verbosity::silent);
+                map::g_player->change_max_hp(6, Verbosity::silent);
         }
         break;
 
@@ -1058,12 +1060,12 @@ void pick_occultist_domain(const OccultistDomain domain)
 {
         ASSERT(domain != OccultistDomain::END);
 
-        current_occultist_domain = domain;
+        s_current_occultist_domain = domain;
 }
 
 void on_player_gained_lvl(const int new_lvl)
 {
-        if (current_bg == Bg::occultist)
+        if (s_current_bg == Bg::occultist)
         {
                 const bool is_occultist_spell_incr_lvl =
                         (new_lvl == 4) ||
@@ -1080,7 +1082,8 @@ void on_player_gained_lvl(const int new_lvl)
                                                 (SpellId)spell_id));
 
                                 if (spell->player_can_learn() &&
-                                    spell->domain() == current_occultist_domain)
+                                    (spell->domain() ==
+                                     s_current_occultist_domain))
                                 {
                                         player_spells::incr_spell_skill(
                                                 (SpellId)spell_id);
@@ -1094,7 +1097,7 @@ void set_all_traits_to_picked()
 {
         for (int i = 0; i < (int)Trait::END; ++i)
         {
-                traits[i] = true;
+                g_traits[i] = true;
         }
 }
 
@@ -1102,7 +1105,7 @@ void pick_trait(const Trait id)
 {
         ASSERT(id != Trait::END);
 
-        traits[(size_t)id] = true;
+        g_traits[(size_t)id] = true;
 
         switch (id)
         {
@@ -1111,11 +1114,11 @@ void pick_trait(const Trait id)
         {
                 const int hp_incr = 4;
 
-                map::player->change_max_hp(
+                map::g_player->change_max_hp(
                         hp_incr,
                         Verbosity::silent);
 
-                map::player->restore_hp(
+                map::g_player->restore_hp(
                         hp_incr,
                         false, // Not allowed above max
                         Verbosity::silent);
@@ -1128,7 +1131,7 @@ void pick_trait(const Trait id)
 
                 prop->set_indefinite();
 
-                map::player->properties.apply(
+                map::g_player->m_properties.apply(
                         prop,
                         PropSrc::intr,
                         true,
@@ -1140,11 +1143,11 @@ void pick_trait(const Trait id)
         {
                 const int spi_incr = 2;
 
-                map::player->change_max_sp(
+                map::g_player->change_max_sp(
                         spi_incr,
                         Verbosity::silent);
 
-                map::player->restore_sp(
+                map::g_player->restore_sp(
                         spi_incr,
                         false, // Not allowed above max
                         Verbosity::silent);
@@ -1157,7 +1160,7 @@ void pick_trait(const Trait id)
 
                 prop->set_indefinite();
 
-                map::player->properties.apply(
+                map::g_player->m_properties.apply(
                         prop,
                         PropSrc::intr,
                         true,
@@ -1171,7 +1174,7 @@ void pick_trait(const Trait id)
 
                 prop->set_indefinite();
 
-                map::player->properties.apply(
+                map::g_player->m_properties.apply(
                         prop,
                         PropSrc::intr,
                         true,
@@ -1185,7 +1188,7 @@ void pick_trait(const Trait id)
 
                 prop->set_indefinite();
 
-                map::player->properties.apply(
+                map::g_player->m_properties.apply(
                         prop,
                         PropSrc::intr,
                         true,
@@ -1199,7 +1202,7 @@ void pick_trait(const Trait id)
 
                 prop->set_indefinite();
 
-                map::player->properties.apply(
+                map::g_player->m_properties.apply(
                         prop,
                         PropSrc::intr,
                         true,
@@ -1218,7 +1221,7 @@ std::string all_picked_traits_titles_line()
 
         for (int i = 0; i < (int)Trait::END; ++i)
         {
-                if (traits[i])
+                if (g_traits[i])
                 {
                         const std::string title = trait_title(Trait(i));
 
@@ -1232,7 +1235,7 @@ std::string all_picked_traits_titles_line()
 bool gets_undead_bane_bon(const ActorData& actor_data)
 {
         return
-                player_bon::traits[(size_t)Trait::undead_bane] &&
+                player_bon::g_traits[(size_t)Trait::undead_bane] &&
                 actor_data.is_undead;
 }
 

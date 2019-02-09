@@ -29,7 +29,7 @@ TEST_CASE("fov")
 
         const auto fov = fov::run(P(x, y), fov_map);
 
-        const int r = fov_radi_int;
+        const int r = g_fov_radi_int;
 
         SECTION("Not blocked")
         {

@@ -15,7 +15,7 @@ class Item;
 class Wpn;
 struct P;
 
-class AttData
+struct AttData
 {
 public:
         virtual ~AttData() {}
@@ -32,18 +32,19 @@ public:
         bool is_intrinsic_att;
 
 protected:
-        // Never use this class directly (only through inheritance)
-        AttData(Actor* const attacker,
+        AttData(
+                Actor* const attacker,
                 Actor* const defender,
                 const Item& att_item);
 };
 
-class MeleeAttData: public AttData
+struct MeleeAttData: public AttData
 {
 public:
-        MeleeAttData(Actor* const attacker,
-                     Actor& defender,
-                     const Wpn& wpn);
+        MeleeAttData(
+                Actor* const attacker,
+                Actor& defender,
+                const Wpn& wpn);
 
         ~MeleeAttData() {}
 
@@ -51,14 +52,15 @@ public:
         bool is_weak_attack;
 };
 
-class RangedAttData: public AttData
+struct RangedAttData: public AttData
 {
 public:
-        RangedAttData(Actor* const attacker,
-                      const P& attacker_origin,
-                      const P& aim_pos,
-                      const P& current_pos,
-                      const Wpn& wpn);
+        RangedAttData(
+                Actor* const attacker,
+                const P& attacker_origin,
+                const P& aim_pos,
+                const P& current_pos,
+                const Wpn& wpn);
 
         ~RangedAttData() {}
 
@@ -68,13 +70,14 @@ public:
         int dist_mod;
 };
 
-class ThrowAttData: public AttData
+struct ThrowAttData: public AttData
 {
 public:
-        ThrowAttData(Actor* const attacker,
-                     const P& aim_pos,
-                     const P& current_pos,
-                     const Item& item);
+        ThrowAttData(
+                Actor* const attacker,
+                const P& aim_pos,
+                const P& current_pos,
+                const Item& item);
 
         ActorSize aim_lvl;
         ActorSize defender_size;

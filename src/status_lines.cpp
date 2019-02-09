@@ -23,15 +23,16 @@
 // -----------------------------------------------------------------------------
 // Private
 // -----------------------------------------------------------------------------
-static const Panel panel = Panel::player_stats;
+static const Panel s_panel = Panel::player_stats;
 
-static const bool draw_text_bg = false;
+static const bool s_draw_text_bg = false;
 
-static const int text_x0 = 1;
+static const int s_text_x0 = 1;
+
 
 static int text_x1()
 {
-        return panels::w(panel) - 2;
+        return panels::w(s_panel) - 2;
 }
 
 static Color label_color()
@@ -42,11 +43,11 @@ static Color label_color()
 static void draw_player_name(int& y)
 {
         io::draw_text(
-                map::player->name_the(),
-                panel,
-                P(text_x0, y),
+                map::g_player->name_the(),
+                s_panel,
+                P(s_text_x0, y),
                 colors::light_sepia(),
-                draw_text_bg);
+                s_draw_text_bg);
 
         ++y;
 }
@@ -71,16 +72,16 @@ static void draw_player_class(int& y)
         const auto class_lines =
                 text_format::split(
                         bg_title,
-                        text_x1() - text_x0 + 1);
+                        text_x1() - s_text_x0 + 1);
 
         for (const std::string& line : class_lines)
         {
                 io::draw_text(
                         line,
-                        panel,
-                        P(text_x0, y),
+                        s_panel,
+                        P(s_text_x0, y),
                         colors::light_sepia(),
-                        draw_text_bg);
+                        s_draw_text_bg);
 
                 ++y;
         }
@@ -90,10 +91,10 @@ static void draw_char_lvl_and_xp(int& y)
 {
         io::draw_text(
                 "Level",
-                panel,
-                P(text_x0, y),
+                s_panel,
+                P(s_text_x0, y),
                 label_color(),
-                draw_text_bg);
+                s_draw_text_bg);
 
         const std::string xp_str =
                 std::to_string(game::clvl()) +
@@ -103,10 +104,10 @@ static void draw_char_lvl_and_xp(int& y)
 
         io::draw_text_right(
                 xp_str,
-                panel,
+                s_panel,
                 P(text_x1(), y),
                 colors::white(),
-                draw_text_bg);
+                s_draw_text_bg);
 
         ++y;
 }
@@ -115,19 +116,19 @@ static void draw_dlvl(int& y)
 {
         io::draw_text(
                 "Depth",
-                panel,
-                P(text_x0, y),
+                s_panel,
+                P(s_text_x0, y),
                 label_color(),
-                draw_text_bg);
+                s_draw_text_bg);
 
-        std::string dlvl_str = std::to_string(map::dlvl);
+        std::string dlvl_str = std::to_string(map::g_dlvl);
 
         io::draw_text_right(
                 dlvl_str,
-                panel,
+                s_panel,
                 P(text_x1(), y),
                 colors::white(),
-                draw_text_bg);
+                s_draw_text_bg);
 
         ++y;
 }
@@ -136,22 +137,22 @@ static void draw_hp(int& y)
 {
         io::draw_text(
                 "Health",
-                panel,
-                P(text_x0, y),
+                s_panel,
+                P(s_text_x0, y),
                 label_color(),
-                draw_text_bg);
+                s_draw_text_bg);
 
         const std::string str =
-                std::to_string(map::player->hp) +
+                std::to_string(map::g_player->m_hp) +
                 "/" +
-                std::to_string(actor::max_hp(*map::player));
+                std::to_string(actor::max_hp(*map::g_player));
 
         io::draw_text_right(
                 str,
-                panel,
+                s_panel,
                 P(text_x1(), y),
                 colors::light_red(),
-                draw_text_bg);
+                s_draw_text_bg);
 
         ++y;
 }
@@ -160,22 +161,22 @@ static void draw_sp(int& y)
 {
         io::draw_text(
                 "Spirit",
-                panel,
-                P(text_x0, y),
+                s_panel,
+                P(s_text_x0, y),
                 label_color(),
-                draw_text_bg);
+                s_draw_text_bg);
 
         const std::string str =
-                std::to_string(map::player->sp) +
+                std::to_string(map::g_player->m_sp) +
                 "/" +
-                std::to_string(actor::max_sp(*map::player));
+                std::to_string(actor::max_sp(*map::g_player));
 
         io::draw_text_right(
                 str,
-                panel,
+                s_panel,
                 P(text_x1(), y),
                 colors::light_blue(),
-                draw_text_bg);
+                s_draw_text_bg);
 
         ++y;
 }
@@ -184,12 +185,12 @@ static void draw_shock(int& y)
 {
         io::draw_text(
                 "Shock",
-                panel,
-                P(text_x0, y),
+                s_panel,
+                P(s_text_x0, y),
                 label_color(),
-                draw_text_bg);
+                s_draw_text_bg);
 
-        const int shock = std::min(999, map::player->shock_tot());
+        const int shock = std::min(999, map::g_player->shock_tot());
 
         const std::string shock_str = std::to_string(shock) + "%";
 
@@ -201,10 +202,10 @@ static void draw_shock(int& y)
 
         io::draw_text_right(
                 shock_str,
-                panel,
+                s_panel,
                 P(text_x1(), y),
                 colors::magenta() /* shock_color */,
-                draw_text_bg);
+                s_draw_text_bg);
 
         ++y;
 }
@@ -213,19 +214,19 @@ static void draw_insanity(int& y)
 {
         io::draw_text(
                 "Insanity",
-                panel,
-                P(text_x0, y),
+                s_panel,
+                P(s_text_x0, y),
                 label_color(),
-                draw_text_bg);
+                s_draw_text_bg);
 
-        const std::string ins_str = std::to_string(map::player->ins()) + "%";
+        const std::string ins_str = std::to_string(map::g_player->ins()) + "%";
 
         io::draw_text_right(
                 ins_str,
-                panel,
+                s_panel,
                 P(text_x1(), y),
                 colors::magenta(),
-                draw_text_bg);
+                s_draw_text_bg);
 
         ++y;
 }
@@ -234,16 +235,16 @@ static void draw_wielded_wpn(int& y)
 {
         io::draw_text(
                 "Wpn",
-                panel,
-                P(text_x0, y),
+                s_panel,
+                P(s_text_x0, y),
                 label_color(),
-                draw_text_bg);
+                s_draw_text_bg);
 
-        const Item* wpn = map::player->inv.item_in_slot(SlotId::wpn);
+        const Item* wpn = map::g_player->m_inv.item_in_slot(SlotId::wpn);
 
         if (!wpn)
         {
-                wpn = &map::player->unarmed_wpn();
+                wpn = &map::g_player->unarmed_wpn();
         }
 
         const ItemRefAttInf att_inf =
@@ -268,10 +269,10 @@ static void draw_wielded_wpn(int& y)
 
         io::draw_text_right(
                 wpn_str,
-                panel,
+                s_panel,
                 P(text_x1(), y),
                 colors::white(),
-                draw_text_bg);
+                s_draw_text_bg);
 
         ++y;
 }
@@ -280,16 +281,16 @@ static void draw_alt_wpn(int& y)
 {
         io::draw_text(
                 "Alt",
-                panel,
-                P(text_x0, y),
+                s_panel,
+                P(s_text_x0, y),
                 label_color(),
-                draw_text_bg);
+                s_draw_text_bg);
 
-        const Item* wpn = map::player->inv.item_in_slot(SlotId::wpn_alt);
+        const Item* wpn = map::g_player->m_inv.item_in_slot(SlotId::wpn_alt);
 
         if (!wpn)
         {
-                wpn = &map::player->unarmed_wpn();
+                wpn = &map::g_player->unarmed_wpn();
         }
 
         const ItemRefAttInf att_inf =
@@ -314,10 +315,10 @@ static void draw_alt_wpn(int& y)
 
         io::draw_text_right(
                 wpn_str,
-                panel,
+                s_panel,
                 P(text_x1(), y),
                 colors::gray(),
-                draw_text_bg);
+                s_draw_text_bg);
 
         ++y;
 }
@@ -326,13 +327,13 @@ static void draw_lantern(int& y)
 {
         io::draw_text(
                 "Lantern",
-                panel,
-                P(text_x0, y),
+                s_panel,
+                P(s_text_x0, y),
                 label_color(),
-                draw_text_bg);
+                s_draw_text_bg);
 
         const Item* const item =
-                map::player->inv.item_in_backpack(ItemId::lantern);
+                map::g_player->m_inv.item_in_backpack(ItemId::lantern);
 
         Color color = colors::white();
 
@@ -354,10 +355,10 @@ static void draw_lantern(int& y)
 
         io::draw_text_right(
                 lantern_str,
-                panel,
+                s_panel,
                 P(text_x1(), y),
                 color,
-                draw_text_bg);
+                s_draw_text_bg);
 
         ++y;
 }
@@ -366,30 +367,30 @@ static void draw_med_suppl(int& y)
 {
         io::draw_text(
                 "Med. Suppl.",
-                panel,
-                P(text_x0, y),
+                s_panel,
+                P(s_text_x0, y),
                 label_color(),
-                draw_text_bg);
+                s_draw_text_bg);
 
         std::string suppl_str = "-";
 
         const Item* const item =
-                map::player->inv.item_in_backpack(ItemId::medical_bag);
+                map::g_player->m_inv.item_in_backpack(ItemId::medical_bag);
 
         if (item)
         {
                 const MedicalBag* const medical_bag =
                         static_cast<const MedicalBag*>(item);
 
-                suppl_str = std::to_string(medical_bag->nr_supplies_);
+                suppl_str = std::to_string(medical_bag->m_nr_supplies);
         }
 
         io::draw_text_right(
                 suppl_str,
-                panel,
+                s_panel,
                 P(text_x1(), y),
                 colors::white(),
-                draw_text_bg);
+                s_draw_text_bg);
 
         ++y;
 }
@@ -398,20 +399,20 @@ static void draw_armor(int& y)
 {
         io::draw_text(
                 "Armor",
-                panel,
-                P(text_x0, y),
+                s_panel,
+                P(s_text_x0, y),
                 label_color(),
-                draw_text_bg);
+                s_draw_text_bg);
 
         const std::string armor_str =
-                std::to_string(map::player->armor_points());
+                std::to_string(map::g_player->armor_points());
 
         io::draw_text_right(
                 armor_str,
-                panel,
+                s_panel,
                 P(text_x1(), y),
                 colors::white(),
-                draw_text_bg);
+                s_draw_text_bg);
 
         ++y;
 }
@@ -420,26 +421,26 @@ static void draw_encumbrance(int& y)
 {
         io::draw_text(
                 "Weight",
-                panel,
-                P(text_x0, y),
+                s_panel,
+                P(s_text_x0, y),
                 label_color(),
-                draw_text_bg);
+                s_draw_text_bg);
 
-        const int enc = map::player->enc_percent();
+        const int enc = map::g_player->enc_percent();
 
         const std::string enc_str = std::to_string(enc) + "%";
 
         const Color enc_color =
                 (enc < 100) ? colors::white() :
-                (enc < enc_immobile_lvl) ? colors::yellow() :
+                (enc < g_enc_immobile_lvl) ? colors::yellow() :
                 colors::light_red();
 
         io::draw_text_right(
                 enc_str,
-                panel,
+                s_panel,
                 P(text_x1(), y),
                 enc_color,
-                draw_text_bg);
+                s_draw_text_bg);
 
         ++y;
 }
@@ -447,21 +448,21 @@ static void draw_encumbrance(int& y)
 static void draw_properties(int& y)
 {
         const auto property_names =
-                map::player->properties.property_names_short();
+                map::g_player->m_properties.property_names_short();
 
         for (const auto& name : property_names)
         {
-                if (y >= panels::y1(panel))
+                if (y >= panels::y1(s_panel))
                 {
                         break;
                 }
 
                 io::draw_text(
                         name.str,
-                        panel,
-                        P(text_x0, y),
+                        s_panel,
+                        P(s_text_x0, y),
                         name.color,
-                        draw_text_bg);
+                        s_draw_text_bg);
 
                 ++y;
         }
@@ -475,9 +476,9 @@ namespace status_lines
 
 void draw()
 {
-        io::cover_panel(panel, colors::extra_dark_gray());
+        io::cover_panel(s_panel, colors::extra_dark_gray());
 
-        io::draw_box(panels::area(panel));
+        io::draw_box(panels::area(s_panel));
 
         int y = 1;
 

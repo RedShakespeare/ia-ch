@@ -68,26 +68,26 @@ struct ChokePointData
 namespace map
 {
 
-extern Player* player;
+extern Player* g_player;
 
-extern int dlvl;
+extern int g_dlvl;
 
-extern Array2<Cell> cells;
+extern Array2<Cell> g_cells;
 
-extern Array2<bool> light;
-extern Array2<bool> dark;
+extern Array2<bool> g_light;
+extern Array2<bool> g_dark;
 
-extern Color wall_color;
+extern Color g_wall_color;
 
 // This vector is the room owner
-extern std::vector<Room*> room_list;
+extern std::vector<Room*> g_room_list;
 
 // Helper array, for convenience and optimization
-extern Array2<Room*> room_map;
+extern Array2<Room*> g_room_map;
 
 // NOTE: This data is only intended to be used for the purpose of map generation
 // (and placing items etc), it is NOT updated while playing the map.
-extern std::vector<ChokePointData> choke_point_data;
+extern std::vector<ChokePointData> g_choke_point_data;
 
 void init();
 void cleanup();

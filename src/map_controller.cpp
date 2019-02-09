@@ -22,7 +22,7 @@
 // -----------------------------------------------------------------------------
 void MapControllerStd::on_start()
 {
-        if (!map::player->properties.has(PropId::deaf))
+        if (!map::g_player->m_properties.has(PropId::deaf))
         {
                 audio::try_play_amb(1);
         }
@@ -42,7 +42,7 @@ void MapControllerBoss::on_start()
 {
         audio::play(SfxId::boss_voice1);
 
-        for (auto* const actor : game_time::actors)
+        for (auto* const actor : game_time::g_actors)
         {
                 if (!actor->is_player())
                 {
@@ -56,7 +56,7 @@ void MapControllerBoss::on_std_turn()
         const P stair_pos(map::w() - 2, 11);
 
         const auto feature_at_stair_pos =
-                map::cells.at(stair_pos).rigid->id();
+                map::g_cells.at(stair_pos).rigid->id();
 
         if (feature_at_stair_pos == FeatureId::stairs)
         {
@@ -64,7 +64,7 @@ void MapControllerBoss::on_std_turn()
                 return;
         }
 
-        for (const auto* const actor : game_time::actors)
+        for (const auto* const actor : game_time::g_actors)
         {
                 if ((actor->id() == ActorId::the_high_priest) &&
                     actor->is_alive())
@@ -100,6 +100,6 @@ void MapControllerBoss::on_std_turn()
 namespace map_control
 {
 
-std::unique_ptr<MapController> controller = nullptr;
+std::unique_ptr<MapController> g_controller = nullptr;
 
 }

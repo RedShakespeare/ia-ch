@@ -35,13 +35,13 @@
 // Property base class
 // -----------------------------------------------------------------------------
 Prop::Prop(PropId id) :
-        id_(id),
-        data_(property_data::data[(size_t)id]),
-        nr_turns_left_(data_.std_rnd_turns.roll()),
-        duration_mode_(PropDurationMode::standard),
-        owner_(nullptr),
-        src_(PropSrc::END),
-        item_applying_(nullptr)
+        m_id(id),
+        m_data(property_data::g_data[(size_t)id]),
+        m_nr_turns_left(m_data.std_rnd_turns.roll()),
+        m_duration_mode(PropDurationMode::standard),
+        m_owner(nullptr),
+        m_src(PropSrc::END),
+        m_item_applying(nullptr)
 {
 
 }
@@ -51,7 +51,7 @@ Prop::Prop(PropId id) :
 // -----------------------------------------------------------------------------
 void PropBlessed::on_applied()
 {
-        owner_->properties.end_prop(
+        m_owner->m_properties.end_prop(
                 PropId::cursed,
                 PropEndConfig(
                         PropEndAllowCallEndHook::no,
@@ -72,13 +72,13 @@ void PropBlessed::on_more(const Prop& new_prop)
 void PropBlessed::bless_adjacent() const
 {
         // "Bless" adjacent fountains
-        const P& p = owner_->pos;
+        const P& p = m_owner->m_pos;
 
-        for (const P& d : dir_utils::dir_list_w_center)
+        for (const P& d : dir_utils::g_dir_list_w_center)
         {
                 const P p_adj(p + d);
 
-                Cell& cell = map::cells.at(p_adj);
+                Cell& cell = map::g_cells.at(p_adj);
 
                 Rigid* const rigid = cell.rigid;
 
@@ -93,7 +93,7 @@ void PropBlessed::bless_adjacent() const
 
 void PropCursed::on_applied()
 {
-        owner_->properties.end_prop(
+        m_owner->m_properties.end_prop(
                 PropId::blessed,
                 PropEndConfig(
                         PropEndAllowCallEndHook::no,
@@ -114,13 +114,13 @@ void PropCursed::on_more(const Prop& new_prop)
 void PropCursed::curse_adjacent() const
 {
         // "Curse" adjacent fountains
-        const P& p = owner_->pos;
+        const P& p = m_owner->m_pos;
 
-        for (const P& d : dir_utils::dir_list_w_center)
+        for (const P& d : dir_utils::g_dir_list_w_center)
         {
                 const P p_adj(p + d);
 
-                Cell& cell = map::cells.at(p_adj);
+                Cell& cell = map::g_cells.at(p_adj);
 
                 Rigid* const rigid = cell.rigid;
 
@@ -135,25 +135,25 @@ void PropCursed::curse_adjacent() const
 
 PropEnded PropEntangled::on_tick()
 {
-        if (!owner_->properties.has(PropId::swimming))
+        if (!m_owner->m_properties.has(PropId::swimming))
         {
                 return PropEnded::no;
         }
 
-        if (owner_->is_player())
+        if (m_owner->is_player())
         {
                 msg_log::add("I am drowning!", colors::msg_bad());
         }
-        else if (map::player->can_see_actor(*owner_))
+        else if (map::g_player->can_see_actor(*m_owner))
         {
                 const auto name_the =
                         text_format::first_to_upper(
-                                owner_->name_the());
+                                m_owner->name_the());
 
                 msg_log::add(name_the + " is drowning.", colors::msg_good());
         }
 
-        actor::hit(*owner_, 1, DmgType::physical);
+        actor::hit(*m_owner, 1, DmgType::physical);
 
         return PropEnded::no;
 }
@@ -179,17 +179,17 @@ PropEnded PropEntangled::affect_move_dir(const P& actor_pos, Dir& dir)
 
         dir = Dir::center;
 
-        if (owner_->is_player())
+        if (m_owner->is_player())
         {
                 msg_log::add("I struggle to tear free!", colors::msg_bad());
         }
         else // Is monster
         {
-                if (map::player->can_see_actor(*owner_))
+                if (map::g_player->can_see_actor(*m_owner))
                 {
                         const std::string actor_name_the =
                                 text_format::first_to_upper(
-                                        owner_->name_the());
+                                        m_owner->name_the());
 
                         msg_log::add(actor_name_the +
                                      " struggles to tear free.",
@@ -199,7 +199,7 @@ PropEnded PropEntangled::affect_move_dir(const P& actor_pos, Dir& dir)
 
         if (rnd::one_in(8))
         {
-                owner_->properties.end_prop(id());
+                m_owner->m_properties.end_prop(id());
 
                 return PropEnded::yes;
         }
@@ -209,18 +209,18 @@ PropEnded PropEntangled::affect_move_dir(const P& actor_pos, Dir& dir)
 
 bool PropEntangled::try_player_end_with_machete()
 {
-        if (owner_ != map::player)
+        if (m_owner != map::g_player)
         {
                 return false;
         }
 
-        Item* item = owner_->inv.item_in_slot(SlotId::wpn);
+        Item* item = m_owner->m_inv.item_in_slot(SlotId::wpn);
 
         if (item && (item->id() == ItemId::machete))
         {
                 msg_log::add("I cut myself free with my Machete.");
 
-                owner_->properties.end_prop(
+                m_owner->m_properties.end_prop(
                         id(),
                         PropEndConfig(
                                 PropEndAllowCallEndHook::no,
@@ -236,7 +236,7 @@ bool PropEntangled::try_player_end_with_machete()
 
 void PropSlowed::on_applied()
 {
-        owner_->properties.end_prop(
+        m_owner->m_properties.end_prop(
                 PropId::hasted,
                 PropEndConfig(
                         PropEndAllowCallEndHook::no,
@@ -247,7 +247,7 @@ void PropSlowed::on_applied()
 
 void PropHasted::on_applied()
 {
-        owner_->properties.end_prop(
+        m_owner->m_properties.end_prop(
                 PropId::slowed,
                 PropEndConfig(
                         PropEndAllowCallEndHook::no,
@@ -258,7 +258,7 @@ void PropHasted::on_applied()
 
 void PropClockworkHasted::on_applied()
 {
-        owner_->properties.end_prop(
+        m_owner->m_properties.end_prop(
                 PropId::slowed,
                 PropEndConfig(
                         PropEndAllowCallEndHook::no,
@@ -269,38 +269,38 @@ void PropClockworkHasted::on_applied()
 
 void PropSummoned::on_end()
 {
-        owner_->state = ActorState::destroyed;
+        m_owner->m_state = ActorState::destroyed;
 
-        actor::unset_actor_as_leader_for_all_mon(*owner_);
+        actor::unset_actor_as_leader_for_all_mon(*m_owner);
 }
 
 PropEnded PropInfected::on_tick()
 {
 #ifndef NDEBUG
-        ASSERT(!owner_->properties.has(PropId::diseased));
+        ASSERT(!m_owner->m_properties.has(PropId::diseased));
 #endif // NDEBUG
 
-        if (map::player->active_medical_bag_)
+        if (map::g_player->m_active_medical_bag)
         {
-                ++nr_turns_left_;
+                ++m_nr_turns_left;
 
                 return PropEnded::no;
         }
 
         const int allow_disease_below_turns_left = 50;
 
-        const int apply_disease_one_in_n = nr_turns_left_ - 1;
+        const int apply_disease_one_in_n = m_nr_turns_left - 1;
 
         const bool apply_disease =
-                (nr_turns_left_ <= allow_disease_below_turns_left) &&
+                (m_nr_turns_left <= allow_disease_below_turns_left) &&
                 ((apply_disease_one_in_n <= 0) ||
                  rnd::one_in(apply_disease_one_in_n));
 
         if (apply_disease)
         {
-                auto* const owner = owner_;
+                auto* const owner = m_owner;
 
-                owner->properties.end_prop(
+                owner->m_properties.end_prop(
                         id(),
                         PropEndConfig(
                                 PropEndAllowCallEndHook::no,
@@ -314,7 +314,7 @@ PropEnded PropInfected::on_tick()
 
                 prop_diseased->set_indefinite();
 
-                owner->properties.apply(prop_diseased);
+                owner->m_properties.apply(prop_diseased);
 
                 msg_log::more_prompt();
 
@@ -332,7 +332,7 @@ int PropDiseased::affect_max_hp(const int hp_max) const
 void PropDiseased::on_applied()
 {
         // End infection
-        owner_->properties.end_prop(
+        m_owner->m_properties.end_prop(
                 PropId::infected,
                 PropEndConfig(
                         PropEndAllowCallEndHook::no,
@@ -344,7 +344,7 @@ void PropDiseased::on_applied()
 bool PropDiseased::is_resisting_other_prop(const PropId prop_id) const
 {
 #ifndef NDEBUG
-        ASSERT(!owner_->properties.has(PropId::infected));
+        ASSERT(!m_owner->m_properties.has(PropId::infected));
 #endif // NDEBUG
 
         // Getting infected while already diseased is just annoying
@@ -353,11 +353,11 @@ bool PropDiseased::is_resisting_other_prop(const PropId prop_id) const
 
 PropEnded PropDescend::on_tick()
 {
-        ASSERT(owner_->is_player());
+        ASSERT(m_owner->is_player());
 
-        if (nr_turns_left_ <= 1)
+        if (m_nr_turns_left <= 1)
         {
-                game_time::is_magic_descend_nxt_std_turn = true;
+                game_time::g_is_magic_descend_nxt_std_turn = true;
         }
 
         return PropEnded::no;
@@ -371,7 +371,7 @@ void PropZuulPossessPriest::on_placed()
         // actor is killed, Zuul will be allowed to spawn infinitely (this is
         // handled elsewhere).
 
-        const int nr_left_allowed = owner_->data->nr_left_allowed_to_spawn;
+        const int nr_left_allowed = m_owner->m_data->nr_left_allowed_to_spawn;
 
         ASSERT(nr_left_allowed <= 0);
 
@@ -379,18 +379,18 @@ void PropZuulPossessPriest::on_placed()
 
         if (should_possess)
         {
-                owner_->state = ActorState::destroyed;
+                m_owner->m_state = ActorState::destroyed;
 
                 Actor* actor =
                         actor_factory::make(
                                 ActorId::cultist_priest,
-                                owner_->pos);
+                                m_owner->m_pos);
 
                 auto* prop = new PropPossessedByZuul();
 
                 prop->set_indefinite();
 
-                actor->properties.apply(
+                actor->m_properties.apply(
                         prop,
                         PropSrc::intr,
                         true,
@@ -404,28 +404,28 @@ void PropPossessedByZuul::on_death()
 {
         // An actor possessed by Zuul has died - release Zuul!
 
-        if (map::player->can_see_actor(*owner_))
+        if (map::g_player->can_see_actor(*m_owner))
         {
                 const std::string& name1 =
                         text_format::first_to_upper(
-                                owner_->name_the());
+                                m_owner->name_the());
 
                 const std::string& name2 =
-                        actor_data::data[(size_t)ActorId::zuul].name_the;
+                        actor_data::g_data[(size_t)ActorId::zuul].name_the;
 
                 msg_log::add(name1 + " was possessed by " + name2 + "!");
         }
 
-        owner_->state = ActorState::destroyed;
+        m_owner->m_state = ActorState::destroyed;
 
-        const P& pos = owner_->pos;
+        const P& pos = m_owner->m_pos;
 
         map::make_gore(pos);
 
         map::make_blood(pos);
 
         // Zuul is now free, allow it to spawn infinitely
-        actor_data::data[(size_t)ActorId::zuul].nr_left_allowed_to_spawn = -1;
+        actor_data::g_data[(size_t)ActorId::zuul].nr_left_allowed_to_spawn = -1;
 
         actor_factory::spawn(pos, {ActorId::zuul}, map::rect())
                 .make_aware_of_player();
@@ -433,10 +433,10 @@ void PropPossessedByZuul::on_death()
 
 PropEnded PropPoisoned::on_tick()
 {
-        if (owner_->is_alive() &&
-            (game_time::turn_nr() % poison_dmg_n_turn) == 0)
+        if (m_owner->is_alive() &&
+            (game_time::turn_nr() % g_poison_dmg_n_turn) == 0)
         {
-                if (owner_->is_player())
+                if (m_owner->is_player())
                 {
                         msg_log::add("I am suffering from the poison!",
                                      colors::msg_bad(),
@@ -444,18 +444,18 @@ PropEnded PropPoisoned::on_tick()
                 }
                 else // Is monster
                 {
-                        if (map::player->can_see_actor(*owner_))
+                        if (map::g_player->can_see_actor(*m_owner))
                         {
                                 const std::string actor_name_the =
                                         text_format::first_to_upper(
-                                                owner_->name_the());
+                                                m_owner->name_the());
 
                                 msg_log::add(actor_name_the +
                                              " suffers from poisoning!");
                         }
                 }
 
-                actor::hit(*owner_, 1, DmgType::pure);
+                actor::hit(*m_owner, 1, DmgType::pure);
         }
 
         return PropEnded::no;
@@ -463,12 +463,12 @@ PropEnded PropPoisoned::on_tick()
 
 void PropAiming::on_hit()
 {
-        owner_->properties.end_prop(id());
+        m_owner->m_properties.end_prop(id());
 }
 
 bool PropTerrified::allow_attack_melee(const Verbosity verbosity) const
 {
-        if (owner_->is_player() && verbosity == Verbosity::verbose)
+        if (m_owner->is_player() && verbosity == Verbosity::verbose)
         {
                 msg_log::add("I am too terrified to engage in close combat!");
         }
@@ -489,11 +489,11 @@ void PropTerrified::on_applied()
         // (the AI would typically use the idle movement algorithm, which
         // favors stepping in the same direction as the last move).
 
-        if (!owner_->is_player())
+        if (!m_owner->is_player())
         {
-                Mon* const mon = static_cast<Mon*>(owner_);
+                Mon* const mon = static_cast<Mon*>(m_owner);
 
-                mon->last_dir_moved_ = Dir::center;
+                mon->m_last_dir_moved = Dir::center;
         }
 }
 
@@ -508,45 +508,45 @@ PropEnded PropNailed::affect_move_dir(const P& actor_pos, Dir& dir)
 
         dir = Dir::center;
 
-        if (owner_->is_player())
+        if (m_owner->is_player())
         {
                 msg_log::add("I struggle to tear out the spike!",
                              colors::msg_bad());
         }
         else // Is monster
         {
-                if (map::player->can_see_actor(*owner_))
+                if (map::g_player->can_see_actor(*m_owner))
                 {
                         const std::string actor_name_the =
                                 text_format::first_to_upper(
-                                        owner_->name_the());
+                                        m_owner->name_the());
 
                         msg_log::add(actor_name_the + " struggles in pain!",
                                      colors::msg_good());
                 }
         }
 
-        actor::hit(*owner_, rnd::dice(1, 3), DmgType::physical);
+        actor::hit(*m_owner, rnd::dice(1, 3), DmgType::physical);
 
-        if (!owner_->is_alive() ||
+        if (!m_owner->is_alive() ||
             !rnd::one_in(4))
         {
                 return PropEnded::no;
         }
 
-        --nr_spikes_;
+        --m_nr_spikes;
 
-        if (nr_spikes_ > 0)
+        if (m_nr_spikes > 0)
         {
-                if (owner_->is_player())
+                if (m_owner->is_player())
                 {
                         msg_log::add("I rip out a spike from my flesh!");
                 }
-                else if (map::player->can_see_actor(*owner_))
+                else if (map::g_player->can_see_actor(*m_owner))
                 {
                         const std::string actor_name_the =
                                 text_format::first_to_upper(
-                                        owner_->name_the());
+                                        m_owner->name_the());
 
                         msg_log::add(actor_name_the + " tears out a spike!");
                 }
@@ -557,30 +557,30 @@ PropEnded PropNailed::affect_move_dir(const P& actor_pos, Dir& dir)
 
 void PropWound::save() const
 {
-        saving::put_int(nr_wounds_);
+        saving::put_int(m_nr_wounds);
 }
 
 void PropWound::load()
 {
-        nr_wounds_ = saving::get_int();
+        m_nr_wounds = saving::get_int();
 }
 
 int PropWound::ability_mod(const AbilityId ability) const
 {
         // A player with Survivalist receives no ability penalties
-        if (owner_->is_player() &&
-            player_bon::traits[(size_t)Trait::survivalist])
+        if (m_owner->is_player() &&
+            player_bon::has_trait(Trait::survivalist))
         {
                 return 0;
         }
 
         if (ability == AbilityId::melee)
         {
-                return (nr_wounds_ * -5);
+                return (m_nr_wounds * -5);
         }
         else if (ability == AbilityId::dodging)
         {
-                return (nr_wounds_ * -5);
+                return (m_nr_wounds * -5);
         }
 
         return 0;
@@ -590,11 +590,11 @@ int PropWound::affect_max_hp(const int hp_max) const
 {
         const int pen_pct_per_wound = 10;
 
-        int hp_pen_pct = nr_wounds_ * pen_pct_per_wound;
+        int hp_pen_pct = m_nr_wounds * pen_pct_per_wound;
 
         // The HP penalty is halved for a player with Survivalist
-        if (owner_->is_player() &&
-            player_bon::traits[(size_t)Trait::survivalist])
+        if (m_owner->is_player() &&
+            player_bon::has_trait(Trait::survivalist))
         {
                 hp_pen_pct /= 2;
         }
@@ -607,18 +607,18 @@ int PropWound::affect_max_hp(const int hp_max) const
 
 void PropWound::heal_one_wound()
 {
-        ASSERT(nr_wounds_ > 0);
+        ASSERT(m_nr_wounds > 0);
 
-        --nr_wounds_;
+        --m_nr_wounds;
 
-        if (nr_wounds_ > 0)
+        if (m_nr_wounds > 0)
         {
                 msg_log::add("A wound is healed.");
         }
         else // This was the last wound
         {
                 // End self
-                owner_->properties.end_prop(id());
+                m_owner->m_properties.end_prop(id());
         }
 }
 
@@ -626,17 +626,17 @@ void PropWound::on_more(const Prop& new_prop)
 {
         (void)new_prop;
 
-        ++nr_wounds_;
+        ++m_nr_wounds;
 
-        if (nr_wounds_ >= 5)
+        if (m_nr_wounds >= 5)
         {
-                if (owner_ == map::player)
+                if (m_owner == map::g_player)
                 {
                         msg_log::add("I die from my wounds!");
                 }
 
                 actor::kill(
-                        *owner_,
+                        *m_owner,
                         IsDestroyed::no,
                         AllowGore::no,
                         AllowDropItems::yes);
@@ -645,79 +645,85 @@ void PropWound::on_more(const Prop& new_prop)
 
 PropHpSap::PropHpSap() :
         Prop(PropId::hp_sap),
-        nr_drained_(rnd::range(1, 3)) {}
+        m_nr_drained(rnd::range(1, 3)) {}
 
 void PropHpSap::save() const
 {
-        saving::put_int(nr_drained_);
+        saving::put_int(m_nr_drained);
 }
 
 void PropHpSap::load()
 {
-        nr_drained_ = saving::get_int();
+        m_nr_drained = saving::get_int();
 }
 
 int PropHpSap::affect_max_hp(const int hp_max) const
 {
-        return (hp_max - nr_drained_);
+        return (hp_max - m_nr_drained);
 }
 
 void PropHpSap::on_more(const Prop& new_prop)
 {
-        nr_drained_ += static_cast<const PropHpSap*>(&new_prop)->nr_drained_;
+        m_nr_drained +=
+                static_cast<const PropHpSap*>(&new_prop)
+                ->m_nr_drained;
 }
 
 PropSpiSap::PropSpiSap() :
         Prop(PropId::spi_sap),
-        nr_drained_(1) {}
+        m_nr_drained(1) {}
 
 void PropSpiSap::save() const
 {
-        saving::put_int(nr_drained_);
+        saving::put_int(m_nr_drained);
 }
 
 void PropSpiSap::load()
 {
-        nr_drained_ = saving::get_int();
+        m_nr_drained = saving::get_int();
 }
 
 int PropSpiSap::affect_max_spi(const int spi_max) const
 {
-        return (spi_max - nr_drained_);
+        return (spi_max - m_nr_drained);
 }
 
 void PropSpiSap::on_more(const Prop& new_prop)
 {
-        nr_drained_ += static_cast<const PropSpiSap*>(&new_prop)->nr_drained_;
+        m_nr_drained +=
+                static_cast<const PropSpiSap*>(&new_prop)
+                ->m_nr_drained;
 }
 
 PropMindSap::PropMindSap() :
         Prop(PropId::mind_sap),
-        nr_drained_(rnd::range(1, 3)) {}
+        m_nr_drained(rnd::range(1, 3)) {}
 
 void PropMindSap::save() const
 {
-        saving::put_int(nr_drained_);
+        saving::put_int(m_nr_drained);
 }
 
 void PropMindSap::load()
 {
-        nr_drained_ = saving::get_int();
+        m_nr_drained = saving::get_int();
 }
 
 int PropMindSap::affect_shock(const int shock) const
 {
-        return (shock + nr_drained_);
+        return (shock + m_nr_drained);
 }
 
 void PropMindSap::on_more(const Prop& new_prop)
 {
-        nr_drained_ += static_cast<const PropMindSap*>(&new_prop)->nr_drained_;
+        m_nr_drained +=
+                static_cast<const PropMindSap*>(&new_prop)
+                ->m_nr_drained;
 }
 
 bool PropConfused::allow_read_absolute(const Verbosity verbosity) const
 {
-        if (owner_->is_player() && verbosity == Verbosity::verbose)
+        if (m_owner->is_player() && verbosity == Verbosity::verbose)
         {
                 msg_log::add("I am too confused to read.");
         }
@@ -728,7 +734,7 @@ bool PropConfused::allow_read_absolute(const Verbosity verbosity) const
 bool PropConfused::allow_cast_intr_spell_absolute(
         const Verbosity verbosity) const
 {
-        if (owner_->is_player() &&
+        if (m_owner->is_player() &&
             (verbosity == Verbosity::verbose))
         {
                 msg_log::add("I am too confused to concentrate!");
@@ -741,7 +747,7 @@ bool PropConfused::allow_attack_melee(const Verbosity verbosity) const
 {
         (void)verbosity;
 
-        if (owner_ != map::player)
+        if (m_owner != map::g_player)
         {
                 return rnd::coin_toss();
         }
@@ -753,7 +759,7 @@ bool PropConfused::allow_attack_ranged(const Verbosity verbosity) const
 {
         (void)verbosity;
 
-        if (owner_ != map::player)
+        if (m_owner != map::g_player)
         {
                 return rnd::coin_toss();
         }
@@ -774,7 +780,7 @@ PropEnded PropConfused::affect_move_dir(const P& actor_pos, Dir& dir)
                 actor_pos - P(1, 1),
                 actor_pos + P(1, 1));
 
-        map_parsers::BlocksActor(*owner_, ParseActors::yes)
+        map_parsers::BlocksActor(*m_owner, ParseActors::yes)
                 .run(blocked,
                      area_check_blocked,
                      MapParseMode::overwrite);
@@ -783,7 +789,7 @@ PropEnded PropConfused::affect_move_dir(const P& actor_pos, Dir& dir)
         {
                 std::vector<P> d_bucket;
 
-                for (const P& d : dir_utils::dir_list)
+                for (const P& d : dir_utils::g_dir_list)
                 {
                         const P tgt_p(actor_pos + d);
 
@@ -806,13 +812,13 @@ PropEnded PropConfused::affect_move_dir(const P& actor_pos, Dir& dir)
 
 PropEnded PropFrenzied::affect_move_dir(const P& actor_pos, Dir& dir)
 {
-        if (!owner_->is_player() ||
+        if (!m_owner->is_player() ||
             (dir == Dir::center))
         {
                 return PropEnded::no;
         }
 
-        const auto seen_foes = owner_->seen_foes();
+        const auto seen_foes = m_owner->seen_foes();
 
         if (seen_foes.empty())
         {
@@ -825,7 +831,7 @@ PropEnded PropFrenzied::affect_move_dir(const P& actor_pos, Dir& dir)
 
         for (auto* actor : seen_foes)
         {
-                seen_foes_cells.push_back(actor->pos);
+                seen_foes_cells.push_back(actor->m_pos);
         }
 
         sort(begin(seen_foes_cells),
@@ -836,7 +842,7 @@ PropEnded PropFrenzied::affect_move_dir(const P& actor_pos, Dir& dir)
 
         Array2<bool> blocked(map::dims());
 
-        map_parsers::BlocksActor(*owner_, ParseActors::no)
+        map_parsers::BlocksActor(*m_owner, ParseActors::no)
                 .run(blocked, blocked.rect());
 
         const auto line =
@@ -879,25 +885,25 @@ void PropFrenzied::on_applied()
                 PropEndAllowMsg::no,
                 PropEndAllowHistoricMsg::yes);
 
-        owner_->properties.end_prop(PropId::confused, prop_end_config);
-        owner_->properties.end_prop(PropId::fainted, prop_end_config);
-        owner_->properties.end_prop(PropId::terrified, prop_end_config);
-        owner_->properties.end_prop(PropId::weakened, prop_end_config);
+        m_owner->m_properties.end_prop(PropId::confused, prop_end_config);
+        m_owner->m_properties.end_prop(PropId::fainted, prop_end_config);
+        m_owner->m_properties.end_prop(PropId::terrified, prop_end_config);
+        m_owner->m_properties.end_prop(PropId::weakened, prop_end_config);
 }
 
 void PropFrenzied::on_end()
 {
         // Only the player (except for Ghoul background) gets tired after a
         // frenzy (it looks weird for monsters)
-        if (owner_->is_player() && (player_bon::bg() != Bg::ghoul))
+        if (m_owner->is_player() && (player_bon::bg() != Bg::ghoul))
         {
-                owner_->properties.apply(new PropWeakened());
+                m_owner->m_properties.apply(new PropWeakened());
         }
 }
 
 bool PropFrenzied::allow_read_absolute(const Verbosity verbosity) const
 {
-        if (owner_->is_player() && verbosity == Verbosity::verbose)
+        if (m_owner->is_player() && verbosity == Verbosity::verbose)
         {
                 msg_log::add("I am too enraged to read!");
         }
@@ -908,7 +914,7 @@ bool PropFrenzied::allow_read_absolute(const Verbosity verbosity) const
 bool PropFrenzied::allow_cast_intr_spell_absolute(
         const Verbosity verbosity) const
 {
-        if (owner_->is_player() &&
+        if (m_owner->is_player() &&
             (verbosity == Verbosity::verbose))
         {
                 msg_log::add("I am too enraged to concentrate!");
@@ -919,12 +925,12 @@ bool PropFrenzied::allow_cast_intr_spell_absolute(
 
 PropEnded PropBurning::on_tick()
 {
-        if (owner_->is_player())
+        if (m_owner->is_player())
         {
                 msg_log::add("AAAARGH IT BURNS!!!", colors::light_red());
         }
 
-        actor::hit(*owner_, rnd::dice(1, 3), DmgType::fire);
+        actor::hit(*m_owner, rnd::dice(1, 3), DmgType::fire);
 
         return PropEnded::no;
 }
@@ -933,7 +939,7 @@ bool PropBurning::allow_read_chance(const Verbosity verbosity) const
 {
         if (!rnd::coin_toss())
         {
-                if (owner_->is_player() &&
+                if (m_owner->is_player() &&
                     (verbosity == Verbosity::verbose))
                 {
                         msg_log::add("I fail to concentrate!");
@@ -949,7 +955,7 @@ bool PropBurning::allow_cast_intr_spell_chance(const Verbosity verbosity) const
 {
         if (!rnd::coin_toss())
         {
-                if (owner_->is_player() &&
+                if (m_owner->is_player() &&
                     (verbosity == Verbosity::verbose))
                 {
                         msg_log::add("I fail to concentrate!");
@@ -963,7 +969,7 @@ bool PropBurning::allow_cast_intr_spell_chance(const Verbosity verbosity) const
 
 bool PropBurning::allow_attack_ranged(const Verbosity verbosity) const
 {
-        if (owner_->is_player() && (verbosity == Verbosity::verbose))
+        if (m_owner->is_player() && (verbosity == Verbosity::verbose))
         {
                 msg_log::add("Not while burning.");
         }
@@ -973,15 +979,15 @@ bool PropBurning::allow_attack_ranged(const Verbosity verbosity) const
 
 PropActResult PropRecloaks::on_act()
 {
-        if (owner_->is_alive() &&
-            !owner_->properties.has(PropId::cloaked) &&
+        if (m_owner->is_alive() &&
+            !m_owner->m_properties.has(PropId::cloaked) &&
             rnd::one_in(8))
         {
                 auto prop_cloaked = new PropCloaked();
 
                 prop_cloaked->set_indefinite();
 
-                owner_->properties.apply(prop_cloaked);
+                m_owner->m_properties.apply(prop_cloaked);
 
                 game_time::tick();
 
@@ -993,7 +999,7 @@ PropActResult PropRecloaks::on_act()
 
 bool PropBlind::allow_read_absolute(const Verbosity verbosity) const
 {
-        if (owner_->is_player() &&
+        if (m_owner->is_player() &&
             (verbosity == Verbosity::verbose))
         {
                 msg_log::add("I cannot read while blind.");
@@ -1004,41 +1010,41 @@ bool PropBlind::allow_read_absolute(const Verbosity verbosity) const
 
 bool PropBlind::should_update_vision_on_toggled() const
 {
-        return owner_->is_player();
+        return m_owner->is_player();
 }
 
 PropEnded PropParalyzed::on_tick()
 {
-        if (!owner_->properties.has(PropId::swimming))
+        if (!m_owner->m_properties.has(PropId::swimming))
         {
                 return PropEnded::no;
         }
 
-        if (owner_->is_player())
+        if (m_owner->is_player())
         {
                 msg_log::add("I am drowning!", colors::msg_bad());
         }
-        else if (map::player->can_see_actor(*owner_))
+        else if (map::g_player->can_see_actor(*m_owner))
         {
                 const auto name_the =
                         text_format::first_to_upper(
-                                owner_->name_the());
+                                m_owner->name_the());
 
                 msg_log::add(name_the + " is drowning.", colors::msg_good());
         }
 
-        actor::hit(*owner_, 1, DmgType::physical);
+        actor::hit(*m_owner, 1, DmgType::physical);
 
         return PropEnded::no;
 }
 
 void PropParalyzed::on_applied()
 {
-        auto* const player = map::player;
+        auto* const player = map::g_player;
 
-        if (owner_->is_player())
+        if (m_owner->is_player())
         {
-                auto* const active_explosive = player->active_explosive_;
+                auto* const active_explosive = player->m_active_explosive;
 
                 if (active_explosive)
                 {
@@ -1049,18 +1055,18 @@ void PropParalyzed::on_applied()
 
 bool PropFainted::should_update_vision_on_toggled() const
 {
-        return owner_->is_player();
+        return m_owner->is_player();
 }
 
 PropEnded PropFlared::on_tick()
 {
-        actor::hit(*owner_, 1, DmgType::fire);
+        actor::hit(*m_owner, 1, DmgType::fire);
 
-        if (nr_turns_left_ <= 1)
+        if (m_nr_turns_left <= 1)
         {
-                owner_->properties.apply(new PropBurning());
+                m_owner->m_properties.apply(new PropBurning());
 
-                owner_->properties.end_prop(id());
+                m_owner->m_properties.end_prop(id());
 
                 return PropEnded::yes;
         }
@@ -1101,7 +1107,7 @@ bool PropRConf::is_resisting_other_prop(const PropId prop_id) const
 
 void PropRConf::on_applied()
 {
-        owner_->properties.end_prop(
+        m_owner->m_properties.end_prop(
                 PropId::confused,
                 PropEndConfig(
                         PropEndAllowCallEndHook::no,
@@ -1117,7 +1123,7 @@ bool PropRFear::is_resisting_other_prop(const PropId prop_id) const
 
 void PropRFear::on_applied()
 {
-        owner_->properties.end_prop(
+        m_owner->m_properties.end_prop(
                 PropId::terrified,
                 PropEndConfig(
                         PropEndAllowCallEndHook::no,
@@ -1125,8 +1131,8 @@ void PropRFear::on_applied()
                         PropEndAllowHistoricMsg::yes)
                 );
 
-        if (owner_->is_player() &&
-            duration_mode_ == PropDurationMode::indefinite)
+        if (m_owner->is_player() &&
+            m_duration_mode == PropDurationMode::indefinite)
         {
                 insanity::on_permanent_rfear();
         }
@@ -1139,7 +1145,7 @@ bool PropRSlow::is_resisting_other_prop(const PropId prop_id) const
 
 void PropRSlow::on_applied()
 {
-        owner_->properties.end_prop(
+        m_owner->m_properties.end_prop(
                 PropId::slowed,
                 PropEndConfig(
                         PropEndAllowCallEndHook::no,
@@ -1179,7 +1185,7 @@ bool PropRFire::is_resisting_other_prop(const PropId prop_id) const
 
 void PropRFire::on_applied()
 {
-        owner_->properties.end_prop(
+        m_owner->m_properties.end_prop(
                 PropId::burning,
                 PropEndConfig(
                         PropEndAllowCallEndHook::no,
@@ -1208,7 +1214,7 @@ bool PropRPoison::is_resisting_other_prop(const PropId prop_id) const
 
 void PropRPoison::on_applied()
 {
-        owner_->properties.end_prop(
+        m_owner->m_properties.end_prop(
                 PropId::poisoned,
                 PropEndConfig(
                         PropEndAllowCallEndHook::no,
@@ -1224,7 +1230,7 @@ bool PropRSleep::is_resisting_other_prop(const PropId prop_id) const
 
 void PropRSleep::on_applied()
 {
-        owner_->properties.end_prop(
+        m_owner->m_properties.end_prop(
                 PropId::fainted,
                 PropEndConfig(
                         PropEndAllowCallEndHook::no,
@@ -1240,7 +1246,7 @@ bool PropRDisease::is_resisting_other_prop(const PropId prop_id) const
 
 void PropRDisease::on_applied()
 {
-        owner_->properties.end_prop(
+        m_owner->m_properties.end_prop(
                 PropId::diseased,
                 PropEndConfig(
                         PropEndAllowCallEndHook::no,
@@ -1248,7 +1254,7 @@ void PropRDisease::on_applied()
                         PropEndAllowHistoricMsg::yes)
                 );
 
-        owner_->properties.end_prop(
+        m_owner->m_properties.end_prop(
                 PropId::infected,
                 PropEndConfig(
                         PropEndAllowCallEndHook::no,
@@ -1264,7 +1270,7 @@ bool PropRBlind::is_resisting_other_prop(const PropId prop_id) const
 
 void PropRBlind::on_applied()
 {
-        owner_->properties.end_prop(
+        m_owner->m_properties.end_prop(
                 PropId::blind,
                 PropEndConfig(
                         PropEndAllowCallEndHook::no,
@@ -1280,7 +1286,7 @@ bool PropRPara::is_resisting_other_prop(const PropId prop_id) const
 
 void PropRPara::on_applied()
 {
-        owner_->properties.end_prop(
+        m_owner->m_properties.end_prop(
                 PropId::paralyzed,
                 PropEndConfig(
                         PropEndAllowCallEndHook::no,
@@ -1296,7 +1302,7 @@ bool PropSeeInvis::is_resisting_other_prop(const PropId prop_id) const
 
 void PropSeeInvis::on_applied()
 {
-        owner_->properties.end_prop(
+        m_owner->m_properties.end_prop(
                 PropId::blind,
                 PropEndConfig(
                         PropEndAllowCallEndHook::no,
@@ -1307,9 +1313,9 @@ void PropSeeInvis::on_applied()
 
 PropEnded PropBurrowing::on_tick()
 {
-        const P& p = owner_->pos;
+        const P& p = m_owner->m_pos;
 
-        map::cells.at(p).rigid->hit(
+        map::g_cells.at(p).rigid->hit(
                 1, // Doesn't matter
                 DmgType::physical,
                 DmgMethod::forced);
@@ -1322,12 +1328,12 @@ PropActResult PropVortex::on_act()
         TRACE_FUNC_BEGIN;
 
         // Not supported yet
-        if (owner_->is_player())
+        if (m_owner->is_player())
         {
                 return PropActResult();
         }
 
-        if (!owner_->is_alive())
+        if (!m_owner->is_alive())
         {
                 return PropActResult();
         }
@@ -1337,17 +1343,17 @@ PropActResult PropVortex::on_act()
                 --pull_cooldown;
         }
 
-        auto* const mon = static_cast<Mon*>(owner_);
+        auto* const mon = static_cast<Mon*>(m_owner);
 
-        if ((mon->aware_of_player_counter_ <= 0) ||
+        if ((mon->m_aware_of_player_counter <= 0) ||
             (pull_cooldown > 0))
         {
                 return PropActResult();
         }
 
-        const P& player_pos = map::player->pos;
+        const P& player_pos = map::g_player->m_pos;
 
-        if (is_pos_adj(mon->pos, player_pos, true) ||
+        if (is_pos_adj(mon->m_pos, player_pos, true) ||
             !rnd::coin_toss())
         {
                 return PropActResult();
@@ -1356,7 +1362,7 @@ PropActResult PropVortex::on_act()
         TRACE << "Monster with vortex property attempting to pull player"
               << std::endl;
 
-        const P delta = player_pos - mon->pos;
+        const P delta = player_pos - mon->m_pos;
 
         P knockback_from_pos = player_pos;
 
@@ -1394,23 +1400,23 @@ PropActResult PropVortex::on_act()
 
         Array2<bool> blocked_los(map::dims());
 
-        const R fov_rect = fov::fov_rect(mon->pos, blocked_los.dims());
+        const R fov_rect = fov::fov_rect(mon->m_pos, blocked_los.dims());
 
         map_parsers::BlocksLos()
                 .run(blocked_los,
                      fov_rect,
                      MapParseMode::overwrite);
 
-        if (mon->can_see_actor(*(map::player), blocked_los))
+        if (mon->can_see_actor(*(map::g_player), blocked_los))
         {
                 TRACE << "Is seeing player" << std::endl;
 
                 mon->set_player_aware_of_me();
 
-                if (map::player->can_see_actor(*mon))
+                if (map::g_player->can_see_actor(*mon))
                 {
                         const auto name_the = text_format::first_to_upper(
-                                owner_->name_the());
+                                m_owner->name_the());
 
                         msg_log::add(name_the + " pulls me!");
                 }
@@ -1423,7 +1429,7 @@ PropActResult PropVortex::on_act()
 
                 // TODO: Add sfx
                 knockback::run(
-                        *map::player,
+                        *map::g_player,
                         knockback_from_pos,
                         false,
                         Verbosity::silent);
@@ -1442,7 +1448,7 @@ void PropExplodesOnDeath::on_death()
 {
         TRACE_FUNC_BEGIN;
 
-        explosion::run(owner_->pos, ExplType::expl);
+        explosion::run(m_owner->m_pos, ExplType::expl);
 
         TRACE_FUNC_END;
 }
@@ -1450,35 +1456,35 @@ void PropExplodesOnDeath::on_death()
 void PropSplitsOnDeath::on_death()
 {
         // Not supported yet
-        if (owner_->is_player())
+        if (m_owner->is_player())
         {
                 return;
         }
 
-        const int actor_max_hp = actor::max_hp(*owner_);
+        const int actor_max_hp = actor::max_hp(*m_owner);
 
         // Do not allow splitting if HP is reduced to this point (if the monster
         // is killed "hard" enough, it doesn't split)
         const bool is_very_destroyed =
-                owner_->hp <=
+                m_owner->m_hp <=
                 (actor_max_hp * (-5));
 
-        const P pos = owner_->pos;
+        const P pos = m_owner->m_pos;
 
-        const auto f_id = map::cells.at(pos).rigid->id();
+        const auto f_id = map::g_cells.at(pos).rigid->id();
 
         if (is_very_destroyed ||
             f_id == FeatureId::chasm ||
             f_id == FeatureId::liquid_deep ||
-            (game_time::actors.size() >= max_nr_actors_on_map))
+            (game_time::g_actors.size() >= g_max_nr_actors_on_map))
         {
                 return;
         }
 
-        auto* const leader = static_cast<Mon*>(owner_)->leader_;
+        auto* const leader = static_cast<Mon*>(m_owner)->m_leader;
 
         const auto summoned =
-                actor_factory::spawn(pos, {2, owner_->id()}, map::rect())
+                actor_factory::spawn(pos, {2, m_owner->id()}, map::rect())
                 .make_aware_of_player()
                 .set_leader(leader)
                 .for_each([this](Mon* const mon)
@@ -1487,20 +1493,20 @@ void PropSplitsOnDeath::on_death()
 
                         prop_waiting->set_duration(1);
 
-                        mon->properties.apply(prop_waiting);
+                        mon->m_properties.apply(prop_waiting);
 
                         // The new actors should usually not also split
                         if (rnd::fraction(4, 5))
                         {
-                                mon->properties.end_prop(
+                                mon->m_properties.end_prop(
                                         PropId::splits_on_death);
                         }
 
                         // If the original actor is burning, the spawned actors
                         // should too
-                        if (owner_->properties.has(PropId::burning))
+                        if (m_owner->m_properties.has(PropId::burning))
                         {
-                                mon->properties.apply(
+                                mon->m_properties.apply(
                                         new PropBurning(),
                                         PropSrc::intr,
                                         false, // Do not force effect
@@ -1509,9 +1515,9 @@ void PropSplitsOnDeath::on_death()
                 });
 
         // If no leader yet, set the first actor as leader of the second
-        if (!leader && (summoned.monsters.size() == 2))
+        if (!leader && (summoned.m_monsters.size() == 2))
         {
-                summoned.monsters[1]->leader_ = summoned.monsters[0];
+                summoned.m_monsters[1]->m_leader = summoned.m_monsters[0];
         }
 }
 
@@ -1519,9 +1525,9 @@ PropActResult PropCorpseEater::on_act()
 {
         auto did_action = DidAction::no;
 
-        if (owner_->is_alive() && rnd::coin_toss())
+        if (m_owner->is_alive() && rnd::coin_toss())
         {
-                did_action = owner_->try_eat_corpse();
+                did_action = m_owner->try_eat_corpse();
 
                 if (did_action == DidAction::yes)
                 {
@@ -1538,9 +1544,9 @@ PropActResult PropTeleports::on_act()
 
         const int teleport_one_in_n = 12;
 
-        if (owner_->is_alive() && rnd::one_in(teleport_one_in_n))
+        if (m_owner->is_alive() && rnd::one_in(teleport_one_in_n))
         {
-                teleport(*owner_);
+                teleport(*m_owner);
 
                 game_time::tick();
 
@@ -1552,9 +1558,9 @@ PropActResult PropTeleports::on_act()
 
 PropActResult PropCorruptsEnvColor::on_act()
 {
-        const auto pos = owner_->pos;
+        const auto pos = m_owner->m_pos;
 
-        Rigid* r = map::cells.at(pos).rigid;
+        Rigid* r = map::g_cells.at(pos).rigid;
 
         r->corrupt_color();
 
@@ -1588,35 +1594,35 @@ void PropAltersEnv::on_std_turn()
 
         Array2<bool> has_actor(map::dims());
 
-        for (auto actor : game_time::actors)
+        for (auto actor : game_time::g_actors)
         {
-                has_actor.at(actor->pos) = true;
+                has_actor.at(actor->m_pos) = true;
         }
 
         const int r = 3;
 
         const int x0 = std::max(
                 1,
-                owner_->pos.x - r);
+                m_owner->m_pos.x - r);
 
         const int y0 = std::max(
                 1,
-                owner_->pos.y - r);
+                m_owner->m_pos.y - r);
 
         const int x1 = std::min(
                 map::w() - 2,
-                owner_->pos.x + r);
+                m_owner->m_pos.x + r);
 
         const int y1 = std::min(
                 map::h() - 2,
-                owner_->pos.y + r);
+                m_owner->m_pos.y + r);
 
         for (int x = x0; x <= x1; ++x)
         {
                 for (int y = y0; y <= y1; ++y)
                 {
                         if (has_actor.at(x, y) ||
-                            map::cells.at(x, y).item ||
+                            map::g_cells.at(x, y).item ||
                             !rnd::one_in(6))
                         {
                                 continue;
@@ -1625,7 +1631,7 @@ void PropAltersEnv::on_std_turn()
                         const P pos(x, y);
 
                         const FeatureId current_id =
-                                map::cells.at(x, y).rigid->id();
+                                map::g_cells.at(x, y).rigid->id();
 
                         if (current_id == FeatureId::wall)
                         {
@@ -1652,23 +1658,23 @@ void PropAltersEnv::on_std_turn()
 
 void PropRegenerates::on_std_turn()
 {
-        if (owner_->is_alive() &&
-            !owner_->properties.has(PropId::burning))
+        if (m_owner->is_alive() &&
+            !m_owner->m_properties.has(PropId::burning))
         {
-                owner_->restore_hp(2, false, Verbosity::silent);
+                m_owner->restore_hp(2, false, Verbosity::silent);
         }
 }
 
 PropActResult PropCorpseRises::on_act()
 {
-        if (!owner_->is_corpse() || map::actor_at_pos(owner_->pos))
+        if (!m_owner->is_corpse() || map::actor_at_pos(m_owner->m_pos))
         {
                 return PropActResult();
         }
 
-        if (nr_turns_until_allow_rise_ > 0)
+        if (m_nr_turns_until_allow_rise > 0)
         {
-                --nr_turns_until_allow_rise_;
+                --m_nr_turns_until_allow_rise;
 
                 return PropActResult();
         }
@@ -1680,19 +1686,19 @@ PropActResult PropCorpseRises::on_act()
                 return PropActResult();
         }
 
-        owner_->state = ActorState::alive;
+        m_owner->m_state = ActorState::alive;
 
-        owner_->hp = actor::max_hp(*owner_) / 2;
+        m_owner->m_hp = actor::max_hp(*m_owner) / 2;
 
-        --owner_->data->nr_kills;
+        --m_owner->m_data->nr_kills;
 
-        if (map::cells.at(owner_->pos).is_seen_by_player)
+        if (map::g_cells.at(m_owner->m_pos).is_seen_by_player)
         {
-                ASSERT(!owner_->data->corpse_name_the.empty());
+                ASSERT(!m_owner->m_data->corpse_name_the.empty());
 
                 const std::string name =
                         text_format::first_to_upper(
-                                owner_->data->corpse_name_the);
+                                m_owner->m_data->corpse_name_the);
 
                 msg_log::add(
                         name +
@@ -1700,32 +1706,32 @@ PropActResult PropCorpseRises::on_act()
                         colors::text(),
                         true);
 
-                map::player->incr_shock(ShockLvl::frightening,
+                map::g_player->incr_shock(ShockLvl::frightening,
                                         ShockSrc::see_mon);
         }
 
-        static_cast<Mon*>(owner_)->become_aware_player(false);
+        static_cast<Mon*>(m_owner)->become_aware_player(false);
 
         game_time::tick();
 
-        has_risen_ = true;
+        m_has_risen = true;
 
         return PropActResult(DidAction::yes, PropEnded::no);
 }
 
 void PropCorpseRises::on_death()
 {
-        if (has_risen_)
+        if (m_has_risen)
         {
-                owner_->destroy();
+                m_owner->destroy();
         }
 }
 
 void PropSpawnsZombiePartsOnDestroyed::on_destroyed()
 {
-        const P& pos = owner_->pos;
+        const P& pos = m_owner->m_pos;
 
-        const auto f_id = map::cells.at(pos).rigid->id();
+        const auto f_id = map::g_cells.at(pos).rigid->id();
 
         if (f_id == FeatureId::chasm ||
             f_id == FeatureId::liquid_deep)
@@ -1744,7 +1750,7 @@ void PropSpawnsZombiePartsOnDestroyed::on_destroyed()
         // Spawning zombie part monsters is only allowed if the monster is not
         // destroyed "too hard". This also reward heavy weapons, since they will
         // more often prevent spawning
-        const bool is_very_destroyed = (owner_->hp <= -8);
+        const bool is_very_destroyed = (m_owner->m_hp <= -8);
 
         const int summon_one_in_n = 5;
 
@@ -1763,7 +1769,7 @@ void PropSpawnsZombiePartsOnDestroyed::on_destroyed()
 
         const int mon_choice = rnd::weighted_choice(weights);
 
-        const std::string my_name = owner_->name_the();
+        const std::string my_name = m_owner->name_the();
 
         std::string spawn_msg = "";
 
@@ -1798,13 +1804,13 @@ void PropSpawnsZombiePartsOnDestroyed::on_destroyed()
 
         }
 
-        if (map::cells.at(pos).is_seen_by_player)
+        if (map::g_cells.at(pos).is_seen_by_player)
         {
                 ASSERT(!spawn_msg.empty());
 
                 msg_log::add(spawn_msg);
 
-                map::player->incr_shock(ShockLvl::frightening,
+                map::g_player->incr_shock(ShockLvl::frightening,
                                         ShockSrc::see_mon);
         }
 
@@ -1818,7 +1824,7 @@ void PropSpawnsZombiePartsOnDestroyed::on_destroyed()
 
                         waiting->set_duration(1);
 
-                        mon->properties.apply(waiting);
+                        mon->m_properties.apply(waiting);
                 });
 }
 
@@ -1826,23 +1832,23 @@ void PropBreeds::on_std_turn()
 {
         const int spawn_new_one_in_n = 50;
 
-        if (owner_->is_player() ||
-            !owner_->is_alive() ||
-            owner_->properties.has(PropId::burning) ||
-            (game_time::actors.size() >= max_nr_actors_on_map) ||
+        if (m_owner->is_player() ||
+            !m_owner->is_alive() ||
+            m_owner->m_properties.has(PropId::burning) ||
+            (game_time::g_actors.size() >= g_max_nr_actors_on_map) ||
             !rnd::one_in(spawn_new_one_in_n))
         {
                 return;
         }
 
-        auto* const mon = static_cast<Mon*>(owner_);
+        auto* const mon = static_cast<Mon*>(m_owner);
 
         Actor* const leader_of_spawned_mon =
-                mon->leader_
-                ? mon->leader_
+                mon->m_leader
+                ? mon->m_leader
                 : mon;
 
-        const auto area_allowed = R(mon->pos - 1, mon->pos + 1);
+        const auto area_allowed = R(mon->m_pos - 1, mon->m_pos + 1);
 
         auto summoned =
                 actor_factory::spawn_random_position({mon->id()}, area_allowed)
@@ -1853,10 +1859,10 @@ void PropBreeds::on_std_turn()
 
                         prop_waiting->set_duration(2);
 
-                        mon->properties.apply(prop_waiting);
+                        mon->m_properties.apply(prop_waiting);
                 });
 
-        if (mon->aware_of_player_counter_ > 0)
+        if (mon->m_aware_of_player_counter > 0)
         {
                 summoned.make_aware_of_player();
         }
@@ -1864,17 +1870,17 @@ void PropBreeds::on_std_turn()
 
 void PropConfusesAdjacent::on_std_turn()
 {
-        if (!owner_->is_alive() ||
-            !map::player->can_see_actor(*owner_) ||
-            !map::player->pos.is_adjacent(owner_->pos))
+        if (!m_owner->is_alive() ||
+            !map::g_player->can_see_actor(*m_owner) ||
+            !map::g_player->m_pos.is_adjacent(m_owner->m_pos))
         {
                 return;
         }
 
-        if (!map::player->properties.has(PropId::confused))
+        if (!map::g_player->m_properties.has(PropId::confused))
         {
                 const std::string msg =
-                        text_format::first_to_upper(owner_->name_the()) +
+                        text_format::first_to_upper(m_owner->name_the()) +
                         " bewilders me.";
 
                 msg_log::add(msg);
@@ -1884,20 +1890,20 @@ void PropConfusesAdjacent::on_std_turn()
 
         prop_confusd->set_duration(rnd::range(8, 12));
 
-        map::player->properties.apply(prop_confusd);
+        map::g_player->m_properties.apply(prop_confusd);
 }
 
 PropActResult PropSpeaksCurses::on_act()
 {
-        if (owner_->is_player())
+        if (m_owner->is_player())
         {
                 return PropActResult();
         }
 
-        auto* const mon = static_cast<Mon*>(owner_);
+        auto* const mon = static_cast<Mon*>(m_owner);
 
         if (!mon->is_alive() ||
-            (mon->aware_of_player_counter_ <= 0) ||
+            (mon->m_aware_of_player_counter <= 0) ||
             !rnd::one_in(4))
         {
                 return PropActResult();
@@ -1905,16 +1911,16 @@ PropActResult PropSpeaksCurses::on_act()
 
         Array2<bool> blocked_los(map::dims());
 
-        const R fov_rect = fov::fov_rect(mon->pos, blocked_los.dims());
+        const R fov_rect = fov::fov_rect(mon->m_pos, blocked_los.dims());
 
         map_parsers::BlocksLos()
                 .run(blocked_los,
                      fov_rect,
                      MapParseMode::overwrite);
 
-        if (mon->can_see_actor(*map::player, blocked_los))
+        if (mon->can_see_actor(*map::g_player, blocked_los))
         {
-                const bool player_see_owner = map::player->can_see_actor(*mon);
+                const bool player_see_owner = map::g_player->can_see_actor(*mon);
 
                 std::string snd_msg =
                         player_see_owner ?
@@ -1926,14 +1932,14 @@ PropActResult PropSpeaksCurses::on_act()
                 Snd snd(snd_msg,
                         SfxId::END,
                         IgnoreMsgIfOriginSeen::no,
-                        mon->pos,
+                        mon->m_pos,
                         mon,
                         SndVol::high,
                         AlertsMon::no);
 
                 snd_emit::run(snd);
 
-                map::player->properties.apply(new PropCursed());
+                map::g_player->m_properties.apply(new PropCursed());
 
                 game_time::tick();
 
@@ -1945,17 +1951,17 @@ PropActResult PropSpeaksCurses::on_act()
 
 void PropAuraOfDecay::save() const
 {
-        saving::put_int(dmg_);
+        saving::put_int(m_dmg);
 }
 
 void PropAuraOfDecay::load()
 {
-        dmg_ = saving::get_int();
+        m_dmg = saving::get_int();
 }
 
 int PropAuraOfDecay::range() const
 {
-        return expl_std_radi;
+        return g_expl_std_radi;
 }
 
 void PropAuraOfDecay::on_std_turn()
@@ -1967,39 +1973,39 @@ void PropAuraOfDecay::on_std_turn()
 
 void PropAuraOfDecay::run_effect_on_actors() const
 {
-        for (auto* const actor : game_time::actors)
+        for (auto* const actor : game_time::g_actors)
         {
-                if (actor == owner_ ||
-                    actor->state == ActorState::destroyed ||
-                    king_dist(owner_->pos, actor->pos) > range())
+                if (actor == m_owner ||
+                    actor->m_state == ActorState::destroyed ||
+                    king_dist(m_owner->m_pos, actor->m_pos) > range())
                 {
                         continue;
                 }
 
                 const bool player_see_target =
-                        map::player->can_see_actor(*actor);
+                        map::g_player->can_see_actor(*actor);
 
                 if (player_see_target)
                 {
                         print_msg_actor_hit(*actor);
                 }
 
-                actor::hit(*actor, dmg_, DmgType::pure);
+                actor::hit(*actor, m_dmg, DmgType::pure);
         }
 }
 
 void PropAuraOfDecay::run_effect_on_env() const
 {
-        for (const P& d : dir_utils::dir_list)
+        for (const P& d : dir_utils::g_dir_list)
         {
-                const P p = owner_->pos + d;
+                const P p = m_owner->m_pos + d;
 
                 if (!map::is_pos_inside_outer_walls(p))
                 {
                         continue;
                 }
 
-                auto& cell = map::cells.at(p);
+                auto& cell = map::g_cells.at(p);
 
                 auto* const rigid = cell.rigid;
 
@@ -2034,7 +2040,8 @@ void PropAuraOfDecay::run_effect_on_env() const
                 else if (id == FeatureId::grass &&
                          rnd::one_in(10))
                 {
-                        static_cast<Grass*>(rigid)->type_ = GrassType::withered;
+                        static_cast<Grass*>(rigid)->m_type =
+                                GrassType::withered;
                 }
                 else if (id == FeatureId::fountain)
                 {
@@ -2057,7 +2064,7 @@ void PropAuraOfDecay::print_msg_actor_hit(const Actor& actor) const
         //                 : actor.corpse_name_the();
 
         //         const Color msg_color =
-        //                 (map::player->is_leader_of(&actor))
+        //                 (map::g_player->is_leader_of(&actor))
         //                 ? colors::text()
         //                 : colors::msg_good();
 
@@ -2069,29 +2076,29 @@ void PropAuraOfDecay::print_msg_actor_hit(const Actor& actor) const
 
 PropActResult PropMajorClaphamSummon::on_act()
 {
-        if (owner_->is_player())
+        if (m_owner->is_player())
         {
                 return PropActResult();
         }
 
-        auto* const mon = static_cast<Mon*>(owner_);
+        auto* const mon = static_cast<Mon*>(m_owner);
 
         if (!mon->is_alive() ||
-            (mon->aware_of_player_counter_ <= 0))
+            (mon->m_aware_of_player_counter <= 0))
         {
                 return PropActResult();
         }
 
         Array2<bool> blocked_los(map::dims());
 
-        const R fov_rect = fov::fov_rect(mon->pos, blocked_los.dims());
+        const R fov_rect = fov::fov_rect(mon->m_pos, blocked_los.dims());
 
         map_parsers::BlocksLos()
                 .run(blocked_los,
                      fov_rect,
                      MapParseMode::overwrite);
 
-        if (!mon->can_see_actor(*(map::player), blocked_los))
+        if (!mon->can_see_actor(*(map::g_player), blocked_los))
         {
                 return PropActResult();
         }
@@ -2122,7 +2129,7 @@ PropActResult PropMajorClaphamSummon::on_act()
         }
 
         auto spawned =
-                actor_factory::spawn(mon->pos, ids_to_summon, map::rect())
+                actor_factory::spawn(mon->m_pos, ids_to_summon, map::rect())
                 .make_aware_of_player()
                 .set_leader(mon)
                 .for_each([](Mon* const mon)
@@ -2131,14 +2138,14 @@ PropActResult PropMajorClaphamSummon::on_act()
 
                         prop_summoned->set_indefinite();
 
-                        mon->properties.apply(prop_summoned);
+                        mon->m_properties.apply(prop_summoned);
 
-                        mon->is_player_feeling_msg_allowed_ = false;
+                        mon->m_is_player_feeling_msg_allowed = false;
                 });
 
-        map::player->incr_shock(ShockLvl::terrifying, ShockSrc::misc);
+        map::g_player->incr_shock(ShockLvl::terrifying, ShockSrc::misc);
 
-        mon->properties.end_prop(id());
+        mon->m_properties.end_prop(id());
 
         game_time::tick();
 
@@ -2147,46 +2154,46 @@ PropActResult PropMajorClaphamSummon::on_act()
 
 void PropMagicSearching::save() const
 {
-        saving::put_int(range_);
+        saving::put_int(m_range);
 
-        saving::put_bool(allow_reveal_items_);
+        saving::put_bool(m_allow_reveal_items);
 }
 
 void PropMagicSearching::load()
 {
-        range_ = saving::get_int();
+        m_range = saving::get_int();
 
-        allow_reveal_items_ = saving::get_bool();
+        m_allow_reveal_items = saving::get_bool();
 }
 
 PropEnded PropMagicSearching::on_tick()
 {
-        ASSERT(owner_->is_player());
+        ASSERT(m_owner->is_player());
 
-        const int orig_x = map::player->pos.x;
-        const int orig_y = map::player->pos.y;
+        const int orig_x = map::g_player->m_pos.x;
+        const int orig_y = map::g_player->m_pos.y;
 
         const int x0 = std::max(
                 0,
-                orig_x - range_);
+                orig_x - m_range);
 
         const int y0 = std::max(
                 0,
-                orig_y - range_);
+                orig_y - m_range);
 
         const int x1 = std::min(
                 map::w() - 1,
-                orig_x + range_);
+                orig_x + m_range);
 
         const int y1 = std::min(
                 map::h() - 1,
-                orig_y + range_);
+                orig_y + m_range);
 
         for (int y = y0; y <= y1; ++y)
         {
                 for (int x = x0; x <= x1; ++x)
                 {
-                        auto& cell = map::cells.at(x, y);
+                        auto& cell = map::g_cells.at(x, y);
 
                         auto* const f = cell.rigid;
 
@@ -2204,7 +2211,7 @@ PropEnded PropMagicSearching::on_tick()
                                 cell.is_explored = true;
                         }
 
-                        if (allow_reveal_items_ && cell.item)
+                        if (m_allow_reveal_items && cell.item)
                         {
                                 cell.is_seen_by_player = true;
 
@@ -2215,13 +2222,13 @@ PropEnded PropMagicSearching::on_tick()
 
         const int det_mon_multiplier = 20;
 
-        for (Actor* actor : game_time::actors)
+        for (Actor* actor : game_time::g_actors)
         {
-                const P& p = actor->pos;
+                const P& p = actor->m_pos;
 
                 if (actor->is_player() ||
                     !actor->is_alive() ||
-                    (king_dist(map::player->pos, p) > range_))
+                    (king_dist(map::g_player->m_pos, p) > m_range))
                 {
                         continue;
                 }
@@ -2232,7 +2239,7 @@ PropEnded PropMagicSearching::on_tick()
 
         states::draw();
 
-        map::player->update_fov();
+        map::g_player->update_fov();
 
         states::draw();
 
@@ -2241,7 +2248,7 @@ PropEnded PropMagicSearching::on_tick()
 
 bool PropSwimming::allow_read_absolute(const Verbosity verbosity) const
 {
-        if (owner_->is_player() && verbosity == Verbosity::verbose)
+        if (m_owner->is_player() && verbosity == Verbosity::verbose)
         {
                 msg_log::add("I cannot read this while swimming.");
         }
@@ -2251,7 +2258,7 @@ bool PropSwimming::allow_read_absolute(const Verbosity verbosity) const
 
 bool PropSwimming::allow_attack_ranged(const Verbosity verbosity) const
 {
-        if (owner_->is_player() && (verbosity == Verbosity::verbose))
+        if (m_owner->is_player() && (verbosity == Verbosity::verbose))
         {
                 msg_log::add("Not while swimming.");
         }

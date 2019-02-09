@@ -18,7 +18,7 @@ static void decorate_walls()
         {
                 for (int y = 0; y < map::h(); ++y)
                 {
-                        Cell& cell = map::cells.at(x, y);
+                        Cell& cell = map::g_cells.at(x, y);
 
                         if (cell.rigid->id() != FeatureId::wall)
                         {
@@ -46,7 +46,7 @@ static void decorate_walls()
 
 static bool is_cave_floor(const P& p)
 {
-        const auto& f = *map::cells.at(p).rigid;
+        const auto& f = *map::g_cells.at(p).rigid;
 
         // TODO: Consider traps mimicking cave floor
 
@@ -54,7 +54,7 @@ static bool is_cave_floor(const P& p)
         {
                 auto* floor = static_cast<const Floor*>(&f);
 
-                if (floor->type_ == FloorType::cave)
+                if (floor->m_type == FloorType::cave)
                 {
                         return true;
                 }
@@ -93,7 +93,7 @@ static bool should_convert_wall_to_cave_mid_game(const P& p)
 
         bool is_adj_to_cave_floor = false;
 
-        for (const P& d : dir_utils::dir_list)
+        for (const P& d : dir_utils::g_dir_list)
         {
                 const P p_adj(p + d);
 
@@ -115,11 +115,11 @@ static bool should_convert_wall_to_cave_mid_game(const P& p)
 
 static bool should_convert_wall_to_cave(const P& p)
 {
-        if (map::dlvl <= dlvl_last_early_game)
+        if (map::g_dlvl <= g_dlvl_last_early_game)
         {
                 return should_convert_wall_to_cave_early_game(p);
         }
-        else if (map::dlvl <= dlvl_last_mid_game)
+        else if (map::g_dlvl <= g_dlvl_last_mid_game)
         {
                 return should_convert_wall_to_cave_mid_game(p);
         }
@@ -137,7 +137,7 @@ static void convert_walls_to_cave()
                 {
                         const P p(x, y);
 
-                        auto& f = *map::cells.at(p).rigid;
+                        auto& f = *map::g_cells.at(p).rigid;
 
                         if ((f.id() != FeatureId::wall) ||
                             !should_convert_wall_to_cave(p))
@@ -147,7 +147,7 @@ static void convert_walls_to_cave()
 
                         auto* const wall = static_cast<Wall*>(&f);
 
-                        wall->type_ = WallType::cave;
+                        wall->m_type = WallType::cave;
                 }
         }
 }
@@ -160,7 +160,7 @@ static void decorate_floor()
                 {
                         const P p(x, y);
 
-                        const auto& cell = map::cells.at(x, y);
+                        const auto& cell = map::g_cells.at(x, y);
 
                         if (cell.rigid->id() != FeatureId::floor)
                         {
@@ -174,12 +174,12 @@ static void decorate_floor()
 
                         if (rnd::one_in(150))
                         {
-                                for (const P& d : dir_utils::dir_list_w_center)
+                                for (const P& d : dir_utils::g_dir_list_w_center)
                                 {
                                         const P adj_p(p + d);
 
                                         const auto& adj_id =
-                                                map::cells.at(adj_p).rigid
+                                                map::g_cells.at(adj_p).rigid
                                                 ->id();
 
                                         const bool adj_is_floor =
@@ -215,7 +215,7 @@ static void make_grates()
 
                         const int convert_to_grate_one_in_n = 6;
 
-                        if ((map::cells.at(p).rigid->id() != FeatureId::wall) ||
+                        if ((map::g_cells.at(p).rigid->id() != FeatureId::wall) ||
                             !rnd::one_in(convert_to_grate_one_in_n))
                         {
                                 continue;

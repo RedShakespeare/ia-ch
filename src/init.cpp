@@ -38,8 +38,10 @@
 namespace init
 {
 
-bool is_cheat_vision_enabled = false;
-bool is_demo_mapgen = false;
+bool g_is_cheat_vision_enabled = false;
+
+bool g_is_demo_mapgen = false;
+
 
 void init_io()
 {

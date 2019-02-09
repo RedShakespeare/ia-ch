@@ -70,7 +70,7 @@ static Mon* spawn_at(const P& pos, const ActorId id)
 
         Mon* const mon = static_cast<Mon*>(actor);
 
-        if (map::player->can_see_actor(*mon))
+        if (map::g_player->can_see_actor(*mon))
         {
                 mon->set_player_aware_of_me();
         }
@@ -91,7 +91,7 @@ static MonSpawnResult spawn_at_positions(const std::vector<P>& positions,
 
                 const ActorId id = ids[i];
 
-                result.monsters.emplace_back(
+                result.m_monsters.emplace_back(
                         spawn_at(pos, id));
         }
 
@@ -103,20 +103,27 @@ static MonSpawnResult spawn_at_positions(const std::vector<P>& positions,
 // -----------------------------------------------------------------------------
 MonSpawnResult& MonSpawnResult::set_leader(Actor* const leader)
 {
-        std::for_each(begin(monsters), end(monsters), [leader](auto mon)
-        {
-                mon->leader_ = leader;
-        });
+        std::for_each(
+                std::begin(m_monsters),
+                std::end(m_monsters),
+                [leader](auto mon)
+                {
+                        mon->m_leader = leader;
+                });
 
         return *this;
 }
 
 MonSpawnResult& MonSpawnResult::make_aware_of_player()
 {
-        std::for_each(begin(monsters), end(monsters), [](auto mon)
-        {
-                mon->aware_of_player_counter_ = mon->data->nr_turns_aware;
-        });
+        std::for_each(
+                std::begin(m_monsters),
+                std::end(m_monsters),
+                [](auto mon)
+                {
+                        mon->m_aware_of_player_counter =
+                                mon->m_data->nr_turns_aware;
+                });
 
         return *this;
 }
@@ -131,23 +138,23 @@ Actor* make(const ActorId id, const P& pos)
 {
         Actor* const actor = make_actor_from_id(id);
 
-        actor::init_actor(*actor, pos, actor_data::data[(size_t)id]);
+        actor::init_actor(*actor, pos, actor_data::g_data[(size_t)id]);
 
-        if (actor->data->nr_left_allowed_to_spawn > 0)
+        if (actor->m_data->nr_left_allowed_to_spawn > 0)
         {
-                --actor->data->nr_left_allowed_to_spawn;
+                --actor->m_data->nr_left_allowed_to_spawn;
         }
 
         game_time::add_actor(actor);
 
-        actor->properties.on_placed();
+        actor->m_properties.on_placed();
 
         return actor;
 }
 
 void delete_all_mon()
 {
-        std::vector<Actor*>& actors = game_time::actors;
+        std::vector<Actor*>& actors = game_time::g_actors;
 
         for (auto it = begin(actors); it != end(actors);)
         {

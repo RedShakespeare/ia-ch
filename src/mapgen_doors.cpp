@@ -17,7 +17,7 @@
 
 static bool is_wall(const P& p)
 {
-        return map::cells.at(p).rigid->id() == FeatureId::wall;
+        return map::g_cells.at(p).rigid->id() == FeatureId::wall;
 }
 
 static void try_make_door(const P& p)
@@ -99,7 +99,7 @@ void make_doors()
         {
                 for (int y = 0; y < map::h(); ++y)
                 {
-                        if (door_proposals.at(x, y) && rnd::fraction(4, 5))
+                        if (g_door_proposals.at(x, y) && rnd::fraction(4, 5))
                         {
                                 try_make_door(P(x, y));
                         }
@@ -110,7 +110,7 @@ void make_doors()
 void make_metal_doors_and_levers()
 {
         // Only make metal on some maps, and never late game (theme)
-        if (map::dlvl >= dlvl_first_late_game)
+        if (map::g_dlvl >= g_dlvl_first_late_game)
         {
                 return;
         }
@@ -129,7 +129,7 @@ void make_metal_doors_and_levers()
                 // Find all chokepoints with a door
                 std::vector<const ChokePointData*> chokepoint_bucket;
 
-                for (const auto& chokepoint : map::choke_point_data)
+                for (const auto& chokepoint : map::g_choke_point_data)
                 {
                         if (chokepoint.sides[0].empty() ||
                             chokepoint.sides[1].empty())
@@ -139,7 +139,7 @@ void make_metal_doors_and_levers()
 
                         const P& p = chokepoint.p;
 
-                        auto id = map::cells.at(p).rigid->id();
+                        auto id = map::g_cells.at(p).rigid->id();
 
                         if (id == FeatureId::door)
                         {
@@ -166,9 +166,9 @@ void make_metal_doors_and_levers()
                         blocks_levers.rect());
 
                 // Block cells with actors
-                for (const auto* const actor : game_time::actors)
+                for (const auto* const actor : game_time::g_actors)
                 {
-                        blocks_levers.at(actor->pos) = true;
+                        blocks_levers.at(actor->m_pos) = true;
                 }
 
                 // Make a floodfill from the player - this will be used to ONLY
@@ -201,7 +201,7 @@ void make_metal_doors_and_levers()
                 }
 
                 const auto player_flood =
-                        floodfill(map::player->pos, blocks_player);
+                        floodfill(map::g_player->m_pos, blocks_player);
 
                 // Cells blocking the player from reaching the levers
                 Array2<bool> blocks_reaching_levers(map::dims());
@@ -212,7 +212,7 @@ void make_metal_doors_and_levers()
 
                 for (size_t i = 0; i < map::nr_cells(); ++i)
                 {
-                        const auto* r = map::cells.at(i).rigid;
+                        const auto* r = map::g_cells.at(i).rigid;
 
                         if (r->id() == FeatureId::door)
                         {
@@ -239,7 +239,7 @@ void make_metal_doors_and_levers()
                         const P& door_p = chokepoint->p;
 
                         {
-                                const auto* r = map::cells.at(door_p).rigid;
+                                const auto* r = map::g_cells.at(door_p).rigid;
 
                                 if (r->id() == FeatureId::door)
                                 {

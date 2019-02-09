@@ -11,7 +11,11 @@
 
 class Actor;
 
-enum class ActorDied {no ,yes};
+enum class ActorDied
+{
+        no,
+        yes
+};
 
 namespace actor
 {

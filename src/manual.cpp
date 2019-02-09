@@ -18,9 +18,9 @@
 // -----------------------------------------------------------------------------
 // Private
 // -----------------------------------------------------------------------------
-static const int manual_text_x0 = 1;
-static const int manual_text_x1 = 78; // TODO: Set from standard value
-static const int manual_text_w = manual_text_x1 - manual_text_x0 + 1;
+static const int s_manual_text_x0 = 1;
+static const int s_manual_text_x1 = 78; // TODO: Set from standard value
+static const int s_manual_text_w = s_manual_text_x1 - s_manual_text_x0 + 1;
 
 static std::vector<std::string> read_manual_file()
 {
@@ -65,7 +65,7 @@ static std::vector<std::string> format_lines(
                 {
                         const auto split_line = text_format::split(
                                 raw_line,
-                                manual_text_w
+                                s_manual_text_w
                                 /* panels::w(Panel::screen) */);
 
                         for (const auto& line : split_line)
@@ -129,13 +129,13 @@ StateId BrowseManual::id()
 
 void BrowseManual::on_start()
 {
-        raw_lines_ = read_manual_file();
+        m_raw_lines = read_manual_file();
 
-        const auto formatted_lines = format_lines(raw_lines_);
+        const auto formatted_lines = format_lines(m_raw_lines);
 
-        pages_ = init_pages(formatted_lines);
+        m_pages = init_pages(formatted_lines);
 
-        browser_.reset(pages_.size());
+        m_browser.reset(m_pages.size());
 }
 
 void BrowseManual::draw()
@@ -149,31 +149,31 @@ void BrowseManual::draw()
                 colors::black(),
                 true); // Allow pixel-level adjustment
 
-        const int nr_pages = pages_.size();
+        const int nr_pages = m_pages.size();
 
         const int labels_y0 = 1;
 
         for (int idx = 0; idx < (int)nr_pages; ++idx)
         {
                 const auto key_str =
-                        browser_.menu_keys()[idx] +
+                        m_browser.menu_keys()[idx] +
                         std::string{") "};
 
-                const bool is_marked = browser_.y() == idx;
+                const bool is_marked = m_browser.y() == idx;
 
                 const Color& draw_color =
                         is_marked ?
                         colors::menu_highlight() :
                         colors::menu_dark();
 
-                const auto& page = pages_[idx];
+                const auto& page = m_pages[idx];
 
                 const int y = labels_y0 + idx;
 
                 io::draw_text(
                         key_str + page.title,
                         Panel::screen,
-                        P(manual_text_x0, y),
+                        P(s_manual_text_x0, y),
                         draw_color);
         }
 }
@@ -190,7 +190,7 @@ void BrowseManual::update()
         const auto input = io::get();
 
         const MenuAction action =
-                browser_.read(
+                m_browser.read(
                         input,
                         MenuInputMode::scrolling_and_letters);
 
@@ -198,7 +198,7 @@ void BrowseManual::update()
         {
         case MenuAction::selected:
         {
-                const auto& page = pages_[browser_.y()];
+                const auto& page = m_pages[m_browser.y()];
 
                 std::unique_ptr<State> browse_page(
                         new BrowseManualPage(page));
@@ -231,20 +231,20 @@ void BrowseManualPage::draw()
 {
         draw_interface();
 
-        const int nr_lines_tot = page_.lines.size();
+        const int nr_lines_tot = m_page.lines.size();
 
         const int btm_nr =
-                std::min(top_idx_ + max_nr_lines_on_screen() - 1,
+                std::min(m_top_idx + max_nr_lines_on_screen() - 1,
                          nr_lines_tot - 1);
 
         int screen_y = 1;
 
-        for (int i = top_idx_; i <= btm_nr; ++i)
+        for (int i = m_top_idx; i <= btm_nr; ++i)
         {
                 io::draw_text(
-                        page_.lines[i],
+                        m_page.lines[i],
                         Panel::screen,
-                        P(manual_text_x0, screen_y),
+                        P(s_manual_text_x0, screen_y),
                         colors::text());
 
                 ++screen_y;
@@ -255,7 +255,7 @@ void BrowseManualPage::update()
 {
         const int line_jump = 3;
 
-        const int nr_lines_tot = page_.lines.size();
+        const int nr_lines_tot = m_page.lines.size();
 
         const auto input = io::get();
 
@@ -263,23 +263,23 @@ void BrowseManualPage::update()
         {
         case '2':
         case SDLK_DOWN:
-                top_idx_ += line_jump;
+                m_top_idx += line_jump;
 
                 if (nr_lines_tot <= max_nr_lines_on_screen())
                 {
-                        top_idx_ = 0;
+                        m_top_idx = 0;
                 }
                 else
                 {
-                        top_idx_ = std::min(
+                        m_top_idx = std::min(
                                 nr_lines_tot - max_nr_lines_on_screen(),
-                                top_idx_);
+                                m_top_idx);
                 }
                 break;
 
         case '8':
         case SDLK_UP:
-                top_idx_ = std::max(0, top_idx_ - line_jump);
+                m_top_idx = std::max(0, m_top_idx - line_jump);
                 break;
 
         case SDLK_SPACE:
@@ -295,5 +295,5 @@ void BrowseManualPage::update()
 
 std::string BrowseManualPage::title() const
 {
-        return page_.title;
+        return m_page.title;
 }

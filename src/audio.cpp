@@ -24,26 +24,26 @@ static_assert(
         std::is_integral<std::chrono::system_clock::rep>::value,
         "Representation of ticks isn't an integral value.");
 
-static std::vector<Mix_Chunk*> audio_chunks_;
+static std::vector<Mix_Chunk*> s_audio_chunks;
 
-static std::vector<Mix_Music*> mus_chunks_;
+static std::vector<Mix_Music*> s_mus_chunks;
 
 // TODO: Also use std::chrono for sound effects?
-static size_t ms_at_sfx_played_[(size_t)SfxId::END];
+static size_t s_ms_at_sfx_played[(size_t)SfxId::END];
 
-static int current_channel_ = 0;
+static int s_current_channel = 0;
 
-static const auto min_seconds_between_amb = 20s;
+static const auto s_min_seconds_between_amb = 20s;
 
-static auto seconds_at_amb_played_ = 0s;
+static auto s_seconds_at_amb_played = 0s;
 
-static int nr_files_loaded_ = 0;
+static int s_nr_files_loaded = 0;
 
 
 static void load(const SfxId sfx, const std::string& filename)
 {
         // Sound already loaded?
-        if (audio_chunks_[(size_t)sfx])
+        if (s_audio_chunks[(size_t)sfx])
         {
                 return;
         }
@@ -51,11 +51,11 @@ static void load(const SfxId sfx, const std::string& filename)
         // Read events, so that we don't freeze the game while we loading sounds
         SDL_PumpEvents();
 
-        const std::string file_rel_path = paths::audio_dir +  "/" + filename;
+        const std::string file_rel_path = paths::g_audio_dir +  "/" + filename;
 
-        audio_chunks_[(size_t)sfx] = Mix_LoadWAV(file_rel_path.c_str());
+        s_audio_chunks[(size_t)sfx] = Mix_LoadWAV(file_rel_path.c_str());
 
-        if (!audio_chunks_[(size_t)sfx])
+        if (!s_audio_chunks[(size_t)sfx])
         {
                 TRACE << "Problem loading audio file with name: "
                       << filename << std::endl
@@ -64,16 +64,16 @@ static void load(const SfxId sfx, const std::string& filename)
                 ASSERT(false);
         }
 
-        ++nr_files_loaded_;
+        ++s_nr_files_loaded;
 }
 
 static int next_channel(const int from)
 {
-        ASSERT(from >= 0 && from < audio::allocated_channels);
+        ASSERT(from >= 0 && from < audio::g_allocated_channels);
 
         int ret = from + 1;
 
-        if (ret == audio::allocated_channels)
+        if (ret == audio::g_allocated_channels)
         {
                 ret = 0;
         }
@@ -83,11 +83,11 @@ static int next_channel(const int from)
 
 static int find_free_channel(const int from)
 {
-        ASSERT(from >= 0 && from < audio::allocated_channels);
+        ASSERT(from >= 0 && from < audio::g_allocated_channels);
 
         int ret = from;
 
-        for (int i = 0; i < audio::allocated_channels; ++i)
+        for (int i = 0; i < audio::g_allocated_channels; ++i)
         {
                 ret = next_channel(ret);
 
@@ -137,11 +137,11 @@ void init()
                 return;
         }
 
-        audio_chunks_.resize((size_t)SfxId::END);
+        s_audio_chunks.resize((size_t)SfxId::END);
 
-        for (size_t i = 0; i < audio_chunks_.size(); ++i)
+        for (size_t i = 0; i < s_audio_chunks.size(); ++i)
         {
-                audio_chunks_[i] = nullptr;
+                s_audio_chunks[i] = nullptr;
         }
 
         // Pre-load the action sounds (ambient sounds are loaded on demand)
@@ -208,16 +208,16 @@ void init()
         load(SfxId::menu_browse, "sfx_menu_browse.ogg");
         load(SfxId::menu_select, "sfx_menu_select.ogg");
 
-        ASSERT(nr_files_loaded_ == (int)SfxId::AMB_START);
+        ASSERT(s_nr_files_loaded == (int)SfxId::AMB_START);
 
         // Load music
-        mus_chunks_.resize((size_t)MusId::END);
+        s_mus_chunks.resize((size_t)MusId::END);
 
         const std::string music_path =
-                paths::audio_dir +
+                paths::g_audio_dir +
                 "/musica_cthulhiana_fragment_madness.ogg";
 
-        mus_chunks_[(size_t)MusId::cthulhiana_madness] =
+        s_mus_chunks[(size_t)MusId::cthulhiana_madness] =
                 Mix_LoadMUS(music_path.c_str());
 
         TRACE_FUNC_END;
@@ -229,27 +229,27 @@ void cleanup()
 
         for (size_t i = 0; i < (size_t)SfxId::END; ++i)
         {
-                ms_at_sfx_played_[i] = 0;
+                s_ms_at_sfx_played[i] = 0;
         }
 
-        for (Mix_Chunk* chunk : audio_chunks_)
+        for (Mix_Chunk* chunk : s_audio_chunks)
         {
                 Mix_FreeChunk(chunk);
         }
 
-        audio_chunks_.clear();
+        s_audio_chunks.clear();
 
-        for (Mix_Music* chunk : mus_chunks_)
+        for (Mix_Music* chunk : s_mus_chunks)
         {
                 Mix_FreeMusic(chunk);
         }
 
-        mus_chunks_.clear();
+        s_mus_chunks.clear();
 
-        current_channel_ =  0;
-        seconds_at_amb_played_ = 0s;
+        s_current_channel =  0;
+        s_seconds_at_amb_played = 0s;
 
-        nr_files_loaded_ = 0;
+        s_nr_files_loaded = 0;
 
         TRACE_FUNC_END;
 }
@@ -258,7 +258,7 @@ void play(const SfxId sfx,
           const int vol_pct_tot,
           const int vol_pct_l)
 {
-        if (audio_chunks_.empty() ||
+        if (s_audio_chunks.empty() ||
             (sfx == SfxId::AMB_START) ||
             (sfx == SfxId::END))
         {
@@ -267,35 +267,37 @@ void play(const SfxId sfx,
 
         // Is this an ambient sound which has not yet been loaded?
         if (((int)sfx > (int)SfxId::AMB_START) &&
-            !audio_chunks_[(size_t)sfx])
+            !s_audio_chunks[(size_t)sfx])
         {
                 load(sfx, amb_sfx_filename(sfx));
         }
 
-        const int free_channel = find_free_channel(current_channel_);
+        const int free_channel = find_free_channel(s_current_channel);
 
         const size_t ms_now = SDL_GetTicks();
 
-        size_t& ms_last = ms_at_sfx_played_[(size_t)sfx];
+        size_t& ms_last = s_ms_at_sfx_played[(size_t)sfx];
 
         const size_t ms_diff = ms_now - ms_last;
 
         if ((free_channel >= 0) &&
-            (ms_diff >= min_ms_between_same_sfx))
+            (ms_diff >= g_min_ms_between_same_sfx))
         {
-                current_channel_ = free_channel;
+                s_current_channel = free_channel;
 
                 const int vol_tot = (255 * vol_pct_tot) / 100;
                 const int vol_l = (vol_pct_l * vol_tot) / 100;
                 const int vol_r = vol_tot - vol_l;
 
-                Mix_SetPanning(current_channel_,
-                               vol_l,
-                               vol_r);
+                Mix_SetPanning(
+                        s_current_channel,
+                        vol_l,
+                        vol_r);
 
-                Mix_PlayChannel(current_channel_,
-                                audio_chunks_[(size_t)sfx],
-                                0);
+                Mix_PlayChannel(
+                        s_current_channel,
+                        s_audio_chunks[(size_t)sfx],
+                        0);
 
                 ms_last = SDL_GetTicks();
         }
@@ -364,7 +366,7 @@ void play(const SfxId sfx,
 void try_play_amb(const int one_in_n_chance_to_play)
 {
         if (!config::is_amb_audio_enabled() ||
-            audio_chunks_.empty() ||
+            s_audio_chunks.empty() ||
             !rnd::one_in(one_in_n_chance_to_play))
         {
                 return;
@@ -375,9 +377,9 @@ void try_play_amb(const int one_in_n_chance_to_play)
                         std::chrono::system_clock::now()
                         .time_since_epoch());
 
-        if ((seconds_now - seconds_at_amb_played_) > min_seconds_between_amb)
+        if ((seconds_now - s_seconds_at_amb_played) > s_min_seconds_between_amb)
         {
-                seconds_at_amb_played_ = seconds_now;
+                s_seconds_at_amb_played = seconds_now;
 
                 const int vol_pct = rnd::range(15, 100);
 
@@ -396,12 +398,12 @@ void try_play_amb(const int one_in_n_chance_to_play)
 void play_music(const MusId mus)
 {
         // NOTE: We do not play if already playing  music
-        if (mus_chunks_.empty() || Mix_PlayingMusic())
+        if (s_mus_chunks.empty() || Mix_PlayingMusic())
         {
                 return;
         }
 
-        auto* const chunk = mus_chunks_[(size_t)mus];
+        auto* const chunk = s_mus_chunks[(size_t)mus];
 
         // Loop forever
         Mix_PlayMusic(chunk, -1);

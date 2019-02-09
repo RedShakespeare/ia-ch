@@ -17,10 +17,10 @@ class Mob;
 namespace game_time
 {
 
-extern std::vector<Actor*> actors;
-extern std::vector<Mob*> mobs;
+extern std::vector<Actor*> g_actors;
+extern std::vector<Mob*> g_mobs;
 
-extern bool is_magic_descend_nxt_std_turn;
+extern bool g_is_magic_descend_nxt_std_turn;
 
 void init();
 void cleanup();

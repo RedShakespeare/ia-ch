@@ -98,7 +98,7 @@ public:
         // Used for determining if '!'-marks should be drawn over the player
         double perm_shock_taken_current_turn() const
         {
-                return perm_shock_taken_current_turn_;
+                return m_perm_shock_taken_current_turn;
         }
 
         int shock_tot() const;
@@ -111,7 +111,7 @@ public:
 
         void set_unarmed_wpn(Wpn* wpn)
         {
-                unarmed_wpn_ = wpn;
+                m_unarmed_wpn = wpn;
         }
 
         void kick_mon(Actor& defender);
@@ -142,25 +142,25 @@ public:
         // there are unique monsters on the map, and the player is a Rogue
         void mon_feeling();
 
-        MedicalBag* active_medical_bag_ {nullptr};
-        int handle_armor_countdown_ {0};
-        int armor_putting_on_backpack_idx_ {-1};
-        bool is_dropping_armor_from_body_slot_ {false};
-        Explosive* active_explosive_ {nullptr};
-        Item* last_thrown_item_ {nullptr};
-        Actor* tgt_ {nullptr};
+        MedicalBag* m_active_medical_bag {nullptr};
+        int m_handle_armor_countdown {0};
+        int m_armor_putting_on_backpack_idx {-1};
+        bool m_is_dropping_armor_from_body_slot {false};
+        Explosive* m_active_explosive {nullptr};
+        Item* m_last_thrown_item {nullptr};
+        Actor* m_tgt {nullptr};
         int wait_turns_left {-1};
-        int ins_ {0};
-        double shock_ {0.0};
-        double shock_tmp_ {0.0};
-        double perm_shock_taken_current_turn_ {0.0};
+        int m_ins {0};
+        double m_shock {0.0};
+        double m_shock_tmp {0.0};
+        double m_perm_shock_taken_current_turn {0.0};
 
 private:
         void incr_insanity();
 
         void reset_perm_shock_taken_current_turn()
         {
-                perm_shock_taken_current_turn_ = 0.0;
+                m_perm_shock_taken_current_turn = 0.0;
         }
 
         int shock_resistance(const ShockSrc shock_src) const;
@@ -179,11 +179,11 @@ private:
 
         void fov_hack();
 
-        int nr_turns_until_ins_ {-1};
-        Dir auto_move_dir_ {Dir::END};
-        bool has_taken_auto_move_step_ {false};
-        int nr_turns_until_rspell_ {-1};
-        Wpn* unarmed_wpn_ {nullptr};
+        int m_nr_turns_until_ins {-1};
+        Dir m_auto_move_dir {Dir::END};
+        bool m_has_taken_auto_move_step {false};
+        int m_nr_turns_until_rspell {-1};
+        Wpn* m_unarmed_wpn {nullptr};
 };
 
 #endif // PLAYER_HPP

@@ -57,8 +57,8 @@ std::vector<P> pathfind_with_flood(
 
         const std::vector<P>& dirs =
                 allow_diagonal
-                ? dir_utils::dir_list
-                : dir_utils::cardinal_list;
+                ? dir_utils::g_dir_list
+                : dir_utils::g_cardinal_list;
 
         const size_t nr_dirs = dirs.size();
 

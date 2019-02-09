@@ -39,7 +39,7 @@ void PharaohStaff::on_std_turn_in_inv(const InvType inv_type)
 {
         (void)inv_type;
 
-        if (actor_carrying() != map::player)
+        if (actor_carrying() != map::g_player)
         {
                 return;
         }
@@ -48,10 +48,10 @@ void PharaohStaff::on_std_turn_in_inv(const InvType inv_type)
 
         map_parsers::BlocksLos()
                 .run(blocked_los,
-                     fov::fov_rect(map::player->pos, map::dims()),
+                     fov::fov_rect(map::g_player->m_pos, map::dims()),
                      MapParseMode::overwrite);
 
-        for (auto* const actor : game_time::actors)
+        for (auto* const actor : game_time::g_actors)
         {
                 if (actor->is_player() || !actor->is_alive())
                 {
@@ -60,13 +60,13 @@ void PharaohStaff::on_std_turn_in_inv(const InvType inv_type)
 
                 auto* const mon = static_cast<Mon*>(actor);
 
-                if (mon->aware_of_player_counter_ <= 0)
+                if (mon->m_aware_of_player_counter <= 0)
                 {
                         continue;
                 }
 
                 const bool mon_see_player =
-                        mon->can_see_actor(*map::player, blocked_los);
+                        mon->can_see_actor(*map::g_player, blocked_los);
 
                 if (!mon_see_player)
                 {
@@ -86,7 +86,7 @@ void PharaohStaff::on_mon_see_player_carrying(Mon& mon) const
                 return;
         }
 
-        if (mon.is_actor_my_leader(map::player))
+        if (mon.is_actor_my_leader(map::g_player))
         {
                 return;
         }
@@ -95,9 +95,9 @@ void PharaohStaff::on_mon_see_player_carrying(Mon& mon) const
 
         if (rnd::percent(convert_pct_chance))
         {
-                mon.leader_ = map::player;
+                mon.m_leader = map::g_player;
 
-                if (map::player->can_see_actor(mon))
+                if (map::g_player->can_see_actor(mon))
                 {
                         const auto name_the =
                                 text_format::first_to_upper(
@@ -170,37 +170,37 @@ void HornOfMaliceHeard::run(Actor& actor) const
 {
         if (!actor.is_player())
         {
-                actor.properties.apply(new PropConflict());
+                actor.m_properties.apply(new PropConflict());
         }
 }
 
 HornOfMalice::HornOfMalice(ItemData* const item_data) :
         Item(item_data),
-        charges_(rnd::range(4, 6))
+        m_charges(rnd::range(4, 6))
 {
 
 }
 
 std::string HornOfMalice::name_inf_str() const
 {
-        return "{" + std::to_string(charges_) + "}";
+        return "{" + std::to_string(m_charges) + "}";
 }
 
 void HornOfMalice::save() const
 {
-        saving::put_int(charges_);
+        saving::put_int(m_charges);
 }
 
 void HornOfMalice::load()
 {
-        charges_ = saving::get_int();
+        m_charges = saving::get_int();
 }
 
 ConsumeItem HornOfMalice::activate(Actor* const actor)
 {
         (void)actor;
 
-        if (charges_ <= 0)
+        if (m_charges <= 0)
         {
                 msg_log::add("It makes no sound.");
 
@@ -213,8 +213,8 @@ ConsumeItem HornOfMalice::activate(Actor* const actor)
         Snd snd("The Horn of Malice resounds!",
                 SfxId::END, // TODO: Make a sound effect
                 IgnoreMsgIfOriginSeen::no,
-                map::player->pos,
-                map::player,
+                map::g_player->m_pos,
+                map::g_player,
                 SndVol::high,
                 AlertsMon::yes,
                 MorePromptOnMsg::no,
@@ -222,7 +222,7 @@ ConsumeItem HornOfMalice::activate(Actor* const actor)
 
         snd_emit::run(snd);
 
-        --charges_;
+        --m_charges;
 
         game_time::tick();
 
@@ -234,9 +234,9 @@ ConsumeItem HornOfMalice::activate(Actor* const actor)
 // -----------------------------------------------------------------------------
 void HornOfBanishmentHeard::run(Actor& actor) const
 {
-        if (actor.properties.has(PropId::summoned))
+        if (actor.m_properties.has(PropId::summoned))
         {
-                if (map::player->can_see_actor(actor))
+                if (map::g_player->can_see_actor(actor))
                 {
                         const std::string name_the =
                                 text_format::first_to_upper(
@@ -245,40 +245,40 @@ void HornOfBanishmentHeard::run(Actor& actor) const
                         msg_log::add(
                                 name_the +
                                 " " +
-                                common_text::mon_disappear);
+                                common_text::g_mon_disappear);
                 }
 
-                actor.state = ActorState::destroyed;
+                actor.m_state = ActorState::destroyed;
         }
 }
 
 HornOfBanishment::HornOfBanishment(ItemData* const item_data) :
         Item(item_data),
-        charges_(rnd::range(4, 6))
+        m_charges(rnd::range(4, 6))
 {
 
 }
 
 std::string HornOfBanishment::name_inf_str() const
 {
-        return "{" + std::to_string(charges_) + "}";
+        return "{" + std::to_string(m_charges) + "}";
 }
 
 void HornOfBanishment::save() const
 {
-        saving::put_int(charges_);
+        saving::put_int(m_charges);
 }
 
 void HornOfBanishment::load()
 {
-        charges_ = saving::get_int();
+        m_charges = saving::get_int();
 }
 
 ConsumeItem HornOfBanishment::activate(Actor* const actor)
 {
         (void)actor;
 
-        if (charges_ <= 0)
+        if (m_charges <= 0)
         {
                 msg_log::add("It makes no sound.");
 
@@ -291,8 +291,8 @@ ConsumeItem HornOfBanishment::activate(Actor* const actor)
         Snd snd("The Horn of Banishment resounds!",
                 SfxId::END, // TODO: Make a sound effect
                 IgnoreMsgIfOriginSeen::no,
-                map::player->pos,
-                map::player,
+                map::g_player->m_pos,
+                map::g_player,
                 SndVol::high,
                 AlertsMon::yes,
                 MorePromptOnMsg::no,
@@ -300,7 +300,7 @@ ConsumeItem HornOfBanishment::activate(Actor* const actor)
 
         snd_emit::run(snd);
 
-        --charges_;
+        --m_charges;
 
         game_time::tick();
 
@@ -312,38 +312,38 @@ ConsumeItem HornOfBanishment::activate(Actor* const actor)
 // -----------------------------------------------------------------------------
 Clockwork::Clockwork(ItemData* const item_data) :
         Item(item_data),
-        charges_(rnd::range(4, 6))
+        m_charges(rnd::range(4, 6))
 {
 
 }
 
 std::string Clockwork::name_inf_str() const
 {
-        return "{" + std::to_string(charges_) + "}";
+        return "{" + std::to_string(m_charges) + "}";
 }
 
 void Clockwork::save() const
 {
-        saving::put_int(charges_);
+        saving::put_int(m_charges);
 }
 
 void Clockwork::load()
 {
-        charges_ = saving::get_int();
+        m_charges = saving::get_int();
 }
 
 ConsumeItem Clockwork::activate(Actor* const actor)
 {
         (void)actor;
 
-        if (charges_ <= 0)
+        if (m_charges <= 0)
         {
                 msg_log::add("Nothing happens.");
 
                 return ConsumeItem::no;
         }
 
-        if (map::player->properties.has(PropId::clockwork_hasted))
+        if (map::g_player->m_properties.has(PropId::clockwork_hasted))
         {
                 msg_log::add("It will not move.");
 
@@ -352,18 +352,18 @@ ConsumeItem Clockwork::activate(Actor* const actor)
 
         msg_log::add("I wind up the clockwork.");
 
-        map::player->incr_shock(
+        map::g_player->incr_shock(
                 ShockLvl::terrifying,
                 ShockSrc::use_strange_item);
 
-        if (!map::player->is_alive())
+        if (!map::g_player->is_alive())
         {
                 return ConsumeItem::no;
         }
 
-        map::player->properties.apply(new PropClockworkHasted());
+        map::g_player->m_properties.apply(new PropClockworkHasted());
 
-        --charges_;
+        --m_charges;
 
         game_time::tick();
 
@@ -405,7 +405,7 @@ void SpiritDagger::on_melee_hit(Actor& actor_hit, const int dmg)
         }
 
         // We give the player spirit regardless of the above
-        map::player->restore_sp(1, true, Verbosity::verbose);
+        map::g_player->restore_sp(1, true, Verbosity::verbose);
 }
 
 // -----------------------------------------------------------------------------
@@ -419,7 +419,7 @@ OrbOfLife::OrbOfLife(ItemData* const item_data) :
 
 void OrbOfLife::on_pickup_hook()
 {
-        map::player->change_max_hp(4, Verbosity::verbose);
+        map::g_player->change_max_hp(4, Verbosity::verbose);
 
         auto prop_r_poison = new PropRPoison();
 
@@ -436,7 +436,7 @@ void OrbOfLife::on_pickup_hook()
 
 void OrbOfLife::on_removed_from_inv_hook()
 {
-        map::player->change_max_hp(-4, Verbosity::verbose);
+        map::g_player->change_max_hp(-4, Verbosity::verbose);
 
         clear_carrier_props();
 }

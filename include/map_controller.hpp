@@ -52,7 +52,7 @@ public:
 namespace map_control
 {
 
-extern std::unique_ptr<MapController> controller;
+extern std::unique_ptr<MapController> g_controller;
 
 }
 

@@ -31,17 +31,18 @@
 // -----------------------------------------------------------------------------
 // Private
 // -----------------------------------------------------------------------------
-static std::vector<RoomType> room_bucket_;
+static std::vector<RoomType> s_room_bucket;
+
 
 static void add_to_room_bucket(const RoomType type, const size_t nr)
 {
         if (nr > 0)
         {
-                room_bucket_.reserve(room_bucket_.size() + nr);
+                s_room_bucket.reserve(s_room_bucket.size() + nr);
 
                 for (size_t i = 0; i < nr; ++i)
                 {
-                        room_bucket_.push_back(type);
+                        s_room_bucket.push_back(type);
                 }
         }
 }
@@ -113,7 +114,7 @@ static int walk_blockers_in_dir(const Dir dir, const P& pos)
                 for (int dy = -1; dy <= 1; ++dy)
                 {
                         const auto* const f =
-                                map::cells.at(pos.x + 1, pos.y + dy).rigid;
+                                map::g_cells.at(pos.x + 1, pos.y + dy).rigid;
 
                         if (!f->is_walkable())
                         {
@@ -126,7 +127,7 @@ static int walk_blockers_in_dir(const Dir dir, const P& pos)
                 for (int dx = -1; dx <= 1; ++dx)
                 {
                         const auto* const f =
-                                map::cells.at(pos.x + dx, pos.y + 1).rigid;
+                                map::g_cells.at(pos.x + dx, pos.y + 1).rigid;
 
                         if (!f->is_walkable())
                         {
@@ -139,7 +140,7 @@ static int walk_blockers_in_dir(const Dir dir, const P& pos)
                 for (int dy = -1; dy <= 1; ++dy)
                 {
                         const auto* const f =
-                                map::cells.at(pos.x - 1, pos.y + dy).rigid;
+                                map::g_cells.at(pos.x - 1, pos.y + dy).rigid;
 
                         if (!f->is_walkable())
                         {
@@ -152,7 +153,7 @@ static int walk_blockers_in_dir(const Dir dir, const P& pos)
                 for (int dx = -1; dx <= 1; ++dx)
                 {
                         const auto* const f =
-                                map::cells.at(pos.x + dx, pos.y - 1).rigid;
+                                map::g_cells.at(pos.x + dx, pos.y - 1).rigid;
 
                         if (!f->is_walkable())
                         {
@@ -188,18 +189,18 @@ static void get_positions_in_room_relative_to_walls(
 
         pos_bucket.clear();
 
-        const R& r = room.r_;
+        const auto& r = room.m_r;
 
         for (int x = r.p0.x; x <= r.p1.x; ++x)
         {
                 for (int y = r.p0.y; y <= r.p1.y; ++y)
                 {
-                        if (map::room_map.at(x, y) != &room)
+                        if (map::g_room_map.at(x, y) != &room)
                         {
                                 continue;
                         }
 
-                        auto* const f = map::cells.at(x, y).rigid;
+                        auto* const f = map::g_cells.at(x, y).rigid;
 
                         if (f->is_walkable() && f->can_have_rigid())
                         {
@@ -234,7 +235,7 @@ static void get_positions_in_room_relative_to_walls(
                         for (int dy = -1; dy <= 1; ++dy)
                         {
                                 const auto* const f =
-                                        map::cells.at(pos.x + dx, pos.y + dy)
+                                        map::g_cells.at(pos.x + dx, pos.y + dy)
                                         .rigid;
 
                                 if (f->id() == FeatureId::door)
@@ -274,11 +275,11 @@ void init_room_bucket()
 {
         TRACE_FUNC_BEGIN;
 
-        room_bucket_.clear();
+        s_room_bucket.clear();
 
-        const int dlvl = map::dlvl;
+        const int dlvl = map::g_dlvl;
 
-        if (dlvl <= dlvl_last_early_game)
+        if (dlvl <= g_dlvl_last_early_game)
         {
                 add_to_room_bucket(RoomType::human, rnd::range(4, 5));
                 add_to_room_bucket(RoomType::jail, 1);
@@ -289,11 +290,11 @@ void init_room_bucket()
                 add_to_room_bucket(RoomType::pool, rnd::range(2, 3));
                 add_to_room_bucket(RoomType::snake_pit, rnd::one_in(3) ? 1 : 0);
 
-                const size_t nr_plain_rooms = room_bucket_.size() * 2;
+                const size_t nr_plain_rooms = s_room_bucket.size() * 2;
 
                 add_to_room_bucket(RoomType::plain, nr_plain_rooms);
         }
-        else if (dlvl <= dlvl_last_mid_game)
+        else if (dlvl <= g_dlvl_last_mid_game)
         {
                 add_to_room_bucket(RoomType::human, rnd::range(2, 3));
                 add_to_room_bucket(RoomType::jail, rnd::range(1, 2));
@@ -308,7 +309,7 @@ void init_room_bucket()
                 add_to_room_bucket(RoomType::chasm, 1);
                 add_to_room_bucket(RoomType::forest, 2);
 
-                const size_t nr_plain_rooms = room_bucket_.size() * 2;
+                const size_t nr_plain_rooms = s_room_bucket.size() * 2;
 
                 add_to_room_bucket(RoomType::plain, nr_plain_rooms);
         }
@@ -322,12 +323,12 @@ void init_room_bucket()
                 add_to_room_bucket(RoomType::chasm, 2);
                 add_to_room_bucket(RoomType::forest, 2);
 
-                const size_t nr_cave_rooms = room_bucket_.size() * 2;
+                const size_t nr_cave_rooms = s_room_bucket.size() * 2;
 
                 add_to_room_bucket(RoomType::cave, nr_cave_rooms);
         }
 
-        rnd::shuffle(room_bucket_);
+        rnd::shuffle(s_room_bucket);
 
         TRACE_FUNC_END;
 }
@@ -402,35 +403,35 @@ Room* make_random_room(const R& r, const IsSubRoom is_subroom)
 {
         TRACE_FUNC_BEGIN_VERBOSE;
 
-        auto room_bucket_it = begin(room_bucket_);
+        auto s_room_bucketit = std::begin(s_room_bucket);
 
         Room* room = nullptr;
 
         while (true)
         {
-                if (room_bucket_it == end(room_bucket_))
+                if (s_room_bucketit == std::end(s_room_bucket))
                 {
                         // No more rooms to pick from, generate a new bucket
                         init_room_bucket();
 
-                        room_bucket_it = begin(room_bucket_);
+                        s_room_bucketit = std::begin(s_room_bucket);
                 }
                 else // There are still room types in the bucket
                 {
-                        const RoomType room_type = *room_bucket_it;
+                        const RoomType room_type = *s_room_bucketit;
 
                         room = make(room_type, r);
 
                         // NOTE: This must be set before "is_allowed()" below is
                         // called (some room types should never exist as sub
                         // rooms)
-                        room->is_sub_room_ = is_subroom == IsSubRoom::yes;
+                        room->m_is_sub_room = is_subroom == IsSubRoom::yes;
 
                         StdRoom* const std_room = static_cast<StdRoom*>(room);
 
                         if (std_room->is_allowed())
                         {
-                                room_bucket_.erase(room_bucket_it);
+                                s_room_bucket.erase(s_room_bucketit);
 
                                 TRACE_FUNC_END_VERBOSE << "Made room type: "
                                                        << (int)room_type
@@ -442,7 +443,7 @@ Room* make_random_room(const R& r, const IsSubRoom is_subroom)
                                 delete room;
 
                                 // Try next room type in the bucket
-                                ++room_bucket_it;
+                                ++s_room_bucketit;
                         }
                 }
         }
@@ -458,21 +459,21 @@ Room* make_random_room(const R& r, const IsSubRoom is_subroom)
 // Room
 // -----------------------------------------------------------------------------
 Room::Room(R r, RoomType type) :
-        r_(r),
-        type_(type),
-        is_sub_room_(false) {}
+        m_r(r),
+        m_type(type),
+        m_is_sub_room(false) {}
 
 std::vector<P> Room::positions_in_room() const
 {
         std::vector<P> positions;
 
-        positions.reserve(r_.w() * r_.h());
+        positions.reserve(m_r.w() * m_r.h());
 
-        for (int x = r_.p0.x; x <= r_.p1.x; ++x)
+        for (int x = m_r.p0.x; x <= m_r.p1.x; ++x)
         {
-                for (int y = r_.p0.y; y <= r_.p1.y; ++y)
+                for (int y = m_r.p0.y; y <= m_r.p1.y; ++y)
                 {
-                        if (map::room_map.at(x, y) == this)
+                        if (map::g_room_map.at(x, y) == this)
                         {
                                 positions.push_back(P(x, y));
                         }
@@ -486,14 +487,14 @@ void Room::make_dark() const
 {
         for (size_t i = 0; i < map::nr_cells(); ++i)
         {
-                if (map::room_map.at(i) == this)
+                if (map::g_room_map.at(i) == this)
                 {
-                        map::dark.at(i) = true;
+                        map::g_dark.at(i) = true;
                 }
         }
 
         // Also make sub rooms dark
-        for (Room* const sub_room : sub_rooms_)
+        for (Room* const sub_room : m_sub_rooms)
         {
                 sub_room->make_dark();
         }
@@ -519,15 +520,15 @@ void StdRoom::on_post_connect(Array2<bool>& door_proposals)
 
         bool has_light_source = false;
 
-        for (int x = r_.p0.x; x <= r_.p1.x; ++x)
+        for (int x = m_r.p0.x; x <= m_r.p1.x; ++x)
         {
-                for (int y = r_.p0.y; y <= r_.p1.y; ++y)
+                for (int y = m_r.p0.y; y <= m_r.p1.y; ++y)
                 {
                         // TODO: This should really be handled in a more generic
                         // way, but currently the only map features that are
                         // light sources are braziers - so it works for now.
 
-                        const auto id = map::cells.at(x, y).rigid->id();
+                        const auto id = map::g_cells.at(x, y).rigid->id();
 
                         if (id == FeatureId::brazier)
                         {
@@ -538,10 +539,10 @@ void StdRoom::on_post_connect(Array2<bool>& door_proposals)
 
         if (!has_light_source)
         {
-                int pct_chance_dark = base_pct_chance_dark(type_) - 15;
+                int pct_chance_dark = base_pct_chance_dark(m_type) - 15;
 
                 // Increase chance with deeper dungeon levels
-                pct_chance_dark += map::dlvl;
+                pct_chance_dark += map::g_dlvl;
 
                 set_constr_in_range(0, pct_chance_dark, 100);
 
@@ -630,9 +631,10 @@ void StdRoom::place_auto_features()
         for (const auto& rule : rules)
         {
                 // Insert N elements of the given Feature ID
-                feature_bucket.insert(end(feature_bucket),
-                                      rule.nr_allowed,
-                                      rule.feature_id);
+                feature_bucket.insert(
+                        std::end(feature_bucket),
+                        rule.nr_allowed,
+                        rule.feature_id);
         }
 
         std::vector<P> adj_to_walls_bucket;
@@ -653,7 +655,7 @@ void StdRoom::place_auto_features()
                 const FeatureId id =
                         feature_bucket[feature_idx];
 
-                feature_bucket.erase(begin(feature_bucket) + feature_idx);
+                feature_bucket.erase(std::begin(feature_bucket) + feature_idx);
 
                 const P p = find_auto_feature_placement(adj_to_walls_bucket,
                                                         away_from_walls_bucket,
@@ -681,14 +683,14 @@ void StdRoom::place_auto_features()
                                         std::begin(adj_to_walls_bucket),
                                         std::end(adj_to_walls_bucket),
                                         is_adj),
-                                end(adj_to_walls_bucket));
+                                std::end(adj_to_walls_bucket));
 
                         away_from_walls_bucket.erase(
                                 std::remove_if(
                                         std::begin(away_from_walls_bucket),
                                         std::end(away_from_walls_bucket),
                                         is_adj),
-                                end(away_from_walls_bucket));
+                                std::end(away_from_walls_bucket));
                 }
         }
 }
@@ -699,8 +701,8 @@ void StdRoom::place_auto_features()
 std::vector<RoomAutoFeatureRule> PlainRoom::auto_features_allowed() const
 {
         const int fountain_one_in_n =
-                (map::dlvl <= 4) ? 7 :
-                (map::dlvl <= dlvl_last_mid_game) ? 10 :
+                (map::g_dlvl <= 4) ? 7 :
+                (map::g_dlvl <= g_dlvl_last_mid_game) ? 10 :
                 20;
 
         return
@@ -764,8 +766,8 @@ std::vector<RoomAutoFeatureRule> HumanRoom::auto_features_allowed() const
 bool HumanRoom::is_allowed() const
 {
         return
-                r_.min_dim() >= 3 &&
-                r_.max_dim() <= 8;
+                m_r.min_dim() >= 3 &&
+                m_r.max_dim() <= 8;
 }
 
 void HumanRoom::on_pre_connect_hook(Array2<bool>& door_proposals)
@@ -794,12 +796,12 @@ void HumanRoom::on_post_connect_hook(Array2<bool>& door_proposals)
                 map_parsers::BlocksWalking(ParseActors::no)
                         .run(blocked, blocked.rect());
 
-                for (int x = r_.p0.x + 1; x <= r_.p1.x - 1; ++x)
+                for (int x = m_r.p0.x + 1; x <= m_r.p1.x - 1; ++x)
                 {
-                        for (int y = r_.p0.y + 1; y <= r_.p1.y - 1; ++y)
+                        for (int y = m_r.p0.y + 1; y <= m_r.p1.y - 1; ++y)
                         {
                                 if (!blocked.at(x, y) &&
-                                    map::room_map.at(x, y) == this)
+                                    map::g_room_map.at(x, y) == this)
                                 {
                                         Carpet* const carpet =
                                                 new Carpet(P(x, y));
@@ -861,8 +863,8 @@ std::vector<RoomAutoFeatureRule> RitualRoom::auto_features_allowed() const
 bool RitualRoom::is_allowed() const
 {
         return
-                r_.min_dim() >= 4 &&
-                r_.max_dim() <= 8;
+                m_r.min_dim() >= 4 &&
+                m_r.max_dim() <= 8;
 }
 
 void RitualRoom::on_pre_connect_hook(Array2<bool>& door_proposals)
@@ -896,11 +898,11 @@ void RitualRoom::on_post_connect_hook(Array2<bool>& door_proposals)
                 P origin(-1, -1);
                 std::vector<P> origin_bucket;
 
-                for (int y = r_.p0.y; y <= r_.p1.y; ++y)
+                for (int y = m_r.p0.y; y <= m_r.p1.y; ++y)
                 {
-                        for (int x = r_.p0.x; x <= r_.p1.x; ++x)
+                        for (int x = m_r.p0.x; x <= m_r.p1.x; ++x)
                         {
-                                if (map::cells.at(x, y).rigid->id() ==
+                                if (map::g_cells.at(x, y).rigid->id() ==
                                     FeatureId::altar)
                                 {
                                         origin = P(x, y);
@@ -928,7 +930,7 @@ void RitualRoom::on_post_connect_hook(Array2<bool>& door_proposals)
                                 origin = origin_bucket[element];
                         }
 
-                        for (const P& d : dir_utils::dir_list)
+                        for (const P& d : dir_utils::g_dir_list)
                         {
                                 if (rnd::percent(bloody_chamber_pct / 2))
                                 {
@@ -959,17 +961,17 @@ std::vector<RoomAutoFeatureRule> SpiderRoom::auto_features_allowed() const
 bool SpiderRoom::is_allowed() const
 {
         return
-                r_.min_dim() >= 3 &&
-                r_.max_dim() <= 8;
+                m_r.min_dim() >= 3 &&
+                m_r.max_dim() <= 8;
 }
 
 void SpiderRoom::on_pre_connect_hook(Array2<bool>& door_proposals)
 {
         (void)door_proposals;
 
-        const bool is_early = map::dlvl <= dlvl_last_early_game;
+        const bool is_early = map::g_dlvl <= g_dlvl_last_early_game;
 
-        const bool is_mid = !is_early && (map::dlvl <= dlvl_last_mid_game);
+        const bool is_mid = !is_early && (map::g_dlvl <= g_dlvl_last_mid_game);
 
         if (is_early || (is_mid && rnd::coin_toss()))
         {
@@ -1005,16 +1007,16 @@ std::vector<RoomAutoFeatureRule> SnakePitRoom::auto_features_allowed() const
 bool SnakePitRoom::is_allowed() const
 {
         return
-                r_.min_dim() >= 2 &&
-                r_.max_dim() <= 6;
+                m_r.min_dim() >= 2 &&
+                m_r.max_dim() <= 6;
 }
 
 void SnakePitRoom::on_pre_connect_hook(Array2<bool>& door_proposals)
 {
         (void)door_proposals;
 
-        const bool is_early = map::dlvl <= dlvl_last_early_game;
-        const bool is_mid = !is_early && map::dlvl <= dlvl_last_mid_game;
+        const bool is_early = map::g_dlvl <= g_dlvl_last_early_game;
+        const bool is_mid = !is_early && map::g_dlvl <= g_dlvl_last_mid_game;
 
         if (is_early || is_mid)
         {
@@ -1034,18 +1036,18 @@ void SnakePitRoom::on_post_connect_hook(Array2<bool>& door_proposals)
         (void)door_proposals;
 
         // Put lots of rubble, to make the room more "pit like"
-        for (int x = r_.p0.x; x <= r_.p1.x; ++x)
+        for (int x = m_r.p0.x; x <= m_r.p1.x; ++x)
         {
-                for (int y = r_.p0.y; y <= r_.p1.y; ++y)
+                for (int y = m_r.p0.y; y <= m_r.p1.y; ++y)
                 {
-                        if (map::room_map.at(x, y) != this)
+                        if (map::g_room_map.at(x, y) != this)
                         {
                                 continue;
                         }
 
                         const P p(x, y);
 
-                        if (map::cells.at(x, y).rigid->can_have_rigid() &&
+                        if (map::g_cells.at(x, y).rigid->can_have_rigid() &&
                             rnd::coin_toss())
                         {
                                 map::put(new RubbleLow(p));
@@ -1058,7 +1060,7 @@ void SnakePitRoom::on_post_connect_hook(Array2<bool>& door_proposals)
 
         for (size_t i = 0; i < (size_t)ActorId::END; ++i)
         {
-                const ActorData& d = actor_data::data[i];
+                const ActorData& d = actor_data::g_data[i];
 
                 // NOTE: We do not allow Spitting Cobras in snake pits, because
                 // it's VERY tedious to fight swarms of them (attack, get
@@ -1071,12 +1073,12 @@ void SnakePitRoom::on_post_connect_hook(Array2<bool>& door_proposals)
         }
 
         // Hijacking snake pit rooms to make a worm room...
-        if (map::dlvl <= dlvl_last_mid_game)
+        if (map::g_dlvl <= g_dlvl_last_mid_game)
         {
                 actor_id_bucket.push_back(ActorId::worm_mass);
         }
 
-        if (map::dlvl >= 3)
+        if (map::g_dlvl >= 3)
         {
                 actor_id_bucket.push_back(ActorId::mind_worms);
         }
@@ -1090,9 +1092,9 @@ void SnakePitRoom::on_post_connect_hook(Array2<bool>& door_proposals)
                      blocked.rect(),
                      MapParseMode::overwrite);
 
-        const int min_dist_to_player = fov_radi_int + 1;
+        const int min_dist_to_player = g_fov_radi_int + 1;
 
-        const P& player_pos = map::player->pos;
+        const P& player_pos = map::g_player->m_pos;
 
         const int x0 = std::max(
                 0,
@@ -1125,12 +1127,12 @@ void SnakePitRoom::on_post_connect_hook(Array2<bool>& door_proposals)
                 // Find an origin
                 std::vector<P> origin_bucket;
 
-                for (int x = r_.p0.x; x <= r_.p1.x; ++x)
+                for (int x = m_r.p0.x; x <= m_r.p1.x; ++x)
                 {
-                        for (int y = r_.p0.y; y <= r_.p1.y; ++y)
+                        for (int y = m_r.p0.y; y <= m_r.p1.y; ++y)
                         {
                                 if (!blocked.at(x, y) &&
-                                    (map::room_map.at(x, y) == this))
+                                    (map::g_room_map.at(x, y) == this))
                                 {
                                         origin_bucket.push_back(P(x, y));
                                 }
@@ -1175,8 +1177,8 @@ std::vector<RoomAutoFeatureRule> CryptRoom::auto_features_allowed() const
 bool CryptRoom::is_allowed() const
 {
         return
-                r_.min_dim() >= 2 &&
-                r_.max_dim() <= 12;
+                m_r.min_dim() >= 2 &&
+                m_r.max_dim() <= 12;
 }
 
 void CryptRoom::on_pre_connect_hook(Array2<bool>& door_proposals)
@@ -1213,8 +1215,8 @@ std::vector<RoomAutoFeatureRule> MonsterRoom::auto_features_allowed() const
 bool MonsterRoom::is_allowed() const
 {
         return
-                r_.min_dim() >= 4 &&
-                r_.max_dim() <= 8;
+                m_r.min_dim() >= 4 &&
+                m_r.max_dim() <= 8;
 }
 
 void MonsterRoom::on_pre_connect_hook(Array2<bool>& door_proposals)
@@ -1222,11 +1224,11 @@ void MonsterRoom::on_pre_connect_hook(Array2<bool>& door_proposals)
         (void)door_proposals;
 
         const bool is_early =
-                map::dlvl <= dlvl_last_early_game;
+                map::g_dlvl <= g_dlvl_last_early_game;
 
         const bool is_mid =
                 !is_early &&
-                (map::dlvl <= dlvl_last_mid_game);
+                (map::g_dlvl <= g_dlvl_last_mid_game);
 
         if (is_early || is_mid)
         {
@@ -1262,12 +1264,12 @@ void MonsterRoom::on_post_connect_hook(Array2<bool>& door_proposals)
 
         for (int i = 0; i < nr_tries; ++i)
         {
-                for (int x = r_.p0.x; x <= r_.p1.x; ++x)
+                for (int x = m_r.p0.x; x <= m_r.p1.x; ++x)
                 {
-                        for (int y = r_.p0.y; y <= r_.p1.y; ++y)
+                        for (int y = m_r.p0.y; y <= m_r.p1.y; ++y)
                         {
                                 if (!blocked.at(x, y) &&
-                                    map::room_map.at(x, y) == this &&
+                                    map::g_room_map.at(x, y) == this &&
                                     rnd::fraction(2, 5))
                                 {
                                         map::make_gore(P(x, y));
@@ -1304,9 +1306,9 @@ void DampRoom::on_pre_connect_hook(Array2<bool>& door_proposals)
 {
         (void)door_proposals;
 
-        const bool is_early = map::dlvl <= dlvl_last_early_game;
+        const bool is_early = map::g_dlvl <= g_dlvl_last_early_game;
 
-        const bool is_mid = !is_early && (map::dlvl <= dlvl_last_mid_game);
+        const bool is_mid = !is_early && (map::g_dlvl <= g_dlvl_last_mid_game);
 
         if (is_early || (is_mid && rnd::coin_toss()))
         {
@@ -1342,17 +1344,17 @@ void DampRoom::on_post_connect_hook(Array2<bool>& door_proposals)
                 ? LiquidType::water
                 : LiquidType::mud;
 
-        for (int x = r_.p0.x; x <= r_.p1.x; ++x)
+        for (int x = m_r.p0.x; x <= m_r.p1.x; ++x)
         {
-                for (int y = r_.p0.y; y <= r_.p1.y; ++y)
+                for (int y = m_r.p0.y; y <= m_r.p1.y; ++y)
                 {
                         if (!blocked.at(x, y) &&
-                            map::room_map.at(x, y) == this &&
+                            map::g_room_map.at(x, y) == this &&
                             rnd::one_in(liquid_one_in_n))
                         {
                                 auto* const liquid = new LiquidShallow(P(x, y));
 
-                                liquid->type_ = liquid_type;
+                                liquid->m_type = liquid_type;
 
                                 map::put(liquid);
                         }
@@ -1373,20 +1375,20 @@ std::vector<RoomAutoFeatureRule> PoolRoom::auto_features_allowed() const
 
 bool PoolRoom::is_allowed() const
 {
-        return r_.min_dim() >= 5;
+        return m_r.min_dim() >= 5;
 }
 
 void PoolRoom::on_pre_connect_hook(Array2<bool>& door_proposals)
 {
         (void)door_proposals;
 
-        const bool is_early = map::dlvl <= dlvl_last_early_game;
+        const bool is_early = map::g_dlvl <= g_dlvl_last_early_game;
 
-        const bool is_mid = !is_early && (map::dlvl <= dlvl_last_mid_game);
+        const bool is_mid = !is_early && (map::g_dlvl <= g_dlvl_last_mid_game);
 
         if (is_early ||
             (is_mid && rnd::coin_toss()) ||
-            is_sub_room_)
+            m_is_sub_room)
         {
                 if (rnd::coin_toss())
                 {
@@ -1415,7 +1417,7 @@ void PoolRoom::on_post_connect_hook(Array2<bool>& door_proposals)
 
         std::vector<P> origin_bucket;
 
-        origin_bucket.reserve(r_.w() * r_.h());
+        origin_bucket.reserve(m_r.w() * m_r.h());
 
         for (int x = 0; x < blocked.w(); ++x)
         {
@@ -1426,7 +1428,7 @@ void PoolRoom::on_post_connect_hook(Array2<bool>& door_proposals)
                                 continue;
                         }
 
-                        if (map::room_map.at(x, y) == this)
+                        if (map::g_room_map.at(x, y) == this)
                         {
                                 origin_bucket.push_back(P(x, y));
                         }
@@ -1494,11 +1496,11 @@ void PoolRoom::on_post_connect_hook(Array2<bool>& door_proposals)
 
         bool is_natural_pool = false;
 
-        if (map::dlvl >= dlvl_first_late_game)
+        if (map::g_dlvl >= g_dlvl_first_late_game)
         {
                 is_natural_pool = true;
         }
-        else if (map::dlvl >= dlvl_first_mid_game)
+        else if (map::g_dlvl >= g_dlvl_first_mid_game)
         {
                 is_natural_pool = rnd::coin_toss();
         }
@@ -1524,7 +1526,7 @@ void PoolRoom::on_post_connect_hook(Array2<bool>& door_proposals)
                         {
                                 auto* const liquid = new LiquidDeep(p);
 
-                                liquid->type_ = LiquidType::water;
+                                liquid->m_type = LiquidType::water;
 
                                 map::put(liquid);
                         }
@@ -1532,7 +1534,7 @@ void PoolRoom::on_post_connect_hook(Array2<bool>& door_proposals)
                         {
                                 auto* const liquid = new LiquidShallow(p);
 
-                                liquid->type_ = LiquidType::water;
+                                liquid->m_type = LiquidType::water;
 
                                 map::put(liquid);
                         }
@@ -1554,7 +1556,7 @@ std::vector<RoomAutoFeatureRule> CaveRoom::auto_features_allowed() const
 
 bool CaveRoom::is_allowed() const
 {
-        return !is_sub_room_;
+        return !m_is_sub_room;
 }
 
 void CaveRoom::on_pre_connect_hook(Array2<bool>& door_proposals)
@@ -1584,8 +1586,8 @@ bool ForestRoom::is_allowed() const
 {
         // TODO: Also check sub_rooms_.empty() ?
         return
-                !is_sub_room_ &&
-                r_.min_dim() >= 5;
+                !m_is_sub_room &&
+                m_r.min_dim() >= 5;
 }
 
 void ForestRoom::on_pre_connect_hook(Array2<bool>& door_proposals)
@@ -1607,7 +1609,7 @@ void ForestRoom::on_post_connect_hook(Array2<bool>& door_proposals)
         // Do not consider doors blocking
         for (size_t i = 0; i < map::nr_cells(); ++i)
         {
-                if (map::cells.at(i).rigid->id() == FeatureId::door)
+                if (map::g_cells.at(i).rigid->id() == FeatureId::door)
                 {
                         blocked.at(i) = false;
                 }
@@ -1615,12 +1617,12 @@ void ForestRoom::on_post_connect_hook(Array2<bool>& door_proposals)
 
         std::vector<P> tree_pos_bucket;
 
-        for (int x = r_.p0.x; x <= r_.p1.x; ++x)
+        for (int x = m_r.p0.x; x <= m_r.p1.x; ++x)
         {
-                for (int y = r_.p0.y; y <= r_.p1.y; ++y)
+                for (int y = m_r.p0.y; y <= m_r.p1.y; ++y)
                 {
                         if (!blocked.at(x, y) &&
-                            map::room_map.at(x, y) == this)
+                            map::g_room_map.at(x, y) == this)
                         {
                                 const P p(x, y);
 
@@ -1679,8 +1681,8 @@ std::vector<RoomAutoFeatureRule> ChasmRoom::auto_features_allowed() const
 bool ChasmRoom::is_allowed() const
 {
         return
-                r_.min_dim() >= 5 &&
-                r_.max_dim() <= 9;
+                m_r.min_dim() >= 5 &&
+                m_r.max_dim() <= 9;
 }
 
 void ChasmRoom::on_pre_connect_hook(Array2<bool>& door_proposals)
@@ -1701,7 +1703,7 @@ void ChasmRoom::on_post_connect_hook(Array2<bool>& door_proposals)
 
         for (size_t i = 0; i < map::nr_cells(); ++i)
         {
-                if (map::room_map.at(i) != this)
+                if (map::g_room_map.at(i) != this)
                 {
                         blocked.at(i) = true;
                 }
@@ -1711,9 +1713,9 @@ void ChasmRoom::on_post_connect_hook(Array2<bool>& door_proposals)
 
         P origin;
 
-        for (int x = r_.p0.x; x <= r_.p1.x; ++x)
+        for (int x = m_r.p0.x; x <= m_r.p1.x; ++x)
         {
-                for (int y = r_.p0.y; y <= r_.p1.y; ++y)
+                for (int y = m_r.p0.y; y <= m_r.p1.y; ++y)
                 {
                         if (!blocked.at(x, y))
                         {
@@ -1729,9 +1731,9 @@ void ChasmRoom::on_post_connect_hook(Array2<bool>& door_proposals)
                 P(-1, -1),
                 false);
 
-        for (int x = r_.p0.x; x <= r_.p1.x; ++x)
+        for (int x = m_r.p0.x; x <= m_r.p1.x; ++x)
         {
-                for (int y = r_.p0.y; y <= r_.p1.y; ++y)
+                for (int y = m_r.p0.y; y <= m_r.p1.y; ++y)
                 {
                         const P p(x, y);
 
@@ -1753,16 +1755,16 @@ void RiverRoom::on_pre_connect(Array2<bool>& door_proposals)
         // Strategy: Expand the the river on both sides until parallel to the
         // closest center cell of another room
 
-        const bool is_hor = axis_ == Axis::hor;
+        const bool is_hor = m_axis == Axis::hor;
 
         TRACE << "Finding room centers" << std::endl;
         Array2<bool> centers(map::dims());
 
-        for (Room* const room : map::room_list)
+        for (Room* const room : map::g_room_list)
         {
                 if (room != this)
                 {
-                        const P c_pos(room->r_.center());
+                        const P c_pos(room->m_r.center());
 
                         centers.at(c_pos) = true;
                 }
@@ -1836,7 +1838,7 @@ void RiverRoom::on_pre_connect(Array2<bool>& door_proposals)
 
                 if (is_hor)
                 {
-                        const int river_y = r_.p0.y;
+                        const int river_y = m_r.p0.y;
 
                         find_closest_center0(
                                 Range(river_y - 1, 1),
@@ -1848,7 +1850,7 @@ void RiverRoom::on_pre_connect(Array2<bool>& door_proposals)
                 }
                 else // Vertical
                 {
-                        const int river_x = r_.p0.x;
+                        const int river_x = m_r.p0.x;
 
                         find_closest_center0(
                                 Range(river_x - 1, 1),
@@ -1872,12 +1874,12 @@ void RiverRoom::on_pre_connect(Array2<bool>& door_proposals)
                 {
                         blocked.at(x, y) = true;
 
-                        if ((axis_ == Axis::hor &&
+                        if ((m_axis == Axis::hor &&
                              (y >= closest_center0 && y <= closest_center1)) ||
-                            (axis_ == Axis::ver &&
+                            (m_axis == Axis::ver &&
                              (x >= closest_center0 && x <= closest_center1)))
                         {
-                                Room* r = map::room_map.at(x, y);
+                                Room* r = map::g_room_map.at(x, y);
 
                                 blocked.at(x, y) = r && r != this;
                         }
@@ -1886,7 +1888,7 @@ void RiverRoom::on_pre_connect(Array2<bool>& door_proposals)
 
         blocked = map_parsers::expand(blocked, blocked.rect());
 
-        const P origin(r_.center());
+        const P origin(m_r.center());
 
         const auto flood = floodfill(
                 origin,
@@ -1904,11 +1906,11 @@ void RiverRoom::on_pre_connect(Array2<bool>& door_proposals)
                         if (flood.at(x, y) > 0 || p == origin)
                         {
                                 map::put(new Chasm(p));
-                                map::room_map.at(x, y) = this;
-                                r_.p0.x = std::min(r_.p0.x, x);
-                                r_.p0.y = std::min(r_.p0.y, y);
-                                r_.p1.x = std::max(r_.p1.x, x);
-                                r_.p1.y = std::max(r_.p1.y, y);
+                                map::g_room_map.at(x, y) = this;
+                                m_r.p0.x = std::min(m_r.p0.x, x);
+                                m_r.p0.y = std::min(m_r.p0.y, y);
+                                m_r.p1.x = std::max(m_r.p1.x, x);
+                                m_r.p1.y = std::max(m_r.p1.y, y);
                         }
                 }
         }
@@ -1946,7 +1948,7 @@ void RiverRoom::on_pre_connect(Array2<bool>& door_proposals)
                                      i_inner <= r_inner.max;
                                      ++i_inner)
                                 {
-                                        if (map::room_map.at(x, y) == this)
+                                        if (map::g_room_map.at(x, y) == this)
                                         {
                                                 is_on_side0 = false;
                                                 sides.at(x, y) = in_river;
@@ -1962,7 +1964,7 @@ void RiverRoom::on_pre_connect(Array2<bool>& door_proposals)
                         }
                 };
 
-                if (axis_ == Axis::hor)
+                if (m_axis == Axis::hor)
                 {
                         mark_sides(Range(1, map::w() - 2),
                                    Range(1, map::h() - 2), x, y);
@@ -1989,10 +1991,10 @@ void RiverRoom::on_pre_connect(Array2<bool>& door_proposals)
                 for (int y = edge_d; y < map::h() - edge_d; ++y)
                 {
                         const FeatureId feature_id =
-                                map::cells.at(x, y).rigid->id();
+                                map::g_cells.at(x, y).rigid->id();
 
                         if ((feature_id != FeatureId::wall) ||
-                            map::room_map.at(x, y))
+                            map::g_room_map.at(x, y))
                         {
                                 continue;
                         }
@@ -2001,19 +2003,19 @@ void RiverRoom::on_pre_connect(Array2<bool>& door_proposals)
                         int nr_cardinal_floor = 0;
                         int nr_cardinal_river = 0;
 
-                        for (const auto& d : dir_utils::cardinal_list)
+                        for (const auto& d : dir_utils::g_cardinal_list)
                         {
                                 const auto p_adj(p + d);
 
                                 const auto* const f =
-                                        map::cells.at(p_adj).rigid;
+                                        map::g_cells.at(p_adj).rigid;
 
                                 if (f->id() == FeatureId::floor)
                                 {
                                         nr_cardinal_floor++;
                                 }
 
-                                if (map::room_map.at(p_adj) == this)
+                                if (map::g_room_map.at(p_adj) == this)
                                 {
                                         nr_cardinal_river++;
                                 }
@@ -2040,7 +2042,7 @@ void RiverRoom::on_pre_connect(Array2<bool>& door_proposals)
         }
 
 #ifndef NDEBUG
-        if (init::is_demo_mapgen)
+        if (init::g_is_demo_mapgen)
         {
                 states::draw();
 
@@ -2084,7 +2086,7 @@ void RiverRoom::on_pre_connect(Array2<bool>& door_proposals)
                 ? map::w()
                 : map::h());
 
-        std::iota(begin(positions), end(positions), 0);
+        std::iota(std::begin(positions), std::end(positions), 0);
 
         rnd::shuffle(positions);
 
@@ -2131,8 +2133,8 @@ void RiverRoom::on_pre_connect(Array2<bool>& door_proposals)
                 P room_con0(-1, -1);
                 P room_con1(-1, -1);
 
-                const int c0_0 = is_hor ? r_.p1.y : r_.p1.x;
-                const int c1_0 = is_hor ? r_.p0.y : r_.p0.x;
+                const int c0_0 = is_hor ? m_r.p1.y : m_r.p1.x;
+                const int c1_0 = is_hor ? m_r.p0.y : m_r.p0.x;
 
                 for (int c = c0_0; c != c1_0; --c)
                 {
@@ -2154,8 +2156,8 @@ void RiverRoom::on_pre_connect(Array2<bool>& door_proposals)
                         }
                 }
 
-                const int c0_1 = is_hor ? r_.p0.y : r_.p0.x;
-                const int c1_1 = is_hor ? r_.p1.y : r_.p1.x;
+                const int c0_1 = is_hor ? m_r.p0.y : m_r.p0.x;
+                const int c1_1 = is_hor ? m_r.p1.y : m_r.p1.x;
 
                 for (int c = c0_1; c != c1_1; ++c)
                 {
@@ -2181,7 +2183,7 @@ void RiverRoom::on_pre_connect(Array2<bool>& door_proposals)
                 if (room_con0.x != -1 && room_con1.x != -1)
                 {
 #ifndef NDEBUG
-                        if (init::is_demo_mapgen)
+                        if (init::g_is_demo_mapgen)
                         {
                                 states::draw();
 
@@ -2211,14 +2213,14 @@ void RiverRoom::on_pre_connect(Array2<bool>& door_proposals)
                         {
                                 for (int y = room_con0.y; y <= room_con1.y; ++y)
                                 {
-                                        if (map::room_map.at(bridge_n, y) ==
+                                        if (map::g_room_map.at(bridge_n, y) ==
                                             this)
                                         {
                                                 auto* const floor =
                                                         new Floor(
                                                                 {bridge_n, y});
 
-                                                floor->type_ =
+                                                floor->m_type =
                                                         FloorType::common;
 
                                                 map::put(floor);
@@ -2229,14 +2231,14 @@ void RiverRoom::on_pre_connect(Array2<bool>& door_proposals)
                         {
                                 for (int x = room_con0.x; x <= room_con1.x; ++x)
                                 {
-                                        if (map::room_map.at(x, bridge_n) ==
+                                        if (map::g_room_map.at(x, bridge_n) ==
                                             this)
                                         {
                                                 auto* const floor =
                                                         new Floor(
                                                                 {x, bridge_n});
 
-                                                floor->type_ =
+                                                floor->m_type =
                                                         FloorType::common;
 
                                                 map::put(floor);
@@ -2266,7 +2268,7 @@ void RiverRoom::on_pre_connect(Array2<bool>& door_proposals)
 
         if (c_built.empty())
         {
-                mapgen::is_map_valid = false;
+                mapgen::g_is_map_valid = false;
         }
         else // Map is valid (at least one bridge was built)
         {
@@ -2282,12 +2284,15 @@ void RiverRoom::on_pre_connect(Array2<bool>& door_proposals)
 
                                 // Convert some remaining valid room entries
                                 if (valid_room_entries.at(x, y) &&
-                                    (find(begin(c_built), end(c_built), x) ==
-                                     end(c_built)))
+                                    (std::find(
+                                            std::begin(c_built),
+                                            std::end(c_built),
+                                            x) ==
+                                     std::end(c_built)))
                                 {
                                         map::put(new Floor(P(x, y)));
 
-                                        map::room_map.at(x, y) = this;
+                                        map::g_room_map.at(x, y) = this;
                                 }
                         }
                 }
@@ -2300,15 +2305,15 @@ void RiverRoom::on_pre_connect(Array2<bool>& door_proposals)
                         for (int y = 2; y < map::h() - 2; ++y)
                         {
                                 if (valid_room_entries.at(x, y) &&
-                                    map::room_map.at(x, y) == this)
+                                    map::g_room_map.at(x, y) == this)
                                 {
                                         auto* const floor = new Floor(P(x, y));
 
-                                        floor->type_ = FloorType::common;
+                                        floor->m_type = FloorType::common;
 
                                         map::put(floor);
 
-                                        map::room_map.at(x, y) = nullptr;
+                                        map::g_room_map.at(x, y) = nullptr;
                                 }
                         }
                 }

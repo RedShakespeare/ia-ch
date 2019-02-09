@@ -29,7 +29,7 @@ public:
 
         Array2(const Array2<T>& other)
         {
-                resize_no_init(other.dims_);
+                resize_no_init(other.m_dims);
 
                 std::copy(
                         std::begin(other),
@@ -38,21 +38,21 @@ public:
         }
 
         Array2(Array2<T>&& other) :
-                data_(other.data_),
-                dims_(other.dims_)
+                m_data(other.m_data),
+                m_dims(other.m_dims)
         {
-                other.data_ = nullptr;
-                other.dims_ = {0, 0};
+                other.m_data = nullptr;
+                other.m_dims = {0, 0};
         }
 
         ~Array2()
         {
-                delete[] data_;
+                delete[] m_data;
         }
 
         Array2<T>& operator=(const Array2<T>& other)
         {
-                resize_no_init(other.dims_);
+                resize_no_init(other.m_dims);
 
                 std::copy(
                         std::begin(other),
@@ -69,13 +69,13 @@ public:
                         return *this;
                 }
 
-                delete[] data_;
+                delete[] m_data;
 
-                data_ = other.data_;
-                dims_ = other.dims_;
+                m_data = other.m_data;
+                m_dims = other.m_dims;
 
-                other.data_ = nullptr;
-                other.dims_ = {0, 0};
+                other.m_data = nullptr;
+                other.m_dims = {0, 0};
 
                 return *this;
         }
@@ -92,32 +92,32 @@ public:
 
         T& at(const size_t idx) const
         {
-                return data_[idx];
+                return m_data[idx];
         }
 
         T* begin() const
         {
-                return data_;
+                return m_data;
         }
 
         T* end() const
         {
-                return data_ + length();
+                return m_data + length();
         }
 
         void resize(const P& dims)
         {
-                dims_ = dims;
+                m_dims = dims;
 
                 const size_t len = length();
 
-                delete[] data_;
+                delete[] m_data;
 
-                data_ = nullptr;
+                m_data = nullptr;
 
                 if (len > 0)
                 {
-                        data_ = new T[len]();
+                        m_data = new T[len]();
                 }
         }
 
@@ -130,7 +130,7 @@ public:
         {
                 resize_no_init(dims);
 
-                std::fill_n(data_, length(), value);
+                std::fill_n(m_data, length(), value);
         }
 
         void resize(const int w, const int h, const T value)
@@ -140,17 +140,17 @@ public:
 
         void resize_no_init(const P& dims)
         {
-                dims_ = dims;
+                m_dims = dims;
 
                 const size_t len = length();
 
-                delete[] data_;
+                delete[] m_data;
 
-                data_ = nullptr;
+                m_data = nullptr;
 
                 if (len > 0)
                 {
-                        data_ = new T[len];
+                        m_data = new T[len];
                 }
         }
 
@@ -167,7 +167,7 @@ public:
                                 const size_t my_idx = pos_to_idx(x, y);
 
                                 rotated.at(my_dims.y - 1 - y, x) =
-                                        data_[my_idx];
+                                        m_data[my_idx];
                         }
                 }
 
@@ -187,7 +187,7 @@ public:
                                 const size_t my_idx = pos_to_idx(x, y);
 
                                 rotated.at(y, my_dims.x - 1 - x) =
-                                        data_[my_idx];
+                                        m_data[my_idx];
                         }
                 }
 
@@ -205,7 +205,7 @@ public:
                                 const size_t idx_1 = pos_to_idx(x, y);
                                 const size_t idx_2 = pos_to_idx(d.x - 1 - x, y);
 
-                                std::swap(data_[idx_1], data_[idx_2]);
+                                std::swap(m_data[idx_1], m_data[idx_2]);
                         }
                 }
         }
@@ -221,51 +221,51 @@ public:
                                 const size_t idx_1 = pos_to_idx(x, y);
                                 const size_t idx_2 = pos_to_idx(x, d.y - 1 - y);
 
-                                std::swap(data_[idx_1], data_[idx_2]);
+                                std::swap(m_data[idx_1], m_data[idx_2]);
                         }
                 }
         }
 
         void clear()
         {
-                delete[] data_;
+                delete[] m_data;
 
-                dims_.set(0, 0);
+                m_dims.set(0, 0);
         }
 
         size_t length() const
         {
-                return dims_.x * dims_.y;
+                return m_dims.x * m_dims.y;
         }
 
         const P& dims() const
         {
-                return dims_;
+                return m_dims;
         }
 
         int w() const
         {
-                return dims_.x;
+                return m_dims.x;
         }
 
         int h() const
         {
-                return dims_.y;
+                return m_dims.y;
         }
 
         const R rect() const
         {
-                return R({0, 0}, dims_ - 1);
+                return R({0, 0}, m_dims - 1);
         }
 
         T* data()
         {
-                return data_;
+                return m_data;
         }
 
         const T* data() const
         {
-                return data_;
+                return m_data;
         }
 
 private:
@@ -273,12 +273,12 @@ private:
         {
                 const size_t idx = pos_to_idx(p);
 
-                return data_[idx];
+                return m_data[idx];
         }
 
         size_t pos_to_idx(const P& p) const
         {
-                return (p.x * dims_.y) + p.y;
+                return (p.x * m_dims.y) + p.y;
         }
 
         size_t pos_to_idx(const int x, const int y) const
@@ -286,8 +286,8 @@ private:
                 return pos_to_idx(P(x, y));
         }
 
-        T* data_ {nullptr};
-        P dims_ {0, 0};
+        T* m_data {nullptr};
+        P m_dims {0, 0};
 };
 
 #endif // ARRAY2_HPP

@@ -29,7 +29,7 @@ std::vector<std::string> false_names_;
 
 static SpellSkill get_player_skill_for_scroll(SpellId spell_id)
 {
-        const auto player_spell_skill = map::player->spell_skill(spell_id);
+        const auto player_spell_skill = map::g_player->spell_skill(spell_id);
 
         return (SpellSkill)std::max(
                 player_spell_skill,
@@ -41,22 +41,22 @@ static SpellSkill get_player_skill_for_scroll(SpellId spell_id)
 // -----------------------------------------------------------------------------
 Scroll::Scroll(ItemData* const item_data) :
         Item(item_data),
-        domain_feeling_dlvl_countdown_(rnd::range(1, 3)),
-        domain_feeling_turn_countdown_(rnd::range(100, 200))
+        m_domain_feeling_dlvl_countdown(rnd::range(1, 3)),
+        m_domain_feeling_turn_countdown(rnd::range(100, 200))
 {
 
 }
 
 void Scroll::save() const
 {
-        saving::put_int(domain_feeling_dlvl_countdown_);
-        saving::put_int(domain_feeling_turn_countdown_);
+        saving::put_int(m_domain_feeling_dlvl_countdown);
+        saving::put_int(m_domain_feeling_turn_countdown);
 }
 
 void Scroll::load()
 {
-        domain_feeling_dlvl_countdown_ = saving::get_int();
-        domain_feeling_turn_countdown_ = saving::get_int();
+        m_domain_feeling_dlvl_countdown = saving::get_int();
+        m_domain_feeling_turn_countdown = saving::get_int();
 }
 
 const std::string Scroll::real_name() const
@@ -72,7 +72,7 @@ std::vector<std::string> Scroll::descr() const
 {
         const std::unique_ptr<const Spell> spell(make_spell());
 
-        if (data_->is_identified)
+        if (m_data->is_identified)
         {
                 const auto skill = get_player_skill_for_scroll(spell->id());
 
@@ -82,9 +82,9 @@ std::vector<std::string> Scroll::descr() const
         }
         else // Not identified
         {
-                auto lines = data_->base_descr;
+                auto lines = m_data->base_descr;
 
-                if (data_->is_spell_domain_known)
+                if (m_data->is_spell_domain_known)
                 {
                         const std::string domain_str = spell->domain_descr();
 
@@ -104,19 +104,19 @@ void Scroll::on_player_reached_new_dlvl()
 
         if (d.is_spell_domain_known ||
             d.is_identified ||
-            (domain_feeling_dlvl_countdown_ <= 0))
+            (m_domain_feeling_dlvl_countdown <= 0))
         {
                 return;
         }
 
-        --domain_feeling_dlvl_countdown_;
+        --m_domain_feeling_dlvl_countdown;
 }
 
 void Scroll::on_actor_turn_in_inv(const InvType inv_type)
 {
         (void)inv_type;
 
-        if (actor_carrying_ != map::player)
+        if (m_actor_carrying != map::g_player)
         {
                 return;
         }
@@ -125,16 +125,16 @@ void Scroll::on_actor_turn_in_inv(const InvType inv_type)
 
         if (d.is_spell_domain_known ||
             d.is_identified ||
-            (domain_feeling_dlvl_countdown_ > 0))
+            (m_domain_feeling_dlvl_countdown > 0))
         {
                 return;
         }
 
-        ASSERT(domain_feeling_turn_countdown_ > 0);
+        ASSERT(m_domain_feeling_turn_countdown > 0);
 
-        --domain_feeling_turn_countdown_;
+        --m_domain_feeling_turn_countdown;
 
-        if (domain_feeling_turn_countdown_ <= 0)
+        if (m_domain_feeling_turn_countdown <= 0)
         {
                 TRACE << "Scroll domain discovered" << std::endl;
 
@@ -176,15 +176,15 @@ ConsumeItem Scroll::activate(Actor* const actor)
         TRACE_FUNC_BEGIN;
 
         // Check properties which NEVER allows reading or speaking
-        if (!actor->properties.allow_read_absolute(Verbosity::verbose) ||
-            !actor->properties.allow_speak(Verbosity::verbose))
+        if (!actor->m_properties.allow_read_absolute(Verbosity::verbose) ||
+            !actor->m_properties.allow_speak(Verbosity::verbose))
         {
                 return ConsumeItem::no;
         }
 
-        const P& player_pos(map::player->pos);
+        const P& player_pos(map::g_player->m_pos);
 
-        if (map::dark.at(player_pos) && !map::light.at(player_pos))
+        if (map::g_dark.at(player_pos) && !map::g_light.at(player_pos))
         {
                 msg_log::add("It's too dark to read here.");
 
@@ -195,7 +195,7 @@ ConsumeItem Scroll::activate(Actor* const actor)
 
         // OK, we can try to cast
 
-        const bool is_identified_before = data_->is_identified;
+        const bool is_identified_before = m_data->is_identified;
 
         if (is_identified_before)
         {
@@ -214,7 +214,7 @@ ConsumeItem Scroll::activate(Actor* const actor)
         const std::string crumble_str = "The Manuscript crumbles to dust.";
 
         // Check properties which MAY allow reading, with a random chance
-        if (!actor->properties.allow_read_chance(Verbosity::verbose))
+        if (!actor->m_properties.allow_read_chance(Verbosity::verbose))
         {
                 msg_log::add(crumble_str);
 
@@ -232,7 +232,7 @@ ConsumeItem Scroll::activate(Actor* const actor)
         const auto skill = get_player_skill_for_scroll(id);
 
         spell->cast(
-                map::player,
+                map::g_player,
                 skill,
                 SpellSrc::manuscript);
 
@@ -254,17 +254,17 @@ ConsumeItem Scroll::activate(Actor* const actor)
 Spell* Scroll::make_spell() const
 {
         return spell_factory::make_spell_from_id(
-                data_->spell_cast_from_scroll);
+                m_data->spell_cast_from_scroll);
 }
 
 void Scroll::identify(const Verbosity verbosity)
 {
-        if (data_->is_identified)
+        if (m_data->is_identified)
         {
                 return;
         }
 
-        data_->is_identified = true;
+        m_data->is_identified = true;
 
         if (verbosity == Verbosity::verbose)
         {
@@ -279,7 +279,7 @@ void Scroll::identify(const Verbosity verbosity)
 
 std::string Scroll::name_inf_str() const
 {
-        if (data_->is_spell_domain_known && !data_->is_identified)
+        if (m_data->is_spell_domain_known && !m_data->is_identified)
         {
                 const std::unique_ptr<const Spell> spell(make_spell());
 
@@ -371,7 +371,7 @@ void init()
                 }
         }
 
-        for (auto& d : item_data::data)
+        for (auto& d : item_data::g_data)
         {
                 if (d.type == ItemType::scroll)
                 {
@@ -425,12 +425,12 @@ void save()
 {
         for (size_t i = 0; i < (size_t)ItemId::END; ++i)
         {
-                if (item_data::data[i].type != ItemType::scroll)
+                if (item_data::g_data[i].type != ItemType::scroll)
                 {
                         continue;
                 }
 
-                auto& names = item_data::data[i].base_name_un_id.names;
+                auto& names = item_data::g_data[i].base_name_un_id.names;
 
                 saving::put_str(names[(size_t)ItemRefType::plain]);
                 saving::put_str(names[(size_t)ItemRefType::plural]);
@@ -442,12 +442,12 @@ void load()
 {
         for (size_t i = 0; i < (size_t)ItemId::END; ++i)
         {
-                if (item_data::data[i].type != ItemType::scroll)
+                if (item_data::g_data[i].type != ItemType::scroll)
                 {
                         continue;
                 }
 
-                auto& names = item_data::data[i].base_name_un_id.names;
+                auto& names = item_data::g_data[i].base_name_un_id.names;
 
                 names[(size_t)ItemRefType::plain] = saving::get_str();
                 names[(size_t)ItemRefType::plural] = saving::get_str();

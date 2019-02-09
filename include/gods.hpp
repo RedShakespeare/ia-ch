@@ -12,8 +12,8 @@
 
 struct God
 {
-        std::string name_;
-        std::string descr_;
+        std::string name;
+        std::string descr;
 };
 
 namespace gods

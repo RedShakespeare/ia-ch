@@ -88,7 +88,7 @@ public:
         ConsumeItem activate(Actor* const actor) override;
 
 private:
-        int charges_;
+        int m_charges;
 };
 
 // -----------------------------------------------------------------------------
@@ -118,7 +118,7 @@ public:
         ConsumeItem activate(Actor* const actor) override;
 
 private:
-        int charges_;
+        int m_charges;
 };
 
 
@@ -143,7 +143,7 @@ private:
 
         void on_removed_from_inv_hook() override;
 
-        int charges_;
+        int m_charges;
 };
 
 // -----------------------------------------------------------------------------

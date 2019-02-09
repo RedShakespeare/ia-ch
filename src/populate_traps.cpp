@@ -22,7 +22,7 @@
 // -----------------------------------------------------------------------------
 static Trap* make_trap(const TrapId id, const P& pos)
 {
-        const auto* const f = map::cells.at(pos).rigid;
+        const auto* const f = map::g_cells.at(pos).rigid;
 
         const auto& d = feature_data::data(f->id());
 
@@ -108,14 +108,14 @@ void populate_std_lvl()
         map_parsers::BlocksWalking(ParseActors::no)
                 .run(blocked, blocked.rect());
 
-        const P& player_p = map::player->pos;
+        const P& player_p = map::g_player->m_pos;
 
         blocked.at(player_p) = true;
 
         // Put traps in non-plain rooms
-        for (Room* const room : map::room_list)
+        for (Room* const room : map::g_room_list)
         {
-                const RoomType type = room->type_;
+                const RoomType type = room->m_type;
 
                 if (type != RoomType::plain)
                 {
@@ -129,15 +129,15 @@ void populate_std_lvl()
 
                                 std::vector<P> trap_pos_bucket;
 
-                                const P& p0 = room->r_.p0;
-                                const P& p1 = room->r_.p1;
+                                const P& p0 = room->m_r.p0;
+                                const P& p1 = room->m_r.p1;
 
                                 for (int y = p0.y; y <= p1.y; ++y)
                                 {
                                         for (int x = p0.x; x <= p1.x; ++x)
                                         {
                                                 if (!blocked.at(x, y) &&
-                                                    map::cells.at(x, y).rigid->can_have_rigid())
+                                                    map::g_cells.at(x, y).rigid->can_have_rigid())
                                                 {
                                                         trap_pos_bucket.push_back(P(x, y));
                                                 }
@@ -186,7 +186,7 @@ void populate_std_lvl()
                                                           sorter);
 
                                                 // NOTE: Trap type may have been randomized by the trap.
-                                                //       We retrieve the actual trap resulting id here:
+                                                // We retrieve the actual trap resulting id here:
                                                 const TrapId origin_trap_type = origin_trap->type();
 
                                                 const int nr_adj =
@@ -231,7 +231,7 @@ void populate_std_lvl()
 
         const int chance_trap_plain_areas = std::min(
                 85,
-                10 + ((map::dlvl - 1) * 8));
+                10 + ((map::g_dlvl - 1) * 8));
 
         if (rnd::percent(chance_trap_plain_areas))
         {
@@ -243,11 +243,11 @@ void populate_std_lvl()
                 {
                         for (int y = 1; y < map::h() - 1; ++y)
                         {
-                                if (map::room_map.at(x, y))
+                                if (map::g_room_map.at(x, y))
                                 {
                                         if (!blocked.at(x, y) &&
-                                            map::room_map.at(x, y)->type_ == RoomType::plain &&
-                                            map::cells.at(x, y).rigid->can_have_rigid())
+                                            map::g_room_map.at(x, y)->m_type == RoomType::plain &&
+                                            map::g_cells.at(x, y).rigid->can_have_rigid())
                                         {
                                                 trap_pos_bucket.push_back(P(x, y));
                                         }

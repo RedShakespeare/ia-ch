@@ -27,9 +27,9 @@ class BrowseManual: public State
 public:
         BrowseManual() :
                 State(),
-                browser_(),
-                pages_(),
-                top_idx_(0) {}
+                m_browser(),
+                m_pages(),
+                m_top_idx(0) {}
 
         void on_start() override;
 
@@ -42,13 +42,13 @@ public:
         StateId id() override;
 
 private:
-        MenuBrowser browser_;
+        MenuBrowser m_browser;
 
-        std::vector<std::string> raw_lines_;
+        std::vector<std::string> m_raw_lines;
 
-        std::vector<ManualPage> pages_;
+        std::vector<ManualPage> m_pages;
 
-        int top_idx_;
+        int m_top_idx;
 };
 
 class BrowseManualPage: public InfoScreenState
@@ -56,8 +56,8 @@ class BrowseManualPage: public InfoScreenState
 public:
         BrowseManualPage(const ManualPage& page) :
                 InfoScreenState(),
-                page_(page),
-                top_idx_(0) {}
+                m_page(page),
+                m_top_idx(0) {}
 
         void draw() override;
 
@@ -73,9 +73,9 @@ private:
                 return InfoScreenType::scrolling;
         }
 
-        const ManualPage& page_;
+        const ManualPage& m_page;
 
-        int top_idx_;
+        int m_top_idx;
 };
 
 #endif // MANUAL_HPP

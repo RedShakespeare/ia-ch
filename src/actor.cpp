@@ -39,109 +39,109 @@
 
 Actor::~Actor()
 {
-    // Free all items owning actors
-    for (Item* item : inv.backpack)
-    {
-        item->clear_actor_carrying();
-    }
-
-    for (auto& slot : inv.slots)
-    {
-        if (slot.item)
+        // Free all items owning actors
+        for (Item* item : m_inv.m_backpack)
         {
-            slot.item->clear_actor_carrying();
+                item->clear_actor_carrying();
         }
-    }
+
+        for (auto& slot : m_inv.m_slots)
+        {
+                if (slot.item)
+                {
+                        slot.item->clear_actor_carrying();
+                }
+        }
 }
 
 int Actor::ability(const AbilityId id, const bool is_affected_by_props) const
 {
-    return data->ability_values.val(id, is_affected_by_props, *this);
+        return m_data->ability_values.val(id, is_affected_by_props, *this);
 }
 
 void Actor::on_std_turn_common()
 {
-    // Do light damage if in lit cell
-    if (map::light.at(pos))
-    {
-            actor::hit(*this, 1, DmgType::light);
-    }
-
-    if (is_alive())
-    {
-        // Slowly decrease current HP/spirit if above max
-        const int decr_above_max_n_turns = 7;
-
-        const bool decr_this_turn =
-            (game_time::turn_nr() % decr_above_max_n_turns) == 0;
-
-        if ((hp > actor::max_hp(*this)) && decr_this_turn)
+        // Do light damage if in lit cell
+        if (map::g_light.at(m_pos))
         {
-            --hp;
+                actor::hit(*this, 1, DmgType::light);
         }
 
-        if ((sp > actor::max_sp(*this)) && decr_this_turn)
+        if (is_alive())
         {
-            --sp;
+                // Slowly decrease current HP/spirit if above max
+                const int decr_above_max_n_turns = 7;
+
+                const bool decr_this_turn =
+                        (game_time::turn_nr() % decr_above_max_n_turns) == 0;
+
+                if ((m_hp > actor::max_hp(*this)) && decr_this_turn)
+                {
+                        --m_hp;
+                }
+
+                if ((m_sp > actor::max_sp(*this)) && decr_this_turn)
+                {
+                        --m_sp;
+                }
+
+                // Regenerate spirit
+                int regen_spi_n_turns = 18;
+
+                if (is_player())
+                {
+                        if (player_bon::g_traits[(size_t)Trait::stout_spirit])
+                        {
+                                regen_spi_n_turns -= 4;
+                        }
+
+                        if (player_bon::has_trait(Trait::strong_spirit))
+                        {
+                                regen_spi_n_turns -= 4;
+                        }
+
+                        if (player_bon::has_trait(Trait::mighty_spirit))
+                        {
+                                regen_spi_n_turns -= 4;
+                        }
+                }
+                else // Is monster
+                {
+                        // Monsters regen spirit very quickly, so spell casters
+                        // doesn't suddenly get completely handicapped
+                        regen_spi_n_turns = 1;
+                }
+
+                const bool regen_spi_this_turn =
+                        (game_time::turn_nr() % regen_spi_n_turns) == 0;
+
+                if (regen_spi_this_turn)
+                {
+                        restore_sp(1, false, Verbosity::silent);
+                }
         }
 
-        // Regenerate spirit
-        int regen_spi_n_turns = 18;
-
-        if (is_player())
-        {
-            if (player_bon::traits[(size_t)Trait::stout_spirit])
-            {
-                regen_spi_n_turns -= 4;
-            }
-
-            if (player_bon::traits[(size_t)Trait::strong_spirit])
-            {
-                regen_spi_n_turns -= 4;
-            }
-
-            if (player_bon::traits[(size_t)Trait::mighty_spirit])
-            {
-                regen_spi_n_turns -= 4;
-            }
-        }
-        else // Is monster
-        {
-            // Monsters regen spirit very quickly, so spell casters doesn't
-            // suddenly get completely handicapped
-            regen_spi_n_turns = 1;
-        }
-
-        const bool regen_spi_this_turn =
-            (game_time::turn_nr() % regen_spi_n_turns) == 0;
-
-        if (regen_spi_this_turn)
-        {
-            restore_sp(1, false, Verbosity::silent);
-        }
-    }
-
-    on_std_turn();
+        on_std_turn();
 }
 
 TileId Actor::tile() const
 {
-    if (is_corpse())
-    {
-        return TileId::corpse2;
-    }
+        if (is_corpse())
+        {
+                return TileId::corpse2;
+        }
 
-    return data->tile;
+        return m_data->tile;
 }
 
 char Actor::character() const
 {
-    if (is_corpse())
-    {
-        return '&';
-    }
+        if (is_corpse())
+        {
+                return '&';
+        }
 
-    return data->character;
+        return m_data->character;
 }
 
 bool Actor::restore_hp(
@@ -156,10 +156,10 @@ bool Actor::restore_hp(
         // If HP is below limit, but restored HP will push it over the limit, HP
         // is set to max.
         if (!is_allowed_above_max &&
-            (hp > dif_from_max) &&
-            (hp < actor::max_hp(*this)))
+            (m_hp > dif_from_max) &&
+            (m_hp < actor::max_hp(*this)))
         {
-                hp = actor::max_hp(*this);
+                m_hp = actor::max_hp(*this);
 
                 is_hp_gained = true;
         }
@@ -167,9 +167,9 @@ bool Actor::restore_hp(
         // If HP is below limit, and restored HP will NOT push it over the
         // limit, restored HP is added to current.
         if (is_allowed_above_max ||
-            (hp <= dif_from_max))
+            (m_hp <= dif_from_max))
         {
-                hp += hp_restored;
+                m_hp += hp_restored;
 
                 is_hp_gained = true;
         }
@@ -180,11 +180,11 @@ bool Actor::restore_hp(
                 {
                         msg_log::add("I feel healthier!", colors::msg_good());
                 }
-                else if (map::player->can_see_actor(*this))
+                else if (map::g_player->can_see_actor(*this))
                 {
                         const std::string actor_name_the =
                                 text_format::first_to_upper(
-                                        data->name_the);
+                                        m_data->name_the);
 
                         msg_log::add(actor_name_the + " looks healthier.");
                 }
@@ -198,46 +198,50 @@ bool Actor::restore_sp(
         const bool is_allowed_above_max,
         const Verbosity verbosity)
 {
-    // Maximum allowed level to increase spirit to
-    // * If we allow above max, we can raise spirit "infinitely"
-    // * Otherwise we cap to max spirit, or current spirit, whichever is higher
-    const int limit =
-            is_allowed_above_max
-            ? INT_MAX
-            : std::max(sp, actor::max_sp(*this));
+        // Maximum allowed level to increase spirit to
+        // * If we allow above max, we can raise spirit "infinitely"
+        // * Otherwise we cap to max sp, or current sp, whichever is higher
+        const int limit =
+                is_allowed_above_max
+                ? INT_MAX
+                : std::max(m_sp, actor::max_sp(*this));
 
-    const int sp_before = sp;
+        const int sp_before = m_sp;
 
-    sp = std::min(sp + spi_restored, limit);
+        m_sp = std::min(m_sp + spi_restored, limit);
 
-    const bool is_spi_gained = sp > sp_before;
+        const bool is_spi_gained = m_sp > sp_before;
 
-    if (verbosity == Verbosity::verbose &&
-        is_spi_gained)
-    {
-        if (is_player())
+        if (verbosity == Verbosity::verbose &&
+            is_spi_gained)
         {
-            msg_log::add("I feel more spirited!", colors::msg_good());
-        }
-        else
-        {
-            if (map::player->can_see_actor(*this))
-            {
-                const std::string actor_name_the =
-                    text_format::first_to_upper(
-                        data->name_the);
+                if (is_player())
+                {
+                        msg_log::add(
+                                "I feel more spirited!",
+                                colors::msg_good());
+                }
+                else
+                {
+                        if (map::g_player->can_see_actor(*this))
+                        {
+                                const std::string actor_name_the =
+                                        text_format::first_to_upper(
+                                                m_data->name_the);
 
-                msg_log::add(actor_name_the + " looks more spirited.");
-            }
+                                msg_log::add(
+                                        actor_name_the +
+                                        " looks more spirited.");
+                        }
+                }
         }
-    }
 
-    return is_spi_gained;
+        return is_spi_gained;
 }
 
 void Actor::change_max_hp(const int change, const Verbosity verbosity)
 {
-        base_max_hp = std::max(1, base_max_hp + change);
+        m_base_max_hp = std::max(1, m_base_max_hp + change);
 
         if (verbosity == Verbosity::silent)
         {
@@ -259,7 +263,7 @@ void Actor::change_max_hp(const int change, const Verbosity verbosity)
                                 colors::msg_bad());
                 }
         }
-        else if (map::player->can_see_actor(*this))
+        else if (map::g_player->can_see_actor(*this))
         {
                 const std::string actor_name_the =
                         text_format::first_to_upper(
@@ -278,7 +282,7 @@ void Actor::change_max_hp(const int change, const Verbosity verbosity)
 
 void Actor::change_max_sp(const int change, const Verbosity verbosity)
 {
-        base_max_sp = std::max(1, base_max_sp + change);
+        m_base_max_sp = std::max(1, m_base_max_sp + change);
 
         if (verbosity == Verbosity::silent)
         {
@@ -300,7 +304,7 @@ void Actor::change_max_sp(const int change, const Verbosity verbosity)
                                 colors::msg_bad());
                 }
         }
-        else if (map::player->can_see_actor(*this))
+        else if (map::g_player->can_see_actor(*this))
         {
                 const std::string actor_name_the =
                         text_format::first_to_upper(
@@ -323,217 +327,221 @@ void Actor::change_max_sp(const int change, const Verbosity verbosity)
 
 int Actor::armor_points() const
 {
-    int ap = 0;
+        int ap = 0;
 
-    // Worn armor
-    if (data->is_humanoid)
-    {
-        Armor* armor =
-            static_cast<Armor*>(inv.item_in_slot(SlotId::body));
-
-        if (armor)
+        // Worn armor
+        if (m_data->is_humanoid)
         {
-            ap += armor->armor_points();
-        }
-    }
+                Armor* armor =
+                        static_cast<Armor*>(m_inv.item_in_slot(SlotId::body));
 
-    // "Natural armor"
-    if (is_player())
-    {
-        if (player_bon::traits[(size_t)Trait::thick_skinned])
+                if (armor)
+                {
+                        ap += armor->armor_points();
+                }
+        }
+
+        // "Natural armor"
+        if (is_player())
         {
-            ++ap;
+                if (player_bon::g_traits[(size_t)Trait::thick_skinned])
+                {
+                        ++ap;
+                }
         }
-    }
 
-    return ap;
+        return ap;
 }
 
 void Actor::destroy()
 {
-    state = ActorState::destroyed;
+        m_state = ActorState::destroyed;
 
-    properties.on_destroyed();
+        m_properties.on_destroyed();
 }
 
 std::string Actor::death_msg() const
 {
-    const std::string actor_name_the =
-        text_format::first_to_upper(
-            name_the());
+        const std::string actor_name_the =
+                text_format::first_to_upper(
+                        name_the());
 
-    std::string msg_end = "";
+        std::string msg_end = "";
 
-    if (data->death_msg_override.empty())
-    {
-            msg_end = "dies.";
-    }
-    else
-    {
-            msg_end = data->death_msg_override;
-    }
+        if (m_data->death_msg_override.empty())
+        {
+                msg_end = "dies.";
+        }
+        else
+        {
+                msg_end = m_data->death_msg_override;
+        }
 
-    return actor_name_the + " " + msg_end;
+        return actor_name_the + " " + msg_end;
 }
 
 DidAction Actor::try_eat_corpse()
 {
-    const bool actor_is_player = is_player();
+        const bool actor_is_player = is_player();
 
-    PropWound* wound = nullptr;
-
-    if (actor_is_player)
-    {
-        Prop* prop = properties.prop(PropId::wound);
-
-        if (prop)
-        {
-            wound = static_cast<PropWound*>(prop);
-        }
-    }
-
-    if ((hp >= actor::max_hp(*this)) && !wound)
-    {
-        // Not "hungry"
-        return DidAction::no;
-    }
-
-    Actor* corpse = nullptr;
-
-    // Check all corpses here, if this is the player eating, stop at any corpse
-    // which is prioritized for bashing (Zombies)
-    for (Actor* const actor : game_time::actors)
-    {
-        if ((actor->pos == pos) &&
-            (actor->state == ActorState::corpse))
-        {
-            corpse = actor;
-
-            if (actor_is_player &&
-                actor->data->prio_corpse_bash)
-            {
-                break;
-            }
-        }
-    }
-
-    if (corpse)
-    {
-        const int corpse_max_hp = corpse->base_max_hp;
-
-        const int destr_one_in_n = constr_in_range(1, corpse_max_hp / 4, 8);
-
-        const bool is_destroyed = rnd::one_in(destr_one_in_n);
-
-        const std::string corpse_name_the = corpse->data->corpse_name_the;
-
-        Snd snd("I hear ripping and chewing.",
-                SfxId::bite,
-                IgnoreMsgIfOriginSeen::yes,
-                pos,
-                this,
-                SndVol::low,
-                AlertsMon::no,
-                MorePromptOnMsg::no);
-
-        snd.run();
+        PropWound* wound = nullptr;
 
         if (actor_is_player)
         {
-            msg_log::add("I feed on " + corpse_name_the + ".");
-        }
-        else // Is monster
-        {
-            if (map::player->can_see_actor(*this))
-            {
-                const std::string actor_name_the =
-                    text_format::first_to_upper(
-                        name_the());
+                Prop* prop = m_properties.prop(PropId::wound);
 
-                msg_log::add(actor_name_the +
-                             " feeds on " +
-                             corpse_name_the +
-                             ".");
-            }
-        }
-
-        if (is_destroyed)
-        {
-            corpse->destroy();
-
-            map::make_gore(pos);
-            map::make_blood(pos);
-        }
-
-        if (actor_is_player && is_destroyed)
-        {
-            msg_log::add(text_format::first_to_upper(corpse_name_the) +
-                         " is completely devoured.");
-
-            std::vector<Actor*> corpses_here;
-
-            for (auto* const actor : game_time::actors)
-            {
-                if ((actor->pos == pos) &&
-                    (actor->state == ActorState::corpse))
+                if (prop)
                 {
-                    corpses_here.push_back(actor);
+                        wound = static_cast<PropWound*>(prop);
                 }
-            }
-
-            if (!corpses_here.empty())
-            {
-                msg_log::more_prompt();
-
-                for (auto* const corpse : corpses_here)
-                {
-                    const std::string name =
-                        text_format::first_to_upper(
-                            corpse->data->corpse_name_a);
-
-                    msg_log::add(name + ".");
-                }
-            }
         }
 
-        // Heal
-        on_feed();
+        if ((m_hp >= actor::max_hp(*this)) && !wound)
+        {
+                // Not "hungry"
+                return DidAction::no;
+        }
 
-        return DidAction::yes;
-    }
+        Actor* corpse = nullptr;
 
-    return DidAction::no;
+        // Check all corpses here, if this is the player eating, stop at any
+        // corpse which is prioritized for bashing (Zombies)
+        for (Actor* const actor : game_time::g_actors)
+        {
+                if ((actor->m_pos == m_pos) &&
+                    (actor->m_state == ActorState::corpse))
+                {
+                        corpse = actor;
+
+                        if (actor_is_player &&
+                            actor->m_data->prio_corpse_bash)
+                        {
+                                break;
+                        }
+                }
+        }
+
+        if (corpse)
+        {
+                const int corpse_max_hp = corpse->m_base_max_hp;
+
+                const int destr_one_in_n =
+                        constr_in_range(1, corpse_max_hp / 4, 8);
+
+                const bool is_destroyed = rnd::one_in(destr_one_in_n);
+
+                const std::string corpse_name_the =
+                        corpse->m_data->corpse_name_the;
+
+                Snd snd("I hear ripping and chewing.",
+                        SfxId::bite,
+                        IgnoreMsgIfOriginSeen::yes,
+                        m_pos,
+                        this,
+                        SndVol::low,
+                        AlertsMon::no,
+                        MorePromptOnMsg::no);
+
+                snd.run();
+
+                if (actor_is_player)
+                {
+                        msg_log::add("I feed on " + corpse_name_the + ".");
+                }
+                else // Is monster
+                {
+                        if (map::g_player->can_see_actor(*this))
+                        {
+                                const std::string actor_name_the =
+                                        text_format::first_to_upper(
+                                                name_the());
+
+                                msg_log::add(actor_name_the +
+                                             " feeds on " +
+                                             corpse_name_the +
+                                             ".");
+                        }
+                }
+
+                if (is_destroyed)
+                {
+                        corpse->destroy();
+
+                        map::make_gore(m_pos);
+                        map::make_blood(m_pos);
+                }
+
+                if (actor_is_player && is_destroyed)
+                {
+                        msg_log::add(
+                                text_format::first_to_upper(corpse_name_the) +
+                                " is completely devoured.");
+
+                        std::vector<Actor*> corpses_here;
+
+                        for (auto* const actor : game_time::g_actors)
+                        {
+                                if ((actor->m_pos == m_pos) &&
+                                    (actor->m_state == ActorState::corpse))
+                                {
+                                        corpses_here.push_back(actor);
+                                }
+                        }
+
+                        if (!corpses_here.empty())
+                        {
+                                msg_log::more_prompt();
+
+                                for (auto* const corpse : corpses_here)
+                                {
+                                        const std::string name =
+                                                text_format::first_to_upper(
+                                                        corpse->m_data
+                                                        ->corpse_name_a);
+
+                                        msg_log::add(name + ".");
+                                }
+                        }
+                }
+
+                // Heal
+                on_feed();
+
+                return DidAction::yes;
+        }
+
+        return DidAction::no;
 }
 
 void Actor::on_feed()
 {
-    const int hp_restored = rnd::range(3, 5);
+        const int hp_restored = rnd::range(3, 5);
 
-    restore_hp(hp_restored, false, Verbosity::silent);
+        restore_hp(hp_restored, false, Verbosity::silent);
 
-    if (is_player())
-    {
-        Prop* const prop = properties.prop(PropId::wound);
-
-        if (prop && rnd::one_in(6))
+        if (is_player())
         {
-            PropWound* const wound = static_cast<PropWound*>(prop);
+                Prop* const prop = m_properties.prop(PropId::wound);
 
-            wound->heal_one_wound();
+                if (prop && rnd::one_in(6))
+                {
+                        PropWound* const wound = static_cast<PropWound*>(prop);
+
+                        wound->heal_one_wound();
+                }
         }
-    }
 }
 
 void Actor::add_light(Array2<bool>& light_map) const
 {
-        if (state == ActorState::alive && properties.has(PropId::radiant))
+        if (m_state == ActorState::alive && m_properties.has(PropId::radiant))
         {
                 // TODO: Much of the code below is duplicated from
                 // ActorPlayer::add_light_hook(), some refactoring is needed.
 
                 Array2<bool> hard_blocked(map::dims());
 
-                const R fov_lmt = fov::fov_rect(pos, hard_blocked.dims());
+                const R fov_lmt = fov::fov_rect(m_pos, hard_blocked.dims());
 
                 map_parsers::BlocksLos()
                         .run(hard_blocked,
@@ -542,10 +550,10 @@ void Actor::add_light(Array2<bool>& light_map) const
 
                 FovMap fov_map;
                 fov_map.hard_blocked = &hard_blocked;
-                fov_map.light = &map::light;
-                fov_map.dark = &map::dark;
+                fov_map.light = &map::g_light;
+                fov_map.dark = &map::g_dark;
 
-                const auto actor_fov = fov::run(pos, fov_map);
+                const auto actor_fov = fov::run(m_pos, fov_map);
 
                 for (int x = fov_lmt.p0.x; x <= fov_lmt.p1.x; ++x)
                 {
@@ -558,11 +566,11 @@ void Actor::add_light(Array2<bool>& light_map) const
                         }
                 }
         }
-        else if (properties.has(PropId::burning))
+        else if (m_properties.has(PropId::burning))
         {
-                for (const auto d : dir_utils::dir_list_w_center)
+                for (const auto d : dir_utils::g_dir_list_w_center)
                 {
-                        light_map.at(pos + d) = true;
+                        light_map.at(m_pos + d) = true;
                 }
         }
 
@@ -571,7 +579,7 @@ void Actor::add_light(Array2<bool>& light_map) const
 
 bool Actor::is_player() const
 {
-    return this == map::player;
+        return this == map::g_player;
 }
 
 // -----------------------------------------------------------------------------
@@ -582,33 +590,33 @@ namespace actor
 
 int max_hp(const Actor& actor)
 {
-        int result = actor.base_max_hp;
+        int result = actor.m_base_max_hp;
 
-        result = actor.properties.affect_max_hp(result);
+        result = actor.m_properties.affect_max_hp(result);
 
         return std::max(1, result);
 }
 
 int max_sp(const Actor& actor)
 {
-        int result = actor.base_max_sp;
+        int result = actor.m_base_max_sp;
 
-        result = actor.properties.affect_max_spi(result);
+        result = actor.m_properties.affect_max_spi(result);
 
         return std::max(1, result);
 }
 
 void init_actor(Actor& actor, const P& pos_, ActorData& data)
 {
-        actor.pos = pos_;
+        actor.m_pos = pos_;
 
-        actor.data = &data;
+        actor.m_data = &data;
 
         // NOTE: Cannot compare against the global player pointer here, since it
         // may not yet have been set up
-        if (actor.data->id == ActorId::player)
+        if (actor.m_data->id == ActorId::player)
         {
-                actor.base_max_hp = data.hp;
+                actor.m_base_max_hp = data.hp;
         }
         else // Is monster
         {
@@ -620,16 +628,16 @@ void init_actor(Actor& actor, const P& pos_, ActorData& data)
 
                 hp_range.min = std::max(1, hp_range.min);
 
-                actor.base_max_hp = hp_range.roll();
+                actor.m_base_max_hp = hp_range.roll();
         }
 
-        actor.hp = actor.base_max_hp;
+        actor.m_hp = actor.m_base_max_hp;
 
-        actor.sp = actor.base_max_sp = data.spi;
+        actor.m_sp = actor.m_base_max_sp = data.spi;
 
-        actor.lair_pos = actor.pos;
+        actor.m_lair_pos = actor.m_pos;
 
-        actor.properties.apply_natural_props_from_actor_data();
+        actor.m_properties.apply_natural_props_from_actor_data();
 
         if (!actor.is_player())
         {
@@ -646,7 +654,7 @@ void init_actor(Actor& actor, const P& pos_, ActorData& data)
                 {
                         Mon* const mon = static_cast<Mon*>(&actor);
 
-                        mon->leader_ = map::player;
+                        mon->m_leader = map::g_player;
                 }
         }
 }
@@ -665,8 +673,8 @@ ActionResult roll_sneak(const SneakData& data)
 
         const int dist =
                 king_dist(
-                        data.actor_sneaking->pos,
-                        data.actor_searching->pos);
+                        data.actor_sneaking->m_pos,
+                        data.actor_searching->m_pos);
 
         // Distance  Sneak bonus
         // ----------------------
@@ -680,9 +688,9 @@ ActionResult roll_sneak(const SneakData& data)
         // 8         42
         const int dist_mod = (dist - 2) * 7;
 
-        const bool is_lit = map::light.at(data.actor_sneaking->pos);
+        const bool is_lit = map::g_light.at(data.actor_sneaking->m_pos);
 
-        const bool is_dark = map::light.at(data.actor_sneaking->pos);
+        const bool is_dark = map::g_light.at(data.actor_sneaking->m_pos);
 
         const int lgt_mod =
                 is_lit
@@ -721,11 +729,11 @@ void print_aware_invis_mon_msg(const Mon& mon)
 {
         std::string mon_ref;
 
-        if (mon.data->is_ghost)
+        if (mon.m_data->is_ghost)
         {
                 mon_ref = "some foul entity";
         }
-        else if (mon.data->is_humanoid)
+        else if (mon.m_data->is_humanoid)
         {
                 mon_ref = "someone";
         }

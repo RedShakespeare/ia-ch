@@ -95,7 +95,7 @@ static bool try_make_aux_room(
             {
                 blocked.at(x, y) = true;
 
-                ASSERT(!map::room_map.at(x, y));
+                ASSERT(!map::g_room_map.at(x, y));
             }
         }
 
@@ -168,23 +168,28 @@ void make_aux_rooms(Region regions[3][3])
                 {
                     for (int i = 0; i < nr_tries_per_side; ++i)
                     {
-                        const P con_p(main_r.r_.p1.x + 1,
-                                      rnd::range(main_r.r_.p0.y + 1,
-                                                 main_r.r_.p1.y - 1));
+                        const P con_p(
+                                main_r.m_r.p1.x + 1,
+                                rnd::range(
+                                        main_r.m_r.p0.y + 1,
+                                        main_r.m_r.p1.y - 1));
 
                         const P aux_d(rnd_aux_room_dim());
 
-                        const P aux_p(con_p.x + 1,
-                                      rnd::range(con_p.y - aux_d.y + 1,
-                                                 con_p.y));
+                        const P aux_p(
+                                con_p.x + 1,
+                                rnd::range(
+                                        con_p.y - aux_d.y + 1,
+                                        con_p.y));
 
                         if (floor_cells.at(con_p.x - 1, con_p.y))
                         {
                             const bool did_place_room =
-                                try_make_aux_room(aux_p,
-                                                aux_d,
-                                                floor_cells,
-                                                con_p);
+                                try_make_aux_room(
+                                        aux_p,
+                                        aux_d,
+                                        floor_cells,
+                                        con_p);
 
                             if (did_place_room)
                             {
@@ -201,9 +206,11 @@ void make_aux_rooms(Region regions[3][3])
                 {
                     for (int i = 0; i < nr_tries_per_side; ++i)
                     {
-                        const P con_p(rnd::range(main_r.r_.p0.x + 1,
-                                                 main_r.r_.p1.x - 1),
-                                      main_r.r_.p0.y - 1);
+                        const P con_p(
+                                rnd::range(
+                                        main_r.m_r.p0.x + 1,
+                                        main_r.m_r.p1.x - 1),
+                                main_r.m_r.p0.y - 1);
 
                         const P aux_d(rnd_aux_room_dim());
 
@@ -234,9 +241,11 @@ void make_aux_rooms(Region regions[3][3])
                 {
                     for (int i = 0; i < nr_tries_per_side; ++i)
                     {
-                        const P con_p(main_r.r_.p0.x - 1,
-                                      rnd::range(main_r.r_.p0.y + 1,
-                                                 main_r.r_.p1.y - 1));
+                        const P con_p(
+                                main_r.m_r.p0.x - 1,
+                                rnd::range(
+                                        main_r.m_r.p0.y + 1,
+                                        main_r.m_r.p1.y - 1));
 
                         const P aux_d(rnd_aux_room_dim());
 
@@ -267,9 +276,11 @@ void make_aux_rooms(Region regions[3][3])
                 {
                     for (int i = 0; i < nr_tries_per_side; ++i)
                     {
-                        const P con_p(rnd::range(main_r.r_.p0.x + 1,
-                                                 main_r.r_.p1.x - 1),
-                                      main_r.r_.p1.y + 1);
+                        const P con_p(
+                                rnd::range(
+                                        main_r.m_r.p0.x + 1,
+                                        main_r.m_r.p1.x - 1),
+                                main_r.m_r.p1.y + 1);
 
                         const P aux_d(rnd_aux_room_dim());
 

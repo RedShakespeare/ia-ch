@@ -28,7 +28,8 @@ namespace wham
 
 void try_sprain_player()
 {
-        const bool is_frenzied =  map::player->properties.has(PropId::frenzied);
+        const bool is_frenzied =
+                map::g_player->m_properties.has(PropId::frenzied);
 
         const bool is_player_ghoul = player_bon::bg() == Bg::ghoul;
 
@@ -58,7 +59,7 @@ void try_sprain_player()
 
                 const int dmg = rnd::range(1, 2);
 
-                actor::hit(*map::player, dmg, DmgType::pure);
+                actor::hit(*map::g_player, dmg, DmgType::pure);
         }
 }
 
@@ -70,7 +71,7 @@ void run()
 
         // Choose direction
         msg_log::add(
-                "Which direction? " + common_text::cancel_hint,
+                "Which direction? " + common_text::g_cancel_hint,
                 colors::light_white());
 
         const Dir input_dir = query::dir(AllowCenter::yes);
@@ -89,7 +90,7 @@ void run()
 
         // The chosen direction is valid
 
-        P att_pos(map::player->pos + dir_utils::offset(input_dir));
+        P att_pos(map::g_player->m_pos + dir_utils::offset(input_dir));
 
         // Kick living actor?
         TRACE << "Checking if player is kicking a living actor" << std::endl;
@@ -104,7 +105,7 @@ void run()
                         TRACE << "Actor found at kick pos" << std::endl;
 
                         const bool melee_allowed =
-                                map::player->properties.allow_attack_melee(
+                                map::g_player->m_properties.allow_attack_melee(
                                         Verbosity::verbose);
 
                         if (melee_allowed)
@@ -119,12 +120,12 @@ void run()
 
                                 TRACE << "Player can see actor" << std::endl;
 
-                                map::player->kick_mon(*living_actor);
+                                map::g_player->kick_mon(*living_actor);
 
                                 try_sprain_player();
 
                                 // Attacking ends cloaking
-                                map::player->properties.end_prop(
+                                map::g_player->m_properties.end_prop(
                                         PropId::cloaked);
 
                                 game_time::tick();
@@ -141,14 +142,14 @@ void run()
 
         // Check all corpses here, stop at any corpse which is prioritized for
         // bashing (Zombies)
-        for (Actor* const actor : game_time::actors)
+        for (Actor* const actor : game_time::g_actors)
         {
-                if ((actor->pos == att_pos) &&
-                    (actor->state == ActorState::corpse))
+                if ((actor->m_pos == att_pos) &&
+                    (actor->m_state == ActorState::corpse))
                 {
                         corpse = actor;
 
-                        if (actor->data->prio_corpse_bash)
+                        if (actor->m_data->prio_corpse_bash)
                         {
                                 break;
                         }
@@ -160,11 +161,11 @@ void run()
                         static_cast<Wpn*>(
                                 item_factory::make(ItemId::player_kick)));
 
-        const auto* wpn = map::player->inv.item_in_slot(SlotId::wpn);
+        const auto* wpn = map::g_player->m_inv.item_in_slot(SlotId::wpn);
 
         if (!wpn)
         {
-                wpn = &map::player->unarmed_wpn();
+                wpn = &map::g_player->unarmed_wpn();
         }
 
         ASSERT(wpn);
@@ -172,11 +173,11 @@ void run()
         if (corpse)
         {
                 const bool is_seeing_cell =
-                        map::cells.at(att_pos).is_seen_by_player;
+                        map::g_cells.at(att_pos).is_seen_by_player;
 
                 std::string corpse_name =
                         is_seeing_cell
-                        ? corpse->data->corpse_name_the
+                        ? corpse->m_data->corpse_name_the
                         : "a corpse";
 
                 corpse_name = text_format::first_to_lower(corpse_name);
@@ -198,7 +199,7 @@ void run()
                 msg_log::add(msg);
 
                 const Dice dmg_dice =
-                        wpn_used_att_corpse->melee_dmg(map::player);
+                        wpn_used_att_corpse->melee_dmg(map::g_player);
 
                 const int dmg = dmg_dice.roll();
 
@@ -213,14 +214,14 @@ void run()
                         try_sprain_player();
                 }
 
-                if (corpse->state == ActorState::destroyed)
+                if (corpse->m_state == ActorState::destroyed)
                 {
                         std::vector<Actor*> corpses_here;
 
-                        for (auto* const actor : game_time::actors)
+                        for (auto* const actor : game_time::g_actors)
                         {
-                                if ((actor->pos == att_pos) &&
-                                    (actor->state == ActorState::corpse))
+                                if ((actor->m_pos == att_pos) &&
+                                    (actor->m_state == ActorState::corpse))
                                 {
                                         corpses_here.push_back(actor);
                                 }
@@ -235,14 +236,14 @@ void run()
                         {
                                 const std::string name =
                                         text_format::first_to_upper(
-                                                corpse->data->corpse_name_a);
+                                                corpse->m_data->corpse_name_a);
 
                                 msg_log::add(name + ".");
                         }
                 }
 
                 // Attacking ends cloaking
-                map::player->properties.end_prop(PropId::cloaked);
+                map::g_player->m_properties.end_prop(PropId::cloaked);
 
                 game_time::tick();
 
@@ -257,7 +258,7 @@ void run()
         if (input_dir != Dir::center)
         {
                 // Decide if we should kick or use wielded weapon
-                auto* const feature = map::cells.at(att_pos).rigid;
+                auto* const feature = map::g_cells.at(att_pos).rigid;
 
                 bool allow_wpn_att_rigid = wpn->data().melee.att_rigid;
 
@@ -310,7 +311,7 @@ void run()
                         : kick_wpn.get();
 
                 const Dice dmg_dice =
-                        wpn_used_att_feature->melee_dmg(map::player);
+                        wpn_used_att_feature->melee_dmg(map::g_player);
 
                 const int dmg = dmg_dice.roll();
 
@@ -318,10 +319,10 @@ void run()
                         dmg,
                         DmgType::physical,
                         wpn_used_att_feature->data().melee.dmg_method,
-                        map::player);
+                        map::g_player);
 
                 // Attacking ends cloaking
-                map::player->properties.end_prop(PropId::cloaked);
+                map::g_player->m_properties.end_prop(PropId::cloaked);
 
                 game_time::tick();
         }

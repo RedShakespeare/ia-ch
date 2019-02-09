@@ -69,7 +69,7 @@ public:
         {
                 // Trap is valid if we have succesfully created an
                 // implementation
-                return trap_impl_;
+                return m_trap_impl;
         }
 
         AllowAction pre_bump(Actor& actor_bumping) override;
@@ -92,12 +92,12 @@ public:
 
         bool can_have_blood() const override
         {
-                return is_hidden_;
+                return m_is_hidden;
         }
 
         bool can_have_gore() const override
         {
-                return is_hidden_;
+                return m_is_hidden;
         }
 
         bool is_magical() const;
@@ -106,7 +106,7 @@ public:
 
         bool is_hidden() const
         {
-                return is_hidden_;
+                return m_is_hidden;
         }
 
         Matl matl() const override;
@@ -115,7 +115,7 @@ public:
 
         const TrapImpl* trap_impl() const
         {
-                return trap_impl_;
+                return m_trap_impl;
         }
 
         void player_try_spot_hidden();
@@ -135,12 +135,12 @@ private:
 
         void trigger_start(const Actor* actor);
 
-        Rigid* mimic_feature_ {nullptr};
-        bool is_hidden_ {false};
-        int nr_turns_until_trigger_ {-1};
+        Rigid* m_mimic_feature {nullptr};
+        bool m_is_hidden {false};
+        int m_nr_turns_until_trigger {-1};
 
         // TODO: Should be a unique pointer
-        TrapImpl* trap_impl_ {nullptr};
+        TrapImpl* m_trap_impl {nullptr};
 };
 
 class TrapImpl
@@ -148,9 +148,9 @@ class TrapImpl
 protected:
         friend class Trap;
         TrapImpl(P p, TrapId type, Trap* const base_trap) :
-                pos_(p),
-                type_(type),
-                base_trap_(base_trap) {}
+                m_pos(p),
+                m_type(type),
+                m_base_trap(base_trap) {}
 
         virtual ~TrapImpl() {}
 
@@ -190,13 +190,13 @@ protected:
 
         virtual std::string disarm_msg() const = 0;
 
-        P pos_;
+        P m_pos;
 
-        TrapId type_;
+        TrapId m_type;
 
-        P dart_origin_pos_;
+        P m_dart_origin_pos;
 
-        Trap* const base_trap_;
+        Trap* const m_base_trap;
 };
 
 class MechTrapImpl : public TrapImpl
@@ -258,11 +258,11 @@ private:
                 return {2, 3};
         }
 
-        bool is_poisoned_;
+        bool m_is_poisoned;
 
-        P dart_origin_;
+        P m_dart_origin;
 
-        bool is_dart_origin_destroyed_;
+        bool m_is_dart_origin_destroyed;
 };
 
 class TrapSpear: public MechTrapImpl
@@ -298,11 +298,11 @@ private:
                 return {2, 3};
         }
 
-        bool is_poisoned_;
+        bool m_is_poisoned;
 
-        P spear_origin_;
+        P m_spear_origin;
 
-        bool is_spear_origin_destroyed_;
+        bool m_is_spear_origin_destroyed;
 };
 
 class GasTrapImpl: public MechTrapImpl

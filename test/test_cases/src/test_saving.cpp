@@ -30,30 +30,30 @@ TEST_CASE("Saving and loading the game")
                 test_utils::init_all();
 
                 // Item data
-                item_data::data[(size_t)ItemId::scroll_telep]
+                item_data::g_data[(size_t)ItemId::scroll_telep]
                         .is_spell_domain_known = true;
 
-                item_data::data[(size_t)ItemId::scroll_opening]
+                item_data::g_data[(size_t)ItemId::scroll_opening]
                         .is_identified = true;
 
                 // Bonus
                 player_bon::pick_bg(Bg::rogue);
-                player_bon::traits[(size_t)Trait::healer] = true;
+                player_bon::g_traits[(size_t)Trait::healer] = true;
 
                 // Player inventory
-                auto& inv = map::player->inv;
+                auto& inv = map::g_player->m_inv;
 
                 // First, remove all present items to get a clean state
-                for (Item* item : inv.backpack)
+                for (Item* item : inv.m_backpack)
                 {
                         delete item;
                 }
 
-                inv.backpack.clear();
+                inv.m_backpack.clear();
 
                 for (size_t i = 0; i < (size_t)SlotId::END; ++i)
                 {
-                        auto& slot = inv.slots[i];
+                        auto& slot = inv.m_slots[i];
 
                         if (slot.item)
                         {
@@ -72,7 +72,7 @@ TEST_CASE("Saving and loading the game")
                         item,
                         Verbosity::verbose);
 
-                map::player->set_unarmed_wpn(
+                map::g_player->set_unarmed_wpn(
                         static_cast<Wpn*>(
                                 item_factory::make(ItemId::player_punch)));
 
@@ -85,19 +85,19 @@ TEST_CASE("Saving and loading the game")
                         Verbosity::verbose);
 
                 item = item_factory::make(ItemId::pistol_mag);
-                static_cast<AmmoMag*>(item)->ammo_ = 1;
+                static_cast<AmmoMag*>(item)->m_ammo = 1;
                 inv.put_in_backpack(item);
 
                 item = item_factory::make(ItemId::pistol_mag);
-                static_cast<AmmoMag*>(item)->ammo_ = 2;
+                static_cast<AmmoMag*>(item)->m_ammo = 2;
                 inv.put_in_backpack(item);
 
                 item = item_factory::make(ItemId::pistol_mag);
-                static_cast<AmmoMag*>(item)->ammo_ = 3;
+                static_cast<AmmoMag*>(item)->m_ammo = 3;
                 inv.put_in_backpack(item);
 
                 item = item_factory::make(ItemId::pistol_mag);
-                static_cast<AmmoMag*>(item)->ammo_ = 3;
+                static_cast<AmmoMag*>(item)->m_ammo = 3;
                 inv.put_in_backpack(item);
 
                 item = item_factory::make(ItemId::device_blaster);
@@ -115,16 +115,16 @@ TEST_CASE("Saving and loading the game")
                 inv.put_in_backpack(item);
 
                 // Player
-                map::player->data->name_a = "TEST PLAYER";
-                map::player->data->name_the = "THIS IS OVERWRITTEN";
+                map::g_player->m_data->name_a = "TEST PLAYER";
+                map::g_player->m_data->name_the = "THIS IS OVERWRITTEN";
 
-                map::player->base_max_hp = 456;
+                map::g_player->m_base_max_hp = 456;
 
                 // map
-                map::dlvl = 7;
+                map::g_dlvl = 7;
 
                 // Actor data
-                actor_data::data[(size_t)ActorId::END - 1].nr_kills = 123;
+                actor_data::g_data[(size_t)ActorId::END - 1].nr_kills = 123;
 
                 // Learned spells
                 player_spells::learn_spell(
@@ -136,7 +136,7 @@ TEST_CASE("Saving and loading the game")
                         Verbosity::silent);
 
                 // Applied properties
-                auto& props = map::player->properties;
+                auto& props = map::g_player->m_properties;
 
                 {
                         auto* const prop = new PropRSleep();
@@ -157,10 +157,6 @@ TEST_CASE("Saving and loading the game")
                 REQUIRE(props.has(PropId::blessed));
                 REQUIRE(!props.has(PropId::confused));
 
-                // map sequence
-                map_travel::map_list[5] = MapType::deep_one_lair;
-                map_travel::map_list[7] = MapType::egypt;
-
                 saving::save_game();
 
                 REQUIRE(saving::is_save_available());
@@ -179,47 +175,47 @@ TEST_CASE("Saving and loading the game")
                 saving::load_game();
 
                 // Item data
-                REQUIRE(item_data::data[(size_t)ItemId::scroll_telep]
+                REQUIRE(item_data::g_data[(size_t)ItemId::scroll_telep]
                         .is_spell_domain_known);
 
-                REQUIRE(!item_data::data[(size_t)ItemId::scroll_telep]
+                REQUIRE(!item_data::g_data[(size_t)ItemId::scroll_telep]
                         .is_identified);
 
-                REQUIRE(item_data::data[(size_t)ItemId::scroll_opening]
+                REQUIRE(item_data::g_data[(size_t)ItemId::scroll_opening]
                         .is_identified);
 
-                REQUIRE(!item_data::data[(size_t)ItemId::scroll_opening]
+                REQUIRE(!item_data::g_data[(size_t)ItemId::scroll_opening]
                         .is_spell_domain_known);
 
-                REQUIRE(!item_data::data[(size_t)ItemId::scroll_searching]
+                REQUIRE(!item_data::g_data[(size_t)ItemId::scroll_searching]
                         .is_spell_domain_known);
 
-                REQUIRE(!item_data::data[(size_t)ItemId::scroll_searching]
+                REQUIRE(!item_data::g_data[(size_t)ItemId::scroll_searching]
                         .is_identified);
 
                 // Player
-                REQUIRE(map::player->data->name_a == "TEST PLAYER");
-                REQUIRE(map::player->data->name_the == "TEST PLAYER");
+                REQUIRE(map::g_player->m_data->name_a == "TEST PLAYER");
+                REQUIRE(map::g_player->m_data->name_the == "TEST PLAYER");
 
                 // Check max HP (affected by disease)
-                REQUIRE(actor::max_hp(*map::player) == 456 / 2);
+                REQUIRE(actor::max_hp(*map::g_player) == 456 / 2);
 
                 // Bonus
                 REQUIRE(player_bon::bg() == Bg::rogue);
 
-                REQUIRE(player_bon::traits[(size_t)Trait::healer]);
+                REQUIRE(player_bon::g_traits[(size_t)Trait::healer]);
 
-                REQUIRE(!player_bon::traits[(size_t)Trait::vigilant]);
+                REQUIRE(!player_bon::g_traits[(size_t)Trait::vigilant]);
 
                 // Player inventory
-                const auto& inv  = map::player->inv;
+                const auto& inv  = map::g_player->m_inv;
 
-                REQUIRE(inv.backpack.size() == 6);
+                REQUIRE(inv.m_backpack.size() == 6);
 
                 REQUIRE(inv.item_in_slot(SlotId::wpn)->data().id ==
                         ItemId::mi_go_gun);
 
-                REQUIRE(map::player->unarmed_wpn().id() ==
+                REQUIRE(map::g_player->unarmed_wpn().id() ==
                         ItemId::player_punch);
 
                 REQUIRE(inv.item_in_slot(SlotId::body)->data().id ==
@@ -231,13 +227,13 @@ TEST_CASE("Saving and loading the game")
                 bool is_sentry_device_found = false;
                 bool is_lantern_found = false;
 
-                for (Item* item : inv.backpack)
+                for (Item* item : inv.m_backpack)
                 {
                         ItemId id = item->id();
 
                         if (id == ItemId::pistol_mag)
                         {
-                                switch (static_cast<AmmoMag*>(item)->ammo_)
+                                switch (static_cast<AmmoMag*>(item)->m_ammo)
                                 {
                                 case 1:
                                         ++nr_mag_with_1;
@@ -284,10 +280,10 @@ TEST_CASE("Saving and loading the game")
                 REQUIRE(is_lantern_found);
 
                 // map
-                REQUIRE(map::dlvl == 7);
+                REQUIRE(map::g_dlvl == 7);
 
                 // Actor data
-                REQUIRE(actor_data::data[(int)ActorId::END - 1]
+                REQUIRE(actor_data::g_data[(int)ActorId::END - 1]
                         .nr_kills == 123);
 
                 // Learned spells
@@ -298,7 +294,7 @@ TEST_CASE("Saving and loading the game")
                 REQUIRE(!player_spells::is_spell_learned(SpellId::mayhem));
 
                 // Properties
-                const auto& props = map::player->properties;
+                const auto& props = map::g_player->m_properties;
 
                 {
                         const auto* const prop = props.prop(PropId::diseased);
@@ -308,7 +304,7 @@ TEST_CASE("Saving and loading the game")
                 }
 
                 // Check currrent HP (should not be affected by disease)
-                REQUIRE(map::player->hp == map::player->data->hp);
+                REQUIRE(map::g_player->m_hp == map::g_player->m_data->hp);
 
                 {
                         const auto* const prop = props.prop(PropId::r_sleep);
@@ -338,13 +334,6 @@ TEST_CASE("Saving and loading the game")
                         REQUIRE(prop);
                         REQUIRE(prop->nr_turns_left() == -1);
                 }
-
-                // map sequence
-                REQUIRE(map_travel::map_list[3] == MapType::std);
-
-                REQUIRE(map_travel::map_list[5] == MapType::deep_one_lair);
-
-                REQUIRE(map_travel::map_list[7] == MapType::egypt);
 
                 // Turn number
                 REQUIRE(game_time::turn_nr() == 0);

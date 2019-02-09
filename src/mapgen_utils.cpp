@@ -32,25 +32,26 @@
 namespace mapgen
 {
 
-bool is_map_valid = true;
+bool g_is_map_valid = true;
 
-Array2<bool> door_proposals(0, 0);
+Array2<bool> g_door_proposals(0, 0);
+
 
 // Adds the room to the room list and the room map
 void register_room(Room& room)
 {
 #ifndef NDEBUG
         // Check that the room has not already been added
-        for (Room* const room_in_list : map::room_list)
+        for (Room* const room_in_list : map::g_room_list)
         {
                 ASSERT(room_in_list != &room);
         }
 #endif // NDEBUG
 
-        map::room_list.push_back(&room);
+        map::g_room_list.push_back(&room);
 
-        const P room_p0(room.r_.p0);
-        const P room_p1(room.r_.p1);
+        const P room_p0(room.m_r.p0);
+        const P room_p1(room.m_r.p1);
 
         ASSERT(map::is_pos_inside_outer_walls(room_p0));
         ASSERT(map::is_pos_inside_outer_walls(room_p1));
@@ -59,16 +60,16 @@ void register_room(Room& room)
         {
                 for (int y = room_p0.y; y <= room_p1.y; ++y)
                 {
-                        map::room_map.at(x, y) = &room;
+                        map::g_room_map.at(x, y) = &room;
                 }
         }
 }
 
 void make_floor(const Room& room)
 {
-        for (int x = room.r_.p0.x; x <= room.r_.p1.x; ++x)
+        for (int x = room.m_r.p0.x; x <= room.m_r.p1.x; ++x)
         {
-                for (int y = room.r_.p0.y; y <= room.r_.p1.y; ++y)
+                for (int y = room.m_r.p0.y; y <= room.m_r.p1.y; ++y)
                 {
                         map::put(new Floor(P(x, y)));
                 }
@@ -78,15 +79,15 @@ void make_floor(const Room& room)
 void cut_room_corners(const Room& room)
 {
         // Never cut the room corners if it's a "small" room
-        if (room.r_.min_dim() < 6)
+        if (room.m_r.min_dim() < 6)
         {
                 return;
         }
 
-        const P max_dims(room.r_.dims() - 4);
+        const P max_dims(room.m_r.dims() - 4);
 
-        const P room_p0(room.r_.p0);
-        const P room_p1(room.r_.p1);
+        const P room_p0(room.m_r.p0);
+        const P room_p1(room.m_r.p1);
 
         // NOTE: The "cross" dimensons and coordinates refer to the inner
         // rectangle of the plus shape.
@@ -175,17 +176,17 @@ void cut_room_corners(const Room& room)
                 {
                         for (int y = r.p0.y; y <= r.p1.y; ++y)
                         {
-                                for (const P& d : dir_utils::dir_list_w_center)
+                                for (const P& d : dir_utils::g_dir_list_w_center)
                                 {
                                         const P p(x, y);
 
                                         const P check_p(p + d);
 
                                         const Room* const room_here =
-                                                map::room_map.at(check_p);
+                                                map::g_room_map.at(check_p);
 
                                         const FeatureId id =
-                                                map::cells.at(check_p)
+                                                map::g_cells.at(check_p)
                                                 .rigid->id();
 
                                         if ((room_here == &room &&
@@ -214,7 +215,7 @@ void cut_room_corners(const Room& room)
                                 for (int y = r.p0.y; y <= r.p1.y; ++y)
                                 {
                                         map::put(new Wall(P(x, y)));
-                                        map::room_map.at(x, y) = nullptr;
+                                        map::g_room_map.at(x, y) = nullptr;
                                 }
                         }
                 }
@@ -223,16 +224,17 @@ void cut_room_corners(const Room& room)
 
 void make_pillars_in_room(const Room& room)
 {
-        const P& room_p0(room.r_.p0);
-        const P& room_p1(room.r_.p1);
+        const P& room_p0(room.m_r.p0);
+        const P& room_p1(room.m_r.p1);
 
         auto is_free = [](const P & p) {
 
-                for (const P& d : dir_utils::dir_list_w_center)
+                for (const P& d : dir_utils::g_dir_list_w_center)
                 {
                         const P check_p(p + d);
 
-                        const FeatureId id = map::cells.at(check_p).rigid->id();
+                        const FeatureId id =
+                                map::g_cells.at(check_p).rigid->id();
 
                         if (id == FeatureId::wall)
                         {
@@ -273,7 +275,7 @@ void cavify_room(Room& room)
 
         for (size_t i = 0; i < map::nr_cells(); ++i)
         {
-                const auto* const room_here = map::room_map.at(i);
+                const auto* const room_here = map::g_room_map.at(i);
 
                 is_other_room.at(i) =
                         room_here &&
@@ -284,11 +286,11 @@ void cavify_room(Room& room)
                 is_other_room,
                 is_other_room.rect());
 
-        R& room_rect = room.r_;
+        R& room_rect = room.m_r;
 
         std::vector<P> origin_bucket;
 
-        const auto& r = room.r_;
+        const auto& r = room.m_r;
 
         const int x0 = r.p0.x + 1;
         const int y0 = r.p0.y + 1;
@@ -310,7 +312,7 @@ void cavify_room(Room& room)
         for (const P& origin : origin_bucket)
         {
                 if (blocked.at(origin) ||
-                    map::room_map.at(origin) != &room)
+                    map::g_room_map.at(origin) != &room)
                 {
                         continue;
                 }
@@ -327,11 +329,11 @@ void cavify_room(Room& room)
                         for (int y = 0; y < map::h(); ++y)
                         {
                                 if ((flood.at(x, y) > 0) &&
-                                    (map::room_map.at(x, y) != &room))
+                                    (map::g_room_map.at(x, y) != &room))
                                 {
                                         map::put(new Floor({x, y}));
 
-                                        map::room_map.at(x, y) = &room;
+                                        map::g_room_map.at(x, y) = &room;
 
                                         if (x < room_rect.p0.x)
                                         {
@@ -359,13 +361,13 @@ void cavify_room(Room& room)
 
         for (size_t i = 0; i < map::nr_cells(); ++i)
         {
-                if (map::room_map.at(i) == &room)
+                if (map::g_room_map.at(i) == &room)
                 {
-                        Rigid* const rigid = map::cells.at(i).rigid;
+                        Rigid* const rigid = map::g_cells.at(i).rigid;
 
                         if (rigid->id() == FeatureId::floor)
                         {
-                                static_cast<Floor*>(rigid)->type_ =
+                                static_cast<Floor*>(rigid)->m_type =
                                         FloorType::cave;
                         }
                 }
@@ -391,11 +393,11 @@ void valid_corridor_entries(const Room& room, std::vector<P>& out)
         for (size_t i = 0; i < map::nr_cells(); ++i)
         {
                 const bool is_room_cell =
-                        map::room_map.at(i) == &room;
+                        map::g_room_map.at(i) == &room;
 
                 room_cells.at(i) = is_room_cell;
 
-                const auto* const f = map::cells.at(i).rigid;
+                const auto* const f = map::g_cells.at(i).rigid;
 
                 room_floor_cells.at(i) =
                         is_room_cell &&
@@ -404,21 +406,21 @@ void valid_corridor_entries(const Room& room, std::vector<P>& out)
 
         const auto room_cells_expanded = map_parsers::expand(
                 room_cells,
-                R(P(room.r_.p0 - 2),
-                  P(room.r_.p1 + 2)));
+                R(P(room.m_r.p0 - 2),
+                  P(room.m_r.p1 + 2)));
 
-        for (int y = room.r_.p0.y - 1; y <= room.r_.p1.y + 1; ++y)
+        for (int y = room.m_r.p0.y - 1; y <= room.m_r.p1.y + 1; ++y)
         {
-                for (int x = room.r_.p0.x - 1; x <= room.r_.p1.x + 1; ++x)
+                for (int x = room.m_r.p0.x - 1; x <= room.m_r.p1.x + 1; ++x)
                 {
                         // Condition (1)
-                        if (map::cells.at(x, y).rigid->id() != FeatureId::wall)
+                        if (map::g_cells.at(x, y).rigid->id() != FeatureId::wall)
                         {
                                 continue;
                         }
 
                         // Condition (2)
-                        if (map::room_map.at(x, y))
+                        if (map::g_room_map.at(x, y))
                         {
                                 continue;
                         }
@@ -439,7 +441,7 @@ void valid_corridor_entries(const Room& room, std::vector<P>& out)
 
                         bool is_adj_to_floor_not_in_room = false;
 
-                        for (const P& d : dir_utils::cardinal_list)
+                        for (const P& d : dir_utils::g_cardinal_list)
                         {
                                 const P& p_adj(p + d);
 
@@ -479,7 +481,7 @@ bool is_choke_point(const P& p,
         if (blocked.at(p))
         {
                 // This is weird, invalidate the map
-                is_map_valid = false;
+                g_is_map_valid = false;
 
                 return false;
         }
@@ -489,7 +491,7 @@ bool is_choke_point(const P& p,
         P p_side1;
         P p_side2;
 
-        for (const P& d : dir_utils::cardinal_list)
+        for (const P& d : dir_utils::g_cardinal_list)
         {
                 const P adj_p(p + d);
 
@@ -587,8 +589,8 @@ void make_pathfind_corridor(
                                  << &room_0 << " and " << &room_1
                                  << std::endl;
 
-        ASSERT(map::is_area_inside_map(room_0.r_));
-        ASSERT(map::is_area_inside_map(room_1.r_));
+        ASSERT(map::is_area_inside_map(room_0.m_r));
+        ASSERT(map::is_area_inside_map(room_1.m_r));
 
         std::vector<P> p0_bucket;
         std::vector<P> p1_bucket;
@@ -676,20 +678,20 @@ void make_pathfind_corridor(
                 for (size_t i = 0; i < map::nr_cells(); ++i)
                 {
                         const bool is_wall =
-                                map::cells.at(i).rigid->id() ==
+                                map::g_cells.at(i).rigid->id() ==
                                 FeatureId::wall;
 
-                        const auto* const room_ptr = map::room_map.at(i);
+                        const auto* const room_ptr = map::g_room_map.at(i);
 
                         blocked.at(i) = !is_wall || room_ptr;
                 }
 
                 // Search around p0 and p1 to see if they are OK to build from
-                for (const P& d : dir_utils::dir_list)
+                for (const P& d : dir_utils::g_dir_list)
                 {
                         const P p(p0 + d);
 
-                        const auto* const room_ptr = map::room_map.at(p);
+                        const auto* const room_ptr = map::g_room_map.at(p);
 
                         if (blocked.at(p) && (room_ptr != &room_0))
                         {
@@ -697,11 +699,11 @@ void make_pathfind_corridor(
                         }
                 }
 
-                for (const P& d : dir_utils::dir_list)
+                for (const P& d : dir_utils::g_dir_list)
                 {
                         const P p(p1 + d);
 
-                        const auto* const room_ptr = map::room_map.at(p);
+                        const auto* const room_ptr = map::g_room_map.at(p);
 
                         if (blocked.at(p) && (room_ptr != &room_1))
                         {
@@ -722,8 +724,8 @@ void make_pathfind_corridor(
                 //         // Blocking a high amount of cells in the late game levels
                 //         // creates very nice cave corridors
                 //         const int block_one_in_n =
-                //             map::dlvl >= dlvl_first_late_game   ? 3 :
-                //             map::dlvl >= dlvl_first_mid_game    ? 6 :
+                //             map::g_dlvl >= dlvl_first_late_game   ? 3 :
+                //             map::g_dlvl >= dlvl_first_mid_game    ? 6 :
                 //             10;
 
                 //         if (rnd::one_in(block_one_in_n))
@@ -741,7 +743,7 @@ void make_pathfind_corridor(
                 blocked_expanded.at(p1) = false;
 
                 // Allowing diagonal steps creates a more "cave like" path
-                const bool allow_diagonal = (map::dlvl >= dlvl_first_late_game);
+                const bool allow_diagonal = (map::g_dlvl >= g_dlvl_first_late_game);
 
                 // Randomizing step choices (i.e. when to change directions)
                 // creates more "snaky" paths (note that this does NOT create
@@ -776,22 +778,22 @@ void make_pathfind_corridor(
 
                         for (const P& p : path)
                         {
-                                if (p.x < room->r_.p0.x)
+                                if (p.x < room->m_r.p0.x)
                                 {
                                         is_left_of_room = true;
                                 }
 
-                                if (p.x > room->r_.p1.x)
+                                if (p.x > room->m_r.p1.x)
                                 {
                                         is_right_of_room = true;
                                 }
 
-                                if (p.y < room->r_.p0.y)
+                                if (p.y < room->m_r.p0.y)
                                 {
                                         is_above_room = true;
                                 }
 
-                                if (p.y > room->r_.p1.y)
+                                if (p.y > room->m_r.p1.y)
                                 {
                                         is_below_room = true;
                                 }
@@ -818,10 +820,10 @@ void make_pathfind_corridor(
                         // If this is a late level, occasionally put floor in
                         // 3x3 cells around each path point (wide corridors for
                         // more "open" level).
-                        if ((map::dlvl >= dlvl_first_late_game) &&
+                        if ((map::g_dlvl >= g_dlvl_first_late_game) &&
                             rnd::fraction(2, 5))
                         {
-                                for (const P d : dir_utils::dir_list_w_center)
+                                for (const P d : dir_utils::g_dir_list_w_center)
                                 {
                                         const P p_adj(p + d);
 
@@ -849,22 +851,22 @@ void make_pathfind_corridor(
                                                 RoomType::corr_link,
                                                 R(p, p));
 
-                                map::room_list.push_back(link);
+                                map::g_room_list.push_back(link);
 
-                                map::room_map.at(p) = link;
+                                map::g_room_map.at(p) = link;
 
-                                link->rooms_con_to_.push_back(&room_0);
-                                link->rooms_con_to_.push_back(&room_1);
+                                link->m_rooms_con_to.push_back(&room_0);
+                                link->m_rooms_con_to.push_back(&room_1);
 
-                                room_0.rooms_con_to_.push_back(link);
-                                room_1.rooms_con_to_.push_back(link);
+                                room_0.m_rooms_con_to.push_back(link);
+                                room_1.m_rooms_con_to.push_back(link);
 
                                 for (Room* prev_link : prev_links)
                                 {
-                                        link->rooms_con_to_.push_back(
+                                        link->m_rooms_con_to.push_back(
                                                 prev_link);
 
-                                        prev_link->rooms_con_to_.push_back(
+                                        prev_link->m_rooms_con_to.push_back(
                                                 link);
                                 }
 
@@ -878,8 +880,8 @@ void make_pathfind_corridor(
                         door_proposals->at(p1) = true;
                 }
 
-                room_0.rooms_con_to_.push_back(&room_1);
-                room_1.rooms_con_to_.push_back(&room_0);
+                room_0.m_rooms_con_to.push_back(&room_1);
+                room_1.m_rooms_con_to.push_back(&room_0);
 
                 TRACE_FUNC_END_VERBOSE << "Successfully connected roooms"
                                        << std::endl;
@@ -937,8 +939,8 @@ std::vector<P> rnd_walk(
 
         const std::vector<P>& d_list =
                 allow_diagonal ?
-                dir_utils::dir_list :
-                dir_utils::cardinal_list;
+                dir_utils::g_dir_list :
+                dir_utils::g_cardinal_list;
 
         P p(p0);
 
@@ -976,14 +978,14 @@ void make_explore_spawn_weights(
                 weight_map.at(i) = 1;
 
                 // Increase weight for dark cells
-                if (map::dark.at(i))
+                if (map::g_dark.at(i))
                 {
                         weight_map.at(i) += 10;
                 }
         }
 
         // Put extra weight for "optional" areas behind choke points
-        for (const auto& choke_point : map::choke_point_data)
+        for (const auto& choke_point : map::g_choke_point_data)
         {
                 // If the player and the stairs are on the same side of the
                 // choke point, this means that the "other" side is an optional
@@ -1001,8 +1003,9 @@ void make_explore_spawn_weights(
                         }
 
                         const int other_side_idx =
-                                (choke_point.player_side == 0) ?
-                                1 : 0;
+                                (choke_point.player_side == 0)
+                                ? 1
+                                : 0;
 
                         const auto& other_side_positions =
                                 choke_point.sides[other_side_idx];
@@ -1021,7 +1024,7 @@ void make_explore_spawn_weights(
                                 1,
                                 (250 / weight_div));
 
-                        Rigid* const rigid = map::cells.at(choke_point.p).rigid;
+                        Rigid* const rigid = map::g_cells.at(choke_point.p).rigid;
 
                         // Increase weight if behind hidden/stuck/metal doors
                         if (rigid->id() == FeatureId::door)
@@ -1109,16 +1112,16 @@ Array2<bool> allowed_stair_cells()
         // Block cells with items
         for (size_t i = 0; i < map::nr_cells(); ++i)
         {
-                if (map::cells.at(i).item)
+                if (map::g_cells.at(i).item)
                 {
                         result.at(i) = false;
                 }
         }
 
         // Block cells with actors
-        for (const auto* const actor : game_time::actors)
+        for (const auto* const actor : game_time::g_actors)
         {
-                const P& p(actor->pos);
+                const P& p(actor->m_pos);
 
                 result.at(p) = false;
         }
@@ -1138,24 +1141,24 @@ void move_player_to_nearest_allowed_pos()
 
         if (pos_bucket.empty())
         {
-                is_map_valid = false;
+                g_is_map_valid = false;
         }
         else // Valid cells exists
         {
                 TRACE << "Sorting the allowed cells vector "
                       << "(" << pos_bucket.size() << " cells)" << std:: endl;
 
-                IsCloserToPos is_closer_to_origin(map::player->pos);
+                IsCloserToPos is_closer_to_origin(map::g_player->m_pos);
 
                 sort(pos_bucket.begin(),
                      pos_bucket.end(),
                      is_closer_to_origin);
 
-                map::player->pos = pos_bucket.front();
+                map::g_player->m_pos = pos_bucket.front();
 
                 // Ensure that the player always descends to a floor cell (and
                 // not into a bush or something)
-                map::put(new Floor(map::player->pos));
+                map::put(new Floor(map::g_player->m_pos));
         }
 
         TRACE_FUNC_END;
@@ -1179,10 +1182,10 @@ P make_stairs_at_random_pos()
                       << "(" << nr_ok_cells << "), discarding map"
                       << std:: endl;
 
-                is_map_valid = false;
+                g_is_map_valid = false;
 
 #ifndef NDEBUG
-                if (init::is_demo_mapgen)
+                if (init::g_is_demo_mapgen)
                 {
                         io::cover_panel(Panel::log);
                         states::draw();
@@ -1224,7 +1227,7 @@ P make_stairs_at_random_pos()
                 }
         }
 
-        const auto flood = floodfill(map::player->pos, blocks_player);
+        const auto flood = floodfill(map::g_player->m_pos, blocks_player);
 
         std::sort(
                 std::begin(pos_bucket),
@@ -1258,7 +1261,7 @@ P make_stairs_at_random_pos()
         {
                 ASSERT(false);
 
-                is_map_valid = false;
+                g_is_map_valid = false;
 
                 return P(-1, -1);
         }
@@ -1305,7 +1308,7 @@ void reveal_doors_on_path_to_stairs(const P& stairs_pos)
         }
 
         const auto path = pathfind(
-                map::player->pos,
+                map::g_player->m_pos,
                 stairs_pos,
                 blocks_player);
 
@@ -1315,7 +1318,7 @@ void reveal_doors_on_path_to_stairs(const P& stairs_pos)
 
         for (const P& pos : path)
         {
-                auto* const feature = map::cells.at(pos).rigid;
+                auto* const feature = map::g_cells.at(pos).rigid;
 
                 if (feature->id() == FeatureId::door)
                 {

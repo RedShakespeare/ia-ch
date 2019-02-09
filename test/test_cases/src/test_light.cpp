@@ -16,16 +16,16 @@ TEST_CASE("Test light map")
 {
         test_utils::init_all();
 
-        std::fill(std::begin(map::light), std::end(map::light), false);
-        std::fill(std::begin(map::dark), std::end(map::dark), true);
+        std::fill(std::begin(map::g_light), std::end(map::g_light), false);
+        std::fill(std::begin(map::g_dark), std::end(map::g_dark), true);
 
-        map::player->pos.set(40, 12);
+        map::g_player->m_pos.set(40, 12);
 
         const P burn_pos(40, 10);
 
-        Rigid* const burn_f = map::cells.at(burn_pos).rigid;
+        Rigid* const burn_f = map::g_cells.at(burn_pos).rigid;
 
-        while (burn_f->burn_state_ != BurnState::burning)
+        while (burn_f->m_burn_state != BurnState::burning)
         {
                 burn_f->hit(
                         1,
@@ -35,17 +35,17 @@ TEST_CASE("Test light map")
 
         game_time::update_light_map();
 
-        map::player->update_fov();
+        map::g_player->update_fov();
 
-        for (const auto& d : dir_utils::dir_list_w_center)
+        for (const auto& d : dir_utils::g_dir_list_w_center)
         {
                 const P p = burn_pos + d;
 
                 // The cells around the burning floor should be lit
-                REQUIRE(map::light.at(p));
+                REQUIRE(map::g_light.at(p));
 
                 // The cells should also be dark (independent from light)
-                REQUIRE(map::dark.at(p));
+                REQUIRE(map::g_dark.at(p));
         }
 
         test_utils::cleanup_all();

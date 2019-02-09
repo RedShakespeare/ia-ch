@@ -77,23 +77,23 @@ public:
 
         bool has_started() const
         {
-                return has_started_;
+                return m_has_started;
         }
 
         void set_started()
         {
-                has_started_ = true;
+                m_has_started = true;
         }
 
         bool has_started()
         {
-                return has_started_;
+                return m_has_started;
         }
 
         virtual StateId id() = 0;
 
 private:
-        bool has_started_ {false};
+        bool m_has_started {false};
 };
 
 namespace states

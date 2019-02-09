@@ -164,24 +164,24 @@ public:
 
         Actor* actor_carrying()
         {
-                return actor_carrying_;
+                return m_actor_carrying;
         }
 
         void clear_actor_carrying()
         {
-                actor_carrying_ = nullptr;
+                m_actor_carrying = nullptr;
         }
 
         const std::vector<Prop*>& carrier_props() const
         {
-                return carrier_props_;
+                return m_carrier_props;
         }
 
-        int nr_items_;
+        int m_nr_items;
 
         // Base damage (not including actor properties, player traits, etc)
-        Dice melee_base_dmg_;
-        Dice ranged_base_dmg_;
+        Dice m_melee_base_dmg;
+        Dice m_ranged_base_dmg;
 
 protected:
         virtual void on_pickup_hook() {}
@@ -205,14 +205,14 @@ protected:
         ItemAttProp* prop_applied_intr_attack(
                 const Actor* const attacker) const;
 
-        ItemData* data_;
+        ItemData* m_data;
 
-        Actor* actor_carrying_;
+        Actor* m_actor_carrying;
 
 private:
         // Properties to apply on owning actor (when e.g. wearing the item, or
         // just keeping it in the inventory)
-        std::vector<Prop*> carrier_props_;
+        std::vector<Prop*> m_carrier_props;
 };
 
 class Armor: public Item
@@ -236,12 +236,12 @@ public:
 
         int durability() const
         {
-                return dur_;
+                return m_dur;
         }
 
         void set_max_durability()
         {
-                dur_ = 100;
+                m_dur = 100;
         }
 
         bool is_destroyed() const
@@ -252,7 +252,7 @@ public:
         void hit(const int dmg);
 
 protected:
-        int dur_;
+        int m_dur;
 };
 
 class ArmorAsbSuit: public Armor
@@ -305,13 +305,13 @@ public:
 
         const ItemData& ammo_data()
         {
-                return *ammo_data_;
+                return *m_ammo_data;
         }
 
-        int ammo_loaded_;
+        int m_ammo_loaded;
 
 protected:
-        ItemData* ammo_data_;
+        ItemData* m_ammo_data;
 };
 
 class SpikedMace : public Wpn
@@ -452,7 +452,7 @@ public:
 
         std::string name_inf_str() const override
         {
-                return "{" + std::to_string(ammo_) + "}";
+                return "{" + std::to_string(m_ammo) + "}";
         }
 
         void set_full_ammo();
@@ -461,7 +461,7 @@ public:
 
         void load() override;
 
-        int ammo_;
+        int m_ammo;
 };
 
 enum class MedBagAction
@@ -489,7 +489,7 @@ public:
 
         std::string name_inf_str() const override
         {
-                return "{" + std::to_string(nr_supplies_) + "}";
+                return "{" + std::to_string(m_nr_supplies) + "}";
         }
 
         void on_pickup_hook() override;
@@ -502,7 +502,7 @@ public:
 
         void finish_current_action();
 
-        int nr_supplies_;
+        int m_nr_supplies;
 
 protected:
         MedBagAction choose_action() const;
@@ -511,9 +511,9 @@ protected:
 
         int tot_turns_for_action(const MedBagAction action) const;
 
-        int nr_turns_left_action_;
+        int m_nr_turns_left_action;
 
-        MedBagAction current_action_;
+        MedBagAction m_current_action;
 };
 
 class Headwear: public Item
@@ -533,11 +533,11 @@ class GasMask: public Headwear
 public:
         GasMask(ItemData* item_data) :
                 Headwear        (item_data),
-                nr_turns_left_  (60) {}
+                m_nr_turns_left  (60) {}
 
         std::string name_inf_str() const override
         {
-                return "{" + std::to_string(nr_turns_left_) + "}";
+                return "{" + std::to_string(m_nr_turns_left) + "}";
         }
 
         void on_equip_hook(const Verbosity verbosity) override;
@@ -547,7 +547,7 @@ public:
         void decr_turns_left(Inventory& carrier_inv);
 
 protected:
-        int nr_turns_left_;
+        int m_nr_turns_left;
 };
 
 class Explosive : public Item
@@ -573,12 +573,12 @@ public:
 protected:
         Explosive(ItemData* const item_data) :
                 Item(item_data),
-                fuse_turns_(-1) {}
+                m_fuse_turns(-1) {}
 
         virtual int std_fuse_turns() const = 0;
         virtual void on_player_ignite() const = 0;
 
-        int fuse_turns_;
+        int m_fuse_turns;
 };
 
 class Dynamite: public Explosive

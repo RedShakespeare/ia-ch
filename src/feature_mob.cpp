@@ -30,11 +30,11 @@
 // -----------------------------------------------------------------------------
 void Smoke::on_new_turn()
 {
-        auto* actor = map::actor_at_pos(pos_);
+        auto* actor = map::actor_at_pos(m_pos);
 
         if (actor)
         {
-                const bool is_player = actor == map::player;
+                const bool is_player = actor == map::g_player;
 
                 // TODO: There needs to be some criteria here, so that e.g. a
                 // statue-monster or a very alien monster can't get blinded by
@@ -45,17 +45,17 @@ void Smoke::on_new_turn()
 
                 bool is_blind_prot = false;
 
-                bool is_breath_prot = actor->properties.has(PropId::r_breath);
+                bool is_breath_prot = actor->m_properties.has(PropId::r_breath);
 
                 if (is_player)
                 {
                         auto* const player_head_item =
-                                map::player->inv
-                                .slots[(size_t)SlotId::head].item;
+                                map::g_player->m_inv
+                                .m_slots[(size_t)SlotId::head].item;
 
                         auto* const player_body_item =
-                                map::player->inv
-                                .slots[(size_t)SlotId::body].item;
+                                map::g_player->m_inv
+                                .m_slots[(size_t)SlotId::body].item;
 
                         if (player_head_item &&
                             (player_head_item->data().id == ItemId::gas_mask))
@@ -66,7 +66,7 @@ void Smoke::on_new_turn()
 
                                 // This may destroy the gasmask
                                 static_cast<GasMask*>(player_head_item)
-                                        ->decr_turns_left(map::player->inv);
+                                        ->decr_turns_left(map::g_player->m_inv);
                         }
 
                         if (player_body_item &&
@@ -92,7 +92,7 @@ void Smoke::on_new_turn()
 
                         prop->set_duration(rnd::range(1, 3));
 
-                        actor->properties.apply(prop);
+                        actor->m_properties.apply(prop);
                 }
 
                 // Coughing?
@@ -107,7 +107,7 @@ void Smoke::on_new_turn()
                         }
                         else // Is monster
                         {
-                                if (actor->data->is_humanoid)
+                                if (actor->m_data->is_humanoid)
                                 {
                                         snd_msg = "I hear coughing.";
                                 }
@@ -121,7 +121,7 @@ void Smoke::on_new_turn()
                         Snd snd(snd_msg,
                                 SfxId::END,
                                 IgnoreMsgIfOriginSeen::yes,
-                                actor->pos,
+                                actor->m_pos,
                                 actor,
                                 SndVol::low,
                                 alerts);
@@ -131,11 +131,11 @@ void Smoke::on_new_turn()
         }
 
         // If not permanent, count down turns left and possibly erase self
-        if (nr_turns_left_ > -1)
+        if (m_nr_turns_left > -1)
         {
-                --nr_turns_left_;
+                --m_nr_turns_left;
 
-                if (nr_turns_left_ <= 0)
+                if (m_nr_turns_left <= 0)
                 {
                         game_time::erase_mob(this, true);
                 }
@@ -165,14 +165,14 @@ Color Smoke::color() const
 void ForceField::on_new_turn()
 {
         // If not permanent, count down turns left and possibly erase self
-        if (nr_turns_left_ <= -1)
+        if (m_nr_turns_left <= -1)
         {
                 return;
         }
 
-        --nr_turns_left_;
+        --m_nr_turns_left;
 
-        if (nr_turns_left_ <= 0)
+        if (m_nr_turns_left <= 0)
         {
                 game_time::erase_mob(this, true);
         }
@@ -200,11 +200,11 @@ Color ForceField::color() const
 // -----------------------------------------------------------------------------
 void LitDynamite::on_new_turn()
 {
-        --nr_turns_left_;
+        --m_nr_turns_left;
 
-        if (nr_turns_left_ <= 0)
+        if (m_nr_turns_left <= 0)
         {
-                const P p(pos_);
+                const P p(m_pos);
 
                 // Removing the dynamite before the explosion, so it can't be
                 // rendered after the explosion (e.g. if there are "more"
@@ -239,9 +239,9 @@ Color LitDynamite::color() const
 // -----------------------------------------------------------------------------
 void LitFlare::on_new_turn()
 {
-        --nr_turns_left_;
+        --m_nr_turns_left;
 
-        if (nr_turns_left_ <= 0)
+        if (m_nr_turns_left <= 0)
         {
                 game_time::erase_mob(this, true);
         }
@@ -249,13 +249,13 @@ void LitFlare::on_new_turn()
 
 void LitFlare::add_light(Array2<bool>& light) const
 {
-        const int radi = fov_radi_int; //light_radius();
+        const int radi = g_fov_radi_int;
 
-        P p0(std::max(0, pos_.x - radi),
-             std::max(0, pos_.y - radi));
+        P p0(std::max(0, m_pos.x - radi),
+             std::max(0, m_pos.y - radi));
 
-        P p1(std::min(map::w() - 1, pos_.x + radi),
-             std::min(map::h() - 1, pos_.y + radi));
+        P p1(std::min(map::w() - 1, m_pos.x + radi),
+             std::min(map::h() - 1, m_pos.y + radi));
 
         Array2<bool> hard_blocked(map::dims());
 
@@ -266,10 +266,10 @@ void LitFlare::add_light(Array2<bool>& light) const
 
         FovMap fov_map;
         fov_map.hard_blocked = &hard_blocked;
-        fov_map.light = &map::light;
-        fov_map.dark = &map::dark;
+        fov_map.light = &map::g_light;
+        fov_map.dark = &map::g_dark;
 
-        const auto light_fov = fov::run(pos_, fov_map);
+        const auto light_fov = fov::run(m_pos, fov_map);
 
         for (int y = p0.y; y <= p1.y; ++y)
         {

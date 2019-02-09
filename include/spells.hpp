@@ -569,33 +569,33 @@ class SpellBolt: public Spell
 public:
         SpellBolt(BoltImpl* impl) :
                 Spell(),
-                impl_(impl) {}
+                m_impl(impl) {}
 
         bool allow_mon_cast_now(Mon& mon) const override;
 
         int mon_cooldown() const override
         {
-                return impl_->mon_cooldown();
+                return m_impl->mon_cooldown();
         }
 
         bool mon_can_learn() const override
         {
-                return impl_->mon_can_learn();
+                return m_impl->mon_can_learn();
         }
 
         bool player_can_learn() const override
         {
-                return impl_->player_can_learn();
+                return m_impl->player_can_learn();
         }
 
         std::string name() const override
         {
-                return impl_->name();
+                return m_impl->name();
         }
 
         SpellId id() const override
         {
-                return impl_->id();
+                return m_impl->id();
         }
 
         OccultistDomain domain() const override
@@ -611,7 +611,7 @@ public:
         std::vector<std::string> descr_specific(
                 const SpellSkill skill) const override
         {
-                return impl_->descr_specific(skill);
+                return m_impl->descr_specific(skill);
         }
 
         void run_effect(
@@ -621,7 +621,7 @@ public:
 private:
         int max_spi_cost(const SpellSkill skill) const override
         {
-                return impl_->max_spi_cost(skill);
+                return m_impl->max_spi_cost(skill);
         }
 
         bool is_noisy(const SpellSkill skill) const override
@@ -631,7 +631,7 @@ private:
                 return true;
         }
 
-        std::unique_ptr<BoltImpl> impl_;
+        std::unique_ptr<BoltImpl> m_impl;
 };
 
 class SpellAzaWrath: public Spell

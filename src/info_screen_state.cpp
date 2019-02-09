@@ -64,8 +64,8 @@ void InfoScreenState::draw_interface() const
 
         const std::string cmd_info =
                 (type() == InfoScreenType::scrolling)
-                ? common_text::scrollable_info_screen_hint
-                : common_text::screen_exit_hint;
+                ? common_text::g_scrollable_info_screen_hint
+                : common_text::g_screen_exit_hint;
 
         io::draw_text_center(
                 " " + cmd_info + " ",

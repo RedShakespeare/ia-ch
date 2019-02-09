@@ -21,7 +21,7 @@ class ViewActorDescr: public InfoScreenState
 public:
         ViewActorDescr(Actor& actor) :
                 InfoScreenState(),
-                actor_(actor) {}
+                m_actor(actor) {}
 
         void on_start() override;
 
@@ -41,11 +41,11 @@ private:
 
         std::string auto_description_str() const;
 
-        std::vector<ColoredString> lines_ {};
+        std::vector<ColoredString> m_lines {};
 
-        int top_idx_ {0};
+        int m_top_idx {0};
 
-        Actor& actor_;
+        Actor& m_actor;
 };
 
 namespace look

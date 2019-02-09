@@ -20,26 +20,26 @@ public:
         Msg(const std::string& text,
             const Color& color_id,
             const int x_pos) :
-                text_(text),
-                repeats_str_(""),
-                nr_repeats_(1),
-                x_pos_(x_pos),
-                color_(color_id) {}
+                m_text(text),
+                m_repeats_str(""),
+                m_nr_repeats(1),
+                m_x_pos(x_pos),
+                m_color(color_id) {}
 
         Msg() :
-                text_(""),
-                repeats_str_(""),
-                nr_repeats_(1),
-                x_pos_(0),
-                color_(colors::white()) {}
+                m_text(""),
+                m_repeats_str(""),
+                m_nr_repeats(1),
+                m_x_pos(0),
+                m_color(colors::white()) {}
 
         std::string text_with_repeats() const
         {
-                std::string result_str = text_;
+                std::string result_str = m_text;
 
-                if (nr_repeats_ > 1)
+                if (m_nr_repeats > 1)
                 {
-                        result_str += repeats_str_;
+                        result_str += m_repeats_str;
                 }
 
                 return result_str;
@@ -47,32 +47,32 @@ public:
 
         std::string text() const
         {
-                return text_;
+                return m_text;
         }
 
         void incr_repeats()
         {
-                ++nr_repeats_;
+                ++m_nr_repeats;
 
-                repeats_str_ = "(x" + std::to_string(nr_repeats_) + ")";
+                m_repeats_str = "(x" + std::to_string(m_nr_repeats) + ")";
         }
 
         int x_pos() const
         {
-                return x_pos_;
+                return m_x_pos;
         }
 
         Color color() const
         {
-                return color_;
+                return m_color;
         }
 
 private:
-        std::string text_;
-        std::string repeats_str_;
-        int nr_repeats_;
-        int x_pos_;
-        Color color_;
+        std::string m_text;
+        std::string m_repeats_str;
+        int m_nr_repeats;
+        int m_x_pos;
+        Color m_color;
 };
 
 namespace msg_log
@@ -108,9 +108,9 @@ class MsgHistoryState: public InfoScreenState
 public:
         MsgHistoryState() :
                 InfoScreenState(),
-                top_line_nr_(0),
-                btm_line_nr_(0),
-                history_() {}
+                m_top_line_nr(0),
+                m_btm_line_nr(0),
+                m_history() {}
 
         ~MsgHistoryState() {}
 
@@ -130,10 +130,10 @@ private:
                 return InfoScreenType::scrolling;
         }
 
-        int top_line_nr_;
-        int btm_line_nr_;
+        int m_top_line_nr;
+        int m_btm_line_nr;
 
-        std::vector< std::vector<Msg> > history_;
+        std::vector< std::vector<Msg> > m_history;
 };
 
 #endif // MSG_LOG_HPP

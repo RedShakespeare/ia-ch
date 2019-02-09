@@ -14,76 +14,76 @@ class Actor;
 
 enum class AbilityId
 {
-    melee,
-    ranged,
-    dodging,
-    stealth,
-    searching,
-    END
+        melee,
+        ranged,
+        dodging,
+        stealth,
+        searching,
+        END
 };
 
-const std::unordered_map<std::string, AbilityId> str_to_ability_id_map = {
-    {"melee", AbilityId::melee},
-    {"ranged", AbilityId::ranged},
-    {"dodging", AbilityId::dodging},
-    {"stealth", AbilityId::stealth},
-    {"searching", AbilityId::searching},
+const std::unordered_map<std::string, AbilityId> g_str_to_ability_id_map = {
+        {"melee", AbilityId::melee},
+        {"ranged", AbilityId::ranged},
+        {"dodging", AbilityId::dodging},
+        {"stealth", AbilityId::stealth},
+        {"searching", AbilityId::searching},
 };
 
-const std::unordered_map<AbilityId, std::string> ability_id_to_str_map = {
-    {AbilityId::melee, "melee"},
-    {AbilityId::ranged, "ranged"},
-    {AbilityId::dodging, "dodging"},
-    {AbilityId::stealth, "stealth"},
-    {AbilityId::searching, "searching"},
+const std::unordered_map<AbilityId, std::string> g_ability_id_to_str_map = {
+        {AbilityId::melee, "melee"},
+        {AbilityId::ranged, "ranged"},
+        {AbilityId::dodging, "dodging"},
+        {AbilityId::stealth, "stealth"},
+        {AbilityId::searching, "searching"},
 };
 
 enum class ActionResult
 {
-    fail_critical,
-    fail_big,
-    fail,
-    success,
-    success_big,
-    success_critical
+        fail_critical,
+        fail_big,
+        fail,
+        success,
+        success_big,
+        success_critical
 };
 
 // Each actor has an instance of this class
 class AbilityValues
 {
 public:
-    AbilityValues()
-    {
-        reset();
-    }
-
-    AbilityValues& operator=(const AbilityValues& other)
-    {
-        for (size_t i = 0; i < (size_t)AbilityId::END; ++i)
+        AbilityValues()
         {
-            ability_list[i] = other.ability_list[i];
+                reset();
         }
 
-        return *this;
-    }
+        AbilityValues& operator=(const AbilityValues& other)
+        {
+                for (size_t i = 0; i < (size_t)AbilityId::END; ++i)
+                {
+                        m_ability_list[i] = other.m_ability_list[i];
+                }
 
-    void reset();
+                return *this;
+        }
 
-    int val(const AbilityId id,
-            const bool is_affected_by_props,
-            const Actor& actor) const;
+        void reset();
 
-    int raw_val(const AbilityId id) const
-    {
-        return ability_list[(size_t)id];
-    }
+        int val(const AbilityId id,
+                const bool is_affected_by_props,
+                const Actor& actor) const;
 
-    void set_val(const AbilityId id, const int val);
+        int raw_val(const AbilityId id) const
+        {
+                return m_ability_list[(size_t)id];
+        }
 
-    void change_val(const AbilityId id, const int change);
+        void set_val(const AbilityId id, const int val);
+
+        void change_val(const AbilityId id, const int change);
 
 private:
-    int ability_list[(size_t)AbilityId::END];
+        int m_ability_list[(size_t)AbilityId::END];
 };
 
 namespace ability_roll

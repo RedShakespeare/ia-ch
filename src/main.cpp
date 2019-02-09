@@ -30,7 +30,7 @@ int main(int argc, char** argv)
 
                 if (arg_str == "--demo-mapgen")
                 {
-                        init::is_demo_mapgen = true;
+                        init::g_is_demo_mapgen = true;
                 }
         }
 #endif // NDEBUG

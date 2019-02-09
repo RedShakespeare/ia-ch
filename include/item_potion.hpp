@@ -62,8 +62,8 @@ protected:
 private:
         std::string alignment_str() const;
 
-        int alignment_feeling_dlvl_countdown_;
-        int alignment_feeling_turn_countdown_;
+        int m_alignment_feeling_dlvl_countdown;
+        int m_alignment_feeling_turn_countdown;
 };
 
 class PotionVitality: public Potion

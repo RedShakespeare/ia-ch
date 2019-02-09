@@ -125,7 +125,7 @@ public:
 
         int intrinsics_size() const
         {
-                return intrinsics.size();
+                return m_intrinsics.size();
         }
 
         Item* intrinsic_in_element(const int idx) const;
@@ -138,20 +138,17 @@ public:
 
         int total_item_weight() const;
 
-        InvSlot slots[(size_t)SlotId::END];
+        InvSlot m_slots[(size_t)SlotId::END];
 
-        std::vector<Item*> backpack;
+        std::vector<Item*> m_backpack;
 
-        std::vector<Item*> intrinsics;
+        std::vector<Item*> m_intrinsics;
 
 private:
         // Puts the item in the slot, and prints messages
-        void equip(const SlotId id,
-                   Item* const item,
-                   Verbosity verbosity);
+        void equip(const SlotId id, Item* const item, Verbosity verbosity);
 
-        void equip_from_backpack(const SlotId id,
-                                 const size_t backpack_idx);
+        void equip_from_backpack(const SlotId id, const size_t backpack_idx);
 
         size_t move_from_slot_to_backpack(const SlotId id);
 
@@ -161,7 +158,7 @@ private:
         // destroyed)
         bool try_stack_in_backpack(Item* item);
 
-        Actor* const owning_actor_;
+        Actor* const m_owning_actor;
 };
 
 #endif // INVENTORY_HPP

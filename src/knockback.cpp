@@ -42,11 +42,11 @@ void run(Actor& defender,
 
         const bool is_defender_player = defender.is_player();
 
-        if (defender.data->prevent_knockback ||
-            (defender.data->actor_size >= ActorSize::giant) ||
-            defender.properties.has(PropId::entangled) ||
-            defender.properties.has(PropId::ethereal) ||
-            defender.properties.has(PropId::ooze) ||
+        if (defender.m_data->prevent_knockback ||
+            (defender.m_data->actor_size >= ActorSize::giant) ||
+            defender.m_properties.has(PropId::entangled) ||
+            defender.m_properties.has(PropId::ethereal) ||
+            defender.m_properties.has(PropId::ooze) ||
             (is_defender_player && config::is_bot_playing()))
         {
                 // Defender is not knockable
@@ -56,9 +56,9 @@ void run(Actor& defender,
                 return;
         }
 
-        const P d = (defender.pos - attacked_from_pos).signs();
+        const P d = (defender.m_pos - attacked_from_pos).signs();
 
-        const P new_pos = defender.pos + d;
+        const P new_pos = defender.m_pos + d;
 
         const bool defender_can_move_through_cell =
                 !map_parsers::BlocksActor(defender, ParseActors::yes)
@@ -73,7 +73,7 @@ void run(Actor& defender,
                 map_parsers::IsAnyOfFeatures(deep_features)
                 .cell(new_pos);
 
-        auto& tgt_cell = map::cells.at(new_pos);
+        auto& tgt_cell = map::g_cells.at(new_pos);
 
         if (!defender_can_move_through_cell && !is_cell_deep)
         {
@@ -88,7 +88,7 @@ void run(Actor& defender,
 
                                 prop->set_indefinite();
 
-                                defender.properties.apply(prop);
+                                defender.m_properties.apply(prop);
                         }
                 }
 
@@ -103,7 +103,7 @@ void run(Actor& defender,
         const bool player_can_see_defender =
                 is_defender_player
                 ? true
-                : map::player->can_see_actor(defender);
+                : map::g_player->can_see_actor(defender);
 
         bool player_is_aware_of_defender = true;
 
@@ -111,7 +111,8 @@ void run(Actor& defender,
         {
                 const auto* const mon = static_cast<const Mon*>(&defender);
 
-                player_is_aware_of_defender = mon->aware_of_player_counter_ > 0;
+                player_is_aware_of_defender =
+                        mon->m_aware_of_player_counter > 0;
         }
 
         std::string defender_name =
@@ -135,12 +136,12 @@ void run(Actor& defender,
 
         prop->set_duration(1 + paralyze_extra_turns);
 
-        defender.properties.apply(prop);
+        defender.m_properties.apply(prop);
 
         // Leave current cell
-        map::cells.at(defender.pos).rigid->on_leave(defender);
+        map::g_cells.at(defender.m_pos).rigid->on_leave(defender);
 
-        defender.pos = new_pos;
+        defender.m_pos = new_pos;
 
         if (is_cell_deep && !defender_can_move_through_cell)
         {
@@ -170,7 +171,7 @@ void run(Actor& defender,
         }
 
         // Bump target cell
-        const auto mobs = game_time::mobs_at_pos(defender.pos);
+        const auto mobs = game_time::mobs_at_pos(defender.m_pos);
 
         for (Mob* const mob : mobs)
         {
@@ -183,7 +184,7 @@ void run(Actor& defender,
                 return;
         }
 
-        map::cells.at(defender.pos).rigid->bump(defender);
+        map::g_cells.at(defender.m_pos).rigid->bump(defender);
 
         TRACE_FUNC_END;
 }

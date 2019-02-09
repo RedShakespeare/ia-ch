@@ -43,9 +43,9 @@
 // -----------------------------------------------------------------------------
 // Private
 // -----------------------------------------------------------------------------
-static const std::string spell_resist_msg = "The spell is resisted!";
+static const std::string s_spell_resist_msg = "The spell is resisted!";
 
-static const std::string spell_reflect_msg = "The spell is reflected!";
+static const std::string s_spell_reflect_msg = "The spell is reflected!";
 
 // -----------------------------------------------------------------------------
 // spell_factory
@@ -176,30 +176,30 @@ Range Spell::spi_cost(const SpellSkill skill, Actor* const caster) const
 {
         int cost_max = max_spi_cost(skill);
 
-        if (caster == map::player)
+        if (caster == map::g_player)
         {
                 // Standing next to an altar reduces the cost
                 const int x0 = std::max(
                         0,
-                        caster->pos.x - 1);
+                        caster->m_pos.x - 1);
 
                 const int y0 = std::max(
                         0,
-                        caster->pos.y - 1);
+                        caster->m_pos.y - 1);
 
                 const int x1 = std::min(
                         map::w() - 1,
-                        caster->pos.x + 1);
+                        caster->m_pos.x + 1);
 
                 const int y1 = std::min(
                         map::h() - 1,
-                        caster->pos.y + 1);
+                        caster->m_pos.y + 1);
 
                 for (int x = x0; x <= x1; ++x)
                 {
                         for (int y = y0; y <= y1; ++y)
                         {
-                                if (map::cells.at(x, y).rigid->id() ==
+                                if (map::g_cells.at(x, y).rigid->id() ==
                                     FeatureId::altar)
                                 {
                                         cost_max -= 1;
@@ -224,7 +224,7 @@ void Spell::cast(
 
         ASSERT(caster);
 
-        auto& properties = caster->properties;
+        auto& properties = caster->m_properties;
 
         // If this is an intrinsic cast, check properties which NEVER allows
         // casting or speaking
@@ -251,7 +251,7 @@ void Spell::cast(
 
                 const int value = shock_value();
 
-                map::player->incr_shock((double)value, shock_src);
+                map::g_player->incr_shock((double)value, shock_src);
 
                 // Make sound if noisy - casting from scrolls is always noisy
                 if (is_noisy(skill) || (spell_src == SpellSrc::manuscript))
@@ -259,7 +259,7 @@ void Spell::cast(
                         Snd snd("",
                                 SfxId::spell_generic,
                                 IgnoreMsgIfOriginSeen::yes,
-                                caster->pos,
+                                caster->m_pos,
                                 caster,
                                 SndVol::low,
                                 AlertsMon::yes);
@@ -278,9 +278,9 @@ void Spell::cast(
                         Mon* const mon = static_cast<Mon*>(caster);
 
                         const bool is_mon_seen =
-                                map::player->can_see_actor(*mon);
+                                map::g_player->can_see_actor(*mon);
 
-                        std::string spell_msg = mon->data->spell_msg;
+                        std::string spell_msg = mon->m_data->spell_msg;
 
                         if (!spell_msg.empty())
                         {
@@ -295,7 +295,7 @@ void Spell::cast(
                                 else // Cannot see monster
                                 {
                                         mon_name =
-                                                mon->data->is_humanoid
+                                                mon->m_data->is_humanoid
                                                 ? "Someone"
                                                 : "Something";
                                 }
@@ -306,7 +306,7 @@ void Spell::cast(
                         Snd snd(spell_msg,
                                 SfxId::END,
                                 IgnoreMsgIfOriginSeen::no,
-                                caster->pos,
+                                caster->m_pos,
                                 caster,
                                 SndVol::low,
                                 AlertsMon::no);
@@ -335,7 +335,7 @@ void Spell::cast(
         }
 
         // Casting spells ends cloaking
-        caster->properties.end_prop(PropId::cloaked);
+        caster->m_properties.end_prop(PropId::cloaked);
 
         game_time::tick();
 
@@ -346,27 +346,26 @@ void Spell::on_resist(Actor& target) const
 {
         const bool is_player = target.is_player();
 
-        const bool player_see_target = map::player->can_see_actor(target);
+        const bool player_see_target = map::g_player->can_see_actor(target);
 
         if (player_see_target)
         {
-                msg_log::add(spell_resist_msg);
+                msg_log::add(s_spell_resist_msg);
 
                 if (is_player)
                 {
                         audio::play(SfxId::spell_shield_break);
                 }
 
-                io::draw_blast_at_cells({target.pos}, colors::white());
+                io::draw_blast_at_cells({target.m_pos}, colors::white());
         }
 
         // TODO: Only end r_spell if this is not a natural property
-        target.properties.end_prop(PropId::r_spell);
+        target.m_properties.end_prop(PropId::r_spell);
 
-        if (is_player &&
-            player_bon::traits[(size_t)Trait::absorb])
+        if (is_player && player_bon::has_trait(Trait::absorb))
         {
-                map::player->restore_sp(
+                map::g_player->restore_sp(
                         rnd::dice(1, 6),
                         false, // Not allowed above max
                         Verbosity::verbose);
@@ -497,7 +496,7 @@ void SpellAuraOfDecay::run_effect(
 
         prop->set_dmg(dmg);
 
-        caster->properties.apply(prop);
+        caster->m_properties.apply(prop);
 }
 
 std::vector<std::string> SpellAuraOfDecay::descr_specific(
@@ -533,9 +532,9 @@ int SpellAuraOfDecay::mon_cooldown() const
 bool SpellAuraOfDecay::allow_mon_cast_now(Mon& mon) const
 {
         return
-                mon.target_ &&
-                mon.is_target_seen_ &&
-                !mon.properties.has(PropId::aura_of_decay);
+                mon.m_target &&
+                mon.m_is_target_seen &&
+                !mon.m_properties.has(PropId::aura_of_decay);
 }
 
 // -----------------------------------------------------------------------------
@@ -611,7 +610,7 @@ std::vector<std::string> Darkbolt::descr_specific(
                 "conjured bolt has some will on its own - the caster cannot "
                 "determine exactly which creature will be struck.");
 
-        const auto dmg_range = damage(skill, *map::player);
+        const auto dmg_range = damage(skill, *map::g_player);
 
         descr.push_back("The impact does " + dmg_range.str() + " damage.");
 
@@ -638,7 +637,7 @@ void Darkbolt::on_hit(Actor& actor_hit, const SpellSkill skill) const
 
         prop->set_duration(rnd::range(1, 2));
 
-        actor_hit.properties.apply(prop);
+        actor_hit.m_properties.apply(prop);
 
         if (skill == SpellSkill::master)
         {
@@ -646,7 +645,7 @@ void Darkbolt::on_hit(Actor& actor_hit, const SpellSkill skill) const
 
                 prop->set_duration(rnd::range(2, 3));
 
-                actor_hit.properties.apply(prop);
+                actor_hit.m_properties.apply(prop);
         }
 }
 
@@ -654,7 +653,7 @@ void SpellBolt::run_effect(
         Actor* const caster,
         const SpellSkill skill) const
 {
-        // if (caster == map::player &&
+        // if (caster == map::g_player &&
         //     player_bon::traits[(size_t)Trait::warlock] &&
         //     rnd::percent(warlock_multi_cast_chance_pct))
         // {
@@ -684,21 +683,21 @@ void SpellBolt::run_effect(
 
         Actor* const target =
                 map::random_closest_actor(
-                        caster->pos,
+                        caster->m_pos,
                         target_bucket);
 
         // Spell resistance?
-        if (target->properties.has(PropId::r_spell))
+        if (target->m_properties.has(PropId::r_spell))
         {
                 on_resist(*target);
 
                 // Spell reflection?
-                if (target->properties.has(PropId::spell_reflect))
+                if (target->m_properties.has(PropId::spell_reflect))
                 {
-                        if (map::player->can_see_actor(*target))
+                        if (map::g_player->can_see_actor(*target))
                         {
                                 msg_log::add(
-                                        spell_reflect_msg,
+                                        s_spell_reflect_msg,
                                         colors::text(),
                                         false,
                                         MorePromptOnMsg::yes);
@@ -718,12 +717,12 @@ void SpellBolt::run_effect(
                 map_parsers::BlocksProjectiles()
                         .run(blocked, blocked.rect());
 
-                const auto flood = floodfill(caster->pos, blocked);
+                const auto flood = floodfill(caster->m_pos, blocked);
 
                 const auto path =
                         pathfind_with_flood(
-                                caster->pos,
-                                target->pos,
+                                caster->m_pos,
+                                target->m_pos,
                                 flood);
 
                 if (!path.empty())
@@ -736,7 +735,7 @@ void SpellBolt::run_effect(
                         {
                                 const P& p = path[i];
 
-                                if (!map::cells.at(p).is_seen_by_player ||
+                                if (!map::g_cells.at(p).is_seen_by_player ||
                                     !viewport::is_in_view(p))
                                 {
                                         continue;
@@ -759,16 +758,16 @@ void SpellBolt::run_effect(
                 }
         }
 
-        const P& target_p = target->pos;
+        const P& target_p = target->m_pos;
 
         const bool player_see_cell =
-                map::cells.at(target_p).is_seen_by_player;
+                map::g_cells.at(target_p).is_seen_by_player;
 
-        const bool player_see_tgt = map::player->can_see_actor(*target);
+        const bool player_see_tgt = map::g_player->can_see_actor(*target);
 
         if (player_see_tgt || player_see_cell)
         {
-                io::draw_blast_at_cells({target->pos}, colors::magenta());
+                io::draw_blast_at_cells({target->m_pos}, colors::magenta());
 
                 Color msg_clr = colors::msg_good();
 
@@ -788,7 +787,7 @@ void SpellBolt::run_effect(
 
                         str_begin = name_the + " is";
 
-                        if (map::player->is_leader_of(target))
+                        if (map::g_player->is_leader_of(target))
                         {
                                 msg_clr = colors::white();
                         }
@@ -797,11 +796,11 @@ void SpellBolt::run_effect(
                 msg_log::add(
                         str_begin +
                         " " +
-                        impl_->hit_msg_ending(),
+                        m_impl->hit_msg_ending(),
                         msg_clr);
         }
 
-        const auto dmg_range = impl_->damage(skill, *caster);
+        const auto dmg_range = m_impl->damage(skill, *caster);
 
         actor::hit(
                 *target,
@@ -810,12 +809,12 @@ void SpellBolt::run_effect(
                 DmgMethod::END,
                 AllowWound::no);
 
-        impl_->on_hit(*target, skill);
+        m_impl->on_hit(*target, skill);
 
         Snd snd("",
                 SfxId::END,
                 IgnoreMsgIfOriginSeen::yes,
-                target->pos,
+                target->m_pos,
                 nullptr,
                 SndVol::low,
                 AlertsMon::yes);
@@ -829,7 +828,7 @@ bool SpellBolt::allow_mon_cast_now(Mon& mon) const
         // without LOS to the player, but we do not allow the AI to do this,
         // since it would probably be very hard or annoying for the player to
         // deal with
-        return mon.target_ && mon.is_target_seen_;
+        return mon.m_target && mon.m_is_target_seen;
 }
 
 // -----------------------------------------------------------------------------
@@ -839,7 +838,7 @@ void SpellAzaWrath::run_effect(
         Actor* const caster,
         const SpellSkill skill) const
 {
-        // if (caster == map::player &&
+        // if (caster == map::g_player &&
         //     player_bon::traits[(size_t)Trait::warlock] &&
         //     rnd::percent(warlock_multi_cast_chance_pct))
         // {
@@ -868,17 +867,17 @@ void SpellAzaWrath::run_effect(
         for (Actor* const target : targets)
         {
                 // Spell resistance?
-                if (target->properties.has(PropId::r_spell))
+                if (target->m_properties.has(PropId::r_spell))
                 {
                         on_resist(*target);
 
                         // Spell reflection?
-                        if (target->properties.has(PropId::spell_reflect))
+                        if (target->m_properties.has(PropId::spell_reflect))
                         {
-                                if (map::player->can_see_actor(*target))
+                                if (map::g_player->can_see_actor(*target))
                                 {
                                         msg_log::add(
-                                                spell_reflect_msg,
+                                                s_spell_reflect_msg,
                                                 colors::white(),
                                                 false,
                                                 MorePromptOnMsg::yes);
@@ -905,13 +904,13 @@ void SpellAzaWrath::run_effect(
                                 text_format::first_to_upper(
                                         target->name_the()) + " is";
 
-                        if (map::player->is_leader_of(target))
+                        if (map::g_player->is_leader_of(target))
                         {
                                 msg_clr = colors::white();
                         }
                 }
 
-                if (map::player->can_see_actor(*target))
+                if (map::g_player->can_see_actor(*target))
                 {
                         msg_log::add(
                                 str_begin + " struck by a roaring blast!",
@@ -940,7 +939,7 @@ void SpellAzaWrath::run_effect(
 
                         prop->set_duration(1);
 
-                        target->properties.apply(prop);
+                        target->m_properties.apply(prop);
                 }
 
                 if ((skill == SpellSkill::master) &&
@@ -950,13 +949,13 @@ void SpellAzaWrath::run_effect(
 
                         prop->set_duration(2);
 
-                        target->properties.apply(prop);
+                        target->m_properties.apply(prop);
                 }
 
                 Snd snd("",
                         SfxId::END,
                         IgnoreMsgIfOriginSeen::yes,
-                        target->pos,
+                        target->m_pos,
                         nullptr,
                         SndVol::high, AlertsMon::yes);
 
@@ -996,7 +995,7 @@ std::vector<std::string> SpellAzaWrath::descr_specific(
 
 bool SpellAzaWrath::allow_mon_cast_now(Mon& mon) const
 {
-        return mon.target_ && mon.is_target_seen_;
+        return mon.m_target && mon.m_is_target_seen;
 }
 
 // -----------------------------------------------------------------------------
@@ -1013,7 +1012,7 @@ void SpellMayhem::run_effect(
         Actor* const caster,
         const SpellSkill skill) const
 {
-        // if (caster == map::player &&
+        // if (caster == map::g_player &&
         //     player_bon::traits[(size_t)Trait::warlock] &&
         //     rnd::percent(warlock_multi_cast_chance_pct))
         // {
@@ -1027,7 +1026,7 @@ void SpellMayhem::run_effect(
 
         const bool is_player = caster->is_player();
 
-        if (map::player->can_see_actor(*caster))
+        if (map::g_player->can_see_actor(*caster))
         {
                 std::string caster_name =
                         is_player ?
@@ -1037,9 +1036,9 @@ void SpellMayhem::run_effect(
                 msg_log::add("Destruction rages around " + caster_name + "!");
         }
 
-        const P& caster_pos = caster->pos;
+        const P& caster_pos = caster->m_pos;
 
-        const int destr_radi = fov_radi_int + (int)skill * 2;
+        const int destr_radi = g_fov_radi_int + (int)skill * 2;
 
         const int x0 = std::max(
                 1,
@@ -1066,7 +1065,7 @@ void SpellMayhem::run_effect(
         {
                 for (int y = y0; y <= y1; ++y)
                 {
-                        const Rigid* const f = map::cells.at(x, y).rigid;
+                        const Rigid* const f = map::g_cells.at(x, y).rigid;
 
                         if (!f->is_walkable())
                         {
@@ -1077,7 +1076,8 @@ void SpellMayhem::run_effect(
 
                         const int dist = king_dist(caster_pos, p);
 
-                        const int min_dist = expl_std_radi + 1 + expl_radi_diff;
+                        const int min_dist =
+                                g_expl_std_radi + 1 + expl_radi_diff;
 
                         if (dist >= min_dist)
                         {
@@ -1112,7 +1112,7 @@ void SpellMayhem::run_effect(
         {
                 for (int y = y0; y <= y1; ++y)
                 {
-                        const auto id = map::cells.at(x, y).rigid->id();
+                        const auto id = map::g_cells.at(x, y).rigid->id();
 
                         if (id == FeatureId::brazier)
                         {
@@ -1157,11 +1157,11 @@ void SpellMayhem::run_effect(
 
                                 bool is_adj_to_walkable_cell = false;
 
-                                for (const P& d : dir_utils::dir_list)
+                                for (const P& d : dir_utils::g_dir_list)
                                 {
                                         const P p_adj(P(x, y) + d);
 
-                                        const auto& cell = map::cells.at(p_adj);
+                                        const auto& cell = map::g_cells.at(p_adj);
 
                                         if (cell.rigid->is_walkable())
                                         {
@@ -1171,7 +1171,7 @@ void SpellMayhem::run_effect(
 
                                 if (is_adj_to_walkable_cell)
                                 {
-                                        map::cells.at(x, y).rigid->hit(
+                                        map::g_cells.at(x, y).rigid->hit(
                                                 1, // Damage (doesn't matter)
                                                 DmgType::physical,
                                                 DmgMethod::explosion,
@@ -1186,7 +1186,7 @@ void SpellMayhem::run_effect(
         {
                 for (int y = y0; y <= y1; ++y)
                 {
-                        auto* const f = map::cells.at(x, y).rigid;
+                        auto* const f = map::g_cells.at(x, y).rigid;
 
                         if (f->can_have_blood() &&
                             rnd::one_in(10))
@@ -1199,7 +1199,7 @@ void SpellMayhem::run_effect(
                                 }
                         }
 
-                        if ((P(x, y) != caster->pos) &&
+                        if ((P(x, y) != caster->m_pos) &&
                             rnd::one_in(6))
                         {
                                 f->hit(1, // Damage (doesn't matter)
@@ -1239,8 +1239,8 @@ std::vector<std::string> SpellMayhem::descr_specific(
 bool SpellMayhem::allow_mon_cast_now(Mon& mon) const
 {
         return
-                mon.target_ &&
-                (mon.is_target_seen_ || rnd::one_in(20));
+                mon.m_target &&
+                (mon.m_is_target_seen || rnd::one_in(20));
 }
 
 // -----------------------------------------------------------------------------
@@ -1260,34 +1260,35 @@ void SpellPestilence::run_effect(
         }
         else // Caster is monster
         {
-                Actor* const caster_leader = static_cast<Mon*>(caster)->leader_;
+                Actor* const caster_leader =
+                        static_cast<Mon*>(caster)->m_leader;
 
                 leader =
-                        caster_leader ?
-                        caster_leader :
-                        caster;
+                        caster_leader
+                        ? caster_leader
+                        : caster;
         }
 
         bool is_any_seen_by_player = false;
 
         const auto mon_summoned =
                 actor_factory::spawn(
-                        caster->pos,
+                        caster->m_pos,
                         {nr_mon, ActorId::rat},
                         map::rect())
                 .make_aware_of_player()
                 .set_leader(leader)
                 .for_each([skill, &is_any_seen_by_player](Mon* const mon)
                 {
-                        mon->properties.apply(new PropSummoned());
+                        mon->m_properties.apply(new PropSummoned());
 
                         auto prop_waiting = new PropWaiting();
 
                         prop_waiting->set_duration(2);
 
-                        mon->properties.apply(prop_waiting);
+                        mon->m_properties.apply(prop_waiting);
 
-                        if (map::player->can_see_actor(*mon))
+                        if (map::g_player->can_see_actor(*mon))
                         {
                                 is_any_seen_by_player = true;
                         }
@@ -1299,7 +1300,7 @@ void SpellPestilence::run_effect(
 
                                 prop_hasted->set_indefinite();
 
-                                mon->properties.apply(
+                                mon->m_properties.apply(
                                         prop_hasted,
                                         PropSrc::intr,
                                         true,
@@ -1307,7 +1308,7 @@ void SpellPestilence::run_effect(
                         }
                 });
 
-        if (mon_summoned.monsters.empty())
+        if (mon_summoned.m_monsters.empty())
         {
                 return;
         }
@@ -1319,7 +1320,7 @@ void SpellPestilence::run_effect(
 
                 if (!caster->is_player())
                 {
-                        if (map::player->can_see_actor(*caster))
+                        if (map::g_player->can_see_actor(*caster))
                         {
                                 caster_str = caster->name_the();
                         }
@@ -1355,8 +1356,8 @@ std::vector<std::string> SpellPestilence::descr_specific(
 bool SpellPestilence::allow_mon_cast_now(Mon& mon) const
 {
         return
-                mon.target_ &&
-                (mon.is_target_seen_ || rnd::one_in(30));
+                mon.m_target &&
+                (mon.m_is_target_seen || rnd::one_in(30));
 }
 
 // -----------------------------------------------------------------------------
@@ -1381,7 +1382,7 @@ void SpellSpectralWpns::run_effect(
 
         std::vector<const Item*> weapons;
 
-        for (const auto& slot : caster->inv.slots)
+        for (const auto& slot : caster->m_inv.m_slots)
         {
                 if (is_melee_wpn(slot.item))
                 {
@@ -1389,7 +1390,7 @@ void SpellSpectralWpns::run_effect(
                 }
         }
 
-        for (const auto& item : caster->inv.backpack)
+        for (const auto& item : caster->m_inv.m_backpack)
         {
                 if (is_melee_wpn(item))
                 {
@@ -1401,24 +1402,24 @@ void SpellSpectralWpns::run_effect(
         {
                 Item* new_item = item_factory::make(item->id());
 
-                new_item->melee_base_dmg_ = new_item->melee_base_dmg_;
+                new_item->m_melee_base_dmg = new_item->m_melee_base_dmg;
 
                 auto spectral_wpn_init = [new_item, skill](Mon* const mon) {
 
-                        ASSERT(!mon->inv.item_in_slot(SlotId::wpn));
+                        ASSERT(!mon->m_inv.item_in_slot(SlotId::wpn));
 
-                        mon->inv.put_in_slot(
+                        mon->m_inv.put_in_slot(
                                 SlotId::wpn,
                                 new_item,
                                 Verbosity::silent);
 
-                        mon->properties.apply(new PropSummoned());
+                        mon->m_properties.apply(new PropSummoned());
 
                         auto prop_waiting = new PropWaiting();
 
                         prop_waiting->set_duration(1);
 
-                        mon->properties.apply(prop_waiting);
+                        mon->m_properties.apply(prop_waiting);
 
                         if (skill >= SpellSkill::expert)
                         {
@@ -1426,7 +1427,7 @@ void SpellSpectralWpns::run_effect(
 
                                 prop->set_indefinite();
 
-                                mon->properties.apply(
+                                mon->m_properties.apply(
                                         prop,
                                         PropSrc::intr,
                                         true,
@@ -1439,14 +1440,14 @@ void SpellSpectralWpns::run_effect(
 
                                 prop->set_indefinite();
 
-                                mon->properties.apply(
+                                mon->m_properties.apply(
                                         prop,
                                         PropSrc::intr,
                                         true,
                                         Verbosity::silent);
                         }
 
-                        if (map::player->can_see_actor(*mon))
+                        if (map::g_player->can_see_actor(*mon))
                         {
                                 msg_log::add(mon->name_a() + " appears!");
                         }
@@ -1454,7 +1455,7 @@ void SpellSpectralWpns::run_effect(
 
                 const auto summoned =
                         actor_factory::spawn(
-                                caster->pos,
+                                caster->m_pos,
                                 {ActorId::spectral_wpn},
                                 map::rect())
                         .set_leader(caster)
@@ -1519,7 +1520,7 @@ void SpellSearching::run_effect(
                 prop->set_allow_reveal_items();
         }
 
-        caster->properties.apply(prop);
+        caster->m_properties.apply(prop);
 }
 
 std::vector<std::string> SpellSearching::descr_specific(
@@ -1564,8 +1565,8 @@ void SpellOpening::run_effect(
 
         const int range = 1 + (int)skill * 3;
 
-        const int orig_x = map::player->pos.x;
-        const int orig_y = map::player->pos.y;
+        const int orig_x = map::g_player->m_pos.x;
+        const int orig_y = map::g_player->m_pos.y;
 
         const int x0 = std::max(
                 0,
@@ -1598,7 +1599,7 @@ void SpellOpening::run_effect(
                                 continue;
                         }
 
-                        const auto& cell = map::cells.at(x, y);
+                        const auto& cell = map::g_cells.at(x, y);
 
                         auto* const f = cell.rigid;
 
@@ -1628,7 +1629,7 @@ void SpellOpening::run_effect(
                                                      y_lever < map::h();
                                                      ++y_lever)
                                                 {
-                                                        auto* const f_lever = map::cells.at(x_lever, y_lever).rigid;
+                                                        auto* const f_lever = map::g_cells.at(x_lever, y_lever).rigid;
 
                                                         if (f_lever->id() !=
                                                             FeatureId::lever)
@@ -1741,7 +1742,7 @@ void SpellFrenzy::run_effect(
 
         prop->set_duration(rnd::range(30, 40));
 
-        caster->properties.apply(prop);
+        caster->m_properties.apply(prop);
 }
 
 std::vector<std::string> SpellFrenzy::descr_specific(
@@ -1767,7 +1768,7 @@ void SpellBless::run_effect(
 
         prop->set_duration(20 + (int)skill * 100);
 
-        caster->properties.apply(prop);
+        caster->m_properties.apply(prop);
 }
 
 std::vector<std::string> SpellBless::descr_specific(
@@ -1798,11 +1799,11 @@ void SpellLight::run_effect(
 
         prop->set_duration(20 + (int)skill * 20);
 
-        caster->properties.apply(prop);
+        caster->m_properties.apply(prop);
 
         if (skill == SpellSkill::master)
         {
-                explosion::run(caster->pos,
+                explosion::run(caster->m_pos,
                                ExplType::apply_prop,
                                EmitExplSnd::no,
                                0,
@@ -1854,7 +1855,7 @@ void SpellSeeInvis::run_effect(
 
         prop->set_duration(duration_range.roll());
 
-        caster->properties.apply(prop);
+        caster->m_properties.apply(prop);
 }
 
 std::vector<std::string> SpellSeeInvis::descr_specific(
@@ -1881,8 +1882,8 @@ std::vector<std::string> SpellSeeInvis::descr_specific(
 bool SpellSeeInvis::allow_mon_cast_now(Mon& mon) const
 {
         return
-                !mon.properties.has(PropId::see_invis) &&
-                (mon.aware_of_player_counter_ > 0) &&
+                !mon.m_properties.has(PropId::see_invis) &&
+                (mon.m_aware_of_player_counter > 0) &&
                 rnd::one_in(8);
 }
 
@@ -1904,7 +1905,7 @@ void SpellSpellShield::run_effect(
 
         prop->set_indefinite();
 
-        caster->properties.apply(prop);
+        caster->m_properties.apply(prop);
 }
 
 std::vector<std::string> SpellSpellShield::descr_specific(
@@ -1927,7 +1928,7 @@ std::vector<std::string> SpellSpellShield::descr_specific(
 
 bool SpellSpellShield::allow_mon_cast_now(Mon& mon) const
 {
-        return !mon.properties.has(PropId::r_spell);
+        return !mon.m_properties.has(PropId::r_spell);
 }
 
 // -----------------------------------------------------------------------------
@@ -1954,7 +1955,7 @@ void SpellSlowTime::run_effect(
 
         prop->set_duration(duration);
 
-        caster->properties.apply(prop);
+        caster->m_properties.apply(prop);
 }
 
 std::vector<std::string> SpellSlowTime::descr_specific(
@@ -1981,9 +1982,9 @@ int SpellSlowTime::mon_cooldown() const
 bool SpellSlowTime::allow_mon_cast_now(Mon& mon) const
 {
         return
-                mon.target_ &&
-                mon.is_target_seen_ &&
-                !mon.properties.has(PropId::hasted);
+                mon.m_target &&
+                mon.m_is_target_seen &&
+                !mon.m_properties.has(PropId::hasted);
 }
 
 // -----------------------------------------------------------------------------
@@ -2008,7 +2009,7 @@ void SpellPremonition::run_effect(
 
         prop->set_duration(duration_range.roll());
 
-        caster->properties.apply(prop);
+        caster->m_properties.apply(prop);
 }
 
 std::vector<std::string> SpellPremonition::descr_specific(
@@ -2106,13 +2107,13 @@ void SpellTeleport::run_effect(
 
                 prop->set_duration(3);
 
-                caster->properties.apply(prop);
+                caster->m_properties.apply(prop);
         }
 
         auto should_ctrl = ShouldCtrlTele::if_tele_ctrl_prop;
 
         if ((skill == SpellSkill::master) &&
-            (caster == map::player))
+            (caster == map::g_player))
         {
                 should_ctrl = ShouldCtrlTele::always;
         }
@@ -2122,10 +2123,10 @@ void SpellTeleport::run_effect(
 
 bool SpellTeleport::allow_mon_cast_now(Mon& mon) const
 {
-        const bool is_low_hp = mon.hp <= (actor::max_hp(mon) / 2);
+        const bool is_low_hp = mon.m_hp <= (actor::max_hp(mon) / 2);
 
         return
-                (mon.aware_of_player_counter_ > 0) &&
+                (mon.m_aware_of_player_counter > 0) &&
                 is_low_hp &&
                 rnd::fraction(3, 4);
 }
@@ -2172,8 +2173,8 @@ void SpellRes::run_effect(
         prop_r_fire->set_duration(nr_turns);
         prop_r_elec->set_duration(nr_turns);
 
-        caster->properties.apply(prop_r_fire);
-        caster->properties.apply(prop_r_elec);
+        caster->m_properties.apply(prop_r_fire);
+        caster->m_properties.apply(prop_r_elec);
 }
 
 std::vector<std::string> SpellRes::descr_specific(
@@ -2196,12 +2197,12 @@ std::vector<std::string> SpellRes::descr_specific(
 
 bool SpellRes::allow_mon_cast_now(Mon& mon) const
 {
-        const bool has_rfire = mon.properties.has(PropId::r_fire);
-        const bool has_relec = mon.properties.has(PropId::r_elec);
+        const bool has_rfire = mon.m_properties.has(PropId::r_fire);
+        const bool has_relec = mon.m_properties.has(PropId::r_elec);
 
         return
                 (!has_rfire || !has_relec) &&
-                mon.target_;
+                mon.m_target;
 }
 
 // -----------------------------------------------------------------------------
@@ -2223,24 +2224,24 @@ void SpellKnockBack::run_effect(
 
         auto* const mon = static_cast<Mon*>(caster_used);
 
-        Actor* target = mon->target_;
+        Actor* target = mon->m_target;
 
         ASSERT(target);
 
-        ASSERT(mon->is_target_seen_);
+        ASSERT(mon->m_is_target_seen);
 
         // Spell resistance?
-        if (target->properties.has(PropId::r_spell))
+        if (target->m_properties.has(PropId::r_spell))
         {
                 on_resist(*target);
 
                 // Spell reflection?
-                if (target->properties.has(PropId::spell_reflect))
+                if (target->m_properties.has(PropId::spell_reflect))
                 {
-                        if (map::player->can_see_actor(*target))
+                        if (map::g_player->can_see_actor(*target))
                         {
                                 msg_log::add(
-                                        spell_reflect_msg,
+                                        s_spell_reflect_msg,
                                         colors::text(),
                                         false,
                                         MorePromptOnMsg::yes);
@@ -2262,23 +2263,23 @@ void SpellKnockBack::run_effect(
         {
                 target_str = target->name_the();
 
-                if (map::player->is_leader_of(target))
+                if (map::g_player->is_leader_of(target))
                 {
                         msg_clr = colors::white();
                 }
         }
 
-        if (map::player->can_see_actor(*target))
+        if (map::g_player->can_see_actor(*target))
         {
                 msg_log::add("A force pushes " + target_str + "!", msg_clr);
         }
 
-        knockback::run(*target, caster->pos, false);
+        knockback::run(*target, caster->m_pos, false);
 }
 
 bool SpellKnockBack::allow_mon_cast_now(Mon& mon) const
 {
-        return mon.target_ && mon.is_target_seen_;
+        return mon.m_target && mon.m_is_target_seen;
 }
 
 // -----------------------------------------------------------------------------
@@ -2332,17 +2333,17 @@ void SpellEnfeeble::run_effect(
         for (Actor* const target : targets)
         {
                 // Spell resistance?
-                if (target->properties.has(PropId::r_spell))
+                if (target->m_properties.has(PropId::r_spell))
                 {
                         on_resist(*target);
 
                         // Spell reflection?
-                        if (target->properties.has(PropId::spell_reflect))
+                        if (target->m_properties.has(PropId::spell_reflect))
                         {
-                                if (map::player->can_see_actor(*target))
+                                if (map::g_player->can_see_actor(*target))
                                 {
                                         msg_log::add(
-                                                spell_reflect_msg,
+                                                s_spell_reflect_msg,
                                                 colors::text(),
                                                 false,
                                                 MorePromptOnMsg::yes);
@@ -2359,7 +2360,7 @@ void SpellEnfeeble::run_effect(
 
                 prop->set_duration(duration);
 
-                target->properties.apply(prop);
+                target->m_properties.apply(prop);
         }
 }
 
@@ -2397,7 +2398,7 @@ std::vector<std::string> SpellEnfeeble::descr_specific(
 
 bool SpellEnfeeble::allow_mon_cast_now(Mon& mon) const
 {
-        return mon.target_ && mon.is_target_seen_;
+        return mon.m_target && mon.m_is_target_seen;
 }
 
 // -----------------------------------------------------------------------------
@@ -2446,17 +2447,17 @@ void SpellSlow::run_effect(
         for (Actor* const target : targets)
         {
                 // Spell resistance?
-                if (target->properties.has(PropId::r_spell))
+                if (target->m_properties.has(PropId::r_spell))
                 {
                         on_resist(*target);
 
                         // Spell reflection?
-                        if (target->properties.has(PropId::spell_reflect))
+                        if (target->m_properties.has(PropId::spell_reflect))
                         {
-                                if (map::player->can_see_actor(*target))
+                                if (map::g_player->can_see_actor(*target))
                                 {
                                         msg_log::add(
-                                                spell_reflect_msg,
+                                                s_spell_reflect_msg,
                                                 colors::text(),
                                                 false,
                                                 MorePromptOnMsg::yes);
@@ -2473,7 +2474,7 @@ void SpellSlow::run_effect(
 
                 prop->set_duration(duration);
 
-                target->properties.apply(prop);
+                target->m_properties.apply(prop);
         }
 }
 
@@ -2514,7 +2515,7 @@ int SpellSlow::mon_cooldown() const
 
 bool SpellSlow::allow_mon_cast_now(Mon& mon) const
 {
-        return mon.target_ && mon.is_target_seen_;
+        return mon.m_target && mon.m_is_target_seen;
 }
 
 // -----------------------------------------------------------------------------
@@ -2567,17 +2568,17 @@ void SpellTerrify::run_effect(
         for (Actor* const target : targets)
         {
                 // Spell resistance?
-                if (target->properties.has(PropId::r_spell))
+                if (target->m_properties.has(PropId::r_spell))
                 {
                         on_resist(*target);
 
                         // Spell reflection?
-                        if (target->properties.has(PropId::spell_reflect))
+                        if (target->m_properties.has(PropId::spell_reflect))
                         {
-                                if (map::player->can_see_actor(*target))
+                                if (map::g_player->can_see_actor(*target))
                                 {
                                         msg_log::add(
-                                                spell_reflect_msg,
+                                                s_spell_reflect_msg,
                                                 colors::text(),
                                                 false,
                                                 MorePromptOnMsg::yes);
@@ -2594,7 +2595,7 @@ void SpellTerrify::run_effect(
 
                 prop->set_duration(duration);
 
-                target->properties.apply(prop);
+                target->m_properties.apply(prop);
         }
 }
 
@@ -2632,7 +2633,7 @@ std::vector<std::string> SpellTerrify::descr_specific(
 
 bool SpellTerrify::allow_mon_cast_now(Mon& mon) const
 {
-        return mon.target_ && mon.is_target_seen_;
+        return mon.m_target && mon.m_is_target_seen;
 }
 
 // -----------------------------------------------------------------------------
@@ -2650,24 +2651,24 @@ void SpellDisease::run_effect(
 
         auto* const mon = static_cast<Mon*>(caster_used);
 
-        Actor* target = mon->target_;
+        Actor* target = mon->m_target;
 
         ASSERT(target);
 
-        ASSERT(mon->is_target_seen_);
+        ASSERT(mon->m_is_target_seen);
 
         // Spell resistance?
-        if (target->properties.has(PropId::r_spell))
+        if (target->m_properties.has(PropId::r_spell))
         {
                 on_resist(*target);
 
                 // Spell reflection?
-                if (target->properties.has(PropId::spell_reflect))
+                if (target->m_properties.has(PropId::spell_reflect))
                 {
-                        if (map::player->can_see_actor(*target))
+                        if (map::g_player->can_see_actor(*target))
                         {
                                 msg_log::add(
-                                        spell_reflect_msg,
+                                        s_spell_reflect_msg,
                                         colors::text(),
                                         false,
                                         MorePromptOnMsg::yes);
@@ -2688,7 +2689,7 @@ void SpellDisease::run_effect(
                 actor_name = target->name_the();
         }
 
-        if (map::player->can_see_actor(*target))
+        if (map::g_player->can_see_actor(*target))
         {
                 msg_log::add(
                         "A horrible disease is starting to afflict " +
@@ -2696,12 +2697,12 @@ void SpellDisease::run_effect(
                         "!");
         }
 
-        target->properties.apply(new PropDiseased());
+        target->m_properties.apply(new PropDiseased());
 }
 
 bool SpellDisease::allow_mon_cast_now(Mon& mon) const
 {
-        return mon.target_ && mon.is_target_seen_;
+        return mon.m_target && mon.m_is_target_seen;
 }
 
 // -----------------------------------------------------------------------------
@@ -2740,21 +2741,21 @@ void SpellSummonMon::run_effect(
         else // Caster is monster
         {
                 int max_dlvl_spawned =
-                        (skill == SpellSkill::basic) ? dlvl_last_early_game :
-                        (skill == SpellSkill::expert) ? dlvl_last_mid_game :
-                        dlvl_last;
+                        (skill == SpellSkill::basic) ? g_dlvl_last_early_game :
+                        (skill == SpellSkill::expert) ? g_dlvl_last_mid_game :
+                        g_dlvl_last;
 
                 const int nr_dlvls_ood_allowed = 3;
 
                 max_dlvl_spawned =
                         std::min(max_dlvl_spawned,
-                                 map::dlvl + nr_dlvls_ood_allowed);
+                                 map::g_dlvl + nr_dlvls_ood_allowed);
 
                 const int min_dlvl_spawned = max_dlvl_spawned - 10;
 
                 for (size_t i = 0; i < (size_t)ActorId::END; ++i)
                 {
-                        const ActorData& data = actor_data::data[i];
+                        const ActorData& data = actor_data::g_data[i];
 
                         if (!data.can_be_summoned_by_mon)
                         {
@@ -2774,7 +2775,7 @@ void SpellSummonMon::run_effect(
                 {
                         for (size_t i = 0; i < (size_t)ActorId::END; ++i)
                         {
-                                const ActorData& data = actor_data::data[i];
+                                const ActorData& data = actor_data::g_data[i];
 
                                 if (!data.can_be_summoned_by_mon)
                                 {
@@ -2804,7 +2805,7 @@ void SpellSummonMon::run_effect(
         {
                 for (const auto id : summon_bucket)
                 {
-                        ASSERT(actor_data::data[(size_t)id]
+                        ASSERT(actor_data::g_data[(size_t)id]
                                .can_be_summoned_by_mon);
                 }
         }
@@ -2820,7 +2821,8 @@ void SpellSummonMon::run_effect(
         }
         else // Caster is monster
         {
-                Actor* const caster_leader = static_cast<Mon*>(caster)->leader_;
+                Actor* const caster_leader =
+                        static_cast<Mon*>(caster)->m_leader;
 
                 leader =
                         caster_leader
@@ -2829,28 +2831,28 @@ void SpellSummonMon::run_effect(
         }
 
         const auto summoned =
-                actor_factory::spawn(caster->pos, {mon_id}, map::rect())
+                actor_factory::spawn(caster->m_pos, {mon_id}, map::rect())
                 .make_aware_of_player()
                 .set_leader(leader)
                 .for_each([](Mon* const mon)
                 {
-                        mon->properties.apply(new PropSummoned());
+                        mon->m_properties.apply(new PropSummoned());
 
                         auto prop_waiting = new PropWaiting();
 
                         prop_waiting->set_duration(2);
 
-                        mon->properties.apply(prop_waiting);
+                        mon->m_properties.apply(prop_waiting);
                 });
 
-        if (summoned.monsters.empty())
+        if (summoned.m_monsters.empty())
         {
                 return;
         }
 
-        Mon* const mon = summoned.monsters[0];
+        Mon* const mon = summoned.m_monsters[0];
 
-        if (map::player->can_see_actor(*mon))
+        if (map::g_player->can_see_actor(*mon))
         {
                 msg_log::add(
                         text_format::first_to_upper(
@@ -2880,8 +2882,8 @@ std::vector<std::string> SpellSummonMon::descr_specific(
 bool SpellSummonMon::allow_mon_cast_now(Mon& mon) const
 {
         return
-                mon.target_ &&
-                (mon.is_target_seen_ || rnd::one_in(30));
+                mon.m_target &&
+                (mon.m_is_target_seen || rnd::one_in(30));
 }
 
 // -----------------------------------------------------------------------------
@@ -2901,7 +2903,8 @@ void SpellSummonTentacles::run_effect(
         }
         else // Caster is monster
         {
-                Actor* const caster_leader = static_cast<Mon*>(caster)->leader_;
+                Actor* const caster_leader =
+                        static_cast<Mon*>(caster)->m_leader;
 
                 leader =
                         caster_leader
@@ -2911,30 +2914,30 @@ void SpellSummonTentacles::run_effect(
 
         const auto summoned =
                 actor_factory::spawn(
-                        caster->pos,
+                        caster->m_pos,
                         {ActorId::tentacles},
                         map::rect())
                 .make_aware_of_player()
                 .set_leader(leader)
                 .for_each([](Mon* const mon)
                 {
-                        mon->properties.apply(new PropSummoned());
+                        mon->m_properties.apply(new PropSummoned());
 
                         auto prop_waiting = new PropWaiting();
 
                         prop_waiting->set_duration(2);
 
-                        mon->properties.apply(prop_waiting);
+                        mon->m_properties.apply(prop_waiting);
                 });
 
-        if (summoned.monsters.empty())
+        if (summoned.m_monsters.empty())
         {
                 return;
         }
 
-        Mon* const mon = summoned.monsters[0];
+        Mon* const mon = summoned.m_monsters[0];
 
-        if (map::player->can_see_actor(*mon))
+        if (map::g_player->can_see_actor(*mon))
         {
                 msg_log::add("Monstrous tentacles rises up from the ground!");
         }
@@ -2942,7 +2945,7 @@ void SpellSummonTentacles::run_effect(
 
 bool SpellSummonTentacles::allow_mon_cast_now(Mon& mon) const
 {
-        return mon.target_ && mon.is_target_seen_;
+        return mon.m_target && mon.m_is_target_seen;
 }
 
 // -----------------------------------------------------------------------------
@@ -2954,22 +2957,22 @@ void SpellHeal::run_effect(
 {
         if ((int)skill >= (int)SpellSkill::expert)
         {
-                caster->properties.end_prop(PropId::infected);
-                caster->properties.end_prop(PropId::diseased);
-                caster->properties.end_prop(PropId::weakened);
-                caster->properties.end_prop(PropId::hp_sap);
+                caster->m_properties.end_prop(PropId::infected);
+                caster->m_properties.end_prop(PropId::diseased);
+                caster->m_properties.end_prop(PropId::weakened);
+                caster->m_properties.end_prop(PropId::hp_sap);
         }
 
         if (skill == SpellSkill::master)
         {
-                caster->properties.end_prop(PropId::blind);
-                caster->properties.end_prop(PropId::deaf);
-                caster->properties.end_prop(PropId::poisoned);
+                caster->m_properties.end_prop(PropId::blind);
+                caster->m_properties.end_prop(PropId::deaf);
+                caster->m_properties.end_prop(PropId::poisoned);
 
                 if (caster->is_player())
                 {
                         Prop* const wound_prop =
-                                map::player->properties.prop(PropId::wound);
+                                map::g_player->m_properties.prop(PropId::wound);
 
                         if (wound_prop)
                         {
@@ -2988,7 +2991,7 @@ void SpellHeal::run_effect(
 
 bool SpellHeal::allow_mon_cast_now(Mon& mon) const
 {
-        return mon.hp < actor::max_hp(mon);
+        return mon.m_hp < actor::max_hp(mon);
 }
 
 std::vector<std::string> SpellHeal::descr_specific(
@@ -3037,24 +3040,24 @@ void SpellMiGoHypno::run_effect(
 
         auto* const mon = static_cast<Mon*>(caster_used);
 
-        Actor* target = mon->target_;
+        Actor* target = mon->m_target;
 
         ASSERT(target);
 
-        ASSERT(mon->is_target_seen_);
+        ASSERT(mon->m_is_target_seen);
 
         // Spell resistance?
-        if (target->properties.has(PropId::r_spell))
+        if (target->m_properties.has(PropId::r_spell))
         {
                 on_resist(*target);
 
                 // Spell reflection?
-                if (target->properties.has(PropId::spell_reflect))
+                if (target->m_properties.has(PropId::spell_reflect))
                 {
-                        if (map::player->can_see_actor(*target))
+                        if (map::g_player->can_see_actor(*target))
                         {
                                 msg_log::add(
-                                        spell_reflect_msg,
+                                        s_spell_reflect_msg,
                                         colors::text(),
                                         false,
                                         MorePromptOnMsg::yes);
@@ -3079,7 +3082,7 @@ void SpellMiGoHypno::run_effect(
 
                 prop_fainted->set_duration(rnd::range(2, 10));
 
-                target->properties.apply(prop_fainted);
+                target->m_properties.apply(prop_fainted);
         }
         else
         {
@@ -3090,9 +3093,9 @@ void SpellMiGoHypno::run_effect(
 bool SpellMiGoHypno::allow_mon_cast_now(Mon& mon) const
 {
         return
-                mon.target_ &&
-                mon.is_target_seen_ &&
-                mon.target_->is_player();
+                mon.m_target &&
+                mon.m_is_target_seen &&
+                mon.m_target->is_player();
 }
 
 // -----------------------------------------------------------------------------
@@ -3108,26 +3111,27 @@ void SpellBurn::run_effect(
 
         auto* const mon = static_cast<Mon*>(caster_used);
 
-        Actor* target = mon->target_;
+        Actor* target = mon->m_target;
 
         ASSERT(target);
 
-        ASSERT(mon->is_target_seen_);
+        ASSERT(mon->m_is_target_seen);
 
         // Spell resistance?
-        if (target->properties.has(PropId::r_spell))
+        if (target->m_properties.has(PropId::r_spell))
         {
                 on_resist(*target);
 
                 // Spell reflection?
-                if (target->properties.has(PropId::spell_reflect))
+                if (target->m_properties.has(PropId::spell_reflect))
                 {
-                        if (map::player->can_see_actor(*target))
+                        if (map::g_player->can_see_actor(*target))
                         {
-                                msg_log::add(spell_reflect_msg,
-                                             colors::text(),
-                                             false,
-                                             MorePromptOnMsg::yes);
+                                msg_log::add(
+                                        s_spell_reflect_msg,
+                                        colors::text(),
+                                        false,
+                                        MorePromptOnMsg::yes);
                         }
 
                         std::swap(caster_used, target);
@@ -3145,7 +3149,7 @@ void SpellBurn::run_effect(
                 target_str = target->name_the();
         }
 
-        if (map::player->can_see_actor(*target))
+        if (map::g_player->can_see_actor(*target))
         {
                 msg_log::add("Flames are rising around " + target_str + "!");
         }
@@ -3154,12 +3158,12 @@ void SpellBurn::run_effect(
 
         prop->set_duration(2 + (int)skill);
 
-        target->properties.apply(prop);
+        target->m_properties.apply(prop);
 }
 
 bool SpellBurn::allow_mon_cast_now(Mon& mon) const
 {
-        return mon.target_ && mon.is_target_seen_;
+        return mon.m_target && mon.m_is_target_seen;
 }
 
 // -----------------------------------------------------------------------------
@@ -3175,26 +3179,27 @@ void SpellDeafen::run_effect(
 
         auto* const mon = static_cast<Mon*>(caster_used);
 
-        Actor* target = mon->target_;
+        Actor* target = mon->m_target;
 
         ASSERT(target);
 
-        ASSERT(mon->is_target_seen_);
+        ASSERT(mon->m_is_target_seen);
 
         // Spell resistance?
-        if (target->properties.has(PropId::r_spell))
+        if (target->m_properties.has(PropId::r_spell))
         {
                 on_resist(*target);
 
                 // Spell reflection?
-                if (target->properties.has(PropId::spell_reflect))
+                if (target->m_properties.has(PropId::spell_reflect))
                 {
-                        if (map::player->can_see_actor(*target))
+                        if (map::g_player->can_see_actor(*target))
                         {
-                                msg_log::add(spell_reflect_msg,
-                                             colors::text(),
-                                             false,
-                                             MorePromptOnMsg::yes);
+                                msg_log::add(
+                                        s_spell_reflect_msg,
+                                        colors::text(),
+                                        false,
+                                        MorePromptOnMsg::yes);
                         }
 
                         std::swap(caster_used, target);
@@ -3209,12 +3214,12 @@ void SpellDeafen::run_effect(
 
         prop->set_duration(75 + (int)skill * 75);
 
-        target->properties.apply(prop);
+        target->m_properties.apply(prop);
 }
 
 bool SpellDeafen::allow_mon_cast_now(Mon& mon) const
 {
-        return mon.target_ && mon.is_target_seen_;
+        return mon.m_target && mon.m_is_target_seen;
 }
 
 // -----------------------------------------------------------------------------
@@ -3226,9 +3231,9 @@ void SpellTransmut::run_effect(
 {
         (void)caster;
 
-        const P& p = map::player->pos;
+        const P& p = map::g_player->m_pos;
 
-        auto& cell = map::cells.at(p);
+        auto& cell = map::g_cells.at(p);
 
         Item* item_before = cell.item;
 
@@ -3246,12 +3251,12 @@ void SpellTransmut::run_effect(
 
         const int nr_items_before =
                 is_stackable_before
-                ? item_before->nr_items_
+                ? item_before->m_nr_items
                 : 1;
 
         const auto item_type_before = item_before->data().type;
 
-        const int melee_wpn_plus = item_before->melee_base_dmg_.plus;
+        const int melee_wpn_plus = item_before->m_melee_base_dmg.plus;
 
         const auto id_before = item_before->id();
 
@@ -3299,7 +3304,7 @@ void SpellTransmut::run_effect(
                                 continue;
                         }
 
-                        const auto& d = item_data::data[item_id];
+                        const auto& d = item_data::g_data[item_id];
 
                         if (d.type == ItemType::potion)
                         {
@@ -3321,7 +3326,7 @@ void SpellTransmut::run_effect(
                                 continue;
                         }
 
-                        const auto& d = item_data::data[item_id];
+                        const auto& d = item_data::g_data[item_id];
 
                         if (d.type == ItemType::scroll)
                         {
@@ -3339,7 +3344,7 @@ void SpellTransmut::run_effect(
                      (ItemId)item_id != ItemId::END;
                      ++item_id)
                 {
-                        const auto& d = item_data::data[item_id];
+                        const auto& d = item_data::g_data[item_id];
 
                         if ((d.type == ItemType::potion) ||
                             (d.type == ItemType::scroll))
@@ -3392,11 +3397,11 @@ void SpellTransmut::run_effect(
 
         // Spawn new item(s)
         auto* const item_new =
-                item_factory::make_item_on_floor(id_new, map::player->pos);
+                item_factory::make_item_on_floor(id_new, map::g_player->m_pos);
 
         if (item_new->data().is_stackable)
         {
-                item_new->nr_items_ = nr_items_new;
+                item_new->m_nr_items = nr_items_new;
         }
 
         if (cell.is_seen_by_player)

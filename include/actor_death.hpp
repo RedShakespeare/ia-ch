@@ -9,11 +9,23 @@
 
 class Actor;
 
-enum class IsDestroyed {no, yes};
+enum class IsDestroyed
+{
+        no,
+        yes
+};
 
-enum class AllowGore {no, yes};
+enum class AllowGore
+{
+        no,
+        yes
+};
 
-enum class AllowDropItems{no, yes};
+enum class AllowDropItems
+{
+        no,
+        yes
+};
 
 namespace actor
 {

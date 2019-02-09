@@ -54,7 +54,7 @@ public:
 protected:
         const Array2<char>& get_template() const
         {
-                return template_;
+                return m_template;
         }
 
 private:
@@ -71,7 +71,7 @@ private:
 
         virtual void on_template_built() {}
 
-        Array2<char> template_ {P(0, 0)};
+        Array2<char> m_template {P(0, 0)};
 };
 
 // -----------------------------------------------------------------------------
@@ -113,7 +113,7 @@ private:
 
         void on_template_built() override;
 
-        const char passage_symbol_;
+        const char m_passage_symbol;
 };
 
 // -----------------------------------------------------------------------------
@@ -142,7 +142,7 @@ private:
 
         void on_template_built() override;
 
-        std::vector<P> possible_grave_positions_ {};
+        std::vector<P> m_possible_grave_positions {};
 };
 
 // -----------------------------------------------------------------------------
@@ -165,7 +165,7 @@ private:
 
         void on_template_built() override;
 
-        const char stair_symbol_;
+        const char m_stair_symbol;
 };
 
 // -----------------------------------------------------------------------------

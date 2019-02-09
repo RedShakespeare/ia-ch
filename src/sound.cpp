@@ -20,8 +20,9 @@
 // -----------------------------------------------------------------------------
 // Private
 // -----------------------------------------------------------------------------
-static const int snd_dist_normal = fov_radi_int;
-static const int snd_dist_loud = snd_dist_normal * 2;
+static const int s_snd_dist_normal = g_fov_radi_int;
+
+static const int s_snd_dist_loud = s_snd_dist_normal * 2;
 
 // -----------------------------------------------------------------------------
 // Sound
@@ -37,15 +38,15 @@ Snd::Snd(
         const MorePromptOnMsg add_more_prompt_on_msg,
         std::shared_ptr<SndHeardEffect> snd_heard_effect) :
 
-        msg_(msg),
-        sfx_(sfx),
-        is_msg_ignored_if_origin_seen_(ignore_msg_if_origin_seen),
-        origin_(origin),
-        actor_who_made_sound_(actor_who_made_sound),
-        vol_(vol),
-        is_alerting_mon_(alerting_mon),
-        add_more_prompt_on_msg_(add_more_prompt_on_msg),
-        snd_heard_effect_(snd_heard_effect)
+        m_msg(msg),
+        m_sfx(sfx),
+        m_is_msg_ignored_if_origin_seen(ignore_msg_if_origin_seen),
+        m_origin(origin),
+        m_actor_who_made_sound(actor_who_made_sound),
+        m_vol(vol),
+        m_is_alerting_mon(alerting_mon),
+        m_add_more_prompt_on_msg(add_more_prompt_on_msg),
+        m_snd_heard_effect(snd_heard_effect)
 {
 
 }
@@ -62,23 +63,24 @@ void Snd::run()
 
 void Snd::on_heard(Actor& actor) const
 {
-        if (snd_heard_effect_)
+        if (m_snd_heard_effect)
         {
-                snd_heard_effect_->run(actor);
+                m_snd_heard_effect->run(actor);
         }
 }
 
 // -----------------------------------------------------------------------------
 // Private
 // -----------------------------------------------------------------------------
-static int nr_snd_msg_printed_current_turn_;
+static int s_nr_snd_msg_printed_current_turn;
+
 
 static int get_max_dist(const Snd& snd)
 {
         return
                 snd.is_loud()
-                ? snd_dist_loud
-                : snd_dist_normal;
+                ? s_snd_dist_loud
+                : s_snd_dist_normal;
 }
 
 static bool is_snd_heard_at_range(const int range, const Snd& snd)
@@ -94,7 +96,7 @@ namespace snd_emit
 
 void reset_nr_snd_msg_printed_current_turn()
 {
-        nr_snd_msg_printed_current_turn_ = 0;
+        s_nr_snd_msg_printed_current_turn = 0;
 }
 
 void run(Snd snd)
@@ -125,11 +127,11 @@ void run(Snd snd)
 
         flood.at(origin.x, origin.y) = 0;
 
-        for (Actor* actor : game_time::actors)
+        for (Actor* actor : game_time::g_actors)
         {
-                const int flood_val_at_actor = flood.at(actor->pos);
+                const int flood_val_at_actor = flood.at(actor->m_pos);
 
-                const P& actor_pos = actor->pos;
+                const P& actor_pos = actor->m_pos;
 
                 if (((flood_val_at_actor == 0) && (actor_pos != origin)) ||
                     !is_snd_heard_at_range(flood_val_at_actor, snd))
@@ -138,7 +140,7 @@ void run(Snd snd)
                 }
 
                 const bool is_origin_seen_by_player =
-                        map::cells.at(origin).is_seen_by_player;
+                        map::g_cells.at(origin).is_seen_by_player;
 
                 if (actor->is_player())
                 {
@@ -169,7 +171,7 @@ void run(Snd snd)
 
                         const Dir dir_to_origin = dir_utils::dir(offset);
 
-                        map::player->hear_sound(
+                        map::g_player->hear_sound(
                                 snd,
                                 is_origin_seen_by_player,
                                 dir_to_origin, pct_dist);

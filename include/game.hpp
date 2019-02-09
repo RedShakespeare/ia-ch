@@ -18,12 +18,12 @@ class Actor;
 
 struct HistoryEvent
 {
-    HistoryEvent(const std::string msg, const int turn) :
-        msg(msg),
-        turn(turn) {}
+        HistoryEvent(const std::string msg, const int turn) :
+                msg(msg),
+                turn(turn) {}
 
-    const std::string msg;
-    const int turn;
+        const std::string msg;
+        const int turn;
 };
 
 namespace game
@@ -67,22 +67,22 @@ const std::vector<HistoryEvent>& history();
 class GameState: public State
 {
 public:
-    GameState(GameEntryMode entry_mode) :
-        State(),
-        entry_mode_(entry_mode) {}
+        GameState(GameEntryMode entry_mode) :
+                State(),
+                m_entry_mode(entry_mode) {}
 
-    void on_start() override;
+        void on_start() override;
 
-    void draw() override;
+        void draw() override;
 
-    void update() override;
+        void update() override;
 
-    StateId id() override;
+        StateId id() override;
 
 private:
-    void query_quit();
+        void query_quit();
 
-    const GameEntryMode entry_mode_;
+        const GameEntryMode m_entry_mode;
 };
 
 #endif // GAME_HPP

@@ -60,7 +60,7 @@ public:
 
         int y() const
         {
-                return y_;
+                return m_y;
         }
 
         void set_y(const int y);
@@ -79,24 +79,24 @@ public:
 
         int nr_items_tot() const
         {
-                return nr_items_;
+                return m_nr_items;
         }
 
         bool is_at_idx(const int idx) const
         {
-                return y_ == idx;
+                return m_y == idx;
         }
 
         void reset(const int nr_items, const int list_h = -1);
 
         const std::vector<char>& menu_keys() const
         {
-                return menu_keys_;
+                return m_menu_keys;
         }
 
         void set_custom_menu_keys(const std::vector<char>& keys)
         {
-                menu_keys_ = keys;
+                m_menu_keys = keys;
         }
 
 private:
@@ -104,11 +104,11 @@ private:
 
         void update_range_shown();
 
-        std::vector<char> menu_keys_ {std_menu_keys};
-        int nr_items_ {0};
-        int y_ {0};
-        int list_h_ {-1};
-        Range range_shown_ {-1, -1};
+        std::vector<char> m_menu_keys {std_menu_keys};
+        int m_nr_items {0};
+        int m_y {0};
+        int m_list_h {-1};
+        Range m_range_shown {-1, -1};
 };
 
 #endif // BROWSER_HPP
