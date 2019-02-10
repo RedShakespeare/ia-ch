@@ -1473,7 +1473,10 @@ void PoolRoom::on_post_connect_hook(Array2<bool>& door_proposals)
                         {
                                 const P p(x, y);
 
-                                if ((flood.at(p) > 0) || (p == origin))
+                                const bool should_put_liquid =
+                                        (flood.at(p) > 0) || (p == origin);
+
+                                if (should_put_liquid)
                                 {
                                         ++nr_liquid_cells;
                                 }
@@ -1509,7 +1512,10 @@ void PoolRoom::on_post_connect_hook(Array2<bool>& door_proposals)
                 {
                         const P p(x, y);
 
-                        if ((flood.at(p) > 0) || (p == origin))
+                        const bool should_put_liquid =
+                                (flood.at(p) > 0) || (p == origin);
+
+                        if (!should_put_liquid)
                         {
                                 continue;
                         }
