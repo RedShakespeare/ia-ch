@@ -370,20 +370,6 @@ ConsumeItem Clockwork::activate(Actor* const actor)
         return ConsumeItem::no;
 }
 
-void Clockwork::on_pickup_hook()
-{
-        auto prop = new PropRSlow();
-
-        prop->set_indefinite();
-
-        add_carrier_prop(prop, Verbosity::verbose);
-}
-
-void Clockwork::on_removed_from_inv_hook()
-{
-        clear_carrier_props();
-}
-
 // -----------------------------------------------------------------------------
 // Spirit Dagger
 // -----------------------------------------------------------------------------

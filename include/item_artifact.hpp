@@ -139,10 +139,6 @@ public:
         void load() override;
 
 private:
-        void on_pickup_hook() override;
-
-        void on_removed_from_inv_hook() override;
-
         int m_charges;
 };
 
