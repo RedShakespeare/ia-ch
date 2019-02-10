@@ -28,6 +28,7 @@ static Fraction chance_for_trapped_room(const RoomType type)
         {
         case RoomType::plain:
                 chance = {1, 12};
+                break;
 
         case RoomType::human:
                 chance = {1, 4};
