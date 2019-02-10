@@ -87,7 +87,7 @@ private:
                         "This elixir heals all wounds and cures blindness, "
                         "deafness, poisoning, infections, disease, weakening, "
                         "and life sapping. It can even temporarily raise the "
-                        "consumers condition past normal levels.";
+                        "consumer's condition past normal levels.";
         }
 
         PotionAlignment alignment() const override
