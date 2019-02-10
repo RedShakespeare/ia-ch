@@ -582,8 +582,7 @@ static void init_data_list()
         d.name_short = "Blessed";
         d.descr =
                 "+5% hit chance with melee and ranged attacks, +5% chance to "
-                "evade attacks, +5% chance to avoid detection, +5% chance to "
-                "detect hidden creatures and objects";
+                "evade attacks, +5% chance to avoid detection";
         d.msg_start_player = "I feel luckier.";
         d.msg_end_player = "I have normal luck.";
         d.historic_msg_start_permanent = "I received a great blessing.";
@@ -599,8 +598,7 @@ static void init_data_list()
         d.name_short = "Cursed";
         d.descr =
                 "-5% hit chance with melee and ranged attacks, -5% chance to "
-                "evade attacks, -5% chance to avoid detection, -5% chance to "
-                "detect hidden creatures and objects";
+                "evade attacks, -5% chance to avoid detection";
         d.msg_start_player = "I feel misfortunate.";
         d.msg_end_player = "I feel more fortunate.";
         d.msg_res_player = "I resist misfortune.";

@@ -582,9 +582,19 @@ public:
 
         int ability_mod(const AbilityId ability) const override
         {
-                (void)ability;
+                switch (ability)
+                {
+                case AbilityId::melee:
+                case AbilityId::ranged:
+                case AbilityId::dodging:
+                case AbilityId::stealth:
+                        return 5;
 
-                return 5;
+                default:
+                        break;
+                }
+
+                return 0;
         }
 
 private:
@@ -599,9 +609,19 @@ public:
 
         int ability_mod(const AbilityId ability) const override
         {
-                (void)ability;
+                switch (ability)
+                {
+                case AbilityId::melee:
+                case AbilityId::ranged:
+                case AbilityId::dodging:
+                case AbilityId::stealth:
+                        return -5;
 
-                return -5;
+                default:
+                        break;
+                }
+
+                return 0;
         }
 
         void on_applied() override;
