@@ -110,8 +110,6 @@ public:
         Viewing(const P& origin) :
                 MarkerState(origin) {}
 
-        ~Viewing() {}
-
 protected:
         void on_moved() override;
 
@@ -137,8 +135,6 @@ public:
         Aiming(const P& origin, Wpn& wpn) :
                 MarkerState(origin),
                 m_wpn(wpn) {}
-
-        ~Aiming() {}
 
 protected:
         void on_moved() override;
@@ -172,8 +168,6 @@ public:
                 MarkerState(origin),
                 m_inv_item(&inv_item) {}
 
-        ~Throwing() {}
-
 protected:
         void on_moved() override;
 
@@ -206,8 +200,6 @@ public:
                 MarkerState(origin),
                 m_explosive(explosive) {}
 
-        ~ThrowingExplosive() {}
-
 protected:
         void on_draw() override;
 
@@ -237,8 +229,6 @@ class CtrlTele: public MarkerState
 {
 public:
         CtrlTele(const P& origin, const Array2<bool>& blocked);
-
-        ~CtrlTele() {}
 
 protected:
         void on_start_hook() override;

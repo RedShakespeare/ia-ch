@@ -1273,7 +1273,6 @@ class PropLgtSens: public Prop
 public:
         PropLgtSens() :
                 Prop(PropId::light_sensitive) {}
-        ~PropLgtSens() override {}
 };
 
 class PropTeleControl: public Prop
@@ -1281,7 +1280,6 @@ class PropTeleControl: public Prop
 public:
         PropTeleControl() :
                 Prop(PropId::tele_ctrl) {}
-        ~PropTeleControl() override {}
 };
 
 class PropRSpell: public Prop
@@ -1296,8 +1294,6 @@ class PropSpellReflect: public Prop
 public:
         PropSpellReflect() :
                 Prop(PropId::spell_reflect) {}
-
-        ~PropSpellReflect() override {}
 };
 
 class PropConflict: public Prop
@@ -1305,7 +1301,6 @@ class PropConflict: public Prop
 public:
         PropConflict() :
                 Prop(PropId::conflict) {}
-        ~PropConflict() override {}
 };
 
 class PropVortex: public Prop

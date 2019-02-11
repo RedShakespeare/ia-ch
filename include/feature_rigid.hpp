@@ -181,8 +181,6 @@ public:
 
         Floor() = delete;
 
-        ~Floor() {}
-
         FeatureId id() const override
         {
                 return FeatureId::floor;
@@ -210,8 +208,6 @@ public:
         Carpet(const P& p);
 
         Carpet() = delete;
-
-        ~Carpet() {}
 
         FeatureId id() const override
         {
@@ -245,8 +241,6 @@ public:
 
         Grass() = delete;
 
-        ~Grass() {}
-
         FeatureId id() const override
         {
                 return FeatureId::grass;
@@ -273,8 +267,6 @@ public:
         Bush(const P& p);
 
         Bush() = delete;
-
-        ~Bush() {}
 
         FeatureId id() const override
         {
@@ -303,8 +295,6 @@ public:
 
         Vines() = delete;
 
-        ~Vines() {}
-
         FeatureId id() const override
         {
                 return FeatureId::vines;
@@ -329,8 +319,6 @@ public:
         Chains(const P& p);
 
         Chains() = delete;
-
-        ~Chains() {}
 
         FeatureId id() const override
         {
@@ -360,8 +348,6 @@ public:
 
         Grate() = delete;
 
-        ~Grate() {}
-
         FeatureId id() const override
         {
                 return FeatureId::grate;
@@ -385,8 +371,6 @@ public:
         Brazier(const P& p) : Rigid(p) {}
 
         Brazier() = delete;
-
-        ~Brazier() {}
 
         FeatureId id() const override
         {
@@ -424,8 +408,6 @@ public:
 
         Wall() = delete;
 
-        ~Wall() {}
-
         FeatureId id() const override
         {
                 return FeatureId::wall;
@@ -462,8 +444,6 @@ public:
 
         RubbleLow() = delete;
 
-        ~RubbleLow() {}
-
         FeatureId id() const override
         {
                 return FeatureId::rubble_low;
@@ -487,8 +467,6 @@ public:
         Bones(const P& p);
 
         Bones() = delete;
-
-        ~Bones() {}
 
         FeatureId id() const override
         {
@@ -514,8 +492,6 @@ public:
 
         RubbleHigh() = delete;
 
-        ~RubbleHigh() {}
-
         FeatureId id() const override
         {
                 return FeatureId::rubble_high;
@@ -539,8 +515,6 @@ public:
         GraveStone(const P& p);
 
         GraveStone() = delete;
-
-        ~GraveStone() {}
 
         FeatureId id() const override
         {
@@ -575,8 +549,6 @@ public:
 
         ChurchBench() = delete;
 
-        ~ChurchBench() {}
-
         FeatureId id() const override
         {
                 return FeatureId::church_bench;
@@ -605,7 +577,6 @@ class Statue: public Rigid
 public:
         Statue(const P& p);
         Statue() = delete;
-        ~Statue() {}
 
         FeatureId id() const override
         {
@@ -635,7 +606,6 @@ class Stalagmite: public Rigid
 public:
         Stalagmite(const P& p);
         Stalagmite() = delete;
-        ~Stalagmite() {}
 
         FeatureId id() const override
         {
@@ -659,7 +629,6 @@ class Stairs: public Rigid
 public:
         Stairs(const P& p);
         Stairs() = delete;
-        ~Stairs() {}
 
         FeatureId id() const override
         {
@@ -689,7 +658,6 @@ public:
                 Rigid(p),
                 m_axis(Axis::hor) {}
         Bridge() = delete;
-        ~Bridge() {}
 
         FeatureId id() const override
         {
@@ -722,7 +690,6 @@ class LiquidShallow: public Rigid
 public:
         LiquidShallow(const P& p);
         LiquidShallow() = delete;
-        ~LiquidShallow() {}
 
         FeatureId id() const override
         {
@@ -752,7 +719,6 @@ class LiquidDeep: public Rigid
 public:
         LiquidDeep(const P& p);
         LiquidDeep() = delete;
-        ~LiquidDeep() {}
 
         FeatureId id() const override
         {
@@ -788,7 +754,6 @@ class Chasm: public Rigid
 public:
         Chasm(const P& p);
         Chasm() = delete;
-        ~Chasm() {}
 
         FeatureId id() const override
         {
@@ -813,8 +778,6 @@ public:
         Lever(const P& p);
 
         Lever() = delete;
-
-        ~Lever() {}
 
         FeatureId id() const override
         {
@@ -878,8 +841,6 @@ public:
 
         Altar() = delete;
 
-        ~Altar() {}
-
         FeatureId id() const override
         {
                 return FeatureId::altar;
@@ -911,7 +872,6 @@ class Tree: public Rigid
 public:
         Tree(const P& p);
         Tree() = delete;
-        ~Tree() {}
 
         FeatureId id() const override
         {
@@ -961,7 +921,6 @@ class Tomb: public Rigid
 public:
         Tomb(const P& pos);
         Tomb() = delete;
-        ~Tomb() {}
 
         FeatureId id() const override
         {
@@ -1006,7 +965,6 @@ class Chest: public Rigid
 public:
         Chest(const P& pos);
         Chest() = delete;
-        ~Chest() {}
 
         FeatureId id() const override
         {
@@ -1048,7 +1006,6 @@ class Cabinet: public Rigid
 public:
         Cabinet(const P& pos);
         Cabinet() = delete;
-        ~Cabinet() {}
 
         FeatureId id() const override
         {
@@ -1082,7 +1039,6 @@ class Bookshelf: public Rigid
 public:
         Bookshelf(const P& pos);
         Bookshelf() = delete;
-        ~Bookshelf() {}
 
         FeatureId id() const override
         {
@@ -1114,7 +1070,6 @@ class AlchemistBench: public Rigid
 public:
         AlchemistBench(const P& pos);
         AlchemistBench() = delete;
-        ~AlchemistBench() {}
 
         FeatureId id() const override
         {
@@ -1164,8 +1119,6 @@ public:
 
         Fountain() = delete;
 
-        ~Fountain() {}
-
         FeatureId id() const override
         {
                 return FeatureId::fountain;
@@ -1213,8 +1166,6 @@ public:
         Cocoon(const P& pos);
 
         Cocoon() = delete;
-
-        ~Cocoon() {}
 
         FeatureId id() const override
         {
