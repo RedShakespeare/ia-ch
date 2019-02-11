@@ -26,11 +26,13 @@ namespace config
 void init();
 
 void set_fullscreen(const bool value);
+void set_native_resolution_fullscreen(const bool value);
 
 InputMode input_mode();
 bool is_tiles_mode();
 std::string font_name();
 bool is_fullscreen();
+bool is_native_resolution_fullscreen();
 void set_screen_px_w(const int w);
 void set_screen_px_h(const int h);
 int screen_px_w();

@@ -46,6 +46,7 @@ static const int s_opt_values_x_pos = 40;
 static InputMode s_input_mode = InputMode::standard;
 static std::string s_font_name = "";
 static bool s_is_fullscreen = false;
+static bool s_is_native_resolution_fullscreen = false;
 static bool s_is_tiles_wall_full_square = false;
 static bool s_is_text_mode_wall_full_square = false;
 static bool s_is_light_explosive_prompt = false;
@@ -173,6 +174,7 @@ static void set_default_variables()
         s_is_audio_enabled = true;
         s_is_amb_audio_enabled = true;
         s_is_fullscreen = false;
+        s_is_native_resolution_fullscreen = false;
         s_is_tiles_wall_full_square = false;
         s_is_text_mode_wall_full_square = true;
         s_is_intro_lvl_skipped = false;
@@ -307,62 +309,73 @@ static void player_sets_option(const MenuBrowser& browser)
         }
         break;
 
-        case 6: // Tiles mode wall symbol
+        case 6: // Use native resolution in fullscreen
+        {
+                set_native_resolution_fullscreen(!s_is_native_resolution_fullscreen);
+
+                if (s_is_fullscreen)
+                {
+                        io::on_fullscreen_toggled();
+                }       
+        }
+        break;
+
+        case 7: // Tiles mode wall symbol
         {
                 s_is_tiles_wall_full_square = !s_is_tiles_wall_full_square;
         }
         break;
 
-        case 7: // Text mode wall symbol
+        case 8: // Text mode wall symbol
         {
                 s_is_text_mode_wall_full_square =
                         !s_is_text_mode_wall_full_square;
         }
         break;
 
-        case 8: // Skip intro level
+        case 9: // Skip intro level
         {
                 s_is_intro_lvl_skipped = !s_is_intro_lvl_skipped;
         }
         break;
 
-        case 9: // Confirm "more" with any key
+        case 10: // Confirm "more" with any key
         {
                 s_is_any_key_confirm_more = !s_is_any_key_confirm_more;
         }
         break;
 
-        case 10: // Always warn when a new monster appears
+        case 11: // Always warn when a new monster appears
         {
                 s_always_warn_new_mon = !s_always_warn_new_mon;
         }
         break;
 
-        case 11: // Print warning when lighting explovies
+        case 12: // Print warning when lighting explovies
         {
                 s_is_light_explosive_prompt = !s_is_light_explosive_prompt;
         }
         break;
 
-        case 12: // Print warning when drinking known malign potions
+        case 13: // Print warning when drinking known malign potions
         {
                 s_is_drink_malign_pot_prompt = !s_is_drink_malign_pot_prompt;
         }
         break;
 
-        case 13: // Print warning when melee attacking with ranged weapons
+        case 14: // Print warning when melee attacking with ranged weapons
         {
                 s_is_ranged_wpn_meleee_prompt = !s_is_ranged_wpn_meleee_prompt;
         }
         break;
 
-        case 14: // Ranged weapon auto reload
+        case 15: // Ranged weapon auto reload
         {
                 s_is_ranged_wpn_auto_reload = !s_is_ranged_wpn_auto_reload;
         }
         break;
 
-        case 15: // Projectile delay
+        case 16: // Projectile delay
         {
                 const P p(s_opt_values_x_pos, s_opt_y0 + browser.y());
 
@@ -381,7 +394,7 @@ static void player_sets_option(const MenuBrowser& browser)
         }
         break;
 
-        case 16: // Shotgun delay
+        case 17: // Shotgun delay
         {
                 const P p(s_opt_values_x_pos, s_opt_y0 + browser.y());
 
@@ -400,7 +413,7 @@ static void player_sets_option(const MenuBrowser& browser)
         }
         break;
 
-        case 17: // Explosion delay
+        case 18: // Explosion delay
         {
                 const P p(s_opt_values_x_pos, s_opt_y0 + browser.y());
 
@@ -419,7 +432,7 @@ static void player_sets_option(const MenuBrowser& browser)
         }
         break;
 
-        case 18: // Reset to defaults
+        case 19: // Reset to defaults
         {
                 set_default_variables();
 
@@ -487,6 +500,9 @@ static void set_variables_from_lines(std::vector<std::string>& lines)
         update_render_dims();
 
         s_is_fullscreen = lines.front() == "1";
+        lines.erase(begin(lines));
+
+        s_is_native_resolution_fullscreen = lines.front() == "1";
         lines.erase(begin(lines));
 
         s_is_tiles_wall_full_square = lines.front() == "1";
@@ -573,6 +589,7 @@ static std::vector<std::string> lines_from_variables()
         lines.push_back(s_is_tiles_mode ? "1" : "0");
         lines.push_back(s_font_name);
         lines.push_back(s_is_fullscreen ? "1" : "0");
+        lines.push_back(s_is_native_resolution_fullscreen ? "1" : "0");
         lines.push_back(s_is_tiles_wall_full_square ? "1" : "0");
         lines.push_back(s_is_text_mode_wall_full_square ? "1" : "0");
         lines.push_back(s_is_intro_lvl_skipped ? "1" : "0");
@@ -641,6 +658,11 @@ std::string font_name()
 bool is_fullscreen()
 {
         return s_is_fullscreen;
+}
+
+bool is_native_resolution_fullscreen()
+{
+        return s_is_native_resolution_fullscreen;
 }
 
 void set_screen_px_w(const int w)
@@ -793,6 +815,15 @@ void set_fullscreen(const bool value)
         write_lines_to_file(lines);
 }
 
+void set_native_resolution_fullscreen(const bool value)
+{
+        s_is_native_resolution_fullscreen = value;
+
+        const auto lines = lines_from_variables();
+
+        write_lines_to_file(lines);
+}
+
 } // config
 
 // -----------------------------------------------------------------------------
@@ -800,7 +831,7 @@ void set_fullscreen(const bool value)
 // -----------------------------------------------------------------------------
 ConfigState::ConfigState() :
         State(),
-        m_browser(19)
+        m_browser(20)
 {
 
 }
@@ -916,6 +947,13 @@ void ConfigState::draw()
                         config::s_is_fullscreen
                         ? "Yes"
                         : "No"
+                },
+
+                {
+                        "Use native resolution in fullscreen",
+                        config::s_is_native_resolution_fullscreen
+                        ? "Yes"
+                        : "No (Stretch)"
                 },
 
                 {
