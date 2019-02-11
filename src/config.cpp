@@ -311,12 +311,13 @@ static void player_sets_option(const MenuBrowser& browser)
 
         case 6: // Use native resolution in fullscreen
         {
-                set_native_resolution_fullscreen(!s_is_native_resolution_fullscreen);
+                s_is_native_resolution_fullscreen =
+                        !s_is_native_resolution_fullscreen;
 
                 if (s_is_fullscreen)
                 {
                         io::on_fullscreen_toggled();
-                }       
+                }
         }
         break;
 
@@ -809,15 +810,6 @@ std::string default_player_name()
 void set_fullscreen(const bool value)
 {
         s_is_fullscreen = value;
-
-        const auto lines = lines_from_variables();
-
-        write_lines_to_file(lines);
-}
-
-void set_native_resolution_fullscreen(const bool value)
-{
-        s_is_native_resolution_fullscreen = value;
 
         const auto lines = lines_from_variables();
 

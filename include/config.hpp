@@ -26,7 +26,6 @@ namespace config
 void init();
 
 void set_fullscreen(const bool value);
-void set_native_resolution_fullscreen(const bool value);
 
 InputMode input_mode();
 bool is_tiles_mode();

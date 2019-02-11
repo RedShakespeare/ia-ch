@@ -890,9 +890,8 @@ void init()
         if (config::is_fullscreen())
         {
                 const P resolution = config::is_native_resolution_fullscreen()
-                    ? native_resolution_from_sdl()
-                    : io::gui_to_px_coords(
-                        io::min_screen_gui_dims());
+                        ? native_resolution_from_sdl()
+                        : io::gui_to_px_coords(io::min_screen_gui_dims());
 
                 panels::init(io::px_to_gui_coords(resolution));
 
