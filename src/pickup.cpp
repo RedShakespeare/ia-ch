@@ -97,8 +97,6 @@ void try_unload_or_pick()
 
                 Ammo* const spawned_ammo = unload_ranged_wpn(*wpn);
 
-                ASSERT(spawned_ammo);
-
                 if (spawned_ammo)
                 {
                         audio::play(SfxId::pickup);
