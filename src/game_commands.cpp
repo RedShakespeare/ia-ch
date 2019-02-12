@@ -529,7 +529,8 @@ void handle(const GameCmd cmd)
 
         case GameCmd::reload:
         {
-                Item* const wpn = map::g_player->m_inv.item_in_slot(SlotId::wpn);
+                Item* const wpn =
+                        map::g_player->m_inv.item_in_slot(SlotId::wpn);
 
                 reload::try_reload(*map::g_player, wpn);
         }
@@ -549,7 +550,7 @@ void handle(const GameCmd cmd)
 
         case GameCmd::unload:
         {
-                item_pickup::try_unload_wpn_or_pickup_ammo();
+                item_pickup::try_unload_or_pick();
         }
         break;
 

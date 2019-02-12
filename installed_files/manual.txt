@@ -17,7 +17,7 @@ Gameplay commands:
    r         Reload
    s         Wait five turns
    t         Throw item
-   u         Unload and pick up ammunition from weapons on the ground
+   u         Unload firearm on the ground, or pick up item
    x         Cast spell
    z         Swap to readied weapon
    Q         Quit
@@ -58,7 +58,7 @@ Press '.' (period) to wait for one turn or to select your current position
    d         Drop item
    f         Aim/fire weapon
    g         Pick up item
-   G         Unload and pick up ammunition from weapons on the ground
+   G         Unload firearm on the ground, or pick up item
    i         Inventory (wield, equip, remove, consume, or activate items)
    m         Minimap
    M         Message history

@@ -85,51 +85,40 @@ Ammo* unload_ranged_wpn(Wpn& wpn)
         return static_cast<Ammo*>(spawned_ammo);
 }
 
-void try_unload_wpn_or_pickup_ammo()
+void try_unload_or_pick()
 {
         Item* item = map::g_cells.at(map::g_player->m_pos).item;
 
-        if (!item)
-        {
-                msg_log::add("I see no ammo to unload or pick up here.");
-
-                return;
-        }
-
-        if (item->data().ranged.is_ranged_wpn)
+        if (item &&
+            item->data().ranged.is_ranged_wpn &&
+            !item->data().ranged.has_infinite_ammo)
         {
                 Wpn* const wpn = static_cast<Wpn*>(item);
 
-                const std::string wpn_name =
-                        wpn->name(ItemRefType::a, ItemRefInf::yes);
+                Ammo* const spawned_ammo = unload_ranged_wpn(*wpn);
 
-                if (!wpn->data().ranged.has_infinite_ammo)
+                ASSERT(spawned_ammo);
+
+                if (spawned_ammo)
                 {
-                        Ammo* const spawned_ammo =
-                                unload_ranged_wpn(*wpn);
+                        audio::play(SfxId::pickup);
 
-                        if (spawned_ammo)
-                        {
-                                audio::play(SfxId::pickup);
+                        const std::string name_a =
+                                item->name(ItemRefType::a, ItemRefInf::yes);
 
-                                msg_log::add("I unload " + wpn_name + ".");
+                        msg_log::add("I unload " + name_a + ".");
 
-                                map::g_player->m_inv.put_in_backpack(spawned_ammo);
+                        map::g_player->m_inv.put_in_backpack(spawned_ammo);
 
-                                game_time::tick();
+                        game_time::tick();
 
-                                return;
-                        }
+                        return;
                 }
         }
-        // Not a ranged weapon
-        else if (item->data().type == ItemType::ammo ||
-                 item->data().type == ItemType::ammo_mag)
-        {
-                try_pick();
 
-                return;
-        }
+        // Did not unload a ranged weapon, run the normal item picking instead
+
+        try_pick();
 }
 
 } // item_pickup

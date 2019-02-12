@@ -13,13 +13,15 @@ class Wpn;
 namespace item_pickup
 {
 
-//Can always be called to check if something is there to be picked up.
+// NOTE: The "try_" functions can always be called to check if something is
+// there to be picked up or unloaded
+
 void try_pick();
 
-void try_unload_wpn_or_pickup_ammo();
+void try_unload_or_pick();
 
 Ammo* unload_ranged_wpn(Wpn& wpn);
 
-} //item_pickup
+} // item_pickup
 
 #endif
