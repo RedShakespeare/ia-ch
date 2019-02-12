@@ -185,10 +185,6 @@ void populate_std_lvl()
 
                         const auto pos = trap_pos_bucket[i];
 
-                        trap_pos_bucket.erase(std::begin(trap_pos_bucket) + i);
-
-                        blocked.at(pos) = true;
-
                         auto* const trap = make_trap(trap_type, pos);
 
                         if (!trap->valid())
