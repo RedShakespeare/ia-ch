@@ -1402,7 +1402,7 @@ void SpellSpectralWpns::run_effect(
         {
                 Item* new_item = item_factory::make(item->id());
 
-                new_item->m_melee_base_dmg = new_item->m_melee_base_dmg;
+                new_item->set_melee_base_dmg(new_item->melee_base_dmg());
 
                 auto spectral_wpn_init = [new_item, skill](Mon* const mon) {
 
@@ -3256,7 +3256,7 @@ void SpellTransmut::run_effect(
 
         const auto item_type_before = item_before->data().type;
 
-        const int melee_wpn_plus = item_before->m_melee_base_dmg.plus;
+        const int melee_wpn_plus = item_before->melee_base_dmg().plus;
 
         const auto id_before = item_before->id();
 

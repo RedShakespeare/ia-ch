@@ -1562,8 +1562,8 @@ void Player::on_std_turn()
 
 void Player::on_log_msg_printed()
 {
-        // NOTE: There cannot be any calls to msg_log::add() in this function, as
-        // that would cause infinite recursion!
+        // NOTE: There cannot be any calls to msg_log::add() in this function,
+        // as that would cause infinite recursion!
 
         // All messages abort waiting
         wait_turns_left = -1;

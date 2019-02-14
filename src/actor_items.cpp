@@ -122,7 +122,7 @@ static void make_for_player_rogue()
 
         auto* const dagger = item_factory::make(ItemId::dagger);
 
-        static_cast<Wpn*>(dagger)->m_melee_base_dmg.plus = 1;
+        dagger->set_melee_plus(1);
 
         inv.put_in_slot(SlotId::wpn,
                         dagger,
@@ -273,8 +273,9 @@ static void make_for_player()
         } // Background switch
 }
 
-static void make_random_item_to_backpack(Actor& actor,
-                                         std::vector<ItemId>& item_id_bucket)
+static void make_random_item_to_backpack(
+        Actor& actor,
+        std::vector<ItemId>& item_id_bucket)
 {
         if (!item_id_bucket.empty())
         {
@@ -467,7 +468,7 @@ static void make_item_set_zealot_spiked_mace(Actor& actor)
 {
         Item* item = item_factory::make(ItemId::spiked_mace);
 
-        item->m_melee_base_dmg.plus = 0;
+        item->set_melee_plus(0);
 
         actor.m_inv.put_in_slot(SlotId::wpn, item, Verbosity::silent);
 }
@@ -482,7 +483,7 @@ static void make_item_set_priest_dagger(Actor& actor)
                 1
         };
 
-        item->m_melee_base_dmg.plus = rnd::weighted_choice(weights) + 1;
+        item->set_melee_plus(rnd::weighted_choice(weights) + 1);
 
         actor.m_inv.put_in_slot(SlotId::wpn, item, Verbosity::silent);
 }
@@ -515,7 +516,7 @@ static void make_item_set_high_priest_guard_rogue(Actor& actor)
 {
         Item* const item = item_factory::make(ItemId::machete);
 
-        item->m_melee_base_dmg.plus = 1;
+        item->set_melee_plus(1);
 
         actor.m_inv.put_in_slot(
                 SlotId::wpn,
@@ -598,8 +599,8 @@ static void make_monster_intr_attacks(Actor& actor)
                 // the other will have no effect)
                 const auto dice = Dice(1, intr_attack->dmg);
 
-                item->m_melee_base_dmg = dice;
-                item->m_ranged_base_dmg = dice;
+                item->set_melee_base_dmg(dice);
+                item->set_ranged_base_dmg(dice);
 
                 actor.m_inv.put_in_intrinsics(item);
         }

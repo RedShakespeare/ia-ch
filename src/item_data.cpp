@@ -1981,10 +1981,11 @@ void init()
                 "the Spirit Dagger"};
         d.base_descr = {
                 "A black dagger with elaborate ornaments. The blade appears "
-                "blurry, as if perpetually covered in a dark haze. On a "
-                "succesful attack, 1 Spirit Point is drained from the victim "
-                "and transfered to the attacker, in addition to doing normal "
-                "physical damage.",
+                "blurry, as if perpetually covered in a dark haze.",
+
+                "This weapon does extra damaged based on the current number "
+                "of spirit points of the wielder. Successfully attacking an "
+                "opponent drains one spirit point from the attacker.",
 
                 "Attacking an unaware opponent with a dagger does +300% damage "
                 "(in addition to the normal +50% damage from stealth attacks).",
@@ -1993,7 +1994,7 @@ void init()
         d.tile = TileId::dagger;
         d.color = colors::violet();
         d.melee.att_msgs = {"stab", "stabs me with a Dagger"};
-        d.melee.dmg = Dice(1, 4, 3);
+        d.melee.dmg = Dice(1, 4);
         d.melee.hit_chance_mod = 20;
         d.melee.is_noisy = false;
         d.melee.hit_medium_sfx = SfxId::hit_sharp;

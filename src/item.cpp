@@ -38,10 +38,10 @@
 // -----------------------------------------------------------------------------
 Item::Item(ItemData* item_data) :
         m_nr_items(1),
-        m_melee_base_dmg(item_data->melee.dmg),
-        m_ranged_base_dmg(item_data->ranged.dmg),
         m_data(item_data),
         m_actor_carrying(nullptr),
+        m_melee_base_dmg(item_data->melee.dmg),
+        m_ranged_base_dmg(item_data->ranged.dmg),
         m_carrier_props()
 {
 
@@ -95,6 +95,22 @@ TileId Item::tile() const
 std::vector<std::string> Item::descr() const
 {
         return m_data->base_descr;
+}
+
+void Item::set_random_melee_plus()
+{
+        // Element corresponds to plus damage value (+0, +1, +2, etc)
+        const std::vector<int> weights = {
+                100,    // +0
+                100,    // +1
+                50,     // +2
+                25,     // +3
+                4,      // +4
+                2,      // +5
+                1       // +6
+        };
+
+        m_melee_base_dmg.plus = rnd::weighted_choice(weights);
 }
 
 Dice Item::melee_dmg(const Actor* const attacker) const
@@ -432,8 +448,9 @@ std::string Item::hit_mod_str(const ItemRefAttInf att_inf) const
         return "";
 }
 
-std::string Item::dmg_str(const ItemRefAttInf att_inf,
-                          const ItemRefDmg dmg_value) const
+std::string Item::dmg_str(
+        const ItemRefAttInf att_inf,
+        const ItemRefDmg dmg_value) const
 {
         if (!m_data->allow_display_dmg)
         {
@@ -474,9 +491,9 @@ std::string Item::dmg_str(const ItemRefAttInf att_inf,
         {
                 if (m_melee_base_dmg.max() > 0)
                 {
-                        const Dice dmg_dice = melee_dmg(map::g_player);
+                        const auto dmg_dice = melee_dmg(map::g_player);
 
-                        const std::string str_avg = dmg_dice.str_avg();
+                        const auto str_avg = dmg_dice.str_avg();
 
                         switch (dmg_value)
                         {
@@ -815,23 +832,6 @@ Color Wpn::color() const
         }
 
         return m_data->color;
-}
-
-void Wpn::set_random_melee_plus()
-{
-        // Element corresponds to plus damage value (+0, +1, +2, etc)
-        const std::vector<int> weights =
-        {
-                100,    // +0
-                100,    // +1
-                50,     // +2
-                25,     // +3
-                4,      // +4
-                2,      // +5
-                1       // +6
-        };
-
-        m_melee_base_dmg.plus = rnd::weighted_choice(weights);
 }
 
 std::string Wpn::name_inf_str() const

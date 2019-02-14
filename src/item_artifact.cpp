@@ -13,6 +13,7 @@
 #include "actor_mon.hpp"
 #include "actor_player.hpp"
 #include "common_text.hpp"
+#include "explosion.hpp"
 #include "feature_rigid.hpp"
 #include "fov.hpp"
 #include "game.hpp"
@@ -383,15 +384,64 @@ void SpiritDagger::on_melee_hit(Actor& actor_hit, const int dmg)
 {
         (void)dmg;
 
-        // Only drain spirit if the victim did not die from the normal attack,
-        // otherwise the actor might be killed twice
-        if (actor_hit.is_alive())
+        if (m_actor_carrying->m_sp >= 17)
         {
-                actor::hit_sp(actor_hit, 1, Verbosity::verbose);
+                const P defender_pos = actor_hit.m_pos;
+
+                const P attacker_pos = m_actor_carrying->m_pos;
+
+                const auto tgt_pos =
+                        defender_pos + (defender_pos - attacker_pos);
+
+                const auto* const tgt_f = map::g_cells.at(tgt_pos).rigid;
+
+                if (tgt_f->id() != FeatureId::chasm &&
+                    tgt_f->id() != FeatureId::liquid_deep)
+                {
+                        P expl_pos;
+
+                        int expl_d = 0;
+
+                        if (tgt_f->is_projectile_passable())
+                        {
+                                expl_pos = tgt_pos;
+                                expl_d = -1;
+                        }
+                        else
+                        {
+                                expl_pos = defender_pos;
+                                expl_d = -2;
+                        }
+
+                        // TODO: Emit sound from explosion center
+
+                        explosion::run(
+                                expl_pos,
+                                ExplType::apply_prop,
+                                EmitExplSnd::no,
+                                expl_d,
+                                ExplExclCenter::no,
+                                {new PropBurning()});
+                }
         }
 
-        // We give the player spirit regardless of the above
-        map::g_player->restore_sp(1, true, Verbosity::verbose);
+        actor::hit_sp(*m_actor_carrying, 1, Verbosity::verbose);
+}
+
+void SpiritDagger::specific_dmg_mod(Dice& dice, const Actor* const actor) const
+{
+        if (!actor)
+        {
+                return;
+        }
+
+        const auto sp_db = (double)actor->m_sp;
+
+        const double exp = 0.5;
+
+        const auto dmg_plus_db = std::pow(sp_db, exp);
+
+        dice.plus = (int)dmg_plus_db;
 }
 
 // -----------------------------------------------------------------------------

@@ -384,7 +384,7 @@ void set_item_randomized_properties(Item* item)
         // specified randomize the extra damage
         if (d.melee.is_melee_wpn &&
             !d.ranged.is_ranged_wpn &&
-            (item->m_melee_base_dmg.plus == 0))
+            (item->melee_base_dmg().plus == 0))
         {
                 static_cast<Wpn*>(item)->set_random_melee_plus();
         }

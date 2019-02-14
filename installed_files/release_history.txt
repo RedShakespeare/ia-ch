@@ -6,7 +6,7 @@ Gameplay
 * Some maps built from templates (such as the "Egypt" level)  are randomly flipped and rotated for more variety
 * Added more special levels
 * Added swimming
-* You can now make a "dark pact" at altars, giving a big bonus for a big penalty - the bonus is received immediately, and the penalty is activated later in the game
+* You can now make a "dark pact" at altars, giving bonus for a penalty - the bonus is received immediately, and the penalty is activated later in the game
 * The blessed/cursed status effects no longer affect spell casting, and instead only give +/- 5% to hit chance, evasion, and sneaking - their descriptions now also say explicitly what they do (instead of "is generally more lucky")
 * The Occultist traits to improve spells (such as Lesser/Greater Invocation, Summoning, etc) have been removed - instead there are now multiple Occultist domains to choose from at character creation, which get free upgrades at certain levels for spells belonging to their respective domains
 * When carrying Manuscripts, the player eventually gets a "feeling" for which spell domain it belongs to (similarly to Potions)
@@ -16,6 +16,7 @@ Gameplay
 * The "Searching" spell lasts multiple turns, but detects in a smaller area (and never across the whole map)
 * Spells cast from manuscripts are always cast at least at "expert" level
 * The Staff of the Pharaohs gives a passive ability to convert mummies, instead of granting a spell to summon mummies
+* The Spirit Dagger now does extra damage based on the attacker's current spirit, and drains spirit from the attacker on succesful attacks (instead of giving spirit to the attacker)
 * Added a new "Strange Device"
 * Removed some player traits
 * Added more monsters, and removed some redundant monsters
@@ -32,7 +33,7 @@ Gameplay
 * Some monsters are now rarer than others (previously all monsters which could spawn on a certain level had equal chance of spawning)
 * The time system is more predictable and simple - creatures can only have 50%/100%/200%/300% speed (never something like 110%), and all types of actions take the same time to perform for a creature (no +10% melee attack speed for example)
 * Traps are always triggered when bumped, and always removed when disarmed
-* Updated how traps are placed - magic traps cannot be placed in blocking positions (since only Occultists can disarm them), traps tend to be more spread out in a room instead of clustered together, traps can be placed in corridors, and generally fewer traps are placed on the map overall
+* Updated traps placement - magic traps cannot be placed in blocking positions (since only Occultists can disarm them), traps tend to be more spread out in a room instead of clustered together, traps can be placed in corridors, and generally fewer traps are placed on the map overall
 * Added slow and curse traps
 * Improved check for if Phobia of open places should trigger (for example it no longer triggers while standing in smoke)
 

@@ -59,8 +59,9 @@ public:
 
         std::string hit_mod_str(const ItemRefAttInf att_inf) const;
 
-        std::string dmg_str(const ItemRefAttInf att_inf,
-                            const ItemRefDmg dmg_value) const;
+        std::string dmg_str(
+                const ItemRefAttInf att_inf,
+                const ItemRefDmg dmg_value) const;
 
         // E.g. "{Off}" for Lanterns, or "4/7" for Pistols
         virtual std::string name_inf_str() const
@@ -132,6 +133,28 @@ public:
                 (void)dmg;
         }
 
+        void set_melee_base_dmg(const Dice& dice)
+        {
+                m_melee_base_dmg = dice;
+        }
+
+        void set_ranged_base_dmg(const Dice& dice)
+        {
+                m_melee_base_dmg = dice;
+        }
+
+        void set_melee_plus(const int v)
+        {
+                m_melee_base_dmg.plus = v;
+        }
+
+        void set_random_melee_plus();
+
+        Dice melee_base_dmg() const
+        {
+                return m_melee_base_dmg;
+        }
+
         Dice melee_dmg(const Actor* const attacker) const;
         Dice ranged_dmg(const Actor* const attacker) const;
         Dice thrown_dmg(const Actor* const attacker) const;
@@ -179,10 +202,6 @@ public:
 
         int m_nr_items;
 
-        // Base damage (not including actor properties, player traits, etc)
-        Dice m_melee_base_dmg;
-        Dice m_ranged_base_dmg;
-
 protected:
         virtual void on_pickup_hook() {}
 
@@ -195,8 +214,9 @@ protected:
 
         virtual void on_removed_from_inv_hook() {}
 
-        virtual void specific_dmg_mod(Dice& dice,
-                                      const Actor* const actor) const
+        virtual void specific_dmg_mod(
+                Dice& dice,
+                const Actor* const actor) const
         {
                 (void)dice;
                 (void)actor;
@@ -208,6 +228,10 @@ protected:
         ItemData* m_data;
 
         Actor* m_actor_carrying;
+
+        // Base damage (not including actor properties, player traits, etc)
+        Dice m_melee_base_dmg;
+        Dice m_ranged_base_dmg;
 
 private:
         // Properties to apply on owning actor (when e.g. wearing the item, or
@@ -300,8 +324,6 @@ public:
         }
 
         std::string name_inf_str() const override;
-
-        void set_random_melee_plus();
 
         const ItemData& ammo_data()
         {
