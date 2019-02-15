@@ -67,9 +67,6 @@ static std::unique_ptr<Benefit> make_benefit(BenefitId id)
         case BenefitId::blessed:
                 return std::make_unique<Blessed>(id);
 
-        case BenefitId::hasted:
-                return std::make_unique<Hasted>(id);
-
         case BenefitId::START_OF_BENEFITS:
         case BenefitId::undefined:
         case BenefitId::END:
@@ -811,36 +808,6 @@ void Blessed::run_effect()
 }
 
 // -----------------------------------------------------------------------------
-// Hasted
-// -----------------------------------------------------------------------------
-Hasted::Hasted(BenefitId id) :
-        Benefit(id)
-{
-
-}
-
-std::string Hasted::offer_msg() const
-{
-        return
-                "I can give you TIME (permanently hasted, all actions are "
-                "performed at double speed, lasts until reverted by slowing).";
-}
-
-bool Hasted::is_allowed_to_offer_now() const
-{
-        return !map::g_player->m_properties.has(PropId::hasted);
-}
-
-void Hasted::run_effect()
-{
-        auto* const hasted = property_factory::make(PropId::hasted);
-
-        hasted->set_indefinite();
-
-        map::g_player->m_properties.apply(hasted);
-}
-
-// -----------------------------------------------------------------------------
 // HP reduced
 // -----------------------------------------------------------------------------
 HpReduced::HpReduced(TollId id) :
@@ -966,7 +933,7 @@ bool Slowed::is_allowed_to_offer_now() const
 
 std::vector<BenefitId> Slowed::benefits_not_allowed_with() const
 {
-        return {BenefitId::hasted};
+        return {};
 }
 
 std::string Slowed::offer_msg() const

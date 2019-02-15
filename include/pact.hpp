@@ -30,7 +30,6 @@ enum class BenefitId
         // recharge_item,
         healed,
         blessed,
-        hasted,
 
         END
 };
@@ -244,18 +243,6 @@ class Blessed : public Benefit
 {
 public:
         Blessed(BenefitId id);
-
-        std::string offer_msg() const override;
-
-        bool is_allowed_to_offer_now() const override;
-
-        void run_effect() override;
-};
-
-class Hasted : public Benefit
-{
-public:
-        Hasted(BenefitId id);
 
         std::string offer_msg() const override;
 
