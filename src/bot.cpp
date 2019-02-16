@@ -131,17 +131,62 @@ static bool walk_to_adj_cell(const P& p)
 {
         ASSERT(is_pos_adj(map::g_player->m_pos, p, true));
 
-        char key = '0' + (int)dir_utils::dir(p - map::g_player->m_pos);
+        auto dir = Dir::END;
 
-        // Occasionally randomize movement
-        if (rnd::one_in(5))
+        if (rnd::fraction(3, 4))
         {
-                key = '0' + rnd::range(1, 9);
+                dir = (Dir)rnd::range(0, (int)Dir::END - 1);
+        }
+        else
+        {
+                dir = dir_utils::dir(p - map::g_player->m_pos);
         }
 
-        const auto game_cmd = game_commands::to_cmd({key});
+        GameCmd cmd = GameCmd::none;
 
-        game_commands::handle(game_cmd);
+        switch (dir)
+        {
+        case Dir::down_left:
+                cmd = GameCmd::down_left;
+                break;
+
+        case Dir::down:
+                cmd = GameCmd::down;
+                break;
+
+        case Dir::down_right:
+                cmd = GameCmd::down_right;
+                break;
+
+        case Dir::left:
+                cmd = GameCmd::left;
+                break;
+
+        case Dir::center:
+                cmd = GameCmd::wait;
+                break;
+
+        case Dir::right:
+                cmd = GameCmd::right;
+                break;
+
+        case Dir::up_left:
+                cmd = GameCmd::up_left;
+                break;
+
+        case Dir::up:
+                cmd = GameCmd::up;
+                break;
+
+        case Dir::up_right:
+                cmd = GameCmd::up_right;
+                break;
+
+        case Dir::END:
+                break;
+        }
+
+        game_commands::handle(cmd);
 
         return map::g_player->m_pos == p;
 }
@@ -223,27 +268,9 @@ void act()
 
         auto& inv = map::g_player->m_inv;
 
-        // Use an Incinerator as ranged weapon
-        {
-                auto* wpn_item = inv.item_in_slot(SlotId::wpn);
-
-                if (!wpn_item || wpn_item->data().ranged.is_ranged_wpn)
-                {
-                        delete inv.m_slots[(size_t)SlotId::wpn].item;
-
-                        inv.m_slots[(size_t)SlotId::wpn].item = nullptr;
-
-                        inv.put_in_slot(
-                                SlotId::wpn,
-                                item_factory::make(ItemId::incinerator),
-                                Verbosity::silent);
-                }
-        }
-
         // If no armor, occasionally equip an asbesthos suite (helps not getting
         // stuck on e.g. Energy Hounds)
-        if (!inv.m_slots[(size_t)SlotId::body].item &&
-            rnd::one_in(20))
+        if (!inv.m_slots[(size_t)SlotId::body].item && rnd::one_in(20))
         {
                 inv.put_in_slot(
                         SlotId::body,
@@ -282,7 +309,7 @@ void act()
                 map::g_player->m_properties.apply(prop);
         }
 
-        // Occasionally apply rFear to avoid getting stuck
+        // Occasionally apply fear resistance to avoid getting stuck
         if (rnd::one_in(7))
         {
                 auto prop = new PropRFear();
@@ -292,10 +319,11 @@ void act()
                 map::g_player->m_properties.apply(prop);
         }
 
-        // Occasionally apply Burning to a random actor (to avoid getting stuck)
+        // Occasionally apply burning to a random actor (to avoid getting stuck)
         if (rnd::one_in(10))
         {
-                const int element = rnd::range(0, game_time::g_actors.size() - 1);
+                const int element =
+                        rnd::range(0, game_time::g_actors.size() - 1);
 
                 Actor* const actor = game_time::g_actors[element];
 
@@ -328,7 +356,7 @@ void act()
         }
 
         // Occasionally fire at a random position
-        if (rnd::one_in(5))
+        if (rnd::one_in(20))
         {
                 auto* wpn_item = map::g_player->m_inv.item_in_slot(SlotId::wpn);
 
@@ -345,7 +373,7 @@ void act()
         }
 
         // Occasionally apply a random property (to exercise the prop code)
-        if (rnd::one_in(20))
+        if (rnd::one_in(30))
         {
                 std::vector<PropId> prop_bucket;
 
@@ -383,7 +411,7 @@ void act()
 
         // Occasionally run an explosion around the player (code exercise, and
         // to avoid getting stuck)
-        if (rnd::one_in(1000))
+        if (rnd::one_in(50))
         {
                 explosion::run(map::g_player->m_pos, ExplType::expl);
 
