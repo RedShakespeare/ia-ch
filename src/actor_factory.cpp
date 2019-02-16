@@ -12,6 +12,7 @@
 #include "actor_data.hpp"
 #include "actor_mon.hpp"
 #include "actor_player.hpp"
+#include "feature_door.hpp"
 #include "feature_rigid.hpp"
 #include "init.hpp"
 #include "io.hpp"
@@ -148,6 +149,23 @@ Actor* make(const ActorId id, const P& pos)
         game_time::add_actor(actor);
 
         actor->m_properties.on_placed();
+
+#ifndef NDEBUG
+        if (map::nr_cells() != 0)
+        {
+                const auto* const f = map::g_cells.at(pos).rigid;
+
+                if (f->id() == FeatureId::door)
+                {
+                        const auto* const door = static_cast<const Door*>(f);
+
+                        ASSERT(
+                                door->is_open() ||
+                                actor->m_properties.has(PropId::ooze) ||
+                                actor->m_properties.has(PropId::ethereal));
+                }
+        }
+#endif // NDEBUG
 
         return actor;
 }

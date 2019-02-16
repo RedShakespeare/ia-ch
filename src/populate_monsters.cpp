@@ -144,10 +144,11 @@ static bool make_random_group_for_room(
 
                 const ActorData& d = actor_data::g_data[(size_t)id];
 
-                if (std::find(begin(d.native_rooms),
-                              end(d.native_rooms),
-                              room_type)
-                    != end(d.native_rooms))
+                if (std::find(
+                            std::begin(d.native_rooms),
+                            std::end(d.native_rooms),
+                            room_type)
+                    != std::end(d.native_rooms))
                 {
                         // Monster is native to room - keep the monster
                         continue;
@@ -333,7 +334,7 @@ std::vector<P> make_sorted_free_cells(
 
         IsCloserToPos sorter(origin);
 
-        std::sort(begin(out), end(out), sorter);
+        std::sort(std::begin(out), std::end(out), sorter);
 
         return out;
 }

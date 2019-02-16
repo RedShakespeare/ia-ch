@@ -73,15 +73,11 @@ static void try_make_door(const P& p)
                 {
                         const Wall* const mimic = new Wall(p);
 
-                        door = new Door(p,
-                                        mimic,
-                                        DoorType::wood);
+                        door = new Door(p, mimic, DoorType::wood);
                 }
                 else // Barred gate
                 {
-                        door = new Door(p,
-                                        nullptr,
-                                        DoorType::gate);
+                        door = new Door(p, nullptr, DoorType::gate);
                 }
 
                 map::put(door);

@@ -11,6 +11,7 @@
 #include "actor_player.hpp"
 #include "attack.hpp"
 #include "common_text.hpp"
+#include "feature_door.hpp"
 #include "feature_mob.hpp"
 #include "feature_rigid.hpp"
 #include "game_time.hpp"
@@ -371,8 +372,6 @@ static void move_mon(Mon& mon, Dir dir)
 
         const P target_p(mon.m_pos + dir_utils::offset(dir));
 
-        // Sanity check - monsters should never attempt to move into a blocked
-        // cell (if they do try this, it's probably an AI bug)
 #ifndef NDEBUG
         if (target_p != mon.m_pos)
         {
@@ -383,6 +382,18 @@ static void move_mon(Mon& mon, Dir dir)
                         .cell(target_p);
 
                 ASSERT(!is_blocked);
+
+                const auto* const f = map::g_cells.at(target_p).rigid;
+
+                if (f->id() == FeatureId::door)
+                {
+                        const auto* const door = static_cast<const Door*>(f);
+
+                        ASSERT(
+                                door->is_open() ||
+                                mon.m_properties.has(PropId::ooze) ||
+                                mon.m_properties.has(PropId::ethereal));
+                }
         }
 #endif // NDEBUG
 

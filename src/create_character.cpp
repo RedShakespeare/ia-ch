@@ -63,6 +63,15 @@ void PickBgState::update()
         {
                 player_bon::pick_bg(rnd::element(m_bgs));
 
+                ASSERT(player_bon::bg() != Bg::END);
+
+                if (player_bon::bg() == Bg::occultist)
+                {
+                        player_bon::pick_occultist_domain(
+                                (OccultistDomain)
+                                rnd::range(0, (int)OccultistDomain::END - 1));
+                }
+
                 states::pop();
 
                 return;

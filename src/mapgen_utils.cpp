@@ -1024,7 +1024,8 @@ void make_explore_spawn_weights(
                                 1,
                                 (250 / weight_div));
 
-                        Rigid* const rigid = map::g_cells.at(choke_point.p).rigid;
+                        Rigid* const rigid =
+                                map::g_cells.at(choke_point.p).rigid;
 
                         // Increase weight if behind hidden/stuck/metal doors
                         if (rigid->id() == FeatureId::door)
@@ -1288,8 +1289,7 @@ void reveal_doors_on_path_to_stairs(const P& stairs_pos)
 
         blocks_player.at(stairs_pos) = false;
 
-        const std::vector<FeatureId> free_features =
-        {
+        const std::vector<FeatureId> free_features = {
                 FeatureId::door,
                 FeatureId::liquid_deep
         };
