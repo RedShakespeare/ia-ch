@@ -540,6 +540,11 @@ bool MapBuilderStd::build_specific()
         }
 
         // ---------------------------------------------------------------------
+        // Reveal all doors on the path to the stairs
+        // ---------------------------------------------------------------------
+        mapgen::reveal_doors_on_path_to_stairs(stairs_pos);
+
+        // ---------------------------------------------------------------------
         // Populate the map with monsters
         // ---------------------------------------------------------------------
         populate_mon::populate_std_lvl();
@@ -596,16 +601,6 @@ bool MapBuilderStd::build_specific()
         if (!mapgen::g_is_map_valid)
         {
                 return false;
-        }
-
-        // ---------------------------------------------------------------------
-        // Reveal all doors on the path to the stairs (if "early" dungeon level)
-        // ---------------------------------------------------------------------
-        const int last_lvl_to_reveal_stairs_path = 6;
-
-        if (map::g_dlvl <= last_lvl_to_reveal_stairs_path)
-        {
-                mapgen::reveal_doors_on_path_to_stairs(stairs_pos);
         }
 
         // ---------------------------------------------------------------------
