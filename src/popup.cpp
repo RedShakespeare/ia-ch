@@ -14,6 +14,7 @@
 #include "msg_log.hpp"
 #include "panel.hpp"
 #include "query.hpp"
+#include "rect.hpp"
 #include "text_format.hpp"
 
 // -----------------------------------------------------------------------------

@@ -7,16 +7,28 @@
 #ifndef TELEPORT_HPP
 #define TELEPORT_HPP
 
-#include "actor.hpp"
 #include "global.hpp"
 #include "pos.hpp"
 
+
+namespace actor
+{
+
+class Actor;
+
+} // actor
+
+
+template<typename T>
+class Array2;
+
+
 void teleport(
-        Actor& actor,
+        actor::Actor& actor,
         const ShouldCtrlTele ctrl_tele = ShouldCtrlTele::if_tele_ctrl_prop);
 
 void teleport(
-        Actor& actor,
+        actor::Actor& actor,
         P p,
         const Array2<bool>& blocked);
 

@@ -9,15 +9,24 @@
 
 #include <vector>
 
-#include "feature.hpp"
 #include "actor_data.hpp"
 
+
+namespace actor
+{
+
+class Actor;
+
+} // actor
+
+
 class Mob;
+
 
 namespace game_time
 {
 
-extern std::vector<Actor*> g_actors;
+extern std::vector<actor::Actor*> g_actors;
 extern std::vector<Mob*> g_mobs;
 
 extern bool g_is_magic_descend_nxt_std_turn;
@@ -28,13 +37,13 @@ void cleanup();
 void save();
 void load();
 
-void add_actor(Actor* actor);
+void add_actor(actor::Actor* actor);
 
 void tick();
 
 int turn_nr();
 
-Actor* current_actor();
+actor::Actor* current_actor();
 
 std::vector<Mob*> mobs_at_pos(const P& p);
 

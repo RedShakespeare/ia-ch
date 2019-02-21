@@ -8,6 +8,8 @@
 
 #include "io.hpp"
 #include "panel.hpp"
+#include "pos.hpp"
+#include "rect.hpp"
 
 // -----------------------------------------------------------------------------
 // Private

@@ -28,8 +28,8 @@
 // Private
 // -----------------------------------------------------------------------------
 static BinaryAnswer query_player_attack_mon_with_ranged_wpn(
-        const Wpn& wpn,
-        const Mon& mon)
+        const item::Wpn& wpn,
+        const actor::Mon& mon)
 {
         const std::string wpn_name = wpn.name(ItemRefType::a);
 
@@ -55,7 +55,7 @@ static BinaryAnswer query_player_attack_mon_with_ranged_wpn(
         return answer;
 }
 
-static void player_bump_known_hostile_mon(Mon& mon)
+static void player_bump_known_hostile_mon(actor::Mon& mon)
 {
         auto& player = *map::g_player;
 
@@ -64,7 +64,7 @@ static void player_bump_known_hostile_mon(Mon& mon)
                 return;
         }
 
-        Item* const wpn_item = player.m_inv.item_in_slot(SlotId::wpn);
+        auto* const wpn_item = player.m_inv.item_in_slot(SlotId::wpn);
 
         if (!wpn_item)
         {
@@ -73,7 +73,7 @@ static void player_bump_known_hostile_mon(Mon& mon)
                 return;
         }
 
-        auto& wpn = static_cast<Wpn&>(*wpn_item);
+        auto& wpn = static_cast<item::Wpn&>(*wpn_item);
 
         // If this is also a ranged weapon, ask if player really
         // intended to use it as melee weapon
@@ -100,14 +100,14 @@ static void player_bump_known_hostile_mon(Mon& mon)
         player.m_tgt = &mon;
 }
 
-static void player_bump_unkown_hostile_mon(Mon& mon)
+static void player_bump_unkown_hostile_mon(actor::Mon& mon)
 {
         mon.set_player_aware_of_me();
 
         actor::print_aware_invis_mon_msg(mon);
 }
 
-static void player_bump_allied_mon(Mon& mon)
+static void player_bump_allied_mon(actor::Mon& mon)
 {
         if (mon.m_player_aware_of_me_counter > 0)
         {
@@ -122,7 +122,7 @@ static void player_bump_allied_mon(Mon& mon)
         mon.m_pos = map::g_player->m_pos;
 }
 
-static void player_walk_on_item(Item* const item)
+static void player_walk_on_item(item::Item* const item)
 {
         if (!item)
         {
@@ -181,7 +181,7 @@ static bool is_player_staggering_from_wounds()
         return nr_wounds >= min_nr_wounds_for_stagger;
 }
 
-static AllowAction pre_bump_features(Actor& actor, const P& tgt)
+static AllowAction pre_bump_features(actor::Actor& actor, const P& tgt)
 {
         const auto mobs = game_time::mobs_at_pos(tgt);
 
@@ -200,7 +200,7 @@ static AllowAction pre_bump_features(Actor& actor, const P& tgt)
         return result;
 }
 
-static void bump_features(Actor& actor, const P& tgt)
+static void bump_features(actor::Actor& actor, const P& tgt)
 {
         const auto mobs = game_time::mobs_at_pos(tgt);
 
@@ -242,7 +242,7 @@ static void move_player_non_center_direction(const P& tgt)
                 map_parsers::BlocksActor(player, ParseActors::no)
                 .cell(tgt);
 
-        auto* const mon = static_cast<Mon*>(map::actor_at_pos(tgt));
+        auto* const mon = static_cast<actor::Mon*>(map::actor_at_pos(tgt));
 
         const auto is_aware_of_mon =
                 mon &&
@@ -349,7 +349,7 @@ static void move_player(Dir dir)
         }
 }
 
-static void move_mon(Mon& mon, Dir dir)
+static void move_mon(actor::Mon& mon, Dir dir)
 {
 #ifndef NDEBUG
         if (dir == Dir::END)

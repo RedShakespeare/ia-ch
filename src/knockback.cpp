@@ -30,7 +30,7 @@
 namespace knockback
 {
 
-void run(Actor& defender,
+void run(actor::Actor& defender,
          const P& attacked_from_pos,
          const bool is_spike_gun,
          const Verbosity verbosity,
@@ -43,7 +43,7 @@ void run(Actor& defender,
         const bool is_defender_player = defender.is_player();
 
         if (defender.m_data->prevent_knockback ||
-            (defender.m_data->actor_size >= ActorSize::giant) ||
+            (defender.m_data->actor_size >= actor::Size::giant) ||
             defender.m_properties.has(PropId::entangled) ||
             defender.m_properties.has(PropId::ethereal) ||
             defender.m_properties.has(PropId::ooze) ||
@@ -109,7 +109,8 @@ void run(Actor& defender,
 
         if (!is_defender_player)
         {
-                const auto* const mon = static_cast<const Mon*>(&defender);
+                const auto* const mon =
+                        static_cast<const actor::Mon*>(&defender);
 
                 player_is_aware_of_defender =
                         mon->m_aware_of_player_counter > 0;

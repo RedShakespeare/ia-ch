@@ -46,7 +46,8 @@ void MapControllerBoss::on_start()
         {
                 if (!actor->is_player())
                 {
-                        static_cast<Mon*>(actor)->become_aware_player(false);
+                        static_cast<actor::Mon*>(actor)->
+                                become_aware_player(false);
                 }
         }
 }
@@ -66,7 +67,7 @@ void MapControllerBoss::on_std_turn()
 
         for (const auto* const actor : game_time::g_actors)
         {
-                if ((actor->id() == ActorId::the_high_priest) &&
+                if ((actor->id() == actor::Id::the_high_priest) &&
                     actor->is_alive())
                 {
                         // The boss is still alive
@@ -91,7 +92,7 @@ void MapControllerBoss::on_std_turn()
 
         // actor_factory::spawn(
         //         pos,
-        //         {nr_snakes, ActorId::pit_viper});
+        //         {nr_snakes, actor::Id::pit_viper});
 }
 
 // -----------------------------------------------------------------------------

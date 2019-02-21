@@ -46,11 +46,11 @@ static int random_out_of_depth()
         return nr_levels;
 }
 
-static WeightedItems<ActorId> valid_auto_spawn_monsters(
+static WeightedItems<actor::Id> valid_auto_spawn_monsters(
         const int nr_lvls_out_of_depth,
         const AllowSpawnUniqueMon allow_spawn_unique)
 {
-        WeightedItems<ActorId> weighted_ids;
+        WeightedItems<actor::Id> weighted_ids;
 
         const int effective_dlvl =
                 constr_in_range(
@@ -60,16 +60,16 @@ static WeightedItems<ActorId> valid_auto_spawn_monsters(
 
         // Get list of actors currently on the level to help avoid spawning
         // multiple unique monsters of the same id
-        bool spawned_ids[(size_t)ActorId::END] = {};
+        bool spawned_ids[(size_t)actor::Id::END] = {};
 
         for (const auto* const actor : game_time::g_actors)
         {
                 spawned_ids[(size_t)actor->id()] = true;
         }
 
-        for (const auto& d : actor_data::g_data)
+        for (const auto& d : actor::g_data)
         {
-                if (d.id == ActorId::player)
+                if (d.id == actor::Id::player)
                 {
                         continue;
                 }
@@ -142,7 +142,7 @@ static bool make_random_group_for_room(
 
                 const auto id = id_bucket.items[i];
 
-                const ActorData& d = actor_data::g_data[(size_t)id];
+                const auto& d = actor::g_data[(size_t)id];
 
                 if (std::find(
                             std::begin(d.native_rooms),
@@ -222,12 +222,12 @@ namespace populate_mon
 {
 
 void make_group_at(
-        const ActorId id,
+        const actor::Id id,
         const std::vector<P>& sorted_free_cells,
         Array2<bool>* const blocked_out,
         const MonRoamingAllowed is_roaming_allowed)
 {
-        const ActorData& d = actor_data::g_data[(size_t)id];
+        const auto& d = actor::g_data[(size_t)id];
 
         int max_nr_in_group = 1;
 
@@ -241,20 +241,20 @@ void make_group_at(
 
         const int rnd_choice = rnd::weighted_choice(weights);
 
-        const MonGroupSize group_size = d.group_sizes[rnd_choice].group_size;
+        const auto group_size = d.group_sizes[rnd_choice].group_size;
 
         // Determine the number of monsters to spawn based on the group type
         switch (group_size)
         {
-        case MonGroupSize::few:
+        case actor::MonGroupSize::few:
                 max_nr_in_group = rnd::range(2, 3);
                 break;
 
-        case MonGroupSize::pack:
+        case actor::MonGroupSize::pack:
                 max_nr_in_group = rnd::range(4, 5);
                 break;
 
-        case MonGroupSize::swarm:
+        case actor::MonGroupSize::swarm:
                 max_nr_in_group = rnd::range(9, 11);
                 break;
 
@@ -262,7 +262,7 @@ void make_group_at(
                 break;
         }
 
-        Actor* origin_actor = nullptr;
+        actor::Actor* origin_actor = nullptr;
 
         const int nr_free_cells = sorted_free_cells.size();
 
@@ -277,9 +277,9 @@ void make_group_at(
                         ASSERT(!blocked_out->at(p));
                 }
 
-                Actor* const actor = actor_factory::make(id, p);
+                auto* const actor = actor::make(id, p);
 
-                Mon* const mon = static_cast<Mon*>(actor);
+                auto* const mon = static_cast<actor::Mon*>(actor);
 
                 mon->m_is_roaming_allowed = is_roaming_allowed;
 

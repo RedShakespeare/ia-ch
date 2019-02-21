@@ -16,6 +16,7 @@
 #include "common_text.hpp"
 #include "config.hpp"
 #include "disarm.hpp"
+#include "game.hpp"
 #include "game_time.hpp"
 #include "init.hpp"
 #include "item_factory.hpp"
@@ -529,7 +530,7 @@ void handle(const GameCmd cmd)
 
         case GameCmd::reload:
         {
-                Item* const wpn =
+                auto* const wpn =
                         map::g_player->m_inv.item_in_slot(SlotId::wpn);
 
                 reload::try_reload(*map::g_player, wpn);
@@ -567,11 +568,11 @@ void handle(const GameCmd cmd)
 
                         if (item)
                         {
-                                const ItemData& item_data = item->data();
+                                const auto& item_data = item->data();
 
                                 if (item_data.ranged.is_ranged_wpn)
                                 {
-                                        auto* wpn = static_cast<Wpn*>(item);
+                                        auto* wpn = static_cast<item::Wpn*>(item);
 
                                         if ((wpn->m_ammo_loaded >= 1) ||
                                             item_data.ranged.has_infinite_ammo)
@@ -579,7 +580,7 @@ void handle(const GameCmd cmd)
                                                 // Not enough health for Mi-go gun?
 
                                                 // TODO: This doesn't belong here - refactor
-                                                if (wpn->data().id == ItemId::mi_go_gun)
+                                                if (wpn->data().id == item::Id::mi_go_gun)
                                                 {
                                                         if (map::g_player->m_hp <= g_mi_go_gun_hp_drained)
                                                         {
@@ -621,10 +622,10 @@ void handle(const GameCmd cmd)
         {
                 const P& p = map::g_player->m_pos;
 
-                Item* const item_at_player = map::g_cells.at(p).item;
+                auto* const item_at_player = map::g_cells.at(p).item;
 
                 if (item_at_player &&
-                    item_at_player->data().id == ItemId::trapez)
+                    item_at_player->data().id == item::Id::trapez)
                 {
                         game::add_history_event(
                                 "Beheld The Shining Trapezohedron!");
@@ -666,9 +667,9 @@ void handle(const GameCmd cmd)
 
         case GameCmd::swap_weapon:
         {
-                Item* const wielded = map::g_player->m_inv.item_in_slot(SlotId::wpn);
+                auto* const wielded = map::g_player->m_inv.item_in_slot(SlotId::wpn);
 
-                Item* const alt = map::g_player->m_inv.item_in_slot(SlotId::wpn_alt);
+                auto* const alt = map::g_player->m_inv.item_in_slot(SlotId::wpn_alt);
 
                 if (wielded || alt)
                 {
@@ -811,7 +812,7 @@ void handle(const GameCmd cmd)
 
         case GameCmd::throw_item:
         {
-                const Item* explosive = map::g_player->m_active_explosive;
+                const auto* explosive = map::g_player->m_active_explosive;
 
                 if (explosive)
                 {
@@ -986,19 +987,19 @@ void handle(const GameCmd cmd)
 
         case GameCmd::debug_f6:
         {
-                item_factory::make_item_on_floor(
-                        ItemId::gas_mask,
+                item::make_item_on_floor(
+                        item::Id::gas_mask,
                         map::g_player->m_pos);
 
-                for (size_t i = 0; i < (size_t)ItemId::END; ++i)
+                for (size_t i = 0; i < (size_t)item::Id::END; ++i)
                 {
-                        const auto& item_data = item_data::g_data[i];
+                        const auto& item_data = item::g_data[i];
 
-                        if ((item_data.value != ItemValue::normal) &&
+                        if ((item_data.value != item::Value::normal) &&
                             item_data.allow_spawn)
                         {
-                                item_factory::make_item_on_floor(
-                                        ItemId(i),
+                                item::make_item_on_floor(
+                                        item::Id(i),
                                         map::g_player->m_pos);
                         }
                 }
@@ -1032,13 +1033,13 @@ void handle(const GameCmd cmd)
                                 P(query_str.size(), 0),
                                 colors::light_white(),
                                 0,
-                                (int)ActorId::END,
+                                (int)actor::Id::END,
                                 0,
                                 false);
 
-                const ActorId mon_id = ActorId(idx);
+                const auto mon_id = (actor::Id)idx;
 
-                actor_factory::spawn(
+                actor::spawn(
                         map::g_player->m_pos,
                         {mon_id},
                         map::rect());

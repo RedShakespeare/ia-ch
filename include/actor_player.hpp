@@ -14,6 +14,18 @@
 #include "global.hpp"
 #include "insanity.hpp"
 
+
+namespace item
+{
+
+class Explosive;
+class Item;
+class MedicalBag;
+class Wpn;
+
+} // item
+
+
 enum class Phobia
 {
         rat,
@@ -44,10 +56,9 @@ enum class ShockSrc
         END
 };
 
-class MedicalBag;
-class Explosive;
-class Item;
-class Wpn;
+
+namespace actor
+{
 
 class Player: public Actor
 {
@@ -107,9 +118,9 @@ public:
 
         void auto_melee();
 
-        Wpn& unarmed_wpn();
+        item::Wpn& unarmed_wpn();
 
-        void set_unarmed_wpn(Wpn* wpn)
+        void set_unarmed_wpn(item::Wpn* wpn)
         {
                 m_unarmed_wpn = wpn;
         }
@@ -142,12 +153,12 @@ public:
         // there are unique monsters on the map, and the player is a Rogue
         void mon_feeling();
 
-        MedicalBag* m_active_medical_bag {nullptr};
+        item::MedicalBag* m_active_medical_bag {nullptr};
         int m_handle_armor_countdown {0};
         int m_armor_putting_on_backpack_idx {-1};
         bool m_is_dropping_armor_from_body_slot {false};
-        Explosive* m_active_explosive {nullptr};
-        Item* m_last_thrown_item {nullptr};
+        item::Explosive* m_active_explosive {nullptr};
+        item::Item* m_last_thrown_item {nullptr};
         Actor* m_tgt {nullptr};
         int wait_turns_left {-1};
         int m_ins {0};
@@ -183,7 +194,9 @@ private:
         Dir m_auto_move_dir {Dir::END};
         bool m_has_taken_auto_move_step {false};
         int m_nr_turns_until_rspell {-1};
-        Wpn* m_unarmed_wpn {nullptr};
+        item::Wpn* m_unarmed_wpn {nullptr};
 };
+
+} // actor
 
 #endif // PLAYER_HPP

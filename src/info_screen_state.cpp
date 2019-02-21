@@ -9,6 +9,7 @@
 #include "common_text.hpp"
 #include "io.hpp"
 #include "panel.hpp"
+#include "pos.hpp"
 
 int InfoScreenState::max_nr_lines_on_screen() const
 {

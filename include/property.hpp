@@ -16,8 +16,17 @@
 #include "global.hpp"
 #include "property_data.hpp"
 
-struct P;
+
+namespace item
+{
+
 class Item;
+
+} // item
+
+
+struct P;
+
 
 // -----------------------------------------------------------------------------
 // Support types
@@ -316,9 +325,9 @@ protected:
 
         PropDurationMode m_duration_mode;
 
-        Actor* m_owner;
+        actor::Actor* m_owner;
         PropSrc m_src;
-        const Item* m_item_applying;
+        const item::Item* m_item_applying;
 };
 
 // -----------------------------------------------------------------------------
@@ -1459,7 +1468,7 @@ private:
 
         void run_effect_on_env() const;
 
-        void print_msg_actor_hit(const Actor& actor) const;
+        void print_msg_actor_hit(const actor::Actor& actor) const;
 
         int m_dmg;
 };

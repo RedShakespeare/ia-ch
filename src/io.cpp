@@ -1726,8 +1726,9 @@ void draw_blast_at_seen_cells(const std::vector<P>& positions,
         }
 }
 
-void draw_blast_at_seen_actors(const std::vector<Actor*>& actors,
-                               const Color& color)
+void draw_blast_at_seen_actors(
+        const std::vector<actor::Actor*>& actors,
+        const Color& color)
 {
         if (!panels::is_valid())
         {
@@ -1736,7 +1737,7 @@ void draw_blast_at_seen_actors(const std::vector<Actor*>& actors,
 
         std::vector<P> positions;
 
-        for (Actor* const actor : actors)
+        for (auto* const actor : actors)
         {
                 positions.push_back(actor->m_pos);
         }

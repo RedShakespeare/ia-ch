@@ -7,23 +7,28 @@
 #ifndef ITEM_FACTORY_HPP
 #define ITEM_FACTORY_HPP
 
-#include <string>
 
-#include "item.hpp"
+struct P;
 
-namespace item_factory
+
+namespace item
 {
 
-Item* make(const ItemId item_id, const int nr_items = 1);
+class Item;
+
+enum class Id;
+
+
+item::Item* make(const item::Id item_id, const int nr_items = 1);
 
 // TODO: Shouldn't this be a virtual function for the Item class? Something like
 // "init_randomized()"?
-void set_item_randomized_properties(Item* item);
+void set_item_randomized_properties(item::Item* item);
 
-Item* make_item_on_floor(const ItemId item_id, const P& pos);
+item::Item* make_item_on_floor(const item::Id item_id, const P& pos);
 
-Item* copy_item(const Item& item_to_copy);
+item::Item* copy_item(const item::Item& item_to_copy);
 
-} // item_factory
+} // item
 
-#endif
+#endif // ITEM_FACTORY_HPP

@@ -27,6 +27,179 @@
 #include "saving.hpp"
 #include "text_format.hpp"
 
+
+// -----------------------------------------------------------------------------
+// Private
+// -----------------------------------------------------------------------------
+std::vector<rod::RodLook> s_rod_looks;
+
+
+// -----------------------------------------------------------------------------
+// rod
+// -----------------------------------------------------------------------------
+namespace rod
+{
+
+void init()
+{
+        TRACE_FUNC_BEGIN;
+
+        // Init possible rod colors and fake names
+        s_rod_looks.clear();
+
+        s_rod_looks.push_back(
+                {"Iron", "an Iron", colors::gray()});
+
+        s_rod_looks.push_back(
+                {"Zinc", "a Zinc", colors::light_white()});
+
+        s_rod_looks.push_back(
+                {"Chromium", "a Chromium", colors::light_white()});
+
+        s_rod_looks.push_back(
+                {"Tin", "a Tin", colors::light_white()});
+
+        s_rod_looks.push_back(
+                {"Silver", "a Silver", colors::light_white()});
+
+        s_rod_looks.push_back(
+                {"Golden", "a Golden", colors::yellow()});
+
+        s_rod_looks.push_back(
+                {"Nickel", "a Nickel", colors::light_white()});
+
+        s_rod_looks.push_back(
+                {"Copper", "a Copper", colors::brown()});
+
+        s_rod_looks.push_back(
+                {"Lead", "a Lead", colors::gray()});
+
+        s_rod_looks.push_back(
+                {"Tungsten", "a Tungsten", colors::white()});
+
+        s_rod_looks.push_back(
+                {"Platinum", "a Platinum", colors::light_white()});
+
+        s_rod_looks.push_back(
+                {"Lithium", "a Lithium", colors::white()});
+
+        s_rod_looks.push_back(
+                {"Zirconium", "a Zirconium", colors::white()});
+
+        s_rod_looks.push_back(
+                {"Gallium", "a Gallium", colors::light_white()});
+
+        s_rod_looks.push_back(
+                {"Cobalt", "a Cobalt", colors::light_blue()});
+
+        s_rod_looks.push_back(
+                {"Titanium", "a Titanium", colors::light_white()});
+
+        s_rod_looks.push_back(
+                {"Magnesium", "a Magnesium", colors::white()});
+
+        for (auto& d : item::g_data)
+        {
+                if (d.type == ItemType::rod)
+                {
+                        // Color and false name
+                        const size_t idx =
+                                rnd::range(0, s_rod_looks.size() - 1);
+
+                        RodLook& look = s_rod_looks[idx];
+
+                        d.base_name_un_id.names[(size_t)ItemRefType::plain] =
+                                look.name_plain + " Rod";
+
+                        d.base_name_un_id.names[(size_t)ItemRefType::plural] =
+                                look.name_plain + " Rods";
+
+                        d.base_name_un_id.names[(size_t)ItemRefType::a] =
+                                look.name_a + " Rod";
+
+                        d.color = look.color;
+
+                        s_rod_looks.erase(s_rod_looks.begin() + idx);
+
+                        // True name
+                        const Rod* const rod =
+                                static_cast<const Rod*>(
+                                        item::make(d.id, 1));
+
+                        const std::string real_type_name = rod->real_name();
+
+                        delete rod;
+
+                        const std::string real_name =
+                                "Rod of " + real_type_name;
+
+                        const std::string real_name_plural =
+                                "Rods of " + real_type_name;
+
+                        const std::string real_name_a =
+                                "a Rod of " + real_type_name;
+
+                        d.base_name.names[(size_t)ItemRefType::plain] =
+                                real_name;
+
+                        d.base_name.names[(size_t)ItemRefType::plural] =
+                                real_name_plural;
+
+                        d.base_name.names[(size_t)ItemRefType::a] =
+                                real_name_a;
+                }
+        }
+
+        TRACE_FUNC_END;
+}
+
+void save()
+{
+        for (int i = 0; i < (int)item::Id::END; ++i)
+        {
+                auto& d = item::g_data[i];
+
+                if (d.type == ItemType::rod)
+                {
+                        saving::put_str(
+                                d.base_name_un_id.names[
+                                        (size_t)ItemRefType::plain]);
+
+                        saving::put_str(
+                                d.base_name_un_id.names[
+                                        (size_t)ItemRefType::plural]);
+
+                        saving::put_str(
+                                d.base_name_un_id.names[
+                                        (size_t)ItemRefType::a]);
+
+                        saving::put_str(colors::color_to_name(d.color));
+                }
+        }
+}
+
+void load()
+{
+        for (int i = 0; i < (int)item::Id::END; ++i)
+        {
+                auto& d = item::g_data[i];
+
+                if (d.type == ItemType::rod)
+                {
+                        d.base_name_un_id.names[(size_t)ItemRefType::plain] =
+                                saving::get_str();
+
+                        d.base_name_un_id.names[(size_t)ItemRefType::plural] =
+                                saving::get_str();
+
+                        d.base_name_un_id.names[(size_t)ItemRefType::a] =
+                                saving::get_str();
+
+                        d.color = colors::name_to_color(saving::get_str());
+                }
+        }
+}
+
 void Rod::save() const
 {
         saving::put_int(m_nr_charge_turns_left);
@@ -47,7 +220,7 @@ void Rod::set_max_charge_turns_left()
         }
 }
 
-ConsumeItem Rod::activate(Actor* const actor)
+ConsumeItem Rod::activate(actor::Actor* const actor)
 {
         (void)actor;
 
@@ -176,19 +349,18 @@ std::string Rod::name_inf_str() const
         }
 }
 
-void RodCuring::run_effect()
+void Curing::run_effect()
 {
-        Player& player = *map::g_player;
+        auto& player = *map::g_player;
 
-        std::vector<PropId> props_can_heal =
-                {
-                        PropId::blind,
-                        PropId::poisoned,
-                        PropId::infected,
-                        PropId::diseased,
-                        PropId::weakened,
-                        PropId::hp_sap
-                };
+        std::vector<PropId> props_can_heal = {
+                PropId::blind,
+                PropId::poisoned,
+                PropId::infected,
+                PropId::diseased,
+                PropId::weakened,
+                PropId::hp_sap
+        };
 
         bool is_something_healed = false;
 
@@ -213,7 +385,7 @@ void RodCuring::run_effect()
         identify(Verbosity::verbose);
 }
 
-void RodOpening::run_effect()
+void Opening::run_effect()
 {
         bool is_any_opened = false;
 
@@ -236,7 +408,7 @@ void RodOpening::run_effect()
         }
 }
 
-void RodBless::run_effect()
+void Bless::run_effect()
 {
         const int nr_turns = rnd::range(8, 12);
 
@@ -249,15 +421,15 @@ void RodBless::run_effect()
         identify(Verbosity::verbose);
 }
 
-void RodCloudMinds::run_effect()
+void CloudMinds::run_effect()
 {
         msg_log::add("I vanish from the minds of my enemies.");
 
-        for (Actor* actor : game_time::g_actors)
+        for (auto* actor : game_time::g_actors)
         {
                 if (!actor->is_player())
                 {
-                        Mon* const mon = static_cast<Mon*>(actor);
+                        auto* const mon = static_cast<actor::Mon*>(actor);
 
                         mon->m_aware_of_player_counter = 0;
 
@@ -268,7 +440,7 @@ void RodCloudMinds::run_effect()
         identify(Verbosity::verbose);
 }
 
-void RodShockwave::run_effect()
+void Shockwave::run_effect()
 {
         msg_log::add("It triggers a shock wave around me.");
 
@@ -286,7 +458,7 @@ void RodShockwave::run_effect()
                         DmgMethod::explosion);
         }
 
-        for (Actor* actor : game_time::g_actors)
+        for (actor::Actor* actor : game_time::g_actors)
         {
                 if (actor->is_player() ||
                     !actor->is_alive())
@@ -340,139 +512,4 @@ void RodShockwave::run_effect()
         identify(Verbosity::verbose);
 }
 
-namespace rod_handling
-{
-
-namespace
-{
-
-std::vector<RodLook> rod_looks_;
-
-} // namespace
-
-void init()
-{
-        TRACE_FUNC_BEGIN;
-
-        // Init possible rod colors and fake names
-        rod_looks_.clear();
-        rod_looks_.push_back({"Iron", "an Iron", colors::gray()});
-        rod_looks_.push_back({"Zinc", "a Zinc", colors::light_white()});
-        rod_looks_.push_back({"Chromium", "a Chromium", colors::light_white()});
-        rod_looks_.push_back({"Tin", "a Tin", colors::light_white()});
-        rod_looks_.push_back({"Silver", "a Silver", colors::light_white()});
-        rod_looks_.push_back({"Golden", "a Golden", colors::yellow()});
-        rod_looks_.push_back({"Nickel", "a Nickel", colors::light_white()});
-        rod_looks_.push_back({"Copper", "a Copper", colors::brown()});
-        rod_looks_.push_back({"Lead", "a Lead", colors::gray()});
-        rod_looks_.push_back({"Tungsten", "a Tungsten", colors::white()});
-        rod_looks_.push_back({"Platinum", "a Platinum", colors::light_white()});
-        rod_looks_.push_back({"Lithium", "a Lithium", colors::white()});
-        rod_looks_.push_back({"Zirconium", "a Zirconium", colors::white()});
-        rod_looks_.push_back({"Gallium", "a Gallium", colors::light_white()});
-        rod_looks_.push_back({"Cobalt", "a Cobalt", colors::light_blue()});
-        rod_looks_.push_back({"Titanium", "a Titanium", colors::light_white()});
-        rod_looks_.push_back({"Magnesium", "a Magnesium", colors::white()});
-
-        for (auto& d : item_data::g_data)
-        {
-                if (d.type == ItemType::rod)
-                {
-                        // Color and false name
-                        const size_t idx = rnd::range(0, rod_looks_.size() - 1);
-
-                        RodLook& look = rod_looks_[idx];
-
-                        d.base_name_un_id.names[(size_t)ItemRefType::plain] =
-                                look.name_plain + " Rod";
-
-                        d.base_name_un_id.names[(size_t)ItemRefType::plural] =
-                                look.name_plain + " Rods";
-
-                        d.base_name_un_id.names[(size_t)ItemRefType::a] =
-                                look.name_a + " Rod";
-
-                        d.color = look.color;
-
-                        rod_looks_.erase(rod_looks_.begin() + idx);
-
-                        // True name
-                        const Rod* const rod =
-                                static_cast<const Rod*>(
-                                        item_factory::make(d.id, 1));
-
-                        const std::string real_type_name = rod->real_name();
-
-                        delete rod;
-
-                        const std::string real_name =
-                                "Rod of " + real_type_name;
-
-                        const std::string real_name_plural =
-                                "Rods of " + real_type_name;
-
-                        const std::string real_name_a =
-                                "a Rod of " + real_type_name;
-
-                        d.base_name.names[(size_t)ItemRefType::plain] =
-                                real_name;
-
-                        d.base_name.names[(size_t)ItemRefType::plural] =
-                                real_name_plural;
-
-                        d.base_name.names[(size_t)ItemRefType::a] =
-                                real_name_a;
-                }
-        }
-
-        TRACE_FUNC_END;
-}
-
-void save()
-{
-        for (int i = 0; i < (int)ItemId::END; ++i)
-        {
-                ItemData& d = item_data::g_data[i];
-
-                if (d.type == ItemType::rod)
-                {
-                        saving::put_str(
-                                d.base_name_un_id.names[
-                                        (size_t)ItemRefType::plain]);
-
-                        saving::put_str(
-                                d.base_name_un_id.names[
-                                        (size_t)ItemRefType::plural]);
-
-                        saving::put_str(
-                                d.base_name_un_id.names[
-                                        (size_t)ItemRefType::a]);
-
-                        saving::put_str(colors::color_to_name(d.color));
-                }
-        }
-}
-
-void load()
-{
-        for (int i = 0; i < (int)ItemId::END; ++i)
-        {
-                ItemData& d = item_data::g_data[i];
-
-                if (d.type == ItemType::rod)
-                {
-                        d.base_name_un_id.names[(size_t)ItemRefType::plain] =
-                                saving::get_str();
-
-                        d.base_name_un_id.names[(size_t)ItemRefType::plural] =
-                                saving::get_str();
-
-                        d.base_name_un_id.names[(size_t)ItemRefType::a] =
-                                saving::get_str();
-
-                        d.color = colors::name_to_color(saving::get_str());
-                }
-        }
-}
-
-} // rod_handling
+} // rod

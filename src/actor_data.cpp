@@ -23,89 +23,89 @@
 // -----------------------------------------------------------------------------
 // Private
 // -----------------------------------------------------------------------------
-static std::unordered_map<std::string, ActorId> str_to_actor_id_map = {
-        {"player", ActorId::player},
-        {"zombie", ActorId::zombie},
-        {"bloated_zombie", ActorId::bloated_zombie},
-        {"crawling_intestines", ActorId::crawling_intestines},
-        {"crawling_hand", ActorId::crawling_hand},
-        {"thing", ActorId::thing},
-        {"floating_skull", ActorId::floating_skull},
-        {"cultist", ActorId::cultist},
-        {"zealot", ActorId::zealot},
-        {"cultist_priest", ActorId::cultist_priest},
-        {"cultist_wizard", ActorId::cultist_wizard},
-        {"cultist_arch_wizard", ActorId::cultist_arch_wizard},
-        {"bog_tcher", ActorId::bog_tcher},
-        {"rat", ActorId::rat},
-        {"rat_thing", ActorId::rat_thing},
-        {"green_spider", ActorId::green_spider},
-        {"white_spider", ActorId::white_spider},
-        {"red_spider", ActorId::red_spider},
-        {"shadow_spider", ActorId::shadow_spider},
-        {"leng_spider", ActorId::leng_spider},
-        {"pit_viper", ActorId::pit_viper},
-        {"spitting_cobra", ActorId::spitting_cobra},
-        {"black_mamba", ActorId::black_mamba},
-        {"mi_go", ActorId::mi_go},
-        {"mi_go_commander", ActorId::mi_go_commander},
-        {"flying_polyp", ActorId::flying_polyp},
-        {"greater_polyp", ActorId::greater_polyp},
-        {"mind_leech", ActorId::mind_leech},
-        {"spirit_leech", ActorId::spirit_leech},
-        {"life_leech", ActorId::life_leech},
-        {"ghoul", ActorId::ghoul},
-        {"shadow", ActorId::shadow},
-        {"invis_stalker", ActorId::invis_stalker},
-        {"wolf", ActorId::wolf},
-        {"fire_hound", ActorId::fire_hound},
-        {"energy_hound", ActorId::energy_hound},
-        {"zuul", ActorId::zuul},
-        {"ghost", ActorId::ghost},
-        {"void_traveler", ActorId::void_traveler},
-        {"elder_void_traveler", ActorId::elder_void_traveler},
-        {"raven", ActorId::raven},
-        {"giant_bat", ActorId::giant_bat},
-        {"vampire_bat", ActorId::vampire_bat},
-        {"abaxu", ActorId::abaxu},
-        {"giant_mantis", ActorId::giant_mantis},
-        {"locust", ActorId::locust},
-        {"mummy", ActorId::mummy},
-        {"croc_head_mummy", ActorId::croc_head_mummy},
-        {"khephren", ActorId::khephren},
-        {"nitokris", ActorId::nitokris},
-        {"deep_one", ActorId::deep_one},
-        {"niduza", ActorId::niduza},
-        {"ape", ActorId::ape},
-        {"keziah_mason", ActorId::keziah_mason},
-        {"brown_jenkin", ActorId::brown_jenkin},
-        {"major_clapham_lee", ActorId::major_clapham_lee},
-        {"dean_halsey", ActorId::dean_halsey},
-        {"worm_mass", ActorId::worm_mass},
-        {"mind_worms", ActorId::mind_worms},
-        {"dust_vortex", ActorId::dust_vortex},
-        {"fire_vortex", ActorId::fire_vortex},
-        {"energy_vortex", ActorId::energy_vortex},
-        {"ooze_black", ActorId::ooze_black},
-        {"ooze_clear", ActorId::ooze_clear},
-        {"ooze_putrid", ActorId::ooze_putrid},
-        {"ooze_poison", ActorId::ooze_poison},
-        {"strange_color", ActorId::strange_color},
-        {"chthonian", ActorId::chthonian},
-        {"hunting_horror", ActorId::hunting_horror},
-        {"sentry_drone", ActorId::sentry_drone},
-        {"spectral_wpn", ActorId::spectral_wpn},
-        {"mold", ActorId::mold},
-        {"gas_spore", ActorId::gas_spore},
-        {"tentacles", ActorId::tentacles},
-        {"warping_aberrance", ActorId::warping_aberrance},
-        {"death_fiend", ActorId::death_fiend},
-        {"khaga_offspring", ActorId::khaga_offspring},
-        {"khaga", ActorId::khaga},
-        {"the_high_priest", ActorId::the_high_priest},
-        {"high_priest_guard_war_vet", ActorId::high_priest_guard_war_vet},
-        {"high_priest_guard_rogue", ActorId::high_priest_guard_rogue},
-        {"high_priest_guard_ghoul", ActorId::high_priest_guard_ghoul}
+static std::unordered_map<std::string, actor::Id> str_to_actor_id_map = {
+        {"player", actor::Id::player},
+        {"zombie", actor::Id::zombie},
+        {"bloated_zombie", actor::Id::bloated_zombie},
+        {"crawling_intestines", actor::Id::crawling_intestines},
+        {"crawling_hand", actor::Id::crawling_hand},
+        {"thing", actor::Id::thing},
+        {"floating_skull", actor::Id::floating_skull},
+        {"cultist", actor::Id::cultist},
+        {"zealot", actor::Id::zealot},
+        {"cultist_priest", actor::Id::cultist_priest},
+        {"cultist_wizard", actor::Id::cultist_wizard},
+        {"cultist_arch_wizard", actor::Id::cultist_arch_wizard},
+        {"bog_tcher", actor::Id::bog_tcher},
+        {"rat", actor::Id::rat},
+        {"rat_thing", actor::Id::rat_thing},
+        {"green_spider", actor::Id::green_spider},
+        {"white_spider", actor::Id::white_spider},
+        {"red_spider", actor::Id::red_spider},
+        {"shadow_spider", actor::Id::shadow_spider},
+        {"leng_spider", actor::Id::leng_spider},
+        {"pit_viper", actor::Id::pit_viper},
+        {"spitting_cobra", actor::Id::spitting_cobra},
+        {"black_mamba", actor::Id::black_mamba},
+        {"mi_go", actor::Id::mi_go},
+        {"mi_go_commander", actor::Id::mi_go_commander},
+        {"flying_polyp", actor::Id::flying_polyp},
+        {"greater_polyp", actor::Id::greater_polyp},
+        {"mind_leech", actor::Id::mind_leech},
+        {"spirit_leech", actor::Id::spirit_leech},
+        {"life_leech", actor::Id::life_leech},
+        {"ghoul", actor::Id::ghoul},
+        {"shadow", actor::Id::shadow},
+        {"invis_stalker", actor::Id::invis_stalker},
+        {"wolf", actor::Id::wolf},
+        {"fire_hound", actor::Id::fire_hound},
+        {"energy_hound", actor::Id::energy_hound},
+        {"zuul", actor::Id::zuul},
+        {"ghost", actor::Id::ghost},
+        {"void_traveler", actor::Id::void_traveler},
+        {"elder_void_traveler", actor::Id::elder_void_traveler},
+        {"raven", actor::Id::raven},
+        {"giant_bat", actor::Id::giant_bat},
+        {"vampire_bat", actor::Id::vampire_bat},
+        {"abaxu", actor::Id::abaxu},
+        {"giant_mantis", actor::Id::giant_mantis},
+        {"locust", actor::Id::locust},
+        {"mummy", actor::Id::mummy},
+        {"croc_head_mummy", actor::Id::croc_head_mummy},
+        {"khephren", actor::Id::khephren},
+        {"nitokris", actor::Id::nitokris},
+        {"deep_one", actor::Id::deep_one},
+        {"niduza", actor::Id::niduza},
+        {"ape", actor::Id::ape},
+        {"keziah_mason", actor::Id::keziah_mason},
+        {"brown_jenkin", actor::Id::brown_jenkin},
+        {"major_clapham_lee", actor::Id::major_clapham_lee},
+        {"dean_halsey", actor::Id::dean_halsey},
+        {"worm_mass", actor::Id::worm_mass},
+        {"mind_worms", actor::Id::mind_worms},
+        {"dust_vortex", actor::Id::dust_vortex},
+        {"fire_vortex", actor::Id::fire_vortex},
+        {"energy_vortex", actor::Id::energy_vortex},
+        {"ooze_black", actor::Id::ooze_black},
+        {"ooze_clear", actor::Id::ooze_clear},
+        {"ooze_putrid", actor::Id::ooze_putrid},
+        {"ooze_poison", actor::Id::ooze_poison},
+        {"strange_color", actor::Id::strange_color},
+        {"chthonian", actor::Id::chthonian},
+        {"hunting_horror", actor::Id::hunting_horror},
+        {"sentry_drone", actor::Id::sentry_drone},
+        {"spectral_wpn", actor::Id::spectral_wpn},
+        {"mold", actor::Id::mold},
+        {"gas_spore", actor::Id::gas_spore},
+        {"tentacles", actor::Id::tentacles},
+        {"warping_aberrance", actor::Id::warping_aberrance},
+        {"death_fiend", actor::Id::death_fiend},
+        {"khaga_offspring", actor::Id::khaga_offspring},
+        {"khaga", actor::Id::khaga},
+        {"the_high_priest", actor::Id::the_high_priest},
+        {"high_priest_guard_war_vet", actor::Id::high_priest_guard_war_vet},
+        {"high_priest_guard_rogue", actor::Id::high_priest_guard_rogue},
+        {"high_priest_guard_ghoul", actor::Id::high_priest_guard_ghoul}
 };
 
 static const std::unordered_map<std::string, ShockLvl> str_to_shock_lvl_map = {
@@ -116,14 +116,14 @@ static const std::unordered_map<std::string, ShockLvl> str_to_shock_lvl_map = {
         {"mind_shattering", ShockLvl::mind_shattering}
 };
 
-static const std::unordered_map<std::string, ActorSpeed> str_to_speed_map = {
-        {"slow", ActorSpeed::slow},
-        {"normal", ActorSpeed::normal},
-        {"fast", ActorSpeed::fast},
-        {"very_fast", ActorSpeed::very_fast}
+static const std::unordered_map<std::string, actor::Speed> str_to_speed_map = {
+        {"slow", actor::Speed::slow},
+        {"normal", actor::Speed::normal},
+        {"fast", actor::Speed::fast},
+        {"very_fast", actor::Speed::very_fast}
 };
 
-static ActorId get_id(xml::Element* mon_e)
+static actor::Id get_id(xml::Element* mon_e)
 {
         const auto id_search = str_to_actor_id_map.find(
                 xml::get_attribute_str(mon_e, "id"));
@@ -133,7 +133,7 @@ static ActorId get_id(xml::Element* mon_e)
         return id_search->second;
 }
 
-static void dump_text(xml::Element* text_e, ActorData& data)
+static void dump_text(xml::Element* text_e, actor::ActorData& data)
 {
         data.name_a = xml::get_text_str(
                 xml::first_child(text_e, "name_a"));
@@ -187,7 +187,7 @@ static void dump_text(xml::Element* text_e, ActorData& data)
         }
 }
 
-static void dump_gfx(xml::Element* gfx_e, ActorData& data)
+static void dump_gfx(xml::Element* gfx_e, actor::ActorData& data)
 {
         data.tile = g_str_to_tile_id_map.at(
                 xml::get_text_str(
@@ -205,7 +205,7 @@ static void dump_gfx(xml::Element* gfx_e, ActorData& data)
                         xml::first_child(gfx_e, "color")));
 }
 
-static void dump_audio(xml::Element* audio_e, ActorData& data)
+static void dump_audio(xml::Element* audio_e, actor::ActorData& data)
 {
         data.aware_sfx_mon_seen = g_str_to_sfx_id_map.at(
                 xml::get_text_str(
@@ -216,7 +216,7 @@ static void dump_audio(xml::Element* audio_e, ActorData& data)
                         xml::first_child(audio_e, "aware_sfx_hidden")));
 }
 
-static void dump_attributes(xml::Element* attrib_e, ActorData& data)
+static void dump_attributes(xml::Element* attrib_e, actor::ActorData& data)
 {
         data.hp = xml::get_text_int(
                 xml::first_child(attrib_e, "hit_points"));
@@ -266,7 +266,7 @@ static void dump_attributes(xml::Element* attrib_e, ActorData& data)
         data.can_swim = xml::get_text_bool(
                 xml::first_child(attrib_e, "can_swim"));
 
-        data.actor_size = g_str_to_actor_size_map.at(
+        data.actor_size = actor::g_str_to_actor_size_map.at(
                 xml::get_text_str(xml::first_child(attrib_e, "size")));
 
         data.prevent_knockback = xml::get_text_bool(
@@ -304,7 +304,7 @@ static void dump_attributes(xml::Element* attrib_e, ActorData& data)
 
 static void dump_intr_attack_property(
         xml::Element* property_e,
-        IntrAttData& attack_data)
+        actor::IntrAttData& attack_data)
 {
         const auto prop_id =
                 g_str_to_prop_id_map.at(
@@ -353,17 +353,17 @@ static void dump_intr_attack_property(
         }
 }
 
-static void dump_items(xml::Element* items_e, ActorData& data)
+static void dump_items(xml::Element* items_e, actor::ActorData& data)
 {
         for (auto item_set_e = xml::first_child(items_e);
              item_set_e;
              item_set_e = xml::next_sibling(item_set_e))
         {
-                ActorItemSetData item_set;
+                actor::ActorItemSetData item_set;
 
                 const std::string id_str = xml::get_text_str(item_set_e);
 
-                item_set.item_set_id = str_to_item_set_id_map.at(id_str);
+                item_set.item_set_id = item::str_to_item_set_id_map.at(id_str);
 
                 xml::try_get_attribute_int(
                         item_set_e,
@@ -384,18 +384,18 @@ static void dump_items(xml::Element* items_e, ActorData& data)
         }
 }
 
-static void dump_intr_attacks(xml::Element* attacks_e, ActorData& data)
+static void dump_intr_attacks(xml::Element* attacks_e, actor::ActorData& data)
 {
         for (auto attack_e = xml::first_child(attacks_e);
              attack_e;
              attack_e = xml::next_sibling(attack_e))
         {
-                auto attack_data = std::make_unique<IntrAttData>();
+                auto attack_data = std::make_unique<actor::IntrAttData>();
 
                 const std::string id_str =
                         xml::get_attribute_str(attack_e, "id");
 
-                attack_data->item_id = str_to_intr_item_id_map.at(id_str);
+                attack_data->item_id = item::str_to_intr_item_id_map.at(id_str);
 
                 auto e = xml::first_child(attack_e);
 
@@ -413,13 +413,13 @@ static void dump_intr_attacks(xml::Element* attacks_e, ActorData& data)
         }
 }
 
-static void dump_spells(xml::Element* spells_e, ActorData& data)
+static void dump_spells(xml::Element* spells_e, actor::ActorData& data)
 {
         for (auto spell_e = xml::first_child(spells_e);
              spell_e;
              spell_e = xml::next_sibling(spell_e))
         {
-                ActorSpellData spell_data;
+                actor::ActorSpellData spell_data;
 
                 const std::string id_str = xml::get_text_str(spell_e);
 
@@ -439,7 +439,7 @@ static void dump_spells(xml::Element* spells_e, ActorData& data)
         }
 }
 
-static void dump_properties(xml::Element* properties_e, ActorData& data)
+static void dump_properties(xml::Element* properties_e, actor::ActorData& data)
 {
         for (auto e = xml::first_child(properties_e);
              e;
@@ -452,7 +452,7 @@ static void dump_properties(xml::Element* properties_e, ActorData& data)
         }
 }
 
-static void dump_ai(xml::Element* ai_e, ActorData& data)
+static void dump_ai(xml::Element* ai_e, actor::ActorData& data)
 {
         data.erratic_move_pct = xml::get_text_int(
                 xml::first_child(ai_e, "erratic_move_percent"));
@@ -463,18 +463,19 @@ static void dump_ai(xml::Element* ai_e, ActorData& data)
         data.ranged_cooldown_turns = xml::get_text_int(
                 xml::first_child(ai_e, "ranged_cooldown_turns"));
 
-        for (size_t i = 0; i < (size_t)AiId::END; ++i)
+        for (size_t i = 0; i < (size_t)actor::AiId::END; ++i)
         {
-                const std::string ai_id_str = g_ai_id_to_str_map.at((AiId)i);
+                const std::string ai_id_str =
+                        actor::g_ai_id_to_str_map.at((actor::AiId)i);
 
                 data.ai[i] = xml::get_text_bool(
                         xml::first_child(ai_e, ai_id_str));
         }
 }
 
-static void dump_group_size(xml::Element* group_e, ActorData& data)
+static void dump_group_size(xml::Element* group_e, actor::ActorData& data)
 {
-        const auto group_size = g_str_to_group_size_map.at(
+        const auto group_size = actor::g_str_to_group_size_map.at(
                 xml::get_text_str(group_e));
 
         int weight = 1;
@@ -484,7 +485,9 @@ static void dump_group_size(xml::Element* group_e, ActorData& data)
         data.group_sizes.push_back({group_size, weight});
 }
 
-static void dump_native_room(xml::Element* native_room_e, ActorData& data)
+static void dump_native_room(
+        xml::Element* native_room_e,
+        actor::ActorData& data)
 {
         const auto room_type = g_str_to_room_type_map.at(
                 xml::get_text_str(native_room_e));
@@ -492,7 +495,7 @@ static void dump_native_room(xml::Element* native_room_e, ActorData& data)
         data.native_rooms.push_back(room_type);
 }
 
-static void dump_spawning(xml::Element* spawn_e, ActorData& data)
+static void dump_spawning(xml::Element* spawn_e, actor::ActorData& data)
 {
         data.spawn_min_dlvl = xml::get_text_int(
                 xml::first_child(spawn_e, "min_dungeon_level"));
@@ -533,7 +536,7 @@ static void dump_spawning(xml::Element* spawn_e, ActorData& data)
         }
 }
 
-static void dump_starting_allies(xml::Element* allies_e, ActorData& data)
+static void dump_starting_allies(xml::Element* allies_e, actor::ActorData& data)
 {
         for (auto e = xml::first_child(allies_e);
              e;
@@ -559,9 +562,9 @@ static void read_actor_definitions_xml()
 
         for ( ; mon_e ; mon_e = xml::next_sibling(mon_e, "monster"))
         {
-                const ActorId id = get_id(mon_e);
+                const actor::Id id = get_id(mon_e);
 
-                ActorData& data = actor_data::g_data[(size_t)id];
+                auto& data = actor::g_data[(size_t)id];
 
                 data.reset();
 
@@ -621,12 +624,19 @@ static void read_actor_definitions_xml()
         }
 } // read_actor_definitions_xml
 
+
+// -----------------------------------------------------------------------------
+// actor
+// -----------------------------------------------------------------------------
+namespace actor
+{
+
 // -----------------------------------------------------------------------------
 // ActorData
 // -----------------------------------------------------------------------------
 void ActorData::reset()
 {
-        id = ActorId::END;
+        id = Id::END;
         name_a = "";
         name_the = "";
         corpse_name_a = "";
@@ -646,7 +656,7 @@ void ActorData::reset()
         intr_attacks.clear();
         spells.clear();
         spi = 0;
-        speed = ActorSpeed::normal;
+        speed = Speed::normal;
 
         for (size_t i = 0; i < (size_t)PropId::END; ++i)
         {
@@ -667,7 +677,7 @@ void ActorData::reset()
         spawn_min_dlvl = -1;
         spawn_max_dlvl = -1;
         spawn_weight = 100;
-        actor_size = ActorSize::humanoid;
+        actor_size = Size::humanoid;
         allow_generated_descr = true;
         nr_kills = 0;
         has_player_seen = false;
@@ -705,13 +715,9 @@ void ActorData::reset()
         descr = "";
 }
 
-// -----------------------------------------------------------------------------
-// actor_data
-// -----------------------------------------------------------------------------
-namespace actor_data
-{
 
-ActorData g_data[(size_t)ActorId::END];
+ActorData g_data[(size_t)Id::END];
+
 
 void init()
 {
@@ -724,7 +730,7 @@ void init()
 
 void save()
 {
-        for (int i = 0; i < (int)ActorId::END; ++i)
+        for (int i = 0; i < (int)Id::END; ++i)
         {
                 const auto& d = g_data[i];
 
@@ -736,7 +742,7 @@ void save()
 
 void load()
 {
-        for (int i = 0; i < (int)ActorId::END; ++i)
+        for (int i = 0; i < (int)Id::END; ++i)
         {
                 auto& d = g_data[i];
 
@@ -746,4 +752,4 @@ void load()
         }
 }
 
-} // actor_data
+} // actor

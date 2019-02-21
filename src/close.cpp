@@ -54,7 +54,7 @@ static void player_try_close_or_jam_feature(Feature* const feature)
         {
                 const bool has_spike =
                         map::g_player->m_inv.has_item_in_backpack(
-                                ItemId::iron_spike);
+                                item::Id::iron_spike);
 
                 if (has_spike)
                 {
@@ -64,12 +64,12 @@ static void player_try_close_or_jam_feature(Feature* const feature)
                         if (did_spike_door)
                         {
                                 map::g_player->m_inv.decr_item_type_in_backpack(
-                                        ItemId::iron_spike);
+                                        item::Id::iron_spike);
 
                                 const int nr_spikes_left =
                                         map::g_player->m_inv
                                         .item_stack_size_in_backpack(
-                                                ItemId::iron_spike);
+                                                item::Id::iron_spike);
 
                                 if (nr_spikes_left == 0)
                                 {

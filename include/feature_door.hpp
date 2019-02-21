@@ -9,6 +9,7 @@
 
 #include "feature_rigid.hpp"
 
+
 enum class DoorSpawnState
 {
         open,
@@ -25,6 +26,7 @@ enum class DoorType
         metal,
         gate
 };
+
 
 class Door: public Rigid
 {
@@ -65,11 +67,11 @@ public:
 
         TileId tile() const override;
 
-        void bump(Actor& actor_bumping) override;
+        void bump(actor::Actor& actor_bumping) override;
 
         bool is_walkable() const override;
 
-        bool can_move(const Actor& actor) const override;
+        bool can_move(const actor::Actor& actor) const override;
 
         bool is_los_passable() const override;
 
@@ -77,11 +79,11 @@ public:
 
         bool is_smoke_passable() const override;
 
-        void try_open(Actor* actor_trying);
+        void try_open(actor::Actor* actor_trying);
 
-        void try_close(Actor* actor_trying);
+        void try_close(actor::Actor* actor_trying);
 
-        bool try_jam(Actor* actor_trying);
+        bool try_jam(actor::Actor* actor_trying);
 
         void on_lever_pulled(Lever* const lever) override;
 
@@ -112,9 +114,9 @@ public:
                 m_is_stuck = true;
         }
 
-        DidOpen open(Actor* const actor_opening) override;
+        DidOpen open(actor::Actor* const actor_opening) override;
 
-        DidClose close(Actor* const actor_closing) override;
+        DidClose close(actor::Actor* const actor_closing) override;
 
         static bool is_tile_any_door(const TileId tile)
         {
@@ -140,7 +142,7 @@ private:
                 const int dmg,
                 const DmgType dmg_type,
                 const DmgMethod dmg_method,
-                Actor* const actor) override;
+                actor::Actor* const actor) override;
 
         const Wall* const m_mimic_feature {nullptr};
 

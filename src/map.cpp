@@ -75,7 +75,7 @@ void Cell::reset()
 namespace map
 {
 
-Player* g_player = nullptr;
+actor::Player* g_player = nullptr;
 
 int g_dlvl = 0;
 
@@ -100,9 +100,9 @@ void init()
 
         g_room_list.clear();
 
-        Actor* actor = actor_factory::make(ActorId::player, {0, 0});
+        actor::Actor* actor = actor::make(actor::Id::player, {0, 0});
 
-        g_player = static_cast<Player*>(actor);
+        g_player = static_cast<actor::Player*>(actor);
 }
 
 void cleanup()
@@ -125,7 +125,7 @@ void load()
 
 void reset(const P& dims)
 {
-        actor_factory::delete_all_mon();
+        actor::delete_all_mon();
 
         game_time::erase_all_mobs();
 
@@ -328,7 +328,7 @@ bool is_pos_seen_by_player(const P& p)
         return g_cells.at(p).is_seen_by_player;
 }
 
-Actor* actor_at_pos(const P& pos, ActorState state)
+actor::Actor* actor_at_pos(const P& pos, ActorState state)
 {
         for (auto* const actor : game_time::g_actors)
         {
@@ -354,7 +354,9 @@ Mob* first_mob_at_pos(const P& pos)
         return nullptr;
 }
 
-void actor_cells(const std::vector<Actor*>& actors, std::vector<P>& out)
+void actor_cells(
+        const std::vector<actor::Actor*>& actors,
+        std::vector<P>& out)
 {
         out.clear();
 
@@ -364,11 +366,11 @@ void actor_cells(const std::vector<Actor*>& actors, std::vector<P>& out)
         }
 }
 
-Array2< std::vector<Actor*> > get_actor_array()
+Array2<std::vector<actor::Actor*>> get_actor_array()
 {
-        Array2< std::vector<Actor*> > a(dims());
+        Array2<std::vector<actor::Actor*>> a(dims());
 
-        for (Actor* actor : game_time::g_actors)
+        for (auto* actor : game_time::g_actors)
         {
                 const P& p = actor->m_pos;
 
@@ -378,7 +380,9 @@ Array2< std::vector<Actor*> > get_actor_array()
         return a;
 }
 
-Actor* random_closest_actor(const P& c, const std::vector<Actor*>& actors)
+actor::Actor* random_closest_actor(
+        const P& c,
+        const std::vector<actor::Actor*>& actors)
 {
         if (actors.empty())
         {
@@ -393,7 +397,7 @@ Actor* random_closest_actor(const P& c, const std::vector<Actor*>& actors)
         // Find distance to nearest actor(s)
         int dist_to_nearest = INT_MAX;
 
-        for (Actor* actor : actors)
+        for (auto* actor : actors)
         {
                 const int current_dist = king_dist(c, actor->m_pos);
 
@@ -406,9 +410,9 @@ Actor* random_closest_actor(const P& c, const std::vector<Actor*>& actors)
         ASSERT(dist_to_nearest != INT_MAX);
 
         // Store all actors with distance equal to the nearest distance
-        std::vector<Actor*> closest_actors;
+        std::vector<actor::Actor*> closest_actors;
 
-        for (Actor* actor : actors)
+        for (auto* actor : actors)
         {
                 if (king_dist(c, actor->m_pos) == dist_to_nearest)
                 {

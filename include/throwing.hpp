@@ -7,20 +7,36 @@
 #ifndef THROWING_HPP
 #define THROWING_HPP
 
+
+namespace item
+{
+
 class Item;
+
+} // item
+
+
+namespace actor
+{
+
 class Actor;
+
+} // actor
+
+
 struct P;
+
 
 namespace throwing
 {
 
 void throw_item(
-        Actor& actor_throwing,
+        actor::Actor& actor_throwing,
         const P& tgt_pos,
-        Item& item_thrown);
+        item::Item& item_thrown);
 
 void player_throw_lit_explosive(const P& aim_cell);
 
-} //Throwing
+} // Throwing
 
-#endif
+#endif // THROWING_HPP

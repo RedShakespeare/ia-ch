@@ -39,7 +39,7 @@ static int mon_descr_max_w()
         return panels::w(Panel::screen) - 2;
 }
 
-static std::string get_mon_memory_turns_descr(const Actor& actor)
+static std::string get_mon_memory_turns_descr(const actor::Actor& actor)
 {
         const int nr_turns_aware = actor.m_data->nr_turns_aware;
 
@@ -69,7 +69,7 @@ static std::string get_mon_memory_turns_descr(const Actor& actor)
         }
 }
 
-static std::string get_mon_dlvl_descr(const Actor& actor)
+static std::string get_mon_dlvl_descr(const actor::Actor& actor)
 {
         const auto& d = *actor.m_data;
 
@@ -99,20 +99,20 @@ static std::string get_mon_dlvl_descr(const Actor& actor)
         }
 }
 
-static std::string mon_speed_type_to_str(const Actor& actor)
+static std::string mon_speed_type_to_str(const actor::Actor& actor)
 {
         switch (actor.m_data->speed)
         {
-        case ActorSpeed::slow:
+        case actor::Speed::slow:
                 return "slowly";
 
-        case ActorSpeed::normal:
+        case actor::Speed::normal:
                 return "";
 
-        case ActorSpeed::fast:
+        case actor::Speed::fast:
                 return "fast";
 
-        case ActorSpeed::very_fast:
+        case actor::Speed::very_fast:
                 return "very swiftly";
         }
 
@@ -121,7 +121,7 @@ static std::string mon_speed_type_to_str(const Actor& actor)
         return "";
 }
 
-static std::string get_mon_speed_descr(const Actor& actor)
+static std::string get_mon_speed_descr(const actor::Actor& actor)
 {
         const auto& d = *actor.m_data;
 
@@ -150,7 +150,7 @@ static std::string get_mon_speed_descr(const Actor& actor)
 }
 
 static void mon_shock_lvl_to_str(
-        const Actor& actor,
+        const actor::Actor& actor,
         std::string& shock_str_out,
         std::string& punct_str_out)
 {
@@ -185,7 +185,7 @@ static void mon_shock_lvl_to_str(
         }
 }
 
-static std::string get_mon_shock_descr(const Actor& actor)
+static std::string get_mon_shock_descr(const actor::Actor& actor)
 {
         std::string shock_str = "";
 
@@ -217,14 +217,14 @@ static std::string get_mon_shock_descr(const Actor& actor)
         }
 }
 
-static std::string get_melee_hit_chance_descr(Actor& actor)
+static std::string get_melee_hit_chance_descr(actor::Actor& actor)
 {
-        const Item* wielded_item =
+        const auto* wielded_item =
                 map::g_player->m_inv.item_in_slot(SlotId::wpn);
 
         const auto* const player_wpn =
                 wielded_item
-                ? static_cast<const Wpn*>(wielded_item)
+                ? static_cast<const item::Wpn*>(wielded_item)
                 : &map::g_player->unarmed_wpn();
 
         if (!player_wpn)
@@ -447,10 +447,21 @@ std::string ViewActorDescr::auto_description_str() const
 {
         std::string str = "";
 
-        text_format::append_with_space(str, get_melee_hit_chance_descr(m_actor));
-        text_format::append_with_space(str, get_mon_dlvl_descr(m_actor));
-        text_format::append_with_space(str, get_mon_speed_descr(m_actor));
-        text_format::append_with_space(str, get_mon_memory_turns_descr(m_actor));
+        text_format::append_with_space(
+                str,
+                get_melee_hit_chance_descr(m_actor));
+
+        text_format::append_with_space(
+                str,
+                get_mon_dlvl_descr(m_actor));
+
+        text_format::append_with_space(
+                str,
+                get_mon_speed_descr(m_actor));
+
+        text_format::append_with_space(
+                str,
+                get_mon_memory_turns_descr(m_actor));
 
         if (m_actor.m_data->is_undead)
         {
@@ -519,12 +530,14 @@ void print_location_info_msgs(const P& pos)
                 }
 
                 // Describe item
-                Item* item = cell->item;
+                auto* item = cell->item;
 
                 if (item)
                 {
-                        str = item->name(ItemRefType::plural, ItemRefInf::yes,
-                                         ItemRefAttInf::wpn_main_att_mode);
+                        str = item->name(
+                                ItemRefType::plural,
+                                ItemRefInf::yes,
+                                ItemRefAttInf::wpn_main_att_mode);
 
                         str = text_format::first_to_upper(str);
 
@@ -532,7 +545,7 @@ void print_location_info_msgs(const P& pos)
                 }
 
                 // Describe dead actors
-                for (Actor* actor : game_time::g_actors)
+                for (auto* actor : game_time::g_actors)
                 {
                         if (actor->is_corpse() && actor->m_pos == pos)
                         {
@@ -557,7 +570,7 @@ void print_location_info_msgs(const P& pos)
 
 void print_living_actor_info_msg(const P& pos)
 {
-        Actor* actor = map::actor_at_pos(pos);
+        auto* actor = map::actor_at_pos(pos);
 
         if (!actor ||
             actor->is_player() ||
@@ -576,7 +589,7 @@ void print_living_actor_info_msg(const P& pos)
         }
         else // Cannot see actor
         {
-                const Mon* const mon = static_cast<Mon*>(actor);
+                const auto* const mon = static_cast<actor::Mon*>(actor);
 
                 if (mon->m_player_aware_of_me_counter > 0)
                 {

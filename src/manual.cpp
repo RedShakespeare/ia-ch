@@ -13,6 +13,7 @@
 
 #include "debug.hpp"
 #include "io.hpp"
+#include "pos.hpp"
 #include "text_format.hpp"
 
 // -----------------------------------------------------------------------------

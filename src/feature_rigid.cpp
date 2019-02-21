@@ -16,6 +16,8 @@
 #include "drop.hpp"
 #include "explosion.hpp"
 #include "feature_mob.hpp"
+#include "game.hpp"
+#include "game_time.hpp"
 #include "init.hpp"
 #include "io.hpp"
 #include "item_factory.hpp"
@@ -36,6 +38,32 @@
 #include "wham.hpp"
 
 // -----------------------------------------------------------------------------
+// Private
+// -----------------------------------------------------------------------------
+static void scorch_actor(actor::Actor& actor)
+{
+        if (actor.is_player())
+        {
+                msg_log::add(
+                        "I am scorched by flames.",
+                        colors::msg_bad());
+        }
+        else if (map::g_player->can_see_actor(actor))
+        {
+                const std::string name_the =
+                        text_format::first_to_upper(
+                                actor.name_the());
+
+                msg_log::add(
+                        name_the +
+                        " is scorched by flames.",
+                        colors::msg_good());
+        }
+
+        actor::hit(actor, 1, DmgType::fire);
+}
+
+// -----------------------------------------------------------------------------
 // Rigid
 // -----------------------------------------------------------------------------
 Rigid::Rigid(const P& p) :
@@ -44,7 +72,7 @@ Rigid::Rigid(const P& p) :
 
 }
 
-AllowAction Rigid::pre_bump(Actor& actor_bumping)
+AllowAction Rigid::pre_bump(actor::Actor& actor_bumping)
 {
         if (!actor_bumping.is_player() ||
             actor_bumping.m_properties.has(PropId::confused))
@@ -89,30 +117,6 @@ void Rigid::on_new_turn()
         {
                 clear_gore();
 
-                auto scorch_actor = [](Actor & actor)
-                        {
-                                if (actor.is_player())
-                                {
-                                        msg_log::add("I am scorched by flames.",
-                                                     colors::msg_bad());
-                                }
-                                else // Monster
-                                {
-                                        if (map::g_player->can_see_actor(actor))
-                                        {
-                                                const std::string name_the =
-                                                text_format::first_to_upper(
-                                                        actor.name_the());
-
-                                                msg_log::add(
-                                                        name_the + " is scorched by flames.",
-                                                        colors::msg_good());
-                                        }
-                                }
-
-                                actor::hit(actor, 1, DmgType::fire);
-                        };
-
                 // TODO: Hit dead actors
 
                 // Hit actor standing on feature
@@ -120,8 +124,8 @@ void Rigid::on_new_turn()
 
                 if (actor)
                 {
-                        // Occasionally try to set actor on fire, otherwise just do small
-                        // fire damage
+                        // Occasionally try to set actor on fire, otherwise just
+                        // do small fire damage
                         if (rnd::one_in(4))
                         {
                                 actor->m_properties.apply(new PropBurning());
@@ -263,21 +267,21 @@ WasDestroyed Rigid::on_finished_burning()
         return WasDestroyed::no;
 }
 
-DidOpen Rigid::open(Actor* const actor_opening)
+DidOpen Rigid::open(actor::Actor* const actor_opening)
 {
         (void)actor_opening;
 
         return DidOpen::no;
 }
 
-DidClose Rigid::close(Actor* const actor_closing)
+DidClose Rigid::close(actor::Actor* const actor_closing)
 {
         (void)actor_closing;
 
         return DidClose::no;
 }
 
-DidTriggerTrap Rigid::trigger_trap(Actor* const actor)
+DidTriggerTrap Rigid::trigger_trap(actor::Actor* const actor)
 {
         (void)actor;
 
@@ -287,7 +291,7 @@ DidTriggerTrap Rigid::trigger_trap(Actor* const actor)
 void Rigid::hit(const int dmg,
                 const DmgType dmg_type,
                 const DmgMethod dmg_method,
-                Actor* actor)
+                actor::Actor* actor)
 {
         bool is_feature_hit = true;
 
@@ -306,7 +310,8 @@ void Rigid::hit(const int dmg,
                         if (dmg_method == DmgMethod::kicking)
                         {
                                 const bool can_see_feature =
-                                        !map::g_cells.at(m_pos).is_seen_by_player;
+                                        !map::g_cells.at(m_pos)
+                                        .is_seen_by_player;
 
                                 const std::string rigid_name =
                                         can_see_feature
@@ -334,10 +339,11 @@ void Rigid::hit(const int dmg,
 
         if (is_feature_hit)
         {
-                on_hit(dmg,
-                       dmg_type,
-                       dmg_method,
-                       actor);
+                on_hit(
+                        dmg,
+                        dmg_type,
+                        dmg_method,
+                        actor);
         }
 }
 
@@ -514,7 +520,7 @@ void Floor::on_hit(
         const int dmg,
         const DmgType dmg_type,
         const DmgMethod dmg_method,
-        Actor* const actor)
+        actor::Actor* const actor)
 {
         (void)dmg;
 
@@ -592,10 +598,11 @@ Wall::Wall(const P& p) :
         m_type(WallType::common),
         m_is_mossy(false) {}
 
-void Wall::on_hit(const int dmg,
-                  const DmgType dmg_type,
-                  const DmgMethod dmg_method,
-                  Actor* const actor)
+void Wall::on_hit(
+        const int dmg,
+        const DmgType dmg_type,
+        const DmgMethod dmg_method,
+        actor::Actor* const actor)
 {
         (void)dmg;
         (void)actor;
@@ -610,7 +617,8 @@ void Wall::on_hit(const int dmg,
 
                                 if (map::is_pos_inside_map(p))
                                 {
-                                        if (map::g_cells.at(p).rigid->id() == FeatureId::door)
+                                        if (map::g_cells.at(p).rigid->id() ==
+                                            FeatureId::door)
                                         {
                                                 map::put(new RubbleLow(p));
                                         }
@@ -627,7 +635,7 @@ void Wall::on_hit(const int dmg,
 
                         if (rnd::one_in(4))
                         {
-                                item_factory::make_item_on_floor(ItemId::rock, p);
+                                item::make_item_on_floor(item::Id::rock, p);
                         }
                 };
 
@@ -836,10 +844,11 @@ void Wall::set_moss_grown()
 RubbleHigh::RubbleHigh(const P& p) :
         Rigid(p) {}
 
-void RubbleHigh::on_hit(const int dmg,
-                        const DmgType dmg_type,
-                        const DmgMethod dmg_method,
-                        Actor* const actor)
+void RubbleHigh::on_hit(
+        const int dmg,
+        const DmgType dmg_type,
+        const DmgMethod dmg_method,
+        actor::Actor* const actor)
 {
         (void)dmg;
         (void)actor;
@@ -848,11 +857,13 @@ void RubbleHigh::on_hit(const int dmg,
                 {
                         const P p(m_pos);
 
-                        map::put(new RubbleLow(p)); // NOTE: "this" is now deleted!
+                        map::put(new RubbleLow(p));
+
+                        // NOTE: "this" is now deleted!
 
                         if (rnd::one_in(4))
                         {
-                                item_factory::make_item_on_floor(ItemId::rock, p);
+                                item::make_item_on_floor(item::Id::rock, p);
                         }
 
                         map::update_vision();
@@ -895,10 +906,11 @@ Color RubbleHigh::color_default() const
 RubbleLow::RubbleLow(const P& p) :
         Rigid(p) {}
 
-void RubbleLow::on_hit(const int dmg,
-                       const DmgType dmg_type,
-                       const DmgMethod dmg_method,
-                       Actor* const actor)
+void RubbleLow::on_hit(
+        const int dmg,
+        const DmgType dmg_type,
+        const DmgMethod dmg_method,
+        actor::Actor* const actor)
 {
         (void)dmg;
         (void)actor;
@@ -942,7 +954,7 @@ void Bones::on_hit(
         const int dmg,
         const DmgType dmg_type,
         const DmgMethod dmg_method,
-        Actor* const actor)
+        actor::Actor* const actor)
 {
         (void)dmg;
         (void)dmg_type;
@@ -973,10 +985,11 @@ Color Bones::color_default() const
 GraveStone::GraveStone(const P& p) :
         Rigid(p) {}
 
-void GraveStone::on_hit(const int dmg,
-                        const DmgType dmg_type,
-                        const DmgMethod dmg_method,
-                        Actor* const actor)
+void GraveStone::on_hit(
+        const int dmg,
+        const DmgType dmg_type,
+        const DmgMethod dmg_method,
+        actor::Actor* const actor)
 {
         (void)dmg;
         (void)dmg_type;
@@ -984,7 +997,7 @@ void GraveStone::on_hit(const int dmg,
         (void)actor;
 }
 
-void GraveStone::bump(Actor& actor_bumping)
+void GraveStone::bump(actor::Actor& actor_bumping)
 {
         if (actor_bumping.is_player())
         {
@@ -1012,10 +1025,11 @@ Color GraveStone::color_default() const
 // -----------------------------------------------------------------------------
 ChurchBench::ChurchBench(const P& p) : Rigid(p) {}
 
-void ChurchBench::on_hit(const int dmg,
-                         const DmgType dmg_type,
-                         const DmgMethod dmg_method,
-                         Actor* const actor)
+void ChurchBench::on_hit(
+        const int dmg,
+        const DmgType dmg_type,
+        const DmgMethod dmg_method,
+        actor::Actor* const actor)
 {
         (void)dmg;
         (void)dmg_type;
@@ -1059,10 +1073,11 @@ int Statue::base_shock_when_adj() const
         return 0;
 }
 
-void Statue::on_hit(const int dmg,
-                    const DmgType dmg_type,
-                    const DmgMethod dmg_method,
-                    Actor* const actor)
+void Statue::on_hit(
+        const int dmg,
+        const DmgType dmg_type,
+        const DmgMethod dmg_method,
+        actor::Actor* const actor)
 {
         (void)dmg;
 
@@ -1101,7 +1116,7 @@ void Statue::on_hit(const int dmg,
 
                 map::put(new RubbleLow(m_pos)); // NOTE: "this" is now deleted!
 
-                Actor* const actor_behind = map::actor_at_pos(dst_pos);
+                actor::Actor* const actor_behind = map::actor_at_pos(dst_pos);
 
                 if (actor_behind && actor_behind->is_alive())
                 {
@@ -1175,10 +1190,11 @@ Color Statue::color_default() const
 Stalagmite::Stalagmite(const P& p) :
         Rigid(p) {}
 
-void Stalagmite::on_hit(const int dmg,
-                        const DmgType dmg_type,
-                        const DmgMethod dmg_method,
-                        Actor* const actor)
+void Stalagmite::on_hit(
+        const int dmg,
+        const DmgType dmg_type,
+        const DmgMethod dmg_method,
+        actor::Actor* const actor)
 {
         (void)dmg;
         (void)dmg_type;
@@ -1207,10 +1223,11 @@ Color Stalagmite::color_default() const
 Stairs::Stairs(const P& p) :
         Rigid(p) {}
 
-void Stairs::on_hit(const int dmg,
-                    const DmgType dmg_type,
-                    const DmgMethod dmg_method,
-                    Actor* const actor)
+void Stairs::on_hit(
+        const int dmg,
+        const DmgType dmg_type,
+        const DmgMethod dmg_method,
+        actor::Actor* const actor)
 {
         (void)dmg;
         (void)dmg_type;
@@ -1223,7 +1240,7 @@ void Stairs::on_new_turn_hook()
         ASSERT(!map::g_cells.at(m_pos).item);
 }
 
-void Stairs::bump(Actor& actor_bumping)
+void Stairs::bump(actor::Actor& actor_bumping)
 {
         if (actor_bumping.is_player())
         {
@@ -1294,10 +1311,11 @@ TileId Bridge::tile() const
                 : TileId::hangbridge_ver;
 }
 
-void Bridge::on_hit(const int dmg,
-                    const DmgType dmg_type,
-                    const DmgMethod dmg_method,
-                    Actor* const actor)
+void Bridge::on_hit(
+        const int dmg,
+        const DmgType dmg_type,
+        const DmgMethod dmg_method,
+        actor::Actor* const actor)
 {
         (void)dmg;
         (void)dmg_type;
@@ -1333,10 +1351,11 @@ LiquidShallow::LiquidShallow(const P& p) :
         Rigid(p),
         m_type(LiquidType::water) {}
 
-void LiquidShallow::on_hit(const int dmg,
-                           const DmgType dmg_type,
-                           const DmgMethod dmg_method,
-                           Actor* const actor)
+void LiquidShallow::on_hit(
+        const int dmg,
+        const DmgType dmg_type,
+        const DmgMethod dmg_method,
+        actor::Actor* const actor)
 {
         (void)dmg;
         (void)dmg_type;
@@ -1344,7 +1363,7 @@ void LiquidShallow::on_hit(const int dmg,
         (void)actor;
 }
 
-void LiquidShallow::bump(Actor& actor_bumping)
+void LiquidShallow::bump(actor::Actor& actor_bumping)
 {
         if (actor_bumping.m_properties.has(PropId::ethereal) ||
             actor_bumping.m_properties.has(PropId::flying) ||
@@ -1362,7 +1381,10 @@ void LiquidShallow::bump(Actor& actor_bumping)
                         ? "water"
                         : "mud";
 
-                msg_log::add("I wade slowly through the knee high " + type_str + ".");
+                msg_log::add(
+                        "I wade slowly through the knee high " +
+                        type_str +
+                        ".");
 
                 // Make a sound, unless the player is Silent
                 if (!player_bon::has_trait(Trait::silent))
@@ -1426,7 +1448,10 @@ Color LiquidShallow::color_bg_default() const
 {
         const auto* const item = map::g_cells.at(m_pos).item;
 
-        const auto* const corpse = map::actor_at_pos(m_pos, ActorState::corpse);
+        const auto* const corpse =
+                map::actor_at_pos(
+                        m_pos,
+                        ActorState::corpse);
 
         if (item || corpse)
         {
@@ -1449,7 +1474,7 @@ void LiquidDeep::on_hit(
         const int dmg,
         const DmgType dmg_type,
         const DmgMethod dmg_method,
-        Actor* const actor)
+        actor::Actor* const actor)
 {
         (void)dmg;
         (void)dmg_type;
@@ -1457,14 +1482,14 @@ void LiquidDeep::on_hit(
         (void)actor;
 }
 
-bool LiquidDeep::must_swim_on_enter(const Actor& actor) const
+bool LiquidDeep::must_swim_on_enter(const actor::Actor& actor) const
 {
         return
                 !actor.m_properties.has(PropId::ethereal) &&
                 !actor.m_properties.has(PropId::flying);
 }
 
-AllowAction LiquidDeep::pre_bump(Actor& actor_bumping)
+AllowAction LiquidDeep::pre_bump(actor::Actor& actor_bumping)
 {
         if (!actor_bumping.is_player() ||
             actor_bumping.m_properties.has(PropId::confused))
@@ -1503,7 +1528,7 @@ AllowAction LiquidDeep::pre_bump(Actor& actor_bumping)
         return AllowAction::yes;
 }
 
-void LiquidDeep::bump(Actor& actor_bumping)
+void LiquidDeep::bump(actor::Actor& actor_bumping)
 {
         const bool must_swim = must_swim_on_enter(actor_bumping);
 
@@ -1559,7 +1584,7 @@ void LiquidDeep::bump(Actor& actor_bumping)
         }
 }
 
-void LiquidDeep::on_leave(Actor &actor_leaving)
+void LiquidDeep::on_leave(actor::Actor &actor_leaving)
 {
         actor_leaving.m_properties.end_prop(PropId::swimming);
 }
@@ -1605,7 +1630,7 @@ Color LiquidDeep::color_default() const
         return colors::yellow();
 }
 
-bool LiquidDeep::can_move(const Actor& actor) const
+bool LiquidDeep::can_move(const actor::Actor& actor) const
 {
         return
                 actor.m_data->can_swim ||
@@ -1623,7 +1648,7 @@ void Chasm::on_hit(
         const int dmg,
         const DmgType dmg_type,
         const DmgMethod dmg_method,
-        Actor* const actor)
+        actor::Actor* const actor)
 {
         (void)dmg;
         (void)dmg_type;
@@ -1657,7 +1682,7 @@ void Lever::on_hit(
         const int dmg,
         const DmgType dmg_type,
         const DmgMethod dmg_method,
-        Actor* const actor)
+        actor::Actor* const actor)
 {
         (void)dmg;
         (void)dmg_type;
@@ -1700,7 +1725,7 @@ TileId Lever::tile() const
                 : TileId::lever_right;
 }
 
-void Lever::bump(Actor& actor_bumping)
+void Lever::bump(actor::Actor& actor_bumping)
 {
         (void)actor_bumping;
 
@@ -1771,7 +1796,7 @@ void Lever::toggle()
 Altar::Altar(const P& p) :
         Rigid(p) {}
 
-void Altar::bump(Actor& actor_bumping)
+void Altar::bump(actor::Actor& actor_bumping)
 {
         if (!actor_bumping.is_player())
         {
@@ -1827,7 +1852,7 @@ void Altar::on_hit(
         const int dmg,
         const DmgType dmg_type,
         const DmgMethod dmg_method,
-        Actor* const actor)
+        actor::Actor* const actor)
 {
         (void)dmg;
         (void)dmg_type;
@@ -1858,10 +1883,11 @@ Color Altar::color_default() const
 Carpet::Carpet(const P& p) :
         Rigid(p) {}
 
-void Carpet::on_hit(const int dmg,
-                    const DmgType dmg_type,
-                    const DmgMethod dmg_method,
-                    Actor* const actor)
+void Carpet::on_hit(
+        const int dmg,
+        const DmgType dmg_type,
+        const DmgMethod dmg_method,
+        actor::Actor* const actor)
 {
         (void)dmg;
 
@@ -1915,7 +1941,7 @@ void Grass::on_hit(
         const int dmg,
         const DmgType dmg_type,
         const DmgMethod dmg_method,
-        Actor* const actor)
+        actor::Actor* const actor)
 {
         (void)dmg;
 
@@ -1995,10 +2021,11 @@ Bush::Bush(const P& p) :
         }
 }
 
-void Bush::on_hit(const int dmg,
-                  const DmgType dmg_type,
-                  const DmgMethod dmg_method,
-                  Actor* const actor)
+void Bush::on_hit(
+        const int dmg,
+        const DmgType dmg_type,
+        const DmgMethod dmg_method,
+        actor::Actor* const actor)
 {
         (void)dmg;
 
@@ -2080,7 +2107,7 @@ void Vines::on_hit(
         const int dmg,
         const DmgType dmg_type,
         const DmgMethod dmg_method,
-        Actor* const actor)
+        actor::Actor* const actor)
 {
         (void)dmg;
 
@@ -2157,7 +2184,10 @@ Color Chains::color_bg_default() const
 {
         const auto* const item = map::g_cells.at(m_pos).item;
 
-        const auto* const corpse = map::actor_at_pos(m_pos, ActorState::corpse);
+        const auto* const corpse =
+                map::actor_at_pos(
+                        m_pos,
+                        ActorState::corpse);
 
         if (item || corpse)
         {
@@ -2169,9 +2199,9 @@ Color Chains::color_bg_default() const
         }
 }
 
-void Chains::bump(Actor& actor_bumping)
+void Chains::bump(actor::Actor& actor_bumping)
 {
-        if (actor_bumping.m_data->actor_size > ActorSize::floor &&
+        if (actor_bumping.m_data->actor_size > actor::Size::floor &&
             !actor_bumping.m_properties.has(PropId::ethereal) &&
             !actor_bumping.m_properties.has(PropId::ooze))
         {
@@ -2203,10 +2233,11 @@ void Chains::bump(Actor& actor_bumping)
         }
 }
 
-void Chains::on_hit(const int dmg,
-                    const DmgType dmg_type,
-                    const DmgMethod dmg_method,
-                    Actor* const actor)
+void Chains::on_hit(
+        const int dmg,
+        const DmgType dmg_type,
+        const DmgMethod dmg_method,
+        actor::Actor* const actor)
 {
         (void)dmg;
         (void)dmg_type;
@@ -2224,7 +2255,7 @@ void Grate::on_hit(
         const int dmg,
         const DmgType dmg_type,
         const DmgMethod dmg_method,
-        Actor* const actor)
+        actor::Actor* const actor)
 {
         (void)dmg;
         (void)actor;
@@ -2282,10 +2313,11 @@ Color Grate::color_default() const
 Tree::Tree(const P& p) :
         Rigid(p) {}
 
-void Tree::on_hit(const int dmg,
-                  const DmgType dmg_type,
-                  const DmgMethod dmg_method,
-                  Actor* const actor)
+void Tree::on_hit(
+        const int dmg,
+        const DmgType dmg_type,
+        const DmgMethod dmg_method,
+        actor::Actor* const actor)
 {
         (void)dmg;
 
@@ -2361,10 +2393,11 @@ std::string Brazier::name(const Article article) const
         return ret + "brazier";
 }
 
-void Brazier::on_hit(const int dmg,
-                     const DmgType dmg_type,
-                     const DmgMethod dmg_method,
-                     Actor* const actor)
+void Brazier::on_hit(
+        const int dmg,
+        const DmgType dmg_type,
+        const DmgMethod dmg_method,
+        actor::Actor* const actor)
 {
         (void)dmg;
 
@@ -2496,11 +2529,11 @@ void ItemContainer::init(const FeatureId feature_id,
         // Try until actually succeeded to add at least one item
         while (m_items.empty())
         {
-                std::vector<ItemId> item_bucket;
+                std::vector<item::Id> item_bucket;
 
-                for (size_t i = 0; i < (size_t)ItemId::END; ++i)
+                for (size_t i = 0; i < (size_t)item::Id::END; ++i)
                 {
-                        ItemData& item_d = item_data::g_data[i];
+                        auto& item_d = item::g_data[i];
 
                         if (!item_d.allow_spawn)
                         {
@@ -2523,7 +2556,7 @@ void ItemContainer::init(const FeatureId feature_id,
 
                         if (rnd::percent(item_d.chance_to_incl_in_spawn_list))
                         {
-                                item_bucket.push_back(ItemId(i));
+                                item_bucket.push_back(item::Id(i));
                         }
                 }
 
@@ -2536,14 +2569,14 @@ void ItemContainer::init(const FeatureId feature_id,
 
                         const int idx = rnd::range(0, item_bucket.size() - 1);
 
-                        const ItemId id = item_bucket[idx];
+                        const auto id = item_bucket[idx];
 
                         // Is this item still allowed to spawn (perhaps unique)?
-                        if (item_data::g_data[(size_t)id].allow_spawn)
+                        if (item::g_data[(size_t)id].allow_spawn)
                         {
-                                Item* item = item_factory::make(item_bucket[idx]);
+                                auto* item = item::make(item_bucket[idx]);
 
-                                item_factory::set_item_randomized_properties(item);
+                                item::set_item_randomized_properties(item);
 
                                 m_items.push_back(item);
                         }
@@ -2555,7 +2588,9 @@ void ItemContainer::init(const FeatureId feature_id,
         }
 }
 
-void ItemContainer::open(const P& feature_pos, Actor* const actor_opening)
+void ItemContainer::open(
+        const P& feature_pos,
+        actor::Actor* const actor_opening)
 {
         if (actor_opening)
         {
@@ -2573,11 +2608,11 @@ void ItemContainer::open(const P& feature_pos, Actor* const actor_opening)
                                 "Pick up " + name + "? " + common_text::g_yes_or_no_hint,
                                 colors::light_white());
 
-                        const ItemData&  data = item->data();
+                        const auto& data = item->data();
 
-                        Wpn* wpn =
+                        auto* wpn =
                                 data.ranged.is_ranged_wpn
-                                ? static_cast<Wpn*>(item)
+                                ? static_cast<item::Wpn*>(item)
                                 : nullptr;
 
                         const bool is_unloadable_wpn =
@@ -2619,7 +2654,7 @@ void ItemContainer::open(const P& feature_pos, Actor* const actor_opening)
 
                                 audio::play(SfxId::pickup);
 
-                                Ammo* const spawned_ammo =
+                                auto* const spawned_ammo =
                                         item_pickup::unload_ranged_wpn(*wpn);
 
                                 map::g_player->m_inv.put_in_backpack(
@@ -2650,11 +2685,11 @@ void ItemContainer::destroy_single_fragile()
 
         for (size_t i = 0; i < m_items.size(); ++i)
         {
-                Item* const item = m_items[i];
+                auto* const item = m_items[i];
 
-                const ItemData& d = item->data();
+                const auto& d = item->data();
 
-                if (d.type == ItemType::potion || d.id == ItemId::molotov)
+                if ((d.type == ItemType::potion) || (d.id == item::Id::molotov))
                 {
                         delete item;
                         m_items.erase(m_items.begin() + i);
@@ -2709,17 +2744,17 @@ Tomb::Tomb(const P& p) :
         {
                 // Base appearance on value of contained items
 
-                for (Item* item : m_item_container.m_items)
+                for (auto* item : m_item_container.m_items)
                 {
-                        const ItemValue item_value = item->data().value;
+                        const auto item_value = item->data().value;
 
-                        if (item_value == ItemValue::supreme_treasure)
+                        if (item_value == item::Value::supreme_treasure)
                         {
                                 m_appearance = TombAppearance::marvelous;
 
                                 break;
                         }
-                        else if (item_value >= ItemValue::minor_treasure)
+                        else if (item_value >= item::Value::minor_treasure)
                         {
                                 m_appearance = TombAppearance::ornate;
                         }
@@ -2748,10 +2783,11 @@ Tomb::Tomb(const P& p) :
         }
 }
 
-void Tomb::on_hit(const int dmg,
-                  const DmgType dmg_type,
-                  const DmgMethod dmg_method,
-                  Actor* const actor)
+void Tomb::on_hit(
+        const int dmg,
+        const DmgType dmg_type,
+        const DmgMethod dmg_method,
+        actor::Actor* const actor)
 {
         (void)dmg;
         (void)dmg_type;
@@ -2841,7 +2877,7 @@ Color Tomb::color_default() const
         return colors::black();
 }
 
-void Tomb::bump(Actor& actor_bumping)
+void Tomb::bump(actor::Actor& actor_bumping)
 {
         if (actor_bumping.is_player())
         {
@@ -2934,7 +2970,7 @@ void Tomb::player_loot()
         }
 }
 
-DidOpen Tomb::open(Actor* const actor_opening)
+DidOpen Tomb::open(actor::Actor* const actor_opening)
 {
         if (m_is_open)
         {
@@ -2965,7 +3001,7 @@ DidOpen Tomb::open(Actor* const actor_opening)
         }
 }
 
-DidTriggerTrap Tomb::trigger_trap(Actor* const actor)
+DidTriggerTrap Tomb::trigger_trap(actor::Actor* const actor)
 {
         TRACE_FUNC_BEGIN;
 
@@ -2973,7 +3009,7 @@ DidTriggerTrap Tomb::trigger_trap(Actor* const actor)
 
         DidTriggerTrap did_trigger_trap = DidTriggerTrap::no;
 
-        ActorId id_to_spawn = ActorId::END;
+        auto id_to_spawn = actor::Id::END;
 
         const bool is_seen = map::g_cells.at(m_pos).is_seen_by_player;
 
@@ -2981,7 +3017,7 @@ DidTriggerTrap Tomb::trigger_trap(Actor* const actor)
         {
         case TombTrait::ghost:
         {
-                id_to_spawn = ActorId::ghost;
+                id_to_spawn = actor::Id::ghost;
 
                 const std::string msg = "The air suddenly feels colder.";
 
@@ -2996,11 +3032,11 @@ DidTriggerTrap Tomb::trigger_trap(Actor* const actor)
 
         case TombTrait::other_undead:
         {
-                std::vector<ActorId> mon_bucket = {
-                        ActorId::mummy,
-                        ActorId::croc_head_mummy,
-                        ActorId::zombie,
-                        ActorId::floating_skull
+                std::vector<actor::Id> mon_bucket = {
+                        actor::Id::mummy,
+                        actor::Id::croc_head_mummy,
+                        actor::Id::zombie,
+                        actor::Id::floating_skull
                 };
 
                 id_to_spawn = rnd::element(mon_bucket);
@@ -3079,17 +3115,17 @@ DidTriggerTrap Tomb::trigger_trap(Actor* const actor)
                 }
                 else // Not fumes
                 {
-                        std::vector<ActorId> mon_bucket;
+                        std::vector<actor::Id> mon_bucket;
 
-                        for (size_t i = 0; i < size_t(ActorId::END); ++i)
+                        for (size_t i = 0; i < size_t(actor::Id::END); ++i)
                         {
-                                const ActorData& d = actor_data::g_data[i];
+                                const auto& d = actor::g_data[i];
 
                                 if (d.natural_props[(size_t)PropId::ooze] &&
                                     d.is_auto_spawn_allowed &&
                                     !d.is_unique)
                                 {
-                                        mon_bucket.push_back(ActorId(i));
+                                        mon_bucket.push_back((actor::Id)i);
                                 }
                         }
 
@@ -3099,10 +3135,11 @@ DidTriggerTrap Tomb::trigger_trap(Actor* const actor)
 
                         if (is_seen)
                         {
-                                msg_log::add("Something repulsive creeps up from the tomb!",
-                                             colors::white(),
-                                             false,
-                                             MorePromptOnMsg::yes);
+                                msg_log::add(
+                                        "Something repulsive creeps up from the tomb!",
+                                        colors::white(),
+                                        false,
+                                        MorePromptOnMsg::yes);
                         }
                 }
 
@@ -3122,12 +3159,16 @@ DidTriggerTrap Tomb::trigger_trap(Actor* const actor)
                 break;
         }
 
-        if (id_to_spawn != ActorId::END)
+        if (id_to_spawn != actor::Id::END)
         {
                 const auto summoned =
-                        actor_factory::spawn(m_pos, {id_to_spawn}, map::rect())
-                        .make_aware_of_player()
-                        .for_each([this](Mon* const mon)
+                        actor::spawn(m_pos, {id_to_spawn}, map::rect())
+                        .make_aware_of_player();
+
+                std::for_each(
+                        std::begin(summoned.monsters),
+                        std::end(summoned.monsters),
+                        [this](auto* const mon)
                         {
                                 auto prop = new PropWaiting();
 
@@ -3137,9 +3178,14 @@ DidTriggerTrap Tomb::trigger_trap(Actor* const actor)
 
                                 if (m_appearance == TombAppearance::marvelous)
                                 {
-                                        mon->change_max_hp(mon->m_hp, Verbosity::silent);
+                                        mon->change_max_hp(
+                                                mon->m_hp,
+                                                Verbosity::silent);
 
-                                        mon->restore_hp(999, false, Verbosity::silent);
+                                        mon->restore_hp(
+                                                999,
+                                                false,
+                                                Verbosity::silent);
                                 }
                         });
         }
@@ -3200,7 +3246,7 @@ Chest::Chest(const P& p) :
         m_is_locked = rnd::fraction(locked_numer, 10);
 }
 
-void Chest::bump(Actor& actor_bumping)
+void Chest::bump(actor::Actor& actor_bumping)
 {
         if (actor_bumping.is_player())
         {
@@ -3249,7 +3295,7 @@ void Chest::player_loot()
         }
 }
 
-DidOpen Chest::open(Actor* const actor_opening)
+DidOpen Chest::open(actor::Actor* const actor_opening)
 {
         (void)actor_opening;
 
@@ -3275,7 +3321,7 @@ DidOpen Chest::open(Actor* const actor_opening)
 void Chest::hit(const int dmg,
                 const DmgType dmg_type,
                 const DmgMethod dmg_method,
-                Actor* const actor)
+                actor::Actor* const actor)
 {
         switch (dmg_type)
         {
@@ -3379,7 +3425,7 @@ void Chest::on_hit(
         const int dmg,
         const DmgType dmg_type,
         const DmgMethod dmg_method,
-        Actor* const actor)
+        actor::Actor* const actor)
 {
         (void)dmg;
         (void)dmg_type;
@@ -3494,10 +3540,11 @@ Fountain::Fountain(const P& p) :
         }
 }
 
-void Fountain::on_hit(const int dmg,
-                      const DmgType dmg_type,
-                      const DmgMethod dmg_method,
-                      Actor* const actor)
+void Fountain::on_hit(
+        const int dmg,
+        const DmgType dmg_type,
+        const DmgMethod dmg_method,
+        actor::Actor* const actor)
 {
         (void)dmg;
         (void)dmg_type;
@@ -3526,7 +3573,7 @@ std::string Fountain::name(const Article article) const
         return a + "fountain";
 }
 
-void Fountain::bump(Actor& actor_bumping)
+void Fountain::bump(actor::Actor& actor_bumping)
 {
         if (!actor_bumping.is_player())
         {
@@ -3763,10 +3810,11 @@ Cabinet::Cabinet(const P& p) :
                 rnd::range(nr_items_min, nr_items_max));
 }
 
-void Cabinet::on_hit(const int dmg,
-                     const DmgType dmg_type,
-                     const DmgMethod dmg_method,
-                     Actor* const actor)
+void Cabinet::on_hit(
+        const int dmg,
+        const DmgType dmg_type,
+        const DmgMethod dmg_method,
+        actor::Actor* const actor)
 {
         (void)dmg;
         (void)dmg_type;
@@ -3774,7 +3822,7 @@ void Cabinet::on_hit(const int dmg,
         (void)actor;
 }
 
-void Cabinet::bump(Actor& actor_bumping)
+void Cabinet::bump(actor::Actor& actor_bumping)
 {
         if (actor_bumping.is_player())
         {
@@ -3814,7 +3862,7 @@ void Cabinet::player_loot()
         }
 }
 
-DidOpen Cabinet::open(Actor* const actor_opening)
+DidOpen Cabinet::open(actor::Actor* const actor_opening)
 {
         (void)actor_opening;
 
@@ -3894,10 +3942,11 @@ Bookshelf::Bookshelf(const P& p) :
                 rnd::range(nr_items_min, nr_items_max));
 }
 
-void Bookshelf::on_hit(const int dmg,
-                       const DmgType dmg_type,
-                       const DmgMethod dmg_method,
-                       Actor* const actor)
+void Bookshelf::on_hit(
+        const int dmg,
+        const DmgType dmg_type,
+        const DmgMethod dmg_method,
+        actor::Actor* const actor)
 {
         (void)dmg;
         (void)dmg_type;
@@ -3905,7 +3954,7 @@ void Bookshelf::on_hit(const int dmg,
         (void)actor;
 }
 
-void Bookshelf::bump(Actor& actor_bumping)
+void Bookshelf::bump(actor::Actor& actor_bumping)
 {
         if (actor_bumping.is_player())
         {
@@ -4007,7 +4056,7 @@ void AlchemistBench::on_hit(
         const int dmg,
         const DmgType dmg_type,
         const DmgMethod dmg_method,
-        Actor* const actor)
+        actor::Actor* const actor)
 {
         (void)dmg;
         (void)dmg_type;
@@ -4015,7 +4064,7 @@ void AlchemistBench::on_hit(
         (void)actor;
 }
 
-void AlchemistBench::bump(Actor& actor_bumping)
+void AlchemistBench::bump(actor::Actor& actor_bumping)
 {
         if (actor_bumping.is_player())
         {
@@ -4128,7 +4177,7 @@ void Cocoon::on_hit(
         const int dmg,
         const DmgType dmg_type,
         const DmgMethod dmg_method,
-        Actor* const actor)
+        actor::Actor* const actor)
 {
         (void)dmg;
         (void)dmg_type;
@@ -4136,7 +4185,7 @@ void Cocoon::on_hit(
         (void)actor;
 }
 
-void Cocoon::bump(Actor& actor_bumping)
+void Cocoon::bump(actor::Actor& actor_bumping)
 {
         if (actor_bumping.is_player())
         {
@@ -4168,7 +4217,7 @@ void Cocoon::bump(Actor& actor_bumping)
         }
 }
 
-DidTriggerTrap Cocoon::trigger_trap(Actor* const actor)
+DidTriggerTrap Cocoon::trigger_trap(actor::Actor* const actor)
 {
         (void)actor;
 
@@ -4194,14 +4243,14 @@ DidTriggerTrap Cocoon::trigger_trap(Actor* const actor)
                 {
                         // Spiders
                         TRACE << "Attempting to spawn spiders" << std::endl;
-                        std::vector<ActorId> spawn_bucket;
+                        std::vector<actor::Id> spawn_bucket;
 
-                        for (int i = 0; i < (int)ActorId::END; ++i)
+                        for (int i = 0; i < (int)actor::Id::END; ++i)
                         {
-                                const ActorData& d = actor_data::g_data[i];
+                                const auto& d = actor::g_data[i];
 
                                 if (d.is_spider &&
-                                    d.actor_size == ActorSize::floor &&
+                                    d.actor_size == actor::Size::floor &&
                                     d.is_auto_spawn_allowed &&
                                     !d.is_unique)
                                 {
@@ -4223,10 +4272,10 @@ DidTriggerTrap Cocoon::trigger_trap(Actor* const actor)
                                 const int idx =
                                         rnd::range(0, nr_candidates - 1);
 
-                                const ActorId actor_id_to_summon =
+                                const actor::Id actor_id_to_summon =
                                         spawn_bucket[idx];
 
-                                actor_factory::spawn(
+                                actor::spawn(
                                         m_pos,
                                         {nr_spiders, actor_id_to_summon},
                                         map::rect())
@@ -4256,7 +4305,7 @@ void Cocoon::player_loot()
         }
 }
 
-DidOpen Cocoon::open(Actor* const actor_opening)
+DidOpen Cocoon::open(actor::Actor* const actor_opening)
 {
         if (m_is_open)
         {

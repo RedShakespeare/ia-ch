@@ -13,13 +13,22 @@
 #include "feature_data.hpp"
 #include "pos.hpp"
 
+
+namespace actor
+{
+
+class Actor;
+
+} // actor
+
+
 struct R;
 struct Cell;
 class Mob;
-class Actor;
 
 template<typename T>
 class Array2;
+
 
 // NOTE: If append mode is used, the caller is responsible for initializing the
 // array (e.g. with a previous "overwrite" parse call)
@@ -29,11 +38,24 @@ enum class MapParseMode
         append
 };
 
-enum class ParseCells {no ,yes};
+enum class ParseCells
+{
+        no,
+        yes
+};
 
-enum class ParseMobs {no ,yes};
+enum class ParseMobs
+{
+        no,
+        yes
+};
 
-enum class ParseActors {no ,yes};
+enum class ParseActors
+{
+        no,
+        yes
+};
+
 
 namespace map_parsers
 {
@@ -67,7 +89,7 @@ public:
                 return false;
         }
 
-        virtual bool parse(const Actor& a) const
+        virtual bool parse(const actor::Actor& a) const
         {
                 (void)a;
 
@@ -108,22 +130,22 @@ public:
 private:
         bool parse(const Cell& c, const P& pos) const override;
         bool parse(const Mob& f) const override;
-        bool parse(const Actor& a) const override;
+        bool parse(const actor::Actor& a) const override;
 };
 
 class BlocksActor : public MapParser
 {
 public:
-        BlocksActor(const Actor& actor, ParseActors parse_actors) :
+        BlocksActor(const actor::Actor& actor, ParseActors parse_actors) :
                 MapParser(ParseCells::yes, ParseMobs::yes, parse_actors),
                 m_actor(actor) {}
 
 private:
         bool parse(const Cell& c, const P& pos) const override;
         bool parse(const Mob& f) const override;
-        bool parse(const Actor& a) const override;
+        bool parse(const actor::Actor& a) const override;
 
-        const Actor& m_actor;
+        const actor::Actor& m_actor;
 };
 
 class BlocksProjectiles : public MapParser
@@ -156,7 +178,7 @@ public:
                 m_pos(pos) {}
 
 private:
-        bool parse(const Actor& a) const override;
+        bool parse(const actor::Actor& a) const override;
 
         const P& m_pos;
 };

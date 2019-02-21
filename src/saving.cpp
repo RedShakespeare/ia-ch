@@ -59,17 +59,17 @@ static void save_modules()
         saving::put_str(map::g_player->name_a());
 
         game::save();
-        scroll_handling::save();
-        potion_handling::save();
-        rod_handling::save();
-        item_data::save();
+        scroll::save();
+        potion::save();
+        rod::save();
+        item::save();
         map::g_player->m_inv.save();
         map::g_player->save();
         insanity::save();
         player_bon::save();
         map_travel::save();
         map::save();
-        actor_data::save();
+        actor::save();
         game_time::save();
         player_spells::save();
         map_templates::save();
@@ -93,17 +93,17 @@ static void load_modules()
         map::g_player->m_data->name_the = player_name;
 
         game::load();
-        scroll_handling::load();
-        potion_handling::load();
-        rod_handling::load();
-        item_data::load();
+        scroll::load();
+        potion::load();
+        rod::load();
+        item::load();
         map::g_player->m_inv.load();
         map::g_player->load();
         insanity::load();
         player_bon::load();
         map_travel::load();
         map::load();
-        actor_data::load();
+        actor::load();
         game_time::load();
         player_spells::load();
         map_templates::load();

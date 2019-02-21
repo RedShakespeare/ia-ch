@@ -40,7 +40,7 @@ void make_pylons_and_levers()
 
         blocked = map_parsers::expand(blocked, 2);
 
-        for (Actor* const actor : game_time::g_actors)
+        for (auto* const actor : game_time::g_actors)
         {
                 blocked.at(actor->m_pos) = true;
         }

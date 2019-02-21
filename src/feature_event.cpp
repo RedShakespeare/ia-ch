@@ -10,6 +10,7 @@
 #include "actor_mon.hpp"
 #include "actor_player.hpp"
 #include "feature_rigid.hpp"
+#include "game_time.hpp"
 #include "init.hpp"
 #include "io.hpp"
 #include "map.hpp"
@@ -191,16 +192,16 @@ void EventWallCrumble::on_new_turn()
         // Spawn monsters
 
         // Actor id, and corresponding maximum number of monsters allowed
-        std::vector< std::pair<ActorId, size_t> > spawn_bucket;
+        std::vector< std::pair<actor::Id, size_t> > spawn_bucket;
 
         if (map::g_dlvl <= g_dlvl_last_early_game)
         {
-                spawn_bucket.push_back({ActorId::rat, 24});
-                spawn_bucket.push_back({ActorId::rat_thing, 16});
+                spawn_bucket.push_back({actor::Id::rat, 24});
+                spawn_bucket.push_back({actor::Id::rat_thing, 16});
         }
 
-        spawn_bucket.push_back({ActorId::zombie, 4});
-        spawn_bucket.push_back({ActorId::bloated_zombie, 1});
+        spawn_bucket.push_back({actor::Id::zombie, 4});
+        spawn_bucket.push_back({actor::Id::bloated_zombie, 1});
 
         const auto spawn_data = rnd::element(spawn_bucket);
 
@@ -210,16 +211,16 @@ void EventWallCrumble::on_new_turn()
 
         rnd::shuffle(m_inner_cells);
 
-        std::vector<Mon*> mon_spawned;
+        std::vector<actor::Mon*> mon_spawned;
 
         for (const P& p : m_inner_cells)
         {
                 if ((mon_spawned.size() <  nr_mon_limit_except_adj_to_entry) ||
                     is_pos_adj(p, m_pos, false))
                 {
-                        Actor* const actor = actor_factory::make(actor_id, p);
+                        auto* const actor = actor::make(actor_id, p);
 
-                        Mon* const mon = static_cast<Mon*>(actor);
+                        auto* const mon = static_cast<actor::Mon*>(actor);
 
                         mon_spawned.push_back(mon);
                 }
@@ -355,7 +356,7 @@ Array2<bool> EventSnakeEmerge::blocked_cells(const R& r) const
                 }
         }
 
-        for (Actor* const actor : game_time::g_actors)
+        for (auto* const actor : game_time::g_actors)
         {
                 const P& p = actor->m_pos;
 
@@ -393,9 +394,9 @@ void EventSnakeEmerge::on_new_turn()
 
         rnd::shuffle(tgt_bucket);
 
-        std::vector<ActorId> id_bucket;
+        std::vector<actor::Id> id_bucket;
 
-        for (ActorData d : actor_data::g_data)
+        for (auto d : actor::g_data)
         {
                 if (d.is_snake)
                 {
@@ -405,7 +406,7 @@ void EventSnakeEmerge::on_new_turn()
 
         const size_t idx = rnd::range(0, id_bucket.size() - 1);
 
-        const ActorId id = id_bucket[idx];
+        const auto id = id_bucket[idx];
 
         const size_t nr_summoned = rnd::range(m_min_nr_snakes, max_nr_snakes);
 
@@ -449,7 +450,7 @@ void EventSnakeEmerge::on_new_turn()
         {
                 const P& p(tgt_bucket[i]);
 
-                Actor* const actor = actor_factory::make(id, p);
+                auto* const actor = actor::make(id, p);
 
                 auto prop = new PropWaiting();
 
@@ -457,7 +458,7 @@ void EventSnakeEmerge::on_new_turn()
 
                 actor->m_properties.apply(prop);
 
-                static_cast<Mon*>(actor)->become_aware_player(false);
+                static_cast<actor::Mon*>(actor)->become_aware_player(false);
         }
 
         game_time::erase_mob(this, true);
@@ -494,11 +495,12 @@ void EventRatsInTheWallsDiscovery::on_new_turn()
                         ShockLvl::mind_shattering,
                         ShockSrc::misc);
 
-                for (Actor* const actor : game_time::g_actors)
+                for (auto* const actor : game_time::g_actors)
                 {
                         if (!actor->is_player())
                         {
-                                static_cast<Mon*>(actor)->m_is_roaming_allowed =
+                                static_cast<actor::Mon*>(actor)
+                                        ->m_is_roaming_allowed =
                                         MonRoamingAllowed::yes;
                         }
                 }

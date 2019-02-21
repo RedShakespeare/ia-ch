@@ -13,10 +13,18 @@
 
 #include <vector>
 
-#include "config.hpp"
-#include "game_time.hpp"
+#include "colors.hpp"
 #include "gfx.hpp"
 #include "panel.hpp"
+
+
+namespace actor
+{
+
+class Actor;
+
+} // actor
+
 
 struct CellRenderData
 {
@@ -157,7 +165,7 @@ void draw_blast_at_seen_cells(
         const Color& color);
 
 void draw_blast_at_seen_actors(
-        const std::vector<Actor*>& actors,
+        const std::vector<actor::Actor*>& actors,
         const Color& color);
 
 void draw_main_menu_logo();

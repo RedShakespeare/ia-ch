@@ -13,6 +13,7 @@
 
 #include "actor_player.hpp"
 #include "game.hpp"
+#include "game_time.hpp"
 #include "highscore.hpp"
 #include "init.hpp"
 #include "io.hpp"
@@ -42,9 +43,9 @@ static int get_max_nr_entries_on_screen()
 
 static void sort_entries(std::vector<HighscoreEntry>& entries)
 {
-        sort(
-                entries.begin(),
-                entries.end(),
+        std::sort(
+                std::begin(entries),
+                std::end(entries),
                 [](const HighscoreEntry & e1, const HighscoreEntry & e2)
                 {
                         return e1.score() > e2.score();

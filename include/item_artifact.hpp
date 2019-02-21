@@ -10,6 +10,19 @@
 #include "item.hpp"
 #include "sound.hpp"
 
+
+namespace actor
+{
+
+class Actor;
+class Mon;
+
+}
+
+
+namespace item
+{
+
 // -----------------------------------------------------------------------------
 // Staff of the Pharaohs
 // -----------------------------------------------------------------------------
@@ -21,7 +34,7 @@ public:
         void on_std_turn_in_inv(const InvType inv_type) override;
 
 private:
-        void on_mon_see_player_carrying(Mon& mon) const;
+        void on_mon_see_player_carrying(actor::Mon& mon) const;
 };
 
 // -----------------------------------------------------------------------------
@@ -71,7 +84,7 @@ public:
 
         ~HornOfMaliceHeard() {}
 
-        void run(Actor& actor) const override;
+        void run(actor::Actor& actor) const override;
 };
 
 class HornOfMalice: public Item
@@ -85,7 +98,7 @@ public:
 
         void load() override;
 
-        ConsumeItem activate(Actor* const actor) override;
+        ConsumeItem activate(actor::Actor* const actor) override;
 
 private:
         int m_charges;
@@ -101,7 +114,7 @@ public:
 
         ~HornOfBanishmentHeard() {}
 
-        void run(Actor& actor) const override;
+        void run(actor::Actor& actor) const override;
 };
 
 class HornOfBanishment: public Item
@@ -115,7 +128,7 @@ public:
 
         void load() override;
 
-        ConsumeItem activate(Actor* const actor) override;
+        ConsumeItem activate(actor::Actor* const actor) override;
 
 private:
         int m_charges;
@@ -130,7 +143,7 @@ class Clockwork: public Item
 public:
         Clockwork(ItemData* const item_data);
 
-        ConsumeItem activate(Actor* const actor) override;
+        ConsumeItem activate(actor::Actor* const actor) override;
 
         std::string name_inf_str() const override;
 
@@ -150,12 +163,12 @@ class SpiritDagger: public Wpn
 public:
         SpiritDagger(ItemData* const item_data);
 
-        void on_melee_hit(Actor& actor_hit, const int dmg) override;
+        void on_melee_hit(actor::Actor& actor_hit, const int dmg) override;
 
 protected:
         void specific_dmg_mod(
                 Dice& dice,
-                const Actor* const actor) const override;
+                const actor::Actor* const actor) const override;
 };
 
 // -----------------------------------------------------------------------------
@@ -171,5 +184,7 @@ private:
 
         void on_removed_from_inv_hook() override;
 };
+
+} // item
 
 #endif // ITEM_ARTIFACT_HPP

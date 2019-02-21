@@ -11,6 +11,7 @@
 #include "feature_mob.hpp"
 #include "feature_rigid.hpp"
 #include "game.hpp"
+#include "game_time.hpp"
 #include "io.hpp"
 #include "line_calc.hpp"
 #include "map.hpp"
@@ -156,8 +157,8 @@ static void draw(const std::vector< std::vector<P> >& pos_lists,
 static void apply_explosion_on_pos(
         const P& pos,
         const int current_radi,
-        Actor* living_actor,
-        std::vector<Actor*> corpses_here)
+        actor::Actor* living_actor,
+        std::vector<actor::Actor*> corpses_here)
 {
         const int rolls = g_expl_dmg_rolls - current_radi;
 
@@ -195,7 +196,7 @@ static void apply_explosion_on_pos(
         }
 
         // Damage dead actors
-        for (Actor* corpse : corpses_here)
+        for (auto* corpse : corpses_here)
         {
                 actor::hit(*corpse, dmg, DmgType::physical);
         }
@@ -210,8 +211,8 @@ static void apply_explosion_on_pos(
 static void apply_explosion_property_on_pos(
         const P& pos,
         Prop* property,
-        Actor* living_actor,
-        std::vector<Actor*> corpses_here,
+        actor::Actor* living_actor,
+        std::vector<actor::Actor*> corpses_here,
         const ExplIsGas is_gas)
 {
         bool should_apply_on_living_actor = true;
@@ -229,13 +230,13 @@ static void apply_explosion_property_on_pos(
                         {
                                 // Do not apply effect if wearing Gas Mask, and
                                 // this is a gas explosion
-                                const Item* const head_item =
+                                const auto* const head_item =
                                         map::g_player->m_inv.item_in_slot(
                                                 SlotId::head);
 
                                 if ((is_gas == ExplIsGas::yes) &&
                                     head_item &&
-                                    (head_item->id() == ItemId::gas_mask))
+                                    (head_item->id() == item::Id::gas_mask))
                                 {
                                         should_apply_on_living_actor = false;
                                 }
@@ -267,7 +268,7 @@ static void apply_explosion_property_on_pos(
                                 DmgMethod::elemental,
                                 nullptr);
 
-                for (Actor* corpse : corpses_here)
+                for (auto* corpse : corpses_here)
                 {
                         Prop* const prop_cpy =
                                 property_factory::make(property->id());
@@ -326,9 +327,9 @@ void run(const P& origin,
         draw(pos_lists, blocked, color_override);
 
         // Do damage, apply effect
-        Array2<Actor*> living_actors(map::dims());
+        Array2<actor::Actor*> living_actors(map::dims());
 
-        Array2< std::vector<Actor*> > corpses(map::dims());
+        Array2< std::vector<actor::Actor*> > corpses(map::dims());
 
         const size_t len = map::nr_cells();
 
@@ -339,7 +340,7 @@ void run(const P& origin,
                 corpses.at(i).clear();
         }
 
-        for (Actor* actor : game_time::g_actors)
+        for (auto* actor : game_time::g_actors)
         {
                 const P& pos = actor->m_pos;
 
@@ -361,9 +362,9 @@ void run(const P& origin,
 
                 for (const P& pos : positions_at_dist)
                 {
-                        Actor* living_actor = living_actors.at(pos);
+                        actor::Actor* living_actor = living_actors.at(pos);
 
-                        std::vector<Actor*> corpses_here = corpses.at(pos);
+                        auto corpses_here = corpses.at(pos);
 
                         if (expl_type == ExplType::expl)
                         {

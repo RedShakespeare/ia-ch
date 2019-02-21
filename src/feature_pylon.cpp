@@ -105,7 +105,7 @@ Color Pylon::color_default() const
 void Pylon::on_hit(const int dmg,
                    const DmgType dmg_type,
                    const DmgMethod dmg_method,
-                   Actor* const actor)
+                   actor::Actor* const actor)
 {
         (void)dmg;
         (void)dmg_type;
@@ -232,9 +232,9 @@ void Pylon::add_light_hook(Array2<bool>& light) const
 //     snd.run();
 // }
 
-std::vector<Actor*> PylonImpl::living_actors_reached() const
+std::vector<actor::Actor*> PylonImpl::living_actors_reached() const
 {
-        std::vector<Actor*> actors;
+        std::vector<actor::Actor*> actors;
 
         for (auto* const actor : game_time::g_actors)
         {
@@ -260,7 +260,7 @@ std::vector<Actor*> PylonImpl::living_actors_reached() const
         return actors;
 }
 
-Actor* PylonImpl::rnd_reached_living_actor() const
+actor::Actor* PylonImpl::rnd_reached_living_actor() const
 {
         auto actors = living_actors_reached();
 
@@ -269,7 +269,7 @@ Actor* PylonImpl::rnd_reached_living_actor() const
                 return nullptr;
         }
 
-        Actor* actor = rnd::element(living_actors_reached());
+        auto* actor = rnd::element(living_actors_reached());
 
         return actor;
 }

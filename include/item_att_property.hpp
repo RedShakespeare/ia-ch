@@ -11,6 +11,7 @@
 
 #include "property.hpp"
 
+
 struct ItemAttProp
 {
         ItemAttProp() :

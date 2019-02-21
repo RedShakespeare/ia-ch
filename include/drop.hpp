@@ -9,19 +9,35 @@
 
 #include "global.hpp"
 
-struct P;
+
+namespace item
+{
+
 class Item;
+
+} // item
+
+
+namespace actor
+{
+
 class Actor;
+
+} // actor
+
+
+struct P;
+
 
 namespace item_drop
 {
 
 // This function places the item as close to the origin as possible, but never
 // on top of other items, unless they can be stacked.
-Item* drop_item_on_map(const P& intended_pos, Item& item);
+item::Item* drop_item_on_map(const P& intended_pos, item::Item& item);
 
 void drop_item_from_inv(
-        Actor& actor,
+        actor::Actor& actor,
         const InvType inv_type,
         const size_t idx,
         const int nr_items_to_drop = -1);

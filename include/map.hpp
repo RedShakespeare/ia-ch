@@ -12,13 +12,30 @@
 #include "colors.hpp"
 #include "config.hpp"
 #include "fov.hpp"
-#include "game.hpp"
-#include "item_data.hpp"
 #include "pos.hpp"
 
-class Rigid;
-class Mob;
+
+namespace item
+{
+
+class Item;
+
+} // item
+
+
+namespace actor
+{
+
+class Actor;
 class Player;
+
+} // actor
+
+
+class Mob;
+class Rigid;
+class Room;
+
 
 // TODO: This should probably be removed, and multiple smaller arrays should be
 // used instead
@@ -31,7 +48,7 @@ struct Cell
 
         bool is_explored, is_seen_by_player;
         LosResult player_los; // Updated when player updates FOV
-        Item* item;
+        item::Item* item;
         Rigid* rigid;
 };
 
@@ -65,10 +82,11 @@ struct ChokePointData
         std::vector<P> sides[2];
 };
 
+
 namespace map
 {
 
-extern Player* g_player;
+extern actor::Player* g_player;
 
 extern int g_dlvl;
 
@@ -120,15 +138,21 @@ void delete_and_remove_room_from_list(Room* const room);
 
 bool is_pos_seen_by_player(const P& p);
 
-Actor* actor_at_pos(const P& pos, ActorState state = ActorState::alive);
+actor::Actor* actor_at_pos(
+        const P& pos,
+        ActorState state = ActorState::alive);
 
 Mob* first_mob_at_pos(const P& pos);
 
-void actor_cells(const std::vector<Actor*>& actors, std::vector<P>& out);
+void actor_cells(
+        const std::vector<actor::Actor*>& actors,
+        std::vector<P>& out);
 
-Array2< std::vector<Actor*> > get_actor_array();
+Array2<std::vector<actor::Actor*>> get_actor_array();
 
-Actor* random_closest_actor(const P& c, const std::vector<Actor*>& actors);
+actor::Actor* random_closest_actor(
+        const P& c,
+        const std::vector<actor::Actor*>& actors);
 
 bool is_pos_inside_map(const P& pos);
 

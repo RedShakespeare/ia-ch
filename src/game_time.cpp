@@ -31,7 +31,7 @@
 // -----------------------------------------------------------------------------
 // Private
 // -----------------------------------------------------------------------------
-static std::vector<ActorSpeed> s_turn_type_vector;
+static std::vector<actor::Speed> s_turn_type_vector;
 
 // Smallest number divisible by both 2 (200% speed) and 3 (300% speed)
 static const int s_ticks_per_turn = 6;
@@ -44,20 +44,20 @@ static int s_turn_nr = 0;
 
 static int s_std_turn_delay = s_ticks_per_turn;
 
-static int speed_to_pct(const ActorSpeed speed)
+static int speed_to_pct(const actor::Speed speed)
 {
         switch (speed)
         {
-        case ActorSpeed::slow:
+        case actor::Speed::slow:
                 return 50;
 
-        case ActorSpeed::normal:
+        case actor::Speed::normal:
                 return 100;
 
-        case ActorSpeed::fast:
+        case actor::Speed::fast:
                 return 200;
 
-        case ActorSpeed::very_fast:
+        case actor::Speed::very_fast:
                 return 300;
         }
 
@@ -66,38 +66,38 @@ static int speed_to_pct(const ActorSpeed speed)
         return 100;
 }
 
-static ActorSpeed incr_speed_category(ActorSpeed speed)
+static actor::Speed incr_speed_category(actor::Speed speed)
 {
-        if (speed < ActorSpeed::very_fast)
+        if (speed < actor::Speed::very_fast)
         {
-                speed = (ActorSpeed)((int)speed + 1);
+                speed = (actor::Speed)((int)speed + 1);
         }
 
         return speed;
 }
 
-static ActorSpeed decr_speed_category(ActorSpeed speed)
+static actor::Speed decr_speed_category(actor::Speed speed)
 {
         if ((int)speed > 0)
         {
-                speed = (ActorSpeed)((int)speed - 1);
+                speed = (actor::Speed)((int)speed - 1);
         }
 
         return speed;
 }
 
-static ActorSpeed current_actor_speed(const Actor& actor)
+static actor::Speed current_actor_speed(const actor::Actor& actor)
 {
         // Paralyzed actors always act at normal speed (otherwise paralysis will
         // barely affect super fast monsters at all)
         if (actor.m_properties.has(PropId::paralyzed))
         {
-                return ActorSpeed::normal;
+                return actor::Speed::normal;
         }
 
         if (actor.m_properties.has(PropId::clockwork_hasted))
         {
-                return ActorSpeed::very_fast;
+                return actor::Speed::very_fast;
         }
 
         auto speed = actor.m_data->speed;
@@ -159,7 +159,7 @@ static void run_std_turn_events()
         // from the 'breeding' property)
         for (size_t i = 0; i < game_time::g_actors.size(); /* No increment */)
         {
-                Actor* const actor = game_time::g_actors[i];
+                auto* const actor = game_time::g_actors[i];
 
                 // Delete destroyed actors
                 if (actor->m_state == ActorState::destroyed)
@@ -189,7 +189,8 @@ static void run_std_turn_events()
                         if (!actor->is_player())
                         {
                                 // Count down monster awareness
-                                Mon* const mon = static_cast<Mon*>(actor);
+                                auto* const mon =
+                                        static_cast<actor::Mon*>(actor);
 
                                 if (mon->m_player_aware_of_me_counter > 0)
                                 {
@@ -235,7 +236,7 @@ static void run_std_turn_events()
         }
 
         // Run new turn events on all player items
-        for (Item* const item : map::g_player->m_inv.m_backpack)
+        for (auto* const item : map::g_player->m_inv.m_backpack)
         {
                 item->on_std_turn_in_inv(InvType::backpack);
         }
@@ -284,7 +285,7 @@ static  void run_atomic_turn_events()
 namespace game_time
 {
 
-std::vector<Actor*> g_actors;
+std::vector<actor::Actor*> g_actors;
 std::vector<Mob*> g_mobs;
 
 bool g_is_magic_descend_nxt_std_turn;
@@ -306,7 +307,7 @@ void init()
 
 void cleanup()
 {
-        for (Actor* a : g_actors)
+        for (auto* a : g_actors)
         {
                 delete a;
         }
@@ -388,13 +389,13 @@ void erase_all_mobs()
         g_mobs.clear();
 }
 
-void add_actor(Actor* actor)
+void add_actor(actor::Actor* actor)
 {
         // Sanity checks
         // ASSERT(map::is_pos_inside_map(actor->m_pos));
 
 #ifndef NDEBUG
-        for (Actor* const existing_actor : g_actors)
+        for (actor::Actor* const existing_actor : g_actors)
         {
                 ASSERT(actor != existing_actor);
 
@@ -512,11 +513,11 @@ void update_light_map()
         memcpy(map::g_light.data(), light_tmp.data(), map::g_light.length());
 }
 
-Actor* current_actor()
+actor::Actor* current_actor()
 {
         ASSERT(s_current_actor_idx < g_actors.size());
 
-        Actor* const actor = g_actors[s_current_actor_idx];
+        auto* const actor = g_actors[s_current_actor_idx];
 
         ASSERT(map::is_pos_inside_map(actor->m_pos));
 

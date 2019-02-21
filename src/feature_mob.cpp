@@ -58,20 +58,20 @@ void Smoke::on_new_turn()
                                 .m_slots[(size_t)SlotId::body].item;
 
                         if (player_head_item &&
-                            (player_head_item->data().id == ItemId::gas_mask))
+                            (player_head_item->data().id == item::Id::gas_mask))
                         {
                                 is_blind_prot = true;
 
                                 is_breath_prot = true;
 
                                 // This may destroy the gasmask
-                                static_cast<GasMask*>(player_head_item)
+                                static_cast<item::GasMask*>(player_head_item)
                                         ->decr_turns_left(map::g_player->m_inv);
                         }
 
                         if (player_body_item &&
                             (player_body_item->data().id ==
-                             ItemId::armor_asb_suit))
+                             item::Id::armor_asb_suit))
                         {
                                 is_blind_prot = true;
 

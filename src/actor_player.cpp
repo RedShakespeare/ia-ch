@@ -25,7 +25,9 @@
 #include "feature_trap.hpp"
 #include "flood.hpp"
 #include "fov.hpp"
+#include "game.hpp"
 #include "game_commands.hpp"
+#include "game_time.hpp"
 #include "init.hpp"
 #include "insanity.hpp"
 #include "inventory.hpp"
@@ -84,6 +86,12 @@ static int nr_wounds(const PropHandler& properties)
 }
 
 // -----------------------------------------------------------------------------
+// actor
+// -----------------------------------------------------------------------------
+namespace actor
+{
+
+// -----------------------------------------------------------------------------
 // Player
 // -----------------------------------------------------------------------------
 Player::Player() :
@@ -138,18 +146,18 @@ void Player::load()
         m_pos.y = saving::get_int();
         m_nr_turns_until_rspell = saving::get_int();
 
-        const auto unarmed_wpn_id = (ItemId)saving::get_int();
+        const auto unarmed_wpn_id = (item::Id)saving::get_int();
 
-        ASSERT(unarmed_wpn_id < ItemId::END);
+        ASSERT(unarmed_wpn_id < item::Id::END);
 
         delete m_unarmed_wpn;
         m_unarmed_wpn = nullptr;
 
-        auto* const unarmed_item = item_factory::make(unarmed_wpn_id);
+        auto* const unarmed_item = item::make(unarmed_wpn_id);
 
         ASSERT(unarmed_item);
 
-        m_unarmed_wpn = static_cast<Wpn*>(unarmed_item);
+        m_unarmed_wpn = static_cast<item::Wpn*>(unarmed_item);
 
         for (int i = 0; i < (int)AbilityId::END; ++i)
         {
@@ -483,7 +491,7 @@ void Player::incr_insanity()
 
                 popup::msg(msg, "Insane!", SfxId::insanity_rise);
 
-                actor::kill(
+                kill(
                         *this,
                         IsDestroyed::yes,
                         AllowGore::no,
@@ -508,8 +516,8 @@ void Player::item_feeling()
 
         bool print_feeling = false;
 
-        auto is_nice = [](const Item& item) {
-                return item.data().value == ItemValue::supreme_treasure;
+        auto is_nice = [](const item::Item& item) {
+                return item.data().value == item::Value::supreme_treasure;
         };
 
         for (auto& cell : map::g_cells)
@@ -696,7 +704,9 @@ void Player::act()
                         }
                         else // Taking off armor
                         {
-                                ASSERT(m_inv.m_slots[(size_t)SlotId::body].item);
+                                ASSERT(
+                                        m_inv.m_slots[(size_t)SlotId::body]
+                                        .item);
 
                                 m_inv.unequip_slot(SlotId::body);
                         }
@@ -713,7 +723,7 @@ void Player::act()
         {
                 --wait_turns_left;
 
-                actor::move(*this, Dir::center);
+                move(*this, Dir::center);
 
                 return;
         }
@@ -806,7 +816,7 @@ void Player::act()
 
                 const auto adj_known_closed_doors_before = adj_known_closed_doors(m_pos);
 
-                actor::move(*this, m_auto_move_dir);
+                move(*this, m_auto_move_dir);
 
                 m_has_taken_auto_move_step = true;
 
@@ -1011,7 +1021,7 @@ void Player::on_actor_turn()
                                         if (is_cell_seen)
                                         {
                                                 // The monster must be invisible
-                                                actor::print_aware_invis_mon_msg(mon);
+                                                print_aware_invis_mon_msg(mon);
                                         }
                                         else // Became aware of a monster in an unseen cell
                                         {
@@ -1039,7 +1049,7 @@ void Player::on_actor_turn()
                                         sneak_data.actor_sneaking = &mon;
                                         sneak_data.actor_searching = this;
 
-                                        sneak_result = actor::roll_sneak(sneak_data);
+                                        sneak_result = roll_sneak(sneak_data);
                                 }
 
                                 if (sneak_result <= ActionResult::fail)
@@ -1111,7 +1121,7 @@ void Player::on_actor_turn()
                 {
                         if (slot.item)
                         {
-                                const ItemData& d = slot.item->data();
+                                const auto& d = slot.item->data();
 
                                 // NOTE: Having an item equiped also counts as
                                 // carrying it
@@ -1125,7 +1135,7 @@ void Player::on_actor_turn()
                         }
                 }
 
-                for (const Item* const item : m_inv.m_backpack)
+                for (const auto* const item : m_inv.m_backpack)
                 {
                         if (item->data().is_carry_shocking)
                         {
@@ -1145,7 +1155,7 @@ void Player::on_actor_turn()
         }
 
         // Run new turn events on all items
-        for (Item* const item : m_inv.m_backpack)
+        for (auto* const item : m_inv.m_backpack)
         {
                 item->on_actor_turn_in_inv(InvType::backpack);
         }
@@ -1405,7 +1415,7 @@ void Player::on_std_turn()
                 spell_shield_turns_base - spell_shield_turns_bon);
 
         // Halved number of turns due to the Talisman of Reflection?
-        if (m_inv.has_item_in_backpack(ItemId::refl_talisman))
+        if (m_inv.has_item_in_backpack(item::Id::refl_talisman))
         {
                 nr_turns_to_recharge_spell_shield /= 2;
         }
@@ -1497,7 +1507,7 @@ void Player::on_std_turn()
                         }
                 }
 
-                for (const Item* const item : m_inv.m_backpack)
+                for (const auto* const item : m_inv.m_backpack)
                 {
                         nr_turns_per_hp +=
                                 item->hp_regen_change(InvType::backpack);
@@ -1715,12 +1725,12 @@ Color Player::color() const
                 return tmp_color;
         }
 
-        const auto* const lantern_item = m_inv.item_in_backpack(ItemId::lantern);
+        const auto* const lantern_item = m_inv.item_in_backpack(item::Id::lantern);
 
         if (lantern_item)
         {
                 const auto* const lantern =
-                        static_cast<const DeviceLantern*>(lantern_item);
+                        static_cast<const device::Lantern*>(lantern_item);
 
                 if (lantern->is_activated)
                 {
@@ -1754,7 +1764,7 @@ void Player::auto_melee()
             is_pos_adj(m_pos, m_tgt->m_pos, false) &&
             can_see_actor(*m_tgt))
         {
-                actor::move(*this, dir_utils::dir(m_tgt->m_pos - m_pos));
+                move(*this, dir_utils::dir(m_tgt->m_pos - m_pos));
 
                 return;
         }
@@ -1768,7 +1778,7 @@ void Player::auto_melee()
                 {
                         m_tgt = actor;
 
-                        actor::move(*this, dir_utils::dir(d));
+                        move(*this, dir_utils::dir(d));
 
                         return;
                 }
@@ -1777,26 +1787,26 @@ void Player::auto_melee()
 
 void Player::kick_mon(Actor& defender)
 {
-        Wpn* kick_wpn = nullptr;
+        item::Wpn* kick_wpn = nullptr;
 
         const ActorData& d = *defender.m_data;
 
         // TODO: This is REALLY hacky, it should be done another way. Why even
         // have a "stomp" attack?? Why not just kick them as well?
-        if (d.actor_size == ActorSize::floor &&
+        if (d.actor_size == Size::floor &&
             (d.is_spider ||
              d.is_rat ||
              d.is_snake ||
-             d.id == ActorId::worm_mass ||
-             d.id == ActorId::mind_worms))
+             d.id == Id::worm_mass ||
+             d.id == Id::mind_worms))
         {
-                kick_wpn = static_cast<Wpn*>(
-                        item_factory::make(ItemId::player_stomp));
+                kick_wpn = static_cast<item::Wpn*>(
+                        item::make(item::Id::player_stomp));
         }
         else
         {
-                kick_wpn = static_cast<Wpn*>(
-                        item_factory::make(ItemId::player_kick));
+                kick_wpn = static_cast<item::Wpn*>(
+                        item::make(item::Id::player_kick));
         }
 
         attack::melee(this, m_pos, defender, *kick_wpn);
@@ -1804,7 +1814,7 @@ void Player::kick_mon(Actor& defender)
         delete kick_wpn;
 }
 
-Wpn& Player::unarmed_wpn()
+item::Wpn& Player::unarmed_wpn()
 {
         ASSERT(m_unarmed_wpn);
 
@@ -1813,7 +1823,7 @@ Wpn& Player::unarmed_wpn()
 
 void Player::hand_att(Actor& defender)
 {
-        Wpn& wpn = unarmed_wpn();
+        item::Wpn& wpn = unarmed_wpn();
 
         attack::melee(this, m_pos, defender, wpn);
 }
@@ -1824,7 +1834,7 @@ void Player::add_light_hook(Array2<bool>& light_map) const
 
         if (m_active_explosive)
         {
-                if (m_active_explosive->data().id == ItemId::flare)
+                if (m_active_explosive->data().id == item::Id::flare)
                 {
                         lgt_size = LgtSize::fov;
                 }
@@ -1832,7 +1842,7 @@ void Player::add_light_hook(Array2<bool>& light_map) const
 
         if (lgt_size != LgtSize::fov)
         {
-                for (Item* const item : m_inv.m_backpack)
+                for (auto* const item : m_inv.m_backpack)
                 {
                         LgtSize item_lgt_size = item->lgt_size();
 
@@ -2116,3 +2126,5 @@ bool Player::is_actor_my_leader(const Actor* const actor) const
 
         return false;
 }
+
+} // actor

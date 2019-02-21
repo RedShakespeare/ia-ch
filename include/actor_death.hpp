@@ -7,7 +7,6 @@
 #ifndef ACTOR_DIE_HPP
 #define ACTOR_DIE_HPP
 
-class Actor;
 
 enum class IsDestroyed
 {
@@ -27,8 +26,12 @@ enum class AllowDropItems
         yes
 };
 
+
 namespace actor
 {
+
+class Actor;
+
 
 void kill(
         Actor& actor,

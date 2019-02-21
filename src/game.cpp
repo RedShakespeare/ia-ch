@@ -10,6 +10,7 @@
 #include "actor_player.hpp"
 #include "create_character.hpp"
 #include "draw_map.hpp"
+#include "game_time.hpp"
 #include "init.hpp"
 #include "io.hpp"
 #include "map.hpp"
@@ -285,7 +286,7 @@ void win_game()
         query::wait_for_confirm();
 }
 
-void on_mon_seen(Actor& actor)
+void on_mon_seen(actor::Actor& actor)
 {
         auto& d = *actor.m_data;
 
@@ -346,9 +347,9 @@ void on_mon_seen(Actor& actor)
         }
 }
 
-void on_mon_killed(Actor& actor)
+void on_mon_killed(actor::Actor& actor)
 {
-        ActorData& d = *actor.m_data;
+        auto& d = *actor.m_data;
 
         d.nr_kills += 1;
 
@@ -490,7 +491,7 @@ void GameState::update()
         while (true)
         {
                 // Let the current actor act
-                Actor* actor = game_time::current_actor();
+                auto* actor = game_time::current_actor();
 
                 const bool allow_act = actor->m_properties.allow_act();
 
@@ -524,7 +525,7 @@ void GameState::update()
                 }
 
                 // Stop if the next actor is the player (to trigger rendering).
-                const Actor* next_actor = game_time::current_actor();
+                const auto* next_actor = game_time::current_actor();
 
                 if (next_actor->is_player())
                 {

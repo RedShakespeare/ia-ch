@@ -9,18 +9,28 @@
 
 #include <vector>
 
-#include "actor_data.hpp"
+#include "global.hpp"
+
+
+namespace actor
+{
+
+enum class Id;
+
+} // actor
+
 
 struct P;
 
 template<typename T>
 class Array2;
 
+
 namespace populate_mon
 {
 
 void make_group_at(
-        const ActorId id,
+        const actor::Id id,
         const std::vector<P>& sorted_free_cells,
         Array2<bool>* const blocked_out,
         const MonRoamingAllowed roaming_allowed);

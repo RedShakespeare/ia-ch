@@ -8,13 +8,13 @@
 
 #include "init.hpp"
 
-#include <list>
-
 #include "actor_factory.hpp"
 #include "actor_mon.hpp"
 #include "actor_player.hpp"
 #include "draw_map.hpp"
 #include "feature_rigid.hpp"
+#include "game.hpp"
+#include "game_time.hpp"
 #include "io.hpp"
 #include "map.hpp"
 #include "map_builder.hpp"

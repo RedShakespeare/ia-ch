@@ -660,7 +660,7 @@ static void init_data_list()
 // -----------------------------------------------------------------------------
 // Move rules
 // -----------------------------------------------------------------------------
-bool MoveRules::can_move(const Actor& actor) const
+bool MoveRules::can_move(const actor::Actor& actor) const
 {
         if (m_is_walkable)
         {

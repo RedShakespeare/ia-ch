@@ -14,7 +14,14 @@
 #include "state.hpp"
 #include "time.hpp"
 
+
+namespace actor
+{
+
 class Actor;
+
+} // actor
+
 
 struct HistoryEvent
 {
@@ -39,9 +46,9 @@ int xp_pct();
 int xp_accumulated();
 TimeData start_time();
 
-void on_mon_seen(Actor& actor);
+void on_mon_seen(actor::Actor& actor);
 
-void on_mon_killed(Actor& actor);
+void on_mon_killed(actor::Actor& actor);
 
 void win_game();
 

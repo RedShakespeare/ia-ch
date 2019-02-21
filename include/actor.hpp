@@ -18,15 +18,34 @@
 #include "property_handler.hpp"
 #include "sound.hpp"
 
+
+namespace actor
+{
+
+class Actor;
+
+
 struct SneakData
 {
-        const Actor* actor_sneaking {nullptr};
-        const Actor* actor_searching {nullptr};
+        const actor::Actor* actor_sneaking {nullptr};
+        const actor::Actor* actor_searching {nullptr};
 };
 
-// -----------------------------------------------------------------------------
-// Actor
-// -----------------------------------------------------------------------------
+
+int max_hp(const Actor& actor);
+
+int max_sp(const Actor& actor);
+
+void init_actor(Actor& actor, const P& pos_, ActorData& data);
+
+// This function is not concerned with whether actors are within FOV, or if they
+// are actually hidden or not. It merely performs a skill check, taking various
+// conditions such as light/dark into concern.
+ActionResult roll_sneak(const SneakData& data);
+
+void print_aware_invis_mon_msg(const Mon& mon);
+
+
 class Actor
 {
 public:
@@ -78,7 +97,7 @@ public:
 
         virtual std::vector<Actor*> seen_foes() const = 0;
 
-        ActorId id() const
+        Id id() const
         {
                 return m_data->id;
         }
@@ -156,22 +175,6 @@ protected:
         // Damages worn armor, and returns damage after armor absorbs damage
         int hit_armor(int dmg);
 };
-
-namespace actor
-{
-
-int max_hp(const Actor& actor);
-
-int max_sp(const Actor& actor);
-
-void init_actor(Actor& actor, const P& pos_, ActorData& data);
-
-// This function is not concerned with whether actors are within FOV, or if they
-// are actually hidden or not. It merely performs a skill check, taking various
-// conditions such as light/dark into concern.
-ActionResult roll_sneak(const SneakData& data);
-
-void print_aware_invis_mon_msg(const Mon& mon);
 
 } // actor
 

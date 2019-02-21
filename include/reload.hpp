@@ -7,13 +7,27 @@
 #ifndef RELOAD_HPP
 #define RELOAD_HPP
 
-class Actor;
+
+namespace item
+{
+
 class Item;
+
+} // item
+
+
+namespace actor
+{
+
+class Actor;
+
+} // actor
+
 
 namespace reload
 {
 
-void try_reload(Actor& actor, Item* const item_to_reload);
+void try_reload(actor::Actor& actor, item::Item* const item_to_reload);
 
 void player_arrange_pistol_mags();
 

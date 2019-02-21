@@ -37,10 +37,181 @@
 #include "property_handler.hpp"
 #include "text_format.hpp"
 
+
+// -----------------------------------------------------------------------------
+// actor
+// -----------------------------------------------------------------------------
+namespace actor
+{
+
+int max_hp(const Actor& actor)
+{
+        int result = actor.m_base_max_hp;
+
+        result = actor.m_properties.affect_max_hp(result);
+
+        return std::max(1, result);
+}
+
+int max_sp(const Actor& actor)
+{
+        int result = actor.m_base_max_sp;
+
+        result = actor.m_properties.affect_max_spi(result);
+
+        return std::max(1, result);
+}
+
+void init_actor(Actor& actor, const P& pos_, ActorData& data)
+{
+        actor.m_pos = pos_;
+
+        actor.m_data = &data;
+
+        // NOTE: Cannot compare against the global player pointer here, since it
+        // may not yet have been set up
+        if (actor.m_data->id == actor::Id::player)
+        {
+                actor.m_base_max_hp = data.hp;
+        }
+        else // Is monster
+        {
+                const int hp_max_variation_pct = 50;
+
+                const int hp_range_min = (data.hp * hp_max_variation_pct) / 100;
+
+                Range hp_range(hp_range_min, data.hp + hp_range_min);
+
+                hp_range.min = std::max(1, hp_range.min);
+
+                actor.m_base_max_hp = hp_range.roll();
+        }
+
+        actor.m_hp = actor.m_base_max_hp;
+
+        actor.m_sp = actor.m_base_max_sp = data.spi;
+
+        actor.m_lair_pos = actor.m_pos;
+
+        actor.m_properties.apply_natural_props_from_actor_data();
+
+        if (!actor.is_player())
+        {
+                actor_items::make_for_actor(actor);
+
+                // Monster ghouls start allied to player ghouls
+                const bool set_allied =
+                        data.is_ghoul &&
+                        (player_bon::bg() == Bg::ghoul) &&
+                        // HACK: Do not allow the boss Ghoul to become allied
+                        (data.id != actor::Id::high_priest_guard_ghoul);
+
+                if (set_allied)
+                {
+                        Mon* const mon = static_cast<Mon*>(&actor);
+
+                        mon->m_leader = map::g_player;
+                }
+        }
+}
+
+ActionResult roll_sneak(const SneakData& data)
+{
+        const int sneak_skill =
+                data.actor_sneaking->ability(
+                        AbilityId::stealth,
+                        true);
+
+        const int search_mod =
+                data.actor_searching->is_player()
+                ? data.actor_searching->ability(AbilityId::searching, true)
+                : 0;
+
+        const int dist =
+                king_dist(
+                        data.actor_sneaking->m_pos,
+                        data.actor_searching->m_pos);
+
+        // Distance  Sneak bonus
+        // ----------------------
+        // 1         -7
+        // 2          0
+        // 3          7
+        // 4         14
+        // 5         21
+        // 6         28
+        // 7         35
+        // 8         42
+        const int dist_mod = (dist - 2) * 7;
+
+        const bool is_lit = map::g_light.at(data.actor_sneaking->m_pos);
+
+        const bool is_dark = map::g_light.at(data.actor_sneaking->m_pos);
+
+        const int lgt_mod =
+                is_lit
+                ? 20
+                : 0;
+
+        const int drk_mod =
+                (is_dark && !is_lit)
+                ? 20
+                : 0;
+
+        int sneak_tot =
+                sneak_skill
+                - search_mod
+                + dist_mod
+                - lgt_mod
+                + drk_mod;
+
+        // std::cout << "SNEAKING" << std::endl
+        //           << "------------------" << std::endl
+        //           << "sneak_skill : " << sneak_skill << std::endl
+        //           << "dist_mod    : " << dist_mod << std::endl
+        //           << "lgt_mod     : " << lgt_mod << std::endl
+        //           << "drk_mod     : " << drk_mod << std::endl
+        //           << "sneak_tot   : " << sneak_tot << std::endl;
+
+        // NOTE: There is no need to cap the sneak value, since there's always
+        // critical fails
+
+        const auto result = ability_roll::roll(sneak_tot);
+
+        return result;
+}
+
+void print_aware_invis_mon_msg(const Mon& mon)
+{
+        std::string mon_ref;
+
+        if (mon.m_data->is_ghost)
+        {
+                mon_ref = "some foul entity";
+        }
+        else if (mon.m_data->is_humanoid)
+        {
+                mon_ref = "someone";
+        }
+        else
+        {
+                mon_ref = "a creature";
+        }
+
+        msg_log::add(
+                "There is " + mon_ref + " here!",
+                colors::msg_note(),
+                false,
+                MorePromptOnMsg::yes);
+}
+
+// -----------------------------------------------------------------------------
+// Actor
+// -----------------------------------------------------------------------------
 Actor::~Actor()
 {
         // Free all items owning actors
-        for (Item* item : m_inv.m_backpack)
+        for (auto* item : m_inv.m_backpack)
         {
                 item->clear_actor_carrying();
         }
@@ -332,8 +503,9 @@ int Actor::armor_points() const
         // Worn armor
         if (m_data->is_humanoid)
         {
-                Armor* armor =
-                        static_cast<Armor*>(m_inv.item_in_slot(SlotId::body));
+                auto* armor =
+                        static_cast<item::Armor*>(
+                                m_inv.item_in_slot(SlotId::body));
 
                 if (armor)
                 {
@@ -581,173 +753,6 @@ void Actor::add_light(Array2<bool>& light_map) const
 bool Actor::is_player() const
 {
         return this == map::g_player;
-}
-
-// -----------------------------------------------------------------------------
-// actor
-// -----------------------------------------------------------------------------
-namespace actor
-{
-
-int max_hp(const Actor& actor)
-{
-        int result = actor.m_base_max_hp;
-
-        result = actor.m_properties.affect_max_hp(result);
-
-        return std::max(1, result);
-}
-
-int max_sp(const Actor& actor)
-{
-        int result = actor.m_base_max_sp;
-
-        result = actor.m_properties.affect_max_spi(result);
-
-        return std::max(1, result);
-}
-
-void init_actor(Actor& actor, const P& pos_, ActorData& data)
-{
-        actor.m_pos = pos_;
-
-        actor.m_data = &data;
-
-        // NOTE: Cannot compare against the global player pointer here, since it
-        // may not yet have been set up
-        if (actor.m_data->id == ActorId::player)
-        {
-                actor.m_base_max_hp = data.hp;
-        }
-        else // Is monster
-        {
-                const int hp_max_variation_pct = 50;
-
-                const int hp_range_min = (data.hp * hp_max_variation_pct) / 100;
-
-                Range hp_range(hp_range_min, data.hp + hp_range_min);
-
-                hp_range.min = std::max(1, hp_range.min);
-
-                actor.m_base_max_hp = hp_range.roll();
-        }
-
-        actor.m_hp = actor.m_base_max_hp;
-
-        actor.m_sp = actor.m_base_max_sp = data.spi;
-
-        actor.m_lair_pos = actor.m_pos;
-
-        actor.m_properties.apply_natural_props_from_actor_data();
-
-        if (!actor.is_player())
-        {
-                actor_items::make_for_actor(actor);
-
-                // Monster ghouls start allied to player ghouls
-                const bool set_allied =
-                        data.is_ghoul &&
-                        (player_bon::bg() == Bg::ghoul) &&
-                        // HACK: Do not allow the boss Ghoul to become allied
-                        (data.id != ActorId::high_priest_guard_ghoul);
-
-                if (set_allied)
-                {
-                        Mon* const mon = static_cast<Mon*>(&actor);
-
-                        mon->m_leader = map::g_player;
-                }
-        }
-}
-
-ActionResult roll_sneak(const SneakData& data)
-{
-        const int sneak_skill =
-                data.actor_sneaking->ability(
-                        AbilityId::stealth,
-                        true);
-
-        const int search_mod =
-                data.actor_searching->is_player()
-                ? data.actor_searching->ability(AbilityId::searching, true)
-                : 0;
-
-        const int dist =
-                king_dist(
-                        data.actor_sneaking->m_pos,
-                        data.actor_searching->m_pos);
-
-        // Distance  Sneak bonus
-        // ----------------------
-        // 1         -7
-        // 2          0
-        // 3          7
-        // 4         14
-        // 5         21
-        // 6         28
-        // 7         35
-        // 8         42
-        const int dist_mod = (dist - 2) * 7;
-
-        const bool is_lit = map::g_light.at(data.actor_sneaking->m_pos);
-
-        const bool is_dark = map::g_light.at(data.actor_sneaking->m_pos);
-
-        const int lgt_mod =
-                is_lit
-                ? 20
-                : 0;
-
-        const int drk_mod =
-                (is_dark && !is_lit)
-                ? 20
-                : 0;
-
-        int sneak_tot =
-                sneak_skill
-                - search_mod
-                + dist_mod
-                - lgt_mod
-                + drk_mod;
-
-        // std::cout << "SNEAKING" << std::endl
-        //           << "------------------" << std::endl
-        //           << "sneak_skill : " << sneak_skill << std::endl
-        //           << "dist_mod    : " << dist_mod << std::endl
-        //           << "lgt_mod     : " << lgt_mod << std::endl
-        //           << "drk_mod     : " << drk_mod << std::endl
-        //           << "sneak_tot   : " << sneak_tot << std::endl;
-
-        // NOTE: There is no need to cap the sneak value, since there's always
-        // critical fails
-
-        const auto result = ability_roll::roll(sneak_tot);
-
-        return result;
-}
-
-void print_aware_invis_mon_msg(const Mon& mon)
-{
-        std::string mon_ref;
-
-        if (mon.m_data->is_ghost)
-        {
-                mon_ref = "some foul entity";
-        }
-        else if (mon.m_data->is_humanoid)
-        {
-                mon_ref = "someone";
-        }
-        else
-        {
-                mon_ref = "a creature";
-        }
-
-        msg_log::add(
-                "There is " + mon_ref + " here!",
-                colors::msg_note(),
-                false,
-                MorePromptOnMsg::yes);
 }
 
 } // actor

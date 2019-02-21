@@ -10,7 +10,14 @@
 #include <cstddef>
 #include <unordered_map>
 
+
+namespace actor
+{
+
 class Actor;
+
+} // actor
+
 
 enum class AbilityId
 {
@@ -71,7 +78,7 @@ public:
 
         int val(const AbilityId id,
                 const bool is_affected_by_props,
-                const Actor& actor) const;
+                const actor::Actor& actor) const;
 
         int raw_val(const AbilityId id) const
         {

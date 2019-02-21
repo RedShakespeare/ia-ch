@@ -10,18 +10,34 @@
 #include "ability_values.hpp"
 #include "actor_data.hpp"
 
-class Actor;
+
+namespace Item
+{
+
 class Item;
 class Wpn;
+
+} // item
+
+
+namespace actor
+{
+
+class Actor;
+
+} // actor
+
+
 struct P;
+
 
 struct AttData
 {
 public:
         virtual ~AttData() {}
 
-        Actor* attacker;
-        Actor* defender;
+        actor::Actor* attacker;
+        actor::Actor* defender;
         int skill_mod;
         int wpn_mod;
         int dodging_mod;
@@ -33,18 +49,18 @@ public:
 
 protected:
         AttData(
-                Actor* const attacker,
-                Actor* const defender,
-                const Item& att_item);
+                actor::Actor* const attacker,
+                actor::Actor* const defender,
+                const item::Item& att_item);
 };
 
 struct MeleeAttData: public AttData
 {
 public:
         MeleeAttData(
-                Actor* const attacker,
-                Actor& defender,
-                const Wpn& wpn);
+                actor::Actor* const attacker,
+                actor::Actor& defender,
+                const item::Wpn& wpn);
 
         ~MeleeAttData() {}
 
@@ -56,17 +72,17 @@ struct RangedAttData: public AttData
 {
 public:
         RangedAttData(
-                Actor* const attacker,
+                actor::Actor* const attacker,
                 const P& attacker_origin,
                 const P& aim_pos,
                 const P& current_pos,
-                const Wpn& wpn);
+                const item::Wpn& wpn);
 
         ~RangedAttData() {}
 
         P aim_pos;
-        ActorSize aim_lvl;
-        ActorSize defender_size;
+        actor::Size aim_lvl;
+        actor::Size defender_size;
         int dist_mod;
 };
 
@@ -74,13 +90,13 @@ struct ThrowAttData: public AttData
 {
 public:
         ThrowAttData(
-                Actor* const attacker,
+                actor::Actor* const attacker,
                 const P& aim_pos,
                 const P& current_pos,
-                const Item& item);
+                const item::Item& item);
 
-        ActorSize aim_lvl;
-        ActorSize defender_size;
+        actor::Size aim_lvl;
+        actor::Size defender_size;
         int dist_mod;
 };
 

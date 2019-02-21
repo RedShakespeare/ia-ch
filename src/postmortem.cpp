@@ -90,9 +90,9 @@ void PostmortemMenu::on_start()
 
         int nr_kills_tot_all_mon = 0;
 
-        for (const auto& d : actor_data::g_data)
+        for (const auto& d : actor::g_data)
         {
-                if (d.id != ActorId::player && d.nr_kills > 0)
+                if ((d.id != actor::Id::player) && (d.nr_kills > 0))
                 {
                         nr_kills_tot_all_mon += d.nr_kills;
 

@@ -1230,7 +1230,7 @@ std::string all_picked_traits_titles_line()
         return out;
 }
 
-bool gets_undead_bane_bon(const ActorData& actor_data)
+bool gets_undead_bane_bon(const actor::ActorData& actor_data)
 {
         return
                 player_bon::g_traits[(size_t)Trait::undead_bane] &&

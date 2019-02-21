@@ -182,7 +182,7 @@ void InsBabbling::babble() const
 
         for (int i = rnd::range(1, 3); i > 0; --i)
         {
-                msg_log::add(player_name + ": " + get_cultist_phrase());
+                msg_log::add(player_name + ": " + actor::get_cultist_phrase());
         }
 
         Snd snd("",
@@ -201,7 +201,8 @@ void InsBabbling::on_start_hook()
         babble();
 }
 
-void InsBabbling::on_new_player_turn(const std::vector<Actor*>& seen_foes)
+void InsBabbling::on_new_player_turn(
+        const std::vector<actor::Actor*>& seen_foes)
 {
         (void)seen_foes;
 
@@ -244,14 +245,15 @@ bool InsPhobiaRat::is_allowed() const
         return !is_rfear && (!has_phobia || rnd::one_in(20));
 }
 
-void InsPhobiaRat::on_new_player_turn(const std::vector<Actor*>& seen_foes)
+void InsPhobiaRat::on_new_player_turn(
+        const std::vector<actor::Actor*>& seen_foes)
 {
         if (!rnd::one_in(10))
         {
                 return;
         }
 
-        for (Actor* const actor : seen_foes)
+        for (auto* const actor : seen_foes)
         {
                 if (actor->m_data->is_rat)
                 {
@@ -277,14 +279,15 @@ bool InsPhobiaSpider::is_allowed() const
         return !is_rfear && (!has_phobia || rnd::one_in(20));
 }
 
-void InsPhobiaSpider::on_new_player_turn(const std::vector<Actor*>& seen_foes)
+void InsPhobiaSpider::on_new_player_turn(
+        const std::vector<actor::Actor*>& seen_foes)
 {
         if (!rnd::one_in(10))
         {
                 return;
         }
 
-        for (Actor* const actor : seen_foes)
+        for (auto* const actor : seen_foes)
         {
                 if (actor->m_data->is_spider)
                 {
@@ -311,7 +314,7 @@ bool InsPhobiaReptileAndAmph::is_allowed() const
 }
 
 void InsPhobiaReptileAndAmph::on_new_player_turn(
-        const std::vector<Actor*>& seen_foes)
+        const std::vector<actor::Actor*>& seen_foes)
 {
         if (!rnd::one_in(10))
         {
@@ -322,7 +325,7 @@ void InsPhobiaReptileAndAmph::on_new_player_turn(
 
         std::string animal_str = "";
 
-        for (Actor* const actor : seen_foes)
+        for (auto* const actor : seen_foes)
         {
                 if (actor->m_data->is_reptile)
                 {
@@ -366,14 +369,15 @@ bool InsPhobiaCanine::is_allowed() const
         return !is_rfear && (!has_phobia || rnd::one_in(20));
 }
 
-void InsPhobiaCanine::on_new_player_turn(const std::vector<Actor*>& seen_foes)
+void InsPhobiaCanine::on_new_player_turn(
+        const std::vector<actor::Actor*>& seen_foes)
 {
         if (!rnd::one_in(10))
         {
                 return;
         }
 
-        for (Actor* const actor : seen_foes)
+        for (auto* const actor : seen_foes)
         {
                 if (actor->m_data->is_canine)
                 {
@@ -399,14 +403,15 @@ bool InsPhobiaDead::is_allowed() const
         return !is_rfear && (!has_phobia || rnd::one_in(20));
 }
 
-void InsPhobiaDead::on_new_player_turn(const std::vector<Actor*>& seen_foes)
+void InsPhobiaDead::on_new_player_turn(
+        const std::vector<actor::Actor*>& seen_foes)
 {
         if (!rnd::one_in(10))
         {
                 return;
         }
 
-        for (Actor* const actor : seen_foes)
+        for (auto* const actor : seen_foes)
         {
                 if (actor->m_data->is_undead)
                 {
@@ -432,7 +437,8 @@ bool InsPhobiaOpen::is_allowed() const
         return !is_rfear && (!has_phobia || rnd::one_in(20));
 }
 
-void InsPhobiaOpen::on_new_player_turn(const std::vector<Actor*>& seen_foes)
+void InsPhobiaOpen::on_new_player_turn(
+        const std::vector<actor::Actor*>& seen_foes)
 {
         (void)seen_foes;
 
@@ -458,7 +464,8 @@ bool InsPhobiaConfined::is_allowed() const
         return !is_rfear && (!has_phobia || rnd::one_in(20));
 }
 
-void InsPhobiaConfined::on_new_player_turn(const std::vector<Actor*>& seen_foes)
+void InsPhobiaConfined::on_new_player_turn(
+        const std::vector<actor::Actor*>& seen_foes)
 {
         (void)seen_foes;
 
@@ -484,7 +491,8 @@ bool InsPhobiaDeep::is_allowed() const
         return !is_rfear && (!has_phobia || rnd::one_in(20));
 }
 
-void InsPhobiaDeep::on_new_player_turn(const std::vector<Actor*>& seen_foes)
+void InsPhobiaDeep::on_new_player_turn(
+        const std::vector<actor::Actor*>& seen_foes)
 {
         (void)seen_foes;
 
@@ -523,7 +531,8 @@ bool InsPhobiaDark::is_allowed() const
                 (!has_phobia || rnd::one_in(20));
 }
 
-void InsPhobiaDark::on_new_player_turn(const std::vector<Actor*>& seen_foes)
+void InsPhobiaDark::on_new_player_turn(
+        const std::vector<actor::Actor*>& seen_foes)
 {
         (void)seen_foes;
 
@@ -576,12 +585,17 @@ void InsShadows::on_start_hook()
 
         const size_t nr = rnd::range(nr_shadows_lower, nr_shadows_upper);
 
-        const auto summoned =
-                actor_factory::spawn(map::g_player->m_pos,
-                                     {nr, ActorId::shadow},
-                                     map::rect())
-                .make_aware_of_player()
-                .for_each([](Mon* const mon)
+        auto summoned =
+                actor::spawn(
+                        map::g_player->m_pos,
+                        {nr, actor::Id::shadow},
+                        map::rect())
+                .make_aware_of_player();
+
+        std::for_each(
+                std::begin(summoned.monsters),
+                std::end(summoned.monsters),
+                [](auto* const mon)
                 {
                         auto prop = new PropWaiting();
 
@@ -596,9 +610,9 @@ void InsShadows::on_start_hook()
 
         const auto player_seen_foes = map::g_player->seen_foes();
 
-        for (Actor* const actor : player_seen_foes)
+        for (auto* const actor : player_seen_foes)
         {
-                static_cast<Mon*>(actor)->set_player_aware_of_me();
+                static_cast<actor::Mon*>(actor)->set_player_aware_of_me();
         }
 
 
@@ -614,16 +628,21 @@ void InsParanoia::on_start_hook()
                 return;
         }
 
-        std::vector<ActorId> stalker_id(1, ActorId::invis_stalker);
+        std::vector<actor::Id> stalker_id(1, actor::Id::invis_stalker);
 
         const P& pos = map::g_player->m_pos;
 
-        const auto summoned =
-                actor_factory::spawn(pos,
-                                     {ActorId::invis_stalker},
-                                     map::rect())
-                .make_aware_of_player()
-                .for_each([](Mon* const mon)
+        auto summoned =
+                actor::spawn(
+                        pos,
+                        {actor::Id::invis_stalker},
+                        map::rect())
+                .make_aware_of_player();
+
+        std::for_each(
+                std::begin(summoned.monsters),
+                std::end(summoned.monsters),
+                [](auto* const mon)
                 {
                         auto prop = new PropWaiting();
 
@@ -890,7 +909,7 @@ std::vector<const InsSympt*> active_sympts()
         return out;
 }
 
-void on_new_player_turn(const std::vector<Actor*>& seen_foes)
+void on_new_player_turn(const std::vector<actor::Actor*>& seen_foes)
 {
         for (size_t i = 0; i < (size_t)InsSymptId::END; ++i)
         {

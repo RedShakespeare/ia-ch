@@ -34,7 +34,7 @@ void make_monoliths()
 
         blocked = map_parsers::expand(blocked, blocked.rect());
 
-        for (Actor* const actor : game_time::g_actors)
+        for (auto* const actor : game_time::g_actors)
         {
                 blocked.at(actor->m_pos) = true;
         }

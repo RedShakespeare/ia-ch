@@ -26,12 +26,12 @@ namespace item_drop
 {
 
 void drop_item_from_inv(
-        Actor& actor,
+        actor::Actor& actor,
         const InvType inv_type,
         const size_t idx,
         const int nr_items_to_drop)
 {
-        Item* item_to_drop = nullptr;
+        item::Item* item_to_drop = nullptr;
 
         if (inv_type == InvType::slots)
         {
@@ -51,7 +51,7 @@ void drop_item_from_inv(
                 return;
         }
 
-        const ItemData& data = item_to_drop->data();
+        const item::ItemData& data = item_to_drop->data();
 
         const bool is_stackable = data.is_stackable;
 
@@ -64,7 +64,7 @@ void drop_item_from_inv(
 
         std::string item_ref = "";
 
-        Item* item_to_keep = nullptr;
+        item::Item* item_to_keep = nullptr;
 
         if (is_whole_stack_dropped)
         {
@@ -77,7 +77,7 @@ void drop_item_from_inv(
                 // Drop a copy of the selected item
                 item_to_keep = item_to_drop;
 
-                item_to_drop = item_factory::copy_item(*item_to_keep);
+                item_to_drop = item::copy_item(*item_to_keep);
 
                 item_to_drop->m_nr_items = nr_items_to_drop;
 
@@ -118,7 +118,7 @@ void drop_item_from_inv(
         drop_item_on_map(actor.m_pos, *item_to_drop);
 }
 
-Item* drop_item_on_map(const P& intended_pos, Item& item)
+item::Item* drop_item_on_map(const P& intended_pos, item::Item& item)
 {
         TRACE_FUNC_BEGIN_VERBOSE;
 
@@ -207,7 +207,7 @@ Item* drop_item_on_map(const P& intended_pos, Item& item)
                                         break;
                                 }
 
-                                Item* item_on_floor =
+                                auto* item_on_floor =
                                         map::g_cells.at(stack_p).item;
 
                                 if (item_on_floor &&

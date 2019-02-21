@@ -31,10 +31,17 @@
 #include "teleport.hpp"
 #include "text_format.hpp"
 
+
+// -----------------------------------------------------------------------------
+// device
+// -----------------------------------------------------------------------------
+namespace device
+{
+
 // -----------------------------------------------------------------------------
 // Device
 // -----------------------------------------------------------------------------
-Device::Device(ItemData* const item_data) :
+Device::Device(item::ItemData* const item_data) :
         Item(item_data) {}
 
 void Device::identify(const Verbosity verbosity)
@@ -64,7 +71,7 @@ void Device::identify(const Verbosity verbosity)
 // -----------------------------------------------------------------------------
 // Strange device
 // -----------------------------------------------------------------------------
-StrangeDevice::StrangeDevice(ItemData* const item_data) :
+StrangeDevice::StrangeDevice(item::ItemData* const item_data) :
         Device(item_data),
         condition(rnd::coin_toss() ? Condition::fine : Condition::shoddy) {}
 
@@ -113,7 +120,7 @@ std::vector<std::string> StrangeDevice::descr() const
         }
 }
 
-ConsumeItem StrangeDevice::activate(Actor* const actor)
+ConsumeItem StrangeDevice::activate(actor::Actor* const actor)
 {
         ASSERT(actor);
 
@@ -284,7 +291,7 @@ std::string StrangeDevice::name_inf_str() const
 // -----------------------------------------------------------------------------
 // Blaster
 // -----------------------------------------------------------------------------
-ConsumeItem DeviceBlaster::run_effect()
+ConsumeItem Blaster::run_effect()
 {
         const auto tgt_bucket = map::g_player->seen_foes();
 
@@ -309,7 +316,7 @@ ConsumeItem DeviceBlaster::run_effect()
 // -----------------------------------------------------------------------------
 // Rejuvenator
 // -----------------------------------------------------------------------------
-ConsumeItem DeviceRejuvenator::run_effect()
+ConsumeItem Rejuvenator::run_effect()
 {
         msg_log::add("It repairs my body.");
 
@@ -341,9 +348,9 @@ ConsumeItem DeviceRejuvenator::run_effect()
 // -----------------------------------------------------------------------------
 // Translocator
 // -----------------------------------------------------------------------------
-ConsumeItem DeviceTranslocator::run_effect()
+ConsumeItem Translocator::run_effect()
 {
-        Player* const player = map::g_player;
+        auto* const player = map::g_player;
 
         const auto seen_foes = player->seen_foes();
 
@@ -353,7 +360,7 @@ ConsumeItem DeviceTranslocator::run_effect()
         }
         else // Seen targets are available
         {
-                for (Actor* actor : seen_foes)
+                for (auto* actor : seen_foes)
                 {
                         msg_log::add(
                                 text_format::first_to_upper(actor->name_the()) +
@@ -373,13 +380,14 @@ ConsumeItem DeviceTranslocator::run_effect()
 // -----------------------------------------------------------------------------
 // Sentry drone
 // -----------------------------------------------------------------------------
-ConsumeItem DeviceSentryDrone::run_effect()
+ConsumeItem SentryDrone::run_effect()
 {
         msg_log::add("The Sentry Drone awakens!");
 
-        actor_factory::spawn(map::g_player->m_pos,
-                             {ActorId::sentry_drone},
-                             map::rect())
+        actor::spawn(
+                map::g_player->m_pos,
+                {actor::Id::sentry_drone},
+                map::rect())
                 .make_aware_of_player()
                 .set_leader(map::g_player);
 
@@ -389,11 +397,11 @@ ConsumeItem DeviceSentryDrone::run_effect()
 // -----------------------------------------------------------------------------
 // Deafening
 // -----------------------------------------------------------------------------
-ConsumeItem DeviceDeafening::run_effect()
+ConsumeItem Deafening::run_effect()
 {
         msg_log::add("The device emits a piercing resonance.");
 
-        for (Actor* const actor : game_time::g_actors)
+        for (auto* const actor : game_time::g_actors)
         {
                 if (actor->is_player())
                 {
@@ -409,7 +417,7 @@ ConsumeItem DeviceDeafening::run_effect()
 // -----------------------------------------------------------------------------
 // Force Field
 // -----------------------------------------------------------------------------
-ConsumeItem DeviceForceField::run_effect()
+ConsumeItem ForceField::run_effect()
 {
         msg_log::add("The air thickens around me.");
 
@@ -451,7 +459,7 @@ ConsumeItem DeviceForceField::run_effect()
                         map::make_gore(p);
                 }
 
-                game_time::add_mob(new ForceField(p, duration));
+                game_time::add_mob(new ::ForceField(p, duration));
         }
 
         return ConsumeItem::no;
@@ -460,12 +468,12 @@ ConsumeItem DeviceForceField::run_effect()
 // -----------------------------------------------------------------------------
 // Electric lantern
 // -----------------------------------------------------------------------------
-DeviceLantern::DeviceLantern(ItemData* const item_data) :
+Lantern::Lantern(item::ItemData* const item_data) :
         Device(item_data),
         nr_turns_left(100),
         is_activated(false) {}
 
-std::string DeviceLantern::name_inf_str() const
+std::string Lantern::name_inf_str() const
 {
         std::string inf = "{" + std::to_string(nr_turns_left);
 
@@ -477,7 +485,7 @@ std::string DeviceLantern::name_inf_str() const
         return inf + "}";
 }
 
-ConsumeItem DeviceLantern::activate(Actor* const actor)
+ConsumeItem Lantern::activate(actor::Actor* const actor)
 {
         (void)actor;
 
@@ -490,19 +498,19 @@ ConsumeItem DeviceLantern::activate(Actor* const actor)
         return ConsumeItem::no;
 }
 
-void DeviceLantern::save() const
+void Lantern::save() const
 {
         saving::put_int(nr_turns_left);
         saving::put_bool(is_activated);
 }
 
-void DeviceLantern::load()
+void Lantern::load()
 {
         nr_turns_left = saving::get_int();
         is_activated = saving::get_bool();
 }
 
-void DeviceLantern::on_pickup_hook()
+void Lantern::on_pickup_hook()
 {
         ASSERT(m_actor_carrying);
 
@@ -514,7 +522,7 @@ void DeviceLantern::on_pickup_hook()
                         continue;
                 }
 
-                auto* other_lantern = static_cast<DeviceLantern*>(other);
+                auto* other_lantern = static_cast<Lantern*>(other);
 
                 other_lantern->nr_turns_left += nr_turns_left;
 
@@ -525,7 +533,7 @@ void DeviceLantern::on_pickup_hook()
         }
 }
 
-void DeviceLantern::toggle()
+void Lantern::toggle()
 {
         const std::string toggle_str =
                 is_activated
@@ -545,7 +553,7 @@ void DeviceLantern::toggle()
         audio::play(SfxId::lantern);
 }
 
-void DeviceLantern::on_std_turn_in_inv(const InvType inv_type)
+void Lantern::on_std_turn_in_inv(const InvType inv_type)
 {
         (void)inv_type;
 
@@ -570,14 +578,17 @@ void DeviceLantern::on_std_turn_in_inv(const InvType inv_type)
                 game::add_history_event("My Electric Lantern expired.");
 
                 // NOTE: The this deletes the object
-                map::g_player->m_inv.remove_item_in_backpack_with_ptr(this, true);
+                map::g_player->m_inv.remove_item_in_backpack_with_ptr(
+                        this, true);
         }
 }
 
-LgtSize DeviceLantern::lgt_size() const
+LgtSize Lantern::lgt_size() const
 {
         return
                 is_activated
                 ? LgtSize::fov
                 : LgtSize::none;
 }
+
+} // device

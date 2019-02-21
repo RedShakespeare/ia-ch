@@ -27,6 +27,13 @@
 #include "saving.hpp"
 #include "text_format.hpp"
 
+
+// -----------------------------------------------------------------------------
+// item
+// -----------------------------------------------------------------------------
+namespace item
+{
+
 // -----------------------------------------------------------------------------
 // Staff of the pharaohs
 // -----------------------------------------------------------------------------
@@ -59,7 +66,7 @@ void PharaohStaff::on_std_turn_in_inv(const InvType inv_type)
                         continue;
                 }
 
-                auto* const mon = static_cast<Mon*>(actor);
+                auto* const mon = static_cast<actor::Mon*>(actor);
 
                 if (mon->m_aware_of_player_counter <= 0)
                 {
@@ -78,11 +85,11 @@ void PharaohStaff::on_std_turn_in_inv(const InvType inv_type)
         }
 }
 
-void PharaohStaff::on_mon_see_player_carrying(Mon& mon) const
+void PharaohStaff::on_mon_see_player_carrying(actor::Mon& mon) const
 {
         // TODO: Consider an "is_mummy" actor data field
-        if (mon.id() != ActorId::mummy &&
-            mon.id() != ActorId::croc_head_mummy)
+        if (mon.id() != actor::Id::mummy &&
+            mon.id() != actor::Id::croc_head_mummy)
         {
                 return;
         }
@@ -167,7 +174,7 @@ void TeleCtrlTalisman::on_removed_from_inv_hook()
 // -----------------------------------------------------------------------------
 // Horn of Malice
 // -----------------------------------------------------------------------------
-void HornOfMaliceHeard::run(Actor& actor) const
+void HornOfMaliceHeard::run(actor::Actor& actor) const
 {
         if (!actor.is_player())
         {
@@ -197,7 +204,7 @@ void HornOfMalice::load()
         m_charges = saving::get_int();
 }
 
-ConsumeItem HornOfMalice::activate(Actor* const actor)
+ConsumeItem HornOfMalice::activate(actor::Actor* const actor)
 {
         (void)actor;
 
@@ -233,7 +240,7 @@ ConsumeItem HornOfMalice::activate(Actor* const actor)
 // -----------------------------------------------------------------------------
 // Horn of Banishment
 // -----------------------------------------------------------------------------
-void HornOfBanishmentHeard::run(Actor& actor) const
+void HornOfBanishmentHeard::run(actor::Actor& actor) const
 {
         if (actor.m_properties.has(PropId::summoned))
         {
@@ -275,7 +282,7 @@ void HornOfBanishment::load()
         m_charges = saving::get_int();
 }
 
-ConsumeItem HornOfBanishment::activate(Actor* const actor)
+ConsumeItem HornOfBanishment::activate(actor::Actor* const actor)
 {
         (void)actor;
 
@@ -333,7 +340,7 @@ void Clockwork::load()
         m_charges = saving::get_int();
 }
 
-ConsumeItem Clockwork::activate(Actor* const actor)
+ConsumeItem Clockwork::activate(actor::Actor* const actor)
 {
         (void)actor;
 
@@ -380,7 +387,7 @@ SpiritDagger::SpiritDagger(ItemData* const item_data) :
 
 }
 
-void SpiritDagger::on_melee_hit(Actor& actor_hit, const int dmg)
+void SpiritDagger::on_melee_hit(actor::Actor& actor_hit, const int dmg)
 {
         (void)dmg;
 
@@ -428,7 +435,9 @@ void SpiritDagger::on_melee_hit(Actor& actor_hit, const int dmg)
         actor::hit_sp(*m_actor_carrying, 1, Verbosity::verbose);
 }
 
-void SpiritDagger::specific_dmg_mod(Dice& dice, const Actor* const actor) const
+void SpiritDagger::specific_dmg_mod(
+        Dice& dice,
+        const actor::Actor* const actor) const
 {
         if (!actor)
         {
@@ -476,3 +485,5 @@ void OrbOfLife::on_removed_from_inv_hook()
 
         clear_carrier_props();
 }
+
+} // item

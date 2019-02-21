@@ -11,8 +11,17 @@
 
 #include "feature.hpp"
 
+
+namespace item
+{
+
 class Item;
+
+} // item
+
+
 class Lever;
+
 
 enum class BurnState
 {
@@ -54,11 +63,11 @@ public:
 
         void init(const FeatureId feature_id, const int nr_items_to_attempt);
 
-        void open(const P& feature_pos, Actor* const actor_opening);
+        void open(const P& feature_pos, actor::Actor* const actor_opening);
 
         void destroy_single_fragile();
 
-        std::vector<Item*> m_items;
+        std::vector<item::Item*> m_items;
 };
 
 class Rigid: public Feature
@@ -74,7 +83,7 @@ public:
 
         virtual std::string name(const Article article) const override = 0;
 
-        virtual AllowAction pre_bump(Actor& actor_bumping) override;
+        virtual AllowAction pre_bump(actor::Actor& actor_bumping) override;
 
         virtual void on_new_turn() override final;
 
@@ -86,7 +95,7 @@ public:
                 const int dmg,
                 const DmgType dmg_type,
                 const DmgMethod dmg_method,
-                Actor* const actor = nullptr) override;
+                actor::Actor* const actor = nullptr) override;
 
         int shock_when_adj() const;
 
@@ -104,9 +113,9 @@ public:
 
         void clear_gore();
 
-        virtual DidOpen open(Actor* const actor_opening);
+        virtual DidOpen open(actor::Actor* const actor_opening);
 
-        virtual DidClose close(Actor* const actor_closing);
+        virtual DidClose close(actor::Actor* const actor_closing);
 
         virtual void on_lever_pulled(Lever* const lever)
         {
@@ -135,7 +144,7 @@ protected:
                 const int dmg,
                 const DmgType dmg_type,
                 const DmgMethod dmg_method,
-                Actor* const actor) = 0;
+                actor::Actor* const actor) = 0;
 
         virtual Color color_default() const = 0;
 
@@ -148,7 +157,7 @@ protected:
 
         virtual WasDestroyed on_finished_burning();
 
-        virtual DidTriggerTrap trigger_trap(Actor* const actor);
+        virtual DidTriggerTrap trigger_trap(actor::Actor* const actor);
 
         virtual void add_light_hook(Array2<bool>& light) const
         {
@@ -199,7 +208,7 @@ private:
                 const int dmg,
                 const DmgType dmg_type,
                 const DmgMethod dmg_method,
-                Actor* const actor) override;
+                actor::Actor* const actor) override;
 };
 
 class Carpet: public Rigid
@@ -225,7 +234,7 @@ private:
                 const int dmg,
                 const DmgType dmg_type,
                 const DmgMethod dmg_method,
-                Actor* const actor) override;
+                actor::Actor* const actor) override;
 };
 
 enum class GrassType
@@ -258,7 +267,7 @@ private:
                 const int dmg,
                 const DmgType dmg_type,
                 const DmgMethod dmg_method,
-                Actor* const actor) override;
+                actor::Actor* const actor) override;
 };
 
 class Bush: public Rigid
@@ -285,7 +294,7 @@ private:
                 const int dmg,
                 const DmgType dmg_type,
                 const DmgMethod dmg_method,
-                Actor* const actor) override;
+                actor::Actor* const actor) override;
 };
 
 class Vines: public Rigid
@@ -310,7 +319,7 @@ private:
                 const int dmg,
                 const DmgType dmg_type,
                 const DmgMethod dmg_method,
-                Actor* const actor) override;
+                actor::Actor* const actor) override;
 };
 
 class Chains: public Rigid
@@ -327,7 +336,7 @@ public:
 
         std::string name(const Article article) const override;
 
-        void bump(Actor& actor_bumping) override;
+        void bump(actor::Actor& actor_bumping) override;
 
 private:
         Color color_default() const override;
@@ -338,7 +347,7 @@ private:
                 const int dmg,
                 const DmgType dmg_type,
                 const DmgMethod dmg_method,
-                Actor* const actor) override;
+                actor::Actor* const actor) override;
 };
 
 class Grate: public Rigid
@@ -362,7 +371,7 @@ private:
                 const int dmg,
                 const DmgType dmg_type,
                 const DmgMethod dmg_method,
-                Actor* const actor) override;
+                actor::Actor* const actor) override;
 };
 
 class Brazier: public Rigid
@@ -386,7 +395,7 @@ private:
                 const int dmg,
                 const DmgType dmg_type,
                 const DmgMethod dmg_method,
-                Actor* const actor) override;
+                actor::Actor* const actor) override;
 
         void add_light_hook(Array2<bool>& light) const override;
 };
@@ -434,7 +443,7 @@ private:
                 const int dmg,
                 const DmgType dmg_type,
                 const DmgMethod dmg_method,
-                Actor* const actor) override;
+                actor::Actor* const actor) override;
 };
 
 class RubbleLow: public Rigid
@@ -458,7 +467,7 @@ private:
                 const int dmg,
                 const DmgType dmg_type,
                 const DmgMethod dmg_method,
-                Actor* const actor) override;
+                actor::Actor* const actor) override;
 };
 
 class Bones: public Rigid
@@ -482,7 +491,7 @@ private:
                 const int dmg,
                 const DmgType dmg_type,
                 const DmgMethod dmg_method,
-                Actor* const actor) override;
+                actor::Actor* const actor) override;
 };
 
 class RubbleHigh: public Rigid
@@ -506,7 +515,7 @@ private:
                 const int dmg,
                 const DmgType dmg_type,
                 const DmgMethod dmg_method,
-                Actor* const actor) override;
+                actor::Actor* const actor) override;
 };
 
 class GraveStone: public Rigid
@@ -528,7 +537,7 @@ public:
                 m_inscr = str;
         }
 
-        void bump(Actor& actor_bumping) override;
+        void bump(actor::Actor& actor_bumping) override;
 
 private:
         Color color_default() const override;
@@ -537,7 +546,7 @@ private:
                 const int dmg,
                 const DmgType dmg_type,
                 const DmgMethod dmg_method,
-                Actor* const actor) override;
+                actor::Actor* const actor) override;
 
         std::string m_inscr;
 };
@@ -563,7 +572,7 @@ private:
                 const int dmg,
                 const DmgType dmg_type,
                 const DmgMethod dmg_method,
-                Actor* const actor) override;
+                actor::Actor* const actor) override;
 };
 
 enum class StatueType
@@ -596,7 +605,7 @@ private:
                 const int dmg,
                 const DmgType dmg_type,
                 const DmgMethod dmg_method,
-                Actor* const actor) override;
+                actor::Actor* const actor) override;
 
         int base_shock_when_adj() const override;
 };
@@ -621,7 +630,7 @@ private:
                 const int dmg,
                 const DmgType dmg_type,
                 const DmgMethod dmg_method,
-                Actor* const actor) override;
+                actor::Actor* const actor) override;
 };
 
 class Stairs: public Rigid
@@ -637,7 +646,7 @@ public:
 
         std::string name(const Article article) const override;
 
-        void bump(Actor& actor_bumping) override;
+        void bump(actor::Actor& actor_bumping) override;
 
         void on_new_turn_hook() override;
 
@@ -648,7 +657,7 @@ private:
                 const int dmg,
                 const DmgType dmg_type,
                 const DmgMethod dmg_method,
-                Actor* const actor) override;
+                actor::Actor* const actor) override;
 };
 
 class Bridge : public Rigid
@@ -680,7 +689,7 @@ private:
                 const int dmg,
                 const DmgType dmg_type,
                 const DmgMethod dmg_method,
-                Actor* const actor) override;
+                actor::Actor* const actor) override;
 
         Axis m_axis;
 };
@@ -698,7 +707,7 @@ public:
 
         std::string name(const Article article) const override;
 
-        void bump(Actor& actor_bumping) override;
+        void bump(actor::Actor& actor_bumping) override;
 
         LiquidType m_type;
 
@@ -711,7 +720,7 @@ private:
                 const int dmg,
                 const DmgType dmg_type,
                 const DmgMethod dmg_method,
-                Actor* const actor) override;
+                actor::Actor* const actor) override;
 };
 
 class LiquidDeep: public Rigid
@@ -727,13 +736,13 @@ public:
 
         std::string name(const Article article) const override;
 
-        AllowAction pre_bump(Actor& actor_bumping) override;
+        AllowAction pre_bump(actor::Actor& actor_bumping) override;
 
-        void bump(Actor& actor_bumping) override;
+        void bump(actor::Actor& actor_bumping) override;
 
-        void on_leave(Actor& actor_leaving) override;
+        void on_leave(actor::Actor& actor_leaving) override;
 
-        bool can_move(const Actor& actor) const override;
+        bool can_move(const actor::Actor& actor) const override;
 
         LiquidType m_type;
 
@@ -744,9 +753,9 @@ private:
                 const int dmg,
                 const DmgType dmg_type,
                 const DmgMethod dmg_method,
-                Actor* const actor) override;
+                actor::Actor* const actor) override;
 
-        bool must_swim_on_enter(const Actor& actor) const;
+        bool must_swim_on_enter(const actor::Actor& actor) const;
 };
 
 class Chasm: public Rigid
@@ -769,7 +778,7 @@ private:
                 const int dmg,
                 const DmgType dmg_type,
                 const DmgMethod dmg_method,
-                Actor* const actor) override;
+                actor::Actor* const actor) override;
 };
 
 class Lever: public Rigid
@@ -790,7 +799,7 @@ public:
 
         void toggle();
 
-        void bump(Actor& actor_bumping) override;
+        void bump(actor::Actor& actor_bumping) override;
 
         bool is_left_pos() const
         {
@@ -825,7 +834,7 @@ private:
                 const int dmg,
                 const DmgType dmg_type,
                 const DmgMethod dmg_method,
-                Actor* const actor) override;
+                actor::Actor* const actor) override;
 
         bool m_is_left_pos;
 
@@ -848,7 +857,7 @@ public:
 
         std::string name(const Article article) const override;
 
-        void bump(Actor& actor_bumping) override;
+        void bump(actor::Actor& actor_bumping) override;
 
         void disable_pact()
         {
@@ -862,7 +871,7 @@ private:
                 const int dmg,
                 const DmgType dmg_type,
                 const DmgMethod dmg_method,
-                Actor* const actor) override;
+                actor::Actor* const actor) override;
 
         bool m_can_offer_pact {true};
 };
@@ -889,7 +898,7 @@ private:
                 const int dmg,
                 const DmgType dmg_type,
                 const DmgMethod dmg_method,
-                Actor* const actor) override;
+                actor::Actor* const actor) override;
 };
 
 // NOTE: In some previous versions, it was possible to inspect the tomb and get
@@ -929,8 +938,8 @@ public:
 
         std::string name(const Article article) const override;
         TileId tile() const override;
-        void bump(Actor& actor_bumping) override;
-        DidOpen open(Actor* const actor_opening) override;
+        void bump(actor::Actor& actor_bumping) override;
+        DidOpen open(actor::Actor* const actor_opening) override;
 
 private:
         Color color_default() const override;
@@ -939,9 +948,9 @@ private:
                 const int dmg,
                 const DmgType dmg_type,
                 const DmgMethod dmg_method,
-                Actor* const actor) override;
+                actor::Actor* const actor) override;
 
-        DidTriggerTrap trigger_trap(Actor* const actor) override;
+        DidTriggerTrap trigger_trap(actor::Actor* const actor) override;
 
         void player_loot();
 
@@ -975,14 +984,14 @@ public:
 
         TileId tile() const override;
 
-        void bump(Actor& actor_bumping) override;
+        void bump(actor::Actor& actor_bumping) override;
 
-        DidOpen open(Actor* const actor_opening) override;
+        DidOpen open(actor::Actor* const actor_opening) override;
 
         void hit(const int dmg,
                  const DmgType dmg_type,
                  const DmgMethod dmg_method,
-                 Actor* const actor) override;
+                 actor::Actor* const actor) override;
 
 private:
         Color color_default() const override;
@@ -991,7 +1000,7 @@ private:
                 const int dmg,
                 const DmgType dmg_type,
                 const DmgMethod dmg_method,
-                Actor* const actor) override;
+                actor::Actor* const actor) override;
 
         void player_loot();
 
@@ -1016,9 +1025,9 @@ public:
 
         TileId tile() const override;
 
-        void bump(Actor& actor_bumping) override;
+        void bump(actor::Actor& actor_bumping) override;
 
-        DidOpen open(Actor* const actor_opening) override;
+        DidOpen open(actor::Actor* const actor_opening) override;
 
 private:
         Color color_default() const override;
@@ -1027,7 +1036,7 @@ private:
                 const int dmg,
                 const DmgType dmg_type,
                 const DmgMethod dmg_method,
-                Actor* const actor) override;
+                actor::Actor* const actor) override;
 
         void player_loot();
 
@@ -1049,7 +1058,7 @@ public:
 
         TileId tile() const override;
 
-        void bump(Actor& actor_bumping) override;
+        void bump(actor::Actor& actor_bumping) override;
 
 private:
         Color color_default() const override;
@@ -1058,7 +1067,7 @@ private:
                 const int dmg,
                 const DmgType dmg_type,
                 const DmgMethod dmg_method,
-                Actor* const actor) override;
+                actor::Actor* const actor) override;
 
         void player_loot();
 
@@ -1080,7 +1089,7 @@ public:
 
         TileId tile() const override;
 
-        void bump(Actor& actor_bumping) override;
+        void bump(actor::Actor& actor_bumping) override;
 
 private:
         Color color_default() const override;
@@ -1089,7 +1098,7 @@ private:
                 const int dmg,
                 const DmgType dmg_type,
                 const DmgMethod dmg_method,
-                Actor* const actor) override;
+                actor::Actor* const actor) override;
 
         void player_loot();
 
@@ -1126,7 +1135,7 @@ public:
 
         std::string name(const Article article) const override;
 
-        void bump(Actor& actor_bumping) override;
+        void bump(actor::Actor& actor_bumping) override;
 
         bool has_drinks_left() const
         {
@@ -1154,7 +1163,7 @@ private:
                 const int dmg,
                 const DmgType dmg_type,
                 const DmgMethod dmg_method,
-                Actor* const actor) override;
+                actor::Actor* const actor) override;
 
         FountainEffect m_fountain_effect;
         bool m_has_drinks_left;
@@ -1176,9 +1185,9 @@ public:
 
         TileId tile() const override;
 
-        void bump(Actor& actor_bumping) override;
+        void bump(actor::Actor& actor_bumping) override;
 
-        DidOpen open(Actor* const actor_opening) override;
+        DidOpen open(actor::Actor* const actor_opening) override;
 
 private:
         Color color_default() const override;
@@ -1187,11 +1196,11 @@ private:
                 const int dmg,
                 const DmgType dmg_type,
                 const DmgMethod dmg_method,
-                Actor* const actor) override;
+                actor::Actor* const actor) override;
 
         void player_loot();
 
-        DidTriggerTrap trigger_trap(Actor* const actor) override;
+        DidTriggerTrap trigger_trap(actor::Actor* const actor) override;
 
         bool m_is_trapped;
         bool m_is_open;

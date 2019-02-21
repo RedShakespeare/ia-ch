@@ -14,8 +14,17 @@
 
 #include "global.hpp"
 
+
+namespace actor
+{
+
 struct ActorData;
+
+} // actor
+
+
 struct ColoredString;
+
 
 enum class Trait
 {
@@ -150,7 +159,7 @@ void on_player_gained_lvl(const int new_lvl);
 
 void set_all_traits_to_picked();
 
-bool gets_undead_bane_bon(const ActorData& actor_data);
+bool gets_undead_bane_bon(const actor::ActorData& actor_data);
 
 } // player_bon
 

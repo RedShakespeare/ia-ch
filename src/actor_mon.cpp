@@ -44,8 +44,9 @@
 // -----------------------------------------------------------------------------
 // Private
 // -----------------------------------------------------------------------------
-static void unblock_passable_doors(const ActorData& actor_data,
-                                   Array2<bool>& blocked)
+static void unblock_passable_doors(
+        const actor::ActorData& actor_data,
+        Array2<bool>& blocked)
 {
         for (size_t i = 0; i < blocked.length(); ++i)
         {
@@ -69,6 +70,87 @@ static void unblock_passable_doors(const ActorData& actor_data,
                         blocked.at(i) = false;
                 }
         }
+}
+
+
+// -----------------------------------------------------------------------------
+// actor
+// -----------------------------------------------------------------------------
+namespace actor
+{
+
+std::string get_cultist_phrase()
+{
+        std::vector<std::string> phrase_bucket = {
+                "Apigami!",
+                "Bhuudesco invisuu!",
+                "Bhuuesco marana!",
+                "Crudux cruo!",
+                "Cruento paashaeximus!",
+                "Cruento pestis shatruex!",
+                "Cruo crunatus durbe!",
+                "Cruo lokemundux!",
+                "Cruo stragara-na!",
+                "Gero shay cruo!",
+                "In marana domus-bhaava crunatus!",
+                "Caecux infirmux!",
+                "Malax sayti!",
+                "Marana pallex!",
+                "Marana malax!",
+                "Pallex ti!",
+                "Peroshay bibox malax!",
+                "Pestis Cruento!",
+                "Pestis cruento vilomaxus pretiacruento!",
+                "Pretaanluxis cruonit!",
+                "Pretiacruento!",
+                "Stragar-Naya!",
+                "Vorox esco marana!",
+                "Vilomaxus!",
+                "Prostragaranar malachtose!",
+                "Apigami!"
+        };
+
+        if (rnd::one_in(4))
+        {
+                const God& god = gods::current_god();
+
+                const std::vector<std::string> god_phrases = {
+                        god.name + " save us!",
+                        god.descr + " will save us!",
+                        god.name + " watches over us!",
+                        god.descr + " watches over us!",
+                        god.name + ", guide us!",
+                        god.descr + " guides us!",
+                        "For " + god.name + "!",
+                        "For " + god.descr + "!",
+                        "Blood for " + god.name + "!",
+                        "Blood for " + god.descr + "!",
+                        "Perish for " + god.name + "!",
+                        "Perish for " + god.descr + "!",
+                        "In the name of " + god.name + "!",
+                };
+
+                phrase_bucket.insert(
+                        end(phrase_bucket),
+                        begin(god_phrases),
+                        end(god_phrases));
+        }
+
+        return rnd::element(phrase_bucket);
+}
+
+std::string get_cultist_aware_msg_seen(const Actor& actor)
+{
+        const std::string name_the =
+                text_format::first_to_upper(
+                        actor.name_the());
+
+        return name_the + ": " + get_cultist_phrase();
+}
+
+std::string get_cultist_aware_msg_hidden()
+{
+        return "Voice: " + get_cultist_phrase();
 }
 
 // -----------------------------------------------------------------------------
@@ -1158,13 +1240,13 @@ AiAvailAttacksData Mon::avail_attacks(Actor& defender) const
         return result;
 }
 
-Wpn* Mon::avail_wielded_melee() const
+item::Wpn* Mon::avail_wielded_melee() const
 {
-        Item* const item = m_inv.item_in_slot(SlotId::wpn);
+        auto* const item = m_inv.item_in_slot(SlotId::wpn);
 
         if (item)
         {
-                auto* const wpn = static_cast<Wpn*>(item);
+                auto* const wpn = static_cast<item::Wpn*>(item);
 
                 if (wpn->data().melee.is_melee_wpn)
                 {
@@ -1175,13 +1257,13 @@ Wpn* Mon::avail_wielded_melee() const
         return nullptr;
 }
 
-Wpn* Mon::avail_wielded_ranged() const
+item::Wpn* Mon::avail_wielded_ranged() const
 {
-        Item* const item = m_inv.item_in_slot(SlotId::wpn);
+        auto* const item = m_inv.item_in_slot(SlotId::wpn);
 
         if (item)
         {
-                auto* const wpn = static_cast<Wpn*>(item);
+                auto* const wpn = static_cast<item::Wpn*>(item);
 
                 if (wpn->data().ranged.is_ranged_wpn)
                 {
@@ -1192,13 +1274,13 @@ Wpn* Mon::avail_wielded_ranged() const
         return nullptr;
 }
 
-std::vector<Wpn*> Mon::avail_intr_melee() const
+std::vector<item::Wpn*> Mon::avail_intr_melee() const
 {
-        std::vector<Wpn*> result;
+        std::vector<item::Wpn*> result;
 
-        for (Item* const item : m_inv.m_intrinsics)
+        for (auto* const item : m_inv.m_intrinsics)
         {
-                auto* wpn = static_cast<Wpn*>(item);
+                auto* wpn = static_cast<item::Wpn*>(item);
 
                 if (wpn->data().melee.is_melee_wpn)
                 {
@@ -1209,13 +1291,13 @@ std::vector<Wpn*> Mon::avail_intr_melee() const
         return result;
 }
 
-std::vector<Wpn*> Mon::avail_intr_ranged() const
+std::vector<item::Wpn*> Mon::avail_intr_ranged() const
 {
-        std::vector<Wpn*> result;
+        std::vector<item::Wpn*> result;
 
-        for (Item* const item : m_inv.m_intrinsics)
+        for (auto* const item : m_inv.m_intrinsics)
         {
-                auto* const wpn = static_cast<Wpn*>(item);
+                auto* const wpn = static_cast<item::Wpn*>(item);
 
                 if (wpn->data().ranged.is_ranged_wpn)
                 {
@@ -1226,7 +1308,7 @@ std::vector<Wpn*> Mon::avail_intr_ranged() const
         return result;
 }
 
-bool Mon::should_reload(const Wpn& wpn) const
+bool Mon::should_reload(const item::Wpn& wpn) const
 {
         // TODO: This could be made more sophisticated, e.g. if the monster does
         // not see any enemies it should reload even if the weapon is not
@@ -1350,14 +1432,19 @@ DidAction Khephren::on_act()
 
         const size_t nr_of_spawns = 15;
 
-        const auto summoned =
-                actor_factory::spawn(
+        auto summoned =
+                actor::spawn(
                         m_pos,
-                        {nr_of_spawns, ActorId::locust},
-                        map::rect())
-                .set_leader(leader_of_spawned_mon)
-                .make_aware_of_player()
-                .for_each([](Mon* const mon)
+                        {nr_of_spawns, actor::Id::locust},
+                        map::rect());
+
+        summoned.set_leader(leader_of_spawned_mon);
+        summoned.make_aware_of_player();
+
+        std::for_each(
+                std::begin(summoned.monsters),
+                std::end(summoned.monsters),
+                [](Mon* const mon)
                 {
                         auto prop = new PropSummoned();
 
@@ -1422,7 +1509,7 @@ void SpectralWpn::on_death()
 
 std::string SpectralWpn::name_the() const
 {
-        Item* item = m_inv.item_in_slot(SlotId::wpn);
+        auto* item = m_inv.item_in_slot(SlotId::wpn);
 
         ASSERT(item);
 
@@ -1436,7 +1523,7 @@ std::string SpectralWpn::name_the() const
 
 std::string SpectralWpn::name_a() const
 {
-        Item* item = m_inv.item_in_slot(SlotId::wpn);
+        auto* item = m_inv.item_in_slot(SlotId::wpn);
 
         ASSERT(item);
 
@@ -1450,7 +1537,7 @@ std::string SpectralWpn::name_a() const
 
 char SpectralWpn::character() const
 {
-        Item* item = m_inv.item_in_slot(SlotId::wpn);
+        auto* item = m_inv.item_in_slot(SlotId::wpn);
 
         ASSERT(item);
 
@@ -1459,7 +1546,7 @@ char SpectralWpn::character() const
 
 TileId SpectralWpn::tile() const
 {
-        Item* item = m_inv.item_in_slot(SlotId::wpn);
+        auto* item = m_inv.item_in_slot(SlotId::wpn);
 
         ASSERT(item);
 
@@ -1468,7 +1555,7 @@ TileId SpectralWpn::tile() const
 
 std::string SpectralWpn::descr() const
 {
-        Item* item = m_inv.item_in_slot(SlotId::wpn);
+        auto* item = m_inv.item_in_slot(SlotId::wpn);
 
         ASSERT(item);
 
@@ -1484,76 +1571,4 @@ std::string SpectralWpn::descr() const
         return str;
 }
 
-std::string get_cultist_phrase()
-{
-        std::vector<std::string> phrase_bucket = {
-                "Apigami!",
-                "Bhuudesco invisuu!",
-                "Bhuuesco marana!",
-                "Crudux cruo!",
-                "Cruento paashaeximus!",
-                "Cruento pestis shatruex!",
-                "Cruo crunatus durbe!",
-                "Cruo lokemundux!",
-                "Cruo stragara-na!",
-                "Gero shay cruo!",
-                "In marana domus-bhaava crunatus!",
-                "Caecux infirmux!",
-                "Malax sayti!",
-                "Marana pallex!",
-                "Marana malax!",
-                "Pallex ti!",
-                "Peroshay bibox malax!",
-                "Pestis Cruento!",
-                "Pestis cruento vilomaxus pretiacruento!",
-                "Pretaanluxis cruonit!",
-                "Pretiacruento!",
-                "Stragar-Naya!",
-                "Vorox esco marana!",
-                "Vilomaxus!",
-                "Prostragaranar malachtose!",
-                "Apigami!"
-        };
-
-        if (rnd::one_in(4))
-        {
-                const God& god = gods::current_god();
-
-                const std::vector<std::string> god_phrases = {
-                        god.name + " save us!",
-                        god.descr + " will save us!",
-                        god.name + " watches over us!",
-                        god.descr + " watches over us!",
-                        god.name + ", guide us!",
-                        god.descr + " guides us!",
-                        "For " + god.name + "!",
-                        "For " + god.descr + "!",
-                        "Blood for " + god.name + "!",
-                        "Blood for " + god.descr + "!",
-                        "Perish for " + god.name + "!",
-                        "Perish for " + god.descr + "!",
-                        "In the name of " + god.name + "!",
-                };
-
-                phrase_bucket.insert(
-                        end(phrase_bucket),
-                        begin(god_phrases),
-                        end(god_phrases));
-        }
-
-        return rnd::element(phrase_bucket);
-}
-
-std::string get_cultist_aware_msg_seen(const Actor& actor)
-{
-        const std::string name_the =
-                text_format::first_to_upper(
-                        actor.name_the());
-
-        return name_the + ": " + get_cultist_phrase();
-}
-
-std::string get_cultist_aware_msg_hidden()
-{
-        return "Voice: " + get_cultist_phrase();
-}
+} // actor

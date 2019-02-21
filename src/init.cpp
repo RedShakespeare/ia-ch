@@ -14,6 +14,7 @@
 #include "debug.hpp"
 #include "draw_map.hpp"
 #include "game.hpp"
+#include "game_time.hpp"
 #include "highscore.hpp"
 #include "insanity.hpp"
 #include "io.hpp"
@@ -90,13 +91,13 @@ void init_session()
 {
         TRACE_FUNC_BEGIN;
 
-        actor_data::init();
+        actor::init();
         feature_data::init();
         property_data::init();
-        item_data::init();
-        scroll_handling::init();
-        potion_handling::init();
-        rod_handling::init();
+        item::init();
+        scroll::init();
+        potion::init();
+        rod::init();
         game_time::init();
         map_travel::init();
         map::init();
@@ -125,7 +126,7 @@ void cleanup_session()
         insanity::cleanup();
         map::cleanup();
         game_time::cleanup();
-        item_data::cleanup();
+        item::cleanup();
 
         TRACE_FUNC_END;
 }

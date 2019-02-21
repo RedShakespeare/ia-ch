@@ -9,13 +9,22 @@
 
 #include "global.hpp"
 
-struct P;
+
+namespace actor
+{
+
 class Actor;
+
+} // actor
+
+
+struct P;
+
 
 namespace knockback
 {
 
-void run(Actor& defender,
+void run(actor::Actor& defender,
          const P& attacked_from_pos,
          const bool is_spike_gun,
          const Verbosity verbosity = Verbosity::verbose,

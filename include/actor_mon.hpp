@@ -10,20 +10,21 @@
 #include <vector>
 #include <string>
 
-#include "global.hpp"
 #include "actor.hpp"
+#include "global.hpp"
+#include "item.hpp"
 #include "sound.hpp"
 #include "spells.hpp"
 
 struct AiAttData
 {
-        Wpn* wpn = nullptr;
+        item::Wpn* wpn = nullptr;
         bool is_melee = false;
 };
 
 struct AiAvailAttacksData
 {
-        std::vector<Wpn*> weapons = {};
+        std::vector<item::Wpn*> weapons = {};
         bool should_reload = false;
         bool is_melee = false;
 };
@@ -39,6 +40,17 @@ struct MonSpell
         SpellSkill skill;
         int cooldown;
 };
+
+
+namespace actor
+{
+
+std::string get_cultist_phrase();
+
+std::string get_cultist_aware_msg_seen(const Actor& actor);
+
+std::string get_cultist_aware_msg_hidden();
+
 
 class Mon: public Actor
 {
@@ -138,12 +150,12 @@ protected:
 
         bool is_friend_blocking_ranged_attack(const P& target_pos) const;
 
-        Wpn* avail_wielded_melee() const;
-        Wpn* avail_wielded_ranged() const;
-        std::vector<Wpn*> avail_intr_melee() const;
-        std::vector<Wpn*> avail_intr_ranged() const;
+        item::Wpn* avail_wielded_melee() const;
+        item::Wpn* avail_wielded_ranged() const;
+        std::vector<item::Wpn*> avail_intr_melee() const;
+        std::vector<item::Wpn*> avail_intr_ranged() const;
 
-        bool should_reload(const Wpn& wpn) const;
+        bool should_reload(const item::Wpn& wpn) const;
 
         virtual void on_hit(
                 int& dmg,
@@ -221,10 +233,6 @@ public:
         std::string descr() const override;
 };
 
-std::string get_cultist_phrase();
-
-std::string get_cultist_aware_msg_seen(const Actor& actor);
-
-std::string get_cultist_aware_msg_hidden();
+} // actor
 
 #endif // MON_HPP

@@ -1056,17 +1056,16 @@ void SnakePitRoom::on_post_connect_hook(Array2<bool>& door_proposals)
         }
 
         // Put some monsters in the room
-        std::vector<ActorId> actor_id_bucket;
+        std::vector<actor::Id> actor_id_bucket;
 
-        for (size_t i = 0; i < (size_t)ActorId::END; ++i)
+        for (size_t i = 0; i < (size_t)actor::Id::END; ++i)
         {
-                const ActorData& d = actor_data::g_data[i];
+                const auto& d = actor::g_data[i];
 
                 // NOTE: We do not allow Spitting Cobras in snake pits, because
                 // it's VERY tedious to fight swarms of them (attack, get
                 // blinded, back away, repeat...)
-                if (d.is_snake &&
-                    (d.id != ActorId::spitting_cobra))
+                if (d.is_snake && (d.id != actor::Id::spitting_cobra))
                 {
                         actor_id_bucket.push_back(d.id);
                 }
@@ -1075,12 +1074,12 @@ void SnakePitRoom::on_post_connect_hook(Array2<bool>& door_proposals)
         // Hijacking snake pit rooms to make a worm room...
         if (map::g_dlvl <= g_dlvl_last_mid_game)
         {
-                actor_id_bucket.push_back(ActorId::worm_mass);
+                actor_id_bucket.push_back(actor::Id::worm_mass);
         }
 
         if (map::g_dlvl >= 3)
         {
-                actor_id_bucket.push_back(ActorId::mind_worms);
+                actor_id_bucket.push_back(actor::Id::mind_worms);
         }
 
         const auto actor_id = rnd::element(actor_id_bucket);

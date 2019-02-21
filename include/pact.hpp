@@ -7,7 +7,17 @@
 #include <string>
 #include <vector>
 
-#include "item_data.hpp"
+
+namespace item
+{
+
+enum class Id;
+
+} // item
+
+
+enum class SpellId;
+
 
 namespace pact
 {
@@ -210,9 +220,9 @@ public:
         void run_effect() override;
 
 private:
-        std::vector<ItemId> find_allowed_item_ids() const;
+        std::vector<item::Id> find_allowed_item_ids() const;
 
-        ItemId m_item_id;
+        item::Id m_item_id;
 };
 
 // class RechargeItem : public Benefit

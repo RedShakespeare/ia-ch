@@ -33,21 +33,21 @@ static int nr_items()
         return nr;
 }
 
-static std::vector<ItemId> make_item_bucket()
+static std::vector<item::Id> make_item_bucket()
 {
-        std::vector<ItemId> item_bucket;
+        std::vector<item::Id> item_bucket;
         item_bucket.clear();
 
-        for (int i = 0; i < (int)ItemId::END; ++i)
+        for (int i = 0; i < (int)item::Id::END; ++i)
         {
-                const ItemData& data = item_data::g_data[i];
+                const auto& data = item::g_data[i];
 
                 if (data.type < ItemType::END_OF_EXTRINSIC_ITEMS &&
                     data.spawn_std_range.is_in_range(map::g_dlvl) &&
                     data.allow_spawn &&
                     rnd::percent(data.chance_to_incl_in_spawn_list))
                 {
-                        item_bucket.push_back(ItemId(i));
+                        item_bucket.push_back(item::Id(i));
                 }
         }
 
@@ -115,11 +115,11 @@ void make_items_on_floor()
 
                 const size_t item_idx = rnd::range(0, item_bucket.size() - 1);
 
-                const ItemId id = item_bucket[item_idx];
+                const item::Id id = item_bucket[item_idx];
 
-                if (item_data::g_data[(size_t)id].allow_spawn)
+                if (item::g_data[(size_t)id].allow_spawn)
                 {
-                        item_factory::make_item_on_floor(id, p);
+                        item::make_item_on_floor(id, p);
 
                         positions.erase(begin(positions) + p_idx);
                         position_weights.erase(begin(position_weights) + p_idx);

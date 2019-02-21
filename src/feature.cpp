@@ -25,7 +25,7 @@ const FeatureData& Feature::data() const
         return feature_data::data(id());
 }
 
-void Feature::bump(Actor& actor_bumping)
+void Feature::bump(actor::Actor& actor_bumping)
 {
         if (!can_move(actor_bumping) && actor_bumping.is_player())
         {
@@ -40,7 +40,7 @@ void Feature::bump(Actor& actor_bumping)
         }
 }
 
-void Feature::on_leave(Actor& actor_leaving)
+void Feature::on_leave(actor::Actor& actor_leaving)
 {
         (void)actor_leaving;
 }
@@ -60,7 +60,7 @@ bool Feature::is_walkable() const
         return data().move_rules.is_walkable();
 }
 
-bool Feature::can_move(const Actor& actor) const
+bool Feature::can_move(const actor::Actor& actor) const
 {
         return data().move_rules.can_move(actor);
 }

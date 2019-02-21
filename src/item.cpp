@@ -33,6 +33,9 @@
 #include "saving.hpp"
 #include "text_format.hpp"
 
+namespace item
+{
+
 // -----------------------------------------------------------------------------
 // Item
 // -----------------------------------------------------------------------------
@@ -67,7 +70,7 @@ Item::~Item()
         }
 }
 
-ItemId Item::id() const
+Id Item::id() const
 {
         return m_data->id;
 }
@@ -113,7 +116,7 @@ void Item::set_random_melee_plus()
         m_melee_base_dmg.plus = rnd::weighted_choice(weights);
 }
 
-Dice Item::melee_dmg(const Actor* const attacker) const
+Dice Item::melee_dmg(const actor::Actor* const attacker) const
 {
         auto dice = m_melee_base_dmg;
 
@@ -140,7 +143,7 @@ Dice Item::melee_dmg(const Actor* const attacker) const
                 }
 
                 // TODO: This should be handled via the 'specific_dmg_mod' hook
-                if (id() == ItemId::player_ghoul_claw)
+                if (id() == Id::player_ghoul_claw)
                 {
                         if (player_bon::has_trait(Trait::foul))
                         {
@@ -165,7 +168,7 @@ Dice Item::melee_dmg(const Actor* const attacker) const
         return dice;
 }
 
-Dice Item::ranged_dmg(const Actor* const attacker) const
+Dice Item::ranged_dmg(const actor::Actor* const attacker) const
 {
         auto dice = m_ranged_base_dmg;
 
@@ -174,7 +177,7 @@ Dice Item::ranged_dmg(const Actor* const attacker) const
         return dice;
 }
 
-Dice Item::thrown_dmg(const Actor* const attacker) const
+Dice Item::thrown_dmg(const actor::Actor* const attacker) const
 {
         Dice dice;
 
@@ -203,7 +206,8 @@ Dice Item::thrown_dmg(const Actor* const attacker) const
         return dice;
 }
 
-ItemAttProp& Item::prop_applied_on_melee(const Actor* const attacker) const
+ItemAttProp& Item::prop_applied_on_melee(
+        const actor::Actor* const attacker) const
 {
         const auto intr = prop_applied_intr_attack(attacker);
 
@@ -215,7 +219,8 @@ ItemAttProp& Item::prop_applied_on_melee(const Actor* const attacker) const
         return data().melee.prop_applied;
 }
 
-ItemAttProp& Item::prop_applied_on_ranged(const Actor* const attacker) const
+ItemAttProp& Item::prop_applied_on_ranged(
+        const actor::Actor* const attacker) const
 {
         const auto intr = prop_applied_intr_attack(attacker);
 
@@ -227,7 +232,8 @@ ItemAttProp& Item::prop_applied_on_ranged(const Actor* const attacker) const
         return data().ranged.prop_applied;
 }
 
-ItemAttProp* Item::prop_applied_intr_attack(const Actor* const attacker) const
+ItemAttProp* Item::prop_applied_intr_attack(
+        const actor::Actor* const attacker) const
 {
         if (attacker)
         {
@@ -254,17 +260,17 @@ std::string Item::weight_str() const
 {
         const int wgt = weight();
 
-        if (wgt <= ((int)ItemWeight::extra_light + (int)ItemWeight::light) / 2)
+        if (wgt <= ((int)Weight::extra_light + (int)Weight::light) / 2)
         {
                 return "very light";
         }
 
-        if (wgt <= ((int)ItemWeight::light + (int)ItemWeight::medium) / 2)
+        if (wgt <= ((int)Weight::light + (int)Weight::medium) / 2)
         {
                 return "light";
         }
 
-        if (wgt <= ((int)ItemWeight::medium + (int)ItemWeight::heavy) / 2)
+        if (wgt <= ((int)Weight::medium + (int)Weight::heavy) / 2)
         {
                 return "a bit heavy";
         }
@@ -272,7 +278,7 @@ std::string Item::weight_str() const
         return "heavy";
 }
 
-ConsumeItem Item::activate(Actor* const actor)
+ConsumeItem Item::activate(actor::Actor* const actor)
 {
         (void)actor;
 
@@ -281,7 +287,7 @@ ConsumeItem Item::activate(Actor* const actor)
         return ConsumeItem::no;
 }
 
-void Item::on_pickup(Actor& actor)
+void Item::on_pickup(actor::Actor& actor)
 {
         ASSERT(!m_actor_carrying);
 
@@ -789,9 +795,9 @@ Wpn::Wpn(ItemData* const item_data) :
 {
         const auto ammo_item_id = m_data->ranged.ammo_item_id;
 
-        if (ammo_item_id != ItemId::END)
+        if (ammo_item_id != Id::END)
         {
-                m_ammo_data = &item_data::g_data[(size_t)ammo_item_id];
+                m_ammo_data = &item::g_data[(size_t)ammo_item_id];
                 m_ammo_loaded = m_data->ranged.max_ammo;
         }
 }
@@ -851,7 +857,7 @@ std::string Wpn::name_inf_str() const
 // -----------------------------------------------------------------------------
 // Spiked Mace
 // -----------------------------------------------------------------------------
-void SpikedMace::on_melee_hit(Actor& actor_hit, const int dmg)
+void SpikedMace::on_melee_hit(actor::Actor& actor_hit, const int dmg)
 {
         (void)dmg;
 
@@ -875,7 +881,7 @@ void SpikedMace::on_melee_hit(Actor& actor_hit, const int dmg)
 // -----------------------------------------------------------------------------
 // Player ghoul claw
 // -----------------------------------------------------------------------------
-void PlayerGhoulClaw::on_melee_hit(Actor& actor_hit, const int dmg)
+void PlayerGhoulClaw::on_melee_hit(actor::Actor& actor_hit, const int dmg)
 {
         (void)dmg;
 
@@ -892,7 +898,7 @@ void PlayerGhoulClaw::on_melee_hit(Actor& actor_hit, const int dmg)
         // should be a pretty good rule for this. We should NOT check if the
         // monster can leave a corpse however, since some monsters such as
         // Worms don't leave a corpse, and you SHOULD be able to feed on those.
-        const ActorData& d = *actor_hit.m_data;
+        const auto& d = *actor_hit.m_data;
 
         const bool is_ethereal = actor_hit.m_properties.has(PropId::ethereal);
 
@@ -944,14 +950,15 @@ void PlayerGhoulClaw::on_melee_hit(Actor& actor_hit, const int dmg)
         }
 }
 
-void PlayerGhoulClaw::on_melee_kill(Actor& actor_killed)
+void PlayerGhoulClaw::on_melee_kill(actor::Actor& actor_killed)
 {
         // TODO: See TODO note in melee hit hook for Ghoul claw concerning
         // "constructed monsters".
 
-        const ActorData& d = *actor_killed.m_data;
+        const auto& d = *actor_killed.m_data;
 
-        const bool is_ethereal = actor_killed.m_properties.has(PropId::ethereal);
+        const bool is_ethereal =
+                actor_killed.m_properties.has(PropId::ethereal);
 
         if (player_bon::has_trait(Trait::foul) &&
             !is_ethereal &&
@@ -960,9 +967,9 @@ void PlayerGhoulClaw::on_melee_kill(Actor& actor_killed)
         {
                 const size_t nr_worms = rnd::range(1, 2);
 
-                actor_factory::spawn(
+                actor::spawn(
                         actor_killed.m_pos,
-                        {nr_worms, ActorId::worm_mass},
+                        {nr_worms, actor::Id::worm_mass},
                         map::rect())
                         .make_aware_of_player()
                         .set_leader(map::g_player);
@@ -972,7 +979,7 @@ void PlayerGhoulClaw::on_melee_kill(Actor& actor_killed)
 // -----------------------------------------------------------------------------
 // Zombie Dust
 // -----------------------------------------------------------------------------
-void ZombieDust::on_ranged_hit(Actor& actor_hit)
+void ZombieDust::on_ranged_hit(actor::Actor& actor_hit)
 {
         if (actor_hit.is_alive() && !actor_hit.m_data->is_undead)
         {
@@ -986,7 +993,9 @@ void ZombieDust::on_ranged_hit(Actor& actor_hit)
 MiGoGun::MiGoGun(ItemData* const item_data) :
         Wpn(item_data) {}
 
-void MiGoGun::specific_dmg_mod(Dice& dice, const Actor* const actor) const
+void MiGoGun::specific_dmg_mod(
+        Dice& dice,
+        const actor::Actor* const actor) const
 {
         if ((actor == map::g_player) &&
             player_bon::has_trait(Trait::elec_incl))
@@ -1013,7 +1022,7 @@ void Incinerator::on_projectile_blocked(
 // -----------------------------------------------------------------------------
 // Raven peck
 // -----------------------------------------------------------------------------
-void RavenPeck::on_melee_hit(Actor& actor_hit, const int dmg)
+void RavenPeck::on_melee_hit(actor::Actor& actor_hit, const int dmg)
 {
         (void)dmg;
 
@@ -1026,8 +1035,8 @@ void RavenPeck::on_melee_hit(Actor& actor_hit, const int dmg)
         Item* const head_item = actor_hit.m_inv.item_in_slot(SlotId::head);
         Item* const body_item = actor_hit.m_inv.item_in_slot(SlotId::body);
 
-        if ((head_item && head_item->id() == ItemId::gas_mask) ||
-            (body_item && body_item->id() == ItemId::armor_asb_suit))
+        if ((head_item && head_item->id() == Id::gas_mask) ||
+            (body_item && body_item->id() == Id::armor_asb_suit))
         {
                 return;
         }
@@ -1045,7 +1054,7 @@ void RavenPeck::on_melee_hit(Actor& actor_hit, const int dmg)
 // -----------------------------------------------------------------------------
 // Vampire Bat Bite
 // -----------------------------------------------------------------------------
-void VampiricBite::on_melee_hit(Actor& actor_hit, const int dmg)
+void VampiricBite::on_melee_hit(actor::Actor& actor_hit, const int dmg)
 {
         if (!actor_hit.is_alive())
         {
@@ -1061,7 +1070,7 @@ void VampiricBite::on_melee_hit(Actor& actor_hit, const int dmg)
 // -----------------------------------------------------------------------------
 // Mind Leech Sting
 // -----------------------------------------------------------------------------
-void MindLeechSting::on_melee_hit(Actor& actor_hit, const int dmg)
+void MindLeechSting::on_melee_hit(actor::Actor& actor_hit, const int dmg)
 {
         (void)dmg;
 
@@ -1116,7 +1125,7 @@ void MindLeechSting::on_melee_hit(Actor& actor_hit, const int dmg)
 // -----------------------------------------------------------------------------
 // Spirit Leech Sting
 // -----------------------------------------------------------------------------
-void SpiritLeechSting::on_melee_hit(Actor& actor_hit, const int dmg)
+void SpiritLeechSting::on_melee_hit(actor::Actor& actor_hit, const int dmg)
 {
         (void)dmg;
 
@@ -1149,7 +1158,7 @@ void SpiritLeechSting::on_melee_hit(Actor& actor_hit, const int dmg)
 // -----------------------------------------------------------------------------
 // Life Leech Sting
 // -----------------------------------------------------------------------------
-void LifeLeechSting::on_melee_hit(Actor& actor_hit, const int dmg)
+void LifeLeechSting::on_melee_hit(actor::Actor& actor_hit, const int dmg)
 {
         (void)dmg;
 
@@ -1182,7 +1191,7 @@ void LifeLeechSting::on_melee_hit(Actor& actor_hit, const int dmg)
 // -----------------------------------------------------------------------------
 // Dust vortex enguld
 // -----------------------------------------------------------------------------
-void DustEngulf::on_melee_hit(Actor& actor_hit, const int dmg)
+void DustEngulf::on_melee_hit(actor::Actor& actor_hit, const int dmg)
 {
         (void)dmg;
 
@@ -1195,8 +1204,8 @@ void DustEngulf::on_melee_hit(Actor& actor_hit, const int dmg)
         Item* const head_item = actor_hit.m_inv.item_in_slot(SlotId::head);
         Item* const body_item = actor_hit.m_inv.item_in_slot(SlotId::body);
 
-        if ((head_item && head_item->id() == ItemId::gas_mask) ||
-            (body_item && body_item->id() == ItemId::armor_asb_suit))
+        if ((head_item && head_item->id() == Id::gas_mask) ||
+            (body_item && body_item->id() == Id::armor_asb_suit))
         {
                 return;
         }
@@ -1209,7 +1218,7 @@ void DustEngulf::on_melee_hit(Actor& actor_hit, const int dmg)
 // -----------------------------------------------------------------------------
 // Spitting cobra spit
 // -----------------------------------------------------------------------------
-void SnakeVenomSpit::on_ranged_hit(Actor& actor_hit)
+void SnakeVenomSpit::on_ranged_hit(actor::Actor& actor_hit)
 {
         if (!actor_hit.is_alive())
         {
@@ -1220,8 +1229,8 @@ void SnakeVenomSpit::on_ranged_hit(Actor& actor_hit)
         Item* const head_item = actor_hit.m_inv.item_in_slot(SlotId::head);
         Item* const body_item = actor_hit.m_inv.item_in_slot(SlotId::body);
 
-        if ((head_item && head_item->id() == ItemId::gas_mask) ||
-            (body_item && body_item->id() == ItemId::armor_asb_suit))
+        if ((head_item && head_item->id() == Id::gas_mask) ||
+            (body_item && body_item->id() == Id::armor_asb_suit))
         {
                 return;
         }
@@ -1301,7 +1310,7 @@ void MedicalBag::on_pickup_hook()
         }
 }
 
-ConsumeItem MedicalBag::activate(Actor* const actor)
+ConsumeItem MedicalBag::activate(actor::Actor* const actor)
 {
         (void)actor;
 
@@ -1566,7 +1575,7 @@ void GasMask::decr_turns_left(Inventory& carrier_inv)
 // -----------------------------------------------------------------------------
 // Explosive
 // -----------------------------------------------------------------------------
-ConsumeItem Explosive::activate(Actor* const actor)
+ConsumeItem Explosive::activate(actor::Actor* const actor)
 {
         (void)actor;
 
@@ -1616,7 +1625,7 @@ ConsumeItem Explosive::activate(Actor* const actor)
         }
 
         // Make a copy to use as the held ignited explosive.
-        auto* cpy = static_cast<Explosive*>(item_factory::make(data().id, 1));
+        auto* cpy = static_cast<Explosive*>(item::make(data().id, 1));
 
         cpy->m_fuse_turns = std_fuse_turns();
 
@@ -1913,3 +1922,5 @@ Color SmokeGrenade::ignited_projectile_color() const
 {
         return data().color;
 }
+
+} // item

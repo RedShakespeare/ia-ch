@@ -9,6 +9,7 @@
 
 #include "feature_rigid.hpp"
 
+
 class Monolith: public Rigid
 {
 public:
@@ -23,7 +24,7 @@ public:
 
     std::string name(const Article article) const override;
 
-    void bump(Actor& actor_bumping) override;
+    void bump(actor::Actor& actor_bumping) override;
 
 private:
     Color color_default() const override;
@@ -31,7 +32,7 @@ private:
     void on_hit(const int dmg,
                 const DmgType dmg_type,
                 const DmgMethod dmg_method,
-                Actor* const actor) override;
+                actor::Actor* const actor) override;
 
     void activate();
 

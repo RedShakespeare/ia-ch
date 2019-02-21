@@ -11,6 +11,7 @@
 #include "config.hpp"
 #include "game_commands.hpp"
 #include "io.hpp"
+#include "pos.hpp"
 
 // -----------------------------------------------------------------------------
 // Private

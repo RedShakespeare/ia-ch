@@ -4,8 +4,8 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 // =============================================================================
 
-#ifndef DATA_HPP
-#define DATA_HPP
+#ifndef ITEM_DATA_HPP
+#define ITEM_DATA_HPP
 
 #include <vector>
 #include <string>
@@ -17,9 +17,14 @@
 #include "room.hpp"
 #include "item_att_property.hpp"
 
+
 enum class SndVol;
 
-enum class ItemId
+
+namespace item
+{
+
+enum class Id
 {
         trapez,
 
@@ -182,34 +187,83 @@ enum class ItemId
         END
 };
 
-const std::unordered_map<std::string, ItemId> str_to_intr_item_id_map =
+const std::unordered_map<std::string, Id> str_to_intr_item_id_map =
 {
-        {"bite", ItemId::intr_bite},
-        {"claw", ItemId::intr_claw},
-        {"strike", ItemId::intr_strike},
-        {"punch", ItemId::intr_punch},
-        {"acid_spit", ItemId::intr_acid_spit},
-        {"snake_venom_spit", ItemId::intr_snake_venom_spit},
-        {"fire_breath", ItemId::intr_fire_breath},
-        {"energy_breath", ItemId::intr_energy_breath},
-        {"raven_peck", ItemId::intr_raven_peck},
-        {"vampiric_bite", ItemId::intr_vampiric_bite},
-        {"strangle", ItemId::intr_strangle},
-        {"ghost_touch", ItemId::intr_ghost_touch},
-        {"sting", ItemId::intr_sting},
-        {"mind_leech_sting", ItemId::intr_mind_leech_sting},
-        {"life_leech_sting", ItemId::intr_life_leech_sting},
-        {"spirit_leech_sting", ItemId::intr_spirit_leech_sting},
-        {"spear_thrust", ItemId::intr_spear_thrust},
-        {"net_throw", ItemId::intr_net_throw},
-        {"maul", ItemId::intr_maul},
-        {"pus_spew", ItemId::intr_pus_spew},
-        {"acid_touch", ItemId::intr_acid_touch},
-        {"dust_engulf", ItemId::intr_dust_engulf},
-        {"fire_engulf", ItemId::intr_fire_engulf},
-        {"energy_engulf", ItemId::intr_energy_engulf},
-        {"spores", ItemId::intr_spores},
-        {"web_bola", ItemId::intr_web_bola},
+        {"bite", Id::intr_bite},
+        {"claw", Id::intr_claw},
+        {"strike", Id::intr_strike},
+        {"punch", Id::intr_punch},
+        {"acid_spit", Id::intr_acid_spit},
+        {"snake_venom_spit", Id::intr_snake_venom_spit},
+        {"fire_breath", Id::intr_fire_breath},
+        {"energy_breath", Id::intr_energy_breath},
+        {"raven_peck", Id::intr_raven_peck},
+        {"vampiric_bite", Id::intr_vampiric_bite},
+        {"strangle", Id::intr_strangle},
+        {"ghost_touch", Id::intr_ghost_touch},
+        {"sting", Id::intr_sting},
+        {"mind_leech_sting", Id::intr_mind_leech_sting},
+        {"life_leech_sting", Id::intr_life_leech_sting},
+        {"spirit_leech_sting", Id::intr_spirit_leech_sting},
+        {"spear_thrust", Id::intr_spear_thrust},
+        {"net_throw", Id::intr_net_throw},
+        {"maul", Id::intr_maul},
+        {"pus_spew", Id::intr_pus_spew},
+        {"acid_touch", Id::intr_acid_touch},
+        {"dust_engulf", Id::intr_dust_engulf},
+        {"fire_engulf", Id::intr_fire_engulf},
+        {"energy_engulf", Id::intr_energy_engulf},
+        {"spores", Id::intr_spores},
+        {"web_bola", Id::intr_web_bola},
+};
+
+
+enum class ItemSetId
+{
+        minor_treasure,
+        rare_treasure,
+        supreme_treasure,
+        firearm,
+        spike_gun,
+        zealot_spiked_mace,
+        priest_dagger,
+        mi_go_gun,
+        mi_go_armor,
+        high_priest_guard_war_vet,
+        high_priest_guard_rogue
+};
+
+const std::unordered_map<std::string, ItemSetId> str_to_item_set_id_map =
+{
+        {"minor_treasure", ItemSetId::minor_treasure},
+        {"rare_treasure", ItemSetId::rare_treasure},
+        {"supreme_treasure", ItemSetId::supreme_treasure},
+        {"firearm", ItemSetId::firearm},
+        {"spike_gun", ItemSetId::spike_gun},
+        {"zealot_spiked_mace", ItemSetId::zealot_spiked_mace},
+        {"priest_dagger", ItemSetId::priest_dagger},
+        {"mi_go_gun", ItemSetId::mi_go_gun},
+        {"mi_go_armor", ItemSetId::mi_go_armor},
+        {"high_priest_guard_war_vet", ItemSetId::high_priest_guard_war_vet},
+        {"high_priest_guard_rogue", ItemSetId::high_priest_guard_rogue}
+};
+
+
+enum class Value
+{
+        normal,
+        minor_treasure,
+        rare_treasure,
+        supreme_treasure
+};
+
+enum Weight
+{
+        none            = 0,
+        extra_light     = 1,    // E.g. ammo
+        light           = 10,   // E.g. dynamite, daggers
+        medium          = 50,   // E.g. most firearms
+        heavy           = 100,  // E.g. heavy armor, heavy weapons
 };
 
 struct ItemName
@@ -247,56 +301,9 @@ struct ItemAttMsgs
         std::string player, other;
 };
 
-enum class ItemValue
+struct ContainerSpawnRule
 {
-        normal,
-        minor_treasure,
-        rare_treasure,
-        supreme_treasure
-};
-
-enum class ItemSetId
-{
-        minor_treasure,
-        rare_treasure,
-        supreme_treasure,
-        firearm,
-        spike_gun,
-        zealot_spiked_mace,
-        priest_dagger,
-        mi_go_gun,
-        mi_go_armor,
-        high_priest_guard_war_vet,
-        high_priest_guard_rogue
-};
-
-const std::unordered_map<std::string, ItemSetId> str_to_item_set_id_map =
-{
-        {"minor_treasure", ItemSetId::minor_treasure},
-        {"rare_treasure", ItemSetId::rare_treasure},
-        {"supreme_treasure", ItemSetId::supreme_treasure},
-        {"firearm", ItemSetId::firearm},
-        {"spike_gun", ItemSetId::spike_gun},
-        {"zealot_spiked_mace", ItemSetId::zealot_spiked_mace},
-        {"priest_dagger", ItemSetId::priest_dagger},
-        {"mi_go_gun", ItemSetId::mi_go_gun},
-        {"mi_go_armor", ItemSetId::mi_go_armor},
-        {"high_priest_guard_war_vet", ItemSetId::high_priest_guard_war_vet},
-        {"high_priest_guard_rogue", ItemSetId::high_priest_guard_rogue}
-};
-
-enum ItemWeight
-{
-        none            = 0,
-        extra_light     = 1,    // E.g. ammo
-        light           = 10,   // E.g. dynamite, daggers
-        medium          = 50,   // E.g. most firearms
-        heavy           = 100,  // E.g. heavy armor, heavy weapons
-};
-
-struct ItemContainerSpawnRule
-{
-        ItemContainerSpawnRule(FeatureId feature_id_, int pct_chance_to_incl_) :
+        ContainerSpawnRule(FeatureId feature_id_, int pct_chance_to_incl_) :
                 feature_id(feature_id_),
                 pct_chance_to_incl(pct_chance_to_incl_) {}
 
@@ -304,19 +311,83 @@ struct ItemContainerSpawnRule
         int pct_chance_to_incl = 0;
 };
 
-class ItemData
+struct MeleeData
+{
+        MeleeData();
+
+        bool is_melee_wpn;
+        // NOTE: The "plus" field is ignored in the melee damage data,
+        // melee weapons have individual plus damages per class instance
+        Dice dmg;
+        int hit_chance_mod;
+        bool is_noisy;
+        ItemAttMsgs att_msgs;
+        ItemAttProp prop_applied;
+        DmgType dmg_type;
+        DmgMethod dmg_method;
+        bool knocks_back;
+        bool att_corpse;
+        bool att_rigid;
+        SfxId hit_small_sfx;
+        SfxId hit_medium_sfx;
+        SfxId hit_hard_sfx;
+        SfxId miss_sfx;
+};
+
+struct RangedData
+{
+        RangedData();
+
+        bool is_ranged_wpn;
+        bool is_throwable_wpn;
+        bool is_machine_gun;
+        bool is_shotgun;
+        // NOTE: This should be set on ranged weapons AND magazines
+        int max_ammo;
+        // NOTE: "Pure" melee weapons should not set this value - they
+        // do throw damage based on their melee damage instead
+        Dice dmg;
+        int hit_chance_mod;
+        int throw_hit_chance_mod;
+        bool always_break_on_throw;
+        int effective_range;
+        int max_range;
+        bool knocks_back;
+        Id ammo_item_id;
+        DmgType dmg_type;
+        bool has_infinite_ammo;
+        char projectile_character;
+        TileId projectile_tile;
+        Color projectile_color;
+        bool projectile_leaves_trail;
+        ItemAttMsgs att_msgs;
+        std::string snd_msg;
+        SndVol snd_vol;
+        bool makes_ricochet_snd;
+        SfxId att_sfx;
+        SfxId reload_sfx;
+        ItemAttProp prop_applied;
+};
+
+struct ArmorData
+{
+        ArmorData();
+
+        int armor_points;
+        double dmg_to_durability_factor;
+};
+
+struct ItemData
 {
 public:
         ItemData();
 
-        ~ItemData() {}
-
-        ItemId id;
+        Id id;
         ItemType type;
         bool is_intr;
         bool has_std_activate; // E.g. potions and scrolls
         bool is_prio_in_backpack_list; // E.g. Medical Bag
-        ItemValue value;
+        Value value;
         int weight;
         bool is_unique;
         bool allow_spawn;
@@ -350,83 +421,16 @@ public:
 
         bool allow_display_dmg;
 
-        struct MeleeData
-        {
-                MeleeData();
+        MeleeData melee;
 
-                ~MeleeData();
+        RangedData ranged;
 
-                bool is_melee_wpn;
-                // NOTE: The "plus" field is ignored in the melee damage data,
-                // melee weapons have individual plus damages per class instance
-                Dice dmg;
-                int hit_chance_mod;
-                bool is_noisy;
-                ItemAttMsgs att_msgs;
-                ItemAttProp prop_applied;
-                DmgType dmg_type;
-                DmgMethod dmg_method;
-                bool knocks_back;
-                bool att_corpse;
-                bool att_rigid;
-                SfxId hit_small_sfx;
-                SfxId hit_medium_sfx;
-                SfxId hit_hard_sfx;
-                SfxId miss_sfx;
-        } melee;
-
-        struct RangedData
-        {
-                RangedData();
-
-                ~RangedData();
-
-                bool is_ranged_wpn;
-                bool is_throwable_wpn;
-                bool is_machine_gun;
-                bool is_shotgun;
-                // NOTE: This should be set on ranged weapons AND magazines
-                int max_ammo;
-                // NOTE: "Pure" melee weapons should not set this value - they
-                // do throw damage based on their melee damage instead
-                Dice dmg;
-                int hit_chance_mod;
-                int throw_hit_chance_mod;
-                bool always_break_on_throw;
-                int effective_range;
-                int max_range;
-                bool knocks_back;
-                ItemId ammo_item_id;
-                DmgType dmg_type;
-                bool has_infinite_ammo;
-                char projectile_character;
-                TileId projectile_tile;
-                Color projectile_color;
-                bool projectile_leaves_trail;
-                ItemAttMsgs att_msgs;
-                std::string snd_msg;
-                SndVol snd_vol;
-                bool makes_ricochet_snd;
-                SfxId att_sfx;
-                SfxId reload_sfx;
-                ItemAttProp prop_applied;
-        } ranged;
-
-        struct ArmorData
-        {
-                ArmorData();
-
-                int armor_points;
-                double dmg_to_durability_factor;
-        } armor;
+        ArmorData armor;
 };
 
-class Item;
 
-namespace item_data
-{
+extern ItemData g_data[(size_t)Id::END];
 
-extern ItemData g_data[(size_t)ItemId::END];
 
 void init();
 void cleanup();
@@ -436,4 +440,4 @@ void load();
 
 } // item_data
 
-#endif
+#endif // ITEM_DATA_HPP

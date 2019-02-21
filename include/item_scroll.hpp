@@ -9,13 +9,31 @@
 
 #include "item.hpp"
 
+
+namespace actor
+{
+
 class Actor;
+
+} // actor
+
+
 class Spell;
 
-class Scroll: public Item
+
+namespace scroll
+{
+
+void init();
+
+void save();
+void load();
+
+
+class Scroll: public item::Item
 {
 public:
-        Scroll(ItemData* const item_data);
+        Scroll(item::ItemData* const item_data);
 
         ~Scroll() {}
 
@@ -30,7 +48,7 @@ public:
 
         std::string name_inf_str() const override;
 
-        ConsumeItem activate(Actor* const actor) override;
+        ConsumeItem activate(actor::Actor* const actor) override;
 
         const std::string real_name() const;
 
@@ -49,14 +67,6 @@ private:
         int m_domain_feeling_turn_countdown;
 };
 
-namespace scroll_handling
-{
-
-void init();
-
-void save();
-void load();
-
-} // scroll_handling
+} // scroll
 
 #endif // ITEM_SCROLL_HPP

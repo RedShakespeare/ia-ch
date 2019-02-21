@@ -18,6 +18,7 @@
 #include "explosion.hpp"
 #include "feature_mob.hpp"
 #include "feature_rigid.hpp"
+#include "game_time.hpp"
 #include "init.hpp"
 #include "inventory.hpp"
 #include "io.hpp"
@@ -118,9 +119,9 @@ void player_throw_lit_explosive(const P& aim_cell)
 }
 
 void throw_item(
-        Actor& actor_throwing,
+        actor::Actor& actor_throwing,
         const P& tgt_pos,
-        Item& item_thrown)
+        item::Item& item_thrown)
 {
         TRACE_FUNC_BEGIN;
 
@@ -142,7 +143,7 @@ void throw_item(
 
         TRACE << "Throwing path size: " << path.size() << std::endl;
 
-        const ItemData& item_thrown_data = item_thrown.data();
+        const auto& item_thrown_data = item_thrown.data();
 
         const std::string item_name_a = item_thrown.name(ItemRefType::a);
 
@@ -202,11 +203,11 @@ void throw_item(
 
                 drop_pos = pos;
 
-                Actor* const actor_here = map::actor_at_pos(pos);
+                auto* const actor_here = map::actor_at_pos(pos);
 
                 if (actor_here &&
                     ((pos == tgt_pos) ||
-                     (actor_here->m_data->actor_size >= ActorSize::humanoid)))
+                     (actor_here->m_data->actor_size >= actor::Size::humanoid)))
                 {
                         att_data = ThrowAttData(&actor_throwing,
                                                 tgt_pos,
@@ -234,7 +235,7 @@ void throw_item(
                                                 hit_color);
                                 }
 
-                                static_cast<Mon*>(actor_here)
+                                static_cast<actor::Mon*>(actor_here)
                                         ->set_player_aware_of_me();
 
                                 Snd snd("A creature is hit.",
@@ -283,8 +284,8 @@ void throw_item(
                                 // it should not know about potions!
                                 if (is_potion)
                                 {
-                                        Potion* const potion =
-                                                static_cast<Potion*>(
+                                        auto* const potion =
+                                                static_cast<potion::Potion*>(
                                                         &item_thrown);
 
                                         potion->on_collide(pos, actor_here);
@@ -345,7 +346,7 @@ void throw_item(
                 }
 
                 if ((pos == tgt_pos) &&
-                    (att_data.aim_lvl == ActorSize::floor))
+                    (att_data.aim_lvl == actor::Size::floor))
                 {
                         break;
                 }
@@ -358,7 +359,7 @@ void throw_item(
 
                 io::draw_blast_at_seen_cells({pos}, hit_color);
 
-                Potion* const potion = static_cast<Potion*>(&item_thrown);
+                auto* const potion = static_cast<potion::Potion*>(&item_thrown);
 
                 potion->on_collide(pos, nullptr);
 

@@ -9,30 +9,46 @@
 
 #include "global.hpp"
 
-class Actor;
+
+namespace item
+{
+
 class Wpn;
+
+} // item
+
+
+namespace actor
+{
+
+class Actor;
+
+} // actor
+
+
 struct P;
+
 
 namespace attack
 {
 
 // NOTE: Attacker origin is needed since attacker may be a null pointer.
 void melee(
-        Actor* const attacker,
+        actor::Actor* const attacker,
         const P& attacker_origin,
-        Actor& defender,
-        Wpn& wpn);
+        actor::Actor& defender,
+        item::Wpn& wpn);
 
 DidAction ranged(
-        Actor* const attacker,
+        actor::Actor* const attacker,
         const P& origin,
         const P& aim_pos,
-        Wpn& wpn);
+        item::Wpn& wpn);
 
 void ranged_hit_chance(
-        const Actor& attacker,
-        const Actor& defender,
-        const Wpn& wpn);
+        const actor::Actor& attacker,
+        const actor::Actor& defender,
+        const item::Wpn& wpn);
 
 } // attack
 

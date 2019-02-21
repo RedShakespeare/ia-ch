@@ -152,10 +152,11 @@ Door::~Door()
         delete m_mimic_feature;
 }
 
-void Door::on_hit(const int dmg,
-                  const DmgType dmg_type,
-                  const DmgMethod dmg_method,
-                  Actor* const actor)
+void Door::on_hit(
+        const int dmg,
+        const DmgType dmg_type,
+        const DmgMethod dmg_method,
+        actor::Actor* const actor)
 {
         if (dmg_method == DmgMethod::forced)
         {
@@ -451,7 +452,7 @@ bool Door::is_walkable() const
         return m_is_open;
 }
 
-bool Door::can_move(const Actor& actor) const
+bool Door::can_move(const actor::Actor& actor) const
 {
         return
                 m_is_open ||
@@ -669,7 +670,7 @@ Matl Door::matl() const
         return Matl::wood;
 }
 
-void Door::bump(Actor& actor_bumping)
+void Door::bump(actor::Actor& actor_bumping)
 {
         if (!actor_bumping.is_player())
         {
@@ -735,7 +736,7 @@ void Door::set_secret()
         m_is_secret = true;
 }
 
-bool Door::try_jam(Actor* actor_trying)
+bool Door::try_jam(actor::Actor* actor_trying)
 {
         const bool is_player = actor_trying == map::g_player;
 
@@ -768,7 +769,7 @@ bool Door::try_jam(Actor* actor_trying)
         return true;
 }
 
-void Door::try_close(Actor* actor_trying)
+void Door::try_close(actor::Actor* actor_trying)
 {
         const bool is_player = actor_trying == map::g_player;
 
@@ -821,7 +822,7 @@ void Door::try_close(Actor* actor_trying)
         {
                 bool is_blocked_by_actor = false;
 
-                for (Actor* actor : game_time::g_actors)
+                for (auto* actor : game_time::g_actors)
                 {
                         if ((actor->m_state != ActorState::destroyed) &&
                             (actor->m_pos == m_pos))
@@ -1003,7 +1004,7 @@ void Door::try_close(Actor* actor_trying)
 
 } // try_close
 
-void Door::try_open(Actor* actor_trying)
+void Door::try_open(actor::Actor* actor_trying)
 {
         TRACE_FUNC_BEGIN;
 
@@ -1256,7 +1257,7 @@ void Door::on_lever_pulled(Lever* const lever)
         }
 }
 
-DidOpen Door::open(Actor* const actor_opening)
+DidOpen Door::open(actor::Actor* const actor_opening)
 {
         (void)actor_opening;
 
@@ -1283,7 +1284,7 @@ DidOpen Door::open(Actor* const actor_opening)
         return DidOpen::yes;
 }
 
-DidClose Door::close(Actor* const actor_closing)
+DidClose Door::close(actor::Actor* const actor_closing)
 {
         (void)actor_closing;
 

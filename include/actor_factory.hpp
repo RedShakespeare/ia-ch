@@ -9,52 +9,51 @@
 
 #include <vector>
 
-#include "actor_data.hpp"
+
+struct P;
+struct R;
+
+
+namespace actor
+{
 
 class Actor;
 class Mon;
 
-enum class MakeMonAware {no ,yes};
+enum class Id;
 
-class MonSpawnResult
+
+enum class MakeMonAware
+{
+        no,
+        yes
+};
+
+struct MonSpawnResult
 {
 public:
         MonSpawnResult() :
-                m_monsters() {}
+                monsters() {}
 
         MonSpawnResult& set_leader(Actor* const leader);
 
         MonSpawnResult& make_aware_of_player();
 
-        // Generic for each function to perform any operation on the actors
-        template<typename Func>
-        MonSpawnResult& for_each(Func const& lambda)
-        {
-                std::for_each(
-                        std::begin(m_monsters),
-                        std::end(m_monsters),
-                        lambda);
-
-                return *this;
-        }
-
-        std::vector<Mon*> m_monsters;
+        std::vector<Mon*> monsters;
 };
 
-namespace actor_factory
-{
 
 void delete_all_mon();
 
-Actor* make(const ActorId id, const P& pos);
+Actor* make(const Id id, const P& pos);
 
 MonSpawnResult spawn(
         const P& origin,
-        const std::vector<ActorId>& monster_ids,
+        const std::vector<Id>& monster_ids,
         const R& area_allowed);
 
 MonSpawnResult spawn_random_position(
-        const std::vector<ActorId>& monster_ids,
+        const std::vector<Id>& monster_ids,
         const R& area_allowed);
 
 } // actor_factory

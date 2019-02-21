@@ -7,8 +7,15 @@
 #ifndef PICKUP_HPP
 #define PICKUP_HPP
 
+
+namespace item
+{
+
 class Ammo;
 class Wpn;
+
+} // item
+
 
 namespace item_pickup
 {
@@ -20,7 +27,7 @@ void try_pick();
 
 void try_unload_or_pick();
 
-Ammo* unload_ranged_wpn(Wpn& wpn);
+item::Ammo* unload_ranged_wpn(item::Wpn& wpn);
 
 } // item_pickup
 

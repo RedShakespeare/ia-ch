@@ -9,10 +9,12 @@
 
 #include "direction.hpp"
 
-class Actor;
 
 namespace actor
 {
+
+class Actor;
+
 
 void move(Actor& actor, const Dir dir);
 

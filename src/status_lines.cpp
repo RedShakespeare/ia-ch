@@ -240,7 +240,7 @@ static void draw_wielded_wpn(int& y)
                 label_color(),
                 s_draw_text_bg);
 
-        const Item* wpn = map::g_player->m_inv.item_in_slot(SlotId::wpn);
+        const auto* wpn = map::g_player->m_inv.item_in_slot(SlotId::wpn);
 
         if (!wpn)
         {
@@ -286,7 +286,7 @@ static void draw_alt_wpn(int& y)
                 label_color(),
                 s_draw_text_bg);
 
-        const Item* wpn = map::g_player->m_inv.item_in_slot(SlotId::wpn_alt);
+        const auto* wpn = map::g_player->m_inv.item_in_slot(SlotId::wpn_alt);
 
         if (!wpn)
         {
@@ -332,8 +332,8 @@ static void draw_lantern(int& y)
                 label_color(),
                 s_draw_text_bg);
 
-        const Item* const item =
-                map::g_player->m_inv.item_in_backpack(ItemId::lantern);
+        const auto* const item =
+                map::g_player->m_inv.item_in_backpack(item::Id::lantern);
 
         Color color = colors::white();
 
@@ -341,8 +341,8 @@ static void draw_lantern(int& y)
 
         if (item)
         {
-                const DeviceLantern* const lantern =
-                        static_cast<const DeviceLantern*>(item);
+                const auto* const lantern =
+                        static_cast<const device::Lantern*>(item);
 
                 if (lantern->is_activated)
                 {
@@ -374,13 +374,13 @@ static void draw_med_suppl(int& y)
 
         std::string suppl_str = "-";
 
-        const Item* const item =
-                map::g_player->m_inv.item_in_backpack(ItemId::medical_bag);
+        const auto* const item =
+                map::g_player->m_inv.item_in_backpack(item::Id::medical_bag);
 
         if (item)
         {
-                const MedicalBag* const medical_bag =
-                        static_cast<const MedicalBag*>(item);
+                const auto* const medical_bag =
+                        static_cast<const item::MedicalBag*>(item);
 
                 suppl_str = std::to_string(medical_bag->m_nr_supplies);
         }

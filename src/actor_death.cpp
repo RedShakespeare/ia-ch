@@ -11,7 +11,10 @@
 #include "actor_player.hpp"
 #include "drop.hpp"
 #include "feature_rigid.hpp"
+#include "game.hpp"
+#include "game_time.hpp"
 #include "io.hpp"
+#include "item_data.hpp"
 #include "map.hpp"
 #include "map_travel.hpp"
 #include "msg_log.hpp"
@@ -20,18 +23,20 @@
 // -----------------------------------------------------------------------------
 // Private
 // -----------------------------------------------------------------------------
-static bool try_use_talisman_of_resurrection(Actor& actor)
+static bool try_use_talisman_of_resurrection(actor::Actor& actor)
 {
         // Player has the Talisman of Resurrection, and died of physical damage?
         if (!actor.is_player() ||
-            !actor.m_inv.has_item_in_backpack(ItemId::resurrect_talisman) ||
+            !actor.m_inv.has_item_in_backpack(
+                    item::Id::resurrect_talisman) ||
             (map::g_player->ins() >= 100) ||
             (actor.m_sp <= 0))
         {
                 return false;
         }
 
-        actor.m_inv.decr_item_type_in_backpack(ItemId::resurrect_talisman);
+        actor.m_inv.decr_item_type_in_backpack(
+                item::Id::resurrect_talisman);
 
         msg_log::more_prompt();
 
@@ -75,7 +80,7 @@ static bool try_use_talisman_of_resurrection(Actor& actor)
         return true;
 }
 
-static void move_actor_to_pos_can_have_corpse(Actor& actor)
+static void move_actor_to_pos_can_have_corpse(actor::Actor& actor)
 {
         if (map::g_cells.at(actor.m_pos).rigid->can_have_corpse())
         {
@@ -95,7 +100,7 @@ static void move_actor_to_pos_can_have_corpse(Actor& actor)
         }
 }
 
-static void print_mon_death_msg(Actor& actor)
+static void print_mon_death_msg(actor::Actor& actor)
 {
         TRACE_VERBOSE << "Printing death message" << std::endl;
 
@@ -115,7 +120,7 @@ namespace actor
 
 // TODO: Split into smaller functions
 void kill(
-        Actor& actor,
+        actor::Actor& actor,
         const IsDestroyed is_destroyed,
         const AllowGore allow_gore,
         const AllowDropItems allow_drop_items)
@@ -212,7 +217,7 @@ void kill(
         TRACE_FUNC_END_VERBOSE;
 }
 
-void unset_actor_as_leader_for_all_mon(Actor& actor)
+void unset_actor_as_leader_for_all_mon(actor::Actor& actor)
 {
         for (Actor* other : game_time::g_actors)
         {

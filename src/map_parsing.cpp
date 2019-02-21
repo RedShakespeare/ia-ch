@@ -88,7 +88,7 @@ void MapParser::run(Array2<bool>& out,
 
         if (m_parse_actors == ParseActors::yes)
         {
-                for (Actor* actor : game_time::g_actors)
+                for (auto* actor : game_time::g_actors)
                 {
                         const P& p = actor->m_pos;
 
@@ -152,7 +152,7 @@ bool MapParser::cell(const P& pos) const
 
         if (m_parse_actors == ParseActors::yes)
         {
-                for (Actor* actor : game_time::g_actors)
+                for (auto* actor : game_time::g_actors)
                 {
                         const P& actor_pos = actor->m_pos;
 
@@ -177,7 +177,7 @@ bool MapParser::cell(const P& pos) const
 // -----------------------------------------------------------------------------
 // Map parsers
 // -----------------------------------------------------------------------------
-bool BlocksLos::parse(const Cell& c, const P& pos)  const
+bool BlocksLos::parse(const Cell& c, const P& pos) const
 {
         return
                 !map::is_pos_inside_outer_walls(pos) ||
@@ -201,7 +201,7 @@ bool BlocksWalking::parse(const Mob& f) const
         return !f.is_walkable();
 }
 
-bool BlocksWalking::parse(const Actor& a) const
+bool BlocksWalking::parse(const actor::Actor& a) const
 {
         return a.is_alive();
 }
@@ -218,36 +218,36 @@ bool BlocksActor::parse(const Mob& f) const
         return !f.can_move(m_actor);
 }
 
-bool BlocksActor::parse(const Actor& a) const
+bool BlocksActor::parse(const actor::Actor& a) const
 {
         return a.is_alive();
 }
 
-bool BlocksProjectiles::parse(const Cell& c, const P& pos)  const
+bool BlocksProjectiles::parse(const Cell& c, const P& pos) const
 {
         return
                 !map::is_pos_inside_outer_walls(pos) ||
                 !c.rigid->is_projectile_passable();
 }
 
-bool BlocksProjectiles::parse(const Mob& f)  const
+bool BlocksProjectiles::parse(const Mob& f) const
 {
         return !f.is_projectile_passable();
 }
 
-bool BlocksSound::parse(const Cell& c, const P& pos)  const
+bool BlocksSound::parse(const Cell& c, const P& pos) const
 {
         return
                 !map::is_pos_inside_outer_walls(pos) ||
                 !c.rigid->is_sound_passable();
 }
 
-bool BlocksSound::parse(const Mob& f)  const
+bool BlocksSound::parse(const Mob& f) const
 {
         return !f.is_sound_passable();
 }
 
-bool LivingActorsAdjToPos::parse(const Actor& a) const
+bool LivingActorsAdjToPos::parse(const actor::Actor& a) const
 {
         if (!a.is_alive())
         {
@@ -257,7 +257,7 @@ bool LivingActorsAdjToPos::parse(const Actor& a) const
         return is_pos_adj(m_pos, a.m_pos, true);
 }
 
-bool BlocksItems::parse(const Cell& c, const P& pos)  const
+bool BlocksItems::parse(const Cell& c, const P& pos) const
 {
         return
                 !map::is_pos_inside_outer_walls(pos) ||
@@ -269,7 +269,7 @@ bool BlocksItems::parse(const Mob& f) const
         return !f.can_have_item();
 }
 
-bool BlocksRigid::parse(const Cell& c, const P& pos)  const
+bool BlocksRigid::parse(const Cell& c, const P& pos) const
 {
         return
                 !map::is_pos_inside_outer_walls(pos) ||

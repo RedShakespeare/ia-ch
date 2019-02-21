@@ -23,7 +23,7 @@ void Monolith::on_hit(
         const int dmg,
         const DmgType dmg_type,
         const DmgMethod dmg_method,
-        Actor* const actor)
+        actor::Actor* const actor)
 {
         (void)dmg;
         (void)dmg_type;
@@ -49,7 +49,7 @@ Color Monolith::color_default() const
                 : colors::light_cyan();
 }
 
-void Monolith::bump(Actor& actor_bumping)
+void Monolith::bump(actor::Actor& actor_bumping)
 {
         if (!actor_bumping.is_player())
         {

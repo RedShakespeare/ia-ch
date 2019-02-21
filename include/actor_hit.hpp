@@ -9,7 +9,6 @@
 
 #include "global.hpp"
 
-class Actor;
 
 enum class ActorDied
 {
@@ -17,8 +16,12 @@ enum class ActorDied
         yes
 };
 
+
 namespace actor
 {
+
+class Actor;
+
 
 ActorDied hit(
         Actor& actor,

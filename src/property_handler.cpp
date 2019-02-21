@@ -20,18 +20,19 @@
 // -----------------------------------------------------------------------------
 // Property handler
 // -----------------------------------------------------------------------------
-PropHandler::PropHandler(Actor* owner) :
+PropHandler::PropHandler(actor::Actor* owner) :
         m_owner(owner)
 {
         // Reset the active props info
-        std::fill(std::begin(m_prop_count_cache),
-                  std::end(m_prop_count_cache),
-                  0);
+        std::fill(
+                std::begin(m_prop_count_cache),
+                std::end(m_prop_count_cache),
+                0);
 }
 
 void PropHandler::apply_natural_props_from_actor_data()
 {
-        const ActorData& d = *m_owner->m_data;
+        const auto& d = *m_owner->m_data;
 
         // Add natural properties
         for (size_t i = 0; i < (size_t)PropId::END; ++i)
@@ -334,16 +335,17 @@ bool PropHandler::try_apply_more_on_existing_intr_prop(const Prop& new_prop)
 }
 
 void PropHandler::add_prop_from_equipped_item(
-        const Item* const item,
+        const item::Item* const item,
         Prop* const prop,
         const Verbosity verbosity)
 {
         prop->m_item_applying = item;
 
-        apply(prop,
-              PropSrc::inv,
-              true,
-              verbosity);
+        apply(
+                prop,
+                PropSrc::inv,
+                true,
+                verbosity);
 }
 
 Prop* PropHandler::prop(const PropId id) const
@@ -362,7 +364,7 @@ Prop* PropHandler::prop(const PropId id) const
         return nullptr;
 }
 
-void PropHandler::remove_props_for_item(const Item* const item)
+void PropHandler::remove_props_for_item(const item::Item* const item)
 {
         for (auto it = std::begin(m_props); it != std::end(m_props); )
         {
@@ -540,7 +542,7 @@ void PropHandler::on_turn_begin()
                 if (!m_owner->is_player() &&
                     prop->is_making_mon_aware())
                 {
-                        auto* mon = static_cast<Mon*>(m_owner);
+                        auto* mon = static_cast<actor::Mon*>(m_owner);
 
                         mon->become_aware_player(false);
                 }
@@ -856,7 +858,7 @@ bool PropHandler::is_resisting_dmg(const DmgType dmg_type,
                 else // Is monster
                 {
                         const auto* const mon =
-                                static_cast<const Mon*>(m_owner);
+                                static_cast<const actor::Mon*>(m_owner);
 
                         if (mon->m_player_aware_of_me_counter > 0)
                         {

@@ -13,6 +13,18 @@
 #include "property_data.hpp"
 #include "global.hpp"
 
+
+namespace actor
+{
+
+class Actor;
+
+} // actor
+
+
+class Feature;
+
+
 enum class FeatureId
 {
         floor,
@@ -68,7 +80,6 @@ enum class FeaturePlacement
         either
 };
 
-class Actor;
 
 class MoveRules
 {
@@ -102,14 +113,12 @@ public:
                 return m_is_walkable;
         }
 
-        bool can_move(const Actor& actor) const;
+        bool can_move(const actor::Actor& actor) const;
 
 private:
         bool m_is_walkable;
         std::vector<PropId> m_props_allow_move;
 };
-
-class Feature;
 
 struct FeatureData
 {

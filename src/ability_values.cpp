@@ -19,7 +19,7 @@
 int AbilityValues::val(
         const AbilityId id,
         const bool is_affected_by_props,
-        const Actor& actor) const
+        const actor::Actor& actor) const
 {
         int ret = m_ability_list[(size_t)id];
 

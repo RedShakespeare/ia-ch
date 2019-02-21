@@ -47,7 +47,7 @@ public:
         void on_hit(const int dmg,
                     const DmgType dmg_type,
                     const DmgMethod dmg_method,
-                    Actor* const actor) override;
+                    actor::Actor* const actor) override;
 
         void on_lever_pulled(Lever* const lever) override;
 
@@ -87,9 +87,9 @@ public:
 protected:
         // void emit_trigger_snd() const;
 
-        std::vector<Actor*> living_actors_reached() const;
+        std::vector<actor::Actor*> living_actors_reached() const;
 
-        Actor* rnd_reached_living_actor() const;
+        actor::Actor* rnd_reached_living_actor() const;
 
         P m_pos;
 

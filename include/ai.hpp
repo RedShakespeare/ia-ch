@@ -12,8 +12,17 @@
 #include "array2.hpp"
 #include "global.hpp"
 
-struct P;
+
+namespace actor
+{
+
 class Mon;
+
+} // actor
+
+
+struct P;
+
 
 namespace ai
 {
@@ -24,21 +33,21 @@ namespace ai
 namespace action
 {
 
-bool try_cast_random_spell(Mon& mon);
+bool try_cast_random_spell(actor::Mon& mon);
 
-bool handle_closed_blocking_door(Mon& mon, std::vector<P> path);
+bool handle_closed_blocking_door(actor::Mon& mon, std::vector<P> path);
 
-bool handle_inventory(Mon& mon);
+bool handle_inventory(actor::Mon& mon);
 
-bool make_room_for_friend(Mon& mon);
+bool make_room_for_friend(actor::Mon& mon);
 
-bool move_to_random_adj_cell(Mon& mon);
+bool move_to_random_adj_cell(actor::Mon& mon);
 
-bool move_to_target_simple(Mon& mon);
+bool move_to_target_simple(actor::Mon& mon);
 
-bool step_path(Mon& mon, std::vector<P>& path);
+bool step_path(actor::Mon& mon, std::vector<P>& path);
 
-bool step_to_lair_if_los(Mon& mon, const P& lair_p);
+bool step_to_lair_if_los(actor::Mon& mon, const P& lair_p);
 
 } // action
 
@@ -48,15 +57,15 @@ bool step_to_lair_if_los(Mon& mon, const P& lair_p);
 namespace info
 {
 
-bool look(Mon& mon);
+bool look(actor::Mon& mon);
 
-std::vector<P> find_path_to_lair_if_no_los(Mon& mon, const P& lair_p);
+std::vector<P> find_path_to_lair_if_no_los(actor::Mon& mon, const P& lair_p);
 
-std::vector<P> find_path_to_leader(Mon& mon);
+std::vector<P> find_path_to_leader(actor::Mon& mon);
 
-std::vector<P> find_path_to_target(Mon& mon);
+std::vector<P> find_path_to_target(actor::Mon& mon);
 
-void set_special_blocked_cells(Mon& mon, Array2<bool>& a);
+void set_special_blocked_cells(actor::Mon& mon, Array2<bool>& a);
 
 } // info
 

@@ -11,7 +11,14 @@
 
 #include "item_data.hpp"
 
+
+namespace actor
+{
+
 class Actor;
+
+} // actor
+
 
 enum class SndVol
 {
@@ -30,7 +37,7 @@ public:
 
         virtual ~SndHeardEffect() {}
 
-        virtual void run(Actor& actor) const = 0;
+        virtual void run(actor::Actor& actor) const = 0;
 };
 
 // -----------------------------------------------------------------------------
@@ -43,7 +50,7 @@ public:
             const SfxId sfx,
             const IgnoreMsgIfOriginSeen ignore_msg_if_origin_seen,
             const P& origin,
-            Actor* const actor_who_made_sound,
+            actor::Actor* const actor_who_made_sound,
             const SndVol vol,
             const AlertsMon alerting_mon,
             const MorePromptOnMsg add_more_prompt_on_msg = MorePromptOnMsg::no,
@@ -101,7 +108,7 @@ public:
                 return m_origin;
         }
 
-        Actor* actor_who_made_sound() const
+        actor::Actor* actor_who_made_sound() const
         {
                 return m_actor_who_made_sound;
         }
@@ -116,14 +123,14 @@ public:
                 m_msg += str;
         }
 
-        void on_heard(Actor& actor) const;
+        void on_heard(actor::Actor& actor) const;
 
 private:
         std::string m_msg;
         SfxId m_sfx;
         IgnoreMsgIfOriginSeen m_is_msg_ignored_if_origin_seen;
         P m_origin;
-        Actor* m_actor_who_made_sound;
+        actor::Actor* m_actor_who_made_sound;
         SndVol m_vol;
         AlertsMon m_is_alerting_mon;
         MorePromptOnMsg m_add_more_prompt_on_msg;

@@ -14,6 +14,7 @@
 #include "actor_player.hpp"
 #include "feature_door.hpp"
 #include "feature_rigid.hpp"
+#include "game_time.hpp"
 #include "init.hpp"
 #include "io.hpp"
 #include "map.hpp"
@@ -23,30 +24,30 @@
 // -----------------------------------------------------------------------------
 // Private
 // -----------------------------------------------------------------------------
-static Actor* make_actor_from_id(const ActorId id)
+static actor::Actor* make_actor_from_id(const actor::Id id)
 {
         switch (id)
         {
-        case ActorId::player:
-                return new Player();
+        case actor::Id::player:
+                return new actor::Player();
 
-        case ActorId::khephren:
-                return new Khephren();
+        case actor::Id::khephren:
+                return new actor::Khephren();
 
-        case ActorId::ape:
-                return new Ape();
+        case actor::Id::ape:
+                return new actor::Ape();
 
-        case ActorId::strange_color:
-                return new StrangeColor();
+        case actor::Id::strange_color:
+                return new actor::StrangeColor();
 
-        case ActorId::spectral_wpn:
-                return new SpectralWpn();
+        case actor::Id::spectral_wpn:
+                return new actor::SpectralWpn();
 
         default:
                 break;
         }
 
-        return new Mon();
+        return new actor::Mon();
 }
 
 static std::vector<P> free_spawn_positions(const R& area)
@@ -63,13 +64,13 @@ static std::vector<P> free_spawn_positions(const R& area)
         return free_positions;
 }
 
-static Mon* spawn_at(const P& pos, const ActorId id)
+static actor::Mon* spawn_at(const P& pos, const actor::Id id)
 {
         ASSERT(map::is_pos_inside_outer_walls(pos));
 
-        Actor* const actor = actor_factory::make(id, pos);
+        auto* const actor = actor::make(id, pos);
 
-        Mon* const mon = static_cast<Mon*>(actor);
+        auto* const mon = static_cast<actor::Mon*>(actor);
 
         if (map::g_player->can_see_actor(*mon))
         {
@@ -79,10 +80,11 @@ static Mon* spawn_at(const P& pos, const ActorId id)
         return mon;
 }
 
-static MonSpawnResult spawn_at_positions(const std::vector<P>& positions,
-                                         const std::vector<ActorId>& ids)
+static actor::MonSpawnResult spawn_at_positions(
+        const std::vector<P>& positions,
+        const std::vector<actor::Id>& ids)
 {
-        MonSpawnResult result;
+        actor::MonSpawnResult result;
 
         const size_t nr_to_spawn = std::min(positions.size(), ids.size());
 
@@ -90,23 +92,25 @@ static MonSpawnResult spawn_at_positions(const std::vector<P>& positions,
         {
                 const P& pos = positions[i];
 
-                const ActorId id = ids[i];
+                const actor::Id id = ids[i];
 
-                result.m_monsters.emplace_back(
-                        spawn_at(pos, id));
+                result.monsters.emplace_back(spawn_at(pos, id));
         }
 
         return result;
 }
 
 // -----------------------------------------------------------------------------
-// MonSpawnResult
+// actor
 // -----------------------------------------------------------------------------
+namespace actor
+{
+
 MonSpawnResult& MonSpawnResult::set_leader(Actor* const leader)
 {
         std::for_each(
-                std::begin(m_monsters),
-                std::end(m_monsters),
+                std::begin(monsters),
+                std::end(monsters),
                 [leader](auto mon)
                 {
                         mon->m_leader = leader;
@@ -118,8 +122,8 @@ MonSpawnResult& MonSpawnResult::set_leader(Actor* const leader)
 MonSpawnResult& MonSpawnResult::make_aware_of_player()
 {
         std::for_each(
-                std::begin(m_monsters),
-                std::end(m_monsters),
+                std::begin(monsters),
+                std::end(monsters),
                 [](auto mon)
                 {
                         mon->m_aware_of_player_counter =
@@ -129,17 +133,12 @@ MonSpawnResult& MonSpawnResult::make_aware_of_player()
         return *this;
 }
 
-// -----------------------------------------------------------------------------
-// actor_factory
-// -----------------------------------------------------------------------------
-namespace actor_factory
-{
 
-Actor* make(const ActorId id, const P& pos)
+Actor* make(const Id id, const P& pos)
 {
         Actor* const actor = make_actor_from_id(id);
 
-        actor::init_actor(*actor, pos, actor_data::g_data[(size_t)id]);
+        init_actor(*actor, pos, g_data[(size_t)id]);
 
         if (actor->m_data->nr_left_allowed_to_spawn > 0)
         {
@@ -191,9 +190,10 @@ void delete_all_mon()
         }
 }
 
-MonSpawnResult spawn(const P& origin,
-                     const std::vector<ActorId>& monster_ids,
-                     const R& area_allowed)
+MonSpawnResult spawn(
+        const P& origin,
+        const std::vector<Id>& monster_ids,
+        const R& area_allowed)
 {
         TRACE_FUNC_BEGIN;
 
@@ -215,8 +215,9 @@ MonSpawnResult spawn(const P& origin,
         return result;
 }
 
-MonSpawnResult spawn_random_position(const std::vector<ActorId>& monster_ids,
-                                     const R& area_allowed)
+MonSpawnResult spawn_random_position(
+        const std::vector<Id>& monster_ids,
+        const R& area_allowed)
 {
         TRACE_FUNC_BEGIN;
 
@@ -236,4 +237,4 @@ MonSpawnResult spawn_random_position(const std::vector<ActorId>& monster_ids,
         return result;
 }
 
-} // actor_factory
+} // actor

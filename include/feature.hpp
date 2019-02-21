@@ -15,7 +15,14 @@
 #include "global.hpp"
 #include "pos.hpp"
 
+
+namespace actor
+{
+
 class Actor;
+
+} // actor
+
 
 template<typename T>
 class Array2;
@@ -39,7 +46,7 @@ public:
                 const int dmg,
                 const DmgType dmg_type,
                 const DmgMethod dmg_method,
-                Actor* const actor)
+                actor::Actor* const actor)
         {
                 (void)dmg;
                 (void)dmg_type;
@@ -49,18 +56,18 @@ public:
 
         virtual void reveal(const Verbosity verbosity);
 
-        virtual AllowAction pre_bump(Actor& actor_bumping)
+        virtual AllowAction pre_bump(actor::Actor& actor_bumping)
         {
                 (void)actor_bumping;
 
                 return AllowAction::yes;
         }
 
-        virtual void bump(Actor& actor_bumping);
-        virtual void on_leave(Actor& actor_leaving);
+        virtual void bump(actor::Actor& actor_bumping);
+        virtual void on_leave(actor::Actor& actor_leaving);
         virtual void on_new_turn() {}
         virtual bool is_walkable() const;
-        virtual bool can_move(const Actor& actor) const;
+        virtual bool can_move(const actor::Actor& actor) const;
         virtual bool is_sound_passable() const;
         virtual bool is_los_passable() const;
         virtual bool is_projectile_passable() const;

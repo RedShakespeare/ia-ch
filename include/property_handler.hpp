@@ -16,10 +16,26 @@
 #include "property.hpp"
 #include "property_data.hpp"
 
-struct P;
-class Actor;
+
+namespace item
+{
+
 class Item;
 class Wpn;
+
+} // item
+
+
+namespace actor
+{
+
+class Actor;
+
+} // actor
+
+
+struct P;
+
 
 enum class PropEndAllowCallEndHook
 {
@@ -79,7 +95,7 @@ struct PropEndConfig
 class PropHandler
 {
 public:
-        PropHandler(Actor* owner);
+        PropHandler(actor::Actor* owner);
 
         ~PropHandler();
 
@@ -103,11 +119,11 @@ public:
 
         // The following two methods are supposed to be called by items
         void add_prop_from_equipped_item(
-                const Item* const item,
+                const item::Item* const item,
                 Prop* const prop,
                 const Verbosity verbosity);
 
-        void remove_props_for_item(const Item* const item);
+        void remove_props_for_item(const item::Item* const item);
 
         // Fast method for checking if a certain property id is applied
         bool has(const PropId id) const
@@ -210,7 +226,7 @@ private:
         // properties are currently active (see the "has()" method above).
         int m_prop_count_cache[(size_t)PropId::END];
 
-        Actor* m_owner;
+        actor::Actor* m_owner;
 };
 
 #endif // PROPERTY_HANDLER_HPP

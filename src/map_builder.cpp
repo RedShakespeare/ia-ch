@@ -62,7 +62,7 @@ void MapBuilder::build()
         // Spawn starting allies
         for (size_t i = 0; i < game_time::g_actors.size(); ++i)
         {
-                Actor* const actor = game_time::g_actors[i];
+                auto* const actor = game_time::g_actors[i];
 
                 const auto& allies = actor->m_data->starting_allies;
 
@@ -71,9 +71,16 @@ void MapBuilder::build()
                         continue;
                 }
 
-                actor_factory::spawn(actor->m_pos, allies, map::rect())
-                        .set_leader(actor)
-                        .for_each([](Mon* mon)
+                auto summoned = actor::spawn(
+                        actor->m_pos,
+                        allies,
+                        map::rect())
+                        .set_leader(actor);
+
+                std::for_each(
+                        std::begin(summoned.monsters),
+                        std::end(summoned.monsters),
+                        [](auto* mon)
                         {
                                 mon->m_is_player_feeling_msg_allowed = false;
                         });

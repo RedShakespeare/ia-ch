@@ -12,6 +12,7 @@
 #include "feature_door.hpp"
 #include "feature_mob.hpp"
 #include "feature_rigid.hpp"
+#include "game_time.hpp"
 #include "io.hpp"
 #include "map.hpp"
 #include "viewport.hpp"
@@ -157,7 +158,7 @@ static void post_process_wall_tiles()
 
 static void set_dead_actors()
 {
-        for (Actor* actor : game_time::g_actors)
+        for (auto* actor : game_time::g_actors)
         {
                 const P& p(actor->m_pos);
 
@@ -182,7 +183,7 @@ static void set_items()
 {
         for (size_t i = 0; i < map::nr_cells(); ++i)
         {
-                const Item* const item = map::g_cells.at(i).item;
+                const auto* const item = map::g_cells.at(i).item;
 
                 if (!map::g_cells.at(i).is_seen_by_player || !item)
                 {
@@ -252,8 +253,9 @@ static void set_mobiles()
         }
 }
 
-static void set_living_seen_monster(const Mon& mon,
-                                    CellRenderData& render_data)
+static void set_living_seen_monster(
+        const actor::Mon& mon,
+        CellRenderData& render_data)
 {
         if (mon.tile() == TileId::END ||
             mon.character() == 0 ||
@@ -292,8 +294,9 @@ static void set_living_seen_monster(const Mon& mon,
         }
 }
 
-static void set_living_hidden_monster(const Mon& mon,
-                                      CellRenderData& render_data)
+static void set_living_hidden_monster(
+        const actor::Mon& mon,
+        CellRenderData& render_data)
 {
         if (mon.m_player_aware_of_me_counter <= 0)
         {
@@ -324,7 +327,7 @@ static void set_living_monsters()
 
                 auto& render_data = s_render_array.at(pos);
 
-                const auto* const mon = static_cast<const Mon*>(actor);
+                const auto* const mon = static_cast<const actor::Mon*>(actor);
 
                 if (map::g_player->can_see_actor(*actor))
                 {
@@ -405,7 +408,7 @@ static void draw_render_array()
         }
 }
 
-static int lifebar_length(const Actor& actor)
+static int lifebar_length(const actor::Actor& actor)
 {
         const int actor_hp = std::max(0, actor.m_hp);
 
@@ -421,7 +424,7 @@ static int lifebar_length(const Actor& actor)
         return -1;
 }
 
-static void draw_life_bar(const Actor& actor)
+static void draw_life_bar(const actor::Actor& actor)
 {
         const int length = lifebar_length(actor);
 
@@ -507,7 +510,7 @@ static void draw_player_character()
                 return;
         }
 
-        Item* item = map::g_player->m_inv.item_in_slot(SlotId::wpn);
+        auto* item = map::g_player->m_inv.item_in_slot(SlotId::wpn);
 
         const bool is_ghoul = player_bon::bg() == Bg::ghoul;
 

@@ -97,7 +97,7 @@ void run()
 
         if (input_dir != Dir::center)
         {
-                Actor* living_actor =
+                auto* living_actor =
                         map::actor_at_pos(att_pos, ActorState::alive);
 
                 if (living_actor)
@@ -138,11 +138,11 @@ void run()
 
         // Destroy corpse?
         TRACE << "Checking if player is destroying a corpse" << std::endl;
-        Actor* corpse = nullptr;
+        actor::Actor* corpse = nullptr;
 
         // Check all corpses here, stop at any corpse which is prioritized for
         // bashing (Zombies)
-        for (Actor* const actor : game_time::g_actors)
+        for (auto* const actor : game_time::g_actors)
         {
                 if ((actor->m_pos == att_pos) &&
                     (actor->m_state == ActorState::corpse))
@@ -157,9 +157,9 @@ void run()
         }
 
         const auto kick_wpn =
-                std::unique_ptr<Wpn>(
-                        static_cast<Wpn*>(
-                                item_factory::make(ItemId::player_kick)));
+                std::unique_ptr<item::Wpn>(
+                        static_cast<item::Wpn*>(
+                                item::make(item::Id::player_kick)));
 
         const auto* wpn = map::g_player->m_inv.item_in_slot(SlotId::wpn);
 
@@ -216,7 +216,7 @@ void run()
 
                 if (corpse->m_state == ActorState::destroyed)
                 {
-                        std::vector<Actor*> corpses_here;
+                        std::vector<actor::Actor*> corpses_here;
 
                         for (auto* const actor : game_time::g_actors)
                         {

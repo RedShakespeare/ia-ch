@@ -50,11 +50,11 @@ void MapBuilderDeepOneLair::handle_template_pos(const P& p, const char c)
                 }
                 else if (c == 'd')
                 {
-                        actor_factory::make(ActorId::deep_one, p);
+                        actor::make(actor::Id::deep_one, p);
                 }
                 else if (c == 'B')
                 {
-                        actor_factory::make(ActorId::niduza, p);
+                        actor::make(actor::Id::niduza, p);
                 }
                 else if (c == '%')
                 {
@@ -445,29 +445,28 @@ void MapBuilderEgypt::handle_template_pos(const P&p, const char c)
                         map::put(new Floor(p));
                 }
 
-                ActorId actor_id = ActorId::END;
+                auto actor_id = actor::Id::END;
 
                 switch (c)
                 {
                 case 'P':
-                        actor_id = ActorId::khephren;
+                        actor_id = actor::Id::khephren;
                         break;
 
                 case 'M':
-                        actor_id = ActorId::mummy;
+                        actor_id = actor::Id::mummy;
                         break;
 
                 case 'C':
-                        actor_id = ActorId::croc_head_mummy;
+                        actor_id = actor::Id::croc_head_mummy;
                         break;
                 }
 
-                if (actor_id != ActorId::END)
+                if (actor_id != actor::Id::END)
                 {
-                        Actor* const actor =
-                                actor_factory::make(actor_id, p);
+                        auto* const actor = actor::make(actor_id, p);
 
-                        static_cast<Mon*>(actor)->m_is_roaming_allowed =
+                        static_cast<actor::Mon*>(actor)->m_is_roaming_allowed =
                                 MonRoamingAllowed::no;
                 }
         }
@@ -560,17 +559,15 @@ void MapBuilderRatCave::handle_template_pos(const P& p, const char c)
                 }
                 else if (c == 'r')
                 {
-                        Actor* actor = nullptr;
+                        actor::Actor* actor = nullptr;
 
                         if (rnd::one_in(6))
                         {
-                                actor = actor_factory::make(
-                                        ActorId::rat_thing, p);
+                                actor = actor::make(actor::Id::rat_thing, p);
                         }
                         else
                         {
-                                actor = actor_factory::make(
-                                        ActorId::rat, p);
+                                actor = actor::make(actor::Id::rat, p);
                         }
 
                         auto prop = new PropFrenzied();
@@ -640,11 +637,11 @@ void MapBuilderRatCave::handle_template_pos(const P& p, const char c)
 void MapBuilderRatCave::on_template_built()
 {
         // Set all actors to non-roaming (they will be set to roaming later)
-        for (Actor* const actor : game_time::g_actors)
+        for (auto* const actor : game_time::g_actors)
         {
                 if (!actor->is_player())
                 {
-                        static_cast<Mon*>(actor)->m_is_roaming_allowed =
+                        static_cast<actor::Mon*>(actor)->m_is_roaming_allowed =
                                 MonRoamingAllowed::no;
                 }
         }
@@ -674,23 +671,19 @@ void MapBuilderBoss::handle_template_pos(const P& p, const char c)
                 }
                 else if (c == 'P')
                 {
-                        actor_factory::make(
-                                ActorId::the_high_priest, p);
+                        actor::make(actor::Id::the_high_priest, p);
                 }
                 else if (c == 'W')
                 {
-                        actor_factory::make(
-                                ActorId::high_priest_guard_war_vet, p);
+                        actor::make(actor::Id::high_priest_guard_war_vet, p);
                 }
                 else if (c == 'R')
                 {
-                        actor_factory::make(
-                                ActorId::high_priest_guard_rogue, p);
+                        actor::make(actor::Id::high_priest_guard_rogue, p);
                 }
                 else if (c == 'G')
                 {
-                        actor_factory::make(
-                                ActorId::high_priest_guard_ghoul, p);
+                        actor::make(actor::Id::high_priest_guard_ghoul, p);
                 }
         }
         break;
@@ -722,11 +715,11 @@ void MapBuilderBoss::handle_template_pos(const P& p, const char c)
 void MapBuilderBoss::on_template_built()
 {
         // Make the High Priest leader of all other monsters
-        Actor* high_priest = nullptr;
+        actor::Actor* high_priest = nullptr;
 
-        for (Actor* const actor : game_time::g_actors)
+        for (auto* const actor : game_time::g_actors)
         {
-                if (actor->id() == ActorId::the_high_priest)
+                if (actor->id() == actor::Id::the_high_priest)
                 {
                         high_priest = actor;
 
@@ -734,11 +727,11 @@ void MapBuilderBoss::on_template_built()
                 }
         }
 
-        for (Actor* const actor : game_time::g_actors)
+        for (auto* const actor : game_time::g_actors)
         {
                 if (!actor->is_player() && (actor != high_priest))
                 {
-                        static_cast<Mon*>(actor)->m_leader = high_priest;
+                        static_cast<actor::Mon*>(actor)->m_leader = high_priest;
                 }
         }
 }
@@ -769,7 +762,7 @@ void MapBuilderTrapez::handle_template_pos(const P& p, const char c)
                 }
                 else if (c == 'o')
                 {
-                        item_factory::make_item_on_floor(ItemId::trapez, p);
+                        item::make_item_on_floor(item::Id::trapez, p);
                 }
         }
         break;

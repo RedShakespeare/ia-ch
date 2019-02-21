@@ -21,8 +21,8 @@
 // Private
 // -----------------------------------------------------------------------------
 static bool is_defender_aware_of_attack(
-        const Actor* const attacker,
-        const Actor& defender)
+        const actor::Actor* const attacker,
+        const actor::Actor& defender)
 {
         bool is_aware = false;
 
@@ -31,7 +31,7 @@ static bool is_defender_aware_of_attack(
                 if (attacker)
                 {
                         const auto* const mon =
-                                static_cast<const Mon*>(attacker);
+                                static_cast<const actor::Mon*>(attacker);
 
                         is_aware = mon->m_player_aware_of_me_counter > 0;
                 }
@@ -42,7 +42,7 @@ static bool is_defender_aware_of_attack(
         }
         else // Defender is monster
         {
-                auto* const mon = static_cast<const Mon*>(&defender);
+                auto* const mon = static_cast<const actor::Mon*>(&defender);
 
                 is_aware = mon->m_aware_of_player_counter > 0;
         }
@@ -54,9 +54,9 @@ static bool is_defender_aware_of_attack(
 // Attack data
 // -----------------------------------------------------------------------------
 AttData::AttData(
-        Actor* const the_attacker,
-        Actor* const the_defender,
-        const Item& att_item) :
+        actor::Actor* const the_attacker,
+        actor::Actor* const the_defender,
+        const item::Item& att_item) :
         attacker(the_attacker),
         defender(the_defender),
         skill_mod(0),
@@ -71,9 +71,9 @@ AttData::AttData(
                 (att_item.data().type == ItemType::ranged_wpn_intr)) {}
 
 MeleeAttData::MeleeAttData(
-        Actor* const the_attacker,
-        Actor& the_defender,
-        const Wpn& wpn) :
+        actor::Actor* const the_attacker,
+        actor::Actor& the_defender,
+        const item::Wpn& wpn) :
         AttData(the_attacker, &the_defender, wpn),
         is_backstab(false),
         is_weak_attack(false)
@@ -102,7 +102,7 @@ MeleeAttData::MeleeAttData(
                 const auto* const item =
                         defender->m_inv.item_in_slot(SlotId::wpn);
 
-                if (item && (item->id() == ItemId::pitch_fork))
+                if (item && (item->id() == item::Id::pitch_fork))
                 {
                         dodging_mod -= 15;
                 }
@@ -261,7 +261,7 @@ MeleeAttData::MeleeAttData(
                 // +300% damage if attacking with a dagger
                 const auto id = wpn.data().id;
 
-                if ((id == ItemId::dagger) || (id == ItemId::spirit_dagger))
+                if ((id == item::Id::dagger) || (id == item::Id::spirit_dagger))
                 {
                         dmg_pct += 300;
                 }
@@ -273,26 +273,26 @@ MeleeAttData::MeleeAttData(
 }
 
 RangedAttData::RangedAttData(
-        Actor* const the_attacker,
+        actor::Actor* const the_attacker,
         const P& attacker_origin,
         const P& the_aim_pos,
         const P& current_pos,
-        const Wpn& wpn) :
+        const item::Wpn& wpn) :
         AttData(the_attacker, nullptr, wpn),
         aim_pos(the_aim_pos),
-        aim_lvl((ActorSize)0),
-        defender_size((ActorSize)0),
+        aim_lvl((actor::Size)0),
+        defender_size((actor::Size)0),
         dist_mod(0)
 {
         // Determine aim level
         // TODO: Quick hack, Incinerators always aim at the floor
-        if (wpn.id() == ItemId::incinerator)
+        if (wpn.id() == item::Id::incinerator)
         {
-                aim_lvl = ActorSize::floor;
+                aim_lvl = actor::Size::floor;
         }
         else // Not incinerator
         {
-                Actor* const actor_aimed_at = map::actor_at_pos(aim_pos);
+                auto* const actor_aimed_at = map::actor_at_pos(aim_pos);
 
                 if (actor_aimed_at)
                 {
@@ -306,8 +306,8 @@ RangedAttData::RangedAttData(
 
                         aim_lvl =
                                 is_cell_blocked
-                                ? ActorSize::humanoid
-                                : ActorSize::floor;
+                                ? actor::Size::humanoid
+                                : actor::Size::floor;
                 }
         }
 
@@ -374,7 +374,8 @@ RangedAttData::RangedAttData(
                         }
                         else // Attacker is monster
                         {
-                                Mon* const mon = static_cast<Mon*>(attacker);
+                                auto* const mon =
+                                        static_cast<actor::Mon*>(attacker);
 
                                 Array2<bool> hard_blocked_los(map::dims());
 
@@ -403,7 +404,7 @@ RangedAttData::RangedAttData(
                 // Player gets attack bonus for attacking unaware monster
                 if (attacker == map::g_player)
                 {
-                        auto* const mon = static_cast<Mon*>(defender);
+                        auto* const mon = static_cast<actor::Mon*>(defender);
 
                         if (mon->m_aware_of_player_counter <= 0)
                         {
@@ -476,16 +477,16 @@ RangedAttData::RangedAttData(
 }
 
 ThrowAttData::ThrowAttData(
-        Actor* const the_attacker,
+        actor::Actor* const the_attacker,
         const P& aim_pos,
         const P& current_pos,
-        const Item& item) :
+        const item::Item& item) :
         AttData(the_attacker, nullptr, item),
-        aim_lvl((ActorSize)0),
-        defender_size((ActorSize)0),
+        aim_lvl((actor::Size)0),
+        defender_size((actor::Size)0),
         dist_mod(0)
 {
-        Actor* const actor_aimed_at = map::actor_at_pos(aim_pos);
+        auto* const actor_aimed_at = map::actor_at_pos(aim_pos);
 
         // Determine aim level
         if (actor_aimed_at)
@@ -500,8 +501,8 @@ ThrowAttData::ThrowAttData(
 
                 aim_lvl =
                         is_cell_blocked
-                        ? ActorSize::humanoid
-                        : ActorSize::floor;
+                        ? actor::Size::humanoid
+                        : actor::Size::floor;
         }
 
         defender = map::actor_at_pos(current_pos);
@@ -575,7 +576,8 @@ ThrowAttData::ThrowAttData(
                 // Player gets attack bonus for attacking unaware monster
                 if (attacker == map::g_player)
                 {
-                        const auto* const mon = static_cast<Mon*>(defender);
+                        const auto* const mon =
+                                static_cast<actor::Mon*>(defender);
 
                         if (mon->m_aware_of_player_counter <= 0)
                         {

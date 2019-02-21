@@ -214,9 +214,9 @@ bool PropEntangled::try_player_end_with_machete()
                 return false;
         }
 
-        Item* item = m_owner->m_inv.item_in_slot(SlotId::wpn);
+        auto* item = m_owner->m_inv.item_in_slot(SlotId::wpn);
 
-        if (item && (item->id() == ItemId::machete))
+        if (item && (item->id() == item::Id::machete))
         {
                 msg_log::add("I cut myself free with my Machete.");
 
@@ -381,9 +381,9 @@ void PropZuulPossessPriest::on_placed()
         {
                 m_owner->m_state = ActorState::destroyed;
 
-                Actor* actor =
-                        actor_factory::make(
-                                ActorId::cultist_priest,
+                auto* actor =
+                        actor::make(
+                                actor::Id::cultist_priest,
                                 m_owner->m_pos);
 
                 auto* prop = new PropPossessedByZuul();
@@ -411,7 +411,7 @@ void PropPossessedByZuul::on_death()
                                 m_owner->name_the());
 
                 const std::string& name2 =
-                        actor_data::g_data[(size_t)ActorId::zuul].name_the;
+                        actor::g_data[(size_t)actor::Id::zuul].name_the;
 
                 msg_log::add(name1 + " was possessed by " + name2 + "!");
         }
@@ -425,9 +425,12 @@ void PropPossessedByZuul::on_death()
         map::make_blood(pos);
 
         // Zuul is now free, allow it to spawn infinitely
-        actor_data::g_data[(size_t)ActorId::zuul].nr_left_allowed_to_spawn = -1;
+        actor::g_data[(size_t)actor::Id::zuul].nr_left_allowed_to_spawn = -1;
 
-        actor_factory::spawn(pos, {ActorId::zuul}, map::rect())
+        actor::spawn(
+                pos,
+                {actor::Id::zuul},
+                map::rect())
                 .make_aware_of_player();
 }
 
@@ -491,7 +494,7 @@ void PropTerrified::on_applied()
 
         if (!m_owner->is_player())
         {
-                Mon* const mon = static_cast<Mon*>(m_owner);
+                auto* const mon = static_cast<actor::Mon*>(m_owner);
 
                 mon->m_last_dir_moved = Dir::center;
         }
@@ -1348,7 +1351,7 @@ PropActResult PropVortex::on_act()
                 --pull_cooldown;
         }
 
-        auto* const mon = static_cast<Mon*>(m_owner);
+        auto* const mon = static_cast<actor::Mon*>(m_owner);
 
         if ((mon->m_aware_of_player_counter <= 0) ||
             (pull_cooldown > 0))
@@ -1491,13 +1494,17 @@ void PropSplitsOnDeath::on_death()
                 return;
         }
 
-        auto* const leader = static_cast<Mon*>(m_owner)->m_leader;
+        auto* const leader = static_cast<actor::Mon*>(m_owner)->m_leader;
 
-        const auto summoned =
-                actor_factory::spawn(pos, {2, m_owner->id()}, map::rect())
+        const auto spawned =
+                actor::spawn(pos, {2, m_owner->id()}, map::rect())
                 .make_aware_of_player()
-                .set_leader(leader)
-                .for_each([this](Mon* const mon)
+                .set_leader(leader);
+
+        std::for_each(
+                std::begin(spawned.monsters),
+                std::end(spawned.monsters),
+                [this](auto* const mon)
                 {
                         auto prop_waiting = new PropWaiting();
 
@@ -1525,9 +1532,9 @@ void PropSplitsOnDeath::on_death()
                 });
 
         // If no leader yet, set the first actor as leader of the second
-        if (!leader && (summoned.m_monsters.size() == 2))
+        if (!leader && (spawned.monsters.size() == 2))
         {
-                summoned.m_monsters[1]->m_leader = summoned.m_monsters[0];
+                spawned.monsters[1]->m_leader = spawned.monsters[0];
         }
 }
 
@@ -1730,7 +1737,7 @@ PropActResult PropCorpseRises::on_act()
                                         ShockSrc::see_mon);
         }
 
-        static_cast<Mon*>(m_owner)->become_aware_player(false);
+        static_cast<actor::Mon*>(m_owner)->become_aware_player(false);
 
         game_time::tick();
 
@@ -1769,7 +1776,7 @@ void PropSpawnsZombiePartsOnDestroyed::on_destroyed()
 
         if (rnd::one_in(make_dust_one_in_n))
         {
-                item_factory::make_item_on_floor(ItemId::zombie_dust, pos);
+                item::make_item_on_floor(item::Id::zombie_dust, pos);
         }
 
         // Spawning zombie part monsters is only allowed if the monster is not
@@ -1784,7 +1791,7 @@ void PropSpawnsZombiePartsOnDestroyed::on_destroyed()
                 return;
         }
 
-        ActorId id_to_spawn = ActorId::END;
+        auto id_to_spawn = actor::Id::END;
 
         const std::vector<int> weights = {
                 25,     // Hand
@@ -1801,7 +1808,7 @@ void PropSpawnsZombiePartsOnDestroyed::on_destroyed()
         switch (mon_choice)
         {
         case 0:
-                id_to_spawn = ActorId::crawling_hand;
+                id_to_spawn = actor::Id::crawling_hand;
 
                 spawn_msg =
                         "The hand of " +
@@ -1810,7 +1817,7 @@ void PropSpawnsZombiePartsOnDestroyed::on_destroyed()
                 break;
 
         case 1:
-                id_to_spawn = ActorId::crawling_intestines;
+                id_to_spawn = actor::Id::crawling_intestines;
 
                 spawn_msg =
                         "The intestines of " +
@@ -1819,7 +1826,7 @@ void PropSpawnsZombiePartsOnDestroyed::on_destroyed()
                 break;
 
         case 2:
-                id_to_spawn = ActorId::floating_skull;
+                id_to_spawn = actor::Id::floating_skull;
 
                 spawn_msg =
                         "The head of " +
@@ -1839,11 +1846,18 @@ void PropSpawnsZombiePartsOnDestroyed::on_destroyed()
                                         ShockSrc::see_mon);
         }
 
-        ASSERT(id_to_spawn != ActorId::END);
+        ASSERT(id_to_spawn != actor::Id::END);
 
-        actor_factory::spawn(pos, {id_to_spawn}, map::rect())
-                .make_aware_of_player()
-                .for_each([](Mon* const mon)
+        const auto spawned = actor::spawn(
+                pos,
+                {id_to_spawn},
+                map::rect())
+                .make_aware_of_player();
+
+        std::for_each(
+                std::begin(spawned.monsters),
+                std::end(spawned.monsters),
+                [](auto* const mon)
                 {
                         auto* waiting = new PropWaiting();
 
@@ -1866,19 +1880,25 @@ void PropBreeds::on_std_turn()
                 return;
         }
 
-        auto* const mon = static_cast<Mon*>(m_owner);
+        auto* const mon = static_cast<actor::Mon*>(m_owner);
 
-        Actor* const leader_of_spawned_mon =
+        auto* const leader_of_spawned_mon =
                 mon->m_leader
                 ? mon->m_leader
                 : mon;
 
         const auto area_allowed = R(mon->m_pos - 1, mon->m_pos + 1);
 
-        auto summoned =
-                actor_factory::spawn_random_position({mon->id()}, area_allowed)
-                .set_leader(leader_of_spawned_mon)
-                .for_each([](Mon* const spawned_mon)
+        auto spawned =
+                actor::spawn_random_position(
+                        {mon->id()},
+                        area_allowed)
+                .set_leader(leader_of_spawned_mon);
+
+        std::for_each(
+                std::begin(spawned.monsters),
+                std::end(spawned.monsters),
+                [](auto* const spawned_mon)
                 {
                         auto prop_waiting = new PropWaiting();
 
@@ -1889,7 +1909,7 @@ void PropBreeds::on_std_turn()
 
         if (mon->m_aware_of_player_counter > 0)
         {
-                summoned.make_aware_of_player();
+                spawned.make_aware_of_player();
         }
 }
 
@@ -1925,7 +1945,7 @@ PropActResult PropSpeaksCurses::on_act()
                 return PropActResult();
         }
 
-        auto* const mon = static_cast<Mon*>(m_owner);
+        auto* const mon = static_cast<actor::Mon*>(m_owner);
 
         if (!mon->is_alive() ||
             (mon->m_aware_of_player_counter <= 0) ||
@@ -2081,7 +2101,7 @@ void PropAuraOfDecay::run_effect_on_env() const
         }
 }
 
-void PropAuraOfDecay::print_msg_actor_hit(const Actor& actor) const
+void PropAuraOfDecay::print_msg_actor_hit(const actor::Actor& actor) const
 {
         if (actor.is_player())
         {
@@ -2112,7 +2132,7 @@ PropActResult PropMajorClaphamSummon::on_act()
                 return PropActResult();
         }
 
-        auto* const mon = static_cast<Mon*>(m_owner);
+        auto* const mon = static_cast<actor::Mon*>(m_owner);
 
         if (!mon->is_alive() ||
             (mon->m_aware_of_player_counter <= 0))
@@ -2138,13 +2158,13 @@ PropActResult PropMajorClaphamSummon::on_act()
 
         msg_log::add("Major Clapham Lee calls forth his Tomb-Legions!");
 
-        std::vector<ActorId> ids_to_summon = {ActorId::dean_halsey};
+        std::vector<actor::Id> ids_to_summon = {actor::Id::dean_halsey};
 
         const int nr_of_extra_spawns = 4;
 
-        const std::vector<ActorId> possible_random_id_choices = {
-                ActorId::zombie,
-                ActorId::bloated_zombie
+        const std::vector<actor::Id> possible_random_id_choices = {
+                actor::Id::zombie,
+                actor::Id::bloated_zombie
         };
 
         const std::vector<int> weights = {
@@ -2160,10 +2180,14 @@ PropActResult PropMajorClaphamSummon::on_act()
         }
 
         auto spawned =
-                actor_factory::spawn(mon->m_pos, ids_to_summon, map::rect())
+                actor::spawn(mon->m_pos, ids_to_summon, map::rect())
                 .make_aware_of_player()
-                .set_leader(mon)
-                .for_each([](Mon* const spawned_mon)
+                .set_leader(mon);
+
+        std::for_each(
+                std::begin(spawned.monsters),
+                std::end(spawned.monsters),
+                [](auto* const spawned_mon)
                 {
                         auto prop_summoned = new PropSummoned();
 
@@ -2258,7 +2282,7 @@ PropEnded PropMagicSearching::on_tick()
 
         const int det_mon_multiplier = 20;
 
-        for (Actor* actor : game_time::g_actors)
+        for (auto* actor : game_time::g_actors)
         {
                 const P& p = actor->m_pos;
 
@@ -2269,7 +2293,7 @@ PropEnded PropMagicSearching::on_tick()
                         continue;
                 }
 
-                static_cast<Mon*>(actor)->set_player_aware_of_me(
+                static_cast<actor::Mon*>(actor)->set_player_aware_of_me(
                         det_mon_multiplier);
         }
 

@@ -32,7 +32,7 @@ Snd::Snd(
         const SfxId sfx,
         const IgnoreMsgIfOriginSeen ignore_msg_if_origin_seen,
         const P& origin,
-        Actor* const actor_who_made_sound,
+        actor::Actor* const actor_who_made_sound,
         const SndVol vol,
         const AlertsMon alerting_mon,
         const MorePromptOnMsg add_more_prompt_on_msg,
@@ -61,7 +61,7 @@ void Snd::run()
         snd_emit::run(*this);
 }
 
-void Snd::on_heard(Actor& actor) const
+void Snd::on_heard(actor::Actor& actor) const
 {
         if (m_snd_heard_effect)
         {
@@ -127,7 +127,7 @@ void run(Snd snd)
 
         flood.at(origin.x, origin.y) = 0;
 
-        for (Actor* actor : game_time::g_actors)
+        for (auto* actor : game_time::g_actors)
         {
                 const int flood_val_at_actor = flood.at(actor->m_pos);
 
@@ -178,7 +178,7 @@ void run(Snd snd)
                 }
                 else // Not player
                 {
-                        Mon* const mon = static_cast<Mon*>(actor);
+                        auto* const mon = static_cast<actor::Mon*>(actor);
 
                         mon->hear_sound(snd);
                 }

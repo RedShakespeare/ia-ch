@@ -326,7 +326,7 @@ void MarkerState::move(const Dir dir)
 
 bool MarkerState::try_go_to_tgt()
 {
-        const Actor* const tgt = map::g_player->m_tgt;
+        const auto* const tgt = map::g_player->m_tgt;
 
         if (!tgt)
         {
@@ -528,7 +528,7 @@ void Aiming::handle_input(const InputData& input)
                 {
                         msg_log::clear();
 
-                        Actor* const actor = map::actor_at_pos(m_pos);
+                        auto* const actor = map::actor_at_pos(m_pos);
 
                         if (actor && map::g_player->can_see_actor(*actor))
                         {
@@ -537,7 +537,7 @@ void Aiming::handle_input(const InputData& input)
 
                         const P pos = m_pos;
 
-                        Wpn* const wpn = &m_wpn;
+                        auto* const wpn = &m_wpn;
 
                         states::pop();
 
@@ -646,7 +646,7 @@ void Throwing::handle_input(const InputData& input)
                 {
                         msg_log::clear();
 
-                        Actor* const actor = map::actor_at_pos(m_pos);
+                        auto* const actor = map::actor_at_pos(m_pos);
 
                         if (actor && map::g_player->can_see_actor(*actor))
                         {
@@ -655,8 +655,7 @@ void Throwing::handle_input(const InputData& input)
 
                         const P pos = m_pos;
 
-                        Item* item_to_throw =
-                                item_factory::copy_item(*m_inv_item);
+                        auto* item_to_throw = item::copy_item(*m_inv_item);
 
                         item_to_throw->m_nr_items = 1;
 
@@ -708,11 +707,11 @@ int Throwing::red_from_king_dist() const
 // -----------------------------------------------------------------------------
 void ThrowingExplosive::on_draw()
 {
-        const ItemId id = m_explosive.id();
+        const auto id = m_explosive.id();
 
-        if (id != ItemId::dynamite &&
-            id != ItemId::molotov &&
-            id != ItemId::smoke_grenade)
+        if (id != item::Id::dynamite &&
+            id != item::Id::molotov &&
+            id != item::Id::smoke_grenade)
         {
                 return;
         }

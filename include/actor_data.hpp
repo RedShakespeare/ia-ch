@@ -22,7 +22,11 @@
 #include "room.hpp"
 #include "spells.hpp"
 
-enum class ActorId
+
+namespace actor
+{
+
+enum class Id
 {
         player,
         zombie,
@@ -152,7 +156,7 @@ struct MonGroupSpawnRule
 
 struct ActorItemSetData
 {
-        ItemSetId item_set_id {(ItemSetId)0};
+        item::ItemSetId item_set_id {(item::ItemSetId)0};
         int pct_chance_to_spawn {100};
         Range nr_spawned_range {1, 1};
 };
@@ -163,7 +167,7 @@ struct IntrAttData
 
         ~IntrAttData() {}
 
-        ItemId item_id {ItemId::END};
+        item::Id item_id {item::Id::END};
         int dmg {0};
         ItemAttProp prop_applied {};
 };
@@ -175,7 +179,7 @@ struct ActorSpellData
         int pct_chance_to_know {100};
 };
 
-enum class ActorSpeed
+enum class Speed
 {
         slow,
         normal,
@@ -183,23 +187,23 @@ enum class ActorSpeed
         very_fast,
 };
 
-enum class ActorSize
+enum class Size
 {
         floor,
         humanoid,
         giant
 };
 
-const std::unordered_map<std::string, ActorSize> g_str_to_actor_size_map = {
-        {"floor", ActorSize::floor},
-        {"humanoid", ActorSize::humanoid},
-        {"giant", ActorSize::giant}
+const std::unordered_map<std::string, Size> g_str_to_actor_size_map = {
+        {"floor", Size::floor},
+        {"humanoid", Size::humanoid},
+        {"giant", Size::giant}
 };
 
-const std::unordered_map<ActorSize, std::string> g_actor_size_to_str_map = {
-        {ActorSize::floor, "floor"},
-        {ActorSize::humanoid, "humanoid"},
-        {ActorSize::giant, "giant"}
+const std::unordered_map<Size, std::string> g_actor_size_to_str_map = {
+        {Size::floor, "floor"},
+        {Size::humanoid, "humanoid"},
+        {Size::giant, "giant"}
 };
 
 enum class AiId
@@ -246,7 +250,7 @@ struct ActorData
 
         void reset();
 
-        ActorId id;
+        Id id;
         std::string name_a;
         std::string name_the;
         std::string corpse_name_a;
@@ -260,7 +264,7 @@ struct ActorData
         std::vector<ActorItemSetData> item_sets;
         std::vector<std::shared_ptr<IntrAttData>> intr_attacks;
         std::vector<ActorSpellData> spells;
-        ActorSpeed speed;
+        Speed speed;
         AbilityValues ability_values;
         bool natural_props[(size_t)PropId::END];
         bool ai[(size_t)AiId::END];
@@ -268,7 +272,7 @@ struct ActorData
         int ranged_cooldown_turns;
         int spawn_min_dlvl, spawn_max_dlvl;
         int spawn_weight;
-        ActorSize actor_size;
+        Size actor_size;
         bool allow_generated_descr;
         int nr_kills;
         bool has_player_seen;
@@ -308,13 +312,12 @@ struct ActorData
         bool can_leave_corpse;
         bool prio_corpse_bash;
         std::vector<RoomType> native_rooms;
-        std::vector<ActorId> starting_allies;
+        std::vector<Id> starting_allies;
 };
 
-namespace actor_data
-{
 
-extern ActorData g_data[(size_t)ActorId::END];
+extern ActorData g_data[(size_t)Id::END];
+
 
 void init();
 

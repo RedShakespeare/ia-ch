@@ -14,8 +14,15 @@
 #include "item.hpp"
 #include "player_bon.hpp"
 
+
+namespace actor
+{
+
 class Actor;
 class Mon;
+
+} // actor
+
 
 enum class SpellId
 {
@@ -140,11 +147,11 @@ public:
 
         virtual ~Spell() {}
 
-        void cast(Actor* const caster,
+        void cast(actor::Actor* const caster,
                   const SpellSkill skill,
                   const SpellSrc spell_src) const;
 
-        virtual bool allow_mon_cast_now(Mon& mon) const
+        virtual bool allow_mon_cast_now(actor::Mon& mon) const
         {
                 (void)mon;
                 return false;
@@ -178,14 +185,14 @@ public:
 
         Range spi_cost(
                 const SpellSkill skill,
-                Actor* const caster = nullptr) const;
+                actor::Actor* const caster = nullptr) const;
 
         int shock_value() const;
 
         virtual SpellShock shock_type() const = 0;
 
         virtual void run_effect(
-            Actor* const caster,
+            actor::Actor* const caster,
             const SpellSkill skill) const = 0;
 
 protected:
@@ -196,7 +203,7 @@ protected:
 
         virtual bool is_noisy(const SpellSkill skill) const = 0;
 
-        void on_resist(Actor& target) const;
+        void on_resist(actor::Actor& target) const;
 };
 
 class SpellEnfeeble: public Spell
@@ -204,7 +211,7 @@ class SpellEnfeeble: public Spell
 public:
         SpellEnfeeble() : Spell() {}
 
-        bool allow_mon_cast_now(Mon& mon) const override;
+        bool allow_mon_cast_now(actor::Mon& mon) const override;
 
         int mon_cooldown() const override;
 
@@ -242,7 +249,7 @@ public:
                 const SpellSkill skill) const override;
 
         void run_effect(
-            Actor* const caster,
+            actor::Actor* const caster,
             const SpellSkill skill) const override;
 
 protected:
@@ -261,7 +268,7 @@ class SpellSlow: public Spell
 public:
         SpellSlow() : Spell() {}
 
-        bool allow_mon_cast_now(Mon& mon) const override;
+        bool allow_mon_cast_now(actor::Mon& mon) const override;
 
         int mon_cooldown() const override;
 
@@ -299,7 +306,7 @@ public:
                 const SpellSkill skill) const override;
 
         void run_effect(
-            Actor* const caster,
+            actor::Actor* const caster,
             const SpellSkill skill) const override;
 
 protected:
@@ -318,7 +325,7 @@ class SpellTerrify: public Spell
 public:
         SpellTerrify() : Spell() {}
 
-        bool allow_mon_cast_now(Mon& mon) const override;
+        bool allow_mon_cast_now(actor::Mon& mon) const override;
 
         int mon_cooldown() const override;
 
@@ -356,7 +363,7 @@ public:
                 const SpellSkill skill) const override;
 
         void run_effect(
-            Actor* const caster,
+            actor::Actor* const caster,
             const SpellSkill skill) const override;
 
 protected:
@@ -375,7 +382,7 @@ class SpellAuraOfDecay: public Spell
 public:
         SpellAuraOfDecay() : Spell() {}
 
-        bool allow_mon_cast_now(Mon& mon) const override;
+        bool allow_mon_cast_now(actor::Mon& mon) const override;
 
         int mon_cooldown() const override;
 
@@ -413,7 +420,7 @@ public:
                 const SpellSkill skill) const override;
 
         void run_effect(
-            Actor* const caster,
+            actor::Actor* const caster,
             const SpellSkill skill) const override;
 
 private:
@@ -434,9 +441,11 @@ public:
 
         virtual Range damage(
                 const SpellSkill skill,
-                const Actor& caster) const = 0;
+                const actor::Actor& caster) const = 0;
 
-        virtual void on_hit(Actor& actor_hit, const SpellSkill skill) const = 0;
+        virtual void on_hit(
+                actor::Actor& actor_hit,
+                const SpellSkill skill) const = 0;
 
         virtual std::string hit_msg_ending() const = 0;
 
@@ -463,9 +472,11 @@ public:
 
         Range damage(
                 const SpellSkill skill,
-                const Actor& caster) const override;
+                const actor::Actor& caster) const override;
 
-        void on_hit(Actor& actor_hit, const SpellSkill skill) const override
+        void on_hit(
+                actor::Actor& actor_hit,
+                const SpellSkill skill) const override
         {
                 (void)actor_hit;
                 (void)skill;
@@ -519,9 +530,11 @@ public:
 
         Range damage(
                 const SpellSkill skill,
-                const Actor& caster) const override;
+                const actor::Actor& caster) const override;
 
-        void on_hit(Actor& actor_hit, const SpellSkill skill) const override;
+        void on_hit(
+                actor::Actor& actor_hit,
+                const SpellSkill skill) const override;
 
         std::string hit_msg_ending() const override
         {
@@ -571,7 +584,7 @@ public:
                 Spell(),
                 m_impl(impl) {}
 
-        bool allow_mon_cast_now(Mon& mon) const override;
+        bool allow_mon_cast_now(actor::Mon& mon) const override;
 
         int mon_cooldown() const override
         {
@@ -615,7 +628,7 @@ public:
         }
 
         void run_effect(
-            Actor* const caster,
+            actor::Actor* const caster,
             const SpellSkill skill) const override;
 
 private:
@@ -639,7 +652,7 @@ class SpellAzaWrath: public Spell
 public:
         SpellAzaWrath() : Spell() {}
 
-        bool allow_mon_cast_now(Mon& mon) const override;
+        bool allow_mon_cast_now(actor::Mon& mon) const override;
 
         int mon_cooldown() const override
         {
@@ -680,7 +693,7 @@ public:
                 const SpellSkill skill) const override;
 
         void run_effect(
-            Actor* const caster,
+            actor::Actor* const caster,
             const SpellSkill skill) const override;
 
 private:
@@ -704,7 +717,7 @@ class SpellMayhem: public Spell
 public:
         SpellMayhem() : Spell() {}
 
-        bool allow_mon_cast_now(Mon& mon) const override;
+        bool allow_mon_cast_now(actor::Mon& mon) const override;
 
         bool mon_can_learn() const override
         {
@@ -740,7 +753,7 @@ public:
                 const SpellSkill skill) const override;
 
         void run_effect(
-            Actor* const caster,
+            actor::Actor* const caster,
             const SpellSkill skill) const override;
 
 private:
@@ -759,7 +772,7 @@ class SpellPestilence: public Spell
 public:
         SpellPestilence() : Spell() {}
 
-        bool allow_mon_cast_now(Mon& mon) const override;
+        bool allow_mon_cast_now(actor::Mon& mon) const override;
 
         int mon_cooldown() const override
         {
@@ -800,7 +813,7 @@ public:
                 const SpellSkill skill) const override;
 
         void run_effect(
-            Actor* const caster,
+            actor::Actor* const caster,
             const SpellSkill skill) const override;
 
 private:
@@ -858,7 +871,7 @@ public:
                 const SpellSkill skill) const override;
 
         void run_effect(
-            Actor* const caster,
+            actor::Actor* const caster,
             const SpellSkill skill) const override;
 
 private:
@@ -916,7 +929,7 @@ public:
                 const SpellSkill skill) const override;
 
         void run_effect(
-            Actor* const caster,
+            actor::Actor* const caster,
             const SpellSkill skill) const override;
 
 private:
@@ -969,7 +982,7 @@ public:
                 const SpellSkill skill) const override;
 
         void run_effect(
-            Actor* const caster,
+            actor::Actor* const caster,
             const SpellSkill skill) const override;
 
 private:
@@ -1027,7 +1040,7 @@ public:
                 const SpellSkill skill) const override;
 
         void run_effect(
-            Actor* const caster,
+            actor::Actor* const caster,
             const SpellSkill skill) const override;
 
 private:
@@ -1088,7 +1101,7 @@ public:
                 const SpellSkill skill) const override;
 
         void run_effect(
-            Actor* const caster,
+            actor::Actor* const caster,
             const SpellSkill skill) const override;
 
 private:
@@ -1146,7 +1159,7 @@ public:
                 const SpellSkill skill) const override;
 
         void run_effect(
-            Actor* const caster,
+            actor::Actor* const caster,
             const SpellSkill skill) const override;
 
 private:
@@ -1203,7 +1216,7 @@ public:
                 const SpellSkill skill) const override;
 
         void run_effect(
-            Actor* const caster,
+            actor::Actor* const caster,
             const SpellSkill skill) const override;
 
 private:
@@ -1227,7 +1240,7 @@ class SpellKnockBack: public Spell
 public:
         SpellKnockBack() : Spell() {}
 
-        bool allow_mon_cast_now(Mon& mon) const override;
+        bool allow_mon_cast_now(actor::Mon& mon) const override;
 
         int mon_cooldown() const override
         {
@@ -1273,7 +1286,7 @@ public:
         }
 
         void run_effect(
-            Actor* const caster,
+            actor::Actor* const caster,
             const SpellSkill skill) const override;
 
 private:
@@ -1297,7 +1310,7 @@ class SpellTeleport: public Spell
 public:
         SpellTeleport() : Spell() {}
 
-        bool allow_mon_cast_now(Mon& mon) const override;
+        bool allow_mon_cast_now(actor::Mon& mon) const override;
 
         int mon_cooldown() const override
         {
@@ -1338,7 +1351,7 @@ public:
                 const SpellSkill skill) const override;
 
         void run_effect(
-            Actor* const caster,
+            actor::Actor* const caster,
             const SpellSkill skill) const override;
 
 private:
@@ -1362,7 +1375,7 @@ class SpellSeeInvis: public Spell
 public:
         SpellSeeInvis() : Spell() {}
 
-        bool allow_mon_cast_now(Mon& mon) const override;
+        bool allow_mon_cast_now(actor::Mon& mon) const override;
 
         int mon_cooldown() const override
         {
@@ -1403,7 +1416,7 @@ public:
                 const SpellSkill skill) const override;
 
         void run_effect(
-            Actor* const caster,
+            actor::Actor* const caster,
             const SpellSkill skill) const override;
 
 private:
@@ -1427,7 +1440,7 @@ class SpellSpellShield: public Spell
 public:
         SpellSpellShield() : Spell() {}
 
-        bool allow_mon_cast_now(Mon& mon) const override;
+        bool allow_mon_cast_now(actor::Mon& mon) const override;
 
         int mon_cooldown() const override
         {
@@ -1468,7 +1481,7 @@ public:
                 const SpellSkill skill) const override;
 
         void run_effect(
-            Actor* const caster,
+            actor::Actor* const caster,
             const SpellSkill skill) const override;
 
 private:
@@ -1487,7 +1500,7 @@ class SpellSlowTime: public Spell
 public:
         SpellSlowTime() : Spell() {}
 
-        bool allow_mon_cast_now(Mon& mon) const override;
+        bool allow_mon_cast_now(actor::Mon& mon) const override;
 
         int mon_cooldown() const override;
 
@@ -1525,7 +1538,7 @@ public:
                 const SpellSkill skill) const override;
 
         void run_effect(
-            Actor* const caster,
+            actor::Actor* const caster,
             const SpellSkill skill) const override;
 
 private:
@@ -1578,7 +1591,7 @@ public:
                 const SpellSkill skill) const override;
 
         void run_effect(
-            Actor* const caster,
+            actor::Actor* const caster,
             const SpellSkill skill) const override;
 
 private:
@@ -1631,7 +1644,7 @@ public:
                 const SpellSkill skill) const override;
 
         void run_effect(
-            Actor* const caster,
+            actor::Actor* const caster,
             const SpellSkill skill) const override;
 
 private:
@@ -1650,7 +1663,7 @@ class SpellRes: public Spell
 public:
         SpellRes() : Spell() {}
 
-        bool allow_mon_cast_now(Mon& mon) const override;
+        bool allow_mon_cast_now(actor::Mon& mon) const override;
 
         int mon_cooldown() const override
         {
@@ -1691,7 +1704,7 @@ public:
                 const SpellSkill skill) const override;
 
         void run_effect(
-            Actor* const caster,
+            actor::Actor* const caster,
             const SpellSkill skill) const override;
 
 private:
@@ -1715,7 +1728,7 @@ class SpellDisease: public Spell
 public:
         SpellDisease() : Spell() {}
 
-        bool allow_mon_cast_now(Mon& mon) const override;
+        bool allow_mon_cast_now(actor::Mon& mon) const override;
 
         int mon_cooldown() const override
         {
@@ -1761,7 +1774,7 @@ public:
         }
 
         void run_effect(
-            Actor* const caster,
+            actor::Actor* const caster,
             const SpellSkill skill) const override;
 
 private:
@@ -1785,7 +1798,7 @@ class SpellSummonMon: public Spell
 public:
         SpellSummonMon() : Spell() {}
 
-        bool allow_mon_cast_now(Mon& mon) const override;
+        bool allow_mon_cast_now(actor::Mon& mon) const override;
 
         int mon_cooldown() const override
         {
@@ -1826,7 +1839,7 @@ public:
                 const SpellSkill skill) const override;
 
         void run_effect(
-            Actor* const caster,
+            actor::Actor* const caster,
             const SpellSkill skill) const override;
 
 private:
@@ -1850,7 +1863,7 @@ class SpellSummonTentacles: public Spell
 public:
         SpellSummonTentacles() : Spell() {}
 
-        bool allow_mon_cast_now(Mon& mon) const override;
+        bool allow_mon_cast_now(actor::Mon& mon) const override;
 
         int mon_cooldown() const override
         {
@@ -1896,7 +1909,7 @@ public:
         }
 
         void run_effect(
-            Actor* const caster,
+            actor::Actor* const caster,
             const SpellSkill skill) const override;
 
 private:
@@ -1920,7 +1933,7 @@ class SpellHeal: public Spell
 public:
         SpellHeal() : Spell() {}
 
-        bool allow_mon_cast_now(Mon& mon) const override;
+        bool allow_mon_cast_now(actor::Mon& mon) const override;
 
         int mon_cooldown() const override
         {
@@ -1961,7 +1974,7 @@ public:
                 const SpellSkill skill) const override;
 
         void run_effect(
-            Actor* const caster,
+            actor::Actor* const caster,
             const SpellSkill skill) const override;
 
 private:
@@ -1985,7 +1998,7 @@ class SpellMiGoHypno: public Spell
 public:
         SpellMiGoHypno() : Spell() {}
 
-        bool allow_mon_cast_now(Mon& mon) const override;
+        bool allow_mon_cast_now(actor::Mon& mon) const override;
 
         int mon_cooldown() const override
         {
@@ -2031,7 +2044,7 @@ public:
         }
 
         void run_effect(
-            Actor* const caster,
+            actor::Actor* const caster,
             const SpellSkill skill) const override;
 
 private:
@@ -2055,7 +2068,7 @@ class SpellBurn: public Spell
 public:
         SpellBurn() : Spell() {}
 
-        bool allow_mon_cast_now(Mon& mon) const override;
+        bool allow_mon_cast_now(actor::Mon& mon) const override;
 
         int mon_cooldown() const override
         {
@@ -2101,7 +2114,7 @@ public:
         }
 
         void run_effect(
-            Actor* const caster,
+            actor::Actor* const caster,
             const SpellSkill skill) const override;
 
 private:
@@ -2125,7 +2138,7 @@ class SpellDeafen: public Spell
 public:
         SpellDeafen() : Spell() {}
 
-        bool allow_mon_cast_now(Mon& mon) const override;
+        bool allow_mon_cast_now(actor::Mon& mon) const override;
 
         int mon_cooldown() const override
         {
@@ -2171,7 +2184,7 @@ public:
         }
 
         void run_effect(
-            Actor* const caster,
+            actor::Actor* const caster,
             const SpellSkill skill) const override;
 
 private:

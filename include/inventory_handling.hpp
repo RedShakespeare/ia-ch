@@ -59,14 +59,14 @@ protected:
         void draw_weight_pct_and_dots(
                 const P item_pos,
                 const size_t item_name_len,
-                const Item& item,
+                const item::Item& item,
                 const Color& item_name_color_id,
                 const bool is_marked) const;
 
-        // void draw_item_symbol(const Item& item, const P& p) const;
+        // void draw_item_symbol(const item::Item& item, const P& p) const;
 
         void draw_detailed_item_descr(
-                const Item* const item,
+                const item::Item* const item,
                 const ItemRefAttInf att_inf) const;
 };
 

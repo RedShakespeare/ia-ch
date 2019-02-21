@@ -26,20 +26,22 @@
 // -----------------------------------------------------------------------------
 // Private
 // -----------------------------------------------------------------------------
-static bool is_void_traveler_affecting_player_teleport(const Actor& actor)
+static bool is_void_traveler_affecting_player_teleport(
+        const actor::Actor& actor)
 {
         const auto actor_id = actor.id();
 
         const bool is_void_traveler =
-                (actor_id == ActorId::void_traveler) ||
-                (actor_id == ActorId::elder_void_traveler);
+                (actor_id == actor::Id::void_traveler) ||
+                (actor_id == actor::Id::elder_void_traveler);
 
         return
                 is_void_traveler &&
                 (actor.m_state == ActorState::alive) &&
                 actor.m_properties.allow_act() &&
                 !actor.is_actor_my_leader(map::g_player) &&
-                (static_cast<const Mon&>(actor).m_aware_of_player_counter > 0);
+                (static_cast<const actor::Mon&>(actor)
+                 .m_aware_of_player_counter > 0);
 }
 
 static std::vector<P> get_free_positions_around_pos(
@@ -79,7 +81,7 @@ static void make_all_mon_not_seeing_player_unaware()
                         continue;
                 }
 
-                auto* const mon = static_cast<Mon*>(other_actor);
+                auto* const mon = static_cast<actor::Mon*>(other_actor);
 
                 if (!mon->can_see_actor(*map::g_player, blocks_los))
                 {
@@ -92,9 +94,9 @@ static void make_player_aware_of_all_seen_mon()
 {
         const auto player_seen_actors = map::g_player->seen_actors();
 
-        for (Actor* const actor : player_seen_actors)
+        for (auto* const actor : player_seen_actors)
         {
-                static_cast<Mon*>(actor)->set_player_aware_of_me();
+                static_cast<actor::Mon*>(actor)->set_player_aware_of_me();
         }
 }
 
@@ -143,7 +145,7 @@ static bool should_player_ctrl_tele(const ShouldCtrlTele ctrl_tele)
 // -----------------------------------------------------------------------------
 // teleport
 // -----------------------------------------------------------------------------
-void teleport(Actor& actor, const ShouldCtrlTele ctrl_tele)
+void teleport(actor::Actor& actor, const ShouldCtrlTele ctrl_tele)
 {
         Array2<bool> blocks_flood(map::dims());
 
@@ -222,7 +224,7 @@ void teleport(Actor& actor, const ShouldCtrlTele ctrl_tele)
         teleport(actor, tgt_pos, blocked);
 }
 
-void teleport(Actor& actor, P p, const Array2<bool>& blocked)
+void teleport(actor::Actor& actor, P p, const Array2<bool>& blocked)
 {
         if (!actor.is_player() && map::g_player->can_see_actor(actor))
         {
@@ -238,7 +240,8 @@ void teleport(Actor& actor, P p, const Array2<bool>& blocked)
 
         if (!actor.is_player())
         {
-                static_cast<Mon&>(actor).m_player_aware_of_me_counter = 0;
+                static_cast<actor::Mon&>(actor)
+                        .m_player_aware_of_me_counter = 0;
         }
 
         actor.m_properties.end_prop(
@@ -255,7 +258,7 @@ void teleport(Actor& actor, P p, const Array2<bool>& blocked)
 
         if (actor.is_player())
         {
-                for (Actor* const other_actor : game_time::g_actors)
+                for (auto* const other_actor : game_time::g_actors)
                 {
                         if (!is_void_traveler_affecting_player_teleport(
                                     *other_actor))
@@ -284,7 +287,7 @@ void teleport(Actor& actor, P p, const Array2<bool>& blocked)
                                 actor_name_a +
                                 " intercepts my teleportation!");
 
-                        static_cast<Mon*>(other_actor)
+                        static_cast<actor::Mon*>(other_actor)
                                 ->become_aware_player(false);
 
                         is_affected_by_void_traveler = true;

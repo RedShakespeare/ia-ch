@@ -52,11 +52,11 @@ static void show_map_and_freeze(const std::string& msg)
                 cell.is_seen_by_player = true;
         }
 
-        for (Actor* const actor : game_time::g_actors)
+        for (auto* const actor : game_time::g_actors)
         {
                 if (!actor->is_player())
                 {
-                        Mon* const mon = static_cast<Mon*>(actor);
+                        auto* const mon = static_cast<actor::Mon*>(actor);
 
                         mon->m_player_aware_of_me_counter = 999;
                 }
@@ -212,7 +212,7 @@ void act()
              outer_idx < game_time::g_actors.size();
              ++outer_idx)
         {
-                const Actor* const actor = game_time::g_actors[outer_idx];
+                const auto* const actor = game_time::g_actors[outer_idx];
 
                 ASSERT(map::is_pos_inside_map(actor->m_pos));
 
@@ -220,7 +220,7 @@ void act()
                      inner_idx < game_time::g_actors.size();
                      ++inner_idx)
                 {
-                        const Actor* const other_actor =
+                        const auto* const other_actor =
                                 game_time::g_actors[inner_idx];
 
                         if (outer_idx == inner_idx ||
@@ -274,7 +274,7 @@ void act()
         {
                 inv.put_in_slot(
                         SlotId::body,
-                        item_factory::make(ItemId::armor_asb_suit),
+                        item::make(item::Id::armor_asb_suit),
                         Verbosity::silent);
         }
 
@@ -282,7 +282,7 @@ void act()
         // situations, and for some allied monster code exercise)
         bool has_allied_mon = false;
 
-        for (const Actor* const actor : game_time::g_actors)
+        for (const auto* const actor : game_time::g_actors)
         {
                 if (map::g_player->is_leader_of(actor))
                 {
@@ -293,8 +293,8 @@ void act()
 
         if (!has_allied_mon)
         {
-                actor_factory::spawn(
-                        map::g_player->m_pos, {ActorId::mi_go}, map::rect())
+                actor::spawn(
+                        map::g_player->m_pos, {actor::Id::mi_go}, map::rect())
                         .set_leader(map::g_player)
                         .make_aware_of_player();
         }
@@ -325,7 +325,7 @@ void act()
                 const int element =
                         rnd::range(0, game_time::g_actors.size() - 1);
 
-                Actor* const actor = game_time::g_actors[element];
+                auto* const actor = game_time::g_actors[element];
 
                 if (actor != map::g_player)
                 {
@@ -362,7 +362,7 @@ void act()
 
                 if (wpn_item && wpn_item->data().ranged.is_ranged_wpn)
                 {
-                        auto* wpn = static_cast<Wpn*>(wpn_item);
+                        auto* wpn = static_cast<item::Wpn*>(wpn_item);
 
                         wpn->m_ammo_loaded = wpn->data().ranged.max_ammo;
 

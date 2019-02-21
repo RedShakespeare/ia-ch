@@ -72,9 +72,9 @@ public:
                 return m_trap_impl;
         }
 
-        AllowAction pre_bump(Actor& actor_bumping) override;
+        AllowAction pre_bump(actor::Actor& actor_bumping) override;
 
-        void bump(Actor& actor_bumping) override;
+        void bump(actor::Actor& actor_bumping) override;
 
         char character() const override;
 
@@ -129,11 +129,11 @@ private:
         void on_hit(const int dmg,
                     const DmgType dmg_type,
                     const DmgMethod dmg_method,
-                    Actor* const actor) override;
+                    actor::Actor* const actor) override;
 
-        DidTriggerTrap trigger_trap(Actor* const actor) override;
+        DidTriggerTrap trigger_trap(actor::Actor* const actor) override;
 
-        void trigger_start(const Actor* actor);
+        void trigger_start(const actor::Actor* actor);
 
         Rigid* m_mimic_feature {nullptr};
         bool m_is_hidden {false};

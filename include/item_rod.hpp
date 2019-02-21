@@ -8,12 +8,37 @@
 #define ITEM_ROD_HPP
 
 #include "item.hpp"
-#include "spells.hpp"
 
-class Rod: public Item
+
+namespace item
+{
+
+struct ItemData;
+
+} // item_data
+
+
+namespace rod
+{
+
+struct RodLook
+{
+        std::string name_plain;
+        std::string name_a;
+        Color color;
+};
+
+
+void init();
+
+void save();
+void load();
+
+
+class Rod: public item::Item
 {
 public:
-        Rod(ItemData* const item_data) :
+        Rod(item::ItemData* const item_data) :
                 Item(item_data),
                 m_nr_charge_turns_left(0) {}
 
@@ -23,7 +48,7 @@ public:
 
         void load() override final;
 
-        ConsumeItem activate(Actor* const actor) override final;
+        ConsumeItem activate(actor::Actor* const actor) override final;
 
         Color interface_color() const override final
         {
@@ -56,13 +81,13 @@ private:
         int m_nr_charge_turns_left;
 };
 
-class RodCuring : public Rod
+class Curing : public Rod
 {
 public:
-        RodCuring(ItemData* const item_data) :
+        Curing(item::ItemData* const item_data) :
                 Rod(item_data) {}
 
-        ~RodCuring() {}
+        ~Curing() {}
 
         const std::string real_name() const override
         {
@@ -82,13 +107,13 @@ protected:
         void run_effect() override;
 };
 
-class RodOpening : public Rod
+class Opening : public Rod
 {
 public:
-        RodOpening(ItemData* const item_data) :
+        Opening(item::ItemData* const item_data) :
                 Rod(item_data) {}
 
-        ~RodOpening() {}
+        ~Opening() {}
 
         const std::string real_name() const override
         {
@@ -107,13 +132,13 @@ protected:
         void run_effect() override;
 };
 
-class RodBless : public Rod
+class Bless : public Rod
 {
 public:
-        RodBless(ItemData* const item_data) :
+        Bless(item::ItemData* const item_data) :
                 Rod(item_data) {}
 
-        ~RodBless() {}
+        ~Bless() {}
 
         const std::string real_name() const override
         {
@@ -131,13 +156,13 @@ protected:
         void run_effect() override;
 };
 
-class RodCloudMinds : public Rod
+class CloudMinds : public Rod
 {
 public:
-        RodCloudMinds(ItemData* const item_data) :
+        CloudMinds(item::ItemData* const item_data) :
                 Rod(item_data) {}
 
-        ~RodCloudMinds() {}
+        ~CloudMinds() {}
 
         const std::string real_name() const override
         {
@@ -161,13 +186,13 @@ protected:
         void run_effect() override;
 };
 
-class RodShockwave : public Rod
+class Shockwave : public Rod
 {
 public:
-        RodShockwave(ItemData* const item_data) :
+        Shockwave(item::ItemData* const item_data) :
                 Rod(item_data) {}
 
-        ~RodShockwave() {}
+        ~Shockwave() {}
 
         const std::string real_name() const override
         {
@@ -186,21 +211,6 @@ protected:
         void run_effect() override;
 };
 
-namespace rod_handling
-{
-
-struct RodLook
-{
-        std::string name_plain;
-        std::string name_a;
-        Color color;
-};
-
-void init();
-
-void save();
-void load();
-
-} // rod_handling
+} // rod
 
 #endif // ITEM_ROD_HPP

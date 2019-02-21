@@ -119,9 +119,9 @@ static void add_potion_descr(std::vector<ColoredString>& lines)
 
         std::vector<ColoredString> potion_list;
 
-        for (int i = 0; i < (int)ItemId::END; ++i)
+        for (int i = 0; i < (int)item::Id::END; ++i)
         {
-                const ItemData& d = item_data::g_data[i];
+                const auto& d = item::g_data[i];
 
                 if ((d.type != ItemType::potion) ||
                     (!d.is_tried &&
@@ -130,7 +130,7 @@ static void add_potion_descr(std::vector<ColoredString>& lines)
                         continue;
                 }
 
-                Item* item = item_factory::make(d.id);
+                auto* item = item::make(d.id);
 
                 const std::string name =
                         item->name(ItemRefType::plain);
@@ -171,9 +171,9 @@ static void add_scroll_descr(std::vector<ColoredString>& lines)
 
         std::vector<ColoredString> manuscript_list;
 
-        for (int i = 0; i < (int)ItemId::END; ++i)
+        for (int i = 0; i < (int)item::Id::END; ++i)
         {
-                const ItemData& d = item_data::g_data[i];
+                const auto& d = item::g_data[i];
 
                 if ((d.type != ItemType::scroll) ||
                     (!d.is_tried &&
@@ -182,14 +182,15 @@ static void add_scroll_descr(std::vector<ColoredString>& lines)
                         continue;
                 }
 
-                Item* item = item_factory::make(d.id);
+                auto* item = item::make(d.id);
 
                 const std::string name =
                         item->name(ItemRefType::plain);
 
                 manuscript_list.push_back(
-                        ColoredString(s_offset + name,
-                                      item->interface_color()));
+                        ColoredString(
+                                s_offset + name,
+                                item->interface_color()));
 
                 delete item;
         }
@@ -197,8 +198,9 @@ static void add_scroll_descr(std::vector<ColoredString>& lines)
         if (manuscript_list.empty())
         {
                 lines.push_back(
-                        ColoredString(s_offset + "No known manuscripts",
-                                      colors::text()));
+                        ColoredString(
+                                s_offset + "No known manuscripts",
+                                colors::text()));
         }
         else
         {

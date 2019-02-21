@@ -28,7 +28,7 @@ namespace ai
 namespace action
 {
 
-bool try_cast_random_spell(Mon& mon)
+bool try_cast_random_spell(actor::Mon& mon)
 {
         if (!mon.is_alive() ||
             mon.m_spells.empty() ||
@@ -92,7 +92,7 @@ bool try_cast_random_spell(Mon& mon)
         return false;
 }
 
-bool handle_closed_blocking_door(Mon& mon, std::vector<P> path)
+bool handle_closed_blocking_door(actor::Mon& mon, std::vector<P> path)
 {
         if (!mon.is_alive() || path.empty())
         {
@@ -186,7 +186,7 @@ bool handle_closed_blocking_door(Mon& mon, std::vector<P> path)
         return false;
 }
 
-bool handle_inventory(Mon& mon)
+bool handle_inventory(actor::Mon& mon)
 {
         (void)mon;
         return false;
@@ -236,7 +236,7 @@ bool is_pos_on_line(const P& p,
 
 // Returns all free positions around the acting monster that is closer to the
 // player than the monster's current position
-std::vector<P> move_bucket(Mon& mon)
+std::vector<P> move_bucket(actor::Mon& mon)
 {
         std::vector<P> bucket;
 
@@ -273,7 +273,7 @@ std::vector<P> move_bucket(Mon& mon)
 
 } // namespace
 
-bool make_room_for_friend(Mon& mon)
+bool make_room_for_friend(actor::Mon& mon)
 {
         if (!mon.is_alive())
         {
@@ -293,14 +293,14 @@ bool make_room_for_friend(Mon& mon)
         const P& player_p = map::g_player->m_pos;
 
         // Check if there is an allied monster that we should move away for
-        for (Actor* other_actor : game_time::g_actors)
+        for (auto* other_actor : game_time::g_actors)
         {
                 if (other_actor != &mon &&
                     other_actor->is_alive() &&
                     !other_actor->is_player() &&
                     !map::g_player->is_leader_of(other_actor))
                 {
-                        Mon* const other_mon = static_cast<Mon*>(other_actor);
+                        auto* const other_mon = static_cast<actor::Mon*>(other_actor);
 
                         const bool is_other_adj =
                                 is_pos_adj(mon.m_pos, other_mon->m_pos, false);
@@ -362,7 +362,7 @@ bool make_room_for_friend(Mon& mon)
                                 {
                                         bool is_p_ok = true;
 
-                                        for (Actor* actor3 : game_time::g_actors)
+                                        for (auto* actor3 : game_time::g_actors)
                                         {
                                                 // NOTE: The third actor here can include the original
                                                 // blocked "other" actor, since we must also check if we
@@ -372,7 +372,7 @@ bool make_room_for_friend(Mon& mon)
                                                     !actor3->is_player() &&
                                                     !map::g_player->is_leader_of(actor3))
                                                 {
-                                                        Mon* const mon3 = static_cast<Mon*>(actor3);
+                                                        auto* const mon3 = static_cast<actor::Mon*>(actor3);
 
                                                         const bool other_is_seeing_player =
                                                                 mon3->can_see_actor(*map::g_player, blocked_los);
@@ -409,7 +409,7 @@ bool make_room_for_friend(Mon& mon)
         return false;
 }
 
-bool move_to_random_adj_cell(Mon& mon)
+bool move_to_random_adj_cell(actor::Mon& mon)
 {
         if (!mon.is_alive() ||
             ((mon.m_is_roaming_allowed == MonRoamingAllowed::no) &&
@@ -484,7 +484,7 @@ bool move_to_random_adj_cell(Mon& mon)
         return false;
 }
 
-bool move_to_target_simple(Mon& mon)
+bool move_to_target_simple(actor::Mon& mon)
 {
         if (!mon.is_alive() ||
             !mon.m_target ||
@@ -512,7 +512,7 @@ bool move_to_target_simple(Mon& mon)
         return false;
 }
 
-bool step_path(Mon& mon, std::vector<P>& path)
+bool step_path(actor::Mon& mon, std::vector<P>& path)
 {
         if (mon.is_alive() &&
             !path.empty())
@@ -527,7 +527,7 @@ bool step_path(Mon& mon, std::vector<P>& path)
         return false;
 }
 
-bool step_to_lair_if_los(Mon& mon, const P& lair_p)
+bool step_to_lair_if_los(actor::Mon& mon, const P& lair_p)
 {
         if (mon.is_alive())
         {
@@ -580,7 +580,7 @@ bool step_to_lair_if_los(Mon& mon, const P& lair_p)
 namespace info
 {
 
-bool look(Mon& mon)
+bool look(actor::Mon& mon)
 {
         if (!mon.is_alive())
         {
@@ -603,11 +603,11 @@ bool look(Mon& mon)
                 return false;
         }
 
-        for (Actor* actor : seeable_foes)
+        for (auto* actor : seeable_foes)
         {
                 if (actor->is_player())
                 {
-                        SneakData sneak_data;
+                        actor::SneakData sneak_data;
 
                         sneak_data.actor_sneaking = actor;
                         sneak_data.actor_searching = &mon;
@@ -657,7 +657,7 @@ bool look(Mon& mon)
         return false;
 }
 
-std::vector<P> find_path_to_lair_if_no_los(Mon& mon, const P& lair_p)
+std::vector<P> find_path_to_lair_if_no_los(actor::Mon& mon, const P& lair_p)
 {
         if (!mon.is_alive())
         {
@@ -698,17 +698,16 @@ std::vector<P> find_path_to_lair_if_no_los(Mon& mon, const P& lair_p)
         return path;
 }
 
-std::vector<P> find_path_to_leader(Mon& mon)
+std::vector<P> find_path_to_leader(actor::Mon& mon)
 {
         if (!mon.is_alive())
         {
                 return {};
         }
 
-        Actor* leader = mon.m_leader;
+        auto* leader = mon.m_leader;
 
-        if (!leader ||
-            !leader->is_alive())
+        if (!leader || !leader->is_alive())
         {
                 return {};
         }
@@ -748,7 +747,7 @@ std::vector<P> find_path_to_leader(Mon& mon)
         return path;
 }
 
-std::vector<P> find_path_to_target(Mon& mon)
+std::vector<P> find_path_to_target(actor::Mon& mon)
 {
         if (!mon.is_alive() || !mon.m_target)
         {

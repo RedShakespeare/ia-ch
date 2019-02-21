@@ -28,7 +28,7 @@ void try_pick()
 
         const P& pos = map::g_player->m_pos;
 
-        Item* const item = map::g_cells.at(pos).item;
+        auto* const item = map::g_cells.at(pos).item;
 
         if (!item)
         {
@@ -52,7 +52,7 @@ void try_pick()
         game_time::tick();
 }
 
-Ammo* unload_ranged_wpn(Wpn& wpn)
+item::Ammo* unload_ranged_wpn(item::Wpn& wpn)
 {
         ASSERT(!wpn.data().ranged.has_infinite_ammo);
 
@@ -63,16 +63,17 @@ Ammo* unload_ranged_wpn(Wpn& wpn)
                 return nullptr;
         }
 
-        const ItemId ammo_id = wpn.data().ranged.ammo_item_id;
+        const auto ammo_id = wpn.data().ranged.ammo_item_id;
 
-        ItemData& ammo_data = item_data::g_data[(size_t)ammo_id];
+        auto& ammo_data = item::g_data[(size_t)ammo_id];
 
-        Item* spawned_ammo = item_factory::make(ammo_id);
+        auto* spawned_ammo = item::make(ammo_id);
 
         if (ammo_data.type == ItemType::ammo_mag)
         {
                 // Unload a mag
-                static_cast<AmmoMag*>(spawned_ammo)->m_ammo = nr_ammo_loaded;
+                static_cast<item::AmmoMag*>(spawned_ammo)->m_ammo =
+                        nr_ammo_loaded;
         }
         else
         {
@@ -82,20 +83,20 @@ Ammo* unload_ranged_wpn(Wpn& wpn)
 
         wpn.m_ammo_loaded = 0;
 
-        return static_cast<Ammo*>(spawned_ammo);
+        return static_cast<item::Ammo*>(spawned_ammo);
 }
 
 void try_unload_or_pick()
 {
-        Item* item = map::g_cells.at(map::g_player->m_pos).item;
+        auto* item = map::g_cells.at(map::g_player->m_pos).item;
 
         if (item &&
             item->data().ranged.is_ranged_wpn &&
             !item->data().ranged.has_infinite_ammo)
         {
-                Wpn* const wpn = static_cast<Wpn*>(item);
+                auto* const wpn = static_cast<item::Wpn*>(item);
 
-                Ammo* const spawned_ammo = unload_ranged_wpn(*wpn);
+                auto* const spawned_ammo = unload_ranged_wpn(*wpn);
 
                 if (spawned_ammo)
                 {

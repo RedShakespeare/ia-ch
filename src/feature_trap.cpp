@@ -17,6 +17,7 @@
 #include "drop.hpp"
 #include "explosion.hpp"
 #include "feature_data.hpp"
+#include "game_time.hpp"
 #include "init.hpp"
 #include "inventory.hpp"
 #include "io.hpp"
@@ -185,7 +186,7 @@ TrapImpl* Trap::make_trap_impl_from_id(const TrapId trap_id)
 void Trap::on_hit(const int dmg,
                   const DmgType dmg_type,
                   const DmgMethod dmg_method,
-                  Actor* const actor)
+                  actor::Actor* const actor)
 {
         (void)dmg;
         (void)dmg_type;
@@ -223,7 +224,7 @@ void Trap::on_new_turn_hook()
         }
 }
 
-void Trap::trigger_start(const Actor* actor)
+void Trap::trigger_start(const actor::Actor* actor)
 {
         TRACE_FUNC_BEGIN_VERBOSE;
 
@@ -314,7 +315,7 @@ void Trap::trigger_start(const Actor* actor)
         TRACE_FUNC_END_VERBOSE;
 }
 
-AllowAction Trap::pre_bump(Actor& actor_bumping)
+AllowAction Trap::pre_bump(actor::Actor& actor_bumping)
 {
         if (!actor_bumping.is_player() ||
             actor_bumping.m_properties.has(PropId::confused))
@@ -359,15 +360,15 @@ AllowAction Trap::pre_bump(Actor& actor_bumping)
         }
 }
 
-void Trap::bump(Actor& actor_bumping)
+void Trap::bump(actor::Actor& actor_bumping)
 {
         TRACE_FUNC_BEGIN_VERBOSE;
 
-        const ActorData& d = *actor_bumping.m_data;
+        const auto& d = *actor_bumping.m_data;
 
         if (actor_bumping.m_properties.has(PropId::ethereal) ||
             actor_bumping.m_properties.has(PropId::flying) ||
-            (d.actor_size < ActorSize::humanoid) ||
+            (d.actor_size < actor::Size::humanoid) ||
             d.is_spider)
         {
                 TRACE_FUNC_END_VERBOSE;
@@ -377,7 +378,7 @@ void Trap::bump(Actor& actor_bumping)
 
         if (!actor_bumping.is_player())
         {
-                Mon* const mon = static_cast<Mon*>(&actor_bumping);
+                auto* const mon = static_cast<actor::Mon*>(&actor_bumping);
 
                 if (mon->m_aware_of_player_counter <= 0)
                 {
@@ -428,7 +429,7 @@ void Trap::destroy()
         }
 }
 
-DidTriggerTrap Trap::trigger_trap(Actor* const actor)
+DidTriggerTrap Trap::trigger_trap(actor::Actor* const actor)
 {
         TRACE_FUNC_BEGIN_VERBOSE;
 
@@ -514,7 +515,10 @@ Color Trap::color_bg_default() const
 {
         const auto* const item = map::g_cells.at(m_pos).item;
 
-        const auto* const corpse = map::actor_at_pos(m_pos, ActorState::corpse);
+        const auto* const corpse =
+                map::actor_at_pos(
+                        m_pos,
+                        ActorState::corpse);
 
         if (!m_is_hidden && (item || corpse))
         {
@@ -685,17 +689,17 @@ void TrapDart::trigger()
         }
 
         // Make a temporary dart weapon
-        Wpn* wpn = nullptr;
+        item::Wpn* wpn = nullptr;
 
         if (m_is_poisoned)
         {
-                wpn = static_cast<Wpn*>(
-                        item_factory::make(ItemId::trap_dart_poison));
+                wpn = static_cast<item::Wpn*>(
+                        item::make(item::Id::trap_dart_poison));
         }
         else // Not poisoned
         {
-                wpn = static_cast<Wpn*>(
-                        item_factory::make(ItemId::trap_dart));
+                wpn = static_cast<item::Wpn*>(
+                        item::make(item::Id::trap_dart));
         }
 
         // Fire!
@@ -781,24 +785,22 @@ void TrapSpear::trigger()
         }
 
         // Is anyone standing on the trap now?
-        Actor* const actor_on_trap = map::actor_at_pos(m_pos);
+        auto* const actor_on_trap = map::actor_at_pos(m_pos);
 
         if (actor_on_trap)
         {
                 // Make a temporary spear weapon
-                Wpn* wpn = nullptr;
+                item::Wpn* wpn = nullptr;
 
                 if (m_is_poisoned)
                 {
-                        wpn = static_cast<Wpn*>(
-                                item_factory::make(
-                                        ItemId::trap_spear_poison));
+                        wpn = static_cast<item::Wpn*>(
+                                item::make(item::Id::trap_spear_poison));
                 }
                 else // Not poisoned
                 {
-                        wpn = static_cast<Wpn*>(
-                                item_factory::make(
-                                        ItemId::trap_spear));
+                        wpn = static_cast<item::Wpn*>(
+                                item::make(item::Id::trap_spear));
                 }
 
                 // Attack!
@@ -958,7 +960,7 @@ void TrapTeleport::trigger()
 {
         TRACE_FUNC_BEGIN_VERBOSE;
 
-        Actor* const actor_here = map::actor_at_pos(m_pos);
+        auto* const actor_here = map::actor_at_pos(m_pos);
 
         ASSERT(actor_here);
 
@@ -972,7 +974,8 @@ void TrapTeleport::trigger()
 
         const bool can_see = actor_here->m_properties.allow_see();
 
-        const bool player_sees_actor = map::g_player->can_see_actor(*actor_here);
+        const bool player_sees_actor =
+                map::g_player->can_see_actor(*actor_here);
 
         const std::string actor_name = actor_here->name_the();
 
@@ -1018,7 +1021,7 @@ void TrapSummonMon::trigger()
 {
         TRACE_FUNC_BEGIN;
 
-        Actor* const actor_here = map::actor_at_pos(m_pos);
+        auto* const actor_here = map::actor_at_pos(m_pos);
 
         ASSERT(actor_here);
 
@@ -1067,16 +1070,16 @@ void TrapSummonMon::trigger()
         }
 
         TRACE << "Finding summon candidates" << std::endl;
-        std::vector<ActorId> summon_bucket;
+        std::vector<actor::Id> summon_bucket;
 
-        for (size_t i = 0; i < (size_t)ActorId::END; ++i)
+        for (size_t i = 0; i < (size_t)actor::Id::END; ++i)
         {
-                const ActorData& data = actor_data::g_data[i];
+                const auto& data = actor::g_data[i];
 
                 if (data.can_be_summoned_by_mon &&
                     data.spawn_min_dlvl <= map::g_dlvl + 3)
                 {
-                        summon_bucket.push_back((ActorId)i);
+                        summon_bucket.push_back((actor::Id)i);
                 }
         }
 
@@ -1088,16 +1091,18 @@ void TrapSummonMon::trigger()
         {
                 const size_t idx = rnd::range(0, summon_bucket.size() - 1);
 
-                const ActorId id_to_summon = summon_bucket[idx];
+                const auto id_to_summon = summon_bucket[idx];
 
                 TRACE_VERBOSE << "Actor id: " << int(id_to_summon) << std::endl;
 
                 const auto summoned =
-                        actor_factory::spawn(m_pos,
-                                             {id_to_summon},
-                                             map::rect())
-                        .make_aware_of_player()
-                        .for_each([](Mon* const mon)
+                        actor::spawn(m_pos, {id_to_summon}, map::rect())
+                        .make_aware_of_player();
+
+                std::for_each(
+                        std::begin(summoned.monsters),
+                        std::end(summoned.monsters),
+                        [](auto* const mon)
                         {
                                 auto prop_summoned = new PropSummoned();
 
@@ -1131,7 +1136,7 @@ void TrapSpiDrain::trigger()
 {
         TRACE_FUNC_BEGIN_VERBOSE;
 
-        Actor* const actor_here = map::actor_at_pos(m_pos);
+        auto* const actor_here = map::actor_at_pos(m_pos);
 
         ASSERT(actor_here);
 
@@ -1280,7 +1285,7 @@ void TrapWeb::trigger()
 {
         TRACE_FUNC_BEGIN_VERBOSE;
 
-        Actor* const actor_here = map::actor_at_pos(m_pos);
+        auto* const actor_here = map::actor_at_pos(m_pos);
 
         ASSERT(actor_here);
 
@@ -1328,14 +1333,14 @@ void TrapWeb::trigger()
         // Players getting stuck in spider webs alerts all spiders
         if (actor_here->is_player())
         {
-                for (Actor* const actor : game_time::g_actors)
+                for (auto* const actor : game_time::g_actors)
                 {
                         if (actor->is_player() || !actor->m_data->is_spider)
                         {
                                 continue;
                         }
 
-                        auto* const mon = static_cast<Mon*>(actor);
+                        auto* const mon = static_cast<actor::Mon*>(actor);
 
                         mon->become_aware_player(false);
                 }
@@ -1350,7 +1355,7 @@ void TrapSlow::trigger()
 {
         TRACE_FUNC_BEGIN_VERBOSE;
 
-        Actor* const actor_here = map::actor_at_pos(m_pos);
+        auto* const actor_here = map::actor_at_pos(m_pos);
 
         ASSERT(actor_here);
 
@@ -1369,7 +1374,7 @@ void TrapCurse::trigger()
 {
         TRACE_FUNC_BEGIN_VERBOSE;
 
-        Actor* const actor_here = map::actor_at_pos(m_pos);
+        auto* const actor_here = map::actor_at_pos(m_pos);
 
         ASSERT(actor_here);
 

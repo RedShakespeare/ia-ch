@@ -12,11 +12,27 @@
 
 #include "global.hpp"
 
+
+namespace item
+{
+
 class Item;
+
+enum class Id;
+
+} // item
+
+
+namespace actor
+{
+
 class Actor;
+
+} // actor
+
+
 struct P;
 
-enum class ItemId;
 
 enum class SlotId
 {
@@ -41,13 +57,13 @@ struct InvSlot
 
         SlotId id;
         std::string name;
-        Item* item;
+        item::Item* item;
 };
 
 class Inventory
 {
 public:
-        Inventory(Actor* const owning_actor);
+        Inventory(actor::Actor* const owning_actor);
 
         ~Inventory();
 
@@ -60,7 +76,7 @@ public:
                 const SlotId slot_id);
 
         void equip_backpack_item(
-                const Item* const item,
+                const item::Item* const item,
                 const SlotId slot_id);
 
         size_t unequip_slot(const SlotId id);
@@ -70,20 +86,20 @@ public:
         // new/external items in the inventory
         void put_in_slot(
                 const SlotId id,
-                Item* item,
+                item::Item* item,
                 Verbosity verbosity);
 
-        void put_in_backpack(Item* item);
+        void put_in_backpack(item::Item* item);
 
-        void put_in_intrinsics(Item* item);
+        void put_in_intrinsics(item::Item* item);
 
         void print_equip_message(
                 const SlotId slot_id,
-                const Item& item);
+                const item::Item& item);
 
         void print_unequip_message(
                 const SlotId slot_id,
-                const Item& item);
+                const item::Item& item);
 
         void drop_all_non_intrinsic(const P& pos);
 
@@ -93,34 +109,34 @@ public:
 
         bool has_ammo_for_firearm_in_inventory() const;
 
-        Item* item_in_backpack(const ItemId id) const;
+        item::Item* item_in_backpack(const item::Id id) const;
 
-        int backpack_idx(const ItemId item_id) const;
+        int backpack_idx(const item::Id item_id) const;
 
-        Item* item_in_slot(const SlotId id) const;
+        item::Item* item_in_slot(const SlotId id) const;
 
         // All "decr_..." functions which operates on a single item returns the
         // decremented item stack if it still exists, otherwise returns nullptr
-        Item* decr_item_in_slot(SlotId slot_id);
-        Item* decr_item_in_backpack(const size_t idx);
-        Item* decr_item(Item* const item);
+        item::Item* decr_item_in_slot(SlotId slot_id);
+        item::Item* decr_item_in_backpack(const size_t idx);
+        item::Item* decr_item(item::Item* const item);
 
-        void decr_item_type_in_backpack(const ItemId item_id);
+        void decr_item_type_in_backpack(const item::Id item_id);
 
-        Item* remove_item(
-                Item* const item,
+        item::Item* remove_item(
+                item::Item* const item,
                 const bool delete_item);
 
-        Item* remove_item_in_slot(
+        item::Item* remove_item_in_slot(
                 const SlotId slot_id,
                 const bool delete_item);
 
-        Item* remove_item_in_backpack_with_idx(
+        item::Item* remove_item_in_backpack_with_idx(
                 const size_t idx,
                 const bool delete_item);
 
-        Item* remove_item_in_backpack_with_ptr(
-                Item* const item,
+        item::Item* remove_item_in_backpack_with_ptr(
+                item::Item* const item,
                 const bool delete_item);
 
         int intrinsics_size() const
@@ -128,11 +144,11 @@ public:
                 return m_intrinsics.size();
         }
 
-        Item* intrinsic_in_element(const int idx) const;
+        item::Item* intrinsic_in_element(const int idx) const;
 
-        bool has_item_in_backpack(const ItemId id) const;
+        bool has_item_in_backpack(const item::Id id) const;
 
-        int item_stack_size_in_backpack(const ItemId id) const;
+        int item_stack_size_in_backpack(const item::Id id) const;
 
         void sort_backpack();
 
@@ -140,13 +156,16 @@ public:
 
         InvSlot m_slots[(size_t)SlotId::END];
 
-        std::vector<Item*> m_backpack;
+        std::vector<item::Item*> m_backpack;
 
-        std::vector<Item*> m_intrinsics;
+        std::vector<item::Item*> m_intrinsics;
 
 private:
         // Puts the item in the slot, and prints messages
-        void equip(const SlotId id, Item* const item, Verbosity verbosity);
+        void equip(
+                const SlotId id,
+                item::Item* const item,
+                Verbosity verbosity);
 
         void equip_from_backpack(const SlotId id, const size_t backpack_idx);
 
@@ -156,9 +175,9 @@ private:
         // another item of the same type in the backpack. The item pointer is
         // still valid if a stack occurs (it is the other item that gets
         // destroyed)
-        bool try_stack_in_backpack(Item* item);
+        bool try_stack_in_backpack(item::Item* item);
 
-        Actor* const m_owning_actor;
+        actor::Actor* const m_owning_actor;
 };
 
 #endif // INVENTORY_HPP

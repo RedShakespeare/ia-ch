@@ -17,7 +17,7 @@
 // -----------------------------------------------------------------------------
 // Private
 // -----------------------------------------------------------------------------
-static int hit_armor(Actor& actor, int dmg)
+static int hit_armor(actor::Actor& actor, int dmg)
 {
         // NOTE: We retrieve armor points BEFORE damaging the armor, since it
         // should reduce damage taken even if it gets damaged or destroyed
@@ -33,7 +33,7 @@ static int hit_armor(Actor& actor, int dmg)
                         TRACE_VERBOSE << "Has armor, running hit on armor"
                                       << std::endl;
 
-                        Armor* const armor = static_cast<Armor*>(item);
+                        auto* const armor = static_cast<item::Armor*>(item);
 
                         armor->hit(dmg);
 

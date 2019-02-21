@@ -27,49 +27,47 @@
 #include "saving.hpp"
 #include "text_format.hpp"
 
-namespace pact
-{
 
 // -----------------------------------------------------------------------------
 // Private
 // -----------------------------------------------------------------------------
-static std::vector<std::unique_ptr<Toll>> s_waiting_tolls;
+static std::vector<std::unique_ptr<pact::Toll>> s_waiting_tolls;
 
 
-static std::unique_ptr<Benefit> make_benefit(BenefitId id)
+static std::unique_ptr<pact::Benefit> make_benefit(pact::BenefitId id)
 {
         switch (id)
         {
-        case BenefitId::upgrade_spell:
-                return std::make_unique<UpgradeSpell>(id);
+        case pact::BenefitId::upgrade_spell:
+                return std::make_unique<pact::UpgradeSpell>(id);
 
-        case BenefitId::gain_hp:
-                return std::make_unique<GainHp>(id);
+        case pact::BenefitId::gain_hp:
+                return std::make_unique<pact::GainHp>(id);
 
-        case BenefitId::gain_sp:
-                return std::make_unique<GainSp>(id);
+        case pact::BenefitId::gain_sp:
+                return std::make_unique<pact::GainSp>(id);
 
-        case BenefitId::gain_xp:
-                return std::make_unique<GainXp>(id);
+        case pact::BenefitId::gain_xp:
+                return std::make_unique<pact::GainXp>(id);
 
-        case BenefitId::remove_insanity:
-                return std::make_unique<RemoveInsanity>(id);
+        case pact::BenefitId::remove_insanity:
+                return std::make_unique<pact::RemoveInsanity>(id);
 
-        case BenefitId::gain_item:
-                return std::make_unique<GainItem>(id);
+        case pact::BenefitId::gain_item:
+                return std::make_unique<pact::GainItem>(id);
 
-        // case BenefitId::recharge_item:
-        //         return std::make_unique<RechargeItem>(id);
+        // case pact::BenefitId::recharge_item:
+        //         return std::make_unique<pact::RechargeItem>(id);
 
-        case BenefitId::healed:
-                return std::make_unique<Healed>(id);
+        case pact::BenefitId::healed:
+                return std::make_unique<pact::Healed>(id);
 
-        case BenefitId::blessed:
-                return std::make_unique<Blessed>(id);
+        case pact::BenefitId::blessed:
+                return std::make_unique<pact::Blessed>(id);
 
-        case BenefitId::START_OF_BENEFITS:
-        case BenefitId::undefined:
-        case BenefitId::END:
+        case pact::BenefitId::START_OF_BENEFITS:
+        case pact::BenefitId::undefined:
+        case pact::BenefitId::END:
                 break;
         }
 
@@ -78,35 +76,35 @@ static std::unique_ptr<Benefit> make_benefit(BenefitId id)
         return nullptr;
 }
 
-static std::unique_ptr<Toll> make_toll(TollId id)
+static std::unique_ptr<pact::Toll> make_toll(pact::TollId id)
 {
         switch (id)
         {
-        case TollId::hp_reduced:
-                return std::make_unique<HpReduced>(id);
+        case pact::TollId::hp_reduced:
+                return std::make_unique<pact::HpReduced>(id);
 
-        case TollId::sp_reduced:
-                return std::make_unique<SpReduced>(id);
+        case pact::TollId::sp_reduced:
+                return std::make_unique<pact::SpReduced>(id);
 
-        case TollId::xp_reduced:
-                return std::make_unique<XpReduced>(id);
+        case pact::TollId::xp_reduced:
+                return std::make_unique<pact::XpReduced>(id);
 
-        // case TollId::unlearn_spell:
-        //         return std::make_unique<UnlearnSpell>(id);
+        // case pact::TollId::unlearn_spell:
+        //         return std::make_unique<pact::UnlearnSpell>(id);
 
-        case TollId::slowed:
-                return std::make_unique<Slowed>(id);
+        case pact::TollId::slowed:
+                return std::make_unique<pact::Slowed>(id);
 
-        case TollId::blind:
-                return std::make_unique<Blind>(id);
+        case pact::TollId::blind:
+                return std::make_unique<pact::Blind>(id);
 
-        case TollId::deaf:
-                return std::make_unique<Deaf>(id);
+        case pact::TollId::deaf:
+                return std::make_unique<pact::Deaf>(id);
 
-        case TollId::cursed:
-                return std::make_unique<Cursed>(id);
+        case pact::TollId::cursed:
+                return std::make_unique<pact::Cursed>(id);
 
-        case TollId::END:
+        case pact::TollId::END:
                 break;
         }
 
@@ -115,15 +113,16 @@ static std::unique_ptr<Toll> make_toll(TollId id)
         return nullptr;
 }
 
-static std::vector<std::unique_ptr<Benefit>> make_all_benefits_can_be_offered()
+static std::vector<std::unique_ptr<pact::Benefit>>
+make_all_benefits_can_be_offered()
 {
-        std::vector< std::unique_ptr<Benefit> > benefits;
+        std::vector< std::unique_ptr<pact::Benefit> > benefits;
 
-        for (int i = (int)BenefitId::START_OF_BENEFITS + 1;
-             i < (int)BenefitId::END;
+        for (int i = (int)pact::BenefitId::START_OF_BENEFITS + 1;
+             i < (int)pact::BenefitId::END;
              ++i)
         {
-                auto benefit = make_benefit((BenefitId)i);
+                auto benefit = make_benefit((pact::BenefitId)i);
 
                 // Robustness for release mode, should not happen
                 if (!benefit)
@@ -142,7 +141,7 @@ static std::vector<std::unique_ptr<Benefit>> make_all_benefits_can_be_offered()
         return benefits;
 }
 
-static std::unique_ptr<Benefit> make_random_benefit_can_be_offered()
+static std::unique_ptr<pact::Benefit> make_random_benefit_can_be_offered()
 {
         auto benefit_bucket = make_all_benefits_can_be_offered();
 
@@ -161,8 +160,8 @@ static std::unique_ptr<Benefit> make_random_benefit_can_be_offered()
 }
 
 static bool is_toll_allowing_benefit(
-        const Toll& toll,
-        const BenefitId benefit_id)
+        const pact::Toll& toll,
+        const pact::BenefitId benefit_id)
 {
         const auto benefits_not_allowed_with =
                 toll.benefits_not_allowed_with();
@@ -177,18 +176,18 @@ static bool is_toll_allowing_benefit(
         return is_allowing_benefit;
 }
 
-static std::vector<std::unique_ptr<Toll>> make_all_tolls_can_be_offered(
-        const BenefitId benefit_id_accepted)
+static std::vector<std::unique_ptr<pact::Toll>> make_all_tolls_can_be_offered(
+        const pact::BenefitId benefit_id_accepted)
 {
-        ASSERT((benefit_id_accepted != BenefitId::undefined));
-        ASSERT((benefit_id_accepted != BenefitId::START_OF_BENEFITS));
-        ASSERT((benefit_id_accepted != BenefitId::END));
+        ASSERT((benefit_id_accepted != pact::BenefitId::undefined));
+        ASSERT((benefit_id_accepted != pact::BenefitId::START_OF_BENEFITS));
+        ASSERT((benefit_id_accepted != pact::BenefitId::END));
 
-        std::vector<std::unique_ptr<Toll>> tolls;
+        std::vector<std::unique_ptr<pact::Toll>> tolls;
 
-        for (int i = 0; i < (int)TollId::END; ++i)
+        for (int i = 0; i < (int)pact::TollId::END; ++i)
         {
-                auto toll = make_toll((TollId)i);
+                auto toll = make_toll((pact::TollId)i);
 
                 // Robustness for release mode, should not happen
                 if (!toll)
@@ -213,8 +212,11 @@ static std::vector<std::unique_ptr<Toll>> make_all_tolls_can_be_offered(
 }
 
 // -----------------------------------------------------------------------------
-// Public
+// pact
 // -----------------------------------------------------------------------------
+namespace pact
+{
+
 void init()
 {
         cleanup();
@@ -635,7 +637,7 @@ void RemoveInsanity::run_effect()
 // -----------------------------------------------------------------------------
 GainItem::GainItem(BenefitId id) :
         Benefit(id),
-        m_item_id(ItemId::END)
+        m_item_id(item::Id::END)
 {
         const auto item_ids = find_allowed_item_ids();
 
@@ -652,12 +654,12 @@ std::string GainItem::offer_msg() const
 
 bool GainItem::is_allowed_to_offer_now() const
 {
-        return m_item_id != ItemId::END;
+        return m_item_id != item::Id::END;
 }
 
 void GainItem::run_effect()
 {
-        auto* const item = item_factory::make(m_item_id);
+        auto* const item = item::make(m_item_id);
 
         const std::string name_a = item->name(ItemRefType::a);
 
@@ -666,17 +668,17 @@ void GainItem::run_effect()
         map::g_player->m_inv.put_in_backpack(item);
 }
 
-std::vector<ItemId> GainItem::find_allowed_item_ids() const
+std::vector<item::Id> GainItem::find_allowed_item_ids() const
 {
-        std::vector<ItemId> ids;
+        std::vector<item::Id> ids;
 
-        for (size_t i = 0; i < (size_t)ItemId::END; ++i)
+        for (size_t i = 0; i < (size_t)item::Id::END; ++i)
         {
-                const auto& d = item_data::g_data[i];
+                const auto& d = item::g_data[i];
 
-                if (d.allow_spawn && d.value >= ItemValue::supreme_treasure)
+                if (d.allow_spawn && d.value >= item::Value::supreme_treasure)
                 {
-                        ids.push_back((ItemId)i);
+                        ids.push_back((item::Id)i);
                 }
         }
 

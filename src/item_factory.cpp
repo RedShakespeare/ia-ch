@@ -17,328 +17,328 @@
 #include "item_rod.hpp"
 #include "item_scroll.hpp"
 
-namespace item_factory
+namespace item
 {
 
-Item* make(const ItemId item_id, const int nr_items)
+Item* make(const Id item_id, const int nr_items)
 {
         Item* r = nullptr;
 
-        ItemData* d = &item_data::g_data[(size_t)item_id];
+        auto* d = &g_data[(size_t)item_id];
 
         // Sanity check
         ASSERT(d->id == item_id);
 
         switch (item_id)
         {
-        case ItemId::trapez:
+        case Id::trapez:
                 r = new Item(d);
                 break;
 
-        case ItemId::sawed_off:
-        case ItemId::pump_shotgun:
-        case ItemId::machine_gun:
-        case ItemId::pistol:
-        case ItemId::flare_gun:
-        case ItemId::spike_gun:
-        case ItemId::rock:
-        case ItemId::thr_knife:
-        case ItemId::iron_spike:
-        case ItemId::dagger:
-        case ItemId::hatchet:
-        case ItemId::club:
-        case ItemId::hammer:
-        case ItemId::machete:
-        case ItemId::axe:
-        case ItemId::pitch_fork:
-        case ItemId::sledge_hammer:
-        case ItemId::trap_dart:
-        case ItemId::trap_dart_poison:
-        case ItemId::trap_spear:
-        case ItemId::trap_spear_poison:
-        case ItemId::player_kick:
-        case ItemId::player_stomp:
-        case ItemId::player_punch:
-        case ItemId::intr_bite:
-        case ItemId::intr_claw:
-        case ItemId::intr_strike:
-        case ItemId::intr_punch:
-        case ItemId::intr_acid_spit:
-        case ItemId::intr_fire_breath:
-        case ItemId::intr_energy_breath:
-        case ItemId::intr_strangle:
-        case ItemId::intr_ghost_touch:
-        case ItemId::intr_sting:
-        case ItemId::intr_spear_thrust:
-        case ItemId::intr_net_throw:
-        case ItemId::intr_maul:
-        case ItemId::intr_pus_spew:
-        case ItemId::intr_acid_touch:
-        case ItemId::intr_fire_engulf:
-        case ItemId::intr_energy_engulf:
-        case ItemId::intr_spores:
-        case ItemId::intr_web_bola:
+        case Id::sawed_off:
+        case Id::pump_shotgun:
+        case Id::machine_gun:
+        case Id::pistol:
+        case Id::flare_gun:
+        case Id::spike_gun:
+        case Id::rock:
+        case Id::thr_knife:
+        case Id::iron_spike:
+        case Id::dagger:
+        case Id::hatchet:
+        case Id::club:
+        case Id::hammer:
+        case Id::machete:
+        case Id::axe:
+        case Id::pitch_fork:
+        case Id::sledge_hammer:
+        case Id::trap_dart:
+        case Id::trap_dart_poison:
+        case Id::trap_spear:
+        case Id::trap_spear_poison:
+        case Id::player_kick:
+        case Id::player_stomp:
+        case Id::player_punch:
+        case Id::intr_bite:
+        case Id::intr_claw:
+        case Id::intr_strike:
+        case Id::intr_punch:
+        case Id::intr_acid_spit:
+        case Id::intr_fire_breath:
+        case Id::intr_energy_breath:
+        case Id::intr_strangle:
+        case Id::intr_ghost_touch:
+        case Id::intr_sting:
+        case Id::intr_spear_thrust:
+        case Id::intr_net_throw:
+        case Id::intr_maul:
+        case Id::intr_pus_spew:
+        case Id::intr_acid_touch:
+        case Id::intr_fire_engulf:
+        case Id::intr_energy_engulf:
+        case Id::intr_spores:
+        case Id::intr_web_bola:
                 r = new Wpn(d);
                 break;
 
-        case ItemId::incinerator:
+        case Id::incinerator:
                 r = new Incinerator(d);
                 break;
 
-        case ItemId::mi_go_gun:
+        case Id::mi_go_gun:
                 r = new MiGoGun(d);
                 break;
 
-        case ItemId::spiked_mace:
+        case Id::spiked_mace:
                 r = new SpikedMace(d);
                 break;
 
-        case ItemId::shotgun_shell:
+        case Id::shotgun_shell:
                 r = new Ammo(d);
                 break;
 
-        case ItemId::drum_of_bullets:
-        case ItemId::pistol_mag:
-        case ItemId::incinerator_ammo:
+        case Id::drum_of_bullets:
+        case Id::pistol_mag:
+        case Id::incinerator_ammo:
                 r = new AmmoMag(d);
                 break;
 
-        case ItemId::zombie_dust:
+        case Id::zombie_dust:
                 r = new ZombieDust(d);
                 break;
 
-        case ItemId::dynamite:
+        case Id::dynamite:
                 r = new Dynamite(d);
                 break;
 
-        case ItemId::flare:
+        case Id::flare:
                 r = new Flare(d);
                 break;
 
-        case ItemId::molotov:
+        case Id::molotov:
                 r = new Molotov(d);
                 break;
 
-        case ItemId::smoke_grenade:
+        case Id::smoke_grenade:
                 r = new SmokeGrenade(d);
                 break;
 
-        case ItemId::player_ghoul_claw:
+        case Id::player_ghoul_claw:
                 r = new PlayerGhoulClaw(d);
                 break;
 
-        case ItemId::intr_raven_peck:
+        case Id::intr_raven_peck:
                 r = new RavenPeck(d);
                 break;
 
-        case ItemId::intr_vampiric_bite:
+        case Id::intr_vampiric_bite:
                 r = new VampiricBite(d);
                 break;
 
-        case ItemId::intr_mind_leech_sting:
+        case Id::intr_mind_leech_sting:
                 r = new MindLeechSting(d);
                 break;
 
-        case ItemId::intr_spirit_leech_sting:
+        case Id::intr_spirit_leech_sting:
                 r = new SpiritLeechSting(d);
                 break;
 
-        case ItemId::intr_life_leech_sting:
+        case Id::intr_life_leech_sting:
                 r = new LifeLeechSting(d);
                 break;
 
-        case ItemId::intr_dust_engulf:
+        case Id::intr_dust_engulf:
                 r = new DustEngulf(d);
                 break;
 
-        case ItemId::intr_snake_venom_spit:
+        case Id::intr_snake_venom_spit:
                 r = new SnakeVenomSpit(d);
                 break;
 
-        case ItemId::armor_flak_jacket:
-        case ItemId::armor_leather_jacket:
-        case ItemId::armor_iron_suit:
+        case Id::armor_flak_jacket:
+        case Id::armor_leather_jacket:
+        case Id::armor_iron_suit:
                 r = new Armor(d);
                 break;
 
-        case ItemId::armor_asb_suit:
+        case Id::armor_asb_suit:
                 r = new ArmorAsbSuit(d);
                 break;
 
-        case ItemId::armor_mi_go:
+        case Id::armor_mi_go:
                 r = new ArmorMiGo(d);
                 break;
 
-        case ItemId::gas_mask:
+        case Id::gas_mask:
                 r = new GasMask(d);
                 break;
 
-        case ItemId::scroll_aura_of_decay:
-        case ItemId::scroll_mayhem:
-        case ItemId::scroll_telep:
-        case ItemId::scroll_pest:
-        case ItemId::scroll_enfeeble:
-        case ItemId::scroll_slow:
-        case ItemId::scroll_terrify:
-        case ItemId::scroll_searching:
-        case ItemId::scroll_bless:
-        case ItemId::scroll_darkbolt:
-        case ItemId::scroll_aza_wrath:
-        case ItemId::scroll_opening:
-        case ItemId::scroll_res:
-        case ItemId::scroll_summon_mon:
-        case ItemId::scroll_light:
-        case ItemId::scroll_spectral_wpns:
-        case ItemId::scroll_transmut:
-        case ItemId::scroll_heal:
-        case ItemId::scroll_see_invis:
-        case ItemId::scroll_premonition:
-        case ItemId::scroll_slow_time:
-        case ItemId::scroll_spell_shield:
-                r = new Scroll(d);
+        case Id::scroll_aura_of_decay:
+        case Id::scroll_mayhem:
+        case Id::scroll_telep:
+        case Id::scroll_pest:
+        case Id::scroll_enfeeble:
+        case Id::scroll_slow:
+        case Id::scroll_terrify:
+        case Id::scroll_searching:
+        case Id::scroll_bless:
+        case Id::scroll_darkbolt:
+        case Id::scroll_aza_wrath:
+        case Id::scroll_opening:
+        case Id::scroll_res:
+        case Id::scroll_summon_mon:
+        case Id::scroll_light:
+        case Id::scroll_spectral_wpns:
+        case Id::scroll_transmut:
+        case Id::scroll_heal:
+        case Id::scroll_see_invis:
+        case Id::scroll_premonition:
+        case Id::scroll_slow_time:
+        case Id::scroll_spell_shield:
+                r = new scroll::Scroll(d);
                 break;
 
-        case ItemId::potion_vitality:
-                r = new PotionVitality(d);
+        case Id::potion_vitality:
+                r = new potion::Vitality(d);
                 break;
 
-        case ItemId::potion_spirit:
-                r = new PotionSpirit(d);
+        case Id::potion_spirit:
+                r = new potion::Spirit(d);
                 break;
 
-        case ItemId::potion_blindness:
-                r = new PotionBlindness(d);
+        case Id::potion_blindness:
+                r = new potion::Blindness(d);
                 break;
 
-        case ItemId::potion_fortitude:
-                r = new PotionFortitude(d);
+        case Id::potion_fortitude:
+                r = new potion::Fortitude(d);
                 break;
 
-        case ItemId::potion_paralyze:
-                r = new PotionParal(d);
+        case Id::potion_paralyze:
+                r = new potion::Paral(d);
                 break;
 
-        case ItemId::potion_r_elec:
-                r = new PotionRElec(d);
+        case Id::potion_r_elec:
+                r = new potion::RElec(d);
                 break;
 
-        case ItemId::potion_conf:
-                r = new PotionConf(d);
+        case Id::potion_conf:
+                r = new potion::Conf(d);
                 break;
 
-        case ItemId::potion_poison:
-                r = new PotionPoison(d);
+        case Id::potion_poison:
+                r = new potion::Poison(d);
                 break;
 
-        case ItemId::potion_insight:
-                r = new PotionInsight(d);
+        case Id::potion_insight:
+                r = new potion::Insight(d);
                 break;
 
-        case ItemId::potion_r_fire:
-                r = new PotionRFire(d);
+        case Id::potion_r_fire:
+                r = new potion::RFire(d);
                 break;
 
-        case ItemId::potion_curing:
-                r = new PotionCuring(d);
+        case Id::potion_curing:
+                r = new potion::Curing(d);
                 break;
 
-        case ItemId::potion_descent:
-                r = new PotionDescent(d);
+        case Id::potion_descent:
+                r = new potion::Descent(d);
                 break;
 
-        case ItemId::potion_invis:
-                r = new PotionInvis(d);
+        case Id::potion_invis:
+                r = new potion::Invis(d);
                 break;
 
-        case ItemId::device_blaster:
-                r = new DeviceBlaster(d);
+        case Id::device_blaster:
+                r = new device::Blaster(d);
                 break;
 
-        case ItemId::device_rejuvenator:
-                r = new DeviceRejuvenator(d);
+        case Id::device_rejuvenator:
+                r = new device::Rejuvenator(d);
                 break;
 
-        case ItemId::device_translocator:
-                r = new DeviceTranslocator(d);
+        case Id::device_translocator:
+                r = new device::Translocator(d);
                 break;
 
-        case ItemId::device_sentry_drone:
-                r = new DeviceSentryDrone(d);
+        case Id::device_sentry_drone:
+                r = new device::SentryDrone(d);
                 break;
 
-        case ItemId::device_deafening:
-                r = new DeviceDeafening(d);
+        case Id::device_deafening:
+                r = new device::Deafening(d);
                 break;
 
-        case ItemId::device_force_field:
-                r = new DeviceForceField(d);
+        case Id::device_force_field:
+                r = new device::ForceField(d);
                 break;
 
-        case ItemId::lantern:
-                r = new DeviceLantern(d);
+        case Id::lantern:
+                r = new device::Lantern(d);
                 break;
 
-        case ItemId::rod_curing:
-                r = new RodCuring(d);
+        case Id::rod_curing:
+                r = new rod::Curing(d);
                 break;
 
-        case ItemId::rod_opening:
-                r = new RodOpening(d);
+        case Id::rod_opening:
+                r = new rod::Opening(d);
                 break;
 
-        case ItemId::rod_bless:
-                r = new RodBless(d);
+        case Id::rod_bless:
+                r = new rod::Bless(d);
                 break;
 
-        case ItemId::rod_cloud_minds:
-                r = new RodCloudMinds(d);
+        case Id::rod_cloud_minds:
+                r = new rod::CloudMinds(d);
                 break;
 
-        case ItemId::rod_shockwave:
-                r = new RodShockwave(d);
+        case Id::rod_shockwave:
+                r = new rod::Shockwave(d);
                 break;
 
-        case ItemId::medical_bag:
+        case Id::medical_bag:
                 r = new MedicalBag(d);
                 break;
 
-        case ItemId::pharaoh_staff:
+        case Id::pharaoh_staff:
                 r = new PharaohStaff(d);
                 break;
 
-        case ItemId::refl_talisman:
+        case Id::refl_talisman:
                 r = new ReflTalisman(d);
                 break;
 
-        case ItemId::resurrect_talisman:
+        case Id::resurrect_talisman:
                 r = new ResurrectTalisman(d);
                 break;
 
-        case ItemId::tele_ctrl_talisman:
+        case Id::tele_ctrl_talisman:
                 r = new TeleCtrlTalisman(d);
                 break;
 
-        case ItemId::horn_of_malice:
+        case Id::horn_of_malice:
                 r = new HornOfMalice(d);
                 break;
 
-        case ItemId::horn_of_banishment:
+        case Id::horn_of_banishment:
                 r = new HornOfBanishment(d);
                 break;
 
-        case ItemId::clockwork:
+        case Id::clockwork:
                 r = new Clockwork(d);
                 break;
 
-        case ItemId::spirit_dagger:
+        case Id::spirit_dagger:
                 r = new SpiritDagger(d);
                 break;
 
-        case ItemId::orb_of_life:
+        case Id::orb_of_life:
                 r = new OrbOfLife(d);
                 break;
 
-        case ItemId::END:
+        case Id::END:
                 break;
         }
 
@@ -375,7 +375,7 @@ Item* make(const ItemId item_id, const int nr_items)
 
 void set_item_randomized_properties(Item* item)
 {
-        const ItemData& d = item->data();
+        const auto& d = item->data();
 
         ASSERT(d.type != ItemType::melee_wpn_intr &&
                d.type != ItemType::ranged_wpn_intr);
@@ -393,7 +393,7 @@ void set_item_randomized_properties(Item* item)
         if (d.ranged.is_ranged_wpn &&
             !d.ranged.has_infinite_ammo)
         {
-                Wpn* const wpn = static_cast<Wpn*>(item);
+                auto* const wpn = static_cast<Wpn*>(item);
 
                 if (wpn->data().ranged.max_ammo == 1)
                 {
@@ -433,9 +433,9 @@ void set_item_randomized_properties(Item* item)
         }
 
         // Vary number of Medical supplies
-        if (d.id == ItemId::medical_bag)
+        if (d.id == Id::medical_bag)
         {
-                MedicalBag* const medbag = static_cast<MedicalBag*>(item);
+                auto* const medbag = static_cast<MedicalBag*>(item);
 
                 const int nr_supplies_max = medbag->m_nr_supplies;
 
@@ -447,10 +447,9 @@ void set_item_randomized_properties(Item* item)
         }
 
         // Vary Lantern duration
-        if (d.id == ItemId::lantern)
+        if (d.id == Id::lantern)
         {
-                DeviceLantern* const lantern =
-                        static_cast<DeviceLantern*>(item);
+                auto* const lantern = static_cast<device::Lantern*>(item);
 
                 const int duration_max = lantern->nr_turns_left;
 
@@ -460,9 +459,9 @@ void set_item_randomized_properties(Item* item)
         }
 }
 
-Item* make_item_on_floor(const ItemId item_id, const P& pos)
+Item* make_item_on_floor(const Id item_id, const P& pos)
 {
-        Item* item = make(item_id);
+        auto* item = make(item_id);
 
         set_item_randomized_properties(item);
 
@@ -473,11 +472,11 @@ Item* make_item_on_floor(const ItemId item_id, const P& pos)
 
 Item* copy_item(const Item& item_to_copy)
 {
-        Item* new_item = make(item_to_copy.id());
+        auto* new_item = make(item_to_copy.id());
 
         *new_item = item_to_copy;
 
         return new_item;
 }
 
-} // item_factory
+} // item

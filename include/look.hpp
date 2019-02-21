@@ -12,14 +12,22 @@
 #include "colors.hpp"
 #include "info_screen_state.hpp"
 
-struct P;
+
+namespace actor
+{
 
 class Actor;
+
+} // actor
+
+
+struct P;
+
 
 class ViewActorDescr: public InfoScreenState
 {
 public:
-        ViewActorDescr(Actor& actor) :
+        ViewActorDescr(actor::Actor& actor) :
                 InfoScreenState(),
                 m_actor(actor) {}
 
@@ -45,8 +53,9 @@ private:
 
         int m_top_idx {0};
 
-        Actor& m_actor;
+        actor::Actor& m_actor;
 };
+
 
 namespace look
 {

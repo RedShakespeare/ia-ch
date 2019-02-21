@@ -10,14 +10,22 @@
 #include <climits>
 
 #include "array2.hpp"
-#include "game.hpp"
 #include "global.hpp"
 #include "io.hpp"
 #include "state.hpp"
 
-struct InputData;
-class Wpn;
+
+namespace item
+{
+
 class Item;
+class Wpn;
+
+} // item
+
+
+struct InputData;
+
 
 // -----------------------------------------------------------------------------
 // Abstract marker state base class
@@ -132,7 +140,7 @@ protected:
 class Aiming: public MarkerState
 {
 public:
-        Aiming(const P& origin, Wpn& wpn) :
+        Aiming(const P& origin, item::Wpn& wpn) :
                 MarkerState(origin),
                 m_wpn(wpn) {}
 
@@ -155,7 +163,7 @@ protected:
 
         int red_from_king_dist() const override;
 
-        Wpn& m_wpn;
+        item::Wpn& m_wpn;
 };
 
 // -----------------------------------------------------------------------------
@@ -164,7 +172,7 @@ protected:
 class Throwing: public MarkerState
 {
 public:
-        Throwing(const P& origin, Item& inv_item) :
+        Throwing(const P& origin, item::Item& inv_item) :
                 MarkerState(origin),
                 m_inv_item(&inv_item) {}
 
@@ -187,7 +195,7 @@ protected:
 
         int red_from_king_dist() const override;
 
-        Item* m_inv_item;
+        item::Item* m_inv_item;
 };
 
 // -----------------------------------------------------------------------------
@@ -196,7 +204,7 @@ protected:
 class ThrowingExplosive: public MarkerState
 {
 public:
-        ThrowingExplosive(const P& origin, const Item& explosive) :
+        ThrowingExplosive(const P& origin, const item::Item& explosive) :
                 MarkerState(origin),
                 m_explosive(explosive) {}
 
@@ -219,7 +227,7 @@ protected:
 
         int red_from_king_dist() const override;
 
-        const Item& m_explosive;
+        const item::Item& m_explosive;
 };
 
 // -----------------------------------------------------------------------------

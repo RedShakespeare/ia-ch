@@ -17,6 +17,7 @@
 #include "browser.hpp"
 #include "common_text.hpp"
 #include "drop.hpp"
+#include "game_time.hpp"
 #include "io.hpp"
 #include "item_factory.hpp"
 #include "item_potion.hpp"
@@ -38,7 +39,7 @@ static bool run_drop_query(const InvType inv_type, const size_t idx)
 {
         TRACE_FUNC_BEGIN;
 
-        Item* item = nullptr;
+        item::Item* item = nullptr;
 
         if (inv_type == InvType::slots)
         {
@@ -60,7 +61,7 @@ static bool run_drop_query(const InvType inv_type, const size_t idx)
                 return false;
         }
 
-        const ItemData& data = item->data();
+        const auto& data = item->data();
 
         msg_log::clear();
 
@@ -214,7 +215,7 @@ void InvState::draw_slot(
         p.x += 9; // Offset to leave room for slot label
 
         // Draw item
-        const Item* const item = slot.item;
+        const auto* const item = slot.item;
 
         if (item)
         {
@@ -298,7 +299,7 @@ void InvState::draw_backpack_item(
         p.x += 3;
 
         // Draw item
-        const Item* const item = map::g_player->m_inv.m_backpack[backpack_idx];
+        const auto* const item = map::g_player->m_inv.m_backpack[backpack_idx];
 
         // draw_item_symbol(*item, p);
 
@@ -342,7 +343,7 @@ void InvState::draw_backpack_item(
 void InvState::draw_weight_pct_and_dots(
         const P item_pos,
         const size_t item_name_len,
-        const Item& item,
+        const item::Item& item,
         const Color& item_name_color,
         const bool is_marked) const
 {
@@ -420,7 +421,7 @@ void InvState::draw_weight_pct_and_dots(
 }
 
 void InvState::draw_detailed_item_descr(
-        const Item* const item,
+        const item::Item* const item,
         const ItemRefAttInf att_inf) const
 {
         std::vector<ColoredString> lines;
@@ -452,7 +453,7 @@ void InvState::draw_detailed_item_descr(
                         ? "They are "
                         : "It is ";
 
-                const ItemData& d = item->data();
+                const auto& d = item->data();
 
                 // -------------------------------------------------------------
                 // Damage dice
@@ -621,7 +622,7 @@ void InvState::draw_detailed_item_descr(
 
 void InvState::activate(const size_t backpack_idx)
 {
-        Item* item = map::g_player->m_inv.m_backpack[backpack_idx];
+        auto* item = map::g_player->m_inv.m_backpack[backpack_idx];
 
         auto result = item->activate(map::g_player);
 
@@ -838,9 +839,9 @@ void Apply::on_start()
 
         for (size_t i = 0; i < backpack.size(); ++i)
         {
-                const Item* const item = backpack[i];
+                const auto* const item = backpack[i];
 
-                const ItemData& d = item->data();
+                const auto& d = item->data();
 
                 if (d.has_std_activate)
                 {
@@ -977,7 +978,7 @@ void Drop::on_start()
         // Filter slots
         for (InvSlot& slot : map::g_player->m_inv.m_slots)
         {
-                const Item* const item = slot.item;
+                const auto* const item = slot.item;
 
                 if (item)
                 {
@@ -1277,9 +1278,10 @@ void Equip::draw()
                 const size_t backpack_idx =
                         m_filtered_backpack_indexes[i];
 
-                Item* const item = map::g_player->m_inv.m_backpack[backpack_idx];
+                auto* const item =
+                        map::g_player->m_inv.m_backpack[backpack_idx];
 
-                const ItemData& d = item->data();
+                const auto& d = item->data();
 
                 ItemRefAttInf att_inf = ItemRefAttInf::none;
 
@@ -1392,11 +1394,11 @@ void SelectThrow::on_start()
         // Filter slots
         for (InvSlot& slot : map::g_player->m_inv.m_slots)
         {
-                const Item* const item = slot.item;
+                const auto* const item = slot.item;
 
                 if (item)
                 {
-                        const ItemData& d = item->data();
+                        const auto& d = item->data();
 
                         if (d.ranged.is_throwable_wpn)
                         {
@@ -1565,7 +1567,7 @@ void SelectThrow::update()
 
         const auto& inv = map::g_player->m_inv;
 
-        Item* item = nullptr;
+        item::Item* item = nullptr;
 
         if (inv_entry_marked.is_slot)
         {
@@ -1635,14 +1637,14 @@ void SelectIdentify::on_start()
         // Filter slots
         for (InvSlot& slot : map::g_player->m_inv.m_slots)
         {
-                const Item* const item = slot.item;
+                const auto* const item = slot.item;
 
                 if (!item)
                 {
                         continue;
                 }
 
-                const ItemData& d = item->data();
+                const auto& d = item->data();
 
                 if (!d.is_identified &&
                     is_allowed_item_type(d.type, m_item_types_allowed))
@@ -1658,9 +1660,9 @@ void SelectIdentify::on_start()
         // Filter backpack
         for (size_t i = 0; i < map::g_player->m_inv.m_backpack.size(); ++i)
         {
-                const Item* const item = map::g_player->m_inv.m_backpack[i];
+                const auto* const item = map::g_player->m_inv.m_backpack[i];
 
-                const ItemData& d = item->data();
+                const auto& d = item->data();
 
                 if (!d.is_identified &&
                     is_allowed_item_type(d.type, m_item_types_allowed))
@@ -1779,7 +1781,7 @@ void SelectIdentify::update()
         {
                 const auto& inv_entry_marked = m_filtered_inv[m_browser.y()];
 
-                Item* item_to_identify;
+                item::Item* item_to_identify;
 
                 if (inv_entry_marked.is_slot)
                 {

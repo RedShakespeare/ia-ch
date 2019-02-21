@@ -37,9 +37,167 @@ static SpellSkill get_player_skill_for_scroll(SpellId spell_id)
 }
 
 // -----------------------------------------------------------------------------
-// Scroll
+// scroll
 // -----------------------------------------------------------------------------
-Scroll::Scroll(ItemData* const item_data) :
+namespace scroll
+{
+
+void init()
+{
+        TRACE_FUNC_BEGIN;
+
+        // Init possible fake names
+        false_names_.clear();
+        false_names_.push_back("Cruensseasrjit");
+        false_names_.push_back("Rudsceleratus");
+        false_names_.push_back("Rudminuox");
+        false_names_.push_back("Cruo stragara-na");
+        false_names_.push_back("Praya navita");
+        false_names_.push_back("Pretia Cruento");
+        false_names_.push_back("Pestis Cruento");
+        false_names_.push_back("Cruento Pestis");
+        false_names_.push_back("Domus-bhaava");
+        false_names_.push_back("Acerbus-shatruex");
+        false_names_.push_back("Pretaanluxis");
+        false_names_.push_back("Praansilenux");
+        false_names_.push_back("Quodpipax");
+        false_names_.push_back("Lokemundux");
+        false_names_.push_back("Profanuxes");
+        false_names_.push_back("Shaantitus");
+        false_names_.push_back("Geropayati");
+        false_names_.push_back("Vilomaxus");
+        false_names_.push_back("Bhuudesco");
+        false_names_.push_back("Durbentia");
+        false_names_.push_back("Bhuuesco");
+        false_names_.push_back("Maravita");
+        false_names_.push_back("Infirmux");
+
+        std::vector<std::string> cmb;
+        cmb.clear();
+        cmb.push_back("Cruo");
+        cmb.push_back("Cruonit");
+        cmb.push_back("Cruentu");
+        cmb.push_back("Marana");
+        cmb.push_back("Domus");
+        cmb.push_back("Malax");
+        cmb.push_back("Caecux");
+        cmb.push_back("Eximha");
+        cmb.push_back("Vorox");
+        cmb.push_back("Bibox");
+        cmb.push_back("Pallex");
+        cmb.push_back("Profanx");
+        cmb.push_back("Invisuu");
+        cmb.push_back("Invisux");
+        cmb.push_back("Odiosuu");
+        cmb.push_back("Odiosux");
+        cmb.push_back("Vigra");
+        cmb.push_back("Crudux");
+        cmb.push_back("Desco");
+        cmb.push_back("Esco");
+        cmb.push_back("Gero");
+        cmb.push_back("Klaatu");
+        cmb.push_back("Barada");
+        cmb.push_back("Nikto");
+
+        const size_t nr_cmb_parts = cmb.size();
+
+        for (size_t i = 0; i < nr_cmb_parts; ++i)
+        {
+                for (size_t ii = 0; ii < nr_cmb_parts; ii++)
+                {
+                        if (i != ii)
+                        {
+                                false_names_.push_back(cmb[i] + " " + cmb[ii]);
+                        }
+                }
+        }
+
+        for (auto& d : item::g_data)
+        {
+                if (d.type == ItemType::scroll)
+                {
+                        // False name
+                        const size_t idx = rnd::idx(false_names_);
+
+                        const std::string& title = false_names_[idx];
+
+                        d.base_name_un_id.names[(size_t)ItemRefType::plain] =
+                                "Manuscript titled " + title;
+
+                        d.base_name_un_id.names[(size_t)ItemRefType::plural] =
+                                "Manuscripts titled " + title;
+
+                        d.base_name_un_id.names[(size_t)ItemRefType::a] =
+                                "a Manuscript titled " + title;
+
+                        false_names_.erase(false_names_.begin() + idx);
+
+                        // True name
+                        const std::unique_ptr<const Scroll> scroll(
+                                static_cast<const Scroll*>(
+                                        item::make(d.id, 1)));
+
+                        const std::string real_type_name = scroll->real_name();
+
+                        const std::string real_name =
+                                "Manuscript of " + real_type_name;
+
+                        const std::string real_name_plural =
+                                "Manuscripts of " + real_type_name;
+
+                        const std::string real_name_a =
+                                "a Manuscript of " + real_type_name;
+
+                        d.base_name.names[(size_t)ItemRefType::plain] =
+                                real_name;
+
+                        d.base_name.names[(size_t)ItemRefType::plural] =
+                                real_name_plural;
+
+                        d.base_name.names[(size_t)ItemRefType::a] =
+                                real_name_a;
+                }
+        }
+
+        TRACE_FUNC_END;
+}
+
+void save()
+{
+        for (size_t i = 0; i < (size_t)item::Id::END; ++i)
+        {
+                if (item::g_data[i].type != ItemType::scroll)
+                {
+                        continue;
+                }
+
+                auto& names = item::g_data[i].base_name_un_id.names;
+
+                saving::put_str(names[(size_t)ItemRefType::plain]);
+                saving::put_str(names[(size_t)ItemRefType::plural]);
+                saving::put_str(names[(size_t)ItemRefType::a]);
+        }
+}
+
+void load()
+{
+        for (size_t i = 0; i < (size_t)item::Id::END; ++i)
+        {
+                if (item::g_data[i].type != ItemType::scroll)
+                {
+                        continue;
+                }
+
+                auto& names = item::g_data[i].base_name_un_id.names;
+
+                names[(size_t)ItemRefType::plain] = saving::get_str();
+                names[(size_t)ItemRefType::plural] = saving::get_str();
+                names[(size_t)ItemRefType::a] = saving::get_str();
+        }
+}
+
+
+Scroll::Scroll(item::ItemData* const item_data) :
         Item(item_data),
         m_domain_feeling_dlvl_countdown(rnd::range(1, 3)),
         m_domain_feeling_turn_countdown(rnd::range(100, 200))
@@ -171,7 +329,7 @@ void Scroll::on_actor_turn_in_inv(const InvType inv_type)
         }
 }
 
-ConsumeItem Scroll::activate(Actor* const actor)
+ConsumeItem Scroll::activate(actor::Actor* const actor)
 {
         TRACE_FUNC_BEGIN;
 
@@ -298,161 +456,4 @@ std::string Scroll::name_inf_str() const
         return "";
 }
 
-namespace scroll_handling
-{
-
-void init()
-{
-        TRACE_FUNC_BEGIN;
-
-        // Init possible fake names
-        false_names_.clear();
-        false_names_.push_back("Cruensseasrjit");
-        false_names_.push_back("Rudsceleratus");
-        false_names_.push_back("Rudminuox");
-        false_names_.push_back("Cruo stragara-na");
-        false_names_.push_back("Praya navita");
-        false_names_.push_back("Pretia Cruento");
-        false_names_.push_back("Pestis Cruento");
-        false_names_.push_back("Cruento Pestis");
-        false_names_.push_back("Domus-bhaava");
-        false_names_.push_back("Acerbus-shatruex");
-        false_names_.push_back("Pretaanluxis");
-        false_names_.push_back("Praansilenux");
-        false_names_.push_back("Quodpipax");
-        false_names_.push_back("Lokemundux");
-        false_names_.push_back("Profanuxes");
-        false_names_.push_back("Shaantitus");
-        false_names_.push_back("Geropayati");
-        false_names_.push_back("Vilomaxus");
-        false_names_.push_back("Bhuudesco");
-        false_names_.push_back("Durbentia");
-        false_names_.push_back("Bhuuesco");
-        false_names_.push_back("Maravita");
-        false_names_.push_back("Infirmux");
-
-        std::vector<std::string> cmb;
-        cmb.clear();
-        cmb.push_back("Cruo");
-        cmb.push_back("Cruonit");
-        cmb.push_back("Cruentu");
-        cmb.push_back("Marana");
-        cmb.push_back("Domus");
-        cmb.push_back("Malax");
-        cmb.push_back("Caecux");
-        cmb.push_back("Eximha");
-        cmb.push_back("Vorox");
-        cmb.push_back("Bibox");
-        cmb.push_back("Pallex");
-        cmb.push_back("Profanx");
-        cmb.push_back("Invisuu");
-        cmb.push_back("Invisux");
-        cmb.push_back("Odiosuu");
-        cmb.push_back("Odiosux");
-        cmb.push_back("Vigra");
-        cmb.push_back("Crudux");
-        cmb.push_back("Desco");
-        cmb.push_back("Esco");
-        cmb.push_back("Gero");
-        cmb.push_back("Klaatu");
-        cmb.push_back("Barada");
-        cmb.push_back("Nikto");
-
-        const size_t nr_cmb_parts = cmb.size();
-
-        for (size_t i = 0; i < nr_cmb_parts; ++i)
-        {
-                for (size_t ii = 0; ii < nr_cmb_parts; ii++)
-                {
-                        if (i != ii)
-                        {
-                                false_names_.push_back(cmb[i] + " " + cmb[ii]);
-                        }
-                }
-        }
-
-        for (auto& d : item_data::g_data)
-        {
-                if (d.type == ItemType::scroll)
-                {
-                        // False name
-                        const size_t idx = rnd::idx(false_names_);
-
-                        const std::string& title = false_names_[idx];
-
-                        d.base_name_un_id.names[(size_t)ItemRefType::plain] =
-                                "Manuscript titled " + title;
-
-                        d.base_name_un_id.names[(size_t)ItemRefType::plural] =
-                                "Manuscripts titled " + title;
-
-                        d.base_name_un_id.names[(size_t)ItemRefType::a] =
-                                "a Manuscript titled " + title;
-
-                        false_names_.erase(false_names_.begin() + idx);
-
-                        // True name
-                        const std::unique_ptr<const Scroll> scroll(
-                                static_cast<const Scroll*>(
-                                        item_factory::make(d.id, 1)));
-
-                        const std::string real_type_name = scroll->real_name();
-
-                        const std::string real_name =
-                                "Manuscript of " + real_type_name;
-
-                        const std::string real_name_plural =
-                                "Manuscripts of " + real_type_name;
-
-                        const std::string real_name_a =
-                                "a Manuscript of " + real_type_name;
-
-                        d.base_name.names[(size_t)ItemRefType::plain] =
-                                real_name;
-
-                        d.base_name.names[(size_t)ItemRefType::plural] =
-                                real_name_plural;
-
-                        d.base_name.names[(size_t)ItemRefType::a] =
-                                real_name_a;
-                }
-        }
-
-        TRACE_FUNC_END;
-}
-
-void save()
-{
-        for (size_t i = 0; i < (size_t)ItemId::END; ++i)
-        {
-                if (item_data::g_data[i].type != ItemType::scroll)
-                {
-                        continue;
-                }
-
-                auto& names = item_data::g_data[i].base_name_un_id.names;
-
-                saving::put_str(names[(size_t)ItemRefType::plain]);
-                saving::put_str(names[(size_t)ItemRefType::plural]);
-                saving::put_str(names[(size_t)ItemRefType::a]);
-        }
-}
-
-void load()
-{
-        for (size_t i = 0; i < (size_t)ItemId::END; ++i)
-        {
-                if (item_data::g_data[i].type != ItemType::scroll)
-                {
-                        continue;
-                }
-
-                auto& names = item_data::g_data[i].base_name_un_id.names;
-
-                names[(size_t)ItemRefType::plain] = saving::get_str();
-                names[(size_t)ItemRefType::plural] = saving::get_str();
-                names[(size_t)ItemRefType::a] = saving::get_str();
-        }
-}
-
-} // scroll_handling
+} // scroll
