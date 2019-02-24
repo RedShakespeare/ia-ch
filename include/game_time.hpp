@@ -14,20 +14,20 @@
 
 namespace actor
 {
-
 class Actor;
+}
 
-} // actor
-
-
-class Mob;
+namespace terrain
+{
+class Terrain;
+}
 
 
 namespace game_time
 {
 
 extern std::vector<actor::Actor*> g_actors;
-extern std::vector<Mob*> g_mobs;
+extern std::vector<terrain::Terrain*> g_mobs;
 
 extern bool g_is_magic_descend_nxt_std_turn;
 
@@ -45,11 +45,11 @@ int turn_nr();
 
 actor::Actor* current_actor();
 
-std::vector<Mob*> mobs_at_pos(const P& p);
+std::vector<terrain::Terrain*> mobs_at_pos(const P& p);
 
-void add_mob(Mob* const f);
+void add_mob(terrain::Terrain* const f);
 
-void erase_mob(Mob* const f, const bool destroy_object);
+void erase_mob(terrain::Terrain* const f, const bool destroy_object);
 
 void erase_all_mobs();
 

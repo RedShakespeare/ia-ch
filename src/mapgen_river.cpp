@@ -7,7 +7,7 @@
 #include "mapgen.hpp"
 
 #include "debug.hpp"
-#include "feature_rigid.hpp"
+#include "terrain.hpp"
 #include "map.hpp"
 #include "misc.hpp"
 
@@ -114,9 +114,9 @@ void reserve_river(Region regions[3][3])
                 {
                         for (int y = y0; y <= y1; ++y)
                         {
-                                // Just put floor for now, river feature will be
+                                // Just put floor for now, river terrain will be
                                 // placed later
-                                map::put(new Floor(P(x, y)));
+                                map::put(new terrain::Floor(P(x, y)));
                                 map::g_room_map.at(x, y) = room;
                         }
                 }

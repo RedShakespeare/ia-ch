@@ -4,7 +4,7 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 // =============================================================================
 
-#include "feature_rigid.hpp"
+#include "terrain.hpp"
 
 #include <string>
 
@@ -15,7 +15,7 @@
 #include "common_text.hpp"
 #include "drop.hpp"
 #include "explosion.hpp"
-#include "feature_mob.hpp"
+#include "terrain_mob.hpp"
 #include "game.hpp"
 #include "game_time.hpp"
 #include "init.hpp"
@@ -64,15 +64,27 @@ static void scorch_actor(actor::Actor& actor)
 }
 
 // -----------------------------------------------------------------------------
-// Rigid
+// terrain
 // -----------------------------------------------------------------------------
-Rigid::Rigid(const P& p) :
-        Feature(p)
+namespace terrain
 {
 
+void Terrain::bump(actor::Actor& actor_bumping)
+{
+        if (!can_move(actor_bumping) && actor_bumping.is_player())
+        {
+                if (map::g_cells.at(m_pos).is_seen_by_player)
+                {
+                        msg_log::add(data().msg_on_player_blocked);
+                }
+                else
+                {
+                        msg_log::add(data().msg_on_player_blocked_blind);
+                }
+        }
 }
 
-AllowAction Rigid::pre_bump(actor::Actor& actor_bumping)
+AllowAction Terrain::pre_bump(actor::Actor& actor_bumping)
 {
         if (!actor_bumping.is_player() ||
             actor_bumping.m_properties.has(PropId::confused))
@@ -105,7 +117,7 @@ AllowAction Rigid::pre_bump(actor::Actor& actor_bumping)
         return AllowAction::yes;
 }
 
-void Rigid::on_new_turn()
+void Terrain::on_new_turn()
 {
         if (m_nr_turns_color_corrupted > 0)
         {
@@ -119,7 +131,7 @@ void Rigid::on_new_turn()
 
                 // TODO: Hit dead actors
 
-                // Hit actor standing on feature
+                // Hit actor standing on terrain
                 auto* actor = map::actor_at_pos(m_pos);
 
                 if (actor)
@@ -184,7 +196,7 @@ void Rigid::on_new_turn()
                         }
                 }
 
-                // Hit actors and adjacent features?
+                // Hit actors and adjacent terrains?
                 if (rnd::one_in(hit_adjacent_one_in_n))
                 {
                         actor = map::actor_at_pos(m_pos);
@@ -200,14 +212,14 @@ void Rigid::on_new_turn()
                         {
                                 auto& cell = map::g_cells.at(p);
 
-                                cell.rigid->hit(
+                                cell.terrain->hit(
                                         1, // Damage
                                         DmgType::fire,
                                         DmgMethod::elemental);
 
-                                if (cell.rigid->m_burn_state == BurnState::burning)
+                                if (cell.terrain->m_burn_state == BurnState::burning)
                                 {
-                                        cell.rigid->m_started_burning_this_turn = true;
+                                        cell.terrain->m_started_burning_this_turn = true;
 
                                         if (map::g_player->m_pos == p)
                                         {
@@ -237,7 +249,7 @@ void Rigid::on_new_turn()
         on_new_turn_hook();
 }
 
-void Rigid::try_start_burning(const bool is_msg_allowed)
+void Terrain::try_start_burning(const bool is_msg_allowed)
 {
         clear_gore();
 
@@ -262,38 +274,18 @@ void Rigid::try_start_burning(const bool is_msg_allowed)
         }
 }
 
-WasDestroyed Rigid::on_finished_burning()
+WasDestroyed Terrain::on_finished_burning()
 {
         return WasDestroyed::no;
 }
 
-DidOpen Rigid::open(actor::Actor* const actor_opening)
+void Terrain::hit(
+        const int dmg,
+        const DmgType dmg_type,
+        const DmgMethod dmg_method,
+        actor::Actor* actor)
 {
-        (void)actor_opening;
-
-        return DidOpen::no;
-}
-
-DidClose Rigid::close(actor::Actor* const actor_closing)
-{
-        (void)actor_closing;
-
-        return DidClose::no;
-}
-
-DidTriggerTrap Rigid::trigger_trap(actor::Actor* const actor)
-{
-        (void)actor;
-
-        return DidTriggerTrap::no;
-}
-
-void Rigid::hit(const int dmg,
-                const DmgType dmg_type,
-                const DmgMethod dmg_method,
-                actor::Actor* actor)
-{
-        bool is_feature_hit = true;
+        bool is_terrain_hit = true;
 
         if ((actor == map::g_player) &&
             ((dmg_method == DmgMethod::kicking) ||
@@ -302,23 +294,23 @@ void Rigid::hit(const int dmg,
         {
                 const bool is_blocking =
                         !is_walkable() &&
-                        (id() != FeatureId::stairs) &&
-                        (id() != FeatureId::liquid_deep);
+                        (id() != terrain::Id::stairs) &&
+                        (id() != terrain::Id::liquid_deep);
 
                 if (is_blocking)
                 {
                         if (dmg_method == DmgMethod::kicking)
                         {
-                                const bool can_see_feature =
+                                const bool can_see_terrain =
                                         !map::g_cells.at(m_pos)
                                         .is_seen_by_player;
 
-                                const std::string rigid_name =
-                                        can_see_feature
+                                const std::string terrain_name =
+                                        can_see_terrain
                                         ? "something"
                                         : name(Article::the);
 
-                                msg_log::add("I kick " + rigid_name + "!");
+                                msg_log::add("I kick " + terrain_name + "!");
 
                                 wham::try_sprain_player();
                         }
@@ -327,9 +319,9 @@ void Rigid::hit(const int dmg,
                                 msg_log::add("*WHAM!*");
                         }
                 }
-                else // The featyre is not blocking
+                else // The terrain is not blocking
                 {
-                        is_feature_hit = false;
+                        is_terrain_hit = false;
 
                         msg_log::add("*Whoosh!*");
 
@@ -337,7 +329,7 @@ void Rigid::hit(const int dmg,
                 }
         }
 
-        if (is_feature_hit)
+        if (is_terrain_hit)
         {
                 on_hit(
                         dmg,
@@ -347,7 +339,7 @@ void Rigid::hit(const int dmg,
         }
 }
 
-int Rigid::shock_when_adj() const
+int Terrain::shock_when_adj() const
 {
         int shock = base_shock_when_adj();
 
@@ -359,12 +351,12 @@ int Rigid::shock_when_adj() const
         return shock;
 }
 
-int Rigid::base_shock_when_adj() const
+int Terrain::base_shock_when_adj() const
 {
         return data().shock_when_adjacent;
 }
 
-void Rigid::try_put_gore()
+void Terrain::try_put_gore()
 {
         if (data().can_have_gore)
         {
@@ -428,12 +420,12 @@ void Rigid::try_put_gore()
         }
 }
 
-void Rigid::corrupt_color()
+void Terrain::corrupt_color()
 {
         m_nr_turns_color_corrupted = rnd::range(200, 220);
 }
 
-Color Rigid::color() const
+Color Terrain::color() const
 {
         if (m_burn_state == BurnState::burning)
         {
@@ -465,7 +457,7 @@ Color Rigid::color() const
         }
 }
 
-Color Rigid::color_bg() const
+Color Terrain::color_bg() const
 {
         switch (m_burn_state)
         {
@@ -484,14 +476,14 @@ Color Rigid::color_bg() const
         return colors::yellow();
 }
 
-void Rigid::clear_gore()
+void Terrain::clear_gore()
 {
         m_gore_tile = TileId::END;
         m_gore_character = ' ';
         m_is_bloody = false;
 }
 
-void Rigid::add_light(Array2<bool>& light) const
+void Terrain::add_light(Array2<bool>& light) const
 {
         if (m_burn_state == BurnState::burning)
         {
@@ -509,11 +501,16 @@ void Rigid::add_light(Array2<bool>& light) const
         add_light_hook(light);
 }
 
+Color Terrain::color_bg_default() const
+{
+        return colors::black();
+}
+
 // -----------------------------------------------------------------------------
 // Floor
 // -----------------------------------------------------------------------------
 Floor::Floor(const P& p) :
-        Rigid(p),
+        Terrain(p),
         m_type(FloorType::common) {}
 
 void Floor::on_hit(
@@ -594,7 +591,7 @@ Color Floor::color_default() const
 // Wall
 // -----------------------------------------------------------------------------
 Wall::Wall(const P& p) :
-        Rigid(p),
+        Terrain(p),
         m_type(WallType::common),
         m_is_mossy(false) {}
 
@@ -617,8 +614,8 @@ void Wall::on_hit(
 
                                 if (map::is_pos_inside_map(p))
                                 {
-                                        if (map::g_cells.at(p).rigid->id() ==
-                                            FeatureId::door)
+                                        if (map::g_cells.at(p).terrain->id() ==
+                                            terrain::Id::door)
                                         {
                                                 map::put(new RubbleLow(p));
                                         }
@@ -842,7 +839,7 @@ void Wall::set_moss_grown()
 // High rubble
 // -----------------------------------------------------------------------------
 RubbleHigh::RubbleHigh(const P& p) :
-        Rigid(p) {}
+        Terrain(p) {}
 
 void RubbleHigh::on_hit(
         const int dmg,
@@ -904,7 +901,7 @@ Color RubbleHigh::color_default() const
 // Low rubble
 // -----------------------------------------------------------------------------
 RubbleLow::RubbleLow(const P& p) :
-        Rigid(p) {}
+        Terrain(p) {}
 
 void RubbleLow::on_hit(
         const int dmg,
@@ -948,7 +945,7 @@ Color RubbleLow::color_default() const
 // Bones
 // -----------------------------------------------------------------------------
 Bones::Bones(const P& p) :
-        Rigid(p) {}
+        Terrain(p) {}
 
 void Bones::on_hit(
         const int dmg,
@@ -983,7 +980,7 @@ Color Bones::color_default() const
 // Grave
 // -----------------------------------------------------------------------------
 GraveStone::GraveStone(const P& p) :
-        Rigid(p) {}
+        Terrain(p) {}
 
 void GraveStone::on_hit(
         const int dmg,
@@ -1023,7 +1020,8 @@ Color GraveStone::color_default() const
 // -----------------------------------------------------------------------------
 // Church bench
 // -----------------------------------------------------------------------------
-ChurchBench::ChurchBench(const P& p) : Rigid(p) {}
+ChurchBench::ChurchBench(const P& p) :
+        Terrain(p) {}
 
 void ChurchBench::on_hit(
         const int dmg,
@@ -1056,7 +1054,7 @@ Color ChurchBench::color_default() const
 // Statue
 // -----------------------------------------------------------------------------
 Statue::Statue(const P& p) :
-        Rigid(p),
+        Terrain(p),
         m_type(rnd::one_in(8) ? StatueType::ghoul : StatueType::common)
 {
 
@@ -1135,13 +1133,13 @@ void Statue::on_hit(
                         }
                 }
 
-                const auto rigid_id = map::g_cells.at(dst_pos).rigid->id();
+                const auto terrain_id = map::g_cells.at(dst_pos).terrain->id();
 
                 // NOTE: This is kinda hacky, but the rubble is mostly just for
                 // decoration anyway, so it doesn't really matter.
-                if (rigid_id == FeatureId::floor ||
-                    rigid_id == FeatureId::grass ||
-                    rigid_id == FeatureId::carpet)
+                if (terrain_id == terrain::Id::floor ||
+                    terrain_id == terrain::Id::grass ||
+                    terrain_id == terrain::Id::carpet)
                 {
                         map::put(new RubbleLow(dst_pos));
                 }
@@ -1188,7 +1186,7 @@ Color Statue::color_default() const
 // Stalagmite
 // -----------------------------------------------------------------------------
 Stalagmite::Stalagmite(const P& p) :
-        Rigid(p) {}
+        Terrain(p) {}
 
 void Stalagmite::on_hit(
         const int dmg,
@@ -1221,7 +1219,7 @@ Color Stalagmite::color_default() const
 // Stairs
 // -----------------------------------------------------------------------------
 Stairs::Stairs(const P& p) :
-        Rigid(p) {}
+        Terrain(p) {}
 
 void Stairs::on_hit(
         const int dmg,
@@ -1348,7 +1346,7 @@ Color Bridge::color_default() const
 // Shallow liquid
 // -----------------------------------------------------------------------------
 LiquidShallow::LiquidShallow(const P& p) :
-        Rigid(p),
+        Terrain(p),
         m_type(LiquidType::water) {}
 
 void LiquidShallow::on_hit(
@@ -1467,7 +1465,7 @@ Color LiquidShallow::color_bg_default() const
 // Deep liquid
 // -----------------------------------------------------------------------------
 LiquidDeep::LiquidDeep(const P& p) :
-        Rigid(p),
+        Terrain(p),
         m_type(LiquidType::water) {}
 
 void LiquidDeep::on_hit(
@@ -1642,7 +1640,7 @@ bool LiquidDeep::can_move(const actor::Actor& actor) const
 // Chasm
 // -----------------------------------------------------------------------------
 Chasm::Chasm(const P& p) :
-        Rigid(p) {}
+        Terrain(p) {}
 
 void Chasm::on_hit(
         const int dmg,
@@ -1674,9 +1672,9 @@ Color Chasm::color_default() const
 // Lever
 // -----------------------------------------------------------------------------
 Lever::Lever(const P& p) :
-        Rigid(p),
+        Terrain(p),
         m_is_left_pos(true),
-        m_linked_feature(nullptr)  {}
+        m_linked_terrain(nullptr)  {}
 
 void Lever::on_hit(
         const int dmg,
@@ -1777,10 +1775,10 @@ void Lever::toggle()
 {
         m_is_left_pos = !m_is_left_pos;
 
-        // Signal that the lever has been pulled to any linked feature
-        if (m_linked_feature)
+        // Signal that the lever has been pulled to any linked terrain
+        if (m_linked_terrain)
         {
-                m_linked_feature->on_lever_pulled(this);
+                m_linked_terrain->on_lever_pulled(this);
         }
 
         // Set all sibblings to same status as this lever
@@ -1794,7 +1792,7 @@ void Lever::toggle()
 // Altar
 // -----------------------------------------------------------------------------
 Altar::Altar(const P& p) :
-        Rigid(p) {}
+        Terrain(p) {}
 
 void Altar::bump(actor::Actor& actor_bumping)
 {
@@ -1881,7 +1879,7 @@ Color Altar::color_default() const
 // Carpet
 // -----------------------------------------------------------------------------
 Carpet::Carpet(const P& p) :
-        Rigid(p) {}
+        Terrain(p) {}
 
 void Carpet::on_hit(
         const int dmg,
@@ -1928,7 +1926,7 @@ Color Carpet::color_default() const
 // Grass
 // -----------------------------------------------------------------------------
 Grass::Grass(const P& p) :
-        Rigid(p),
+        Terrain(p),
         m_type(GrassType::common)
 {
         if (rnd::one_in(5))
@@ -2012,7 +2010,7 @@ Color Grass::color_default() const
 // Bush
 // -----------------------------------------------------------------------------
 Bush::Bush(const P& p) :
-        Rigid(p),
+        Terrain(p),
         m_type(GrassType::common)
 {
         if (rnd::one_in(5))
@@ -2101,7 +2099,7 @@ Color Bush::color_default() const
 // Vines
 // -----------------------------------------------------------------------------
 Vines::Vines(const P& p) :
-        Rigid(p) {}
+        Terrain(p) {}
 
 void Vines::on_hit(
         const int dmg,
@@ -2163,7 +2161,7 @@ Color Vines::color_default() const
 // Chains
 // -----------------------------------------------------------------------------
 Chains::Chains(const P& p) :
-        Rigid(p) {}
+        Terrain(p) {}
 
 std::string Chains::name(const Article article) const
 {
@@ -2249,7 +2247,7 @@ void Chains::on_hit(
 // Grate
 // -----------------------------------------------------------------------------
 Grate::Grate(const P& p) :
-        Rigid(p) {}
+        Terrain(p) {}
 
 void Grate::on_hit(
         const int dmg,
@@ -2270,7 +2268,7 @@ void Grate::on_hit(
 
                                 if (map::is_pos_inside_map(p))
                                 {
-                                        if (map::g_cells.at(p).rigid->id() == FeatureId::door)
+                                        if (map::g_cells.at(p).terrain->id() == terrain::Id::door)
                                         {
                                                 map::put(new RubbleLow(p));
                                         }
@@ -2311,7 +2309,7 @@ Color Grate::color_default() const
 // Tree
 // -----------------------------------------------------------------------------
 Tree::Tree(const P& p) :
-        Rigid(p) {}
+        Terrain(p) {}
 
 void Tree::on_hit(
         const int dmg,
@@ -2440,10 +2438,10 @@ void Brazier::on_hit(
 
                 // NOTE: "this" is now deleted!
 
-                const auto* const tgt_f = map::g_cells.at(dst_pos).rigid;
+                const auto* const tgt_f = map::g_cells.at(dst_pos).terrain;
 
-                if (tgt_f->id() != FeatureId::chasm &&
-                    tgt_f->id() != FeatureId::liquid_deep)
+                if (tgt_f->id() != terrain::Id::chasm &&
+                    tgt_f->id() != terrain::Id::liquid_deep)
                 {
                         P expl_pos;
 
@@ -2511,8 +2509,9 @@ ItemContainer::~ItemContainer()
         }
 }
 
-void ItemContainer::init(const FeatureId feature_id,
-                         const int nr_items_to_attempt)
+void ItemContainer::init(
+        const terrain::Id terrain_id,
+        const int nr_items_to_attempt)
 {
         for (auto* item : m_items)
         {
@@ -2544,13 +2543,14 @@ void ItemContainer::init(const FeatureId feature_id,
                         const bool can_spawn_in_container =
                                 std::find(begin(item_d.native_containers),
                                           end(item_d.native_containers),
-                                          feature_id) !=
+                                          terrain_id) !=
                                 end(item_d.native_containers);
 
 
                         if (!can_spawn_in_container)
                         {
-                                // Item not allowed to spawn in this feature - next item!
+                                // Item not allowed to spawn in this terrain -
+                                // next item!
                                 continue;
                         }
 
@@ -2589,7 +2589,7 @@ void ItemContainer::init(const FeatureId feature_id,
 }
 
 void ItemContainer::open(
-        const P& feature_pos,
+        const P& terrain_pos,
         actor::Actor* const actor_opening)
 {
         if (actor_opening)
@@ -2641,7 +2641,7 @@ void ItemContainer::open(
                         }
                         else if (answer == BinaryAnswer::no)
                         {
-                                item_drop::drop_item_on_map(feature_pos, *item);
+                                item_drop::drop_item_on_map(terrain_pos, *item);
 
                                 item->on_player_found();
                         }
@@ -2660,7 +2660,7 @@ void ItemContainer::open(
                                 map::g_player->m_inv.put_in_backpack(
                                         spawned_ammo);
 
-                                item_drop::drop_item_on_map(feature_pos, *wpn);
+                                item_drop::drop_item_on_map(terrain_pos, *wpn);
                         }
 
                         msg_log::more_prompt();
@@ -2672,7 +2672,7 @@ void ItemContainer::open(
         {
                 for (auto* item : m_items)
                 {
-                        item_drop::drop_item_on_map(feature_pos, *item);
+                        item_drop::drop_item_on_map(terrain_pos, *item);
                 }
         }
 
@@ -2703,7 +2703,7 @@ void ItemContainer::destroy_single_fragile()
 // Tomb
 // -----------------------------------------------------------------------------
 Tomb::Tomb(const P& p) :
-        Rigid(p),
+        Terrain(p),
         m_is_open(false),
         m_is_trait_known(false),
         m_push_lid_one_in_n(rnd::range(4, 10)),
@@ -2731,7 +2731,7 @@ Tomb::Tomb(const P& p) :
         }
 
         m_item_container.init(
-                FeatureId::tomb,
+                terrain::Id::tomb,
                 rnd::range(nr_items_min, nr_items_max));
 
         // Set appearance - sometimes we base the appearance on the value of the
@@ -3203,7 +3203,7 @@ DidTriggerTrap Tomb::trigger_trap(actor::Actor* const actor)
 // Chest
 // -----------------------------------------------------------------------------
 Chest::Chest(const P& p) :
-        Rigid(p),
+        Terrain(p),
         m_is_open(false),
         m_is_locked(false),
         m_matl(ChestMatl::wood)
@@ -3235,7 +3235,7 @@ Chest::Chest(const P& p) :
         }
 
         m_item_container.init(
-                FeatureId::chest,
+                terrain::Id::chest,
                 rnd::range(nr_items_min, nr_items_max));
 
         const int locked_numer =
@@ -3335,10 +3335,11 @@ void Chest::hit(const int dmg,
                         {
                                 // If player is blind, call the parent hit function instead
                                 // (generic kicking)
-                                Rigid::hit(dmg,
-                                           dmg_type,
-                                           dmg_method,
-                                           map::g_player);
+                                Terrain::hit(
+                                        dmg,
+                                        dmg_type,
+                                        dmg_method,
+                                        map::g_player);
                         }
                         else if (m_is_open)
                         {
@@ -3502,7 +3503,7 @@ Color Chest::color_default() const
 // Fountain
 // -----------------------------------------------------------------------------
 Fountain::Fountain(const P& p) :
-        Rigid(p),
+        Terrain(p),
         m_fountain_effect(FountainEffect::END),
         m_has_drinks_left(true)
 {
@@ -3782,7 +3783,7 @@ void Fountain::curse()
 // Cabinet
 // -----------------------------------------------------------------------------
 Cabinet::Cabinet(const P& p) :
-        Rigid(p),
+        Terrain(p),
         m_is_open(false)
 {
         // Contained items
@@ -3806,7 +3807,7 @@ Cabinet::Cabinet(const P& p) :
         }
 
         m_item_container.init(
-                FeatureId::cabinet,
+                terrain::Id::cabinet,
                 rnd::range(nr_items_min, nr_items_max));
 }
 
@@ -3914,7 +3915,7 @@ Color Cabinet::color_default() const
 // Bookshelf
 // -----------------------------------------------------------------------------
 Bookshelf::Bookshelf(const P& p) :
-        Rigid(p),
+        Terrain(p),
         m_is_looted(false)
 {
         // Contained items
@@ -3938,7 +3939,7 @@ Bookshelf::Bookshelf(const P& p) :
         }
 
         m_item_container.init(
-                FeatureId::bookshelf,
+                terrain::Id::bookshelf,
                 rnd::range(nr_items_min, nr_items_max));
 }
 
@@ -4024,7 +4025,7 @@ Color Bookshelf::color_default() const
 // AlchemistBench
 // -----------------------------------------------------------------------------
 AlchemistBench::AlchemistBench(const P& p) :
-        Rigid(p),
+        Terrain(p),
         m_is_looted(false)
 {
         // Contained items
@@ -4048,7 +4049,7 @@ AlchemistBench::AlchemistBench(const P& p) :
         }
 
         m_item_container.init(
-                FeatureId::alchemist_bench,
+                terrain::Id::alchemist_bench,
                 rnd::range(nr_items_min, nr_items_max));
 }
 
@@ -4141,13 +4142,13 @@ Color AlchemistBench::color_default() const
 // Cocoon
 // -----------------------------------------------------------------------------
 Cocoon::Cocoon(const P& p) :
-        Rigid(p),
+        Terrain(p),
         m_is_trapped(rnd::fraction(6, 10)),
         m_is_open(false)
 {
         if (m_is_trapped)
         {
-                m_item_container.init(FeatureId::cocoon, 0);
+                m_item_container.init(terrain::Id::cocoon, 0);
         }
         else
         {
@@ -4168,7 +4169,7 @@ Cocoon::Cocoon(const P& p) :
                          : 0);
 
                 m_item_container.init(
-                        FeatureId::cocoon,
+                        terrain::Id::cocoon,
                         rnd::range(nr_items_min, nr_items_max));
         }
 }
@@ -4352,3 +4353,5 @@ Color Cocoon::color_default() const
 {
         return colors::white();
 }
+
+} // terrain

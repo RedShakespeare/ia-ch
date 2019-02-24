@@ -4,10 +4,10 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 // =============================================================================
 
-#ifndef FEATURE_DOOR_HPP
-#define FEATURE_DOOR_HPP
+#ifndef TERRAIN_DOOR_HPP
+#define TERRAIN_DOOR_HPP
 
-#include "feature_rigid.hpp"
+#include "terrain.hpp"
 
 
 enum class DoorSpawnState
@@ -28,29 +28,32 @@ enum class DoorType
 };
 
 
-class Door: public Rigid
+namespace terrain
+{
+
+class Door: public Terrain
 {
 public:
-        Door(const P& feature_pos,
+        Door(const P& terrain_pos,
 
              // NOTE: This should always be nullptr if type is "gate"
-             const Wall* const mimic_feature,
+             const Wall* const mimic_terrain,
 
              DoorType type = DoorType::wood,
 
              // NOTE: For gates, this should never be any "secret" variant
              DoorSpawnState spawn_state = DoorSpawnState::any);
 
-        Door(const P& feature_pos) :
-                Rigid(feature_pos) {}
+        Door(const P& terrain_pos) :
+                Terrain(terrain_pos) {}
 
         Door() = delete;
 
         ~Door();
 
-        FeatureId id() const override
+        Id id() const override
         {
-                return FeatureId::door;
+                return Id::door;
         }
 
         // Sometimes we want to refer to a door as just a "door", instead of
@@ -127,7 +130,7 @@ public:
 
         const Wall* mimic() const
         {
-                return m_mimic_feature;
+                return m_mimic_terrain;
         }
 
         DoorType type() const
@@ -144,7 +147,7 @@ private:
                 const DmgMethod dmg_method,
                 actor::Actor* const actor) override;
 
-        const Wall* const m_mimic_feature {nullptr};
+        const Wall* const m_mimic_terrain {nullptr};
 
         int m_nr_spikes {0};
 
@@ -156,4 +159,6 @@ private:
 
 }; // Door
 
-#endif // FEATURE_DOOR_HPP
+} // terrain
+
+#endif // TERRAIN_DOOR_HPP

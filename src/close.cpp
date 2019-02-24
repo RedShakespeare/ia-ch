@@ -9,8 +9,7 @@
 #include "actor.hpp"
 #include "actor_player.hpp"
 #include "common_text.hpp"
-#include "feature.hpp"
-#include "feature_door.hpp"
+#include "terrain_door.hpp"
 #include "io.hpp"
 #include "map.hpp"
 #include "msg_log.hpp"
@@ -20,9 +19,9 @@
 // -----------------------------------------------------------------------------
 // Private
 // -----------------------------------------------------------------------------
-static void player_try_close_or_jam_feature(Feature* const feature)
+static void player_try_close_or_jam_terrain(terrain::Terrain* const terrain)
 {
-        if (feature->id() != FeatureId::door)
+        if (terrain->id() != terrain::Id::door)
         {
                 const bool player_can_see =
                         map::g_player->m_properties.allow_see();
@@ -43,7 +42,7 @@ static void player_try_close_or_jam_feature(Feature* const feature)
 
         // This is a door
 
-        Door* const door = static_cast<Door*>(feature);
+        auto* const door = static_cast<terrain::Door*>(terrain);
 
         if (door->is_open())
         {
@@ -90,7 +89,7 @@ static void player_try_close_or_jam_feature(Feature* const feature)
                         msg_log::add("I have nothing to jam the door with.");
                 }
         }
-} // player_try_close_or_jam_feature
+} // player_try_close_or_jam_terrain
 
 // -----------------------------------------------------------------------------
 // close_door
@@ -115,7 +114,7 @@ void player_try_close_or_jam()
                 // Valid direction
                 const P p(map::g_player->m_pos + dir_utils::offset(input_dir));
 
-                player_try_close_or_jam_feature(map::g_cells.at(p).rigid);
+                player_try_close_or_jam_terrain(map::g_cells.at(p).terrain);
         }
 }
 

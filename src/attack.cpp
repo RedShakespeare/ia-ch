@@ -12,9 +12,9 @@
 #include "actor_player.hpp"
 #include "attack_data.hpp"
 #include "drop.hpp"
-#include "feature_mob.hpp"
-#include "feature_rigid.hpp"
-#include "feature_trap.hpp"
+#include "terrain_mob.hpp"
+#include "terrain.hpp"
+#include "terrain_trap.hpp"
 #include "game_time.hpp"
 #include "init.hpp"
 #include "io.hpp"
@@ -50,7 +50,7 @@ struct Projectile
         bool is_dead = false;
         int obstructed_in_path_idx = -1;
         actor::Actor* actor_hit = nullptr;
-        Feature* feature_hit = nullptr;
+        terrain::Terrain* terrain_hit = nullptr;
         bool is_seen_by_player = false;
         TileId tile = TileId::END;
         char character = -1;
@@ -645,7 +645,7 @@ static void emit_projectile_hit_actor_snd(const P& pos)
         snd.run();
 }
 
-static void emit_projectile_hit_feature_snd(
+static void emit_projectile_hit_terrain_snd(
         const P& pos,
         const item::Wpn& wpn)
 {
@@ -690,13 +690,13 @@ static actor::Actor* get_actor_hit_by_projectile(const Projectile& projectile)
         return nullptr;
 }
 
-static Feature* get_feature_blocking_projectile(const P& pos)
+static terrain::Terrain* get_terrain_blocking_projectile(const P& pos)
 {
-        auto* rigid = map::g_cells.at(pos).rigid;
+        auto* terrain = map::g_cells.at(pos).terrain;
 
-        if (!rigid->is_projectile_passable())
+        if (!terrain->is_projectile_passable())
         {
-                return rigid;
+                return terrain;
         }
 
         for (auto* const mob : game_time::g_mobs)
@@ -710,7 +710,8 @@ static Feature* get_feature_blocking_projectile(const P& pos)
         return nullptr;
 }
 
-static Feature* get_ground_blocking_projectile(const Projectile& projectile)
+static terrain::Terrain* get_ground_blocking_projectile(
+        const Projectile& projectile)
 {
         // Hit the ground?
         const auto& att_data = *projectile.att_data;
@@ -723,7 +724,7 @@ static Feature* get_ground_blocking_projectile(const Projectile& projectile)
 
         if (has_hit_ground)
         {
-                return map::g_cells.at(pos).rigid;
+                return map::g_cells.at(pos).terrain;
         }
 
         return nullptr;
@@ -830,15 +831,15 @@ static void hit_actor_with_projectile(
         }
 }
 
-static void hit_feature_with_projectile(
+static void hit_terrain_with_projectile(
         const P& prev_pos,
         const P& current_pos,
         item::Wpn& wpn)
 {
         // TODO: This was in the 'shotgun' function (but only the shotgun was
-        // calling the feature 'hit' method in attack.cpp - the normal
+        // calling the terrain 'hit' method in attack.cpp - the normal
         // projectile firing did not do this). Reimplement somehow.
-        // cell.rigid->hit(
+        // cell.terrain->hit(
         //         att_data.dmg,
         //         DmgType::physical,
         //         DmgMethod::shotgun,
@@ -1017,7 +1018,7 @@ static void run_projectile_hits(ProjectileFireData& fire_data)
                         continue;
                 }
 
-                if (projectile.feature_hit)
+                if (projectile.terrain_hit)
                 {
                         const int prev_idx = projectile.path_idx - 1;
 
@@ -1032,7 +1033,7 @@ static void run_projectile_hits(ProjectileFireData& fire_data)
 
                         const P& current_pos = projectile.pos;
 
-                        hit_feature_with_projectile(
+                        hit_terrain_with_projectile(
                                 prev_pos,
                                 current_pos,
                                 *fire_data.wpn);
@@ -1109,20 +1110,20 @@ static void update_projectile_states(ProjectileFireData& fire_data)
                         continue;
                 }
 
-                projectile.feature_hit =
-                        get_feature_blocking_projectile(projectile.pos);
+                projectile.terrain_hit =
+                        get_terrain_blocking_projectile(projectile.pos);
 
-                if (projectile.feature_hit)
+                if (projectile.terrain_hit)
                 {
                         projectile.obstructed_in_path_idx = projectile.path_idx;
 
                         continue;
                 }
 
-                projectile.feature_hit =
+                projectile.terrain_hit =
                         get_ground_blocking_projectile(projectile);
 
-                if (projectile.feature_hit)
+                if (projectile.terrain_hit)
                 {
                         projectile.obstructed_in_path_idx = projectile.path_idx;
 
@@ -1177,10 +1178,11 @@ static void run_projectiles_messages_and_sounds(
                         continue;
                 }
 
-                if (projectile.feature_hit)
+                if (projectile.terrain_hit)
                 {
-                        emit_projectile_hit_feature_snd(projectile.pos,
-                                                        *fire_data.wpn);
+                        emit_projectile_hit_terrain_snd(
+                                projectile.pos,
+                                *fire_data.wpn);
                 }
         }
 }

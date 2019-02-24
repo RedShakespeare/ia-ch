@@ -14,8 +14,8 @@
 #include "actor_mon.hpp"
 #include "actor_player.hpp"
 #include "audio.hpp"
-#include "feature_mob.hpp"
-#include "feature_rigid.hpp"
+#include "terrain_mob.hpp"
+#include "terrain.hpp"
 #include "game.hpp"
 #include "game_time.hpp"
 #include "init.hpp"
@@ -430,20 +430,20 @@ ConsumeItem ForceField::run_effect()
         const auto blocked_parser =
                 map_parsers::BlocksWalking(ParseActors::yes);
 
-        const std::vector<FeatureId> specific_allowed_features = {
-                FeatureId::liquid_deep,
-                FeatureId::chasm
+        const std::vector<terrain::Id> specific_allowed_terrains = {
+                terrain::Id::liquid_deep,
+                terrain::Id::chasm
         };
 
-        const auto specific_allowed_features_parser =
-                map_parsers::IsAnyOfFeatures(specific_allowed_features);
+        const auto specific_allowed_terrains_parser =
+                map_parsers::IsAnyOfTerrains(specific_allowed_terrains);
 
         for (const auto& d : dir_utils::g_dir_list)
         {
                 const P p = map::g_player->m_pos + d;
 
                 if (blocked_parser.cell(p) &&
-                    !specific_allowed_features_parser.cell(p))
+                    !specific_allowed_terrains_parser.cell(p))
                 {
                         continue;
                 }
@@ -459,7 +459,7 @@ ConsumeItem ForceField::run_effect()
                         map::make_gore(p);
                 }
 
-                game_time::add_mob(new ::ForceField(p, duration));
+                game_time::add_mob(new terrain::ForceField(p, duration));
         }
 
         return ConsumeItem::no;

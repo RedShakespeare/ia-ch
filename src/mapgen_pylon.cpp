@@ -7,7 +7,7 @@
 #include "mapgen.hpp"
 
 #include "actor.hpp"
-#include "feature_pylon.hpp"
+#include "terrain_pylon.hpp"
 #include "flood.hpp"
 #include "game_time.hpp"
 #include "map_parsing.hpp"
@@ -35,7 +35,7 @@ void make_pylons_and_levers()
 
         Array2<bool> blocked(map::dims());
 
-        map_parsers::BlocksRigid()
+        map_parsers::BlocksTerrain()
                 .run(blocked, blocked.rect());
 
         blocked = map_parsers::expand(blocked, 2);
@@ -116,15 +116,18 @@ void make_pylons_and_levers()
                 const P lever_p = rnd::element(lever_pos_bucket);
 
                 // OK, valid positions found - place Pylon and Lever
-                auto* const pylon = new Pylon(pylon_p, PylonId::any);
+                auto* const pylon =
+                        new terrain::Pylon(
+                                pylon_p,
+                                terrain::PylonId::any);
 
-                auto* const lever = new Lever(lever_p);
+                auto* const lever = new terrain::Lever(lever_p);
 
-                lever->set_linked_feature(*pylon);
+                lever->set_linked_terrain(*pylon);
 
-                map::g_cells.at(pylon_p).rigid = pylon;
+                map::g_cells.at(pylon_p).terrain = pylon;
 
-                map::g_cells.at(lever_p).rigid = lever;
+                map::g_cells.at(lever_p).terrain = lever;
 
                 // Don't place other pylons too near
                 {

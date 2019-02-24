@@ -7,8 +7,8 @@
 #include "mapgen.hpp"
 
 #include "debug.hpp"
-#include "feature_event.hpp"
-#include "feature_rigid.hpp"
+#include "terrain_event.hpp"
+#include "terrain.hpp"
 #include "game_time.hpp"
 #include "map.hpp"
 #include "map_parsing.hpp"
@@ -44,12 +44,12 @@ static void make_crumble_room(const R& room_area_incl_walls,
 
             // Fill the room with walls (so we don't have an inaccessible
             // empty room)
-            map::put(new Wall(p));
+            map::put(new terrain::Wall(p));
         }
     }
 
     game_time::add_mob(
-            new EventWallCrumble(
+            new terrain::EventWallCrumble(
                     event_pos,
                     wall_cells,
                     inner_cells));

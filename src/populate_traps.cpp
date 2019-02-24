@@ -12,8 +12,8 @@
 #include "map.hpp"
 #include "mapgen.hpp"
 #include "map_parsing.hpp"
-#include "feature_data.hpp"
-#include "feature_trap.hpp"
+#include "terrain_data.hpp"
+#include "terrain_trap.hpp"
 #include "game_time.hpp"
 #include "actor_player.hpp"
 
@@ -99,7 +99,7 @@ static std::vector<P> find_allowed_cells_in_room(
                         const P p(x, y);
 
                         if (!blocked.at(p) &&
-                            map::g_cells.at(p).rigid->can_have_rigid() &&
+                            map::g_cells.at(p).terrain->can_have_terrain() &&
                             (map::g_room_map.at(p) == &room))
                         {
                                 positions.push_back(p);
@@ -110,18 +110,18 @@ static std::vector<P> find_allowed_cells_in_room(
         return positions;
 }
 
-static Trap* make_trap(const TrapId id, const P& pos)
+static terrain::Trap* make_trap(const terrain::TrapId id, const P& pos)
 {
-        const auto* const f = map::g_cells.at(pos).rigid;
+        const auto* const t = map::g_cells.at(pos).terrain;
 
-        const auto& d = feature_data::data(f->id());
+        const auto& d = terrain::data(t->id());
 
-        auto* const mimic = static_cast<Rigid*>(d.make_obj(pos));
+        auto* const mimic = static_cast<terrain::Terrain*>(d.make_obj(pos));
 
-        if (!f->can_have_rigid())
+        if (!t->can_have_terrain())
         {
-                TRACE << "Cannot place trap on feature id: "
-                      << (int)f->id() << std::endl
+                TRACE << "Cannot place trap on terrain id: "
+                      << (int)t->id() << std::endl
                       << "Trap id: "
                       << int(id) << std::endl;
 
@@ -130,7 +130,7 @@ static Trap* make_trap(const TrapId id, const P& pos)
                 return nullptr;
         }
 
-        Trap* const trap = new Trap(pos, mimic, id);
+        auto* const trap = new terrain::Trap(pos, mimic, id);
 
         return trap;
 }
@@ -178,10 +178,10 @@ void populate_std_lvl()
 
                 for (int i = 0; i < nr_traps; ++i)
                 {
-                        const TrapId trap_type =
+                        const terrain::TrapId trap_type =
                                 (room->m_type == RoomType::spider)
-                                ? TrapId::web
-                                : TrapId::any;
+                                ? terrain::TrapId::web
+                                : terrain::TrapId::any;
 
                         const auto pos = trap_pos_bucket[i];
 

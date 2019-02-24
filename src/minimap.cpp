@@ -10,8 +10,8 @@
 
 #include "actor_player.hpp"
 #include "common_text.hpp"
-#include "feature_door.hpp"
-#include "feature_rigid.hpp"
+#include "terrain_door.hpp"
+#include "terrain.hpp"
 #include "io.hpp"
 #include "map.hpp"
 #include "map_parsing.hpp"
@@ -188,24 +188,25 @@ void update()
 
                 auto& cell = minimap_.at(i);
 
-                const Rigid* const feature = map_cell.rigid;
+                const auto* const terrain = map_cell.terrain;
 
-                const auto feature_id = feature->id();
+                const auto terrain_id = terrain->id();
 
                 if (map_cell.item)
                 {
                         cell = colors::light_magenta();
                 }
-                else if (feature_id == FeatureId::stairs)
+                else if (terrain_id == terrain::Id::stairs)
                 {
                         cell = colors::yellow();
                 }
-                else if (feature_id == FeatureId::door &&
-                         !static_cast<const Door*>(feature)->is_secret())
+                else if ((terrain_id == terrain::Id::door) &&
+                         !static_cast<const terrain::Door*>(terrain)
+                         ->is_secret())
                 {
                         cell = colors::light_white();
                 }
-                else if (feature_id == FeatureId::liquid_deep)
+                else if (terrain_id == terrain::Id::liquid_deep)
                 {
                         cell = colors::blue();
                 }

@@ -16,8 +16,8 @@
 #include "attack_data.hpp"
 #include "drop.hpp"
 #include "explosion.hpp"
-#include "feature_mob.hpp"
-#include "feature_rigid.hpp"
+#include "terrain_mob.hpp"
+#include "terrain.hpp"
 #include "game_time.hpp"
 #include "init.hpp"
 #include "inventory.hpp"
@@ -60,9 +60,9 @@ void player_throw_lit_explosive(const P& aim_cell)
         {
                 const P p = path[i];
 
-                const auto* f = map::g_cells.at(p).rigid;
+                const auto* t = map::g_cells.at(p).terrain;
 
-                if (!f->is_projectile_passable())
+                if (!t->is_projectile_passable())
                 {
                         path.resize(i);
                         break;
@@ -103,10 +103,10 @@ void player_throw_lit_explosive(const P& aim_cell)
                 }
         }
 
-        const auto f_id = map::g_cells.at(end_pos).rigid->id();
+        const auto f_id = map::g_cells.at(end_pos).terrain->id();
 
-        if (f_id != FeatureId::chasm &&
-            f_id != FeatureId::liquid_deep)
+        if (f_id != terrain::Id::chasm &&
+            f_id != terrain::Id::liquid_deep)
         {
                 explosive->on_thrown_ignited_landing(end_pos);
         }
@@ -320,9 +320,9 @@ void throw_item(
                         }
                 } // if actor hit
 
-                const auto* feature_here = map::g_cells.at(pos).rigid;
+                const auto* terrain_here = map::g_cells.at(pos).terrain;
 
-                if (!feature_here->is_projectile_passable())
+                if (!terrain_here->is_projectile_passable())
                 {
                         // Drop item before the wall, not on the wall
                         drop_pos = path[path_idx - 1];
@@ -440,10 +440,10 @@ void throw_item(
         if (!is_actor_hit)
         {
                 const Matl matl_at_last_pos =
-                        map::g_cells.at(pos).rigid->matl();
+                        map::g_cells.at(pos).terrain->matl();
 
                 const Matl matl_at_drop_pos =
-                        map::g_cells.at(drop_pos).rigid->matl();
+                        map::g_cells.at(drop_pos).terrain->matl();
 
                 if (is_noisy_matl(matl_at_last_pos) ||
                     is_noisy_matl(matl_at_drop_pos))

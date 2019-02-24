@@ -4,12 +4,12 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 // =============================================================================
 
-#include "feature_event.hpp"
+#include "terrain_event.hpp"
 
 #include "actor_factory.hpp"
 #include "actor_mon.hpp"
 #include "actor_player.hpp"
-#include "feature_rigid.hpp"
+#include "terrain.hpp"
 #include "game_time.hpp"
 #include "init.hpp"
 #include "io.hpp"
@@ -21,11 +21,9 @@
 #include "property_handler.hpp"
 #include "sdl_base.hpp"
 
-// -----------------------------------------------------------------------------
-// Event
-// -----------------------------------------------------------------------------
-Event::Event(const P& feature_pos) :
-        Mob(feature_pos) {}
+
+namespace terrain
+{
 
 // -----------------------------------------------------------------------------
 // Wall crumble
@@ -46,11 +44,11 @@ void EventWallCrumble::on_new_turn()
         }
 
         auto is_wall = [](const P& p) {
-                const auto id = map::g_cells.at(p).rigid->id();
+                const auto id = map::g_cells.at(p).terrain->id();
 
                 return
-                (id == FeatureId::wall) ||
-                (id == FeatureId::rubble_high);
+                (id == terrain::Id::wall) ||
+                (id == terrain::Id::rubble_high);
         };
 
         // Check that it still makes sense to run the crumbling
@@ -159,12 +157,13 @@ void EventWallCrumble::on_new_turn()
                         map::g_dark.at(p) = true;
                 }
 
-                auto* const f = map::g_cells.at(p).rigid;
+                auto* const t = map::g_cells.at(p).terrain;
 
-                f->hit(1, // Doesn't matter
-                       DmgType::physical,
-                       DmgMethod::forced,
-                       nullptr);
+                t->hit(
+                        1, // Doesn't matter
+                        DmgType::physical,
+                        DmgMethod::forced,
+                        nullptr);
         }
 
         // Destroy the inner walls
@@ -175,9 +174,9 @@ void EventWallCrumble::on_new_turn()
                         map::g_dark.at(p) = true;
                 }
 
-                Rigid* const f = map::g_cells.at(p).rigid;
+                auto* const t = map::g_cells.at(p).terrain;
 
-                f->hit(1, // Doesn't matter
+                t->hit(1, // Doesn't matter
                        DmgType::physical,
                        DmgMethod::forced,
                        nullptr);
@@ -289,14 +288,14 @@ R EventSnakeEmerge::allowed_emerge_rect(const P& p) const
         return R(x0, y0, x1, y1);
 }
 
-bool EventSnakeEmerge::is_ok_feature_at(const P& p) const
+bool EventSnakeEmerge::is_ok_terrain_at(const P& p) const
 {
         ASSERT(map::is_pos_inside_map(p));
 
-        const FeatureId id = map::g_cells.at(p).rigid->id();
+        const auto id = map::g_cells.at(p).terrain->id();
 
-        return id == FeatureId::floor ||
-                id == FeatureId::rubble_low;
+        return id == terrain::Id::floor ||
+                id == terrain::Id::rubble_low;
 }
 
 std::vector<P> EventSnakeEmerge::emerge_p_bucket(
@@ -352,7 +351,7 @@ Array2<bool> EventSnakeEmerge::blocked_cells(const R& r) const
                 {
                         const P p(x, y);
 
-                        result.at(p) = !is_ok_feature_at(p);
+                        result.at(p) = !is_ok_terrain_at(p);
                 }
         }
 
@@ -468,8 +467,8 @@ void EventSnakeEmerge::on_new_turn()
 // Rats in the walls discovery
 // -----------------------------------------------------------------------------
 EventRatsInTheWallsDiscovery::EventRatsInTheWallsDiscovery(
-        const P& feature_pos) :
-        Event(feature_pos) {}
+        const P& terrain_pos) :
+        Event(terrain_pos) {}
 
 void EventRatsInTheWallsDiscovery::on_new_turn()
 {
@@ -508,3 +507,5 @@ void EventRatsInTheWallsDiscovery::on_new_turn()
                 game_time::erase_mob(this, true);
         }
 }
+
+} // terrain

@@ -9,13 +9,13 @@
 #include "mapgen.hpp"
 #include "map_controller.hpp"
 #include "map_parsing.hpp"
-#include "feature_rigid.hpp"
+#include "terrain.hpp"
 #include "actor_player.hpp"
-#include "feature_door.hpp"
+#include "terrain_door.hpp"
 #include "populate_monsters.hpp"
 #include "populate_traps.hpp"
 #include "populate_items.hpp"
-#include "feature_event.hpp"
+#include "terrain_event.hpp"
 #include "game_time.hpp"
 
 // For map generation demo
@@ -378,10 +378,10 @@ bool MapBuilderStd::build_specific()
         map_parsers::BlocksWalking(ParseActors::no)
                 .run(blocked, blocked.rect());
 
-        const std::vector<FeatureId> free_features = {
-                FeatureId::door,
-                FeatureId::liquid_deep,
-                FeatureId::stairs
+        const std::vector<terrain::Id> free_terrains = {
+                terrain::Id::door,
+                terrain::Id::liquid_deep,
+                terrain::Id::stairs
         };
 
         for (int x = 0; x < blocked.w(); ++x)
@@ -390,7 +390,7 @@ bool MapBuilderStd::build_specific()
                 {
                         const P p(x, y);
 
-                        if (map_parsers::IsAnyOfFeatures(free_features).cell(p))
+                        if (map_parsers::IsAnyOfTerrains(free_terrains).cell(p))
                         {
                                 blocked.at(p) = false;
                         }
@@ -492,11 +492,11 @@ bool MapBuilderStd::build_specific()
                         continue;
                 }
 
-                Rigid* const rigid = map::g_cells.at(choke_point.p).rigid;
+                auto* const terrain = map::g_cells.at(choke_point.p).terrain;
 
-                if (rigid->id() == FeatureId::door)
+                if (terrain->id() == terrain::Id::door)
                 {
-                        Door* const door = static_cast<Door*>(rigid);
+                        auto* const door = static_cast<terrain::Door*>(terrain);
 
                         if ((door->type() != DoorType::gate) &&
                             (door->type() != DoorType::metal) &&
@@ -586,7 +586,7 @@ bool MapBuilderStd::build_specific()
 
         for (int i = 0; i < nr_snake_emerge_events_to_try; ++i)
         {
-                EventSnakeEmerge* const event = new EventSnakeEmerge();
+                auto* const event = new terrain::EventSnakeEmerge();
 
                 if (event->try_find_p())
                 {

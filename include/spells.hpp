@@ -17,11 +17,9 @@
 
 namespace actor
 {
-
 class Actor;
 class Mon;
-
-} // actor
+}
 
 
 enum class SpellId
@@ -131,7 +129,6 @@ enum class SpellShock
         severe
 };
 
-class Spell;
 
 namespace spell_factory
 {
@@ -139,6 +136,7 @@ namespace spell_factory
 Spell* make_spell_from_id(const SpellId spell_id);
 
 } // spell_factory
+
 
 class Spell
 {

@@ -12,9 +12,8 @@
 #include "actor_mon.hpp"
 #include "actor_player.hpp"
 #include "attack_data.hpp"
-#include "feature.hpp"
-#include "feature_mob.hpp"
-#include "feature_rigid.hpp"
+#include "terrain_mob.hpp"
+#include "terrain.hpp"
 #include "game_time.hpp"
 #include "inventory.hpp"
 #include "io.hpp"
@@ -503,14 +502,14 @@ void print_location_info_msgs(const P& pos)
 
         if (is_cell_seen)
         {
-                // Describe rigid
-                std::string str = cell->rigid->name(Article::a);
+                // Describe terrain
+                std::string str = cell->terrain->name(Article::a);
 
                 str = text_format::first_to_upper(str);
 
                 msg_log::add(str + ".");
 
-                // Describe mobile features
+                // Describe mobile terrains
                 for (auto* mob : game_time::g_mobs)
                 {
                         if (mob->pos() == pos)

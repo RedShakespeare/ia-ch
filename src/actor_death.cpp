@@ -10,7 +10,6 @@
 #include "actor_mon.hpp"
 #include "actor_player.hpp"
 #include "drop.hpp"
-#include "feature_rigid.hpp"
 #include "game.hpp"
 #include "game_time.hpp"
 #include "io.hpp"
@@ -19,6 +18,7 @@
 #include "map_travel.hpp"
 #include "msg_log.hpp"
 #include "popup.hpp"
+#include "terrain.hpp"
 
 // -----------------------------------------------------------------------------
 // Private
@@ -64,7 +64,7 @@ static bool try_use_talisman_of_resurrection(actor::Actor& actor)
                 );
 
         // If player died due to falling down a chasm, go to next level
-        if (map::g_cells.at(actor.m_pos).rigid->id() == FeatureId::chasm)
+        if (map::g_cells.at(actor.m_pos).terrain->id() == terrain::Id::chasm)
         {
                 map_travel::go_to_nxt();
         }
@@ -82,7 +82,7 @@ static bool try_use_talisman_of_resurrection(actor::Actor& actor)
 
 static void move_actor_to_pos_can_have_corpse(actor::Actor& actor)
 {
-        if (map::g_cells.at(actor.m_pos).rigid->can_have_corpse())
+        if (map::g_cells.at(actor.m_pos).terrain->can_have_corpse())
         {
                 return;
         }
@@ -91,7 +91,7 @@ static void move_actor_to_pos_can_have_corpse(actor::Actor& actor)
         {
                 const P p = actor.m_pos + d;
 
-                if (map::g_cells.at(p).rigid->can_have_corpse())
+                if (map::g_cells.at(p).terrain->can_have_corpse())
                 {
                         actor.m_pos = p;
 

@@ -11,9 +11,8 @@
 #include "actor_factory.hpp"
 #include "actor_player.hpp"
 #include "debug.hpp"
-#include "feature.hpp"
-#include "feature_mob.hpp"
-#include "feature_rigid.hpp"
+#include "terrain_mob.hpp"
+#include "terrain.hpp"
 #include "game_time.hpp"
 #include "init.hpp"
 #include "io.hpp"
@@ -43,11 +42,11 @@ Cell::Cell() :
         is_seen_by_player(false),
         player_los(),
         item(nullptr),
-        rigid(nullptr) {}
+        terrain(nullptr) {}
 
 Cell::~Cell()
 {
-        delete rigid;
+        delete terrain;
         delete item;
 }
 
@@ -62,8 +61,8 @@ void Cell::reset()
 
         player_los.is_blocked_by_dark = false;
 
-        delete rigid;
-        rigid = nullptr;
+        delete terrain;
+        terrain = nullptr;
 
         delete item;
         item = nullptr;
@@ -162,7 +161,7 @@ void reset(const P& dims)
         {
                 for (int y = 0; y < h(); ++y)
                 {
-                        put(new Wall(P(x, y)));
+                        put(new terrain::Wall(P(x, y)));
                 }
         }
 
@@ -210,7 +209,7 @@ size_t nr_cells()
         return g_cells.length();
 }
 
-Rigid* put(Rigid* const f)
+terrain::Terrain* put(terrain::Terrain* const f)
 {
         ASSERT(f);
 
@@ -218,14 +217,14 @@ Rigid* put(Rigid* const f)
 
         Cell& cell = g_cells.at(p);
 
-        delete cell.rigid;
+        delete cell.terrain;
 
-        cell.rigid = f;
+        cell.terrain = f;
 
 #ifndef NDEBUG
         if (init::g_is_demo_mapgen)
         {
-                if (f->id() == FeatureId::floor)
+                if (f->id() == terrain::Id::floor)
                 {
                         if (!viewport::is_in_view(p))
                         {
@@ -277,13 +276,13 @@ void make_blood(const P& origin)
                 {
                         const P c = origin + P(dx, dy);
 
-                        Rigid* const f = g_cells.at(c).rigid;
+                        auto* const t = g_cells.at(c).terrain;
 
-                        if (f->can_have_blood())
+                        if (t->can_have_blood())
                         {
                                 if (rnd::one_in(3))
                                 {
-                                        f->make_bloody();
+                                        t->make_bloody();
                                 }
                         }
                 }
@@ -300,7 +299,7 @@ void make_gore(const P& origin)
 
                         if (rnd::one_in(3))
                         {
-                                g_cells.at(c).rigid->try_put_gore();
+                                g_cells.at(c).terrain->try_put_gore();
                         }
                 }
         }
@@ -341,7 +340,7 @@ actor::Actor* actor_at_pos(const P& pos, ActorState state)
         return nullptr;
 }
 
-Mob* first_mob_at_pos(const P& pos)
+terrain::Terrain* first_mob_at_pos(const P& pos)
 {
         for (auto* const mob : game_time::g_mobs)
         {

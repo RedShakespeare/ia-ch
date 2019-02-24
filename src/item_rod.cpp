@@ -9,7 +9,7 @@
 #include "actor_hit.hpp"
 #include "actor_mon.hpp"
 #include "actor_player.hpp"
-#include "feature_rigid.hpp"
+#include "terrain.hpp"
 #include "fov.hpp"
 #include "game.hpp"
 #include "game_time.hpp"
@@ -393,7 +393,7 @@ void Opening::run_effect()
         {
                 if (cell.is_seen_by_player)
                 {
-                        DidOpen did_open = cell.rigid->open(nullptr);
+                        DidOpen did_open = cell.terrain->open(nullptr);
 
                         if (did_open == DidOpen::yes)
                         {
@@ -450,9 +450,9 @@ void Shockwave::run_effect()
         {
                 const P p(player_pos + d);
 
-                Rigid* const rigid = map::g_cells.at(p).rigid;
+                auto* const terrain = map::g_cells.at(p).terrain;
 
-                rigid->hit(
+                terrain->hit(
                         1, // Doesn't matter
                         DmgType::physical,
                         DmgMethod::explosion);

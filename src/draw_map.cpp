@@ -9,9 +9,9 @@
 #include "actor.hpp"
 #include "actor_mon.hpp"
 #include "actor_player.hpp"
-#include "feature_door.hpp"
-#include "feature_mob.hpp"
-#include "feature_rigid.hpp"
+#include "terrain_door.hpp"
+#include "terrain_mob.hpp"
+#include "terrain.hpp"
 #include "game_time.hpp"
 #include "io.hpp"
 #include "map.hpp"
@@ -32,7 +32,7 @@ static void clear_render_array()
                 CellRenderData());
 }
 
-static void set_rigids()
+static void set_terrains()
 {
         for (size_t i = 0; i < map::nr_cells(); ++i)
         {
@@ -45,30 +45,30 @@ static void set_rigids()
 
                 auto& render_data = s_render_array.at(i);
 
-                const auto* const f = cell.rigid;
+                const auto* const t = cell.terrain;
 
                 TileId gore_tile = TileId::END;
 
                 char gore_character = 0;
 
-                if (f->can_have_gore())
+                if (t->can_have_gore())
                 {
-                        gore_tile = f->gore_tile();
-                        gore_character = f->gore_character();
+                        gore_tile = t->gore_tile();
+                        gore_character = t->gore_character();
                 }
 
                 if (gore_tile == TileId::END)
                 {
-                        render_data.tile = f->tile();
-                        render_data.character = f->character();
-                        render_data.color = f->color();
+                        render_data.tile = t->tile();
+                        render_data.character = t->character();
+                        render_data.color = t->color();
 
-                        const Color feature_color_bg = f->color_bg();
+                        const Color terrain_color_bg = t->color_bg();
 
-                        if (feature_color_bg != colors::black())
+                        if (terrain_color_bg != colors::black())
                         {
                                 render_data.color_bg =
-                                        feature_color_bg;
+                                        terrain_color_bg;
                         }
                 }
                 else // Has gore
@@ -91,28 +91,28 @@ static void post_process_wall_tiles()
                         const auto tile = render_data.tile;
 
                         const bool is_wall_top_tile =
-                                Wall::is_wall_top_tile(tile);
+                                terrain::Wall::is_wall_top_tile(tile);
 
                         if (!is_wall_top_tile)
                         {
                                 continue;
                         }
 
-                        const Wall* wall = nullptr;
+                        const terrain::Wall* wall = nullptr;
 
                         {
-                                const auto* const f =
-                                        map::g_cells.at(x, y).rigid;
+                                const auto* const t =
+                                        map::g_cells.at(x, y).terrain;
 
-                                const auto id = f->id();
+                                const auto id = t->id();
 
-                                if (id == FeatureId::wall)
+                                if (id == terrain::Id::wall)
                                 {
-                                        wall = static_cast<const Wall*>(f);
+                                        wall = static_cast<const terrain::Wall*>(t);
                                 }
-                                else if (id == FeatureId::door)
+                                else if (id == terrain::Id::door)
                                 {
-                                        auto door = static_cast<const Door*>(f);
+                                        auto door = static_cast<const terrain::Door*>(t);
 
                                         if (door->is_secret())
                                         {
@@ -131,9 +131,9 @@ static void post_process_wall_tiles()
                                 const auto tile_below =
                                         s_render_array.at(x, y + 1).tile;
 
-                                if (Wall::is_wall_front_tile(tile_below) ||
-                                    Wall::is_wall_top_tile(tile_below) ||
-                                    Door::is_tile_any_door(tile_below))
+                                if (terrain::Wall::is_wall_front_tile(tile_below) ||
+                                    terrain::Wall::is_wall_top_tile(tile_below) ||
+                                    terrain::Door::is_tile_any_door(tile_below))
                                 {
                                         render_data.tile =
                                                 wall->top_wall_tile();
@@ -214,12 +214,12 @@ static void set_light()
 {
         for (size_t i = 0; i < map::nr_cells(); ++i)
         {
-                const auto* const f = map::g_cells.at(i).rigid;
+                const auto* const t = map::g_cells.at(i).terrain;
 
                 if (map::g_cells.at(i).is_seen_by_player &&
                     map::g_light.at(i) &&
-                    f->is_los_passable() &&
-                    (f->id() != FeatureId::chasm))
+                    t->is_los_passable() &&
+                    (t->id() != terrain::Id::chasm))
                 {
                         auto& color = s_render_array.at(i).color;
 
@@ -580,7 +580,7 @@ void run()
 
         set_unseen_cells_from_player_memory();
 
-        set_rigids();
+        set_terrains();
 
         if (config::is_tiles_mode() && !config::is_tiles_wall_full_square())
         {

@@ -12,8 +12,8 @@
 #include "actor.hpp"
 #include "actor_player.hpp"
 #include "explosion.hpp"
-#include "feature_mob.hpp"
-#include "feature_rigid.hpp"
+#include "terrain_mob.hpp"
+#include "terrain.hpp"
 #include "fov.hpp"
 #include "game_time.hpp"
 #include "inventory.hpp"
@@ -24,6 +24,10 @@
 #include "player_bon.hpp"
 #include "property.hpp"
 #include "property_handler.hpp"
+
+
+namespace terrain
+{
 
 // -----------------------------------------------------------------------------
 // Smoke
@@ -299,3 +303,5 @@ Color LitFlare::color() const
 {
         return colors::yellow();
 }
+
+} // terrain

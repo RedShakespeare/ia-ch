@@ -498,24 +498,24 @@ void InvState::draw_detailed_item_descr(
                 // -------------------------------------------------------------
                 // Can be used for breaking doors or destroying corpses?
                 // -------------------------------------------------------------
-                const bool can_att_rigid = d.melee.att_rigid;
+                const bool can_att_terrain = d.melee.att_terrain;
                 const bool can_att_corpse = d.melee.att_corpse;
 
                 std::string att_obj_str = "";
 
-                if (can_att_rigid || can_att_corpse)
+                if (can_att_terrain || can_att_corpse)
                 {
                         att_obj_str = "Can be used for ";
                 }
 
-                if (can_att_rigid)
+                if (can_att_terrain)
                 {
                         att_obj_str += "breaching doors";
                 }
 
                 if (can_att_corpse)
                 {
-                        if (can_att_rigid)
+                        if (can_att_terrain)
                         {
                                 att_obj_str += " and ";
                         }
@@ -523,7 +523,7 @@ void InvState::draw_detailed_item_descr(
                         att_obj_str += "destroying corpses";
                 }
 
-                if (can_att_rigid || can_att_corpse)
+                if (can_att_terrain || can_att_corpse)
                 {
                         att_obj_str +=
                                 " more effectively (bonus is based on attack "

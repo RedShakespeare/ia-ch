@@ -12,7 +12,7 @@
 
 #include "actor_factory.hpp"
 #include "actor_player.hpp"
-#include "feature_rigid.hpp"
+#include "terrain.hpp"
 #include "flood.hpp"
 #include "game_time.hpp"
 #include "gods.hpp"
@@ -113,10 +113,10 @@ static int walk_blockers_in_dir(const Dir dir, const P& pos)
         case Dir::right:
                 for (int dy = -1; dy <= 1; ++dy)
                 {
-                        const auto* const f =
-                                map::g_cells.at(pos.x + 1, pos.y + dy).rigid;
+                        const auto* const t =
+                                map::g_cells.at(pos.x + 1, pos.y + dy).terrain;
 
-                        if (!f->is_walkable())
+                        if (!t->is_walkable())
                         {
                                 nr_blockers += 1;
                         }
@@ -126,10 +126,10 @@ static int walk_blockers_in_dir(const Dir dir, const P& pos)
         case Dir::down:
                 for (int dx = -1; dx <= 1; ++dx)
                 {
-                        const auto* const f =
-                                map::g_cells.at(pos.x + dx, pos.y + 1).rigid;
+                        const auto* const t =
+                                map::g_cells.at(pos.x + dx, pos.y + 1).terrain;
 
-                        if (!f->is_walkable())
+                        if (!t->is_walkable())
                         {
                                 nr_blockers += 1;
                         }
@@ -139,10 +139,10 @@ static int walk_blockers_in_dir(const Dir dir, const P& pos)
         case Dir::left:
                 for (int dy = -1; dy <= 1; ++dy)
                 {
-                        const auto* const f =
-                                map::g_cells.at(pos.x - 1, pos.y + dy).rigid;
+                        const auto* const t =
+                                map::g_cells.at(pos.x - 1, pos.y + dy).terrain;
 
-                        if (!f->is_walkable())
+                        if (!t->is_walkable())
                         {
                                 nr_blockers += 1;
                         }
@@ -152,10 +152,10 @@ static int walk_blockers_in_dir(const Dir dir, const P& pos)
         case Dir::up:
                 for (int dx = -1; dx <= 1; ++dx)
                 {
-                        const auto* const f =
-                                map::g_cells.at(pos.x + dx, pos.y - 1).rigid;
+                        const auto* const t =
+                                map::g_cells.at(pos.x + dx, pos.y - 1).terrain;
 
-                        if (!f->is_walkable())
+                        if (!t->is_walkable())
                         {
                                 nr_blockers += 1;
                         }
@@ -200,9 +200,9 @@ static void get_positions_in_room_relative_to_walls(
                                 continue;
                         }
 
-                        auto* const f = map::g_cells.at(x, y).rigid;
+                        auto* const t = map::g_cells.at(x, y).terrain;
 
-                        if (f->is_walkable() && f->can_have_rigid())
+                        if (t->is_walkable() && t->can_have_terrain())
                         {
                                 pos_bucket.push_back(P(x, y));
                         }
@@ -234,11 +234,11 @@ static void get_positions_in_room_relative_to_walls(
                 {
                         for (int dy = -1; dy <= 1; ++dy)
                         {
-                                const auto* const f =
+                                const auto* const t =
                                         map::g_cells.at(pos.x + dx, pos.y + dy)
-                                        .rigid;
+                                        .terrain;
 
-                                if (f->id() == FeatureId::door)
+                                if (t->id() == terrain::Id::door)
                                 {
                                         is_door_adjacent = true;
                                 }
@@ -510,7 +510,7 @@ void StdRoom::on_pre_connect(Array2<bool>& door_proposals)
 
 void StdRoom::on_post_connect(Array2<bool>& door_proposals)
 {
-        place_auto_features();
+        place_auto_terrains();
 
         on_post_connect_hook(door_proposals);
 
@@ -525,12 +525,12 @@ void StdRoom::on_post_connect(Array2<bool>& door_proposals)
                 for (int y = m_r.p0.y; y <= m_r.p1.y; ++y)
                 {
                         // TODO: This should really be handled in a more generic
-                        // way, but currently the only map features that are
+                        // way, but currently the only map terrains that are
                         // light sources are braziers - so it works for now.
 
-                        const auto id = map::g_cells.at(x, y).rigid->id();
+                        const auto id = map::g_cells.at(x, y).terrain->id();
 
-                        if (id == FeatureId::brazier)
+                        if (id == terrain::Id::brazier)
                         {
                                 has_light_source = true;
                         }
@@ -553,9 +553,10 @@ void StdRoom::on_post_connect(Array2<bool>& door_proposals)
         }
 }
 
-P StdRoom::find_auto_feature_placement(const std::vector<P>& adj_to_walls,
-                                       const std::vector<P>& away_from_walls,
-                                       const FeatureId id) const
+P StdRoom::find_auto_terrain_placement(
+        const std::vector<P>& adj_to_walls,
+        const std::vector<P>& away_from_walls,
+        const terrain::Id id) const
 {
         TRACE_FUNC_BEGIN_VERBOSE;
 
@@ -577,23 +578,25 @@ P StdRoom::find_auto_feature_placement(const std::vector<P>& adj_to_walls,
 
         for (int i = 0; i < nr_attempts_to_find_pos; ++i)
         {
-                const FeatureData& d = feature_data::data(id);
+                const auto& d = terrain::data(id);
 
                 if (is_adj_to_walls_avail &&
-                    d.auto_spawn_placement == FeaturePlacement::adj_to_walls)
+                    (d.auto_spawn_placement ==
+                     terrain::TerrainPlacement::adj_to_walls))
                 {
                         TRACE_FUNC_END_VERBOSE;
                         return rnd::element(adj_to_walls);
                 }
 
                 if (is_away_from_walls_avail &&
-                    d.auto_spawn_placement == FeaturePlacement::away_from_walls)
+                    (d.auto_spawn_placement ==
+                     terrain::TerrainPlacement::away_from_walls))
                 {
                         TRACE_FUNC_END_VERBOSE;
                         return rnd::element(away_from_walls);
                 }
 
-                if (d.auto_spawn_placement == FeaturePlacement::either)
+                if (d.auto_spawn_placement == terrain::TerrainPlacement::either)
                 {
                         if (rnd::coin_toss())
                         {
@@ -619,20 +622,20 @@ P StdRoom::find_auto_feature_placement(const std::vector<P>& adj_to_walls,
         return P(-1, -1);
 }
 
-void StdRoom::place_auto_features()
+void StdRoom::place_auto_terrains()
 {
         TRACE_FUNC_BEGIN;
 
-        // Make a feature bucket
-        std::vector<FeatureId> feature_bucket;
+        // Make a terrain bucket
+        std::vector<terrain::Id> terrain_bucket;
 
-        const auto rules = auto_features_allowed();
+        const auto rules = auto_terrains_allowed();
 
         for (const auto& rule : rules)
         {
-                // Insert N elements of the given Feature ID
-                feature_bucket.insert(
-                        std::end(feature_bucket),
+                // Insert N elements of the given Terrain ID
+                terrain_bucket.insert(
+                        std::end(terrain_bucket),
                         rule.nr_allowed,
                         rule.id);
         }
@@ -645,33 +648,33 @@ void StdRoom::place_auto_features()
                 adj_to_walls_bucket,
                 away_from_walls_bucket);
 
-        while (!feature_bucket.empty())
+        while (!terrain_bucket.empty())
         {
                 // TODO: Do a random shuffle of the bucket instead, and pop
                 // elements
-                const size_t feature_idx =
-                        rnd::range(0, feature_bucket.size() - 1);
+                const size_t terrain_idx =
+                        rnd::range(0, terrain_bucket.size() - 1);
 
-                const FeatureId id =
-                        feature_bucket[feature_idx];
+                const auto id = terrain_bucket[terrain_idx];
 
-                feature_bucket.erase(std::begin(feature_bucket) + feature_idx);
+                terrain_bucket.erase(std::begin(terrain_bucket) + terrain_idx);
 
-                const P p = find_auto_feature_placement(adj_to_walls_bucket,
-                                                        away_from_walls_bucket,
-                                                        id);
+                const P p = find_auto_terrain_placement(
+                        adj_to_walls_bucket,
+                        away_from_walls_bucket,
+                        id);
 
                 if (p.x >= 0)
                 {
                         // A good position was found
 
-                        const FeatureData& d = feature_data::data(id);
+                        const auto& d = terrain::data(id);
 
-                        TRACE_VERBOSE << "Placing feature" << std::endl;
+                        TRACE_VERBOSE << "Placing terrain" << std::endl;
 
                         ASSERT(map::is_pos_inside_outer_walls(p));
 
-                        map::put(static_cast<Rigid*>(d.make_obj(p)));
+                        map::put(static_cast<terrain::Terrain*>(d.make_obj(p)));
 
                         // Erase all adjacent positions
                         auto is_adj = [&](const P& other_p) {
@@ -698,7 +701,7 @@ void StdRoom::place_auto_features()
 // -----------------------------------------------------------------------------
 // Plain room
 // -----------------------------------------------------------------------------
-std::vector<RoomAutoFeatureRule> PlainRoom::auto_features_allowed() const
+std::vector<RoomAutoTerrainRule> PlainRoom::auto_terrains_allowed() const
 {
         const int fountain_one_in_n =
                 (map::g_dlvl <= 4) ? 7 :
@@ -707,10 +710,10 @@ std::vector<RoomAutoFeatureRule> PlainRoom::auto_features_allowed() const
 
         return
         {
-                {FeatureId::brazier, rnd::one_in(4) ? 1 : 0},
-                {FeatureId::statue, rnd::one_in(7) ? rnd::range(1, 2) : 0},
-                {FeatureId::fountain, rnd::one_in(fountain_one_in_n) ? 1 : 0},
-                {FeatureId::chains, rnd::one_in(7) ? rnd::range(1, 2) : 0}
+                {terrain::Id::brazier, rnd::one_in(4) ? 1 : 0},
+                {terrain::Id::statue, rnd::one_in(7) ? rnd::range(1, 2) : 0},
+                {terrain::Id::fountain, rnd::one_in(fountain_one_in_n) ? 1 : 0},
+                {terrain::Id::chains, rnd::one_in(7) ? rnd::range(1, 2) : 0}
         };
 }
 
@@ -737,21 +740,20 @@ void PlainRoom::on_post_connect_hook(Array2<bool>& door_proposals)
 // -----------------------------------------------------------------------------
 // Human room
 // -----------------------------------------------------------------------------
-std::vector<RoomAutoFeatureRule> HumanRoom::auto_features_allowed() const
+std::vector<RoomAutoTerrainRule> HumanRoom::auto_terrains_allowed() const
 {
-        std::vector<RoomAutoFeatureRule> result;
+        std::vector<RoomAutoTerrainRule> result;
 
-        result.push_back({FeatureId::brazier,   rnd::range(0, 2)});
-        result.push_back({FeatureId::statue,    rnd::range(0, 2)});
+        result.push_back({terrain::Id::brazier,   rnd::range(0, 2)});
+        result.push_back({terrain::Id::statue,    rnd::range(0, 2)});
 
-        // Control how many item container features that can spawn in the room
-        std::vector<FeatureId> item_containers =
-                {
-                        FeatureId::chest,
-                        FeatureId::cabinet,
-                        FeatureId::bookshelf,
-                        FeatureId::alchemist_bench
-                };
+        // Control how many item container terrains that can spawn in the room
+        std::vector<terrain::Id> item_containers = {
+                terrain::Id::chest,
+                terrain::Id::cabinet,
+                terrain::Id::bookshelf,
+                terrain::Id::alchemist_bench
+        };
 
         const int nr_item_containers = rnd::range(0, 2);
 
@@ -803,8 +805,8 @@ void HumanRoom::on_post_connect_hook(Array2<bool>& door_proposals)
                                 if (!blocked.at(x, y) &&
                                     map::g_room_map.at(x, y) == this)
                                 {
-                                        Carpet* const carpet =
-                                                new Carpet(P(x, y));
+                                        auto* const carpet =
+                                                new terrain::Carpet(P(x, y));
 
                                         map::put(carpet);
                                 }
@@ -816,13 +818,13 @@ void HumanRoom::on_post_connect_hook(Array2<bool>& door_proposals)
 // -----------------------------------------------------------------------------
 // Jail room
 // -----------------------------------------------------------------------------
-std::vector<RoomAutoFeatureRule> JailRoom::auto_features_allowed() const
+std::vector<RoomAutoTerrainRule> JailRoom::auto_terrains_allowed() const
 {
         return
         {
-                {FeatureId::chains, rnd::range(2, 8)},
-                {FeatureId::brazier, rnd::one_in(4) ? 1 : 0},
-                {FeatureId::rubble_low, rnd::range(1, 4)}
+                {terrain::Id::chains, rnd::range(2, 8)},
+                {terrain::Id::brazier, rnd::one_in(4) ? 1 : 0},
+                {terrain::Id::rubble_low, rnd::range(1, 4)}
         };
 }
 
@@ -849,14 +851,14 @@ void JailRoom::on_post_connect_hook(Array2<bool>& door_proposals)
 // -----------------------------------------------------------------------------
 // Ritual room
 // -----------------------------------------------------------------------------
-std::vector<RoomAutoFeatureRule> RitualRoom::auto_features_allowed() const
+std::vector<RoomAutoTerrainRule> RitualRoom::auto_terrains_allowed() const
 {
         return
         {
-                {FeatureId::altar, 1},
-                {FeatureId::alchemist_bench, rnd::one_in(4) ? 1 : 0},
-                {FeatureId::brazier, rnd::range(2, 4)},
-                {FeatureId::chains, rnd::one_in(7) ? rnd::range(1, 2) : 0}
+                {terrain::Id::altar, 1},
+                {terrain::Id::alchemist_bench, rnd::one_in(4) ? 1 : 0},
+                {terrain::Id::brazier, rnd::range(2, 4)},
+                {terrain::Id::chains, rnd::one_in(7) ? rnd::range(1, 2) : 0}
         };
 }
 
@@ -902,8 +904,8 @@ void RitualRoom::on_post_connect_hook(Array2<bool>& door_proposals)
                 {
                         for (int x = m_r.p0.x; x <= m_r.p1.x; ++x)
                         {
-                                if (map::g_cells.at(x, y).rigid->id() ==
-                                    FeatureId::altar)
+                                if (map::g_cells.at(x, y).terrain->id() ==
+                                    terrain::Id::altar)
                                 {
                                         origin = P(x, y);
                                         y = 999;
@@ -950,11 +952,11 @@ void RitualRoom::on_post_connect_hook(Array2<bool>& door_proposals)
 // -----------------------------------------------------------------------------
 // Spider room
 // -----------------------------------------------------------------------------
-std::vector<RoomAutoFeatureRule> SpiderRoom::auto_features_allowed() const
+std::vector<RoomAutoTerrainRule> SpiderRoom::auto_terrains_allowed() const
 {
         return
         {
-                {FeatureId::cocoon, rnd::range(0, 3)}
+                {terrain::Id::cocoon, rnd::range(0, 3)}
         };
 }
 
@@ -999,7 +1001,7 @@ void SpiderRoom::on_post_connect_hook(Array2<bool>& door_proposals)
 // -----------------------------------------------------------------------------
 // Snake pit room
 // -----------------------------------------------------------------------------
-std::vector<RoomAutoFeatureRule> SnakePitRoom::auto_features_allowed() const
+std::vector<RoomAutoTerrainRule> SnakePitRoom::auto_terrains_allowed() const
 {
         return {};
 }
@@ -1047,10 +1049,10 @@ void SnakePitRoom::on_post_connect_hook(Array2<bool>& door_proposals)
 
                         const P p(x, y);
 
-                        if (map::g_cells.at(x, y).rigid->can_have_rigid() &&
+                        if (map::g_cells.at(x, y).terrain->can_have_terrain() &&
                             rnd::coin_toss())
                         {
-                                map::put(new RubbleLow(p));
+                                map::put(new terrain::RubbleLow(p));
                         }
                 }
         }
@@ -1164,12 +1166,12 @@ void SnakePitRoom::on_post_connect_hook(Array2<bool>& door_proposals)
 // -----------------------------------------------------------------------------
 // Crypt room
 // -----------------------------------------------------------------------------
-std::vector<RoomAutoFeatureRule> CryptRoom::auto_features_allowed() const
+std::vector<RoomAutoTerrainRule> CryptRoom::auto_terrains_allowed() const
 {
         return
         {
-                {FeatureId::tomb, rnd::one_in(6) ? 2 : 1},
-                {FeatureId::rubble_low, rnd::range(1, 4)}
+                {terrain::Id::tomb, rnd::one_in(6) ? 2 : 1},
+                {terrain::Id::rubble_low, rnd::range(1, 4)}
         };
 }
 
@@ -1203,11 +1205,11 @@ void CryptRoom::on_post_connect_hook(Array2<bool>& door_proposals)
 // -----------------------------------------------------------------------------
 // Monster room
 // -----------------------------------------------------------------------------
-std::vector<RoomAutoFeatureRule> MonsterRoom::auto_features_allowed() const
+std::vector<RoomAutoTerrainRule> MonsterRoom::auto_terrains_allowed() const
 {
         return
         {
-                {FeatureId::rubble_low, rnd::range(3, 6)}
+                {terrain::Id::rubble_low, rnd::range(3, 6)}
         };
 }
 
@@ -1288,11 +1290,11 @@ void MonsterRoom::on_post_connect_hook(Array2<bool>& door_proposals)
 // -----------------------------------------------------------------------------
 // Damp room
 // -----------------------------------------------------------------------------
-std::vector<RoomAutoFeatureRule> DampRoom::auto_features_allowed() const
+std::vector<RoomAutoTerrainRule> DampRoom::auto_terrains_allowed() const
 {
         return
         {
-                {FeatureId::vines, rnd::coin_toss() ? rnd::range(2, 8) : 0}
+                {terrain::Id::vines, rnd::coin_toss() ? rnd::range(2, 8) : 0}
         };
 }
 
@@ -1351,7 +1353,8 @@ void DampRoom::on_post_connect_hook(Array2<bool>& door_proposals)
                             map::g_room_map.at(x, y) == this &&
                             rnd::one_in(liquid_one_in_n))
                         {
-                                auto* const liquid = new LiquidShallow(P(x, y));
+                                auto* const liquid =
+                                        new terrain::LiquidShallow(P(x, y));
 
                                 liquid->m_type = liquid_type;
 
@@ -1364,11 +1367,11 @@ void DampRoom::on_post_connect_hook(Array2<bool>& door_proposals)
 // -----------------------------------------------------------------------------
 // Pool room
 // -----------------------------------------------------------------------------
-std::vector<RoomAutoFeatureRule> PoolRoom::auto_features_allowed() const
+std::vector<RoomAutoTerrainRule> PoolRoom::auto_terrains_allowed() const
 {
         return
         {
-                {FeatureId::vines, rnd::coin_toss() ? rnd::range(2, 8) : 0}
+                {terrain::Id::vines, rnd::coin_toss() ? rnd::range(2, 8) : 0}
         };
 }
 
@@ -1523,7 +1526,8 @@ void PoolRoom::on_post_connect_hook(Array2<bool>& door_proposals)
                             (flood.at(p) < (flood_travel_limit / 2)) ||
                             rnd::coin_toss())
                         {
-                                auto* const liquid = new LiquidDeep(p);
+                                auto* const liquid =
+                                        new terrain::LiquidDeep(p);
 
                                 liquid->m_type = LiquidType::water;
 
@@ -1531,7 +1535,8 @@ void PoolRoom::on_post_connect_hook(Array2<bool>& door_proposals)
                         }
                         else if (rnd::fraction(2, 3))
                         {
-                                auto* const liquid = new LiquidShallow(p);
+                                auto* const liquid =
+                                        new terrain::LiquidShallow(p);
 
                                 liquid->m_type = LiquidType::water;
 
@@ -1544,12 +1549,12 @@ void PoolRoom::on_post_connect_hook(Array2<bool>& door_proposals)
 // -----------------------------------------------------------------------------
 // Cave room
 // -----------------------------------------------------------------------------
-std::vector<RoomAutoFeatureRule> CaveRoom::auto_features_allowed() const
+std::vector<RoomAutoTerrainRule> CaveRoom::auto_terrains_allowed() const
 {
         return
         {
-                {FeatureId::rubble_low, rnd::range(2, 4)},
-                {FeatureId::stalagmite, rnd::range(1, 4)}
+                {terrain::Id::rubble_low, rnd::range(2, 4)},
+                {terrain::Id::stalagmite, rnd::range(1, 4)}
         };
 }
 
@@ -1573,11 +1578,11 @@ void CaveRoom::on_post_connect_hook(Array2<bool>& door_proposals)
 // -----------------------------------------------------------------------------
 // Forest room
 // -----------------------------------------------------------------------------
-std::vector<RoomAutoFeatureRule> ForestRoom::auto_features_allowed() const
+std::vector<RoomAutoTerrainRule> ForestRoom::auto_terrains_allowed() const
 {
         return
         {
-                {FeatureId::brazier, rnd::range(0, 1)}
+                {terrain::Id::brazier, rnd::range(0, 1)}
         };
 }
 
@@ -1608,7 +1613,7 @@ void ForestRoom::on_post_connect_hook(Array2<bool>& door_proposals)
         // Do not consider doors blocking
         for (size_t i = 0; i < map::nr_cells(); ++i)
         {
-                if (map::g_cells.at(i).rigid->id() == FeatureId::door)
+                if (map::g_cells.at(i).terrain->id() == terrain::Id::door)
                 {
                         blocked.at(i) = false;
                 }
@@ -1629,11 +1634,11 @@ void ForestRoom::on_post_connect_hook(Array2<bool>& door_proposals)
 
                                 if (rnd::one_in(10))
                                 {
-                                        map::put(new Bush(p));
+                                        map::put(new terrain::Bush(p));
                                 }
                                 else
                                 {
-                                        map::put(new Grass(p));
+                                        map::put(new terrain::Grass(p));
                                 }
                         }
                 }
@@ -1657,7 +1662,7 @@ void ForestRoom::on_post_connect_hook(Array2<bool>& door_proposals)
 
                         if (map_parsers::is_map_connected(blocked))
                         {
-                                map::put(new Tree(p));
+                                map::put(new terrain::Tree(p));
 
                                 ++nr_trees_placed;
                         }
@@ -1672,7 +1677,7 @@ void ForestRoom::on_post_connect_hook(Array2<bool>& door_proposals)
 // -----------------------------------------------------------------------------
 // Chasm room
 // -----------------------------------------------------------------------------
-std::vector<RoomAutoFeatureRule> ChasmRoom::auto_features_allowed() const
+std::vector<RoomAutoTerrainRule> ChasmRoom::auto_terrains_allowed() const
 {
         return {};
 }
@@ -1738,7 +1743,7 @@ void ChasmRoom::on_post_connect_hook(Array2<bool>& door_proposals)
 
                         if (p == origin || flood.at(x, y) != 0)
                         {
-                                map::put(new Chasm(p));
+                                map::put(new terrain::Chasm(p));
                         }
                 }
         }
@@ -1904,8 +1909,10 @@ void RiverRoom::on_pre_connect(Array2<bool>& door_proposals)
 
                         if (flood.at(x, y) > 0 || p == origin)
                         {
-                                map::put(new Chasm(p));
+                                map::put(new terrain::Chasm(p));
+
                                 map::g_room_map.at(x, y) = this;
+
                                 m_r.p0.x = std::min(m_r.p0.x, x);
                                 m_r.p0.y = std::min(m_r.p0.y, y);
                                 m_r.p1.x = std::max(m_r.p1.x, x);
@@ -1989,10 +1996,10 @@ void RiverRoom::on_pre_connect(Array2<bool>& door_proposals)
         {
                 for (int y = edge_d; y < map::h() - edge_d; ++y)
                 {
-                        const FeatureId feature_id =
-                                map::g_cells.at(x, y).rigid->id();
+                        const auto terrain_id =
+                                map::g_cells.at(x, y).terrain->id();
 
-                        if ((feature_id != FeatureId::wall) ||
+                        if ((terrain_id != terrain::Id::wall) ||
                             map::g_room_map.at(x, y))
                         {
                                 continue;
@@ -2006,10 +2013,10 @@ void RiverRoom::on_pre_connect(Array2<bool>& door_proposals)
                         {
                                 const auto p_adj(p + d);
 
-                                const auto* const f =
-                                        map::g_cells.at(p_adj).rigid;
+                                const auto* const t =
+                                        map::g_cells.at(p_adj).terrain;
 
-                                if (f->id() == FeatureId::floor)
+                                if (t->id() == terrain::Id::floor)
                                 {
                                         nr_cardinal_floor++;
                                 }
@@ -2216,11 +2223,11 @@ void RiverRoom::on_pre_connect(Array2<bool>& door_proposals)
                                             this)
                                         {
                                                 auto* const floor =
-                                                        new Floor(
+                                                        new terrain::Floor(
                                                                 {bridge_n, y});
 
                                                 floor->m_type =
-                                                        FloorType::common;
+                                                        terrain::FloorType::common;
 
                                                 map::put(floor);
                                         }
@@ -2234,19 +2241,19 @@ void RiverRoom::on_pre_connect(Array2<bool>& door_proposals)
                                             this)
                                         {
                                                 auto* const floor =
-                                                        new Floor(
+                                                        new terrain::Floor(
                                                                 {x, bridge_n});
 
                                                 floor->m_type =
-                                                        FloorType::common;
+                                                        terrain::FloorType::common;
 
                                                 map::put(floor);
                                         }
                                 }
                         }
 
-                        map::put(new Floor(room_con0));
-                        map::put(new Floor(room_con1));
+                        map::put(new terrain::Floor(room_con0));
+                        map::put(new terrain::Floor(room_con1));
 
                         door_proposals.at(room_con0) = true;
                         door_proposals.at(room_con1) = true;
@@ -2289,7 +2296,7 @@ void RiverRoom::on_pre_connect(Array2<bool>& door_proposals)
                                             x) ==
                                      std::end(c_built)))
                                 {
-                                        map::put(new Floor(P(x, y)));
+                                        map::put(new terrain::Floor(P(x, y)));
 
                                         map::g_room_map.at(x, y) = this;
                                 }
@@ -2306,9 +2313,9 @@ void RiverRoom::on_pre_connect(Array2<bool>& door_proposals)
                                 if (valid_room_entries.at(x, y) &&
                                     map::g_room_map.at(x, y) == this)
                                 {
-                                        auto* const floor = new Floor(P(x, y));
+                                        auto* const floor = new terrain::Floor(P(x, y));
 
-                                        floor->m_type = FloorType::common;
+                                        floor->m_type = terrain::FloorType::common;
 
                                         map::put(floor);
 

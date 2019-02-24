@@ -17,23 +17,20 @@
 
 namespace item
 {
-
 class Item;
-
-} // item
-
+}
 
 namespace actor
 {
-
 class Actor;
 class Player;
+}
 
-} // actor
+namespace terrain
+{
+class Terrain;
+}
 
-
-class Mob;
-class Rigid;
 class Room;
 
 
@@ -49,7 +46,7 @@ struct Cell
         bool is_explored, is_seen_by_player;
         LosResult player_los; // Updated when player updates FOV
         item::Item* item;
-        Rigid* rigid;
+        terrain::Terrain* terrain;
 };
 
 struct ChokePointData
@@ -125,7 +122,7 @@ R rect();
 
 size_t nr_cells();
 
-Rigid* put(Rigid* const rigid);
+terrain::Terrain* put(terrain::Terrain* const terrain);
 
 // This should be called when e.g. a door closes, or a wall is destoyed -
 // updates light map, player fov (etc).
@@ -142,7 +139,7 @@ actor::Actor* actor_at_pos(
         const P& pos,
         ActorState state = ActorState::alive);
 
-Mob* first_mob_at_pos(const P& pos);
+terrain::Terrain* first_mob_at_pos(const P& pos);
 
 void actor_cells(
         const std::vector<actor::Actor*>& actors,

@@ -15,7 +15,7 @@
 #include "actor_mon.hpp"
 #include "actor_player.hpp"
 #include "explosion.hpp"
-#include "feature_rigid.hpp"
+#include "terrain.hpp"
 #include "game_time.hpp"
 #include "io.hpp"
 #include "item_factory.hpp"
@@ -80,14 +80,14 @@ void PropBlessed::bless_adjacent() const
 
                 Cell& cell = map::g_cells.at(p_adj);
 
-                Rigid* const rigid = cell.rigid;
+                auto* const terrain = cell.terrain;
 
-                if (rigid->id() != FeatureId::fountain)
+                if (terrain->id() != terrain::Id::fountain)
                 {
                         continue;
                 }
 
-                static_cast<Fountain*>(rigid)->bless();
+                static_cast<terrain::Fountain*>(terrain)->bless();
         }
 }
 
@@ -122,14 +122,14 @@ void PropCursed::curse_adjacent() const
 
                 Cell& cell = map::g_cells.at(p_adj);
 
-                Rigid* const rigid = cell.rigid;
+                auto* const terrain = cell.terrain;
 
-                if (rigid->id() != FeatureId::fountain)
+                if (terrain->id() != terrain::Id::fountain)
                 {
                         continue;
                 }
 
-                static_cast<Fountain*>(rigid)->curse();
+                static_cast<terrain::Fountain*>(terrain)->curse();
         }
 }
 
@@ -1323,7 +1323,7 @@ PropEnded PropBurrowing::on_tick()
 {
         const P& p = m_owner->m_pos;
 
-        map::g_cells.at(p).rigid->hit(
+        map::g_cells.at(p).terrain->hit(
                 1, // Doesn't matter
                 DmgType::physical,
                 DmgMethod::forced);
@@ -1484,11 +1484,11 @@ void PropSplitsOnDeath::on_death()
 
         const P pos = m_owner->m_pos;
 
-        const auto f_id = map::g_cells.at(pos).rigid->id();
+        const auto f_id = map::g_cells.at(pos).terrain->id();
 
         if (is_very_destroyed ||
-            f_id == FeatureId::chasm ||
-            f_id == FeatureId::liquid_deep ||
+            f_id == terrain::Id::chasm ||
+            f_id == terrain::Id::liquid_deep ||
             (game_time::g_actors.size() >= g_max_nr_actors_on_map))
         {
                 return;
@@ -1587,7 +1587,7 @@ PropActResult PropCorruptsEnvColor::on_act()
 {
         const auto pos = m_owner->m_pos;
 
-        Rigid* r = map::g_cells.at(pos).rigid;
+        auto* r = map::g_cells.at(pos).terrain;
 
         r->corrupt_color();
 
@@ -1601,9 +1601,9 @@ void PropAltersEnv::on_std_turn()
         map_parsers::BlocksWalking(ParseActors::no)
                 .run(blocked, blocked.rect());
 
-        const std::vector<FeatureId> free_features = {
-                FeatureId::door,
-                FeatureId::liquid_deep,
+        const std::vector<terrain::Id> free_terrains = {
+                terrain::Id::door,
+                terrain::Id::liquid_deep,
         };
 
         for (int x = 0; x < blocked.w(); ++x)
@@ -1612,7 +1612,7 @@ void PropAltersEnv::on_std_turn()
                 {
                         const P p(x, y);
 
-                        if (map_parsers::IsAnyOfFeatures(free_features).cell(p))
+                        if (map_parsers::IsAnyOfTerrains(free_terrains).cell(p))
                         {
                                 blocked.at(p) = false;
                         }
@@ -1657,22 +1657,22 @@ void PropAltersEnv::on_std_turn()
 
                         const P pos(x, y);
 
-                        const FeatureId current_id =
-                                map::g_cells.at(x, y).rigid->id();
+                        const auto current_id =
+                                map::g_cells.at(x, y).terrain->id();
 
-                        if (current_id == FeatureId::wall)
+                        if (current_id == terrain::Id::wall)
                         {
-                                map::put(new Floor(pos));
+                                map::put(new terrain::Floor(pos));
 
                                 blocked.at(x, y) = false;
                         }
-                        else if (current_id == FeatureId::floor)
+                        else if (current_id == terrain::Id::floor)
                         {
                                 blocked.at(x, y) = true;
 
                                 if (map_parsers::is_map_connected(blocked))
                                 {
-                                        map::put(new Wall(pos));
+                                        map::put(new terrain::Wall(pos));
                                 }
                                 else
                                 {
@@ -1763,10 +1763,10 @@ void PropSpawnsZombiePartsOnDestroyed::on_destroyed()
 {
         const P& pos = m_owner->m_pos;
 
-        const auto f_id = map::g_cells.at(pos).rigid->id();
+        const auto f_id = map::g_cells.at(pos).terrain->id();
 
-        if (f_id == FeatureId::chasm ||
-            f_id == FeatureId::liquid_deep)
+        if (f_id == terrain::Id::chasm ||
+            f_id == terrain::Id::liquid_deep)
         {
                 return;
         }
@@ -2058,45 +2058,45 @@ void PropAuraOfDecay::run_effect_on_env() const
 
                 auto& cell = map::g_cells.at(p);
 
-                auto* const rigid = cell.rigid;
+                auto* const terrain = cell.terrain;
 
-                const auto id = rigid->id();
+                const auto id = terrain->id();
 
-                if ((id == FeatureId::wall ||
-                     id == FeatureId::rubble_high ||
-                     id == FeatureId::door) &&
+                if ((id == terrain::Id::wall ||
+                     id == terrain::Id::rubble_high ||
+                     id == terrain::Id::door) &&
                     rnd::one_in(250))
                 {
                         if (cell.is_seen_by_player)
                         {
                                 const std::string name =
                                         text_format::first_to_upper(
-                                                rigid->name(Article::the));
+                                                terrain->name(Article::the));
 
                                 msg_log::add(name + " collapses!");
 
                                 msg_log::more_prompt();
                         }
 
-                        rigid->hit(
+                        terrain->hit(
                                 1, // Doesn't actually matter
                                 DmgType::physical,
                                 DmgMethod::forced);
                 }
-                else if (id == FeatureId::floor &&
+                else if (id == terrain::Id::floor &&
                          rnd::one_in(100))
                 {
-                        map::put(new RubbleLow(p));
+                        map::put(new terrain::RubbleLow(p));
                 }
-                else if (id == FeatureId::grass &&
+                else if (id == terrain::Id::grass &&
                          rnd::one_in(10))
                 {
-                        static_cast<Grass*>(rigid)->m_type =
-                                GrassType::withered;
+                        static_cast<terrain::Grass*>(terrain)->m_type =
+                                terrain::GrassType::withered;
                 }
-                else if (id == FeatureId::fountain)
+                else if (id == terrain::Id::fountain)
                 {
-                        static_cast<Fountain*>(rigid)->curse();
+                        static_cast<terrain::Fountain*>(terrain)->curse();
                 }
         }
 }
@@ -2255,16 +2255,16 @@ PropEnded PropMagicSearching::on_tick()
                 {
                         auto& cell = map::g_cells.at(x, y);
 
-                        auto* const f = cell.rigid;
+                        auto* const t = cell.terrain;
 
-                        const auto id = f->id();
+                        const auto id = t->id();
 
-                        if ((id == FeatureId::trap) ||
-                            (id == FeatureId::door) ||
-                            (id == FeatureId::monolith) ||
-                            (id == FeatureId::stairs))
+                        if ((id == terrain::Id::trap) ||
+                            (id == terrain::Id::door) ||
+                            (id == terrain::Id::monolith) ||
+                            (id == terrain::Id::stairs))
                         {
-                                f->reveal(Verbosity::silent);
+                                t->reveal(Verbosity::silent);
 
                                 cell.is_seen_by_player = true;
 

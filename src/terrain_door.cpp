@@ -4,12 +4,12 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 // =============================================================================
 
-#include "feature_door.hpp"
+#include "terrain_door.hpp"
 
 #include "actor.hpp"
 #include "actor_player.hpp"
 #include "debug.hpp"
-#include "feature_data.hpp"
+#include "terrain_data.hpp"
 #include "game.hpp"
 #include "game_time.hpp"
 #include "init.hpp"
@@ -21,12 +21,16 @@
 #include "property_handler.hpp"
 #include "text_format.hpp"
 
-Door::Door(const P& feature_pos,
-           const Wall* const mimic_feature,
+
+namespace terrain
+{
+
+Door::Door(const P& terrain_pos,
+           const Wall* const mimic_terrain,
            DoorType type,
            DoorSpawnState spawn_state) :
-        Rigid(feature_pos),
-        m_mimic_feature(mimic_feature),
+        Terrain(terrain_pos),
+        m_mimic_terrain(mimic_terrain),
         m_nr_spikes(0),
         m_is_open(false),
         m_is_stuck(false),
@@ -34,7 +38,7 @@ Door::Door(const P& feature_pos,
         m_type(type)
 {
         // Gates should never be secret
-        ASSERT(!(m_type == DoorType::gate && m_mimic_feature));
+        ASSERT(!(m_type == DoorType::gate && m_mimic_terrain));
 
         ASSERT(
                 !(m_type == DoorType::gate &&
@@ -135,11 +139,12 @@ Door::~Door()
         {
                 for (size_t i = 0; i < map::nr_cells(); ++i)
                 {
-                        auto* const rigid = map::g_cells.at(i).rigid;
+                        auto* const terrain = map::g_cells.at(i).terrain;
 
-                        if (rigid && (rigid->id() == FeatureId::lever))
+                        if (terrain && (terrain->id() == terrain::Id::lever))
                         {
-                                auto* const lever = static_cast<Lever*>(rigid);
+                                auto* const lever =
+                                        static_cast<Lever*>(terrain);
 
                                 if (lever->is_linked_to(*this))
                                 {
@@ -149,7 +154,7 @@ Door::~Door()
                 }
         }
 
-        delete m_mimic_feature;
+        delete m_mimic_terrain;
 }
 
 void Door::on_hit(
@@ -524,9 +529,9 @@ std::string Door::name(const Article article) const
         if (m_is_secret)
         {
                 ASSERT(m_type != DoorType::gate);
-                ASSERT(m_mimic_feature);
+                ASSERT(m_mimic_terrain);
 
-                return m_mimic_feature->name(article);
+                return m_mimic_terrain->name(article);
         }
 
         std::string a = "";
@@ -572,7 +577,7 @@ Color Door::color_default() const
 {
         if (m_is_secret)
         {
-                return m_mimic_feature->color();
+                return m_mimic_terrain->color();
         }
         else
         {
@@ -602,9 +607,9 @@ char Door::character() const
         if (m_is_secret)
         {
                 ASSERT(m_type != DoorType::gate);
-                ASSERT(m_mimic_feature);
+                ASSERT(m_mimic_terrain);
 
-                return m_mimic_feature->character();
+                return m_mimic_terrain->character();
         }
         else // Not secret
         {
@@ -619,9 +624,9 @@ TileId Door::tile() const
         if (m_is_secret)
         {
                 ASSERT(m_type != DoorType::gate);
-                ASSERT(m_mimic_feature);
+                ASSERT(m_mimic_terrain);
 
-                ret = m_mimic_feature->tile();
+                ret = m_mimic_terrain->tile();
         }
         else // Not secret
         {
@@ -689,7 +694,7 @@ void Door::bump(actor::Actor& actor_bumping)
                               << "with vision in cell" << std::endl;
 
                         msg_log::add(
-                                feature_data::data(FeatureId::wall).
+                                terrain::data(terrain::Id::wall).
                                 msg_on_player_blocked);
                 }
                 else // Not seen by player
@@ -698,7 +703,7 @@ void Door::bump(actor::Actor& actor_bumping)
                               << "without vision in cell" << std::endl;
 
                         msg_log::add(
-                                feature_data::data(FeatureId::wall).
+                                terrain::data(terrain::Id::wall).
                                 msg_on_player_blocked_blind);
                 }
 
@@ -1306,3 +1311,5 @@ DidClose Door::close(actor::Actor* const actor_closing)
 
         return DidClose::yes;
 }
+
+} // terrain

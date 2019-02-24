@@ -15,9 +15,9 @@
 #include "ai.hpp"
 #include "attack.hpp"
 #include "drop.hpp"
-#include "feature_door.hpp"
-#include "feature_mob.hpp"
-#include "feature_trap.hpp"
+#include "terrain_door.hpp"
+#include "terrain_mob.hpp"
+#include "terrain_trap.hpp"
 #include "flood.hpp"
 #include "fov.hpp"
 #include "game_time.hpp"
@@ -50,14 +50,14 @@ static void unblock_passable_doors(
 {
         for (size_t i = 0; i < blocked.length(); ++i)
         {
-                const auto* const f = map::g_cells.at(i).rigid;
+                const auto* const t = map::g_cells.at(i).terrain;
 
-                if (f->id() != FeatureId::door)
+                if (t->id() != terrain::Id::door)
                 {
                         continue;
                 }
 
-                const auto* const door = static_cast<const Door*>(f);
+                const auto* const door = static_cast<const terrain::Door*>(t);
 
                 if (door->type() == DoorType::metal)
                 {

@@ -14,7 +14,7 @@
 #include "actor_mon.hpp"
 #include "actor_player.hpp"
 #include "explosion.hpp"
-#include "feature_door.hpp"
+#include "terrain_door.hpp"
 #include "flood.hpp"
 #include "game.hpp"
 #include "game_time.hpp"
@@ -200,8 +200,8 @@ Range Spell::spi_cost(const SpellSkill skill, actor::Actor* const caster) const
                 {
                         for (int y = y0; y <= y1; ++y)
                         {
-                                if (map::g_cells.at(x, y).rigid->id() ==
-                                    FeatureId::altar)
+                                if (map::g_cells.at(x, y).terrain->id() ==
+                                    terrain::Id::altar)
                                 {
                                         cost_max -= 1;
                                 }
@@ -1067,9 +1067,9 @@ void SpellMayhem::run_effect(
         {
                 for (int y = y0; y <= y1; ++y)
                 {
-                        const Rigid* const f = map::g_cells.at(x, y).rigid;
+                        const auto* const t = map::g_cells.at(x, y).terrain;
 
-                        if (!f->is_walkable())
+                        if (!t->is_walkable())
                         {
                                 continue;
                         }
@@ -1101,10 +1101,11 @@ void SpellMayhem::run_effect(
 
                 const P& p = rnd::element(p_bucket);
 
-                explosion::run(p,
-                               ExplType::expl,
-                               EmitExplSnd::yes,
-                               expl_radi_diff);
+                explosion::run(
+                        p,
+                        ExplType::expl,
+                        EmitExplSnd::yes,
+                        expl_radi_diff);
 
                 p_bucket.erase(p_bucket.begin() + idx);
         }
@@ -1114,9 +1115,9 @@ void SpellMayhem::run_effect(
         {
                 for (int y = y0; y <= y1; ++y)
                 {
-                        const auto id = map::g_cells.at(x, y).rigid->id();
+                        const auto id = map::g_cells.at(x, y).terrain->id();
 
-                        if (id == FeatureId::brazier)
+                        if (id == terrain::Id::brazier)
                         {
                                 const P p(x, y);
 
@@ -1130,7 +1131,7 @@ void SpellMayhem::run_effect(
 
                                 snd.run();
 
-                                map::put(new RubbleLow(p));
+                                map::put(new terrain::RubbleLow(p));
 
                                 explosion::run(
                                         p,
@@ -1165,7 +1166,7 @@ void SpellMayhem::run_effect(
 
                                         const auto& cell = map::g_cells.at(p_adj);
 
-                                        if (cell.rigid->is_walkable())
+                                        if (cell.terrain->is_walkable())
                                         {
                                                 is_adj_to_walkable_cell = true;
                                         }
@@ -1173,7 +1174,7 @@ void SpellMayhem::run_effect(
 
                                 if (is_adj_to_walkable_cell)
                                 {
-                                        map::g_cells.at(x, y).rigid->hit(
+                                        map::g_cells.at(x, y).terrain->hit(
                                                 1, // Damage (doesn't matter)
                                                 DmgType::physical,
                                                 DmgMethod::explosion,
@@ -1188,26 +1189,27 @@ void SpellMayhem::run_effect(
         {
                 for (int y = y0; y <= y1; ++y)
                 {
-                        auto* const f = map::g_cells.at(x, y).rigid;
+                        auto* const t = map::g_cells.at(x, y).terrain;
 
-                        if (f->can_have_blood() &&
+                        if (t->can_have_blood() &&
                             rnd::one_in(10))
                         {
-                                f->make_bloody();
+                                t->make_bloody();
 
                                 if (rnd::one_in(3))
                                 {
-                                        f->try_put_gore();
+                                        t->try_put_gore();
                                 }
                         }
 
                         if ((P(x, y) != caster->m_pos) &&
                             rnd::one_in(6))
                         {
-                                f->hit(1, // Damage (doesn't matter)
-                                       DmgType::fire,
-                                       DmgMethod::elemental,
-                                       nullptr);
+                                t->hit(
+                                        1, // Damage (doesn't matter)
+                                        DmgType::fire,
+                                        DmgMethod::elemental,
+                                        nullptr);
                         }
                 }
         }
@@ -1611,16 +1613,16 @@ void SpellOpening::run_effect(
 
                         const auto& cell = map::g_cells.at(x, y);
 
-                        auto* const f = cell.rigid;
+                        auto* const t = cell.terrain;
 
                         auto did_open = DidOpen::no;
 
                         bool is_metal_door = false;
 
                         // Is this a metal door?
-                        if (f->id() == FeatureId::door)
+                        if (t->id() == terrain::Id::door)
                         {
-                                auto* const door = static_cast<Door*>(f);
+                                auto* const door = static_cast<terrain::Door*>(t);
 
                                 is_metal_door =
                                         (door->type() == DoorType::metal);
@@ -1639,17 +1641,20 @@ void SpellOpening::run_effect(
                                                      y_lever < map::h();
                                                      ++y_lever)
                                                 {
-                                                        auto* const f_lever = map::g_cells.at(x_lever, y_lever).rigid;
+                                                        auto* const f_lever =
+                                                                map::g_cells.at(x_lever, y_lever)
+                                                                .terrain;
 
                                                         if (f_lever->id() !=
-                                                            FeatureId::lever)
+                                                            terrain::Id::lever)
                                                         {
                                                                 continue;
                                                         }
 
-                                                        auto* const lever = static_cast<Lever*>(f_lever);
+                                                        auto* const lever =
+                                                                static_cast<terrain::Lever*>(f_lever);
 
-                                                        if (lever->is_linked_to(*f))
+                                                        if (lever->is_linked_to(*t))
                                                         {
                                                                 lever->toggle();
 
@@ -1670,7 +1675,7 @@ void SpellOpening::run_effect(
                         if ((did_open != DidOpen::yes) &&
                             !is_metal_door)
                         {
-                                did_open = cell.rigid->open(nullptr);
+                                did_open = cell.terrain->open(nullptr);
                         }
 
                         if (did_open == DidOpen::yes)

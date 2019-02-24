@@ -12,10 +12,8 @@
 
 namespace item
 {
-
 struct ItemData;
-
-} // item_data
+}
 
 
 namespace rod

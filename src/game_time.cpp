@@ -11,8 +11,8 @@
 #include "actor_mon.hpp"
 #include "actor_player.hpp"
 #include "audio.hpp"
-#include "feature_mob.hpp"
-#include "feature_rigid.hpp"
+#include "terrain_mob.hpp"
+#include "terrain.hpp"
 #include "init.hpp"
 #include "inventory.hpp"
 #include "inventory_handling.hpp"
@@ -207,27 +207,27 @@ static void run_std_turn_events()
                 }
         } // Actor loop
 
-        // Allow already burning features to damage stuff, spread fire, etc
+        // Allow already burning terrains to damage stuff, spread fire, etc
         for (auto& cell : map::g_cells)
         {
-                if (cell.rigid->m_burn_state == BurnState::burning)
+                if (cell.terrain->m_burn_state == BurnState::burning)
                 {
-                        cell.rigid->m_started_burning_this_turn = false;
+                        cell.terrain->m_started_burning_this_turn = false;
                 }
         }
 
-        // New turn for rigids
+        // New turn for terrains
         for (auto& cell : map::g_cells)
         {
-                cell.rigid->on_new_turn();
+                cell.terrain->on_new_turn();
         }
 
         // New turn for mobs
-        const std::vector<Mob*> mobs_cpy = game_time::g_mobs;
+        const std::vector<terrain::Terrain*> mobs_cpy = game_time::g_mobs;
 
-        for (auto* f : mobs_cpy)
+        for (auto* t : mobs_cpy)
         {
-                f->on_new_turn();
+                t->on_new_turn();
         }
 
         if (map_control::g_controller)
@@ -266,9 +266,9 @@ static  void run_atomic_turn_events()
         {
                 const P& p = actor->m_pos;
 
-                const Rigid* const rigid = map::g_cells.at(p).rigid;
+                const auto* const terrain = map::g_cells.at(p).terrain;
 
-                if (rigid->data().matl_type == Matl::fluid)
+                if (terrain->data().matl_type == Matl::fluid)
                 {
                         actor->m_properties.end_prop(PropId::burning);
                 }
@@ -286,7 +286,7 @@ namespace game_time
 {
 
 std::vector<actor::Actor*> g_actors;
-std::vector<Mob*> g_mobs;
+std::vector<terrain::Terrain*> g_mobs;
 
 bool g_is_magic_descend_nxt_std_turn;
 
@@ -314,9 +314,9 @@ void cleanup()
 
         g_actors.clear();
 
-        for (auto* f : g_mobs)
+        for (auto* t : g_mobs)
         {
-                delete f;
+                delete t;
         }
 
         g_mobs.clear();
@@ -339,9 +339,9 @@ int turn_nr()
         return s_turn_nr;
 }
 
-std::vector<Mob*> mobs_at_pos(const P& p)
+std::vector<terrain::Terrain*> mobs_at_pos(const P& p)
 {
-        std::vector<Mob*> mobs;
+        std::vector<terrain::Terrain*> mobs;
 
         for (auto* m : mobs)
         {
@@ -354,12 +354,12 @@ std::vector<Mob*> mobs_at_pos(const P& p)
         return mobs;
 }
 
-void add_mob(Mob* const f)
+void add_mob(terrain::Terrain* const f)
 {
         g_mobs.push_back(f);
 }
 
-void erase_mob(Mob* const f, const bool destroy_object)
+void erase_mob(terrain::Terrain* const f, const bool destroy_object)
 {
         for (auto it = g_mobs.begin(); it != g_mobs.end(); ++it)
         {
@@ -506,7 +506,7 @@ void update_light_map()
 
         for (size_t i = 0; i < map::nr_cells(); ++i)
         {
-                map::g_cells.at(i).rigid->add_light(light_tmp);
+                map::g_cells.at(i).terrain->add_light(light_tmp);
         }
 
         // Copy the temporary buffer to the real light map

@@ -8,13 +8,13 @@
 
 #include "debug.hpp"
 #include "room.hpp"
-#include "feature_rigid.hpp"
-#include "feature_door.hpp"
+#include "terrain.hpp"
+#include "terrain_door.hpp"
 
 // -----------------------------------------------------------------------------
 // Private
 // -----------------------------------------------------------------------------
-static void put_templ_features(
+static void put_templ_terrains(
         const Array2<char>& templ,
         const P& p0)
 {
@@ -36,13 +36,13 @@ static void put_templ_features(
                         {
                         case '.':
                         {
-                                map::put(new Floor(p));
+                                map::put(new terrain::Floor(p));
                         }
                         break;
 
                         case '#':
                         {
-                                map::put(new Wall(p));
+                                map::put(new terrain::Wall(p));
 
                                 is_room_cell = false;
                         }
@@ -50,13 +50,13 @@ static void put_templ_features(
 
                         case '-':
                         {
-                                map::put(new Altar(p));
+                                map::put(new terrain::Altar(p));
                         }
                         break;
 
                         case '~':
                         {
-                                auto* liquid = new LiquidShallow(p);
+                                auto* liquid = new terrain::LiquidShallow(p);
 
                                 liquid->m_type = LiquidType::water;
 
@@ -66,45 +66,53 @@ static void put_templ_features(
 
                         case '0':
                         {
-                                map::put(new Brazier(p));
+                                map::put(new terrain::Brazier(p));
                         }
                         break;
 
                         case 'P':
                         {
-                                map::put(new Statue(p));
+                                map::put(new terrain::Statue(p));
                         }
                         break;
 
                         case '+':
                         {
-                                Wall* mimic = new Wall(p);
+                                auto* mimic = new terrain::Wall(p);
 
-                                map::put(new Door(p, mimic, DoorType::wood));
+                                map::put(
+                                        new terrain::Door(
+                                                p,
+                                                mimic,
+                                                DoorType::wood));
                         }
                         break;
 
                         case 'x':
                         {
-                                map::put(new Door(p, nullptr, DoorType::gate));
+                                map::put(
+                                        new terrain::Door(
+                                                p,
+                                                nullptr,
+                                                DoorType::gate));
                         }
                         break;
 
                         case '=':
                         {
-                                map::put(new Grate(p));
+                                map::put(new terrain::Grate(p));
                         }
                         break;
 
                         case '"':
                         {
-                                map::put(new Vines(p));
+                                map::put(new terrain::Vines(p));
                         }
                         break;
 
                         case '*':
                         {
-                                map::put(new Chains(p));
+                                map::put(new terrain::Chains(p));
                         }
                         break;
 
@@ -165,11 +173,11 @@ static Room* make_template_room(const RoomTempl& templ, Region& region)
 
         mapgen::register_room(*room);
 
-        // Place features on the map based on the template
+        // Place terrains on the map based on the template
 
         // NOTE: This must be done AFTER "register_room", since it may remove
         // some of its cells from the global room map (e.g. untouched cells)
-        put_templ_features(templ.symbols, p0);
+        put_templ_terrains(templ.symbols, p0);
 
         region.main_room = room;
         region.is_free = false;

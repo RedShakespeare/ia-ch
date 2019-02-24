@@ -20,10 +20,8 @@
 
 namespace actor
 {
-
 class Actor;
-
-} // actor
+}
 
 
 struct CellRenderData

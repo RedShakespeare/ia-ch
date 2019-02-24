@@ -4,18 +4,18 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 // =============================================================================
 
-#include "feature_data.hpp"
+#include "terrain_data.hpp"
 
 #include "init.hpp"
 
 #include "actor.hpp"
-#include "feature_rigid.hpp"
-#include "feature_mob.hpp"
-#include "feature_trap.hpp"
-#include "feature_event.hpp"
-#include "feature_door.hpp"
-#include "feature_monolith.hpp"
-#include "feature_pylon.hpp"
+#include "terrain.hpp"
+#include "terrain_mob.hpp"
+#include "terrain_trap.hpp"
+#include "terrain_event.hpp"
+#include "terrain_door.hpp"
+#include "terrain_monolith.hpp"
+#include "terrain_pylon.hpp"
 #include "game_time.hpp"
 #include "property_data.hpp"
 #include "property_handler.hpp"
@@ -23,12 +23,12 @@
 // -----------------------------------------------------------------------------
 // Private
 // -----------------------------------------------------------------------------
-static FeatureData s_data[(size_t)FeatureId::END];
+static terrain::TerrainData s_data[(size_t)terrain::Id::END];
 
-static void reset_data(FeatureData& d)
+static void reset_data(terrain::TerrainData& d)
 {
         d.make_obj = [](const P & p) {(void)p; return nullptr;};
-        d.id = FeatureId::END;
+        d.id = terrain::Id::END;
         d.character = ' ';
         d.tile = TileId::END;
         d.move_rules.reset();
@@ -39,7 +39,7 @@ static void reset_data(FeatureData& d)
         d.can_have_blood = true;
         d.can_have_gore = false;
         d.can_have_corpse = true;
-        d.can_have_rigid = true;
+        d.can_have_terrain = true;
         d.can_have_item = true;
         d.matl_type = Matl::stone;
         d.msg_on_player_blocked = "The way is blocked.";
@@ -47,7 +47,7 @@ static void reset_data(FeatureData& d)
         d.shock_when_adjacent = 0;
 }
 
-static void add_to_list_and_reset(FeatureData& d)
+static void add_to_list_and_reset(terrain::TerrainData& d)
 {
         s_data[(size_t)d.id] = d;
 
@@ -56,12 +56,12 @@ static void add_to_list_and_reset(FeatureData& d)
 
 static void init_data_list()
 {
-        FeatureData d;
+        terrain::TerrainData d;
         reset_data(d);
 
-        d.id = FeatureId::floor;
+        d.id = terrain::Id::floor;
         d.make_obj = [](const P & p) {
-                return new Floor(p);
+                return new terrain::Floor(p);
         };
         d.character = '.';
         d.tile = TileId::floor;
@@ -71,17 +71,17 @@ static void init_data_list()
         add_to_list_and_reset(d);
 
 
-        d.id = FeatureId::bridge;
+        d.id = terrain::Id::bridge;
         d.make_obj = [](const P & p) {
-                return new Bridge(p);
+                return new terrain::Bridge(p);
         };
         d.move_rules.set_walkable();
         d.matl_type = Matl::wood;
         add_to_list_and_reset(d);
 
-        d.id = FeatureId::wall;
+        d.id = terrain::Id::wall;
         d.make_obj = [](const P & p) {
-                return new Wall(p);
+                return new terrain::Wall(p);
         };
         d.character = config::is_text_mode_wall_full_square() ? 10 : '#';
         d.tile = TileId::wall_top;
@@ -93,14 +93,14 @@ static void init_data_list()
         d.is_smoke_passable = false;
         d.can_have_gore = false;
         d.can_have_corpse = false;
-        d.can_have_rigid = false;
+        d.can_have_terrain = false;
         d.can_have_item = false;
         d.matl_type = Matl::stone;
         add_to_list_and_reset(d);
 
-        d.id = FeatureId::tree;
+        d.id = terrain::Id::tree;
         d.make_obj = [](const P & p) {
-                return new Tree(p);
+                return new terrain::Tree(p);
         };
         d.character = '|';
         d.tile = TileId::tree;
@@ -111,16 +111,16 @@ static void init_data_list()
         d.can_have_blood = false;
         d.can_have_gore = false;
         d.can_have_corpse = false;
-        d.can_have_rigid = false;
+        d.can_have_terrain = false;
         d.can_have_item = false;
         d.msg_on_player_blocked = "There is a tree in the way.";
         d.matl_type = Matl::wood;
         d.shock_when_adjacent = 1;
         add_to_list_and_reset(d);
 
-        d.id = FeatureId::grass;
+        d.id = terrain::Id::grass;
         d.make_obj = [](const P & p) {
-                return new Grass(p);
+                return new terrain::Grass(p);
         };
         d.character = '.';
         d.tile = TileId::floor;
@@ -129,9 +129,9 @@ static void init_data_list()
         d.can_have_gore = true;
         add_to_list_and_reset(d);
 
-        d.id = FeatureId::bush;
+        d.id = terrain::Id::bush;
         d.make_obj = [](const P & p) {
-                return new Bush(p);
+                return new terrain::Bush(p);
         };
         d.character = '"';
         d.tile = TileId::bush;
@@ -140,9 +140,9 @@ static void init_data_list()
         d.matl_type = Matl::plant;
         add_to_list_and_reset(d);
 
-        d.id = FeatureId::vines;
+        d.id = terrain::Id::vines;
         d.make_obj = [](const P & p) {
-                return new Vines(p);
+                return new terrain::Vines(p);
         };
         d.character = '"';
         d.tile = TileId::vines;
@@ -151,12 +151,12 @@ static void init_data_list()
         d.can_have_blood = false;
         d.can_have_gore = false;
         d.matl_type = Matl::plant;
-        d.auto_spawn_placement = FeaturePlacement::either;
+        d.auto_spawn_placement = terrain::TerrainPlacement::either;
         add_to_list_and_reset(d);
 
-        d.id = FeatureId::chains;
+        d.id = terrain::Id::chains;
         d.make_obj = [](const P & p) {
-                return new Chains(p);
+                return new terrain::Chains(p);
         };
         d.character = '"';
         d.tile = TileId::chains;
@@ -165,12 +165,12 @@ static void init_data_list()
         d.is_projectile_passable = true;
         d.can_have_blood = true;
         d.matl_type = Matl::metal;
-        d.auto_spawn_placement = FeaturePlacement::either;
+        d.auto_spawn_placement = terrain::TerrainPlacement::either;
         add_to_list_and_reset(d);
 
-        d.id = FeatureId::grate;
+        d.id = terrain::Id::grate;
         d.make_obj = [](const P & p) {
-                return new Grate(p);
+                return new terrain::Grate(p);
         };
         d.character = '#';
         d.tile = TileId::grate;
@@ -181,28 +181,28 @@ static void init_data_list()
         d.can_have_blood = false; // Looks weird
         d.can_have_gore = false;
         d.can_have_corpse = false;
-        d.can_have_rigid = false;
+        d.can_have_terrain = false;
         d.can_have_item = false;
         d.matl_type = Matl::metal;
         add_to_list_and_reset(d);
 
-        d.id = FeatureId::stairs;
+        d.id = terrain::Id::stairs;
         d.make_obj = [](const P & p) {
-                return new Stairs(p);
+                return new terrain::Stairs(p);
         };
         d.character = '>';
         d.tile = TileId::stairs_down;
         d.can_have_blood = false;
         d.can_have_gore = false;
         d.can_have_corpse = false;
-        d.can_have_rigid = false;
+        d.can_have_terrain = false;
         d.can_have_item = false;
         d.matl_type = Matl::stone;
         add_to_list_and_reset(d);
 
-        d.id = FeatureId::monolith;
+        d.id = terrain::Id::monolith;
         d.make_obj = [](const P & p) {
-                return new Monolith(p);
+                return new terrain::Monolith(p);
         };
         d.character = '|';
         d.tile = TileId::monolith;
@@ -211,15 +211,15 @@ static void init_data_list()
         d.can_have_blood = false; // We don't want to mess with the color
         d.can_have_gore = false;
         d.can_have_corpse = false;
-        d.can_have_rigid = false;
+        d.can_have_terrain = false;
         d.can_have_item = false;
         d.shock_when_adjacent = 10;
         d.matl_type = Matl::stone;
         add_to_list_and_reset(d);
 
-        d.id = FeatureId::pylon;
+        d.id = terrain::Id::pylon;
         d.make_obj = [](const P & p) {
-                return new Pylon(p, PylonId::any);
+                return new terrain::Pylon(p, terrain::PylonId::any);
         };
         d.character = '|';
         d.tile = TileId::pylon;
@@ -228,70 +228,70 @@ static void init_data_list()
         d.can_have_blood = false; // We don't want to mess with the color
         d.can_have_gore = false;
         d.can_have_corpse = false;
-        d.can_have_rigid = false;
+        d.can_have_terrain = false;
         d.can_have_item = false;
         d.shock_when_adjacent = 10;
         d.matl_type = Matl::metal;
         add_to_list_and_reset(d);
 
-        d.id = FeatureId::lever;
+        d.id = terrain::Id::lever;
         d.make_obj = [](const P & p) {
-                return new Lever(p);
+                return new terrain::Lever(p);
         };
         d.character = '%';
         d.tile = TileId::lever_left;
         d.can_have_blood = false;
         d.can_have_gore = false;
         d.can_have_corpse = false;
-        d.can_have_rigid = false;
+        d.can_have_terrain = false;
         d.can_have_item = false;
         d.matl_type = Matl::metal;
         add_to_list_and_reset(d);
 
-        d.id = FeatureId::brazier;
+        d.id = terrain::Id::brazier;
         d.make_obj = [](const P & p) {
-                return new Brazier(p);
+                return new terrain::Brazier(p);
         };
         d.character = '0';
         d.tile = TileId::brazier;
         d.can_have_blood = false;
         d.can_have_gore = false;
         d.can_have_corpse = false;
-        d.can_have_rigid = false;
+        d.can_have_terrain = false;
         d.can_have_item = false;
         d.matl_type = Matl::metal;
-        d.auto_spawn_placement = FeaturePlacement::away_from_walls;
+        d.auto_spawn_placement = terrain::TerrainPlacement::away_from_walls;
         add_to_list_and_reset(d);
 
-        d.id = FeatureId::liquid_shallow;
+        d.id = terrain::Id::liquid_shallow;
         d.make_obj = [](const P & p) {
-                return new LiquidShallow(p);
+                return new terrain::LiquidShallow(p);
         };
         d.character = '~';
         d.tile = TileId::water;
         d.move_rules.set_walkable();
         d.can_have_blood = false;
         d.can_have_gore = false;
-        d.can_have_rigid = false;
+        d.can_have_terrain = false;
         d.matl_type = Matl::fluid;
         add_to_list_and_reset(d);
 
-        d.id = FeatureId::liquid_deep;
+        d.id = terrain::Id::liquid_deep;
         d.make_obj = [](const P & p) {
-                return new LiquidDeep(p);
+                return new terrain::LiquidDeep(p);
         };
         d.character = '~';
         d.tile = TileId::water;
         d.can_have_item = false;
         d.can_have_blood = false;
         d.can_have_gore = false;
-        d.can_have_rigid = false;
+        d.can_have_terrain = false;
         d.matl_type = Matl::fluid;
         add_to_list_and_reset(d);
 
-        d.id = FeatureId::chasm;
+        d.id = terrain::Id::chasm;
         d.make_obj = [](const P & p) {
-                return new Chasm(p);
+                return new terrain::Chasm(p);
         };
         d.character = '.';
         d.tile = TileId::floor;
@@ -301,7 +301,7 @@ static void init_data_list()
         d.can_have_blood = false;
         d.can_have_gore = false;
         d.can_have_corpse = false;
-        d.can_have_rigid = false;
+        d.can_have_terrain = false;
         d.msg_on_player_blocked = "A chasm lies in my way.";
         d.msg_on_player_blocked_blind =
                 "I realize I am standing on the edge of a chasm.";
@@ -309,9 +309,9 @@ static void init_data_list()
         d.shock_when_adjacent = 3;
         add_to_list_and_reset(d);
 
-        d.id = FeatureId::gravestone;
+        d.id = terrain::Id::gravestone;
         d.make_obj = [](const P & p) {
-                return new GraveStone(p);
+                return new terrain::GraveStone(p);
         };
         d.character = ']';
         d.tile = TileId::grave_stone;
@@ -320,15 +320,15 @@ static void init_data_list()
         d.can_have_blood = false;
         d.can_have_gore = false;
         d.can_have_corpse = false;
-        d.can_have_rigid = false;
+        d.can_have_terrain = false;
         d.can_have_item = false;
         d.shock_when_adjacent = 2;
         d.matl_type = Matl::stone;
         add_to_list_and_reset(d);
 
-        d.id = FeatureId::church_bench;
+        d.id = terrain::Id::church_bench;
         d.make_obj = [](const P & p) {
-                return new ChurchBench(p);
+                return new terrain::ChurchBench(p);
         };
         d.character = '[';
         d.tile = TileId::church_bench;
@@ -340,25 +340,25 @@ static void init_data_list()
         d.can_have_blood = false;
         d.can_have_gore = false;
         d.can_have_corpse = false;
-        d.can_have_rigid = false;
+        d.can_have_terrain = false;
         d.can_have_item = false;
         d.matl_type = Matl::wood;
         add_to_list_and_reset(d);
 
-        d.id = FeatureId::carpet;
+        d.id = terrain::Id::carpet;
         d.make_obj = [](const P & p) {
-                return new Carpet(p);
+                return new terrain::Carpet(p);
         };
         d.character = '.';
         d.tile = TileId::floor;
-        d.can_have_rigid = false;
+        d.can_have_terrain = false;
         d.move_rules.set_walkable();
         d.matl_type = Matl::cloth;
         add_to_list_and_reset(d);
 
-        d.id = FeatureId::rubble_high;
+        d.id = terrain::Id::rubble_high;
         d.make_obj = [](const P & p) {
-                return new RubbleHigh(p);
+                return new terrain::RubbleHigh(p);
         };
         d.character = 8;
         d.tile = TileId::rubble_high;
@@ -371,36 +371,36 @@ static void init_data_list()
         d.can_have_blood = false;
         d.can_have_gore = false;
         d.can_have_corpse = false;
-        d.can_have_rigid = false;
+        d.can_have_terrain = false;
         d.can_have_item = false;
         d.matl_type = Matl::stone;
         add_to_list_and_reset(d);
 
-        d.id = FeatureId::rubble_low;
+        d.id = terrain::Id::rubble_low;
         d.make_obj = [](const P & p) {
-                return new RubbleLow(p);
+                return new terrain::RubbleLow(p);
         };
         d.character = ',';
         d.tile = TileId::rubble_low;
         d.move_rules.set_walkable();
         d.matl_type = Matl::stone;
-        d.auto_spawn_placement = FeaturePlacement::either;
+        d.auto_spawn_placement = terrain::TerrainPlacement::either;
         add_to_list_and_reset(d);
 
-        d.id = FeatureId::bones;
+        d.id = terrain::Id::bones;
         d.make_obj = [](const P & p) {
-                return new Bones(p);
+                return new terrain::Bones(p);
         };
         d.character = '&';
         d.tile = TileId::corpse2;
         d.move_rules.set_walkable();
         d.matl_type = Matl::stone;
-        d.auto_spawn_placement = FeaturePlacement::either;
+        d.auto_spawn_placement = terrain::TerrainPlacement::either;
         add_to_list_and_reset(d);
 
-        d.id = FeatureId::statue;
+        d.id = terrain::Id::statue;
         d.make_obj = [](const P & p) {
-                return new Statue(p);
+                return new terrain::Statue(p);
         };
         d.character = 5; //Paragraph sign
         d.tile = TileId::witch_or_warlock;
@@ -409,15 +409,15 @@ static void init_data_list()
         d.can_have_blood = false;
         d.can_have_gore = false;
         d.can_have_corpse = false;
-        d.can_have_rigid = false;
+        d.can_have_terrain = false;
         d.can_have_item = false;
         d.matl_type = Matl::stone;
-        d.auto_spawn_placement = FeaturePlacement::either;
+        d.auto_spawn_placement = terrain::TerrainPlacement::either;
         add_to_list_and_reset(d);
 
-        d.id = FeatureId::cocoon;
+        d.id = terrain::Id::cocoon;
         d.make_obj = [](const P & p) {
-                return new Cocoon(p);
+                return new terrain::Cocoon(p);
         };
         d.character = '8';
         d.tile = TileId::cocoon_closed;
@@ -426,30 +426,30 @@ static void init_data_list()
         d.can_have_blood = false;
         d.can_have_gore = false;
         d.can_have_corpse = false;
-        d.can_have_rigid = false;
+        d.can_have_terrain = false;
         d.can_have_item = false;
         d.shock_when_adjacent = 3;
         d.matl_type = Matl::cloth;
-        d.auto_spawn_placement = FeaturePlacement::either;
+        d.auto_spawn_placement = terrain::TerrainPlacement::either;
         add_to_list_and_reset(d);
 
-        d.id = FeatureId::chest;
+        d.id = terrain::Id::chest;
         d.make_obj = [](const P & p) {
-                return new Chest(p);
+                return new terrain::Chest(p);
         };
         d.character = '+';
         d.tile = TileId::chest_closed;
         d.can_have_blood = false;
         d.can_have_gore = false;
         d.can_have_corpse = false;
-        d.can_have_rigid = false;
+        d.can_have_terrain = false;
         d.can_have_item = false;
-        d.auto_spawn_placement = FeaturePlacement::adj_to_walls;
+        d.auto_spawn_placement = terrain::TerrainPlacement::adj_to_walls;
         add_to_list_and_reset(d);
 
-        d.id = FeatureId::cabinet;
+        d.id = terrain::Id::cabinet;
         d.make_obj = [](const P & p) {
-                return new Cabinet(p);
+                return new terrain::Cabinet(p);
         };
         d.character = '7';
         d.tile = TileId::cabinet_closed;
@@ -458,15 +458,15 @@ static void init_data_list()
         d.can_have_blood = false;
         d.can_have_gore = false;
         d.can_have_corpse = false;
-        d.can_have_rigid = false;
+        d.can_have_terrain = false;
         d.can_have_item = false;
         d.matl_type = Matl::wood;
-        d.auto_spawn_placement = FeaturePlacement::adj_to_walls;
+        d.auto_spawn_placement = terrain::TerrainPlacement::adj_to_walls;
         add_to_list_and_reset(d);
 
-        d.id = FeatureId::bookshelf;
+        d.id = terrain::Id::bookshelf;
         d.make_obj = [](const P & p) {
-                return new Bookshelf(p);
+                return new terrain::Bookshelf(p);
         };
         d.character = '7';
         d.tile = TileId::bookshelf_full;
@@ -475,15 +475,15 @@ static void init_data_list()
         d.can_have_blood = false;
         d.can_have_gore = false;
         d.can_have_corpse = false;
-        d.can_have_rigid = false;
+        d.can_have_terrain = false;
         d.can_have_item = false;
         d.matl_type = Matl::wood;
-        d.auto_spawn_placement = FeaturePlacement::adj_to_walls;
+        d.auto_spawn_placement = terrain::TerrainPlacement::adj_to_walls;
         add_to_list_and_reset(d);
 
-        d.id = FeatureId::alchemist_bench;
+        d.id = terrain::Id::alchemist_bench;
         d.make_obj = [](const P & p) {
-                return new AlchemistBench(p);
+                return new terrain::AlchemistBench(p);
         };
         d.character = '7';
         d.tile = TileId::alchemist_bench_full;
@@ -492,15 +492,15 @@ static void init_data_list()
         d.can_have_blood = false;
         d.can_have_gore = false;
         d.can_have_corpse = false;
-        d.can_have_rigid = false;
+        d.can_have_terrain = false;
         d.can_have_item = false;
         d.matl_type = Matl::wood;
-        d.auto_spawn_placement = FeaturePlacement::either;
+        d.auto_spawn_placement = terrain::TerrainPlacement::either;
         add_to_list_and_reset(d);
 
-        d.id = FeatureId::fountain;
+        d.id = terrain::Id::fountain;
         d.make_obj = [](const P & p) {
-                return new Fountain(p);
+                return new terrain::Fountain(p);
         };
         d.character = '1';
         d.tile = TileId::fountain;
@@ -509,15 +509,15 @@ static void init_data_list()
         d.can_have_blood = false;
         d.can_have_gore = false;
         d.can_have_corpse = false;
-        d.can_have_rigid = false;
+        d.can_have_terrain = false;
         d.can_have_item = false;
         d.matl_type = Matl::stone;
-        d.auto_spawn_placement = FeaturePlacement::away_from_walls;
+        d.auto_spawn_placement = terrain::TerrainPlacement::away_from_walls;
         add_to_list_and_reset(d);
 
-        d.id = FeatureId::stalagmite;
+        d.id = terrain::Id::stalagmite;
         d.make_obj = [](const P & p) {
-                return new Stalagmite(p);
+                return new terrain::Stalagmite(p);
         };
         d.character = ':';
         d.tile = TileId::stalagmite;
@@ -526,31 +526,31 @@ static void init_data_list()
         d.can_have_blood = true;
         d.can_have_gore = false;
         d.can_have_corpse = false;
-        d.can_have_rigid = false;
+        d.can_have_terrain = false;
         d.can_have_item = false;
         d.matl_type = Matl::stone;
-        d.auto_spawn_placement = FeaturePlacement::either;
+        d.auto_spawn_placement = terrain::TerrainPlacement::either;
         add_to_list_and_reset(d);
 
-        d.id = FeatureId::altar;
+        d.id = terrain::Id::altar;
         d.make_obj = [](const P & p) {
-                return new Altar(p);
+                return new terrain::Altar(p);
         };
         d.character = '_';
         d.tile = TileId::altar;
         d.can_have_blood = false;
         d.can_have_gore = false;
         d.can_have_corpse = false;
-        d.can_have_rigid = false;
+        d.can_have_terrain = false;
         d.can_have_item = false;
         d.shock_when_adjacent = 10;
         d.matl_type = Matl::stone;
-        d.auto_spawn_placement = FeaturePlacement::either;
+        d.auto_spawn_placement = terrain::TerrainPlacement::either;
         add_to_list_and_reset(d);
 
-        d.id = FeatureId::tomb;
+        d.id = terrain::Id::tomb;
         d.make_obj = [](const P & p) {
-                return new Tomb(p);
+                return new terrain::Tomb(p);
         };
         d.character = ']';
         d.tile = TileId::tomb_closed;
@@ -559,35 +559,35 @@ static void init_data_list()
         d.can_have_blood = false;
         d.can_have_gore = false;
         d.can_have_corpse = false;
-        d.can_have_rigid = false;
+        d.can_have_terrain = false;
         d.can_have_item = false;
         d.shock_when_adjacent = 10;
         d.matl_type = Matl::stone;
-        d.auto_spawn_placement = FeaturePlacement::either;
+        d.auto_spawn_placement = terrain::TerrainPlacement::either;
         add_to_list_and_reset(d);
 
-        d.id = FeatureId::door;
+        d.id = terrain::Id::door;
         d.make_obj = [](const P & p) {
-                return new Door(p);
+                return new terrain::Door(p);
         };
         d.can_have_blood = false;
         d.can_have_gore = false;
         d.can_have_corpse = false;
-        d.can_have_rigid = false;
+        d.can_have_terrain = false;
         d.can_have_item = false;
         add_to_list_and_reset(d);
 
-        d.id = FeatureId::trap;
+        d.id = terrain::Id::trap;
         d.make_obj = [](const P & p) {
-                return new Trap(p);
+                return new terrain::Trap(p);
         };
         d.move_rules.set_walkable();
-        d.can_have_rigid = false;
+        d.can_have_terrain = false;
         add_to_list_and_reset(d);
 
-        d.id = FeatureId::lit_dynamite;
+        d.id = terrain::Id::lit_dynamite;
         d.make_obj = [](const P & p) {
-                return new LitDynamite(p);
+                return new terrain::LitDynamite(p);
         };
         d.character = '/';
         d.tile = TileId::dynamite_lit;
@@ -598,18 +598,18 @@ static void init_data_list()
         d.can_have_item = false;
         add_to_list_and_reset(d);
 
-        d.id = FeatureId::lit_flare;
+        d.id = terrain::Id::lit_flare;
         d.make_obj = [](const P & p) {
-                return new LitFlare(p);
+                return new terrain::LitFlare(p);
         };
         d.character = '/';
         d.tile = TileId::flare_lit;
         d.move_rules.set_walkable();
         add_to_list_and_reset(d);
 
-        d.id = FeatureId::smoke;
+        d.id = terrain::Id::smoke;
         d.make_obj = [](const P & p) {
-                return new Smoke(p);
+                return new terrain::Smoke(p);
         };
         d.character = '*';
         d.tile = TileId::smoke;
@@ -617,9 +617,9 @@ static void init_data_list()
         d.is_los_passable = false;
         add_to_list_and_reset(d);
 
-        d.id = FeatureId::force_field;
+        d.id = terrain::Id::force_field;
         d.make_obj = [](const P & p) {
-                return new ForceField(p);
+                return new terrain::ForceField(p);
         };
         d.character = '#';
         d.tile = TileId::square_checkered;
@@ -630,36 +630,39 @@ static void init_data_list()
         d.is_smoke_passable = false;
         d.can_have_blood = false;
         d.can_have_gore = false;
-        d.can_have_rigid = false;
+        d.can_have_terrain = false;
         d.can_have_item = false;
         d.matl_type = Matl::metal;
         add_to_list_and_reset(d);
 
-        d.id = FeatureId::event_wall_crumble;
+        d.id = terrain::Id::event_wall_crumble;
         d.make_obj = [](const P & p) {
-                return new EventWallCrumble(p);
+                return new terrain::EventWallCrumble(p);
         };
         d.move_rules.set_walkable();
         add_to_list_and_reset(d);
 
-        d.id = FeatureId::event_snake_emerge;
+        d.id = terrain::Id::event_snake_emerge;
         d.make_obj = [](const P & p) {
-                return new EventSnakeEmerge(p);
+                return new terrain::EventSnakeEmerge(p);
         };
         d.move_rules.set_walkable();
         add_to_list_and_reset(d);
 
-        d.id = FeatureId::event_rat_cave_discovery;
+        d.id = terrain::Id::event_rat_cave_discovery;
         d.make_obj = [](const P & p) {
-                return new EventRatsInTheWallsDiscovery(p);
+                return new terrain::EventRatsInTheWallsDiscovery(p);
         };
         d.move_rules.set_walkable();
         add_to_list_and_reset(d);
 }
 
 // -----------------------------------------------------------------------------
-// Move rules
+// terrain
 // -----------------------------------------------------------------------------
+namespace terrain
+{
+
 bool MoveRules::can_move(const actor::Actor& actor) const
 {
         if (m_is_walkable)
@@ -667,7 +670,7 @@ bool MoveRules::can_move(const actor::Actor& actor) const
                 return true;
         }
 
-        // This feature blocks walking, check if any property overrides this
+        // This terrain blocks walking, check if any property overrides this
         // (e.g. flying)
 
         for (const auto id : m_props_allow_move)
@@ -681,12 +684,6 @@ bool MoveRules::can_move(const actor::Actor& actor) const
         return false;
 }
 
-// -----------------------------------------------------------------------------
-// Feature data
-// -----------------------------------------------------------------------------
-namespace feature_data
-{
-
 void init()
 {
         TRACE_FUNC_BEGIN;
@@ -696,11 +693,11 @@ void init()
         TRACE_FUNC_END;
 }
 
-const FeatureData& data(const FeatureId id)
+const TerrainData& data(const Id id)
 {
-        ASSERT(id != FeatureId::END);
+        ASSERT(id != terrain::Id::END);
 
         return s_data[int(id)];
 }
 
-} // feature_data
+} // terrain

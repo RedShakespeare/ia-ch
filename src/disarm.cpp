@@ -9,7 +9,7 @@
 #include "actor_player.hpp"
 #include "common_text.hpp"
 #include "common_text.hpp"
-#include "feature_trap.hpp"
+#include "terrain_trap.hpp"
 #include "game_time.hpp"
 #include "inventory.hpp"
 #include "io.hpp"
@@ -61,13 +61,13 @@ void player_disarm()
                 return;
         }
 
-        auto* const feature = map::g_cells.at(pos).rigid;
+        auto* const terrain = map::g_cells.at(pos).terrain;
 
-        Trap* trap = nullptr;
+        terrain::Trap* trap = nullptr;
 
-        if (feature->id() == FeatureId::trap)
+        if (terrain->id() == terrain::Id::trap)
         {
-                trap = static_cast<Trap*>(feature);
+                trap = static_cast<terrain::Trap*>(terrain);
         }
 
         if (!trap || trap->is_hidden())

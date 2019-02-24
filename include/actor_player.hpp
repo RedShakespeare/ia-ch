@@ -17,13 +17,11 @@
 
 namespace item
 {
-
 class Explosive;
 class Item;
 class MedicalBag;
 class Wpn;
-
-} // item
+}
 
 
 enum class Phobia
@@ -79,7 +77,7 @@ public:
 
         std::vector<Actor*> seen_foes() const override;
 
-        bool is_seeing_burning_feature() const;
+        bool is_seeing_burning_terrain() const;
 
         void act() override;
 

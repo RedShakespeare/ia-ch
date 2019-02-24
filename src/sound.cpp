@@ -11,7 +11,7 @@
 
 #include "actor_mon.hpp"
 #include "actor_player.hpp"
-#include "feature_rigid.hpp"
+#include "terrain.hpp"
 #include "flood.hpp"
 #include "game_time.hpp"
 #include "map.hpp"

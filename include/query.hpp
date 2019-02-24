@@ -10,7 +10,9 @@
 #include "colors.hpp"
 #include "direction.hpp"
 
+
 struct InputData;
+
 
 enum class BinaryAnswer
 {
@@ -19,7 +21,12 @@ enum class BinaryAnswer
         special
 };
 
-enum class AllowCenter {no ,yes};
+enum class AllowCenter
+{
+        no,
+        yes
+};
+
 
 namespace query
 {

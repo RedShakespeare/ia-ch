@@ -12,7 +12,7 @@
 #include "actor_mon.hpp"
 #include "actor_player.hpp"
 #include "debug.hpp"
-#include "feature_trap.hpp"
+#include "terrain_trap.hpp"
 #include "flood.hpp"
 #include "game_time.hpp"
 #include "init.hpp"
@@ -516,7 +516,7 @@ void populate_std_lvl()
                         }
 
                         // If room is too full (due to spawned monsters
-                        // and features), stop spawning in this room
+                        // and terrains), stop spawning in this room
                         const int nr_origin_candidates = origin_bucket.size();
 
                         if (nr_origin_candidates < (nr_cells_in_room / 3))

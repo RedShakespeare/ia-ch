@@ -196,7 +196,7 @@ enum class DmgMethod
         explosion,
         shotgun,
         elemental,
-        forced, // Guaranteed to detroy the feature (silently - no messages)
+        forced, // Guaranteed to detroy the terrain (silently - no messages)
         END
 };
 

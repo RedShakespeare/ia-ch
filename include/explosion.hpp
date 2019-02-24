@@ -14,7 +14,9 @@
 #include "global.hpp"
 #include "rect.hpp"
 
+
 class Prop;
+
 
 enum class ExplType
 {
@@ -22,11 +24,24 @@ enum class ExplType
         apply_prop
 };
 
-enum class EmitExplSnd {no ,yes};
+enum class EmitExplSnd
+{
+        no,
+        yes
+};
 
-enum class ExplExclCenter {no ,yes};
+enum class ExplExclCenter
+{
+        no,
+        yes
+};
 
-enum class ExplIsGas {no ,yes};
+enum class ExplIsGas
+{
+        no,
+        yes
+};
+
 
 namespace explosion
 {

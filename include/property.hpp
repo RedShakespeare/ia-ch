@@ -19,11 +19,8 @@
 
 namespace item
 {
-
 class Item;
-
-} // item
-
+}
 
 struct P;
 

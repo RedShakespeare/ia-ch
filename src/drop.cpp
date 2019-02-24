@@ -10,7 +10,7 @@
 #include <string>
 
 #include "actor_player.hpp"
-#include "feature_rigid.hpp"
+#include "terrain.hpp"
 #include "game_time.hpp"
 #include "init.hpp"
 #include "inventory.hpp"
@@ -125,10 +125,10 @@ item::Item* drop_item_on_map(const P& intended_pos, item::Item& item)
         ASSERT(map::is_pos_inside_outer_walls(intended_pos));
 
         // If target cell is bottomless, just destroy the item
-        const auto* const tgt_f = map::g_cells.at(intended_pos).rigid;
+        const auto* const tgt_f = map::g_cells.at(intended_pos).terrain;
 
-        if (tgt_f->id() == FeatureId::chasm ||
-            tgt_f->id() == FeatureId::liquid_deep)
+        if (tgt_f->id() == terrain::Id::chasm ||
+            tgt_f->id() == terrain::Id::liquid_deep)
         {
                 delete &item;
 
@@ -137,16 +137,16 @@ item::Item* drop_item_on_map(const P& intended_pos, item::Item& item)
                 return nullptr;
         }
 
-        // Make a vector of all cells on map with no blocking feature
+        // Make a vector of all cells on map with no blocking terrain
         Array2<bool> free_cell_array(map::dims());
 
         const size_t len = map::nr_cells();
 
         for (size_t i = 0; i < len; ++i)
         {
-                Rigid* const f = map::g_cells.at(i).rigid;
+                auto* const t = map::g_cells.at(i).terrain;
 
-                free_cell_array.at(i) = f->can_have_item();
+                free_cell_array.at(i) = t->can_have_item();
         }
 
         auto free_cells = to_vec(

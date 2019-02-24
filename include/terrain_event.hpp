@@ -4,17 +4,28 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 // =============================================================================
 
-#ifndef FEATURE_EVENT_HPP
-#define FEATURE_EVENT_HPP
+#ifndef TERRAIN_EVENT_HPP
+#define TERRAIN_EVENT_HPP
 
 #include <vector>
 
-#include "feature_mob.hpp"
+#include "colors.hpp"
 #include "rect.hpp"
+#include "terrain.hpp"
 
-class Event: public Mob
+
+// TODO: Events should probably not be terrain
+
+
+namespace terrain
+{
+
+class Event: public Terrain
 {
 public:
+        Event(const P& pos) :
+                Terrain(pos) {}
+
         virtual ~Event() {}
 
         virtual void on_new_turn() override = 0;
@@ -29,9 +40,6 @@ public:
         {
                 return colors::black();
         }
-
-protected:
-        Event(const P&);
 };
 
 class EventWallCrumble: public Event
@@ -47,9 +55,9 @@ public:
 
         ~EventWallCrumble() {}
 
-        FeatureId id() const override
+        Id id() const override
         {
-                return FeatureId::event_wall_crumble;
+                return Id::event_wall_crumble;
         }
 
         void on_new_turn() override;
@@ -69,9 +77,9 @@ public:
 
         ~EventSnakeEmerge() {}
 
-        FeatureId id() const override
+        Id id() const override
         {
-                return FeatureId::event_snake_emerge;
+                return Id::event_snake_emerge;
         }
 
         bool try_find_p();
@@ -81,7 +89,7 @@ public:
 private:
         R allowed_emerge_rect(const P& p) const;
 
-        bool is_ok_feature_at(const P& p) const;
+        bool is_ok_terrain_at(const P& p) const;
 
         Array2<bool> blocked_cells(const R& r) const;
 
@@ -99,14 +107,16 @@ private:
 class EventRatsInTheWallsDiscovery: public Event
 {
 public:
-        EventRatsInTheWallsDiscovery(const P& feature_pos);
+        EventRatsInTheWallsDiscovery(const P& terrain_pos);
 
-        FeatureId id() const override
+        Id id() const override
         {
-                return FeatureId::event_rat_cave_discovery;
+                return Id::event_rat_cave_discovery;
         }
 
         void on_new_turn() override;
 };
 
-#endif
+} // terrain
+
+#endif // TERRAIN_EVENT_HPP

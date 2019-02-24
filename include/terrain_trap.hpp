@@ -4,16 +4,21 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 // =============================================================================
 
-#ifndef FEATURE_TRAPS_HPP
-#define FEATURE_TRAPS_HPP
+#ifndef TERRAIN_TRAPS_HPP
+#define TERRAIN_TRAPS_HPP
 
-#include "feature.hpp"
 #include "ability_values.hpp"
+#include "colors.hpp"
 #include "gfx.hpp"
-#include "feature_rigid.hpp"
 #include "global.hpp"
+#include "terrain.hpp"
+
+
+namespace terrain
+{
 
 class TrapImpl;
+
 
 enum class TrapId
 {
@@ -48,21 +53,22 @@ enum class TrapPlacementValid
         yes
 };
 
-class Trap: public Rigid
+
+class Trap: public Terrain
 {
 public:
-        Trap(const P& p, Rigid* const mimic_feature, TrapId id);
+        Trap(const P& p, Terrain* const mimic_terrain, TrapId id);
 
         Trap(const P& p) :
-                Rigid(p) {}
+                Terrain(p) {}
 
         Trap() = delete;
 
         ~Trap();
 
-        FeatureId id() const override
+        Id id() const override
         {
-                return FeatureId::trap;
+                return Id::trap;
         }
 
         bool valid()
@@ -85,7 +91,7 @@ public:
         void disarm();
 
         // Quietly destroys the trap, and either places rubble, or replaces it
-        // with the mimic feature (depending on trap type)
+        // with the mimic terrain (depending on trap type)
         void destroy();
 
         void on_new_turn_hook() override;
@@ -135,7 +141,7 @@ private:
 
         void trigger_start(const actor::Actor* actor);
 
-        Rigid* m_mimic_feature {nullptr};
+        Terrain* m_mimic_terrain {nullptr};
         bool m_is_hidden {false};
         int m_nr_turns_until_trigger {-1};
 
@@ -154,7 +160,7 @@ protected:
 
         virtual ~TrapImpl() {}
 
-        // Called by the trap feature after picking a random trap
+        // Called by the trap terrain after picking a random trap
         // implementation. This allows the specific implementation initialize
         // and to modify the map. The implementation may report that the
         // placement is impossible (e.g. no suitable wall to fire a dart from),
@@ -692,4 +698,6 @@ private:
         void trigger() override;
 };
 
-#endif // FEATURE_TRAPS_HPP
+} // terrain
+
+#endif // TERRAIN_TRAPS_HPP

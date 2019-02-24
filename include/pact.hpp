@@ -10,11 +10,8 @@
 
 namespace item
 {
-
 enum class Id;
-
-} // item
-
+}
 
 enum class SpellId;
 

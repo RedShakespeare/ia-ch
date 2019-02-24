@@ -13,8 +13,8 @@
 #include <cstring>
 
 #include "actor_player.hpp"
-#include "feature_door.hpp"
-#include "feature_rigid.hpp"
+#include "terrain_door.hpp"
+#include "terrain.hpp"
 #include "flood.hpp"
 #include "game_time.hpp"
 #include "init.hpp"
@@ -71,7 +71,7 @@ void make_floor(const Room& room)
         {
                 for (int y = room.m_r.p0.y; y <= room.m_r.p1.y; ++y)
                 {
-                        map::put(new Floor(P(x, y)));
+                        map::put(new terrain::Floor(P(x, y)));
                 }
         }
 }
@@ -185,14 +185,14 @@ void cut_room_corners(const Room& room)
                                         const Room* const room_here =
                                                 map::g_room_map.at(check_p);
 
-                                        const FeatureId id =
+                                        const terrain::Id id =
                                                 map::g_cells.at(check_p)
-                                                .rigid->id();
+                                                .terrain->id();
 
                                         if ((room_here == &room &&
-                                             id != FeatureId::floor) ||
+                                             id != terrain::Id::floor) ||
                                             (room_here != &room &&
-                                             id != FeatureId::wall)
+                                             id != terrain::Id::wall)
                                                 )
                                         {
                                                 allow_cut = false;
@@ -214,7 +214,7 @@ void cut_room_corners(const Room& room)
                         {
                                 for (int y = r.p0.y; y <= r.p1.y; ++y)
                                 {
-                                        map::put(new Wall(P(x, y)));
+                                        map::put(new terrain::Wall(P(x, y)));
                                         map::g_room_map.at(x, y) = nullptr;
                                 }
                         }
@@ -233,10 +233,10 @@ void make_pillars_in_room(const Room& room)
                 {
                         const P check_p(p + d);
 
-                        const FeatureId id =
-                                map::g_cells.at(check_p).rigid->id();
+                        const terrain::Id id =
+                                map::g_cells.at(check_p).terrain->id();
 
-                        if (id == FeatureId::wall)
+                        if (id == terrain::Id::wall)
                         {
                                 return false;
                         }
@@ -263,7 +263,7 @@ void make_pillars_in_room(const Room& room)
 
                         if (is_free(p) && rnd::one_in(place_one_in_n))
                         {
-                                map::put(new Wall(p));
+                                map::put(new terrain::Wall(p));
                         }
                 }
         }
@@ -331,7 +331,7 @@ void cavify_room(Room& room)
                                 if ((flood.at(x, y) > 0) &&
                                     (map::g_room_map.at(x, y) != &room))
                                 {
-                                        map::put(new Floor({x, y}));
+                                        map::put(new terrain::Floor({x, y}));
 
                                         map::g_room_map.at(x, y) = &room;
 
@@ -363,12 +363,12 @@ void cavify_room(Room& room)
         {
                 if (map::g_room_map.at(i) == &room)
                 {
-                        Rigid* const rigid = map::g_cells.at(i).rigid;
+                        auto* const terrain = map::g_cells.at(i).terrain;
 
-                        if (rigid->id() == FeatureId::floor)
+                        if (terrain->id() == terrain::Id::floor)
                         {
-                                static_cast<Floor*>(rigid)->m_type =
-                                        FloorType::cave;
+                                static_cast<terrain::Floor*>(terrain)->m_type =
+                                        terrain::FloorType::cave;
                         }
                 }
         }
@@ -397,11 +397,11 @@ void valid_corridor_entries(const Room& room, std::vector<P>& out)
 
                 room_cells.at(i) = is_room_cell;
 
-                const auto* const f = map::g_cells.at(i).rigid;
+                const auto* const t = map::g_cells.at(i).terrain;
 
                 room_floor_cells.at(i) =
                         is_room_cell &&
-                        (f->id() == FeatureId::floor);
+                        (t->id() == terrain::Id::floor);
         }
 
         const auto room_cells_expanded = map_parsers::expand(
@@ -414,7 +414,7 @@ void valid_corridor_entries(const Room& room, std::vector<P>& out)
                 for (int x = room.m_r.p0.x - 1; x <= room.m_r.p1.x + 1; ++x)
                 {
                         // Condition (1)
-                        if (map::g_cells.at(x, y).rigid->id() != FeatureId::wall)
+                        if (map::g_cells.at(x, y).terrain->id() != terrain::Id::wall)
                         {
                                 continue;
                         }
@@ -678,8 +678,8 @@ void make_pathfind_corridor(
                 for (size_t i = 0; i < map::nr_cells(); ++i)
                 {
                         const bool is_wall =
-                                map::g_cells.at(i).rigid->id() ==
-                                FeatureId::wall;
+                                map::g_cells.at(i).terrain->id() ==
+                                terrain::Id::wall;
 
                         const auto* const room_ptr = map::g_room_map.at(i);
 
@@ -834,12 +834,12 @@ void make_pathfind_corridor(
                                         if (is_inside &&
                                             !blocked_expanded.at(p_adj))
                                         {
-                                                map::put(new Floor(p_adj));
+                                                map::put(new terrain::Floor(p_adj));
                                         }
                                 }
                         }
 
-                        map::put(new Floor(p));
+                        map::put(new terrain::Floor(p));
 
                         // Make it possible to branch from the corridor
                         if ((i > 1) &&
@@ -1024,13 +1024,14 @@ void make_explore_spawn_weights(
                                 1,
                                 (250 / weight_div));
 
-                        Rigid* const rigid =
-                                map::g_cells.at(choke_point.p).rigid;
+                        auto* const terrain =
+                                map::g_cells.at(choke_point.p).terrain;
 
                         // Increase weight if behind hidden/stuck/metal doors
-                        if (rigid->id() == FeatureId::door)
+                        if (terrain->id() == terrain::Id::door)
                         {
-                                Door* const door = static_cast<Door*>(rigid);
+                                auto* const door =
+                                        static_cast<terrain::Door*>(terrain);
 
                                 if (door->is_secret())
                                 {
@@ -1095,19 +1096,19 @@ Array2<bool> allowed_stair_cells()
 
         Array2<bool> result(map::dims());
 
-        // Mark cells as free if all adjacent feature types are allowed
-        std::vector<FeatureId> feat_ids_ok = {
-                FeatureId::floor,
-                FeatureId::carpet,
-                FeatureId::grass,
-                FeatureId::bush,
-                FeatureId::rubble_low,
-                FeatureId::vines,
-                FeatureId::chains,
-                FeatureId::trap
+        // Mark cells as free if all adjacent terrain types are allowed
+        std::vector<terrain::Id> feat_ids_ok = {
+                terrain::Id::floor,
+                terrain::Id::carpet,
+                terrain::Id::grass,
+                terrain::Id::bush,
+                terrain::Id::rubble_low,
+                terrain::Id::vines,
+                terrain::Id::chains,
+                terrain::Id::trap
         };
 
-        map_parsers::AllAdjIsAnyOfFeatures(feat_ids_ok)
+        map_parsers::AllAdjIsAnyOfTerrains(feat_ids_ok)
                 .run(result, result.rect());
 
         // Block cells with items
@@ -1159,7 +1160,7 @@ void move_player_to_nearest_allowed_pos()
 
                 // Ensure that the player always descends to a floor cell (and
                 // not into a bush or something)
-                map::put(new Floor(map::g_player->m_pos));
+                map::put(new terrain::Floor(map::g_player->m_pos));
         }
 
         TRACE_FUNC_END;
@@ -1210,9 +1211,9 @@ P make_stairs_at_random_pos()
         map_parsers::BlocksWalking(ParseActors::no)
                 .run(blocks_player, blocks_player.rect());
 
-        const std::vector<FeatureId> free_features = {
-                FeatureId::door,
-                FeatureId::liquid_deep,
+        const std::vector<terrain::Id> free_terrains = {
+                terrain::Id::door,
+                terrain::Id::liquid_deep,
         };
 
         for (int x = 0; x < blocks_player.w(); ++x)
@@ -1221,7 +1222,7 @@ P make_stairs_at_random_pos()
                 {
                         const P p(x, y);
 
-                        if (map_parsers::IsAnyOfFeatures(free_features).cell(p))
+                        if (map_parsers::IsAnyOfTerrains(free_terrains).cell(p))
                         {
                                 blocks_player.at(p) = false;
                         }
@@ -1271,7 +1272,7 @@ P make_stairs_at_random_pos()
 
         TRACE << "Spawning stairs at chosen cell" << std:: endl;
 
-        map::put(new Stairs(stairs_pos));
+        map::put(new terrain::Stairs(stairs_pos));
 
         TRACE_FUNC_END;
 
@@ -1289,9 +1290,9 @@ void reveal_doors_on_path_to_stairs(const P& stairs_pos)
 
         blocks_player.at(stairs_pos) = false;
 
-        const std::vector<FeatureId> free_features = {
-                FeatureId::door,
-                FeatureId::liquid_deep
+        const std::vector<terrain::Id> free_terrains = {
+                terrain::Id::door,
+                terrain::Id::liquid_deep
         };
 
         for (int x = 0; x < blocks_player.w(); ++x)
@@ -1300,7 +1301,7 @@ void reveal_doors_on_path_to_stairs(const P& stairs_pos)
                 {
                         const P p(x, y);
 
-                        if (map_parsers::IsAnyOfFeatures(free_features).cell(p))
+                        if (map_parsers::IsAnyOfTerrains(free_terrains).cell(p))
                         {
                                 blocks_player.at(p) = false;
                         }
@@ -1318,11 +1319,12 @@ void reveal_doors_on_path_to_stairs(const P& stairs_pos)
 
         for (const P& pos : path)
         {
-                auto* const feature = map::g_cells.at(pos).rigid;
+                auto* const terrain = map::g_cells.at(pos).terrain;
 
-                if (feature->id() == FeatureId::door)
+                if (terrain->id() == terrain::Id::door)
                 {
-                        static_cast<Door*>(feature)->reveal(Verbosity::silent);
+                        static_cast<terrain::Door*>(terrain)
+                                ->reveal(Verbosity::silent);
                 }
         }
 

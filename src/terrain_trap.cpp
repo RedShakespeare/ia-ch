@@ -4,7 +4,7 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 // =============================================================================
 
-#include "feature_trap.hpp"
+#include "terrain_trap.hpp"
 
 #include <algorithm>
 
@@ -16,7 +16,7 @@
 #include "common_text.hpp"
 #include "drop.hpp"
 #include "explosion.hpp"
-#include "feature_data.hpp"
+#include "terrain_data.hpp"
 #include "game_time.hpp"
 #include "init.hpp"
 #include "inventory.hpp"
@@ -37,24 +37,28 @@
 #include "teleport.hpp"
 #include "text_format.hpp"
 
+
+namespace terrain
+{
+
 // -----------------------------------------------------------------------------
 // Trap
 // -----------------------------------------------------------------------------
-Trap::Trap(const P& feature_pos,
-           Rigid* const mimic_feature,
+Trap::Trap(const P& pos,
+           Terrain* const mimic_terrain,
            TrapId id) :
-        Rigid(feature_pos),
-        m_mimic_feature(mimic_feature),
+        Terrain(pos),
+        m_mimic_terrain(mimic_terrain),
         m_is_hidden(true)
 {
         ASSERT(id != TrapId::END);
 
-        auto* const rigid_here = map::g_cells.at(feature_pos).rigid;
+        auto* const terrain_here = map::g_cells.at(pos).terrain;
 
-        if (!rigid_here->can_have_rigid())
+        if (!terrain_here->can_have_terrain())
         {
-                TRACE << "Cannot place trap on feature id: "
-                      << (int)rigid_here->id()
+                TRACE << "Cannot place trap on terrain id: "
+                      << (int)terrain_here->id()
                       << std::endl
                       << "Trap id: " << (int)id
                       << std::endl;
@@ -107,7 +111,7 @@ Trap::Trap(const P& feature_pos,
 Trap::~Trap()
 {
         delete m_trap_impl;
-        delete m_mimic_feature;
+        delete m_mimic_terrain;
 }
 
 TrapImpl* Trap::make_trap_impl_from_id(const TrapId trap_id)
@@ -352,9 +356,9 @@ AllowAction Trap::pre_bump(actor::Actor& actor_bumping)
         else
         {
                 // The trap is unknown, or will not be triggered by the player -
-                // delegate the question to the mimicked feature
+                // delegate the question to the mimicked terrain
 
-                const auto result = m_mimic_feature->pre_bump(actor_bumping);
+                const auto result = m_mimic_terrain->pre_bump(actor_bumping);
 
                 return result;
         }
@@ -409,16 +413,16 @@ void Trap::disarm()
 
 void Trap::destroy()
 {
-        ASSERT(m_mimic_feature);
+        ASSERT(m_mimic_terrain);
 
         // Magical traps and webs simply "dissapear" (place their mimic
-        // feature), and mechanical traps puts rubble.
+        // terrain), and mechanical traps puts rubble.
 
         if (is_magical() || type() == TrapId::web)
         {
-                Rigid* const f_tmp = m_mimic_feature;
+                auto* const f_tmp = m_mimic_terrain;
 
-                m_mimic_feature = nullptr;
+                m_mimic_terrain = nullptr;
 
                 // NOTE: This call destroys the object!
                 map::put(f_tmp);
@@ -495,7 +499,7 @@ std::string Trap::name(const Article article) const
 {
         if (m_is_hidden)
         {
-                return m_mimic_feature->name(article);
+                return m_mimic_terrain->name(article);
         }
         else // Not hidden
         {
@@ -507,7 +511,7 @@ Color Trap::color_default() const
 {
         return
                 m_is_hidden
-                ? m_mimic_feature->color()
+                ? m_mimic_terrain->color()
                 : m_trap_impl->color();
 }
 
@@ -534,7 +538,7 @@ char Trap::character() const
 {
         return
                 m_is_hidden
-                ? m_mimic_feature->character()
+                ? m_mimic_terrain->character()
                 : m_trap_impl->character();
 }
 
@@ -542,7 +546,7 @@ TileId Trap::tile() const
 {
         return
                 m_is_hidden
-                ? m_mimic_feature->tile()
+                ? m_mimic_terrain->tile()
                 : m_trap_impl->tile();
 }
 
@@ -550,7 +554,7 @@ Matl Trap::matl() const
 {
         return
                 m_is_hidden
-                ? m_mimic_feature->matl()
+                ? m_mimic_terrain->matl()
                 : data().matl_type;
 }
 
@@ -559,15 +563,15 @@ Matl Trap::matl() const
 // -----------------------------------------------------------------------------
 TrapPlacementValid MagicTrapImpl::on_place()
 {
-        // Do not allow placing magic traps next to blocking features
+        // Do not allow placing magic traps next to blocking terrains
         // (non-Occultist characters cannot disarm them)
         for (const P& d : dir_utils::g_dir_list)
         {
                 const P p(m_pos + d);
 
-                const auto* const f = map::g_cells.at(p).rigid;
+                const auto* const t = map::g_cells.at(p).terrain;
 
-                if (!f->is_walkable())
+                if (!t->is_walkable())
                 {
                         return TrapPlacementValid::no;
                 }
@@ -601,19 +605,19 @@ TrapPlacementValid TrapDart::on_place()
                 {
                         p += d;
 
-                        const Rigid* const rigid = map::g_cells.at(p).rigid;
+                        const auto* const terrain = map::g_cells.at(p).terrain;
 
-                        const bool is_wall = rigid->id() == FeatureId::wall;
+                        const bool is_wall = terrain->id() == terrain::Id::wall;
 
                         const bool is_passable =
-                                rigid->is_projectile_passable();
+                                terrain->is_projectile_passable();
 
                         if (!is_passable &&
                             ((i < nr_steps_min) || !is_wall))
                         {
                                 // We are blocked too early - OR - blocked by a
-                                // rigid feature other than a wall. Give up on
-                                // this direction.
+                                // terrain other than a wall. Give up on this
+                                // direction.
                                 break;
                         }
 
@@ -652,7 +656,7 @@ void TrapDart::trigger()
 
         const auto& origin_cell = map::g_cells.at(m_dart_origin);
 
-        if (origin_cell.rigid->id() != FeatureId::wall)
+        if (origin_cell.terrain->id() != terrain::Id::wall)
         {
                 // NOTE: This is permanently set from now on
                 m_is_dart_origin_destroyed = true;
@@ -683,7 +687,7 @@ void TrapDart::trigger()
 
         if (origin_cell.is_seen_by_player)
         {
-                const std::string name = origin_cell.rigid->name(Article::the);
+                const std::string name = origin_cell.terrain->name(Article::the);
 
                 msg_log::add("A dart is launched from " + name + "!");
         }
@@ -732,11 +736,11 @@ TrapPlacementValid TrapSpear::on_place()
         {
                 const P p = m_pos + d;
 
-                const Rigid* const rigid = map::g_cells.at(p).rigid;
+                const auto* const terrain = map::g_cells.at(p).terrain;
 
-                const bool is_wall = rigid->id() == FeatureId::wall;
+                const bool is_wall = terrain->id() == terrain::Id::wall;
 
-                const bool is_passable = rigid->is_projectile_passable();
+                const bool is_passable = terrain->is_projectile_passable();
 
                 if (is_wall && !is_passable)
                 {
@@ -766,7 +770,7 @@ void TrapSpear::trigger()
 
         const auto& origin_cell = map::g_cells.at(m_spear_origin);
 
-        if (origin_cell.rigid->id() != FeatureId::wall)
+        if (origin_cell.terrain->id() != terrain::Id::wall)
         {
                 // NOTE: This is permanently set from now on
                 m_is_spear_origin_destroyed = true;
@@ -779,7 +783,8 @@ void TrapSpear::trigger()
 
         if (origin_cell.is_seen_by_player)
         {
-                const std::string name = origin_cell.rigid->name(Article::the);
+                const std::string name =
+                        origin_cell.terrain->name(Article::the);
 
                 msg_log::add("A spear shoots out from " + name + "!");
         }
@@ -1388,3 +1393,5 @@ void TrapCurse::trigger()
 
         TRACE_FUNC_END_VERBOSE;
 }
+
+} // terrain

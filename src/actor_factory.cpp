@@ -12,8 +12,8 @@
 #include "actor_data.hpp"
 #include "actor_mon.hpp"
 #include "actor_player.hpp"
-#include "feature_door.hpp"
-#include "feature_rigid.hpp"
+#include "terrain_door.hpp"
+#include "terrain.hpp"
 #include "game_time.hpp"
 #include "init.hpp"
 #include "io.hpp"
@@ -152,11 +152,12 @@ Actor* make(const Id id, const P& pos)
 #ifndef NDEBUG
         if (map::nr_cells() != 0)
         {
-                const auto* const f = map::g_cells.at(pos).rigid;
+                const auto* const t = map::g_cells.at(pos).terrain;
 
-                if (f->id() == FeatureId::door)
+                if (t->id() == terrain::Id::door)
                 {
-                        const auto* const door = static_cast<const Door*>(f);
+                        const auto* const door =
+                                static_cast<const terrain::Door*>(t);
 
                         ASSERT(
                                 door->is_open() ||

@@ -12,19 +12,13 @@
 
 namespace item
 {
-
 class Item;
-
-} // item
-
+}
 
 namespace actor
 {
-
 class Actor;
-
-} // actor
-
+}
 
 struct P;
 

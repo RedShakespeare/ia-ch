@@ -14,11 +14,8 @@
 
 namespace actor
 {
-
 enum class Id;
-
-} // actor
-
+}
 
 struct P;
 

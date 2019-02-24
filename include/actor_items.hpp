@@ -10,10 +10,8 @@
 
 namespace actor
 {
-
 class Actor;
-
-} // actor
+}
 
 
 namespace actor_items

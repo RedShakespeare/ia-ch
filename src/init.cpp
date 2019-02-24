@@ -92,7 +92,7 @@ void init_session()
         TRACE_FUNC_BEGIN;
 
         actor::init();
-        feature_data::init();
+        terrain::init();
         property_data::init();
         item::init();
         scroll::init();

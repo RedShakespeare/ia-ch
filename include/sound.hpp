@@ -14,10 +14,8 @@
 
 namespace actor
 {
-
 class Actor;
-
-} // actor
+}
 
 
 enum class SndVol

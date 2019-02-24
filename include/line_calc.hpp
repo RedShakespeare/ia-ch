@@ -9,7 +9,9 @@
 
 #include <vector>
 
+
 struct P;
+
 
 namespace line_calc
 {

@@ -13,8 +13,8 @@
 #include "actor_player.hpp"
 #include "common_text.hpp"
 #include "explosion.hpp"
-#include "feature_mob.hpp"
-#include "feature_rigid.hpp"
+#include "terrain_mob.hpp"
+#include "terrain.hpp"
 #include "game.hpp"
 #include "game_time.hpp"
 #include "global.hpp"
@@ -1330,7 +1330,7 @@ ConsumeItem MedicalBag::activate(actor::Actor* const actor)
 
                 return ConsumeItem::no;
         }
-        else if (map::g_player->is_seeing_burning_feature())
+        else if (map::g_player->is_seeing_burning_terrain())
         {
                 msg_log::add(common_text::g_fire_prevent_cmd);
 
@@ -1687,7 +1687,7 @@ void Dynamite::on_std_turn_player_hold_ignited()
 
 void Dynamite::on_thrown_ignited_landing(const P& p)
 {
-        game_time::add_mob(new LitDynamite(p, m_fuse_turns));
+        game_time::add_mob(new terrain::LitDynamite(p, m_fuse_turns));
 }
 
 void Dynamite::on_player_paralyzed()
@@ -1698,12 +1698,12 @@ void Dynamite::on_player_paralyzed()
 
         const P& p = map::g_player->m_pos;
 
-        const auto f_id = map::g_cells.at(p).rigid->id();
+        const auto f_id = map::g_cells.at(p).terrain->id();
 
-        if (f_id != FeatureId::chasm &&
-            f_id != FeatureId::liquid_deep)
+        if (f_id != terrain::Id::chasm &&
+            f_id != terrain::Id::liquid_deep)
         {
-                game_time::add_mob(new LitDynamite(p, m_fuse_turns));
+                game_time::add_mob(new terrain::LitDynamite(p, m_fuse_turns));
         }
 
         delete this;
@@ -1843,7 +1843,7 @@ void Flare::on_std_turn_player_hold_ignited()
 
 void Flare::on_thrown_ignited_landing(const P& p)
 {
-        game_time::add_mob(new LitFlare(p, m_fuse_turns));
+        game_time::add_mob(new terrain::LitFlare(p, m_fuse_turns));
 }
 
 void Flare::on_player_paralyzed()
@@ -1854,12 +1854,12 @@ void Flare::on_player_paralyzed()
 
         const P& p = map::g_player->m_pos;
 
-        const auto f_id = map::g_cells.at(p).rigid->id();
+        const auto f_id = map::g_cells.at(p).terrain->id();
 
-        if (f_id != FeatureId::chasm &&
-            f_id != FeatureId::liquid_deep)
+        if (f_id != terrain::Id::chasm &&
+            f_id != terrain::Id::liquid_deep)
         {
-                game_time::add_mob(new LitFlare(p, m_fuse_turns));
+                game_time::add_mob(new terrain::LitFlare(p, m_fuse_turns));
         }
 
         delete this;
@@ -1907,10 +1907,10 @@ void SmokeGrenade::on_player_paralyzed()
 
         const P& p = map::g_player->m_pos;
 
-        const auto f_id = map::g_cells.at(p).rigid->id();
+        const auto f_id = map::g_cells.at(p).terrain->id();
 
-        if (f_id != FeatureId::chasm &&
-            f_id != FeatureId::liquid_deep)
+        if (f_id != terrain::Id::chasm &&
+            f_id != terrain::Id::liquid_deep)
         {
                 explosion::run_smoke_explosion_at(map::g_player->m_pos);
         }

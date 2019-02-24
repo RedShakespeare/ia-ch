@@ -8,8 +8,8 @@
 
 #include "actor_hit.hpp"
 #include "actor_player.hpp"
-#include "feature_mob.hpp"
-#include "feature_rigid.hpp"
+#include "terrain_mob.hpp"
+#include "terrain.hpp"
 #include "game.hpp"
 #include "game_time.hpp"
 #include "io.hpp"
@@ -169,7 +169,7 @@ static void apply_explosion_on_pos(
         // Damage environment
         Cell& cell = map::g_cells.at(pos);
 
-        cell.rigid->hit(
+        cell.terrain->hit(
                 dmg,
                 DmgType::physical,
                 DmgMethod::explosion,
@@ -204,7 +204,7 @@ static void apply_explosion_on_pos(
         // Add smoke
         if (rnd::fraction(6, 10))
         {
-                game_time::add_mob(new Smoke(pos, rnd::range(2, 4)));
+                game_time::add_mob(new terrain::Smoke(pos, rnd::range(2, 4)));
         }
 }
 
@@ -263,10 +263,11 @@ static void apply_explosion_property_on_pos(
         {
                 Cell& cell = map::g_cells.at(pos);
 
-                cell.rigid->hit(1, // Doesn't matter
-                                DmgType::fire,
-                                DmgMethod::elemental,
-                                nullptr);
+                cell.terrain->hit(
+                        1, // Doesn't matter
+                        DmgType::fire,
+                        DmgMethod::elemental,
+                        nullptr);
 
                 for (auto* corpse : corpses_here)
                 {
@@ -431,7 +432,8 @@ void run_smoke_explosion_at(const P& origin, const int radi_change)
                         if (!blocked.at(pos))
                         {
                                 game_time::add_mob(
-                                        new Smoke(pos, rnd::range(25, 30)));
+                                        new terrain::Smoke(
+                                                pos, rnd::range(25, 30)));
                         }
                 }
         }

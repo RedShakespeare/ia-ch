@@ -13,10 +13,8 @@
 
 namespace actor
 {
-
 class Actor;
 class Mon;
-
 }
 
 

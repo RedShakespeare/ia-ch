@@ -13,7 +13,9 @@
 #include "state.hpp"
 #include "browser.hpp"
 
+
 class Spell;
+
 
 namespace player_spells
 {

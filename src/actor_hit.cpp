@@ -9,9 +9,9 @@
 #include "actor.hpp"
 #include "actor_death.hpp"
 #include "actor_player.hpp"
-#include "feature_rigid.hpp"
 #include "map.hpp"
 #include "msg_log.hpp"
+#include "terrain.hpp"
 #include "text_format.hpp"
 
 // -----------------------------------------------------------------------------
@@ -230,11 +230,11 @@ ActorDied hit(
 
         if (actor.m_hp <= 0)
         {
-                const auto f_id = map::g_cells.at(actor.m_pos).rigid->id();
+                const auto f_id = map::g_cells.at(actor.m_pos).terrain->id();
 
                 const bool is_on_bottomless =
-                        (f_id == FeatureId::chasm) ||
-                        (f_id == FeatureId::liquid_deep);
+                        (f_id == terrain::Id::chasm) ||
+                        (f_id == terrain::Id::liquid_deep);
 
                 // Destroy the corpse if the killing blow damage is either:
                 //
@@ -343,11 +343,11 @@ ActorDied hit_sp(
                 msg_log::add(actor_name_the + " has no spirit left!");
         }
 
-        const auto f_id = map::g_cells.at(actor.m_pos).rigid->id();
+        const auto f_id = map::g_cells.at(actor.m_pos).terrain->id();
 
         const bool is_on_bottomless =
-                (f_id == FeatureId::chasm) ||
-                (f_id == FeatureId::liquid_deep);
+                (f_id == terrain::Id::chasm) ||
+                (f_id == terrain::Id::liquid_deep);
 
         const auto is_destroyed =
                 (!actor.m_data->can_leave_corpse ||

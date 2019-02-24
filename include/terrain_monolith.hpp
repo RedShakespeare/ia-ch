@@ -4,22 +4,25 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 // =============================================================================
 
-#ifndef FEATURE_MONOLITH_HPP
-#define FEATURE_MONOLITH_HPP
+#ifndef TERRAIN_MONOLITH_HPP
+#define TERRAIN_MONOLITH_HPP
 
-#include "feature_rigid.hpp"
+#include "terrain.hpp"
 
 
-class Monolith: public Rigid
+namespace terrain
+{
+
+class Monolith: public Terrain
 {
 public:
     Monolith(const P& p);
     Monolith() = delete;
     ~Monolith() {}
 
-    FeatureId id() const override
+    Id id() const override
     {
-        return FeatureId::monolith;
+        return Id::monolith;
     }
 
     std::string name(const Article article) const override;
@@ -39,4 +42,6 @@ private:
     bool m_is_activated;
 };
 
-#endif // FEATURE_MONOLITH_HPP
+} // terrain
+
+#endif // TERRAIN_MONOLITH_HPP

@@ -12,7 +12,7 @@
 #include "audio.hpp"
 #include "browser.hpp"
 #include "debug.hpp"
-#include "feature_data.hpp"
+#include "terrain_data.hpp"
 #include "init.hpp"
 #include "io.hpp"
 #include "misc.hpp"
@@ -848,8 +848,8 @@ void ConfigState::update()
         case MenuAction::space:
         {
                 // Since text mode wall symbol may have changed, we need to
-                // redefine the feature data list
-                feature_data::init();
+                // redefine the terrain data list
+                terrain::init();
 
                 states::pop();
 

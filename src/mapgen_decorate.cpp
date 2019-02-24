@@ -6,7 +6,7 @@
 
 #include "mapgen.hpp"
 #include "map.hpp"
-#include "feature_rigid.hpp"
+#include "terrain.hpp"
 #include "map_parsing.hpp"
 
 // -----------------------------------------------------------------------------
@@ -20,16 +20,17 @@ static void decorate_walls()
                 {
                         Cell& cell = map::g_cells.at(x, y);
 
-                        if (cell.rigid->id() != FeatureId::wall)
+                        if (cell.terrain->id() != terrain::Id::wall)
                         {
                                 continue;
                         }
 
-                        Wall* const wall = static_cast<Wall*>(cell.rigid);
+                        auto* const wall =
+                                static_cast<terrain::Wall*>(cell.terrain);
 
                         if (rnd::one_in(10))
                         {
-                                map::put(new RubbleHigh(P(x, y)));
+                                map::put(new terrain::RubbleHigh(P(x, y)));
                         }
                         else
                         {
@@ -46,15 +47,15 @@ static void decorate_walls()
 
 static bool is_cave_floor(const P& p)
 {
-        const auto& f = *map::g_cells.at(p).rigid;
+        const auto& t = *map::g_cells.at(p).terrain;
 
         // TODO: Consider traps mimicking cave floor
 
-        if (f.id() == FeatureId::floor)
+        if (t.id() == terrain::Id::floor)
         {
-                auto* floor = static_cast<const Floor*>(&f);
+                auto* floor = static_cast<const terrain::Floor*>(&t);
 
-                if (floor->m_type == FloorType::cave)
+                if (floor->m_type == terrain::FloorType::cave)
                 {
                         return true;
                 }
@@ -65,30 +66,30 @@ static bool is_cave_floor(const P& p)
 
 static bool should_convert_wall_to_cave_early_game(const P& p)
 {
-        return map_parsers::AllAdjIsFeature(FeatureId::wall).cell(p);
+        return map_parsers::AllAdjIsTerrain(terrain::Id::wall).cell(p);
 }
 
 static bool should_convert_wall_to_cave_mid_game(const P& p)
 {
-        const std::vector<FeatureId> features_for_cave = {
-                FeatureId::bones,
-                FeatureId::bush,
-                FeatureId::chasm,
-                FeatureId::cocoon,
-                FeatureId::grass,
-                FeatureId::liquid_deep,
-                FeatureId::liquid_shallow,
-                FeatureId::rubble_high,
-                FeatureId::rubble_low,
-                FeatureId::stalagmite,
-                FeatureId::tree,
-                FeatureId::vines,
-                FeatureId::wall
+        const std::vector<terrain::Id> terrains_for_cave = {
+                terrain::Id::bones,
+                terrain::Id::bush,
+                terrain::Id::chasm,
+                terrain::Id::cocoon,
+                terrain::Id::grass,
+                terrain::Id::liquid_deep,
+                terrain::Id::liquid_shallow,
+                terrain::Id::rubble_high,
+                terrain::Id::rubble_low,
+                terrain::Id::stalagmite,
+                terrain::Id::tree,
+                terrain::Id::vines,
+                terrain::Id::wall
         };
 
-        const bool all_adj_are_features_for_cave =
-                map_parsers::AllAdjIsAnyOfFeatures(
-                        features_for_cave)
+        const bool all_adj_are_terrains_for_cave =
+                map_parsers::AllAdjIsAnyOfTerrains(
+                        terrains_for_cave)
                 .cell(p);
 
         bool is_adj_to_cave_floor = false;
@@ -110,7 +111,7 @@ static bool should_convert_wall_to_cave_mid_game(const P& p)
                 }
         }
 
-        return all_adj_are_features_for_cave || is_adj_to_cave_floor;
+        return all_adj_are_terrains_for_cave || is_adj_to_cave_floor;
 }
 
 static bool should_convert_wall_to_cave(const P& p)
@@ -137,17 +138,17 @@ static void convert_walls_to_cave()
                 {
                         const P p(x, y);
 
-                        auto& f = *map::g_cells.at(p).rigid;
+                        auto& t = *map::g_cells.at(p).terrain;
 
-                        if ((f.id() != FeatureId::wall) ||
+                        if ((t.id() != terrain::Id::wall) ||
                             !should_convert_wall_to_cave(p))
                         {
                                 continue;
                         }
 
-                        auto* const wall = static_cast<Wall*>(&f);
+                        auto* const wall = static_cast<terrain::Wall*>(&t);
 
-                        wall->m_type = WallType::cave;
+                        wall->m_type = terrain::WallType::cave;
                 }
         }
 }
@@ -162,14 +163,14 @@ static void decorate_floor()
 
                         const auto& cell = map::g_cells.at(x, y);
 
-                        if (cell.rigid->id() != FeatureId::floor)
+                        if (cell.terrain->id() != terrain::Id::floor)
                         {
                                 continue;
                         }
 
                         if (rnd::one_in(100))
                         {
-                                map::put(new RubbleLow(p));
+                                map::put(new terrain::RubbleLow(p));
                         }
 
                         if (rnd::one_in(150))
@@ -179,15 +180,15 @@ static void decorate_floor()
                                         const P adj_p(p + d);
 
                                         const auto& adj_id =
-                                                map::g_cells.at(adj_p).rigid
+                                                map::g_cells.at(adj_p).terrain
                                                 ->id();
 
                                         const bool adj_is_floor =
-                                                adj_id == FeatureId::floor;
+                                                adj_id == terrain::Id::floor;
 
                                         if (adj_is_floor && rnd::one_in(3))
                                         {
-                                                map::put(new Vines(adj_p));
+                                                map::put(new terrain::Vines(adj_p));
                                         }
                                 }
                         }
@@ -215,7 +216,7 @@ static void make_grates()
 
                         const int convert_to_grate_one_in_n = 6;
 
-                        if ((map::g_cells.at(p).rigid->id() != FeatureId::wall) ||
+                        if ((map::g_cells.at(p).terrain->id() != terrain::Id::wall) ||
                             !rnd::one_in(convert_to_grate_one_in_n))
                         {
                                 continue;
@@ -223,8 +224,8 @@ static void make_grates()
 
                         // TODO: Why are adjacent grates not allowed?
                         const bool is_adj_to_grate =
-                                map_parsers::AnyAdjIsAnyOfFeatures(
-                                        FeatureId::grate)
+                                map_parsers::AnyAdjIsAnyOfTerrains(
+                                        terrain::Id::grate)
                                 .cell(p);
 
                         if (is_adj_to_grate)
@@ -261,7 +262,7 @@ static void make_grates()
                         if ((is_blocked_hor && is_free_ver) ||
                             (is_free_hor && is_blocked_ver))
                         {
-                                map::put(new Grate(p));
+                                map::put(new terrain::Grate(p));
                         }
                 }
         }

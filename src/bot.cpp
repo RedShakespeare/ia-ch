@@ -17,8 +17,7 @@
 #include "actor_player.hpp"
 #include "attack.hpp"
 #include "explosion.hpp"
-#include "feature.hpp"
-#include "feature_door.hpp"
+#include "terrain_door.hpp"
 #include "game_commands.hpp"
 #include "game_time.hpp"
 #include "inventory.hpp"
@@ -35,6 +34,7 @@
 #include "property_handler.hpp"
 #include "sdl_base.hpp"
 #include "teleport.hpp"
+#include "terrain.hpp"
 
 // -----------------------------------------------------------------------------
 // Private
@@ -90,15 +90,15 @@ static void find_stair_path()
         {
                 for (int y = 0; y < map::h(); ++y)
                 {
-                        const auto id = map::g_cells.at(x, y).rigid->id();
+                        const auto id = map::g_cells.at(x, y).terrain->id();
 
-                        if (id == FeatureId::stairs)
+                        if (id == terrain::Id::stairs)
                         {
                                 blocked.at(x, y) = false;
 
                                 stair_p.set(x, y);
                         }
-                        else if (id == FeatureId::door)
+                        else if (id == terrain::Id::door)
                         {
                                 blocked.at(x, y) = false;
                         }
@@ -423,20 +423,21 @@ void act()
         {
                 const P p(map::g_player->m_pos + d);
 
-                auto* const f = map::g_cells.at(p).rigid;
+                auto* const t = map::g_cells.at(p).terrain;
 
-                if (f->id() == FeatureId::door)
+                if (t->id() == terrain::Id::door)
                 {
-                        Door* const door = static_cast<Door*>(f);
+                        auto* const door = static_cast<terrain::Door*>(t);
 
                         door->reveal(Verbosity::silent);
 
                         if (door->is_stuck())
                         {
-                                f->hit(6, // Arbitrary
-                                       DmgType::physical,
-                                       DmgMethod::blunt,
-                                       map::g_player);
+                                t->hit(
+                                        6, // Arbitrary
+                                        DmgType::physical,
+                                        DmgMethod::blunt,
+                                        map::g_player);
 
                                 return;
                         }

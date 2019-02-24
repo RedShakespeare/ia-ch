@@ -14,7 +14,7 @@
 #include "actor_player.hpp"
 #include "common_text.hpp"
 #include "explosion.hpp"
-#include "feature_rigid.hpp"
+#include "terrain.hpp"
 #include "fov.hpp"
 #include "game.hpp"
 #include "game_time.hpp"
@@ -400,10 +400,10 @@ void SpiritDagger::on_melee_hit(actor::Actor& actor_hit, const int dmg)
                 const auto tgt_pos =
                         defender_pos + (defender_pos - attacker_pos);
 
-                const auto* const tgt_f = map::g_cells.at(tgt_pos).rigid;
+                const auto* const tgt_f = map::g_cells.at(tgt_pos).terrain;
 
-                if (tgt_f->id() != FeatureId::chasm &&
-                    tgt_f->id() != FeatureId::liquid_deep)
+                if (tgt_f->id() != terrain::Id::chasm &&
+                    tgt_f->id() != terrain::Id::liquid_deep)
                 {
                         P expl_pos;
 

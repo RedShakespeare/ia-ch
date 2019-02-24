@@ -17,10 +17,8 @@
 
 namespace actor
 {
-
 class Actor;
-
-} // actor
+}
 
 
 struct HistoryEvent

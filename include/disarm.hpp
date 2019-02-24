@@ -12,6 +12,6 @@ namespace disarm
 
 void player_disarm();
 
-} //Disarm
+} // Disarm
 
 #endif

@@ -489,7 +489,7 @@ void handle(const GameCmd cmd)
 
         case GameCmd::wait_long:
         {
-                if (map::g_player->is_seeing_burning_feature())
+                if (map::g_player->is_seeing_burning_terrain())
                 {
                         msg_log::add(common_text::g_fire_prevent_cmd);
                 }
@@ -742,7 +742,7 @@ void handle(const GameCmd cmd)
         case GameCmd::auto_move_down_left:
         case GameCmd::auto_move_up_left:
         {
-                if (map::g_player->is_seeing_burning_feature())
+                if (map::g_player->is_seeing_burning_terrain())
                 {
                         msg_log::add(common_text::g_fire_prevent_cmd);
                 }

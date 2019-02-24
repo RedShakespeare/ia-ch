@@ -4,23 +4,37 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 // =============================================================================
 
-#ifndef FEATURE_RIGID_HPP
-#define FEATURE_RIGID_HPP
+#ifndef TERRAIN_HPP
+#define TERRAIN_HPP
 
 #include <memory>
+#include <vector>
 
-#include "feature.hpp"
+#include "colors.hpp"
+#include "terrain_data.hpp"
+#include "gfx.hpp"
+#include "pos.hpp"
 
+
+namespace actor
+{
+class Actor;
+}
 
 namespace item
 {
-
 class Item;
+}
 
-} // item
+template<typename T>
+class Array2;
 
-
-class Lever;
+enum class AllowAction;
+enum class Article;
+enum class DmgMethod;
+enum class DmgType;
+enum class Matl;
+enum class Verbosity;
 
 
 enum class BurnState
@@ -54,6 +68,16 @@ enum class DidClose
         yes
 };
 
+
+namespace terrain
+{
+
+class Terrain;
+enum class Id;
+struct TerrainData;
+class Lever;
+
+
 class ItemContainer
 {
 public:
@@ -61,45 +85,120 @@ public:
 
         ~ItemContainer();
 
-        void init(const FeatureId feature_id, const int nr_items_to_attempt);
+        void init(const Id terrain_id, const int nr_items_to_attempt);
 
-        void open(const P& feature_pos, actor::Actor* const actor_opening);
+        void open(const P& terrain_pos, actor::Actor* const actor_opening);
 
         void destroy_single_fragile();
 
         std::vector<item::Item*> m_items;
 };
 
-class Rigid: public Feature
+
+class Terrain
 {
 public:
-        Rigid(const P& p);
+        Terrain(const P& p) :
+                m_pos(p) {}
 
-        Rigid() = delete;
+        Terrain() = delete;
 
-        virtual ~Rigid() {}
+        virtual ~Terrain() {}
 
-        virtual FeatureId id() const override = 0;
+        virtual Id id() const = 0;
 
-        virtual std::string name(const Article article) const override = 0;
+        const TerrainData& data() const
+        {
+                return ::terrain::data(id());
+        }
 
-        virtual AllowAction pre_bump(actor::Actor& actor_bumping) override;
+        P pos() const
+        {
+                return m_pos;
+        }
 
-        virtual void on_new_turn() override final;
+        virtual std::string name(const Article article) const = 0;
 
-        Color color() const override final;
+        virtual Color color() const;
 
-        virtual Color color_bg() const override final;
+        virtual Color color_bg() const;
 
-        virtual void hit(
-                const int dmg,
-                const DmgType dmg_type,
-                const DmgMethod dmg_method,
-                actor::Actor* const actor = nullptr) override;
+        virtual bool is_walkable() const
+        {
+                return data().move_rules.is_walkable();
+        }
 
-        int shock_when_adj() const;
+        virtual bool can_move(const actor::Actor& actor) const
+        {
+                return data().move_rules.can_move(actor);
+        }
+
+        virtual bool is_sound_passable() const
+        {
+                return data().is_sound_passable;
+        }
+
+        virtual bool is_los_passable() const
+        {
+                return data().is_los_passable;
+        }
+
+        virtual bool is_projectile_passable() const
+        {
+                return data().is_projectile_passable;
+        }
+
+        virtual bool is_smoke_passable() const
+        {
+                return data().is_smoke_passable;
+        }
+
+        virtual char character() const
+        {
+                return data().character;
+        }
+
+        virtual TileId tile() const
+        {
+                return data().tile;
+        }
+
+        virtual bool can_have_corpse() const
+        {
+                return data().can_have_corpse;
+        }
+
+        virtual bool can_have_terrain() const
+        {
+                return data().can_have_terrain;
+        }
+
+        virtual bool can_have_blood() const
+        {
+                return data().can_have_blood;
+        }
+
+        virtual bool can_have_gore() const
+        {
+                return data().can_have_gore;
+        }
+
+        virtual bool can_have_item() const
+        {
+                return data().can_have_item;
+        }
+
+        virtual Matl matl() const
+        {
+                return data().matl_type;
+        }
 
         void try_put_gore();
+
+        void make_bloody()
+        {
+                m_is_bloody = true;
+        }
 
         TileId gore_tile() const
         {
@@ -113,23 +212,52 @@ public:
 
         void clear_gore();
 
-        virtual DidOpen open(actor::Actor* const actor_opening);
+        void corrupt_color();
 
-        virtual DidClose close(actor::Actor* const actor_closing);
+        virtual void on_new_turn();
+
+        virtual void hit(
+                const int dmg,
+                const DmgType dmg_type,
+                const DmgMethod dmg_method,
+                actor::Actor* const actor = nullptr);
+
+        virtual void reveal(const Verbosity verbosity)
+        {
+                (void)verbosity;
+        }
+
+        virtual AllowAction pre_bump(actor::Actor& actor_bumping);
+
+        virtual void bump(actor::Actor& actor_bumping);
+
+        virtual void on_leave(actor::Actor& actor_leaving)
+        {
+                (void)actor_leaving;
+        }
+
+        virtual DidOpen open(actor::Actor* const actor_opening)
+        {
+                (void)actor_opening;
+
+                return DidOpen::no;
+        }
+
+        virtual DidClose close(actor::Actor* const actor_closing)
+        {
+                (void)actor_closing;
+
+                return DidClose::no;
+        }
 
         virtual void on_lever_pulled(Lever* const lever)
         {
                 (void)lever;
         }
 
-        void add_light(Array2<bool>& light) const override final;
+        int shock_when_adj() const;
 
-        void make_bloody()
-        {
-                m_is_bloody = true;
-        }
-
-        void corrupt_color();
+        virtual void add_light(Array2<bool>& light) const;
 
         ItemContainer m_item_container {};
 
@@ -144,20 +272,31 @@ protected:
                 const int dmg,
                 const DmgType dmg_type,
                 const DmgMethod dmg_method,
-                actor::Actor* const actor) = 0;
-
-        virtual Color color_default() const = 0;
-
-        virtual Color color_bg_default() const
+                actor::Actor* const actor)
         {
-                return colors::black();
+                (void)dmg;
+                (void)dmg_type;
+                (void)dmg_method;
+                (void)actor;
         }
+
+        virtual Color color_default() const
+        {
+                return colors::white();
+        }
+
+        virtual Color color_bg_default() const;
 
         void try_start_burning(const bool is_msg_allowed);
 
         virtual WasDestroyed on_finished_burning();
 
-        virtual DidTriggerTrap trigger_trap(actor::Actor* const actor);
+        virtual DidTriggerTrap trigger_trap(actor::Actor* const actor)
+        {
+                (void)actor;
+
+                return DidTriggerTrap::no;
+        }
 
         virtual void add_light_hook(Array2<bool>& light) const
         {
@@ -167,7 +306,10 @@ protected:
         virtual int base_shock_when_adj() const;
 
         TileId m_gore_tile {TileId::END};
+
         char m_gore_character {0};
+
+        P m_pos;
 
 private:
         bool m_is_bloody {false};
@@ -183,16 +325,16 @@ enum class FloorType
         stone_path
 };
 
-class Floor: public Rigid
+class Floor: public Terrain
 {
 public:
         Floor(const P& p);
 
         Floor() = delete;
 
-        FeatureId id() const override
+        Id id() const override
         {
-                return FeatureId::floor;
+                return Id::floor;
         }
 
         TileId tile() const override;
@@ -211,16 +353,16 @@ private:
                 actor::Actor* const actor) override;
 };
 
-class Carpet: public Rigid
+class Carpet: public Terrain
 {
 public:
         Carpet(const P& p);
 
         Carpet() = delete;
 
-        FeatureId id() const override
+        Id id() const override
         {
-                return FeatureId::carpet;
+                return Id::carpet;
         }
 
         std::string name(const Article article) const override;
@@ -243,16 +385,16 @@ enum class GrassType
         withered
 };
 
-class Grass: public Rigid
+class Grass: public Terrain
 {
 public:
         Grass(const P& p);
 
         Grass() = delete;
 
-        FeatureId id() const override
+        Id id() const override
         {
-                return FeatureId::grass;
+                return Id::grass;
         }
 
         TileId tile() const override;
@@ -270,16 +412,16 @@ private:
                 actor::Actor* const actor) override;
 };
 
-class Bush: public Rigid
+class Bush: public Terrain
 {
 public:
         Bush(const P& p);
 
         Bush() = delete;
 
-        FeatureId id() const override
+        Id id() const override
         {
-                return FeatureId::bush;
+                return Id::bush;
         }
 
         std::string name(const Article article) const override;
@@ -297,16 +439,16 @@ private:
                 actor::Actor* const actor) override;
 };
 
-class Vines: public Rigid
+class Vines: public Terrain
 {
 public:
         Vines(const P& p);
 
         Vines() = delete;
 
-        FeatureId id() const override
+        Id id() const override
         {
-                return FeatureId::vines;
+                return Id::vines;
         }
 
         std::string name(const Article article) const override;
@@ -322,16 +464,16 @@ private:
                 actor::Actor* const actor) override;
 };
 
-class Chains: public Rigid
+class Chains: public Terrain
 {
 public:
         Chains(const P& p);
 
         Chains() = delete;
 
-        FeatureId id() const override
+        Id id() const override
         {
-                return FeatureId::chains;
+                return Id::chains;
         }
 
         std::string name(const Article article) const override;
@@ -350,16 +492,16 @@ private:
                 actor::Actor* const actor) override;
 };
 
-class Grate: public Rigid
+class Grate: public Terrain
 {
 public:
         Grate(const P& p);
 
         Grate() = delete;
 
-        FeatureId id() const override
+        Id id() const override
         {
-                return FeatureId::grate;
+                return Id::grate;
         }
 
         std::string name(const Article article) const override;
@@ -374,16 +516,16 @@ private:
                 actor::Actor* const actor) override;
 };
 
-class Brazier: public Rigid
+class Brazier: public Terrain
 {
 public:
-        Brazier(const P& p) : Rigid(p) {}
+        Brazier(const P& p) : Terrain(p) {}
 
         Brazier() = delete;
 
-        FeatureId id() const override
+        Id id() const override
         {
-                return FeatureId::brazier;
+                return Id::brazier;
         }
 
         std::string name(const Article article) const override;
@@ -410,16 +552,16 @@ enum class WallType
         leng_monestary
 };
 
-class Wall: public Rigid
+class Wall: public Terrain
 {
 public:
         Wall(const P& p);
 
         Wall() = delete;
 
-        FeatureId id() const override
+        Id id() const override
         {
-                return FeatureId::wall;
+                return Id::wall;
         }
 
         std::string name(const Article article) const override;
@@ -446,16 +588,16 @@ private:
                 actor::Actor* const actor) override;
 };
 
-class RubbleLow: public Rigid
+class RubbleLow: public Terrain
 {
 public:
         RubbleLow(const P& p);
 
         RubbleLow() = delete;
 
-        FeatureId id() const override
+        Id id() const override
         {
-                return FeatureId::rubble_low;
+                return Id::rubble_low;
         }
 
         std::string name(const Article article) const override;
@@ -470,16 +612,16 @@ private:
                 actor::Actor* const actor) override;
 };
 
-class Bones: public Rigid
+class Bones: public Terrain
 {
 public:
         Bones(const P& p);
 
         Bones() = delete;
 
-        FeatureId id() const override
+        Id id() const override
         {
-                return FeatureId::bones;
+                return Id::bones;
         }
 
         std::string name(const Article article) const override;
@@ -494,16 +636,16 @@ private:
                 actor::Actor* const actor) override;
 };
 
-class RubbleHigh: public Rigid
+class RubbleHigh: public Terrain
 {
 public:
         RubbleHigh(const P& p);
 
         RubbleHigh() = delete;
 
-        FeatureId id() const override
+        Id id() const override
         {
-                return FeatureId::rubble_high;
+                return Id::rubble_high;
         }
 
         std::string name(const Article article) const override;
@@ -518,16 +660,16 @@ private:
                 actor::Actor* const actor) override;
 };
 
-class GraveStone: public Rigid
+class GraveStone: public Terrain
 {
 public:
         GraveStone(const P& p);
 
         GraveStone() = delete;
 
-        FeatureId id() const override
+        Id id() const override
         {
-                return FeatureId::gravestone;
+                return Id::gravestone;
         }
 
         std::string name(const Article article) const override;
@@ -551,16 +693,16 @@ private:
         std::string m_inscr;
 };
 
-class ChurchBench: public Rigid
+class ChurchBench: public Terrain
 {
 public:
         ChurchBench(const P& p);
 
         ChurchBench() = delete;
 
-        FeatureId id() const override
+        Id id() const override
         {
-                return FeatureId::church_bench;
+                return Id::church_bench;
         }
 
         std::string name(const Article article) const override;
@@ -581,15 +723,15 @@ enum class StatueType
         ghoul
 };
 
-class Statue: public Rigid
+class Statue: public Terrain
 {
 public:
         Statue(const P& p);
         Statue() = delete;
 
-        FeatureId id() const override
+        Id id() const override
         {
-                return FeatureId::statue;
+                return Id::statue;
         }
 
         std::string name(const Article article) const override;
@@ -610,15 +752,15 @@ private:
         int base_shock_when_adj() const override;
 };
 
-class Stalagmite: public Rigid
+class Stalagmite: public Terrain
 {
 public:
         Stalagmite(const P& p);
         Stalagmite() = delete;
 
-        FeatureId id() const override
+        Id id() const override
         {
-                return FeatureId::stalagmite;
+                return Id::stalagmite;
         }
 
         std::string name(const Article article) const override;
@@ -633,15 +775,15 @@ private:
                 actor::Actor* const actor) override;
 };
 
-class Stairs: public Rigid
+class Stairs: public Terrain
 {
 public:
         Stairs(const P& p);
         Stairs() = delete;
 
-        FeatureId id() const override
+        Id id() const override
         {
-                return FeatureId::stairs;
+                return Id::stairs;
         }
 
         std::string name(const Article article) const override;
@@ -660,17 +802,17 @@ private:
                 actor::Actor* const actor) override;
 };
 
-class Bridge : public Rigid
+class Bridge : public Terrain
 {
 public:
         Bridge(const P& p) :
-                Rigid(p),
+                Terrain(p),
                 m_axis(Axis::hor) {}
         Bridge() = delete;
 
-        FeatureId id() const override
+        Id id() const override
         {
-                return FeatureId::bridge;
+                return Id::bridge;
         }
 
         std::string name(const Article article) const override;
@@ -694,15 +836,15 @@ private:
         Axis m_axis;
 };
 
-class LiquidShallow: public Rigid
+class LiquidShallow: public Terrain
 {
 public:
         LiquidShallow(const P& p);
         LiquidShallow() = delete;
 
-        FeatureId id() const override
+        Id id() const override
         {
-                return FeatureId::liquid_shallow;
+                return Id::liquid_shallow;
         }
 
         std::string name(const Article article) const override;
@@ -723,15 +865,15 @@ private:
                 actor::Actor* const actor) override;
 };
 
-class LiquidDeep: public Rigid
+class LiquidDeep: public Terrain
 {
 public:
         LiquidDeep(const P& p);
         LiquidDeep() = delete;
 
-        FeatureId id() const override
+        Id id() const override
         {
-                return FeatureId::liquid_deep;
+                return Id::liquid_deep;
         }
 
         std::string name(const Article article) const override;
@@ -758,15 +900,15 @@ private:
         bool must_swim_on_enter(const actor::Actor& actor) const;
 };
 
-class Chasm: public Rigid
+class Chasm: public Terrain
 {
 public:
         Chasm(const P& p);
         Chasm() = delete;
 
-        FeatureId id() const override
+        Id id() const override
         {
-                return FeatureId::chasm;
+                return Id::chasm;
         }
 
         std::string name(const Article article) const override;
@@ -781,16 +923,16 @@ private:
                 actor::Actor* const actor) override;
 };
 
-class Lever: public Rigid
+class Lever: public Terrain
 {
 public:
         Lever(const P& p);
 
         Lever() = delete;
 
-        FeatureId id() const override
+        Id id() const override
         {
-                return FeatureId::lever;
+                return Id::lever;
         }
 
         std::string name(const Article article) const override;
@@ -806,22 +948,22 @@ public:
                 return m_is_left_pos;
         }
 
-        bool is_linked_to(const Rigid& feature) const
+        bool is_linked_to(const Terrain& terrain) const
         {
-                return m_linked_feature == &feature;
+                return m_linked_terrain == &terrain;
         }
 
-        void set_linked_feature(Rigid& feature)
+        void set_linked_terrain(Terrain& terrain)
         {
-                m_linked_feature = &feature;
+                m_linked_terrain = &terrain;
         }
 
         void unlink()
         {
-                m_linked_feature = nullptr;
+                m_linked_terrain = nullptr;
         }
 
-        // Levers linked to the same feature
+        // Levers linked to the same terrain
         void add_sibbling(Lever* const lever)
         {
                 m_sibblings.push_back(lever);
@@ -838,21 +980,21 @@ private:
 
         bool m_is_left_pos;
 
-        Rigid* m_linked_feature;
+        Terrain* m_linked_terrain;
 
         std::vector<Lever*> m_sibblings;
 };
 
-class Altar: public Rigid
+class Altar: public Terrain
 {
 public:
         Altar(const P& p);
 
         Altar() = delete;
 
-        FeatureId id() const override
+        Id id() const override
         {
-                return FeatureId::altar;
+                return Id::altar;
         }
 
         std::string name(const Article article) const override;
@@ -876,15 +1018,15 @@ private:
         bool m_can_offer_pact {true};
 };
 
-class Tree: public Rigid
+class Tree: public Terrain
 {
 public:
         Tree(const P& p);
         Tree() = delete;
 
-        FeatureId id() const override
+        Id id() const override
         {
-                return FeatureId::tree;
+                return Id::tree;
         }
 
         std::string name(const Article article) const override;
@@ -925,15 +1067,15 @@ enum class TombAppearance
         END
 };
 
-class Tomb: public Rigid
+class Tomb: public Terrain
 {
 public:
         Tomb(const P& pos);
         Tomb() = delete;
 
-        FeatureId id() const override
+        Id id() const override
         {
-                return FeatureId::tomb;
+                return Id::tomb;
         }
 
         std::string name(const Article article) const override;
@@ -969,15 +1111,15 @@ enum class ChestMatl
         END
 };
 
-class Chest: public Rigid
+class Chest: public Terrain
 {
 public:
         Chest(const P& pos);
         Chest() = delete;
 
-        FeatureId id() const override
+        Id id() const override
         {
-                return FeatureId::chest;
+                return Id::chest;
         }
 
         std::string name(const Article article) const override;
@@ -1010,15 +1152,15 @@ private:
         ChestMatl m_matl;
 };
 
-class Cabinet: public Rigid
+class Cabinet: public Terrain
 {
 public:
         Cabinet(const P& pos);
         Cabinet() = delete;
 
-        FeatureId id() const override
+        Id id() const override
         {
-                return FeatureId::cabinet;
+                return Id::cabinet;
         }
 
         std::string name(const Article article) const override;
@@ -1043,15 +1185,15 @@ private:
         bool m_is_open;
 };
 
-class Bookshelf: public Rigid
+class Bookshelf: public Terrain
 {
 public:
         Bookshelf(const P& pos);
         Bookshelf() = delete;
 
-        FeatureId id() const override
+        Id id() const override
         {
-                return FeatureId::bookshelf;
+                return Id::bookshelf;
         }
 
         std::string name(const Article article) const override;
@@ -1074,15 +1216,15 @@ private:
         bool m_is_looted;
 };
 
-class AlchemistBench: public Rigid
+class AlchemistBench: public Terrain
 {
 public:
         AlchemistBench(const P& pos);
         AlchemistBench() = delete;
 
-        FeatureId id() const override
+        Id id() const override
         {
-                return FeatureId::alchemist_bench;
+                return Id::alchemist_bench;
         }
 
         std::string name(const Article article) const override;
@@ -1121,16 +1263,16 @@ enum class FountainEffect
         END
 };
 
-class Fountain: public Rigid
+class Fountain: public Terrain
 {
 public:
         Fountain(const P& pos);
 
         Fountain() = delete;
 
-        FeatureId id() const override
+        Id id() const override
         {
-                return FeatureId::fountain;
+                return Id::fountain;
         }
 
         std::string name(const Article article) const override;
@@ -1169,16 +1311,16 @@ private:
         bool m_has_drinks_left;
 };
 
-class Cocoon: public Rigid
+class Cocoon: public Terrain
 {
 public:
         Cocoon(const P& pos);
 
         Cocoon() = delete;
 
-        FeatureId id() const override
+        Id id() const override
         {
-                return FeatureId::cocoon;
+                return Id::cocoon;
         }
 
         std::string name(const Article article) const override;
@@ -1206,4 +1348,6 @@ private:
         bool m_is_open;
 };
 
-#endif // FEATURE_RIGID_HPP
+} // terrain
+
+#endif // TERRAIN_HPP

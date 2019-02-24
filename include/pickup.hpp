@@ -10,11 +10,9 @@
 
 namespace item
 {
-
 class Ammo;
 class Wpn;
-
-} // item
+}
 
 
 namespace item_pickup

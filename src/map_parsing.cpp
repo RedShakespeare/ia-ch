@@ -10,8 +10,8 @@
 #include <climits>
 
 #include "actor_player.hpp"
-#include "feature_mob.hpp"
-#include "feature_rigid.hpp"
+#include "terrain_mob.hpp"
+#include "terrain.hpp"
 #include "flood.hpp"
 #include "game_time.hpp"
 #include "init.hpp"
@@ -30,9 +30,10 @@ namespace map_parsers
 // -----------------------------------------------------------------------------
 // Base class
 // -----------------------------------------------------------------------------
-void MapParser::run(Array2<bool>& out,
-                    const R& area_to_parse_cells,
-                    const MapParseMode write_rule)
+void MapParser::run(
+        Array2<bool>& out,
+        const R& area_to_parse_cells,
+        const MapParseMode write_rule)
 {
         ASSERT(m_parse_cells == ParseCells::yes ||
                m_parse_mobs == ParseMobs::yes ||
@@ -53,7 +54,7 @@ void MapParser::run(Array2<bool>& out,
                         {
                                 const auto& c = map::g_cells.at(x, y);
 
-                                const bool is_match = parse(c, P(x, y));
+                                const bool is_match = parse_cell(c, P(x, y));
 
                                 if (is_match || allow_write_false)
                                 {
@@ -65,13 +66,13 @@ void MapParser::run(Array2<bool>& out,
 
         if (m_parse_mobs == ParseMobs::yes)
         {
-                for (Mob* mob : game_time::g_mobs)
+                for (auto* mob : game_time::g_mobs)
                 {
                         const P& p = mob->pos();
 
                         if (area_to_parse_cells.is_pos_inside(p))
                         {
-                                const bool is_match = parse(*mob);
+                                const bool is_match = parse_mob(*mob);
 
                                 if (is_match || allow_write_false)
                                 {
@@ -94,7 +95,7 @@ void MapParser::run(Array2<bool>& out,
 
                         if (area_to_parse_cells.is_pos_inside(p))
                         {
-                                const bool is_match = parse(*actor);
+                                const bool is_match = parse_actor(*actor);
 
                                 if (is_match || allow_write_false)
                                 {
@@ -123,7 +124,7 @@ bool MapParser::cell(const P& pos) const
         {
                 const auto& c = map::g_cells.at(pos);
 
-                const bool is_match = parse(c, pos);
+                const bool is_match = parse_cell(c, pos);
 
                 if (is_match)
                 {
@@ -133,13 +134,13 @@ bool MapParser::cell(const P& pos) const
 
         if (m_parse_mobs == ParseMobs::yes)
         {
-                for (Mob* mob : game_time::g_mobs)
+                for (auto* mob : game_time::g_mobs)
                 {
                         const P& mob_p = mob->pos();
 
                         if (mob_p == pos)
                         {
-                                const bool is_match = parse(*mob);
+                                const bool is_match = parse_mob(*mob);
 
                                 if (is_match)
                                 {
@@ -158,7 +159,7 @@ bool MapParser::cell(const P& pos) const
 
                         if (actor_pos == pos)
                         {
-                                const bool is_match = parse(*actor);
+                                const bool is_match = parse_actor(*actor);
 
                                 if (is_match)
                                 {
@@ -177,77 +178,77 @@ bool MapParser::cell(const P& pos) const
 // -----------------------------------------------------------------------------
 // Map parsers
 // -----------------------------------------------------------------------------
-bool BlocksLos::parse(const Cell& c, const P& pos) const
+bool BlocksLos::parse_cell(const Cell& c, const P& pos) const
 {
         return
                 !map::is_pos_inside_outer_walls(pos) ||
-                !c.rigid->is_los_passable();
+                !c.terrain->is_los_passable();
 }
 
-bool BlocksLos::parse(const Mob& f) const
+bool BlocksLos::parse_mob(const terrain::Terrain& f) const
 {
         return !f.is_los_passable();
 }
 
-bool BlocksWalking::parse(const Cell& c, const P& pos) const
+bool BlocksWalking::parse_cell(const Cell& c, const P& pos) const
 {
         return
                 !map::is_pos_inside_outer_walls(pos) ||
-                !c.rigid->is_walkable();
+                !c.terrain->is_walkable();
 }
 
-bool BlocksWalking::parse(const Mob& f) const
+bool BlocksWalking::parse_mob(const terrain::Terrain& f) const
 {
         return !f.is_walkable();
 }
 
-bool BlocksWalking::parse(const actor::Actor& a) const
+bool BlocksWalking::parse_actor(const actor::Actor& a) const
 {
         return a.is_alive();
 }
 
-bool BlocksActor::parse(const Cell& c, const P& pos) const
+bool BlocksActor::parse_cell(const Cell& c, const P& pos) const
 {
         return
                 !map::is_pos_inside_outer_walls(pos) ||
-                !c.rigid->can_move(m_actor);
+                !c.terrain->can_move(m_actor);
 }
 
-bool BlocksActor::parse(const Mob& f) const
+bool BlocksActor::parse_mob(const terrain::Terrain& f) const
 {
         return !f.can_move(m_actor);
 }
 
-bool BlocksActor::parse(const actor::Actor& a) const
+bool BlocksActor::parse_actor(const actor::Actor& a) const
 {
         return a.is_alive();
 }
 
-bool BlocksProjectiles::parse(const Cell& c, const P& pos) const
+bool BlocksProjectiles::parse_cell(const Cell& c, const P& pos) const
 {
         return
                 !map::is_pos_inside_outer_walls(pos) ||
-                !c.rigid->is_projectile_passable();
+                !c.terrain->is_projectile_passable();
 }
 
-bool BlocksProjectiles::parse(const Mob& f) const
+bool BlocksProjectiles::parse_mob(const terrain::Terrain& f) const
 {
         return !f.is_projectile_passable();
 }
 
-bool BlocksSound::parse(const Cell& c, const P& pos) const
+bool BlocksSound::parse_cell(const Cell& c, const P& pos) const
 {
         return
                 !map::is_pos_inside_outer_walls(pos) ||
-                !c.rigid->is_sound_passable();
+                !c.terrain->is_sound_passable();
 }
 
-bool BlocksSound::parse(const Mob& f) const
+bool BlocksSound::parse_mob(const terrain::Terrain& f) const
 {
         return !f.is_sound_passable();
 }
 
-bool LivingActorsAdjToPos::parse(const actor::Actor& a) const
+bool LivingActorsAdjToPos::parse_actor(const actor::Actor& a) const
 {
         if (!a.is_alive())
         {
@@ -257,39 +258,39 @@ bool LivingActorsAdjToPos::parse(const actor::Actor& a) const
         return is_pos_adj(m_pos, a.m_pos, true);
 }
 
-bool BlocksItems::parse(const Cell& c, const P& pos) const
+bool BlocksItems::parse_cell(const Cell& c, const P& pos) const
 {
         return
                 !map::is_pos_inside_outer_walls(pos) ||
-                !c.rigid->can_have_item();
+                !c.terrain->can_have_item();
 }
 
-bool BlocksItems::parse(const Mob& f) const
+bool BlocksItems::parse_mob(const terrain::Terrain& f) const
 {
         return !f.can_have_item();
 }
 
-bool BlocksRigid::parse(const Cell& c, const P& pos) const
+bool BlocksTerrain::parse_cell(const Cell& c, const P& pos) const
 {
         return
                 !map::is_pos_inside_outer_walls(pos) ||
-                !c.rigid->can_have_rigid();
+                !c.terrain->can_have_terrain();
 }
 
-bool IsNotFeature::parse(const Cell& c, const P& pos) const
+bool IsNotTerrain::parse_cell(const Cell& c, const P& pos) const
 {
         (void)pos;
 
-        return c.rigid->id() != m_feature;
+        return c.terrain->id() != m_terrain;
 }
 
-bool IsAnyOfFeatures::parse(const Cell& c, const P& pos) const
+bool IsAnyOfTerrains::parse_cell(const Cell& c, const P& pos) const
 {
         (void)pos;
 
-        for (auto f : m_features)
+        for (auto t : m_terrains)
         {
-                if (f == c.rigid->id())
+                if (t == c.terrain->id())
                 {
                         return true;
                 }
@@ -298,7 +299,7 @@ bool IsAnyOfFeatures::parse(const Cell& c, const P& pos) const
         return false;
 }
 
-bool AnyAdjIsAnyOfFeatures::parse(const Cell& c, const P& pos) const
+bool AnyAdjIsAnyOfTerrains::parse_cell(const Cell& c, const P& pos) const
 {
         (void)c;
 
@@ -309,15 +310,15 @@ bool AnyAdjIsAnyOfFeatures::parse(const Cell& c, const P& pos) const
 
         for (const auto& d : dir_utils::g_dir_list_w_center)
         {
-                const auto id_here = map::g_cells.at(pos + d).rigid->id();
+                const auto id_here = map::g_cells.at(pos + d).terrain->id();
 
                 const auto search_result =
                         std::find(
-                                std::begin(m_features),
-                                std::end(m_features),
+                                std::begin(m_terrains),
+                                std::end(m_terrains),
                                 id_here);
 
-                if (search_result != std::end(m_features))
+                if (search_result != std::end(m_terrains))
                 {
                         return true;
                 }
@@ -326,7 +327,7 @@ bool AnyAdjIsAnyOfFeatures::parse(const Cell& c, const P& pos) const
         return false;
 }
 
-bool AllAdjIsFeature::parse(const Cell& c, const P& pos) const
+bool AllAdjIsTerrain::parse_cell(const Cell& c, const P& pos) const
 {
         (void)c;
 
@@ -337,7 +338,7 @@ bool AllAdjIsFeature::parse(const Cell& c, const P& pos) const
 
         for (const auto& d : dir_utils::g_dir_list_w_center)
         {
-                if (map::g_cells.at(pos + d).rigid->id() != m_feature)
+                if (map::g_cells.at(pos + d).terrain->id() != m_terrain)
                 {
                         return false;
                 }
@@ -346,7 +347,7 @@ bool AllAdjIsFeature::parse(const Cell& c, const P& pos) const
         return true;
 }
 
-bool AllAdjIsAnyOfFeatures::parse(const Cell& c, const P& pos) const
+bool AllAdjIsAnyOfTerrains::parse_cell(const Cell& c, const P& pos) const
 {
         (void)c;
 
@@ -357,13 +358,13 @@ bool AllAdjIsAnyOfFeatures::parse(const Cell& c, const P& pos) const
 
         for (const auto& d : dir_utils::g_dir_list_w_center)
         {
-                const auto current_id = map::g_cells.at(pos + d).rigid->id();
+                const auto current_id = map::g_cells.at(pos + d).terrain->id();
 
                 bool is_match = false;
 
-                for (auto f : m_features)
+                for (auto t : m_terrains)
                 {
-                        if (f == current_id)
+                        if (t == current_id)
                         {
                                 is_match = true;
 
@@ -380,7 +381,7 @@ bool AllAdjIsAnyOfFeatures::parse(const Cell& c, const P& pos) const
         return true;
 }
 
-bool AllAdjIsNotFeature::parse(const Cell& c, const P& pos) const
+bool AllAdjIsNotTerrain::parse_cell(const Cell& c, const P& pos) const
 {
         (void)c;
 
@@ -394,7 +395,7 @@ bool AllAdjIsNotFeature::parse(const Cell& c, const P& pos) const
 
         for (const auto& d : dir_utils::g_dir_list_w_center)
         {
-                if (map::g_cells.at(pos + d).rigid->id() == m_feature)
+                if (map::g_cells.at(pos + d).terrain->id() == m_terrain)
                 {
                         return false;
                 }
@@ -403,7 +404,7 @@ bool AllAdjIsNotFeature::parse(const Cell& c, const P& pos) const
         return true;
 }
 
-bool AllAdjIsNoneOfFeatures::parse(const Cell& c, const P& pos) const
+bool AllAdjIsNoneOfTerrains::parse_cell(const Cell& c, const P& pos) const
 {
         (void)c;
 
@@ -417,11 +418,11 @@ bool AllAdjIsNoneOfFeatures::parse(const Cell& c, const P& pos) const
 
         for (const auto& d : dir_utils::g_dir_list_w_center)
         {
-                const auto current_id = map::g_cells.at(pos + d).rigid->id();
+                const auto current_id = map::g_cells.at(pos + d).terrain->id();
 
-                for (auto f : m_features)
+                for (auto t : m_terrains)
                 {
-                        if (f == current_id)
+                        if (t == current_id)
                         {
                                 return false;
                         }

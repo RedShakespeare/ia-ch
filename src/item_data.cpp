@@ -156,11 +156,11 @@ static void reset_data(item::ItemData& d, ItemType const item_type)
                 d.tile = TileId::scroll;
                 d.max_stack_at_spawn = 1;
                 d.land_on_hard_snd_msg = "";
-                d.native_containers.push_back(FeatureId::chest);
-                d.native_containers.push_back(FeatureId::tomb);
-                d.native_containers.push_back(FeatureId::cabinet);
-                d.native_containers.push_back(FeatureId::bookshelf);
-                d.native_containers.push_back(FeatureId::cocoon);
+                d.native_containers.push_back(terrain::Id::chest);
+                d.native_containers.push_back(terrain::Id::tomb);
+                d.native_containers.push_back(terrain::Id::cabinet);
+                d.native_containers.push_back(terrain::Id::bookshelf);
+                d.native_containers.push_back(terrain::Id::cocoon);
                 break;
 
         case ItemType::potion:
@@ -185,11 +185,11 @@ static void reset_data(item::ItemData& d, ItemType const item_type)
                 d.max_stack_at_spawn = 1;
                 d.land_on_hard_snd_msg = "";
                 d.ranged.is_throwable_wpn = true;
-                d.native_containers.push_back(FeatureId::chest);
-                d.native_containers.push_back(FeatureId::tomb);
-                d.native_containers.push_back(FeatureId::cabinet);
-                d.native_containers.push_back(FeatureId::alchemist_bench);
-                d.native_containers.push_back(FeatureId::cocoon);
+                d.native_containers.push_back(terrain::Id::chest);
+                d.native_containers.push_back(terrain::Id::tomb);
+                d.native_containers.push_back(terrain::Id::cabinet);
+                d.native_containers.push_back(terrain::Id::alchemist_bench);
+                d.native_containers.push_back(terrain::Id::cocoon);
                 break;
 
         case ItemType::device:
@@ -217,8 +217,8 @@ static void reset_data(item::ItemData& d, ItemType const item_type)
                 d.land_on_hard_snd_msg = "I hear a clanking sound.";
                 d.land_on_hard_sfx = SfxId::metal_clank;
                 d.chance_to_incl_in_spawn_list = 5;
-                d.native_containers.push_back(FeatureId::chest);
-                d.native_containers.push_back(FeatureId::cocoon);
+                d.native_containers.push_back(terrain::Id::chest);
+                d.native_containers.push_back(terrain::Id::cocoon);
                 break;
 
         case ItemType::rod:
@@ -240,8 +240,8 @@ static void reset_data(item::ItemData& d, ItemType const item_type)
                 d.land_on_hard_snd_msg = "I hear a clanking sound.";
                 d.land_on_hard_sfx = SfxId::metal_clank;
                 d.chance_to_incl_in_spawn_list = 5;
-                d.native_containers.push_back(FeatureId::chest);
-                d.native_containers.push_back(FeatureId::cocoon);
+                d.native_containers.push_back(terrain::Id::chest);
+                d.native_containers.push_back(terrain::Id::cocoon);
                 break;
 
         case ItemType::armor:
@@ -334,9 +334,9 @@ void init()
         d.ranged.makes_ricochet_snd = true;
         d.ranged.reload_sfx = SfxId::shotgun_reload;
         d.spawn_std_range.min = 2;
-        d.native_containers.push_back(FeatureId::chest);
-        d.native_containers.push_back(FeatureId::cabinet);
-        d.native_containers.push_back(FeatureId::cocoon);
+        d.native_containers.push_back(terrain::Id::chest);
+        d.native_containers.push_back(terrain::Id::cabinet);
+        d.native_containers.push_back(terrain::Id::cocoon);
         g_data[(size_t)d.id] = d;
 
         reset_data(d, ItemType::ranged_wpn);
@@ -364,9 +364,9 @@ void init()
         d.ranged.makes_ricochet_snd = true;
         d.ranged.reload_sfx = SfxId::shotgun_reload;
         d.spawn_std_range.min = 2;
-        d.native_containers.push_back(FeatureId::chest);
-        d.native_containers.push_back(FeatureId::cabinet);
-        d.native_containers.push_back(FeatureId::cocoon);
+        d.native_containers.push_back(terrain::Id::chest);
+        d.native_containers.push_back(terrain::Id::cabinet);
+        d.native_containers.push_back(terrain::Id::cocoon);
         g_data[(size_t)d.id] = d;
 
         reset_data(d, ItemType::ammo);
@@ -376,9 +376,9 @@ void init()
                 "A cartridge designed to be fired from a shotgun."
         };
         d.max_stack_at_spawn = 10;
-        d.native_containers.push_back(FeatureId::chest);
-        d.native_containers.push_back(FeatureId::cabinet);
-        d.native_containers.push_back(FeatureId::cocoon);
+        d.native_containers.push_back(terrain::Id::chest);
+        d.native_containers.push_back(terrain::Id::cabinet);
+        d.native_containers.push_back(terrain::Id::cocoon);
         g_data[(size_t)d.id] = d;
 
         reset_data(d, ItemType::ranged_wpn);
@@ -403,9 +403,9 @@ void init()
         d.ranged.reload_sfx = SfxId::machine_gun_reload;
         d.spawn_std_range.min = g_dlvl_first_mid_game;
         d.chance_to_incl_in_spawn_list = 35;
-        d.native_containers.push_back(FeatureId::chest);
-        d.native_containers.push_back(FeatureId::cabinet);
-        d.native_containers.push_back(FeatureId::cocoon);
+        d.native_containers.push_back(terrain::Id::chest);
+        d.native_containers.push_back(terrain::Id::cabinet);
+        d.native_containers.push_back(terrain::Id::cocoon);
         g_data[(size_t)d.id] = d;
 
         reset_data(d, ItemType::ammo_mag);
@@ -423,9 +423,9 @@ void init()
         d.max_stack_at_spawn = 1;
         d.ranged.max_ammo = g_data[(size_t)Id::incinerator].ranged.max_ammo;
         d.chance_to_incl_in_spawn_list = 15;
-        d.native_containers.push_back(FeatureId::chest);
-        d.native_containers.push_back(FeatureId::cabinet);
-        d.native_containers.push_back(FeatureId::cocoon);
+        d.native_containers.push_back(terrain::Id::chest);
+        d.native_containers.push_back(terrain::Id::cabinet);
+        d.native_containers.push_back(terrain::Id::cocoon);
         g_data[(size_t)d.id] = d;
 
         reset_data(d, ItemType::ranged_wpn);
@@ -453,9 +453,9 @@ void init()
         d.ranged.reload_sfx = SfxId::machine_gun_reload;
         d.spawn_std_range.min = 2;
         d.chance_to_incl_in_spawn_list = 75;
-        d.native_containers.push_back(FeatureId::chest);
-        d.native_containers.push_back(FeatureId::cabinet);
-        d.native_containers.push_back(FeatureId::cocoon);
+        d.native_containers.push_back(terrain::Id::chest);
+        d.native_containers.push_back(terrain::Id::cabinet);
+        d.native_containers.push_back(terrain::Id::cocoon);
         g_data[(size_t)d.id] = d;
 
         reset_data(d, ItemType::ammo_mag);
@@ -470,9 +470,9 @@ void init()
         };
         d.ranged.max_ammo = g_data[(size_t)Id::machine_gun].ranged.max_ammo;
         d.chance_to_incl_in_spawn_list = 50;
-        d.native_containers.push_back(FeatureId::chest);
-        d.native_containers.push_back(FeatureId::cabinet);
-        d.native_containers.push_back(FeatureId::cocoon);
+        d.native_containers.push_back(terrain::Id::chest);
+        d.native_containers.push_back(terrain::Id::cabinet);
+        d.native_containers.push_back(terrain::Id::cocoon);
         g_data[(size_t)d.id] = d;
 
         reset_data(d, ItemType::ranged_wpn);
@@ -494,9 +494,9 @@ void init()
         d.ranged.att_sfx = SfxId::pistol_fire;
         d.ranged.makes_ricochet_snd = true;
         d.ranged.reload_sfx = SfxId::pistol_reload;
-        d.native_containers.push_back(FeatureId::chest);
-        d.native_containers.push_back(FeatureId::cabinet);
-        d.native_containers.push_back(FeatureId::cocoon);
+        d.native_containers.push_back(terrain::Id::chest);
+        d.native_containers.push_back(terrain::Id::cabinet);
+        d.native_containers.push_back(terrain::Id::cocoon);
         g_data[(size_t)d.id] = d;
 
         reset_data(d, ItemType::ammo_mag);
@@ -509,9 +509,9 @@ void init()
                 "Ammunition used by Colt pistols."
         };
         d.ranged.max_ammo = g_data[(size_t)Id::pistol].ranged.max_ammo;
-        d.native_containers.push_back(FeatureId::chest);
-        d.native_containers.push_back(FeatureId::cabinet);
-        d.native_containers.push_back(FeatureId::cocoon);
+        d.native_containers.push_back(terrain::Id::chest);
+        d.native_containers.push_back(terrain::Id::cabinet);
+        d.native_containers.push_back(terrain::Id::cocoon);
         g_data[(size_t)d.id] = d;
 
         reset_data(d, ItemType::ranged_wpn);
@@ -531,9 +531,9 @@ void init()
         d.ranged.att_msgs = {"fire", "fires a flare gun"};
         d.ranged.snd_msg = "I hear a flare gun being fired.";
         d.ranged.prop_applied = ItemAttProp(new PropFlared());
-        d.native_containers.push_back(FeatureId::chest);
-        d.native_containers.push_back(FeatureId::cabinet);
-        d.native_containers.push_back(FeatureId::cocoon);
+        d.native_containers.push_back(terrain::Id::chest);
+        d.native_containers.push_back(terrain::Id::cabinet);
+        d.native_containers.push_back(terrain::Id::cocoon);
         g_data[(size_t)d.id] = d;
 
         reset_data(d, ItemType::ranged_wpn);
@@ -563,9 +563,9 @@ void init()
         d.spawn_std_range.min = 4;
         d.ranged.att_sfx = SfxId::spike_gun;
         d.ranged.snd_vol = SndVol::low;
-        d.native_containers.push_back(FeatureId::chest);
-        d.native_containers.push_back(FeatureId::cabinet);
-        d.native_containers.push_back(FeatureId::cocoon);
+        d.native_containers.push_back(terrain::Id::chest);
+        d.native_containers.push_back(terrain::Id::cabinet);
+        d.native_containers.push_back(terrain::Id::cocoon);
         g_data[(size_t)d.id] = d;
 
         reset_data(d, ItemType::ranged_wpn);
@@ -651,9 +651,9 @@ void init()
         d.weight = Weight::light;
         d.tile = TileId::dynamite;
         d.color = colors::light_red();
-        d.native_containers.push_back(FeatureId::chest);
-        d.native_containers.push_back(FeatureId::cabinet);
-        d.native_containers.push_back(FeatureId::cocoon);
+        d.native_containers.push_back(terrain::Id::chest);
+        d.native_containers.push_back(terrain::Id::cabinet);
+        d.native_containers.push_back(terrain::Id::cocoon);
         g_data[(size_t)d.id] = d;
 
         reset_data(d, ItemType::explosive);
@@ -666,9 +666,9 @@ void init()
         d.weight = Weight::light;
         d.tile = TileId::flare;
         d.color = colors::gray();
-        d.native_containers.push_back(FeatureId::chest);
-        d.native_containers.push_back(FeatureId::cabinet);
-        d.native_containers.push_back(FeatureId::cocoon);
+        d.native_containers.push_back(terrain::Id::chest);
+        d.native_containers.push_back(terrain::Id::cabinet);
+        d.native_containers.push_back(terrain::Id::cocoon);
         g_data[(size_t)d.id] = d;
 
         reset_data(d, ItemType::explosive);
@@ -685,9 +685,9 @@ void init()
         d.weight = Weight::light;
         d.tile = TileId::molotov;
         d.color = colors::white();
-        d.native_containers.push_back(FeatureId::chest);
-        d.native_containers.push_back(FeatureId::cabinet);
-        d.native_containers.push_back(FeatureId::cocoon);
+        d.native_containers.push_back(terrain::Id::chest);
+        d.native_containers.push_back(terrain::Id::cabinet);
+        d.native_containers.push_back(terrain::Id::cocoon);
         g_data[(size_t)d.id] = d;
 
         reset_data(d, ItemType::explosive);
@@ -703,8 +703,8 @@ void init()
         d.weight = Weight::light;
         d.tile = TileId::flare;
         d.color = colors::green();
-        d.native_containers.push_back(FeatureId::chest);
-        d.native_containers.push_back(FeatureId::cabinet);
+        d.native_containers.push_back(terrain::Id::chest);
+        d.native_containers.push_back(terrain::Id::cabinet);
         g_data[(size_t)d.id] = d;
 
         reset_data(d, ItemType::throwing_wpn);
@@ -726,9 +726,9 @@ void init()
         d.land_on_hard_snd_msg = "I hear a clanking sound.";
         d.land_on_hard_sfx = SfxId::metal_clank;
         d.main_att_mode = AttMode::thrown;
-        d.native_containers.push_back(FeatureId::chest);
-        d.native_containers.push_back(FeatureId::cabinet);
-        d.native_containers.push_back(FeatureId::cocoon);
+        d.native_containers.push_back(terrain::Id::chest);
+        d.native_containers.push_back(terrain::Id::cabinet);
+        d.native_containers.push_back(terrain::Id::cocoon);
         g_data[(size_t)d.id] = d;
 
         reset_data(d, ItemType::throwing_wpn);
@@ -747,8 +747,8 @@ void init()
         d.ranged.max_range = d.ranged.effective_range + 3;
         d.max_stack_at_spawn = 3;
         d.main_att_mode = AttMode::thrown;
-        d.native_containers.push_back(FeatureId::cabinet);
-        d.native_containers.push_back(FeatureId::cocoon);
+        d.native_containers.push_back(terrain::Id::cabinet);
+        d.native_containers.push_back(terrain::Id::cocoon);
         g_data[(size_t)d.id] = d;
 
         reset_data(d, ItemType::melee_wpn);
@@ -778,10 +778,10 @@ void init()
         d.ranged.throw_hit_chance_mod = -5;
         d.ranged.effective_range = 4;
         d.ranged.max_range = d.ranged.effective_range + 3;
-        d.native_containers.push_back(FeatureId::chest);
-        d.native_containers.push_back(FeatureId::cabinet);
-        d.native_containers.push_back(FeatureId::tomb);
-        d.native_containers.push_back(FeatureId::cocoon);
+        d.native_containers.push_back(terrain::Id::chest);
+        d.native_containers.push_back(terrain::Id::cabinet);
+        d.native_containers.push_back(terrain::Id::tomb);
+        d.native_containers.push_back(terrain::Id::cocoon);
         g_data[(size_t)d.id] = d;
 
         reset_data(d, ItemType::melee_wpn);
@@ -808,9 +808,9 @@ void init()
         d.ranged.throw_hit_chance_mod = 0;
         d.ranged.effective_range = 5;
         d.ranged.max_range = d.ranged.effective_range + 3;
-        d.native_containers.push_back(FeatureId::chest);
-        d.native_containers.push_back(FeatureId::cabinet);
-        d.native_containers.push_back(FeatureId::cocoon);
+        d.native_containers.push_back(terrain::Id::chest);
+        d.native_containers.push_back(terrain::Id::cabinet);
+        d.native_containers.push_back(terrain::Id::cocoon);
         g_data[(size_t)d.id] = d;
 
         reset_data(d, ItemType::melee_wpn);
@@ -860,8 +860,8 @@ void init()
         d.ranged.throw_hit_chance_mod = -5;
         d.ranged.effective_range = 4;
         d.ranged.max_range = d.ranged.effective_range + 3;
-        d.native_containers.push_back(FeatureId::cabinet);
-        d.native_containers.push_back(FeatureId::cocoon);
+        d.native_containers.push_back(terrain::Id::cabinet);
+        d.native_containers.push_back(terrain::Id::cocoon);
         g_data[(size_t)d.id] = d;
 
         reset_data(d, ItemType::melee_wpn);
@@ -887,8 +887,8 @@ void init()
         d.ranged.throw_hit_chance_mod = -5;
         d.ranged.effective_range = 4;
         d.ranged.max_range = d.ranged.effective_range + 3;
-        d.native_containers.push_back(FeatureId::cabinet);
-        d.native_containers.push_back(FeatureId::cocoon);
+        d.native_containers.push_back(terrain::Id::cabinet);
+        d.native_containers.push_back(terrain::Id::cocoon);
         g_data[(size_t)d.id] = d;
 
         reset_data(d, ItemType::melee_wpn);
@@ -907,16 +907,16 @@ void init()
         d.melee.dmg = Dice(2, 6);
         d.melee.hit_chance_mod = -5;
         d.melee.att_corpse = true;
-        d.melee.att_rigid = true;
+        d.melee.att_terrain = true;
         d.melee.dmg_method = DmgMethod::slashing;
         d.melee.miss_sfx = SfxId::miss_medium;
         d.melee.is_noisy = true;
         d.ranged.throw_hit_chance_mod = -5;
         d.ranged.effective_range = 4;
         d.ranged.max_range = d.ranged.effective_range + 3;
-        d.native_containers.push_back(FeatureId::cabinet);
-        d.native_containers.push_back(FeatureId::tomb);
-        d.native_containers.push_back(FeatureId::cocoon);
+        d.native_containers.push_back(terrain::Id::cabinet);
+        d.native_containers.push_back(terrain::Id::tomb);
+        d.native_containers.push_back(terrain::Id::cocoon);
         g_data[(size_t)d.id] = d;
 
         reset_data(d, ItemType::melee_wpn);
@@ -937,16 +937,16 @@ void init()
         d.melee.dmg = Dice(2, 7);
         d.melee.hit_chance_mod = -10;
         d.melee.att_corpse = true;
-        d.melee.att_rigid = false;
+        d.melee.att_terrain = false;
         d.melee.dmg_method = DmgMethod::piercing;
         d.melee.miss_sfx = SfxId::miss_heavy;
         d.melee.is_noisy = true;
         d.ranged.throw_hit_chance_mod = -5;
         d.ranged.effective_range = 4;
         d.ranged.max_range = d.ranged.effective_range + 3;
-        d.native_containers.push_back(FeatureId::cabinet);
-        d.native_containers.push_back(FeatureId::tomb);
-        d.native_containers.push_back(FeatureId::cocoon);
+        d.native_containers.push_back(terrain::Id::cabinet);
+        d.native_containers.push_back(terrain::Id::tomb);
+        d.native_containers.push_back(terrain::Id::cocoon);
         g_data[(size_t)d.id] = d;
 
         reset_data(d, ItemType::melee_wpn);
@@ -974,8 +974,8 @@ void init()
         d.ranged.throw_hit_chance_mod = -10;
         d.ranged.effective_range = 3;
         d.ranged.max_range = d.ranged.effective_range + 3;
-        d.native_containers.push_back(FeatureId::cabinet);
-        d.native_containers.push_back(FeatureId::cocoon);
+        d.native_containers.push_back(terrain::Id::cabinet);
+        d.native_containers.push_back(terrain::Id::cocoon);
         g_data[(size_t)d.id] = d;
 
         reset_data(d, ItemType::melee_wpn);
@@ -993,13 +993,13 @@ void init()
         d.melee.dmg = Dice(3, 5);
         d.melee.hit_chance_mod = -15;
         d.melee.att_corpse = true;
-        d.melee.att_rigid = true;
+        d.melee.att_terrain = true;
         d.melee.dmg_method = DmgMethod::blunt;
         d.melee.miss_sfx = SfxId::miss_heavy;
         d.ranged.throw_hit_chance_mod = -10;
         d.ranged.effective_range = 3;
         d.ranged.max_range = d.ranged.effective_range + 3;
-        d.native_containers.push_back(FeatureId::cabinet);
+        d.native_containers.push_back(terrain::Id::cabinet);
         g_data[(size_t)d.id] = d;
 
         reset_data(d, ItemType::throwing_wpn);
@@ -1022,8 +1022,8 @@ void init()
         d.land_on_hard_snd_msg = "I hear a clanking sound.";
         d.land_on_hard_sfx = SfxId::metal_clank;
         d.main_att_mode = AttMode::thrown;
-        d.native_containers.push_back(FeatureId::cabinet);
-        d.native_containers.push_back(FeatureId::cocoon);
+        d.native_containers.push_back(terrain::Id::cabinet);
+        d.native_containers.push_back(terrain::Id::cocoon);
         g_data[(size_t)d.id] = d;
 
         reset_data(d, ItemType::melee_wpn_intr);
@@ -1033,7 +1033,7 @@ void init()
         d.melee.dmg = Dice(1, 2);
         d.melee.knocks_back = true;
         d.melee.dmg_method = DmgMethod::kicking;
-        d.melee.att_rigid = true;
+        d.melee.att_terrain = true;
         d.melee.att_corpse = true;
         d.melee.miss_sfx = SfxId::miss_medium;
         g_data[(size_t)d.id] = d;
@@ -1049,7 +1049,7 @@ void init()
                 g_data[(size_t)Id::player_kick].melee.miss_sfx;
         d.melee.dmg_method = DmgMethod::kicking;
         d.melee.knocks_back = false;
-        d.melee.att_rigid = false;
+        d.melee.att_terrain = false;
         d.melee.att_corpse = false;
         g_data[(size_t)d.id] = d;
 
@@ -1271,7 +1271,7 @@ void init()
         d.armor.armor_points = 1;
         d.armor.dmg_to_durability_factor = 1.0;
         d.land_on_hard_snd_msg = "";
-        d.native_containers.push_back(FeatureId::cabinet);
+        d.native_containers.push_back(terrain::Id::cabinet);
         g_data[(size_t)d.id] = d;
 
         reset_data(d, ItemType::armor);
@@ -1294,7 +1294,7 @@ void init()
         d.armor.armor_points = 5;
         d.armor.dmg_to_durability_factor = 0.3;
         d.land_on_hard_snd_msg = "I hear a crashing sound.";
-        d.native_containers.push_back(FeatureId::cabinet);
+        d.native_containers.push_back(terrain::Id::cabinet);
         g_data[(size_t)d.id] = d;
 
         reset_data(d, ItemType::armor);
@@ -1315,7 +1315,7 @@ void init()
         d.armor.armor_points = 3;
         d.armor.dmg_to_durability_factor = 0.5;
         d.land_on_hard_snd_msg = "I hear a thudding sound.";
-        d.native_containers.push_back(FeatureId::cabinet);
+        d.native_containers.push_back(terrain::Id::cabinet);
         g_data[(size_t)d.id] = d;
 
         reset_data(d, ItemType::armor);
@@ -1340,8 +1340,8 @@ void init()
         d.armor.armor_points = 1;
         d.armor.dmg_to_durability_factor = 1.0;
         d.land_on_hard_snd_msg = "";
-        d.native_containers.push_back(FeatureId::cabinet);
-        d.native_containers.push_back(FeatureId::chest);
+        d.native_containers.push_back(terrain::Id::cabinet);
+        d.native_containers.push_back(terrain::Id::chest);
         g_data[(size_t)d.id] = d;
 
         reset_data(d, ItemType::armor);
@@ -1558,9 +1558,9 @@ void init()
         d.id = Id::device_blaster;
         d.base_name = {"Blaster Device", "Blaster Devices", "a Blaster Device"};
         d.color = colors::gray();
-        d.native_containers.push_back(FeatureId::chest);
-        d.native_containers.push_back(FeatureId::tomb);
-        d.native_containers.push_back(FeatureId::cocoon);
+        d.native_containers.push_back(terrain::Id::chest);
+        d.native_containers.push_back(terrain::Id::tomb);
+        d.native_containers.push_back(terrain::Id::cocoon);
         g_data[(size_t)d.id] = d;
 
         reset_data(d, ItemType::device);
@@ -1571,9 +1571,9 @@ void init()
                 "a Rejuvenator Device"
         };
         d.color = colors::gray();
-        d.native_containers.push_back(FeatureId::chest);
-        d.native_containers.push_back(FeatureId::tomb);
-        d.native_containers.push_back(FeatureId::cocoon);
+        d.native_containers.push_back(terrain::Id::chest);
+        d.native_containers.push_back(terrain::Id::tomb);
+        d.native_containers.push_back(terrain::Id::cocoon);
         g_data[(size_t)d.id] = d;
 
         reset_data(d, ItemType::device);
@@ -1584,9 +1584,9 @@ void init()
                 "a Translocator Device"
         };
         d.color = colors::gray();
-        d.native_containers.push_back(FeatureId::chest);
-        d.native_containers.push_back(FeatureId::tomb);
-        d.native_containers.push_back(FeatureId::cocoon);
+        d.native_containers.push_back(terrain::Id::chest);
+        d.native_containers.push_back(terrain::Id::tomb);
+        d.native_containers.push_back(terrain::Id::cocoon);
         g_data[(size_t)d.id] = d;
 
         reset_data(d, ItemType::device);
@@ -1597,9 +1597,9 @@ void init()
                 "a Sentry Drone Device"
         };
         d.color = colors::gray();
-        d.native_containers.push_back(FeatureId::chest);
-        d.native_containers.push_back(FeatureId::tomb);
-        d.native_containers.push_back(FeatureId::cocoon);
+        d.native_containers.push_back(terrain::Id::chest);
+        d.native_containers.push_back(terrain::Id::tomb);
+        d.native_containers.push_back(terrain::Id::cocoon);
         g_data[(size_t)d.id] = d;
 
         reset_data(d, ItemType::device);
@@ -1608,9 +1608,9 @@ void init()
                 "Deafening Device", "Deafening Devices", "a Deafening Device"
         };
         d.color = colors::gray();
-        d.native_containers.push_back(FeatureId::chest);
-        d.native_containers.push_back(FeatureId::tomb);
-        d.native_containers.push_back(FeatureId::cocoon);
+        d.native_containers.push_back(terrain::Id::chest);
+        d.native_containers.push_back(terrain::Id::tomb);
+        d.native_containers.push_back(terrain::Id::cocoon);
         g_data[(size_t)d.id] = d;
 
         reset_data(d, ItemType::device);
@@ -1621,9 +1621,9 @@ void init()
                 "a Force Field Device"
         };
         d.color = colors::gray();
-        d.native_containers.push_back(FeatureId::chest);
-        d.native_containers.push_back(FeatureId::tomb);
-        d.native_containers.push_back(FeatureId::cocoon);
+        d.native_containers.push_back(terrain::Id::chest);
+        d.native_containers.push_back(terrain::Id::tomb);
+        d.native_containers.push_back(terrain::Id::cocoon);
         g_data[(size_t)d.id] = d;
 
         reset_data(d, ItemType::device);
@@ -1640,9 +1640,9 @@ void init()
         d.is_identified = true;
         d.tile = TileId::lantern;
         d.color = colors::yellow();
-        d.native_containers.push_back(FeatureId::chest);
-        d.native_containers.push_back(FeatureId::cabinet);
-        d.native_containers.push_back(FeatureId::cocoon);
+        d.native_containers.push_back(terrain::Id::chest);
+        d.native_containers.push_back(terrain::Id::cabinet);
+        d.native_containers.push_back(terrain::Id::cocoon);
         g_data[(size_t)d.id] = d;
 
         reset_data(d, ItemType::rod);
@@ -1715,7 +1715,7 @@ void init()
         d.value = Value::supreme_treasure;
         d.is_carry_shocking = true;
         d.chance_to_incl_in_spawn_list = 1;
-        d.native_containers.push_back(FeatureId::tomb);
+        d.native_containers.push_back(terrain::Id::tomb);
         g_data[(size_t)d.id] = d;
 
         reset_data(d, ItemType::general);
@@ -1739,7 +1739,7 @@ void init()
         d.value = Value::supreme_treasure;
         d.is_carry_shocking = true;
         d.chance_to_incl_in_spawn_list = 1;
-        d.native_containers.push_back(FeatureId::tomb);
+        d.native_containers.push_back(terrain::Id::tomb);
         g_data[(size_t)d.id] = d;
 
         reset_data(d, ItemType::general);
@@ -1763,7 +1763,7 @@ void init()
         d.value = Value::supreme_treasure;
         d.is_carry_shocking = true;
         d.chance_to_incl_in_spawn_list = 1;
-        d.native_containers.push_back(FeatureId::tomb);
+        d.native_containers.push_back(terrain::Id::tomb);
         g_data[(size_t)d.id] = d;
 
         reset_data(d, ItemType::general);
@@ -1786,7 +1786,7 @@ void init()
         d.value = Value::supreme_treasure;
         d.is_carry_shocking = true;
         d.chance_to_incl_in_spawn_list = 1;
-        d.native_containers.push_back(FeatureId::tomb);
+        d.native_containers.push_back(terrain::Id::tomb);
         g_data[(size_t)d.id] = d;
 
         reset_data(d, ItemType::general);
@@ -1811,7 +1811,7 @@ void init()
         d.has_std_activate = true;
         d.is_carry_shocking = true;
         d.chance_to_incl_in_spawn_list = 1;
-        d.native_containers.push_back(FeatureId::chest);
+        d.native_containers.push_back(terrain::Id::chest);
         g_data[(size_t)d.id] = d;
 
         reset_data(d, ItemType::general);
@@ -1837,7 +1837,7 @@ void init()
         d.has_std_activate = true;
         d.is_carry_shocking = true;
         d.chance_to_incl_in_spawn_list = 1;
-        d.native_containers.push_back(FeatureId::tomb);
+        d.native_containers.push_back(terrain::Id::tomb);
         g_data[(size_t)d.id] = d;
 
         reset_data(d, ItemType::general);
@@ -1861,7 +1861,7 @@ void init()
         d.has_std_activate = true;
         d.is_carry_shocking = true;
         d.chance_to_incl_in_spawn_list = 1;
-        d.native_containers.push_back(FeatureId::tomb);
+        d.native_containers.push_back(terrain::Id::tomb);
         g_data[(size_t)d.id] = d;
 
         reset_data(d, ItemType::melee_wpn);
@@ -1900,7 +1900,7 @@ void init()
         d.value = Value::supreme_treasure;
         d.is_carry_shocking = true;
         d.chance_to_incl_in_spawn_list = 1;
-        d.native_containers.push_back(FeatureId::tomb);
+        d.native_containers.push_back(terrain::Id::tomb);
         g_data[(size_t)d.id] = d;
 
         reset_data(d, ItemType::general);
@@ -1922,7 +1922,7 @@ void init()
         d.value = Value::supreme_treasure;
         d.is_carry_shocking = true;
         d.chance_to_incl_in_spawn_list = 1;
-        d.native_containers.push_back(FeatureId::tomb);
+        d.native_containers.push_back(terrain::Id::tomb);
         g_data[(size_t)d.id] = d;
 
         reset_data(d, ItemType::throwing_wpn);
@@ -1949,8 +1949,8 @@ void init()
         d.max_stack_at_spawn = 1;
         d.main_att_mode = AttMode::thrown;
         d.chance_to_incl_in_spawn_list = 35;
-        d.native_containers.push_back(FeatureId::chest);
-        d.native_containers.push_back(FeatureId::cabinet);
+        d.native_containers.push_back(terrain::Id::chest);
+        d.native_containers.push_back(terrain::Id::cabinet);
         g_data[(size_t)d.id] = d;
 
         TRACE_FUNC_END;
@@ -2014,7 +2014,7 @@ MeleeData::MeleeData() :
         dmg_method(DmgMethod::slashing),
         knocks_back(false),
         att_corpse(false),
-        att_rigid(false),
+        att_terrain(false),
         hit_small_sfx(SfxId::END),
         hit_medium_sfx(SfxId::END),
         hit_hard_sfx(SfxId::END),

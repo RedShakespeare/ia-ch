@@ -13,11 +13,8 @@
 
 namespace actor
 {
-
 class Actor;
-
-} // actor
-
+}
 
 template<typename T>
 class Array2;

@@ -12,7 +12,6 @@
 #include "actor_mon.hpp"
 #include "actor_player.hpp"
 #include "draw_map.hpp"
-#include "feature_rigid.hpp"
 #include "game.hpp"
 #include "game_time.hpp"
 #include "io.hpp"
@@ -26,6 +25,7 @@
 #include "property.hpp"
 #include "property_handler.hpp"
 #include "saving.hpp"
+#include "terrain.hpp"
 
 // -----------------------------------------------------------------------------
 // Private

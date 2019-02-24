@@ -7,8 +7,10 @@
 #ifndef VIEWPORT_HPP
 #define VIEWPORT_HPP
 
+
 struct P;
 struct R;
+
 
 namespace viewport
 {

@@ -10,7 +10,7 @@
 #include "actor_player.hpp"
 #include "audio.hpp"
 #include "common_text.hpp"
-#include "feature_rigid.hpp"
+#include "terrain.hpp"
 #include "game.hpp"
 #include "game_time.hpp"
 #include "init.hpp"
@@ -409,17 +409,17 @@ void Potion::on_collide(const P& pos, actor::Actor* const actor)
         }
         else if (cell.is_seen_by_player)
         {
-                const std::vector<FeatureId> deep_features = {
-                        FeatureId::chasm,
-                        FeatureId::liquid_deep
+                const std::vector<terrain::Id> deep_terrains = {
+                        terrain::Id::chasm,
+                        terrain::Id::liquid_deep
                 };
 
-                if (!map_parsers::IsAnyOfFeatures(deep_features)
+                if (!map_parsers::IsAnyOfTerrains(deep_terrains)
                     .cell(pos))
                 {
                         msg_log::add(
                                 "The potion shatters on " +
-                                cell.rigid->name(Article::the) +
+                                cell.terrain->name(Article::the) +
                                 ".");
                 }
         }

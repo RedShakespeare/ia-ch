@@ -12,7 +12,7 @@
 
 #include "ability_values.hpp"
 #include "spells.hpp"
-#include "feature_data.hpp"
+#include "terrain_data.hpp"
 #include "audio.hpp"
 #include "room.hpp"
 #include "item_att_property.hpp"
@@ -303,11 +303,13 @@ struct ItemAttMsgs
 
 struct ContainerSpawnRule
 {
-        ContainerSpawnRule(FeatureId feature_id_, int pct_chance_to_incl_) :
-                feature_id(feature_id_),
-                pct_chance_to_incl(pct_chance_to_incl_) {}
+        ContainerSpawnRule(
+                terrain::Id container_terrain_id,
+                int pct_chance_to_incl_terrain) :
+                terrain_id(container_terrain_id),
+                pct_chance_to_incl(pct_chance_to_incl_terrain) {}
 
-        FeatureId feature_id = FeatureId::END;
+        terrain::Id terrain_id = terrain::Id::END;
         int pct_chance_to_incl = 0;
 };
 
@@ -327,7 +329,7 @@ struct MeleeData
         DmgMethod dmg_method;
         bool knocks_back;
         bool att_corpse;
-        bool att_rigid;
+        bool att_terrain;
         SfxId hit_small_sfx;
         SfxId hit_medium_sfx;
         SfxId hit_hard_sfx;
@@ -415,7 +417,7 @@ public:
         bool is_equiped_shocking;
 
         std::vector<RoomType> native_rooms;
-        std::vector<FeatureId> native_containers;
+        std::vector<terrain::Id> native_containers;
 
         int ability_mods_while_equipped[(size_t)AbilityId::END];
 

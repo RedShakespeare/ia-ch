@@ -12,11 +12,8 @@
 
 namespace actor
 {
-
 class Actor;
-
-} // actor
-
+}
 
 class Spell;
 

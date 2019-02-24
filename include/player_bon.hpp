@@ -17,10 +17,8 @@
 
 namespace actor
 {
-
 struct ActorData;
-
-} // actor
+}
 
 
 struct ColoredString;

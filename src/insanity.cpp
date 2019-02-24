@@ -9,7 +9,7 @@
 #include "actor_factory.hpp"
 #include "actor_mon.hpp"
 #include "actor_player.hpp"
-#include "feature_rigid.hpp"
+#include "terrain.hpp"
 #include "game.hpp"
 #include "game_time.hpp"
 #include "init.hpp"
@@ -501,12 +501,12 @@ void InsPhobiaDeep::on_new_player_turn(
                 return;
         }
 
-        const std::vector<FeatureId> deep_features = {
-                FeatureId::chasm,
-                FeatureId::liquid_deep
+        const std::vector<terrain::Id> deep_terrains = {
+                terrain::Id::chasm,
+                terrain::Id::liquid_deep
         };
 
-        if (map_parsers::AnyAdjIsAnyOfFeatures(deep_features)
+        if (map_parsers::AnyAdjIsAnyOfTerrains(deep_terrains)
             .cell(map::g_player->m_pos))
         {
                 msg_log::add("I am plagued by my phobia of deep places!");

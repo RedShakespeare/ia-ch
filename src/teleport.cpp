@@ -11,8 +11,8 @@
 #include "actor_mon.hpp"
 #include "actor_player.hpp"
 #include "common_text.hpp"
-#include "feature_door.hpp"
-#include "feature_mob.hpp"
+#include "terrain_door.hpp"
+#include "terrain_mob.hpp"
 #include "flood.hpp"
 #include "game_time.hpp"
 #include "map.hpp"
@@ -158,11 +158,12 @@ void teleport(actor::Actor& actor, const ShouldCtrlTele ctrl_tele)
         // door for monsters
         for (size_t i = 0; i < len; ++i)
         {
-                const auto* const r = map::g_cells.at(i).rigid;
+                const auto* const r = map::g_cells.at(i).terrain;
 
-                if (r->id() == FeatureId::door)
+                if (r->id() == terrain::Id::door)
                 {
-                        const auto* const door = static_cast<const Door*>(r);
+                        const auto* const door =
+                                static_cast<const terrain::Door*>(r);
 
                         if ((door->type() != DoorType::metal) ||
                             !actor.is_player())
@@ -175,7 +176,7 @@ void teleport(actor::Actor& actor, const ShouldCtrlTele ctrl_tele)
         // Allow teleporting past Force Fields, since they are temporary
         for (const auto* const mob : game_time::g_mobs)
         {
-                if (mob->id() == FeatureId::force_field)
+                if (mob->id() == terrain::Id::force_field)
                 {
                         blocks_flood.at(mob->pos()) = false;
                 }
@@ -297,7 +298,7 @@ void teleport(actor::Actor& actor, P p, const Array2<bool>& blocked)
         }
 
         // Leave current cell
-        map::g_cells.at(actor.m_pos).rigid->on_leave(actor);
+        map::g_cells.at(actor.m_pos).terrain->on_leave(actor);
 
         // Update actor position to new position
         actor.m_pos = p;
@@ -323,7 +324,7 @@ void teleport(actor::Actor& actor, P p, const Array2<bool>& blocked)
                 confuse_player();
         }
 
-        // Bump the target feature, so that we for example start swimming if
+        // Bump the target terrain, so that we for example start swimming if
         // teleporting into water
-        map::g_cells.at(p).rigid->bump(actor);
+        map::g_cells.at(p).terrain->bump(actor);
 }

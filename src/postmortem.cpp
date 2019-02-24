@@ -16,7 +16,7 @@
 #include "browser.hpp"
 #include "create_character.hpp"
 #include "draw_map.hpp"
-#include "feature_rigid.hpp"
+#include "terrain.hpp"
 #include "game.hpp"
 #include "highscore.hpp"
 #include "init.hpp"

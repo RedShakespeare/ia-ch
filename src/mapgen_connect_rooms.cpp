@@ -8,7 +8,7 @@
 
 #include "debug.hpp"
 #include "map_parsing.hpp"
-#include "feature_rigid.hpp"
+#include "terrain.hpp"
 
 #ifndef NDEBUG
 #include "init.hpp"
@@ -151,9 +151,9 @@ void connect_rooms()
                 // Do not consider doors blocking
                 for (size_t i = 0; i < map::nr_cells(); ++i)
                 {
-                        const auto id = map::g_cells.at(i).rigid->id();
+                        const auto id = map::g_cells.at(i).terrain->id();
 
-                        if (id == FeatureId::door)
+                        if (id == terrain::Id::door)
                         {
                                 blocked.at(i) = false;
                         }

@@ -16,7 +16,7 @@
 #include "config.hpp"
 #include "draw_map.hpp"
 #include "explosion.hpp"
-#include "feature_rigid.hpp"
+#include "terrain.hpp"
 #include "game_commands.hpp"
 #include "inventory_handling.hpp"
 #include "io.hpp"

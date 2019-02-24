@@ -4,7 +4,7 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 // =============================================================================
 
-#include "feature_monolith.hpp"
+#include "terrain_monolith.hpp"
 
 #include "msg_log.hpp"
 #include "game.hpp"
@@ -15,8 +15,12 @@
 #include "actor_player.hpp"
 #include "property_handler.hpp"
 
+
+namespace terrain
+{
+
 Monolith::Monolith(const P& p) :
-        Rigid(p),
+        Terrain(p),
         m_is_activated(false) {}
 
 void Monolith::on_hit(
@@ -89,3 +93,5 @@ void Monolith::activate()
                 ShockLvl::terrifying,
                 ShockSrc::misc);
 }
+
+} // terrain

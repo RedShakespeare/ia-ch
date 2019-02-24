@@ -11,9 +11,9 @@
 #include "actor_player.hpp"
 #include "attack.hpp"
 #include "common_text.hpp"
-#include "feature_door.hpp"
-#include "feature_mob.hpp"
-#include "feature_rigid.hpp"
+#include "terrain_door.hpp"
+#include "terrain_mob.hpp"
+#include "terrain.hpp"
 #include "game_time.hpp"
 #include "item.hpp"
 #include "map.hpp"
@@ -181,7 +181,7 @@ static bool is_player_staggering_from_wounds()
         return nr_wounds >= min_nr_wounds_for_stagger;
 }
 
-static AllowAction pre_bump_features(actor::Actor& actor, const P& tgt)
+static AllowAction pre_bump_terrains(actor::Actor& actor, const P& tgt)
 {
         const auto mobs = game_time::mobs_at_pos(tgt);
 
@@ -195,12 +195,12 @@ static AllowAction pre_bump_features(actor::Actor& actor, const P& tgt)
                 }
         }
 
-        const auto result = map::g_cells.at(tgt).rigid->pre_bump(actor);
+        const auto result = map::g_cells.at(tgt).terrain->pre_bump(actor);
 
         return result;
 }
 
-static void bump_features(actor::Actor& actor, const P& tgt)
+static void bump_terrains(actor::Actor& actor, const P& tgt)
 {
         const auto mobs = game_time::mobs_at_pos(tgt);
 
@@ -209,7 +209,7 @@ static void bump_features(actor::Actor& actor, const P& tgt)
                 mob->bump(actor);
         }
 
-        map::g_cells.at(tgt).rigid->bump(actor);
+        map::g_cells.at(tgt).terrain->bump(actor);
 }
 
 static void on_player_waiting()
@@ -238,7 +238,7 @@ static void move_player_non_center_direction(const P& tgt)
 {
         auto& player = *map::g_player;
 
-        const bool is_features_blocking_move =
+        const bool is_terrains_blocking_move =
                 map_parsers::BlocksActor(player, ParseActors::no)
                 .cell(tgt);
 
@@ -257,7 +257,7 @@ static void move_player_non_center_direction(const P& tgt)
                 return;
         }
 
-        const auto pre_move_result = pre_bump_features(player, tgt);
+        const auto pre_move_result = pre_bump_terrains(player, tgt);
 
         if (pre_move_result == AllowAction::no)
         {
@@ -266,7 +266,7 @@ static void move_player_non_center_direction(const P& tgt)
 
         if (mon &&
             !player.is_leader_of(mon) &&
-            !is_features_blocking_move &&
+            !is_terrains_blocking_move &&
             !is_aware_of_mon)
         {
                 player_bump_unkown_hostile_mon(*mon);
@@ -274,7 +274,7 @@ static void move_player_non_center_direction(const P& tgt)
                 return;
         }
 
-        if (!is_features_blocking_move)
+        if (!is_terrains_blocking_move)
         {
                 const int enc = player.enc_percent();
 
@@ -302,7 +302,7 @@ static void move_player_non_center_direction(const P& tgt)
                         player_bump_allied_mon(*mon);
                 }
 
-                map::g_cells.at(player.m_pos).rigid->on_leave(player);
+                map::g_cells.at(player.m_pos).terrain->on_leave(player);
 
                 player.m_pos = tgt;
 
@@ -311,7 +311,7 @@ static void move_player_non_center_direction(const P& tgt)
                 print_corpses_at_player_msgs();
         }
 
-        bump_features(player, tgt);
+        bump_terrains(player, tgt);
 }
 
 static void move_player(Dir dir)
@@ -383,11 +383,12 @@ static void move_mon(actor::Mon& mon, Dir dir)
 
                 ASSERT(!is_blocked);
 
-                const auto* const f = map::g_cells.at(target_p).rigid;
+                const auto* const t = map::g_cells.at(target_p).terrain;
 
-                if (f->id() == FeatureId::door)
+                if (t->id() == terrain::Id::door)
                 {
-                        const auto* const door = static_cast<const Door*>(f);
+                        const auto* const door =
+                                static_cast<const terrain::Door*>(t);
 
                         ASSERT(
                                 door->is_open() ||
@@ -401,11 +402,11 @@ static void move_mon(actor::Mon& mon, Dir dir)
             map::is_pos_inside_outer_walls(target_p))
         {
                 // Leave current cell (e.g. stop swimming)
-                map::g_cells.at(mon.m_pos).rigid->on_leave(mon);
+                map::g_cells.at(mon.m_pos).terrain->on_leave(mon);
 
                 mon.m_pos = target_p;
 
-                // Bump features in target cell (e.g. to trigger traps)
+                // Bump terrains in target cell (e.g. to trigger traps)
                 const auto mobs = game_time::mobs_at_pos(mon.m_pos);
 
                 for (auto* m : mobs)
@@ -413,7 +414,7 @@ static void move_mon(actor::Mon& mon, Dir dir)
                         m->bump(mon);
                 }
 
-                map::g_cells.at(mon.m_pos).rigid->bump(mon);
+                map::g_cells.at(mon.m_pos).terrain->bump(mon);
         }
 
         game_time::tick();

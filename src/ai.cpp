@@ -9,8 +9,8 @@
 #include "actor_mon.hpp"
 #include "actor_move.hpp"
 #include "actor_player.hpp"
-#include "feature_door.hpp"
-#include "feature_mob.hpp"
+#include "terrain_door.hpp"
+#include "terrain_mob.hpp"
 #include "fov.hpp"
 #include "game_time.hpp"
 #include "line_calc.hpp"
@@ -101,16 +101,16 @@ bool handle_closed_blocking_door(actor::Mon& mon, std::vector<P> path)
 
         const P& p = path.back();
 
-        Feature* const f = map::g_cells.at(p).rigid;
+        auto* const t = map::g_cells.at(p).terrain;
 
-        if ((f->id() != FeatureId::door) || f->can_move(mon))
+        if ((t->id() != terrain::Id::door) || t->can_move(mon))
         {
                 return false;
         }
 
         // This is a door which is blocking the monster
 
-        Door* const door = static_cast<Door*>(f);
+        auto* const door = static_cast<terrain::Door*>(t);
 
         // There should never be a path past metal doors
         ASSERT(door->type() != DoorType::metal);
@@ -819,16 +819,16 @@ std::vector<P> find_path_to_target(actor::Mon& mon)
 
                         // This cell is blocked
 
-                        const auto* const f = map::g_cells.at(p).rigid;
+                        const auto* const t = map::g_cells.at(p).terrain;
 
-                        if (f->id() == FeatureId::door)
+                        if (t->id() == terrain::Id::door)
                         {
                                 // NOTE: The door is guaranteed to be closed,
-                                // since this point is only reached for features
+                                // since this point is only reached for terrains
                                 // considered blocking by the map parser
 
                                 const auto* const door =
-                                        static_cast<const Door*>(f);
+                                        static_cast<const terrain::Door*>(t);
 
                                 bool should_door_block = false;
 

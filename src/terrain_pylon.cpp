@@ -4,7 +4,7 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 // =============================================================================
 
-#include "feature_pylon.hpp"
+#include "terrain_pylon.hpp"
 
 #include "actor.hpp"
 #include "flood.hpp"
@@ -19,11 +19,15 @@
 #include "sound.hpp"
 #include "teleport.hpp"
 
+
+namespace terrain
+{
+
 // -----------------------------------------------------------------------------
 // Pylon
 // -----------------------------------------------------------------------------
 Pylon::Pylon(const P& p, PylonId id) :
-        Rigid(p),
+        Terrain(p),
         m_pylon_impl(nullptr),
         m_is_activated(false),
         m_nr_turns_active(0)
@@ -142,15 +146,15 @@ void Pylon::on_new_turn_hook()
 
         for (size_t i = 0; i < map::nr_cells(); ++i)
         {
-                auto* const rigid = map::g_cells.at(i).rigid;
+                auto* const terrain = map::g_cells.at(i).terrain;
 
-                if (!rigid || (rigid->id() != FeatureId::lever))
+                if (!terrain || (terrain->id() != terrain::Id::lever))
                 {
                         continue;
                 }
 
                 auto* const lever =
-                        static_cast<Lever*>(rigid);
+                        static_cast<Lever*>(terrain);
 
                 if (lever->is_linked_to(*this))
                 {
@@ -279,7 +283,7 @@ actor::Actor* PylonImpl::rnd_reached_living_actor() const
 // -----------------------------------------------------------------------------
 void PylonBurning::on_new_turn_activated()
 {
-        // Do a floodfill from the pylon, and apply burning on each feature
+        // Do a floodfill from the pylon, and apply burning on each terrain
         // reached.  The flood distance is increased every N turn.
         Array2<bool> blocks_flood(map::dims());
 
@@ -288,10 +292,10 @@ void PylonBurning::on_new_turn_activated()
 
         for (size_t i = 0; i < map::nr_cells(); ++i)
         {
-                const auto f = map::g_cells.at(i).rigid;
+                const auto t = map::g_cells.at(i).terrain;
 
-                if (f->id() == FeatureId::chasm ||
-                    f->id() == FeatureId::liquid_deep)
+                if (t->id() == terrain::Id::chasm ||
+                    t->id() == terrain::Id::liquid_deep)
                 {
                         blocks_flood.at(i) = true;
                 }
@@ -303,7 +307,7 @@ void PylonBurning::on_new_turn_activated()
                 // is destroyed, then it will seem like the fire is rushing in.
                 // It's questionable if this is a good behavior or not, but
                 // keeping it like this for now...
-                else if (f->id() == FeatureId::door)
+                else if (t->id() == terrain::Id::door)
                 {
                         blocks_flood.at(i) = false;
                 }
@@ -328,7 +332,7 @@ void PylonBurning::on_new_turn_activated()
         {
                 if (flood.at(i) > 0)
                 {
-                        map::g_cells.at(i).rigid->hit(
+                        map::g_cells.at(i).terrain->hit(
                                 1, // Doesn't matter
                                 DmgType::fire,
                                 DmgMethod::elemental);
@@ -440,3 +444,5 @@ void PylonTerrify::on_new_turn_activated()
                 actor->m_properties.apply(new PropTerrified());
         }
 }
+
+} // terrain

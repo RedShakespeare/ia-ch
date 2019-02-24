@@ -10,7 +10,7 @@
 #include "actor_factory.hpp"
 #include "actor_mon.hpp"
 #include "actor_player.hpp"
-#include "feature_rigid.hpp"
+#include "terrain.hpp"
 #include "game_time.hpp"
 #include "global.hpp"
 #include "map.hpp"
@@ -56,10 +56,10 @@ void MapControllerBoss::on_std_turn()
 {
         const P stair_pos(map::w() - 2, 11);
 
-        const auto feature_at_stair_pos =
-                map::g_cells.at(stair_pos).rigid->id();
+        const auto terrain_at_stair_pos =
+                map::g_cells.at(stair_pos).terrain->id();
 
-        if (feature_at_stair_pos == FeatureId::stairs)
+        if (terrain_at_stair_pos == terrain::Id::stairs)
         {
                 // Stairs already created
                 return;
@@ -82,9 +82,9 @@ void MapControllerBoss::on_std_turn()
                      false,
                      MorePromptOnMsg::yes);
 
-        map::put(new Stairs(stair_pos));
+        map::put(new terrain::Stairs(stair_pos));
 
-        map::put(new RubbleLow(stair_pos - P(1, 0)));
+        map::put(new terrain::RubbleLow(stair_pos - P(1, 0)));
 
         // TODO: This was in the 'on_death' hook for TheHighPriest - it should
         // be a property if this event should still exist

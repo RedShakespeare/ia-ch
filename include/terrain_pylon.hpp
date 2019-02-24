@@ -4,12 +4,19 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 // =============================================================================
 
-#ifndef FEATURE_PYLON_HPP
-#define FEATURE_PYLON_HPP
+#ifndef TERRAIN_PYLON_HPP
+#define TERRAIN_PYLON_HPP
 
 #include <memory>
 
-#include "feature_rigid.hpp"
+#include "terrain.hpp"
+
+
+namespace terrain
+{
+
+class PylonImpl;
+
 
 enum class PylonId
 {
@@ -23,12 +30,10 @@ enum class PylonId
         any
 };
 
-class PylonImpl;
-
 // -----------------------------------------------------------------------------
 // Pylon
 // -----------------------------------------------------------------------------
-class Pylon: public Rigid
+class Pylon: public Terrain
 {
 public:
         Pylon(const P& p, PylonId id);
@@ -37,9 +42,9 @@ public:
 
         ~Pylon() {}
 
-        FeatureId id() const override
+        Id id() const override
         {
-                return FeatureId::pylon;
+                return Id::pylon;
         }
 
         std::string name(const Article article) const override;
@@ -150,4 +155,6 @@ public:
         void on_new_turn_activated() override;
 };
 
-#endif // FEATURE_PYLON_HPP
+} // terrain
+
+#endif // TERRAIN_PYLON_HPP

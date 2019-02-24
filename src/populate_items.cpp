@@ -14,9 +14,9 @@
 #include "item_factory.hpp"
 #include "player_bon.hpp"
 #include "map_parsing.hpp"
-#include "feature_rigid.hpp"
-#include "feature_door.hpp"
-#include "feature_trap.hpp"
+#include "terrain.hpp"
+#include "terrain_door.hpp"
+#include "terrain_trap.hpp"
 
 // -----------------------------------------------------------------------------
 // Private
@@ -62,8 +62,8 @@ static Array2<bool> make_blocked_map()
                 .run(result, result.rect());
 
         // Shallow liquid doesn't block items, but let's not spawn there...
-        map_parsers::IsAnyOfFeatures(
-                FeatureId::liquid_shallow)
+        map_parsers::IsAnyOfTerrains(
+                terrain::Id::liquid_shallow)
                 .run(result,
                      result.rect(),
                      MapParseMode::append);

@@ -8,7 +8,7 @@
 
 #include "actor.hpp"
 #include "actor_player.hpp"
-#include "feature_monolith.hpp"
+#include "terrain_monolith.hpp"
 #include "game_time.hpp"
 #include "map_parsing.hpp"
 #include "misc.hpp"
@@ -29,7 +29,7 @@ void make_monoliths()
 
         Array2<bool> blocked(map::dims());
 
-        map_parsers::BlocksRigid()
+        map_parsers::BlocksTerrain()
                 .run(blocked, blocked.rect());
 
         blocked = map_parsers::expand(blocked, blocked.rect());
@@ -82,7 +82,7 @@ void make_monoliths()
 
                 const P p = spawn_weight_positions[spawn_p_idx];
 
-                map::g_cells.at(p).rigid = new Monolith(p);
+                map::g_cells.at(p).terrain = new terrain::Monolith(p);
 
                 // Block this position and all adjacent positions
                 for (const P& d : dir_utils::g_cardinal_list_w_center)

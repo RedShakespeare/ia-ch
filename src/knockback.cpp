@@ -14,9 +14,9 @@
 #include "actor_player.hpp"
 #include "attack.hpp"
 #include "config.hpp"
-#include "feature_mob.hpp"
-#include "feature_rigid.hpp"
-#include "feature_trap.hpp"
+#include "terrain_mob.hpp"
+#include "terrain.hpp"
+#include "terrain_trap.hpp"
 #include "game_time.hpp"
 #include "io.hpp"
 #include "map.hpp"
@@ -64,13 +64,13 @@ void run(actor::Actor& defender,
                 !map_parsers::BlocksActor(defender, ParseActors::yes)
                 .cell(new_pos);
 
-        const std::vector<FeatureId> deep_features = {
-                FeatureId::chasm,
-                FeatureId::liquid_deep
+        const std::vector<terrain::Id> deep_terrains = {
+                terrain::Id::chasm,
+                terrain::Id::liquid_deep
         };
 
         const bool is_cell_deep =
-                map_parsers::IsAnyOfFeatures(deep_features)
+                map_parsers::IsAnyOfTerrains(deep_terrains)
                 .cell(new_pos);
 
         auto& tgt_cell = map::g_cells.at(new_pos);
@@ -82,7 +82,7 @@ void run(actor::Actor& defender,
                 {
                         // TODO: Wouldn't it be better to check if the cell is
                         // blocking projectiles?
-                        if (!tgt_cell.rigid->is_los_passable())
+                        if (!tgt_cell.terrain->is_los_passable())
                         {
                                 auto prop = new PropNailed();
 
@@ -140,7 +140,7 @@ void run(actor::Actor& defender,
         defender.m_properties.apply(prop);
 
         // Leave current cell
-        map::g_cells.at(defender.m_pos).rigid->on_leave(defender);
+        map::g_cells.at(defender.m_pos).terrain->on_leave(defender);
 
         defender.m_pos = new_pos;
 
@@ -174,7 +174,7 @@ void run(actor::Actor& defender,
         // Bump target cell
         const auto mobs = game_time::mobs_at_pos(defender.m_pos);
 
-        for (Mob* const mob : mobs)
+        for (auto* const mob : mobs)
         {
                 mob->bump(defender);
         }
@@ -185,7 +185,7 @@ void run(actor::Actor& defender,
                 return;
         }
 
-        map::g_cells.at(defender.m_pos).rigid->bump(defender);
+        map::g_cells.at(defender.m_pos).terrain->bump(defender);
 
         TRACE_FUNC_END;
 }

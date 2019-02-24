@@ -17,12 +17,9 @@
 
 namespace item
 {
-
 class Item;
 class Wpn;
-
-} // item
-
+}
 
 struct InputData;
 

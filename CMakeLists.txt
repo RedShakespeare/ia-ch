@@ -38,15 +38,6 @@ set(COMMON_SRC
         include/draw_map.hpp
         include/drop.hpp
         include/explosion.hpp
-        include/feature.hpp
-        include/feature_data.hpp
-        include/feature_door.hpp
-        include/feature_event.hpp
-        include/feature_mob.hpp
-        include/feature_monolith.hpp
-        include/feature_pylon.hpp
-        include/feature_rigid.hpp
-        include/feature_trap.hpp
         include/flood.hpp
         include/fov.hpp
         include/game.hpp
@@ -116,6 +107,14 @@ set(COMMON_SRC
         include/state.hpp
         include/status_lines.hpp
         include/teleport.hpp
+        include/terrain.hpp
+        include/terrain_data.hpp
+        include/terrain_door.hpp
+        include/terrain_event.hpp
+        include/terrain_mob.hpp
+        include/terrain_monolith.hpp
+        include/terrain_pylon.hpp
+        include/terrain_trap.hpp
         include/text_format.hpp
         include/throwing.hpp
         include/time.hpp
@@ -151,15 +150,6 @@ set(COMMON_SRC
         src/draw_map.cpp
         src/drop.cpp
         src/explosion.cpp
-        src/feature.cpp
-        src/feature_data.cpp
-        src/feature_door.cpp
-        src/feature_event.cpp
-        src/feature_mob.cpp
-        src/feature_monolith.cpp
-        src/feature_pylon.cpp
-        src/feature_rigid.cpp
-        src/feature_trap.cpp
         src/flood.cpp
         src/fov.cpp
         src/game.cpp
@@ -237,6 +227,14 @@ set(COMMON_SRC
         src/state.cpp
         src/status_lines.cpp
         src/teleport.cpp
+        src/terrain.cpp
+        src/terrain_data.cpp
+        src/terrain_door.cpp
+        src/terrain_event.cpp
+        src/terrain_mob.cpp
+        src/terrain_monolith.cpp
+        src/terrain_pylon.cpp
+        src/terrain_trap.cpp
         src/text_format.cpp
         src/throwing.cpp
         src/time.cpp

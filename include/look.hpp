@@ -15,10 +15,8 @@
 
 namespace actor
 {
-
 class Actor;
-
-} // actor
+}
 
 
 struct P;

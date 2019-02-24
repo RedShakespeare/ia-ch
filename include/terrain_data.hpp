@@ -4,8 +4,8 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 // =============================================================================
 
-#ifndef FEATURE_DATA_HPP
-#define FEATURE_DATA_HPP
+#ifndef TERRAIN_DATA_HPP
+#define TERRAIN_DATA_HPP
 
 #include <functional>
 
@@ -16,16 +16,17 @@
 
 namespace actor
 {
-
 class Actor;
-
-} // actor
-
-
-class Feature;
+}
 
 
-enum class FeatureId
+namespace terrain
+{
+
+class Terrain;
+
+
+enum class Id
 {
         floor,
         bridge,
@@ -73,7 +74,7 @@ enum class FeatureId
         END
 };
 
-enum class FeaturePlacement
+enum class TerrainPlacement
 {
         adj_to_walls,
         away_from_walls,
@@ -120,10 +121,10 @@ private:
         std::vector<PropId> m_props_allow_move;
 };
 
-struct FeatureData
+struct TerrainData
 {
-        std::function<Feature*(const P& p)> make_obj;
-        FeatureId id;
+        std::function<Terrain*(const P& p)> make_obj;
+        Id id;
         char character;
         TileId tile;
         MoveRules move_rules;
@@ -134,22 +135,20 @@ struct FeatureData
         bool can_have_blood;
         bool can_have_gore;
         bool can_have_corpse;
-        bool can_have_rigid;
+        bool can_have_terrain;
         bool can_have_item;
         Matl matl_type;
         std::string msg_on_player_blocked;
         std::string msg_on_player_blocked_blind;
         int shock_when_adjacent;
-        FeaturePlacement auto_spawn_placement;
+        TerrainPlacement auto_spawn_placement;
 };
 
-namespace feature_data
-{
 
 void init();
 
-const FeatureData& data(const FeatureId id);
+const TerrainData& data(const Id id);
 
-} // feature_data
+} // terrain
 
-#endif // FEATURE_DATA_HPP
+#endif // TERRAIN_DATA_HPP

@@ -15,21 +15,14 @@
 
 namespace item
 {
-
 class Item;
-
 enum class Id;
-
-} // item
-
+}
 
 namespace actor
 {
-
 class Actor;
-
-} // actor
-
+}
 
 struct P;
 

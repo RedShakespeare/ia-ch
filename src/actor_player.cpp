@@ -20,9 +20,9 @@
 #include "create_character.hpp"
 #include "drop.hpp"
 #include "explosion.hpp"
-#include "feature_door.hpp"
-#include "feature_mob.hpp"
-#include "feature_trap.hpp"
+#include "terrain_door.hpp"
+#include "terrain_mob.hpp"
+#include "terrain_trap.hpp"
 #include "flood.hpp"
 #include "fov.hpp"
 #include "game.hpp"
@@ -533,7 +533,7 @@ void Player::item_feeling()
                 }
 
                 // Nice item in container?
-                const auto& cont_items = cell.rigid->m_item_container.m_items;
+                const auto& cont_items = cell.terrain->m_item_container.m_items;
 
                 for (const auto* const item : cont_items)
                 {
@@ -752,31 +752,31 @@ void Player::act()
                 const Cell& target_cell = map::g_cells.at(target);
 
                 // If this is not the first step of auto moving, stop before
-                // blocking features, fire, known traps, etc - otherwise allow
-                // bumping features as with normal movement
+                // blocking terrains, fire, known traps, etc - otherwise allow
+                // bumping terrains as with normal movement
                 if (m_has_taken_auto_move_step)
                 {
                         bool should_abort = false;
 
-                        if (!target_cell.rigid->can_move(*this))
+                        if (!target_cell.terrain->can_move(*this))
                         {
                                 should_abort = true;
                         }
                         else
                         {
-                                const auto target_rigid_id = target_cell.rigid->id();
+                                const auto target_terrain_id = target_cell.terrain->id();
 
                                 const bool is_target_known_trap =
                                         target_cell.is_seen_by_player &&
-                                        (target_rigid_id == FeatureId::trap) &&
-                                        !static_cast<const Trap*>(target_cell.rigid)->is_hidden();
+                                        (target_terrain_id == terrain::Id::trap) &&
+                                        !static_cast<const terrain::Trap*>(target_cell.terrain)->is_hidden();
 
                                 should_abort =
                                         is_target_known_trap ||
-                                        (target_rigid_id == FeatureId::chains) ||
-                                        (target_rigid_id == FeatureId::liquid_shallow) ||
-                                        (target_rigid_id == FeatureId::vines) ||
-                                        (target_cell.rigid->m_burn_state == BurnState::burning);
+                                        (target_terrain_id == terrain::Id::chains) ||
+                                        (target_terrain_id == terrain::Id::liquid_shallow) ||
+                                        (target_terrain_id == terrain::Id::vines) ||
+                                        (target_cell.terrain->m_burn_state == BurnState::burning);
                         }
 
                         if (should_abort)
@@ -789,7 +789,7 @@ void Player::act()
 
                 auto adj_known_closed_doors = [](const P& p)
                         {
-                                std::vector<const Door*> doors;
+                                std::vector<const terrain::Door*> doors;
 
                                 for (const P& d : dir_utils::g_dir_list_w_center)
                                 {
@@ -798,10 +798,10 @@ void Player::act()
                                         const Cell& adj_cell = map::g_cells.at(p_adj);
 
                                         if (adj_cell.is_seen_by_player &&
-                                            (adj_cell.rigid->id() == FeatureId::door))
+                                            (adj_cell.terrain->id() == terrain::Id::door))
                                         {
                                                 const auto* const door =
-                                                        static_cast<const Door*>(adj_cell.rigid);
+                                                        static_cast<const terrain::Door*>(adj_cell.terrain);
 
                                                 if (!door->is_secret() &&
                                                     !door->is_open())
@@ -869,7 +869,7 @@ void Player::act()
         }
 }
 
-bool Player::is_seeing_burning_feature() const
+bool Player::is_seeing_burning_terrain() const
 {
         const R fov_r = fov::fov_rect(m_pos, map::dims());
 
@@ -882,7 +882,7 @@ bool Player::is_seeing_burning_feature() const
                         const auto& cell = map::g_cells.at(x, y);
 
                         if (cell.is_seen_by_player &&
-                            (cell.rigid->m_burn_state == BurnState::burning))
+                            (cell.terrain->m_burn_state == BurnState::burning))
                         {
                                 is_fire_found = true;
 
@@ -918,7 +918,7 @@ void Player::on_actor_turn()
                 (m_auto_move_dir != Dir::END);
         };
 
-        if (is_busy() && is_seeing_burning_feature())
+        if (is_busy() && is_seeing_burning_terrain())
         {
                 msg_log::add(
                         common_text::g_fire_prevent_cmd,
@@ -1339,16 +1339,16 @@ void Player::update_tmp_shock()
                         m_shock_tmp += shock_taken_after_mods(shock_value, ShockSrc::misc);
                 }
 
-                // Temporary shock from seen features?
+                // Temporary shock from seen terrains?
                 for (const P& d : dir_utils::g_dir_list_w_center)
                 {
                         const P p(m_pos + d);
 
-                        const double feature_shock_db =
-                                (double)map::g_cells.at(p).rigid->shock_when_adj();
+                        const double terrain_shock_db =
+                                (double)map::g_cells.at(p).terrain->shock_when_adj();
 
                         m_shock_tmp += shock_taken_after_mods(
-                                feature_shock_db,
+                                terrain_shock_db,
                                 ShockSrc::misc);
                 }
         }
@@ -1542,11 +1542,11 @@ void Player::on_std_turn()
                                 continue;
                         }
 
-                        auto* f = map::g_cells.at(i).rigid;
+                        auto* t = map::g_cells.at(i).terrain;
 
                         const int lit_mod = map::g_light.at(i) ? 5 : 0;
 
-                        const int dist = king_dist(m_pos, f->pos());
+                        const int dist = king_dist(m_pos, t->pos());
 
                         const int dist_mod = -((dist - 1) * 5);
 
@@ -1563,7 +1563,7 @@ void Player::on_std_turn()
 
                                 if (is_spotted)
                                 {
-                                        f->reveal(Verbosity::verbose);
+                                        t->reveal(Verbosity::verbose);
                                 }
                         }
                 }
@@ -1949,7 +1949,7 @@ void Player::update_fov()
 #ifndef NDEBUG
                                 // Sanity check - if the cell is ONLY blocked by
                                 // darkness (i.e. not by a wall or other
-                                // blocking feature), it should NOT be lit
+                                // blocking terrain), it should NOT be lit
                                 if (!los.is_blocked_hard && los.is_blocked_by_dark)
                                 {
                                         ASSERT(!map::g_light.at(x, y));
@@ -2036,11 +2036,10 @@ void Player::fov_hack()
         map_parsers::BlocksWalking(ParseActors::no)
                 .run(blocked, blocked.rect());
 
-        const std::vector<FeatureId> free_features =
-                {
-                        FeatureId::liquid_deep,
-                        FeatureId::chasm
-                };
+        const std::vector<terrain::Id> free_terrains = {
+                terrain::Id::liquid_deep,
+                terrain::Id::chasm
+        };
 
         for (int x = 0; x < blocked.w(); ++x)
         {
@@ -2048,7 +2047,7 @@ void Player::fov_hack()
                 {
                         const P p(x, y);
 
-                        if (map_parsers::IsAnyOfFeatures(free_features).cell(p))
+                        if (map_parsers::IsAnyOfTerrains(free_terrains).cell(p))
                         {
                                 blocked.at(p) = false;
                         }

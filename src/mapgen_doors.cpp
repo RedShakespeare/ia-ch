@@ -10,26 +10,26 @@
 
 #include "actor.hpp"
 #include "actor_player.hpp"
-#include "feature_door.hpp"
+#include "terrain_door.hpp"
 #include "flood.hpp"
 #include "game_time.hpp"
 #include "map_parsing.hpp"
 
 static bool is_wall(const P& p)
 {
-        return map::g_cells.at(p).rigid->id() == FeatureId::wall;
+        return map::g_cells.at(p).terrain->id() == terrain::Id::wall;
 }
 
 static void try_make_door(const P& p)
 {
-        // Do not allow placing doors adjacent to these features
-        std::vector<FeatureId> forbidden_adj_features = {
-                FeatureId::door,
-                FeatureId::liquid_shallow,
-                FeatureId::liquid_deep
+        // Do not allow placing doors adjacent to these terrains
+        std::vector<terrain::Id> forbidden_adj_terrains = {
+                terrain::Id::door,
+                terrain::Id::liquid_shallow,
+                terrain::Id::liquid_deep
         };
 
-        if (map_parsers::AnyAdjIsAnyOfFeatures(forbidden_adj_features)
+        if (map_parsers::AnyAdjIsAnyOfTerrains(forbidden_adj_terrains)
             .cell(p))
         {
                 return;
@@ -67,17 +67,17 @@ static void try_make_door(const P& p)
         if (is_good_hor || is_good_ver)
         {
                 // Make most doors wooden doors, and occasionally make gates
-                Door* door = nullptr;
+                terrain::Door* door = nullptr;
 
                 if (rnd::fraction(4, 5))
                 {
-                        const Wall* const mimic = new Wall(p);
+                        const auto* const mimic = new terrain::Wall(p);
 
-                        door = new Door(p, mimic, DoorType::wood);
+                        door = new terrain::Door(p, mimic, DoorType::wood);
                 }
                 else // Barred gate
                 {
-                        door = new Door(p, nullptr, DoorType::gate);
+                        door = new terrain::Door(p, nullptr, DoorType::gate);
                 }
 
                 map::put(door);
@@ -135,9 +135,9 @@ void make_metal_doors_and_levers()
 
                         const P& p = chokepoint.p;
 
-                        auto id = map::g_cells.at(p).rigid->id();
+                        auto id = map::g_cells.at(p).terrain->id();
 
-                        if (id == FeatureId::door)
+                        if (id == terrain::Id::door)
                         {
                                 chokepoint_bucket.push_back(&chokepoint);
                         }
@@ -154,7 +154,7 @@ void make_metal_doors_and_levers()
                 // Only allow levers in cells completely surrounded by floor
                 Array2<bool> blocks_levers(map::dims());
 
-                map_parsers::IsNotFeature(FeatureId::floor)
+                map_parsers::IsNotTerrain(terrain::Id::floor)
                         .run(blocks_levers, blocks_levers.rect());
 
                 blocks_levers = map_parsers::expand(
@@ -177,9 +177,9 @@ void make_metal_doors_and_levers()
                 map_parsers::BlocksWalking(ParseActors::no)
                         .run(blocks_player, blocks_player.rect());
 
-                const std::vector<FeatureId> free_features = {
-                        FeatureId::door,
-                        FeatureId::liquid_deep
+                const std::vector<terrain::Id> free_terrains = {
+                        terrain::Id::door,
+                        terrain::Id::liquid_deep
                 };
 
                 for (int x = 0; x < blocks_player.w(); ++x)
@@ -188,7 +188,7 @@ void make_metal_doors_and_levers()
                         {
                                 const P p(x, y);
 
-                                if (map_parsers::IsAnyOfFeatures(free_features)
+                                if (map_parsers::IsAnyOfTerrains(free_terrains)
                                     .cell(p))
                                 {
                                         blocks_player.at(p) = false;
@@ -210,19 +210,19 @@ void make_metal_doors_and_levers()
                      cell_idx < map::nr_cells();
                      ++cell_idx)
                 {
-                        const auto* r = map::g_cells.at(cell_idx).rigid;
+                        const auto* r = map::g_cells.at(cell_idx).terrain;
 
-                        if (r->id() == FeatureId::door)
+                        if (r->id() == terrain::Id::door)
                         {
                                 const auto* const door =
-                                        static_cast<const Door*>(r);
+                                        static_cast<const terrain::Door*>(r);
 
                                 const bool is_metal =
                                         door->type() == DoorType::metal;
 
                                 blocks_reaching_levers.at(cell_idx) = is_metal;
                         }
-                        else if (r->id() == FeatureId::liquid_deep)
+                        else if (r->id() == terrain::Id::liquid_deep)
                         {
                                 blocks_reaching_levers.at(cell_idx) = false;
                         }
@@ -237,12 +237,12 @@ void make_metal_doors_and_levers()
                         const P& door_p = chokepoint->p;
 
                         {
-                                const auto* r = map::g_cells.at(door_p).rigid;
+                                const auto* r = map::g_cells.at(door_p).terrain;
 
-                                if (r->id() == FeatureId::door)
+                                if (r->id() == terrain::Id::door)
                                 {
                                         const auto* const door =
-                                                static_cast<const Door*>(r);
+                                                static_cast<const terrain::Door*>(r);
 
                                         if (door->type() == DoorType::metal)
                                         {
@@ -354,7 +354,7 @@ void make_metal_doors_and_levers()
 
                         // OK, there exists valid positions for the door, and at
                         // least a lever on the player side
-                        auto* door = new Door(
+                        auto* door = new terrain::Door(
                                 door_p,
                                 nullptr, // No mimic needed
                                 DoorType::metal,
@@ -362,22 +362,22 @@ void make_metal_doors_and_levers()
 
                         map::put(door);
 
-                        Lever* lever_1 = nullptr;
-                        Lever* lever_2 = nullptr;
+                        terrain::Lever* lever_1 = nullptr;
+                        terrain::Lever* lever_2 = nullptr;
 
                         auto put_lever_random_p =[](
                                 const std::vector<int>& weights,
                                 const std::vector<P>& positions,
-                                Door* const linked_door) {
+                                terrain::Door* const linked_door) {
 
                                 const size_t lever_p_idx =
                                         rnd::weighted_choice(weights);
 
                                 const P& lever_1_p = positions[lever_p_idx];
 
-                                Lever* lever = new Lever(lever_1_p);
+                                auto* lever = new terrain::Lever(lever_1_p);
 
-                                lever->set_linked_feature(*linked_door);
+                                lever->set_linked_terrain(*linked_door);
 
                                 map::put(lever);
 

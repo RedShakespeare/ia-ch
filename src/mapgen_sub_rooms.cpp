@@ -7,7 +7,7 @@
 #include "mapgen.hpp"
 
 #include "debug.hpp"
-#include "feature_rigid.hpp"
+#include "terrain.hpp"
 #include "map.hpp"
 #include "misc.hpp"
 
@@ -108,7 +108,7 @@ void make_sub_rooms()
                                         continue;
                                 }
 
-                                // Check if map features allow us to build here
+                                // Check if map terrains allow us to build here
                                 bool is_area_free = true;
 
                                 for (int x = p0.x - 1; x <= p1.x + 1; ++x)
@@ -122,15 +122,15 @@ void make_sub_rooms()
                                                         continue;
                                                 }
 
-                                                const auto& f_id = map::g_cells.at(x, y).rigid->id();
+                                                const auto& f_id = map::g_cells.at(x, y).terrain->id();
 
                                                 const Room* const room = map::g_room_map.at(x, y);
 
                                                 // Rules to allow building:
                                                 //* Cells belonging to the outer room must be floor
                                                 //* Cells not belonging to the outer room must be walls
-                                                if ((room == outer_room && f_id != FeatureId::floor) ||
-                                                    (room != outer_room && f_id != FeatureId::wall))
+                                                if ((room == outer_room && f_id != terrain::Id::floor) ||
+                                                    (room != outer_room && f_id != terrain::Id::wall))
                                                 {
                                                         is_area_free = false;
 
@@ -147,7 +147,7 @@ void make_sub_rooms()
 
                                 if (!is_area_free)
                                 {
-                                        // Map features prevents us from building here - next try
+                                        // Map terrains prevents us from building here - next try
                                         continue;
                                 }
 
@@ -177,7 +177,7 @@ void make_sub_rooms()
                                                 {
                                                         const P p(x, y);
 
-                                                        map::put(new Wall(p));
+                                                        map::put(new terrain::Wall(p));
 
                                                         // Only consider this position if it is completely
                                                         // inside the edge of the inner room
@@ -216,7 +216,7 @@ void make_sub_rooms()
 
                                         const P& door_pos = entrance_bucket[door_pos_idx];
 
-                                        map::put(new Floor(door_pos));
+                                        map::put(new terrain::Floor(door_pos));
 
                                         g_door_proposals.at(door_pos) = true;
                                 }
@@ -246,7 +246,7 @@ void make_sub_rooms()
 
                                                 if (is_pos_ok)
                                                 {
-                                                        map::put(new Floor(try_p));
+                                                        map::put(new terrain::Floor(try_p));
                                                         positions_placed.push_back(try_p);
                                                 }
                                         }
