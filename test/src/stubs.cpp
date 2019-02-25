@@ -4,6 +4,7 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 // =============================================================================
 
+#include "actor.hpp"
 #include "io.hpp"
 #include "panel.hpp"
 #include "pos.hpp"
@@ -184,7 +185,7 @@ void draw_blast_at_seen_cells(
         const Color&) {}
 
 void draw_blast_at_seen_actors(
-        const std::vector<Actor*>&,
+        const std::vector<actor::Actor*>&,
         const Color&) {}
 
 void draw_main_menu_logo() {}

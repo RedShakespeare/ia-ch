@@ -9,12 +9,12 @@
 #include "actor_player.hpp"
 #include "drop.hpp"
 #include "explosion.hpp"
-#include "feature_rigid.hpp"
 #include "inventory.hpp"
 #include "item_factory.hpp"
 #include "map.hpp"
 #include "property_data.hpp"
 #include "property_handler.hpp"
+#include "terrain.hpp"
 #include "test_utils.hpp"
 
 TEST_CASE("Properties from item applied and removed for actor")
@@ -37,7 +37,7 @@ TEST_CASE("Properties from item applied and removed for actor")
         }
 
         // Wear asbesthos suit
-        auto* item = item_factory::make(ItemId::armor_asb_suit);
+        auto* item = item::make(item::Id::armor_asb_suit);
 
         inv.put_in_slot(
                 SlotId::body,
@@ -64,7 +64,7 @@ TEST_CASE("Properties from item applied and removed for actor")
         // Take off asbeshos suit
         inv.unequip_slot(SlotId::body);
 
-        REQUIRE(inv.backpack_idx(ItemId::armor_asb_suit) != -1);
+        REQUIRE(inv.backpack_idx(item::Id::armor_asb_suit) != -1);
 
         // Check that the properties are cleared
         for (int i = 0; i < (int)PropId::END; ++i)
@@ -74,7 +74,7 @@ TEST_CASE("Properties from item applied and removed for actor")
 
         // Wear the asbeshos suit again
         inv.equip_backpack_item(
-                inv.backpack_idx(ItemId::armor_asb_suit),
+                inv.backpack_idx(item::Id::armor_asb_suit),
                 SlotId::body);
 
         // Check that the props are applied

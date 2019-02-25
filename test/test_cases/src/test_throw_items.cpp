@@ -7,13 +7,13 @@
 #include "catch.hpp"
 
 #include "actor_player.hpp"
-#include "feature_rigid.hpp"
 #include "game_time.hpp"
 #include "init.hpp"
 #include "item_data.hpp"
 #include "item_factory.hpp"
 #include "line_calc.hpp"
 #include "map.hpp"
+#include "terrain.hpp"
 #include "test_utils.hpp"
 #include "throwing.hpp"
 
@@ -30,13 +30,13 @@ TEST_CASE("Throw weapon at wall")
 
         test_utils::init_all();
 
-        map::put(new Floor(P(5, 7)));
-        map::put(new Wall(P(5, 8)));
-        map::put(new Floor(P(5, 9)));
-        map::put(new Floor(P(5, 10)));
+        map::put(new terrain::Floor(P(5, 7)));
+        map::put(new terrain::Wall(P(5, 8)));
+        map::put(new terrain::Floor(P(5, 9)));
+        map::put(new terrain::Floor(P(5, 10)));
         map::g_player->m_pos = P(5, 10);
 
-        Item* item = item_factory::make(ItemId::thr_knife);
+        auto* item = item::make(item::Id::thr_knife);
 
         throwing::throw_item(*(map::g_player), {5, 8}, *item);
 

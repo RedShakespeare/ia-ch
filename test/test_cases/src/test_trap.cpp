@@ -9,12 +9,12 @@
 #include "actor_factory.hpp"
 #include "actor_mon.hpp"
 #include "actor_move.hpp"
-#include "feature_rigid.hpp"
-#include "feature_trap.hpp"
 #include "map.hpp"
 #include "pos.hpp"
 #include "property_data.hpp"
 #include "property_handler.hpp"
+#include "terrain.hpp"
+#include "terrain_trap.hpp"
 #include "test_utils.hpp"
 
 TEST_CASE("Spider web")
@@ -34,18 +34,18 @@ TEST_CASE("Spider web")
         {
                 test_utils::init_all();
 
-                map::put(new Floor(pos_l));
+                map::put(new terrain::Floor(pos_l));
 
                 map::put(
-                        new Trap(
+                        new terrain::Trap(
                                 pos_r,
-                                new Floor(pos_r),
-                                TrapId::web));
+                                new terrain::Floor(pos_r),
+                                terrain::TrapId::web));
 
-                Actor* const actor =
-                        actor_factory::make(ActorId::zombie, pos_l);
+                auto* const actor =
+                        actor::make(actor::Id::zombie, pos_l);
 
-                Mon* const mon = static_cast<Mon*>(actor);
+                auto* const mon = static_cast<actor::Mon*>(actor);
 
                 // Awareness > 0 required for triggering trap
                 mon->m_aware_of_player_counter = 42;

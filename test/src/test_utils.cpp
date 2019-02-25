@@ -7,9 +7,9 @@
 #include "test_utils.hpp"
 
 #include "actor_player.hpp"
-#include "feature_rigid.hpp"
 #include "init.hpp"
 #include "map.hpp"
+#include "terrain.hpp"
 
 static void put_floor_and_walls_on_map()
 {
@@ -25,11 +25,11 @@ static void put_floor_and_walls_on_map()
 
                         if (is_on_edge)
                         {
-                                map::put(new Wall({x, y}));
+                                map::put(new terrain::Wall({x, y}));
                         }
                         else
                         {
-                                map::put(new Floor({x, y}));
+                                map::put(new terrain::Floor({x, y}));
                         }
                 }
         }

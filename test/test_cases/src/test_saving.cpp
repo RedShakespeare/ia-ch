@@ -30,10 +30,10 @@ TEST_CASE("Saving and loading the game")
                 test_utils::init_all();
 
                 // Item data
-                item_data::g_data[(size_t)ItemId::scroll_telep]
+                item::g_data[(size_t)item::Id::scroll_telep]
                         .is_spell_domain_known = true;
 
-                item_data::g_data[(size_t)ItemId::scroll_opening]
+                item::g_data[(size_t)item::Id::scroll_opening]
                         .is_identified = true;
 
                 // Bonus
@@ -44,7 +44,7 @@ TEST_CASE("Saving and loading the game")
                 auto& inv = map::g_player->m_inv;
 
                 // First, remove all present items to get a clean state
-                for (Item* item : inv.m_backpack)
+                for (auto* item : inv.m_backpack)
                 {
                         delete item;
                 }
@@ -63,9 +63,9 @@ TEST_CASE("Saving and loading the game")
                 }
 
                 // Put new items
-                Item* item = nullptr;
+                item::Item* item = nullptr;
 
-                item = item_factory::make(ItemId::mi_go_gun);
+                item = item::make(item::Id::mi_go_gun);
 
                 inv.put_in_slot(
                         SlotId::wpn,
@@ -73,41 +73,41 @@ TEST_CASE("Saving and loading the game")
                         Verbosity::verbose);
 
                 map::g_player->set_unarmed_wpn(
-                        static_cast<Wpn*>(
-                                item_factory::make(ItemId::player_punch)));
+                        static_cast<item::Wpn*>(
+                                item::make(item::Id::player_punch)));
 
                 // Wear asbestos suit to test properties from wearing items
-                item = item_factory::make(ItemId::armor_asb_suit);
+                item = item::make(item::Id::armor_asb_suit);
 
                 inv.put_in_slot(
                         SlotId::body,
                         item,
                         Verbosity::verbose);
 
-                item = item_factory::make(ItemId::pistol_mag);
-                static_cast<AmmoMag*>(item)->m_ammo = 1;
+                item = item::make(item::Id::pistol_mag);
+                static_cast<item::AmmoMag*>(item)->m_ammo = 1;
                 inv.put_in_backpack(item);
 
-                item = item_factory::make(ItemId::pistol_mag);
-                static_cast<AmmoMag*>(item)->m_ammo = 2;
+                item = item::make(item::Id::pistol_mag);
+                static_cast<item::AmmoMag*>(item)->m_ammo = 2;
                 inv.put_in_backpack(item);
 
-                item = item_factory::make(ItemId::pistol_mag);
-                static_cast<AmmoMag*>(item)->m_ammo = 3;
+                item = item::make(item::Id::pistol_mag);
+                static_cast<item::AmmoMag*>(item)->m_ammo = 3;
                 inv.put_in_backpack(item);
 
-                item = item_factory::make(ItemId::pistol_mag);
-                static_cast<AmmoMag*>(item)->m_ammo = 3;
+                item = item::make(item::Id::pistol_mag);
+                static_cast<item::AmmoMag*>(item)->m_ammo = 3;
                 inv.put_in_backpack(item);
 
-                item = item_factory::make(ItemId::device_blaster);
-                static_cast<StrangeDevice*>(item)->condition =
+                item = item::make(item::Id::device_blaster);
+                static_cast<device::StrangeDevice*>(item)->condition =
                         Condition::shoddy;
                 inv.put_in_backpack(item);
 
-                item = item_factory::make(ItemId::lantern);
+                item = item::make(item::Id::lantern);
 
-                DeviceLantern* lantern = static_cast<DeviceLantern*>(item);
+                auto* lantern = static_cast<device::Lantern*>(item);
 
                 lantern->nr_turns_left = 789;
                 lantern->is_activated = true;
@@ -124,7 +124,7 @@ TEST_CASE("Saving and loading the game")
                 map::g_dlvl = 7;
 
                 // Actor data
-                actor_data::g_data[(size_t)ActorId::END - 1].nr_kills = 123;
+                actor::g_data[(size_t)actor::Id::END - 1].nr_kills = 123;
 
                 // Learned spells
                 player_spells::learn_spell(
@@ -175,22 +175,22 @@ TEST_CASE("Saving and loading the game")
                 saving::load_game();
 
                 // Item data
-                REQUIRE(item_data::g_data[(size_t)ItemId::scroll_telep]
+                REQUIRE(item::g_data[(size_t)item::Id::scroll_telep]
                         .is_spell_domain_known);
 
-                REQUIRE(!item_data::g_data[(size_t)ItemId::scroll_telep]
+                REQUIRE(!item::g_data[(size_t)item::Id::scroll_telep]
                         .is_identified);
 
-                REQUIRE(item_data::g_data[(size_t)ItemId::scroll_opening]
+                REQUIRE(item::g_data[(size_t)item::Id::scroll_opening]
                         .is_identified);
 
-                REQUIRE(!item_data::g_data[(size_t)ItemId::scroll_opening]
+                REQUIRE(!item::g_data[(size_t)item::Id::scroll_opening]
                         .is_spell_domain_known);
 
-                REQUIRE(!item_data::g_data[(size_t)ItemId::scroll_searching]
+                REQUIRE(!item::g_data[(size_t)item::Id::scroll_searching]
                         .is_spell_domain_known);
 
-                REQUIRE(!item_data::g_data[(size_t)ItemId::scroll_searching]
+                REQUIRE(!item::g_data[(size_t)item::Id::scroll_searching]
                         .is_identified);
 
                 // Player
@@ -213,13 +213,13 @@ TEST_CASE("Saving and loading the game")
                 REQUIRE(inv.m_backpack.size() == 6);
 
                 REQUIRE(inv.item_in_slot(SlotId::wpn)->data().id ==
-                        ItemId::mi_go_gun);
+                        item::Id::mi_go_gun);
 
                 REQUIRE(map::g_player->unarmed_wpn().id() ==
-                        ItemId::player_punch);
+                        item::Id::player_punch);
 
                 REQUIRE(inv.item_in_slot(SlotId::body)->data().id ==
-                        ItemId::armor_asb_suit);
+                        item::Id::armor_asb_suit);
 
                 int nr_mag_with_1 = 0;
                 int nr_mag_with_2 = 0;
@@ -227,13 +227,14 @@ TEST_CASE("Saving and loading the game")
                 bool is_sentry_device_found = false;
                 bool is_lantern_found = false;
 
-                for (Item* item : inv.m_backpack)
+                for (auto* item : inv.m_backpack)
                 {
-                        ItemId id = item->id();
+                        item::Id id = item->id();
 
-                        if (id == ItemId::pistol_mag)
+                        if (id == item::Id::pistol_mag)
                         {
-                                switch (static_cast<AmmoMag*>(item)->m_ammo)
+                                switch (static_cast<item::AmmoMag*>(item)
+                                        ->m_ammo)
                                 {
                                 case 1:
                                         ++nr_mag_with_1;
@@ -251,21 +252,22 @@ TEST_CASE("Saving and loading the game")
                                         break;
                                 }
                         }
-                        else if (id == ItemId::device_blaster)
+                        else if (id == item::Id::device_blaster)
                         {
                                 is_sentry_device_found = true;
 
                                 const auto* const device =
-                                        static_cast<StrangeDevice*>(item);
+                                        static_cast<device::StrangeDevice*>(
+                                                item);
 
                                 REQUIRE(device->condition == Condition::shoddy);
                         }
-                        else if (id == ItemId::lantern)
+                        else if (id == item::Id::lantern)
                         {
                                 is_lantern_found = true;
 
                                 const auto* const lantern =
-                                        static_cast<DeviceLantern*>(item);
+                                        static_cast<device::Lantern*>(item);
 
                                 REQUIRE(lantern->nr_turns_left == 789);
 
@@ -283,7 +285,7 @@ TEST_CASE("Saving and loading the game")
                 REQUIRE(map::g_dlvl == 7);
 
                 // Actor data
-                REQUIRE(actor_data::g_data[(int)ActorId::END - 1]
+                REQUIRE(actor::g_data[(int)actor::Id::END - 1]
                         .nr_kills == 123);
 
                 // Learned spells

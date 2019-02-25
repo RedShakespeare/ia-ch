@@ -7,9 +7,9 @@
 #include "catch.hpp"
 
 #include "actor_player.hpp"
-#include "feature_rigid.hpp"
 #include "game_time.hpp"
 #include "map.hpp"
+#include "terrain.hpp"
 #include "test_utils.hpp"
 
 TEST_CASE("Test light map")
@@ -23,7 +23,7 @@ TEST_CASE("Test light map")
 
         const P burn_pos(40, 10);
 
-        Rigid* const burn_f = map::g_cells.at(burn_pos).rigid;
+        auto* const burn_f = map::g_cells.at(burn_pos).terrain;
 
         while (burn_f->m_burn_state != BurnState::burning)
         {
