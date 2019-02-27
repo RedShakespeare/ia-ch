@@ -571,7 +571,7 @@ void MsgHistoryState::update()
         switch (input.key)
         {
         case SDLK_DOWN:
-        case '2':
+        case SDLK_KP_2:
         {
                 m_top_line_nr += line_jump;
 
@@ -584,7 +584,7 @@ void MsgHistoryState::update()
         break;
 
         case SDLK_UP:
-        case '8':
+        case SDLK_KP_8:
         {
                 m_top_line_nr =
                         std::max(0, m_top_line_nr - line_jump);

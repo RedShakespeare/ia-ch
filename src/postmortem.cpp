@@ -609,7 +609,7 @@ void PostmortemInfo::update()
         switch (input.key)
         {
         case SDLK_DOWN:
-        case '2':
+        case SDLK_KP_2:
                 m_top_idx += line_jump;
 
                 if (nr_lines <= max_nr_lines_on_screen())
@@ -625,7 +625,7 @@ void PostmortemInfo::update()
                 break;
 
         case SDLK_UP:
-        case '8':
+        case SDLK_KP_8:
                 m_top_idx = std::max(0, m_top_idx - line_jump);
                 break;
 

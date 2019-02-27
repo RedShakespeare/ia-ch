@@ -542,7 +542,7 @@ void BrowseHighscoreEntry::update()
 
         switch (input.key)
         {
-        case '2':
+        case SDLK_KP_2:
         case SDLK_DOWN:
                 m_top_idx += line_jump;
 
@@ -558,7 +558,7 @@ void BrowseHighscoreEntry::update()
                 }
                 break;
 
-        case '8':
+        case SDLK_KP_8:
         case SDLK_UP:
                 m_top_idx = std::max(0, m_top_idx - line_jump);
                 break;
