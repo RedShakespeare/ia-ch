@@ -200,7 +200,12 @@ static void player_sets_option(const MenuBrowser& browser)
         {
         case 0: // Input mode
         {
-                s_input_mode = (InputMode)((s_input_mode + 1) % InputMode::END);
+                const auto input_mode_nr = (int)s_input_mode;
+
+                const auto nr_input_modes = (int)InputMode::END;
+
+                s_input_mode = (InputMode)
+                        ((input_mode_nr + 1) % nr_input_modes);
         }
         break;
 
@@ -584,7 +589,7 @@ static std::vector<std::string> lines_from_variables()
 
         std::vector<std::string> lines;
 
-        lines.push_back(std::to_string(s_input_mode));
+        lines.push_back(std::to_string((int)s_input_mode));
         lines.push_back(s_is_audio_enabled ? "1" : "0");
         lines.push_back(s_is_amb_audio_enabled ? "1" : "0");
         lines.push_back(std::to_string(s_screen_px_w));

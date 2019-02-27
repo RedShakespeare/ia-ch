@@ -12,7 +12,7 @@
 #include "state.hpp"
 #include "browser.hpp"
 
-enum InputMode
+enum class InputMode
 {
         standard,
         vi_keys,

@@ -78,8 +78,6 @@ public:
 
         void on_start() override;
 
-        void on_resume() override;
-
         void draw() override;
 
         void update() override;
@@ -112,9 +110,6 @@ public:
         void draw() override;
 
         void update() override;
-
-private:
-        std::vector<SlotId> m_filtered_slots {};
 };
 
 class Equip: public InvState

@@ -652,22 +652,6 @@ void BrowseInv::on_start()
         audio::play(SfxId::backpack);
 }
 
-void BrowseInv::on_resume()
-{
-        // If we have been away from this state (e.g. equipping a slot), then
-        // the inventory may have been affected by the other state(s), so we
-        // need to reset the browser.
-
-        const int list_size =
-                (int)SlotId::END +
-                (int)map::g_player->m_inv.m_backpack.size();
-
-        // (The browser will also set the y pos to the nearest valid point)
-        m_browser.reset(
-                list_size,
-                panels::h(Panel::item_menu));
-}
-
 void BrowseInv::draw()
 {
         io::clear_screen();
@@ -740,17 +724,6 @@ void BrowseInv::draw()
 
 void BrowseInv::update()
 {
-        auto inv_type = [&]() {
-                if (m_browser.y() < (int)SlotId::END)
-                {
-                        return InvType::slots;
-                }
-                else
-                {
-                        return InvType::backpack;
-                }
-        };
-
         const auto input = io::get();
 
         const MenuAction action =
@@ -760,7 +733,10 @@ void BrowseInv::update()
         {
         case MenuAction::selected:
         {
-                const auto inv_type_marked = inv_type();
+                const auto inv_type_marked =
+                        (m_browser.y() < (int)SlotId::END)
+                        ? InvType::slots
+                        : InvType::backpack;
 
                 if (inv_type_marked == InvType::slots)
                 {
@@ -975,30 +951,9 @@ void Drop::on_start()
 {
         map::g_player->m_inv.sort_backpack();
 
-        // Filter slots
-        for (InvSlot& slot : map::g_player->m_inv.m_slots)
-        {
-                const auto* const item = slot.item;
-
-                if (item)
-                {
-                        m_filtered_slots.push_back(slot.id);
-                }
-        }
-
         const int list_size =
-                (int)m_filtered_slots.size() +
+                (int)SlotId::END +
                 (int)map::g_player->m_inv.m_backpack.size();
-
-        if (list_size == 0)
-        {
-                // Nothing to drop, exit screen
-                states::pop();
-
-                msg_log::add("I carry nothing to drop.");
-
-                return;
-        }
 
         m_browser.reset(
                 list_size,
@@ -1019,7 +974,7 @@ void Drop::draw()
 
         const int browser_y = m_browser.y();
 
-        const Range idx_range_shown = m_browser.range_shown();
+        const auto idx_range_shown = m_browser.range_shown();
 
         int y = 0;
 
@@ -1029,9 +984,9 @@ void Drop::draw()
 
                 const bool is_marked = browser_y == i;
 
-                if (i < (int)m_filtered_slots.size())
+                if (i < (int)SlotId::END)
                 {
-                        const SlotId slot_id = m_filtered_slots[i];
+                        const auto slot_id = (SlotId)i;
 
                         draw_slot(
                                 slot_id,
@@ -1042,8 +997,8 @@ void Drop::draw()
                 }
                 else // This index is in backpack
                 {
-                        const size_t backpack_idx =
-                                i - (int)m_filtered_slots.size();
+                        const auto backpack_idx =
+                                (size_t)(i - (int)SlotId::END);
 
                         draw_backpack_item(
                                 backpack_idx,
@@ -1090,14 +1045,24 @@ void Drop::update()
                 const int browser_y = m_browser.y();
 
                 const auto inv_type_marked =
-                        (m_browser.y() < (int)m_filtered_slots.size())
+                        (m_browser.y() < (int)SlotId::END)
                         ? InvType::slots
                         : InvType::backpack;
 
-                const size_t idx =
-                        (inv_type_marked == InvType::slots)
-                        ? (size_t)m_filtered_slots[browser_y]
-                        : (size_t)browser_y - m_filtered_slots.size();
+                auto idx = (size_t)browser_y;
+
+                if (inv_type_marked == InvType::slots)
+                {
+                        if (!map::g_player->m_inv.has_item_in_slot((SlotId)idx))
+                        {
+                                return;
+                        }
+                }
+                else
+                {
+                        // Backpack item marked
+                        idx -= (size_t)SlotId::END;
+                }
 
                 // Exit screen
                 states::pop();
@@ -1105,17 +1070,18 @@ void Drop::update()
                 if ((inv_type_marked == InvType::slots) &&
                     (idx == (size_t)SlotId::body))
                 {
-                        // Start dropping the armor
+                        // Body slot marked, start dropping the armor
                         map::g_player->m_handle_armor_countdown =
                                 s_nr_turns_to_handle_armor;
 
-                        map::g_player->m_is_dropping_armor_from_body_slot = true;
+                        map::g_player
+                                ->m_is_dropping_armor_from_body_slot = true;
 
                         game_time::tick();
                 }
-                else // Not dropping from body slot
+                else
                 {
-                        // Drop the item immediately
+                        // Not dropping from body slot, drop immediately
                         const bool did_drop =
                                 run_drop_query(inv_type_marked, idx);
 
