@@ -1774,7 +1774,7 @@
         <attacks>
             <attack id="bite">
                 <damage>5</damage>
-                <property_applied duration="2">paralyzed</property_applied>
+                <property_applied duration="2" percent_chance="50">paralyzed</property_applied>
             </attack>
         </attacks>
 
