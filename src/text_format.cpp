@@ -152,7 +152,7 @@ std::string pad_before(
 
         if (tot_w > str.size())
         {
-                result.insert(0, tot_w - result.size(), c);
+                result.insert(0, tot_w - str.size(), c);
         }
 
         return result;
@@ -165,9 +165,9 @@ std::string pad_after(
 {
         auto result = str;
 
-        if (tot_w > result.size())
+        if (tot_w > str.size())
         {
-                result.insert(result.size(), tot_w, c);
+                result.insert(result.size(), tot_w - str.size(), c);
         }
 
         return result;

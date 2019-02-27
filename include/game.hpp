@@ -58,7 +58,8 @@ void incr_player_xp(
 
 void decr_player_xp(int xp_lost);
 
-void incr_clvl();
+// This function has no side effects except for incrementing the clvl value
+void incr_clvl_number();
 
 void add_history_event(const std::string msg);
 

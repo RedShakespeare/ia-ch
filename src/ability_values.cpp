@@ -76,7 +76,7 @@ int AbilityValues::val(
                                 ret += 10;
                         }
 
-                        if (player_bon::g_traits[(size_t)Trait::master_melee])
+                        if (player_bon::has_trait(Trait::master_melee))
                         {
                                 ret += 10;
                         }

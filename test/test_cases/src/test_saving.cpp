@@ -7,6 +7,7 @@
 #include "catch.hpp"
 
 #include "actor_player.hpp"
+#include "game.hpp"
 #include "game_time.hpp"
 #include "inventory.hpp"
 #include "item_data.hpp"
@@ -14,6 +15,7 @@
 #include "item_factory.hpp"
 #include "map.hpp"
 #include "map_travel.hpp"
+#include "paths.hpp"
 #include "player_bon.hpp"
 #include "player_spells.hpp"
 #include "property.hpp"
@@ -36,9 +38,19 @@ TEST_CASE("Saving and loading the game")
                 item::g_data[(size_t)item::Id::scroll_opening]
                         .is_identified = true;
 
-                // Bonus
+                // Background
                 player_bon::pick_bg(Bg::rogue);
-                player_bon::g_traits[(size_t)Trait::healer] = true;
+
+                // Traits
+                game::incr_clvl_number();
+
+                player_bon::pick_trait(Trait::healer);
+
+                game::incr_clvl_number();
+                game::incr_clvl_number();
+                game::incr_clvl_number();
+
+                player_bon::pick_trait(Trait::resistant);
 
                 // Player inventory
                 auto& inv = map::g_player->m_inv;
@@ -200,15 +212,31 @@ TEST_CASE("Saving and loading the game")
                 // Check max HP (affected by disease)
                 REQUIRE(actor::max_hp(*map::g_player) == 456 / 2);
 
-                // Bonus
+                // Background
                 REQUIRE(player_bon::bg() == Bg::rogue);
 
-                REQUIRE(player_bon::g_traits[(size_t)Trait::healer]);
+                // Traits
+                REQUIRE(player_bon::has_trait(Trait::healer));
 
-                REQUIRE(!player_bon::g_traits[(size_t)Trait::vigilant]);
+                REQUIRE(player_bon::has_trait(Trait::resistant));
+
+                REQUIRE(!player_bon::has_trait(Trait::vigilant));
+
+                const auto trait_log = player_bon::trait_log();
+
+                REQUIRE(trait_log.size() == 3);
+
+                REQUIRE(trait_log[0].clvl_picked == 0);
+                REQUIRE(trait_log[0].trait_id == Trait::stealthy);
+
+                REQUIRE(trait_log[1].clvl_picked == 1);
+                REQUIRE(trait_log[1].trait_id == Trait::healer);
+
+                REQUIRE(trait_log[2].clvl_picked == 4);
+                REQUIRE(trait_log[2].trait_id == Trait::resistant);
 
                 // Player inventory
-                const auto& inv  = map::g_player->m_inv;
+                const auto& inv = map::g_player->m_inv;
 
                 REQUIRE(inv.m_backpack.size() == 6);
 
@@ -339,6 +367,9 @@ TEST_CASE("Saving and loading the game")
 
                 // Turn number
                 REQUIRE(game_time::turn_nr() == 0);
+
+                // Cleanup
+                saving::erase_save();
 
                 test_utils::cleanup_all();
         }

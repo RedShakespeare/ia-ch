@@ -24,6 +24,10 @@
 // -----------------------------------------------------------------------------
 // Private
 // -----------------------------------------------------------------------------
+static bool s_traits[(size_t)Trait::END];
+
+static std::vector<player_bon::TraitLogEntry> s_trait_log;
+
 static Bg s_current_bg = Bg::END;
 
 static OccultistDomain s_current_occultist_domain = OccultistDomain::END;
@@ -96,9 +100,6 @@ static bool is_trait_blocked_for_bg(const Trait trait, const Bg bg)
 namespace player_bon
 {
 
-bool g_traits[(size_t)Trait::END];
-
-
 void init()
 {
         s_current_bg = Bg::END;
@@ -107,8 +108,10 @@ void init()
 
         for (size_t i = 0; i < (size_t)Trait::END; ++i)
         {
-                g_traits[i] = false;
+                s_traits[i] = false;
         }
+
+        s_trait_log.clear();
 }
 
 void save()
@@ -119,7 +122,16 @@ void save()
 
         for (size_t i = 0; i < (size_t)Trait::END; ++i)
         {
-                saving::put_bool(g_traits[i]);
+                saving::put_bool(s_traits[i]);
+        }
+
+        saving::put_int(s_trait_log.size());
+
+        for (const auto& e : s_trait_log)
+        {
+                saving::put_int(e.clvl_picked);
+
+                saving::put_int((int)e.trait_id);
         }
 }
 
@@ -131,7 +143,18 @@ void load()
 
         for (size_t i = 0; i < (size_t)Trait::END; ++i)
         {
-                g_traits[i] = saving::get_bool();
+                s_traits[i] = saving::get_bool();
+        }
+
+        const int nr_trait_log_entries = saving::get_int();
+
+        s_trait_log.resize(nr_trait_log_entries);
+
+        for (auto& e : s_trait_log)
+        {
+                e.clvl_picked = saving::get_int();
+
+                e.trait_id = (Trait)saving::get_int();
         }
 }
 
@@ -823,14 +846,15 @@ void trait_prereqs(
         }
 
         // Sort lexicographically
-        sort(traits_out.begin(),
-             traits_out.end(),
-             [](const Trait & t1, const Trait & t2)
-             {
-                     const std::string str1 = trait_title(t1);
-                     const std::string str2 = trait_title(t2);
-                     return str1 < str2;
-             });
+        std::sort(
+                std::begin(traits_out),
+                std::end(traits_out),
+                [](const Trait & t1, const Trait & t2)
+                {
+                        const std::string str1 = trait_title(t1);
+                        const std::string str2 = trait_title(t2);
+                        return str1 < str2;
+                });
 }
 
 Bg bg()
@@ -845,49 +869,55 @@ OccultistDomain occultist_domain()
 
 bool has_trait(const Trait id)
 {
-        return g_traits[(size_t)id];
+        return s_traits[(size_t)id];
 }
 
 std::vector<Bg> pickable_bgs()
 {
-        std::vector<Bg> ret;
+        std::vector<Bg> result;
 
         for (int i = 0; i < (int)Bg::END; ++i)
         {
-                ret.push_back((Bg)i);
+                result.push_back((Bg)i);
         }
 
         // Sort lexicographically
-        sort(ret.begin(), ret.end(), [](const Bg bg1, const Bg bg2)
-        {
-                const std::string str1 = bg_title(bg1);
-                const std::string str2 = bg_title(bg2);
-                return str1 < str2;
-        });
+        std::sort(
+                std::begin(result),
+                std::end(result),
+                [](const Bg bg1, const Bg bg2)
+                {
+                        const std::string str1 = bg_title(bg1);
+                        const std::string str2 = bg_title(bg2);
+                        return str1 < str2;
+                });
 
-        return ret;
+        return result;
 }
 
 std::vector<OccultistDomain> pickable_occultist_domains()
 {
-        std::vector<OccultistDomain> ret;
+        std::vector<OccultistDomain> result;
 
         for (int i = 0; i < (int)OccultistDomain::END; ++i)
         {
-                ret.push_back((OccultistDomain)i);
+                result.push_back((OccultistDomain)i);
         }
 
         // Sort lexicographically
-        sort(ret.begin(), ret.end(), [](
-                const OccultistDomain domain_1,
-                const OccultistDomain domain_2)
-        {
-                const std::string str1 = spell_domain_title(domain_1);
-                const std::string str2 = spell_domain_title(domain_2);
-                return str1 < str2;
-        });
+        std::sort(
+                std::begin(result),
+                std::end(result),
+                [](
+                        const OccultistDomain domain_1,
+                        const OccultistDomain domain_2)
+                {
+                        const std::string str1 = spell_domain_title(domain_1);
+                        const std::string str2 = spell_domain_title(domain_2);
+                        return str1 < str2;
+                });
 
-        return ret;
+        return result;
 }
 
 void unpicked_traits_for_bg(
@@ -898,7 +928,7 @@ void unpicked_traits_for_bg(
         for (size_t i = 0; i < (size_t)Trait::END; ++i)
         {
                 // Already picked?
-                if (g_traits[i])
+                if (s_traits[i])
                 {
                         continue;
                 }
@@ -944,7 +974,7 @@ void unpicked_traits_for_bg(
 
                 for (const auto& prereq : trait_prereq_list)
                 {
-                        if (!g_traits[(size_t)prereq])
+                        if (!s_traits[(size_t)prereq])
                         {
                                 is_trait_prereqs_ok = false;
 
@@ -968,23 +998,25 @@ void unpicked_traits_for_bg(
         } // Trait loop
 
         // Sort lexicographically
-        sort(traits_can_be_picked_out.begin(),
-             traits_can_be_picked_out.end(),
-             [](const Trait & t1, const Trait & t2)
-             {
-                     const std::string str1 = trait_title(t1);
-                     const std::string str2 = trait_title(t2);
-                     return str1 < str2;
-             });
+        std::sort(
+                std::begin(traits_can_be_picked_out),
+                std::end(traits_can_be_picked_out),
+                [](const Trait & t1, const Trait & t2)
+                {
+                        const std::string str1 = trait_title(t1);
+                        const std::string str2 = trait_title(t2);
+                        return str1 < str2;
+                });
 
-        sort(traits_prereqs_not_met_out.begin(),
-             traits_prereqs_not_met_out.end(),
-             [](const Trait & t1, const Trait & t2)
-             {
-                     const std::string str1 = trait_title(t1);
-                     const std::string str2 = trait_title(t2);
-                     return str1 < str2;
-             });
+        std::sort(
+                std::begin(traits_prereqs_not_met_out),
+                std::end(traits_prereqs_not_met_out),
+                [](const Trait & t1, const Trait & t2)
+                {
+                        const std::string str1 = trait_title(t1);
+                        const std::string str2 = trait_title(t2);
+                        return str1 < str2;
+                });
 }
 
 void pick_bg(const Bg bg)
@@ -1095,7 +1127,7 @@ void set_all_traits_to_picked()
 {
         for (int i = 0; i < (int)Trait::END; ++i)
         {
-                g_traits[i] = true;
+                s_traits[i] = true;
         }
 }
 
@@ -1103,7 +1135,16 @@ void pick_trait(const Trait id)
 {
         ASSERT(id != Trait::END);
 
-        g_traits[(size_t)id] = true;
+        s_traits[(size_t)id] = true;
+
+        {
+                TraitLogEntry trait_log_entry;
+
+                trait_log_entry.trait_id = id;
+                trait_log_entry.clvl_picked = game::clvl();
+
+                s_trait_log.push_back(trait_log_entry);
+        }
 
         switch (id)
         {
@@ -1213,27 +1254,15 @@ void pick_trait(const Trait id)
         }
 }
 
-std::string all_picked_traits_titles_line()
+std::vector<TraitLogEntry> trait_log()
 {
-        std::string out = "";
-
-        for (int i = 0; i < (int)Trait::END; ++i)
-        {
-                if (g_traits[i])
-                {
-                        const std::string title = trait_title(Trait(i));
-
-                        out += (out.empty() ? "" : ", ") + title;
-                }
-        }
-
-        return out;
+        return s_trait_log;
 }
 
 bool gets_undead_bane_bon(const actor::ActorData& actor_data)
 {
         return
-                player_bon::g_traits[(size_t)Trait::undead_bane] &&
+                s_traits[(size_t)Trait::undead_bane] &&
                 actor_data.is_undead;
 }
 

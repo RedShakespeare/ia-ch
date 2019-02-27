@@ -49,7 +49,7 @@ namespace game
 
 void init()
 {
-        s_clvl = 1;
+        s_clvl = 0;
         s_xp_pct = 0;
         s_xp_accum = 0;
 
@@ -200,7 +200,7 @@ void decr_player_xp(int xp_lost)
         s_xp_pct -= xp_lost;
 }
 
-void incr_clvl()
+void incr_clvl_number()
 {
         ++s_clvl;
 }

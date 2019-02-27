@@ -261,7 +261,7 @@ void Actor::on_std_turn_common()
 
                 if (is_player())
                 {
-                        if (player_bon::g_traits[(size_t)Trait::stout_spirit])
+                        if (player_bon::has_trait(Trait::stout_spirit))
                         {
                                 regen_spi_n_turns -= 4;
                         }
@@ -516,7 +516,7 @@ int Actor::armor_points() const
         // "Natural armor"
         if (is_player())
         {
-                if (player_bon::g_traits[(size_t)Trait::thick_skinned])
+                if (player_bon::has_trait(Trait::thick_skinned))
                 {
                         ++ap;
                 }

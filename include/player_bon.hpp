@@ -95,10 +95,16 @@ enum class OccultistDomain
         END
 };
 
+
 namespace player_bon
 {
 
-extern bool g_traits[(size_t)Trait::END];
+struct TraitLogEntry
+{
+        Trait trait_id {Trait::END};
+        int clvl_picked = 0;
+};
+
 
 void init();
 
@@ -145,7 +151,7 @@ std::vector<ColoredString> bg_descr(const Bg id);
 
 std::string occultist_domain_descr(const OccultistDomain domain);
 
-std::string all_picked_traits_titles_line();
+std::vector<TraitLogEntry> trait_log();
 
 void pick_trait(const Trait id);
 

@@ -92,6 +92,9 @@ void PickBgState::update()
 
                 player_bon::pick_bg(bg);
 
+                // Increase clvl to 1
+                game::incr_clvl_number();
+
                 states::pop();
 
                 // Occultists also pick a domain

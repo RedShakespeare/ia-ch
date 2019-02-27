@@ -204,22 +204,49 @@ void PostmortemMenu::on_start()
 
         s_info_lines.push_back({"", color_info});
 
-        s_info_lines.push_back({"Traits gained:", color_heading});
+        s_info_lines.push_back(
+                ColoredString(
+                        "Traits gained (at character level):",
+                        color_heading));
 
-        std::string traits_line =
-                player_bon::all_picked_traits_titles_line();
+        const auto trait_log = player_bon::trait_log();
 
-        if (traits_line.empty())
+        if (trait_log.empty())
         {
                 s_info_lines.push_back({offset + "None", color_info});
         }
         else
         {
-                const auto abilities_lines =
-                        text_format::split(traits_line, 60);
+                bool is_double_digit =
+                        std::find_if(
+                                std::begin(trait_log),
+                                std::end(trait_log),
+                                [](const auto& e)
+                                {
+                                        return e.clvl_picked >= 10;
+                                })
+                        != std::end(trait_log);
 
-                for (const std::string& str : abilities_lines)
+                for (const auto& e : trait_log)
                 {
+                        std::string clvl_str = std::to_string(e.clvl_picked);
+
+                        if (is_double_digit)
+                        {
+                                clvl_str =
+                                        text_format::pad_before(
+                                                std::to_string(e.clvl_picked),
+                                                2);
+                        }
+
+                        const std::string title =
+                                player_bon::trait_title(e.trait_id);
+
+                        const std::string str =
+                                clvl_str +
+                                " " +
+                                title;
+
                         s_info_lines.push_back({offset + str, color_info});
                 }
         }

@@ -226,7 +226,7 @@ static void add_traits_descr(std::vector<ColoredString>& lines)
 
         for (size_t i = 0; i < (size_t)Trait::END; ++i)
         {
-                if (player_bon::g_traits[i])
+                if (player_bon::has_trait((Trait)i))
                 {
                         const Trait trait = Trait(i);
 

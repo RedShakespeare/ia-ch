@@ -209,7 +209,7 @@ ActorDied hit(
         if (((dmg_type == DmgType::fire) ||
              (dmg_type == DmgType::electric)) &&
             actor.is_player() &&
-            player_bon::g_traits[(size_t)Trait::resistant])
+            player_bon::has_trait(Trait::resistant))
         {
                 dmg /= 2;
         }
