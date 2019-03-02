@@ -354,9 +354,11 @@ std::vector<terrain::Terrain*> mobs_at_pos(const P& p)
         return mobs;
 }
 
-void add_mob(terrain::Terrain* const f)
+void add_mob(terrain::Terrain* const t)
 {
-        g_mobs.push_back(f);
+        g_mobs.push_back(t);
+
+        t->on_placed();
 }
 
 void erase_mob(terrain::Terrain* const f, const bool destroy_object)

@@ -209,22 +209,22 @@ size_t nr_cells()
         return g_cells.length();
 }
 
-terrain::Terrain* put(terrain::Terrain* const f)
+terrain::Terrain* put(terrain::Terrain* const t)
 {
-        ASSERT(f);
+        ASSERT(t);
 
-        const P p = f->pos();
+        const P p = t->pos();
 
         Cell& cell = g_cells.at(p);
 
         delete cell.terrain;
 
-        cell.terrain = f;
+        cell.terrain = t;
 
 #ifndef NDEBUG
         if (init::g_is_demo_mapgen)
         {
-                if (f->id() == terrain::Id::floor)
+                if (t->id() == terrain::Id::floor)
                 {
                         if (!viewport::is_in_view(p))
                         {
@@ -254,7 +254,9 @@ terrain::Terrain* put(terrain::Terrain* const f)
         }
 #endif // NDEBUG
 
-        return f;
+        t->on_placed();
+
+        return t;
 }
 
 void update_vision()

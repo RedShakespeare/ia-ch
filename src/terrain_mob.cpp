@@ -32,6 +32,40 @@ namespace terrain
 // -----------------------------------------------------------------------------
 // Smoke
 // -----------------------------------------------------------------------------
+void Smoke::on_placed()
+{
+        // Remove any other smoke in the same position (this is so that for
+        // example the gas mask is not drained much faster if there is multiple
+        // smoke objects stacked on the same position)
+        for (auto it = std::begin(game_time::g_mobs);
+             it != std::end(game_time::g_mobs); )
+        {
+                const auto terrain = static_cast<const Terrain*>(*it);
+
+                if ((terrain == this) ||
+                    (terrain->id() != Id::smoke) ||
+                    (terrain->pos() != m_pos))
+                {
+                        ++it;
+
+                        continue;
+                }
+
+                // This is another smoke object in the same position
+
+                const auto other_smoke = static_cast<const Smoke*>(terrain);
+
+                // Use the longest duration of the new or old smoke
+                m_nr_turns_left = std::max(
+                        m_nr_turns_left,
+                        other_smoke->m_nr_turns_left);
+
+                delete other_smoke;
+
+                game_time::g_mobs.erase(it);
+        }
+}
+
 void Smoke::on_new_turn()
 {
         auto* actor = map::actor_at_pos(m_pos);
@@ -84,8 +118,7 @@ void Smoke::on_new_turn()
                 }
 
                 // Blinded?
-                if (!is_blind_prot &&
-                    rnd::one_in(4))
+                if (!is_blind_prot && rnd::one_in(4))
                 {
                         if (is_player)
                         {
@@ -122,7 +155,8 @@ void Smoke::on_new_turn()
                                 ? AlertsMon::yes
                                 : AlertsMon::no;
 
-                        Snd snd(snd_msg,
+                        Snd snd(
+                                snd_msg,
                                 SfxId::END,
                                 IgnoreMsgIfOriginSeen::yes,
                                 actor->m_pos,

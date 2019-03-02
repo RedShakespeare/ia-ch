@@ -214,6 +214,11 @@ public:
 
         void corrupt_color();
 
+        virtual void on_placed()
+        {
+
+        }
+
         virtual void on_new_turn();
 
         virtual void hit(

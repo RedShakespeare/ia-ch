@@ -34,6 +34,8 @@ public:
 
         Color color() const override;
 
+        void on_placed() override;
+
         void on_new_turn() override;
 
 protected:

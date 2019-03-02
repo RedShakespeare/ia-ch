@@ -47,9 +47,9 @@ actor::Actor* current_actor();
 
 std::vector<terrain::Terrain*> mobs_at_pos(const P& p);
 
-void add_mob(terrain::Terrain* const f);
+void add_mob(terrain::Terrain* const t);
 
-void erase_mob(terrain::Terrain* const f, const bool destroy_object);
+void erase_mob(terrain::Terrain* const t, const bool destroy_object);
 
 void erase_all_mobs();
 
