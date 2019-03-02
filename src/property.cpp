@@ -439,26 +439,32 @@ PropEnded PropPoisoned::on_tick()
         if (m_owner->is_alive() &&
             (game_time::turn_nr() % g_poison_dmg_n_turn) == 0)
         {
+                int dmg = 1;
+
                 if (m_owner->is_player())
                 {
-                        msg_log::add("I am suffering from the poison!",
-                                     colors::msg_bad(),
-                                     true);
+                        msg_log::add(
+                                "I am suffering from the poison!",
+                                colors::msg_bad(),
+                                true);
                 }
                 else // Is monster
                 {
+                        dmg *= 2;
+
                         if (map::g_player->can_see_actor(*m_owner))
                         {
                                 const std::string actor_name_the =
                                         text_format::first_to_upper(
                                                 m_owner->name_the());
 
-                                msg_log::add(actor_name_the +
-                                             " suffers from poisoning!");
+                                msg_log::add(
+                                        actor_name_the +
+                                        " suffers from poisoning!");
                         }
                 }
 
-                actor::hit(*m_owner, 1, DmgType::pure);
+                actor::hit(*m_owner, dmg, DmgType::pure);
         }
 
         return PropEnded::no;
