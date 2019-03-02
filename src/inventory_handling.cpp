@@ -647,6 +647,8 @@ void BrowseInv::on_start()
                 list_size,
                 panels::h(Panel::item_menu));
 
+        m_browser.disable_selection_audio();
+
         map::g_player->m_inv.sort_backpack();
 
         audio::play(SfxId::backpack);
@@ -839,6 +841,8 @@ void Apply::on_start()
                 m_filtered_backpack_indexes.size(),
                 panels::h(Panel::item_menu));
 
+        m_browser.disable_selection_audio();
+
         audio::play(SfxId::backpack);
 }
 
@@ -958,6 +962,8 @@ void Drop::on_start()
         m_browser.reset(
                 list_size,
                 panels::h(Panel::item_menu));
+
+        m_browser.disable_selection_audio();
 
         audio::play(SfxId::backpack);
 }
@@ -1167,6 +1173,8 @@ void Equip::on_start()
         m_browser.reset(
                 m_filtered_backpack_indexes.size(),
                 panels::h(Panel::item_menu));
+
+        m_browser.disable_selection_audio();
 
         m_browser.set_y(0);
 }
@@ -1423,6 +1431,8 @@ void SelectThrow::on_start()
                 list_size,
                 panels::h(Panel::item_menu));
 
+        m_browser.disable_selection_audio();
+
         // Set up custom menu keys - a specific key is always reserved for the
         // last thrown item (if any), and never used for throwing any other item
         auto custom_keys = m_browser.menu_keys();
@@ -1649,15 +1659,17 @@ void SelectIdentify::on_start()
                 states::pop();
 
                 msg_log::add("There is nothing to identify.");
-        }
-        else
-        {
-                m_browser.reset(
-                        list_size,
-                        panels::h(Panel::item_menu));
 
-                audio::play(SfxId::backpack);
+                return;
         }
+
+        m_browser.reset(
+                list_size,
+                panels::h(Panel::item_menu));
+
+        m_browser.disable_selection_audio();
+
+        audio::play(SfxId::backpack);
 }
 
 void SelectIdentify::draw()

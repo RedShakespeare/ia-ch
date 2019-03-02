@@ -61,7 +61,10 @@ MenuAction MenuBrowser::read(const InputData& input, MenuInputMode mode)
         else if ((input.key == SDLK_RETURN) ||
                  (input.key == 'l'))
         {
-                audio::play(SfxId::menu_select);
+                if (m_play_selection_audio)
+                {
+                        audio::play(SfxId::menu_select);
+                }
 
                 return MenuAction::selected;
         }
@@ -113,7 +116,10 @@ MenuAction MenuBrowser::read(const InputData& input, MenuInputMode mode)
 
                 set_y(global_idx);
 
-                audio::play(SfxId::menu_select);
+                if (m_play_selection_audio)
+                {
+                        audio::play(SfxId::menu_select);
+                }
 
                 return MenuAction::selected;
         }

@@ -99,6 +99,11 @@ public:
                 m_menu_keys = keys;
         }
 
+        void disable_selection_audio()
+        {
+                m_play_selection_audio = false;
+        }
+
 private:
         void set_y_nearest_valid();
 
@@ -109,6 +114,7 @@ private:
         int m_y {0};
         int m_list_h {-1};
         Range m_range_shown {-1, -1};
+        bool m_play_selection_audio {true};
 };
 
 #endif // BROWSER_HPP

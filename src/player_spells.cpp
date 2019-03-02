@@ -252,6 +252,8 @@ void BrowseSpell::on_start()
         }
 
         m_browser.reset(s_learned_spells.size());
+
+        m_browser.disable_selection_audio();
 }
 
 void BrowseSpell::draw()
