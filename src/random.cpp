@@ -11,49 +11,15 @@
 
 #include "debug.hpp"
 
-int Dice::roll() const
+
+int Range::roll() const
 {
-        return rnd::dice(rolls, sides) + plus;
+        return rnd::range(min, max);
 }
 
-std::string Dice::str() const
+bool Fraction::roll() const
 {
-        const std::string rolls_str = std::to_string(rolls);
-
-        const std::string sides_str = std::to_string(sides);
-
-        const std::string plus_str = str_plus();
-
-        return rolls_str + "d" + sides_str + plus_str;
-}
-
-std::string Dice::str_plus() const
-{
-        if (plus == 0)
-        {
-                return "";
-        }
-        else if (plus > 0)
-        {
-                return "+" + std::to_string(plus);
-        }
-        else
-        {
-                return "-" + std::to_string(plus);
-        }
-}
-
-std::string Dice::str_avg() const
-{
-        const double val = avg();
-
-        double rounded = roundf(val * 100.0) / 100.0;
-
-        std::ostringstream ss;
-
-        ss << std::fixed << std::setprecision(1) << rounded;
-
-        return ss.str();
+        return rnd::fraction(num, den);
 }
 
 std::string Range::str() const
@@ -67,15 +33,19 @@ std::string Range::str() const
                 std::to_string(max_actual);
 }
 
-int Range::roll() const
+std::string Range::str_avg() const
 {
-        return rnd::range(min, max);
+        const double val = avg();
+
+        double rounded = roundf(val * 100.0) / 100.0;
+
+        std::ostringstream ss;
+
+        ss << std::fixed << std::setprecision(1) << rounded;
+
+        return ss.str();
 }
 
-bool Fraction::roll() const
-{
-        return rnd::fraction(num, den);
-}
 
 namespace rnd
 {
@@ -121,30 +91,6 @@ int range_binom(const int v1, const int v2, const double p)
         const int random_value = dist(g_rng);
 
         return min + random_value;
-}
-
-int dice(const int rolls, const int sides)
-{
-        if (sides <= 0)
-        {
-                return 0;
-        }
-
-        if (sides == 1)
-        {
-                return rolls * sides;
-        }
-
-        int result = 0;
-
-        const Range roll_range(1, sides);
-
-        for (int i = 0; i < rolls; ++i)
-        {
-                result += roll_range.roll();
-        }
-
-        return result;
 }
 
 bool coin_toss()

@@ -360,7 +360,7 @@ void Terrain::try_put_gore()
 {
         if (data().can_have_gore)
         {
-                const int roll_character = rnd::dice(1, 4);
+                const int roll_character = rnd::range(1, 4);
 
                 switch (roll_character)
                 {
@@ -382,7 +382,7 @@ void Terrain::try_put_gore()
                 }
         }
 
-        const int roll_tile = rnd::dice(1, 8);
+        const int roll_tile = rnd::range(1, 8);
 
         switch (roll_tile)
         {
@@ -1129,7 +1129,7 @@ void Statue::on_hit(
                                         msg_log::add("It falls on " + actor_behind->name_a() + ".");
                                 }
 
-                                actor::hit(*actor_behind, rnd::dice(3, 5), DmgType::physical);
+                                actor::hit(*actor_behind, rnd::range(3, 15), DmgType::physical);
                         }
                 }
 

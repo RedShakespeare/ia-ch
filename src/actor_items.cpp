@@ -600,10 +600,10 @@ static void make_monster_intr_attacks(actor::Actor& actor)
                 // (we always override both melee and ranged damage - this
                 // doesn't matter, since only one damage type will be used and
                 // the other will have no effect)
-                const auto dice = Dice(1, intr_attack->dmg);
+                const DmgRange range(1, intr_attack->dmg);
 
-                item->set_melee_base_dmg(dice);
-                item->set_ranged_base_dmg(dice);
+                item->set_melee_base_dmg(range);
+                item->set_ranged_base_dmg(range);
 
                 actor.m_inv.put_in_intrinsics(item);
         }

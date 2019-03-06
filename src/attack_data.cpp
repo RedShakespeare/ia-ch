@@ -215,23 +215,20 @@ MeleeAttData::MeleeAttData(
 
         // Roll the damage dice
         {
-                Dice dmg_dice = wpn.melee_dmg(attacker);
+                auto dmg_range = wpn.melee_dmg(attacker);
 
                 if (apply_undead_bane_bon)
                 {
-                        dmg_dice.plus += 2;
+                        dmg_range.set_plus(dmg_range.plus() + 2);
                 }
 
                 // Roll the damage dice
-                if (att_result == ActionResult::success_critical)
-                {
-                        // Critical hit (max damage)
-                        dmg = std::max(1, dmg_dice.max());
-                }
-                else // Not critical hit
-                {
-                        dmg = std::max(1, dmg_dice.roll());
-                }
+                dmg =
+                        (att_result == ActionResult::success_critical)
+                        ? dmg_range.total_range().max
+                        : dmg_range.total_range().roll();
+
+                dmg = std::max(1, dmg);
         }
 
         if (attacker && attacker->m_properties.has(PropId::weakened))
@@ -449,18 +446,18 @@ RangedAttData::RangedAttData(
                                         .has(PropId::aiming);
                         }
 
-                        Dice dmg_dice = wpn.ranged_dmg(attacker);
+                        auto dmg_range = wpn.ranged_dmg(attacker);
 
                         if ((attacker == map::g_player) &&
                             player_bon::gets_undead_bane_bon(*defender->m_data))
                         {
-                                dmg_dice.plus += 2;
+                                dmg_range.set_plus(dmg_range.plus() + 2);
                         }
 
                         dmg =
                                 player_has_aim_bon
-                                ? dmg_dice.max()
-                                : dmg_dice.roll();
+                                ? dmg_range.total_range().max
+                                : dmg_range.total_range().roll();
 
                         // Outside effective range limit?
                         if (!wpn.is_in_effective_range_lmt(
@@ -622,17 +619,17 @@ ThrowAttData::ThrowAttData(
                                         .has(PropId::aiming);
                         }
 
-                        Dice dmg_dice = item.thrown_dmg(attacker);
+                        auto dmg_range = item.thrown_dmg(attacker);
 
                         if (apply_undead_bane_bon)
                         {
-                                dmg_dice.plus += 2;
+                                dmg_range.set_plus(dmg_range.plus() + 2);
                         }
 
                         dmg =
                                 player_has_aim_bon
-                                ? dmg_dice.max()
-                                : dmg_dice.roll();
+                                ? dmg_range.total_range().max
+                                : dmg_range.total_range().roll();
 
                         // Outside effective range limit?
                         if (!item.is_in_effective_range_lmt(

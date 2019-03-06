@@ -42,12 +42,9 @@ const size_t g_nr_mg_projectiles = 5;
 
 const int g_mi_go_gun_hp_drained = 3;
 
-// NOTE: Number of rolls is reduced by one for each step away from the center
-const int g_expl_dmg_rolls = 5;
-const int g_expl_dmg_sides = 6;
-const int g_expl_dmg_plus = 10;
-const int g_expl_max_dmg =
-        (g_expl_dmg_rolls * g_expl_dmg_sides) + g_expl_dmg_plus;
+// NOTE: Damage is reduced with higher distance from the center
+const int g_expl_dmg_min = 15;
+const int g_expl_dmg_max = 40;
 
 const int g_poison_dmg_n_turn = 4;
 
@@ -142,7 +139,7 @@ enum class ItemRefDmg
 {
         average,
         average_and_melee_plus,
-        dice,
+        range,
 };
 
 enum class Article

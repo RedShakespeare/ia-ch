@@ -156,15 +156,15 @@ static void draw(const std::vector< std::vector<P> >& pos_lists,
 
 static void apply_explosion_on_pos(
         const P& pos,
-        const int current_radi,
+        const int current_dist,
         actor::Actor* living_actor,
         std::vector<actor::Actor*> corpses_here)
 {
-        const int rolls = g_expl_dmg_rolls - current_radi;
+        const Range dmg_range(
+                g_expl_dmg_min - current_dist,
+                g_expl_dmg_max - (current_dist * 5));
 
-        const int dmg =
-                rnd::dice(rolls, g_expl_dmg_sides) +
-                g_expl_dmg_plus;
+        const int dmg = dmg_range.roll();
 
         // Damage environment
         Cell& cell = map::g_cells.at(pos);

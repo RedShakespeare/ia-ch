@@ -436,7 +436,7 @@ void SpiritDagger::on_melee_hit(actor::Actor& actor_hit, const int dmg)
 }
 
 void SpiritDagger::specific_dmg_mod(
-        Dice& dice,
+        DmgRange& range,
         const actor::Actor* const actor) const
 {
         if (!actor)
@@ -450,7 +450,7 @@ void SpiritDagger::specific_dmg_mod(
 
         const auto dmg_plus_db = std::pow(sp_db, exp);
 
-        dice.plus = (int)dmg_plus_db;
+        range.set_plus((int)dmg_plus_db);
 }
 
 // -----------------------------------------------------------------------------

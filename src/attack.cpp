@@ -167,9 +167,9 @@ static HitSize relative_hit_size_melee(
         const AttData& att_data,
         const item::Wpn& wpn)
 {
-        const Dice dmg_dice = wpn.melee_dmg(att_data.attacker);
+        const auto dmg_range = wpn.melee_dmg(att_data.attacker);
 
-        const int max_dmg = dmg_dice.max();
+        const int max_dmg = dmg_range.total_range().max;
 
         return relative_hit_size(att_data.dmg, max_dmg);
 }
@@ -178,9 +178,9 @@ static HitSize relative_hit_size_ranged(
         const AttData& att_data,
         const item::Wpn& wpn)
 {
-        const Dice dmg_dice = wpn.ranged_dmg(att_data.attacker);
+        const auto dmg_range = wpn.ranged_dmg(att_data.attacker);
 
-        const int max_dmg = dmg_dice.max();
+        const int max_dmg = dmg_range.total_range().max;
 
         return relative_hit_size(att_data.dmg, max_dmg);
 }

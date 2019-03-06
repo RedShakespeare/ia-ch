@@ -36,6 +36,7 @@ Gameplay
 * Updated traps placement - magic traps cannot be placed in blocking positions (since only Occultists can disarm them), traps tend to be more spread out in a room instead of clustered together, traps can be placed in corridors, and generally fewer traps are placed on the map overall
 * Added slow and curse traps
 * Improved check for if Phobia of open places should trigger (for example it no longer triggers while standing in smoke)
+* Completely removed the concept of dice rolls from the game, weapon damage is now specified as a range (e.g. 1-4) instead of dice rolls and sides (e.g. 1d4)
 
 User interface
 * The interface has a new layout, and there is a scrolling viewport centered on the player

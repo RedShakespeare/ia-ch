@@ -14,78 +14,10 @@
 
 #include "debug.hpp"
 
-struct Dice
-{
-        Dice() {}
-
-        Dice(const int nr_rolls, const int nr_sides, const int nr_plus = 0) :
-                rolls(nr_rolls),
-                sides(nr_sides),
-                plus(nr_plus) {}
-
-        Dice(const Dice& other) :
-                rolls(other.rolls),
-                sides(other.sides),
-                plus(other.plus) {}
-
-        Dice& operator=(const Dice& other)
-        {
-                rolls = other.rolls;
-                sides = other.sides;
-                plus  = other.plus;
-                return *this;
-        }
-
-        bool operator==(const Dice& other) const
-        {
-                return
-                        (rolls == other.rolls) &&
-                        (sides == other.sides) &&
-                        (plus == other.plus);
-        }
-
-        bool operator!=(const Dice& other) const
-        {
-                return !(*this == other);
-        }
-
-        int max() const
-        {
-                return (rolls * sides) + plus;
-        }
-
-        int min() const
-        {
-                return (rolls + plus);
-        }
-
-        double avg() const
-        {
-                const double roll_avg = ((double)sides + 1.0) / 2.0;
-
-                const double roll_avg_tot = roll_avg * (double)rolls;
-
-                return roll_avg_tot + (double)plus;
-        }
-
-        int roll() const;
-
-        std::string str() const;
-
-        std::string str_plus() const;
-
-        std::string str_avg() const;
-
-        int rolls {0};
-        int sides {0};
-        int plus {0};
-};
 
 struct Range
 {
-        Range() :
-                min(-1),
-                max(-1) {}
+        Range() {}
 
         Range(const int min_val, const int max_val) :
                 min(min_val),
@@ -93,18 +25,6 @@ struct Range
 
         Range(const Range& other) :
                 Range(other.min, other.max) {}
-
-        int len() const
-        {
-                return max - min + 1;
-        }
-
-        bool is_in_range(const int v) const
-        {
-                return
-                        (v >= min) &&
-                        (v <= max);
-        }
 
         void set(const int min_val, const int max_val)
         {
@@ -121,9 +41,29 @@ struct Range
 
         int roll() const;
 
+        int len() const
+        {
+                return max - min + 1;
+        }
+
+        double avg() const
+        {
+                return (double)(min + max) / 2.0;
+        }
+
+        bool is_in_range(const int v) const
+        {
+                return
+                        (v >= min) &&
+                        (v <= max);
+        }
+
         std::string str() const;
 
-        int min, max;
+        std::string str_avg() const;
+
+        int min {0};
+        int max {0};
 };
 
 struct Fraction
@@ -167,10 +107,6 @@ extern std::mt19937 g_rng;
 void seed();
 
 void seed(uint32_t seed);
-
-// NOTE: If not called with a positive non-zero number of sides, this will
-// always return zero.
-int dice(const int rolls, const int sides);
 
 bool coin_toss();
 

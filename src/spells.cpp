@@ -367,7 +367,7 @@ void Spell::on_resist(actor::Actor& target) const
         if (is_player && player_bon::has_trait(Trait::absorb))
         {
                 map::g_player->restore_sp(
-                        rnd::dice(1, 6),
+                        rnd::range(1, 6),
                         false, // Not allowed above max
                         Verbosity::verbose);
         }
@@ -3282,7 +3282,7 @@ void SpellTransmut::run_effect(
 
         const auto item_type_before = item_before->data().type;
 
-        const int melee_wpn_plus = item_before->melee_base_dmg().plus;
+        const int melee_wpn_plus = item_before->melee_base_dmg().plus();
 
         const auto id_before = item_before->id();
 

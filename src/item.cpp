@@ -113,33 +113,34 @@ void Item::set_random_melee_plus()
                 1       // +6
         };
 
-        m_melee_base_dmg.plus = rnd::weighted_choice(weights);
+        m_melee_base_dmg.set_plus(
+                rnd::weighted_choice(weights));
 }
 
-Dice Item::melee_dmg(const actor::Actor* const attacker) const
+DmgRange Item::melee_dmg(const actor::Actor* const attacker) const
 {
-        auto dice = m_melee_base_dmg;
+        DmgRange range = m_melee_base_dmg;
 
-        if (dice.max() == 0)
+        if (range.total_range().max == 0)
         {
-                return dice;
+                return range;
         }
 
         if (attacker == map::g_player)
         {
                 if (player_bon::has_trait(Trait::adept_melee))
                 {
-                        ++dice.plus;
+                        range.set_plus(range.plus() + 1);
                 }
 
                 if (player_bon::has_trait(Trait::expert_melee))
                 {
-                        ++dice.plus;
+                        range.set_plus(range.plus() + 1);
                 }
 
                 if (player_bon::has_trait(Trait::master_melee))
                 {
-                        ++dice.plus;
+                        range.set_plus(range.plus() + 1);
                 }
 
                 // TODO: This should be handled via the 'specific_dmg_mod' hook
@@ -147,12 +148,12 @@ Dice Item::melee_dmg(const actor::Actor* const attacker) const
                 {
                         if (player_bon::has_trait(Trait::foul))
                         {
-                                ++dice.plus;
+                                range.set_plus(range.plus() + 1);
                         }
 
                         if (player_bon::has_trait(Trait::toxic))
                         {
-                                ++dice.plus;
+                                range.set_plus(range.plus() + 1);
                         }
                 }
         }
@@ -160,50 +161,39 @@ Dice Item::melee_dmg(const actor::Actor* const attacker) const
         // Bonus damage from being frenzied?
         if (attacker && attacker->m_properties.has(PropId::frenzied))
         {
-                ++dice.plus;
+                range.set_plus(range.plus() + 1);
         }
 
-        specific_dmg_mod(dice, attacker);
+        specific_dmg_mod(range, attacker);
 
-        return dice;
+        return range;
 }
 
-Dice Item::ranged_dmg(const actor::Actor* const attacker) const
+DmgRange Item::ranged_dmg(const actor::Actor* const attacker) const
 {
-        auto dice = m_ranged_base_dmg;
+        auto range = m_ranged_base_dmg;
 
-        specific_dmg_mod(dice, attacker);
+        specific_dmg_mod(range, attacker);
 
-        return dice;
+        return range;
 }
 
-Dice Item::thrown_dmg(const actor::Actor* const attacker) const
+DmgRange Item::thrown_dmg(const actor::Actor* const attacker) const
 {
-        Dice dice;
-
         // Melee weapons do throw damage based on their melee damage
-        if (m_data->type == ItemType::melee_wpn)
-        {
-                dice = m_melee_base_dmg;
+        auto range =
+                (m_data->type == ItemType::melee_wpn)
+                ? m_melee_base_dmg
+                : m_ranged_base_dmg;
 
-                if (dice.max() == 0)
-                {
-                        return dice;
-                }
-        }
-        else // Not a melee weapon
+        if (range.total_range().max == 0)
         {
-                dice = m_ranged_base_dmg;
-
-                if (dice.max() == 0)
-                {
-                        return dice;
-                }
+                return range;
         }
 
-        specific_dmg_mod(dice, attacker);
+        specific_dmg_mod(range, attacker);
 
-        return dice;
+        return range;
 }
 
 ItemAttProp& Item::prop_applied_on_melee(
@@ -495,11 +485,11 @@ std::string Item::dmg_str(
         {
         case ItemRefAttInf::melee:
         {
-                if (m_melee_base_dmg.max() > 0)
+                if (m_melee_base_dmg.total_range().max > 0)
                 {
-                        const auto dmg_dice = melee_dmg(map::g_player);
+                        const auto dmg_range = melee_dmg(map::g_player);
 
-                        const auto str_avg = dmg_dice.str_avg();
+                        const auto str_avg = dmg_range.total_range().str_avg();
 
                         switch (dmg_value)
                         {
@@ -523,9 +513,9 @@ std::string Item::dmg_str(
                         }
                         break;
 
-                        case ItemRefDmg::dice:
+                        case ItemRefDmg::range:
                         {
-                                dmg_str = dmg_dice.str();
+                                dmg_str = dmg_range.total_range().str();
                         }
                         break;
                         }
@@ -535,25 +525,29 @@ std::string Item::dmg_str(
 
         case ItemRefAttInf::ranged:
         {
-                if (m_ranged_base_dmg.max() > 0)
+                if (m_ranged_base_dmg.total_range().max > 0)
                 {
-                        Dice dmg_dice = ranged_dmg(map::g_player);
+                        auto dmg_range = ranged_dmg(map::g_player);
 
                         if (m_data->ranged.is_machine_gun)
                         {
-                                dmg_dice.rolls *= g_nr_mg_projectiles;
+                                const int n = g_nr_mg_projectiles;
 
-                                dmg_dice.plus *= g_nr_mg_projectiles;
+                                const int min = n * dmg_range.base_min();
+                                const int max = n * dmg_range.base_max();
+                                const int plus = n * dmg_range.plus();
+
+                                dmg_range = DmgRange(min, max, plus);
                         }
 
                         if ((dmg_value == ItemRefDmg::average) ||
                             (dmg_value == ItemRefDmg::average_and_melee_plus))
                         {
-                                dmg_str = dmg_dice.str_avg();
+                                dmg_str = dmg_range.total_range().str_avg();
                         }
                         else
                         {
-                                dmg_str = dmg_dice.str();
+                                dmg_str = dmg_range.total_range().str();
                         }
                 }
         }
@@ -564,21 +558,22 @@ std::string Item::dmg_str(
                 // Print damage if non-zero throwing damage, or melee weapon
                 // with non zero melee damage (melee weapons use melee damage
                 // when thrown)
-                if ((m_data->ranged.dmg.max() > 0) ||
+                if ((m_data->ranged.dmg.total_range().max > 0) ||
                     ((m_data->main_att_mode == AttMode::melee) &&
-                     (m_melee_base_dmg.max() > 0)))
+                     (m_melee_base_dmg.total_range().max > 0)))
                 {
                         // NOTE: "thrown_dmg" will return melee damage if this
                         // is primarily a melee weapon
-                        const Dice dmg_dice = thrown_dmg(map::g_player);
+                        const auto dmg_range = thrown_dmg(map::g_player);
 
-                        const std::string str_avg = dmg_dice.str_avg();
+                        const std::string str_avg =
+                                dmg_range.total_range().str_avg();
 
                         switch (dmg_value)
                         {
                         case ItemRefDmg::average:
                         {
-                                dmg_str = dmg_dice.str_avg();
+                                dmg_str = dmg_range.total_range().str_avg();
                         }
                         break;
 
@@ -601,9 +596,9 @@ std::string Item::dmg_str(
                         }
                         break;
 
-                        case ItemRefDmg::dice:
+                        case ItemRefDmg::range:
                         {
-                                dmg_str = dmg_dice.str();
+                                dmg_str = dmg_range.total_range().str();
                         }
                         break;
                         }
@@ -804,26 +799,26 @@ Wpn::Wpn(ItemData* const item_data) :
 
 void Wpn::save() const
 {
-        saving::put_int(m_melee_base_dmg.rolls);
-        saving::put_int(m_melee_base_dmg.sides);
-        saving::put_int(m_melee_base_dmg.plus);
+        saving::put_int(m_melee_base_dmg.base_min());
+        saving::put_int(m_melee_base_dmg.base_max());
+        saving::put_int(m_melee_base_dmg.plus());
 
-        saving::put_int(m_ranged_base_dmg.rolls);
-        saving::put_int(m_ranged_base_dmg.sides);
-        saving::put_int(m_ranged_base_dmg.plus);
+        saving::put_int(m_ranged_base_dmg.base_min());
+        saving::put_int(m_ranged_base_dmg.base_max());
+        saving::put_int(m_ranged_base_dmg.plus());
 
         saving::put_int(m_ammo_loaded);
 }
 
 void Wpn::load()
 {
-        m_melee_base_dmg.rolls = saving::get_int();
-        m_melee_base_dmg.sides = saving::get_int();
-        m_melee_base_dmg.plus = saving::get_int();
+        m_melee_base_dmg.set_base_min(saving::get_int());
+        m_melee_base_dmg.set_base_max(saving::get_int());
+        m_melee_base_dmg.set_plus(saving::get_int());
 
-        m_ranged_base_dmg.rolls = saving::get_int();
-        m_ranged_base_dmg.sides = saving::get_int();
-        m_ranged_base_dmg.plus = saving::get_int();
+        m_ranged_base_dmg.set_base_min(saving::get_int());
+        m_ranged_base_dmg.set_base_max(saving::get_int());
+        m_ranged_base_dmg.set_plus(saving::get_int());
 
         m_ammo_loaded = saving::get_int();
 }
@@ -994,13 +989,13 @@ MiGoGun::MiGoGun(ItemData* const item_data) :
         Wpn(item_data) {}
 
 void MiGoGun::specific_dmg_mod(
-        Dice& dice,
+        DmgRange& range,
         const actor::Actor* const actor) const
 {
         if ((actor == map::g_player) &&
             player_bon::has_trait(Trait::elec_incl))
         {
-                ++dice.plus;
+                range.set_plus(range.plus() + 1);
         }
 }
 
@@ -1096,7 +1091,7 @@ void MindLeechSting::on_melee_hit(actor::Actor& actor_hit, const int dmg)
                         msg_log::add(mon_name_the + " looks shocked!");
                 }
 
-                actor::hit(*mon, rnd::dice(3, 5), DmgType::pure);
+                actor::hit(*mon, rnd::range(3, 15), DmgType::pure);
 
                 if (mon->is_alive())
                 {

@@ -486,7 +486,7 @@ void Shockwave::run_effect()
                         msg_log::add(msg);
                 }
 
-                actor::hit(*actor, rnd::dice(1, 6), DmgType::physical);
+                actor::hit(*actor, rnd::range(1, 6), DmgType::physical);
 
                 // Surived the damage? Knock the monster back
                 if (actor->is_alive())

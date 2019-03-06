@@ -535,7 +535,7 @@ PropEnded PropNailed::affect_move_dir(const P& actor_pos, Dir& dir)
                 }
         }
 
-        actor::hit(*m_owner, rnd::dice(1, 3), DmgType::physical);
+        actor::hit(*m_owner, rnd::range(1, 3), DmgType::physical);
 
         if (!m_owner->is_alive() ||
             !rnd::one_in(4))
@@ -939,7 +939,7 @@ PropEnded PropBurning::on_tick()
                 msg_log::add("AAAARGH IT BURNS!!!", colors::light_red());
         }
 
-        actor::hit(*m_owner, rnd::dice(1, 3), DmgType::fire);
+        actor::hit(*m_owner, rnd::range(1, 3), DmgType::fire);
 
         return PropEnded::no;
 }

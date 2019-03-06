@@ -80,7 +80,7 @@ static void reset_data(item::ItemData& d, ItemType const item_type)
                 d.character = '}';
                 d.color = colors::white();
                 d.melee.is_melee_wpn = true;
-                d.melee.dmg = Dice(1, 3);
+                d.melee.dmg = DmgRange(1, 3);
                 d.main_att_mode = AttMode::ranged;
                 d.ranged.is_ranged_wpn = true;
                 d.ranged.projectile_character = '/';
@@ -180,7 +180,7 @@ static void reset_data(item::ItemData& d, ItemType const item_type)
                 d.character = '!';
                 d.tile = TileId::potion;
                 d.ranged.throw_hit_chance_mod = 15;
-                d.ranged.dmg = Dice(1, 3, 0);
+                d.ranged.dmg = DmgRange(1, 3);
                 d.ranged.always_break_on_throw = true;
                 d.max_stack_at_spawn = 1;
                 d.land_on_hard_snd_msg = "";
@@ -324,7 +324,7 @@ void init()
         d.ranged.is_shotgun = true;
         d.melee.att_msgs = {"strike", "strikes me with a shotgun"};
         d.ranged.max_ammo = 2;
-        d.ranged.dmg = Dice(8, 3);
+        d.ranged.dmg = DmgRange(8, 24);
         d.ranged.hit_chance_mod = 0;
         d.ranged.effective_range = 3;
         d.ranged.ammo_item_id = Id::shotgun_shell;
@@ -354,7 +354,7 @@ void init()
         d.ranged.is_shotgun = true;
         d.melee.att_msgs = {"strike", "strikes me with a shotgun"};
         d.ranged.max_ammo = 8;
-        d.ranged.dmg = Dice(6, 3);
+        d.ranged.dmg = DmgRange(6, 18);
         d.ranged.hit_chance_mod = 0;
         d.ranged.effective_range = 5;
         d.ranged.ammo_item_id = Id::shotgun_shell;
@@ -392,7 +392,7 @@ void init()
         d.tile = TileId::incinerator;
         d.melee.att_msgs = {"strike", "strikes me with an Incinerator"};
         d.ranged.max_ammo = 5;
-        d.ranged.dmg = Dice(1, 3);
+        d.ranged.dmg = DmgRange(1, 3);
         d.ranged.effective_range = 8;
         d.allow_display_dmg = false;
         d.ranged.ammo_item_id = Id::incinerator_ammo;
@@ -442,7 +442,7 @@ void init()
         d.melee.att_msgs = {"strike", "strikes me with a Tommy Gun"};
         d.ranged.is_machine_gun = true;
         d.ranged.max_ammo = 50;
-        d.ranged.dmg = Dice(2, 2, 2);
+        d.ranged.dmg = DmgRange(2, 4, 2);
         d.ranged.hit_chance_mod = -10;
         d.ranged.effective_range = 8;
         d.ranged.ammo_item_id = Id::drum_of_bullets;
@@ -485,7 +485,7 @@ void init()
         d.weight = (Weight::light + Weight::medium) / 2;
         d.tile = TileId::pistol;
         d.ranged.max_ammo = 7;
-        d.ranged.dmg = Dice(1, 8, 4);
+        d.ranged.dmg = DmgRange(1, 8, 4);
         d.ranged.effective_range = 6;
         d.ranged.ammo_item_id = Id::pistol_mag;
         d.melee.att_msgs = {"strike", "strikes me with a pistol"};
@@ -523,7 +523,7 @@ void init()
         d.weight = (Weight::light + Weight::medium) / 2;
         d.tile = TileId::flare_gun;
         d.ranged.max_ammo = 1;
-        d.ranged.dmg = Dice(1, 3, 0);
+        d.ranged.dmg = DmgRange(1, 3, 0);
         d.ranged.effective_range = 3;
         d.allow_display_dmg = false;
         d.ranged.ammo_item_id = Id::flare;
@@ -550,7 +550,7 @@ void init()
         d.color = colors::dark_brown();
         d.melee.att_msgs = {"strike", "strikes me with a Spike Gun"};
         d.ranged.max_ammo = 12;
-        d.ranged.dmg = Dice(1, 7, 0);
+        d.ranged.dmg = DmgRange(1, 7, 0);
         d.ranged.hit_chance_mod = 0;
         d.ranged.effective_range = 4;
         d.ranged.dmg_type = DmgType::physical;
@@ -584,7 +584,7 @@ void init()
         d.weight = Weight::medium;
         d.tile = TileId::mi_go_gun;
         d.color = colors::yellow();
-        d.ranged.dmg = Dice(3, 4, 1);
+        d.ranged.dmg = DmgRange(3, 12, 1);
         d.ranged.hit_chance_mod = 5;
         d.ranged.effective_range = 4;
         {
@@ -609,7 +609,7 @@ void init()
         d.id = Id::trap_dart;
         d.allow_spawn = false;
         d.ranged.has_infinite_ammo = true;
-        d.ranged.dmg = Dice(1, 8);
+        d.ranged.dmg = DmgRange(1, 8);
         d.ranged.hit_chance_mod = 70;
         d.ranged.effective_range = 6;
         d.ranged.snd_msg = "I hear the launching of a projectile.";
@@ -627,7 +627,7 @@ void init()
         d.id = Id::trap_spear;
         d.allow_spawn = false;
         d.weight = Weight::heavy;
-        d.melee.dmg = Dice(2, 6);
+        d.melee.dmg = DmgRange(2, 12);
         d.melee.hit_chance_mod = 85;
         d.melee.dmg_method = DmgMethod::piercing;
         d.melee.hit_small_sfx = SfxId::hit_sharp;
@@ -718,7 +718,7 @@ void init()
         d.tile = TileId::dagger;
         d.character = '/';
         d.color = colors::white();
-        d.ranged.dmg = Dice(2, 3);
+        d.ranged.dmg = DmgRange(2, 6);
         d.ranged.throw_hit_chance_mod = 10;
         d.ranged.effective_range = 5;
         d.ranged.max_range = d.ranged.effective_range + 3;
@@ -742,7 +742,7 @@ void init()
         d.tile = TileId::rock;
         d.character = '*';
         d.color = colors::gray();
-        d.ranged.dmg = Dice(1, 3);
+        d.ranged.dmg = DmgRange(1, 3);
         d.ranged.effective_range = 4;
         d.ranged.max_range = d.ranged.effective_range + 3;
         d.max_stack_at_spawn = 3;
@@ -768,7 +768,7 @@ void init()
         d.weight = Weight::light;
         d.tile = TileId::dagger;
         d.melee.att_msgs = {"stab", "stabs me with a Dagger"};
-        d.melee.dmg = Dice(1, 4);
+        d.melee.dmg = DmgRange(1, 4);
         d.melee.hit_chance_mod = 20;
         d.melee.dmg_method = DmgMethod::piercing;
         d.melee.is_noisy = false;
@@ -797,7 +797,7 @@ void init()
         d.weight = Weight::light;
         d.tile = TileId::axe;
         d.melee.att_msgs = {"strike", "strikes me with a Hatchet"};
-        d.melee.dmg = Dice(1, 5);
+        d.melee.dmg = DmgRange(1, 5);
         d.melee.hit_chance_mod = 15;
         d.melee.att_corpse = true;
         d.melee.dmg_method = DmgMethod::slashing;
@@ -826,7 +826,7 @@ void init()
         d.tile = TileId::club;
         d.color = colors::brown();
         d.melee.att_msgs = {"strike", "strikes me with a Club"};
-        d.melee.dmg = Dice(2, 3);
+        d.melee.dmg = DmgRange(2, 6);
         d.melee.hit_chance_mod = 10;
         d.melee.att_corpse = true;
         d.melee.dmg_method = DmgMethod::blunt;
@@ -851,7 +851,7 @@ void init()
         d.weight = Weight::medium;
         d.tile = TileId::hammer;
         d.melee.att_msgs = {"smash", "smashes me with a Hammer"};
-        d.melee.dmg = Dice(2, 4);
+        d.melee.dmg = DmgRange(2, 8);
         d.melee.hit_chance_mod = 5;
         d.melee.att_corpse = true;
         d.melee.dmg_method = DmgMethod::blunt;
@@ -876,7 +876,7 @@ void init()
         d.weight = Weight::medium;
         d.tile = TileId::machete;
         d.melee.att_msgs = {"chop", "chops me with a Machete"};
-        d.melee.dmg = Dice(2, 5);
+        d.melee.dmg = DmgRange(2, 10);
         d.melee.hit_chance_mod = 0;
         d.melee.att_corpse = true;
         d.melee.dmg_method = DmgMethod::slashing;
@@ -904,7 +904,7 @@ void init()
         d.weight = Weight::medium;
         d.tile = TileId::axe;
         d.melee.att_msgs = {"strike", "strikes me with an axe"};
-        d.melee.dmg = Dice(2, 6);
+        d.melee.dmg = DmgRange(2, 12);
         d.melee.hit_chance_mod = -5;
         d.melee.att_corpse = true;
         d.melee.att_terrain = true;
@@ -934,7 +934,7 @@ void init()
         d.weight = (Weight::medium + Weight::heavy) / 2;
         d.tile = TileId::spiked_mace;
         d.melee.att_msgs = {"strike", "strikes me with a spiked mace"};
-        d.melee.dmg = Dice(2, 7);
+        d.melee.dmg = DmgRange(2, 14);
         d.melee.hit_chance_mod = -10;
         d.melee.att_corpse = true;
         d.melee.att_terrain = false;
@@ -962,7 +962,7 @@ void init()
         d.weight = Weight::heavy;
         d.tile = TileId::pitchfork;
         d.melee.att_msgs = {"strike", "strikes me with a Pitchfork"};
-        d.melee.dmg = Dice(3, 4);
+        d.melee.dmg = DmgRange(3, 12);
         d.melee.hit_chance_mod = -15;
         d.melee.att_corpse = true;
         d.melee.knocks_back = true;
@@ -990,7 +990,7 @@ void init()
         d.weight = Weight::heavy;
         d.tile = TileId::sledge_hammer;
         d.melee.att_msgs = {"smash", "smash me with a Sledgehammer"};
-        d.melee.dmg = Dice(3, 5);
+        d.melee.dmg = DmgRange(3, 15);
         d.melee.hit_chance_mod = -15;
         d.melee.att_corpse = true;
         d.melee.att_terrain = true;
@@ -1015,7 +1015,7 @@ void init()
         d.color = colors::gray();
         d.character = '/';
         d.ranged.throw_hit_chance_mod = -5;
-        d.ranged.dmg = Dice(1, 4);
+        d.ranged.dmg = DmgRange(1, 4);
         d.ranged.effective_range = 3;
         d.ranged.max_range = d.ranged.effective_range + 3;
         d.max_stack_at_spawn = 12;
@@ -1030,7 +1030,7 @@ void init()
         d.id = Id::player_kick;
         d.melee.att_msgs = {"kick", ""};
         d.melee.hit_chance_mod = 15;
-        d.melee.dmg = Dice(1, 2);
+        d.melee.dmg = DmgRange(1, 2);
         d.melee.knocks_back = true;
         d.melee.dmg_method = DmgMethod::kicking;
         d.melee.att_terrain = true;
@@ -1058,7 +1058,7 @@ void init()
         d.base_name = {"Punch", "", ""};
         d.melee.att_msgs = {"punch", ""};
         d.melee.hit_chance_mod = 20;
-        d.melee.dmg = Dice(1, 1);
+        d.melee.dmg = DmgRange(1, 1);
         d.melee.miss_sfx = SfxId::miss_light;
         g_data[(size_t)d.id] = d;
 
@@ -1067,7 +1067,7 @@ void init()
         d.base_name = {"Claw", "", ""};
         d.melee.att_msgs = {"claw", ""};
         d.melee.hit_chance_mod = 20;
-        d.melee.dmg = Dice(1, 8);
+        d.melee.dmg = DmgRange(1, 8);
         d.melee.att_corpse = true;
         d.melee.dmg_method = DmgMethod::slashing;
         d.melee.hit_small_sfx = SfxId::hit_sharp;
@@ -1703,7 +1703,7 @@ void init()
                 "strike",
                 "strikes me with the Staff of the Pharaohs"
         };
-        d.melee.dmg = Dice(2, 4, 4);
+        d.melee.dmg = DmgRange(2, 8, 4);
         d.melee.hit_chance_mod = 0;
         d.melee.miss_sfx = SfxId::miss_medium;
         d.melee.dmg_method = DmgMethod::blunt;
@@ -1885,7 +1885,7 @@ void init()
         d.tile = TileId::dagger;
         d.color = colors::violet();
         d.melee.att_msgs = {"stab", "stabs me with a Dagger"};
-        d.melee.dmg = Dice(1, 4);
+        d.melee.dmg = DmgRange(1, 4);
         d.melee.hit_chance_mod = 20;
         d.melee.is_noisy = false;
         d.melee.hit_medium_sfx = SfxId::hit_sharp;
@@ -1941,7 +1941,7 @@ void init()
         d.tile = TileId::zombie_dust;
         d.character = '*';
         d.color = colors::brown();
-        d.ranged.dmg = Dice(0, 0);
+        d.ranged.dmg = DmgRange(0, 0);
         d.ranged.throw_hit_chance_mod = 15;
         d.ranged.always_break_on_throw = true;
         d.ranged.effective_range = -1;

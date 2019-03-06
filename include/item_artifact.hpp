@@ -165,7 +165,7 @@ public:
 
 protected:
         void specific_dmg_mod(
-                Dice& dice,
+                DmgRange& range,
                 const actor::Actor* const actor) const override;
 };
 

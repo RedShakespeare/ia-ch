@@ -463,7 +463,7 @@ void InvState::draw_detailed_item_descr(
                         const std::string dmg_str =
                                 item->dmg_str(
                                         att_inf,
-                                        ItemRefDmg::dice);
+                                        ItemRefDmg::range);
 
                         const std::string dmg_str_avg =
                                 item->dmg_str(

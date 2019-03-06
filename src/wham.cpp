@@ -198,10 +198,10 @@ void run()
 
                 msg_log::add(msg);
 
-                const Dice dmg_dice =
+                const auto dmg_range =
                         wpn_used_att_corpse->melee_dmg(map::g_player);
 
-                const int dmg = dmg_dice.roll();
+                const int dmg = dmg_range.total_range().roll();
 
                 actor::hit(
                         *corpse,
@@ -313,10 +313,10 @@ void run()
                         ? wpn
                         : kick_wpn.get();
 
-                const Dice dmg_dice =
+                const auto dmg_range =
                         wpn_used_att_terrain->melee_dmg(map::g_player);
 
-                const int dmg = dmg_dice.roll();
+                const int dmg = dmg_range.total_range().roll();
 
                 terrain->hit(
                         dmg,
