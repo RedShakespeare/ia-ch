@@ -6658,7 +6658,7 @@
             <size>humanoid</size>
             <always_prevent_knockback>true</always_prevent_knockback>
             <can_bleed>true</can_bleed>
-            <can_leave_corpse>true</can_leave_corpse>
+            <can_leave_corpse>false</can_leave_corpse>
             <prioritize_destroying_corpse>false</prioritize_destroying_corpse>
         </attributes>
 
