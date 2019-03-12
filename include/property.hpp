@@ -347,10 +347,8 @@ public:
                         return -20;
 
                 default:
-                        break;
+                        return 0;
                 }
-
-                return 0;
         }
 
         bool allow_attack_melee(const Verbosity verbosity) const override;
@@ -514,10 +512,8 @@ public:
                         return -50;
 
                 default:
-                        break;
+                        return 0;
                 }
-
-                return 0;
         }
 };
 
@@ -597,10 +593,8 @@ public:
                         return 5;
 
                 default:
-                        break;
+                        return 0;
                 }
-
-                return 0;
         }
 
 private:
@@ -624,10 +618,8 @@ public:
                         return -5;
 
                 default:
-                        break;
+                        return 0;
                 }
-
-                return 0;
         }
 
         void on_applied() override;
@@ -1495,6 +1487,21 @@ public:
         }
 
         bool allow_attack_ranged(const Verbosity verbosity) const override;
+
+        int ability_mod(const AbilityId ability) const override
+        {
+                switch (ability)
+                {
+                case AbilityId::melee:
+                        return -10;
+
+                case AbilityId::dodging:
+                        return -10;
+
+                default:
+                        return 0;
+                }
+        }
 };
 
 #endif // PROPERTY_HPP

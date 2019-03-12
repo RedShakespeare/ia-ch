@@ -883,7 +883,9 @@ static void init_data_list()
         d.std_rnd_turns = Range(1, 1);
         d.name = "Swimming";
         d.name_short = "Swimming";
-        d.descr = "Cannot read, fire ranged weapons, or light explosives";
+        d.descr =
+                "Cannot read, fire ranged weapons, or light explosives, "
+                "-10% melee hit chance, -10% chance to evade attacks";
         d.allow_display_turns = false;
         d.allow_test_on_bot = false;
         d.alignment = PropAlignment::neutral;
