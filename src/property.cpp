@@ -1700,7 +1700,11 @@ void PropRegenerates::on_std_turn()
 
 PropActResult PropCorpseRises::on_act()
 {
-        if (!m_owner->is_corpse() || map::first_actor_at_pos(m_owner->m_pos))
+        const auto pos = m_owner->m_pos;
+
+        if (!m_owner->is_corpse() ||
+            map::first_actor_at_pos(m_owner->m_pos) ||
+            (map::g_cells.at(pos).terrain->id() == terrain::Id::liquid_deep))
         {
                 return PropActResult();
         }
@@ -1725,7 +1729,7 @@ PropActResult PropCorpseRises::on_act()
 
         --m_owner->m_data->nr_kills;
 
-        if (map::g_cells.at(m_owner->m_pos).is_seen_by_player)
+        if (map::g_cells.at(pos).is_seen_by_player)
         {
                 ASSERT(!m_owner->m_data->corpse_name_the.empty());
 
@@ -1739,8 +1743,9 @@ PropActResult PropCorpseRises::on_act()
                         colors::text(),
                         true);
 
-                map::g_player->incr_shock(ShockLvl::frightening,
-                                        ShockSrc::see_mon);
+                map::g_player->incr_shock(
+                        ShockLvl::frightening,
+                        ShockSrc::see_mon);
         }
 
         static_cast<actor::Mon*>(m_owner)->become_aware_player(false);
@@ -1771,8 +1776,8 @@ void PropSpawnsZombiePartsOnDestroyed::on_destroyed()
 
         const auto f_id = map::g_cells.at(pos).terrain->id();
 
-        if (f_id == terrain::Id::chasm ||
-            f_id == terrain::Id::liquid_deep)
+        if ((f_id == terrain::Id::chasm) ||
+            (f_id == terrain::Id::liquid_deep))
         {
                 return;
         }
