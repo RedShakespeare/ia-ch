@@ -81,7 +81,7 @@ void player_disarm()
 
         // There is a known and seen trap here
 
-        const auto* const actor_on_trap = map::actor_at_pos(pos);
+        const auto* const actor_on_trap = map::first_actor_at_pos(pos);
 
         if (actor_on_trap && !actor_on_trap->is_player())
         {

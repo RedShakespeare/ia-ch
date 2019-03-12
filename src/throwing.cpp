@@ -203,7 +203,7 @@ void throw_item(
 
                 drop_pos = pos;
 
-                auto* const actor_here = map::actor_at_pos(pos);
+                auto* const actor_here = map::first_actor_at_pos(pos);
 
                 if (actor_here &&
                     ((pos == tgt_pos) ||

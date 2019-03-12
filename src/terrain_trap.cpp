@@ -520,7 +520,7 @@ Color Trap::color_bg_default() const
         const auto* const item = map::g_cells.at(m_pos).item;
 
         const auto* const corpse =
-                map::actor_at_pos(
+                map::first_actor_at_pos(
                         m_pos,
                         ActorState::corpse);
 
@@ -790,7 +790,7 @@ void TrapSpear::trigger()
         }
 
         // Is anyone standing on the trap now?
-        auto* const actor_on_trap = map::actor_at_pos(m_pos);
+        auto* const actor_on_trap = map::first_actor_at_pos(m_pos);
 
         if (actor_on_trap)
         {
@@ -965,7 +965,7 @@ void TrapTeleport::trigger()
 {
         TRACE_FUNC_BEGIN_VERBOSE;
 
-        auto* const actor_here = map::actor_at_pos(m_pos);
+        auto* const actor_here = map::first_actor_at_pos(m_pos);
 
         ASSERT(actor_here);
 
@@ -1026,7 +1026,7 @@ void TrapSummonMon::trigger()
 {
         TRACE_FUNC_BEGIN;
 
-        auto* const actor_here = map::actor_at_pos(m_pos);
+        auto* const actor_here = map::first_actor_at_pos(m_pos);
 
         ASSERT(actor_here);
 
@@ -1141,7 +1141,7 @@ void TrapSpiDrain::trigger()
 {
         TRACE_FUNC_BEGIN_VERBOSE;
 
-        auto* const actor_here = map::actor_at_pos(m_pos);
+        auto* const actor_here = map::first_actor_at_pos(m_pos);
 
         ASSERT(actor_here);
 
@@ -1290,7 +1290,7 @@ void TrapWeb::trigger()
 {
         TRACE_FUNC_BEGIN_VERBOSE;
 
-        auto* const actor_here = map::actor_at_pos(m_pos);
+        auto* const actor_here = map::first_actor_at_pos(m_pos);
 
         ASSERT(actor_here);
 
@@ -1360,7 +1360,7 @@ void TrapSlow::trigger()
 {
         TRACE_FUNC_BEGIN_VERBOSE;
 
-        auto* const actor_here = map::actor_at_pos(m_pos);
+        auto* const actor_here = map::first_actor_at_pos(m_pos);
 
         ASSERT(actor_here);
 
@@ -1379,7 +1379,7 @@ void TrapCurse::trigger()
 {
         TRACE_FUNC_BEGIN_VERBOSE;
 
-        auto* const actor_here = map::actor_at_pos(m_pos);
+        auto* const actor_here = map::first_actor_at_pos(m_pos);
 
         ASSERT(actor_here);
 

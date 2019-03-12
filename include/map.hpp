@@ -135,7 +135,7 @@ void delete_and_remove_room_from_list(Room* const room);
 
 bool is_pos_seen_by_player(const P& p);
 
-actor::Actor* actor_at_pos(
+actor::Actor* first_actor_at_pos(
         const P& pos,
         ActorState state = ActorState::alive);
 

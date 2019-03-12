@@ -242,7 +242,9 @@ static void move_player_non_center_direction(const P& tgt)
                 map_parsers::BlocksActor(player, ParseActors::no)
                 .cell(tgt);
 
-        auto* const mon = static_cast<actor::Mon*>(map::actor_at_pos(tgt));
+        auto* const mon =
+                static_cast<actor::Mon*>(
+                        map::first_actor_at_pos(tgt));
 
         const auto is_aware_of_mon =
                 mon &&

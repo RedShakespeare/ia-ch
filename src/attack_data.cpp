@@ -289,7 +289,7 @@ RangedAttData::RangedAttData(
         }
         else // Not incinerator
         {
-                auto* const actor_aimed_at = map::actor_at_pos(aim_pos);
+                auto* const actor_aimed_at = map::first_actor_at_pos(aim_pos);
 
                 if (actor_aimed_at)
                 {
@@ -308,7 +308,7 @@ RangedAttData::RangedAttData(
                 }
         }
 
-        defender = map::actor_at_pos(current_pos);
+        defender = map::first_actor_at_pos(current_pos);
 
         if (defender && (defender != attacker))
         {
@@ -483,7 +483,7 @@ ThrowAttData::ThrowAttData(
         defender_size((actor::Size)0),
         dist_mod(0)
 {
-        auto* const actor_aimed_at = map::actor_at_pos(aim_pos);
+        auto* const actor_aimed_at = map::first_actor_at_pos(aim_pos);
 
         // Determine aim level
         if (actor_aimed_at)
@@ -502,7 +502,7 @@ ThrowAttData::ThrowAttData(
                         : actor::Size::floor;
         }
 
-        defender = map::actor_at_pos(current_pos);
+        defender = map::first_actor_at_pos(current_pos);
 
         if (defender && (defender != attacker))
         {

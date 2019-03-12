@@ -68,7 +68,7 @@ void Smoke::on_placed()
 
 void Smoke::on_new_turn()
 {
-        auto* actor = map::actor_at_pos(m_pos);
+        auto* actor = map::first_actor_at_pos(m_pos);
 
         if (actor)
         {

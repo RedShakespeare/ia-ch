@@ -317,6 +317,8 @@ if(CMAKE_COMPILER_IS_GNUCXX OR(CMAKE_C_COMPILER_ID MATCHES "Clang") OR(CMAKE_CXX
                 # with mingw (the command seems to freeze forever), but -Og works
                 -Og
                 -g
+                # -fsanitize=undefined
+                # -fno-sanitize=vptr  # Requires RTTI
                 )
 
         set(RELEASE_COMPILE_FLAGS
@@ -332,6 +334,7 @@ set(RELEASE_COMPILE_FLAGS
 
 set(TEST_COMPILE_FLAGS
         ${DEBUG_COMPILE_FLAGS}
+        -DTRACE_LVL=0
         )
 
 target_compile_options(ia PUBLIC

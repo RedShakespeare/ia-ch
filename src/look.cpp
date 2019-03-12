@@ -569,7 +569,7 @@ void print_location_info_msgs(const P& pos)
 
 void print_living_actor_info_msg(const P& pos)
 {
-        auto* actor = map::actor_at_pos(pos);
+        auto* actor = map::first_actor_at_pos(pos);
 
         if (!actor ||
             actor->is_player() ||

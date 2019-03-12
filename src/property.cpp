@@ -1700,7 +1700,7 @@ void PropRegenerates::on_std_turn()
 
 PropActResult PropCorpseRises::on_act()
 {
-        if (!m_owner->is_corpse() || map::actor_at_pos(m_owner->m_pos))
+        if (!m_owner->is_corpse() || map::first_actor_at_pos(m_owner->m_pos))
         {
                 return PropActResult();
         }

@@ -132,7 +132,7 @@ void Terrain::on_new_turn()
                 // TODO: Hit dead actors
 
                 // Hit actor standing on terrain
-                auto* actor = map::actor_at_pos(m_pos);
+                auto* actor = map::first_actor_at_pos(m_pos);
 
                 if (actor)
                 {
@@ -199,7 +199,7 @@ void Terrain::on_new_turn()
                 // Hit actors and adjacent terrains?
                 if (rnd::one_in(hit_adjacent_one_in_n))
                 {
-                        actor = map::actor_at_pos(m_pos);
+                        actor = map::first_actor_at_pos(m_pos);
 
                         if (actor)
                         {
@@ -1114,7 +1114,7 @@ void Statue::on_hit(
 
                 map::put(new RubbleLow(m_pos)); // NOTE: "this" is now deleted!
 
-                actor::Actor* const actor_behind = map::actor_at_pos(dst_pos);
+                actor::Actor* const actor_behind = map::first_actor_at_pos(dst_pos);
 
                 if (actor_behind && actor_behind->is_alive())
                 {
@@ -1447,7 +1447,7 @@ Color LiquidShallow::color_bg_default() const
         const auto* const item = map::g_cells.at(m_pos).item;
 
         const auto* const corpse =
-                map::actor_at_pos(
+                map::first_actor_at_pos(
                         m_pos,
                         ActorState::corpse);
 
@@ -2183,7 +2183,7 @@ Color Chains::color_bg_default() const
         const auto* const item = map::g_cells.at(m_pos).item;
 
         const auto* const corpse =
-                map::actor_at_pos(
+                map::first_actor_at_pos(
                         m_pos,
                         ActorState::corpse);
 

@@ -25,8 +25,9 @@ TEST_CASE("Spider web")
         const P pos_l(5, 7);
         const P pos_r(6, 7);
 
-        // There is randomness involved in getting stuck or breaking free, run
-        // until we have encountered both of these cases
+        // TODO: Is getting stuck deterministic now? Perhaps there is no need to
+        // run this in a loop?
+
         bool tested_stuck = false;
         bool tested_unstuck = false;
 

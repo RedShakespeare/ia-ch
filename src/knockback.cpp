@@ -30,11 +30,12 @@
 namespace knockback
 {
 
-void run(actor::Actor& defender,
-         const P& attacked_from_pos,
-         const bool is_spike_gun,
-         const Verbosity verbosity,
-         const int paralyze_extra_turns)
+void run(
+        actor::Actor& defender,
+        const P& attacked_from_pos,
+        const bool is_spike_gun,
+        const Verbosity verbosity,
+        const int paralyze_extra_turns)
 {
         TRACE_FUNC_BEGIN;
 
@@ -60,8 +61,14 @@ void run(actor::Actor& defender,
 
         const P new_pos = defender.m_pos + d;
 
-        const bool defender_can_move_through_cell =
-                !map_parsers::BlocksActor(defender, ParseActors::yes)
+        if (map::first_actor_at_pos(new_pos, ActorState::alive))
+        {
+                // Target position is occupied by another actor
+                return;
+        }
+
+        const auto defender_can_move_into_tgt_pos =
+                !map_parsers::BlocksActor(defender, ParseActors::no)
                 .cell(new_pos);
 
         const std::vector<terrain::Id> deep_terrains = {
@@ -69,20 +76,18 @@ void run(actor::Actor& defender,
                 terrain::Id::liquid_deep
         };
 
-        const bool is_cell_deep =
+        const bool is_tgt_pos_deep =
                 map_parsers::IsAnyOfTerrains(deep_terrains)
                 .cell(new_pos);
 
         auto& tgt_cell = map::g_cells.at(new_pos);
 
-        if (!defender_can_move_through_cell && !is_cell_deep)
+        if (!defender_can_move_into_tgt_pos && !is_tgt_pos_deep)
         {
                 // Defender nailed to a wall from a spike gun?
                 if (is_spike_gun)
                 {
-                        // TODO: Wouldn't it be better to check if the cell is
-                        // blocking projectiles?
-                        if (!tgt_cell.terrain->is_los_passable())
+                        if (!tgt_cell.terrain->is_projectile_passable())
                         {
                                 auto prop = new PropNailed();
 
@@ -144,7 +149,7 @@ void run(actor::Actor& defender,
 
         defender.m_pos = new_pos;
 
-        if (is_cell_deep && !defender_can_move_through_cell)
+        if (!defender_can_move_into_tgt_pos && is_tgt_pos_deep)
         {
                 if (is_defender_player)
                 {

@@ -329,7 +329,7 @@ bool is_pos_seen_by_player(const P& p)
         return g_cells.at(p).is_seen_by_player;
 }
 
-actor::Actor* actor_at_pos(const P& pos, ActorState state)
+actor::Actor* first_actor_at_pos(const P& pos, ActorState state)
 {
         for (auto* const actor : game_time::g_actors)
         {

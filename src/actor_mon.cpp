@@ -1175,10 +1175,10 @@ bool Mon::is_friend_blocking_ranged_attack(const P& target_pos) const
 
         for (const P& line_pos : line)
         {
-                if ((line_pos != m_pos) &&
-                    (line_pos != target_pos))
+                if ((line_pos != m_pos) && (line_pos != target_pos))
                 {
-                        Actor* const actor_here = map::actor_at_pos(line_pos);
+                        auto* const actor_here =
+                                map::first_actor_at_pos(line_pos);
 
                         // TODO: This does not consider who is allied/hostile!
                         if (actor_here)

@@ -364,7 +364,7 @@ void MarkerState::try_go_to_closest_enemy()
         {
                 m_pos = closest_pos(map::g_player->m_pos, seen_foes_cells);
 
-                map::g_player->m_tgt = map::actor_at_pos(m_pos);
+                map::g_player->m_tgt = map::first_actor_at_pos(m_pos);
         }
 }
 
@@ -377,7 +377,7 @@ void Viewing::on_moved()
 
         look::print_location_info_msgs(m_pos);
 
-        const auto* const actor = map::actor_at_pos(m_pos);
+        const auto* const actor = map::first_actor_at_pos(m_pos);
 
         if (actor &&
             !actor->is_player() &&
@@ -420,7 +420,7 @@ void Viewing::handle_input(const InputData& input)
 
         if (game_cmd == GameCmd::look)
         {
-                auto* const actor = map::actor_at_pos(m_pos);
+                auto* const actor = map::first_actor_at_pos(m_pos);
 
                 if (actor &&
                     actor != map::g_player &&
@@ -454,7 +454,7 @@ void Aiming::on_moved()
 
         if (is_in_range)
         {
-                auto* const actor = map::actor_at_pos(m_pos);
+                auto* const actor = map::first_actor_at_pos(m_pos);
 
                 if (actor &&
                     !actor->is_player() &&
@@ -528,7 +528,7 @@ void Aiming::handle_input(const InputData& input)
                 {
                         msg_log::clear();
 
-                        auto* const actor = map::actor_at_pos(m_pos);
+                        auto* const actor = map::first_actor_at_pos(m_pos);
 
                         if (actor && map::g_player->can_see_actor(*actor))
                         {
@@ -588,7 +588,7 @@ void Throwing::on_moved()
 
         if (is_in_range)
         {
-                auto* const actor = map::actor_at_pos(m_pos);
+                auto* const actor = map::first_actor_at_pos(m_pos);
 
                 if (actor &&
                     !actor->is_player() &&
@@ -646,7 +646,7 @@ void Throwing::handle_input(const InputData& input)
                 {
                         msg_log::clear();
 
-                        auto* const actor = map::actor_at_pos(m_pos);
+                        auto* const actor = map::first_actor_at_pos(m_pos);
 
                         if (actor && map::g_player->can_see_actor(*actor))
                         {

@@ -1772,7 +1772,7 @@ void Player::auto_melee()
         // If this line reached, there is no adjacent cur target.
         for (const P& d : dir_utils::g_dir_list)
         {
-                Actor* const actor = map::actor_at_pos(m_pos + d);
+                Actor* const actor = map::first_actor_at_pos(m_pos + d);
 
                 if (actor && !is_leader_of(actor) && can_see_actor(*actor))
                 {

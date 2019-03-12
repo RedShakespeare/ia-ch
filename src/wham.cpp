@@ -98,7 +98,7 @@ void run()
         if (input_dir != Dir::center)
         {
                 auto* living_actor =
-                        map::actor_at_pos(att_pos, ActorState::alive);
+                        map::first_actor_at_pos(att_pos, ActorState::alive);
 
                 if (living_actor)
                 {
