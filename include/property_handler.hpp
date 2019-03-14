@@ -169,7 +169,8 @@ public:
 
         void on_hit();
         void on_death();
-        void on_destroyed();
+        void on_destroyed_alive();
+        void on_destroyed_corpse();
 
         int ability_mod(const AbilityId ability) const;
 

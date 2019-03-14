@@ -73,8 +73,6 @@ public:
                 const int change,
                 const Verbosity verbosity = Verbosity::verbose);
 
-        void destroy();
-
         // Used by Ghoul class and Ghoul monsters
         DidAction try_eat_corpse();
 

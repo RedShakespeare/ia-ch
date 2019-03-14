@@ -525,13 +525,6 @@ int Actor::armor_points() const
         return ap;
 }
 
-void Actor::destroy()
-{
-        m_state = ActorState::destroyed;
-
-        m_properties.on_destroyed();
-}
-
 std::string Actor::death_msg() const
 {
         const std::string actor_name_the =
@@ -585,8 +578,7 @@ DidAction Actor::try_eat_corpse()
                 {
                         corpse = actor;
 
-                        if (actor_is_player &&
-                            actor->m_data->prio_corpse_bash)
+                        if (actor_is_player && actor->m_data->prio_corpse_bash)
                         {
                                 break;
                         }
@@ -638,7 +630,7 @@ DidAction Actor::try_eat_corpse()
 
                 if (is_destroyed)
                 {
-                        corpse->destroy();
+                        corpse->m_state = ActorState::destroyed;
 
                         map::make_gore(m_pos);
                         map::make_blood(m_pos);

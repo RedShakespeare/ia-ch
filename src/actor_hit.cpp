@@ -95,8 +95,6 @@ ActorDied hit(
                 return ActorDied::no;
         }
 
-
-
         if (actor.is_player())
         {
                 map::g_player->interrupt_actions();
@@ -135,10 +133,13 @@ ActorDied hit(
                                 snd.run();
                         }
 
-                        actor.destroy();
+                        actor.m_state = ActorState::destroyed;
+
+                        actor.m_properties.on_destroyed_corpse();
 
                         if (actor.m_data->is_humanoid)
                         {
+                                map::make_blood(actor.m_pos);
                                 map::make_gore(actor.m_pos);
                         }
 
@@ -271,10 +272,7 @@ ActorDied hit(
                         ? AllowDropItems::no
                         : AllowDropItems::yes;
 
-                kill(actor,
-                     is_destroyed,
-                     allow_gore,
-                     allow_drop_items);
+                kill(actor, is_destroyed, allow_gore, allow_drop_items);
 
                 return ActorDied::yes;
         }
@@ -356,10 +354,7 @@ ActorDied hit_sp(
                 ? IsDestroyed::yes
                 : IsDestroyed::no;
 
-        kill(actor,
-             is_destroyed,
-             AllowGore::no,
-             AllowDropItems::yes);
+        kill(actor, is_destroyed, AllowGore::no, AllowDropItems::yes);
 
         return ActorDied::yes;
 }

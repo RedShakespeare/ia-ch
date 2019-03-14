@@ -153,37 +153,27 @@ void kill(
                 }
         }
 
-        if (is_destroyed == IsDestroyed::yes)
+        if (!actor.is_player() && actor.m_data->is_humanoid)
         {
-                actor.destroy();
-        }
-        else // Not destroyed
-        {
-                actor.m_state = ActorState::corpse;
-        }
+                TRACE_VERBOSE << "Emitting death sound" << std::endl;
 
-        if (!actor.is_player())
-        {
-                // This is a monster
+                Snd snd("I hear agonized screaming.",
+                        SfxId::END,
+                        IgnoreMsgIfOriginSeen::yes,
+                        actor.m_pos,
+                        &actor,
+                        SndVol::high,
+                        AlertsMon::no);
 
-                if (actor.m_data->is_humanoid)
-                {
-                        TRACE_VERBOSE << "Emitting death sound" << std::endl;
-
-                        Snd snd("I hear agonized screaming.",
-                                SfxId::END,
-                                IgnoreMsgIfOriginSeen::yes,
-                                actor.m_pos,
-                                &actor,
-                                SndVol::high,
-                                AlertsMon::no);
-
-                        snd.run();
-                }
+                snd.run();
         }
 
         if (is_destroyed == IsDestroyed::yes)
         {
+                actor.m_state = ActorState::destroyed;
+
+                actor.m_properties.on_destroyed_alive();
+
                 if (actor.m_data->can_bleed && (allow_gore == AllowGore::yes))
                 {
                         map::make_gore(actor.m_pos);
@@ -192,6 +182,8 @@ void kill(
         }
         else // Not destroyed
         {
+                actor.m_state = ActorState::corpse;
+
                 if (!actor.is_player())
                 {
                         move_actor_to_pos_can_have_corpse(actor);

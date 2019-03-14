@@ -212,7 +212,10 @@ public:
         }
 
         virtual void on_death() {}
-        virtual void on_destroyed() {}
+
+        virtual void on_destroyed_alive() {}
+
+        virtual void on_destroyed_corpse() {}
 
         virtual int affect_max_hp(const int hp_max) const
         {
@@ -1400,7 +1403,15 @@ public:
         PropSpawnsZombiePartsOnDestroyed():
                 Prop(PropId::spawns_zombie_parts_on_destroyed) {}
 
-        void on_destroyed() override;
+        void on_destroyed_alive() override;
+        void on_destroyed_corpse() override;
+
+private:
+        void try_spawn_zombie_parts() const;
+
+        void try_spawn_zombie_dust() const;
+
+        bool is_allowed_to_spawn_parts_here() const;
 };
 
 class PropBreeds: public Prop

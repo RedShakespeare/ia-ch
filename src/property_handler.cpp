@@ -1115,13 +1115,25 @@ void PropHandler::on_death()
         TRACE_FUNC_END_VERBOSE;
 }
 
-void PropHandler::on_destroyed()
+void PropHandler::on_destroyed_alive()
 {
         TRACE_FUNC_BEGIN_VERBOSE;
 
         for (auto& prop : m_props)
         {
-                prop->on_destroyed();
+                prop->on_destroyed_alive();
+        }
+
+        TRACE_FUNC_END_VERBOSE;
+}
+
+void PropHandler::on_destroyed_corpse()
+{
+        TRACE_FUNC_BEGIN_VERBOSE;
+
+        for (auto& prop : m_props)
+        {
+                prop->on_destroyed_corpse();
         }
 
         TRACE_FUNC_END_VERBOSE;

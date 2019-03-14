@@ -453,10 +453,13 @@ ConsumeItem ForceField::run_effect()
                 // Destroy corpses in cells with force fields
                 for (auto* const actor : actors_here)
                 {
-                        actor->destroy();
+                        if (actor->is_corpse())
+                        {
+                                actor->m_state = ActorState::destroyed;
 
-                        map::make_blood(p);
-                        map::make_gore(p);
+                                map::make_blood(p);
+                                map::make_gore(p);
+                        }
                 }
 
                 game_time::add_mob(new terrain::ForceField(p, duration));

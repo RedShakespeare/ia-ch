@@ -1467,6 +1467,10 @@ void PropExplodesOnDeath::on_death()
 {
         TRACE_FUNC_BEGIN;
 
+        // Setting the actor to destroyed here, just to make sure there will not
+        // be a recursive call chain due to explosion damage to the corpse
+        m_owner->m_state = ActorState::destroyed;
+
         explosion::run(m_owner->m_pos, ExplType::expl);
 
         TRACE_FUNC_END;
@@ -1764,35 +1768,42 @@ PropActResult PropCorpseRises::on_act()
 
 void PropCorpseRises::on_death()
 {
-        if (m_has_risen)
+        // If we have already risen before, and were killed again leaving a
+        // corpse, destroy the corpse to prevent rising multiple times
+        if (m_owner->is_corpse() && m_has_risen)
         {
-                m_owner->destroy();
+                m_owner->m_state = ActorState::destroyed;
+
+                m_owner->m_properties.on_destroyed_alive();
         }
 }
 
-void PropSpawnsZombiePartsOnDestroyed::on_destroyed()
+void PropSpawnsZombiePartsOnDestroyed::on_destroyed_alive()
 {
-        const P& pos = m_owner->m_pos;
+        try_spawn_zombie_dust();
 
-        const auto f_id = map::g_cells.at(pos).terrain->id();
+        try_spawn_zombie_parts();
+}
 
-        if ((f_id == terrain::Id::chasm) ||
-            (f_id == terrain::Id::liquid_deep))
+void PropSpawnsZombiePartsOnDestroyed::on_destroyed_corpse()
+{
+        // NOTE: We do not spawn zombie parts when the corpse is destroyed (it's
+        // pretty annoying if parts are spawned when you bash a corpse)
+        try_spawn_zombie_dust();
+}
+
+void PropSpawnsZombiePartsOnDestroyed::try_spawn_zombie_parts() const
+{
+        if (!is_allowed_to_spawn_parts_here())
         {
                 return;
         }
 
-        // Occasionally make Zombie Dust
-        const int make_dust_one_in_n = 7;
-
-        if (rnd::one_in(make_dust_one_in_n))
-        {
-                item::make_item_on_floor(item::Id::zombie_dust, pos);
-        }
+        const auto pos = m_owner->m_pos;
 
         // Spawning zombie part monsters is only allowed if the monster is not
-        // destroyed "too hard". This also reward heavy weapons, since they will
-        // more often prevent spawning
+        // destroyed "too hard". This is also rewarding heavy weapons, since
+        // they will more often prevent spawning
         const bool is_very_destroyed = (m_owner->m_hp <= -8);
 
         const int summon_one_in_n = 5;
@@ -1853,8 +1864,9 @@ void PropSpawnsZombiePartsOnDestroyed::on_destroyed()
 
                 msg_log::add(spawn_msg);
 
-                map::g_player->incr_shock(ShockLvl::frightening,
-                                        ShockSrc::see_mon);
+                map::g_player->incr_shock(
+                        ShockLvl::frightening,
+                        ShockSrc::see_mon);
         }
 
         ASSERT(id_to_spawn != actor::Id::END);
@@ -1876,6 +1888,32 @@ void PropSpawnsZombiePartsOnDestroyed::on_destroyed()
 
                         mon->m_properties.apply(waiting);
                 });
+}
+
+void PropSpawnsZombiePartsOnDestroyed::try_spawn_zombie_dust() const
+{
+        if (!is_allowed_to_spawn_parts_here())
+        {
+                return;
+        }
+
+        const int make_dust_one_in_n = 7;
+
+        if (rnd::one_in(make_dust_one_in_n))
+        {
+                item::make_item_on_floor(item::Id::zombie_dust, m_owner->m_pos);
+        }
+}
+
+bool PropSpawnsZombiePartsOnDestroyed::is_allowed_to_spawn_parts_here() const
+{
+        const P& pos = m_owner->m_pos;
+
+        const auto f_id = map::g_cells.at(pos).terrain->id();
+
+        return
+                (f_id != terrain::Id::chasm) &&
+                (f_id != terrain::Id::liquid_deep);
 }
 
 void PropBreeds::on_std_turn()

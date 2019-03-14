@@ -221,7 +221,7 @@ void run()
                         for (auto* const actor : game_time::g_actors)
                         {
                                 if ((actor->m_pos == att_pos) &&
-                                    (actor->m_state == ActorState::corpse))
+                                    actor->is_corpse())
                                 {
                                         corpses_here.push_back(actor);
                                 }
