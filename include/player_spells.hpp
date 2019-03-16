@@ -28,6 +28,8 @@ void load();
 
 void learn_spell(const SpellId id, const Verbosity verbosity);
 
+void unlearn_spell(const SpellId id, const Verbosity verbosity);
+
 void incr_spell_skill(const SpellId id);
 
 SpellSkill spell_skill(const SpellId id);

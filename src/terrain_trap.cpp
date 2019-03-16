@@ -8,6 +8,7 @@
 
 #include <algorithm>
 
+#include "player_spells.hpp"
 #include "actor_factory.hpp"
 #include "actor_hit.hpp"
 #include "actor_mon.hpp"
@@ -179,6 +180,9 @@ TrapImpl* Trap::make_trap_impl_from_id(const TrapId trap_id)
         case TrapId::curse:
                 return new TrapCurse(m_pos, this);
 
+        case TrapId::unlearn_spell:
+                return new TrapUnlearnSpell(m_pos, this);
+
         case TrapId::END:
         case TrapId::any:
                 break;
@@ -187,10 +191,11 @@ TrapImpl* Trap::make_trap_impl_from_id(const TrapId trap_id)
         return nullptr;
 }
 
-void Trap::on_hit(const int dmg,
-                  const DmgType dmg_type,
-                  const DmgMethod dmg_method,
-                  actor::Actor* const actor)
+void Trap::on_hit(
+        const int dmg,
+        const DmgType dmg_type,
+        const DmgMethod dmg_method,
+        actor::Actor* const actor)
 {
         (void)dmg;
         (void)dmg_type;
@@ -278,7 +283,11 @@ void Trap::trigger_start(const actor::Actor* actor)
 
                         if (actor == map::g_player)
                         {
-                                if (map::g_player->m_properties.has(PropId::deaf))
+                                const bool is_deaf =
+                                        map::g_player->m_properties.has(
+                                                PropId::deaf);
+
+                                if (is_deaf)
                                 {
                                         msg_log::add(
                                                 "I feel the ground shifting "
@@ -1390,6 +1399,51 @@ void TrapCurse::trigger()
         }
 
         actor_here->m_properties.apply(new PropCursed());
+
+        TRACE_FUNC_END_VERBOSE;
+}
+
+void TrapUnlearnSpell::trigger()
+{
+        TRACE_FUNC_BEGIN_VERBOSE;
+
+        auto* const actor_here = map::first_actor_at_pos(m_pos);
+
+        ASSERT(actor_here);
+
+        if (!actor_here)
+        {
+                // Should never happen
+                return;
+        }
+
+        // TODO: Monsters could unlearn spells too
+        if (!actor_here->is_player())
+        {
+                return;
+        }
+
+        std::vector<SpellId> id_bucket;
+        id_bucket.reserve((size_t)SpellId::END);
+
+        for (int i = 0; i < (int)SpellId::END; ++i)
+        {
+                const auto id = (SpellId)i;
+
+                if (player_spells::is_spell_learned(id))
+                {
+                        id_bucket.push_back(id);
+                }
+        }
+
+        if (id_bucket.empty())
+        {
+                return;
+        }
+
+        const auto id = rnd::element(id_bucket);
+
+        player_spells::unlearn_spell(id, Verbosity::verbose);
 
         TRACE_FUNC_END_VERBOSE;
 }

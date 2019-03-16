@@ -6,8 +6,9 @@
 
 #include "player_spells.hpp"
 
-#include <vector>
 #include <algorithm>
+#include <memory>
+#include <vector>
 
 #include "actor_player.hpp"
 #include "browser.hpp"
@@ -185,6 +186,52 @@ void learn_spell(const SpellId id, const Verbosity verbosity)
         }
 
         s_learned_spells.push_back(spell);
+}
+
+void unlearn_spell(const SpellId id, const Verbosity verbosity)
+{
+        ASSERT(id != SpellId::END);
+
+        if (!is_spell_learned(id))
+        {
+                // Spell was already unknown
+                return;
+        }
+
+        const std::unique_ptr<const Spell> spell(
+                spell_factory::make_spell_from_id(id));
+
+        ASSERT(spell->player_can_learn());
+
+        if (verbosity == Verbosity::verbose)
+        {
+                const auto name = spell->name();
+
+                msg_log::add(
+                        "I no longer recall how to cast the spell " +
+                        name +
+                        "!");
+        }
+
+        for (auto it = std::begin(s_learned_spells);
+             it != std::end(s_learned_spells);
+             ++it)
+        {
+                if ((*it)->id() == id)
+                {
+                        s_learned_spells.erase(it);
+
+                        break;
+                }
+        }
+
+        std::remove_if(
+                std::begin(s_learned_spells),
+                std::end(s_learned_spells),
+                [id](const auto* const learned_spell)
+                {
+                        return learned_spell->id() == id;
+                });
 }
 
 void incr_spell_skill(const SpellId id)

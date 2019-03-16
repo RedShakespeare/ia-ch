@@ -41,6 +41,7 @@ enum class TrapId
         spi_drain,
         slow,
         curse,
+        unlearn_spell,
 
         END,
 
@@ -693,6 +694,17 @@ private:
         friend class Trap;
 
         TrapCurse(P pos, Trap* const base_trap) :
+                MagicTrapImpl(pos, TrapId::curse, base_trap) {}
+
+        void trigger() override;
+};
+
+class TrapUnlearnSpell: public MagicTrapImpl
+{
+private:
+        friend class Trap;
+
+        TrapUnlearnSpell(P pos, Trap* const base_trap) :
                 MagicTrapImpl(pos, TrapId::curse, base_trap) {}
 
         void trigger() override;
