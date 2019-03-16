@@ -31,9 +31,10 @@ Gameplay
 * Ravens only have 50% chance to cause blindness on a melee hit (instead of 100% chance)
 * Locusts no longer "breed"
 * Some monsters are now rarer than others (previously all monsters which could spawn on a certain level had equal chance of spawning)
+* Many monster descriptions have been completely rewritten (thanks Renan Nunes!)
 * The time system is more predictable and simple - creatures can only have 50%/100%/200%/300% speed (never something like 110%), and all types of actions take the same time to perform for a creature (no +10% melee attack speed for example)
 * Traps are always triggered when bumped, and always removed when disarmed
-* Updated traps placement - magic traps cannot be placed in blocking positions (since only Occultists can disarm them), traps tend to be more spread out in a room instead of clustered together, traps can be placed in corridors, and generally fewer traps are placed on the map overall
+* Updated trap placement - magic traps cannot be placed in blocking positions (since only Occultists can disarm them), traps tend to be more spread out in a room instead of clustered together, traps can be placed in corridors, and generally fewer traps are placed on the map overall
 * Added more trap types
 * Improved check for if Phobia of open places should trigger (for example it no longer triggers while standing in smoke)
 * Completely removed the concept of dice rolls from the game, weapon damage is now specified as a range (e.g. 1-4) instead of dice rolls and sides (e.g. 1d4)
@@ -50,8 +51,8 @@ User interface
 * All menus can now be scrolled with vi keys ("j"/"k"), and the currently marked menu entry can be selected with "l" (these three keys never occur as letter indexes in menus)
 * "Auto moving" is used by holding shift and pressing direction keys, instead of repeatedly pressing "e" + direction (auto moving is not supported when using the arrow keys, where shift is used to move diagonally upwards instead)
 * Added a minimap, accessed with "m"
+* Holding shift while moving markers (e.g. "look" or "aim") jumps five steps
 * The "throw item" command ("t") always opens a menu to select throwing item, where the last thrown item is shown at the top with the "t" key assigned - in the throwing menu, this key is never assigned to any other item than the "last thrown item" (so you can for example safely spam throwing knives by repeatedly pressing the "t" key, without worrying about suddenly throwing another item)
-* Many monster descriptions have been completely rewritten (thanks Renan Nunes!)
 * Removed the (ugly) hit chance tables from the monster description pages - only player melee hit chance is shown now, which is part of the description text instead
 * The generated part of monster descriptions is printed in a separate paragraph, to make it easier to distinguish from the static handwritten part
 * Dropping items is now done from a separate inventory screen, accessed by pressing "d" (which is a more conventional method than the old way of pressing shift+enter)

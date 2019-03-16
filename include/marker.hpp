@@ -99,7 +99,7 @@ protected:
         P m_pos;
 
 private:
-        void move(const Dir dir);
+        void move(const Dir dir, const int nr_steps = 1);
 
         bool try_go_to_tgt();
 

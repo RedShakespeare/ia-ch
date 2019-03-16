@@ -133,6 +133,8 @@ void MarkerState::draw()
 
 void MarkerState::update()
 {
+        const int nr_jump_steps = 5;
+
         InputData input;
 
         if (!config::is_bot_playing())
@@ -179,6 +181,38 @@ void MarkerState::update()
 
         case GameCmd::down_left:
                 move(Dir::down_left);
+                break;
+
+        case GameCmd::auto_move_right:
+                move(Dir::right, nr_jump_steps);
+                break;
+
+        case GameCmd::auto_move_down:
+                move(Dir::down, nr_jump_steps);
+                break;
+
+        case GameCmd::auto_move_left:
+                move(Dir::left, nr_jump_steps);
+                break;
+
+        case GameCmd::auto_move_up:
+                move(Dir::up, nr_jump_steps);
+                break;
+
+        case GameCmd::auto_move_up_right:
+                move(Dir::up_right, nr_jump_steps);
+                break;
+
+        case GameCmd::auto_move_down_right:
+                move(Dir::down_right, nr_jump_steps);
+                break;
+
+        case GameCmd::auto_move_up_left:
+                move(Dir::up_left, nr_jump_steps);
+                break;
+
+        case GameCmd::auto_move_down_left:
+                move(Dir::down_left, nr_jump_steps);
                 break;
 
         default:
@@ -307,9 +341,9 @@ void MarkerState::draw_marker(
         }
 }
 
-void MarkerState::move(const Dir dir)
+void MarkerState::move(const Dir dir, const int nr_steps)
 {
-        const P new_pos(m_pos + dir_utils::offset(dir));
+        const P new_pos(m_pos + dir_utils::offset(dir).scaled_up(nr_steps));
 
         // We limit the distance from the player that the marker can be moved to
         // (mostly just to avoid segfaults or weird integer wraparound behavior)
