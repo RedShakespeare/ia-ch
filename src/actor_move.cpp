@@ -91,13 +91,13 @@ static void player_bump_known_hostile_mon(actor::Mon& mon)
                 }
         }
 
+        player.m_tgt = &mon;
+
         attack::melee(
                 &player,
                 player.m_pos,
                 mon,
                 wpn);
-
-        player.m_tgt = &mon;
 }
 
 static void player_bump_unkown_hostile_mon(actor::Mon& mon)

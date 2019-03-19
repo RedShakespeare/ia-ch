@@ -160,6 +160,10 @@ PropEnded PropEntangled::on_tick()
 
 void PropEntangled::on_applied()
 {
+        // TODO: Rather than doing this on the "on_applied" hook (which should
+        // probably be reserved for when the property actually does get applied,
+        // i.e. it shall not be removed), consider checking this elsewhere,
+        // perhaps in a new function such as "is_resisting_self"
         try_player_end_with_machete();
 }
 

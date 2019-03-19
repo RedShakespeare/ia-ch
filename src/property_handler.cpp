@@ -45,10 +45,7 @@ void PropHandler::apply_natural_props_from_actor_data()
 
                         prop->set_indefinite();
 
-                        apply(prop,
-                              PropSrc::intr,
-                              true,
-                              Verbosity::silent);
+                        apply(prop, PropSrc::intr, true, Verbosity::silent);
                 }
         }
 }
@@ -159,7 +156,7 @@ void PropHandler::apply(
         {
                 if (is_resisting_prop(prop->m_id))
                 {
-                        if (verbosity == Verbosity::verbose &&
+                        if ((verbosity == Verbosity::verbose) &&
                             m_owner->is_alive())
                         {
                                 print_resist_msg(*prop);
@@ -198,8 +195,6 @@ void PropHandler::apply(
                 print_start_msg(*prop);
         }
 
-        prop->on_applied();
-
         if ((prop->duration_mode() == PropDurationMode::indefinite) &&
             (m_owner == map::g_player))
         {
@@ -210,6 +205,8 @@ void PropHandler::apply(
                         game::add_history_event(msg);
                 }
         }
+
+        prop->on_applied();
 
         return;
 }
@@ -222,9 +219,7 @@ void PropHandler::print_resist_msg(const Prop& prop)
 
                 if (!msg.empty())
                 {
-                        msg_log::add(msg,
-                                     colors::text(),
-                                     true);
+                        msg_log::add(msg, colors::text(), true);
                 }
         }
         else // Is a monster
@@ -256,9 +251,7 @@ void PropHandler::print_start_msg(const Prop& prop)
                         const bool is_interrupting =
                                 (prop.alignment() != PropAlignment::good);
 
-                        msg_log::add(msg,
-                                     colors::text(),
-                                     is_interrupting);
+                        msg_log::add(msg, colors::text(), is_interrupting);
                 }
         }
         else // Is monster
@@ -299,7 +292,8 @@ bool PropHandler::try_apply_more_on_existing_intr_prop(const Prop& new_prop)
                 {
                         old_prop->m_nr_turns_left = -1;
 
-                        old_prop->m_duration_mode = PropDurationMode::indefinite;
+                        old_prop->m_duration_mode =
+                                PropDurationMode::indefinite;
                 }
                 else if (!old_is_permanent)
                 {

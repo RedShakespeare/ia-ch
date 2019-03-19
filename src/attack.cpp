@@ -1432,9 +1432,10 @@ void melee(
 
                         if (wpn.data().melee.knocks_back)
                         {
-                                knockback::run(defender,
-                                               attacker_origin,
-                                               false);
+                                knockback::run(
+                                        defender,
+                                        attacker_origin,
+                                        false);
                         }
                 }
                 else // Defender was killed

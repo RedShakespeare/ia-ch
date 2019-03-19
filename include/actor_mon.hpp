@@ -7,8 +7,9 @@
 #ifndef MON_HPP
 #define MON_HPP
 
-#include <vector>
+#include <memory>
 #include <string>
+#include <vector>
 
 #include "actor.hpp"
 #include "global.hpp"
@@ -231,6 +232,9 @@ public:
         TileId tile() const override;
 
         std::string descr() const override;
+
+private:
+        std::unique_ptr<item::Item> m_discarded_item {};
 };
 
 } // actor

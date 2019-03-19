@@ -253,13 +253,11 @@ void Terrain::try_start_burning(const bool is_msg_allowed)
 {
         clear_gore();
 
-        // Always start burning if not already burnt, and sometimes if already burnt
         if ((m_burn_state == BurnState::not_burned) ||
             ((m_burn_state == BurnState::has_burned) &&
              rnd::one_in(3)))
         {
-                if (map::is_pos_seen_by_player(m_pos) &&
-                    is_msg_allowed)
+                if (map::is_pos_seen_by_player(m_pos) && is_msg_allowed)
                 {
                         std::string str = name(Article::the) + " catches fire.";
 
@@ -606,35 +604,33 @@ void Wall::on_hit(
 
         // TODO: This is copy pasted - it should be handled better!
 
-        auto destr_adj_doors = [&]()
+        auto destr_adj_doors = [&]() {
+                for (const P& d : dir_utils::g_cardinal_list)
                 {
-                        for (const P& d : dir_utils::g_cardinal_list)
-                        {
-                                const P p(m_pos + d);
+                        const P p(m_pos + d);
 
-                                if (map::is_pos_inside_map(p))
+                        if (map::is_pos_inside_map(p))
+                        {
+                                if (map::g_cells.at(p).terrain->id() ==
+                                    terrain::Id::door)
                                 {
-                                        if (map::g_cells.at(p).terrain->id() ==
-                                            terrain::Id::door)
-                                        {
-                                                map::put(new RubbleLow(p));
-                                        }
+                                        map::put(new RubbleLow(p));
                                 }
                         }
-                };
+                }
+        };
 
-        auto make_low_rubble_and_rocks = [&]()
+        auto make_low_rubble_and_rocks = [&]() {
+                const P p(m_pos);
+                map::put(new RubbleLow(p));
+
+                // NOTE: Object is now deleted!
+
+                if (rnd::one_in(4))
                 {
-                        const P p(m_pos);
-                        map::put(new RubbleLow(p));
-
-                        // NOTE: Object is now deleted!
-
-                        if (rnd::one_in(4))
-                        {
-                                item::make_item_on_floor(item::Id::rock, p);
-                        }
-                };
+                        item::make_item_on_floor(item::Id::rock, p);
+                }
+        };
 
         if (dmg_type == DmgType::physical)
         {
@@ -1242,11 +1238,11 @@ void Stairs::bump(actor::Actor& actor_bumping)
 {
         if (actor_bumping.is_player())
         {
-                const std::vector<std::string> choices {
+                const std::vector<std::string> choices = {
                         "Descend",
-                                "Save and quit",
-                                "Cancel"
-                                };
+                        "Save and quit",
+                        "Cancel"
+                };
 
                 const std::string title = "A staircase leading downwards";
 
@@ -1262,7 +1258,7 @@ void Stairs::bump(actor::Actor& actor_bumping)
                         msg_log::add("I descend the stairs.");
 
                         // Always auto-save the game when descending
-                        // NOTE: We descend one dungeon level when loading the game, so
+                        // NOTE: We descend one dlvl when loading the game, so
                         // auto-saving should be done BEFORE descending here
                         saving::save_game();
 
