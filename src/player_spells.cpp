@@ -198,8 +198,22 @@ void unlearn_spell(const SpellId id, const Verbosity verbosity)
                 return;
         }
 
-        const std::unique_ptr<const Spell> spell(
-                spell_factory::make_spell_from_id(id));
+        auto spell_iterator = std::begin(s_learned_spells);
+
+        for ( ; spell_iterator != std::end(s_learned_spells); ++spell_iterator)
+        {
+                if ((*spell_iterator)->id() == id)
+                {
+                        break;
+                }
+        }
+
+        if (spell_iterator == std::end(s_learned_spells))
+        {
+                return;
+        }
+
+        const auto* const spell = *spell_iterator;
 
         ASSERT(spell->player_can_learn());
 
@@ -213,25 +227,9 @@ void unlearn_spell(const SpellId id, const Verbosity verbosity)
                         "!");
         }
 
-        for (auto it = std::begin(s_learned_spells);
-             it != std::end(s_learned_spells);
-             ++it)
-        {
-                if ((*it)->id() == id)
-                {
-                        s_learned_spells.erase(it);
+        delete spell;
 
-                        break;
-                }
-        }
-
-        std::remove_if(
-                std::begin(s_learned_spells),
-                std::end(s_learned_spells),
-                [id](const auto* const learned_spell)
-                {
-                        return learned_spell->id() == id;
-                });
+        s_learned_spells.erase(spell_iterator);
 }
 
 void incr_spell_skill(const SpellId id)
