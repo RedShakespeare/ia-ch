@@ -128,6 +128,8 @@ public:
         virtual void on_pre_connect(Array2<bool>& door_proposals) = 0;
         virtual void on_post_connect(Array2<bool>& door_proposals) = 0;
 
+        virtual void populate_monsters() const {}
+
         virtual int max_nr_mon_groups_spawned() const
         {
                 return 3;
@@ -274,6 +276,8 @@ public:
                 StdRoom(r, RoomType::monster) {}
 
         bool is_allowed() const override;
+
+        void populate_monsters() const override;
 
 protected:
         std::vector<RoomAutoTerrainRule> auto_terrains_allowed() const override;

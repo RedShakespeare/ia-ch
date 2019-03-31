@@ -37,6 +37,9 @@ std::vector<P> make_sorted_free_cells(
         const P& origin,
         const Array2<bool>& blocked);
 
+// Unwalkable terrain or too close to the player
+Array2<bool> forbidden_spawn_positions();
+
 void spawn_for_repopulate_over_time();
 
 void populate_std_lvl();

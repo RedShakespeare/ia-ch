@@ -288,7 +288,7 @@ void init_room_bucket()
                 add_to_room_bucket(RoomType::monster, 1);
                 add_to_room_bucket(RoomType::damp, rnd::range(1, 2));
                 add_to_room_bucket(RoomType::pool, rnd::range(2, 3));
-                add_to_room_bucket(RoomType::snake_pit, rnd::one_in(3) ? 1 : 0);
+                add_to_room_bucket(RoomType::snake_pit, 1);
 
                 const size_t nr_plain_rooms = s_room_bucket.size() * 2;
 
@@ -1017,19 +1017,13 @@ void SnakePitRoom::on_pre_connect_hook(Array2<bool>& door_proposals)
 {
         (void)door_proposals;
 
-        const bool is_early = map::g_dlvl <= g_dlvl_last_early_game;
-        const bool is_mid = !is_early && map::g_dlvl <= g_dlvl_last_mid_game;
-
-        if (is_early || is_mid)
-        {
-                if (rnd::fraction(3, 4))
-                {
-                        mapgen::make_pillars_in_room(*this);
-                }
-        }
-        else // Is late game
+        if ((map::g_dlvl >= g_dlvl_first_late_game) || rnd::fraction(3, 4))
         {
                 mapgen::cavify_room(*this);
+        }
+        else // Late game
+        {
+                mapgen::make_pillars_in_room(*this);
         }
 }
 
@@ -1056,8 +1050,10 @@ void SnakePitRoom::on_post_connect_hook(Array2<bool>& door_proposals)
                         }
                 }
         }
+}
 
-        // Put some monsters in the room
+void SnakePitRoom::populate_monsters() const
+{
         std::vector<actor::Id> actor_id_bucket;
 
         for (size_t i = 0; i < (size_t)actor::Id::END; ++i)
@@ -1086,42 +1082,9 @@ void SnakePitRoom::on_post_connect_hook(Array2<bool>& door_proposals)
 
         const auto actor_id = rnd::element(actor_id_bucket);
 
-        Array2<bool> blocked(map::dims());
+        auto blocked = populate_mon::forbidden_spawn_positions();
 
-        map_parsers::BlocksWalking(ParseActors::yes)
-                .run(blocked,
-                     blocked.rect(),
-                     MapParseMode::overwrite);
-
-        const int min_dist_to_player = g_fov_radi_int + 1;
-
-        const P& player_pos = map::g_player->m_pos;
-
-        const int x0 = std::max(
-                0,
-                player_pos.x - min_dist_to_player);
-
-        const int y0 = std::max(
-                0,
-                player_pos.y - min_dist_to_player);
-
-        const int x1 = std::min(
-                map::w() - 1,
-                player_pos.x + min_dist_to_player);
-
-        const int y1 = std::min(
-                map::h() - 1,
-                player_pos.y + min_dist_to_player);
-
-        for (int x = x0; x <= x1; ++x)
-        {
-                for (int y = y0; y <= y1; ++y)
-                {
-                        blocked.at(x, y) = true;
-                }
-        }
-
-        const int nr_groups = rnd::range(1, 2);
+        const int nr_groups = rnd::range(3, 4);
 
         for (int group_idx = 0; group_idx < nr_groups; ++group_idx)
         {

@@ -206,12 +206,13 @@ bool MapBuilderStd::build_specific()
         // NOTE: This allows common rooms to assume that they are rectangular
         // and have their walls untouched when their reshaping functions run.
 
-        sort(begin(map::g_room_list),
-             end(map::g_room_list),
-             [](const auto r0, const auto r1)
-             {
-                     return r0->m_type < r1->m_type;
-             });
+        std::sort(
+                std::begin(map::g_room_list),
+                std::end(map::g_room_list),
+                [](const auto r0, const auto r1)
+                {
+                        return r0->m_type < r1->m_type;
+                });
 
         if (!mapgen::g_is_map_valid)
         {
@@ -252,7 +253,7 @@ bool MapBuilderStd::build_specific()
         }
 #endif // NDEBUG
 
-        for (Room* room : map::g_room_list)
+        for (auto* const room : map::g_room_list)
         {
                 room->on_pre_connect(mapgen::g_door_proposals);
         }
@@ -308,7 +309,7 @@ bool MapBuilderStd::build_specific()
         }
 #endif // NDEBUG
 
-        for (Room* room : map::g_room_list)
+        for (auto* const room : map::g_room_list)
         {
                 room->on_post_connect(mapgen::g_door_proposals);
         }
@@ -547,6 +548,11 @@ bool MapBuilderStd::build_specific()
         // ---------------------------------------------------------------------
         // Populate the map with monsters
         // ---------------------------------------------------------------------
+        for (const auto* const room : map::g_room_list)
+        {
+                room->populate_monsters();
+        }
+
         populate_mon::populate_std_lvl();
 
         if (!mapgen::g_is_map_valid)
@@ -627,9 +633,9 @@ bool MapBuilderStd::build_specific()
                 return false;
         }
 
-        for (auto* r : map::g_room_list)
+        for (auto* const room : map::g_room_list)
         {
-                delete r;
+                delete room;
         }
 
         map::g_room_list.clear();

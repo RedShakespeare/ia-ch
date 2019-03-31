@@ -339,6 +339,44 @@ std::vector<P> make_sorted_free_cells(
         return out;
 }
 
+Array2<bool> forbidden_spawn_positions()
+{
+        Array2<bool> blocked(map::dims());
+
+        map_parsers::BlocksWalking(ParseActors::yes)
+                .run(blocked, blocked.rect());
+
+        const P& player_p = map::g_player->m_pos;
+
+        {
+                // Checking which cells projectiles can travel through, as a
+                // general way of blocking cells within a certain number of
+                // steps to the player (We cannot just check for cells blocking
+                // walking, as that could for example spawn monsters on the
+                // other side of water very close to the player)
+                Array2<bool> blocks_projectiles(map::dims());
+
+                map_parsers::BlocksProjectiles()
+                        .run(blocks_projectiles, blocks_projectiles.rect());
+
+                const auto flood = floodfill(player_p, blocks_projectiles);
+
+                for (size_t i = 0; i < map::nr_cells(); ++i)
+                {
+                        const int v = flood.at(i);
+
+                        if ((v > 0) && (v < s_min_dist_to_player))
+                        {
+                                blocked.at(i) = true;
+                        }
+                }
+        }
+
+        blocked.at(player_p) = true;
+
+        return blocked;
+}
+
 void spawn_for_repopulate_over_time()
 {
         TRACE_FUNC_BEGIN;
@@ -433,38 +471,7 @@ void populate_std_lvl()
 
         int nr_groups_spawned = 0;
 
-        Array2<bool> blocked(map::dims());
-
-        map_parsers::BlocksWalking(ParseActors::yes)
-                .run(blocked, blocked.rect());
-
-        const P& player_p = map::g_player->m_pos;
-
-        {
-                // Checking which cells projectiles can travel through, as a
-                // general way of blocking cells within a certain number of
-                // steps to the player (We cannot just check for cells blocking
-                // walking, as that could for example spawn monsters on the
-                // other side of water very close to the player)
-                Array2<bool> blocks_projectiles(map::dims());
-
-                map_parsers::BlocksProjectiles()
-                        .run(blocks_projectiles, blocks_projectiles.rect());
-
-                const auto flood = floodfill(player_p, blocks_projectiles);
-
-                for (size_t i = 0; i < map::nr_cells(); ++i)
-                {
-                        const int v = flood.at(i);
-
-                        if ((v > 0) && (v < s_min_dist_to_player))
-                        {
-                                blocked.at(i) = true;
-                        }
-                }
-        }
-
-        blocked.at(player_p) = true;
+        auto blocked = forbidden_spawn_positions();
 
         // First, attempt to populate all non-plain standard rooms
         for (Room* const room : map::g_room_list)
