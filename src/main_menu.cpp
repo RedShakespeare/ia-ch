@@ -272,7 +272,7 @@ void MainMenuState::draw()
                         {
                                 if (character != ' ')
                                 {
-                                        Color color = colors::violet();
+                                        auto color = colors::violet();
 
                                         int g =
                                                 color.g() +

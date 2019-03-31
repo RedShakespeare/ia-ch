@@ -43,7 +43,7 @@ static const std::vector<std::string> font_image_names = {
 };
 
 static const int s_opt_y0 = 1;
-static const int s_opt_values_x_pos = 40;
+static const int s_opt_values_x_pos = 44;
 
 static InputMode s_input_mode = InputMode::standard;
 static std::string s_font_name = "";
@@ -65,6 +65,7 @@ static std::string s_default_player_name = "";
 static bool s_is_bot_playing = false;
 static bool s_is_audio_enabled = false;
 static bool s_is_amb_audio_enabled = false;
+static bool s_is_amb_audio_preloaded = false;
 static bool s_is_tiles_mode = false;
 static int s_screen_px_w = -1;
 static int s_screen_px_h = -1;
@@ -175,6 +176,7 @@ static void set_default_variables()
 
         s_is_audio_enabled = true;
         s_is_amb_audio_enabled = true;
+        s_is_amb_audio_preloaded = false;
         s_is_fullscreen = false;
         s_is_native_resolution_fullscreen = false;
         s_is_tiles_wall_full_square = false;
@@ -225,7 +227,13 @@ static void player_sets_option(const MenuBrowser& browser)
         }
         break;
 
-        case 3: // Tiles mode
+        case 3: // Ambient audio
+        {
+                s_is_amb_audio_preloaded = !s_is_amb_audio_preloaded;
+        }
+        break;
+
+        case 4: // Tiles mode
         {
                 s_is_tiles_mode = !s_is_tiles_mode;
 
@@ -257,7 +265,7 @@ static void player_sets_option(const MenuBrowser& browser)
         }
         break;
 
-        case 4: // Font
+        case 5: // Font
         {
                 // Set next font
                 for (size_t i = 0; i < font_image_names.size(); ++i)
@@ -308,7 +316,7 @@ static void player_sets_option(const MenuBrowser& browser)
         }
         break;
 
-        case 5: // Fullscreen
+        case 6: // Fullscreen
         {
                 set_fullscreen(!s_is_fullscreen);
 
@@ -316,7 +324,7 @@ static void player_sets_option(const MenuBrowser& browser)
         }
         break;
 
-        case 6: // Use native resolution in fullscreen
+        case 7: // Use native resolution in fullscreen
         {
                 s_is_native_resolution_fullscreen =
                         !s_is_native_resolution_fullscreen;
@@ -328,62 +336,62 @@ static void player_sets_option(const MenuBrowser& browser)
         }
         break;
 
-        case 7: // Tiles mode wall symbol
+        case 8: // Tiles mode wall symbol
         {
                 s_is_tiles_wall_full_square = !s_is_tiles_wall_full_square;
         }
         break;
 
-        case 8: // Text mode wall symbol
+        case 9: // Text mode wall symbol
         {
                 s_is_text_mode_wall_full_square =
                         !s_is_text_mode_wall_full_square;
         }
         break;
 
-        case 9: // Skip intro level
+        case 10: // Skip intro level
         {
                 s_is_intro_lvl_skipped = !s_is_intro_lvl_skipped;
         }
         break;
 
-        case 10: // Confirm "more" with any key
+        case 11: // Confirm "more" with any key
         {
                 s_is_any_key_confirm_more = !s_is_any_key_confirm_more;
         }
         break;
 
-        case 11: // Always warn when a new monster appears
+        case 12: // Always warn when a new monster appears
         {
                 s_always_warn_new_mon = !s_always_warn_new_mon;
         }
         break;
 
-        case 12: // Print warning when lighting explovies
+        case 13: // Print warning when lighting explovies
         {
                 s_is_light_explosive_prompt = !s_is_light_explosive_prompt;
         }
         break;
 
-        case 13: // Print warning when drinking known malign potions
+        case 14: // Print warning when drinking known malign potions
         {
                 s_is_drink_malign_pot_prompt = !s_is_drink_malign_pot_prompt;
         }
         break;
 
-        case 14: // Print warning when melee attacking with ranged weapons
+        case 15: // Print warning when melee attacking with ranged weapons
         {
                 s_is_ranged_wpn_meleee_prompt = !s_is_ranged_wpn_meleee_prompt;
         }
         break;
 
-        case 15: // Ranged weapon auto reload
+        case 16: // Ranged weapon auto reload
         {
                 s_is_ranged_wpn_auto_reload = !s_is_ranged_wpn_auto_reload;
         }
         break;
 
-        case 16: // Projectile delay
+        case 17: // Projectile delay
         {
                 const P p(s_opt_values_x_pos, s_opt_y0 + browser.y());
 
@@ -402,7 +410,7 @@ static void player_sets_option(const MenuBrowser& browser)
         }
         break;
 
-        case 17: // Shotgun delay
+        case 18: // Shotgun delay
         {
                 const P p(s_opt_values_x_pos, s_opt_y0 + browser.y());
 
@@ -421,7 +429,7 @@ static void player_sets_option(const MenuBrowser& browser)
         }
         break;
 
-        case 18: // Explosion delay
+        case 19: // Explosion delay
         {
                 const P p(s_opt_values_x_pos, s_opt_y0 + browser.y());
 
@@ -440,7 +448,7 @@ static void player_sets_option(const MenuBrowser& browser)
         }
         break;
 
-        case 19: // Reset to defaults
+        case 20: // Reset to defaults
         {
                 set_default_variables();
 
@@ -485,80 +493,83 @@ static void set_variables_from_lines(std::vector<std::string>& lines)
         TRACE_FUNC_BEGIN;
 
         s_input_mode = (InputMode)to_int(lines.front());
-        lines.erase(begin(lines));
+        lines.erase(std::begin(lines));
 
         s_is_audio_enabled = lines.front() == "1";
-        lines.erase(begin(lines));
+        lines.erase(std::begin(lines));
 
         s_is_amb_audio_enabled = lines.front() == "1";
-        lines.erase(begin(lines));
+        lines.erase(std::begin(lines));
+
+        s_is_audio_enabled = lines.front() == "1";
+        lines.erase(std::begin(lines));
 
         s_screen_px_w = to_int(lines.front());
-        lines.erase(begin(lines));
+        lines.erase(std::begin(lines));
 
         s_screen_px_h = to_int(lines.front());
-        lines.erase(begin(lines));
+        lines.erase(std::begin(lines));
 
         s_is_tiles_mode = lines.front() == "1";
-        lines.erase(begin(lines));
+        lines.erase(std::begin(lines));
 
         s_font_name = lines.front();
-        lines.erase(begin(lines));
+        lines.erase(std::begin(lines));
 
         update_render_dims();
 
         s_is_fullscreen = lines.front() == "1";
-        lines.erase(begin(lines));
+        lines.erase(std::begin(lines));
 
         s_is_native_resolution_fullscreen = lines.front() == "1";
-        lines.erase(begin(lines));
+        lines.erase(std::begin(lines));
 
         s_is_tiles_wall_full_square = lines.front() == "1";
-        lines.erase(begin(lines));
+        lines.erase(std::begin(lines));
 
         s_is_text_mode_wall_full_square = lines.front() == "1";
-        lines.erase(begin(lines));
+        lines.erase(std::begin(lines));
 
         s_is_intro_lvl_skipped = lines.front() == "1";
-        lines.erase(begin(lines));
+        lines.erase(std::begin(lines));
 
         s_is_any_key_confirm_more = lines.front() == "1";
-        lines.erase(begin(lines));
+        lines.erase(std::begin(lines));
 
         s_always_warn_new_mon = lines.front() == "1";
-        lines.erase(begin(lines));
+        lines.erase(std::begin(lines));
 
         s_is_light_explosive_prompt = lines.front() == "1";
-        lines.erase(begin(lines));
+        lines.erase(std::begin(lines));
 
         s_is_drink_malign_pot_prompt = lines.front() == "1";
-        lines.erase(begin(lines));
+        lines.erase(std::begin(lines));
 
         s_is_ranged_wpn_meleee_prompt = lines.front() == "1";
-        lines.erase(begin(lines));
+        lines.erase(std::begin(lines));
 
         s_is_ranged_wpn_auto_reload = lines.front() == "1";
-        lines.erase(begin(lines));
+        lines.erase(std::begin(lines));
 
         s_delay_projectile_draw = to_int(lines.front());
-        lines.erase(begin(lines));
+        lines.erase(std::begin(lines));
 
         s_delay_shotgun = to_int(lines.front());
-        lines.erase(begin(lines));
+        lines.erase(std::begin(lines));
 
         s_delay_explosion = to_int(lines.front());
-        lines.erase(begin(lines));
+        lines.erase(std::begin(lines));
 
         s_default_player_name = "";
 
         if (lines.front() == "1")
         {
-                lines.erase(begin(lines));
+                lines.erase(std::begin(lines));
 
                 s_default_player_name = lines.front();
         }
 
-        lines.erase(begin(lines));
+        lines.erase(std::begin(lines));
 
         ASSERT(lines.empty());
 
@@ -592,6 +603,7 @@ static std::vector<std::string> lines_from_variables()
         lines.push_back(std::to_string((int)s_input_mode));
         lines.push_back(s_is_audio_enabled ? "1" : "0");
         lines.push_back(s_is_amb_audio_enabled ? "1" : "0");
+        lines.push_back(s_is_amb_audio_preloaded ? "1" : "0");
         lines.push_back(std::to_string(s_screen_px_w));
         lines.push_back(std::to_string(s_screen_px_h));
         lines.push_back(s_is_tiles_mode ? "1" : "0");
@@ -739,6 +751,11 @@ bool is_audio_enabled()
 bool is_amb_audio_enabled()
 {
         return s_is_amb_audio_enabled;
+}
+
+bool is_amb_audio_preloaded()
+{
+        return s_is_amb_audio_preloaded;
 }
 
 bool is_bot_playing()
@@ -931,6 +948,13 @@ void ConfigState::draw()
                 },
 
                 {
+                        "Preload ambient sounds at game startup",
+                        config::s_is_amb_audio_preloaded
+                        ? "Yes"
+                        : "No"
+                },
+
+                {
                         "Use tile set",
                         config::s_is_tiles_mode
                         ? "Yes"
@@ -1079,6 +1103,6 @@ void ConfigState::draw()
         io::draw_text(
                 "[enter] to set option [space/esc] to exit",
                 Panel::screen,
-                P(1, 21),
+                P(1, 23),
                 colors::white());
 }

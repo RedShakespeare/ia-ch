@@ -62,6 +62,7 @@ User interface
 * Added an option to always warn when a new monster is seen (and no other monster was already seen)
 * While aiming firearms or thrown weapons, the game no longer prints info about map features, items, etc in the aiming location (only info about any monster seen there)
 * Many properties now have longer and more descriptive names on the map screen (e.g. "Fear Res." instead of rFear", or "LIFE SAPPED(4)" instead of "HP(4)")
+* Added an option for if ambient sounds should be preloaded at game startup (otherwise each sound is loaded the first time it's played)
 
 Misc
 * Save files are no longer erased when loading a saved game (only when dying, winning the game, or when actively quitting), this allows players to resume from a previous save file if the game has crashed

@@ -14,6 +14,7 @@
 #include "io.hpp"
 #include "map.hpp"
 #include "paths.hpp"
+#include "text_format.hpp"
 
 using namespace std::chrono_literals;
 
@@ -144,7 +145,7 @@ void init()
                 s_audio_chunks[i] = nullptr;
         }
 
-        // Pre-load the action sounds (ambient sounds are loaded on demand)
+        // Pre-load the action sounds
 
         // Monster sounds
         load(SfxId::dog_snarl, "sfx_dog_snarl.ogg");
@@ -209,6 +210,30 @@ void init()
         load(SfxId::menu_select, "sfx_menu_select.ogg");
 
         ASSERT(s_nr_files_loaded == (int)SfxId::AMB_START);
+
+        if (config::is_amb_audio_preloaded() &&
+            config::is_amb_audio_enabled())
+        {
+                for (auto i = (int)SfxId::AMB_START + 1;
+                     i < (int)SfxId::END;
+                     ++i)
+                {
+                        const int amb_nr = i - (int)SfxId::AMB_START;
+
+                        auto amb_nr_str = std::to_string(amb_nr);
+
+                        amb_nr_str =
+                                text_format::pad_before(
+                                        amb_nr_str,
+                                        3, // Total width
+                                        '0');
+
+                        const std::string amb_name =
+                                "amb_" + amb_nr_str + ".ogg";
+
+                        load((SfxId)i, amb_name);
+                }
+        }
 
         // Load music
         s_mus_chunks.resize((size_t)MusId::END);

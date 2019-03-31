@@ -44,6 +44,7 @@ bool is_text_mode_wall_full_square();
 bool is_tiles_wall_full_square();
 bool is_audio_enabled();
 bool is_amb_audio_enabled();
+bool is_amb_audio_preloaded();
 bool is_bot_playing();
 void toggle_bot_playing();
 bool is_light_explosive_prompt();

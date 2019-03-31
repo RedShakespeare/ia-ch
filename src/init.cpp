@@ -29,6 +29,7 @@
 #include "map_travel.hpp"
 #include "msg_log.hpp"
 #include "pact.hpp"
+#include "panel.hpp"
 #include "player_bon.hpp"
 #include "player_spells.hpp"
 #include "property_data.hpp"
@@ -51,9 +52,21 @@ void init_io()
         sdl_base::init();
         config::init();
         io::init();
+        colors::init();
+
+        io::clear_screen();
+
+        // TODO: Use more creative loading messages
+        io::draw_text_center(
+                "Loading...",
+                Panel::screen,
+                panels::center(Panel::screen),
+                colors::menu_dark());
+
+        io::update_screen();
+
         query::init();
         audio::init();
-        colors::init();
 
         TRACE_FUNC_END;
 }
