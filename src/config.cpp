@@ -501,7 +501,7 @@ static void set_variables_from_lines(std::vector<std::string>& lines)
         s_is_amb_audio_enabled = lines.front() == "1";
         lines.erase(std::begin(lines));
 
-        s_is_audio_enabled = lines.front() == "1";
+        s_is_amb_audio_preloaded = lines.front() == "1";
         lines.erase(std::begin(lines));
 
         s_screen_px_w = to_int(lines.front());
