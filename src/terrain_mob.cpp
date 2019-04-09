@@ -34,52 +34,47 @@ namespace terrain
 // -----------------------------------------------------------------------------
 void Smoke::on_placed()
 {
-        // Remove any other smoke in the same position (this is so that for
-        // example the gas mask is not drained much faster if there is multiple
-        // smoke objects stacked on the same position)
-        for (auto it = std::begin(game_time::g_mobs);
-             it != std::end(game_time::g_mobs); )
+        // Expire any existing smoke in the current position, and set the
+        // duration of the new smoke to whatever was higher
+        for (auto* const terrain : game_time::g_mobs)
         {
-                const auto terrain = static_cast<const Terrain*>(*it);
-
                 if ((terrain == this) ||
                     (terrain->id() != Id::smoke) ||
                     (terrain->pos() != m_pos))
                 {
-                        ++it;
-
                         continue;
                 }
 
-                // This is another smoke object in the same position
+                auto other_smoke = static_cast<Smoke*>(terrain);
 
-                const auto other_smoke = static_cast<const Smoke*>(terrain);
+                if (other_smoke->m_nr_turns_left == -1)
+                {
+                        m_nr_turns_left = -1;
+                }
+                else if (m_nr_turns_left != -1)
+                {
+                        m_nr_turns_left =
+                                std::max(
+                                        m_nr_turns_left,
+                                        other_smoke->m_nr_turns_left);
+                }
 
-                // Use the longest duration of the new or old smoke
-                m_nr_turns_left = std::max(
-                        m_nr_turns_left,
-                        other_smoke->m_nr_turns_left);
-
-                delete other_smoke;
-
-                game_time::g_mobs.erase(it);
+                other_smoke->m_nr_turns_left = 0;
         }
 }
 
 void Smoke::on_new_turn()
 {
+        // If smoke has turns left, or is permanent, harm the actor here
         auto* actor = map::first_actor_at_pos(m_pos);
 
-        if (actor)
+        if (actor && ((m_nr_turns_left > 0) || (m_nr_turns_left == -1)))
         {
                 const bool is_player = actor == map::g_player;
 
                 // TODO: There needs to be some criteria here, so that e.g. a
                 // statue-monster or a very alien monster can't get blinded by
-                // smoke (but do not use is_humanoid - rats, wolves etc should
-                // definitely be blinded by smoke).
-
-                // Perhaps add some variable like "has_eyes"?
+                // smoke. Perhaps add something like "has_eyes"?
 
                 bool is_blind_prot = false;
 
@@ -87,32 +82,29 @@ void Smoke::on_new_turn()
 
                 if (is_player)
                 {
-                        auto* const player_head_item =
+                        auto* const head_item =
                                 map::g_player->m_inv
                                 .m_slots[(size_t)SlotId::head].item;
 
-                        auto* const player_body_item =
+                        auto* const body_item =
                                 map::g_player->m_inv
                                 .m_slots[(size_t)SlotId::body].item;
 
-                        if (player_head_item &&
-                            (player_head_item->data().id == item::Id::gas_mask))
+                        if (head_item &&
+                            (head_item->data().id == item::Id::gas_mask))
                         {
                                 is_blind_prot = true;
-
                                 is_breath_prot = true;
 
                                 // This may destroy the gasmask
-                                static_cast<item::GasMask*>(player_head_item)
+                                static_cast<item::GasMask*>(head_item)
                                         ->decr_turns_left(map::g_player->m_inv);
                         }
 
-                        if (player_body_item &&
-                            (player_body_item->data().id ==
-                             item::Id::armor_asb_suit))
+                        if (body_item &&
+                            (body_item->data().id == item::Id::armor_asb_suit))
                         {
                                 is_blind_prot = true;
-
                                 is_breath_prot = true;
                         }
                 }
@@ -133,8 +125,7 @@ void Smoke::on_new_turn()
                 }
 
                 // Coughing?
-                if (!is_breath_prot &&
-                    rnd::one_in(4))
+                if (!is_breath_prot && rnd::one_in(4))
                 {
                         std::string snd_msg = "";
 
