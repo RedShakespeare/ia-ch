@@ -36,7 +36,8 @@ Gameplay
 * Traps are always triggered when bumped, and always removed when disarmed
 * Updated trap placement - magic traps cannot be placed in blocking positions (since only Occultists can disarm them), traps tend to be more spread out in a room instead of clustered together, traps can be placed in corridors, and generally fewer traps are placed on the map overall
 * Added more trap types
-* Improved check for if Phobia of open places should trigger (for example it no longer triggers while standing in smoke)
+* When a creature opens a door, the door cannot be closed until this creature's next turn starts (i.e. you cannot shut a door in the face of a monster who just opened it)
+* Improved check for if phobia of open places should trigger (for example it no longer triggers while standing in smoke)
 * Completely removed the concept of dice rolls from the game, weapon damage is now specified as a range (e.g. 1-4) instead of dice rolls and sides (e.g. 1d4)
 
 User interface

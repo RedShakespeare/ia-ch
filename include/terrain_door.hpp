@@ -121,6 +121,16 @@ public:
 
         DidClose close(actor::Actor* const actor_closing) override;
 
+        actor::Actor* actor_currently_opening() const
+        {
+                return m_actor_currently_opening;
+        }
+
+        void clear_actor_currently_opening()
+        {
+                m_actor_currently_opening = nullptr;
+        }
+
         static bool is_tile_any_door(const TileId tile)
         {
                 return
@@ -156,6 +166,8 @@ private:
         bool m_is_secret {false};
 
         DoorType m_type {DoorType::wood};
+
+        actor::Actor* m_actor_currently_opening {nullptr};
 
 }; // Door
 

@@ -11,8 +11,6 @@
 #include "actor_mon.hpp"
 #include "actor_player.hpp"
 #include "audio.hpp"
-#include "terrain_mob.hpp"
-#include "terrain.hpp"
 #include "init.hpp"
 #include "inventory.hpp"
 #include "inventory_handling.hpp"
@@ -27,6 +25,9 @@
 #include "property_data.hpp"
 #include "property_handler.hpp"
 #include "saving.hpp"
+#include "terrain.hpp"
+#include "terrain_door.hpp"
+#include "terrain_mob.hpp"
 
 // -----------------------------------------------------------------------------
 // Private
@@ -259,7 +260,7 @@ static void run_std_turn_events()
         }
 }
 
-static  void run_atomic_turn_events()
+static void run_atomic_turn_events()
 {
         // Stop burning for any actor standing in liquid
         for (auto* const actor : game_time::g_actors)
@@ -487,9 +488,31 @@ void tick()
 
         run_atomic_turn_events();
 
-        current_actor()->m_properties.on_turn_begin();
+        auto* const next_actor = current_actor();
 
-        current_actor()->on_actor_turn();
+        // Clear flag that this actor is opening a door
+        if (map::rect().is_pos_inside(next_actor->m_opening_door_pos))
+        {
+                auto* const t =
+                        map::g_cells.at(next_actor->m_opening_door_pos)
+                        .terrain;
+
+                if (t->id() == terrain::Id::door)
+                {
+                        auto* const door = static_cast<terrain::Door*>(t);
+
+                        if (door->actor_currently_opening() == next_actor)
+                        {
+                                door->clear_actor_currently_opening();
+                        }
+
+                        next_actor->m_opening_door_pos = {-1, -1};
+                }
+        }
+
+        next_actor->m_properties.on_turn_begin();
+
+        next_actor->on_actor_turn();
 }
 
 void update_light_map()

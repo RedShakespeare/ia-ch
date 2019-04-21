@@ -504,8 +504,10 @@ void GameState::update()
                         // it's a monster, the AI handles it.
                         actor->act();
                 }
-                else // Actor cannot act
+                else
                 {
+                        // Actor cannot act
+
                         if (actor->is_player())
                         {
                                 sdl_base::sleep(g_ms_delay_player_unable_act);

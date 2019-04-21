@@ -168,6 +168,7 @@ public:
         ActorData* m_data {nullptr};
         int m_delay {0};
         P m_lair_pos {};
+        P m_opening_door_pos {-1, -1};
 
 protected:
         // Damages worn armor, and returns damage after armor absorbs damage

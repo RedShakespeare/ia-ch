@@ -776,16 +776,18 @@ bool Door::try_jam(actor::Actor* actor_trying)
 
 void Door::try_close(actor::Actor* actor_trying)
 {
+        // TODO: Refactor this function
+
         const bool is_player = actor_trying == map::g_player;
 
         const bool tryer_is_blind = !actor_trying->m_properties.allow_see();
 
-        if (is_player &&
-            m_type == DoorType::metal)
+        if (is_player && (m_type == DoorType::metal))
         {
                 if (tryer_is_blind)
                 {
-                        msg_log::add("There is a metal door here, but it's stuck.");
+                        msg_log::add(
+                                "There is a metal door here, but it's stuck.");
                 }
                 else
                 {
@@ -797,18 +799,14 @@ void Door::try_close(actor::Actor* actor_trying)
                 return;
         }
 
-        bool is_closable = true;
-
         const bool player_see_tryer =
                 is_player
                 ? true
                 : map::g_player->can_see_actor(*actor_trying);
 
         // Already closed?
-        if (is_closable && !m_is_open)
+        if (!m_is_open)
         {
-                is_closable = false;
-
                 if (is_player)
                 {
                         if (tryer_is_blind)
@@ -820,156 +818,123 @@ void Door::try_close(actor::Actor* actor_trying)
                                 msg_log::add("I see nothing there to close.");
                         }
                 }
+
+                return;
+        }
+
+        // Currently being opened by another actor?
+        if (m_actor_currently_opening &&
+            (m_actor_currently_opening != actor_trying))
+        {
+                TRACE <<
+                        "Door marked as currently being opened, checking if "
+                        "opening actor still exists and is alive"
+                      << std::endl;
+
+                bool is_opening_actor_alive = false;
+
+                for (const auto* const actor : game_time::g_actors)
+                {
+                        if ((actor == m_actor_currently_opening) &&
+                            actor->is_alive())
+                        {
+                                is_opening_actor_alive = true;
+                        }
+                }
+
+                if (is_opening_actor_alive)
+                {
+                        TRACE << "Opening actor exists and is alive"
+                              << std::endl;
+
+                        if (is_player)
+                        {
+                                msg_log::add(
+                                        "The door is currently being opened, "
+                                        "and cannot be closed.");
+                        }
+
+                        return;
+                }
+                else
+                {
+                        TRACE << "Opening actor no longer exists, or is dead"
+                              << std::endl;
+
+                        m_actor_currently_opening = nullptr;
+                }
         }
 
         // Blocked?
-        if (is_closable)
+        bool is_blocked_by_actor = false;
+
+        for (auto* actor : game_time::g_actors)
         {
-                bool is_blocked_by_actor = false;
-
-                for (auto* actor : game_time::g_actors)
+                if ((actor->m_state != ActorState::destroyed) &&
+                    (actor->m_pos == m_pos))
                 {
-                        if ((actor->m_state != ActorState::destroyed) &&
-                            (actor->m_pos == m_pos))
-                        {
-                                is_blocked_by_actor = true;
+                        is_blocked_by_actor = true;
 
-                                break;
-                        }
-                }
-
-                if (is_blocked_by_actor ||
-                    map::g_cells.at(m_pos).item)
-                {
-                        is_closable = false;
-
-                        if (is_player)
-                        {
-                                if (tryer_is_blind)
-                                {
-                                        msg_log::add(
-                                                "Something is blocking the " +
-                                                base_name_short() +
-                                                ".");
-                                }
-                                else // Can see
-                                {
-                                        msg_log::add(
-                                                "The " +
-                                                base_name_short() +
-                                                " is blocked.");
-                                }
-                        }
+                        break;
                 }
         }
 
-        if (is_closable)
+        if (is_blocked_by_actor || map::g_cells.at(m_pos).item)
         {
-                // Door is in correct state for closing (open, working, not blocked)
-
-                if (tryer_is_blind)
+                if (is_player)
                 {
-                        if (rnd::coin_toss())
+                        if (tryer_is_blind)
                         {
-                                m_is_open = false;
-
-                                if (is_player)
-                                {
-                                        Snd snd("",
-                                                SfxId::door_close,
-                                                IgnoreMsgIfOriginSeen::yes,
-                                                m_pos,
-                                                actor_trying,
-                                                SndVol::low,
-                                                AlertsMon::yes);
-
-                                        snd.run();
-
-                                        msg_log::add("I fumble with a " +
-                                                     base_name_short() +
-                                                     ", but manage to close it.");
-                                }
-                                else // Monster closing
-                                {
-                                        Snd snd("I hear a door closing.",
-                                                SfxId::door_close,
-                                                IgnoreMsgIfOriginSeen::yes,
-                                                m_pos,
-                                                actor_trying,
-                                                SndVol::low,
-                                                AlertsMon::no);
-
-                                        snd.run();
-
-                                        if (player_see_tryer)
-                                        {
-                                                const std::string actor_name_the =
-                                                        text_format::first_to_upper(
-                                                                actor_trying->name_the());
-
-                                                msg_log::add(
-                                                        actor_name_the +
-                                                        "fumbles, but manages to close a " +
-                                                        base_name_short() +
-                                                        ".");
-                                        }
-                                }
+                                msg_log::add(
+                                        "Something is blocking the " +
+                                        base_name_short() +
+                                        ".");
                         }
-                        else // Fail to close
+                        else // Can see
                         {
-                                if (is_player)
-                                {
-                                        msg_log::add(
-                                                "I fumble blindly with a " +
-                                                base_name_short() +
-                                                ", and fail to close it.");
-                                }
-                                else // Monster failing to close
-                                {
-                                        if (player_see_tryer)
-                                        {
-                                                const std::string actor_name_the =
-                                                        text_format::first_to_upper(
-                                                                actor_trying->name_the());
-
-                                                msg_log::add(
-                                                        actor_name_the +
-                                                        " fumbles blindly, and fails to close a " +
-                                                        base_name_short() +
-                                                        ".");
-                                        }
-                                }
+                                msg_log::add(
+                                        "The " +
+                                        base_name_short() +
+                                        " is blocked.");
                         }
                 }
-                else // Can see
+
+                return;
+        }
+
+        // Door can be closed
+
+        if (tryer_is_blind)
+        {
+                if (rnd::coin_toss())
                 {
                         m_is_open = false;
 
+                        map::update_vision();
+
                         if (is_player)
                         {
-                                const auto alerts_mon =
-                                        player_bon::has_trait(Trait::silent)
-                                        ? AlertsMon::no
-                                        : AlertsMon::yes;
-
-                                Snd snd("",
+                                Snd snd(
+                                        "",
                                         SfxId::door_close,
                                         IgnoreMsgIfOriginSeen::yes,
                                         m_pos,
                                         actor_trying,
                                         SndVol::low,
-                                        alerts_mon);
+                                        AlertsMon::yes);
 
                                 snd.run();
 
                                 msg_log::add(
-                                        "I close the " +
+                                        "I fumble with a " +
                                         base_name_short() +
-                                        ".");
+                                        ", but manage to close it.");
                         }
-                        else // Is a monster closing
+                        else
                         {
-                                Snd snd("I hear a door closing.",
+                                // Monster closing
+                                Snd snd(
+                                        "I hear a door closing.",
                                         SfxId::door_close,
                                         IgnoreMsgIfOriginSeen::yes,
                                         m_pos,
@@ -987,25 +952,105 @@ void Door::try_close(actor::Actor* actor_trying)
 
                                         msg_log::add(
                                                 actor_name_the +
-                                                " closes a " +
+                                                "fumbles, but manages to close a " +
                                                 base_name_short() +
                                                 ".");
                                 }
                         }
+
+                        game_time::tick();
+                }
+                else
+                {
+                        // Failed to close
+
+                        if (is_player)
+                        {
+                                msg_log::add(
+                                        "I fumble blindly with a " +
+                                        base_name_short() +
+                                        ", and fail to close it.");
+                        }
+                        else // Monster failing to close
+                        {
+                                if (player_see_tryer)
+                                {
+                                        const std::string actor_name_the =
+                                                text_format::first_to_upper(
+                                                        actor_trying->name_the());
+
+                                        msg_log::add(
+                                                actor_name_the +
+                                                " fumbles blindly, and fails to close a " +
+                                                base_name_short() +
+                                                ".");
+                                }
+                        }
+
+                        game_time::tick();
+                }
+
+                return;
+        }
+
+        // Door can be closed, and actor can see
+
+        m_is_open = false;
+
+        map::update_vision();
+
+        if (is_player)
+        {
+                const auto alerts_mon =
+                        player_bon::has_trait(Trait::silent)
+                        ? AlertsMon::no
+                        : AlertsMon::yes;
+
+                Snd snd(
+                        "",
+                        SfxId::door_close,
+                        IgnoreMsgIfOriginSeen::yes,
+                        m_pos,
+                        actor_trying,
+                        SndVol::low,
+                        alerts_mon);
+
+                snd.run();
+
+                msg_log::add(
+                        "I close the " +
+                        base_name_short() +
+                        ".");
+        }
+        else
+        {
+                // Monster closing
+                Snd snd(
+                        "I hear a door closing.",
+                        SfxId::door_close,
+                        IgnoreMsgIfOriginSeen::yes,
+                        m_pos,
+                        actor_trying,
+                        SndVol::low,
+                        AlertsMon::no);
+
+                snd.run();
+
+                if (player_see_tryer)
+                {
+                        const std::string actor_name_the =
+                                text_format::first_to_upper(
+                                        actor_trying->name_the());
+
+                        msg_log::add(
+                                actor_name_the +
+                                " closes a " +
+                                base_name_short() +
+                                ".");
                 }
         }
 
-        // TODO: It doesn't seem like a turn is spent if player is blind and fails
-        // to close the door?
-        if (!m_is_open && is_closable)
-        {
-                game_time::tick();
-        }
-
-        if (!m_is_open)
-        {
-                map::update_vision();
-        }
+        game_time::tick();
 
 } // try_close
 
@@ -1024,8 +1069,7 @@ void Door::try_open(actor::Actor* actor_trying)
                 ? true
                 : map::g_player->can_see_actor(*actor_trying);
 
-        if (is_player &&
-            m_type == DoorType::metal)
+        if (is_player && (m_type == DoorType::metal))
         {
                 if (!player_see_door)
                 {
@@ -1055,7 +1099,8 @@ void Door::try_open(actor::Actor* actor_trying)
         {
                 TRACE << "Is not stuck" << std::endl;
 
-                const bool tryer_can_see = actor_trying->m_properties.allow_see();
+                const bool tryer_can_see =
+                        actor_trying->m_properties.allow_see();
 
                 if (tryer_can_see)
                 {
@@ -1238,8 +1283,13 @@ void Door::try_open(actor::Actor* actor_trying)
                 if (m_is_secret)
                 {
                         TRACE << "Was secret, now revealing" << std::endl;
+
                         reveal(Verbosity::verbose);
                 }
+
+                m_actor_currently_opening = actor_trying;
+
+                actor_trying->m_opening_door_pos = m_pos;
 
                 game_time::tick();
 
@@ -1272,10 +1322,18 @@ DidOpen Door::open(actor::Actor* const actor_opening)
 
         m_is_stuck = false;
 
+        if (actor_opening)
+        {
+                m_actor_currently_opening = actor_opening;
+
+                actor_opening->m_opening_door_pos = m_pos;
+        }
+
         // TODO: This is kind of a hack...
         if (m_type == DoorType::metal)
         {
-                Snd snd("",
+                Snd snd(
+                        "",
                         SfxId::END,
                         IgnoreMsgIfOriginSeen::yes,
                         m_pos,
