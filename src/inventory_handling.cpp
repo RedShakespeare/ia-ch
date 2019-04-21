@@ -746,31 +746,47 @@ void BrowseInv::update()
 
                         InvSlot& slot = map::g_player->m_inv.m_slots[browser_y];
 
-                        if (slot.item)
+                        if (!slot.item)
                         {
-                                // Exit screen
-                                states::pop();
-
-                                msg_log::clear();
-
-                                if (slot.id == SlotId::body)
-                                {
-                                        map::g_player->m_handle_armor_countdown =
-                                                s_nr_turns_to_handle_armor;
-                                }
-                                else
-                                {
-                                        map::g_player->m_inv.unequip_slot(slot.id);
-                                }
-
-                                game_time::tick();
+                                states::push(std::make_unique<Equip>(slot));
 
                                 return;
                         }
-                        else // No item in slot
+
+                        // Has item in selected slot
+                        states::pop();
+
+                        msg_log::clear();
+
+                        if (slot.id == SlotId::body)
                         {
-                                states::push(std::make_unique<Equip>(slot));
+                                if (map::g_player->m_properties.has(
+                                            PropId::burning))
+                                {
+                                        msg_log::add("Not while burning.");
+
+                                        return;
+                                }
+
+                                if (map::g_player->m_properties.has(
+                                            PropId::swimming))
+                                {
+                                        msg_log::add("Not while swimming.");
+
+                                        return;
+                                }
+
+                                map::g_player->m_handle_armor_countdown =
+                                        s_nr_turns_to_handle_armor;
                         }
+                        else
+                        {
+                                map::g_player->m_inv.unequip_slot(slot.id);
+                        }
+
+                        game_time::tick();
+
+                        return;
                 }
                 else // In backpack inventory
                 {
@@ -1331,6 +1347,13 @@ void Equip::update()
                         if (map::g_player->m_properties.has(PropId::burning))
                         {
                                 msg_log::add("Not while burning.");
+
+                                return;
+                        }
+
+                        if (map::g_player->m_properties.has(PropId::swimming))
+                        {
+                                msg_log::add("Not while swimming.");
 
                                 return;
                         }
