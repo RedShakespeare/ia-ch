@@ -27,15 +27,15 @@ static Fraction chance_for_trapped_room(const RoomType type)
         switch (type)
         {
         case RoomType::plain:
-                chance = {1, 12};
+                chance = {1, 14};
                 break;
 
         case RoomType::human:
-                chance = {1, 4};
+                chance = {1, 6};
                 break;
 
         case RoomType::ritual:
-                chance = {1, 4};
+                chance = {1, 6};
                 break;
 
         case RoomType::spider:
@@ -43,11 +43,11 @@ static Fraction chance_for_trapped_room(const RoomType type)
                 break;
 
         case RoomType::crypt:
-                chance = {1, 3};
+                chance = {1, 6};
                 break;
 
         case RoomType::monster:
-                chance = {1, 6};
+                chance = {1, 8};
                 break;
 
         case RoomType::chasm:
@@ -55,15 +55,15 @@ static Fraction chance_for_trapped_room(const RoomType type)
                 break;
 
         case RoomType::damp:
-                chance = {1, 12};
+                chance = {1, 14};
                 break;
 
         case RoomType::pool:
-                chance = {1, 12};
+                chance = {1, 14};
                 break;
 
         case RoomType::jail:
-                chance = {1, 4};
+                chance = {1, 8};
                 break;
 
         case RoomType::corr_link:
