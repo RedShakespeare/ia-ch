@@ -1384,6 +1384,7 @@ void SpellSpectralWpns::run_effect(
                 return;
         }
 
+        // Find available weapons
         auto is_melee_wpn = [](const auto* const item) {
                 return item && item->data().type == ItemType::melee_wpn;
         };
@@ -1406,6 +1407,17 @@ void SpellSpectralWpns::run_effect(
                 }
         }
 
+        // Cap the number of weapons spawned
+        rnd::shuffle(weapons);
+
+        const auto nr_weapons_max = (size_t)(2 + (int)skill);
+
+        if (nr_weapons_max < weapons.size())
+        {
+                weapons.resize(nr_weapons_max);
+        }
+
+        // Spawn weapon monsters
         for (const auto* const item : weapons)
         {
                 auto* new_item = item::make(item->id());
@@ -1489,6 +1501,13 @@ std::vector<std::string> SpellSpectralWpns::descr_specific(
                 "dematerialize when damaged. It is only possible to create "
                 "copies of basic melee weapons - \"modern\" mechanisms such as "
                 "pistols or machine guns are far too complex.");
+
+        const auto nr_weapons_max = (size_t)(2 + (int)skill);
+
+        descr.push_back(
+                "A maximum of " +
+                std::to_string(nr_weapons_max) +
+                " weapons are spawned on casting the spell.");
 
         if (skill >= SpellSkill::expert)
         {
