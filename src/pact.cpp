@@ -25,6 +25,7 @@
 #include "property_factory.hpp"
 #include "random.hpp"
 #include "saving.hpp"
+#include "spells.hpp"
 #include "text_format.hpp"
 
 
@@ -523,8 +524,12 @@ std::vector<SpellId> UpgradeSpell::find_spells_can_upgrade() const
         {
                 const auto id = (SpellId)i;
 
+                std::unique_ptr<const Spell> spell(
+                        spell_factory::make_spell_from_id(id));
+
                 if (player_spells::is_spell_learned(id) &&
-                    (player_spells::spell_skill(id) != SpellSkill::master))
+                    (player_spells::spell_skill(id) != SpellSkill::master) &&
+                    spell->can_be_improved_with_skill())
                 {
                         spells.push_back(id);
                 }
