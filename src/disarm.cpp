@@ -47,8 +47,6 @@ void player_disarm()
 
         if (input_dir == Dir::END)
         {
-                ASSERT(false);
-
                 return;
         }
 

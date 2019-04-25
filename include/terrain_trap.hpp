@@ -111,10 +111,7 @@ public:
 
         void reveal(const Verbosity verbosity) override;
 
-        bool is_hidden() const
-        {
-                return m_is_hidden;
-        }
+        void on_revealed_from_searching() override;
 
         Matl matl() const override;
 
@@ -143,7 +140,6 @@ private:
         void trigger_start(const actor::Actor* actor);
 
         Terrain* m_mimic_terrain {nullptr};
-        bool m_is_hidden {false};
         int m_nr_turns_until_trigger {-1};
 
         // TODO: Should be a unique pointer

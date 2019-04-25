@@ -95,11 +95,6 @@ public:
                 return m_is_open;
         }
 
-        bool is_secret() const
-        {
-                return m_is_secret;
-        }
-
         bool is_stuck() const
         {
                 return m_is_stuck;
@@ -108,6 +103,8 @@ public:
         Matl matl() const override;
 
         void reveal(const Verbosity verbosity) override;
+
+        void on_revealed_from_searching() override;
 
         void set_secret();
 
@@ -163,7 +160,6 @@ private:
 
         bool m_is_open {false};
         bool m_is_stuck {false};
-        bool m_is_secret {false};
 
         DoorType m_type {DoorType::wood};
 

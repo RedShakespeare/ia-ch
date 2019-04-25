@@ -150,7 +150,7 @@ static void reset_data(item::ItemData& d, ItemType const item_type)
                 d.weight = item::Weight::none;
                 d.is_identified = false;
                 d.is_spell_domain_known = false;
-                d.xp_on_found = 10;
+                d.xp_on_found = 8;
                 d.character = '?';
                 d.color = colors::white();
                 d.tile = TileId::scroll;
@@ -176,7 +176,7 @@ static void reset_data(item::ItemData& d, ItemType const item_type)
                 d.weight = item::Weight::light;
                 d.is_identified = false;
                 d.is_alignment_known = false;
-                d.xp_on_found = 10;
+                d.xp_on_found = 8;
                 d.character = '!';
                 d.tile = TileId::potion;
                 d.ranged.throw_hit_chance_mod = 15;

@@ -2317,11 +2317,18 @@ PropEnded PropMagicSearching::on_tick()
                             (id == terrain::Id::monolith) ||
                             (id == terrain::Id::stairs))
                         {
-                                t->reveal(Verbosity::silent);
-
                                 cell.is_seen_by_player = true;
 
                                 cell.is_explored = true;
+
+                                if (t->is_hidden())
+                                {
+                                        t->reveal(Verbosity::verbose);
+
+                                        t->on_revealed_from_searching();
+
+                                        msg_log::more_prompt();
+                                }
                         }
 
                         if (m_allow_reveal_items && cell.item)

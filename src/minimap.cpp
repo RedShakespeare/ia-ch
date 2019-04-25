@@ -202,7 +202,7 @@ void update()
                 }
                 else if ((terrain_id == terrain::Id::door) &&
                          !static_cast<const terrain::Door*>(terrain)
-                         ->is_secret())
+                         ->is_hidden())
                 {
                         cell = colors::light_white();
                 }

@@ -429,7 +429,10 @@ void act()
                 {
                         auto* const door = static_cast<terrain::Door*>(t);
 
-                        door->reveal(Verbosity::silent);
+                        if (door->is_hidden())
+                        {
+                                door->reveal(Verbosity::silent);
+                        }
 
                         if (door->is_stuck())
                         {

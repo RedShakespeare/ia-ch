@@ -8,7 +8,6 @@
 
 #include <algorithm>
 
-#include "player_spells.hpp"
 #include "actor_factory.hpp"
 #include "actor_hit.hpp"
 #include "actor_mon.hpp"
@@ -17,7 +16,7 @@
 #include "common_text.hpp"
 #include "drop.hpp"
 #include "explosion.hpp"
-#include "terrain_data.hpp"
+#include "game.hpp"
 #include "game_time.hpp"
 #include "init.hpp"
 #include "inventory.hpp"
@@ -28,6 +27,7 @@
 #include "map_parsing.hpp"
 #include "msg_log.hpp"
 #include "player_bon.hpp"
+#include "player_spells.hpp"
 #include "popup.hpp"
 #include "postmortem.hpp"
 #include "property.hpp"
@@ -36,6 +36,7 @@
 #include "query.hpp"
 #include "sound.hpp"
 #include "teleport.hpp"
+#include "terrain_data.hpp"
 #include "text_format.hpp"
 
 
@@ -49,10 +50,11 @@ Trap::Trap(const P& pos,
            Terrain* const mimic_terrain,
            TrapId id) :
         Terrain(pos),
-        m_mimic_terrain(mimic_terrain),
-        m_is_hidden(true)
+        m_mimic_terrain(mimic_terrain)
 {
         ASSERT(id != TrapId::END);
+
+        m_is_hidden = true;
 
         auto* const terrain_here = map::g_cells.at(pos).terrain;
 
@@ -77,8 +79,9 @@ Trap::Trap(const P& pos,
                 {
                         m_trap_impl = impl;
                 }
-                else // Placement not valid
+                else
                 {
+                        // Placement not valid
                         delete impl;
                 }
         };
@@ -100,8 +103,10 @@ Trap::Trap(const P& pos,
                         }
                 }
         }
-        else // Make a specific trap type
+        else
         {
+                // Make a specific trap type
+
                 // NOTE: This may fail, in which case we have no trap
                 // implementation. The trap creator is responsible for handling
                 // this situation.
@@ -242,7 +247,10 @@ void Trap::trigger_start(const actor::Actor* actor)
         if (actor == map::g_player)
         {
                 // Reveal trap if triggered by player stepping on it
-                reveal(Verbosity::silent);
+                if (is_hidden())
+                {
+                        reveal(Verbosity::silent);
+                }
 
                 map::g_player->update_fov();
 
@@ -253,8 +261,9 @@ void Trap::trigger_start(const actor::Actor* actor)
         {
                 // TODO: Play sfx for magic traps (if player)
         }
-        else // Not magical
+        else
         {
+                // Not magical
                 if (type() != TrapId::web)
                 {
                         std::string msg = "I hear a click.";
@@ -436,8 +445,9 @@ void Trap::destroy()
                 // NOTE: This call destroys the object!
                 map::put(f_tmp);
         }
-        else // "Mechanical" trap
+        else
         {
+                // "Mechanical" trap
                 map::put(new RubbleLow(m_pos));
         }
 }
@@ -468,11 +478,6 @@ void Trap::reveal(const Verbosity verbosity)
 {
         TRACE_FUNC_BEGIN_VERBOSE;
 
-        if (!m_is_hidden)
-        {
-                return;
-        }
-
         m_is_hidden = false;
 
         clear_gore();
@@ -492,8 +497,9 @@ void Trap::reveal(const Verbosity verbosity)
                         {
                                 msg += "There is " + trap_name_a + " here!";
                         }
-                        else // Trap is not at player position
+                        else
                         {
+                                // Trap is not at player position
                                 msg = "I spot " + trap_name_a + ".";
                         }
 
@@ -504,14 +510,20 @@ void Trap::reveal(const Verbosity verbosity)
         TRACE_FUNC_END_VERBOSE;
 }
 
+void Trap::on_revealed_from_searching()
+{
+        game::incr_player_xp(1);
+}
+
 std::string Trap::name(const Article article) const
 {
         if (m_is_hidden)
         {
                 return m_mimic_terrain->name(article);
         }
-        else // Not hidden
+        else
         {
+                // Not hidden
                 return m_trap_impl->name(article);
         }
 }
@@ -537,8 +549,9 @@ Color Trap::color_bg_default() const
         {
                 return m_trap_impl->color();
         }
-        else // Is hidden, or nothing is over the trap
+        else
         {
+                // Is hidden, or nothing is over the trap
                 return colors::black();
         }
 }
@@ -686,8 +699,9 @@ void TrapDart::trigger()
                         ? 0
                         : (map::h() - 1);
         }
-        else // Dart origin is on same vertial line as the trap
+        else
         {
+                // Dart origin is on same vertial line as the trap
                 aim_pos.x =
                         (m_dart_origin.x > m_pos.x)
                         ? 0
@@ -709,8 +723,9 @@ void TrapDart::trigger()
                 wpn = static_cast<item::Wpn*>(
                         item::make(item::Id::trap_dart_poison));
         }
-        else // Not poisoned
+        else
         {
+                // Not poisoned
                 wpn = static_cast<item::Wpn*>(
                         item::make(item::Id::trap_dart));
         }
@@ -811,8 +826,9 @@ void TrapSpear::trigger()
                         wpn = static_cast<item::Wpn*>(
                                 item::make(item::Id::trap_spear_poison));
                 }
-                else // Not poisoned
+                else
                 {
+                        // Not poisoned
                         wpn = static_cast<item::Wpn*>(
                                 item::make(item::Id::trap_spear));
                 }
@@ -1012,13 +1028,15 @@ void TrapTeleport::trigger()
 
                         msg_log::add(msg);
                 }
-                else // Cannot see
+                else
                 {
+                        // Cannot see
                         msg_log::add("I feel a peculiar energy around me!");
                 }
         }
-        else // Is a monster
+        else
         {
+                // Is a monster
                 if (player_sees_actor)
                 {
                         msg_log::add(
@@ -1078,8 +1096,9 @@ void TrapSummonMon::trigger()
 
                 msg_log::add(msg);
         }
-        else // Cannot see
+        else
         {
+                // Cannot see
                 msg_log::add("I feel a peculiar energy around me!");
         }
 
@@ -1101,8 +1120,9 @@ void TrapSummonMon::trigger()
         {
                 TRACE_VERBOSE << "No eligible candidates found" << std::endl;
         }
-        else // Eligible monsters found
+        else
         {
+                // Eligible monsters found
                 const size_t idx = rnd::range(0, summon_bucket.size() - 1);
 
                 const auto id_to_summon = summon_bucket[idx];
@@ -1195,8 +1215,9 @@ void TrapSpiDrain::trigger()
 
                 msg_log::add(msg);
         }
-        else // Cannot see
+        else
         {
+                // Cannot see
                 msg_log::add("I feel a peculiar energy around me!");
         }
 
@@ -1315,22 +1336,25 @@ void TrapWeb::trigger()
                         msg_log::add(
                                 "I am entangled in a spider web!");
                 }
-                else // Cannot see
+                else
                 {
+                        // Cannot see
                         msg_log::add(
                                 "I am entangled in a sticky mass of threads!");
                 }
         }
-        else // Is a monster
+        else
         {
+                // Is a monster
                 if (map::g_player->can_see_actor(*actor_here))
                 {
                         const std::string actor_name =
                                 text_format::first_to_upper(
                                         actor_here->name_the());
 
-                        msg_log::add(actor_name +
-                                     " is entangled in a huge spider web!");
+                        msg_log::add(
+                                actor_name +
+                                " is entangled in a huge spider web!");
                 }
         }
 

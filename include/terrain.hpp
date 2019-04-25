@@ -193,6 +193,11 @@ public:
                 return data().matl_type;
         }
 
+        bool is_hidden() const
+        {
+                return m_is_hidden;
+        }
+
         void try_put_gore();
 
         void make_bloody()
@@ -231,6 +236,8 @@ public:
         {
                 (void)verbosity;
         }
+
+        virtual void on_revealed_from_searching() {}
 
         virtual AllowAction pre_bump(actor::Actor& actor_bumping);
 
@@ -310,10 +317,9 @@ protected:
 
         virtual int base_shock_when_adj() const;
 
+        bool m_is_hidden {false};
         TileId m_gore_tile {TileId::END};
-
         char m_gore_character {0};
-
         P m_pos;
 
 private:

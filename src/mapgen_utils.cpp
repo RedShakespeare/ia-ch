@@ -1033,7 +1033,7 @@ void make_explore_spawn_weights(
                                 auto* const door =
                                         static_cast<terrain::Door*>(terrain);
 
-                                if (door->is_secret())
+                                if (door->is_hidden())
                                 {
                                         weight_inc += std::max(
                                                 1,

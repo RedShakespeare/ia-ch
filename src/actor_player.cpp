@@ -803,7 +803,7 @@ void Player::act()
                                                 const auto* const door =
                                                         static_cast<const terrain::Door*>(adj_cell.terrain);
 
-                                                if (!door->is_secret() &&
+                                                if (!door->is_hidden() &&
                                                     !door->is_open())
                                                 {
                                                         doors.push_back(door);
@@ -1532,8 +1532,7 @@ void Player::on_std_turn()
         const int player_search_skill =
                 map::g_player->ability(AbilityId::searching, true);
 
-        if (!m_properties.has(PropId::confused) &&
-            m_properties.allow_see())
+        if (!m_properties.has(PropId::confused) && m_properties.allow_see())
         {
                 for (size_t i = 0; i < map::g_cells.length(); ++i)
                 {
@@ -1543,6 +1542,11 @@ void Player::on_std_turn()
                         }
 
                         auto* t = map::g_cells.at(i).terrain;
+
+                        if (!t->is_hidden())
+                        {
+                                continue;
+                        }
 
                         const int lit_mod = map::g_light.at(i) ? 5 : 0;
 
@@ -1564,6 +1568,10 @@ void Player::on_std_turn()
                                 if (is_spotted)
                                 {
                                         t->reveal(Verbosity::verbose);
+
+                                        t->on_revealed_from_searching();
+
+                                        msg_log::more_prompt();
                                 }
                         }
                 }

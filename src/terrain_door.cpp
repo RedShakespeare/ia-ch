@@ -34,7 +34,6 @@ Door::Door(const P& terrain_pos,
         m_nr_spikes(0),
         m_is_open(false),
         m_is_stuck(false),
-        m_is_secret(false),
         m_type(type)
 {
         // Gates should never be secret
@@ -52,7 +51,7 @@ Door::Door(const P& terrain_pos,
                 // other states elsewhere during map generation (e.g. set to
                 // secret to hide an optional branch of the map).
 
-                const int pct_secret = 10 + ((map::g_dlvl - 1) * 2);
+                const int pct_secret = 15 + (map::g_dlvl - 1);
 
                 const int pct_stuck = 5;
 
@@ -94,31 +93,31 @@ Door::Door(const P& terrain_pos,
         case DoorSpawnState::open:
                 m_is_open = true;
                 m_is_stuck = false;
-                m_is_secret = false;
+                m_is_hidden = false;
                 break;
 
         case DoorSpawnState::closed:
                 m_is_open = false;
                 m_is_stuck = false;
-                m_is_secret = false;
+                m_is_hidden = false;
                 break;
 
         case DoorSpawnState::stuck:
                 m_is_open = false;
                 m_is_stuck = true;
-                m_is_secret = false;
+                m_is_hidden = false;
                 break;
 
         case DoorSpawnState::secret:
                 m_is_open = false;
                 m_is_stuck = false;
-                m_is_secret = true;
+                m_is_hidden = true;
                 break;
 
         case DoorSpawnState::secret_and_stuck:
                 m_is_open = false;
                 m_is_stuck = true;
-                m_is_secret = true;
+                m_is_hidden = true;
                 break;
 
         case DoorSpawnState::any:
@@ -126,7 +125,7 @@ Door::Door(const P& terrain_pos,
 
                 m_is_open = false;
                 m_is_stuck = false;
-                m_is_secret = false;
+                m_is_hidden = false;
                 break;
         }
 
@@ -188,7 +187,7 @@ void Door::on_hit(
                                         if (map::is_pos_seen_by_player(m_pos))
                                         {
                                                 const std::string a =
-                                                        m_is_secret
+                                                        m_is_hidden
                                                         ? "A "
                                                         : "The ";
 
@@ -280,7 +279,7 @@ void Door::on_hit(
 
                                                         if (is_cell_seen)
                                                         {
-                                                                if (m_is_secret)
+                                                                if (m_is_hidden)
                                                                 {
                                                                         msg_log::add(
                                                                                 "A " +
@@ -307,7 +306,7 @@ void Door::on_hit(
                                                 else // Not destroyed
                                                 {
                                                         const SfxId sfx =
-                                                                m_is_secret ?
+                                                                m_is_hidden ?
                                                                 SfxId::END :
                                                                 SfxId::door_bang;
 
@@ -324,7 +323,7 @@ void Door::on_hit(
                                         }
                                         else // No chance of success
                                         {
-                                                if (is_cell_seen && !m_is_secret)
+                                                if (is_cell_seen && !m_is_hidden)
                                                 {
                                                         Snd snd("",
                                                                 SfxId::door_bang,
@@ -407,7 +406,7 @@ void Door::on_hit(
                         {
                                 if (is_player &&
                                     is_cell_seen &&
-                                    !m_is_secret)
+                                    !m_is_hidden)
                                 {
                                         msg_log::add(
                                                 "It seems futile.",
@@ -526,7 +525,7 @@ std::string Door::base_name_short() const
 
 std::string Door::name(const Article article) const
 {
-        if (m_is_secret)
+        if (m_is_hidden)
         {
                 ASSERT(m_type != DoorType::gate);
                 ASSERT(m_mimic_terrain);
@@ -575,7 +574,7 @@ std::string Door::name(const Article article) const
 
 Color Door::color_default() const
 {
-        if (m_is_secret)
+        if (m_is_hidden)
         {
                 return m_mimic_terrain->color();
         }
@@ -604,7 +603,7 @@ Color Door::color_default() const
 
 char Door::character() const
 {
-        if (m_is_secret)
+        if (m_is_hidden)
         {
                 ASSERT(m_type != DoorType::gate);
                 ASSERT(m_mimic_terrain);
@@ -621,7 +620,7 @@ TileId Door::tile() const
 {
         TileId ret = TileId::END;
 
-        if (m_is_secret)
+        if (m_is_hidden)
         {
                 ASSERT(m_type != DoorType::gate);
                 ASSERT(m_mimic_terrain);
@@ -682,7 +681,7 @@ void Door::bump(actor::Actor& actor_bumping)
                 return;
         }
 
-        if (m_is_secret)
+        if (m_is_hidden)
         {
                 ASSERT(m_type != DoorType::gate);
 
@@ -719,18 +718,18 @@ void Door::bump(actor::Actor& actor_bumping)
 
 void Door::reveal(const Verbosity verbosity)
 {
-        if (!m_is_secret)
-        {
-                return;
-        }
+        m_is_hidden = false;
 
-        m_is_secret = false;
-
-        if (verbosity == Verbosity::verbose &&
+        if ((verbosity == Verbosity::verbose) &&
             map::g_cells.at(m_pos).is_seen_by_player)
         {
                 msg_log::add("A secret is revealed.");
         }
+}
+
+void Door::on_revealed_from_searching()
+{
+        game::incr_player_xp(2);
 }
 
 void Door::set_secret()
@@ -738,7 +737,7 @@ void Door::set_secret()
         ASSERT(m_type != DoorType::gate);
 
         m_is_open = false;
-        m_is_secret = true;
+        m_is_hidden = true;
 }
 
 bool Door::try_jam(actor::Actor* actor_trying)
@@ -747,7 +746,7 @@ bool Door::try_jam(actor::Actor* actor_trying)
 
         const bool tryer_is_blind = !actor_trying->m_properties.allow_see();
 
-        if (m_is_secret || m_is_open)
+        if (m_is_hidden || m_is_open)
         {
                 return false;
         }
@@ -1280,7 +1279,7 @@ void Door::try_open(actor::Actor* actor_trying)
         {
                 TRACE << "Open was successful" << std::endl;
 
-                if (m_is_secret)
+                if (m_is_hidden)
                 {
                         TRACE << "Was secret, now revealing" << std::endl;
 
@@ -1318,7 +1317,7 @@ DidOpen Door::open(actor::Actor* const actor_opening)
 
         m_is_open = true;
 
-        m_is_secret= false;
+        m_is_hidden = false;
 
         m_is_stuck = false;
 

@@ -114,7 +114,7 @@ static void post_process_wall_tiles()
                                 {
                                         auto door = static_cast<const terrain::Door*>(t);
 
-                                        if (door->is_secret())
+                                        if (door->is_hidden())
                                         {
                                                 wall = door->mimic();
                                         }
