@@ -25,7 +25,8 @@
 // -----------------------------------------------------------------------------
 // Private
 // -----------------------------------------------------------------------------
-std::vector<std::string> false_names_;
+static std::vector<std::string> s_false_names;
+
 
 static SpellSkill get_player_skill_for_scroll(SpellId spell_id)
 {
@@ -46,31 +47,31 @@ void init()
 {
         TRACE_FUNC_BEGIN;
 
-        // Init possible fake names
-        false_names_.clear();
-        false_names_.push_back("Cruensseasrjit");
-        false_names_.push_back("Rudsceleratus");
-        false_names_.push_back("Rudminuox");
-        false_names_.push_back("Cruo stragara-na");
-        false_names_.push_back("Praya navita");
-        false_names_.push_back("Pretia Cruento");
-        false_names_.push_back("Pestis Cruento");
-        false_names_.push_back("Cruento Pestis");
-        false_names_.push_back("Domus-bhaava");
-        false_names_.push_back("Acerbus-shatruex");
-        false_names_.push_back("Pretaanluxis");
-        false_names_.push_back("Praansilenux");
-        false_names_.push_back("Quodpipax");
-        false_names_.push_back("Lokemundux");
-        false_names_.push_back("Profanuxes");
-        false_names_.push_back("Shaantitus");
-        false_names_.push_back("Geropayati");
-        false_names_.push_back("Vilomaxus");
-        false_names_.push_back("Bhuudesco");
-        false_names_.push_back("Durbentia");
-        false_names_.push_back("Bhuuesco");
-        false_names_.push_back("Maravita");
-        false_names_.push_back("Infirmux");
+        // Randomize scroll fake names
+        s_false_names.clear();
+        s_false_names.push_back("Cruensseasrjit");
+        s_false_names.push_back("Rudsceleratus");
+        s_false_names.push_back("Rudminuox");
+        s_false_names.push_back("Cruo stragara-na");
+        s_false_names.push_back("Praya navita");
+        s_false_names.push_back("Pretia Cruento");
+        s_false_names.push_back("Pestis Cruento");
+        s_false_names.push_back("Cruento Pestis");
+        s_false_names.push_back("Domus-bhaava");
+        s_false_names.push_back("Acerbus-shatruex");
+        s_false_names.push_back("Pretaanluxis");
+        s_false_names.push_back("Praansilenux");
+        s_false_names.push_back("Quodpipax");
+        s_false_names.push_back("Lokemundux");
+        s_false_names.push_back("Profanuxes");
+        s_false_names.push_back("Shaantitus");
+        s_false_names.push_back("Geropayati");
+        s_false_names.push_back("Vilomaxus");
+        s_false_names.push_back("Bhuudesco");
+        s_false_names.push_back("Durbentia");
+        s_false_names.push_back("Bhuuesco");
+        s_false_names.push_back("Maravita");
+        s_false_names.push_back("Infirmux");
 
         std::vector<std::string> cmb;
         cmb.clear();
@@ -107,56 +108,79 @@ void init()
                 {
                         if (i != ii)
                         {
-                                false_names_.push_back(cmb[i] + " " + cmb[ii]);
+                                s_false_names.push_back(cmb[i] + " " + cmb[ii]);
                         }
                 }
         }
+
+        std::vector<item::ItemData*> scroll_data;
 
         for (auto& d : item::g_data)
         {
                 if (d.type == ItemType::scroll)
                 {
-                        // False name
-                        const size_t idx = rnd::idx(false_names_);
-
-                        const std::string& title = false_names_[idx];
-
-                        d.base_name_un_id.names[(size_t)ItemRefType::plain] =
-                                "Manuscript titled " + title;
-
-                        d.base_name_un_id.names[(size_t)ItemRefType::plural] =
-                                "Manuscripts titled " + title;
-
-                        d.base_name_un_id.names[(size_t)ItemRefType::a] =
-                                "a Manuscript titled " + title;
-
-                        false_names_.erase(false_names_.begin() + idx);
-
-                        // True name
-                        const std::unique_ptr<const Scroll> scroll(
-                                static_cast<const Scroll*>(
-                                        item::make(d.id, 1)));
-
-                        const std::string real_type_name = scroll->real_name();
-
-                        const std::string real_name =
-                                "Manuscript of " + real_type_name;
-
-                        const std::string real_name_plural =
-                                "Manuscripts of " + real_type_name;
-
-                        const std::string real_name_a =
-                                "a Manuscript of " + real_type_name;
-
-                        d.base_name.names[(size_t)ItemRefType::plain] =
-                                real_name;
-
-                        d.base_name.names[(size_t)ItemRefType::plural] =
-                                real_name_plural;
-
-                        d.base_name.names[(size_t)ItemRefType::a] =
-                                real_name_a;
+                        scroll_data.push_back(&d);
                 }
+        }
+
+        for (auto& d : scroll_data)
+        {
+                // False name
+                const size_t idx = rnd::idx(s_false_names);
+
+                const auto& title = s_false_names[idx];
+
+                d->base_name_un_id.names[(size_t)ItemRefType::plain] =
+                        "Manuscript titled " + title;
+
+                d->base_name_un_id.names[(size_t)ItemRefType::plural] =
+                        "Manuscripts titled " + title;
+
+                d->base_name_un_id.names[(size_t)ItemRefType::a] =
+                        "a Manuscript titled " + title;
+
+                s_false_names.erase(s_false_names.begin() + idx);
+
+                // True name
+                const std::unique_ptr<const Scroll> scroll(
+                        static_cast<const Scroll*>(
+                                item::make(d->id, 1)));
+
+                const auto real_type_name = scroll->real_name();
+
+                const auto real_name =
+                        "Manuscript of " + real_type_name;
+
+                const auto real_name_plural =
+                        "Manuscripts of " + real_type_name;
+
+                const auto real_name_a =
+                        "a Manuscript of " + real_type_name;
+
+                d->base_name.names[(size_t)ItemRefType::plain] =
+                        real_name;
+
+                d->base_name.names[(size_t)ItemRefType::plural] =
+                        real_name_plural;
+
+                d->base_name.names[(size_t)ItemRefType::a] =
+                        real_name_a;
+        }
+
+        // Randomize scroll spawning chances - some scrolls have a "high"
+        // chance of spawning, and some have a "low" chance. The effect of this
+        // should be that there is less chance to find all spells.
+        rnd::shuffle(scroll_data);
+
+        const size_t nr_scrolls = scroll_data.size();
+        const size_t nr_high_chance = nr_scrolls / 2;
+
+        for (size_t i = 0; i < nr_scrolls; ++i)
+        {
+                scroll_data[i]->chance_to_incl_in_spawn_list =
+                        (i < nr_high_chance)
+                        ? 35
+                        : 15;
         }
 
         TRACE_FUNC_END;

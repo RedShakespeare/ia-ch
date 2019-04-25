@@ -135,6 +135,7 @@ static void reset_data(item::ItemData& d, ItemType const item_type)
                 break;
 
         case ItemType::scroll:
+                // NOTE: Scroll spawning chances are set elsewhere
                 reset_data(d, ItemType::general);
                 d.type = ItemType::scroll;
                 d.has_std_activate = true;
@@ -146,7 +147,6 @@ static void reset_data(item::ItemData& d, ItemType const item_type)
                         "the purpose is unclear."
                 };
                 d.value = item::Value::minor_treasure;
-                d.chance_to_incl_in_spawn_list = 30;
                 d.weight = item::Weight::none;
                 d.is_identified = false;
                 d.is_spell_domain_known = false;
@@ -293,12 +293,11 @@ void init()
 
         reset_data(d, ItemType::general);
         d.id = Id::trapez;;
-        d.base_name =
-                {
-                        "Shining Trapezohedron",
-                        "Shining Trapezohedrons",
-                        "The Shining Trapezohedron"
-                };
+        d.base_name = {
+                "Shining Trapezohedron",
+                "Shining Trapezohedrons",
+                "The Shining Trapezohedron"
+        };
         d.spawn_std_range = Range(-1, -1);
         d.chance_to_incl_in_spawn_list = 0;
         d.allow_spawn = false;
@@ -1972,7 +1971,6 @@ void cleanup()
         TRACE_FUNC_END;
 }
 
-
 void save()
 {
         for (size_t i = 0; i < (size_t)Id::END; ++i)
@@ -1985,6 +1983,7 @@ void save()
                 saving::put_bool(d.is_tried);
                 saving::put_bool(d.is_found);
                 saving::put_bool(d.allow_spawn);
+                saving::put_int(d.chance_to_incl_in_spawn_list);
         }
 }
 
@@ -2000,6 +1999,7 @@ void load()
                 d.is_tried = saving::get_bool();
                 d.is_found = saving::get_bool();
                 d.allow_spawn = saving::get_bool();
+                d.chance_to_incl_in_spawn_list = saving::get_int();
         }
 }
 

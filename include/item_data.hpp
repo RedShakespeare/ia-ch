@@ -441,6 +441,6 @@ void cleanup();
 void save();
 void load();
 
-} // item_data
+} // item
 
 #endif // ITEM_DATA_HPP
