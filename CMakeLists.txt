@@ -305,7 +305,6 @@ if(CMAKE_COMPILER_IS_GNUCXX OR(CMAKE_C_COMPILER_ID MATCHES "Clang") OR(CMAKE_CXX
                 -Wmissing-declarations
                 -Wunused
                 -Wuninitialized
-                -Wmaybe-uninitialized
                 -Wshadow
                 # TODO: Enable flag: -Weffc++
                 )
@@ -324,6 +323,14 @@ if(CMAKE_COMPILER_IS_GNUCXX OR(CMAKE_C_COMPILER_ID MATCHES "Clang") OR(CMAKE_CXX
         set(RELEASE_COMPILE_FLAGS
                 -O2
                 -Wno-unused-value
+                )
+endif()
+
+# GNU gcc specific compiler flags
+if(CMAKE_COMPILER_IS_GNUCXX)
+
+        list(APPEND COMMON_COMPILE_FLAGS
+                -Wmaybe-uninitialized
                 )
 endif()
 

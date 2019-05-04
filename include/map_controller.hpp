@@ -17,7 +17,7 @@ class MapController
 public:
         MapController() {}
 
-        ~MapController() {}
+        virtual ~MapController() {}
 
         virtual void on_start() {}
 
