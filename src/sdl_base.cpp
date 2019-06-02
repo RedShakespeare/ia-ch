@@ -30,7 +30,7 @@ void init()
 
         s_is_inited = true;
 
-        if (SDL_Init(SDL_INIT_EVERYTHING) == -1)
+        if (SDL_Init(SDL_INIT_VIDEO|SDL_INIT_AUDIO|SDL_INIT_EVENTS) == -1)
         {
                 TRACE_ERROR_RELEASE << "Failed to init SDL"
                                     << std::endl
