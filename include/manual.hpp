@@ -28,8 +28,7 @@ public:
         BrowseManual() :
                 State(),
                 m_browser(),
-                m_pages(),
-                m_top_idx(0) {}
+                m_pages() {}
 
         void on_start() override;
 
@@ -47,8 +46,6 @@ private:
         std::vector<std::string> m_raw_lines;
 
         std::vector<ManualPage> m_pages;
-
-        int m_top_idx;
 };
 
 class BrowseManualPage: public InfoScreenState

@@ -87,6 +87,8 @@ public:
                 m_pos(p),
                 m_pylon(pylon) {}
 
+        virtual ~PylonImpl() {}
+
         virtual void on_new_turn_activated() = 0;
 
 protected:

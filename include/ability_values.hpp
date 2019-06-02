@@ -8,6 +8,7 @@
 #define ABILITY_VALUES_HPP
 
 #include <cstddef>
+#include <string>
 #include <unordered_map>
 
 
