@@ -1,4 +1,4 @@
-#!/bin/bash -e
+#!/usr/bin/env bash -e
 
 if [ -z "${1}" ]; then
     echo "No file argument provided"
