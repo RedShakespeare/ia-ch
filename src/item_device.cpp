@@ -75,17 +75,17 @@ StrangeDevice::StrangeDevice(item::ItemData* const item_data) :
         Device(item_data),
         condition(rnd::coin_toss() ? Condition::fine : Condition::shoddy) {}
 
-void StrangeDevice::save() const
+void StrangeDevice::save_hook() const
 {
-        saving::put_int(int(condition));
+        saving::put_int((int)condition);
 }
 
-void StrangeDevice::load()
+void StrangeDevice::load_hook()
 {
         condition = Condition(saving::get_int());
 }
 
-std::vector<std::string> StrangeDevice::descr() const
+std::vector<std::string> StrangeDevice::descr_hook() const
 {
         if (m_data->is_identified)
         {
@@ -501,13 +501,13 @@ ConsumeItem Lantern::activate(actor::Actor* const actor)
         return ConsumeItem::no;
 }
 
-void Lantern::save() const
+void Lantern::save_hook() const
 {
         saving::put_int(nr_turns_left);
         saving::put_bool(is_activated);
 }
 
-void Lantern::load()
+void Lantern::load_hook()
 {
         nr_turns_left = saving::get_int();
         is_activated = saving::get_bool();
@@ -556,7 +556,7 @@ void Lantern::toggle()
         audio::play(SfxId::lantern);
 }
 
-void Lantern::on_std_turn_in_inv(const InvType inv_type)
+void Lantern::on_std_turn_in_inv_hook(const InvType inv_type)
 {
         (void)inv_type;
 

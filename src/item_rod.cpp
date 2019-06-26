@@ -200,12 +200,12 @@ void load()
         }
 }
 
-void Rod::save() const
+void Rod::save_hook() const
 {
         saving::put_int(m_nr_charge_turns_left);
 }
 
-void Rod::load()
+void Rod::load_hook()
 {
         m_nr_charge_turns_left = saving::get_int();
 }
@@ -270,7 +270,7 @@ ConsumeItem Rod::activate(actor::Actor* const actor)
         return ConsumeItem::no;
 }
 
-void Rod::on_std_turn_in_inv(const InvType inv_type)
+void Rod::on_std_turn_in_inv_hook(const InvType inv_type)
 {
         (void)inv_type;
 
@@ -296,7 +296,7 @@ void Rod::on_std_turn_in_inv(const InvType inv_type)
         }
 }
 
-std::vector<std::string> Rod::descr() const
+std::vector<std::string> Rod::descr_hook() const
 {
         if (m_data->is_identified)
         {

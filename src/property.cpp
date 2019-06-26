@@ -2385,3 +2385,13 @@ bool PropSwimming::allow_attack_ranged(const Verbosity verbosity) const
 
         return false;
 }
+
+bool PropCannotReadCurse::allow_read_absolute(const Verbosity verbosity) const
+{
+        if (m_owner->is_player() && verbosity == Verbosity::verbose)
+        {
+                msg_log::add("I cannot seem to read it.");
+        }
+
+        return false;
+}

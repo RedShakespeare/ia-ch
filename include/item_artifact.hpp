@@ -8,6 +8,7 @@
 #define ITEM_ARTIFACT_HPP
 
 #include "item.hpp"
+#include "item_curse_ids.hpp"
 #include "sound.hpp"
 
 
@@ -29,7 +30,7 @@ class PharaohStaff: public Wpn
 public:
         PharaohStaff(ItemData* const item_data);
 
-        void on_std_turn_in_inv(const InvType inv_type) override;
+        void on_std_turn_in_inv_hook(const InvType inv_type) override;
 
 private:
         void on_mon_see_player_carrying(actor::Mon& mon) const;
@@ -56,6 +57,15 @@ class ResurrectTalisman: public Item
 {
 public:
         ResurrectTalisman(ItemData* const item_data);
+
+        bool is_curse_allowed(item_curse::Id id) const override
+        {
+                (void)id;
+
+                // This item is destroyed on use, it's too messy to also
+                // have to deactivate the curse
+                return false;
+        }
 };
 
 // -----------------------------------------------------------------------------
@@ -92,9 +102,9 @@ public:
 
         std::string name_inf_str() const override;
 
-        void save() const override;
+        void save_hook() const override;
 
-        void load() override;
+        void load_hook() override;
 
         ConsumeItem activate(actor::Actor* const actor) override;
 
@@ -122,9 +132,9 @@ public:
 
         std::string name_inf_str() const override;
 
-        void save() const override;
+        void save_hook() const override;
 
-        void load() override;
+        void load_hook() override;
 
         ConsumeItem activate(actor::Actor* const actor) override;
 
@@ -145,9 +155,9 @@ public:
 
         std::string name_inf_str() const override;
 
-        void save() const override;
+        void save_hook() const override;
 
-        void load() override;
+        void load_hook() override;
 
 private:
         int m_charges;

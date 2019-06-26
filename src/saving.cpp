@@ -16,6 +16,7 @@
 #include "insanity.hpp"
 #include "inventory.hpp"
 #include "io.hpp"
+#include "item_curse.hpp"
 #include "item_potion.hpp"
 #include "item_rod.hpp"
 #include "item_scroll.hpp"
@@ -63,6 +64,7 @@ static void save_modules()
         potion::save();
         rod::save();
         item::save();
+        item_curse::save();
         map::g_player->m_inv.save();
         map::g_player->save();
         insanity::save();
@@ -97,6 +99,7 @@ static void load_modules()
         potion::load();
         rod::load();
         item::load();
+        item_curse::load();
         map::g_player->m_inv.load();
         map::g_player->load();
         insanity::load();

@@ -12,6 +12,7 @@
 #include "gfx.hpp"
 #include "inventory_handling.hpp"
 #include "item_att_property.hpp"
+#include "item_curse.hpp"
 #include "random.hpp"
 
 
@@ -19,6 +20,7 @@ namespace actor
 {
 class Actor;
 }
+
 
 class Prop;
 class Spell;
@@ -51,6 +53,10 @@ public:
 
         Id id() const;
 
+        void save();
+
+        void load();
+
         ItemData& data() const;
 
         virtual Color color() const;
@@ -69,7 +75,7 @@ public:
                 const ItemRefInf inf = ItemRefInf::yes,
                 const ItemRefAttInf att_inf = ItemRefAttInf::none) const;
 
-        virtual std::vector<std::string> descr() const;
+        std::vector<std::string> descr() const;
 
         std::string hit_mod_str(const ItemRefAttInf att_inf) const;
 
@@ -88,11 +94,7 @@ public:
                 (void)verbosity;
         }
 
-        virtual void save() const {}
-
-        virtual void load() {}
-
-        virtual int weight() const;
+        int weight() const;
 
         std::string weight_str() const;
 
@@ -103,15 +105,9 @@ public:
                 return colors::dark_yellow();
         }
 
-        virtual void on_std_turn_in_inv(const InvType inv_type)
-        {
-                (void)inv_type;
-        }
+        void on_std_turn_in_inv(const InvType inv_type);
 
-        virtual void on_actor_turn_in_inv(const InvType inv_type)
-        {
-                (void)inv_type;
-        }
+        void on_actor_turn_in_inv(const InvType inv_type);
 
         void on_pickup(actor::Actor& actor);
 
@@ -131,7 +127,7 @@ public:
         // * The item is found in an item container, but not picked up
         void on_player_found();
 
-        virtual void on_player_reached_new_dlvl() {}
+        void on_player_reached_new_dlvl();
 
         virtual void on_projectile_blocked(
                 const P& prev_pos,
@@ -217,9 +213,42 @@ public:
                 return m_carrier_props;
         }
 
-        int m_nr_items;
+        virtual bool is_curse_allowed(item_curse::Id id) const
+        {
+                (void)id;
+
+                return false;
+        }
+
+        item_curse::Curse& current_curse()
+        {
+                return m_curse;
+        }
+
+        void set_curse(item_curse::Curse&& curse)
+        {
+                m_curse = std::move(curse);
+        }
+
+        int m_nr_items {1};
 
 protected:
+        virtual void save_hook() const {}
+
+        virtual void load_hook() {}
+
+        virtual std::vector<std::string> descr_hook() const;
+
+        virtual void on_std_turn_in_inv_hook(const InvType inv_type)
+        {
+                (void)inv_type;
+        }
+
+        virtual void on_actor_turn_in_inv_hook(const InvType inv_type)
+        {
+                (void)inv_type;
+        }
+
         virtual void on_pickup_hook() {}
 
         virtual void on_equip_hook(const Verbosity verbosity)
@@ -230,6 +259,8 @@ protected:
         virtual void on_unequip_hook() {}
 
         virtual void on_removed_from_inv_hook() {}
+
+        virtual void on_player_reached_new_dlvl_hook() {}
 
         virtual void specific_dmg_mod(
                 DmgRange& range,
@@ -244,7 +275,7 @@ protected:
 
         ItemData* m_data;
 
-        actor::Actor* m_actor_carrying;
+        actor::Actor* m_actor_carrying {nullptr};
 
         // Base damage (not including actor properties, player traits, etc)
         DmgRange m_melee_base_dmg;
@@ -253,7 +284,9 @@ protected:
 private:
         // Properties to apply on owning actor (when e.g. wearing the item, or
         // just keeping it in the inventory)
-        std::vector<Prop*> m_carrier_props;
+        std::vector<Prop*> m_carrier_props {};
+
+        item_curse::Curse m_curse {};
 };
 
 class Armor: public Item
@@ -263,8 +296,8 @@ public:
 
         ~Armor() {}
 
-        void save() const override;
-        void load() override;
+        void save_hook() const override;
+        void load_hook() override;
 
         Color interface_color() const override
         {
@@ -330,8 +363,8 @@ public:
 
         Wpn& operator=(const Wpn& other) = delete;
 
-        void save() const override;
-        void load() override;
+        void save_hook() const override;
+        void load_hook() override;
 
         Color color() const override;
 
@@ -473,7 +506,9 @@ public:
 class Ammo: public Item
 {
 public:
-        Ammo(ItemData* const item_data) : Item(item_data) {}
+        Ammo(ItemData* const item_data) :
+                Item(item_data) {}
+
         virtual ~Ammo() {}
 
         Color interface_color() const override
@@ -496,9 +531,9 @@ public:
 
         void set_full_ammo();
 
-        void save() const override;
+        void save_hook() const override;
 
-        void load() override;
+        void load_hook() override;
 
         int m_ammo;
 };
@@ -517,9 +552,9 @@ public:
 
         ~MedicalBag() {}
 
-        void save() const override;
+        void save_hook() const override;
 
-        void load() override;
+        void load_hook() override;
 
         Color interface_color() const override
         {

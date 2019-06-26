@@ -34,9 +34,9 @@ public:
 
         ~Scroll() {}
 
-        void save() const override;
+        void save_hook() const override;
 
-        void load() override;
+        void load_hook() override;
 
         Color interface_color() const override
         {
@@ -49,11 +49,11 @@ public:
 
         const std::string real_name() const;
 
-        std::vector<std::string> descr() const override;
+        std::vector<std::string> descr_hook() const override;
 
-        void on_player_reached_new_dlvl() override final;
+        void on_player_reached_new_dlvl_hook() override final;
 
-        void on_actor_turn_in_inv(const InvType inv_type) override;
+        void on_actor_turn_in_inv_hook(const InvType inv_type) override;
 
         void identify(const Verbosity verbosity) override;
 

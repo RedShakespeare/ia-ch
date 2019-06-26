@@ -229,13 +229,13 @@ Scroll::Scroll(item::ItemData* const item_data) :
 
 }
 
-void Scroll::save() const
+void Scroll::save_hook() const
 {
         saving::put_int(m_domain_feeling_dlvl_countdown);
         saving::put_int(m_domain_feeling_turn_countdown);
 }
 
-void Scroll::load()
+void Scroll::load_hook()
 {
         m_domain_feeling_dlvl_countdown = saving::get_int();
         m_domain_feeling_turn_countdown = saving::get_int();
@@ -250,7 +250,7 @@ const std::string Scroll::real_name() const
         return scroll_name;
 }
 
-std::vector<std::string> Scroll::descr() const
+std::vector<std::string> Scroll::descr_hook() const
 {
         const std::unique_ptr<const Spell> spell(make_spell());
 
@@ -280,7 +280,7 @@ std::vector<std::string> Scroll::descr() const
         }
 }
 
-void Scroll::on_player_reached_new_dlvl()
+void Scroll::on_player_reached_new_dlvl_hook()
 {
         auto& d = data();
 
@@ -294,7 +294,7 @@ void Scroll::on_player_reached_new_dlvl()
         --m_domain_feeling_dlvl_countdown;
 }
 
-void Scroll::on_actor_turn_in_inv(const InvType inv_type)
+void Scroll::on_actor_turn_in_inv_hook(const InvType inv_type)
 {
         (void)inv_type;
 

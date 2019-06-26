@@ -40,33 +40,32 @@ static std::unique_ptr<pact::Benefit> make_benefit(pact::BenefitId id)
         switch (id)
         {
         case pact::BenefitId::upgrade_spell:
-                return std::make_unique<pact::UpgradeSpell>(id);
+                return std::make_unique<pact::UpgradeSpell>();
 
         case pact::BenefitId::gain_hp:
-                return std::make_unique<pact::GainHp>(id);
+                return std::make_unique<pact::GainHp>();
 
         case pact::BenefitId::gain_sp:
-                return std::make_unique<pact::GainSp>(id);
+                return std::make_unique<pact::GainSp>();
 
         case pact::BenefitId::gain_xp:
-                return std::make_unique<pact::GainXp>(id);
+                return std::make_unique<pact::GainXp>();
 
         case pact::BenefitId::remove_insanity:
-                return std::make_unique<pact::RemoveInsanity>(id);
+                return std::make_unique<pact::RemoveInsanity>();
 
         case pact::BenefitId::gain_item:
-                return std::make_unique<pact::GainItem>(id);
+                return std::make_unique<pact::GainItem>();
 
         // case pact::BenefitId::recharge_item:
-        //         return std::make_unique<pact::RechargeItem>(id);
+        //         return std::make_unique<pact::RechargeItem>();
 
         case pact::BenefitId::healed:
-                return std::make_unique<pact::Healed>(id);
+                return std::make_unique<pact::Healed>();
 
         case pact::BenefitId::blessed:
-                return std::make_unique<pact::Blessed>(id);
+                return std::make_unique<pact::Blessed>();
 
-        case pact::BenefitId::START_OF_BENEFITS:
         case pact::BenefitId::undefined:
         case pact::BenefitId::END:
                 break;
@@ -82,28 +81,28 @@ static std::unique_ptr<pact::Toll> make_toll(pact::TollId id)
         switch (id)
         {
         case pact::TollId::hp_reduced:
-                return std::make_unique<pact::HpReduced>(id);
+                return std::make_unique<pact::HpReduced>();
 
         case pact::TollId::sp_reduced:
-                return std::make_unique<pact::SpReduced>(id);
+                return std::make_unique<pact::SpReduced>();
 
         case pact::TollId::xp_reduced:
-                return std::make_unique<pact::XpReduced>(id);
+                return std::make_unique<pact::XpReduced>();
 
         // case pact::TollId::unlearn_spell:
-        //         return std::make_unique<pact::UnlearnSpell>(id);
+        //         return std::make_unique<pact::UnlearnSpell>();
 
         case pact::TollId::slowed:
-                return std::make_unique<pact::Slowed>(id);
+                return std::make_unique<pact::Slowed>();
 
         case pact::TollId::blind:
-                return std::make_unique<pact::Blind>(id);
+                return std::make_unique<pact::Blind>();
 
         case pact::TollId::deaf:
-                return std::make_unique<pact::Deaf>(id);
+                return std::make_unique<pact::Deaf>();
 
         case pact::TollId::cursed:
-                return std::make_unique<pact::Cursed>(id);
+                return std::make_unique<pact::Cursed>();
 
         case pact::TollId::END:
                 break;
@@ -119,9 +118,7 @@ make_all_benefits_can_be_offered()
 {
         std::vector< std::unique_ptr<pact::Benefit> > benefits;
 
-        for (int i = (int)pact::BenefitId::START_OF_BENEFITS + 1;
-             i < (int)pact::BenefitId::END;
-             ++i)
+        for (int i = 0; i < (int)pact::BenefitId::END; ++i)
         {
                 auto benefit = make_benefit((pact::BenefitId)i);
 
@@ -181,7 +178,6 @@ static std::vector<std::unique_ptr<pact::Toll>> make_all_tolls_can_be_offered(
         const pact::BenefitId benefit_id_accepted)
 {
         ASSERT((benefit_id_accepted != pact::BenefitId::undefined));
-        ASSERT((benefit_id_accepted != pact::BenefitId::START_OF_BENEFITS));
         ASSERT((benefit_id_accepted != pact::BenefitId::END));
 
         std::vector<std::unique_ptr<pact::Toll>> tolls;
@@ -426,8 +422,7 @@ void on_player_turn()
 // -----------------------------------------------------------------------------
 // Toll
 // -----------------------------------------------------------------------------
-Toll::Toll(TollId id) :
-        m_id(id),
+Toll::Toll() :
         m_dlvl_countdown(rnd::range(1, 3)),
         m_turn_countdown(rnd::range(100, 300))
 {
@@ -478,8 +473,8 @@ TollDone Toll::on_player_turn()
 // -----------------------------------------------------------------------------
 // Upgrade spell
 // -----------------------------------------------------------------------------
-UpgradeSpell::UpgradeSpell(BenefitId id) :
-        Benefit(id),
+UpgradeSpell::UpgradeSpell() :
+        Benefit(),
         m_spell_id(SpellId::END)
 {
         const auto bucket = find_spells_can_upgrade();
@@ -541,8 +536,8 @@ std::vector<SpellId> UpgradeSpell::find_spells_can_upgrade() const
 // -----------------------------------------------------------------------------
 // Gain HP
 // -----------------------------------------------------------------------------
-GainHp::GainHp(BenefitId id) :
-        Benefit(id)
+GainHp::GainHp() :
+        Benefit()
 {
 
 }
@@ -565,8 +560,8 @@ void GainHp::run_effect()
 // -----------------------------------------------------------------------------
 // Gain SP
 // -----------------------------------------------------------------------------
-GainSp::GainSp(BenefitId id) :
-        Benefit(id)
+GainSp::GainSp() :
+        Benefit()
 {
 
 }
@@ -589,8 +584,8 @@ void GainSp::run_effect()
 // -----------------------------------------------------------------------------
 // Gain XP
 // -----------------------------------------------------------------------------
-GainXp::GainXp(BenefitId id) :
-        Benefit(id)
+GainXp::GainXp() :
+        Benefit()
 {
 
 }
@@ -616,8 +611,8 @@ void GainXp::run_effect()
 // -----------------------------------------------------------------------------
 // Remove insanity
 // -----------------------------------------------------------------------------
-RemoveInsanity::RemoveInsanity(BenefitId id) :
-        Benefit(id)
+RemoveInsanity::RemoveInsanity() :
+        Benefit()
 {
 
 }
@@ -640,8 +635,8 @@ void RemoveInsanity::run_effect()
 // -----------------------------------------------------------------------------
 // Gain item
 // -----------------------------------------------------------------------------
-GainItem::GainItem(BenefitId id) :
-        Benefit(id),
+GainItem::GainItem() :
+        Benefit(),
         m_item_id(item::Id::END)
 {
         const auto item_ids = find_allowed_item_ids();
@@ -665,6 +660,8 @@ bool GainItem::is_allowed_to_offer_now() const
 void GainItem::run_effect()
 {
         auto* const item = item::make(m_item_id);
+
+        item::set_item_randomized_properties(*item);
 
         const std::string name_a = item->name(ItemRefType::a);
 
@@ -693,8 +690,8 @@ std::vector<item::Id> GainItem::find_allowed_item_ids() const
 // -----------------------------------------------------------------------------
 // Recharge item
 // -----------------------------------------------------------------------------
-// RechargeItem::RechargeItem(BenefitId id) :
-//         Benefit(id)
+// RechargeItem::RechargeItem() :
+//         Benefit()
 // {
 
 // }
@@ -717,8 +714,8 @@ std::vector<item::Id> GainItem::find_allowed_item_ids() const
 // -----------------------------------------------------------------------------
 // Healed
 // -----------------------------------------------------------------------------
-Healed::Healed(BenefitId id) :
-        Benefit(id)
+Healed::Healed() :
+        Benefit()
 {
 
 }
@@ -780,8 +777,8 @@ void Healed::run_effect()
 // -----------------------------------------------------------------------------
 // Blessed
 // -----------------------------------------------------------------------------
-Blessed::Blessed(BenefitId id) :
-        Benefit(id)
+Blessed::Blessed() :
+        Benefit()
 {
 
 }
@@ -817,8 +814,8 @@ void Blessed::run_effect()
 // -----------------------------------------------------------------------------
 // HP reduced
 // -----------------------------------------------------------------------------
-HpReduced::HpReduced(TollId id) :
-        Toll(id)
+HpReduced::HpReduced() :
+        Toll()
 {
 }
 
@@ -840,8 +837,8 @@ void HpReduced::run_effect()
 // -----------------------------------------------------------------------------
 // SP reduced
 // -----------------------------------------------------------------------------
-SpReduced::SpReduced(TollId id) :
-        Toll(id)
+SpReduced::SpReduced() :
+        Toll()
 {
 
 }
@@ -864,8 +861,8 @@ void SpReduced::run_effect()
 // -----------------------------------------------------------------------------
 // XP reduced
 // -----------------------------------------------------------------------------
-XpReduced::XpReduced(TollId id) :
-        Toll(id)
+XpReduced::XpReduced() :
+        Toll()
 {
 
 }
@@ -893,8 +890,8 @@ void XpReduced::run_effect()
 // -----------------------------------------------------------------------------
 // Unlearn spell
 // -----------------------------------------------------------------------------
-// UnlearnSpell::UnlearnSpell(TollId id) :
-//         Toll(id)
+// UnlearnSpell::UnlearnSpell() :
+//         Toll()
 // {
 
 // }
@@ -925,8 +922,8 @@ void XpReduced::run_effect()
 // -----------------------------------------------------------------------------
 // Slowed
 // -----------------------------------------------------------------------------
-Slowed::Slowed(TollId id) :
-        Toll(id)
+Slowed::Slowed() :
+        Toll()
 {
 
 }
@@ -967,8 +964,8 @@ void Slowed::run_effect()
 // -----------------------------------------------------------------------------
 // Blind
 // -----------------------------------------------------------------------------
-Blind::Blind(TollId id) :
-        Toll(id)
+Blind::Blind() :
+        Toll()
 {
 
 }
@@ -1002,8 +999,8 @@ void Blind::run_effect()
 // -----------------------------------------------------------------------------
 // Deaf
 // -----------------------------------------------------------------------------
-Deaf::Deaf(TollId id) :
-        Toll(id)
+Deaf::Deaf() :
+        Toll()
 {
 
 }
@@ -1037,8 +1034,8 @@ void Deaf::run_effect()
 // -----------------------------------------------------------------------------
 // Cursed
 // -----------------------------------------------------------------------------
-Cursed::Cursed(TollId id) :
-        Toll(id)
+Cursed::Cursed() :
+        Toll()
 {
 
 }

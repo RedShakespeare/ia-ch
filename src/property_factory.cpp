@@ -257,6 +257,15 @@ Prop* make(const PropId id)
         case PropId::swimming:
                 return new PropSwimming();
 
+        case PropId::hit_chance_penalty_curse:
+                return new PropHitChancePenaltyCurse();
+
+        case PropId::increased_shock_curse:
+                return new PropIncreasedShockCurse();
+
+        case PropId::cannot_read_curse:
+                return new PropCannotReadCurse();
+
         case PropId::END:
                 break;
         }

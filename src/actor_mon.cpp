@@ -1352,7 +1352,7 @@ bool Mon::is_actor_my_leader(const Actor* const actor) const
         return m_leader == actor;
 }
 
-int Mon::nr_mon_in_group()
+int Mon::nr_mon_in_group() const
 {
         const Actor* const group_leader = m_leader ? m_leader : this;
 

@@ -11,11 +11,13 @@
 #include "game_time.hpp"
 #include "init.hpp"
 #include "item_artifact.hpp"
+#include "item_curse.hpp"
 #include "item_data.hpp"
 #include "item_device.hpp"
 #include "item_potion.hpp"
 #include "item_rod.hpp"
 #include "item_scroll.hpp"
+
 
 namespace item
 {
@@ -349,14 +351,13 @@ Item* make(const Id item_id, const int nr_items)
 
         // Sanity check number of items (non-stackable items should never be set
         // to anything other than one item)
-        if (!r->data().is_stackable &&
-            (nr_items != 1))
+        if (!r->data().is_stackable && (nr_items != 1))
         {
                 TRACE << "Specified number of items ("
                       << nr_items
                       << ") != 1 for "
                       << "non-stackable item: "
-                      << int(d->id) << ", "
+                      << (int)d->id << ", "
                       << r->name(ItemRefType::plain)
                       << std::endl;
 
@@ -373,9 +374,9 @@ Item* make(const Id item_id, const int nr_items)
         return r;
 }
 
-void set_item_randomized_properties(Item* item)
+void set_item_randomized_properties(Item& item)
 {
-        const auto& d = item->data();
+        const auto& d = item.data();
 
         ASSERT(d.type != ItemType::melee_wpn_intr &&
                d.type != ItemType::ranged_wpn_intr);
@@ -384,24 +385,23 @@ void set_item_randomized_properties(Item* item)
         // specified randomize the extra damage
         if (d.melee.is_melee_wpn &&
             !d.ranged.is_ranged_wpn &&
-            (item->melee_base_dmg().plus() == 0))
+            (item.melee_base_dmg().plus() == 0))
         {
-                static_cast<Wpn*>(item)->set_random_melee_plus();
+                static_cast<Wpn&>(item).set_random_melee_plus();
         }
 
         // If firearm, spawn with random amount of ammo
-        if (d.ranged.is_ranged_wpn &&
-            !d.ranged.has_infinite_ammo)
+        if (d.ranged.is_ranged_wpn && !d.ranged.has_infinite_ammo)
         {
-                auto* const wpn = static_cast<Wpn*>(item);
+                auto& wpn = static_cast<Wpn&>(item);
 
-                if (wpn->data().ranged.max_ammo == 1)
+                if (wpn.data().ranged.max_ammo == 1)
                 {
-                        wpn->m_ammo_loaded = rnd::coin_toss() ? 1 : 0;
+                        wpn.m_ammo_loaded = rnd::coin_toss() ? 1 : 0;
                 }
                 else // Weapon ammo capacity > 1
                 {
-                        const int ammo_cap = wpn->data().ranged.max_ammo;
+                        const int ammo_cap = wpn.data().ranged.max_ammo;
 
                         if (d.ranged.is_machine_gun)
                         {
@@ -415,13 +415,13 @@ void set_item_randomized_properties(Item* item)
                                 const int min_scaled =
                                         cap_scaled / 4;
 
-                                wpn->m_ammo_loaded =
+                                wpn.m_ammo_loaded =
                                         rnd::range(min_scaled, cap_scaled) *
                                         g_nr_mg_projectiles;
                         }
                         else // Not machinegun
                         {
-                                wpn->m_ammo_loaded =
+                                wpn.m_ammo_loaded =
                                         rnd::range(ammo_cap / 4, ammo_cap);
                         }
                 }
@@ -429,33 +429,48 @@ void set_item_randomized_properties(Item* item)
 
         if (d.is_stackable)
         {
-                item->m_nr_items = rnd::range(1, d.max_stack_at_spawn);
+                item.m_nr_items = rnd::range(1, d.max_stack_at_spawn);
         }
 
         // Vary number of Medical supplies
         if (d.id == Id::medical_bag)
         {
-                auto* const medbag = static_cast<MedicalBag*>(item);
+                auto& medbag = static_cast<MedicalBag&>(item);
 
-                const int nr_supplies_max = medbag->m_nr_supplies;
+                const int nr_supplies_max = medbag.m_nr_supplies;
 
                 const int nr_supplies_min =
                         nr_supplies_max - (nr_supplies_max / 3);
 
-                medbag->m_nr_supplies =
+                medbag.m_nr_supplies =
                         rnd::range(nr_supplies_min, nr_supplies_max);
         }
 
         // Vary Lantern duration
         if (d.id == Id::lantern)
         {
-                auto* const lantern = static_cast<device::Lantern*>(item);
+                auto& lantern = static_cast<device::Lantern&>(item);
 
-                const int duration_max = lantern->nr_turns_left;
+                const int duration_max = lantern.nr_turns_left;
 
                 const int duration_min = duration_max / 2;
 
-                lantern->nr_turns_left = rnd::range(duration_min, duration_max);
+                lantern.nr_turns_left = rnd::range(duration_min, duration_max);
+        }
+
+        // Item curse
+        const int cursed_one_in_n = 5;
+
+        if (d.is_unique &&
+            (d.value >= Value::supreme_treasure) &&
+            rnd::one_in(cursed_one_in_n))
+        {
+                auto curse = item_curse::try_make_random_free_curse(item);
+
+                if (curse.id() != item_curse::Id::END)
+                {
+                        item.set_curse(std::move(curse));
+                }
         }
 }
 
@@ -463,7 +478,7 @@ Item* make_item_on_floor(const Id item_id, const P& pos)
 {
         auto* item = make(item_id);
 
-        set_item_randomized_properties(item);
+        set_item_randomized_properties(*item);
 
         item_drop::drop_item_on_map(pos, *item);
 

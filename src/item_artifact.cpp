@@ -43,7 +43,7 @@ PharaohStaff::PharaohStaff(ItemData* const item_data) :
 
 }
 
-void PharaohStaff::on_std_turn_in_inv(const InvType inv_type)
+void PharaohStaff::on_std_turn_in_inv_hook(const InvType inv_type)
 {
         (void)inv_type;
 
@@ -88,8 +88,8 @@ void PharaohStaff::on_std_turn_in_inv(const InvType inv_type)
 void PharaohStaff::on_mon_see_player_carrying(actor::Mon& mon) const
 {
         // TODO: Consider an "is_mummy" actor data field
-        if (mon.id() != actor::Id::mummy &&
-            mon.id() != actor::Id::croc_head_mummy)
+        if ((mon.id() != actor::Id::mummy) &&
+            (mon.id() != actor::Id::croc_head_mummy))
         {
                 return;
         }
@@ -194,12 +194,12 @@ std::string HornOfMalice::name_inf_str() const
         return "{" + std::to_string(m_charges) + "}";
 }
 
-void HornOfMalice::save() const
+void HornOfMalice::save_hook() const
 {
         saving::put_int(m_charges);
 }
 
-void HornOfMalice::load()
+void HornOfMalice::load_hook()
 {
         m_charges = saving::get_int();
 }
@@ -272,12 +272,12 @@ std::string HornOfBanishment::name_inf_str() const
         return "{" + std::to_string(m_charges) + "}";
 }
 
-void HornOfBanishment::save() const
+void HornOfBanishment::save_hook() const
 {
         saving::put_int(m_charges);
 }
 
-void HornOfBanishment::load()
+void HornOfBanishment::load_hook()
 {
         m_charges = saving::get_int();
 }
@@ -330,12 +330,12 @@ std::string Clockwork::name_inf_str() const
         return "{" + std::to_string(m_charges) + "}";
 }
 
-void Clockwork::save() const
+void Clockwork::save_hook() const
 {
         saving::put_int(m_charges);
 }
 
-void Clockwork::load()
+void Clockwork::load_hook()
 {
         m_charges = saving::get_int();
 }

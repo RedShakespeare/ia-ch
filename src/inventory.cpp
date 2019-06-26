@@ -82,7 +82,7 @@ void Inventory::save() const
 
         for (size_t i = 0; i < m_backpack.size(); ++i)
         {
-                const auto* const item = m_backpack[i];
+                auto* const item = m_backpack[i];
 
                 saving::put_int((int)item->id());
                 saving::put_int(item->m_nr_items);

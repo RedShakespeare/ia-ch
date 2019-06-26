@@ -104,6 +104,9 @@ enum class PropId
         hp_sap,
         spi_sap,
         mind_sap,
+        hit_chance_penalty_curse,
+        increased_shock_curse,
+        cannot_read_curse,
 
         END
 };

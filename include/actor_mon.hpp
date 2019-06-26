@@ -172,7 +172,7 @@ protected:
         // TODO: This will be removed
         virtual void on_std_turn_hook() {}
 
-        int nr_mon_in_group();
+        int nr_mon_in_group() const;
 };
 
 class Ape: public Mon

@@ -57,6 +57,8 @@ set(COMMON_SRC
         include/item.hpp
         include/item_artifact.hpp
         include/item_att_property.hpp
+        include/item_curse.hpp
+        include/item_curse_ids.hpp
         include/item_data.hpp
         include/item_device.hpp
         include/item_factory.hpp
@@ -167,6 +169,7 @@ set(COMMON_SRC
         src/inventory_handling.cpp
         src/item.cpp
         src/item_artifact.cpp
+        src/item_curse.cpp
         src/item_data.cpp
         src/item_device.cpp
         src/item_factory.cpp

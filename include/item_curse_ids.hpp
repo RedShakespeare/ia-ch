@@ -1,0 +1,30 @@
+// =============================================================================
+// Copyright 2011-2019 Martin Törnqvist <m.tornq@gmail.com>
+//
+// SPDX-License-Identifier: AGPL-3.0-or-later
+// =============================================================================
+
+#ifndef ITEM_CURSE_IDS_HPP
+#define ITEM_CURSE_IDS_HPP
+
+namespace item_curse
+{
+
+enum class Id
+{
+        hit_chance_penalty,
+        increased_shock,
+        heavy,
+        shriek,
+        teleport,
+        summon,
+        fire,
+        // cannot_sneak,
+        cannot_read,
+
+        END
+};
+
+} // item_curse
+
+#endif // ITEM_CURSE_IDS_HPP

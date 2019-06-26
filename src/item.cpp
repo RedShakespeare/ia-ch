@@ -13,12 +13,11 @@
 #include "actor_player.hpp"
 #include "common_text.hpp"
 #include "explosion.hpp"
-#include "terrain_mob.hpp"
-#include "terrain.hpp"
 #include "game.hpp"
 #include "game_time.hpp"
 #include "global.hpp"
 #include "io.hpp"
+#include "item_curse.hpp"
 #include "item_data.hpp"
 #include "item_factory.hpp"
 #include "map.hpp"
@@ -31,6 +30,8 @@
 #include "property_handler.hpp"
 #include "query.hpp"
 #include "saving.hpp"
+#include "terrain.hpp"
+#include "terrain_mob.hpp"
 #include "text_format.hpp"
 
 namespace item
@@ -40,12 +41,9 @@ namespace item
 // Item
 // -----------------------------------------------------------------------------
 Item::Item(ItemData* item_data) :
-        m_nr_items(1),
         m_data(item_data),
-        m_actor_carrying(nullptr),
         m_melee_base_dmg(item_data->melee.dmg),
-        m_ranged_base_dmg(item_data->ranged.dmg),
-        m_carrier_props()
+        m_ranged_base_dmg(item_data->ranged.dmg)
 {
 
 }
@@ -75,6 +73,20 @@ Id Item::id() const
         return m_data->id;
 }
 
+void Item::save()
+{
+        m_curse.save();
+
+        save_hook();
+}
+
+void Item::load()
+{
+        m_curse.load();
+
+        load_hook();
+}
+
 ItemData& Item::data() const
 {
         return *m_data;
@@ -96,6 +108,18 @@ TileId Item::tile() const
 }
 
 std::vector<std::string> Item::descr() const
+{
+        auto full_descr = descr_hook();
+
+        if (m_curse.is_active())
+        {
+                full_descr.push_back(m_curse.descr());
+        }
+
+        return full_descr;
+}
+
+std::vector<std::string> Item::descr_hook() const
 {
         return m_data->base_descr;
 }
@@ -243,7 +267,14 @@ ItemAttProp* Item::prop_applied_intr_attack(
 
 int Item::weight() const
 {
-        return (int)m_data->weight * m_nr_items;
+        auto w = (int)m_data->weight * m_nr_items;
+
+        if (m_curse.is_active())
+        {
+                w = m_curse.affect_weight(w);
+        }
+
+        return w;
 }
 
 std::string Item::weight_str() const
@@ -277,6 +308,25 @@ ConsumeItem Item::activate(actor::Actor* const actor)
         return ConsumeItem::no;
 }
 
+void Item::on_std_turn_in_inv(const InvType inv_type)
+{
+        ASSERT(m_actor_carrying);
+
+        if (m_actor_carrying == map::g_player)
+        {
+                m_curse.on_new_turn(*this);
+        }
+
+        on_std_turn_in_inv_hook(inv_type);
+}
+
+void Item::on_actor_turn_in_inv(const InvType inv_type)
+{
+        ASSERT(m_actor_carrying);
+
+        on_actor_turn_in_inv_hook(inv_type);
+}
+
 void Item::on_pickup(actor::Actor& actor)
 {
         ASSERT(!m_actor_carrying);
@@ -287,6 +337,8 @@ void Item::on_pickup(actor::Actor& actor)
         {
                 on_player_found();
         }
+
+        m_curse.on_item_picked_up(*this);
 
         on_pickup_hook();
 }
@@ -307,6 +359,8 @@ void Item::on_unequip()
 
 void Item::on_removed_from_inv()
 {
+        m_curse.on_item_dropped();
+
         on_removed_from_inv_hook();
 
         m_actor_carrying = nullptr;
@@ -329,6 +383,13 @@ void Item::on_player_found()
         }
 
         m_data->is_found = true;
+}
+
+void Item::on_player_reached_new_dlvl()
+{
+        m_curse.on_player_reached_new_dlvl();
+
+        on_player_reached_new_dlvl_hook();
 }
 
 std::string Item::name(
@@ -654,12 +715,12 @@ Armor::Armor(ItemData* const item_data) :
         Item(item_data),
         m_dur(rnd::range(80, 100)) {}
 
-void Armor::save() const
+void Armor::save_hook() const
 {
         saving::put_int(m_dur);
 }
 
-void Armor::load()
+void Armor::load_hook()
 {
         m_dur = saving::get_int();
 }
@@ -770,13 +831,15 @@ void ArmorMiGo::on_equip_hook(const Verbosity verbosity)
 {
         if (verbosity == Verbosity::verbose)
         {
-                msg_log::add("The armor joins with my skin!",
-                             colors::text(),
-                             false,
-                             MorePromptOnMsg::yes);
+                msg_log::add(
+                        "The armor joins with my skin!",
+                        colors::text(),
+                        false,
+                        MorePromptOnMsg::yes);
 
-                map::g_player->incr_shock(ShockLvl::terrifying,
-                                        ShockSrc::use_strange_item);
+                map::g_player->incr_shock(
+                        ShockLvl::terrifying,
+                        ShockSrc::use_strange_item);
         }
 }
 
@@ -797,7 +860,7 @@ Wpn::Wpn(ItemData* const item_data) :
         }
 }
 
-void Wpn::save() const
+void Wpn::save_hook() const
 {
         saving::put_int(m_melee_base_dmg.base_min());
         saving::put_int(m_melee_base_dmg.base_max());
@@ -810,7 +873,7 @@ void Wpn::save() const
         saving::put_int(m_ammo_loaded);
 }
 
-void Wpn::load()
+void Wpn::load_hook()
 {
         m_melee_base_dmg.set_base_min(saving::get_int());
         m_melee_base_dmg.set_base_max(saving::get_int());
@@ -1245,12 +1308,12 @@ AmmoMag::AmmoMag(ItemData* const item_data) : Ammo(item_data)
         set_full_ammo();
 }
 
-void AmmoMag::save() const
+void AmmoMag::save_hook() const
 {
         saving::put_int(m_ammo);
 }
 
-void AmmoMag::load()
+void AmmoMag::load_hook()
 {
         m_ammo = saving::get_int();
 }
@@ -1269,12 +1332,12 @@ MedicalBag::MedicalBag(ItemData* const item_data) :
         m_nr_turns_left_action(-1),
         m_current_action(MedBagAction::END) {}
 
-void MedicalBag::save() const
+void MedicalBag::save_hook() const
 {
         saving::put_int(m_nr_supplies);
 }
 
-void MedicalBag::load()
+void MedicalBag::load_hook()
 {
         m_nr_supplies = saving::get_int();
 }

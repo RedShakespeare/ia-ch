@@ -21,10 +21,6 @@ namespace pact
 
 enum class BenefitId
 {
-        undefined,
-
-        START_OF_BENEFITS,
-
         upgrade_spell,
         gain_hp,
         gain_sp,
@@ -38,7 +34,8 @@ enum class BenefitId
         healed,
         blessed,
 
-        END
+        END,
+        undefined,
 };
 
 enum class TollId
@@ -81,37 +78,23 @@ void on_player_turn();
 class Benefit
 {
 public:
-        Benefit(BenefitId id) :
-                m_id(id) {}
+        Benefit() {}
 
-        virtual ~Benefit() {}
-
-        BenefitId id() const
-        {
-                return m_id;
-        }
+        virtual BenefitId id() const = 0;
 
         virtual bool is_allowed_to_offer_now() const = 0;
 
         virtual std::string offer_msg() const = 0;
 
         virtual void run_effect() = 0;
-
-private:
-        const BenefitId m_id;
 };
 
 class Toll
 {
 public:
-        Toll(TollId id);
+        Toll();
 
-        virtual ~Toll() {}
-
-        TollId id() const
-        {
-                return m_id;
-        }
+        virtual TollId id() const = 0;
 
         void on_player_reached_new_dlvl();
 
@@ -134,8 +117,6 @@ public:
         virtual void run_effect() = 0;
 
 private:
-        const TollId m_id;
-
         int m_dlvl_countdown;
         int m_turn_countdown;
 };
@@ -143,7 +124,12 @@ private:
 class UpgradeSpell : public Benefit
 {
 public:
-        UpgradeSpell(BenefitId id);
+        UpgradeSpell();
+
+        BenefitId id() const override
+        {
+                return BenefitId::upgrade_spell;
+        }
 
         std::string offer_msg() const override;
 
@@ -160,7 +146,12 @@ private:
 class GainHp : public Benefit
 {
 public:
-        GainHp(BenefitId id);
+        GainHp();
+
+        BenefitId id() const override
+        {
+                return BenefitId::gain_hp;
+        }
 
         std::string offer_msg() const override;
 
@@ -172,7 +163,12 @@ public:
 class GainSp : public Benefit
 {
 public:
-        GainSp(BenefitId id);
+        GainSp();
+
+        BenefitId id() const override
+        {
+                return BenefitId::gain_sp;
+        }
 
         std::string offer_msg() const override;
 
@@ -184,7 +180,12 @@ public:
 class GainXp : public Benefit
 {
 public:
-        GainXp(BenefitId id);
+        GainXp();
+
+        BenefitId id() const override
+        {
+                return BenefitId::gain_xp;
+        }
 
         std::string offer_msg() const override;
 
@@ -196,7 +197,12 @@ public:
 class RemoveInsanity : public Benefit
 {
 public:
-        RemoveInsanity(BenefitId id);
+        RemoveInsanity();
+
+        BenefitId id() const override
+        {
+                return BenefitId::remove_insanity;
+        }
 
         std::string offer_msg() const override;
 
@@ -208,7 +214,12 @@ public:
 class GainItem : public Benefit
 {
 public:
-        GainItem(BenefitId id);
+        GainItem();
+
+        BenefitId id() const override
+        {
+                return BenefitId::gain_item;
+        }
 
         std::string offer_msg() const override;
 
@@ -225,7 +236,12 @@ private:
 // class RechargeItem : public Benefit
 // {
 // public:
-//         RechargeItem(BenefitId id);
+//         RechargeItem();
+
+//         BenefitId id() const override
+//         {
+//                 return BenefitId::asdf;
+//         }
 
 //         std::string offer_msg() const override;
 
@@ -237,7 +253,12 @@ private:
 class Healed : public Benefit
 {
 public:
-        Healed(BenefitId id);
+        Healed();
+
+        BenefitId id() const override
+        {
+                return BenefitId::healed;
+        }
 
         std::string offer_msg() const override;
 
@@ -249,7 +270,12 @@ public:
 class Blessed : public Benefit
 {
 public:
-        Blessed(BenefitId id);
+        Blessed();
+
+        BenefitId id() const override
+        {
+                return BenefitId::blessed;
+        }
 
         std::string offer_msg() const override;
 
@@ -261,7 +287,12 @@ public:
 class HpReduced : public Toll
 {
 public:
-        HpReduced(TollId id);
+        HpReduced();
+
+        TollId id() const override
+        {
+                return TollId::hp_reduced;
+        }
 
         std::vector<BenefitId> benefits_not_allowed_with() const override;
 
@@ -273,7 +304,12 @@ public:
 class SpReduced : public Toll
 {
 public:
-        SpReduced(TollId id);
+        SpReduced();
+
+        TollId id() const override
+        {
+                return TollId::sp_reduced;
+        }
 
         std::vector<BenefitId> benefits_not_allowed_with() const override;
 
@@ -285,7 +321,12 @@ public:
 class XpReduced : public Toll
 {
 public:
-        XpReduced(TollId id);
+        XpReduced();
+
+        TollId id() const override
+        {
+                return TollId::xp_reduced;
+        }
 
         bool is_allowed_to_apply_now() const override;
 
@@ -296,24 +337,16 @@ public:
         void run_effect() override;
 };
 
-// class UnlearnSpell : public Toll
-// {
-// public:
-//         UnlearnSpell(TollId id);
-
-//         std::vector<BenefitId> benefits_not_allowed_with() const override;
-
-//         bool is_allowed_to_offer_now() const override;
-
-//         std::string offer_msg() const override;
-
-//         void run_effect() override;
-// };
 
 class Slowed : public Toll
 {
 public:
-        Slowed(TollId id);
+        Slowed();
+
+        TollId id() const override
+        {
+                return TollId::slowed;
+        }
 
         bool is_allowed_to_offer_now() const override;
 
@@ -327,7 +360,12 @@ public:
 class Blind : public Toll
 {
 public:
-        Blind(TollId id);
+        Blind();
+
+        TollId id() const override
+        {
+                return TollId::blind;
+        }
 
         bool is_allowed_to_offer_now() const override;
 
@@ -341,7 +379,12 @@ public:
 class Deaf : public Toll
 {
 public:
-        Deaf(TollId id);
+        Deaf();
+
+        TollId id() const override
+        {
+                return TollId::deaf;
+        }
 
         bool is_allowed_to_offer_now() const override;
 
@@ -355,7 +398,12 @@ public:
 class Cursed : public Toll
 {
 public:
-        Cursed(TollId id);
+        Cursed();
+
+        TollId id() const override
+        {
+                return TollId::cursed;
+        }
 
         bool is_allowed_to_offer_now() const override;
 

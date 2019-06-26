@@ -50,8 +50,6 @@ const int g_poison_dmg_n_turn = 4;
 
 const int g_shock_from_obsession = 30;
 
-const double g_shock_from_disturbing_items = 0.05;
-
 // How many "units" of weight the player can carry, without trait modifiers etc
 const int g_player_carry_weight_base = 500;
 

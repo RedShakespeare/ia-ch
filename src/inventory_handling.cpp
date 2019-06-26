@@ -35,37 +35,18 @@ static const int s_nr_turns_to_handle_armor = 7;
 
 
 // Index can mean Slot index or Backpack Index (both start from zero)
-static bool run_drop_query(const InvType inv_type, const size_t idx)
+static bool run_drop_query(
+        item::Item& item,
+        const InvType inv_type,
+        const size_t idx)
 {
         TRACE_FUNC_BEGIN;
 
-        item::Item* item = nullptr;
-
-        if (inv_type == InvType::slots)
-        {
-                ASSERT(idx < (int)SlotId::END);
-
-                item = map::g_player->m_inv.m_slots[idx].item;
-        }
-        else // Backpack
-        {
-                ASSERT(idx < map::g_player->m_inv.m_backpack.size());
-
-                item = map::g_player->m_inv.m_backpack[idx];
-        }
-
-        if (!item)
-        {
-                TRACE_FUNC_END;
-
-                return false;
-        }
-
-        const auto& data = item->data();
+        const auto& data = item.data();
 
         msg_log::clear();
 
-        if (data.is_stackable && item->m_nr_items > 1)
+        if (data.is_stackable && (item.m_nr_items > 1))
         {
                 TRACE << "Item is stackable and more than one" << std::endl;
 
@@ -75,7 +56,7 @@ static bool run_drop_query(const InvType inv_type, const size_t idx)
 
                 const std::string nr_str =
                         "1-" +
-                        std::to_string(item->m_nr_items);
+                        std::to_string(item.m_nr_items);
 
                 const std::string drop_str = "Drop how many (" + nr_str + ")?:";
 
@@ -103,7 +84,7 @@ static bool run_drop_query(const InvType inv_type, const size_t idx)
                                 nr_query_pos,
                                 colors::light_white(),
                                 0, 3,
-                                item->m_nr_items,
+                                item.m_nr_items,
                                 false);
 
                 if (nr_to_drop <= 0)
@@ -533,50 +514,6 @@ void InvState::draw_detailed_item_descr(
                                 ColoredString(
                                         att_obj_str,
                                         colors::light_white()));
-                }
-
-                // -------------------------------------------------------------
-                // Disturbing to carry?
-                // -------------------------------------------------------------
-                std::string disturb_str = "";
-
-                const std::string disturb_base_str =
-                        ref_str + "a burden on my mind to ";
-
-                if (d.is_carry_shocking)
-                {
-                        disturb_str = disturb_base_str + "carry";
-                }
-                else if (d.is_equiped_shocking)
-                {
-                        if (d.type == ItemType::melee_wpn ||
-                            d.type == ItemType::ranged_wpn)
-                        {
-                                disturb_str = disturb_base_str + "wield.";
-                        }
-                        else // Not a wieldable item
-                        {
-                                disturb_str = disturb_base_str + "wear.";
-                        }
-                }
-
-                if (!disturb_str.empty())
-                {
-                        std::stringstream shock_value_stream;
-
-                        shock_value_stream << std::setprecision(2)
-                                           << g_shock_from_disturbing_items;
-
-                        disturb_str +=
-                                " (+" +
-                                shock_value_stream.str() +
-                                "% shock taken per turn - before resistances "
-                                "are applied)";
-
-                        lines.push_back(
-                                ColoredString(
-                                        disturb_str,
-                                        colors::magenta()));
                 }
 
                 // -------------------------------------------------------------
@@ -1073,21 +1010,42 @@ void Drop::update()
 
                 auto idx = (size_t)browser_y;
 
+                item::Item* item = nullptr;
+
                 if (inv_type_marked == InvType::slots)
                 {
                         if (!map::g_player->m_inv.has_item_in_slot((SlotId)idx))
                         {
                                 return;
                         }
+
+                        item = map::g_player->m_inv.m_slots[idx].item;
                 }
                 else
                 {
                         // Backpack item marked
                         idx -= (size_t)SlotId::END;
+
+                        item = map::g_player->m_inv.m_backpack[idx];
                 }
+
+                ASSERT(item);
 
                 // Exit screen
                 states::pop();
+
+                if (item->current_curse().is_active())
+                {
+                        const auto name =
+                                item->name(
+                                        ItemRefType::plain,
+                                        ItemRefInf::none,
+                                        ItemRefAttInf::none);
+
+                        msg_log::add("I refuse to drop the " + name + "!");
+
+                        return;
+                }
 
                 if ((inv_type_marked == InvType::slots) &&
                     (idx == (size_t)SlotId::body))
@@ -1105,7 +1063,7 @@ void Drop::update()
                 {
                         // Not dropping from body slot, drop immediately
                         const bool did_drop =
-                                run_drop_query(inv_type_marked, idx);
+                                run_drop_query(*item, inv_type_marked, idx);
 
                         if (did_drop)
                         {
@@ -1577,11 +1535,26 @@ void SelectThrow::update()
                 item = inv.m_backpack[inv_entry_marked.relative_idx];
         }
 
+        ASSERT(item);
+
         switch (action)
         {
         case MenuAction::selected:
         {
                 states::pop();
+
+                if (item->current_curse().is_active())
+                {
+                        const auto name =
+                                item->name(
+                                        ItemRefType::plain,
+                                        ItemRefInf::none,
+                                        ItemRefAttInf::none);
+
+                        msg_log::add("I refuse to throw the " + name + "!");
+
+                        return;
+                }
 
                 states::push(
                         std::make_unique<Throwing>(

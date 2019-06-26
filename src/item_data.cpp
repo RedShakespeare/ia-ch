@@ -1351,7 +1351,6 @@ void init()
         };
         d.spawn_std_range = Range(-1, -1);
         d.weight = Weight::medium;
-        d.is_equiped_shocking = true;
         d.color = colors::magenta();
         d.tile = TileId::mi_go_armor;
         d.armor.armor_points = 3;
@@ -1693,7 +1692,8 @@ void init()
                 "Once wielded by long-forgotten kings in ancient times, this "
                 "powerful artifact grants the power to command mummies. "
                 "On each turn there is 10% chance that a mummy beholding the "
-                "owner will become allied."
+                "owner will become allied (while the weapon is carried or "
+                "wielded)."
         };
         d.color = colors::magenta();
         d.weight = Weight::medium;
@@ -1712,7 +1712,6 @@ void init()
         d.is_unique = true;
         d.xp_on_found = 20;
         d.value = Value::supreme_treasure;
-        d.is_carry_shocking = true;
         d.chance_to_incl_in_spawn_list = 1;
         d.native_containers.push_back(terrain::Id::tomb);
         g_data[(size_t)d.id] = d;
@@ -1736,7 +1735,6 @@ void init()
         d.is_unique = true;
         d.xp_on_found = 20;
         d.value = Value::supreme_treasure;
-        d.is_carry_shocking = true;
         d.chance_to_incl_in_spawn_list = 1;
         d.native_containers.push_back(terrain::Id::tomb);
         g_data[(size_t)d.id] = d;
@@ -1760,7 +1758,6 @@ void init()
         d.is_unique = true;
         d.xp_on_found = 20;
         d.value = Value::supreme_treasure;
-        d.is_carry_shocking = true;
         d.chance_to_incl_in_spawn_list = 1;
         d.native_containers.push_back(terrain::Id::tomb);
         g_data[(size_t)d.id] = d;
@@ -1783,7 +1780,6 @@ void init()
         d.is_unique = true;
         d.xp_on_found = 20;
         d.value = Value::supreme_treasure;
-        d.is_carry_shocking = true;
         d.chance_to_incl_in_spawn_list = 1;
         d.native_containers.push_back(terrain::Id::tomb);
         g_data[(size_t)d.id] = d;
@@ -1808,7 +1804,6 @@ void init()
         d.xp_on_found = 20;
         d.value = Value::supreme_treasure;
         d.has_std_activate = true;
-        d.is_carry_shocking = true;
         d.chance_to_incl_in_spawn_list = 1;
         d.native_containers.push_back(terrain::Id::chest);
         g_data[(size_t)d.id] = d;
@@ -1834,7 +1829,6 @@ void init()
         d.xp_on_found = 20;
         d.value = Value::supreme_treasure;
         d.has_std_activate = true;
-        d.is_carry_shocking = true;
         d.chance_to_incl_in_spawn_list = 1;
         d.native_containers.push_back(terrain::Id::tomb);
         g_data[(size_t)d.id] = d;
@@ -1858,7 +1852,6 @@ void init()
         d.xp_on_found = 20;
         d.value = Value::supreme_treasure;
         d.has_std_activate = true;
-        d.is_carry_shocking = true;
         d.chance_to_incl_in_spawn_list = 1;
         d.native_containers.push_back(terrain::Id::tomb);
         g_data[(size_t)d.id] = d;
@@ -1897,7 +1890,6 @@ void init()
         d.is_unique = true;
         d.xp_on_found = 20;
         d.value = Value::supreme_treasure;
-        d.is_carry_shocking = true;
         d.chance_to_incl_in_spawn_list = 1;
         d.native_containers.push_back(terrain::Id::tomb);
         g_data[(size_t)d.id] = d;
@@ -1919,7 +1911,6 @@ void init()
         d.is_unique = true;
         d.xp_on_found = 20;
         d.value = Value::supreme_treasure;
-        d.is_carry_shocking = true;
         d.chance_to_incl_in_spawn_list = 1;
         d.native_containers.push_back(terrain::Id::tomb);
         g_data[(size_t)d.id] = d;
@@ -2083,8 +2074,6 @@ ItemData::ItemData() :
         spell_cast_from_scroll(SpellId::END),
         land_on_hard_snd_msg("I hear a thudding sound."),
         land_on_hard_sfx(SfxId::END),
-        is_carry_shocking(false),
-        is_equiped_shocking(false),
         allow_display_dmg(true),
         melee(MeleeData()),
         ranged(RangedData()),

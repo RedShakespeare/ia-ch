@@ -1515,4 +1515,45 @@ public:
         }
 };
 
+class PropHitChancePenaltyCurse: public Prop
+{
+public:
+        PropHitChancePenaltyCurse() :
+                Prop(PropId::hit_chance_penalty_curse) {}
+
+        int ability_mod(const AbilityId ability) const override
+        {
+                switch (ability)
+                {
+                case AbilityId::melee:
+                case AbilityId::ranged:
+                        return -10;
+
+                default:
+                        return 0;
+                }
+        }
+};
+
+class PropIncreasedShockCurse: public Prop
+{
+public:
+        PropIncreasedShockCurse() :
+                Prop(PropId::increased_shock_curse) {}
+
+        int affect_shock(const int shock) const override
+        {
+                return shock + 10;
+        }
+};
+
+class PropCannotReadCurse: public Prop
+{
+public:
+        PropCannotReadCurse() :
+                Prop(PropId::cannot_read_curse) {}
+
+        bool allow_read_absolute(const Verbosity verbosity) const override;
+};
+
 #endif // PROPERTY_HPP

@@ -2572,7 +2572,7 @@ void ItemContainer::init(
                         {
                                 auto* item = item::make(item_bucket[idx]);
 
-                                item::set_item_randomized_properties(item);
+                                item::set_item_randomized_properties(*item);
 
                                 m_items.push_back(item);
                         }
@@ -2601,7 +2601,11 @@ void ItemContainer::open(
                                         ItemRefAttInf::wpn_main_att_mode);
 
                         msg_log::add(
-                                "Pick up " + name + "? " + common_text::g_yes_or_no_hint,
+                                std::string(
+                                        "Pick up " +
+                                        name +
+                                        "? " +
+                                        common_text::g_yes_or_no_hint),
                                 colors::light_white());
 
                         const auto& data = item->data();

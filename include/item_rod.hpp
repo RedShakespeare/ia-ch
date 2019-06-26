@@ -42,9 +42,9 @@ public:
 
         virtual ~Rod() {}
 
-        void save() const override final;
+        void save_hook() const override final;
 
-        void load() override final;
+        void load_hook() override final;
 
         ConsumeItem activate(actor::Actor* const actor) override final;
 
@@ -55,9 +55,9 @@ public:
 
         std::string name_inf_str() const override final;
 
-        void on_std_turn_in_inv(const InvType inv_type) override final;
+        void on_std_turn_in_inv_hook(const InvType inv_type) override final;
 
-        std::vector<std::string> descr() const override final;
+        std::vector<std::string> descr_hook() const override final;
 
         void identify(const Verbosity verbosity) override final;
 

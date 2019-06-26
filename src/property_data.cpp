@@ -890,6 +890,42 @@ static void init_data_list()
         d.allow_test_on_bot = false;
         d.alignment = PropAlignment::neutral;
         add(d);
+
+        d.id = PropId::hit_chance_penalty_curse;
+        d.std_rnd_turns = Range(1, 1);
+        d.name = "";
+        d.name_short = "";
+        d.descr = "";
+        d.msg_start_player = "My aiming feels worse.";
+        d.msg_end_player = "My aiming feels better.";
+        d.allow_display_turns = false;
+        d.allow_test_on_bot = true;
+        d.alignment = PropAlignment::bad;
+        add(d);
+
+        d.id = PropId::increased_shock_curse;
+        d.std_rnd_turns = Range(1, 1);
+        d.name = "";
+        d.name_short = "";
+        d.descr = "";
+        d.msg_start_player = "I feel more anxious!";
+        d.msg_end_player = "I feel less anxious.";
+        d.allow_display_turns = false;
+        d.allow_test_on_bot = true;
+        d.alignment = PropAlignment::bad;
+        add(d);
+
+        d.id = PropId::cannot_read_curse;
+        d.std_rnd_turns = Range(1, 1);
+        d.name = "";
+        d.name_short = "";
+        d.descr = "";
+        d.msg_start_player = "I feel illiterate!";
+        d.msg_end_player = "I can read again.";
+        d.allow_display_turns = false;
+        d.allow_test_on_bot = true;
+        d.alignment = PropAlignment::bad;
+        add(d);
 }
 
 // -----------------------------------------------------------------------------

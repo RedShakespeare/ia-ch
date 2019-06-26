@@ -190,13 +190,13 @@ Potion::Potion(item::ItemData* const item_data) :
 
 }
 
-void Potion::save() const
+void Potion::save_hook() const
 {
         saving::put_int(m_alignment_feeling_dlvl_countdown);
         saving::put_int(m_alignment_feeling_turn_countdown);
 }
 
-void Potion::load()
+void Potion::load_hook()
 {
         m_alignment_feeling_dlvl_countdown = saving::get_int();
         m_alignment_feeling_turn_countdown = saving::get_int();
@@ -299,7 +299,7 @@ void Potion::identify(const Verbosity verbosity)
         }
 }
 
-std::vector<std::string> Potion::descr() const
+std::vector<std::string> Potion::descr_hook() const
 {
         if (m_data->is_identified)
         {
@@ -319,7 +319,7 @@ std::string Potion::alignment_str() const
                 : "Malign";
 }
 
-void Potion::on_player_reached_new_dlvl()
+void Potion::on_player_reached_new_dlvl_hook()
 {
         auto& d = data();
 
@@ -333,7 +333,7 @@ void Potion::on_player_reached_new_dlvl()
         --m_alignment_feeling_dlvl_countdown;
 }
 
-void Potion::on_actor_turn_in_inv(const InvType inv_type)
+void Potion::on_actor_turn_in_inv_hook(const InvType inv_type)
 {
         (void)inv_type;
 

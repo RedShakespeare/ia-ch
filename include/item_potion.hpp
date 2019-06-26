@@ -36,9 +36,9 @@ public:
 
         virtual ~Potion() {}
 
-        void save() const override;
+        void save_hook() const override;
 
-        void load() override;
+        void load_hook() override;
 
         Color interface_color() const override final
         {
@@ -49,11 +49,11 @@ public:
 
         ConsumeItem activate(actor::Actor* const actor) override final;
 
-        std::vector<std::string> descr() const override final;
+        std::vector<std::string> descr_hook() const override final;
 
-        void on_player_reached_new_dlvl() override final;
+        void on_player_reached_new_dlvl_hook() override final;
 
-        void on_actor_turn_in_inv(const InvType inv_type) override;
+        void on_actor_turn_in_inv_hook(const InvType inv_type) override;
 
         void on_collide(const P& pos, actor::Actor* actor);
 

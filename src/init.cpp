@@ -19,6 +19,7 @@
 #include "insanity.hpp"
 #include "io.hpp"
 #include "item_artifact.hpp"
+#include "item_curse.hpp"
 #include "item_potion.hpp"
 #include "item_rod.hpp"
 #include "item_scroll.hpp"
@@ -111,6 +112,7 @@ void init_session()
         scroll::init();
         potion::init();
         rod::init();
+        item_curse::init();
         game_time::init();
         map_travel::init();
         map::init();

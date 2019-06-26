@@ -30,7 +30,7 @@ public:
                 return colors::cyan();
         }
 
-        virtual void on_std_turn_in_inv(const InvType inv_type) override
+        virtual void on_std_turn_in_inv_hook(const InvType inv_type) override
         {
                 (void)inv_type;
         }
@@ -43,14 +43,14 @@ class StrangeDevice : public Device
 public:
         StrangeDevice(item::ItemData* const item_data);
 
-        virtual std::vector<std::string> descr() const override final;
+        virtual std::vector<std::string> descr_hook() const override final;
 
         ConsumeItem activate(actor::Actor* const actor) override;
 
         virtual std::string name_inf_str() const override;
 
-        virtual void save() const override;
-        virtual void load() override;
+        virtual void save_hook() const override;
+        virtual void load_hook() override;
 
         Condition condition;
 
@@ -190,14 +190,14 @@ public:
 
         ConsumeItem activate(actor::Actor* const actor) override;
 
-        void on_std_turn_in_inv(const InvType inv_type) override;
+        void on_std_turn_in_inv_hook(const InvType inv_type) override;
 
         void on_pickup_hook() override;
 
         LgtSize lgt_size() const override;
 
-        void save() const override;
-        void load() override;
+        void save_hook() const override;
+        void load_hook() override;
 
         int nr_turns_left;
         bool is_activated;

@@ -16,6 +16,7 @@
 #include "game_time.hpp"
 #include "init.hpp"
 
+
 static bool s_is_inited = false;
 
 
@@ -30,7 +31,7 @@ void init()
 
         s_is_inited = true;
 
-        if (SDL_Init(SDL_INIT_VIDEO|SDL_INIT_AUDIO|SDL_INIT_EVENTS) == -1)
+        if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO | SDL_INIT_EVENTS) == -1)
         {
                 TRACE_ERROR_RELEASE << "Failed to init SDL"
                                     << std::endl
@@ -56,10 +57,11 @@ void init()
         const int audio_buffers = 1024;
 
         const int result =
-                Mix_OpenAudio(audio_freq,
-                              audio_format,
-                              audio_channels,
-                              audio_buffers);
+                Mix_OpenAudio(
+                        audio_freq,
+                        audio_format,
+                        audio_channels,
+                        audio_buffers);
 
         if (result == -1)
         {
@@ -105,8 +107,9 @@ void sleep(const Uint32 duration)
         {
                 SDL_Delay(duration);
         }
-        else // Duration longer than 1 ms
+        else
         {
+                // Duration longer than 1 ms
                 const Uint32 wait_until = SDL_GetTicks() + duration;
 
                 while (SDL_GetTicks() < wait_until)

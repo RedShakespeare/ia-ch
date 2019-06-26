@@ -1111,47 +1111,6 @@ void Player::on_actor_turn()
                 }
 
                 incr_shock(passive_shock_taken, ShockSrc::time);
-
-                // Passive shock taken over time due to items
-                bool is_item_shock_taken = false;
-
-                double item_shock_taken = 0.0;
-
-                for (auto& slot : m_inv.m_slots)
-                {
-                        if (slot.item)
-                        {
-                                const auto& d = slot.item->data();
-
-                                // NOTE: Having an item equiped also counts as
-                                // carrying it
-                                if (d.is_carry_shocking || d.is_equiped_shocking)
-                                {
-                                        item_shock_taken +=
-                                                g_shock_from_disturbing_items;
-
-                                        is_item_shock_taken = true;
-                                }
-                        }
-                }
-
-                for (const auto* const item : m_inv.m_backpack)
-                {
-                        if (item->data().is_carry_shocking)
-                        {
-                                item_shock_taken +=
-                                        g_shock_from_disturbing_items;
-
-                                is_item_shock_taken = true;
-                        }
-                }
-
-                if (is_item_shock_taken)
-                {
-                        incr_shock(
-                                item_shock_taken,
-                                ShockSrc::use_strange_item);
-                }
         }
 
         // Run new turn events on all items
@@ -1372,7 +1331,7 @@ int Player::shock_tot() const
 
         shock_tot_db = std::max(0.0, shock_tot_db);
 
-        shock_tot_db = floor(shock_tot_db);
+        shock_tot_db = std::floor(shock_tot_db);
 
         int result = (int)shock_tot_db;
 

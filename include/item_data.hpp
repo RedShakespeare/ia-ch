@@ -414,8 +414,6 @@ public:
         SpellId spell_cast_from_scroll;
         std::string land_on_hard_snd_msg;
         SfxId land_on_hard_sfx;
-        bool is_carry_shocking;
-        bool is_equiped_shocking;
 
         std::vector<RoomType> native_rooms;
         std::vector<terrain::Id> native_containers;
