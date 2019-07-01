@@ -2390,7 +2390,7 @@ bool PropCannotReadCurse::allow_read_absolute(const Verbosity verbosity) const
 {
         if (m_owner->is_player() && verbosity == Verbosity::verbose)
         {
-                msg_log::add("I cannot seem to read it.");
+                msg_log::add("I cannot read it.");
         }
 
         return false;

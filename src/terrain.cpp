@@ -1370,10 +1370,22 @@ void LiquidShallow::bump(actor::Actor& actor_bumping)
 
         if (actor_bumping.is_player())
         {
-                const std::string type_str =
-                        (m_type == LiquidType::water)
-                        ? "water"
-                        : "mud";
+                std::string type_str;
+
+                switch (m_type)
+                {
+                case LiquidType::water:
+                        type_str = "water";
+                        break;
+
+                case LiquidType::mud:
+                        type_str = "mud";
+                        break;
+
+                case LiquidType::magic_water:
+                        type_str = "water";
+                        break;
+                }
 
                 msg_log::add(
                         "I wade slowly through the knee high " +
@@ -1393,7 +1405,50 @@ void LiquidShallow::bump(actor::Actor& actor_bumping)
 
                         snd_emit::run(snd);
                 }
+
+                if (m_type == LiquidType::magic_water)
+                {
+                        run_magic_pool_effects_on_player();
+                }
         }
+}
+
+void LiquidShallow::run_magic_pool_effects_on_player()
+{
+        std::vector<item::Item*> cursed_items;
+
+        for (const auto& slot : map::g_player->m_inv.m_slots)
+        {
+                if (slot.item && slot.item->is_cursed())
+                {
+                        cursed_items.push_back(slot.item);
+                }
+        }
+
+        for (auto* const item : map::g_player->m_inv.m_backpack)
+        {
+                if (item->is_cursed())
+                {
+                        cursed_items.push_back(item);
+                }
+        }
+
+        for (auto* const item : cursed_items)
+        {
+                item->current_curse().on_curse_end();
+
+                item->remove_curse();
+
+                const auto name =
+                        item->name(
+                                ItemRefType::plain,
+                                ItemRefInf::none);
+
+                msg_log::add("The " + name + " seems cleansed!");
+        }
+
+        map::g_player->m_properties.end_prop(PropId::cursed);
+        map::g_player->m_properties.end_prop(PropId::diseased);
 }
 
 std::string LiquidShallow::name(const Article article) const
@@ -1405,16 +1460,18 @@ std::string LiquidShallow::name(const Article article) const
                 ret += "the ";
         }
 
-        ret += "shallow ";
-
         switch (m_type)
         {
         case LiquidType::water:
-                ret += "water";
+                ret += "shallow water";
                 break;
 
         case LiquidType::mud:
-                ret += "mud";
+                ret += "shallow mud";
+                break;
+
+        case LiquidType::magic_water:
+                ret += "gleaming pool";
                 break;
         }
 
@@ -1431,6 +1488,10 @@ Color LiquidShallow::color_default() const
 
         case LiquidType::mud:
                 return colors::brown();
+                break;
+
+        case LiquidType::magic_water:
+                return colors::light_cyan();
                 break;
         }
 
@@ -1603,6 +1664,13 @@ std::string LiquidDeep::name(const Article article) const
         case LiquidType::mud:
                 ret += "mud";
                 break;
+
+        case LiquidType::magic_water:
+                // Should not happen
+                ASSERT(false);
+
+                ret += "water";
+                break;
         }
 
         return ret;
@@ -1614,14 +1682,20 @@ Color LiquidDeep::color_default() const
         {
         case LiquidType::water:
                 return colors::blue();
-                break;
 
         case LiquidType::mud:
                 return colors::dark_brown();
-                break;
+
+        case LiquidType::magic_water:
+                // Should not happen
+                ASSERT(false);
+
+                return colors::blue();
         }
 
-        return colors::yellow();
+        ASSERT(false);
+
+        return colors::blue();
 }
 
 bool LiquidDeep::can_move(const actor::Actor& actor) const

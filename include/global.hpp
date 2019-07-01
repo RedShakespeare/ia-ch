@@ -161,6 +161,7 @@ enum class LiquidType
 {
         water,
         mud,
+        magic_water
 };
 
 enum class Condition

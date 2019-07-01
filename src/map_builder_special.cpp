@@ -9,18 +9,19 @@
 #include "actor_factory.hpp"
 #include "actor_mon.hpp"
 #include "actor_player.hpp"
-#include "terrain_door.hpp"
-#include "terrain_door.hpp"
-#include "terrain_event.hpp"
-#include "terrain_monolith.hpp"
-#include "terrain.hpp"
 #include "game_time.hpp"
 #include "highscore.hpp"
 #include "item_factory.hpp"
 #include "map.hpp"
 #include "map_controller.hpp"
 #include "populate_items.hpp"
+#include "populate_monsters.hpp"
 #include "property.hpp"
+#include "terrain.hpp"
+#include "terrain_door.hpp"
+#include "terrain_door.hpp"
+#include "terrain_event.hpp"
+#include "terrain_monolith.hpp"
 
 // -----------------------------------------------------------------------------
 // MapBuilderDeepOneLair
@@ -42,7 +43,11 @@ void MapBuilderDeepOneLair::handle_template_pos(const P& p, const char c)
         case '%': // TODO: Just put random blood/gore on the level instead?
         case 'B':
         {
-                map::put(new terrain::Floor(p));
+                auto floor = new terrain::Floor(p);
+
+                floor->m_type = terrain::FloorType::cave;
+
+                map::put(floor);
 
                 if (c == '@')
                 {
@@ -154,6 +159,87 @@ void MapBuilderDeepOneLair::handle_template_pos(const P& p, const char c)
 void MapBuilderDeepOneLair::on_template_built()
 {
         populate_items::make_items_on_floor();
+}
+
+// -----------------------------------------------------------------------------
+// MapBuilderMagicPool
+// -----------------------------------------------------------------------------
+MapBuilderMagicPool::MapBuilderMagicPool() :
+        MapBuilderTemplateLevel()
+{
+
+}
+
+void MapBuilderMagicPool::handle_template_pos(const P& p, const char c)
+{
+        switch (c)
+        {
+        case '@':
+        case '.':
+        {
+                auto floor = new terrain::Floor(p);
+
+                floor->m_type = terrain::FloorType::cave;
+
+                map::put(floor);
+
+                if (c == '@')
+                {
+                        map::g_player->m_pos = p;
+                }
+        }
+        break;
+
+        case '#':
+        {
+                auto wall = new terrain::Wall(p);
+
+                wall->m_type = terrain::WallType::cave;
+
+                map::put(wall);
+        }
+        break;
+
+        case 't':
+        {
+                map::put(new terrain::Tree(p));
+        }
+        break;
+
+        case '~':
+        {
+                auto* water = new terrain::LiquidShallow(p);
+
+                water->m_type = LiquidType::magic_water;
+
+                map::put(water);
+        }
+        break;
+
+        case '>':
+        {
+                map::put(new terrain::Stairs(p));
+        }
+        break;
+
+        case '^':
+        {
+                map::put(new terrain::Stalagmite(p));
+        }
+        break;
+        }
+}
+
+void MapBuilderMagicPool::on_template_built()
+{
+        populate_items::make_items_on_floor();
+
+        const std::vector<RoomType> mon_room_types = {
+                RoomType::cave,
+                RoomType::forest
+        };
+
+        populate_mon::populate_lvl_as_room_types(mon_room_types);
 }
 
 // -----------------------------------------------------------------------------

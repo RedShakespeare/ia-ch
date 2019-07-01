@@ -63,6 +63,8 @@ public:
 
         void on_item_dropped();
 
+        void on_curse_end();
+
         int affect_weight(const int weight) const;
 
         std::string descr() const;
@@ -95,6 +97,8 @@ class CurseImpl
 {
 public:
         CurseImpl() {}
+
+        virtual ~CurseImpl() {}
 
         virtual Id id() const = 0;
 

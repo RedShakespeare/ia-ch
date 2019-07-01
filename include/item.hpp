@@ -217,7 +217,12 @@ public:
         {
                 (void)id;
 
-                return false;
+                return true;
+        }
+
+        bool is_cursed() const
+        {
+                return (m_curse.id() != item_curse::Id::END);
         }
 
         item_curse::Curse& current_curse()
@@ -228,6 +233,11 @@ public:
         void set_curse(item_curse::Curse&& curse)
         {
                 m_curse = std::move(curse);
+        }
+
+        void remove_curse()
+        {
+                m_curse = item_curse::Curse();
         }
 
         int m_nr_items {1};

@@ -12,9 +12,11 @@
 #include "room.hpp"
 #include "array2.hpp"
 
+
 enum class LevelTemplId
 {
         deep_one_lair,
+        magic_pool,
         egypt,
         high_priest,
         intro_forest,

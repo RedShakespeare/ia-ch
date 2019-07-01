@@ -15,10 +15,12 @@
 #include "pos.hpp"
 
 class MapController;
+class MapBuilder;
 
 enum class MapType
 {
         deep_one_lair,
+        magic_pool,
         egypt,
         high_priest,
         intro_forest,
@@ -26,6 +28,17 @@ enum class MapType
         std,
         trapez
 };
+
+
+// -----------------------------------------------------------------------------
+// map_builder
+// -----------------------------------------------------------------------------
+namespace map_builder
+{
+
+std::unique_ptr<MapBuilder> make(const MapType map_type);
+
+} // map_builder
 
 // -----------------------------------------------------------------------------
 // MapBuilder
@@ -114,6 +127,32 @@ private:
         void on_template_built() override;
 
         const char m_passage_symbol;
+};
+
+// -----------------------------------------------------------------------------
+// MapBuilderMagicPool
+// -----------------------------------------------------------------------------
+class MapBuilderMagicPool: public MapBuilderTemplateLevel
+{
+public:
+        MapBuilderMagicPool();
+
+        ~MapBuilderMagicPool() {}
+
+private:
+        LevelTemplId template_id() const override
+        {
+                return LevelTemplId::magic_pool;
+        }
+
+        bool allow_transform_template() const override
+        {
+                return true;
+        }
+
+        void handle_template_pos(const P& p, const char c) override;
+
+        void on_template_built() override;
 };
 
 // -----------------------------------------------------------------------------
@@ -238,12 +277,5 @@ private:
 
         void handle_template_pos(const P& p, const char c) override;
 };
-
-namespace map_builder
-{
-
-std::unique_ptr<MapBuilder> make(const MapType map_type);
-
-} // map_builder
 
 #endif // MAP_BUILDER_HPP

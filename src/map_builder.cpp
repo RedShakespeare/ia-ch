@@ -21,6 +21,47 @@
 #include "map_templates.hpp"
 #include "mapgen.hpp"
 
+
+// -----------------------------------------------------------------------------
+// map_builder
+// -----------------------------------------------------------------------------
+namespace map_builder
+{
+
+std::unique_ptr<MapBuilder> make(const MapType map_type)
+{
+        switch (map_type)
+        {
+        case MapType::deep_one_lair:
+                return std::make_unique<MapBuilderDeepOneLair>();
+
+        case MapType::magic_pool:
+                return std::make_unique<MapBuilderMagicPool>();
+
+        case MapType::intro_forest:
+                return std::make_unique<MapBuilderIntroForest>();
+
+        case MapType::std:
+                return std::make_unique<MapBuilderStd>();
+
+        case MapType::egypt:
+                return std::make_unique<MapBuilderEgypt>();
+
+        case MapType::rat_cave:
+                return std::make_unique<MapBuilderRatCave>();
+
+        case MapType::high_priest:
+                return std::make_unique<MapBuilderBoss>();
+
+        case MapType::trapez:
+                return std::make_unique<MapBuilderTrapez>();
+        }
+
+        return nullptr;
+}
+
+} // map_builder
+
 // -----------------------------------------------------------------------------
 // MapBuilder
 // -----------------------------------------------------------------------------
@@ -155,40 +196,3 @@ bool MapBuilderTemplateLevel::build_specific()
 
         return true;
 }
-
-// -----------------------------------------------------------------------------
-// map_builder
-// -----------------------------------------------------------------------------
-namespace map_builder
-{
-
-std::unique_ptr<MapBuilder> make(const MapType map_type)
-{
-        switch (map_type)
-        {
-        case MapType::deep_one_lair:
-                return std::make_unique<MapBuilderDeepOneLair>();
-
-        case MapType::intro_forest:
-                return std::make_unique<MapBuilderIntroForest>();
-
-        case MapType::std:
-                return std::make_unique<MapBuilderStd>();
-
-        case MapType::egypt:
-                return std::make_unique<MapBuilderEgypt>();
-
-        case MapType::rat_cave:
-                return std::make_unique<MapBuilderRatCave>();
-
-        case MapType::high_priest:
-                return std::make_unique<MapBuilderBoss>();
-
-        case MapType::trapez:
-                return std::make_unique<MapBuilderTrapez>();
-        }
-
-        return nullptr;
-}
-
-} // map_builder

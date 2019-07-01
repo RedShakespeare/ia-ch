@@ -12,7 +12,6 @@
 #include "actor_mon.hpp"
 #include "actor_player.hpp"
 #include "debug.hpp"
-#include "terrain_trap.hpp"
 #include "flood.hpp"
 #include "game_time.hpp"
 #include "init.hpp"
@@ -20,7 +19,7 @@
 #include "map_parsing.hpp"
 #include "misc.hpp"
 #include "random.hpp"
-#include "room.hpp"
+#include "terrain_trap.hpp"
 
 // -----------------------------------------------------------------------------
 // Private
@@ -465,6 +464,13 @@ void spawn_for_repopulate_over_time()
 
 void populate_std_lvl()
 {
+        // TODO: This function seems weird and unnecessarily complicated,
+        // consider just picking random rooms and dropping a monster group for
+        // that room in a random room position - or even just pick free cells on
+        // the map at random and place a monster group there for whatever room
+        // it happens to be?
+
+
         TRACE_FUNC_BEGIN;
 
         const int nr_groups_to_spawn = rnd::range(5, 7);
@@ -482,9 +488,9 @@ void populate_std_lvl()
                         continue;
                 }
 
-                // TODO: This is not a good method to calculate the
-                // number of room cells (the room may be irregularly
-                // shaped), parse the room map instead
+                // TODO: This is not a good method to calculate the number of
+                // room cells (the room may be irregularly shaped), parse the
+                // room map instead
                 const int room_w = room->m_r.p1.x - room->m_r.p0.x + 1;
                 const int room_h = room->m_r.p1.y - room->m_r.p0.y + 1;
 
@@ -500,6 +506,8 @@ void populate_std_lvl()
                 {
                         // Randomly pick a free position inside the room
                         std::vector<P> origin_bucket;
+
+                        origin_bucket.reserve(room->m_r.w() * room->m_r.h());
 
                         for (int y = room->m_r.p0.y;
                              y <= room->m_r.p1.y;
@@ -577,6 +585,8 @@ void populate_std_lvl()
         // groups to place
         std::vector<P> origin_bucket;
 
+        origin_bucket.reserve(map::w() * map::h());
+
         for (int y = 1; y < map::h() - 1; ++y)
         {
                 for (int x = 1; x < map::w() - 1; ++x)
@@ -616,5 +626,81 @@ void populate_std_lvl()
 
         TRACE_FUNC_END;
 } // populate_std_lvl
+
+void populate_lvl_as_room_types(const std::vector<RoomType>& room_types)
+{
+        TRACE_FUNC_BEGIN;
+
+        if (room_types.empty())
+        {
+                ASSERT(false);
+
+                return;
+        }
+
+        auto blocked = forbidden_spawn_positions();
+
+        std::vector<P> origin_bucket;
+
+        origin_bucket.reserve(map::w() * map::h());
+
+        for (int y = 1; y < map::h() - 1; ++y)
+        {
+                for (int x = 1; x < map::w() - 1; ++x)
+                {
+                        if (!blocked.at(x, y))
+                        {
+                                origin_bucket.push_back({x, y});
+                        }
+                }
+        }
+
+        if (origin_bucket.empty())
+        {
+                return;
+        }
+
+        const int nr_groups_to_spawn = rnd::range(5, 7);
+
+        int nr_groups_spawned = 0;
+        int nr_failed = 0;
+
+        while (nr_groups_spawned < nr_groups_to_spawn)
+        {
+                const auto origin = rnd::element(origin_bucket);
+
+                const auto sorted_free_cells =
+                        make_sorted_free_cells(origin, blocked);
+
+                const auto room_type = rnd::element(room_types);
+
+                const bool did_make_group =
+                        make_random_group_for_room(
+                                room_type,
+                                sorted_free_cells,
+                                blocked);
+
+                if (did_make_group)
+                {
+                        ++nr_groups_spawned;
+                }
+                else
+                {
+                        // Give up after too many failed attempts - it must not
+                        // be possible to loop forever
+                        ++nr_failed;
+
+                        // Just a random large number
+                        const int nr_tries_allowed = 10000;
+
+                        if (nr_failed >= nr_tries_allowed)
+                        {
+                                break;
+                        }
+                }
+        }
+
+        TRACE_FUNC_END;
+} // populate_lvl_as_room_types
 
 } // populate_mon

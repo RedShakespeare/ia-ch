@@ -384,6 +384,19 @@ void Curse::on_item_dropped()
         }
 }
 
+void Curse::on_curse_end()
+{
+        if (!m_curse_impl)
+        {
+                return;
+        }
+
+        if (m_turn_countdown == 0)
+        {
+                m_curse_impl->on_stop();
+        }
+}
+
 int Curse::affect_weight(const int weight) const
 {
         if (!m_curse_impl)
@@ -509,11 +522,13 @@ std::string Heavy::curse_msg(const item::Item& item) const
 Shriek::Shriek() :
         CurseImpl()
 {
-        std::string player_name = map::g_player->name_the();
-
-        text_format::all_to_upper(player_name);
+        auto player_name =
+                text_format::all_to_upper(
+                        map::g_player->name_the());
 
         m_words = {
+                player_name,
+                player_name,
                 player_name,
                 "BHUUDESCO",
                 "STRAGARANA",

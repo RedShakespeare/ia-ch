@@ -10,6 +10,7 @@
 #include <vector>
 
 #include "global.hpp"
+#include "room.hpp"
 
 
 namespace actor
@@ -32,7 +33,6 @@ void make_group_at(
         Array2<bool>* const blocked_out,
         const MonRoamingAllowed roaming_allowed);
 
-// TODO: This is a very general function, it should not be here
 std::vector<P> make_sorted_free_cells(
         const P& origin,
         const Array2<bool>& blocked);
@@ -43,6 +43,10 @@ Array2<bool> forbidden_spawn_positions();
 void spawn_for_repopulate_over_time();
 
 void populate_std_lvl();
+
+// Convenient function for special levels which should auto-spawn monsters
+// instead of according to design (or in addition to hand-placed monsters)
+void populate_lvl_as_room_types(const std::vector<RoomType>& room_types);
 
 } // populate_mon
 

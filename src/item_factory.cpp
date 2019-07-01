@@ -459,7 +459,7 @@ void set_item_randomized_properties(Item& item)
         }
 
         // Item curse
-        const int cursed_one_in_n = 5;
+        const int cursed_one_in_n = 3;
 
         if (d.is_unique &&
             (d.value >= Value::supreme_treasure) &&

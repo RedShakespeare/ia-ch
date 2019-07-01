@@ -34,6 +34,7 @@ static const char s_comment_symbol = '\'';
 const std::unordered_map<LevelTemplId, std::string> level_id_to_filename =
 {
         {LevelTemplId::deep_one_lair, "deep_one_lair.txt"},
+        {LevelTemplId::magic_pool, "magic_pool.txt"},
         {LevelTemplId::egypt, "egypt.txt"},
         {LevelTemplId::high_priest, "high_priest.txt"},
         {LevelTemplId::intro_forest, "intro_forest.txt"},

@@ -874,6 +874,8 @@ private:
                 const DmgType dmg_type,
                 const DmgMethod dmg_method,
                 actor::Actor* const actor) override;
+
+        void run_magic_pool_effects_on_player();
 };
 
 class LiquidDeep: public Terrain

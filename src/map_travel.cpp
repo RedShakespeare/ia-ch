@@ -84,6 +84,8 @@ void init()
         // "Pharaoh chamber" is the first late game level
         s_map_list[g_dlvl_first_late_game] = MapType::egypt;
 
+        s_map_list[g_dlvl_first_late_game + 1] = MapType::magic_pool;
+
         s_map_list[g_dlvl_last + 1] = MapType::high_priest;
 
         s_map_list[g_dlvl_last + 2] = MapType::trapez;
