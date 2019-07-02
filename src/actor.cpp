@@ -74,9 +74,10 @@ void init_actor(Actor& actor, const P& pos_, ActorData& data)
         {
                 actor.m_base_max_hp = data.hp;
         }
-        else // Is monster
+        else
         {
-                const int hp_max_variation_pct = 50;
+                // Is monster
+                const int hp_max_variation_pct = 25;
 
                 const int hp_range_min = (data.hp * hp_max_variation_pct) / 100;
 
