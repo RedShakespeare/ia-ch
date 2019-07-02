@@ -1042,6 +1042,8 @@ public:
                 return Id::tree;
         }
 
+        TileId tile() const override;
+
         std::string name(const Article article) const override;
 
         WasDestroyed on_finished_burning() override;
@@ -1054,6 +1056,10 @@ private:
                 const DmgType dmg_type,
                 const DmgMethod dmg_method,
                 actor::Actor* const actor) override;
+
+        bool is_fungi() const;
+
+        Color m_color {};
 };
 
 // NOTE: In some previous versions, it was possible to inspect the tomb and get

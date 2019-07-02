@@ -223,8 +223,10 @@ static void set_light()
                 {
                         auto& color = s_render_array.at(i).color;
 
-                        color.set_r(std::min(255, color.r() + 40));
-                        color.set_g(std::min(255, color.g() + 40));
+                        color.set_rgb(
+                                std::min(255, color.r() + 40),
+                                std::min(255, color.g() + 40),
+                                color.b());
                 }
         }
 }

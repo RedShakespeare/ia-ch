@@ -280,7 +280,10 @@ void MainMenuState::draw()
 
                                         g = constr_in_range(0, (int)g, 254);
 
-                                        color.set_g(g);
+                                        color.set_rgb(
+                                                color.r(),
+                                                g,
+                                                color.b());
 
                                         io::draw_character(
                                                 character,

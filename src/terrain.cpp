@@ -435,9 +435,10 @@ Color Terrain::color() const
                 {
                         Color color = colors::light_magenta();
 
-                        color.set_r(rnd::range(40, 255));
-                        color.set_g(rnd::range(40, 255));
-                        color.set_b(rnd::range(40, 255));
+                        color.set_rgb(
+                                rnd::range(40, 255),
+                                rnd::range(40, 255),
+                                rnd::range(40, 255));
 
                         return color;
                 }
@@ -2379,7 +2380,37 @@ Color Grate::color_default() const
 // Tree
 // -----------------------------------------------------------------------------
 Tree::Tree(const P& p) :
-        Terrain(p) {}
+        Terrain(p)
+{
+        if (is_fungi())
+        {
+                const std::vector<Color> base_color_bucket = {
+                        colors::white(),
+                        colors::cyan(),
+                        colors::gray_brown(),
+                        colors::orange(),
+                        colors::green()
+                };
+
+                const std::vector<int> weights = {
+                        100,
+                        10,
+                        10,
+                        1,
+                        1
+                };
+
+                const size_t choice = rnd::weighted_choice(weights);
+
+                m_color = base_color_bucket[choice];
+
+                m_color.randomize_rgb(20);
+        }
+        else
+        {
+                m_color = colors::dark_brown();
+        }
+}
 
 void Tree::on_hit(
         const int dmg,
@@ -2419,9 +2450,17 @@ WasDestroyed Tree::on_finished_burning()
         return WasDestroyed::no;
 }
 
+TileId Tree::tile() const
+{
+        return
+                is_fungi()
+                ? TileId::tree_fungi
+                : TileId::tree;
+}
+
 std::string Tree::name(const Article article) const
 {
-        std::string ret =
+        std::string result =
                 (article == Article::a)
                 ? "a "
                 : "the ";
@@ -2432,20 +2471,34 @@ std::string Tree::name(const Article article) const
                 break;
 
         case BurnState::burning:
-                ret += "burning ";
+                result += "burning ";
                 break;
 
         case BurnState::has_burned:
-                ret += "scorched ";
+                result += "scorched ";
                 break;
         }
 
-        return ret + "tree";
+        if (is_fungi())
+        {
+                result += "giant fungi";
+        }
+        else
+        {
+                result += "tree";
+        }
+
+        return result;
 }
 
 Color Tree::color_default() const
 {
-        return colors::dark_brown();
+        return m_color;
+}
+
+bool Tree::is_fungi() const
+{
+        return (map::g_dlvl > 1);
 }
 
 // -----------------------------------------------------------------------------

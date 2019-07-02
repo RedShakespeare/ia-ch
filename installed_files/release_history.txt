@@ -5,6 +5,7 @@ Gameplay
 * Maps can have different size, the standard map size is bigger than before
 * Some maps built from templates (such as the "Egypt" level)  are randomly flipped and rotated for more variety
 * Added more special levels
+* Trees appearing beneath the first few levels are now "giant fungi" instead
 * Added swimming
 * You can now make a "dark pact" at altars, giving a bonus for a penalty - the bonus is received immediately, and the penalty is activated later in the game
 * Removed passive shock for carrying or wearing certain items - unique items may instead have a curse on them

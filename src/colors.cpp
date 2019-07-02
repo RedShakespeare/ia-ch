@@ -11,7 +11,9 @@
 #include <vector>
 
 #include "debug.hpp"
+#include "misc.hpp"
 #include "paths.hpp"
+#include "random.hpp"
 #include "xml.hpp"
 
 //-----------------------------------------------------------------------------
@@ -266,6 +268,7 @@ Color& Color::operator=(const Color& other)
         m_sdl_color.r = other.m_sdl_color.r;
         m_sdl_color.g = other.m_sdl_color.g;
         m_sdl_color.b = other.m_sdl_color.b;
+        m_is_defined = other.m_is_defined;
 
         return *this;
 }
@@ -329,21 +332,27 @@ uint8_t Color::b() const
 }
 
 
-void Color::set_r(const uint8_t value)
+void Color::set_rgb(const uint8_t r, const uint8_t g, const uint8_t b)
 {
-        m_sdl_color.r = value;
+        m_sdl_color.r = r;
+        m_sdl_color.g = g;
+        m_sdl_color.b = b;
+
+        m_is_defined = true;
 }
 
-void Color::set_g(const uint8_t value)
+void Color::randomize_rgb(const int range)
 {
-        m_sdl_color.g = value;
-}
+        const Range random(-range/2, range/2);
 
-void Color::set_b(const uint8_t value)
-{
-        m_sdl_color.b = value;
-}
+        const int new_r = (int)m_sdl_color.r + random.roll();
+        const int new_g = (int)m_sdl_color.g + random.roll();
+        const int new_b = (int)m_sdl_color.b + random.roll();
 
+        m_sdl_color.r = (uint8_t)constr_in_range(0, new_r, 255);
+        m_sdl_color.g = (uint8_t)constr_in_range(0, new_g, 255);
+        m_sdl_color.b = (uint8_t)constr_in_range(0, new_b, 255);
+}
 
 // -----------------------------------------------------------------------------
 // Color handling

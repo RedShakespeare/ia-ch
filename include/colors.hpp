@@ -43,9 +43,9 @@ public:
         uint8_t g() const;
         uint8_t b() const;
 
-        void set_r(const uint8_t value);
-        void set_g(const uint8_t value);
-        void set_b(const uint8_t value);
+        void set_rgb(const uint8_t r, const uint8_t g, const uint8_t b);
+
+        void randomize_rgb(const int range);
 
 private:
         SDL_Color m_sdl_color;

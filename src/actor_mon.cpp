@@ -1490,9 +1490,12 @@ Color StrangeColor::color() const
 {
         Color color = colors::light_magenta();
 
-        color.set_r(rnd::range(40, 255));
-        color.set_g(rnd::range(40, 255));
-        color.set_b(rnd::range(40, 255));
+        const Range range(40, 255);
+
+        color.set_rgb(
+                range.roll(),
+                range.roll(),
+                range.roll());
 
         return color;
 }
