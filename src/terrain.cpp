@@ -1433,22 +1433,22 @@ void LiquidShallow::run_magic_pool_effects_on_player()
                 }
         }
 
+        map::g_player->m_properties.end_prop(PropId::cursed);
+        map::g_player->m_properties.end_prop(PropId::diseased);
+
         for (auto* const item : cursed_items)
         {
-                item->current_curse().on_curse_end();
-
-                item->remove_curse();
-
                 const auto name =
                         item->name(
                                 ItemRefType::plain,
                                 ItemRefInf::none);
 
                 msg_log::add("The " + name + " seems cleansed!");
-        }
 
-        map::g_player->m_properties.end_prop(PropId::cursed);
-        map::g_player->m_properties.end_prop(PropId::diseased);
+                item->current_curse().on_curse_end();
+
+                item->remove_curse();
+        }
 }
 
 std::string LiquidShallow::name(const Article article) const
