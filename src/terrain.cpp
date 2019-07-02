@@ -1436,6 +1436,7 @@ void LiquidShallow::run_magic_pool_effects_on_player()
 
         map::g_player->m_properties.end_prop(PropId::cursed);
         map::g_player->m_properties.end_prop(PropId::diseased);
+        map::g_player->m_properties.end_prop(PropId::wound);
 
         for (auto* const item : cursed_items)
         {
