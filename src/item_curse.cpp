@@ -187,8 +187,6 @@ void Curse::save() const
 
         const auto curse_id = id();
 
-        ASSERT(curse_id != Id::END);
-
         saving::put_int((int)curse_id);
 
         if (m_curse_impl)
@@ -206,8 +204,6 @@ void Curse::load()
         m_warning_turn_countdown = saving::get_int();
 
         const auto curse_id = (Id)saving::get_int();
-
-        ASSERT(curse_id != Id::END);
 
         if (curse_id == Id::END)
         {

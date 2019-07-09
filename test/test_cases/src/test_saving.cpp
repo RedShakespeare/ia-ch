@@ -10,6 +10,7 @@
 #include "game.hpp"
 #include "game_time.hpp"
 #include "inventory.hpp"
+#include "item_curse.hpp"
 #include "item_data.hpp"
 #include "item_device.hpp"
 #include "item_factory.hpp"
@@ -22,6 +23,7 @@
 #include "property_handler.hpp"
 #include "saving.hpp"
 #include "test_utils.hpp"
+
 
 TEST_CASE("Saving and loading the game")
 {
@@ -126,6 +128,39 @@ TEST_CASE("Saving and loading the game")
 
                 inv.put_in_backpack(item);
 
+                item = item::make(item::Id::horn_of_malice);
+
+                item->set_curse(
+                        item_curse::Curse(
+                                std::make_unique<item_curse::CannotRead>()));
+
+                inv.put_in_backpack(item);
+
+                for (int i = 0; i < 10; ++i)
+                {
+                        item->current_curse().on_player_reached_new_dlvl();
+                }
+
+                for (int i = 0; i < 5000; ++i)
+                {
+                        item->current_curse().on_new_turn(*item);
+                }
+
+                item = item::make(item::Id::horn_of_banishment);
+
+                item->set_curse(
+                        item_curse::Curse(
+                                std::make_unique
+                                <item_curse::HitChancePenalty>()));
+
+                inv.put_in_backpack(item);
+
+                item = item::make(item::Id::spirit_dagger);
+
+                item->remove_curse();
+
+                inv.put_in_backpack(item);
+
                 // Player
                 map::g_player->m_data->name_a = "TEST PLAYER";
                 map::g_player->m_data->name_the = "THIS IS OVERWRITTEN";
@@ -155,7 +190,6 @@ TEST_CASE("Saving and loading the game")
                         prop->set_duration(3);
                         props.apply(prop);
                 }
-
 
                 {
                         auto* const prop = new PropDiseased();
@@ -238,7 +272,7 @@ TEST_CASE("Saving and loading the game")
                 // Player inventory
                 const auto& inv = map::g_player->m_inv;
 
-                REQUIRE(inv.m_backpack.size() == 6);
+                REQUIRE(inv.m_backpack.size() == 9);
 
                 REQUIRE(inv.item_in_slot(SlotId::wpn)->data().id ==
                         item::Id::mi_go_gun);
@@ -254,12 +288,15 @@ TEST_CASE("Saving and loading the game")
                 int nr_mag_with_3 = 0;
                 bool is_sentry_device_found = false;
                 bool is_lantern_found = false;
+                bool is_horn_of_malice_found = false;
+                bool is_horn_of_banishment_found = false;
+                bool is_spirit_dagger_found = false;
 
                 for (auto* item : inv.m_backpack)
                 {
-                        item::Id id = item->id();
-
-                        if (id == item::Id::pistol_mag)
+                        switch(item->id())
+                        {
+                        case item::Id::pistol_mag:
                         {
                                 switch (static_cast<item::AmmoMag*>(item)
                                         ->m_ammo)
@@ -280,7 +317,9 @@ TEST_CASE("Saving and loading the game")
                                         break;
                                 }
                         }
-                        else if (id == item::Id::device_blaster)
+                        break;
+
+                        case item::Id::device_blaster:
                         {
                                 is_sentry_device_found = true;
 
@@ -290,7 +329,9 @@ TEST_CASE("Saving and loading the game")
 
                                 REQUIRE(device->condition == Condition::shoddy);
                         }
-                        else if (id == item::Id::lantern)
+                        break;
+
+                        case item::Id::lantern:
                         {
                                 is_lantern_found = true;
 
@@ -301,6 +342,53 @@ TEST_CASE("Saving and loading the game")
 
                                 REQUIRE(lantern->is_activated);
                         }
+                        break;
+
+                        case item::Id::horn_of_malice:
+                        {
+                                is_horn_of_malice_found = true;
+
+                                REQUIRE(
+                                        item->current_curse().is_active());
+
+                                REQUIRE(
+                                        item->current_curse().id() ==
+                                        item_curse::Id::cannot_read);
+                        }
+                        break;
+
+                        case item::Id::horn_of_banishment:
+                        {
+                                is_horn_of_banishment_found = true;
+
+                                REQUIRE(
+                                        !item->current_curse().is_active());
+
+                                REQUIRE(
+                                        item->current_curse().id() ==
+                                        item_curse::Id::hit_chance_penalty);
+                        }
+                        break;
+
+                        case item::Id::spirit_dagger:
+                        {
+                                is_spirit_dagger_found = true;
+
+                                REQUIRE(
+                                        !item->current_curse().is_active());
+
+                                REQUIRE(
+                                        item->current_curse().id() ==
+                                        item_curse::Id::END);
+                        }
+                        break;
+
+                        default:
+                        {
+                                ASSERT(false);
+                        }
+                        break;
+                        }
                 }
 
                 REQUIRE(nr_mag_with_1 == 1);
@@ -308,6 +396,9 @@ TEST_CASE("Saving and loading the game")
                 REQUIRE(nr_mag_with_3 == 2);
                 REQUIRE(is_sentry_device_found);
                 REQUIRE(is_lantern_found);
+                REQUIRE(is_horn_of_malice_found);
+                REQUIRE(is_horn_of_banishment_found);
+                REQUIRE(is_spirit_dagger_found);
 
                 // map
                 REQUIRE(map::g_dlvl == 7);
@@ -364,6 +455,16 @@ TEST_CASE("Saving and loading the game")
                         REQUIRE(prop);
                         REQUIRE(prop->nr_turns_left() == -1);
                 }
+
+                // Properties from item curse
+                {
+                        const auto* const prop = props.prop(PropId::cannot_read_curse);
+
+                        REQUIRE(prop);
+                        REQUIRE(prop->nr_turns_left() == -1);
+                }
+
+                REQUIRE(!props.has(PropId::hit_chance_penalty_curse));
 
                 // Turn number
                 REQUIRE(game_time::turn_nr() == 0);
