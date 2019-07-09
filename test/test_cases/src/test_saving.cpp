@@ -458,7 +458,8 @@ TEST_CASE("Saving and loading the game")
 
                 // Properties from item curse
                 {
-                        const auto* const prop = props.prop(PropId::cannot_read_curse);
+                        const auto* const prop =
+                                props.prop(PropId::cannot_read_curse);
 
                         REQUIRE(prop);
                         REQUIRE(prop->nr_turns_left() == -1);

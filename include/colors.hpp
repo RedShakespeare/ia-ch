@@ -19,6 +19,8 @@ class Color
 public:
         Color();
 
+        Color(const Color& other);
+
         Color(uint8_t r, uint8_t g, uint8_t b);
 
         Color(const SDL_Color& sdl_color);

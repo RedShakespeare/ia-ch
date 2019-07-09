@@ -244,6 +244,13 @@ Color::Color() :
 
 }
 
+Color::Color(const Color& other) :
+        m_sdl_color(other.m_sdl_color),
+        m_is_defined(other.m_is_defined)
+{
+
+}
+
 Color::Color(uint8_t r, uint8_t g, uint8_t b) :
         m_sdl_color({r, g, b, 0}),
         m_is_defined(true)
@@ -265,9 +272,7 @@ Color::~Color()
 
 Color& Color::operator=(const Color& other)
 {
-        m_sdl_color.r = other.m_sdl_color.r;
-        m_sdl_color.g = other.m_sdl_color.g;
-        m_sdl_color.b = other.m_sdl_color.b;
+        m_sdl_color = other.m_sdl_color;
         m_is_defined = other.m_is_defined;
 
         return *this;
