@@ -160,8 +160,12 @@ TrapImpl* Trap::make_trap_impl_from_id(const TrapId trap_id)
                 return new TrapSummonMon(m_pos, this);
                 break;
 
-        case TrapId::spi_drain:
-                return new TrapSpiDrain(m_pos, this);
+        case TrapId::hp_sap:
+                return new TrapHpSap(m_pos, this);
+                break;
+
+        case TrapId::spi_sap:
+                return new TrapSpiSap(m_pos, this);
                 break;
 
         case TrapId::smoke:
@@ -211,6 +215,7 @@ void Trap::on_hit(
 TrapId Trap::type() const
 {
         ASSERT(m_trap_impl);
+
         return m_trap_impl->m_type;
 }
 
@@ -1166,7 +1171,7 @@ void TrapSummonMon::trigger()
         TRACE_FUNC_END;
 }
 
-void TrapSpiDrain::trigger()
+void TrapHpSap::trigger()
 {
         TRACE_FUNC_BEGIN_VERBOSE;
 
@@ -1221,19 +1226,75 @@ void TrapSpiDrain::trigger()
                 msg_log::add("I feel a peculiar energy around me!");
         }
 
-        TRACE << "Draining player spirit" << std::endl;
+        auto* const hp_sap = new PropHpSap();
 
-        // Never let spirit draining traps insta-kill the player
-        const int sp_drained = map::g_player->m_sp - 1;
+        hp_sap->set_indefinite();
 
-        if (sp_drained > 0)
+        actor_here->m_properties.apply(hp_sap);
+
+        TRACE_FUNC_END_VERBOSE;
+}
+
+void TrapSpiSap::trigger()
+{
+        TRACE_FUNC_BEGIN_VERBOSE;
+
+        auto* const actor_here = map::first_actor_at_pos(m_pos);
+
+        ASSERT(actor_here);
+
+        if (!actor_here)
         {
-                actor::hit_sp(*map::g_player, sp_drained);
+                // Should never happen
+                return;
+        }
+
+        const bool is_player = actor_here->is_player();
+        const bool is_hidden = m_base_trap->is_hidden();
+
+        TRACE_VERBOSE << "Is player: " << is_player << std::endl;
+
+        if (!is_player)
+        {
+                TRACE_VERBOSE << "Not triggered by player" << std::endl;
+
+                TRACE_FUNC_END_VERBOSE;
+
+                return;
+        }
+
+        const bool can_see = actor_here->m_properties.allow_see();
+
+        TRACE_VERBOSE << "Actor can see: " << can_see << std::endl;
+
+        const std::string actor_name = actor_here->name_the();
+
+        TRACE_VERBOSE << "Actor name: " << actor_name << std::endl;
+
+        if (can_see)
+        {
+                std::string msg = "A beam of light shoots out from";
+
+                if (!is_hidden)
+                {
+                        msg += " a curious shape on";
+                }
+
+                msg += " the floor!";
+
+                msg_log::add(msg);
         }
         else
         {
-                msg_log::add("I feel somewhat drained.");
+                // Cannot see
+                msg_log::add("I feel a peculiar energy around me!");
         }
+
+        auto* const sp_sap = new PropSpiSap();
+
+        sp_sap->set_indefinite();
+
+        actor_here->m_properties.apply(sp_sap);
 
         TRACE_FUNC_END_VERBOSE;
 }
@@ -1358,7 +1419,7 @@ void TrapWeb::trigger()
                 }
         }
 
-        Prop* entangled = new PropEntangled();
+        Prop* const entangled = new PropEntangled();
 
         entangled->set_indefinite();
 
@@ -1447,6 +1508,28 @@ void TrapUnlearnSpell::trigger()
                 return;
         }
 
+        const bool can_see = actor_here->m_properties.allow_see();
+        const bool is_hidden = m_base_trap->is_hidden();
+
+        if (can_see)
+        {
+                std::string msg = "A beam of light shoots out from";
+
+                if (!is_hidden)
+                {
+                        msg += " a curious shape on";
+                }
+
+                msg += " the floor!";
+
+                msg_log::add(msg);
+        }
+        else
+        {
+                // Cannot see
+                msg_log::add("I feel a peculiar energy around me!");
+        }
+
         std::vector<SpellId> id_bucket;
         id_bucket.reserve((size_t)SpellId::END);
 
@@ -1462,6 +1545,8 @@ void TrapUnlearnSpell::trigger()
 
         if (id_bucket.empty())
         {
+                msg_log::add("There is no apparent effect.");
+
                 return;
         }
 

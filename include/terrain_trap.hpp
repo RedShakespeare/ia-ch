@@ -38,7 +38,8 @@ enum class TrapId
         // Magical traps
         teleport,
         summon,
-        spi_drain,
+        hp_sap,
+        spi_sap,
         slow,
         curse,
         unlearn_spell,
@@ -477,7 +478,7 @@ private:
         friend class Trap;
 
         TrapFire(P pos, Trap* const base_trap) :
-                MechTrapImpl(pos, TrapId::smoke, base_trap) {}
+                MechTrapImpl(pos, TrapId::fire, base_trap) {}
 
         virtual std::string name(const Article article) const override
         {
@@ -662,13 +663,24 @@ private:
         void trigger() override;
 };
 
-class TrapSpiDrain: public MagicTrapImpl
+class TrapHpSap: public MagicTrapImpl
 {
 private:
         friend class Trap;
 
-        TrapSpiDrain(P pos, Trap* const base_trap) :
-                MagicTrapImpl(pos, TrapId::summon, base_trap) {}
+        TrapHpSap(P pos, Trap* const base_trap) :
+                MagicTrapImpl(pos, TrapId::hp_sap, base_trap) {}
+
+        void trigger() override;
+};
+
+class TrapSpiSap: public MagicTrapImpl
+{
+private:
+        friend class Trap;
+
+        TrapSpiSap(P pos, Trap* const base_trap) :
+                MagicTrapImpl(pos, TrapId::spi_sap, base_trap) {}
 
         void trigger() override;
 };
@@ -701,7 +713,7 @@ private:
         friend class Trap;
 
         TrapUnlearnSpell(P pos, Trap* const base_trap) :
-                MagicTrapImpl(pos, TrapId::curse, base_trap) {}
+                MagicTrapImpl(pos, TrapId::unlearn_spell, base_trap) {}
 
         void trigger() override;
 };
