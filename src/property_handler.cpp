@@ -171,7 +171,7 @@ void PropHandler::apply(
         if (prop->m_src == PropSrc::intr)
         {
                 const bool did_apply_more =
-                        try_apply_more_on_existing_intr_prop(*prop);
+                        try_apply_more_on_existing_intr_prop(*prop, verbosity);
 
                 if (did_apply_more)
                 {
@@ -207,8 +207,6 @@ void PropHandler::apply(
         }
 
         prop->on_applied();
-
-        return;
 }
 
 void PropHandler::print_resist_msg(const Prop& prop)
@@ -272,7 +270,9 @@ void PropHandler::print_start_msg(const Prop& prop)
         }
 }
 
-bool PropHandler::try_apply_more_on_existing_intr_prop(const Prop& new_prop)
+bool PropHandler::try_apply_more_on_existing_intr_prop(
+        const Prop& new_prop,
+        const Verbosity verbosity)
 {
         // NOTE: If an existing property exists which the new property shall be
         // merged with, we keep the old property object and discard the new one
@@ -303,6 +303,11 @@ bool PropHandler::try_apply_more_on_existing_intr_prop(const Prop& new_prop)
                                 std::max(
                                         old_prop->m_nr_turns_left,
                                         new_prop.m_nr_turns_left);
+                }
+
+                if (verbosity == Verbosity::verbose)
+                {
+                        print_start_msg(*old_prop);
                 }
 
                 old_prop->on_more(new_prop);

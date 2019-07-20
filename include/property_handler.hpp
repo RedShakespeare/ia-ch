@@ -200,7 +200,9 @@ private:
         void print_resist_msg(const Prop& prop);
         void print_start_msg(const Prop& prop);
 
-        bool try_apply_more_on_existing_intr_prop(const Prop& new_prop);
+        bool try_apply_more_on_existing_intr_prop(
+                const Prop& new_prop,
+                const Verbosity verbosity);
 
         bool is_temporary_negative_prop(const Prop& prop) const;
 
