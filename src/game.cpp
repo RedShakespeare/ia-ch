@@ -372,6 +372,13 @@ void on_mon_killed(actor::Actor& actor)
 
 void add_history_event(const std::string msg)
 {
+        if (saving::is_loading())
+        {
+                // If we are loading the game, never add historic messages (this
+                // allows silently running stuff like equip hooks for items)
+                return;
+        }
+
         const int turn_nr = game_time::turn_nr();
 
         s_history_events.push_back({msg, turn_nr});
