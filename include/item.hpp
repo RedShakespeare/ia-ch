@@ -477,24 +477,6 @@ public:
         void on_melee_hit(actor::Actor& actor_hit, const int dmg) override;
 };
 
-class SpiritLeechSting : public Wpn
-{
-public:
-        SpiritLeechSting(ItemData* const item_data) :
-                Wpn(item_data) {}
-
-        void on_melee_hit(actor::Actor& actor_hit, const int dmg) override;
-};
-
-class LifeLeechSting : public Wpn
-{
-public:
-        LifeLeechSting(ItemData* const item_data) :
-                Wpn(item_data) {}
-
-        void on_melee_hit(actor::Actor& actor_hit, const int dmg) override;
-};
-
 class DustEngulf : public Wpn
 {
 public:

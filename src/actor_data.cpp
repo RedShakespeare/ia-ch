@@ -52,8 +52,6 @@ static std::unordered_map<std::string, actor::Id> str_to_actor_id_map = {
         {"flying_polyp", actor::Id::flying_polyp},
         {"greater_polyp", actor::Id::greater_polyp},
         {"mind_leech", actor::Id::mind_leech},
-        {"spirit_leech", actor::Id::spirit_leech},
-        {"life_leech", actor::Id::life_leech},
         {"ghoul", actor::Id::ghoul},
         {"shadow", actor::Id::shadow},
         {"invis_stalker", actor::Id::invis_stalker},

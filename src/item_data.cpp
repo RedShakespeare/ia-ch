@@ -1176,19 +1176,6 @@ void init()
         g_data[(size_t)d.id] = d;
 
         reset_data(d, ItemType::melee_wpn_intr);
-        d.id = Id::intr_spirit_leech_sting;
-        d.melee.att_msgs = {"", "stings me"};
-        d.melee.dmg_method = DmgMethod::piercing;
-        d.melee.dmg_type = DmgType::spirit;
-        g_data[(size_t)d.id] = d;
-
-        reset_data(d, ItemType::melee_wpn_intr);
-        d.id = Id::intr_life_leech_sting;
-        d.melee.att_msgs = {"", "stings me"};
-        d.melee.dmg_method = DmgMethod::piercing;
-        g_data[(size_t)d.id] = d;
-
-        reset_data(d, ItemType::melee_wpn_intr);
         d.id = Id::intr_spear_thrust;
         d.melee.att_msgs = {"", "strikes me with a spear"};
         d.melee.dmg_method = DmgMethod::piercing;

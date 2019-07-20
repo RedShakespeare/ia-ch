@@ -141,14 +141,6 @@ Item* make(const Id item_id, const int nr_items)
                 r = new MindLeechSting(d);
                 break;
 
-        case Id::intr_spirit_leech_sting:
-                r = new SpiritLeechSting(d);
-                break;
-
-        case Id::intr_life_leech_sting:
-                r = new LifeLeechSting(d);
-                break;
-
         case Id::intr_dust_engulf:
                 r = new DustEngulf(d);
                 break;

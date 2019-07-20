@@ -64,8 +64,6 @@ enum class Id
         flying_polyp,
         greater_polyp,
         mind_leech,
-        spirit_leech,
-        life_leech,
         ghoul,
         shadow,
         invis_stalker,
