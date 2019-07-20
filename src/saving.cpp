@@ -34,7 +34,6 @@
 // -----------------------------------------------------------------------------
 // Private
 // -----------------------------------------------------------------------------
-#ifndef NDEBUG
 // Only used to verify that the put/get methods are not called at the wrong time
 enum class SaveLoadState
 {
@@ -44,8 +43,6 @@ enum class SaveLoadState
 };
 
 static SaveLoadState s_state;
-
-#endif // NDEBUG
 
 
 static std::vector<std::string> s_lines;
@@ -169,27 +166,21 @@ void init()
 {
         s_lines.clear();
 
-#ifndef NDEBUG
         s_state = SaveLoadState::stopped;
-#endif // NDEBUG
 }
 
 void save_game()
 {
-#ifndef NDEBUG
         ASSERT(s_state == SaveLoadState::stopped);
         ASSERT(s_lines.empty());
 
         s_state = SaveLoadState::saving;
-#endif // NDEBUG
 
         // Tell all modules to append to the save lines (via this modules store
         // functions)
         save_modules();
 
-#ifndef NDEBUG
         s_state = SaveLoadState::stopped;
-#endif // NDEBUG
 
         // Write the save lines to the save file
         write_file();
@@ -199,12 +190,10 @@ void save_game()
 
 void load_game()
 {
-#ifndef NDEBUG
         ASSERT(s_state == SaveLoadState::stopped);
         ASSERT(s_lines.empty());
 
         s_state = SaveLoadState::loading;
-#endif // NDEBUG
 
         // Read the save file to the save lines
         read_file();
@@ -215,9 +204,7 @@ void load_game()
         // read functions of this module)
         load_modules();
 
-#ifndef NDEBUG
         s_state = SaveLoadState::stopped;
-#endif // NDEBUG
 
         ASSERT(s_lines.empty());
 }
@@ -251,11 +238,14 @@ bool is_save_available()
         }
 }
 
+bool is_loading()
+{
+        return s_state == SaveLoadState::loading;
+}
+
 void put_str(const std::string str)
 {
-#ifndef NDEBUG
         ASSERT(s_state == SaveLoadState::saving);
-#endif // NDEBUG
 
         s_lines.push_back(str);
 }
@@ -274,10 +264,7 @@ void put_bool(const bool v)
 
 std::string get_str()
 {
-#ifndef NDEBUG
         ASSERT(s_state == SaveLoadState::loading);
-#endif // NDEBUG
-
         ASSERT(!s_lines.empty());
 
         const std::string str = s_lines.front();

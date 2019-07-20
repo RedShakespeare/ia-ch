@@ -22,6 +22,8 @@ void erase_save();
 
 bool is_save_available();
 
+bool is_loading();
+
 //Functions called by modules when saving and loading.
 void put_str(const std::string str);
 void put_int(const int v);

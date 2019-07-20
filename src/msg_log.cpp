@@ -9,11 +9,12 @@
 #include <vector>
 #include <string>
 
+#include "actor_player.hpp"
 #include "init.hpp"
 #include "io.hpp"
-#include "query.hpp"
-#include "actor_player.hpp"
 #include "map.hpp"
+#include "query.hpp"
+#include "saving.hpp"
 #include "text_format.hpp"
 
 // -----------------------------------------------------------------------------
@@ -258,6 +259,13 @@ void add(const std::string& str,
          const MorePromptOnMsg add_more_prompt_on_msg)
 {
         ASSERT(!str.empty());
+
+        if (saving::is_loading())
+        {
+                // If we are loading the game, never print messages (this
+                // allows silently running stuff like equip hooks for items)
+                return;
+        }
 
         if (str.empty())
         {
