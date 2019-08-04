@@ -7,6 +7,8 @@
 #ifndef SDL_BASE_HPP
 #define SDL_BASE_HPP
 
+#include <string>
+
 #include "SDL.h"
 
 // TODO: This can probably be merged with the io namespace
@@ -19,6 +21,8 @@ void init();
 void cleanup();
 
 void sleep(const Uint32 duration);
+
+std::string sdl_pref_dir();
 
 }
 

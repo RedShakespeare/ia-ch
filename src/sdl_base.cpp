@@ -15,6 +15,7 @@
 #include "config.hpp"
 #include "game_time.hpp"
 #include "init.hpp"
+#include "version.hpp"
 
 
 static bool s_is_inited = false;
@@ -117,6 +118,34 @@ void sleep(const Uint32 duration)
                         SDL_PumpEvents();
                 }
         }
+}
+
+std::string user_dir()
+{
+        std::string version_str;
+
+        if (version_info::g_version_str.empty())
+        {
+                version_str = version_info::read_git_sha1_str_from_file();
+        }
+        else
+        {
+                version_str = version_info::g_version_str;
+        }
+
+        const auto path_ptr =
+                // NOTE: This is somewhat of a hack, see the function arguments
+                SDL_GetPrefPath(
+                        "infra_arcana",         // "Organization"
+                        version_str.c_str());   // "Application"
+
+        const std::string path_str = path_ptr;
+
+        SDL_free(path_ptr);
+
+        TRACE << "User data directory: " << path_str << std::endl;
+
+        return path_str;
 }
 
 } // sdl_base
