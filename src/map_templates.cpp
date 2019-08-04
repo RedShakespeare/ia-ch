@@ -94,7 +94,7 @@ static Array2<char> load_level_template(const LevelTemplId id)
 {
         const std::string filename = level_id_to_filename.at(id);
 
-        std::ifstream ifs(paths::g_data_dir + "/map/levels/" + filename);
+        std::ifstream ifs(paths::data_dir() + "map/levels/" + filename);
 
         ASSERT(!ifs.fail());
         ASSERT(ifs.is_open());
@@ -200,7 +200,7 @@ static void load_room_templates()
 
         s_room_templ_status.clear();
 
-        std::ifstream ifs(paths::g_data_dir + "/map/rooms.txt");
+        std::ifstream ifs(paths::data_dir() + "map/rooms.txt");
 
         ASSERT(!ifs.fail());
         ASSERT(ifs.is_open());

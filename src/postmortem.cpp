@@ -64,8 +64,7 @@ void PostmortemMenu::on_start()
                 ".txt";
 
         const std::string game_summary_file_path =
-                paths::g_user_dir +
-                "/" +
+                paths::user_dir() +
                 game_summary_filename;
 
         // Highscore entry
@@ -360,7 +359,7 @@ void PostmortemMenu::on_start()
 
                 std::string current_line;
 
-                std::ifstream file(paths::g_data_dir + "/ascii_graveyard");
+                std::ifstream file(paths::data_dir() + "ascii_graveyard");
 
                 if (file.is_open())
                 {

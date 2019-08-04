@@ -33,7 +33,7 @@ std::string read_git_sha1_str_from_file()
 {
         const std::string default_sha1 = "unknown_revision";
 
-        const std::string sha1_file_path = paths::g_data_dir + "/git-sha1.txt";
+        const std::string sha1_file_path = paths::data_dir() + "git-sha1.txt";
 
         std::ifstream file(sha1_file_path);
 

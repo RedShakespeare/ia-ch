@@ -473,7 +473,7 @@ static void player_sets_option(const MenuBrowser& browser)
 static void read_file(std::vector<std::string>& lines)
 {
         std::ifstream file;
-        file.open(paths::g_config_file_path);
+        file.open(paths::config_file_path());
 
         if (file.is_open())
         {
@@ -579,7 +579,7 @@ static void set_variables_from_lines(std::vector<std::string>& lines)
 static void write_lines_to_file(const std::vector<std::string>& lines)
 {
         std::ofstream file;
-        file.open(paths::g_config_file_path, std::ios::trunc);
+        file.open(paths::config_file_path(), std::ios::trunc);
 
         for (size_t i = 0; i < lines.size(); ++i)
         {

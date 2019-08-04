@@ -56,7 +56,7 @@ static void write_file(std::vector<HighscoreEntry>& entries)
 {
         std::ofstream file;
 
-        file.open(paths::g_highscores_file_path, std::ios::trunc);
+        file.open(paths::highscores_file_path(), std::ios::trunc);
 
         for (const auto entry : entries)
         {
@@ -87,7 +87,7 @@ static std::vector<HighscoreEntry> read_highscores_file()
 
         std::ifstream file;
 
-        file.open(paths::g_highscores_file_path);
+        file.open(paths::highscores_file_path());
 
         if (!file.is_open())
         {

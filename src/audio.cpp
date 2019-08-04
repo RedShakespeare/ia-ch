@@ -52,7 +52,7 @@ static void load(const SfxId sfx, const std::string& filename)
         // Read events, so that we don't freeze the game while we loading sounds
         SDL_PumpEvents();
 
-        const std::string file_rel_path = paths::g_audio_dir +  "/" + filename;
+        const std::string file_rel_path = paths::audio_dir() + filename;
 
         s_audio_chunks[(size_t)sfx] = Mix_LoadWAV(file_rel_path.c_str());
 
@@ -239,8 +239,8 @@ void init()
         s_mus_chunks.resize((size_t)MusId::END);
 
         const std::string music_path =
-                paths::g_audio_dir +
-                "/musica_cthulhiana_fragment_madness.ogg";
+                paths::audio_dir() +
+                "musica_cthulhiana_fragment_madness.ogg";
 
         s_mus_chunks[(size_t)MusId::cthulhiana_madness] =
                 Mix_LoadMUS(music_path.c_str());

@@ -6,28 +6,96 @@
 
 #include "paths.hpp"
 
+#include "SDL.h"
+
+#include "debug.hpp"
+#include "version.hpp"
+
+
 namespace paths
 {
 
-const std::string g_gfx_dir = "gfx";
+std::string gfx_dir()
+{
+        return "gfx/";
+}
 
-const std::string g_fonts_dir = g_gfx_dir + "/fonts";
-const std::string g_tiles_dir = g_gfx_dir + "/tiles/24x24";
-const std::string g_images_dir = g_gfx_dir + "/images";
+std::string fonts_dir()
+{
+        return gfx_dir() + "/fonts/";
+}
 
-const std::string g_logo_img_path = g_images_dir + "/main_menu_logo.png";
-const std::string g_skull_img_path = g_images_dir + "/skull.png";
+std::string tiles_dir()
+{
+        return gfx_dir() + "/tiles/24x24/";
+}
 
-const std::string g_audio_dir = "audio";
+std::string images_dir()
+{
+        return gfx_dir() + "/images/";
+}
 
-const std::string g_data_dir = "data";
+std::string logo_img_path()
+{
+        return images_dir() + "/main_menu_logo.png";
+}
 
-const std::string g_user_dir = "user";
+std::string skull_img_path()
+{
+        return images_dir() + "/skull.png";
+}
 
-const std::string g_save_file_path = g_user_dir + "/save";
+std::string audio_dir()
+{
+        return "audio/";
+}
 
-const std::string g_config_file_path = g_user_dir + "/config";
+std::string data_dir()
+{
+        return "data/";
+}
 
-const std::string g_highscores_file_path = g_user_dir + "/highscores";
+std::string user_dir()
+{
+        std::string version_str;
+
+        if (version_info::g_version_str.empty())
+        {
+                version_str = version_info::read_git_sha1_str_from_file();
+        }
+        else
+        {
+                version_str = version_info::g_version_str;
+        }
+
+        const auto path_ptr =
+                // NOTE: This is somewhat of a hack, see the function arguments
+                SDL_GetPrefPath(
+                        "infra_arcana",         // "Organization"
+                        version_str.c_str());   // "Application"
+
+        const std::string path_str = path_ptr;
+
+        SDL_free(path_ptr);
+
+        TRACE << "User data directory: " << path_str << std::endl;
+
+        return path_str;
+}
+
+std::string save_file_path()
+{
+        return user_dir() + "save";
+}
+
+std::string config_file_path()
+{
+        return user_dir() + "config";
+}
+
+std::string highscores_file_path()
+{
+        return user_dir() + "highscores";
+}
 
 } // paths

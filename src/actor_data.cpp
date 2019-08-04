@@ -552,7 +552,7 @@ static void read_actor_definitions_xml()
 {
         xml::Doc doc;
 
-        xml::load_file(paths::g_data_dir + "/monsters.xml", doc);
+        xml::load_file(paths::data_dir() + "monsters.xml", doc);
 
         auto top_e = xml::first_child(doc);
 

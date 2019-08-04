@@ -424,7 +424,7 @@ static void load_images()
         TRACE_FUNC_BEGIN;
 
         // Main menu logo
-        SDL_Surface* tmp_srf = IMG_Load(paths::g_logo_img_path.c_str());
+        SDL_Surface* tmp_srf = IMG_Load(paths::logo_img_path().c_str());
 
         ASSERT(tmp_srf && "Failed to load main menu logo image");
 
@@ -434,7 +434,7 @@ static void load_images()
         SDL_FreeSurface(tmp_srf);
 
         // Skull
-        tmp_srf = IMG_Load(paths::g_skull_img_path.c_str());
+        tmp_srf = IMG_Load(paths::skull_img_path().c_str());
 
         ASSERT(tmp_srf && "Failed to load skull image");
 
@@ -450,8 +450,7 @@ static void load_font()
         TRACE_FUNC_BEGIN;
 
         const std::string font_path =
-                paths::g_fonts_dir +
-                "/" +
+                paths::fonts_dir() +
                 config::font_name();
 
         SDL_Surface* const font_srf_tmp = IMG_Load(font_path.c_str());
@@ -547,8 +546,7 @@ static void load_tiles()
                 const std::string img_name = g_tile_id_to_str_map.at(id);
 
                 const std::string img_path =
-                        paths::g_tiles_dir +
-                        "/" +
+                        paths::tiles_dir() +
                         img_name +
                         ".png";
 

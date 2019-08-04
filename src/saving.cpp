@@ -117,7 +117,7 @@ static void write_file()
         std::ofstream file;
 
         // Current file content is discarded
-        file.open(paths::g_save_file_path, std::ios::trunc);
+        file.open(paths::save_file_path(), std::ios::trunc);
 
         if (file.is_open())
         {
@@ -137,7 +137,7 @@ static void write_file()
 
 static void read_file()
 {
-        std::ifstream file(paths::g_save_file_path);
+        std::ifstream file(paths::save_file_path());
 
         if (file.is_open())
         {
@@ -219,7 +219,7 @@ void erase_save()
 
 bool is_save_available()
 {
-        std::ifstream file(paths::g_save_file_path);
+        std::ifstream file(paths::save_file_path());
 
         if (file.good())
         {
