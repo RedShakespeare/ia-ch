@@ -120,7 +120,7 @@ void sleep(const Uint32 duration)
         }
 }
 
-std::string user_dir()
+std::string sdl_pref_dir()
 {
         std::string version_str;
 
