@@ -418,6 +418,12 @@ Original title:      Steam Hiss.wav
 License:             Attribution 3.0 Unported (CC-BY-3.0)
 Changes made:        Cut most of the sound and applied early fade-out
 
+File:                sfx_gong.ogg
+Source:              https://freesound.org/people/GowlerMusic/sounds/266566/
+Author:              GowlerMusic (username on freesound.org)
+Original title:      Gong Hit
+License:             Attribution 3.0 Unported (CC-BY-3.0)
+
 File:                sfx_flapping_wings.ogg
 Source:              ???
 Author:              ???

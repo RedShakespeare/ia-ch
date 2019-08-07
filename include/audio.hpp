@@ -62,6 +62,7 @@ enum class SfxId
     lever_pull,
     monolith,
     thunder,
+    gong,
 
     // User interface sounds
     backpack,

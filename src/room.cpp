@@ -283,7 +283,7 @@ void init_room_bucket()
         {
                 add_to_room_bucket(RoomType::human, rnd::range(4, 5));
                 add_to_room_bucket(RoomType::jail, 1);
-                add_to_room_bucket(RoomType::ritual, rnd::coin_toss() ? 1 : 0);
+                add_to_room_bucket(RoomType::ritual, 2);
                 add_to_room_bucket(RoomType::crypt, rnd::range(2, 3));
                 add_to_room_bucket(RoomType::monster, 1);
                 add_to_room_bucket(RoomType::damp, rnd::range(1, 2));
@@ -298,7 +298,7 @@ void init_room_bucket()
         {
                 add_to_room_bucket(RoomType::human, rnd::range(2, 3));
                 add_to_room_bucket(RoomType::jail, rnd::range(1, 2));
-                add_to_room_bucket(RoomType::ritual, rnd::coin_toss() ? 1 : 0);
+                add_to_room_bucket(RoomType::ritual, 2);
                 add_to_room_bucket(RoomType::spider, rnd::range(1, 3));
                 add_to_room_bucket(RoomType::snake_pit, 1);
                 add_to_room_bucket(RoomType::crypt, 4);
@@ -856,6 +856,7 @@ std::vector<RoomAutoTerrainRule> RitualRoom::auto_terrains_allowed() const
         return
         {
                 {terrain::Id::altar, 1},
+                {terrain::Id::gong, rnd::one_in(2) ? 1 : 0},
                 {terrain::Id::alchemist_bench, rnd::one_in(4) ? 1 : 0},
                 {terrain::Id::brazier, rnd::range(2, 4)},
                 {terrain::Id::chains, rnd::one_in(7) ? rnd::range(1, 2) : 0}
@@ -866,7 +867,7 @@ bool RitualRoom::is_allowed() const
 {
         return
                 m_r.min_dim() >= 4 &&
-                m_r.max_dim() <= 8;
+                m_r.max_dim() <= 9;
 }
 
 void RitualRoom::on_pre_connect_hook(Array2<bool>& door_proposals)

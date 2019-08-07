@@ -385,11 +385,7 @@ void MapBuilderIntroForest::handle_template_pos(const P&p, const char c)
 
         case '-':
         {
-                auto* const altar = new terrain::Altar(p);
-
-                altar->disable_pact();
-
-                map::put(altar);
+                map::put(new terrain::Altar(p));
         }
         break;
 

@@ -44,6 +44,7 @@ enum class Id
         tomb,
         church_bench,
         altar,
+        gong,
         carpet,
         rubble_high,
         rubble_low,

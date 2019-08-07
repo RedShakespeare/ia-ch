@@ -260,8 +260,7 @@ void offer_pact_to_player()
         }
 
         std::string msg =
-                "Do you not desire to ease this mortal coil? "
-                "Hear my offer: ";
+                "I have been summoned. Now hear my offer: ";
 
         msg += benefit->offer_msg();
 

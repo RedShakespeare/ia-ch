@@ -548,6 +548,24 @@ static void init_data_list()
         d.auto_spawn_placement = terrain::TerrainPlacement::either;
         add_to_list_and_reset(d);
 
+        d.id = terrain::Id::gong;
+        d.make_obj = [](const P & p) {
+                return new terrain::Gong(p);
+        };
+        d.character = '_';
+        d.tile = TileId::gong;
+        d.is_los_passable = true;
+        d.is_projectile_passable = true;
+        d.can_have_blood = false;
+        d.can_have_gore = false;
+        d.can_have_corpse = false;
+        d.can_have_terrain = false;
+        d.can_have_item = false;
+        d.shock_when_adjacent = 5;
+        d.matl_type = Matl::metal;
+        d.auto_spawn_placement = terrain::TerrainPlacement::either;
+        add_to_list_and_reset(d);
+
         d.id = terrain::Id::tomb;
         d.make_obj = [](const P & p) {
                 return new terrain::Tomb(p);
