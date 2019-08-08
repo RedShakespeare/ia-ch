@@ -418,10 +418,7 @@ void Viewing::on_moved()
             map::g_player->can_see_actor(*actor))
         {
                 // TODO: This should not be specified here
-                const auto view_key =
-                        (config::input_mode() == InputMode::vi_keys)
-                        ? 'v'
-                        : 'l';
+                const auto view_key = 'v';
 
                 // In debug mode, confirm that this is actually the correct key,
                 // however see TODO above

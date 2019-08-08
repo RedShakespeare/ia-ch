@@ -49,7 +49,8 @@ User interface
 * The font size is no longer locked to the tile size (for example a smaller font can be used)
 * The window can be resized
 * Added option for input mode - default keys (numpad/arrows) or vi-mode (h j k l y u b n)
-* For the default keys, several gameplay commands have been moved to different keys, which are hopefully more intuitive (e.g. "k"ick, "u"nload), and all gameplay commands are lowercase keys (except "Q", to help avoid accidental quitting)
+* Improved the game key bindings (see the manual)
+* Dropping items is now done from a separate inventory screen, accessed by pressing "d" (which is a more conventional method than the old way of pressing shift+enter)
 * Removed PgUp/PgDn/Home/End as alternative keys for diagonal movement
 * ">" and "<" can also be used in inventory screens to jump between pages (in addition to page up/page down)
 * All menus can now be scrolled with vi keys ("j"/"k"), and the currently marked menu entry can be selected with "l" (these three keys never occur as letter indexes in menus)
@@ -59,7 +60,6 @@ User interface
 * The "throw item" command ("t") always opens a menu to select throwing item, where the last thrown item is shown at the top with the "t" key assigned - in the throwing menu, this key is never assigned to any other item than the "last thrown item" (so you can for example safely spam throwing knives by repeatedly pressing the "t" key, without worrying about suddenly throwing another item)
 * Removed the (ugly) hit chance tables from the monster description pages - only player melee hit chance is shown now, which is part of the description text instead
 * The generated part of monster descriptions is printed in a separate paragraph, to make it easier to distinguish from the static handwritten part
-* Dropping items is now done from a separate inventory screen, accessed by pressing "d" (which is a more conventional method than the old way of pressing shift+enter)
 * Reworked the tile for Deep Ones
 * The player is asked for confirmation before stepping into fire or traps, or before moving into deep liquid while holding a lit explosive (which will extinguish it)
 * The player is asked for confirmation when picking traits on gaining new character levels (but not when creating a new character)

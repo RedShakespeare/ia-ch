@@ -209,12 +209,14 @@ static GameCmd to_cmd_default(const InputData& input)
                 return GameCmd::reload;
 
         case 'k':
+        case 'w':
                 return GameCmd::kick;
 
         case 'c':
                 return GameCmd::close;
 
         case 'u':
+        case 'G':
                 return GameCmd::unload;
 
         case 'f':
@@ -238,7 +240,7 @@ static GameCmd to_cmd_default(const InputData& input)
         case 't':
                 return GameCmd::throw_item;
 
-        case 'l':
+        case 'v':
                 return GameCmd::look;
 
         case SDLK_TAB:
@@ -254,9 +256,11 @@ static GameCmd to_cmd_default(const InputData& input)
                 return GameCmd::minimap;
 
         case 'h':
+        case 'M':
                 return GameCmd::msg_history;
 
         case 'n':
+        case 'o':
                 return GameCmd::make_noise;
 
         case 'p':
@@ -356,21 +360,6 @@ static GameCmd to_cmd_vi(const InputData& input)
 
         case 'Y':
                 return GameCmd::auto_move_up_left;
-
-        case 'M':
-                return GameCmd::msg_history;
-
-        case 'w':
-                return GameCmd::kick;
-
-        case 'v':
-                return GameCmd::look;
-
-        case 'G':
-                return GameCmd::unload;
-
-        case 'o':
-                return GameCmd::make_noise;
 
         default:
                 break;
@@ -838,7 +827,9 @@ void handle(const GameCmd cmd)
         {
                 if (map::g_player->m_properties.allow_see())
                 {
-                        states::push(std::make_unique<Viewing>(map::g_player->m_pos));
+                        states::push(
+                                std::make_unique<Viewing>(
+                                        map::g_player->m_pos));
                 }
                 else // Cannot see
                 {

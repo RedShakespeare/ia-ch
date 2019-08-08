@@ -7,17 +7,17 @@ Gameplay commands:
    d         Drop item
    f         Aim/fire weapon
    g         Pick up item
-   h         Message history
+   h (M)     Message history
    i         Inventory (wield, equip, remove, consume, or activate items)
-   k         Kick or strike objects, or destroy corpses
-   l         Look (describe things on the map)
+   k (w)     Kick or strike objects, or destroy corpses
    m         Minimap
-   n         Make noise
+   n (o)     Make noise
    p         Disarm trap
    r         Reload
    s         Wait five turns
    t         Throw item
-   u         Unload firearm on the ground, or pick up item
+   u (G)     Unload firearm on the ground, or pick up item
+   v         View descriptions of things on the map
    x         Cast spell
    z         Swap to readied weapon
    Q         Quit
@@ -42,51 +42,22 @@ Move in eight directions with the numpad keys:
     /|\
    1 2 3
 
-Press '5' to wait for one turn. This is also used for selecting your current position, for example when kicking (to destroy a corpse you are standing over) or when disarming traps.
+Press '5' or '.' (period) to wait for one turn. This is also used for selecting your current position, for example when kicking (to destroy a corpse you are standing over) or when disarming traps.
 
 As an alternative, for keyboards without a numpad (e.g. some laptop keyboards), the arrow keys can be used for moving. To move diagonally, hold shift or ctrl ("auto movement" is not supported in this context):
+
    Shift + left  = up left
    Shift + right = up right
    Ctrl  + left  = down left
    Ctrl  + right = down right
 
-Press '.' (period) to wait for one turn or to select your current position
-
-"Vi-keys" are also supported, and can be enabled in the options menu. If vi-mode is enabled, the following keys are used instead:
-   a         Inventory, only showing items that can be consumed or activated
-   c         Close door, or jam closed door with an iron spike
-   d         Drop item
-   f         Aim/fire weapon
-   g         Pick up item
-   G         Unload firearm on the ground, or pick up item
-   i         Inventory (wield, equip, remove, consume, or activate items)
-   m         Minimap
-   M         Message history
-   o         Make noise
-   p         Disarm trap
-   r         Reload
-   s         Wait five turns
-   t         Throw item
-   v         Look (describe things on the map)
-   w         Kick or strike objects, or destroy corpses
-   x         Cast spell
-   z         Swap to readied weapon
-   Q         Quit
-   @         Character information
-   Shift     Hold while pressing a move key to move until interrupted
-   Tab       Melee attack adjacent monster (same as moving into the monster)
-
-Use the "vi-keys" for movement:
+"Vi-keys" are also supported, and can be enabled in the options menu. If vi-mode is enabled, the following keys are used for movement instead:
 
    y k u
     \|/
    h- -l
     /|\
    b j n
-
-Hold shift while pressing any of the letters above to move until interrupted.
-
-Press '.' (period) to wait for one turn or to select your current position.
 
 The "k" and "j" keys can be used to scroll up and down in menus, and "l" selects the currently marked entry (as an alternative to the enter key).
 
