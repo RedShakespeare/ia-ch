@@ -401,12 +401,20 @@ file(COPY ${INSTALLED_FILES} DESTINATION .)
 # ------------------------------------------------------------------------------
 # Retrieve abbreviated git commit
 # ------------------------------------------------------------------------------
-execute_process(
-        COMMAND git log -1 --format=%h
-        WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
-        OUTPUT_STRIP_TRAILING_WHITESPACE
-        OUTPUT_FILE ${CMAKE_BINARY_DIR}/data/git-sha1.txt
-        )
+find_package(Git)
+
+if(GIT_FOUND)
+        message("Git found: ${GIT_EXECUTABLE}")
+
+        execute_process(
+                COMMAND ${GIT_EXECUTABLE} log -1 --format=%h
+                WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
+                OUTPUT_STRIP_TRAILING_WHITESPACE
+                OUTPUT_FILE ${CMAKE_BINARY_DIR}/data/git-sha1.txt
+                )
+else()
+        message("Could not find Git - will not write revision")
+endif()
 
 # ------------------------------------------------------------------------------
 # Dependencies
