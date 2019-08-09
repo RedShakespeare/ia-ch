@@ -404,14 +404,20 @@ file(COPY ${INSTALLED_FILES} DESTINATION .)
 find_package(Git)
 
 if(GIT_FOUND)
-        message("Git found: ${GIT_EXECUTABLE}")
+        message("Running revision command with Git executable: '${GIT_EXECUTABLE}'")
 
         execute_process(
                 COMMAND ${GIT_EXECUTABLE} log -1 --format=%h
                 WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
                 OUTPUT_STRIP_TRAILING_WHITESPACE
                 OUTPUT_FILE ${CMAKE_BINARY_DIR}/data/git-sha1.txt
+                RESULT_VARIABLE REVISION_COMMAND_RESULT
+                ERROR_VARIABLE REVISION_COMMAND_ERRORS
                 )
+
+        message("Revision command result: '${REVISION_COMMAND_RESULT}'")
+
+        message("Revision command errors: '${REVISION_COMMAND_ERRORS}'")
 else()
         message("Could not find Git - will not write revision")
 endif()
