@@ -403,14 +403,18 @@ file(COPY ${INSTALLED_FILES} DESTINATION .)
 # ------------------------------------------------------------------------------
 find_package(Git)
 
+set(GENERATED_GIT_SHA1_PATH ${CMAKE_BINARY_DIR}/data/git-sha1.txt)
+
 if(GIT_FOUND)
         message("Running revision command with Git executable: '${GIT_EXECUTABLE}'")
+
+        message("Revision output path: ${GENERATED_GIT_SHA1_PATH}")
 
         execute_process(
                 COMMAND ${GIT_EXECUTABLE} log -1 --format=%h
                 WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
                 OUTPUT_STRIP_TRAILING_WHITESPACE
-                OUTPUT_FILE ${CMAKE_BINARY_DIR}/data/git-sha1.txt
+                OUTPUT_FILE ${GENERATED_GIT_SHA1_PATH}
                 RESULT_VARIABLE REVISION_COMMAND_RESULT
                 ERROR_VARIABLE REVISION_COMMAND_ERRORS
                 )
@@ -602,3 +606,6 @@ install(TARGETS ia-debug DESTINATION ia-debug)
 
 install(DIRECTORY installed_files/ DESTINATION ia)
 install(DIRECTORY installed_files/ DESTINATION ia-debug)
+
+install(FILES ${GENERATED_GIT_SHA1_PATH} DESTINATION ia/data OPTIONAL)
+install(FILES ${GENERATED_GIT_SHA1_PATH} DESTINATION ia-debug/data OPTIONAL)
