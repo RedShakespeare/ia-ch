@@ -8,6 +8,6 @@ rm -rf build
 mkdir build
 cd build
 cmake -DWIN32=TRUE -DMSVC=FALSE -DARCH=64bit -DCMAKE_TOOLCHAIN_FILE=../Toolchain-cross-mingw32.txt ..
-VERBOSE=1 cmake --build . --target install -- -j4
+VERBOSE=1 cmake --build . --target install -- -j2
 
 cd $root_dir

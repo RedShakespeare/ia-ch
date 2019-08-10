@@ -408,7 +408,7 @@ set(GENERATED_GIT_SHA1_PATH ${CMAKE_BINARY_DIR}/data/git-sha1.txt)
 if(GIT_FOUND)
         message("Running revision command with Git executable: '${GIT_EXECUTABLE}'")
 
-        message("Revision output path: ${GENERATED_GIT_SHA1_PATH}")
+        message("Revision output path: '${GENERATED_GIT_SHA1_PATH}'")
 
         execute_process(
                 COMMAND ${GIT_EXECUTABLE} log -1 --format=%h
