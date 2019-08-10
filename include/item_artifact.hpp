@@ -76,6 +76,11 @@ class TeleCtrlTalisman: public Item
 public:
         TeleCtrlTalisman(ItemData* const item_data);
 
+        bool is_curse_allowed(item_curse::Id id) const override
+        {
+                return id != item_curse::Id::teleport;
+        }
+
 private:
         void on_pickup_hook() override;
 
