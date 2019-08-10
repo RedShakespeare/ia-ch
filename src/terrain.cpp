@@ -1868,7 +1868,12 @@ Altar::Altar(const P& p) :
 
 void Altar::bump(actor::Actor& actor_bumping)
 {
-        (void)actor_bumping;
+        if (!actor_bumping.is_player())
+        {
+                return;
+        }
+
+        msg_log::add("I feel like my magic is stronger here.");
 }
 
 void Altar::on_hit(

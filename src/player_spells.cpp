@@ -17,7 +17,6 @@
 #include "inventory.hpp"
 #include "io.hpp"
 #include "item_factory.hpp"
-#include "item_scroll.hpp"
 #include "map.hpp"
 #include "msg_log.hpp"
 #include "panel.hpp"
@@ -25,6 +24,7 @@
 #include "property_handler.hpp"
 #include "query.hpp"
 #include "saving.hpp"
+#include "terrain.hpp"
 
 // -----------------------------------------------------------------------------
 // Private
@@ -56,9 +56,9 @@ static void try_cast(Spell* const spell)
 
         msg_log::clear();
 
-        const SpellSkill skill = map::g_player->spell_skill(spell->id());
+        const auto skill = map::g_player->spell_skill(spell->id());
 
-        const Range spi_cost_range = spell->spi_cost(skill, map::g_player);
+        const Range spi_cost_range = spell->spi_cost(skill);
 
         if (spi_cost_range.max >= map::g_player->m_sp)
         {
@@ -244,13 +244,9 @@ void incr_spell_skill(const SpellId id)
 
         TRACE << "skill before: " << (int)skill << std::endl;
 
-        if (skill == SpellSkill::basic)
+        if (skill != SpellSkill::master)
         {
-                skill = SpellSkill::expert;
-        }
-        else if (skill == SpellSkill::expert)
-        {
-                skill = SpellSkill::master;
+                skill = (SpellSkill)((int)skill + 1);
         }
 
         TRACE << "skill after: " << (int)skill << std::endl;
@@ -265,7 +261,14 @@ SpellSkill spell_skill(const SpellId id)
                 return SpellSkill::basic;
         }
 
-        return s_spell_skills[(size_t)id];
+        auto skill = s_spell_skills[(size_t)id];
+
+        if ((skill != SpellSkill::master) && is_player_adj_to_altar())
+        {
+                skill = (SpellSkill)((int)skill + 1);
+        }
+
+        return skill;
 }
 
 void set_spell_skill(const SpellId id, const SpellSkill val)
@@ -278,6 +281,21 @@ void set_spell_skill(const SpellId id, const SpellSkill val)
         }
 
         s_spell_skills[(size_t)id] = val;
+}
+
+bool is_player_adj_to_altar()
+{
+        for (const auto d : dir_utils::g_dir_list)
+        {
+                const auto p = map::g_player->m_pos + d;
+
+                if (map::g_cells.at(p).terrain->id() == terrain::Id::altar)
+                {
+                        return true;
+                }
+        }
+
+        return false;
 }
 
 } // player_spells
@@ -385,7 +403,7 @@ void BrowseSpell::draw()
 
                 const auto skill = player_spells::spell_skill(id);
 
-                const Range spi_cost = spell->spi_cost(skill, map::g_player);
+                const Range spi_cost = spell->spi_cost(skill);
 
                 const std::string lower_str = std::to_string(spi_cost.min);
                 const std::string upper_str = std::to_string(spi_cost.max);

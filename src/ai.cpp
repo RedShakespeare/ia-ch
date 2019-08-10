@@ -50,7 +50,7 @@ bool try_cast_random_spell(actor::Mon& mon)
                 }
 
                 const int spell_max_spi =
-                        spell.spell->spi_cost(spell.skill, &mon).max;
+                        spell.spell->spi_cost(spell.skill).max;
 
                 const int max_hp = actor::max_hp(mon);
 

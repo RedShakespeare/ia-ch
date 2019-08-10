@@ -18,6 +18,7 @@ Gameplay
 * The spell "Enfeeble" now only causes Weakening (instead of a bunch of different things)
 * The "Searching" spell lasts multiple turns, but detects in a smaller area (and never across the whole map)
 * Spells cast from manuscripts are always cast at least at "expert" level
+* Casting spells while adjacent to an altar allows casting at one skill level higher (stacks with casting from manuscripts)
 * The Staff of the Pharaohs gives a passive ability to convert mummies, instead of granting a spell to summon mummies
 * The Spirit Dagger now does extra damage based on the attacker's current spirit, and drains spirit from the attacker on succesful attacks (instead of giving spirit to the attacker)
 * Added a new "Strange Device"

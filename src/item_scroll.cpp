@@ -28,13 +28,21 @@
 static std::vector<std::string> s_false_names;
 
 
-static SpellSkill get_player_skill_for_scroll(SpellId spell_id)
+static SpellSkill player_skill_for_scroll(SpellId spell_id)
 {
-        const auto player_spell_skill = map::g_player->spell_skill(spell_id);
+        auto skill = map::g_player->spell_skill(spell_id);
 
-        return (SpellSkill)std::max(
-                player_spell_skill,
-                SpellSkill::expert);
+        // Raise the skill at least to expert level
+        skill = (SpellSkill)std::max(skill, SpellSkill::expert);
+
+        // Raise the skill one level if at an altar
+        if ((skill != SpellSkill::master) &&
+            player_spells::is_player_adj_to_altar())
+        {
+                skill = (SpellSkill)((int)skill + 1);
+        }
+
+        return skill;
 }
 
 // -----------------------------------------------------------------------------
@@ -256,7 +264,7 @@ std::vector<std::string> Scroll::descr_hook() const
 
         if (m_data->is_identified)
         {
-                const auto skill = get_player_skill_for_scroll(spell->id());
+                const auto skill = player_skill_for_scroll(spell->id());
 
                 const auto descr = spell->descr(skill, SpellSrc::manuscript);
 
@@ -411,7 +419,7 @@ ConsumeItem Scroll::activate(actor::Actor* const actor)
 
         const SpellId id = spell->id();
 
-        const auto skill = get_player_skill_for_scroll(id);
+        const auto skill = player_skill_for_scroll(id);
 
         spell->cast(
                 map::g_player,

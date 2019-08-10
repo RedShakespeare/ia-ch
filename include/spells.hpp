@@ -181,9 +181,7 @@ public:
 
         std::string domain_descr() const;
 
-        Range spi_cost(
-                const SpellSkill skill,
-                actor::Actor* const caster = nullptr) const;
+        Range spi_cost(const SpellSkill skill) const;
 
         int shock_value() const;
 

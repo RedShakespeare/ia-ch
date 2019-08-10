@@ -173,43 +173,9 @@ StateId BrowseSpell::id()
 // -----------------------------------------------------------------------------
 // Spell
 // -----------------------------------------------------------------------------
-Range Spell::spi_cost(const SpellSkill skill, actor::Actor* const caster) const
+Range Spell::spi_cost(const SpellSkill skill) const
 {
-        int cost_max = max_spi_cost(skill);
-
-        if (caster == map::g_player)
-        {
-                // Standing next to an altar reduces the cost
-                const int x0 = std::max(
-                        0,
-                        caster->m_pos.x - 1);
-
-                const int y0 = std::max(
-                        0,
-                        caster->m_pos.y - 1);
-
-                const int x1 = std::min(
-                        map::w() - 1,
-                        caster->m_pos.x + 1);
-
-                const int y1 = std::min(
-                        map::h() - 1,
-                        caster->m_pos.y + 1);
-
-                for (int x = x0; x <= x1; ++x)
-                {
-                        for (int y = y0; y <= y1; ++y)
-                        {
-                                if (map::g_cells.at(x, y).terrain->id() ==
-                                    terrain::Id::altar)
-                                {
-                                        cost_max -= 1;
-                                }
-                        }
-                }
-        }
-
-        cost_max = std::max(1, cost_max);
+        const int cost_max = std::max(1, max_spi_cost(skill));
 
         const int cost_min = std::max(1, (cost_max + 1) / 2);
 
@@ -320,7 +286,7 @@ void Spell::cast(
 
         if (spell_src == SpellSrc::learned)
         {
-                const Range cost = spi_cost(skill, caster);
+                const Range cost = spi_cost(skill);
 
                 actor::hit_sp(*caster, cost.roll(), Verbosity::silent);
 
@@ -419,9 +385,32 @@ std::vector<std::string> Spell::descr(
                         break;
                 }
 
-                if (spell_src == SpellSrc::manuscript)
+                const bool is_scroll = spell_src == SpellSrc::manuscript;
+                const bool is_at_altar = player_spells::is_player_adj_to_altar();
+
+                if (is_scroll || is_at_altar)
                 {
-                        skill_str += " (casting from Manuscript)";
+                        skill_str += " (";
+                }
+
+                if (is_scroll)
+                {
+                        skill_str += "casting from manuscript";
+                }
+
+                if (is_at_altar)
+                {
+                        if (is_scroll)
+                        {
+                                skill_str += ", ";
+                        }
+
+                        skill_str += "standing at altar";
+                }
+
+                if (is_scroll || is_at_altar)
+                {
+                        skill_str += ")";
                 }
 
                 lines.push_back("Skill level: " + skill_str);
