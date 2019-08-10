@@ -114,8 +114,6 @@ void Inventory::load()
 
                         slot.item = item;
 
-                        // "Wear" the item to apply properties from wearing and
-                        // set owning actor
                         ASSERT(m_owning_actor);
 
                         item->on_pickup(*m_owning_actor);
@@ -143,7 +141,6 @@ void Inventory::load()
 
                 m_backpack.push_back(item);
 
-                // Pick up the item again to set owning actor
                 ASSERT(m_owning_actor);
 
                 item->on_pickup(*m_owning_actor);

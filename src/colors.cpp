@@ -381,14 +381,14 @@ void init()
 Color name_to_color(const std::string& name)
 {
         auto search = std::find_if(
-                begin(s_str_color_pairs),
-                end(s_str_color_pairs),
+                std::begin(s_str_color_pairs),
+                std::end(s_str_color_pairs),
                 [name](const auto& str_color)
                 {
                         return str_color.first == name;
                 });
 
-        if (search == end(s_str_color_pairs))
+        if (search == std::end(s_str_color_pairs))
         {
                 TRACE << "No color definition stored for color with name: "
                       << name << std::endl;

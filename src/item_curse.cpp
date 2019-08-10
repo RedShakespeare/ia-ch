@@ -337,6 +337,11 @@ void Curse::on_item_picked_up(const item::Item& item)
                 return;
         }
 
+        if (saving::is_loading())
+        {
+                return;
+        }
+
         if (m_turn_countdown == 0)
         {
                 m_curse_impl->on_start(item);
