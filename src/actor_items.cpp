@@ -280,14 +280,38 @@ static void make_random_item_to_backpack(
         actor::Actor& actor,
         std::vector<item::Id>& item_id_bucket)
 {
-        if (!item_id_bucket.empty())
+        if (item_id_bucket.empty())
         {
-                const item::Id item_id = rnd::element(item_id_bucket);
-
-                auto* item = item::make(item_id);
-
-                actor.m_inv.put_in_backpack(item);
+                return;
         }
+
+        std::vector<int> weights;
+        weights.reserve(item_id_bucket.size());
+
+        for (const auto id : item_id_bucket)
+        {
+                // NOTE: Reusing the "chance to include in spawn list" data for
+                // the weight when doing a weighted random choice here.
+
+                // TODO: Consider if items should always be spawned with a
+                // weighted choice, instead of randomly discarding items from
+                // the list (actor spawning already uses weights instead)
+
+                const int weight =
+                        item::g_data[(size_t)id].chance_to_incl_in_spawn_list;
+
+                ASSERT(weight != 0);
+
+                weights.push_back(weight);
+        }
+
+        const int idx = rnd::weighted_choice(weights);
+
+        const item::Id item_id = item_id_bucket[idx];
+
+        auto* item = item::make(item_id);
+
+        actor.m_inv.put_in_backpack(item);
 }
 
 static void make_item_set_minor_treasure(actor::Actor& actor)

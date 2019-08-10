@@ -183,12 +183,15 @@ void init()
         const size_t nr_scrolls = scroll_data.size();
         const size_t nr_high_chance = nr_scrolls / 2;
 
+        const int low_chance = 15;
+        const int high_chance = 35;
+
         for (size_t i = 0; i < nr_scrolls; ++i)
         {
                 scroll_data[i]->chance_to_incl_in_spawn_list =
                         (i < nr_high_chance)
-                        ? 35
-                        : 15;
+                        ? high_chance
+                        : low_chance;
         }
 
         TRACE_FUNC_END;
