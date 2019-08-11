@@ -68,7 +68,7 @@ void PostmortemMenu::on_start()
                 game_summary_filename;
 
         // Highscore entry
-        const auto highscore_entry =
+        auto highscore_entry =
                 highscore::make_entry_from_current_game_data(
                         game_summary_file_path,
                         m_is_win);
@@ -102,24 +102,24 @@ void PostmortemMenu::on_start()
                 }
         }
 
-        const std::string name = highscore_entry.name();
+        const std::string name = highscore_entry.name;
 
         std::string bg_title;
 
-        if (highscore_entry.bg() == Bg::occultist)
+        if (highscore_entry.bg == Bg::occultist)
         {
-                const auto domain = highscore_entry.occultist_domain();
+                const auto domain = highscore_entry.player_occultist_domain;
 
                 bg_title = player_bon::occultist_profession_title(domain);
         }
         else
         {
-                bg_title = player_bon::bg_title(highscore_entry.bg());
+                bg_title = player_bon::bg_title(highscore_entry.bg);
         }
 
         s_info_lines.push_back({name + " (" + bg_title + ")", color_heading});
 
-        const int dlvl = highscore_entry.dlvl();
+        const int dlvl = highscore_entry.dlvl;
 
         if (dlvl == 0)
         {
@@ -140,7 +140,7 @@ void PostmortemMenu::on_start()
 
         }
 
-        const int turn_count = highscore_entry.turn_count();
+        const int turn_count = highscore_entry.turn_count;
 
         s_info_lines.push_back(
                 ColoredString(
@@ -150,7 +150,7 @@ void PostmortemMenu::on_start()
                         " turns",
                         color_info));
 
-        const int ins = highscore_entry.ins();
+        const int ins = highscore_entry.ins;
 
         s_info_lines.push_back(
                 ColoredString(
@@ -165,7 +165,7 @@ void PostmortemMenu::on_start()
                         " monsters",
                         color_info));
 
-        const int xp = highscore_entry.xp();
+        const int xp = highscore_entry.xp;
 
         s_info_lines.push_back(
                 ColoredString(
@@ -175,7 +175,7 @@ void PostmortemMenu::on_start()
                         " experience points",
                         color_info));
 
-        const int score = highscore_entry.score();
+        const int score = highscore_entry.calculate_score();
 
         s_info_lines.push_back(
                 ColoredString(

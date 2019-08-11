@@ -48,34 +48,35 @@ static void sort_entries(std::vector<HighscoreEntry>& entries)
                 std::end(entries),
                 [](const HighscoreEntry & e1, const HighscoreEntry & e2)
                 {
-                        return e1.score() > e2.score();
+                        return e1.calculate_score() > e2.calculate_score();
                 });
 }
 
 static void write_file(std::vector<HighscoreEntry>& entries)
 {
-        std::ofstream file;
+        std::ofstream f;
 
-        file.open(paths::highscores_file_path(), std::ios::trunc);
+        f.open(paths::highscores_file_path(), std::ios::trunc);
 
         for (const auto entry : entries)
         {
                 const std::string win_str =
-                        (entry.is_win() == IsWin::yes) ?
+                        (entry.is_win == IsWin::yes) ?
                         "1" :
                         "0";
 
-                file << entry.game_summary_file_path() << std::endl;
-                file << win_str << std::endl;
-                file << entry.date() << std::endl;
-                file << entry.name() << std::endl;
-                file << entry.xp() << std::endl;
-                file << entry.lvl() << std::endl;
-                file << entry.dlvl() << std::endl;
-                file << entry.turn_count() << std::endl;
-                file << entry.ins() << std::endl;
-                file << (int)entry.bg() << std::endl;
-                file << (int)entry.occultist_domain() << std::endl;
+                f << entry.game_summary_file_path << std::endl;
+                f << win_str << std::endl;
+                f << entry.date << std::endl;
+                f << entry.name << std::endl;
+                f << entry.xp << std::endl;
+                f << entry.lvl << std::endl;
+                f << entry.dlvl << std::endl;
+                f << entry.turn_count << std::endl;
+                f << entry.ins << std::endl;
+                f << (int)entry.bg << std::endl;
+                f << (int)entry.player_occultist_domain << std::endl;
+                f << entry.is_latest_entry << std::endl;
         }
 }
 
@@ -98,55 +99,48 @@ static std::vector<HighscoreEntry> read_highscores_file()
 
         while (getline(file, line))
         {
-                const std::string game_summary_file = line;
+                HighscoreEntry e;
+
+                e.game_summary_file_path = line;
 
                 getline(file, line);
 
-                IsWin is_win =
+                e.is_win =
                         (line[0] == '1')
                         ? IsWin::yes
                         : IsWin::no;
 
                 getline(file, line);
-                const std::string date_and_time = line;
+                e.date = line;
 
                 getline(file, line);
-                const std::string name = line;
+                e.name = line;
 
                 getline(file, line);
-                const int xp = to_int(line);
+                e.xp = to_int(line);
 
                 getline(file, line);
-                const int lvl = to_int(line);
+                e.lvl = to_int(line);
 
                 getline(file, line);
-                const int dlvl = to_int(line);
+                e.dlvl = to_int(line);
 
                 getline(file, line);
-                const int turn_count = to_int(line);
+                e.turn_count = to_int(line);
 
                 getline(file, line);
-                const int ins = to_int(line);
+                e.ins = to_int(line);
 
                 getline(file, line);
-                const auto bg = (Bg)to_int(line);
+                e.bg = (Bg)to_int(line);
 
                 getline(file, line);
-                const auto occultist_domain = (OccultistDomain)to_int(line);
+                e.player_occultist_domain = (OccultistDomain)to_int(line);
 
-                entries.push_back(
-                        HighscoreEntry(
-                                game_summary_file,
-                                date_and_time,
-                                name,
-                                xp,
-                                lvl,
-                                dlvl,
-                                turn_count,
-                                ins,
-                                is_win,
-                                bg,
-                                occultist_domain));
+                getline(file, line);
+                e.is_latest_entry = to_int(line);
+
+                entries.push_back(e);
         }
 
         file.close();
@@ -159,42 +153,14 @@ static std::vector<HighscoreEntry> read_highscores_file()
 // -----------------------------------------------------------------------------
 // Highscore entry
 // -----------------------------------------------------------------------------
-HighscoreEntry::HighscoreEntry(
-        std::string game_summary_file_path,
-        std::string date,
-        std::string player_name,
-        int player_xp,
-        int player_lvl,
-        int player_dlvl,
-        int turn_count,
-        int player_insanity,
-        IsWin is_win,
-        Bg player_bg,
-        OccultistDomain player_occultist_domain) :
-
-        m_game_summary_file_path(game_summary_file_path),
-        m_date(date),
-        m_name(player_name),
-        m_xp(player_xp),
-        m_lvl(player_lvl),
-        m_dlvl(player_dlvl),
-        m_turn_count(turn_count),
-        m_ins(player_insanity),
-        m_is_win(is_win),
-        m_bg(player_bg),
-        m_player_occultist_domain(player_occultist_domain)
+int HighscoreEntry::calculate_score() const
 {
-
-}
-
-int HighscoreEntry::score() const
-{
-        const double xp_db = (double)m_xp;
-        const double dlvl_db = (double)m_dlvl;
+        const double xp_db = (double)xp;
+        const double dlvl_db = (double)dlvl;
         const double dlvl_last_db = (double)g_dlvl_last;
-        const double turns_db = (double)m_turn_count;
-        const double ins_db = (double)m_ins;
-        const bool win = (m_is_win == IsWin::yes);
+        const double turns_db = (double)turn_count;
+        const double ins_db = (double)ins;
+        const bool win = (is_win == IsWin::yes);
 
         auto calc_turns_factor = [](const double nr_turns_db) {
                 return std::max(1.0, 3.0 - (nr_turns_db / 10000.0));
@@ -245,29 +211,35 @@ HighscoreEntry make_entry_from_current_game_data(
         const std::string game_summary_file_path,
         const IsWin is_win)
 {
-        const auto date = current_time().time_str(TimeType::day, true);
+        HighscoreEntry e;
 
-        HighscoreEntry entry(
-                game_summary_file_path,
-                date,
-                map::g_player->name_a(),
-                game::xp_accumulated(),
-                game::clvl(),
-                map::g_dlvl,
-                game_time::turn_nr(),
-                map::g_player->ins(),
-                is_win,
-                player_bon::bg(),
-                player_bon::occultist_domain());
+        e.game_summary_file_path = game_summary_file_path;
+        e.date = current_time().time_str(TimeType::day, true);
+        e.name = map::g_player->name_a();
+        e.xp = game::xp_accumulated();
+        e.lvl = game::clvl();
+        e.dlvl =map::g_dlvl;
+        e.turn_count = game_time::turn_nr();
+        e.ins = map::g_player->ins();
+        e.is_win = is_win;
+        e.bg = player_bon::bg();
+        e.player_occultist_domain = player_bon::occultist_domain();
 
-        return entry;
+        return e;
 }
 
-void append_entry_to_highscores_file(const HighscoreEntry& entry)
+void append_entry_to_highscores_file(HighscoreEntry& entry)
 {
         TRACE_FUNC_BEGIN;
 
         std::vector<HighscoreEntry> entries = entries_sorted();
+
+        std::for_each(
+                std::begin(entries),
+                std::end(entries),
+                [](auto& e) {e.is_latest_entry = false;});
+
+        entry.is_latest_entry = true;
 
         entries.push_back(entry);
 
@@ -344,8 +316,7 @@ void BrowseHighscore::draw()
         const int x_win = x_ins + 6;
         const int x_score = x_win + 5;
 
-        const std::vector< std::pair<std::string, int> > labels
-        {
+        const std::vector< std::pair<std::string, int> > labels {
                 {"Level", x_lvl},
                 {"Depth", x_dlvl},
                 {"Turns", x_turns},
@@ -373,39 +344,52 @@ void BrowseHighscore::draw()
         {
                 const auto& entry = m_entries[i];
 
-                const std::string date = entry.date();
-                const std::string name = entry.name();
+                const std::string date = entry.date;
+                const std::string name = entry.name;
 
                 std::string bg_title;
 
-                if (entry.bg() == Bg::occultist)
+                if (entry.bg == Bg::occultist)
                 {
                         bg_title = player_bon::occultist_profession_title(
-                                entry.occultist_domain());
+                                entry.player_occultist_domain);
                 }
                 else
                 {
-                        bg_title = player_bon::bg_title(entry.bg());
+                        bg_title = player_bon::bg_title(entry.bg);
                 }
 
-                const std::string lvl = std::to_string(entry.lvl());
-                const std::string dlvl = std::to_string(entry.dlvl());
-                const std::string turns = std::to_string(entry.turn_count());
-                const std::string ins = std::to_string(entry.ins());
+                const std::string lvl = std::to_string(entry.lvl);
+                const std::string dlvl = std::to_string(entry.dlvl);
+                const std::string turns = std::to_string(entry.turn_count);
+                const std::string ins = std::to_string(entry.ins);
 
                 const std::string win =
-                        (entry.is_win() == IsWin::yes)
+                        (entry.is_win == IsWin::yes)
                         ? "Yes"
                         : "No";
 
-                const std::string score = std::to_string(entry.score());
+                const std::string score =
+                        std::to_string(entry.calculate_score());
 
                 const bool is_idx_marked = browser_y == i;
 
-                const Color& color =
-                        is_idx_marked
-                        ? colors::menu_highlight()
-                        : colors::menu_dark();
+                Color color;
+
+                if (entry.is_latest_entry)
+                {
+                        color =
+                                is_idx_marked
+                                ? colors::light_green()
+                                : colors::green();
+                }
+                else
+                {
+                        color =
+                                is_idx_marked
+                                ? colors::menu_highlight()
+                                : colors::menu_dark();
+                }
 
                 io::draw_text(date, panel, P(x_date, y), color);
                 io::draw_text(name, panel, P(x_name, y), color);
@@ -468,7 +452,7 @@ void BrowseHighscore::update()
                 const auto& entry_marked = m_entries[browser_y];
 
                 const std::string file_path =
-                        entry_marked.game_summary_file_path();
+                        entry_marked.game_summary_file_path;
 
                 states::push(
                         std::make_unique<BrowseHighscoreEntry>(file_path));

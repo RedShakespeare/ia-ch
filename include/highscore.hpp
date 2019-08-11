@@ -16,93 +16,22 @@
 #include "global.hpp"
 #include "browser.hpp"
 
-class HighscoreEntry
+struct HighscoreEntry
 {
-public:
-        HighscoreEntry(
-                std::string game_summary_file_path,
-                std::string entry_date,
-                std::string player_name,
-                int player_xp,
-                int player_lvl,
-                int player_dlvl,
-                int turn_count,
-                int player_insanity,
-                IsWin is_win,
-                Bg player_bg,
-                OccultistDomain player_occultist_domain);
+        int calculate_score() const;
 
-        ~HighscoreEntry() {}
-
-        int score() const;
-
-        std::string game_summary_file_path() const
-        {
-                return m_game_summary_file_path;
-        }
-
-        std::string date() const
-        {
-                return m_date;
-        }
-
-        std::string name() const
-        {
-                return m_name;
-        }
-
-        int xp() const
-        {
-                return m_xp;
-        }
-
-        int lvl() const
-        {
-                return m_lvl;
-        }
-
-        int dlvl() const
-        {
-                return m_dlvl;
-        }
-
-        int turn_count() const
-        {
-                return m_turn_count;
-        }
-
-        int ins() const
-        {
-                return m_ins;
-        }
-
-        IsWin is_win() const
-        {
-                return m_is_win;
-        }
-
-        Bg bg() const
-        {
-                return m_bg;
-        }
-
-        OccultistDomain occultist_domain() const
-        {
-                return m_player_occultist_domain;
-        }
-
-private:
-        std::string m_game_summary_file_path;
-        std::string m_date;
-        std::string m_name;
-        int m_xp;
-        int m_lvl;
-        int m_dlvl;
-        int m_turn_count;
-        int m_ins;
-        IsWin m_is_win;
-        Bg m_bg;
-        OccultistDomain m_player_occultist_domain;
+        std::string game_summary_file_path {};
+        std::string date {};
+        std::string name {};
+        int xp {0};
+        int lvl {0};
+        int dlvl {0};
+        int turn_count {0};
+        int ins {0};
+        IsWin is_win {IsWin::no};
+        Bg bg {Bg::END};
+        OccultistDomain player_occultist_domain {OccultistDomain::END};
+        bool is_latest_entry {false};
 };
 
 namespace highscore
@@ -117,7 +46,7 @@ HighscoreEntry make_entry_from_current_game_data(
         const std::string game_summary_file_path,
         const IsWin is_win);
 
-void append_entry_to_highscores_file(const HighscoreEntry& entry);
+void append_entry_to_highscores_file(HighscoreEntry& entry);
 
 std::vector<HighscoreEntry> entries_sorted();
 

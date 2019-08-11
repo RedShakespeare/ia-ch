@@ -432,7 +432,7 @@ void MapBuilderIntroForest::on_template_built()
                          end(entries),
                          [](const HighscoreEntry & e)
                          {
-                                 return (e.is_win() == IsWin::no);
+                                 return (e.is_win == IsWin::no);
                          });
 
         if (nr_non_win <= 0)
@@ -458,20 +458,20 @@ void MapBuilderIntroForest::on_template_built()
                 HighscoreEntry entry = entries[entry_idx];
 
                 // Skip winning entries
-                while (entry.is_win() == IsWin::yes)
+                while (entry.is_win == IsWin::yes)
                 {
                         ++entry_idx;
 
                         entry = entries[entry_idx];
                 }
 
-                const std::string name = entry.name();
+                const std::string name = entry.name;
 
-                const std::string date_str = entry.date();
+                const std::string date_str = entry.date;
 
-                const std::string score_str = std::to_string(entry.score());
+                const std::string score_str = std::to_string(entry.calculate_score());
 
-                const std::string class_str = player_bon::bg_title(entry.bg());
+                const std::string class_str = player_bon::bg_title(entry.bg);
 
                 grave->set_inscription(
                         "RIP " +
