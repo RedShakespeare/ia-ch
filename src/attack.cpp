@@ -1374,6 +1374,12 @@ void melee(
         actor::Actor& defender,
         item::Wpn& wpn)
 {
+        if (attacker && (attacker != map::g_player))
+        {
+                // Attacker is a monster, bump monster player awareness
+                static_cast<actor::Mon*>(attacker)->become_aware_player(false);
+        }
+
         map::update_vision();
 
         const MeleeAttData att_data(attacker, defender, wpn);
@@ -1493,21 +1499,17 @@ void melee(
         {
                 if (defender.is_player())
                 {
+                        // A monster attacked the player
                         auto* const mon =
                                 static_cast<actor::Mon*>(att_data.attacker);
 
                         mon->set_player_aware_of_me();
                 }
-                else // Defender is monster
+                else
                 {
+                        // A monster was attacked (by player or another monster)
                         static_cast<actor::Mon&>(defender)
                                 .become_aware_player(false);
-                }
-
-                if (attacker != map::g_player)
-                {
-                        static_cast<actor::Mon*>(attacker)
-                                ->become_aware_player(false);
                 }
 
                 // Attacking ends cloaking

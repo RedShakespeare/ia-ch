@@ -27,8 +27,7 @@ static bool try_use_talisman_of_resurrection(actor::Actor& actor)
 {
         // Player has the Talisman of Resurrection, and died of physical damage?
         if (!actor.is_player() ||
-            !actor.m_inv.has_item_in_backpack(
-                    item::Id::resurrect_talisman) ||
+            !actor.m_inv.has_item_in_backpack(item::Id::resurrect_talisman) ||
             (map::g_player->ins() >= 100) ||
             (actor.m_sp <= 0))
         {
@@ -49,6 +48,17 @@ static bool try_use_talisman_of_resurrection(actor::Actor& actor)
                 "frozen in a world of shadows. Suddenly I awake!";
 
         popup::msg(msg, "Dead");
+
+        for (auto* const a : game_time::g_actors)
+        {
+                if (!a->is_player())
+                {
+                        auto* const mon = static_cast<actor::Mon*>(a);
+
+                        mon->m_aware_of_player_counter = 0;
+                        mon->m_wary_of_player_counter = 0;
+                }
+        }
 
         actor.restore_hp(
                 999,
