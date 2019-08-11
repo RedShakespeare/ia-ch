@@ -22,6 +22,59 @@
 // -----------------------------------------------------------------------------
 Array2<Color> minimap_(0, 0);
 
+
+static Color map_cell_color(const Cell& map_cell, const bool is_blocked)
+{
+        const auto* const terrain = map_cell.terrain;
+
+        const auto terrain_id = terrain->id();
+
+        if (map_cell.item)
+        {
+                return colors::light_magenta();
+        }
+
+        if (terrain_id == terrain::Id::stairs)
+        {
+                return colors::yellow();
+        }
+
+        if (terrain_id == terrain::Id::door)
+        {
+                const auto* const door =
+                        static_cast<const terrain::Door*>(terrain);
+
+                if (!door->is_hidden())
+                {
+                        if (door->type() == DoorType::metal)
+                        {
+                                return colors::light_teal();
+                        }
+                        else
+                        {
+                                return colors::light_white();
+                        }
+                }
+        }
+
+        if (terrain_id == terrain::Id::lever)
+        {
+                return colors::teal();
+        }
+
+        if (terrain_id == terrain::Id::liquid_deep)
+        {
+                return colors::blue();
+        }
+
+        if (is_blocked)
+        {
+                return colors::sepia();
+        }
+
+        return colors::dark_gray_brown();
+}
+
 static int get_px_w_per_cell()
 {
         // TODO: Make this dynamic, i.e. depend on number of map cells and/or
@@ -177,7 +230,9 @@ void update()
         map_parsers::BlocksWalking(ParseActors::no)
                 .run(blocked, blocked.rect());
 
-        for (size_t i = 0; i < map::nr_cells(); ++i)
+        const auto nr_cells = map::nr_cells();
+
+        for (size_t i = 0; i < nr_cells; ++i)
         {
                 const auto& map_cell = map::g_cells.at(i);
 
@@ -186,38 +241,7 @@ void update()
                         continue;
                 }
 
-                auto& cell = minimap_.at(i);
-
-                const auto* const terrain = map_cell.terrain;
-
-                const auto terrain_id = terrain->id();
-
-                if (map_cell.item)
-                {
-                        cell = colors::light_magenta();
-                }
-                else if (terrain_id == terrain::Id::stairs)
-                {
-                        cell = colors::yellow();
-                }
-                else if ((terrain_id == terrain::Id::door) &&
-                         !static_cast<const terrain::Door*>(terrain)
-                         ->is_hidden())
-                {
-                        cell = colors::light_white();
-                }
-                else if (terrain_id == terrain::Id::liquid_deep)
-                {
-                        cell = colors::blue();
-                }
-                else if (blocked.at(i))
-                {
-                        cell = colors::sepia();
-                }
-                else
-                {
-                        cell = colors::dark_gray_brown();
-                }
+                minimap_.at(i) = map_cell_color(map_cell, blocked.at(i));
         }
 }
 
