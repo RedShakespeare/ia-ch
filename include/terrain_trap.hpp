@@ -259,7 +259,7 @@ private:
 
         Range nr_turns_range_to_trigger() const override
         {
-                return {2, 3};
+                return {0, 3};
         }
 
         bool m_is_poisoned;
@@ -299,7 +299,7 @@ private:
 
         Range nr_turns_range_to_trigger() const override
         {
-                return {2, 3};
+                return {0, 3};
         }
 
         bool m_is_poisoned;
@@ -336,7 +336,7 @@ protected:
 
         Range nr_turns_range_to_trigger() const override
         {
-                return {1, 4};
+                return {0, 4};
         }
 };
 
@@ -402,7 +402,7 @@ private:
 
         Range nr_turns_range_to_trigger() const override
         {
-                return {1, 3};
+                return {0, 3};
         }
 };
 
@@ -435,7 +435,7 @@ private:
 
         Range nr_turns_range_to_trigger() const override
         {
-                return {1, 3};
+                return {0, 3};
         }
 };
 
@@ -468,7 +468,7 @@ private:
 
         Range nr_turns_range_to_trigger() const override
         {
-                return {1, 3};
+                return {0, 3};
         }
 };
 
