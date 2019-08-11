@@ -28,72 +28,7 @@
 // -----------------------------------------------------------------------------
 // Private
 // -----------------------------------------------------------------------------
-static bool is_player_standing_in_open_place()
-{
-        const P& pos = map::g_player->m_pos;
 
-        const R r(pos - 1, pos + 1);
-
-        Array2<bool> blocked(map::dims());
-
-        map_parsers::BlocksLos()
-                .run(blocked,
-                     r,
-                     MapParseMode::overwrite);
-
-        for (int x = r.p0.x; x <= r.p1.x; ++x)
-        {
-                for (int y = r.p0.y; y <= r.p1.y; ++y)
-                {
-                        if (blocked.at(x, y))
-                        {
-                                return false;
-                        }
-                }
-        }
-
-        return true;
-}
-
-static bool is_player_standing_in_cramped_place()
-{
-        const P& pos = map::g_player->m_pos;
-
-        const R r(pos - 1, pos + 1);
-
-        Array2<bool> blocked(map::dims());
-
-        // NOTE: Checking if adjacent cells blocks projectiles is probably the
-        // best way to determine if this is an open place. If we check for
-        // things that block common movement, stuff like chasms would count as
-        // blocking.
-        map_parsers::BlocksProjectiles()
-                .run(blocked,
-                     r,
-                     MapParseMode::overwrite);
-
-        int block_count = 0;
-
-        const int min_nr_blocked_for_cramped = 6;
-
-        for (int x = r.p0.x; x <= r.p1.x; ++x)
-        {
-                for (int y = r.p0.y; y <= r.p1.y; ++y)
-                {
-                        if (blocked.at(x, y))
-                        {
-                                ++block_count;
-
-                                if (block_count >= min_nr_blocked_for_cramped)
-                                {
-                                        return true;
-                                }
-                        }
-                }
-        }
-
-        return false;
-}
 
 // -----------------------------------------------------------------------------
 // Insanity symptoms
@@ -429,59 +364,6 @@ void InsPhobiaDead::on_permanent_rfear()
         insanity::end_sympt(id());
 }
 
-bool InsPhobiaOpen::is_allowed() const
-{
-        const bool has_phobia = insanity::has_sympt_type(InsSymptType::phobia);
-        const bool is_rfear = map::g_player->m_properties.has(PropId::r_fear);
-
-        return !is_rfear && (!has_phobia || rnd::one_in(20));
-}
-
-void InsPhobiaOpen::on_new_player_turn(
-        const std::vector<actor::Actor*>& seen_foes)
-{
-        (void)seen_foes;
-
-        if (rnd::one_in(10) && is_player_standing_in_open_place())
-        {
-                msg_log::add("I am plagued by my phobia of open places!");
-
-                map::g_player->m_properties.apply(new PropTerrified());
-        }
-}
-
-void InsPhobiaOpen::on_permanent_rfear()
-{
-        insanity::end_sympt(id());
-}
-
-bool InsPhobiaConfined::is_allowed() const
-{
-        const bool has_phobia = insanity::has_sympt_type(InsSymptType::phobia);
-
-        const bool is_rfear = map::g_player->m_properties.has(PropId::r_fear);
-
-        return !is_rfear && (!has_phobia || rnd::one_in(20));
-}
-
-void InsPhobiaConfined::on_new_player_turn(
-        const std::vector<actor::Actor*>& seen_foes)
-{
-        (void)seen_foes;
-
-        if (rnd::one_in(10) && is_player_standing_in_cramped_place())
-        {
-                msg_log::add("I am plagued by my phobia of confined places!");
-
-                map::g_player->m_properties.apply(new PropTerrified());
-        }
-}
-
-void InsPhobiaConfined::on_permanent_rfear()
-{
-        insanity::end_sympt(id());
-}
-
 bool InsPhobiaDeep::is_allowed() const
 {
         const bool has_phobia = insanity::has_sympt_type(InsSymptType::phobia);
@@ -714,12 +596,6 @@ InsSympt* make_sympt(const InsSymptId id)
 
         case InsSymptId::phobia_dead:
                 return new InsPhobiaDead();
-
-        case InsSymptId::phobia_open:
-                return new InsPhobiaOpen();
-
-        case InsSymptId::phobia_confined:
-                return new InsPhobiaConfined();
 
         case InsSymptId::phobia_deep:
                 return new InsPhobiaDeep();
