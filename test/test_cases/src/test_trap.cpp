@@ -37,16 +37,23 @@ TEST_CASE("Spider web")
 
                 map::put(new terrain::Floor(pos_l));
 
-                map::put(
-                        new terrain::Trap(
+                {
+                        auto* const web = new terrain::Trap(
                                 pos_r,
                                 new terrain::Floor(pos_r),
-                                terrain::TrapId::web));
+                                terrain::TrapId::web);
 
-                auto* const actor =
-                        actor::make(actor::Id::zombie, pos_l);
+                        map::put(web);
+
+                        web->reveal(Verbosity::silent);
+                }
+
+                auto* const actor = actor::make(actor::Id::zombie, pos_l);
 
                 auto* const mon = static_cast<actor::Mon*>(actor);
+
+                // Requirement for triggering traps
+                mon->m_is_target_seen = true;
 
                 // Awareness > 0 required for triggering trap
                 mon->m_aware_of_player_counter = 42;
