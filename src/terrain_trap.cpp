@@ -422,7 +422,9 @@ void Trap::bump(actor::Actor& actor_bumping)
 
 void Trap::disarm()
 {
-        if (is_magical() && (player_bon::bg() != Bg::occultist))
+        const bool is_magic_trap = is_magical();
+
+        if (is_magic_trap && (player_bon::bg() != Bg::occultist))
         {
                 msg_log::add("I do not know how to dispel magic traps.");
 
@@ -432,6 +434,13 @@ void Trap::disarm()
         msg_log::add(m_trap_impl->disarm_msg());
 
         destroy();
+
+        if (is_magic_trap)
+        {
+                map::g_player->restore_sp(
+                        rnd::range(1, 6),
+                        true); // Can go above max
+        }
 }
 
 void Trap::destroy()

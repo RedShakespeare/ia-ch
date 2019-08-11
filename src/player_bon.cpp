@@ -389,7 +389,7 @@ std::vector<ColoredString> bg_descr(const Bg id)
                     "using or identifying strange items (e.g. drinking a "
                     "potion or carrying a disturbing artifact)");
                 put("");
-                put("Can dispel magic traps");
+                put("Can dispel magic traps, doing so grants Spirit Points");
                 put("");
                 put("+2 Spirit Points (in addition to \"Stout Spirit\")");
                 put("");
