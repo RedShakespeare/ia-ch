@@ -660,7 +660,8 @@ public:
         PropMagicSearching() :
                 Prop(PropId::magic_searching),
                 m_range(1),
-                m_allow_reveal_items(false) {}
+                m_allow_reveal_items(false),
+                m_allow_reveal_creatures(false) {}
 
         void save() const override;
 
@@ -678,10 +679,16 @@ public:
                 m_allow_reveal_items = true;
         }
 
+        void set_allow_reveal_creatures()
+        {
+                m_allow_reveal_creatures = true;
+        }
+
 private:
         int m_range;
 
         bool m_allow_reveal_items;
+        bool m_allow_reveal_creatures;
 };
 
 class PropEntangled: public Prop

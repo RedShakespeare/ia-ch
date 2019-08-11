@@ -1545,6 +1545,11 @@ void SpellSearching::run_effect(
                 prop->set_allow_reveal_items();
         }
 
+        if (skill == SpellSkill::master)
+        {
+                prop->set_allow_reveal_creatures();
+        }
+
         caster->m_properties.apply(prop);
 }
 
@@ -1554,12 +1559,16 @@ std::vector<std::string> SpellSearching::descr_specific(
         std::vector<std::string> descr;
 
         descr.push_back(
-                "Reveals the presence of creatures, doors, traps, stairs, and "
-                "other locations of interest in the surrounding area.");
+                "Reveals the presence of doors, traps, stairs, and other "
+                "locations of interest in the surrounding area.");
 
-        if (skill >= SpellSkill::expert)
+        if (skill == SpellSkill::expert)
         {
                 descr.push_back("Also reveals items.");
+        }
+        else if (skill == SpellSkill::master)
+        {
+                descr.push_back("Also reveals items and creatures.");
         }
 
         const int range = 4 + (int)skill * 2;

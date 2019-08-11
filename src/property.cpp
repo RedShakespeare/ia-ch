@@ -2270,6 +2270,7 @@ void PropMagicSearching::save() const
         saving::put_int(m_range);
 
         saving::put_bool(m_allow_reveal_items);
+        saving::put_bool(m_allow_reveal_creatures);
 }
 
 void PropMagicSearching::load()
@@ -2277,6 +2278,7 @@ void PropMagicSearching::load()
         m_range = saving::get_int();
 
         m_allow_reveal_items = saving::get_bool();
+        m_allow_reveal_creatures = saving::get_bool();
 }
 
 PropEnded PropMagicSearching::on_tick()
@@ -2340,21 +2342,24 @@ PropEnded PropMagicSearching::on_tick()
                 }
         }
 
-        const int det_mon_multiplier = 20;
-
-        for (auto* actor : game_time::g_actors)
+        if (m_allow_reveal_creatures)
         {
-                const P& p = actor->m_pos;
+                const int det_mon_multiplier = 20;
 
-                if (actor->is_player() ||
-                    !actor->is_alive() ||
-                    (king_dist(map::g_player->m_pos, p) > m_range))
+                for (auto* actor : game_time::g_actors)
                 {
-                        continue;
-                }
+                        const P& p = actor->m_pos;
 
-                static_cast<actor::Mon*>(actor)->set_player_aware_of_me(
-                        det_mon_multiplier);
+                        if (actor->is_player() ||
+                            !actor->is_alive() ||
+                            (king_dist(map::g_player->m_pos, p) > m_range))
+                        {
+                                continue;
+                        }
+
+                        static_cast<actor::Mon*>(actor)->set_player_aware_of_me(
+                                det_mon_multiplier);
+                }
         }
 
         states::draw();
