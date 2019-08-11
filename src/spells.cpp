@@ -1352,9 +1352,14 @@ std::vector<std::string> SpellPestilence::descr_specific(
 
 bool SpellPestilence::allow_mon_cast_now(actor::Mon& mon) const
 {
+        const bool is_deep_liquid =
+                map::g_cells.at(mon.m_pos).terrain->id() ==
+                terrain::Id::liquid_deep;
+
         return
                 mon.m_target &&
-                (mon.m_is_target_seen || rnd::one_in(30));
+                (mon.m_is_target_seen || rnd::one_in(30)) &&
+                !is_deep_liquid;
 }
 
 // -----------------------------------------------------------------------------
@@ -2902,18 +2907,23 @@ std::vector<std::string> SpellSummonMon::descr_specific(
 {
         (void)skill;
 
-        return
-        {
-                "Summons a creature to do the caster's bidding. A more skilled "
-                        "sorcerer summons beings of greater might and rarity."
-                        };
+        return {
+                "Summons a creature to do the caster's bidding. "
+                "A more skilled sorcerer summons beings of greater might and "
+                "rarity."
+        };
 }
 
 bool SpellSummonMon::allow_mon_cast_now(actor::Mon& mon) const
 {
+        const bool is_deep_liquid =
+                map::g_cells.at(mon.m_pos).terrain->id() ==
+                terrain::Id::liquid_deep;
+
         return
                 mon.m_target &&
-                (mon.m_is_target_seen || rnd::one_in(30));
+                (mon.m_is_target_seen || rnd::one_in(30)) &&
+                !is_deep_liquid;
 }
 
 // -----------------------------------------------------------------------------
@@ -2979,7 +2989,14 @@ void SpellSummonTentacles::run_effect(
 
 bool SpellSummonTentacles::allow_mon_cast_now(actor::Mon& mon) const
 {
-        return mon.m_target && mon.m_is_target_seen;
+        const bool is_deep_liquid =
+                map::g_cells.at(mon.m_pos).terrain->id() ==
+                terrain::Id::liquid_deep;
+
+        return
+                mon.m_target &&
+                mon.m_is_target_seen &&
+                !is_deep_liquid;
 }
 
 // -----------------------------------------------------------------------------
