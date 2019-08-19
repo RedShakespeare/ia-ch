@@ -856,7 +856,7 @@ std::vector<RoomAutoTerrainRule> RitualRoom::auto_terrains_allowed() const
         return
         {
                 {terrain::Id::altar, 1},
-                {terrain::Id::gong, rnd::one_in(2) ? 1 : 0},
+                {terrain::Id::gong, rnd::one_in(3) ? 1 : 0},
                 {terrain::Id::alchemist_bench, rnd::one_in(4) ? 1 : 0},
                 {terrain::Id::brazier, rnd::range(2, 4)},
                 {terrain::Id::chains, rnd::one_in(7) ? rnd::range(1, 2) : 0}

@@ -80,21 +80,6 @@ public:
 
         void on_std_turn_common();
 
-        virtual void act() {}
-
-        virtual void on_actor_turn() {}
-        virtual void on_std_turn() {}
-
-        virtual TileId tile() const;
-
-        virtual char character() const;
-
-        virtual Color color() const = 0;
-
-        virtual std::vector<Actor*> seen_actors() const = 0;
-
-        virtual std::vector<Actor*> seen_foes() const = 0;
-
         Id id() const
         {
                 return m_data->id;
@@ -102,7 +87,31 @@ public:
 
         int armor_points() const;
 
-        virtual SpellSkill spell_skill(const SpellId id) const = 0;
+        void add_light(Array2<bool>& light_map) const;
+
+        bool is_alive() const
+        {
+                return m_state == ActorState::alive;
+        }
+
+        bool is_corpse() const
+        {
+                return m_state == ActorState::corpse;
+        }
+
+        bool is_player() const;
+
+        std::string death_msg() const;
+
+        virtual void act() {}
+
+        virtual void on_actor_turn() {}
+
+        virtual void on_std_turn() {}
+
+        virtual TileId tile() const;
+
+        virtual char character() const;
 
         virtual std::string name_the() const
         {
@@ -119,29 +128,10 @@ public:
                 return m_data->descr;
         }
 
-        void add_light(Array2<bool>& light_map) const;
-
         virtual void add_light_hook(Array2<bool>& light) const
         {
                 (void)light;
         }
-
-        bool is_alive() const
-        {
-                return m_state == ActorState::alive;
-        }
-
-        bool is_corpse() const
-        {
-                return m_state == ActorState::corpse;
-        }
-
-        virtual bool is_leader_of(const Actor* const actor) const = 0;
-        virtual bool is_actor_my_leader(const Actor* const actor) const = 0;
-
-        bool is_player() const;
-
-        std::string death_msg() const;
 
         virtual void on_hit(
                 int& dmg,
@@ -156,6 +146,18 @@ public:
         }
 
         virtual void on_death() {}
+
+        virtual Color color() const = 0;
+
+        virtual std::vector<Actor*> seen_actors() const = 0;
+
+        virtual std::vector<Actor*> seen_foes() const = 0;
+
+        virtual SpellSkill spell_skill(const SpellId id) const = 0;
+
+        virtual bool is_leader_of(const Actor* const actor) const = 0;
+
+        virtual bool is_actor_my_leader(const Actor* const actor) const = 0;
 
         P m_pos {};
         ActorState m_state {ActorState::alive};

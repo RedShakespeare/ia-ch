@@ -7,6 +7,9 @@
 #include <string>
 #include <vector>
 
+#include "actor_data.hpp"
+#include "spells.hpp"
+
 
 namespace item
 {
@@ -27,12 +30,13 @@ enum class BenefitId
         gain_xp,
         remove_insanity,
         gain_item,
-        // TODO: Consider this - it could be used to recharge depleted artifacts
-        // which has a limited number of uses (or perhaps this is not a good
-        // pact, and should be something available elsewhere)
-        // recharge_item,
         healed,
         blessed,
+
+        // TODO: Consider these:
+        // recharge_item (add charges back to artifact, repair device, ...)
+        // minor_treasure (3 random minor treasure)
+        // remove_item_curse
 
         END,
         undefined,
@@ -43,12 +47,11 @@ enum class TollId
         hp_reduced,
         sp_reduced,
         xp_reduced,
-        // TODO: Consider this:
-        // unlearn_spell,
-        slowed,
-        blind,
         deaf,
         cursed,
+        unlearn_spell,
+        burning,
+        spawn_monsters,
 
         END
 };
@@ -78,7 +81,7 @@ void on_player_turn();
 class Benefit
 {
 public:
-        Benefit() {}
+        virtual ~Benefit() {}
 
         virtual BenefitId id() const = 0;
 
@@ -94,7 +97,7 @@ class Toll
 public:
         Toll();
 
-        virtual TollId id() const = 0;
+        virtual ~Toll() {}
 
         void on_player_reached_new_dlvl();
 
@@ -105,10 +108,12 @@ public:
                 return true;
         }
 
-        virtual bool is_allowed_to_apply_now() const
+        virtual bool is_allowed_to_apply_now()
         {
                 return true;
         }
+
+        virtual TollId id() const = 0;
 
         virtual std::vector<BenefitId> benefits_not_allowed_with() const = 0;
 
@@ -146,8 +151,6 @@ private:
 class GainHp : public Benefit
 {
 public:
-        GainHp();
-
         BenefitId id() const override
         {
                 return BenefitId::gain_hp;
@@ -163,8 +166,6 @@ public:
 class GainSp : public Benefit
 {
 public:
-        GainSp();
-
         BenefitId id() const override
         {
                 return BenefitId::gain_sp;
@@ -180,8 +181,6 @@ public:
 class GainXp : public Benefit
 {
 public:
-        GainXp();
-
         BenefitId id() const override
         {
                 return BenefitId::gain_xp;
@@ -197,8 +196,6 @@ public:
 class RemoveInsanity : public Benefit
 {
 public:
-        RemoveInsanity();
-
         BenefitId id() const override
         {
                 return BenefitId::remove_insanity;
@@ -236,8 +233,6 @@ private:
 // class RechargeItem : public Benefit
 // {
 // public:
-//         RechargeItem();
-
 //         BenefitId id() const override
 //         {
 //                 return BenefitId::asdf;
@@ -253,8 +248,6 @@ private:
 class Healed : public Benefit
 {
 public:
-        Healed();
-
         BenefitId id() const override
         {
                 return BenefitId::healed;
@@ -270,8 +263,6 @@ public:
 class Blessed : public Benefit
 {
 public:
-        Blessed();
-
         BenefitId id() const override
         {
                 return BenefitId::blessed;
@@ -287,8 +278,6 @@ public:
 class HpReduced : public Toll
 {
 public:
-        HpReduced();
-
         TollId id() const override
         {
                 return TollId::hp_reduced;
@@ -304,8 +293,6 @@ public:
 class SpReduced : public Toll
 {
 public:
-        SpReduced();
-
         TollId id() const override
         {
                 return TollId::sp_reduced;
@@ -321,53 +308,12 @@ public:
 class XpReduced : public Toll
 {
 public:
-        XpReduced();
-
         TollId id() const override
         {
                 return TollId::xp_reduced;
         }
 
-        bool is_allowed_to_apply_now() const override;
-
-        std::vector<BenefitId> benefits_not_allowed_with() const override;
-
-        std::string offer_msg() const override;
-
-        void run_effect() override;
-};
-
-
-class Slowed : public Toll
-{
-public:
-        Slowed();
-
-        TollId id() const override
-        {
-                return TollId::slowed;
-        }
-
-        bool is_allowed_to_offer_now() const override;
-
-        std::vector<BenefitId> benefits_not_allowed_with() const override;
-
-        std::string offer_msg() const override;
-
-        void run_effect() override;
-};
-
-class Blind : public Toll
-{
-public:
-        Blind();
-
-        TollId id() const override
-        {
-                return TollId::blind;
-        }
-
-        bool is_allowed_to_offer_now() const override;
+        bool is_allowed_to_apply_now() override;
 
         std::vector<BenefitId> benefits_not_allowed_with() const override;
 
@@ -379,8 +325,6 @@ public:
 class Deaf : public Toll
 {
 public:
-        Deaf();
-
         TollId id() const override
         {
                 return TollId::deaf;
@@ -398,14 +342,73 @@ public:
 class Cursed : public Toll
 {
 public:
-        Cursed();
-
         TollId id() const override
         {
                 return TollId::cursed;
         }
 
         bool is_allowed_to_offer_now() const override;
+
+        std::vector<BenefitId> benefits_not_allowed_with() const override;
+
+        std::string offer_msg() const override;
+
+        void run_effect() override;
+};
+
+class SpawnMonsters : public Toll
+{
+public:
+        bool is_allowed_to_apply_now() override;
+
+        TollId id() const override
+        {
+                return TollId::spawn_monsters;
+        }
+
+        std::vector<BenefitId> benefits_not_allowed_with() const override;
+
+        std::string offer_msg() const override;
+
+        void run_effect() override;
+
+private:
+        actor::Id m_id_to_spawn {actor::Id::END};
+};
+
+class UnlearnSpell : public Toll
+{
+public:
+        bool is_allowed_to_offer_now() const override;
+
+        bool is_allowed_to_apply_now() override;
+
+        TollId id() const override
+        {
+                return TollId::unlearn_spell;
+        }
+
+        std::vector<BenefitId> benefits_not_allowed_with() const override;
+
+        std::string offer_msg() const override;
+
+        void run_effect() override;
+
+private:
+        std::vector<SpellId> make_spell_bucket() const;
+
+        SpellId m_spell_to_unlearn {SpellId::END};
+};
+
+class Burning : public Toll
+{
+public:
+        bool is_allowed_to_apply_now() override;
+
+        TollId id() const override
+        {
+                return TollId::burning;
+        }
 
         std::vector<BenefitId> benefits_not_allowed_with() const override;
 

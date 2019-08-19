@@ -17,7 +17,6 @@
 #include "actor_player.hpp"
 #include "attack.hpp"
 #include "explosion.hpp"
-#include "terrain_door.hpp"
 #include "game_commands.hpp"
 #include "game_time.hpp"
 #include "inventory.hpp"
@@ -27,6 +26,7 @@
 #include "map_parsing.hpp"
 #include "map_travel.hpp"
 #include "misc.hpp"
+#include "pact.hpp"
 #include "pathfind.hpp"
 #include "property.hpp"
 #include "property_data.hpp"
@@ -35,6 +35,7 @@
 #include "sdl_base.hpp"
 #include "teleport.hpp"
 #include "terrain.hpp"
+#include "terrain_door.hpp"
 
 // -----------------------------------------------------------------------------
 // Private
@@ -416,6 +417,12 @@ void act()
                 explosion::run(map::g_player->m_pos, ExplType::expl);
 
                 return;
+        }
+
+        // Occasionally sign a dark pact
+        if (rnd::one_in(1000))
+        {
+                pact::offer_pact_to_player();
         }
 
         // Handle blocking door

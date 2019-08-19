@@ -86,10 +86,6 @@ public:
 
         virtual ~Prop() {}
 
-        virtual void save() const {}
-
-        virtual void load() {}
-
         PropId id() const
         {
                 return m_id;
@@ -116,11 +112,6 @@ public:
                 m_nr_turns_left = -1;
         }
 
-        virtual bool is_finished() const
-        {
-                return m_nr_turns_left == 0;
-        }
-
         PropDurationMode duration_mode() const
         {
                 return m_duration_mode;
@@ -129,6 +120,15 @@ public:
         PropSrc src() const
         {
                 return m_src;
+        }
+
+        virtual void save() const {}
+
+        virtual void load() {}
+
+        virtual bool is_finished() const
+        {
+                return m_nr_turns_left == 0;
         }
 
         virtual PropAlignment alignment() const

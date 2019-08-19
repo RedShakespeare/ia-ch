@@ -9,6 +9,8 @@
 #include <memory>
 #include <vector>
 
+#include "actor_factory.hpp"
+#include "actor_mon.hpp"
 #include "actor_player.hpp"
 #include "audio.hpp"
 #include "game.hpp"
@@ -16,6 +18,7 @@
 #include "item.hpp"
 #include "item_data.hpp"
 #include "item_factory.hpp"
+#include "item_scroll.hpp"
 #include "map.hpp"
 #include "msg_log.hpp"
 #include "player_spells.hpp"
@@ -26,8 +29,8 @@
 #include "random.hpp"
 #include "saving.hpp"
 #include "spells.hpp"
+#include "terrain.hpp"
 #include "text_format.hpp"
-
 
 // -----------------------------------------------------------------------------
 // Private
@@ -57,14 +60,14 @@ static std::unique_ptr<pact::Benefit> make_benefit(pact::BenefitId id)
         case pact::BenefitId::gain_item:
                 return std::make_unique<pact::GainItem>();
 
-        // case pact::BenefitId::recharge_item:
-        //         return std::make_unique<pact::RechargeItem>();
-
         case pact::BenefitId::healed:
                 return std::make_unique<pact::Healed>();
 
         case pact::BenefitId::blessed:
                 return std::make_unique<pact::Blessed>();
+
+        // case pact::BenefitId::recharge_item:
+        //         return std::make_unique<pact::RechargeItem>();
 
         case pact::BenefitId::undefined:
         case pact::BenefitId::END:
@@ -89,20 +92,20 @@ static std::unique_ptr<pact::Toll> make_toll(pact::TollId id)
         case pact::TollId::xp_reduced:
                 return std::make_unique<pact::XpReduced>();
 
-        // case pact::TollId::unlearn_spell:
-        //         return std::make_unique<pact::UnlearnSpell>();
-
-        case pact::TollId::slowed:
-                return std::make_unique<pact::Slowed>();
-
-        case pact::TollId::blind:
-                return std::make_unique<pact::Blind>();
-
         case pact::TollId::deaf:
                 return std::make_unique<pact::Deaf>();
 
         case pact::TollId::cursed:
                 return std::make_unique<pact::Cursed>();
+
+        case pact::TollId::unlearn_spell:
+                return std::make_unique<pact::UnlearnSpell>();
+
+        case pact::TollId::burning:
+                return std::make_unique<pact::Burning>();
+
+        case pact::TollId::spawn_monsters:
+                return std::make_unique<pact::SpawnMonsters>();
 
         case pact::TollId::END:
                 break;
@@ -157,22 +160,22 @@ static std::unique_ptr<pact::Benefit> make_random_benefit_can_be_offered()
         }
 }
 
-static bool is_toll_allowing_benefit(
-        const pact::Toll& toll,
-        const pact::BenefitId benefit_id)
-{
-        const auto benefits_not_allowed_with =
-                toll.benefits_not_allowed_with();
+// static bool is_toll_allowing_benefit(
+//         const pact::Toll& toll,
+//         const pact::BenefitId benefit_id)
+// {
+//         const auto benefits_not_allowed_with =
+//                 toll.benefits_not_allowed_with();
 
-        const bool is_allowing_benefit =
-                std::find(
-                        std::begin(benefits_not_allowed_with),
-                        std::end(benefits_not_allowed_with),
-                        benefit_id)
-                == std::end(benefits_not_allowed_with);
+//         const bool is_allowing_benefit =
+//                 std::find(
+//                         std::begin(benefits_not_allowed_with),
+//                         std::end(benefits_not_allowed_with),
+//                         benefit_id)
+//                 == std::end(benefits_not_allowed_with);
 
-        return is_allowing_benefit;
-}
+//         return is_allowing_benefit;
+// }
 
 static std::vector<std::unique_ptr<pact::Toll>> make_all_tolls_can_be_offered(
         const pact::BenefitId benefit_id_accepted)
@@ -180,31 +183,37 @@ static std::vector<std::unique_ptr<pact::Toll>> make_all_tolls_can_be_offered(
         ASSERT((benefit_id_accepted != pact::BenefitId::undefined));
         ASSERT((benefit_id_accepted != pact::BenefitId::END));
 
+        // std::vector<std::unique_ptr<pact::Toll>> tolls;
+
+        // for (int i = 0; i < (int)pact::TollId::END; ++i)
+        // {
+        //         auto toll = make_toll((pact::TollId)i);
+
+        //         // Robustness for release mode, should not happen
+        //         if (!toll)
+        //         {
+        //                 continue;
+        //         }
+
+        //         if (!is_toll_allowing_benefit(*toll.get(), benefit_id_accepted))
+        //         {
+        //                 continue;
+        //         }
+
+        //         if (!toll->is_allowed_to_offer_now())
+        //         {
+        //                 continue;
+        //         }
+
+        //         tolls.push_back(std::move(toll));
+        // }
+
+        // return tolls;
+
+        (void)benefit_id_accepted;
+        auto toll = make_toll(pact::TollId::burning);
         std::vector<std::unique_ptr<pact::Toll>> tolls;
-
-        for (int i = 0; i < (int)pact::TollId::END; ++i)
-        {
-                auto toll = make_toll((pact::TollId)i);
-
-                // Robustness for release mode, should not happen
-                if (!toll)
-                {
-                        continue;
-                }
-
-                if (!is_toll_allowing_benefit(*toll.get(), benefit_id_accepted))
-                {
-                        continue;
-                }
-
-                if (!toll->is_allowed_to_offer_now())
-                {
-                        continue;
-                }
-
-                tolls.push_back(std::move(toll));
-        }
-
+        tolls.push_back(std::move(toll));
         return tolls;
 }
 
@@ -423,7 +432,7 @@ void on_player_turn()
 // -----------------------------------------------------------------------------
 Toll::Toll() :
         m_dlvl_countdown(rnd::range(1, 3)),
-        m_turn_countdown(rnd::range(100, 300))
+        m_turn_countdown(rnd::range(100, 500))
 {
 }
 
@@ -451,7 +460,7 @@ TollDone Toll::on_player_turn()
         {
                 std::string msg = "The time has come to pay your toll. ";
 
-                msg += offer_msg();
+                msg += text_format::first_to_upper(offer_msg());
 
                 popup::msg(
                         msg,
@@ -535,12 +544,6 @@ std::vector<SpellId> UpgradeSpell::find_spells_can_upgrade() const
 // -----------------------------------------------------------------------------
 // Gain HP
 // -----------------------------------------------------------------------------
-GainHp::GainHp() :
-        Benefit()
-{
-
-}
-
 std::string GainHp::offer_msg() const
 {
         return "I can elevate your HEALTH (+2 maximum hit points).";
@@ -559,12 +562,6 @@ void GainHp::run_effect()
 // -----------------------------------------------------------------------------
 // Gain SP
 // -----------------------------------------------------------------------------
-GainSp::GainSp() :
-        Benefit()
-{
-
-}
-
 std::string GainSp::offer_msg() const
 {
         return "I can elevate your SPIRIT (+2 maximum spirit points).";
@@ -583,12 +580,6 @@ void GainSp::run_effect()
 // -----------------------------------------------------------------------------
 // Gain XP
 // -----------------------------------------------------------------------------
-GainXp::GainXp() :
-        Benefit()
-{
-
-}
-
 std::string GainXp::offer_msg() const
 {
         return "I can advance your EXPERIENCE (+50% experience).";
@@ -610,12 +601,6 @@ void GainXp::run_effect()
 // -----------------------------------------------------------------------------
 // Remove insanity
 // -----------------------------------------------------------------------------
-RemoveInsanity::RemoveInsanity() :
-        Benefit()
-{
-
-}
-
 std::string RemoveInsanity::offer_msg() const
 {
         return "I can give you SANITY (-25% insanity).";
@@ -689,12 +674,6 @@ std::vector<item::Id> GainItem::find_allowed_item_ids() const
 // -----------------------------------------------------------------------------
 // Recharge item
 // -----------------------------------------------------------------------------
-// RechargeItem::RechargeItem() :
-//         Benefit()
-// {
-
-// }
-
 // std::string RechargeItem::offer_msg() const
 // {
 //         return "";
@@ -713,12 +692,6 @@ std::vector<item::Id> GainItem::find_allowed_item_ids() const
 // -----------------------------------------------------------------------------
 // Healed
 // -----------------------------------------------------------------------------
-Healed::Healed() :
-        Benefit()
-{
-
-}
-
 std::string Healed::offer_msg() const
 {
         return
@@ -776,12 +749,6 @@ void Healed::run_effect()
 // -----------------------------------------------------------------------------
 // Blessed
 // -----------------------------------------------------------------------------
-Blessed::Blessed() :
-        Benefit()
-{
-
-}
-
 std::string Blessed::offer_msg() const
 {
         std::string blessed_descr =
@@ -813,11 +780,6 @@ void Blessed::run_effect()
 // -----------------------------------------------------------------------------
 // HP reduced
 // -----------------------------------------------------------------------------
-HpReduced::HpReduced() :
-        Toll()
-{
-}
-
 std::vector<BenefitId> HpReduced::benefits_not_allowed_with() const
 {
         return {BenefitId::gain_hp};
@@ -836,12 +798,6 @@ void HpReduced::run_effect()
 // -----------------------------------------------------------------------------
 // SP reduced
 // -----------------------------------------------------------------------------
-SpReduced::SpReduced() :
-        Toll()
-{
-
-}
-
 std::vector<BenefitId> SpReduced::benefits_not_allowed_with() const
 {
         return {BenefitId::gain_sp};
@@ -860,13 +816,7 @@ void SpReduced::run_effect()
 // -----------------------------------------------------------------------------
 // XP reduced
 // -----------------------------------------------------------------------------
-XpReduced::XpReduced() :
-        Toll()
-{
-
-}
-
-bool XpReduced::is_allowed_to_apply_now() const
+bool XpReduced::is_allowed_to_apply_now()
 {
         return game::xp_pct() >= 50;
 }
@@ -887,123 +837,8 @@ void XpReduced::run_effect()
 }
 
 // -----------------------------------------------------------------------------
-// Unlearn spell
-// -----------------------------------------------------------------------------
-// UnlearnSpell::UnlearnSpell() :
-//         Toll()
-// {
-
-// }
-
-// std::vector<BenefitId> UnlearnSpell::benefits_not_allowed_with() const
-// {
-//         return {BenefitId::upgrade_spell};
-// }
-
-// bool UnlearnSpell::is_allowed_to_offer_now() const
-// {
-//         // TODO: Only allow it if at least one spell is learned
-//         return true;
-// }
-
-// std::string UnlearnSpell::offer_msg() const
-// {
-//         return
-//                 "I shall take your MAGIC (unlearn one spell, can be relearned "
-//                 "at the same spell level).";
-// }
-
-// void UnlearnSpell::run_effect()
-// {
-
-// }
-
-// -----------------------------------------------------------------------------
-// Slowed
-// -----------------------------------------------------------------------------
-Slowed::Slowed() :
-        Toll()
-{
-
-}
-
-bool Slowed::is_allowed_to_offer_now() const
-{
-        const auto prop = map::g_player->m_properties.prop(PropId::slowed);
-
-        return !prop || (prop->duration_mode() != PropDurationMode::indefinite);
-}
-
-std::vector<BenefitId> Slowed::benefits_not_allowed_with() const
-{
-        return {};
-}
-
-std::string Slowed::offer_msg() const
-{
-        return
-                "I shall take your TIME (permanently slowed, all actions are "
-                "performed at half speed, lasts until reverted by hasting).";
-}
-
-void Slowed::run_effect()
-{
-        auto* const slowed = property_factory::make(PropId::slowed);
-
-        slowed->set_indefinite();
-
-        map::g_player->m_properties.apply(slowed);
-
-        if (map::g_player->m_properties.has(PropId::r_slow))
-        {
-                msg_log::add("Whispering voice: \"How remarkable!\"");
-        }
-}
-
-// -----------------------------------------------------------------------------
-// Blind
-// -----------------------------------------------------------------------------
-Blind::Blind() :
-        Toll()
-{
-
-}
-
-bool Blind::is_allowed_to_offer_now() const
-{
-        const auto prop = map::g_player->m_properties.prop(PropId::blind);
-
-        return !prop || (prop->duration_mode() != PropDurationMode::indefinite);
-}
-
-std::vector<BenefitId> Blind::benefits_not_allowed_with() const
-{
-        return {};
-}
-
-std::string Blind::offer_msg() const
-{
-        return "I shall take your SIGHT (permanently blinded, until healed).";
-}
-
-void Blind::run_effect()
-{
-        auto* const blind = property_factory::make(PropId::blind);
-
-        blind->set_indefinite();
-
-        map::g_player->m_properties.apply(blind);
-}
-
-// -----------------------------------------------------------------------------
 // Deaf
 // -----------------------------------------------------------------------------
-Deaf::Deaf() :
-        Toll()
-{
-
-}
-
 bool Deaf::is_allowed_to_offer_now() const
 {
         const auto prop = map::g_player->m_properties.prop(PropId::deaf);
@@ -1033,12 +868,6 @@ void Deaf::run_effect()
 // -----------------------------------------------------------------------------
 // Cursed
 // -----------------------------------------------------------------------------
-Cursed::Cursed() :
-        Toll()
-{
-
-}
-
 bool Cursed::is_allowed_to_offer_now() const
 {
         const auto prop = map::g_player->m_properties.prop(PropId::cursed);
@@ -1072,6 +901,211 @@ void Cursed::run_effect()
         cursed->set_indefinite();
 
         map::g_player->m_properties.apply(cursed);
+}
+
+// -----------------------------------------------------------------------------
+// Spawn monsters
+// -----------------------------------------------------------------------------
+bool SpawnMonsters::is_allowed_to_apply_now()
+{
+        if (map::g_cells.at(map::g_player->m_pos).terrain->id() ==
+            terrain::Id::liquid_deep)
+        {
+                return false;
+        }
+
+        std::vector<actor::Id> summon_bucket;
+
+        for (int i = 0; i < (int)actor::Id::END; ++i)
+        {
+                const actor::ActorData& data = actor::g_data[i];
+
+                if (data.can_be_summoned_by_mon)
+                {
+                        if (data.spawn_min_dlvl <= (map::g_dlvl + 3))
+                        {
+                                summon_bucket.push_back(actor::Id(i));
+                        }
+                }
+        }
+
+        if (summon_bucket.empty())
+        {
+                return false;
+        }
+        else
+        {
+                m_id_to_spawn = rnd::element(summon_bucket);
+
+                return true;
+        }
+}
+
+std::vector<BenefitId> SpawnMonsters::benefits_not_allowed_with() const
+{
+        return {};
+}
+
+std::string SpawnMonsters::offer_msg() const
+{
+        return "my minions will seek you out.";
+}
+
+void SpawnMonsters::run_effect()
+{
+        if (m_id_to_spawn == actor::Id::END)
+        {
+                ASSERT(false);
+
+                return;
+        }
+
+        const size_t nr_mon = rnd::range(3, 4);
+
+        const auto mon_summoned =
+                actor::spawn(
+                        map::g_player->m_pos,
+                        {nr_mon, m_id_to_spawn},
+                        map::rect())
+                .make_aware_of_player();
+
+        std::for_each(
+                std::begin(mon_summoned.monsters),
+                std::end(mon_summoned.monsters),
+                [](auto* const mon)
+                {
+                        auto prop_waiting = new PropWaiting();
+
+                        prop_waiting->set_duration(2);
+
+                        mon->m_properties.apply(prop_waiting);
+                });
+}
+
+// -----------------------------------------------------------------------------
+// Unlearn spell
+// -----------------------------------------------------------------------------
+std::vector<BenefitId> UnlearnSpell::benefits_not_allowed_with() const
+{
+        // Mostly because the messages are too similar (sounds weird)
+        return {BenefitId::upgrade_spell};
+}
+
+bool UnlearnSpell::is_allowed_to_offer_now() const
+{
+        return !make_spell_bucket().empty();
+}
+
+bool UnlearnSpell::is_allowed_to_apply_now()
+{
+        const auto spell_bucket = make_spell_bucket();
+
+        if (spell_bucket.empty())
+        {
+                return false;
+        }
+        else
+        {
+                m_spell_to_unlearn = rnd::element(spell_bucket);
+
+                return true;
+        }
+}
+
+std::string UnlearnSpell::offer_msg() const
+{
+        return
+                "I shall take your MAGIC (unlearn one spell, but spell skill "
+                "level is kept).";
+}
+
+void UnlearnSpell::run_effect()
+{
+        player_spells::unlearn_spell(m_spell_to_unlearn, Verbosity::verbose);
+}
+
+std::vector<SpellId> UnlearnSpell::make_spell_bucket() const
+{
+        std::vector<SpellId> result;
+
+        // Find all spells which have scrolls with low spawn chances
+        std::vector<SpellId> low_spawn_spells;
+
+        for (size_t i = 0; i < (size_t)item::Id::END; ++i)
+        {
+                const auto& d = item::g_data[i];
+
+                const bool is_scroll = d.type == ItemType::scroll;
+
+                const bool is_low_chance =
+                        d.chance_to_incl_in_spawn_list ==
+                        scroll::g_low_spawn_chance;
+
+                if (is_scroll && is_low_chance)
+                {
+                        if (d.spell_cast_from_scroll == SpellId::END)
+                        {
+                                ASSERT(false);
+
+                                continue;
+                        }
+
+                        low_spawn_spells.push_back(d.spell_cast_from_scroll);
+                }
+        }
+
+        ASSERT(!low_spawn_spells.empty());
+
+        // Get all learned spells from the low spawn chance spells
+        for (const auto id : low_spawn_spells)
+        {
+                if (player_spells::is_spell_learned(id))
+                {
+                        result.push_back(id);
+                }
+        }
+
+        return result;
+}
+
+// -----------------------------------------------------------------------------
+// Burning
+// -----------------------------------------------------------------------------
+bool Burning::is_allowed_to_apply_now()
+{
+        // NOTE: We can *not* do checks here for carried items such as potion of
+        // fire resistance - this would mean that the player could just hold on
+        // to this item forever, to never trigger the toll - the best we can do
+        // is to check if fire resistance is active and that the player is not
+        // standing in water (obviously dumb situations to trigger it in)
+
+        const auto terrain_id =
+                map::g_cells.at(map::g_player->m_pos)
+                .terrain->id();
+
+        return
+                !map::g_player->m_properties.has(PropId::r_fire) &&
+                (terrain_id != terrain::Id::liquid_shallow) &&
+                (terrain_id != terrain::Id::liquid_deep);
+}
+
+std::vector<BenefitId> Burning::benefits_not_allowed_with() const
+{
+        return {};
+}
+
+std::string Burning::offer_msg() const
+{
+        return "you shall be consumed by fire.";
+}
+
+void Burning::run_effect()
+{
+        auto* const burning = new PropBurning();
+
+        burning->set_duration(burning->nr_turns_left() * 2);
+
+        map::g_player->m_properties.apply(burning);
 }
 
 } // pact

@@ -105,8 +105,6 @@ public:
 
         virtual ~Terrain() {}
 
-        virtual Id id() const = 0;
-
         const TerrainData& data() const
         {
                 return ::terrain::data(id());
@@ -117,7 +115,33 @@ public:
                 return m_pos;
         }
 
-        virtual std::string name(const Article article) const = 0;
+        bool is_hidden() const
+        {
+                return m_is_hidden;
+        }
+
+        void try_put_gore();
+
+        void make_bloody()
+        {
+                m_is_bloody = true;
+        }
+
+        TileId gore_tile() const
+        {
+                return m_gore_tile;
+        }
+
+        char gore_character() const
+        {
+                return m_gore_character;
+        }
+
+        void clear_gore();
+
+        void corrupt_color();
+
+        int shock_when_adj() const;
 
         virtual Color color() const;
 
@@ -193,32 +217,6 @@ public:
                 return data().matl_type;
         }
 
-        bool is_hidden() const
-        {
-                return m_is_hidden;
-        }
-
-        void try_put_gore();
-
-        void make_bloody()
-        {
-                m_is_bloody = true;
-        }
-
-        TileId gore_tile() const
-        {
-                return m_gore_tile;
-        }
-
-        char gore_character() const
-        {
-                return m_gore_character;
-        }
-
-        void clear_gore();
-
-        void corrupt_color();
-
         virtual void on_placed()
         {
 
@@ -267,9 +265,11 @@ public:
                 (void)lever;
         }
 
-        int shock_when_adj() const;
-
         virtual void add_light(Array2<bool>& light) const;
+
+        virtual Id id() const = 0;
+
+        virtual std::string name(const Article article) const = 0;
 
         ItemContainer m_item_container {};
 
