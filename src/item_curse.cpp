@@ -236,6 +236,9 @@ void Curse::on_new_turn(const item::Item& item)
                         map::g_player->incr_shock(
                                 ShockLvl::frightening,
                                 ShockSrc::use_strange_item);
+
+                        m_warning_dlvl_countdown = -1;
+                        m_warning_turn_countdown = -1;
                 }
 
                 if (m_turn_countdown > 0)
