@@ -19,8 +19,8 @@ enum class Id
         teleport,
         summon,
         fire,
-        // cannot_sneak,
         cannot_read,
+        light_sensitive,
 
         END
 };

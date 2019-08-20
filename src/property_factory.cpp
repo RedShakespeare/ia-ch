@@ -266,6 +266,9 @@ Prop* make(const PropId id)
         case PropId::cannot_read_curse:
                 return new PropCannotReadCurse();
 
+        case PropId::light_sensitive_curse:
+                return new PropLgtSensCurse();
+
         case PropId::END:
                 break;
         }

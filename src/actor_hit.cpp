@@ -88,11 +88,20 @@ ActorDied hit(
                 return ActorDied::no;
         }
 
-        // Damage type is "light", and actor is not light sensitive?
-        if (dmg_type == DmgType::light &&
-            !actor.m_properties.has(PropId::light_sensitive))
+        if (dmg_type == DmgType::light)
         {
-                return ActorDied::no;
+                if (!actor.m_properties.has(PropId::light_sensitive) &&
+                    !actor.m_properties.has(PropId::light_sensitive_curse))
+                {
+                        return ActorDied::no;
+                }
+                else if (actor.is_player())
+                {
+                        // Subtle difference ;-)
+                        msg_log::add(
+                                "I am wracked by light!",
+                                colors::msg_bad());
+                }
         }
 
         if (actor.is_player())

@@ -54,11 +54,11 @@ static std::unique_ptr<item_curse::CurseImpl> make_impl(const item_curse::Id id)
         case item_curse::Id::fire:
                 return std::make_unique<item_curse::Fire>();
 
-        // case item_curse::Id::cannot_sneak:
-        //         return std::make_unique<item_curse::CannotSneak>();
-
         case item_curse::Id::cannot_read:
                 return std::make_unique<item_curse::CannotRead>();
+
+        case item_curse::Id::light_sensitive:
+                return std::make_unique<item_curse::LightSensitive>();
 
         case item_curse::Id::END:
                 break;
@@ -131,11 +131,6 @@ Curse try_make_random_free_curse(const item::Item& item)
 // -----------------------------------------------------------------------------
 // Curse
 // -----------------------------------------------------------------------------
-Curse::Curse()
-{
-
-}
-
 Curse::Curse(Curse&& other) :
         m_dlvl_countdown(other.m_dlvl_countdown),
         m_turn_countdown(other.m_turn_countdown),
@@ -428,12 +423,6 @@ std::string Curse::descr() const
 // -----------------------------------------------------------------------------
 // Hit chance penalty
 // -----------------------------------------------------------------------------
-HitChancePenalty::HitChancePenalty() :
-        CurseImpl()
-{
-
-}
-
 void HitChancePenalty::on_start(const item::Item& item)
 {
         (void)item;
@@ -462,12 +451,6 @@ std::string HitChancePenalty::descr() const
 // -----------------------------------------------------------------------------
 // Increased shock
 // -----------------------------------------------------------------------------
-IncreasedShock::IncreasedShock() :
-        CurseImpl()
-{
-
-}
-
 void IncreasedShock::on_start(const item::Item& item)
 {
         (void)item;
@@ -494,12 +477,6 @@ std::string IncreasedShock::descr() const
 // -----------------------------------------------------------------------------
 // Heavy
 // -----------------------------------------------------------------------------
-Heavy::Heavy() :
-        CurseImpl()
-{
-
-}
-
 int Heavy::affect_weight(const int weight)
 {
         return weight + (int)item::Weight::medium;
@@ -673,12 +650,6 @@ std::string Shriek::descr() const
 // -----------------------------------------------------------------------------
 // Teleport
 // -----------------------------------------------------------------------------
-Teleport::Teleport() :
-        CurseImpl()
-{
-
-}
-
 void Teleport::on_start(const item::Item& item)
 {
         teleport(item);
@@ -719,12 +690,6 @@ std::string Teleport::descr() const
 // -----------------------------------------------------------------------------
 // Summon
 // -----------------------------------------------------------------------------
-Summon::Summon() :
-        CurseImpl()
-{
-
-}
-
 void Summon::on_new_turn_active(const item::Item& item)
 {
         (void)item;
@@ -769,12 +734,6 @@ std::string Summon::descr() const
 // -----------------------------------------------------------------------------
 // Fire
 // -----------------------------------------------------------------------------
-Fire::Fire() :
-        CurseImpl()
-{
-
-}
-
 void Fire::on_start(const item::Item& item)
 {
         run_fire(item);
@@ -834,28 +793,8 @@ std::string Fire::descr() const
 }
 
 // -----------------------------------------------------------------------------
-// Cannot sneak
-// -----------------------------------------------------------------------------
-// CannotSneak::CannotSneak() :
-//         CurseImpl()
-// {
-
-// }
-
-// std::string CannotSneak::descr() const
-// {
-//
-// }
-
-// -----------------------------------------------------------------------------
 // Cannot read
 // -----------------------------------------------------------------------------
-CannotRead::CannotRead() :
-        CurseImpl()
-{
-
-}
-
 void CannotRead::on_start(const item::Item& item)
 {
         (void)item;
@@ -877,6 +816,32 @@ void CannotRead::on_stop()
 std::string CannotRead::descr() const
 {
         return "it prevents the owner from comprehending written language.";
+}
+
+// -----------------------------------------------------------------------------
+// Light sensitive
+// -----------------------------------------------------------------------------
+void LightSensitive::on_start(const item::Item& item)
+{
+        (void)item;
+
+        auto* const prop = property_factory::make(
+                PropId::light_sensitive_curse);
+
+        prop->set_indefinite();
+
+        map::g_player->m_properties.apply(prop);
+}
+
+void LightSensitive::on_stop()
+{
+        map::g_player->m_properties.end_prop(
+                PropId::light_sensitive_curse);
+}
+
+std::string LightSensitive::descr() const
+{
+        return "the owner is harmed by light.";
 }
 
 } // item_curse

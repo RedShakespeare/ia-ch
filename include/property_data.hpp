@@ -107,6 +107,7 @@ enum class PropId
         hit_chance_penalty_curse,
         increased_shock_curse,
         cannot_read_curse,
+        light_sensitive_curse, // This is just a copy of light_sensitive
 
         END
 };

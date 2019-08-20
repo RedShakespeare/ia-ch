@@ -1283,6 +1283,13 @@ public:
                 Prop(PropId::light_sensitive) {}
 };
 
+class PropLgtSensCurse: public Prop
+{
+public:
+        PropLgtSensCurse() :
+                Prop(PropId::light_sensitive_curse) {}
+};
+
 class PropTeleControl: public Prop
 {
 public:

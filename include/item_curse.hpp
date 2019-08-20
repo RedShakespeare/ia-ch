@@ -29,7 +29,7 @@ class CurseImpl;
 class Curse
 {
 public:
-        Curse();
+        Curse() {}
 
         Curse(Curse&& other);
 
@@ -96,8 +96,6 @@ Curse try_make_random_free_curse(const item::Item& item);
 class CurseImpl
 {
 public:
-        CurseImpl() {}
-
         virtual ~CurseImpl() {}
 
         virtual Id id() const = 0;
@@ -139,8 +137,6 @@ public:
 class HitChancePenalty : public CurseImpl
 {
 public:
-        HitChancePenalty();
-
         Id id() const override
         {
                 return Id::hit_chance_penalty;
@@ -156,8 +152,6 @@ public:
 class IncreasedShock : public CurseImpl
 {
 public:
-        IncreasedShock();
-
         Id id() const override
         {
                 return Id::increased_shock;
@@ -173,8 +167,6 @@ public:
 class Heavy : public CurseImpl
 {
 public:
-        Heavy();
-
         Id id() const override
         {
                 return Id::heavy;
@@ -212,8 +204,6 @@ private:
 class Teleport : public CurseImpl
 {
 public:
-        Teleport();
-
         Id id() const override
         {
                 return Id::teleport;
@@ -232,8 +222,6 @@ private:
 class Summon : public CurseImpl
 {
 public:
-        Summon();
-
         Id id() const override
         {
                 return Id::summon;
@@ -252,8 +240,6 @@ private:
 class Fire : public CurseImpl
 {
 public:
-        Fire();
-
         Id id() const override
         {
                 return Id::fire;
@@ -269,27 +255,27 @@ private:
         void run_fire(const item::Item& item) const;
 };
 
-// class CannotSneak : public CurseImpl
-// {
-// public:
-//         CannotSneak();
-
-//         Id id() const override
-//         {
-//                 return Id::cannot_sneak;
-//         }
-
-//         std::string descr() const override;
-// };
-
 class CannotRead : public CurseImpl
 {
 public:
-        CannotRead();
-
         Id id() const override
         {
                 return Id::cannot_read;
+        }
+
+        void on_start(const item::Item& item) override;
+
+        void on_stop() override;
+
+        std::string descr() const override;
+};
+
+class LightSensitive : public CurseImpl
+{
+public:
+        Id id() const override
+        {
+                return Id::light_sensitive;
         }
 
         void on_start(const item::Item& item) override;

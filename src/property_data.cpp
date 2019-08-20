@@ -926,6 +926,24 @@ static void init_data_list()
         d.allow_test_on_bot = true;
         d.alignment = PropAlignment::bad;
         add(d);
+
+        // NOTE: This property reuses messages from 'light_sensitive', so order
+        // is important here
+        d.id = PropId::light_sensitive_curse;
+        d.std_rnd_turns = Range(1, 1);
+        d.name = "";
+        d.name_short = "";
+        d.descr = "";
+        d.msg_start_player =
+                property_data::g_data[(size_t)PropId::light_sensitive]
+                .msg_start_player;
+        d.msg_end_player =
+                property_data::g_data[(size_t)PropId::light_sensitive]
+                .msg_end_player;
+        d.allow_display_turns = false;
+        d.allow_test_on_bot = true;
+        d.alignment = PropAlignment::bad;
+        add(d);
 }
 
 // -----------------------------------------------------------------------------
