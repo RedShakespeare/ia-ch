@@ -6742,7 +6742,7 @@
         </audio>
 
         <attributes>
-            <hit_points>10</hit_points>
+            <hit_points>14</hit_points>
             <spirit>12</spirit>
             <speed>normal</speed>
             <shock_level>unsettling</shock_level>
