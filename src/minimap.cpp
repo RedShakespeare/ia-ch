@@ -147,7 +147,7 @@ static R get_minimap_px_rect_on_screen(const R& map_area_explored)
 void ViewMinimap::draw()
 {
         io::draw_text_center(
-                "Viewing minimap " + common_text::g_screen_exit_hint,
+                "Viewing minimap " + common_text::g_minimap_exit_hint,
                 Panel::screen,
                 P(panels::center_x(Panel::screen), 0),
                 colors::title());
@@ -198,6 +198,7 @@ void ViewMinimap::update()
         {
         case SDLK_SPACE:
         case SDLK_ESCAPE:
+        case 'm':
                 // Exit screen
                 states::pop();
                 break;

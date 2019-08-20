@@ -18,6 +18,9 @@ const std::string g_next_page_down_hint =
 const std::string g_screen_exit_hint =
         "[space, esc] to exit";
 
+const std::string g_minimap_exit_hint =
+        "[space, esc, m] to exit";
+
 const std::string g_scrollable_info_screen_hint =
         "[2/8, down/up] to scroll " +
         g_screen_exit_hint;
