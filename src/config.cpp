@@ -847,7 +847,7 @@ void set_fullscreen(const bool value)
 // -----------------------------------------------------------------------------
 ConfigState::ConfigState() :
         State(),
-        m_browser(20)
+        m_browser(21)
 {
 
 }
