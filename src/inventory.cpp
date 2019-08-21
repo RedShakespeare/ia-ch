@@ -533,11 +533,10 @@ void Inventory::equip_backpack_item(const size_t backpack_idx,
 
         const bool backpack_slot_exists = backpack_idx < m_backpack.size();
 
-        ASSERT(backpack_slot_exists);
-
-        // Robustness for release mode
         if (!backpack_slot_exists)
         {
+                ASSERT(false);
+
                 return;
         }
 
@@ -545,9 +544,10 @@ void Inventory::equip_backpack_item(const size_t backpack_idx,
 
         m_backpack.erase(std::begin(m_backpack) + backpack_idx);
 
-        equip(slot_id,
-              item,
-              Verbosity::verbose);
+        equip(
+                slot_id,
+                item,
+                Verbosity::verbose);
 
         sort_backpack();
 }
@@ -561,6 +561,8 @@ void Inventory::equip_backpack_item(
                 if (m_backpack[i] == item)
                 {
                         equip_backpack_item(i, slot_id);
+
+                        return;
                 }
         }
 
@@ -573,7 +575,12 @@ size_t Inventory::unequip_slot(const SlotId id)
 
         auto* item = slot.item;
 
-        ASSERT(item);
+        if (!item)
+        {
+                ASSERT(false);
+
+                return 0;
+        }
 
         const size_t item_backpack_idx = move_from_slot_to_backpack(slot.id);
 
@@ -600,6 +607,7 @@ void Inventory::swap_wielded_and_prepared()
 bool Inventory::has_item_in_slot(SlotId id) const
 {
         ASSERT(id != SlotId::END && "Illegal slot id");
+
         return m_slots[int(id)].item;
 }
 
@@ -678,20 +686,17 @@ void Inventory::equip(
                 }
         }
 
-        ASSERT(slot);
-
-        // Robustness for release mode
         if (!slot)
         {
+                ASSERT(false);
+
                 return;
         }
 
-        // The slot should not already be occupied
-        ASSERT(!slot->item);
-
-        // Robustness for release mode
         if (slot->item)
         {
+                ASSERT(false);
+
                 return;
         }
 

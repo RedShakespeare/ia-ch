@@ -135,7 +135,7 @@ The inventory can be accessed in four ways:
    (1) Pressing "i" opens a full view of your inventory
 Here, you can see all of your inventory slots (see below), and a complete list of your carried items. Selecting an inventory slot (with enter or a letter key), either puts away an existing item from the slot, or opens a list of items that you can equip in the slot.
 
-To wear or wield items, they are placed in different inventory slots:
+Items are equipped in different inventory slots:
    * Wielded  - your currently used melee weapon or firearm
    * Prepared - the weapon to switch to when pressing "z"
    * Body     - item worn on your body (e.g. an armor or a jacket)

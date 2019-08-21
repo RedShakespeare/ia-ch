@@ -154,6 +154,7 @@ public:
         item::MedicalBag* m_active_medical_bag {nullptr};
         int m_handle_armor_countdown {0};
         int m_armor_putting_on_backpack_idx {-1};
+        item::Item* m_wpn_equipping {nullptr};
         bool m_is_dropping_armor_from_body_slot {false};
         item::Explosive* m_active_explosive {nullptr};
         item::Item* m_last_thrown_item {nullptr};
@@ -187,6 +188,8 @@ private:
                     const AllowWound allow_wound) override;
 
         void fov_hack();
+
+        bool is_busy() const;
 
         int m_nr_turns_until_ins {-1};
         Dir m_auto_move_dir {Dir::END};

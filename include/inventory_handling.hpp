@@ -81,6 +81,12 @@ public:
         void draw() override;
 
         void update() override;
+
+private:
+        void on_body_slot_item_selected() const;
+
+        void on_backpack_weapon_selected(
+                const size_t backpack_idx) const;
 };
 
 class Apply: public InvState

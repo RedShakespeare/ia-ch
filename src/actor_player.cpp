@@ -678,23 +678,21 @@ void Player::act()
         {
                 --m_handle_armor_countdown;
 
-                // Done handling armor?
+                // Done handling armor now?
                 if (m_handle_armor_countdown == 0)
                 {
-                        // Putting on armor?
                         if (m_armor_putting_on_backpack_idx >= 0)
                         {
-                                ASSERT(!m_inv.m_slots[(size_t)SlotId::body].item);
-
+                                // Putting on armor
                                 m_inv.equip_backpack_item(
                                         m_armor_putting_on_backpack_idx,
                                         SlotId::body);
 
                                 m_armor_putting_on_backpack_idx = -1;
                         }
-                        // Dropping armor?
                         else if (m_is_dropping_armor_from_body_slot)
                         {
+                                // Dropping armor
                                 item_drop::drop_item_from_inv(
                                         *map::g_player,
                                         InvType::slots,
@@ -702,12 +700,9 @@ void Player::act()
 
                                 m_is_dropping_armor_from_body_slot = false;
                         }
-                        else // Taking off armor
+                        else
                         {
-                                ASSERT(
-                                        m_inv.m_slots[(size_t)SlotId::body]
-                                        .item);
-
+                                // Taking off armor
                                 m_inv.unequip_slot(SlotId::body);
                         }
                 }
@@ -715,6 +710,17 @@ void Player::act()
                 {
                         game_time::tick();
                 }
+
+                return;
+        }
+
+        if (m_wpn_equipping)
+        {
+                m_inv.equip_backpack_item(m_wpn_equipping, SlotId::wpn);
+
+                m_wpn_equipping = nullptr;
+
+                game_time::tick();
 
                 return;
         }
@@ -899,6 +905,16 @@ bool Player::is_seeing_burning_terrain() const
         return is_fire_found;
 }
 
+bool Player::is_busy() const
+{
+        return
+                m_active_medical_bag ||
+                (m_handle_armor_countdown > 0) ||
+                m_wpn_equipping ||
+                (wait_turns_left > 0) ||
+                (m_auto_move_dir != Dir::END);
+}
+
 void Player::on_actor_turn()
 {
         reset_perm_shock_taken_current_turn();
@@ -909,14 +925,6 @@ void Player::on_actor_turn()
 
         // Set current temporary shock from darkness etc
         update_tmp_shock();
-
-        auto is_busy = [this]() {
-                return
-                m_active_medical_bag ||
-                (m_handle_armor_countdown > 0) ||
-                (wait_turns_left > 0) ||
-                (m_auto_move_dir != Dir::END);
-        };
 
         if (is_busy() && is_seeing_burning_terrain())
         {
@@ -1577,24 +1585,29 @@ void Player::interrupt_actions()
 
                         if (m_armor_putting_on_backpack_idx >= 0)
                         {
-                                auto* const item =
-                                        m_inv.m_backpack[m_armor_putting_on_backpack_idx];
+                                auto* const item = m_inv.m_backpack[m_armor_putting_on_backpack_idx];
 
-                                const std::string armor_name =
-                                        item->name(ItemRefType::a, ItemRefInf::yes);
+                                const auto armor_name =
+                                        item->name(
+                                                ItemRefType::a,
+                                                ItemRefInf::yes);
 
                                 msg =
                                         "Putting on " + armor_name +
                                         " (" + turns_left_str + " turns left).";
                         }
-                        else // Taking off armor, or dropping from armor slot
+                        else
                         {
-                                auto* const item = m_inv.item_in_slot(SlotId::body);
+                                // Taking off armor, or dropping from armor slot
+                                auto* const item =
+                                        m_inv.item_in_slot(SlotId::body);
 
                                 ASSERT(item);
 
-                                const std::string armor_name =
-                                        item->name(ItemRefType::a, ItemRefInf::yes);
+                                const auto armor_name =
+                                        item->name(
+                                                ItemRefType::a,
+                                                ItemRefInf::yes);
 
                                 msg =
                                         "Taking off " + armor_name +
@@ -1607,7 +1620,8 @@ void Player::interrupt_actions()
                                 "Continue? " + common_text::g_yes_or_no_hint,
                                 colors::light_white());
 
-                        should_continue = (query::yes_or_no() == BinaryAnswer::yes);
+                        should_continue =
+                                (query::yes_or_no() == BinaryAnswer::yes);
 
                         msg_log::clear();
                 }
@@ -1619,6 +1633,33 @@ void Player::interrupt_actions()
                         m_armor_putting_on_backpack_idx = -1;
 
                         m_is_dropping_armor_from_body_slot = false;
+                }
+        }
+
+        // Abort equipping item?
+        if (m_wpn_equipping)
+        {
+                const auto wpn_name =
+                        m_wpn_equipping->name(
+                                ItemRefType::a,
+                                ItemRefInf::yes);
+
+                const std::string msg =
+                        "Continue equipping " +
+                        wpn_name +
+                        "? " +
+                        common_text::g_yes_or_no_hint;
+
+                msg_log::add(msg, colors::light_white());
+
+                const bool should_continue =
+                        (query::yes_or_no() == BinaryAnswer::yes);
+
+                msg_log::clear();
+
+                if (!should_continue)
+                {
+                        m_wpn_equipping = nullptr;
                 }
         }
 

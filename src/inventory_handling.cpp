@@ -665,6 +665,8 @@ void BrowseInv::update()
 {
         const auto input = io::get();
 
+        auto& inv = map::g_player->m_inv;
+
         const MenuAction action =
                 m_browser.read(input, MenuInputMode::scrolling_and_letters);
 
@@ -679,9 +681,7 @@ void BrowseInv::update()
 
                 if (inv_type_marked == InvType::slots)
                 {
-                        const size_t browser_y = m_browser.y();
-
-                        InvSlot& slot = map::g_player->m_inv.m_slots[browser_y];
+                        InvSlot& slot = inv.m_slots[m_browser.y()];
 
                         if (!slot.item)
                         {
@@ -697,28 +697,11 @@ void BrowseInv::update()
 
                         if (slot.id == SlotId::body)
                         {
-                                if (map::g_player->m_properties.has(
-                                            PropId::burning))
-                                {
-                                        msg_log::add("Not while burning.");
-
-                                        return;
-                                }
-
-                                if (map::g_player->m_properties.has(
-                                            PropId::swimming))
-                                {
-                                        msg_log::add("Not while swimming.");
-
-                                        return;
-                                }
-
-                                map::g_player->m_handle_armor_countdown =
-                                        s_nr_turns_to_handle_armor;
+                                on_body_slot_item_selected();
                         }
                         else
                         {
-                                map::g_player->m_inv.unequip_slot(slot.id);
+                                inv.unequip_slot(slot.id);
                         }
 
                         game_time::tick();
@@ -727,13 +710,28 @@ void BrowseInv::update()
                 }
                 else // In backpack inventory
                 {
-                        const size_t browser_y =
+                        const size_t backpack_idx =
                                 m_browser.y() - (int)SlotId::END;
 
                         // Exit screen
                         states::pop();
 
-                        activate(browser_y);
+                        auto* item = inv.m_backpack[backpack_idx];
+
+                        const auto& data = item->data();
+
+                        // TODO: Also allow equipping body and head items by
+                        // selecting them
+
+                        if ((data.type == ItemType::melee_wpn) ||
+                            (data.type == ItemType::ranged_wpn))
+                        {
+                                on_backpack_weapon_selected(backpack_idx);
+                        }
+                        else
+                        {
+                                activate(backpack_idx);
+                        }
 
                         return;
                 }
@@ -753,6 +751,48 @@ void BrowseInv::update()
         default:
                 break;
         }
+}
+
+void BrowseInv::on_body_slot_item_selected() const
+{
+        if (map::g_player->m_properties.has(PropId::burning))
+        {
+                msg_log::add("Not while burning.");
+
+                return;
+        }
+
+        if (map::g_player->m_properties.has(PropId::swimming))
+        {
+                msg_log::add("Not while swimming.");
+
+                return;
+        }
+
+        map::g_player->m_handle_armor_countdown = s_nr_turns_to_handle_armor;
+}
+
+void BrowseInv::on_backpack_weapon_selected(
+        const size_t backpack_idx) const
+{
+        auto& inv = map::g_player->m_inv;
+
+        if (inv.has_item_in_slot(SlotId::wpn))
+        {
+                // Weapon slot occupied, this needs to be a multi-turn action
+                auto* const item_to_equip = inv.m_backpack[backpack_idx];
+
+                inv.unequip_slot(SlotId::wpn);
+
+                map::g_player->m_wpn_equipping = item_to_equip;
+        }
+        else
+        {
+                // Weapon slot is free, equip immediately
+                inv.equip_backpack_item(backpack_idx, SlotId::wpn);
+        }
+
+        game_time::tick();
 }
 
 // -----------------------------------------------------------------------------
@@ -874,13 +914,13 @@ void Apply::update()
         {
                 if (!m_filtered_backpack_indexes.empty())
                 {
-                        const size_t idx =
+                        const size_t backpack_idx =
                                 m_filtered_backpack_indexes[m_browser.y()];
 
                         // Exit screen
                         states::pop();
 
-                        activate(idx);
+                        activate(backpack_idx);
 
                         return;
                 }
@@ -1110,16 +1150,16 @@ void Equip::on_start()
                 switch (m_slot_to_equip.id)
                 {
                 case SlotId::wpn:
-                        if (data.melee.is_melee_wpn ||
-                            data.ranged.is_ranged_wpn)
+                        if ((data.melee.is_melee_wpn) ||
+                            (data.ranged.is_ranged_wpn))
                         {
                                 m_filtered_backpack_indexes.push_back(i);
                         }
                         break;
 
                 case SlotId::wpn_alt:
-                        if (data.melee.is_melee_wpn ||
-                            data.ranged.is_ranged_wpn)
+                        if ((data.melee.is_melee_wpn) ||
+                            (data.ranged.is_ranged_wpn))
                         {
                                 m_filtered_backpack_indexes.push_back(i);
                         }
@@ -1195,10 +1235,11 @@ void Equip::draw()
 
         if (!has_item)
         {
-                io::draw_text(heading + " " + common_text::g_any_key_hint,
-                              Panel::screen,
-                              P(0, 0),
-                              colors::light_white());
+                io::draw_text(
+                        heading + " " + common_text::g_any_key_hint,
+                        Panel::screen,
+                        P(0, 0),
+                        colors::light_white());
 
                 return;
         }
@@ -1322,9 +1363,9 @@ void Equip::update()
 
                         map::g_player->m_armor_putting_on_backpack_idx = idx;
                 }
-                else // Not the body slot
+                else
                 {
-                        // Equip the item immediately
+                        // Not the body slot, equip the item immediately
                         map::g_player->m_inv.equip_backpack_item(idx, slot_id);
                 }
 
