@@ -160,22 +160,22 @@ static std::unique_ptr<pact::Benefit> make_random_benefit_can_be_offered()
         }
 }
 
-// static bool is_toll_allowing_benefit(
-//         const pact::Toll& toll,
-//         const pact::BenefitId benefit_id)
-// {
-//         const auto benefits_not_allowed_with =
-//                 toll.benefits_not_allowed_with();
+static bool is_toll_allowing_benefit(
+        const pact::Toll& toll,
+        const pact::BenefitId benefit_id)
+{
+        const auto benefits_not_allowed_with =
+                toll.benefits_not_allowed_with();
 
-//         const bool is_allowing_benefit =
-//                 std::find(
-//                         std::begin(benefits_not_allowed_with),
-//                         std::end(benefits_not_allowed_with),
-//                         benefit_id)
-//                 == std::end(benefits_not_allowed_with);
+        const bool is_allowing_benefit =
+                std::find(
+                        std::begin(benefits_not_allowed_with),
+                        std::end(benefits_not_allowed_with),
+                        benefit_id)
+                == std::end(benefits_not_allowed_with);
 
-//         return is_allowing_benefit;
-// }
+        return is_allowing_benefit;
+}
 
 static std::vector<std::unique_ptr<pact::Toll>> make_all_tolls_can_be_offered(
         const pact::BenefitId benefit_id_accepted)
@@ -183,37 +183,31 @@ static std::vector<std::unique_ptr<pact::Toll>> make_all_tolls_can_be_offered(
         ASSERT((benefit_id_accepted != pact::BenefitId::undefined));
         ASSERT((benefit_id_accepted != pact::BenefitId::END));
 
-        // std::vector<std::unique_ptr<pact::Toll>> tolls;
-
-        // for (int i = 0; i < (int)pact::TollId::END; ++i)
-        // {
-        //         auto toll = make_toll((pact::TollId)i);
-
-        //         // Robustness for release mode, should not happen
-        //         if (!toll)
-        //         {
-        //                 continue;
-        //         }
-
-        //         if (!is_toll_allowing_benefit(*toll.get(), benefit_id_accepted))
-        //         {
-        //                 continue;
-        //         }
-
-        //         if (!toll->is_allowed_to_offer_now())
-        //         {
-        //                 continue;
-        //         }
-
-        //         tolls.push_back(std::move(toll));
-        // }
-
-        // return tolls;
-
-        (void)benefit_id_accepted;
-        auto toll = make_toll(pact::TollId::burning);
         std::vector<std::unique_ptr<pact::Toll>> tolls;
-        tolls.push_back(std::move(toll));
+
+        for (int i = 0; i < (int)pact::TollId::END; ++i)
+        {
+                auto toll = make_toll((pact::TollId)i);
+
+                // Robustness for release mode, should not happen
+                if (!toll)
+                {
+                        continue;
+                }
+
+                if (!is_toll_allowing_benefit(*toll.get(), benefit_id_accepted))
+                {
+                        continue;
+                }
+
+                if (!toll->is_allowed_to_offer_now())
+                {
+                        continue;
+                }
+
+                tolls.push_back(std::move(toll));
+        }
+
         return tolls;
 }
 
