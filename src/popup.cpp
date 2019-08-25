@@ -183,6 +183,8 @@ void msg(
         const SfxId sfx,
         const int w_change)
 {
+        msg_log::more_prompt();
+
         const int text_w = s_text_w_default + w_change;
 
         const auto lines = text_format::split(msg, text_w);
@@ -264,6 +266,8 @@ int menu(
         const int w_change,
         const SfxId sfx)
 {
+        msg_log::more_prompt();
+
         if (config::is_bot_playing())
         {
                 return 0;
