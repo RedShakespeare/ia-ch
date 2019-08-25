@@ -317,8 +317,7 @@ void PostmortemMenu::on_start()
                         "Last messages:",
                         color_heading));
 
-        const std::vector< std::vector<Msg> >& msg_history =
-                msg_log::history();
+        const auto& msg_history = msg_log::history();
 
         const int max_nr_messages_to_show = 20;
 
@@ -326,24 +325,15 @@ void PostmortemMenu::on_start()
                 0,
                 (int)msg_history.size() - max_nr_messages_to_show);
 
-        for (size_t history_line_idx = history_start_idx;
-             history_line_idx < msg_history.size();
-             ++history_line_idx)
+        for (size_t history_idx = history_start_idx;
+             history_idx < msg_history.size();
+             ++history_idx)
         {
-                std::string row = "";
-
-                const auto& history_line = msg_history[history_line_idx];
-
-                for (const auto& msg : history_line)
-                {
-                        const std::string msg_str = msg.text_with_repeats();
-
-                        row += msg_str + " ";
-                }
+                const auto& msg = msg_history[history_idx];
 
                 s_info_lines.push_back(
                         ColoredString(
-                                offset + row,
+                                offset + msg.text_with_repeats(),
                                 color_info));
         }
 

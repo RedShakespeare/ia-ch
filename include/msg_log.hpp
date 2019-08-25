@@ -34,17 +34,10 @@ public:
             const Color& color_id,
             const int x_pos) :
                 m_text(text),
-                m_repeats_str(""),
-                m_nr_repeats(1),
-                m_x_pos(x_pos),
-                m_color(color_id) {}
+                m_color(color_id),
+                m_x_pos(x_pos) {}
 
-        Msg() :
-                m_text(""),
-                m_repeats_str(""),
-                m_nr_repeats(1),
-                m_x_pos(0),
-                m_color(colors::white()) {}
+        Msg() {}
 
         std::string text_with_repeats() const
         {
@@ -81,11 +74,11 @@ public:
         }
 
 private:
-        std::string m_text;
-        std::string m_repeats_str;
-        int m_nr_repeats;
-        int m_x_pos;
-        Color m_color;
+        std::string m_text {""};
+        std::string m_repeats_str {""};
+        Color m_color {colors::white()};
+        int m_nr_repeats {1};
+        int m_x_pos {0};
 };
 
 namespace msg_log
@@ -110,7 +103,7 @@ void clear();
 
 void add_line_to_history(const std::string& line_to_add);
 
-const std::vector< std::vector<Msg> > history();
+const std::vector<Msg> history();
 
 } // log
 
@@ -121,10 +114,7 @@ class MsgHistoryState: public InfoScreenState
 {
 public:
         MsgHistoryState() :
-                InfoScreenState(),
-                m_top_line_nr(0),
-                m_btm_line_nr(0),
-                m_history() {}
+                InfoScreenState() {}
 
         ~MsgHistoryState() {}
 
@@ -144,10 +134,10 @@ private:
                 return InfoScreenType::scrolling;
         }
 
-        int m_top_line_nr;
-        int m_btm_line_nr;
+        int m_top_line_nr {0};
+        int m_btm_line_nr {0};
 
-        std::vector< std::vector<Msg> > m_history;
+        std::vector<Msg> m_history {};
 };
 
 #endif // MSG_LOG_HPP

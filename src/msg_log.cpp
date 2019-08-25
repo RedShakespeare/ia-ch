@@ -22,12 +22,12 @@
 // -----------------------------------------------------------------------------
 static std::vector<Msg> s_lines[2];
 
-static const size_t s_history_capacity = 200;
+static const size_t s_history_cap = 200;
 
 static size_t s_history_size = 0;
 static size_t s_history_count = 0;
 
-static std::vector<Msg> s_history[s_history_capacity];
+static Msg s_history[s_history_cap];
 
 static const std::string s_more_str = "-More-";
 
@@ -120,7 +120,6 @@ static std::string convert_to_frenzied_str(const std::string& str)
         return frenzied_str;
 }
 
-// Used by normal log and history viewer
 static void draw_line(
         const std::vector<Msg>& line,
         const Panel panel,
@@ -128,10 +127,8 @@ static void draw_line(
 {
         for (const Msg& msg : line)
         {
-                const std::string str = msg.text_with_repeats();
-
                 io::draw_text(
-                        str,
+                        msg.text_with_repeats(),
                         panel,
                         pos.with_x_offset(msg.x_pos()),
                         msg.color(),
@@ -233,23 +230,22 @@ void draw()
 
 void clear()
 {
-        for (std::vector<Msg>& line : s_lines)
+        for (auto& line : s_lines)
         {
-                if (!line.empty())
+                for (auto& msg : line)
                 {
                         // Add cleared line to history
-                        ::s_history[s_history_count % s_history_capacity] =
-                                line;
+                        ::s_history[s_history_count % s_history_cap] = msg;
 
                         ++s_history_count;
 
-                        if (s_history_size < s_history_capacity)
+                        if (s_history_size < s_history_cap)
                         {
                                 ++s_history_size;
                         }
-
-                        line.clear();
                 }
+
+                line.clear();
         }
 }
 
@@ -291,8 +287,7 @@ void add(
         if (map::g_player->m_properties.has(PropId::frenzied) &&
             allow_convert_to_frenzied_str(str))
         {
-                const std::string frenzied_str =
-                        convert_to_frenzied_str(str);
+                const std::string frenzied_str = convert_to_frenzied_str(str);
 
                 add(
                         frenzied_str,
@@ -332,7 +327,6 @@ void add(
                 // Message 1  : "a long message foo bar", which is split into ->
                 // Message 1a : "a long message"
                 // Message 1b : "foo bar"
-                //
                 // Message 2: : "foo bar"
                 //
                 // But this seems extremely unlikely in practice...
@@ -473,37 +467,37 @@ void add_line_to_history(const std::string& line_to_add)
                 colors::white(),
                 0);
 
-        ::s_history[s_history_count % s_history_capacity] = {msg};
+        ::s_history[s_history_count % s_history_cap] = {msg};
 
         ++s_history_count;
 
-        if (s_history_size < s_history_capacity)
+        if (s_history_size < s_history_cap)
         {
                 ++s_history_size;
         }
 }
 
-const std::vector< std::vector<Msg> > history()
+const std::vector<Msg> history()
 {
-        std::vector< std::vector<Msg> > ret;
+        std::vector<Msg> result;
 
-        ret.reserve(s_history_size);
+        result.reserve(s_history_size);
 
         size_t start = 0;
 
-        if (s_history_count >= s_history_capacity)
+        if (s_history_count >= s_history_cap)
         {
-                start = s_history_count - s_history_capacity;
+                start = s_history_count - s_history_cap;
         }
 
         for (size_t i = start; i < s_history_count; ++i)
         {
-                const auto& line = ::s_history[i % s_history_capacity];
+                const auto& msg = ::s_history[i % s_history_cap];
 
-                ret.push_back(line);
+                result.push_back(msg);
         }
 
-        return ret;
+        return result;
 }
 
 } // msg_log
@@ -563,9 +557,14 @@ void MsgHistoryState::draw()
 
         for (int i = m_top_line_nr; i <= m_btm_line_nr; ++i)
         {
-                const auto& line = m_history[i];
+                const auto& msg = m_history[i];
 
-                draw_line(line, Panel::screen, P(0, y));
+                io::draw_text(
+                        msg.text_with_repeats(),
+                        Panel::screen,
+                        P(1, y),
+                        msg.color(),
+                        false); // Do not draw background
 
                 ++y;
         }
