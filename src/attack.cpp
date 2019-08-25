@@ -133,9 +133,10 @@ static void print_mon_melee_miss_msg(const MeleeAttData& att_data)
                         other_name = "It";
                 }
 
-                msg_log::add(other_name + " misses me.",
-                             colors::text(),
-                             true);
+                msg_log::add(
+                        other_name + " misses me.",
+                        colors::text(),
+                        MsgInterruptPlayer::yes);
         }
 }
 
@@ -288,12 +289,11 @@ static void print_mon_hit_player_melee_msg(
                 hit_size_punctuation_str(
                         relative_hit_size_melee(att_data, wpn));
 
-        msg_log::add(other_name +
-                     " " +
-                     wpn_verb +
-                     dmg_punct,
-                     colors::msg_bad(),
-                     true);
+        msg_log::add(
+                other_name + " " + wpn_verb +
+                dmg_punct,
+                colors::msg_bad(),
+                MsgInterruptPlayer::yes);
 }
 
 static void print_no_attacker_hit_player_melee_msg(
@@ -304,9 +304,10 @@ static void print_no_attacker_hit_player_melee_msg(
                 hit_size_punctuation_str(
                         relative_hit_size_melee(att_data, wpn));
 
-        msg_log::add("I am hit" + dmg_punct,
-                     colors::msg_bad(),
-                     true);
+        msg_log::add(
+                "I am hit" + dmg_punct,
+                colors::msg_bad(),
+                MsgInterruptPlayer::yes);
 }
 
 static void print_no_attacker_hit_mon_melee_msg(
@@ -331,9 +332,10 @@ static void print_no_attacker_hit_mon_melee_msg(
                 hit_size_punctuation_str(
                         relative_hit_size_melee(att_data, wpn));
 
-        msg_log::add(other_name + " is hit" + dmg_punct,
-                     msg_color,
-                     true);
+        msg_log::add(
+                other_name + " is hit" + dmg_punct,
+                msg_color,
+                MsgInterruptPlayer::yes);
 }
 
 static void print_melee_miss_msg(const MeleeAttData& att_data)
@@ -513,9 +515,10 @@ static void print_mon_fire_ranged_msg(
                 const std::string attack_verb =
                         wpn.data().ranged.att_msgs.other;
 
-                msg_log::add(attacker_name + " " + attack_verb + ".",
-                             colors::white(),
-                             true);
+                msg_log::add(
+                        attacker_name + " " + attack_verb + ".",
+                        colors::white(),
+                        MsgInterruptPlayer::yes);
         }
 }
 
@@ -547,9 +550,10 @@ static void print_projectile_hit_player_msg(
                 hit_size_punctuation_str(
                         relative_hit_size_ranged(att_data, wpn));
 
-        msg_log::add("I am hit" + dmg_punct,
-                     colors::msg_bad(),
-                     true);
+        msg_log::add(
+                "I am hit" + dmg_punct,
+                colors::msg_bad(),
+                MsgInterruptPlayer::yes);
 }
 
 static void print_projectile_hit_mon_msg(
@@ -1488,7 +1492,7 @@ void melee(
                         msg_log::add(
                                 "My " + item_name + " breaks!",
                                 colors::msg_note(),
-                                true,
+                                MsgInterruptPlayer::yes,
                                 MorePromptOnMsg::yes);
 
                         delete item;

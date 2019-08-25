@@ -14,6 +14,19 @@
 #include "global.hpp"
 #include "info_screen_state.hpp"
 
+
+enum class MorePromptOnMsg
+{
+        no,
+        yes
+};
+
+enum class MsgInterruptPlayer
+{
+        no,
+        yes
+};
+
 class Msg
 {
 public:
@@ -82,10 +95,11 @@ void init();
 
 void draw();
 
-void add(const std::string& str,
-         const Color& color = colors::text(),
-         const bool interrupt_all_player_actions = false,
-         const MorePromptOnMsg add_more_prompt_on_msg = MorePromptOnMsg::no);
+void add(
+        const std::string& str,
+        const Color& color = colors::text(),
+        const MsgInterruptPlayer interrupt_player = MsgInterruptPlayer::no,
+        const MorePromptOnMsg add_more_prompt_on_msg = MorePromptOnMsg::no);
 
 // NOTE: This function can safely be called at any time. If there is content in
 // the log, a "more" prompt will be run, and the log is cleared. If the log

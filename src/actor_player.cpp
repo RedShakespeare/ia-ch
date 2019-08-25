@@ -553,7 +553,7 @@ void Player::item_feeling()
                         msg_log::add(
                                 msg,
                                 colors::light_cyan(),
-                                false,
+                                MsgInterruptPlayer::no,
                                 MorePromptOnMsg::yes);
 
                         return;
@@ -636,7 +636,7 @@ void Player::mon_feeling()
 
                 msg_log::add(msg,
                              colors::msg_note(),
-                             false,
+                             MsgInterruptPlayer::no,
                              MorePromptOnMsg::yes);
         }
 }
@@ -931,7 +931,7 @@ void Player::on_actor_turn()
                 msg_log::add(
                         common_text::g_fire_prevent_cmd,
                         colors::text(),
-                        true);
+                        MsgInterruptPlayer::yes);
         }
 
         Array2<int> vigilant_flood(map::dims());
@@ -1069,7 +1069,7 @@ void Player::on_actor_turn()
                                         msg_log::add(
                                                 "I spot " + mon_name + "!",
                                                 colors::msg_note(),
-                                                true,
+                                                MsgInterruptPlayer::yes,
                                                 MorePromptOnMsg::yes);
 
                                         mon.m_is_msg_mon_in_view_printed = true;
@@ -1091,7 +1091,7 @@ void Player::on_actor_turn()
                 msg_log::add(
                         name_a + " is in my view.",
                         colors::text(),
-                        true,
+                        MsgInterruptPlayer::yes,
                         MorePromptOnMsg::yes);
         }
 
@@ -1152,10 +1152,11 @@ void Player::on_actor_turn()
 
                 if (m_nr_turns_until_ins > 0)
                 {
-                        msg_log::add("I feel my sanity slipping...",
-                                     colors::msg_note(),
-                                     true,
-                                     MorePromptOnMsg::yes);
+                        msg_log::add(
+                                "I feel my sanity slipping...",
+                                colors::msg_note(),
+                                MsgInterruptPlayer::yes,
+                                MorePromptOnMsg::yes);
                 }
                 else // Time to go crazy!
                 {
@@ -1691,10 +1692,11 @@ void Player::hear_sound(
 
         if (has_snd_msg)
         {
-                msg_log::add(msg,
-                             colors::text(),
-                             false,
-                             snd.should_add_more_prompt_on_msg());
+                msg_log::add(
+                        msg,
+                        colors::text(),
+                        MsgInterruptPlayer::no,
+                        snd.should_add_more_prompt_on_msg());
         }
 
         // Play audio after message to ensure sync between audio and animation.

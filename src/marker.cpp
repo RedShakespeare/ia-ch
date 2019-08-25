@@ -889,7 +889,7 @@ void CtrlTele::on_start_hook()
         msg_log::add(
                 "I have the power to control teleportation.",
                 colors::white(),
-                false,
+                MsgInterruptPlayer::no,
                 MorePromptOnMsg::yes);
 }
 
@@ -940,7 +940,7 @@ void CtrlTele::handle_input(const InputData& input)
                         msg_log::add(
                                 "I failed to go there...",
                                 colors::white(),
-                                false,
+                                MsgInterruptPlayer::no,
                                 MorePromptOnMsg::yes);
 
                         // Run a randomized teleport with no teleport control

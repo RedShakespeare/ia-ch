@@ -287,12 +287,6 @@ enum class LgtSize
         fov
 };
 
-enum class MorePromptOnMsg
-{
-        no,
-        yes
-};
-
 enum class ItemType
 {
         general,

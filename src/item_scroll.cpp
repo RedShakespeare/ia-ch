@@ -352,7 +352,7 @@ void Scroll::on_actor_turn_in_inv_hook(const InvType inv_type)
                                                 domain_str +
                                                 " domain."),
                                         colors::text(),
-                                        false,
+                                        MsgInterruptPlayer::no,
                                         MorePromptOnMsg::yes);
                         }
                 }

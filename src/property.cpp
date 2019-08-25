@@ -450,7 +450,7 @@ PropEnded PropPoisoned::on_tick()
                         msg_log::add(
                                 "I am suffering from the poison!",
                                 colors::msg_bad(),
-                                true);
+                                MsgInterruptPlayer::yes);
                 }
                 else // Is monster
                 {
@@ -1749,7 +1749,7 @@ PropActResult PropCorpseRises::on_act()
                         name +
                         " rises again!!",
                         colors::text(),
-                        true);
+                        MsgInterruptPlayer::yes);
 
                 map::g_player->incr_shock(
                         ShockLvl::frightening,

@@ -756,7 +756,7 @@ void Inventory::print_equip_message(
         msg_log::add(
                 msg,
                 colors::text(),
-                false,
+                MsgInterruptPlayer::no,
                 MorePromptOnMsg::no);
 }
 
@@ -798,10 +798,11 @@ void Inventory::print_unequip_message(
                 break;
         }
 
-        msg_log::add(msg,
-                     colors::text(),
-                     false,
-                     MorePromptOnMsg::no);
+        msg_log::add(
+                msg,
+                colors::text(),
+                MsgInterruptPlayer::no,
+                MorePromptOnMsg::no);
 }
 
 int Inventory::total_item_weight() const

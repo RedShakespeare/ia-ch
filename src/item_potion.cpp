@@ -373,7 +373,7 @@ void Potion::on_actor_turn_in_inv_hook(const InvType inv_type)
                                 align_str +
                                 "."),
                         colors::text(),
-                        false,
+                        MsgInterruptPlayer::no,
                         MorePromptOnMsg::yes);
 
                 d.is_alignment_known = true;

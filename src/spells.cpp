@@ -690,7 +690,7 @@ void SpellBolt::run_effect(
                                 msg_log::add(
                                         s_spell_reflect_msg,
                                         colors::text(),
-                                        false,
+                                        MsgInterruptPlayer::no,
                                         MorePromptOnMsg::yes);
                         }
 
@@ -870,7 +870,7 @@ void SpellAzaWrath::run_effect(
                                         msg_log::add(
                                                 s_spell_reflect_msg,
                                                 colors::white(),
-                                                false,
+                                                MsgInterruptPlayer::no,
                                                 MorePromptOnMsg::yes);
                                 }
 
@@ -2280,7 +2280,7 @@ void SpellKnockBack::run_effect(
                                 msg_log::add(
                                         s_spell_reflect_msg,
                                         colors::text(),
-                                        false,
+                                        MsgInterruptPlayer::no,
                                         MorePromptOnMsg::yes);
                         }
 
@@ -2382,7 +2382,7 @@ void SpellEnfeeble::run_effect(
                                         msg_log::add(
                                                 s_spell_reflect_msg,
                                                 colors::text(),
-                                                false,
+                                                MsgInterruptPlayer::no,
                                                 MorePromptOnMsg::yes);
                                 }
 
@@ -2496,7 +2496,7 @@ void SpellSlow::run_effect(
                                         msg_log::add(
                                                 s_spell_reflect_msg,
                                                 colors::text(),
-                                                false,
+                                                MsgInterruptPlayer::no,
                                                 MorePromptOnMsg::yes);
                                 }
 
@@ -2617,7 +2617,7 @@ void SpellTerrify::run_effect(
                                         msg_log::add(
                                                 s_spell_reflect_msg,
                                                 colors::text(),
-                                                false,
+                                                MsgInterruptPlayer::no,
                                                 MorePromptOnMsg::yes);
                                 }
 
@@ -2707,7 +2707,7 @@ void SpellDisease::run_effect(
                                 msg_log::add(
                                         s_spell_reflect_msg,
                                         colors::text(),
-                                        false,
+                                        MsgInterruptPlayer::no,
                                         MorePromptOnMsg::yes);
                         }
 
@@ -3119,7 +3119,7 @@ void SpellMiGoHypno::run_effect(
                                 msg_log::add(
                                         s_spell_reflect_msg,
                                         colors::text(),
-                                        false,
+                                        MsgInterruptPlayer::no,
                                         MorePromptOnMsg::yes);
                         }
 
@@ -3190,7 +3190,7 @@ void SpellBurn::run_effect(
                                 msg_log::add(
                                         s_spell_reflect_msg,
                                         colors::text(),
-                                        false,
+                                        MsgInterruptPlayer::no,
                                         MorePromptOnMsg::yes);
                         }
 
@@ -3258,7 +3258,7 @@ void SpellDeafen::run_effect(
                                 msg_log::add(
                                         s_spell_reflect_msg,
                                         colors::text(),
-                                        false,
+                                        MsgInterruptPlayer::no,
                                         MorePromptOnMsg::yes);
                         }
 
@@ -3341,7 +3341,7 @@ void SpellTransmut::run_effect(
                 msg_log::add(
                         item_name_before + " disappears.",
                         colors::text(),
-                        false,
+                        MsgInterruptPlayer::no,
                         MorePromptOnMsg::yes);
         }
 

@@ -10,6 +10,7 @@
 #include <string>
 
 #include "item_data.hpp"
+#include "msg_log.hpp"
 
 
 namespace actor

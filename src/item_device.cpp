@@ -573,10 +573,11 @@ void Lantern::on_std_turn_in_inv_hook(const InvType inv_type)
 
         if (nr_turns_left <= 0)
         {
-                msg_log::add("My Electric Lantern has expired.",
-                             colors::msg_note(),
-                             true,
-                             MorePromptOnMsg::yes);
+                msg_log::add(
+                        "My Electric Lantern has expired.",
+                        colors::msg_note(),
+                        MsgInterruptPlayer::yes,
+                        MorePromptOnMsg::yes);
 
                 game::add_history_event("My Electric Lantern expired.");
 

@@ -77,10 +77,11 @@ void MapControllerBoss::on_std_turn()
 
         // The boss is dead, and stairs have not yet been created
 
-        msg_log::add("The ground rumbles...",
-                     colors::white(),
-                     false,
-                     MorePromptOnMsg::yes);
+        msg_log::add(
+                "The ground rumbles...",
+                colors::white(),
+                MsgInterruptPlayer::no,
+                MorePromptOnMsg::yes);
 
         map::put(new terrain::Stairs(stair_pos));
 

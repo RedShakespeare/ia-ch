@@ -217,7 +217,10 @@ void PropHandler::print_resist_msg(const Prop& prop)
 
                 if (!msg.empty())
                 {
-                        msg_log::add(msg, colors::text(), true);
+                        msg_log::add(
+                                msg,
+                                colors::text(),
+                                MsgInterruptPlayer::yes);
                 }
         }
         else // Is a monster
@@ -246,8 +249,10 @@ void PropHandler::print_start_msg(const Prop& prop)
 
                 if (!msg.empty())
                 {
-                        const bool is_interrupting =
-                                (prop.alignment() != PropAlignment::good);
+                        const auto is_interrupting =
+                                (prop.alignment() != PropAlignment::good)
+                                ? MsgInterruptPlayer::yes
+                                : MsgInterruptPlayer::no;
 
                         msg_log::add(msg, colors::text(), is_interrupting);
                 }

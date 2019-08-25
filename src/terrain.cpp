@@ -223,10 +223,11 @@ void Terrain::on_new_turn()
 
                                         if (map::g_player->m_pos == p)
                                         {
-                                                msg_log::add("Fire has spread here!",
-                                                             colors::msg_note(),
-                                                             true,
-                                                             MorePromptOnMsg::yes);
+                                                msg_log::add(
+                                                        "Fire has spread here!",
+                                                        colors::msg_note(),
+                                                        MsgInterruptPlayer::yes,
+                                                        MorePromptOnMsg::yes);
                                         }
                                 }
                         }
@@ -1960,7 +1961,7 @@ void Gong::bump(actor::Actor& actor_bumping)
                                 "As the sound of the instrument dies away, I "
                                 "hear a discarnate whispering..."),
                         colors::text(),
-                        false,
+                        MsgInterruptPlayer::no,
                         MorePromptOnMsg::yes);
 
                 msg_log::clear();
@@ -3212,10 +3213,11 @@ DidTriggerTrap Tomb::trigger_trap(actor::Actor* const actor)
 
                 const std::string msg = "The air suddenly feels colder.";
 
-                msg_log::add(msg,
-                             colors::white(),
-                             false,
-                             MorePromptOnMsg::yes);
+                msg_log::add(
+                        msg,
+                        colors::white(),
+                        MsgInterruptPlayer::no,
+                        MorePromptOnMsg::yes);
 
                 did_trigger_trap = DidTriggerTrap::yes;
         }
@@ -3234,10 +3236,11 @@ DidTriggerTrap Tomb::trigger_trap(actor::Actor* const actor)
 
                 const std::string msg = "Something rises from the tomb!";
 
-                msg_log::add(msg,
-                             colors::white(),
-                             false,
-                             MorePromptOnMsg::yes);
+                msg_log::add(
+                        msg,
+                        colors::white(),
+                        MsgInterruptPlayer::no,
+                        MorePromptOnMsg::yes);
 
                 did_trigger_trap = DidTriggerTrap::yes;
         }
@@ -3249,10 +3252,11 @@ DidTriggerTrap Tomb::trigger_trap(actor::Actor* const actor)
                 {
                         if (is_seen)
                         {
-                                msg_log::add("Fumes burst out from the tomb!",
-                                             colors::white(),
-                                             false,
-                                             MorePromptOnMsg::yes);
+                                msg_log::add(
+                                        "Fumes burst out from the tomb!",
+                                        colors::white(),
+                                        MsgInterruptPlayer::no,
+                                        MorePromptOnMsg::yes);
                         }
 
                         Snd snd("I hear a burst of gas.",
@@ -3329,7 +3333,7 @@ DidTriggerTrap Tomb::trigger_trap(actor::Actor* const actor)
                                 msg_log::add(
                                         "Something repulsive creeps up from the tomb!",
                                         colors::white(),
-                                        false,
+                                        MsgInterruptPlayer::no,
                                         MorePromptOnMsg::yes);
                         }
                 }
@@ -3567,7 +3571,7 @@ void Chest::hit(const int dmg,
                                                         msg_log::add(
                                                                 "The lock breaks and the lid flies open!",
                                                                 colors::text(),
-                                                                false,
+                                                                MsgInterruptPlayer::no,
                                                                 MorePromptOnMsg::yes);
 
                                                         m_is_locked = false;
@@ -4168,10 +4172,11 @@ void Bookshelf::bump(actor::Actor& actor_bumping)
 
 void Bookshelf::player_loot()
 {
-        msg_log::add("I search the bookshelf.",
-                     colors::text(),
-                     false,
-                     MorePromptOnMsg::yes);
+        msg_log::add(
+                "I search the bookshelf.",
+                colors::text(),
+                MsgInterruptPlayer::no,
+                MorePromptOnMsg::yes);
 
         m_is_looted = true;
 
@@ -4278,10 +4283,11 @@ void AlchemistBench::bump(actor::Actor& actor_bumping)
 
 void AlchemistBench::player_loot()
 {
-        msg_log::add("I search the alchemist's workbench.",
-                     colors::text(),
-                     false,
-                     MorePromptOnMsg::yes);
+        msg_log::add(
+                "I search the alchemist's workbench.",
+                colors::text(),
+                MsgInterruptPlayer::no,
+                MorePromptOnMsg::yes);
 
         m_is_looted = true;
 

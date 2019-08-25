@@ -273,7 +273,7 @@ void Curse::print_trigger_msg(const item::Item& item) const
         msg_log::add(
                 "A curse lies upon the " + item_name + "!",
                 colors::msg_note(),
-                false,
+                MsgInterruptPlayer::no,
                 MorePromptOnMsg::yes);
 
         const auto specific_msg = m_curse_impl->curse_msg(item);
@@ -306,7 +306,7 @@ void Curse::print_warning_msg(const item::Item& item) const
         msg_log::add(
                 msg,
                 colors::msg_note(),
-                false,
+                MsgInterruptPlayer::no,
                 MorePromptOnMsg::yes);
 }
 
@@ -608,7 +608,7 @@ void Shriek::shriek(const item::Item& item) const
         msg_log::add(
                 "The " + name + " shrieks...",
                 colors::text(),
-                false,
+                MsgInterruptPlayer::no,
                 MorePromptOnMsg::yes);
 
         const int nr_words = rnd::range(2, 4);
@@ -679,7 +679,7 @@ void Teleport::teleport(const item::Item& item) const
         msg_log::add(
                 "I am being teleported...",
                 colors::text(),
-                true,
+                MsgInterruptPlayer::yes,
                 MorePromptOnMsg::yes);
 
         ::teleport(*map::g_player);
@@ -710,7 +710,7 @@ void Summon::summon(const item::Item& item) const
         msg_log::add(
                 "There is a loud whistling sound.",
                 colors::text(),
-                false,
+                MsgInterruptPlayer::no,
                 MorePromptOnMsg::yes);
 
         actor::spawn(
@@ -759,7 +759,7 @@ void Fire::run_fire(const item::Item& item) const
         msg_log::add(
                 "The surrounding area suddenly burst into flames!",
                 colors::text(),
-                false,
+                MsgInterruptPlayer::no,
                 MorePromptOnMsg::yes);
 
         const int d = g_fov_radi_int - 2;

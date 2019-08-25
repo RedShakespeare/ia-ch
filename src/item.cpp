@@ -834,7 +834,7 @@ void ArmorMiGo::on_equip_hook(const Verbose verbose)
                 msg_log::add(
                         "The armor joins with my skin!",
                         colors::text(),
-                        false,
+                        MsgInterruptPlayer::no,
                         MorePromptOnMsg::yes);
 
                 map::g_player->incr_shock(
@@ -1557,7 +1557,7 @@ void GasMask::decr_turns_left(Inventory& carrier_inv)
                 msg_log::add(
                         "My " + item_name + " expires.",
                         colors::msg_note(),
-                        true,
+                        MsgInterruptPlayer::yes,
                         MorePromptOnMsg::yes);
 
                 carrier_inv.decr_item(this);
@@ -1658,13 +1658,15 @@ void Dynamite::on_std_turn_player_hold_ignited()
                         MorePromptOnMsg::yes :
                         MorePromptOnMsg::no;
 
-                msg_log::add(fuse_msg,
-                             colors::yellow(),
-                             true,
-                             more_prompt);
+                msg_log::add(
+                        fuse_msg,
+                        colors::yellow(),
+                        MsgInterruptPlayer::yes,
+                        more_prompt);
         }
-        else // Fuse has run out
+        else
         {
+                // Fuse has run out
                 msg_log::add("The dynamite explodes in my hand!");
 
                 map::g_player->m_active_explosive = nullptr;
@@ -1717,18 +1719,20 @@ void Molotov::on_std_turn_player_hold_ignited()
 
         if (m_fuse_turns == 2)
         {
-                msg_log::add("The Molotov Cocktail will soon explode.",
-                             colors::text(),
-                             false,
-                             MorePromptOnMsg::yes);
+                msg_log::add(
+                        "The Molotov Cocktail will soon explode.",
+                        colors::text(),
+                        MsgInterruptPlayer::no,
+                        MorePromptOnMsg::yes);
         }
 
         if (m_fuse_turns == 1)
         {
-                msg_log::add("The Molotov Cocktail is about to explode!",
-                             colors::text(),
-                             false,
-                             MorePromptOnMsg::yes);
+                msg_log::add(
+                        "The Molotov Cocktail is about to explode!",
+                        colors::text(),
+                        MsgInterruptPlayer::yes,
+                        MorePromptOnMsg::yes);
         }
 
         if (m_fuse_turns <= 0)

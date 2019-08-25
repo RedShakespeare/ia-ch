@@ -148,7 +148,7 @@ void incr_player_xp(const int xp_gained, const Verbose verbose)
                                         std::to_string(s_clvl) +
                                         "!"),
                                 colors::green(),
-                                false,
+                                MsgInterruptPlayer::no,
                                 MorePromptOnMsg::yes);
 
                         msg_log::more_prompt();
@@ -552,7 +552,7 @@ void GameState::update()
                 msg_log::add(
                         "-I AM DEAD!-",
                         colors::msg_bad(),
-                        false,
+                        MsgInterruptPlayer::no,
                         MorePromptOnMsg::yes);
 
                 saving::erase_save();

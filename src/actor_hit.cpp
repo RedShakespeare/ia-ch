@@ -285,8 +285,9 @@ ActorDied hit(
 
                 return ActorDied::yes;
         }
-        else // HP is greater than 0
+        else
         {
+                // HP is greater than 0
                 const int hp_pct_after = (actor.m_hp * 100) / max_hp(actor);
 
                 const int hp_warn_lvl = 25;
@@ -298,7 +299,7 @@ ActorDied hit(
                         msg_log::add(
                                 "-LOW HP WARNING!-",
                                 colors::msg_bad(),
-                                true,
+                                MsgInterruptPlayer::no,
                                 MorePromptOnMsg::yes);
                 }
 

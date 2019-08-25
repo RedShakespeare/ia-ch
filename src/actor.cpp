@@ -202,7 +202,7 @@ void print_aware_invis_mon_msg(const Mon& mon)
         msg_log::add(
                 "There is " + mon_ref + " here!",
                 colors::msg_note(),
-                false,
+                MsgInterruptPlayer::no,
                 MorePromptOnMsg::yes);
 }
 

@@ -253,10 +253,11 @@ void clear()
         }
 }
 
-void add(const std::string& str,
-         const Color& color,
-         const bool interrupt_all_player_actions,
-         const MorePromptOnMsg add_more_prompt_on_msg)
+void add(
+        const std::string& str,
+        const Color& color,
+        const MsgInterruptPlayer interrupt_player,
+        const MorePromptOnMsg add_more_prompt_on_msg)
 {
         ASSERT(!str.empty());
 
@@ -293,10 +294,11 @@ void add(const std::string& str,
                 const std::string frenzied_str =
                         convert_to_frenzied_str(str);
 
-                add(frenzied_str,
-                    color,
-                    interrupt_all_player_actions,
-                    add_more_prompt_on_msg);
+                add(
+                        frenzied_str,
+                        color,
+                        interrupt_player,
+                        add_more_prompt_on_msg);
 
                 return;
         }
@@ -345,10 +347,10 @@ void add(const std::string& str,
 
                         // If the message is interrupting, only allow this for
                         // the last line of the split message
-                        const bool interrupt_actions_current_line =
+                        const auto interrupt_actions_current_line =
                                 is_last_msg
-                                ? interrupt_all_player_actions
-                                : false;
+                                ? interrupt_player
+                                : MsgInterruptPlayer::no;
 
                         // If a more prompt was requested through the parameter,
                         // only allow this on the last message
@@ -357,10 +359,11 @@ void add(const std::string& str,
                                 ? add_more_prompt_on_msg
                                 : MorePromptOnMsg::no;
 
-                        add(lines[i],
-                            color,
-                            interrupt_actions_current_line,
-                            add_more_prompt_current_line);
+                        add(
+                                lines[i],
+                                color,
+                                interrupt_actions_current_line,
+                                add_more_prompt_current_line);
                 }
 
                 return;
@@ -434,7 +437,7 @@ void add(const std::string& str,
         }
 
         // Messages may stop long actions like first aid and quick walk
-        if (interrupt_all_player_actions)
+        if (interrupt_player == MsgInterruptPlayer::yes)
         {
                 map::g_player->interrupt_actions();
         }

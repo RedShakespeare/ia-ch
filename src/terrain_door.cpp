@@ -411,7 +411,7 @@ void Door::on_hit(
                                         msg_log::add(
                                                 "It seems futile.",
                                                 colors::msg_note(),
-                                                false,
+                                                MsgInterruptPlayer::no,
                                                 MorePromptOnMsg::yes);
                                 }
                         }

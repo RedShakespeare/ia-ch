@@ -100,7 +100,7 @@ void drop_item_from_inv(
                 msg_log::add(
                         "I drop " + item_ref + ".",
                         colors::text(),
-                        false,
+                        MsgInterruptPlayer::no,
                         MorePromptOnMsg::yes);
         }
         else // Monster is dropping item

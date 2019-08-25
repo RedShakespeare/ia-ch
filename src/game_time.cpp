@@ -145,7 +145,7 @@ static void run_std_turn_events()
                 msg_log::add(
                         "I sink downwards!",
                         colors::white(),
-                        false,
+                        MsgInterruptPlayer::yes,
                         MorePromptOnMsg::yes);
 
                 map_travel::go_to_nxt();

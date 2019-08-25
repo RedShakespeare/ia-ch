@@ -110,10 +110,11 @@ void EventWallCrumble::on_new_turn()
 
         if (map::g_player->m_properties.allow_see())
         {
-                msg_log::add("Suddenly, the walls collapse!",
-                             colors::msg_note(),
-                             false,
-                             MorePromptOnMsg::yes);
+                msg_log::add(
+                        "Suddenly, the walls collapse!",
+                        colors::msg_note(),
+                        MsgInterruptPlayer::no,
+                        MorePromptOnMsg::yes);
         }
 
         bool should_make_dark = false;
@@ -429,7 +430,7 @@ void EventSnakeEmerge::on_new_turn()
                         "Suddenly, vicious snakes slither up from cracks in "
                         "the floor!",
                         colors::msg_note(),
-                        true,
+                        MsgInterruptPlayer::yes,
                         MorePromptOnMsg::yes);
 
                 io::draw_blast_at_cells(seen_tgt_positions, colors::magenta());
