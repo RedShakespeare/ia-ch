@@ -98,11 +98,16 @@ AllowAction Terrain::pre_bump(actor::Actor& actor_bumping)
             can_move(actor_bumping) &&
             map::g_cells.at(m_pos).is_seen_by_player)
         {
+                const std::string msg =
+                        "Step into the flames? " +
+                        common_text::g_yes_or_no_hint;
+
                 msg_log::add(
-                        std::string(
-                                "Step into the flames? " +
-                                common_text::g_yes_or_no_hint),
-                        colors::light_white());
+                        msg,
+                        colors::light_white(),
+                        MsgInterruptPlayer::no,
+                        MorePromptOnMsg::no,
+                        CopyToMsgHistory::no);
 
                 const auto query_result = query::yes_or_no();
 
@@ -1563,15 +1568,20 @@ AllowAction LiquidDeep::pre_bump(actor::Actor& actor_bumping)
 
                 const std::string liquid_name_the = name(Article::the);
 
+                const std::string msg =
+                        "Swim through " +
+                        liquid_name_the +
+                        "? (The " +
+                        explosive_name +
+                        " will be extinguished) " +
+                        common_text::g_yes_or_no_hint;
+
                 msg_log::add(
-                        std::string(
-                                "Swim through " +
-                                liquid_name_the +
-                                "? (The " +
-                                explosive_name +
-                                " will be extinguished) " +
-                                common_text::g_yes_or_no_hint),
-                        colors::light_white());
+                        msg,
+                        colors::light_white(),
+                        MsgInterruptPlayer::no,
+                        MorePromptOnMsg::no,
+                        CopyToMsgHistory::no);
 
                 const auto result = query::yes_or_no();
 
@@ -1807,11 +1817,16 @@ void Lever::bump(actor::Actor& actor_bumping)
         {
                 msg_log::clear();
 
+                const std::string msg =
+                        "There is a lever here. Pull it? " +
+                        common_text::g_yes_or_no_hint;
+
                 msg_log::add(
-                        std::string(
-                                "There is a lever here. Pull it? " +
-                                common_text::g_yes_or_no_hint),
-                        colors::light_white());
+                        msg,
+                        colors::light_white(),
+                        MsgInterruptPlayer::no,
+                        MorePromptOnMsg::no,
+                        CopyToMsgHistory::no);
 
                 const auto answer = query::yes_or_no();
 
@@ -1920,11 +1935,16 @@ void Gong::bump(actor::Actor& actor_bumping)
         {
                 msg_log::clear();
 
+                const std::string msg =
+                        "There is a temple gong here. Strike it? " +
+                        common_text::g_yes_or_no_hint;
+
                 msg_log::add(
-                        std::string(
-                                "There is a temple gong here. Strike it? " +
-                                common_text::g_yes_or_no_hint),
-                        colors::light_white());
+                        msg,
+                        colors::light_white(),
+                        MsgInterruptPlayer::no,
+                        MorePromptOnMsg::no,
+                        CopyToMsgHistory::no);
 
                 const auto answer = query::yes_or_no();
 
@@ -2792,13 +2812,18 @@ void ItemContainer::open(
                                         ItemRefInf::yes,
                                         ItemRefAttInf::wpn_main_att_mode);
 
+                        const std::string msg =
+                                "Pick up " +
+                                name +
+                                "? " +
+                                common_text::g_yes_or_no_hint;
+
                         msg_log::add(
-                                std::string(
-                                        "Pick up " +
-                                        name +
-                                        "? " +
-                                        common_text::g_yes_or_no_hint),
-                                colors::light_white());
+                                msg,
+                                colors::light_white(),
+                                MsgInterruptPlayer::no,
+                                MorePromptOnMsg::no,
+                                CopyToMsgHistory::no);
 
                         const auto& data = item->data();
 
@@ -3784,11 +3809,16 @@ void Fountain::bump(actor::Actor& actor_bumping)
                 {
                         msg_log::clear();
 
+                        const std::string msg =
+                                "There is a fountain here. Drink from it? " +
+                                common_text::g_yes_or_no_hint;
+
                         msg_log::add(
-                                std::string(
-                                        "There is a fountain here. Drink from it? " +
-                                        common_text::g_yes_or_no_hint),
-                                colors::light_white());
+                                msg,
+                                colors::light_white(),
+                                MsgInterruptPlayer::no,
+                                MorePromptOnMsg::no,
+                                CopyToMsgHistory::no);
 
                         const auto answer = query::yes_or_no();
 

@@ -406,7 +406,12 @@ void handle(const GameCmd cmd)
         {
         case GameCmd::undefined:
         {
-                msg_log::add("Press [?] for help.");
+                msg_log::add(
+                        "Press [?] for help.",
+                        colors::light_white(),
+                        MsgInterruptPlayer::no,
+                        MorePromptOnMsg::no,
+                        CopyToMsgHistory::no);
         }
         break;
 
@@ -480,11 +485,21 @@ void handle(const GameCmd cmd)
         {
                 if (map::g_player->is_seeing_burning_terrain())
                 {
-                        msg_log::add(common_text::g_fire_prevent_cmd);
+                        msg_log::add(
+                                common_text::g_fire_prevent_cmd,
+                                colors::text(),
+                                MsgInterruptPlayer::no,
+                                MorePromptOnMsg::no,
+                                CopyToMsgHistory::no);
                 }
                 else if (!map::g_player->seen_foes().empty())
                 {
-                        msg_log::add(common_text::g_mon_prevent_cmd);
+                        msg_log::add(
+                                common_text::g_mon_prevent_cmd,
+                                colors::text(),
+                                MsgInterruptPlayer::no,
+                                MorePromptOnMsg::no,
+                                CopyToMsgHistory::no);
                 }
                 else // We are allowed to wait
                 {
@@ -737,7 +752,12 @@ void handle(const GameCmd cmd)
                 }
                 else if (!map::g_player->seen_foes().empty())
                 {
-                        msg_log::add(common_text::g_mon_prevent_cmd);
+                        msg_log::add(
+                                common_text::g_mon_prevent_cmd,
+                                colors::text(),
+                                MsgInterruptPlayer::no,
+                                MorePromptOnMsg::no,
+                                CopyToMsgHistory::no);
                 }
                 else if (!map::g_player->m_properties.allow_see())
                 {

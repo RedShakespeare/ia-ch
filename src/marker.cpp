@@ -439,10 +439,20 @@ void Viewing::on_moved()
                         view_key +
                         std::string("] for description");
 
-                msg_log::add(msg, colors::light_white());
+                msg_log::add(
+                        msg,
+                        colors::light_white(),
+                        MsgInterruptPlayer::no,
+                        MorePromptOnMsg::no,
+                        CopyToMsgHistory::no);
         }
 
-        msg_log::add(common_text::g_cancel_hint, colors::light_white());
+        msg_log::add(
+                common_text::g_cancel_hint,
+                colors::light_white(),
+                MsgInterruptPlayer::no,
+                MorePromptOnMsg::no,
+                CopyToMsgHistory::no);
 }
 
 void Viewing::handle_input(const InputData& input)
@@ -503,9 +513,11 @@ void Aiming::on_moved()
                                         att_data.hit_chance_tot);
 
                         msg_log::add(
-                                std::to_string(hit_chance) +
-                                "% hit chance.",
-                                colors::light_white());
+                                std::to_string(hit_chance) + "% hit chance.",
+                                colors::light_white(),
+                                MsgInterruptPlayer::no,
+                                MorePromptOnMsg::no,
+                                CopyToMsgHistory::no);
                 }
         }
 
@@ -531,7 +543,12 @@ void Aiming::on_moved()
                 std::string("] to fire ") +
                 common_text::g_cancel_hint;
 
-        msg_log::add(msg, colors::light_white());
+        msg_log::add(
+                msg,
+                colors::light_white(),
+                MsgInterruptPlayer::no,
+                MorePromptOnMsg::no,
+                CopyToMsgHistory::no);
 }
 
 void Aiming::handle_input(const InputData& input)
@@ -636,9 +653,11 @@ void Throwing::on_moved()
                                         att_data.hit_chance_tot);
 
                         msg_log::add(
-                                std::to_string(hit_chance) +
-                                "% hit chance.",
-                                colors::light_white());
+                                std::to_string(hit_chance) + "% hit chance.",
+                                colors::light_white(),
+                                MsgInterruptPlayer::no,
+                                MorePromptOnMsg::no,
+                                CopyToMsgHistory::no);
                 }
         }
 
@@ -664,7 +683,12 @@ void Throwing::on_moved()
                 std::string("] to throw ") +
                 common_text::g_cancel_hint;
 
-        msg_log::add(msg, colors::light_white());
+        msg_log::add(
+                msg,
+                colors::light_white(),
+                MsgInterruptPlayer::no,
+                MorePromptOnMsg::no,
+                CopyToMsgHistory::no);
 }
 
 void Throwing::handle_input(const InputData& input)
@@ -830,7 +854,12 @@ void ThrowingExplosive::on_moved()
                 std::string("] to throw ") +
                 common_text::g_cancel_hint;
 
-        msg_log::add(msg, colors::light_white());
+        msg_log::add(
+                msg,
+                colors::light_white(),
+                MsgInterruptPlayer::no,
+                MorePromptOnMsg::no,
+                CopyToMsgHistory::no);
 }
 
 void ThrowingExplosive::handle_input(const InputData& input)
@@ -890,7 +919,8 @@ void CtrlTele::on_start_hook()
                 "I have the power to control teleportation.",
                 colors::white(),
                 MsgInterruptPlayer::no,
-                MorePromptOnMsg::yes);
+                MorePromptOnMsg::yes,
+                CopyToMsgHistory::yes);
 }
 
 void CtrlTele::on_moved()
@@ -903,11 +933,17 @@ void CtrlTele::on_moved()
 
                 msg_log::add(
                         std::to_string(chance_pct) + "% chance of success.",
-                        colors::light_white());
+                        colors::light_white(),
+                        MsgInterruptPlayer::no,
+                        MorePromptOnMsg::no,
+                        CopyToMsgHistory::no);
 
                 msg_log::add(
                         "[enter] to try teleporting here",
-                        colors::light_white());
+                        colors::light_white(),
+                        MsgInterruptPlayer::no,
+                        MorePromptOnMsg::no,
+                        CopyToMsgHistory::no);
         }
 }
 
@@ -941,7 +977,8 @@ void CtrlTele::handle_input(const InputData& input)
                                 "I failed to go there...",
                                 colors::white(),
                                 MsgInterruptPlayer::no,
-                                MorePromptOnMsg::yes);
+                                MorePromptOnMsg::yes,
+                                CopyToMsgHistory::yes);
 
                         // Run a randomized teleport with no teleport control
                         teleport(*map::g_player, ShouldCtrlTele::never);

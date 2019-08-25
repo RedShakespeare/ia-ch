@@ -234,6 +234,12 @@ void clear()
         {
                 for (auto& msg : line)
                 {
+                        if (msg.should_copy_to_history() ==
+                            CopyToMsgHistory::no)
+                        {
+                                continue;
+                        }
+
                         // Add cleared line to history
                         ::s_history[s_history_count % s_history_cap] = msg;
 
@@ -253,7 +259,8 @@ void add(
         const std::string& str,
         const Color& color,
         const MsgInterruptPlayer interrupt_player,
-        const MorePromptOnMsg add_more_prompt_on_msg)
+        const MorePromptOnMsg add_more_prompt_on_msg,
+        const CopyToMsgHistory copy_to_history)
 {
         ASSERT(!str.empty());
 
@@ -293,7 +300,8 @@ void add(
                         frenzied_str,
                         color,
                         interrupt_player,
-                        add_more_prompt_on_msg);
+                        add_more_prompt_on_msg,
+                        copy_to_history);
 
                 return;
         }
@@ -357,7 +365,8 @@ void add(
                                 lines[i],
                                 color,
                                 interrupt_actions_current_line,
-                                add_more_prompt_current_line);
+                                add_more_prompt_current_line,
+                                copy_to_history);
                 }
 
                 return;
@@ -418,7 +427,7 @@ void add(
                 }
 
                 s_lines[current_line_nr].push_back(
-                        Msg(str, color, msg_x0));
+                        Msg(str, color, msg_x0, copy_to_history));
         }
 
         io::clear_screen();
@@ -465,7 +474,8 @@ void add_line_to_history(const std::string& line_to_add)
         const Msg msg(
                 line_to_add,
                 colors::white(),
-                0);
+                0,
+                CopyToMsgHistory::yes); // Doesn't matter at this point
 
         ::s_history[s_history_count % s_history_cap] = {msg};
 

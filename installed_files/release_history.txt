@@ -52,7 +52,7 @@ User interface
 * The font size is no longer locked to the tile size (for example a smaller font can be used)
 * The window can be resized
 * Added option for input mode - default keys (numpad/arrows) or vi-mode (h j k l y u b n)
-* Improved the game key bindings (see the manual)
+* Improved the game key bindings
 * Dropping items is now done from a separate inventory screen, accessed by pressing "d" (which is a more conventional method than the old way of pressing shift+enter)
 * Removed PgUp/PgDn/Home/End as alternative keys for diagonal movement
 * ">" and "<" can also be used in inventory screens to jump between pages (in addition to page up/page down)
@@ -69,6 +69,7 @@ User interface
 * The player is asked for confirmation when picking traits on gaining new character levels (but not when creating a new character)
 * Added an option to always warn when a new monster is seen (and no other monster was already seen)
 * While aiming firearms or thrown weapons, the game no longer prints info about map features, items, etc in the aiming location (only info about any monster seen there)
+* Many types of messages are no longer added to the message history, such as messages printed when moving around the marker ("[f] to fire") or when asking for a direction ("Which direction? [space, esc] to cancel") - this keeps the message history more clean and focused on game events
 * Many properties now have longer and more descriptive names on the map screen (e.g. "Fear Res." instead of rFear", or "LIFE SAPPED(4)" instead of "HP(4)")
 * Added an option for if ambient sounds should be preloaded at game startup (otherwise each sound is loaded the first time it's played)
 

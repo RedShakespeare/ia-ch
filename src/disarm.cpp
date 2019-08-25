@@ -39,7 +39,10 @@ void player_disarm()
 
         msg_log::add(
                 "Which direction? " + common_text::g_cancel_hint,
-                colors::light_white());
+                colors::light_white(),
+                MsgInterruptPlayer::no,
+                MorePromptOnMsg::no,
+                CopyToMsgHistory::no);
 
         const auto input_dir = query::dir(AllowCenter::yes);
 
@@ -70,7 +73,12 @@ void player_disarm()
 
         if (!trap || trap->is_hidden())
         {
-                msg_log::add(common_text::g_disarm_no_trap);
+                msg_log::add(
+                        common_text::g_disarm_no_trap,
+                        colors::text(),
+                        MsgInterruptPlayer::no,
+                        MorePromptOnMsg::no,
+                        CopyToMsgHistory::no);
 
                 states::draw();
 

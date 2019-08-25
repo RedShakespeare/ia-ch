@@ -103,7 +103,10 @@ void player_try_close_or_jam()
 
         msg_log::add(
                 "Which direction? " + common_text::g_cancel_hint,
-                colors::light_white());
+                colors::light_white(),
+                MsgInterruptPlayer::no,
+                MorePromptOnMsg::no,
+                CopyToMsgHistory::no);
 
         const Dir input_dir = query::dir(AllowCenter::no);
 

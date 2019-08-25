@@ -507,7 +507,12 @@ void print_location_info_msgs(const P& pos)
 
                 str = text_format::first_to_upper(str);
 
-                msg_log::add(str + ".");
+                msg_log::add(
+                        str + ".",
+                        colors::text(),
+                        MsgInterruptPlayer::no,
+                        MorePromptOnMsg::no,
+                        CopyToMsgHistory::no);
 
                 // Describe mobile terrains
                 for (auto* mob : game_time::g_mobs)
@@ -518,14 +523,24 @@ void print_location_info_msgs(const P& pos)
 
                                 str = text_format::first_to_upper(str);
 
-                                msg_log::add(str  + ".");
+                                msg_log::add(
+                                        str  + ".",
+                                        colors::text(),
+                                        MsgInterruptPlayer::no,
+                                        MorePromptOnMsg::no,
+                                        CopyToMsgHistory::no);
                         }
                 }
 
                 // Describe darkness
                 if (map::g_dark.at(pos) && !map::g_light.at(pos))
                 {
-                        msg_log::add("It is very dark here.");
+                        msg_log::add(
+                                "It is very dark here.",
+                                colors::text(),
+                                MsgInterruptPlayer::no,
+                                MorePromptOnMsg::no,
+                                CopyToMsgHistory::no);
                 }
 
                 // Describe item
@@ -540,7 +555,12 @@ void print_location_info_msgs(const P& pos)
 
                         str = text_format::first_to_upper(str);
 
-                        msg_log::add(str + ".");
+                        msg_log::add(
+                                str + ".",
+                                colors::text(),
+                                MsgInterruptPlayer::no,
+                                MorePromptOnMsg::no,
+                                CopyToMsgHistory::no);
                 }
 
                 // Describe dead actors
@@ -553,7 +573,12 @@ void print_location_info_msgs(const P& pos)
                                 str = text_format::first_to_upper(
                                         actor->m_data->corpse_name_a);
 
-                                msg_log::add(str + ".");
+                                msg_log::add(
+                                        str + ".",
+                                        colors::text(),
+                                        MsgInterruptPlayer::no,
+                                        MorePromptOnMsg::no,
+                                        CopyToMsgHistory::no);
                         }
                 }
 
@@ -563,7 +588,12 @@ void print_location_info_msgs(const P& pos)
 
         if (!is_cell_seen)
         {
-                msg_log::add("I have no vision here.");
+                msg_log::add(
+                        "I have no vision here.",
+                        colors::text(),
+                        MsgInterruptPlayer::no,
+                        MorePromptOnMsg::no,
+                        CopyToMsgHistory::no);
         }
 }
 
@@ -584,7 +614,12 @@ void print_living_actor_info_msg(const P& pos)
                         text_format::first_to_upper(
                                 actor->name_a());
 
-                msg_log::add(str + ".");
+                msg_log::add(
+                        str + ".",
+                        colors::text(),
+                        MsgInterruptPlayer::no,
+                        MorePromptOnMsg::no,
+                        CopyToMsgHistory::no);
         }
         else // Cannot see actor
         {
@@ -592,7 +627,12 @@ void print_living_actor_info_msg(const P& pos)
 
                 if (mon->m_player_aware_of_me_counter > 0)
                 {
-                        msg_log::add("There is a creature here.");
+                        msg_log::add(
+                                "There is a creature here.",
+                                colors::text(),
+                                MsgInterruptPlayer::no,
+                                MorePromptOnMsg::no,
+                                CopyToMsgHistory::no);
                 }
         }
 }

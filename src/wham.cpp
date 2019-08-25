@@ -72,7 +72,10 @@ void run()
         // Choose direction
         msg_log::add(
                 "Which direction? " + common_text::g_cancel_hint,
-                colors::light_white());
+                colors::light_white(),
+                MsgInterruptPlayer::no,
+                MorePromptOnMsg::no,
+                CopyToMsgHistory::no);
 
         const Dir input_dir = query::dir(AllowCenter::yes);
 

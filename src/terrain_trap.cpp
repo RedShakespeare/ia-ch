@@ -359,13 +359,18 @@ AllowAction Trap::pre_bump(actor::Actor& actor_bumping)
 
                 const std::string name_the = name(Article::the);
 
+                const std::string msg =
+                        "Step into " +
+                        name_the +
+                        "? " +
+                        common_text::g_yes_or_no_hint;
+
                 msg_log::add(
-                        std::string(
-                                "Step into " +
-                                name_the +
-                                "? " +
-                                common_text::g_yes_or_no_hint),
-                        colors::light_white());
+                        msg,
+                        colors::light_white(),
+                        MsgInterruptPlayer::no,
+                        MorePromptOnMsg::no,
+                        CopyToMsgHistory::no);
 
                 const auto query_result = query::yes_or_no();
 

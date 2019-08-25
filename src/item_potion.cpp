@@ -220,13 +220,18 @@ ConsumeItem Potion::activate(actor::Actor* const actor)
                 {
                         const std::string name = this->name(ItemRefType::a);
 
+                        const std::string msg =
+                                "Drink " +
+                                name +
+                                "? " +
+                                common_text::g_yes_or_no_hint;
+
                         msg_log::add(
-                                std::string(
-                                        "Drink " +
-                                        name +
-                                        "? " +
-                                        common_text::g_yes_or_no_hint),
-                                colors::light_white());
+                                msg,
+                                colors::light_white(),
+                                MsgInterruptPlayer::no,
+                                MorePromptOnMsg::no,
+                                CopyToMsgHistory::no);
 
                         auto result = query::yes_or_no();
 

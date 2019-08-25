@@ -27,15 +27,23 @@ enum class MsgInterruptPlayer
         yes
 };
 
+enum class CopyToMsgHistory
+{
+        no,
+        yes
+};
+
 class Msg
 {
 public:
         Msg(const std::string& text,
             const Color& color_id,
-            const int x_pos) :
+            const int x_pos,
+            CopyToMsgHistory copy_to_history) :
                 m_text(text),
                 m_color(color_id),
-                m_x_pos(x_pos) {}
+                m_x_pos(x_pos),
+                m_copy_to_history(copy_to_history) {}
 
         Msg() {}
 
@@ -73,12 +81,18 @@ public:
                 return m_color;
         }
 
+        CopyToMsgHistory should_copy_to_history() const
+        {
+                return m_copy_to_history;
+        }
+
 private:
         std::string m_text {""};
         std::string m_repeats_str {""};
         Color m_color {colors::white()};
         int m_nr_repeats {1};
         int m_x_pos {0};
+        CopyToMsgHistory m_copy_to_history {CopyToMsgHistory::yes};
 };
 
 namespace msg_log
@@ -92,7 +106,8 @@ void add(
         const std::string& str,
         const Color& color = colors::text(),
         const MsgInterruptPlayer interrupt_player = MsgInterruptPlayer::no,
-        const MorePromptOnMsg add_more_prompt_on_msg = MorePromptOnMsg::no);
+        const MorePromptOnMsg add_more_prompt_on_msg = MorePromptOnMsg::no,
+        const CopyToMsgHistory copy_to_history = CopyToMsgHistory::yes);
 
 // NOTE: This function can safely be called at any time. If there is content in
 // the log, a "more" prompt will be run, and the log is cleared. If the log

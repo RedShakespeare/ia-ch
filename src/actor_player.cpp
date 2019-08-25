@@ -1619,7 +1619,10 @@ void Player::interrupt_actions()
 
                         msg_log::add(
                                 "Continue? " + common_text::g_yes_or_no_hint,
-                                colors::light_white());
+                                colors::light_white(),
+                                MsgInterruptPlayer::no,
+                                MorePromptOnMsg::no,
+                                CopyToMsgHistory::no);
 
                         should_continue =
                                 (query::yes_or_no() == BinaryAnswer::yes);
@@ -1651,7 +1654,12 @@ void Player::interrupt_actions()
                         "? " +
                         common_text::g_yes_or_no_hint;
 
-                msg_log::add(msg, colors::light_white());
+                msg_log::add(
+                        msg,
+                        colors::light_white(),
+                        MsgInterruptPlayer::no,
+                        MorePromptOnMsg::no,
+                        CopyToMsgHistory::no);
 
                 const bool should_continue =
                         (query::yes_or_no() == BinaryAnswer::yes);

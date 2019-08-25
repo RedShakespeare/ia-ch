@@ -40,15 +40,20 @@ static BinaryAnswer query_player_attack_mon_with_ranged_wpn(
                 ? mon.name_the()
                 : "it";
 
+        const std::string msg =
+                "Attack " +
+                mon_name +
+                " with " +
+                wpn_name +
+                "? " +
+                common_text::g_yes_or_no_hint;
+
         msg_log::add(
-                std::string(
-                        "Attack " +
-                        mon_name +
-                        " with " +
-                        wpn_name +
-                        "? " +
-                        common_text::g_yes_or_no_hint),
-                colors::light_white());
+                msg,
+                colors::light_white(),
+                MsgInterruptPlayer::no,
+                MorePromptOnMsg::no,
+                CopyToMsgHistory::no);
 
         const auto answer = query::yes_or_no();
 

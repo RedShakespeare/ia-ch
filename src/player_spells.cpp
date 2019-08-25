@@ -62,11 +62,16 @@ static void try_cast(Spell* const spell)
 
         if (spi_cost_range.max >= map::g_player->m_sp)
         {
+                const std::string msg =
+                        "Low spirit, try casting spell anyway? " +
+                        common_text::g_yes_or_no_hint;
+
                 msg_log::add(
-                        std::string(
-                                "Low spirit, try casting spell anyway? " +
-                                common_text::g_yes_or_no_hint),
-                        colors::light_white());
+                        msg,
+                        colors::light_white(),
+                        MsgInterruptPlayer::no,
+                        MorePromptOnMsg::no,
+                        CopyToMsgHistory::no);
 
                 if (query::yes_or_no() == BinaryAnswer::no)
                 {
