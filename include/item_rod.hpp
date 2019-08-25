@@ -59,7 +59,7 @@ public:
 
         std::vector<std::string> descr_hook() const override final;
 
-        void identify(const Verbosity verbosity) override final;
+        void identify(const Verbose verbose) override final;
 
         virtual const std::string real_name() const = 0;
 

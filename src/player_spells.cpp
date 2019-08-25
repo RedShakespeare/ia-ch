@@ -40,13 +40,13 @@ static void try_cast(Spell* const spell)
 
         bool allow_cast =
                 props.allow_cast_intr_spell_absolute(
-                        Verbosity::verbose);
+                        Verbose::yes);
 
         if (allow_cast)
         {
                 allow_cast =
                         allow_cast &&
-                        props.allow_speak(Verbosity::verbose);
+                        props.allow_speak(Verbose::yes);
         }
 
         if (!allow_cast)
@@ -158,7 +158,7 @@ bool is_spell_learned(const SpellId id)
         return false;
 }
 
-void learn_spell(const SpellId id, const Verbosity verbosity)
+void learn_spell(const SpellId id, const Verbose verbose)
 {
         ASSERT(id != SpellId::END);
 
@@ -180,7 +180,7 @@ void learn_spell(const SpellId id, const Verbosity verbosity)
                 return;
         }
 
-        if (verbosity == Verbosity::verbose)
+        if (verbose == Verbose::yes)
         {
                 msg_log::add("I can now cast this incantation from memory.");
         }
@@ -188,7 +188,7 @@ void learn_spell(const SpellId id, const Verbosity verbosity)
         s_learned_spells.push_back(spell);
 }
 
-void unlearn_spell(const SpellId id, const Verbosity verbosity)
+void unlearn_spell(const SpellId id, const Verbose verbose)
 {
         ASSERT(id != SpellId::END);
 
@@ -217,7 +217,7 @@ void unlearn_spell(const SpellId id, const Verbosity verbosity)
 
         ASSERT(spell->player_can_learn());
 
-        if (verbosity == Verbosity::verbose)
+        if (verbose == Verbose::yes)
         {
                 const auto name = spell->name();
 

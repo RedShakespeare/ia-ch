@@ -1324,7 +1324,7 @@ void reveal_doors_on_path_to_stairs(const P& stairs_pos)
                 if (terrain->id() == terrain::Id::door)
                 {
                         static_cast<terrain::Door*>(terrain)
-                                ->reveal(Verbosity::silent);
+                                ->reveal(Verbose::no);
                 }
         }
 

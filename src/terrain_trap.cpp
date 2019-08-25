@@ -254,7 +254,7 @@ void Trap::trigger_start(const actor::Actor* actor)
                 // Reveal trap if triggered by player stepping on it
                 if (is_hidden())
                 {
-                        reveal(Verbosity::silent);
+                        reveal(Verbose::no);
                 }
 
                 map::g_player->update_fov();
@@ -493,7 +493,7 @@ DidTriggerTrap Trap::trigger_trap(actor::Actor* const actor)
         return DidTriggerTrap::yes;
 }
 
-void Trap::reveal(const Verbosity verbosity)
+void Trap::reveal(const Verbose verbose)
 {
         TRACE_FUNC_BEGIN_VERBOSE;
 
@@ -505,7 +505,7 @@ void Trap::reveal(const Verbosity verbosity)
         {
                 states::draw();
 
-                if (verbosity == Verbosity::verbose)
+                if (verbose == Verbose::yes)
                 {
                         std::string msg = "";
 
@@ -1441,7 +1441,7 @@ void TrapWeb::trigger()
                 entangled,
                 PropSrc::intr,
                 false,
-                Verbosity::silent);
+                Verbose::no);
 
         // Players getting stuck in spider webs alerts all spiders
         if (actor_here->is_player())
@@ -1566,7 +1566,7 @@ void TrapUnlearnSpell::trigger()
 
         const auto id = rnd::element(id_bucket);
 
-        player_spells::unlearn_spell(id, Verbosity::verbose);
+        player_spells::unlearn_spell(id, Verbose::yes);
 
         TRACE_FUNC_END_VERBOSE;
 }

@@ -743,7 +743,7 @@ static void try_apply_attack_property_on_actor(
         const bool is_resisting_dmg =
                 actor.m_properties.is_resisting_dmg(
                         dmg_type,
-                        Verbosity::silent);
+                        Verbose::no);
 
         if (!is_resisting_dmg)
         {

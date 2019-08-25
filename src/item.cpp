@@ -343,11 +343,11 @@ void Item::on_pickup(actor::Actor& actor)
         on_pickup_hook();
 }
 
-void Item::on_equip(const Verbosity verbosity)
+void Item::on_equip(const Verbose verbose)
 {
         ASSERT(m_actor_carrying);
 
-        on_equip_hook(verbosity);
+        on_equip_hook(verbose);
 }
 
 void Item::on_unequip()
@@ -377,7 +377,7 @@ void Item::on_player_found()
 
                 msg_log::add("I have found " + item_name + "!");
 
-                game::incr_player_xp(m_data->xp_on_found, Verbosity::verbose);
+                game::incr_player_xp(m_data->xp_on_found, Verbose::yes);
 
                 game::add_history_event("Found " + item_name + ".");
         }
@@ -689,7 +689,7 @@ bool Item::is_in_effective_range_lmt(const P& p0, const P& p1) const
                 m_data->ranged.effective_range;
 }
 
-void Item::add_carrier_prop(Prop* const prop, const Verbosity verbosity)
+void Item::add_carrier_prop(Prop* const prop, const Verbose verbose)
 {
         ASSERT(m_actor_carrying);
         ASSERT(prop);
@@ -698,7 +698,7 @@ void Item::add_carrier_prop(Prop* const prop, const Verbosity verbosity)
                 .add_prop_from_equipped_item(
                         this,
                         prop,
-                        verbosity);
+                        verbose);
 }
 
 void Item::clear_carrier_props()
@@ -805,9 +805,9 @@ std::string Armor::name_inf_str() const
         return "[" + ap_str + "]";
 }
 
-void ArmorAsbSuit::on_equip_hook(const Verbosity verbosity)
+void ArmorAsbSuit::on_equip_hook(const Verbose verbose)
 {
-        (void)verbosity;
+        (void)verbose;
 
         auto prop_r_fire = new PropRFire();
         auto prop_r_acid = new PropRAcid();
@@ -817,9 +817,9 @@ void ArmorAsbSuit::on_equip_hook(const Verbosity verbosity)
         prop_r_acid->set_indefinite();
         prop_r_elec->set_indefinite();
 
-        add_carrier_prop(prop_r_fire, Verbosity::silent);
-        add_carrier_prop(prop_r_acid, Verbosity::silent);
-        add_carrier_prop(prop_r_elec, Verbosity::silent);
+        add_carrier_prop(prop_r_fire, Verbose::no);
+        add_carrier_prop(prop_r_acid, Verbose::no);
+        add_carrier_prop(prop_r_elec, Verbose::no);
 }
 
 void ArmorAsbSuit::on_unequip_hook()
@@ -827,9 +827,9 @@ void ArmorAsbSuit::on_unequip_hook()
         clear_carrier_props();
 }
 
-void ArmorMiGo::on_equip_hook(const Verbosity verbosity)
+void ArmorMiGo::on_equip_hook(const Verbose verbose)
 {
-        if (verbosity == Verbosity::verbose)
+        if (verbose == Verbose::yes)
         {
                 msg_log::add(
                         "The armor joins with my skin!",
@@ -1122,7 +1122,7 @@ void VampiricBite::on_melee_hit(actor::Actor& actor_hit, const int dmg)
         m_actor_carrying->restore_hp(
                 dmg,
                 false,
-                Verbosity::verbose);
+                Verbose::yes);
 }
 
 // -----------------------------------------------------------------------------
@@ -1535,9 +1535,9 @@ int MedicalBag::tot_turns_for_action(const MedBagAction action) const
 // -----------------------------------------------------------------------------
 // Gas mask
 // -----------------------------------------------------------------------------
-void GasMask::on_equip_hook(const Verbosity verbosity)
+void GasMask::on_equip_hook(const Verbose verbose)
 {
-        (void)verbosity;
+        (void)verbose;
 }
 
 void GasMask::on_unequip_hook()

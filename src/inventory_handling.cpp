@@ -1817,7 +1817,7 @@ void SelectIdentify::update()
                 map::update_vision();
 
                 // Identify item
-                item_to_identify->identify(Verbosity::verbose);
+                item_to_identify->identify(Verbose::yes);
 
                 return;
         }

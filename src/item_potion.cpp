@@ -206,7 +206,7 @@ ConsumeItem Potion::activate(actor::Actor* const actor)
 {
         ASSERT(actor);
 
-        if (!actor->m_properties.allow_eat(Verbosity::verbose))
+        if (!actor->m_properties.allow_eat(Verbose::yes))
         {
                 return ConsumeItem::no;
         }
@@ -277,7 +277,7 @@ ConsumeItem Potion::activate(actor::Actor* const actor)
         return ConsumeItem::yes;
 }
 
-void Potion::identify(const Verbosity verbosity)
+void Potion::identify(const Verbose verbose)
 {
         if (m_data->is_identified)
         {
@@ -288,7 +288,7 @@ void Potion::identify(const Verbosity verbosity)
 
         m_data->is_alignment_known = true;
 
-        if (verbosity == Verbosity::verbose)
+        if (verbose == Verbose::yes)
         {
                 const std::string name_after =
                         name(ItemRefType::a, ItemRefInf::none);
@@ -463,7 +463,7 @@ void Vitality::quaff_impl(actor::Actor& actor)
 
         if (map::g_player->can_see_actor(actor))
         {
-                identify(Verbosity::verbose);
+                identify(Verbose::yes);
         }
 }
 
@@ -490,7 +490,7 @@ void Spirit::quaff_impl(actor::Actor& actor)
 
         if (map::g_player->can_see_actor(actor))
         {
-                identify(Verbosity::verbose);
+                identify(Verbose::yes);
         }
 }
 
@@ -510,7 +510,7 @@ void Blindness::quaff_impl(actor::Actor& actor)
 
         if (map::g_player->can_see_actor(actor))
         {
-                identify(Verbosity::verbose);
+                identify(Verbose::yes);
         }
 }
 
@@ -530,7 +530,7 @@ void Paral::quaff_impl(actor::Actor& actor)
 
         if (map::g_player->can_see_actor(actor))
         {
-                identify(Verbosity::verbose);
+                identify(Verbose::yes);
         }
 }
 
@@ -551,7 +551,7 @@ void Disease::quaff_impl(actor::Actor& actor)
 
         if (map::g_player->can_see_actor(actor))
         {
-                identify(Verbosity::verbose);
+                identify(Verbose::yes);
         }
 }
 
@@ -561,7 +561,7 @@ void Conf::quaff_impl(actor::Actor& actor)
 
         if (map::g_player->can_see_actor(actor))
         {
-                identify(Verbosity::verbose);
+                identify(Verbose::yes);
         }
 }
 
@@ -618,7 +618,7 @@ void Fortitude::quaff_impl(actor::Actor& actor)
 
         if (map::g_player->can_see_actor(actor))
         {
-                identify(Verbosity::verbose);
+                identify(Verbose::yes);
         }
 }
 
@@ -655,7 +655,7 @@ void Poison::quaff_impl(actor::Actor& actor)
 
         if (map::g_player->can_see_actor(actor))
         {
-                identify(Verbosity::verbose);
+                identify(Verbose::yes);
         }
 }
 
@@ -675,7 +675,7 @@ void RFire::quaff_impl(actor::Actor& actor)
 
         if (map::g_player->can_see_actor(actor))
         {
-                identify(Verbosity::verbose);
+                identify(Verbose::yes);
         }
 }
 
@@ -727,7 +727,7 @@ void Curing::quaff_impl(actor::Actor& actor)
         if (is_noticable &&
             map::g_player->can_see_actor(actor))
         {
-                identify(Verbosity::verbose);
+                identify(Verbose::yes);
         }
 }
 
@@ -747,7 +747,7 @@ void RElec::quaff_impl(actor::Actor& actor)
 
         if (map::g_player->can_see_actor(actor))
         {
-                identify(Verbosity::verbose);
+                identify(Verbose::yes);
         }
 }
 
@@ -765,7 +765,7 @@ void Insight::quaff_impl(actor::Actor& actor)
 {
         (void)actor;
 
-        identify(Verbosity::verbose);
+        identify(Verbose::yes);
 
         // Run identify selection menu
 
@@ -801,7 +801,7 @@ void Descent::quaff_impl(actor::Actor& actor)
                              "but it soon disappears...");
         }
 
-        identify(Verbosity::verbose);
+        identify(Verbose::yes);
 }
 
 void Invis::quaff_impl(actor::Actor& actor)
@@ -810,7 +810,7 @@ void Invis::quaff_impl(actor::Actor& actor)
 
         if (map::g_player->can_see_actor(actor))
         {
-                identify(Verbosity::verbose);
+                identify(Verbose::yes);
         }
 }
 

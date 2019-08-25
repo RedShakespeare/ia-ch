@@ -42,7 +42,7 @@ TEST_CASE("Properties from item applied and removed for actor")
         inv.put_in_slot(
                 SlotId::body,
                 item,
-                Verbosity::verbose);
+                Verbose::yes);
 
         // Check that the expected properties are applied
         int nr_props = 0;
@@ -116,7 +116,7 @@ TEST_CASE("Properties from item applied and removed for actor")
         inv.put_in_slot(
                 SlotId::body,
                 cell.item,
-                Verbosity::verbose);
+                Verbose::yes);
 
         cell.item = nullptr;
 

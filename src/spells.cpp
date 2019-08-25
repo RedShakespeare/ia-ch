@@ -199,8 +199,8 @@ void Spell::cast(
         // NOTE: If this is a non-intrinsic cast (e.g. from a scroll), then we
         // assume that the caller has made all checks themselves
         if ((spell_src == SpellSrc::learned) &&
-            (!properties.allow_cast_intr_spell_absolute(Verbosity::verbose) ||
-             !properties.allow_speak(Verbosity::verbose)))
+            (!properties.allow_cast_intr_spell_absolute(Verbose::yes) ||
+             !properties.allow_speak(Verbose::yes)))
         {
                 return;
         }
@@ -288,12 +288,12 @@ void Spell::cast(
         {
                 const Range cost = spi_cost(skill);
 
-                actor::hit_sp(*caster, cost.roll(), Verbosity::silent);
+                actor::hit_sp(*caster, cost.roll(), Verbose::no);
 
                 // Check properties which MAY allow casting with a random chance
                 allow_cast =
                         properties.allow_cast_intr_spell_chance(
-                                Verbosity::verbose);
+                                Verbose::yes);
         }
 
         if (allow_cast && caster->is_alive())
@@ -335,7 +335,7 @@ void Spell::on_resist(actor::Actor& target) const
                 map::g_player->restore_sp(
                         rnd::range(1, 6),
                         false, // Not allowed above max
-                        Verbosity::verbose);
+                        Verbose::yes);
         }
 }
 
@@ -1301,7 +1301,7 @@ void SpellPestilence::run_effect(
                                         prop_hasted,
                                         PropSrc::intr,
                                         true,
-                                        Verbosity::silent);
+                                        Verbose::no);
                         }
                 });
 
@@ -1425,7 +1425,7 @@ void SpellSpectralWpns::run_effect(
                         mon->m_inv.put_in_slot(
                                 SlotId::wpn,
                                 new_item,
-                                Verbosity::silent);
+                                Verbose::no);
 
                         mon->m_properties.apply(new PropSummoned());
 
@@ -1445,7 +1445,7 @@ void SpellSpectralWpns::run_effect(
                                         prop,
                                         PropSrc::intr,
                                         true,
-                                        Verbosity::silent);
+                                        Verbose::no);
                         }
 
                         if (skill == SpellSkill::master)
@@ -1458,7 +1458,7 @@ void SpellSpectralWpns::run_effect(
                                         prop,
                                         PropSrc::intr,
                                         true,
-                                        Verbosity::silent);
+                                        Verbose::no);
                         }
 
                         if (map::g_player->can_see_actor(*mon))

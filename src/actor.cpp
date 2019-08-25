@@ -289,7 +289,7 @@ void Actor::on_std_turn_common()
 
                 if (regen_spi_this_turn)
                 {
-                        restore_sp(1, false, Verbosity::silent);
+                        restore_sp(1, false, Verbose::no);
                 }
         }
 
@@ -319,7 +319,7 @@ char Actor::character() const
 bool Actor::restore_hp(
         const int hp_restored,
         const bool is_allowed_above_max,
-        const Verbosity verbosity)
+        const Verbose verbose)
 {
         bool is_hp_gained = is_allowed_above_max;
 
@@ -346,7 +346,7 @@ bool Actor::restore_hp(
                 is_hp_gained = true;
         }
 
-        if ((verbosity == Verbosity::verbose) && is_hp_gained)
+        if ((verbose == Verbose::yes) && is_hp_gained)
         {
                 if (is_player())
                 {
@@ -368,7 +368,7 @@ bool Actor::restore_hp(
 bool Actor::restore_sp(
         const int spi_restored,
         const bool is_allowed_above_max,
-        const Verbosity verbosity)
+        const Verbose verbose)
 {
         // Maximum allowed level to increase spirit to
         // * If we allow above max, we can raise spirit "infinitely"
@@ -384,7 +384,7 @@ bool Actor::restore_sp(
 
         const bool is_spi_gained = m_sp > sp_before;
 
-        if (verbosity == Verbosity::verbose &&
+        if (verbose == Verbose::yes &&
             is_spi_gained)
         {
                 if (is_player())
@@ -411,11 +411,11 @@ bool Actor::restore_sp(
         return is_spi_gained;
 }
 
-void Actor::change_max_hp(const int change, const Verbosity verbosity)
+void Actor::change_max_hp(const int change, const Verbose verbose)
 {
         m_base_max_hp = std::max(1, m_base_max_hp + change);
 
-        if (verbosity == Verbosity::silent)
+        if (verbose == Verbose::no)
         {
                 return;
         }
@@ -452,11 +452,11 @@ void Actor::change_max_hp(const int change, const Verbosity verbosity)
         }
 }
 
-void Actor::change_max_sp(const int change, const Verbosity verbosity)
+void Actor::change_max_sp(const int change, const Verbose verbose)
 {
         m_base_max_sp = std::max(1, m_base_max_sp + change);
 
-        if (verbosity == Verbosity::silent)
+        if (verbose == Verbose::no)
         {
                 return;
         }
@@ -683,7 +683,7 @@ void Actor::on_feed()
 {
         const int hp_restored = rnd::range(3, 5);
 
-        restore_hp(hp_restored, false, Verbosity::silent);
+        restore_hp(hp_restored, false, Verbose::no);
 
         if (is_player())
         {

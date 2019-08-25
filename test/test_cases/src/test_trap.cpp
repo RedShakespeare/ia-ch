@@ -45,7 +45,7 @@ TEST_CASE("Spider web")
 
                         map::put(web);
 
-                        web->reveal(Verbosity::silent);
+                        web->reveal(Verbose::no);
                 }
 
                 auto* const actor = actor::make(actor::Id::zombie, pos_l);

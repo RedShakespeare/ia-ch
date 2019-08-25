@@ -160,7 +160,7 @@ void go_to_nxt()
         // NOTE: When the "intro level" is skipped, "go_to_nxt" is called when
         // the game starts - so no XP is missed in that case (same thing when
         // loading the game)
-        game::incr_player_xp(5, Verbosity::verbose);
+        game::incr_player_xp(5, Verbose::yes);
 
         map::g_player->on_new_dlvl_reached();
 

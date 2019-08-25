@@ -89,9 +89,9 @@ public:
                 return "";
         }
 
-        virtual void identify(const Verbosity verbosity)
+        virtual void identify(const Verbose verbose)
         {
-                (void)verbosity;
+                (void)verbose;
         }
 
         int weight() const;
@@ -112,7 +112,7 @@ public:
         void on_pickup(actor::Actor& actor);
 
         // "on_pickup()" should be called before this
-        void on_equip(const Verbosity verbosity);
+        void on_equip(const Verbose verbose);
 
         void on_unequip();
 
@@ -185,7 +185,7 @@ public:
                 (void)actor_hit;
         }
 
-        void add_carrier_prop(Prop* const prop, const Verbosity verbosity);
+        void add_carrier_prop(Prop* const prop, const Verbose verbose);
 
         void clear_carrier_props();
 
@@ -261,9 +261,9 @@ protected:
 
         virtual void on_pickup_hook() {}
 
-        virtual void on_equip_hook(const Verbosity verbosity)
+        virtual void on_equip_hook(const Verbose verbose)
         {
-                (void)verbosity;
+                (void)verbose;
         }
 
         virtual void on_unequip_hook() {}
@@ -347,7 +347,7 @@ public:
 
         ~ArmorAsbSuit() {}
 
-        void on_equip_hook(const Verbosity verbosity) override;
+        void on_equip_hook(const Verbose verbose) override;
 
 private:
         void on_unequip_hook() override;
@@ -361,7 +361,7 @@ public:
 
         ~ArmorMiGo() {}
 
-        void on_equip_hook(const Verbosity verbosity) override;
+        void on_equip_hook(const Verbose verbose) override;
 };
 
 class Wpn: public Item
@@ -606,7 +606,7 @@ public:
                 return "{" + std::to_string(m_nr_turns_left) + "}";
         }
 
-        void on_equip_hook(const Verbosity verbosity) override;
+        void on_equip_hook(const Verbose verbose) override;
 
         void on_unequip_hook() override;
 

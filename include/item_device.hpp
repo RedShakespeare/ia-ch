@@ -35,7 +35,7 @@ public:
                 (void)inv_type;
         }
 
-        void identify(const Verbosity verbosity) override;
+        void identify(const Verbose verbose) override;
 };
 
 class StrangeDevice : public Device

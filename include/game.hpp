@@ -54,7 +54,7 @@ void set_start_time_to_now();
 
 void incr_player_xp(
         const int xp_gained,
-        const Verbosity verbosity = Verbosity::verbose);
+        const Verbose verbose = Verbose::yes);
 
 void decr_player_xp(int xp_lost);
 

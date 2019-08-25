@@ -34,7 +34,7 @@ void run(
         actor::Actor& defender,
         const P& attacked_from_pos,
         const bool is_spike_gun,
-        const Verbosity verbosity,
+        const Verbose verbose,
         const int paralyze_extra_turns)
 {
         TRACE_FUNC_BEGIN;
@@ -126,7 +126,7 @@ void run(
                 ? text_format::first_to_upper(defender.name_the())
                 : "It";
 
-        if ((verbosity == Verbosity::verbose) && player_is_aware_of_defender)
+        if ((verbose == Verbose::yes) && player_is_aware_of_defender)
         {
                 if (is_defender_player)
                 {

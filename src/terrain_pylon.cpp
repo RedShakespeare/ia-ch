@@ -405,7 +405,7 @@ void PylonKnockback::on_new_turn_activated()
                         *actor,
                         m_pos,
                         false, // Not spike gun
-                        Verbosity::verbose,
+                        Verbose::yes,
                         2); // Extra paralyze turns
         }
 }

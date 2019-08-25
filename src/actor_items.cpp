@@ -24,7 +24,7 @@
 // -----------------------------------------------------------------------------
 static void learn_spell_player(const SpellId spell)
 {
-        player_spells::learn_spell(spell, Verbosity::silent);
+        player_spells::learn_spell(spell, Verbose::no);
 
         // Also identify and "find" the corresponding scroll
         for (auto& d : item::g_data)
@@ -34,11 +34,11 @@ static void learn_spell_player(const SpellId spell)
                         std::unique_ptr<item::Item> temp_scroll(
                                 item::make(d.id));
 
-                        temp_scroll->identify(Verbosity::silent);
+                        temp_scroll->identify(Verbose::no);
 
                         game::incr_player_xp(
                                 temp_scroll->data().xp_on_found,
-                                Verbosity::silent);
+                                Verbose::no);
 
                         temp_scroll->data().is_found = true;
                 }
@@ -52,27 +52,27 @@ static void make_for_player_occultist_common()
         inv.put_in_slot(
                 SlotId::wpn,
                 item::make(item::Id::hatchet),
-                Verbosity::silent);
+                Verbose::no);
 
         inv.put_in_slot(
                 SlotId::wpn_alt,
                 item::make(item::Id::pistol),
-                Verbosity::silent);
+                Verbose::no);
 
         inv.put_in_backpack(item::make(item::Id::pistol_mag));
 
         inv.put_in_slot(
                 SlotId::body,
                 item::make(item::Id::armor_leather_jacket),
-                Verbosity::silent);
+                Verbose::no);
 
         auto* spirit_pot = item::make(item::Id::potion_spirit);
 
-        spirit_pot->identify(Verbosity::silent);
+        spirit_pot->identify(Verbose::no);
 
         game::incr_player_xp(
                 spirit_pot->data().xp_on_found,
-                Verbosity::silent);
+                Verbose::no);
 
         spirit_pot->data().is_found = true;
 
@@ -128,12 +128,12 @@ static void make_for_player_rogue()
         inv.put_in_slot(
                 SlotId::wpn,
                 dagger,
-                Verbosity::silent);
+                Verbose::no);
 
         inv.put_in_slot(
                 SlotId::wpn_alt,
                 item::make(item::Id::pistol),
-                Verbosity::silent);
+                Verbose::no);
 
         for (int i = 0; i < 2; ++i)
         {
@@ -142,16 +142,16 @@ static void make_for_player_rogue()
 
         inv.put_in_slot(SlotId::body,
                         item::make(item::Id::armor_leather_jacket),
-                        Verbosity::silent);
+                        Verbose::no);
 
         inv.put_in_backpack(item::make(item::Id::iron_spike, 12));
 
         auto* rod_cloud_minds = item::make(item::Id::rod_cloud_minds);
 
-        rod_cloud_minds->identify(Verbosity::silent);
+        rod_cloud_minds->identify(Verbose::no);
 
         game::incr_player_xp(rod_cloud_minds->data().xp_on_found,
-                             Verbosity::silent);
+                             Verbose::no);
 
         rod_cloud_minds->data().is_found = true;
 
@@ -180,7 +180,7 @@ static void make_for_player_war_vet()
         inv.put_in_slot(
                 SlotId::wpn,
                 item::make(item::Id::machete),
-                Verbosity::silent);
+                Verbose::no);
 
         for (int i = 0; i < 3; ++i)
         {
@@ -190,12 +190,12 @@ static void make_for_player_war_vet()
         inv.put_in_slot(
                 SlotId::wpn_alt,
                 item::make(item::Id::pistol),
-                Verbosity::silent);
+                Verbose::no);
 
         inv.put_in_slot(
                 SlotId::body,
                 item::make(item::Id::armor_flak_jacket),
-                Verbosity::silent);
+                Verbose::no);
 
         map::g_player->set_unarmed_wpn(
                 static_cast<item::Wpn*>(
@@ -394,7 +394,7 @@ static void make_item_set_firearm(actor::Actor& actor)
 
                 wpn->m_ammo_loaded = rnd::range(ammo_cap / 2, ammo_cap);
 
-                inv.put_in_slot(SlotId::wpn, item, Verbosity::silent);
+                inv.put_in_slot(SlotId::wpn, item, Verbose::no);
 
                 if (rnd::coin_toss())
                 {
@@ -414,7 +414,7 @@ static void make_item_set_firearm(actor::Actor& actor)
 
                 wpn->m_ammo_loaded = rnd::range(ammo_cap / 2, ammo_cap);
 
-                inv.put_in_slot(SlotId::wpn, item, Verbosity::silent);
+                inv.put_in_slot(SlotId::wpn, item, Verbose::no);
 
                 item = item::make(item::Id::shotgun_shell);
 
@@ -430,7 +430,7 @@ static void make_item_set_firearm(actor::Actor& actor)
                 inv.put_in_slot(
                         SlotId::wpn,
                         item::make(item::Id::sawed_off),
-                        Verbosity::silent);
+                        Verbose::no);
 
                 auto* item = item::make(item::Id::shotgun_shell);
 
@@ -460,7 +460,7 @@ static void make_item_set_firearm(actor::Actor& actor)
                         rnd::range(min_scaled, cap_scaled) *
                         g_nr_mg_projectiles;
 
-                inv.put_in_slot(SlotId::wpn, item, Verbosity::silent);
+                inv.put_in_slot(SlotId::wpn, item, Verbose::no);
         }
         break;
         }
@@ -479,7 +479,7 @@ static void make_item_set_spike_gun(actor::Actor& actor)
 
                 wpn->m_ammo_loaded = rnd::range(ammo_cap / 2, ammo_cap);
 
-                inv.put_in_slot(SlotId::wpn, item, Verbosity::silent);
+                inv.put_in_slot(SlotId::wpn, item, Verbose::no);
         }
 
         {
@@ -497,7 +497,7 @@ static void make_item_set_zealot_spiked_mace(actor::Actor& actor)
 
         item->set_melee_plus(0);
 
-        actor.m_inv.put_in_slot(SlotId::wpn, item, Verbosity::silent);
+        actor.m_inv.put_in_slot(SlotId::wpn, item, Verbose::no);
 }
 
 static void make_item_set_priest_dagger(actor::Actor& actor)
@@ -512,7 +512,7 @@ static void make_item_set_priest_dagger(actor::Actor& actor)
 
         item->set_melee_plus(rnd::weighted_choice(weights) + 1);
 
-        actor.m_inv.put_in_slot(SlotId::wpn, item, Verbosity::silent);
+        actor.m_inv.put_in_slot(SlotId::wpn, item, Verbose::no);
 }
 
 static void make_item_set_mi_go_gun(actor::Actor& actor)
@@ -520,7 +520,7 @@ static void make_item_set_mi_go_gun(actor::Actor& actor)
         actor.m_inv.put_in_slot(
                 SlotId::wpn,
                 item::make(item::Id::mi_go_gun),
-                Verbosity::silent);
+                Verbose::no);
 }
 
 static void make_item_set_mi_go_armor(actor::Actor& actor)
@@ -528,7 +528,7 @@ static void make_item_set_mi_go_armor(actor::Actor& actor)
         actor.m_inv.put_in_slot(
                 SlotId::body,
                 item::make(item::Id::armor_mi_go),
-                Verbosity::silent);
+                Verbose::no);
 }
 
 static void make_item_set_high_priest_guard_war_vet(actor::Actor& actor)
@@ -536,7 +536,7 @@ static void make_item_set_high_priest_guard_war_vet(actor::Actor& actor)
         actor.m_inv.put_in_slot(
                 SlotId::wpn,
                 item::make(item::Id::machine_gun),
-                Verbosity::silent);
+                Verbose::no);
 }
 
 static void make_item_set_high_priest_guard_rogue(actor::Actor& actor)
@@ -548,7 +548,7 @@ static void make_item_set_high_priest_guard_rogue(actor::Actor& actor)
         actor.m_inv.put_in_slot(
                 SlotId::wpn,
                 item,
-                Verbosity::silent);
+                Verbose::no);
 }
 
 static void make_monster_item_sets(actor::Actor& actor)

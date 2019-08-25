@@ -26,9 +26,9 @@ void cleanup();
 void save();
 void load();
 
-void learn_spell(const SpellId id, const Verbosity verbosity);
+void learn_spell(const SpellId id, const Verbose verbose);
 
-void unlearn_spell(const SpellId id, const Verbosity verbosity);
+void unlearn_spell(const SpellId id, const Verbose verbose);
 
 void incr_spell_skill(const SpellId id);
 

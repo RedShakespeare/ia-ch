@@ -44,7 +44,7 @@ namespace device
 Device::Device(item::ItemData* const item_data) :
         Item(item_data) {}
 
-void Device::identify(const Verbosity verbosity)
+void Device::identify(const Verbose verbose)
 {
         if (m_data->is_identified)
         {
@@ -53,7 +53,7 @@ void Device::identify(const Verbosity verbosity)
 
         m_data->is_identified = true;
 
-        if (verbosity == Verbosity::verbose)
+        if (verbose == Verbose::yes)
         {
                 const std::string name_after =
                         name(ItemRefType::a, ItemRefInf::none);

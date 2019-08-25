@@ -1031,9 +1031,9 @@ void pick_bg(const Bg bg)
         {
                 pick_trait(Trait::stout_spirit);
 
-                map::g_player->change_max_sp(2, Verbosity::silent);
+                map::g_player->change_max_sp(2, Verbose::no);
 
-                map::g_player->change_max_hp(-2, Verbosity::silent);
+                map::g_player->change_max_hp(-2, Verbose::no);
         }
         break;
 
@@ -1047,7 +1047,7 @@ void pick_bg(const Bg bg)
                         prop_r_disease,
                         PropSrc::intr,
                         true,
-                        Verbosity::silent);
+                        Verbose::no);
 
                 auto prop_darkvis = new PropDarkvis();
 
@@ -1057,12 +1057,12 @@ void pick_bg(const Bg bg)
                         prop_darkvis,
                         PropSrc::intr,
                         true,
-                        Verbosity::silent);
+                        Verbose::no);
 
                 player_spells::learn_spell(SpellId::frenzy,
-                                           Verbosity::silent);
+                                           Verbose::no);
 
-                map::g_player->change_max_hp(6, Verbosity::silent);
+                map::g_player->change_max_hp(6, Verbose::no);
         }
         break;
 
@@ -1155,12 +1155,12 @@ void pick_trait(const Trait id)
 
                 map::g_player->change_max_hp(
                         hp_incr,
-                        Verbosity::silent);
+                        Verbose::no);
 
                 map::g_player->restore_hp(
                         hp_incr,
                         false, // Not allowed above max
-                        Verbosity::silent);
+                        Verbose::no);
         }
         break;
 
@@ -1174,7 +1174,7 @@ void pick_trait(const Trait id)
                         prop,
                         PropSrc::intr,
                         true,
-                        Verbosity::silent);
+                        Verbose::no);
         }
         // Fallthrough
         case Trait::strong_spirit:
@@ -1184,12 +1184,12 @@ void pick_trait(const Trait id)
 
                 map::g_player->change_max_sp(
                         spi_incr,
-                        Verbosity::silent);
+                        Verbose::no);
 
                 map::g_player->restore_sp(
                         spi_incr,
                         false, // Not allowed above max
-                        Verbosity::silent);
+                        Verbose::no);
         }
         break;
 
@@ -1203,7 +1203,7 @@ void pick_trait(const Trait id)
                         prop,
                         PropSrc::intr,
                         true,
-                        Verbosity::silent);
+                        Verbose::no);
         }
         break;
 
@@ -1217,7 +1217,7 @@ void pick_trait(const Trait id)
                         prop,
                         PropSrc::intr,
                         true,
-                        Verbosity::silent);
+                        Verbose::no);
         }
         break;
 
@@ -1231,7 +1231,7 @@ void pick_trait(const Trait id)
                         prop,
                         PropSrc::intr,
                         true,
-                        Verbosity::silent);
+                        Verbose::no);
         }
         break;
 
@@ -1245,7 +1245,7 @@ void pick_trait(const Trait id)
                         prop,
                         PropSrc::intr,
                         true,
-                        Verbosity::silent);
+                        Verbose::no);
         }
         break;
 

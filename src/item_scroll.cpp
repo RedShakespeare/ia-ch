@@ -366,8 +366,8 @@ ConsumeItem Scroll::activate(actor::Actor* const actor)
         TRACE_FUNC_BEGIN;
 
         // Check properties which NEVER allows reading or speaking
-        if (!actor->m_properties.allow_read_absolute(Verbosity::verbose) ||
-            !actor->m_properties.allow_speak(Verbosity::verbose))
+        if (!actor->m_properties.allow_read_absolute(Verbose::yes) ||
+            !actor->m_properties.allow_speak(Verbose::yes))
         {
                 return ConsumeItem::no;
         }
@@ -404,7 +404,7 @@ ConsumeItem Scroll::activate(actor::Actor* const actor)
         const std::string crumble_str = "The Manuscript crumbles to dust.";
 
         // Check properties which MAY allow reading, with a random chance
-        if (!actor->m_properties.allow_read_chance(Verbosity::verbose))
+        if (!actor->m_properties.allow_read_chance(Verbose::yes))
         {
                 msg_log::add(crumble_str);
 
@@ -428,12 +428,12 @@ ConsumeItem Scroll::activate(actor::Actor* const actor)
 
         msg_log::add(crumble_str);
 
-        identify(Verbosity::verbose);
+        identify(Verbose::yes);
 
         // Learn spell
         if (spell->player_can_learn())
         {
-                player_spells::learn_spell(id, Verbosity::verbose);
+                player_spells::learn_spell(id, Verbose::yes);
         }
 
         TRACE_FUNC_END;
@@ -447,7 +447,7 @@ Spell* Scroll::make_spell() const
                 m_data->spell_cast_from_scroll);
 }
 
-void Scroll::identify(const Verbosity verbosity)
+void Scroll::identify(const Verbose verbose)
 {
         if (m_data->is_identified)
         {
@@ -456,7 +456,7 @@ void Scroll::identify(const Verbosity verbosity)
 
         m_data->is_identified = true;
 
-        if (verbosity == Verbosity::verbose)
+        if (verbose == Verbose::yes)
         {
                 const std::string name_after =
                         name(ItemRefType::a, ItemRefInf::none);

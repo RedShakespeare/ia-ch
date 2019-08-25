@@ -102,7 +102,7 @@ public:
 
         Matl matl() const override;
 
-        void reveal(const Verbosity verbosity) override;
+        void reveal(const Verbose verbose) override;
 
         void on_revealed_from_searching() override;
 

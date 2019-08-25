@@ -308,13 +308,13 @@ std::vector<std::string> Rod::descr_hook() const
         }
 }
 
-void Rod::identify(const Verbosity verbosity)
+void Rod::identify(const Verbose verbose)
 {
         if (!m_data->is_identified)
         {
                 m_data->is_identified = true;
 
-                if (verbosity == Verbosity::verbose)
+                if (verbose == Verbose::yes)
                 {
                         const std::string name_after =
                                 name(ItemRefType::a,
@@ -382,7 +382,7 @@ void Curing::run_effect()
                 msg_log::add("I feel fine.");
         }
 
-        identify(Verbosity::verbose);
+        identify(Verbose::yes);
 }
 
 void Opening::run_effect()
@@ -404,7 +404,7 @@ void Opening::run_effect()
 
         if (is_any_opened)
         {
-                identify(Verbosity::verbose);
+                identify(Verbose::yes);
         }
 }
 
@@ -418,7 +418,7 @@ void Bless::run_effect()
 
         map::g_player->m_properties.apply(prop);
 
-        identify(Verbosity::verbose);
+        identify(Verbose::yes);
 }
 
 void CloudMinds::run_effect()
@@ -437,7 +437,7 @@ void CloudMinds::run_effect()
                 }
         }
 
-        identify(Verbosity::verbose);
+        identify(Verbose::yes);
 }
 
 void Shockwave::run_effect()
@@ -494,7 +494,7 @@ void Shockwave::run_effect()
                         knockback::run(*actor,
                                        player_pos,
                                        false,
-                                       Verbosity::verbose,
+                                       Verbose::yes,
                                        1); // 1 extra turn paralyzed
                 }
         }
@@ -509,7 +509,7 @@ void Shockwave::run_effect()
 
         snd.run();
 
-        identify(Verbosity::verbose);
+        identify(Verbose::yes);
 }
 
 } // rod

@@ -107,7 +107,7 @@ public:
                 Prop* const prop,
                 PropSrc src = PropSrc::intr,
                 const bool force_effect = false,
-                const Verbosity verbosity = Verbosity::verbose);
+                const Verbose verbose = Verbose::yes);
 
         void apply_natural_props_from_actor_data();
 
@@ -115,7 +115,7 @@ public:
         void add_prop_from_equipped_item(
                 const item::Item* const item,
                 Prop* const prop,
-                const Verbosity verbosity);
+                const Verbose verbose);
 
         void remove_props_for_item(const item::Item* const item);
 
@@ -146,14 +146,14 @@ public:
         int affect_max_spi(const int spi_max) const;
         int affect_shock(const int shock) const;
 
-        bool allow_attack(const Verbosity verbosity) const;
-        bool allow_attack_melee(const Verbosity verbosity) const;
-        bool allow_attack_ranged(const Verbosity verbosity) const;
+        bool allow_attack(const Verbose verbose) const;
+        bool allow_attack_melee(const Verbose verbose) const;
+        bool allow_attack_ranged(const Verbose verbose) const;
         bool allow_see() const;
         bool allow_move() const;
         bool allow_act() const;
-        bool allow_speak(const Verbosity verbosity) const;
-        bool allow_eat(const Verbosity verbosity) const; // Also for drinking
+        bool allow_speak(const Verbose verbose) const;
+        bool allow_eat(const Verbose verbose) const; // Also for drinking
 
         // NOTE: The allow_*_absolute methods below answer if some action could
         // EVER be performed, and the allow_*_chance methods allows the action
@@ -162,10 +162,10 @@ public:
         // will allow the player to try, with a certain percent chance of
         // success, and the scroll will be wasted on failure. (All plain
         // allow_* methods above are also considered "absolute".)
-        bool allow_read_absolute(const Verbosity verbosity) const;
-        bool allow_read_chance(const Verbosity verbosity) const;
-        bool allow_cast_intr_spell_absolute(const Verbosity verbosity) const;
-        bool allow_cast_intr_spell_chance(const Verbosity verbosity) const;
+        bool allow_read_absolute(const Verbose verbose) const;
+        bool allow_read_chance(const Verbose verbose) const;
+        bool allow_cast_intr_spell_absolute(const Verbose verbose) const;
+        bool allow_cast_intr_spell_chance(const Verbose verbose) const;
 
         void on_hit();
         void on_death();
@@ -194,7 +194,7 @@ public:
 
         bool is_resisting_dmg(
                 const DmgType dmg_type,
-                const Verbosity verbosity) const;
+                const Verbose verbose) const;
 
 private:
         void print_resist_msg(const Prop& prop);
@@ -202,7 +202,7 @@ private:
 
         bool try_apply_more_on_existing_intr_prop(
                 const Prop& new_prop,
-                const Verbosity verbosity);
+                const Verbose verbose);
 
         bool is_temporary_negative_prop(const Prop& prop) const;
 

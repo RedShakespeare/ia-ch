@@ -34,7 +34,7 @@ enum class Article;
 enum class DmgMethod;
 enum class DmgType;
 enum class Matl;
-enum class Verbosity;
+enum class Verbose;
 
 
 enum class BurnState
@@ -230,9 +230,9 @@ public:
                 const DmgMethod dmg_method,
                 actor::Actor* const actor = nullptr);
 
-        virtual void reveal(const Verbosity verbosity)
+        virtual void reveal(const Verbose verbose)
         {
-                (void)verbosity;
+                (void)verbose;
         }
 
         virtual void on_revealed_from_searching() {}

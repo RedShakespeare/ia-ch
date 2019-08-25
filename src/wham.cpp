@@ -106,7 +106,7 @@ void run()
 
                         const bool melee_allowed =
                                 map::g_player->m_properties.allow_attack_melee(
-                                        Verbosity::verbose);
+                                        Verbose::yes);
 
                         if (melee_allowed)
                         {

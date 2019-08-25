@@ -238,53 +238,53 @@ public:
                 return false;
         }
 
-        virtual bool allow_attack_melee(const Verbosity verbosity) const
+        virtual bool allow_attack_melee(const Verbose verbose) const
         {
-                (void)verbosity;
+                (void)verbose;
                 return true;
         }
 
-        virtual bool allow_attack_ranged(const Verbosity verbosity) const
+        virtual bool allow_attack_ranged(const Verbose verbose) const
         {
-                (void)verbosity;
+                (void)verbose;
                 return true;
         }
 
-        virtual bool allow_speak(const Verbosity verbosity) const
+        virtual bool allow_speak(const Verbose verbose) const
         {
-                (void)verbosity;
+                (void)verbose;
                 return true;
         }
 
-        virtual bool allow_eat(const Verbosity verbosity) const
+        virtual bool allow_eat(const Verbose verbose) const
         {
-                (void)verbosity;
+                (void)verbose;
                 return true;
         }
 
-        virtual bool allow_read_absolute(const Verbosity verbosity) const
+        virtual bool allow_read_absolute(const Verbose verbose) const
         {
-                (void)verbosity;
+                (void)verbose;
                 return true;
         }
 
-        virtual bool allow_read_chance(const Verbosity verbosity) const
+        virtual bool allow_read_chance(const Verbose verbose) const
         {
-                (void)verbosity;
+                (void)verbose;
                 return true;
         }
 
         virtual bool allow_cast_intr_spell_absolute(
-                const Verbosity verbosity) const
+                const Verbose verbose) const
         {
-                (void)verbosity;
+                (void)verbose;
                 return true;
         }
 
         virtual bool allow_cast_intr_spell_chance(
-                const Verbosity verbosity) const
+                const Verbose verbose) const
         {
-                (void)verbosity;
+                (void)verbose;
                 return true;
         }
 
@@ -354,9 +354,9 @@ public:
                 }
         }
 
-        bool allow_attack_melee(const Verbosity verbosity) const override;
+        bool allow_attack_melee(const Verbose verbose) const override;
 
-        bool allow_attack_ranged(const Verbosity verbosity) const override;
+        bool allow_attack_ranged(const Verbose verbose) const override;
 
         void on_applied() override;
 };
@@ -491,7 +491,7 @@ public:
 
         bool should_update_vision_on_toggled() const override;
 
-        bool allow_read_absolute(const Verbosity verbosity) const override;
+        bool allow_read_absolute(const Verbose verbose) const override;
 
         bool allow_see() const override
         {
@@ -713,10 +713,10 @@ public:
         PropBurning() :
                 Prop(PropId::burning) {}
 
-        bool allow_read_chance(const Verbosity verbosity) const override;
+        bool allow_read_chance(const Verbose verbose) const override;
 
         bool allow_cast_intr_spell_chance(
-                const Verbosity verbosity) const override;
+                const Verbose verbose) const override;
 
         int ability_mod(const AbilityId ability) const override
         {
@@ -731,7 +731,7 @@ public:
                 return true;
         }
 
-        bool allow_attack_ranged(const Verbosity verbosity) const override;
+        bool allow_attack_ranged(const Verbose verbose) const override;
 
         PropEnded on_tick() override;
 };
@@ -753,11 +753,11 @@ public:
 
         PropEnded affect_move_dir(const P& actor_pos, Dir& dir) override;
 
-        bool allow_attack_melee(const Verbosity verbosity) const override;
-        bool allow_attack_ranged(const Verbosity verbosity) const override;
-        bool allow_read_absolute(const Verbosity verbosity) const override;
+        bool allow_attack_melee(const Verbose verbose) const override;
+        bool allow_attack_ranged(const Verbose verbose) const override;
+        bool allow_read_absolute(const Verbose verbose) const override;
         bool allow_cast_intr_spell_absolute(
-                const Verbosity verbosity) const override;
+                const Verbose verbose) const override;
 };
 
 class PropStunned: public Prop
@@ -925,15 +925,15 @@ public:
                 return false;
         }
 
-        bool allow_attack_melee(const Verbosity verbosity) const override
+        bool allow_attack_melee(const Verbose verbose) const override
         {
-                (void)verbosity;
+                (void)verbose;
                 return false;
         }
 
-        bool allow_attack_ranged(const Verbosity verbosity) const override
+        bool allow_attack_ranged(const Verbose verbose) const override
         {
-                (void)verbosity;
+                (void)verbose;
                 return false;
         }
 };
@@ -944,15 +944,15 @@ public:
         PropDisabledAttack() :
                 Prop(PropId::disabled_attack) {}
 
-        bool allow_attack_ranged(const Verbosity verbosity) const override
+        bool allow_attack_ranged(const Verbose verbose) const override
         {
-                (void)verbosity;
+                (void)verbose;
                 return false;
         }
 
-        bool allow_attack_melee(const Verbosity verbosity) const override
+        bool allow_attack_melee(const Verbose verbose) const override
         {
-                (void)verbosity;
+                (void)verbose;
                 return false;
         }
 };
@@ -963,9 +963,9 @@ public:
         PropDisabledMelee() :
                 Prop(PropId::disabled_melee) {}
 
-        bool allow_attack_melee(const Verbosity verbosity) const override
+        bool allow_attack_melee(const Verbose verbose) const override
         {
-                (void)verbosity;
+                (void)verbose;
                 return false;
         }
 };
@@ -976,9 +976,9 @@ public:
         PropDisabledRanged() :
                 Prop(PropId::disabled_ranged) {}
 
-        bool allow_attack_ranged(const Verbosity verbosity) const override
+        bool allow_attack_ranged(const Verbose verbose) const override
         {
-                (void)verbosity;
+                (void)verbose;
                 return false;
         }
 };
@@ -1010,15 +1010,15 @@ public:
                 return false;
         }
 
-        bool allow_attack_ranged(const Verbosity verbosity) const override
+        bool allow_attack_ranged(const Verbose verbose) const override
         {
-                (void)verbosity;
+                (void)verbose;
                 return false;
         }
 
-        bool allow_attack_melee(const Verbosity verbosity) const override
+        bool allow_attack_melee(const Verbose verbose) const override
         {
-                (void)verbosity;
+                (void)verbose;
                 return false;
         }
 };
@@ -1053,15 +1053,15 @@ public:
                 return false;
         }
 
-        bool allow_attack_ranged(const Verbosity verbosity) const override
+        bool allow_attack_ranged(const Verbose verbose) const override
         {
-                (void)verbosity;
+                (void)verbose;
                 return false;
         }
 
-        bool allow_attack_melee(const Verbosity verbosity) const override
+        bool allow_attack_melee(const Verbose verbose) const override
         {
-                (void)verbosity;
+                (void)verbose;
                 return false;
         }
 
@@ -1118,9 +1118,9 @@ public:
 
         PropEnded affect_move_dir(const P& actor_pos, Dir& dir) override;
 
-        bool allow_read_absolute(const Verbosity verbosity) const override;
+        bool allow_read_absolute(const Verbose verbose) const override;
         bool allow_cast_intr_spell_absolute(
-                const Verbosity verbosity) const override;
+                const Verbose verbose) const override;
 
         bool is_resisting_other_prop(const PropId prop_id) const override;
 
@@ -1502,7 +1502,7 @@ public:
         PropSwimming() :
                 Prop(PropId::swimming) {}
 
-        bool allow_read_absolute(const Verbosity verbosity) const override;
+        bool allow_read_absolute(const Verbose verbose) const override;
 
         bool affect_actor_color(Color& color) const override
         {
@@ -1511,7 +1511,7 @@ public:
                 return true;
         }
 
-        bool allow_attack_ranged(const Verbosity verbosity) const override;
+        bool allow_attack_ranged(const Verbose verbose) const override;
 
         int ability_mod(const AbilityId ability) const override
         {
@@ -1567,7 +1567,7 @@ public:
         PropCannotReadCurse() :
                 Prop(PropId::cannot_read_curse) {}
 
-        bool allow_read_absolute(const Verbosity verbosity) const override;
+        bool allow_read_absolute(const Verbose verbose) const override;
 };
 
 #endif // PROPERTY_HPP

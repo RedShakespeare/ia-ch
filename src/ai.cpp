@@ -32,7 +32,7 @@ bool try_cast_random_spell(actor::Mon& mon)
 {
         if (!mon.is_alive() ||
             mon.m_spells.empty() ||
-            !mon.m_properties.allow_cast_intr_spell_absolute(Verbosity::silent))
+            !mon.m_properties.allow_cast_intr_spell_absolute(Verbose::no))
         {
                 return false;
         }

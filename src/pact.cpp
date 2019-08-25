@@ -589,7 +589,7 @@ bool GainXp::is_allowed_to_offer_now() const
 
 void GainXp::run_effect()
 {
-        game::incr_player_xp(50, Verbosity::silent);
+        game::incr_player_xp(50, Verbose::no);
 }
 
 // -----------------------------------------------------------------------------
@@ -1015,7 +1015,7 @@ std::string UnlearnSpell::offer_msg() const
 
 void UnlearnSpell::run_effect()
 {
-        player_spells::unlearn_spell(m_spell_to_unlearn, Verbosity::verbose);
+        player_spells::unlearn_spell(m_spell_to_unlearn, Verbose::yes);
 }
 
 std::vector<SpellId> UnlearnSpell::make_spell_bucket() const

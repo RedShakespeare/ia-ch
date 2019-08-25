@@ -131,7 +131,7 @@ void ReflTalisman::on_pickup_hook()
 
         prop->set_indefinite();
 
-        add_carrier_prop(prop, Verbosity::silent);
+        add_carrier_prop(prop, Verbose::no);
 }
 
 void ReflTalisman::on_removed_from_inv_hook()
@@ -163,7 +163,7 @@ void TeleCtrlTalisman::on_pickup_hook()
 
         prop->set_indefinite();
 
-        add_carrier_prop(prop, Verbosity::silent);
+        add_carrier_prop(prop, Verbose::no);
 }
 
 void TeleCtrlTalisman::on_removed_from_inv_hook()
@@ -432,7 +432,7 @@ void SpiritDagger::on_melee_hit(actor::Actor& actor_hit, const int dmg)
                 }
         }
 
-        actor::hit_sp(*m_actor_carrying, 1, Verbosity::verbose);
+        actor::hit_sp(*m_actor_carrying, 1, Verbose::yes);
 }
 
 void SpiritDagger::specific_dmg_mod(
@@ -464,24 +464,24 @@ OrbOfLife::OrbOfLife(ItemData* const item_data) :
 
 void OrbOfLife::on_pickup_hook()
 {
-        map::g_player->change_max_hp(4, Verbosity::verbose);
+        map::g_player->change_max_hp(4, Verbose::yes);
 
         auto prop_r_poison = new PropRPoison();
 
         prop_r_poison->set_indefinite();
 
-        add_carrier_prop(prop_r_poison, Verbosity::verbose);
+        add_carrier_prop(prop_r_poison, Verbose::yes);
 
         auto prop_r_disease = new PropRDisease();
 
         prop_r_disease->set_indefinite();
 
-        add_carrier_prop(prop_r_disease, Verbosity::verbose);
+        add_carrier_prop(prop_r_disease, Verbose::yes);
 }
 
 void OrbOfLife::on_removed_from_inv_hook()
 {
-        map::g_player->change_max_hp(-4, Verbosity::verbose);
+        map::g_player->change_max_hp(-4, Verbose::yes);
 
         clear_carrier_props();
 }

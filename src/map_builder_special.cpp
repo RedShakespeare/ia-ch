@@ -664,7 +664,7 @@ void MapBuilderRatCave::handle_template_pos(const P& p, const char c)
                                 prop,
                                 PropSrc::intr,
                                 false,
-                                Verbosity::silent);
+                                Verbose::no);
                 }
         }
         break;

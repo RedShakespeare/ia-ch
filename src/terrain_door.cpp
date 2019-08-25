@@ -716,11 +716,11 @@ void Door::bump(actor::Actor& actor_bumping)
 
 } // bump
 
-void Door::reveal(const Verbosity verbosity)
+void Door::reveal(const Verbose verbose)
 {
         m_is_hidden = false;
 
-        if ((verbosity == Verbosity::verbose) &&
+        if ((verbose == Verbose::yes) &&
             map::g_cells.at(m_pos).is_seen_by_player)
         {
                 msg_log::add("A secret is revealed.");
@@ -1283,7 +1283,7 @@ void Door::try_open(actor::Actor* actor_trying)
                 {
                         TRACE << "Was secret, now revealing" << std::endl;
 
-                        reveal(Verbosity::verbose);
+                        reveal(Verbose::yes);
                 }
 
                 m_actor_currently_opening = actor_trying;

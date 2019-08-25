@@ -84,7 +84,7 @@ TEST_CASE("Saving and loading the game")
                 inv.put_in_slot(
                         SlotId::wpn,
                         item,
-                        Verbosity::verbose);
+                        Verbose::yes);
 
                 map::g_player->set_unarmed_wpn(
                         static_cast<item::Wpn*>(
@@ -96,7 +96,7 @@ TEST_CASE("Saving and loading the game")
                 inv.put_in_slot(
                         SlotId::body,
                         item,
-                        Verbosity::verbose);
+                        Verbose::yes);
 
                 item = item::make(item::Id::pistol_mag);
                 static_cast<item::AmmoMag*>(item)->m_ammo = 1;
@@ -176,11 +176,11 @@ TEST_CASE("Saving and loading the game")
                 // Learned spells
                 player_spells::learn_spell(
                         SpellId::bless,
-                        Verbosity::silent);
+                        Verbose::no);
 
                 player_spells::learn_spell(
                         SpellId::aza_wrath,
-                        Verbosity::silent);
+                        Verbose::no);
 
                 // Applied properties
                 auto& props = map::g_player->m_properties;

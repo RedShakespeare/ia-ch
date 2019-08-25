@@ -63,7 +63,7 @@ static bool try_use_talisman_of_resurrection(actor::Actor& actor)
         actor.restore_hp(
                 999,
                 false,
-                Verbosity::silent);
+                Verbose::no);
 
         actor.m_properties.end_prop(
                 PropId::wound,

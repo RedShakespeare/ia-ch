@@ -1195,7 +1195,7 @@ AiAvailAttacksData Mon::avail_attacks(Actor& defender) const
 {
         AiAvailAttacksData result;
 
-        if (!m_properties.allow_attack(Verbosity::silent))
+        if (!m_properties.allow_attack(Verbose::no))
         {
                 return result;
         }
@@ -1204,7 +1204,7 @@ AiAvailAttacksData Mon::avail_attacks(Actor& defender) const
 
         if (result.is_melee)
         {
-                if (!m_properties.allow_attack_melee(Verbosity::silent))
+                if (!m_properties.allow_attack_melee(Verbose::no))
                 {
                         return result;
                 }
@@ -1220,7 +1220,7 @@ AiAvailAttacksData Mon::avail_attacks(Actor& defender) const
         }
         else // Ranged attack
         {
-                if (!m_properties.allow_attack_ranged(Verbosity::silent))
+                if (!m_properties.allow_attack_ranged(Verbose::no))
                 {
                         return result;
                 }

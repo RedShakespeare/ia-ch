@@ -80,7 +80,7 @@ public:
         void put_in_slot(
                 const SlotId id,
                 item::Item* item,
-                Verbosity verbosity);
+                Verbose verbose);
 
         void put_in_backpack(item::Item* item);
 
@@ -158,7 +158,7 @@ private:
         void equip(
                 const SlotId id,
                 item::Item* const item,
-                Verbosity verbosity);
+                Verbose verbose);
 
         void equip_from_backpack(const SlotId id, const size_t backpack_idx);
 

@@ -548,7 +548,7 @@ void handle(const GameCmd cmd)
         {
                 const bool is_allowed =
                         map::g_player->m_properties
-                        .allow_attack_ranged(Verbosity::verbose);
+                        .allow_attack_ranged(Verbose::yes);
 
                 if (is_allowed)
                 {
@@ -813,7 +813,7 @@ void handle(const GameCmd cmd)
                 {
                         const bool is_allowed =
                                 map::g_player->m_properties
-                                .allow_attack_ranged(Verbosity::verbose);
+                                .allow_attack_ranged(Verbose::yes);
 
                         if (is_allowed)
                         {
@@ -945,7 +945,7 @@ void handle(const GameCmd cmd)
 
         case GameCmd::debug_f3:
         {
-                game::incr_player_xp(100, Verbosity::silent);
+                game::incr_player_xp(100, Verbose::no);
         }
         break;
 

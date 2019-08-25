@@ -68,10 +68,10 @@ const size_t g_max_nr_actors_on_map = 125;
 // applying to enable/disable printing to the message log, animating, or other
 // such "side effects". For example when loading a saved game, we may want to do
 // these things silently.
-enum class Verbosity
+enum class Verbose
 {
-        silent,
-        verbose,
+        no,
+        yes,
 };
 
 enum class UpdateScreen

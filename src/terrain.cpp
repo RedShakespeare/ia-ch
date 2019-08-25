@@ -3371,12 +3371,12 @@ DidTriggerTrap Tomb::trigger_trap(actor::Actor* const actor)
                                 {
                                         mon->change_max_hp(
                                                 mon->m_hp,
-                                                Verbosity::silent);
+                                                Verbose::no);
 
                                         mon->restore_hp(
                                                 999,
                                                 false,
-                                                Verbosity::silent);
+                                                Verbose::no);
                                 }
                         });
         }
@@ -3796,7 +3796,7 @@ void Fountain::bump(actor::Actor& actor_bumping)
                         }
                 }
 
-                if (!properties.allow_eat(Verbosity::verbose))
+                if (!properties.allow_eat(Verbose::yes))
                 {
                         return;
                 }
@@ -3811,8 +3811,8 @@ void Fountain::bump(actor::Actor& actor_bumping)
                 case FountainEffect::refreshing:
                 {
                         msg_log::add("It's very refreshing.");
-                        map::g_player->restore_hp(1, false, Verbosity::silent);
-                        map::g_player->restore_sp(1, false, Verbosity::silent);
+                        map::g_player->restore_hp(1, false, Verbose::no);
+                        map::g_player->restore_sp(1, false, Verbose::no);
                         map::g_player->restore_shock(5, true);
                 }
                 break;

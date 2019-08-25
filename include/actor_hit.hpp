@@ -33,7 +33,7 @@ ActorDied hit(
 ActorDied hit_sp(
         Actor& actor,
         const int dmg,
-        const Verbosity verbosity = Verbosity::verbose);
+        const Verbose verbose = Verbose::yes);
 
 } // actor
 

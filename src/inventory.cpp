@@ -118,7 +118,7 @@ void Inventory::load()
 
                         item->on_pickup(*m_owning_actor);
 
-                        item->on_equip(Verbosity::silent);
+                        item->on_equip(Verbose::no);
                 }
         }
 
@@ -547,7 +547,7 @@ void Inventory::equip_backpack_item(const size_t backpack_idx,
         equip(
                 slot_id,
                 item,
-                Verbosity::verbose);
+                Verbose::yes);
 
         sort_backpack();
 }
@@ -672,7 +672,7 @@ void Inventory::put_in_intrinsics(item::Item* item)
 void Inventory::equip(
         const SlotId id,
         item::Item* const item,
-        Verbosity verbosity)
+        Verbose verbose)
 {
         ASSERT(id != SlotId::END);
 
@@ -702,22 +702,22 @@ void Inventory::equip(
 
         slot->item = item;
 
-        if (m_owning_actor->is_player() && (verbosity == Verbosity::verbose))
+        if (m_owning_actor->is_player() && (verbose == Verbose::yes))
         {
                 print_equip_message(id, *item);
         }
 
-        item->on_equip(verbosity);
+        item->on_equip(verbose);
 }
 
 void Inventory::put_in_slot(
         const SlotId id,
         item::Item* item,
-        Verbosity verbosity)
+        Verbose verbose)
 {
         item->on_pickup(*m_owning_actor);
 
-        equip(id, item, verbosity);
+        equip(id, item, verbose);
 }
 
 void Inventory::print_equip_message(

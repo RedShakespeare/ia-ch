@@ -120,14 +120,14 @@ TimeData start_time()
         return s_start_time;
 }
 
-void incr_player_xp(const int xp_gained, const Verbosity verbosity)
+void incr_player_xp(const int xp_gained, const Verbose verbose)
 {
         if (!map::g_player->is_alive())
         {
                 return;
         }
 
-        if (verbosity == Verbosity::verbose)
+        if (verbose == Verbose::yes)
         {
                 msg_log::add("(+" + std::to_string(xp_gained) + "% XP)");
         }
@@ -158,12 +158,12 @@ void incr_player_xp(const int xp_gained, const Verbosity verbosity)
 
                                 map::g_player->change_max_hp(
                                         hp_gained,
-                                        Verbosity::silent);
+                                        Verbose::no);
 
                                 map::g_player->restore_hp(
                                         hp_gained,
                                         false,
-                                        Verbosity::silent);
+                                        Verbose::no);
                         }
 
                         {
@@ -171,12 +171,12 @@ void incr_player_xp(const int xp_gained, const Verbosity verbosity)
 
                                 map::g_player->change_max_sp(
                                         spi_gained,
-                                        Verbosity::silent);
+                                        Verbose::no);
 
                                 map::g_player->restore_sp(
                                         spi_gained,
                                         false,
-                                        Verbosity::silent);
+                                        Verbose::no);
                         }
 
                         player_bon::on_player_gained_lvl(s_clvl);

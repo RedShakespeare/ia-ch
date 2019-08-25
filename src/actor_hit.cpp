@@ -194,13 +194,13 @@ ActorDied hit(
         }
 
         // Property resists damage?
-        const auto verbosity =
+        const auto verbose =
                 actor.is_alive()
-                ? Verbosity::verbose
-                : Verbosity::silent;
+                ? Verbose::yes
+                : Verbose::no;
 
         const bool is_dmg_resisted =
-                actor.m_properties.is_resisting_dmg(dmg_type, verbosity);
+                actor.m_properties.is_resisting_dmg(dmg_type, verbose);
 
         if (is_dmg_resisted)
         {
@@ -309,9 +309,9 @@ ActorDied hit(
 ActorDied hit_sp(
         Actor& actor,
         const int dmg,
-        const Verbosity verbosity)
+        const Verbose verbose)
 {
-        if (verbosity == Verbosity::verbose)
+        if (verbose == Verbose::yes)
         {
                 if (actor.is_player())
                 {

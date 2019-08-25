@@ -398,9 +398,9 @@ void PropZuulPossessPriest::on_placed()
                         prop,
                         PropSrc::intr,
                         true,
-                        Verbosity::silent);
+                        Verbose::no);
 
-                actor->restore_hp(999, false, Verbosity::silent);
+                actor->restore_hp(999, false, Verbose::no);
         }
 }
 
@@ -479,9 +479,9 @@ void PropAiming::on_hit()
         m_owner->m_properties.end_prop(id());
 }
 
-bool PropTerrified::allow_attack_melee(const Verbosity verbosity) const
+bool PropTerrified::allow_attack_melee(const Verbose verbose) const
 {
-        if (m_owner->is_player() && verbosity == Verbosity::verbose)
+        if (m_owner->is_player() && verbose == Verbose::yes)
         {
                 msg_log::add("I am too terrified to engage in close combat!");
         }
@@ -489,9 +489,9 @@ bool PropTerrified::allow_attack_melee(const Verbosity verbosity) const
         return false;
 }
 
-bool PropTerrified::allow_attack_ranged(const Verbosity verbosity) const
+bool PropTerrified::allow_attack_ranged(const Verbose verbose) const
 {
-        (void)verbosity;
+        (void)verbose;
         return true;
 }
 
@@ -734,9 +734,9 @@ void PropMindSap::on_more(const Prop& new_prop)
                 ->m_nr_drained;
 }
 
-bool PropConfused::allow_read_absolute(const Verbosity verbosity) const
+bool PropConfused::allow_read_absolute(const Verbose verbose) const
 {
-        if (m_owner->is_player() && verbosity == Verbosity::verbose)
+        if (m_owner->is_player() && verbose == Verbose::yes)
         {
                 msg_log::add("I am too confused to read.");
         }
@@ -745,10 +745,10 @@ bool PropConfused::allow_read_absolute(const Verbosity verbosity) const
 }
 
 bool PropConfused::allow_cast_intr_spell_absolute(
-        const Verbosity verbosity) const
+        const Verbose verbose) const
 {
         if (m_owner->is_player() &&
-            (verbosity == Verbosity::verbose))
+            (verbose == Verbose::yes))
         {
                 msg_log::add("I am too confused to concentrate!");
         }
@@ -756,9 +756,9 @@ bool PropConfused::allow_cast_intr_spell_absolute(
         return false;
 }
 
-bool PropConfused::allow_attack_melee(const Verbosity verbosity) const
+bool PropConfused::allow_attack_melee(const Verbose verbose) const
 {
-        (void)verbosity;
+        (void)verbose;
 
         if (m_owner != map::g_player)
         {
@@ -768,9 +768,9 @@ bool PropConfused::allow_attack_melee(const Verbosity verbosity) const
         return true;
 }
 
-bool PropConfused::allow_attack_ranged(const Verbosity verbosity) const
+bool PropConfused::allow_attack_ranged(const Verbose verbose) const
 {
-        (void)verbosity;
+        (void)verbose;
 
         if (m_owner != map::g_player)
         {
@@ -914,9 +914,9 @@ void PropFrenzied::on_end()
         }
 }
 
-bool PropFrenzied::allow_read_absolute(const Verbosity verbosity) const
+bool PropFrenzied::allow_read_absolute(const Verbose verbose) const
 {
-        if (m_owner->is_player() && verbosity == Verbosity::verbose)
+        if (m_owner->is_player() && verbose == Verbose::yes)
         {
                 msg_log::add("I am too enraged to read!");
         }
@@ -925,10 +925,10 @@ bool PropFrenzied::allow_read_absolute(const Verbosity verbosity) const
 }
 
 bool PropFrenzied::allow_cast_intr_spell_absolute(
-        const Verbosity verbosity) const
+        const Verbose verbose) const
 {
         if (m_owner->is_player() &&
-            (verbosity == Verbosity::verbose))
+            (verbose == Verbose::yes))
         {
                 msg_log::add("I am too enraged to concentrate!");
         }
@@ -948,12 +948,12 @@ PropEnded PropBurning::on_tick()
         return PropEnded::no;
 }
 
-bool PropBurning::allow_read_chance(const Verbosity verbosity) const
+bool PropBurning::allow_read_chance(const Verbose verbose) const
 {
         if (!rnd::coin_toss())
         {
                 if (m_owner->is_player() &&
-                    (verbosity == Verbosity::verbose))
+                    (verbose == Verbose::yes))
                 {
                         msg_log::add("I fail to concentrate!");
                 }
@@ -964,12 +964,12 @@ bool PropBurning::allow_read_chance(const Verbosity verbosity) const
         return true;
 }
 
-bool PropBurning::allow_cast_intr_spell_chance(const Verbosity verbosity) const
+bool PropBurning::allow_cast_intr_spell_chance(const Verbose verbose) const
 {
         if (!rnd::coin_toss())
         {
                 if (m_owner->is_player() &&
-                    (verbosity == Verbosity::verbose))
+                    (verbose == Verbose::yes))
                 {
                         msg_log::add("I fail to concentrate!");
                 }
@@ -980,9 +980,9 @@ bool PropBurning::allow_cast_intr_spell_chance(const Verbosity verbosity) const
         return true;
 }
 
-bool PropBurning::allow_attack_ranged(const Verbosity verbosity) const
+bool PropBurning::allow_attack_ranged(const Verbose verbose) const
 {
-        if (m_owner->is_player() && (verbosity == Verbosity::verbose))
+        if (m_owner->is_player() && (verbose == Verbose::yes))
         {
                 msg_log::add("Not while burning.");
         }
@@ -1015,10 +1015,10 @@ PropActResult PropRecloaks::on_act()
         return PropActResult();
 }
 
-bool PropBlind::allow_read_absolute(const Verbosity verbosity) const
+bool PropBlind::allow_read_absolute(const Verbose verbose) const
 {
         if (m_owner->is_player() &&
-            (verbosity == Verbosity::verbose))
+            (verbose == Verbose::yes))
         {
                 msg_log::add("I cannot read while blind.");
         }
@@ -1450,7 +1450,7 @@ PropActResult PropVortex::on_act()
                         *map::g_player,
                         knockback_from_pos,
                         false,
-                        Verbosity::silent);
+                        Verbose::no);
 
                 pull_cooldown = 2;
 
@@ -1541,7 +1541,7 @@ void PropSplitsOnDeath::on_death()
                                         new PropBurning(),
                                         PropSrc::intr,
                                         false, // Do not force effect
-                                        Verbosity::silent);
+                                        Verbose::no);
                         }
                 });
 
@@ -1702,7 +1702,7 @@ void PropRegenerates::on_std_turn()
         if (m_owner->is_alive() &&
             !m_owner->m_properties.has(PropId::burning))
         {
-                m_owner->restore_hp(2, false, Verbosity::silent);
+                m_owner->restore_hp(2, false, Verbose::no);
         }
 }
 
@@ -2325,7 +2325,7 @@ PropEnded PropMagicSearching::on_tick()
 
                                 if (t->is_hidden())
                                 {
-                                        t->reveal(Verbosity::verbose);
+                                        t->reveal(Verbose::yes);
 
                                         t->on_revealed_from_searching();
 
@@ -2371,9 +2371,9 @@ PropEnded PropMagicSearching::on_tick()
         return PropEnded::no;
 }
 
-bool PropSwimming::allow_read_absolute(const Verbosity verbosity) const
+bool PropSwimming::allow_read_absolute(const Verbose verbose) const
 {
-        if (m_owner->is_player() && verbosity == Verbosity::verbose)
+        if (m_owner->is_player() && verbose == Verbose::yes)
         {
                 msg_log::add("I cannot read this while swimming.");
         }
@@ -2381,9 +2381,9 @@ bool PropSwimming::allow_read_absolute(const Verbosity verbosity) const
         return false;
 }
 
-bool PropSwimming::allow_attack_ranged(const Verbosity verbosity) const
+bool PropSwimming::allow_attack_ranged(const Verbose verbose) const
 {
-        if (m_owner->is_player() && (verbosity == Verbosity::verbose))
+        if (m_owner->is_player() && (verbose == Verbose::yes))
         {
                 msg_log::add("Not while swimming.");
         }
@@ -2391,9 +2391,9 @@ bool PropSwimming::allow_attack_ranged(const Verbosity verbosity) const
         return false;
 }
 
-bool PropCannotReadCurse::allow_read_absolute(const Verbosity verbosity) const
+bool PropCannotReadCurse::allow_read_absolute(const Verbose verbose) const
 {
-        if (m_owner->is_player() && verbosity == Verbosity::verbose)
+        if (m_owner->is_player() && verbose == Verbose::yes)
         {
                 msg_log::add("I cannot read it.");
         }

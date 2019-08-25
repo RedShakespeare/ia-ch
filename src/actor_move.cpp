@@ -59,7 +59,7 @@ static void player_bump_known_hostile_mon(actor::Mon& mon)
 {
         auto& player = *map::g_player;
 
-        if (!player.m_properties.allow_attack_melee(Verbosity::verbose))
+        if (!player.m_properties.allow_attack_melee(Verbose::yes))
         {
                 return;
         }

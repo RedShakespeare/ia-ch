@@ -45,7 +45,7 @@ void PropHandler::apply_natural_props_from_actor_data()
 
                         prop->set_indefinite();
 
-                        apply(prop, PropSrc::intr, true, Verbosity::silent);
+                        apply(prop, PropSrc::intr, true, Verbose::no);
                 }
         }
 }
@@ -143,7 +143,7 @@ void PropHandler::apply(
         Prop* const prop,
         PropSrc src,
         const bool force_effect,
-        const Verbosity verbosity)
+        const Verbose verbose)
 {
         prop->m_owner = m_owner;
 
@@ -156,7 +156,7 @@ void PropHandler::apply(
         {
                 if (is_resisting_prop(prop->m_id))
                 {
-                        if ((verbosity == Verbosity::verbose) &&
+                        if ((verbose == Verbose::yes) &&
                             m_owner->is_alive())
                         {
                                 print_resist_msg(*prop);
@@ -171,7 +171,7 @@ void PropHandler::apply(
         if (prop->m_src == PropSrc::intr)
         {
                 const bool did_apply_more =
-                        try_apply_more_on_existing_intr_prop(*prop, verbosity);
+                        try_apply_more_on_existing_intr_prop(*prop, verbose);
 
                 if (did_apply_more)
                 {
@@ -185,7 +185,7 @@ void PropHandler::apply(
 
         incr_prop_count(prop->m_id);
 
-        if ((verbosity == Verbosity::verbose) && m_owner->is_alive())
+        if ((verbose == Verbose::yes) && m_owner->is_alive())
         {
                 if (prop->should_update_vision_on_toggled())
                 {
@@ -272,7 +272,7 @@ void PropHandler::print_start_msg(const Prop& prop)
 
 bool PropHandler::try_apply_more_on_existing_intr_prop(
         const Prop& new_prop,
-        const Verbosity verbosity)
+        const Verbose verbose)
 {
         // NOTE: If an existing property exists which the new property shall be
         // merged with, we keep the old property object and discard the new one
@@ -305,7 +305,7 @@ bool PropHandler::try_apply_more_on_existing_intr_prop(
                                         new_prop.m_nr_turns_left);
                 }
 
-                if (verbosity == Verbosity::verbose)
+                if (verbose == Verbose::yes)
                 {
                         print_start_msg(*old_prop);
                 }
@@ -336,7 +336,7 @@ bool PropHandler::try_apply_more_on_existing_intr_prop(
 void PropHandler::add_prop_from_equipped_item(
         const item::Item* const item,
         Prop* const prop,
-        const Verbosity verbosity)
+        const Verbose verbose)
 {
         prop->m_item_applying = item;
 
@@ -344,7 +344,7 @@ void PropHandler::add_prop_from_equipped_item(
                 prop,
                 PropSrc::inv,
                 true,
-                verbosity);
+                verbose);
 }
 
 Prop* PropHandler::prop(const PropId id) const
@@ -833,7 +833,7 @@ bool PropHandler::is_resisting_prop(const PropId id) const
 }
 
 bool PropHandler::is_resisting_dmg(const DmgType dmg_type,
-                                   const Verbosity verbosity) const
+                                   const Verbose verbose) const
 {
         DmgResistData res_data;
 
@@ -848,7 +848,7 @@ bool PropHandler::is_resisting_dmg(const DmgType dmg_type,
         }
 
         if (res_data.is_resisted &&
-            (verbosity == Verbosity::verbose))
+            (verbose == Verbose::yes))
         {
                 if (m_owner->is_player())
                 {
@@ -948,12 +948,12 @@ void PropHandler::affect_move_dir(const P& actor_pos, Dir& dir) const
         }
 }
 
-bool PropHandler::allow_attack(const Verbosity verbosity) const
+bool PropHandler::allow_attack(const Verbose verbose) const
 {
         for (auto& prop : m_props)
         {
-                if (!prop->allow_attack_melee(verbosity) &&
-                    !prop->allow_attack_ranged(verbosity))
+                if (!prop->allow_attack_melee(verbose) &&
+                    !prop->allow_attack_ranged(verbose))
                 {
                         return false;
                 }
@@ -962,11 +962,11 @@ bool PropHandler::allow_attack(const Verbosity verbosity) const
         return true;
 }
 
-bool PropHandler::allow_attack_melee(const Verbosity verbosity) const
+bool PropHandler::allow_attack_melee(const Verbose verbose) const
 {
         for (auto& prop : m_props)
         {
-                if (!prop->allow_attack_melee(verbosity))
+                if (!prop->allow_attack_melee(verbose))
                 {
                         return false;
                 }
@@ -975,11 +975,11 @@ bool PropHandler::allow_attack_melee(const Verbosity verbosity) const
         return true;
 }
 
-bool PropHandler::allow_attack_ranged(const Verbosity verbosity) const
+bool PropHandler::allow_attack_ranged(const Verbose verbose) const
 {
         for (auto& prop : m_props)
         {
-                if (!prop->allow_attack_ranged(verbosity))
+                if (!prop->allow_attack_ranged(verbose))
                 {
                         return false;
                 }
@@ -1014,11 +1014,11 @@ bool PropHandler::allow_act() const
         return true;
 }
 
-bool PropHandler::allow_read_absolute(const Verbosity verbosity) const
+bool PropHandler::allow_read_absolute(const Verbose verbose) const
 {
         for (auto& prop : m_props)
         {
-                if (!prop->allow_read_absolute(verbosity))
+                if (!prop->allow_read_absolute(verbose))
                 {
                         return false;
                 }
@@ -1027,11 +1027,11 @@ bool PropHandler::allow_read_absolute(const Verbosity verbosity) const
         return true;
 }
 
-bool PropHandler::allow_read_chance(const Verbosity verbosity) const
+bool PropHandler::allow_read_chance(const Verbose verbose) const
 {
         for (auto& prop : m_props)
         {
-                if (!prop->allow_read_chance(verbosity))
+                if (!prop->allow_read_chance(verbose))
                 {
                         return false;
                 }
@@ -1041,11 +1041,11 @@ bool PropHandler::allow_read_chance(const Verbosity verbosity) const
 }
 
 bool PropHandler::allow_cast_intr_spell_absolute(
-        const Verbosity verbosity) const
+        const Verbose verbose) const
 {
         for (auto& prop : m_props)
         {
-                if (!prop->allow_cast_intr_spell_absolute(verbosity))
+                if (!prop->allow_cast_intr_spell_absolute(verbose))
                 {
                         return false;
                 }
@@ -1055,11 +1055,11 @@ bool PropHandler::allow_cast_intr_spell_absolute(
 }
 
 bool PropHandler::allow_cast_intr_spell_chance(
-        const Verbosity verbosity) const
+        const Verbose verbose) const
 {
         for (auto& prop : m_props)
         {
-                if (!prop->allow_cast_intr_spell_chance(verbosity))
+                if (!prop->allow_cast_intr_spell_chance(verbose))
                 {
                         return false;
                 }
@@ -1068,11 +1068,11 @@ bool PropHandler::allow_cast_intr_spell_chance(
         return true;
 }
 
-bool PropHandler::allow_speak(const Verbosity verbosity) const
+bool PropHandler::allow_speak(const Verbose verbose) const
 {
         for (auto& prop : m_props)
         {
-                if (!prop->allow_speak(verbosity))
+                if (!prop->allow_speak(verbose))
                 {
                         return false;
                 }
@@ -1081,11 +1081,11 @@ bool PropHandler::allow_speak(const Verbosity verbosity) const
         return true;
 }
 
-bool PropHandler::allow_eat(const Verbosity verbosity) const
+bool PropHandler::allow_eat(const Verbose verbose) const
 {
         for (auto& prop : m_props)
         {
-                if (!prop->allow_eat(verbosity))
+                if (!prop->allow_eat(verbose))
                 {
                         return false;
                 }

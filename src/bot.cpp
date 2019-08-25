@@ -276,7 +276,7 @@ void act()
                 inv.put_in_slot(
                         SlotId::body,
                         item::make(item::Id::armor_asb_suit),
-                        Verbosity::silent);
+                        Verbose::no);
         }
 
         // Keep an allied Mi-go around (to help getting out of sticky
@@ -438,7 +438,7 @@ void act()
 
                         if (door->is_hidden())
                         {
-                                door->reveal(Verbosity::silent);
+                                door->reveal(Verbose::no);
                         }
 
                         if (door->is_stuck())

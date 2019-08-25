@@ -1534,7 +1534,7 @@ void Player::on_std_turn()
 
                                 if (is_spotted)
                                 {
-                                        t->reveal(Verbosity::verbose);
+                                        t->reveal(Verbose::yes);
 
                                         t->on_revealed_from_searching();
 

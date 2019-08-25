@@ -58,20 +58,20 @@ public:
         bool restore_hp(
                 const int hp_restored,
                 const bool is_allowed_above_max = false,
-                const Verbosity verbosity = Verbosity::verbose);
+                const Verbose verbose = Verbose::yes);
 
         bool restore_sp(
                 const int sp_restored,
                 const bool is_allowed_above_max = false,
-                const Verbosity verbosity = Verbosity::verbose);
+                const Verbose verbose = Verbose::yes);
 
         void change_max_hp(
                 const int change,
-                const Verbosity verbosity = Verbosity::verbose);
+                const Verbose verbose = Verbose::yes);
 
         void change_max_sp(
                 const int change,
-                const Verbosity verbosity = Verbosity::verbose);
+                const Verbose verbose = Verbose::yes);
 
         // Used by Ghoul class and Ghoul monsters
         DidAction try_eat_corpse();

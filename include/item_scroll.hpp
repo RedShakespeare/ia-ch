@@ -59,7 +59,7 @@ public:
 
         void on_actor_turn_in_inv_hook(const InvType inv_type) override;
 
-        void identify(const Verbosity verbosity) override;
+        void identify(const Verbose verbose) override;
 
         Spell* make_spell() const;
 
