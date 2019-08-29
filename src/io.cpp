@@ -71,15 +71,16 @@ static void init_screen_surface(const P px_dims)
                 SDL_FreeSurface(s_screen_srf);
         }
 
-        s_screen_srf = SDL_CreateRGBSurface(
-                0,
-                px_dims.x,
-                px_dims.y,
-                s_screen_bpp,
-                0x00FF0000,
-                0x0000FF00,
-                0x000000FF,
-                0xFF000000);
+        s_screen_srf =
+                SDL_CreateRGBSurface(
+                        0,
+                        px_dims.x,
+                        px_dims.y,
+                        s_screen_bpp,
+                        0x00FF0000,
+                        0x0000FF00,
+                        0x000000FF,
+                        0xFF000000);
 
         if (!s_screen_srf)
         {
@@ -162,10 +163,11 @@ static void init_renderer(const P px_dims)
                 SDL_DestroyRenderer(s_sdl_renderer);
         }
 
-        s_sdl_renderer = SDL_CreateRenderer(
-                s_sdl_window,
-                -1,
-                SDL_RENDERER_SOFTWARE);
+        s_sdl_renderer =
+                SDL_CreateRenderer(
+                        s_sdl_window,
+                        -1,
+                        SDL_RENDERER_SOFTWARE);
 
         if (!s_sdl_renderer)
         {
@@ -177,10 +179,7 @@ static void init_renderer(const P px_dims)
                 PANIC;
         }
 
-        SDL_RenderSetLogicalSize(
-                s_sdl_renderer,
-                px_dims.x,
-                px_dims.y);
+        SDL_RenderSetLogicalSize(s_sdl_renderer, px_dims.x, px_dims.y);
 
         // SDL_RenderSetIntegerScale(s_sdl_renderer_, SDL_TRUE);
 
@@ -196,12 +195,13 @@ static void init_screen_texture(const P px_dims)
                 SDL_DestroyTexture(s_screen_texture);
         }
 
-        s_screen_texture = SDL_CreateTexture(
-                s_sdl_renderer,
-                SDL_PIXELFORMAT_ARGB8888,
-                SDL_TEXTUREACCESS_STREAMING,
-                px_dims.x,
-                px_dims.y);
+        s_screen_texture =
+                SDL_CreateTexture(
+                        s_sdl_renderer,
+                        SDL_PIXELFORMAT_ARGB8888,
+                        SDL_TEXTUREACCESS_STREAMING,
+                        px_dims.x,
+                        px_dims.y);
 
         if (!s_screen_texture)
         {
@@ -218,7 +218,9 @@ static P native_resolution_from_sdl()
 {
         SDL_DisplayMode dm;
 
-        if (SDL_GetDesktopDisplayMode(0, &dm) != 0)
+        auto result = SDL_GetDesktopDisplayMode(0, &dm);
+
+        if (result != 0)
         {
                 TRACE_ERROR_RELEASE << "Failed to read native resolution"
                                     << std::endl
@@ -247,7 +249,7 @@ static bool is_window_maximized()
 
 // Pointer to function used for writing pixels on the screen (there are
 // different variants depending on bpp)
-static void (*put_px_ptr_)(
+static void (*put_px_ptr)(
         const SDL_Surface& srf,
         int pixel_x,
         int pixel_y,
@@ -257,7 +259,7 @@ static Uint32 px(const SDL_Surface& srf,
                  const int pixel_x,
                  const int pixel_y)
 {
-        // p is the address to the pixel we want to retrieve
+        // 'p' is the address to the pixel we want to retrieve
         Uint8* p =
                 (Uint8*)srf.pixels +
                 (pixel_y * srf.pitch) +
@@ -406,9 +408,10 @@ static void load_contour(const std::vector<P>& source_px_data,
                                 // Only mark pixel as contour if it's not marked
                                 // on the source
                                 const auto it =
-                                        std::find(begin(source_px_data),
-                                                  end(source_px_data),
-                                                  p);
+                                        std::find(
+                                                std::begin(source_px_data),
+                                                std::end(source_px_data),
+                                                p);
 
                                 if (it == end(source_px_data))
                                 {
@@ -624,18 +627,19 @@ static void put_pixels_on_screen(
 {
         const auto sdl_color = color.sdl_color();
 
-        const int px_color = SDL_MapRGB(
-                s_screen_srf->format,
-                sdl_color.r,
-                sdl_color.g,
-                sdl_color.b);
+        const int px_color =
+                SDL_MapRGB(
+                        s_screen_srf->format,
+                        sdl_color.r,
+                        sdl_color.g,
+                        sdl_color.b);
 
         for (const auto p_relative : px_data)
         {
                 const int screen_px_x = px_pos.x + p_relative.x;
                 const int screen_px_y = px_pos.y + p_relative.y;
 
-                put_px_ptr_(
+                put_px_ptr(
                         *s_screen_srf,
                         screen_px_x,
                         screen_px_y,
@@ -711,9 +715,7 @@ static R gui_to_px_rect(const R rect)
 
         R px_rect;
 
-        px_rect = rect.scaled_up(
-                gui_cell_px_w,
-                gui_cell_px_h);
+        px_rect = rect.scaled_up(gui_cell_px_w, gui_cell_px_h);
 
         // We must include ALL pixels in the given gui area
         px_rect.p1 =
@@ -887,7 +889,8 @@ void init()
 
         if (config::is_fullscreen())
         {
-                const P resolution = config::is_native_resolution_fullscreen()
+                const P resolution =
+                        config::is_native_resolution_fullscreen()
                         ? native_resolution_from_sdl()
                         : io::gui_to_px_coords(io::min_screen_gui_dims());
 
@@ -909,15 +912,15 @@ void init()
         // is enabled
         if (!config::is_fullscreen())
         {
-                const P min_gui_dims = io::min_screen_gui_dims();
+                const auto min_gui_dims = io::min_screen_gui_dims();
 
-                const P config_res =
+                const auto config_res =
                         P(config::screen_px_w(),
                           config::screen_px_h());
 
-                const P config_gui_dims = px_to_gui_coords(config_res);
+                const auto config_gui_dims = px_to_gui_coords(config_res);
 
-                const P native_res = native_resolution_from_sdl();
+                const auto native_res = native_resolution_from_sdl();
 
                 TRACE << "Minimum required GUI dimensions: "
                       << min_gui_dims.x
@@ -987,19 +990,19 @@ void init()
         switch (s_bpp)
         {
         case 1:
-                put_px_ptr_ = &put_px8;
+                put_px_ptr = &put_px8;
                 break;
 
         case 2:
-                put_px_ptr_ = &put_px16;
+                put_px_ptr = &put_px16;
                 break;
 
         case 3:
-                put_px_ptr_ = &put_px24;
+                put_px_ptr = &put_px24;
                 break;
 
         case 4:
-                put_px_ptr_ = &put_px32;
+                put_px_ptr = &put_px32;
                 break;
 
         default:
@@ -1073,11 +1076,28 @@ void update_screen()
                 s_screen_srf->pixels,
                 s_screen_srf->pitch);
 
+        const auto screen_srf_dims =
+                P(s_screen_srf->w,
+                  s_screen_srf->h);
+
+        const auto screen_panel_dims = panel_px_dims(Panel::screen);
+
+        const auto offsets =
+                (screen_srf_dims - screen_panel_dims)
+                .scaled_down(2);
+
+        SDL_Rect dstrect;
+
+        dstrect.x = offsets.x;
+        dstrect.y = offsets.y;
+        dstrect.w = s_screen_srf->w;
+        dstrect.h = s_screen_srf->h;
+
         SDL_RenderCopy(
                 s_sdl_renderer,
                 s_screen_texture,
                 nullptr,
-                nullptr);
+                &dstrect);
 
         SDL_RenderPresent(s_sdl_renderer);
 }
@@ -1428,10 +1448,11 @@ void draw_rectangle_filled(
         SDL_FillRect(
                 s_screen_srf,
                 &sdl_rect,
-                SDL_MapRGB(s_screen_srf->format,
-                           sdl_color.r,
-                           sdl_color.g,
-                           sdl_color.b));
+                SDL_MapRGB(
+                        s_screen_srf->format,
+                        sdl_color.r,
+                        sdl_color.g,
+                        sdl_color.b));
 }
 
 void cover_panel(const Panel panel, const Color& color)
