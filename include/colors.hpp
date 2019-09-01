@@ -120,18 +120,13 @@ Color mon_temp_property_bg();
 //-----------------------------------------------------------------------------
 struct ColoredString
 {
-        ColoredString() {}
+        ColoredString() = default;
 
         ColoredString(const std::string& the_str, const Color& the_color) :
                 str(the_str),
                 color(the_color) {}
 
-        ColoredString& operator=(const ColoredString& other)
-        {
-                str = other.str;
-                color = other.color;
-                return *this;
-        }
+        ColoredString& operator=(const ColoredString& other) = default;
 
         std::string str {};
         Color color {colors::white()};

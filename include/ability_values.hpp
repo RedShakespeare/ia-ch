@@ -63,15 +63,7 @@ public:
                 reset();
         }
 
-        AbilityValues& operator=(const AbilityValues& other)
-        {
-                for (size_t i = 0; i < (size_t)AbilityId::END; ++i)
-                {
-                        m_ability_list[i] = other.m_ability_list[i];
-                }
-
-                return *this;
-        }
+        AbilityValues& operator=(const AbilityValues& other) = default;
 
         void reset();
 

@@ -12,7 +12,7 @@
 struct R
 {
 public:
-        R() {}
+        R() = default;
 
         R(const P p0_val, const P p1_val) :
                 p0(p0_val),
@@ -22,9 +22,7 @@ public:
                 p0(P(x0, y0)),
                 p1(P(x1, y1)) {}
 
-        R(const R& r) :
-                p0(r.p0),
-                p1(r.p1) {}
+        R(const R& r) = default;
 
         int w() const
         {

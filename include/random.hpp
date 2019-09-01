@@ -17,14 +17,13 @@
 
 struct Range
 {
-        Range() {}
+        Range() = default;
 
         Range(const int min_val, const int max_val) :
                 min(min_val),
                 max(max_val) {}
 
-        Range(const Range& other) :
-                Range(other.min, other.max) {}
+        Range(const Range& other) = default;
 
         void set(const int min_val, const int max_val)
         {
@@ -68,25 +67,18 @@ struct Range
 
 struct Fraction
 {
-        Fraction() :
-                num(-1),
-                den(-1) {}
+        Fraction() = default;
 
         Fraction(const int numerator, const int denominator) :
                 num(numerator),
                 den(denominator) {}
 
-        Fraction& operator=(const Fraction& other)
-        {
-                num = other.num;
-                den = other.den;
-
-                return *this;
-        }
+        Fraction& operator=(const Fraction& other) = default;
 
         bool roll() const;
 
-        int num, den;
+        int num {-1};
+        int den {-1};
 };
 
 template <typename T>
