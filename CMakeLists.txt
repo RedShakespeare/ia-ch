@@ -304,7 +304,12 @@ if(CMAKE_COMPILER_IS_GNUCXX OR(CMAKE_C_COMPILER_ID MATCHES "Clang") OR(CMAKE_CXX
                 -pedantic-errors
                 -Wall
                 -Wextra
-                -Werror
+                # NOTE: While warnings should not be accepted, -Werror can cause
+                # problems for people trying to build the game with more recent
+                # compiler versions than it was developed on. Therefore, instead
+                # of turning warnings into errors, warnings should be (manually)
+                # checked and fixed during development.
+                # -Werror
                 -Wmissing-declarations
                 -Wunused
                 -Wuninitialized
