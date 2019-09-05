@@ -1866,7 +1866,7 @@ InputData get()
                                         SDL_GetTicks() -
                                         ms_at_last_window_resize;
 
-                                if (d > 50)
+                                if (d > 150)
                                 {
                                         states::draw();
 
