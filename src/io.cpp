@@ -255,9 +255,7 @@ static void (*put_px_ptr)(
         int pixel_y,
         Uint32 px) = nullptr;
 
-static Uint32 px(const SDL_Surface& srf,
-                 const int pixel_x,
-                 const int pixel_y)
+static Uint32 px(const SDL_Surface& srf, const int pixel_x, const int pixel_y)
 {
         // 'p' is the address to the pixel we want to retrieve
         Uint8* p =
@@ -377,9 +375,10 @@ static void blit_surface(SDL_Surface& srf, const P px_pos)
         SDL_BlitSurface(&srf, nullptr, s_screen_srf, &dst_rect);
 }
 
-static void load_contour(const std::vector<P>& source_px_data,
-                         std::vector<P>& dest_px_data,
-                         const P cell_px_dims)
+static void load_contour(
+        const std::vector<P>& source_px_data,
+        std::vector<P>& dest_px_data,
+        const P cell_px_dims)
 {
         for (const P source_px_pos : source_px_data)
         {
@@ -669,7 +668,7 @@ static void put_pixels_on_screen(
         put_pixels_on_screen(pixel_data, px_pos, color);
 }
 
-static void draw_character(
+static void draw_character_at_px(
         const char character,
         const P px_pos,
         const Color& color,
@@ -741,20 +740,14 @@ static P panel_px_dims(const Panel panel)
         return io::gui_to_px_coords(panels::dims(panel));
 }
 
-static void draw_text(
+static void draw_text_at_px(
         const std::string& str,
         P px_pos,
         const Color& color,
         const bool draw_bg,
         const Color& bg_color)
 {
-        if (!panels::is_valid())
-        {
-                return;
-        }
-
-        if ((px_pos.y < 0) ||
-            (px_pos.y >= panel_px_h(Panel::screen)))
+        if ((px_pos.y < 0) || (px_pos.y >= panel_px_h(Panel::screen)))
         {
                 return;
         }
@@ -790,16 +783,17 @@ static void draw_text(
 
                 if (draw_dots)
                 {
-                        draw_character(
+                        draw_character_at_px(
                                 '.',
                                 px_pos,
                                 sdl_color_gray,
                                 draw_bg,
                                 bg_color);
                 }
-                else // Whole message fits, or we are not yet near the edge
+                else
                 {
-                        draw_character(
+                        // Whole message fits, or we are not yet near the edge
+                        draw_character_at_px(
                                 str[i],
                                 px_pos,
                                 sdl_color,
@@ -867,10 +861,6 @@ static void on_window_resized()
         init_screen_texture(new_px_dims);
 
         states::on_window_resized();
-
-        states::draw();
-
-        io::update_screen();
 }
 
 // -----------------------------------------------------------------------------
@@ -1070,6 +1060,24 @@ void cleanup()
 
 void update_screen()
 {
+        const auto screen_panel_dims = panel_px_dims(Panel::screen);
+
+        bool is_centering_allowed = true;
+
+        if (!panels::is_valid() &&
+            (screen_panel_dims.x > config::gui_cell_px_w()) &&
+            (screen_panel_dims.y > config::gui_cell_px_h()))
+        {
+                draw_text_at_px(
+                        "Window too small",
+                        {0, 0},
+                        colors::light_white(),
+                        false,
+                        colors::black());
+
+                is_centering_allowed = false;
+        }
+
         SDL_UpdateTexture(
                 s_screen_texture,
                 nullptr,
@@ -1080,11 +1088,14 @@ void update_screen()
                 P(s_screen_srf->w,
                   s_screen_srf->h);
 
-        const auto screen_panel_dims = panel_px_dims(Panel::screen);
+        P offsets(0, 0);
 
-        const auto offsets =
-                (screen_srf_dims - screen_panel_dims)
-                .scaled_down(2);
+        if (is_centering_allowed)
+        {
+                offsets =
+                        (screen_srf_dims - screen_panel_dims)
+                        .scaled_down(2);
+        }
 
         SDL_Rect dstrect;
 
@@ -1296,7 +1307,7 @@ void draw_character(
 
         const auto sdl_color_bg = bg_color.sdl_color();
 
-        draw_character(
+        draw_character_at_px(
                 character,
                 px_pos,
                 sdl_color,
@@ -1319,7 +1330,7 @@ void draw_text(
 
         P px_pos = gui_to_px_coords(panel, pos);
 
-        draw_text(
+        draw_text_at_px(
                 str,
                 px_pos,
                 color,
@@ -1359,7 +1370,7 @@ void draw_text_center(
                 px_pos += P(pixel_x_adj, 0);
         }
 
-        draw_text(
+        draw_text_at_px(
                 str,
                 px_pos,
                 color,
@@ -1386,7 +1397,7 @@ void draw_text_right(
                 panel,
                 P(x_pos_left, pos.y));
 
-        draw_text(
+        draw_text_at_px(
                 str,
                 px_pos,
                 color,
@@ -1815,6 +1826,8 @@ InputData get()
 
         bool is_window_resized = false;
 
+        uint32_t ms_at_last_window_resize = 0;
+
         while (!is_done)
         {
                 sdl_base::sleep(1);
@@ -1827,6 +1840,43 @@ InputData get()
 
                 const bool did_poll_event = SDL_PollEvent(&s_sdl_event);
 
+                // Handle window resizing
+                if (!config::is_fullscreen())
+                {
+                        if (is_window_resized)
+                        {
+                                on_window_resized();
+
+                                clear_screen();
+
+                                io::update_screen();
+
+                                clear_events();
+
+                                is_window_resized = false;
+
+                                ms_at_last_window_resize = SDL_GetTicks();
+
+                                continue;
+                        }
+
+                        if (ms_at_last_window_resize != 0)
+                        {
+                                const auto d =
+                                        SDL_GetTicks() -
+                                        ms_at_last_window_resize;
+
+                                if (d > 50)
+                                {
+                                        states::draw();
+
+                                        io::update_screen();
+
+                                        ms_at_last_window_resize = 0;
+                                }
+                        }
+                }
+
                 if (!did_poll_event)
                 {
                         continue;
@@ -1838,15 +1888,12 @@ InputData get()
                 {
                         switch (s_sdl_event.window.event)
                         {
-                        // case SDL_WINDOWEVENT_RESIZED:
                         case SDL_WINDOWEVENT_SIZE_CHANGED:
                         {
                                 TRACE << "Window resized" << std::endl;
 
                                 if (!config::is_fullscreen())
                                 {
-                                        on_window_resized();
-
                                         is_window_resized = true;
                                 }
                         }
@@ -2118,14 +2165,6 @@ InputData get()
         } // while
 
         SDL_StopTextInput();
-
-        // Adjust window size to nearest gui cells?
-        if (!config::is_fullscreen() && is_window_resized)
-        {
-                on_window_resized();
-
-                clear_events();
-        }
 
         return input;
 }

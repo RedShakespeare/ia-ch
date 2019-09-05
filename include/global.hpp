@@ -7,6 +7,7 @@
 #ifndef GLOBAL_HPP
 #define GLOBAL_HPP
 
+#include <cstdint>
 #include <cstdlib>
 
 // -----------------------------------------------------------------------------
@@ -26,8 +27,8 @@ const int g_dlvl_last = 30;
 
 const int g_dlvl_harder_traps = 6;
 
-const size_t g_ms_delay_player_unable_act = 7;
-const size_t g_min_ms_between_same_sfx = 60;
+const uint32_t g_ms_delay_player_unable_act = 7;
+const uint32_t g_min_ms_between_same_sfx = 60;
 
 const int g_fov_radi_int = 6;
 const int g_fov_w_int = (g_fov_radi_int * 2) + 1;

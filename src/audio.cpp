@@ -7,6 +7,7 @@
 #include "audio.hpp"
 
 #include <chrono>
+#include <cstdint>
 
 #include "SDL_mixer.h"
 
@@ -30,7 +31,7 @@ static std::vector<Mix_Chunk*> s_audio_chunks;
 static std::vector<Mix_Music*> s_mus_chunks;
 
 // TODO: Also use std::chrono for sound effects?
-static size_t s_ms_at_sfx_played[(size_t)SfxId::END];
+static uint32_t s_ms_at_sfx_played[(size_t)SfxId::END];
 
 static int s_current_channel = 0;
 
@@ -300,11 +301,11 @@ void play(const SfxId sfx,
 
         const int free_channel = find_free_channel(s_current_channel);
 
-        const size_t ms_now = SDL_GetTicks();
+        const auto ms_now = SDL_GetTicks();
 
-        size_t& ms_last = s_ms_at_sfx_played[(size_t)sfx];
+        auto& ms_last = s_ms_at_sfx_played[(size_t)sfx];
 
-        const size_t ms_diff = ms_now - ms_last;
+        const auto ms_diff = ms_now - ms_last;
 
         if ((free_channel >= 0) &&
             (ms_diff >= g_min_ms_between_same_sfx))
