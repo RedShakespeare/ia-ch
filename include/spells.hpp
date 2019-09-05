@@ -31,7 +31,7 @@ enum class SpellId
         heal,
         pestilence,
         slow,
-        slow_time,
+        haste,
         spell_shield,
         summon,
         teleport,
@@ -92,7 +92,7 @@ const std::unordered_map<std::string, SpellId> str_to_spell_id_map =
         {"searching", SpellId::searching},
         {"see_invis", SpellId::see_invis},
         {"slow", SpellId::slow},
-        {"slow_time", SpellId::slow_time},
+        {"haste", SpellId::haste},
         {"spell_shield", SpellId::spell_shield},
         {"summon", SpellId::summon},
         {"summon_tentacles", SpellId::summon_tentacles},
@@ -1491,10 +1491,10 @@ private:
         }
 };
 
-class SpellSlowTime: public Spell
+class SpellHaste: public Spell
 {
 public:
-        SpellSlowTime() : Spell() {}
+        SpellHaste() : Spell() {}
 
         bool allow_mon_cast_now(actor::Mon& mon) const override;
 
@@ -1512,12 +1512,12 @@ public:
 
         std::string name() const override
         {
-                return "Slow Time";
+                return "Haste";
         }
 
         SpellId id() const override
         {
-                return SpellId::slow_time;
+                return SpellId::haste;
         }
 
         OccultistDomain domain() const override

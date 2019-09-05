@@ -1125,7 +1125,7 @@
             <spell skill="expert" percent_chance="75">enfeeble</spell>
             <spell skill="expert" percent_chance="75">slow</spell>
             <spell skill="expert" percent_chance="75">terrify</spell>
-            <spell skill="basic">slow_time</spell>
+            <spell skill="basic">haste</spell>
         </spells>
 
         <ai>
@@ -7058,7 +7058,7 @@
             <spell skill="master">enfeeble</spell>
             <spell skill="master">slow</spell>
             <spell skill="master">terrify</spell>
-            <spell skill="master">slow_time</spell>
+            <spell skill="master">haste</spell>
         </spells>
 
         <properties>

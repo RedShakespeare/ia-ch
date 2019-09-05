@@ -90,7 +90,7 @@ static void make_for_player_occultist_common()
 
 static void make_for_player_occultist_transmut()
 {
-        learn_spell_player(SpellId::slow_time);
+        learn_spell_player(SpellId::haste);
         learn_spell_player(SpellId::transmut);
 }
 

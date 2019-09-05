@@ -1473,8 +1473,8 @@ void init()
         g_data[(size_t)d.id] = d;
 
         reset_data(d, ItemType::scroll);
-        d.id = Id::scroll_slow_time;
-        d.spell_cast_from_scroll = SpellId::slow_time;
+        d.id = Id::scroll_haste;
+        d.spell_cast_from_scroll = SpellId::haste;
         g_data[(size_t)d.id] = d;
 
         reset_data(d, ItemType::scroll);

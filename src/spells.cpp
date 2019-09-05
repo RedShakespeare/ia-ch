@@ -142,8 +142,8 @@ Spell* make_spell_from_id(const SpellId spell_id)
         case SpellId::spell_shield:
                 return new SpellSpellShield();
 
-        case SpellId::slow_time:
-                return new SpellSlowTime();
+        case SpellId::haste:
+                return new SpellHaste();
 
         case SpellId::premonition:
                 return new SpellPremonition();
@@ -1969,16 +1969,16 @@ bool SpellSpellShield::allow_mon_cast_now(actor::Mon& mon) const
 }
 
 // -----------------------------------------------------------------------------
-// Slow Time
+// Haste
 // -----------------------------------------------------------------------------
-int SpellSlowTime::max_spi_cost(const SpellSkill skill) const
+int SpellHaste::max_spi_cost(const SpellSkill skill) const
 {
         (void)skill;
 
         return 5;
 }
 
-void SpellSlowTime::run_effect(
+void SpellHaste::run_effect(
         actor::Actor* const caster,
         const SpellSkill skill) const
 {
@@ -1995,12 +1995,13 @@ void SpellSlowTime::run_effect(
         caster->m_properties.apply(prop);
 }
 
-std::vector<std::string> SpellSlowTime::descr_specific(
+std::vector<std::string> SpellHaste::descr_specific(
         const SpellSkill skill) const
 {
         std::vector<std::string> descr;
 
-        descr.push_back("Time slows down from the caster's perspective.");
+        descr.push_back(
+                "Time slows down relative to the caster's perspective.");
 
         Range duration_range;
         duration_range.min = 5 * ((int)skill + 1);
@@ -2011,12 +2012,12 @@ std::vector<std::string> SpellSlowTime::descr_specific(
         return descr;
 }
 
-int SpellSlowTime::mon_cooldown() const
+int SpellHaste::mon_cooldown() const
 {
         return 20;
 }
 
-bool SpellSlowTime::allow_mon_cast_now(actor::Mon& mon) const
+bool SpellHaste::allow_mon_cast_now(actor::Mon& mon) const
 {
         return
                 mon.m_target &&

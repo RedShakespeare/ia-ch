@@ -129,7 +129,7 @@ enum class Id
         scroll_searching,
         scroll_see_invis,
         scroll_slow,
-        scroll_slow_time,
+        scroll_haste,
         scroll_spectral_wpns,
         scroll_spell_shield,
         scroll_summon_mon,
