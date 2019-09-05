@@ -43,6 +43,9 @@ const std::string g_disarm_no_trap =
 const std::string g_mon_prevent_cmd =
         "Not while an enemy is near.";
 
+const std::string g_shock_prevent_cmd =
+        "Not while insanity is near.";
+
 const std::string g_fire_prevent_cmd =
         "Fire is spreading!";
 

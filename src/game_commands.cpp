@@ -501,6 +501,15 @@ void handle(const GameCmd cmd)
                                 MorePromptOnMsg::no,
                                 CopyToMsgHistory::no);
                 }
+                else if (map::g_player->shock_tot() >= 100)
+                {
+                        msg_log::add(
+                                common_text::g_shock_prevent_cmd,
+                                colors::text(),
+                                MsgInterruptPlayer::no,
+                                MorePromptOnMsg::no,
+                                CopyToMsgHistory::no);
+                }
                 else // We are allowed to wait
                 {
                         // NOTE: We should not print any "wait" message here,
