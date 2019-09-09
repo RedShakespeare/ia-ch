@@ -440,36 +440,64 @@ void PropPossessedByZuul::on_death()
 
 PropEnded PropPoisoned::on_tick()
 {
-        if (m_owner->is_alive() &&
-            (game_time::turn_nr() % g_poison_dmg_n_turn) == 0)
+        if (!m_owner->is_alive())
         {
-                int dmg = 1;
-
-                if (m_owner->is_player())
-                {
-                        msg_log::add(
-                                "I am suffering from the poison!",
-                                colors::msg_bad(),
-                                MsgInterruptPlayer::yes);
-                }
-                else // Is monster
-                {
-                        dmg *= 2;
-
-                        if (map::g_player->can_see_actor(*m_owner))
-                        {
-                                const std::string actor_name_the =
-                                        text_format::first_to_upper(
-                                                m_owner->name_the());
-
-                                msg_log::add(
-                                        actor_name_the +
-                                        " suffers from poisoning!");
-                        }
-                }
-
-                actor::hit(*m_owner, dmg, DmgType::pure);
+                return PropEnded::no;
         }
+
+        // NOTE: Monsters have a shorter, more intense poisoning
+
+        if (!m_owner->is_player() && (m_nr_turns_left > 1))
+        {
+                --m_nr_turns_left;
+        }
+
+        const auto owner_hp = m_owner->m_hp;
+
+        int dmg;
+        int pct_chance;
+
+        if (m_owner->is_player())
+        {
+                dmg = 1;
+                pct_chance = (int)std::pow((double)owner_hp, 1.5);
+        }
+        else
+        {
+                dmg = 2;
+                pct_chance = (int)std::pow((double)owner_hp, 2.0);
+        }
+
+        if (owner_hp <= dmg)
+        {
+                return PropEnded::no;
+        }
+
+        if (!rnd::percent(pct_chance))
+        {
+                return PropEnded::no;
+        }
+
+        if (m_owner->is_player())
+        {
+                msg_log::add(
+                        "I am suffering from the poison!",
+                        colors::msg_bad(),
+                        MsgInterruptPlayer::yes);
+        }
+        else if (map::g_player->can_see_actor(*m_owner))
+        {
+                // Is seen monster
+                const std::string actor_name_the =
+                        text_format::first_to_upper(
+                                m_owner->name_the());
+
+                msg_log::add(
+                        actor_name_the +
+                        " suffers from poisoning!");
+        }
+
+        actor::hit(*m_owner, dmg, DmgType::pure);
 
         return PropEnded::no;
 }

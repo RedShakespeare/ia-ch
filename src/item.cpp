@@ -992,18 +992,14 @@ void PlayerGhoulClaw::on_melee_hit(actor::Actor& actor_hit, const int dmg)
                 // Poison victim from Ghoul Toxic trait?
                 if (player_bon::has_trait(Trait::toxic) && rnd::one_in(4))
                 {
-                        Prop* const poison = new PropPoisoned();
-
-                        actor_hit.m_properties.apply(poison);
+                        actor_hit.m_properties.apply(new PropPoisoned());
                 }
 
                 // Terrify victim from Ghoul Indomitable Fury trait?
                 if (player_bon::has_trait(Trait::indomitable_fury) &&
                     map::g_player->m_properties.has(PropId::frenzied))
                 {
-                        Prop* const fear = new PropTerrified();
-
-                        actor_hit.m_properties.apply(fear);
+                        actor_hit.m_properties.apply(new PropTerrified());
                 }
         }
 }

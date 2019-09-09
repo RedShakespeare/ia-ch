@@ -3302,13 +3302,7 @@ DidTriggerTrap Tomb::trigger_trap(actor::Actor* const actor)
 
                         if (rnd < 20)
                         {
-                                const Range dmg_range(8, 11);
-
                                 prop = new PropPoisoned();
-
-                                prop->set_duration(
-                                        g_poison_dmg_n_turn *
-                                        dmg_range.roll());
 
                                 fume_color = colors::light_green();
                         }
@@ -3325,13 +3319,14 @@ DidTriggerTrap Tomb::trigger_trap(actor::Actor* const actor)
                                 prop->set_duration(prop->nr_turns_left() * 2);
                         }
 
-                        explosion::run(m_pos,
-                                       ExplType::apply_prop,
-                                       EmitExplSnd::no,
-                                       0,
-                                       ExplExclCenter::no,
-                                       {prop},
-                                       fume_color);
+                        explosion::run(
+                                m_pos,
+                                ExplType::apply_prop,
+                                EmitExplSnd::no,
+                                0,
+                                ExplExclCenter::no,
+                                {prop},
+                                fume_color);
                 }
                 else // Not fumes
                 {
@@ -3872,15 +3867,7 @@ void Fountain::bump(actor::Actor& actor_bumping)
 
                 case FountainEffect::poison:
                 {
-                        const Range dmg_range(8, 11);
-
-                        auto prop = new PropPoisoned();
-
-                        prop->set_duration(
-                                g_poison_dmg_n_turn *
-                                dmg_range.roll());
-
-                        properties.apply(prop);
+                        properties.apply(new PropPoisoned());
                 }
                 break;
 

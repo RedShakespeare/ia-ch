@@ -47,8 +47,6 @@ const int g_mi_go_gun_hp_drained = 3;
 const int g_expl_dmg_min = 15;
 const int g_expl_dmg_max = 40;
 
-const int g_poison_dmg_n_turn = 4;
-
 const int g_shock_from_obsession = 30;
 
 // How many "units" of weight the player can carry, without trait modifiers etc

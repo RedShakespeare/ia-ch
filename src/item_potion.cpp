@@ -639,24 +639,7 @@ void Fortitude::collide_hook(const P& pos, actor::Actor* const actor)
 
 void Poison::quaff_impl(actor::Actor& actor)
 {
-        // NOTE: The maximum damage value here is lower than the lowest possible
-        // starting HP - no (non-diseased) character should die from full HP for
-        // quaffing this potion
-        Range dmg_range(8, 11);
-
-        // Let the poison do double damage against monsters - so it's more
-        // worthwhile as a throwing weapon
-        if (!actor.is_player())
-        {
-                dmg_range.min *= 2;
-                dmg_range.max *= 2;
-        }
-
-        auto prop = new PropPoisoned();
-
-        prop->set_duration(g_poison_dmg_n_turn * dmg_range.roll());
-
-        actor.m_properties.apply(prop);
+        actor.m_properties.apply(new PropPoisoned());
 
         if (map::g_player->can_see_actor(actor))
         {
