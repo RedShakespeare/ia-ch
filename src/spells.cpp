@@ -3352,14 +3352,14 @@ void SpellTransmut::run_effect(
         }
 
         // Determine which item(s) to spawn, if any
-        int pct_chance_per_item = (int)skill * 20;
+        int pct_chance_per_item = 10 * (int)skill;
 
         std::vector<item::Id> id_bucket;
 
         // Converting a potion?
         if (item_type_before == ItemType::potion)
         {
-                pct_chance_per_item += 50;
+                pct_chance_per_item += 40;
 
                 for (size_t item_id = 0;
                      (item::Id)item_id != item::Id::END;
@@ -3381,7 +3381,7 @@ void SpellTransmut::run_effect(
         // Converting a scroll?
         else if (item_type_before == ItemType::scroll)
         {
-                pct_chance_per_item += 50;
+                pct_chance_per_item += 40;
 
                 for (size_t item_id = 0;
                      (item::Id)item_id != item::Id::END;
@@ -3421,7 +3421,7 @@ void SpellTransmut::run_effect(
         }
 
         // Never spawn Transmute scrolls, this is just dumb
-        for (auto it = begin(id_bucket); it != end(id_bucket); )
+        for (auto it = std::begin(id_bucket); it != std::end(id_bucket); )
         {
                 if (*it == item::Id::scroll_transmut)
                 {
@@ -3451,8 +3451,7 @@ void SpellTransmut::run_effect(
                 }
         }
 
-        if ((id_new == item::Id::END) ||
-            (nr_items_new < 1))
+        if ((id_new == item::Id::END) || (nr_items_new < 1))
         {
                 msg_log::add("Nothing appears.");
 
@@ -3463,7 +3462,9 @@ void SpellTransmut::run_effect(
 
         // Spawn new item(s)
         auto* const item_new =
-                item::make_item_on_floor(id_new, map::g_player->m_pos);
+                item::make_item_on_floor(
+                        id_new,
+                        map::g_player->m_pos);
 
         if (item_new->data().is_stackable)
         {
@@ -3489,11 +3490,11 @@ std::vector<std::string> SpellTransmut::descr_specific(
                 "Attempts to convert items (stand over an item when casting). "
                 "On failure, the item is destroyed.");
 
-        const int skill_bon = (int)skill * 20;
+        const int skill_bon = 10 * (int)skill;
 
-        const int chance_per_pot = skill_bon + 50;
+        const int chance_per_pot = 40 + skill_bon;
 
-        const int chance_per_scroll = skill_bon + 50;
+        const int chance_per_scroll = 40 + skill_bon;
 
         const int chance_per_wpn_plus = 10;
 
