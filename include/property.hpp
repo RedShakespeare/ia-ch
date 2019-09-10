@@ -1459,20 +1459,17 @@ class PropAuraOfDecay: public Prop
 {
 public:
         PropAuraOfDecay() :
-                Prop(PropId::aura_of_decay),
-                m_dmg(1) {}
+                Prop(PropId::aura_of_decay) {}
 
         void save() const override;
 
         void load() override;
 
-        // PropEnded on_tick() override;
-
         void on_std_turn() override;
 
-        void set_dmg(const int dmg)
+        void set_max_dmg(const int dmg)
         {
-                m_dmg = dmg;
+                m_max_dmg = dmg;
         }
 
 private:
@@ -1484,7 +1481,7 @@ private:
 
         void print_msg_actor_hit(const actor::Actor& actor) const;
 
-        int m_dmg;
+        int m_max_dmg {1};
 };
 
 class PropMajorClaphamSummon: public Prop

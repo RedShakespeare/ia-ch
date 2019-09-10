@@ -27,10 +27,17 @@ std::string Range::str() const
         const int min_actual = std::min(min, max);
         const int max_actual = std::max(min, max);
 
-        return
-                std::to_string(min_actual) +
-                "-" +
-                std::to_string(max_actual);
+        if (min_actual == max_actual)
+        {
+                return std::to_string(min_actual);
+        }
+        else
+        {
+                return
+                        std::to_string(min_actual) +
+                        "-" +
+                        std::to_string(max_actual);
+        }
 }
 
 std::string Range::str_avg() const

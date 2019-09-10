@@ -2083,12 +2083,12 @@ PropActResult PropSpeaksCurses::on_act()
 
 void PropAuraOfDecay::save() const
 {
-        saving::put_int(m_dmg);
+        saving::put_int(m_max_dmg);
 }
 
 void PropAuraOfDecay::load()
 {
-        m_dmg = saving::get_int();
+        m_max_dmg = saving::get_int();
 }
 
 int PropAuraOfDecay::range() const
@@ -2122,7 +2122,9 @@ void PropAuraOfDecay::run_effect_on_actors() const
                         print_msg_actor_hit(*actor);
                 }
 
-                actor::hit(*actor, m_dmg, DmgType::pure);
+                const int dmg = rnd::range(1, m_max_dmg);
+
+                actor::hit(*actor, dmg, DmgType::pure);
         }
 }
 
