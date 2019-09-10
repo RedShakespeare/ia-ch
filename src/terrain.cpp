@@ -3718,16 +3718,13 @@ Color Chest::color_default() const
 // Fountain
 // -----------------------------------------------------------------------------
 Fountain::Fountain(const P& p) :
-        Terrain(p),
-        m_fountain_effect(FountainEffect::END),
-        m_has_drinks_left(true)
+        Terrain(p)
 {
-        std::vector<int> weights =
-                {
-                        32, // Refreshing
-                        8,  // XP
-                        4,  // Bad effect
-                };
+        std::vector<int> weights = {
+                4, // Refreshing
+                1, // XP
+                1, // Bad effect
+        };
 
         const int choice = rnd::weighted_choice(weights);
 
@@ -3770,23 +3767,64 @@ void Fountain::on_hit(
 
 Color Fountain::color_default() const
 {
-        return
-                m_has_drinks_left
-                ? colors::light_blue()
-                : colors::gray();
+        if (m_has_drinks_left)
+        {
+                if (m_is_tried)
+                {
+                        // Has drinks left, tried
+                        const auto is_bad =
+                                m_fountain_effect >
+                                FountainEffect::START_OF_BAD_EFFECTS;
 
-        ASSERT("Failed to get fountain color" && false);
-        return colors::black();
+                        return
+                                is_bad
+                                ? colors::magenta()
+                                : colors::light_cyan();
+                }
+                else
+                {
+                        // Has drinks left, not tried
+                        return colors::light_blue();
+                }
+        }
+        else
+        {
+                // No drinks left
+                return colors::gray();
+        }
 }
 
 std::string Fountain::name(const Article article) const
 {
-        std::string a =
-                (article == Article::a)
-                ? "a "
-                : "the ";
+        std::string type_str = "";
 
-        return a + "fountain";
+        std::string indefinite_article = "a";
+
+        if (m_has_drinks_left)
+        {
+                if (m_is_tried)
+                {
+                        type_str = type_name();
+
+                        indefinite_article = type_indefinite_article();
+                }
+        }
+        else
+        {
+                type_str = "dried-up";
+        }
+
+        const std::string a =
+                (article == Article::a)
+                ? indefinite_article
+                : "the";
+
+        if (!type_str.empty())
+        {
+                type_str = " " + type_str;
+        }
+
+        return a + type_str + " fountain";
 }
 
 void Fountain::bump(actor::Actor& actor_bumping)
@@ -3796,134 +3834,137 @@ void Fountain::bump(actor::Actor& actor_bumping)
                 return;
         }
 
-        if (m_has_drinks_left)
+        if (!m_has_drinks_left)
         {
-                PropHandler& properties = map::g_player->m_properties;
+                msg_log::add("The fountain is dried-up.");
 
-                if (!map::g_cells.at(m_pos).is_seen_by_player)
+                return;
+        }
+
+        PropHandler& properties = map::g_player->m_properties;
+
+        if (!map::g_cells.at(m_pos).is_seen_by_player)
+        {
+                msg_log::clear();
+
+                const std::string name_a =
+                        text_format::first_to_lower(
+                                name(Article::a));
+
+                const std::string msg =
+                        ("There is " +
+                         name_a +
+                         " fountain here. Drink from it? ") +
+                        common_text::g_yes_or_no_hint;
+
+                msg_log::add(
+                        msg,
+                        colors::light_white(),
+                        MsgInterruptPlayer::no,
+                        MorePromptOnMsg::no,
+                        CopyToMsgHistory::no);
+
+                const auto answer = query::yes_or_no();
+
+                if (answer == BinaryAnswer::no)
                 {
                         msg_log::clear();
 
-                        const std::string msg =
-                                "There is a fountain here. Drink from it? " +
-                                common_text::g_yes_or_no_hint;
-
-                        msg_log::add(
-                                msg,
-                                colors::light_white(),
-                                MsgInterruptPlayer::no,
-                                MorePromptOnMsg::no,
-                                CopyToMsgHistory::no);
-
-                        const auto answer = query::yes_or_no();
-
-                        if (answer == BinaryAnswer::no)
-                        {
-                                msg_log::clear();
-
-                                return;
-                        }
-                }
-
-                if (!properties.allow_eat(Verbose::yes))
-                {
                         return;
                 }
-
-                msg_log::clear();
-                msg_log::add("I drink from the fountain...");
-
-                audio::play(SfxId::fountain_drink);
-
-                switch (m_fountain_effect)
-                {
-                case FountainEffect::refreshing:
-                {
-                        msg_log::add("It's very refreshing.");
-                        map::g_player->restore_hp(1, false, Verbose::no);
-                        map::g_player->restore_sp(1, false, Verbose::no);
-                        map::g_player->restore_shock(5, true);
-                }
-                break;
-
-                case FountainEffect::xp:
-                {
-                        msg_log::add("I feel more powerful!");
-                        game::incr_player_xp(1);
-                }
-                break;
-
-                case FountainEffect::curse:
-                {
-                        properties.apply(new PropCursed());
-                }
-                break;
-
-                case FountainEffect::disease:
-                {
-                        properties.apply(new PropDiseased());
-                }
-                break;
-
-                case FountainEffect::poison:
-                {
-                        properties.apply(new PropPoisoned());
-                }
-                break;
-
-                case FountainEffect::frenzy:
-                {
-                        properties.apply(new PropFrenzied());
-                }
-                break;
-
-                case FountainEffect::paralyze:
-                {
-                        properties.apply(new PropParalyzed());
-                }
-                break;
-
-                case FountainEffect::blind:
-                {
-                        properties.apply(new PropBlind());
-                }
-                break;
-
-                case FountainEffect::faint:
-                {
-                        auto prop = new PropFainted();
-
-                        prop->set_duration(10);
-
-                        properties.apply(prop);
-                }
-                break;
-
-                case FountainEffect::START_OF_BAD_EFFECTS:
-                case FountainEffect::END:
-                        break;
-                }
-
-                const int dry_one_in_n = 3;
-
-                const bool is_bad =
-                        (int)m_fountain_effect >
-                        (int)FountainEffect::START_OF_BAD_EFFECTS;
-
-                if (is_bad ||
-                    rnd::one_in(dry_one_in_n))
-                {
-                        m_has_drinks_left = false;
-
-                        msg_log::add("The fountain dries up.");
-                }
-
-                game_time::tick();
         }
-        else // Dried up
+
+        if (!properties.allow_eat(Verbose::yes))
         {
-                msg_log::add("The fountain is dried-up.");
+                return;
         }
+
+        msg_log::clear();
+        msg_log::add("I drink from the fountain...");
+
+        audio::play(SfxId::fountain_drink);
+
+        switch (m_fountain_effect)
+        {
+        case FountainEffect::refreshing:
+        {
+                msg_log::add("It's very refreshing.");
+                map::g_player->restore_hp(1, false, Verbose::no);
+                map::g_player->restore_sp(1, false, Verbose::no);
+                map::g_player->restore_shock(5, true);
+        }
+        break;
+
+        case FountainEffect::xp:
+        {
+                msg_log::add("I feel more powerful!");
+                game::incr_player_xp(1);
+        }
+        break;
+
+        case FountainEffect::curse:
+        {
+                properties.apply(new PropCursed());
+        }
+        break;
+
+        case FountainEffect::disease:
+        {
+                properties.apply(new PropDiseased());
+        }
+        break;
+
+        case FountainEffect::poison:
+        {
+                properties.apply(new PropPoisoned());
+        }
+        break;
+
+        case FountainEffect::frenzy:
+        {
+                properties.apply(new PropFrenzied());
+        }
+        break;
+
+        case FountainEffect::paralyze:
+        {
+                properties.apply(new PropParalyzed());
+        }
+        break;
+
+        case FountainEffect::blind:
+        {
+                properties.apply(new PropBlind());
+        }
+        break;
+
+        case FountainEffect::faint:
+        {
+                auto prop = new PropFainted();
+
+                prop->set_duration(10);
+
+                properties.apply(prop);
+        }
+        break;
+
+        case FountainEffect::START_OF_BAD_EFFECTS:
+        case FountainEffect::END:
+                break;
+        }
+
+        m_is_tried = true;
+
+        const int dry_one_in_n = 3;
+
+        if (rnd::one_in(dry_one_in_n))
+        {
+                m_has_drinks_left = false;
+
+                msg_log::add("The fountain dries up.");
+        }
+
+        game_time::tick();
 }
 
 void Fountain::bless()
@@ -3941,6 +3982,8 @@ void Fountain::bless()
         {
                 return;
         }
+
+        m_is_tried = false;
 
         m_fountain_effect = FountainEffect::refreshing;
 
@@ -3973,6 +4016,8 @@ void Fountain::curse()
                 return;
         }
 
+        m_is_tried = false;
+
         const int min = (int)FountainEffect::START_OF_BAD_EFFECTS + 1;
         const int max = (int)FountainEffect::END - 1;
 
@@ -3989,6 +4034,106 @@ void Fountain::curse()
                         name_the +
                         " seems murkier.");
         }
+}
+
+std::string Fountain::type_name() const
+{
+        switch (m_fountain_effect)
+        {
+        case FountainEffect::refreshing:
+                return "refreshing";
+                break;
+
+        case FountainEffect::xp:
+                return "exalting";
+                break;
+
+        case FountainEffect::curse:
+                return "cursed";
+                break;
+
+        case FountainEffect::disease:
+                return "diseased";
+                break;
+
+        case FountainEffect::poison:
+                return "poisonous";
+                break;
+
+        case FountainEffect::frenzy:
+                return "enraging";
+                break;
+
+        case FountainEffect::paralyze:
+                return "paralyzing";
+                break;
+
+        case FountainEffect::blind:
+                return "blinding";
+                break;
+
+        case FountainEffect::faint:
+                return "sleep-inducing";
+                break;
+
+        case FountainEffect::START_OF_BAD_EFFECTS:
+        case FountainEffect::END:
+                break;
+        }
+
+        ASSERT(false);
+
+        return "";
+}
+
+std::string Fountain::type_indefinite_article() const
+{
+        switch (m_fountain_effect)
+        {
+        case FountainEffect::refreshing:
+                return "a";
+                break;
+
+        case FountainEffect::xp:
+                return "an";
+                break;
+
+        case FountainEffect::curse:
+                return "a";
+                break;
+
+        case FountainEffect::disease:
+                return "a";
+                break;
+
+        case FountainEffect::poison:
+                return "a";
+                break;
+
+        case FountainEffect::frenzy:
+                return "an";
+                break;
+
+        case FountainEffect::paralyze:
+                return "a";
+                break;
+
+        case FountainEffect::blind:
+                return "a";
+                break;
+
+        case FountainEffect::faint:
+                return "a";
+                break;
+
+        case FountainEffect::START_OF_BAD_EFFECTS:
+        case FountainEffect::END:
+                break;
+        }
+
+        ASSERT(false);
+
+        return "";
 }
 
 // -----------------------------------------------------------------------------

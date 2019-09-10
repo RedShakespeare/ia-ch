@@ -1341,14 +1341,19 @@ public:
 private:
         Color color_default() const override;
 
+        std::string type_name() const;
+
+        std::string type_indefinite_article() const;
+
         void on_hit(
                 const int dmg,
                 const DmgType dmg_type,
                 const DmgMethod dmg_method,
                 actor::Actor* const actor) override;
 
-        FountainEffect m_fountain_effect;
-        bool m_has_drinks_left;
+        FountainEffect m_fountain_effect {FountainEffect::END};
+        bool m_has_drinks_left {true};
+        bool m_is_tried = {false};
 };
 
 class Cocoon: public Terrain
