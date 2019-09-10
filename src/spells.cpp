@@ -1840,13 +1840,18 @@ void SpellLight::run_effect(
 
         if (skill == SpellSkill::master)
         {
-                explosion::run(caster->m_pos,
-                               ExplType::apply_prop,
-                               EmitExplSnd::no,
-                               0,
-                               ExplExclCenter::yes,
-                               {new PropBlind()},
-                               colors::yellow());
+                auto* const blind = new PropBlind();
+
+                blind->set_duration(blind->nr_turns_left() / 4);
+
+                explosion::run(
+                        caster->m_pos,
+                        ExplType::apply_prop,
+                        EmitExplSnd::no,
+                        0,
+                        ExplExclCenter::yes,
+                        {blind},
+                        colors::yellow());
         }
 }
 
