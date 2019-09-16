@@ -564,6 +564,12 @@ Range Darkbolt::damage(const SpellSkill skill, const actor::Actor& caster) const
 {
         Range dmg;
 
+        // Skill  damage    avg
+        // -----------------------
+        // 0      4 - 9     6.5
+        // 1      6 - 12    9.0
+        // 2      8 - 15    11.5
+
         switch (skill)
         {
         case SpellSkill::basic:
@@ -571,17 +577,17 @@ Range Darkbolt::damage(const SpellSkill skill, const actor::Actor& caster) const
                 break;
 
         case SpellSkill::expert:
-                dmg = Range(7, 14);
+                dmg = Range(6, 12);
                 break;
 
         case SpellSkill::master:
-                dmg = Range(10, 19);
+                dmg = Range(8, 15);
                 break;
         }
 
         if (!caster.is_player())
         {
-                const int mon_dmg_pct = 75;
+                const int mon_dmg_pct = 80;
 
                 dmg.min = (dmg.min * mon_dmg_pct) / 100;
                 dmg.max = (dmg.max * mon_dmg_pct) / 100;
@@ -590,8 +596,7 @@ Range Darkbolt::damage(const SpellSkill skill, const actor::Actor& caster) const
         return dmg;
 }
 
-std::vector<std::string> Darkbolt::descr_specific(
-        const SpellSkill skill) const
+std::vector<std::string> Darkbolt::descr_specific(const SpellSkill skill) const
 {
         std::vector<std::string> descr;
 
