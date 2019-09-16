@@ -373,10 +373,11 @@ void set_item_randomized_properties(Item& item)
         ASSERT(d.type != ItemType::melee_wpn_intr &&
                d.type != ItemType::ranged_wpn_intr);
 
-        // If it is a pure melee weapon, and "plus" damage is not already
-        // specified randomize the extra damage
+        // If it is a pure, common melee weapon, and "plus" damage is not
+        // already specified, randomize the extra damage
         if (d.melee.is_melee_wpn &&
             !d.ranged.is_ranged_wpn &&
+            !d.is_unique &&
             (item.melee_base_dmg().plus() == 0))
         {
                 static_cast<Wpn&>(item).set_random_melee_plus();

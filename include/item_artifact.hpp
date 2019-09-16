@@ -176,8 +176,6 @@ class SpiritDagger: public Wpn
 public:
         SpiritDagger(ItemData* const item_data);
 
-        void on_melee_hit(actor::Actor& actor_hit, const int dmg) override;
-
 protected:
         void specific_dmg_mod(
                 DmgRange& range,

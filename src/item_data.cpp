@@ -1853,9 +1853,8 @@ void init()
                 "A black dagger with elaborate ornaments. The blade appears "
                 "blurry, as if perpetually covered in a dark haze.",
 
-                "This weapon does extra damaged based on the current number "
-                "of spirit points of the wielder. Successfully attacking an "
-                "opponent drains one spirit point from the attacker.",
+                "This damage dealt by this weapon is based on the current "
+                "number of of spirit points of the wielder.",
 
                 "Attacking an unaware opponent with a dagger does +300% damage "
                 "(in addition to the normal +50% damage from stealth attacks).",

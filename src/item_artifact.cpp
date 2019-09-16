@@ -387,54 +387,6 @@ SpiritDagger::SpiritDagger(ItemData* const item_data) :
 
 }
 
-void SpiritDagger::on_melee_hit(actor::Actor& actor_hit, const int dmg)
-{
-        (void)dmg;
-
-        if (m_actor_carrying->m_sp >= 17)
-        {
-                const P defender_pos = actor_hit.m_pos;
-
-                const P attacker_pos = m_actor_carrying->m_pos;
-
-                const auto tgt_pos =
-                        defender_pos + (defender_pos - attacker_pos);
-
-                const auto* const tgt_f = map::g_cells.at(tgt_pos).terrain;
-
-                if (tgt_f->id() != terrain::Id::chasm &&
-                    tgt_f->id() != terrain::Id::liquid_deep)
-                {
-                        P expl_pos;
-
-                        int expl_d = 0;
-
-                        if (tgt_f->is_projectile_passable())
-                        {
-                                expl_pos = tgt_pos;
-                                expl_d = -1;
-                        }
-                        else
-                        {
-                                expl_pos = defender_pos;
-                                expl_d = -2;
-                        }
-
-                        // TODO: Emit sound from explosion center
-
-                        explosion::run(
-                                expl_pos,
-                                ExplType::apply_prop,
-                                EmitExplSnd::no,
-                                expl_d,
-                                ExplExclCenter::no,
-                                {new PropBurning()});
-                }
-        }
-
-        actor::hit_sp(*m_actor_carrying, 1, Verbose::yes);
-}
-
 void SpiritDagger::specific_dmg_mod(
         DmgRange& range,
         const actor::Actor* const actor) const
