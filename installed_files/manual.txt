@@ -205,7 +205,7 @@ If your Insanity reaches 100%, you are hopelessly lost, and the game is over.
 --------------------------------------------------------------------------------
 Sneaking and backstabbing
 --------------------------------------------------------------------------------
-Monsters unaware of your presence have a blue background on their map icon. This is their default mode. While in this state they may roam the map, but they will not actively search for you or purposefully attack you. If you attack an unaware opponent in melee, the attack gets a big bonus to damage and hit chance.
+Monsters unaware of your presence have a blue background on their map icon. This is their default mode. While in this state they may roam the map, but they will not actively search for you or purposefully attack you. If you attack an unaware opponent in melee, the attack does +50% extra damage, and has a very high chance to hit.
 
 For each turn you spend in a monsters visual area (for monsters with sight), there is a chance that it will either completely detect you, or become "suspicious". While suspicious, the monster has an increased chance of detecting you (watch out for messages about monsters looking "wary" or "disturbed").
 

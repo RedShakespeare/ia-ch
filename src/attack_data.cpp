@@ -248,11 +248,18 @@ MeleeAttData::MeleeAttData(
                 // Backstab, +50% damage
                 int dmg_pct = 150;
 
-                // +150% if player is Vicious
-                if ((attacker == map::g_player) &&
-                    player_bon::has_trait(Trait::vicious))
+                // Extra backstab damage from traits
+                if (attacker == map::g_player)
                 {
-                        dmg_pct += 150;
+                        if (player_bon::has_trait(Trait::vicious))
+                        {
+                                dmg_pct += 150;
+                        }
+
+                        if (player_bon::has_trait(Trait::ruthless))
+                        {
+                                dmg_pct += 150;
+                        }
                 }
 
                 // +300% damage if attacking with a dagger

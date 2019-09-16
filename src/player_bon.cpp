@@ -55,6 +55,7 @@ static bool is_trait_blocked_for_bg(const Trait trait, const Bg bg)
         case Trait::imperceptible:
         case Trait::silent:
         case Trait::vicious:
+        case Trait::ruthless:
         case Trait::treasure_hunter:
         case Trait::undead_bane:
         case Trait::absorb:
@@ -317,6 +318,9 @@ std::string trait_title(const Trait id)
 
         case Trait::vicious:
                 return "Vicious";
+
+        case Trait::ruthless:
+                return "Ruthless";
 
         case Trait::strong_backed:
                 return "Strong-backed";
@@ -612,8 +616,12 @@ std::string trait_descr(const Trait id)
 
         case Trait::vicious:
                 return
-                        "+150% backstab damage (in addition to the normal +50% "
+                        "+150% backstab damage (in addition to the basic +50% "
                         "damage from stealth attacks)";
+
+        case Trait::ruthless:
+                return
+                        "+150% backstab damage";
 
         case Trait::treasure_hunter:
                 return
@@ -791,6 +799,11 @@ void trait_prereqs(
         case Trait::vicious:
                 traits_out.push_back(Trait::stealthy);
                 traits_out.push_back(Trait::dexterous);
+                bg_out = Bg::rogue;
+                break;
+
+        case Trait::ruthless:
+                traits_out.push_back(Trait::vicious);
                 bg_out = Bg::rogue;
                 break;
 

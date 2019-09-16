@@ -67,6 +67,7 @@ enum class Trait
 
         // Unique for Rogue
         vicious,
+        ruthless,
 
         // Unique for War veteran
         steady_aimer,

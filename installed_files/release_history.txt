@@ -24,6 +24,7 @@ Gameplay
 * The Staff of the Pharaohs gives a passive ability to convert mummies, instead of granting a spell to summon mummies
 * The Spirit Dagger now does extra damage based on the attacker's current spirit, and drains spirit from the attacker on succesful attacks (instead of giving spirit to the attacker)
 * Added a new "Strange Device"
+* Added trait "Ruthless", which is an upgrade of "Vicious" with even more backstab damage
 * Removed some player traits
 * Added more monsters, and removed some redundant monsters
 * Deep Ones can throw a net which entangles the victim (instead of throwing a spear)
