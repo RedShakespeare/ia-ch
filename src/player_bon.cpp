@@ -785,7 +785,6 @@ void trait_prereqs(
                 break;
 
         case Trait::silent:
-                traits_out.push_back(Trait::dexterous);
                 traits_out.push_back(Trait::stealthy);
                 break;
 
