@@ -40,6 +40,35 @@ static TimeData s_start_time;
 
 static std::vector<HistoryEvent> s_history_events;
 
+static const std::string intro_msg =
+        "I stand at the end of a cobbled forest path, before me lies a shunned "
+        "and decrepit old church building. This is the access point to the "
+        "domains of the abhorred \"Cult of Starry Wisdom\". "
+        "I am determined to enter these sprawling catacombs and rob them of "
+        "treasures and knowledge. At the depths of the abyss lies my true "
+        "destiny, an artifact of non-human origin called \"The shining "
+        "Trapezohedron\" - a window to all the secrets of the universe!";
+
+static const std::vector<std::string> win_msg = {
+        "As I approach the crystal, an eerie glow illuminates the area. I "
+        "notice a figure observing me from the edge of the light. There is no "
+        "doubt concerning the nature of this entity; it is the Faceless God "
+        "who dwells in the depths of the earth - Nyarlathotep!",
+
+        "I panic. Why is it I find myself here, stumbling around in darkness? "
+        "Is this all part of a plan? The being beckons me to gaze into the "
+        "stone.",
+
+        "In the radiance I see visions beyond eternity, visions of unreal "
+        "reality, visions of the brightest light of day and the darkest night "
+        "of madness. There is only onward now, I have to see, I have to KNOW.",
+
+        "So I make a pact with the Fiend.",
+
+        "I now harness the shadows that stride from world to world to sow "
+        "death and madness. The destinies of all things on earth, living and "
+        "dead, are mine."
+};
 
 // -----------------------------------------------------------------------------
 // game
@@ -210,35 +239,9 @@ void win_game()
         io::cover_panel(Panel::screen);
         io::update_screen();
 
-        const std::vector<std::string> win_msg = {
-                "As I approach the crystal, an eerie glow illuminates "
-                "the area. I notice a figure observing me from the "
-                "edge of the light. There is no doubt concerning the "
-                "nature of this entity; it is the Faceless God who "
-                "dwells in the depths of the earth - Nyarlathotep!",
-
-                "I panic. Why is it I find myself here, stumbling "
-                "around in darkness? Is this all part of a plan? The "
-                "being beckons me to gaze into the stone.",
-
-                "In the radiance I see visions beyond eternity, "
-                "visions of unreal reality, visions of the brightest "
-                "light of day and the darkest night of madness. There "
-                "is only onward now, I have to see, I have to KNOW.",
-
-                "So I make a pact with the Fiend.",
-
-                "I now harness the shadows that stride from world to "
-                "world to sow death and madness. The destinies of all "
-                "things on earth, living and dead, are mine."
-        };
-
         const int padding = 9;
-
         const int x0 = padding;
-
         const int max_w = panels::w(Panel::screen) - (padding * 2);
-
         const int line_delay = 50;
 
         int y = 2;
@@ -415,28 +418,16 @@ void GameState::on_start()
 
                 game::add_history_event("Started journey");
 
-                if (!config::is_intro_lvl_skipped())
+                if (!config::is_intro_lvl_skipped() &&
+                    !config::is_intro_popup_skipped())
                 {
                         io::clear_screen();
 
-                        const std::string msg =
-                                "I stand on a cobbled forest path, ahead lies "
-                                "a shunned and decrepit old church building. "
-                                "This is the access point to the abhorred "
-                                "\"Cult of Starry Wisdom\". "
-                                "I am determined to enter these sprawling "
-                                "catacombs and rob them of treasures and "
-                                "knowledge. "
-                                "At the depths of the abyss lies my true "
-                                "destiny, an artifact of non-human origin "
-                                "called \"The shining Trapezohedron\" - a "
-                                "window to all the secrets of the universe!";
-
                         popup::msg(
-                                msg,
+                                intro_msg,
                                 "The story so far...",
                                 SfxId::END,
-                                5);
+                                14);
                 }
         }
 

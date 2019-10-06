@@ -56,6 +56,7 @@ static bool s_is_drink_malign_pot_prompt = false;
 static bool s_is_ranged_wpn_meleee_prompt = false;
 static bool s_is_ranged_wpn_auto_reload = false;
 static bool s_is_intro_lvl_skipped = false;
+static bool s_is_intro_popup_skipped = false;
 static bool s_is_any_key_confirm_more = false;
 static bool s_always_warn_new_mon = false;
 static int s_delay_projectile_draw = -1;
@@ -182,6 +183,7 @@ static void set_default_variables()
         s_is_tiles_wall_full_square = false;
         s_is_text_mode_wall_full_square = true;
         s_is_intro_lvl_skipped = false;
+        s_is_intro_popup_skipped = false;
         s_is_any_key_confirm_more = false;
         s_always_warn_new_mon = true;
         s_is_light_explosive_prompt = false;
@@ -355,43 +357,49 @@ static void player_sets_option(const MenuBrowser& browser)
         }
         break;
 
-        case 11: // Confirm "more" with any key
+        case 11: // Skip intro popup
+        {
+                s_is_intro_popup_skipped = !s_is_intro_popup_skipped;
+        }
+        break;
+
+        case 12: // Confirm "more" with any key
         {
                 s_is_any_key_confirm_more = !s_is_any_key_confirm_more;
         }
         break;
 
-        case 12: // Always warn when a new monster appears
+        case 13: // Always warn when a new monster appears
         {
                 s_always_warn_new_mon = !s_always_warn_new_mon;
         }
         break;
 
-        case 13: // Print warning when lighting explovies
+        case 14: // Print warning when lighting explovies
         {
                 s_is_light_explosive_prompt = !s_is_light_explosive_prompt;
         }
         break;
 
-        case 14: // Print warning when drinking known malign potions
+        case 15: // Print warning when drinking known malign potions
         {
                 s_is_drink_malign_pot_prompt = !s_is_drink_malign_pot_prompt;
         }
         break;
 
-        case 15: // Print warning when melee attacking with ranged weapons
+        case 16: // Print warning when melee attacking with ranged weapons
         {
                 s_is_ranged_wpn_meleee_prompt = !s_is_ranged_wpn_meleee_prompt;
         }
         break;
 
-        case 16: // Ranged weapon auto reload
+        case 17: // Ranged weapon auto reload
         {
                 s_is_ranged_wpn_auto_reload = !s_is_ranged_wpn_auto_reload;
         }
         break;
 
-        case 17: // Projectile delay
+        case 18: // Projectile delay
         {
                 const P p(s_opt_values_x_pos, s_opt_y0 + browser.y());
 
@@ -410,7 +418,7 @@ static void player_sets_option(const MenuBrowser& browser)
         }
         break;
 
-        case 18: // Shotgun delay
+        case 19: // Shotgun delay
         {
                 const P p(s_opt_values_x_pos, s_opt_y0 + browser.y());
 
@@ -429,7 +437,7 @@ static void player_sets_option(const MenuBrowser& browser)
         }
         break;
 
-        case 19: // Explosion delay
+        case 20: // Explosion delay
         {
                 const P p(s_opt_values_x_pos, s_opt_y0 + browser.y());
 
@@ -448,7 +456,7 @@ static void player_sets_option(const MenuBrowser& browser)
         }
         break;
 
-        case 20: // Reset to defaults
+        case 21: // Reset to defaults
         {
                 set_default_variables();
 
@@ -533,6 +541,9 @@ static void set_variables_from_lines(std::vector<std::string>& lines)
         s_is_intro_lvl_skipped = lines.front() == "1";
         lines.erase(std::begin(lines));
 
+        s_is_intro_popup_skipped = lines.front() == "1";
+        lines.erase(std::begin(lines));
+
         s_is_any_key_confirm_more = lines.front() == "1";
         lines.erase(std::begin(lines));
 
@@ -613,6 +624,7 @@ static std::vector<std::string> lines_from_variables()
         lines.push_back(s_is_tiles_wall_full_square ? "1" : "0");
         lines.push_back(s_is_text_mode_wall_full_square ? "1" : "0");
         lines.push_back(s_is_intro_lvl_skipped ? "1" : "0");
+        lines.push_back(s_is_intro_popup_skipped ? "1" : "0");
         lines.push_back(s_is_any_key_confirm_more ? "1" : "0");
         lines.push_back(s_always_warn_new_mon ? "1" : "0");
         lines.push_back(s_is_light_explosive_prompt ? "1" : "0");
@@ -793,6 +805,11 @@ bool is_intro_lvl_skipped()
         return s_is_intro_lvl_skipped;
 }
 
+bool is_intro_popup_skipped()
+{
+        return s_is_intro_popup_skipped;
+}
+
 bool is_any_key_confirm_more()
 {
         return s_is_any_key_confirm_more;
@@ -847,7 +864,7 @@ void set_fullscreen(const bool value)
 // -----------------------------------------------------------------------------
 ConfigState::ConfigState() :
         State(),
-        m_browser(21)
+        m_browser(22)
 {
 
 }
@@ -1001,6 +1018,13 @@ void ConfigState::draw()
                 },
 
                 {
+                        "Skip intro popup",
+                        config::s_is_intro_popup_skipped
+                        ? "Yes"
+                        : "No"
+                },
+
+                {
                         "Any key confirms \"-More-\" prompts",
                         config::s_is_any_key_confirm_more
                         ? "Yes"
@@ -1103,6 +1127,6 @@ void ConfigState::draw()
         io::draw_text(
                 "[enter] to set option [space/esc] to exit",
                 Panel::screen,
-                P(1, 23),
+                P(1, 24),
                 colors::white());
 }

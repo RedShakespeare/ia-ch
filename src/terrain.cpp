@@ -547,10 +547,7 @@ TileId Floor::tile() const
 
 std::string Floor::name(const Article article) const
 {
-        std::string ret =
-                (article == Article::a)
-                ? ""
-                : "the ";
+        std::string ret = (article == Article::a) ? "" : "the ";
 
         if (m_burn_state == BurnState::burning)
         {
@@ -686,10 +683,7 @@ bool Wall::is_wall_top_tile(const TileId tile)
 
 std::string Wall::name(const Article article) const
 {
-        std::string ret =
-                (article == Article::a)
-                ? "a "
-                : "the ";
+        std::string ret = (article == Article::a) ? "a " : "the ";
 
         if (m_is_mossy)
         {
@@ -886,12 +880,9 @@ void RubbleHigh::on_hit(
 
 std::string RubbleHigh::name(const Article article) const
 {
-        std::string ret =
-                (article == Article::a)
-                ? "a "
-                : "the ";
+        std::string a = (article == Article::a) ? "a " : "the ";
 
-        return ret + "big pile of debris";
+        return a + "big pile of debris";
 }
 
 Color RubbleHigh::color_default() const
@@ -1007,12 +998,9 @@ void GraveStone::bump(actor::Actor& actor_bumping)
 
 std::string GraveStone::name(const Article article) const
 {
-        const std::string ret =
-                (article == Article::a)
-                ? "a "
-                : "the ";
+        const std::string a = (article == Article::a) ? "a " : "the ";
 
-        return ret + "gravestone; " + m_inscr;
+        return a + "gravestone; " + m_inscr;
 }
 
 Color GraveStone::color_default() const
@@ -1040,12 +1028,9 @@ void ChurchBench::on_hit(
 
 std::string ChurchBench::name(const Article article) const
 {
-        const std::string ret =
-                (article == Article::a)
-                ? "a "
-                : "the ";
+        const std::string a = (article == Article::a) ? "a " : "the ";
 
-        return ret + "church bench";
+        return a + "church bench";
 }
 
 Color ChurchBench::color_default() const
@@ -1153,10 +1138,7 @@ void Statue::on_hit(
 
 std::string Statue::name(const Article article) const
 {
-        std::string ret =
-                (article == Article::a)
-                ? "a "
-                : "the ";
+        std::string ret = (article == Article::a) ? "a " : "the ";
 
         switch (m_type)
         {
@@ -1205,12 +1187,9 @@ void Stalagmite::on_hit(
 
 std::string Stalagmite::name(const Article article) const
 {
-        std::string ret =
-                (article == Article::a)
-                ? "a "
-                : "the ";
+        std::string a = (article == Article::a) ? "a " : "the ";
 
-        return ret + "stalagmite";
+        return a + "stalagmite";
 }
 
 Color Stalagmite::color_default() const
@@ -1289,12 +1268,9 @@ void Stairs::bump(actor::Actor& actor_bumping)
 
 std::string Stairs::name(const Article article) const
 {
-        std::string ret =
-                (article == Article::a)
-                ? "a "
-                : "the ";
+        std::string a = (article == Article::a) ? "a " : "the ";
 
-        return ret + "downward staircase";
+        return a + "downward staircase";
 }
 
 Color Stairs::color_default() const
@@ -1333,11 +1309,9 @@ char Bridge::character() const
 
 std::string Bridge::name(const Article article) const
 {
-        std::string ret = (article == Article::a)
-                ? "a "
-                : "the ";
+        std::string a = (article == Article::a) ? "a " : "the ";
 
-        return ret + "bridge";
+        return a + "bridge";
 }
 
 Color Bridge::color_default() const
@@ -1739,11 +1713,9 @@ void Chasm::on_hit(
 
 std::string Chasm::name(const Article article) const
 {
-        std::string ret = (article == Article::a)
-                ? "a "
-                : "the ";
+        std::string a = (article == Article::a) ? "a " : "the ";
 
-        return ret + "chasm";
+        return a + "chasm";
 }
 
 Color Chasm::color_default() const
@@ -1773,10 +1745,7 @@ void Lever::on_hit(
 
 std::string Lever::name(const Article article) const
 {
-        std::string ret =
-                (article == Article::a)
-                ? "a"
-                : "the";
+        std::string ret = (article == Article::a) ? "a" : "the";
 
         ret += " lever (in ";
 
@@ -1882,16 +1851,6 @@ void Lever::toggle()
 Altar::Altar(const P& p) :
         Terrain(p) {}
 
-void Altar::bump(actor::Actor& actor_bumping)
-{
-        if (!actor_bumping.is_player())
-        {
-                return;
-        }
-
-        msg_log::add("I feel like my magic is stronger here.");
-}
-
 void Altar::on_hit(
         const int dmg,
         const DmgType dmg_type,
@@ -1906,9 +1865,7 @@ void Altar::on_hit(
 
 std::string Altar::name(const Article article) const
 {
-        std::string ret = (article == Article::a)
-                ? "an "
-                : "the ";
+        std::string ret = (article == Article::a) ? "an " : "the ";
 
         return ret + "altar";
 }
@@ -2016,11 +1973,9 @@ void Gong::on_hit(
 
 std::string Gong::name(const Article article) const
 {
-        std::string ret = (article == Article::a)
-                ? "a "
-                : "the ";
+        std::string a = (article == Article::a) ? "a " : "the ";
 
-        return ret + "temple gong";
+        return a + "temple gong";
 }
 
 Color Gong::color_default() const
@@ -2204,10 +2159,7 @@ WasDestroyed Bush::on_finished_burning()
 
 std::string Bush::name(const Article article) const
 {
-        std::string ret =
-                (article == Article::a)
-                ? "a "
-                : "the ";
+        std::string ret = (article == Article::a) ? "a " : "the ";
 
         switch (m_burn_state)
         {
@@ -2286,10 +2238,7 @@ WasDestroyed Vines::on_finished_burning()
 
 std::string Vines::name(const Article article) const
 {
-        std::string ret =
-                (article == Article::a)
-                ? ""
-                : "the ";
+        std::string ret = (article == Article::a) ? "" : "the ";
 
         switch (m_burn_state)
         {
@@ -2321,12 +2270,9 @@ Chains::Chains(const P& p) :
 
 std::string Chains::name(const Article article) const
 {
-        std::string ret =
-                (article == Article::a)
-                ? ""
-                : "the ";
+        std::string a = (article == Article::a) ? "" : "the ";
 
-        return ret + "rusty chains";
+        return a + "rusty chains";
 }
 
 Color Chains::color_default() const
@@ -2448,12 +2394,9 @@ void Grate::on_hit(
 
 std::string Grate::name(const Article article) const
 {
-        std::string ret =
-                (article == Article::a)
-                ? "a "
-                : "the ";
+        std::string a = (article == Article::a) ? "a " : "the ";
 
-        return ret + "grate";
+        return a + "grate";
 }
 
 Color Grate::color_default() const
@@ -2545,10 +2488,7 @@ TileId Tree::tile() const
 
 std::string Tree::name(const Article article) const
 {
-        std::string result =
-                (article == Article::a)
-                ? "a "
-                : "the ";
+        std::string result = (article == Article::a) ? "a " : "the ";
 
         switch (m_burn_state)
         {
@@ -2591,12 +2531,9 @@ bool Tree::is_fungi() const
 // -----------------------------------------------------------------------------
 std::string Brazier::name(const Article article) const
 {
-        std::string ret =
-                (article == Article::a)
-                ? "a "
-                : "the ";
+        std::string a = (article == Article::a) ? "a " : "the ";
 
-        return ret + "brazier";
+        return a + "brazier";
 }
 
 void Brazier::on_hit(
@@ -4243,10 +4180,7 @@ DidOpen Cabinet::open(actor::Actor* const actor_opening)
 
 std::string Cabinet::name(const Article article) const
 {
-        std::string ret =
-                (article == Article::a)
-                ? "a "
-                : "the ";
+        std::string ret = (article == Article::a) ? "a " : "the ";
 
         if (m_burn_state == BurnState::burning)
         {
@@ -4354,10 +4288,7 @@ void Bookshelf::player_loot()
 
 std::string Bookshelf::name(const Article article) const
 {
-        std::string ret =
-                (article == Article::a)
-                ? "a "
-                : "the ";
+        std::string ret = (article == Article::a) ? "a " : "the ";
 
         if (m_burn_state == BurnState::burning)
         {
@@ -4465,10 +4396,7 @@ void AlchemistBench::player_loot()
 
 std::string AlchemistBench::name(const Article article) const
 {
-        std::string a =
-                (article == Article::a)
-                ? "an "
-                : "the ";
+        std::string a = (article == Article::a) ? "an " : "the ";
 
         std::string mod = "";
 
@@ -4688,10 +4616,7 @@ DidOpen Cocoon::open(actor::Actor* const actor_opening)
 
 std::string Cocoon::name(const Article article) const
 {
-        std::string ret =
-                (article == Article::a)
-                ? "a "
-                : "the ";
+        std::string ret = (article == Article::a) ? "a " : "the ";
 
         if (m_burn_state == BurnState::burning)
         {

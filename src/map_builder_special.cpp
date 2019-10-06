@@ -357,6 +357,16 @@ void MapBuilderIntroForest::handle_template_pos(const P&p, const char c)
 
         case '~':
         {
+                auto liquid = new terrain::LiquidDeep(p);
+
+                liquid->m_type = LiquidType::water;
+
+                map::put(liquid);
+        }
+        break;
+
+        case '%':
+        {
                 auto liquid = new terrain::LiquidShallow(p);
 
                 liquid->m_type = LiquidType::water;
@@ -414,6 +424,12 @@ void MapBuilderIntroForest::handle_template_pos(const P&p, const char c)
         }
         break;
 
+        case '"':
+        {
+                map::put(new terrain::Bones(p));
+        }
+        break;
+
         default:
         {
                 ASSERT(false);
@@ -424,25 +440,16 @@ void MapBuilderIntroForest::handle_template_pos(const P&p, const char c)
 
 void MapBuilderIntroForest::on_template_built()
 {
-        std::vector<HighscoreEntry> entries =
-                highscore::entries_sorted();
+        const auto highscore_entries = highscore::entries_sorted();
+        const size_t nr_highscore_entries = highscore_entries.size();
 
-        const int nr_non_win =
-                count_if(begin(entries),
-                         end(entries),
-                         [](const HighscoreEntry & e)
-                         {
-                                 return (e.is_win == IsWin::no);
-                         });
-
-        if (nr_non_win <= 0)
+        if (nr_highscore_entries <= 0)
         {
                 return;
         }
 
         size_t entry_idx = 0;
-
-        int nr_placed = 0;
+        size_t nr_placed = 0;
 
         // NOTE: This assumes that the grave positions are added from left to
         // right when building the template. Here we iterate backwards over the
@@ -455,23 +462,11 @@ void MapBuilderIntroForest::on_template_built()
 
                 auto* grave = new terrain::GraveStone(pos);
 
-                HighscoreEntry entry = entries[entry_idx];
-
-                // Skip winning entries
-                while (entry.is_win == IsWin::yes)
-                {
-                        ++entry_idx;
-
-                        entry = entries[entry_idx];
-                }
-
-                const std::string name = entry.name;
-
-                const std::string date_str = entry.date;
-
-                const std::string score_str = std::to_string(entry.calculate_score());
-
-                const std::string class_str = player_bon::bg_title(entry.bg);
+                const auto entry = highscore_entries[entry_idx];
+                const auto name = entry.name;
+                const auto date_str = entry.date;
+                const auto score_str = std::to_string(entry.calculate_score());
+                const auto class_str = player_bon::bg_title(entry.bg);
 
                 grave->set_inscription(
                         "RIP " +
@@ -485,7 +480,7 @@ void MapBuilderIntroForest::on_template_built()
                 ++nr_placed;
                 ++entry_idx;
 
-                if (nr_placed == nr_non_win)
+                if (nr_placed == nr_highscore_entries)
                 {
                         break;
                 }

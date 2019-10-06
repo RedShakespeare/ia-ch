@@ -1012,8 +1012,6 @@ public:
 
         std::string name(const Article article) const override;
 
-        void bump(actor::Actor& actor_bumping) override;
-
 private:
         Color color_default() const override;
 

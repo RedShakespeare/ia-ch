@@ -5,6 +5,7 @@ Gameplay
 * Maps can have different size, the standard map size is bigger than before
 * Some maps built from templates (such as the "Egypt" level)  are randomly flipped and rotated for more variety
 * Added more special levels
+* The intro map is much smaller
 * Trees appearing beneath the first few levels are now "giant fungi" instead
 * Added swimming
 * You can now make a "dark pact" (by striking a temple gong), giving a bonus for a penalty - the bonus is received immediately, and the penalty is activated later in the game
@@ -74,6 +75,7 @@ User interface
 * Many types of messages are no longer added to the message history, such as messages printed when moving around the marker ("[f] to fire") or when asking for a direction ("Which direction? [space, esc] to cancel") - this keeps the message history more clean and focused on game events
 * Many properties now have longer and more descriptive names on the map screen (e.g. "Fear Res." instead of rFear", or "LIFE SAPPED(4)" instead of "HP(4)")
 * Added an option for if ambient sounds should be preloaded at game startup (otherwise each sound is loaded the first time it's played)
+* Added option to skip the intro level popup message
 
 Misc
 * Save files are no longer erased when loading a saved game (only when dying, winning the game, or when actively quitting), this allows players to resume from a previous save file if the game has crashed

@@ -52,6 +52,7 @@ bool is_drink_malign_pot_prompt();
 bool is_ranged_wpn_meleee_prompt();
 bool is_ranged_wpn_auto_reload();
 bool is_intro_lvl_skipped();
+bool is_intro_popup_skipped();
 bool is_any_key_confirm_more();
 bool always_warn_new_mon();
 int delay_projectile_draw();
