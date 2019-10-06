@@ -17,6 +17,7 @@ enum class StateId
         config,
         descript,
         game,
+        win_game,
         highscore,
         inventory,
         manual,

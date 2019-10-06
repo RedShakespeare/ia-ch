@@ -644,8 +644,6 @@ void handle(const GameCmd cmd)
                         game::add_history_event(
                                 "Beheld The Shining Trapezohedron!");
 
-                        game::win_game();
-
                         saving::erase_save();
 
                         states::pop();
@@ -653,6 +651,9 @@ void handle(const GameCmd cmd)
                         states::push(
                                 std::make_unique<PostmortemMenu>(
                                         IsWin::yes));
+
+                        states::push(
+                                std::make_unique<WinGameState>());
 
                         return;
                 }

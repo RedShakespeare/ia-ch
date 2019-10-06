@@ -48,8 +48,6 @@ void on_mon_seen(actor::Actor& actor);
 
 void on_mon_killed(actor::Actor& actor);
 
-void win_game();
-
 void set_start_time_to_now();
 
 void incr_player_xp(
@@ -89,6 +87,22 @@ private:
         void query_quit();
 
         const GameEntryMode m_entry_mode;
+};
+
+// -----------------------------------------------------------------------------
+// Win game state
+// -----------------------------------------------------------------------------
+class WinGameState: public State
+{
+public:
+        WinGameState() :
+                State() {}
+
+        void draw() override;
+
+        void update() override;
+
+        StateId id() override;
 };
 
 #endif // GAME_HPP

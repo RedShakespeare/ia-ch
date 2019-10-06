@@ -164,9 +164,9 @@ static void set_dead_actors()
 
                 if (!map::g_cells.at(p).is_seen_by_player ||
                     !actor->is_corpse() ||
-                    actor->m_data->character == 0 ||
-                    actor->m_data->character == ' ' ||
-                    actor->m_data->tile == TileId::END)
+                    (actor->m_data->character == 0) ||
+                    (actor->m_data->character == ' ') ||
+                    (actor->m_data->tile == TileId::END))
                 {
                         continue;
                 }

@@ -8,8 +8,10 @@
 
 #include "actor_items.hpp"
 #include "actor_player.hpp"
+#include "common_text.hpp"
 #include "create_character.hpp"
 #include "draw_map.hpp"
+#include "game_commands.hpp"
 #include "game_time.hpp"
 #include "init.hpp"
 #include "io.hpp"
@@ -234,61 +236,6 @@ void incr_clvl_number()
         ++s_clvl;
 }
 
-void win_game()
-{
-        io::cover_panel(Panel::screen);
-        io::update_screen();
-
-        const int padding = 9;
-        const int x0 = padding;
-        const int max_w = panels::w(Panel::screen) - (padding * 2);
-        const int line_delay = 50;
-
-        int y = 2;
-
-        for (const std::string& section_msg : win_msg)
-        {
-                const auto section_lines =
-                        text_format::split(section_msg, max_w);
-
-                for (const std::string& line : section_lines)
-                {
-                        io::draw_text(
-                                line,
-                                Panel::screen,
-                                P(x0, y),
-                                colors::white(),
-                                false, // Do not draw background color
-                                colors::black());
-
-                        io::update_screen();
-
-                        sdl_base::sleep(line_delay);
-
-                        ++y;
-                }
-                ++y;
-        }
-
-        ++y;
-
-        const int screen_w = panels::w(Panel::screen);
-        const int screen_h = panels::h(Panel::screen);
-
-        io::draw_text_center(
-                "[space/esc/enter] to continue",
-                Panel::screen,
-                P((screen_w - 1) / 2, screen_h - 2),
-                colors::menu_dark(),
-                false, // Do not draw background color
-                colors::black(),
-                false); // Do not allow pixel-level adjustment
-
-        io::update_screen();
-
-        query::wait_for_confirm();
-}
-
 void on_mon_seen(actor::Actor& actor)
 {
         auto& d = *actor.m_data;
@@ -460,6 +407,11 @@ void GameState::on_start()
 
 void GameState::draw()
 {
+        if (map::w() == 0)
+        {
+                return;
+        }
+
         if (states::is_current_state(*this))
         {
 #ifndef NDEBUG
@@ -554,4 +506,72 @@ void GameState::update()
 
                 return;
         }
+}
+
+// -----------------------------------------------------------------------------
+// Win game state
+// -----------------------------------------------------------------------------
+void WinGameState::draw()
+{
+        const int padding = 9;
+        const int x0 = padding;
+        const int max_w = panels::w(Panel::screen) - (padding * 2);
+
+        int y = 2;
+
+        for (const std::string& section_msg : win_msg)
+        {
+                const auto section_lines =
+                        text_format::split(section_msg, max_w);
+
+                for (const std::string& line : section_lines)
+                {
+                        io::draw_text(
+                                line,
+                                Panel::screen,
+                                P(x0, y),
+                                colors::white(),
+                                false, // Do not draw background color
+                                colors::black());
+
+                        ++y;
+                }
+                ++y;
+        }
+
+        ++y;
+
+        const int screen_w = panels::w(Panel::screen);
+        const int screen_h = panels::h(Panel::screen);
+
+        io::draw_text_center(
+                common_text::g_confirm_hint,
+                Panel::screen,
+                P((screen_w - 1) / 2, screen_h - 2),
+                colors::menu_dark(),
+                false, // Do not draw background color
+                colors::black(),
+                false); // Do not allow pixel-level adjustment
+}
+
+void WinGameState::update()
+{
+        const auto input = io::get();
+
+        switch (input.key)
+        {
+        case SDLK_SPACE:
+        case SDLK_ESCAPE:
+        case SDLK_RETURN:
+                states::pop();
+                break;
+
+        default:
+                break;
+        }
+}
+
+StateId WinGameState::id()
+{
+        return StateId::win_game;
 }
