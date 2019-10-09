@@ -104,7 +104,8 @@ void init_actor(Actor& actor, const P& pos_, ActorData& data)
                 const bool set_allied =
                         data.is_ghoul &&
                         (player_bon::bg() == Bg::ghoul) &&
-                        // HACK: Do not allow the boss Ghoul to become allied
+                        // TODO: This is a hack to not allow the boss Ghoul to
+                        // become allied
                         (data.id != actor::Id::high_priest_guard_ghoul);
 
                 if (set_allied)

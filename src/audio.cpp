@@ -11,10 +11,13 @@
 
 #include "SDL_mixer.h"
 
+#include "actor_player.hpp"
 #include "init.hpp"
 #include "io.hpp"
 #include "map.hpp"
+#include "map.hpp"
 #include "paths.hpp"
+#include "property_data.hpp"
 #include "text_format.hpp"
 
 using namespace std::chrono_literals;
@@ -281,10 +284,16 @@ void cleanup()
         TRACE_FUNC_END;
 }
 
-void play(const SfxId sfx,
-          const int vol_pct_tot,
-          const int vol_pct_l)
+void play(const SfxId sfx, const int vol_pct_tot, const int vol_pct_l)
 {
+        // TODO: Ugly hack (although this is probably more robust than for
+        // example disabling the audio when deaf is applied, and enabling it
+        // when deafness ends, or when the gameplay session ends, etc(?))
+        if (map::g_player && map::g_player->m_properties.has(PropId::deaf))
+        {
+                return;
+        }
+
         if (s_audio_chunks.empty() ||
             (sfx == SfxId::AMB_START) ||
             (sfx == SfxId::END))
@@ -330,9 +339,7 @@ void play(const SfxId sfx,
         }
 }
 
-void play(const SfxId sfx,
-          const Dir dir,
-          const int distance_pct)
+void play(const SfxId sfx, const Dir dir, const int distance_pct)
 {
         if (dir == Dir::END)
         {

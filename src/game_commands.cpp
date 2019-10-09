@@ -1036,9 +1036,7 @@ void handle(const GameCmd cmd)
 
         case GameCmd::debug_f8:
         {
-                map::put(
-                        new terrain::Fountain(
-                                map::g_player->m_pos.with_x_offset(1)));
+                map::g_player->m_properties.apply(new PropDeaf());
         }
         break;
 
