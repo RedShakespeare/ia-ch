@@ -468,4 +468,4 @@ void act()
         walk_to_adj_cell(s_path.back());
 }
 
-} // bot
+}  // namespace bot

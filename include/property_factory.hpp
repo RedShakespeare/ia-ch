@@ -18,6 +18,6 @@ namespace property_factory
 
 Prop* make(const PropId id);
 
-} // prop_factory
+} // namespace property_factory
 
 #endif // PROPERTY_FACTORY_H

@@ -20,10 +20,10 @@ public:
                 Terrain(pos),
                 m_nr_turns_left(nr_turns) {}
 
-        Smoke(const P& pos) :
+        explicit Smoke(const P& pos) :
                 Terrain(pos) {}
 
-        ~Smoke() {}
+        ~Smoke() override = default;
 
         terrain::Id id() const override
         {
@@ -49,10 +49,10 @@ public:
                 Terrain(pos),
                 m_nr_turns_left(nr_turns) {}
 
-        ForceField(const P& pos) :
+        explicit ForceField(const P& pos) :
                 Terrain(pos) {}
 
-        ~ForceField() {}
+        ~ForceField() override = default;
 
         terrain::Id id() const override
         {
@@ -76,10 +76,10 @@ public:
                 Terrain(pos),
                 m_nr_turns_left(nr_turns) {}
 
-        LitDynamite(const P& pos) :
+        explicit LitDynamite(const P& pos) :
                 Terrain(pos) {}
 
-        ~LitDynamite() {}
+        ~LitDynamite() override = default;
 
         terrain::Id id() const override
         {
@@ -106,10 +106,10 @@ public:
                 Terrain(pos),
                 m_nr_turns_left(nr_turns) {}
 
-        LitFlare(const P& pos) :
+        explicit LitFlare(const P& pos) :
                 Terrain(pos) {}
 
-        ~LitFlare() {}
+        ~LitFlare() override = default;
 
         terrain::Id id() const override
         {
@@ -128,6 +128,6 @@ private:
         int m_nr_turns_left {-1};
 };
 
-} // terrain
+} // namespace terrain
 
 #endif // TERRAIN_MOB_HPP

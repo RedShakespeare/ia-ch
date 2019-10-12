@@ -144,9 +144,9 @@ void init()
 
         s_audio_chunks.resize((size_t)SfxId::END);
 
-        for (size_t i = 0; i < s_audio_chunks.size(); ++i)
+        for (auto& audio_chunk : s_audio_chunks)
         {
-                s_audio_chunks[i] = nullptr;
+                audio_chunk = nullptr;
         }
 
         // Pre-load the action sounds
@@ -257,9 +257,9 @@ void cleanup()
 {
         TRACE_FUNC_BEGIN;
 
-        for (size_t i = 0; i < (size_t)SfxId::END; ++i)
+        for (auto& v : s_ms_at_sfx_played)
         {
-                s_ms_at_sfx_played[i] = 0;
+                v = 0;
         }
 
         for (Mix_Chunk* chunk : s_audio_chunks)
@@ -421,7 +421,7 @@ void try_play_amb(const int one_in_n_chance_to_play)
 
                 const int last_int = (int)SfxId::END - 1;
 
-                const SfxId sfx = (SfxId)rnd::range(first_int, last_int);
+                const auto sfx = (SfxId)rnd::range(first_int, last_int);
 
                 // NOTE: The ambient sound effect will be loaded by 'play', if
                 // not already loaded (only action sound effects are pre-loaded)
@@ -448,4 +448,4 @@ void fade_out_music()
         Mix_FadeOutMusic(2000);
 }
 
-} // audio
+}  // namespace audio

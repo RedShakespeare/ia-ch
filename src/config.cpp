@@ -612,36 +612,36 @@ static std::vector<std::string> lines_from_variables()
         std::vector<std::string> lines;
 
         lines.push_back(std::to_string((int)s_input_mode));
-        lines.push_back(s_is_audio_enabled ? "1" : "0");
-        lines.push_back(s_is_amb_audio_enabled ? "1" : "0");
-        lines.push_back(s_is_amb_audio_preloaded ? "1" : "0");
+        lines.emplace_back(s_is_audio_enabled ? "1" : "0");
+        lines.emplace_back(s_is_amb_audio_enabled ? "1" : "0");
+        lines.emplace_back(s_is_amb_audio_preloaded ? "1" : "0");
         lines.push_back(std::to_string(s_screen_px_w));
         lines.push_back(std::to_string(s_screen_px_h));
-        lines.push_back(s_is_tiles_mode ? "1" : "0");
+        lines.emplace_back(s_is_tiles_mode ? "1" : "0");
         lines.push_back(s_font_name);
-        lines.push_back(s_is_fullscreen ? "1" : "0");
-        lines.push_back(s_is_native_resolution_fullscreen ? "1" : "0");
-        lines.push_back(s_is_tiles_wall_full_square ? "1" : "0");
-        lines.push_back(s_is_text_mode_wall_full_square ? "1" : "0");
-        lines.push_back(s_is_intro_lvl_skipped ? "1" : "0");
-        lines.push_back(s_is_intro_popup_skipped ? "1" : "0");
-        lines.push_back(s_is_any_key_confirm_more ? "1" : "0");
-        lines.push_back(s_always_warn_new_mon ? "1" : "0");
-        lines.push_back(s_is_light_explosive_prompt ? "1" : "0");
-        lines.push_back(s_is_drink_malign_pot_prompt ? "1" : "0");
-        lines.push_back(s_is_ranged_wpn_meleee_prompt ? "1" : "0");
-        lines.push_back(s_is_ranged_wpn_auto_reload ? "1" : "0");
+        lines.emplace_back(s_is_fullscreen ? "1" : "0");
+        lines.emplace_back(s_is_native_resolution_fullscreen ? "1" : "0");
+        lines.emplace_back(s_is_tiles_wall_full_square ? "1" : "0");
+        lines.emplace_back(s_is_text_mode_wall_full_square ? "1" : "0");
+        lines.emplace_back(s_is_intro_lvl_skipped ? "1" : "0");
+        lines.emplace_back(s_is_intro_popup_skipped ? "1" : "0");
+        lines.emplace_back(s_is_any_key_confirm_more ? "1" : "0");
+        lines.emplace_back(s_always_warn_new_mon ? "1" : "0");
+        lines.emplace_back(s_is_light_explosive_prompt ? "1" : "0");
+        lines.emplace_back(s_is_drink_malign_pot_prompt ? "1" : "0");
+        lines.emplace_back(s_is_ranged_wpn_meleee_prompt ? "1" : "0");
+        lines.emplace_back(s_is_ranged_wpn_auto_reload ? "1" : "0");
         lines.push_back(std::to_string(s_delay_projectile_draw));
         lines.push_back(std::to_string(s_delay_shotgun));
         lines.push_back(std::to_string(s_delay_explosion));
 
         if (s_default_player_name.empty())
         {
-                lines.push_back("0");
+                lines.emplace_back("0");
         }
         else // Default player name has been set
         {
-                lines.push_back("1");
+                lines.emplace_back("1");
 
                 lines.push_back(s_default_player_name);
         }
@@ -857,7 +857,7 @@ void set_fullscreen(const bool value)
         write_lines_to_file(lines);
 }
 
-} // config
+}  // namespace config
 
 // -----------------------------------------------------------------------------
 // Config state

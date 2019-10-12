@@ -424,4 +424,4 @@ void make_metal_doors_and_levers()
 
 } // make_metal_doors_and_levers
 
-} // mapgen
+}  // namespace mapgen

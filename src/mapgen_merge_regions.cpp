@@ -150,4 +150,4 @@ void merge_regions(Region regions[3][3])
 
 } // merge_regions
 
-} // mapgen
+}  // namespace mapgen

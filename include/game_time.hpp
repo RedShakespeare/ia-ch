@@ -15,12 +15,12 @@
 namespace actor
 {
 class Actor;
-}
+} // namespace actor
 
 namespace terrain
 {
 class Terrain;
-}
+} // namespace terrain
 
 
 namespace game_time
@@ -57,6 +57,6 @@ void reset_turn_type_and_actor_counters();
 
 void update_light_map();
 
-} // game_time
+} // namespace game_time
 
 #endif // GAME_TIME_HPP

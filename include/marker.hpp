@@ -19,7 +19,7 @@ namespace item
 {
 class Item;
 class Wpn;
-}
+} // namespace item
 
 struct InputData;
 
@@ -30,28 +30,28 @@ struct InputData;
 class MarkerState: public State
 {
 public:
-        MarkerState(const P& origin) :
+        explicit MarkerState(const P& origin) :
                 State(),
                 m_marker_render_data(P(0, 0)),
                 m_origin(origin),
                 m_pos() {}
 
-        virtual ~MarkerState() {}
+        ~MarkerState() override = default;
 
-        void on_start() override final;
+        void on_start() final;
 
-        void on_popped() override final;
+        void on_popped() final;
 
-        void draw() override final;
+        void draw() final;
 
-        bool draw_overlayed() const override final
+        bool draw_overlayed() const final
         {
                 return true;
         }
 
-        void update() override final;
+        void update() final;
 
-        StateId id() override final;
+        StateId id() final;
 
 protected:
         virtual void on_start_hook() {}
@@ -112,7 +112,7 @@ private:
 class Viewing: public MarkerState
 {
 public:
-        Viewing(const P& origin) :
+        explicit Viewing(const P& origin) :
                 MarkerState(origin) {}
 
 protected:
@@ -233,7 +233,7 @@ protected:
 class CtrlTele: public MarkerState
 {
 public:
-        CtrlTele(const P& origin, const Array2<bool>& blocked);
+        CtrlTele(const P& origin, Array2<bool>  blocked);
 
 protected:
         void on_start_hook() override;

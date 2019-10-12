@@ -106,7 +106,7 @@ InputData letter(const bool accept_enter)
 
 int number(
         const P& pos,
-        const Color color,
+        const Color& color,
         const int min,
         const int max_nr_digits,
         const int default_value,
@@ -343,4 +343,4 @@ Dir dir(const AllowCenter allow_center)
         return Dir::END;
 }
 
-} // query
+}  // namespace query

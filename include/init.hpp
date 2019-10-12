@@ -22,6 +22,6 @@ void cleanup_game();
 void init_session();
 void cleanup_session();
 
-} // init
+} // namespace init
 
 #endif

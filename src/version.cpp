@@ -60,4 +60,4 @@ std::string read_git_sha1_str_from_file()
         return sha1;
 }
 
-} // version_info
+}  // namespace version_info

@@ -438,4 +438,4 @@ void OrbOfLife::on_removed_from_inv_hook()
         clear_carrier_props();
 }
 
-} // item
+}  // namespace item

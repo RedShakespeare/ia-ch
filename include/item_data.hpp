@@ -7,6 +7,7 @@
 #ifndef ITEM_DATA_HPP
 #define ITEM_DATA_HPP
 
+#include <utility>
 #include <vector>
 #include <string>
 
@@ -15,11 +16,9 @@
 #include "dmg_range.hpp"
 #include "item_att_property.hpp"
 #include "room.hpp"
+#include "sound.hpp"
 #include "spells.hpp"
 #include "terrain_data.hpp"
-
-
-enum class SndVol;
 
 
 namespace item
@@ -276,9 +275,9 @@ struct ItemName
 
         ItemName()
         {
-                for (size_t i = 0; i < (size_t)ItemRefType::END; ++i)
+                for (auto& name : names)
                 {
-                        names[i] = "";
+                        name = "";
                 }
         }
 
@@ -291,9 +290,9 @@ struct ItemAttMsgs
                 player(""),
                 other("") {}
 
-        ItemAttMsgs(const std::string& player_, const std::string& other_) :
-                player(player_),
-                other(other_) {}
+        ItemAttMsgs(std::string  player_, std::string  other_) :
+                player(std::move(player_)),
+                other(std::move(other_)) {}
 
         std::string player, other;
 };
@@ -314,57 +313,57 @@ struct MeleeData
 {
         MeleeData();
 
-        bool is_melee_wpn;
+        bool is_melee_wpn{false};
         // NOTE: The "plus" field is ignored in the melee damage data,
         // melee weapons have individual plus damages per class instance
         DmgRange dmg;
-        int hit_chance_mod;
-        bool is_noisy;
+        int hit_chance_mod{0};
+        bool is_noisy{true};
         ItemAttMsgs att_msgs;
         ItemAttProp prop_applied;
-        DmgType dmg_type;
-        DmgMethod dmg_method;
-        bool knocks_back;
-        bool att_corpse;
-        bool att_terrain;
-        SfxId hit_small_sfx;
-        SfxId hit_medium_sfx;
-        SfxId hit_hard_sfx;
-        SfxId miss_sfx;
+        DmgType dmg_type{DmgType::physical};
+        DmgMethod dmg_method{DmgMethod::slashing};
+        bool knocks_back{false};
+        bool att_corpse{false};
+        bool att_terrain{false};
+        SfxId hit_small_sfx{SfxId::END};
+        SfxId hit_medium_sfx{SfxId::END};
+        SfxId hit_hard_sfx{SfxId::END};
+        SfxId miss_sfx{SfxId::END};
 };
 
 struct RangedData
 {
         RangedData();
 
-        bool is_ranged_wpn;
-        bool is_throwable_wpn;
-        bool is_machine_gun;
-        bool is_shotgun;
+        bool is_ranged_wpn{false};
+        bool is_throwable_wpn{false};
+        bool is_machine_gun{false};
+        bool is_shotgun{false};
         // NOTE: This should be set on ranged weapons AND magazines
-        int max_ammo;
+        int max_ammo{0};
         // NOTE: "Pure" melee weapons should not set this value - they
         // do throw damage based on their melee damage instead
         DmgRange dmg;
-        int hit_chance_mod;
-        int throw_hit_chance_mod;
-        bool always_break_on_throw;
-        int effective_range;
+        int hit_chance_mod{0};
+        int throw_hit_chance_mod{0};
+        bool always_break_on_throw{false};
+        int effective_range{6};
         int max_range;
-        bool knocks_back;
-        Id ammo_item_id;
-        DmgType dmg_type;
-        bool has_infinite_ammo;
-        char projectile_character;
-        TileId projectile_tile;
+        bool knocks_back{false};
+        Id ammo_item_id{Id::END};
+        DmgType dmg_type{DmgType::physical};
+        bool has_infinite_ammo{false};
+        char projectile_character{'/'};
+        TileId projectile_tile{TileId::projectile_std_front_slash};
         Color projectile_color;
-        bool projectile_leaves_trail;
+        bool projectile_leaves_trail{false};
         ItemAttMsgs att_msgs;
         std::string snd_msg;
-        SndVol snd_vol;
-        bool makes_ricochet_snd;
-        SfxId att_sfx;
-        SfxId reload_sfx;
+        SndVol snd_vol{SndVol::low};
+        bool makes_ricochet_snd{false};
+        SfxId att_sfx{SfxId::END};
+        SfxId reload_sfx{SfxId::END};
         ItemAttProp prop_applied;
 };
 
@@ -372,8 +371,8 @@ struct ArmorData
 {
         ArmorData();
 
-        int armor_points;
-        double dmg_to_durability_factor;
+        int armor_points{0};
+        double dmg_to_durability_factor{0.0};
 };
 
 struct ItemData
@@ -381,42 +380,42 @@ struct ItemData
 public:
         ItemData();
 
-        Id id;
-        ItemType type;
-        bool is_intr;
-        bool has_std_activate; // E.g. potions and scrolls
-        bool is_prio_in_backpack_list; // E.g. Medical Bag
-        Value value;
-        int weight;
-        bool is_unique;
-        bool allow_spawn;
+        Id id{Id::END};
+        ItemType type{ItemType::general};
+        bool is_intr{false};
+        bool has_std_activate{false}; // E.g. potions and scrolls
+        bool is_prio_in_backpack_list{false}; // E.g. Medical Bag
+        Value value{Value::normal};
+        int weight{Weight::none};
+        bool is_unique{false};
+        bool allow_spawn{true};
         Range spawn_std_range;
-        int max_stack_at_spawn;
-        int chance_to_incl_in_spawn_list;
-        bool is_stackable;
-        bool is_identified;
-        bool is_alignment_known; // Used for Potions
-        bool is_spell_domain_known; // Used for Scrolls
-        bool is_tried;
-        bool is_found; // Was seen on map or in inventory
-        int xp_on_found;
+        int max_stack_at_spawn{1};
+        int chance_to_incl_in_spawn_list{100};
+        bool is_stackable{true};
+        bool is_identified{true};
+        bool is_alignment_known{true}; // Used for Potions
+        bool is_spell_domain_known{true}; // Used for Scrolls
+        bool is_tried{false};
+        bool is_found{false}; // Was seen on map or in inventory
+        int xp_on_found{0};
         ItemName base_name;
         ItemName base_name_un_id;
         std::vector<std::string> base_descr;
-        char character;
+        char character{'X'};
         Color color;
-        TileId tile;
-        AttMode main_att_mode;
-        SpellId spell_cast_from_scroll;
+        TileId tile{TileId::END};
+        AttMode main_att_mode{AttMode::none};
+        SpellId spell_cast_from_scroll{SpellId::END};
         std::string land_on_hard_snd_msg;
-        SfxId land_on_hard_sfx;
+        SfxId land_on_hard_sfx{SfxId::END};
 
         std::vector<RoomType> native_rooms;
         std::vector<terrain::Id> native_containers;
 
         int ability_mods_while_equipped[(size_t)AbilityId::END];
 
-        bool allow_display_dmg;
+        bool allow_display_dmg{true};
 
         MeleeData melee;
 
@@ -435,6 +434,6 @@ void cleanup();
 void save();
 void load();
 
-} // item
+}  // namespace item
 
 #endif // ITEM_DATA_HPP

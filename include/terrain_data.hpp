@@ -17,7 +17,7 @@
 namespace actor
 {
 class Actor;
-}
+} // namespace actor
 
 
 namespace terrain
@@ -91,7 +91,7 @@ public:
                 reset();
         }
 
-        ~MoveRules() {}
+        ~MoveRules() = default;
 
         void reset()
         {
@@ -150,6 +150,6 @@ void init();
 
 const TerrainData& data(const Id id);
 
-} // terrain
+} // namespace terrain
 
 #endif // TERRAIN_DATA_HPP

@@ -46,6 +46,6 @@ std::string compass_dir_name(const Dir dir);
 
 std::string compass_dir_name(const P& offs);
 
-} // dir_utils
+}  // namespace dir_utils
 
 #endif // DIRECTION_HPP

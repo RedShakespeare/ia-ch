@@ -329,4 +329,4 @@ Color LitFlare::color() const
         return colors::yellow();
 }
 
-} // terrain
+}  // namespace terrain

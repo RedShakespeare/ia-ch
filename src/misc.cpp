@@ -46,7 +46,7 @@ int constr_in_range(const double min, const double val, const double max)
                 return -1;
         }
 
-        return std::min(max, std::max(val, min));
+        return (int)std::min(max, std::max(val, min));
 }
 
 std::vector<P> to_vec(const Array2<bool>& a,
@@ -122,7 +122,7 @@ P closest_pos(const P& p, const std::vector<P>& positions)
 
         P closest_pos;
 
-        for (P p_cmp : positions)
+        for (const P& p_cmp : positions)
         {
                 const int dist = king_dist(p, p_cmp);
 

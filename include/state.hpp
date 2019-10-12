@@ -40,7 +40,7 @@ enum class StateId
 class State
 {
 public:
-        virtual ~State() {}
+        virtual ~State() = default;
 
         // Executed immediately when the state is pushed.
         virtual void on_pushed() {}
@@ -126,6 +126,6 @@ void pop_until(const StateId id);
 
 bool contains_state(const StateId id);
 
-} // states
+} // namespace states
 
 #endif // STATE_HPP

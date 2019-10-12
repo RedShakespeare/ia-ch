@@ -476,8 +476,8 @@ TollDone Toll::on_player_turn()
 // Upgrade spell
 // -----------------------------------------------------------------------------
 UpgradeSpell::UpgradeSpell() :
-        Benefit(),
-        m_spell_id(SpellId::END)
+        Benefit()
+        
 {
         const auto bucket = find_spells_can_upgrade();
 
@@ -614,8 +614,8 @@ void RemoveInsanity::run_effect()
 // Gain item
 // -----------------------------------------------------------------------------
 GainItem::GainItem() :
-        Benefit(),
-        m_item_id(item::Id::END)
+        Benefit()
+        
 {
         const auto item_ids = find_allowed_item_ids();
 
@@ -1025,10 +1025,8 @@ std::vector<SpellId> UnlearnSpell::make_spell_bucket() const
         // Find all spells which have scrolls with low spawn chances
         std::vector<SpellId> low_spawn_spells;
 
-        for (size_t i = 0; i < (size_t)item::Id::END; ++i)
+        for (const auto& d : item::g_data)
         {
-                const auto& d = item::g_data[i];
-
                 const bool is_scroll = d.type == ItemType::scroll;
 
                 const bool is_low_chance =
@@ -1102,4 +1100,4 @@ void Burning::run_effect()
         map::g_player->m_properties.apply(burning);
 }
 
-} // pact
+}  // namespace pact

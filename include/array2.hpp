@@ -17,7 +17,7 @@ template<typename T>
 class Array2
 {
 public:
-        Array2(const P& dims)
+        explicit Array2(const P& dims)
         {
                 resize(dims);
         }

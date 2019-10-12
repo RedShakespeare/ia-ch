@@ -130,12 +130,10 @@ bool MapBuilderStd::build_specific()
         // ---------------------------------------------------------------------
         TRACE << "Making main rooms" << std:: endl;
 
-        for (int x = 0; x < 3; ++x)
+        for (auto& region_row : regions)
         {
-                for (int y = 0; y < 3; ++y)
+                for (auto& region : region_row)
                 {
-                        auto& region = regions[x][y];
-
                         if (!region.main_room && region.is_free)
                         {
                                 mapgen::make_room(region);

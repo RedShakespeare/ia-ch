@@ -380,4 +380,4 @@ void player_arrange_pistol_mags()
         }
 }
 
-} // reload
+}  // namespace reload

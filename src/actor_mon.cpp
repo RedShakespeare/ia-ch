@@ -158,17 +158,7 @@ std::string get_cultist_aware_msg_hidden()
 // -----------------------------------------------------------------------------
 Mon::Mon() :
         Actor(),
-        m_wary_of_player_counter(0),
-        m_aware_of_player_counter(0),
-        m_player_aware_of_me_counter(0),
-        m_is_msg_mon_in_view_printed(false),
-        m_is_player_feeling_msg_allowed(true),
-        m_last_dir_moved(Dir::center),
-        m_is_roaming_allowed(MonRoamingAllowed::yes),
-        m_leader(nullptr),
-        m_target(nullptr),
-        m_is_target_seen(false),
-        m_waiting(false),
+        
         m_spells()
 {
 
@@ -1580,4 +1570,4 @@ std::string SpectralWpn::descr() const
         return str;
 }
 
-} // actor
+}  // namespace actor

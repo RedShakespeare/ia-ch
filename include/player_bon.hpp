@@ -10,7 +10,7 @@
 #include <string>
 #include <vector>
 #include <algorithm>
-#include <math.h>
+#include <cmath>
 
 #include "global.hpp"
 
@@ -18,7 +18,7 @@
 namespace actor
 {
 struct ActorData;
-}
+} // namespace actor
 
 
 struct ColoredString;
@@ -166,6 +166,6 @@ void set_all_traits_to_picked();
 
 bool gets_undead_bane_bon(const actor::ActorData& actor_data);
 
-} // player_bon
+} // namespace player_bon
 
 #endif // PLAYER_BON_HPP

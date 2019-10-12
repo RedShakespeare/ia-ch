@@ -31,9 +31,7 @@ Door::Door(const P& terrain_pos,
            DoorSpawnState spawn_state) :
         Terrain(terrain_pos),
         m_mimic_terrain(mimic_terrain),
-        m_nr_spikes(0),
-        m_is_open(false),
-        m_is_stuck(false),
+        
         m_type(type)
 {
         // Gates should never be secret
@@ -439,7 +437,7 @@ WasDestroyed Door::on_finished_burning()
                 msg_log::add("The door burns down.");
         }
 
-        RubbleLow* const rubble = new RubbleLow(m_pos);
+        auto* const rubble = new RubbleLow(m_pos);
 
         rubble->m_burn_state = BurnState::has_burned;
 
@@ -1379,4 +1377,4 @@ DidClose Door::close(actor::Actor* const actor_closing)
         return DidClose::yes;
 }
 
-} // terrain
+}  // namespace terrain

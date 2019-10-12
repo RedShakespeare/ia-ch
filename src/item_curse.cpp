@@ -85,17 +85,17 @@ void init()
 
 void save()
 {
-        for (size_t i = 0; i < (size_t)Id::END; ++i)
+        for (const auto is_avail : s_available_curses)
         {
-                saving::put_bool(s_available_curses[i]);
+                saving::put_bool(is_avail);
         }
 }
 
 void load()
 {
-        for (size_t i = 0; i < (size_t)Id::END; ++i)
+        for (bool& avail : s_available_curses)
         {
-                s_available_curses[i] = saving::get_bool();
+                avail = saving::get_bool();
         }
 }
 
@@ -847,4 +847,4 @@ std::string LightSensitive::descr() const
         return "the owner is harmed by light.";
 }
 
-} // item_curse
+}  // namespace item_curse

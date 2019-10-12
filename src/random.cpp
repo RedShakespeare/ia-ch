@@ -61,7 +61,7 @@ std::mt19937 g_rng;
 
 void seed()
 {
-        uint32_t t = static_cast<uint32_t>(time(nullptr));
+        auto t = static_cast<uint32_t>(time(nullptr));
 
         std::hash<uint32_t> hasher;
 
@@ -148,7 +148,7 @@ bool percent(const int pct_chance)
         return pct_chance >= range(1, 100);
 }
 
-int weighted_choice(const std::vector<int> weights)
+int weighted_choice(const std::vector<int>& weights)
 {
         ASSERT(!weights.empty());
 
@@ -159,7 +159,11 @@ int weighted_choice(const std::vector<int> weights)
         }
 #endif // NDEBUG
 
-        const int sum = std::accumulate(begin(weights), end(weights), 0);
+        const int sum =
+                std::accumulate(
+                        std::begin(weights),
+                        std::end(weights),
+                        0);
 
         int rnd = rnd::range(0, sum - 1);
 
@@ -181,4 +185,4 @@ int weighted_choice(const std::vector<int> weights)
         return 0;
 }
 
-} // rnd
+}  // namespace rnd

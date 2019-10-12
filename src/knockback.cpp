@@ -195,4 +195,4 @@ void run(
         TRACE_FUNC_END;
 }
 
-} // knockback
+}  // namespace knockback

@@ -43,14 +43,14 @@ void cleanup();
 // NOTE: All this does is construct a HighscoreEntry object, populated with
 // highscore info based on the current game - it has no side effects
 HighscoreEntry make_entry_from_current_game_data(
-        const std::string game_summary_file_path,
+        const std::string& game_summary_file_path,
         const IsWin is_win);
 
 void append_entry_to_highscores_file(HighscoreEntry& entry);
 
 std::vector<HighscoreEntry> entries_sorted();
 
-} // highscore
+}  // namespace highscore
 
 class BrowseHighscore: public State
 {
@@ -83,7 +83,7 @@ private:
 class BrowseHighscoreEntry: public InfoScreenState
 {
 public:
-        BrowseHighscoreEntry(const std::string& file_path);
+        explicit BrowseHighscoreEntry(std::string  file_path);
 
         void on_start() override;
 

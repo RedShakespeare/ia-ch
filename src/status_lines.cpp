@@ -528,4 +528,4 @@ void draw()
         // io::draw_text(turn_nr_str, panel, p, colors::white());
 }
 
-} // status_lines
+}  // namespace status_lines

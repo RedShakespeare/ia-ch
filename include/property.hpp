@@ -20,7 +20,7 @@
 namespace item
 {
 class Item;
-}
+} // namespace item
 
 struct P;
 
@@ -50,11 +50,11 @@ enum class PropDurationMode
 struct DmgResistData
 {
         DmgResistData() :
-                is_resisted(false),
+                
                 msg_resist_player(),
                 msg_resist_mon() {}
 
-        bool is_resisted;
+        bool is_resisted{false};
         std::string msg_resist_player;
         // Not including monster name, e.g. " seems unaffected"
         std::string msg_resist_mon;
@@ -68,12 +68,11 @@ enum class PropEnded
 
 struct PropActResult
 {
-        PropActResult() :
-                did_action(DidAction::no),
-                prop_ended(PropEnded::no) {}
+        PropActResult() 
+                = default;
 
-        DidAction did_action;
-        PropEnded prop_ended;
+        DidAction did_action{DidAction::no};
+        PropEnded prop_ended{PropEnded::no};
 };
 
 // -----------------------------------------------------------------------------
@@ -82,9 +81,9 @@ struct PropActResult
 class Prop
 {
 public:
-        Prop(PropId id);
+        explicit Prop(PropId id);
 
-        virtual ~Prop() {}
+        virtual ~Prop() = default;
 
         PropId id() const
         {
@@ -199,7 +198,7 @@ public:
 
         virtual PropActResult on_act()
         {
-                return PropActResult();
+                return {};
         }
 
         virtual void on_applied() {}
@@ -658,10 +657,8 @@ class PropMagicSearching: public Prop
 {
 public:
         PropMagicSearching() :
-                Prop(PropId::magic_searching),
-                m_range(1),
-                m_allow_reveal_items(false),
-                m_allow_reveal_creatures(false) {}
+                Prop(PropId::magic_searching)
+                {}
 
         void save() const override;
 
@@ -685,10 +682,10 @@ public:
         }
 
 private:
-        int m_range;
+        int m_range{1};
 
-        bool m_allow_reveal_items;
-        bool m_allow_reveal_creatures;
+        bool m_allow_reveal_items{false};
+        bool m_allow_reveal_creatures{false};
 };
 
 class PropEntangled: public Prop
@@ -771,8 +768,8 @@ class PropNailed: public Prop
 {
 public:
         PropNailed() :
-                Prop(PropId::nailed),
-                m_nr_spikes(1) {}
+                Prop(PropId::nailed)
+                {}
 
         std::string name_short() const override
         {
@@ -794,15 +791,15 @@ public:
         }
 
 private:
-        int m_nr_spikes;
+        int m_nr_spikes{1};
 };
 
 class PropWound: public Prop
 {
 public:
         PropWound() :
-                Prop(PropId::wound),
-                m_nr_wounds(1) {}
+                Prop(PropId::wound)
+                {}
 
         void save() const override;
 
@@ -840,7 +837,7 @@ public:
         void heal_one_wound();
 
 private:
-        int m_nr_wounds;
+        int m_nr_wounds{1};
 };
 
 class PropHpSap: public Prop
@@ -884,7 +881,7 @@ public:
         int affect_max_spi(const int spi_max) const override;
 
 private:
-        int m_nr_drained;
+        int m_nr_drained{1};
 };
 
 class PropMindSap: public Prop
@@ -1322,13 +1319,13 @@ class PropVortex: public Prop
 {
 public:
         PropVortex() :
-                Prop(PropId::vortex),
-                pull_cooldown(0) {}
+                Prop(PropId::vortex)
+                {}
 
         PropActResult on_act() override;
 
 private:
-        int pull_cooldown;
+        int pull_cooldown{0};
 };
 
 class PropExplodesOnDeath: public Prop
@@ -1398,17 +1395,16 @@ class PropCorpseRises: public Prop
 {
 public:
         PropCorpseRises() :
-                Prop(PropId::corpse_rises),
-                m_has_risen(false),
-                m_nr_turns_until_allow_rise(2) {}
+                Prop(PropId::corpse_rises)
+                {}
 
         PropActResult on_act() override;
 
         void on_death() override;
 
 private:
-        bool m_has_risen;
-        int m_nr_turns_until_allow_rise;
+        bool m_has_risen{false};
+        int m_nr_turns_until_allow_rise{2};
 };
 
 class PropSpawnsZombiePartsOnDestroyed: public Prop

@@ -41,6 +41,6 @@ void kill(
 
 void unset_actor_as_leader_for_all_mon(Actor& actor);
 
-} // actor
+}  // namespace actor
 
 #endif // ACTOR_DIE_HPP

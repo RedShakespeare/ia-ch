@@ -56,6 +56,6 @@ MonSpawnResult spawn_random_position(
         const std::vector<Id>& monster_ids,
         const R& area_allowed);
 
-} // actor_factory
+}  // namespace actor
 
 #endif // ACTOR_FACTORY_HPP

@@ -104,4 +104,4 @@ namespace map_control
 
 std::unique_ptr<MapController> g_controller = nullptr;
 
-}
+} // namespace map_control

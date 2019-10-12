@@ -6,6 +6,7 @@
 
 #include "marker.hpp"
 
+#include <utility>
 #include <vector>
 #include <cstring>
 
@@ -643,7 +644,7 @@ void Throwing::on_moved()
                     map::g_player->can_see_actor(*actor))
                 {
                         ThrowAttData att_data(
-                                map::g_player,
+                                *map::g_player,
                                 actor->m_pos, // Aim position
                                 actor->m_pos, // Current position
                                 *m_inv_item);
@@ -897,9 +898,9 @@ int ThrowingExplosive::red_from_king_dist() const
 // -----------------------------------------------------------------------------
 // Teleport control marker state
 // -----------------------------------------------------------------------------
-CtrlTele::CtrlTele(const P& origin, const Array2<bool>& blocked) :
+CtrlTele::CtrlTele(const P& origin, Array2<bool>  blocked) :
         MarkerState(origin),
-        m_blocked(blocked)
+        m_blocked(std::move(blocked))
 {
 
 }

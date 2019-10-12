@@ -313,4 +313,4 @@ void make_aux_rooms(Region regions[3][3])
 
 } // make_aux_rooms
 
-} // mapgen
+}  // namespace mapgen

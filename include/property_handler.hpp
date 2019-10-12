@@ -21,12 +21,12 @@ namespace item
 {
 class Item;
 class Wpn;
-}
+} // namespace item
 
 namespace actor
 {
 class Actor;
-}
+} // namespace actor
 
 struct P;
 
@@ -53,19 +53,19 @@ struct PropTextListEntry
 {
         PropTextListEntry() :
                 title(),
-                descr(),
-                prop(nullptr) {}
+                descr()
+                {}
 
         ColoredString title;
 
         std::string descr;
 
-        const Prop* prop;
+        const Prop* prop{nullptr};
 };
 
 struct PropEndConfig
 {
-        PropEndConfig() {}
+        PropEndConfig() = default;
 
         PropEndConfig(
                 PropEndAllowCallEndHook end_hook_allowed,
@@ -89,7 +89,7 @@ struct PropEndConfig
 class PropHandler
 {
 public:
-        PropHandler(actor::Actor* owner);
+        explicit PropHandler(actor::Actor* owner);
 
         ~PropHandler();
 

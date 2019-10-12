@@ -18,18 +18,18 @@
 namespace item
 {
 class Item;
-}
+} // namespace item
 
 namespace actor
 {
 class Actor;
 class Player;
-}
+} // namespace actor
 
 namespace terrain
 {
 class Terrain;
-}
+} // namespace terrain
 
 class Room;
 
@@ -43,18 +43,17 @@ struct Cell
 
         void reset();
 
-        bool is_explored, is_seen_by_player;
+        bool is_explored{false}, is_seen_by_player{false};
         LosResult player_los; // Updated when player updates FOV
-        item::Item* item;
-        terrain::Terrain* terrain;
+        item::Item* item{nullptr};
+        terrain::Terrain* terrain{nullptr};
 };
 
 struct ChokePointData
 {
         ChokePointData() :
-                p(),
-                player_side(-1),
-                stairs_side(-1)
+                p()
+                
         {
                 sides[0].resize(0);
                 sides[1].resize(0);
@@ -73,8 +72,8 @@ struct ChokePointData
         P p;
 
         // These shall only ever have a value of 0 or 1
-        int player_side;
-        int stairs_side;
+        int player_side{-1};
+        int stairs_side{-1};
 
         std::vector<P> sides[2];
 };
@@ -157,6 +156,6 @@ bool is_pos_inside_outer_walls(const P& pos);
 
 bool is_area_inside_map(const R& area);
 
-} // map
+}  // namespace map
 
 #endif // MAP_HPP

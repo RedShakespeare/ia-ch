@@ -618,4 +618,4 @@ const CellRenderData& get_drawn_cell_player_memory(int x, int y)
         return s_render_array_player_memory.at(x, y);
 }
 
-} // draw_map
+}  // namespace draw_map

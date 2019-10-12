@@ -9,14 +9,15 @@
 
 #include <string>
 
-#include "item_data.hpp"
+#include "audio.hpp"
 #include "msg_log.hpp"
+#include "pos.hpp"
 
 
 namespace actor
 {
 class Actor;
-}
+} // namespace actor
 
 
 enum class SndVol
@@ -32,9 +33,9 @@ enum class IgnoreMsgIfOriginSeen {no ,yes};
 class SndHeardEffect
 {
 public:
-        SndHeardEffect() {}
+        SndHeardEffect() = default;
 
-        virtual ~SndHeardEffect() {}
+        virtual ~SndHeardEffect() = default;
 
         virtual void run(actor::Actor& actor) const = 0;
 };
@@ -45,7 +46,7 @@ public:
 class Snd
 {
 public:
-        Snd(const std::string& msg,
+        Snd(std::string  msg,
             const SfxId sfx,
             const IgnoreMsgIfOriginSeen ignore_msg_if_origin_seen,
             const P& origin,
@@ -55,7 +56,7 @@ public:
             const MorePromptOnMsg add_more_prompt_on_msg = MorePromptOnMsg::no,
             std::shared_ptr<SndHeardEffect> snd_heard_effect = nullptr);
 
-        Snd() {}
+        Snd() = default;
 
         ~Snd();
 
@@ -146,6 +147,6 @@ void run(Snd snd);
 
 void reset_nr_snd_msg_printed_current_turn();
 
-} // snd_emit
+} // namespace snd_emit
 
 #endif // SOUND_HPP

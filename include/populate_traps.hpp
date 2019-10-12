@@ -12,6 +12,6 @@ namespace populate_traps
 
 void populate_std_lvl();
 
-} // populate_traps
+} // namespace populate_traps
 
 #endif // POPULATE_TRAPS_HPP

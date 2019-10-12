@@ -439,7 +439,7 @@ Array2<bool> cells_within_dist_of_others(
         const Array2<bool>& in,
         const Range& dist_interval)
 {
-        const P dims = in.dims();
+        const P& dims = in.dims();
 
         Array2<bool> result(dims);
 
@@ -506,7 +506,7 @@ void append(Array2<bool>& base, const Array2<bool>& append)
 Array2<bool> expand(const Array2<bool>& in,
                     const R& area_allowed_to_modify)
 {
-        const P dims = in.dims();
+        const P& dims = in.dims();
 
         Array2<bool> result(dims);
 
@@ -575,7 +575,7 @@ Array2<bool> expand(const Array2<bool>& in,
 Array2<bool> expand(const Array2<bool>& in,
                     const int dist)
 {
-        const P dims = in.dims();
+        const P& dims = in.dims();
 
         Array2<bool> result(dims);
 
@@ -632,7 +632,7 @@ bool is_map_connected(const Array2<bool>& blocked)
 {
         P origin(-1, -1);
 
-        const P dims = blocked.dims();
+        const P& dims = blocked.dims();
 
         for (int x = 1; x < dims.x - 1; ++x)
         {
@@ -703,7 +703,7 @@ bool is_map_connected(const Array2<bool>& blocked)
 } // is_map_connected
 
 
-} // map_parsers
+}  // namespace map_parsers
 
 
 // -----------------------------------------------------------------------------

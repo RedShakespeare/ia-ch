@@ -85,9 +85,7 @@ const std::unordered_map<std::string, RoomType> g_str_to_room_type_map = {
 
 struct RoomAutoTerrainRule
 {
-        RoomAutoTerrainRule() :
-                id(terrain::Id::END),
-                nr_allowed(0) {}
+        RoomAutoTerrainRule() = default;
 
         RoomAutoTerrainRule(
                 const terrain::Id terrain_id,
@@ -95,8 +93,8 @@ struct RoomAutoTerrainRule
                 id(terrain_id),
                 nr_allowed(nr_terrains_allowed) {}
 
-        terrain::Id id;
-        int nr_allowed;
+        terrain::Id id {terrain::Id::END};
+        int nr_allowed {0};
 };
 
 
@@ -112,16 +110,16 @@ Room* make(const RoomType type, const R& r);
 
 Room* make_random_room(const R& r, const IsSubRoom is_subroom);
 
-} // room_factory
+} // namespace room_factory
 
 class Room
 {
 public:
-        Room(R r, RoomType type);
+        Room(const R& r, RoomType type);
 
         Room() = delete;
 
-        virtual ~Room() {}
+        virtual ~Room() = default;
 
         std::vector<P> positions_in_room() const;
 
@@ -153,12 +151,13 @@ protected:
 class StdRoom : public Room
 {
 public:
-        StdRoom(R r, RoomType type) : Room(r, type) {}
+        StdRoom(const R& r, const RoomType type) :
+                Room(r, type) {}
 
-        virtual ~StdRoom() {}
+        ~StdRoom() override = default;
 
-        void on_pre_connect(Array2<bool>& door_proposals) override final;
-        void on_post_connect(Array2<bool>& door_proposals) override final;
+        void on_pre_connect(Array2<bool>& door_proposals) final;
+        void on_post_connect(Array2<bool>& door_proposals) final;
 
         virtual bool is_allowed() const
         {
@@ -192,7 +191,8 @@ protected:
 class PlainRoom: public StdRoom
 {
 public:
-        PlainRoom(R r) : StdRoom(r, RoomType::plain) {}
+        explicit PlainRoom(const R& r) :
+                StdRoom(r, RoomType::plain) {}
 
 protected:
         std::vector<RoomAutoTerrainRule> auto_terrains_allowed() const override;
@@ -205,7 +205,7 @@ protected:
 class HumanRoom: public StdRoom
 {
 public:
-        HumanRoom(R r) :
+        explicit HumanRoom(const R& r) :
                 StdRoom(r, RoomType::human) {}
 
         bool is_allowed() const override;
@@ -221,7 +221,7 @@ protected:
 class JailRoom: public StdRoom
 {
 public:
-        JailRoom(R r) :
+        explicit JailRoom(const R& r) :
                 StdRoom(r, RoomType::jail) {}
 
 protected:
@@ -235,7 +235,7 @@ protected:
 class RitualRoom: public StdRoom
 {
 public:
-        RitualRoom(R r) :
+        explicit RitualRoom(const R& r) :
                 StdRoom(r, RoomType::ritual) {}
 
         bool is_allowed() const override;
@@ -251,7 +251,7 @@ protected:
 class SpiderRoom: public StdRoom
 {
 public:
-        SpiderRoom(R r) :
+        explicit SpiderRoom(const R& r) :
                 StdRoom(r, RoomType::spider) {}
 
         bool is_allowed() const override;
@@ -272,7 +272,7 @@ protected:
 class SnakePitRoom: public StdRoom
 {
 public:
-        SnakePitRoom(R r) :
+        explicit SnakePitRoom(const R& r) :
                 StdRoom(r, RoomType::monster) {}
 
         bool is_allowed() const override;
@@ -290,7 +290,7 @@ protected:
 class CryptRoom: public StdRoom
 {
 public:
-        CryptRoom(R r) :
+        explicit CryptRoom(const R& r) :
                 StdRoom(r, RoomType::crypt) {}
 
         bool is_allowed() const override;
@@ -306,7 +306,7 @@ protected:
 class MonsterRoom: public StdRoom
 {
 public:
-        MonsterRoom(R r) :
+        explicit MonsterRoom(const R& r) :
                 StdRoom(r, RoomType::monster) {}
 
         bool is_allowed() const override;
@@ -322,7 +322,7 @@ protected:
 class DampRoom: public StdRoom
 {
 public:
-        DampRoom(R r) :
+        explicit DampRoom(const R& r) :
                 StdRoom(r, RoomType::damp) {}
 
         bool is_allowed() const override;
@@ -338,7 +338,7 @@ protected:
 class PoolRoom: public StdRoom
 {
 public:
-        PoolRoom(R r) :
+        explicit PoolRoom(const R& r) :
                 StdRoom(r, RoomType::pool) {}
 
         bool is_allowed() const override;
@@ -354,7 +354,7 @@ protected:
 class CaveRoom: public StdRoom
 {
 public:
-        CaveRoom(R r) :
+        explicit CaveRoom(const R& r) :
                 StdRoom(r, RoomType::cave) {}
 
         bool is_allowed() const override;
@@ -370,7 +370,7 @@ protected:
 class ChasmRoom: public StdRoom
 {
 public:
-        ChasmRoom(R r) :
+        explicit ChasmRoom(const R& r) :
                 StdRoom(r, RoomType::chasm) {}
 
         bool is_allowed() const override;
@@ -386,7 +386,7 @@ protected:
 class ForestRoom: public StdRoom
 {
 public:
-        ForestRoom(R r) :
+        explicit ForestRoom(const R& r) :
                 StdRoom(r, RoomType::forest) {}
 
         bool is_allowed() const override;
@@ -414,7 +414,7 @@ public:
 class CorrLinkRoom: public Room
 {
 public:
-        CorrLinkRoom(const R& r) :
+        explicit CorrLinkRoom(const R& r) :
                 Room(r, RoomType::corr_link) {}
 
         void on_pre_connect(Array2<bool>& door_proposals) override
@@ -431,7 +431,7 @@ public:
 class CrumbleRoom: public Room
 {
 public:
-        CrumbleRoom(const R& r) :
+        explicit CrumbleRoom(const R& r) :
                 Room(r, RoomType::crumble_room) {}
 
         void on_pre_connect(Array2<bool>& door_proposals) override
@@ -448,7 +448,7 @@ public:
 class RiverRoom: public Room
 {
 public:
-        RiverRoom(const R& r) :
+        explicit RiverRoom(const R& r) :
                 Room(r, RoomType::river),
                 m_axis(Axis::hor) {}
 

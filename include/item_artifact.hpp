@@ -16,7 +16,7 @@ namespace actor
 {
 class Actor;
 class Mon;
-}
+} // namespace actor
 
 
 namespace item
@@ -28,7 +28,7 @@ namespace item
 class PharaohStaff: public Wpn
 {
 public:
-        PharaohStaff(ItemData* const item_data);
+        explicit PharaohStaff(ItemData* const item_data);
 
         void on_std_turn_in_inv_hook(const InvType inv_type) override;
 
@@ -42,7 +42,7 @@ private:
 class ReflTalisman: public Item
 {
 public:
-        ReflTalisman(ItemData* const item_data);
+        explicit ReflTalisman(ItemData* const item_data);
 
 private:
         void on_pickup_hook() override;
@@ -56,7 +56,7 @@ private:
 class ResurrectTalisman: public Item
 {
 public:
-        ResurrectTalisman(ItemData* const item_data);
+        explicit ResurrectTalisman(ItemData* const item_data);
 
         bool is_curse_allowed(item_curse::Id id) const override
         {
@@ -74,7 +74,7 @@ public:
 class TeleCtrlTalisman: public Item
 {
 public:
-        TeleCtrlTalisman(ItemData* const item_data);
+        explicit TeleCtrlTalisman(ItemData* const item_data);
 
         bool is_curse_allowed(item_curse::Id id) const override
         {
@@ -93,9 +93,9 @@ private:
 class HornOfMaliceHeard: public SndHeardEffect
 {
 public:
-        HornOfMaliceHeard() {}
+        HornOfMaliceHeard() = default;
 
-        ~HornOfMaliceHeard() {}
+        ~HornOfMaliceHeard() override = default;
 
         void run(actor::Actor& actor) const override;
 };
@@ -103,7 +103,7 @@ public:
 class HornOfMalice: public Item
 {
 public:
-        HornOfMalice(ItemData* const item_data);
+        explicit HornOfMalice(ItemData* const item_data);
 
         std::string name_inf_str() const override;
 
@@ -123,9 +123,9 @@ private:
 class HornOfBanishmentHeard: public SndHeardEffect
 {
 public:
-        HornOfBanishmentHeard() {}
+        HornOfBanishmentHeard() = default;
 
-        ~HornOfBanishmentHeard() {}
+        ~HornOfBanishmentHeard() override = default;
 
         void run(actor::Actor& actor) const override;
 };
@@ -133,7 +133,7 @@ public:
 class HornOfBanishment: public Item
 {
 public:
-        HornOfBanishment(ItemData* const item_data);
+        explicit HornOfBanishment(ItemData* const item_data);
 
         std::string name_inf_str() const override;
 
@@ -154,7 +154,7 @@ private:
 class Clockwork: public Item
 {
 public:
-        Clockwork(ItemData* const item_data);
+        explicit Clockwork(ItemData* const item_data);
 
         ConsumeItem activate(actor::Actor* const actor) override;
 
@@ -174,7 +174,7 @@ private:
 class SpiritDagger: public Wpn
 {
 public:
-        SpiritDagger(ItemData* const item_data);
+        explicit SpiritDagger(ItemData* const item_data);
 
 protected:
         void specific_dmg_mod(
@@ -188,7 +188,7 @@ protected:
 class OrbOfLife: public Item
 {
 public:
-        OrbOfLife(ItemData* const item_data);
+        explicit OrbOfLife(ItemData* const item_data);
 
 private:
         void on_pickup_hook() override;
@@ -196,6 +196,6 @@ private:
         void on_removed_from_inv_hook() override;
 };
 
-} // item
+}  // namespace item
 
 #endif // ITEM_ARTIFACT_HPP

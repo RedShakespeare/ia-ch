@@ -24,6 +24,6 @@ void sleep(const Uint32 duration);
 
 std::string sdl_pref_dir();
 
-}
+}  // namespace sdl_base
 
 #endif // SDL_BASE_HPP

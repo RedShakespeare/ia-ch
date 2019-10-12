@@ -59,13 +59,13 @@ void run(const P& origin,
          const int radi_change = 0,
          const ExplExclCenter exclude_center = ExplExclCenter::no,
          std::vector<Prop*> properties_applied = {},
-         const Color color_override = Color(),
+         const Color& color_override = Color(),
          const ExplIsGas is_gas = ExplIsGas::no);
 
 void run_smoke_explosion_at(const P& origin, const int radi_change = 0);
 
 R explosion_area(const P& c, const int radi);
 
-} // explosion
+} // namespace explosion
 
 #endif

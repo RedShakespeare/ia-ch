@@ -595,4 +595,4 @@ LgtSize Lantern::lgt_size() const
                 : LgtSize::none;
 }
 
-} // device
+}  // namespace device

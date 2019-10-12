@@ -71,11 +71,9 @@ static int nr_wounds(const PropHandler& properties)
 {
         if (properties.has(PropId::wound))
         {
-                const auto* const prop =
-                        properties.prop(PropId::wound);
-
-                const PropWound* const wound =
-                        static_cast<const PropWound*>(prop);
+                const auto* const wound =
+                        static_cast<const PropWound*>(
+                                properties.prop(PropId::wound));
 
                 return wound->nr_wounds();
         }
@@ -404,7 +402,7 @@ double Player::shock_taken_after_mods(
         const double base_shock,
         const ShockSrc shock_src) const
 {
-        const double shock_res_db = (double)shock_resistance(shock_src);
+        const auto shock_res_db = (double)shock_resistance(shock_src);
 
         return (base_shock * (100.0 - shock_res_db)) / 100.0;
 }
@@ -629,7 +627,7 @@ void Player::mon_feeling()
                 if (!player_bon::has_trait(Trait::fearless) &&
                     !m_properties.has(PropId::frenzied))
                 {
-                        msg_bucket.push_back("I feel anxious.");
+                        msg_bucket.emplace_back("I feel anxious.");
                 }
 
                 const auto msg = rnd::element(msg_bucket);
@@ -1312,8 +1310,9 @@ void Player::update_tmp_shock()
                 {
                         const P p(m_pos + d);
 
-                        const double terrain_shock_db =
-                                (double)map::g_cells.at(p).terrain->shock_when_adj();
+                        const auto terrain_shock_db =
+                                (double)map::g_cells.at(p).terrain
+                                ->shock_when_adj();
 
                         m_shock_tmp += shock_taken_after_mods(
                                 terrain_shock_db,
@@ -2144,4 +2143,4 @@ bool Player::is_actor_my_leader(const Actor* const actor) const
         return false;
 }
 
-} // actor
+}  // namespace actor

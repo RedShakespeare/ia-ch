@@ -14,6 +14,6 @@ void init();
 
 void act();
 
-} // Bot
+} // namespace bot
 
 #endif // BOT_HPP

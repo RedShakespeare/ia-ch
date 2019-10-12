@@ -60,7 +60,7 @@ std::unique_ptr<MapBuilder> make(const MapType map_type)
         return nullptr;
 }
 
-} // map_builder
+}  // namespace map_builder
 
 // -----------------------------------------------------------------------------
 // MapBuilder
@@ -101,10 +101,8 @@ void MapBuilder::build()
         gods::set_random_god();
 
         // Spawn starting allies
-        for (size_t i = 0; i < game_time::g_actors.size(); ++i)
+        for (auto actor : game_time::g_actors)
         {
-                auto* const actor = game_time::g_actors[i];
-
                 const auto& allies = actor->m_data->starting_allies;
 
                 if (allies.empty())

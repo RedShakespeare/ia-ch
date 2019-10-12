@@ -14,7 +14,7 @@
 namespace actor
 {
 class Actor;
-}
+} // namespace actor
 
 template<typename T>
 class Array2;

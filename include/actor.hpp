@@ -49,6 +49,16 @@ void print_aware_invis_mon_msg(const Mon& mon);
 class Actor
 {
 public:
+        Actor() = default;
+
+        Actor(const Actor&) = delete;
+
+        Actor(Actor&&) = delete;
+
+        Actor& operator=(const Actor&) = delete;
+
+        Actor& operator=(Actor&&) = delete;
+
         virtual ~Actor();
 
         int ability(
@@ -177,6 +187,6 @@ protected:
         int hit_armor(int dmg);
 };
 
-} // actor
+}  // namespace actor
 
 #endif // ACTOR_HPP

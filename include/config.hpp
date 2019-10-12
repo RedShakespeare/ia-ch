@@ -61,7 +61,7 @@ int delay_explosion();
 void set_default_player_name(const std::string& name);
 std::string default_player_name();
 
-} // config
+}  // namespace config
 
 class ConfigState: public State
 {

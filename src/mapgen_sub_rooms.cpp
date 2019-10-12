@@ -38,9 +38,9 @@ void make_sub_rooms()
                         continue;
                 }
 
-                const R outer_room_rect = outer_room->m_r;
+                const auto outer_room_rect = outer_room->m_r;
 
-                const P outer_room_d(outer_room_rect.dims());
+                const auto outer_room_d = outer_room_rect.dims();
 
                 // Max sub room size, including the walls, in this outer room
                 const P walls_max_d(outer_room_d + 2);
@@ -158,7 +158,7 @@ void make_sub_rooms()
                                 // room area lies inside these points
                                 const R sub_room_rect(p0 + 1, p1 - 1);
 
-                                Room* const sub_room = make_room(sub_room_rect, IsSubRoom::yes);
+                                auto* const sub_room = make_room(sub_room_rect, IsSubRoom::yes);
 
                                 outer_room->m_sub_rooms.push_back(sub_room);
 
@@ -191,7 +191,7 @@ void make_sub_rooms()
                                                                 if ((x != p0.x && x != p1.x) ||
                                                                     (y != p0.y && y != p1.y))
                                                                 {
-                                                                        entrance_bucket.push_back(P(x, y));
+                                                                        entrance_bucket.emplace_back(x, y);
                                                                 }
                                                         }
                                                 }
@@ -263,4 +263,4 @@ void make_sub_rooms()
 
 } // make_sub_rooms
 
-} // make_sub_rooms
+}  // namespace mapgen

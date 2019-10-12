@@ -26,6 +26,6 @@ int menu(const std::string& msg,
          const int w_change = 0,
          const SfxId sfx = SfxId::END);
 
-} // popup
+}  // namespace popup
 
 #endif // POPUP_HPP

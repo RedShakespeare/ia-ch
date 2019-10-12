@@ -21,7 +21,7 @@
 namespace actor
 {
 class Actor;
-}
+} // namespace actor
 
 
 struct CellRenderData
@@ -63,27 +63,27 @@ int gui_to_px_coords_y(const int value);
 int map_to_px_coords_x(const int value);
 int map_to_px_coords_y(const int value);
 
-P gui_to_px_coords(const P pos);
+P gui_to_px_coords(const P& pos);
 P gui_to_px_coords(const int x, const int y);
 
-P map_to_px_coords(const P pos);
+P map_to_px_coords(const P& pos);
 P map_to_px_coords(const int x, const int y);
 
-P px_to_gui_coords(const P px_pos);
+P px_to_gui_coords(const P& px_pos);
 
-P px_to_map_coords(const P px_pos);
+P px_to_map_coords(const P& px_pos);
 
-P gui_to_map_coords(const P gui_pos);
+P gui_to_map_coords(const P& gui_pos);
 
 // Returns a screen pixel position, relative to a cell position in a panel
-P gui_to_px_coords(const Panel panel, const P offset);
-P map_to_px_coords(const Panel panel, const P offset);
+P gui_to_px_coords(const Panel panel, const P& offset);
+P map_to_px_coords(const Panel panel, const P& offset);
 
 void draw_symbol(
         const TileId tile,
         const char character,
         const Panel panel,
-        const P pos,
+        const P& pos,
         const Color& color,
         const bool draw_bg = true,
         const Color& color_bg = colors::black());
@@ -91,7 +91,7 @@ void draw_symbol(
 void draw_tile(
         const TileId tile,
         const Panel panel,
-        const P pos,
+        const P& pos,
         const Color& color,
         const bool draw_bg = true,
         const Color& color_bg = colors::black());
@@ -99,7 +99,7 @@ void draw_tile(
 void draw_character(
         const char character,
         const Panel panel,
-        const P pos,
+        const P& pos,
         const Color& color,
         const bool draw_bg = true,
         const Color& color_bg = colors::black());
@@ -107,7 +107,7 @@ void draw_character(
 void draw_text(
         const std::string& str,
         const Panel panel,
-        const P pos,
+        const P& pos,
         const Color& color,
         const bool draw_bg = true,
         const Color& color_bg = colors::black());
@@ -115,7 +115,7 @@ void draw_text(
 void draw_text_center(
         const std::string& str,
         const Panel panel,
-        const P pos,
+        const P& pos,
         const Color& color,
         const bool draw_bg = true,
         const Color& color_bg = colors::black(),
@@ -124,12 +124,12 @@ void draw_text_center(
 void draw_text_right(
         const std::string& str,
         const Panel panel,
-        const P pos,
+        const P& pos,
         const Color& color,
         const bool draw_bg = true,
         const Color& color_bg = colors::black());
 
-void cover_cell(const Panel panel, const P offset);
+void cover_cell(const Panel panel, const P& offset);
 
 void cover_panel(
         const Panel panel,
@@ -137,13 +137,13 @@ void cover_panel(
 
 void cover_area(
         const Panel panel,
-        const R area,
+        const R& area,
         const Color& color = colors::black());
 
 void cover_area(
         const Panel panel,
-        const P offset,
-        const P dims,
+        const P& offset,
+        const P& dims,
         const Color& color = colors::black());
 
 void draw_rectangle(
@@ -168,7 +168,7 @@ void draw_blast_at_seen_actors(
 
 void draw_main_menu_logo();
 
-void draw_skull(const P pos);
+void draw_skull(const P& pos);
 
 // TODO: Perhaps add an option to draw a background color inside the box
 void draw_box(
@@ -187,6 +187,6 @@ void clear_events();
 
 InputData get();
 
-} // io
+} // namespace io
 
 #endif // IO_HPP

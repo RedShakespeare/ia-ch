@@ -28,7 +28,75 @@
 // -----------------------------------------------------------------------------
 // Private
 // -----------------------------------------------------------------------------
+static InsSympt* s_sympts[(size_t)InsSymptId::END];
 
+
+static InsSympt* make_sympt(const InsSymptId id)
+{
+        switch (id)
+        {
+        case InsSymptId::scream:
+                return new InsScream();
+
+        case InsSymptId::babbling:
+                return new InsBabbling();
+
+        case InsSymptId::faint:
+                return new InsFaint();
+
+        case InsSymptId::laugh:
+                return new InsLaugh();
+
+        case InsSymptId::phobia_rat:
+                return new InsPhobiaRat();
+
+        case InsSymptId::phobia_spider:
+                return new InsPhobiaSpider();
+
+        case InsSymptId::phobia_reptile_and_amph:
+                return new InsPhobiaReptileAndAmph();
+
+        case InsSymptId::phobia_canine:
+                return new InsPhobiaCanine();
+
+        case InsSymptId::phobia_dead:
+                return new InsPhobiaDead();
+
+        case InsSymptId::phobia_deep:
+                return new InsPhobiaDeep();
+
+        case InsSymptId::phobia_dark:
+                return new InsPhobiaDark();
+
+        case InsSymptId::masoch:
+                return new InsMasoch();
+
+        case InsSymptId::sadism:
+                return new InsSadism();
+
+        case InsSymptId::shadows:
+                return new InsShadows();
+
+        case InsSymptId::paranoia:
+                return new InsParanoia();
+
+        case InsSymptId::confusion:
+                return new InsConfusion();
+
+        case InsSymptId::frenzy:
+                return new InsFrenzy();
+
+        case InsSymptId::strange_sensation:
+                return new InsStrangeSensation();
+
+        case InsSymptId::END:
+                break;
+        }
+
+        ASSERT(false);
+
+        return nullptr;
+}
 
 // -----------------------------------------------------------------------------
 // Insanity symptoms
@@ -561,105 +629,28 @@ void InsFrenzy::on_start_hook()
 namespace insanity
 {
 
-namespace
-{
-
-InsSympt* sympts_[(size_t)InsSymptId::END];
-
-InsSympt* make_sympt(const InsSymptId id)
-{
-        switch (id)
-        {
-        case InsSymptId::scream:
-                return new InsScream();
-
-        case InsSymptId::babbling:
-                return new InsBabbling();
-
-        case InsSymptId::faint:
-                return new InsFaint();
-
-        case InsSymptId::laugh:
-                return new InsLaugh();
-
-        case InsSymptId::phobia_rat:
-                return new InsPhobiaRat();
-
-        case InsSymptId::phobia_spider:
-                return new InsPhobiaSpider();
-
-        case InsSymptId::phobia_reptile_and_amph:
-                return new InsPhobiaReptileAndAmph();
-
-        case InsSymptId::phobia_canine:
-                return new InsPhobiaCanine();
-
-        case InsSymptId::phobia_dead:
-                return new InsPhobiaDead();
-
-        case InsSymptId::phobia_deep:
-                return new InsPhobiaDeep();
-
-        case InsSymptId::phobia_dark:
-                return new InsPhobiaDark();
-
-        case InsSymptId::masoch:
-                return new InsMasoch();
-
-        case InsSymptId::sadism:
-                return new InsSadism();
-
-        case InsSymptId::shadows:
-                return new InsShadows();
-
-        case InsSymptId::paranoia:
-                return new InsParanoia();
-
-        case InsSymptId::confusion:
-                return new InsConfusion();
-
-        case InsSymptId::frenzy:
-                return new InsFrenzy();
-
-        case InsSymptId::strange_sensation:
-                return new InsStrangeSensation();
-
-        case InsSymptId::END:
-                break;
-        }
-
-        ASSERT(false);
-
-        return nullptr;
-}
-
-} // namespace
-
-
 void init()
 {
-        for (size_t i = 0; i < (size_t)InsSymptId::END; ++i)
+        for (auto& sympt : s_sympts)
         {
-                sympts_[i] = nullptr;
+                sympt = nullptr;
         }
 }
 
 void cleanup()
 {
-        for (size_t i = 0; i < (size_t)InsSymptId::END; ++i)
+        for (auto& sympt : s_sympts)
         {
-                delete sympts_[i];
+                delete sympt;
 
-                sympts_[i] = nullptr;
+                sympt = nullptr;
         }
 }
 
 void save()
 {
-        for (size_t i = 0; i < (size_t)InsSymptId::END; ++i)
+        for (const auto* const sympt : s_sympts)
         {
-                const auto* const sympt = sympts_[i];
-
                 saving::put_bool(sympt != nullptr);
 
                 if (sympt)
@@ -679,7 +670,7 @@ void load()
                 {
                         auto* const sympt = make_sympt((InsSymptId)i);
 
-                        sympts_[i] = sympt;
+                        s_sympts[i] = sympt;
 
                         sympt->load();
                 }
@@ -692,7 +683,7 @@ void run_sympt()
 
         for (size_t i = 0; i < (size_t)InsSymptId::END; ++i)
         {
-                const InsSympt* const active_sympt = sympts_[i];
+                const InsSympt* const active_sympt = s_sympts[i];
 
                 // Symptoms are only allowed if not already active
                 if (!active_sympt)
@@ -736,11 +727,11 @@ void run_sympt()
         // screaming), set it as active in the symptoms list
         if (sympt->is_permanent())
         {
-                const size_t sympt_idx = size_t(sympt->id());
+                const auto sympt_idx = (size_t)sympt->id();
 
-                ASSERT(!sympts_[sympt_idx]);
+                ASSERT(!s_sympts[sympt_idx]);
 
-                sympts_[sympt_idx] = sympt;
+                s_sympts[sympt_idx] = sympt;
         }
 
         sympt->on_start();
@@ -750,16 +741,14 @@ bool has_sympt(const InsSymptId id)
 {
         ASSERT(id != InsSymptId::END);
 
-        return sympts_[size_t(id)];
+        return s_sympts[size_t(id)];
 }
 
 bool has_sympt_type(const InsSymptType type)
 {
-        for (size_t i = 0; i < (size_t)InsSymptId::END; ++i)
+        for (const auto* const sympt : s_sympts)
         {
-                const InsSympt* const s = sympts_[i];
-
-                if (s && s->type() == type)
+                if (sympt && sympt->type() == type)
                 {
                         return true;
                 }
@@ -772,10 +761,8 @@ std::vector<const InsSympt*> active_sympts()
 {
         std::vector<const InsSympt*> out;
 
-        for (size_t i = 0; i < (size_t)InsSymptId::END; ++i)
+        for (const auto* const sympt : s_sympts)
         {
-                const InsSympt* const sympt = sympts_[i];
-
                 if (sympt)
                 {
                         out.push_back(sympt);
@@ -787,10 +774,8 @@ std::vector<const InsSympt*> active_sympts()
 
 void on_new_player_turn(const std::vector<actor::Actor*>& seen_foes)
 {
-        for (size_t i = 0; i < (size_t)InsSymptId::END; ++i)
+        for (auto* const sympt : s_sympts)
         {
-                InsSympt* const sympt = sympts_[i];
-
                 if (sympt)
                 {
                         sympt->on_new_player_turn(seen_foes);
@@ -800,10 +785,8 @@ void on_new_player_turn(const std::vector<actor::Actor*>& seen_foes)
 
 void on_permanent_rfear()
 {
-        for (size_t i = 0; i < (size_t)InsSymptId::END; ++i)
+        for (auto* const sympt : s_sympts)
         {
-                InsSympt* const sympt = sympts_[i];
-
                 if (sympt)
                 {
                         sympt->on_permanent_rfear();
@@ -815,17 +798,16 @@ void end_sympt(const InsSymptId id)
 {
         ASSERT(id != InsSymptId::END);
 
-        const size_t idx = size_t(id);
-
-        InsSympt* const sympt = sympts_[idx];
+        const auto idx = (size_t)id;
+        InsSympt* const sympt = s_sympts[idx];
 
         ASSERT(sympt);
 
-        sympts_[idx] = nullptr;
+        s_sympts[idx] = nullptr;
 
         sympt->on_end();
 
         delete sympt;
 }
 
-} // insanity
+}  // namespace insanity

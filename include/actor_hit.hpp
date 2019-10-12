@@ -35,6 +35,6 @@ ActorDied hit_sp(
         const int dmg,
         const Verbose verbose = Verbose::yes);
 
-} // actor
+}  // namespace actor
 
 #endif // ACTOR_HIT_HPP

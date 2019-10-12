@@ -88,7 +88,7 @@ static std::vector< std::vector<P> > cells_reached(
 
 static void draw(const std::vector< std::vector<P> >& pos_lists,
                  const Array2<bool>& blocked,
-                 const Color color_override)
+                 const Color& color_override)
 {
         states::draw();
 
@@ -293,7 +293,7 @@ void run(const P& origin,
          const int radi_change,
          const ExplExclCenter exclude_center,
          std::vector<Prop*> properties_applied,
-         const Color color_override,
+         const Color& color_override,
          const ExplIsGas is_gas)
 {
         const int radi = g_expl_std_radi + radi_change;
@@ -449,4 +449,4 @@ R explosion_area(const P& c, const int radi)
                    std::min(c.y + radi, map::h() - 2)));
 }
 
-} // explosion
+}  // namespace explosion

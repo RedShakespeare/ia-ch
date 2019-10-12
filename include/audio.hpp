@@ -234,6 +234,6 @@ void play_music(const MusId sfx);
 
 void fade_out_music();
 
-}
+}  // namespace audio
 
 #endif // AUDIO_HPP

@@ -19,7 +19,7 @@
 namespace actor
 {
 class Actor;
-}
+} // namespace actor
 
 
 class Prop;
@@ -43,7 +43,7 @@ enum class ItemActivateRetType
 class Item
 {
 public:
-        Item(ItemData* item_data);
+        explicit Item(ItemData* item_data);
 
         Item(Item& other) = delete;
 
@@ -302,9 +302,9 @@ private:
 class Armor: public Item
 {
 public:
-        Armor(ItemData* const item_data);
+        explicit Armor(ItemData* const item_data);
 
-        ~Armor() {}
+        ~Armor() override = default;
 
         void save_hook() const override;
         void load_hook() override;
@@ -342,10 +342,10 @@ protected:
 class ArmorAsbSuit: public Armor
 {
 public:
-        ArmorAsbSuit(ItemData* const item_data) :
+        explicit ArmorAsbSuit(ItemData* const item_data) :
                 Armor(item_data) {}
 
-        ~ArmorAsbSuit() {}
+        ~ArmorAsbSuit() override = default;
 
         void on_equip_hook(const Verbose verbose) override;
 
@@ -356,10 +356,10 @@ private:
 class ArmorMiGo: public Armor
 {
 public:
-        ArmorMiGo(ItemData* const item_data) :
+        explicit ArmorMiGo(ItemData* const item_data) :
                 Armor(item_data) {}
 
-        ~ArmorMiGo() {}
+        ~ArmorMiGo() override = default;
 
         void on_equip_hook(const Verbose verbose) override;
 };
@@ -367,9 +367,9 @@ public:
 class Wpn: public Item
 {
 public:
-        Wpn(ItemData* const item_data);
+        explicit Wpn(ItemData* const item_data);
 
-        virtual ~Wpn() {}
+        ~Wpn() override = default;
 
         Wpn& operator=(const Wpn& other) = delete;
 
@@ -399,7 +399,7 @@ protected:
 class SpikedMace : public Wpn
 {
 public:
-        SpikedMace(ItemData* const item_data) :
+        explicit SpikedMace(ItemData* const item_data) :
                 Wpn(item_data) {}
 
 private:
@@ -409,7 +409,7 @@ private:
 class PlayerGhoulClaw : public Wpn
 {
 public:
-        PlayerGhoulClaw(ItemData* const item_data) :
+        explicit PlayerGhoulClaw(ItemData* const item_data) :
                 Wpn(item_data) {}
 
 private:
@@ -421,28 +421,28 @@ private:
 class ZombieDust : public Wpn
 {
 public:
-        ZombieDust(ItemData* const item_data) :
+        explicit ZombieDust(ItemData* const item_data) :
                 Wpn(item_data) {}
 
-        void on_ranged_hit(actor::Actor& actor_hit);
+        void on_ranged_hit(actor::Actor& actor_hit) override;
 };
 
 class Incinerator: public Wpn
 {
 public:
-        Incinerator(ItemData* const item_data);
-        ~Incinerator() {}
+        explicit Incinerator(ItemData* const item_data);
+        ~Incinerator() override = default;
 
         void on_projectile_blocked(
                 const P& prev_pos,
-                const P& current_pos);
+                const P& current_pos) override;
 };
 
 class MiGoGun: public Wpn
 {
 public:
-        MiGoGun(ItemData* const item_data);
-        ~MiGoGun() {}
+        explicit MiGoGun(ItemData* const item_data);
+        ~MiGoGun() override = default;
 
 protected:
         void specific_dmg_mod(
@@ -453,7 +453,7 @@ protected:
 class RavenPeck : public Wpn
 {
 public:
-        RavenPeck(ItemData* const item_data) :
+        explicit RavenPeck(ItemData* const item_data) :
                 Wpn(item_data) {}
 
         void on_melee_hit(actor::Actor& actor_hit, const int dmg) override;
@@ -462,7 +462,7 @@ public:
 class VampiricBite : public Wpn
 {
 public:
-        VampiricBite(ItemData* const item_data) :
+        explicit VampiricBite(ItemData* const item_data) :
                 Wpn(item_data) {}
 
         void on_melee_hit(actor::Actor& actor_hit, const int dmg) override;
@@ -471,7 +471,7 @@ public:
 class MindLeechSting : public Wpn
 {
 public:
-        MindLeechSting(ItemData* const item_data) :
+        explicit MindLeechSting(ItemData* const item_data) :
                 Wpn(item_data) {}
 
         void on_melee_hit(actor::Actor& actor_hit, const int dmg) override;
@@ -480,7 +480,7 @@ public:
 class DustEngulf : public Wpn
 {
 public:
-        DustEngulf(ItemData* const item_data) :
+        explicit DustEngulf(ItemData* const item_data) :
                 Wpn(item_data) {}
 
         void on_melee_hit(actor::Actor& actor_hit, const int dmg) override;
@@ -489,7 +489,7 @@ public:
 class SnakeVenomSpit : public Wpn
 {
 public:
-        SnakeVenomSpit(ItemData* const item_data) :
+        explicit SnakeVenomSpit(ItemData* const item_data) :
                 Wpn(item_data) {}
 
         void on_ranged_hit(actor::Actor& actor_hit) override;
@@ -498,10 +498,10 @@ public:
 class Ammo: public Item
 {
 public:
-        Ammo(ItemData* const item_data) :
+        explicit Ammo(ItemData* const item_data) :
                 Item(item_data) {}
 
-        virtual ~Ammo() {}
+        ~Ammo() override = default;
 
         Color interface_color() const override
         {
@@ -512,9 +512,9 @@ public:
 class AmmoMag: public Ammo
 {
 public:
-        AmmoMag(ItemData* const item_data);
+        explicit AmmoMag(ItemData* const item_data);
 
-        ~AmmoMag() {}
+        ~AmmoMag() override = default;
 
         std::string name_inf_str() const override
         {
@@ -540,9 +540,9 @@ enum class MedBagAction
 class MedicalBag: public Item
 {
 public:
-        MedicalBag(ItemData* const item_data);
+        explicit MedicalBag(ItemData* const item_data);
 
-        ~MedicalBag() {}
+        ~MedicalBag() override = default;
 
         void save_hook() const override;
 
@@ -585,7 +585,7 @@ protected:
 class Headwear: public Item
 {
 public:
-        Headwear(ItemData* item_data) :
+        explicit Headwear(ItemData* item_data) :
                 Item(item_data) {}
 
         Color interface_color() const override
@@ -597,7 +597,7 @@ public:
 class GasMask: public Headwear
 {
 public:
-        GasMask(ItemData* item_data) :
+        explicit GasMask(ItemData* item_data) :
                 Headwear        (item_data),
                 m_nr_turns_left  (60) {}
 
@@ -619,13 +619,13 @@ protected:
 class Explosive : public Item
 {
 public:
-        virtual ~Explosive() {}
+        ~Explosive() override = default;
 
         Explosive() = delete;
 
-        ConsumeItem activate(actor::Actor* const actor) override final;
+        ConsumeItem activate(actor::Actor* const actor) final;
 
-        Color interface_color() const override final
+        Color interface_color() const final
         {
                 return colors::light_red();
         }
@@ -637,7 +637,7 @@ public:
         virtual std::string str_on_player_throw() const = 0;
 
 protected:
-        Explosive(ItemData* const item_data) :
+        explicit Explosive(ItemData* const item_data) :
                 Item(item_data),
                 m_fuse_turns(-1) {}
 
@@ -650,7 +650,7 @@ protected:
 class Dynamite: public Explosive
 {
 public:
-        Dynamite(ItemData* const item_data) :
+        explicit Dynamite(ItemData* const item_data) :
                 Explosive(item_data) {}
 
         void on_thrown_ignited_landing(const P& p) override;
@@ -679,7 +679,7 @@ protected:
 class Molotov: public Explosive
 {
 public:
-        Molotov(ItemData* const item_data) :
+        explicit Molotov(ItemData* const item_data) :
                 Explosive(item_data) {}
 
         void on_thrown_ignited_landing(const P& p) override;
@@ -707,7 +707,7 @@ protected:
 class Flare: public Explosive
 {
 public:
-        Flare(ItemData* const item_data) :
+        explicit Flare(ItemData* const item_data) :
                 Explosive(item_data) {}
 
         void on_thrown_ignited_landing(const P& p) override;
@@ -735,7 +735,7 @@ protected:
 class SmokeGrenade: public Explosive
 {
 public:
-        SmokeGrenade(ItemData* const item_data) :
+        explicit SmokeGrenade(ItemData* const item_data) :
                 Explosive(item_data) {}
 
         void on_thrown_ignited_landing(const P& p) override;
@@ -758,6 +758,6 @@ protected:
         void on_player_ignite() const override;
 };
 
-} // item
+}  // namespace item
 
 #endif // ITEM_HPP

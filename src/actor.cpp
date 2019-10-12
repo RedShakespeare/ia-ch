@@ -692,7 +692,7 @@ void Actor::on_feed()
 
                 if (prop && rnd::one_in(6))
                 {
-                        PropWound* const wound = static_cast<PropWound*>(prop);
+                        auto* const wound = static_cast<PropWound*>(prop);
 
                         wound->heal_one_wound();
                 }
@@ -735,7 +735,7 @@ void Actor::add_light(Array2<bool>& light_map) const
         }
         else if (m_properties.has(PropId::burning))
         {
-                for (const auto d : dir_utils::g_dir_list_w_center)
+                for (const auto& d : dir_utils::g_dir_list_w_center)
                 {
                         light_map.at(m_pos + d) = true;
                 }
@@ -749,4 +749,4 @@ bool Actor::is_player() const
         return this == map::g_player;
 }
 
-} // actor
+}  // namespace actor

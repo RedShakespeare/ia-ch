@@ -29,6 +29,6 @@ item::Item* make_item_on_floor(const item::Id item_id, const P& pos);
 
 item::Item* copy_item(const item::Item& item_to_copy);
 
-} // item
+}  // namespace item
 
 #endif // ITEM_FACTORY_HPP

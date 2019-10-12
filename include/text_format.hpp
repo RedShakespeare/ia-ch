@@ -44,6 +44,6 @@ void append_with_space(
         std::string& base_str,
         const std::string& addition);
 
-} // text_format
+}  // namespace text_format
 
 #endif // TEXT_FORMATTING_HPP

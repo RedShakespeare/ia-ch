@@ -391,7 +391,7 @@ void add(
         {
                 const std::string prev_text = prev_msg->text();
 
-                if (prev_text.compare(str) == 0)
+                if (prev_text == str)
                 {
                         prev_msg->incr_repeats();
 
@@ -426,8 +426,7 @@ void add(
                         msg_x0 = 0;
                 }
 
-                s_lines[current_line_nr].push_back(
-                        Msg(str, color, msg_x0, copy_to_history));
+                s_lines[current_line_nr].emplace_back(str, color, msg_x0, copy_to_history);
         }
 
         io::clear_screen();
@@ -510,7 +509,7 @@ const std::vector<Msg> history()
         return result;
 }
 
-} // msg_log
+}  // namespace msg_log
 
 // -----------------------------------------------------------------------------
 // Message history state

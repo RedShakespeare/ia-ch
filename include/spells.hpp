@@ -19,7 +19,7 @@ namespace actor
 {
 class Actor;
 class Mon;
-}
+} // namespace actor
 
 
 enum class SpellId
@@ -135,15 +135,15 @@ namespace spell_factory
 
 Spell* make_spell_from_id(const SpellId spell_id);
 
-} // spell_factory
+} // namespace spell_factory
 
 
 class Spell
 {
 public:
-        Spell() {}
+        Spell() = default;
 
-        virtual ~Spell() {}
+        virtual ~Spell() = default;
 
         void cast(actor::Actor* const caster,
                   const SpellSkill skill,
@@ -433,7 +433,7 @@ private:
 class BoltImpl
 {
 public:
-        virtual ~BoltImpl() {}
+        virtual ~BoltImpl() = default;
 
         virtual Range damage(
                 const SpellSkill skill,
@@ -576,7 +576,7 @@ public:
 class SpellBolt: public Spell
 {
 public:
-        SpellBolt(BoltImpl* impl) :
+        explicit SpellBolt(BoltImpl* impl) :
                 Spell(),
                 m_impl(impl) {}
 

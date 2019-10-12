@@ -50,9 +50,12 @@ void PropHandler::apply_natural_props_from_actor_data()
         }
 }
 
+#ifdef NDEBUG
+PropHandler::~PropHandler() = default;
+#else
 PropHandler::~PropHandler()
 {
-#ifndef NDEBUG
+
         // Sanity check the property cache
         for (auto& prop : m_props)
         {
@@ -69,8 +72,8 @@ PropHandler::~PropHandler()
                         ASSERT(false);
                 }
         }
-#endif // NDEBUG
 }
+#endif // NDEBUG
 
 void PropHandler::save() const
 {
@@ -745,7 +748,7 @@ std::vector<ColoredString> PropHandler::property_names_short() const
                         color = colors::white();
                 }
 
-                line.push_back(ColoredString(str, color));
+                line.emplace_back(str, color);
         }
 
         return line;

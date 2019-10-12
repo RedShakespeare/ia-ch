@@ -18,7 +18,7 @@ static void put_templ_terrains(
         const Array2<char>& templ,
         const P& p0)
 {
-        const P dims(templ.dims());
+        const P& dims = templ.dims();
 
         for (int templ_x = 0; templ_x < dims.x; ++templ_x)
         {
@@ -260,4 +260,4 @@ Room* make_room(const R& r, const IsSubRoom is_sub_room)
         return room;
 }
 
-} // mapgen
+}  // namespace mapgen

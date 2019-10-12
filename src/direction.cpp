@@ -227,4 +227,4 @@ std::string compass_dir_name(const P& offs)
         return g_compass_dir_names[offs.x + 1][offs.y + 1];
 }
 
-} // dir_utils
+}  // namespace dir_utils

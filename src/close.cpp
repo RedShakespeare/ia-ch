@@ -121,4 +121,4 @@ void player_try_close_or_jam()
         }
 }
 
-} // close
+}  // namespace close_door

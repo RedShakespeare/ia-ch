@@ -16,9 +16,9 @@ namespace terrain
 class Monolith: public Terrain
 {
 public:
-    Monolith(const P& p);
+    explicit Monolith(const P& p);
     Monolith() = delete;
-    ~Monolith() {}
+    ~Monolith() override = default;
 
     Id id() const override
     {
@@ -42,6 +42,6 @@ private:
     bool m_is_activated;
 };
 
-} // terrain
+}  // namespace terrain
 
 #endif // TERRAIN_MONOLITH_HPP

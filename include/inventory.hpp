@@ -7,6 +7,7 @@
 #ifndef INVENTORY_HPP
 #define INVENTORY_HPP
 
+#include <utility>
 #include <vector>
 #include <string>
 
@@ -17,12 +18,12 @@ namespace item
 {
 class Item;
 enum class Id;
-}
+} // namespace item
 
 namespace actor
 {
 class Actor;
-}
+} // namespace actor
 
 struct P;
 
@@ -38,25 +39,25 @@ enum class SlotId
 
 struct InvSlot
 {
-        InvSlot(SlotId id_, std::string name_) :
+        InvSlot(SlotId id_, std::string  name_) :
                 id(id_),
-                name(name_),
+                name(std::move(name_)),
                 item(nullptr) {}
 
         InvSlot() :
-                id(SlotId::wpn),
-                name(""),
-                item(nullptr) {}
+                
+                name("")
+                {}
 
-        SlotId id;
+        SlotId id{SlotId::wpn};
         std::string name;
-        item::Item* item;
+        item::Item* item{nullptr};
 };
 
 class Inventory
 {
 public:
-        Inventory(actor::Actor* const owning_actor);
+        explicit Inventory(actor::Actor* const owning_actor);
 
         ~Inventory();
 

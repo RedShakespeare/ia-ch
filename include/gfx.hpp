@@ -574,6 +574,6 @@ namespace gfx
 
 P character_pos(const char character);
 
-} // gfx
+} // namespace gfx
 
 #endif // GFX_HPP

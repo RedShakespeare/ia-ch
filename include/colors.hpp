@@ -8,6 +8,7 @@
 #define COLORS_HPP
 
 #include <string>
+#include <utility>
 
 #include "SDL_video.h"
 
@@ -17,21 +18,37 @@
 class Color
 {
 public:
-        Color();
+        Color() = default;
 
-        Color(const Color& other);
+        Color(const Color& other) = default;
 
-        Color(uint8_t r, uint8_t g, uint8_t b);
+        Color(uint8_t r, uint8_t g, uint8_t b) :
+                m_sdl_color({r, g, b, 0}),
+                m_is_defined(true) {}
 
-        Color(const SDL_Color& sdl_color);
+        explicit Color(const SDL_Color& sdl_color) :
+                m_sdl_color(sdl_color),
+                m_is_defined(true) {}
 
-        ~Color();
+        ~Color() = default;
 
-        Color& operator=(const Color& other);
+        Color& operator=(const Color& other) = default;
 
-        bool operator==(const Color& other) const;
+        bool operator==(const Color& other) const
+        {
+                return
+                        m_sdl_color.r == other.m_sdl_color.r &&
+                        m_sdl_color.g == other.m_sdl_color.g &&
+                        m_sdl_color.b == other.m_sdl_color.b;
+        }
 
-        bool operator!=(const Color& other) const;
+        bool operator!=(const Color& other) const
+        {
+                return
+                        m_sdl_color.r != other.m_sdl_color.r ||
+                        m_sdl_color.g != other.m_sdl_color.g ||
+                        m_sdl_color.b != other.m_sdl_color.b;
+        }
 
         Color fraction(const double div);
 
@@ -50,9 +67,9 @@ public:
         void randomize_rgb(const int range);
 
 private:
-        SDL_Color m_sdl_color;
+        SDL_Color m_sdl_color {0, 0, 0, 0};
 
-        bool m_is_defined;
+        bool m_is_defined {false};
 };
 
 //-----------------------------------------------------------------------------
@@ -113,7 +130,7 @@ Color mon_unaware_bg();
 Color mon_allied_bg();
 Color mon_temp_property_bg();
 
-} // colors
+}  // namespace colors
 
 //-----------------------------------------------------------------------------
 // Colored string
@@ -122,8 +139,8 @@ struct ColoredString
 {
         ColoredString() = default;
 
-        ColoredString(const std::string& the_str, const Color& the_color) :
-                str(the_str),
+        ColoredString(std::string  the_str, const Color& the_color) :
+                str(std::move(the_str)),
                 color(the_color) {}
 
         ColoredString& operator=(const ColoredString& other) = default;

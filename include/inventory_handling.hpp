@@ -7,6 +7,8 @@
 #ifndef INV_HANDLING_HPP
 #define INV_HANDLING_HPP
 
+#include <utility>
+
 #include "inventory.hpp"
 #include "state.hpp"
 #include "browser.hpp"
@@ -33,7 +35,7 @@ class InvState: public State
 public:
         InvState();
 
-        virtual ~InvState() {}
+        ~InvState() override = default;
 
         StateId id() override;
 
@@ -121,7 +123,7 @@ public:
 class Equip: public InvState
 {
 public:
-        Equip(InvSlot& slot) :
+        explicit Equip(InvSlot& slot) :
                 InvState(),
                 m_slot_to_equip(slot) {}
 
@@ -156,9 +158,9 @@ private:
 class SelectIdentify: public InvState
 {
 public:
-        SelectIdentify(std::vector<ItemType> item_types_allowed = {}) :
+        explicit SelectIdentify(std::vector<ItemType>  item_types_allowed = {}) :
                 InvState(),
-                m_item_types_allowed(item_types_allowed) {}
+                m_item_types_allowed(std::move(item_types_allowed)) {}
 
         void on_start() override;
 

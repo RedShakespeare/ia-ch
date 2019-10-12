@@ -12,7 +12,7 @@ namespace status_lines
 
 void draw();
 
-} // status_lines
+} // namespace status_lines
 
 
 #endif // STATUS_LINES_HPP

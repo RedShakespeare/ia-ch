@@ -140,16 +140,14 @@ const std::unordered_map<MonGroupSize, std::string> g_group_size_to_str_map = {
 // example usually spawn alone, but on some rare occasions spawn in big groups).
 struct MonGroupSpawnRule
 {
-        MonGroupSpawnRule() :
-                group_size(MonGroupSize::alone),
-                weight(1) {}
+        MonGroupSpawnRule() = default;
 
         MonGroupSpawnRule(MonGroupSize group_size_type, int spawn_weight) :
                 group_size(group_size_type),
                 weight(spawn_weight) {}
 
-        MonGroupSize group_size;
-        int weight;
+        MonGroupSize group_size{MonGroupSize::alone};
+        int weight{1};
 };
 
 struct ActorItemSetData
@@ -161,10 +159,6 @@ struct ActorItemSetData
 
 struct IntrAttData
 {
-        IntrAttData() {}
-
-        ~IntrAttData() {}
-
         item::Id item_id {item::Id::END};
         int dmg {0};
         ItemAttProp prop_applied {};
@@ -322,6 +316,6 @@ void init();
 void save();
 void load();
 
-} // actor_data
+} // namespace actor
 
 #endif // ACTOR_DATA_HPP

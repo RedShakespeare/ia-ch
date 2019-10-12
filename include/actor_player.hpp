@@ -7,7 +7,7 @@
 #ifndef PLAYER_HPP
 #define PLAYER_HPP
 
-#include <math.h>
+#include <cmath>
 
 #include "actor.hpp"
 #include "colors.hpp"
@@ -21,7 +21,7 @@ class Explosive;
 class Item;
 class MedicalBag;
 class Wpn;
-}
+} // namespace item
 
 
 enum class Phobia
@@ -62,7 +62,7 @@ class Player: public Actor
 {
 public:
         Player();
-        ~Player();
+        ~Player() override;
 
         void save() const;
         void load();
@@ -198,6 +198,6 @@ private:
         item::Wpn* m_unarmed_wpn {nullptr};
 };
 
-} // actor
+}  // namespace actor
 
 #endif // PLAYER_HPP

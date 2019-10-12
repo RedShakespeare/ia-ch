@@ -12,6 +12,6 @@ namespace populate_items
 
 void make_items_on_floor();
 
-} // populate_items
+} // namespace populate_items
 
 #endif // POPULATE_ITEMS_HPP

@@ -29,8 +29,8 @@ struct RoomTempl
 {
         RoomTempl() :
                 symbols(P(0, 0)),
-                type((RoomType)0),
-                base_templ_idx(0) {}
+                type((RoomType)0)
+                {}
 
         Array2<char> symbols;
 
@@ -39,7 +39,7 @@ struct RoomTempl
         // Each template in the data file is rotated/flipped to create variants
         // - this is the index of the origin template from the file (i.e. there
         // will be many templates with index 0, then index 1, etc)
-        size_t base_templ_idx;
+        size_t base_templ_idx{0};
 };
 
 enum class RoomTemplStatus
@@ -70,6 +70,6 @@ void on_map_discarded();
 
 void on_map_ok();
 
-} // map_templates
+} // namespace map_templates
 
 #endif // MAP_TEMPLATES_HPP

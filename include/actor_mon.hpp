@@ -33,13 +33,13 @@ struct AiAvailAttacksData
 struct MonSpell
 {
         MonSpell() :
-                spell(nullptr),
-                skill((SpellSkill)0),
-                cooldown(-1) {}
+                
+                skill((SpellSkill)0)
+                {}
 
-        Spell* spell;
+        Spell* spell{nullptr};
         SpellSkill skill;
-        int cooldown;
+        int cooldown{-1};
 };
 
 
@@ -57,7 +57,7 @@ class Mon: public Actor
 {
 public:
         Mon();
-        virtual ~Mon();
+        ~Mon() override;
 
         bool can_see_actor(const Actor& other,
                            const Array2<bool>& hard_blocked_los) const;
@@ -75,7 +75,7 @@ public:
 
         void act() override;
 
-        virtual Color color() const override;
+        Color color() const override;
 
         SpellSkill spell_skill(const SpellId id) const override;
 
@@ -96,7 +96,7 @@ public:
 
         void on_actor_turn() override;
 
-        void on_std_turn() override final;
+        void on_std_turn() final;
 
         std::string aware_msg_mon_seen() const;
 
@@ -119,17 +119,17 @@ public:
 
         void add_spell(SpellSkill skill, Spell* const spell);
 
-        int m_wary_of_player_counter;
-        int m_aware_of_player_counter;
-        int m_player_aware_of_me_counter;
-        bool m_is_msg_mon_in_view_printed;
-        bool m_is_player_feeling_msg_allowed;
-        Dir m_last_dir_moved;
-        MonRoamingAllowed m_is_roaming_allowed;
-        Actor* m_leader;
-        Actor* m_target;
-        bool m_is_target_seen;
-        bool m_waiting;
+        int m_wary_of_player_counter{0};
+        int m_aware_of_player_counter{0};
+        int m_player_aware_of_me_counter{0};
+        bool m_is_msg_mon_in_view_printed{false};
+        bool m_is_player_feeling_msg_allowed{true};
+        Dir m_last_dir_moved{Dir::center};
+        MonRoamingAllowed m_is_roaming_allowed{MonRoamingAllowed::yes};
+        Actor* m_leader{nullptr};
+        Actor* m_target{nullptr};
+        bool m_is_target_seen{false};
+        bool m_waiting{false};
 
         std::vector<MonSpell> m_spells;
 
@@ -158,7 +158,7 @@ protected:
 
         bool should_reload(const item::Wpn& wpn) const;
 
-        virtual void on_hit(
+        void on_hit(
                 int& dmg,
                 const DmgType dmg_type,
                 const DmgMethod method,
@@ -179,29 +179,29 @@ class Ape: public Mon
 {
 public:
         Ape() :
-                Mon(),
-                m_frenzy_cooldown(0) {}
+                Mon()
+                {}
 
-        ~Ape() {}
+        ~Ape() override = default;
 
 private:
         DidAction on_act() override;
 
-        int m_frenzy_cooldown;
+        int m_frenzy_cooldown{0};
 };
 
 class Khephren: public Mon
 {
 public:
         Khephren() :
-                Mon(),
-                m_has_summoned_locusts(false) {}
-        ~Khephren() {}
+                Mon()
+                {}
+        ~Khephren() override = default;
 
 private:
         DidAction on_act() override;
 
-        bool m_has_summoned_locusts;
+        bool m_has_summoned_locusts{false};
 };
 
 class StrangeColor: public Mon
@@ -209,7 +209,7 @@ class StrangeColor: public Mon
 public:
         StrangeColor() : Mon() {}
 
-        ~StrangeColor() {}
+        ~StrangeColor() override = default;
 
         Color color() const override;
 };
@@ -219,7 +219,7 @@ class SpectralWpn: public Mon
 public:
         SpectralWpn();
 
-        ~SpectralWpn() {}
+        ~SpectralWpn() override = default;
 
         void on_death() override;
 
@@ -237,6 +237,6 @@ private:
         std::unique_ptr<item::Item> m_discarded_item {};
 };
 
-} // actor
+}  // namespace actor
 
 #endif // MON_HPP

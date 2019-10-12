@@ -15,7 +15,7 @@
 namespace actor
 {
 class Actor;
-}
+} // namespace actor
 
 
 enum class AbilityId
@@ -58,13 +58,6 @@ enum class ActionResult
 class AbilityValues
 {
 public:
-        AbilityValues()
-        {
-                reset();
-        }
-
-        AbilityValues& operator=(const AbilityValues& other) = default;
-
         void reset();
 
         int val(const AbilityId id,
@@ -81,7 +74,7 @@ public:
         void change_val(const AbilityId id, const int change);
 
 private:
-        int m_ability_list[(size_t)AbilityId::END];
+        int m_ability_list[(size_t)AbilityId::END] {};
 };
 
 namespace ability_roll
@@ -95,6 +88,6 @@ ActionResult roll(const int skill_value);
 // hits and misses.
 int hit_chance_pct_actual(const int value);
 
-} // ability_roll
+}  // namespace ability_roll
 
 #endif // ABILITY_VALUES_HPP

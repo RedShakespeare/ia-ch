@@ -161,4 +161,4 @@ void make_pylons_and_levers()
         } // Pylons loop
 } // make_pylons_and_levers
 
-} // namespace
+}  // namespace mapgen

@@ -6,9 +6,8 @@
 
 #include "pos.hpp"
 
-P::P(const Dir dir) :
-        x(0),
-        y(0)
+P::P(const Dir dir) 
+        
 {
         set(dir_utils::offset(dir));
 }

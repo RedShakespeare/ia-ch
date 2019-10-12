@@ -626,7 +626,7 @@ TrapPlacementValid MagicTrapImpl::on_place()
         return TrapPlacementValid::yes;
 }
 
-TrapDart::TrapDart(P pos, Trap* const base_trap) :
+TrapDart::TrapDart(const P& pos, Trap* const base_trap) :
         MechTrapImpl(pos, TrapId::dart, base_trap),
         m_is_poisoned((map::g_dlvl >= g_dlvl_harder_traps) && rnd::one_in(3)),
         m_dart_origin(),
@@ -766,7 +766,7 @@ void TrapDart::trigger()
         TRACE_FUNC_END_VERBOSE;
 }
 
-TrapSpear::TrapSpear(P pos, Trap* const base_trap) :
+TrapSpear::TrapSpear(const P& pos, Trap* const base_trap) :
         MechTrapImpl(pos, TrapId::spear, base_trap),
         m_is_poisoned((map::g_dlvl >= g_dlvl_harder_traps) && rnd::one_in(4)),
         m_spear_origin(),
@@ -1576,4 +1576,4 @@ void TrapUnlearnSpell::trigger()
         TRACE_FUNC_END_VERBOSE;
 }
 
-} // terrain
+}  // namespace terrain

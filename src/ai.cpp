@@ -575,7 +575,7 @@ bool step_to_lair_if_los(actor::Mon& mon, const P& lair_p)
         return false;
 }
 
-} // action
+}  // namespace action
 
 namespace info
 {
@@ -880,6 +880,6 @@ std::vector<P> find_path_to_target(actor::Mon& mon)
         return path;
 }
 
-} // info
+}  // namespace info
 
-} // ai
+}  // namespace ai

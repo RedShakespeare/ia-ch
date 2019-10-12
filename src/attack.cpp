@@ -1589,4 +1589,4 @@ DidAction ranged(
 
 } // ranged
 
-} // attack
+}  // namespace attack

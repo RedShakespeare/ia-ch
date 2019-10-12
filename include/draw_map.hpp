@@ -24,6 +24,6 @@ const CellRenderData& get_drawn_cell(int x, int y);
 
 const CellRenderData& get_drawn_cell_player_memory(int x, int y);
 
-} // draw_map
+}  // namespace draw_map
 
 #endif // DRAW_MAP_HPP

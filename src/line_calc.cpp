@@ -6,7 +6,7 @@
 
 #include "line_calc.hpp"
 
-#include <math.h>
+#include <cmath>
 #include <vector>
 
 #include "global.hpp"
@@ -32,9 +32,9 @@ void init()
         // Calculate FOV absolute distances
         for (int y = 0; y < g_fov_w_int; ++y)
         {
-                for (int x = 0; x < g_fov_w_int; ++x)
+                for (auto& fov_abs_distance : s_fov_abs_distances)
                 {
-                        s_fov_abs_distances[x][y] = 0;
+                        fov_abs_distance[y] = 0;
                 }
         }
 
@@ -108,8 +108,8 @@ std::vector<P> calc_new_line(
                 return line;
         }
 
-        const double delta_x_db = double(target.x - origin.x);
-        const double delta_y_db = double(target.y - origin.y);
+        const auto delta_x_db = (double)(target.x - origin.x);
+        const auto delta_y_db = (double)(target.y - origin.y);
 
         const double hypot_db =
                 sqrt((delta_x_db * delta_x_db) +
@@ -170,4 +170,4 @@ std::vector<P> calc_new_line(
         return line;
 }
 
-} // line_calc
+}  // namespace line_calc

@@ -605,7 +605,7 @@ void PickTraitState::draw()
                         const std::string bg_title =
                                 player_bon::bg_title(trait_marked_bg_prereq);
 
-                        prereq_titles.push_back(ColoredString(bg_title, color));
+                        prereq_titles.emplace_back(bg_title, color);
                 }
 
                 for (Trait prereq_trait : trait_marked_prereqs)
@@ -621,8 +621,7 @@ void PickTraitState::draw()
                         const std::string trait_title =
                                 player_bon::trait_title(prereq_trait);
 
-                        prereq_titles.push_back(
-                                ColoredString(trait_title, color));
+                        prereq_titles.emplace_back(trait_title, color);
                 }
 
                 if (trait_marked_clvl_prereq != -1)
@@ -636,8 +635,7 @@ void PickTraitState::draw()
                                 "Character level " +
                                 std::to_string(trait_marked_clvl_prereq);
 
-                        prereq_titles.push_back(
-                                ColoredString(clvl_title, color));
+                        prereq_titles.emplace_back(clvl_title, color);
                 }
 
                 const int prereq_list_x = label.size() + 1;

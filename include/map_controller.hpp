@@ -15,9 +15,9 @@
 class MapController
 {
 public:
-        MapController() {}
+        MapController() = default;
 
-        virtual ~MapController() {}
+        virtual ~MapController() = default;
 
         virtual void on_start() {}
 
@@ -54,6 +54,6 @@ namespace map_control
 
 extern std::unique_ptr<MapController> g_controller;
 
-}
+} // namespace map_control
 
 #endif // MAP_CONTROL_HPP

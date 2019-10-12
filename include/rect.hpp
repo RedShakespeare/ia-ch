@@ -14,7 +14,7 @@ struct R
 public:
         R() = default;
 
-        R(const P p0_val, const P p1_val) :
+        R(const P& p0_val, const P& p1_val) :
                 p0(p0_val),
                 p1(p1_val) {}
 

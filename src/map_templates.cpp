@@ -92,7 +92,7 @@ static size_t max_length(const std::vector<std::string>& lines)
 
 static Array2<char> load_level_template(const LevelTemplId id)
 {
-        const std::string filename = level_id_to_filename.at(id);
+        const std::string& filename = level_id_to_filename.at(id);
 
         std::ifstream ifs(paths::data_dir() + "map/levels/" + filename);
 
@@ -366,9 +366,9 @@ void load()
 {
         TRACE_FUNC_BEGIN;
 
-        for (size_t i = 0; i < s_room_templ_status.size(); ++i)
+        for (auto& room_templ_status : s_room_templ_status)
         {
-                s_room_templ_status[i] = (RoomTemplStatus)saving::get_int();
+                room_templ_status = (RoomTemplStatus)saving::get_int();
         }
 
         TRACE_FUNC_END;
@@ -443,10 +443,8 @@ void on_base_room_template_placed(const RoomTempl& templ)
 void on_map_discarded()
 {
         // "Placed" -> "unused"
-        for (size_t i = 0; i < s_room_templ_status.size(); ++i)
+        for (auto& status : s_room_templ_status)
         {
-                auto& status = s_room_templ_status[i];
-
                 if (status == RoomTemplStatus::placed)
                 {
                         status = RoomTemplStatus::unused;
@@ -457,10 +455,8 @@ void on_map_discarded()
 void on_map_ok()
 {
         // "Placed" -> "used"
-        for (size_t i = 0; i < s_room_templ_status.size(); ++i)
+        for (auto& status : s_room_templ_status)
         {
-                auto& status = s_room_templ_status[i];
-
                 if (status == RoomTemplStatus::placed)
                 {
                         status = RoomTemplStatus::used;
@@ -468,4 +464,4 @@ void on_map_ok()
         }
 }
 
-} // map_templates
+}  // namespace map_templates

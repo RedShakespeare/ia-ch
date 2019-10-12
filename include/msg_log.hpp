@@ -8,6 +8,7 @@
 #define MSG_LOG_HPP
 
 #include <string>
+#include <utility>
 #include <vector>
 
 #include "colors.hpp"
@@ -36,16 +37,16 @@ enum class CopyToMsgHistory
 class Msg
 {
 public:
-        Msg(const std::string& text,
+        Msg(std::string  text,
             const Color& color_id,
             const int x_pos,
             CopyToMsgHistory copy_to_history) :
-                m_text(text),
+                m_text(std::move(text)),
                 m_color(color_id),
                 m_x_pos(x_pos),
                 m_copy_to_history(copy_to_history) {}
 
-        Msg() {}
+        Msg() = default;
 
         std::string text_with_repeats() const
         {
@@ -120,7 +121,7 @@ void add_line_to_history(const std::string& line_to_add);
 
 const std::vector<Msg> history();
 
-} // log
+}  // namespace msg_log
 
 // -----------------------------------------------------------------------------
 // Message history state
@@ -131,7 +132,7 @@ public:
         MsgHistoryState() :
                 InfoScreenState() {}
 
-        ~MsgHistoryState() {}
+        ~MsgHistoryState() override = default;
 
         void on_start() override;
 

@@ -13,12 +13,12 @@
 namespace item
 {
 class Item;
-}
+} // namespace item
 
 namespace actor
 {
 class Actor;
-}
+} // namespace actor
 
 struct P;
 
@@ -36,6 +36,6 @@ void drop_item_from_inv(
         const size_t idx,
         const int nr_items_to_drop = -1);
 
-} // item_drop
+}  // namespace item_drop
 
 #endif

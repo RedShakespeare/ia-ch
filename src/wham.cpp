@@ -336,4 +336,4 @@ void run()
         TRACE_FUNC_END;
 }
 
-} // wham
+}  // namespace wham

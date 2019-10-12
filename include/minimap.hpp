@@ -39,6 +39,6 @@ void clear();
 
 void update();
 
-}
+} // namespace minimap
 
 #endif // MINIMAP_HPP

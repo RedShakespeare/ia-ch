@@ -17,7 +17,7 @@
 namespace item
 {
 class Item;
-}
+} // namespace item
 
 
 namespace item_curse
@@ -29,11 +29,11 @@ class CurseImpl;
 class Curse
 {
 public:
-        Curse() {}
+        Curse() = default;
 
         Curse(Curse&& other);
 
-        Curse(std::unique_ptr<CurseImpl> curse_impl);
+        explicit Curse(std::unique_ptr<CurseImpl> curse_impl);
 
         Curse& operator=(Curse&& other);
 
@@ -96,7 +96,7 @@ Curse try_make_random_free_curse(const item::Item& item);
 class CurseImpl
 {
 public:
-        virtual ~CurseImpl() {}
+        virtual ~CurseImpl() = default;
 
         virtual Id id() const = 0;
 
@@ -285,6 +285,6 @@ public:
         std::string descr() const override;
 };
 
-} // item_curse
+} // namespace item_curse
 
 #endif // ITEM_CURSE_HPP

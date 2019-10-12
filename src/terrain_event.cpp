@@ -196,12 +196,12 @@ void EventWallCrumble::on_new_turn()
 
         if (map::g_dlvl <= g_dlvl_last_early_game)
         {
-                spawn_bucket.push_back({actor::Id::rat, 24});
-                spawn_bucket.push_back({actor::Id::rat_thing, 16});
+                spawn_bucket.emplace_back(actor::Id::rat, 24);
+                spawn_bucket.emplace_back(actor::Id::rat_thing, 16);
         }
 
-        spawn_bucket.push_back({actor::Id::zombie, 4});
-        spawn_bucket.push_back({actor::Id::bloated_zombie, 1});
+        spawn_bucket.emplace_back(actor::Id::zombie, 4);
+        spawn_bucket.emplace_back(actor::Id::bloated_zombie, 1);
 
         const auto spawn_data = rnd::element(spawn_bucket);
 
@@ -390,13 +390,13 @@ void EventSnakeEmerge::on_new_turn()
         // Cap max number of snakes to the size of the target bucket
 
         // NOTE: The target bucket is at least as big as the minimum number
-        max_nr_snakes = std::min(max_nr_snakes, int(tgt_bucket.size()));
+        max_nr_snakes = std::min(max_nr_snakes, (int)tgt_bucket.size());
 
         rnd::shuffle(tgt_bucket);
 
         std::vector<actor::Id> id_bucket;
 
-        for (auto d : actor::g_data)
+        for (const auto& d : actor::g_data)
         {
                 if (d.is_snake)
                 {
@@ -509,4 +509,4 @@ void EventRatsInTheWallsDiscovery::on_new_turn()
         }
 }
 
-} // terrain
+}  // namespace terrain

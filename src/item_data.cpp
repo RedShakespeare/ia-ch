@@ -1936,12 +1936,9 @@ void cleanup()
 {
         TRACE_FUNC_BEGIN;
 
-        for (size_t i = 0; i < (size_t)Id::END; ++i)
+        for (auto& d : g_data)
         {
-                ItemData& d = g_data[i];
-
                 d.melee.prop_applied = ItemAttProp();
-
                 d.ranged.prop_applied = ItemAttProp();
         }
 
@@ -1950,10 +1947,8 @@ void cleanup()
 
 void save()
 {
-        for (size_t i = 0; i < (size_t)Id::END; ++i)
+        for (const auto& d : g_data)
         {
-                const ItemData& d = g_data[i];
-
                 saving::put_bool(d.is_identified);
                 saving::put_bool(d.is_alignment_known);
                 saving::put_bool(d.is_spell_domain_known);
@@ -1966,10 +1961,8 @@ void save()
 
 void load()
 {
-        for (size_t i = 0; i < (size_t)Id::END; ++i)
+        for (auto& d : g_data)
         {
-                ItemData& d = g_data[i];
-
                 d.is_identified = saving::get_bool();
                 d.is_alignment_known = saving::get_bool();
                 d.is_spell_domain_known = saving::get_bool();
@@ -1981,93 +1974,49 @@ void load()
 }
 
 MeleeData::MeleeData() :
-        is_melee_wpn(false),
+
         dmg(),
-        hit_chance_mod(0),
-        is_noisy(true),
+
         att_msgs(ItemAttMsgs()),
-        prop_applied(ItemAttProp()),
-        dmg_type(DmgType::physical),
-        dmg_method(DmgMethod::slashing),
-        knocks_back(false),
-        att_corpse(false),
-        att_terrain(false),
-        hit_small_sfx(SfxId::END),
-        hit_medium_sfx(SfxId::END),
-        hit_hard_sfx(SfxId::END),
-        miss_sfx(SfxId::END){}
+        prop_applied(ItemAttProp())
+        {}
 
 RangedData::RangedData() :
-        is_ranged_wpn(false),
-        is_throwable_wpn(false),
-        is_machine_gun(false),
-        is_shotgun(false),
-        max_ammo(0),
+
         dmg(),
-        hit_chance_mod(0),
-        throw_hit_chance_mod(0),
-        always_break_on_throw(false),
-        effective_range(6),
+
         max_range(g_fov_radi_int * 2),
-        knocks_back(false),
-        ammo_item_id(Id::END),
-        dmg_type(DmgType::physical),
-        has_infinite_ammo(false),
-        projectile_character('/'),
-        projectile_tile(TileId::projectile_std_front_slash),
+
         projectile_color(colors::white()),
-        projectile_leaves_trail(false),
+
         att_msgs(ItemAttMsgs()),
         snd_msg(""),
-        snd_vol(SndVol::low),
-        makes_ricochet_snd(false),
-        att_sfx(SfxId::END),
-        reload_sfx(SfxId::END),
+
         prop_applied(ItemAttProp())
 {
 
 }
 
-ArmorData::ArmorData() :
-        armor_points(0),
-        dmg_to_durability_factor(0.0) {}
+ArmorData::ArmorData()
+        = default;
 
 ItemData::ItemData() :
-        id(Id::END),
-        type(ItemType::general),
-        is_intr(false),
-        has_std_activate(false),
-        is_prio_in_backpack_list(false),
-        value(Value::normal),
-        weight(Weight::none),
-        is_unique(false),
-        allow_spawn(true),
+
         spawn_std_range(Range(1, g_dlvl_last)),
-        max_stack_at_spawn(1),
-        chance_to_incl_in_spawn_list(100),
-        is_stackable(true),
-        is_identified(true),
-        is_alignment_known(true),
-        is_spell_domain_known(true),
-        is_tried(false),
-        is_found(false),
-        xp_on_found(0),
+
         base_name(),
-        character('X'),
+
         color(colors::white()),
-        tile(TileId::END),
-        main_att_mode(AttMode::none),
-        spell_cast_from_scroll(SpellId::END),
+
         land_on_hard_snd_msg("I hear a thudding sound."),
-        land_on_hard_sfx(SfxId::END),
-        allow_display_dmg(true),
+
         melee(MeleeData()),
         ranged(RangedData()),
         armor(ArmorData())
 {
-        for (size_t i = 0; i < (size_t)AbilityId::END; ++i)
+        for (int& v : ability_mods_while_equipped)
         {
-                ability_mods_while_equipped[i] = 0;
+                v = 0;
         }
 
         base_descr.clear();
@@ -2075,4 +2024,4 @@ ItemData::ItemData() :
         native_containers.clear();
 }
 
-} // item
+}  // namespace item

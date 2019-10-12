@@ -1,0 +1,503 @@
+Checks: >
+
+    # Enable all checks
+    clang-diagnostic-*,
+    clang-analyzer-*,
+    *,
+
+    ##################################################
+    # DISABLED CHECKS
+    ##################################################
+    -cert-dcl58-cpp,
+    -cert-err58-cpp,
+    -cert-flp30-c,
+    -cert-msc32-c,
+    -cert-msc51-cpp,
+    -cppcoreguidelines-no-malloc,
+    -cppcoreguidelines-owning-memory,
+    -cppcoreguidelines-pro-bounds-array-to-pointer-decay,
+    -cppcoreguidelines-pro-bounds-constant-array-index,
+    -cppcoreguidelines-pro-bounds-pointer-arithmetic,
+    -cppcoreguidelines-pro-type-cstyle-cast,
+    -cppcoreguidelines-pro-type-member-init,
+    -cppcoreguidelines-pro-type-static-cast-downcast,
+    -cppcoreguidelines-special-member-functions,
+    -hicpp-braces-around-statements,
+    -hicpp-function-size,
+    -hicpp-member-init,
+    -hicpp-no-array-decay,
+    -hicpp-no-malloc,
+    -hicpp-noexcept-move,
+    -hicpp-signed-bitwise,
+    -hicpp-special-member-functions,
+    -modernize-loop-convert,
+    -performance-inefficient-string-concatenation,
+    -performance-noexcept-move-constructor,
+    -performance-unnecessary-copy-initialization,
+    -performance-unnecessary-value-param,
+
+    ##################################################
+    # TO BE EVALUATED FOR ENABLING/DISABLING
+    ##################################################
+    -android-cloexec-accept,
+    -android-cloexec-accept,
+    -android-cloexec-accept4,
+    -android-cloexec-creat,
+    -android-cloexec-dup,
+    -android-cloexec-epoll-create,
+    -android-cloexec-epoll-create1,
+    -android-cloexec-fopen,
+    -android-cloexec-inotify-init,
+    -android-cloexec-inotify-init1,
+    -android-cloexec-memfd-create,
+    -android-cloexec-open,
+    -android-cloexec-socket,
+    -android-comparison-in-temp-failure-retry,
+    -boost-use-to-string,
+    -clang-analyzer-apiModeling.TrustNonnull,
+    -clang-analyzer-apiModeling.google.GTest,
+    -clang-analyzer-cplusplus.InnerPointer,
+    -clang-analyzer-cplusplus.NewDelete,
+    -clang-analyzer-cplusplus.NewDeleteLeaks,
+    -clang-analyzer-cplusplus.SelfAssignment,
+    -clang-analyzer-deadcode.DeadStores,
+    -clang-analyzer-llvm.Conventions,
+    -clang-analyzer-nullability.NullPassedToNonnull,
+    -clang-analyzer-nullability.NullReturnedFromNonnull,
+    -clang-analyzer-nullability.NullableDereferenced,
+    -clang-analyzer-nullability.NullablePassedToNonnull,
+    -clang-analyzer-nullability.NullableReturnedFromNonnull,
+    -clang-analyzer-optin.cplusplus.VirtualCall,
+    -clang-analyzer-optin.mpi.MPI-Checker,
+    -clang-analyzer-optin.osx.cocoa.localizability.EmptyLocalizationContextChecker,
+    -clang-analyzer-optin.osx.cocoa.localizability.NonLocalizedStringChecker,
+    -clang-analyzer-optin.performance.GCDAntipattern,
+    -clang-analyzer-optin.performance.Padding,
+    -clang-analyzer-optin.portability.UnixAPI,
+    -clang-analyzer-osx.API,
+    -clang-analyzer-osx.NumberObjectConversion,
+    -clang-analyzer-osx.ObjCProperty,
+    -clang-analyzer-osx.SecKeychainAPI,
+    -clang-analyzer-osx.cocoa.AtSync,
+    -clang-analyzer-osx.cocoa.AutoreleaseWrite,
+    -clang-analyzer-osx.cocoa.ClassRelease,
+    -clang-analyzer-osx.cocoa.Dealloc,
+    -clang-analyzer-osx.cocoa.IncompatibleMethodTypes,
+    -clang-analyzer-osx.cocoa.Loops,
+    -clang-analyzer-osx.cocoa.MissingSuperCall,
+    -clang-analyzer-osx.cocoa.NSAutoreleasePool,
+    -clang-analyzer-osx.cocoa.NSError,
+    -clang-analyzer-osx.cocoa.NilArg,
+    -clang-analyzer-osx.cocoa.NonNilReturnValue,
+    -clang-analyzer-osx.cocoa.ObjCGenerics,
+    -clang-analyzer-osx.cocoa.RetainCount,
+    -clang-analyzer-osx.cocoa.RunLoopAutoreleaseLeak,
+    -clang-analyzer-osx.cocoa.SelfInit,
+    -clang-analyzer-osx.cocoa.SuperDealloc,
+    -clang-analyzer-osx.cocoa.UnusedIvars,
+    -clang-analyzer-osx.cocoa.VariadicMethodTypes,
+    -clang-analyzer-osx.coreFoundation.CFError,
+    -clang-analyzer-osx.coreFoundation.CFNumber,
+    -clang-analyzer-osx.coreFoundation.CFRetainRelease,
+    -clang-analyzer-osx.coreFoundation.containers.OutOfBounds,
+    -clang-analyzer-osx.coreFoundation.containers.PointerSizedValues,
+    -clang-analyzer-security.FloatLoopCounter,
+    -clang-analyzer-security.insecureAPI.UncheckedReturn,
+    -clang-analyzer-security.insecureAPI.bcmp,
+    -clang-analyzer-security.insecureAPI.bcopy,
+    -clang-analyzer-security.insecureAPI.bzero,
+    -clang-analyzer-security.insecureAPI.getpw,
+    -clang-analyzer-security.insecureAPI.gets,
+    -clang-analyzer-security.insecureAPI.mkstemp,
+    -clang-analyzer-security.insecureAPI.mktemp,
+    -clang-analyzer-security.insecureAPI.rand,
+    -clang-analyzer-security.insecureAPI.strcpy,
+    -clang-analyzer-security.insecureAPI.vfork,
+    -clang-analyzer-unix.API,
+    -clang-analyzer-unix.Malloc,
+    -clang-analyzer-unix.MallocSizeof,
+    -clang-analyzer-unix.MismatchedDeallocator,
+    -clang-analyzer-unix.StdCLibraryFunctions,
+    -clang-analyzer-unix.Vfork,
+    -clang-analyzer-unix.cstring.BadSizeArg,
+    -clang-analyzer-unix.cstring.NullArg,
+    -clang-analyzer-valist.CopyToSelf,
+    -clang-analyzer-valist.Uninitialized,
+    -clang-analyzer-valist.Unterminated,
+    -fuchsia-default-arguments,
+    -fuchsia-header-anon-namespaces,
+    -fuchsia-multiple-inheritance,
+    -fuchsia-overloaded-operator,
+    -fuchsia-restrict-system-includes,
+    -fuchsia-statically-constructed-objects,
+    -fuchsia-trailing-return,
+    -fuchsia-virtual-inheritance,
+    -google-build-explicit-make-pair,
+    -google-build-namespaces,
+    -google-build-using-namespace,
+    -google-default-arguments,
+    -google-explicit-constructor,
+    -google-global-names-in-headers,
+    -google-objc-avoid-throwing-exception,
+    -google-objc-global-variable-declaration,
+    -google-readability-braces-around-statements,
+    -google-readability-casting,
+    -google-readability-function-size,
+    -google-readability-todo,
+    -google-runtime-int,
+    -google-runtime-operator,
+    -google-runtime-references,
+    -llvm-header-guard,
+    -llvm-include-order,
+    -llvm-twine-local,
+    -misc-definitions-in-headers,
+    -misc-misplaced-const,
+    -misc-new-delete-overloads,
+    -misc-non-copyable-objects,
+    -misc-redundant-expression,
+    -misc-static-assert,
+    -misc-throw-by-value-catch-by-reference,
+    -misc-unconventional-assign-operator,
+    -misc-uniqueptr-reset-release,
+    -misc-unused-alias-decls,
+    -misc-unused-parameters,
+    -misc-unused-using-decls,
+    -mpi-buffer-deref,
+    -mpi-type-mismatch,
+    -objc-avoid-nserror-init,
+    -objc-avoid-spinlock,
+    -objc-forbidden-subclassing,
+    -objc-property-declaration,
+    -portability-simd-intrinsics,
+    -readability-avoid-const-params-in-decls,
+    -readability-braces-around-statements,
+    -readability-container-size-empty,
+    -readability-delete-null-pointer,
+    -readability-deleted-default,
+    -readability-else-after-return,
+    -readability-function-size,
+    -readability-identifier-naming,
+    -readability-implicit-bool-conversion,
+    -readability-inconsistent-declaration-parameter-name,
+    -readability-misleading-indentation,
+    -readability-misplaced-array-index,
+    -readability-named-parameter,
+    -readability-non-const-parameter,
+    -readability-redundant-control-flow,
+    -readability-redundant-declaration,
+    -readability-redundant-function-ptr-dereference,
+    -readability-redundant-member-init,
+    -readability-redundant-smartptr-get,
+    -readability-redundant-string-cstr,
+    -readability-redundant-string-init,
+    -readability-simplify-boolean-expr,
+    -readability-simplify-subscript-expr,
+    -readability-static-accessed-through-instance,
+    -readability-static-definition-in-anonymous-namespace,
+    -readability-uniqueptr-delete-release,
+    -zircon-temporary-objects
+
+CheckOptions:
+  - key:             abseil-string-find-startswith.AbseilStringsMatchHeader
+    value:           absl/strings/match.h
+  - key:             abseil-string-find-startswith.IncludeStyle
+    value:           llvm
+  - key:             abseil-string-find-startswith.StringLikeClasses
+    value:           '::std::basic_string'
+  - key:             bugprone-argument-comment.StrictMode
+    value:           '0'
+  - key:             bugprone-assert-side-effect.AssertMacros
+    value:           assert
+  - key:             bugprone-assert-side-effect.CheckFunctionCalls
+    value:           '0'
+  - key:             bugprone-dangling-handle.HandleClasses
+    value:           'std::basic_string_view;std::experimental::basic_string_view'
+  - key:             bugprone-exception-escape.FunctionsThatShouldNotThrow
+    value:           ''
+  - key:             bugprone-exception-escape.IgnoredExceptions
+    value:           ''
+  - key:             bugprone-misplaced-widening-cast.CheckImplicitCasts
+    value:           '0'
+  - key:             bugprone-sizeof-expression.WarnOnSizeOfCompareToConstant
+    value:           '1'
+  - key:             bugprone-sizeof-expression.WarnOnSizeOfConstant
+    value:           '1'
+  - key:             bugprone-sizeof-expression.WarnOnSizeOfIntegerExpression
+    value:           '0'
+  - key:             bugprone-sizeof-expression.WarnOnSizeOfThis
+    value:           '1'
+  - key:             bugprone-string-constructor.LargeLengthThreshold
+    value:           '8388608'
+  - key:             bugprone-string-constructor.WarnOnLargeLength
+    value:           '1'
+  - key:             bugprone-suspicious-enum-usage.StrictMode
+    value:           '0'
+  - key:             bugprone-suspicious-missing-comma.MaxConcatenatedTokens
+    value:           '5'
+  - key:             bugprone-suspicious-missing-comma.RatioThreshold
+    value:           '0.200000'
+  - key:             bugprone-suspicious-missing-comma.SizeThreshold
+    value:           '5'
+  - key:             bugprone-suspicious-string-compare.StringCompareLikeFunctions
+    value:           ''
+  - key:             bugprone-suspicious-string-compare.WarnOnImplicitComparison
+    value:           '1'
+  - key:             bugprone-suspicious-string-compare.WarnOnLogicalNotComparison
+    value:           '0'
+  - key:             bugprone-unused-return-value.CheckedFunctions
+    value:           '::std::async;::std::launder;::std::remove;::std::remove_if;::std::unique;::std::unique_ptr::release;::std::basic_string::empty;::std::vector::empty'
+  - key:             cert-dcl59-cpp.HeaderFileExtensions
+    value:           ',h,hh,hpp,hxx'
+  - key:             cert-err09-cpp.CheckThrowTemporaries
+    value:           '1'
+  - key:             cert-err61-cpp.CheckThrowTemporaries
+    value:           '1'
+  - key:             cert-msc32-c.DisallowedSeedTypes
+    value:           'time_t,std::time_t'
+  - key:             cert-msc51-cpp.DisallowedSeedTypes
+    value:           'time_t,std::time_t'
+  - key:             cert-oop11-cpp.IncludeStyle
+    value:           llvm
+  - key:             cppcoreguidelines-no-malloc.Allocations
+    value:           '::malloc;::calloc'
+  - key:             cppcoreguidelines-no-malloc.Deallocations
+    value:           '::free'
+  - key:             cppcoreguidelines-no-malloc.Reallocations
+    value:           '::realloc'
+  - key:             cppcoreguidelines-owning-memory.LegacyResourceConsumers
+    value:           '::free;::realloc;::freopen;::fclose'
+  - key:             cppcoreguidelines-owning-memory.LegacyResourceProducers
+    value:           '::malloc;::aligned_alloc;::realloc;::calloc;::fopen;::freopen;::tmpfile'
+  - key:             cppcoreguidelines-pro-bounds-constant-array-index.GslHeader
+    value:           ''
+  - key:             cppcoreguidelines-pro-bounds-constant-array-index.IncludeStyle
+    value:           '0'
+  - key:             cppcoreguidelines-pro-type-member-init.IgnoreArrays
+    value:           '0'
+  - key:             cppcoreguidelines-special-member-functions.AllowMissingMoveFunctions
+    value:           '0'
+  - key:             cppcoreguidelines-special-member-functions.AllowSoleDefaultDtor
+    value:           '0'
+  - key:             fuchsia-header-anon-namespaces.HeaderFileExtensions
+    value:           ',h,hh,hpp,hxx'
+  - key:             fuchsia-restrict-system-includes.Includes
+    value:           '*'
+  - key:             google-build-namespaces.HeaderFileExtensions
+    value:           ',h,hh,hpp,hxx'
+  - key:             google-global-names-in-headers.HeaderFileExtensions
+    value:           ',h,hh,hpp,hxx'
+  - key:             google-readability-braces-around-statements.ShortStatementLines
+    value:           '1'
+  - key:             google-readability-function-size.BranchThreshold
+    value:           '4294967295'
+  - key:             google-readability-function-size.LineThreshold
+    value:           '4294967295'
+  - key:             google-readability-function-size.NestingThreshold
+    value:           '4294967295'
+  - key:             google-readability-function-size.ParameterThreshold
+    value:           '4294967295'
+  - key:             google-readability-function-size.StatementThreshold
+    value:           '800'
+  - key:             google-readability-function-size.VariableThreshold
+    value:           '4294967295'
+  - key:             google-readability-namespace-comments.ShortNamespaceLines
+    value:           '10'
+  - key:             google-readability-namespace-comments.SpacesBeforeComments
+    value:           '2'
+  - key:             google-runtime-int.SignedTypePrefix
+    value:           int
+  - key:             google-runtime-int.TypeSuffix
+    value:           ''
+  - key:             google-runtime-int.UnsignedTypePrefix
+    value:           uint
+  - key:             google-runtime-references.WhiteListTypes
+    value:           ''
+  - key:             hicpp-braces-around-statements.ShortStatementLines
+    value:           '0'
+  - key:             hicpp-function-size.BranchThreshold
+    value:           '4294967295'
+  - key:             hicpp-function-size.LineThreshold
+    value:           '4294967295'
+  - key:             hicpp-function-size.NestingThreshold
+    value:           '4294967295'
+  - key:             hicpp-function-size.ParameterThreshold
+    value:           '4294967295'
+  - key:             hicpp-function-size.StatementThreshold
+    value:           '800'
+  - key:             hicpp-function-size.VariableThreshold
+    value:           '4294967295'
+  - key:             hicpp-member-init.IgnoreArrays
+    value:           '0'
+  - key:             hicpp-move-const-arg.CheckTriviallyCopyableMove
+    value:           '1'
+  - key:             hicpp-multiway-paths-covered.WarnOnMissingElse
+    value:           '0'
+  - key:             hicpp-named-parameter.IgnoreFailedSplit
+    value:           '0'
+  - key:             hicpp-no-malloc.Allocations
+    value:           '::malloc;::calloc'
+  - key:             hicpp-no-malloc.Deallocations
+    value:           '::free'
+  - key:             hicpp-no-malloc.Reallocations
+    value:           '::realloc'
+  - key:             hicpp-special-member-functions.AllowMissingMoveFunctions
+    value:           '0'
+  - key:             hicpp-special-member-functions.AllowSoleDefaultDtor
+    value:           '0'
+  - key:             hicpp-use-auto.MinTypeNameLength
+    value:           '5'
+  - key:             hicpp-use-auto.RemoveStars
+    value:           '0'
+  - key:             hicpp-use-emplace.ContainersWithPushBack
+    value:           '::std::vector;::std::list;::std::deque'
+  - key:             hicpp-use-emplace.SmartPointers
+    value:           '::std::shared_ptr;::std::unique_ptr;::std::auto_ptr;::std::weak_ptr'
+  - key:             hicpp-use-emplace.TupleMakeFunctions
+    value:           '::std::make_pair;::std::make_tuple'
+  - key:             hicpp-use-emplace.TupleTypes
+    value:           '::std::pair;::std::tuple'
+  - key:             hicpp-use-equals-default.IgnoreMacros
+    value:           '1'
+  - key:             hicpp-use-noexcept.ReplacementString
+    value:           ''
+  - key:             hicpp-use-noexcept.UseNoexceptFalse
+    value:           '1'
+  - key:             hicpp-use-nullptr.NullMacros
+    value:           ''
+  - key:             llvm-namespace-comment.ShortNamespaceLines
+    value:           '1'
+  - key:             llvm-namespace-comment.SpacesBeforeComments
+    value:           '1'
+  - key:             misc-definitions-in-headers.HeaderFileExtensions
+    value:           ',h,hh,hpp,hxx'
+  - key:             misc-definitions-in-headers.UseHeaderFileExtension
+    value:           '1'
+  - key:             misc-throw-by-value-catch-by-reference.CheckThrowTemporaries
+    value:           '1'
+  - key:             misc-unused-parameters.StrictMode
+    value:           '0'
+  - key:             modernize-loop-convert.MaxCopySize
+    value:           '16'
+  - key:             modernize-loop-convert.MinConfidence
+    value:           reasonable
+  - key:             modernize-loop-convert.NamingStyle
+    value:           CamelCase
+  - key:             modernize-make-shared.IgnoreMacros
+    value:           '1'
+  - key:             modernize-make-shared.IncludeStyle
+    value:           '0'
+  - key:             modernize-make-shared.MakeSmartPtrFunction
+    value:           'std::make_shared'
+  - key:             modernize-make-shared.MakeSmartPtrFunctionHeader
+    value:           memory
+  - key:             modernize-make-unique.IgnoreMacros
+    value:           '1'
+  - key:             modernize-make-unique.IncludeStyle
+    value:           '0'
+  - key:             modernize-make-unique.MakeSmartPtrFunction
+    value:           'std::make_unique'
+  - key:             modernize-make-unique.MakeSmartPtrFunctionHeader
+    value:           memory
+  - key:             modernize-pass-by-value.IncludeStyle
+    value:           llvm
+  - key:             modernize-pass-by-value.ValuesOnly
+    value:           '0'
+  - key:             modernize-raw-string-literal.ReplaceShorterLiterals
+    value:           '0'
+  - key:             modernize-replace-auto-ptr.IncludeStyle
+    value:           llvm
+  - key:             modernize-replace-random-shuffle.IncludeStyle
+    value:           llvm
+  - key:             modernize-use-auto.MinTypeNameLength
+    value:           '5'
+  - key:             modernize-use-auto.RemoveStars
+    value:           '0'
+  - key:             modernize-use-default-member-init.IgnoreMacros
+    value:           '1'
+  - key:             modernize-use-default-member-init.UseAssignment
+    value:           '0'
+  - key:             modernize-use-emplace.ContainersWithPushBack
+    value:           '::std::vector;::std::list;::std::deque'
+  - key:             modernize-use-emplace.SmartPointers
+    value:           '::std::shared_ptr;::std::unique_ptr;::std::auto_ptr;::std::weak_ptr'
+  - key:             modernize-use-emplace.TupleMakeFunctions
+    value:           '::std::make_pair;::std::make_tuple'
+  - key:             modernize-use-emplace.TupleTypes
+    value:           '::std::pair;::std::tuple'
+  - key:             modernize-use-equals-default.IgnoreMacros
+    value:           '1'
+  - key:             modernize-use-noexcept.ReplacementString
+    value:           ''
+  - key:             modernize-use-noexcept.UseNoexceptFalse
+    value:           '1'
+  - key:             modernize-use-nullptr.NullMacros
+    value:           'NULL'
+  - key:             modernize-use-transparent-functors.SafeMode
+    value:           '0'
+  - key:             modernize-use-using.IgnoreMacros
+    value:           '1'
+  - key:             objc-forbidden-subclassing.ForbiddenSuperClassNames
+    value:           'ABNewPersonViewController;ABPeoplePickerNavigationController;ABPersonViewController;ABUnknownPersonViewController;NSHashTable;NSMapTable;NSPointerArray;NSPointerFunctions;NSTimer;UIActionSheet;UIAlertView;UIImagePickerController;UITextInputMode;UIWebView'
+  - key:             objc-property-declaration.Acronyms
+    value:           ''
+  - key:             objc-property-declaration.IncludeDefaultAcronyms
+    value:           '1'
+  - key:             performance-faster-string-find.StringLikeClasses
+    value:           'std::basic_string'
+  - key:             performance-for-range-copy.WarnOnAllAutoCopies
+    value:           '0'
+  - key:             performance-inefficient-string-concatenation.StrictMode
+    value:           '0'
+  - key:             performance-inefficient-vector-operation.VectorLikeClasses
+    value:           '::std::vector'
+  - key:             performance-move-const-arg.CheckTriviallyCopyableMove
+    value:           '1'
+  - key:             performance-move-constructor-init.IncludeStyle
+    value:           llvm
+  - key:             performance-type-promotion-in-math-fn.IncludeStyle
+    value:           llvm
+  - key:             performance-unnecessary-value-param.IncludeStyle
+    value:           llvm
+  - key:             portability-simd-intrinsics.Std
+    value:           ''
+  - key:             portability-simd-intrinsics.Suggest
+    value:           '0'
+  - key:             readability-braces-around-statements.ShortStatementLines
+    value:           '0'
+  - key:             readability-function-size.BranchThreshold
+    value:           '4294967295'
+  - key:             readability-function-size.LineThreshold
+    value:           '4294967295'
+  - key:             readability-function-size.NestingThreshold
+    value:           '4294967295'
+  - key:             readability-function-size.ParameterThreshold
+    value:           '4294967295'
+  - key:             readability-function-size.StatementThreshold
+    value:           '800'
+  - key:             readability-function-size.VariableThreshold
+    value:           '4294967295'
+  - key:             readability-identifier-naming.IgnoreFailedSplit
+    value:           '0'
+  - key:             readability-implicit-bool-conversion.AllowIntegerConditions
+    value:           '0'
+  - key:             readability-implicit-bool-conversion.AllowPointerConditions
+    value:           '1'
+  - key:             readability-inconsistent-declaration-parameter-name.IgnoreMacros
+    value:           '1'
+  - key:             readability-inconsistent-declaration-parameter-name.Strict
+    value:           '0'
+  - key:             readability-simplify-boolean-expr.ChainedConditionalAssignment
+    value:           '0'
+  - key:             readability-simplify-boolean-expr.ChainedConditionalReturn
+    value:           '0'
+  - key:             readability-simplify-subscript-expr.Types
+    value:           '::std::basic_string;::std::basic_string_view;::std::vector;::std::array'
+  - key:             readability-static-accessed-through-instance.NameSpecifierNestingThreshold
+    value:           '3'
+  - key:             zircon-temporary-objects.Names
+    value:           ''
+
+WarningsAsErrors: ''
+HeaderFilterRegex: ''
+AnalyzeTemporaryDtors: false
+FormatStyle:     none

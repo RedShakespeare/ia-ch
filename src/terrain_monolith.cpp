@@ -94,4 +94,4 @@ void Monolith::activate()
                 ShockSrc::misc);
 }
 
-} // terrain
+}  // namespace terrain

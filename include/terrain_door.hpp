@@ -44,12 +44,12 @@ public:
              // NOTE: For gates, this should never be any "secret" variant
              DoorSpawnState spawn_state = DoorSpawnState::any);
 
-        Door(const P& terrain_pos) :
+        explicit Door(const P& terrain_pos) :
                 Terrain(terrain_pos) {}
 
         Door() = delete;
 
-        ~Door();
+        ~Door() override;
 
         Id id() const override
         {
@@ -167,6 +167,6 @@ private:
 
 }; // Door
 
-} // terrain
+}  // namespace terrain
 
 #endif // TERRAIN_DOOR_HPP

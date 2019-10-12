@@ -246,4 +246,4 @@ void update()
         }
 }
 
-} // minimap
+}  // namespace minimap

@@ -14,7 +14,7 @@
 namespace actor
 {
 class Actor;
-}
+} // namespace actor
 
 
 enum class InsSymptId
@@ -50,9 +50,9 @@ enum class InsSymptType
 class InsSympt
 {
 public:
-        InsSympt() {}
+        InsSympt() = default;
 
-        virtual ~InsSympt() {}
+        virtual ~InsSympt() = default;
 
         virtual InsSymptId id() const = 0;
 
@@ -1107,6 +1107,6 @@ void on_permanent_rfear();
 
 void end_sympt(const InsSymptId id);
 
-} //insanity
+} // namespace insanity
 
 #endif // INSANITY_HPP

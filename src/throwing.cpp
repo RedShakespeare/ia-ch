@@ -126,7 +126,7 @@ void throw_item(
         TRACE_FUNC_BEGIN;
 
         ThrowAttData att_data(
-                &actor_throwing,
+                actor_throwing,
                 tgt_pos,
                 actor_throwing.m_pos,
                 item_thrown);
@@ -209,10 +209,12 @@ void throw_item(
                     ((pos == tgt_pos) ||
                      (actor_here->m_data->actor_size >= actor::Size::humanoid)))
                 {
-                        att_data = ThrowAttData(&actor_throwing,
-                                                tgt_pos,
-                                                pos,
-                                                item_thrown);
+                        att_data =
+                                ThrowAttData(
+                                        actor_throwing,
+                                        tgt_pos,
+                                        pos,
+                                        item_thrown);
 
                         if (att_data.att_result >= ActionResult::success)
                         {
@@ -257,8 +259,9 @@ void throw_item(
                                                         actor_here->name_the())
                                                 : "An unseen creature";
 
-                                        msg_log::add(defender_name + " is hit.",
-                                                     colors::msg_good());
+                                        msg_log::add(
+                                                defender_name + " is hit.",
+                                                colors::msg_good());
                                 }
 
                                 if (att_data.dmg > 0)
@@ -461,4 +464,4 @@ void throw_item(
         TRACE_FUNC_END;
 }
 
-} // throwing
+}  // namespace throwing

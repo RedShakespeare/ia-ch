@@ -13,7 +13,7 @@
 namespace item
 {
 struct ItemData;
-}
+} // namespace item
 
 
 namespace rod
@@ -36,30 +36,30 @@ void load();
 class Rod: public item::Item
 {
 public:
-        Rod(item::ItemData* const item_data) :
+        explicit Rod(item::ItemData* const item_data) :
                 Item(item_data),
                 m_nr_charge_turns_left(0) {}
 
-        virtual ~Rod() {}
+        ~Rod() override = default;
 
-        void save_hook() const override final;
+        void save_hook() const final;
 
-        void load_hook() override final;
+        void load_hook() final;
 
-        ConsumeItem activate(actor::Actor* const actor) override final;
+        ConsumeItem activate(actor::Actor* const actor) final;
 
-        Color interface_color() const override final
+        Color interface_color() const final
         {
                 return colors::violet();
         }
 
-        std::string name_inf_str() const override final;
+        std::string name_inf_str() const final;
 
-        void on_std_turn_in_inv_hook(const InvType inv_type) override final;
+        void on_std_turn_in_inv_hook(const InvType inv_type) final;
 
-        std::vector<std::string> descr_hook() const override final;
+        std::vector<std::string> descr_hook() const final;
 
-        void identify(const Verbose verbose) override final;
+        void identify(const Verbose verbose) final;
 
         virtual const std::string real_name() const = 0;
 
@@ -82,10 +82,10 @@ private:
 class Curing : public Rod
 {
 public:
-        Curing(item::ItemData* const item_data) :
+        explicit Curing(item::ItemData* const item_data) :
                 Rod(item_data) {}
 
-        ~Curing() {}
+        ~Curing() override = default;
 
         const std::string real_name() const override
         {
@@ -108,10 +108,10 @@ protected:
 class Opening : public Rod
 {
 public:
-        Opening(item::ItemData* const item_data) :
+        explicit Opening(item::ItemData* const item_data) :
                 Rod(item_data) {}
 
-        ~Opening() {}
+        ~Opening() override = default;
 
         const std::string real_name() const override
         {
@@ -133,10 +133,10 @@ protected:
 class Bless : public Rod
 {
 public:
-        Bless(item::ItemData* const item_data) :
+        explicit Bless(item::ItemData* const item_data) :
                 Rod(item_data) {}
 
-        ~Bless() {}
+        ~Bless() override = default;
 
         const std::string real_name() const override
         {
@@ -157,10 +157,10 @@ protected:
 class CloudMinds : public Rod
 {
 public:
-        CloudMinds(item::ItemData* const item_data) :
+        explicit CloudMinds(item::ItemData* const item_data) :
                 Rod(item_data) {}
 
-        ~CloudMinds() {}
+        ~CloudMinds() override = default;
 
         const std::string real_name() const override
         {
@@ -176,7 +176,7 @@ protected:
                         "the presence of the user.";
         }
 
-        virtual int nr_turns_to_recharge() const override
+        int nr_turns_to_recharge() const override
         {
                 return 90;
         }
@@ -187,10 +187,10 @@ protected:
 class Shockwave : public Rod
 {
 public:
-        Shockwave(item::ItemData* const item_data) :
+        explicit Shockwave(item::ItemData* const item_data) :
                 Rod(item_data) {}
 
-        ~Shockwave() {}
+        ~Shockwave() override = default;
 
         const std::string real_name() const override
         {
@@ -209,6 +209,6 @@ protected:
         void run_effect() override;
 };
 
-} // rod
+}  // namespace rod
 
 #endif // ITEM_ROD_HPP

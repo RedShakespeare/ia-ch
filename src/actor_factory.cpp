@@ -238,4 +238,4 @@ MonSpawnResult spawn_random_position(
         return result;
 }
 
-} // actor
+}  // namespace actor

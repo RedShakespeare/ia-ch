@@ -204,7 +204,7 @@ static void get_positions_in_room_relative_to_walls(
 
                         if (t->is_walkable() && t->can_have_terrain())
                         {
-                                pos_bucket.push_back(P(x, y));
+                                pos_bucket.emplace_back(x, y);
                         }
                 }
         }
@@ -427,7 +427,7 @@ Room* make_random_room(const R& r, const IsSubRoom is_subroom)
                         // rooms)
                         room->m_is_sub_room = is_subroom == IsSubRoom::yes;
 
-                        StdRoom* const std_room = static_cast<StdRoom*>(room);
+                        auto* const std_room = static_cast<StdRoom*>(room);
 
                         if (std_room->is_allowed())
                         {
@@ -453,12 +453,12 @@ Room* make_random_room(const R& r, const IsSubRoom is_subroom)
         return room;
 }
 
-} // room_factory
+}  // namespace room_factory
 
 // -----------------------------------------------------------------------------
 // Room
 // -----------------------------------------------------------------------------
-Room::Room(R r, RoomType type) :
+Room::Room(const R& r, RoomType type) :
         m_r(r),
         m_type(type),
         m_is_sub_room(false) {}
@@ -475,7 +475,7 @@ std::vector<P> Room::positions_in_room() const
                 {
                         if (map::g_room_map.at(x, y) == this)
                         {
-                                positions.push_back(P(x, y));
+                                positions.emplace_back(x, y);
                         }
                 }
         }
@@ -744,8 +744,8 @@ std::vector<RoomAutoTerrainRule> HumanRoom::auto_terrains_allowed() const
 {
         std::vector<RoomAutoTerrainRule> result;
 
-        result.push_back({terrain::Id::brazier,   rnd::range(0, 2)});
-        result.push_back({terrain::Id::statue,    rnd::range(0, 2)});
+        result.emplace_back(terrain::Id::brazier,   rnd::range(0, 2));
+        result.emplace_back(terrain::Id::statue,    rnd::range(0, 2));
 
         // Control how many item container terrains that can spawn in the room
         std::vector<terrain::Id> item_containers = {
@@ -759,7 +759,7 @@ std::vector<RoomAutoTerrainRule> HumanRoom::auto_terrains_allowed() const
 
         for (int i = 0; i < nr_item_containers; ++i)
         {
-                result.push_back({rnd::element(item_containers), 1});
+                result.emplace_back(rnd::element(item_containers), 1);
         }
 
         return result;
@@ -916,8 +916,7 @@ void RitualRoom::on_post_connect_hook(Array2<bool>& door_proposals)
                                 {
                                         if (!blocked.at(x, y))
                                         {
-                                                origin_bucket.push_back(
-                                                        P(x, y));
+                                                origin_bucket.emplace_back(x, y);
                                         }
                                 }
                         }
@@ -1057,10 +1056,8 @@ void SnakePitRoom::populate_monsters() const
 {
         std::vector<actor::Id> actor_id_bucket;
 
-        for (size_t i = 0; i < (size_t)actor::Id::END; ++i)
+        for (const auto& d : actor::g_data)
         {
-                const auto& d = actor::g_data[i];
-
                 // NOTE: We do not allow Spitting Cobras in snake pits, because
                 // it's VERY tedious to fight swarms of them (attack, get
                 // blinded, back away, repeat...)
@@ -1099,7 +1096,7 @@ void SnakePitRoom::populate_monsters() const
                                 if (!blocked.at(x, y) &&
                                     (map::g_room_map.at(x, y) == this))
                                 {
-                                        origin_bucket.push_back(P(x, y));
+                                        origin_bucket.emplace_back(x, y);
                                 }
                         }
                 }
@@ -1396,7 +1393,7 @@ void PoolRoom::on_post_connect_hook(Array2<bool>& door_proposals)
 
                         if (map::g_room_map.at(x, y) == this)
                         {
-                                origin_bucket.push_back(P(x, y));
+                                origin_bucket.emplace_back(x, y);
                         }
                         else
                         {

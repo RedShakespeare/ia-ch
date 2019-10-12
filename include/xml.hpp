@@ -13,8 +13,8 @@
 namespace xml
 {
 
-typedef tinyxml2::XMLDocument Doc;
-typedef tinyxml2::XMLElement Element;
+using Doc = tinyxml2::XMLDocument;
+using Element = tinyxml2::XMLElement;
 
 void load_file(const std::string& path, Doc& to_doc);
 
@@ -48,6 +48,6 @@ bool try_get_attribute_bool(const Element* const e,
                             const std::string name,
                             bool& result);
 
-} // xml
+}  // namespace xml
 
 #endif // XML_HPP

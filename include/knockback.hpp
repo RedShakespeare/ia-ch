@@ -13,7 +13,7 @@
 namespace actor
 {
 class Actor;
-}
+} // namespace actor
 
 struct P;
 
@@ -28,6 +28,6 @@ void run(
         const Verbose verbose = Verbose::yes,
         const int paralyze_extra_turns = 0);
 
-} // knockback
+}  // namespace knockback
 
 #endif // KNOCKBACK_HPP

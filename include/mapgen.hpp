@@ -17,21 +17,21 @@ class Room;
 struct Region
 {
 public:
-        Region(const R& rect) :
+        explicit Region(const R& rect) :
                 main_room(nullptr),
-                r(rect),
-                is_free(true) {}
+                r(rect)
+                {}
 
         Region() :
-                main_room(nullptr),
-                r(),
-                is_free(true) {}
+                
+                r()
+                {}
 
         R rnd_room_rect() const;
 
-        Room* main_room;
+        Room* main_room{nullptr};
         R r;
-        bool is_free;
+        bool is_free{true};
 };
 
 namespace mapgen
@@ -120,7 +120,7 @@ void make_pathfind_corridor(
 std::vector<P> rnd_walk(
         const P& p0,
         int len,
-        R area,
+        const R& area,
         const bool allow_diagonal = true);
 
 std::vector<P> pathfinder_walk(
@@ -143,6 +143,6 @@ P make_stairs_at_random_pos();
 
 void reveal_doors_on_path_to_stairs(const P& stairs_pos);
 
-} // mapgen
+}  // namespace mapgen
 
 #endif // MAPBUILD_HPP

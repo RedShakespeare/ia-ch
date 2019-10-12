@@ -13,12 +13,12 @@
 namespace item
 {
 class Wpn;
-}
+} // namespace item
 
 namespace actor
 {
 class Actor;
-}
+} // namespace actor
 
 struct P;
 
@@ -44,6 +44,6 @@ void ranged_hit_chance(
         const actor::Actor& defender,
         const item::Wpn& wpn);
 
-} // attack
+} // namespace attack
 
 #endif // ATTACK_HPP

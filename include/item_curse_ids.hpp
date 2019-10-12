@@ -25,6 +25,6 @@ enum class Id
         END
 };
 
-} // item_curse
+} // namespace item_curse
 
 #endif // ITEM_CURSE_IDS_HPP

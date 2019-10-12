@@ -12,15 +12,14 @@
 struct P
 {
 public:
-        P() {}
+        P() = default;
 
         P(const int x_val, const int y_val) :
                 x(x_val),
                 y(y_val) {}
 
-        P(const P& p) :
-                x(p.x),
-                y(p.y) {}
+        P(const P& p) 
+                = default;
 
         // Construct from a direction -> offsets (e.g. 1, -1)
         explicit P(const Dir dir);
@@ -191,7 +190,7 @@ public:
                 set(tmp);
         }
 
-        bool is_adjacent(const P p)
+        bool is_adjacent(const P& p)
         {
                 // Do not count the same position as adjacent
                 if (p == *this)
@@ -216,15 +215,14 @@ public:
 
 struct PosVal
 {
-        PosVal() {}
+        PosVal() = default;
 
-        PosVal(const P pos_, const int val_) :
+        PosVal(const P& pos_, const int val_) :
                 pos(pos_),
                 val(val_) {}
 
-        PosVal(const PosVal& o) :
-                pos(o.pos),
-                val(o.val) {}
+        PosVal(const PosVal& o) 
+                = default;
 
         P pos {0, 0};
         int val {-1};

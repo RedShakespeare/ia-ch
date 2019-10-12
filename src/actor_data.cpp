@@ -8,7 +8,7 @@
 
 #include <string>
 #include <vector>
-#include <math.h>
+#include <cmath>
 #include <unordered_map>
 
 #include "colors.hpp"
@@ -480,7 +480,7 @@ static void dump_group_size(xml::Element* group_e, actor::ActorData& data)
 
         xml::try_get_attribute_int(group_e, "weight", weight);
 
-        data.group_sizes.push_back({group_size, weight});
+        data.group_sizes.emplace_back(group_size, weight);
 }
 
 static void dump_native_room(
@@ -656,16 +656,16 @@ void ActorData::reset()
         spi = 0;
         speed = Speed::normal;
 
-        for (size_t i = 0; i < (size_t)PropId::END; ++i)
+        for (auto& prop : natural_props)
         {
-                natural_props[i] = false;
+                prop = false;
         }
 
         ability_values.reset();
 
-        for (size_t i = 0; i < (size_t)AiId::END; ++i)
+        for (auto& ai_type : ai)
         {
-                ai[i] = false;
+                ai_type = false;
         }
 
         ai[(size_t)AiId::moves_randomly_when_unaware] = true;
@@ -728,10 +728,8 @@ void init()
 
 void save()
 {
-        for (int i = 0; i < (int)Id::END; ++i)
+        for (const auto& d : g_data)
         {
-                const auto& d = g_data[i];
-
                 saving::put_int(d.nr_left_allowed_to_spawn);
                 saving::put_int(d.nr_kills);
                 saving::put_bool(d.has_player_seen);
@@ -740,14 +738,12 @@ void save()
 
 void load()
 {
-        for (int i = 0; i < (int)Id::END; ++i)
+        for (auto& d : g_data)
         {
-                auto& d = g_data[i];
-
                 d.nr_left_allowed_to_spawn = saving::get_int();
                 d.nr_kills = saving::get_int();
                 d.has_player_seen = saving::get_bool();
         }
 }
 
-} // actor
+}  // namespace actor

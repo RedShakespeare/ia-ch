@@ -14,7 +14,7 @@
 namespace item
 {
 enum class Id;
-}
+} // namespace item
 
 enum class SpellId;
 
@@ -81,7 +81,7 @@ void on_player_turn();
 class Benefit
 {
 public:
-        virtual ~Benefit() {}
+        virtual ~Benefit() = default;
 
         virtual BenefitId id() const = 0;
 
@@ -97,7 +97,7 @@ class Toll
 public:
         Toll();
 
-        virtual ~Toll() {}
+        virtual ~Toll() = default;
 
         void on_player_reached_new_dlvl();
 
@@ -145,7 +145,7 @@ public:
 private:
         std::vector<SpellId> find_spells_can_upgrade() const;
 
-        SpellId m_spell_id;
+        SpellId m_spell_id{SpellId::END};
 };
 
 class GainHp : public Benefit
@@ -227,7 +227,7 @@ public:
 private:
         std::vector<item::Id> find_allowed_item_ids() const;
 
-        item::Id m_item_id;
+        item::Id m_item_id{item::Id::END};
 };
 
 // class RechargeItem : public Benefit
@@ -417,4 +417,4 @@ public:
         void run_effect() override;
 };
 
-} // pact
+}  // namespace pact

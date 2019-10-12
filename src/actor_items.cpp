@@ -463,6 +463,11 @@ static void make_item_set_firearm(actor::Actor& actor)
                 inv.put_in_slot(SlotId::wpn, item, Verbose::no);
         }
         break;
+
+        default:
+        {
+                ASSERT(false);
+        }
         }
 }
 
@@ -686,4 +691,4 @@ void make_for_actor(actor::Actor& actor)
         }
 }
 
-} // actor_items
+}  // namespace actor_items

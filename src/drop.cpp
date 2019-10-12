@@ -261,4 +261,4 @@ item::Item* drop_item_on_map(const P& intended_pos, item::Item& item)
         return nullptr;
 }
 
-} // item_drop
+}  // namespace item_drop

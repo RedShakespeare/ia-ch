@@ -131,4 +131,4 @@ void make_items_on_floor()
         }
 }
 
-} // populate_items
+}  // namespace populate_items

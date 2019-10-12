@@ -760,7 +760,7 @@ void Armor::hit(const int dmg)
         const int ap_before = armor_points();
 
         // Damage factor
-        const double dmg_db = double(dmg);
+        const auto dmg_db = (double)dmg;
 
         // Armor durability factor
         const double df = m_data->armor.dmg_to_durability_factor;
@@ -1446,7 +1446,7 @@ void MedicalBag::finish_current_action()
 
                 ASSERT(wound_prop);
 
-                PropWound* const wound = static_cast<PropWound*>(wound_prop);
+                auto* const wound = static_cast<PropWound*>(wound_prop);
 
                 wound->heal_one_wound();
         }
@@ -1929,4 +1929,4 @@ Color SmokeGrenade::ignited_projectile_color() const
         return data().color;
 }
 
-} // item
+}  // namespace item

@@ -14,19 +14,16 @@
 
 struct ItemAttProp
 {
-        ItemAttProp() :
-                prop(nullptr),
-                pct_chance_to_apply(100) {}
+        ItemAttProp() = default;
 
-        ItemAttProp(Prop* const property) :
-                prop(property),
-                pct_chance_to_apply(100) {}
+        explicit ItemAttProp(Prop* const property) :
+                prop(property) {}
 
-        ~ItemAttProp() {}
+        ~ItemAttProp() = default;
 
-        std::shared_ptr<Prop> prop;
+        std::shared_ptr<Prop> prop {nullptr};
 
-        int pct_chance_to_apply;
+        int pct_chance_to_apply {100};
 };
 
 #endif // ITEM_ATT_PROPERTY_HPP

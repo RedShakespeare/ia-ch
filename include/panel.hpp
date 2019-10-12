@@ -59,6 +59,6 @@ int center_y(const Panel panel);
 
 P center(const Panel panel);
 
-} // panels
+} // namespace panels
 
 #endif // PANEL_HPP

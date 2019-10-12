@@ -15,7 +15,7 @@
 class PostmortemMenu: public State
 {
 public:
-        PostmortemMenu(const IsWin is_win);
+        explicit PostmortemMenu(const IsWin is_win);
 
         void on_start() override;
 
@@ -28,7 +28,7 @@ public:
         StateId id() override;
 
 private:
-        void make_memorial_file(const std::string path) const;
+        void make_memorial_file(const std::string& path) const;
 
         MenuBrowser m_browser;
 
@@ -41,8 +41,8 @@ class PostmortemInfo: public InfoScreenState
 {
 public:
         PostmortemInfo() :
-                InfoScreenState(),
-                m_top_idx(0) {}
+                InfoScreenState()
+                {}
 
         void draw() override;
 
@@ -61,7 +61,7 @@ private:
                 return InfoScreenType::scrolling;
         }
 
-        int m_top_idx;
+        int m_top_idx{0};
 };
 
 #endif // POSTMORTEM_HPP

@@ -29,6 +29,6 @@ const std::vector<P>* fov_delta_line(
         const P& delta,
         const double& max_dist_abs);
 
-} // line_calc
+}  // namespace line_calc
 
 #endif // LINE_CALC_HPP

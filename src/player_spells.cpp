@@ -111,9 +111,9 @@ void cleanup()
 
         s_learned_spells.clear();
 
-        for (size_t i = 0; i < (size_t)SpellId::END; ++i)
+        for (auto& skill : s_spell_skills)
         {
-                s_spell_skills[i] = (SpellSkill)0;
+                skill = (SpellSkill)0;
         }
 }
 
@@ -126,9 +126,9 @@ void save()
                 saving::put_int((int)s->id());
         }
 
-        for (size_t i = 0; i < (size_t)SpellId::END; ++i)
+        for (auto& skill : s_spell_skills)
         {
-                saving::put_int((int)s_spell_skills[i]);
+                saving::put_int((int)skill);
         }
 }
 
@@ -138,15 +138,15 @@ void load()
 
         for (int i = 0; i < nr_spells; ++i)
         {
-                const SpellId id = (SpellId)saving::get_int();
+                const auto id = (SpellId)saving::get_int();
 
                 s_learned_spells.push_back(
                         spell_factory::make_spell_from_id(id));
         }
 
-        for (size_t i = 0; i < (size_t)SpellId::END; ++i)
+        for (auto& skill : s_spell_skills)
         {
-                s_spell_skills[i] = (SpellSkill)saving::get_int();
+                skill = (SpellSkill)saving::get_int();
         }
 }
 
@@ -290,7 +290,7 @@ void set_spell_skill(const SpellId id, const SpellSkill val)
 
 bool is_player_adj_to_altar()
 {
-        for (const auto d : dir_utils::g_dir_list)
+        for (const auto& d : dir_utils::g_dir_list)
         {
                 const auto p = map::g_player->m_pos + d;
 
@@ -303,7 +303,7 @@ bool is_player_adj_to_altar()
         return false;
 }
 
-} // player_spells
+}  // namespace player_spells
 
 // -----------------------------------------------------------------------------
 // BrowseSpell
@@ -467,12 +467,13 @@ void BrowseSpell::draw()
 
                         std::vector<ColoredString> lines;
 
+                        lines.reserve(descr.size());
+
                         for (const auto& line : descr)
                         {
-                                lines.push_back(
-                                        ColoredString(
+                                lines.emplace_back(
                                                 line,
-                                                colors::light_white()));
+                                                colors::light_white());
                         }
 
                         if (!lines.empty())

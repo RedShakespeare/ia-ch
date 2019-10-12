@@ -9,6 +9,7 @@
 #include <algorithm>
 #include <iostream>
 #include <fstream>
+#include <utility>
 #include <vector>
 
 #include "actor_player.hpp"
@@ -58,7 +59,7 @@ static void write_file(std::vector<HighscoreEntry>& entries)
 
         f.open(paths::highscores_file_path(), std::ios::trunc);
 
-        for (const auto entry : entries)
+        for (const auto& entry : entries)
         {
                 const std::string win_str =
                         (entry.is_win == IsWin::yes) ?
@@ -155,11 +156,11 @@ static std::vector<HighscoreEntry> read_highscores_file()
 // -----------------------------------------------------------------------------
 int HighscoreEntry::calculate_score() const
 {
-        const double xp_db = (double)xp;
-        const double dlvl_db = (double)dlvl;
-        const double dlvl_last_db = (double)g_dlvl_last;
-        const double turns_db = (double)turn_count;
-        const double ins_db = (double)ins;
+        const auto xp_db = (double)xp;
+        const auto dlvl_db = (double)dlvl;
+        const auto dlvl_last_db = (double)g_dlvl_last;
+        const auto turns_db = (double)turn_count;
+        const auto ins_db = (double)ins;
         const bool win = (is_win == IsWin::yes);
 
         auto calc_turns_factor = [](const double nr_turns_db) {
@@ -208,7 +209,7 @@ void cleanup()
 }
 
 HighscoreEntry make_entry_from_current_game_data(
-        const std::string game_summary_file_path,
+        const std::string& game_summary_file_path,
         const IsWin is_win)
 {
         HighscoreEntry e;
@@ -262,7 +263,7 @@ std::vector<HighscoreEntry> entries_sorted()
         return entries;
 }
 
-} // highscore
+}  // namespace highscore
 
 // -----------------------------------------------------------------------------
 // Browse highscore
@@ -475,9 +476,9 @@ void BrowseHighscore::update()
 // -----------------------------------------------------------------------------
 // Browse highscore entry game summary file
 // -----------------------------------------------------------------------------
-BrowseHighscoreEntry::BrowseHighscoreEntry(const std::string& file_path) :
+BrowseHighscoreEntry::BrowseHighscoreEntry(std::string  file_path) :
         InfoScreenState(),
-        m_file_path(file_path),
+        m_file_path(std::move(file_path)),
         m_lines(),
         m_top_idx(0) {}
 

@@ -445,4 +445,4 @@ void move(Actor& actor, const Dir dir)
         }
 }
 
-} // actor
+}  // namespace actor

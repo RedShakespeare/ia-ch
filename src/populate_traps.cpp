@@ -201,4 +201,4 @@ void populate_std_lvl()
         TRACE_FUNC_END;
 }
 
-} // populate_traps
+}  // namespace populate_traps

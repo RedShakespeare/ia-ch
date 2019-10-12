@@ -15,8 +15,8 @@ class CharacterDescr: public InfoScreenState
 {
 public:
         CharacterDescr() :
-                InfoScreenState(),
-                m_top_idx(0) {}
+                InfoScreenState()
+                {}
 
         void on_start() override;
 
@@ -39,7 +39,7 @@ private:
 
         std::vector<ColoredString> m_lines;
 
-        int m_top_idx;
+        int m_top_idx{0};
 };
 
 #endif // CHARACTER_DESCR_HPP

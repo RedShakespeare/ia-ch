@@ -115,7 +115,7 @@ int range_binom(const int v1, const int v2, const double p);
 
 bool percent(const int pct_chance);
 
-int weighted_choice(const std::vector<int> weights);
+int weighted_choice(const std::vector<int>& weights);
 
 template <typename T>
 T weighted_choice(const WeightedItems<T>& weighted_items)
@@ -149,6 +149,6 @@ void shuffle(std::vector<T>& v)
         std::shuffle(std::begin(v), std::end(v), g_rng);
 }
 
-} // rnd
+}  // namespace rnd
 
 #endif // RANDOM_HPP

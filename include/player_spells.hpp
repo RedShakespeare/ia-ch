@@ -40,7 +40,7 @@ bool is_spell_learned(const SpellId id);
 
 bool is_player_adj_to_altar();
 
-} // player_spells
+}  // namespace player_spells
 
 class BrowseSpell: public State
 {

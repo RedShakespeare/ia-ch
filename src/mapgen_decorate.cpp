@@ -285,4 +285,4 @@ void decorate()
         make_grates();
 }
 
-} // mapgen
+}  // namespace mapgen

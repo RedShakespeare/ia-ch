@@ -383,6 +383,10 @@ void Terrain::try_put_gore()
                 case 4:
                         m_gore_character = ';';
                         break;
+
+                default:
+                        ASSERT(false);
+                        break;
                 }
         }
 
@@ -420,6 +424,10 @@ void Terrain::try_put_gore()
 
         case 8:
                 m_gore_tile = TileId::gore8;
+                break;
+
+        default:
+                ASSERT(false);
                 break;
         }
 }
@@ -813,18 +821,10 @@ TileId Wall::top_wall_tile() const
 
 void Wall::set_rnd_common_wall()
 {
-        const int rnd = rnd::range(1, 6);
-
-        switch (rnd)
-        {
-        case 1:
-                m_type = WallType::common_alt;
-                break;
-
-        default:
-                m_type = WallType::common;
-                break;
-        }
+        m_type =
+                rnd::one_in(6)
+                ? WallType::common_alt
+                : WallType::common;
 }
 
 void Wall::set_moss_grown()
@@ -2010,7 +2010,7 @@ void Carpet::on_hit(
 
 WasDestroyed Carpet::on_finished_burning()
 {
-        Floor* const floor = new Floor(m_pos);
+        auto* const floor = new Floor(m_pos);
 
         floor->m_burn_state = BurnState::has_burned;
 
@@ -2148,7 +2148,7 @@ void Bush::on_hit(
 
 WasDestroyed Bush::on_finished_burning()
 {
-        Grass* const grass = new Grass(m_pos);
+        auto* const grass = new Grass(m_pos);
 
         grass->m_burn_state = BurnState::has_burned;
 
@@ -2227,7 +2227,7 @@ void Vines::on_hit(
 
 WasDestroyed Vines::on_finished_burning()
 {
-        Floor* const floor = new Floor(m_pos);
+        auto* const floor = new Floor(m_pos);
 
         floor->m_burn_state = BurnState::has_burned;
 
@@ -2464,7 +2464,7 @@ WasDestroyed Tree::on_finished_burning()
 {
         if (map::is_pos_inside_outer_walls(m_pos))
         {
-                Grass* const grass = new Grass(m_pos);
+                auto* const grass = new Grass(m_pos);
 
                 grass->m_burn_state = BurnState::has_burned;
 
@@ -2806,15 +2806,21 @@ void ItemContainer::open(
                                 ASSERT(wpn->m_ammo_loaded > 0);
                                 ASSERT(!data.ranged.has_infinite_ammo);
 
-                                audio::play(SfxId::pickup);
+                                if (wpn)
+                                {
+                                        audio::play(SfxId::pickup);
 
-                                auto* const spawned_ammo =
-                                        item_pickup::unload_ranged_wpn(*wpn);
+                                        auto* const spawned_ammo =
+                                                item_pickup::unload_ranged_wpn(
+                                                        *wpn);
 
-                                map::g_player->m_inv.put_in_backpack(
-                                        spawned_ammo);
+                                        map::g_player->m_inv.put_in_backpack(
+                                                spawned_ammo);
 
-                                item_drop::drop_item_on_map(terrain_pos, *wpn);
+                                        item_drop::drop_item_on_map(
+                                                terrain_pos,
+                                                *wpn);
+                                }
                         }
 
                         msg_log::more_prompt();
@@ -3687,6 +3693,12 @@ Fountain::Fountain(const P& p) :
                 m_fountain_effect = (FountainEffect)rnd::range(min, max);
         }
         break;
+
+        default:
+        {
+                ASSERT(false);
+        }
+        break;
         }
 }
 
@@ -4533,10 +4545,8 @@ DidTriggerTrap Cocoon::trigger_trap(actor::Actor* const actor)
                         TRACE << "Attempting to spawn spiders" << std::endl;
                         std::vector<actor::Id> spawn_bucket;
 
-                        for (int i = 0; i < (int)actor::Id::END; ++i)
+                        for (const auto& d : actor::g_data)
                         {
-                                const auto& d = actor::g_data[i];
-
                                 if (d.is_spider &&
                                     d.actor_size == actor::Size::floor &&
                                     d.is_auto_spawn_allowed &&
@@ -4638,4 +4648,4 @@ Color Cocoon::color_default() const
         return colors::white();
 }
 
-} // terrain
+}  // namespace terrain

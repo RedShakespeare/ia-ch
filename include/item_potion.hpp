@@ -32,32 +32,32 @@ void load();
 class Potion: public item::Item
 {
 public:
-        Potion(item::ItemData* const item_data);
+        explicit Potion(item::ItemData* const item_data);
 
-        virtual ~Potion() {}
+        ~Potion() override = default;
 
         void save_hook() const override;
 
         void load_hook() override;
 
-        Color interface_color() const override final
+        Color interface_color() const final
         {
                 return colors::light_blue();
         }
 
-        std::string name_inf_str() const override final;
+        std::string name_inf_str() const final;
 
-        ConsumeItem activate(actor::Actor* const actor) override final;
+        ConsumeItem activate(actor::Actor* const actor) final;
 
-        std::vector<std::string> descr_hook() const override final;
+        std::vector<std::string> descr_hook() const final;
 
-        void on_player_reached_new_dlvl_hook() override final;
+        void on_player_reached_new_dlvl_hook() final;
 
         void on_actor_turn_in_inv_hook(const InvType inv_type) override;
 
         void on_collide(const P& pos, actor::Actor* actor);
 
-        void identify(const Verbose verbose) override final;
+        void identify(const Verbose verbose) final;
 
         virtual const std::string real_name() const = 0;
 
@@ -80,9 +80,9 @@ private:
 class Vitality: public Potion
 {
 public:
-        Vitality(item::ItemData* const item_data) :
+        explicit Vitality(item::ItemData* const item_data) :
                 Potion(item_data) {}
-        ~Vitality() {}
+        ~Vitality() override = default;
 
         void quaff_impl(actor::Actor& actor) override;
 
@@ -112,9 +112,9 @@ private:
 class Spirit: public Potion
 {
 public:
-        Spirit(item::ItemData* const item_data) :
+        explicit Spirit(item::ItemData* const item_data) :
                 Potion(item_data) {}
-        ~Spirit() {}
+        ~Spirit() override = default;
 
         void quaff_impl(actor::Actor& actor) override;
 
@@ -140,9 +140,9 @@ private:
 class Blindness: public Potion
 {
 public:
-        Blindness(item::ItemData* const item_data) :
+        explicit Blindness(item::ItemData* const item_data) :
                 Potion(item_data) {}
-        ~Blindness() {}
+        ~Blindness() override = default;
 
         void quaff_impl(actor::Actor& actor) override;
 
@@ -168,9 +168,9 @@ private:
 class Paral: public Potion
 {
 public:
-        Paral(item::ItemData* const item_data) :
+        explicit Paral(item::ItemData* const item_data) :
                 Potion(item_data) {}
-        ~Paral() {}
+        ~Paral() override = default;
 
         void quaff_impl(actor::Actor& actor) override;
 
@@ -196,9 +196,9 @@ private:
 class Disease: public Potion
 {
 public:
-        Disease(item::ItemData* const item_data) :
+        explicit Disease(item::ItemData* const item_data) :
                 Potion(item_data) {}
-        ~Disease() {}
+        ~Disease() override = default;
 
         void quaff_impl(actor::Actor& actor) override;
 
@@ -228,9 +228,9 @@ private:
 class Conf: public Potion
 {
 public:
-        Conf(item::ItemData* const item_data) :
+        explicit Conf(item::ItemData* const item_data) :
                 Potion(item_data) {}
-        ~Conf() {}
+        ~Conf() override = default;
         void quaff_impl(actor::Actor& actor) override;
 
         const std::string real_name() const override
@@ -255,10 +255,10 @@ private:
 class Fortitude: public Potion
 {
 public:
-        Fortitude(item::ItemData* const item_data) :
+        explicit Fortitude(item::ItemData* const item_data) :
                 Potion(item_data) {}
 
-        ~Fortitude() {}
+        ~Fortitude() override = default;
 
         void quaff_impl(actor::Actor& actor) override;
 
@@ -286,9 +286,9 @@ private:
 class Poison: public Potion
 {
 public:
-        Poison(item::ItemData* const item_data) :
+        explicit Poison(item::ItemData* const item_data) :
                 Potion(item_data) {}
-        ~Poison() {}
+        ~Poison() override = default;
 
         void quaff_impl(actor::Actor& actor) override;
 
@@ -314,9 +314,9 @@ private:
 class Insight: public Potion
 {
 public:
-        Insight(item::ItemData* const item_data) :
+        explicit Insight(item::ItemData* const item_data) :
                 Potion(item_data) {}
-        ~Insight() {}
+        ~Insight() override = default;
 
         void quaff_impl(actor::Actor& actor) override;
 
@@ -349,9 +349,9 @@ private:
 class RFire: public Potion
 {
 public:
-        RFire(item::ItemData* const item_data) :
+        explicit RFire(item::ItemData* const item_data) :
                 Potion(item_data) {}
-        ~RFire() {}
+        ~RFire() override = default;
 
         void quaff_impl(actor::Actor& actor) override;
 
@@ -377,9 +377,9 @@ private:
 class Curing: public Potion
 {
 public:
-        Curing(item::ItemData* const item_data) :
+        explicit Curing(item::ItemData* const item_data) :
                 Potion(item_data) {}
-        ~Curing() {}
+        ~Curing() override = default;
 
         void quaff_impl(actor::Actor& actor) override;
 
@@ -408,9 +408,9 @@ private:
 class RElec: public Potion
 {
 public:
-        RElec(item::ItemData* const item_data) :
+        explicit RElec(item::ItemData* const item_data) :
                 Potion(item_data) {}
-        ~RElec() {}
+        ~RElec() override = default;
 
         void quaff_impl(actor::Actor& actor) override;
 
@@ -436,9 +436,9 @@ private:
 class Descent: public Potion
 {
 public:
-        Descent(item::ItemData* const item_data) :
+        explicit Descent(item::ItemData* const item_data) :
                 Potion(item_data) {}
-        ~Descent() {}
+        ~Descent() override = default;
 
         void quaff_impl(actor::Actor& actor) override;
 
@@ -471,9 +471,9 @@ private:
 class Invis: public Potion
 {
 public:
-        Invis(item::ItemData* const item_data) :
+        explicit Invis(item::ItemData* const item_data) :
                 Potion(item_data) {}
-        ~Invis() {}
+        ~Invis() override = default;
 
         void quaff_impl(actor::Actor& actor) override;
 
@@ -499,6 +499,6 @@ private:
         void collide_hook(const P& pos, actor::Actor* const actor) override;
 };
 
-} // potion
+}  // namespace potion
 
 #endif // ITEM_POTION_HPP

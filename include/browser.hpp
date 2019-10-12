@@ -43,12 +43,12 @@ const std::vector<char> std_menu_keys =
 class MenuBrowser
 {
 public:
-        MenuBrowser(const int nr_items, const int list_h = - 1)
+        explicit MenuBrowser(const int nr_items, const int list_h = - 1)
         {
                 reset(nr_items, list_h);
         }
 
-        MenuBrowser() {}
+        MenuBrowser() = default;
 
         MenuBrowser& operator=(const MenuBrowser&) = default;
 

@@ -107,9 +107,9 @@ void init()
 
         s_current_occultist_domain = OccultistDomain::END;
 
-        for (size_t i = 0; i < (size_t)Trait::END; ++i)
+        for (bool& trait : s_traits)
         {
-                s_traits[i] = false;
+                trait = false;
         }
 
         s_trait_log.clear();
@@ -121,9 +121,9 @@ void save()
 
         saving::put_int((int)s_current_occultist_domain);
 
-        for (size_t i = 0; i < (size_t)Trait::END; ++i)
+        for (const bool trait : s_traits)
         {
-                saving::put_bool(s_traits[i]);
+                saving::put_bool(trait);
         }
 
         saving::put_int(s_trait_log.size());
@@ -142,9 +142,9 @@ void load()
 
         s_current_occultist_domain = (OccultistDomain)saving::get_int();
 
-        for (size_t i = 0; i < (size_t)Trait::END; ++i)
+        for (bool& trait : s_traits)
         {
-                s_traits[i] = saving::get_bool();
+                trait = saving::get_bool();
         }
 
         const int nr_trait_log_entries = saving::get_int();
@@ -372,12 +372,12 @@ std::vector<ColoredString> bg_descr(const Bg id)
         std::vector<ColoredString> descr;
 
         auto put = [&descr](const std::string& str) {
-                descr.push_back({str, colors::white()});
+                descr.emplace_back(str, colors::white());
         };
 
         auto put_trait = [&descr](const Trait trait_id) {
-                descr.push_back({trait_title(trait_id), colors::white()});
-                descr.push_back({trait_descr(trait_id), colors::gray()});
+                descr.emplace_back(trait_title(trait_id), colors::white());
+                descr.emplace_back(trait_descr(trait_id), colors::gray());
         };
 
         switch (id)
@@ -888,6 +888,8 @@ std::vector<Bg> pickable_bgs()
 {
         std::vector<Bg> result;
 
+        result.reserve((size_t)Bg::END);
+
         for (int i = 0; i < (int)Bg::END; ++i)
         {
                 result.push_back((Bg)i);
@@ -910,6 +912,8 @@ std::vector<Bg> pickable_bgs()
 std::vector<OccultistDomain> pickable_occultist_domains()
 {
         std::vector<OccultistDomain> result;
+
+        result.reserve((size_t)OccultistDomain::END);
 
         for (int i = 0; i < (int)OccultistDomain::END; ++i)
         {
@@ -1137,9 +1141,9 @@ void on_player_gained_lvl(const int new_lvl)
 
 void set_all_traits_to_picked()
 {
-        for (int i = 0; i < (int)Trait::END; ++i)
+        for (bool& trait : s_traits)
         {
-                s_traits[i] = true;
+                trait = true;
         }
 }
 
@@ -1278,4 +1282,4 @@ bool gets_undead_bane_bon(const actor::ActorData& actor_data)
                 actor_data.is_undead;
 }
 
-} // player_bon
+}  // namespace player_bon

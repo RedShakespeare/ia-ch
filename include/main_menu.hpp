@@ -15,7 +15,7 @@ class MainMenuState: public State
 public:
     MainMenuState();
 
-    ~MainMenuState();
+    ~MainMenuState() override;
 
     void draw() override;
 

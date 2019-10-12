@@ -21,7 +21,7 @@ enum class TimeType
 
 struct TimeData
 {
-        TimeData() {}
+        TimeData() = default;
 
         TimeData(
                 int year_val,

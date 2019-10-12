@@ -78,6 +78,6 @@ GameCmd to_cmd(const InputData& input);
 
 void handle(const GameCmd cmd);
 
-}
+} // namespace game_commands
 
 #endif // GAME_COMMANDS_HPP

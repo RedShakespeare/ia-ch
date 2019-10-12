@@ -185,4 +185,4 @@ bool try_get_attribute_bool(const Element* const e,
         return (conv_result == tinyxml2::XML_SUCCESS);
 }
 
-} // xml
+}  // namespace xml

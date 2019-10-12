@@ -155,10 +155,8 @@ void init()
 
 void save()
 {
-        for (int i = 0; i < (int)item::Id::END; ++i)
+        for (auto& d : item::g_data)
         {
-                auto& d = item::g_data[i];
-
                 if (d.type == ItemType::rod)
                 {
                         saving::put_str(
@@ -180,10 +178,8 @@ void save()
 
 void load()
 {
-        for (int i = 0; i < (int)item::Id::END; ++i)
+        for (auto& d : item::g_data)
         {
-                auto& d = item::g_data[i];
-
                 if (d.type == ItemType::rod)
                 {
                         d.base_name_un_id.names[(size_t)ItemRefType::plain] =
@@ -512,4 +508,4 @@ void Shockwave::run_effect()
         identify(Verbose::yes);
 }
 
-} // rod
+}  // namespace rod

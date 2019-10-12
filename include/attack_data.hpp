@@ -11,16 +11,10 @@
 #include "actor_data.hpp"
 
 
-namespace Item
-{
-class Item;
-class Wpn;
-}
-
 namespace actor
 {
 class Actor;
-}
+} // namespace actor
 
 struct P;
 
@@ -28,7 +22,7 @@ struct P;
 struct AttData
 {
 public:
-        virtual ~AttData() {}
+        virtual ~AttData() = default;
 
         actor::Actor* attacker;
         actor::Actor* defender;
@@ -56,7 +50,7 @@ public:
                 actor::Actor& defender,
                 const item::Wpn& wpn);
 
-        ~MeleeAttData() {}
+        ~MeleeAttData() override = default;
 
         bool is_backstab;
         bool is_weak_attack;
@@ -72,7 +66,7 @@ public:
                 const P& current_pos,
                 const item::Wpn& wpn);
 
-        ~RangedAttData() {}
+        ~RangedAttData() override = default;
 
         P aim_pos;
         actor::Size aim_lvl;
@@ -84,7 +78,7 @@ struct ThrowAttData: public AttData
 {
 public:
         ThrowAttData(
-                actor::Actor* const attacker,
+                actor::Actor& attacker,
                 const P& aim_pos,
                 const P& current_pos,
                 const item::Item& item);

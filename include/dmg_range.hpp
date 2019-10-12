@@ -15,7 +15,7 @@
 class DmgRange
 {
 public:
-        DmgRange() {}
+        DmgRange() = default;
 
         DmgRange(const int min, const int max, const int plus = 0) :
                 m_min(min),

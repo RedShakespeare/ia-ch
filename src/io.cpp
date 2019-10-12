@@ -62,7 +62,7 @@ static const SDL_Color s_sdl_color_black = {0, 0, 0, 0};
 static SDL_Event s_sdl_event;
 
 
-static void init_screen_surface(const P px_dims)
+static void init_screen_surface(const P& px_dims)
 {
         TRACE << "Initializing screen surface" << std::endl;
 
@@ -93,7 +93,7 @@ static void init_screen_surface(const P px_dims)
         }
 }
 
-static void init_window(const P px_dims)
+static void init_window(const P& px_dims)
 {
         TRACE << "Initializing window" << std::endl;
 
@@ -154,7 +154,7 @@ static void init_window(const P px_dims)
         }
 }
 
-static void init_renderer(const P px_dims)
+static void init_renderer(const P& px_dims)
 {
         TRACE << "Initializing renderer" << std::endl;
 
@@ -186,7 +186,7 @@ static void init_renderer(const P px_dims)
         SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "0");
 }
 
-static void init_screen_texture(const P px_dims)
+static void init_screen_texture(const P& px_dims)
 {
         TRACE << "Initializing screen texture" << std::endl;
 
@@ -363,7 +363,7 @@ static void put_px32(
         *(Uint32*)p = px;
 }
 
-static void blit_surface(SDL_Surface& srf, const P px_pos)
+static void blit_surface(SDL_Surface& srf, const P& px_pos)
 {
         SDL_Rect dst_rect;
 
@@ -378,9 +378,9 @@ static void blit_surface(SDL_Surface& srf, const P px_pos)
 static void load_contour(
         const std::vector<P>& source_px_data,
         std::vector<P>& dest_px_data,
-        const P cell_px_dims)
+        const P& cell_px_dims)
 {
-        for (const P source_px_pos : source_px_data)
+        for (const P& source_px_pos : source_px_data)
         {
                 const int size = 1;
 
@@ -514,9 +514,8 @@ static void load_font()
                                                 const int y_relative =
                                                         sheet_y - sheet_y0;
 
-                                                px_data.push_back(
-                                                        P(x_relative,
-                                                          y_relative));
+                                                px_data.emplace_back(x_relative,
+                                                          y_relative);
                                         }
                                 }
                         }
@@ -603,7 +602,7 @@ static void load_tiles()
 
                                 if (is_img_px)
                                 {
-                                        px_data.push_back(P(x, y));
+                                        px_data.emplace_back(x, y);
                                 }
                         }
                 }
@@ -620,8 +619,8 @@ static void load_tiles()
 }
 
 static void put_pixels_on_screen(
-        const std::vector<P> px_data,
-        const P px_pos,
+        const std::vector<P>& px_data,
+        const P& px_pos,
         const Color& color)
 {
         const auto sdl_color = color.sdl_color();
@@ -633,7 +632,7 @@ static void put_pixels_on_screen(
                         sdl_color.g,
                         sdl_color.b);
 
-        for (const auto p_relative : px_data)
+        for (const auto& p_relative : px_data)
         {
                 const int screen_px_x = px_pos.x + p_relative.x;
                 const int screen_px_y = px_pos.y + p_relative.y;
@@ -648,7 +647,7 @@ static void put_pixels_on_screen(
 
 static void put_pixels_on_screen(
         const TileId tile,
-        const P px_pos,
+        const P& px_pos,
         const Color& color)
 {
         const auto& pixel_data = s_tile_px_data[(size_t)tile];
@@ -658,7 +657,7 @@ static void put_pixels_on_screen(
 
 static void put_pixels_on_screen(
         const char character,
-        const P px_pos,
+        const P& px_pos,
         const Color& color)
 {
         const P sheet_pos(gfx::character_pos(character));
@@ -670,7 +669,7 @@ static void put_pixels_on_screen(
 
 static void draw_character_at_px(
         const char character,
-        const P px_pos,
+        const P& px_pos,
         const Color& color,
         const bool draw_bg = true,
         const Color& bg_color = Color(0, 0, 0))
@@ -698,7 +697,7 @@ static void draw_character_at_px(
                 put_pixels_on_screen(
                         contour_px_data,
                         px_pos,
-                        s_sdl_color_black);
+                        Color(s_sdl_color_black));
         }
 
         put_pixels_on_screen(
@@ -755,13 +754,6 @@ static void draw_text_at_px(
         const int cell_px_w = config::gui_cell_px_w();
         const size_t msg_w = str.size();
         const int msg_px_w = msg_w * cell_px_w;
-
-        const auto sdl_color = color.sdl_color();
-
-        const auto sdl_bg_color = bg_color.sdl_color();
-
-        const auto sdl_color_gray = colors::gray();
-
         const int screen_px_w = panel_px_w(Panel::screen);
         const int msg_px_x1 = px_pos.x + msg_px_w - 1;
         const bool msg_w_fit_on_screen = msg_px_x1 < screen_px_w;
@@ -786,7 +778,7 @@ static void draw_text_at_px(
                         draw_character_at_px(
                                 '.',
                                 px_pos,
-                                sdl_color_gray,
+                                colors::gray(),
                                 draw_bg,
                                 bg_color);
                 }
@@ -796,9 +788,9 @@ static void draw_text_at_px(
                         draw_character_at_px(
                                 str[i],
                                 px_pos,
-                                sdl_color,
+                                color,
                                 draw_bg,
-                                sdl_bg_color);
+                                bg_color);
                 }
 
                 px_pos.x += cell_px_w;
@@ -1186,7 +1178,7 @@ int map_to_px_coords_y(const int value)
         return value * config::map_cell_px_h();
 }
 
-P gui_to_px_coords(const P pos)
+P gui_to_px_coords(const P& pos)
 {
         return P(gui_to_px_coords_x(pos.x),
                  gui_to_px_coords_y(pos.y));
@@ -1197,7 +1189,7 @@ P gui_to_px_coords(const int x, const int y)
         return gui_to_px_coords(P(x, y));
 }
 
-P map_to_px_coords(const P pos)
+P map_to_px_coords(const P& pos)
 {
         return P(map_to_px_coords_x(pos.x),
                  map_to_px_coords_y(pos.y));
@@ -1208,33 +1200,33 @@ P map_to_px_coords(const int x, const int y)
         return map_to_px_coords(P(x, y));
 }
 
-P px_to_gui_coords(const P px_pos)
+P px_to_gui_coords(const P& px_pos)
 {
         return P(px_pos.x / config::gui_cell_px_w(),
                  px_pos.y / config::gui_cell_px_h());
 }
 
-P px_to_map_coords(const P px_pos)
+P px_to_map_coords(const P& px_pos)
 {
         return P(px_pos.x / config::map_cell_px_w(),
                  px_pos.y / config::map_cell_px_h());
 }
 
-P gui_to_map_coords(const P gui_pos)
+P gui_to_map_coords(const P& gui_pos)
 {
         const P px_coords = gui_to_px_coords(gui_pos);
 
         return px_to_map_coords(px_coords);
 }
 
-P gui_to_px_coords(const Panel panel, const P offset)
+P gui_to_px_coords(const Panel panel, const P& offset)
 {
         const P pos = panels::area(panel).p0 + offset;
 
         return gui_to_px_coords(pos);
 }
 
-P map_to_px_coords(const Panel panel, const P offset)
+P map_to_px_coords(const Panel panel, const P& offset)
 {
         const P px_p0 = gui_to_px_coords(panels::area(panel).p0);
 
@@ -1246,7 +1238,7 @@ P map_to_px_coords(const Panel panel, const P offset)
 void draw_tile(
         const TileId tile,
         const Panel panel,
-        const P pos,
+        const P& pos,
         const Color& color,
         const bool draw_bg,
         const Color& bg_color)
@@ -1279,19 +1271,19 @@ void draw_tile(
                 put_pixels_on_screen(
                         contour_px_data,
                         px_pos,
-                        s_sdl_color_black);
+                        Color(s_sdl_color_black));
         }
 
         put_pixels_on_screen(
                 tile,
                 px_pos,
-                color.sdl_color());
+                color);
 }
 
 void draw_character(
         const char character,
         const Panel panel,
-        const P pos,
+        const P& pos,
         const Color& color,
         const bool draw_bg,
         const Color& bg_color)
@@ -1301,24 +1293,18 @@ void draw_character(
                 return;
         }
 
-        const P px_pos = gui_to_px_coords(panel, pos);
-
-        const auto sdl_color = color.sdl_color();
-
-        const auto sdl_color_bg = bg_color.sdl_color();
-
         draw_character_at_px(
                 character,
-                px_pos,
-                sdl_color,
+                gui_to_px_coords(panel, pos),
+                color,
                 draw_bg,
-                sdl_color_bg);
+                bg_color);
 }
 
 void draw_text(
         const std::string& str,
         const Panel panel,
-        const P pos,
+        const P& pos,
         const Color& color,
         const bool draw_bg,
         const Color& bg_color)
@@ -1341,7 +1327,7 @@ void draw_text(
 void draw_text_center(
         const std::string& str,
         const Panel panel,
-        const P pos,
+        const P& pos,
         const Color& color,
         const bool draw_bg,
         const Color& bg_color,
@@ -1381,7 +1367,7 @@ void draw_text_center(
 void draw_text_right(
         const std::string& str,
         const Panel panel,
-        const P pos,
+        const P& pos,
         const Color& color,
         const bool draw_bg,
         const Color& bg_color)
@@ -1480,7 +1466,7 @@ void cover_panel(const Panel panel, const Color& color)
 
 void cover_area(
         const Panel panel,
-        const R area,
+        const R& area,
         const Color& color)
 {
         const P panel_p0 = panels::p0(panel);
@@ -1494,17 +1480,17 @@ void cover_area(
 
 void cover_area(
         const Panel panel,
-        const P offset,
-        const P dims,
+        const P& offset,
+        const P& dims,
         const Color& color)
 {
         cover_area(
                 panel,
-                {offset, offset + dims - 1},
+                R(offset, offset + dims - 1),
                 color);
 }
 
-void cover_cell(const Panel panel, const P offset)
+void cover_cell(const Panel panel, const P& offset)
 {
         cover_area(panel, offset, P(1, 1));
 }
@@ -1664,7 +1650,7 @@ void draw_main_menu_logo()
         blit_surface(*s_main_menu_logo_srf, px_pos);
 }
 
-void draw_skull(const P pos)
+void draw_skull(const P& pos)
 {
         if (!panels::is_valid())
         {
@@ -1691,7 +1677,7 @@ void draw_blast_at_cells(const std::vector<P>& positions, const Color& color)
 
         states::draw();
 
-        for (const P pos : positions)
+        for (const P& pos : positions)
         {
                 if (!viewport::is_in_view(pos))
                 {
@@ -1710,7 +1696,7 @@ void draw_blast_at_cells(const std::vector<P>& positions, const Color& color)
 
         sdl_base::sleep(config::delay_explosion() / 2);
 
-        for (const P pos : positions)
+        for (const P& pos : positions)
         {
                 if (!viewport::is_in_view(pos))
                 {
@@ -1742,7 +1728,7 @@ void draw_blast_at_seen_cells(const std::vector<P>& positions,
 
         std::vector<P> positions_with_vision;
 
-        for (const P p : positions)
+        for (const P& p : positions)
         {
                 if (map::g_cells.at(p).is_seen_by_player)
                 {
@@ -1767,7 +1753,9 @@ void draw_blast_at_seen_actors(
 
         std::vector<P> positions;
 
-        for (auto* const actor : actors)
+        positions.reserve(actors.size());
+
+        for (const auto* const actor : actors)
         {
                 positions.push_back(actor->m_pos);
         }
@@ -1779,7 +1767,7 @@ void draw_symbol(
         const TileId tile,
         const char character,
         const Panel panel,
-        const P pos,
+        const P& pos,
         const Color& color,
         const bool draw_bg,
         const Color& color_bg)
@@ -2169,4 +2157,4 @@ InputData get()
         return input;
 }
 
-} // io
+}  // namespace io

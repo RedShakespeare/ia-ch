@@ -110,11 +110,9 @@ MeleeAttData::MeleeAttData(
 
         const bool allow_positive_doge =
                 is_defender_aware &&
-                !(defender->is_player() &&
-                  player_is_handling_armor);
+                !(defender->is_player() && player_is_handling_armor);
 
-        if (allow_positive_doge ||
-            (dodging_ability < 0))
+        if (allow_positive_doge || (dodging_ability < 0))
         {
                 dodging_mod -= dodging_ability;
         }
@@ -126,7 +124,7 @@ MeleeAttData::MeleeAttData(
         // check if target is seen when player is attacking.
         bool can_attacker_see_tgt = true;
 
-        if (attacker == map::g_player)
+        if (attacker && attacker->is_player())
         {
                 can_attacker_see_tgt = map::g_player->can_see_actor(*defender);
         }
@@ -481,11 +479,11 @@ RangedAttData::RangedAttData(
 }
 
 ThrowAttData::ThrowAttData(
-        actor::Actor* const the_attacker,
+        actor::Actor& the_attacker,
         const P& aim_pos,
         const P& current_pos,
         const item::Item& item) :
-        AttData(the_attacker, nullptr, item),
+        AttData(&the_attacker, nullptr, item),
         aim_lvl((actor::Size)0),
         defender_size((actor::Size)0),
         dist_mod(0)

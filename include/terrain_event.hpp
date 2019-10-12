@@ -23,20 +23,20 @@ namespace terrain
 class Event: public Terrain
 {
 public:
-        Event(const P& pos) :
+        explicit Event(const P& pos) :
                 Terrain(pos) {}
 
-        virtual ~Event() {}
+        ~Event() override = default;
 
-        virtual void on_new_turn() override = 0;
+        void on_new_turn() override = 0;
 
-        std::string name(const Article article) const override final
+        std::string name(const Article article) const final
         {
                 (void)article;
                 return "";
         }
 
-        Color color() const override final
+        Color color() const final
         {
                 return colors::black();
         }
@@ -50,10 +50,10 @@ public:
                 std::vector<P>& walls,
                 std::vector<P>& inner);
 
-        EventWallCrumble(const P& p) :
+        explicit EventWallCrumble(const P& p) :
                 Event(p) {}
 
-        ~EventWallCrumble() {}
+        ~EventWallCrumble() override = default;
 
         Id id() const override
         {
@@ -72,10 +72,10 @@ class EventSnakeEmerge: public Event
 public:
         EventSnakeEmerge();
 
-        EventSnakeEmerge(const P& p) :
+        explicit EventSnakeEmerge(const P& p) :
                 Event(p) {}
 
-        ~EventSnakeEmerge() {}
+        ~EventSnakeEmerge() override = default;
 
         Id id() const override
         {
@@ -107,7 +107,7 @@ private:
 class EventRatsInTheWallsDiscovery: public Event
 {
 public:
-        EventRatsInTheWallsDiscovery(const P& terrain_pos);
+        explicit EventRatsInTheWallsDiscovery(const P& terrain_pos);
 
         Id id() const override
         {
@@ -117,6 +117,6 @@ public:
         void on_new_turn() override;
 };
 
-} // terrain
+}  // namespace terrain
 
 #endif // TERRAIN_EVENT_HPP

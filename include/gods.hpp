@@ -23,6 +23,6 @@ const God& current_god();
 
 void set_random_god();
 
-} // gods
+} // namespace gods
 
 #endif // GODS_HPP

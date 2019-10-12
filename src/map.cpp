@@ -38,11 +38,9 @@ static P s_dims(0, 0);
 // Cell
 // -----------------------------------------------------------------------------
 Cell::Cell() :
-        is_explored(false),
-        is_seen_by_player(false),
-        player_los(),
-        item(nullptr),
-        terrain(nullptr) {}
+        
+        player_los()
+        {}
 
 Cell::~Cell()
 {
@@ -453,4 +451,4 @@ bool is_area_inside_map(const R& area)
                 is_pos_inside_map(area.p1);
 }
 
-} // map
+}  // namespace map

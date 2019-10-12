@@ -268,10 +268,9 @@ void ViewActorDescr::on_start()
 
                 for (const auto& line : fixed_lines)
                 {
-                        m_lines.push_back(
-                                ColoredString(
+                        m_lines.emplace_back(
                                         line,
-                                        colors::text()));
+                                        colors::text());
                 }
         }
 
@@ -293,10 +292,9 @@ void ViewActorDescr::on_start()
 
                         for (const auto& line : auto_descr_lines)
                         {
-                                m_lines.push_back(
-                                        ColoredString(
+                                m_lines.emplace_back(
                                                 line,
-                                                colors::text()));
+                                                colors::text());
                         }
                 }
         }
@@ -304,10 +302,9 @@ void ViewActorDescr::on_start()
         // Add the full description
         m_lines.resize(m_lines.size() + 1);
 
-        m_lines.push_back(
-                ColoredString(
+        m_lines.emplace_back(
                         "Current properties",
-                        colors::text()));
+                        colors::text());
 
         auto prop_list = m_actor.m_properties.property_names_temporary_negative();
 
@@ -339,10 +336,9 @@ void ViewActorDescr::on_start()
 
         if (prop_list.empty())
         {
-                m_lines.push_back(
-                        ColoredString(
+                m_lines.emplace_back(
                                 offset + "None",
-                                colors::text()));
+                                colors::text());
         }
         else // Has properties
         {
@@ -352,7 +348,7 @@ void ViewActorDescr::on_start()
                 {
                         const auto& title = e.title;
 
-                        m_lines.push_back({offset + title.str, e.title.color});
+                        m_lines.emplace_back(offset + title.str, e.title.color);
 
                         const auto descr_formatted =
                                 text_format::split(
@@ -361,10 +357,9 @@ void ViewActorDescr::on_start()
 
                         for (const auto& descr_line : descr_formatted)
                         {
-                                m_lines.push_back(
-                                        ColoredString(
+                                m_lines.emplace_back(
                                                 offset + descr_line,
-                                                colors::gray()));
+                                                colors::gray());
                         }
                 }
         }
@@ -637,4 +632,4 @@ void print_living_actor_info_msg(const P& pos)
         }
 }
 
-} // look
+}  // namespace look

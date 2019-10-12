@@ -25,6 +25,6 @@ P to_view_pos(const P map_pos);
 
 P to_map_pos(const P view_pos);
 
-} // viewport
+}  // namespace viewport
 
 #endif // VIEWPORT_HPP

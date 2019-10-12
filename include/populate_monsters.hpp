@@ -16,7 +16,7 @@
 namespace actor
 {
 enum class Id;
-}
+} // namespace actor
 
 struct P;
 
@@ -48,6 +48,6 @@ void populate_std_lvl();
 // instead of according to design (or in addition to hand-placed monsters)
 void populate_lvl_as_room_types(const std::vector<RoomType>& room_types);
 
-} // populate_mon
+}  // namespace populate_mon
 
 #endif // POPULATE_MON_HPP

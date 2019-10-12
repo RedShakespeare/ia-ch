@@ -38,10 +38,8 @@ Inventory::Inventory(actor::Actor* const owning_actor) :
 
 Inventory::~Inventory()
 {
-        for (size_t i = 0; i < (size_t)SlotId::END; ++i)
+        for (auto& slot : m_slots)
         {
-                auto& slot = m_slots[i];
-
                 if (slot.item)
                 {
                         delete slot.item;
@@ -80,10 +78,8 @@ void Inventory::save() const
 
         saving::put_int(m_backpack.size());
 
-        for (size_t i = 0; i < m_backpack.size(); ++i)
+        for (auto* const item : m_backpack)
         {
-                auto* const item = m_backpack[i];
-
                 saving::put_int((int)item->id());
                 saving::put_int(item->m_nr_items);
 
@@ -162,18 +158,14 @@ bool Inventory::has_item_in_backpack(const item::Id id) const
 
 int Inventory::item_stack_size_in_backpack(const item::Id id) const
 {
-        for (size_t i = 0; i < m_backpack.size(); ++i)
+        for (const auto* const item : m_backpack)
         {
-                if (m_backpack[i]->data().id == id)
+                if (item->data().id == id)
                 {
-                        if (m_backpack[i]->data().is_stackable)
-                        {
-                                return m_backpack[i]->m_nr_items;
-                        }
-                        else // Not stackable
-                        {
-                                return 1;
-                        }
+                        return
+                                item->data().is_stackable
+                                ? item->m_nr_items
+                                : 1;
                 }
         }
 
@@ -188,25 +180,23 @@ bool Inventory::try_stack_in_backpack(item::Item* item)
                 return false;
         }
 
-        for (size_t i = 0; i < m_backpack.size(); ++i)
+        for (auto& backpack_item : m_backpack)
         {
-                auto* const other = m_backpack[i];
-
-                if (other->id() != item->id())
+                if (backpack_item->id() != item->id())
                 {
                         continue;
                 }
 
                 // NOTE: We are keeping the new item and destroying old one (so
                 // the parameter pointer is still valid)
-                item->m_nr_items += other->m_nr_items;
+                item->m_nr_items += backpack_item->m_nr_items;
 
-                delete other;
+                delete backpack_item;
 
-                m_backpack[i] = item;
+                backpack_item = item;
 
                 if (m_owning_actor->is_player() &&
-                    (map::g_player->m_last_thrown_item == other))
+                    (map::g_player->m_last_thrown_item == backpack_item))
                 {
                         map::g_player->m_last_thrown_item = item;
                 }
@@ -278,9 +268,9 @@ bool Inventory::has_ammo_for_firearm_in_inventory() const
                                 weapon->data().ranged.ammo_item_id;
 
                         // Look for that ammo type in inventory
-                        for (size_t i = 0; i < m_backpack.size(); ++i)
+                        for (const auto* const item : m_backpack)
                         {
-                                if (m_backpack[i]->data().id == ammo_id)
+                                if (item->data().id == ammo_id)
                                 {
                                         return true;
                                 }
@@ -869,7 +859,9 @@ void Inventory::sort_backpack()
         // Sort the prioritized items lexicographically
         if (!prio_items.empty())
         {
-                std::sort(begin(prio_items), end(prio_items), lex_cmp);
+                std::sort(std::begin(prio_items),
+                          std::end(prio_items),
+                          lex_cmp);
         }
 
         // Categorize the remaining items
@@ -910,18 +902,18 @@ void Inventory::sort_backpack()
         // Sort lexicographically secondarily
         for (auto& group : sort_buffer)
         {
-                std::sort(begin(group), end(group), lex_cmp);
+                std::sort(std::begin(group), std::end(group), lex_cmp);
         }
 
         // Add the sorted items to the backpack
         // NOTE: prio_items may be empty
         m_backpack = prio_items;
 
-        for (size_t i = 0; i < sort_buffer.size(); ++i)
+        for (const auto& group : sort_buffer)
         {
-                for (size_t ii = 0; ii < sort_buffer[i].size(); ii++)
+                for (auto* const item : group)
                 {
-                        m_backpack.push_back(sort_buffer[i][ii]);
+                        m_backpack.push_back(item);
                 }
         }
 }

@@ -19,12 +19,12 @@
 namespace actor
 {
 class Actor;
-}
+} // namespace actor
 
 namespace item
 {
 class Item;
-}
+} // namespace item
 
 template<typename T>
 class Array2;
@@ -98,12 +98,12 @@ public:
 class Terrain
 {
 public:
-        Terrain(const P& p) :
+        explicit Terrain(const P& p) :
                 m_pos(p) {}
 
         Terrain() = delete;
 
-        virtual ~Terrain() {}
+        virtual ~Terrain() = default;
 
         const TerrainData& data() const
         {
@@ -339,7 +339,7 @@ enum class FloorType
 class Floor: public Terrain
 {
 public:
-        Floor(const P& p);
+        explicit Floor(const P& p);
 
         Floor() = delete;
 
@@ -367,7 +367,7 @@ private:
 class Carpet: public Terrain
 {
 public:
-        Carpet(const P& p);
+        explicit Carpet(const P& p);
 
         Carpet() = delete;
 
@@ -399,7 +399,7 @@ enum class GrassType
 class Grass: public Terrain
 {
 public:
-        Grass(const P& p);
+        explicit Grass(const P& p);
 
         Grass() = delete;
 
@@ -426,7 +426,7 @@ private:
 class Bush: public Terrain
 {
 public:
-        Bush(const P& p);
+        explicit Bush(const P& p);
 
         Bush() = delete;
 
@@ -453,7 +453,7 @@ private:
 class Vines: public Terrain
 {
 public:
-        Vines(const P& p);
+        explicit Vines(const P& p);
 
         Vines() = delete;
 
@@ -478,7 +478,7 @@ private:
 class Chains: public Terrain
 {
 public:
-        Chains(const P& p);
+        explicit Chains(const P& p);
 
         Chains() = delete;
 
@@ -506,7 +506,7 @@ private:
 class Grate: public Terrain
 {
 public:
-        Grate(const P& p);
+        explicit Grate(const P& p);
 
         Grate() = delete;
 
@@ -530,7 +530,7 @@ private:
 class Brazier: public Terrain
 {
 public:
-        Brazier(const P& p) : Terrain(p) {}
+        explicit Brazier(const P& p) : Terrain(p) {}
 
         Brazier() = delete;
 
@@ -566,7 +566,7 @@ enum class WallType
 class Wall: public Terrain
 {
 public:
-        Wall(const P& p);
+        explicit Wall(const P& p);
 
         Wall() = delete;
 
@@ -602,7 +602,7 @@ private:
 class RubbleLow: public Terrain
 {
 public:
-        RubbleLow(const P& p);
+        explicit RubbleLow(const P& p);
 
         RubbleLow() = delete;
 
@@ -626,7 +626,7 @@ private:
 class Bones: public Terrain
 {
 public:
-        Bones(const P& p);
+        explicit Bones(const P& p);
 
         Bones() = delete;
 
@@ -650,7 +650,7 @@ private:
 class RubbleHigh: public Terrain
 {
 public:
-        RubbleHigh(const P& p);
+        explicit RubbleHigh(const P& p);
 
         RubbleHigh() = delete;
 
@@ -674,7 +674,7 @@ private:
 class GraveStone: public Terrain
 {
 public:
-        GraveStone(const P& p);
+        explicit GraveStone(const P& p);
 
         GraveStone() = delete;
 
@@ -707,7 +707,7 @@ private:
 class ChurchBench: public Terrain
 {
 public:
-        ChurchBench(const P& p);
+        explicit ChurchBench(const P& p);
 
         ChurchBench() = delete;
 
@@ -737,7 +737,7 @@ enum class StatueType
 class Statue: public Terrain
 {
 public:
-        Statue(const P& p);
+        explicit Statue(const P& p);
         Statue() = delete;
 
         Id id() const override
@@ -766,7 +766,7 @@ private:
 class Stalagmite: public Terrain
 {
 public:
-        Stalagmite(const P& p);
+        explicit Stalagmite(const P& p);
         Stalagmite() = delete;
 
         Id id() const override
@@ -789,7 +789,7 @@ private:
 class Stairs: public Terrain
 {
 public:
-        Stairs(const P& p);
+        explicit Stairs(const P& p);
         Stairs() = delete;
 
         Id id() const override
@@ -816,7 +816,7 @@ private:
 class Bridge : public Terrain
 {
 public:
-        Bridge(const P& p) :
+        explicit Bridge(const P& p) :
                 Terrain(p),
                 m_axis(Axis::hor) {}
         Bridge() = delete;
@@ -850,7 +850,7 @@ private:
 class LiquidShallow: public Terrain
 {
 public:
-        LiquidShallow(const P& p);
+        explicit LiquidShallow(const P& p);
         LiquidShallow() = delete;
 
         Id id() const override
@@ -881,7 +881,7 @@ private:
 class LiquidDeep: public Terrain
 {
 public:
-        LiquidDeep(const P& p);
+        explicit LiquidDeep(const P& p);
         LiquidDeep() = delete;
 
         Id id() const override
@@ -916,7 +916,7 @@ private:
 class Chasm: public Terrain
 {
 public:
-        Chasm(const P& p);
+        explicit Chasm(const P& p);
         Chasm() = delete;
 
         Id id() const override
@@ -939,7 +939,7 @@ private:
 class Lever: public Terrain
 {
 public:
-        Lever(const P& p);
+        explicit Lever(const P& p);
 
         Lever() = delete;
 
@@ -1001,7 +1001,7 @@ private:
 class Altar: public Terrain
 {
 public:
-        Altar(const P& p);
+        explicit Altar(const P& p);
 
         Altar() = delete;
 
@@ -1025,7 +1025,7 @@ private:
 class Gong: public Terrain
 {
 public:
-        Gong(const P& p);
+        explicit Gong(const P& p);
 
         Gong() = delete;
 
@@ -1053,7 +1053,7 @@ private:
 class Tree: public Terrain
 {
 public:
-        Tree(const P& p);
+        explicit Tree(const P& p);
         Tree() = delete;
 
         Id id() const override
@@ -1108,7 +1108,7 @@ enum class TombAppearance
 class Tomb: public Terrain
 {
 public:
-        Tomb(const P& pos);
+        explicit Tomb(const P& pos);
         Tomb() = delete;
 
         Id id() const override
@@ -1152,7 +1152,7 @@ enum class ChestMatl
 class Chest: public Terrain
 {
 public:
-        Chest(const P& pos);
+        explicit Chest(const P& pos);
         Chest() = delete;
 
         Id id() const override
@@ -1193,7 +1193,7 @@ private:
 class Cabinet: public Terrain
 {
 public:
-        Cabinet(const P& pos);
+        explicit Cabinet(const P& pos);
         Cabinet() = delete;
 
         Id id() const override
@@ -1226,7 +1226,7 @@ private:
 class Bookshelf: public Terrain
 {
 public:
-        Bookshelf(const P& pos);
+        explicit Bookshelf(const P& pos);
         Bookshelf() = delete;
 
         Id id() const override
@@ -1257,7 +1257,7 @@ private:
 class AlchemistBench: public Terrain
 {
 public:
-        AlchemistBench(const P& pos);
+        explicit AlchemistBench(const P& pos);
         AlchemistBench() = delete;
 
         Id id() const override
@@ -1304,7 +1304,7 @@ enum class FountainEffect
 class Fountain: public Terrain
 {
 public:
-        Fountain(const P& pos);
+        explicit Fountain(const P& pos);
 
         Fountain() = delete;
 
@@ -1357,7 +1357,7 @@ private:
 class Cocoon: public Terrain
 {
 public:
-        Cocoon(const P& pos);
+        explicit Cocoon(const P& pos);
 
         Cocoon() = delete;
 
@@ -1391,6 +1391,6 @@ private:
         bool m_is_open;
 };
 
-} // terrain
+}  // namespace terrain
 
 #endif // TERRAIN_HPP

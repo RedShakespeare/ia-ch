@@ -61,12 +61,12 @@ class Trap: public Terrain
 public:
         Trap(const P& p, Terrain* const mimic_terrain, TrapId id);
 
-        Trap(const P& p) :
+        explicit Trap(const P& p) :
                 Terrain(p) {}
 
         Trap() = delete;
 
-        ~Trap();
+        ~Trap() override;
 
         Id id() const override
         {
@@ -151,12 +151,12 @@ class TrapImpl
 {
 protected:
         friend class Trap;
-        TrapImpl(P p, TrapId type, Trap* const base_trap) :
+        TrapImpl(const P& p, TrapId type, Trap* const base_trap) :
                 m_pos(p),
                 m_type(type),
                 m_base_trap(base_trap) {}
 
-        virtual ~TrapImpl() {}
+        virtual ~TrapImpl() = default;
 
         // Called by the trap terrain after picking a random trap
         // implementation. This allows the specific implementation initialize
@@ -208,12 +208,12 @@ class MechTrapImpl : public TrapImpl
 protected:
         friend class Trap;
 
-        MechTrapImpl(P pos, TrapId type, Trap* const base_trap) :
+        MechTrapImpl(const P& pos, TrapId type, Trap* const base_trap) :
                 TrapImpl(pos, type, base_trap) {}
 
-        virtual ~MechTrapImpl() {}
+        ~MechTrapImpl() override = default;
 
-        virtual TileId tile() const override
+        TileId tile() const override
         {
                 return TileId::trap_general;
         }
@@ -234,9 +234,9 @@ class TrapDart: public MechTrapImpl
 private:
         friend class Trap;
 
-        TrapDart(P pos, Trap* const base_trap);
+        TrapDart(const P& pos, Trap* const base_trap);
 
-        virtual std::string name(const Article article) const override
+        std::string name(const Article article) const override
         {
                 std::string name =
                         (article == Article::a) ?
@@ -248,7 +248,7 @@ private:
                 return name;
         }
 
-        virtual Color color() const override
+        Color color() const override
         {
                 return colors::white();
         }
@@ -274,9 +274,9 @@ class TrapSpear: public MechTrapImpl
 private:
         friend class Trap;
 
-        TrapSpear(P pos, Trap* const base_trap);
+        TrapSpear(const P& pos, Trap* const base_trap);
 
-        virtual std::string name(const Article article) const override
+        std::string name(const Article article) const override
         {
                 std::string name =
                         (article == Article::a) ?
@@ -288,7 +288,7 @@ private:
                 return name;
         }
 
-        virtual Color color() const override
+        Color color() const override
         {
                 return colors::light_white();
         }
@@ -314,10 +314,10 @@ class GasTrapImpl: public MechTrapImpl
 protected:
         friend class Trap;
 
-        GasTrapImpl(P pos, TrapId type, Trap* const base_trap) :
+        GasTrapImpl(const P& pos, TrapId type, Trap* const base_trap) :
                 MechTrapImpl(pos, type, base_trap) {}
 
-        virtual std::string name(const Article article) const override
+        std::string name(const Article article) const override
         {
                 std::string name =
                         (article == Article::a) ?
@@ -329,7 +329,7 @@ protected:
                 return name;
         }
 
-        virtual Color color() const override
+        Color color() const override
         {
                 return colors::magenta();
         }
@@ -345,7 +345,7 @@ class TrapGasConfusion: public GasTrapImpl
 private:
         friend class Trap;
 
-        TrapGasConfusion(P pos, Trap* const base_trap) :
+        TrapGasConfusion(const P& pos, Trap* const base_trap) :
                 GasTrapImpl(pos, TrapId::gas_confusion, base_trap) {}
 
         void trigger() override;
@@ -356,7 +356,7 @@ class TrapGasParalyzation: public GasTrapImpl
 private:
         friend class Trap;
 
-        TrapGasParalyzation(P pos, Trap* const base_trap) :
+        TrapGasParalyzation(const P& pos, Trap* const base_trap) :
                 GasTrapImpl(pos, TrapId::gas_paralyze, base_trap) {}
 
         void trigger() override;
@@ -367,7 +367,7 @@ class TrapGasFear: public GasTrapImpl
 private:
         friend class Trap;
 
-        TrapGasFear(P pos, Trap* const base_trap) :
+        TrapGasFear(const P& pos, Trap* const base_trap) :
                 GasTrapImpl(pos, TrapId::gas_fear, base_trap) {}
 
         void trigger() override;
@@ -378,10 +378,10 @@ class TrapBlindingFlash: public MechTrapImpl
 private:
         friend class Trap;
 
-        TrapBlindingFlash(P pos, Trap* const base_trap) :
+        TrapBlindingFlash(const P& pos, Trap* const base_trap) :
                 MechTrapImpl(pos, TrapId::blinding, base_trap) {}
 
-        virtual std::string name(const Article article) const override
+        std::string name(const Article article) const override
         {
                 std::string name =
                         (article == Article::a) ?
@@ -393,7 +393,7 @@ private:
                 return name;
         }
 
-        virtual Color color() const override
+        Color color() const override
         {
                 return colors::yellow();
         }
@@ -411,10 +411,10 @@ class TrapDeafening: public MechTrapImpl
 private:
         friend class Trap;
 
-        TrapDeafening(P pos, Trap* const base_trap) :
+        TrapDeafening(const P& pos, Trap* const base_trap) :
                 MechTrapImpl(pos, TrapId::deafening, base_trap) {}
 
-        virtual std::string name(const Article article) const override
+        std::string name(const Article article) const override
         {
                 std::string name =
                         (article == Article::a) ?
@@ -426,7 +426,7 @@ private:
                 return name;
         }
 
-        virtual Color color() const override
+        Color color() const override
         {
                 return colors::violet();
         }
@@ -444,10 +444,10 @@ class TrapSmoke: public MechTrapImpl
 private:
         friend class Trap;
 
-        TrapSmoke(P pos, Trap* const base_trap) :
+        TrapSmoke(const P& pos, Trap* const base_trap) :
                 MechTrapImpl(pos, TrapId::smoke, base_trap) {}
 
-        virtual std::string name(const Article article) const override
+        std::string name(const Article article) const override
         {
                 std::string name =
                         (article == Article::a) ?
@@ -459,7 +459,7 @@ private:
                 return name;
         }
 
-        virtual Color color() const override
+        Color color() const override
         {
                 return colors::gray();
         }
@@ -477,10 +477,10 @@ class TrapFire: public MechTrapImpl
 private:
         friend class Trap;
 
-        TrapFire(P pos, Trap* const base_trap) :
+        TrapFire(const P& pos, Trap* const base_trap) :
                 MechTrapImpl(pos, TrapId::fire, base_trap) {}
 
-        virtual std::string name(const Article article) const override
+        std::string name(const Article article) const override
         {
                 std::string name =
                         (article == Article::a) ?
@@ -492,7 +492,7 @@ private:
                 return name;
         }
 
-        virtual Color color() const override
+        Color color() const override
         {
                 return colors::light_red();
         }
@@ -510,10 +510,10 @@ class TrapAlarm: public MechTrapImpl
 private:
         friend class Trap;
 
-        TrapAlarm(P pos, Trap* const base_trap) :
+        TrapAlarm(const P& pos, Trap* const base_trap) :
                 MechTrapImpl(pos, TrapId::alarm, base_trap) {}
 
-        virtual std::string name(const Article article) const override
+        std::string name(const Article article) const override
         {
                 std::string name =
                         (article == Article::a) ?
@@ -525,7 +525,7 @@ private:
                 return name;
         }
 
-        virtual Color color() const override
+        Color color() const override
         {
                 return colors::orange();
         }
@@ -543,7 +543,7 @@ class TrapWeb: public MechTrapImpl
 private:
         friend class Trap;
 
-        TrapWeb(P pos, Trap* const base_trap) :
+        TrapWeb(const P& pos, Trap* const base_trap) :
                 MechTrapImpl(pos, TrapId::web, base_trap) {}
 
         void trigger() override;
@@ -596,14 +596,14 @@ class MagicTrapImpl : public TrapImpl
 protected:
         friend class Trap;
 
-        MagicTrapImpl(P pos, TrapId type, Trap* const base_trap) :
+        MagicTrapImpl(const P& pos, TrapId type, Trap* const base_trap) :
                 TrapImpl(pos, type, base_trap) {}
 
-        virtual ~MagicTrapImpl() {}
+        ~MagicTrapImpl() override = default;
 
         TrapPlacementValid on_place() override;
 
-        virtual std::string name(const Article article) const override
+        std::string name(const Article article) const override
         {
                 std::string name =
                         (article == Article::a)
@@ -615,12 +615,12 @@ protected:
                 return name;
         }
 
-        virtual Color color() const override
+        Color color() const override
         {
                 return colors::light_red();
         }
 
-        virtual TileId tile() const override
+        TileId tile() const override
         {
                 return TileId::elder_sign;
         }
@@ -646,7 +646,7 @@ class TrapTeleport: public MagicTrapImpl
 private:
         friend class Trap;
 
-        TrapTeleport(P pos, Trap* const base_trap) :
+        TrapTeleport(const P& pos, Trap* const base_trap) :
                 MagicTrapImpl(pos, TrapId::teleport, base_trap) {}
 
         void trigger() override;
@@ -657,7 +657,7 @@ class TrapSummonMon: public MagicTrapImpl
 private:
         friend class Trap;
 
-        TrapSummonMon(P pos, Trap* const base_trap) :
+        TrapSummonMon(const P& pos, Trap* const base_trap) :
                 MagicTrapImpl(pos, TrapId::summon, base_trap) {}
 
         void trigger() override;
@@ -668,7 +668,7 @@ class TrapHpSap: public MagicTrapImpl
 private:
         friend class Trap;
 
-        TrapHpSap(P pos, Trap* const base_trap) :
+        TrapHpSap(const P& pos, Trap* const base_trap) :
                 MagicTrapImpl(pos, TrapId::hp_sap, base_trap) {}
 
         void trigger() override;
@@ -679,7 +679,7 @@ class TrapSpiSap: public MagicTrapImpl
 private:
         friend class Trap;
 
-        TrapSpiSap(P pos, Trap* const base_trap) :
+        TrapSpiSap(const P& pos, Trap* const base_trap) :
                 MagicTrapImpl(pos, TrapId::spi_sap, base_trap) {}
 
         void trigger() override;
@@ -690,7 +690,7 @@ class TrapSlow: public MagicTrapImpl
 private:
         friend class Trap;
 
-        TrapSlow(P pos, Trap* const base_trap) :
+        TrapSlow(const P& pos, Trap* const base_trap) :
                 MagicTrapImpl(pos, TrapId::slow, base_trap) {}
 
         void trigger() override;
@@ -701,7 +701,7 @@ class TrapCurse: public MagicTrapImpl
 private:
         friend class Trap;
 
-        TrapCurse(P pos, Trap* const base_trap) :
+        TrapCurse(const P& pos, Trap* const base_trap) :
                 MagicTrapImpl(pos, TrapId::curse, base_trap) {}
 
         void trigger() override;
@@ -712,12 +712,12 @@ class TrapUnlearnSpell: public MagicTrapImpl
 private:
         friend class Trap;
 
-        TrapUnlearnSpell(P pos, Trap* const base_trap) :
+        TrapUnlearnSpell(const P& pos, Trap* const base_trap) :
                 MagicTrapImpl(pos, TrapId::unlearn_spell, base_trap) {}
 
         void trigger() override;
 };
 
-} // terrain
+} // namespace terrain
 
 #endif // TERRAIN_TRAPS_HPP

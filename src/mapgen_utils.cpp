@@ -112,16 +112,17 @@ void cut_room_corners(const Room& room)
                 {
                         int nr_corners = 0;
 
-                        for (int i = 0; i < 4; ++i)
+                        for (bool& v : c)
                         {
                                 if (rnd::coin_toss())
                                 {
-                                        c[i] = true;
+                                        v = true;
                                         ++nr_corners;
                                 }
-                                else // Do not cut this corner
+                                else
                                 {
-                                        c[i] = false;
+                                        // Do not cut this corner
+                                        v = false;
                                 }
                         }
 
@@ -167,6 +168,12 @@ void cut_room_corners(const Room& room)
                         r.p0 = cross_x1y1 + 1;
                         r.p1 = room_p1;
                         break;
+
+                default:
+                {
+                        ASSERT(false);
+                }
+                break;
                 }
 
                 // Check if these positions can be cut
@@ -304,7 +311,7 @@ void cavify_room(Room& room)
                         // add to origin bucket if we are on the edge
                         if (x == x0 || x == x1 || y == y0 || y == y1)
                         {
-                                origin_bucket.push_back({x, y});
+                                origin_bucket.emplace_back(x, y);
                         }
                 }
         }
@@ -567,11 +574,11 @@ bool is_choke_point(const P& p,
                                 {
                                         ASSERT(flood_side2.at(x, y) == 0);
 
-                                        out->sides[0].push_back(P(x, y));
+                                        out->sides[0].emplace_back(x, y);
                                 }
                                 else if (flood_side2.at(x, y) > 0)
                                 {
-                                        out->sides[1].push_back(P(x, y));
+                                        out->sides[1].emplace_back(x, y);
                                 }
                         }
                 }
@@ -644,8 +651,7 @@ void make_pathfind_corridor(
 
                         if (dist == shortest_dist)
                         {
-                                entries_bucket.push_back(
-                                        std::pair<P, P>(p0, p1));
+                                entries_bucket.emplace_back(p0, p1);
                         }
                 }
         }
@@ -823,7 +829,7 @@ void make_pathfind_corridor(
                         if ((map::g_dlvl >= g_dlvl_first_late_game) &&
                             rnd::fraction(2, 5))
                         {
-                                for (const P d : dir_utils::g_dir_list_w_center)
+                                for (const P& d : dir_utils::g_dir_list_w_center)
                                 {
                                         const P p_adj(p + d);
 
@@ -932,7 +938,7 @@ std::vector<P> pathfinder_walk(const P& p0,
 std::vector<P> rnd_walk(
         const P& p0,
         int len,
-        R area,
+        const R& area,
         const bool allow_diagonal)
 {
         std::vector<P> result;
@@ -1082,7 +1088,7 @@ void make_explore_spawn_weights(
                         {
                                 // OK, we can spawn here, save the position and
                                 // the corresponding spawn chance weight
-                                positions_out.push_back(P(x, y));
+                                positions_out.emplace_back(x, y);
 
                                 weights_out.push_back(weight);
                         }
@@ -1331,4 +1337,4 @@ void reveal_doors_on_path_to_stairs(const P& stairs_pos)
         TRACE_FUNC_END;
 }
 
-} // mapgen
+}  // namespace mapgen

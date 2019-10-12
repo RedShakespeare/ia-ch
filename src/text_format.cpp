@@ -75,7 +75,7 @@ std::vector<std::string> split(std::string line, const int max_w)
                         // Word did not fit on current line, make a new line
                         ++current_row_idx;
 
-                        result.push_back("");
+                        result.emplace_back("");
                 }
 
                 // If this is not the first word on the current line, add a
@@ -222,4 +222,4 @@ void append_with_space(
         base_str += addition;
 }
 
-} // text_format
+}  // namespace text_format

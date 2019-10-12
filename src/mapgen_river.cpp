@@ -78,7 +78,7 @@ void reserve_river(Region regions[3][3])
 
         Room* const room = room_factory::make(RoomType::river, room_rect);
 
-        RiverRoom* const river_room = static_cast<RiverRoom*>(room);
+        auto* const river_room = static_cast<RiverRoom*>(room);
 
         river_room->m_axis = axis;
 
@@ -140,4 +140,4 @@ void reserve_river(Region regions[3][3])
         TRACE_FUNC_END;
 }
 
-} // mapgen
+}  // namespace mapgen

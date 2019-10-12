@@ -24,6 +24,6 @@ void try_use_down_stairs();
 
 void go_to_nxt();
 
-} // map_travel
+} // namespace map_travel
 
 #endif // MAP_TRAVEL_HPP

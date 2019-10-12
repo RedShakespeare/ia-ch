@@ -115,4 +115,4 @@ void make_monoliths()
         }
 }
 
-} // namespace
+}  // namespace mapgen

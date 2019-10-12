@@ -243,7 +243,7 @@ bool is_loading()
         return s_state == SaveLoadState::loading;
 }
 
-void put_str(const std::string str)
+void put_str(const std::string& str)
 {
         ASSERT(s_state == SaveLoadState::saving);
 
@@ -284,4 +284,4 @@ bool get_bool()
         return get_str() == "T";
 }
 
-} // save
+}  // namespace saving

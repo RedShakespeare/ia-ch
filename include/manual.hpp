@@ -51,7 +51,7 @@ private:
 class BrowseManualPage: public InfoScreenState
 {
 public:
-        BrowseManualPage(const ManualPage& page) :
+        explicit BrowseManualPage(const ManualPage& page) :
                 InfoScreenState(),
                 m_page(page),
                 m_top_idx(0) {}

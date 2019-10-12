@@ -418,10 +418,9 @@ void InvState::draw_detailed_item_descr(
                 {
                         for (const std::string& paragraph : base_descr)
                         {
-                                lines.push_back(
-                                        ColoredString(
+                                lines.emplace_back(
                                                 paragraph,
-                                                colors::light_white()));
+                                                colors::light_white());
                         }
                 }
 
@@ -453,14 +452,13 @@ void InvState::draw_detailed_item_descr(
 
                         if (!dmg_str.empty() && !dmg_str_avg.empty())
                         {
-                                lines.push_back(
-                                        ColoredString(
+                                lines.emplace_back(
                                                 "Damage: " +
                                                 dmg_str +
                                                 " (average " +
                                                 dmg_str_avg +
                                                 ")",
-                                                colors::light_white()));
+                                                colors::light_white());
                         }
 
                         const std::string hit_mod_str =
@@ -468,11 +466,10 @@ void InvState::draw_detailed_item_descr(
 
                         if (!hit_mod_str.empty())
                         {
-                                lines.push_back(
-                                        ColoredString(
+                                lines.emplace_back(
                                                 "Hit chance modifier: " +
                                                 hit_mod_str,
-                                                colors::light_white()));
+                                                colors::light_white());
                         }
                 }
 
@@ -510,10 +507,9 @@ void InvState::draw_detailed_item_descr(
                                 " more effectively (bonus is based on attack "
                                 "damage).";
 
-                        lines.push_back(
-                                ColoredString(
+                        lines.emplace_back(
                                         att_obj_str,
-                                        colors::light_white()));
+                                        colors::light_white());
                 }
 
                 // -------------------------------------------------------------
@@ -522,7 +518,7 @@ void InvState::draw_detailed_item_descr(
                 const std::string weight_str =
                         ref_str + item->weight_str() + " to carry.";
 
-                lines.push_back(ColoredString(weight_str, colors::green()));
+                lines.emplace_back(weight_str, colors::green());
 
                 const int weight_carried_tot =
                         map::g_player->m_inv.total_item_weight();
@@ -545,10 +541,9 @@ void InvState::draw_detailed_item_descr(
                                 std::to_string(weight_pct) +
                                 "% of total carried weight)";
 
-                        lines.push_back(
-                                ColoredString(
+                        lines.emplace_back(
                                         pct_str,
-                                        colors::green()));
+                                        colors::green());
                 }
         }
 
@@ -597,7 +592,7 @@ void BrowseInv::draw()
 
         const int browser_y = m_browser.y();
 
-        const size_t nr_slots = (size_t)SlotId::END;
+        const auto nr_slots = (size_t)SlotId::END;
 
         io::draw_text_center(
                 "Browsing inventory " + common_text::g_screen_exit_hint,

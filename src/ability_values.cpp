@@ -6,7 +6,7 @@
 
 #include "ability_values.hpp"
 
-#include <math.h>
+#include <cmath>
 
 #include "actor_player.hpp"
 #include "colors.hpp"
@@ -156,9 +156,9 @@ int AbilityValues::val(
 
 void AbilityValues::reset()
 {
-        for (size_t i = 0; i < (size_t)AbilityId::END; ++i)
+        for (auto& ability : m_ability_list)
         {
-                m_ability_list[i] = 0;
+                ability = 0;
         }
 }
 
@@ -240,4 +240,4 @@ int hit_chance_pct_actual(const int value)
         return constr_in_range(2, value, 98);
 }
 
-} // ability_roll
+}  // namespace ability_roll

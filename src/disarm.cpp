@@ -109,4 +109,4 @@ void player_disarm()
 
 } // player_disarm
 
-} // disarm
+}  // namespace disarm

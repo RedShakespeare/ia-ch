@@ -345,4 +345,4 @@ int menu(
         }
 }
 
-} // popup
+}  // namespace popup
