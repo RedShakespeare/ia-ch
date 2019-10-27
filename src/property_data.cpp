@@ -413,7 +413,7 @@ static void init_data_list()
         add(d);
 
         d.id = PropId::summoned;
-        d.std_rnd_turns = Range(40, 80);
+        d.std_rnd_turns = Range(80, 120);
         d.msg_end_mon = "suddenly disappears.";
         d.name = "Summoned";
         d.descr = "Was magically summoned here";
