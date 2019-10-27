@@ -56,9 +56,11 @@ static bool is_defender_aware_of_attack(
 AttData::AttData(
         actor::Actor* const the_attacker,
         actor::Actor* const the_defender,
-        const item::Item& att_item) :
+        const item::Item& the_att_item) :
+
         attacker(the_attacker),
         defender(the_defender),
+        att_item(&the_att_item),
         skill_mod(0),
         wpn_mod(0),
         dodging_mod(0),
@@ -67,8 +69,8 @@ AttData::AttData(
         att_result(ActionResult::fail),
         dmg(0),
         is_intrinsic_att(
-                (att_item.data().type == ItemType::melee_wpn_intr) ||
-                (att_item.data().type == ItemType::ranged_wpn_intr)) {}
+                (att_item->data().type == ItemType::melee_wpn_intr) ||
+                (att_item->data().type == ItemType::ranged_wpn_intr)) {}
 
 MeleeAttData::MeleeAttData(
         actor::Actor* const the_attacker,

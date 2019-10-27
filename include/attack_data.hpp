@@ -32,6 +32,7 @@ public:
 
         actor::Actor* attacker;
         actor::Actor* defender;
+        const item::Item* att_item;
         int skill_mod;
         int wpn_mod;
         int dodging_mod;

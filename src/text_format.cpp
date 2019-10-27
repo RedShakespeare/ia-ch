@@ -136,7 +136,6 @@ std::string replace_all(
         {
                 result.replace(start_pos, from.length(), to);
 
-                //In case 'to' contains 'from', like replacing 'x' with 'yx'
                 start_pos += to.length();
         }
 

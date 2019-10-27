@@ -1717,7 +1717,8 @@ void Player::hear_sound(
                 if (actor_who_made_snd &&
                     (actor_who_made_snd != this))
                 {
-                        static_cast<Mon*>(actor_who_made_snd)->set_player_aware_of_me();
+                        static_cast<Mon*>(actor_who_made_snd)
+                                ->set_player_aware_of_me();
                 }
         }
 

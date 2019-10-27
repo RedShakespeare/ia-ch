@@ -321,13 +321,13 @@ void init()
         d.weight = Weight::medium;
         d.tile = TileId::shotgun;
         d.ranged.is_shotgun = true;
-        d.melee.att_msgs = {"strike", "strikes me with a shotgun"};
+        d.melee.att_msgs = {"strike", "strikes"};
         d.ranged.max_ammo = 2;
         d.ranged.dmg = DmgRange(8, 24);
         d.ranged.hit_chance_mod = 0;
         d.ranged.effective_range = 3;
         d.ranged.ammo_item_id = Id::shotgun_shell;
-        d.ranged.att_msgs = {"fire", "fires a shotgun"};
+        d.ranged.att_msgs = {"fire", "fires"};
         d.ranged.snd_msg = "I hear a shotgun blast.";
         d.ranged.att_sfx = SfxId::shotgun_sawed_off_fire;
         d.ranged.makes_ricochet_snd = true;
@@ -351,13 +351,13 @@ void init()
         d.weight = Weight::medium;
         d.tile = TileId::shotgun;
         d.ranged.is_shotgun = true;
-        d.melee.att_msgs = {"strike", "strikes me with a shotgun"};
+        d.melee.att_msgs = {"strike", "strikes"};
         d.ranged.max_ammo = 8;
         d.ranged.dmg = DmgRange(6, 18);
         d.ranged.hit_chance_mod = 0;
         d.ranged.effective_range = 5;
         d.ranged.ammo_item_id = Id::shotgun_shell;
-        d.ranged.att_msgs = {"fire", "fires a shotgun"};
+        d.ranged.att_msgs = {"fire", "fires"};
         d.ranged.snd_msg = "I hear a shotgun blast.";
         d.ranged.att_sfx = SfxId::shotgun_pump_fire ;
         d.ranged.makes_ricochet_snd = true;
@@ -389,13 +389,13 @@ void init()
         };
         d.weight = (Weight::medium + Weight::heavy) / 2;
         d.tile = TileId::incinerator;
-        d.melee.att_msgs = {"strike", "strikes me with an Incinerator"};
+        d.melee.att_msgs = {"strike", "strikes"};
         d.ranged.max_ammo = 5;
         d.ranged.dmg = DmgRange(1, 3);
         d.ranged.effective_range = 8;
         d.allow_display_dmg = false;
         d.ranged.ammo_item_id = Id::incinerator_ammo;
-        d.ranged.att_msgs = {"fire", "fires an incinerator"};
+        d.ranged.att_msgs = {"fire", "fires"};
         d.ranged.snd_msg = "I hear the blast of a launched missile.";
         d.ranged.projectile_character = '*';
         d.ranged.projectile_color = colors::light_red();
@@ -438,14 +438,14 @@ void init()
         };
         d.weight = Weight::medium;
         d.tile = TileId::tommy_gun;
-        d.melee.att_msgs = {"strike", "strikes me with a Tommy Gun"};
+        d.melee.att_msgs = {"strike", "strikes"};
         d.ranged.is_machine_gun = true;
         d.ranged.max_ammo = 50;
         d.ranged.dmg = DmgRange(2, 4, 2);
         d.ranged.hit_chance_mod = -10;
         d.ranged.effective_range = 8;
         d.ranged.ammo_item_id = Id::drum_of_bullets;
-        d.ranged.att_msgs = {"fire", "fires a Tommy Gun"};
+        d.ranged.att_msgs = {"fire", "fires"};
         d.ranged.snd_msg = "I hear the burst of a machine gun.";
         d.ranged.att_sfx = SfxId::machine_gun_fire;
         d.ranged.makes_ricochet_snd = true;
@@ -487,8 +487,8 @@ void init()
         d.ranged.dmg = DmgRange(1, 8, 4);
         d.ranged.effective_range = 6;
         d.ranged.ammo_item_id = Id::pistol_mag;
-        d.melee.att_msgs = {"strike", "strikes me with a pistol"};
-        d.ranged.att_msgs = {"fire", "fires a pistol"};
+        d.melee.att_msgs = {"strike", "strikes"};
+        d.ranged.att_msgs = {"fire", "fires"};
         d.ranged.snd_msg = "I hear a pistol being fired.";
         d.ranged.att_sfx = SfxId::pistol_fire;
         d.ranged.makes_ricochet_snd = true;
@@ -526,8 +526,8 @@ void init()
         d.ranged.effective_range = 3;
         d.allow_display_dmg = false;
         d.ranged.ammo_item_id = Id::flare;
-        d.melee.att_msgs = {"strike", "strikes me with a flare gun"};
-        d.ranged.att_msgs = {"fire", "fires a flare gun"};
+        d.melee.att_msgs = {"strike", "strikes"};
+        d.ranged.att_msgs = {"fire", "fires"};
         d.ranged.snd_msg = "I hear a flare gun being fired.";
         d.ranged.prop_applied = ItemAttProp(new PropFlared());
         d.native_containers.push_back(terrain::Id::chest);
@@ -547,7 +547,7 @@ void init()
         d.weight = Weight::medium;
         d.tile = TileId::tommy_gun;
         d.color = colors::dark_brown();
-        d.melee.att_msgs = {"strike", "strikes me with a Spike Gun"};
+        d.melee.att_msgs = {"strike", "strikes"};
         d.ranged.max_ammo = 12;
         d.ranged.dmg = DmgRange(1, 7, 0);
         d.ranged.hit_chance_mod = 0;
@@ -555,7 +555,7 @@ void init()
         d.ranged.dmg_type = DmgType::physical;
         d.ranged.knocks_back = true;
         d.ranged.ammo_item_id = Id::iron_spike;
-        d.ranged.att_msgs = {"fire", "fires a Spike Gun"};
+        d.ranged.att_msgs = {"fire", "fires"};
         d.ranged.snd_msg = "I hear a very crude weapon being fired.";
         d.ranged.makes_ricochet_snd = true;
         d.ranged.projectile_color = colors::gray();
@@ -597,8 +597,8 @@ void init()
         d.ranged.has_infinite_ammo = true;
         d.ranged.projectile_leaves_trail = true;
         d.ranged.projectile_color = colors::yellow();
-        d.melee.att_msgs = {"strike", "strikes me with a Mi-go Electric Gun"};
-        d.ranged.att_msgs = {"fire", "fires a Mi-go Electric Gun"};
+        d.melee.att_msgs = {"strike", "strikes"};
+        d.ranged.att_msgs = {"fire", "fires"};
         d.ranged.snd_msg = "I hear a bolt of electricity.";
         d.ranged.att_sfx = SfxId::mi_go_gun_fire;
         d.ranged.makes_ricochet_snd = false;
@@ -766,7 +766,7 @@ void init()
         };
         d.weight = Weight::light;
         d.tile = TileId::dagger;
-        d.melee.att_msgs = {"stab", "stabs me with a Dagger"};
+        d.melee.att_msgs = {"stab", "stabs"};
         d.melee.dmg = DmgRange(1, 4);
         d.melee.hit_chance_mod = 20;
         d.melee.dmg_method = DmgMethod::piercing;
@@ -795,7 +795,7 @@ void init()
         };
         d.weight = Weight::light;
         d.tile = TileId::axe;
-        d.melee.att_msgs = {"strike", "strikes me with a Hatchet"};
+        d.melee.att_msgs = {"strike", "strikes"};
         d.melee.dmg = DmgRange(1, 5);
         d.melee.hit_chance_mod = 15;
         d.melee.att_corpse = true;
@@ -824,7 +824,7 @@ void init()
         d.weight = Weight::medium;
         d.tile = TileId::club;
         d.color = colors::brown();
-        d.melee.att_msgs = {"strike", "strikes me with a Club"};
+        d.melee.att_msgs = {"strike", "strikes"};
         d.melee.dmg = DmgRange(2, 6);
         d.melee.hit_chance_mod = 10;
         d.melee.att_corpse = true;
@@ -849,7 +849,7 @@ void init()
         };
         d.weight = Weight::medium;
         d.tile = TileId::hammer;
-        d.melee.att_msgs = {"smash", "smashes me with a Hammer"};
+        d.melee.att_msgs = {"smash", "smashes"};
         d.melee.dmg = DmgRange(2, 8);
         d.melee.hit_chance_mod = 5;
         d.melee.att_corpse = true;
@@ -874,7 +874,7 @@ void init()
         };
         d.weight = Weight::medium;
         d.tile = TileId::machete;
-        d.melee.att_msgs = {"chop", "chops me with a Machete"};
+        d.melee.att_msgs = {"chop", "chops"};
         d.melee.dmg = DmgRange(2, 10);
         d.melee.hit_chance_mod = 0;
         d.melee.att_corpse = true;
@@ -902,7 +902,7 @@ void init()
         };
         d.weight = Weight::medium;
         d.tile = TileId::axe;
-        d.melee.att_msgs = {"strike", "strikes me with an axe"};
+        d.melee.att_msgs = {"strike", "strikes"};
         d.melee.dmg = DmgRange(2, 12);
         d.melee.hit_chance_mod = -5;
         d.melee.att_corpse = true;
@@ -932,7 +932,7 @@ void init()
         };
         d.weight = (Weight::medium + Weight::heavy) / 2;
         d.tile = TileId::spiked_mace;
-        d.melee.att_msgs = {"strike", "strikes me with a spiked mace"};
+        d.melee.att_msgs = {"strike", "strikes"};
         d.melee.dmg = DmgRange(2, 14);
         d.melee.hit_chance_mod = -10;
         d.melee.att_corpse = true;
@@ -960,7 +960,7 @@ void init()
         };
         d.weight = Weight::heavy;
         d.tile = TileId::pitchfork;
-        d.melee.att_msgs = {"strike", "strikes me with a Pitchfork"};
+        d.melee.att_msgs = {"strike", "strikes"};
         d.melee.dmg = DmgRange(3, 12);
         d.melee.hit_chance_mod = -15;
         d.melee.att_corpse = true;
@@ -988,7 +988,7 @@ void init()
         };
         d.weight = Weight::heavy;
         d.tile = TileId::sledge_hammer;
-        d.melee.att_msgs = {"smash", "smash me with a Sledgehammer"};
+        d.melee.att_msgs = {"smash", "smashes"};
         d.melee.dmg = DmgRange(3, 15);
         d.melee.hit_chance_mod = -15;
         d.melee.att_corpse = true;
@@ -1076,31 +1076,31 @@ void init()
 
         reset_data(d, ItemType::melee_wpn_intr);
         d.id = Id::intr_bite;
-        d.melee.att_msgs = {"", "bites me"};
+        d.melee.att_msgs = {"", "bites"};
         d.melee.dmg_method = DmgMethod::piercing;
         g_data[(size_t)d.id] = d;
 
         reset_data(d, ItemType::melee_wpn_intr);
         d.id = Id::intr_claw;
-        d.melee.att_msgs = {"", "claws me"};
+        d.melee.att_msgs = {"", "claws"};
         d.melee.dmg_method = DmgMethod::slashing;
         g_data[(size_t)d.id] = d;
 
         reset_data(d, ItemType::melee_wpn_intr);
         d.id = Id::intr_strike;
-        d.melee.att_msgs = {"", "strikes me"};
+        d.melee.att_msgs = {"", "strikes"};
         d.melee.dmg_method = DmgMethod::blunt;
         g_data[(size_t)d.id] = d;
 
         reset_data(d, ItemType::melee_wpn_intr);
         d.id = Id::intr_punch;
-        d.melee.att_msgs = {"", "punches me"};
+        d.melee.att_msgs = {"", "punches"};
         d.melee.dmg_method = DmgMethod::blunt;
         g_data[(size_t)d.id] = d;
 
         reset_data(d, ItemType::ranged_wpn_intr);
         d.id = Id::intr_acid_spit;
-        d.ranged.att_msgs = {"", "spits acid pus at me"};
+        d.ranged.att_msgs = {"", "spits acid pus"};
         d.ranged.snd_msg = "I hear spitting.";
         d.ranged.projectile_color = colors::light_green();
         d.ranged.dmg_type = DmgType::acid;
@@ -1109,7 +1109,7 @@ void init()
 
         reset_data(d, ItemType::ranged_wpn_intr);
         d.id = Id::intr_snake_venom_spit;
-        d.ranged.att_msgs = {"", "spits venom at me"};
+        d.ranged.att_msgs = {"", "spits venom"};
         d.ranged.snd_msg = "I hear hissing and spitting.";
         d.ranged.projectile_color = colors::light_green();
         d.ranged.dmg_type = DmgType::physical;
@@ -1118,7 +1118,7 @@ void init()
 
         reset_data(d, ItemType::ranged_wpn_intr);
         d.id = Id::intr_fire_breath;
-        d.ranged.att_msgs = {"", "breathes fire at me"};
+        d.ranged.att_msgs = {"", "breathes fire"};
         d.ranged.snd_msg = "I hear a burst of flames.";
         d.ranged.projectile_color = colors::light_red();
         d.ranged.projectile_character = '*';
@@ -1129,7 +1129,7 @@ void init()
 
         reset_data(d, ItemType::ranged_wpn_intr);
         d.id = Id::intr_energy_breath;
-        d.ranged.att_msgs = {"", "breathes lightning at me"};
+        d.ranged.att_msgs = {"", "breathes lightning"};
         d.ranged.snd_msg = "I hear a burst of lightning.";
         d.ranged.projectile_color = colors::yellow();
         d.ranged.projectile_character = '*';
@@ -1140,50 +1140,50 @@ void init()
 
         reset_data(d, ItemType::melee_wpn_intr);
         d.id = Id::intr_raven_peck;
-        d.melee.att_msgs = {"", "pecks at me"};
+        d.melee.att_msgs = {"", "pecks"};
         d.melee.dmg_method = DmgMethod::piercing;
         g_data[(size_t)d.id] = d;
 
         reset_data(d, ItemType::melee_wpn_intr);
         d.id = Id::intr_vampiric_bite;
-        d.melee.att_msgs = {"", "bites me"};
+        d.melee.att_msgs = {"", "bites"};
         d.melee.dmg_method = DmgMethod::piercing;
         g_data[(size_t)d.id] = d;
 
         reset_data(d, ItemType::melee_wpn_intr);
         d.id = Id::intr_strangle;
-        d.melee.att_msgs = {"", "strangles me"};
+        d.melee.att_msgs = {"", "strangles"};
         d.melee.dmg_method = DmgMethod::blunt;
         g_data[(size_t)d.id] = d;
 
         reset_data(d, ItemType::melee_wpn_intr);
         d.id = Id::intr_ghost_touch;
-        d.melee.att_msgs = {"", "reaches for me"};
+        d.melee.att_msgs = {"", "reaches for"};
         d.melee.dmg_type = DmgType::spirit;
         d.melee.dmg_method = DmgMethod::blunt;
         g_data[(size_t)d.id] = d;
 
         reset_data(d, ItemType::melee_wpn_intr);
         d.id = Id::intr_sting;
-        d.melee.att_msgs = {"", "stings me"};
+        d.melee.att_msgs = {"", "stings"};
         d.melee.dmg_method = DmgMethod::piercing;
         g_data[(size_t)d.id] = d;
 
         reset_data(d, ItemType::melee_wpn_intr);
         d.id = Id::intr_mind_leech_sting;
-        d.melee.att_msgs = {"", "stings me"};
+        d.melee.att_msgs = {"", "stings"};
         d.melee.dmg_method = DmgMethod::piercing;
         g_data[(size_t)d.id] = d;
 
         reset_data(d, ItemType::melee_wpn_intr);
         d.id = Id::intr_spear_thrust;
-        d.melee.att_msgs = {"", "strikes me with a spear"};
+        d.melee.att_msgs = {"", "strikes"};
         d.melee.dmg_method = DmgMethod::piercing;
         g_data[(size_t)d.id] = d;
 
         reset_data(d, ItemType::ranged_wpn_intr);
         d.id = Id::intr_net_throw;
-        d.ranged.att_msgs = {"", "throws a net at me"};
+        d.ranged.att_msgs = {"", "throws a net"};
         d.ranged.snd_msg = "I hear a whooshing sound.";
         d.ranged.projectile_color = colors::brown();
         d.ranged.projectile_character = '*';
@@ -1192,52 +1192,52 @@ void init()
 
         reset_data(d, ItemType::melee_wpn_intr);
         d.id = Id::intr_maul;
-        d.melee.att_msgs = {"", "mauls me"};
+        d.melee.att_msgs = {"", "mauls"};
         d.melee.dmg_method = DmgMethod::blunt;
         g_data[(size_t)d.id] = d;
 
         reset_data(d, ItemType::melee_wpn_intr);
         d.id = Id::intr_pus_spew;
-        d.melee.att_msgs = {"", "spews pus on me"};
+        d.melee.att_msgs = {"", "spews pus on"};
         d.melee.dmg_method = DmgMethod::blunt;
         g_data[(size_t)d.id] = d;
 
         reset_data(d, ItemType::melee_wpn_intr);
         d.id = Id::intr_acid_touch;
-        d.melee.att_msgs = {"", "touches me"};
+        d.melee.att_msgs = {"", "touches"};
         d.melee.dmg_type = DmgType::acid;
         d.melee.dmg_method = DmgMethod::elemental;
         g_data[(size_t)d.id] = d;
 
         reset_data(d, ItemType::melee_wpn_intr);
         d.id = Id::intr_dust_engulf;
-        d.melee.att_msgs = {"", "engulfs me"};
+        d.melee.att_msgs = {"", "engulfs"};
         d.melee.dmg_method = DmgMethod::elemental;
         g_data[(size_t)d.id] = d;
 
         reset_data(d, ItemType::melee_wpn_intr);
         d.id = Id::intr_fire_engulf;
-        d.melee.att_msgs = {"", "engulfs me"};
+        d.melee.att_msgs = {"", "engulfs"};
         d.melee.dmg_method = DmgMethod::elemental;
         d.melee.dmg_type = DmgType::fire;
         g_data[(size_t)d.id] = d;
 
         reset_data(d, ItemType::melee_wpn_intr);
         d.id = Id::intr_energy_engulf;
-        d.melee.att_msgs = {"", "engulfs me"};
+        d.melee.att_msgs = {"", "engulfs"};
         d.melee.dmg_method = DmgMethod::elemental;
         d.melee.dmg_type = DmgType::electric;
         g_data[(size_t)d.id] = d;
 
         reset_data(d, ItemType::melee_wpn_intr);
         d.id = Id::intr_spores;
-        d.melee.att_msgs = {"", "releases spores at me"};
+        d.melee.att_msgs = {"", "releases spores"};
         d.melee.dmg_method = DmgMethod::blunt;
         g_data[(size_t)d.id] = d;
 
         reset_data(d, ItemType::ranged_wpn_intr);
         d.id = Id::intr_web_bola;
-        d.ranged.att_msgs = {"", "shoots a web bola at me"};
+        d.ranged.att_msgs = {"", "shoots a web bola"};
         d.ranged.snd_msg = "";
         d.ranged.projectile_color = colors::light_white();
         d.ranged.projectile_tile = TileId::blast1;
@@ -1685,10 +1685,7 @@ void init()
         d.color = colors::magenta();
         d.weight = Weight::medium;
         d.tile = TileId::pharaoh_staff;
-        d.melee.att_msgs = {
-                "strike",
-                "strikes me with the Staff of the Pharaohs"
-        };
+        d.melee.att_msgs = {"strike", "strikes"};
         d.melee.dmg = DmgRange(2, 8, 4);
         d.melee.hit_chance_mod = 0;
         d.melee.miss_sfx = SfxId::miss_medium;
@@ -1862,7 +1859,7 @@ void init()
         d.weight = Weight::light;
         d.tile = TileId::dagger;
         d.color = colors::violet();
-        d.melee.att_msgs = {"stab", "stabs me with a Dagger"};
+        d.melee.att_msgs = {"stab", "stabs"};
         d.melee.dmg = DmgRange(1, 4);
         d.melee.hit_chance_mod = 20;
         d.melee.is_noisy = false;

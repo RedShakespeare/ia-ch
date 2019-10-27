@@ -111,35 +111,6 @@ static size_t nr_projectiles_for_ranged_weapon(const item::Wpn& wpn)
         return nr_projectiles;
 }
 
-static void print_player_melee_miss_msg()
-{
-        msg_log::add("I miss.");
-}
-
-static void print_mon_melee_miss_msg(const MeleeAttData& att_data)
-{
-        if (att_data.defender->is_player())
-        {
-                std::string other_name;
-
-                if (map::g_player->can_see_actor(*att_data.attacker))
-                {
-                        other_name =
-                                text_format::first_to_upper(
-                                        att_data.attacker->name_the());
-                }
-                else // Player cannot see attacker
-                {
-                        other_name = "It";
-                }
-
-                msg_log::add(
-                        other_name + " misses me.",
-                        colors::text(),
-                        MsgInterruptPlayer::yes);
-        }
-}
-
 // TODO: It would be better to use absolute numbers, rather than relative to
 // the weapon's max damage (if a weapon does 100 maximum damage, it would still
 // be pretty catastrophic if it did 50 damage - but currently this would only
@@ -164,22 +135,20 @@ static HitSize relative_hit_size(const int dmg, const int wpn_max_dmg)
         return result;
 }
 
-static HitSize relative_hit_size_melee(
-        const AttData& att_data,
-        const item::Wpn& wpn)
+static HitSize relative_hit_size_melee(const AttData& att_data)
 {
-        const auto dmg_range = wpn.melee_dmg(att_data.attacker);
+        const auto dmg_range =
+                att_data.att_item->melee_dmg(att_data.attacker);
 
         const int max_dmg = dmg_range.total_range().max;
 
         return relative_hit_size(att_data.dmg, max_dmg);
 }
 
-static HitSize relative_hit_size_ranged(
-        const AttData& att_data,
-        const item::Wpn& wpn)
+static HitSize relative_hit_size_ranged(const AttData& att_data)
 {
-        const auto dmg_range = wpn.ranged_dmg(att_data.attacker);
+        const auto dmg_range =
+                att_data.att_item->ranged_dmg(att_data.attacker);
 
         const int max_dmg = dmg_range.total_range().max;
 
@@ -203,11 +172,86 @@ static std::string hit_size_punctuation_str(const HitSize hit_size)
         return "";
 }
 
-static void print_player_hit_mon_melee_msg(
-        const MeleeAttData& att_data,
-        const item::Wpn& wpn)
+static void print_player_melee_miss_msg()
 {
-        const std::string wpn_verb = wpn.data().melee.att_msgs.player;
+        msg_log::add("I miss.");
+}
+
+static void print_mon_melee_miss_msg(const MeleeAttData& att_data)
+{
+        if (!att_data.defender)
+        {
+                ASSERT(false);
+
+                return;
+        }
+
+        const bool is_player_seeing_attacker =
+                map::g_player->can_see_actor(*att_data.attacker);
+
+        const bool is_player_seeing_defender =
+                map::g_player->can_see_actor(*att_data.defender);
+
+        const bool is_attacker_pos_seen =
+                map::g_cells.at(att_data.attacker->m_pos).is_seen_by_player;
+
+        if (!is_attacker_pos_seen ||
+            (!is_player_seeing_attacker && !is_player_seeing_defender))
+        {
+                // Attacker position not seen, or two unseen monsters fighting
+                // each other - a sound message will be printed
+                return;
+        }
+
+        std::string attacker_name;
+
+        if (is_player_seeing_attacker)
+        {
+                attacker_name =
+                        text_format::first_to_upper(
+                                att_data.attacker->name_the());
+        }
+        else
+        {
+                attacker_name = "It";
+        }
+
+        std::string defender_name;
+
+        if (att_data.defender->is_player())
+        {
+                defender_name = "me";
+        }
+        else
+        {
+                if (is_player_seeing_defender)
+                {
+                        defender_name = att_data.defender->name_the();
+                }
+                else
+                {
+                        defender_name = "it";
+                }
+        }
+
+        const std::string msg =
+                attacker_name +
+                " misses " +
+                defender_name +
+                ".";
+
+        const auto interrupt =
+                att_data.defender->is_player()
+                ? MsgInterruptPlayer::yes
+                : MsgInterruptPlayer::no;
+
+        msg_log::add(msg, colors::text(), interrupt);
+}
+
+static void print_player_melee_hit_msg(const MeleeAttData& att_data)
+{
+        const std::string wpn_verb =
+                att_data.att_item->data().melee.att_msgs.player;
 
         std::string other_name;
 
@@ -215,14 +259,15 @@ static void print_player_hit_mon_melee_msg(
         {
                 other_name = att_data.defender->name_the();
         }
-        else // Player cannot see defender
+        else
         {
+                // Player cannot see defender
                 other_name = "it";
         }
 
         const std::string dmg_punct =
                 hit_size_punctuation_str(
-                        relative_hit_size_melee(att_data, wpn));
+                        relative_hit_size_melee(att_data));
 
         if (att_data.is_intrinsic_att)
         {
@@ -230,16 +275,18 @@ static void print_player_hit_mon_melee_msg(
                         att_data.is_weak_attack ?
                         " feebly" : "";
 
-                msg_log::add("I " +
-                             wpn_verb +
-                             " " +
-                             other_name +
-                             att_mod_str +
-                             dmg_punct,
-                             colors::msg_good());
+                msg_log::add(
+                        "I " +
+                        wpn_verb +
+                        " " +
+                        other_name +
+                        att_mod_str +
+                        dmg_punct,
+                        colors::msg_good());
         }
-        else // Not intrinsic attack
+        else
         {
+                // Not intrinsic attack
                 const std::string att_mod_str =
                         att_data.is_weak_attack ? "feebly " :
                         att_data.is_backstab ? "covertly "  : "";
@@ -250,59 +297,129 @@ static void print_player_hit_mon_melee_msg(
                         colors::msg_good();
 
                 const std::string wpn_name_a =
-                        wpn.name(ItemRefType::a,
-                                 ItemRefInf::none);
+                        att_data.att_item->name(
+                                ItemRefType::a,
+                                ItemRefInf::none);
 
-                msg_log::add("I " +
-                             wpn_verb +
-                             " " +
-                             other_name +
-                             " " +
-                             att_mod_str +
-                             "with " +
-                             wpn_name_a +
-                             dmg_punct,
-                             color);
+                msg_log::add(
+                        "I " +
+                        wpn_verb +
+                        " " +
+                        other_name +
+                        " " +
+                        att_mod_str +
+                        "with " +
+                        wpn_name_a +
+                        dmg_punct,
+                        color);
         }
 }
 
-static void print_mon_hit_player_melee_msg(
-        const MeleeAttData& att_data,
-        const item::Wpn& wpn)
+static void print_mon_melee_hit_msg(const MeleeAttData& att_data)
 {
-        const std::string wpn_verb = wpn.data().melee.att_msgs.other;
-
-        std::string other_name;
-
-        if (map::g_player->can_see_actor(*att_data.attacker))
+        if (!att_data.defender)
         {
-                other_name =
+                ASSERT(false);
+
+                return;
+        }
+
+        const bool is_player_seeing_attacker =
+                map::g_player->can_see_actor(*att_data.attacker);
+
+        const bool is_player_seeing_defender =
+                map::g_player->can_see_actor(*att_data.defender);
+
+        const bool is_attacker_pos_seen =
+                map::g_cells.at(att_data.attacker->m_pos).is_seen_by_player;
+
+        if (!is_attacker_pos_seen ||
+            (!is_player_seeing_attacker && !is_player_seeing_defender))
+        {
+                // Attacker position not seen, or two unseen monsters fighting
+                // each other - a sound message will be printed
+                return;
+        }
+
+        std::string attacker_name;
+
+        if (is_player_seeing_attacker)
+        {
+                attacker_name =
                         text_format::first_to_upper(
                                 att_data.attacker->name_the());
         }
-        else // Player cannot see attacker
+        else
         {
-                other_name = "It";
+                attacker_name = "It";
+        }
+
+        std::string wpn_verb = att_data.att_item->data().melee.att_msgs.other;
+
+        std::string defender_name;
+
+        if (att_data.defender->is_player())
+        {
+                defender_name = "me";
+        }
+        else
+        {
+                if (is_player_seeing_defender)
+                {
+                        defender_name = att_data.defender->name_the();
+                }
+                else
+                {
+                        defender_name = "it";
+                }
         }
 
         const std::string dmg_punct =
                 hit_size_punctuation_str(
-                        relative_hit_size_melee(att_data, wpn));
+                        relative_hit_size_melee(att_data));
 
-        msg_log::add(
-                other_name + " " + wpn_verb +
-                dmg_punct,
-                colors::msg_bad(),
-                MsgInterruptPlayer::yes);
+        std::string used_wpn_str = "";
+
+        if (!att_data.att_item->data().is_intr &&
+            // TODO: This is hacky
+            (att_data.attacker->id() != actor::Id::spectral_wpn))
+        {
+                const std::string wpn_name_a =
+                        att_data.att_item->name(
+                                ItemRefType::a,
+                                ItemRefInf::none,
+                                ItemRefAttInf::none);
+
+                used_wpn_str = " with " + wpn_name_a;
+        }
+
+        const std::string msg =
+                attacker_name +
+                " " +
+                wpn_verb +
+                " " +
+                defender_name +
+                used_wpn_str +
+                dmg_punct;
+
+        const auto color =
+                att_data.defender->is_player()
+                ? colors::msg_bad()
+                : colors::text();
+
+        const auto interrupt =
+                att_data.defender->is_player()
+                ? MsgInterruptPlayer::yes
+                : MsgInterruptPlayer::no;
+
+        msg_log::add(msg, color, interrupt);
 }
 
-static void print_no_attacker_hit_player_melee_msg(
-        const MeleeAttData& att_data,
-        const item::Wpn& wpn)
+static void print_no_attacker_hit_player_melee_msg(const MeleeAttData& att_data)
 {
         const std::string dmg_punct =
                 hit_size_punctuation_str(
-                        relative_hit_size_melee(att_data, wpn));
+                        relative_hit_size_melee(att_data));
 
         msg_log::add(
                 "I am hit" + dmg_punct,
@@ -310,9 +427,7 @@ static void print_no_attacker_hit_player_melee_msg(
                 MsgInterruptPlayer::yes);
 }
 
-static void print_no_attacker_hit_mon_melee_msg(
-        const MeleeAttData& att_data,
-        const item::Wpn& wpn)
+static void print_no_attacker_hit_mon_melee_msg(const MeleeAttData& att_data)
 {
         const std::string other_name =
                 text_format::first_to_upper(
@@ -330,7 +445,7 @@ static void print_no_attacker_hit_mon_melee_msg(
 
         const std::string dmg_punct =
                 hit_size_punctuation_str(
-                        relative_hit_size_melee(att_data, wpn));
+                        relative_hit_size_melee(att_data));
 
         msg_log::add(
                 other_name + " is hit" + dmg_punct,
@@ -340,70 +455,71 @@ static void print_no_attacker_hit_mon_melee_msg(
 
 static void print_melee_miss_msg(const MeleeAttData& att_data)
 {
-        if (att_data.attacker == map::g_player)
+        if (!att_data.attacker)
+        {
+                ASSERT(false);
+
+                return;
+        }
+
+        if (att_data.attacker->is_player())
         {
                 print_player_melee_miss_msg();
         }
-        else if (att_data.attacker)
+        else
         {
                 print_mon_melee_miss_msg(att_data);
         }
 }
 
-static void print_melee_hit_msg(
-        const MeleeAttData& att_data,
-        const item::Wpn& wpn)
+static void print_melee_hit_msg(const MeleeAttData& att_data)
 {
-        if (att_data.attacker == map::g_player)
+        if (!att_data.defender)
         {
-                print_player_hit_mon_melee_msg(att_data, wpn);
+                ASSERT(false);
 
                 return;
         }
 
         if (att_data.attacker)
         {
-                // Attacker is monster
-
+                if (att_data.attacker->is_player())
+                {
+                        print_player_melee_hit_msg(att_data);
+                }
+                else
+                {
+                        print_mon_melee_hit_msg(att_data);
+                }
+        }
+        else
+        {
+                // No attacker (e.g. trap attack)
                 if (att_data.defender->is_player())
                 {
-                        print_mon_hit_player_melee_msg(att_data, wpn);
+                        print_no_attacker_hit_player_melee_msg(att_data);
                 }
-
-                return;
-        }
-
-        // No attacker (e.g. trap attack)
-
-        if (att_data.defender == map::g_player)
-        {
-                print_no_attacker_hit_player_melee_msg(att_data, wpn);
-        }
-        else // Defender is monster
-        {
-                if (map::g_player->can_see_actor(*att_data.defender))
+                else if (map::g_player->can_see_actor(*att_data.defender))
                 {
-                        print_no_attacker_hit_mon_melee_msg(att_data, wpn);
+                        print_no_attacker_hit_mon_melee_msg(att_data);
                 }
         }
 }
 
-static SfxId melee_hit_sfx(
-        const MeleeAttData& att_data,
-        const item::Wpn& wpn)
+static SfxId melee_hit_sfx(const MeleeAttData& att_data)
 {
-        const auto hit_size = relative_hit_size_melee(att_data, wpn);
+        const auto hit_size = relative_hit_size_melee(att_data);
 
         switch (hit_size)
         {
         case HitSize::small:
-                return wpn.data().melee.hit_small_sfx;
+                return att_data.att_item->data().melee.hit_small_sfx;
 
         case HitSize::medium:
-                return wpn.data().melee.hit_medium_sfx;
+                return att_data.att_item->data().melee.hit_medium_sfx;
 
         case HitSize::hard:
-                return wpn.data().melee.hit_hard_sfx;
+                return att_data.att_item->data().melee.hit_hard_sfx;
         }
 
         return SfxId::END;
@@ -411,7 +527,7 @@ static SfxId melee_hit_sfx(
 
 static AlertsMon is_melee_snd_alerting_mon(
         const actor::Actor* const attacker,
-        const item::Wpn& wpn)
+        const item::Item& wpn)
 {
         auto alerts = AlertsMon::no;
 
@@ -428,19 +544,22 @@ static AlertsMon is_melee_snd_alerting_mon(
         return alerts;
 }
 
-static void print_melee_msg(
-        const MeleeAttData& att_data,
-        const item::Wpn& wpn)
+static void print_melee_msg(const MeleeAttData& att_data)
 {
-        ASSERT(att_data.defender);
+        if (!att_data.defender)
+        {
+                ASSERT(false);
+
+                return;
+        }
 
         if (att_data.att_result <= ActionResult::fail)
         {
                 print_melee_miss_msg(att_data);
         }
-        else // Attack hits target
+        else
         {
-                print_melee_hit_msg(att_data, wpn);
+                print_melee_hit_msg(att_data);
         }
 }
 
@@ -459,12 +578,19 @@ static std::string melee_snd_msg(const MeleeAttData& att_data)
         return snd_msg;
 }
 
-static void emit_melee_snd(
-        const MeleeAttData& att_data,
-        const item::Wpn& wpn)
+static void emit_melee_snd(const MeleeAttData& att_data)
 {
+        if (!att_data.defender)
+        {
+                ASSERT(false);
+
+                return;
+        }
+
         const auto snd_alerts_mon =
-                is_melee_snd_alerting_mon(att_data.attacker, wpn);
+                is_melee_snd_alerting_mon(
+                        att_data.attacker,
+                        *att_data.att_item);
 
         const std::string snd_msg = melee_snd_msg(att_data);
 
@@ -472,17 +598,40 @@ static void emit_melee_snd(
 
         if (att_data.att_result <= ActionResult::fail)
         {
-                sfx = wpn.data().melee.miss_sfx;
+                sfx = att_data.att_item->data().melee.miss_sfx;
         }
         else
         {
-                sfx = melee_hit_sfx(att_data, wpn);
+                sfx = melee_hit_sfx(att_data);
         }
 
-        Snd snd(snd_msg,
+        const auto origin =
+                att_data.attacker
+                ? att_data.attacker->m_pos
+                : att_data.defender->m_pos;
+
+        auto ignore_msg_if_origin_seeen = IgnoreMsgIfOriginSeen::yes;
+
+        const bool is_player_seeing_attacker =
+                map::g_player->can_see_actor(*att_data.attacker);
+
+        const bool is_player_seeing_defender =
+                map::g_player->can_see_actor(*att_data.defender);
+
+        if (att_data.attacker &&
+            !is_player_seeing_attacker &&
+            !is_player_seeing_defender)
+        {
+                // Two unseen monsters fighting each other - always include the
+                // sound message
+                ignore_msg_if_origin_seeen = IgnoreMsgIfOriginSeen::no;
+        }
+
+        Snd snd(
+                snd_msg,
                 sfx,
-                IgnoreMsgIfOriginSeen::yes,
-                att_data.defender->m_pos,
+                ignore_msg_if_origin_seeen,
+                origin,
                 att_data.attacker,
                 SndVol::low,
                 snd_alerts_mon);
@@ -497,29 +646,46 @@ static void print_player_fire_ranged_msg(const item::Wpn& wpn)
         msg_log::add("I " + attack_verb + ".");
 }
 
-static void print_mon_fire_ranged_msg(
-        const RangedAttData& att_data,
-        const item::Wpn& wpn)
+static void print_mon_fire_ranged_msg(const RangedAttData& att_data)
 {
-        if (att_data.aim_pos != map::g_player->m_pos)
+        if (!map::g_player->can_see_actor(*att_data.attacker))
         {
                 return;
         }
 
-        if (map::g_player->can_see_actor(*att_data.attacker))
+        const std::string attacker_name_the =
+                text_format::first_to_upper(
+                        att_data.attacker->name_the());
+
+        const std::string attack_verb =
+                att_data.att_item->data().ranged.att_msgs.other;
+
+        std::string wpn_used_str = "";
+
+        if (!att_data.att_item->data().is_intr)
         {
-                const std::string attacker_name =
-                        text_format::first_to_upper(
-                                att_data.attacker->name_the());
+                const std::string wpn_name_a =
+                        att_data.att_item->name(
+                                ItemRefType::a,
+                                ItemRefInf::none,
+                                ItemRefAttInf::none);
 
-                const std::string attack_verb =
-                        wpn.data().ranged.att_msgs.other;
-
-                msg_log::add(
-                        attacker_name + " " + attack_verb + ".",
-                        colors::white(),
-                        MsgInterruptPlayer::yes);
+                wpn_used_str = " " + wpn_name_a;
         }
+
+        const std::string msg =
+                attacker_name_the +
+                " " +
+                attack_verb +
+                wpn_used_str +
+                ".";
+
+        const auto interrupt =
+                (att_data.defender == map::g_player)
+                ? MsgInterruptPlayer::yes
+                : MsgInterruptPlayer::no;
+
+        msg_log::add(msg, colors::text(), interrupt);
 }
 
 static void print_ranged_fire_msg(
@@ -538,17 +704,15 @@ static void print_ranged_fire_msg(
         }
         else
         {
-                print_mon_fire_ranged_msg(att_data, wpn);
+                print_mon_fire_ranged_msg(att_data);
         }
 }
 
-static void print_projectile_hit_player_msg(
-        const AttData& att_data,
-        const item::Wpn& wpn)
+static void print_projectile_hit_player_msg(const AttData& att_data)
 {
         const std::string dmg_punct =
                 hit_size_punctuation_str(
-                        relative_hit_size_ranged(att_data, wpn));
+                        relative_hit_size_ranged(att_data));
 
         msg_log::add(
                 "I am hit" + dmg_punct,
@@ -556,9 +720,7 @@ static void print_projectile_hit_player_msg(
                 MsgInterruptPlayer::yes);
 }
 
-static void print_projectile_hit_mon_msg(
-        const AttData& att_data,
-        const item::Wpn& wpn)
+static void print_projectile_hit_mon_msg(const AttData& att_data)
 {
         std::string other_name = "It";
 
@@ -571,22 +733,20 @@ static void print_projectile_hit_mon_msg(
 
         const std::string dmg_punct =
                 hit_size_punctuation_str(
-                        relative_hit_size_ranged(att_data, wpn));
+                        relative_hit_size_ranged(att_data));
 
         msg_log::add(other_name + " is hit" +
                      dmg_punct,
                      colors::msg_good());
 }
 
-static void print_projectile_hit_actor_msg(
-        const RangedAttData& att_data,
-        const item::Wpn& wpn)
+static void print_projectile_hit_actor_msg(const RangedAttData& att_data)
 {
         ASSERT(att_data.defender);
 
         if (att_data.defender->is_player())
         {
-                print_projectile_hit_player_msg(att_data, wpn);
+                print_projectile_hit_player_msg(att_data);
         }
         else // Defender is monster
         {
@@ -597,7 +757,7 @@ static void print_projectile_hit_actor_msg(
                         return;
                 }
 
-                print_projectile_hit_mon_msg(att_data, wpn);
+                print_projectile_hit_mon_msg(att_data);
         }
 }
 
@@ -1175,9 +1335,7 @@ static void run_projectiles_messages_and_sounds(
                 {
                         emit_projectile_hit_actor_snd(projectile.pos);
 
-                        print_projectile_hit_actor_msg(
-                                *projectile.att_data,
-                                *fire_data.wpn);
+                        print_projectile_hit_actor_msg(*projectile.att_data);
 
                         continue;
                 }
@@ -1320,8 +1478,9 @@ static void fire_projectiles(
                         origin,
                         aim_pos);
 
-        print_ranged_fire_msg(*fire_data.projectiles[0].att_data,
-                              *fire_data.wpn);
+        print_ranged_fire_msg(
+                *fire_data.projectiles[0].att_data,
+                *fire_data.wpn);
 
         while(true)
         {
@@ -1388,9 +1547,9 @@ void melee(
 
         const MeleeAttData att_data(attacker, defender, wpn);
 
-        print_melee_msg(att_data, wpn);
+        print_melee_msg(att_data);
 
-        emit_melee_snd(att_data, wpn);
+        emit_melee_snd(att_data);
 
         const bool is_hit = att_data.att_result >= ActionResult::success;
 

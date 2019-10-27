@@ -48,6 +48,7 @@ Gameplay
 * Improved check for if phobia of open places should trigger (for example it no longer triggers while standing in smoke)
 * Completely removed the concept of dice rolls from the game, weapon damage is now specified as a range (e.g. 1-4) instead of dice rolls and sides (e.g. 1d4)
 * Removed the phobias for open/confined places (they were too annoying from a gameplay perspective)
+* Messages are now printed when monsters fight each other
 
 User interface
 * The interface has a new layout, and there is a scrolling viewport centered on the player
