@@ -46,16 +46,16 @@ namespace
 struct Projectile
 {
         P pos {0, 0};
-        int path_idx = 0;
-        bool is_dead = false;
-        int obstructed_in_path_idx = -1;
-        actor::Actor* actor_hit = nullptr;
-        terrain::Terrain* terrain_hit = nullptr;
-        bool is_seen_by_player = false;
-        TileId tile = TileId::END;
-        char character = -1;
-        Color color = colors::white();
-        std::unique_ptr<RangedAttData> att_data = nullptr;
+        int path_idx {0};
+        bool is_dead {false};
+        int obstructed_in_path_idx {-1};
+        actor::Actor* actor_hit {nullptr};
+        terrain::Terrain* terrain_hit {nullptr};
+        bool is_seen_by_player {false};
+        TileId tile {TileId::END};
+        char character {-1};
+        Color color {colors::white()};
+        std::unique_ptr<RangedAttData> att_data {nullptr};
 };
 
 struct ProjectileFireData
@@ -1270,6 +1270,7 @@ static void update_projectile_states(ProjectileFireData& fire_data)
                 if (projectile.actor_hit)
                 {
                         projectile.obstructed_in_path_idx = projectile.path_idx;
+                        projectile.color = colors::light_red();
 
                         continue;
                 }
@@ -1280,6 +1281,7 @@ static void update_projectile_states(ProjectileFireData& fire_data)
                 if (projectile.terrain_hit)
                 {
                         projectile.obstructed_in_path_idx = projectile.path_idx;
+                        projectile.color = colors::yellow();
 
                         continue;
                 }
@@ -1290,6 +1292,19 @@ static void update_projectile_states(ProjectileFireData& fire_data)
                 if (projectile.terrain_hit)
                 {
                         projectile.obstructed_in_path_idx = projectile.path_idx;
+
+                        const auto terrain_id = projectile.terrain_hit->id();
+
+                        if ((terrain_id == terrain::Id::liquid_shallow) ||
+                            (terrain_id == terrain::Id::liquid_deep))
+                        {
+                                projectile.color =
+                                        projectile.terrain_hit->color();
+                        }
+                        else
+                        {
+                                projectile.color = colors::yellow();
+                        }
 
                         continue;
                 }
@@ -1369,11 +1384,10 @@ static void draw_projectile(const Projectile& projectile)
                 projectile.color);
 }
 
-static void draw_projectile_hit(Projectile& projectile,
-                                const int animation_delay)
+static void draw_projectile_hit(
+        Projectile& projectile,
+        const int animation_delay)
 {
-        projectile.color = colors::light_red();
-
         if (config::is_tiles_mode())
         {
                 projectile.tile = TileId::blast1;
@@ -1392,8 +1406,9 @@ static void draw_projectile_hit(Projectile& projectile,
 
                 sdl_base::sleep(animation_delay / 2);
         }
-        else // Text mode
+        else
         {
+                // Text mode
                 projectile.character = '*';
 
                 draw_projectile(projectile);
