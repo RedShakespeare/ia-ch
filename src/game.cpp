@@ -418,9 +418,7 @@ void GameState::draw()
                 if (!init::g_is_demo_mapgen)
                 {
 #endif // NDEBUG
-
                         viewport::focus_on(map::g_player->m_pos);
-
 #ifndef NDEBUG
                 }
 #endif // NDEBUG

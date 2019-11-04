@@ -12,6 +12,7 @@
 #include "actor_player.hpp"
 #include "game.hpp"
 #include "game_time.hpp"
+#include "hints.hpp"
 #include "init.hpp"
 #include "insanity.hpp"
 #include "inventory.hpp"
@@ -73,6 +74,7 @@ static void save_modules()
         player_spells::save();
         map_templates::save();
         pact::save();
+        hints::save();
 
         TRACE_FUNC_END;
 }
@@ -108,6 +110,7 @@ static void load_modules()
         player_spells::load();
         map_templates::load();
         pact::load();
+        hints::load();
 
         TRACE_FUNC_END;
 }

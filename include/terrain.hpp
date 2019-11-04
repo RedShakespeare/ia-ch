@@ -1010,6 +1010,8 @@ public:
                 return Id::altar;
         }
 
+        void on_new_turn() override;
+
         std::string name(const Article article) const override;
 
 private:
@@ -1314,6 +1316,8 @@ public:
         }
 
         std::string name(const Article article) const override;
+
+        void on_new_turn() override;
 
         void bump(actor::Actor& actor_bumping) override;
 

@@ -15,9 +15,9 @@
 #include "common_text.hpp"
 #include "drop.hpp"
 #include "explosion.hpp"
-#include "terrain_mob.hpp"
 #include "game.hpp"
 #include "game_time.hpp"
+#include "hints.hpp"
 #include "init.hpp"
 #include "io.hpp"
 #include "item_factory.hpp"
@@ -34,6 +34,7 @@
 #include "query.hpp"
 #include "saving.hpp"
 #include "sound.hpp"
+#include "terrain_mob.hpp"
 #include "text_format.hpp"
 #include "wham.hpp"
 
@@ -1861,6 +1862,15 @@ void Altar::on_hit(
         (void)dmg_type;
         (void)dmg_method;
         (void)actor;
+}
+
+void Altar::on_new_turn()
+{
+        if (map::g_player->m_pos.is_adjacent(m_pos) &&
+            map::g_cells.at(m_pos).is_seen_by_player)
+        {
+                hints::display(hints::Id::altars);
+        }
 }
 
 std::string Altar::name(const Article article) const
@@ -3902,6 +3912,15 @@ void Fountain::bump(actor::Actor& actor_bumping)
         }
 
         game_time::tick();
+}
+
+void Fountain::on_new_turn()
+{
+        if (map::g_player->m_pos.is_adjacent(m_pos) &&
+            map::g_cells.at(m_pos).is_seen_by_player)
+        {
+                hints::display(hints::Id::fountains);
+        }
 }
 
 void Fountain::bless()

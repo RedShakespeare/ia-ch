@@ -16,6 +16,7 @@
 #include "game.hpp"
 #include "game_time.hpp"
 #include "highscore.hpp"
+#include "hints.hpp"
 #include "insanity.hpp"
 #include "io.hpp"
 #include "item_artifact.hpp"
@@ -125,6 +126,7 @@ void init_session()
         player_spells::init();
         highscore::init();
         pact::init();
+        hints::init();
 
         TRACE_FUNC_END;
 }

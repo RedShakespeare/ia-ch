@@ -20,14 +20,12 @@
 #include "create_character.hpp"
 #include "drop.hpp"
 #include "explosion.hpp"
-#include "terrain_door.hpp"
-#include "terrain_mob.hpp"
-#include "terrain_trap.hpp"
 #include "flood.hpp"
 #include "fov.hpp"
 #include "game.hpp"
 #include "game_commands.hpp"
 #include "game_time.hpp"
+#include "hints.hpp"
 #include "init.hpp"
 #include "insanity.hpp"
 #include "inventory.hpp"
@@ -53,6 +51,9 @@
 #include "query.hpp"
 #include "reload.hpp"
 #include "saving.hpp"
+#include "terrain_door.hpp"
+#include "terrain_mob.hpp"
+#include "terrain_trap.hpp"
 #include "text_format.hpp"
 
 // -----------------------------------------------------------------------------
@@ -1135,6 +1136,31 @@ void Player::on_actor_turn()
                 }
         }
 
+        const auto* const item_here = map::g_cells.at(m_pos).item;
+
+        if (item_here)
+        {
+                const auto d = item_here->data();
+
+                if ((d.type == ItemType::ranged_wpn) &&
+                    !d.ranged.has_infinite_ammo &&
+                    (d.ranged.max_ammo > 0))
+                {
+                        const auto* const wpn =
+                                static_cast<const item::Wpn*>(item_here);
+
+                        if (wpn->m_ammo_loaded > 0)
+                        {
+                                hints::display(hints::Id::unload_weapons);
+                        }
+                }
+        }
+
+        if (enc_percent() >= 100)
+        {
+                hints::display(hints::Id::overburdened);
+        }
+
         pact::on_player_turn();
 
         if (!is_alive())
@@ -1145,6 +1171,8 @@ void Player::on_actor_turn()
         // Take sanity hit from high shock?
         if (shock_tot() >= 100)
         {
+                hints::display(hints::Id::high_shock);
+
                 m_nr_turns_until_ins =
                         (m_nr_turns_until_ins < 0)
                         ? 3
@@ -1158,8 +1186,9 @@ void Player::on_actor_turn()
                                 MsgInterruptPlayer::yes,
                                 MorePromptOnMsg::yes);
                 }
-                else // Time to go crazy!
+                else
                 {
+                        // Time to go crazy!
                         m_nr_turns_until_ins = -1;
 
                         incr_insanity();

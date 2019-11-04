@@ -48,6 +48,7 @@ set(COMMON_SRC
         include/global.hpp
         include/gods.hpp
         include/highscore.hpp
+        include/hints.hpp
         include/info_screen_state.hpp
         include/init.hpp
         include/insanity.hpp
@@ -162,6 +163,7 @@ set(COMMON_SRC
         src/gfx.cpp
         src/gods.cpp
         src/highscore.cpp
+        src/hints.cpp
         src/info_screen_state.cpp
         src/init.cpp
         src/insanity.cpp

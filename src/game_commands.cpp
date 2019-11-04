@@ -1036,7 +1036,7 @@ void handle(const GameCmd cmd)
 
         case GameCmd::debug_f8:
         {
-                map::g_player->m_properties.apply(new PropDeaf());
+                map::g_player->m_properties.apply(new PropInfected());
         }
         break;
 

@@ -15,8 +15,8 @@
 #include "actor_mon.hpp"
 #include "actor_player.hpp"
 #include "explosion.hpp"
-#include "terrain.hpp"
 #include "game_time.hpp"
+#include "hints.hpp"
 #include "io.hpp"
 #include "item_factory.hpp"
 #include "knockback.hpp"
@@ -29,6 +29,7 @@
 #include "property_factory.hpp"
 #include "saving.hpp"
 #include "teleport.hpp"
+#include "terrain.hpp"
 #include "text_format.hpp"
 
 // -----------------------------------------------------------------------------
@@ -326,6 +327,14 @@ PropEnded PropInfected::on_tick()
         }
 
         return PropEnded::no;
+}
+
+void PropInfected::on_applied()
+{
+        if (m_owner->is_player())
+        {
+                hints::display(hints::infected);
+        }
 }
 
 int PropDiseased::affect_max_hp(const int hp_max) const
@@ -1745,6 +1754,13 @@ PropActResult PropCorpseRises::on_act()
                 return PropActResult();
         }
 
+        const bool is_seen_by_player = map::g_player->can_see_actor(*m_owner);
+
+        if (is_seen_by_player)
+        {
+                hints::display(hints::Id::destroying_corpses);
+        }
+
         if (m_nr_turns_until_allow_rise > 0)
         {
                 --m_nr_turns_until_allow_rise;
@@ -1765,7 +1781,7 @@ PropActResult PropCorpseRises::on_act()
 
         --m_owner->m_data->nr_kills;
 
-        if (map::g_cells.at(pos).is_seen_by_player)
+        if (is_seen_by_player)
         {
                 ASSERT(!m_owner->m_data->corpse_name_the.empty());
 

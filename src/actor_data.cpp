@@ -126,7 +126,7 @@ static actor::Id get_id(xml::Element* mon_e)
         const auto id_search = str_to_actor_id_map.find(
                 xml::get_attribute_str(mon_e, "id"));
 
-        ASSERT(id_search != end(str_to_actor_id_map));
+        ASSERT(id_search != std::end(str_to_actor_id_map));
 
         return id_search->second;
 }

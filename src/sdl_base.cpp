@@ -97,7 +97,7 @@ void cleanup()
         SDL_Quit();
 }
 
-void sleep(const Uint32 duration)
+void sleep(const u_int32_t duration)
 {
         if (config::is_bot_playing())
         {

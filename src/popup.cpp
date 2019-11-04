@@ -15,12 +15,15 @@
 #include "panel.hpp"
 #include "query.hpp"
 #include "rect.hpp"
+#include "sdl_base.hpp"
 #include "text_format.hpp"
 
 // -----------------------------------------------------------------------------
 // Private
 // -----------------------------------------------------------------------------
 static const int s_text_w_default = 39;
+
+static const uint32_t s_msg_line_delay = 50;
 
 
 static int get_x0(const int width)
@@ -54,7 +57,7 @@ static int get_title_y(const int text_h)
 
 static void draw_box(const int text_w, const int text_h)
 {
-        const int box_w = get_box_w(text_w);
+        const int box_w = get_box_w(text_w + 2);
         const int box_h = get_box_h(text_h);
 
         const int x0 = get_x0(box_w);
@@ -129,8 +132,9 @@ static void draw_menu_popup(
                                 colors::black(),
                                 true); // Allow pixel-level adjustmet
                 }
-                else // Draw the message with left alignment
+                else
                 {
+                        // Draw the message with left alignment
                         io::draw_text(
                                 line,
                                 Panel::screen,
@@ -183,6 +187,8 @@ void msg(
         const SfxId sfx,
         const int w_change)
 {
+        states::draw();
+
         msg_log::more_prompt();
 
         const int text_w = s_text_w_default + w_change;
@@ -232,7 +238,8 @@ void msg(
                 else
                 {
                         const int text_x0 =
-                                get_x0(s_text_w_default) - ((w_change + 1) / 2);
+                                get_x0(s_text_w_default) -
+                                ((w_change + 1) / 2);
 
                         io::draw_text(
                                 line,
@@ -241,6 +248,10 @@ void msg(
                                 colors::white(),
                                 false); // Do not draw background color
                 }
+
+                io::update_screen();
+
+                sdl_base::sleep(s_msg_line_delay);
 
                 msg_log::add_line_to_history(line);
         }
@@ -256,6 +267,8 @@ void msg(
 
         io::update_screen();
 
+        io::clear_events();
+
         query::wait_for_confirm();
 }
 
@@ -266,7 +279,11 @@ int menu(
         const int w_change,
         const SfxId sfx)
 {
+        states::draw();
+
         msg_log::more_prompt();
+
+        io::clear_events();
 
         if (config::is_bot_playing())
         {

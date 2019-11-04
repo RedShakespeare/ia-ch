@@ -375,6 +375,8 @@ public:
                 Prop(PropId::infected) {}
 
         PropEnded on_tick() override;
+
+        void on_applied() override;
 };
 
 class PropDiseased: public Prop

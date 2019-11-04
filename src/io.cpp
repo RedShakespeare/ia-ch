@@ -1405,9 +1405,7 @@ void draw_text_right(
                 bg_color);
 }
 
-void draw_rectangle(
-        const R& px_rect,
-        const Color& color)
+void draw_rectangle(const R& px_rect, const Color& color)
 {
         draw_rectangle_filled(
                 R(px_rect.p0.x,
@@ -1438,9 +1436,7 @@ void draw_rectangle(
                 color);
 }
 
-void draw_rectangle_filled(
-        const R& px_rect,
-        const Color& color)
+void draw_rectangle_filled(const R& px_rect, const Color& color)
 {
         if (!panels::is_valid())
         {
@@ -1454,7 +1450,7 @@ void draw_rectangle_filled(
                 (Uint16)px_rect.h()
         };
 
-        const SDL_Color& sdl_color = color.sdl_color();
+        const auto& sdl_color = color.sdl_color();
 
         SDL_FillRect(
                 s_screen_srf,

@@ -147,7 +147,7 @@ This is merely a convenience feature - you can just as well use items by selecti
    (3) Pressing "d" opens a list to select an item to drop
 
    (4) Pressing "t" opens a list to select an item to throw
-Selecting an item in this menu will show an aiming marker on the map, to select where to throw the chosen item. In the throwing menu, the item stack previously thrown from (if any) is shown at the top with the "t" key assigned (for convenience). If there is no stack previously thrown from, the "t" key is not assigned to any item.
+The item stack previously thrown from (if any) is shown at the top with the "t" key assigned (for convenience). If there is no stack previously thrown from, the "t" key is not assigned to any item. Selecting an item in this menu will show an aiming marker on the map, to select where to throw the chosen item.
 
 Note that explosives are not used like throwing weapons. Instead they are used by first igniting or priming the explosive, this is done by "activating" it (can be done from the "a" inventory screen, see above) - now you can see your character colored yellow as a warning that you are holding an ignited explosive. Press "t", and aim somewhere (in some cases the game will mark the area around your aim position to indicate the explosion size - be careful though, there may be unseen objects blocking the throw path). Press "t" again to throw the explosive toward the aim position.
 
@@ -226,15 +226,16 @@ Monsters also react to noise, and may disturb nearby monsters when becoming awar
 --------------------------------------------------------------------------------
 High scores and memorial files
 --------------------------------------------------------------------------------
-Winning is not the sole purpose of Infra Arcana - there is also challenge and joy to be found in exploring further, gaining more abilities, discovering more items, or encountering stranger and more powerful monsters than in previous attempts.
+Winning is not necessarily the sole purpose of Infra Arcana - there is also challenge to be found in exploring further, gaining more abilities, discovering more items, or encountering stranger and more powerful monsters than in previous attempts.
 
 After each game is finished, information such as player name and dungeon level reached is stored in a "memorial file" on the disk, and a high score entry is added (unless you manually quit the game by pressing "Q"). The high score list can be viewed by selecting the main menu option "Graveyard". Selecting a high score entry on this screen will show the corresponding stored memorial file.
 
 In addition to this, the top high score entries show up as gravestones on the first level of the game (in the forest). Bumping a gravestone shows a short summary of the high score entry.
 
-Score values are calculated based on your Experience Points (including points gained after the maximum character level is reached), which is then multiplied by several factors.
+Score values are calculated based on your experience points (including points gained after the maximum character level is reached), which is then multiplied by several factors.
 
-The factors contributing to a better score value are:
+The factors contributing to a higher score value are:
+   * Experience points gained
    * Dungeon level reached
    * Fewer turns spent
    * Lower insanity

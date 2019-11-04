@@ -12,7 +12,7 @@
 #include "audio.hpp"
 #include "browser.hpp"
 #include "debug.hpp"
-#include "terrain_data.hpp"
+#include "hints.hpp"
 #include "init.hpp"
 #include "io.hpp"
 #include "misc.hpp"
@@ -21,6 +21,7 @@
 #include "pos.hpp"
 #include "query.hpp"
 #include "sdl_base.hpp"
+#include "terrain_data.hpp"
 #include "text_format.hpp"
 
 // -----------------------------------------------------------------------------
@@ -58,6 +59,7 @@ static bool s_is_ranged_wpn_auto_reload = false;
 static bool s_is_intro_lvl_skipped = false;
 static bool s_is_intro_popup_skipped = false;
 static bool s_is_any_key_confirm_more = false;
+static bool s_display_hints = false;
 static bool s_always_warn_new_mon = false;
 static int s_delay_projectile_draw = -1;
 static int s_delay_shotgun = -1;
@@ -185,6 +187,7 @@ static void set_default_variables()
         s_is_intro_lvl_skipped = false;
         s_is_intro_popup_skipped = false;
         s_is_any_key_confirm_more = false;
+        s_display_hints = true;
         s_always_warn_new_mon = true;
         s_is_light_explosive_prompt = false;
         s_is_drink_malign_pot_prompt = true;
@@ -369,37 +372,45 @@ static void player_sets_option(const MenuBrowser& browser)
         }
         break;
 
-        case 13: // Always warn when a new monster appears
+        case 13: // Display hints
+        {
+                s_display_hints = !s_display_hints;
+
+                hints::init();
+        }
+        break;
+
+        case 14: // Always warn when a new monster appears
         {
                 s_always_warn_new_mon = !s_always_warn_new_mon;
         }
         break;
 
-        case 14: // Print warning when lighting explovies
+        case 15: // Print warning when lighting explovies
         {
                 s_is_light_explosive_prompt = !s_is_light_explosive_prompt;
         }
         break;
 
-        case 15: // Print warning when drinking known malign potions
+        case 16: // Print warning when drinking known malign potions
         {
                 s_is_drink_malign_pot_prompt = !s_is_drink_malign_pot_prompt;
         }
         break;
 
-        case 16: // Print warning when melee attacking with ranged weapons
+        case 17: // Print warning when melee attacking with ranged weapons
         {
                 s_is_ranged_wpn_meleee_prompt = !s_is_ranged_wpn_meleee_prompt;
         }
         break;
 
-        case 17: // Ranged weapon auto reload
+        case 18: // Ranged weapon auto reload
         {
                 s_is_ranged_wpn_auto_reload = !s_is_ranged_wpn_auto_reload;
         }
         break;
 
-        case 18: // Projectile delay
+        case 19: // Projectile delay
         {
                 const P p(s_opt_values_x_pos, s_opt_y0 + browser.y());
 
@@ -418,7 +429,7 @@ static void player_sets_option(const MenuBrowser& browser)
         }
         break;
 
-        case 19: // Shotgun delay
+        case 20: // Shotgun delay
         {
                 const P p(s_opt_values_x_pos, s_opt_y0 + browser.y());
 
@@ -437,7 +448,7 @@ static void player_sets_option(const MenuBrowser& browser)
         }
         break;
 
-        case 20: // Explosion delay
+        case 21: // Explosion delay
         {
                 const P p(s_opt_values_x_pos, s_opt_y0 + browser.y());
 
@@ -456,7 +467,7 @@ static void player_sets_option(const MenuBrowser& browser)
         }
         break;
 
-        case 21: // Reset to defaults
+        case 22: // Reset to defaults
         {
                 set_default_variables();
 
@@ -547,6 +558,9 @@ static void set_variables_from_lines(std::vector<std::string>& lines)
         s_is_any_key_confirm_more = lines.front() == "1";
         lines.erase(std::begin(lines));
 
+        s_display_hints = lines.front() == "1";
+        lines.erase(std::begin(lines));
+
         s_always_warn_new_mon = lines.front() == "1";
         lines.erase(std::begin(lines));
 
@@ -626,6 +640,7 @@ static std::vector<std::string> lines_from_variables()
         lines.push_back(s_is_intro_lvl_skipped ? "1" : "0");
         lines.push_back(s_is_intro_popup_skipped ? "1" : "0");
         lines.push_back(s_is_any_key_confirm_more ? "1" : "0");
+        lines.push_back(s_display_hints ? "1" : "0");
         lines.push_back(s_always_warn_new_mon ? "1" : "0");
         lines.push_back(s_is_light_explosive_prompt ? "1" : "0");
         lines.push_back(s_is_drink_malign_pot_prompt ? "1" : "0");
@@ -815,6 +830,11 @@ bool is_any_key_confirm_more()
         return s_is_any_key_confirm_more;
 }
 
+bool should_display_hints()
+{
+        return s_display_hints;
+}
+
 bool always_warn_new_mon()
 {
         return s_always_warn_new_mon;
@@ -864,7 +884,7 @@ void set_fullscreen(const bool value)
 // -----------------------------------------------------------------------------
 ConfigState::ConfigState() :
         State(),
-        m_browser(22)
+        m_browser(23)
 {
 
 }
@@ -1032,6 +1052,13 @@ void ConfigState::draw()
                 },
 
                 {
+                        "Display hints",
+                        config::s_display_hints
+                        ? "Yes"
+                        : "No"
+                },
+
+                {
                         "Always warn when new monster is seen",
                         config::s_always_warn_new_mon
                         ? "Yes"
@@ -1127,6 +1154,6 @@ void ConfigState::draw()
         io::draw_text(
                 "[enter] to set option [space/esc] to exit",
                 Panel::screen,
-                P(1, 24),
+                P(1, panels::h(Panel::screen) - 1),
                 colors::white());
 }

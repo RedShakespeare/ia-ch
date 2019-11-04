@@ -83,6 +83,7 @@ Misc
 * The game is auto-saved on each descent to a new dungeon level, so in the case of a crash, only the progress on the current dungeon level is lost
 * Switched license to GNU Affero General Public License v3.0 or later, and added a reference to this license at the top of each Infra Arcana source code file, and a reference from the main menu
 * User data (such as save file and highscore list) is no longer stored in the game directory, instead the user data location is based on SDL_GetPrefPath() and the current version/checksum of the game (e.g. "~/.local/share/infra_arcana/873f2d0e/") - the Infra Arcana game directory is now treated as read-only.
+* Added in-game hints for some basic concepts such as treating infections or unloading firearms
 
 --------------------------------------------------------------
 v19.2 (November 6, 2017)
