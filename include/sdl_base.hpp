@@ -20,7 +20,7 @@ void init();
 
 void cleanup();
 
-void sleep(const u_int32_t duration);
+void sleep(const uint32_t duration);
 
 std::string sdl_pref_dir();
 
