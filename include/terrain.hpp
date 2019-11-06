@@ -1024,34 +1024,6 @@ private:
                 actor::Actor* const actor) override;
 };
 
-class Gong: public Terrain
-{
-public:
-        Gong(const P& p);
-
-        Gong() = delete;
-
-        Id id() const override
-        {
-                return Id::gong;
-        }
-
-        std::string name(const Article article) const override;
-
-        void bump(actor::Actor& actor_bumping) override;
-
-private:
-        Color color_default() const override;
-
-        void on_hit(
-                const int dmg,
-                const DmgType dmg_type,
-                const DmgMethod dmg_method,
-                actor::Actor* const actor) override;
-
-        bool m_can_offer_pact {true};
-};
-
 class Tree: public Terrain
 {
 public:

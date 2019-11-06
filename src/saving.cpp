@@ -26,7 +26,6 @@
 #include "map_travel.hpp"
 #include "misc.hpp"
 #include "msg_log.hpp"
-#include "pact.hpp"
 #include "paths.hpp"
 #include "player_bon.hpp"
 #include "player_spells.hpp"
@@ -73,7 +72,6 @@ static void save_modules()
         game_time::save();
         player_spells::save();
         map_templates::save();
-        pact::save();
         hints::save();
 
         TRACE_FUNC_END;
@@ -109,7 +107,6 @@ static void load_modules()
         game_time::load();
         player_spells::load();
         map_templates::load();
-        pact::load();
         hints::load();
 
         TRACE_FUNC_END;

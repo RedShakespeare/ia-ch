@@ -2046,7 +2046,7 @@ PropActResult PropSpeaksCurses::on_act()
 
         if (!mon->is_alive() ||
             (mon->m_aware_of_player_counter <= 0) ||
-            !rnd::one_in(4))
+            !rnd::one_in(3))
         {
                 return PropActResult();
         }

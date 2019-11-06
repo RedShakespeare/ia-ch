@@ -30,7 +30,6 @@
 #include "map_templates.hpp"
 #include "map_travel.hpp"
 #include "msg_log.hpp"
-#include "pact.hpp"
 #include "panel.hpp"
 #include "player_bon.hpp"
 #include "player_spells.hpp"
@@ -125,7 +124,6 @@ void init_session()
         bot::init();
         player_spells::init();
         highscore::init();
-        pact::init();
         hints::init();
 
         TRACE_FUNC_END;
@@ -137,7 +135,6 @@ void cleanup_session()
 
         map_templates::clear_base_room_templates_used();
 
-        pact::cleanup();
         highscore::cleanup();
         player_spells::cleanup();
         insanity::cleanup();

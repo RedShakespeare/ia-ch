@@ -8,7 +8,7 @@ Gameplay
 * The intro map is much smaller
 * Trees appearing beneath the first few levels are now "giant fungi" instead
 * Added swimming
-* You can now make a "dark pact" (by striking a temple gong), giving a bonus for a penalty - the bonus is received immediately, and the penalty is activated later in the game
+* Added "Temple Gongs" - striking a Gong gives a significant bonus and penalty
 * Removed passive shock for carrying or wearing certain items - unique items may instead have a curse on them
 * Spotting hidden doors or traps now gives a small amount of XP (except when traps are revealed by triggering them)
 * The blessed/cursed status effects no longer affect spell casting, and instead only give +/- 5% to hit chance, evasion, and sneaking - their descriptions now also say explicitly what they do (instead of "is generally more lucky")

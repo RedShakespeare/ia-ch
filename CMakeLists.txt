@@ -82,7 +82,6 @@ set(COMMON_SRC
         include/minimap.hpp
         include/misc.hpp
         include/msg_log.hpp
-        include/pact.hpp
         include/panel.hpp
         include/pathfind.hpp
         include/paths.hpp
@@ -115,6 +114,7 @@ set(COMMON_SRC
         include/terrain_data.hpp
         include/terrain_door.hpp
         include/terrain_event.hpp
+        include/terrain_gong.hpp
         include/terrain_mob.hpp
         include/terrain_monolith.hpp
         include/terrain_pylon.hpp
@@ -207,7 +207,6 @@ set(COMMON_SRC
         src/minimap.cpp
         src/misc.cpp
         src/msg_log.cpp
-        src/pact.cpp
         src/panel.cpp
         src/pathfind.cpp
         src/paths.cpp
@@ -238,6 +237,7 @@ set(COMMON_SRC
         src/terrain_data.cpp
         src/terrain_door.cpp
         src/terrain_event.cpp
+        src/terrain_gong.cpp
         src/terrain_mob.cpp
         src/terrain_monolith.cpp
         src/terrain_pylon.cpp

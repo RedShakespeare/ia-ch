@@ -42,7 +42,6 @@
 #include "minimap.hpp"
 #include "misc.hpp"
 #include "msg_log.hpp"
-#include "pact.hpp"
 #include "player_bon.hpp"
 #include "player_spells.hpp"
 #include "popup.hpp"
@@ -575,8 +574,6 @@ void Player::on_new_dlvl_reached()
                         slot.item->on_player_reached_new_dlvl();
                 }
         }
-
-        pact::on_player_reached_new_dlvl();
 
         for (auto* const item: m_inv.m_backpack)
         {
@@ -1160,8 +1157,6 @@ void Player::on_actor_turn()
         {
                 hints::display(hints::Id::overburdened);
         }
-
-        pact::on_player_turn();
 
         if (!is_alive())
         {

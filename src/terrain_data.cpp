@@ -9,16 +9,17 @@
 #include "init.hpp"
 
 #include "actor.hpp"
-#include "terrain.hpp"
-#include "terrain_mob.hpp"
-#include "terrain_trap.hpp"
-#include "terrain_event.hpp"
-#include "terrain_door.hpp"
-#include "terrain_monolith.hpp"
-#include "terrain_pylon.hpp"
 #include "game_time.hpp"
 #include "property_data.hpp"
 #include "property_handler.hpp"
+#include "terrain.hpp"
+#include "terrain_door.hpp"
+#include "terrain_event.hpp"
+#include "terrain_gong.hpp"
+#include "terrain_mob.hpp"
+#include "terrain_monolith.hpp"
+#include "terrain_pylon.hpp"
+#include "terrain_trap.hpp"
 
 // -----------------------------------------------------------------------------
 // Private

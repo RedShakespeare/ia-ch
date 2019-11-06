@@ -25,7 +25,6 @@
 #include "map_parsing.hpp"
 #include "map_travel.hpp"
 #include "msg_log.hpp"
-#include "pact.hpp"
 #include "pickup.hpp"
 #include "popup.hpp"
 #include "property.hpp"
@@ -1883,117 +1882,6 @@ std::string Altar::name(const Article article) const
 Color Altar::color_default() const
 {
         return colors::white();
-}
-
-// -----------------------------------------------------------------------------
-// Gong
-// -----------------------------------------------------------------------------
-Gong::Gong(const P& p) :
-        Terrain(p) {}
-
-void Gong::bump(actor::Actor& actor_bumping)
-{
-        if (!actor_bumping.is_player())
-        {
-                return;
-        }
-
-        if (!map::g_cells.at(m_pos).is_seen_by_player)
-        {
-                msg_log::clear();
-
-                const std::string msg =
-                        "There is a temple gong here. Strike it? " +
-                        common_text::g_yes_or_no_hint;
-
-                msg_log::add(
-                        msg,
-                        colors::light_white(),
-                        MsgInterruptPlayer::no,
-                        MorePromptOnMsg::no,
-                        CopyToMsgHistory::no);
-
-                const auto answer = query::yes_or_no();
-
-                if (answer == BinaryAnswer::no)
-                {
-                        msg_log::clear();
-
-                        return;
-                }
-        }
-
-        msg_log::add("I strike the temple gong!");
-
-        Snd snd(
-                "The crash resonates through the air!",
-                SfxId::gong,
-                IgnoreMsgIfOriginSeen::no,
-                m_pos,
-                map::g_player,
-                SndVol::high,
-                AlertsMon::yes,
-                MorePromptOnMsg::no);
-
-        snd.run();
-
-        const bool is_deaf = map::g_player->m_properties.has(PropId::deaf);
-
-        if (m_can_offer_pact && !is_deaf)
-        {
-                msg_log::more_prompt();
-
-                msg_log::add(
-                        std::string(
-                                "As the sound of the instrument dies away, I "
-                                "hear a discarnate whispering..."),
-                        colors::text(),
-                        MsgInterruptPlayer::no,
-                        MorePromptOnMsg::yes);
-
-                msg_log::clear();
-
-                states::draw();
-
-                pact::offer_pact_to_player();
-
-                m_can_offer_pact = false;
-
-                game_time::tick();
-        }
-        else
-        {
-                msg_log::add("Nothing happens.");
-        }
-
-        game_time::tick();
-}
-
-void Gong::on_hit(
-        const int dmg,
-        const DmgType dmg_type,
-        const DmgMethod dmg_method,
-        actor::Actor* const actor)
-{
-        (void)dmg;
-        (void)dmg_type;
-        (void)dmg_method;
-        (void)actor;
-}
-
-std::string Gong::name(const Article article) const
-{
-        std::string a = (article == Article::a) ? "a " : "the ";
-
-        return a + "temple gong";
-}
-
-Color Gong::color_default() const
-{
-        return
-                m_can_offer_pact
-                ? colors::brown()
-                : colors::gray();
 }
 
 // -----------------------------------------------------------------------------

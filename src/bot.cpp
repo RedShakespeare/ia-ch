@@ -26,7 +26,6 @@
 #include "map_parsing.hpp"
 #include "map_travel.hpp"
 #include "misc.hpp"
-#include "pact.hpp"
 #include "pathfind.hpp"
 #include "property.hpp"
 #include "property_data.hpp"
@@ -417,12 +416,6 @@ void act()
                 explosion::run(map::g_player->m_pos, ExplType::expl);
 
                 return;
-        }
-
-        // Occasionally sign a dark pact
-        if (rnd::one_in(1000))
-        {
-                pact::offer_pact_to_player();
         }
 
         // Handle blocking door
