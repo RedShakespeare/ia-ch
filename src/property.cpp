@@ -70,6 +70,24 @@ void PropBlessed::on_more(const Prop& new_prop)
         bless_adjacent();
 }
 
+int PropBlessed::ability_mod(const AbilityId ability) const
+{
+        switch (ability)
+        {
+        case AbilityId::melee:
+        case AbilityId::ranged:
+        case AbilityId::dodging:
+        case AbilityId::stealth:
+        case AbilityId::searching:
+                return 10;
+
+        case AbilityId::END:
+                break;
+        }
+
+        return 0;
+}
+
 void PropBlessed::bless_adjacent() const
 {
         // "Bless" adjacent fountains
@@ -110,6 +128,24 @@ void PropCursed::on_more(const Prop& new_prop)
         (void)new_prop;
 
         curse_adjacent();
+}
+
+int PropCursed::ability_mod(const AbilityId ability) const
+{
+        switch (ability)
+        {
+        case AbilityId::melee:
+        case AbilityId::ranged:
+        case AbilityId::dodging:
+        case AbilityId::stealth:
+        case AbilityId::searching:
+                return -10;
+
+        case AbilityId::END:
+                break;
+        }
+
+        return 0;
 }
 
 void PropCursed::curse_adjacent() const

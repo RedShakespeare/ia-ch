@@ -51,7 +51,7 @@ Door::Door(const P& terrain_pos,
                 // other states elsewhere during map generation (e.g. set to
                 // secret to hide an optional branch of the map).
 
-                const int pct_secret = 15 + (map::g_dlvl - 1);
+                const int pct_secret = 20 + (map::g_dlvl - 1);
                 const int pct_stuck = 5;
 
                 if ((m_type != DoorType::gate) && rnd::percent(pct_secret))

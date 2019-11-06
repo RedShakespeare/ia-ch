@@ -587,20 +587,7 @@ public:
 
         void on_more(const Prop& new_prop) override;
 
-        int ability_mod(const AbilityId ability) const override
-        {
-                switch (ability)
-                {
-                case AbilityId::melee:
-                case AbilityId::ranged:
-                case AbilityId::dodging:
-                case AbilityId::stealth:
-                        return 5;
-
-                default:
-                        return 0;
-                }
-        }
+        int ability_mod(const AbilityId ability) const override;
 
 private:
         void bless_adjacent() const;
@@ -612,20 +599,7 @@ public:
         PropCursed() :
                 Prop(PropId::cursed) {}
 
-        int ability_mod(const AbilityId ability) const override
-        {
-                switch (ability)
-                {
-                case AbilityId::melee:
-                case AbilityId::ranged:
-                case AbilityId::dodging:
-                case AbilityId::stealth:
-                        return -5;
-
-                default:
-                        return 0;
-                }
-        }
+        int ability_mod(const AbilityId ability) const override;
 
         void on_applied() override;
 
