@@ -310,9 +310,25 @@ std::vector<std::string> Potion::descr_hook() const
         {
                 return {descr_identified()};
         }
-        else // Not identified
+        else
         {
-                return m_data->base_descr;
+                auto lines = m_data->base_descr;
+
+                if (m_data->is_alignment_known)
+                {
+                        lines.push_back(
+                                "This potion is " +
+                                text_format::first_to_lower(alignment_str()) +
+                                ".");
+                }
+                else
+                {
+                        lines.push_back(
+                                "Perhaps keeping it for a while will reveal "
+                                "something about it.");
+                }
+
+                return lines;
         }
 }
 

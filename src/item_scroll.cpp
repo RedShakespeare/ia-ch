@@ -270,8 +270,9 @@ std::vector<std::string> Scroll::descr_hook() const
 
                 return descr;
         }
-        else // Not identified
+        else
         {
+                // Not identified
                 auto lines = m_data->base_descr;
 
                 if (m_data->is_spell_domain_known)
@@ -282,6 +283,12 @@ std::vector<std::string> Scroll::descr_hook() const
                         {
                                 lines.push_back(domain_str);
                         }
+                }
+                else
+                {
+                        lines.push_back(
+                                "Perhaps keeping it for a while will reveal "
+                                "something about it.");
                 }
 
                 return lines;
