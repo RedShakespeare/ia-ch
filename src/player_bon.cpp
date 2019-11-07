@@ -629,10 +629,9 @@ std::string trait_descr(const Trait id)
 
         case Trait::undead_bane:
                 return
-                        "+2 melee and ranged attack damage against undead "
-                        "monsters. Attacks against ethereal undead monsters "
-                        "(e.g. Ghosts) never pass through them (although you "
-                        "can still miss in the ordinary way)";
+                        "+2 melee and ranged attack damage against all undead "
+                        "monsters, +50% hit chance against ethereal undead "
+                        "monsters (Ghosts)";
 
         case Trait::elec_incl:
                 return
