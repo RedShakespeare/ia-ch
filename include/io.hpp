@@ -168,8 +168,6 @@ void draw_blast_at_seen_actors(
 
 void draw_main_menu_logo();
 
-void draw_skull(const P pos);
-
 // TODO: Perhaps add an option to draw a background color inside the box
 void draw_box(
         const R& area,

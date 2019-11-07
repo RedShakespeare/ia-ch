@@ -46,7 +46,6 @@ static SDL_Surface* s_screen_srf = nullptr;
 static SDL_Texture* s_screen_texture = nullptr;
 
 static SDL_Surface* s_main_menu_logo_srf = nullptr;
-static SDL_Surface* s_skull_srf = nullptr;
 
 static const size_t s_font_nr_x = 16;
 static const size_t s_font_nr_y = 7;
@@ -432,15 +431,6 @@ static void load_images()
 
         s_main_menu_logo_srf =
                 SDL_ConvertSurface(tmp_srf, s_screen_srf->format, 0);
-
-        SDL_FreeSurface(tmp_srf);
-
-        // Skull
-        tmp_srf = IMG_Load(paths::skull_img_path().c_str());
-
-        ASSERT(tmp_srf && "Failed to load skull image");
-
-        s_skull_srf = SDL_ConvertSurface(tmp_srf, s_screen_srf->format, 0);
 
         SDL_FreeSurface(tmp_srf);
 
@@ -1049,12 +1039,6 @@ void cleanup()
                 s_main_menu_logo_srf = nullptr;
         }
 
-        if (s_skull_srf)
-        {
-                SDL_FreeSurface(s_skull_srf);
-                s_skull_srf = nullptr;
-        }
-
         TRACE_FUNC_END;
 }
 
@@ -1658,20 +1642,6 @@ void draw_main_menu_logo()
         const P px_pos((screen_px_w - logo_px_h) / 2, 0);
 
         blit_surface(*s_main_menu_logo_srf, px_pos);
-}
-
-void draw_skull(const P pos)
-{
-        if (!panels::is_valid())
-        {
-                return;
-        }
-
-        const P px_pos(
-                pos.x * config::map_cell_px_w(),
-                pos.y * config::map_cell_px_h());
-
-        blit_surface(*s_skull_srf, px_pos);
 }
 
 void draw_blast_at_cells(const std::vector<P>& positions, const Color& color)
