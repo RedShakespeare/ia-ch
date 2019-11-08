@@ -612,19 +612,20 @@ static void emit_melee_snd(const MeleeAttData& att_data)
 
         auto ignore_msg_if_origin_seeen = IgnoreMsgIfOriginSeen::yes;
 
-        const bool is_player_seeing_attacker =
-                map::g_player->can_see_actor(*att_data.attacker);
-
-        const bool is_player_seeing_defender =
-                map::g_player->can_see_actor(*att_data.defender);
-
-        if (att_data.attacker &&
-            !is_player_seeing_attacker &&
-            !is_player_seeing_defender)
+        if (att_data.attacker)
         {
-                // Two unseen monsters fighting each other - always include the
-                // sound message
-                ignore_msg_if_origin_seeen = IgnoreMsgIfOriginSeen::no;
+                const bool is_player_seeing_defender =
+                        map::g_player->can_see_actor(*att_data.defender);
+
+                const bool is_player_seeing_attacker =
+                        map::g_player->can_see_actor(*att_data.attacker);
+
+                if (!is_player_seeing_attacker && !is_player_seeing_defender)
+                {
+                        // Two unseen monsters fighting each other - always
+                        // include the sound message
+                        ignore_msg_if_origin_seeen = IgnoreMsgIfOriginSeen::no;
+                }
         }
 
         Snd snd(
