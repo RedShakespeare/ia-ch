@@ -127,30 +127,16 @@ ConsumeItem StrangeDevice::activate(actor::Actor* const actor)
         if (!m_data->is_identified)
         {
                 msg_log::add(
-                        "This device is completely alien to me, ");
-
-                msg_log::add(
-                        "I could never understand it through normal means.");
+                        "This device is completely alien to me, I could never "
+                        "understand it through normal means.");
 
                 return ConsumeItem::no;
         }
 
-        const std::string item_name =
-                name(ItemRefType::plain, ItemRefInf::none);
-
-        const std::string item_name_a =
-                name(ItemRefType::a, ItemRefInf::none);
-
-        msg_log::add("I activate " + item_name_a + "...");
-
-        // Damage user? Fail to run effect? Condition degrade? Warning?
-        const std::string hurt_msg  = "It hits me with a jolt of electricity!";
-
-        bool is_effect_failed = false;
-
-        bool is_cond_degrade = false;
-
-        bool is_warning = false;
+        bool should_warn = false;
+        bool should_hurt_user = false;
+        bool should_fail = false;
+        bool should_degrade = false;
 
         int max = 8;
 
@@ -165,52 +151,26 @@ ConsumeItem StrangeDevice::activate(actor::Actor* const actor)
         {
         case Condition::breaking:
         {
-                is_cond_degrade = (rnd <= 2);
-
-                is_effect_failed =
-                        (rnd == 3) ||
-                        (rnd == 4);
-
-                if ((rnd == 5) ||
-                    (rnd == 6))
-                {
-                        msg_log::add(hurt_msg, colors::msg_bad());
-
-                        actor::hit(*actor, rnd::range(1, 3), DmgType::electric);
-                }
-
-                is_warning =
-                        (rnd == 7) ||
-                        (rnd == 8);
+                should_warn = (rnd == 7) || (rnd == 8);
+                should_hurt_user = (rnd == 5) || (rnd == 6);
+                should_fail = (rnd == 3) || (rnd == 4);
+                should_degrade = (rnd <= 2);
         }
         break;
 
         case Condition::shoddy:
         {
-                is_cond_degrade = (rnd <= 2);
-
-                is_effect_failed = (rnd == 3);
-
-                if (rnd == 4)
-                {
-                        msg_log::add(hurt_msg, colors::msg_bad());
-
-                        actor::hit(*actor, 1, DmgType::electric);
-                }
-
-                is_warning =
-                        (rnd == 5) ||
-                        (rnd == 6);
+                should_warn = (rnd == 5) || (rnd == 6);
+                should_hurt_user = (rnd == 4);
+                should_fail = (rnd == 3);
+                should_degrade = (rnd <= 2);
         }
         break;
 
         case Condition::fine:
         {
-                is_cond_degrade = (rnd <= 2);
-
-                is_warning =
-                        (rnd == 3) ||
-                        (rnd == 4);
+                should_warn = (rnd == 3) || (rnd == 4);
+                should_degrade = (rnd <= 2);
         }
         break;
         }
@@ -220,9 +180,38 @@ ConsumeItem StrangeDevice::activate(actor::Actor* const actor)
                 return ConsumeItem::no;
         }
 
+        if (!should_fail)
+        {
+                if (should_degrade)
+                {
+                        audio::play(SfxId::strange_device_damaged);
+                }
+                else
+                {
+                        audio::play(SfxId::strange_device_activate);
+                }
+        }
+
+        const std::string item_name =
+                name(ItemRefType::plain, ItemRefInf::none);
+
+        const std::string item_name_a =
+                name(ItemRefType::a, ItemRefInf::none);
+
+        msg_log::add("I activate " + item_name_a + "...");
+
         ConsumeItem consumed = ConsumeItem::no;
 
-        if (is_effect_failed)
+        if (should_hurt_user)
+        {
+                msg_log::add(
+                        "It hits me with a jolt of electricity!",
+                        colors::msg_bad());
+
+                actor::hit(*actor, rnd::range(1, 3), DmgType::electric);
+        }
+
+        if (should_fail)
         {
                 msg_log::add("It suddenly stops.");
         }
@@ -233,7 +222,7 @@ ConsumeItem StrangeDevice::activate(actor::Actor* const actor)
 
         if (consumed == ConsumeItem::no)
         {
-                if (is_cond_degrade)
+                if (should_degrade)
                 {
                         if (condition == Condition::breaking)
                         {
@@ -246,22 +235,22 @@ ConsumeItem StrangeDevice::activate(actor::Actor* const actor)
                                 msg_log::add(
                                         "The " +
                                         item_name +
-                                        " makes a terrible grinding noise.");
-
-                                msg_log::add("I seem to have damaged it.");
+                                        " makes a terrible grinding noise. "
+                                        "I seem to have damaged it.");
 
                                 condition = (Condition)((int)condition - 1);
                         }
                 }
 
-                if (is_warning)
+                if (should_warn)
                 {
                         msg_log::add("The " + item_name + " hums ominously.");
                 }
         }
 
-        map::g_player->incr_shock(ShockLvl::terrifying,
-                                ShockSrc::use_strange_item);
+        map::g_player->incr_shock(
+                ShockLvl::terrifying,
+                ShockSrc::use_strange_item);
 
         game_time::tick();
 

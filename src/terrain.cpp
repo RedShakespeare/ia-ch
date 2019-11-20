@@ -1067,73 +1067,91 @@ void Statue::on_hit(
 {
         (void)dmg;
 
-        if ((dmg_type == DmgType::physical) &&
-            (dmg_method == DmgMethod::kicking))
+        if ((dmg_type != DmgType::physical) ||
+            (dmg_method != DmgMethod::kicking))
         {
-                ASSERT(actor);
-
-                if (actor->m_properties.has(PropId::weakened))
-                {
-                        msg_log::add("It wiggles a bit.");
-                        return;
-                }
-
-                const AlertsMon alerts_mon =
-                        (actor == map::g_player)
-                        ? AlertsMon::yes
-                        : AlertsMon::no;
-
-                if (map::g_cells.at(m_pos).is_seen_by_player)
-                {
-                        msg_log::add("It topples over.");
-                }
-
-                Snd snd("I hear a crash.",
-                        SfxId::END,
-                        IgnoreMsgIfOriginSeen::yes,
-                        m_pos,
-                        actor,
-                        SndVol::low,
-                        alerts_mon);
-
-                snd_emit::run(snd);
-
-                const P dst_pos = m_pos + (m_pos - actor->m_pos);
-
-                map::put(new RubbleLow(m_pos)); // NOTE: "this" is now deleted!
-
-                actor::Actor* const actor_behind = map::first_actor_at_pos(dst_pos);
-
-                if (actor_behind && actor_behind->is_alive())
-                {
-                        if (!actor_behind->m_properties.has(PropId::ethereal))
-                        {
-                                if (actor_behind == map::g_player)
-                                {
-                                        msg_log::add("It falls on me!");
-                                }
-                                else if (map::g_player->can_see_actor(*actor_behind))
-                                {
-                                        msg_log::add("It falls on " + actor_behind->name_a() + ".");
-                                }
-
-                                actor::hit(*actor_behind, rnd::range(3, 15), DmgType::physical);
-                        }
-                }
-
-                const auto terrain_id = map::g_cells.at(dst_pos).terrain->id();
-
-                // NOTE: This is kinda hacky, but the rubble is mostly just for
-                // decoration anyway, so it doesn't really matter.
-                if (terrain_id == terrain::Id::floor ||
-                    terrain_id == terrain::Id::grass ||
-                    terrain_id == terrain::Id::carpet)
-                {
-                        map::put(new RubbleLow(dst_pos));
-                }
-
-                map::update_vision();
+                return;
         }
+
+        ASSERT(actor);
+
+        if (actor->m_properties.has(PropId::weakened))
+        {
+                msg_log::add("It wiggles a bit.");
+
+                return;
+        }
+
+        const AlertsMon alerts_mon =
+                (actor == map::g_player)
+                ? AlertsMon::yes
+                : AlertsMon::no;
+
+        if (map::g_cells.at(m_pos).is_seen_by_player)
+        {
+                msg_log::add("It topples over.");
+        }
+
+        Snd snd(
+                "I hear a crash.",
+                SfxId::statue_crash,
+                IgnoreMsgIfOriginSeen::yes,
+                m_pos,
+                actor,
+                SndVol::low,
+                alerts_mon);
+
+        snd_emit::run(snd);
+
+        const P dst_pos = m_pos + (m_pos - actor->m_pos);
+
+        map::put(new RubbleLow(m_pos)); // NOTE: "this" is now deleted!
+
+        actor::Actor* const actor_behind =
+                map::first_actor_at_pos(dst_pos);
+
+        if (actor_behind && actor_behind->is_alive())
+        {
+                if (!actor_behind->m_properties.has(PropId::ethereal))
+                {
+                        if (actor_behind == map::g_player)
+                        {
+                                msg_log::add("It falls on me!");
+                        }
+                        else
+                        {
+                                const bool is_player_seeing_actor =
+                                        map::g_player->can_see_actor(
+                                                *actor_behind);
+
+                                if (is_player_seeing_actor)
+                                {
+                                        msg_log::add(
+                                                "It falls on " +
+                                                actor_behind->name_a() +
+                                                ".");
+                                }
+                        }
+
+                        actor::hit(
+                                *actor_behind,
+                                rnd::range(3, 15),
+                                DmgType::physical);
+                }
+        }
+
+        const auto terrain_id = map::g_cells.at(dst_pos).terrain->id();
+
+        // NOTE: This is kinda hacky, but the rubble is mostly just for
+        // decoration anyway, so it doesn't really matter.
+        if (terrain_id == terrain::Id::floor ||
+            terrain_id == terrain::Id::grass ||
+            terrain_id == terrain::Id::carpet)
+        {
+                map::put(new RubbleLow(dst_pos));
+        }
+
+        map::update_vision();
 }
 
 std::string Statue::name(const Article article) const

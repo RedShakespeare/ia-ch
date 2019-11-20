@@ -196,6 +196,7 @@ void init()
         load(SfxId::boss_voice1, "sfx_boss_voice1.ogg");
         load(SfxId::boss_voice2, "sfx_boss_voice2.ogg");
         load(SfxId::chains, "sfx_chains.ogg");
+        load(SfxId::statue_crash, "sfx_statue_crash.ogg");
         load(SfxId::glop, "sfx_glop.ogg");
         load(SfxId::lever_pull, "sfx_lever_pull.ogg");
         load(SfxId::monolith, "sfx_monolith.ogg");
@@ -207,6 +208,8 @@ void init()
         load(SfxId::pickup, "sfx_pickup.ogg");
         load(SfxId::lantern, "sfx_electric_lantern.ogg");
         load(SfxId::potion_quaff, "sfx_potion_quaff.ogg");
+        load(SfxId::strange_device_activate, "sfx_strange_device_activate.ogg");
+        load(SfxId::strange_device_damaged, "sfx_strange_device_damaged.ogg");
         load(SfxId::spell_generic, "sfx_spell_generic.ogg");
         load(SfxId::spell_shield_break, "sfx_spell_shield_break.ogg");
         load(SfxId::insanity_rise, "sfx_insanity_rising.ogg");

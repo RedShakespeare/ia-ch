@@ -153,10 +153,10 @@ Original title:      ???
 License:             ???
 
 File:                amb_021.ogg
-Source:              ???
-Author:              ???
-Original title:      ???
-License:             ???
+Source:              https://www.pmsfx.com/free
+Author:              Phil Michalski
+Original title:      PM_Darkscapes_1.wav
+EULA:                https://www.pmsfx.com/legal-1
 
 File:                amb_022.ogg
 Source:              Created for Infra Arcana
@@ -213,10 +213,10 @@ Original title:      ???
 License:             ???
 
 File:                amb_031.ogg
-Source:              https://www.freesound.org/people/nicStage/sounds/1178
-Author:              nicStage (username on freesound.org)
-Original title:      guitar string ominous.wav
-License:             Attribution 3.0 Unported (CC-BY-3.0)
+Source:              https://www.pmsfx.com/free
+Author:              Phil Michalski
+Original title:      PM_Darkscapes_27.wav
+EULA:                https://www.pmsfx.com/legal-1
 
 File:                amb_032.ogg
 Source:              https://www.freesound.org/people/suonho/sounds/9691
@@ -669,6 +669,25 @@ Author:              Kinoton (username on freesound.org)
 Original title:      Thunder Clap And Rumble
 License:             CC0 1.0 Universal (CC0-1.0)
 Changes made:        Cut parts of the sound, and made some minor touches
+
+File:                sfx_strange_device_activate.ogg
+Source:              https://www.pmsfx.com/free
+Author:              Phil Michalski
+Original title:      PM_HT_1 Sci-Fi, Futuristic, Tech, Technology, Open.wav
+EULA:                https://www.pmsfx.com/legal-1
+
+File:                sfx_strange_device_damaged.ogg
+Source:              https://www.pmsfx.com/free
+Author:              Phil Michalski
+Original title:      PM_GC_DISTORTED_GLITCH_2.wav
+EULA:                https://www.pmsfx.com/legal-1
+Changes made:        Cut parts of the sound
+
+File:                sfx_statue_crash.ogg
+Source:              https://www.pmsfx.com/free
+Author:              Phil Michalski
+Original title:      PM_SB_DESIGNED_IMPACT_106 Impact brick rock dirt gravel designed multi LFE.wav
+EULA:                https://www.pmsfx.com/legal-1
 
 File:                musica_cthulhiana_fragment_madness.ogg
 Source:              ???
