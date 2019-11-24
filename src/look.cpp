@@ -329,8 +329,9 @@ void ViewActorDescr::on_start()
                 {
                         it = prop_list.erase(it);
                 }
-                else // Not a natural property
+                else
                 {
+                        // Not a natural property
                         ++it;
                 }
         }
@@ -343,9 +344,13 @@ void ViewActorDescr::on_start()
                         ColoredString(
                                 offset + "None",
                                 colors::text()));
+
+                // End with an empty line
+                m_lines.push_back(ColoredString("", colors::text()));
         }
-        else // Has properties
+        else
         {
+                // Has properties
                 const int max_w_descr = (panels::x1(Panel::screen) * 3) / 4;
 
                 for (const auto& e : prop_list)
@@ -366,11 +371,12 @@ void ViewActorDescr::on_start()
                                                 offset + descr_line,
                                                 colors::gray()));
                         }
+
+                        // Add an empty line between each property, and also
+                        // after the last one
+                        m_lines.push_back(ColoredString("", colors::text()));
                 }
         }
-
-        // Add a single empty line at the end (looks better)
-        m_lines.resize(m_lines.size() + 1);
 }
 
 void ViewActorDescr::draw()
