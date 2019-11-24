@@ -155,6 +155,8 @@ void go_to_nxt()
 
         map::g_player->restore_shock(999, true);
 
+        map::g_player->update_tmp_shock();
+
         msg_log::add("I have discovered a new area.");
 
         // NOTE: When the "intro level" is skipped, "go_to_nxt" is called when

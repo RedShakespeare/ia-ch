@@ -142,6 +142,8 @@ public:
 
         void on_new_dlvl_reached();
 
+        void update_tmp_shock();
+
         // Randomly prints a message such as "I sense an object of great power
         // here" if there is a major treasure on the map (on the floor or in a
         // container), and the player is a Rogue
@@ -179,8 +181,6 @@ private:
                                       const ShockSrc shock_src) const;
 
         void add_shock_from_seen_monsters();
-
-        void update_tmp_shock();
 
         void on_hit(int& dmg,
                     const DmgType dmg_type,

@@ -307,6 +307,8 @@ void teleport(actor::Actor& actor, P p, const Array2<bool>& blocked)
 
         if (actor.is_player())
         {
+                static_cast<actor::Player&>(actor).update_tmp_shock();
+
                 make_all_mon_not_seeing_player_unaware();
         }
 

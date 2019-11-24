@@ -818,7 +818,8 @@ void Player::act()
                                 return doors;
                         };
 
-                const auto adj_known_closed_doors_before = adj_known_closed_doors(m_pos);
+                const auto adj_known_closed_doors_before =
+                        adj_known_closed_doors(m_pos);
 
                 move(*this, m_auto_move_dir);
 
@@ -1196,8 +1197,9 @@ void Player::on_actor_turn()
                         return;
                 }
         }
-        else // Total shock is less than 100%
+        else
         {
+                // Total shock is less than 100%
                 m_nr_turns_until_ins = -1;
         }
 
@@ -1235,13 +1237,14 @@ void Player::add_shock_from_seen_monsters()
                 {
                         shock_lvl = mon->m_data->mon_shock_lvl;
                 }
-                else // Monster cannot be seen
+                else
                 {
+                        // Monster cannot be seen
                         const P mon_p = mon->m_pos;
 
                         if (map::g_cells.at(mon_p).is_seen_by_player)
                         {
-                                // There is an invisible monster here! How scary!
+                                // There is an invisible monster here!
                                 shock_lvl = ShockLvl::terrifying;
                         }
                 }
@@ -1270,8 +1273,8 @@ void Player::add_shock_from_seen_monsters()
                 }
         }
 
-        // Dampen the progression (it doesn't seem right that e.g. 8 monsters are
-        // twice as scary as 4 monsters).
+        // Dampen the progression (it doesn't seem right that e.g. 8 monsters
+        // are twice as scary as 4 monsters).
         val = std::sqrt(val);
 
         // Cap the value
@@ -1293,12 +1296,12 @@ void Player::update_tmp_shock()
         // NOTE: In case the total shock is currently at 100, we do NOT want to
         // allow lowering the shock e.g. by turning on the Electric Lantern,
         // since you could interrupt the 3 turns countdown until the insanity
-        // event happens just ny turning the lantern on for one turn. Therefore
+        // event happens just by turning the lantern on for one turn. Therefore
         // we only allow negative temporary shock while below 100%.
         double shock_tmp_min =
-                (tot_shock_before < 100) ?
-                -999.0 :
-                0.0;
+                (tot_shock_before < 100)
+                ? -999.0
+                : 0.0;
 
         // "Obessions" raise the minimum temporary shock
         if (insanity::has_sympt(InsSymptId::sadism) ||
@@ -1319,7 +1322,8 @@ void Player::update_tmp_shock()
                         m_shock_tmp -= 20.0;
                 }
                 // Not lit - shock from darkness?
-                else if (map::g_dark.at(m_pos) && (player_bon::bg() != Bg::ghoul))
+                else if (map::g_dark.at(m_pos) &&
+                         (player_bon::bg() != Bg::ghoul))
                 {
                         double shock_value = 20.0;
 
@@ -1328,7 +1332,10 @@ void Player::update_tmp_shock()
                                 shock_value = 30.0;
                         }
 
-                        m_shock_tmp += shock_taken_after_mods(shock_value, ShockSrc::misc);
+                        m_shock_tmp +=
+                                shock_taken_after_mods(
+                                        shock_value,
+                                        ShockSrc::misc);
                 }
 
                 // Temporary shock from seen terrains?
@@ -1337,7 +1344,8 @@ void Player::update_tmp_shock()
                         const P p(m_pos + d);
 
                         const double terrain_shock_db =
-                                (double)map::g_cells.at(p).terrain->shock_when_adj();
+                                (double)map::g_cells.at(p).terrain
+                                ->shock_when_adj();
 
                         m_shock_tmp += shock_taken_after_mods(
                                 terrain_shock_db,
