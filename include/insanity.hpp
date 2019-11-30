@@ -19,6 +19,7 @@ class Actor;
 
 enum class InsSymptId
 {
+        reduce_xp,
         scream,
         babbling,
         faint,
@@ -107,6 +108,45 @@ protected:
         virtual std::string history_msg_end() const
         {
                 return "";
+        }
+};
+
+class InsReduceXp : public InsSympt
+{
+public:
+        InsReduceXp() :
+                InsSympt() {}
+
+        InsSymptId id() const override
+        {
+                return InsSymptId::reduce_xp;
+        }
+
+        InsSymptType type() const override
+        {
+                return InsSymptType::misc;
+        }
+
+        bool is_permanent() const override
+        {
+                return false;
+        }
+
+        bool is_allowed() const override;
+
+protected:
+        void on_start_hook() override;
+
+        std::string start_msg() const override;
+
+        std::string start_heading() const override
+        {
+                return "Experiences erased!";
+        }
+
+        std::string history_msg() const override
+        {
+                return "Experiences were erased from memory.";
         }
 };
 

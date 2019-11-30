@@ -81,6 +81,23 @@ void InsSympt::on_end()
         }
 }
 
+bool InsReduceXp::is_allowed() const
+{
+        return game::xp_pct() >= 25;
+}
+
+void InsReduceXp::on_start_hook()
+{
+        game::decr_player_xp(25);
+}
+
+std::string InsReduceXp::start_msg() const
+{
+        return
+                "Thanks to the mercy of the mind, some past experiences are "
+                "forgotten (-25% XP).";
+}
+
 bool InsScream::is_allowed() const
 {
         return !map::g_player->m_properties.has(PropId::r_fear);
@@ -570,6 +587,9 @@ InsSympt* make_sympt(const InsSymptId id)
 {
         switch (id)
         {
+        case InsSymptId::reduce_xp:
+                return new InsReduceXp();
+
         case InsSymptId::scream:
                 return new InsScream();
 
