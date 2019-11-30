@@ -318,13 +318,15 @@ void Terrain::hit(
 
                                 wham::try_sprain_player();
                         }
-                        else // Not kicking
+                        else
                         {
+                                // Not kicking
                                 msg_log::add("*WHAM!*");
                         }
                 }
-                else // The terrain is not blocking
+                else
                 {
+                        // The terrain is not blocking
                         is_terrain_hit = false;
 
                         msg_log::add("*Whoosh!*");
@@ -435,8 +437,9 @@ Color Terrain::color() const
         {
                 return colors::orange();
         }
-        else // Not burning
+        else
         {
+                // Not burning
                 if (m_nr_turns_color_corrupted > 0)
                 {
                         Color color = colors::light_magenta();

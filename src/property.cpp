@@ -1674,9 +1674,12 @@ PropActResult PropCorruptsEnvColor::on_act()
 {
         const auto pos = m_owner->m_pos;
 
-        auto* r = map::g_cells.at(pos).terrain;
+        auto* terrain = map::g_cells.at(pos).terrain;
 
-        r->corrupt_color();
+        if (terrain->id() != terrain::Id::chasm)
+        {
+                terrain->corrupt_color();
+        }
 
         return PropActResult();
 }
