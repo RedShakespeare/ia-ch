@@ -191,8 +191,6 @@ void draw_blast_at_seen_actors(
 
 void draw_main_menu_logo() {}
 
-void draw_skull(const P) {}
-
 void draw_box(
         const R&,
         const Color&) {}

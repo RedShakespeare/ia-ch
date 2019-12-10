@@ -85,7 +85,7 @@ public:
 private:
         void on_body_slot_item_selected() const;
 
-        void on_backpack_weapon_selected(
+        void on_equipable_backpack_item_selected(
                 const size_t backpack_idx) const;
 };
 

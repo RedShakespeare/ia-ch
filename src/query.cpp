@@ -40,7 +40,9 @@ void wait_for_key_press()
         }
 }
 
-BinaryAnswer yes_or_no(char key_for_special_event)
+BinaryAnswer yes_or_no(
+        const char key_for_special_event,
+        const AllowSpaceCancel allow_space_cancel)
 {
         if (!s_is_inited || config::is_bot_playing())
         {
@@ -49,16 +51,28 @@ BinaryAnswer yes_or_no(char key_for_special_event)
 
         io::update_screen();
 
-        auto input = io::get();
+        InputData input;
 
-        while ((input.key != 'y') &&
-               (input.key != 'n') &&
-               (input.key != SDLK_ESCAPE) &&
-               (input.key != SDLK_SPACE) &&
-               ((input.key != key_for_special_event) ||
-                (key_for_special_event == -1)))
+        while (true)
         {
                 input = io::get();
+
+                const bool is_special_key_pressed =
+                        (key_for_special_event != -1) &&
+                        (input.key == key_for_special_event);
+
+                const bool is_canceled_with_space =
+                        (input.key == SDLK_SPACE) &&
+                        (allow_space_cancel == AllowSpaceCancel::yes);
+
+                if ((input.key == 'y') ||
+                    (input.key == 'n') ||
+                    (input.key == SDLK_ESCAPE) ||
+                    is_canceled_with_space ||
+                    is_special_key_pressed)
+                {
+                        break;
+                }
         }
 
         if ((input.key == key_for_special_event) &&

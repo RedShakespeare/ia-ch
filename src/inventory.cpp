@@ -524,8 +524,9 @@ size_t Inventory::move_from_slot_to_backpack(const SlotId id)
         return 0;
 }
 
-void Inventory::equip_backpack_item(const size_t backpack_idx,
-                                    const SlotId slot_id)
+void Inventory::equip_backpack_item(
+        const size_t backpack_idx,
+        const SlotId slot_id)
 {
         ASSERT(slot_id != SlotId::END);
 
@@ -544,10 +545,7 @@ void Inventory::equip_backpack_item(const size_t backpack_idx,
 
         m_backpack.erase(std::begin(m_backpack) + backpack_idx);
 
-        equip(
-                slot_id,
-                item,
-                Verbose::yes);
+        equip(slot_id, item, Verbose::yes);
 
         sort_backpack();
 }

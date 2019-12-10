@@ -708,8 +708,9 @@ void BrowseInv::update()
 
                         return;
                 }
-                else // In backpack inventory
+                else
                 {
+                        // In backpack inventory
                         const size_t backpack_idx =
                                 m_browser.y() - (int)SlotId::END;
 
@@ -724,9 +725,12 @@ void BrowseInv::update()
                         // selecting them
 
                         if ((data.type == ItemType::melee_wpn) ||
-                            (data.type == ItemType::ranged_wpn))
+                            (data.type == ItemType::ranged_wpn) ||
+                            (data.type == ItemType::armor) ||
+                            (data.type == ItemType::head_wear))
                         {
-                                on_backpack_weapon_selected(backpack_idx);
+                                on_equipable_backpack_item_selected(
+                                        backpack_idx);
                         }
                         else
                         {
@@ -769,27 +773,83 @@ void BrowseInv::on_body_slot_item_selected() const
                 return;
         }
 
-        map::g_player->m_handle_armor_countdown = s_nr_turns_to_handle_armor;
+        map::g_player->m_remove_armor_countdown = s_nr_turns_to_handle_armor;
 }
 
-void BrowseInv::on_backpack_weapon_selected(
+void BrowseInv::on_equipable_backpack_item_selected(
         const size_t backpack_idx) const
 {
         auto& inv = map::g_player->m_inv;
+        auto* const item_to_equip = inv.m_backpack[backpack_idx];
+        const auto item_type = item_to_equip->data().type;
 
-        if (inv.has_item_in_slot(SlotId::wpn))
+        switch (item_type)
         {
-                // Weapon slot occupied, this needs to be a multi-turn action
-                auto* const item_to_equip = inv.m_backpack[backpack_idx];
+        case ItemType::melee_wpn:
+        case ItemType::ranged_wpn:
+        {
+                if (inv.has_item_in_slot(SlotId::wpn))
+                {
+                        inv.unequip_slot(SlotId::wpn);
 
-                inv.unequip_slot(SlotId::wpn);
-
-                map::g_player->m_wpn_equipping = item_to_equip;
+                        map::g_player->m_item_equipping = item_to_equip;
+                }
+                else
+                {
+                        inv.equip_backpack_item(backpack_idx, SlotId::wpn);
+                }
         }
-        else
+        break;
+
+        case ItemType::head_wear:
         {
-                // Weapon slot is free, equip immediately
-                inv.equip_backpack_item(backpack_idx, SlotId::wpn);
+                if (inv.has_item_in_slot(SlotId::head))
+                {
+                        inv.unequip_slot(SlotId::head);
+
+                        map::g_player->m_item_equipping = item_to_equip;
+                }
+                else
+                {
+                        inv.equip_backpack_item(backpack_idx, SlotId::head);
+                }
+        }
+        break;
+
+        case ItemType::armor:
+        {
+                if (map::g_player->m_properties.has(PropId::burning))
+                {
+                        msg_log::add("Not while burning.");
+
+                        return;
+                }
+
+                if (map::g_player->m_properties.has(PropId::swimming))
+                {
+                        msg_log::add("Not while swimming.");
+
+                        return;
+                }
+
+                if (inv.has_item_in_slot(SlotId::body))
+                {
+                        map::g_player->m_remove_armor_countdown =
+                                s_nr_turns_to_handle_armor;
+                }
+
+                map::g_player->m_item_equipping = item_to_equip;
+
+                map::g_player->m_equip_armor_countdown =
+                        s_nr_turns_to_handle_armor;
+        }
+        break;
+
+        default:
+        {
+                ASSERT(false);
+        }
+        break;
         }
 
         game_time::tick();
@@ -1091,7 +1151,7 @@ void Drop::update()
                     (idx == (size_t)SlotId::body))
                 {
                         // Body slot marked, start dropping the armor
-                        map::g_player->m_handle_armor_countdown =
+                        map::g_player->m_remove_armor_countdown =
                                 s_nr_turns_to_handle_armor;
 
                         map::g_player
@@ -1358,10 +1418,11 @@ void Equip::update()
                         }
 
                         // Start putting on armor
-                        map::g_player->m_handle_armor_countdown =
+                        map::g_player->m_equip_armor_countdown =
                                 s_nr_turns_to_handle_armor;
 
-                        map::g_player->m_armor_putting_on_backpack_idx = idx;
+                        map::g_player->m_item_equipping =
+                                map::g_player->m_inv.m_backpack[idx];
                 }
                 else
                 {

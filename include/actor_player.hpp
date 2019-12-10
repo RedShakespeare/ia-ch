@@ -154,10 +154,10 @@ public:
         void mon_feeling();
 
         item::MedicalBag* m_active_medical_bag {nullptr};
-        int m_handle_armor_countdown {0};
-        int m_armor_putting_on_backpack_idx {-1};
-        item::Item* m_wpn_equipping {nullptr};
+        int m_equip_armor_countdown {0};
+        int m_remove_armor_countdown {0};
         bool m_is_dropping_armor_from_body_slot {false};
+        item::Item* m_item_equipping {nullptr};
         item::Explosive* m_active_explosive {nullptr};
         item::Item* m_last_thrown_item {nullptr};
         Actor* m_tgt {nullptr};
@@ -177,15 +177,17 @@ private:
 
         int shock_resistance(const ShockSrc shock_src) const;
 
-        double shock_taken_after_mods(const double base_shock,
-                                      const ShockSrc shock_src) const;
+        double shock_taken_after_mods(
+                const double base_shock,
+                const ShockSrc shock_src) const;
 
         void add_shock_from_seen_monsters();
 
-        void on_hit(int& dmg,
-                    const DmgType dmg_type,
-                    const DmgMethod method,
-                    const AllowWound allow_wound) override;
+        void on_hit(
+                int& dmg,
+                const DmgType dmg_type,
+                const DmgMethod method,
+                const AllowWound allow_wound) override;
 
         void fov_hack();
 

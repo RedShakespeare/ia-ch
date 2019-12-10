@@ -94,7 +94,8 @@ MeleeAttData::MeleeAttData(
         dodging_mod = 0;
 
         const bool player_is_handling_armor =
-                map::g_player->m_handle_armor_countdown > 0;
+                (map::g_player->m_equip_armor_countdown > 0) ||
+                (map::g_player->m_remove_armor_countdown);
 
         const int dodging_ability = defender->ability(AbilityId::dodging, true);
 
@@ -338,7 +339,8 @@ RangedAttData::RangedAttData(
                 dodging_mod = 0;
 
                 const bool player_is_handling_armor =
-                        map::g_player->m_handle_armor_countdown > 0;
+                        (map::g_player->m_equip_armor_countdown > 0) ||
+                        (map::g_player->m_remove_armor_countdown);
 
                 const bool allow_positive_doge =
                         is_defender_aware &&
@@ -530,7 +532,8 @@ ThrowAttData::ThrowAttData(
                 dodging_mod = 0;
 
                 const bool player_is_handling_armor =
-                        map::g_player->m_handle_armor_countdown > 0;
+                        (map::g_player->m_equip_armor_countdown > 0) ||
+                        (map::g_player->m_remove_armor_countdown);
 
                 const int dodging_ability =
                         defender->ability(AbilityId::dodging, true);
@@ -553,10 +556,11 @@ ThrowAttData::ThrowAttData(
                 const P& def_pos(defender->m_pos);
 
                 const int dist_to_tgt =
-                        king_dist(att_pos.x,
-                                  att_pos.y,
-                                  def_pos.x,
-                                  def_pos.y);
+                        king_dist(
+                                att_pos.x,
+                                att_pos.y,
+                                def_pos.x,
+                                def_pos.y);
 
                 dist_mod = 15 - (dist_to_tgt * 5);
 
