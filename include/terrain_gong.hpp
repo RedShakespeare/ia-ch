@@ -66,12 +66,11 @@ enum class BonusId
         remove_insanity,
         gain_item,
         healed,
-        blessed,
+        blessed, // Also removes one item curse
 
         // TODO: Consider these:
         // recharge_item (add charges back to artifact, repair device, ...)
         // minor_treasure (3 random minor treasure)
-        // remove_item_curse
 
         END,
         undefined,
@@ -216,19 +215,6 @@ private:
         item::Id m_item_id;
 };
 
-// class RechargeItem : public Bonus
-// {
-// public:
-//         BonusId id() const override
-//         {
-//                 return BonusId::asdf;
-//         }
-
-//         bool is_allowed() const override;
-
-//         void run_effect() override;
-// };
-
 class Healed : public Bonus
 {
 public:
@@ -253,6 +239,9 @@ public:
         bool is_allowed() const override;
 
         void run_effect() override;
+
+private:
+        item::Item* get_random_cursed_item() const;
 };
 
 class HpReduced : public Toll

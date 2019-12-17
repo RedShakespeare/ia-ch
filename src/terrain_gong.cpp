@@ -67,9 +67,6 @@ static std::unique_ptr<terrain::gong::Bonus> make_bonus(
         case terrain::gong::BonusId::blessed:
                 return std::make_unique<terrain::gong::Blessed>();
 
-        // case terrain::gong::BonusId::recharge_item:
-        //         return std::make_unique<terrain::gong::RechargeItem>();
-
         case terrain::gong::BonusId::undefined:
         case terrain::gong::BonusId::END:
                 break;
@@ -512,19 +509,6 @@ std::vector<item::Id> GainItem::find_allowed_item_ids() const
 }
 
 // -----------------------------------------------------------------------------
-// Recharge item
-// -----------------------------------------------------------------------------
-// bool RechargeItem::is_allowed() const
-// {
-//         return true;
-// }
-
-// void RechargeItem::run_effect()
-// {
-
-// }
-
-// -----------------------------------------------------------------------------
 // Healed
 // -----------------------------------------------------------------------------
 bool Healed::is_allowed() const
@@ -579,7 +563,13 @@ void Healed::run_effect()
 // -----------------------------------------------------------------------------
 bool Blessed::is_allowed() const
 {
-        return !map::g_player->m_properties.has(PropId::blessed);
+        const bool is_blessed =
+                map::g_player->m_properties.has(PropId::blessed);
+
+        const bool has_cursed_item =
+                (get_random_cursed_item() != nullptr);
+
+        return !is_blessed || has_cursed_item;
 }
 
 void Blessed::run_effect()
@@ -589,6 +579,52 @@ void Blessed::run_effect()
         blessed->set_indefinite();
 
         map::g_player->m_properties.apply(blessed);
+
+        auto* const cursed_item = get_random_cursed_item();
+
+        if (cursed_item)
+        {
+                const auto name =
+                        cursed_item->name(
+                                ItemRefType::plain,
+                                ItemRefInf::none);
+
+                msg_log::add("The " + name + " seems cleansed!");
+
+                cursed_item->current_curse().on_curse_end();
+
+                cursed_item->remove_curse();
+        }
+}
+
+item::Item* Blessed::get_random_cursed_item() const
+{
+        std::vector<item::Item*> cursed_items;
+
+        for (const auto& slot : map::g_player->m_inv.m_slots)
+        {
+                if (slot.item && slot.item->is_cursed())
+                {
+                        cursed_items.push_back(slot.item);
+                }
+        }
+
+        for (auto* const item : map::g_player->m_inv.m_backpack)
+        {
+                if (item->is_cursed())
+                {
+                        cursed_items.push_back(item);
+                }
+        }
+
+        if (cursed_items.empty())
+        {
+                return nullptr;
+        }
+        else
+        {
+                return rnd::element(cursed_items);
+        }
 }
 
 // -----------------------------------------------------------------------------
