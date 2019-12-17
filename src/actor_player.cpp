@@ -311,7 +311,7 @@ void Player::on_hit(
                         if (insanity::has_sympt(InsSymptId::masoch))
                         {
                                 game::add_history_event(
-                                        "Experienced a very pleasant wound.");
+                                        "Experienced a very pleasant wound");
 
                                 msg_log::add("Hehehe...");
 
@@ -324,7 +324,7 @@ void Player::on_hit(
                         else // Not masochistic
                         {
                                 game::add_history_event(
-                                        "Sustained a severe wound.");
+                                        "Sustained a severe wound");
                         }
                 }
         }

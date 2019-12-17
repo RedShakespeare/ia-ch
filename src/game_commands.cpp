@@ -642,7 +642,7 @@ void handle(const GameCmd cmd)
                     item_at_player->data().id == item::Id::trapez)
                 {
                         game::add_history_event(
-                                "Beheld The Shining Trapezohedron!");
+                                "Beheld The Shining Trapezohedron");
 
                         saving::erase_save();
 

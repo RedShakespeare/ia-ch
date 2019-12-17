@@ -379,7 +379,7 @@ void Item::on_player_found()
 
                 game::incr_player_xp(m_data->xp_on_found, Verbose::yes);
 
-                game::add_history_event("Found " + item_name + ".");
+                game::add_history_event("Found " + item_name);
         }
 
         m_data->is_found = true;
@@ -1472,7 +1472,7 @@ void MedicalBag::finish_current_action()
                 map::g_player->m_inv
                         .remove_item_in_backpack_with_ptr(this, true);
 
-                game::add_history_event("Ran out of medical supplies.");
+                game::add_history_event("Ran out of medical supplies");
         }
 }
 

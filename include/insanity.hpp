@@ -146,7 +146,7 @@ protected:
 
         std::string history_msg() const override
         {
-                return "Experiences were erased from memory.";
+                return "Experiences were erased from memory";
         }
 };
 
@@ -185,7 +185,7 @@ protected:
 
         std::string history_msg() const override
         {
-                return "Screamed in terror.";
+                return "Screamed in terror";
         }
 };
 
@@ -245,12 +245,12 @@ protected:
 
         std::string history_msg() const override
         {
-                return "Started babbling incoherently.";
+                return "Started babbling incoherently";
         }
 
         std::string history_msg_end() const override
         {
-                return "My strange babbling was cured.";
+                return "My strange babbling was cured";
         }
 };
 
@@ -292,7 +292,7 @@ protected:
 
         std::string history_msg() const override
         {
-                return "Fainted.";
+                return "Fainted";
         }
 };
 
@@ -332,7 +332,7 @@ protected:
 
         std::string history_msg() const override
         {
-                return "Laughed maniacally.";
+                return "Laughed maniacally";
         }
 };
 
@@ -392,12 +392,12 @@ protected:
 
         std::string history_msg() const override
         {
-                return "Gained a phobia of rats.";
+                return "Gained a phobia of rats";
         }
 
         std::string history_msg_end() const override
         {
-                return "My phobia of rats was cured.";
+                return "My phobia of rats was cured";
         }
 };
 
@@ -457,12 +457,12 @@ protected:
 
         std::string history_msg() const override
         {
-                return "Gained a phobia of spiders.";
+                return "Gained a phobia of spiders";
         }
 
         std::string history_msg_end() const override
         {
-                return "My phobia of spiders was cured.";
+                return "My phobia of spiders was cured";
         }
 };
 
@@ -522,12 +522,12 @@ protected:
 
         std::string history_msg() const override
         {
-                return "Gained a phobia of reptiles and amphibians.";
+                return "Gained a phobia of reptiles and amphibians";
         }
 
         std::string history_msg_end() const override
         {
-                return "My phobia of reptiles and amphibians was cured.";
+                return "My phobia of reptiles and amphibians was cured";
         }
 };
 
@@ -587,12 +587,12 @@ protected:
 
         std::string history_msg() const override
         {
-                return "Gained a phobia of canines.";
+                return "Gained a phobia of canines";
         }
 
         std::string history_msg_end() const override
         {
-                return "My phobia of canines was cured.";
+                return "My phobia of canines was cured";
         }
 };
 
@@ -652,12 +652,12 @@ protected:
 
         std::string history_msg() const override
         {
-                return "Gained a phobia of the dead.";
+                return "Gained a phobia of the dead";
         }
 
         std::string history_msg_end() const override
         {
-                return "My phobia of the dead was cured.";
+                return "My phobia of the dead was cured";
         }
 };
 
@@ -717,12 +717,12 @@ protected:
 
         std::string history_msg() const override
         {
-                return "Gained a phobia of deep places.";
+                return "Gained a phobia of deep places";
         }
 
         std::string history_msg_end() const override
         {
-                return "My phobia of deep places was cured.";
+                return "My phobia of deep places was cured";
         }
 };
 
@@ -782,12 +782,12 @@ protected:
 
         std::string history_msg() const override
         {
-                return "Gained a phobia of darkness.";
+                return "Gained a phobia of darkness";
         }
 
         std::string history_msg_end() const override
         {
-                return "My phobia of darkness was cured.";
+                return "My phobia of darkness was cured";
         }
 };
 
@@ -845,12 +845,12 @@ protected:
 
         std::string history_msg() const override
         {
-                return "Gained a masochistic obsession.";
+                return "Gained a masochistic obsession";
         }
 
         std::string history_msg_end() const override
         {
-                return "My masochistic obsession was cured.";
+                return "My masochistic obsession was cured";
         }
 };
 
@@ -908,12 +908,12 @@ protected:
 
         std::string history_msg() const override
         {
-                return "Gained a sadistic obsession.";
+                return "Gained a sadistic obsession";
         }
 
         std::string history_msg_end() const override
         {
-                return "My sadistic obsession was cured.";
+                return "My sadistic obsession was cured";
         }
 };
 
@@ -953,7 +953,7 @@ protected:
 
         std::string history_msg() const override
         {
-                return "Was haunted by shadows.";
+                return "Was haunted by shadows";
         }
 };
 
@@ -994,7 +994,7 @@ protected:
 
         std::string history_msg() const override
         {
-                return "Had a strong sensation of being followed.";
+                return "Had a strong sensation of being followed";
         }
 };
 
@@ -1037,7 +1037,7 @@ protected:
 
         std::string history_msg() const override
         {
-                return "Suddenly felt deeply confused for no reason.";
+                return "Suddenly felt deeply confused for no reason";
         }
 };
 
@@ -1079,7 +1079,7 @@ protected:
 
         std::string history_msg() const override
         {
-                return "Fell into an uncontrollable rage.";
+                return "Fell into an uncontrollable rage";
         }
 };
 
@@ -1118,7 +1118,7 @@ protected:
 
         std::string history_msg() const override
         {
-                return "Had a sensation of something crawling on my neck.";
+                return "Had a sensation of something crawling on my neck";
         }
 };
 

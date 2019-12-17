@@ -191,7 +191,7 @@ static void apply_explosion_on_pos(
                 {
                         // Player survived being hit by an explosion, that's
                         // pretty cool!
-                        game::add_history_event("Survived an explosion.");
+                        game::add_history_event("Survived an explosion");
                 }
         }
 

@@ -378,7 +378,10 @@ void PickTraitState::update()
 
                         bool should_pick_trait = true;
 
-                        if (!states::contains_state(StateId::pick_name))
+                        const bool is_character_creation =
+                                states::contains_state(StateId::pick_name);
+
+                        if (!is_character_creation)
                         {
                                 states::draw();
 
@@ -394,6 +397,15 @@ void PickTraitState::update()
                         if (should_pick_trait)
                         {
                                 player_bon::pick_trait(trait);
+
+                                if (!is_character_creation)
+                                {
+                                        game::add_history_event(
+                                                "Gained trait \"" +
+                                                name +
+                                                "\"");
+
+                                }
 
                                 states::pop();
                         }

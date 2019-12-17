@@ -300,7 +300,7 @@ void Potion::identify(const Verbose verbose)
 
                 msg_log::add("I have identified " + name_after + ".");
 
-                game::add_history_event("Identified " + name_after + ".");
+                game::add_history_event("Identified " + name_after);
         }
 }
 

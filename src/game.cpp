@@ -280,7 +280,7 @@ void on_mon_seen(actor::Actor& actor)
 
                         msg_log::more_prompt();
 
-                        add_history_event("Discovered " + name + ".");
+                        add_history_event("Discovered " + name);
 
                         // We also cause some shock the first time
                         double shock_value =
@@ -316,7 +316,7 @@ void on_mon_killed(actor::Actor& actor)
         {
                 const std::string name = actor.name_the();
 
-                add_history_event("Defeated " + name + ".");
+                add_history_event("Defeated " + name);
         }
 }
 

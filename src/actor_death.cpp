@@ -81,7 +81,7 @@ static bool try_use_talisman_of_resurrection(actor::Actor& actor)
 
         msg_log::add("I LIVE AGAIN!");
 
-        game::add_history_event("I was brought back from the dead.");
+        game::add_history_event("Was brought back from the dead");
 
         map::g_player->incr_shock(
                 ShockLvl::mind_shattering,

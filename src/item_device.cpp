@@ -62,7 +62,7 @@ void Device::identify(const Verbose verbose)
 
                 msg_log::add("All its properties are now known to me.");
 
-                game::add_history_event("Comprehended " + name_after + ".");
+                game::add_history_event("Comprehended " + name_after);
 
                 game::incr_player_xp(15);
         }
@@ -568,7 +568,7 @@ void Lantern::on_std_turn_in_inv_hook(const InvType inv_type)
                         MsgInterruptPlayer::yes,
                         MorePromptOnMsg::yes);
 
-                game::add_history_event("My Electric Lantern expired.");
+                game::add_history_event("My Electric Lantern expired");
 
                 // NOTE: The this deletes the object
                 map::g_player->m_inv.remove_item_in_backpack_with_ptr(
