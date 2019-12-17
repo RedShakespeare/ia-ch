@@ -19,7 +19,7 @@ namespace version_info
 
 // This shall be set when (and only when) building a tagged release. Use the
 // format "vMAJOR.MINOR".
-const std::string g_version_str = "";
+const std::string g_version_str = "v20.0";
 
 const std::string g_copyright_str =
         "(c) 2011-2019 Martin Tornqvist";

@@ -1,5 +1,5 @@
 --------------------------------------------------------------
-v20.0 - *** WORK IN PROGRESS ***
+v20.0 (December 17, 2019)
 --------------------------------------------------------------
 Gameplay
 * Maps can have different size, the standard map size is bigger than before
