@@ -2,7 +2,7 @@
 
 ## Fetching the source code
 
-Clone the IA repository on Github:
+Clone the IA repository on GitLab:
 
     https://gitlab.com/martin-tornqvist/ia
 
@@ -16,19 +16,31 @@ Clone the IA repository on Github:
 Infra Arcana is built with [CMake](https://cmake.org/), which is a build system generator. CMake can generate GNU Makefiles, Code::Blocks projects, Visual Studio solutions, etc for many different platforms. Look for an online tutorial on how to use CMake (some pointers are given below).
 
 ### Unix/Linux/macOS
-You need CMake, build tools (e.g. GNU Make + gcc), as well as SDL2, SDL2-image, and SDL2-mixer. These are the required SDL packages (can be retrived with apt for Debian/Ubuntu/Mint):
+You need CMake, build tools (e.g. GNU Make + gcc), SDL2, SDL2-image, and SDL2-mixer.
 
-    libsdl2-2.0-0 libsdl2-dev libsdl2-image-dev libsdl2-mixer-dev
+To install dependencies on Debian, Ubuntu and other DEB-based systems, try:
 
-Hint for building:
+    apt install build-essential cmake \
+        libsdl2-2.0-0 libsdl2-dev libsdl2-image-dev libsdl2-mixer-dev
+
+On Fedora and other RPM-based systems, try:
+
+    dnf install g++ make cmake \
+        SDL2 SDL2-devel \
+        SDL2_image SDL2_image-devel \
+        SDL2_mixer SDL2_mixer-devel
+
+On macOS, using [Homebrew](https://brew.sh/):
+
+    brew install cmake SDL2 SDL2_mixer SDL2_image
+
+Now you can build IA:
 
     cd <ia directory>
     mkdir build
     cd build
     cmake ../
     make ia
-
-NOTE: Building with CMake on macOS is not yet tested (as far as I know) - I would love to hear feedback on success or failures!
 
 ### Windows
 You need CMake, and some IDE or build tools of your choice (such as [Code::Blocks](http://www.codeblocks.org), or [Visual Studio](https://www.visualstudio.com/)). The Windows version of SDL is included in the repository already, so there is no need to download this.
