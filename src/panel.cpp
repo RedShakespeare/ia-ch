@@ -298,4 +298,4 @@ int center_y(const Panel panel)
         return (y1(panel) - y0(panel)) / 2;
 }
 
-} // panels
+} // namespace panels

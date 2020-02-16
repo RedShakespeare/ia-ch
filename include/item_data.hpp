@@ -7,8 +7,9 @@
 #ifndef ITEM_DATA_HPP
 #define ITEM_DATA_HPP
 
-#include <vector>
 #include <string>
+#include <utility>
+#include <vector>
 
 #include "ability_values.hpp"
 #include "audio.hpp"
@@ -291,9 +292,9 @@ struct ItemAttMsgs
                 player(""),
                 other("") {}
 
-        ItemAttMsgs(const std::string& player_, const std::string& other_) :
-                player(player_),
-                other(other_) {}
+        ItemAttMsgs(std::string  player_, std::string  other_) :
+                player(std::move(player_)),
+                other(std::move(other_)) {}
 
         std::string player, other;
 };
@@ -435,6 +436,6 @@ void cleanup();
 void save();
 void load();
 
-} // item
+} // namespace item
 
 #endif // ITEM_DATA_HPP

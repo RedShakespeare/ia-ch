@@ -6,8 +6,8 @@
 
 #include "reload.hpp"
 
-#include <string>
 #include <climits>
+#include <string>
 
 #include "actor_player.hpp"
 #include "audio.hpp"
@@ -380,4 +380,4 @@ void player_arrange_pistol_mags()
         }
 }
 
-} // reload
+} // namespace reload

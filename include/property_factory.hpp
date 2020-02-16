@@ -4,8 +4,8 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 // =============================================================================
 
-#ifndef PROPERTY_FACTORY_H
-#define PROPERTY_FACTORY_H
+#ifndef PROPERTY_FACTORY_HPP
+#define PROPERTY_FACTORY_HPP
 
 #include "property_data.hpp"
 
@@ -16,8 +16,8 @@ class Prop;
 namespace property_factory
 {
 
-Prop* make(const PropId id);
+Prop* make(PropId id);
 
-} // prop_factory
+} // namespace property_factory
 
-#endif // PROPERTY_FACTORY_H
+#endif // PROPERTY_FACTORY_HPP

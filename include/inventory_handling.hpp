@@ -4,12 +4,14 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 // =============================================================================
 
-#ifndef INV_HANDLING_HPP
-#define INV_HANDLING_HPP
+#ifndef INVENTORY_HANDLING_HPP
+#define INVENTORY_HANDLING_HPP
 
+#include <utility>
+
+#include "browser.hpp"
 #include "inventory.hpp"
 #include "state.hpp"
-#include "browser.hpp"
 
 class Color;
 
@@ -33,48 +35,48 @@ class InvState: public State
 public:
         InvState();
 
-        virtual ~InvState() {}
+        virtual ~InvState() = default;
 
         StateId id() override;
 
 protected:
         void draw_slot(
-                const SlotId id,
-                const int y,
-                const char key,
-                const bool is_marked,
-                const ItemRefAttInf att_info) const;
+                SlotId id,
+                int y,
+                char key,
+                bool is_marked,
+                ItemRefAttInf att_info) const;
 
         void draw_backpack_item(
-                const size_t backpack_idx,
-                const int y,
-                const char key,
-                const bool is_marked,
-                const ItemRefAttInf att_info) const;
+                size_t backpack_idx,
+                int y,
+                char key,
+                bool is_marked,
+                ItemRefAttInf att_info) const;
 
-        void activate(const size_t backpack_idx);
+        void activate(size_t backpack_idx);
 
         MenuBrowser m_browser;
 
         void draw_weight_pct_and_dots(
-                const P item_pos,
-                const size_t item_name_len,
+                P item_pos,
+                size_t item_name_len,
                 const item::Item& item,
                 const Color& item_name_color_id,
-                const bool is_marked) const;
+                bool is_marked) const;
 
         // void draw_item_symbol(const item::Item& item, const P& p) const;
 
         void draw_detailed_item_descr(
-                const item::Item* const item,
-                const ItemRefAttInf att_inf) const;
+                const item::Item* item,
+                ItemRefAttInf att_inf) const;
 };
 
 class BrowseInv: public InvState
 {
 public:
-        BrowseInv() :
-                InvState() {}
+        BrowseInv() 
+                = default;
 
         void on_start() override;
 
@@ -86,14 +88,14 @@ private:
         void on_body_slot_item_selected() const;
 
         void on_equipable_backpack_item_selected(
-                const size_t backpack_idx) const;
+                size_t backpack_idx) const;
 };
 
 class Apply: public InvState
 {
 public:
-        Apply() :
-                InvState() {}
+        Apply() 
+                = default;
 
         void on_start() override;
 
@@ -108,8 +110,8 @@ private:
 class Drop: public InvState
 {
 public:
-        Drop() :
-                InvState() {}
+        Drop() 
+                = default;
 
         void on_start() override;
 
@@ -122,7 +124,7 @@ class Equip: public InvState
 {
 public:
         Equip(InvSlot& slot) :
-                InvState(),
+                
                 m_slot_to_equip(slot) {}
 
         void on_start() override;
@@ -140,8 +142,8 @@ private:
 class SelectThrow: public InvState
 {
 public:
-        SelectThrow() :
-                InvState() {}
+        SelectThrow() 
+                = default;
 
         void on_start() override;
 
@@ -157,8 +159,8 @@ class SelectIdentify: public InvState
 {
 public:
         SelectIdentify(std::vector<ItemType> item_types_allowed = {}) :
-                InvState(),
-                m_item_types_allowed(item_types_allowed) {}
+                
+                m_item_types_allowed(std::move(item_types_allowed)) {}
 
         void on_start() override;
 
@@ -171,4 +173,4 @@ private:
         std::vector<FilteredInvEntry> m_filtered_inv {};
 };
 
-#endif // INV_HANDLING_HPP
+#endif // INVENTORY_HANDLING_HPP

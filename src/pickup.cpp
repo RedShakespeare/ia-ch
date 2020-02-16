@@ -120,4 +120,4 @@ void try_unload_or_pick()
         try_pick();
 }
 
-} // item_pickup
+} // namespace item_pickup

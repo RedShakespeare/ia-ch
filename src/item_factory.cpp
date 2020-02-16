@@ -487,4 +487,4 @@ Item* copy_item(const Item& item_to_copy)
         return new_item;
 }
 
-} // item
+} // namespace item

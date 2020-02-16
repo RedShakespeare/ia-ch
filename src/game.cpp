@@ -52,24 +52,34 @@ static const std::string intro_msg =
         "Trapezohedron\" - a window to all the secrets of the universe!";
 
 static const std::vector<std::string> win_msg = {
-        "As I approach the crystal, an eerie glow illuminates the area. I "
-        "notice a figure observing me from the edge of the light. There is no "
-        "doubt concerning the nature of this entity; it is the Faceless God "
-        "who dwells in the depths of the earth - Nyarlathotep!",
+        {
+                "As I approach the crystal, an eerie glow illuminates the area. I "
+                "notice a figure observing me from the edge of the light. There is no "
+                "doubt concerning the nature of this entity; it is the Faceless God "
+                "who dwells in the depths of the earth - Nyarlathotep!"
+        },
 
-        "I panic. Why is it I find myself here, stumbling around in darkness? "
-        "Is this all part of a plan? The being beckons me to gaze into the "
-        "stone.",
+        {
+                "I panic. Why is it I find myself here, stumbling around in darkness? "
+                "Is this all part of a plan? The being beckons me to gaze into the "
+                "stone."
+        },
 
-        "In the radiance I see visions beyond eternity, visions of unreal "
-        "reality, visions of the brightest light of day and the darkest night "
-        "of madness. There is only onward now, I have to see, I have to KNOW.",
+        {
+                "In the radiance I see visions beyond eternity, visions of unreal "
+                "reality, visions of the brightest light of day and the darkest night "
+                "of madness. There is only onward now, I have to see, I have to KNOW."
+        },
 
-        "So I make a pact with the Fiend.",
+        {
+                "So I make a pact with the Fiend."
+        },
 
-        "I now harness the shadows that stride from world to world to sow "
-        "death and madness. The destinies of all things on earth, living and "
-        "dead, are mine."
+        {
+                "I now harness the shadows that stride from world to world to sow "
+                "death and madness. The destinies of all things on earth, living and "
+                "dead, are mine."
+        }
 };
 
 // -----------------------------------------------------------------------------
@@ -127,7 +137,7 @@ void load()
                 const std::string msg = saving::get_str();
                 const int turn = saving::get_int();
 
-                s_history_events.push_back({msg, turn});
+                s_history_events.emplace_back(msg, turn);
         }
 }
 
@@ -331,7 +341,7 @@ void add_history_event(const std::string msg)
 
         const int turn_nr = game_time::turn_nr();
 
-        s_history_events.push_back({msg, turn_nr});
+        s_history_events.emplace_back(msg, turn_nr);
 }
 
 const std::vector<HistoryEvent>& history()
@@ -339,7 +349,7 @@ const std::vector<HistoryEvent>& history()
         return s_history_events;
 }
 
-} // game
+} // namespace game
 
 // -----------------------------------------------------------------------------
 // Game state

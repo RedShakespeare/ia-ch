@@ -6,17 +6,17 @@
 
 #include "map_builder.hpp"
 
-#include "mapgen.hpp"
+#include "actor_player.hpp"
+#include "game_time.hpp"
 #include "map_controller.hpp"
 #include "map_parsing.hpp"
-#include "terrain.hpp"
-#include "actor_player.hpp"
-#include "terrain_door.hpp"
+#include "mapgen.hpp"
+#include "populate_items.hpp"
 #include "populate_monsters.hpp"
 #include "populate_traps.hpp"
-#include "populate_items.hpp"
+#include "terrain.hpp"
+#include "terrain_door.hpp"
 #include "terrain_event.hpp"
-#include "game_time.hpp"
 
 // For map generation demo
 #ifndef NDEBUG
@@ -453,7 +453,7 @@ bool MapBuilderStd::build_specific()
 
                         // Robustness for release mode
                         if ((d.player_side != 0 && d.player_side != 1) ||
-                            (d.player_side != 0 && d.player_side != 1))
+                            (d.stairs_side != 0 && d.stairs_side != 1))
                         {
                                 // Invalidate the map
                                 mapgen::g_is_map_valid = false;

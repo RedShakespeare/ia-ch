@@ -450,7 +450,7 @@ static void make_item_set_firearm(actor::Actor& actor)
 
                 auto* const wpn = static_cast<item::Wpn*>(item);
 
-                const int cap_scaled =
+                const auto cap_scaled =
                         wpn->data().ranged.max_ammo /
                         g_nr_mg_projectiles;
 
@@ -461,6 +461,12 @@ static void make_item_set_firearm(actor::Actor& actor)
                         g_nr_mg_projectiles;
 
                 inv.put_in_slot(SlotId::wpn, item, Verbose::no);
+        }
+        break;
+
+        default:
+        {
+                ASSERT(false);
         }
         break;
         }
@@ -686,4 +692,4 @@ void make_for_actor(actor::Actor& actor)
         }
 }
 
-} // actor_items
+} // namespace actor_items

@@ -67,7 +67,7 @@ Element* next_sibling(Element* e, const std::string name)
 
 std::string get_text_str(const Element* const e)
 {
-        std::string str = "";
+        std::string str;
 
         const char* c_str = e->GetText();
 
@@ -185,4 +185,4 @@ bool try_get_attribute_bool(const Element* const e,
         return (conv_result == tinyxml2::XML_SUCCESS);
 }
 
-} // xml
+} // namespace xml

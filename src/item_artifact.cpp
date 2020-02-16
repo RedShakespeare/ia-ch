@@ -14,7 +14,6 @@
 #include "actor_player.hpp"
 #include "common_text.hpp"
 #include "explosion.hpp"
-#include "terrain.hpp"
 #include "fov.hpp"
 #include "game.hpp"
 #include "game_time.hpp"
@@ -25,6 +24,7 @@
 #include "property.hpp"
 #include "property_data.hpp"
 #include "saving.hpp"
+#include "terrain.hpp"
 #include "text_format.hpp"
 
 
@@ -438,4 +438,4 @@ void OrbOfLife::on_removed_from_inv_hook()
         clear_carrier_props();
 }
 
-} // item
+} // namespace item

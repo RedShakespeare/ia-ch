@@ -11,20 +11,20 @@
 #include <vector>
 
 #include "colors.hpp"
-#include "terrain_data.hpp"
 #include "gfx.hpp"
 #include "pos.hpp"
+#include "terrain_data.hpp"
 
 
 namespace actor
 {
 class Actor;
-}
+} // namespace actor
 
 namespace item
 {
 class Item;
-}
+} // namespace item
 
 template<typename T>
 class Array2;
@@ -85,9 +85,9 @@ public:
 
         ~ItemContainer();
 
-        void init(const Id terrain_id, const int nr_items_to_attempt);
+        void init(Id terrain_id, int nr_items_to_attempt);
 
-        void open(const P& terrain_pos, actor::Actor* const actor_opening);
+        void open(const P& terrain_pos, actor::Actor* actor_opening);
 
         void destroy_single_fragile();
 
@@ -103,7 +103,7 @@ public:
 
         Terrain() = delete;
 
-        virtual ~Terrain() {}
+        virtual ~Terrain() = default;
 
         const TerrainData& data() const
         {
@@ -225,10 +225,10 @@ public:
         virtual void on_new_turn();
 
         virtual void hit(
-                const int dmg,
-                const DmgType dmg_type,
-                const DmgMethod dmg_method,
-                actor::Actor* const actor = nullptr);
+                int dmg,
+                DmgType dmg_type,
+                DmgMethod dmg_method,
+                actor::Actor* actor = nullptr);
 
         virtual void reveal(const Verbose verbose)
         {
@@ -269,7 +269,7 @@ public:
 
         virtual Id id() const = 0;
 
-        virtual std::string name(const Article article) const = 0;
+        virtual std::string name(Article article) const = 0;
 
         ItemContainer m_item_container {};
 
@@ -299,7 +299,7 @@ protected:
 
         virtual Color color_bg_default() const;
 
-        void try_start_burning(const bool is_msg_allowed);
+        void try_start_burning(bool is_msg_allowed);
 
         virtual WasDestroyed on_finished_burning();
 
@@ -350,7 +350,7 @@ public:
 
         TileId tile() const override;
 
-        std::string name(const Article article) const override;
+        std::string name(Article article) const override;
 
         FloorType m_type;
 
@@ -358,10 +358,10 @@ private:
         Color color_default() const override;
 
         void on_hit(
-                const int dmg,
-                const DmgType dmg_type,
-                const DmgMethod dmg_method,
-                actor::Actor* const actor) override;
+                int dmg,
+                DmgType dmg_type,
+                DmgMethod dmg_method,
+                actor::Actor* actor) override;
 };
 
 class Carpet: public Terrain
@@ -376,7 +376,7 @@ public:
                 return Id::carpet;
         }
 
-        std::string name(const Article article) const override;
+        std::string name(Article article) const override;
 
         WasDestroyed on_finished_burning() override;
 
@@ -384,10 +384,10 @@ private:
         Color color_default() const override;
 
         void on_hit(
-                const int dmg,
-                const DmgType dmg_type,
-                const DmgMethod dmg_method,
-                actor::Actor* const actor) override;
+                int dmg,
+                DmgType dmg_type,
+                DmgMethod dmg_method,
+                actor::Actor* actor) override;
 };
 
 enum class GrassType
@@ -409,7 +409,7 @@ public:
         }
 
         TileId tile() const override;
-        std::string name(const Article article) const override;
+        std::string name(Article article) const override;
 
         GrassType m_type;
 
@@ -417,10 +417,10 @@ private:
         Color color_default() const override;
 
         void on_hit(
-                const int dmg,
-                const DmgType dmg_type,
-                const DmgMethod dmg_method,
-                actor::Actor* const actor) override;
+                int dmg,
+                DmgType dmg_type,
+                DmgMethod dmg_method,
+                actor::Actor* actor) override;
 };
 
 class Bush: public Terrain
@@ -435,7 +435,7 @@ public:
                 return Id::bush;
         }
 
-        std::string name(const Article article) const override;
+        std::string name(Article article) const override;
         WasDestroyed on_finished_burning() override;
 
         GrassType m_type;
@@ -444,10 +444,10 @@ private:
         Color color_default() const override;
 
         void on_hit(
-                const int dmg,
-                const DmgType dmg_type,
-                const DmgMethod dmg_method,
-                actor::Actor* const actor) override;
+                int dmg,
+                DmgType dmg_type,
+                DmgMethod dmg_method,
+                actor::Actor* actor) override;
 };
 
 class Vines: public Terrain
@@ -462,17 +462,17 @@ public:
                 return Id::vines;
         }
 
-        std::string name(const Article article) const override;
+        std::string name(Article article) const override;
         WasDestroyed on_finished_burning() override;
 
 private:
         Color color_default() const override;
 
         void on_hit(
-                const int dmg,
-                const DmgType dmg_type,
-                const DmgMethod dmg_method,
-                actor::Actor* const actor) override;
+                int dmg,
+                DmgType dmg_type,
+                DmgMethod dmg_method,
+                actor::Actor* actor) override;
 };
 
 class Chains: public Terrain
@@ -487,7 +487,7 @@ public:
                 return Id::chains;
         }
 
-        std::string name(const Article article) const override;
+        std::string name(Article article) const override;
 
         void bump(actor::Actor& actor_bumping) override;
 
@@ -497,10 +497,10 @@ private:
         Color color_bg_default() const override;
 
         void on_hit(
-                const int dmg,
-                const DmgType dmg_type,
-                const DmgMethod dmg_method,
-                actor::Actor* const actor) override;
+                int dmg,
+                DmgType dmg_type,
+                DmgMethod dmg_method,
+                actor::Actor* actor) override;
 };
 
 class Grate: public Terrain
@@ -515,16 +515,16 @@ public:
                 return Id::grate;
         }
 
-        std::string name(const Article article) const override;
+        std::string name(Article article) const override;
 
 private:
         Color color_default() const override;
 
         void on_hit(
-                const int dmg,
-                const DmgType dmg_type,
-                const DmgMethod dmg_method,
-                actor::Actor* const actor) override;
+                int dmg,
+                DmgType dmg_type,
+                DmgMethod dmg_method,
+                actor::Actor* actor) override;
 };
 
 class Brazier: public Terrain
@@ -539,16 +539,16 @@ public:
                 return Id::brazier;
         }
 
-        std::string name(const Article article) const override;
+        std::string name(Article article) const override;
 
 private:
         Color color_default() const override;
 
         void on_hit(
-                const int dmg,
-                const DmgType dmg_type,
-                const DmgMethod dmg_method,
-                actor::Actor* const actor) override;
+                int dmg,
+                DmgType dmg_type,
+                DmgMethod dmg_method,
+                actor::Actor* actor) override;
 
         void add_light_hook(Array2<bool>& light) const override;
 };
@@ -575,7 +575,7 @@ public:
                 return Id::wall;
         }
 
-        std::string name(const Article article) const override;
+        std::string name(Article article) const override;
         char character() const override;
         TileId front_wall_tile() const;
         TileId top_wall_tile() const;
@@ -586,17 +586,17 @@ public:
         WallType m_type;
         bool m_is_mossy;
 
-        static bool is_wall_front_tile(const TileId tile);
-        static bool is_wall_top_tile(const TileId tile);
+        static bool is_wall_front_tile(TileId tile);
+        static bool is_wall_top_tile(TileId tile);
 
 private:
         Color color_default() const override;
 
         void on_hit(
-                const int dmg,
-                const DmgType dmg_type,
-                const DmgMethod dmg_method,
-                actor::Actor* const actor) override;
+                int dmg,
+                DmgType dmg_type,
+                DmgMethod dmg_method,
+                actor::Actor* actor) override;
 };
 
 class RubbleLow: public Terrain
@@ -611,16 +611,16 @@ public:
                 return Id::rubble_low;
         }
 
-        std::string name(const Article article) const override;
+        std::string name(Article article) const override;
 
 private:
         Color color_default() const override;
 
         void on_hit(
-                const int dmg,
-                const DmgType dmg_type,
-                const DmgMethod dmg_method,
-                actor::Actor* const actor) override;
+                int dmg,
+                DmgType dmg_type,
+                DmgMethod dmg_method,
+                actor::Actor* actor) override;
 };
 
 class Bones: public Terrain
@@ -635,16 +635,16 @@ public:
                 return Id::bones;
         }
 
-        std::string name(const Article article) const override;
+        std::string name(Article article) const override;
 
 private:
         Color color_default() const override;
 
         void on_hit(
-                const int dmg,
-                const DmgType dmg_type,
-                const DmgMethod dmg_method,
-                actor::Actor* const actor) override;
+                int dmg,
+                DmgType dmg_type,
+                DmgMethod dmg_method,
+                actor::Actor* actor) override;
 };
 
 class RubbleHigh: public Terrain
@@ -659,16 +659,16 @@ public:
                 return Id::rubble_high;
         }
 
-        std::string name(const Article article) const override;
+        std::string name(Article article) const override;
 
 private:
         Color color_default() const override;
 
         void on_hit(
-                const int dmg,
-                const DmgType dmg_type,
-                const DmgMethod dmg_method,
-                actor::Actor* const actor) override;
+                int dmg,
+                DmgType dmg_type,
+                DmgMethod dmg_method,
+                actor::Actor* actor) override;
 };
 
 class GraveStone: public Terrain
@@ -683,7 +683,7 @@ public:
                 return Id::gravestone;
         }
 
-        std::string name(const Article article) const override;
+        std::string name(Article article) const override;
 
         void set_inscription(const std::string& str)
         {
@@ -696,10 +696,10 @@ private:
         Color color_default() const override;
 
         void on_hit(
-                const int dmg,
-                const DmgType dmg_type,
-                const DmgMethod dmg_method,
-                actor::Actor* const actor) override;
+                int dmg,
+                DmgType dmg_type,
+                DmgMethod dmg_method,
+                actor::Actor* actor) override;
 
         std::string m_inscr;
 };
@@ -716,16 +716,16 @@ public:
                 return Id::church_bench;
         }
 
-        std::string name(const Article article) const override;
+        std::string name(Article article) const override;
 
 private:
         Color color_default() const override;
 
         void on_hit(
-                const int dmg,
-                const DmgType dmg_type,
-                const DmgMethod dmg_method,
-                actor::Actor* const actor) override;
+                int dmg,
+                DmgType dmg_type,
+                DmgMethod dmg_method,
+                actor::Actor* actor) override;
 };
 
 enum class StatueType
@@ -745,7 +745,7 @@ public:
                 return Id::statue;
         }
 
-        std::string name(const Article article) const override;
+        std::string name(Article article) const override;
 
         TileId tile() const override;
 
@@ -755,10 +755,10 @@ private:
         Color color_default() const override;
 
         void on_hit(
-                const int dmg,
-                const DmgType dmg_type,
-                const DmgMethod dmg_method,
-                actor::Actor* const actor) override;
+                int dmg,
+                DmgType dmg_type,
+                DmgMethod dmg_method,
+                actor::Actor* actor) override;
 
         int base_shock_when_adj() const override;
 };
@@ -774,16 +774,16 @@ public:
                 return Id::stalagmite;
         }
 
-        std::string name(const Article article) const override;
+        std::string name(Article article) const override;
 
 private:
         Color color_default() const override;
 
         void on_hit(
-                const int dmg,
-                const DmgType dmg_type,
-                const DmgMethod dmg_method,
-                actor::Actor* const actor) override;
+                int dmg,
+                DmgType dmg_type,
+                DmgMethod dmg_method,
+                actor::Actor* actor) override;
 };
 
 class Stairs: public Terrain
@@ -797,7 +797,7 @@ public:
                 return Id::stairs;
         }
 
-        std::string name(const Article article) const override;
+        std::string name(Article article) const override;
 
         void bump(actor::Actor& actor_bumping) override;
 
@@ -807,10 +807,10 @@ private:
         Color color_default() const override;
 
         void on_hit(
-                const int dmg,
-                const DmgType dmg_type,
-                const DmgMethod dmg_method,
-                actor::Actor* const actor) override;
+                int dmg,
+                DmgType dmg_type,
+                DmgMethod dmg_method,
+                actor::Actor* actor) override;
 };
 
 class Bridge : public Terrain
@@ -826,7 +826,7 @@ public:
                 return Id::bridge;
         }
 
-        std::string name(const Article article) const override;
+        std::string name(Article article) const override;
         TileId tile() const override;
         char character() const override;
 
@@ -839,10 +839,10 @@ private:
         Color color_default() const override;
 
         void on_hit(
-                const int dmg,
-                const DmgType dmg_type,
-                const DmgMethod dmg_method,
-                actor::Actor* const actor) override;
+                int dmg,
+                DmgType dmg_type,
+                DmgMethod dmg_method,
+                actor::Actor* actor) override;
 
         Axis m_axis;
 };
@@ -858,7 +858,7 @@ public:
                 return Id::liquid_shallow;
         }
 
-        std::string name(const Article article) const override;
+        std::string name(Article article) const override;
 
         void bump(actor::Actor& actor_bumping) override;
 
@@ -870,10 +870,10 @@ private:
         Color color_bg_default() const override;
 
         void on_hit(
-                const int dmg,
-                const DmgType dmg_type,
-                const DmgMethod dmg_method,
-                actor::Actor* const actor) override;
+                int dmg,
+                DmgType dmg_type,
+                DmgMethod dmg_method,
+                actor::Actor* actor) override;
 
         void run_magic_pool_effects_on_player();
 };
@@ -889,7 +889,7 @@ public:
                 return Id::liquid_deep;
         }
 
-        std::string name(const Article article) const override;
+        std::string name(Article article) const override;
 
         AllowAction pre_bump(actor::Actor& actor_bumping) override;
 
@@ -905,10 +905,10 @@ private:
         Color color_default() const override;
 
         void on_hit(
-                const int dmg,
-                const DmgType dmg_type,
-                const DmgMethod dmg_method,
-                actor::Actor* const actor) override;
+                int dmg,
+                DmgType dmg_type,
+                DmgMethod dmg_method,
+                actor::Actor* actor) override;
 
         bool must_swim_on_enter(const actor::Actor& actor) const;
 };
@@ -924,16 +924,16 @@ public:
                 return Id::chasm;
         }
 
-        std::string name(const Article article) const override;
+        std::string name(Article article) const override;
 
 private:
         Color color_default() const override;
 
         void on_hit(
-                const int dmg,
-                const DmgType dmg_type,
-                const DmgMethod dmg_method,
-                actor::Actor* const actor) override;
+                int dmg,
+                DmgType dmg_type,
+                DmgMethod dmg_method,
+                actor::Actor* actor) override;
 };
 
 class Lever: public Terrain
@@ -948,7 +948,7 @@ public:
                 return Id::lever;
         }
 
-        std::string name(const Article article) const override;
+        std::string name(Article article) const override;
 
         TileId tile() const override;
 
@@ -986,10 +986,10 @@ private:
         Color color_default() const override;
 
         void on_hit(
-                const int dmg,
-                const DmgType dmg_type,
-                const DmgMethod dmg_method,
-                actor::Actor* const actor) override;
+                int dmg,
+                DmgType dmg_type,
+                DmgMethod dmg_method,
+                actor::Actor* actor) override;
 
         bool m_is_left_pos;
 
@@ -1012,16 +1012,16 @@ public:
 
         void on_new_turn() override;
 
-        std::string name(const Article article) const override;
+        std::string name(Article article) const override;
 
 private:
         Color color_default() const override;
 
         void on_hit(
-                const int dmg,
-                const DmgType dmg_type,
-                const DmgMethod dmg_method,
-                actor::Actor* const actor) override;
+                int dmg,
+                DmgType dmg_type,
+                DmgMethod dmg_method,
+                actor::Actor* actor) override;
 };
 
 class Tree: public Terrain
@@ -1037,7 +1037,7 @@ public:
 
         TileId tile() const override;
 
-        std::string name(const Article article) const override;
+        std::string name(Article article) const override;
 
         WasDestroyed on_finished_burning() override;
 
@@ -1045,10 +1045,10 @@ private:
         Color color_default() const override;
 
         void on_hit(
-                const int dmg,
-                const DmgType dmg_type,
-                const DmgMethod dmg_method,
-                actor::Actor* const actor) override;
+                int dmg,
+                DmgType dmg_type,
+                DmgMethod dmg_method,
+                actor::Actor* actor) override;
 
         bool is_fungi() const;
 
@@ -1090,21 +1090,21 @@ public:
                 return Id::tomb;
         }
 
-        std::string name(const Article article) const override;
+        std::string name(Article article) const override;
         TileId tile() const override;
         void bump(actor::Actor& actor_bumping) override;
-        DidOpen open(actor::Actor* const actor_opening) override;
+        DidOpen open(actor::Actor* actor_opening) override;
 
 private:
         Color color_default() const override;
 
         void on_hit(
-                const int dmg,
-                const DmgType dmg_type,
-                const DmgMethod dmg_method,
-                actor::Actor* const actor) override;
+                int dmg,
+                DmgType dmg_type,
+                DmgMethod dmg_method,
+                actor::Actor* actor) override;
 
-        DidTriggerTrap trigger_trap(actor::Actor* const actor) override;
+        DidTriggerTrap trigger_trap(actor::Actor* actor) override;
 
         void player_loot();
 
@@ -1134,27 +1134,27 @@ public:
                 return Id::chest;
         }
 
-        std::string name(const Article article) const override;
+        std::string name(Article article) const override;
 
         TileId tile() const override;
 
         void bump(actor::Actor& actor_bumping) override;
 
-        DidOpen open(actor::Actor* const actor_opening) override;
+        DidOpen open(actor::Actor* actor_opening) override;
 
-        void hit(const int dmg,
-                 const DmgType dmg_type,
-                 const DmgMethod dmg_method,
-                 actor::Actor* const actor) override;
+        void hit(int dmg,
+                 DmgType dmg_type,
+                 DmgMethod dmg_method,
+                 actor::Actor* actor) override;
 
 private:
         Color color_default() const override;
 
         void on_hit(
-                const int dmg,
-                const DmgType dmg_type,
-                const DmgMethod dmg_method,
-                actor::Actor* const actor) override;
+                int dmg,
+                DmgType dmg_type,
+                DmgMethod dmg_method,
+                actor::Actor* actor) override;
 
         void player_loot();
 
@@ -1175,22 +1175,22 @@ public:
                 return Id::cabinet;
         }
 
-        std::string name(const Article article) const override;
+        std::string name(Article article) const override;
 
         TileId tile() const override;
 
         void bump(actor::Actor& actor_bumping) override;
 
-        DidOpen open(actor::Actor* const actor_opening) override;
+        DidOpen open(actor::Actor* actor_opening) override;
 
 private:
         Color color_default() const override;
 
         void on_hit(
-                const int dmg,
-                const DmgType dmg_type,
-                const DmgMethod dmg_method,
-                actor::Actor* const actor) override;
+                int dmg,
+                DmgType dmg_type,
+                DmgMethod dmg_method,
+                actor::Actor* actor) override;
 
         void player_loot();
 
@@ -1208,7 +1208,7 @@ public:
                 return Id::bookshelf;
         }
 
-        std::string name(const Article article) const override;
+        std::string name(Article article) const override;
 
         TileId tile() const override;
 
@@ -1218,10 +1218,10 @@ private:
         Color color_default() const override;
 
         void on_hit(
-                const int dmg,
-                const DmgType dmg_type,
-                const DmgMethod dmg_method,
-                actor::Actor* const actor) override;
+                int dmg,
+                DmgType dmg_type,
+                DmgMethod dmg_method,
+                actor::Actor* actor) override;
 
         void player_loot();
 
@@ -1239,7 +1239,7 @@ public:
                 return Id::alchemist_bench;
         }
 
-        std::string name(const Article article) const override;
+        std::string name(Article article) const override;
 
         TileId tile() const override;
 
@@ -1249,10 +1249,10 @@ private:
         Color color_default() const override;
 
         void on_hit(
-                const int dmg,
-                const DmgType dmg_type,
-                const DmgMethod dmg_method,
-                actor::Actor* const actor) override;
+                int dmg,
+                DmgType dmg_type,
+                DmgMethod dmg_method,
+                actor::Actor* actor) override;
 
         void player_loot();
 
@@ -1287,7 +1287,7 @@ public:
                 return Id::fountain;
         }
 
-        std::string name(const Article article) const override;
+        std::string name(Article article) const override;
 
         void on_new_turn() override;
 
@@ -1320,10 +1320,10 @@ private:
         std::string type_indefinite_article() const;
 
         void on_hit(
-                const int dmg,
-                const DmgType dmg_type,
-                const DmgMethod dmg_method,
-                actor::Actor* const actor) override;
+                int dmg,
+                DmgType dmg_type,
+                DmgMethod dmg_method,
+                actor::Actor* actor) override;
 
         FountainEffect m_fountain_effect {FountainEffect::END};
         bool m_has_drinks_left {true};
@@ -1342,31 +1342,31 @@ public:
                 return Id::cocoon;
         }
 
-        std::string name(const Article article) const override;
+        std::string name(Article article) const override;
 
         TileId tile() const override;
 
         void bump(actor::Actor& actor_bumping) override;
 
-        DidOpen open(actor::Actor* const actor_opening) override;
+        DidOpen open(actor::Actor* actor_opening) override;
 
 private:
         Color color_default() const override;
 
         void on_hit(
-                const int dmg,
-                const DmgType dmg_type,
-                const DmgMethod dmg_method,
-                actor::Actor* const actor) override;
+                int dmg,
+                DmgType dmg_type,
+                DmgMethod dmg_method,
+                actor::Actor* actor) override;
 
         void player_loot();
 
-        DidTriggerTrap trigger_trap(actor::Actor* const actor) override;
+        DidTriggerTrap trigger_trap(actor::Actor* actor) override;
 
         bool m_is_trapped;
         bool m_is_open;
 };
 
-} // terrain
+} // namespace terrain
 
 #endif // TERRAIN_HPP

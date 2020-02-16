@@ -7,14 +7,14 @@
 #ifndef INSANITY_HPP
 #define INSANITY_HPP
 
-#include <vector>
 #include <string>
+#include <vector>
 
 
 namespace actor
 {
 class Actor;
-}
+} // namespace actor
 
 
 enum class InsSymptId
@@ -51,9 +51,9 @@ enum class InsSymptType
 class InsSympt
 {
 public:
-        InsSympt() {}
+        InsSympt() = default;
 
-        virtual ~InsSympt() {}
+        virtual ~InsSympt() = default;
 
         virtual InsSymptId id() const = 0;
 
@@ -114,8 +114,8 @@ protected:
 class InsReduceXp : public InsSympt
 {
 public:
-        InsReduceXp() :
-                InsSympt() {}
+        InsReduceXp() 
+                = default;
 
         InsSymptId id() const override
         {
@@ -153,8 +153,8 @@ protected:
 class InsScream : public InsSympt
 {
 public:
-        InsScream() :
-                InsSympt() {}
+        InsScream() 
+                = default;
 
         InsSymptId id() const override
         {
@@ -192,8 +192,8 @@ protected:
 class InsBabbling : public InsSympt
 {
 public:
-        InsBabbling() :
-                InsSympt() {}
+        InsBabbling() 
+                = default;
 
         InsSymptId id() const override
         {
@@ -257,8 +257,8 @@ protected:
 class InsFaint : public InsSympt
 {
 public:
-        InsFaint() :
-                InsSympt() {}
+        InsFaint() 
+                = default;
 
         InsSymptId id() const override
         {
@@ -299,8 +299,8 @@ protected:
 class InsLaugh : public InsSympt
 {
 public:
-        InsLaugh() :
-                InsSympt() {}
+        InsLaugh() 
+                = default;
 
         InsSymptId id() const override
         {
@@ -339,8 +339,8 @@ protected:
 class InsPhobiaRat : public InsSympt
 {
 public:
-        InsPhobiaRat() :
-                InsSympt() {}
+        InsPhobiaRat() 
+                = default;
 
         InsSymptId id() const override
         {
@@ -404,8 +404,8 @@ protected:
 class InsPhobiaSpider : public InsSympt
 {
 public:
-        InsPhobiaSpider() :
-                InsSympt() {}
+        InsPhobiaSpider() 
+                = default;
 
         InsSymptId id() const override
         {
@@ -469,8 +469,8 @@ protected:
 class InsPhobiaReptileAndAmph : public InsSympt
 {
 public:
-        InsPhobiaReptileAndAmph() :
-                InsSympt() {}
+        InsPhobiaReptileAndAmph() 
+                = default;
 
         InsSymptId id() const override
         {
@@ -534,8 +534,8 @@ protected:
 class InsPhobiaCanine : public InsSympt
 {
 public:
-        InsPhobiaCanine() :
-                InsSympt() {}
+        InsPhobiaCanine() 
+                = default;
 
         InsSymptId id() const override
         {
@@ -599,8 +599,8 @@ protected:
 class InsPhobiaDead : public InsSympt
 {
 public:
-        InsPhobiaDead() :
-                InsSympt() {}
+        InsPhobiaDead() 
+                = default;
 
         InsSymptId id() const override
         {
@@ -664,8 +664,8 @@ protected:
 class InsPhobiaDeep : public InsSympt
 {
 public:
-        InsPhobiaDeep() :
-                InsSympt() {}
+        InsPhobiaDeep() 
+                = default;
 
         InsSymptId id() const override
         {
@@ -729,8 +729,8 @@ protected:
 class InsPhobiaDark : public InsSympt
 {
 public:
-        InsPhobiaDark() :
-                InsSympt() {}
+        InsPhobiaDark() 
+                = default;
 
         InsSymptId id() const override
         {
@@ -794,8 +794,8 @@ protected:
 class InsMasoch : public InsSympt
 {
 public:
-        InsMasoch() :
-                InsSympt() {}
+        InsMasoch() 
+                = default;
 
         InsSymptId id() const override
         {
@@ -857,8 +857,8 @@ protected:
 class InsSadism : public InsSympt
 {
 public:
-        InsSadism() :
-                InsSympt() {}
+        InsSadism() 
+                = default;
 
         InsSymptId id() const override
         {
@@ -920,8 +920,8 @@ protected:
 class InsShadows : public InsSympt
 {
 public:
-        InsShadows() :
-                InsSympt() {}
+        InsShadows() 
+                = default;
 
         InsSymptId id() const override
         {
@@ -960,8 +960,8 @@ protected:
 class InsParanoia : public InsSympt
 {
 public:
-        InsParanoia() :
-                InsSympt() {}
+        InsParanoia() 
+                = default;
 
         InsSymptId id() const override
         {
@@ -1001,8 +1001,8 @@ protected:
 class InsConfusion : public InsSympt
 {
 public:
-        InsConfusion() :
-                InsSympt() {}
+        InsConfusion() 
+                = default;
 
         InsSymptId id() const override
         {
@@ -1044,8 +1044,8 @@ protected:
 class InsFrenzy : public InsSympt
 {
 public:
-        InsFrenzy() :
-                InsSympt() {}
+        InsFrenzy() 
+                = default;
 
         InsSymptId id() const override
         {
@@ -1086,8 +1086,8 @@ protected:
 class InsStrangeSensation : public InsSympt
 {
 public:
-        InsStrangeSensation() :
-                InsSympt() {}
+        InsStrangeSensation() 
+                = default;
 
         InsSymptId id() const override
         {
@@ -1134,9 +1134,9 @@ void load();
 
 void run_sympt();
 
-bool has_sympt(const InsSymptId id);
+bool has_sympt(InsSymptId id);
 
-bool has_sympt_type(const InsSymptType type);
+bool has_sympt_type(InsSymptType type);
 
 std::vector<const InsSympt*> active_sympts();
 
@@ -1145,8 +1145,8 @@ void on_new_player_turn(
 
 void on_permanent_rfear();
 
-void end_sympt(const InsSymptId id);
+void end_sympt(InsSymptId id);
 
-} //insanity
+} // namespace insanity
 
 #endif // INSANITY_HPP

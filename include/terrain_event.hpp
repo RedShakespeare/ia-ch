@@ -26,17 +26,17 @@ public:
         Event(const P& pos) :
                 Terrain(pos) {}
 
-        virtual ~Event() {}
+        virtual ~Event() = default;
 
-        virtual void on_new_turn() override = 0;
+        void on_new_turn() override = 0;
 
-        std::string name(const Article article) const override final
+        std::string name(const Article article) const final
         {
                 (void)article;
                 return "";
         }
 
-        Color color() const override final
+        Color color() const final
         {
                 return colors::black();
         }
@@ -53,7 +53,7 @@ public:
         EventWallCrumble(const P& p) :
                 Event(p) {}
 
-        ~EventWallCrumble() {}
+        ~EventWallCrumble() = default;
 
         Id id() const override
         {
@@ -75,7 +75,7 @@ public:
         EventSnakeEmerge(const P& p) :
                 Event(p) {}
 
-        ~EventSnakeEmerge() {}
+        ~EventSnakeEmerge() = default;
 
         Id id() const override
         {
@@ -101,7 +101,7 @@ private:
         const Range allowed_emerge_dist_range =
                 Range(2, g_fov_radi_int - 1);
 
-        const size_t m_min_nr_snakes = 3;
+        const int m_min_nr_snakes = 3;
 };
 
 class EventRatsInTheWallsDiscovery: public Event
@@ -117,6 +117,6 @@ public:
         void on_new_turn() override;
 };
 
-} // terrain
+} // namespace terrain
 
 #endif // TERRAIN_EVENT_HPP

@@ -15,7 +15,7 @@ class CharacterDescr: public InfoScreenState
 {
 public:
         CharacterDescr() :
-                InfoScreenState(),
+                
                 m_top_idx(0) {}
 
         void on_start() override;

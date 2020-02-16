@@ -161,9 +161,9 @@ struct ActorItemSetData
 
 struct IntrAttData
 {
-        IntrAttData() {}
+        IntrAttData() = default;
 
-        ~IntrAttData() {}
+        ~IntrAttData() = default;
 
         item::Id item_id {item::Id::END};
         int dmg {0};
@@ -322,6 +322,6 @@ void init();
 void save();
 void load();
 
-} // actor_data
+} // namespace actor
 
 #endif // ACTOR_DATA_HPP

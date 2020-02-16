@@ -18,8 +18,8 @@ enum class InfoScreenType
 class InfoScreenState: public State
 {
 public:
-        InfoScreenState() :
-                State() {}
+        InfoScreenState() 
+                = default;
 
 protected:
         int max_nr_lines_on_screen() const;

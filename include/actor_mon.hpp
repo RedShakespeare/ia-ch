@@ -4,8 +4,8 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 // =============================================================================
 
-#ifndef MON_HPP
-#define MON_HPP
+#ifndef ACTOR_MON_HPP
+#define ACTOR_MON_HPP
 
 #include <memory>
 #include <string>
@@ -75,9 +75,9 @@ public:
 
         void act() override;
 
-        virtual Color color() const override;
+        Color color() const override;
 
-        SpellSkill spell_skill(const SpellId id) const override;
+        SpellSkill spell_skill(SpellId id) const override;
 
         AiAvailAttacksData avail_attacks(Actor& defender) const;
 
@@ -87,8 +87,8 @@ public:
 
         void hear_sound(const Snd& snd);
 
-        void become_aware_player(const bool is_from_seeing,
-                                 const int factor = 1);
+        void become_aware_player(bool is_from_seeing,
+                                 int factor = 1);
 
         void become_wary_player();
 
@@ -96,7 +96,7 @@ public:
 
         void on_actor_turn() override;
 
-        void on_std_turn() override final;
+        void on_std_turn() final;
 
         std::string aware_msg_mon_seen() const;
 
@@ -112,12 +112,12 @@ public:
                 return m_data->aware_sfx_mon_hidden;
         }
 
-        void speak_phrase(const AlertsMon alerts_others);
+        void speak_phrase(AlertsMon alerts_others);
 
-        bool is_leader_of(const Actor* const actor) const override;
-        bool is_actor_my_leader(const Actor* const actor) const override;
+        bool is_leader_of(const Actor* actor) const override;
+        bool is_actor_my_leader(const Actor* actor) const override;
 
-        void add_spell(SpellSkill skill, Spell* const spell);
+        void add_spell(SpellSkill skill, Spell* spell);
 
         int m_wary_of_player_counter;
         int m_aware_of_player_counter;
@@ -158,11 +158,11 @@ protected:
 
         bool should_reload(const item::Wpn& wpn) const;
 
-        virtual void on_hit(
+        void on_hit(
                 int& dmg,
-                const DmgType dmg_type,
-                const DmgMethod method,
-                const AllowWound allow_wound) override;
+                DmgType dmg_type,
+                DmgMethod method,
+                AllowWound allow_wound) override;
 
         virtual DidAction on_act()
         {
@@ -179,10 +179,10 @@ class Ape: public Mon
 {
 public:
         Ape() :
-                Mon(),
+                
                 m_frenzy_cooldown(0) {}
 
-        ~Ape() {}
+        ~Ape() = default;
 
 private:
         DidAction on_act() override;
@@ -194,9 +194,9 @@ class Khephren: public Mon
 {
 public:
         Khephren() :
-                Mon(),
+                
                 m_has_summoned_locusts(false) {}
-        ~Khephren() {}
+        ~Khephren() = default;
 
 private:
         DidAction on_act() override;
@@ -207,9 +207,9 @@ private:
 class StrangeColor: public Mon
 {
 public:
-        StrangeColor() : Mon() {}
+        StrangeColor()  = default;
 
-        ~StrangeColor() {}
+        ~StrangeColor() = default;
 
         Color color() const override;
 };
@@ -219,7 +219,7 @@ class SpectralWpn: public Mon
 public:
         SpectralWpn();
 
-        ~SpectralWpn() {}
+        ~SpectralWpn() = default;
 
         void on_death() override;
 
@@ -237,6 +237,6 @@ private:
         std::unique_ptr<item::Item> m_discarded_item {};
 };
 
-} // actor
+} // namespace actor
 
-#endif // MON_HPP
+#endif // ACTOR_MON_HPP

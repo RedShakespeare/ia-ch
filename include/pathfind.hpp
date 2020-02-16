@@ -27,14 +27,14 @@ std::vector<P> pathfind(
     const P& p0,                                // Origin
     const P& p1,                                // Target
     const Array2<bool>& blocked,                // Blocked cells
-    const bool allow_diagonal = true,           // Cardinals only?
-    const bool randomize_steps = false);        // See above
+    bool allow_diagonal = true,           // Cardinals only?
+    bool randomize_steps = false);        // See above
 
 std::vector<P> pathfind_with_flood(
     const P& p0,                                // Origin
     const P& p1,                                // Target
     const Array2<int>& flood,                   // Floodfill
-    const bool allow_diagonal = true,           // Cardinals only?
-    const bool randomize_steps = false);        // See above
+    bool allow_diagonal = true,           // Cardinals only?
+    bool randomize_steps = false);        // See above
 
 #endif // PATHFIND_HPP

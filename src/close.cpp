@@ -9,12 +9,12 @@
 #include "actor.hpp"
 #include "actor_player.hpp"
 #include "common_text.hpp"
-#include "terrain_door.hpp"
 #include "io.hpp"
 #include "map.hpp"
 #include "msg_log.hpp"
 #include "property_handler.hpp"
 #include "query.hpp"
+#include "terrain_door.hpp"
 
 // -----------------------------------------------------------------------------
 // Private
@@ -121,4 +121,4 @@ void player_try_close_or_jam()
         }
 }
 
-} // close
+} // namespace close_door

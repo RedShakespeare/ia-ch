@@ -10,7 +10,6 @@
 #include "actor_player.hpp"
 #include "audio.hpp"
 #include "common_text.hpp"
-#include "terrain.hpp"
 #include "game.hpp"
 #include "game_time.hpp"
 #include "init.hpp"
@@ -27,6 +26,7 @@
 #include "property_handler.hpp"
 #include "query.hpp"
 #include "saving.hpp"
+#include "terrain.hpp"
 #include "text_format.hpp"
 
 
@@ -85,7 +85,7 @@ void init()
                 {
                         // Color and false name
                         const size_t idx =
-                                rnd::range(0, s_potion_looks.size() - 1);
+                                rnd::range(0, (int)s_potion_looks.size() - 1);
 
                         PotionLook& look = s_potion_looks[idx];
 
@@ -323,7 +323,7 @@ std::vector<std::string> Potion::descr_hook() const
                 }
                 else
                 {
-                        lines.push_back(
+                        lines.emplace_back(
                                 "Perhaps keeping it for a while will reveal "
                                 "something about it.");
                 }
@@ -448,7 +448,7 @@ void Potion::on_collide(const P& pos, actor::Actor* const actor)
 
 std::string Potion::name_inf_str() const
 {
-        std::string str = "";
+        std::string str;
 
         if (data().is_alignment_known && !data().is_identified)
         {
@@ -625,9 +625,7 @@ void Fortitude::quaff_impl(actor::Actor& actor)
 
                 if (!sympts.empty())
                 {
-                        const size_t idx = rnd::range(0, sympts.size() - 1);
-
-                        const InsSymptId id = sympts[idx]->id();
+                        const auto id = rnd::element(sympts)->id();
 
                         insanity::end_sympt(id);
                 }
@@ -828,4 +826,4 @@ void Invis::collide_hook(const P& pos, actor::Actor* const actor)
         }
 }
 
-} // potion
+} // namespace potion

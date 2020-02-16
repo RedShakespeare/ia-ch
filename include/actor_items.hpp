@@ -11,7 +11,7 @@
 namespace actor
 {
 class Actor;
-}
+} // namespace actor
 
 
 namespace actor_items
@@ -19,6 +19,6 @@ namespace actor_items
 
 void make_for_actor(actor::Actor& actor);
 
-} // actors_items
+} // namespace actor_items
 
 #endif // ACTOR_ITEMS_HPP

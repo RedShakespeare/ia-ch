@@ -10,13 +10,13 @@
 #include <climits>
 
 #include "actor_player.hpp"
-#include "terrain_mob.hpp"
-#include "terrain.hpp"
 #include "flood.hpp"
 #include "game_time.hpp"
 #include "init.hpp"
 #include "map.hpp"
 #include "misc.hpp"
+#include "terrain.hpp"
+#include "terrain_mob.hpp"
 
 #ifndef NDEBUG
 #include "io.hpp"
@@ -703,7 +703,7 @@ bool is_map_connected(const Array2<bool>& blocked)
 } // is_map_connected
 
 
-} // map_parsers
+} // namespace map_parsers
 
 
 // -----------------------------------------------------------------------------

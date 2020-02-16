@@ -7,15 +7,15 @@
 #ifndef POSTMORTEM_HPP
 #define POSTMORTEM_HPP
 
-#include "state.hpp"
-#include "info_screen_state.hpp"
 #include "browser.hpp"
 #include "global.hpp"
+#include "info_screen_state.hpp"
+#include "state.hpp"
 
 class PostmortemMenu: public State
 {
 public:
-        PostmortemMenu(const IsWin is_win);
+        PostmortemMenu(IsWin is_win);
 
         void on_start() override;
 
@@ -28,7 +28,7 @@ public:
         StateId id() override;
 
 private:
-        void make_memorial_file(const std::string path) const;
+        void make_memorial_file(std::string path) const;
 
         MenuBrowser m_browser;
 
@@ -41,7 +41,7 @@ class PostmortemInfo: public InfoScreenState
 {
 public:
         PostmortemInfo() :
-                InfoScreenState(),
+                
                 m_top_idx(0) {}
 
         void draw() override;

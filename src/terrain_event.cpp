@@ -9,7 +9,6 @@
 #include "actor_factory.hpp"
 #include "actor_mon.hpp"
 #include "actor_player.hpp"
-#include "terrain.hpp"
 #include "game_time.hpp"
 #include "init.hpp"
 #include "io.hpp"
@@ -20,6 +19,7 @@
 #include "property.hpp"
 #include "property_handler.hpp"
 #include "sdl_base.hpp"
+#include "terrain.hpp"
 
 
 namespace terrain
@@ -196,12 +196,12 @@ void EventWallCrumble::on_new_turn()
 
         if (map::g_dlvl <= g_dlvl_last_early_game)
         {
-                spawn_bucket.push_back({actor::Id::rat, 24});
-                spawn_bucket.push_back({actor::Id::rat_thing, 16});
+                spawn_bucket.emplace_back(actor::Id::rat, 24);
+                spawn_bucket.emplace_back(actor::Id::rat_thing, 16);
         }
 
-        spawn_bucket.push_back({actor::Id::zombie, 4});
-        spawn_bucket.push_back({actor::Id::bloated_zombie, 1});
+        spawn_bucket.emplace_back(actor::Id::zombie, 4);
+        spawn_bucket.emplace_back(actor::Id::bloated_zombie, 1);
 
         const auto spawn_data = rnd::element(spawn_bucket);
 
@@ -266,7 +266,7 @@ bool EventSnakeEmerge::try_find_p()
 
                 const auto emerge_bucket = emerge_p_bucket(p, blocked, r);
 
-                if (emerge_bucket.size() >= m_min_nr_snakes)
+                if ((int)emerge_bucket.size() >= m_min_nr_snakes)
                 {
                         m_pos = p;
 
@@ -379,7 +379,7 @@ void EventSnakeEmerge::on_new_turn()
 
         auto tgt_bucket = emerge_p_bucket(m_pos, blocked, r);
 
-        if (tgt_bucket.size() < m_min_nr_snakes)
+        if ((int)tgt_bucket.size() < m_min_nr_snakes)
         {
                 // Not possible to spawn at least minimum number
                 return;
@@ -396,7 +396,7 @@ void EventSnakeEmerge::on_new_turn()
 
         std::vector<actor::Id> id_bucket;
 
-        for (auto d : actor::g_data)
+        for (const auto& d : actor::g_data)
         {
                 if (d.is_snake)
                 {
@@ -404,17 +404,17 @@ void EventSnakeEmerge::on_new_turn()
                 }
         }
 
-        const size_t idx = rnd::range(0, id_bucket.size() - 1);
+        const size_t idx = rnd::range(0, (int)id_bucket.size() - 1);
 
         const auto id = id_bucket[idx];
 
-        const size_t nr_summoned = rnd::range(m_min_nr_snakes, max_nr_snakes);
+        const int nr_summoned = rnd::range(m_min_nr_snakes, max_nr_snakes);
 
         std::vector<P> seen_tgt_positions;
 
-        for (size_t i = 0; i < nr_summoned; ++i)
+        for (int i = 0; i < nr_summoned; ++i)
         {
-                ASSERT(i < tgt_bucket.size());
+                ASSERT(i < (int)tgt_bucket.size());
 
                 const P& p(tgt_bucket[i]);
 
@@ -442,11 +442,10 @@ void EventSnakeEmerge::on_new_turn()
                         shock_lvl = ShockLvl::terrifying;
                 }
 
-                map::g_player->incr_shock(shock_lvl,
-                                        ShockSrc::see_mon);
+                map::g_player->incr_shock(shock_lvl, ShockSrc::see_mon);
         }
 
-        for (size_t i = 0; i < nr_summoned; ++i)
+        for (int i = 0; i < nr_summoned; ++i)
         {
                 const P& p(tgt_bucket[i]);
 
@@ -509,4 +508,4 @@ void EventRatsInTheWallsDiscovery::on_new_turn()
         }
 }
 
-} // terrain
+} // namespace terrain

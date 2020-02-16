@@ -42,9 +42,9 @@ std::string Range::str() const
 
 std::string Range::str_avg() const
 {
-        const double val = avg();
+        const auto val = avg();
 
-        double rounded = roundf(val * 100.0) / 100.0;
+        auto rounded = round(val * 100.0) / 100.0;
 
         std::ostringstream ss;
 
@@ -61,7 +61,7 @@ std::mt19937 g_rng;
 
 void seed()
 {
-        uint32_t t = static_cast<uint32_t>(time(nullptr));
+        auto t = static_cast<uint32_t>(time(nullptr));
 
         std::hash<uint32_t> hasher;
 
@@ -181,4 +181,4 @@ int weighted_choice(const std::vector<int> weights)
         return 0;
 }
 
-} // rnd
+} // namespace rnd

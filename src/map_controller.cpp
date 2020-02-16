@@ -10,12 +10,12 @@
 #include "actor_factory.hpp"
 #include "actor_mon.hpp"
 #include "actor_player.hpp"
-#include "terrain.hpp"
 #include "game_time.hpp"
 #include "global.hpp"
 #include "map.hpp"
 #include "msg_log.hpp"
 #include "populate_monsters.hpp"
+#include "terrain.hpp"
 
 // -----------------------------------------------------------------------------
 // MapController
@@ -104,4 +104,4 @@ namespace map_control
 
 std::unique_ptr<MapController> g_controller = nullptr;
 
-}
+} // namespace map_control

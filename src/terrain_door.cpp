@@ -9,7 +9,6 @@
 #include "actor.hpp"
 #include "actor_player.hpp"
 #include "debug.hpp"
-#include "terrain_data.hpp"
 #include "game.hpp"
 #include "game_time.hpp"
 #include "init.hpp"
@@ -19,6 +18,7 @@
 #include "player_bon.hpp"
 #include "postmortem.hpp"
 #include "property_handler.hpp"
+#include "terrain_data.hpp"
 #include "text_format.hpp"
 
 
@@ -439,7 +439,7 @@ WasDestroyed Door::on_finished_burning()
                 msg_log::add("The door burns down.");
         }
 
-        RubbleLow* const rubble = new RubbleLow(m_pos);
+        auto* const rubble = new RubbleLow(m_pos);
 
         rubble->m_burn_state = BurnState::has_burned;
 
@@ -480,7 +480,7 @@ bool Door::is_smoke_passable() const
 
 std::string Door::base_name() const
 {
-        std::string ret = "";
+        std::string ret;
 
         switch (m_type)
         {
@@ -502,7 +502,7 @@ std::string Door::base_name() const
 
 std::string Door::base_name_short() const
 {
-        std::string ret = "";
+        std::string ret;
 
         switch (m_type)
         {
@@ -532,9 +532,9 @@ std::string Door::name(const Article article) const
                 return m_mimic_terrain->name(article);
         }
 
-        std::string a = "";
+        std::string a;
 
-        std::string mod = "";
+        std::string mod;
 
         if (m_burn_state == BurnState::burning)
         {
@@ -1379,4 +1379,4 @@ DidClose Door::close(actor::Actor* const actor_closing)
         return DidClose::yes;
 }
 
-} // terrain
+} // namespace terrain

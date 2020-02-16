@@ -228,21 +228,21 @@ const int g_allocated_channels = 16;
 void init();
 void cleanup();
 
-void play(const SfxId sfx,
-          const int vol_percent_tot = 100,
-          const int vol_percent_l = 50);
+void play(SfxId sfx,
+          int vol_pct_tot = 100,
+          int vol_pct_l = 50);
 
-void play(const SfxId sfx,
-          const Dir dir,
-          const int distance_percent);
+void play(SfxId sfx,
+          Dir dir,
+          int distance_pct);
 
-void try_play_amb(const int one_in_n_chance_to_play);
+void try_play_amb(int one_in_n_chance_to_play);
 
 // Plays music if not already playing any music
-void play_music(const MusId sfx);
+void play_music(MusId mus);
 
 void fade_out_music();
 
-}
+} // namespace audio
 
 #endif // AUDIO_HPP

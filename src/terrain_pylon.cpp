@@ -445,4 +445,4 @@ void PylonTerrify::on_new_turn_activated()
         }
 }
 
-} // terrain
+} // namespace terrain

@@ -37,7 +37,7 @@ public:
         Door(const P& terrain_pos,
 
              // NOTE: This should always be nullptr if type is "gate"
-             const Wall* const mimic_terrain,
+             const Wall* mimic_terrain,
 
              DoorType type = DoorType::wood,
 
@@ -62,7 +62,7 @@ public:
 
         std::string base_name_short() const; // E.g. "door"
 
-        std::string name(const Article article) const override;
+        std::string name(Article article) const override;
 
         WasDestroyed on_finished_burning() override;
 
@@ -88,7 +88,7 @@ public:
 
         bool try_jam(actor::Actor* actor_trying);
 
-        void on_lever_pulled(Lever* const lever) override;
+        void on_lever_pulled(Lever* lever) override;
 
         bool is_open() const
         {
@@ -102,7 +102,7 @@ public:
 
         Matl matl() const override;
 
-        void reveal(const Verbose verbose) override;
+        void reveal(Verbose verbose) override;
 
         void on_revealed_from_searching() override;
 
@@ -114,9 +114,9 @@ public:
                 m_is_stuck = true;
         }
 
-        DidOpen open(actor::Actor* const actor_opening) override;
+        DidOpen open(actor::Actor* actor_opening) override;
 
-        DidClose close(actor::Actor* const actor_closing) override;
+        DidClose close(actor::Actor* actor_closing) override;
 
         actor::Actor* actor_currently_opening() const
         {
@@ -149,10 +149,10 @@ private:
         Color color_default() const override;
 
         void on_hit(
-                const int dmg,
-                const DmgType dmg_type,
-                const DmgMethod dmg_method,
-                actor::Actor* const actor) override;
+                int dmg,
+                DmgType dmg_type,
+                DmgMethod dmg_method,
+                actor::Actor* actor) override;
 
         const Wall* const m_mimic_terrain {nullptr};
 
@@ -167,6 +167,6 @@ private:
 
 }; // Door
 
-} // terrain
+} // namespace terrain
 
 #endif // TERRAIN_DOOR_HPP

@@ -60,7 +60,7 @@ std::unique_ptr<MapBuilder> make(const MapType map_type)
         return nullptr;
 }
 
-} // map_builder
+} // namespace map_builder
 
 // -----------------------------------------------------------------------------
 // MapBuilder

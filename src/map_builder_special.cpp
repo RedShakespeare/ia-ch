@@ -27,8 +27,8 @@
 // MapBuilderDeepOneLair
 // -----------------------------------------------------------------------------
 MapBuilderDeepOneLair::MapBuilderDeepOneLair() :
-        MapBuilderTemplateLevel(),
-        m_passage_symbol('1' + rnd::range(0, 1))
+
+        m_passage_symbol((char)((int)'1' + rnd::range(0, 1)))
 {
 
 }
@@ -153,6 +153,12 @@ void MapBuilderDeepOneLair::handle_template_pos(const P& p, const char c)
                 map::put(new terrain::Stalagmite(p));
         }
         break;
+
+        default:
+        {
+                ASSERT(false);
+        }
+        break;
         }
 }
 
@@ -164,11 +170,9 @@ void MapBuilderDeepOneLair::on_template_built()
 // -----------------------------------------------------------------------------
 // MapBuilderMagicPool
 // -----------------------------------------------------------------------------
-MapBuilderMagicPool::MapBuilderMagicPool() :
-        MapBuilderTemplateLevel()
-{
+MapBuilderMagicPool::MapBuilderMagicPool()
 
-}
+= default;
 
 void MapBuilderMagicPool::handle_template_pos(const P& p, const char c)
 {
@@ -225,6 +229,12 @@ void MapBuilderMagicPool::handle_template_pos(const P& p, const char c)
         case '^':
         {
                 map::put(new terrain::Stalagmite(p));
+        }
+        break;
+
+        default:
+        {
+                ASSERT(false);
         }
         break;
         }
@@ -491,8 +501,8 @@ void MapBuilderIntroForest::on_template_built()
 // MapBuilderEgypt
 // -----------------------------------------------------------------------------
 MapBuilderEgypt::MapBuilderEgypt() :
-        MapBuilderTemplateLevel(),
-        m_stair_symbol('1' + rnd::range(0, 3))
+
+        m_stair_symbol((char)((int)'1' + rnd::range(0, 3)))
 {
 
 }
@@ -540,6 +550,12 @@ void MapBuilderEgypt::handle_template_pos(const P&p, const char c)
                 case 'C':
                         actor_id = actor::Id::croc_head_mummy;
                         break;
+
+                default:
+                {
+                        ASSERT(false);
+                }
+                break;
                 }
 
                 if (actor_id != actor::Id::END)
@@ -594,6 +610,12 @@ void MapBuilderEgypt::handle_template_pos(const P&p, const char c)
                 liquid->m_type = LiquidType::water;
 
                 map::put(liquid);
+        }
+        break;
+
+        default:
+        {
+                ASSERT(false);
         }
         break;
         }
@@ -712,6 +734,12 @@ void MapBuilderRatCave::handle_template_pos(const P& p, const char c)
                 map::put(new terrain::Stalagmite(p));
         }
         break;
+
+        default:
+        {
+                ASSERT(false);
+        }
+        break;
         }
 }
 
@@ -790,6 +818,12 @@ void MapBuilderBoss::handle_template_pos(const P& p, const char c)
                 map::put(new terrain::Stairs(p));
         }
         break;
+
+        default:
+        {
+                ASSERT(false);
+        }
+        break;
         }
 }
 
@@ -861,6 +895,12 @@ void MapBuilderTrapez::handle_template_pos(const P& p, const char c)
         case 'v':
         {
                 map::put(new terrain::Brazier(p));
+        }
+        break;
+
+        default:
+        {
+                ASSERT(false);
         }
         break;
         }

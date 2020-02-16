@@ -15,9 +15,9 @@
 class MapController
 {
 public:
-        MapController() {}
+        MapController() = default;
 
-        virtual ~MapController() {}
+        virtual ~MapController() = default;
 
         virtual void on_start() {}
 
@@ -27,8 +27,8 @@ public:
 class MapControllerStd: public MapController
 {
 public:
-        MapControllerStd() :
-                MapController() {}
+        MapControllerStd() 
+                = default;
 
         void on_start() override;
 
@@ -38,8 +38,8 @@ public:
 class MapControllerBoss: public MapController
 {
 public:
-        MapControllerBoss() :
-                MapController() {}
+        MapControllerBoss() 
+                = default;
 
         void on_start() override;
 
@@ -54,6 +54,6 @@ namespace map_control
 
 extern std::unique_ptr<MapController> g_controller;
 
-}
+} // namespace map_control
 
-#endif // MAP_CONTROL_HPP
+#endif // MAP_CONTROLLER_HPP

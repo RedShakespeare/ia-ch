@@ -6,7 +6,7 @@
 
 #include "time.hpp"
 
-#include <time.h>
+#include <ctime>
 
 std::string TimeData::time_str(
         const TimeType lowest,

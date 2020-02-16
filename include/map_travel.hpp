@@ -7,8 +7,8 @@
 #ifndef MAP_TRAVEL_HPP
 #define MAP_TRAVEL_HPP
 
-#include <vector>
 #include <string>
+#include <vector>
 
 #include "map_builder.hpp"
 
@@ -24,6 +24,6 @@ void try_use_down_stairs();
 
 void go_to_nxt();
 
-} // map_travel
+} // namespace map_travel
 
 #endif // MAP_TRAVEL_HPP

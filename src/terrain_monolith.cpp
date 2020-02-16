@@ -6,13 +6,13 @@
 
 #include "terrain_monolith.hpp"
 
-#include "msg_log.hpp"
+#include "actor.hpp"
+#include "actor_factory.hpp"
+#include "actor_mon.hpp"
+#include "actor_player.hpp"
 #include "game.hpp"
 #include "map.hpp"
-#include "actor.hpp"
-#include "actor_mon.hpp"
-#include "actor_factory.hpp"
-#include "actor_player.hpp"
+#include "msg_log.hpp"
 #include "property_handler.hpp"
 
 
@@ -94,4 +94,4 @@ void Monolith::activate()
                 ShockSrc::misc);
 }
 
-} // terrain
+} // namespace terrain

@@ -6,14 +6,12 @@
 
 #include "look.hpp"
 
-#include <string>
 #include <climits>
+#include <string>
 
 #include "actor_mon.hpp"
 #include "actor_player.hpp"
 #include "attack_data.hpp"
-#include "terrain_mob.hpp"
-#include "terrain.hpp"
 #include "game_time.hpp"
 #include "inventory.hpp"
 #include "io.hpp"
@@ -25,6 +23,8 @@
 #include "property_data.hpp"
 #include "property_handler.hpp"
 #include "query.hpp"
+#include "terrain.hpp"
+#include "terrain_mob.hpp"
 #include "text_format.hpp"
 
 // -----------------------------------------------------------------------------
@@ -186,9 +186,9 @@ static void mon_shock_lvl_to_str(
 
 static std::string get_mon_shock_descr(const actor::Actor& actor)
 {
-        std::string shock_str = "";
+        std::string shock_str;
 
-        std::string shock_punct_str = "";
+        std::string shock_punct_str;
 
         mon_shock_lvl_to_str(actor, shock_str, shock_punct_str);
 
@@ -268,10 +268,9 @@ void ViewActorDescr::on_start()
 
                 for (const auto& line : fixed_lines)
                 {
-                        m_lines.push_back(
-                                ColoredString(
+                        m_lines.emplace_back(
                                         line,
-                                        colors::text()));
+                                        colors::text());
                 }
         }
 
@@ -293,10 +292,9 @@ void ViewActorDescr::on_start()
 
                         for (const auto& line : auto_descr_lines)
                         {
-                                m_lines.push_back(
-                                        ColoredString(
+                                m_lines.emplace_back(
                                                 line,
-                                                colors::text()));
+                                                colors::text());
                         }
                 }
         }
@@ -304,12 +302,11 @@ void ViewActorDescr::on_start()
         // Add the full description
         m_lines.resize(m_lines.size() + 1);
 
-        m_lines.push_back(
-                ColoredString(
-                        "Current properties",
-                        colors::text()));
+        m_lines.emplace_back("Current properties", colors::text());
 
-        auto prop_list = m_actor.m_properties.property_names_temporary_negative();
+        auto prop_list =
+                m_actor.m_properties
+                .property_names_temporary_negative();
 
         // Remove all non-negative properties (we should not show temporary
         // spell resistance for example), and all natural properties (properties
@@ -340,13 +337,12 @@ void ViewActorDescr::on_start()
 
         if (prop_list.empty())
         {
-                m_lines.push_back(
-                        ColoredString(
-                                offset + "None",
-                                colors::text()));
+                m_lines.emplace_back(
+                        offset + "None",
+                        colors::text());
 
                 // End with an empty line
-                m_lines.push_back(ColoredString("", colors::text()));
+                m_lines.emplace_back("", colors::text());
         }
         else
         {
@@ -357,7 +353,7 @@ void ViewActorDescr::on_start()
                 {
                         const auto& title = e.title;
 
-                        m_lines.push_back({offset + title.str, e.title.color});
+                        m_lines.emplace_back(offset + title.str, e.title.color);
 
                         const auto descr_formatted =
                                 text_format::split(
@@ -366,15 +362,14 @@ void ViewActorDescr::on_start()
 
                         for (const auto& descr_line : descr_formatted)
                         {
-                                m_lines.push_back(
-                                        ColoredString(
+                                m_lines.emplace_back(
                                                 offset + descr_line,
-                                                colors::gray()));
+                                                colors::gray());
                         }
 
                         // Add an empty line between each property, and also
                         // after the last one
-                        m_lines.push_back(ColoredString("", colors::text()));
+                        m_lines.emplace_back("", colors::text());
                 }
         }
 }
@@ -450,7 +445,7 @@ void ViewActorDescr::update()
 
 std::string ViewActorDescr::auto_description_str() const
 {
-        std::string str = "";
+        std::string str;
 
         text_format::append_with_space(
                 str,
@@ -643,4 +638,4 @@ void print_living_actor_info_msg(const P& pos)
         }
 }
 
-} // look
+} // namespace look

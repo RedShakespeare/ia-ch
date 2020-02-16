@@ -12,9 +12,6 @@
 #include "actor_player.hpp"
 #include "attack_data.hpp"
 #include "drop.hpp"
-#include "terrain_mob.hpp"
-#include "terrain.hpp"
-#include "terrain_trap.hpp"
 #include "game_time.hpp"
 #include "init.hpp"
 #include "io.hpp"
@@ -31,6 +28,9 @@
 #include "property_factory.hpp"
 #include "property_handler.hpp"
 #include "sdl_base.hpp"
+#include "terrain.hpp"
+#include "terrain_mob.hpp"
+#include "terrain_trap.hpp"
 #include "text_format.hpp"
 #include "viewport.hpp"
 
@@ -378,7 +378,7 @@ static void print_mon_melee_hit_msg(const MeleeAttData& att_data)
                 hit_size_punctuation_str(
                         relative_hit_size_melee(att_data));
 
-        std::string used_wpn_str = "";
+        std::string used_wpn_str;
 
         if (!att_data.att_item->data().is_intr &&
             // TODO: This is hacky
@@ -565,7 +565,7 @@ static void print_melee_msg(const MeleeAttData& att_data)
 
 static std::string melee_snd_msg(const MeleeAttData& att_data)
 {
-        std::string snd_msg = "";
+        std::string snd_msg;
 
         // Only print a message if player is not involved
         if ((att_data.defender != map::g_player) &&
@@ -661,7 +661,7 @@ static void print_mon_fire_ranged_msg(const RangedAttData& att_data)
         const std::string attack_verb =
                 att_data.att_item->data().ranged.att_msgs.other;
 
-        std::string wpn_used_str = "";
+        std::string wpn_used_str;
 
         if (!att_data.att_item->data().is_intr)
         {
@@ -1764,4 +1764,4 @@ DidAction ranged(
 
 } // ranged
 
-} // attack
+} // namespace attack

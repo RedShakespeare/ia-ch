@@ -54,18 +54,18 @@ namespace explosion
 // caller should emit a custom sound before running the explosion (e.g. molotov
 // explosion sound).
 void run(const P& origin,
-         const ExplType expl_type,
-         const EmitExplSnd emit_expl_snd = EmitExplSnd::yes,
-         const int radi_change = 0,
-         const ExplExclCenter exclude_center = ExplExclCenter::no,
+         ExplType expl_type,
+         EmitExplSnd emit_expl_snd = EmitExplSnd::yes,
+         int radi_change = 0,
+         ExplExclCenter exclude_center = ExplExclCenter::no,
          std::vector<Prop*> properties_applied = {},
-         const Color color_override = Color(),
-         const ExplIsGas is_gas = ExplIsGas::no);
+         Color color_override = Color(),
+         ExplIsGas is_gas = ExplIsGas::no);
 
-void run_smoke_explosion_at(const P& origin, const int radi_change = 0);
+void run_smoke_explosion_at(const P& origin, int radi_change = 0);
 
-R explosion_area(const P& c, const int radi);
+R explosion_area(const P& c, int radi);
 
-} // explosion
+} // namespace explosion
 
 #endif

@@ -4,11 +4,11 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 // =============================================================================
 
-#ifndef TEXT_FORMATTING_HPP
-#define TEXT_FORMATTING_HPP
+#ifndef TEXT_FORMAT_HPP
+#define TEXT_FORMAT_HPP
 
-#include <vector>
 #include <string>
+#include <vector>
 
 namespace text_format
 {
@@ -17,7 +17,7 @@ namespace text_format
 // with the given maximum width.  If any single word in the "line" parameter is
 // longer than the maximum width, this word will NOT be split (the entire word
 // is simply added to the output vector, breaking the maximum width).
-std::vector<std::string> split(std::string line, const int max_w);
+std::vector<std::string> split(std::string line, int max_w);
 
 std::vector<std::string> space_separated_list(const std::string& line);
 
@@ -28,13 +28,13 @@ std::string replace_all(
 
 std::string pad_before(
         const std::string& str,
-        const size_t tot_w,
-        const char c = ' ');
+        size_t tot_w,
+        char c = ' ');
 
 std::string pad_after(
         const std::string& str,
-        const size_t tot_w,
-        const char c = ' ');
+        size_t tot_w,
+        char c = ' ');
 
 std::string first_to_lower(const std::string& str);
 std::string first_to_upper(const std::string& str);
@@ -44,6 +44,6 @@ void append_with_space(
         std::string& base_str,
         const std::string& addition);
 
-} // text_format
+} // namespace text_format
 
-#endif // TEXT_FORMATTING_HPP
+#endif // TEXT_FORMAT_HPP

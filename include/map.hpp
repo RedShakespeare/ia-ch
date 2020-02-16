@@ -18,18 +18,18 @@
 namespace item
 {
 class Item;
-}
+} // namespace item
 
 namespace actor
 {
 class Actor;
 class Player;
-}
+} // namespace actor
 
 namespace terrain
 {
 class Terrain;
-}
+} // namespace terrain
 
 class Room;
 
@@ -52,7 +52,7 @@ struct Cell
 struct ChokePointData
 {
         ChokePointData() :
-                p(),
+                
                 player_side(-1),
                 stairs_side(-1)
         {
@@ -62,6 +62,11 @@ struct ChokePointData
 
         ChokePointData& operator=(const ChokePointData& other)
         {
+                if (&other == this)
+                {
+                        return *this;
+                }
+
                 p = other.p;
 
                 sides[0] = other.sides[0];
@@ -122,7 +127,7 @@ R rect();
 
 size_t nr_cells();
 
-terrain::Terrain* put(terrain::Terrain* const terrain);
+terrain::Terrain* put(terrain::Terrain* terrain);
 
 // This should be called when e.g. a door closes, or a wall is destoyed -
 // updates light map, player fov (etc).
@@ -131,7 +136,7 @@ void update_vision();
 void make_blood(const P& origin);
 void make_gore(const P& origin);
 
-void delete_and_remove_room_from_list(Room* const room);
+void delete_and_remove_room_from_list(Room* room);
 
 bool is_pos_seen_by_player(const P& p);
 
@@ -157,6 +162,6 @@ bool is_pos_inside_outer_walls(const P& pos);
 
 bool is_area_inside_map(const R& area);
 
-} // map
+} // namespace map
 
 #endif // MAP_HPP

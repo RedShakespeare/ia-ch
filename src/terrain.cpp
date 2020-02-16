@@ -364,28 +364,34 @@ int Terrain::base_shock_when_adj() const
 
 void Terrain::try_put_gore()
 {
-        if (data().can_have_gore)
+        if (!data().can_have_gore)
         {
-                const int roll_character = rnd::range(1, 4);
+                return;
+        }
 
-                switch (roll_character)
-                {
-                case 1:
-                        m_gore_character = ',';
-                        break;
+        const int roll_character = rnd::range(1, 4);
 
-                case 2:
-                        m_gore_character = '`';
-                        break;
+        switch (roll_character)
+        {
+        case 1:
+                m_gore_character = ',';
+                break;
 
-                case 3:
-                        m_gore_character = 39;
-                        break;
+        case 2:
+                m_gore_character = '`';
+                break;
 
-                case 4:
-                        m_gore_character = ';';
-                        break;
-                }
+        case 3:
+                m_gore_character = 39;
+                break;
+
+        case 4:
+                m_gore_character = ';';
+                break;
+
+        default:
+                ASSERT(false);
+                break;
         }
 
         const int roll_tile = rnd::range(1, 8);
@@ -422,6 +428,10 @@ void Terrain::try_put_gore()
 
         case 8:
                 m_gore_tile = TileId::gore8;
+                break;
+
+        default:
+                ASSERT(false);
                 break;
         }
 }
@@ -816,18 +826,10 @@ TileId Wall::top_wall_tile() const
 
 void Wall::set_rnd_common_wall()
 {
-        const int rnd = rnd::range(1, 6);
-
-        switch (rnd)
-        {
-        case 1:
-                m_type = WallType::common_alt;
-                break;
-
-        default:
-                m_type = WallType::common;
-                break;
-        }
+        m_type =
+                (rnd::one_in(6))
+                ? WallType::common_alt
+                : WallType::common;
 }
 
 void Wall::set_moss_grown()
@@ -917,7 +919,7 @@ void RubbleLow::on_hit(
 
 std::string RubbleLow::name(const Article article) const
 {
-        std::string ret = "";
+        std::string ret;
 
         if (article == Article::the)
         {
@@ -958,7 +960,7 @@ void Bones::on_hit(
 
 std::string Bones::name(const Article article) const
 {
-        std::string ret = "";
+        std::string ret;
 
         if (article == Article::the)
         {
@@ -1456,7 +1458,7 @@ void LiquidShallow::run_magic_pool_effects_on_player()
 
 std::string LiquidShallow::name(const Article article) const
 {
-        std::string ret = "";
+        std::string ret;
 
         if (article == Article::the)
         {
@@ -1654,7 +1656,7 @@ void LiquidDeep::on_leave(actor::Actor &actor_leaving)
 
 std::string LiquidDeep::name(const Article article) const
 {
-        std::string ret = "";
+        std::string ret;
 
         if (article == Article::the)
         {
@@ -1929,7 +1931,7 @@ void Carpet::on_hit(
 
 WasDestroyed Carpet::on_finished_burning()
 {
-        Floor* const floor = new Floor(m_pos);
+        auto* const floor = new Floor(m_pos);
 
         floor->m_burn_state = BurnState::has_burned;
 
@@ -1991,7 +1993,7 @@ TileId Grass::tile() const
 
 std::string Grass::name(const Article article) const
 {
-        std::string ret = "";
+        std::string ret;
 
         if (article == Article::the) {ret += "the ";}
 
@@ -2067,7 +2069,7 @@ void Bush::on_hit(
 
 WasDestroyed Bush::on_finished_burning()
 {
-        Grass* const grass = new Grass(m_pos);
+        auto* const grass = new Grass(m_pos);
 
         grass->m_burn_state = BurnState::has_burned;
 
@@ -2146,7 +2148,7 @@ void Vines::on_hit(
 
 WasDestroyed Vines::on_finished_burning()
 {
-        Floor* const floor = new Floor(m_pos);
+        auto* const floor = new Floor(m_pos);
 
         floor->m_burn_state = BurnState::has_burned;
 
@@ -2383,7 +2385,7 @@ WasDestroyed Tree::on_finished_burning()
 {
         if (map::is_pos_inside_outer_walls(m_pos))
         {
-                Grass* const grass = new Grass(m_pos);
+                auto* const grass = new Grass(m_pos);
 
                 grass->m_burn_state = BurnState::has_burned;
 
@@ -2631,7 +2633,8 @@ void ItemContainer::init(
                                 break;
                         }
 
-                        const int idx = rnd::range(0, item_bucket.size() - 1);
+                        const int idx =
+                                rnd::range(0, (int)item_bucket.size() - 1);
 
                         const auto id = item_bucket[idx];
 
@@ -2656,75 +2659,86 @@ void ItemContainer::open(
         const P& terrain_pos,
         actor::Actor* const actor_opening)
 {
-        if (actor_opening)
+        if (!actor_opening)
         {
+                // Not opened by an actor (probably opened by the opening spell)
                 for (auto* item : m_items)
                 {
-                        msg_log::clear();
+                        item_drop::drop_item_on_map(terrain_pos, *item);
+                }
 
-                        const std::string name =
-                                item->name(
-                                        ItemRefType::plural,
-                                        ItemRefInf::yes,
-                                        ItemRefAttInf::wpn_main_att_mode);
+                m_items.clear();
 
-                        const std::string msg =
-                                "Pick up " +
-                                name +
-                                "? " +
-                                common_text::g_yes_or_no_hint;
+                return;
+        }
 
-                        msg_log::add(
-                                msg,
-                                colors::light_white(),
-                                MsgInterruptPlayer::no,
-                                MorePromptOnMsg::no,
-                                CopyToMsgHistory::no);
+        for (auto* item : m_items)
+        {
+                msg_log::clear();
 
-                        const auto& data = item->data();
+                const std::string name =
+                        item->name(
+                                ItemRefType::plural,
+                                ItemRefInf::yes,
+                                ItemRefAttInf::wpn_main_att_mode);
 
-                        auto* wpn =
-                                data.ranged.is_ranged_wpn
-                                ? static_cast<item::Wpn*>(item)
-                                : nullptr;
+                const std::string msg =
+                        "Pick up " +
+                        name +
+                        "? " +
+                        common_text::g_yes_or_no_hint;
 
-                        const bool is_unloadable_wpn =
-                                wpn &&
-                                (wpn->m_ammo_loaded > 0) &&
-                                !data.ranged.has_infinite_ammo;
+                msg_log::add(
+                        msg,
+                        colors::light_white(),
+                        MsgInterruptPlayer::no,
+                        MorePromptOnMsg::no,
+                        CopyToMsgHistory::no);
+
+                const auto& data = item->data();
+
+                auto* wpn =
+                        data.ranged.is_ranged_wpn
+                        ? static_cast<item::Wpn*>(item)
+                        : nullptr;
+
+                const bool is_unloadable_wpn =
+                        wpn &&
+                        (wpn->m_ammo_loaded > 0) &&
+                        !data.ranged.has_infinite_ammo;
+
+                if (is_unloadable_wpn)
+                {
+                        msg_log::add("Unload? [u]");
+                }
+
+                const BinaryAnswer answer =
+                        query::yes_or_no(
+                                is_unloadable_wpn
+                                ? 'u'
+                                : -1);
+
+                msg_log::clear();
+
+                if (answer == BinaryAnswer::yes)
+                {
+                        audio::play(SfxId::pickup);
+
+                        map::g_player->m_inv.put_in_backpack(item);
+                }
+                else if (answer == BinaryAnswer::no)
+                {
+                        item_drop::drop_item_on_map(terrain_pos, *item);
+
+                        item->on_player_found();
+                }
+                else
+                {
+                        // Special key (unload in this case)
+                        ASSERT(is_unloadable_wpn);
 
                         if (is_unloadable_wpn)
                         {
-                                msg_log::add("Unload? [u]");
-                        }
-
-                        const BinaryAnswer answer =
-                                query::yes_or_no(
-                                        is_unloadable_wpn
-                                        ? 'u'
-                                        : -1);
-
-                        msg_log::clear();
-
-                        if (answer == BinaryAnswer::yes)
-                        {
-                                audio::play(SfxId::pickup);
-
-                                map::g_player->m_inv.put_in_backpack(item);
-                        }
-                        else if (answer == BinaryAnswer::no)
-                        {
-                                item_drop::drop_item_on_map(terrain_pos, *item);
-
-                                item->on_player_found();
-                        }
-                        else // Special key (unload in this case)
-                        {
-                                ASSERT(is_unloadable_wpn);
-                                ASSERT(wpn);
-                                ASSERT(wpn->m_ammo_loaded > 0);
-                                ASSERT(!data.ranged.has_infinite_ammo);
-
                                 audio::play(SfxId::pickup);
 
                                 auto* const spawned_ammo =
@@ -2735,19 +2749,12 @@ void ItemContainer::open(
 
                                 item_drop::drop_item_on_map(terrain_pos, *wpn);
                         }
-
-                        msg_log::more_prompt();
                 }
 
-                msg_log::add("There are no more items of interest.");
+                msg_log::more_prompt();
         }
-        else // Not opened by an actor (probably opened by a spell of opening)
-        {
-                for (auto* item : m_items)
-                {
-                        item_drop::drop_item_on_map(terrain_pos, *item);
-                }
-        }
+
+        msg_log::add("There are no more items of interest.");
 
         m_items.clear();
 }
@@ -2884,7 +2891,7 @@ std::string Tomb::name(const Article article) const
                 ? "open "
                 : "";
 
-        std::string a = "";
+        std::string a;
 
         if (article == Article::a)
         {
@@ -2898,7 +2905,7 @@ std::string Tomb::name(const Article article) const
                 a = "the ";
         }
 
-        std::string appear_str = "";
+        std::string appear_str;
 
         if (!is_empty)
         {
@@ -3200,9 +3207,7 @@ DidTriggerTrap Tomb::trigger_trap(actor::Actor* const actor)
                                 }
                         }
 
-                        const size_t idx = rnd::range(0, mon_bucket.size() - 1);
-
-                        id_to_spawn = mon_bucket[idx];
+                        id_to_spawn = rnd::element(mon_bucket);
 
                         if (is_seen)
                         {
@@ -3507,11 +3512,11 @@ void Chest::on_hit(
 
 std::string Chest::name(const Article article) const
 {
-        std::string matl_str = "";
-        std::string locked_str = "";
-        std::string empty_str = "";
-        std::string open_str = "";
-        std::string a = "";
+        std::string matl_str;
+        std::string locked_str;
+        std::string empty_str;
+        std::string open_str;
+        std::string a;
 
         if (m_matl == ChestMatl::wood)
         {
@@ -3606,6 +3611,12 @@ Fountain::Fountain(const P& p) :
                 m_fountain_effect = (FountainEffect)rnd::range(min, max);
         }
         break;
+
+        default:
+        {
+                ASSERT(false);
+        }
+        break;
         }
 }
 
@@ -3652,7 +3663,7 @@ Color Fountain::color_default() const
 
 std::string Fountain::name(const Article article) const
 {
-        std::string type_str = "";
+        std::string type_str;
 
         std::string indefinite_article = "a";
 
@@ -4326,7 +4337,7 @@ std::string AlchemistBench::name(const Article article) const
 {
         std::string a = (article == Article::a) ? "an " : "the ";
 
-        std::string mod = "";
+        std::string mod;
 
         if (m_burn_state == BurnState::burning)
         {
@@ -4566,4 +4577,4 @@ Color Cocoon::color_default() const
         return colors::white();
 }
 
-} // terrain
+} // namespace terrain

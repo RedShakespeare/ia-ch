@@ -141,7 +141,7 @@ static void read_file()
 
         if (file.is_open())
         {
-                std::string current_line = "";
+                std::string current_line;
 
                 while (getline(file, current_line))
                 {
@@ -284,4 +284,4 @@ bool get_bool()
         return get_str() == "T";
 }
 
-} // save
+} // namespace saving

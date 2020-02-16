@@ -16,8 +16,8 @@
 class ViewMinimap : public State
 {
 public:
-        ViewMinimap() :
-                State() {}
+        ViewMinimap() 
+                = default;
 
         StateId id() override
         {
@@ -39,6 +39,6 @@ void clear();
 
 void update();
 
-}
+} // namespace minimap
 
 #endif // MINIMAP_HPP

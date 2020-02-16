@@ -549,4 +549,4 @@ actor::Actor* current_actor()
         return actor;
 }
 
-} // game_time
+} // namespace game_time

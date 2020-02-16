@@ -416,9 +416,7 @@ RoomTempl* random_room_templ(const P& max_dims)
                 return nullptr;
         }
 
-        const size_t idx = rnd::range(0, bucket.size() - 1);
-
-        return bucket[idx];
+        return rnd::element(bucket);
 }
 
 void clear_base_room_templates_used()
@@ -468,4 +466,4 @@ void on_map_ok()
         }
 }
 
-} // map_templates
+} // namespace map_templates

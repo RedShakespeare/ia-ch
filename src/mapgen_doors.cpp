@@ -10,10 +10,10 @@
 
 #include "actor.hpp"
 #include "actor_player.hpp"
-#include "terrain_door.hpp"
 #include "flood.hpp"
 #include "game_time.hpp"
 #include "map_parsing.hpp"
+#include "terrain_door.hpp"
 
 static bool is_wall(const P& p)
 {
@@ -424,4 +424,4 @@ void make_metal_doors_and_levers()
 
 } // make_metal_doors_and_levers
 
-} // mapgen
+} // namespace mapgen

@@ -42,25 +42,25 @@ void init();
 void wait_for_key_press();
 
 BinaryAnswer yes_or_no(
-        const char key_for_special_event = -1,
-        const AllowSpaceCancel allow_space_cancel = AllowSpaceCancel::yes);
+        char key_for_special_event = -1,
+        AllowSpaceCancel allow_space_cancel = AllowSpaceCancel::yes);
 
-Dir dir(const AllowCenter allow_center);
+Dir dir(AllowCenter allow_center);
 
 void wait_for_msg_more();
 
 void wait_for_confirm();
 
-InputData letter(const bool accept_enter);
+InputData letter(bool accept_enter);
 
 int number(
         const P& pos,
-        const Color color,
-        const int min,
-        const int max_nr_digits,
-        const int default_value,
-        const bool cancel_returns_default);
+        Color color,
+        int min,
+        int max_nr_digits,
+        int default_value,
+        bool cancel_returns_default);
 
-} // query
+} // namespace query
 
 #endif // QUERY_HPP

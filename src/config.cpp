@@ -47,7 +47,7 @@ static const int s_opt_y0 = 1;
 static const int s_opt_values_x_pos = 44;
 
 static InputMode s_input_mode = InputMode::standard;
-static std::string s_font_name = "";
+static std::string s_font_name;
 static bool s_is_fullscreen = false;
 static bool s_is_native_resolution_fullscreen = false;
 static bool s_is_tiles_wall_full_square = false;
@@ -64,7 +64,7 @@ static bool s_always_warn_new_mon = false;
 static int s_delay_projectile_draw = -1;
 static int s_delay_shotgun = -1;
 static int s_delay_explosion = -1;
-static std::string s_default_player_name = "";
+static std::string s_default_player_name;
 static bool s_is_bot_playing = false;
 static bool s_is_audio_enabled = false;
 static bool s_is_amb_audio_enabled = false;
@@ -88,7 +88,7 @@ static P parse_dims_from_font_name(std::string font_name)
                 ch = font_name.front();
         }
 
-        std::string w_str = "";
+        std::string w_str;
 
         while (ch != 'x')
         {
@@ -103,7 +103,7 @@ static P parse_dims_from_font_name(std::string font_name)
 
         ch = font_name.front();
 
-        std::string h_str = "";
+        std::string h_str;
 
         while (ch != '_' && ch != '.')
         {
@@ -632,37 +632,38 @@ static std::vector<std::string> lines_from_variables()
         std::vector<std::string> lines;
 
         lines.push_back(std::to_string((int)s_input_mode));
-        lines.push_back(s_is_audio_enabled ? "1" : "0");
-        lines.push_back(s_is_amb_audio_enabled ? "1" : "0");
-        lines.push_back(s_is_amb_audio_preloaded ? "1" : "0");
+        lines.emplace_back(s_is_audio_enabled ? "1" : "0");
+        lines.emplace_back(s_is_amb_audio_enabled ? "1" : "0");
+        lines.emplace_back(s_is_amb_audio_preloaded ? "1" : "0");
         lines.push_back(std::to_string(s_screen_px_w));
         lines.push_back(std::to_string(s_screen_px_h));
-        lines.push_back(s_is_tiles_mode ? "1" : "0");
+        lines.emplace_back(s_is_tiles_mode ? "1" : "0");
         lines.push_back(s_font_name);
-        lines.push_back(s_is_fullscreen ? "1" : "0");
-        lines.push_back(s_is_native_resolution_fullscreen ? "1" : "0");
-        lines.push_back(s_is_tiles_wall_full_square ? "1" : "0");
-        lines.push_back(s_is_text_mode_wall_full_square ? "1" : "0");
-        lines.push_back(s_is_intro_lvl_skipped ? "1" : "0");
-        lines.push_back(s_is_intro_popup_skipped ? "1" : "0");
-        lines.push_back(s_is_any_key_confirm_more ? "1" : "0");
-        lines.push_back(s_display_hints ? "1" : "0");
-        lines.push_back(s_always_warn_new_mon ? "1" : "0");
-        lines.push_back(s_is_light_explosive_prompt ? "1" : "0");
-        lines.push_back(s_is_drink_malign_pot_prompt ? "1" : "0");
-        lines.push_back(s_is_ranged_wpn_meleee_prompt ? "1" : "0");
-        lines.push_back(s_is_ranged_wpn_auto_reload ? "1" : "0");
+        lines.emplace_back(s_is_fullscreen ? "1" : "0");
+        lines.emplace_back(s_is_native_resolution_fullscreen ? "1" : "0");
+        lines.emplace_back(s_is_tiles_wall_full_square ? "1" : "0");
+        lines.emplace_back(s_is_text_mode_wall_full_square ? "1" : "0");
+        lines.emplace_back(s_is_intro_lvl_skipped ? "1" : "0");
+        lines.emplace_back(s_is_intro_popup_skipped ? "1" : "0");
+        lines.emplace_back(s_is_any_key_confirm_more ? "1" : "0");
+        lines.emplace_back(s_display_hints ? "1" : "0");
+        lines.emplace_back(s_always_warn_new_mon ? "1" : "0");
+        lines.emplace_back(s_is_light_explosive_prompt ? "1" : "0");
+        lines.emplace_back(s_is_drink_malign_pot_prompt ? "1" : "0");
+        lines.emplace_back(s_is_ranged_wpn_meleee_prompt ? "1" : "0");
+        lines.emplace_back(s_is_ranged_wpn_auto_reload ? "1" : "0");
         lines.push_back(std::to_string(s_delay_projectile_draw));
         lines.push_back(std::to_string(s_delay_shotgun));
         lines.push_back(std::to_string(s_delay_explosion));
 
         if (s_default_player_name.empty())
         {
-                lines.push_back("0");
+                lines.emplace_back("0");
         }
-        else // Default player name has been set
+        else
         {
-                lines.push_back("1");
+                // Default player name has been set
+                lines.emplace_back("1");
 
                 lines.push_back(s_default_player_name);
         }
@@ -883,13 +884,13 @@ void set_fullscreen(const bool value)
         write_lines_to_file(lines);
 }
 
-} // config
+} // namespace config
 
 // -----------------------------------------------------------------------------
 // Config state
 // -----------------------------------------------------------------------------
 ConfigState::ConfigState() :
-        State(),
+
         m_browser(23)
 {
 
@@ -943,7 +944,7 @@ void ConfigState::draw()
 {
         const int x1 = config::s_opt_values_x_pos;
 
-        std::string str = "";
+        std::string str;
 
         io::draw_text(
                 "-Options-",
@@ -953,7 +954,7 @@ void ConfigState::draw()
 
         std::string font_disp_name = config::s_font_name;
 
-        std::string input_mode_value_str = "";
+        std::string input_mode_value_str;
 
         switch (config::s_input_mode)
         {
@@ -1133,7 +1134,7 @@ void ConfigState::draw()
                         : colors::menu_dark();
 
 
-                const int y = config::s_opt_y0 + i;
+                const auto y = config::s_opt_y0 + (int)i;
 
                 io::draw_text(
                         str_l,
@@ -1141,7 +1142,7 @@ void ConfigState::draw()
                         P(1, y),
                         color);
 
-                if (str_r != "")
+                if (!str_r.empty())
                 {
                         io::draw_text(
                                 ":",

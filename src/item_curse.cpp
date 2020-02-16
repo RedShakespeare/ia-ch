@@ -500,8 +500,8 @@ std::string Heavy::curse_msg(const item::Item& item) const
 // -----------------------------------------------------------------------------
 // Shriek
 // -----------------------------------------------------------------------------
-Shriek::Shriek() :
-        CurseImpl()
+Shriek::Shriek() 
+        
 {
         auto player_name =
                 text_format::all_to_upper(
@@ -613,7 +613,7 @@ void Shriek::shriek(const item::Item& item) const
 
         const int nr_words = rnd::range(2, 4);
 
-        std::string phrase = "";
+        std::string phrase;
 
         for (int i = 0; i < nr_words; ++i)
         {
@@ -847,4 +847,4 @@ std::string LightSensitive::descr() const
         return "the owner is harmed by light.";
 }
 
-} // item_curse
+} // namespace item_curse

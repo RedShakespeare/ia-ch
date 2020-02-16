@@ -89,7 +89,7 @@ static SDL_Color rgb_hex_str_to_sdl_color(const std::string str)
         {
                 const std::string hex8_str = str.substr(2 * i, 2);
 
-                rgb[i] =  (uint8_t)std::stoi(hex8_str, 0, 16);
+                rgb[i] =  (uint8_t)std::stoi(hex8_str, nullptr, 16);
         }
 
         const SDL_Color sdl_color = {rgb[0], rgb[1], rgb[2], 0};
@@ -131,7 +131,7 @@ static void load_color(
 
                 target_color = sdl_color;
 
-                s_str_color_pairs.push_back({name, Color(sdl_color)});
+                s_str_color_pairs.emplace_back(name, Color(sdl_color));
 
                 break;
         }
@@ -166,7 +166,7 @@ static void load_gui_color(
 
                 target_color = color.sdl_color();
 
-                s_str_color_pairs.push_back({name, color});
+                s_str_color_pairs.emplace_back(name, color);
 
                 break;
         }
@@ -244,12 +244,9 @@ Color::Color() :
 
 }
 
-Color::Color(const Color& other) :
-        m_sdl_color(other.m_sdl_color),
-        m_is_defined(other.m_is_defined)
-{
-
-}
+Color::Color(const Color& other) 
+        
+= default;
 
 Color::Color(uint8_t r, uint8_t g, uint8_t b) :
         m_sdl_color({r, g, b, 0}),
@@ -266,12 +263,15 @@ Color::Color(const SDL_Color& sdl_color) :
 }
 
 Color::~Color()
-{
-
-}
+= default;
 
 Color& Color::operator=(const Color& other)
 {
+        if (&other == this)
+        {
+                return *this;
+        }
+
         m_sdl_color = other.m_sdl_color;
         m_is_defined = other.m_is_defined;
 
@@ -646,4 +646,4 @@ Color mon_temp_property_bg()
         return Color(s_mon_temp_property_bg);
 }
 
-} // colors
+} // namespace colors

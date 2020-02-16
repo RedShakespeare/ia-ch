@@ -59,7 +59,7 @@ static std::vector<std::string> format_lines(
         {
                 // Format the line if it does not start with a space
                 const bool should_format_line =
-                        raw_line.size() > 0 &&
+                        !raw_line.empty() &&
                         raw_line[0] != ' ';
 
                 if (should_format_line)

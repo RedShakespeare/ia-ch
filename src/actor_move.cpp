@@ -11,9 +11,6 @@
 #include "actor_player.hpp"
 #include "attack.hpp"
 #include "common_text.hpp"
-#include "terrain_door.hpp"
-#include "terrain_mob.hpp"
-#include "terrain.hpp"
 #include "game_time.hpp"
 #include "item.hpp"
 #include "map.hpp"
@@ -22,6 +19,9 @@
 #include "property.hpp"
 #include "query.hpp"
 #include "reload.hpp"
+#include "terrain.hpp"
+#include "terrain_door.hpp"
+#include "terrain_mob.hpp"
 #include "text_format.hpp"
 
 // -----------------------------------------------------------------------------
@@ -445,4 +445,4 @@ void move(Actor& actor, const Dir dir)
         }
 }
 
-} // actor
+} // namespace actor

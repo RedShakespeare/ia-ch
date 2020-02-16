@@ -9,7 +9,6 @@
 #include "actor_factory.hpp"
 #include "actor_mon.hpp"
 #include "actor_player.hpp"
-#include "terrain.hpp"
 #include "game.hpp"
 #include "game_time.hpp"
 #include "init.hpp"
@@ -24,6 +23,7 @@
 #include "property_handler.hpp"
 #include "saving.hpp"
 #include "sound.hpp"
+#include "terrain.hpp"
 
 // -----------------------------------------------------------------------------
 // Private
@@ -275,7 +275,7 @@ void InsPhobiaReptileAndAmph::on_new_player_turn(
 
         bool is_triggered = false;
 
-        std::string animal_str = "";
+        std::string animal_str;
 
         for (auto* const actor : seen_foes)
         {
@@ -740,9 +740,9 @@ void run_sympt()
                 return;
         }
 
-        const size_t bucket_idx = rnd::range(0, sympt_bucket.size() - 1);
+        const auto bucket_idx = rnd::range(0, (int)sympt_bucket.size() - 1);
 
-        InsSympt* const sympt = sympt_bucket[bucket_idx];
+        auto* const sympt = sympt_bucket[bucket_idx];
 
         sympt_bucket.erase(std::begin(sympt_bucket) + bucket_idx);
 
@@ -756,7 +756,7 @@ void run_sympt()
         // screaming), set it as active in the symptoms list
         if (sympt->is_permanent())
         {
-                const size_t sympt_idx = size_t(sympt->id());
+                const auto sympt_idx = size_t(sympt->id());
 
                 ASSERT(!sympts_[sympt_idx]);
 
@@ -835,7 +835,7 @@ void end_sympt(const InsSymptId id)
 {
         ASSERT(id != InsSymptId::END);
 
-        const size_t idx = size_t(id);
+        const auto idx = size_t(id);
 
         InsSympt* const sympt = sympts_[idx];
 
@@ -848,4 +848,4 @@ void end_sympt(const InsSymptId id)
         delete sympt;
 }
 
-} // insanity
+} // namespace insanity

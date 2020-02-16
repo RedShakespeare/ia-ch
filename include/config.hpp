@@ -9,8 +9,8 @@
 
 #include <string>
 
-#include "state.hpp"
 #include "browser.hpp"
+#include "state.hpp"
 
 enum class InputMode
 {
@@ -25,15 +25,15 @@ namespace config
 
 void init();
 
-void set_fullscreen(const bool value);
+void set_fullscreen(bool value);
 
 InputMode input_mode();
 bool is_tiles_mode();
 std::string font_name();
 bool is_fullscreen();
 bool is_native_resolution_fullscreen();
-void set_screen_px_w(const int w);
-void set_screen_px_h(const int h);
+void set_screen_px_w(int w);
+void set_screen_px_h(int h);
 int screen_px_w();
 int screen_px_h();
 int gui_cell_px_w();
@@ -62,7 +62,7 @@ int delay_explosion();
 void set_default_player_name(const std::string& name);
 std::string default_player_name();
 
-} // config
+} // namespace config
 
 class ConfigState: public State
 {

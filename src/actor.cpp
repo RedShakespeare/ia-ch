@@ -15,9 +15,6 @@
 #include "actor_player.hpp"
 #include "drop.hpp"
 #include "explosion.hpp"
-#include "terrain_door.hpp"
-#include "terrain_mob.hpp"
-#include "terrain_trap.hpp"
 #include "fov.hpp"
 #include "game.hpp"
 #include "game_time.hpp"
@@ -35,6 +32,9 @@
 #include "property.hpp"
 #include "property_data.hpp"
 #include "property_handler.hpp"
+#include "terrain_door.hpp"
+#include "terrain_mob.hpp"
+#include "terrain_trap.hpp"
 #include "text_format.hpp"
 
 
@@ -533,7 +533,7 @@ std::string Actor::death_msg() const
                 text_format::first_to_upper(
                         name_the());
 
-        std::string msg_end = "";
+        std::string msg_end;
 
         if (m_data->death_msg_override.empty())
         {
@@ -692,7 +692,7 @@ void Actor::on_feed()
 
                 if (prop && rnd::one_in(6))
                 {
-                        PropWound* const wound = static_cast<PropWound*>(prop);
+                        auto* const wound = static_cast<PropWound*>(prop);
 
                         wound->heal_one_wound();
                 }
@@ -749,4 +749,4 @@ bool Actor::is_player() const
         return this == map::g_player;
 }
 
-} // actor
+} // namespace actor

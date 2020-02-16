@@ -369,4 +369,4 @@ ActorDied hit_sp(
         return ActorDied::yes;
 }
 
-} // actor
+} // namespace actor

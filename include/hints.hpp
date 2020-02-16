@@ -30,8 +30,8 @@ void save();
 
 void load();
 
-void display(const Id id);
+void display(Id id);
 
-} // hints
+} // namespace hints
 
 #endif // HINTS_HPP

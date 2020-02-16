@@ -9,7 +9,6 @@
 #include "actor_hit.hpp"
 #include "actor_mon.hpp"
 #include "actor_player.hpp"
-#include "terrain.hpp"
 #include "fov.hpp"
 #include "game.hpp"
 #include "game_time.hpp"
@@ -25,6 +24,7 @@
 #include "property_data.hpp"
 #include "property_handler.hpp"
 #include "saving.hpp"
+#include "terrain.hpp"
 #include "text_format.hpp"
 
 
@@ -104,7 +104,7 @@ void init()
                 {
                         // Color and false name
                         const size_t idx =
-                                rnd::range(0, s_rod_looks.size() - 1);
+                                rnd::range(0, (int)s_rod_looks.size() - 1);
 
                         RodLook& look = s_rod_looks[idx];
 
@@ -511,4 +511,4 @@ void Shockwave::run_effect()
         identify(Verbose::yes);
 }
 
-} // rod
+} // namespace rod

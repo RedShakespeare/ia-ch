@@ -169,4 +169,4 @@ void connect_rooms()
         TRACE_FUNC_END;
 }
 
-} // mapgen
+} // namespace mapgen

@@ -8,13 +8,11 @@
 
 #include "mapgen.hpp"
 
-#include <vector>
 #include <climits>
 #include <cstring>
+#include <vector>
 
 #include "actor_player.hpp"
-#include "terrain_door.hpp"
-#include "terrain.hpp"
 #include "flood.hpp"
 #include "game_time.hpp"
 #include "init.hpp"
@@ -23,6 +21,8 @@
 #include "map_templates.hpp"
 #include "misc.hpp"
 #include "pathfind.hpp"
+#include "terrain.hpp"
+#include "terrain_door.hpp"
 
 #ifndef NDEBUG
 #include "io.hpp"
@@ -144,28 +144,32 @@ void cut_room_corners(const Room& room)
 
                 switch (corner_idx)
                 {
-                        // Up left
                 case 0:
+                        // Up left
                         r.p0 = room_p0;
                         r.p1 = cross_x0y0 - 1;
                         break;
 
-                        // Up right
                 case 1:
+                        // Up right
                         r.p0 = P(cross_x1y1.x + 1, room_p0.y);
                         r.p1 = P(room_p1.x, cross_x0y0.y - 1);
                         break;
 
-                        // Down left
                 case 2:
+                        // Down left
                         r.p0 = P(room_p0.x, cross_x1y1.y + 1);
                         r.p1 = P(cross_x0y0.x - 1, room_p1.y);
                         break;
 
-                        // Down right
                 case 3:
+                        // Down right
                         r.p0 = cross_x1y1 + 1;
                         r.p1 = room_p1;
+                        break;
+
+                default:
+                        ASSERT(false);
                         break;
                 }
 
@@ -304,7 +308,7 @@ void cavify_room(Room& room)
                         // add to origin bucket if we are on the edge
                         if (x == x0 || x == x1 || y == y0 || y == y1)
                         {
-                                origin_bucket.push_back({x, y});
+                                origin_bucket.emplace_back(x, y);
                         }
                 }
         }
@@ -567,11 +571,11 @@ bool is_choke_point(const P& p,
                                 {
                                         ASSERT(flood_side2.at(x, y) == 0);
 
-                                        out->sides[0].push_back(P(x, y));
+                                        out->sides[0].emplace_back(x, y);
                                 }
                                 else if (flood_side2.at(x, y) > 0)
                                 {
-                                        out->sides[1].push_back(P(x, y));
+                                        out->sides[1].emplace_back(x, y);
                                 }
                         }
                 }
@@ -644,15 +648,14 @@ void make_pathfind_corridor(
 
                         if (dist == shortest_dist)
                         {
-                                entries_bucket.push_back(
-                                        std::pair<P, P>(p0, p1));
+                                entries_bucket.emplace_back(p0, p1);
                         }
                 }
         }
 
         TRACE_VERBOSE << "Picking a random stored entry pair" << std::endl;
 
-        const size_t idx = rnd::range(0, entries_bucket.size() - 1);
+        const size_t idx = rnd::range(0, (int)entries_bucket.size() - 1);
 
         const auto& entries = entries_bucket[idx];
 
@@ -1082,7 +1085,7 @@ void make_explore_spawn_weights(
                         {
                                 // OK, we can spawn here, save the position and
                                 // the corresponding spawn chance weight
-                                positions_out.push_back(P(x, y));
+                                positions_out.emplace_back(x, y);
 
                                 weights_out.push_back(weight);
                         }
@@ -1331,4 +1334,4 @@ void reveal_doors_on_path_to_stairs(const P& stairs_pos)
         TRACE_FUNC_END;
 }
 
-} // mapgen
+} // namespace mapgen

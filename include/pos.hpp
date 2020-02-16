@@ -12,18 +12,17 @@
 struct P
 {
 public:
-        P() {}
+        P() = default;
 
         P(const int x_val, const int y_val) :
                 x(x_val),
                 y(y_val) {}
 
-        P(const P& p) :
-                x(p.x),
-                y(p.y) {}
+        P(const P& p) 
+                = default;
 
         // Construct from a direction -> offsets (e.g. 1, -1)
-        explicit P(const Dir dir);
+        explicit P(Dir dir);
 
         P& operator=(const P p)
         {
@@ -34,7 +33,7 @@ public:
         }
 
         // Assign from a direction -> offsets (e.g. 1, -1)
-        P& operator=(const Dir dir);
+        P& operator=(Dir dir);
 
         P& operator+=(const P p)
         {
@@ -45,7 +44,7 @@ public:
         }
 
         // Add a direction offset (e.g. 1, -1)
-        P& operator+=(const Dir dir);
+        P& operator+=(Dir dir);
 
         P& operator-=(const P p)
         {
@@ -81,7 +80,7 @@ public:
                 return P(x + v, y + v);
         }
 
-        P operator+(const Dir dir) const;
+        P operator+(Dir dir) const;
 
         P operator-(const P p) const
         {
@@ -216,15 +215,14 @@ public:
 
 struct PosVal
 {
-        PosVal() {}
+        PosVal() = default;
 
         PosVal(const P pos_, const int val_) :
                 pos(pos_),
                 val(val_) {}
 
-        PosVal(const PosVal& o) :
-                pos(o.pos),
-                val(o.val) {}
+        PosVal(const PosVal& o) 
+                = default;
 
         P pos {0, 0};
         int val {-1};

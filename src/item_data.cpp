@@ -6,21 +6,21 @@
 
 #include "item_data.hpp"
 
-#include <iostream>
 #include <climits>
+#include <iostream>
 
-#include "init.hpp"
-#include "colors.hpp"
-#include "item.hpp"
-#include "item_att_property.hpp"
 #include "actor_data.hpp"
 #include "actor_player.hpp"
-#include "sound.hpp"
+#include "colors.hpp"
+#include "game_time.hpp"
+#include "init.hpp"
+#include "item.hpp"
+#include "item_att_property.hpp"
 #include "item_device.hpp"
 #include "map.hpp"
-#include "saving.hpp"
-#include "game_time.hpp"
 #include "property.hpp"
+#include "saving.hpp"
+#include "sound.hpp"
 
 // -----------------------------------------------------------------------------
 // Private
@@ -1719,7 +1719,7 @@ void init()
         d.is_unique = true;
         d.xp_on_found = 20;
         d.value = Value::supreme_treasure;
-        d.chance_to_incl_in_spawn_list = 1;
+        d.chance_to_incl_in_spawn_list = 100;
         d.native_containers.push_back(terrain::Id::tomb);
         g_data[(size_t)d.id] = d;
 
@@ -1742,7 +1742,7 @@ void init()
         d.is_unique = true;
         d.xp_on_found = 20;
         d.value = Value::supreme_treasure;
-        d.chance_to_incl_in_spawn_list = 1;
+        d.chance_to_incl_in_spawn_list = 100;
         d.native_containers.push_back(terrain::Id::tomb);
         g_data[(size_t)d.id] = d;
 
@@ -1764,7 +1764,7 @@ void init()
         d.is_unique = true;
         d.xp_on_found = 20;
         d.value = Value::supreme_treasure;
-        d.chance_to_incl_in_spawn_list = 1;
+        d.chance_to_incl_in_spawn_list = 100;
         d.native_containers.push_back(terrain::Id::tomb);
         g_data[(size_t)d.id] = d;
 
@@ -1788,7 +1788,7 @@ void init()
         d.xp_on_found = 20;
         d.value = Value::supreme_treasure;
         d.has_std_activate = true;
-        d.chance_to_incl_in_spawn_list = 1;
+        d.chance_to_incl_in_spawn_list = 100;
         d.native_containers.push_back(terrain::Id::chest);
         g_data[(size_t)d.id] = d;
 
@@ -1813,7 +1813,7 @@ void init()
         d.xp_on_found = 20;
         d.value = Value::supreme_treasure;
         d.has_std_activate = true;
-        d.chance_to_incl_in_spawn_list = 1;
+        d.chance_to_incl_in_spawn_list = 100;
         d.native_containers.push_back(terrain::Id::tomb);
         g_data[(size_t)d.id] = d;
 
@@ -1836,7 +1836,7 @@ void init()
         d.xp_on_found = 20;
         d.value = Value::supreme_treasure;
         d.has_std_activate = true;
-        d.chance_to_incl_in_spawn_list = 1;
+        d.chance_to_incl_in_spawn_list = 100;
         d.native_containers.push_back(terrain::Id::tomb);
         g_data[(size_t)d.id] = d;
 
@@ -1873,7 +1873,7 @@ void init()
         d.is_unique = true;
         d.xp_on_found = 20;
         d.value = Value::supreme_treasure;
-        d.chance_to_incl_in_spawn_list = 1;
+        d.chance_to_incl_in_spawn_list = 100;
         d.native_containers.push_back(terrain::Id::tomb);
         g_data[(size_t)d.id] = d;
 
@@ -1894,7 +1894,7 @@ void init()
         d.is_unique = true;
         d.xp_on_found = 20;
         d.value = Value::supreme_treasure;
-        d.chance_to_incl_in_spawn_list = 1;
+        d.chance_to_incl_in_spawn_list = 100;
         d.native_containers.push_back(terrain::Id::tomb);
         g_data[(size_t)d.id] = d;
 
@@ -1979,7 +1979,7 @@ void load()
 
 MeleeData::MeleeData() :
         is_melee_wpn(false),
-        dmg(),
+        
         hit_chance_mod(0),
         is_noisy(true),
         att_msgs(ItemAttMsgs()),
@@ -2000,7 +2000,7 @@ RangedData::RangedData() :
         is_machine_gun(false),
         is_shotgun(false),
         max_ammo(0),
-        dmg(),
+        
         hit_chance_mod(0),
         throw_hit_chance_mod(0),
         always_break_on_throw(false),
@@ -2049,7 +2049,7 @@ ItemData::ItemData() :
         is_tried(false),
         is_found(false),
         xp_on_found(0),
-        base_name(),
+        
         character('X'),
         color(colors::white()),
         tile(TileId::END),
@@ -2072,4 +2072,4 @@ ItemData::ItemData() :
         native_containers.clear();
 }
 
-} // item
+} // namespace item

@@ -601,7 +601,7 @@ void PickTraitState::draw()
 
                 std::vector<ColoredString> prereq_titles;
 
-                std::string prereq_str = "";
+                std::string prereq_str;
 
                 const Color& clr_prereq_ok = colors::green();
 
@@ -617,7 +617,7 @@ void PickTraitState::draw()
                         const std::string bg_title =
                                 player_bon::bg_title(trait_marked_bg_prereq);
 
-                        prereq_titles.push_back(ColoredString(bg_title, color));
+                        prereq_titles.emplace_back(bg_title, color);
                 }
 
                 for (Trait prereq_trait : trait_marked_prereqs)
@@ -633,8 +633,7 @@ void PickTraitState::draw()
                         const std::string trait_title =
                                 player_bon::trait_title(prereq_trait);
 
-                        prereq_titles.push_back(
-                                ColoredString(trait_title, color));
+                        prereq_titles.emplace_back(trait_title, color);
                 }
 
                 if (trait_marked_clvl_prereq != -1)
@@ -648,11 +647,10 @@ void PickTraitState::draw()
                                 "Character level " +
                                 std::to_string(trait_marked_clvl_prereq);
 
-                        prereq_titles.push_back(
-                                ColoredString(clvl_title, color));
+                        prereq_titles.emplace_back(clvl_title, color);
                 }
 
-                const int prereq_list_x = label.size() + 1;
+                const auto prereq_list_x = (int)label.size() + 1;
 
                 for (const ColoredString& prereq_title : prereq_titles)
                 {
@@ -772,8 +770,8 @@ void EnterNameState::draw()
                 colors::menu_highlight());
 
         R box_rect(
-                P(name_x0 - 1, y_name - 1),
-                P(name_x1 + 1, y_name + 1));
+                P((int)name_x0 - 1, y_name - 1),
+                P((int)name_x1 + 1, y_name + 1));
 
         io::draw_box(box_rect);
 }

@@ -232,4 +232,4 @@ void unset_actor_as_leader_for_all_mon(actor::Actor& actor)
         }
 }
 
-} // actor
+} // namespace actor

@@ -7,8 +7,8 @@
 #ifndef STATE_HPP
 #define STATE_HPP
 
-#include <vector>
 #include <memory>
+#include <vector>
 
 enum class StateId
 {
@@ -40,7 +40,7 @@ enum class StateId
 class State
 {
 public:
-        virtual ~State() {}
+        virtual ~State() = default;
 
         // Executed immediately when the state is pushed.
         virtual void on_pushed() {}
@@ -122,10 +122,10 @@ bool is_empty();
 
 bool is_current_state(const State& state);
 
-void pop_until(const StateId id);
+void pop_until(StateId id);
 
-bool contains_state(const StateId id);
+bool contains_state(StateId id);
 
-} // states
+} // namespace states
 
 #endif // STATE_HPP

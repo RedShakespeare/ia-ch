@@ -145,4 +145,4 @@ void cleanup_session()
         TRACE_FUNC_END;
 }
 
-} // init
+} // namespace init

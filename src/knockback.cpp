@@ -14,9 +14,6 @@
 #include "actor_player.hpp"
 #include "attack.hpp"
 #include "config.hpp"
-#include "terrain_mob.hpp"
-#include "terrain.hpp"
-#include "terrain_trap.hpp"
 #include "game_time.hpp"
 #include "io.hpp"
 #include "map.hpp"
@@ -25,6 +22,9 @@
 #include "property.hpp"
 #include "property_data.hpp"
 #include "sdl_base.hpp"
+#include "terrain.hpp"
+#include "terrain_mob.hpp"
+#include "terrain_trap.hpp"
 #include "text_format.hpp"
 
 namespace knockback
@@ -195,4 +195,4 @@ void run(
         TRACE_FUNC_END;
 }
 
-} // knockback
+} // namespace knockback

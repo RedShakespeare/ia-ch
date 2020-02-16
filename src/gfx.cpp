@@ -124,4 +124,4 @@ P character_pos(const char character)
         }
 }
 
-} // gfx
+} // namespace gfx

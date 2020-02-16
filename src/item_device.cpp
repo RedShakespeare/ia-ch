@@ -14,8 +14,6 @@
 #include "actor_mon.hpp"
 #include "actor_player.hpp"
 #include "audio.hpp"
-#include "terrain_mob.hpp"
-#include "terrain.hpp"
 #include "game.hpp"
 #include "game_time.hpp"
 #include "init.hpp"
@@ -29,6 +27,8 @@
 #include "property_data.hpp"
 #include "saving.hpp"
 #include "teleport.hpp"
+#include "terrain.hpp"
+#include "terrain_mob.hpp"
 #include "text_format.hpp"
 
 
@@ -584,4 +584,4 @@ LgtSize Lantern::lgt_size() const
                 : LgtSize::none;
 }
 
-} // device
+} // namespace device

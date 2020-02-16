@@ -20,10 +20,10 @@ void init();
 
 void cleanup();
 
-void sleep(const uint32_t duration);
+void sleep(uint32_t duration);
 
 std::string sdl_pref_dir();
 
-}
+} // namespace sdl_base
 
 #endif // SDL_BASE_HPP

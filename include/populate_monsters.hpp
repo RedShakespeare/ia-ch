@@ -4,8 +4,8 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 // =============================================================================
 
-#ifndef POPULATE_MON_HPP
-#define POPULATE_MON_HPP
+#ifndef POPULATE_MONSTERS_HPP
+#define POPULATE_MONSTERS_HPP
 
 #include <vector>
 
@@ -16,7 +16,7 @@
 namespace actor
 {
 enum class Id;
-}
+} // namespace actor
 
 struct P;
 
@@ -28,10 +28,10 @@ namespace populate_mon
 {
 
 void make_group_at(
-        const actor::Id id,
+        actor::Id id,
         const std::vector<P>& sorted_free_cells,
-        Array2<bool>* const blocked_out,
-        const MonRoamingAllowed roaming_allowed);
+        Array2<bool>* blocked_out,
+        MonRoamingAllowed roaming_allowed);
 
 std::vector<P> make_sorted_free_cells(
         const P& origin,
@@ -48,6 +48,6 @@ void populate_std_lvl();
 // instead of according to design (or in addition to hand-placed monsters)
 void populate_lvl_as_room_types(const std::vector<RoomType>& room_types);
 
-} // populate_mon
+} // namespace populate_mon
 
-#endif // POPULATE_MON_HPP
+#endif // POPULATE_MONSTERS_HPP

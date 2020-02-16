@@ -13,12 +13,12 @@
 namespace item
 {
 class Wpn;
-}
+} // namespace item
 
 namespace actor
 {
 class Actor;
-}
+} // namespace actor
 
 struct P;
 
@@ -28,13 +28,13 @@ namespace attack
 
 // NOTE: Attacker origin is needed since attacker may be a null pointer.
 void melee(
-        actor::Actor* const attacker,
+        actor::Actor* attacker,
         const P& attacker_origin,
         actor::Actor& defender,
         item::Wpn& wpn);
 
 DidAction ranged(
-        actor::Actor* const attacker,
+        actor::Actor* attacker,
         const P& origin,
         const P& aim_pos,
         item::Wpn& wpn);
@@ -44,6 +44,6 @@ void ranged_hit_chance(
         const actor::Actor& defender,
         const item::Wpn& wpn);
 
-} // attack
+} // namespace attack
 
 #endif // ATTACK_HPP

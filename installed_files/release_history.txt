@@ -1,4 +1,14 @@
 --------------------------------------------------------------
+v21.0 *** WORK IN PROGRESS ***
+--------------------------------------------------------------
+Gameplay
+
+User interface
+
+Bug fixes
+* Fixed a bug that prevented messages for Rogues sensing artifacts on the dungeon floor (there were only messages for sensing artifacts in item containers, such as tombs)
+
+--------------------------------------------------------------
 v20.0 (December 17, 2019)
 --------------------------------------------------------------
 Gameplay

@@ -4,8 +4,8 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 // =============================================================================
 
-#ifndef COMMON_MESSAGES_HPP
-#define COMMON_MESSAGES_HPP
+#ifndef COMMON_TEXT_HPP
+#define COMMON_TEXT_HPP
 
 #include <string>
 
@@ -27,6 +27,6 @@ extern const std::string g_fire_prevent_cmd;
 extern const std::string g_shock_prevent_cmd;
 extern const std::string g_mon_disappear;
 
-} // common_text
+} // namespace common_text
 
-#endif // COMMON_MESSAGES_HPP
+#endif // COMMON_TEXT_HPP

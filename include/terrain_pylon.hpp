@@ -40,21 +40,21 @@ public:
 
         Pylon() = delete;
 
-        ~Pylon() {}
+        ~Pylon() = default;
 
         Id id() const override
         {
                 return Id::pylon;
         }
 
-        std::string name(const Article article) const override;
+        std::string name(Article article) const override;
 
-        void on_hit(const int dmg,
-                    const DmgType dmg_type,
-                    const DmgMethod dmg_method,
-                    actor::Actor* const actor) override;
+        void on_hit(int dmg,
+                    DmgType dmg_type,
+                    DmgMethod dmg_method,
+                    actor::Actor* actor) override;
 
-        void on_lever_pulled(Lever* const lever) override;
+        void on_lever_pulled(Lever* lever) override;
 
         void add_light_hook(Array2<bool>& light) const override;
 
@@ -64,9 +64,9 @@ public:
         }
 
 private:
-        PylonImpl* make_pylon_impl_from_id(const PylonId id);
+        PylonImpl* make_pylon_impl_from_id(PylonId id);
 
-        virtual void on_new_turn_hook() override;
+        void on_new_turn_hook() override;
 
         Color color_default() const override;
 
@@ -87,7 +87,7 @@ public:
                 m_pos(p),
                 m_pylon(pylon) {}
 
-        virtual ~PylonImpl() {}
+        virtual ~PylonImpl() = default;
 
         virtual void on_new_turn_activated() = 0;
 
@@ -157,6 +157,6 @@ public:
         void on_new_turn_activated() override;
 };
 
-} // terrain
+} // namespace terrain
 
 #endif // TERRAIN_PYLON_HPP

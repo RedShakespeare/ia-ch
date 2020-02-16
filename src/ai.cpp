@@ -9,8 +9,6 @@
 #include "actor_mon.hpp"
 #include "actor_move.hpp"
 #include "actor_player.hpp"
-#include "terrain_door.hpp"
-#include "terrain_mob.hpp"
 #include "fov.hpp"
 #include "game_time.hpp"
 #include "line_calc.hpp"
@@ -20,6 +18,8 @@
 #include "msg_log.hpp"
 #include "pathfind.hpp"
 #include "property_handler.hpp"
+#include "terrain_door.hpp"
+#include "terrain_mob.hpp"
 #include "text_format.hpp"
 
 namespace ai
@@ -467,7 +467,8 @@ bool move_to_random_adj_cell(actor::Mon& mon)
 
                 if (!dir_bucket.empty())
                 {
-                        const size_t idx = rnd::range(0, dir_bucket.size() - 1);
+                        const auto idx =
+                                rnd::range(0, (int)dir_bucket.size() - 1);
 
                         dir = dir_bucket[idx];
                 }
@@ -575,7 +576,7 @@ bool step_to_lair_if_los(actor::Mon& mon, const P& lair_p)
         return false;
 }
 
-} // action
+} // namespace action
 
 namespace info
 {
@@ -880,6 +881,6 @@ std::vector<P> find_path_to_target(actor::Mon& mon)
         return path;
 }
 
-} // info
+} // namespace info
 
-} // ai
+} // namespace ai

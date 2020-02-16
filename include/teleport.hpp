@@ -14,7 +14,7 @@
 namespace actor
 {
 class Actor;
-}
+} // namespace actor
 
 template<typename T>
 class Array2;
@@ -22,7 +22,7 @@ class Array2;
 
 void teleport(
         actor::Actor& actor,
-        const ShouldCtrlTele ctrl_tele = ShouldCtrlTele::if_tele_ctrl_prop);
+        ShouldCtrlTele ctrl_tele = ShouldCtrlTele::if_tele_ctrl_prop);
 
 void teleport(
         actor::Actor& actor,

@@ -18,30 +18,30 @@ class Monolith: public Terrain
 public:
     Monolith(const P& p);
     Monolith() = delete;
-    ~Monolith() {}
+    ~Monolith() = default;
 
     Id id() const override
     {
         return Id::monolith;
     }
 
-    std::string name(const Article article) const override;
+    std::string name(Article article) const override;
 
     void bump(actor::Actor& actor_bumping) override;
 
 private:
     Color color_default() const override;
 
-    void on_hit(const int dmg,
-                const DmgType dmg_type,
-                const DmgMethod dmg_method,
-                actor::Actor* const actor) override;
+    void on_hit(int dmg,
+                DmgType dmg_type,
+                DmgMethod dmg_method,
+                actor::Actor* actor) override;
 
     void activate();
 
     bool m_is_activated;
 };
 
-} // terrain
+} // namespace terrain
 
 #endif // TERRAIN_MONOLITH_HPP

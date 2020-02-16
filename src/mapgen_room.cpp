@@ -260,4 +260,4 @@ Room* make_room(const R& r, const IsSubRoom is_sub_room)
         return room;
 }
 
-} // mapgen
+} // namespace mapgen

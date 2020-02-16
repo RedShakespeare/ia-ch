@@ -76,8 +76,8 @@ namespace game_commands
 // NOTE: This is a pure function, except for reading the options
 GameCmd to_cmd(const InputData& input);
 
-void handle(const GameCmd cmd);
+void handle(GameCmd cmd);
 
-}
+} // namespace game_commands
 
 #endif // GAME_COMMANDS_HPP

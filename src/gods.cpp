@@ -134,4 +134,4 @@ void set_random_god()
         s_current_god_idx = rnd::range(0, nr_gods - 1);
 }
 
-} // gods
+} // namespace gods

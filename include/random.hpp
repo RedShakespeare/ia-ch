@@ -7,8 +7,8 @@
 #ifndef RANDOM_HPP
 #define RANDOM_HPP
 
-#include <random>
 #include <algorithm>
+#include <random>
 #include <string>
 #include <vector>
 
@@ -102,20 +102,20 @@ void seed(uint32_t seed);
 
 bool coin_toss();
 
-bool fraction(const int num, const int den);
+bool fraction(int num, int den);
 
-bool one_in(const int N);
+bool one_in(int N);
 
 // Can be called with any range (positive or negative), V2 does *not* have to be
 // bigger than V1.
-int range(const int v1, const int v2);
+int range(int v1, int v2);
 
 // NOTE: "p" shall be within [0.0, 1.0]
-int range_binom(const int v1, const int v2, const double p);
+int range_binom(int v1, int v2, double p);
 
-bool percent(const int pct_chance);
+bool percent(int pct_chance);
 
-int weighted_choice(const std::vector<int> weights);
+int weighted_choice(std::vector<int> weights);
 
 template <typename T>
 T weighted_choice(const WeightedItems<T>& weighted_items)
@@ -149,6 +149,6 @@ void shuffle(std::vector<T>& v)
         std::shuffle(std::begin(v), std::end(v), g_rng);
 }
 
-} // rnd
+} // namespace rnd
 
 #endif // RANDOM_HPP

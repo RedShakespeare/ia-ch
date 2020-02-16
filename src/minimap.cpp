@@ -10,12 +10,12 @@
 
 #include "actor_player.hpp"
 #include "common_text.hpp"
-#include "terrain_door.hpp"
-#include "terrain.hpp"
 #include "io.hpp"
 #include "map.hpp"
 #include "map_parsing.hpp"
 #include "panel.hpp"
+#include "terrain.hpp"
+#include "terrain_door.hpp"
 
 // -----------------------------------------------------------------------------
 // Private
@@ -246,4 +246,4 @@ void update()
         }
 }
 
-} // minimap
+} // namespace minimap

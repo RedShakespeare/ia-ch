@@ -26,15 +26,15 @@ class Actor;
 ActorDied hit(
         Actor& actor,
         int dmg,
-        const DmgType dmg_type,
-        const DmgMethod method = DmgMethod::END,
-        const AllowWound allow_wound = AllowWound::yes);
+        DmgType dmg_type,
+        DmgMethod method = DmgMethod::END,
+        AllowWound allow_wound = AllowWound::yes);
 
 ActorDied hit_sp(
         Actor& actor,
-        const int dmg,
-        const Verbose verbose = Verbose::yes);
+        int dmg,
+        Verbose verbose = Verbose::yes);
 
-} // actor
+} // namespace actor
 
 #endif // ACTOR_HIT_HPP

@@ -13,7 +13,7 @@
 namespace actor
 {
 class Actor;
-}
+} // namespace actor
 
 class Spell;
 
@@ -34,9 +34,9 @@ void load();
 class Scroll: public item::Item
 {
 public:
-        Scroll(item::ItemData* const item_data);
+        Scroll(item::ItemData* item_data);
 
-        ~Scroll() {}
+        ~Scroll() = default;
 
         void save_hook() const override;
 
@@ -49,17 +49,17 @@ public:
 
         std::string name_inf_str() const override;
 
-        ConsumeItem activate(actor::Actor* const actor) override;
+        ConsumeItem activate(actor::Actor* actor) override;
 
-        const std::string real_name() const;
+        std::string real_name() const;
 
         std::vector<std::string> descr_hook() const override;
 
-        void on_player_reached_new_dlvl_hook() override final;
+        void on_player_reached_new_dlvl_hook() final;
 
-        void on_actor_turn_in_inv_hook(const InvType inv_type) override;
+        void on_actor_turn_in_inv_hook(InvType inv_type) override;
 
-        void identify(const Verbose verbose) override;
+        void identify(Verbose verbose) override;
 
         Spell* make_spell() const;
 
@@ -68,6 +68,6 @@ private:
         int m_domain_feeling_turn_countdown;
 };
 
-} // scroll
+} // namespace scroll
 
 #endif // ITEM_SCROLL_HPP

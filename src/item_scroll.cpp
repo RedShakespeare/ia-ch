@@ -57,56 +57,56 @@ void init()
 
         // Randomize scroll fake names
         s_false_names.clear();
-        s_false_names.push_back("Cruensseasrjit");
-        s_false_names.push_back("Rudsceleratus");
-        s_false_names.push_back("Rudminuox");
-        s_false_names.push_back("Cruo stragara-na");
-        s_false_names.push_back("Praya navita");
-        s_false_names.push_back("Pretia Cruento");
-        s_false_names.push_back("Pestis Cruento");
-        s_false_names.push_back("Cruento Pestis");
-        s_false_names.push_back("Domus-bhaava");
-        s_false_names.push_back("Acerbus-shatruex");
-        s_false_names.push_back("Pretaanluxis");
-        s_false_names.push_back("Praansilenux");
-        s_false_names.push_back("Quodpipax");
-        s_false_names.push_back("Lokemundux");
-        s_false_names.push_back("Profanuxes");
-        s_false_names.push_back("Shaantitus");
-        s_false_names.push_back("Geropayati");
-        s_false_names.push_back("Vilomaxus");
-        s_false_names.push_back("Bhuudesco");
-        s_false_names.push_back("Durbentia");
-        s_false_names.push_back("Bhuuesco");
-        s_false_names.push_back("Maravita");
-        s_false_names.push_back("Infirmux");
+        s_false_names.emplace_back("Cruensseasrjit");
+        s_false_names.emplace_back("Rudsceleratus");
+        s_false_names.emplace_back("Rudminuox");
+        s_false_names.emplace_back("Cruo stragara-na");
+        s_false_names.emplace_back("Praya navita");
+        s_false_names.emplace_back("Pretia Cruento");
+        s_false_names.emplace_back("Pestis Cruento");
+        s_false_names.emplace_back("Cruento Pestis");
+        s_false_names.emplace_back("Domus-bhaava");
+        s_false_names.emplace_back("Acerbus-shatruex");
+        s_false_names.emplace_back("Pretaanluxis");
+        s_false_names.emplace_back("Praansilenux");
+        s_false_names.emplace_back("Quodpipax");
+        s_false_names.emplace_back("Lokemundux");
+        s_false_names.emplace_back("Profanuxes");
+        s_false_names.emplace_back("Shaantitus");
+        s_false_names.emplace_back("Geropayati");
+        s_false_names.emplace_back("Vilomaxus");
+        s_false_names.emplace_back("Bhuudesco");
+        s_false_names.emplace_back("Durbentia");
+        s_false_names.emplace_back("Bhuuesco");
+        s_false_names.emplace_back("Maravita");
+        s_false_names.emplace_back("Infirmux");
 
         std::vector<std::string> cmb;
         cmb.clear();
-        cmb.push_back("Cruo");
-        cmb.push_back("Cruonit");
-        cmb.push_back("Cruentu");
-        cmb.push_back("Marana");
-        cmb.push_back("Domus");
-        cmb.push_back("Malax");
-        cmb.push_back("Caecux");
-        cmb.push_back("Eximha");
-        cmb.push_back("Vorox");
-        cmb.push_back("Bibox");
-        cmb.push_back("Pallex");
-        cmb.push_back("Profanx");
-        cmb.push_back("Invisuu");
-        cmb.push_back("Invisux");
-        cmb.push_back("Odiosuu");
-        cmb.push_back("Odiosux");
-        cmb.push_back("Vigra");
-        cmb.push_back("Crudux");
-        cmb.push_back("Desco");
-        cmb.push_back("Esco");
-        cmb.push_back("Gero");
-        cmb.push_back("Klaatu");
-        cmb.push_back("Barada");
-        cmb.push_back("Nikto");
+        cmb.emplace_back("Cruo");
+        cmb.emplace_back("Cruonit");
+        cmb.emplace_back("Cruentu");
+        cmb.emplace_back("Marana");
+        cmb.emplace_back("Domus");
+        cmb.emplace_back("Malax");
+        cmb.emplace_back("Caecux");
+        cmb.emplace_back("Eximha");
+        cmb.emplace_back("Vorox");
+        cmb.emplace_back("Bibox");
+        cmb.emplace_back("Pallex");
+        cmb.emplace_back("Profanx");
+        cmb.emplace_back("Invisuu");
+        cmb.emplace_back("Invisux");
+        cmb.emplace_back("Odiosuu");
+        cmb.emplace_back("Odiosux");
+        cmb.emplace_back("Vigra");
+        cmb.emplace_back("Crudux");
+        cmb.emplace_back("Desco");
+        cmb.emplace_back("Esco");
+        cmb.emplace_back("Gero");
+        cmb.emplace_back("Klaatu");
+        cmb.emplace_back("Barada");
+        cmb.emplace_back("Nikto");
 
         const size_t nr_cmb_parts = cmb.size();
 
@@ -249,7 +249,7 @@ void Scroll::load_hook()
         m_domain_feeling_turn_countdown = saving::get_int();
 }
 
-const std::string Scroll::real_name() const
+std::string Scroll::real_name() const
 {
         const std::unique_ptr<const Spell> spell(make_spell());
 
@@ -286,7 +286,7 @@ std::vector<std::string> Scroll::descr_hook() const
                 }
                 else
                 {
-                        lines.push_back(
+                        lines.emplace_back(
                                 "Perhaps keeping it for a while will reveal "
                                 "something about it.");
                 }
@@ -495,4 +495,4 @@ std::string Scroll::name_inf_str() const
         return "";
 }
 
-} // scroll
+} // namespace scroll

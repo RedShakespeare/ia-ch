@@ -12,6 +12,6 @@ namespace close_door
 
 void player_try_close_or_jam();
 
-} // close_door
+} // namespace close_door
 
 #endif // CLOSE_HPP

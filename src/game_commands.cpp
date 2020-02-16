@@ -1073,4 +1073,4 @@ void handle(const GameCmd cmd)
 
 } // handle
 
-} // game_commands
+} // namespace game_commands

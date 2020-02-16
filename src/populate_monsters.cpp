@@ -326,7 +326,7 @@ std::vector<P> make_sorted_free_cells(
                 {
                         if (!blocked.at(x, y))
                         {
-                                out.push_back(P(x, y));
+                                out.emplace_back(x, y);
                         }
                 }
         }
@@ -424,7 +424,7 @@ void spawn_for_repopulate_over_time()
                 {
                         if (!blocked.at(x, y))
                         {
-                                free_cells_vector.push_back(P(x, y));
+                                free_cells_vector.emplace_back(x, y);
                         }
                 }
         }
@@ -524,8 +524,7 @@ void populate_std_lvl()
                                         if (is_current_room &&
                                             !blocked.at(x, y))
                                         {
-                                                origin_bucket.push_back(
-                                                        P(x, y));
+                                                origin_bucket.emplace_back(x, y);
                                         }
                                 }
                         }
@@ -597,7 +596,7 @@ void populate_std_lvl()
                             room &&
                             (room->m_type == RoomType::plain))
                         {
-                                origin_bucket.push_back(P(x, y));
+                                origin_bucket.emplace_back(x, y);
                         }
                 }
         }
@@ -650,7 +649,7 @@ void populate_lvl_as_room_types(const std::vector<RoomType>& room_types)
                 {
                         if (!blocked.at(x, y))
                         {
-                                origin_bucket.push_back({x, y});
+                                origin_bucket.emplace_back(x, y);
                         }
                 }
         }
@@ -703,4 +702,4 @@ void populate_lvl_as_room_types(const std::vector<RoomType>& room_types)
         TRACE_FUNC_END;
 } // populate_lvl_as_room_types
 
-} // populate_mon
+} // namespace populate_mon

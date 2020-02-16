@@ -7,11 +7,11 @@
 #include "mapgen.hpp"
 
 #include "debug.hpp"
-#include "terrain_event.hpp"
-#include "terrain.hpp"
 #include "game_time.hpp"
 #include "map.hpp"
 #include "map_parsing.hpp"
+#include "terrain.hpp"
+#include "terrain_event.hpp"
 
 // -----------------------------------------------------------------------------
 // Private
@@ -313,4 +313,4 @@ void make_aux_rooms(Region regions[3][3])
 
 } // make_aux_rooms
 
-} // mapgen
+} // namespace mapgen

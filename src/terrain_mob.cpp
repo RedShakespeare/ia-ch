@@ -12,8 +12,6 @@
 #include "actor.hpp"
 #include "actor_player.hpp"
 #include "explosion.hpp"
-#include "terrain_mob.hpp"
-#include "terrain.hpp"
 #include "fov.hpp"
 #include "game_time.hpp"
 #include "inventory.hpp"
@@ -24,6 +22,8 @@
 #include "player_bon.hpp"
 #include "property.hpp"
 #include "property_handler.hpp"
+#include "terrain.hpp"
+#include "terrain_mob.hpp"
 
 
 namespace terrain
@@ -127,7 +127,7 @@ void Smoke::on_new_turn()
                 // Coughing?
                 if (!is_breath_prot && rnd::one_in(4))
                 {
-                        std::string snd_msg = "";
+                        std::string snd_msg;
 
                         if (is_player)
                         {
@@ -173,7 +173,7 @@ void Smoke::on_new_turn()
 
 std::string Smoke::name(const Article article)  const
 {
-        std::string name = "";
+        std::string name;
 
         if (article == Article::the)
         {
@@ -329,4 +329,4 @@ Color LitFlare::color() const
         return colors::yellow();
 }
 
-} // terrain
+} // namespace terrain

@@ -10,7 +10,6 @@
 #include <string>
 
 #include "actor_player.hpp"
-#include "terrain.hpp"
 #include "game_time.hpp"
 #include "init.hpp"
 #include "inventory.hpp"
@@ -20,6 +19,7 @@
 #include "map_parsing.hpp"
 #include "misc.hpp"
 #include "msg_log.hpp"
+#include "terrain.hpp"
 #include "text_format.hpp"
 
 namespace item_drop
@@ -62,7 +62,7 @@ void drop_item_from_inv(
                 (nr_items_to_drop == -1) ||
                 (nr_items_to_drop >= nr_items_before_drop);
 
-        std::string item_ref = "";
+        std::string item_ref;
 
         item::Item* item_to_keep = nullptr;
 
@@ -261,4 +261,4 @@ item::Item* drop_item_on_map(const P& intended_pos, item::Item& item)
         return nullptr;
 }
 
-} // item_drop
+} // namespace item_drop

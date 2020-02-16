@@ -6,10 +6,10 @@
 
 #include "actor_data.hpp"
 
+#include <cmath>
 #include <string>
-#include <vector>
-#include <math.h>
 #include <unordered_map>
+#include <vector>
 
 #include "colors.hpp"
 #include "item_att_property.hpp"
@@ -404,7 +404,7 @@ static void dump_intr_attacks(xml::Element* attacks_e, actor::ActorData& data)
                      e;
                      e = xml::next_sibling(e))
                 {
-                        dump_intr_attack_property(e, *attack_data.get());
+                        dump_intr_attack_property(e, *attack_data);
                 }
 
                 data.intr_attacks.push_back(std::move(attack_data));
@@ -480,7 +480,7 @@ static void dump_group_size(xml::Element* group_e, actor::ActorData& data)
 
         xml::try_get_attribute_int(group_e, "weight", weight);
 
-        data.group_sizes.push_back({group_size, weight});
+        data.group_sizes.emplace_back(group_size, weight);
 }
 
 static void dump_native_room(
@@ -750,4 +750,4 @@ void load()
         }
 }
 
-} // actor
+} // namespace actor

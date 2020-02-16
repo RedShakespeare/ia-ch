@@ -39,7 +39,7 @@ const int g_expl_std_radi = 2;
 
 const int g_enc_immobile_lvl = 125;
 
-const size_t g_nr_mg_projectiles = 5;
+const int g_nr_mg_projectiles = 5;
 
 const int g_mi_go_gun_hp_drained = 3;
 

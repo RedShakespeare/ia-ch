@@ -174,7 +174,7 @@ static std::vector<std::unique_ptr<terrain::gong::Toll>> make_all_allowed_tolls(
                         continue;
                 }
 
-                if (!is_toll_allowing_bonus(*toll.get(), bonus_id))
+                if (!is_toll_allowing_bonus(*toll, bonus_id))
                 {
                         continue;
                 }
@@ -357,7 +357,7 @@ namespace gong
 // Upgrade spell
 // -----------------------------------------------------------------------------
 UpgradeSpell::UpgradeSpell() :
-        Bonus(),
+        
         m_spell_id(SpellId::END)
 {
         const auto bucket = find_spells_can_upgrade();
@@ -462,7 +462,7 @@ void RemoveInsanity::run_effect()
 // Gain item
 // -----------------------------------------------------------------------------
 GainItem::GainItem() :
-        Bonus(),
+        
         m_item_id(item::Id::END)
 {
         const auto item_ids = find_allowed_item_ids();
@@ -724,8 +724,8 @@ void Cursed::run_effect()
 // -----------------------------------------------------------------------------
 // Spawn monsters
 // -----------------------------------------------------------------------------
-SpawnMonsters::SpawnMonsters() :
-        Toll()
+SpawnMonsters::SpawnMonsters() 
+        
 {
         std::vector<actor::Id> summon_bucket;
 
@@ -794,8 +794,8 @@ void SpawnMonsters::run_effect()
 // -----------------------------------------------------------------------------
 // Unlearn spell
 // -----------------------------------------------------------------------------
-UnlearnSpell::UnlearnSpell() :
-        Toll()
+UnlearnSpell::UnlearnSpell() 
+        
 {
         const auto spell_bucket = make_spell_bucket();
 
@@ -864,6 +864,6 @@ std::vector<SpellId> UnlearnSpell::make_spell_bucket() const
         return result;
 }
 
-} // gong
+} // namespace gong
 
-} // pact
+} // namespace terrain

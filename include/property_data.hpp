@@ -236,6 +236,6 @@ extern PropData g_data[(size_t)PropId::END];
 
 void init();
 
-} // prop_data
+} // namespace property_data
 
 #endif // PROPERTY_DATA_HPP

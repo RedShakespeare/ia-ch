@@ -8,10 +8,10 @@
 
 #include "actor.hpp"
 #include "actor_player.hpp"
-#include "terrain_monolith.hpp"
 #include "game_time.hpp"
 #include "map_parsing.hpp"
 #include "misc.hpp"
+#include "terrain_monolith.hpp"
 
 namespace mapgen
 {
@@ -115,4 +115,4 @@ void make_monoliths()
         }
 }
 
-} // namespace
+} // namespace mapgen

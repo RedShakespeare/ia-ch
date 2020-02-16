@@ -7,9 +7,9 @@
 #include "mapgen.hpp"
 
 #include "debug.hpp"
-#include "terrain.hpp"
 #include "map.hpp"
 #include "misc.hpp"
+#include "terrain.hpp"
 
 namespace mapgen
 {
@@ -191,7 +191,7 @@ void make_sub_rooms()
                                                                 if ((x != p0.x && x != p1.x) ||
                                                                     (y != p0.y && y != p1.y))
                                                                 {
-                                                                        entrance_bucket.push_back(P(x, y));
+                                                                        entrance_bucket.emplace_back(x, y);
                                                                 }
                                                         }
                                                 }
@@ -211,10 +211,8 @@ void make_sub_rooms()
                                 // (always do this if there are very few possible entries)
                                 if (rnd::coin_toss() || entrance_bucket.size() <= 4)
                                 {
-                                        const size_t door_pos_idx =
-                                                rnd::range(0, entrance_bucket.size() - 1);
-
-                                        const P& door_pos = entrance_bucket[door_pos_idx];
+                                        const auto door_pos =
+                                                rnd::element(entrance_bucket);
 
                                         map::put(new terrain::Floor(door_pos));
 
@@ -227,10 +225,8 @@ void make_sub_rooms()
 
                                         for (int j = 0; j < nr_tries; ++j)
                                         {
-                                                const size_t door_pos_idx =
-                                                        rnd::range(0, entrance_bucket.size() - 1);
-
-                                                const P& try_p = entrance_bucket[door_pos_idx];
+                                                const auto try_p =
+                                                        rnd::element(entrance_bucket);
 
                                                 bool is_pos_ok = true;
 
@@ -263,4 +259,4 @@ void make_sub_rooms()
 
 } // make_sub_rooms
 
-} // make_sub_rooms
+} // namespace mapgen

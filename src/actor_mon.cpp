@@ -6,18 +6,15 @@
 
 #include "actor_mon.hpp"
 
-#include <vector>
-#include <cstring>
 #include <algorithm>
+#include <cstring>
+#include <vector>
 
 #include "actor_factory.hpp"
 #include "actor_player.hpp"
 #include "ai.hpp"
 #include "attack.hpp"
 #include "drop.hpp"
-#include "terrain_door.hpp"
-#include "terrain_mob.hpp"
-#include "terrain_trap.hpp"
 #include "flood.hpp"
 #include "fov.hpp"
 #include "game_time.hpp"
@@ -39,6 +36,9 @@
 #include "property_handler.hpp"
 #include "reload.hpp"
 #include "sound.hpp"
+#include "terrain_door.hpp"
+#include "terrain_mob.hpp"
+#include "terrain_trap.hpp"
 #include "text_format.hpp"
 
 // -----------------------------------------------------------------------------
@@ -157,7 +157,7 @@ std::string get_cultist_aware_msg_hidden()
 // Monster
 // -----------------------------------------------------------------------------
 Mon::Mon() :
-        Actor(),
+        
         m_wary_of_player_counter(0),
         m_aware_of_player_counter(0),
         m_player_aware_of_me_counter(0),
@@ -168,8 +168,8 @@ Mon::Mon() :
         m_leader(nullptr),
         m_target(nullptr),
         m_is_target_seen(false),
-        m_waiting(false),
-        m_spells()
+        m_waiting(false)
+        
 {
 
 }
@@ -1580,4 +1580,4 @@ std::string SpectralWpn::descr() const
         return str;
 }
 
-} // actor
+} // namespace actor

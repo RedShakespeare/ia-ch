@@ -6,7 +6,7 @@
 
 #include "line_calc.hpp"
 
-#include <math.h>
+#include <cmath>
 #include <vector>
 
 #include "global.hpp"
@@ -108,8 +108,8 @@ std::vector<P> calc_new_line(
                 return line;
         }
 
-        const double delta_x_db = double(target.x - origin.x);
-        const double delta_y_db = double(target.y - origin.y);
+        const auto delta_x_db = double(target.x - origin.x);
+        const auto delta_y_db = double(target.y - origin.y);
 
         const double hypot_db =
                 sqrt((delta_x_db * delta_x_db) +
@@ -170,4 +170,4 @@ std::vector<P> calc_new_line(
         return line;
 }
 
-} // line_calc
+} // namespace line_calc

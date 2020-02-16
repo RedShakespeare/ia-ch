@@ -148,4 +148,4 @@ std::string sdl_pref_dir()
         return path_str;
 }
 
-} // sdl_base
+} // namespace sdl_base

@@ -7,8 +7,8 @@
 #ifndef MAIN_MENU_HPP
 #define MAIN_MENU_HPP
 
-#include "state.hpp"
 #include "browser.hpp"
+#include "state.hpp"
 
 class MainMenuState: public State
 {

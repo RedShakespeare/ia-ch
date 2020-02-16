@@ -6,8 +6,8 @@
 
 #include "io.hpp"
 
-#include <vector>
 #include <iostream>
+#include <vector>
 
 #include "actor.hpp"
 #include "actor_mon.hpp"
@@ -504,9 +504,9 @@ static void load_font()
                                                 const int y_relative =
                                                         sheet_y - sheet_y0;
 
-                                                px_data.push_back(
-                                                        P(x_relative,
-                                                          y_relative));
+                                                px_data.emplace_back(
+                                                        x_relative,
+                                                        y_relative);
                                         }
                                 }
                         }
@@ -593,7 +593,7 @@ static void load_tiles()
 
                                 if (is_img_px)
                                 {
-                                        px_data.push_back(P(x, y));
+                                        px_data.emplace_back(x, y);
                                 }
                         }
                 }
@@ -743,7 +743,7 @@ static void draw_text_at_px(
         }
 
         const int cell_px_w = config::gui_cell_px_w();
-        const size_t msg_w = str.size();
+        const int msg_w = str.size();
         const int msg_px_w = msg_w * cell_px_w;
 
         const auto sdl_color = color.sdl_color();
@@ -760,7 +760,7 @@ static void draw_text_at_px(
         // fit on the screen horizontally.
         const int px_x_dots = screen_px_w - (cell_px_w * 3);
 
-        for (size_t i = 0; i < msg_w; ++i)
+        for (int i = 0; i < msg_w; ++i)
         {
                 if (px_pos.x < 0 || px_pos.x >= screen_px_w)
                 {
@@ -1375,7 +1375,7 @@ void draw_text_right(
                 return;
         }
 
-        const int x_pos_left = pos.x - str.size() + 1;
+        const int x_pos_left = pos.x - (int)str.size() + 1;
 
         P px_pos = gui_to_px_coords(
                 panel,
@@ -1733,6 +1733,7 @@ void draw_blast_at_seen_actors(
 
         std::vector<P> positions;
 
+        positions.reserve(actors.size());
         for (auto* const actor : actors)
         {
                 positions.push_back(actor->m_pos);
@@ -2135,4 +2136,4 @@ InputData get()
         return input;
 }
 
-} // io
+} // namespace io

@@ -14,6 +14,6 @@ void try_sprain_player();
 
 void run();
 
-} // wham
+} // namespace wham
 
 #endif // WHAM_HPP

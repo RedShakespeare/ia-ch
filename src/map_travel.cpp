@@ -180,4 +180,4 @@ void go_to_nxt()
         TRACE_FUNC_END;
 }
 
-} // map_travel
+} // namespace map_travel

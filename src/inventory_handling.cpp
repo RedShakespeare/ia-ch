@@ -8,9 +8,9 @@
 
 #include "init.hpp"
 
-#include <vector>
-#include <sstream>
 #include <iomanip>
+#include <sstream>
+#include <vector>
 
 #include "actor_player.hpp"
 #include "audio.hpp"
@@ -68,7 +68,7 @@ static bool run_drop_query(
 
                 io::update_screen();
 
-                const P nr_query_pos(drop_str.size() + 1, 0);
+                const P nr_query_pos((int)drop_str.size() + 1, 0);
 
                 const int max_digits = 3;
                 const P done_inf_pos = nr_query_pos + P(max_digits + 2, 0);
@@ -143,12 +143,9 @@ static void cap_str_to_menu_x1(
 // -----------------------------------------------------------------------------
 // Abstract inventory screen state
 // -----------------------------------------------------------------------------
-InvState::InvState() :
-        State(),
-        m_browser()
-{
-
-}
+InvState::InvState() 
+        
+= default;
 
 StateId InvState::id()
 {
@@ -339,7 +336,7 @@ void InvState::draw_weight_pct_and_dots(
 
         std::string weight_str = std::to_string(item_weight_pct) + "%";
 
-        int weight_x = panels::w(Panel::item_menu) - weight_str.size();
+        int weight_x = panels::w(Panel::item_menu) - (int)weight_str.size();
 
         ASSERT(item_weight_pct >= 0 && item_weight_pct <= 100);
 
@@ -365,7 +362,7 @@ void InvState::draw_weight_pct_and_dots(
                 weight_x = panels::w(Panel::item_menu);
         }
 
-        int dots_x = item_pos.x + item_name_len;
+        int dots_x = item_pos.x + (int)item_name_len;
         int dots_w = weight_x - dots_x;
 
         if (dots_w == 0)
@@ -418,10 +415,9 @@ void InvState::draw_detailed_item_descr(
                 {
                         for (const std::string& paragraph : base_descr)
                         {
-                                lines.push_back(
-                                        ColoredString(
+                                lines.emplace_back(
                                                 paragraph,
-                                                colors::light_white()));
+                                                colors::light_white());
                         }
                 }
 
@@ -453,14 +449,13 @@ void InvState::draw_detailed_item_descr(
 
                         if (!dmg_str.empty() && !dmg_str_avg.empty())
                         {
-                                lines.push_back(
-                                        ColoredString(
+                                lines.emplace_back(
                                                 "Damage: " +
                                                 dmg_str +
                                                 " (average " +
                                                 dmg_str_avg +
                                                 ")",
-                                                colors::light_white()));
+                                                colors::light_white());
                         }
 
                         const std::string hit_mod_str =
@@ -468,11 +463,10 @@ void InvState::draw_detailed_item_descr(
 
                         if (!hit_mod_str.empty())
                         {
-                                lines.push_back(
-                                        ColoredString(
+                                lines.emplace_back(
                                                 "Hit chance modifier: " +
                                                 hit_mod_str,
-                                                colors::light_white()));
+                                                colors::light_white());
                         }
                 }
 
@@ -482,7 +476,7 @@ void InvState::draw_detailed_item_descr(
                 const bool can_att_terrain = d.melee.att_terrain;
                 const bool can_att_corpse = d.melee.att_corpse;
 
-                std::string att_obj_str = "";
+                std::string att_obj_str;
 
                 if (can_att_terrain || can_att_corpse)
                 {
@@ -510,10 +504,9 @@ void InvState::draw_detailed_item_descr(
                                 " more effectively (bonus is based on attack "
                                 "damage).";
 
-                        lines.push_back(
-                                ColoredString(
+                        lines.emplace_back(
                                         att_obj_str,
-                                        colors::light_white()));
+                                        colors::light_white());
                 }
 
                 // -------------------------------------------------------------
@@ -522,7 +515,7 @@ void InvState::draw_detailed_item_descr(
                 const std::string weight_str =
                         ref_str + item->weight_str() + " to carry.";
 
-                lines.push_back(ColoredString(weight_str, colors::green()));
+                lines.emplace_back(weight_str, colors::green());
 
                 const int weight_carried_tot =
                         map::g_player->m_inv.total_item_weight();
@@ -545,10 +538,9 @@ void InvState::draw_detailed_item_descr(
                                 std::to_string(weight_pct) +
                                 "% of total carried weight)";
 
-                        lines.push_back(
-                                ColoredString(
+                        lines.emplace_back(
                                         pct_str,
-                                        colors::green()));
+                                        colors::green());
                 }
         }
 
@@ -597,7 +589,7 @@ void BrowseInv::draw()
 
         const int browser_y = m_browser.y();
 
-        const size_t nr_slots = (size_t)SlotId::END;
+        const auto nr_slots = (size_t)SlotId::END;
 
         io::draw_text_center(
                 "Browsing inventory " + common_text::g_screen_exit_hint,
@@ -1257,7 +1249,7 @@ void Equip::draw()
 {
         const bool has_item = !m_filtered_backpack_indexes.empty();
 
-        std::string heading = "";
+        std::string heading;
 
         switch (m_slot_to_equip.id)
         {

@@ -11,8 +11,6 @@
 #include "actor_factory.hpp"
 #include "actor_player.hpp"
 #include "debug.hpp"
-#include "terrain_mob.hpp"
-#include "terrain.hpp"
 #include "game_time.hpp"
 #include "init.hpp"
 #include "io.hpp"
@@ -23,6 +21,8 @@
 #include "pos.hpp"
 #include "random.hpp"
 #include "saving.hpp"
+#include "terrain.hpp"
+#include "terrain_mob.hpp"
 
 #ifndef NDEBUG
 #include "sdl_base.hpp"
@@ -40,7 +40,7 @@ static P s_dims(0, 0);
 Cell::Cell() :
         is_explored(false),
         is_seen_by_player(false),
-        player_los(),
+        
         item(nullptr),
         terrain(nullptr) {}
 
@@ -423,9 +423,7 @@ actor::Actor* random_closest_actor(
 
         ASSERT(!closest_actors.empty());
 
-        const int element = rnd::range(0, closest_actors.size() - 1);
-
-        return closest_actors[element];
+        return rnd::element(closest_actors);
 }
 
 bool is_pos_inside_map(const P& pos)
@@ -453,4 +451,4 @@ bool is_area_inside_map(const R& area)
                 is_pos_inside_map(area.p1);
 }
 
-} // map
+} // namespace map

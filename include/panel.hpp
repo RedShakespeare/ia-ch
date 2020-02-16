@@ -33,32 +33,32 @@ void init(P max_gui_dims);
 
 bool is_valid();
 
-R area(const Panel panel);
+R area(Panel panel);
 
-P dims(const Panel panel);
+P dims(Panel panel);
 
-P p0(const Panel panel);
+P p0(Panel panel);
 
-P p1(const Panel panel);
+P p1(Panel panel);
 
-int x0(const Panel panel);
+int x0(Panel panel);
 
-int y0(const Panel panel);
+int y0(Panel panel);
 
-int x1(const Panel panel);
+int x1(Panel panel);
 
-int y1(const Panel panel);
+int y1(Panel panel);
 
-int w(const Panel panel);
+int w(Panel panel);
 
-int h(const Panel panel);
+int h(Panel panel);
 
-int center_x(const Panel panel);
+int center_x(Panel panel);
 
-int center_y(const Panel panel);
+int center_y(Panel panel);
 
-P center(const Panel panel);
+P center(Panel panel);
 
-} // panels
+} // namespace panels
 
 #endif // PANEL_HPP

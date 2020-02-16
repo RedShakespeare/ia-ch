@@ -7,8 +7,8 @@
 #ifndef GAME_HPP
 #define GAME_HPP
 
-#include <vector>
 #include <string>
+#include <vector>
 
 #include "global.hpp"
 #include "state.hpp"
@@ -18,7 +18,7 @@
 namespace actor
 {
 class Actor;
-}
+} // namespace actor
 
 
 struct HistoryEvent
@@ -51,19 +51,19 @@ void on_mon_killed(actor::Actor& actor);
 void set_start_time_to_now();
 
 void incr_player_xp(
-        const int xp_gained,
-        const Verbose verbose = Verbose::yes);
+        int xp_gained,
+        Verbose verbose = Verbose::yes);
 
 void decr_player_xp(int xp_lost);
 
 // This function has no side effects except for incrementing the clvl value
 void incr_clvl_number();
 
-void add_history_event(const std::string msg);
+void add_history_event(std::string msg);
 
 const std::vector<HistoryEvent>& history();
 
-} // game
+} // namespace game
 
 // -----------------------------------------------------------------------------
 // Game state
@@ -72,7 +72,7 @@ class GameState: public State
 {
 public:
         GameState(GameEntryMode entry_mode) :
-                State(),
+                
                 m_entry_mode(entry_mode) {}
 
         void on_start() override;
@@ -95,8 +95,8 @@ private:
 class WinGameState: public State
 {
 public:
-        WinGameState() :
-                State() {}
+        WinGameState() 
+                = default;
 
         void draw() override;
 

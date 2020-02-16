@@ -9,8 +9,8 @@
 
 #include <string>
 
-#include "room.hpp"
 #include "array2.hpp"
+#include "room.hpp"
 
 
 enum class LevelTemplId
@@ -70,6 +70,6 @@ void on_map_discarded();
 
 void on_map_ok();
 
-} // map_templates
+} // namespace map_templates
 
 #endif // MAP_TEMPLATES_HPP

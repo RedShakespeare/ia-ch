@@ -12,7 +12,6 @@
 
 #include "actor_factory.hpp"
 #include "actor_player.hpp"
-#include "terrain.hpp"
 #include "flood.hpp"
 #include "game_time.hpp"
 #include "gods.hpp"
@@ -22,6 +21,7 @@
 #include "mapgen.hpp"
 #include "misc.hpp"
 #include "populate_monsters.hpp"
+#include "terrain.hpp"
 
 #ifndef NDEBUG
 #include "io.hpp"
@@ -204,7 +204,7 @@ static void get_positions_in_room_relative_to_walls(
 
                         if (t->is_walkable() && t->can_have_terrain())
                         {
-                                pos_bucket.push_back(P(x, y));
+                                pos_bucket.emplace_back(x, y);
                         }
                 }
         }
@@ -427,7 +427,7 @@ Room* make_random_room(const R& r, const IsSubRoom is_subroom)
                         // rooms)
                         room->m_is_sub_room = is_subroom == IsSubRoom::yes;
 
-                        StdRoom* const std_room = static_cast<StdRoom*>(room);
+                        auto* const std_room = static_cast<StdRoom*>(room);
 
                         if (std_room->is_allowed())
                         {
@@ -453,7 +453,7 @@ Room* make_random_room(const R& r, const IsSubRoom is_subroom)
         return room;
 }
 
-} // room_factory
+} // namespace room_factory
 
 // -----------------------------------------------------------------------------
 // Room
@@ -475,7 +475,7 @@ std::vector<P> Room::positions_in_room() const
                 {
                         if (map::g_room_map.at(x, y) == this)
                         {
-                                positions.push_back(P(x, y));
+                                positions.emplace_back(x, y);
                         }
                 }
         }
@@ -652,8 +652,8 @@ void StdRoom::place_auto_terrains()
         {
                 // TODO: Do a random shuffle of the bucket instead, and pop
                 // elements
-                const size_t terrain_idx =
-                        rnd::range(0, terrain_bucket.size() - 1);
+                const auto terrain_idx =
+                        rnd::range(0, (int)terrain_bucket.size() - 1);
 
                 const auto id = terrain_bucket[terrain_idx];
 
@@ -744,8 +744,8 @@ std::vector<RoomAutoTerrainRule> HumanRoom::auto_terrains_allowed() const
 {
         std::vector<RoomAutoTerrainRule> result;
 
-        result.push_back({terrain::Id::brazier,   rnd::range(0, 2)});
-        result.push_back({terrain::Id::statue,    rnd::range(0, 2)});
+        result.emplace_back(terrain::Id::brazier,   rnd::range(0, 2));
+        result.emplace_back(terrain::Id::statue,    rnd::range(0, 2));
 
         // Control how many item container terrains that can spawn in the room
         std::vector<terrain::Id> item_containers = {
@@ -759,7 +759,7 @@ std::vector<RoomAutoTerrainRule> HumanRoom::auto_terrains_allowed() const
 
         for (int i = 0; i < nr_item_containers; ++i)
         {
-                result.push_back({rnd::element(item_containers), 1});
+                result.emplace_back(rnd::element(item_containers), 1);
         }
 
         return result;
@@ -916,8 +916,7 @@ void RitualRoom::on_post_connect_hook(Array2<bool>& door_proposals)
                                 {
                                         if (!blocked.at(x, y))
                                         {
-                                                origin_bucket.push_back(
-                                                        P(x, y));
+                                                origin_bucket.emplace_back(x, y);
                                         }
                                 }
                         }
@@ -927,10 +926,7 @@ void RitualRoom::on_post_connect_hook(Array2<bool>& door_proposals)
                 {
                         if (origin.x == -1)
                         {
-                                const int element =
-                                        rnd::range(0, origin_bucket.size() - 1);
-
-                                origin = origin_bucket[element];
+                                origin = rnd::element(origin_bucket);
                         }
 
                         for (const P& d : dir_utils::g_dir_list)
@@ -1099,7 +1095,7 @@ void SnakePitRoom::populate_monsters() const
                                 if (!blocked.at(x, y) &&
                                     (map::g_room_map.at(x, y) == this))
                                 {
-                                        origin_bucket.push_back(P(x, y));
+                                        origin_bucket.emplace_back(x, y);
                                 }
                         }
                 }
@@ -1396,7 +1392,7 @@ void PoolRoom::on_post_connect_hook(Array2<bool>& door_proposals)
 
                         if (map::g_room_map.at(x, y) == this)
                         {
-                                origin_bucket.push_back(P(x, y));
+                                origin_bucket.emplace_back(x, y);
                         }
                         else
                         {
@@ -1748,7 +1744,8 @@ void RiverRoom::on_pre_connect(Array2<bool>& door_proposals)
 
         // Using nestled scope to avoid declaring x and y at function scope
         {
-                int x, y;
+                int x;
+                int y;
 
                 // i_outer and i_inner should be references to x or y.
                 auto find_closest_center0 =
@@ -1899,7 +1896,8 @@ void RiverRoom::on_pre_connect(Array2<bool>& door_proposals)
 
         // Scoping to avoid declaring x and y at function scope
         {
-                int x, y;
+                int x;
+                int y;
 
                 // i_outer and i_inner should be references to x or y.
                 auto mark_sides =

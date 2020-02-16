@@ -261,7 +261,7 @@ static void draw_wielded_wpn(int& y)
 
         const std::string wpn_inf_str = wpn->name_inf_str();
 
-        std::string wpn_str = "";
+        std::string wpn_str;
 
         text_format::append_with_space(wpn_str, wpn_dmg_str);
         text_format::append_with_space(wpn_str, wpn_hit_mod_str);
@@ -307,7 +307,7 @@ static void draw_alt_wpn(int& y)
 
         const std::string wpn_inf_str = wpn->name_inf_str();
 
-        std::string wpn_str = "";
+        std::string wpn_str;
 
         text_format::append_with_space(wpn_str, wpn_dmg_str);
         text_format::append_with_space(wpn_str, wpn_hit_mod_str);
@@ -528,4 +528,4 @@ void draw()
         // io::draw_text(turn_nr_str, panel, p, colors::white());
 }
 
-} // status_lines
+} // namespace status_lines

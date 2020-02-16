@@ -9,7 +9,6 @@
 #include "actor_player.hpp"
 #include "common_text.hpp"
 #include "common_text.hpp"
-#include "terrain_trap.hpp"
 #include "game_time.hpp"
 #include "inventory.hpp"
 #include "io.hpp"
@@ -17,6 +16,7 @@
 #include "msg_log.hpp"
 #include "property_factory.hpp"
 #include "query.hpp"
+#include "terrain_trap.hpp"
 
 namespace disarm
 {
@@ -109,4 +109,4 @@ void player_disarm()
 
 } // player_disarm
 
-} // disarm
+} // namespace disarm

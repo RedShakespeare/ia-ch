@@ -7,12 +7,12 @@
 #ifndef ROOM_HPP
 #define ROOM_HPP
 
-#include <vector>
 #include <unordered_map>
+#include <vector>
 
-#include "terrain_data.hpp"
 #include "global.hpp"
 #include "rect.hpp"
+#include "terrain_data.hpp"
 
 // Room theming occurs both pre- and post-connect (before/after corridors).
 //
@@ -108,11 +108,11 @@ void init_room_bucket();
 // NOTE: These functions do not make rooms on the map, just create Room objects.
 // Use the "make_room..." functions in the map generator for a convenient way to
 // generate rooms on the map.
-Room* make(const RoomType type, const R& r);
+Room* make(RoomType type, const R& r);
 
-Room* make_random_room(const R& r, const IsSubRoom is_subroom);
+Room* make_random_room(const R& r, IsSubRoom is_subroom);
 
-} // room_factory
+} // namespace room_factory
 
 class Room
 {
@@ -121,7 +121,7 @@ public:
 
         Room() = delete;
 
-        virtual ~Room() {}
+        virtual ~Room() = default;
 
         std::vector<P> positions_in_room() const;
 
@@ -155,10 +155,10 @@ class StdRoom : public Room
 public:
         StdRoom(R r, RoomType type) : Room(r, type) {}
 
-        virtual ~StdRoom() {}
+        virtual ~StdRoom() = default;
 
-        void on_pre_connect(Array2<bool>& door_proposals) override final;
-        void on_post_connect(Array2<bool>& door_proposals) override final;
+        void on_pre_connect(Array2<bool>& door_proposals) final;
+        void on_post_connect(Array2<bool>& door_proposals) final;
 
         virtual bool is_allowed() const
         {
@@ -174,7 +174,7 @@ protected:
         P find_auto_terrain_placement(
                 const std::vector<P>& adj_to_walls,
                 const std::vector<P>& away_from_walls,
-                const terrain::Id id) const;
+                terrain::Id id) const;
 
         void place_auto_terrains();
 

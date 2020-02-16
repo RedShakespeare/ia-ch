@@ -7,47 +7,50 @@
 #ifndef XML_HPP
 #define XML_HPP
 
-#include <string>
 #include "tinyxml2.h"
+#include <string>
 
 namespace xml
 {
 
-typedef tinyxml2::XMLDocument Doc;
-typedef tinyxml2::XMLElement Element;
+using Doc = tinyxml2::XMLDocument;
+using Element = tinyxml2::XMLElement;
 
 void load_file(const std::string& path, Doc& to_doc);
 
 Element* first_child(Doc& doc);
 
-Element* first_child(Element* e, const std::string name = "");
+Element* first_child(Element* e, std::string name = "");
 
-bool has_child(Element* e, const std::string name);
+bool has_child(Element* e, std::string name);
 
-Element* next_sibling(Element* e, const std::string name = "");
+Element* next_sibling(Element* e, std::string name = "");
 
-std::string get_text_str(const Element* const e);
+std::string get_text_str(const Element* e);
 
-bool get_text_bool(const Element* const e);
+bool get_text_bool(const Element* e);
 
-int get_text_int(const Element* const e);
+int get_text_int(const Element* e);
 
-std::string get_attribute_str(const Element* const e, const std::string name);
+std::string get_attribute_str(const Element* e, std::string name);
 
-int get_attribute_int(const Element* const e, const std::string name);
+int get_attribute_int(const Element* e, std::string name);
 
-bool try_get_attribute_str(const Element* const e,
-                           const std::string name,
-                           std::string& result);
+bool try_get_attribute_str(
+        const Element* e,
+        std::string name,
+        std::string& result);
 
-bool try_get_attribute_int(const Element* const e,
-                           const std::string name,
-                           int& result);
+bool try_get_attribute_int(
+        const Element* e,
+        std::string name,
+        int& result);
 
-bool try_get_attribute_bool(const Element* const e,
-                            const std::string name,
-                            bool& result);
+bool try_get_attribute_bool(
+        const Element* e,
+        std::string name,
+        bool& result);
 
-} // xml
+} // namespace xml
 
 #endif // XML_HPP

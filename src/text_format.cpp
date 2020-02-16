@@ -17,7 +17,7 @@
 // Reads and removes the first word of the string.
 static std::string read_and_remove_word(std::string& line)
 {
-        std::string str = "";
+        std::string str;
 
         for (auto it = std::begin(line); it != std::end(line); )
         {
@@ -75,7 +75,7 @@ std::vector<std::string> split(std::string line, const int max_w)
                         // Word did not fit on current line, make a new line
                         ++current_row_idx;
 
-                        result.push_back("");
+                        result.emplace_back("");
                 }
 
                 // If this is not the first word on the current line, add a
@@ -97,7 +97,7 @@ std::vector<std::string> space_separated_list(const std::string& line)
 {
         std::vector<std::string> result;
 
-        std::string current_line = "";
+        std::string current_line;
 
         for (char c : line)
         {
@@ -221,4 +221,4 @@ void append_with_space(
         base_str += addition;
 }
 
-} // text_format
+} // namespace text_format

@@ -4,10 +4,10 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 // =============================================================================
 
-#ifndef PLAYER_HPP
-#define PLAYER_HPP
+#ifndef ACTOR_PLAYER_HPP
+#define ACTOR_PLAYER_HPP
 
-#include <math.h>
+#include <cmath>
 
 #include "actor.hpp"
 #include "colors.hpp"
@@ -21,7 +21,7 @@ class Explosive;
 class Item;
 class MedicalBag;
 class Wpn;
-}
+} // namespace item
 
 
 enum class Phobia
@@ -83,26 +83,26 @@ public:
 
         Color color() const override;
 
-        SpellSkill spell_skill(const SpellId id) const override;
+        SpellSkill spell_skill(SpellId id) const override;
 
         void on_actor_turn() override;
         void on_std_turn() override;
 
         void hear_sound(
                 const Snd& snd,
-                const bool is_origin_seen_by_player,
-                const Dir dir_to_origin,
-                const int percent_audible_distance);
+                bool is_origin_seen_by_player,
+                Dir dir_to_origin,
+                int percent_audible_distance);
 
-        void incr_shock(const ShockLvl shock_lvl, ShockSrc shock_src);
+        void incr_shock(ShockLvl shock_lvl, ShockSrc shock_src);
 
-        void incr_shock(const double shock, ShockSrc shock_src);
+        void incr_shock(double shock, ShockSrc shock_src);
 
-        double shock_lvl_to_value(const ShockLvl shock_lvl) const;
+        double shock_lvl_to_value(ShockLvl shock_lvl) const;
 
         void restore_shock(
-                const int amount_restored,
-                const bool is_temp_shock_restored);
+                int amount_restored,
+                bool is_temp_shock_restored);
 
         // Used for determining if '!'-marks should be drawn over the player
         double perm_shock_taken_current_turn() const
@@ -135,10 +135,10 @@ public:
 
         int carry_weight_lmt() const;
 
-        void set_auto_move(const Dir dir);
+        void set_auto_move(Dir dir);
 
-        bool is_leader_of(const Actor* const actor) const override;
-        bool is_actor_my_leader(const Actor* const actor) const override;
+        bool is_leader_of(const Actor* actor) const override;
+        bool is_actor_my_leader(const Actor* actor) const override;
 
         void on_new_dlvl_reached();
 
@@ -175,19 +175,19 @@ private:
                 m_perm_shock_taken_current_turn = 0.0;
         }
 
-        int shock_resistance(const ShockSrc shock_src) const;
+        int shock_resistance(ShockSrc shock_src) const;
 
         double shock_taken_after_mods(
-                const double base_shock,
-                const ShockSrc shock_src) const;
+                double base_shock,
+                ShockSrc shock_src) const;
 
         void add_shock_from_seen_monsters();
 
         void on_hit(
                 int& dmg,
-                const DmgType dmg_type,
-                const DmgMethod method,
-                const AllowWound allow_wound) override;
+                DmgType dmg_type,
+                DmgMethod method,
+                AllowWound allow_wound) override;
 
         void fov_hack();
 
@@ -200,6 +200,6 @@ private:
         item::Wpn* m_unarmed_wpn {nullptr};
 };
 
-} // actor
+} // namespace actor
 
-#endif // PLAYER_HPP
+#endif // ACTOR_PLAYER_HPP

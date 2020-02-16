@@ -16,7 +16,7 @@
 namespace actor
 {
 class Actor;
-}
+} // namespace actor
 
 
 struct P;
@@ -26,7 +26,7 @@ class ViewActorDescr: public InfoScreenState
 {
 public:
         ViewActorDescr(actor::Actor& actor) :
-                InfoScreenState(),
+                
                 m_actor(actor) {}
 
         void on_start() override;
@@ -62,6 +62,6 @@ void print_location_info_msgs(const P& pos);
 
 void print_living_actor_info_msg(const P& pos);
 
-} // look
+} // namespace look
 
 #endif // LOOK_HPP

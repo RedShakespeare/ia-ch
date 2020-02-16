@@ -16,8 +16,6 @@
 #include "attack_data.hpp"
 #include "drop.hpp"
 #include "explosion.hpp"
-#include "terrain_mob.hpp"
-#include "terrain.hpp"
 #include "game_time.hpp"
 #include "init.hpp"
 #include "inventory.hpp"
@@ -33,6 +31,8 @@
 #include "property_data.hpp"
 #include "property_handler.hpp"
 #include "sdl_base.hpp"
+#include "terrain.hpp"
+#include "terrain_mob.hpp"
 #include "text_format.hpp"
 #include "viewport.hpp"
 
@@ -461,4 +461,4 @@ void throw_item(
         TRACE_FUNC_END;
 }
 
-} // throwing
+} // namespace throwing

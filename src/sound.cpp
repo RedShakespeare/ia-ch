@@ -8,14 +8,15 @@
 
 #include <iostream>
 #include <string>
+#include <utility>
 
 #include "actor_mon.hpp"
 #include "actor_player.hpp"
-#include "terrain.hpp"
 #include "flood.hpp"
 #include "game_time.hpp"
 #include "map.hpp"
 #include "map_parsing.hpp"
+#include "terrain.hpp"
 
 // -----------------------------------------------------------------------------
 // Private
@@ -28,7 +29,7 @@ static const int s_snd_dist_loud = s_snd_dist_normal * 2;
 // Sound
 // -----------------------------------------------------------------------------
 Snd::Snd(
-        const std::string& msg,
+        std::string  msg,
         const SfxId sfx,
         const IgnoreMsgIfOriginSeen ignore_msg_if_origin_seen,
         const P& origin,
@@ -38,7 +39,7 @@ Snd::Snd(
         const MorePromptOnMsg add_more_prompt_on_msg,
         std::shared_ptr<SndHeardEffect> snd_heard_effect) :
 
-        m_msg(msg),
+        m_msg(std::move(msg)),
         m_sfx(sfx),
         m_is_msg_ignored_if_origin_seen(ignore_msg_if_origin_seen),
         m_origin(origin),
@@ -46,15 +47,13 @@ Snd::Snd(
         m_vol(vol),
         m_is_alerting_mon(alerting_mon),
         m_add_more_prompt_on_msg(add_more_prompt_on_msg),
-        m_snd_heard_effect(snd_heard_effect)
+        m_snd_heard_effect(std::move(snd_heard_effect))
 {
 
 }
 
 Snd::~Snd()
-{
-
-}
+= default;
 
 void Snd::run()
 {
@@ -185,4 +184,4 @@ void run(Snd snd)
         }
 }
 
-} // snd_emit
+} // namespace snd_emit

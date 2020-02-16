@@ -8,14 +8,14 @@
 
 #include <algorithm>
 
+#include "actor_player.hpp"
+#include "game_time.hpp"
 #include "init.hpp"
 #include "map.hpp"
-#include "mapgen.hpp"
 #include "map_parsing.hpp"
+#include "mapgen.hpp"
 #include "terrain_data.hpp"
 #include "terrain_trap.hpp"
-#include "game_time.hpp"
-#include "actor_player.hpp"
 
 // -----------------------------------------------------------------------------
 // Private
@@ -201,4 +201,4 @@ void populate_std_lvl()
         TRACE_FUNC_END;
 }
 
-} // populate_traps
+} // namespace populate_traps

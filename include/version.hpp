@@ -19,6 +19,6 @@ extern const std::string g_date_str;
 
 std::string read_git_sha1_str_from_file();
 
-} // version_info
+} // namespace version_info
 
 #endif // VERSION_HPP

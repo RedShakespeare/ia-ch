@@ -15,12 +15,12 @@
 namespace actor
 {
 class Actor;
-}
+} // namespace actor
 
 namespace terrain
 {
 class Terrain;
-}
+} // namespace terrain
 
 
 namespace game_time
@@ -47,9 +47,9 @@ actor::Actor* current_actor();
 
 std::vector<terrain::Terrain*> mobs_at_pos(const P& p);
 
-void add_mob(terrain::Terrain* const t);
+void add_mob(terrain::Terrain* t);
 
-void erase_mob(terrain::Terrain* const t, const bool destroy_object);
+void erase_mob(terrain::Terrain* f, bool destroy_object);
 
 void erase_all_mobs();
 
@@ -57,6 +57,6 @@ void reset_turn_type_and_actor_counters();
 
 void update_light_map();
 
-} // game_time
+} // namespace game_time
 
 #endif // GAME_TIME_HPP

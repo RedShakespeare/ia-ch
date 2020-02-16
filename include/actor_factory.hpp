@@ -32,10 +32,10 @@ enum class MakeMonAware
 struct MonSpawnResult
 {
 public:
-        MonSpawnResult() :
-                monsters() {}
+        MonSpawnResult() 
+                = default;
 
-        MonSpawnResult& set_leader(Actor* const leader);
+        MonSpawnResult& set_leader(Actor* leader);
 
         MonSpawnResult& make_aware_of_player();
 
@@ -45,7 +45,7 @@ public:
 
 void delete_all_mon();
 
-Actor* make(const Id id, const P& pos);
+Actor* make(Id id, const P& pos);
 
 MonSpawnResult spawn(
         const P& origin,
@@ -56,6 +56,6 @@ MonSpawnResult spawn_random_position(
         const std::vector<Id>& monster_ids,
         const R& area_allowed);
 
-} // actor_factory
+} // namespace actor
 
 #endif // ACTOR_FACTORY_HPP

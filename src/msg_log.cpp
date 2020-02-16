@@ -6,8 +6,8 @@
 
 #include "msg_log.hpp"
 
-#include <vector>
 #include <string>
+#include <vector>
 
 #include "actor_player.hpp"
 #include "init.hpp"
@@ -33,7 +33,7 @@ static const std::string s_more_str = "-More-";
 
 static const int s_repeat_str_len = 4;
 
-static const int s_space_reserved_for_more_prompt = s_more_str.size() + 1;
+static const int s_space_reserved_for_more_prompt = (int)s_more_str.size() + 1;
 
 static bool s_is_waiting_more_pompt = false;
 
@@ -47,7 +47,7 @@ static int x_after_msg(const Msg* const msg)
 
         const std::string str = msg->text_with_repeats();
 
-        return msg->x_pos() + str.size() + 1;
+        return msg->x_pos() + (int)str.size() + 1;
 }
 
 static int worst_case_msg_w_for_line_nr(
@@ -391,7 +391,7 @@ void add(
         {
                 const std::string prev_text = prev_msg->text();
 
-                if (prev_text.compare(str) == 0)
+                if (prev_text == str)
                 {
                         prev_msg->incr_repeats();
 
@@ -426,8 +426,12 @@ void add(
                         msg_x0 = 0;
                 }
 
-                s_lines[current_line_nr].push_back(
-                        Msg(str, color, msg_x0, copy_to_history));
+                s_lines[current_line_nr]
+                        .emplace_back(
+                                str,
+                                color,
+                                msg_x0,
+                                copy_to_history);
         }
 
         io::clear_screen();
@@ -487,7 +491,7 @@ void add_line_to_history(const std::string& line_to_add)
         }
 }
 
-const std::vector<Msg> history()
+std::vector<Msg> history()
 {
         std::vector<Msg> result;
 
@@ -510,7 +514,7 @@ const std::vector<Msg> history()
         return result;
 }
 
-} // msg_log
+} // namespace msg_log
 
 // -----------------------------------------------------------------------------
 // Message history state
@@ -535,7 +539,7 @@ void MsgHistoryState::on_start()
 
 std::string MsgHistoryState::title() const
 {
-        std::string title = "";
+        std::string title;
 
         if (m_history.empty())
         {

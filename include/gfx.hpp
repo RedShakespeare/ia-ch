@@ -572,8 +572,8 @@ const std::unordered_map<TileId, std::string> g_tile_id_to_str_map = {
 namespace gfx
 {
 
-P character_pos(const char character);
+P character_pos(char character);
 
-} // gfx
+} // namespace gfx
 
 #endif // GFX_HPP

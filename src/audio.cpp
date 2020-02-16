@@ -424,7 +424,7 @@ void try_play_amb(const int one_in_n_chance_to_play)
 
                 const int last_int = (int)SfxId::END - 1;
 
-                const SfxId sfx = (SfxId)rnd::range(first_int, last_int);
+                const auto sfx = (SfxId)rnd::range(first_int, last_int);
 
                 // NOTE: The ambient sound effect will be loaded by 'play', if
                 // not already loaded (only action sound effects are pre-loaded)
@@ -451,4 +451,4 @@ void fade_out_music()
         Mix_FadeOutMusic(2000);
 }
 
-} // audio
+} // namespace audio

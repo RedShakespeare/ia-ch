@@ -322,8 +322,8 @@ void act()
         // Occasionally apply burning to a random actor (to avoid getting stuck)
         if (rnd::one_in(10))
         {
-                const int element =
-                        rnd::range(0, game_time::g_actors.size() - 1);
+                const auto element =
+                        rnd::range(0, (int)game_time::g_actors.size() - 1);
 
                 auto* const actor = game_time::g_actors[element];
 
@@ -461,4 +461,4 @@ void act()
         walk_to_adj_cell(s_path.back());
 }
 
-} // bot
+} // namespace bot

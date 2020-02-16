@@ -4,8 +4,8 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 // =============================================================================
 
-#ifndef MAPBUILD_HPP
-#define MAPBUILD_HPP
+#ifndef MAPGEN_HPP
+#define MAPGEN_HPP
 
 #include <vector>
 
@@ -24,7 +24,7 @@ public:
 
         Region() :
                 main_room(nullptr),
-                r(),
+                
                 is_free(true) {}
 
         R rnd_room_rect() const;
@@ -90,7 +90,7 @@ void cavify_room(Room& room);
 // creating floor on the map, creating room objects and registering them, et c.
 Room* make_room(Region& region);
 
-Room* make_room(const R& r, const IsSubRoom is_sub_room);
+Room* make_room(const R& r, IsSubRoom is_sub_room);
 
 // Low level functions related to room creation - these are only necessary when
 // creating rooms by other methods than the "make_room" functions above.
@@ -113,20 +113,20 @@ bool is_choke_point(
         ChokePointData* out);
 
 void make_pathfind_corridor(
-        Room& r0,
-        Room& r1,
-        const Array2<bool>* const door_proposals = nullptr);
+        Room& room_0,
+        Room& room_1,
+        const Array2<bool>* door_proposals = nullptr);
 
 std::vector<P> rnd_walk(
         const P& p0,
         int len,
         R area,
-        const bool allow_diagonal = true);
+        bool allow_diagonal = true);
 
 std::vector<P> pathfinder_walk(
         const P& p0,
         const P& p1,
-        const bool is_smooth);
+        bool is_smooth);
 
 // Generates a map of spawn chance weights, with emphasis on hidden, optional,
 // or hard to reach areas - this can be used e.g. to place items or levers.
@@ -143,6 +143,6 @@ P make_stairs_at_random_pos();
 
 void reveal_doors_on_path_to_stairs(const P& stairs_pos);
 
-} // mapgen
+} // namespace mapgen
 
-#endif // MAPBUILD_HPP
+#endif // MAPGEN_HPP

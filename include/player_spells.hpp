@@ -9,9 +9,9 @@
 
 #include <vector>
 
+#include "browser.hpp"
 #include "spells.hpp"
 #include "state.hpp"
-#include "browser.hpp"
 
 
 class Spell;
@@ -26,27 +26,27 @@ void cleanup();
 void save();
 void load();
 
-void learn_spell(const SpellId id, const Verbose verbose);
+void learn_spell(SpellId id, Verbose verbose);
 
-void unlearn_spell(const SpellId id, const Verbose verbose);
+void unlearn_spell(SpellId id, Verbose verbose);
 
-void incr_spell_skill(const SpellId id);
+void incr_spell_skill(SpellId id);
 
-SpellSkill spell_skill(const SpellId id);
+SpellSkill spell_skill(SpellId id);
 
-void set_spell_skill(const SpellId id, const SpellSkill val);
+void set_spell_skill(SpellId id, SpellSkill val);
 
-bool is_spell_learned(const SpellId id);
+bool is_spell_learned(SpellId id);
 
 bool is_player_adj_to_altar();
 
-} // player_spells
+} // namespace player_spells
 
 class BrowseSpell: public State
 {
 public:
-        BrowseSpell() :
-                State() {}
+        BrowseSpell() 
+                = default;
 
         void on_start() override;
 

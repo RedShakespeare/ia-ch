@@ -52,26 +52,26 @@ public:
         virtual ~Actor();
 
         int ability(
-                const AbilityId id,
-                const bool is_affected_by_props) const;
+                AbilityId id,
+                bool is_affected_by_props) const;
 
         bool restore_hp(
-                const int hp_restored,
-                const bool is_allowed_above_max = false,
-                const Verbose verbose = Verbose::yes);
+                int hp_restored,
+                bool is_allowed_above_max = false,
+                Verbose verbose = Verbose::yes);
 
         bool restore_sp(
-                const int sp_restored,
-                const bool is_allowed_above_max = false,
-                const Verbose verbose = Verbose::yes);
+                int spi_restored,
+                bool is_allowed_above_max = false,
+                Verbose verbose = Verbose::yes);
 
         void change_max_hp(
-                const int change,
-                const Verbose verbose = Verbose::yes);
+                int change,
+                Verbose verbose = Verbose::yes);
 
         void change_max_sp(
-                const int change,
-                const Verbose verbose = Verbose::yes);
+                int change,
+                Verbose verbose = Verbose::yes);
 
         // Used by Ghoul class and Ghoul monsters
         DidAction try_eat_corpse();
@@ -153,11 +153,11 @@ public:
 
         virtual std::vector<Actor*> seen_foes() const = 0;
 
-        virtual SpellSkill spell_skill(const SpellId id) const = 0;
+        virtual SpellSkill spell_skill(SpellId id) const = 0;
 
-        virtual bool is_leader_of(const Actor* const actor) const = 0;
+        virtual bool is_leader_of(const Actor* actor) const = 0;
 
-        virtual bool is_actor_my_leader(const Actor* const actor) const = 0;
+        virtual bool is_actor_my_leader(const Actor* actor) const = 0;
 
         P m_pos {};
         ActorState m_state {ActorState::alive};
@@ -177,6 +177,6 @@ protected:
         int hit_armor(int dmg);
 };
 
-} // actor
+} // namespace actor
 
 #endif // ACTOR_HPP

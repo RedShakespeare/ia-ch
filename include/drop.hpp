@@ -13,12 +13,12 @@
 namespace item
 {
 class Item;
-}
+} // namespace item
 
 namespace actor
 {
 class Actor;
-}
+} // namespace actor
 
 struct P;
 
@@ -32,10 +32,10 @@ item::Item* drop_item_on_map(const P& intended_pos, item::Item& item);
 
 void drop_item_from_inv(
         actor::Actor& actor,
-        const InvType inv_type,
-        const size_t idx,
-        const int nr_items_to_drop = -1);
+        InvType inv_type,
+        size_t idx,
+        int nr_items_to_drop = -1);
 
-} // item_drop
+} // namespace item_drop
 
 #endif

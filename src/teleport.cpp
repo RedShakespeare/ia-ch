@@ -11,8 +11,6 @@
 #include "actor_mon.hpp"
 #include "actor_player.hpp"
 #include "common_text.hpp"
-#include "terrain_door.hpp"
-#include "terrain_mob.hpp"
 #include "flood.hpp"
 #include "game_time.hpp"
 #include "map.hpp"
@@ -21,6 +19,8 @@
 #include "misc.hpp"
 #include "msg_log.hpp"
 #include "property.hpp"
+#include "terrain_door.hpp"
+#include "terrain_mob.hpp"
 #include "text_format.hpp"
 
 // -----------------------------------------------------------------------------

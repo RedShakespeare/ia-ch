@@ -4,8 +4,8 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 // =============================================================================
 
-#ifndef TERRAIN_TRAPS_HPP
-#define TERRAIN_TRAPS_HPP
+#ifndef TERRAIN_TRAP_HPP
+#define TERRAIN_TRAP_HPP
 
 #include "ability_values.hpp"
 #include "colors.hpp"
@@ -59,7 +59,7 @@ enum class TrapPlacementValid
 class Trap: public Terrain
 {
 public:
-        Trap(const P& p, Terrain* const mimic_terrain, TrapId id);
+        Trap(const P& p, Terrain* mimic_terrain, TrapId id);
 
         Trap(const P& p) :
                 Terrain(p) {}
@@ -88,7 +88,7 @@ public:
 
         TileId tile() const override;
 
-        std::string name(const Article article) const override;
+        std::string name(Article article) const override;
 
         void disarm();
 
@@ -110,7 +110,7 @@ public:
 
         bool is_magical() const;
 
-        void reveal(const Verbose verbose) override;
+        void reveal(Verbose verbose) override;
 
         void on_revealed_from_searching() override;
 
@@ -126,17 +126,17 @@ public:
         void player_try_spot_hidden();
 
 private:
-        TrapImpl* make_trap_impl_from_id(const TrapId trap_id);
+        TrapImpl* make_trap_impl_from_id(TrapId trap_id);
 
         Color color_default() const override;
         Color color_bg_default() const override;
 
-        void on_hit(const int dmg,
-                    const DmgType dmg_type,
-                    const DmgMethod dmg_method,
-                    actor::Actor* const actor) override;
+        void on_hit(int dmg,
+                    DmgType dmg_type,
+                    DmgMethod dmg_method,
+                    actor::Actor* actor) override;
 
-        DidTriggerTrap trigger_trap(actor::Actor* const actor) override;
+        DidTriggerTrap trigger_trap(actor::Actor* actor) override;
 
         void trigger_start(const actor::Actor* actor);
 
@@ -156,7 +156,7 @@ protected:
                 m_type(type),
                 m_base_trap(base_trap) {}
 
-        virtual ~TrapImpl() {}
+        virtual ~TrapImpl() = default;
 
         // Called by the trap terrain after picking a random trap
         // implementation. This allows the specific implementation initialize
@@ -174,7 +174,7 @@ protected:
 
         virtual Range nr_turns_range_to_trigger() const = 0;
 
-        virtual std::string name(const Article article) const = 0;
+        virtual std::string name(Article article) const = 0;
 
         virtual Color color() const = 0;
 
@@ -211,9 +211,9 @@ protected:
         MechTrapImpl(P pos, TrapId type, Trap* const base_trap) :
                 TrapImpl(pos, type, base_trap) {}
 
-        virtual ~MechTrapImpl() {}
+        virtual ~MechTrapImpl() = default;
 
-        virtual TileId tile() const override
+        TileId tile() const override
         {
                 return TileId::trap_general;
         }
@@ -234,9 +234,9 @@ class TrapDart: public MechTrapImpl
 private:
         friend class Trap;
 
-        TrapDart(P pos, Trap* const base_trap);
+        TrapDart(P pos, Trap* base_trap);
 
-        virtual std::string name(const Article article) const override
+        std::string name(const Article article) const override
         {
                 std::string name =
                         (article == Article::a) ?
@@ -248,7 +248,7 @@ private:
                 return name;
         }
 
-        virtual Color color() const override
+        Color color() const override
         {
                 return colors::white();
         }
@@ -274,9 +274,9 @@ class TrapSpear: public MechTrapImpl
 private:
         friend class Trap;
 
-        TrapSpear(P pos, Trap* const base_trap);
+        TrapSpear(P pos, Trap* base_trap);
 
-        virtual std::string name(const Article article) const override
+        std::string name(const Article article) const override
         {
                 std::string name =
                         (article == Article::a) ?
@@ -288,7 +288,7 @@ private:
                 return name;
         }
 
-        virtual Color color() const override
+        Color color() const override
         {
                 return colors::light_white();
         }
@@ -317,7 +317,7 @@ protected:
         GasTrapImpl(P pos, TrapId type, Trap* const base_trap) :
                 MechTrapImpl(pos, type, base_trap) {}
 
-        virtual std::string name(const Article article) const override
+        std::string name(const Article article) const override
         {
                 std::string name =
                         (article == Article::a) ?
@@ -329,7 +329,7 @@ protected:
                 return name;
         }
 
-        virtual Color color() const override
+        Color color() const override
         {
                 return colors::magenta();
         }
@@ -381,7 +381,7 @@ private:
         TrapBlindingFlash(P pos, Trap* const base_trap) :
                 MechTrapImpl(pos, TrapId::blinding, base_trap) {}
 
-        virtual std::string name(const Article article) const override
+        std::string name(const Article article) const override
         {
                 std::string name =
                         (article == Article::a) ?
@@ -393,7 +393,7 @@ private:
                 return name;
         }
 
-        virtual Color color() const override
+        Color color() const override
         {
                 return colors::yellow();
         }
@@ -414,7 +414,7 @@ private:
         TrapDeafening(P pos, Trap* const base_trap) :
                 MechTrapImpl(pos, TrapId::deafening, base_trap) {}
 
-        virtual std::string name(const Article article) const override
+        std::string name(const Article article) const override
         {
                 std::string name =
                         (article == Article::a) ?
@@ -426,7 +426,7 @@ private:
                 return name;
         }
 
-        virtual Color color() const override
+        Color color() const override
         {
                 return colors::violet();
         }
@@ -447,7 +447,7 @@ private:
         TrapSmoke(P pos, Trap* const base_trap) :
                 MechTrapImpl(pos, TrapId::smoke, base_trap) {}
 
-        virtual std::string name(const Article article) const override
+        std::string name(const Article article) const override
         {
                 std::string name =
                         (article == Article::a) ?
@@ -459,7 +459,7 @@ private:
                 return name;
         }
 
-        virtual Color color() const override
+        Color color() const override
         {
                 return colors::gray();
         }
@@ -480,7 +480,7 @@ private:
         TrapFire(P pos, Trap* const base_trap) :
                 MechTrapImpl(pos, TrapId::fire, base_trap) {}
 
-        virtual std::string name(const Article article) const override
+        std::string name(const Article article) const override
         {
                 std::string name =
                         (article == Article::a) ?
@@ -492,7 +492,7 @@ private:
                 return name;
         }
 
-        virtual Color color() const override
+        Color color() const override
         {
                 return colors::light_red();
         }
@@ -513,7 +513,7 @@ private:
         TrapAlarm(P pos, Trap* const base_trap) :
                 MechTrapImpl(pos, TrapId::alarm, base_trap) {}
 
-        virtual std::string name(const Article article) const override
+        std::string name(const Article article) const override
         {
                 std::string name =
                         (article == Article::a) ?
@@ -525,7 +525,7 @@ private:
                 return name;
         }
 
-        virtual Color color() const override
+        Color color() const override
         {
                 return colors::orange();
         }
@@ -599,11 +599,11 @@ protected:
         MagicTrapImpl(P pos, TrapId type, Trap* const base_trap) :
                 TrapImpl(pos, type, base_trap) {}
 
-        virtual ~MagicTrapImpl() {}
+        virtual ~MagicTrapImpl() = default;
 
         TrapPlacementValid on_place() override;
 
-        virtual std::string name(const Article article) const override
+        std::string name(const Article article) const override
         {
                 std::string name =
                         (article == Article::a)
@@ -615,12 +615,12 @@ protected:
                 return name;
         }
 
-        virtual Color color() const override
+        Color color() const override
         {
                 return colors::light_red();
         }
 
-        virtual TileId tile() const override
+        TileId tile() const override
         {
                 return TileId::elder_sign;
         }
@@ -718,6 +718,6 @@ private:
         void trigger() override;
 };
 
-} // terrain
+} // namespace terrain
 
-#endif // TERRAIN_TRAPS_HPP
+#endif // TERRAIN_TRAP_HPP

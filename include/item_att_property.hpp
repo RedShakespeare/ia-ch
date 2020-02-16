@@ -22,7 +22,7 @@ struct ItemAttProp
                 prop(property),
                 pct_chance_to_apply(100) {}
 
-        ~ItemAttProp() {}
+        ~ItemAttProp() = default;
 
         std::shared_ptr<Prop> prop;
 

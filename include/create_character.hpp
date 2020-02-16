@@ -7,9 +7,9 @@
 #ifndef CREATE_CHARACTER_HPP
 #define CREATE_CHARACTER_HPP
 
-#include "state.hpp"
-#include "player_bon.hpp"
 #include "browser.hpp"
+#include "player_bon.hpp"
+#include "state.hpp"
 
 enum class TraitScreenMode
 {

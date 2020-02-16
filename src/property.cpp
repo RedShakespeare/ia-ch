@@ -1085,7 +1085,7 @@ PropActResult PropRecloaks::on_act()
                 return result;
         }
 
-        return PropActResult();
+        return {};
 }
 
 bool PropBlind::allow_read_absolute(const Verbose verbose) const
@@ -1421,12 +1421,12 @@ PropActResult PropVortex::on_act()
         // Not supported yet
         if (m_owner->is_player())
         {
-                return PropActResult();
+                return {};
         }
 
         if (!m_owner->is_alive())
         {
-                return PropActResult();
+                return {};
         }
 
         if (pull_cooldown > 0)
@@ -1439,7 +1439,7 @@ PropActResult PropVortex::on_act()
         if ((mon->m_aware_of_player_counter <= 0) ||
             (pull_cooldown > 0))
         {
-                return PropActResult();
+                return {};
         }
 
         const P& player_pos = map::g_player->m_pos;
@@ -1537,7 +1537,7 @@ PropActResult PropVortex::on_act()
                 return result;
         }
 
-        return PropActResult();
+        return {};
 }
 
 void PropExplodesOnDeath::on_death()
@@ -1681,7 +1681,7 @@ PropActResult PropCorruptsEnvColor::on_act()
                 terrain->corrupt_color();
         }
 
-        return PropActResult();
+        return {};
 }
 
 void PropAltersEnv::on_std_turn()
@@ -1790,7 +1790,7 @@ PropActResult PropCorpseRises::on_act()
             map::first_actor_at_pos(m_owner->m_pos) ||
             (map::g_cells.at(pos).terrain->id() == terrain::Id::liquid_deep))
         {
-                return PropActResult();
+                return {};
         }
 
         const bool is_seen_by_player = map::g_player->can_see_actor(*m_owner);
@@ -1804,14 +1804,14 @@ PropActResult PropCorpseRises::on_act()
         {
                 --m_nr_turns_until_allow_rise;
 
-                return PropActResult();
+                return {};
         }
 
         const int rise_one_in_n = 9;
 
         if (!rnd::one_in(rise_one_in_n))
         {
-                return PropActResult();
+                return {};
         }
 
         m_owner->m_state = ActorState::alive;
@@ -1912,7 +1912,7 @@ void PropSpawnsZombiePartsOnDestroyed::try_spawn_zombie_parts() const
 
         const std::string my_name = m_owner->name_the();
 
-        std::string spawn_msg = "";
+        std::string spawn_msg;
 
         switch (mon_choice)
         {
@@ -1943,6 +1943,9 @@ void PropSpawnsZombiePartsOnDestroyed::try_spawn_zombie_parts() const
                         " starts floating around!";
                 break;
 
+        default:
+                ASSERT(false);
+                break;
         }
 
         if (map::g_cells.at(pos).is_seen_by_player)
@@ -2078,7 +2081,7 @@ PropActResult PropSpeaksCurses::on_act()
 {
         if (m_owner->is_player())
         {
-                return PropActResult();
+                return {};
         }
 
         auto* const mon = static_cast<actor::Mon*>(m_owner);
@@ -2087,7 +2090,7 @@ PropActResult PropSpeaksCurses::on_act()
             (mon->m_aware_of_player_counter <= 0) ||
             !rnd::one_in(3))
         {
-                return PropActResult();
+                return {};
         }
 
         Array2<bool> blocked_los(map::dims());
@@ -2133,7 +2136,7 @@ PropActResult PropSpeaksCurses::on_act()
                 return result;
         }
 
-        return PropActResult();
+        return {};
 }
 
 void PropAuraOfDecay::save() const
@@ -2267,7 +2270,7 @@ PropActResult PropMajorClaphamSummon::on_act()
 {
         if (m_owner->is_player())
         {
-                return PropActResult();
+                return {};
         }
 
         auto* const mon = static_cast<actor::Mon*>(m_owner);
@@ -2275,7 +2278,7 @@ PropActResult PropMajorClaphamSummon::on_act()
         if (!mon->is_alive() ||
             (mon->m_aware_of_player_counter <= 0))
         {
-                return PropActResult();
+                return {};
         }
 
         Array2<bool> blocked_los(map::dims());
@@ -2289,7 +2292,7 @@ PropActResult PropMajorClaphamSummon::on_act()
 
         if (!mon->can_see_actor(*(map::g_player), blocked_los))
         {
-                return PropActResult();
+                return {};
         }
 
         mon->set_player_aware_of_me();

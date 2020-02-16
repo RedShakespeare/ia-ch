@@ -8,7 +8,7 @@
 
 #include "init.hpp"
 
-#include <math.h>
+#include <cmath>
 #include <vector>
 
 #include "debug.hpp"
@@ -153,4 +153,4 @@ Array2<LosResult> run(const P& p0, const FovMap& map)
         return result;
 }
 
-} // fov
+} // namespace fov

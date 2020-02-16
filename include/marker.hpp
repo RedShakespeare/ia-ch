@@ -19,7 +19,7 @@ namespace item
 {
 class Item;
 class Wpn;
-}
+} // namespace item
 
 struct InputData;
 
@@ -31,36 +31,36 @@ class MarkerState: public State
 {
 public:
         MarkerState(const P& origin) :
-                State(),
+                
                 m_marker_render_data(P(0, 0)),
-                m_origin(origin),
-                m_pos() {}
+                m_origin(origin)
+                {}
 
-        virtual ~MarkerState() {}
+        virtual ~MarkerState() = default;
 
-        void on_start() override final;
+        void on_start() final;
 
-        void on_popped() override final;
+        void on_popped() final;
 
-        void draw() override final;
+        void draw() final;
 
-        bool draw_overlayed() const override final
+        bool draw_overlayed() const final
         {
                 return true;
         }
 
-        void update() override final;
+        void update() final;
 
-        StateId id() override final;
+        StateId id() final;
 
 protected:
         virtual void on_start_hook() {}
 
         void draw_marker(
-                const std::vector<P>& trail,
-                const int orange_from_king_dist,
-                const int red_from_king_dist,
-                const int red_from_idx);
+                const std::vector<P>& line,
+                int orange_from_king_dist,
+                int red_from_king_dist,
+                int red_from_idx);
 
         // Fire etc
         virtual void handle_input(const InputData& input) = 0;
@@ -99,7 +99,7 @@ protected:
         P m_pos;
 
 private:
-        void move(const Dir dir, const int nr_steps = 1);
+        void move(Dir dir, int nr_steps = 1);
 
         bool try_go_to_tgt();
 
@@ -233,7 +233,7 @@ protected:
 class CtrlTele: public MarkerState
 {
 public:
-        CtrlTele(const P& origin, const Array2<bool>& blocked);
+        CtrlTele(const P& origin, Array2<bool>  blocked);
 
 protected:
         void on_start_hook() override;

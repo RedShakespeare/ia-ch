@@ -52,4 +52,4 @@ const std::string g_fire_prevent_cmd =
 const std::string g_mon_disappear =
         "suddenly disappears!";
 
-} // common_text
+} // namespace common_text

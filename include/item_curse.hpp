@@ -17,7 +17,7 @@
 namespace item
 {
 class Item;
-}
+} // namespace item
 
 
 namespace item_curse
@@ -29,7 +29,7 @@ class CurseImpl;
 class Curse
 {
 public:
-        Curse() {}
+        Curse() = default;
 
         Curse(Curse&& other);
 
@@ -65,7 +65,7 @@ public:
 
         void on_curse_end();
 
-        int affect_weight(const int weight) const;
+        int affect_weight(int weight) const;
 
         std::string descr() const;
 
@@ -96,7 +96,7 @@ Curse try_make_random_free_curse(const item::Item& item);
 class CurseImpl
 {
 public:
-        virtual ~CurseImpl() {}
+        virtual ~CurseImpl() = default;
 
         virtual Id id() const = 0;
 
@@ -172,7 +172,7 @@ public:
                 return Id::heavy;
         }
 
-        int affect_weight(const int weight) override;
+        int affect_weight(int weight) override;
 
         std::string descr() const override;
 
@@ -285,6 +285,6 @@ public:
         std::string descr() const override;
 };
 
-} // item_curse
+} // namespace item_curse
 
 #endif // ITEM_CURSE_HPP

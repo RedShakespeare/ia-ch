@@ -50,6 +50,11 @@ Item::Item(ItemData* item_data) :
 
 Item& Item::operator=(const Item& other)
 {
+        if (&other == this)
+        {
+                return *this;
+        }
+
         m_nr_items = other.m_nr_items;
         m_data = other.m_data;
         m_actor_carrying = other.m_actor_carrying;
@@ -407,7 +412,7 @@ std::string Item::name(
                 ref_type_used = ItemRefType::a;
         }
 
-        std::string nr_str = "";
+        std::string nr_str;
 
         if (ref_type_used == ItemRefType::plural)
         {
@@ -421,7 +426,7 @@ std::string Item::name(
 
         std::string hit_str = hit_mod_str(att_inf);
 
-        std::string inf_str = "";
+        std::string inf_str;
 
         if (inf == ItemRefInf::yes)
         {
@@ -514,7 +519,7 @@ std::string Item::dmg_str(
                 return "";
         }
 
-        std::string dmg_str = "";
+        std::string dmg_str;
 
         ItemRefAttInf att_inf_used = att_inf;
 
@@ -760,7 +765,7 @@ void Armor::hit(const int dmg)
         const int ap_before = armor_points();
 
         // Damage factor
-        const double dmg_db = double(dmg);
+        const auto dmg_db = double(dmg);
 
         // Armor durability factor
         const double df = m_data->armor.dmg_to_durability_factor;
@@ -1371,7 +1376,7 @@ ConsumeItem MedicalBag::activate(actor::Actor* const actor)
 
         m_nr_turns_left_action = tot_turns_for_action(m_current_action);
 
-        std::string start_msg = "";
+        std::string start_msg;
 
         switch (m_current_action)
         {
@@ -1446,7 +1451,7 @@ void MedicalBag::finish_current_action()
 
                 ASSERT(wound_prop);
 
-                PropWound* const wound = static_cast<PropWound*>(wound_prop);
+                auto* const wound = static_cast<PropWound*>(wound_prop);
 
                 wound->heal_one_wound();
         }
@@ -1929,4 +1934,4 @@ Color SmokeGrenade::ignited_projectile_color() const
         return data().color;
 }
 
-} // item
+} // namespace item

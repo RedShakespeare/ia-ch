@@ -6,8 +6,8 @@
 
 #include "actor_player.hpp"
 
-#include <string>
 #include <cmath>
+#include <string>
 
 #include "actor_death.hpp"
 #include "actor_factory.hpp"
@@ -61,7 +61,7 @@
 static const int s_min_dmg_to_wound = 5;
 
 
-static const std::vector<std::string> item_feeling_messages_ = {
+static const std::vector<std::string> m_item_feeling_messages = {
         "I feel like I should examine this place thoroughly.",
         "I feel like there is something of great interest here.",
         "I sense an object of great power here."
@@ -74,7 +74,7 @@ static int nr_wounds(const PropHandler& properties)
                 const auto* const prop =
                         properties.prop(PropId::wound);
 
-                const PropWound* const wound =
+                const auto* const wound =
                         static_cast<const PropWound*>(prop);
 
                 return wound->nr_wounds();
@@ -94,11 +94,9 @@ namespace actor
 // -----------------------------------------------------------------------------
 // Player
 // -----------------------------------------------------------------------------
-Player::Player() :
-        Actor()
-{
-
-}
+Player::Player() 
+        
+= default;
 
 Player::~Player()
 {
@@ -404,7 +402,7 @@ double Player::shock_taken_after_mods(
         const double base_shock,
         const ShockSrc shock_src) const
 {
-        const double shock_res_db = (double)shock_resistance(shock_src);
+        const auto shock_res_db = (double)shock_resistance(shock_src);
 
         return (base_shock * (100.0 - shock_res_db)) / 100.0;
 }
@@ -544,21 +542,21 @@ void Player::item_feeling()
                                 break;
                         }
                 }
+        }
 
-                if (print_feeling)
-                {
-                        const std::string msg =
-                                rnd::element(item_feeling_messages_);
+        if (print_feeling)
+        {
+                const std::string msg =
+                        rnd::element(m_item_feeling_messages);
 
-                        msg_log::add(
-                                msg,
-                                colors::light_cyan(),
-                                MsgInterruptPlayer::no,
-                                MorePromptOnMsg::yes);
+                msg_log::add(
+                        msg,
+                        colors::light_cyan(),
+                        MsgInterruptPlayer::no,
+                        MorePromptOnMsg::yes);
 
-                        return;
-                }
-        } // map cells loop
+                return;
+        }
 }
 
 void Player::on_new_dlvl_reached()
@@ -627,7 +625,7 @@ void Player::mon_feeling()
                 if (!player_bon::has_trait(Trait::fearless) &&
                     !m_properties.has(PropId::frenzied))
                 {
-                        msg_bucket.push_back("I feel anxious.");
+                        msg_bucket.emplace_back("I feel anxious.");
                 }
 
                 const auto msg = rnd::element(msg_bucket);
@@ -1384,7 +1382,7 @@ void Player::update_tmp_shock()
                 {
                         const P p(m_pos + d);
 
-                        const double terrain_shock_db =
+                        const auto terrain_shock_db =
                                 (double)map::g_cells.at(p).terrain
                                 ->shock_when_adj();
 
@@ -1649,7 +1647,7 @@ void Player::interrupt_actions()
 
                 if (should_continue_handling_armor)
                 {
-                        std::string msg = "";
+                        std::string msg;
 
                         if (m_remove_armor_countdown > 0)
                         {
@@ -2221,4 +2219,4 @@ bool Player::is_actor_my_leader(const Actor* const actor) const
         return false;
 }
 
-} // actor
+} // namespace actor

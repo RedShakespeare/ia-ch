@@ -156,7 +156,7 @@ void display(const Id id)
 
         const auto text = id_to_text(id);
 
-        if (text.second == "")
+        if (text.second.empty())
         {
                 ASSERT(false);
 
@@ -176,4 +176,4 @@ void display(const Id id)
         s_hints_displayed[(size_t)id] = true;
 }
 
-} // hints
+} // namespace hints

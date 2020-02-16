@@ -276,4 +276,4 @@ Prop* make(const PropId id)
         return nullptr;
 }
 
-} // property_factory
+} // namespace property_factory

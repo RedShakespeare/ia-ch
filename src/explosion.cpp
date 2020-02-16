@@ -8,8 +8,6 @@
 
 #include "actor_hit.hpp"
 #include "actor_player.hpp"
-#include "terrain_mob.hpp"
-#include "terrain.hpp"
 #include "game.hpp"
 #include "game_time.hpp"
 #include "io.hpp"
@@ -22,6 +20,8 @@
 #include "property.hpp"
 #include "property_factory.hpp"
 #include "sdl_base.hpp"
+#include "terrain.hpp"
+#include "terrain_mob.hpp"
 #include "viewport.hpp"
 
 // -----------------------------------------------------------------------------
@@ -449,4 +449,4 @@ R explosion_area(const P& c, const int radi)
                    std::min(c.y + radi, map::h() - 2)));
 }
 
-} // explosion
+} // namespace explosion

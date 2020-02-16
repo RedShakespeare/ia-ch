@@ -9,8 +9,6 @@
 #include "actor_hit.hpp"
 #include "actor_player.hpp"
 #include "common_text.hpp"
-#include "terrain_door.hpp"
-#include "terrain.hpp"
 #include "game_time.hpp"
 #include "init.hpp"
 #include "io.hpp"
@@ -21,6 +19,8 @@
 #include "property_data.hpp"
 #include "property_handler.hpp"
 #include "query.hpp"
+#include "terrain.hpp"
+#include "terrain_door.hpp"
 #include "text_format.hpp"
 
 namespace wham
@@ -336,4 +336,4 @@ void run()
         TRACE_FUNC_END;
 }
 
-} // wham
+} // namespace wham

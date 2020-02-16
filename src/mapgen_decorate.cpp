@@ -6,8 +6,8 @@
 
 #include "mapgen.hpp"
 #include "map.hpp"
-#include "terrain.hpp"
 #include "map_parsing.hpp"
+#include "terrain.hpp"
 
 // -----------------------------------------------------------------------------
 // Private
@@ -285,4 +285,4 @@ void decorate()
         make_grates();
 }
 
-} // mapgen
+} // namespace mapgen

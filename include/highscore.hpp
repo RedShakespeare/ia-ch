@@ -7,14 +7,14 @@
 #ifndef HIGHSCORE_HPP
 #define HIGHSCORE_HPP
 
-#include <vector>
 #include <string>
+#include <vector>
 
-#include "state.hpp"
+#include "browser.hpp"
+#include "global.hpp"
 #include "info_screen_state.hpp"
 #include "player_bon.hpp"
-#include "global.hpp"
-#include "browser.hpp"
+#include "state.hpp"
 
 struct HighscoreEntry
 {
@@ -43,22 +43,20 @@ void cleanup();
 // NOTE: All this does is construct a HighscoreEntry object, populated with
 // highscore info based on the current game - it has no side effects
 HighscoreEntry make_entry_from_current_game_data(
-        const std::string game_summary_file_path,
-        const IsWin is_win);
+        std::string game_summary_file_path,
+        IsWin is_win);
 
 void append_entry_to_highscores_file(HighscoreEntry& entry);
 
 std::vector<HighscoreEntry> entries_sorted();
 
-} // highscore
+} // namespace highscore
 
 class BrowseHighscore: public State
 {
 public:
-        BrowseHighscore() :
-                State(),
-                m_entries(),
-                m_browser() {}
+        BrowseHighscore() 
+                = default;
 
         void on_start() override;
 
@@ -83,7 +81,7 @@ private:
 class BrowseHighscoreEntry: public InfoScreenState
 {
 public:
-        BrowseHighscoreEntry(const std::string& file_path);
+        BrowseHighscoreEntry(std::string  file_path);
 
         void on_start() override;
 

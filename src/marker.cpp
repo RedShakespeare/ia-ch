@@ -6,8 +6,9 @@
 
 #include "marker.hpp"
 
-#include <vector>
 #include <cstring>
+#include <utility>
+#include <vector>
 
 #include "actor_player.hpp"
 #include "attack.hpp"
@@ -16,7 +17,6 @@
 #include "config.hpp"
 #include "draw_map.hpp"
 #include "explosion.hpp"
-#include "terrain.hpp"
 #include "game_commands.hpp"
 #include "inventory_handling.hpp"
 #include "io.hpp"
@@ -28,6 +28,7 @@
 #include "misc.hpp"
 #include "msg_log.hpp"
 #include "teleport.hpp"
+#include "terrain.hpp"
 #include "throwing.hpp"
 #include "viewport.hpp"
 
@@ -897,9 +898,9 @@ int ThrowingExplosive::red_from_king_dist() const
 // -----------------------------------------------------------------------------
 // Teleport control marker state
 // -----------------------------------------------------------------------------
-CtrlTele::CtrlTele(const P& origin, const Array2<bool>& blocked) :
+CtrlTele::CtrlTele(const P& origin, Array2<bool>  blocked) :
         MarkerState(origin),
-        m_blocked(blocked)
+        m_blocked(std::move(blocked))
 {
 
 }

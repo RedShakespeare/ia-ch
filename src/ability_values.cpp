@@ -6,7 +6,7 @@
 
 #include "ability_values.hpp"
 
-#include <math.h>
+#include <cmath>
 
 #include "actor_player.hpp"
 #include "colors.hpp"
@@ -240,4 +240,4 @@ int hit_chance_pct_actual(const int value)
         return constr_in_range(2, value, 98);
 }
 
-} // ability_roll
+} // namespace ability_roll

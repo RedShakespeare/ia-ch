@@ -166,9 +166,7 @@ P rnd_adj_pos(const P& origin, const bool is_center_allowed)
                 vec = &g_dir_list;
         }
 
-        const size_t idx = rnd::range(0, vec->size() - 1);
-
-        return origin + vec->at(idx);
+        return origin + rnd::element(*vec);
 }
 
 std::string compass_dir_name(const P& from_pos, const P& to_pos)
@@ -227,4 +225,4 @@ std::string compass_dir_name(const P& offs)
         return g_compass_dir_names[offs.x + 1][offs.y + 1];
 }
 
-} // dir_utils
+} // namespace dir_utils

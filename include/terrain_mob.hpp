@@ -23,14 +23,14 @@ public:
         Smoke(const P& pos) :
                 Terrain(pos) {}
 
-        ~Smoke() {}
+        ~Smoke() = default;
 
         terrain::Id id() const override
         {
                 return terrain::Id::smoke;
         }
 
-        std::string name(const Article article)  const override;
+        std::string name(Article article)  const override;
 
         Color color() const override;
 
@@ -52,7 +52,7 @@ public:
         ForceField(const P& pos) :
                 Terrain(pos) {}
 
-        ~ForceField() {}
+        ~ForceField() = default;
 
         terrain::Id id() const override
         {
@@ -61,7 +61,7 @@ public:
 
         void on_new_turn() override;
 
-        std::string name(const Article article)  const override;
+        std::string name(Article article)  const override;
 
         Color color() const override;
 
@@ -79,14 +79,14 @@ public:
         LitDynamite(const P& pos) :
                 Terrain(pos) {}
 
-        ~LitDynamite() {}
+        ~LitDynamite() = default;
 
         terrain::Id id() const override
         {
                 return terrain::Id::lit_dynamite;
         }
 
-        std::string name(const Article article) const override;
+        std::string name(Article article) const override;
 
         Color color() const override;
 
@@ -109,14 +109,14 @@ public:
         LitFlare(const P& pos) :
                 Terrain(pos) {}
 
-        ~LitFlare() {}
+        ~LitFlare() = default;
 
         terrain::Id id() const override
         {
                 return terrain::Id::lit_flare;
         }
 
-        std::string name(const Article article) const override;
+        std::string name(Article article) const override;
 
         Color color() const override;
 
@@ -128,6 +128,6 @@ private:
         int m_nr_turns_left {-1};
 };
 
-} // terrain
+} // namespace terrain
 
 #endif // TERRAIN_MOB_HPP

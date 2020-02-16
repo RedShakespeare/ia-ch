@@ -42,10 +42,10 @@ Inventory::~Inventory()
         {
                 auto& slot = m_slots[i];
 
-                if (slot.item)
-                {
+                
+                
                         delete slot.item;
-                }
+                
         }
 
         for (auto* item : m_backpack)
@@ -724,7 +724,7 @@ void Inventory::print_equip_message(
 {
         const std::string name = item.name(ItemRefType::plural);
 
-        std::string msg = "";
+        std::string msg;
 
         switch (slot_id)
         {
@@ -772,7 +772,7 @@ void Inventory::print_unequip_message(
 
         const std::string name = item.name(item_ref_type);
 
-        std::string msg = "";
+        std::string msg;
 
         switch (slot_id)
         {

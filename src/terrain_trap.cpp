@@ -512,7 +512,7 @@ void Trap::reveal(const Verbose verbose)
 
                 if (verbose == Verbose::yes)
                 {
-                        std::string msg = "";
+                        std::string msg;
 
                         const std::string trap_name_a =
                                 m_trap_impl->name(Article::a);
@@ -629,7 +629,7 @@ TrapPlacementValid MagicTrapImpl::on_place()
 TrapDart::TrapDart(P pos, Trap* const base_trap) :
         MechTrapImpl(pos, TrapId::dart, base_trap),
         m_is_poisoned((map::g_dlvl >= g_dlvl_harder_traps) && rnd::one_in(3)),
-        m_dart_origin(),
+        
         m_is_dart_origin_destroyed(false) {}
 
 TrapPlacementValid TrapDart::on_place()
@@ -769,7 +769,7 @@ void TrapDart::trigger()
 TrapSpear::TrapSpear(P pos, Trap* const base_trap) :
         MechTrapImpl(pos, TrapId::spear, base_trap),
         m_is_poisoned((map::g_dlvl >= g_dlvl_harder_traps) && rnd::one_in(4)),
-        m_spear_origin(),
+        
         m_is_spear_origin_destroyed(false) {}
 
 TrapPlacementValid TrapSpear::on_place()
@@ -1147,9 +1147,7 @@ void TrapSummonMon::trigger()
         else
         {
                 // Eligible monsters found
-                const size_t idx = rnd::range(0, summon_bucket.size() - 1);
-
-                const auto id_to_summon = summon_bucket[idx];
+                const auto id_to_summon = rnd::element(summon_bucket);
 
                 TRACE_VERBOSE << "Actor id: " << int(id_to_summon) << std::endl;
 
@@ -1576,4 +1574,4 @@ void TrapUnlearnSpell::trigger()
         TRACE_FUNC_END_VERBOSE;
 }
 
-} // terrain
+} // namespace terrain

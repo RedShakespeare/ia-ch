@@ -9,13 +9,13 @@
 #include "actor.hpp"
 #include "actor_mon.hpp"
 #include "actor_player.hpp"
-#include "terrain.hpp"
-#include "terrain_trap.hpp"
 #include "item.hpp"
 #include "map.hpp"
 #include "map_parsing.hpp"
 #include "misc.hpp"
 #include "property.hpp"
+#include "terrain.hpp"
+#include "terrain_trap.hpp"
 
 // -----------------------------------------------------------------------------
 // Private
@@ -129,7 +129,7 @@ MeleeAttData::MeleeAttData(
         // check if target is seen when player is attacking.
         bool can_attacker_see_tgt = true;
 
-        if (attacker == map::g_player)
+        if (attacker && attacker->is_player())
         {
                 can_attacker_see_tgt = map::g_player->can_see_actor(*defender);
         }
@@ -194,7 +194,7 @@ MeleeAttData::MeleeAttData(
         // Lower hit chance if defender is ethereal (except if Bane of the
         // Undead bonus applies)
         const bool apply_undead_bane_bon =
-                (attacker == map::g_player) &&
+                (attacker && attacker->is_player()) &&
                 player_bon::gets_undead_bane_bon(*defender->m_data);
 
         const bool apply_ethereal_defender_pen =
@@ -252,7 +252,7 @@ MeleeAttData::MeleeAttData(
                 int dmg_pct = 150;
 
                 // Extra backstab damage from traits
-                if (attacker == map::g_player)
+                if (attacker && attacker->is_player())
                 {
                         if (player_bon::has_trait(Trait::vicious))
                         {
@@ -410,7 +410,7 @@ RangedAttData::RangedAttData(
                 }
 
                 // Player gets attack bonus for attacking unaware monster
-                if (attacker == map::g_player)
+                if (attacker && attacker->is_player())
                 {
                         auto* const mon = static_cast<actor::Mon*>(defender);
 
@@ -494,6 +494,13 @@ ThrowAttData::ThrowAttData(
         defender_size((actor::Size)0),
         dist_mod(0)
 {
+        if (!attacker)
+        {
+                ASSERT(false);
+
+                return;
+        }
+
         auto* const actor_aimed_at = map::first_actor_at_pos(aim_pos);
 
         // Determine aim level

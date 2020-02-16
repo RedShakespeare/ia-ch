@@ -12,14 +12,14 @@
 #include "actor_data.hpp"
 #include "actor_mon.hpp"
 #include "actor_player.hpp"
-#include "terrain_door.hpp"
-#include "terrain.hpp"
 #include "game_time.hpp"
 #include "init.hpp"
 #include "io.hpp"
 #include "map.hpp"
 #include "map_parsing.hpp"
 #include "misc.hpp"
+#include "terrain.hpp"
+#include "terrain_door.hpp"
 
 // -----------------------------------------------------------------------------
 // Private
@@ -238,4 +238,4 @@ MonSpawnResult spawn_random_position(
         return result;
 }
 
-} // actor
+} // namespace actor

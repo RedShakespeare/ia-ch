@@ -17,14 +17,14 @@ namespace viewport
 
 R get_map_view_area();
 
-void focus_on(const P map_pos);
+void focus_on(P map_pos);
 
-bool is_in_view(const P map_pos);
+bool is_in_view(P map_pos);
 
-P to_view_pos(const P map_pos);
+P to_view_pos(P map_pos);
 
-P to_map_pos(const P view_pos);
+P to_map_pos(P view_pos);
 
-} // viewport
+} // namespace viewport
 
 #endif // VIEWPORT_HPP

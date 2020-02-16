@@ -48,22 +48,22 @@ public:
                 reset(nr_items, list_h);
         }
 
-        MenuBrowser() {}
+        MenuBrowser() = default;
 
         MenuBrowser& operator=(const MenuBrowser&) = default;
 
         MenuAction read(const InputData& input, MenuInputMode mode);
 
-        void move(const VerDir dir);
+        void move(VerDir dir);
 
-        void move_page(const VerDir dir);
+        void move_page(VerDir dir);
 
         int y() const
         {
                 return m_y;
         }
 
-        void set_y(const int y);
+        void set_y(int y);
 
         Range range_shown() const;
 
@@ -87,7 +87,7 @@ public:
                 return m_y == idx;
         }
 
-        void reset(const int nr_items, const int list_h = -1);
+        void reset(int nr_items, int list_h = -1);
 
         const std::vector<char>& menu_keys() const
         {

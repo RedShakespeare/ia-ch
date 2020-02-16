@@ -59,4 +59,4 @@ P to_map_pos(const P view_pos)
         return view_pos + s_p0;
 }
 
-} // viewport
+} // namespace viewport

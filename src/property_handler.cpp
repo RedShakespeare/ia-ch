@@ -50,28 +50,6 @@ void PropHandler::apply_natural_props_from_actor_data()
         }
 }
 
-PropHandler::~PropHandler()
-{
-#ifndef NDEBUG
-        // Sanity check the property cache
-        for (auto& prop : m_props)
-        {
-                decr_prop_count(prop->m_id);
-        }
-
-        // All property counts should be exactly zero now
-        for (size_t i = 0; i < (size_t)PropId::END; ++i)
-        {
-                if (m_prop_count_cache[i] != 0)
-                {
-                        TRACE << "Active property info at id " << i
-                              << " not zero" << std::endl;
-                        ASSERT(false);
-                }
-        }
-#endif // NDEBUG
-}
-
 void PropHandler::save() const
 {
         // Save intrinsic properties to file
@@ -745,7 +723,7 @@ std::vector<ColoredString> PropHandler::property_names_short() const
                         color = colors::white();
                 }
 
-                line.push_back(ColoredString(str, color));
+                line.emplace_back(str, color);
         }
 
         return line;

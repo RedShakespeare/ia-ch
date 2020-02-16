@@ -25,14 +25,14 @@ bool is_save_available();
 bool is_loading();
 
 //Functions called by modules when saving and loading.
-void put_str(const std::string str);
-void put_int(const int v);
-void put_bool(const bool v);
+void put_str(std::string str);
+void put_int(int v);
+void put_bool(bool v);
 
 std::string get_str();
 int get_int();
 bool get_bool();
 
-} // saving
+} // namespace saving
 
 #endif // SAVING_HPP

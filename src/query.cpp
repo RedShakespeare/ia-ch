@@ -357,4 +357,4 @@ Dir dir(const AllowCenter allow_center)
         return Dir::END;
 }
 
-} // query
+} // namespace query

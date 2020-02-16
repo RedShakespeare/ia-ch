@@ -719,4 +719,4 @@ const TerrainData& data(const Id id)
         return s_data[int(id)];
 }
 
-} // terrain
+} // namespace terrain

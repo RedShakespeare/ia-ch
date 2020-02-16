@@ -10,14 +10,14 @@
 #include <functional>
 
 #include "gfx.hpp"
-#include "property_data.hpp"
 #include "global.hpp"
+#include "property_data.hpp"
 
 
 namespace actor
 {
 class Actor;
-}
+} // namespace actor
 
 
 namespace terrain
@@ -91,7 +91,7 @@ public:
                 reset();
         }
 
-        ~MoveRules() {}
+        ~MoveRules() = default;
 
         void reset()
         {
@@ -148,8 +148,8 @@ struct TerrainData
 
 void init();
 
-const TerrainData& data(const Id id);
+const TerrainData& data(Id id);
 
-} // terrain
+} // namespace terrain
 
 #endif // TERRAIN_DATA_HPP

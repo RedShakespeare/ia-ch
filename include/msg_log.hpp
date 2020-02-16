@@ -8,6 +8,7 @@
 #define MSG_LOG_HPP
 
 #include <string>
+#include <utility>
 #include <vector>
 
 #include "colors.hpp"
@@ -36,16 +37,16 @@ enum class CopyToMsgHistory
 class Msg
 {
 public:
-        Msg(const std::string& text,
+        Msg(std::string  text,
             const Color& color_id,
             const int x_pos,
             CopyToMsgHistory copy_to_history) :
-                m_text(text),
+                m_text(std::move(text)),
                 m_color(color_id),
                 m_x_pos(x_pos),
                 m_copy_to_history(copy_to_history) {}
 
-        Msg() {}
+        Msg() = default;
 
         std::string text_with_repeats() const
         {
@@ -105,9 +106,9 @@ void draw();
 void add(
         const std::string& str,
         const Color& color = colors::text(),
-        const MsgInterruptPlayer interrupt_player = MsgInterruptPlayer::no,
-        const MorePromptOnMsg add_more_prompt_on_msg = MorePromptOnMsg::no,
-        const CopyToMsgHistory copy_to_history = CopyToMsgHistory::yes);
+        MsgInterruptPlayer interrupt_player = MsgInterruptPlayer::no,
+        MorePromptOnMsg add_more_prompt_on_msg = MorePromptOnMsg::no,
+        CopyToMsgHistory copy_to_history = CopyToMsgHistory::yes);
 
 // NOTE: This function can safely be called at any time. If there is content in
 // the log, a "more" prompt will be run, and the log is cleared. If the log
@@ -118,9 +119,9 @@ void clear();
 
 void add_line_to_history(const std::string& line_to_add);
 
-const std::vector<Msg> history();
+std::vector<Msg> history();
 
-} // log
+} // namespace msg_log
 
 // -----------------------------------------------------------------------------
 // Message history state
@@ -128,10 +129,10 @@ const std::vector<Msg> history();
 class MsgHistoryState: public InfoScreenState
 {
 public:
-        MsgHistoryState() :
-                InfoScreenState() {}
+        MsgHistoryState() 
+                = default;
 
-        ~MsgHistoryState() {}
+        ~MsgHistoryState() = default;
 
         void on_start() override;
 

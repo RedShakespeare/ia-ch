@@ -78,7 +78,7 @@ MenuAction MenuBrowser::read(const InputData& input, MenuInputMode mode)
         }
         else if (mode == MenuInputMode::scrolling_and_letters)
         {
-                const char c = input.key;
+                const char c = (char)input.key;
 
                 const auto find_result =
                         std::find(

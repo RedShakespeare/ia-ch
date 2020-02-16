@@ -8,6 +8,7 @@
 #define COLORS_HPP
 
 #include <string>
+#include <utility>
 
 #include "SDL_video.h"
 
@@ -33,7 +34,7 @@ public:
 
         bool operator!=(const Color& other) const;
 
-        Color fraction(const double div);
+        Color fraction(double div);
 
         bool is_defined() const;
 
@@ -45,9 +46,9 @@ public:
         uint8_t g() const;
         uint8_t b() const;
 
-        void set_rgb(const uint8_t r, const uint8_t g, const uint8_t b);
+        void set_rgb(uint8_t r, uint8_t g, uint8_t b);
 
-        void randomize_rgb(const int range);
+        void randomize_rgb(int range);
 
 private:
         SDL_Color m_sdl_color;
@@ -113,7 +114,7 @@ Color mon_unaware_bg();
 Color mon_allied_bg();
 Color mon_temp_property_bg();
 
-} // colors
+} // namespace colors
 
 //-----------------------------------------------------------------------------
 // Colored string
@@ -122,8 +123,8 @@ struct ColoredString
 {
         ColoredString() = default;
 
-        ColoredString(const std::string& the_str, const Color& the_color) :
-                str(the_str),
+        ColoredString(std::string  the_str, const Color& the_color) :
+                str(std::move(the_str)),
                 color(the_color) {}
 
         ColoredString& operator=(const ColoredString& other) = default;

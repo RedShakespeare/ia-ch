@@ -316,7 +316,6 @@ if(CMAKE_COMPILER_IS_GNUCXX OR(CMAKE_C_COMPILER_ID MATCHES "Clang") OR(CMAKE_CXX
                 -Wunused
                 -Wuninitialized
                 -Wshadow
-                # TODO: Enable flag: -Weffc++
                 )
 
         set(DEBUG_COMPILE_FLAGS

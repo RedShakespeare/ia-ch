@@ -7,22 +7,18 @@
 #ifndef MAP_PARSING_HPP
 #define MAP_PARSING_HPP
 
+#include <utility>
 #include <vector>
 
 #include "config.hpp"
-#include "terrain_data.hpp"
 #include "pos.hpp"
+#include "terrain_data.hpp"
 
 
 namespace actor
 {
 class Actor;
-}
-
-namespace
-{
-class Terrain;
-}
+} // namespace actor
 
 struct R;
 struct Cell;
@@ -67,12 +63,12 @@ namespace map_parsers
 class MapParser
 {
 public:
-        virtual ~MapParser() {}
+        virtual ~MapParser() = default;
 
         void run(
                 Array2<bool>& out,
                 const R& area_to_parse_cells,
-                const MapParseMode write_rule = MapParseMode::overwrite);
+                MapParseMode write_rule = MapParseMode::overwrite);
 
         bool cell(const P& pos) const;
 
@@ -222,9 +218,9 @@ private:
 class IsAnyOfTerrains : public MapParser
 {
 public:
-        IsAnyOfTerrains(const std::vector<terrain::Id>& terrains) :
+        IsAnyOfTerrains(std::vector<terrain::Id>  terrains) :
                 MapParser(ParseCells::yes, ParseMobs::no, ParseActors::no),
-                m_terrains(terrains) {}
+                m_terrains(std::move(terrains)) {}
 
         IsAnyOfTerrains(const terrain::Id id) :
                 MapParser(ParseCells::yes, ParseMobs::no, ParseActors::no),
@@ -239,9 +235,9 @@ private:
 class AnyAdjIsAnyOfTerrains : public MapParser
 {
 public:
-        AnyAdjIsAnyOfTerrains(const std::vector<terrain::Id>& terrains) :
+        AnyAdjIsAnyOfTerrains(std::vector<terrain::Id>  terrains) :
                 MapParser(ParseCells::yes, ParseMobs::no, ParseActors::no),
-                m_terrains(terrains) {}
+                m_terrains(std::move(terrains)) {}
 
         AnyAdjIsAnyOfTerrains(const terrain::Id id) :
                 MapParser(ParseCells::yes, ParseMobs::no, ParseActors::no),
@@ -269,9 +265,9 @@ private:
 class AllAdjIsAnyOfTerrains : public MapParser
 {
 public:
-        AllAdjIsAnyOfTerrains(const std::vector<terrain::Id>& terrains) :
+        AllAdjIsAnyOfTerrains(std::vector<terrain::Id>  terrains) :
                 MapParser(ParseCells::yes, ParseMobs::no, ParseActors::no),
-                m_terrains(terrains) {}
+                m_terrains(std::move(terrains)) {}
 
         AllAdjIsAnyOfTerrains(const terrain::Id id) :
                 MapParser(ParseCells::yes, ParseMobs::no, ParseActors::no),
@@ -299,9 +295,9 @@ private:
 class AllAdjIsNoneOfTerrains : public MapParser
 {
 public:
-        AllAdjIsNoneOfTerrains(const std::vector<terrain::Id>& terrains) :
+        AllAdjIsNoneOfTerrains(std::vector<terrain::Id>  terrains) :
                 MapParser(ParseCells::yes, ParseMobs::no, ParseActors::no),
-                m_terrains(terrains) {}
+                m_terrains(std::move(terrains)) {}
 
         AllAdjIsNoneOfTerrains(const terrain::Id id) :
                 MapParser(ParseCells::yes, ParseMobs::no, ParseActors::no),
@@ -336,11 +332,11 @@ Array2<bool> expand(
 // Slower version that can expand any distance
 Array2<bool> expand(
         const Array2<bool>& in,
-        const int dist);
+        int dist);
 
 bool is_map_connected(const Array2<bool>& blocked);
 
-} // map_parsers
+} // namespace map_parsers
 
 
 // Function object for sorting STL containers by distance to a position

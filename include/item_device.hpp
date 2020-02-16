@@ -7,8 +7,8 @@
 #ifndef ITEM_DEVICE_HPP
 #define ITEM_DEVICE_HPP
 
-#include <vector>
 #include <string>
+#include <vector>
 
 #include "item.hpp"
 
@@ -19,38 +19,38 @@ namespace device
 class Device: public item::Item
 {
 public:
-        Device(item::ItemData* const item_data);
+        Device(item::ItemData* item_data);
 
-        virtual ~Device() {}
+        virtual ~Device() = default;
 
-        virtual ConsumeItem activate(actor::Actor* const actor) override = 0;
+        ConsumeItem activate(actor::Actor* actor) override = 0;
 
-        Color interface_color() const override final
+        Color interface_color() const final
         {
                 return colors::cyan();
         }
 
-        virtual void on_std_turn_in_inv_hook(const InvType inv_type) override
+        void on_std_turn_in_inv_hook(const InvType inv_type) override
         {
                 (void)inv_type;
         }
 
-        void identify(const Verbose verbose) override;
+        void identify(Verbose verbose) override;
 };
 
 class StrangeDevice : public Device
 {
 public:
-        StrangeDevice(item::ItemData* const item_data);
+        StrangeDevice(item::ItemData* item_data);
 
-        virtual std::vector<std::string> descr_hook() const override final;
+        std::vector<std::string> descr_hook() const final;
 
-        ConsumeItem activate(actor::Actor* const actor) override;
+        ConsumeItem activate(actor::Actor* actor) override;
 
-        virtual std::string name_inf_str() const override;
+        std::string name_inf_str() const override;
 
-        virtual void save_hook() const override;
-        virtual void load_hook() override;
+        void save_hook() const override;
+        void load_hook() override;
 
         Condition condition;
 
@@ -66,7 +66,7 @@ public:
         Blaster(item::ItemData* const item_data) :
                 StrangeDevice(item_data) {}
 
-        ~Blaster() override {}
+        ~Blaster() override = default;
 
 private:
         std::string descr_identified() const override
@@ -85,7 +85,7 @@ public:
         Rejuvenator(item::ItemData* const item_data) :
                 StrangeDevice(item_data) {}
 
-        ~Rejuvenator() override {}
+        ~Rejuvenator() override = default;
 
 private:
         std::string descr_identified() const override
@@ -105,7 +105,7 @@ public:
         Translocator(item::ItemData* const item_data) :
                 StrangeDevice(item_data) {}
 
-        ~Translocator() override {}
+        ~Translocator() override = default;
 
 private:
         std::string descr_identified() const override
@@ -124,7 +124,7 @@ public:
         SentryDrone(item::ItemData* const item_data) :
                 StrangeDevice(item_data) {}
 
-        ~SentryDrone() override {}
+        ~SentryDrone() override = default;
 
 private:
         std::string descr_identified() const override
@@ -143,7 +143,7 @@ public:
         Deafening(item::ItemData* const item_data) :
                 StrangeDevice(item_data) {}
 
-        ~Deafening() override {}
+        ~Deafening() override = default;
 
 private:
         std::string descr_identified() const override
@@ -163,7 +163,7 @@ public:
         ForceField(item::ItemData* const item_data) :
                 StrangeDevice(item_data) {}
 
-        ~ForceField() override {}
+        ~ForceField() override = default;
 
 private:
         std::string descr_identified() const override
@@ -182,15 +182,15 @@ private:
 class Lantern : public Device
 {
 public:
-        Lantern(item::ItemData* const item_data);
+        Lantern(item::ItemData* item_data);
 
-        ~Lantern() override {}
+        ~Lantern() override = default;
 
         std::string name_inf_str() const override;
 
-        ConsumeItem activate(actor::Actor* const actor) override;
+        ConsumeItem activate(actor::Actor* actor) override;
 
-        void on_std_turn_in_inv_hook(const InvType inv_type) override;
+        void on_std_turn_in_inv_hook(InvType inv_type) override;
 
         void on_pickup_hook() override;
 
@@ -206,6 +206,6 @@ private:
         void toggle();
 };
 
-} // device
+} // namespace device
 
 #endif // ITEM_DEVICE_HPP

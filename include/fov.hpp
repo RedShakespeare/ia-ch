@@ -38,6 +38,6 @@ LosResult check_cell(
 
 Array2<LosResult> run(const P& p0, const FovMap& map);
 
-} // fov
+} // namespace fov
 
 #endif // FOV_HPP

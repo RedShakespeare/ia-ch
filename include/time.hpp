@@ -21,7 +21,7 @@ enum class TimeType
 
 struct TimeData
 {
-        TimeData() {}
+        TimeData() = default;
 
         TimeData(
                 int year_val,
@@ -39,8 +39,8 @@ struct TimeData
                 second(second_val) {}
 
         std::string time_str(
-                const TimeType lowest,
-                const bool add_separators) const;
+                TimeType lowest,
+                bool add_separators) const;
 
         int year;
         int month;

@@ -16,8 +16,8 @@ namespace actor
 class Actor;
 
 
-void move(Actor& actor, const Dir dir);
+void move(Actor& actor, Dir dir);
 
-}
+} // namespace actor
 
 #endif // ACTOR_MOVE_HPP

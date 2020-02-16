@@ -77,4 +77,4 @@ std::string highscores_file_path()
         return user_dir() + "highscores";
 }
 
-} // paths
+} // namespace paths

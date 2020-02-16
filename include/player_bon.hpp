@@ -7,10 +7,10 @@
 #ifndef PLAYER_BON_HPP
 #define PLAYER_BON_HPP
 
+#include <algorithm>
+#include <cmath>
 #include <string>
 #include <vector>
-#include <algorithm>
-#include <math.h>
 
 #include "global.hpp"
 
@@ -18,7 +18,7 @@
 namespace actor
 {
 struct ActorData;
-}
+} // namespace actor
 
 
 struct ColoredString;
@@ -118,13 +118,13 @@ std::vector<Bg> pickable_bgs();
 std::vector<OccultistDomain> pickable_occultist_domains();
 
 void unpicked_traits_for_bg(
-        const Bg bg,
+        Bg bg,
         std::vector<Trait>& traits_can_be_picked_out,
         std::vector<Trait>& traits_prereqs_not_met_out);
 
 void trait_prereqs(
-        const Trait id,
-        const Bg bg,
+        Trait trait,
+        Bg bg,
         std::vector<Trait>& traits_out,
         Bg& bg_out,
         int& clvl_out);
@@ -133,39 +133,39 @@ Bg bg();
 
 OccultistDomain occultist_domain();
 
-bool has_trait(const Trait id);
+bool has_trait(Trait id);
 
-std::string trait_title(const Trait id);
+std::string trait_title(Trait id);
 
-std::string trait_descr(const Trait id);
+std::string trait_descr(Trait id);
 
-std::string bg_title(const Bg id);
+std::string bg_title(Bg id);
 
-std::string spell_domain_title(const OccultistDomain domain);
+std::string spell_domain_title(OccultistDomain domain);
 
-std::string occultist_profession_title(const OccultistDomain domain);
+std::string occultist_profession_title(OccultistDomain domain);
 
 // NOTE: The string vector returned is not formatted. Each line still needs to
 // be formatted by the caller. The reason for using a vector instead of a string
 // is to separate the text into paragraphs.
-std::vector<ColoredString> bg_descr(const Bg id);
+std::vector<ColoredString> bg_descr(Bg id);
 
-std::string occultist_domain_descr(const OccultistDomain domain);
+std::string occultist_domain_descr(OccultistDomain domain);
 
 std::vector<TraitLogEntry> trait_log();
 
-void pick_trait(const Trait id);
+void pick_trait(Trait id);
 
-void pick_bg(const Bg bg);
+void pick_bg(Bg bg);
 
-void pick_occultist_domain(const OccultistDomain domain);
+void pick_occultist_domain(OccultistDomain domain);
 
-void on_player_gained_lvl(const int new_lvl);
+void on_player_gained_lvl(int new_lvl);
 
 void set_all_traits_to_picked();
 
 bool gets_undead_bane_bon(const actor::ActorData& actor_data);
 
-} // player_bon
+} // namespace player_bon
 
 #endif // PLAYER_BON_HPP

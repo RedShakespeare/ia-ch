@@ -12,7 +12,7 @@ namespace item
 {
 class Ammo;
 class Wpn;
-}
+} // namespace item
 
 
 namespace item_pickup
@@ -27,6 +27,6 @@ void try_unload_or_pick();
 
 item::Ammo* unload_ranged_wpn(item::Wpn& wpn);
 
-} // item_pickup
+} // namespace item_pickup
 
 #endif

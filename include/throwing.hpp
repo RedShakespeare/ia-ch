@@ -11,12 +11,12 @@
 namespace item
 {
 class Item;
-}
+} // namespace item
 
 namespace actor
 {
 class Actor;
-}
+} // namespace actor
 
 struct P;
 
@@ -31,6 +31,6 @@ void throw_item(
 
 void player_throw_lit_explosive(const P& aim_cell);
 
-} // Throwing
+} // namespace throwing
 
 #endif // THROWING_HPP

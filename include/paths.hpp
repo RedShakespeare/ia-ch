@@ -33,6 +33,6 @@ std::string config_file_path();
 
 std::string highscores_file_path();
 
-} // paths
+} // namespace paths
 
 #endif // PATHS_HPP

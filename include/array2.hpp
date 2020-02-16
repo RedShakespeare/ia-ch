@@ -52,6 +52,11 @@ public:
 
         Array2<T>& operator=(const Array2<T>& other)
         {
+                if (&other == this)
+                {
+                        return *this;
+                }
+
                 resize_no_init(other.m_dims);
 
                 std::copy(
@@ -253,7 +258,7 @@ public:
                 return m_dims.y;
         }
 
-        const R rect() const
+        R rect() const
         {
                 return R({0, 0}, m_dims - 1);
         }

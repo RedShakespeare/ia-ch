@@ -7,11 +7,11 @@
 #include "mapgen.hpp"
 
 #include "actor.hpp"
-#include "terrain_pylon.hpp"
 #include "flood.hpp"
 #include "game_time.hpp"
 #include "map_parsing.hpp"
 #include "misc.hpp"
+#include "terrain_pylon.hpp"
 
 namespace mapgen
 {
@@ -161,4 +161,4 @@ void make_pylons_and_levers()
         } // Pylons loop
 } // make_pylons_and_levers
 
-} // namespace
+} // namespace mapgen

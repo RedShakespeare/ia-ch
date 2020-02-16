@@ -11,21 +11,21 @@
 namespace item
 {
 class Item;
-}
+} // namespace item
 
 namespace actor
 {
 class Actor;
-}
+} // namespace actor
 
 
 namespace reload
 {
 
-void try_reload(actor::Actor& actor, item::Item* const item_to_reload);
+void try_reload(actor::Actor& actor, item::Item* item_to_reload);
 
 void player_arrange_pistol_mags();
 
-} //reload
+} // namespace reload
 
 #endif

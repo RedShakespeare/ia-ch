@@ -18,7 +18,7 @@
 namespace item
 {
 enum class Id;
-}
+} // namespace item
 
 enum class SpellId;
 
@@ -38,7 +38,7 @@ public:
                 return Id::gong;
         }
 
-        std::string name(const Article article) const override;
+        std::string name(Article article) const override;
 
         void bump(actor::Actor& actor_bumping) override;
 
@@ -46,10 +46,10 @@ private:
         Color color_default() const override;
 
         void on_hit(
-                const int dmg,
-                const DmgType dmg_type,
-                const DmgMethod dmg_method,
-                actor::Actor* const actor) override;
+                int dmg,
+                DmgType dmg_type,
+                DmgMethod dmg_method,
+                actor::Actor* actor) override;
 
         bool m_is_used {false};
 };
@@ -97,7 +97,7 @@ enum class TollId
 class Bonus
 {
 public:
-        virtual ~Bonus() {}
+        virtual ~Bonus() = default;
 
         virtual BonusId id() const = 0;
 
@@ -109,7 +109,7 @@ public:
 class Toll
 {
 public:
-        virtual ~Toll() {}
+        virtual ~Toll() = default;
 
         virtual TollId id() const = 0;
 
@@ -357,8 +357,8 @@ private:
         SpellId m_spell_to_unlearn {SpellId::END};
 };
 
-} // gong
+} // namespace gong
 
-} // terrain
+} // namespace terrain
 
 #endif // TERRAIN_GONG_HPP

@@ -7,13 +7,13 @@
 #ifndef MANUAL_HPP
 #define MANUAL_HPP
 
-#include <vector>
 #include <string>
+#include <vector>
 
-#include "state.hpp"
-#include "info_screen_state.hpp"
-#include "global.hpp"
 #include "browser.hpp"
+#include "global.hpp"
+#include "info_screen_state.hpp"
+#include "state.hpp"
 
 struct ManualPage
 {
@@ -25,10 +25,8 @@ struct ManualPage
 class BrowseManual: public State
 {
 public:
-        BrowseManual() :
-                State(),
-                m_browser(),
-                m_pages() {}
+        BrowseManual() 
+                = default;
 
         void on_start() override;
 
@@ -52,7 +50,7 @@ class BrowseManualPage: public InfoScreenState
 {
 public:
         BrowseManualPage(const ManualPage& page) :
-                InfoScreenState(),
+                
                 m_page(page),
                 m_top_idx(0) {}
 

@@ -14,7 +14,6 @@
 #include "actor_mon.hpp"
 #include "actor_player.hpp"
 #include "explosion.hpp"
-#include "terrain_door.hpp"
 #include "flood.hpp"
 #include "game.hpp"
 #include "game_time.hpp"
@@ -38,6 +37,7 @@
 #include "property_handler.hpp"
 #include "sdl_base.hpp"
 #include "teleport.hpp"
+#include "terrain_door.hpp"
 #include "text_format.hpp"
 #include "viewport.hpp"
 
@@ -160,7 +160,7 @@ Spell* make_spell_from_id(const SpellId spell_id)
         return nullptr;
 }
 
-} // spell_factory
+} // namespace spell_factory
 
 // -----------------------------------------------------------------------------
 // BrowseSpell
@@ -251,7 +251,7 @@ void Spell::cast(
 
                         if (!spell_msg.empty())
                         {
-                                std::string mon_name = "";
+                                std::string mon_name;
 
                                 if (is_mon_seen)
                                 {
@@ -349,13 +349,11 @@ std::vector<std::string> Spell::descr(
         {
                 if (is_noisy(skill))
                 {
-                        lines.push_back(
-                                "Casting this spell requires making sounds.");
+                        lines.emplace_back("Casting this spell requires making sounds.");
                 }
                 else // The spell is silent
                 {
-                        lines.push_back(
-                                "This spell can be cast silently.");
+                        lines.emplace_back("This spell can be cast silently.");
                 }
         }
 
@@ -368,7 +366,7 @@ std::vector<std::string> Spell::descr(
 
         if (can_be_improved_with_skill())
         {
-                std::string skill_str = "";
+                std::string skill_str;
 
                 switch (skill)
                 {
@@ -494,8 +492,7 @@ std::vector<std::string> SpellAuraOfDecay::descr_specific(
 {
         std::vector<std::string> descr;
 
-        descr.push_back(
-                "The caster exudes death and decay. Creatures within a "
+        descr.emplace_back("The caster exudes death and decay. Creatures within a "
                 "distance of two moves take damage each standard turn.");
 
         const auto dmg_range = Range(1, 1 + (int)skill);
@@ -600,8 +597,7 @@ std::vector<std::string> Darkbolt::descr_specific(const SpellSkill skill) const
 {
         std::vector<std::string> descr;
 
-        descr.push_back(
-                "Siphons power from some infernal dimension, which is focused "
+        descr.emplace_back("Siphons power from some infernal dimension, which is focused "
                 "into a bolt hurled towards a target with great force. The "
                 "conjured bolt has some will on its own - the caster cannot "
                 "determine exactly which creature will be struck.");
@@ -612,11 +608,11 @@ std::vector<std::string> Darkbolt::descr_specific(const SpellSkill skill) const
 
         if (skill == SpellSkill::master)
         {
-                descr.push_back("The target is paralyzed, and set aflame.");
+                descr.emplace_back("The target is paralyzed, and set aflame.");
         }
         else // Not master
         {
-                descr.push_back("The target is paralyzed.");
+                descr.emplace_back("The target is paralyzed.");
         }
 
         return descr;
@@ -964,8 +960,7 @@ std::vector<std::string> SpellAzaWrath::descr_specific(
 {
         std::vector<std::string> descr;
 
-        descr.push_back(
-                "Channels the destructive force of Azathoth unto all "
+        descr.emplace_back("Channels the destructive force of Azathoth unto all "
                 "visible enemies.");
 
         Range dmg_range(
@@ -979,11 +974,11 @@ std::vector<std::string> SpellAzaWrath::descr_specific(
 
         if (skill == SpellSkill::master)
         {
-                descr.push_back("The target is paralyzed, and set aflame.");
+                descr.emplace_back("The target is paralyzed, and set aflame.");
         }
         else // Not master
         {
-                descr.push_back("The target is paralyzed.");
+                descr.emplace_back("The target is paralyzed.");
         }
 
         return descr;
@@ -1091,7 +1086,7 @@ void SpellMayhem::run_effect(
                         return;
                 }
 
-                const size_t idx = rnd::range(0, p_bucket.size() - 1);
+                const size_t idx = rnd::range(0, (int)p_bucket.size() - 1);
 
                 const P& p = rnd::element(p_bucket);
 
@@ -1226,9 +1221,9 @@ std::vector<std::string> SpellMayhem::descr_specific(
 
         std::vector<std::string> descr;
 
-        descr.push_back("Blasts the surrounding area with terrible force.");
+        descr.emplace_back("Blasts the surrounding area with terrible force.");
 
-        descr.push_back("Higher skill levels increases the magnitude of the "
+        descr.emplace_back("Higher skill levels increases the magnitude of the "
                         "destruction.");
 
         return descr;
@@ -1341,7 +1336,7 @@ std::vector<std::string> SpellPestilence::descr_specific(
 {
         std::vector<std::string> descr;
 
-        descr.push_back("A pack of rats appear around the caster.");
+        descr.emplace_back("A pack of rats appear around the caster.");
 
         const size_t nr_mon = 6 + (int)skill * 6;
 
@@ -1349,7 +1344,7 @@ std::vector<std::string> SpellPestilence::descr_specific(
 
         if (skill == SpellSkill::master)
         {
-                descr.push_back("The rats are Hasted (moves faster).");
+                descr.emplace_back("The rats are Hasted (moves faster).");
         }
 
         return descr;
@@ -1409,7 +1404,7 @@ void SpellSpectralWpns::run_effect(
         // Cap the number of weapons spawned
         rnd::shuffle(weapons);
 
-        const auto nr_weapons_max = (size_t)(2 + (int)skill);
+        const size_t nr_weapons_max = 2 + (int)skill;
 
         if (nr_weapons_max < weapons.size())
         {
@@ -1493,15 +1488,14 @@ std::vector<std::string> SpellSpectralWpns::descr_specific(
 {
         std::vector<std::string> descr;
 
-        descr.push_back(
-                "Conjures ghostly copies of all carried weapons, which will "
+        descr.emplace_back("Conjures ghostly copies of all carried weapons, which will "
                 "float through the air and protect their master. The weapons "
                 "almost always hit their target, but they quickly "
                 "dematerialize when damaged. It is only possible to create "
                 "copies of basic melee weapons - \"modern\" mechanisms such as "
                 "pistols or machine guns are far too complex.");
 
-        const auto nr_weapons_max = (size_t)(2 + (int)skill);
+        const size_t nr_weapons_max = 2 + (int)skill;
 
         descr.push_back(
                 "A maximum of " +
@@ -1510,12 +1504,12 @@ std::vector<std::string> SpellSpectralWpns::descr_specific(
 
         if (skill >= SpellSkill::expert)
         {
-                descr.push_back("The weapons can see invisible creatures.");
+                descr.emplace_back("The weapons can see invisible creatures.");
         }
 
         if (skill == SpellSkill::master)
         {
-                descr.push_back("The weapons are hasted.");
+                descr.emplace_back("The weapons are hasted.");
         }
 
         return descr;
@@ -1563,17 +1557,16 @@ std::vector<std::string> SpellSearching::descr_specific(
 {
         std::vector<std::string> descr;
 
-        descr.push_back(
-                "Reveals the presence of doors, traps, stairs, and other "
+        descr.emplace_back("Reveals the presence of doors, traps, stairs, and other "
                 "locations of interest in the surrounding area.");
 
         if (skill == SpellSkill::expert)
         {
-                descr.push_back("Also reveals items.");
+                descr.emplace_back("Also reveals items.");
         }
         else if (skill == SpellSkill::master)
         {
-                descr.push_back("Also reveals items and creatures.");
+                descr.emplace_back("Also reveals items and creatures.");
         }
 
         const int range = 4 + (int)skill * 2;
@@ -1740,8 +1733,7 @@ std::vector<std::string> SpellOpening::descr_specific(
 
         if ((int)skill >= (int)SpellSkill::expert)
         {
-                descr.push_back(
-                        "If cast within range of a door operated by a lever, "
+                descr.emplace_back("If cast within range of a door operated by a lever, "
                         "then the lever is toggled.");
         }
 
@@ -1749,7 +1741,7 @@ std::vector<std::string> SpellOpening::descr_specific(
 
         if (range == 1)
         {
-                descr.push_back("Only adjacent objects are opened.");
+                descr.emplace_back("Only adjacent objects are opened.");
         }
         else // Range > 1
         {
@@ -1818,7 +1810,7 @@ std::vector<std::string> SpellBless::descr_specific(
 {
         std::vector<std::string> descr;
 
-        descr.push_back("Bends reality in favor of the caster.");
+        descr.emplace_back("Bends reality in favor of the caster.");
 
         const int nr_turns = 20 + (int)skill * 60;
 
@@ -1865,7 +1857,7 @@ std::vector<std::string> SpellLight::descr_specific(
 {
         std::vector<std::string> descr;
 
-        descr.push_back("Illuminates the area around the caster.");
+        descr.emplace_back("Illuminates the area around the caster.");
 
         const int nr_turns = 20 + (int)skill * 20;
 
@@ -1876,8 +1868,7 @@ std::vector<std::string> SpellLight::descr_specific(
 
         if (skill == SpellSkill::master)
         {
-                descr.push_back(
-                        "On casting, causes a blinding flash centered on the "
+                descr.emplace_back("On casting, causes a blinding flash centered on the "
                         "caster (but not affecting the caster itself).");
         }
 
@@ -1910,8 +1901,7 @@ std::vector<std::string> SpellSeeInvis::descr_specific(
 {
         std::vector<std::string> descr;
 
-        descr.push_back(
-                "Grants the caster the ability to see that which is "
+        descr.emplace_back("Grants the caster the ability to see that which is "
                 "normally invisible.");
 
         const Range duration_range =
@@ -1962,12 +1952,10 @@ std::vector<std::string> SpellSpellShield::descr_specific(
 
         std::vector<std::string> descr;
 
-        descr.push_back(
-                "Grants protection against harmful spells. The effect lasts "
+        descr.emplace_back("Grants protection against harmful spells. The effect lasts "
                 "until a spell is blocked.");
 
-        descr.push_back(
-                "Skill level affects the amount of Spirit one needs to spend "
+        descr.emplace_back("Skill level affects the amount of Spirit one needs to spend "
                 "to cast the spell.");
 
         return descr;
@@ -2010,8 +1998,7 @@ std::vector<std::string> SpellHaste::descr_specific(
 {
         std::vector<std::string> descr;
 
-        descr.push_back(
-                "Time slows down relative to the caster's perspective.");
+        descr.emplace_back("Time slows down relative to the caster's perspective.");
 
         Range duration_range;
         duration_range.min = 5 * ((int)skill + 1);
@@ -2065,8 +2052,7 @@ std::vector<std::string> SpellPremonition::descr_specific(
 {
         std::vector<std::string> descr;
 
-        descr.push_back(
-                "Grants foresight of attacks against the caster, "
+        descr.emplace_back("Grants foresight of attacks against the caster, "
                 "making it extremely difficult for assailants to achieve a "
                 "succesful hit.");
 
@@ -2184,8 +2170,7 @@ std::vector<std::string> SpellTeleport::descr_specific(
 {
         std::vector<std::string> descr;
 
-        descr.push_back(
-                "Instantly moves the caster to a different position.");
+        descr.emplace_back("Instantly moves the caster to a different position.");
 
         if ((int)skill >= (int)SpellSkill::expert)
         {
@@ -2199,8 +2184,7 @@ std::vector<std::string> SpellTeleport::descr_specific(
 
         if (skill == SpellSkill::master)
         {
-                descr.push_back(
-                        "The caster can control the teleport destination.");
+                descr.emplace_back("The caster can control the teleport destination.");
         }
 
         return descr;
@@ -2230,8 +2214,7 @@ std::vector<std::string> SpellRes::descr_specific(
 {
         std::vector<std::string> descr;
 
-        descr.push_back(
-                "The caster is completely shielded from fire and electricity.");
+        descr.emplace_back("The caster is completely shielded from fire and electricity.");
 
         const int nr_turns = 15 + (int)skill * 35;
 
@@ -2419,17 +2402,16 @@ std::vector<std::string> SpellEnfeeble::descr_specific(
 
         std::vector<std::string> descr;
 
-        descr.push_back(
-                "Physically enfeebles the spell's victims, causing them to "
+        descr.emplace_back("Physically enfeebles the spell's victims, causing them to "
                 "only do half damage in melee combat.");
 
         if (skill == SpellSkill::basic)
         {
-                descr.push_back("Affects one random visible hostile creature.");
+                descr.emplace_back("Affects one random visible hostile creature.");
         }
         else
         {
-                descr.push_back("Affects all visible hostile creatures.");
+                descr.emplace_back("Affects all visible hostile creatures.");
         }
 
         Range duration_range;
@@ -2533,15 +2515,15 @@ std::vector<std::string> SpellSlow::descr_specific(
 
         std::vector<std::string> descr;
 
-        descr.push_back("Causes the spells victim's to move more slowly.");
+        descr.emplace_back("Causes the spells victim's to move more slowly.");
 
         if (skill == SpellSkill::basic)
         {
-                descr.push_back("Affects one random visible hostile creature.");
+                descr.emplace_back("Affects one random visible hostile creature.");
         }
         else
         {
-                descr.push_back("Affects all visible hostile creatures.");
+                descr.emplace_back("Affects all visible hostile creatures.");
         }
 
         Range duration_range;
@@ -2654,17 +2636,16 @@ std::vector<std::string> SpellTerrify::descr_specific(
 
         std::vector<std::string> descr;
 
-        descr.push_back(
-                "Manifests an overpowering feeling of dread in the spell's "
+        descr.emplace_back("Manifests an overpowering feeling of dread in the spell's "
                 "victims.");
 
         if (skill == SpellSkill::basic)
         {
-                descr.push_back("Affects one random visible hostile creature.");
+                descr.emplace_back("Affects one random visible hostile creature.");
         }
         else
         {
-                descr.push_back("Affects all visible hostile creatures.");
+                descr.emplace_back("Affects all visible hostile creatures.");
         }
 
         Range duration_range;
@@ -3079,18 +3060,15 @@ std::vector<std::string> SpellHeal::descr_specific(
 
         if (skill == SpellSkill::expert)
         {
-                descr.push_back(
-                        "Cures infections, disease, weakening, and life "
+                descr.emplace_back("Cures infections, disease, weakening, and life "
                         "sapping.");
         }
         else if (skill == SpellSkill::master)
         {
-                descr.push_back(
-                        "Cures infections, disease, weakening, life sapping, "
+                descr.emplace_back("Cures infections, disease, weakening, life sapping, "
                         "blindness, deafness, and poisoning.");
 
-                descr.push_back(
-                        "Heals one wound.");
+                descr.emplace_back("Heals one wound.");
         }
 
         return descr;
@@ -3491,8 +3469,7 @@ std::vector<std::string> SpellTransmut::descr_specific(
 {
         std::vector<std::string> descr;
 
-        descr.push_back(
-                "Attempts to convert items (stand over an item when casting). "
+        descr.emplace_back("Attempts to convert items (stand over an item when casting). "
                 "On failure, the item is destroyed.");
 
         const int skill_bon = 10 * (int)skill;

@@ -8,12 +8,12 @@
 
 #include <vector>
 
-#include "mapgen.hpp"
 #include "actor_player.hpp"
-#include "map.hpp"
 #include "item_factory.hpp"
-#include "player_bon.hpp"
+#include "map.hpp"
 #include "map_parsing.hpp"
+#include "mapgen.hpp"
+#include "player_bon.hpp"
 #include "terrain.hpp"
 #include "terrain_door.hpp"
 #include "terrain_trap.hpp"
@@ -113,7 +113,8 @@ void make_items_on_floor()
 
                 const P& p = positions[p_idx];
 
-                const size_t item_idx = rnd::range(0, item_bucket.size() - 1);
+                const size_t item_idx =
+                        rnd::range(0, (int)item_bucket.size() - 1);
 
                 const item::Id id = item_bucket[item_idx];
 
@@ -131,4 +132,4 @@ void make_items_on_floor()
         }
 }
 
-} // populate_items
+} // namespace populate_items

@@ -372,12 +372,12 @@ std::vector<ColoredString> bg_descr(const Bg id)
         std::vector<ColoredString> descr;
 
         auto put = [&descr](const std::string& str) {
-                descr.push_back({str, colors::white()});
+                descr.emplace_back(str, colors::white());
         };
 
         auto put_trait = [&descr](const Trait trait_id) {
-                descr.push_back({trait_title(trait_id), colors::white()});
-                descr.push_back({trait_descr(trait_id), colors::gray()});
+                descr.emplace_back(trait_title(trait_id), colors::white());
+                descr.emplace_back(trait_descr(trait_id), colors::gray());
         };
 
         switch (id)
@@ -887,6 +887,7 @@ std::vector<Bg> pickable_bgs()
 {
         std::vector<Bg> result;
 
+        result.reserve((int)Bg::END);
         for (int i = 0; i < (int)Bg::END; ++i)
         {
                 result.push_back((Bg)i);
@@ -910,6 +911,7 @@ std::vector<OccultistDomain> pickable_occultist_domains()
 {
         std::vector<OccultistDomain> result;
 
+        result.reserve((int)OccultistDomain::END);
         for (int i = 0; i < (int)OccultistDomain::END; ++i)
         {
                 result.push_back((OccultistDomain)i);
@@ -1277,4 +1279,4 @@ bool gets_undead_bane_bon(const actor::ActorData& actor_data)
                 actor_data.is_undead;
 }
 
-} // player_bon
+} // namespace player_bon

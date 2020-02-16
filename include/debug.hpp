@@ -90,10 +90,10 @@
 // NOTE: Never call this function directly, use the "ASSERT" macro above
 //------------------------------------------------------------------------------
 void assert_impl(
-        const bool check,
+        bool check,
         const char* check_str,
         const char* file,
-        const int line,
+        int line,
         const char* func);
 
 #endif // DEBUG_HPP

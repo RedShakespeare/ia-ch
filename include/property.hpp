@@ -20,7 +20,7 @@
 namespace item
 {
 class Item;
-}
+} // namespace item
 
 struct P;
 
@@ -50,9 +50,8 @@ enum class PropDurationMode
 struct DmgResistData
 {
         DmgResistData() :
-                is_resisted(false),
-                msg_resist_player(),
-                msg_resist_mon() {}
+                is_resisted(false)
+                {}
 
         bool is_resisted;
         std::string msg_resist_player;
@@ -84,7 +83,7 @@ class Prop
 public:
         Prop(PropId id);
 
-        virtual ~Prop() {}
+        virtual ~Prop() = default;
 
         PropId id() const
         {
@@ -199,7 +198,7 @@ public:
 
         virtual PropActResult on_act()
         {
-                return PropActResult();
+                return {};
         }
 
         virtual void on_applied() {}
@@ -354,9 +353,9 @@ public:
                 }
         }
 
-        bool allow_attack_melee(const Verbose verbose) const override;
+        bool allow_attack_melee(Verbose verbose) const override;
 
-        bool allow_attack_ranged(const Verbose verbose) const override;
+        bool allow_attack_ranged(Verbose verbose) const override;
 
         void on_applied() override;
 };
@@ -385,9 +384,9 @@ public:
         PropDiseased() :
                 Prop(PropId::diseased) {}
 
-        int affect_max_hp(const int hp_max) const override;
+        int affect_max_hp(int hp_max) const override;
 
-        bool is_resisting_other_prop(const PropId prop_id) const override;
+        bool is_resisting_other_prop(PropId prop_id) const override;
 
         void on_applied() override;
 };
@@ -493,7 +492,7 @@ public:
 
         bool should_update_vision_on_toggled() const override;
 
-        bool allow_read_absolute(const Verbose verbose) const override;
+        bool allow_read_absolute(Verbose verbose) const override;
 
         bool allow_see() const override
         {
@@ -567,7 +566,7 @@ public:
 
         void on_applied() override;
 
-        bool is_resisting_other_prop(const PropId prop_id) const override;
+        bool is_resisting_other_prop(PropId prop_id) const override;
 };
 
 class PropDarkvis: public Prop
@@ -587,7 +586,7 @@ public:
 
         void on_more(const Prop& new_prop) override;
 
-        int ability_mod(const AbilityId ability) const override;
+        int ability_mod(AbilityId ability) const override;
 
 private:
         void bless_adjacent() const;
@@ -599,7 +598,7 @@ public:
         PropCursed() :
                 Prop(PropId::cursed) {}
 
-        int ability_mod(const AbilityId ability) const override;
+        int ability_mod(AbilityId ability) const override;
 
         void on_applied() override;
 
@@ -689,10 +688,10 @@ public:
         PropBurning() :
                 Prop(PropId::burning) {}
 
-        bool allow_read_chance(const Verbose verbose) const override;
+        bool allow_read_chance(Verbose verbose) const override;
 
         bool allow_cast_intr_spell_chance(
-                const Verbose verbose) const override;
+                Verbose verbose) const override;
 
         int ability_mod(const AbilityId ability) const override
         {
@@ -707,7 +706,7 @@ public:
                 return true;
         }
 
-        bool allow_attack_ranged(const Verbose verbose) const override;
+        bool allow_attack_ranged(Verbose verbose) const override;
 
         PropEnded on_tick() override;
 };
@@ -729,11 +728,11 @@ public:
 
         PropEnded affect_move_dir(const P& actor_pos, Dir& dir) override;
 
-        bool allow_attack_melee(const Verbose verbose) const override;
-        bool allow_attack_ranged(const Verbose verbose) const override;
-        bool allow_read_absolute(const Verbose verbose) const override;
+        bool allow_attack_melee(Verbose verbose) const override;
+        bool allow_attack_ranged(Verbose verbose) const override;
+        bool allow_read_absolute(Verbose verbose) const override;
         bool allow_cast_intr_spell_absolute(
-                const Verbose verbose) const override;
+                Verbose verbose) const override;
 };
 
 class PropStunned: public Prop
@@ -797,7 +796,7 @@ public:
                 return "Wounded(" + std::to_string(m_nr_wounds) + ")";
         }
 
-        int ability_mod(const AbilityId ability) const override;
+        int ability_mod(AbilityId ability) const override;
 
         void on_more(const Prop& new_prop) override;
 
@@ -806,7 +805,7 @@ public:
                 return m_nr_wounds <= 0;
         }
 
-        int affect_max_hp(const int hp_max) const override;
+        int affect_max_hp(int hp_max) const override;
 
         int nr_wounds() const
         {
@@ -835,7 +834,7 @@ public:
 
         void on_more(const Prop& new_prop) override;
 
-        int affect_max_hp(const int hp_max) const override;
+        int affect_max_hp(int hp_max) const override;
 
 private:
         int m_nr_drained;
@@ -857,7 +856,7 @@ public:
 
         void on_more(const Prop& new_prop) override;
 
-        int affect_max_spi(const int spi_max) const override;
+        int affect_max_spi(int spi_max) const override;
 
 private:
         int m_nr_drained;
@@ -879,7 +878,7 @@ public:
 
         void on_more(const Prop& new_prop) override;
 
-        int affect_shock(const int shock) const override;
+        int affect_shock(int shock) const override;
 
 private:
         int m_nr_drained;
@@ -1094,11 +1093,11 @@ public:
 
         PropEnded affect_move_dir(const P& actor_pos, Dir& dir) override;
 
-        bool allow_read_absolute(const Verbose verbose) const override;
+        bool allow_read_absolute(Verbose verbose) const override;
         bool allow_cast_intr_spell_absolute(
-                const Verbose verbose) const override;
+                Verbose verbose) const override;
 
-        bool is_resisting_other_prop(const PropId prop_id) const override;
+        bool is_resisting_other_prop(PropId prop_id) const override;
 
         int ability_mod(const AbilityId ability) const override
         {
@@ -1119,7 +1118,7 @@ public:
         PropRAcid() :
                 Prop(PropId::r_acid) {}
 
-        DmgResistData is_resisting_dmg(const DmgType dmg_type) const override;
+        DmgResistData is_resisting_dmg(DmgType dmg_type) const override;
 };
 
 class PropRConf: public Prop
@@ -1130,7 +1129,7 @@ public:
 
         void on_applied() override;
 
-        bool is_resisting_other_prop(const PropId prop_id) const override;
+        bool is_resisting_other_prop(PropId prop_id) const override;
 };
 
 class PropRElec: public Prop
@@ -1139,7 +1138,7 @@ public:
         PropRElec() :
                 Prop(PropId::r_elec) {}
 
-        DmgResistData is_resisting_dmg(const DmgType dmg_type) const override;
+        DmgResistData is_resisting_dmg(DmgType dmg_type) const override;
 };
 
 class PropRFear: public Prop
@@ -1150,7 +1149,7 @@ public:
 
         void on_applied() override;
 
-        bool is_resisting_other_prop(const PropId prop_id) const override;
+        bool is_resisting_other_prop(PropId prop_id) const override;
 };
 
 class PropRSlow: public Prop
@@ -1161,7 +1160,7 @@ public:
 
         void on_applied() override;
 
-        bool is_resisting_other_prop(const PropId prop_id) const override;
+        bool is_resisting_other_prop(PropId prop_id) const override;
 };
 
 class PropRPhys: public Prop
@@ -1172,9 +1171,9 @@ public:
 
         void on_applied() override;
 
-        bool is_resisting_other_prop(const PropId prop_id) const override;
+        bool is_resisting_other_prop(PropId prop_id) const override;
 
-        DmgResistData is_resisting_dmg(const DmgType dmg_type) const override;
+        DmgResistData is_resisting_dmg(DmgType dmg_type) const override;
 };
 
 class PropRFire: public Prop
@@ -1185,9 +1184,9 @@ public:
 
         void on_applied() override;
 
-        bool is_resisting_other_prop(const PropId prop_id) const override;
+        bool is_resisting_other_prop(PropId prop_id) const override;
 
-        DmgResistData is_resisting_dmg(const DmgType dmg_type) const override;
+        DmgResistData is_resisting_dmg(DmgType dmg_type) const override;
 };
 
 class PropRPoison: public Prop
@@ -1198,7 +1197,7 @@ public:
 
         void on_applied() override;
 
-        bool is_resisting_other_prop(const PropId prop_id) const override;
+        bool is_resisting_other_prop(PropId prop_id) const override;
 };
 
 class PropRSleep: public Prop
@@ -1209,7 +1208,7 @@ public:
 
         void on_applied() override;
 
-        bool is_resisting_other_prop(const PropId prop_id) const override;
+        bool is_resisting_other_prop(PropId prop_id) const override;
 };
 
 class PropRDisease: public Prop
@@ -1220,7 +1219,7 @@ public:
 
         void on_applied() override;
 
-        bool is_resisting_other_prop(const PropId prop_id) const override;
+        bool is_resisting_other_prop(PropId prop_id) const override;
 };
 
 class PropRBlind: public Prop
@@ -1231,7 +1230,7 @@ public:
 
         void on_applied() override;
 
-        bool is_resisting_other_prop(const PropId prop_id) const override;
+        bool is_resisting_other_prop(PropId prop_id) const override;
 };
 
 class PropRPara: public Prop
@@ -1242,7 +1241,7 @@ public:
 
         void on_applied() override;
 
-        bool is_resisting_other_prop(const PropId prop_id) const override;
+        bool is_resisting_other_prop(PropId prop_id) const override;
 };
 
 class PropRBreath: public Prop
@@ -1475,7 +1474,7 @@ public:
         PropSwimming() :
                 Prop(PropId::swimming) {}
 
-        bool allow_read_absolute(const Verbose verbose) const override;
+        bool allow_read_absolute(Verbose verbose) const override;
 
         bool affect_actor_color(Color& color) const override
         {
@@ -1484,7 +1483,7 @@ public:
                 return true;
         }
 
-        bool allow_attack_ranged(const Verbose verbose) const override;
+        bool allow_attack_ranged(Verbose verbose) const override;
 
         int ability_mod(const AbilityId ability) const override
         {
@@ -1540,7 +1539,7 @@ public:
         PropCannotReadCurse() :
                 Prop(PropId::cannot_read_curse) {}
 
-        bool allow_read_absolute(const Verbose verbose) const override;
+        bool allow_read_absolute(Verbose verbose) const override;
 };
 
 #endif // PROPERTY_HPP

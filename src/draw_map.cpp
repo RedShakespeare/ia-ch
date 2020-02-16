@@ -9,12 +9,12 @@
 #include "actor.hpp"
 #include "actor_mon.hpp"
 #include "actor_player.hpp"
-#include "terrain_door.hpp"
-#include "terrain_mob.hpp"
-#include "terrain.hpp"
 #include "game_time.hpp"
 #include "io.hpp"
 #include "map.hpp"
+#include "terrain.hpp"
+#include "terrain_door.hpp"
+#include "terrain_mob.hpp"
 #include "viewport.hpp"
 
 // -----------------------------------------------------------------------------
@@ -618,4 +618,4 @@ const CellRenderData& get_drawn_cell_player_memory(int x, int y)
         return s_render_array_player_memory.at(x, y);
 }
 
-} // draw_map
+} // namespace draw_map

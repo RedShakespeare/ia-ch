@@ -16,7 +16,7 @@
 namespace actor
 {
 class Mon;
-}
+} // namespace actor
 
 struct P;
 
@@ -46,7 +46,7 @@ bool step_path(actor::Mon& mon, std::vector<P>& path);
 
 bool step_to_lair_if_los(actor::Mon& mon, const P& lair_p);
 
-} // action
+} // namespace action
 
 // -----------------------------------------------------------------------------
 // Information gathering
@@ -64,8 +64,8 @@ std::vector<P> find_path_to_target(actor::Mon& mon);
 
 void set_special_blocked_cells(actor::Mon& mon, Array2<bool>& a);
 
-} // info
+} // namespace info
 
-} // ai
+} // namespace ai
 
 #endif // AI_HPP

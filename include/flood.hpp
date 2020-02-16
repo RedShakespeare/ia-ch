@@ -14,6 +14,6 @@ Array2<int> floodfill(
         const Array2<bool>& blocked,
         int travel_lmt = -1,
         const P& p1 = P(-1, -1),
-        const bool allow_diagonal = true);
+        bool allow_diagonal = true);
 
 #endif // FLOOD_HPP

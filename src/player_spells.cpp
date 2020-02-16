@@ -138,7 +138,7 @@ void load()
 
         for (int i = 0; i < nr_spells; ++i)
         {
-                const SpellId id = (SpellId)saving::get_int();
+                const auto id = (SpellId)saving::get_int();
 
                 s_learned_spells.push_back(
                         spell_factory::make_spell_from_id(id));
@@ -303,7 +303,7 @@ bool is_player_adj_to_altar()
         return false;
 }
 
-} // player_spells
+} // namespace player_spells
 
 // -----------------------------------------------------------------------------
 // BrowseSpell
@@ -375,7 +375,7 @@ void BrowseSpell::draw()
                         p,
                         color);
 
-                std::string fill_str = "";
+                std::string fill_str;
 
                 const size_t fill_size = spi_label_x - p.x - name.size();
 
@@ -389,7 +389,7 @@ void BrowseSpell::draw()
                 io::draw_text(
                         fill_str,
                         Panel::item_menu,
-                        P(p.x + name.size(), p.y),
+                        P(p.x + (int)name.size(), p.y),
                         fill_color);
 
                 p.x = spi_label_x;
@@ -467,12 +467,12 @@ void BrowseSpell::draw()
 
                         std::vector<ColoredString> lines;
 
+                        lines.reserve(descr.size());
                         for (const auto& line : descr)
                         {
-                                lines.push_back(
-                                        ColoredString(
+                                lines.emplace_back(
                                                 line,
-                                                colors::light_white()));
+                                                colors::light_white());
                         }
 
                         if (!lines.empty())
