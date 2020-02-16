@@ -177,7 +177,13 @@ static void set_default_variables()
         s_screen_px_w = s_gui_cell_px_w * default_nr_gui_cells_x;
         s_screen_px_h = s_gui_cell_px_h * default_nr_gui_cells_y;
 
+#ifdef NDEBUG
         s_is_audio_enabled = true;
+#else
+        // Hearing the audio all the time while debug testing gets old...
+        s_is_audio_enabled = false;
+#endif // NDEBUG
+
         s_is_amb_audio_enabled = true;
         s_is_amb_audio_preloaded = false;
         s_is_fullscreen = false;
