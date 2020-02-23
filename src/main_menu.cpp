@@ -301,17 +301,12 @@ static const std::vector<std::string> quotes =
 // Main menu state
 // -----------------------------------------------------------------------------
 MainMenuState::MainMenuState() :
-#ifdef NDEBUG
         m_browser (MenuBrowser(6))
-#else // Debug mode
-        m_browser (MenuBrowser(7))
-#endif // NDEBUG
 {
 
 }
 
-MainMenuState::~MainMenuState()
-= default;
+MainMenuState::~MainMenuState() = default;
 
 StateId MainMenuState::id()
 {
@@ -361,9 +356,6 @@ void MainMenuState::draw()
                 "Options",
                 "Graveyard",
                 "Escape to reality"
-#ifndef NDEBUG
-                , "DEBUG: RUN BOT"
-#endif // NDEBUG
         };
 
         const P screen_dims = panels::dims(Panel::screen);
@@ -490,17 +482,8 @@ void MainMenuState::update()
                 switch (m_browser.y())
                 {
                 case 0:
-#ifndef NDEBUG
-                case 6:
-#endif // NDEBUG
                 {
 #ifndef NDEBUG
-                        // New game (or run bot)
-                        if (m_browser.y() == 6)
-                        {
-                                config::toggle_bot_playing();
-                        }
-
                         if (!config::is_bot_playing())
 #endif // NDEBUG
                         {

@@ -6,6 +6,7 @@
 
 #include "init.hpp"
 
+#include "config.hpp"
 #include "debug.hpp"
 #include "init.hpp"
 #include "io.hpp"
@@ -20,6 +21,10 @@ int main(int argc, char** argv)
 {
         TRACE_FUNC_BEGIN;
 
+        rnd::seed();
+
+        init::init_io();
+
 #ifdef NDEBUG
         (void)argc;
         (void)argv;
@@ -32,12 +37,14 @@ int main(int argc, char** argv)
                 {
                         init::g_is_demo_mapgen = true;
                 }
+
+                if (arg_str == "--bot")
+                {
+                        config::toggle_bot_playing();
+                }
         }
 #endif // NDEBUG
 
-        rnd::seed();
-
-        init::init_io();
         init::init_game();
 
         std::unique_ptr<State> main_menu_state(new MainMenuState);
