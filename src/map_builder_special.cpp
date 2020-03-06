@@ -552,10 +552,7 @@ void MapBuilderEgypt::handle_template_pos(const P&p, const char c)
                         break;
 
                 default:
-                {
-                        ASSERT(false);
-                }
-                break;
+                        break;
                 }
 
                 if (actor_id != actor::Id::END)
