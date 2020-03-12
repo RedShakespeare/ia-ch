@@ -491,7 +491,7 @@ static void make_item_set_firearm(actor::Actor& actor)
 
                 inv.put_in_slot(SlotId::wpn, item, Verbose::no);
 
-                item = item::make(item::Id::shotgun_shell);
+                item = item::make(item::Id::rifle_bullet);
                 item->m_nr_items = rnd::range(1, 6);
 
                 inv.put_in_backpack(item);
