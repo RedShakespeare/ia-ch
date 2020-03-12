@@ -127,6 +127,7 @@ void throw_item(
 
         ThrowAttData att_data(
                 &actor_throwing,
+                actor_throwing.m_pos,
                 tgt_pos,
                 actor_throwing.m_pos,
                 item_thrown);
@@ -209,10 +210,13 @@ void throw_item(
                     ((pos == tgt_pos) ||
                      (actor_here->m_data->actor_size >= actor::Size::humanoid)))
                 {
-                        att_data = ThrowAttData(&actor_throwing,
-                                                tgt_pos,
-                                                pos,
-                                                item_thrown);
+                        att_data =
+                                ThrowAttData(
+                                        &actor_throwing,
+                                        actor_throwing.m_pos,
+                                        tgt_pos,
+                                        pos,
+                                        item_thrown);
 
                         if (att_data.att_result >= ActionResult::success)
                         {

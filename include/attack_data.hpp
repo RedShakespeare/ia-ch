@@ -80,6 +80,7 @@ struct ThrowAttData: public AttData
 public:
         ThrowAttData(
                 actor::Actor* attacker,
+                const P& attacker_origin,
                 const P& aim_pos,
                 const P& current_pos,
                 const item::Item& item);

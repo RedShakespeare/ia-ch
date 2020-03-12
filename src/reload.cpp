@@ -62,7 +62,19 @@ static void msg_reloaded(
 {
         if (actor.is_player())
         {
+                const auto ammo_loaded = wpn.m_ammo_loaded;
+                const auto ammo_max = wpn.data().ranged.max_ammo;
+                const auto ammo_loaded_str = std::to_string(ammo_loaded);
+                const auto ammo_max_str = std::to_string(ammo_max);
+
                 audio::play(wpn.data().ranged.reload_sfx);
+
+                // TODO: This is a hack
+                if ((wpn.id() == item::Id::revolver) &&
+                    (ammo_loaded == ammo_max))
+                {
+                        audio::play(SfxId::revolver_spin);
+                }
 
                 if (ammo.data().type == ItemType::ammo_mag)
                 {
@@ -70,26 +82,32 @@ static void msg_reloaded(
                                 wpn.name(ItemRefType::plain, ItemRefInf::none);
 
                         msg_log::add(
-                                "I reload my " + wpn_name +
-                                " (" + std::to_string(wpn.m_ammo_loaded) +
+                                "I reload my " +
+                                wpn_name +
+                                " (" +
+                                ammo_loaded_str +
                                 "/" +
-                                std::to_string(wpn.data().ranged.max_ammo) +
+                                ammo_max_str +
                                 ").");
                 }
-                else // Not a mag
+                else
                 {
+                        // Not a magazine
                         const std::string ammo_name = ammo.name(ItemRefType::a);
 
                         msg_log::add(
-                                "I load " + ammo_name +
-                                " (" + std::to_string(wpn.m_ammo_loaded) +
+                                "I load " +
+                                ammo_name +
+                                " (" +
+                                ammo_loaded_str +
                                 "/" +
-                                std::to_string(wpn.data().ranged.max_ammo) +
+                                ammo_max_str +
                                 ").");
                 }
         }
-        else // Is monster
+        else
         {
+                // Is monster
                 if (map::g_player->can_see_actor(actor))
                 {
                         const std::string name_the =

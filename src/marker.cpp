@@ -94,9 +94,19 @@ void MarkerState::draw()
                 line.erase(line.begin());
         }
 
-        const int orange_from_dist = orange_from_king_dist();
+        const auto effective_dist_range = effective_king_dist_range();
 
-        const int red_from_dist = red_from_king_dist();
+        const int orange_until_including_dist =
+                (effective_dist_range.min == -1)
+                ? -1
+                : (effective_dist_range.min - 1);
+
+        const int orange_from_dist =
+                (effective_dist_range.max == -1)
+                ? -1
+                : (effective_dist_range.max + 1);
+
+        auto red_from_dist = max_king_dist();
 
         int red_from_idx = -1;
 
@@ -125,6 +135,7 @@ void MarkerState::draw()
 
         draw_marker(
                 line,
+                orange_until_including_dist,
                 orange_from_dist,
                 red_from_dist,
                 red_from_idx);
@@ -224,12 +235,12 @@ void MarkerState::update()
 
 void MarkerState::draw_marker(
         const std::vector<P>& line,
-        const int orange_from_king_dist,
-        const int red_from_king_dist,
-        const int red_from_idx)
+        int orange_until_including_king_dist,
+        int orange_from_king_dist,
+        int red_from_king_dist,
+        int red_from_idx)
 {
-        const P map_view_dims =
-                viewport::get_map_view_area().dims();
+        const P map_view_dims = viewport::get_map_view_area().dims();
 
         for (int x = 0; x < map_view_dims.x; ++x)
         {
@@ -242,7 +253,7 @@ void MarkerState::draw_marker(
                 }
         }
 
-        Color color = colors::light_green();
+        auto color = colors::light_green();
 
         // Draw the line
 
@@ -260,27 +271,34 @@ void MarkerState::draw_marker(
 
                 const int dist = king_dist(m_origin, line_pos);
 
-                // Draw red due to index, or due to distance?
-                const bool red_by_idx =
-                        (red_from_idx != -1) &&
-                        ((int)line_idx >= red_from_idx);
+                const bool is_near_orange =
+                        (orange_until_including_king_dist != -1) &&
+                        (dist <= orange_until_including_king_dist);
 
-                const bool red_by_dist =
+                const bool is_far_orange =
+                        (orange_from_king_dist != -1) &&
+                        (dist >= orange_from_king_dist);
+
+                const bool is_red_by_dist =
                         (red_from_king_dist != -1) &&
                         (dist >= red_from_king_dist);
 
-                const bool is_red = red_by_idx || red_by_dist;
+                const bool is_red_by_idx =
+                        (red_from_idx != -1) &&
+                        ((int)line_idx >= red_from_idx);
 
                 // NOTE: Final color is stored for drawing the head
-                if (is_red)
+                if (is_red_by_idx || is_red_by_dist)
                 {
                         color = colors::light_red();
                 }
-                // Not red - orange by distance?
-                else if ((orange_from_king_dist != -1) &&
-                         (dist >= orange_from_king_dist))
+                else if (is_near_orange || is_far_orange)
                 {
                         color = colors::orange();
+                }
+                else
+                {
+                        color = colors::light_green();
                 }
 
                 // Do not draw the head yet
@@ -319,6 +337,15 @@ void MarkerState::draw_marker(
 
         if (viewport::is_in_view(head_pos))
         {
+                // If we are currently only drawing the head and the line is
+                // empty, draw the head as orange if the aiming has a defined
+                // minimum effective range (if the line is non-empty, the head
+                // color would be set by the line drawing above)
+                if (line.empty() && (orange_until_including_king_dist >= 0))
+                {
+                        color = colors::orange();
+                }
+
                 const P view_pos = viewport::to_view_pos(head_pos);
 
                 auto& d = m_marker_render_data.at(view_pos);
@@ -491,8 +518,7 @@ void Aiming::on_moved()
 {
         look::print_living_actor_info_msg(m_pos);
 
-        const bool is_in_range =
-                king_dist(m_origin, m_pos) < red_from_king_dist();
+        const bool is_in_range = king_dist(m_origin, m_pos) <= max_king_dist();
 
         if (is_in_range)
         {
@@ -605,24 +631,14 @@ void Aiming::handle_input(const InputData& input)
         }
 }
 
-int Aiming::orange_from_king_dist() const
+Range Aiming::effective_king_dist_range() const
 {
-        const int effective_range = m_wpn.data().ranged.effective_range;
-
-        return
-                (effective_range < 0)
-                ? -1
-                : (effective_range + 1);
+        return m_wpn.data().ranged.effective_range;
 }
 
-int Aiming::red_from_king_dist() const
+int Aiming::max_king_dist() const
 {
-        const int max_range = m_wpn.data().ranged.max_range;
-
-        return
-                (max_range < 0)
-                ? -1
-                : (max_range + 1);
+        return m_wpn.data().ranged.max_range;
 }
 
 // -----------------------------------------------------------------------------
@@ -632,8 +648,7 @@ void Throwing::on_moved()
 {
         look::print_living_actor_info_msg(m_pos);
 
-        const bool is_in_range =
-                king_dist(m_origin, m_pos) < red_from_king_dist();
+        const bool is_in_range = king_dist(m_origin, m_pos) <= max_king_dist();
 
         if (is_in_range)
         {
@@ -645,6 +660,7 @@ void Throwing::on_moved()
                 {
                         ThrowAttData att_data(
                                 map::g_player,
+                                m_origin,
                                 actor->m_pos, // Aim position
                                 actor->m_pos, // Current position
                                 *m_inv_item);
@@ -738,24 +754,14 @@ void Throwing::handle_input(const InputData& input)
         }
 }
 
-int Throwing::orange_from_king_dist() const
+Range Throwing::effective_king_dist_range() const
 {
-        const int effective_range = m_inv_item->data().ranged.effective_range;
-
-        return
-                (effective_range < 0)
-                ? -1
-                : (effective_range + 1);
+        return m_inv_item->data().ranged.effective_range;
 }
 
-int Throwing::red_from_king_dist() const
+int Throwing::max_king_dist() const
 {
-        const int max_range = m_inv_item->data().ranged.max_range;
-
-        return
-                (max_range < 0)
-                ? -1
-                : (max_range + 1);
+        return m_inv_item->data().ranged.max_range;
 }
 
 // -----------------------------------------------------------------------------
@@ -885,14 +891,9 @@ void ThrowingExplosive::handle_input(const InputData& input)
         }
 }
 
-int ThrowingExplosive::red_from_king_dist() const
+int ThrowingExplosive::max_king_dist() const
 {
-        const int max_range = m_explosive.data().ranged.max_range;
-
-        return
-                (max_range < 0)
-                ? -1
-                : (max_range + 1);
+        return m_explosive.data().ranged.max_range;
 }
 
 // -----------------------------------------------------------------------------

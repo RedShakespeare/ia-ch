@@ -325,7 +325,7 @@ void init()
         d.ranged.max_ammo = 2;
         d.ranged.dmg = DmgRange(8, 24);
         d.ranged.hit_chance_mod = 0;
-        d.ranged.effective_range = 3;
+        d.ranged.effective_range = {0, 3};
         d.ranged.ammo_item_id = Id::shotgun_shell;
         d.ranged.att_msgs = {"fire", "fires"};
         d.ranged.snd_msg = "I hear a shotgun blast.";
@@ -355,7 +355,7 @@ void init()
         d.ranged.max_ammo = 8;
         d.ranged.dmg = DmgRange(6, 18);
         d.ranged.hit_chance_mod = 0;
-        d.ranged.effective_range = 5;
+        d.ranged.effective_range = {0, 5};
         d.ranged.ammo_item_id = Id::shotgun_shell;
         d.ranged.att_msgs = {"fire", "fires"};
         d.ranged.snd_msg = "I hear a shotgun blast.";
@@ -374,6 +374,7 @@ void init()
         d.base_descr = {
                 "A cartridge designed to be fired from a shotgun."
         };
+        d.color = colors::light_red();
         d.max_stack_at_spawn = 10;
         d.native_containers.push_back(terrain::Id::chest);
         d.native_containers.push_back(terrain::Id::cabinet);
@@ -392,7 +393,7 @@ void init()
         d.melee.att_msgs = {"strike", "strikes"};
         d.ranged.max_ammo = 5;
         d.ranged.dmg = DmgRange(1, 3);
-        d.ranged.effective_range = 8;
+        d.ranged.effective_range = {0, 8};
         d.allow_display_dmg = false;
         d.ranged.ammo_item_id = Id::incinerator_ammo;
         d.ranged.att_msgs = {"fire", "fires"};
@@ -441,9 +442,9 @@ void init()
         d.melee.att_msgs = {"strike", "strikes"};
         d.ranged.is_machine_gun = true;
         d.ranged.max_ammo = 50;
-        d.ranged.dmg = DmgRange(2, 4, 2);
+        d.ranged.dmg = DmgRange(4, 6);
         d.ranged.hit_chance_mod = -10;
-        d.ranged.effective_range = 8;
+        d.ranged.effective_range = {0, 8};
         d.ranged.ammo_item_id = Id::drum_of_bullets;
         d.ranged.att_msgs = {"fire", "fires"};
         d.ranged.snd_msg = "I hear the burst of a machine gun.";
@@ -475,8 +476,57 @@ void init()
         g_data[(size_t)d.id] = d;
 
         reset_data(d, ItemType::ranged_wpn);
+        d.id = Id::revolver;
+        d.base_name = {
+                "S&W Model 10 Revolver",
+                "S&W Model 10 Revolvers",
+                "a S&W Model 10 Revolver"
+        };
+        d.base_descr = {
+                "A six-shot double-action revolver."
+        };
+        d.weight = (Weight::light + Weight::medium) / 2;
+        d.tile = TileId::revolver;
+        d.ranged.max_ammo = 6;
+        d.ranged.dmg = DmgRange(5, 10);
+        d.ranged.hit_chance_mod = 5;
+        d.ranged.effective_range = {0, 6};
+        d.ranged.ammo_item_id = Id::revolver_bullet;
+        d.melee.att_msgs = {"strike", "strikes"};
+        d.ranged.att_msgs = {"fire", "fires"};
+        d.ranged.snd_msg = "I hear a revolver being fired.";
+        d.ranged.att_sfx = SfxId::revolver_fire;
+        d.ranged.makes_ricochet_snd = true;
+        d.ranged.reload_sfx = SfxId::rifle_revolver_reload;
+        d.native_containers.push_back(terrain::Id::chest);
+        d.native_containers.push_back(terrain::Id::cabinet);
+        d.native_containers.push_back(terrain::Id::cocoon);
+        g_data[(size_t)d.id] = d;
+
+        reset_data(d, ItemType::ammo);
+        d.id = Id::revolver_bullet;
+        d.base_name = {
+                "Revolver .38 Bullet",
+                "Revolver .38 Bullets",
+                "a Revolver .38 Bullet"
+        };
+        d.base_descr = {
+                "Ammunition used by S&W Model 10 Revolvers."
+        };
+        d.color = colors::dark_yellow();
+        d.max_stack_at_spawn = 10;
+        d.native_containers.push_back(terrain::Id::chest);
+        d.native_containers.push_back(terrain::Id::cabinet);
+        d.native_containers.push_back(terrain::Id::cocoon);
+        g_data[(size_t)d.id] = d;
+
+        reset_data(d, ItemType::ranged_wpn);
         d.id = Id::pistol;
-        d.base_name = {"M1911 Colt", "M1911 Colt", "an M1911 Colt"};
+        d.base_name = {
+                "M1911 Colt",
+                "M1911 Colts",
+                "an M1911 Colt"
+        };
         d.base_descr = {
                 "A semi-automatic, magazine-fed pistol chambered for the .45 "
                 "ACP cartridge."
@@ -484,8 +534,9 @@ void init()
         d.weight = (Weight::light + Weight::medium) / 2;
         d.tile = TileId::pistol;
         d.ranged.max_ammo = 7;
-        d.ranged.dmg = DmgRange(1, 8, 4);
-        d.ranged.effective_range = 6;
+        d.ranged.dmg = DmgRange(5, 12);
+        d.ranged.hit_chance_mod = 0;
+        d.ranged.effective_range = {0, 6};
         d.ranged.ammo_item_id = Id::pistol_mag;
         d.melee.att_msgs = {"strike", "strikes"};
         d.ranged.att_msgs = {"fire", "fires"};
@@ -501,13 +552,58 @@ void init()
         reset_data(d, ItemType::ammo_mag);
         d.id = Id::pistol_mag;
         d.base_name = {
-                ".45ACP Colt cartridge", ".45ACP Colt cartridges",
-                "a .45ACP Colt cartridge"
+                "Colt .45ACP Magazine",
+                "Colt .45ACP Magazines",
+                "a Colt .45ACP Magazine"
         };
         d.base_descr = {
                 "Ammunition used by Colt pistols."
         };
+        d.color = colors::dark_yellow();
         d.ranged.max_ammo = g_data[(size_t)Id::pistol].ranged.max_ammo;
+        d.native_containers.push_back(terrain::Id::chest);
+        d.native_containers.push_back(terrain::Id::cabinet);
+        d.native_containers.push_back(terrain::Id::cocoon);
+        g_data[(size_t)d.id] = d;
+
+        reset_data(d, ItemType::ranged_wpn);
+        d.id = Id::rifle;
+        d.base_name = {
+                "Winchester Rifle", "Winchester Rifles", "a Winchester Rifle"
+        };
+        d.base_descr = {
+                "A lever-action repeating rifle.",
+
+                "This weapon has an accuracy penalty at close ranges."
+        };
+        d.weight = Weight::medium;
+        d.tile = TileId::rifle;
+        // d.color = colors::dark_brown();
+        d.ranged.max_ammo = 7;
+        d.ranged.dmg = DmgRange(10, 16);
+        d.ranged.hit_chance_mod = 15;
+        d.ranged.effective_range = {4, 8};
+        d.ranged.ammo_item_id = Id::rifle_bullet;
+        d.melee.att_msgs = {"strike", "strikes"};
+        d.ranged.att_msgs = {"fire", "fires"};
+        d.ranged.snd_msg = "I hear a rifle being fired.";
+        d.ranged.att_sfx = SfxId::rifle_fire;
+        d.ranged.makes_ricochet_snd = true;
+        d.ranged.reload_sfx = SfxId::rifle_revolver_reload;
+        d.native_containers.push_back(terrain::Id::cabinet);
+        g_data[(size_t)d.id] = d;
+
+        reset_data(d, ItemType::ammo);
+        d.id = Id::rifle_bullet;
+        d.base_name = {
+                "Winchester .30 Bullet",
+                "Winchester .30 Bullets",
+                "a Winchester .30 Bullet"
+        };
+        d.base_descr = {
+                "Ammunition used by Winchester Rifles."
+        };
+        d.max_stack_at_spawn = 10;
         d.native_containers.push_back(terrain::Id::chest);
         d.native_containers.push_back(terrain::Id::cabinet);
         d.native_containers.push_back(terrain::Id::cocoon);
@@ -523,7 +619,7 @@ void init()
         d.tile = TileId::flare_gun;
         d.ranged.max_ammo = 1;
         d.ranged.dmg = DmgRange(1, 3, 0);
-        d.ranged.effective_range = 3;
+        d.ranged.effective_range = {0, 3};
         d.allow_display_dmg = false;
         d.ranged.ammo_item_id = Id::flare;
         d.melee.att_msgs = {"strike", "strikes"};
@@ -551,7 +647,7 @@ void init()
         d.ranged.max_ammo = 12;
         d.ranged.dmg = DmgRange(1, 7, 0);
         d.ranged.hit_chance_mod = 0;
-        d.ranged.effective_range = 4;
+        d.ranged.effective_range = {0, 4};
         d.ranged.dmg_type = DmgType::physical;
         d.ranged.knocks_back = true;
         d.ranged.ammo_item_id = Id::iron_spike;
@@ -585,7 +681,7 @@ void init()
         d.color = colors::yellow();
         d.ranged.dmg = DmgRange(3, 12, 1);
         d.ranged.hit_chance_mod = 5;
-        d.ranged.effective_range = 4;
+        d.ranged.effective_range = {0, 4};
         {
                 auto prop = new PropParalyzed();
 
@@ -610,9 +706,10 @@ void init()
         d.ranged.has_infinite_ammo = true;
         d.ranged.dmg = DmgRange(1, 8);
         d.ranged.hit_chance_mod = 70;
-        d.ranged.effective_range = 6;
+        d.ranged.effective_range = {0, 6};
         d.ranged.snd_msg = "I hear the launching of a projectile.";
-        d.ranged.att_sfx = SfxId::END; // TODO: Make a sound effect for this
+        // TODO: Make a sound effect for this
+        d.ranged.att_sfx = SfxId::END;
         d.ranged.makes_ricochet_snd = true;
         g_data[(size_t)d.id] = d;
 
@@ -719,8 +816,8 @@ void init()
         d.color = colors::white();
         d.ranged.dmg = DmgRange(2, 6);
         d.ranged.throw_hit_chance_mod = 10;
-        d.ranged.effective_range = 5;
-        d.ranged.max_range = d.ranged.effective_range + 3;
+        d.ranged.effective_range = {0, 5};
+        d.ranged.max_range = d.ranged.effective_range.max + 3;
         d.max_stack_at_spawn = 6;
         d.land_on_hard_snd_msg = "I hear a clanking sound.";
         d.land_on_hard_sfx = SfxId::metal_clank;
@@ -742,8 +839,8 @@ void init()
         d.character = '*';
         d.color = colors::gray();
         d.ranged.dmg = DmgRange(1, 3);
-        d.ranged.effective_range = 4;
-        d.ranged.max_range = d.ranged.effective_range + 3;
+        d.ranged.effective_range = {0, 4};
+        d.ranged.max_range = d.ranged.effective_range.max + 3;
         d.max_stack_at_spawn = 3;
         d.main_att_mode = AttMode::thrown;
         d.native_containers.push_back(terrain::Id::cabinet);
@@ -775,8 +872,8 @@ void init()
         d.melee.hit_hard_sfx = SfxId::hit_sharp;
         d.melee.miss_sfx = SfxId::miss_light;
         d.ranged.throw_hit_chance_mod = -5;
-        d.ranged.effective_range = 4;
-        d.ranged.max_range = d.ranged.effective_range + 3;
+        d.ranged.effective_range = {0, 4};
+        d.ranged.max_range = d.ranged.effective_range.max + 3;
         d.native_containers.push_back(terrain::Id::chest);
         d.native_containers.push_back(terrain::Id::cabinet);
         d.native_containers.push_back(terrain::Id::tomb);
@@ -805,8 +902,8 @@ void init()
         d.melee.hit_hard_sfx = SfxId::hit_sharp;
         d.melee.miss_sfx = SfxId::miss_light;
         d.ranged.throw_hit_chance_mod = 0;
-        d.ranged.effective_range = 5;
-        d.ranged.max_range = d.ranged.effective_range + 3;
+        d.ranged.effective_range = {0, 5};
+        d.ranged.max_range = d.ranged.effective_range.max + 3;
         d.native_containers.push_back(terrain::Id::chest);
         d.native_containers.push_back(terrain::Id::cabinet);
         d.native_containers.push_back(terrain::Id::cocoon);
@@ -832,8 +929,8 @@ void init()
         d.melee.is_noisy = false;
         d.melee.miss_sfx = SfxId::miss_medium;
         d.ranged.throw_hit_chance_mod = -5;
-        d.ranged.effective_range = 4;
-        d.ranged.max_range = d.ranged.effective_range + 3;
+        d.ranged.effective_range = {0, 4};
+        d.ranged.max_range = d.ranged.effective_range.max + 3;
         d.land_on_hard_snd_msg = "I hear a thudding sound.";
         d.land_on_hard_sfx = SfxId::END;
         g_data[(size_t)d.id] = d;
@@ -857,8 +954,8 @@ void init()
         d.melee.is_noisy = true;
         d.melee.miss_sfx = SfxId::miss_medium;
         d.ranged.throw_hit_chance_mod = -5;
-        d.ranged.effective_range = 4;
-        d.ranged.max_range = d.ranged.effective_range + 3;
+        d.ranged.effective_range = {0, 4};
+        d.ranged.max_range = d.ranged.effective_range.max + 3;
         d.native_containers.push_back(terrain::Id::cabinet);
         d.native_containers.push_back(terrain::Id::cocoon);
         g_data[(size_t)d.id] = d;
@@ -884,8 +981,8 @@ void init()
         d.melee.miss_sfx = SfxId::miss_medium;
         d.melee.is_noisy = true;
         d.ranged.throw_hit_chance_mod = -5;
-        d.ranged.effective_range = 4;
-        d.ranged.max_range = d.ranged.effective_range + 3;
+        d.ranged.effective_range = {0, 4};
+        d.ranged.max_range = d.ranged.effective_range.max + 3;
         d.native_containers.push_back(terrain::Id::cabinet);
         d.native_containers.push_back(terrain::Id::cocoon);
         g_data[(size_t)d.id] = d;
@@ -911,8 +1008,8 @@ void init()
         d.melee.miss_sfx = SfxId::miss_medium;
         d.melee.is_noisy = true;
         d.ranged.throw_hit_chance_mod = -5;
-        d.ranged.effective_range = 4;
-        d.ranged.max_range = d.ranged.effective_range + 3;
+        d.ranged.effective_range = {0, 4};
+        d.ranged.max_range = d.ranged.effective_range.max + 3;
         d.native_containers.push_back(terrain::Id::cabinet);
         d.native_containers.push_back(terrain::Id::tomb);
         d.native_containers.push_back(terrain::Id::cocoon);
@@ -941,8 +1038,8 @@ void init()
         d.melee.miss_sfx = SfxId::miss_heavy;
         d.melee.is_noisy = true;
         d.ranged.throw_hit_chance_mod = -5;
-        d.ranged.effective_range = 4;
-        d.ranged.max_range = d.ranged.effective_range + 3;
+        d.ranged.effective_range = {0, 4};
+        d.ranged.max_range = d.ranged.effective_range.max + 3;
         d.native_containers.push_back(terrain::Id::cabinet);
         d.native_containers.push_back(terrain::Id::tomb);
         d.native_containers.push_back(terrain::Id::cocoon);
@@ -971,8 +1068,8 @@ void init()
         d.melee.hit_medium_sfx = SfxId::hit_sharp;
         d.melee.miss_sfx = SfxId::miss_heavy;
         d.ranged.throw_hit_chance_mod = -10;
-        d.ranged.effective_range = 3;
-        d.ranged.max_range = d.ranged.effective_range + 3;
+        d.ranged.effective_range = {0, 3};
+        d.ranged.max_range = d.ranged.effective_range.max + 3;
         d.native_containers.push_back(terrain::Id::cabinet);
         d.native_containers.push_back(terrain::Id::cocoon);
         g_data[(size_t)d.id] = d;
@@ -996,8 +1093,8 @@ void init()
         d.melee.dmg_method = DmgMethod::blunt;
         d.melee.miss_sfx = SfxId::miss_heavy;
         d.ranged.throw_hit_chance_mod = -10;
-        d.ranged.effective_range = 3;
-        d.ranged.max_range = d.ranged.effective_range + 3;
+        d.ranged.effective_range = {0, 3};
+        d.ranged.max_range = d.ranged.effective_range.max + 3;
         d.native_containers.push_back(terrain::Id::cabinet);
         g_data[(size_t)d.id] = d;
 
@@ -1006,7 +1103,6 @@ void init()
         d.base_name = {"Iron Spike", "Iron Spikes", "an Iron Spike"};
         d.base_descr = {
                 "Can be useful for wedging things closed."
-                /*TODO: or prying things open."*/
         };
         d.weight = Weight::extra_light;
         d.tile = TileId::iron_spike;
@@ -1015,8 +1111,8 @@ void init()
         d.character = '/';
         d.ranged.throw_hit_chance_mod = -5;
         d.ranged.dmg = DmgRange(1, 4);
-        d.ranged.effective_range = 3;
-        d.ranged.max_range = d.ranged.effective_range + 3;
+        d.ranged.effective_range = {0, 3};
+        d.ranged.max_range = d.ranged.effective_range.max + 3;
         d.max_stack_at_spawn = 12;
         d.land_on_hard_snd_msg = "I hear a clanking sound.";
         d.land_on_hard_sfx = SfxId::metal_clank;
@@ -1691,8 +1787,8 @@ void init()
         d.melee.miss_sfx = SfxId::miss_medium;
         d.melee.dmg_method = DmgMethod::blunt;
         d.ranged.throw_hit_chance_mod = -10;
-        d.ranged.effective_range = 3;
-        d.ranged.max_range = d.ranged.effective_range + 3;
+        d.ranged.effective_range = {0, 3};
+        d.ranged.max_range = d.ranged.effective_range.max + 3;
         d.is_unique = true;
         d.xp_on_found = 20;
         d.value = Value::supreme_treasure;
@@ -1868,8 +1964,8 @@ void init()
         d.melee.miss_sfx = SfxId::miss_light;
         d.melee.dmg_method = DmgMethod::piercing;
         d.ranged.throw_hit_chance_mod = -5;
-        d.ranged.effective_range = 4;
-        d.ranged.max_range = d.ranged.effective_range + 3;
+        d.ranged.effective_range = {0, 4};
+        d.ranged.max_range = d.ranged.effective_range.max + 3;
         d.is_unique = true;
         d.xp_on_found = 20;
         d.value = Value::supreme_treasure;
@@ -1917,7 +2013,7 @@ void init()
         d.ranged.dmg = DmgRange(0, 0);
         d.ranged.throw_hit_chance_mod = 15;
         d.ranged.always_break_on_throw = true;
-        d.ranged.effective_range = -1;
+        d.ranged.effective_range = {-1, -1};
         d.ranged.max_range = 3;
         d.max_stack_at_spawn = 1;
         d.main_att_mode = AttMode::thrown;
@@ -2004,7 +2100,7 @@ RangedData::RangedData() :
         hit_chance_mod(0),
         throw_hit_chance_mod(0),
         always_break_on_throw(false),
-        effective_range(6),
+        effective_range({0, 6}),
         max_range(g_fov_radi_int * 2),
         knocks_back(false),
         ammo_item_id(Id::END),

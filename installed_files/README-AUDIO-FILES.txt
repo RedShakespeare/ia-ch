@@ -394,10 +394,10 @@ Original title:      ???
 License:             ???
 
 File:                sfx_electric_lantern.ogg
-Source:              ???
-Author:              ???
-Original title:      ???
-License:             ???
+Source:              https://freesound.org/people/joedeshon/sounds/139062/
+Author:              joedeshon (username on freesound.org)
+Original title:      electrical_switch_02.wav
+License:             Attribution 3.0 Unported (CC BY 3.0)
 
 File:                sfx_explosion_molotov.ogg
 Source:              ???
@@ -406,10 +406,10 @@ Original title:      ???
 License:             ???
 
 File:                sfx_explosion.ogg
-Source:              ???
-Author:              ???
-Original title:      ???
-License:             ???
+Source:              https://freesound.org/people/steveygos93/sounds/80401/
+Author:              steveygos93
+Original title:      Explosion2.wav
+License:             Attribution 3.0 Unported (CC-BY-3.0)
 
 File:                sfx_gas.ogg
 Source:              https://freesound.org/people/jesabat/sounds/119741
@@ -479,10 +479,10 @@ Original title:      ???
 License:             ???
 
 File:                sfx_hit_sharp.ogg
-Source:              ???
-Author:              ???
-Original title:      ???
-License:             ???
+Source:              https://freesound.org/people/JoelAudio/sounds/77611/
+Author:              JoelAudio (username on freesound.org)
+Original title:      SFX_ATTACK_SWORD_001.wav
+License:             Attribution 3.0 Unported (CC-BY-3.0)
 
 File:                sfx_hit_small.ogg
 Source:              ???
@@ -509,10 +509,10 @@ Original title:      ???
 License:             ???
 
 File:                sfx_metal_clank.ogg
-Source:              ???
-Author:              ???
-Original title:      ???
-License:             ???
+Source:              https://freesound.org/people/Project_Trident/sounds/140321/
+Author:              Project_Trident (username on freesound.org)
+Original title:      Large knife drop
+License:             Attribution-NonCommercial 3.0 Unported (CC BY-NC 3.0)
 
 File:                sfx_migo_gun.ogg
 Source:              https://www.freesound.org/people/TheHadnot/sounds/160880
@@ -545,28 +545,55 @@ Original title:      ???
 License:             ???
 
 File:                sfx_pickup.ogg
-Source:              ???
-Author:              ???
-Original title:      ???
-License:             ???
+Source:              https://freesound.org/people/redjim/sounds/32578/
+Author:              redjim (username on freesound.org)
+Original title:      Remote pick drop.wav
+License:             Attribution-NonCommercial 3.0 Unported (CC BY-NC 3.0)
 
 File:                sfx_pistol_fire.ogg
-Source:              ???
-Author:              ???
-Original title:      ???
-License:             ???
+Source:              https://freesound.org/people/LeMudCrab/sounds/163456/
+Author:              LeMudCrab (username on freesound.org)
+Original title:      Pistol Shot
+License:             CC0 1.0 Universal (CC0-1.0)
 
 File:                sfx_pistol_reload.ogg
-Source:              ???
-Author:              ???
-Original title:      ???
-License:             ???
+Source:              https://freesound.org/people/ceremonialchapstick/sounds/142891/
+Author:              ceremonialchapstick (username on freesound.org)
+Original title:      1911 .45acp chambering.aif
+License:             CC0 1.0 Universal (CC0-1.0)
+
+File:                sfx_revolver_fire.ogg
+Source:              https://freesound.org/people/ermfilm/sounds/162432/
+Author:              ermfilm (username on freesound.org)
+Original title:      Rossi-Revolver_96kHz-24bit.wav
+License:             Attribution 3.0 Unported (CC-BY-3.0)
+Changes made:        Cut most of the sound
+
+File:                sfx_rifle_revolver_reload.ogg
+Source:              https://freesound.org/people/Dredile/sounds/177863/
+Author:              Dredile (username on freesound.org)
+Original title:      Clean Revolver Reload
+License:             CC0 1.0 Universal (CC0-1.0)
+Changes made:        Cut most of the sound
+
+File:                sfx_revolver_spin.ogg
+Source:              https://freesound.org/people/Dredile/sounds/177863/
+Author:              Dredile (username on freesound.org)
+Original title:      Clean Revolver Reload
+License:             CC0 1.0 Universal (CC0-1.0)
+Changes made:        Cut most of the sound
+
+File:                sfx_rifle_fire.ogg
+Source:              https://freesound.org/people/MATTIX/sounds/433858/
+Author:              MATTIX
+Original title:      Rifle_Gun_Shot_01.wav
+License:             Attribution 3.0 Unported (CC BY 3.0)
 
 File:                sfx_potion_quaff.ogg
-Source:              ???
-Author:              ???
-Original title:      ???
-License:             ???
+Source:              https://freesound.org/people/Jamius/sounds/41529/
+Author:              Jamius (username on freesound.org)
+Original title:      PotionDrinkLONG.wav
+License:             Attribution 3.0 Unported (CC-BY-3.0)
 
 File:                sfx_ricochet.ogg
 Source:              ???
@@ -575,16 +602,17 @@ Original title:      ???
 License:             ???
 
 File:                sfx_shotgun_pump_fire.ogg
-Source:              ???
-Author:              ???
-Original title:      ???
-License:             ???
+Source:              https://freesound.org/people/Pyrocamancer/sounds/137034/
+Author:              Pyrocamancer (username on freesound.org)
+Original title:      DSSHOTGN.wav
+License:             CC0 1.0 Universal (CC0-1.0)
 
 File:                sfx_shotgun_reload.ogg
-Source:              ???
-Author:              ???
-Original title:      ???
-License:             ???
+Source:              https://freesound.org/people/lensflare8642/sounds/145209/
+Author:              lensflare8642
+Original title:      shotgun sounds
+License:             CC0 1.0 Universal (CC0-1.0)
+Changes made:        Cut most of the sound
 
 File:                sfx_shotgun_sawed_off_fire.ogg
 Source:              ???
@@ -603,7 +631,7 @@ Source:              https://www.freesound.org/people/jgeralyn/sounds/143644
 Author:              geralyn (username on freesound.org)
 Original title:      NailGun_Dad'sHouse_Jan2012.aif
 License:             Attribution 3.0 Unported (CC-BY-3.0)
-Changes made:        Cut parts of the sound and applies fade-out
+Changes made:        Cut parts of the sound and applied fade-out
 
 File:                sfx_tomb_open.ogg
 Source:              https://www.freesound.org/people/Timbre/sounds/109361

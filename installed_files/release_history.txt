@@ -2,6 +2,7 @@
 v21.0 *** WORK IN PROGRESS ***
 --------------------------------------------------------------
 Gameplay
+* Added weapons "S&W Model 10 Revolver" and "Winchester Rifle"
 
 User interface
 

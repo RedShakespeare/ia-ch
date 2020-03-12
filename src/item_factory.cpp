@@ -41,6 +41,8 @@ Item* make(const Id item_id, const int nr_items)
         case Id::pump_shotgun:
         case Id::machine_gun:
         case Id::pistol:
+        case Id::revolver:
+        case Id::rifle:
         case Id::flare_gun:
         case Id::spike_gun:
         case Id::rock:
@@ -95,6 +97,8 @@ Item* make(const Id item_id, const int nr_items)
                 r = new SpikedMace(d);
                 break;
 
+        case Id::revolver_bullet:
+        case Id::rifle_bullet:
         case Id::shotgun_shell:
                 r = new Ammo(d);
                 break;

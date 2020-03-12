@@ -35,13 +35,15 @@ static bool is_defender_aware_of_attack(
 
                         is_aware = mon->m_player_aware_of_me_counter > 0;
                 }
-                else // No attacker actor (e.g. a trap)
+                else
                 {
+                        // No attacker actor (e.g. a trap)
                         is_aware = true;
                 }
         }
-        else // Defender is monster
+        else
         {
+                // Defender is monster
                 auto* const mon = static_cast<const actor::Mon*>(&defender);
 
                 is_aware = mon->m_aware_of_player_counter > 0;
@@ -116,8 +118,7 @@ MeleeAttData::MeleeAttData(
                 !(defender->is_player() &&
                   player_is_handling_armor);
 
-        if (allow_positive_doge ||
-            (dodging_ability < 0))
+        if (allow_positive_doge || (dodging_ability < 0))
         {
                 dodging_mod -= dodging_ability;
         }
@@ -297,16 +298,18 @@ RangedAttData::RangedAttData(
         {
                 aim_lvl = actor::Size::floor;
         }
-        else // Not incinerator
+        else
         {
+                // Not incinerator
                 auto* const actor_aimed_at = map::first_actor_at_pos(aim_pos);
 
                 if (actor_aimed_at)
                 {
                         aim_lvl = actor_aimed_at->m_data->actor_size;
                 }
-                else // No actor aimed at
+                else
                 {
+                        // No actor aimed at
                         const bool is_cell_blocked =
                                 map_parsers::BlocksProjectiles().
                                 cell(aim_pos);
@@ -320,172 +323,182 @@ RangedAttData::RangedAttData(
 
         defender = map::first_actor_at_pos(current_pos);
 
-        if (defender && (defender != attacker))
+        if (!defender || (defender == attacker))
         {
-                TRACE_VERBOSE << "Defender found" << std::endl;
+                return;
+        }
 
-                const P& def_pos(defender->m_pos);
+        TRACE_VERBOSE << "Defender found" << std::endl;
 
-                skill_mod =
-                        attacker
-                        ? attacker->ability(AbilityId::ranged, true)
-                        : 50;
+        skill_mod =
+                attacker
+                ? attacker->ability(AbilityId::ranged, true)
+                : 50;
 
-                wpn_mod = wpn.data().ranged.hit_chance_mod;
+        wpn_mod = wpn.data().ranged.hit_chance_mod;
 
-                const bool is_defender_aware =
-                        is_defender_aware_of_attack(attacker, *defender);
+        const bool is_defender_aware =
+                is_defender_aware_of_attack(attacker, *defender);
 
-                dodging_mod = 0;
+        dodging_mod = 0;
 
-                const bool player_is_handling_armor =
-                        (map::g_player->m_equip_armor_countdown > 0) ||
-                        (map::g_player->m_remove_armor_countdown);
+        const bool player_is_handling_armor =
+                (map::g_player->m_equip_armor_countdown > 0) ||
+                (map::g_player->m_remove_armor_countdown);
 
-                const bool allow_positive_doge =
-                        is_defender_aware &&
-                        !(defender->is_player() &&
-                          player_is_handling_armor);
+        const bool allow_positive_doge =
+                is_defender_aware &&
+                !(defender->is_player() &&
+                  player_is_handling_armor);
 
-                const int dodging_ability =
-                        defender->ability(AbilityId::dodging, true);
+        const int dodging_ability =
+                defender->ability(AbilityId::dodging, true);
 
-                if (allow_positive_doge ||
-                    (dodging_ability < 0))
+        if (allow_positive_doge || (dodging_ability < 0))
+        {
+                const int defender_dodging =
+                        defender->ability(
+                                AbilityId::dodging,
+                                true);
+
+                dodging_mod = -defender_dodging;
+        }
+
+        const auto dist = king_dist(attacker_origin, current_pos);
+
+        const auto effective_range = wpn.data().ranged.effective_range;
+
+        if (dist >= effective_range.min)
+        {
+                // Normal distance modifier
+                 dist_mod = 15 - (dist * 5);
+        }
+        else
+        {
+                // Closer than effective range
+                dist_mod = -50 + (dist * 5);
+        }
+
+        defender_size = defender->m_data->actor_size;
+
+        state_mod = 0;
+
+        // Lower hit chance if attacker cannot see target (e.g.
+        // attacking invisible creature)
+        if (attacker)
+        {
+                bool can_attacker_see_tgt = true;
+
+                if (attacker->is_player())
                 {
-                        const int defender_dodging =
-                                defender->ability(
-                                        AbilityId::dodging,
-                                        true);
+                        can_attacker_see_tgt =
+                                map::g_player->can_see_actor(*defender);
+                }
+                else
+                {
+                        // Attacker is monster
+                        auto* const mon =
+                                static_cast<actor::Mon*>(attacker);
 
-                        dodging_mod = -defender_dodging;
+                        Array2<bool> hard_blocked_los(map::dims());
+
+                        const R fov_rect =
+                                fov::fov_rect(
+                                        attacker->m_pos,
+                                        hard_blocked_los.dims());
+
+                        map_parsers::BlocksLos()
+                                .run(hard_blocked_los,
+                                     fov_rect,
+                                     MapParseMode::overwrite);
+
+                        can_attacker_see_tgt =
+                                mon->can_see_actor(
+                                        *defender,
+                                        hard_blocked_los);
                 }
 
-                const int dist_to_tgt = king_dist(attacker_origin, def_pos);
-
-                dist_mod = 15 - (dist_to_tgt * 5);
-
-                defender_size = defender->m_data->actor_size;
-
-                state_mod = 0;
-
-                // Lower hit chance if attacker cannot see target (e.g.
-                // attacking invisible creature)
-                if (attacker)
+                if (!can_attacker_see_tgt)
                 {
-                        bool can_attacker_see_tgt = true;
+                        state_mod -= 25;
+                }
+        }
 
-                        if (attacker->is_player())
-                        {
-                                can_attacker_see_tgt =
-                                        map::g_player->can_see_actor(*defender);
-                        }
-                        else // Attacker is monster
-                        {
-                                auto* const mon =
-                                        static_cast<actor::Mon*>(attacker);
+        // Player gets attack bonus for attacking unaware monster
+        if (attacker && attacker->is_player())
+        {
+                auto* const mon = static_cast<actor::Mon*>(defender);
 
-                                Array2<bool> hard_blocked_los(map::dims());
+                if (mon->m_aware_of_player_counter <= 0)
+                {
+                        state_mod += 25;
+                }
+        }
 
-                                const R fov_rect =
-                                        fov::fov_rect(
-                                                attacker->m_pos,
-                                                hard_blocked_los.dims());
+        const bool apply_undead_bane_bon =
+                (attacker == map::g_player) &&
+                player_bon::gets_undead_bane_bon(*defender->m_data);
 
-                                map_parsers::BlocksLos()
-                                        .run(hard_blocked_los,
-                                             fov_rect,
-                                             MapParseMode::overwrite);
+        const bool apply_ethereal_defender_pen =
+                defender->m_properties.has(PropId::ethereal) &&
+                !apply_undead_bane_bon;
 
-                                can_attacker_see_tgt =
-                                        mon->can_see_actor(
-                                                *defender,
-                                                hard_blocked_los);
-                        }
+        if (apply_ethereal_defender_pen)
+        {
+                state_mod -= 50;
+        }
 
-                        if (!can_attacker_see_tgt)
-                        {
-                                state_mod -= 25;
-                        }
+        hit_chance_tot =
+                skill_mod
+                + wpn_mod
+                + dodging_mod
+                + dist_mod
+                + state_mod;
+
+        set_constr_in_range(5, hit_chance_tot, 99);
+
+        att_result = ability_roll::roll(hit_chance_tot);
+
+        if (att_result >= ActionResult::success)
+        {
+                TRACE_VERBOSE << "Attack roll succeeded" << std::endl;
+
+                bool player_has_aim_bon = false;
+
+                if (attacker == map::g_player)
+                {
+                        player_has_aim_bon =
+                                attacker->m_properties
+                                .has(PropId::aiming);
                 }
 
-                // Player gets attack bonus for attacking unaware monster
-                if (attacker && attacker->is_player())
-                {
-                        auto* const mon = static_cast<actor::Mon*>(defender);
+                auto dmg_range = wpn.ranged_dmg(attacker);
 
-                        if (mon->m_aware_of_player_counter <= 0)
-                        {
-                                state_mod += 25;
-                        }
+                if ((attacker == map::g_player) &&
+                    player_bon::gets_undead_bane_bon(*defender->m_data))
+                {
+                        dmg_range.set_plus(dmg_range.plus() + 2);
                 }
 
-                const bool apply_undead_bane_bon =
-                        (attacker == map::g_player) &&
-                        player_bon::gets_undead_bane_bon(*defender->m_data);
+                dmg =
+                        player_has_aim_bon
+                        ? dmg_range.total_range().max
+                        : dmg_range.total_range().roll();
 
-                const bool apply_ethereal_defender_pen =
-                        defender->m_properties.has(PropId::ethereal) &&
-                        !apply_undead_bane_bon;
-
-                if (apply_ethereal_defender_pen)
+                // Positions further than max range have halved damage
+                if (dist > effective_range.max)
                 {
-                        state_mod -= 50;
-                }
+                        TRACE_VERBOSE << "Outside effetive range limit"
+                                      << std::endl;
 
-                hit_chance_tot =
-                        skill_mod
-                        + wpn_mod
-                        + dodging_mod
-                        + dist_mod
-                        + state_mod;
-
-                set_constr_in_range(5, hit_chance_tot, 99);
-
-                att_result = ability_roll::roll(hit_chance_tot);
-
-                if (att_result >= ActionResult::success)
-                {
-                        TRACE_VERBOSE << "Attack roll succeeded" << std::endl;
-
-                        bool player_has_aim_bon = false;
-
-                        if (attacker == map::g_player)
-                        {
-                                player_has_aim_bon =
-                                        attacker->m_properties
-                                        .has(PropId::aiming);
-                        }
-
-                        auto dmg_range = wpn.ranged_dmg(attacker);
-
-                        if ((attacker == map::g_player) &&
-                            player_bon::gets_undead_bane_bon(*defender->m_data))
-                        {
-                                dmg_range.set_plus(dmg_range.plus() + 2);
-                        }
-
-                        dmg =
-                                player_has_aim_bon
-                                ? dmg_range.total_range().max
-                                : dmg_range.total_range().roll();
-
-                        // Outside effective range limit?
-                        if (!wpn.is_in_effective_range_lmt(
-                                    attacker_origin,
-                                    defender->m_pos))
-                        {
-                                TRACE_VERBOSE << "Outside effetive range limit"
-                                              << std::endl;
-
-                                dmg = std::max(1, dmg / 2);
-                        }
+                        dmg = std::max(1, dmg / 2);
                 }
         }
 }
 
 ThrowAttData::ThrowAttData(
         actor::Actor* const the_attacker,
+        const P& attacker_origin,
         const P& aim_pos,
         const P& current_pos,
         const item::Item& item) :
@@ -508,8 +521,9 @@ ThrowAttData::ThrowAttData(
         {
                 aim_lvl = actor_aimed_at->m_data->actor_size;
         }
-        else // Not aiming at actor
+        else
         {
+                // Not aiming at actor
                 const bool is_cell_blocked =
                         map_parsers::BlocksProjectiles()
                         .cell(current_pos);
@@ -522,145 +536,147 @@ ThrowAttData::ThrowAttData(
 
         defender = map::first_actor_at_pos(current_pos);
 
-        if (defender && (defender != attacker))
+        if (!defender || (defender == attacker))
         {
-                TRACE_VERBOSE << "Defender found" << std::endl;
+                return;
+        }
 
-                skill_mod =
-                        attacker
-                        ? attacker->ability(AbilityId::ranged, true)
-                        : 50;
+        TRACE_VERBOSE << "Defender found" << std::endl;
 
-                wpn_mod = item.data().ranged.throw_hit_chance_mod;
+        skill_mod =
+                attacker
+                ? attacker->ability(AbilityId::ranged, true)
+                : 50;
 
-                const bool is_defender_aware =
-                        is_defender_aware_of_attack(attacker, *defender);
+        wpn_mod = item.data().ranged.throw_hit_chance_mod;
 
-                dodging_mod = 0;
+        const bool is_defender_aware =
+                is_defender_aware_of_attack(attacker, *defender);
 
-                const bool player_is_handling_armor =
-                        (map::g_player->m_equip_armor_countdown > 0) ||
-                        (map::g_player->m_remove_armor_countdown);
+        dodging_mod = 0;
 
-                const int dodging_ability =
-                        defender->ability(AbilityId::dodging, true);
+        const bool player_is_handling_armor =
+                (map::g_player->m_equip_armor_countdown > 0) ||
+                (map::g_player->m_remove_armor_countdown);
 
-                const bool allow_positive_doge =
-                        is_defender_aware &&
-                        !(defender->is_player() &&
-                          player_is_handling_armor);
+        const int dodging_ability =
+                defender->ability(AbilityId::dodging, true);
 
-                if (allow_positive_doge ||
-                    (dodging_ability < 0))
+        const bool allow_positive_doge =
+                is_defender_aware &&
+                !(defender->is_player() &&
+                  player_is_handling_armor);
+
+        if (allow_positive_doge || (dodging_ability < 0))
+        {
+                const int defender_dodging =
+                        defender->ability(AbilityId::dodging, true);;
+
+                dodging_mod = -defender_dodging;
+        }
+
+        const auto dist = king_dist(attacker_origin, current_pos);
+
+        const auto effective_range = item.data().ranged.effective_range;
+
+        if (dist >= effective_range.min)
+        {
+                // Normal distance modifier
+                dist_mod = 15 - (dist * 5);
+        }
+        else
+        {
+                // Closer than effective range
+                dist_mod = -50 + (dist * 5);
+        }
+
+        defender_size = defender->m_data->actor_size;
+
+        state_mod = 0;
+
+        bool can_attacker_see_tgt = true;
+
+        if (attacker == map::g_player)
+        {
+                can_attacker_see_tgt =
+                        map::g_player->can_see_actor(*defender);
+        }
+
+        // Lower hit chance if attacker cannot see target (e.g.
+        // attacking invisible creature)
+        if (!can_attacker_see_tgt)
+        {
+                state_mod -= 25;
+        }
+
+        // Player gets attack bonus for attacking unaware monster
+        if (attacker == map::g_player)
+        {
+                const auto* const mon =
+                        static_cast<actor::Mon*>(defender);
+
+                if (mon->m_aware_of_player_counter <= 0)
                 {
-                        const int defender_dodging =
-                                defender->ability(AbilityId::dodging, true);;
-
-                        dodging_mod = -defender_dodging;
+                        state_mod += 25;
                 }
+        }
 
-                const P& att_pos(attacker->m_pos);
-                const P& def_pos(defender->m_pos);
+        const bool apply_undead_bane_bon =
+                (attacker == map::g_player) &&
+                player_bon::gets_undead_bane_bon(*defender->m_data);
 
-                const int dist_to_tgt =
-                        king_dist(
-                                att_pos.x,
-                                att_pos.y,
-                                def_pos.x,
-                                def_pos.y);
+        const bool apply_ethereal_defender_pen =
+                defender->m_properties.has(PropId::ethereal) &&
+                !apply_undead_bane_bon;
 
-                dist_mod = 15 - (dist_to_tgt * 5);
+        if (apply_ethereal_defender_pen)
+        {
+                state_mod -= 50;
+        }
 
-                defender_size = defender->m_data->actor_size;
+        hit_chance_tot =
+                skill_mod
+                + wpn_mod
+                + dodging_mod
+                + dist_mod
+                + state_mod;
 
-                state_mod = 0;
+        set_constr_in_range(5, hit_chance_tot, 99);
 
-                bool can_attacker_see_tgt = true;
+        att_result = ability_roll::roll(hit_chance_tot);
+
+        if (att_result >= ActionResult::success)
+        {
+                TRACE_VERBOSE << "Attack roll succeeded" << std::endl;
+
+                bool player_has_aim_bon = false;
 
                 if (attacker == map::g_player)
                 {
-                        can_attacker_see_tgt =
-                                map::g_player->can_see_actor(*defender);
+                        player_has_aim_bon =
+                                attacker->m_properties
+                                .has(PropId::aiming);
                 }
 
-                // Lower hit chance if attacker cannot see target (e.g.
-                // attacking invisible creature)
-                if (!can_attacker_see_tgt)
+                auto dmg_range = item.thrown_dmg(attacker);
+
+                if (apply_undead_bane_bon)
                 {
-                        state_mod -= 25;
+                        dmg_range.set_plus(dmg_range.plus() + 2);
                 }
 
-                // Player gets attack bonus for attacking unaware monster
-                if (attacker == map::g_player)
+                dmg =
+                        player_has_aim_bon
+                        ? dmg_range.total_range().max
+                        : dmg_range.total_range().roll();
+
+                // Positions further than max range have halved damage
+                if (dist > effective_range.max)
                 {
-                        const auto* const mon =
-                                static_cast<actor::Mon*>(defender);
+                        TRACE_VERBOSE << "Outside effetive range limit"
+                                      << std::endl;
 
-                        if (mon->m_aware_of_player_counter <= 0)
-                        {
-                                state_mod += 25;
-                        }
-                }
-
-                const bool apply_undead_bane_bon =
-                        (attacker == map::g_player) &&
-                        player_bon::gets_undead_bane_bon(*defender->m_data);
-
-                const bool apply_ethereal_defender_pen =
-                        defender->m_properties.has(PropId::ethereal) &&
-                        !apply_undead_bane_bon;
-
-                if (apply_ethereal_defender_pen)
-                {
-                        state_mod -= 50;
-                }
-
-                hit_chance_tot =
-                        skill_mod
-                        + wpn_mod
-                        + dodging_mod
-                        + dist_mod
-                        + state_mod;
-
-                set_constr_in_range(5, hit_chance_tot, 99);
-
-                att_result = ability_roll::roll(hit_chance_tot);
-
-                if (att_result >= ActionResult::success)
-                {
-                        TRACE_VERBOSE << "Attack roll succeeded" << std::endl;
-
-                        bool player_has_aim_bon = false;
-
-                        if (attacker == map::g_player)
-                        {
-                                player_has_aim_bon =
-                                        attacker->m_properties
-                                        .has(PropId::aiming);
-                        }
-
-                        auto dmg_range = item.thrown_dmg(attacker);
-
-                        if (apply_undead_bane_bon)
-                        {
-                                dmg_range.set_plus(dmg_range.plus() + 2);
-                        }
-
-                        dmg =
-                                player_has_aim_bon
-                                ? dmg_range.total_range().max
-                                : dmg_range.total_range().roll();
-
-                        // Outside effective range limit?
-                        if (!item.is_in_effective_range_lmt(
-                                    attacker->m_pos,
-                                    defender->m_pos))
-                        {
-                                TRACE_VERBOSE << "Outside effetive range limit"
-                                              << std::endl;
-
-                                dmg = std::max(1, dmg / 2);
-                        }
+                        dmg = std::max(1, dmg / 2);
                 }
         }
 }

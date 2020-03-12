@@ -172,6 +172,10 @@ void init()
         load(SfxId::hit_sharp, "sfx_hit_sharp.ogg");
         load(SfxId::pistol_fire, "sfx_pistol_fire.ogg");
         load(SfxId::pistol_reload, "sfx_pistol_reload.ogg");
+        load(SfxId::revolver_fire, "sfx_revolver_fire.ogg");
+        load(SfxId::revolver_spin, "sfx_revolver_spin.ogg");
+        load(SfxId::rifle_fire, "sfx_rifle_fire.ogg");
+        load(SfxId::rifle_revolver_reload, "sfx_rifle_revolver_reload.ogg");
         load(SfxId::shotgun_sawed_off_fire, "sfx_shotgun_sawed_off_fire.ogg");
         load(SfxId::shotgun_pump_fire, "sfx_shotgun_pump_fire.ogg");
         load(SfxId::shotgun_reload, "sfx_shotgun_reload.ogg");

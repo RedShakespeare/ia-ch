@@ -195,9 +195,6 @@ public:
                 return 0;
         }
 
-        // Used when attempting to fire or throw an item
-        bool is_in_effective_range_lmt(const P& p0, const P& p1) const;
-
         actor::Actor* actor_carrying()
         {
                 return m_actor_carrying;

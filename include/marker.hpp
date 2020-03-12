@@ -12,6 +12,7 @@
 #include "array2.hpp"
 #include "global.hpp"
 #include "io.hpp"
+#include "random.hpp"
 #include "state.hpp"
 
 
@@ -20,6 +21,7 @@ namespace item
 class Item;
 class Wpn;
 } // namespace item
+
 
 struct InputData;
 
@@ -31,7 +33,7 @@ class MarkerState: public State
 {
 public:
         MarkerState(const P& origin) :
-                
+
                 m_marker_render_data(P(0, 0)),
                 m_origin(origin)
                 {}
@@ -58,6 +60,7 @@ protected:
 
         void draw_marker(
                 const std::vector<P>& line,
+                int orange_until_including_king_dist,
                 int orange_from_king_dist,
                 int red_from_king_dist,
                 int red_from_idx);
@@ -81,12 +84,12 @@ protected:
                 return false;
         }
 
-        virtual int orange_from_king_dist() const
+        virtual Range effective_king_dist_range() const
         {
-                return -1;
+                return {-1, -1};
         }
 
-        virtual int red_from_king_dist() const
+        virtual int max_king_dist() const
         {
                 return -1;
         }
@@ -156,9 +159,9 @@ protected:
                 return true;
         }
 
-        int orange_from_king_dist() const override;
+        Range effective_king_dist_range() const override;
 
-        int red_from_king_dist() const override;
+        int max_king_dist() const override;
 
         item::Wpn& m_wpn;
 };
@@ -188,9 +191,9 @@ protected:
                 return true;
         }
 
-        int orange_from_king_dist() const override;
+        Range effective_king_dist_range() const override;
 
-        int red_from_king_dist() const override;
+        int max_king_dist() const override;
 
         item::Item* m_inv_item;
 };
@@ -222,7 +225,7 @@ protected:
                 return true;
         }
 
-        int red_from_king_dist() const override;
+        int max_king_dist() const override;
 
         const item::Item& m_explosive;
 };

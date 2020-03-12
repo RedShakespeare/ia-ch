@@ -687,13 +687,6 @@ std::string Item::dmg_str(
         return dmg_str;
 }
 
-bool Item::is_in_effective_range_lmt(const P& p0, const P& p1) const
-{
-        return
-                king_dist(p0, p1) <=
-                m_data->ranged.effective_range;
-}
-
 void Item::add_carrier_prop(Prop* const prop, const Verbose verbose)
 {
         ASSERT(m_actor_carrying);

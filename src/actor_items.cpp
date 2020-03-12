@@ -56,10 +56,14 @@ static void make_for_player_occultist_common()
 
         inv.put_in_slot(
                 SlotId::wpn_alt,
-                item::make(item::Id::pistol),
+                item::make(item::Id::revolver),
                 Verbose::no);
 
-        inv.put_in_backpack(item::make(item::Id::pistol_mag));
+        auto revolver_bullets = item::make(item::Id::revolver_bullet);
+
+        revolver_bullets->m_nr_items = 8;
+
+        inv.put_in_backpack(revolver_bullets);
 
         inv.put_in_slot(
                 SlotId::body,
@@ -132,17 +136,19 @@ static void make_for_player_rogue()
 
         inv.put_in_slot(
                 SlotId::wpn_alt,
-                item::make(item::Id::pistol),
+                item::make(item::Id::revolver),
                 Verbose::no);
 
-        for (int i = 0; i < 2; ++i)
-        {
-                inv.put_in_backpack(item::make(item::Id::pistol_mag));
-        }
+        auto revolver_bullets = item::make(item::Id::revolver_bullet);
 
-        inv.put_in_slot(SlotId::body,
-                        item::make(item::Id::armor_leather_jacket),
-                        Verbose::no);
+        revolver_bullets->m_nr_items = 8;
+
+        inv.put_in_backpack(revolver_bullets);
+
+        inv.put_in_slot(
+                SlotId::body,
+                item::make(item::Id::armor_leather_jacket),
+                Verbose::no);
 
         inv.put_in_backpack(item::make(item::Id::iron_spike, 12));
 
@@ -150,8 +156,9 @@ static void make_for_player_rogue()
 
         rod_cloud_minds->identify(Verbose::no);
 
-        game::incr_player_xp(rod_cloud_minds->data().xp_on_found,
-                             Verbose::no);
+        game::incr_player_xp(
+                rod_cloud_minds->data().xp_on_found,
+                Verbose::no);
 
         rod_cloud_minds->data().is_found = true;
 
@@ -369,14 +376,35 @@ static void make_item_set_firearm(actor::Actor& actor)
 {
         Inventory& inv = actor.m_inv;
 
-        // If we are on an early dungeon level, lean heavily towards pistols
+        // On early dungeon levels, lean heavily towards revolvers and pistols
         const bool is_low_dlvl = map::g_dlvl < 4;
 
+        int revolver_weight;
+        int pistol_weight;
+
+        if (is_low_dlvl)
+        {
+                revolver_weight = 12;
+                pistol_weight = 8;
+        }
+        else
+        {
+                revolver_weight = 3;
+                pistol_weight = 3;
+        }
+
+        const int pump_shotgun_weight = 3;
+        const int sawed_off_shotgun_weight = 3;
+        const int rifle_weight = 1;
+        const int machine_gun_weight = 1;
+
         std::vector<int> weights = {
-                (is_low_dlvl ? 20 : 6), // Pistol
-                3,                      // Pump shotgun
-                3,                      // Sawed-off shotgun
-                1                       // Machine Gun
+                revolver_weight,
+                pistol_weight,
+                pump_shotgun_weight,
+                sawed_off_shotgun_weight,
+                rifle_weight,
+                machine_gun_weight
         };
 
         const int choice = rnd::weighted_choice(weights);
@@ -385,13 +413,29 @@ static void make_item_set_firearm(actor::Actor& actor)
         {
         case 0:
         {
-                // Pistol
-                auto* item = item::make(item::Id::pistol);
-
+                // Revolver
+                auto* item = item::make(item::Id::revolver);
                 auto* wpn = static_cast<item::Wpn*>(item);
 
                 const int ammo_cap = wpn->data().ranged.max_ammo;
+                wpn->m_ammo_loaded = rnd::range(ammo_cap / 2, ammo_cap);
 
+                inv.put_in_slot(SlotId::wpn, item, Verbose::no);
+
+                item = item::make(item::Id::revolver_bullet);
+                item->m_nr_items = rnd::range(1, 6);
+
+                inv.put_in_backpack(item);
+        }
+        break;
+
+        case 1:
+        {
+                // Pistol
+                auto* item = item::make(item::Id::pistol);
+                auto* wpn = static_cast<item::Wpn*>(item);
+
+                const int ammo_cap = wpn->data().ranged.max_ammo;
                 wpn->m_ammo_loaded = rnd::range(ammo_cap / 2, ammo_cap);
 
                 inv.put_in_slot(SlotId::wpn, item, Verbose::no);
@@ -403,37 +447,18 @@ static void make_item_set_firearm(actor::Actor& actor)
         }
         break;
 
-        case 1:
+        case 2:
         {
                 // Pump shotgun
                 auto* item = item::make(item::Id::pump_shotgun);
-
                 auto* wpn = static_cast<item::Wpn*>(item);
 
                 const int ammo_cap = wpn->data().ranged.max_ammo;
-
                 wpn->m_ammo_loaded = rnd::range(ammo_cap / 2, ammo_cap);
 
                 inv.put_in_slot(SlotId::wpn, item, Verbose::no);
 
                 item = item::make(item::Id::shotgun_shell);
-
-                item->m_nr_items = rnd::range(1, 6);
-
-                inv.put_in_backpack(item);
-        }
-        break;
-
-        case 2:
-        {
-                // Sawed-off shotgun
-                inv.put_in_slot(
-                        SlotId::wpn,
-                        item::make(item::Id::sawed_off),
-                        Verbose::no);
-
-                auto* item = item::make(item::Id::shotgun_shell);
-
                 item->m_nr_items = rnd::range(1, 6);
 
                 inv.put_in_backpack(item);
@@ -442,12 +467,44 @@ static void make_item_set_firearm(actor::Actor& actor)
 
         case 3:
         {
+                // Sawed-off shotgun
+                inv.put_in_slot(
+                        SlotId::wpn,
+                        item::make(item::Id::sawed_off),
+                        Verbose::no);
+
+                auto* item = item::make(item::Id::shotgun_shell);
+                item->m_nr_items = rnd::range(1, 6);
+
+                inv.put_in_backpack(item);
+        }
+        break;
+
+        case 4:
+        {
+                // Rifle
+                auto* item = item::make(item::Id::rifle);
+                auto* wpn = static_cast<item::Wpn*>(item);
+
+                const int ammo_cap = wpn->data().ranged.max_ammo;
+                wpn->m_ammo_loaded = rnd::range(ammo_cap / 2, ammo_cap);
+
+                inv.put_in_slot(SlotId::wpn, item, Verbose::no);
+
+                item = item::make(item::Id::shotgun_shell);
+                item->m_nr_items = rnd::range(1, 6);
+
+                inv.put_in_backpack(item);
+        }
+        break;
+
+        case 5:
+        {
                 // Tommy Gun
 
                 // Number of bullets loaded needs to be a multiple of the number
                 // of projectiles fired in each burst
                 auto* item = item::make(item::Id::machine_gun);
-
                 auto* const wpn = static_cast<item::Wpn*>(item);
 
                 const auto cap_scaled =

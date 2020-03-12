@@ -54,8 +54,12 @@ enum class Id
         shotgun_shell,
         drum_of_bullets,
         incinerator_ammo,
+        revolver,
+        revolver_bullet,
         pistol,
         pistol_mag,
+        rifle,
+        rifle_bullet,
         flare_gun,
         mi_go_gun,
 
@@ -350,7 +354,7 @@ struct RangedData
         int hit_chance_mod;
         int throw_hit_chance_mod;
         bool always_break_on_throw;
-        int effective_range;
+        Range effective_range;
         int max_range;
         bool knocks_back;
         Id ammo_item_id;

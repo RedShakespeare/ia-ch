@@ -42,10 +42,10 @@ Inventory::~Inventory()
         {
                 auto& slot = m_slots[i];
 
-                
-                
+
+
                         delete slot.item;
-                
+
         }
 
         for (auto* item : m_backpack)
@@ -858,8 +858,9 @@ void Inventory::sort_backpack()
 
                         it = m_backpack.erase(it);
                 }
-                else // Item not prioritized
+                else
                 {
+                        // Item not prioritized
                         ++it;
                 }
         }
@@ -867,11 +868,16 @@ void Inventory::sort_backpack()
         // Sort the prioritized items lexicographically
         if (!prio_items.empty())
         {
-                std::sort(begin(prio_items), end(prio_items), lex_cmp);
+                std::sort(
+                        std::begin(prio_items),
+                        std::end(prio_items),
+                        lex_cmp);
         }
 
         // Categorize the remaining items
         std::vector< std::vector<item::Item*> > sort_buffer;
+
+        // TODO: Sort according to item type, instead of color?
 
         // Sort according to item interface color first
         for (auto* item : m_backpack)
@@ -908,7 +914,7 @@ void Inventory::sort_backpack()
         // Sort lexicographically secondarily
         for (auto& group : sort_buffer)
         {
-                std::sort(begin(group), end(group), lex_cmp);
+                std::sort(std::begin(group), std::end(group), lex_cmp);
         }
 
         // Add the sorted items to the backpack
