@@ -23,6 +23,7 @@
 #include "msg_log.hpp"
 #include "property.hpp"
 #include "property_data.hpp"
+#include "property_factory.hpp"
 #include "saving.hpp"
 #include "terrain.hpp"
 #include "text_format.hpp"
@@ -127,7 +128,7 @@ ReflTalisman::ReflTalisman(ItemData* const item_data) :
 
 void ReflTalisman::on_pickup_hook()
 {
-        auto prop = new PropSpellReflect();
+        auto prop = property_factory::make(PropId::spell_reflect);
 
         prop->set_indefinite();
 
@@ -159,7 +160,7 @@ TeleCtrlTalisman::TeleCtrlTalisman(ItemData* const item_data) :
 
 void TeleCtrlTalisman::on_pickup_hook()
 {
-        auto prop = new PropTeleControl();
+        auto prop = property_factory::make(PropId::tele_ctrl);
 
         prop->set_indefinite();
 
@@ -178,7 +179,8 @@ void HornOfMaliceHeard::run(actor::Actor& actor) const
 {
         if (!actor.is_player())
         {
-                actor.m_properties.apply(new PropConflict());
+                actor.m_properties.apply(
+                        property_factory::make(PropId::conflict));
         }
 }
 

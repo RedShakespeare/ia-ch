@@ -15,6 +15,7 @@
 #include "misc.hpp"
 #include "msg_log.hpp"
 #include "property.hpp"
+#include "property_factory.hpp"
 #include "random.hpp"
 #include "sound.hpp"
 #include "teleport.hpp"
@@ -366,7 +367,8 @@ void PylonInvis::on_new_turn_activated()
 
         for (auto actor : actors)
         {
-                actor->m_properties.apply(new PropInvisible());
+                actor->m_properties.apply(
+                        property_factory::make(PropId::invis));
         }
 }
 

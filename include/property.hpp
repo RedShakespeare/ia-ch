@@ -360,13 +360,6 @@ public:
         void on_applied() override;
 };
 
-class PropWeakened: public Prop
-{
-public:
-        PropWeakened() :
-                Prop(PropId::weakened) {}
-};
-
 class PropInfected: public Prop
 {
 public:
@@ -398,28 +391,6 @@ public:
                 Prop(PropId::descend) {}
 
         PropEnded on_tick() override;
-};
-
-class PropFlying: public Prop
-{
-public:
-        PropFlying() :
-                Prop(PropId::flying) {}
-};
-
-// TODO: Kill actor inside wall or over chasm (unless flying) when ethereal ends
-class PropEthereal: public Prop
-{
-public:
-        PropEthereal() :
-                Prop(PropId::ethereal) {}
-};
-
-class PropOoze: public Prop
-{
-public:
-        PropOoze() :
-                Prop(PropId::ooze) {}
 };
 
 class PropBurrowing: public Prop
@@ -521,34 +492,6 @@ public:
         }
 };
 
-class PropDeaf: public Prop
-{
-public:
-        PropDeaf() :
-                Prop(PropId::deaf) {}
-};
-
-class PropRadiant: public Prop
-{
-public:
-        PropRadiant() :
-                Prop(PropId::radiant) {}
-};
-
-class PropInvisible: public Prop
-{
-public:
-        PropInvisible() :
-                Prop(PropId::invis) {}
-};
-
-class PropCloaked: public Prop
-{
-public:
-        PropCloaked() :
-                Prop(PropId::cloaked) {}
-};
-
 class PropRecloaks: public Prop
 {
 public:
@@ -567,13 +510,6 @@ public:
         void on_applied() override;
 
         bool is_resisting_other_prop(PropId prop_id) const override;
-};
-
-class PropDarkvis: public Prop
-{
-public:
-        PropDarkvis() :
-                Prop(PropId::darkvision) {}
 };
 
 class PropBlessed: public Prop
@@ -733,13 +669,6 @@ public:
         bool allow_read_absolute(Verbose verbose) const override;
         bool allow_cast_intr_spell_absolute(
                 Verbose verbose) const override;
-};
-
-class PropStunned: public Prop
-{
-public:
-        PropStunned() :
-                Prop(PropId::stunned) {}
 };
 
 class PropNailed: public Prop
@@ -1256,41 +1185,6 @@ class PropLgtSens: public Prop
 public:
         PropLgtSens() :
                 Prop(PropId::light_sensitive) {}
-};
-
-class PropLgtSensCurse: public Prop
-{
-public:
-        PropLgtSensCurse() :
-                Prop(PropId::light_sensitive_curse) {}
-};
-
-class PropTeleControl: public Prop
-{
-public:
-        PropTeleControl() :
-                Prop(PropId::tele_ctrl) {}
-};
-
-class PropRSpell: public Prop
-{
-public:
-        PropRSpell() :
-                Prop(PropId::r_spell) {}
-};
-
-class PropSpellReflect: public Prop
-{
-public:
-        PropSpellReflect() :
-                Prop(PropId::spell_reflect) {}
-};
-
-class PropConflict: public Prop
-{
-public:
-        PropConflict() :
-                Prop(PropId::conflict) {}
 };
 
 class PropVortex: public Prop

@@ -34,6 +34,7 @@
 #include "postmortem.hpp"
 #include "property.hpp"
 #include "property_data.hpp"
+#include "property_factory.hpp"
 #include "property_handler.hpp"
 #include "sdl_base.hpp"
 #include "teleport.hpp"
@@ -1829,7 +1830,7 @@ void SpellLight::run_effect(
         actor::Actor* const caster,
         const SpellSkill skill) const
 {
-        auto prop = new PropRadiant();
+        auto prop = property_factory::make(PropId::radiant);
 
         prop->set_duration(20 + (int)skill * 20);
 
@@ -1938,7 +1939,7 @@ void SpellSpellShield::run_effect(
 {
         (void)skill;
 
-        auto prop = new PropRSpell();
+        auto prop = property_factory::make(PropId::r_spell);
 
         prop->set_indefinite();
 
@@ -1952,10 +1953,12 @@ std::vector<std::string> SpellSpellShield::descr_specific(
 
         std::vector<std::string> descr;
 
-        descr.emplace_back("Grants protection against harmful spells. The effect lasts "
+        descr.emplace_back(
+                "Grants protection against harmful spells. The effect lasts "
                 "until a spell is blocked.");
 
-        descr.emplace_back("Skill level affects the amount of Spirit one needs to spend "
+        descr.emplace_back(
+                "Skill level affects the amount of Spirit one needs to spend "
                 "to cast the spell.");
 
         return descr;
@@ -2137,7 +2140,7 @@ void SpellTeleport::run_effect(
 {
         if ((int)skill >= (int)SpellSkill::expert)
         {
-                auto prop = new PropInvisible();
+                auto prop = property_factory::make(PropId::invis);
 
                 prop->set_duration(3);
 
@@ -2387,7 +2390,7 @@ void SpellEnfeeble::run_effect(
                         continue;
                 }
 
-                auto* const prop = new PropWeakened();
+                auto* const prop = property_factory::make(PropId::weakened);
 
                 prop->set_duration(duration);
 
@@ -2402,16 +2405,19 @@ std::vector<std::string> SpellEnfeeble::descr_specific(
 
         std::vector<std::string> descr;
 
-        descr.emplace_back("Physically enfeebles the spell's victims, causing them to "
+        descr.emplace_back(
+                "Physically enfeebles the spell's victims, causing them to "
                 "only do half damage in melee combat.");
 
         if (skill == SpellSkill::basic)
         {
-                descr.emplace_back("Affects one random visible hostile creature.");
+                descr.emplace_back(
+                        "Affects one random visible hostile creature.");
         }
         else
         {
-                descr.emplace_back("Affects all visible hostile creatures.");
+                descr.emplace_back(
+                        "Affects all visible hostile creatures.");
         }
 
         Range duration_range;
@@ -3259,7 +3265,7 @@ void SpellDeafen::run_effect(
                 }
         }
 
-        auto prop = new PropDeaf();
+        auto prop = property_factory::make(PropId::deaf);
 
         prop->set_duration(75 + (int)skill * 75);
 

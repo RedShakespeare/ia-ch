@@ -23,12 +23,12 @@
 #include "player_spells.hpp"
 #include "property.hpp"
 #include "property_data.hpp"
+#include "property_factory.hpp"
 #include "property_handler.hpp"
 #include "query.hpp"
 #include "saving.hpp"
 #include "terrain.hpp"
 #include "text_format.hpp"
-
 
 // -----------------------------------------------------------------------------
 // Private
@@ -797,10 +797,12 @@ void Descent::quaff_impl(actor::Actor& actor)
                         map::g_player->m_properties.apply(new PropDescend());
                 }
         }
-        else // Dungeon level is near the end
+        else
         {
-                msg_log::add("I feel a faint sinking sensation, "
-                             "but it soon disappears...");
+                // Dungeon level is near the end
+                msg_log::add(
+                        "I feel a faint sinking sensation, "
+                        "but it soon disappears...");
         }
 
         identify(Verbose::yes);
@@ -808,7 +810,7 @@ void Descent::quaff_impl(actor::Actor& actor)
 
 void Invis::quaff_impl(actor::Actor& actor)
 {
-        actor.m_properties.apply(new PropCloaked());
+        actor.m_properties.apply(property_factory::make(PropId::cloaked));
 
         if (map::g_player->can_see_actor(actor))
         {

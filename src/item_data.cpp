@@ -19,6 +19,7 @@
 #include "item_device.hpp"
 #include "map.hpp"
 #include "property.hpp"
+#include "random.hpp"
 #include "saving.hpp"
 #include "sound.hpp"
 
@@ -672,14 +673,20 @@ void init()
                 "A weapon created by the Mi-go. It fires devastating bolts of "
                 "electricity.",
 
-                "The weapon does not use ammunition, instead it draws power "
-                "from the life force of the wielder (3 Hit Points per attack)."
+                ("The weapon does not use ammunition, instead it draws "
+                 "power from the life force of the wielder "
+                 "(3 Hit Points drained per attack, passive Hit Point "
+                 "regeneration is disabled for ")
+                +
+                Range(g_mi_go_gun_regen_disabled_min_turns,
+                      g_mi_go_gun_regen_disabled_max_turns).str() +
+                " turns)."
         };
         d.spawn_std_range = Range(-1, -1);
         d.weight = Weight::medium;
         d.tile = TileId::mi_go_gun;
         d.color = colors::yellow();
-        d.ranged.dmg = DmgRange(3, 12, 1);
+        d.ranged.dmg = DmgRange(8, 12);
         d.ranged.hit_chance_mod = 5;
         d.ranged.effective_range = {0, 4};
         {

@@ -16,6 +16,7 @@
 #include "map_parsing.hpp"
 #include "player_spells.hpp"
 #include "property.hpp"
+#include "property_factory.hpp"
 #include "property_handler.hpp"
 #include "saving.hpp"
 #include "spells.hpp"
@@ -1062,7 +1063,7 @@ void pick_bg(const Bg bg)
                         true,
                         Verbose::no);
 
-                auto prop_darkvis = new PropDarkvis();
+                auto prop_darkvis = property_factory::make(PropId::darkvision);
 
                 prop_darkvis->set_indefinite();
 
@@ -1072,8 +1073,7 @@ void pick_bg(const Bg bg)
                         true,
                         Verbose::no);
 
-                player_spells::learn_spell(SpellId::frenzy,
-                                           Verbose::no);
+                player_spells::learn_spell(SpellId::frenzy, Verbose::no);
 
                 map::g_player->change_max_hp(6, Verbose::no);
         }
@@ -1179,7 +1179,7 @@ void pick_trait(const Trait id)
 
         case Trait::stout_spirit:
         {
-                auto prop = new PropRSpell();
+                auto prop = property_factory::make(PropId::r_spell);
 
                 prop->set_indefinite();
 

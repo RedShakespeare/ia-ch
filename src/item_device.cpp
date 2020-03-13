@@ -25,12 +25,12 @@
 #include "msg_log.hpp"
 #include "property.hpp"
 #include "property_data.hpp"
+#include "property_factory.hpp"
 #include "saving.hpp"
 #include "teleport.hpp"
 #include "terrain.hpp"
 #include "terrain_mob.hpp"
 #include "text_format.hpp"
-
 
 // -----------------------------------------------------------------------------
 // device
@@ -397,7 +397,7 @@ ConsumeItem Deafening::run_effect()
                         continue;
                 }
 
-                actor->m_properties.apply(new PropDeaf());
+                actor->m_properties.apply(property_factory::make(PropId::deaf));
         }
 
         return ConsumeItem::no;

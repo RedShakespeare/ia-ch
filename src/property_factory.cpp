@@ -27,7 +27,7 @@ Prop* make(const PropId id)
                 return new PropBlind();
 
         case PropId::deaf:
-                return new PropDeaf();
+                return new Prop(id);
 
         case PropId::burning:
                 return new PropBurning();
@@ -42,13 +42,13 @@ Prop* make(const PropId id)
                 return new PropTerrified();
 
         case PropId::weakened:
-                return new PropWeakened();
+                return new Prop(id);
 
         case PropId::confused:
                 return new PropConfused();
 
         case PropId::stunned:
-                return new PropStunned();
+                return new Prop(id);
 
         case PropId::waiting:
                 return new PropWaiting();
@@ -135,7 +135,7 @@ Prop* make(const PropId id)
                 return new PropRFire();
 
         case PropId::r_spell:
-                return new PropRSpell();
+                return new Prop(id);
 
         case PropId::r_poison:
                 return new PropRPoison();
@@ -144,7 +144,7 @@ Prop* make(const PropId id)
                 return new PropRSleep();
 
         case PropId::light_sensitive:
-                return new PropLgtSens();
+                return new Prop(id);
 
         case PropId::zuul_possess_priest:
                 return new PropZuulPossessPriest();
@@ -156,22 +156,22 @@ Prop* make(const PropId id)
                 return new PropMajorClaphamSummon();
 
         case PropId::flying:
-                return new PropFlying();
+                return new Prop(id);
 
         case PropId::ethereal:
-                return new PropEthereal();
+                return new Prop(id);
 
         case PropId::ooze:
-                return new PropOoze();
+                return new Prop(id);
 
         case PropId::burrowing:
                 return new PropBurrowing();
 
         case PropId::radiant:
-                return new PropRadiant();
+                return new Prop(id);
 
         case PropId::darkvision:
-                return new PropDarkvis();
+                return new Prop(id);
 
         case PropId::r_disease:
                 return new PropRDisease();
@@ -183,13 +183,13 @@ Prop* make(const PropId id)
                 return new PropRPara();
 
         case PropId::tele_ctrl:
-                return new PropTeleControl();
+                return new Prop(id);
 
         case PropId::spell_reflect:
-                return new PropSpellReflect();
+                return new Prop(id);
 
         case PropId::conflict:
-                return new PropConflict();
+                return new Prop(id);
 
         case PropId::vortex:
                 return new PropVortex();
@@ -234,10 +234,10 @@ Prop* make(const PropId id)
                 return new PropSpawnsZombiePartsOnDestroyed();
 
         case PropId::invis:
-                return new PropInvisible();
+                return new Prop(id);
 
         case PropId::cloaked:
-                return new PropCloaked();
+                return new Prop(id);
 
         case PropId::recloaks:
                 return new PropRecloaks();
@@ -267,7 +267,10 @@ Prop* make(const PropId id)
                 return new PropCannotReadCurse();
 
         case PropId::light_sensitive_curse:
-                return new PropLgtSensCurse();
+                return new Prop(id);
+
+        case PropId::disabled_hp_regen:
+                return new Prop(id);
 
         case PropId::END:
                 break;

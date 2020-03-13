@@ -32,6 +32,7 @@
 #include "postmortem.hpp"
 #include "property.hpp"
 #include "property_data.hpp"
+#include "property_factory.hpp"
 #include "property_handler.hpp"
 #include "query.hpp"
 #include "sound.hpp"
@@ -629,7 +630,7 @@ TrapPlacementValid MagicTrapImpl::on_place()
 TrapDart::TrapDart(P pos, Trap* const base_trap) :
         MechTrapImpl(pos, TrapId::dart, base_trap),
         m_is_poisoned((map::g_dlvl >= g_dlvl_harder_traps) && rnd::one_in(3)),
-        
+
         m_is_dart_origin_destroyed(false) {}
 
 TrapPlacementValid TrapDart::on_place()
@@ -769,7 +770,7 @@ void TrapDart::trigger()
 TrapSpear::TrapSpear(P pos, Trap* const base_trap) :
         MechTrapImpl(pos, TrapId::spear, base_trap),
         m_is_poisoned((map::g_dlvl >= g_dlvl_harder_traps) && rnd::one_in(4)),
-        
+
         m_is_spear_origin_destroyed(false) {}
 
 TrapPlacementValid TrapSpear::on_place()
@@ -1004,7 +1005,7 @@ void TrapDeafening::trigger()
                 EmitExplSnd::no,
                 -1,
                 ExplExclCenter::no,
-                {new PropDeaf()},
+                {property_factory::make(PropId::deaf)},
                 colors::light_white());
 
         TRACE_FUNC_END_VERBOSE;

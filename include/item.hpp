@@ -143,6 +143,10 @@ public:
                 (void)dmg;
         }
 
+        virtual void pre_ranged_attack()
+        {
+        }
+
         void set_melee_base_dmg(const DmgRange& range)
         {
                 m_melee_base_dmg = range;
@@ -440,6 +444,8 @@ class MiGoGun: public Wpn
 public:
         MiGoGun(ItemData* item_data);
         ~MiGoGun() = default;
+
+        void pre_ranged_attack() override;
 
 protected:
         void specific_dmg_mod(

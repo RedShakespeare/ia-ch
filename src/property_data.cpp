@@ -944,6 +944,16 @@ static void init_data_list()
         d.allow_test_on_bot = true;
         d.alignment = PropAlignment::bad;
         add(d);
+
+        d.id = PropId::disabled_hp_regen;
+        d.std_rnd_turns = Range(1, 1);
+        d.name = "";
+        d.name_short = "";
+        d.descr = "";
+        d.allow_display_turns = true;
+        d.allow_test_on_bot = true;
+        d.alignment = PropAlignment::bad;
+        add(d);
 }
 
 // -----------------------------------------------------------------------------

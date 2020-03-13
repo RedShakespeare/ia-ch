@@ -27,6 +27,7 @@
 #include "player_bon.hpp"
 #include "pos.hpp"
 #include "property.hpp"
+#include "property_factory.hpp"
 #include "property_handler.hpp"
 #include "query.hpp"
 #include "saving.hpp"
@@ -1040,7 +1041,7 @@ void ZombieDust::on_ranged_hit(actor::Actor& actor_hit)
 }
 
 // -----------------------------------------------------------------------------
-// Mi-go electric gun
+// Mi-go Electric Gun
 // -----------------------------------------------------------------------------
 MiGoGun::MiGoGun(ItemData* const item_data) :
         Wpn(item_data) {}
@@ -1054,6 +1055,41 @@ void MiGoGun::specific_dmg_mod(
         {
                 range.set_plus(range.plus() + 1);
         }
+}
+
+void MiGoGun::pre_ranged_attack()
+{
+        if (!m_actor_carrying->is_player())
+        {
+                return;
+        }
+
+        const auto wpn_name = name(ItemRefType::plain, ItemRefInf::none);
+
+        msg_log::add(
+                {
+                        "The " +
+                        wpn_name +
+                        " draws power from my life force!"
+                },
+                colors::msg_bad());
+
+        actor::hit(
+                *m_actor_carrying,
+                g_mi_go_gun_hp_drained,
+                DmgType::pure,
+                DmgMethod::forced,
+                AllowWound::no);
+
+        auto disabled_regen =
+                property_factory::make(PropId::disabled_hp_regen);
+
+        disabled_regen->set_duration(
+                rnd::range(
+                        g_mi_go_gun_regen_disabled_min_turns,
+                        g_mi_go_gun_regen_disabled_max_turns));
+
+        m_actor_carrying->m_properties.apply(disabled_regen);
 }
 
 // -----------------------------------------------------------------------------

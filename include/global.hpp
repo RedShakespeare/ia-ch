@@ -42,6 +42,8 @@ const int g_enc_immobile_lvl = 125;
 const int g_nr_mg_projectiles = 5;
 
 const int g_mi_go_gun_hp_drained = 3;
+const int g_mi_go_gun_regen_disabled_min_turns = 7;
+const int g_mi_go_gun_regen_disabled_max_turns = 12;
 
 // NOTE: Damage is reduced with higher distance from the center
 const int g_expl_dmg_min = 15;

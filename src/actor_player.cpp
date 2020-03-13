@@ -46,6 +46,7 @@
 #include "player_spells.hpp"
 #include "popup.hpp"
 #include "property.hpp"
+#include "property_factory.hpp"
 #include "property_handler.hpp"
 #include "query.hpp"
 #include "reload.hpp"
@@ -94,8 +95,8 @@ namespace actor
 // -----------------------------------------------------------------------------
 // Player
 // -----------------------------------------------------------------------------
-Player::Player() 
-        
+Player::Player()
+
 = default;
 
 Player::~Player()
@@ -1459,15 +1460,15 @@ void Player::on_std_turn()
                 nr_turns_to_recharge_spell_shield /= 2;
         }
 
-        // If we already have spell resistance (e.g. due to the Spell Shield spell),
-        // then always (re)set the cooldown to max number of turns
         if (m_properties.has(PropId::r_spell))
         {
+                // We already have spell resistance (e.g. from casting the Spell
+                // Shield spell), (re)set the cooldown to max number of turns
                 m_nr_turns_until_rspell = nr_turns_to_recharge_spell_shield;
         }
-        // Spell resistance not currently active
         else if (player_bon::has_trait(Trait::stout_spirit))
         {
+                // Spell shield not active, and we have at least stout spirit
                 if (m_nr_turns_until_rspell <= 0)
                 {
                         // Cooldown has finished, OR countdown not initialized
@@ -1475,7 +1476,8 @@ void Player::on_std_turn()
                         if (m_nr_turns_until_rspell == 0)
                         {
                                 // Cooldown has finished
-                                auto prop = new PropRSpell();
+                                auto prop =
+                                        property_factory::make(PropId::r_spell);
 
                                 prop->set_indefinite();
 
@@ -1484,14 +1486,15 @@ void Player::on_std_turn()
                                 msg_log::more_prompt();
                         }
 
-                        m_nr_turns_until_rspell = nr_turns_to_recharge_spell_shield;
+                        m_nr_turns_until_rspell =
+                                nr_turns_to_recharge_spell_shield;
                 }
 
                 if (!m_properties.has(PropId::r_spell) &&
                     (m_nr_turns_until_rspell > 0))
                 {
-                        // Spell resistance is in cooldown state, decrement number of
-                        // remaining turns
+                        // Spell resistance is in cooldown state, decrement
+                        // number of remaining turns
                         --m_nr_turns_until_rspell;
                 }
         }
@@ -1503,7 +1506,8 @@ void Player::on_std_turn()
 
         // Regenerate Hit Points
         if (!m_properties.has(PropId::poisoned) &&
-            player_bon::bg() != Bg::ghoul)
+            !m_properties.has(PropId::disabled_hp_regen) &&
+            (player_bon::bg() != Bg::ghoul))
         {
                 int nr_turns_per_hp;
 

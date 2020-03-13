@@ -79,26 +79,6 @@ enum class HitSize
 
 } // namespace
 
-// TODO: This is a hack - it should be handled more generally (perhaps something
-// like an 'on_ranged_attack' or 'on_fired' hook for items)
-static void mi_go_gun_drain_player_hp(const item::Wpn& wpn)
-{
-        const std::string wpn_name =
-                wpn.name(ItemRefType::plain,
-                         ItemRefInf::none);
-
-        msg_log::add(
-                "The " + wpn_name + " draws power from my life force!",
-                colors::msg_bad());
-
-        actor::hit(
-                *map::g_player,
-                g_mi_go_gun_hp_drained,
-                DmgType::pure,
-                DmgMethod::forced,
-                AllowWound::no);
-}
-
 static size_t nr_projectiles_for_ranged_weapon(const item::Wpn& wpn)
 {
         size_t nr_projectiles = 1;
@@ -1623,8 +1603,9 @@ void melee(
                                         false);
                         }
                 }
-                else // Defender was killed
+                else
                 {
+                        // Defender was killed
                         wpn.on_melee_kill(defender);
                 }
         }
@@ -1714,14 +1695,7 @@ DidAction ranged(
 
         if ((wpn.m_ammo_loaded >= nr_projectiles) || has_inf_ammo)
         {
-                // TODO: This is a hack - it should be handled more generally
-                // (perhaps something like an 'on_ranged_attack' or 'on_fired'
-                // hook for items)
-                if ((attacker == map::g_player) &&
-                    (wpn.data().id == item::Id::mi_go_gun))
-                {
-                        mi_go_gun_drain_player_hp(wpn);
-                }
+                wpn.pre_ranged_attack();
 
                 fire_projectiles(
                         attacker,

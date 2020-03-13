@@ -983,7 +983,8 @@ void PropFrenzied::on_end()
         // frenzy (it looks weird for monsters)
         if (m_owner->is_player() && (player_bon::bg() != Bg::ghoul))
         {
-                m_owner->m_properties.apply(new PropWeakened());
+                m_owner->m_properties.apply(
+                        property_factory::make(PropId::weakened));
         }
 }
 
@@ -1069,7 +1070,7 @@ PropActResult PropRecloaks::on_act()
             !m_owner->m_properties.has(PropId::cloaked) &&
             rnd::one_in(8))
         {
-                auto prop_cloaked = new PropCloaked();
+                auto prop_cloaked = property_factory::make(PropId::cloaked);
 
                 prop_cloaked->set_indefinite();
 
