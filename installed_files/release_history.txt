@@ -5,11 +5,13 @@ Gameplay
 * Added weapons "S&W Model 10 Revolver" and "Winchester Rifle"
 * The Electric Gun also disables passive hit point regeneration for a number of turns
 * Changed Electric Gun damage from 4-13 to 8-12
+* The stealth penalty in lit positions is much higher than before (see also bug fixes below concerning stealth and darkness)
 
 User interface
 
 Bug fixes
 * Fixed a bug that prevented messages for Rogues sensing artifacts on the dungeon floor (there were only messages for sensing artifacts in item containers, such as tombs)
+* Fixed a bug which prevented darkness from giving a stealth bonus
 
 --------------------------------------------------------------
 v20.0 (December 17, 2019)

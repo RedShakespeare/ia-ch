@@ -124,9 +124,12 @@ ActionResult roll_sneak(const SneakData& data)
                         AbilityId::stealth,
                         true);
 
+        const int search_skill =
+                data.actor_searching->ability(AbilityId::searching, true);
+
         const int search_mod =
                 data.actor_searching->is_player()
-                ? data.actor_searching->ability(AbilityId::searching, true)
+                ? -search_skill
                 : 0;
 
         const int dist =
@@ -147,24 +150,19 @@ ActionResult roll_sneak(const SneakData& data)
         const int dist_mod = (dist - 2) * 7;
 
         const bool is_lit = map::g_light.at(data.actor_sneaking->m_pos);
+        const bool is_dark = map::g_dark.at(data.actor_sneaking->m_pos);
 
-        const bool is_dark = map::g_light.at(data.actor_sneaking->m_pos);
+        const int lgt_mod = is_lit ? -40 : 0;
 
-        const int lgt_mod =
-                is_lit
-                ? 20
-                : 0;
+        const int drk_mod = (is_dark && !is_lit) ? 10 : 0;
 
-        const int drk_mod =
-                (is_dark && !is_lit)
-                ? 20
-                : 0;
-
+        // NOTE: There is no need to cap the sneak value here, since there's
+        // always critical fails
         int sneak_tot =
                 sneak_skill
-                - search_mod
+                + search_mod
                 + dist_mod
-                - lgt_mod
+                + lgt_mod
                 + drk_mod;
 
         // std::cout << "SNEAKING" << std::endl
@@ -174,9 +172,6 @@ ActionResult roll_sneak(const SneakData& data)
         //           << "lgt_mod     : " << lgt_mod << std::endl
         //           << "drk_mod     : " << drk_mod << std::endl
         //           << "sneak_tot   : " << sneak_tot << std::endl;
-
-        // NOTE: There is no need to cap the sneak value, since there's always
-        // critical fails
 
         const auto result = ability_roll::roll(sneak_tot);
 
