@@ -328,7 +328,7 @@ void init()
         d.ranged.dmg = DmgRange(8, 24);
         d.ranged.hit_chance_mod = 0;
         d.ranged.effective_range = {0, 3};
-        d.ranged.dmg_method = DmgMethod::blunt;
+        d.ranged.dmg_method = DmgMethod::shotgun;
         d.ranged.ammo_item_id = Id::shotgun_shell;
         d.ranged.att_msgs = {"fire", "fires"};
         d.ranged.snd_msg = "I hear a shotgun blast.";
@@ -359,7 +359,7 @@ void init()
         d.ranged.dmg = DmgRange(6, 18);
         d.ranged.hit_chance_mod = 0;
         d.ranged.effective_range = {0, 5};
-        d.ranged.dmg_method = DmgMethod::blunt;
+        d.ranged.dmg_method = DmgMethod::shotgun;
         d.ranged.ammo_item_id = Id::shotgun_shell;
         d.ranged.att_msgs = {"fire", "fires"};
         d.ranged.snd_msg = "I hear a shotgun blast.";
