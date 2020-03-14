@@ -182,6 +182,7 @@ static void reset_data(item::ItemData& d, ItemType const item_type)
                 d.tile = TileId::potion;
                 d.ranged.throw_hit_chance_mod = 15;
                 d.ranged.dmg = DmgRange(1, 3);
+                d.ranged.dmg_method = DmgMethod::blunt;
                 d.ranged.always_break_on_throw = true;
                 d.max_stack_at_spawn = 1;
                 d.land_on_hard_snd_msg = "";
@@ -327,6 +328,7 @@ void init()
         d.ranged.dmg = DmgRange(8, 24);
         d.ranged.hit_chance_mod = 0;
         d.ranged.effective_range = {0, 3};
+        d.ranged.dmg_method = DmgMethod::blunt;
         d.ranged.ammo_item_id = Id::shotgun_shell;
         d.ranged.att_msgs = {"fire", "fires"};
         d.ranged.snd_msg = "I hear a shotgun blast.";
@@ -357,6 +359,7 @@ void init()
         d.ranged.dmg = DmgRange(6, 18);
         d.ranged.hit_chance_mod = 0;
         d.ranged.effective_range = {0, 5};
+        d.ranged.dmg_method = DmgMethod::blunt;
         d.ranged.ammo_item_id = Id::shotgun_shell;
         d.ranged.att_msgs = {"fire", "fires"};
         d.ranged.snd_msg = "I hear a shotgun blast.";
@@ -697,6 +700,7 @@ void init()
                 d.ranged.prop_applied = ItemAttProp(prop);
         }
         d.ranged.dmg_type = DmgType::electric;
+        d.ranged.dmg_method = DmgMethod::elemental;
         d.ranged.has_infinite_ammo = true;
         d.ranged.projectile_leaves_trail = true;
         d.ranged.projectile_color = colors::yellow();
@@ -848,6 +852,7 @@ void init()
         d.ranged.dmg = DmgRange(1, 3);
         d.ranged.effective_range = {0, 4};
         d.ranged.max_range = d.ranged.effective_range.max + 3;
+        d.ranged.dmg_method = DmgMethod::blunt;
         d.max_stack_at_spawn = 3;
         d.main_att_mode = AttMode::thrown;
         d.native_containers.push_back(terrain::Id::cabinet);
@@ -911,6 +916,7 @@ void init()
         d.ranged.throw_hit_chance_mod = 0;
         d.ranged.effective_range = {0, 5};
         d.ranged.max_range = d.ranged.effective_range.max + 3;
+        d.ranged.dmg_method = DmgMethod::slashing;
         d.native_containers.push_back(terrain::Id::chest);
         d.native_containers.push_back(terrain::Id::cabinet);
         d.native_containers.push_back(terrain::Id::cocoon);
@@ -938,6 +944,7 @@ void init()
         d.ranged.throw_hit_chance_mod = -5;
         d.ranged.effective_range = {0, 4};
         d.ranged.max_range = d.ranged.effective_range.max + 3;
+        d.ranged.dmg_method = DmgMethod::blunt;
         d.land_on_hard_snd_msg = "I hear a thudding sound.";
         d.land_on_hard_sfx = SfxId::END;
         g_data[(size_t)d.id] = d;
@@ -963,6 +970,7 @@ void init()
         d.ranged.throw_hit_chance_mod = -5;
         d.ranged.effective_range = {0, 4};
         d.ranged.max_range = d.ranged.effective_range.max + 3;
+        d.ranged.dmg_method = DmgMethod::blunt;
         d.native_containers.push_back(terrain::Id::cabinet);
         d.native_containers.push_back(terrain::Id::cocoon);
         g_data[(size_t)d.id] = d;
@@ -990,6 +998,7 @@ void init()
         d.ranged.throw_hit_chance_mod = -5;
         d.ranged.effective_range = {0, 4};
         d.ranged.max_range = d.ranged.effective_range.max + 3;
+        d.ranged.dmg_method = DmgMethod::slashing;
         d.native_containers.push_back(terrain::Id::cabinet);
         d.native_containers.push_back(terrain::Id::cocoon);
         g_data[(size_t)d.id] = d;
@@ -1016,6 +1025,7 @@ void init()
         d.melee.is_noisy = true;
         d.ranged.throw_hit_chance_mod = -5;
         d.ranged.effective_range = {0, 4};
+        d.ranged.dmg_method = DmgMethod::slashing;
         d.ranged.max_range = d.ranged.effective_range.max + 3;
         d.native_containers.push_back(terrain::Id::cabinet);
         d.native_containers.push_back(terrain::Id::tomb);
@@ -1047,6 +1057,7 @@ void init()
         d.ranged.throw_hit_chance_mod = -5;
         d.ranged.effective_range = {0, 4};
         d.ranged.max_range = d.ranged.effective_range.max + 3;
+        d.ranged.dmg_method = DmgMethod::blunt;
         d.native_containers.push_back(terrain::Id::cabinet);
         d.native_containers.push_back(terrain::Id::tomb);
         d.native_containers.push_back(terrain::Id::cocoon);
@@ -1077,6 +1088,7 @@ void init()
         d.ranged.throw_hit_chance_mod = -10;
         d.ranged.effective_range = {0, 3};
         d.ranged.max_range = d.ranged.effective_range.max + 3;
+        d.ranged.dmg_method = DmgMethod::piercing;
         d.native_containers.push_back(terrain::Id::cabinet);
         d.native_containers.push_back(terrain::Id::cocoon);
         g_data[(size_t)d.id] = d;
@@ -1102,6 +1114,7 @@ void init()
         d.ranged.throw_hit_chance_mod = -10;
         d.ranged.effective_range = {0, 3};
         d.ranged.max_range = d.ranged.effective_range.max + 3;
+        d.ranged.dmg_method = DmgMethod::blunt;
         d.native_containers.push_back(terrain::Id::cabinet);
         g_data[(size_t)d.id] = d;
 
@@ -1207,6 +1220,7 @@ void init()
         d.ranged.snd_msg = "I hear spitting.";
         d.ranged.projectile_color = colors::light_green();
         d.ranged.dmg_type = DmgType::acid;
+        d.ranged.dmg_method = DmgMethod::elemental;
         d.ranged.projectile_character = '*';
         g_data[(size_t)d.id] = d;
 
@@ -1216,6 +1230,7 @@ void init()
         d.ranged.snd_msg = "I hear hissing and spitting.";
         d.ranged.projectile_color = colors::light_green();
         d.ranged.dmg_type = DmgType::physical;
+        d.ranged.dmg_method = DmgMethod::piercing;
         d.ranged.projectile_character = '*';
         g_data[(size_t)d.id] = d;
 
@@ -1228,6 +1243,7 @@ void init()
         d.ranged.projectile_tile = TileId::blast1;
         d.ranged.projectile_leaves_trail = true;
         d.ranged.dmg_type = DmgType::fire;
+        d.ranged.dmg_method = DmgMethod::elemental;;
         g_data[(size_t)d.id] = d;
 
         reset_data(d, ItemType::ranged_wpn_intr);
@@ -1239,6 +1255,7 @@ void init()
         d.ranged.projectile_tile = TileId::blast1;
         d.ranged.projectile_leaves_trail = true;
         d.ranged.dmg_type = DmgType::electric;
+        d.ranged.dmg_method = DmgMethod::elemental;
         g_data[(size_t)d.id] = d;
 
         reset_data(d, ItemType::melee_wpn_intr);
@@ -1289,6 +1306,7 @@ void init()
         d.ranged.att_msgs = {"", "throws a net"};
         d.ranged.snd_msg = "I hear a whooshing sound.";
         d.ranged.projectile_color = colors::brown();
+        d.ranged.dmg_method = DmgMethod::blunt;
         d.ranged.projectile_character = '*';
         d.ranged.projectile_tile = TileId::web;
         g_data[(size_t)d.id] = d;
@@ -1345,6 +1363,7 @@ void init()
         d.ranged.projectile_color = colors::light_white();
         d.ranged.projectile_tile = TileId::blast1;
         d.ranged.projectile_character = '*';
+        d.ranged.dmg_method = DmgMethod::blunt;
         d.ranged.snd_vol = SndVol::low;
         g_data[(size_t)d.id] = d;
 
@@ -1796,6 +1815,7 @@ void init()
         d.ranged.throw_hit_chance_mod = -10;
         d.ranged.effective_range = {0, 3};
         d.ranged.max_range = d.ranged.effective_range.max + 3;
+        d.ranged.dmg_method = DmgMethod::blunt;
         d.is_unique = true;
         d.xp_on_found = 20;
         d.value = Value::supreme_treasure;
@@ -2022,6 +2042,7 @@ void init()
         d.ranged.always_break_on_throw = true;
         d.ranged.effective_range = {-1, -1};
         d.ranged.max_range = 3;
+        d.ranged.dmg_method = DmgMethod::blunt;
         d.max_stack_at_spawn = 1;
         d.main_att_mode = AttMode::thrown;
         d.chance_to_incl_in_spawn_list = 35;
@@ -2103,7 +2124,6 @@ RangedData::RangedData() :
         is_machine_gun(false),
         is_shotgun(false),
         max_ammo(0),
-
         hit_chance_mod(0),
         throw_hit_chance_mod(0),
         always_break_on_throw(false),
@@ -2112,6 +2132,7 @@ RangedData::RangedData() :
         knocks_back(false),
         ammo_item_id(Id::END),
         dmg_type(DmgType::physical),
+        dmg_method(DmgMethod::piercing),
         has_infinite_ammo(false),
         projectile_character('/'),
         projectile_tile(TileId::projectile_std_front_slash),
@@ -2152,7 +2173,6 @@ ItemData::ItemData() :
         is_tried(false),
         is_found(false),
         xp_on_found(0),
-
         character('X'),
         color(colors::white()),
         tile(TileId::END),

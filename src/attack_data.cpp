@@ -238,21 +238,17 @@ MeleeAttData::MeleeAttData(
         if (attacker && attacker->m_properties.has(PropId::weakened))
         {
                 // Weak attack (halved damage)
-                dmg /= 2;
-
-                dmg = std::max(1, dmg);
+                dmg = std::max(1, dmg / 2);
 
                 is_weak_attack = true;
         }
         // Attacker not weakened, or not an actor attacking (e.g. a trap)
         else if (attacker && !is_defender_aware)
         {
-                TRACE << "Melee attack is backstab" << std::endl;
-
-                // Backstab, +50% damage
+                // The attack is a backstab
                 int dmg_pct = 150;
 
-                // Extra backstab damage from traits
+                // Extra backstab damage from traits?
                 if (attacker && attacker->is_player())
                 {
                         if (player_bon::has_trait(Trait::vicious))
@@ -277,6 +273,13 @@ MeleeAttData::MeleeAttData(
                 dmg = (dmg * dmg_pct) / 100;
 
                 is_backstab = true;
+        }
+
+        // Defender takes reduced damage from piercing attacks?
+        if (defender->m_properties.has(PropId::reduced_pierce_dmg) &&
+            (wpn.data().melee.dmg_method == DmgMethod::piercing))
+        {
+                dmg = std::max(1, dmg / 4);
         }
 }
 
@@ -459,40 +462,42 @@ RangedAttData::RangedAttData(
 
         att_result = ability_roll::roll(hit_chance_tot);
 
-        if (att_result >= ActionResult::success)
+        bool player_has_aim_bon = false;
+
+        if (attacker == map::g_player)
         {
-                TRACE_VERBOSE << "Attack roll succeeded" << std::endl;
+                player_has_aim_bon =
+                        attacker->m_properties .has(PropId::aiming);
+        }
 
-                bool player_has_aim_bon = false;
+        auto dmg_range = wpn.ranged_dmg(attacker);
 
-                if (attacker == map::g_player)
-                {
-                        player_has_aim_bon =
-                                attacker->m_properties
-                                .has(PropId::aiming);
-                }
+        if ((attacker == map::g_player) &&
+            player_bon::gets_undead_bane_bon(*defender->m_data))
+        {
+                dmg_range.set_plus(dmg_range.plus() + 2);
+        }
 
-                auto dmg_range = wpn.ranged_dmg(attacker);
+        dmg =
+                player_has_aim_bon
+                ? dmg_range.total_range().max
+                : dmg_range.total_range().roll();
 
-                if ((attacker == map::g_player) &&
-                    player_bon::gets_undead_bane_bon(*defender->m_data))
-                {
-                        dmg_range.set_plus(dmg_range.plus() + 2);
-                }
+        // Positions further than max range have halved damage
+        if (dist > effective_range.max)
+        {
+                dmg = std::max(1, dmg / 2);
+        }
 
-                dmg =
-                        player_has_aim_bon
-                        ? dmg_range.total_range().max
-                        : dmg_range.total_range().roll();
+        // Defender takes reduced damage from piercing attacks?
+        if (defender->m_properties.has(PropId::reduced_pierce_dmg) &&
+            (wpn.data().ranged.dmg_method == DmgMethod::piercing))
+        {
+                TRACE << "Damage BEFORE piercing reduction: " << dmg << std::endl;
 
-                // Positions further than max range have halved damage
-                if (dist > effective_range.max)
-                {
-                        TRACE_VERBOSE << "Outside effetive range limit"
-                                      << std::endl;
+                dmg = std::max(1, dmg / 4);
 
-                        dmg = std::max(1, dmg / 2);
-                }
+                TRACE << "Damage AFTER piercing reduction: " << dmg << std::endl;
         }
 }
 
@@ -645,38 +650,36 @@ ThrowAttData::ThrowAttData(
 
         att_result = ability_roll::roll(hit_chance_tot);
 
-        if (att_result >= ActionResult::success)
+        bool player_has_aim_bon = false;
+
+        if (attacker == map::g_player)
         {
-                TRACE_VERBOSE << "Attack roll succeeded" << std::endl;
+                player_has_aim_bon =
+                        attacker->m_properties .has(PropId::aiming);
+        }
 
-                bool player_has_aim_bon = false;
+        auto dmg_range = item.thrown_dmg(attacker);
 
-                if (attacker == map::g_player)
-                {
-                        player_has_aim_bon =
-                                attacker->m_properties
-                                .has(PropId::aiming);
-                }
+        if (apply_undead_bane_bon)
+        {
+                dmg_range.set_plus(dmg_range.plus() + 2);
+        }
 
-                auto dmg_range = item.thrown_dmg(attacker);
+        dmg =
+                player_has_aim_bon
+                ? dmg_range.total_range().max
+                : dmg_range.total_range().roll();
 
-                if (apply_undead_bane_bon)
-                {
-                        dmg_range.set_plus(dmg_range.plus() + 2);
-                }
+        // Positions further than max range have halved damage
+        if (dist > effective_range.max)
+        {
+                dmg = std::max(1, dmg / 2);
+        }
 
-                dmg =
-                        player_has_aim_bon
-                        ? dmg_range.total_range().max
-                        : dmg_range.total_range().roll();
-
-                // Positions further than max range have halved damage
-                if (dist > effective_range.max)
-                {
-                        TRACE_VERBOSE << "Outside effetive range limit"
-                                      << std::endl;
-
-                        dmg = std::max(1, dmg / 2);
-                }
+        // Defender takes reduced damage from piercing attacks?
+        if (defender->m_properties.has(PropId::reduced_pierce_dmg) &&
+            (item.data().ranged.dmg_method == DmgMethod::piercing))
+        {
+                dmg = std::max(1, dmg / 4);
         }
 }

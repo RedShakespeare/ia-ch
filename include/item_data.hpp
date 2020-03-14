@@ -359,6 +359,7 @@ struct RangedData
         bool knocks_back;
         Id ammo_item_id;
         DmgType dmg_type;
+        DmgMethod dmg_method;
         bool has_infinite_ammo;
         char projectile_character;
         TileId projectile_tile;

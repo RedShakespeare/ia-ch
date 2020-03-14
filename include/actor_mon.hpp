@@ -179,7 +179,7 @@ class Ape: public Mon
 {
 public:
         Ape() :
-                
+
                 m_frenzy_cooldown(0) {}
 
         ~Ape() = default;
@@ -194,7 +194,7 @@ class Khephren: public Mon
 {
 public:
         Khephren() :
-                
+
                 m_has_summoned_locusts(false) {}
         ~Khephren() = default;
 

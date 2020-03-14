@@ -779,7 +779,8 @@ static std::unique_ptr<Snd> ranged_fire_snd(
 
 static void emit_projectile_hit_actor_snd(const P& pos)
 {
-        Snd snd("A creature is hit.",
+        Snd snd(
+                "A creature is hit.",
                 SfxId::hit_small,
                 IgnoreMsgIfOriginSeen::yes,
                 pos,
@@ -798,7 +799,8 @@ static void emit_projectile_hit_terrain_snd(
         {
                 // TODO: Check hit material, soft and wood should not cause
                 // a ricochet sound
-                Snd snd("I hear a ricochet.",
+                Snd snd(
+                        "I hear a ricochet.",
                         SfxId::ricochet,
                         IgnoreMsgIfOriginSeen::yes,
                         pos,
@@ -940,7 +942,7 @@ static void hit_actor_with_projectile(
                         *projectile.actor_hit,
                         att_data.dmg,
                         wpn.data().ranged.dmg_type,
-                        DmgMethod::END,
+                        wpn.data().ranged.dmg_method,
                         AllowWound::yes);
         }
 
@@ -1560,14 +1562,13 @@ void melee(
                         AllowWound::yes;
 
                 const auto dmg_type = wpn.data().melee.dmg_type;
-
-                TRACE << "Melee damage: " << att_data.dmg << std::endl;
+                const auto dmg_method = wpn.data().melee.dmg_method;
 
                 actor::hit(
                         defender,
                         att_data.dmg,
                         dmg_type,
-                        DmgMethod::END,
+                        dmg_method,
                         allow_wound);
 
                 // TODO: Why is light damage included here?

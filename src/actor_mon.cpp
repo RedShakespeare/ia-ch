@@ -157,7 +157,7 @@ std::string get_cultist_aware_msg_hidden()
 // Monster
 // -----------------------------------------------------------------------------
 Mon::Mon() :
-        
+
         m_wary_of_player_counter(0),
         m_aware_of_player_counter(0),
         m_player_aware_of_me_counter(0),
@@ -169,7 +169,7 @@ Mon::Mon() :
         m_target(nullptr),
         m_is_target_seen(false),
         m_waiting(false)
-        
+
 {
 
 }
@@ -910,16 +910,14 @@ void Mon::hear_sound(const Snd& snd)
                 return;
         }
 
-        if (is_alive() &&
-            snd.is_alerting_mon())
+        if (is_alive() && snd.is_alerting_mon())
         {
                 const bool was_aware_before = (m_aware_of_player_counter > 0);
 
                 become_aware_player(false);
 
                 // Give the monster some reaction time
-                if (!was_aware_before &&
-                    !is_actor_my_leader(map::g_player))
+                if (!was_aware_before && !is_actor_my_leader(map::g_player))
                 {
                         auto prop = new PropWaiting();
 

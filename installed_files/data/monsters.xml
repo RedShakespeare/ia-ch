@@ -5116,7 +5116,7 @@
             <name_the>the Worm Mass</name_the>
             <corpse_name_a></corpse_name_a>
             <corpse_name_the></corpse_name_the>
-            <description>A slithering conglomeration of carnivorous worms.</description>
+            <description>A slithering conglomeration of carnivorous worms. Piercing attacks such as pistol shots or dagger strikes are very ineffective against them.</description>
             <allow_generated_description>true</allow_generated_description>
             <wary_message>seems disturbed.</wary_message>
             <aware_message_seen></aware_message_seen>
@@ -5136,13 +5136,13 @@
         </audio>
 
         <attributes>
-            <hit_points>2</hit_points>
+            <hit_points>10</hit_points>
             <spirit>1</spirit>
-            <speed>normal</speed>
-            <shock_level>none</shock_level>
-            <melee>35</melee>
+            <speed>slow</speed>
+            <shock_level>unsettling</shock_level>
+            <melee>40</melee>
             <ranged>0</ranged>
-            <dodging>-20</dodging>
+            <dodging>-30</dodging>
             <stealth>0</stealth>
             <searching>0</searching>
             <can_open_doors>false</can_open_doors>
@@ -5164,13 +5164,16 @@
         <properties>
             <property>splits_on_death</property>
             <property>darkvision</property>
+            <property>r_blind</property>
+            <property>reduced_pierce_dmg</property>
+            <property>short_hearing_range</property>
         </properties>
 
         <ai>
             <erratic_move_percent>35</erratic_move_percent>
-            <turns_aware>5</turns_aware>
+            <turns_aware>8</turns_aware>
             <ranged_cooldown_turns>0</ranged_cooldown_turns>
-            <looks>true</looks>
+            <looks>false</looks>
             <avoids_blocking_friend>false</avoids_blocking_friend>
             <attacks>true</attacks>
             <paths_to_target_when_aware>false</paths_to_target_when_aware>
@@ -5205,7 +5208,7 @@
             <name_the>the Mind Worms</name_the>
             <corpse_name_a></corpse_name_a>
             <corpse_name_the></corpse_name_the>
-            <description>A slithering conglomeration of carnivorous worms. Their bite causes heavy disorientation.</description>
+            <description>A slithering conglomeration of carnivorous worms. Their bite causes heavy disorientation. Piercing attacks such as pistol shots or dagger strikes are very ineffective against them.</description>
             <allow_generated_description>true</allow_generated_description>
             <wary_message>seems disturbed.</wary_message>
             <aware_message_seen></aware_message_seen>
@@ -5225,13 +5228,13 @@
         </audio>
 
         <attributes>
-            <hit_points>4</hit_points>
+            <hit_points>16</hit_points>
             <spirit>2</spirit>
-            <speed>normal</speed>
-            <shock_level>none</shock_level>
+            <speed>slow</speed>
+            <shock_level>unsettling</shock_level>
             <melee>50</melee>
             <ranged>0</ranged>
-            <dodging>-10</dodging>
+            <dodging>-30</dodging>
             <stealth>0</stealth>
             <searching>0</searching>
             <can_open_doors>false</can_open_doors>
@@ -5254,11 +5257,14 @@
         <properties>
             <property>splits_on_death</property>
             <property>darkvision</property>
+            <property>r_blind</property>
+            <property>reduced_pierce_dmg</property>
+            <property>short_hearing_range</property>
         </properties>
 
         <ai>
             <erratic_move_percent>35</erratic_move_percent>
-            <turns_aware>5</turns_aware>
+            <turns_aware>10</turns_aware>
             <ranged_cooldown_turns>0</ranged_cooldown_turns>
             <looks>true</looks>
             <avoids_blocking_friend>false</avoids_blocking_friend>
@@ -6650,7 +6656,7 @@
             <spirit>1</spirit>
             <speed>slow</speed>
             <shock_level>none</shock_level>
-            <melee>50</melee>
+            <melee>90</melee>
             <ranged>0</ranged>
             <dodging>-50</dodging>
             <stealth>0</stealth>
@@ -6681,6 +6687,7 @@
             <property>r_breath</property>
             <property>r_disease</property>
             <property>r_blind</property>
+            <property>short_hearing_range</property>
         </properties>
 
         <ai>

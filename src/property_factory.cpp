@@ -230,6 +230,12 @@ Prop* make(const PropId id)
         case PropId::aura_of_decay:
                 return new PropAuraOfDecay();
 
+        case PropId::reduced_pierce_dmg:
+                return new Prop(id);
+
+        case PropId::short_hearing_range:
+                return new Prop(id);
+
         case PropId::spawns_zombie_parts_on_destroyed:
                 return new PropSpawnsZombiePartsOnDestroyed();
 

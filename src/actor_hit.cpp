@@ -160,8 +160,9 @@ ActorDied hit(
                                         " is destroyed.");
                         }
                 }
-                else // Not destroyed
+                else
                 {
+                        // Not destroyed
                         if ((method == DmgMethod::kicking) ||
                             (method == DmgMethod::blunt) ||
                             (method == DmgMethod::slashing) ||

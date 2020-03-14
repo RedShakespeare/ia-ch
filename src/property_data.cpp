@@ -774,6 +774,9 @@ static void init_data_list()
         d.alignment = PropAlignment::good;
         add(d);
 
+        d.id = PropId::reduced_pierce_dmg;
+        add(d);
+
         d.id = PropId::vortex;
         add(d);
 

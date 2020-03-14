@@ -132,8 +132,18 @@ void run(Snd snd)
 
                 const P& actor_pos = actor->m_pos;
 
+                // Can the sound be heard at this distance?
                 if (((flood_val_at_actor == 0) && (actor_pos != origin)) ||
                     !is_snd_heard_at_range(flood_val_at_actor, snd))
+                {
+                        continue;
+                }
+
+                // Not hearing the sound due to short hearing range property?
+                const int max_dist_short_hearing_range = 2;
+
+                if (actor->m_properties.has(PropId::short_hearing_range) &&
+                    (flood_val_at_actor > max_dist_short_hearing_range))
                 {
                         continue;
                 }
@@ -173,10 +183,12 @@ void run(Snd snd)
                         map::g_player->hear_sound(
                                 snd,
                                 is_origin_seen_by_player,
-                                dir_to_origin, pct_dist);
+                                dir_to_origin,
+                                pct_dist);
                 }
-                else // Not player
+                else
                 {
+                        // Not player
                         auto* const mon = static_cast<actor::Mon*>(actor);
 
                         mon->hear_sound(snd);

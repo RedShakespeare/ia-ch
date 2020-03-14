@@ -1448,7 +1448,7 @@ PropActResult PropVortex::on_act()
         if (is_pos_adj(mon->m_pos, player_pos, true) ||
             !rnd::coin_toss())
         {
-                return PropActResult();
+                return {};
         }
 
         TRACE << "Monster with vortex property attempting to pull player"
@@ -1556,7 +1556,6 @@ void PropExplodesOnDeath::on_death()
 
 void PropSplitsOnDeath::on_death()
 {
-        // Not supported yet
         if (m_owner->is_player())
         {
                 return;
@@ -1575,8 +1574,9 @@ void PropSplitsOnDeath::on_death()
         const auto f_id = map::g_cells.at(pos).terrain->id();
 
         if (is_very_destroyed ||
-            f_id == terrain::Id::chasm ||
-            f_id == terrain::Id::liquid_deep ||
+            m_owner->m_properties.has(PropId::burning) ||
+            (f_id == terrain::Id::chasm) ||
+            (f_id == terrain::Id::liquid_deep) ||
             (game_time::g_actors.size() >= g_max_nr_actors_on_map))
         {
                 return;

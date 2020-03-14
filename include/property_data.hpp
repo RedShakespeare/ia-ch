@@ -75,6 +75,8 @@ enum class PropId
         confuses_adjacent, // "Strange color" confusing player when seen
         speaks_curses,
         aura_of_decay, // Damages adjacent hostile creatures
+        reduced_pierce_dmg, // E.g. worm masses
+        short_hearing_range,
 
         // Properties describing the actors body and/or method of moving around
         flying,
@@ -132,7 +134,6 @@ const std::unordered_map<std::string, PropId> g_str_to_prop_id_map = {
         {"darkvision", PropId::darkvision},
         {"deaf", PropId::deaf},
         {"diseased", PropId::diseased},
-        {"premonition", PropId::premonition},
         {"entangled", PropId::entangled},
         {"ethereal", PropId::ethereal},
         {"explodes_on_death", PropId::explodes_on_death},
@@ -148,6 +149,7 @@ const std::unordered_map<std::string, PropId> g_str_to_prop_id_map = {
         {"ooze", PropId::ooze},
         {"paralyzed", PropId::paralyzed},
         {"poisoned", PropId::poisoned},
+        {"premonition", PropId::premonition},
         {"r_acid", PropId::r_acid},
         {"r_blind", PropId::r_blind},
         {"r_breath", PropId::r_breath},
@@ -164,8 +166,10 @@ const std::unordered_map<std::string, PropId> g_str_to_prop_id_map = {
         {"r_spell", PropId::r_spell},
         {"radiant", PropId::radiant},
         {"recloaks", PropId::recloaks},
+        {"reduced_pierce_dmg", PropId::reduced_pierce_dmg},
         {"regenerates", PropId::regenerates},
         {"see_invis", PropId::see_invis},
+        {"short_hearing_range", PropId::short_hearing_range},
         {"slowed", PropId::slowed},
         {"spawns_zombie_parts_on_destroyed",
          PropId::spawns_zombie_parts_on_destroyed},

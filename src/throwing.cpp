@@ -242,7 +242,8 @@ void throw_item(
                                 static_cast<actor::Mon*>(actor_here)
                                         ->set_player_aware_of_me();
 
-                                Snd snd("A creature is hit.",
+                                Snd snd(
+                                        "A creature is hit.",
                                         SfxId::hit_small,
                                         IgnoreMsgIfOriginSeen::yes,
                                         pos,
@@ -261,8 +262,10 @@ void throw_item(
                                                         actor_here->name_the())
                                                 : "An unseen creature";
 
-                                        msg_log::add(defender_name + " is hit.",
-                                                     colors::msg_good());
+                                        msg_log::add(
+                                                (defender_name +
+                                                 " is hit."),
+                                                colors::msg_good());
                                 }
 
                                 if (att_data.dmg > 0)
@@ -271,7 +274,7 @@ void throw_item(
                                                 *actor_here,
                                                 att_data.dmg,
                                                 DmgType::physical,
-                                                DmgMethod::END,
+                                                item_thrown_data.ranged.dmg_method,
                                                 AllowWound::yes);
                                 }
 
