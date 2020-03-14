@@ -563,7 +563,6 @@ void init()
         d.base_descr = {
                 "Ammunition used by Colt pistols."
         };
-        d.color = colors::dark_yellow();
         d.ranged.max_ammo = g_data[(size_t)Id::pistol].ranged.max_ammo;
         d.native_containers.push_back(terrain::Id::chest);
         d.native_containers.push_back(terrain::Id::cabinet);
@@ -607,6 +606,7 @@ void init()
         d.base_descr = {
                 "Ammunition used by Winchester Rifles."
         };
+        d.color = colors::dark_yellow();
         d.max_stack_at_spawn = 10;
         d.native_containers.push_back(terrain::Id::chest);
         d.native_containers.push_back(terrain::Id::cabinet);
