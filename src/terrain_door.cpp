@@ -52,7 +52,7 @@ Door::Door(const P& terrain_pos,
                 // secret to hide an optional branch of the map).
 
                 const int pct_secret = 20 + (map::g_dlvl - 1);
-                const int pct_stuck = 5;
+                const int pct_stuck = 10;
 
                 if ((m_type != DoorType::gate) && rnd::percent(pct_secret))
                 {
@@ -558,6 +558,12 @@ std::string Door::name(const Article article) const
 
                 mod += "open " ;
         }
+        else if (m_is_stuck &&
+                 map::g_player->m_pos.is_adjacent(m_pos))
+        {
+                // Door is stuck and player is adjacent to it
+                mod = "stuck ";
+        }
 
         if (a.empty())
         {
@@ -573,31 +579,36 @@ std::string Door::name(const Article article) const
 
 Color Door::color_default() const
 {
+        Color color;
+
         if (m_is_hidden)
         {
-                return m_mimic_terrain->color();
+                color = m_mimic_terrain->color();
+        }
+        else if (m_is_stuck && map::g_player->m_pos.is_adjacent(m_pos))
+        {
+                // Door is stuck and player is adjacent to it
+                color = colors::gray_brown();
         }
         else
         {
                 switch (m_type)
                 {
                 case DoorType::wood:
-                        return colors::dark_brown();
+                        color = colors::dark_brown();
                         break;
 
                 case DoorType::metal:
-                        return colors::cyan();
+                        color = colors::cyan();
                         break;
 
                 case DoorType::gate:
-                        return colors::gray();
+                        color = colors::gray();
                         break;
                 }
         }
 
-        ASSERT(false);
-
-        return colors::gray();
+        return color;
 }
 
 char Door::character() const
@@ -611,7 +622,6 @@ char Door::character() const
         }
         else
         {
-                // Not secret
                 return m_is_open ? 39 : '+';
         }
 }
