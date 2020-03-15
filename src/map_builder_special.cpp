@@ -21,6 +21,7 @@
 #include "terrain_door.hpp"
 #include "terrain_door.hpp"
 #include "terrain_event.hpp"
+#include "terrain_gong.hpp"
 #include "terrain_monolith.hpp"
 
 // -----------------------------------------------------------------------------
@@ -145,6 +146,12 @@ void MapBuilderDeepOneLair::handle_template_pos(const P& p, const char c)
         case '-':
         {
                 map::put(new terrain::Altar(p));
+        }
+        break;
+
+        case '0':
+        {
+                map::put(new terrain::Gong(p));
         }
         break;
 
