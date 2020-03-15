@@ -67,6 +67,7 @@ static bool is_trait_blocked_for_bg(const Trait trait, const Bg bg)
         case Trait::strong_backed:
         case Trait::dexterous:
         case Trait::lithe:
+        case Trait::crippling_strikes:
         case Trait::fearless:
         case Trait::steady_aimer:
                 break;
@@ -268,6 +269,9 @@ std::string trait_title(const Trait id)
 
         case Trait::lithe:
                 return "Lithe";
+
+        case Trait::crippling_strikes:
+                return "Crippling Strikes";
 
         case Trait::fearless:
                 return "Fearless";
@@ -553,6 +557,11 @@ std::string trait_descr(const Trait id)
                 return
                         "+25% chance to evade attacks";
 
+        case Trait::crippling_strikes:
+                return "Your melee attacks have 60% chance to Weaken the "
+                        "target creature for 2-3 turns (reducing their "
+                        "melee damage by half).";
+
         case Trait::fearless:
                 return
                         "You cannot become terrified, +10% shock resistance";
@@ -747,6 +756,12 @@ void trait_prereqs(
 
         case Trait::lithe:
                 traits_out.push_back(Trait::dexterous);
+                break;
+
+        case Trait::crippling_strikes:
+                traits_out.push_back(Trait::dexterous);
+                traits_out.push_back(Trait::adept_melee);
+                bg_out = Bg::rogue;
                 break;
 
         case Trait::fearless:
@@ -1004,8 +1019,9 @@ void unpicked_traits_for_bg(
                 {
                         traits_can_be_picked_out.push_back(trait);
                 }
-                else // Prerequisites not met
+                else
                 {
+                        // Prerequisites not met
                         traits_prereqs_not_met_out.push_back(trait);
                 }
 

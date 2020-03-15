@@ -508,24 +508,16 @@ void draw()
         draw_properties(y);
 
         // Turn number
-        // const int turn_nr = game_time::turn_nr();
+        const int turn_nr = game_time::turn_nr();
+        const std::string turn_nr_str = std::to_string(turn_nr);
 
-        // const std::string turn_nr_str = std::to_string(turn_nr);
-
-        // // "T:" + current turn number
-        // const int total_turn_info_w = turn_nr_str.size() + 2;
-
-        // p.x = panels::x1(panel) - total_turn_info_w + 1;
-
-        // io::draw_text("T", panel, p, colors::dark_gray(), colors::black());
-
+        // "T:" + current turn number
+        // P p(0, 0);
+        // io::draw_text("T", Panel::screen, p, colors::dark_gray());
         // ++p.x;
-
-        // io::draw_text(":", panel, p, colors::dark_gray());
-
+        // io::draw_text(":", Panel::screen, p, colors::dark_gray());
         // ++p.x;
-
-        // io::draw_text(turn_nr_str, panel, p, colors::white());
+        // io::draw_text(turn_nr_str, Panel::screen, p, colors::white());
 }
 
 } // namespace status_lines

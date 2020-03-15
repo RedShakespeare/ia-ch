@@ -37,8 +37,6 @@ static std::vector<actor::Speed> s_turn_type_vector;
 // Smallest number divisible by both 2 (200% speed) and 3 (300% speed)
 static const int s_ticks_per_turn = 6;
 
-static int s_current_turn_type_pos = 0;
-
 static size_t s_current_actor_idx = 0;
 
 static int s_turn_nr = 0;
@@ -280,6 +278,21 @@ static void run_atomic_turn_events()
         game_time::update_light_map();
 }
 
+static void set_actor_max_delay(actor::Actor& actor)
+{
+        const auto speed_category = current_actor_speed(actor);
+
+        const int speed_pct = speed_to_pct(speed_category);
+
+        int delay_to_set = (s_ticks_per_turn * 100) / speed_pct;
+
+        // Make sure the delay is at least 1, to never give an actor
+        // infinite number of actions
+        delay_to_set = std::max(1, delay_to_set);
+
+        actor.m_delay = delay_to_set;
+}
+
 // -----------------------------------------------------------------------------
 // game_time
 // -----------------------------------------------------------------------------
@@ -294,7 +307,6 @@ bool g_is_magic_descend_nxt_std_turn;
 
 void init()
 {
-        s_current_turn_type_pos = 0;
         s_current_actor_idx = 0;
         s_turn_nr = 0;
         s_std_turn_delay = s_ticks_per_turn;
@@ -415,28 +427,16 @@ void add_actor(actor::Actor* actor)
         g_actors.push_back(actor);
 }
 
-void reset_turn_type_and_actor_counters()
+void reset_current_actor_idx()
 {
-        s_current_turn_type_pos = s_current_actor_idx = 0;
+        s_current_actor_idx = 0;
 }
 
 void tick()
 {
         auto* actor = current_actor();
 
-        {
-                const auto speed_category = current_actor_speed(*actor);
-
-                const int speed_pct = speed_to_pct(speed_category);
-
-                int delay_to_set = (s_ticks_per_turn * 100) / speed_pct;
-
-                // Make sure the delay is at least 1, to never give an actor
-                // infinite number of actions
-                delay_to_set = std::max(1, delay_to_set);
-
-                actor->m_delay = delay_to_set;
-        }
+        set_actor_max_delay(*actor);
 
         actor->m_properties.on_turn_end();
 
@@ -457,7 +457,6 @@ void tick()
                         {
                                 // Increment the turn counter, and run standard
                                 // turn events
-
                                 // NOTE: This will prune destroyed actors, which
                                 // will decrease the actor vector size.
                                 run_std_turn_events();
@@ -474,16 +473,16 @@ void tick()
 
                 actor = current_actor();
 
-                ASSERT(actor->m_delay >= 0);
-
                 if (actor->m_delay == 0)
                 {
                         // Actor is ready to go
                         break;
                 }
-
-                // Actor is still waiting
-                --actor->m_delay;
+                else
+                {
+                        // Actor is still waiting
+                        --actor->m_delay;
+                }
         }
 
         run_atomic_turn_events();
@@ -543,6 +542,8 @@ actor::Actor* current_actor()
         ASSERT(s_current_actor_idx < g_actors.size());
 
         auto* const actor = g_actors[s_current_actor_idx];
+
+        ASSERT(actor->m_delay >= 0);
 
         ASSERT(map::is_pos_inside_map(actor->m_pos));
 

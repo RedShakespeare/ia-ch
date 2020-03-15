@@ -53,7 +53,7 @@ void erase_mob(terrain::Terrain* f, bool destroy_object);
 
 void erase_all_mobs();
 
-void reset_turn_type_and_actor_counters();
+void reset_current_actor_idx();
 
 void update_light_map();
 

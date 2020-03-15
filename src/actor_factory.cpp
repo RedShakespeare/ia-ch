@@ -174,7 +174,7 @@ void delete_all_mon()
 {
         std::vector<Actor*>& actors = game_time::g_actors;
 
-        for (auto it = begin(actors); it != end(actors);)
+        for (auto it = std::begin(actors); it != std::end(actors);)
         {
                 Actor* const actor = *it;
 
@@ -182,8 +182,9 @@ void delete_all_mon()
                 {
                         ++it;
                 }
-                else // Is monster
+                else
                 {
+                        // Is monster
                         delete actor;
 
                         it = actors.erase(it);

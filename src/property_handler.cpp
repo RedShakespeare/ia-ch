@@ -367,8 +367,9 @@ void PropHandler::remove_props_for_item(const item::Item* const item)
 
                         on_prop_end(moved_prop.get(), PropEndConfig());
                 }
-                else // Property was not added by this item
+                else
                 {
+                        // Property was not added by this item
                         ++it;
                 }
         }

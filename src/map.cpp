@@ -40,7 +40,7 @@ static P s_dims(0, 0);
 Cell::Cell() :
         is_explored(false),
         is_seen_by_player(false),
-        
+
         item(nullptr),
         terrain(nullptr) {}
 
@@ -128,7 +128,7 @@ void reset(const P& dims)
 
         game_time::erase_all_mobs();
 
-        game_time::reset_turn_type_and_actor_counters();
+        game_time::reset_current_actor_idx();
 
         for (auto* room : g_room_list)
         {
@@ -178,8 +178,9 @@ void reset(const P& dims)
 
                 g_wall_color = rnd::element(wall_color_bucket);
         }
-        else // Standard wall color
+        else
         {
+                // Standard wall color
                 g_wall_color = colors::gray();
         }
 }
