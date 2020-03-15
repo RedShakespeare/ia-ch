@@ -510,19 +510,28 @@ static AlertsMon is_melee_snd_alerting_mon(
         const actor::Actor* const attacker,
         const item::Item& wpn)
 {
-        auto alerts = AlertsMon::no;
-
-        const bool is_player_silent = player_bon::has_trait(Trait::silent);
-
         const bool is_wpn_noisy = wpn.data().melee.is_noisy;
 
-        if (is_wpn_noisy &&
-            ((attacker != map::g_player) || is_player_silent))
+        if (is_wpn_noisy)
         {
-                alerts = AlertsMon::yes;
-        }
+                const bool is_player_silent =
+                        player_bon::has_trait(Trait::silent);
 
-        return alerts;
+                const bool is_player = (attacker == map::g_player);
+
+                if (is_player && is_player_silent)
+                {
+                        return AlertsMon::no;
+                }
+                else
+                {
+                        return AlertsMon::yes;
+                }
+        }
+        else
+        {
+                return AlertsMon::no;
+        }
 }
 
 static void print_melee_msg(const MeleeAttData& att_data)
