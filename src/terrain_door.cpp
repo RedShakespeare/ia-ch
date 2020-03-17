@@ -558,10 +558,11 @@ std::string Door::name(const Article article) const
 
                 mod += "open " ;
         }
-        else if (m_is_stuck &&
-                 map::g_player->m_pos.is_adjacent(m_pos))
+
+        if (m_is_stuck &&
+            map::g_player->m_pos.is_adjacent(m_pos) &&
+            (m_type != DoorType::metal))
         {
-                // Door is stuck and player is adjacent to it
                 mod = "stuck ";
         }
 
@@ -585,9 +586,11 @@ Color Door::color_default() const
         {
                 color = m_mimic_terrain->color();
         }
-        else if (m_is_stuck && map::g_player->m_pos.is_adjacent(m_pos))
+        else if (m_is_stuck &&
+                 map::g_player->m_pos.is_adjacent(m_pos) &&
+                 (m_type != DoorType::metal))
         {
-                // Door is stuck and player is adjacent to it
+                // Non-metal door is stuck, and player is adjacent to it
                 color = colors::gray_brown();
         }
         else
