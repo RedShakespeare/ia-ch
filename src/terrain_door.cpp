@@ -591,7 +591,7 @@ Color Door::color_default() const
                  (m_type != DoorType::metal))
         {
                 // Non-metal door is stuck, and player is adjacent to it
-                color = colors::gray_brown();
+                color = colors::red();
         }
         else
         {
