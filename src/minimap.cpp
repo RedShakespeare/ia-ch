@@ -31,6 +31,18 @@ static Color map_cell_color(const Cell& map_cell, const bool is_blocked)
 
         if (map_cell.item)
         {
+                if ((map_cell.item->data().type == ItemType::ranged_wpn) &&
+                    !map_cell.item->data().ranged.has_infinite_ammo)
+                {
+                        auto wpn =
+                                static_cast<const item::Wpn*>(map_cell.item);
+
+                        if (wpn->m_ammo_loaded == 0)
+                        {
+                                return colors::magenta();
+                        }
+                }
+
                 return colors::light_magenta();
         }
 
