@@ -110,18 +110,6 @@ static void move_actor_to_pos_can_have_corpse(actor::Actor& actor)
         }
 }
 
-static void print_mon_death_msg(actor::Actor& actor)
-{
-        TRACE_VERBOSE << "Printing death message" << std::endl;
-
-        const std::string msg = actor.death_msg();
-
-        if (!msg.empty())
-        {
-                msg_log::add(msg);
-        }
-}
-
 // -----------------------------------------------------------------------------
 // actor
 // -----------------------------------------------------------------------------
@@ -190,8 +178,9 @@ void kill(
                         map::make_blood(actor.m_pos);
                 }
         }
-        else // Not destroyed
+        else
         {
+                // Not destroyed
                 actor.m_state = ActorState::corpse;
 
                 if (!actor.is_player())
@@ -217,6 +206,16 @@ void kill(
         }
 
         TRACE_FUNC_END_VERBOSE;
+}
+
+void print_mon_death_msg(const actor::Actor& actor)
+{
+        const std::string msg = actor.death_msg();
+
+        if (!msg.empty())
+        {
+                msg_log::add(msg);
+        }
 }
 
 void unset_actor_as_leader_for_all_mon(actor::Actor& actor)

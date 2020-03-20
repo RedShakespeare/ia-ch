@@ -524,6 +524,13 @@ int Actor::armor_points() const
 
 std::string Actor::death_msg() const
 {
+        // Do not print a standard split message if this monster will split on
+        // death (it will print a split message instead)
+        if (m_properties.has(PropId::splits_on_death))
+        {
+                return "";
+        }
+
         const std::string actor_name_the =
                 text_format::first_to_upper(
                         name_the());

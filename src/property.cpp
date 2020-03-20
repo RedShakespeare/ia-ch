@@ -1561,6 +1561,9 @@ void PropSplitsOnDeath::on_death()
                 return;
         }
 
+        const bool is_player_seeing_owner =
+                map::g_player->can_see_actor(*m_owner);
+
         const int actor_max_hp = actor::max_hp(*m_owner);
 
         // Do not allow splitting if HP is reduced to this point (if the monster
@@ -1579,7 +1582,31 @@ void PropSplitsOnDeath::on_death()
             (f_id == terrain::Id::liquid_deep) ||
             (game_time::g_actors.size() >= g_max_nr_actors_on_map))
         {
+                if (is_player_seeing_owner)
+                {
+                        // Print a standard death message itself
+                        // NOTE: This requires that this property kills itself
+                        // before calling the death message print function
+                        const auto* const owning_actor = m_owner;
+
+                        // End this property
+                        // NOTE: This object is now deleted!
+                        m_owner->m_properties.end_prop(id());
+
+                        actor::print_mon_death_msg(*owning_actor);
+                }
+
                 return;
+        }
+
+        // The monster should split
+
+        if (is_player_seeing_owner)
+        {
+                // NOTE: This is printed instead of the standard death message
+                const std::string name = m_owner->name_the();
+
+                msg_log::add(name + " splits.");
         }
 
         auto* const leader = static_cast<actor::Mon*>(m_owner)->m_leader;
@@ -1592,7 +1619,7 @@ void PropSplitsOnDeath::on_death()
         std::for_each(
                 std::begin(spawned.monsters),
                 std::end(spawned.monsters),
-                [this](auto* const mon)
+                [](auto* const mon)
                 {
                         auto prop_waiting = new PropWaiting();
 
@@ -1607,16 +1634,8 @@ void PropSplitsOnDeath::on_death()
                                         PropId::splits_on_death);
                         }
 
-                        // If the original actor is burning, the spawned actors
-                        // should too
-                        if (m_owner->m_properties.has(PropId::burning))
-                        {
-                                mon->m_properties.apply(
-                                        new PropBurning(),
-                                        PropSrc::intr,
-                                        false, // Do not force effect
-                                        Verbose::no);
-                        }
+                        // Do not print a new "monster in view" message
+                        mon->m_is_msg_mon_in_view_printed = true;
                 });
 
         // If no leader yet, set the first actor as leader of the second
