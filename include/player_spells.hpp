@@ -45,7 +45,7 @@ bool is_player_adj_to_altar();
 class BrowseSpell: public State
 {
 public:
-        BrowseSpell() 
+        BrowseSpell()
                 = default;
 
         void on_start() override;

@@ -9,6 +9,8 @@
 #include "actor_player.hpp"
 #include "init.hpp"
 #include "map.hpp"
+#include "query.hpp"
+#include "random.hpp"
 #include "terrain.hpp"
 
 static void put_floor_and_walls_on_map()
@@ -40,9 +42,14 @@ namespace test_utils
 
 void init_all()
 {
+        rnd::seed();
+
         init::init_io();
         init::init_game();
         init::init_session();
+
+        // To return default answers (e.g. "yes" from yes/no questions)
+        query::cleanup();
 
         map::reset({100, 100});
 

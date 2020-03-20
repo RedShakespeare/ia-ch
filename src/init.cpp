@@ -77,6 +77,7 @@ void cleanup_io()
         TRACE_FUNC_BEGIN;
 
         audio::cleanup();
+        query::cleanup();
         io::cleanup();
         sdl_base::cleanup();
 

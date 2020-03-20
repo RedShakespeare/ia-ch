@@ -39,6 +39,8 @@ namespace query
 
 void init();
 
+void cleanup();
+
 void wait_for_key_press();
 
 BinaryAnswer yes_or_no(

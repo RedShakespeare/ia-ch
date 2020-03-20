@@ -30,6 +30,11 @@ void init()
         s_is_inited = true;
 }
 
+void cleanup()
+{
+        s_is_inited = false;
+}
+
 void wait_for_key_press()
 {
         if (s_is_inited && !config::is_bot_playing())

@@ -327,11 +327,7 @@ void Trap::trigger_start(const actor::Actor* actor)
                 m_nr_turns_until_trigger = rnd_nr_turns;
         }
 
-        TRACE_VERBOSE << "nr_turns_until_trigger_: "
-                      << m_nr_turns_until_trigger
-                      << std::endl;
-
-        ASSERT(m_nr_turns_until_trigger > -1);
+        ASSERT(m_nr_turns_until_trigger >= 0);
 
         // If number of remaining turns is zero, trigger immediately
         if (m_nr_turns_until_trigger == 0)
@@ -542,15 +538,10 @@ void Trap::on_revealed_from_searching()
 
 std::string Trap::name(const Article article) const
 {
-        if (m_is_hidden)
-        {
-                return m_mimic_terrain->name(article);
-        }
-        else
-        {
-                // Not hidden
-                return m_trap_impl->name(article);
-        }
+        return
+                m_is_hidden
+                ? m_mimic_terrain->name(article)
+                : m_trap_impl->name(article);
 }
 
 Color Trap::color_default() const
@@ -1512,11 +1503,11 @@ void TrapUnlearnSpell::trigger()
 
         auto* const actor_here = map::first_actor_at_pos(m_pos);
 
-        ASSERT(actor_here);
-
         if (!actor_here)
         {
                 // Should never happen
+                ASSERT(false);
+
                 return;
         }
 
@@ -1555,7 +1546,20 @@ void TrapUnlearnSpell::trigger()
         {
                 const auto id = (SpellId)i;
 
-                if (player_spells::is_spell_learned(id))
+                // Only allow unlearning spells for which there exists a scroll
+                bool is_scroll = false;
+
+                for (const auto& d : item::g_data)
+                {
+                        if (d.spell_cast_from_scroll == id)
+                        {
+                                is_scroll = true;
+
+                                break;
+                        }
+                }
+
+                if (player_spells::is_spell_learned(id) && is_scroll)
                 {
                         id_bucket.push_back(id);
                 }

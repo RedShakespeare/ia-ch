@@ -357,7 +357,7 @@ namespace gong
 // Upgrade spell
 // -----------------------------------------------------------------------------
 UpgradeSpell::UpgradeSpell() :
-        
+
         m_spell_id(SpellId::END)
 {
         const auto bucket = find_spells_can_upgrade();
@@ -462,7 +462,7 @@ void RemoveInsanity::run_effect()
 // Gain item
 // -----------------------------------------------------------------------------
 GainItem::GainItem() :
-        
+
         m_item_id(item::Id::END)
 {
         const auto item_ids = find_allowed_item_ids();
@@ -724,8 +724,8 @@ void Cursed::run_effect()
 // -----------------------------------------------------------------------------
 // Spawn monsters
 // -----------------------------------------------------------------------------
-SpawnMonsters::SpawnMonsters() 
-        
+SpawnMonsters::SpawnMonsters()
+
 {
         std::vector<actor::Id> summon_bucket;
 
@@ -794,8 +794,7 @@ void SpawnMonsters::run_effect()
 // -----------------------------------------------------------------------------
 // Unlearn spell
 // -----------------------------------------------------------------------------
-UnlearnSpell::UnlearnSpell() 
-        
+UnlearnSpell::UnlearnSpell()
 {
         const auto spell_bucket = make_spell_bucket();
 
