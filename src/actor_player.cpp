@@ -1890,12 +1890,15 @@ void Player::kick_mon(Actor& defender)
 
         // TODO: This is REALLY hacky, it should be done another way. Why even
         // have a "stomp" attack?? Why not just kick them as well?
-        if (d.actor_size == Size::floor &&
+        if ((d.actor_size == Size::floor) &&
             (d.is_spider ||
              d.is_rat ||
              d.is_snake ||
-             d.id == Id::worm_mass ||
-             d.id == Id::mind_worms))
+             ( d.id == Id::worm_mass) ||
+             (d.id == Id::mind_worms) ||
+             (d.id == Id::crawling_intestines) ||
+             (d.id == Id::crawling_hand) ||
+             (d.id == Id::thing)))
         {
                 kick_wpn = static_cast<item::Wpn*>(
                         item::make(item::Id::player_stomp));
