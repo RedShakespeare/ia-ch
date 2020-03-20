@@ -2064,6 +2064,15 @@ void PropBreeds::on_std_turn()
                         prop_waiting->set_duration(2);
 
                         spawned_mon->m_properties.apply(prop_waiting);
+
+                        if (map::g_player->can_see_actor(*spawned_mon))
+                        {
+                                const auto name =
+                                        text_format::first_to_upper(
+                                                spawned_mon->name_a());
+
+                                msg_log::add(name + " is spawned.");
+                        }
                 });
 
         if (mon->m_aware_of_player_counter > 0)
