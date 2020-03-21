@@ -14,8 +14,7 @@
 
 class Room;
 
-struct Region
-{
+struct Region {
 public:
         Region(const R& rect) :
                 main_room(nullptr),
@@ -24,8 +23,9 @@ public:
 
         Region() :
                 main_room(nullptr),
-                
-                is_free(true) {}
+
+                is_free(true)
+        {}
 
         R rnd_room_rect() const;
 
@@ -34,8 +34,7 @@ public:
         bool is_free;
 };
 
-namespace mapgen
-{
+namespace mapgen {
 
 // This variable is checked at certain points to see if the current map has been
 // flagged as "failed". Setting 'is_map_valid' to false will generally stop map

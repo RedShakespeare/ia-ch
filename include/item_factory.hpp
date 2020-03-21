@@ -7,17 +7,13 @@
 #ifndef ITEM_FACTORY_HPP
 #define ITEM_FACTORY_HPP
 
-
 struct P;
 
-
-namespace item
-{
+namespace item {
 
 class Item;
 
 enum class Id;
-
 
 item::Item* make(item::Id item_id, int nr_items = 1);
 

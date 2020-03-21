@@ -16,20 +16,16 @@
 #include "global.hpp"
 #include "property_data.hpp"
 
-
-namespace item
-{
+namespace item {
 class Item;
 } // namespace item
 
 struct P;
 
-
 // -----------------------------------------------------------------------------
 // Support types
 // -----------------------------------------------------------------------------
-enum class PropSrc
-{
+enum class PropSrc {
         // Properties applied by potions, spells, etc, or "natural" properties
         // for monsters (e.g. flying), or player properties gained by traits
         intr,
@@ -40,18 +36,16 @@ enum class PropSrc
         END
 };
 
-enum class PropDurationMode
-{
+enum class PropDurationMode {
         standard,
         specific,
         indefinite
 };
 
-struct DmgResistData
-{
+struct DmgResistData {
         DmgResistData() :
                 is_resisted(false)
-                {}
+        {}
 
         bool is_resisted;
         std::string msg_resist_player;
@@ -59,14 +53,12 @@ struct DmgResistData
         std::string msg_resist_mon;
 };
 
-enum class PropEnded
-{
+enum class PropEnded {
         no,
         yes
 };
 
-struct PropActResult
-{
+struct PropActResult {
         PropActResult() :
                 did_action(DidAction::no),
                 prop_ended(PropEnded::no) {}
@@ -78,8 +70,7 @@ struct PropActResult
 // -----------------------------------------------------------------------------
 // Property base class
 // -----------------------------------------------------------------------------
-class Prop
-{
+class Prop {
 public:
         Prop(PropId id);
 
@@ -332,16 +323,14 @@ protected:
 // -----------------------------------------------------------------------------
 // Specific properties
 // -----------------------------------------------------------------------------
-class PropTerrified: public Prop
-{
+class PropTerrified : public Prop {
 public:
         PropTerrified() :
                 Prop(PropId::terrified) {}
 
         int ability_mod(const AbilityId ability) const override
         {
-                switch (ability)
-                {
+                switch (ability) {
                 case AbilityId::dodging:
                         return 20;
 
@@ -360,8 +349,7 @@ public:
         void on_applied() override;
 };
 
-class PropInfected: public Prop
-{
+class PropInfected : public Prop {
 public:
         PropInfected() :
                 Prop(PropId::infected) {}
@@ -371,8 +359,7 @@ public:
         void on_applied() override;
 };
 
-class PropDiseased: public Prop
-{
+class PropDiseased : public Prop {
 public:
         PropDiseased() :
                 Prop(PropId::diseased) {}
@@ -384,8 +371,7 @@ public:
         void on_applied() override;
 };
 
-class PropDescend: public Prop
-{
+class PropDescend : public Prop {
 public:
         PropDescend() :
                 Prop(PropId::descend) {}
@@ -393,8 +379,7 @@ public:
         PropEnded on_tick() override;
 };
 
-class PropBurrowing: public Prop
-{
+class PropBurrowing : public Prop {
 public:
         PropBurrowing() :
                 Prop(PropId::burrowing) {}
@@ -402,8 +387,7 @@ public:
         PropEnded on_tick() override;
 };
 
-class PropZuulPossessPriest: public Prop
-{
+class PropZuulPossessPriest : public Prop {
 public:
         PropZuulPossessPriest() :
                 Prop(PropId::zuul_possess_priest) {}
@@ -411,8 +395,7 @@ public:
         void on_placed() override;
 };
 
-class PropPossessedByZuul: public Prop
-{
+class PropPossessedByZuul : public Prop {
 public:
         PropPossessedByZuul() :
                 Prop(PropId::possessed_by_zuul) {}
@@ -425,8 +408,7 @@ public:
         }
 };
 
-class PropPoisoned: public Prop
-{
+class PropPoisoned : public Prop {
 public:
         PropPoisoned() :
                 Prop(PropId::poisoned) {}
@@ -434,20 +416,16 @@ public:
         PropEnded on_tick() override;
 };
 
-class PropAiming: public Prop
-{
+class PropAiming : public Prop {
 public:
         PropAiming() :
                 Prop(PropId::aiming) {}
 
         int ability_mod(const AbilityId ability) const override
         {
-                if (ability == AbilityId::ranged)
-                {
+                if (ability == AbilityId::ranged) {
                         return 10;
-                }
-                else
-                {
+                } else {
                         return 0;
                 }
         }
@@ -455,8 +433,7 @@ public:
         void on_hit() override;
 };
 
-class PropBlind: public Prop
-{
+class PropBlind : public Prop {
 public:
         PropBlind() :
                 Prop(PropId::blind) {}
@@ -472,8 +449,7 @@ public:
 
         int ability_mod(const AbilityId ability) const override
         {
-                switch (ability)
-                {
+                switch (ability) {
                 case AbilityId::searching:
                         return -9999;
 
@@ -492,8 +468,7 @@ public:
         }
 };
 
-class PropRecloaks: public Prop
-{
+class PropRecloaks : public Prop {
 public:
         PropRecloaks() :
                 Prop(PropId::recloaks) {}
@@ -501,8 +476,7 @@ public:
         PropActResult on_act() override;
 };
 
-class PropSeeInvis: public Prop
-{
+class PropSeeInvis : public Prop {
 public:
         PropSeeInvis() :
                 Prop(PropId::see_invis) {}
@@ -512,8 +486,7 @@ public:
         bool is_resisting_other_prop(PropId prop_id) const override;
 };
 
-class PropBlessed: public Prop
-{
+class PropBlessed : public Prop {
 public:
         PropBlessed() :
                 Prop(PropId::blessed) {}
@@ -528,8 +501,7 @@ private:
         void bless_adjacent() const;
 };
 
-class PropCursed: public Prop
-{
+class PropCursed : public Prop {
 public:
         PropCursed() :
                 Prop(PropId::cursed) {}
@@ -544,8 +516,7 @@ private:
         void curse_adjacent() const;
 };
 
-class PropPremonition: public Prop
-{
+class PropPremonition : public Prop {
 public:
         PropPremonition() :
                 Prop(PropId::premonition) {}
@@ -554,19 +525,15 @@ public:
         {
                 (void)ability;
 
-                if (ability == AbilityId::dodging)
-                {
+                if (ability == AbilityId::dodging) {
                         return 75;
-                }
-                else
-                {
+                } else {
                         return 0;
                 }
         }
 };
 
-class PropMagicSearching: public Prop
-{
+class PropMagicSearching : public Prop {
 public:
         PropMagicSearching() :
                 Prop(PropId::magic_searching),
@@ -602,8 +569,7 @@ private:
         bool m_allow_reveal_creatures;
 };
 
-class PropEntangled: public Prop
-{
+class PropEntangled : public Prop {
 public:
         PropEntangled() :
                 Prop(PropId::entangled) {}
@@ -618,8 +584,7 @@ private:
         bool try_player_end_with_machete();
 };
 
-class PropBurning: public Prop
-{
+class PropBurning : public Prop {
 public:
         PropBurning() :
                 Prop(PropId::burning) {}
@@ -647,8 +612,7 @@ public:
         PropEnded on_tick() override;
 };
 
-class PropFlared: public Prop
-{
+class PropFlared : public Prop {
 public:
         PropFlared() :
                 Prop(PropId::flared) {}
@@ -656,8 +620,7 @@ public:
         PropEnded on_tick() override;
 };
 
-class PropConfused: public Prop
-{
+class PropConfused : public Prop {
 public:
         PropConfused() :
                 Prop(PropId::confused) {}
@@ -671,8 +634,7 @@ public:
                 Verbose verbose) const override;
 };
 
-class PropNailed: public Prop
-{
+class PropNailed : public Prop {
 public:
         PropNailed() :
                 Prop(PropId::nailed),
@@ -701,8 +663,7 @@ private:
         int m_nr_spikes;
 };
 
-class PropWound: public Prop
-{
+class PropWound : public Prop {
 public:
         PropWound() :
                 Prop(PropId::wound),
@@ -714,10 +675,7 @@ public:
 
         std::string msg_end_player() const override
         {
-                return
-                        (m_nr_wounds > 1) ?
-                        "All my wounds are healed!" :
-                        "A wound is healed!";
+                return (m_nr_wounds > 1) ? "All my wounds are healed!" : "A wound is healed!";
         }
 
         std::string name_short() const override
@@ -747,8 +705,7 @@ private:
         int m_nr_wounds;
 };
 
-class PropHpSap: public Prop
-{
+class PropHpSap : public Prop {
 public:
         PropHpSap();
 
@@ -769,8 +726,7 @@ private:
         int m_nr_drained;
 };
 
-class PropSpiSap: public Prop
-{
+class PropSpiSap : public Prop {
 public:
         PropSpiSap();
 
@@ -791,8 +747,7 @@ private:
         int m_nr_drained;
 };
 
-class PropMindSap: public Prop
-{
+class PropMindSap : public Prop {
 public:
         PropMindSap();
 
@@ -813,8 +768,7 @@ private:
         int m_nr_drained;
 };
 
-class PropWaiting: public Prop
-{
+class PropWaiting : public Prop {
 public:
         PropWaiting() :
                 Prop(PropId::waiting) {}
@@ -842,8 +796,7 @@ public:
         }
 };
 
-class PropDisabledAttack: public Prop
-{
+class PropDisabledAttack : public Prop {
 public:
         PropDisabledAttack() :
                 Prop(PropId::disabled_attack) {}
@@ -861,8 +814,7 @@ public:
         }
 };
 
-class PropDisabledMelee: public Prop
-{
+class PropDisabledMelee : public Prop {
 public:
         PropDisabledMelee() :
                 Prop(PropId::disabled_melee) {}
@@ -874,8 +826,7 @@ public:
         }
 };
 
-class PropDisabledRanged: public Prop
-{
+class PropDisabledRanged : public Prop {
 public:
         PropDisabledRanged() :
                 Prop(PropId::disabled_ranged) {}
@@ -887,8 +838,7 @@ public:
         }
 };
 
-class PropParalyzed: public Prop
-{
+class PropParalyzed : public Prop {
 public:
         PropParalyzed() :
                 Prop(PropId::paralyzed) {}
@@ -899,12 +849,9 @@ public:
 
         int ability_mod(const AbilityId ability) const override
         {
-                if (ability == AbilityId::dodging)
-                {
+                if (ability == AbilityId::dodging) {
                         return -999;
-                }
-                else
-                {
+                } else {
                         return 0;
                 }
         }
@@ -927,8 +874,7 @@ public:
         }
 };
 
-class PropFainted: public Prop
-{
+class PropFainted : public Prop {
 public:
         PropFainted() :
                 Prop(PropId::fainted) {}
@@ -937,12 +883,9 @@ public:
 
         int ability_mod(const AbilityId ability) const override
         {
-                if (ability == AbilityId::dodging)
-                {
+                if (ability == AbilityId::dodging) {
                         return -999;
-                }
-                else
-                {
+                } else {
                         return 0;
                 }
         }
@@ -975,8 +918,7 @@ public:
         }
 };
 
-class PropSlowed: public Prop
-{
+class PropSlowed : public Prop {
 public:
         PropSlowed() :
                 Prop(PropId::slowed) {}
@@ -984,8 +926,7 @@ public:
         void on_applied() override;
 };
 
-class PropHasted: public Prop
-{
+class PropHasted : public Prop {
 public:
         PropHasted() :
                 Prop(PropId::hasted) {}
@@ -993,8 +934,7 @@ public:
         void on_applied() override;
 };
 
-class PropClockworkHasted: public Prop
-{
+class PropClockworkHasted : public Prop {
 public:
         PropClockworkHasted() :
                 Prop(PropId::clockwork_hasted) {}
@@ -1002,8 +942,7 @@ public:
         void on_applied() override;
 };
 
-class PropSummoned: public Prop
-{
+class PropSummoned : public Prop {
 public:
         PropSummoned() :
                 Prop(PropId::summoned) {}
@@ -1011,8 +950,7 @@ public:
         void on_end() override;
 };
 
-class PropFrenzied: public Prop
-{
+class PropFrenzied : public Prop {
 public:
         PropFrenzied() :
                 Prop(PropId::frenzied) {}
@@ -1030,19 +968,15 @@ public:
 
         int ability_mod(const AbilityId ability) const override
         {
-                if (ability == AbilityId::melee)
-                {
+                if (ability == AbilityId::melee) {
                         return 10;
-                }
-                else
-                {
+                } else {
                         return 0;
                 }
         }
 };
 
-class PropRAcid: public Prop
-{
+class PropRAcid : public Prop {
 public:
         PropRAcid() :
                 Prop(PropId::r_acid) {}
@@ -1050,8 +984,7 @@ public:
         DmgResistData is_resisting_dmg(DmgType dmg_type) const override;
 };
 
-class PropRConf: public Prop
-{
+class PropRConf : public Prop {
 public:
         PropRConf() :
                 Prop(PropId::r_conf) {}
@@ -1061,8 +994,7 @@ public:
         bool is_resisting_other_prop(PropId prop_id) const override;
 };
 
-class PropRElec: public Prop
-{
+class PropRElec : public Prop {
 public:
         PropRElec() :
                 Prop(PropId::r_elec) {}
@@ -1070,8 +1002,7 @@ public:
         DmgResistData is_resisting_dmg(DmgType dmg_type) const override;
 };
 
-class PropRFear: public Prop
-{
+class PropRFear : public Prop {
 public:
         PropRFear() :
                 Prop(PropId::r_fear) {}
@@ -1081,8 +1012,7 @@ public:
         bool is_resisting_other_prop(PropId prop_id) const override;
 };
 
-class PropRSlow: public Prop
-{
+class PropRSlow : public Prop {
 public:
         PropRSlow() :
                 Prop(PropId::r_slow) {}
@@ -1092,8 +1022,7 @@ public:
         bool is_resisting_other_prop(PropId prop_id) const override;
 };
 
-class PropRPhys: public Prop
-{
+class PropRPhys : public Prop {
 public:
         PropRPhys() :
                 Prop(PropId::r_phys) {}
@@ -1105,8 +1034,7 @@ public:
         DmgResistData is_resisting_dmg(DmgType dmg_type) const override;
 };
 
-class PropRFire: public Prop
-{
+class PropRFire : public Prop {
 public:
         PropRFire() :
                 Prop(PropId::r_fire) {}
@@ -1118,8 +1046,7 @@ public:
         DmgResistData is_resisting_dmg(DmgType dmg_type) const override;
 };
 
-class PropRPoison: public Prop
-{
+class PropRPoison : public Prop {
 public:
         PropRPoison() :
                 Prop(PropId::r_poison) {}
@@ -1129,8 +1056,7 @@ public:
         bool is_resisting_other_prop(PropId prop_id) const override;
 };
 
-class PropRSleep: public Prop
-{
+class PropRSleep : public Prop {
 public:
         PropRSleep() :
                 Prop(PropId::r_sleep) {}
@@ -1140,8 +1066,7 @@ public:
         bool is_resisting_other_prop(PropId prop_id) const override;
 };
 
-class PropRDisease: public Prop
-{
+class PropRDisease : public Prop {
 public:
         PropRDisease() :
                 Prop(PropId::r_disease) {}
@@ -1151,8 +1076,7 @@ public:
         bool is_resisting_other_prop(PropId prop_id) const override;
 };
 
-class PropRBlind: public Prop
-{
+class PropRBlind : public Prop {
 public:
         PropRBlind() :
                 Prop(PropId::r_blind) {}
@@ -1162,8 +1086,7 @@ public:
         bool is_resisting_other_prop(PropId prop_id) const override;
 };
 
-class PropRPara: public Prop
-{
+class PropRPara : public Prop {
 public:
         PropRPara() :
                 Prop(PropId::r_para) {}
@@ -1173,22 +1096,19 @@ public:
         bool is_resisting_other_prop(PropId prop_id) const override;
 };
 
-class PropRBreath: public Prop
-{
+class PropRBreath : public Prop {
 public:
         PropRBreath() :
                 Prop(PropId::r_breath) {}
 };
 
-class PropLgtSens: public Prop
-{
+class PropLgtSens : public Prop {
 public:
         PropLgtSens() :
                 Prop(PropId::light_sensitive) {}
 };
 
-class PropVortex: public Prop
-{
+class PropVortex : public Prop {
 public:
         PropVortex() :
                 Prop(PropId::vortex),
@@ -1200,8 +1120,7 @@ private:
         int pull_cooldown;
 };
 
-class PropExplodesOnDeath: public Prop
-{
+class PropExplodesOnDeath : public Prop {
 public:
         PropExplodesOnDeath() :
                 Prop(PropId::explodes_on_death) {}
@@ -1209,8 +1128,7 @@ public:
         void on_death() override;
 };
 
-class PropSplitsOnDeath: public Prop
-{
+class PropSplitsOnDeath : public Prop {
 public:
         PropSplitsOnDeath() :
                 Prop(PropId::splits_on_death) {}
@@ -1218,8 +1136,7 @@ public:
         void on_death() override;
 };
 
-class PropCorpseEater: public Prop
-{
+class PropCorpseEater : public Prop {
 public:
         PropCorpseEater() :
                 Prop(PropId::corpse_eater) {}
@@ -1227,8 +1144,7 @@ public:
         PropActResult on_act() override;
 };
 
-class PropTeleports: public Prop
-{
+class PropTeleports : public Prop {
 public:
         PropTeleports() :
                 Prop(PropId::teleports) {}
@@ -1236,8 +1152,7 @@ public:
         PropActResult on_act() override;
 };
 
-class PropCorruptsEnvColor: public Prop
-{
+class PropCorruptsEnvColor : public Prop {
 public:
         PropCorruptsEnvColor() :
                 Prop(PropId::corrupts_env_color) {}
@@ -1245,8 +1160,7 @@ public:
         PropActResult on_act() override;
 };
 
-class PropAltersEnv: public Prop
-{
+class PropAltersEnv : public Prop {
 public:
         PropAltersEnv() :
                 Prop(PropId::alters_env) {}
@@ -1254,8 +1168,7 @@ public:
         void on_std_turn() override;
 };
 
-class PropRegenerates: public Prop
-{
+class PropRegenerates : public Prop {
 public:
         PropRegenerates() :
                 Prop(PropId::regenerates) {}
@@ -1263,8 +1176,7 @@ public:
         void on_std_turn() override;
 };
 
-class PropCorpseRises: public Prop
-{
+class PropCorpseRises : public Prop {
 public:
         PropCorpseRises() :
                 Prop(PropId::corpse_rises),
@@ -1280,10 +1192,9 @@ private:
         int m_nr_turns_until_allow_rise;
 };
 
-class PropSpawnsZombiePartsOnDestroyed: public Prop
-{
+class PropSpawnsZombiePartsOnDestroyed : public Prop {
 public:
-        PropSpawnsZombiePartsOnDestroyed():
+        PropSpawnsZombiePartsOnDestroyed() :
                 Prop(PropId::spawns_zombie_parts_on_destroyed) {}
 
         void on_destroyed_alive() override;
@@ -1297,8 +1208,7 @@ private:
         bool is_allowed_to_spawn_parts_here() const;
 };
 
-class PropBreeds: public Prop
-{
+class PropBreeds : public Prop {
 public:
         PropBreeds() :
                 Prop(PropId::breeds) {}
@@ -1306,8 +1216,7 @@ public:
         void on_std_turn() override;
 };
 
-class PropConfusesAdjacent: public Prop
-{
+class PropConfusesAdjacent : public Prop {
 public:
         PropConfusesAdjacent() :
                 Prop(PropId::confuses_adjacent) {}
@@ -1315,8 +1224,7 @@ public:
         void on_std_turn() override;
 };
 
-class PropSpeaksCurses: public Prop
-{
+class PropSpeaksCurses : public Prop {
 public:
         PropSpeaksCurses() :
                 Prop(PropId::speaks_curses) {}
@@ -1324,8 +1232,7 @@ public:
         PropActResult on_act() override;
 };
 
-class PropAuraOfDecay: public Prop
-{
+class PropAuraOfDecay : public Prop {
 public:
         PropAuraOfDecay() :
                 Prop(PropId::aura_of_decay) {}
@@ -1353,8 +1260,7 @@ private:
         int m_max_dmg {1};
 };
 
-class PropMajorClaphamSummon: public Prop
-{
+class PropMajorClaphamSummon : public Prop {
 public:
         PropMajorClaphamSummon() :
                 Prop(PropId::major_clapham_summon) {}
@@ -1362,8 +1268,7 @@ public:
         PropActResult on_act() override;
 };
 
-class PropSwimming: public Prop
-{
+class PropSwimming : public Prop {
 public:
         PropSwimming() :
                 Prop(PropId::swimming) {}
@@ -1381,8 +1286,7 @@ public:
 
         int ability_mod(const AbilityId ability) const override
         {
-                switch (ability)
-                {
+                switch (ability) {
                 case AbilityId::melee:
                         return -10;
 
@@ -1395,16 +1299,14 @@ public:
         }
 };
 
-class PropHitChancePenaltyCurse: public Prop
-{
+class PropHitChancePenaltyCurse : public Prop {
 public:
         PropHitChancePenaltyCurse() :
                 Prop(PropId::hit_chance_penalty_curse) {}
 
         int ability_mod(const AbilityId ability) const override
         {
-                switch (ability)
-                {
+                switch (ability) {
                 case AbilityId::melee:
                 case AbilityId::ranged:
                         return -10;
@@ -1415,8 +1317,7 @@ public:
         }
 };
 
-class PropIncreasedShockCurse: public Prop
-{
+class PropIncreasedShockCurse : public Prop {
 public:
         PropIncreasedShockCurse() :
                 Prop(PropId::increased_shock_curse) {}
@@ -1427,8 +1328,7 @@ public:
         }
 };
 
-class PropCannotReadCurse: public Prop
-{
+class PropCannotReadCurse : public Prop {
 public:
         PropCannotReadCurse() :
                 Prop(PropId::cannot_read_curse) {}

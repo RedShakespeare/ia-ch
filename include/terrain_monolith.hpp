@@ -9,37 +9,31 @@
 
 #include "terrain.hpp"
 
+namespace terrain {
 
-namespace terrain
-{
-
-class Monolith: public Terrain
-{
+class Monolith : public Terrain {
 public:
-    Monolith(const P& p);
-    Monolith() = delete;
-    ~Monolith() = default;
+        Monolith(const P& p);
+        Monolith() = delete;
+        ~Monolith() = default;
 
-    Id id() const override
-    {
-        return Id::monolith;
-    }
+        Id id() const override
+        {
+                return Id::monolith;
+        }
 
-    std::string name(Article article) const override;
+        std::string name(Article article) const override;
 
-    void bump(actor::Actor& actor_bumping) override;
+        void bump(actor::Actor& actor_bumping) override;
 
 private:
-    Color color_default() const override;
+        Color color_default() const override;
 
-    void on_hit(int dmg,
-                DmgType dmg_type,
-                DmgMethod dmg_method,
-                actor::Actor* actor) override;
+        void on_hit(int dmg, DmgType dmg_type, DmgMethod dmg_method, actor::Actor* actor) override;
 
-    void activate();
+        void activate();
 
-    bool m_is_activated;
+        bool m_is_activated;
 };
 
 } // namespace terrain

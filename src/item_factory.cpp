@@ -18,9 +18,7 @@
 #include "item_rod.hpp"
 #include "item_scroll.hpp"
 
-
-namespace item
-{
+namespace item {
 
 Item* make(const Id item_id, const int nr_items)
 {
@@ -31,8 +29,7 @@ Item* make(const Id item_id, const int nr_items)
         // Sanity check
         ASSERT(d->id == item_id);
 
-        switch (item_id)
-        {
+        switch (item_id) {
         case Id::trapez:
                 r = new Item(d);
                 break;
@@ -340,15 +337,13 @@ Item* make(const Id item_id, const int nr_items)
                 break;
         }
 
-        if (!r)
-        {
+        if (!r) {
                 return nullptr;
         }
 
         // Sanity check number of items (non-stackable items should never be set
         // to anything other than one item)
-        if (!r->data().is_stackable && (nr_items != 1))
-        {
+        if (!r->data().is_stackable && (nr_items != 1)) {
                 TRACE << "Specified number of items ("
                       << nr_items
                       << ") != 1 for "
@@ -362,8 +357,7 @@ Item* make(const Id item_id, const int nr_items)
 
         r->m_nr_items = nr_items;
 
-        if (d->is_unique)
-        {
+        if (d->is_unique) {
                 d->allow_spawn = false;
         }
 
@@ -382,26 +376,21 @@ void set_item_randomized_properties(Item& item)
         if (d.melee.is_melee_wpn &&
             !d.ranged.is_ranged_wpn &&
             !d.is_unique &&
-            (item.melee_base_dmg().plus() == 0))
-        {
+            (item.melee_base_dmg().plus() == 0)) {
                 static_cast<Wpn&>(item).set_random_melee_plus();
         }
 
         // If firearm, spawn with random amount of ammo
-        if (d.ranged.is_ranged_wpn && !d.ranged.has_infinite_ammo)
-        {
+        if (d.ranged.is_ranged_wpn && !d.ranged.has_infinite_ammo) {
                 auto& wpn = static_cast<Wpn&>(item);
 
-                if (wpn.data().ranged.max_ammo == 1)
-                {
+                if (wpn.data().ranged.max_ammo == 1) {
                         wpn.m_ammo_loaded = rnd::coin_toss() ? 1 : 0;
-                }
-                else // Weapon ammo capacity > 1
+                } else // Weapon ammo capacity > 1
                 {
                         const int ammo_cap = wpn.data().ranged.max_ammo;
 
-                        if (d.ranged.is_machine_gun)
-                        {
+                        if (d.ranged.is_machine_gun) {
                                 // Number of machine gun bullets loaded needs to
                                 // be a multiple of the number of projectiles
                                 // fired in each burst
@@ -415,8 +404,7 @@ void set_item_randomized_properties(Item& item)
                                 wpn.m_ammo_loaded =
                                         rnd::range(min_scaled, cap_scaled) *
                                         g_nr_mg_projectiles;
-                        }
-                        else // Not machinegun
+                        } else // Not machinegun
                         {
                                 wpn.m_ammo_loaded =
                                         rnd::range(ammo_cap / 4, ammo_cap);
@@ -424,14 +412,12 @@ void set_item_randomized_properties(Item& item)
                 }
         }
 
-        if (d.is_stackable)
-        {
+        if (d.is_stackable) {
                 item.m_nr_items = rnd::range(1, d.max_stack_at_spawn);
         }
 
         // Vary number of Medical supplies
-        if (d.id == Id::medical_bag)
-        {
+        if (d.id == Id::medical_bag) {
                 auto& medbag = static_cast<MedicalBag&>(item);
 
                 const int nr_supplies_max = medbag.m_nr_supplies;
@@ -444,8 +430,7 @@ void set_item_randomized_properties(Item& item)
         }
 
         // Vary Lantern duration
-        if (d.id == Id::lantern)
-        {
+        if (d.id == Id::lantern) {
                 auto& lantern = static_cast<device::Lantern&>(item);
 
                 const int duration_max = lantern.nr_turns_left;
@@ -460,12 +445,10 @@ void set_item_randomized_properties(Item& item)
 
         if (d.is_unique &&
             (d.value >= Value::supreme_treasure) &&
-            rnd::one_in(cursed_one_in_n))
-        {
+            rnd::one_in(cursed_one_in_n)) {
                 auto curse = item_curse::try_make_random_free_curse(item);
 
-                if (curse.id() != item_curse::Id::END)
-                {
+                if (curse.id() != item_curse::Id::END) {
                         item.set_curse(std::move(curse));
                 }
         }

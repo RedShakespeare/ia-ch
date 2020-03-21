@@ -47,13 +47,11 @@ void MarkerState::on_start()
 
         m_pos = map::g_player->m_pos;
 
-        if (use_player_tgt())
-        {
+        if (use_player_tgt()) {
                 // First, attempt to place marker at player target.
                 const bool did_go_to_tgt = try_go_to_tgt();
 
-                if (!did_go_to_tgt)
-                {
+                if (!did_go_to_tgt) {
                         // If no target available, attempt to place marker at
                         // closest visible monster. This sets a new player
                         // target if successful.
@@ -70,13 +68,11 @@ void MarkerState::on_start()
 
 void MarkerState::on_popped()
 {
-
 }
 
 void MarkerState::draw()
 {
-        if (!viewport::is_in_view(m_pos))
-        {
+        if (!viewport::is_in_view(m_pos)) {
                 viewport::focus_on(m_pos);
         }
 
@@ -89,8 +85,7 @@ void MarkerState::draw()
                         true); // Allow outside map
 
         // Remove origin position
-        if (!line.empty())
-        {
+        if (!line.empty()) {
                 line.erase(line.begin());
         }
 
@@ -112,21 +107,17 @@ void MarkerState::draw()
 
         auto blocked_parser = map_parsers::BlocksProjectiles();
 
-        if (show_blocked())
-        {
-                for (size_t i = 0; i < line.size(); ++i)
-                {
+        if (show_blocked()) {
+                for (size_t i = 0; i < line.size(); ++i) {
                         const P& p = line[i];
 
-                        if (!map::is_pos_inside_map(p))
-                        {
+                        if (!map::is_pos_inside_map(p)) {
                                 break;
                         }
 
                         const Cell& c = map::g_cells.at(p);
 
-                        if (c.is_seen_by_player && blocked_parser.cell(p))
-                        {
+                        if (c.is_seen_by_player && blocked_parser.cell(p)) {
                                 red_from_idx = i;
                                 break;
                         }
@@ -149,20 +140,17 @@ void MarkerState::update()
 
         InputData input;
 
-        if (!config::is_bot_playing())
-        {
+        if (!config::is_bot_playing()) {
                 input = io::get();
         }
 
         const auto game_cmd = game_commands::to_cmd(input);
 
-        if (game_cmd != GameCmd::none)
-        {
+        if (game_cmd != GameCmd::none) {
                 msg_log::clear();
         }
 
-        switch (game_cmd)
-        {
+        switch (game_cmd) {
         case GameCmd::right:
                 move(Dir::right);
                 break;
@@ -242,13 +230,11 @@ void MarkerState::draw_marker(
 {
         const P map_view_dims = viewport::get_map_view_area().dims();
 
-        for (int x = 0; x < map_view_dims.x; ++x)
-        {
-                for (int y = 0; y < map_view_dims.y; ++y)
-                {
+        for (int x = 0; x < map_view_dims.x; ++x) {
+                for (int y = 0; y < map_view_dims.y; ++y) {
                         auto& d = m_marker_render_data.at(x, y);
 
-                        d.tile  = TileId::END;
+                        d.tile = TileId::END;
                         d.character = 0;
                 }
         }
@@ -260,12 +246,10 @@ void MarkerState::draw_marker(
         // NOTE: We include the head index in this loop, so that we can set up
         // which color it should be drawn with, but we do the actual drawing of
         // the head after the loop
-        for (size_t line_idx = 0; line_idx < line.size(); ++line_idx)
-        {
+        for (size_t line_idx = 0; line_idx < line.size(); ++line_idx) {
                 const P& line_pos = line[line_idx];
 
-                if (!viewport::is_in_view(line_pos))
-                {
+                if (!viewport::is_in_view(line_pos)) {
                         continue;
                 }
 
@@ -288,24 +272,18 @@ void MarkerState::draw_marker(
                         ((int)line_idx >= red_from_idx);
 
                 // NOTE: Final color is stored for drawing the head
-                if (is_red_by_idx || is_red_by_dist)
-                {
+                if (is_red_by_idx || is_red_by_dist) {
                         color = colors::light_red();
-                }
-                else if (is_near_orange || is_far_orange)
-                {
+                } else if (is_near_orange || is_far_orange) {
                         color = colors::orange();
-                }
-                else
-                {
+                } else {
                         color = colors::light_green();
                 }
 
                 // Do not draw the head yet
                 const int tail_size_int = (int)line.size() - 1;
 
-                if ((int)line_idx < tail_size_int)
-                {
+                if ((int)line_idx < tail_size_int) {
                         const P view_pos = viewport::to_view_pos(line_pos);
 
                         auto& d = m_marker_render_data.at(view_pos);
@@ -335,14 +313,12 @@ void MarkerState::draw_marker(
                 ? m_origin
                 : line.back();
 
-        if (viewport::is_in_view(head_pos))
-        {
+        if (viewport::is_in_view(head_pos)) {
                 // If we are currently only drawing the head and the line is
                 // empty, draw the head as orange if the aiming has a defined
                 // minimum effective range (if the line is non-empty, the head
                 // color would be set by the line drawing above)
-                if (line.empty() && (orange_until_including_king_dist >= 0))
-                {
+                if (line.empty() && (orange_until_including_king_dist >= 0)) {
                         color = colors::orange();
                 }
 
@@ -378,8 +354,7 @@ void MarkerState::move(const Dir dir, const int nr_steps)
         // The limit is an arbitrary big number, larger than any map should be
         const int max_dist_from_player = 300;
 
-        if (king_dist(map::g_player->m_pos, new_pos) <= max_dist_from_player)
-        {
+        if (king_dist(map::g_player->m_pos, new_pos) <= max_dist_from_player) {
                 m_pos = new_pos;
 
                 on_moved();
@@ -390,19 +365,15 @@ bool MarkerState::try_go_to_tgt()
 {
         const auto* const tgt = map::g_player->m_tgt;
 
-        if (!tgt)
-        {
+        if (!tgt) {
                 return false;
         }
 
         const auto seen_foes = map::g_player->seen_foes();
 
-        if (!seen_foes.empty())
-        {
-                for (auto* const actor : seen_foes)
-                {
-                        if (tgt == actor)
-                        {
+        if (!seen_foes.empty()) {
+                for (auto* const actor : seen_foes) {
+                        if (tgt == actor) {
                                 m_pos = actor->m_pos;
 
                                 return true;
@@ -422,8 +393,7 @@ void MarkerState::try_go_to_closest_enemy()
         map::actor_cells(seen_foes, seen_foes_cells);
 
         // If player sees enemies, suggest one for targeting
-        if (!seen_foes_cells.empty())
-        {
+        if (!seen_foes_cells.empty()) {
                 m_pos = closest_pos(map::g_player->m_pos, seen_foes_cells);
 
                 map::g_player->m_tgt = map::first_actor_at_pos(m_pos);
@@ -443,8 +413,7 @@ void Viewing::on_moved()
 
         if (actor &&
             !actor->is_player() &&
-            map::g_player->can_see_actor(*actor))
-        {
+            map::g_player->can_see_actor(*actor)) {
                 // TODO: This should not be specified here
                 const auto view_key = 'v';
 
@@ -487,14 +456,12 @@ void Viewing::handle_input(const InputData& input)
 {
         const auto game_cmd = game_commands::to_cmd(input);
 
-        if (game_cmd == GameCmd::look)
-        {
+        if (game_cmd == GameCmd::look) {
                 auto* const actor = map::first_actor_at_pos(m_pos);
 
                 if (actor &&
                     actor != map::g_player &&
-                    map::g_player->can_see_actor(*actor))
-                {
+                    map::g_player->can_see_actor(*actor)) {
                         msg_log::clear();
 
                         std::unique_ptr<ViewActorDescr>
@@ -502,9 +469,7 @@ void Viewing::handle_input(const InputData& input)
 
                         states::push(std::move(view_actor_descr));
                 }
-        }
-        else if ((input.key == SDLK_ESCAPE) || (input.key == SDLK_SPACE))
-        {
+        } else if ((input.key == SDLK_ESCAPE) || (input.key == SDLK_SPACE)) {
                 msg_log::clear();
 
                 states::pop();
@@ -520,14 +485,12 @@ void Aiming::on_moved()
 
         const bool is_in_range = king_dist(m_origin, m_pos) <= max_king_dist();
 
-        if (is_in_range)
-        {
+        if (is_in_range) {
                 auto* const actor = map::first_actor_at_pos(m_pos);
 
                 if (actor &&
                     !actor->is_player() &&
-                    map::g_player->can_see_actor(*actor))
-                {
+                    map::g_player->can_see_actor(*actor)) {
                         RangedAttData att_data(
                                 map::g_player,
                                 m_origin,
@@ -582,31 +545,25 @@ void Aiming::handle_input(const InputData& input)
 {
         auto game_cmd = GameCmd::undefined;
 
-        if (config::is_bot_playing())
-        {
+        if (config::is_bot_playing()) {
                 // Bot is playing, fire at a random position
                 game_cmd = GameCmd::fire;
 
                 m_pos.set(
                         rnd::range(0, map::w() - 1),
                         rnd::range(0, map::h() - 1));
-        }
-        else
-        {
+        } else {
                 // Human player
                 game_cmd = game_commands::to_cmd(input);
         }
 
-        if ((game_cmd == GameCmd::fire) || (input.key == SDLK_RETURN))
-        {
-                if (m_pos != map::g_player->m_pos)
-                {
+        if ((game_cmd == GameCmd::fire) || (input.key == SDLK_RETURN)) {
+                if (m_pos != map::g_player->m_pos) {
                         msg_log::clear();
 
                         auto* const actor = map::first_actor_at_pos(m_pos);
 
-                        if (actor && map::g_player->can_see_actor(*actor))
-                        {
+                        if (actor && map::g_player->can_see_actor(*actor)) {
                                 map::g_player->m_tgt = actor;
                         }
 
@@ -624,9 +581,7 @@ void Aiming::handle_input(const InputData& input)
                                 pos,
                                 *wpn);
                 }
-        }
-        else if ((input.key == SDLK_ESCAPE) || (input.key == SDLK_SPACE))
-        {
+        } else if ((input.key == SDLK_ESCAPE) || (input.key == SDLK_SPACE)) {
                 states::pop();
         }
 }
@@ -650,14 +605,12 @@ void Throwing::on_moved()
 
         const bool is_in_range = king_dist(m_origin, m_pos) <= max_king_dist();
 
-        if (is_in_range)
-        {
+        if (is_in_range) {
                 auto* const actor = map::first_actor_at_pos(m_pos);
 
                 if (actor &&
                     !actor->is_player() &&
-                    map::g_player->can_see_actor(*actor))
-                {
+                    map::g_player->can_see_actor(*actor)) {
                         ThrowAttData att_data(
                                 map::g_player,
                                 m_origin,
@@ -712,16 +665,13 @@ void Throwing::handle_input(const InputData& input)
 {
         const auto game_cmd = game_commands::to_cmd(input);
 
-        if ((game_cmd == GameCmd::throw_item) || (input.key == SDLK_RETURN))
-        {
-                if (m_pos != map::g_player->m_pos)
-                {
+        if ((game_cmd == GameCmd::throw_item) || (input.key == SDLK_RETURN)) {
+                if (m_pos != map::g_player->m_pos) {
                         msg_log::clear();
 
                         auto* const actor = map::first_actor_at_pos(m_pos);
 
-                        if (actor && map::g_player->can_see_actor(*actor))
-                        {
+                        if (actor && map::g_player->can_see_actor(*actor)) {
                                 map::g_player->m_tgt = actor;
                         }
 
@@ -747,9 +697,7 @@ void Throwing::handle_input(const InputData& input)
                                 pos,
                                 *item_to_throw);
                 }
-        }
-        else if ((input.key == SDLK_ESCAPE) || (input.key == SDLK_SPACE))
-        {
+        } else if ((input.key == SDLK_ESCAPE) || (input.key == SDLK_SPACE)) {
                 states::pop();
         }
 }
@@ -773,8 +721,7 @@ void ThrowingExplosive::on_draw()
 
         if (id != item::Id::dynamite &&
             id != item::Id::molotov &&
-            id != item::Id::smoke_grenade)
-        {
+            id != item::Id::smoke_grenade) {
                 return;
         }
 
@@ -784,16 +731,13 @@ void ThrowingExplosive::on_draw()
         const Color color_bg = colors::red().fraction(2.0);
 
         // Draw explosion radius area overlay
-        for (int y = expl_area.p0.y; y <= expl_area.p1.y; ++y)
-        {
-                for (int x = expl_area.p0.x; x <= expl_area.p1.x; ++x)
-                {
+        for (int y = expl_area.p0.y; y <= expl_area.p1.y; ++y) {
+                for (int x = expl_area.p0.x; x <= expl_area.p1.x; ++x) {
                         const P p(x, y);
 
                         if (!viewport::is_in_view(p) ||
                             !map::is_pos_inside_map(p) ||
-                            !map::g_cells.at(p).is_explored)
-                        {
+                            !map::g_cells.at(p).is_explored) {
                                 continue;
                         }
 
@@ -807,8 +751,7 @@ void ThrowingExplosive::on_draw()
                         // Draw overlay if the cell contains either a map
                         // symbol, or a marker symbol
                         if ((render_d.character != 0) ||
-                            (marker_render_d.character != 0))
-                        {
+                            (marker_render_d.character != 0)) {
                                 const bool has_marker =
                                         marker_render_d.character != 0;
 
@@ -873,8 +816,7 @@ void ThrowingExplosive::handle_input(const InputData& input)
 {
         const auto game_cmd = game_commands::to_cmd(input);
 
-        if ((game_cmd == GameCmd::throw_item) || (input.key == SDLK_RETURN))
-        {
+        if ((game_cmd == GameCmd::throw_item) || (input.key == SDLK_RETURN)) {
                 msg_log::clear();
 
                 const P pos = m_pos;
@@ -884,9 +826,7 @@ void ThrowingExplosive::handle_input(const InputData& input)
                 // NOTE: This object is now destroyed
 
                 throwing::player_throw_lit_explosive(pos);
-        }
-        else if ((input.key == SDLK_ESCAPE) || (input.key == SDLK_SPACE))
-        {
+        } else if ((input.key == SDLK_ESCAPE) || (input.key == SDLK_SPACE)) {
                 states::pop();
         }
 }
@@ -899,11 +839,10 @@ int ThrowingExplosive::max_king_dist() const
 // -----------------------------------------------------------------------------
 // Teleport control marker state
 // -----------------------------------------------------------------------------
-CtrlTele::CtrlTele(const P& origin, Array2<bool>  blocked) :
+CtrlTele::CtrlTele(const P& origin, Array2<bool> blocked) :
         MarkerState(origin),
         m_blocked(std::move(blocked))
 {
-
 }
 
 int CtrlTele::chance_of_success_pct(const P& tgt) const
@@ -929,8 +868,7 @@ void CtrlTele::on_moved()
 {
         look::print_location_info_msgs(m_pos);
 
-        if (m_pos != map::g_player->m_pos)
-        {
+        if (m_pos != map::g_player->m_pos) {
                 const int chance_pct = chance_of_success_pct(m_pos);
 
                 msg_log::add(
@@ -951,8 +889,7 @@ void CtrlTele::on_moved()
 
 void CtrlTele::handle_input(const InputData& input)
 {
-        if ((input.key == SDLK_RETURN) && (m_pos != map::g_player->m_pos))
-        {
+        if ((input.key == SDLK_RETURN) && (m_pos != map::g_player->m_pos)) {
                 const int chance = chance_of_success_pct(m_pos);
 
                 const bool roll_ok = rnd::percent(chance);
@@ -968,12 +905,10 @@ void CtrlTele::handle_input(const InputData& input)
 
                 // NOTE: This object is now destroyed
 
-                if (is_tele_success)
-                {
+                if (is_tele_success) {
                         // Teleport to this exact destination
                         teleport(*map::g_player, tgt_p, m_blocked);
-                }
-                else // Failed to teleport (blocked or roll failed)
+                } else // Failed to teleport (blocked or roll failed)
                 {
                         msg_log::add(
                                 "I failed to go there...",

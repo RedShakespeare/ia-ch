@@ -48,36 +48,30 @@ static void unblock_passable_doors(
         const actor::ActorData& actor_data,
         Array2<bool>& blocked)
 {
-        for (size_t i = 0; i < blocked.length(); ++i)
-        {
+        for (size_t i = 0; i < blocked.length(); ++i) {
                 const auto* const t = map::g_cells.at(i).terrain;
 
-                if (t->id() != terrain::Id::door)
-                {
+                if (t->id() != terrain::Id::door) {
                         continue;
                 }
 
                 const auto* const door = static_cast<const terrain::Door*>(t);
 
-                if (door->type() == DoorType::metal)
-                {
+                if (door->type() == DoorType::metal) {
                         continue;
                 }
 
                 if (actor_data.can_open_doors ||
-                    actor_data.can_bash_doors)
-                {
+                    actor_data.can_bash_doors) {
                         blocked.at(i) = false;
                 }
         }
 }
 
-
 // -----------------------------------------------------------------------------
 // actor
 // -----------------------------------------------------------------------------
-namespace actor
-{
+namespace actor {
 
 std::string get_cultist_phrase()
 {
@@ -107,11 +101,9 @@ std::string get_cultist_phrase()
                 "Vorox esco marana!",
                 "Vilomaxus!",
                 "Prostragaranar malachtose!",
-                "Apigami!"
-        };
+                "Apigami!"};
 
-        if (rnd::one_in(4))
-        {
+        if (rnd::one_in(4)) {
                 const God& god = gods::current_god();
 
                 const std::vector<std::string> god_phrases = {
@@ -171,21 +163,18 @@ Mon::Mon() :
         m_waiting(false)
 
 {
-
 }
 
 Mon::~Mon()
 {
-        for (auto& spell : m_spells)
-        {
+        for (auto& spell : m_spells) {
                 delete spell.spell;
         }
 }
 
 void Mon::on_actor_turn()
 {
-        if (m_aware_of_player_counter > 0)
-        {
+        if (m_aware_of_player_counter > 0) {
                 --m_wary_of_player_counter;
 
                 --m_aware_of_player_counter;
@@ -198,8 +187,7 @@ void Mon::act()
 
 #ifndef NDEBUG
         // Sanity check - verify that monster is not outside the map
-        if (!map::is_pos_inside_outer_walls(m_pos))
-        {
+        if (!map::is_pos_inside_outer_walls(m_pos)) {
                 TRACE << "Monster outside map" << std::endl;
 
                 ASSERT(false);
@@ -207,14 +195,12 @@ void Mon::act()
 
         // Sanity check - verify that monster's leader does not have a leader
         // (never allowed)
-        if (m_leader && !is_player_leader)
-        {
+        if (m_leader && !is_player_leader) {
                 const auto* const leader_mon = static_cast<Mon*>(m_leader);
 
                 const auto* const leader_leader = leader_mon->m_leader;
 
-                if (leader_leader)
-                {
+                if (leader_leader) {
                         TRACE << "Monster with name '"
                               << name_a()
                               << "' has a leader with name '"
@@ -232,7 +218,7 @@ void Mon::act()
                               << std::endl
                               << "Leader's leader is summoned?: "
                               << leader_leader->m_properties.has(
-                                      PropId::summoned)
+                                         PropId::summoned)
                               << std::endl;
 
                         ASSERT(false);
@@ -242,18 +228,15 @@ void Mon::act()
 
         if ((m_wary_of_player_counter <= 0) &&
             (m_aware_of_player_counter <= 0) &&
-            !is_player_leader)
-        {
+            !is_player_leader) {
                 m_waiting = !m_waiting;
 
-                if (m_waiting)
-                {
+                if (m_waiting) {
                         game_time::tick();
 
                         return;
                 }
-        }
-        else // Is wary/aware, or player is leader
+        } else // Is wary/aware, or player is leader
         {
                 m_waiting = false;
         }
@@ -261,24 +244,20 @@ void Mon::act()
         // Pick a target
         std::vector<Actor*> target_bucket;
 
-        if (m_properties.has(PropId::conflict))
-        {
+        if (m_properties.has(PropId::conflict)) {
                 target_bucket = seen_actors();
 
                 m_is_target_seen = !target_bucket.empty();
-        }
-        else // Not conflicted
+        } else // Not conflicted
         {
                 target_bucket = seen_foes();
 
-                if (target_bucket.empty())
-                {
+                if (target_bucket.empty()) {
                         // There are no seen foes
                         m_is_target_seen = false;
 
                         target_bucket = unseen_foes_aware_of();
-                }
-                else // There are seen foes
+                } else // There are seen foes
                 {
                         m_is_target_seen = true;
                 }
@@ -293,38 +272,32 @@ void Mon::act()
         m_target = map::random_closest_actor(m_pos, target_bucket);
 
         if ((m_wary_of_player_counter > 0) ||
-            (m_aware_of_player_counter > 0))
-        {
+            (m_aware_of_player_counter > 0)) {
                 m_is_roaming_allowed = MonRoamingAllowed::yes;
 
-                // Does the monster have a living leader?
-                if (m_leader && m_leader->is_alive())
-                {
+                if (m_leader && m_leader->is_alive()) {
+                        // Monster has a living leader
                         if ((m_aware_of_player_counter > 0) &&
-                            !is_player_leader)
-                        {
+                            !is_player_leader) {
                                 make_leader_aware_silent();
                         }
-                }
-                else // Monster does not have a living leader
-                {
-                        // Monster is wary or aware, occasionally make a sound
-                        if (is_alive() && rnd::one_in(12))
-                        {
+                } else {
+                        // Monster does not have a living leader
+
+                        // Monster is wary or aware - occasionally make a sound
+                        if (is_alive() && rnd::one_in(12)) {
                                 speak_phrase(AlertsMon::no);
                         }
                 }
         }
 
         // ---------------------------------------------------------------------
-        // Special monster actions (e.g. zombies rising)
+        // Special monster actions
         // ---------------------------------------------------------------------
         // TODO: This will be removed eventually
         if ((m_leader != map::g_player) &&
-            (!m_target || m_target->is_player()))
-        {
-                if (on_act() == DidAction::yes)
-                {
+            (!m_target || m_target->is_player())) {
+                if (on_act() == DidAction::yes) {
                         return;
                 }
         }
@@ -332,8 +305,7 @@ void Mon::act()
         // ---------------------------------------------------------------------
         // Property actions (e.g. Zombie rising, Vortex pulling, ...)
         // ---------------------------------------------------------------------
-        if (m_properties.on_act() == DidAction::yes)
-        {
+        if (m_properties.on_act() == DidAction::yes) {
                 return;
         }
 
@@ -348,43 +320,35 @@ void Mon::act()
             !is_player_leader &&
             (m_target == map::g_player) &&
             m_is_target_seen &&
-            rnd::coin_toss())
-        {
-                if (ai::action::make_room_for_friend(*this))
-                {
+            rnd::coin_toss()) {
+                if (ai::action::make_room_for_friend(*this)) {
                         return;
                 }
         }
 
         // Cast instead of attacking?
-        if (rnd::one_in(5))
-        {
+        if (rnd::one_in(5)) {
                 const bool did_cast = ai::action::try_cast_random_spell(*this);
 
-                if (did_cast)
-                {
+                if (did_cast) {
                         return;
                 }
         }
 
         if (m_data->ai[(size_t)AiId::attacks] &&
             m_target &&
-            m_is_target_seen)
-        {
+            m_is_target_seen) {
                 const auto did_attack = try_attack(*m_target);
 
-                if (did_attack == DidAction::yes)
-                {
+                if (did_attack == DidAction::yes) {
                         return;
                 }
         }
 
-        if (rnd::fraction(3, 4))
-        {
+        if (rnd::fraction(3, 4)) {
                 const bool did_cast = ai::action::try_cast_random_spell(*this);
 
-                if (did_cast)
-                {
+                if (did_cast) {
                         return;
                 }
         }
@@ -392,21 +356,18 @@ void Mon::act()
         int erratic_move_pct = (int)m_data->erratic_move_pct;
 
         // Never move erratically if frenzied
-        if (m_properties.has(PropId::frenzied))
-        {
+        if (m_properties.has(PropId::frenzied)) {
                 erratic_move_pct = 0;
         }
 
         // Move less erratically if allied to player
-        if (is_player_leader)
-        {
+        if (is_player_leader) {
                 erratic_move_pct /= 2;
         }
 
         // Move more erratically if confused
         if (m_properties.has(PropId::confused) &&
-            (erratic_move_pct > 0))
-        {
+            (erratic_move_pct > 0)) {
                 erratic_move_pct += 50;
         }
 
@@ -414,10 +375,8 @@ void Mon::act()
 
         // Occasionally move erratically
         if (m_data->ai[(size_t)AiId::moves_randomly_when_unaware] &&
-            rnd::percent(erratic_move_pct))
-        {
-                if (ai::action::move_to_random_adj_cell(*this))
-                {
+            rnd::percent(erratic_move_pct)) {
+                if (ai::action::move_to_random_adj_cell(*this)) {
                         return;
                 }
         }
@@ -425,10 +384,8 @@ void Mon::act()
         const bool is_terrified = m_properties.has(PropId::terrified);
 
         if (m_data->ai[(size_t)AiId::moves_to_target_when_los] &&
-            !is_terrified)
-        {
-                if (ai::action::move_to_target_simple(*this))
-                {
+            !is_terrified) {
+                if (ai::action::move_to_target_simple(*this)) {
                         return;
                 }
         }
@@ -437,50 +394,41 @@ void Mon::act()
 
         if ((m_data->ai[(size_t)AiId::paths_to_target_when_aware] ||
              is_player_leader) &&
-            !is_terrified)
-        {
+            !is_terrified) {
                 path = ai::info::find_path_to_target(*this);
         }
 
-        if (ai::action::handle_closed_blocking_door(*this, path))
-        {
+        if (ai::action::handle_closed_blocking_door(*this, path)) {
                 return;
         }
 
-        if (ai::action::step_path(*this, path))
-        {
+        if (ai::action::step_path(*this, path)) {
                 return;
         }
 
         if ((m_data->ai[(size_t)AiId::moves_to_leader] ||
              is_player_leader) &&
-            !is_terrified)
-        {
+            !is_terrified) {
                 path = ai::info::find_path_to_leader(*this);
 
-                if (ai::action::step_path(*this, path))
-                {
+                if (ai::action::step_path(*this, path)) {
                         return;
                 }
         }
 
-        if (m_data->ai[(size_t)AiId::moves_to_lair]  &&
+        if (m_data->ai[(size_t)AiId::moves_to_lair] &&
             !is_player_leader &&
-            (!m_target || m_target->is_player()))
-        {
-                if (ai::action::step_to_lair_if_los(*this, m_lair_pos))
-                {
+            (!m_target || m_target->is_player())) {
+                if (ai::action::step_to_lair_if_los(*this, m_lair_pos)) {
                         return;
-                }
-                else // No LOS to lair
+                } else // No LOS to lair
                 {
                         // Try to use pathfinder to travel to lair
                         path = ai::info::find_path_to_lair_if_no_los(
                                 *this,
                                 m_lair_pos);
 
-                        if (ai::action::step_path(*this, path))
-                        {
+                        if (ai::action::step_path(*this, path)) {
                                 return;
                         }
                 }
@@ -488,10 +436,8 @@ void Mon::act()
 
         // When unaware, move randomly
         if (m_data->ai[(size_t)AiId::moves_randomly_when_unaware] &&
-            (!is_player_leader || rnd::one_in(8)))
-        {
-                if (ai::action::move_to_random_adj_cell(*this))
-                {
+            (!is_player_leader || rnd::one_in(8))) {
+                if (ai::action::move_to_random_adj_cell(*this)) {
                         return;
                 }
         }
@@ -504,8 +450,7 @@ std::vector<Actor*> Mon::unseen_foes_aware_of() const
 {
         std::vector<Actor*> result;
 
-        if (is_actor_my_leader(map::g_player))
-        {
+        if (is_actor_my_leader(map::g_player)) {
                 // TODO: This prevents player-allied monsters from casting
                 // spells on unreachable hostile monsters - but it probably
                 // doesn't matter for now
@@ -520,33 +465,27 @@ std::vector<Actor*> Mon::unseen_foes_aware_of() const
                 const auto flood = floodfill(m_pos, blocked);
 
                 // Add all player-hostile monsters which the player is aware of
-                for (Actor* const actor : game_time::g_actors)
-                {
+                for (Actor* const actor : game_time::g_actors) {
                         const P& p = actor->m_pos;
 
                         if (!actor->is_player() &&
                             !actor->is_actor_my_leader(map::g_player) &&
-                            (flood.at(p) > 0))
-                        {
+                            (flood.at(p) > 0)) {
                                 auto* const mon = static_cast<Mon*>(actor);
 
-                                if (mon->m_player_aware_of_me_counter > 0)
-                                {
+                                if (mon->m_player_aware_of_me_counter > 0) {
                                         result.push_back(actor);
                                 }
                         }
                 }
         }
         // Player is not my leader
-        else if (m_aware_of_player_counter > 0)
-        {
+        else if (m_aware_of_player_counter > 0) {
                 result.push_back(map::g_player);
 
-                for (Actor* const actor : game_time::g_actors)
-                {
+                for (Actor* const actor : game_time::g_actors) {
                         if (!actor->is_player() &&
-                            actor->is_actor_my_leader(map::g_player))
-                        {
+                            actor->is_actor_my_leader(map::g_player)) {
                                 result.push_back(actor);
                         }
                 }
@@ -561,23 +500,18 @@ bool Mon::can_see_actor(
 {
         const bool is_seeable = is_actor_seeable(other, hard_blocked_los);
 
-        if (!is_seeable)
-        {
+        if (!is_seeable) {
                 return false;
         }
 
-        if (is_actor_my_leader(map::g_player))
-        {
+        if (is_actor_my_leader(map::g_player)) {
                 // Monster is allied to player
 
-                if (other.is_player())
-                {
+                if (other.is_player()) {
                         // Player-allied monster looking at the player
 
                         return true;
-                }
-                else
-                {
+                } else {
                         // Player-allied monster looking at other monster
 
                         const auto* const other_mon =
@@ -585,8 +519,7 @@ bool Mon::can_see_actor(
 
                         return other_mon->m_player_aware_of_me_counter > 0;
                 }
-        }
-        else // Monster is hostile to player
+        } else // Monster is hostile to player
         {
                 return m_aware_of_player_counter > 0;
         }
@@ -598,21 +531,18 @@ bool Mon::is_actor_seeable(
         const Actor& other,
         const Array2<bool>& hard_blocked_los) const
 {
-        if ((this == &other) || (!other.is_alive()))
-        {
+        if ((this == &other) || (!other.is_alive())) {
                 return true;
         }
 
         // Outside FOV range?
-        if (!fov::is_in_fov_range(m_pos, other.m_pos))
-        {
+        if (!fov::is_in_fov_range(m_pos, other.m_pos)) {
                 // Other actor is outside FOV range
                 return false;
         }
 
         // Monster is blind?
-        if (!m_properties.allow_see())
-        {
+        if (!m_properties.allow_see()) {
                 return false;
         }
 
@@ -624,8 +554,7 @@ bool Mon::is_actor_seeable(
         const LosResult los = fov::check_cell(m_pos, other.m_pos, fov_map);
 
         // LOS blocked hard (e.g. a wall or smoke)?
-        if (los.is_blocked_hard)
-        {
+        if (los.is_blocked_hard) {
                 return false;
         }
 
@@ -634,8 +563,7 @@ bool Mon::is_actor_seeable(
         // Actor is invisible, and monster cannot see invisible?
         if ((other.m_properties.has(PropId::invis) ||
              other.m_properties.has(PropId::cloaked)) &&
-            !can_see_invis)
-        {
+            !can_see_invis) {
                 return false;
         }
 
@@ -644,8 +572,7 @@ bool Mon::is_actor_seeable(
         const bool can_see_other_in_dark = can_see_invis || has_darkvision;
 
         // Blocked by darkness, and not seeing actor with infravision?
-        if (los.is_blocked_by_dark && !can_see_other_in_dark)
-        {
+        if (los.is_blocked_by_dark && !can_see_other_in_dark) {
                 return false;
         }
 
@@ -670,14 +597,11 @@ std::vector<Actor*> Mon::seen_actors() const
                      los_rect,
                      MapParseMode::overwrite);
 
-        for (Actor* actor : game_time::g_actors)
-        {
-                if ((actor != this) && actor->is_alive())
-                {
+        for (Actor* actor : game_time::g_actors) {
+                if ((actor != this) && actor->is_alive()) {
                         const Mon* const mon = static_cast<const Mon*>(this);
 
-                        if (mon->can_see_actor(*actor, blocked_los))
-                        {
+                        if (mon->can_see_actor(*actor, blocked_los)) {
                                 out.push_back(actor);
                         }
                 }
@@ -692,21 +616,20 @@ std::vector<Actor*> Mon::seen_foes() const
 
         Array2<bool> blocked_los(map::dims());
 
-        R los_rect(std::max(0, m_pos.x - g_fov_radi_int),
-                   std::max(0, m_pos.y - g_fov_radi_int),
-                   std::min(map::w() - 1, m_pos.x + g_fov_radi_int),
-                   std::min(map::h() - 1, m_pos.y + g_fov_radi_int));
+        R los_rect(
+                std::max(0, m_pos.x - g_fov_radi_int),
+                std::max(0, m_pos.y - g_fov_radi_int),
+                std::min(map::w() - 1, m_pos.x + g_fov_radi_int),
+                std::min(map::h() - 1, m_pos.y + g_fov_radi_int));
 
         map_parsers::BlocksLos()
                 .run(blocked_los,
                      los_rect,
                      MapParseMode::overwrite);
 
-        for (Actor* actor : game_time::g_actors)
-        {
+        for (Actor* actor : game_time::g_actors) {
                 if ((actor != this) &&
-                    actor->is_alive())
-                {
+                    actor->is_alive()) {
                         const bool is_hostile_to_player =
                                 !is_actor_my_leader(map::g_player);
 
@@ -722,8 +645,7 @@ std::vector<Actor*> Mon::seen_foes() const
                         const Mon* const mon = static_cast<const Mon*>(this);
 
                         if (is_enemy &&
-                            mon->can_see_actor(*actor, blocked_los))
-                        {
+                            mon->can_see_actor(*actor, blocked_los)) {
                                 out.push_back(actor);
                         }
                 }
@@ -745,26 +667,23 @@ std::vector<Actor*> Mon::seeable_foes() const
                      fov_rect,
                      MapParseMode::overwrite);
 
-        for (Actor* actor : game_time::g_actors)
-        {
+        for (Actor* actor : game_time::g_actors) {
                 if ((actor != this) &&
-                    actor->is_alive())
-                {
+                    actor->is_alive()) {
                         const bool is_hostile_to_player =
                                 !is_actor_my_leader(map::g_player);
 
                         const bool is_other_hostile_to_player =
-                                actor->is_player() ?
-                                false :
-                                !actor->is_actor_my_leader(map::g_player);
+                                actor->is_player()
+                                ? false
+                                : !actor->is_actor_my_leader(map::g_player);
 
                         const bool is_enemy =
                                 is_hostile_to_player !=
                                 is_other_hostile_to_player;
 
                         if (is_enemy &&
-                            is_actor_seeable(*actor, blocked_los))
-                        {
+                            is_actor_seeable(*actor, blocked_los)) {
                                 out.push_back(actor);
                         }
                 }
@@ -784,8 +703,7 @@ bool Mon::is_sneaking() const
 
         const int stealth_current = ability(AbilityId::stealth, true);
 
-        return
-                (m_player_aware_of_me_counter <= 0) &&
+        return (m_player_aware_of_me_counter <= 0) &&
                 (stealth_base > 0) &&
                 (stealth_current > 0) &&
                 !is_actor_my_leader(map::g_player);
@@ -795,27 +713,25 @@ void Mon::make_leader_aware_silent() const
 {
         ASSERT(m_leader);
 
-        if (!m_leader)
-        {
+        if (!m_leader) {
                 return;
         }
 
         Mon* const leader_mon = static_cast<Mon*>(m_leader);
 
         leader_mon->m_aware_of_player_counter =
-                std::max(leader_mon->m_data->nr_turns_aware,
-                         leader_mon->m_aware_of_player_counter);
+                std::max(
+                        leader_mon->m_data->nr_turns_aware,
+                        leader_mon->m_aware_of_player_counter);
 }
 
 void Mon::on_std_turn()
 {
         // Countdown all spell cooldowns
-        for (auto& spell : m_spells)
-        {
+        for (auto& spell : m_spells) {
                 int& cooldown = spell.cooldown;
 
-                if (cooldown > 0)
-                {
+                if (cooldown > 0) {
                         --cooldown;
                 }
         }
@@ -825,13 +741,11 @@ void Mon::on_std_turn()
         if (is_alive() &&
             m_data->ai[(size_t)AiId::looks] &&
             (m_leader != map::g_player) &&
-            (!m_target || m_target->is_player()))
-        {
+            (!m_target || m_target->is_player())) {
                 const bool did_become_aware_now = ai::info::look(*this);
 
                 // If the monster became aware, give it some reaction time
-                if (did_become_aware_now)
-                {
+                if (did_become_aware_now) {
                         auto prop = new PropWaiting();
 
                         prop->set_duration(1);
@@ -862,15 +776,13 @@ void Mon::on_hit(
 
 Color Mon::color() const
 {
-        if (m_state != ActorState::alive)
-        {
+        if (m_state != ActorState::alive) {
                 return m_data->color;
         }
 
         Color tmp_color;
 
-        if (m_properties.affect_actor_color(tmp_color))
-        {
+        if (m_properties.affect_actor_color(tmp_color)) {
                 return tmp_color;
         }
 
@@ -881,10 +793,8 @@ SpellSkill Mon::spell_skill(const SpellId id) const
 {
         (void)id;
 
-        for (const auto& spell : m_spells)
-        {
-                if (spell.spell->id() == id)
-                {
+        for (const auto& spell : m_spells) {
+                if (spell.spell->id() == id) {
                         return spell.skill;
                 }
         }
@@ -896,8 +806,7 @@ SpellSkill Mon::spell_skill(const SpellId id) const
 
 void Mon::hear_sound(const Snd& snd)
 {
-        if (m_properties.has(PropId::deaf))
-        {
+        if (m_properties.has(PropId::deaf)) {
                 return;
         }
 
@@ -905,20 +814,17 @@ void Mon::hear_sound(const Snd& snd)
 
         // The monster may have become deaf through the sound callback (e.g.
         // from the Horn of Deafening artifact)
-        if (m_properties.has(PropId::deaf))
-        {
+        if (m_properties.has(PropId::deaf)) {
                 return;
         }
 
-        if (is_alive() && snd.is_alerting_mon())
-        {
+        if (is_alive() && snd.is_alerting_mon()) {
                 const bool was_aware_before = (m_aware_of_player_counter > 0);
 
                 become_aware_player(false);
 
                 // Give the monster some reaction time
-                if (!was_aware_before && !is_actor_my_leader(map::g_player))
-                {
+                if (!was_aware_before && !is_actor_my_leader(map::g_player)) {
                         auto prop = new PropWaiting();
 
                         prop->set_duration(1);
@@ -940,9 +846,9 @@ void Mon::speak_phrase(const AlertsMon alerts_others)
         msg = text_format::first_to_upper(msg);
 
         const SfxId sfx =
-                is_seen_by_player ?
-                aware_sfx_mon_seen() :
-                aware_sfx_mon_hidden();
+                is_seen_by_player
+                ? aware_sfx_mon_seen()
+                : aware_sfx_mon_hidden();
 
         Snd snd(
                 msg,
@@ -958,15 +864,13 @@ void Mon::speak_phrase(const AlertsMon alerts_others)
 
 std::string Mon::aware_msg_mon_seen() const
 {
-        if (m_data->use_cultist_aware_msg_mon_seen)
-        {
+        if (m_data->use_cultist_aware_msg_mon_seen) {
                 return get_cultist_aware_msg_seen(*this);
         }
 
         std::string msg_end = m_data->aware_msg_mon_seen;
 
-        if (msg_end.empty())
-        {
+        if (msg_end.empty()) {
                 return "";
         }
 
@@ -977,19 +881,16 @@ std::string Mon::aware_msg_mon_seen() const
 
 std::string Mon::aware_msg_mon_hidden() const
 {
-        if (m_data->use_cultist_aware_msg_mon_hidden)
-        {
+        if (m_data->use_cultist_aware_msg_mon_hidden) {
                 return get_cultist_aware_msg_hidden();
         }
 
         return m_data->aware_msg_mon_hidden;
 }
 
-void Mon::become_aware_player(const bool is_from_seeing,
-                              const int factor)
+void Mon::become_aware_player(const bool is_from_seeing, const int factor)
 {
-        if (!is_alive() || is_actor_my_leader(map::g_player))
-        {
+        if (!is_alive() || is_actor_my_leader(map::g_player)) {
                 return;
         }
 
@@ -998,21 +899,17 @@ void Mon::become_aware_player(const bool is_from_seeing,
         const int aware_counter_before = m_aware_of_player_counter;
 
         m_aware_of_player_counter =
-                std::max(nr_turns,
-                         aware_counter_before);
+                std::max(nr_turns, aware_counter_before);
 
         m_wary_of_player_counter = m_aware_of_player_counter;
 
-        if (aware_counter_before <= 0)
-        {
+        if (aware_counter_before <= 0) {
                 if (is_from_seeing &&
-                    map::g_player->can_see_actor(*this))
-                {
+                    map::g_player->can_see_actor(*this)) {
                         print_player_see_mon_become_aware_msg();
                 }
 
-                if (rnd::coin_toss())
-                {
+                if (rnd::coin_toss()) {
                         speak_phrase(AlertsMon::yes);
                 }
         }
@@ -1020,8 +917,7 @@ void Mon::become_aware_player(const bool is_from_seeing,
 
 void Mon::become_wary_player()
 {
-        if (!is_alive() || is_actor_my_leader(map::g_player))
-        {
+        if (!is_alive() || is_actor_my_leader(map::g_player)) {
                 return;
         }
 
@@ -1033,15 +929,12 @@ void Mon::become_wary_player()
         m_wary_of_player_counter =
                 std::max(nr_turns, wary_counter_before);
 
-        if (wary_counter_before <= 0)
-        {
-                if (map::g_player->can_see_actor(*this))
-                {
+        if (wary_counter_before <= 0) {
+                if (map::g_player->can_see_actor(*this)) {
                         print_player_see_mon_become_wary_msg();
                 }
 
-                if (rnd::one_in(4))
-                {
+                if (rnd::one_in(4)) {
                         speak_phrase(AlertsMon::no);
                 }
         }
@@ -1061,8 +954,7 @@ void Mon::print_player_see_mon_become_aware_msg() const
 
 void Mon::print_player_see_mon_become_wary_msg() const
 {
-        if (m_data->wary_msg.empty())
-        {
+        if (m_data->wary_msg.empty()) {
                 return;
         }
 
@@ -1081,8 +973,7 @@ void Mon::set_player_aware_of_me(int duration_factor)
 {
         int nr_turns = 2 * duration_factor;
 
-        if (player_bon::bg() == Bg::rogue)
-        {
+        if (player_bon::bg() == Bg::rogue) {
                 nr_turns *= 8;
         }
 
@@ -1094,8 +985,7 @@ DidAction Mon::try_attack(Actor& defender)
 {
         if (m_state != ActorState::alive ||
             ((m_aware_of_player_counter <= 0) &&
-             (m_leader != map::g_player)))
-        {
+             (m_leader != map::g_player))) {
                 return DidAction::no;
         }
 
@@ -1105,15 +995,12 @@ DidAction Mon::try_attack(Actor& defender)
 
         const AiAttData att = choose_attack(my_avail_attacks);
 
-        if (!att.wpn)
-        {
+        if (!att.wpn) {
                 return DidAction::no;
         }
 
-        if (att.is_melee)
-        {
-                if (att.wpn->data().melee.is_melee_wpn)
-                {
+        if (att.is_melee) {
+                if (att.wpn->data().melee.is_melee_wpn) {
                         attack::melee(this, m_pos, defender, *att.wpn);
 
                         return DidAction::yes;
@@ -1122,10 +1009,8 @@ DidAction Mon::try_attack(Actor& defender)
                 return DidAction::no;
         }
 
-        if (att.wpn->data().ranged.is_ranged_wpn)
-        {
-                if (my_avail_attacks.should_reload)
-                {
+        if (att.wpn->data().ranged.is_ranged_wpn) {
+                if (my_avail_attacks.should_reload) {
                         reload::try_reload(*this, att.wpn);
 
                         return DidAction::yes;
@@ -1134,13 +1019,11 @@ DidAction Mon::try_attack(Actor& defender)
                 const bool ignore_blocking_friend = rnd::one_in(20);
 
                 if (!ignore_blocking_friend &&
-                    is_friend_blocking_ranged_attack(defender.m_pos))
-                {
+                    is_friend_blocking_ranged_attack(defender.m_pos)) {
                         return DidAction::no;
                 }
 
-                if (m_data->ranged_cooldown_turns > 0)
-                {
+                if (m_data->ranged_cooldown_turns > 0) {
                         auto prop = new PropDisabledRanged();
 
                         prop->set_duration(m_data->ranged_cooldown_turns);
@@ -1171,16 +1054,13 @@ bool Mon::is_friend_blocking_ranged_attack(const P& target_pos) const
                         9999,
                         false);
 
-        for (const P& line_pos : line)
-        {
-                if ((line_pos != m_pos) && (line_pos != target_pos))
-                {
+        for (const P& line_pos : line) {
+                if ((line_pos != m_pos) && (line_pos != target_pos)) {
                         auto* const actor_here =
                                 map::first_actor_at_pos(line_pos);
 
                         // TODO: This does not consider who is allied/hostile!
-                        if (actor_here)
-                        {
+                        if (actor_here) {
                                 return true;
                         }
                 }
@@ -1193,17 +1073,14 @@ AiAvailAttacksData Mon::avail_attacks(Actor& defender) const
 {
         AiAvailAttacksData result;
 
-        if (!m_properties.allow_attack(Verbose::no))
-        {
+        if (!m_properties.allow_attack(Verbose::no)) {
                 return result;
         }
 
         result.is_melee = is_pos_adj(m_pos, defender.m_pos, false);
 
-        if (result.is_melee)
-        {
-                if (!m_properties.allow_attack_melee(Verbose::no))
-                {
+        if (result.is_melee) {
+                if (!m_properties.allow_attack_melee(Verbose::no)) {
                         return result;
                 }
 
@@ -1211,15 +1088,12 @@ AiAvailAttacksData Mon::avail_attacks(Actor& defender) const
 
                 auto* wielded_wpn = avail_wielded_melee();
 
-                if (wielded_wpn)
-                {
+                if (wielded_wpn) {
                         result.weapons.push_back(wielded_wpn);
                 }
-        }
-        else // Ranged attack
+        } else // Ranged attack
         {
-                if (!m_properties.allow_attack_ranged(Verbose::no))
-                {
+                if (!m_properties.allow_attack_ranged(Verbose::no)) {
                         return result;
                 }
 
@@ -1227,8 +1101,7 @@ AiAvailAttacksData Mon::avail_attacks(Actor& defender) const
 
                 auto* const wielded_wpn = avail_wielded_ranged();
 
-                if (wielded_wpn)
-                {
+                if (wielded_wpn) {
                         result.weapons.push_back(wielded_wpn);
 
                         result.should_reload = should_reload(*wielded_wpn);
@@ -1242,12 +1115,10 @@ item::Wpn* Mon::avail_wielded_melee() const
 {
         auto* const item = m_inv.item_in_slot(SlotId::wpn);
 
-        if (item)
-        {
+        if (item) {
                 auto* const wpn = static_cast<item::Wpn*>(item);
 
-                if (wpn->data().melee.is_melee_wpn)
-                {
+                if (wpn->data().melee.is_melee_wpn) {
                         return wpn;
                 }
         }
@@ -1259,12 +1130,10 @@ item::Wpn* Mon::avail_wielded_ranged() const
 {
         auto* const item = m_inv.item_in_slot(SlotId::wpn);
 
-        if (item)
-        {
+        if (item) {
                 auto* const wpn = static_cast<item::Wpn*>(item);
 
-                if (wpn->data().ranged.is_ranged_wpn)
-                {
+                if (wpn->data().ranged.is_ranged_wpn) {
                         return wpn;
                 }
         }
@@ -1276,12 +1145,10 @@ std::vector<item::Wpn*> Mon::avail_intr_melee() const
 {
         std::vector<item::Wpn*> result;
 
-        for (auto* const item : m_inv.m_intrinsics)
-        {
+        for (auto* const item : m_inv.m_intrinsics) {
                 auto* wpn = static_cast<item::Wpn*>(item);
 
-                if (wpn->data().melee.is_melee_wpn)
-                {
+                if (wpn->data().melee.is_melee_wpn) {
                         result.push_back(wpn);
                 }
         }
@@ -1293,12 +1160,10 @@ std::vector<item::Wpn*> Mon::avail_intr_ranged() const
 {
         std::vector<item::Wpn*> result;
 
-        for (auto* const item : m_inv.m_intrinsics)
-        {
+        for (auto* const item : m_inv.m_intrinsics) {
                 auto* const wpn = static_cast<item::Wpn*>(item);
 
-                if (wpn->data().ranged.is_ranged_wpn)
-                {
+                if (wpn->data().ranged.is_ranged_wpn) {
                         result.push_back(wpn);
                 }
         }
@@ -1311,8 +1176,7 @@ bool Mon::should_reload(const item::Wpn& wpn) const
         // TODO: This could be made more sophisticated, e.g. if the monster does
         // not see any enemies it should reload even if the weapon is not
         // completely empty
-        return
-                (wpn.m_ammo_loaded == 0) &&
+        return (wpn.m_ammo_loaded == 0) &&
                 !wpn.data().ranged.has_infinite_ammo &&
                 m_inv.has_ammo_for_firearm_in_inventory();
 }
@@ -1323,8 +1187,7 @@ AiAttData Mon::choose_attack(const AiAvailAttacksData& avail_attacks) const
 
         result.is_melee = avail_attacks.is_melee;
 
-        if (avail_attacks.weapons.empty())
-        {
+        if (avail_attacks.weapons.empty()) {
                 return result;
         }
 
@@ -1335,8 +1198,7 @@ AiAttData Mon::choose_attack(const AiAvailAttacksData& avail_attacks) const
 
 bool Mon::is_leader_of(const Actor* const actor) const
 {
-        if (actor && !actor->is_player())
-        {
+        if (actor && !actor->is_player()) {
                 const auto* const mon = static_cast<const Mon*>(actor);
 
                 return (mon->m_leader == this);
@@ -1356,10 +1218,8 @@ int Mon::nr_mon_in_group() const
 
         int ret = 1; // Starting at one to include leader
 
-        for (const Actor* const actor : game_time::g_actors)
-        {
-                if (actor->is_actor_my_leader(group_leader))
-                {
+        for (const Actor* const actor : game_time::g_actors) {
+                if (actor->is_actor_my_leader(group_leader)) {
                         ++ret;
                 }
         }
@@ -1372,13 +1232,11 @@ void Mon::add_spell(SpellSkill skill, Spell* const spell)
         const auto search = std::find_if(
                 begin(m_spells),
                 end(m_spells),
-                [spell](MonSpell& spell_entry)
-                {
+                [spell](MonSpell& spell_entry) {
                         return spell_entry.spell->id() == spell->id();
                 });
 
-        if (search != end(m_spells))
-        {
+        if (search != end(m_spells)) {
                 delete spell;
 
                 return;
@@ -1402,8 +1260,7 @@ DidAction Khephren::on_act()
         // Summon locusts
         if (!is_alive() ||
             (m_aware_of_player_counter <= 0) ||
-            m_has_summoned_locusts)
-        {
+            m_has_summoned_locusts) {
                 return DidAction::no;
         }
 
@@ -1416,15 +1273,13 @@ DidAction Khephren::on_act()
                      fov_rect,
                      MapParseMode::overwrite);
 
-        if (!can_see_actor(*(map::g_player), blocked))
-        {
+        if (!can_see_actor(*(map::g_player), blocked)) {
                 return DidAction::no;
         }
 
         msg_log::add("Khephren calls a plague of Locusts!");
 
-        map::g_player->incr_shock(ShockLvl::terrifying,
-                                  ShockSrc::misc);
+        map::g_player->incr_shock(ShockLvl::terrifying, ShockSrc::misc);
 
         Actor* const leader_of_spawned_mon = m_leader ? m_leader : this;
 
@@ -1442,8 +1297,7 @@ DidAction Khephren::on_act()
         std::for_each(
                 std::begin(summoned.monsters),
                 std::end(summoned.monsters),
-                [](Mon* const mon)
-                {
+                [](Mon* const mon) {
                         auto prop = new PropSummoned();
 
                         prop->set_indefinite();
@@ -1461,15 +1315,13 @@ DidAction Khephren::on_act()
 // TODO: Make this into a spell instead
 DidAction Ape::on_act()
 {
-        if (m_frenzy_cooldown > 0)
-        {
+        if (m_frenzy_cooldown > 0) {
                 --m_frenzy_cooldown;
         }
 
         if ((m_frenzy_cooldown <= 0) &&
             m_target &&
-            (m_hp <= (actor::max_hp(*this) / 2)))
-        {
+            (m_hp <= (actor::max_hp(*this) / 2))) {
                 m_frenzy_cooldown = 30;
 
                 auto prop = new PropFrenzied();
@@ -1499,7 +1351,8 @@ Color StrangeColor::color() const
 }
 
 SpectralWpn::SpectralWpn() :
-        Mon() {}
+        Mon()
+{}
 
 void SpectralWpn::on_death()
 {

@@ -14,30 +14,24 @@
 #include "fov.hpp"
 #include "pos.hpp"
 
-
-namespace item
-{
+namespace item {
 class Item;
 } // namespace item
 
-namespace actor
-{
+namespace actor {
 class Actor;
 class Player;
 } // namespace actor
 
-namespace terrain
-{
+namespace terrain {
 class Terrain;
 } // namespace terrain
 
 class Room;
 
-
 // TODO: This should probably be removed, and multiple smaller arrays should be
 // used instead
-struct Cell
-{
+struct Cell {
         Cell();
         ~Cell();
 
@@ -49,10 +43,9 @@ struct Cell
         terrain::Terrain* terrain;
 };
 
-struct ChokePointData
-{
+struct ChokePointData {
         ChokePointData() :
-                
+
                 player_side(-1),
                 stairs_side(-1)
         {
@@ -62,8 +55,7 @@ struct ChokePointData
 
         ChokePointData& operator=(const ChokePointData& other)
         {
-                if (&other == this)
-                {
+                if (&other == this) {
                         return *this;
                 }
 
@@ -84,9 +76,7 @@ struct ChokePointData
         std::vector<P> sides[2];
 };
 
-
-namespace map
-{
+namespace map {
 
 extern actor::Player* g_player;
 

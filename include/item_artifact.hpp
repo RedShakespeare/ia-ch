@@ -11,22 +11,17 @@
 #include "item_curse_ids.hpp"
 #include "sound.hpp"
 
-
-namespace actor
-{
+namespace actor {
 class Actor;
 class Mon;
 } // namespace actor
 
-
-namespace item
-{
+namespace item {
 
 // -----------------------------------------------------------------------------
 // Staff of the Pharaohs
 // -----------------------------------------------------------------------------
-class PharaohStaff: public Wpn
-{
+class PharaohStaff : public Wpn {
 public:
         PharaohStaff(ItemData* item_data);
 
@@ -39,8 +34,7 @@ private:
 // -----------------------------------------------------------------------------
 // Talisman of Reflection
 // -----------------------------------------------------------------------------
-class ReflTalisman: public Item
-{
+class ReflTalisman : public Item {
 public:
         ReflTalisman(ItemData* item_data);
 
@@ -53,8 +47,7 @@ private:
 // -----------------------------------------------------------------------------
 // Talisman of Resurrection
 // -----------------------------------------------------------------------------
-class ResurrectTalisman: public Item
-{
+class ResurrectTalisman : public Item {
 public:
         ResurrectTalisman(ItemData* item_data);
 
@@ -71,8 +64,7 @@ public:
 // -----------------------------------------------------------------------------
 // Talisman of Teleportation Control
 // -----------------------------------------------------------------------------
-class TeleCtrlTalisman: public Item
-{
+class TeleCtrlTalisman : public Item {
 public:
         TeleCtrlTalisman(ItemData* item_data);
 
@@ -90,8 +82,7 @@ private:
 // -----------------------------------------------------------------------------
 // Horn of Malice
 // -----------------------------------------------------------------------------
-class HornOfMaliceHeard: public SndHeardEffect
-{
+class HornOfMaliceHeard : public SndHeardEffect {
 public:
         HornOfMaliceHeard() = default;
 
@@ -100,8 +91,7 @@ public:
         void run(actor::Actor& actor) const override;
 };
 
-class HornOfMalice: public Item
-{
+class HornOfMalice : public Item {
 public:
         HornOfMalice(ItemData* item_data);
 
@@ -120,8 +110,7 @@ private:
 // -----------------------------------------------------------------------------
 // Horn of Banishment
 // -----------------------------------------------------------------------------
-class HornOfBanishmentHeard: public SndHeardEffect
-{
+class HornOfBanishmentHeard : public SndHeardEffect {
 public:
         HornOfBanishmentHeard() = default;
 
@@ -130,8 +119,7 @@ public:
         void run(actor::Actor& actor) const override;
 };
 
-class HornOfBanishment: public Item
-{
+class HornOfBanishment : public Item {
 public:
         HornOfBanishment(ItemData* item_data);
 
@@ -147,12 +135,10 @@ private:
         int m_charges;
 };
 
-
 // -----------------------------------------------------------------------------
 // Arcane Clockwork
 // -----------------------------------------------------------------------------
-class Clockwork: public Item
-{
+class Clockwork : public Item {
 public:
         Clockwork(ItemData* item_data);
 
@@ -171,8 +157,7 @@ private:
 // -----------------------------------------------------------------------------
 // Spirit Dagger
 // -----------------------------------------------------------------------------
-class SpiritDagger: public Wpn
-{
+class SpiritDagger : public Wpn {
 public:
         SpiritDagger(ItemData* item_data);
 
@@ -185,8 +170,7 @@ protected:
 // -----------------------------------------------------------------------------
 // Orb of Life
 // -----------------------------------------------------------------------------
-class OrbOfLife: public Item
-{
+class OrbOfLife : public Item {
 public:
         OrbOfLife(ItemData* item_data);
 

@@ -30,54 +30,48 @@ MenuAction MenuBrowser::read(const InputData& input, MenuInputMode mode)
 
         if ((input.key == SDLK_UP) ||
             (input.key == SDLK_KP_8) ||
-            (input.key == 'k'))
-        {
+            (input.key == 'k')) {
                 move(VerDir::up);
-
                 return MenuAction::moved;
         }
-        else if ((input.key == SDLK_DOWN) ||
-                 (input.key == SDLK_KP_2) ||
-                 (input.key == 'j'))
-        {
+
+        if ((input.key == SDLK_DOWN) ||
+            (input.key == SDLK_KP_2) ||
+            (input.key == 'j')) {
                 move(VerDir::down);
-
                 return MenuAction::moved;
         }
-        else if ((input.key == SDLK_PAGEUP) ||
-                 (input.key == '<'))
-        {
+
+        if ((input.key == SDLK_PAGEUP) ||
+            (input.key == '<')) {
                 move_page(VerDir::up);
-
                 return MenuAction::moved;
         }
-        else if ((input.key == SDLK_PAGEDOWN) ||
-                 (input.key == '>'))
-        {
+
+        if ((input.key == SDLK_PAGEDOWN) ||
+            (input.key == '>')) {
                 move_page(VerDir::down);
-
                 return MenuAction::moved;
         }
-        else if ((input.key == SDLK_RETURN) ||
-                 (input.key == 'l'))
-        {
-                if (m_play_selection_audio)
-                {
+
+        if ((input.key == SDLK_RETURN) ||
+            (input.key == 'l')) {
+                if (m_play_selection_audio) {
                         audio::play(SfxId::menu_select);
                 }
 
                 return MenuAction::selected;
         }
-        else if (input.key == SDLK_SPACE)
-        {
+
+        if (input.key == SDLK_SPACE) {
                 return MenuAction::space;
         }
-        else if (input.key == SDLK_ESCAPE)
-        {
+
+        if (input.key == SDLK_ESCAPE) {
                 return MenuAction::esc;
         }
-        else if (mode == MenuInputMode::scrolling_and_letters)
-        {
+
+        if (mode == MenuInputMode::scrolling_and_letters) {
                 const char c = (char)input.key;
 
                 const auto find_result =
@@ -86,16 +80,14 @@ MenuAction MenuBrowser::read(const InputData& input, MenuInputMode mode)
                                 std::end(m_menu_keys),
                                 c);
 
-                if (find_result == std::end(m_menu_keys))
-                {
+                if (find_result == std::end(m_menu_keys)) {
                         // Not a valid menu key, ever
                         return MenuAction::none;
                 }
 
 #ifndef NDEBUG
                 // Should never be used as letters (reserved for browsing)
-                if ((c == 'j') || (c == 'k') || (c == 'l'))
-                {
+                if ((c == 'j') || (c == 'k') || (c == 'l')) {
                         PANIC;
                 }
 #endif // NDEBUG
@@ -105,8 +97,7 @@ MenuAction MenuBrowser::read(const InputData& input, MenuInputMode mode)
                                 std::begin(m_menu_keys),
                                 find_result);
 
-                if (relative_idx >= nr_items_shown())
-                {
+                if (relative_idx >= nr_items_shown()) {
                         // The key is not in the range of shown items
                         return MenuAction::none;
                 }
@@ -116,29 +107,25 @@ MenuAction MenuBrowser::read(const InputData& input, MenuInputMode mode)
 
                 set_y(global_idx);
 
-                if (m_play_selection_audio)
-                {
+                if (m_play_selection_audio) {
                         audio::play(SfxId::menu_select);
                 }
 
                 return MenuAction::selected;
         }
-        else
-        {
-                return MenuAction::none;
-        }
+
+        return MenuAction::none;
 }
 
 void MenuBrowser::move(const VerDir dir)
 {
         const int last_idx = m_nr_items - 1;
 
-        if (dir == VerDir::up)
-        {
+        if (dir == VerDir::up) {
+                // Up
                 m_y = m_y == 0 ? last_idx : (m_y - 1);
-        }
-        else // Down
-        {
+        } else {
+                // Down
                 m_y = m_y == last_idx ? 0 : (m_y + 1);
         }
 
@@ -149,25 +136,20 @@ void MenuBrowser::move(const VerDir dir)
 
 void MenuBrowser::move_page(const VerDir dir)
 {
-        if (dir == VerDir::up)
-        {
-                if (m_list_h >= 0)
-                {
+        if (dir == VerDir::up) {
+                // Up
+                if (m_list_h >= 0) {
                         m_y -= m_list_h;
-                }
-                else // List height undefined (i.e. showing all)
-                {
+                } else {
+                        // List height undefined (i.e. showing all)
                         m_y = 0;
                 }
-        }
-        else // Down
-        {
-                if (m_list_h >= 0)
-                {
+        } else {
+                // Down
+                if (m_list_h >= 0) {
                         m_y += m_list_h;
-                }
-                else // List height undefined (i.e. showing all)
-                {
+                } else {
+                        // List height undefined (i.e. showing all)
                         m_y = m_nr_items - 1;
                 }
         }
@@ -191,11 +173,9 @@ void MenuBrowser::set_y(const int y)
 Range MenuBrowser::range_shown() const
 {
         // Shown ranged defined?
-        if (m_list_h >= 0)
-        {
+        if (m_list_h >= 0) {
                 return m_range_shown;
-        }
-        else // List height undefined (i.e. showing all)
+        } else // List height undefined (i.e. showing all)
         {
                 // Just return a range of the total number of items
                 return Range(0, m_nr_items - 1);
@@ -205,8 +185,7 @@ Range MenuBrowser::range_shown() const
 void MenuBrowser::update_range_shown()
 {
         // Shown ranged defined?
-        if (m_list_h >= 0)
-        {
+        if (m_list_h >= 0) {
                 const int top = (m_y / m_list_h) * m_list_h;
                 const int btm = std::min(top + m_list_h, m_nr_items) - 1;
 
@@ -221,13 +200,10 @@ void MenuBrowser::set_y_nearest_valid()
 
 int MenuBrowser::nr_items_shown() const
 {
-        if (m_list_h >= 0)
-        {
+        if (m_list_h >= 0) {
                 // The list height has been defined
                 return m_range_shown.len();
-        }
-        else
-        {
+        } else {
                 // List height undefined (i.e. showing all) - just return total
                 // number of items
                 return m_nr_items;
@@ -237,13 +213,11 @@ int MenuBrowser::nr_items_shown() const
 int MenuBrowser::top_idx_shown() const
 {
         // Shown ranged defined?
-        if (m_list_h >= 0)
-        {
+        if (m_list_h >= 0) {
                 // List height undefined (i.e. showing all)
                 return m_range_shown.min;
-        }
-        else // Not showing all items
-        {
+        } else {
+                // Not showing all items
                 return 0;
         }
 }
@@ -251,12 +225,10 @@ int MenuBrowser::top_idx_shown() const
 int MenuBrowser::btm_idx_shown() const
 {
         // Shown ranged defined?
-        if (m_list_h >= 0)
-        {
+        if (m_list_h >= 0) {
                 return m_range_shown.max;
-        }
-        else // List height undefined (i.e. showing all)
-        {
+        } else {
+                // List height undefined (i.e. showing all)
                 return m_nr_items - 1;
         }
 }
@@ -264,12 +236,10 @@ int MenuBrowser::btm_idx_shown() const
 bool MenuBrowser::is_on_top_page() const
 {
         // Shown ranged defined?
-        if (m_list_h >= 0)
-        {
+        if (m_list_h >= 0) {
                 return m_range_shown.min == 0;
-        }
-        else // List height undefined (i.e. showing all)
-        {
+        } else {
+                // List height undefined (i.e. showing all)
                 return true;
         }
 }
@@ -277,12 +247,10 @@ bool MenuBrowser::is_on_top_page() const
 bool MenuBrowser::is_on_btm_page() const
 {
         // Shown ranged defined?
-        if (m_list_h >= 0)
-        {
+        if (m_list_h >= 0) {
                 return m_range_shown.max == m_nr_items - 1;
-        }
-        else // List height undefined (i.e. showing all)
-        {
+        } else {
+                // List height undefined (i.e. showing all)
                 return true;
         }
 }

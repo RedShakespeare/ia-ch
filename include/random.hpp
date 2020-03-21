@@ -14,9 +14,7 @@
 
 #include "debug.hpp"
 
-
-struct Range
-{
+struct Range {
         Range() = default;
 
         Range(const int min_val, const int max_val) :
@@ -52,8 +50,7 @@ struct Range
 
         bool is_in_range(const int v) const
         {
-                return
-                        (v >= min) &&
+                return (v >= min) &&
                         (v <= max);
         }
 
@@ -65,8 +62,7 @@ struct Range
         int max {0};
 };
 
-struct Fraction
-{
+struct Fraction {
         Fraction() = default;
 
         Fraction(const int numerator, const int denominator) :
@@ -82,8 +78,7 @@ struct Fraction
 };
 
 template <typename T>
-struct WeightedItems
-{
+struct WeightedItems {
         std::vector<T> items = {};
         std::vector<int> weights = {};
 };
@@ -91,8 +86,7 @@ struct WeightedItems
 //------------------------------------------------------------------------------
 // Random number generation
 //------------------------------------------------------------------------------
-namespace rnd
-{
+namespace rnd {
 
 extern std::mt19937 g_rng;
 

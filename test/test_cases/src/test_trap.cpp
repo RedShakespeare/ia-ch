@@ -33,8 +33,7 @@ TEST_CASE("Spider web")
         bool tested_stuck = false;
         bool tested_unstuck = false;
 
-        while (!(tested_stuck && tested_unstuck))
-        {
+        while (!(tested_stuck && tested_unstuck)) {
                 test_utils::init_all();
 
                 map::put(new terrain::Floor(pos_l));
@@ -76,12 +75,9 @@ TEST_CASE("Spider web")
                 // move it one step to the left
                 actor::move(*mon, Dir::left);
 
-                if (mon->m_pos == pos_r)
-                {
+                if (mon->m_pos == pos_r) {
                         tested_stuck = true;
-                }
-                else if (mon->m_pos == pos_l)
-                {
+                } else if (mon->m_pos == pos_l) {
                         tested_unstuck = true;
 
                         REQUIRE(!mon->m_properties.has(PropId::entangled));
@@ -187,7 +183,7 @@ TEST_CASE("Do not unlearn frenzy")
         REQUIRE(!player_spells::is_spell_learned(SpellId::darkbolt));
         REQUIRE(player_spells::is_spell_learned(SpellId::frenzy));
 
-         // Step into the trap again
+        // Step into the trap again
         map::g_player->m_pos = pos_l;
         actor::move(*map::g_player, Dir::right);
 

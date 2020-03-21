@@ -17,15 +17,11 @@
 #include "gfx.hpp"
 #include "panel.hpp"
 
-
-namespace actor
-{
+namespace actor {
 class Actor;
 } // namespace actor
 
-
-struct CellRenderData
-{
+struct CellRenderData {
         CellRenderData& operator=(const CellRenderData&) = default;
 
         TileId tile = TileId::END;
@@ -34,16 +30,14 @@ struct CellRenderData
         Color color_bg = colors::black();
 };
 
-struct InputData
-{
+struct InputData {
         int key {-1};
         bool is_shift_held {false};
         bool is_ctrl_held {false};
         bool is_alt_held {false};
 };
 
-namespace io
-{
+namespace io {
 
 void init();
 void cleanup();

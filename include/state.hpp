@@ -10,8 +10,7 @@
 #include <memory>
 #include <vector>
 
-enum class StateId
-{
+enum class StateId {
         browse_highscore_entry,
         browse_spells,
         config,
@@ -37,8 +36,7 @@ enum class StateId
         view_minimap
 };
 
-class State
-{
+class State {
 public:
         virtual ~State() = default;
 
@@ -97,8 +95,7 @@ private:
         bool m_has_started {false};
 };
 
-namespace states
-{
+namespace states {
 
 void init();
 

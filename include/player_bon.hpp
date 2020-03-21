@@ -14,18 +14,13 @@
 
 #include "global.hpp"
 
-
-namespace actor
-{
+namespace actor {
 struct ActorData;
 } // namespace actor
 
-
 struct ColoredString;
 
-
-enum class Trait
-{
+enum class Trait {
         // Common (except some traits can be blocked for certain backgrounds)
         adept_melee,
         expert_melee,
@@ -76,8 +71,7 @@ enum class Trait
         END
 };
 
-enum class Bg
-{
+enum class Bg {
         ghoul,
         occultist,
         rogue,
@@ -86,8 +80,7 @@ enum class Bg
         END
 };
 
-enum class OccultistDomain
-{
+enum class OccultistDomain {
         clairvoyant,
         enchanter,
         invoker,
@@ -97,16 +90,12 @@ enum class OccultistDomain
         END
 };
 
+namespace player_bon {
 
-namespace player_bon
-{
-
-struct TraitLogEntry
-{
+struct TraitLogEntry {
         Trait trait_id {Trait::END};
         int clvl_picked = 0;
 };
-
 
 void init();
 

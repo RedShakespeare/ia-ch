@@ -10,15 +10,12 @@
 #include "global.hpp"
 #include "pos.hpp"
 
-
-namespace actor
-{
+namespace actor {
 class Actor;
 } // namespace actor
 
-template<typename T>
+template <typename T>
 class Array2;
-
 
 void teleport(
         actor::Actor& actor,

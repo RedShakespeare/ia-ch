@@ -33,27 +33,27 @@ TEST_CASE("fov")
 
         SECTION("Not blocked")
         {
-                REQUIRE(!fov.at(x    , y    ).is_blocked_hard);
-                REQUIRE(!fov.at(x + 1, y    ).is_blocked_hard);
-                REQUIRE(!fov.at(x - 1, y    ).is_blocked_hard);
-                REQUIRE(!fov.at(x    , y + 1).is_blocked_hard);
-                REQUIRE(!fov.at(x    , y - 1).is_blocked_hard);
+                REQUIRE(!fov.at(x, y).is_blocked_hard);
+                REQUIRE(!fov.at(x + 1, y).is_blocked_hard);
+                REQUIRE(!fov.at(x - 1, y).is_blocked_hard);
+                REQUIRE(!fov.at(x, y + 1).is_blocked_hard);
+                REQUIRE(!fov.at(x, y - 1).is_blocked_hard);
                 REQUIRE(!fov.at(x + 2, y + 2).is_blocked_hard);
                 REQUIRE(!fov.at(x - 2, y + 2).is_blocked_hard);
                 REQUIRE(!fov.at(x + 2, y - 2).is_blocked_hard);
                 REQUIRE(!fov.at(x - 2, y - 2).is_blocked_hard);
-                REQUIRE(!fov.at(x + r, y    ).is_blocked_hard);
-                REQUIRE(!fov.at(x - r, y    ).is_blocked_hard);
-                REQUIRE(!fov.at(x    , y + r).is_blocked_hard);
-                REQUIRE(!fov.at(x    , y - r).is_blocked_hard);
+                REQUIRE(!fov.at(x + r, y).is_blocked_hard);
+                REQUIRE(!fov.at(x - r, y).is_blocked_hard);
+                REQUIRE(!fov.at(x, y + r).is_blocked_hard);
+                REQUIRE(!fov.at(x, y - r).is_blocked_hard);
         }
 
         SECTION("Blocked due to outside FOV radius")
         {
-                REQUIRE(fov.at(x + r + 1, y        ).is_blocked_hard);
-                REQUIRE(fov.at(x - r - 1, y        ).is_blocked_hard);
-                REQUIRE(fov.at(x        , y + r + 1).is_blocked_hard);
-                REQUIRE(fov.at(x        , y - r - 1).is_blocked_hard);
+                REQUIRE(fov.at(x + r + 1, y).is_blocked_hard);
+                REQUIRE(fov.at(x - r - 1, y).is_blocked_hard);
+                REQUIRE(fov.at(x, y + r + 1).is_blocked_hard);
+                REQUIRE(fov.at(x, y - r - 1).is_blocked_hard);
         }
 
         SECTION("Blocked in corners of FOV")

@@ -14,53 +14,45 @@
 #include "global.hpp"
 #include "rect.hpp"
 
-
 class Prop;
 
-
-enum class ExplType
-{
+enum class ExplType {
         expl,
         apply_prop
 };
 
-enum class EmitExplSnd
-{
+enum class EmitExplSnd {
         no,
         yes
 };
 
-enum class ExplExclCenter
-{
+enum class ExplExclCenter {
         no,
         yes
 };
 
-enum class ExplIsGas
-{
+enum class ExplIsGas {
         no,
         yes
 };
 
+namespace explosion {
 
-namespace explosion
-{
-
-// TODO: The signature of this function is really ugly! add a data struct
-// instead to pass as config. Perhaps also a second convenience function which
-// just runs a good old regular explosion.
+// TODO: The signature of this function is really ugly! Do something similar to
+// the Sound class instead.
 
 // NOTE: If "emit_expl_sound" is set to "no", this typically means that the
 // caller should emit a custom sound before running the explosion (e.g. molotov
 // explosion sound).
-void run(const P& origin,
-         ExplType expl_type,
-         EmitExplSnd emit_expl_snd = EmitExplSnd::yes,
-         int radi_change = 0,
-         ExplExclCenter exclude_center = ExplExclCenter::no,
-         std::vector<Prop*> properties_applied = {},
-         Color color_override = Color(),
-         ExplIsGas is_gas = ExplIsGas::no);
+void run(
+        const P& origin,
+        ExplType expl_type,
+        EmitExplSnd emit_expl_snd = EmitExplSnd::yes,
+        int radi_change = 0,
+        ExplExclCenter exclude_center = ExplExclCenter::no,
+        std::vector<Prop*> properties_applied = {},
+        Color color_override = Color(),
+        ExplIsGas is_gas = ExplIsGas::no);
 
 void run_smoke_explosion_at(const P& origin, int radi_change = 0);
 

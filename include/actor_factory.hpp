@@ -9,31 +9,24 @@
 
 #include <vector>
 
-
 struct P;
 struct R;
 
-
-namespace actor
-{
+namespace actor {
 
 class Actor;
 class Mon;
 
 enum class Id;
 
-
-enum class MakeMonAware
-{
+enum class MakeMonAware {
         no,
         yes
 };
 
-struct MonSpawnResult
-{
+struct MonSpawnResult {
 public:
-        MonSpawnResult() 
-                = default;
+        MonSpawnResult() = default;
 
         MonSpawnResult& set_leader(Actor* leader);
 
@@ -41,7 +34,6 @@ public:
 
         std::vector<Mon*> monsters;
 };
-
 
 void delete_all_mon();
 

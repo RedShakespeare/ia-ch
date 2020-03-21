@@ -12,16 +12,14 @@
 #include "browser.hpp"
 #include "state.hpp"
 
-enum class InputMode
-{
+enum class InputMode {
         standard,
         vi_keys,
 
         END
 };
 
-namespace config
-{
+namespace config {
 
 void init();
 
@@ -64,8 +62,7 @@ std::string default_player_name();
 
 } // namespace config
 
-class ConfigState: public State
-{
+class ConfigState : public State {
 public:
         ConfigState();
 

@@ -9,22 +9,17 @@
 
 #include "global.hpp"
 
-
-namespace item
-{
+namespace item {
 class Wpn;
 } // namespace item
 
-namespace actor
-{
+namespace actor {
 class Actor;
 } // namespace actor
 
 struct P;
 
-
-namespace attack
-{
+namespace attack {
 
 // NOTE: Attacker origin is needed since attacker may be a null pointer.
 void melee(

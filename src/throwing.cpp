@@ -36,8 +36,7 @@
 #include "text_format.hpp"
 #include "viewport.hpp"
 
-namespace throwing
-{
+namespace throwing {
 
 void player_throw_lit_explosive(const P& aim_cell)
 {
@@ -56,14 +55,12 @@ void player_throw_lit_explosive(const P& aim_cell)
                         false);
 
         // Remove cells after blocked cells
-        for (size_t i = 1; i < path.size(); ++i)
-        {
+        for (size_t i = 1; i < path.size(); ++i) {
                 const P p = path[i];
 
                 const auto* t = map::g_cells.at(p).terrain;
 
-                if (!t->is_projectile_passable())
-                {
+                if (!t->is_projectile_passable()) {
                         path.resize(i);
                         break;
                 }
@@ -77,17 +74,14 @@ void player_throw_lit_explosive(const P& aim_cell)
         msg_log::add(explosive->str_on_player_throw());
 
         // Render
-        if (path.size() > 1)
-        {
-                const auto  color = explosive->ignited_projectile_color();
+        if (path.size() > 1) {
+                const auto color = explosive->ignited_projectile_color();
 
-                for (const P& p : path)
-                {
+                for (const P& p : path) {
                         states::draw();
 
                         if (map::g_cells.at(p).is_seen_by_player &&
-                            viewport::is_in_view(p))
-                        {
+                            viewport::is_in_view(p)) {
                                 io::draw_symbol(
                                         explosive->tile(),
                                         explosive->character(),
@@ -106,8 +100,7 @@ void player_throw_lit_explosive(const P& aim_cell)
         const auto f_id = map::g_cells.at(end_pos).terrain->id();
 
         if (f_id != terrain::Id::chasm &&
-            f_id != terrain::Id::liquid_deep)
-        {
+            f_id != terrain::Id::liquid_deep) {
                 explosive->on_thrown_ignited_landing(end_pos);
         }
 
@@ -148,18 +141,15 @@ void throw_item(
 
         const std::string item_name_a = item_thrown.name(ItemRefType::a);
 
-        if (&actor_throwing == map::g_player)
-        {
+        if (&actor_throwing == map::g_player) {
                 msg_log::clear();
 
                 msg_log::add("I throw " + item_name_a + ".");
-        }
-        else // Monster throwing
+        } else // Monster throwing
         {
                 const P& p = path.front();
 
-                if (map::g_cells.at(p).is_seen_by_player)
-                {
+                if (map::g_cells.at(p).is_seen_by_player) {
                         const std::string name_the =
                                 text_format::first_to_upper(
                                         actor_throwing.name_the());
@@ -183,8 +173,7 @@ void throw_item(
 
         P drop_pos(-1, -1);
 
-        for (size_t path_idx = 1; path_idx < path.size(); ++path_idx)
-        {
+        for (size_t path_idx = 1; path_idx < path.size(); ++path_idx) {
                 states::draw();
 
                 // Have we gone out of range?
@@ -194,8 +183,7 @@ void throw_item(
 
                         const P current_pos = path[path_idx];
 
-                        if (king_dist(path[0], current_pos) > max_range)
-                        {
+                        if (king_dist(path[0], current_pos) > max_range) {
                                 break;
                         }
                 }
@@ -208,8 +196,7 @@ void throw_item(
 
                 if (actor_here &&
                     ((pos == tgt_pos) ||
-                     (actor_here->m_data->actor_size >= actor::Size::humanoid)))
-                {
+                     (actor_here->m_data->actor_size >= actor::Size::humanoid))) {
                         att_data =
                                 ThrowAttData(
                                         &actor_throwing,
@@ -218,8 +205,7 @@ void throw_item(
                                         pos,
                                         item_thrown);
 
-                        if (att_data.att_result >= ActionResult::success)
-                        {
+                        if (att_data.att_result >= ActionResult::success) {
                                 const bool is_potion =
                                         item_thrown_data.type ==
                                         ItemType::potion;
@@ -227,8 +213,7 @@ void throw_item(
                                 const bool player_see_cell =
                                         map::g_cells.at(pos).is_seen_by_player;
 
-                                if (player_see_cell)
-                                {
+                                if (player_see_cell) {
                                         const Color hit_color =
                                                 is_potion
                                                 ? item_color
@@ -253,13 +238,12 @@ void throw_item(
 
                                 snd.run();
 
-                                if (player_see_cell)
-                                {
+                                if (player_see_cell) {
                                         const std::string defender_name =
                                                 map::g_player->can_see_actor(
                                                         *actor_here)
                                                 ? text_format::first_to_upper(
-                                                        actor_here->name_the())
+                                                          actor_here->name_the())
                                                 : "An unseen creature";
 
                                         msg_log::add(
@@ -268,8 +252,7 @@ void throw_item(
                                                 colors::msg_good());
                                 }
 
-                                if (att_data.dmg > 0)
-                                {
+                                if (att_data.dmg > 0) {
                                         actor::hit(
                                                 *actor_here,
                                                 att_data.dmg,
@@ -289,8 +272,7 @@ void throw_item(
                                 // via "on_ranged_hit" called above? It would be
                                 // good to make the throwing code more generic,
                                 // it should not know about potions!
-                                if (is_potion)
-                                {
+                                if (is_potion) {
                                         auto* const potion =
                                                 static_cast<potion::Potion*>(
                                                         &item_thrown);
@@ -312,14 +294,13 @@ void throw_item(
 
                                 const bool always_break_on_throw =
                                         item_thrown_data.ranged
-                                        .always_break_on_throw;
+                                                .always_break_on_throw;
 
                                 const bool is_throwing_wpn =
                                         item_thrown_data.type ==
                                         ItemType::throwing_wpn;
 
-                                if (!always_break_on_throw && is_throwing_wpn)
-                                {
+                                if (!always_break_on_throw && is_throwing_wpn) {
                                         break_item_one_in_n = 4;
                                 }
 
@@ -329,8 +310,7 @@ void throw_item(
 
                 const auto* terrain_here = map::g_cells.at(pos).terrain;
 
-                if (!terrain_here->is_projectile_passable())
-                {
+                if (!terrain_here->is_projectile_passable()) {
                         // Drop item before the wall, not on the wall
                         drop_pos = path[path_idx - 1];
 
@@ -338,8 +318,7 @@ void throw_item(
                 }
 
                 if (map::g_cells.at(pos).is_seen_by_player &&
-                    viewport::is_in_view(pos))
-                {
+                    viewport::is_in_view(pos)) {
                         io::draw_symbol(
                                 item_thrown.tile(),
                                 item_thrown.character(),
@@ -353,15 +332,13 @@ void throw_item(
                 }
 
                 if ((pos == tgt_pos) &&
-                    (att_data.aim_lvl == actor::Size::floor))
-                {
+                    (att_data.aim_lvl == actor::Size::floor)) {
                         break;
                 }
         } // path loop
 
         // If potion, collide it on the landscape
-        if (item_thrown_data.type == ItemType::potion)
-        {
+        if (item_thrown_data.type == ItemType::potion) {
                 const Color hit_color = item_color;
 
                 io::draw_blast_at_seen_cells({pos}, hit_color);
@@ -398,11 +375,9 @@ void throw_item(
 
         if (item_thrown.data().ranged.always_break_on_throw ||
             ((break_item_one_in_n != -1) &&
-             rnd::one_in(break_item_one_in_n)))
-        {
+             rnd::one_in(break_item_one_in_n))) {
                 delete &item_thrown;
-        }
-        else // Not destroyed
+        } else // Not destroyed
         {
                 item_drop::drop_item_on_map(drop_pos, item_thrown);
         }
@@ -410,8 +385,7 @@ void throw_item(
         auto is_noisy_matl = [](const Matl matl) {
                 bool is_noisy = false;
 
-                switch (matl)
-                {
+                switch (matl) {
                 case Matl::empty:
                         is_noisy = false;
                         break;
@@ -444,8 +418,7 @@ void throw_item(
                 return is_noisy;
         };
 
-        if (!is_actor_hit)
-        {
+        if (!is_actor_hit) {
                 const Matl matl_at_last_pos =
                         map::g_cells.at(pos).terrain->matl();
 
@@ -453,8 +426,7 @@ void throw_item(
                         map::g_cells.at(drop_pos).terrain->matl();
 
                 if (is_noisy_matl(matl_at_last_pos) ||
-                    is_noisy_matl(matl_at_drop_pos))
-                {
+                    is_noisy_matl(matl_at_drop_pos)) {
                         // OK, run the sound that we set up earlier
                         snd.run();
                 }

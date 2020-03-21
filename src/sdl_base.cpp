@@ -17,12 +17,9 @@
 #include "init.hpp"
 #include "version.hpp"
 
-
 static bool s_is_inited = false;
 
-
-namespace sdl_base
-{
+namespace sdl_base {
 
 void init()
 {
@@ -32,8 +29,7 @@ void init()
 
         s_is_inited = true;
 
-        if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO | SDL_INIT_EVENTS) == -1)
-        {
+        if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO | SDL_INIT_EVENTS) == -1) {
                 TRACE_ERROR_RELEASE << "Failed to init SDL"
                                     << std::endl
                                     << SDL_GetError()
@@ -42,8 +38,7 @@ void init()
                 PANIC;
         }
 
-        if (IMG_Init(IMG_INIT_PNG) == -1)
-        {
+        if (IMG_Init(IMG_INIT_PNG) == -1) {
                 TRACE_ERROR_RELEASE << "Failed to init SDL_image"
                                     << std::endl
                                     << SDL_GetError()
@@ -64,8 +59,7 @@ void init()
                         audio_channels,
                         audio_buffers);
 
-        if (result == -1)
-        {
+        if (result == -1) {
                 TRACE_ERROR_RELEASE << "Failed to init SDL_mixer"
                                     << std::endl
                                     << SDL_GetError()
@@ -81,8 +75,7 @@ void init()
 
 void cleanup()
 {
-        if (!s_is_inited)
-        {
+        if (!s_is_inited) {
                 return;
         }
 
@@ -99,22 +92,17 @@ void cleanup()
 
 void sleep(const uint32_t duration)
 {
-        if (config::is_bot_playing())
-        {
+        if (config::is_bot_playing()) {
                 return;
         }
 
-        if (duration == 1)
-        {
+        if (duration == 1) {
                 SDL_Delay(duration);
-        }
-        else
-        {
+        } else {
                 // Duration longer than 1 ms
                 const Uint32 wait_until = SDL_GetTicks() + duration;
 
-                while (SDL_GetTicks() < wait_until)
-                {
+                while (SDL_GetTicks() < wait_until) {
                         SDL_PumpEvents();
                 }
         }
@@ -124,20 +112,17 @@ std::string sdl_pref_dir()
 {
         std::string version_str;
 
-        if (version_info::g_version_str.empty())
-        {
+        if (version_info::g_version_str.empty()) {
                 version_str = version_info::read_git_sha1_str_from_file();
-        }
-        else
-        {
+        } else {
                 version_str = version_info::g_version_str;
         }
 
         const auto path_ptr =
                 // NOTE: This is somewhat of a hack, see the function arguments
                 SDL_GetPrefPath(
-                        "infra_arcana",         // "Organization"
-                        version_str.c_str());   // "Application"
+                        "infra_arcana", // "Organization"
+                        version_str.c_str()); // "Application"
 
         const std::string path_str = path_ptr;
 

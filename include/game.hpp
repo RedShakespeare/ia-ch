@@ -14,15 +14,11 @@
 #include "state.hpp"
 #include "time.hpp"
 
-
-namespace actor
-{
+namespace actor {
 class Actor;
 } // namespace actor
 
-
-struct HistoryEvent
-{
+struct HistoryEvent {
         HistoryEvent(const std::string history_msg, const int turn_nr) :
                 msg(history_msg),
                 turn(turn_nr) {}
@@ -31,8 +27,7 @@ struct HistoryEvent
         const int turn;
 };
 
-namespace game
-{
+namespace game {
 
 void init();
 
@@ -68,12 +63,12 @@ const std::vector<HistoryEvent>& history();
 // -----------------------------------------------------------------------------
 // Game state
 // -----------------------------------------------------------------------------
-class GameState: public State
-{
+class GameState : public State {
 public:
         GameState(GameEntryMode entry_mode) :
-                
-                m_entry_mode(entry_mode) {}
+
+                m_entry_mode(entry_mode)
+        {}
 
         void on_start() override;
 
@@ -92,11 +87,9 @@ private:
 // -----------------------------------------------------------------------------
 // Win game state
 // -----------------------------------------------------------------------------
-class WinGameState: public State
-{
+class WinGameState : public State {
 public:
-        WinGameState() 
-                = default;
+        WinGameState() = default;
 
         void draw() override;
 

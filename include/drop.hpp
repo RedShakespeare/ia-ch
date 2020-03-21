@@ -9,22 +9,17 @@
 
 #include "global.hpp"
 
-
-namespace item
-{
+namespace item {
 class Item;
 } // namespace item
 
-namespace actor
-{
+namespace actor {
 class Actor;
 } // namespace actor
 
 struct P;
 
-
-namespace item_drop
-{
+namespace item_drop {
 
 // This function places the item as close to the origin as possible, but never
 // on top of other items, unless they can be stacked.

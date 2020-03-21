@@ -9,8 +9,7 @@
 
 #include <string>
 
-namespace saving
-{
+namespace saving {
 
 void init();
 

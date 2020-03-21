@@ -8,17 +8,11 @@
 
 std::string DmgRange::str_plus() const
 {
-        if (m_plus == 0)
-        {
+        if (m_plus == 0) {
                 return "";
-        }
-        else if (m_plus > 0)
-        {
+        } else if (m_plus > 0) {
                 return "+" + std::to_string(m_plus);
-        }
-        else
-        {
+        } else {
                 return "-" + std::to_string(m_plus);
         }
-
 }

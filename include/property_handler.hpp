@@ -16,44 +16,37 @@
 #include "property.hpp"
 #include "property_data.hpp"
 
-
-namespace item
-{
+namespace item {
 class Item;
 class Wpn;
 } // namespace item
 
-namespace actor
-{
+namespace actor {
 class Actor;
 } // namespace actor
 
 struct P;
 
-
-enum class PropEndAllowCallEndHook
-{
+enum class PropEndAllowCallEndHook {
         no,
         yes
 };
 
-enum class PropEndAllowMsg
-{
+enum class PropEndAllowMsg {
         no,
         yes
 };
 
-enum class PropEndAllowHistoricMsg
-{
+enum class PropEndAllowHistoricMsg {
         no,
         yes
 };
 
-struct PropTextListEntry
-{
+struct PropTextListEntry {
         PropTextListEntry() :
 
-                prop(nullptr) {}
+                prop(nullptr)
+        {}
 
         ColoredString title;
 
@@ -62,8 +55,7 @@ struct PropTextListEntry
         const Prop* prop;
 };
 
-struct PropEndConfig
-{
+struct PropEndConfig {
         PropEndConfig() = default;
 
         PropEndConfig(
@@ -85,8 +77,7 @@ struct PropEndConfig
 };
 
 // Each actor has an instance of this
-class PropHandler
-{
+class PropHandler {
 public:
         PropHandler(actor::Actor* owner);
 
@@ -216,7 +207,7 @@ private:
         void incr_prop_count(PropId id);
         void decr_prop_count(PropId id);
 
-        std::vector< std::unique_ptr<Prop> > m_props;
+        std::vector<std::unique_ptr<Prop>> m_props;
 
         // This array is only used as an optimization when requesting which
         // properties are currently active (see the "has()" method above).

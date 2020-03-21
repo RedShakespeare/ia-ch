@@ -15,17 +15,19 @@ void assert_impl(
         const int line,
         const char* func)
 {
-        if (!check)
-        {
+        if (!check) {
                 std::cerr << std::endl
                           << file << ", "
                           << line << ", "
                           << func << "():"
                           << std::endl
-                          << std::endl << "*** ASSERTION FAILED! ***"
                           << std::endl
-                          << std::endl << "Check that failed:"
-                          << std::endl << "\"" << check_str << "\""
+                          << "*** ASSERTION FAILED! ***"
+                          << std::endl
+                          << std::endl
+                          << "Check that failed:"
+                          << std::endl
+                          << "\"" << check_str << "\""
                           << std::endl
                           << std::endl;
 

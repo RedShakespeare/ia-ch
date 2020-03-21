@@ -29,17 +29,14 @@ int main(int argc, char** argv)
         (void)argc;
         (void)argv;
 #else // NDEBUG
-        for (int arg_nr = 0; arg_nr < argc; ++arg_nr)
-        {
+        for (int arg_nr = 0; arg_nr < argc; ++arg_nr) {
                 const std::string arg_str = std::string(argv[arg_nr]);
 
-                if (arg_str == "--demo-mapgen")
-                {
+                if (arg_str == "--demo-mapgen") {
                         init::g_is_demo_mapgen = true;
                 }
 
-                if (arg_str == "--bot")
-                {
+                if (arg_str == "--bot") {
                         config::toggle_bot_playing();
                 }
         }
@@ -52,12 +49,10 @@ int main(int argc, char** argv)
         states::push(std::move(main_menu_state));
 
         // Loop while there is at least one state
-        while (!states::is_empty())
-        {
+        while (!states::is_empty()) {
                 states::start();
 
-                if (states::is_empty())
-                {
+                if (states::is_empty()) {
                         break;
                 }
 

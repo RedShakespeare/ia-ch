@@ -23,24 +23,19 @@ int AbilityValues::val(
 {
         int ret = m_ability_list[(size_t)id];
 
-        if (actor.is_player())
-        {
+        if (actor.is_player()) {
                 ASSERT(ret == 0);
         }
 
-        if (is_affected_by_props)
-        {
+        if (is_affected_by_props) {
                 ret += actor.m_properties.ability_mod(id);
         }
 
-        if (actor.is_player())
-        {
+        if (actor.is_player()) {
                 // TODO: This should probably also be included for monsters,
                 // especially if they should be able to wear armor
-                for (const InvSlot& slot : actor.m_inv.m_slots)
-                {
-                        if (!slot.item)
-                        {
+                for (const InvSlot& slot : actor.m_inv.m_slots) {
+                        if (!slot.item) {
                                 continue;
                         }
 
@@ -49,100 +44,76 @@ int AbilityValues::val(
                         ret += d.ability_mods_while_equipped[(size_t)id];
                 }
 
-                switch (id)
-                {
-                case AbilityId::searching:
-                {
+                switch (id) {
+                case AbilityId::searching: {
                         ret += 10;
 
-                        if (player_bon::bg() == Bg::rogue)
-                        {
+                        if (player_bon::bg() == Bg::rogue) {
                                 ret += 10;
                         }
-                }
-                break;
+                } break;
 
-                case AbilityId::melee:
-                {
+                case AbilityId::melee: {
                         ret += 60;
 
-                        if (player_bon::has_trait(Trait::adept_melee))
-                        {
+                        if (player_bon::has_trait(Trait::adept_melee)) {
                                 ret += 10;
                         }
 
-                        if (player_bon::has_trait(Trait::expert_melee))
-                        {
+                        if (player_bon::has_trait(Trait::expert_melee)) {
                                 ret += 10;
                         }
 
-                        if (player_bon::has_trait(Trait::master_melee))
-                        {
+                        if (player_bon::has_trait(Trait::master_melee)) {
                                 ret += 10;
                         }
-                }
-                break;
+                } break;
 
-                case AbilityId::ranged:
-                {
+                case AbilityId::ranged: {
                         ret += 70;
 
-                        if (player_bon::has_trait(Trait::adept_marksman))
-                        {
+                        if (player_bon::has_trait(Trait::adept_marksman)) {
                                 ret += 10;
                         }
 
-                        if (player_bon::has_trait(Trait::expert_marksman))
-                        {
+                        if (player_bon::has_trait(Trait::expert_marksman)) {
                                 ret += 10;
                         }
 
-                        if (player_bon::has_trait(Trait::expert_marksman))
-                        {
+                        if (player_bon::has_trait(Trait::expert_marksman)) {
                                 ret += 10;
                         }
 
-                        if (player_bon::bg() == Bg::ghoul)
-                        {
+                        if (player_bon::bg() == Bg::ghoul) {
                                 ret -= 15;
                         }
-                }
-                break;
+                } break;
 
-                case AbilityId::dodging:
-                {
-                        if (player_bon::has_trait(Trait::dexterous))
-                        {
+                case AbilityId::dodging: {
+                        if (player_bon::has_trait(Trait::dexterous)) {
                                 ret += 25;
                         }
 
-                        if (player_bon::has_trait(Trait::lithe))
-                        {
+                        if (player_bon::has_trait(Trait::lithe)) {
                                 ret += 25;
                         }
-                }
-                break;
+                } break;
 
-                case AbilityId::stealth:
-                {
-                        if (player_bon::has_trait(Trait::stealthy))
-                        {
+                case AbilityId::stealth: {
+                        if (player_bon::has_trait(Trait::stealthy)) {
                                 ret += 45;
                         }
 
-                        if (player_bon::has_trait(Trait::imperceptible))
-                        {
+                        if (player_bon::has_trait(Trait::imperceptible)) {
                                 ret += 45;
                         }
-                }
-                break;
+                } break;
 
                 case AbilityId::END:
                         break;
                 }
 
-                if (id == AbilityId::searching)
-                {
+                if (id == AbilityId::searching) {
                         // Searching must ALWAYS be at least 1, to avoid
                         // trapping the player
                         ret = std::max(1, ret);
@@ -156,8 +127,7 @@ int AbilityValues::val(
 
 void AbilityValues::reset()
 {
-        for (size_t i = 0; i < (size_t)AbilityId::END; ++i)
-        {
+        for (size_t i = 0; i < (size_t)AbilityId::END; ++i) {
                 m_ability_list[i] = 0;
         }
 }
@@ -172,8 +142,7 @@ void AbilityValues::change_val(const AbilityId ability, const int change)
         m_ability_list[(size_t)ability] += change;
 }
 
-namespace ability_roll
-{
+namespace ability_roll {
 
 ActionResult roll(const int skill_value)
 {
@@ -205,28 +174,23 @@ ActionResult roll(const int skill_value)
         // NOTE: We check critical success and fail first, since they should be
         // completely unaffected by skill values - they can always happen, and
         // always have the same chance to happen, regardless of skills
-        if (roll <= succ_cri_lmt)
-        {
+        if (roll <= succ_cri_lmt) {
                 return ActionResult::success_critical;
         }
 
-        if (roll > fail_big_lmt)
-        {
+        if (roll > fail_big_lmt) {
                 return ActionResult::fail_critical;
         }
 
-        if (roll <= succ_big_lmt)
-        {
+        if (roll <= succ_big_lmt) {
                 return ActionResult::success_big;
         }
 
-        if (roll <= succ_nrm_lmt)
-        {
+        if (roll <= succ_nrm_lmt) {
                 return ActionResult::success;
         }
 
-        if (roll <= fail_nrm_lmt)
-        {
+        if (roll <= fail_nrm_lmt) {
                 return ActionResult::fail;
         }
 

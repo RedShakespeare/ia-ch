@@ -12,8 +12,7 @@
 
 #include "audio.hpp"
 
-namespace popup
-{
+namespace popup {
 
 void msg(
         const std::string& msg,

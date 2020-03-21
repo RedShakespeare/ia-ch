@@ -11,8 +11,7 @@
 #include "misc.hpp"
 #include "terrain.hpp"
 
-namespace mapgen
-{
+namespace mapgen {
 
 void reserve_river(Region regions[3][3])
 {
@@ -25,13 +24,12 @@ void reserve_river(Region regions[3][3])
         const int reserved_padding = 2;
 
         auto init_room_rect = [&](
-                int& len0,
-                int& len1,
-                int& breadth0,
-                int& breadth1,
-                const P & reg0,
-                const P & reg2) {
-
+                                      int& len0,
+                                      int& len1,
+                                      int& breadth0,
+                                      int& breadth1,
+                                      const P& reg0,
+                                      const P& reg2) {
                 const R regions_tot_rect(
                         regions[reg0.x][reg0.y].r.p0,
                         regions[reg2.x][reg2.y].r.p1);
@@ -55,8 +53,7 @@ void reserve_river(Region regions[3][3])
 
         const Axis axis = rnd::coin_toss() ? Axis::hor : Axis::ver;
 
-        if (axis == Axis::hor)
-        {
+        if (axis == Axis::hor) {
                 init_room_rect(
                         room_rect.p0.x,
                         room_rect.p1.x,
@@ -64,8 +61,7 @@ void reserve_river(Region regions[3][3])
                         room_rect.p1.y,
                         P(0, 1),
                         P(2, 1));
-        }
-        else // Vertical
+        } else // Vertical
         {
                 init_room_rect(
                         room_rect.p0.y,
@@ -86,11 +82,9 @@ void reserve_river(Region regions[3][3])
 
         river_region->is_free = false;
 
-        if (axis == Axis::hor)
-        {
+        if (axis == Axis::hor) {
                 regions[1][1] = regions[2][1] = *river_region;
-        }
-        else // Vertical
+        } else // Vertical
         {
                 regions[1][1] = regions[1][2] = *river_region;
         }
@@ -98,22 +92,19 @@ void reserve_river(Region regions[3][3])
         map::g_room_list.push_back(room);
 
         auto make = [&](
-                const int x0,
-                const int x1,
-                const int y0,
-                const int y1) {
-
+                            const int x0,
+                            const int x1,
+                            const int y0,
+                            const int y1) {
                 TRACE_VERBOSE << "Reserving river space with floor cells "
-                              <<  "x0: " << x0
+                              << "x0: " << x0
                               << " x1: " << x1
                               << " y0: " << y0
                               << " y1: " << y1
-                              << std:: endl;
+                              << std::endl;
 
-                for (int x = x0; x <= x1; ++x)
-                {
-                        for (int y = y0; y <= y1; ++y)
-                        {
+                for (int x = x0; x <= x1; ++x) {
+                        for (int y = y0; y <= y1; ++y) {
                                 // Just put floor for now, river terrain will be
                                 // placed later
                                 map::put(new terrain::Floor(P(x, y)));
@@ -122,14 +113,12 @@ void reserve_river(Region regions[3][3])
                 }
         };
 
-        if (axis == Axis::hor)
-        {
+        if (axis == Axis::hor) {
                 make(room_rect.p0.x + 1,
                      room_rect.p1.x - 1,
                      room_rect.p0.y,
                      room_rect.p1.y);
-        }
-        else // Vertical axis
+        } else // Vertical axis
         {
                 make(room_rect.p0.x,
                      room_rect.p1.x,

@@ -14,18 +14,14 @@
 #include "global.hpp"
 #include "insanity.hpp"
 
-
-namespace item
-{
+namespace item {
 class Explosive;
 class Item;
 class MedicalBag;
 class Wpn;
 } // namespace item
 
-
-enum class Phobia
-{
+enum class Phobia {
         rat,
         spider,
         dog,
@@ -37,15 +33,13 @@ enum class Phobia
         END
 };
 
-enum class Obsession
-{
+enum class Obsession {
         sadism,
         masochism,
         END
 };
 
-enum class ShockSrc
-{
+enum class ShockSrc {
         see_mon,
         use_strange_item,
         cast_intr_spell,
@@ -54,12 +48,9 @@ enum class ShockSrc
         END
 };
 
+namespace actor {
 
-namespace actor
-{
-
-class Player: public Actor
-{
+class Player : public Actor {
 public:
         Player();
         ~Player();
@@ -128,8 +119,8 @@ public:
 
         void add_light_hook(Array2<bool>& light_map) const override;
 
-        void on_log_msg_printed();  // Aborts e.g. searching and quick move
-        void interrupt_actions();   // Aborts e.g. healing
+        void on_log_msg_printed(); // Aborts e.g. searching and quick move
+        void interrupt_actions(); // Aborts e.g. healing
 
         int enc_percent() const;
 

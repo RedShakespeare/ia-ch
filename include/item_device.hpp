@@ -12,12 +12,9 @@
 
 #include "item.hpp"
 
+namespace device {
 
-namespace device
-{
-
-class Device: public item::Item
-{
+class Device : public item::Item {
 public:
         Device(item::ItemData* item_data);
 
@@ -38,8 +35,7 @@ public:
         void identify(Verbose verbose) override;
 };
 
-class StrangeDevice : public Device
-{
+class StrangeDevice : public Device {
 public:
         StrangeDevice(item::ItemData* item_data);
 
@@ -60,8 +56,7 @@ private:
         virtual ConsumeItem run_effect() = 0;
 };
 
-class Blaster : public StrangeDevice
-{
+class Blaster : public StrangeDevice {
 public:
         Blaster(item::ItemData* const item_data) :
                 StrangeDevice(item_data) {}
@@ -71,16 +66,14 @@ public:
 private:
         std::string descr_identified() const override
         {
-                return
-                        "When activated, this device blasts all visible "
-                        "enemies with infernal power.";
+                return "When activated, this device blasts all visible "
+                       "enemies with infernal power.";
         }
 
         ConsumeItem run_effect() override;
 };
 
-class Rejuvenator : public StrangeDevice
-{
+class Rejuvenator : public StrangeDevice {
 public:
         Rejuvenator(item::ItemData* const item_data) :
                 StrangeDevice(item_data) {}
@@ -90,17 +83,15 @@ public:
 private:
         std::string descr_identified() const override
         {
-                return
-                        "When activated, this device heals all wounds and "
-                        "physical maladies. The procedure is very painful and "
-                        "invasive however, and causes great shock to the user.";
+                return "When activated, this device heals all wounds and "
+                       "physical maladies. The procedure is very painful and "
+                       "invasive however, and causes great shock to the user.";
         }
 
         ConsumeItem run_effect() override;
 };
 
-class Translocator : public StrangeDevice
-{
+class Translocator : public StrangeDevice {
 public:
         Translocator(item::ItemData* const item_data) :
                 StrangeDevice(item_data) {}
@@ -110,16 +101,14 @@ public:
 private:
         std::string descr_identified() const override
         {
-                return
-                        "When activated, this device teleports all visible "
-                        "enemies to different locations.";
+                return "When activated, this device teleports all visible "
+                       "enemies to different locations.";
         }
 
         ConsumeItem run_effect() override;
 };
 
-class SentryDrone : public StrangeDevice
-{
+class SentryDrone : public StrangeDevice {
 public:
         SentryDrone(item::ItemData* const item_data) :
                 StrangeDevice(item_data) {}
@@ -129,16 +118,14 @@ public:
 private:
         std::string descr_identified() const override
         {
-                return
-                        "When activated, this device will \"come alive\" and "
-                        "guard the user.";
+                return "When activated, this device will \"come alive\" and "
+                       "guard the user.";
         }
 
         ConsumeItem run_effect() override;
 };
 
-class Deafening : public StrangeDevice
-{
+class Deafening : public StrangeDevice {
 public:
         Deafening(item::ItemData* const item_data) :
                 StrangeDevice(item_data) {}
@@ -148,17 +135,15 @@ public:
 private:
         std::string descr_identified() const override
         {
-                return
-                        "When activated, this device causes temporary deafness "
-                        "in all creatures in a large area (on the whole map), "
-                        "except for the user.";
+                return "When activated, this device causes temporary deafness "
+                       "in all creatures in a large area (on the whole map), "
+                       "except for the user.";
         }
 
         ConsumeItem run_effect() override;
 };
 
-class ForceField : public StrangeDevice
-{
+class ForceField : public StrangeDevice {
 public:
         ForceField(item::ItemData* const item_data) :
                 StrangeDevice(item_data) {}
@@ -168,19 +153,17 @@ public:
 private:
         std::string descr_identified() const override
         {
-                return
-                        "When activated, this device constructs a temporary "
-                        "opaque barrier around the user, blocking all "
-                        "physical matter. The barrier can only be created in "
-                        "empty spaces (i.e. not in spaces occupied by "
-                        "creatures, walls, etc).";
+                return "When activated, this device constructs a temporary "
+                       "opaque barrier around the user, blocking all "
+                       "physical matter. The barrier can only be created in "
+                       "empty spaces (i.e. not in spaces occupied by "
+                       "creatures, walls, etc).";
         }
 
         ConsumeItem run_effect() override;
 };
 
-class Lantern : public Device
-{
+class Lantern : public Device {
 public:
         Lantern(item::ItemData* item_data);
 

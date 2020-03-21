@@ -19,8 +19,7 @@
 #include "msg_log.hpp"
 #include "query.hpp"
 
-namespace item_pickup
-{
+namespace item_pickup {
 
 void try_pick()
 {
@@ -30,8 +29,7 @@ void try_pick()
 
         auto* const item = map::g_cells.at(pos).item;
 
-        if (!item)
-        {
+        if (!item) {
                 msg_log::add("I see nothing to pick up here.");
 
                 return;
@@ -58,8 +56,7 @@ item::Ammo* unload_ranged_wpn(item::Wpn& wpn)
 
         const int nr_ammo_loaded = wpn.m_ammo_loaded;
 
-        if (nr_ammo_loaded == 0)
-        {
+        if (nr_ammo_loaded == 0) {
                 return nullptr;
         }
 
@@ -69,14 +66,11 @@ item::Ammo* unload_ranged_wpn(item::Wpn& wpn)
 
         auto* spawned_ammo = item::make(ammo_id);
 
-        if (ammo_data.type == ItemType::ammo_mag)
-        {
+        if (ammo_data.type == ItemType::ammo_mag) {
                 // Unload a mag
                 static_cast<item::AmmoMag*>(spawned_ammo)->m_ammo =
                         nr_ammo_loaded;
-        }
-        else
-        {
+        } else {
                 // Unload loose ammo
                 spawned_ammo->m_nr_items = nr_ammo_loaded;
         }
@@ -92,14 +86,12 @@ void try_unload_or_pick()
 
         if (item &&
             item->data().ranged.is_ranged_wpn &&
-            !item->data().ranged.has_infinite_ammo)
-        {
+            !item->data().ranged.has_infinite_ammo) {
                 auto* const wpn = static_cast<item::Wpn*>(item);
 
                 auto* const spawned_ammo = unload_ranged_wpn(*wpn);
 
-                if (spawned_ammo)
-                {
+                if (spawned_ammo) {
                         audio::play(SfxId::pickup);
 
                         const std::string name_a =

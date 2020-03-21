@@ -13,22 +13,20 @@
 #include "misc.hpp"
 #include "terrain_pylon.hpp"
 
-namespace mapgen
-{
+namespace mapgen {
 
 void make_pylons_and_levers()
 {
         // Never make Pylons late game (theme)
-        if (map::g_dlvl >= g_dlvl_first_late_game)
-        {
+        if (map::g_dlvl >= g_dlvl_first_late_game) {
                 return;
         }
 
         // Determine number of Pylons to place, by a weighted choice
         std::vector<int> nr_weights = {
                 40, // 0 pylon(s)
-                4,  // 1 -
-                1,  // 2 -
+                4, // 1 -
+                1, // 2 -
         };
 
         const int nr_pylons = rnd::weighted_choice(nr_weights);
@@ -40,18 +38,15 @@ void make_pylons_and_levers()
 
         blocked = map_parsers::expand(blocked, 2);
 
-        for (auto* const actor : game_time::g_actors)
-        {
+        for (auto* const actor : game_time::g_actors) {
                 blocked.at(actor->m_pos) = true;
         }
 
-        for (int i = 0; i < nr_pylons; ++i)
-        {
+        for (int i = 0; i < nr_pylons; ++i) {
                 // Store non-blocked (false) cells in a vector
                 const auto p_bucket = to_vec(blocked, false, blocked.rect());
 
-                if (p_bucket.empty())
-                {
+                if (p_bucket.empty()) {
                         // No position available to place a Pylon - give up
                         return;
                 }
@@ -94,12 +89,9 @@ void make_pylons_and_levers()
                                 map::h() - 1,
                                 pylon_p.y + lever_max_dist);
 
-                        for (int x = x0; x <= x1; ++x)
-                        {
-                                for (int y = y0; y <= y1; ++y)
-                                {
-                                        if (flood.at(x, y) > 0)
-                                        {
+                        for (int x = x0; x <= x1; ++x) {
+                                for (int y = y0; y <= y1; ++y) {
+                                        if (flood.at(x, y) > 0) {
                                                 lever_pos_bucket.emplace_back(
                                                         P(x, y));
                                         }
@@ -107,8 +99,7 @@ void make_pylons_and_levers()
                         }
                 }
 
-                if (lever_pos_bucket.empty())
-                {
+                if (lever_pos_bucket.empty()) {
                         // Cannot place a Lever near this Pylon - too bad, next!
                         continue;
                 }
@@ -149,11 +140,8 @@ void make_pylons_and_levers()
                                 map::h() - 1,
                                 pylon_p.y + min_dist_between);
 
-
-                        for (int x = x0; x <= x1; ++x)
-                        {
-                                for (int y = y0; y <= y1; ++y)
-                                {
+                        for (int x = x0; x <= x1; ++x) {
+                                for (int y = y0; y <= y1; ++y) {
                                         blocked.at(x, y) = true;
                                 }
                         }

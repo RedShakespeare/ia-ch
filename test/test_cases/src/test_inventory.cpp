@@ -31,8 +31,7 @@ TEST_CASE("Properties from item applied and removed for actor")
 
         auto& props = map::g_player->m_properties;
 
-        for (size_t i = 0; i < (size_t)PropId::END; ++i)
-        {
+        for (size_t i = 0; i < (size_t)PropId::END; ++i) {
                 REQUIRE(!props.has((PropId)i));
         }
 
@@ -47,10 +46,8 @@ TEST_CASE("Properties from item applied and removed for actor")
         // Check that the expected properties are applied
         int nr_props = 0;
 
-        for (size_t i = 0u; i < (size_t)PropId::END; ++i)
-        {
-                if (props.has((PropId)i))
-                {
+        for (size_t i = 0u; i < (size_t)PropId::END; ++i) {
+                if (props.has((PropId)i)) {
                         ++nr_props;
                 }
         }
@@ -67,8 +64,7 @@ TEST_CASE("Properties from item applied and removed for actor")
         REQUIRE(inv.backpack_idx(item::Id::armor_asb_suit) != -1);
 
         // Check that the properties are cleared
-        for (int i = 0; i < (int)PropId::END; ++i)
-        {
+        for (int i = 0; i < (int)PropId::END; ++i) {
                 REQUIRE(!props.has((PropId)i));
         }
 
@@ -80,10 +76,8 @@ TEST_CASE("Properties from item applied and removed for actor")
         // Check that the props are applied
         nr_props = 0;
 
-        for (int i = 0; i < (int)PropId::END; ++i)
-        {
-                if (props.has((PropId)i))
-                {
+        for (int i = 0; i < (int)PropId::END; ++i) {
+                if (props.has((PropId)i)) {
                         ++nr_props;
                 }
         }
@@ -107,8 +101,7 @@ TEST_CASE("Properties from item applied and removed for actor")
         REQUIRE(cell.item);
 
         // Check that the properties are cleared
-        for (int i = 0; i < (int)PropId::END; ++i)
-        {
+        for (int i = 0; i < (int)PropId::END; ++i) {
                 REQUIRE(!props.has((PropId)i));
         }
 
@@ -123,10 +116,8 @@ TEST_CASE("Properties from item applied and removed for actor")
         // Check that the properties are applied
         nr_props = 0;
 
-        for (int i = 0; i < (int)PropId::END; ++i)
-        {
-                if (props.has((PropId)i))
-                {
+        for (int i = 0; i < (int)PropId::END; ++i) {
+                if (props.has((PropId)i)) {
                         ++nr_props;
                 }
         }
@@ -138,8 +129,7 @@ TEST_CASE("Properties from item applied and removed for actor")
         REQUIRE(props.has(PropId::r_acid));
 
         // Destroy the asbesthos suit by explosions
-        for (int i = 0; i < 10; ++i)
-        {
+        for (int i = 0; i < 10; ++i) {
                 map::g_player->restore_hp(99999, true /* Restoring above max */);
 
                 explosion::run(map::g_player->m_pos, ExplType::expl);
@@ -150,8 +140,7 @@ TEST_CASE("Properties from item applied and removed for actor")
         REQUIRE(!body_slot.item);
 
         // Check that the properties are cleared
-        for (int i = 0; i < (int)PropId::END; ++i)
-        {
+        for (int i = 0; i < (int)PropId::END; ++i) {
                 REQUIRE(!props.has((PropId)i));
         }
 

@@ -7,22 +7,17 @@
 #ifndef THROWING_HPP
 #define THROWING_HPP
 
-
-namespace item
-{
+namespace item {
 class Item;
 } // namespace item
 
-namespace actor
-{
+namespace actor {
 class Actor;
 } // namespace actor
 
 struct P;
 
-
-namespace throwing
-{
+namespace throwing {
 
 void throw_item(
         actor::Actor& actor_throwing,

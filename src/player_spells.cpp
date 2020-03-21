@@ -33,7 +33,6 @@ static std::vector<Spell*> s_learned_spells;
 
 static SpellSkill s_spell_skills[(size_t)SpellId::END];
 
-
 static void try_cast(Spell* const spell)
 {
         const auto& props = map::g_player->m_properties;
@@ -42,15 +41,13 @@ static void try_cast(Spell* const spell)
                 props.allow_cast_intr_spell_absolute(
                         Verbose::yes);
 
-        if (allow_cast)
-        {
+        if (allow_cast) {
                 allow_cast =
                         allow_cast &&
                         props.allow_speak(Verbose::yes);
         }
 
-        if (!allow_cast)
-        {
+        if (!allow_cast) {
                 return;
         }
 
@@ -60,8 +57,7 @@ static void try_cast(Spell* const spell)
 
         const Range spi_cost_range = spell->spi_cost(skill);
 
-        if (spi_cost_range.max >= map::g_player->m_sp)
-        {
+        if (spi_cost_range.max >= map::g_player->m_sp) {
                 const std::string msg =
                         "Low spirit, try casting spell anyway? " +
                         common_text::g_yes_or_no_hint;
@@ -73,8 +69,7 @@ static void try_cast(Spell* const spell)
                         MorePromptOnMsg::no,
                         CopyToMsgHistory::no);
 
-                if (query::yes_or_no() == BinaryAnswer::no)
-                {
+                if (query::yes_or_no() == BinaryAnswer::no) {
                         msg_log::clear();
 
                         return;
@@ -85,8 +80,7 @@ static void try_cast(Spell* const spell)
 
         msg_log::add("I cast " + spell->name() + "!");
 
-        if (map::g_player->is_alive())
-        {
+        if (map::g_player->is_alive()) {
                 spell->cast(map::g_player, skill, SpellSrc::learned);
         }
 }
@@ -94,8 +88,7 @@ static void try_cast(Spell* const spell)
 // -----------------------------------------------------------------------------
 // player_spells
 // -----------------------------------------------------------------------------
-namespace player_spells
-{
+namespace player_spells {
 
 void init()
 {
@@ -104,15 +97,13 @@ void init()
 
 void cleanup()
 {
-        for (Spell* spell : s_learned_spells)
-        {
+        for (Spell* spell : s_learned_spells) {
                 delete spell;
         }
 
         s_learned_spells.clear();
 
-        for (size_t i = 0; i < (size_t)SpellId::END; ++i)
-        {
+        for (size_t i = 0; i < (size_t)SpellId::END; ++i) {
                 s_spell_skills[i] = (SpellSkill)0;
         }
 }
@@ -121,13 +112,11 @@ void save()
 {
         saving::put_int(s_learned_spells.size());
 
-        for (Spell* s : s_learned_spells)
-        {
+        for (Spell* s : s_learned_spells) {
                 saving::put_int((int)s->id());
         }
 
-        for (size_t i = 0; i < (size_t)SpellId::END; ++i)
-        {
+        for (size_t i = 0; i < (size_t)SpellId::END; ++i) {
                 saving::put_int((int)s_spell_skills[i]);
         }
 }
@@ -136,26 +125,22 @@ void load()
 {
         const int nr_spells = saving::get_int();
 
-        for (int i = 0; i < nr_spells; ++i)
-        {
+        for (int i = 0; i < nr_spells; ++i) {
                 const auto id = (SpellId)saving::get_int();
 
                 s_learned_spells.push_back(
                         spell_factory::make_spell_from_id(id));
         }
 
-        for (size_t i = 0; i < (size_t)SpellId::END; ++i)
-        {
+        for (size_t i = 0; i < (size_t)SpellId::END; ++i) {
                 s_spell_skills[i] = (SpellSkill)saving::get_int();
         }
 }
 
 bool is_spell_learned(const SpellId id)
 {
-        for (auto* s : s_learned_spells)
-        {
-                if (s->id() == id)
-                {
+        for (auto* s : s_learned_spells) {
+                if (s->id() == id) {
                         return true;
                 }
         }
@@ -167,8 +152,7 @@ void learn_spell(const SpellId id, const Verbose verbose)
 {
         ASSERT(id != SpellId::END);
 
-        if (is_spell_learned(id))
-        {
+        if (is_spell_learned(id)) {
                 // Spell already known
                 return;
         }
@@ -180,13 +164,11 @@ void learn_spell(const SpellId id, const Verbose verbose)
         ASSERT(player_can_learn);
 
         // Robustness for release mode
-        if (!player_can_learn)
-        {
+        if (!player_can_learn) {
                 return;
         }
 
-        if (verbose == Verbose::yes)
-        {
+        if (verbose == Verbose::yes) {
                 msg_log::add("I can now cast this incantation from memory.");
         }
 
@@ -197,24 +179,20 @@ void unlearn_spell(const SpellId id, const Verbose verbose)
 {
         ASSERT(id != SpellId::END);
 
-        if (!is_spell_learned(id))
-        {
+        if (!is_spell_learned(id)) {
                 // Spell was already unknown
                 return;
         }
 
         auto spell_iterator = std::begin(s_learned_spells);
 
-        for ( ; spell_iterator != std::end(s_learned_spells); ++spell_iterator)
-        {
-                if ((*spell_iterator)->id() == id)
-                {
+        for (; spell_iterator != std::end(s_learned_spells); ++spell_iterator) {
+                if ((*spell_iterator)->id() == id) {
                         break;
                 }
         }
 
-        if (spell_iterator == std::end(s_learned_spells))
-        {
+        if (spell_iterator == std::end(s_learned_spells)) {
                 return;
         }
 
@@ -222,8 +200,7 @@ void unlearn_spell(const SpellId id, const Verbose verbose)
 
         ASSERT(spell->player_can_learn());
 
-        if (verbose == Verbose::yes)
-        {
+        if (verbose == Verbose::yes) {
                 const auto name = spell->name();
 
                 msg_log::add(
@@ -249,8 +226,7 @@ void incr_spell_skill(const SpellId id)
 
         TRACE << "skill before: " << (int)skill << std::endl;
 
-        if (skill != SpellSkill::master)
-        {
+        if (skill != SpellSkill::master) {
                 skill = (SpellSkill)((int)skill + 1);
         }
 
@@ -261,15 +237,13 @@ SpellSkill spell_skill(const SpellId id)
 {
         ASSERT(id != SpellId::END);
 
-        if (id == SpellId::END)
-        {
+        if (id == SpellId::END) {
                 return SpellSkill::basic;
         }
 
         auto skill = s_spell_skills[(size_t)id];
 
-        if ((skill != SpellSkill::master) && is_player_adj_to_altar())
-        {
+        if ((skill != SpellSkill::master) && is_player_adj_to_altar()) {
                 skill = (SpellSkill)((int)skill + 1);
         }
 
@@ -280,8 +254,7 @@ void set_spell_skill(const SpellId id, const SpellSkill val)
 {
         ASSERT(id != SpellId::END);
 
-        if (id == SpellId::END)
-        {
+        if (id == SpellId::END) {
                 return;
         }
 
@@ -290,12 +263,10 @@ void set_spell_skill(const SpellId id, const SpellSkill val)
 
 bool is_player_adj_to_altar()
 {
-        for (const auto d : dir_utils::g_dir_list)
-        {
+        for (const auto d : dir_utils::g_dir_list) {
                 const auto p = map::g_player->m_pos + d;
 
-                if (map::g_cells.at(p).terrain->id() == terrain::Id::altar)
-                {
+                if (map::g_cells.at(p).terrain->id() == terrain::Id::altar) {
                         return true;
                 }
         }
@@ -310,8 +281,7 @@ bool is_player_adj_to_altar()
 // -----------------------------------------------------------------------------
 void BrowseSpell::on_start()
 {
-        if (s_learned_spells.empty())
-        {
+        if (s_learned_spells.empty()) {
                 // Exit screen
                 states::pop();
 
@@ -336,8 +306,7 @@ void BrowseSpell::draw()
 
         P p(0, 1);
 
-        for (int i = 0; i < nr_spells; ++i)
-        {
+        for (int i = 0; i < nr_spells; ++i) {
                 std::string key_str = "?) ";
 
                 key_str[0] = m_browser.menu_keys()[i];
@@ -379,8 +348,7 @@ void BrowseSpell::draw()
 
                 const size_t fill_size = spi_label_x - p.x - name.size();
 
-                for (size_t ii = 0; ii < fill_size; ++ii)
-                {
+                for (size_t ii = 0; ii < fill_size; ++ii) {
                         fill_str.push_back('.');
                 }
 
@@ -416,7 +384,7 @@ void BrowseSpell::draw()
                 str =
                         (spi_cost.max == 1)
                         ? "1"
-                        : (lower_str +  "-" + upper_str);
+                        : (lower_str + "-" + upper_str);
 
                 io::draw_text(
                         str,
@@ -424,8 +392,7 @@ void BrowseSpell::draw()
                         p,
                         colors::white());
 
-                if (spell->can_be_improved_with_skill())
-                {
+                if (spell->can_be_improved_with_skill()) {
                         p.x = skill_label_x;
 
                         str = "Skill: ";
@@ -438,8 +405,7 @@ void BrowseSpell::draw()
 
                         p.x += str.size();
 
-                        switch (skill)
-                        {
+                        switch (skill) {
                         case SpellSkill::basic:
                                 str = "I";
                                 break;
@@ -460,23 +426,20 @@ void BrowseSpell::draw()
                                 colors::white());
                 }
 
-                if (is_idx_marked)
-                {
+                if (is_idx_marked) {
                         const auto descr =
                                 spell->descr(skill, SpellSrc::learned);
 
                         std::vector<ColoredString> lines;
 
                         lines.reserve(descr.size());
-                        for (const auto& line : descr)
-                        {
+                        for (const auto& line : descr) {
                                 lines.emplace_back(
-                                                line,
-                                                colors::light_white());
+                                        line,
+                                        colors::light_white());
                         }
 
-                        if (!lines.empty())
-                        {
+                        if (!lines.empty()) {
                                 io::draw_descr_box(lines);
                         }
                 }
@@ -494,10 +457,8 @@ void BrowseSpell::update()
                         input,
                         MenuInputMode::scrolling_and_letters);
 
-        switch (action)
-        {
-        case MenuAction::selected:
-        {
+        switch (action) {
+        case MenuAction::selected: {
                 auto* const spell = s_learned_spells[m_browser.y()];
 
                 // Exit screen
@@ -506,17 +467,14 @@ void BrowseSpell::update()
                 try_cast(spell);
 
                 return;
-        }
-        break;
+        } break;
 
         case MenuAction::esc:
-        case MenuAction::space:
-        {
+        case MenuAction::space: {
                 // Exit screen
                 states::pop();
                 return;
-        }
-        break;
+        } break;
 
         default:
                 break;

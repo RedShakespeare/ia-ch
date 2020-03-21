@@ -13,12 +13,9 @@
 #include "spells.hpp"
 #include "state.hpp"
 
-
 class Spell;
 
-
-namespace player_spells
-{
+namespace player_spells {
 
 void init();
 void cleanup();
@@ -42,11 +39,9 @@ bool is_player_adj_to_altar();
 
 } // namespace player_spells
 
-class BrowseSpell: public State
-{
+class BrowseSpell : public State {
 public:
-        BrowseSpell()
-                = default;
+        BrowseSpell() = default;
 
         void on_start() override;
 

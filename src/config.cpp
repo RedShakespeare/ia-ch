@@ -27,8 +27,7 @@
 // -----------------------------------------------------------------------------
 // Config
 // -----------------------------------------------------------------------------
-namespace config
-{
+namespace config {
 
 static const std::vector<std::string> font_image_names = {
         "8x12_DOS.png",
@@ -81,8 +80,7 @@ static P parse_dims_from_font_name(std::string font_name)
 {
         char ch = font_name.front();
 
-        while (ch < '0' || ch > '9')
-        {
+        while (ch < '0' || ch > '9') {
                 font_name.erase(begin(font_name));
 
                 ch = font_name.front();
@@ -90,8 +88,7 @@ static P parse_dims_from_font_name(std::string font_name)
 
         std::string w_str;
 
-        while (ch != 'x')
-        {
+        while (ch != 'x') {
                 font_name.erase(begin(font_name));
 
                 w_str += ch;
@@ -105,8 +102,7 @@ static P parse_dims_from_font_name(std::string font_name)
 
         std::string h_str;
 
-        while (ch != '_' && ch != '.')
-        {
+        while (ch != '_' && ch != '.') {
                 font_name.erase(begin(font_name));
 
                 h_str += ch;
@@ -127,8 +123,7 @@ static void update_render_dims()
 {
         TRACE_FUNC_BEGIN;
 
-        if (s_is_tiles_mode)
-        {
+        if (s_is_tiles_mode) {
                 // TODO: Temporary solution
                 const P font_dims = parse_dims_from_font_name(s_font_name);
 
@@ -136,9 +131,7 @@ static void update_render_dims()
                 s_gui_cell_px_h = font_dims.y;
                 s_map_cell_px_w = 24;
                 s_map_cell_px_h = 24;
-        }
-        else
-        {
+        } else {
                 const P font_dims = parse_dims_from_font_name(s_font_name);
 
                 s_gui_cell_px_w = s_map_cell_px_w = font_dims.x;
@@ -209,40 +202,34 @@ static void set_default_variables()
 
 static void player_sets_option(const MenuBrowser& browser)
 {
-        switch (browser.y())
-        {
+        switch (browser.y()) {
         case 0: // Input mode
         {
                 const auto input_mode_nr = (int)s_input_mode;
 
                 const auto nr_input_modes = (int)InputMode::END;
 
-                s_input_mode = (InputMode)
-                        ((input_mode_nr + 1) % nr_input_modes);
-        }
-        break;
+                s_input_mode = (InputMode)((input_mode_nr + 1) % nr_input_modes);
+        } break;
 
         case 1: // Audio
         {
                 s_is_audio_enabled = !s_is_audio_enabled;
 
                 audio::init();
-        }
-        break;
+        } break;
 
         case 2: // Ambient audio
         {
                 s_is_amb_audio_enabled = !s_is_amb_audio_enabled;
 
                 audio::init();
-        }
-        break;
+        } break;
 
         case 3: // Ambient audio
         {
                 s_is_amb_audio_preloaded = !s_is_amb_audio_preloaded;
-        }
-        break;
+        } break;
 
         case 4: // Tiles mode
         {
@@ -273,20 +260,15 @@ static void player_sets_option(const MenuBrowser& browser)
                 sdl_base::init();
 
                 io::init();
-        }
-        break;
+        } break;
 
         case 5: // Font
         {
                 // Set next font
-                for (size_t i = 0; i < font_image_names.size(); ++i)
-                {
-                        if (s_font_name == font_image_names[i])
-                        {
+                for (size_t i = 0; i < font_image_names.size(); ++i) {
+                        if (s_font_name == font_image_names[i]) {
                                 s_font_name =
-                                        (i == (font_image_names.size() - 1)) ?
-                                        font_image_names.front() :
-                                        font_image_names[i + 1];
+                                        (i == (font_image_names.size() - 1)) ? font_image_names.front() : font_image_names[i + 1];
                                 break;
                         }
                 }
@@ -294,15 +276,12 @@ static void player_sets_option(const MenuBrowser& browser)
                 update_render_dims();
 
                 // In tiles mode, find a font with matching size
-                if (s_is_tiles_mode)
-                {
+                if (s_is_tiles_mode) {
                         // Find index of currently used font
                         size_t font_idx = 0;
 
-                        for (; font_idx < font_image_names.size(); ++font_idx)
-                        {
-                                if (s_font_name == font_image_names[font_idx])
-                                {
+                        for (; font_idx < font_image_names.size(); ++font_idx) {
+                                if (s_font_name == font_image_names[font_idx]) {
                                         break;
                                 }
                         }
@@ -324,97 +303,82 @@ static void player_sets_option(const MenuBrowser& browser)
                 sdl_base::init();
 
                 io::init();
-        }
-        break;
+        } break;
 
         case 6: // Fullscreen
         {
                 set_fullscreen(!s_is_fullscreen);
 
                 io::on_fullscreen_toggled();
-        }
-        break;
+        } break;
 
         case 7: // Use native resolution in fullscreen
         {
                 s_is_native_resolution_fullscreen =
                         !s_is_native_resolution_fullscreen;
 
-                if (s_is_fullscreen)
-                {
+                if (s_is_fullscreen) {
                         io::on_fullscreen_toggled();
                 }
-        }
-        break;
+        } break;
 
         case 8: // Tiles mode wall symbol
         {
                 s_is_tiles_wall_full_square = !s_is_tiles_wall_full_square;
-        }
-        break;
+        } break;
 
         case 9: // Text mode wall symbol
         {
                 s_is_text_mode_wall_full_square =
                         !s_is_text_mode_wall_full_square;
-        }
-        break;
+        } break;
 
         case 10: // Skip intro level
         {
                 s_is_intro_lvl_skipped = !s_is_intro_lvl_skipped;
-        }
-        break;
+        } break;
 
         case 11: // Skip intro popup
         {
                 s_is_intro_popup_skipped = !s_is_intro_popup_skipped;
-        }
-        break;
+        } break;
 
         case 12: // Confirm "more" with any key
         {
                 s_is_any_key_confirm_more = !s_is_any_key_confirm_more;
-        }
-        break;
+        } break;
 
         case 13: // Display hints
         {
                 s_display_hints = !s_display_hints;
 
                 hints::init();
-        }
-        break;
+        } break;
 
         case 14: // Always warn when a new monster appears
         {
                 s_always_warn_new_mon = !s_always_warn_new_mon;
-        }
-        break;
+        } break;
 
         case 15: // Print warning when lighting explovies
         {
                 s_is_light_explosive_prompt = !s_is_light_explosive_prompt;
-        }
-        break;
+        } break;
 
         case 16: // Print warning when drinking known malign potions
         {
                 s_is_drink_malign_pot_prompt = !s_is_drink_malign_pot_prompt;
-        }
-        break;
+        } break;
 
         case 17: // Print warning when melee attacking with ranged weapons
         {
                 s_is_ranged_wpn_meleee_prompt = !s_is_ranged_wpn_meleee_prompt;
-        }
-        break;
+        } break;
 
         case 18: // Ranged weapon auto reload
         {
                 s_is_ranged_wpn_auto_reload = !s_is_ranged_wpn_auto_reload;
-        }
-        break;
+        } break;
 
         case 19: // Projectile delay
         {
@@ -428,12 +392,10 @@ static void player_sets_option(const MenuBrowser& browser)
                         s_delay_projectile_draw,
                         true);
 
-                if (nr != -1)
-                {
+                if (nr != -1) {
                         s_delay_projectile_draw = nr;
                 }
-        }
-        break;
+        } break;
 
         case 20: // Shotgun delay
         {
@@ -447,12 +409,10 @@ static void player_sets_option(const MenuBrowser& browser)
                         s_delay_shotgun,
                         true);
 
-                if (nr != -1)
-                {
+                if (nr != -1) {
                         s_delay_shotgun = nr;
                 }
-        }
-        break;
+        } break;
 
         case 21: // Explosion delay
         {
@@ -466,12 +426,10 @@ static void player_sets_option(const MenuBrowser& browser)
                         s_delay_explosion,
                         true);
 
-                if (nr != -1)
-                {
+                if (nr != -1) {
                         s_delay_explosion = nr;
                 }
-        }
-        break;
+        } break;
 
         case 22: // Reset to defaults
         {
@@ -484,14 +442,12 @@ static void player_sets_option(const MenuBrowser& browser)
                 io::init();
 
                 audio::init();
-        }
-        break;
+        } break;
 
         default:
         {
                 ASSERT(false);
-        }
-        break;
+        } break;
         }
 }
 
@@ -500,12 +456,10 @@ static void read_file(std::vector<std::string>& lines)
         std::ifstream file;
         file.open(paths::config_file_path());
 
-        if (file.is_open())
-        {
+        if (file.is_open()) {
                 std::string line;
 
-                while (getline(file, line))
-                {
+                while (getline(file, line)) {
                         lines.push_back(line);
                 }
 
@@ -593,8 +547,7 @@ static void set_variables_from_lines(std::vector<std::string>& lines)
 
         s_default_player_name = "";
 
-        if (lines.front() == "1")
-        {
+        if (lines.front() == "1") {
                 lines.erase(std::begin(lines));
 
                 s_default_player_name = lines.front();
@@ -612,12 +565,10 @@ static void write_lines_to_file(const std::vector<std::string>& lines)
         std::ofstream file;
         file.open(paths::config_file_path(), std::ios::trunc);
 
-        for (size_t i = 0; i < lines.size(); ++i)
-        {
+        for (size_t i = 0; i < lines.size(); ++i) {
                 file << lines[i];
 
-                if (i != (lines.size() - 1))
-                {
+                if (i != (lines.size() - 1)) {
                         file << std::endl;
                 }
         }
@@ -656,12 +607,9 @@ static std::vector<std::string> lines_from_variables()
         lines.push_back(std::to_string(s_delay_shotgun));
         lines.push_back(std::to_string(s_delay_explosion));
 
-        if (s_default_player_name.empty())
-        {
+        if (s_default_player_name.empty()) {
                 lines.emplace_back("0");
-        }
-        else
-        {
+        } else {
                 // Default player name has been set
                 lines.emplace_back("1");
 
@@ -685,8 +633,7 @@ void init()
         // Load config file, if it exists
         read_file(lines);
 
-        if (!lines.empty())
-        {
+        if (!lines.empty()) {
                 // A config file exists, set values from parsed config lines
                 set_variables_from_lines(lines);
         }
@@ -893,7 +840,6 @@ ConfigState::ConfigState() :
 
         m_browser(23)
 {
-
 }
 
 StateId ConfigState::id()
@@ -908,11 +854,9 @@ void ConfigState::update()
         const MenuAction action =
                 m_browser.read(input, MenuInputMode::scrolling);
 
-        switch (action)
-        {
+        switch (action) {
         case MenuAction::esc:
-        case MenuAction::space:
-        {
+        case MenuAction::space: {
                 // Since text mode wall symbol may have changed, we need to
                 // redefine the terrain data list
                 terrain::init();
@@ -920,11 +864,9 @@ void ConfigState::update()
                 states::pop();
 
                 return;
-        }
-        break;
+        } break;
 
-        case MenuAction::selected:
-        {
+        case MenuAction::selected: {
                 config::player_sets_option(m_browser);
 
                 const auto lines = config::lines_from_variables();
@@ -932,8 +874,7 @@ void ConfigState::update()
                 config::write_lines_to_file(lines);
 
                 io::flush_input();
-        }
-        break;
+        } break;
 
         default:
                 break;
@@ -956,8 +897,7 @@ void ConfigState::draw()
 
         std::string input_mode_value_str;
 
-        switch (config::s_input_mode)
-        {
+        switch (config::s_input_mode) {
         case InputMode::standard:
                 input_mode_value_str = "Default (numpad or arrows)";
                 break;
@@ -971,158 +911,110 @@ void ConfigState::draw()
                 break;
         }
 
-        const std::vector< std::pair< std::string, std::string > > labels = {
-                {
-                        "Input mode",
-                        input_mode_value_str
-                },
+        const std::vector<std::pair<std::string, std::string>> labels = {
+                {"Input mode",
+                 input_mode_value_str},
 
-                {
-                        "Enable audio",
-                        config::s_is_audio_enabled
-                        ? "Yes"
-                        : "No"
-                },
+                {"Enable audio",
+                 config::s_is_audio_enabled
+                         ? "Yes"
+                         : "No"},
 
-                {
-                        "Play ambient sounds",
-                        config::s_is_amb_audio_enabled
-                        ? "Yes"
-                        : "No"
-                },
+                {"Play ambient sounds",
+                 config::s_is_amb_audio_enabled
+                         ? "Yes"
+                         : "No"},
 
-                {
-                        "Preload ambient sounds at game startup",
-                        config::s_is_amb_audio_preloaded
-                        ? "Yes"
-                        : "No"
-                },
+                {"Preload ambient sounds at game startup",
+                 config::s_is_amb_audio_preloaded
+                         ? "Yes"
+                         : "No"},
 
-                {
-                        "Use tile set",
-                        config::s_is_tiles_mode
-                        ? "Yes"
-                        : "No"
-                },
+                {"Use tile set",
+                 config::s_is_tiles_mode
+                         ? "Yes"
+                         : "No"},
 
-                {
-                        "Font", font_disp_name
-                },
+                {"Font", font_disp_name},
 
-                {
-                        "Fullscreen",
-                        config::s_is_fullscreen
-                        ? "Yes"
-                        : "No"
-                },
+                {"Fullscreen",
+                 config::s_is_fullscreen
+                         ? "Yes"
+                         : "No"},
 
-                {
-                        "Use native resolution in fullscreen",
-                        config::s_is_native_resolution_fullscreen
-                        ? "Yes"
-                        : "No (Stretch)"
-                },
+                {"Use native resolution in fullscreen",
+                 config::s_is_native_resolution_fullscreen
+                         ? "Yes"
+                         : "No (Stretch)"},
 
-                {
-                        "Tiles mode wall symbol",
-                        config::s_is_tiles_wall_full_square
-                        ? "Full square"
-                        : "Pseudo-3D"
-                },
+                {"Tiles mode wall symbol",
+                 config::s_is_tiles_wall_full_square
+                         ? "Full square"
+                         : "Pseudo-3D"},
 
-                {
-                        "Text mode wall symbol",
-                        config::s_is_text_mode_wall_full_square
-                        ? "Full square"
-                        : "Hash sign"
-                },
+                {"Text mode wall symbol",
+                 config::s_is_text_mode_wall_full_square
+                         ? "Full square"
+                         : "Hash sign"},
 
-                {
-                        "Skip intro level",
-                        config::s_is_intro_lvl_skipped
-                        ? "Yes"
-                        : "No"
-                },
+                {"Skip intro level",
+                 config::s_is_intro_lvl_skipped
+                         ? "Yes"
+                         : "No"},
 
-                {
-                        "Skip intro popup",
-                        config::s_is_intro_popup_skipped
-                        ? "Yes"
-                        : "No"
-                },
+                {"Skip intro popup",
+                 config::s_is_intro_popup_skipped
+                         ? "Yes"
+                         : "No"},
 
-                {
-                        "Any key confirms \"-More-\" prompts",
-                        config::s_is_any_key_confirm_more
-                        ? "Yes"
-                        : "No"
-                },
+                {"Any key confirms \"-More-\" prompts",
+                 config::s_is_any_key_confirm_more
+                         ? "Yes"
+                         : "No"},
 
-                {
-                        "Display hints",
-                        config::s_display_hints
-                        ? "Yes"
-                        : "No"
-                },
+                {"Display hints",
+                 config::s_display_hints
+                         ? "Yes"
+                         : "No"},
 
-                {
-                        "Always warn when new monster is seen",
-                        config::s_always_warn_new_mon
-                        ? "Yes"
-                        : "No"
-                },
+                {"Always warn when new monster is seen",
+                 config::s_always_warn_new_mon
+                         ? "Yes"
+                         : "No"},
 
-                {
-                        "Warn when lighting explosives",
-                        config::s_is_light_explosive_prompt
-                        ? "Yes"
-                        : "No"
-                },
+                {"Warn when lighting explosives",
+                 config::s_is_light_explosive_prompt
+                         ? "Yes"
+                         : "No"},
 
-                {
-                        "Warn when drinking malign potions",
-                        config::s_is_drink_malign_pot_prompt
-                        ? "Yes"
-                        : "No"
-                },
+                {"Warn when drinking malign potions",
+                 config::s_is_drink_malign_pot_prompt
+                         ? "Yes"
+                         : "No"},
 
-                {
-                        "Ranged weapon melee attack warning",
-                        config::s_is_ranged_wpn_meleee_prompt
-                        ? "Yes"
-                        : "No"
-                },
+                {"Ranged weapon melee attack warning",
+                 config::s_is_ranged_wpn_meleee_prompt
+                         ? "Yes"
+                         : "No"},
 
-                {
-                        "Ranged weapon auto reload",
-                        config::s_is_ranged_wpn_auto_reload
-                        ? "Yes"
-                        : "No"
-                },
+                {"Ranged weapon auto reload",
+                 config::s_is_ranged_wpn_auto_reload
+                         ? "Yes"
+                         : "No"},
 
-                {
-                        "Projectile delay (ms)",
-                        std::to_string(config::s_delay_projectile_draw)
-                },
+                {"Projectile delay (ms)",
+                 std::to_string(config::s_delay_projectile_draw)},
 
-                {
-                        "Shotgun delay (ms)",
-                        std::to_string(config::s_delay_shotgun)
-                },
+                {"Shotgun delay (ms)",
+                 std::to_string(config::s_delay_shotgun)},
 
-                {
-                        "Explosion delay (ms)",
-                        std::to_string(config::s_delay_explosion)
-                },
+                {"Explosion delay (ms)",
+                 std::to_string(config::s_delay_explosion)},
 
-                {
-                        "Reset to defaults",
-                        ""
-                }
-        };
+                {"Reset to defaults",
+                 ""}};
 
-        for (size_t i = 0; i < labels.size(); ++i)
-        {
+        for (size_t i = 0; i < labels.size(); ++i) {
                 const auto& label = labels[i];
 
                 const std::string& str_l = label.first;
@@ -1133,7 +1025,6 @@ void ConfigState::draw()
                         ? colors::menu_highlight()
                         : colors::menu_dark();
 
-
                 const auto y = config::s_opt_y0 + (int)i;
 
                 io::draw_text(
@@ -1142,8 +1033,7 @@ void ConfigState::draw()
                         P(1, y),
                         color);
 
-                if (!str_r.empty())
-                {
+                if (!str_r.empty()) {
                         io::draw_text(
                                 ":",
                                 Panel::screen,

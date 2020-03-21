@@ -12,22 +12,18 @@
 #include "colors.hpp"
 #include "info_screen_state.hpp"
 
-
-namespace actor
-{
+namespace actor {
 class Actor;
 } // namespace actor
 
-
 struct P;
 
-
-class ViewActorDescr: public InfoScreenState
-{
+class ViewActorDescr : public InfoScreenState {
 public:
         ViewActorDescr(actor::Actor& actor) :
-                
-                m_actor(actor) {}
+
+                m_actor(actor)
+        {}
 
         void on_start() override;
 
@@ -54,9 +50,7 @@ private:
         actor::Actor& m_actor;
 };
 
-
-namespace look
-{
+namespace look {
 
 void print_location_info_msgs(const P& pos);
 

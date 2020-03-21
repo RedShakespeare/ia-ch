@@ -52,41 +52,29 @@ static const std::string intro_msg =
         "Trapezohedron\" - a window to all the secrets of the universe!";
 
 static const std::vector<std::string> win_msg = {
-        {
-                "As I approach the crystal, an eerie glow illuminates the area. I "
-                "notice a figure observing me from the edge of the light. There is no "
-                "doubt concerning the nature of this entity; it is the Faceless God "
-                "who dwells in the depths of the earth - Nyarlathotep!"
-        },
+        {"As I approach the crystal, an eerie glow illuminates the area. I "
+         "notice a figure observing me from the edge of the light. There is no "
+         "doubt concerning the nature of this entity; it is the Faceless God "
+         "who dwells in the depths of the earth - Nyarlathotep!"},
 
-        {
-                "I panic. Why is it I find myself here, stumbling around in darkness? "
-                "Is this all part of a plan? The being beckons me to gaze into the "
-                "stone."
-        },
+        {"I panic. Why is it I find myself here, stumbling around in darkness? "
+         "Is this all part of a plan? The being beckons me to gaze into the "
+         "stone."},
 
-        {
-                "In the radiance I see visions beyond eternity, visions of unreal "
-                "reality, visions of the brightest light of day and the darkest night "
-                "of madness. There is only onward now, I have to see, I have to KNOW."
-        },
+        {"In the radiance I see visions beyond eternity, visions of unreal "
+         "reality, visions of the brightest light of day and the darkest night "
+         "of madness. There is only onward now, I have to see, I have to KNOW."},
 
-        {
-                "So I make a pact with the Fiend."
-        },
+        {"So I make a pact with the Fiend."},
 
-        {
-                "I now harness the shadows that stride from world to world to sow "
-                "death and madness. The destinies of all things on earth, living and "
-                "dead, are mine."
-        }
-};
+        {"I now harness the shadows that stride from world to world to sow "
+         "death and madness. The destinies of all things on earth, living and "
+         "dead, are mine."}};
 
 // -----------------------------------------------------------------------------
 // game
 // -----------------------------------------------------------------------------
-namespace game
-{
+namespace game {
 
 void init()
 {
@@ -111,8 +99,7 @@ void save()
 
         saving::put_int(s_history_events.size());
 
-        for (const HistoryEvent& event : s_history_events)
-        {
+        for (const HistoryEvent& event : s_history_events) {
                 saving::put_str(event.msg);
                 saving::put_int(event.turn);
         }
@@ -132,8 +119,7 @@ void load()
 
         const int nr_events = saving::get_int();
 
-        for (int i = 0; i < nr_events; ++i)
-        {
+        for (int i = 0; i < nr_events; ++i) {
                 const std::string msg = saving::get_str();
                 const int turn = saving::get_int();
 
@@ -163,13 +149,11 @@ TimeData start_time()
 
 void incr_player_xp(const int xp_gained, const Verbose verbose)
 {
-        if (!map::g_player->is_alive())
-        {
+        if (!map::g_player->is_alive()) {
                 return;
         }
 
-        if (verbose == Verbose::yes)
-        {
+        if (verbose == Verbose::yes) {
                 msg_log::add("(+" + std::to_string(xp_gained) + "% XP)");
         }
 
@@ -177,10 +161,8 @@ void incr_player_xp(const int xp_gained, const Verbose verbose)
 
         s_xp_accum += xp_gained;
 
-        while (s_xp_pct >= 100)
-        {
-                if (s_clvl < s_player_max_clvl)
-                {
+        while (s_xp_pct >= 100) {
+                if (s_clvl < s_player_max_clvl) {
                         ++s_clvl;
 
                         msg_log::add(
@@ -250,15 +232,13 @@ void on_mon_seen(actor::Actor& actor)
 {
         auto& d = *actor.m_data;
 
-        if (!d.has_player_seen)
-        {
+        if (!d.has_player_seen) {
                 d.has_player_seen = true;
 
                 // Give XP based on monster shock rating
                 int xp_gained = 0;
 
-                switch (d.mon_shock_lvl)
-                {
+                switch (d.mon_shock_lvl) {
                 case ShockLvl::unsettling:
                         xp_gained = 3;
                         break;
@@ -280,8 +260,7 @@ void on_mon_seen(actor::Actor& actor)
                         break;
                 }
 
-                if (xp_gained > 0)
-                {
+                if (xp_gained > 0) {
                         const std::string name = actor.name_a();
 
                         msg_log::add("I have discovered " + name + "!");
@@ -316,14 +295,12 @@ void on_mon_killed(actor::Actor& actor)
         const int min_hp_for_sadism_bon = 4;
 
         if (d.hp >= min_hp_for_sadism_bon &&
-            insanity::has_sympt(InsSymptId::sadism))
-        {
+            insanity::has_sympt(InsSymptId::sadism)) {
                 map::g_player->m_shock =
                         std::max(0.0, map::g_player->m_shock - 3.0);
         }
 
-        if (d.is_unique)
-        {
+        if (d.is_unique) {
                 const std::string name = actor.name_the();
 
                 add_history_event("Defeated " + name);
@@ -332,8 +309,7 @@ void on_mon_killed(actor::Actor& actor)
 
 void add_history_event(const std::string msg)
 {
-        if (saving::is_loading())
-        {
+        if (saving::is_loading()) {
                 // If we are loading the game, never add historic messages (this
                 // allows silently running stuff like equip hooks for items)
                 return;
@@ -361,8 +337,7 @@ StateId GameState::id()
 
 void GameState::on_start()
 {
-        if (m_entry_mode == GameEntryMode::new_game)
-        {
+        if (m_entry_mode == GameEntryMode::new_game) {
                 // Character creation may have affected maximum hp and spi
                 // (either positively or negatively), so here we need to (re)set
                 // the current hp and spi to the maximum values
@@ -376,8 +351,7 @@ void GameState::on_start()
                 game::add_history_event("Started journey");
 
                 if (!config::is_intro_lvl_skipped() &&
-                    !config::is_intro_popup_skipped())
-                {
+                    !config::is_intro_popup_skipped()) {
                         io::clear_screen();
 
                         popup::msg(
@@ -389,12 +363,9 @@ void GameState::on_start()
         }
 
         if (config::is_intro_lvl_skipped() ||
-            (m_entry_mode == GameEntryMode::load_game))
-        {
+            (m_entry_mode == GameEntryMode::load_game)) {
                 map_travel::go_to_nxt();
-        }
-        else
-        {
+        } else {
                 const auto map_builder =
                         map_builder::make(MapType::intro_forest);
 
@@ -406,8 +377,7 @@ void GameState::on_start()
 
                 map::update_vision();
 
-                if (map_control::g_controller)
-                {
+                if (map_control::g_controller) {
                         map_control::g_controller->on_start();
                 }
         }
@@ -417,16 +387,13 @@ void GameState::on_start()
 
 void GameState::draw()
 {
-        if (map::w() == 0)
-        {
+        if (map::w() == 0) {
                 return;
         }
 
-        if (states::is_current_state(*this))
-        {
+        if (states::is_current_state(*this)) {
 #ifndef NDEBUG
-                if (!init::g_is_demo_mapgen)
-                {
+                if (!init::g_is_demo_mapgen) {
 #endif // NDEBUG
                         viewport::focus_on(map::g_player->m_pos);
 #ifndef NDEBUG
@@ -446,8 +413,7 @@ void GameState::update()
         // To avoid redrawing the map for each actor, we instead run acting
         // inside a loop here. We exit the loop if the next actor is the player.
         // Then another state cycle will be executed, and rendering performed.
-        while (true)
-        {
+        while (true) {
                 // Let the current actor act
                 auto* actor = game_time::current_actor();
 
@@ -455,19 +421,15 @@ void GameState::update()
 
                 const bool is_gibbed = actor->m_state == ActorState::destroyed;
 
-                if (allow_act && !is_gibbed)
-                {
+                if (allow_act && !is_gibbed) {
                         // Tell actor to "do something". If this is the player,
                         // input is read from either the player or the bot. If
                         // it's a monster, the AI handles it.
                         actor->act();
-                }
-                else
-                {
+                } else {
                         // Actor cannot act
 
-                        if (actor->is_player())
-                        {
+                        if (actor->is_player()) {
                                 sdl_base::sleep(g_ms_delay_player_unable_act);
                         }
 
@@ -479,23 +441,20 @@ void GameState::update()
                 // We have quit the current game, or the player is dead?
                 if (!map::g_player ||
                     !states::contains_state(StateId::game) ||
-                    !map::g_player->is_alive())
-                {
+                    !map::g_player->is_alive()) {
                         break;
                 }
 
                 // Stop if the next actor is the player (to trigger rendering).
                 const auto* next_actor = game_time::current_actor();
 
-                if (next_actor->is_player())
-                {
+                if (next_actor->is_player()) {
                         break;
                 }
         }
 
         // Player is dead?
-        if (map::g_player && !map::g_player->is_alive())
-        {
+        if (map::g_player && !map::g_player->is_alive()) {
                 TRACE << "Player died" << std::endl;
 
                 audio::play(SfxId::death);
@@ -527,13 +486,11 @@ void WinGameState::draw()
 
         int y = 2;
 
-        for (const std::string& section_msg : win_msg)
-        {
+        for (const std::string& section_msg : win_msg) {
                 const auto section_lines =
                         text_format::split(section_msg, max_w);
 
-                for (const std::string& line : section_lines)
-                {
+                for (const std::string& line : section_lines) {
                         io::draw_text(
                                 line,
                                 Panel::screen,
@@ -566,8 +523,7 @@ void WinGameState::update()
 {
         const auto input = io::get();
 
-        switch (input.key)
-        {
+        switch (input.key) {
         case SDLK_SPACE:
         case SDLK_ESCAPE:
         case SDLK_RETURN:

@@ -13,8 +13,7 @@
 
 struct CellRenderData;
 
-namespace draw_map
-{
+namespace draw_map {
 
 void clear();
 

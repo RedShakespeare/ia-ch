@@ -19,7 +19,7 @@
 // -----------------------------------------------------------------------------
 // private
 // -----------------------------------------------------------------------------
-static std::vector< Array2<char> > s_level_templates;
+static std::vector<Array2<char>> s_level_templates;
 
 static std::vector<RoomTempl> s_room_templates;
 
@@ -30,17 +30,14 @@ static const std::string s_whitespace_chars = " \t";
 
 static const char s_comment_symbol = '\'';
 
-
-const std::unordered_map<LevelTemplId, std::string> level_id_to_filename =
-{
+const std::unordered_map<LevelTemplId, std::string> level_id_to_filename = {
         {LevelTemplId::deep_one_lair, "deep_one_lair.txt"},
         {LevelTemplId::magic_pool, "magic_pool.txt"},
         {LevelTemplId::egypt, "egypt.txt"},
         {LevelTemplId::high_priest, "high_priest.txt"},
         {LevelTemplId::intro_forest, "intro_forest.txt"},
         {LevelTemplId::rat_cave, "rat_cave.txt"},
-        {LevelTemplId::trapez, "trapez.txt"}
-};
+        {LevelTemplId::trapez, "trapez.txt"}};
 
 // Checks if this line has non-whitespace characters, and is not commented out
 static bool line_has_content(const std::string& line)
@@ -48,15 +45,12 @@ static bool line_has_content(const std::string& line)
         const size_t first_non_space =
                 line.find_first_not_of(s_whitespace_chars);
 
-        if (first_non_space == std::string::npos)
-        {
+        if (first_non_space == std::string::npos) {
                 // Only whitespace characters
                 return false;
         }
 
-
-        if (line[first_non_space] == s_comment_symbol)
-        {
+        if (line[first_non_space] == s_comment_symbol) {
                 // Starts with comment character
                 return false;
         }
@@ -79,10 +73,8 @@ static size_t max_length(const std::vector<std::string>& lines)
         std::for_each(
                 begin(lines),
                 end(lines),
-                [&max_len](const std::string& buffer_line)
-                {
-                        if (buffer_line.size() > max_len)
-                        {
+                [&max_len](const std::string& buffer_line) {
+                        if (buffer_line.size() > max_len) {
                                 max_len = buffer_line.size();
                         }
                 });
@@ -103,10 +95,8 @@ static Array2<char> load_level_template(const LevelTemplId id)
 
         std::vector<std::string> templ_lines;
 
-        for (std::string line; std::getline(ifs, line); )
-        {
-                if (line_has_content(line))
-                {
+        for (std::string line; std::getline(ifs, line);) {
+                if (line_has_content(line)) {
                         templ_lines.push_back(line);
                 }
         }
@@ -115,14 +105,12 @@ static Array2<char> load_level_template(const LevelTemplId id)
                 templ_lines[0].size(),
                 templ_lines.size());
 
-        for (size_t y = 0; y < templ_lines.size(); ++y)
-        {
+        for (size_t y = 0; y < templ_lines.size(); ++y) {
                 const std::string& line = templ_lines[y];
 
                 ASSERT(line.size() == templ_lines[0].size());
 
-                for (size_t x = 0; x < line.size(); ++x)
-                {
+                for (size_t x = 0; x < line.size(); ++x) {
                         templ.at(x, y) = line.at(x);
                 }
         }
@@ -137,8 +125,7 @@ static void load_level_templates()
         s_level_templates.clear();
         s_level_templates.reserve((size_t)LevelTemplId::END);
 
-        for (int id = 0; id < (int)LevelTemplId::END; ++id)
-        {
+        for (int id = 0; id < (int)LevelTemplId::END; ++id) {
                 const auto templ = load_level_template((LevelTemplId)id);
 
                 s_level_templates.insert(
@@ -149,7 +136,6 @@ static void load_level_templates()
         TRACE_FUNC_END;
 
 } // load_level_templates
-
 
 // Add all combinations of rotating and flipping the template
 static void make_room_templ_variants(RoomTempl& templ)
@@ -209,8 +195,7 @@ static void load_room_templates()
 
         std::vector<std::string> lines_read;
 
-        for (std::string line; std::getline(ifs, line); )
-        {
+        for (std::string line; std::getline(ifs, line);) {
                 lines_read.push_back(line);
         }
 
@@ -220,32 +205,26 @@ static void load_room_templates()
 
         size_t current_base_templ_idx = 0;
 
-        for (size_t line_idx = 0; line_idx < lines_read.size(); ++line_idx)
-        {
+        for (size_t line_idx = 0; line_idx < lines_read.size(); ++line_idx) {
                 std::string& line = lines_read[line_idx];
 
                 bool try_finalize = false;
 
-                if (line.empty())
-                {
+                if (line.empty()) {
                         try_finalize = true;
                 }
 
-                if (!try_finalize)
-                {
-                        if (!line_has_content(line))
-                        {
+                if (!try_finalize) {
+                        if (!line_has_content(line)) {
                                 try_finalize = true;
                         }
                 }
 
-                if (!try_finalize)
-                {
+                if (!try_finalize) {
                         trim_trailing_whitespace(line);
 
                         // Is this line a room type?
-                        if (line[0] == type_symbol)
-                        {
+                        if (line[0] == type_symbol) {
                                 const size_t type_pos = 2;
 
                                 const std::string type_str =
@@ -254,10 +233,9 @@ static void load_room_templates()
                                                 line.size() - type_pos);
 
                                 auto type_it = g_str_to_room_type_map
-                                        .find(type_str);
+                                                       .find(type_str);
 
-                                if (type_it == g_str_to_room_type_map.end())
-                                {
+                                if (type_it == g_str_to_room_type_map.end()) {
                                         TRACE_ERROR_RELEASE
                                                 << "Unrecognized room: "
                                                 << type_str << std::endl;
@@ -266,22 +244,19 @@ static void load_room_templates()
                                 }
 
                                 templ.type = type_it->second;
-                        }
-                        else // Not a name line
+                        } else // Not a name line
                         {
                                 template_buffer.push_back(line);
                         }
                 }
 
                 // Is this the last line? Then we try finalizing the template
-                if (line_idx == (lines_read.size() - 1))
-                {
+                if (line_idx == (lines_read.size() - 1)) {
                         try_finalize = true;
                 }
 
                 // Is the current template done?
-                if (try_finalize && !template_buffer.empty())
-                {
+                if (try_finalize && !template_buffer.empty()) {
                         // Not all lines in a template needs to be the same
                         // length, so find the length of the longest line
                         const size_t max_len = max_length(template_buffer);
@@ -290,8 +265,7 @@ static void load_room_templates()
 
                         for (size_t buffer_idx = 0;
                              buffer_idx < template_buffer.size();
-                             ++buffer_idx)
-                        {
+                             ++buffer_idx) {
                                 std::string& buffer_line =
                                         template_buffer[buffer_idx];
 
@@ -302,8 +276,7 @@ static void load_room_templates()
 
                                 // Fill the template array with the buffer
                                 // characters
-                                for (size_t i = 0; i < max_len; ++i)
-                                {
+                                for (size_t i = 0; i < max_len; ++i) {
                                         templ.symbols.at(i, buffer_idx) =
                                                 buffer_line[i];
                                 }
@@ -336,8 +309,7 @@ static void load_room_templates()
 // -----------------------------------------------------------------------------
 // map_templates
 // -----------------------------------------------------------------------------
-namespace map_templates
-{
+namespace map_templates {
 
 void init()
 {
@@ -354,8 +326,7 @@ void save()
 {
         TRACE_FUNC_BEGIN;
 
-        for (auto status : s_room_templ_status)
-        {
+        for (auto status : s_room_templ_status) {
                 saving::put_int((int)status);
         }
 
@@ -366,8 +337,7 @@ void load()
 {
         TRACE_FUNC_BEGIN;
 
-        for (size_t i = 0; i < s_room_templ_status.size(); ++i)
-        {
+        for (size_t i = 0; i < s_room_templ_status.size(); ++i) {
                 s_room_templ_status[i] = (RoomTemplStatus)saving::get_int();
         }
 
@@ -387,20 +357,17 @@ RoomTempl* random_room_templ(const P& max_dims)
 
         std::vector<RoomTempl*> bucket;
 
-        for (auto& templ : s_room_templates)
-        {
+        for (auto& templ : s_room_templates) {
                 const auto status = s_room_templ_status[templ.base_templ_idx];
 
-                if (status != RoomTemplStatus::unused)
-                {
+                if (status != RoomTemplStatus::unused) {
                         continue;
                 }
 
                 const P templ_dims(templ.symbols.dims());
 
                 if (templ_dims.x <= max_dims.x &&
-                    templ_dims.y <= max_dims.y)
-                {
+                    templ_dims.y <= max_dims.y) {
                         bucket.push_back(&templ);
                 }
         }
@@ -411,8 +378,7 @@ RoomTempl* random_room_templ(const P& max_dims)
               << "Number of candidates found: " << bucket.size()
               << std::endl;
 
-        if (bucket.empty())
-        {
+        if (bucket.empty()) {
                 return nullptr;
         }
 
@@ -441,12 +407,10 @@ void on_base_room_template_placed(const RoomTempl& templ)
 void on_map_discarded()
 {
         // "Placed" -> "unused"
-        for (size_t i = 0; i < s_room_templ_status.size(); ++i)
-        {
+        for (size_t i = 0; i < s_room_templ_status.size(); ++i) {
                 auto& status = s_room_templ_status[i];
 
-                if (status == RoomTemplStatus::placed)
-                {
+                if (status == RoomTemplStatus::placed) {
                         status = RoomTemplStatus::unused;
                 }
         }
@@ -455,12 +419,10 @@ void on_map_discarded()
 void on_map_ok()
 {
         // "Placed" -> "used"
-        for (size_t i = 0; i < s_room_templ_status.size(); ++i)
-        {
+        for (size_t i = 0; i < s_room_templ_status.size(); ++i) {
                 auto& status = s_room_templ_status[i];
 
-                if (status == RoomTemplStatus::placed)
-                {
+                if (status == RoomTemplStatus::placed) {
                         status = RoomTemplStatus::used;
                 }
         }

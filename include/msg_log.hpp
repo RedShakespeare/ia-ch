@@ -15,29 +15,24 @@
 #include "global.hpp"
 #include "info_screen_state.hpp"
 
-
-enum class MorePromptOnMsg
-{
+enum class MorePromptOnMsg {
         no,
         yes
 };
 
-enum class MsgInterruptPlayer
-{
+enum class MsgInterruptPlayer {
         no,
         yes
 };
 
-enum class CopyToMsgHistory
-{
+enum class CopyToMsgHistory {
         no,
         yes
 };
 
-class Msg
-{
+class Msg {
 public:
-        Msg(std::string  text,
+        Msg(std::string text,
             const Color& color_id,
             const int x_pos,
             CopyToMsgHistory copy_to_history) :
@@ -52,8 +47,7 @@ public:
         {
                 std::string result_str = m_text;
 
-                if (m_nr_repeats > 1)
-                {
+                if (m_nr_repeats > 1) {
                         result_str += m_repeats_str;
                 }
 
@@ -96,8 +90,7 @@ private:
         CopyToMsgHistory m_copy_to_history {CopyToMsgHistory::yes};
 };
 
-namespace msg_log
-{
+namespace msg_log {
 
 void init();
 
@@ -126,11 +119,9 @@ std::vector<Msg> history();
 // -----------------------------------------------------------------------------
 // Message history state
 // -----------------------------------------------------------------------------
-class MsgHistoryState: public InfoScreenState
-{
+class MsgHistoryState : public InfoScreenState {
 public:
-        MsgHistoryState() 
-                = default;
+        MsgHistoryState() = default;
 
         ~MsgHistoryState() = default;
 

@@ -59,17 +59,15 @@ void PickBgState::on_start()
 
 void PickBgState::update()
 {
-        if (config::is_bot_playing())
-        {
+        if (config::is_bot_playing()) {
                 player_bon::pick_bg(rnd::element(m_bgs));
 
                 ASSERT(player_bon::bg() != Bg::END);
 
-                if (player_bon::bg() == Bg::occultist)
-                {
+                if (player_bon::bg() == Bg::occultist) {
                         player_bon::pick_occultist_domain(
                                 (OccultistDomain)
-                                rnd::range(0, (int)OccultistDomain::END - 1));
+                                        rnd::range(0, (int)OccultistDomain::END - 1));
                 }
 
                 states::pop();
@@ -84,10 +82,8 @@ void PickBgState::update()
                         input,
                         MenuInputMode::scrolling_and_letters);
 
-        switch (action)
-        {
-        case MenuAction::selected:
-        {
+        switch (action) {
+        case MenuAction::selected: {
                 const auto bg = m_bgs[m_browser.y()];
 
                 player_bon::pick_bg(bg);
@@ -98,18 +94,14 @@ void PickBgState::update()
                 states::pop();
 
                 // Occultists also pick a domain
-                if (bg == Bg::occultist)
-                {
+                if (bg == Bg::occultist) {
                         states::push(std::make_unique<PickOccultistState>());
                 }
-        }
-        break;
+        } break;
 
-        case MenuAction::esc:
-        {
+        case MenuAction::esc: {
                 states::pop_until(StateId::menu);
-        }
-        break;
+        } break;
 
         default:
                 break;
@@ -134,19 +126,16 @@ void PickBgState::draw()
         const auto bg_marked = m_bgs[m_browser.y()];
 
         // Backgrounds
-        for (const auto bg : m_bgs)
-        {
+        for (const auto bg : m_bgs) {
                 const auto key_str =
                         m_browser.menu_keys()[y] +
-                        std::string{") "};
+                        std::string {") "};
 
                 const std::string bg_name = player_bon::bg_title(bg);
                 const bool is_marked = bg == bg_marked;
 
                 const auto& draw_color =
-                        is_marked ?
-                        colors::menu_highlight() :
-                        colors::menu_dark();
+                        is_marked ? colors::menu_highlight() : colors::menu_dark();
 
                 io::draw_text(
                         key_str + bg_name,
@@ -164,10 +153,8 @@ void PickBgState::draw()
 
         ASSERT(!descr.empty());
 
-        for (const auto& descr_entry : descr)
-        {
-                if (descr_entry.str.empty())
-                {
+        for (const auto& descr_entry : descr) {
+                if (descr_entry.str.empty()) {
                         ++y;
 
                         continue;
@@ -177,8 +164,7 @@ void PickBgState::draw()
                         descr_entry.str,
                         panels::w(Panel::create_char_descr));
 
-                for (const std::string& line : formatted_lines)
-                {
+                for (const std::string& line : formatted_lines) {
                         io::draw_text(
                                 line,
                                 Panel::create_char_descr,
@@ -204,8 +190,7 @@ void PickOccultistState::on_start()
 
 void PickOccultistState::update()
 {
-        if (config::is_bot_playing())
-        {
+        if (config::is_bot_playing()) {
                 player_bon::pick_occultist_domain(rnd::element(m_domains));
 
                 states::pop();
@@ -220,23 +205,18 @@ void PickOccultistState::update()
                         input,
                         MenuInputMode::scrolling_and_letters);
 
-        switch (action)
-        {
-        case MenuAction::selected:
-        {
+        switch (action) {
+        case MenuAction::selected: {
                 const auto domain = m_domains[m_browser.y()];
 
                 player_bon::pick_occultist_domain(domain);
 
                 states::pop();
-        }
-        break;
+        } break;
 
-        case MenuAction::esc:
-        {
+        case MenuAction::esc: {
                 states::pop_until(StateId::menu);
-        }
-        break;
+        } break;
 
         default:
                 break;
@@ -261,11 +241,10 @@ void PickOccultistState::draw()
         const auto domain_marked = m_domains[m_browser.y()];
 
         // Domains
-        for (const auto domain : m_domains)
-        {
+        for (const auto domain : m_domains) {
                 const auto key_str =
                         m_browser.menu_keys()[y] +
-                        std::string{") "};
+                        std::string {") "};
 
                 const std::string domain_name =
                         player_bon::spell_domain_title(domain);
@@ -293,8 +272,7 @@ void PickOccultistState::draw()
 
         ASSERT(!descr.empty());
 
-        if (descr.empty())
-        {
+        if (descr.empty()) {
                 return;
         }
 
@@ -302,8 +280,7 @@ void PickOccultistState::draw()
                 descr,
                 panels::w(Panel::create_char_descr));
 
-        for (const std::string& line : formatted_lines)
-        {
+        for (const std::string& line : formatted_lines) {
                 io::draw_text(
                         line,
                         Panel::create_char_descr,
@@ -335,8 +312,7 @@ void PickTraitState::on_start()
 
 void PickTraitState::update()
 {
-        if (config::is_bot_playing())
-        {
+        if (config::is_bot_playing()) {
                 states::pop();
 
                 return;
@@ -345,8 +321,7 @@ void PickTraitState::update()
         const auto input = io::get();
 
         // Switch trait screen mode?
-        if (input.key == SDLK_TAB)
-        {
+        if (input.key == SDLK_TAB) {
                 m_screen_mode =
                         (m_screen_mode == TraitScreenMode::pick_new)
                         ? TraitScreenMode::view_unavail
@@ -365,12 +340,9 @@ void PickTraitState::update()
                         input,
                         MenuInputMode::scrolling_and_letters);
 
-        switch (action)
-        {
-        case MenuAction::selected:
-        {
-                if (m_screen_mode == TraitScreenMode::pick_new)
-                {
+        switch (action) {
+        case MenuAction::selected: {
+                if (m_screen_mode == TraitScreenMode::pick_new) {
                         const Trait trait = m_traits_avail[browser.y()];
 
                         const std::string name =
@@ -381,8 +353,7 @@ void PickTraitState::update()
                         const bool is_character_creation =
                                 states::contains_state(StateId::pick_name);
 
-                        if (!is_character_creation)
-                        {
+                        if (!is_character_creation) {
                                 states::draw();
 
                                 const auto result =
@@ -394,29 +365,23 @@ void PickTraitState::update()
                                 should_pick_trait = (result == 0);
                         }
 
-                        if (should_pick_trait)
-                        {
+                        if (should_pick_trait) {
                                 player_bon::pick_trait(trait);
 
-                                if (!is_character_creation)
-                                {
+                                if (!is_character_creation) {
                                         game::add_history_event(
                                                 "Gained trait \"" +
                                                 name +
                                                 "\"");
-
                                 }
 
                                 states::pop();
                         }
                 }
-        }
-        break;
+        } break;
 
-        case MenuAction::esc:
-        {
-                if (states::contains_state(StateId::pick_name))
-                {
+        case MenuAction::esc: {
+                if (states::contains_state(StateId::pick_name)) {
                         states::pop_until(StateId::menu);
                 }
         }
@@ -430,16 +395,14 @@ void PickTraitState::draw()
 {
         std::string title;
 
-        if (m_screen_mode == TraitScreenMode::pick_new)
-        {
+        if (m_screen_mode == TraitScreenMode::pick_new) {
                 title =
                         states::contains_state(StateId::pick_name)
                         ? "Which extra trait do you start with?"
                         : "Which trait do you gain?";
 
                 title += " [TAB] to view unavailable traits";
-        }
-        else // Viewing unavailable traits
+        } else // Viewing unavailable traits
         {
                 title = "Currently unavailable traits";
 
@@ -461,13 +424,11 @@ void PickTraitState::draw()
 
         std::vector<Trait>* traits;
 
-        if (m_screen_mode == TraitScreenMode::pick_new)
-        {
+        if (m_screen_mode == TraitScreenMode::pick_new) {
                 browser = &m_browser_traits_avail;
 
                 traits = &m_traits_avail;
-        }
-        else // Viewing unavailable traits
+        } else // Viewing unavailable traits
         {
                 browser = &m_browser_traits_unavail;
 
@@ -485,11 +446,10 @@ void PickTraitState::draw()
         const Range idx_range_shown = browser->range_shown();
 
         // Traits
-        for (int i = idx_range_shown.min; i <= idx_range_shown.max; ++i)
-        {
+        for (int i = idx_range_shown.min; i <= idx_range_shown.max; ++i) {
                 const auto key_str =
                         browser->menu_keys()[y] +
-                        std::string{") "};
+                        std::string {") "};
 
                 const Trait trait = traits->at(i);
 
@@ -499,24 +459,18 @@ void PickTraitState::draw()
 
                 Color color = colors::light_magenta();
 
-                if (m_screen_mode == TraitScreenMode::pick_new)
-                {
-                        if (is_idx_marked)
-                        {
+                if (m_screen_mode == TraitScreenMode::pick_new) {
+                        if (is_idx_marked) {
                                 color = colors::menu_highlight();
-                        }
-                        else // Not marked
+                        } else // Not marked
                         {
                                 color = colors::menu_dark();
                         }
-                }
-                else // Viewing unavailable traits
+                } else // Viewing unavailable traits
                 {
-                        if (is_idx_marked)
-                        {
+                        if (is_idx_marked) {
                                 color = colors::light_red();
-                        }
-                        else // Not marked
+                        } else // Not marked
                         {
                                 color = colors::red();
                         }
@@ -560,8 +514,7 @@ void PickTraitState::draw()
                         descr,
                         panels::w(Panel::create_char_descr));
 
-        for (const std::string& str : formatted_descr)
-        {
+        for (const std::string& str : formatted_descr) {
                 io::draw_text(
                         str,
                         Panel::create_char_descr,
@@ -589,8 +542,7 @@ void PickTraitState::draw()
         y = y0_prereqs;
 
         if (!trait_marked_prereqs.empty() ||
-            trait_marked_bg_prereq != Bg::END)
-        {
+            trait_marked_bg_prereq != Bg::END) {
                 const std::string label = "Prerequisite(s):";
 
                 io::draw_text(
@@ -607,12 +559,9 @@ void PickTraitState::draw()
 
                 const Color& clr_prereq_not_ok = colors::red();
 
-                if (trait_marked_bg_prereq != Bg::END)
-                {
+                if (trait_marked_bg_prereq != Bg::END) {
                         const auto& color =
-                                (player_bon::bg() == trait_marked_bg_prereq) ?
-                                clr_prereq_ok :
-                                clr_prereq_not_ok;
+                                (player_bon::bg() == trait_marked_bg_prereq) ? clr_prereq_ok : clr_prereq_not_ok;
 
                         const std::string bg_title =
                                 player_bon::bg_title(trait_marked_bg_prereq);
@@ -620,15 +569,12 @@ void PickTraitState::draw()
                         prereq_titles.emplace_back(bg_title, color);
                 }
 
-                for (Trait prereq_trait : trait_marked_prereqs)
-                {
+                for (Trait prereq_trait : trait_marked_prereqs) {
                         const bool is_picked =
                                 player_bon::has_trait(prereq_trait);
 
                         const auto& color =
-                                is_picked ?
-                                clr_prereq_ok :
-                                clr_prereq_not_ok;
+                                is_picked ? clr_prereq_ok : clr_prereq_not_ok;
 
                         const std::string trait_title =
                                 player_bon::trait_title(prereq_trait);
@@ -636,8 +582,7 @@ void PickTraitState::draw()
                         prereq_titles.emplace_back(trait_title, color);
                 }
 
-                if (trait_marked_clvl_prereq != -1)
-                {
+                if (trait_marked_clvl_prereq != -1) {
                         const Color& color =
                                 (game::clvl() >= trait_marked_clvl_prereq)
                                 ? clr_prereq_ok
@@ -652,8 +597,7 @@ void PickTraitState::draw()
 
                 const auto prereq_list_x = (int)label.size() + 1;
 
-                for (const ColoredString& prereq_title : prereq_titles)
-                {
+                for (const ColoredString& prereq_title : prereq_titles) {
                         io::draw_text(
                                 prereq_title.str,
                                 Panel::create_char_descr,
@@ -677,8 +621,7 @@ void EnterNameState::on_start()
 
 void EnterNameState::update()
 {
-        if (config::is_bot_playing())
-        {
+        if (config::is_bot_playing()) {
                 auto& d = *map::g_player->m_data;
 
                 d.name_a = d.name_the = "Bot";
@@ -690,19 +633,15 @@ void EnterNameState::update()
 
         const auto input = io::get();
 
-        if (input.key == SDLK_ESCAPE)
-        {
+        if (input.key == SDLK_ESCAPE) {
                 states::pop_until(StateId::menu);
                 return;
         }
 
-        if (input.key == SDLK_RETURN)
-        {
-                if (m_current_str.empty())
-                {
+        if (input.key == SDLK_RETURN) {
+                if (m_current_str.empty()) {
                         m_current_str = "Player";
-                }
-                else // Player has entered a string
+                } else // Player has entered a string
                 {
                         config::set_default_player_name(m_current_str);
                 }
@@ -716,28 +655,20 @@ void EnterNameState::update()
                 return;
         }
 
-        if (m_current_str.size() < g_player_name_max_len)
-        {
-                if (input.key == SDLK_SPACE)
-                {
+        if (m_current_str.size() < g_player_name_max_len) {
+                if (input.key == SDLK_SPACE) {
                         m_current_str.push_back(' ');
 
                         return;
-                }
-                else if ((input.key >= 'a' && input.key <= 'z') ||
-                         (input.key >= 'A' && input.key <= 'Z') ||
-                         (input.key >= '0' && input.key <= '9'))
-                {
+                } else if ((input.key >= 'a' && input.key <= 'z') || (input.key >= 'A' && input.key <= 'Z') || (input.key >= '0' && input.key <= '9')) {
                         m_current_str.push_back(input.key);
 
                         return;
                 }
         }
 
-        if (!m_current_str.empty())
-        {
-                if (input.key == SDLK_BACKSPACE)
-                {
+        if (!m_current_str.empty()) {
+                if (input.key == SDLK_BACKSPACE) {
                         m_current_str.erase(m_current_str.end() - 1);
                 }
         }
@@ -756,9 +687,7 @@ void EnterNameState::draw()
         const int y_name = 3;
 
         const std::string name_str =
-                (m_current_str.size() < g_player_name_max_len) ?
-                m_current_str + "_" :
-                m_current_str;
+                (m_current_str.size() < g_player_name_max_len) ? m_current_str + "_" : m_current_str;
 
         const size_t name_x0 = screen_center_x - (g_player_name_max_len / 2);
         const size_t name_x1 = name_x0 + g_player_name_max_len - 1;

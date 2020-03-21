@@ -10,32 +10,25 @@
 #include "colors.hpp"
 #include "direction.hpp"
 
-
 struct InputData;
 
-
-enum class BinaryAnswer
-{
+enum class BinaryAnswer {
         no,
         yes,
         special
 };
 
-enum class AllowCenter
-{
+enum class AllowCenter {
         no,
         yes
 };
 
-enum class AllowSpaceCancel
-{
+enum class AllowSpaceCancel {
         no,
         yes
 };
 
-
-namespace query
-{
+namespace query {
 
 void init();
 

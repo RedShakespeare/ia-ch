@@ -11,12 +11,10 @@
 #include "rect.hpp"
 #include "sdl_base.hpp"
 
-
 // -----------------------------------------------------------------------------
 // io
 // -----------------------------------------------------------------------------
-namespace io
-{
+namespace io {
 
 void init()
 {
@@ -45,7 +43,6 @@ int gui_to_px_coords_y(const int)
 {
         return 0;
 }
-
 
 int map_to_px_coords_x(const int)
 {
@@ -210,13 +207,12 @@ InputData get()
         return d;
 }
 
-} // io
+} // namespace io
 
 // -----------------------------------------------------------------------------
 // sdl_base
 // -----------------------------------------------------------------------------
-namespace sdl_base
-{
+namespace sdl_base {
 
 void init() {}
 
@@ -229,25 +225,20 @@ std::string sdl_pref_dir()
         return "./";
 }
 
-} // sdl_base
+} // namespace sdl_base
 
 // -----------------------------------------------------------------------------
 // audio
 // -----------------------------------------------------------------------------
-namespace audio
-{
+namespace audio {
 
 void init() {}
 
 void cleanup() {}
 
-void play(const SfxId,
-          const int,
-          const int) {}
+void play(const SfxId, const int, const int) {}
 
-void play(const SfxId,
-          const Dir,
-          const int) {}
+void play(const SfxId, const Dir, const int) {}
 
 void try_play_amb(const int) {}
 
@@ -255,4 +246,4 @@ void play_music(const MusId) {}
 
 void fade_out_music() {}
 
-} // audio
+} // namespace audio

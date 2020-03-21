@@ -9,17 +9,14 @@
 
 #include "state.hpp"
 
-enum class InfoScreenType
-{
+enum class InfoScreenType {
         scrolling,
         single_screen
 };
 
-class InfoScreenState: public State
-{
+class InfoScreenState : public State {
 public:
-        InfoScreenState() 
-                = default;
+        InfoScreenState() = default;
 
 protected:
         int max_nr_lines_on_screen() const;

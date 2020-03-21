@@ -17,8 +17,7 @@
 class MapController;
 class MapBuilder;
 
-enum class MapType
-{
+enum class MapType {
         deep_one_lair,
         magic_pool,
         egypt,
@@ -29,12 +28,10 @@ enum class MapType
         trapez
 };
 
-
 // -----------------------------------------------------------------------------
 // map_builder
 // -----------------------------------------------------------------------------
-namespace map_builder
-{
+namespace map_builder {
 
 std::unique_ptr<MapBuilder> make(MapType map_type);
 
@@ -43,8 +40,7 @@ std::unique_ptr<MapBuilder> make(MapType map_type);
 // -----------------------------------------------------------------------------
 // MapBuilder
 // -----------------------------------------------------------------------------
-class MapBuilder
-{
+class MapBuilder {
 public:
         virtual ~MapBuilder() = default;
 
@@ -59,8 +55,7 @@ private:
 // -----------------------------------------------------------------------------
 // MapBuilderTemplateLevel
 // -----------------------------------------------------------------------------
-class MapBuilderTemplateLevel: public MapBuilder
-{
+class MapBuilderTemplateLevel : public MapBuilder {
 public:
         virtual ~MapBuilderTemplateLevel() = default;
 
@@ -90,8 +85,7 @@ private:
 // -----------------------------------------------------------------------------
 // MapBuilderStd
 // -----------------------------------------------------------------------------
-class MapBuilderStd: public MapBuilder
-{
+class MapBuilderStd : public MapBuilder {
 public:
         ~MapBuilderStd() = default;
 
@@ -104,8 +98,7 @@ private:
 // -----------------------------------------------------------------------------
 // MapBuilderDeepOneLair
 // -----------------------------------------------------------------------------
-class MapBuilderDeepOneLair: public MapBuilderTemplateLevel
-{
+class MapBuilderDeepOneLair : public MapBuilderTemplateLevel {
 public:
         MapBuilderDeepOneLair();
 
@@ -132,8 +125,7 @@ private:
 // -----------------------------------------------------------------------------
 // MapBuilderMagicPool
 // -----------------------------------------------------------------------------
-class MapBuilderMagicPool: public MapBuilderTemplateLevel
-{
+class MapBuilderMagicPool : public MapBuilderTemplateLevel {
 public:
         MapBuilderMagicPool();
 
@@ -158,11 +150,9 @@ private:
 // -----------------------------------------------------------------------------
 // MapBuilderIntroForest
 // -----------------------------------------------------------------------------
-class MapBuilderIntroForest: public MapBuilderTemplateLevel
-{
+class MapBuilderIntroForest : public MapBuilderTemplateLevel {
 public:
-        MapBuilderIntroForest() 
-                = default;
+        MapBuilderIntroForest() = default;
 
         ~MapBuilderIntroForest() = default;
 
@@ -187,8 +177,7 @@ private:
 // -----------------------------------------------------------------------------
 // MapBuilderEgypt
 // -----------------------------------------------------------------------------
-class MapBuilderEgypt: public MapBuilderTemplateLevel
-{
+class MapBuilderEgypt : public MapBuilderTemplateLevel {
 public:
         MapBuilderEgypt();
 
@@ -210,11 +199,9 @@ private:
 // -----------------------------------------------------------------------------
 // MapBuilderRatCave
 // -----------------------------------------------------------------------------
-class MapBuilderRatCave: public MapBuilderTemplateLevel
-{
+class MapBuilderRatCave : public MapBuilderTemplateLevel {
 public:
-        MapBuilderRatCave() 
-                = default;
+        MapBuilderRatCave() = default;
 
         ~MapBuilderRatCave() = default;
 
@@ -232,11 +219,9 @@ private:
 // -----------------------------------------------------------------------------
 // MapBuilderBoss
 // -----------------------------------------------------------------------------
-class MapBuilderBoss: public MapBuilderTemplateLevel
-{
+class MapBuilderBoss : public MapBuilderTemplateLevel {
 public:
-        MapBuilderBoss() 
-                = default;
+        MapBuilderBoss() = default;
 
         ~MapBuilderBoss() = default;
 
@@ -261,11 +246,9 @@ private:
 // -----------------------------------------------------------------------------
 // MapBuilderTrapez
 // -----------------------------------------------------------------------------
-class MapBuilderTrapez: public MapBuilderTemplateLevel
-{
+class MapBuilderTrapez : public MapBuilderTemplateLevel {
 public:
-        MapBuilderTrapez() 
-                = default;
+        MapBuilderTrapez() = default;
 
         virtual ~MapBuilderTrapez() = default;
 

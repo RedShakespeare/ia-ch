@@ -18,7 +18,6 @@ static R s_panels[(size_t)Panel::END];
 
 static bool s_is_valid;
 
-
 static void set_panel_area(
         const Panel panel,
         const int x0,
@@ -31,7 +30,7 @@ static void set_panel_area(
 
 static void set_x0(const Panel panel, int x)
 {
-        R& r =  s_panels[(size_t)panel];
+        R& r = s_panels[(size_t)panel];
 
         const int w = r.w();
 
@@ -41,7 +40,7 @@ static void set_x0(const Panel panel, int x)
 
 static void set_y0(const Panel panel, int y)
 {
-        R& r =  s_panels[(size_t)panel];
+        R& r = s_panels[(size_t)panel];
 
         const int h = r.h();
 
@@ -51,7 +50,7 @@ static void set_y0(const Panel panel, int y)
 
 static void set_w(const Panel panel, int w)
 {
-        R& r =  s_panels[(size_t)panel];
+        R& r = s_panels[(size_t)panel];
 
         r.p1.x = r.p0.x + w - 1;
 }
@@ -60,8 +59,7 @@ static void finalize_screen_dims()
 {
         R& screen = s_panels[(size_t)Panel::screen];
 
-        for (const R& panel : s_panels)
-        {
+        for (const R& panel : s_panels) {
                 screen.p1.x = std::max(screen.p1.x, panel.p1.x);
                 screen.p1.y = std::max(screen.p1.y, panel.p1.y);
         }
@@ -81,15 +79,13 @@ static void validate_panels(const P max_gui_dims)
 
         const R& screen = s_panels[(size_t)Panel::screen];
 
-        for (const R& panel : s_panels)
-        {
+        for (const R& panel : s_panels) {
                 if ((panel.p1.x >= max_gui_dims.x) ||
                     (panel.p1.y >= max_gui_dims.y) ||
                     (panel.p1.x > screen.p1.x) ||
                     (panel.p1.y > screen.p1.y) ||
                     (panel.p0.x > panel.p1.x) ||
-                    (panel.p0.y > panel.p1.y))
-                {
+                    (panel.p0.y > panel.p1.y)) {
                         TRACE << "Window too small for panel requiring size: "
                               << panel.p1.x
                               << ", "
@@ -113,8 +109,7 @@ static void validate_panels(const P max_gui_dims)
         const P min_gui_dims = io::min_screen_gui_dims();
 
         if ((screen.p1.x + 1) < min_gui_dims.x ||
-            (screen.p1.y + 1) < min_gui_dims.y)
-        {
+            (screen.p1.y + 1) < min_gui_dims.y) {
                 TRACE << "Window too small for static minimum screen limit: "
                       << min_gui_dims.x
                       << ", "
@@ -125,12 +120,9 @@ static void validate_panels(const P max_gui_dims)
         }
 
 #ifndef NDEBUG
-        if (s_is_valid)
-        {
+        if (s_is_valid) {
                 TRACE << "Panels OK" << std::endl;
-        }
-        else
-        {
+        } else {
                 TRACE << "Panels NOT OK" << std::endl;
         }
 #endif // NDDEBUG
@@ -141,8 +133,7 @@ static void validate_panels(const P max_gui_dims)
 // -----------------------------------------------------------------------------
 // panels
 // -----------------------------------------------------------------------------
-namespace panels
-{
+namespace panels {
 
 void init(const P max_gui_dims)
 {
@@ -154,8 +145,7 @@ void init(const P max_gui_dims)
               << max_gui_dims.y
               << std::endl;
 
-        for (auto& panel : s_panels)
-        {
+        for (auto& panel : s_panels) {
                 panel = R(0, 0, 0, 0);
         }
 

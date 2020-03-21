@@ -9,9 +9,7 @@
 #include "debug.hpp"
 #include "sdl_base.hpp"
 
-
-namespace paths
-{
+namespace paths {
 
 std::string gfx_dir()
 {

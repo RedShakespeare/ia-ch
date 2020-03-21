@@ -7,20 +7,15 @@
 #ifndef RELOAD_HPP
 #define RELOAD_HPP
 
-
-namespace item
-{
+namespace item {
 class Item;
 } // namespace item
 
-namespace actor
-{
+namespace actor {
 class Actor;
 } // namespace actor
 
-
-namespace reload
-{
+namespace reload {
 
 void try_reload(actor::Actor& actor, item::Item* item_to_reload);
 

@@ -16,7 +16,6 @@
 // -----------------------------------------------------------------------------
 static P s_p0;
 
-
 static P get_view_dims()
 {
         return io::gui_to_map_coords(panels::dims(Panel::map));
@@ -25,8 +24,7 @@ static P get_view_dims()
 // -----------------------------------------------------------------------------
 // viewport
 // -----------------------------------------------------------------------------
-namespace viewport
-{
+namespace viewport {
 
 R get_map_view_area()
 {

@@ -10,15 +10,11 @@
 #include <string>
 #include <vector>
 
-
-namespace actor
-{
+namespace actor {
 class Actor;
 } // namespace actor
 
-
-enum class InsSymptId
-{
+enum class InsSymptId {
         reduce_xp,
         scream,
         babbling,
@@ -41,15 +37,12 @@ enum class InsSymptId
         END
 };
 
-enum class InsSymptType
-{
+enum class InsSymptType {
         phobia,
         misc
 };
 
-
-class InsSympt
-{
+class InsSympt {
 public:
         InsSympt() = default;
 
@@ -111,11 +104,9 @@ protected:
         }
 };
 
-class InsReduceXp : public InsSympt
-{
+class InsReduceXp : public InsSympt {
 public:
-        InsReduceXp() 
-                = default;
+        InsReduceXp() = default;
 
         InsSymptId id() const override
         {
@@ -150,11 +141,9 @@ protected:
         }
 };
 
-class InsScream : public InsSympt
-{
+class InsScream : public InsSympt {
 public:
-        InsScream() 
-                = default;
+        InsScream() = default;
 
         InsSymptId id() const override
         {
@@ -189,11 +178,9 @@ protected:
         }
 };
 
-class InsBabbling : public InsSympt
-{
+class InsBabbling : public InsSympt {
 public:
-        InsBabbling() 
-                = default;
+        InsBabbling() = default;
 
         InsSymptId id() const override
         {
@@ -254,11 +241,9 @@ protected:
         }
 };
 
-class InsFaint : public InsSympt
-{
+class InsFaint : public InsSympt {
 public:
-        InsFaint() 
-                = default;
+        InsFaint() = default;
 
         InsSymptId id() const override
         {
@@ -296,11 +281,9 @@ protected:
         }
 };
 
-class InsLaugh : public InsSympt
-{
+class InsLaugh : public InsSympt {
 public:
-        InsLaugh() 
-                = default;
+        InsLaugh() = default;
 
         InsSymptId id() const override
         {
@@ -336,11 +319,9 @@ protected:
         }
 };
 
-class InsPhobiaRat : public InsSympt
-{
+class InsPhobiaRat : public InsSympt {
 public:
-        InsPhobiaRat() 
-                = default;
+        InsPhobiaRat() = default;
 
         InsSymptId id() const override
         {
@@ -401,11 +382,9 @@ protected:
         }
 };
 
-class InsPhobiaSpider : public InsSympt
-{
+class InsPhobiaSpider : public InsSympt {
 public:
-        InsPhobiaSpider() 
-                = default;
+        InsPhobiaSpider() = default;
 
         InsSymptId id() const override
         {
@@ -466,11 +445,9 @@ protected:
         }
 };
 
-class InsPhobiaReptileAndAmph : public InsSympt
-{
+class InsPhobiaReptileAndAmph : public InsSympt {
 public:
-        InsPhobiaReptileAndAmph() 
-                = default;
+        InsPhobiaReptileAndAmph() = default;
 
         InsSymptId id() const override
         {
@@ -531,11 +508,9 @@ protected:
         }
 };
 
-class InsPhobiaCanine : public InsSympt
-{
+class InsPhobiaCanine : public InsSympt {
 public:
-        InsPhobiaCanine() 
-                = default;
+        InsPhobiaCanine() = default;
 
         InsSymptId id() const override
         {
@@ -596,11 +571,9 @@ protected:
         }
 };
 
-class InsPhobiaDead : public InsSympt
-{
+class InsPhobiaDead : public InsSympt {
 public:
-        InsPhobiaDead() 
-                = default;
+        InsPhobiaDead() = default;
 
         InsSymptId id() const override
         {
@@ -661,11 +634,9 @@ protected:
         }
 };
 
-class InsPhobiaDeep : public InsSympt
-{
+class InsPhobiaDeep : public InsSympt {
 public:
-        InsPhobiaDeep() 
-                = default;
+        InsPhobiaDeep() = default;
 
         InsSymptId id() const override
         {
@@ -726,11 +697,9 @@ protected:
         }
 };
 
-class InsPhobiaDark : public InsSympt
-{
+class InsPhobiaDark : public InsSympt {
 public:
-        InsPhobiaDark() 
-                = default;
+        InsPhobiaDark() = default;
 
         InsSymptId id() const override
         {
@@ -791,11 +760,9 @@ protected:
         }
 };
 
-class InsMasoch : public InsSympt
-{
+class InsMasoch : public InsSympt {
 public:
-        InsMasoch() 
-                = default;
+        InsMasoch() = default;
 
         InsSymptId id() const override
         {
@@ -828,9 +795,9 @@ protected:
         std::string start_msg() const override
         {
                 return "To my alarm, I find myself encouraged by the sensation "
-                        "of pain. Physical suffering does not bother me at "
-                        "all, and severe wounds even thrill me. However, my "
-                        "depraved mind will never find complete peace.";
+                       "of pain. Physical suffering does not bother me at "
+                       "all, and severe wounds even thrill me. However, my "
+                       "depraved mind will never find complete peace.";
         }
 
         std::string start_heading() const override
@@ -854,11 +821,9 @@ protected:
         }
 };
 
-class InsSadism : public InsSympt
-{
+class InsSadism : public InsSympt {
 public:
-        InsSadism() 
-                = default;
+        InsSadism() = default;
 
         InsSymptId id() const override
         {
@@ -891,9 +856,9 @@ protected:
         std::string start_msg() const override
         {
                 return "To my alarm, I find myself encouraged by the pain I "
-                        "cause in others. For every significant life I take, I "
-                        "find a little relief. However, my depraved mind will "
-                        "never find complete peace.";
+                       "cause in others. For every significant life I take, I "
+                       "find a little relief. However, my depraved mind will "
+                       "never find complete peace.";
         }
 
         std::string start_heading() const override
@@ -917,11 +882,9 @@ protected:
         }
 };
 
-class InsShadows : public InsSympt
-{
+class InsShadows : public InsSympt {
 public:
-        InsShadows() 
-                = default;
+        InsShadows() = default;
 
         InsSymptId id() const override
         {
@@ -957,11 +920,9 @@ protected:
         }
 };
 
-class InsParanoia : public InsSympt
-{
+class InsParanoia : public InsSympt {
 public:
-        InsParanoia() 
-                = default;
+        InsParanoia() = default;
 
         InsSymptId id() const override
         {
@@ -984,7 +945,7 @@ protected:
         std::string start_msg() const override
         {
                 return "Is there someone following me? Or is it panic taking "
-                        "over?";
+                       "over?";
         }
 
         std::string start_heading() const override
@@ -998,11 +959,9 @@ protected:
         }
 };
 
-class InsConfusion : public InsSympt
-{
+class InsConfusion : public InsSympt {
 public:
-        InsConfusion() 
-                = default;
+        InsConfusion() = default;
 
         InsSymptId id() const override
         {
@@ -1027,7 +986,7 @@ protected:
         std::string start_msg() const override
         {
                 return "I find myself in a peculiar trance. I struggle to "
-                        "recall where I am, and what is happening.";
+                       "recall where I am, and what is happening.";
         }
 
         std::string start_heading() const override
@@ -1041,11 +1000,9 @@ protected:
         }
 };
 
-class InsFrenzy : public InsSympt
-{
+class InsFrenzy : public InsSympt {
 public:
-        InsFrenzy() 
-                = default;
+        InsFrenzy() = default;
 
         InsSymptId id() const override
         {
@@ -1083,11 +1040,9 @@ protected:
         }
 };
 
-class InsStrangeSensation : public InsSympt
-{
+class InsStrangeSensation : public InsSympt {
 public:
-        InsStrangeSensation() 
-                = default;
+        InsStrangeSensation() = default;
 
         InsSymptId id() const override
         {
@@ -1108,7 +1063,7 @@ protected:
         std::string start_msg() const override
         {
                 return "There is a strange itch, as if something is crawling "
-                        "on the back of my neck.";
+                       "on the back of my neck.";
         }
 
         std::string start_heading() const override
@@ -1122,9 +1077,7 @@ protected:
         }
 };
 
-
-namespace insanity
-{
+namespace insanity {
 
 void init();
 void cleanup();

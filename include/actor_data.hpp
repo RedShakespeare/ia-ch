@@ -14,7 +14,6 @@
 
 #include "ability_values.hpp"
 #include "audio.hpp"
-#include "audio.hpp"
 #include "global.hpp"
 #include "item_att_property.hpp"
 #include "item_data.hpp"
@@ -22,12 +21,9 @@
 #include "room.hpp"
 #include "spells.hpp"
 
+namespace actor {
 
-namespace actor
-{
-
-enum class Id
-{
+enum class Id {
         player,
         zombie,
         bloated_zombie,
@@ -112,8 +108,7 @@ enum class Id
         END
 };
 
-enum class MonGroupSize
-{
+enum class MonGroupSize {
         alone,
         few,
         pack,
@@ -124,22 +119,19 @@ const std::unordered_map<std::string, MonGroupSize> g_str_to_group_size_map = {
         {"alone", MonGroupSize::alone},
         {"few", MonGroupSize::few},
         {"pack", MonGroupSize::pack},
-        {"swarm", MonGroupSize::swarm}
-};
+        {"swarm", MonGroupSize::swarm}};
 
 const std::unordered_map<MonGroupSize, std::string> g_group_size_to_str_map = {
         {MonGroupSize::alone, "alone"},
         {MonGroupSize::few, "few"},
         {MonGroupSize::pack, "pack"},
-        {MonGroupSize::swarm, "swarm"}
-};
+        {MonGroupSize::swarm, "swarm"}};
 
 // Each actor data entry has a list of this struct, this is used for choosing
 // group sizes when spawning monsters. The size of the group spawned is
 // determined by a weighted random choice (so that a certain monster could for
 // example usually spawn alone, but on some rare occasions spawn in big groups).
-struct MonGroupSpawnRule
-{
+struct MonGroupSpawnRule {
         MonGroupSpawnRule() :
                 group_size(MonGroupSize::alone),
                 weight(1) {}
@@ -152,15 +144,13 @@ struct MonGroupSpawnRule
         int weight;
 };
 
-struct ActorItemSetData
-{
+struct ActorItemSetData {
         item::ItemSetId item_set_id {(item::ItemSetId)0};
         int pct_chance_to_spawn {100};
         Range nr_spawned_range {1, 1};
 };
 
-struct IntrAttData
-{
+struct IntrAttData {
         IntrAttData() = default;
 
         ~IntrAttData() = default;
@@ -170,23 +160,20 @@ struct IntrAttData
         ItemAttProp prop_applied {};
 };
 
-struct ActorSpellData
-{
+struct ActorSpellData {
         SpellId spell_id {SpellId::END};
         SpellSkill spell_skill {SpellSkill::basic};
         int pct_chance_to_know {100};
 };
 
-enum class Speed
-{
+enum class Speed {
         slow,
         normal,
         fast,
         very_fast,
 };
 
-enum class Size
-{
+enum class Size {
         floor,
         humanoid,
         giant
@@ -195,17 +182,14 @@ enum class Size
 const std::unordered_map<std::string, Size> g_str_to_actor_size_map = {
         {"floor", Size::floor},
         {"humanoid", Size::humanoid},
-        {"giant", Size::giant}
-};
+        {"giant", Size::giant}};
 
 const std::unordered_map<Size, std::string> g_actor_size_to_str_map = {
         {Size::floor, "floor"},
         {Size::humanoid, "humanoid"},
-        {Size::giant, "giant"}
-};
+        {Size::giant, "giant"}};
 
-enum class AiId
-{
+enum class AiId {
         looks,
         avoids_blocking_friend,
         attacks,
@@ -225,8 +209,7 @@ const std::unordered_map<std::string, AiId> g_str_to_ai_id_map = {
         {"moves_to_target_when_los", AiId::moves_to_target_when_los},
         {"moves_to_lair", AiId::moves_to_lair},
         {"moves_to_leader", AiId::moves_to_leader},
-        {"moves_randomly_when_unaware", AiId::moves_randomly_when_unaware}
-};
+        {"moves_randomly_when_unaware", AiId::moves_randomly_when_unaware}};
 
 const std::unordered_map<AiId, std::string> g_ai_id_to_str_map = {
         {AiId::looks, "looks"},
@@ -236,11 +219,9 @@ const std::unordered_map<AiId, std::string> g_ai_id_to_str_map = {
         {AiId::moves_to_target_when_los, "moves_to_target_when_los"},
         {AiId::moves_to_lair, "moves_to_lair"},
         {AiId::moves_to_leader, "moves_to_leader"},
-        {AiId::moves_randomly_when_unaware, "moves_randomly_when_unaware"}
-};
+        {AiId::moves_randomly_when_unaware, "moves_randomly_when_unaware"}};
 
-struct ActorData
-{
+struct ActorData {
         ActorData()
         {
                 reset();
@@ -313,9 +294,7 @@ struct ActorData
         std::vector<Id> starting_allies;
 };
 
-
 extern ActorData g_data[(size_t)Id::END];
-
 
 void init();
 

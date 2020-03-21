@@ -9,9 +9,7 @@
 
 #include "terrain.hpp"
 
-
-enum class DoorSpawnState
-{
+enum class DoorSpawnState {
         open,
         closed,
         stuck,
@@ -20,19 +18,15 @@ enum class DoorSpawnState
         any
 };
 
-enum class DoorType
-{
+enum class DoorType {
         wood,
         metal,
         gate
 };
 
+namespace terrain {
 
-namespace terrain
-{
-
-class Door: public Terrain
-{
+class Door : public Terrain {
 public:
         Door(const P& terrain_pos,
 
@@ -130,8 +124,7 @@ public:
 
         static bool is_tile_any_door(const TileId tile)
         {
-                return
-                        tile == TileId::door_closed ||
+                return tile == TileId::door_closed ||
                         tile == TileId::door_open;
         }
 

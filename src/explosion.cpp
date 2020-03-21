@@ -27,23 +27,20 @@
 // -----------------------------------------------------------------------------
 // Private
 // -----------------------------------------------------------------------------
-static std::vector< std::vector<P> > cells_reached(
+static std::vector<std::vector<P>> cells_reached(
         const R& area,
         const P& origin,
         const ExplExclCenter exclude_center,
         const Array2<bool>& blocked)
 {
-        std::vector< std::vector<P> > out;
+        std::vector<std::vector<P>> out;
 
-        for (int y = area.p0.y; y <= area.p1.y; ++y)
-        {
-                for (int x = area.p0.x; x <= area.p1.x; ++x)
-                {
+        for (int y = area.p0.y; y <= area.p1.y; ++y) {
+                for (int x = area.p0.x; x <= area.p1.x; ++x) {
                         const P pos(x, y);
 
                         if (exclude_center == ExplExclCenter::yes &&
-                            pos == origin)
-                        {
+                            pos == origin) {
                                 continue;
                         }
 
@@ -51,8 +48,7 @@ static std::vector< std::vector<P> > cells_reached(
 
                         bool is_reached = true;
 
-                        if (dist > 1)
-                        {
+                        if (dist > 1) {
                                 const auto path =
                                         line_calc::calc_new_line(
                                                 origin,
@@ -61,20 +57,16 @@ static std::vector< std::vector<P> > cells_reached(
                                                 999,
                                                 false);
 
-                                for (const P& path_pos : path)
-                                {
-                                        if (blocked.at(path_pos))
-                                        {
+                                for (const P& path_pos : path) {
+                                        if (blocked.at(path_pos)) {
                                                 is_reached = false;
                                                 break;
                                         }
                                 }
                         }
 
-                        if (is_reached)
-                        {
-                                if ((int)out.size() <= dist)
-                                {
+                        if (is_reached) {
+                                if ((int)out.size() <= dist) {
                                         out.resize(dist + 1);
                                 }
 
@@ -86,21 +78,22 @@ static std::vector< std::vector<P> > cells_reached(
         return out;
 }
 
-static void draw(const std::vector< std::vector<P> >& pos_lists,
-                 const Array2<bool>& blocked,
-                 const Color color_override)
+static void draw(
+        const std::vector<std::vector<P>>& pos_lists,
+        const Array2<bool>& blocked,
+        const Color color_override)
 {
         states::draw();
 
         const Color& color_inner =
-                color_override.is_defined() ?
-                color_override :
-                colors::yellow();
+                color_override.is_defined()
+                ? color_override
+                : colors::yellow();
 
         const Color& color_outer =
-                color_override.is_defined() ?
-                color_override :
-                colors::light_red();
+                color_override.is_defined()
+                ? color_override
+                : colors::light_red();
 
         const bool is_tiles = config::is_tiles_mode();
 
@@ -108,30 +101,26 @@ static void draw(const std::vector< std::vector<P> >& pos_lists,
 
         bool is_any_cell_seen_by_player = false;
 
-        for (int i_anim = 0; i_anim < nr_anim_steps; i_anim++)
-        {
+        for (int i_anim = 0; i_anim < nr_anim_steps; i_anim++) {
                 const TileId tile =
-                        (i_anim == 0) ?
-                        TileId::blast1 : TileId::blast2;
+                        (i_anim == 0) ? TileId::blast1 : TileId::blast2;
 
                 const int nr_outer = pos_lists.size();
 
-                for (int i_outer = 0; i_outer < nr_outer; i_outer++)
-                {
+                for (int i_outer = 0; i_outer < nr_outer; i_outer++) {
                         const Color& color =
-                                (i_outer == nr_outer - 1) ?
-                                color_outer : color_inner;
+                                (i_outer == nr_outer - 1)
+                                ? color_outer
+                                : color_inner;
 
                         const std::vector<P>& inner = pos_lists[i_outer];
 
-                        for (const P& pos : inner)
-                        {
+                        for (const P& pos : inner) {
                                 const auto& cell = map::g_cells.at(pos);
 
                                 if (cell.is_seen_by_player &&
                                     !blocked.at(pos) &&
-                                    viewport::is_in_view(pos))
-                                {
+                                    viewport::is_in_view(pos)) {
                                         is_any_cell_seen_by_player = true;
 
                                         io::draw_symbol(
@@ -144,8 +133,7 @@ static void draw(const std::vector< std::vector<P> >& pos_lists,
                         }
                 }
 
-                if (is_any_cell_seen_by_player)
-                {
+                if (is_any_cell_seen_by_player) {
                         io::update_screen();
 
                         sdl_base::sleep(
@@ -176,10 +164,8 @@ static void apply_explosion_on_pos(
                 nullptr);
 
         // Damage living actor
-        if (living_actor)
-        {
-                if (living_actor->is_player())
-                {
+        if (living_actor) {
+                if (living_actor->is_player()) {
                         msg_log::add(
                                 "I am hit by an explosion!",
                                 colors::msg_bad());
@@ -187,8 +173,7 @@ static void apply_explosion_on_pos(
 
                 actor::hit(*living_actor, dmg, DmgType::physical);
 
-                if (living_actor->is_alive() && living_actor->is_player())
-                {
+                if (living_actor->is_alive() && living_actor->is_player()) {
                         // Player survived being hit by an explosion, that's
                         // pretty cool!
                         game::add_history_event("Survived an explosion");
@@ -196,14 +181,12 @@ static void apply_explosion_on_pos(
         }
 
         // Damage dead actors
-        for (auto* corpse : corpses_here)
-        {
+        for (auto* corpse : corpses_here) {
                 actor::hit(*corpse, dmg, DmgType::physical);
         }
 
         // Add smoke
-        if (rnd::fraction(6, 10))
-        {
+        if (rnd::fraction(6, 10)) {
                 game_time::add_mob(new terrain::Smoke(pos, rnd::range(2, 4)));
         }
 }
@@ -217,17 +200,13 @@ static void apply_explosion_property_on_pos(
 {
         bool should_apply_on_living_actor = true;
 
-        if (living_actor)
-        {
-                if (is_gas == ExplIsGas::yes)
-                {
-                        if (living_actor->m_properties.has(PropId::r_breath))
-                        {
+        if (living_actor) {
+                if (is_gas == ExplIsGas::yes) {
+                        if (living_actor->m_properties.has(PropId::r_breath)) {
                                 should_apply_on_living_actor = false;
                         }
 
-                        if (living_actor == map::g_player)
-                        {
+                        if (living_actor == map::g_player) {
                                 // Do not apply effect if wearing Gas Mask, and
                                 // this is a gas explosion
                                 const auto* const head_item =
@@ -236,20 +215,17 @@ static void apply_explosion_property_on_pos(
 
                                 if ((is_gas == ExplIsGas::yes) &&
                                     head_item &&
-                                    (head_item->id() == item::Id::gas_mask))
-                                {
+                                    (head_item->id() == item::Id::gas_mask)) {
                                         should_apply_on_living_actor = false;
                                 }
                         }
                 }
-        }
-        else // No living actor here
+        } else // No living actor here
         {
                 should_apply_on_living_actor = false;
         }
 
-        if (should_apply_on_living_actor)
-        {
+        if (should_apply_on_living_actor) {
                 Prop* const prop_cpy = property_factory::make(property->id());
 
                 prop_cpy->set_duration(property->nr_turns_left());
@@ -259,8 +235,7 @@ static void apply_explosion_property_on_pos(
 
         // If property is burning, also apply it to corpses and the
         // environment
-        if (property->id() == PropId::burning)
-        {
+        if (property->id() == PropId::burning) {
                 Cell& cell = map::g_cells.at(pos);
 
                 cell.terrain->hit(
@@ -269,8 +244,7 @@ static void apply_explosion_property_on_pos(
                         DmgMethod::elemental,
                         nullptr);
 
-                for (auto* corpse : corpses_here)
-                {
+                for (auto* corpse : corpses_here) {
                         Prop* const prop_cpy =
                                 property_factory::make(property->id());
 
@@ -284,17 +258,17 @@ static void apply_explosion_property_on_pos(
 // -----------------------------------------------------------------------------
 // explosion
 // -----------------------------------------------------------------------------
-namespace explosion
-{
+namespace explosion {
 
-void run(const P& origin,
-         const ExplType expl_type,
-         const EmitExplSnd emit_expl_snd,
-         const int radi_change,
-         const ExplExclCenter exclude_center,
-         std::vector<Prop*> properties_applied,
-         const Color color_override,
-         const ExplIsGas is_gas)
+void run(
+        const P& origin,
+        const ExplType expl_type,
+        const EmitExplSnd emit_expl_snd,
+        const int radi_change,
+        const ExplExclCenter exclude_center,
+        std::vector<Prop*> properties_applied,
+        const Color color_override,
+        const ExplIsGas is_gas)
 {
         const int radi = g_expl_std_radi + radi_change;
 
@@ -302,8 +276,7 @@ void run(const P& origin,
 
         Array2<bool> blocked(map::dims());
 
-        map_parsers::BlocksProjectiles().
-                run(blocked, area);
+        map_parsers::BlocksProjectiles().run(blocked, area);
 
         auto pos_lists =
                 cells_reached(
@@ -312,8 +285,7 @@ void run(const P& origin,
                         exclude_center,
                         blocked);
 
-        if (emit_expl_snd == EmitExplSnd::yes)
-        {
+        if (emit_expl_snd == EmitExplSnd::yes) {
                 Snd snd("I hear an explosion!",
                         SfxId::explosion,
                         IgnoreMsgIfOriginSeen::yes,
@@ -330,45 +302,37 @@ void run(const P& origin,
         // Do damage, apply effect
         Array2<actor::Actor*> living_actors(map::dims());
 
-        Array2< std::vector<actor::Actor*> > corpses(map::dims());
+        Array2<std::vector<actor::Actor*>> corpses(map::dims());
 
         const size_t len = map::nr_cells();
 
-        for (size_t i = 0; i < len; ++i)
-        {
+        for (size_t i = 0; i < len; ++i) {
                 living_actors.at(i) = nullptr;
 
                 corpses.at(i).clear();
         }
 
-        for (auto* actor : game_time::g_actors)
-        {
+        for (auto* actor : game_time::g_actors) {
                 const P& pos = actor->m_pos;
 
-                if (actor->is_alive())
-                {
+                if (actor->is_alive()) {
                         living_actors.at(pos) = actor;
-                }
-                else if (actor->is_corpse())
-                {
+                } else if (actor->is_corpse()) {
                         corpses.at(pos).push_back(actor);
                 }
         }
 
         const int nr_outer = pos_lists.size();
 
-        for (int dist = 0; dist < nr_outer; ++dist)
-        {
+        for (int dist = 0; dist < nr_outer; ++dist) {
                 const std::vector<P>& positions_at_dist = pos_lists[dist];
 
-                for (const P& pos : positions_at_dist)
-                {
+                for (const P& pos : positions_at_dist) {
                         actor::Actor* living_actor = living_actors.at(pos);
 
                         auto corpses_here = corpses.at(pos);
 
-                        if (expl_type == ExplType::expl)
-                        {
+                        if (expl_type == ExplType::expl) {
                                 apply_explosion_on_pos(
                                         pos,
                                         dist,
@@ -376,8 +340,7 @@ void run(const P& origin,
                                         corpses_here);
                         }
 
-                        for (auto* property : properties_applied)
-                        {
+                        for (auto* property : properties_applied) {
                                 apply_explosion_property_on_pos(
                                         pos,
                                         property,
@@ -388,8 +351,7 @@ void run(const P& origin,
                 }
         }
 
-        for (auto* prop : properties_applied)
-        {
+        for (auto* prop : properties_applied) {
                 delete prop;
         }
 
@@ -425,12 +387,9 @@ void run_smoke_explosion_at(const P& origin, const int radi_change)
 
         snd_emit::run(snd);
 
-        for (const std::vector<P>& inner : pos_lists)
-        {
-                for (const P& pos : inner)
-                {
-                        if (!blocked.at(pos))
-                        {
+        for (const std::vector<P>& inner : pos_lists) {
+                for (const P& pos : inner) {
+                        if (!blocked.at(pos)) {
                                 game_time::add_mob(
                                         new terrain::Smoke(
                                                 pos, rnd::range(25, 30)));
@@ -443,10 +402,15 @@ void run_smoke_explosion_at(const P& origin, const int radi_change)
 
 R explosion_area(const P& c, const int radi)
 {
-        return R(P(std::max(c.x - radi, 1),
-                   std::max(c.y - radi, 1)),
-                 P(std::min(c.x + radi, map::w() - 2),
-                   std::min(c.y + radi, map::h() - 2)));
+        const P x0y0(
+                std::max(c.x - radi, 1),
+                std::max(c.y - radi, 1));
+
+        const P x1y1(
+                std::min(c.x + radi, map::w() - 2),
+                std::min(c.y + radi, map::h() - 2));
+
+        return {x0y0, x1y1};
 }
 
 } // namespace explosion

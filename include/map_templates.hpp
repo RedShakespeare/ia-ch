@@ -12,9 +12,7 @@
 #include "array2.hpp"
 #include "room.hpp"
 
-
-enum class LevelTemplId
-{
+enum class LevelTemplId {
         deep_one_lair,
         magic_pool,
         egypt,
@@ -25,8 +23,7 @@ enum class LevelTemplId
         END
 };
 
-struct RoomTempl
-{
+struct RoomTempl {
         RoomTempl() :
                 symbols(P(0, 0)),
                 type((RoomType)0),
@@ -42,15 +39,13 @@ struct RoomTempl
         size_t base_templ_idx;
 };
 
-enum class RoomTemplStatus
-{
+enum class RoomTemplStatus {
         unused,
         placed, // Plcaed on the map
-        used    // Included in a map which was not discarded
+        used // Included in a map which was not discarded
 };
 
-namespace map_templates
-{
+namespace map_templates {
 
 void init();
 

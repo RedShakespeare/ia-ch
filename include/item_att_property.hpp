@@ -11,9 +11,7 @@
 
 #include "property.hpp"
 
-
-struct ItemAttProp
-{
+struct ItemAttProp {
         ItemAttProp() :
                 prop(nullptr),
                 pct_chance_to_apply(100) {}

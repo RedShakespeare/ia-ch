@@ -9,17 +9,13 @@
 
 #include "global.hpp"
 
-
-namespace actor
-{
+namespace actor {
 class Actor;
 } // namespace actor
 
 struct P;
 
-
-namespace knockback
-{
+namespace knockback {
 
 void run(
         actor::Actor& defender,

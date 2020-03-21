@@ -15,18 +15,15 @@
 #include "pos.hpp"
 #include "terrain_data.hpp"
 
-
-namespace actor
-{
+namespace actor {
 class Actor;
 } // namespace actor
 
-namespace item
-{
+namespace item {
 class Item;
 } // namespace item
 
-template<typename T>
+template <typename T>
 class Array2;
 
 enum class AllowAction;
@@ -36,50 +33,40 @@ enum class DmgType;
 enum class Matl;
 enum class Verbose;
 
-
-enum class BurnState
-{
+enum class BurnState {
         not_burned,
         burning,
         has_burned
 };
 
-enum class WasDestroyed
-{
+enum class WasDestroyed {
         no,
         yes
 };
 
-enum class DidTriggerTrap
-{
+enum class DidTriggerTrap {
         no,
         yes
 };
 
-enum class DidOpen
-{
+enum class DidOpen {
         no,
         yes
 };
 
-enum class DidClose
-{
+enum class DidClose {
         no,
         yes
 };
 
-
-namespace terrain
-{
+namespace terrain {
 
 class Terrain;
 enum class Id;
 struct TerrainData;
 class Lever;
 
-
-class ItemContainer
-{
+class ItemContainer {
 public:
         ItemContainer();
 
@@ -94,9 +81,7 @@ public:
         std::vector<item::Item*> m_items;
 };
 
-
-class Terrain
-{
+class Terrain {
 public:
         Terrain(const P& p) :
                 m_pos(p) {}
@@ -219,7 +204,6 @@ public:
 
         virtual void on_placed()
         {
-
         }
 
         virtual void on_new_turn();
@@ -329,15 +313,13 @@ private:
         int m_nr_turns_color_corrupted {-1};
 };
 
-enum class FloorType
-{
+enum class FloorType {
         common,
         cave,
         stone_path
 };
 
-class Floor: public Terrain
-{
+class Floor : public Terrain {
 public:
         Floor(const P& p);
 
@@ -364,8 +346,7 @@ private:
                 actor::Actor* actor) override;
 };
 
-class Carpet: public Terrain
-{
+class Carpet : public Terrain {
 public:
         Carpet(const P& p);
 
@@ -390,14 +371,12 @@ private:
                 actor::Actor* actor) override;
 };
 
-enum class GrassType
-{
+enum class GrassType {
         common,
         withered
 };
 
-class Grass: public Terrain
-{
+class Grass : public Terrain {
 public:
         Grass(const P& p);
 
@@ -423,8 +402,7 @@ private:
                 actor::Actor* actor) override;
 };
 
-class Bush: public Terrain
-{
+class Bush : public Terrain {
 public:
         Bush(const P& p);
 
@@ -450,8 +428,7 @@ private:
                 actor::Actor* actor) override;
 };
 
-class Vines: public Terrain
-{
+class Vines : public Terrain {
 public:
         Vines(const P& p);
 
@@ -475,8 +452,7 @@ private:
                 actor::Actor* actor) override;
 };
 
-class Chains: public Terrain
-{
+class Chains : public Terrain {
 public:
         Chains(const P& p);
 
@@ -503,8 +479,7 @@ private:
                 actor::Actor* actor) override;
 };
 
-class Grate: public Terrain
-{
+class Grate : public Terrain {
 public:
         Grate(const P& p);
 
@@ -527,10 +502,10 @@ private:
                 actor::Actor* actor) override;
 };
 
-class Brazier: public Terrain
-{
+class Brazier : public Terrain {
 public:
-        Brazier(const P& p) : Terrain(p) {}
+        Brazier(const P& p) :
+                Terrain(p) {}
 
         Brazier() = delete;
 
@@ -553,8 +528,7 @@ private:
         void add_light_hook(Array2<bool>& light) const override;
 };
 
-enum class WallType
-{
+enum class WallType {
         common,
         common_alt,
         cave,
@@ -563,8 +537,7 @@ enum class WallType
         leng_monestary
 };
 
-class Wall: public Terrain
-{
+class Wall : public Terrain {
 public:
         Wall(const P& p);
 
@@ -599,8 +572,7 @@ private:
                 actor::Actor* actor) override;
 };
 
-class RubbleLow: public Terrain
-{
+class RubbleLow : public Terrain {
 public:
         RubbleLow(const P& p);
 
@@ -623,8 +595,7 @@ private:
                 actor::Actor* actor) override;
 };
 
-class Bones: public Terrain
-{
+class Bones : public Terrain {
 public:
         Bones(const P& p);
 
@@ -647,8 +618,7 @@ private:
                 actor::Actor* actor) override;
 };
 
-class RubbleHigh: public Terrain
-{
+class RubbleHigh : public Terrain {
 public:
         RubbleHigh(const P& p);
 
@@ -671,8 +641,7 @@ private:
                 actor::Actor* actor) override;
 };
 
-class GraveStone: public Terrain
-{
+class GraveStone : public Terrain {
 public:
         GraveStone(const P& p);
 
@@ -704,8 +673,7 @@ private:
         std::string m_inscr;
 };
 
-class ChurchBench: public Terrain
-{
+class ChurchBench : public Terrain {
 public:
         ChurchBench(const P& p);
 
@@ -728,14 +696,12 @@ private:
                 actor::Actor* actor) override;
 };
 
-enum class StatueType
-{
+enum class StatueType {
         common,
         ghoul
 };
 
-class Statue: public Terrain
-{
+class Statue : public Terrain {
 public:
         Statue(const P& p);
         Statue() = delete;
@@ -763,8 +729,7 @@ private:
         int base_shock_when_adj() const override;
 };
 
-class Stalagmite: public Terrain
-{
+class Stalagmite : public Terrain {
 public:
         Stalagmite(const P& p);
         Stalagmite() = delete;
@@ -786,8 +751,7 @@ private:
                 actor::Actor* actor) override;
 };
 
-class Stairs: public Terrain
-{
+class Stairs : public Terrain {
 public:
         Stairs(const P& p);
         Stairs() = delete;
@@ -813,8 +777,7 @@ private:
                 actor::Actor* actor) override;
 };
 
-class Bridge : public Terrain
-{
+class Bridge : public Terrain {
 public:
         Bridge(const P& p) :
                 Terrain(p),
@@ -847,8 +810,7 @@ private:
         Axis m_axis;
 };
 
-class LiquidShallow: public Terrain
-{
+class LiquidShallow : public Terrain {
 public:
         LiquidShallow(const P& p);
         LiquidShallow() = delete;
@@ -878,8 +840,7 @@ private:
         void run_magic_pool_effects_on_player();
 };
 
-class LiquidDeep: public Terrain
-{
+class LiquidDeep : public Terrain {
 public:
         LiquidDeep(const P& p);
         LiquidDeep() = delete;
@@ -913,8 +874,7 @@ private:
         bool must_swim_on_enter(const actor::Actor& actor) const;
 };
 
-class Chasm: public Terrain
-{
+class Chasm : public Terrain {
 public:
         Chasm(const P& p);
         Chasm() = delete;
@@ -936,8 +896,7 @@ private:
                 actor::Actor* actor) override;
 };
 
-class Lever: public Terrain
-{
+class Lever : public Terrain {
 public:
         Lever(const P& p);
 
@@ -998,8 +957,7 @@ private:
         std::vector<Lever*> m_sibblings;
 };
 
-class Altar: public Terrain
-{
+class Altar : public Terrain {
 public:
         Altar(const P& p);
 
@@ -1024,8 +982,7 @@ private:
                 actor::Actor* actor) override;
 };
 
-class Tree: public Terrain
-{
+class Tree : public Terrain {
 public:
         Tree(const P& p);
         Tree() = delete;
@@ -1062,25 +1019,22 @@ private:
 // removed, and instead an effect is just randomized when the tomb is
 // opened. But it should be kept the way it is; it could be useful. Maybe some
 // sort of hint will be re-implemented (e.g. via the "Detect Traps" spell).
-enum class TombTrait
-{
+enum class TombTrait {
         ghost,
-        other_undead,   // Zombies, Mummies, ...
-        stench,         // Fumes, Ooze-type monster
+        other_undead, // Zombies, Mummies, ...
+        stench, // Fumes, Ooze-type monster
         cursed,
         END
 };
 
-enum class TombAppearance
-{
-        common,     // Common items
-        ornate,     // Minor treasure
-        marvelous,  // Major treasure
+enum class TombAppearance {
+        common, // Common items
+        ornate, // Minor treasure
+        marvelous, // Major treasure
         END
 };
 
-class Tomb: public Terrain
-{
+class Tomb : public Terrain {
 public:
         Tomb(const P& pos);
         Tomb() = delete;
@@ -1116,15 +1070,13 @@ private:
         TombTrait m_trait;
 };
 
-enum class ChestMatl
-{
+enum class ChestMatl {
         wood,
         iron,
         END
 };
 
-class Chest: public Terrain
-{
+class Chest : public Terrain {
 public:
         Chest(const P& pos);
         Chest() = delete;
@@ -1142,10 +1094,7 @@ public:
 
         DidOpen open(actor::Actor* actor_opening) override;
 
-        void hit(int dmg,
-                 DmgType dmg_type,
-                 DmgMethod dmg_method,
-                 actor::Actor* actor) override;
+        void hit(int dmg, DmgType dmg_type, DmgMethod dmg_method, actor::Actor* actor) override;
 
 private:
         Color color_default() const override;
@@ -1164,8 +1113,7 @@ private:
         ChestMatl m_matl;
 };
 
-class Cabinet: public Terrain
-{
+class Cabinet : public Terrain {
 public:
         Cabinet(const P& pos);
         Cabinet() = delete;
@@ -1197,8 +1145,7 @@ private:
         bool m_is_open;
 };
 
-class Bookshelf: public Terrain
-{
+class Bookshelf : public Terrain {
 public:
         Bookshelf(const P& pos);
         Bookshelf() = delete;
@@ -1228,8 +1175,7 @@ private:
         bool m_is_looted;
 };
 
-class AlchemistBench: public Terrain
-{
+class AlchemistBench : public Terrain {
 public:
         AlchemistBench(const P& pos);
         AlchemistBench() = delete;
@@ -1259,8 +1205,7 @@ private:
         bool m_is_looted;
 };
 
-enum class FountainEffect
-{
+enum class FountainEffect {
         refreshing,
         xp,
 
@@ -1275,8 +1220,7 @@ enum class FountainEffect
         END
 };
 
-class Fountain: public Terrain
-{
+class Fountain : public Terrain {
 public:
         Fountain(const P& pos);
 
@@ -1330,8 +1274,7 @@ private:
         bool m_is_tried = {false};
 };
 
-class Cocoon: public Terrain
-{
+class Cocoon : public Terrain {
 public:
         Cocoon(const P& pos);
 

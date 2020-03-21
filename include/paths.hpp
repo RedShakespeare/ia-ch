@@ -9,8 +9,7 @@
 
 #include <string>
 
-namespace paths
-{
+namespace paths {
 
 std::string gfx_dir();
 

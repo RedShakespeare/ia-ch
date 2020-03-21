@@ -12,8 +12,7 @@
 #include "random.hpp"
 
 // NOTE: When updating this, also update the two maps below
-enum class PropId
-{
+enum class PropId {
         r_phys,
         r_fire,
         r_poison,
@@ -182,18 +181,15 @@ const std::unordered_map<std::string, PropId> g_str_to_prop_id_map = {
         {"terrified", PropId::terrified},
         {"vortex", PropId::vortex},
         {"weakened", PropId::weakened},
-        {"zuul_possess_priest", PropId::zuul_possess_priest}
-};
+        {"zuul_possess_priest", PropId::zuul_possess_priest}};
 
-enum class PropAlignment
-{
+enum class PropAlignment {
         good,
         bad,
         neutral
 };
 
-struct PropData
-{
+struct PropData {
         PropData() :
                 id(PropId::END),
                 std_rnd_turns(Range(10, 10)),
@@ -234,8 +230,7 @@ struct PropData
         PropAlignment alignment;
 };
 
-namespace property_data
-{
+namespace property_data {
 
 extern PropData g_data[(size_t)PropId::END];
 

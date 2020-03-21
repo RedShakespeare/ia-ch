@@ -13,15 +13,11 @@
 #include "global.hpp"
 #include "terrain.hpp"
 
-
-namespace terrain
-{
+namespace terrain {
 
 class TrapImpl;
 
-
-enum class TrapId
-{
+enum class TrapId {
         // Mechanical traps
         blinding,
         deafening,
@@ -49,15 +45,12 @@ enum class TrapId
         any
 };
 
-enum class TrapPlacementValid
-{
+enum class TrapPlacementValid {
         no,
         yes
 };
 
-
-class Trap: public Terrain
-{
+class Trap : public Terrain {
 public:
         Trap(const P& p, Terrain* mimic_terrain, TrapId id);
 
@@ -131,10 +124,7 @@ private:
         Color color_default() const override;
         Color color_bg_default() const override;
 
-        void on_hit(int dmg,
-                    DmgType dmg_type,
-                    DmgMethod dmg_method,
-                    actor::Actor* actor) override;
+        void on_hit(int dmg, DmgType dmg_type, DmgMethod dmg_method, actor::Actor* actor) override;
 
         DidTriggerTrap trigger_trap(actor::Actor* actor) override;
 
@@ -147,8 +137,7 @@ private:
         TrapImpl* m_trap_impl {nullptr};
 };
 
-class TrapImpl
-{
+class TrapImpl {
 protected:
         friend class Trap;
         TrapImpl(P p, TrapId type, Trap* const base_trap) :
@@ -203,8 +192,7 @@ protected:
         Trap* const m_base_trap;
 };
 
-class MechTrapImpl : public TrapImpl
-{
+class MechTrapImpl : public TrapImpl {
 protected:
         friend class Trap;
 
@@ -229,8 +217,7 @@ protected:
         }
 };
 
-class TrapDart: public MechTrapImpl
-{
+class TrapDart : public MechTrapImpl {
 private:
         friend class Trap;
 
@@ -239,9 +226,7 @@ private:
         std::string name(const Article article) const override
         {
                 std::string name =
-                        (article == Article::a) ?
-                        "a" :
-                        "the";
+                        (article == Article::a) ? "a" : "the";
 
                 name += " dart trap";
 
@@ -269,8 +254,7 @@ private:
         bool m_is_dart_origin_destroyed;
 };
 
-class TrapSpear: public MechTrapImpl
-{
+class TrapSpear : public MechTrapImpl {
 private:
         friend class Trap;
 
@@ -279,9 +263,7 @@ private:
         std::string name(const Article article) const override
         {
                 std::string name =
-                        (article == Article::a) ?
-                        "a" :
-                        "the";
+                        (article == Article::a) ? "a" : "the";
 
                 name += " spear trap";
 
@@ -309,8 +291,7 @@ private:
         bool m_is_spear_origin_destroyed;
 };
 
-class GasTrapImpl: public MechTrapImpl
-{
+class GasTrapImpl : public MechTrapImpl {
 protected:
         friend class Trap;
 
@@ -320,9 +301,7 @@ protected:
         std::string name(const Article article) const override
         {
                 std::string name =
-                        (article == Article::a) ?
-                        "a" :
-                        "the";
+                        (article == Article::a) ? "a" : "the";
 
                 name += " gas trap";
 
@@ -340,8 +319,7 @@ protected:
         }
 };
 
-class TrapGasConfusion: public GasTrapImpl
-{
+class TrapGasConfusion : public GasTrapImpl {
 private:
         friend class Trap;
 
@@ -351,8 +329,7 @@ private:
         void trigger() override;
 };
 
-class TrapGasParalyzation: public GasTrapImpl
-{
+class TrapGasParalyzation : public GasTrapImpl {
 private:
         friend class Trap;
 
@@ -362,8 +339,7 @@ private:
         void trigger() override;
 };
 
-class TrapGasFear: public GasTrapImpl
-{
+class TrapGasFear : public GasTrapImpl {
 private:
         friend class Trap;
 
@@ -373,8 +349,7 @@ private:
         void trigger() override;
 };
 
-class TrapBlindingFlash: public MechTrapImpl
-{
+class TrapBlindingFlash : public MechTrapImpl {
 private:
         friend class Trap;
 
@@ -384,9 +359,7 @@ private:
         std::string name(const Article article) const override
         {
                 std::string name =
-                        (article == Article::a) ?
-                        "a" :
-                        "the";
+                        (article == Article::a) ? "a" : "the";
 
                 name += " blinding trap";
 
@@ -406,8 +379,7 @@ private:
         }
 };
 
-class TrapDeafening: public MechTrapImpl
-{
+class TrapDeafening : public MechTrapImpl {
 private:
         friend class Trap;
 
@@ -417,9 +389,7 @@ private:
         std::string name(const Article article) const override
         {
                 std::string name =
-                        (article == Article::a) ?
-                        "a" :
-                        "the";
+                        (article == Article::a) ? "a" : "the";
 
                 name += " deafening trap";
 
@@ -439,8 +409,7 @@ private:
         }
 };
 
-class TrapSmoke: public MechTrapImpl
-{
+class TrapSmoke : public MechTrapImpl {
 private:
         friend class Trap;
 
@@ -450,9 +419,7 @@ private:
         std::string name(const Article article) const override
         {
                 std::string name =
-                        (article == Article::a) ?
-                        "a" :
-                        "the";
+                        (article == Article::a) ? "a" : "the";
 
                 name += " smoke trap";
 
@@ -472,8 +439,7 @@ private:
         }
 };
 
-class TrapFire: public MechTrapImpl
-{
+class TrapFire : public MechTrapImpl {
 private:
         friend class Trap;
 
@@ -483,9 +449,7 @@ private:
         std::string name(const Article article) const override
         {
                 std::string name =
-                        (article == Article::a) ?
-                        "a" :
-                        "the";
+                        (article == Article::a) ? "a" : "the";
 
                 name += " fire trap";
 
@@ -505,8 +469,7 @@ private:
         }
 };
 
-class TrapAlarm: public MechTrapImpl
-{
+class TrapAlarm : public MechTrapImpl {
 private:
         friend class Trap;
 
@@ -516,9 +479,7 @@ private:
         std::string name(const Article article) const override
         {
                 std::string name =
-                        (article == Article::a) ?
-                        "an" :
-                        "the";
+                        (article == Article::a) ? "an" : "the";
 
                 name += " alarm trap";
 
@@ -538,8 +499,7 @@ private:
         }
 };
 
-class TrapWeb: public MechTrapImpl
-{
+class TrapWeb : public MechTrapImpl {
 private:
         friend class Trap;
 
@@ -591,8 +551,7 @@ private:
         }
 };
 
-class MagicTrapImpl : public TrapImpl
-{
+class MagicTrapImpl : public TrapImpl {
 protected:
         friend class Trap;
 
@@ -641,8 +600,7 @@ protected:
         }
 };
 
-class TrapTeleport: public MagicTrapImpl
-{
+class TrapTeleport : public MagicTrapImpl {
 private:
         friend class Trap;
 
@@ -652,8 +610,7 @@ private:
         void trigger() override;
 };
 
-class TrapSummonMon: public MagicTrapImpl
-{
+class TrapSummonMon : public MagicTrapImpl {
 private:
         friend class Trap;
 
@@ -663,8 +620,7 @@ private:
         void trigger() override;
 };
 
-class TrapHpSap: public MagicTrapImpl
-{
+class TrapHpSap : public MagicTrapImpl {
 private:
         friend class Trap;
 
@@ -674,8 +630,7 @@ private:
         void trigger() override;
 };
 
-class TrapSpiSap: public MagicTrapImpl
-{
+class TrapSpiSap : public MagicTrapImpl {
 private:
         friend class Trap;
 
@@ -685,8 +640,7 @@ private:
         void trigger() override;
 };
 
-class TrapSlow: public MagicTrapImpl
-{
+class TrapSlow : public MagicTrapImpl {
 private:
         friend class Trap;
 
@@ -696,8 +650,7 @@ private:
         void trigger() override;
 };
 
-class TrapCurse: public MagicTrapImpl
-{
+class TrapCurse : public MagicTrapImpl {
 private:
         friend class Trap;
 
@@ -707,8 +660,7 @@ private:
         void trigger() override;
 };
 
-class TrapUnlearnSpell: public MagicTrapImpl
-{
+class TrapUnlearnSpell : public MagicTrapImpl {
 private:
         friend class Trap;
 

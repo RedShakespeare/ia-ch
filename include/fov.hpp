@@ -10,22 +10,19 @@
 #include "array2.hpp"
 #include "global.hpp"
 
-struct FovMap
-{
+struct FovMap {
         // NOTE: These fields are NOT optional, even though they are pointers
         const Array2<bool>* hard_blocked {nullptr};
         const Array2<bool>* light {nullptr};
         const Array2<bool>* dark {nullptr};
 };
 
-struct LosResult
-{
+struct LosResult {
         bool is_blocked_hard {false};
         bool is_blocked_by_dark {false};
 };
 
-namespace fov
-{
+namespace fov {
 
 R fov_rect(const P& p, const P& map_dims);
 

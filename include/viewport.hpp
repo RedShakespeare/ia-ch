@@ -7,13 +7,10 @@
 #ifndef VIEWPORT_HPP
 #define VIEWPORT_HPP
 
-
 struct P;
 struct R;
 
-
-namespace viewport
-{
+namespace viewport {
 
 R get_map_view_area();
 

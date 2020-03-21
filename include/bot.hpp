@@ -7,8 +7,7 @@
 #ifndef BOT_HPP
 #define BOT_HPP
 
-namespace bot
-{
+namespace bot {
 
 void init();
 

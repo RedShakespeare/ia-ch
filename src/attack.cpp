@@ -23,7 +23,6 @@
 #include "misc.hpp"
 #include "msg_log.hpp"
 #include "player_bon.hpp"
-#include "player_bon.hpp"
 #include "property.hpp"
 #include "property_data.hpp"
 #include "property_factory.hpp"
@@ -40,12 +39,9 @@
 // -----------------------------------------------------------------------------
 static const int s_nr_cell_jumps_mg_projectiles = 2;
 
+namespace {
 
-namespace
-{
-
-struct Projectile
-{
+struct Projectile {
         P pos {0, 0};
         int path_idx {0};
         bool is_dead {false};
@@ -59,8 +55,7 @@ struct Projectile
         std::unique_ptr<RangedAttData> att_data {nullptr};
 };
 
-struct ProjectileFireData
-{
+struct ProjectileFireData {
         std::vector<Projectile> projectiles {};
         std::vector<P> path {};
         P origin {0, 0};
@@ -71,8 +66,7 @@ struct ProjectileFireData
         bool projectile_animation_leaves_trail = false;
 };
 
-enum class HitSize
-{
+enum class HitSize {
         small,
         medium,
         hard
@@ -84,8 +78,7 @@ static size_t nr_projectiles_for_ranged_weapon(const item::Wpn& wpn)
 {
         size_t nr_projectiles = 1;
 
-        if (wpn.data().ranged.is_machine_gun)
-        {
+        if (wpn.data().ranged.is_machine_gun) {
                 nr_projectiles = g_nr_mg_projectiles;
         }
 
@@ -101,14 +94,10 @@ static HitSize relative_hit_size(const int dmg, const int wpn_max_dmg)
 {
         HitSize result = HitSize::small;
 
-        if (wpn_max_dmg >= 4)
-        {
-                if (dmg > ((wpn_max_dmg * 5) / 6))
-                {
+        if (wpn_max_dmg >= 4) {
+                if (dmg > ((wpn_max_dmg * 5) / 6)) {
                         result = HitSize::hard;
-                }
-                else if (dmg >  (wpn_max_dmg / 2))
-                {
+                } else if (dmg > (wpn_max_dmg / 2)) {
                         result = HitSize::medium;
                 }
         }
@@ -138,8 +127,7 @@ static HitSize relative_hit_size_ranged(const AttData& att_data)
 
 static std::string hit_size_punctuation_str(const HitSize hit_size)
 {
-        switch (hit_size)
-        {
+        switch (hit_size) {
         case HitSize::small:
                 return ".";
 
@@ -160,8 +148,7 @@ static void print_player_melee_miss_msg()
 
 static void print_mon_melee_miss_msg(const MeleeAttData& att_data)
 {
-        if (!att_data.defender)
-        {
+        if (!att_data.defender) {
                 ASSERT(false);
 
                 return;
@@ -177,8 +164,7 @@ static void print_mon_melee_miss_msg(const MeleeAttData& att_data)
                 map::g_cells.at(att_data.attacker->m_pos).is_seen_by_player;
 
         if (!is_attacker_pos_seen ||
-            (!is_player_seeing_attacker && !is_player_seeing_defender))
-        {
+            (!is_player_seeing_attacker && !is_player_seeing_defender)) {
                 // Attacker position not seen, or two unseen monsters fighting
                 // each other - a sound message will be printed
                 return;
@@ -186,31 +172,22 @@ static void print_mon_melee_miss_msg(const MeleeAttData& att_data)
 
         std::string attacker_name;
 
-        if (is_player_seeing_attacker)
-        {
+        if (is_player_seeing_attacker) {
                 attacker_name =
                         text_format::first_to_upper(
                                 att_data.attacker->name_the());
-        }
-        else
-        {
+        } else {
                 attacker_name = "It";
         }
 
         std::string defender_name;
 
-        if (att_data.defender->is_player())
-        {
+        if (att_data.defender->is_player()) {
                 defender_name = "me";
-        }
-        else
-        {
-                if (is_player_seeing_defender)
-                {
+        } else {
+                if (is_player_seeing_defender) {
                         defender_name = att_data.defender->name_the();
-                }
-                else
-                {
+                } else {
                         defender_name = "it";
                 }
         }
@@ -236,12 +213,9 @@ static void print_player_melee_hit_msg(const MeleeAttData& att_data)
 
         std::string other_name;
 
-        if (map::g_player->can_see_actor(*att_data.defender))
-        {
+        if (map::g_player->can_see_actor(*att_data.defender)) {
                 other_name = att_data.defender->name_the();
-        }
-        else
-        {
+        } else {
                 // Player cannot see defender
                 other_name = "it";
         }
@@ -250,32 +224,25 @@ static void print_player_melee_hit_msg(const MeleeAttData& att_data)
                 hit_size_punctuation_str(
                         relative_hit_size_melee(att_data));
 
-        if (att_data.is_intrinsic_att)
-        {
+        if (att_data.is_intrinsic_att) {
                 const std::string att_mod_str =
-                        att_data.is_weak_attack ?
-                        " feebly" : "";
+                        att_data.is_weak_attack ? " feebly" : "";
 
                 msg_log::add(
                         "I " +
-                        wpn_verb +
-                        " " +
-                        other_name +
-                        att_mod_str +
-                        dmg_punct,
+                                wpn_verb +
+                                " " +
+                                other_name +
+                                att_mod_str +
+                                dmg_punct,
                         colors::msg_good());
-        }
-        else
-        {
+        } else {
                 // Not intrinsic attack
                 const std::string att_mod_str =
-                        att_data.is_weak_attack ? "feebly " :
-                        att_data.is_backstab ? "covertly "  : "";
+                        att_data.is_weak_attack ? "feebly " : att_data.is_backstab ? "covertly " : "";
 
                 const Color color =
-                        att_data.is_backstab ?
-                        colors::light_blue() :
-                        colors::msg_good();
+                        att_data.is_backstab ? colors::light_blue() : colors::msg_good();
 
                 const std::string wpn_name_a =
                         att_data.att_item->name(
@@ -284,22 +251,21 @@ static void print_player_melee_hit_msg(const MeleeAttData& att_data)
 
                 msg_log::add(
                         "I " +
-                        wpn_verb +
-                        " " +
-                        other_name +
-                        " " +
-                        att_mod_str +
-                        "with " +
-                        wpn_name_a +
-                        dmg_punct,
+                                wpn_verb +
+                                " " +
+                                other_name +
+                                " " +
+                                att_mod_str +
+                                "with " +
+                                wpn_name_a +
+                                dmg_punct,
                         color);
         }
 }
 
 static void print_mon_melee_hit_msg(const MeleeAttData& att_data)
 {
-        if (!att_data.defender)
-        {
+        if (!att_data.defender) {
                 ASSERT(false);
 
                 return;
@@ -315,8 +281,7 @@ static void print_mon_melee_hit_msg(const MeleeAttData& att_data)
                 map::g_cells.at(att_data.attacker->m_pos).is_seen_by_player;
 
         if (!is_attacker_pos_seen ||
-            (!is_player_seeing_attacker && !is_player_seeing_defender))
-        {
+            (!is_player_seeing_attacker && !is_player_seeing_defender)) {
                 // Attacker position not seen, or two unseen monsters fighting
                 // each other - a sound message will be printed
                 return;
@@ -324,14 +289,11 @@ static void print_mon_melee_hit_msg(const MeleeAttData& att_data)
 
         std::string attacker_name;
 
-        if (is_player_seeing_attacker)
-        {
+        if (is_player_seeing_attacker) {
                 attacker_name =
                         text_format::first_to_upper(
                                 att_data.attacker->name_the());
-        }
-        else
-        {
+        } else {
                 attacker_name = "It";
         }
 
@@ -339,18 +301,12 @@ static void print_mon_melee_hit_msg(const MeleeAttData& att_data)
 
         std::string defender_name;
 
-        if (att_data.defender->is_player())
-        {
+        if (att_data.defender->is_player()) {
                 defender_name = "me";
-        }
-        else
-        {
-                if (is_player_seeing_defender)
-                {
+        } else {
+                if (is_player_seeing_defender) {
                         defender_name = att_data.defender->name_the();
-                }
-                else
-                {
+                } else {
                         defender_name = "it";
                 }
         }
@@ -363,8 +319,7 @@ static void print_mon_melee_hit_msg(const MeleeAttData& att_data)
 
         if (!att_data.att_item->data().is_intr &&
             // TODO: This is hacky
-            (att_data.attacker->id() != actor::Id::spectral_wpn))
-        {
+            (att_data.attacker->id() != actor::Id::spectral_wpn)) {
                 const std::string wpn_name_a =
                         att_data.att_item->name(
                                 ItemRefType::a,
@@ -416,8 +371,7 @@ static void print_no_attacker_hit_mon_melee_msg(const MeleeAttData& att_data)
 
         Color msg_color = colors::msg_good();
 
-        if (map::g_player->is_leader_of(att_data.defender))
-        {
+        if (map::g_player->is_leader_of(att_data.defender)) {
                 // Monster is allied to player, use a neutral color
                 // instead (we do not use red color here, since that
                 // is reserved for player taking damage).
@@ -436,52 +390,38 @@ static void print_no_attacker_hit_mon_melee_msg(const MeleeAttData& att_data)
 
 static void print_melee_miss_msg(const MeleeAttData& att_data)
 {
-        if (!att_data.attacker)
-        {
+        if (!att_data.attacker) {
                 ASSERT(false);
 
                 return;
         }
 
-        if (att_data.attacker->is_player())
-        {
+        if (att_data.attacker->is_player()) {
                 print_player_melee_miss_msg();
-        }
-        else
-        {
+        } else {
                 print_mon_melee_miss_msg(att_data);
         }
 }
 
 static void print_melee_hit_msg(const MeleeAttData& att_data)
 {
-        if (!att_data.defender)
-        {
+        if (!att_data.defender) {
                 ASSERT(false);
 
                 return;
         }
 
-        if (att_data.attacker)
-        {
-                if (att_data.attacker->is_player())
-                {
+        if (att_data.attacker) {
+                if (att_data.attacker->is_player()) {
                         print_player_melee_hit_msg(att_data);
-                }
-                else
-                {
+                } else {
                         print_mon_melee_hit_msg(att_data);
                 }
-        }
-        else
-        {
+        } else {
                 // No attacker (e.g. trap attack)
-                if (att_data.defender->is_player())
-                {
+                if (att_data.defender->is_player()) {
                         print_no_attacker_hit_player_melee_msg(att_data);
-                }
-                else if (map::g_player->can_see_actor(*att_data.defender))
-                {
+                } else if (map::g_player->can_see_actor(*att_data.defender)) {
                         print_no_attacker_hit_mon_melee_msg(att_data);
                 }
         }
@@ -491,8 +431,7 @@ static SfxId melee_hit_sfx(const MeleeAttData& att_data)
 {
         const auto hit_size = relative_hit_size_melee(att_data);
 
-        switch (hit_size)
-        {
+        switch (hit_size) {
         case HitSize::small:
                 return att_data.att_item->data().melee.hit_small_sfx;
 
@@ -512,43 +451,33 @@ static AlertsMon is_melee_snd_alerting_mon(
 {
         const bool is_wpn_noisy = wpn.data().melee.is_noisy;
 
-        if (is_wpn_noisy)
-        {
+        if (is_wpn_noisy) {
                 const bool is_player_silent =
                         player_bon::has_trait(Trait::silent);
 
                 const bool is_player = (attacker == map::g_player);
 
-                if (is_player && is_player_silent)
-                {
+                if (is_player && is_player_silent) {
                         return AlertsMon::no;
-                }
-                else
-                {
+                } else {
                         return AlertsMon::yes;
                 }
-        }
-        else
-        {
+        } else {
                 return AlertsMon::no;
         }
 }
 
 static void print_melee_msg(const MeleeAttData& att_data)
 {
-        if (!att_data.defender)
-        {
+        if (!att_data.defender) {
                 ASSERT(false);
 
                 return;
         }
 
-        if (att_data.att_result <= ActionResult::fail)
-        {
+        if (att_data.att_result <= ActionResult::fail) {
                 print_melee_miss_msg(att_data);
-        }
-        else
-        {
+        } else {
                 print_melee_hit_msg(att_data);
         }
 }
@@ -559,8 +488,7 @@ static std::string melee_snd_msg(const MeleeAttData& att_data)
 
         // Only print a message if player is not involved
         if ((att_data.defender != map::g_player) &&
-            (att_data.attacker != map::g_player))
-        {
+            (att_data.attacker != map::g_player)) {
                 // TODO: This message is not appropriate for traps
                 snd_msg = "I hear fighting.";
         }
@@ -570,8 +498,7 @@ static std::string melee_snd_msg(const MeleeAttData& att_data)
 
 static void emit_melee_snd(const MeleeAttData& att_data)
 {
-        if (!att_data.defender)
-        {
+        if (!att_data.defender) {
                 ASSERT(false);
 
                 return;
@@ -586,12 +513,9 @@ static void emit_melee_snd(const MeleeAttData& att_data)
 
         SfxId sfx = SfxId::END;
 
-        if (att_data.att_result <= ActionResult::fail)
-        {
+        if (att_data.att_result <= ActionResult::fail) {
                 sfx = att_data.att_item->data().melee.miss_sfx;
-        }
-        else
-        {
+        } else {
                 sfx = melee_hit_sfx(att_data);
         }
 
@@ -602,16 +526,14 @@ static void emit_melee_snd(const MeleeAttData& att_data)
 
         auto ignore_msg_if_origin_seeen = IgnoreMsgIfOriginSeen::yes;
 
-        if (att_data.attacker)
-        {
+        if (att_data.attacker) {
                 const bool is_player_seeing_defender =
                         map::g_player->can_see_actor(*att_data.defender);
 
                 const bool is_player_seeing_attacker =
                         map::g_player->can_see_actor(*att_data.attacker);
 
-                if (!is_player_seeing_attacker && !is_player_seeing_defender)
-                {
+                if (!is_player_seeing_attacker && !is_player_seeing_defender) {
                         // Two unseen monsters fighting each other - always
                         // include the sound message
                         ignore_msg_if_origin_seeen = IgnoreMsgIfOriginSeen::no;
@@ -639,8 +561,7 @@ static void print_player_fire_ranged_msg(const item::Wpn& wpn)
 
 static void print_mon_fire_ranged_msg(const RangedAttData& att_data)
 {
-        if (!map::g_player->can_see_actor(*att_data.attacker))
-        {
+        if (!map::g_player->can_see_actor(*att_data.attacker)) {
                 return;
         }
 
@@ -653,8 +574,7 @@ static void print_mon_fire_ranged_msg(const RangedAttData& att_data)
 
         std::string wpn_used_str;
 
-        if (!att_data.att_item->data().is_intr)
-        {
+        if (!att_data.att_item->data().is_intr) {
                 const std::string wpn_name_a =
                         att_data.att_item->name(
                                 ItemRefType::a,
@@ -683,18 +603,14 @@ static void print_ranged_fire_msg(
         const RangedAttData& att_data,
         const item::Wpn& wpn)
 {
-        if (!att_data.attacker)
-        {
+        if (!att_data.attacker) {
                 // No attacker actor (e.g. a trap firing a dart)
                 return;
         }
 
-        if (att_data.attacker == map::g_player)
-        {
+        if (att_data.attacker == map::g_player) {
                 print_player_fire_ranged_msg(wpn);
-        }
-        else
-        {
+        } else {
                 print_mon_fire_ranged_msg(att_data);
         }
 }
@@ -715,8 +631,7 @@ static void print_projectile_hit_mon_msg(const AttData& att_data)
 {
         std::string other_name = "It";
 
-        if (map::g_player->can_see_actor(*att_data.defender))
-        {
+        if (map::g_player->can_see_actor(*att_data.defender)) {
                 other_name =
                         text_format::first_to_upper(
                                 att_data.defender->name_the());
@@ -726,25 +641,20 @@ static void print_projectile_hit_mon_msg(const AttData& att_data)
                 hit_size_punctuation_str(
                         relative_hit_size_ranged(att_data));
 
-        msg_log::add(other_name + " is hit" +
-                     dmg_punct,
-                     colors::msg_good());
+        msg_log::add(other_name + " is hit" + dmg_punct, colors::msg_good());
 }
 
 static void print_projectile_hit_actor_msg(const RangedAttData& att_data)
 {
         ASSERT(att_data.defender);
 
-        if (att_data.defender->is_player())
-        {
+        if (att_data.defender->is_player()) {
                 print_projectile_hit_player_msg(att_data);
-        }
-        else // Defender is monster
+        } else // Defender is monster
         {
                 const P& pos = att_data.defender->m_pos;
 
-                if (!map::g_cells.at(pos).is_seen_by_player)
-                {
+                if (!map::g_cells.at(pos).is_seen_by_player) {
                         return;
                 }
 
@@ -761,16 +671,14 @@ static std::unique_ptr<Snd> ranged_fire_snd(
 
         const std::string snd_msg = wpn.data().ranged.snd_msg;
 
-        if (!snd_msg.empty())
-        {
+        if (!snd_msg.empty()) {
                 const SfxId sfx = wpn.data().ranged.att_sfx;
 
                 const SndVol vol = wpn.data().ranged.snd_vol;
 
                 std::string snd_msg_used = snd_msg;
 
-                if (att_data.attacker == map::g_player)
-                {
+                if (att_data.attacker == map::g_player) {
                         snd_msg_used = "";
                 }
 
@@ -805,8 +713,7 @@ static void emit_projectile_hit_terrain_snd(
         const P& pos,
         const item::Wpn& wpn)
 {
-        if (wpn.data().ranged.makes_ricochet_snd)
-        {
+        if (wpn.data().ranged.makes_ricochet_snd) {
                 // TODO: Check hit material, soft and wood should not cause
                 // a ricochet sound
                 Snd snd(
@@ -826,8 +733,7 @@ static actor::Actor* get_actor_hit_by_projectile(const Projectile& projectile)
 {
         const auto& att_data = *projectile.att_data;
 
-        if (!att_data.defender)
-        {
+        if (!att_data.defender) {
                 return nullptr;
         }
 
@@ -839,8 +745,7 @@ static actor::Actor* get_actor_hit_by_projectile(const Projectile& projectile)
 
         if (!projectile.is_dead &&
             (att_data.att_result >= ActionResult::success) &&
-            can_hit_height)
-        {
+            can_hit_height) {
                 return att_data.defender;
         }
 
@@ -851,15 +756,12 @@ static terrain::Terrain* get_terrain_blocking_projectile(const P& pos)
 {
         auto* terrain = map::g_cells.at(pos).terrain;
 
-        if (!terrain->is_projectile_passable())
-        {
+        if (!terrain->is_projectile_passable()) {
                 return terrain;
         }
 
-        for (auto* const mob : game_time::g_mobs)
-        {
-                if (!mob->is_projectile_passable())
-                {
+        for (auto* const mob : game_time::g_mobs) {
+                if (!mob->is_projectile_passable()) {
                         return mob;
                 }
         }
@@ -879,8 +781,7 @@ static terrain::Terrain* get_ground_blocking_projectile(
                 (pos == att_data.aim_pos) &&
                 (att_data.aim_lvl == actor::Size::floor);
 
-        if (has_hit_ground)
-        {
+        if (has_hit_ground) {
                 return map::g_cells.at(pos).terrain;
         }
 
@@ -892,8 +793,7 @@ static void try_apply_attack_property_on_actor(
         actor::Actor& actor,
         const DmgType& dmg_type)
 {
-        if (!rnd::percent(att_prop.pct_chance_to_apply))
-        {
+        if (!rnd::percent(att_prop.pct_chance_to_apply)) {
                 return;
         }
 
@@ -902,8 +802,7 @@ static void try_apply_attack_property_on_actor(
                         dmg_type,
                         Verbose::no);
 
-        if (!is_resisting_dmg)
-        {
+        if (!is_resisting_dmg) {
                 auto* const prop_cpy =
                         property_factory::make(
                                 att_prop.prop->id());
@@ -911,13 +810,10 @@ static void try_apply_attack_property_on_actor(
                 const auto duration_mode =
                         att_prop.prop->duration_mode();
 
-                if (duration_mode == PropDurationMode::specific)
-                {
+                if (duration_mode == PropDurationMode::specific) {
                         prop_cpy->set_duration(
                                 att_prop.prop->nr_turns_left());
-                }
-                else if (duration_mode == PropDurationMode::indefinite)
-                {
+                } else if (duration_mode == PropDurationMode::indefinite) {
                         prop_cpy->set_indefinite();
                 }
 
@@ -931,23 +827,20 @@ static void hit_actor_with_projectile(
 {
         ASSERT(projectile.actor_hit);
 
-        if (!projectile.actor_hit)
-        {
+        if (!projectile.actor_hit) {
                 return;
         }
 
         const AttData& att_data = *projectile.att_data;
 
-        if (att_data.attacker == map::g_player)
-        {
+        if (att_data.attacker == map::g_player) {
                 static_cast<actor::Mon*>(att_data.defender)
                         ->set_player_aware_of_me();
         }
 
         auto died = ActorDied::no;
 
-        if (att_data.dmg > 0)
-        {
+        if (att_data.dmg > 0) {
                 died = actor::hit(
                         *projectile.actor_hit,
                         att_data.dmg,
@@ -959,14 +852,12 @@ static void hit_actor_with_projectile(
         // NOTE: This is run regardless of if defender died or not
         wpn.on_ranged_hit(*projectile.actor_hit);
 
-        if (died == ActorDied::no)
-        {
+        if (died == ActorDied::no) {
                 auto att_prop =
                         wpn.prop_applied_on_ranged(
                                 projectile.att_data->attacker);
 
-                if (att_prop.prop)
-                {
+                if (att_prop.prop) {
                         try_apply_attack_property_on_actor(
                                 att_prop,
                                 *projectile.actor_hit,
@@ -975,8 +866,7 @@ static void hit_actor_with_projectile(
 
                 // Knock-back?
                 if (wpn.data().ranged.knocks_back &&
-                    att_data.attacker)
-                {
+                    att_data.attacker) {
                         const bool is_spike_gun =
                                 wpn.data().id == item::Id::spike_gun;
 
@@ -1010,8 +900,7 @@ static void init_projectiles_gfx(ProjectileFireData& fire_data)
         ASSERT(fire_data.wpn);
         ASSERT(!fire_data.path.empty());
 
-        if (!fire_data.wpn || fire_data.path.empty())
-        {
+        if (!fire_data.wpn || fire_data.path.empty()) {
                 return;
         }
 
@@ -1021,8 +910,7 @@ static void init_projectiles_gfx(ProjectileFireData& fire_data)
         char projectile_character =
                 fire_data.wpn->data().ranged.projectile_character;
 
-        if (projectile_character == '/')
-        {
+        if (projectile_character == '/') {
                 const auto& path = fire_data.path;
                 const P& origin = fire_data.origin;
 
@@ -1030,22 +918,13 @@ static void init_projectiles_gfx(ProjectileFireData& fire_data)
 
                 const P& ref_pos = path[i];
 
-                if (ref_pos.y == origin.y)
-                {
+                if (ref_pos.y == origin.y) {
                         projectile_character = '-';
-                }
-                else if (ref_pos.x == origin.x)
-                {
+                } else if (ref_pos.x == origin.x) {
                         projectile_character = '|';
-                }
-                else if ((ref_pos.x > origin.x && ref_pos.y < origin.y) ||
-                         (ref_pos.x < origin.x && ref_pos.y > origin.y))
-                {
+                } else if ((ref_pos.x > origin.x && ref_pos.y < origin.y) || (ref_pos.x < origin.x && ref_pos.y > origin.y)) {
                         projectile_character = '/';
-                }
-                else if ((ref_pos.x > origin.x && ref_pos.y > origin.y) ||
-                         (ref_pos.x < origin.x && ref_pos.y < origin.y))
-                {
+                } else if ((ref_pos.x > origin.x && ref_pos.y > origin.y) || (ref_pos.x < origin.x && ref_pos.y < origin.y)) {
                         projectile_character = '\\';
                 }
         }
@@ -1053,18 +932,12 @@ static void init_projectiles_gfx(ProjectileFireData& fire_data)
         TileId projectile_tile =
                 fire_data.wpn->data().ranged.projectile_tile;
 
-        if (projectile_tile == TileId::projectile_std_front_slash)
-        {
-                if (projectile_character == '-')
-                {
+        if (projectile_tile == TileId::projectile_std_front_slash) {
+                if (projectile_character == '-') {
                         projectile_tile = TileId::projectile_std_dash;
-                }
-                else if (projectile_character == '|')
-                {
+                } else if (projectile_character == '|') {
                         projectile_tile = TileId::projectile_std_vertical_bar;
-                }
-                else if (projectile_character == '\\')
-                {
+                } else if (projectile_character == '\\') {
                         projectile_tile = TileId::projectile_std_back_slash;
                 }
         }
@@ -1072,8 +945,7 @@ static void init_projectiles_gfx(ProjectileFireData& fire_data)
         const Color projectile_color =
                 fire_data.wpn->data().ranged.projectile_color;
 
-        for (auto& projectile: fire_data.projectiles)
-        {
+        for (auto& projectile : fire_data.projectiles) {
                 projectile.tile = projectile_tile;
 
                 projectile.character = projectile_character;
@@ -1106,8 +978,7 @@ static ProjectileFireData init_projectiles_fire_data(
 
         fire_data.projectiles.resize(nr_projectiles);
 
-        for (size_t i = 0; i < nr_projectiles; ++i)
-        {
+        for (size_t i = 0; i < nr_projectiles; ++i) {
                 auto& proj = fire_data.projectiles[i];
 
                 // Projectile path indexes are initially set up so that all
@@ -1146,10 +1017,8 @@ static ProjectileFireData init_projectiles_fire_data(
 
 static bool is_all_projectiles_dead(const std::vector<Projectile>& projectiles)
 {
-        for (const auto& projectile : projectiles)
-        {
-                if (!projectile.is_dead)
-                {
+        for (const auto& projectile : projectiles) {
+                if (!projectile.is_dead) {
                         return false;
                 }
         }
@@ -1159,15 +1028,12 @@ static bool is_all_projectiles_dead(const std::vector<Projectile>& projectiles)
 
 static void run_projectile_hits(ProjectileFireData& fire_data)
 {
-        for (auto& projectile : fire_data.projectiles)
-        {
-                if (projectile.is_dead)
-                {
+        for (auto& projectile : fire_data.projectiles) {
+                if (projectile.is_dead) {
                         continue;
                 }
 
-                if (projectile.actor_hit)
-                {
+                if (projectile.actor_hit) {
                         hit_actor_with_projectile(projectile, *fire_data.wpn);
 
                         projectile.is_dead = true;
@@ -1175,14 +1041,12 @@ static void run_projectile_hits(ProjectileFireData& fire_data)
                         continue;
                 }
 
-                if (projectile.terrain_hit)
-                {
+                if (projectile.terrain_hit) {
                         const int prev_idx = projectile.path_idx - 1;
 
                         ASSERT(prev_idx >= 0);
 
-                        if (prev_idx < 0)
-                        {
+                        if (prev_idx < 0) {
                                 continue;
                         }
 
@@ -1204,17 +1068,14 @@ static void run_projectile_hits(ProjectileFireData& fire_data)
 
 static void advance_projectiles_on_path(ProjectileFireData& fire_data)
 {
-        for (auto& projectile : fire_data.projectiles)
-        {
-                if (projectile.is_dead)
-                {
+        for (auto& projectile : fire_data.projectiles) {
+                if (projectile.is_dead) {
                         continue;
                 }
 
                 ++projectile.path_idx;
 
-                if (projectile.path_idx >= 0)
-                {
+                if (projectile.path_idx >= 0) {
                         projectile.pos = fire_data.path[projectile.path_idx];
                 }
         }
@@ -1224,11 +1085,9 @@ static void update_projectile_states(ProjectileFireData& fire_data)
 {
         advance_projectiles_on_path(fire_data);
 
-        for (auto& projectile : fire_data.projectiles)
-        {
+        for (auto& projectile : fire_data.projectiles) {
                 if (projectile.is_dead ||
-                    (projectile.path_idx < 1))
-                {
+                    (projectile.path_idx < 1)) {
                         continue;
                 }
 
@@ -1245,13 +1104,12 @@ static void update_projectile_states(ProjectileFireData& fire_data)
 
                 projectile.is_seen_by_player =
                         map::g_cells.at(projectile_pos)
-                        .is_seen_by_player;
+                                .is_seen_by_player;
 
                 // Projectile out of range?
                 const int max_range = fire_data.wpn->data().ranged.max_range;
 
-                if (king_dist(fire_data.origin, projectile_pos) > max_range)
-                {
+                if (king_dist(fire_data.origin, projectile_pos) > max_range) {
                         projectile.is_dead = true;
                         projectile.obstructed_in_path_idx = projectile.path_idx;
 
@@ -1260,8 +1118,7 @@ static void update_projectile_states(ProjectileFireData& fire_data)
 
                 projectile.actor_hit = get_actor_hit_by_projectile(projectile);
 
-                if (projectile.actor_hit)
-                {
+                if (projectile.actor_hit) {
                         projectile.obstructed_in_path_idx = projectile.path_idx;
                         projectile.color = colors::light_red();
 
@@ -1271,8 +1128,7 @@ static void update_projectile_states(ProjectileFireData& fire_data)
                 projectile.terrain_hit =
                         get_terrain_blocking_projectile(projectile.pos);
 
-                if (projectile.terrain_hit)
-                {
+                if (projectile.terrain_hit) {
                         projectile.obstructed_in_path_idx = projectile.path_idx;
                         projectile.color = colors::yellow();
 
@@ -1282,20 +1138,16 @@ static void update_projectile_states(ProjectileFireData& fire_data)
                 projectile.terrain_hit =
                         get_ground_blocking_projectile(projectile);
 
-                if (projectile.terrain_hit)
-                {
+                if (projectile.terrain_hit) {
                         projectile.obstructed_in_path_idx = projectile.path_idx;
 
                         const auto terrain_id = projectile.terrain_hit->id();
 
                         if ((terrain_id == terrain::Id::liquid_shallow) ||
-                            (terrain_id == terrain::Id::liquid_deep))
-                        {
+                            (terrain_id == terrain::Id::liquid_deep)) {
                                 projectile.color =
                                         projectile.terrain_hit->color();
-                        }
-                        else
-                        {
+                        } else {
                                 projectile.color = colors::yellow();
                         }
 
@@ -1307,16 +1159,13 @@ static void update_projectile_states(ProjectileFireData& fire_data)
 static void run_projectiles_messages_and_sounds(
         const ProjectileFireData& fire_data)
 {
-        for (auto& projectile : fire_data.projectiles)
-        {
-                if (projectile.is_dead)
-                {
+        for (auto& projectile : fire_data.projectiles) {
+                if (projectile.is_dead) {
                         continue;
                 }
 
                 // Projectile entering the path this update?
-                if (projectile.path_idx == 0)
-                {
+                if (projectile.path_idx == 0) {
                         // NOTE: The initial attack sound(s) must NOT alert
                         // monsters, since this would immediately make them
                         // aware before any attack data is set. This would
@@ -1329,8 +1178,7 @@ static void run_projectiles_messages_and_sounds(
                                 *fire_data.wpn,
                                 fire_data.origin);
 
-                        if (snd)
-                        {
+                        if (snd) {
                                 snd->set_alerts_mon(AlertsMon::no);
 
                                 snd->run();
@@ -1339,8 +1187,7 @@ static void run_projectiles_messages_and_sounds(
                         continue;
                 }
 
-                if (projectile.actor_hit)
-                {
+                if (projectile.actor_hit) {
                         emit_projectile_hit_actor_snd(projectile.pos);
 
                         print_projectile_hit_actor_msg(*projectile.att_data);
@@ -1348,8 +1195,7 @@ static void run_projectiles_messages_and_sounds(
                         continue;
                 }
 
-                if (projectile.terrain_hit)
-                {
+                if (projectile.terrain_hit) {
                         emit_projectile_hit_terrain_snd(
                                 projectile.pos,
                                 *fire_data.wpn);
@@ -1359,13 +1205,11 @@ static void run_projectiles_messages_and_sounds(
 
 static void draw_projectile(const Projectile& projectile)
 {
-        if (projectile.tile == TileId::END)
-        {
+        if (projectile.tile == TileId::END) {
                 return;
         }
 
-        if (!viewport::is_in_view(projectile.pos))
-        {
+        if (!viewport::is_in_view(projectile.pos)) {
                 return;
         }
 
@@ -1381,8 +1225,7 @@ static void draw_projectile_hit(
         Projectile& projectile,
         const int animation_delay)
 {
-        if (config::is_tiles_mode())
-        {
+        if (config::is_tiles_mode()) {
                 projectile.tile = TileId::blast1;
 
                 draw_projectile(projectile);
@@ -1398,9 +1241,7 @@ static void draw_projectile_hit(
                 io::update_screen();
 
                 sdl_base::sleep(animation_delay / 2);
-        }
-        else
-        {
+        } else {
                 // Text mode
                 projectile.character = '*';
 
@@ -1414,32 +1255,27 @@ static void draw_projectile_hit(
 
 static bool should_draw_projectile_as_travelling(const Projectile& projectile)
 {
-        return
-                !projectile.is_dead &&
+        return !projectile.is_dead &&
                 projectile.is_seen_by_player &&
                 (projectile.path_idx >= 1);
 }
 
 static bool should_draw_projectile_as_hit(const Projectile& projectile)
 {
-        return
-                !projectile.is_dead &&
+        return !projectile.is_dead &&
                 projectile.is_seen_by_player &&
                 (projectile.obstructed_in_path_idx >= 0);
 }
 
 static void draw_projectiles(ProjectileFireData& fire_data)
 {
-        if (!fire_data.projectile_animation_leaves_trail)
-        {
+        if (!fire_data.projectile_animation_leaves_trail) {
                 states::draw();
         }
 
         // Draw travelling projectiles
-        for (auto& projectile : fire_data.projectiles)
-        {
-                if (!should_draw_projectile_as_travelling(projectile))
-                {
+        for (auto& projectile : fire_data.projectiles) {
+                if (!should_draw_projectile_as_travelling(projectile)) {
                         continue;
                 }
 
@@ -1449,10 +1285,8 @@ static void draw_projectiles(ProjectileFireData& fire_data)
         io::update_screen();
 
         // Draw projectiles hitting something
-        for (auto& projectile : fire_data.projectiles)
-        {
-                if (!should_draw_projectile_as_hit(projectile))
-                {
+        for (auto& projectile : fire_data.projectiles) {
+                if (!should_draw_projectile_as_hit(projectile)) {
                         continue;
                 }
 
@@ -1462,10 +1296,8 @@ static void draw_projectiles(ProjectileFireData& fire_data)
 
 static bool is_any_projectile_seen(const std::vector<Projectile>& projectiles)
 {
-        for (const auto& projectile: projectiles)
-        {
-                if (projectile.is_seen_by_player)
-                {
+        for (const auto& projectile : projectiles) {
+                if (projectile.is_seen_by_player) {
                         return true;
                 }
         }
@@ -1490,10 +1322,8 @@ static void fire_projectiles(
                 *fire_data.projectiles[0].att_data,
                 *fire_data.wpn);
 
-        while(true)
-        {
-                if (is_all_projectiles_dead(fire_data.projectiles))
-                {
+        while (true) {
+                if (is_all_projectiles_dead(fire_data.projectiles)) {
                         // Run a sound without message or audio, which can alert
                         // monsters (the initial fire sound is not allowed to
                         // alert monsters, since this would prevent ranged
@@ -1506,8 +1336,7 @@ static void fire_projectiles(
                                 *fire_data.wpn,
                                 fire_data.origin);
 
-                        if (snd)
-                        {
+                        if (snd) {
                                 snd->clear_msg();
 
                                 snd->clear_sfx();
@@ -1526,8 +1355,7 @@ static void fire_projectiles(
 
                 run_projectile_hits(fire_data);
 
-                if (is_any_projectile_seen(fire_data.projectiles))
-                {
+                if (is_any_projectile_seen(fire_data.projectiles)) {
                         sdl_base::sleep(fire_data.animation_delay);
                 }
         }
@@ -1544,9 +1372,7 @@ static void melee_hit_actor(
                 wpn.data().type == ItemType::ranged_wpn;
 
         const AllowWound allow_wound =
-                is_ranged_wpn ?
-                AllowWound::no :
-                AllowWound::yes;
+                is_ranged_wpn ? AllowWound::no : AllowWound::yes;
 
         const auto dmg_type = wpn.data().melee.dmg_type;
         const auto dmg_method = wpn.data().melee.dmg_method;
@@ -1561,21 +1387,18 @@ static void melee_hit_actor(
         if (defender.m_data->can_bleed &&
             (dmg_type == DmgType::physical ||
              dmg_type == DmgType::pure ||
-             dmg_type == DmgType::light))
-        {
+             dmg_type == DmgType::light)) {
                 map::make_blood(defender.m_pos);
         }
 
         wpn.on_melee_hit(defender, att_data.dmg);
 
-        if (defender.is_alive())
-        {
+        if (defender.is_alive()) {
                 auto att_prop =
                         wpn.prop_applied_on_melee(
                                 att_data.attacker);
 
-                if (att_prop.prop)
-                {
+                if (att_prop.prop) {
                         try_apply_attack_property_on_actor(
                                 att_prop,
                                 defender,
@@ -1593,8 +1416,7 @@ static void melee_hit_actor(
                     // hacky, and only makes sense *right now*, there should be
                     // some better attribute to control this
                     !defender.m_properties.has(PropId::splits_on_death) &&
-                    rnd::percent(60))
-                {
+                    rnd::percent(60)) {
                         auto weak = property_factory::make(PropId::weakened);
 
                         weak->set_duration(rnd::range(2, 3));
@@ -1602,16 +1424,13 @@ static void melee_hit_actor(
                         defender.m_properties.apply(weak);
                 }
 
-                if (wpn.data().melee.knocks_back)
-                {
+                if (wpn.data().melee.knocks_back) {
                         knockback::run(
                                 defender,
                                 attacker_origin,
                                 false);
                 }
-        }
-        else
-        {
+        } else {
                 // Defender was killed
                 wpn.on_melee_kill(defender);
         }
@@ -1633,8 +1452,7 @@ static bool melee_should_break_wpn(
 
         const int break_one_in_n = 32;
 
-        return
-                (attacker == map::g_player) &&
+        return (attacker == map::g_player) &&
                 is_wielding_wpn &&
                 player_cursed &&
                 is_crit_fail &&
@@ -1644,8 +1462,7 @@ static bool melee_should_break_wpn(
 // -----------------------------------------------------------------------------
 // attack
 // -----------------------------------------------------------------------------
-namespace attack
-{
+namespace attack {
 
 void melee(
         actor::Actor* const attacker,
@@ -1653,8 +1470,7 @@ void melee(
         actor::Actor& defender,
         item::Wpn& wpn)
 {
-        if (attacker && (attacker != map::g_player))
-        {
+        if (attacker && (attacker != map::g_player)) {
                 // Attacker is a monster, bump monster player awareness
                 static_cast<actor::Mon*>(attacker)->become_aware_player(false);
         }
@@ -1667,8 +1483,7 @@ void melee(
 
         emit_melee_snd(att_data);
 
-        if (att_data.att_result >= ActionResult::success)
-        {
+        if (att_data.att_result >= ActionResult::success) {
                 melee_hit_actor(
                         defender,
                         attacker,
@@ -1679,16 +1494,14 @@ void melee(
 
         // If player is cursed and the attack critically fails, occasionally
         // break the weapon
-        if (melee_should_break_wpn(attacker, wpn, att_data))
-        {
+        if (melee_should_break_wpn(attacker, wpn, att_data)) {
                 auto* const item =
                         map::g_player->m_inv
-                        .remove_item_in_slot(SlotId::wpn, false);
+                                .remove_item_in_slot(SlotId::wpn, false);
 
                 ASSERT(item);
 
-                if (item)
-                {
+                if (item) {
                         const std::string item_name =
                                 item->name(
                                         ItemRefType::plain,
@@ -1704,18 +1517,14 @@ void melee(
                 }
         }
 
-        if (attacker)
-        {
-                if (defender.is_player())
-                {
+        if (attacker) {
+                if (defender.is_player()) {
                         // A monster attacked the player
                         auto* const mon =
                                 static_cast<actor::Mon*>(att_data.attacker);
 
                         mon->set_player_aware_of_me();
-                }
-                else
-                {
+                } else {
                         // A monster was attacked (by player or another monster)
                         static_cast<actor::Mon&>(defender)
                                 .become_aware_player(false);
@@ -1742,8 +1551,7 @@ DidAction ranged(
 
         const int nr_projectiles = nr_projectiles_for_ranged_weapon(wpn);
 
-        if ((wpn.m_ammo_loaded >= nr_projectiles) || has_inf_ammo)
-        {
+        if ((wpn.m_ammo_loaded >= nr_projectiles) || has_inf_ammo) {
                 wpn.pre_ranged_attack();
 
                 fire_projectiles(
@@ -1754,28 +1562,24 @@ DidAction ranged(
 
                 did_attack = DidAction::yes;
 
-                if (!has_inf_ammo)
-                {
+                if (!has_inf_ammo) {
                         wpn.m_ammo_loaded -= nr_projectiles;
                 }
 
                 // Player could have for example fired an explosive weapon into
                 // a wall and killed themselves - if so, abort early
-                if (!map::g_player->is_alive())
-                {
+                if (!map::g_player->is_alive()) {
                         return DidAction::yes;
                 }
         }
 
         states::draw();
 
-        if ((did_attack == DidAction::yes) && attacker)
-        {
+        if ((did_attack == DidAction::yes) && attacker) {
                 // Attacking ends cloaking
                 attacker->m_properties.end_prop(PropId::cloaked);
 
-                if (!attacker->is_player())
-                {
+                if (!attacker->is_player()) {
                         static_cast<actor::Mon*>(attacker)
                                 ->become_aware_player(false);
                 }

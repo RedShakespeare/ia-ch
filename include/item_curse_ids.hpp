@@ -7,11 +7,9 @@
 #ifndef ITEM_CURSE_IDS_HPP
 #define ITEM_CURSE_IDS_HPP
 
-namespace item_curse
-{
+namespace item_curse {
 
-enum class Id
-{
+enum class Id {
         hit_chance_penalty,
         increased_shock,
         heavy,

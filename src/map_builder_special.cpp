@@ -19,7 +19,6 @@
 #include "property.hpp"
 #include "terrain.hpp"
 #include "terrain_door.hpp"
-#include "terrain_door.hpp"
 #include "terrain_event.hpp"
 #include "terrain_gong.hpp"
 #include "terrain_monolith.hpp"
@@ -31,63 +30,47 @@ MapBuilderDeepOneLair::MapBuilderDeepOneLair() :
 
         m_passage_symbol((char)((int)'1' + rnd::range(0, 1)))
 {
-
 }
 
 void MapBuilderDeepOneLair::handle_template_pos(const P& p, const char c)
 {
-        switch (c)
-        {
+        switch (c) {
         case '@':
         case '.':
         case 'd':
         case '%': // TODO: Just put random blood/gore on the level instead?
-        case 'B':
-        {
+        case 'B': {
                 auto floor = new terrain::Floor(p);
 
                 floor->m_type = terrain::FloorType::cave;
 
                 map::put(floor);
 
-                if (c == '@')
-                {
+                if (c == '@') {
                         map::g_player->m_pos = p;
-                }
-                else if (c == 'd')
-                {
+                } else if (c == 'd') {
                         actor::make(actor::Id::deep_one, p);
-                }
-                else if (c == 'B')
-                {
+                } else if (c == 'B') {
                         actor::make(actor::Id::niduza, p);
-                }
-                else if (c == '%')
-                {
+                } else if (c == '%') {
                         map::make_blood(p);
                         map::make_gore(p);
                 }
-        }
-        break;
+        } break;
 
         case '&': // TODO: Just put random bones on the level instead?
         {
                 map::put(new terrain::Bones(p));
-        }
-        break;
+        } break;
 
         case '#':
         case '1':
-        case '2':
-        {
+        case '2': {
                 terrain::Terrain* t;
 
-                if (c == m_passage_symbol)
-                {
+                if (c == m_passage_symbol) {
                         t = new terrain::Floor(p);
-                }
-                else
-                {
+                } else {
                         t = new terrain::Wall(p);
 
                         static_cast<terrain::Wall*>(t)->m_type =
@@ -95,31 +78,25 @@ void MapBuilderDeepOneLair::handle_template_pos(const P& p, const char c)
                 }
 
                 map::put(t);
-        }
-        break;
+        } break;
 
-        case '*':
-        {
+        case '*': {
                 auto* water = new terrain::LiquidShallow(p);
 
                 water->m_type = LiquidType::water;
 
                 map::put(water);
-        }
-        break;
+        } break;
 
-        case '~':
-        {
+        case '~': {
                 auto* water = new terrain::LiquidDeep(p);
 
                 water->m_type = LiquidType::water;
 
                 map::put(water);
-        }
-        break;
+        } break;
 
-        case 'x':
-        {
+        case 'x': {
                 auto* const door =
                         new terrain::Door(
                                 p,
@@ -128,44 +105,32 @@ void MapBuilderDeepOneLair::handle_template_pos(const P& p, const char c)
                                 DoorSpawnState::closed);
 
                 map::put(door);
-        }
-        break;
+        } break;
 
-        case '>':
-        {
+        case '>': {
                 map::put(new terrain::Stairs(p));
-        }
-        break;
+        } break;
 
-        case '|':
-        {
+        case '|': {
                 map::put(new terrain::Monolith(p));
-        }
-        break;
+        } break;
 
-        case '-':
-        {
+        case '-': {
                 map::put(new terrain::Altar(p));
-        }
-        break;
+        } break;
 
-        case '0':
-        {
+        case '0': {
                 map::put(new terrain::Gong(p));
-        }
-        break;
+        } break;
 
-        case ':':
-        {
+        case ':': {
                 map::put(new terrain::Stalagmite(p));
-        }
-        break;
+        } break;
 
         default:
         {
                 ASSERT(false);
-        }
-        break;
+        } break;
         }
 }
 
@@ -179,71 +144,56 @@ void MapBuilderDeepOneLair::on_template_built()
 // -----------------------------------------------------------------------------
 MapBuilderMagicPool::MapBuilderMagicPool()
 
-= default;
+        = default;
 
 void MapBuilderMagicPool::handle_template_pos(const P& p, const char c)
 {
-        switch (c)
-        {
+        switch (c) {
         case '@':
-        case '.':
-        {
+        case '.': {
                 auto floor = new terrain::Floor(p);
 
                 floor->m_type = terrain::FloorType::cave;
 
                 map::put(floor);
 
-                if (c == '@')
-                {
+                if (c == '@') {
                         map::g_player->m_pos = p;
                 }
-        }
-        break;
+        } break;
 
-        case '#':
-        {
+        case '#': {
                 auto wall = new terrain::Wall(p);
 
                 wall->m_type = terrain::WallType::cave;
 
                 map::put(wall);
-        }
-        break;
+        } break;
 
-        case 't':
-        {
+        case 't': {
                 map::put(new terrain::Tree(p));
-        }
-        break;
+        } break;
 
-        case '~':
-        {
+        case '~': {
                 auto* water = new terrain::LiquidShallow(p);
 
                 water->m_type = LiquidType::magic_water;
 
                 map::put(water);
-        }
-        break;
+        } break;
 
-        case '>':
-        {
+        case '>': {
                 map::put(new terrain::Stairs(p));
-        }
-        break;
+        } break;
 
-        case '^':
-        {
+        case '^': {
                 map::put(new terrain::Stalagmite(p));
-        }
-        break;
+        } break;
 
         default:
         {
                 ASSERT(false);
-        }
-        break;
+        } break;
         }
 }
 
@@ -253,8 +203,7 @@ void MapBuilderMagicPool::on_template_built()
 
         const std::vector<RoomType> mon_room_types = {
                 RoomType::cave,
-                RoomType::forest
-        };
+                RoomType::forest};
 
         populate_mon::populate_lvl_as_room_types(mon_room_types);
 }
@@ -262,64 +211,48 @@ void MapBuilderMagicPool::on_template_built()
 // -----------------------------------------------------------------------------
 // MapBuilderIntroForest
 // -----------------------------------------------------------------------------
-void MapBuilderIntroForest::handle_template_pos(const P&p, const char c)
+void MapBuilderIntroForest::handle_template_pos(const P& p, const char c)
 {
-        switch (c)
-        {
+        switch (c) {
         case '@':
-        case '=':
-        {
+        case '=': {
                 auto* const floor = new terrain::Floor(p);
 
                 floor->m_type = terrain::FloorType::stone_path;
 
                 map::put(floor);
 
-                if (c == '@')
-                {
+                if (c == '@') {
                         map::g_player->m_pos = p;
                 }
-        }
-        break;
+        } break;
 
-        case '_':
-        {
+        case '_': {
                 auto* const grass = new terrain::Grass(p);
                 grass->m_type = terrain::GrassType::withered;
                 map::put(grass);
-        }
-        break;
+        } break;
 
-        case '.':
-        {
-                if (rnd::one_in(6))
-                {
-                        if (rnd::one_in(6))
-                        {
+        case '.': {
+                if (rnd::one_in(6)) {
+                        if (rnd::one_in(6)) {
                                 map::put(new terrain::Bush(p));
-                        }
-                        else
-                        {
+                        } else {
                                 map::put(new terrain::Grass(p));
                         }
-                }
-                else // Normal stone floor
+                } else // Normal stone floor
                 {
                         map::put(new terrain::Floor(p));
                 }
-        }
-        break;
+        } break;
 
-        case '#':
-        {
+        case '#': {
                 bool is_door_adj = false;
 
-                for (const P& d : dir_utils::g_dir_list)
-                {
+                for (const P& d : dir_utils::g_dir_list) {
                         const char adj_c = get_template().at(p + d);
 
-                        if (adj_c == '+')
-                        {
+                        if (adj_c == '+') {
                                 is_door_adj = true;
                                 break;
                         }
@@ -327,109 +260,79 @@ void MapBuilderIntroForest::handle_template_pos(const P&p, const char c)
 
                 terrain::Terrain* terrain = nullptr;
 
-                if (!is_door_adj)
-                {
-                        if (rnd::one_in(16))
-                        {
+                if (!is_door_adj) {
+                        if (rnd::one_in(16)) {
                                 terrain = map::put(new terrain::RubbleLow(p));
-                        }
-                        else if (rnd::one_in(4))
-                        {
+                        } else if (rnd::one_in(4)) {
                                 terrain = map::put(new terrain::RubbleHigh(p));
                         }
                 }
 
-                if (!terrain)
-                {
+                if (!terrain) {
                         auto* const wall = new terrain::Wall(p);
 
-                        if (rnd::one_in(20))
-                        {
+                        if (rnd::one_in(20)) {
                                 wall->set_moss_grown();
                         }
 
                         map::put(wall);
                 }
-        }
-        break;
+        } break;
 
-        case '&':
-        {
+        case '&': {
                 // Store this position for placing player graves
                 m_possible_grave_positions.push_back(p);
         }
         // fallthrough
-        case ',':
-        {
-                if (rnd::one_in(12))
-                {
+        case ',': {
+                if (rnd::one_in(12)) {
                         map::put(new terrain::Bush(p));
-                }
-                else
-                {
+                } else {
                         map::put(new terrain::Grass(p));
                 }
-        }
-        break;
+        } break;
 
-        case '~':
-        {
+        case '~': {
                 auto liquid = new terrain::LiquidDeep(p);
 
                 liquid->m_type = LiquidType::water;
 
                 map::put(liquid);
-        }
-        break;
+        } break;
 
-        case '%':
-        {
+        case '%': {
                 auto liquid = new terrain::LiquidShallow(p);
 
                 liquid->m_type = LiquidType::water;
 
                 map::put(liquid);
-        }
-        break;
+        } break;
 
-        case 't':
-        {
+        case 't': {
                 map::put(new terrain::Tree(p));
-        }
-        break;
+        } break;
 
-        case 'v':
-        {
+        case 'v': {
                 map::put(new terrain::Brazier(p));
-        }
-        break;
+        } break;
 
-        case '[':
-        {
+        case '[': {
                 map::put(new terrain::ChurchBench(p));
-        }
-        break;
+        } break;
 
-        case '-':
-        {
+        case '-': {
                 map::put(new terrain::Altar(p));
-        }
-        break;
+        } break;
 
-        case '*':
-        {
+        case '*': {
                 map::put(new terrain::Carpet(p));
-        }
-        break;
+        } break;
 
-        case '>':
-        {
+        case '>': {
                 map::put(new terrain::Stairs(p));
-        }
-        break;
+        } break;
 
-        case '+':
-        {
+        case '+': {
                 auto* const door =
                         new terrain::Door(
                                 p,
@@ -438,20 +341,16 @@ void MapBuilderIntroForest::handle_template_pos(const P&p, const char c)
                                 DoorSpawnState::closed);
 
                 map::put(door);
-        }
-        break;
+        } break;
 
-        case '"':
-        {
+        case '"': {
                 map::put(new terrain::Bones(p));
-        }
-        break;
+        } break;
 
         default:
         {
                 ASSERT(false);
-        }
-        break;
+        } break;
         }
 }
 
@@ -460,8 +359,7 @@ void MapBuilderIntroForest::on_template_built()
         const auto highscore_entries = highscore::entries_sorted();
         const size_t nr_highscore_entries = highscore_entries.size();
 
-        if (nr_highscore_entries <= 0)
-        {
+        if (nr_highscore_entries <= 0) {
                 return;
         }
 
@@ -473,8 +371,7 @@ void MapBuilderIntroForest::on_template_built()
         // positions, starting with the highest score.
         for (auto it = std::rbegin(m_possible_grave_positions);
              it != std::rend(m_possible_grave_positions);
-             ++it)
-        {
+             ++it) {
                 const P& pos = *it;
 
                 auto* grave = new terrain::GraveStone(pos);
@@ -497,8 +394,7 @@ void MapBuilderIntroForest::on_template_built()
                 ++nr_placed;
                 ++entry_idx;
 
-                if (nr_placed == nr_highscore_entries)
-                {
+                if (nr_placed == nr_highscore_entries) {
                         break;
                 }
         }
@@ -511,13 +407,11 @@ MapBuilderEgypt::MapBuilderEgypt() :
 
         m_stair_symbol((char)((int)'1' + rnd::range(0, 3)))
 {
-
 }
 
-void MapBuilderEgypt::handle_template_pos(const P&p, const char c)
+void MapBuilderEgypt::handle_template_pos(const P& p, const char c)
 {
-        switch (c)
-        {
+        switch (c) {
         case '.':
         case '@':
         case 'P':
@@ -526,26 +420,20 @@ void MapBuilderEgypt::handle_template_pos(const P&p, const char c)
         case '1':
         case '2':
         case '3':
-        case '4':
-        {
-                if (c == '@')
-                {
+        case '4': {
+                if (c == '@') {
                         map::g_player->m_pos = p;
                 }
 
-                if (c == m_stair_symbol)
-                {
+                if (c == m_stair_symbol) {
                         map::put(new terrain::Stairs(p));
-                }
-                else
-                {
+                } else {
                         map::put(new terrain::Floor(p));
                 }
 
                 auto actor_id = actor::Id::END;
 
-                switch (c)
-                {
+                switch (c) {
                 case 'P':
                         actor_id = actor::Id::khephren;
                         break;
@@ -562,40 +450,31 @@ void MapBuilderEgypt::handle_template_pos(const P&p, const char c)
                         break;
                 }
 
-                if (actor_id != actor::Id::END)
-                {
+                if (actor_id != actor::Id::END) {
                         auto* const actor = actor::make(actor_id, p);
 
                         static_cast<actor::Mon*>(actor)->m_is_roaming_allowed =
                                 MonRoamingAllowed::no;
                 }
-        }
-        break;
+        } break;
 
-        case '#':
-        {
+        case '#': {
                 auto* wall = new terrain::Wall(p);
 
                 wall->m_type = terrain::WallType::egypt;
 
                 map::put(wall);
-        }
-        break;
+        } break;
 
-        case 'v':
-        {
+        case 'v': {
                 map::put(new terrain::Brazier(p));
-        }
-        break;
+        } break;
 
-        case 'S':
-        {
+        case 'S': {
                 map::put(new terrain::Statue(p));
-        }
-        break;
+        } break;
 
-        case '+':
-        {
+        case '+': {
                 auto* const door =
                         new terrain::Door(
                                 p,
@@ -604,24 +483,20 @@ void MapBuilderEgypt::handle_template_pos(const P&p, const char c)
                                 DoorSpawnState::closed);
 
                 map::put(door);
-        }
-        break;
+        } break;
 
-        case '~':
-        {
+        case '~': {
                 auto liquid = new terrain::LiquidShallow(p);
 
                 liquid->m_type = LiquidType::water;
 
                 map::put(liquid);
-        }
-        break;
+        } break;
 
         default:
         {
                 ASSERT(false);
-        }
-        break;
+        } break;
         }
 }
 
@@ -635,45 +510,32 @@ void MapBuilderEgypt::on_template_built()
 // -----------------------------------------------------------------------------
 void MapBuilderRatCave::handle_template_pos(const P& p, const char c)
 {
-        switch (c)
-        {
+        switch (c) {
         case '@':
         case '.':
         case ',':
         case '&':
         case 'r':
-        case '1':
-        {
+        case '1': {
                 if ((c == '&') ||
-                    ((c == ',' || c == 'r') && rnd::coin_toss()))
-                {
+                    ((c == ',' || c == 'r') && rnd::coin_toss())) {
                         map::put(new terrain::Bones(p));
-                }
-                else
-                {
+                } else {
                         map::put(new terrain::Floor(p));
                 }
 
-                if (c == '@')
-                {
+                if (c == '@') {
                         map::g_player->m_pos = p;
-                }
-                else if (c == '1')
-                {
+                } else if (c == '1') {
                         // TODO: Should be handled by map controller instead
                         game_time::add_mob(
                                 new terrain::EventRatsInTheWallsDiscovery(p));
-                }
-                else if (c == 'r')
-                {
+                } else if (c == 'r') {
                         actor::Actor* actor = nullptr;
 
-                        if (rnd::one_in(6))
-                        {
+                        if (rnd::one_in(6)) {
                                 actor = actor::make(actor::Id::rat_thing, p);
-                        }
-                        else
-                        {
+                        } else {
                                 actor = actor::make(actor::Id::rat, p);
                         }
 
@@ -687,73 +549,54 @@ void MapBuilderRatCave::handle_template_pos(const P& p, const char c)
                                 false,
                                 Verbose::no);
                 }
-        }
-        break;
+        } break;
 
-        case '#':
-        {
+        case '#': {
                 auto* wall = new terrain::Wall(p);
 
                 wall->m_type = terrain::WallType::cave;
 
                 map::put(wall);
-        }
-        break;
+        } break;
 
-        case 'x':
-        {
-                if (rnd::one_in(3))
-                {
+        case 'x': {
+                if (rnd::one_in(3)) {
                         map::put(new terrain::RubbleLow(p));
-                }
-                else if (rnd::one_in(5))
-                {
+                } else if (rnd::one_in(5)) {
                         map::put(new terrain::RubbleHigh(p));
-                }
-                else
-                {
+                } else {
                         auto* wall = new terrain::Wall(p);
 
                         wall->m_type = terrain::WallType::common;
 
                         map::put(wall);
                 }
-        }
-        break;
+        } break;
 
-        case '>':
-        {
+        case '>': {
                 map::put(new terrain::Stairs(p));
-        }
-        break;
+        } break;
 
-        case '|':
-        {
+        case '|': {
                 map::put(new terrain::Monolith(p));
-        }
-        break;
+        } break;
 
-        case ':':
-        {
+        case ':': {
                 map::put(new terrain::Stalagmite(p));
-        }
-        break;
+        } break;
 
         default:
         {
                 ASSERT(false);
-        }
-        break;
+        } break;
         }
 }
 
 void MapBuilderRatCave::on_template_built()
 {
         // Set all actors to non-roaming (they will be set to roaming later)
-        for (auto* const actor : game_time::g_actors)
-        {
-                if (!actor->is_player())
-                {
+        for (auto* const actor : game_time::g_actors) {
+                if (!actor->is_player()) {
                         static_cast<actor::Mon*>(actor)->m_is_roaming_allowed =
                                 MonRoamingAllowed::no;
                 }
@@ -767,67 +610,48 @@ void MapBuilderRatCave::on_template_built()
 // -----------------------------------------------------------------------------
 void MapBuilderBoss::handle_template_pos(const P& p, const char c)
 {
-        switch (c)
-        {
+        switch (c) {
         case '@':
         case 'P':
         case 'W':
         case 'R':
         case 'G':
-        case '.':
-        {
+        case '.': {
                 map::put(new terrain::Floor(p));
 
-                if (c == '@')
-                {
+                if (c == '@') {
                         map::g_player->m_pos = p;
-                }
-                else if (c == 'P')
-                {
+                } else if (c == 'P') {
                         actor::make(actor::Id::the_high_priest, p);
-                }
-                else if (c == 'W')
-                {
+                } else if (c == 'W') {
                         actor::make(actor::Id::high_priest_guard_war_vet, p);
-                }
-                else if (c == 'R')
-                {
+                } else if (c == 'R') {
                         actor::make(actor::Id::high_priest_guard_rogue, p);
-                }
-                else if (c == 'G')
-                {
+                } else if (c == 'G') {
                         actor::make(actor::Id::high_priest_guard_ghoul, p);
                 }
-        }
-        break;
+        } break;
 
-        case '#':
-        {
+        case '#': {
                 auto* const wall = new terrain::Wall(p);
 
                 wall->m_type = terrain::WallType::egypt;
 
                 map::put(wall);
-        }
-        break;
+        } break;
 
-        case 'v':
-        {
+        case 'v': {
                 map::put(new terrain::Brazier(p));
-        }
-        break;
+        } break;
 
-        case '>':
-        {
+        case '>': {
                 map::put(new terrain::Stairs(p));
-        }
-        break;
+        } break;
 
         default:
         {
                 ASSERT(false);
-        }
-        break;
+        } break;
         }
 }
 
@@ -836,20 +660,16 @@ void MapBuilderBoss::on_template_built()
         // Make the High Priest leader of all other monsters
         actor::Actor* high_priest = nullptr;
 
-        for (auto* const actor : game_time::g_actors)
-        {
-                if (actor->id() == actor::Id::the_high_priest)
-                {
+        for (auto* const actor : game_time::g_actors) {
+                if (actor->id() == actor::Id::the_high_priest) {
                         high_priest = actor;
 
                         break;
                 }
         }
 
-        for (auto* const actor : game_time::g_actors)
-        {
-                if (!actor->is_player() && (actor != high_priest))
-                {
+        for (auto* const actor : game_time::g_actors) {
+                if (!actor->is_player() && (actor != high_priest)) {
                         static_cast<actor::Mon*>(actor)->m_leader = high_priest;
                 }
         }
@@ -867,45 +687,34 @@ void MapBuilderTrapez::handle_template_pos(const P& p, const char c)
 {
         map::g_dark.at(p) = true;
 
-        switch (c)
-        {
+        switch (c) {
         case '@':
         case '.':
-        case 'o':
-        {
+        case 'o': {
                 map::put(new terrain::Floor(p));
 
-                if (c == '@')
-                {
+                if (c == '@') {
                         map::g_player->m_pos = p;
-                }
-                else if (c == 'o')
-                {
+                } else if (c == 'o') {
                         item::make_item_on_floor(item::Id::trapez, p);
                 }
-        }
-        break;
+        } break;
 
-        case '#':
-        {
+        case '#': {
                 auto* const wall = new terrain::Wall(p);
 
                 wall->m_type = terrain::WallType::egypt;
 
                 map::put(wall);
-        }
-        break;
+        } break;
 
-        case 'v':
-        {
+        case 'v': {
                 map::put(new terrain::Brazier(p));
-        }
-        break;
+        } break;
 
         default:
         {
                 ASSERT(false);
-        }
-        break;
+        } break;
         }
 }

@@ -41,8 +41,7 @@
 static std::unique_ptr<terrain::gong::Bonus> make_bonus(
         terrain::gong::BonusId id)
 {
-        switch (id)
-        {
+        switch (id) {
         case terrain::gong::BonusId::upgrade_spell:
                 return std::make_unique<terrain::gong::UpgradeSpell>();
 
@@ -79,8 +78,7 @@ static std::unique_ptr<terrain::gong::Bonus> make_bonus(
 
 static std::unique_ptr<terrain::gong::Toll> make_toll(terrain::gong::TollId id)
 {
-        switch (id)
-        {
+        switch (id) {
         case terrain::gong::TollId::hp_reduced:
                 return std::make_unique<terrain::gong::HpReduced>();
 
@@ -114,21 +112,18 @@ static std::unique_ptr<terrain::gong::Toll> make_toll(terrain::gong::TollId id)
 static std::vector<std::unique_ptr<terrain::gong::Bonus>>
 make_all_allowed_bonuses()
 {
-        std::vector< std::unique_ptr<terrain::gong::Bonus> > bonuses;
+        std::vector<std::unique_ptr<terrain::gong::Bonus>> bonuses;
 
-        for (int i = 0; i < (int)terrain::gong::BonusId::END; ++i)
-        {
+        for (int i = 0; i < (int)terrain::gong::BonusId::END; ++i) {
                 auto bonus = make_bonus((terrain::gong::BonusId)i);
 
-                if (!bonus)
-                {
+                if (!bonus) {
                         ASSERT(false);
 
                         continue;
                 }
 
-                if (!bonus->is_allowed())
-                {
+                if (!bonus->is_allowed()) {
                         continue;
                 }
 
@@ -149,8 +144,7 @@ static bool is_toll_allowing_bonus(
                 std::find(
                         std::begin(bonuses_not_allowed_with),
                         std::end(bonuses_not_allowed_with),
-                        bonus_id)
-                == std::end(bonuses_not_allowed_with);
+                        bonus_id) == std::end(bonuses_not_allowed_with);
 
         return is_allowing_bonus;
 }
@@ -163,24 +157,20 @@ static std::vector<std::unique_ptr<terrain::gong::Toll>> make_all_allowed_tolls(
 
         std::vector<std::unique_ptr<terrain::gong::Toll>> tolls;
 
-        for (int i = 0; i < (int)terrain::gong::TollId::END; ++i)
-        {
+        for (int i = 0; i < (int)terrain::gong::TollId::END; ++i) {
                 auto toll = make_toll((terrain::gong::TollId)i);
 
-                if (!toll)
-                {
+                if (!toll) {
                         ASSERT(false);
 
                         continue;
                 }
 
-                if (!is_toll_allowing_bonus(*toll, bonus_id))
-                {
+                if (!is_toll_allowing_bonus(*toll, bonus_id)) {
                         continue;
                 }
 
-                if (!toll->is_allowed())
-                {
+                if (!toll->is_allowed()) {
                         continue;
                 }
 
@@ -194,8 +184,7 @@ static std::unique_ptr<terrain::gong::Bonus> make_random_allowed_bonus()
 {
         auto bonus_bucket = make_all_allowed_bonuses();
 
-        if (bonus_bucket.empty())
-        {
+        if (bonus_bucket.empty()) {
                 return nullptr;
         }
 
@@ -211,8 +200,7 @@ static std::unique_ptr<terrain::gong::Toll> make_random_allowed_toll(
 {
         auto toll_bucket = make_all_allowed_tolls(bonus_id);
 
-        if (toll_bucket.empty())
-        {
+        if (toll_bucket.empty()) {
                 return nullptr;
         }
 
@@ -227,8 +215,7 @@ static void run_gong_effect()
 {
         const auto bonus = make_random_allowed_bonus();
 
-        if (!bonus)
-        {
+        if (!bonus) {
                 return;
         }
 
@@ -236,8 +223,7 @@ static void run_gong_effect()
 
         const auto toll = make_random_allowed_toll(bonus->id());
 
-        if (!toll)
-        {
+        if (!toll) {
                 return;
         }
 
@@ -249,8 +235,7 @@ static void run_gong_effect()
 // -----------------------------------------------------------------------------
 // terrain
 // -----------------------------------------------------------------------------
-namespace terrain
-{
+namespace terrain {
 
 // -----------------------------------------------------------------------------
 // Gong
@@ -260,13 +245,11 @@ Gong::Gong(const P& p) :
 
 void Gong::bump(actor::Actor& actor_bumping)
 {
-        if (!actor_bumping.is_player())
-        {
+        if (!actor_bumping.is_player()) {
                 return;
         }
 
-        if (!map::g_cells.at(m_pos).is_seen_by_player)
-        {
+        if (!map::g_cells.at(m_pos).is_seen_by_player) {
                 msg_log::clear();
 
                 const std::string msg =
@@ -282,8 +265,7 @@ void Gong::bump(actor::Actor& actor_bumping)
 
                 const auto answer = query::yes_or_no();
 
-                if (answer == BinaryAnswer::no)
-                {
+                if (answer == BinaryAnswer::no) {
                         msg_log::clear();
 
                         return;
@@ -304,12 +286,9 @@ void Gong::bump(actor::Actor& actor_bumping)
 
         snd.run();
 
-        if (m_is_used)
-        {
+        if (m_is_used) {
                 msg_log::add("Nothing happens.");
-        }
-        else
-        {
+        } else {
                 msg_log::more_prompt();
 
                 run_gong_effect();
@@ -341,8 +320,7 @@ std::string Gong::name(const Article article) const
 
 Color Gong::color_default() const
 {
-        return
-                m_is_used
+        return m_is_used
                 ? colors::gray()
                 : colors::brown();
 }
@@ -350,8 +328,7 @@ Color Gong::color_default() const
 // -----------------------------------------------------------------------------
 // gong
 // -----------------------------------------------------------------------------
-namespace gong
-{
+namespace gong {
 
 // -----------------------------------------------------------------------------
 // Upgrade spell
@@ -362,8 +339,7 @@ UpgradeSpell::UpgradeSpell() :
 {
         const auto bucket = find_spells_can_upgrade();
 
-        if (!bucket.empty())
-        {
+        if (!bucket.empty()) {
                 m_spell_id = rnd::element(bucket);
         }
 }
@@ -384,8 +360,7 @@ std::vector<SpellId> UpgradeSpell::find_spells_can_upgrade() const
 
         spells.reserve((size_t)SpellId::END);
 
-        for (int i = 0; i < (int)SpellId::END; ++i)
-        {
+        for (int i = 0; i < (int)SpellId::END; ++i) {
                 const auto id = (SpellId)i;
 
                 std::unique_ptr<const Spell> spell(
@@ -393,8 +368,7 @@ std::vector<SpellId> UpgradeSpell::find_spells_can_upgrade() const
 
                 if (player_spells::is_spell_learned(id) &&
                     (player_spells::spell_skill(id) != SpellSkill::master) &&
-                    spell->can_be_improved_with_skill())
-                {
+                    spell->can_be_improved_with_skill()) {
                         spells.push_back(id);
                 }
         }
@@ -467,8 +441,7 @@ GainItem::GainItem() :
 {
         const auto item_ids = find_allowed_item_ids();
 
-        if (!item_ids.empty())
-        {
+        if (!item_ids.empty()) {
                 m_item_id = rnd::element(item_ids);
         }
 }
@@ -495,12 +468,10 @@ std::vector<item::Id> GainItem::find_allowed_item_ids() const
 {
         std::vector<item::Id> ids;
 
-        for (size_t i = 0; i < (size_t)item::Id::END; ++i)
-        {
+        for (size_t i = 0; i < (size_t)item::Id::END; ++i) {
                 const auto& d = item::g_data[i];
 
-                if (d.allow_spawn && d.value >= item::Value::supreme_treasure)
-                {
+                if (d.allow_spawn && d.value >= item::Value::supreme_treasure) {
                         ids.push_back((item::Id)i);
                 }
         }
@@ -515,19 +486,16 @@ bool Healed::is_allowed() const
 {
         const auto& player = *map::g_player;
 
-        if (player.m_properties.has(PropId::poisoned) && (player.m_hp <= 6))
-        {
+        if (player.m_properties.has(PropId::poisoned) && (player.m_hp <= 6)) {
                 return true;
         }
 
         const auto* const prop = player.m_properties.prop(PropId::wound);
 
-        if (prop)
-        {
+        if (prop) {
                 const auto* const wound = static_cast<const PropWound*>(prop);
 
-                if (wound->nr_wounds() >= 3)
-                {
+                if (wound->nr_wounds() >= 3) {
                         return true;
                 }
         }
@@ -545,16 +513,14 @@ void Healed::run_effect()
                 PropId::diseased,
                 PropId::weakened,
                 PropId::hp_sap,
-                PropId::wound
-        };
+                PropId::wound};
 
-        for (PropId prop_id : props_can_heal)
-        {
+        for (PropId prop_id : props_can_heal) {
                 map::g_player->m_properties.end_prop(prop_id);
         }
 
         map::g_player->restore_hp(
-                999,    // HP restored
+                999, // HP restored
                 false); // Not allowed above max
 }
 
@@ -582,8 +548,7 @@ void Blessed::run_effect()
 
         auto* const cursed_item = get_random_cursed_item();
 
-        if (cursed_item)
-        {
+        if (cursed_item) {
                 const auto name =
                         cursed_item->name(
                                 ItemRefType::plain,
@@ -601,28 +566,21 @@ item::Item* Blessed::get_random_cursed_item() const
 {
         std::vector<item::Item*> cursed_items;
 
-        for (const auto& slot : map::g_player->m_inv.m_slots)
-        {
-                if (slot.item && slot.item->is_cursed())
-                {
+        for (const auto& slot : map::g_player->m_inv.m_slots) {
+                if (slot.item && slot.item->is_cursed()) {
                         cursed_items.push_back(slot.item);
                 }
         }
 
-        for (auto* const item : map::g_player->m_inv.m_backpack)
-        {
-                if (item->is_cursed())
-                {
+        for (auto* const item : map::g_player->m_inv.m_backpack) {
+                if (item->is_cursed()) {
                         cursed_items.push_back(item);
                 }
         }
 
-        if (cursed_items.empty())
-        {
+        if (cursed_items.empty()) {
                 return nullptr;
-        }
-        else
-        {
+        } else {
                 return rnd::element(cursed_items);
         }
 }
@@ -731,21 +689,17 @@ SpawnMonsters::SpawnMonsters()
 
         summon_bucket.reserve((size_t)actor::Id::END);
 
-        for (int i = 0; i < (int)actor::Id::END; ++i)
-        {
+        for (int i = 0; i < (int)actor::Id::END; ++i) {
                 const actor::ActorData& data = actor::g_data[i];
 
-                if (data.can_be_summoned_by_mon)
-                {
-                        if (data.spawn_min_dlvl <= (map::g_dlvl + 3))
-                        {
+                if (data.can_be_summoned_by_mon) {
+                        if (data.spawn_min_dlvl <= (map::g_dlvl + 3)) {
                                 summon_bucket.push_back(actor::Id(i));
                         }
                 }
         }
 
-        if (!summon_bucket.empty())
-        {
+        if (!summon_bucket.empty()) {
                 m_id_to_spawn = rnd::element(summon_bucket);
         }
 }
@@ -762,8 +716,7 @@ std::vector<BonusId> SpawnMonsters::bonuses_not_allowed_with() const
 
 void SpawnMonsters::run_effect()
 {
-        if (m_id_to_spawn == actor::Id::END)
-        {
+        if (m_id_to_spawn == actor::Id::END) {
                 ASSERT(false);
 
                 return;
@@ -776,13 +729,12 @@ void SpawnMonsters::run_effect()
                         map::g_player->m_pos,
                         {nr_mon, m_id_to_spawn},
                         map::rect())
-                .make_aware_of_player();
+                        .make_aware_of_player();
 
         std::for_each(
                 std::begin(mon_summoned.monsters),
                 std::end(mon_summoned.monsters),
-                [](auto* const mon)
-                {
+                [](auto* const mon) {
                         auto prop_waiting = new PropWaiting();
 
                         prop_waiting->set_duration(2);
@@ -798,8 +750,7 @@ UnlearnSpell::UnlearnSpell()
 {
         const auto spell_bucket = make_spell_bucket();
 
-        if (!spell_bucket.empty())
-        {
+        if (!spell_bucket.empty()) {
                 m_spell_to_unlearn = rnd::element(spell_bucket);
         }
 }
@@ -826,8 +777,7 @@ std::vector<SpellId> UnlearnSpell::make_spell_bucket() const
         // Find all spells which have scrolls with low spawn chances
         std::vector<SpellId> low_spawn_spells;
 
-        for (size_t i = 0; i < (size_t)item::Id::END; ++i)
-        {
+        for (size_t i = 0; i < (size_t)item::Id::END; ++i) {
                 const auto& d = item::g_data[i];
 
                 const bool is_scroll = d.type == ItemType::scroll;
@@ -836,10 +786,8 @@ std::vector<SpellId> UnlearnSpell::make_spell_bucket() const
                         d.chance_to_incl_in_spawn_list ==
                         scroll::g_low_spawn_chance;
 
-                if (is_scroll && is_low_chance)
-                {
-                        if (d.spell_cast_from_scroll == SpellId::END)
-                        {
+                if (is_scroll && is_low_chance) {
+                        if (d.spell_cast_from_scroll == SpellId::END) {
                                 ASSERT(false);
 
                                 continue;
@@ -852,10 +800,8 @@ std::vector<SpellId> UnlearnSpell::make_spell_bucket() const
         ASSERT(!low_spawn_spells.empty());
 
         // Get all learned spells from the low spawn chance spells
-        for (const auto id : low_spawn_spells)
-        {
-                if (player_spells::is_spell_learned(id))
-                {
+        for (const auto id : low_spawn_spells) {
+                if (player_spells::is_spell_learned(id)) {
                         result.push_back(id);
                 }
         }

@@ -33,11 +33,9 @@ static Bg s_current_bg = Bg::END;
 
 static OccultistDomain s_current_occultist_domain = OccultistDomain::END;
 
-
 static bool is_trait_blocked_for_bg(const Trait trait, const Bg bg)
 {
-        switch (trait)
-        {
+        switch (trait) {
         case Trait::adept_melee:
         case Trait::expert_melee:
         case Trait::master_melee:
@@ -100,8 +98,7 @@ static bool is_trait_blocked_for_bg(const Trait trait, const Bg bg)
         return false;
 }
 
-namespace player_bon
-{
+namespace player_bon {
 
 void init()
 {
@@ -109,8 +106,7 @@ void init()
 
         s_current_occultist_domain = OccultistDomain::END;
 
-        for (size_t i = 0; i < (size_t)Trait::END; ++i)
-        {
+        for (size_t i = 0; i < (size_t)Trait::END; ++i) {
                 s_traits[i] = false;
         }
 
@@ -123,15 +119,13 @@ void save()
 
         saving::put_int((int)s_current_occultist_domain);
 
-        for (size_t i = 0; i < (size_t)Trait::END; ++i)
-        {
+        for (size_t i = 0; i < (size_t)Trait::END; ++i) {
                 saving::put_bool(s_traits[i]);
         }
 
         saving::put_int(s_trait_log.size());
 
-        for (const auto& e : s_trait_log)
-        {
+        for (const auto& e : s_trait_log) {
                 saving::put_int(e.clvl_picked);
 
                 saving::put_int((int)e.trait_id);
@@ -144,8 +138,7 @@ void load()
 
         s_current_occultist_domain = (OccultistDomain)saving::get_int();
 
-        for (size_t i = 0; i < (size_t)Trait::END; ++i)
-        {
+        for (size_t i = 0; i < (size_t)Trait::END; ++i) {
                 s_traits[i] = saving::get_bool();
         }
 
@@ -153,8 +146,7 @@ void load()
 
         s_trait_log.resize(nr_trait_log_entries);
 
-        for (auto& e : s_trait_log)
-        {
+        for (auto& e : s_trait_log) {
                 e.clvl_picked = saving::get_int();
 
                 e.trait_id = (Trait)saving::get_int();
@@ -163,8 +155,7 @@ void load()
 
 std::string bg_title(const Bg id)
 {
-        switch (id)
-        {
+        switch (id) {
         case Bg::occultist:
                 return "Occultist";
 
@@ -188,8 +179,7 @@ std::string bg_title(const Bg id)
 
 std::string spell_domain_title(const OccultistDomain domain)
 {
-        switch (domain)
-        {
+        switch (domain) {
         case OccultistDomain::clairvoyant:
                 return "Clairvoyance";
 
@@ -199,8 +189,8 @@ std::string spell_domain_title(const OccultistDomain domain)
         case OccultistDomain::invoker:
                 return "Invocation";
 
-        // case OccultistDomain::summoner:
-        //         return "Summoning";
+                // case OccultistDomain::summoner:
+                //         return "Summoning";
 
         case OccultistDomain::transmuter:
                 return "Transmutation";
@@ -216,8 +206,7 @@ std::string spell_domain_title(const OccultistDomain domain)
 
 std::string occultist_profession_title(const OccultistDomain domain)
 {
-        switch (domain)
-        {
+        switch (domain) {
         case OccultistDomain::clairvoyant:
                 return "Clairvoyant";
 
@@ -227,8 +216,8 @@ std::string occultist_profession_title(const OccultistDomain domain)
         case OccultistDomain::invoker:
                 return "Invoker";
 
-        // case OccultistDomain::summoner:
-        //         return "Summoner";
+                // case OccultistDomain::summoner:
+                //         return "Summoner";
 
         case OccultistDomain::transmuter:
                 return "Transmuter";
@@ -244,8 +233,7 @@ std::string occultist_profession_title(const OccultistDomain domain)
 
 std::string trait_title(const Trait id)
 {
-        switch (id)
-        {
+        switch (id) {
         case Trait::adept_melee:
                 return "Adept Melee Fighter";
 
@@ -385,8 +373,7 @@ std::vector<ColoredString> bg_descr(const Bg id)
                 descr.emplace_back(trait_descr(trait_id), colors::gray());
         };
 
-        switch (id)
-        {
+        switch (id) {
         case Bg::occultist:
                 put("Specializes in a spell domain (selected at character "
                     "creation). "
@@ -472,24 +459,19 @@ std::vector<ColoredString> bg_descr(const Bg id)
 
 std::string occultist_domain_descr(const OccultistDomain domain)
 {
-        switch (domain)
-        {
+        switch (domain) {
         case OccultistDomain::clairvoyant:
-                return
-                        "Specialize in detection and learning.";
+                return "Specialize in detection and learning.";
 
         case OccultistDomain::enchanter:
-                return
-                        "Specialize in aiding, debilitating, entrancing, and "
-                        "beguiling.";
+                return "Specialize in aiding, debilitating, entrancing, and "
+                       "beguiling.";
 
         case OccultistDomain::invoker:
-                return
-                        "Specialize in channeling destructive powers.";
+                return "Specialize in channeling destructive powers.";
 
         case OccultistDomain::transmuter:
-                return
-                        "Specialize in manipulating matter, energy, and time.";
+                return "Specialize in manipulating matter, energy, and time.";
 
         case OccultistDomain::END:
                 ASSERT(false);
@@ -501,175 +483,143 @@ std::string occultist_domain_descr(const OccultistDomain domain)
 
 std::string trait_descr(const Trait id)
 {
-        switch (id)
-        {
+        switch (id) {
         case Trait::adept_melee:
         case Trait::expert_melee:
         case Trait::master_melee:
-                return
-                        "+10% hit chance and +1 damage with melee attacks";
+                return "+10% hit chance and +1 damage with melee attacks";
 
         case Trait::adept_marksman:
         case Trait::expert_marksman:
         case Trait::master_marksman:
-                return
-                        "+10% hit chance with firearms and thrown weapons";
+                return "+10% hit chance with firearms and thrown weapons";
 
         case Trait::steady_aimer:
-                return
-                        "Standing still gives ranged attacks maximum damage "
-                        "and +10% hit chance on the following turn, unless "
-                        "damage is taken";
+                return "Standing still gives ranged attacks maximum damage "
+                       "and +10% hit chance on the following turn, unless "
+                       "damage is taken";
 
         case Trait::cool_headed:
         case Trait::courageous:
-                return
-                        "+20% shock resistance";
+                return "+20% shock resistance";
 
         case Trait::absorb:
-                return
-                        "1-6 Spirit Points are restored each time a spell is "
-                        "resisted by Spell Resistance (granted by Spirit "
-                        "traits, or the Spell Shield spell)";
+                return "1-6 Spirit Points are restored each time a spell is "
+                       "resisted by Spell Resistance (granted by Spirit "
+                       "traits, or the Spell Shield spell)";
 
         case Trait::tough:
         case Trait::rugged:
-                return
-                        "+4 Hit Points, less likely to sprain when kicking, "
-                        "more likely to succeed with object interactions "
-                        "requiring strength (e.g. bashing things open)";
+                return "+4 Hit Points, less likely to sprain when kicking, "
+                       "more likely to succeed with object interactions "
+                       "requiring strength (e.g. bashing things open)";
 
         case Trait::thick_skinned:
-                return
-                        "+1 Armor Point (physical damage reduced by 1 point)";
+                return "+1 Armor Point (physical damage reduced by 1 point)";
 
         case Trait::resistant:
-                return
-                        "Halved damage from fire and electricity (at least 1 "
-                        "damage taken)";
+                return "Halved damage from fire and electricity (at least 1 "
+                       "damage taken)";
 
         case Trait::strong_backed:
-                return
-                        "+50% carry weight limit";
+                return "+50% carry weight limit";
 
         case Trait::dexterous:
         case Trait::lithe:
-                return
-                        "+25% chance to evade attacks";
+                return "+25% chance to evade attacks";
 
         case Trait::crippling_strikes:
                 return "Your melee attacks have 60% chance to Weaken the "
-                        "target creature for 2-3 turns (reducing their "
-                        "melee damage by half).";
+                       "target creature for 2-3 turns (reducing their "
+                       "melee damage by half).";
 
         case Trait::fearless:
-                return
-                        "You cannot become terrified, +10% shock resistance";
+                return "You cannot become terrified, +10% shock resistance";
 
         case Trait::healer:
-                return
-                        "Using medical equipment requires only half the "
-                        "normal time and resources";
+                return "Using medical equipment requires only half the "
+                       "normal time and resources";
 
         case Trait::vigilant:
-                return
-                        "You are always aware of creatures within three steps "
-                        "away, even if they are invisible, around the corner, "
-                        "or behind a door, etc";
+                return "You are always aware of creatures within three steps "
+                       "away, even if they are invisible, around the corner, "
+                       "or behind a door, etc";
 
         case Trait::rapid_recoverer:
-                return
-                        "You regenerate 1 Hit Point every second turn";
+                return "You regenerate 1 Hit Point every second turn";
 
         case Trait::survivalist:
-                return
-                        "You cannot become diseased, wounds do not affect "
-                        "your combat abilities, and their negative effect on "
-                        "Hit Points and regeneration is halved";
+                return "You cannot become diseased, wounds do not affect "
+                       "your combat abilities, and their negative effect on "
+                       "Hit Points and regeneration is halved";
 
         case Trait::self_aware:
-                return
-                        "You cannot become confused, the number of remaining "
-                        "turns for status effects are displayed";
+                return "You cannot become confused, the number of remaining "
+                       "turns for status effects are displayed";
 
         case Trait::stout_spirit:
-                return
-                        "+2 Spirit Points, increased Spirit regeneration rate, "
-                        "you can defy harmful spells (it takes 125-150 turns "
-                        "to regain spell resistance after a spell is blocked)";
+                return "+2 Spirit Points, increased Spirit regeneration rate, "
+                       "you can defy harmful spells (it takes 125-150 turns "
+                       "to regain spell resistance after a spell is blocked)";
 
         case Trait::strong_spirit:
-                return
-                        "+2 Spirit Points, increased Spirit regeneration rate, "
-                        "it takes 75-100 turns to regain spell resistance "
-                        "after a spell is blocked";
+                return "+2 Spirit Points, increased Spirit regeneration rate, "
+                       "it takes 75-100 turns to regain spell resistance "
+                       "after a spell is blocked";
 
         case Trait::mighty_spirit:
-                return
-                        "+2 Spirit Points, increased Spirit regeneration rate, "
-                        "it takes 25-50 turns to regain spell resistance "
-                        "after a spell is blocked";
+                return "+2 Spirit Points, increased Spirit regeneration rate, "
+                       "it takes 25-50 turns to regain spell resistance "
+                       "after a spell is blocked";
 
         case Trait::stealthy:
-                return
-                        "+45% chance to avoid detection (per monster and turn)";
+                return "+45% chance to avoid detection (per monster and turn)";
 
         case Trait::imperceptible:
-                return
-                        "+45% chance to avoid detection (per monster and turn)";
+                return "+45% chance to avoid detection (per monster and turn)";
 
         case Trait::silent:
-                return
-                        "All your melee attacks are silent, and creatures are "
-                        "not alerted when you open or close doors, wade, or "
-                        "swim ";
+                return "All your melee attacks are silent, and creatures are "
+                       "not alerted when you open or close doors, wade, or "
+                       "swim ";
 
         case Trait::vicious:
-                return
-                        "+150% backstab damage (in addition to the basic +50% "
-                        "damage from stealth attacks)";
+                return "+150% backstab damage (in addition to the basic +50% "
+                       "damage from stealth attacks)";
 
         case Trait::ruthless:
-                return
-                        "+150% backstab damage";
+                return "+150% backstab damage";
 
         case Trait::treasure_hunter:
-                return
-                        "You tend to find more items";
+                return "You tend to find more items";
 
         case Trait::undead_bane:
-                return
-                        "+2 melee and ranged attack damage against all undead "
-                        "monsters, +50% hit chance against ethereal undead "
-                        "monsters (Ghosts)";
+                return "+2 melee and ranged attack damage against all undead "
+                       "monsters, +50% hit chance against ethereal undead "
+                       "monsters (Ghosts)";
 
         case Trait::elec_incl:
-                return
-                        "Rods recharge twice as fast, Strange Devices are less "
-                        "likely to malfunction or break, Electric Lanterns "
-                        "last twice as long, +1 damage with electricity "
-                        "weapons";
+                return "Rods recharge twice as fast, Strange Devices are less "
+                       "likely to malfunction or break, Electric Lanterns "
+                       "last twice as long, +1 damage with electricity "
+                       "weapons";
 
         case Trait::ravenous:
-                return
-                        "You occasionally feed on living victims when "
-                        "attacking with claws";
+                return "You occasionally feed on living victims when "
+                       "attacking with claws";
 
         case Trait::foul:
-                return
-                        "+1 claw damage, when attacking with claws, vicious "
-                        "worms occasionally burst out from the corpses of your "
-                        "victims to attack your enemies";
+                return "+1 claw damage, when attacking with claws, vicious "
+                       "worms occasionally burst out from the corpses of your "
+                       "victims to attack your enemies";
 
         case Trait::toxic:
-                return
-                        "+1 claw damage, you are immune to poison, and attacks "
-                        "with your claws occasionally poisons your victims";
+                return "+1 claw damage, you are immune to poison, and attacks "
+                       "with your claws occasionally poisons your victims";
 
         case Trait::indomitable_fury:
-                return
-                        "While Frenzied, you are immune to Wounds, and your "
-                        "attacks cause fear";
+                return "While Frenzied, you are immune to Wounds, and your "
+                       "attacks cause fear";
 
         case Trait::END:
                 break;
@@ -693,8 +643,7 @@ void trait_prereqs(
 
         clvl_out = -1;
 
-        switch (trait)
-        {
+        switch (trait) {
         case Trait::adept_melee:
                 break;
 
@@ -860,13 +809,10 @@ void trait_prereqs(
 
         // Remove traits which are blocked for this background (prerequisites
         // are considered fulfilled)
-        for (auto it = std::begin(traits_out); it != std::end(traits_out); )
-        {
-                if (is_trait_blocked_for_bg(*it, bg))
-                {
+        for (auto it = std::begin(traits_out); it != std::end(traits_out);) {
+                if (is_trait_blocked_for_bg(*it, bg)) {
                         it = traits_out.erase(it);
-                }
-                else // Not blocked
+                } else // Not blocked
                 {
                         ++it;
                 }
@@ -876,8 +822,7 @@ void trait_prereqs(
         std::sort(
                 std::begin(traits_out),
                 std::end(traits_out),
-                [](const Trait & t1, const Trait & t2)
-                {
+                [](const Trait& t1, const Trait& t2) {
                         const std::string str1 = trait_title(t1);
                         const std::string str2 = trait_title(t2);
                         return str1 < str2;
@@ -904,8 +849,7 @@ std::vector<Bg> pickable_bgs()
         std::vector<Bg> result;
 
         result.reserve((int)Bg::END);
-        for (int i = 0; i < (int)Bg::END; ++i)
-        {
+        for (int i = 0; i < (int)Bg::END; ++i) {
                 result.push_back((Bg)i);
         }
 
@@ -913,8 +857,7 @@ std::vector<Bg> pickable_bgs()
         std::sort(
                 std::begin(result),
                 std::end(result),
-                [](const Bg bg1, const Bg bg2)
-                {
+                [](const Bg bg1, const Bg bg2) {
                         const std::string str1 = bg_title(bg1);
                         const std::string str2 = bg_title(bg2);
                         return str1 < str2;
@@ -928,8 +871,7 @@ std::vector<OccultistDomain> pickable_occultist_domains()
         std::vector<OccultistDomain> result;
 
         result.reserve((int)OccultistDomain::END);
-        for (int i = 0; i < (int)OccultistDomain::END; ++i)
-        {
+        for (int i = 0; i < (int)OccultistDomain::END; ++i) {
                 result.push_back((OccultistDomain)i);
         }
 
@@ -939,8 +881,7 @@ std::vector<OccultistDomain> pickable_occultist_domains()
                 std::end(result),
                 [](
                         const OccultistDomain domain_1,
-                        const OccultistDomain domain_2)
-                {
+                        const OccultistDomain domain_2) {
                         const std::string str1 = spell_domain_title(domain_1);
                         const std::string str2 = spell_domain_title(domain_2);
                         return str1 < str2;
@@ -954,11 +895,9 @@ void unpicked_traits_for_bg(
         std::vector<Trait>& traits_can_be_picked_out,
         std::vector<Trait>& traits_prereqs_not_met_out)
 {
-        for (size_t i = 0; i < (size_t)Trait::END; ++i)
-        {
+        for (size_t i = 0; i < (size_t)Trait::END; ++i) {
                 // Already picked?
-                if (s_traits[i])
-                {
+                if (s_traits[i]) {
                         continue;
                 }
 
@@ -968,8 +907,7 @@ void unpicked_traits_for_bg(
                 const bool is_blocked_for_bg =
                         is_trait_blocked_for_bg(trait, bg);
 
-                if (is_blocked_for_bg)
-                {
+                if (is_blocked_for_bg) {
                         continue;
                 }
 
@@ -994,17 +932,14 @@ void unpicked_traits_for_bg(
                         (s_current_bg == bg_prereq) ||
                         (bg_prereq == Bg::END);
 
-                if (!is_bg_ok)
-                {
+                if (!is_bg_ok) {
                         continue;
                 }
 
                 bool is_trait_prereqs_ok = true;
 
-                for (const auto& prereq : trait_prereq_list)
-                {
-                        if (!s_traits[(size_t)prereq])
-                        {
+                for (const auto& prereq : trait_prereq_list) {
+                        if (!s_traits[(size_t)prereq]) {
                                 is_trait_prereqs_ok = false;
 
                                 break;
@@ -1015,12 +950,9 @@ void unpicked_traits_for_bg(
                         is_trait_prereqs_ok &&
                         (game::clvl() >= clvl_prereq);
 
-                if (is_trait_prereqs_ok)
-                {
+                if (is_trait_prereqs_ok) {
                         traits_can_be_picked_out.push_back(trait);
-                }
-                else
-                {
+                } else {
                         // Prerequisites not met
                         traits_prereqs_not_met_out.push_back(trait);
                 }
@@ -1031,8 +963,7 @@ void unpicked_traits_for_bg(
         std::sort(
                 std::begin(traits_can_be_picked_out),
                 std::end(traits_can_be_picked_out),
-                [](const Trait & t1, const Trait & t2)
-                {
+                [](const Trait& t1, const Trait& t2) {
                         const std::string str1 = trait_title(t1);
                         const std::string str2 = trait_title(t2);
                         return str1 < str2;
@@ -1041,8 +972,7 @@ void unpicked_traits_for_bg(
         std::sort(
                 std::begin(traits_prereqs_not_met_out),
                 std::end(traits_prereqs_not_met_out),
-                [](const Trait & t1, const Trait & t2)
-                {
+                [](const Trait& t1, const Trait& t2) {
                         const std::string str1 = trait_title(t1);
                         const std::string str2 = trait_title(t2);
                         return str1 < str2;
@@ -1055,20 +985,16 @@ void pick_bg(const Bg bg)
 
         s_current_bg = bg;
 
-        switch (s_current_bg)
-        {
-        case Bg::occultist:
-        {
+        switch (s_current_bg) {
+        case Bg::occultist: {
                 pick_trait(Trait::stout_spirit);
 
                 map::g_player->change_max_sp(2, Verbose::no);
 
                 map::g_player->change_max_hp(-2, Verbose::no);
-        }
-        break;
+        } break;
 
-        case Bg::ghoul:
-        {
+        case Bg::ghoul: {
                 auto prop_r_disease = new PropRDisease();
 
                 prop_r_disease->set_indefinite();
@@ -1092,23 +1018,18 @@ void pick_bg(const Bg bg)
                 player_spells::learn_spell(SpellId::frenzy, Verbose::no);
 
                 map::g_player->change_max_hp(6, Verbose::no);
-        }
-        break;
+        } break;
 
-        case Bg::rogue:
-        {
+        case Bg::rogue: {
                 pick_trait(Trait::stealthy);
-        }
-        break;
+        } break;
 
-        case Bg::war_vet:
-        {
+        case Bg::war_vet: {
                 pick_trait(Trait::adept_marksman);
                 pick_trait(Trait::adept_melee);
                 pick_trait(Trait::tough);
                 pick_trait(Trait::healer);
-        }
-        break;
+        } break;
 
         case Bg::END:
                 break;
@@ -1124,26 +1045,22 @@ void pick_occultist_domain(const OccultistDomain domain)
 
 void on_player_gained_lvl(const int new_lvl)
 {
-        if (s_current_bg == Bg::occultist)
-        {
+        if (s_current_bg == Bg::occultist) {
                 const bool is_occultist_spell_incr_lvl =
                         (new_lvl == 4) ||
                         (new_lvl == 8);
 
-                if (is_occultist_spell_incr_lvl)
-                {
+                if (is_occultist_spell_incr_lvl) {
                         for (int spell_id = 0;
                              spell_id < (int)SpellId::END;
-                             ++spell_id)
-                        {
+                             ++spell_id) {
                                 const std::unique_ptr<Spell> spell(
                                         spell_factory::make_spell_from_id(
                                                 (SpellId)spell_id));
 
                                 if (spell->player_can_learn() &&
                                     (spell->domain() ==
-                                     s_current_occultist_domain))
-                                {
+                                     s_current_occultist_domain)) {
                                         player_spells::incr_spell_skill(
                                                 (SpellId)spell_id);
                                 }
@@ -1154,8 +1071,7 @@ void on_player_gained_lvl(const int new_lvl)
 
 void set_all_traits_to_picked()
 {
-        for (int i = 0; i < (int)Trait::END; ++i)
-        {
+        for (int i = 0; i < (int)Trait::END; ++i) {
                 s_traits[i] = true;
         }
 }
@@ -1175,11 +1091,9 @@ void pick_trait(const Trait id)
                 s_trait_log.push_back(trait_log_entry);
         }
 
-        switch (id)
-        {
+        switch (id) {
         case Trait::tough:
-        case Trait::rugged:
-        {
+        case Trait::rugged: {
                 const int hp_incr = 4;
 
                 map::g_player->change_max_hp(
@@ -1190,11 +1104,9 @@ void pick_trait(const Trait id)
                         hp_incr,
                         false, // Not allowed above max
                         Verbose::no);
-        }
-        break;
+        } break;
 
-        case Trait::stout_spirit:
-        {
+        case Trait::stout_spirit: {
                 auto prop = property_factory::make(PropId::r_spell);
 
                 prop->set_indefinite();
@@ -1207,8 +1119,7 @@ void pick_trait(const Trait id)
         }
         // Fallthrough
         case Trait::strong_spirit:
-        case Trait::mighty_spirit:
-        {
+        case Trait::mighty_spirit: {
                 const int spi_incr = 2;
 
                 map::g_player->change_max_sp(
@@ -1219,11 +1130,9 @@ void pick_trait(const Trait id)
                         spi_incr,
                         false, // Not allowed above max
                         Verbose::no);
-        }
-        break;
+        } break;
 
-        case Trait::self_aware:
-        {
+        case Trait::self_aware: {
                 auto prop = new PropRConf();
 
                 prop->set_indefinite();
@@ -1233,11 +1142,9 @@ void pick_trait(const Trait id)
                         PropSrc::intr,
                         true,
                         Verbose::no);
-        }
-        break;
+        } break;
 
-        case Trait::survivalist:
-        {
+        case Trait::survivalist: {
                 auto prop = new PropRDisease();
 
                 prop->set_indefinite();
@@ -1247,11 +1154,9 @@ void pick_trait(const Trait id)
                         PropSrc::intr,
                         true,
                         Verbose::no);
-        }
-        break;
+        } break;
 
-        case Trait::fearless:
-        {
+        case Trait::fearless: {
                 auto prop = new PropRFear();
 
                 prop->set_indefinite();
@@ -1261,11 +1166,9 @@ void pick_trait(const Trait id)
                         PropSrc::intr,
                         true,
                         Verbose::no);
-        }
-        break;
+        } break;
 
-        case Trait::toxic:
-        {
+        case Trait::toxic: {
                 auto prop = new PropRPoison();
 
                 prop->set_indefinite();
@@ -1275,8 +1178,7 @@ void pick_trait(const Trait id)
                         PropSrc::intr,
                         true,
                         Verbose::no);
-        }
-        break;
+        } break;
 
         default:
                 break;
@@ -1290,8 +1192,7 @@ std::vector<TraitLogEntry> trait_log()
 
 bool gets_undead_bane_bon(const actor::ActorData& actor_data)
 {
-        return
-                s_traits[(size_t)Trait::undead_bane] &&
+        return s_traits[(size_t)Trait::undead_bane] &&
                 actor_data.is_undead;
 }
 

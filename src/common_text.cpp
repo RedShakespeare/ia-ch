@@ -6,8 +6,7 @@
 
 #include "common_text.hpp"
 
-namespace common_text
-{
+namespace common_text {
 
 const std::string g_next_page_up_hint =
         "[page up, <] more";

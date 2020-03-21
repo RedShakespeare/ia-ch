@@ -14,8 +14,7 @@
 
 struct InputData;
 
-enum class MenuAction
-{
+enum class MenuAction {
         none,
         moved,
         selected,
@@ -23,27 +22,70 @@ enum class MenuAction
         esc
 };
 
-enum class MenuInputMode
-{
+enum class MenuInputMode {
         scrolling_and_letters,
         scrolling
 };
 
-const std::vector<char> std_menu_keys =
-{
+const std::vector<char> std_menu_keys = {
         // NOTE: j k l is used for browsing and selecting in menus in vi mode
-        'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', /* 'j', 'k', 'l', */ 'm',
-        'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z',
+        'a',
+        'b',
+        'c',
+        'd',
+        'e',
+        'f',
+        'g',
+        'h',
+        'i',
+        // 'j', 'k', 'l'
+        'm',
+        'n',
+        'o',
+        'p',
+        'q',
+        'r',
+        's',
+        't',
+        'u',
+        'v',
+        'w',
+        'x',
+        'y',
+        'z',
 
-        'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N',
-        'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z',
+        'A',
+        'B',
+        'C',
+        'D',
+        'E',
+        'F',
+        'G',
+        'H',
+        'I',
+        'J',
+        'K',
+        'L',
+        'M',
+        'N',
+        'O',
+        'P',
+        'Q',
+        'R',
+        'S',
+        'T',
+        'U',
+        'V',
+        'W',
+        'X',
+        'Y',
+        'Z',
 };
 
 // TODO: There's probably some public methods here that could be private/removed
-class MenuBrowser
-{
+class MenuBrowser {
 public:
-        MenuBrowser(const int nr_items, const int list_h = - 1)
+        MenuBrowser(const int nr_items, const int list_h = -1)
         {
                 reset(nr_items, list_h);
         }

@@ -11,15 +11,11 @@
 #include <string>
 #include <unordered_map>
 
-
-namespace actor
-{
+namespace actor {
 class Actor;
 } // namespace actor
 
-
-enum class AbilityId
-{
+enum class AbilityId {
         melee,
         ranged,
         dodging,
@@ -44,8 +40,7 @@ const std::unordered_map<AbilityId, std::string> g_ability_id_to_str_map = {
         {AbilityId::searching, "searching"},
 };
 
-enum class ActionResult
-{
+enum class ActionResult {
         fail_critical,
         fail_big,
         fail,
@@ -55,8 +50,7 @@ enum class ActionResult
 };
 
 // Each actor has an instance of this class
-class AbilityValues
-{
+class AbilityValues {
 public:
         AbilityValues()
         {
@@ -84,8 +78,7 @@ private:
         int m_ability_list[(size_t)AbilityId::END];
 };
 
-namespace ability_roll
-{
+namespace ability_roll {
 
 ActionResult roll(int skill_value);
 

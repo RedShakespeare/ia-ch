@@ -11,20 +11,15 @@
 
 #include "actor_data.hpp"
 
-
-namespace actor
-{
+namespace actor {
 class Actor;
 } // namespace actor
 
-namespace terrain
-{
+namespace terrain {
 class Terrain;
 } // namespace terrain
 
-
-namespace game_time
-{
+namespace game_time {
 
 extern std::vector<actor::Actor*> g_actors;
 extern std::vector<terrain::Terrain*> g_mobs;

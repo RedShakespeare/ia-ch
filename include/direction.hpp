@@ -12,22 +12,20 @@
 
 struct P;
 
-enum class Dir
-{
-    down_left   = 1,
-    down        = 2,
-    down_right  = 3,
-    left        = 4,
-    center      = 5,
-    right       = 6,
-    up_left     = 7,
-    up          = 8,
-    up_right    = 9,
-    END
+enum class Dir {
+        down_left = 1,
+        down = 2,
+        down_right = 3,
+        left = 4,
+        center = 5,
+        right = 6,
+        up_left = 7,
+        up = 8,
+        up_right = 9,
+        END
 };
 
-namespace dir_utils
-{
+namespace dir_utils {
 
 extern const std::vector<P> g_cardinal_list;
 extern const std::vector<P> g_cardinal_list_w_center;

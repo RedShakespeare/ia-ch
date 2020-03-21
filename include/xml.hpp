@@ -10,8 +10,7 @@
 #include "tinyxml2.h"
 #include <string>
 
-namespace xml
-{
+namespace xml {
 
 using Doc = tinyxml2::XMLDocument;
 using Element = tinyxml2::XMLElement;

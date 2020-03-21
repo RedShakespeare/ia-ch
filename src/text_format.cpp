@@ -19,14 +19,12 @@ static std::string read_and_remove_word(std::string& line)
 {
         std::string str;
 
-        for (auto it = std::begin(line); it != std::end(line); )
-        {
+        for (auto it = std::begin(line); it != std::end(line);) {
                 const char current_char = *it;
 
                 line.erase(it);
 
-                if (current_char == ' ')
-                {
+                if (current_char == ' ') {
                         break;
                 }
 
@@ -47,20 +45,17 @@ static bool is_word_fit(
 // -----------------------------------------------------------------------------
 // text_format
 // -----------------------------------------------------------------------------
-namespace text_format
-{
+namespace text_format {
 
 std::vector<std::string> split(std::string line, const int max_w)
 {
-        if (line.empty())
-        {
+        if (line.empty()) {
                 return {};
         }
 
         std::string current_word = read_and_remove_word(line);
 
-        if (line.empty())
-        {
+        if (line.empty()) {
                 return {current_word};
         }
 
@@ -68,10 +63,8 @@ std::vector<std::string> split(std::string line, const int max_w)
 
         size_t current_row_idx = 0;
 
-        while (!current_word.empty())
-        {
-                if (!is_word_fit(result[current_row_idx], current_word, max_w))
-                {
+        while (!current_word.empty()) {
+                if (!is_word_fit(result[current_row_idx], current_word, max_w)) {
                         // Word did not fit on current line, make a new line
                         ++current_row_idx;
 
@@ -80,8 +73,7 @@ std::vector<std::string> split(std::string line, const int max_w)
 
                 // If this is not the first word on the current line, add a
                 // space before the word
-                if (!result[current_row_idx].empty())
-                {
+                if (!result[current_row_idx].empty()) {
                         result[current_row_idx] += " ";
                 }
 
@@ -99,16 +91,12 @@ std::vector<std::string> space_separated_list(const std::string& line)
 
         std::string current_line;
 
-        for (char c : line)
-        {
-                if (c == ' ')
-                {
+        for (char c : line) {
+                if (c == ' ') {
                         result.push_back(current_line);
 
                         current_line = "";
-                }
-                else
-                {
+                } else {
                         current_line += c;
                 }
         }
@@ -123,8 +111,7 @@ std::string replace_all(
 {
         std::string result;
 
-        if (from.empty())
-        {
+        if (from.empty()) {
                 return result;
         }
 
@@ -132,8 +119,7 @@ std::string replace_all(
 
         size_t start_pos = 0;
 
-        while ((start_pos = result.find(from, start_pos)) != std::string::npos)
-        {
+        while ((start_pos = result.find(from, start_pos)) != std::string::npos) {
                 result.replace(start_pos, from.length(), to);
 
                 start_pos += to.length();
@@ -149,8 +135,7 @@ std::string pad_before(
 {
         auto result = str;
 
-        if (tot_w > str.size())
-        {
+        if (tot_w > str.size()) {
                 result.insert(0, tot_w - str.size(), c);
         }
 
@@ -164,8 +149,7 @@ std::string pad_after(
 {
         auto result = str;
 
-        if (tot_w > str.size())
-        {
+        if (tot_w > str.size()) {
                 result.insert(result.size(), tot_w - str.size(), c);
         }
 
@@ -176,8 +160,7 @@ std::string first_to_lower(const std::string& str)
 {
         auto result = str;
 
-        if (!result.empty())
-        {
+        if (!result.empty()) {
                 result[0] = tolower(result[0]);
         }
 
@@ -188,8 +171,7 @@ std::string first_to_upper(const std::string& str)
 {
         auto result = str;
 
-        if (!result.empty())
-        {
+        if (!result.empty()) {
                 result[0] = toupper(result[0]);
         }
 
@@ -213,8 +195,7 @@ void append_with_space(
         std::string& base_str,
         const std::string& addition)
 {
-        if (!base_str.empty() && !addition.empty())
-        {
+        if (!base_str.empty() && !addition.empty()) {
                 base_str += " ";
         }
 

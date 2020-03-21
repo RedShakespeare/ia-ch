@@ -13,9 +13,8 @@
 #include "rect.hpp"
 
 // Two dimensional dynamic array class
-template<typename T>
-class Array2
-{
+template <typename T>
+class Array2 {
 public:
         Array2(const P& dims)
         {
@@ -52,8 +51,7 @@ public:
 
         Array2<T>& operator=(const Array2<T>& other)
         {
-                if (&other == this)
-                {
+                if (&other == this) {
                         return *this;
                 }
 
@@ -69,8 +67,7 @@ public:
 
         Array2<T>& operator=(Array2<T>&& other)
         {
-                if (&other == this)
-                {
+                if (&other == this) {
                         return *this;
                 }
 
@@ -120,8 +117,7 @@ public:
 
                 m_data = nullptr;
 
-                if (len > 0)
-                {
+                if (len > 0) {
                         m_data = new T[len]();
                 }
         }
@@ -153,8 +149,7 @@ public:
 
                 m_data = nullptr;
 
-                if (len > 0)
-                {
+                if (len > 0) {
                         m_data = new T[len];
                 }
         }
@@ -165,10 +160,8 @@ public:
 
                 Array2<T> rotated(my_dims.y, my_dims.x);
 
-                for (int x = 0; x < my_dims.x; ++x)
-                {
-                        for (int y = 0; y < my_dims.y; ++y)
-                        {
+                for (int x = 0; x < my_dims.x; ++x) {
+                        for (int y = 0; y < my_dims.y; ++y) {
                                 const size_t my_idx = pos_to_idx(x, y);
 
                                 rotated.at(my_dims.y - 1 - y, x) =
@@ -185,10 +178,8 @@ public:
 
                 Array2<T> rotated(my_dims.y, my_dims.x);
 
-                for (int x = 0; x < my_dims.x; ++x)
-                {
-                        for (int y = 0; y < my_dims.y; ++y)
-                        {
+                for (int x = 0; x < my_dims.x; ++x) {
+                        for (int y = 0; y < my_dims.y; ++y) {
                                 const size_t my_idx = pos_to_idx(x, y);
 
                                 rotated.at(y, my_dims.x - 1 - x) =
@@ -203,10 +194,8 @@ public:
         {
                 const P d(dims());
 
-                for (int x = 0; x < d.x / 2; ++x)
-                {
-                        for (int y = 0; y < d.y; ++y)
-                        {
+                for (int x = 0; x < d.x / 2; ++x) {
+                        for (int y = 0; y < d.y; ++y) {
                                 const size_t idx_1 = pos_to_idx(x, y);
                                 const size_t idx_2 = pos_to_idx(d.x - 1 - x, y);
 
@@ -219,10 +208,8 @@ public:
         {
                 const P d(dims());
 
-                for (int x = 0; x < d.x; ++x)
-                {
-                        for (int y = 0; y < d.y / 2; ++y)
-                        {
+                for (int x = 0; x < d.x; ++x) {
+                        for (int y = 0; y < d.y / 2; ++y) {
                                 const size_t idx_1 = pos_to_idx(x, y);
                                 const size_t idx_2 = pos_to_idx(x, d.y - 1 - y);
 

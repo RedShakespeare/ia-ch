@@ -12,8 +12,7 @@
 #include "info_screen_state.hpp"
 #include "state.hpp"
 
-class PostmortemMenu: public State
-{
+class PostmortemMenu : public State {
 public:
         PostmortemMenu(IsWin is_win);
 
@@ -37,12 +36,11 @@ private:
         std::vector<std::string> m_ascii_graveyard_lines;
 };
 
-class PostmortemInfo: public InfoScreenState
-{
+class PostmortemInfo : public InfoScreenState {
 public:
         PostmortemInfo() :
-                
-                m_top_idx(0) {}
+                m_top_idx(0)
+        {}
 
         void draw() override;
 

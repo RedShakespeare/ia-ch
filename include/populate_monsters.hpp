@@ -12,20 +12,16 @@
 #include "global.hpp"
 #include "room.hpp"
 
-
-namespace actor
-{
+namespace actor {
 enum class Id;
 } // namespace actor
 
 struct P;
 
-template<typename T>
+template <typename T>
 class Array2;
 
-
-namespace populate_mon
-{
+namespace populate_mon {
 
 void make_group_at(
         actor::Id id,

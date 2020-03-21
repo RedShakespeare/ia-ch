@@ -9,32 +9,24 @@
 
 #include "item.hpp"
 
-
-namespace item
-{
+namespace item {
 struct ItemData;
 } // namespace item
 
+namespace rod {
 
-namespace rod
-{
-
-struct RodLook
-{
+struct RodLook {
         std::string name_plain;
         std::string name_a;
         Color color;
 };
-
 
 void init();
 
 void save();
 void load();
 
-
-class Rod: public item::Item
-{
+class Rod : public item::Item {
 public:
         Rod(item::ItemData* const item_data) :
                 Item(item_data),
@@ -79,8 +71,7 @@ private:
         int m_nr_charge_turns_left;
 };
 
-class Curing : public Rod
-{
+class Curing : public Rod {
 public:
         Curing(item::ItemData* const item_data) :
                 Rod(item_data) {}
@@ -95,18 +86,16 @@ public:
 protected:
         std::string descr_identified() const override
         {
-                return
-                        "When activated, this device cures blindness, "
-                        "poisoning, infections, disease, weakening, and life "
-                        "sapping, and restores the user's health by a small "
-                        "amount.";
+                return "When activated, this device cures blindness, "
+                       "poisoning, infections, disease, weakening, and life "
+                       "sapping, and restores the user's health by a small "
+                       "amount.";
         }
 
         void run_effect() override;
 };
 
-class Opening : public Rod
-{
+class Opening : public Rod {
 public:
         Opening(item::ItemData* const item_data) :
                 Rod(item_data) {}
@@ -121,17 +110,15 @@ public:
 protected:
         std::string descr_identified() const override
         {
-                return
-                        "When activated, this device opens all locks, lids and "
-                        "doors in the surrounding area (except heavy doors "
-                        "operated externally by a switch).";
+                return "When activated, this device opens all locks, lids and "
+                       "doors in the surrounding area (except heavy doors "
+                       "operated externally by a switch).";
         }
 
         void run_effect() override;
 };
 
-class Bless : public Rod
-{
+class Bless : public Rod {
 public:
         Bless(item::ItemData* const item_data) :
                 Rod(item_data) {}
@@ -146,16 +133,14 @@ public:
 protected:
         std::string descr_identified() const override
         {
-                return
-                        "When activated, this device bends reality in favor of "
-                        "the user for a while.";
+                return "When activated, this device bends reality in favor of "
+                       "the user for a while.";
         }
 
         void run_effect() override;
 };
 
-class CloudMinds : public Rod
-{
+class CloudMinds : public Rod {
 public:
         CloudMinds(item::ItemData* const item_data) :
                 Rod(item_data) {}
@@ -170,10 +155,9 @@ public:
 protected:
         std::string descr_identified() const override
         {
-                return
-                        "When activated, this device clouds the memories of "
-                        "all creatures in the area, causing them to forget "
-                        "the presence of the user.";
+                return "When activated, this device clouds the memories of "
+                       "all creatures in the area, causing them to forget "
+                       "the presence of the user.";
         }
 
         int nr_turns_to_recharge() const override
@@ -184,8 +168,7 @@ protected:
         void run_effect() override;
 };
 
-class Shockwave : public Rod
-{
+class Shockwave : public Rod {
 public:
         Shockwave(item::ItemData* const item_data) :
                 Rod(item_data) {}
@@ -200,10 +183,9 @@ public:
 protected:
         std::string descr_identified() const override
         {
-                return
-                        "When activated, this device generates a shock wave "
-                        "which violently pushes away any adjacent creatures "
-                        "and destroys structures.";
+                return "When activated, this device generates a shock wave "
+                       "which violently pushes away any adjacent creatures "
+                       "and destroys structures.";
         }
 
         void run_effect() override;

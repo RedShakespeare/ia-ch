@@ -9,19 +9,14 @@
 
 #include "global.hpp"
 
-
-enum class ActorDied
-{
+enum class ActorDied {
         no,
         yes
 };
 
-
-namespace actor
-{
+namespace actor {
 
 class Actor;
-
 
 ActorDied hit(
         Actor& actor,

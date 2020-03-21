@@ -21,17 +21,14 @@
 #include "map_templates.hpp"
 #include "mapgen.hpp"
 
-
 // -----------------------------------------------------------------------------
 // map_builder
 // -----------------------------------------------------------------------------
-namespace map_builder
-{
+namespace map_builder {
 
 std::unique_ptr<MapBuilder> make(const MapType map_type)
 {
-        switch (map_type)
-        {
+        switch (map_type) {
         case MapType::deep_one_lair:
                 return std::make_unique<MapBuilderDeepOneLair>();
 
@@ -80,20 +77,16 @@ void MapBuilder::build()
         // forever. Currently, the only effect of this should be that slightly
         // fewever unique items are found by the player.
 
-        while (!map_ok)
-        {
+        while (!map_ok) {
 #ifndef NDEBUG
                 ++nr_attempts;
 #endif // NDEBUG
 
                 map_ok = build_specific();
 
-                if (map_ok)
-                {
+                if (map_ok) {
                         map_templates::on_map_ok();
-                }
-                else
-                {
+                } else {
                         map_templates::on_map_discarded();
                 }
         }
@@ -101,28 +94,25 @@ void MapBuilder::build()
         gods::set_random_god();
 
         // Spawn starting allies
-        for (size_t i = 0; i < game_time::g_actors.size(); ++i)
-        {
+        for (size_t i = 0; i < game_time::g_actors.size(); ++i) {
                 auto* const actor = game_time::g_actors[i];
 
                 const auto& allies = actor->m_data->starting_allies;
 
-                if (allies.empty())
-                {
+                if (allies.empty()) {
                         continue;
                 }
 
                 auto summoned = actor::spawn(
-                        actor->m_pos,
-                        allies,
-                        map::rect())
-                        .set_leader(actor);
+                                        actor->m_pos,
+                                        allies,
+                                        map::rect())
+                                        .set_leader(actor);
 
                 std::for_each(
                         std::begin(summoned.monsters),
                         std::end(summoned.monsters),
-                        [](auto* mon)
-                        {
+                        [](auto* mon) {
                                 mon->m_is_player_feeling_msg_allowed = false;
                         });
         }
@@ -134,11 +124,11 @@ void MapBuilder::build()
 
         const double duration =
                 std::chrono::duration<double, std::milli>(diff_time)
-                .count();
+                        .count();
 
         TRACE << "Map built after " << nr_attempts << " attempt(s)."
               << std::endl
-              << "Total time taken: " <<  duration << " ms"
+              << "Total time taken: " << duration << " ms"
               << std::endl;
 #endif // NDEBUG
 
@@ -157,20 +147,16 @@ bool MapBuilderTemplateLevel::build_specific()
 {
         m_template = map_templates::level_templ(template_id());
 
-        if (allow_transform_template())
-        {
-                if (rnd::coin_toss())
-                {
+        if (allow_transform_template()) {
+                if (rnd::coin_toss()) {
                         m_template.rotate_cw();
                 }
 
-                if (rnd::coin_toss())
-                {
+                if (rnd::coin_toss()) {
                         m_template.flip_hor();
                 }
 
-                if (rnd::coin_toss())
-                {
+                if (rnd::coin_toss()) {
                         m_template.flip_ver();
                 }
         }
@@ -182,10 +168,8 @@ bool MapBuilderTemplateLevel::build_specific()
         // Move away the player, to avoid placing monsters on the player
         map::g_player->m_pos.set(0, 0);
 
-        for (int x = 0; x < templ_dims.x; ++x)
-        {
-                for (int y = 0; y < templ_dims.y; ++y)
-                {
+        for (int x = 0; x < templ_dims.x; ++x) {
+                for (int y = 0; y < templ_dims.y; ++y) {
                         const P p(x, y);
 
                         handle_template_pos(p, m_template.at(p));

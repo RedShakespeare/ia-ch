@@ -10,17 +10,13 @@
 #include "ability_values.hpp"
 #include "actor_data.hpp"
 
-
-namespace actor
-{
+namespace actor {
 class Actor;
 } // namespace actor
 
 struct P;
 
-
-struct AttData
-{
+struct AttData {
 public:
         virtual ~AttData() = default;
 
@@ -43,8 +39,7 @@ protected:
                 const item::Item& att_item);
 };
 
-struct MeleeAttData: public AttData
-{
+struct MeleeAttData : public AttData {
 public:
         MeleeAttData(
                 actor::Actor* attacker,
@@ -57,8 +52,7 @@ public:
         bool is_weak_attack;
 };
 
-struct RangedAttData: public AttData
-{
+struct RangedAttData : public AttData {
 public:
         RangedAttData(
                 actor::Actor* attacker,
@@ -75,8 +69,7 @@ public:
         int dist_mod;
 };
 
-struct ThrowAttData: public AttData
-{
+struct ThrowAttData : public AttData {
 public:
         ThrowAttData(
                 actor::Actor* attacker,

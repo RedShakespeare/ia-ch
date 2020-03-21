@@ -25,7 +25,6 @@ static const int s_text_w_default = 39;
 
 static const uint32_t s_msg_line_delay = 50;
 
-
 static int get_x0(const int width)
 {
         return panels::center_x(Panel::screen) - (width / 2);
@@ -87,12 +86,10 @@ static void draw_menu_popup(
         const std::string& title)
 {
         // If no message lines, set width to widest menu option or title with
-        if (lines.empty())
-        {
+        if (lines.empty()) {
                 text_w = title.size();
 
-                for (const std::string& s : choices)
-                {
+                for (const std::string& s : choices) {
                         text_w = std::max(text_w, (int)s.size());
                 }
 
@@ -103,8 +100,7 @@ static void draw_menu_popup(
 
         int y = get_title_y(text_h);
 
-        if (!title.empty())
-        {
+        if (!title.empty()) {
                 io::draw_text_center(
                         title,
                         Panel::screen,
@@ -119,10 +115,8 @@ static void draw_menu_popup(
 
         const bool show_msg_centered = lines.size() == 1;
 
-        for (const std::string& line : lines)
-        {
-                if (show_msg_centered)
-                {
+        for (const std::string& line : lines) {
+                if (show_msg_centered) {
                         io::draw_text_center(
                                 line,
                                 Panel::screen,
@@ -131,9 +125,7 @@ static void draw_menu_popup(
                                 false, // Do not draw background color
                                 colors::black(),
                                 true); // Allow pixel-level adjustmet
-                }
-                else
-                {
+                } else {
                         // Draw the message with left alignment
                         io::draw_text(
                                 line,
@@ -148,17 +140,13 @@ static void draw_menu_popup(
                 ++y;
         }
 
-        if (!lines.empty() || !title.empty())
-        {
+        if (!lines.empty() || !title.empty()) {
                 ++y;
         }
 
-        for (size_t i = 0; i < choices.size(); ++i)
-        {
+        for (size_t i = 0; i < choices.size(); ++i) {
                 Color color =
-                        (i == current_choice) ?
-                        colors::menu_highlight() :
-                        colors::menu_dark();
+                        (i == current_choice) ? colors::menu_highlight() : colors::menu_dark();
 
                 io::draw_text_center(
                         choices[i],
@@ -178,8 +166,7 @@ static void draw_menu_popup(
 // -----------------------------------------------------------------------------
 // popup
 // -----------------------------------------------------------------------------
-namespace popup
-{
+namespace popup {
 
 void msg(
         const std::string& msg,
@@ -195,19 +182,17 @@ void msg(
 
         const auto lines = text_format::split(msg, text_w);
 
-        const int text_h =  (int)lines.size() + 3;
+        const int text_h = (int)lines.size() + 3;
 
         draw_box(text_w, text_h);
 
         int y = get_title_y(text_h);
 
-        if (sfx != SfxId::END)
-        {
+        if (sfx != SfxId::END) {
                 audio::play(sfx);
         }
 
-        if (!title.empty())
-        {
+        if (!title.empty()) {
                 io::draw_text_center(
                         title,
                         Panel::screen,
@@ -220,12 +205,10 @@ void msg(
 
         const bool show_msg_centered = lines.size() == 1;
 
-        for (const std::string& line : lines)
-        {
+        for (const std::string& line : lines) {
                 ++y;
 
-                if (show_msg_centered)
-                {
+                if (show_msg_centered) {
                         io::draw_text_center(
                                 line,
                                 Panel::screen,
@@ -234,9 +217,7 @@ void msg(
                                 false, // Do not draw background color
                                 colors::black(),
                                 true); // Allow pixel-level adjustmet
-                }
-                else
-                {
+                } else {
                         const int text_x0 =
                                 get_x0(s_text_w_default) -
                                 ((w_change + 1) / 2);
@@ -285,8 +266,7 @@ int menu(
 
         io::clear_events();
 
-        if (config::is_bot_playing())
-        {
+        if (config::is_bot_playing()) {
                 return 0;
         }
 
@@ -313,8 +293,7 @@ int menu(
 
         MenuBrowser browser(nr_choices);
 
-        if (sfx != SfxId::END)
-        {
+        if (sfx != SfxId::END) {
                 audio::play(sfx);
         }
 
@@ -329,15 +308,13 @@ int menu(
 
         audio::play(SfxId::menu_browse);
 
-        while (true)
-        {
+        while (true) {
                 const auto input = io::get();
 
                 const MenuAction action =
                         browser.read(input, MenuInputMode::scrolling);
 
-                switch (action)
-                {
+                switch (action) {
                 case MenuAction::moved:
                         draw_menu_popup(
                                 lines,

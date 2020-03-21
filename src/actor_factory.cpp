@@ -26,8 +26,7 @@
 // -----------------------------------------------------------------------------
 static actor::Actor* make_actor_from_id(const actor::Id id)
 {
-        switch (id)
-        {
+        switch (id) {
         case actor::Id::player:
                 return new actor::Player();
 
@@ -72,8 +71,7 @@ static actor::Mon* spawn_at(const P& pos, const actor::Id id)
 
         auto* const mon = static_cast<actor::Mon*>(actor);
 
-        if (map::g_player->can_see_actor(*mon))
-        {
+        if (map::g_player->can_see_actor(*mon)) {
                 mon->set_player_aware_of_me();
         }
 
@@ -88,8 +86,7 @@ static actor::MonSpawnResult spawn_at_positions(
 
         const size_t nr_to_spawn = std::min(positions.size(), ids.size());
 
-        for (size_t i = 0; i < nr_to_spawn; ++i)
-        {
+        for (size_t i = 0; i < nr_to_spawn; ++i) {
                 const P& pos = positions[i];
 
                 const actor::Id id = ids[i];
@@ -103,16 +100,14 @@ static actor::MonSpawnResult spawn_at_positions(
 // -----------------------------------------------------------------------------
 // actor
 // -----------------------------------------------------------------------------
-namespace actor
-{
+namespace actor {
 
 MonSpawnResult& MonSpawnResult::set_leader(Actor* const leader)
 {
         std::for_each(
                 std::begin(monsters),
                 std::end(monsters),
-                [leader](auto mon)
-                {
+                [leader](auto mon) {
                         mon->m_leader = leader;
                 });
 
@@ -124,8 +119,7 @@ MonSpawnResult& MonSpawnResult::make_aware_of_player()
         std::for_each(
                 std::begin(monsters),
                 std::end(monsters),
-                [](auto mon)
-                {
+                [](auto mon) {
                         mon->m_aware_of_player_counter =
                                 mon->m_data->nr_turns_aware;
                 });
@@ -133,15 +127,13 @@ MonSpawnResult& MonSpawnResult::make_aware_of_player()
         return *this;
 }
 
-
 Actor* make(const Id id, const P& pos)
 {
         Actor* const actor = make_actor_from_id(id);
 
         init_actor(*actor, pos, g_data[(size_t)id]);
 
-        if (actor->m_data->nr_left_allowed_to_spawn > 0)
-        {
+        if (actor->m_data->nr_left_allowed_to_spawn > 0) {
                 --actor->m_data->nr_left_allowed_to_spawn;
         }
 
@@ -150,12 +142,10 @@ Actor* make(const Id id, const P& pos)
         actor->m_properties.on_placed();
 
 #ifndef NDEBUG
-        if (map::nr_cells() != 0)
-        {
+        if (map::nr_cells() != 0) {
                 const auto* const t = map::g_cells.at(pos).terrain;
 
-                if (t->id() == terrain::Id::door)
-                {
+                if (t->id() == terrain::Id::door) {
                         const auto* const door =
                                 static_cast<const terrain::Door*>(t);
 
@@ -174,16 +164,12 @@ void delete_all_mon()
 {
         std::vector<Actor*>& actors = game_time::g_actors;
 
-        for (auto it = std::begin(actors); it != std::end(actors);)
-        {
+        for (auto it = std::begin(actors); it != std::end(actors);) {
                 Actor* const actor = *it;
 
-                if (actor->is_player())
-                {
+                if (actor->is_player()) {
                         ++it;
-                }
-                else
-                {
+                } else {
                         // Is monster
                         delete actor;
 
@@ -201,14 +187,11 @@ MonSpawnResult spawn(
 
         auto free_positions = free_spawn_positions(area_allowed);
 
-        if (free_positions.empty())
-        {
+        if (free_positions.empty()) {
                 return MonSpawnResult();
         }
 
-        std::sort(begin(free_positions),
-                  end(free_positions),
-                  IsCloserToPos(origin));
+        std::sort(begin(free_positions), end(free_positions), IsCloserToPos(origin));
 
         const auto result = spawn_at_positions(free_positions, monster_ids);
 
@@ -225,8 +208,7 @@ MonSpawnResult spawn_random_position(
 
         auto free_positions = free_spawn_positions(area_allowed);
 
-        if (free_positions.empty())
-        {
+        if (free_positions.empty()) {
                 return MonSpawnResult();
         }
 

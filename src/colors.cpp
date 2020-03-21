@@ -67,13 +67,11 @@ static SDL_Color s_mon_temp_property_bg;
 // -----------------------------------------------------------------------------
 // Private
 // -----------------------------------------------------------------------------
-static std::vector< std::pair<std::string, Color> > s_str_color_pairs;
-
+static std::vector<std::pair<std::string, Color>> s_str_color_pairs;
 
 static SDL_Color rgb_hex_str_to_sdl_color(const std::string str)
 {
-        if (str.size() != 6)
-        {
+        if (str.size() != 6) {
                 TRACE_ERROR_RELEASE
                         << "Invalid rgb hex string: '"
                         << str
@@ -85,11 +83,10 @@ static SDL_Color rgb_hex_str_to_sdl_color(const std::string str)
 
         uint8_t rgb[3] = {};
 
-        for (int i = 0; i < 3; ++i)
-        {
+        for (int i = 0; i < 3; ++i) {
                 const std::string hex8_str = str.substr(2 * i, 2);
 
-                rgb[i] =  (uint8_t)std::stoi(hex8_str, nullptr, 16);
+                rgb[i] = (uint8_t)std::stoi(hex8_str, nullptr, 16);
         }
 
         const SDL_Color sdl_color = {rgb[0], rgb[1], rgb[2], 0};
@@ -104,13 +101,11 @@ static void load_color(
 {
         for (auto e = xml::first_child(colors_e);
              e;
-             e = xml::next_sibling(e))
-        {
+             e = xml::next_sibling(e)) {
                 const std::string current_name =
                         xml::get_attribute_str(e, "name");
 
-                if (current_name != name)
-                {
+                if (current_name != name) {
                         continue;
                 }
 
@@ -142,15 +137,13 @@ static void load_gui_color(
         const std::string type,
         SDL_Color& target_color)
 {
-        for (auto e = xml::first_child(gui_e) ;
+        for (auto e = xml::first_child(gui_e);
              e;
-             e = xml::next_sibling(e))
-        {
+             e = xml::next_sibling(e)) {
                 const std::string current_type =
                         xml::get_attribute_str(e, "type");
 
-                if (current_type != type)
-                {
+                if (current_type != type) {
                         continue;
                 }
 
@@ -241,34 +234,29 @@ Color::Color() :
         m_sdl_color({0, 0, 0, 0}),
         m_is_defined(false)
 {
-
 }
 
-Color::Color(const Color& other) 
-        
-= default;
+Color::Color(const Color& other)
+
+        = default;
 
 Color::Color(uint8_t r, uint8_t g, uint8_t b) :
         m_sdl_color({r, g, b, 0}),
         m_is_defined(true)
 {
-
 }
 
 Color::Color(const SDL_Color& sdl_color) :
         m_sdl_color(sdl_color),
         m_is_defined(true)
 {
-
 }
 
-Color::~Color()
-= default;
+Color::~Color() = default;
 
 Color& Color::operator=(const Color& other)
 {
-        if (&other == this)
-        {
+        if (&other == this) {
                 return *this;
         }
 
@@ -280,16 +268,14 @@ Color& Color::operator=(const Color& other)
 
 bool Color::operator==(const Color& other) const
 {
-        return
-                m_sdl_color.r == other.m_sdl_color.r &&
+        return m_sdl_color.r == other.m_sdl_color.r &&
                 m_sdl_color.g == other.m_sdl_color.g &&
                 m_sdl_color.b == other.m_sdl_color.b;
 }
 
 bool Color::operator!=(const Color& other) const
 {
-        return
-                m_sdl_color.r != other.m_sdl_color.r ||
+        return m_sdl_color.r != other.m_sdl_color.r ||
                 m_sdl_color.g != other.m_sdl_color.g ||
                 m_sdl_color.b != other.m_sdl_color.b;
 }
@@ -336,7 +322,6 @@ uint8_t Color::b() const
         return m_sdl_color.b;
 }
 
-
 void Color::set_rgb(const uint8_t r, const uint8_t g, const uint8_t b)
 {
         m_sdl_color.r = r;
@@ -348,7 +333,7 @@ void Color::set_rgb(const uint8_t r, const uint8_t g, const uint8_t b)
 
 void Color::randomize_rgb(const int range)
 {
-        const Range random(-range/2, range/2);
+        const Range random(-range / 2, range / 2);
 
         const int new_r = (int)m_sdl_color.r + random.roll();
         const int new_g = (int)m_sdl_color.g + random.roll();
@@ -362,8 +347,7 @@ void Color::randomize_rgb(const int range)
 // -----------------------------------------------------------------------------
 // Color handling
 // -----------------------------------------------------------------------------
-namespace colors
-{
+namespace colors {
 
 void init()
 {
@@ -383,13 +367,11 @@ Color name_to_color(const std::string& name)
         auto search = std::find_if(
                 std::begin(s_str_color_pairs),
                 std::end(s_str_color_pairs),
-                [name](const auto& str_color)
-                {
+                [name](const auto& str_color) {
                         return str_color.first == name;
                 });
 
-        if (search == std::end(s_str_color_pairs))
-        {
+        if (search == std::end(s_str_color_pairs)) {
                 TRACE << "No color definition stored for color with name: "
                       << name << std::endl;
 
@@ -406,13 +388,11 @@ std::string color_to_name(const Color& color)
         auto search = std::find_if(
                 std::begin(s_str_color_pairs),
                 std::end(s_str_color_pairs),
-                [color](const auto& str_color)
-                {
+                [color](const auto& str_color) {
                         return str_color.second == color;
                 });
 
-        if (search == std::end(s_str_color_pairs))
-        {
+        if (search == std::end(s_str_color_pairs)) {
                 const auto sdl_color = color.sdl_color();
 
                 TRACE << "No color name stored for color with RGB: "
@@ -591,7 +571,6 @@ Color dark_teal()
         return Color(s_dark_teal);
 }
 
-
 //-----------------------------------------------------------------------------
 // GUI colors
 //-----------------------------------------------------------------------------
@@ -614,7 +593,6 @@ Color title()
 {
         return Color(s_title);
 }
-
 
 Color msg_good()
 {

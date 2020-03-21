@@ -20,10 +20,8 @@ static void put_templ_terrains(
 {
         const P dims(templ.dims());
 
-        for (int templ_x = 0; templ_x < dims.x; ++templ_x)
-        {
-                for (int templ_y = 0; templ_y < dims.y; ++templ_y)
-                {
+        for (int templ_x = 0; templ_x < dims.x; ++templ_x) {
+                for (int templ_y = 0; templ_y < dims.y; ++templ_y) {
                         const P templ_p(templ_x, templ_y);
 
                         const P p(p0 + templ_p);
@@ -32,52 +30,38 @@ static void put_templ_terrains(
 
                         bool is_room_cell = true;
 
-                        switch (c)
-                        {
-                        case '.':
-                        {
+                        switch (c) {
+                        case '.': {
                                 map::put(new terrain::Floor(p));
-                        }
-                        break;
+                        } break;
 
-                        case '#':
-                        {
+                        case '#': {
                                 map::put(new terrain::Wall(p));
 
                                 is_room_cell = false;
-                        }
-                        break;
+                        } break;
 
-                        case '-':
-                        {
+                        case '-': {
                                 map::put(new terrain::Altar(p));
-                        }
-                        break;
+                        } break;
 
-                        case '~':
-                        {
+                        case '~': {
                                 auto* liquid = new terrain::LiquidShallow(p);
 
                                 liquid->m_type = LiquidType::water;
 
                                 map::put(liquid);
-                        }
-                        break;
+                        } break;
 
-                        case '0':
-                        {
+                        case '0': {
                                 map::put(new terrain::Brazier(p));
-                        }
-                        break;
+                        } break;
 
-                        case 'P':
-                        {
+                        case 'P': {
                                 map::put(new terrain::Statue(p));
-                        }
-                        break;
+                        } break;
 
-                        case '+':
-                        {
+                        case '+': {
                                 auto* mimic = new terrain::Wall(p);
 
                                 map::put(
@@ -85,45 +69,34 @@ static void put_templ_terrains(
                                                 p,
                                                 mimic,
                                                 DoorType::wood));
-                        }
-                        break;
+                        } break;
 
-                        case 'x':
-                        {
+                        case 'x': {
                                 map::put(
                                         new terrain::Door(
                                                 p,
                                                 nullptr,
                                                 DoorType::gate));
-                        }
-                        break;
+                        } break;
 
-                        case '=':
-                        {
+                        case '=': {
                                 map::put(new terrain::Grate(p));
-                        }
-                        break;
+                        } break;
 
-                        case '"':
-                        {
+                        case '"': {
                                 map::put(new terrain::Vines(p));
-                        }
-                        break;
+                        } break;
 
-                        case '*':
-                        {
+                        case '*': {
                                 map::put(new terrain::Chains(p));
-                        }
-                        break;
+                        } break;
 
                         // (Space)
-                        case ' ':
-                        {
+                        case ' ': {
                                 // Do nothing
 
                                 is_room_cell = false;
-                        }
-                        break;
+                        } break;
 
                         default:
                         {
@@ -143,13 +116,11 @@ static void put_templ_terrains(
                                 ASSERT(false);
 
                                 return;
-                        }
-                        break;
+                        } break;
 
                         } // switch
 
-                        if (!is_room_cell)
-                        {
+                        if (!is_room_cell) {
                                 map::g_room_map.at(p) = nullptr;
                         }
                 } // y loop
@@ -161,11 +132,9 @@ static Room* make_template_room(const RoomTempl& templ, Region& region)
         const P dims(templ.symbols.dims());
 
         // Random position inside the region
-        const P p0(region.r.p0.x + rnd::range(0, region.r.w() - dims.x),
-                   region.r.p0.y + rnd::range(0, region.r.h() - dims.y));
+        const P p0(region.r.p0.x + rnd::range(0, region.r.w() - dims.x), region.r.p0.y + rnd::range(0, region.r.h() - dims.y));
 
-        const P p1(p0.x + dims.x - 1,
-                   p0.y + dims.y - 1);
+        const P p1(p0.x + dims.x - 1, p0.y + dims.y - 1);
 
         const R r(p0, p1);
 
@@ -189,8 +158,7 @@ static Room* make_template_room(const RoomTempl& templ, Region& region)
 // -----------------------------------------------------------------------------
 // mapgen
 // -----------------------------------------------------------------------------
-namespace mapgen
-{
+namespace mapgen {
 
 Room* make_room(Region& region)
 {
@@ -202,23 +170,18 @@ Room* make_room(Region& region)
 
         // Make a templated room?
         if ((map::g_dlvl <= g_dlvl_last_mid_game) &&
-            rnd::one_in(templ_room_one_in_n))
-        {
+            rnd::one_in(templ_room_one_in_n)) {
                 const P max_dims(region.r.dims());
 
                 const auto* templ = map_templates::random_room_templ(max_dims);
 
-                if (templ)
-                {
+                if (templ) {
                         auto& symbols = templ->symbols;
 
                         if ((symbols.dims().x > max_dims.x) ||
-                            (symbols.dims().y > max_dims.y))
-                        {
+                            (symbols.dims().y > max_dims.y)) {
                                 ASSERT(false);
-                        }
-                        else
-                        {
+                        } else {
                                 Room* const room =
                                         make_template_room(*templ, region);
 

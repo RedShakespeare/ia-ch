@@ -27,10 +27,8 @@ static void learn_spell_player(const SpellId spell)
         player_spells::learn_spell(spell, Verbose::no);
 
         // Also identify and "find" the corresponding scroll
-        for (auto& d : item::g_data)
-        {
-                if (d.spell_cast_from_scroll == spell)
-                {
+        for (auto& d : item::g_data) {
+                if (d.spell_cast_from_scroll == spell) {
                         std::unique_ptr<item::Item> temp_scroll(
                                 item::make(d.id));
 
@@ -189,8 +187,7 @@ static void make_for_player_war_vet()
                 item::make(item::Id::machete),
                 Verbose::no);
 
-        for (int i = 0; i < 3; ++i)
-        {
+        for (int i = 0; i < 3; ++i) {
                 inv.put_in_backpack(item::make(item::Id::pistol_mag));
         }
 
@@ -232,13 +229,11 @@ static void make_for_player_ghoul()
 
 static void make_for_player()
 {
-        switch (player_bon::bg())
-        {
+        switch (player_bon::bg()) {
         case Bg::occultist:
                 make_for_player_occultist_common();
 
-                switch (player_bon::occultist_domain())
-                {
+                switch (player_bon::occultist_domain()) {
                 case OccultistDomain::clairvoyant:
                         make_for_player_occultist_clairv();
                         break;
@@ -287,16 +282,14 @@ static void make_random_item_to_backpack(
         actor::Actor& actor,
         std::vector<item::Id>& item_id_bucket)
 {
-        if (item_id_bucket.empty())
-        {
+        if (item_id_bucket.empty()) {
                 return;
         }
 
         std::vector<int> weights;
         weights.reserve(item_id_bucket.size());
 
-        for (const auto id : item_id_bucket)
-        {
+        for (const auto id : item_id_bucket) {
                 // NOTE: Reusing the "chance to include in spawn list" data for
                 // the weight when doing a weighted random choice here.
 
@@ -325,12 +318,10 @@ static void make_item_set_minor_treasure(actor::Actor& actor)
 {
         std::vector<item::Id> item_bucket;
 
-        for (int i = 0; i < (int)item::Id::END; ++i)
-        {
+        for (int i = 0; i < (int)item::Id::END; ++i) {
                 const auto& d = item::g_data[i];
 
-                if (d.value == item::Value::minor_treasure)
-                {
+                if (d.value == item::Value::minor_treasure) {
                         item_bucket.push_back((item::Id)i);
                 }
         }
@@ -342,12 +333,10 @@ static void make_item_set_rare_treasure(actor::Actor& actor)
 {
         std::vector<item::Id> item_bucket;
 
-        for (int i = 0; i < (int)item::Id::END; ++i)
-        {
+        for (int i = 0; i < (int)item::Id::END; ++i) {
                 const auto& d = item::g_data[i];
 
-                if (d.value == item::Value::rare_treasure)
-                {
+                if (d.value == item::Value::rare_treasure) {
                         item_bucket.push_back((item::Id)i);
                 }
         }
@@ -359,12 +348,10 @@ static void make_item_set_supreme_treasure(actor::Actor& actor)
 {
         std::vector<item::Id> item_bucket;
 
-        for (int i = 0; i < (int)item::Id::END; ++i)
-        {
+        for (int i = 0; i < (int)item::Id::END; ++i) {
                 const auto& d = item::g_data[i];
 
-                if (d.value == item::Value::supreme_treasure)
-                {
+                if (d.value == item::Value::supreme_treasure) {
                         item_bucket.push_back((item::Id)i);
                 }
         }
@@ -382,13 +369,10 @@ static void make_item_set_firearm(actor::Actor& actor)
         int revolver_weight;
         int pistol_weight;
 
-        if (is_low_dlvl)
-        {
+        if (is_low_dlvl) {
                 revolver_weight = 12;
                 pistol_weight = 8;
-        }
-        else
-        {
+        } else {
                 revolver_weight = 3;
                 pistol_weight = 3;
         }
@@ -404,15 +388,12 @@ static void make_item_set_firearm(actor::Actor& actor)
                 pump_shotgun_weight,
                 sawed_off_shotgun_weight,
                 rifle_weight,
-                machine_gun_weight
-        };
+                machine_gun_weight};
 
         const int choice = rnd::weighted_choice(weights);
 
-        switch (choice)
-        {
-        case 0:
-        {
+        switch (choice) {
+        case 0: {
                 // Revolver
                 auto* item = item::make(item::Id::revolver);
                 auto* wpn = static_cast<item::Wpn*>(item);
@@ -426,11 +407,9 @@ static void make_item_set_firearm(actor::Actor& actor)
                 item->m_nr_items = rnd::range(1, 6);
 
                 inv.put_in_backpack(item);
-        }
-        break;
+        } break;
 
-        case 1:
-        {
+        case 1: {
                 // Pistol
                 auto* item = item::make(item::Id::pistol);
                 auto* wpn = static_cast<item::Wpn*>(item);
@@ -440,15 +419,12 @@ static void make_item_set_firearm(actor::Actor& actor)
 
                 inv.put_in_slot(SlotId::wpn, item, Verbose::no);
 
-                if (rnd::coin_toss())
-                {
+                if (rnd::coin_toss()) {
                         inv.put_in_backpack(item::make(item::Id::pistol_mag));
                 }
-        }
-        break;
+        } break;
 
-        case 2:
-        {
+        case 2: {
                 // Pump shotgun
                 auto* item = item::make(item::Id::pump_shotgun);
                 auto* wpn = static_cast<item::Wpn*>(item);
@@ -462,11 +438,9 @@ static void make_item_set_firearm(actor::Actor& actor)
                 item->m_nr_items = rnd::range(1, 6);
 
                 inv.put_in_backpack(item);
-        }
-        break;
+        } break;
 
-        case 3:
-        {
+        case 3: {
                 // Sawed-off shotgun
                 inv.put_in_slot(
                         SlotId::wpn,
@@ -477,11 +451,9 @@ static void make_item_set_firearm(actor::Actor& actor)
                 item->m_nr_items = rnd::range(1, 6);
 
                 inv.put_in_backpack(item);
-        }
-        break;
+        } break;
 
-        case 4:
-        {
+        case 4: {
                 // Rifle
                 auto* item = item::make(item::Id::rifle);
                 auto* wpn = static_cast<item::Wpn*>(item);
@@ -495,11 +467,9 @@ static void make_item_set_firearm(actor::Actor& actor)
                 item->m_nr_items = rnd::range(1, 6);
 
                 inv.put_in_backpack(item);
-        }
-        break;
+        } break;
 
-        case 5:
-        {
+        case 5: {
                 // Tommy Gun
 
                 // Number of bullets loaded needs to be a multiple of the number
@@ -518,14 +488,12 @@ static void make_item_set_firearm(actor::Actor& actor)
                         g_nr_mg_projectiles;
 
                 inv.put_in_slot(SlotId::wpn, item, Verbose::no);
-        }
-        break;
+        } break;
 
         default:
         {
                 ASSERT(false);
-        }
-        break;
+        } break;
         }
 }
 
@@ -570,8 +538,7 @@ static void make_item_set_priest_dagger(actor::Actor& actor)
         const std::vector<int> weights = {
                 6,
                 3,
-                1
-        };
+                1};
 
         item->set_melee_plus(rnd::weighted_choice(weights) + 1);
 
@@ -616,19 +583,15 @@ static void make_item_set_high_priest_guard_rogue(actor::Actor& actor)
 
 static void make_monster_item_sets(actor::Actor& actor)
 {
-        for (const auto& item_set : actor.m_data->item_sets)
-        {
-                if (!rnd::percent(item_set.pct_chance_to_spawn))
-                {
+        for (const auto& item_set : actor.m_data->item_sets) {
+                if (!rnd::percent(item_set.pct_chance_to_spawn)) {
                         continue;
                 }
 
                 const int nr = item_set.nr_spawned_range.roll();
 
-                for (int i = 0; i < nr; ++i)
-                {
-                        switch (item_set.item_set_id)
-                        {
+                for (int i = 0; i < nr; ++i) {
+                        switch (item_set.item_set_id) {
                         case item::ItemSetId::minor_treasure:
                                 make_item_set_minor_treasure(actor);
                                 break;
@@ -679,8 +642,7 @@ static void make_monster_item_sets(actor::Actor& actor)
 
 static void make_monster_intr_attacks(actor::Actor& actor)
 {
-        for (auto& intr_attack : actor.m_data->intr_attacks)
-        {
+        for (auto& intr_attack : actor.m_data->intr_attacks) {
                 auto* item = item::make(intr_attack->item_id);
 
                 // Override damage with the damage in the intrinsic attack data
@@ -700,17 +662,14 @@ static void make_monster_spells(actor::Actor& actor)
 {
         ASSERT(!actor.is_player());
 
-        if (actor.is_player())
-        {
+        if (actor.is_player()) {
                 return;
         }
 
         auto* const mon = static_cast<actor::Mon*>(&actor);
 
-        for (auto& spell_data : actor.m_data->spells)
-        {
-                if (!rnd::percent(spell_data.pct_chance_to_know))
-                {
+        for (auto& spell_data : actor.m_data->spells) {
+                if (!rnd::percent(spell_data.pct_chance_to_know)) {
                         continue;
                 }
 
@@ -734,16 +693,13 @@ static void make_for_monster(actor::Actor& actor)
 // -----------------------------------------------------------------------------
 // actor_items
 // -----------------------------------------------------------------------------
-namespace actor_items
-{
+namespace actor_items {
 
 void make_for_actor(actor::Actor& actor)
 {
-        if (actor.is_player())
-        {
+        if (actor.is_player()) {
                 make_for_player();
-        }
-        else // Not player
+        } else // Not player
         {
                 make_for_monster(actor);
         }

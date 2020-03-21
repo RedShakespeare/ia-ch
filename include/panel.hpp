@@ -12,8 +12,7 @@ struct R;
 struct P;
 
 // TODO: Add *_border for other panels than log as well
-enum class Panel
-{
+enum class Panel {
         screen,
         map,
         player_stats,
@@ -26,8 +25,7 @@ enum class Panel
         END
 };
 
-namespace panels
-{
+namespace panels {
 
 void init(P max_gui_dims);
 

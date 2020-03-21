@@ -29,21 +29,18 @@
 #include "sdl_base.hpp"
 #endif // NDEBUG
 
-namespace mapgen
-{
+namespace mapgen {
 
 bool g_is_map_valid = true;
 
 Array2<bool> g_door_proposals(0, 0);
-
 
 // Adds the room to the room list and the room map
 void register_room(Room& room)
 {
 #ifndef NDEBUG
         // Check that the room has not already been added
-        for (Room* const room_in_list : map::g_room_list)
-        {
+        for (Room* const room_in_list : map::g_room_list) {
                 ASSERT(room_in_list != &room);
         }
 #endif // NDEBUG
@@ -56,10 +53,8 @@ void register_room(Room& room)
         ASSERT(map::is_pos_inside_outer_walls(room_p0));
         ASSERT(map::is_pos_inside_outer_walls(room_p1));
 
-        for (int x = room_p0.x; x <= room_p1.x; ++x)
-        {
-                for (int y = room_p0.y; y <= room_p1.y; ++y)
-                {
+        for (int x = room_p0.x; x <= room_p1.x; ++x) {
+                for (int y = room_p0.y; y <= room_p1.y; ++y) {
                         map::g_room_map.at(x, y) = &room;
                 }
         }
@@ -67,10 +62,8 @@ void register_room(Room& room)
 
 void make_floor(const Room& room)
 {
-        for (int x = room.m_r.p0.x; x <= room.m_r.p1.x; ++x)
-        {
-                for (int y = room.m_r.p0.y; y <= room.m_r.p1.y; ++y)
-                {
+        for (int x = room.m_r.p0.x; x <= room.m_r.p1.x; ++x) {
+                for (int y = room.m_r.p0.y; y <= room.m_r.p1.y; ++y) {
                         map::put(new terrain::Floor(P(x, y)));
                 }
         }
@@ -79,8 +72,7 @@ void make_floor(const Room& room)
 void cut_room_corners(const Room& room)
 {
         // Never cut the room corners if it's a "small" room
-        if (room.m_r.min_dim() < 6)
-        {
+        if (room.m_r.min_dim() < 6) {
                 return;
         }
 
@@ -91,13 +83,9 @@ void cut_room_corners(const Room& room)
 
         // NOTE: The "cross" dimensons and coordinates refer to the inner
         // rectangle of the plus shape.
-        const P cross_dims(rnd::range(2, max_dims.x),
-                           rnd::range(2, max_dims.y));
+        const P cross_dims(rnd::range(2, max_dims.x), rnd::range(2, max_dims.y));
 
-        const P cross_x0y0(rnd::range(room_p0.x + 2,
-                                      room_p1.x - cross_dims.x - 1),
-                           rnd::range(room_p0.y + 2,
-                                      room_p1.y - cross_dims.y - 1));
+        const P cross_x0y0(rnd::range(room_p0.x + 2, room_p1.x - cross_dims.x - 1), rnd::range(room_p0.y + 2, room_p1.y - cross_dims.y - 1));
 
         const P cross_x1y1(cross_x0y0 + cross_dims - 1);
 
@@ -106,44 +94,35 @@ void cut_room_corners(const Room& room)
         bool c[4] = {true, true, true, true};
 
         // Ocassionally cut only some corners
-        if (rnd::fraction(2, 3))
-        {
-                while (true)
-                {
+        if (rnd::fraction(2, 3)) {
+                while (true) {
                         int nr_corners = 0;
 
-                        for (int i = 0; i < 4; ++i)
-                        {
-                                if (rnd::coin_toss())
-                                {
+                        for (int i = 0; i < 4; ++i) {
+                                if (rnd::coin_toss()) {
                                         c[i] = true;
                                         ++nr_corners;
-                                }
-                                else // Do not cut this corner
+                                } else // Do not cut this corner
                                 {
                                         c[i] = false;
                                 }
                         }
 
-                        if (nr_corners > 0)
-                        {
+                        if (nr_corners > 0) {
                                 break;
                         }
                 }
         }
 
-        for (size_t corner_idx = 0; corner_idx < 4; ++corner_idx)
-        {
+        for (size_t corner_idx = 0; corner_idx < 4; ++corner_idx) {
                 // This corner has been marked for skipping?
-                if (!c[corner_idx])
-                {
+                if (!c[corner_idx]) {
                         continue;
                 }
 
                 R r;
 
-                switch (corner_idx)
-                {
+                switch (corner_idx) {
                 case 0:
                         // Up left
                         r.p0 = room_p0;
@@ -176,12 +155,9 @@ void cut_room_corners(const Room& room)
                 // Check if these positions can be cut
                 bool allow_cut = true;
 
-                for (int x = r.p0.x; x <= r.p1.x; ++x)
-                {
-                        for (int y = r.p0.y; y <= r.p1.y; ++y)
-                        {
-                                for (const P& d : dir_utils::g_dir_list_w_center)
-                                {
+                for (int x = r.p0.x; x <= r.p1.x; ++x) {
+                        for (int y = r.p0.y; y <= r.p1.y; ++y) {
+                                for (const P& d : dir_utils::g_dir_list_w_center) {
                                         const P p(x, y);
 
                                         const P check_p(p + d);
@@ -191,33 +167,27 @@ void cut_room_corners(const Room& room)
 
                                         const terrain::Id id =
                                                 map::g_cells.at(check_p)
-                                                .terrain->id();
+                                                        .terrain->id();
 
                                         if ((room_here == &room &&
                                              id != terrain::Id::floor) ||
                                             (room_here != &room &&
-                                             id != terrain::Id::wall)
-                                                )
-                                        {
+                                             id != terrain::Id::wall)) {
                                                 allow_cut = false;
                                                 break;
                                         }
                                 }
 
-                                if (!allow_cut)
-                                {
+                                if (!allow_cut) {
                                         break;
                                 }
                         }
                 }
 
-                if (allow_cut)
-                {
+                if (allow_cut) {
                         // OK, nothing is preventing us from building walls here
-                        for (int x = r.p0.x; x <= r.p1.x; ++x)
-                        {
-                                for (int y = r.p0.y; y <= r.p1.y; ++y)
-                                {
+                        for (int x = r.p0.x; x <= r.p1.x; ++x) {
+                                for (int y = r.p0.y; y <= r.p1.y; ++y) {
                                         map::put(new terrain::Wall(P(x, y)));
                                         map::g_room_map.at(x, y) = nullptr;
                                 }
@@ -231,17 +201,14 @@ void make_pillars_in_room(const Room& room)
         const P& room_p0(room.m_r.p0);
         const P& room_p1(room.m_r.p1);
 
-        auto is_free = [](const P & p) {
-
-                for (const P& d : dir_utils::g_dir_list_w_center)
-                {
+        auto is_free = [](const P& p) {
+                for (const P& d : dir_utils::g_dir_list_w_center) {
                         const P check_p(p + d);
 
                         const terrain::Id id =
                                 map::g_cells.at(check_p).terrain->id();
 
-                        if (id == terrain::Id::wall)
-                        {
+                        if (id == terrain::Id::wall) {
                                 return false;
                         }
                 }
@@ -250,7 +217,6 @@ void make_pillars_in_room(const Room& room)
 
         // Place pillars in rows and columns
         auto step_size = []() {
-
                 return rnd::range(1, 3);
         };
 
@@ -259,14 +225,11 @@ void make_pillars_in_room(const Room& room)
 
         const int place_one_in_n = rnd::range(2, 3);
 
-        for (int y = room_p0.y + 1; y <= room_p1.y - 1; y += dy)
-        {
-                for (int x = room_p0.x + 1; x <= room_p1.x - 1; x += dx)
-                {
+        for (int y = room_p0.y + 1; y <= room_p1.y - 1; y += dy) {
+                for (int x = room_p0.x + 1; x <= room_p1.x - 1; x += dx) {
                         const P p(x, y);
 
-                        if (is_free(p) && rnd::one_in(place_one_in_n))
-                        {
+                        if (is_free(p) && rnd::one_in(place_one_in_n)) {
                                 map::put(new terrain::Wall(p));
                         }
                 }
@@ -277,8 +240,7 @@ void cavify_room(Room& room)
 {
         Array2<bool> is_other_room(map::dims());
 
-        for (size_t i = 0; i < map::nr_cells(); ++i)
-        {
+        for (size_t i = 0; i < map::nr_cells(); ++i) {
                 const auto* const room_here = map::g_room_map.at(i);
 
                 is_other_room.at(i) =
@@ -301,23 +263,18 @@ void cavify_room(Room& room)
         const int x1 = r.p1.x - 1;
         const int y1 = r.p1.y - 1;
 
-        for (int x = x0; x <= x1; ++x)
-        {
-                for (int y = y0; y <= y1; ++y)
-                {
+        for (int x = x0; x <= x1; ++x) {
+                for (int y = y0; y <= y1; ++y) {
                         // add to origin bucket if we are on the edge
-                        if (x == x0 || x == x1 || y == y0 || y == y1)
-                        {
+                        if (x == x0 || x == x1 || y == y0 || y == y1) {
                                 origin_bucket.emplace_back(x, y);
                         }
                 }
         }
 
-        for (const P& origin : origin_bucket)
-        {
+        for (const P& origin : origin_bucket) {
                 if (blocked.at(origin) ||
-                    map::g_room_map.at(origin) != &room)
-                {
+                    map::g_room_map.at(origin) != &room) {
                         continue;
                 }
 
@@ -325,37 +282,30 @@ void cavify_room(Room& room)
                         origin,
                         blocked,
                         rnd::range(1, 4),
-                        P( -1, -1),
+                        P(-1, -1),
                         false);
 
-                for (int x = 0; x < map::w(); ++x)
-                {
-                        for (int y = 0; y < map::h(); ++y)
-                        {
+                for (int x = 0; x < map::w(); ++x) {
+                        for (int y = 0; y < map::h(); ++y) {
                                 if ((flood.at(x, y) > 0) &&
-                                    (map::g_room_map.at(x, y) != &room))
-                                {
+                                    (map::g_room_map.at(x, y) != &room)) {
                                         map::put(new terrain::Floor({x, y}));
 
                                         map::g_room_map.at(x, y) = &room;
 
-                                        if (x < room_rect.p0.x)
-                                        {
+                                        if (x < room_rect.p0.x) {
                                                 room_rect.p0.x = x;
                                         }
 
-                                        if (y < room_rect.p0.y)
-                                        {
+                                        if (y < room_rect.p0.y) {
                                                 room_rect.p0.y = y;
                                         }
 
-                                        if (x > room_rect.p1.x)
-                                        {
+                                        if (x > room_rect.p1.x) {
                                                 room_rect.p1.x = x;
                                         }
 
-                                        if (y > room_rect.p1.y)
-                                        {
+                                        if (y > room_rect.p1.y) {
                                                 room_rect.p1.y = y;
                                         }
                                 }
@@ -363,14 +313,11 @@ void cavify_room(Room& room)
                 }
         }
 
-        for (size_t i = 0; i < map::nr_cells(); ++i)
-        {
-                if (map::g_room_map.at(i) == &room)
-                {
+        for (size_t i = 0; i < map::nr_cells(); ++i) {
+                if (map::g_room_map.at(i) == &room) {
                         auto* const terrain = map::g_cells.at(i).terrain;
 
-                        if (terrain->id() == terrain::Id::floor)
-                        {
+                        if (terrain->id() == terrain::Id::floor) {
                                 static_cast<terrain::Floor*>(terrain)->m_type =
                                         terrain::FloorType::cave;
                         }
@@ -394,8 +341,7 @@ void valid_corridor_entries(const Room& room, std::vector<P>& out)
         Array2<bool> room_cells(map::dims());
         Array2<bool> room_floor_cells(map::dims());
 
-        for (size_t i = 0; i < map::nr_cells(); ++i)
-        {
+        for (size_t i = 0; i < map::nr_cells(); ++i) {
                 const bool is_room_cell =
                         map::g_room_map.at(i) == &room;
 
@@ -413,19 +359,15 @@ void valid_corridor_entries(const Room& room, std::vector<P>& out)
                 R(P(room.m_r.p0 - 2),
                   P(room.m_r.p1 + 2)));
 
-        for (int y = room.m_r.p0.y - 1; y <= room.m_r.p1.y + 1; ++y)
-        {
-                for (int x = room.m_r.p0.x - 1; x <= room.m_r.p1.x + 1; ++x)
-                {
+        for (int y = room.m_r.p0.y - 1; y <= room.m_r.p1.y + 1; ++y) {
+                for (int x = room.m_r.p0.x - 1; x <= room.m_r.p1.x + 1; ++x) {
                         // Condition (1)
-                        if (map::g_cells.at(x, y).terrain->id() != terrain::Id::wall)
-                        {
+                        if (map::g_cells.at(x, y).terrain->id() != terrain::Id::wall) {
                                 continue;
                         }
 
                         // Condition (2)
-                        if (map::g_room_map.at(x, y))
-                        {
+                        if (map::g_room_map.at(x, y)) {
                                 continue;
                         }
 
@@ -433,8 +375,7 @@ void valid_corridor_entries(const Room& room, std::vector<P>& out)
                         if (x <= 1 ||
                             y <= 1 ||
                             x >= (map::w() - 2) ||
-                            y >= (map::h() - 2))
-                        {
+                            y >= (map::h() - 2)) {
                                 continue;
                         }
 
@@ -445,27 +386,23 @@ void valid_corridor_entries(const Room& room, std::vector<P>& out)
 
                         bool is_adj_to_floor_not_in_room = false;
 
-                        for (const P& d : dir_utils::g_cardinal_list)
-                        {
+                        for (const P& d : dir_utils::g_cardinal_list) {
                                 const P& p_adj(p + d);
 
                                 // Condition (4)
-                                if (room_floor_cells.at(p_adj))
-                                {
+                                if (room_floor_cells.at(p_adj)) {
                                         is_adj_to_floor_in_room = true;
                                 }
 
                                 // Condition (5)
-                                if (!room_cells_expanded.at(p_adj))
-                                {
+                                if (!room_cells_expanded.at(p_adj)) {
                                         is_adj_to_cell_outside = true;
                                 }
                         }
 
                         if (!is_adj_to_floor_not_in_room &&
                             is_adj_to_floor_in_room &&
-                            is_adj_to_cell_outside)
-                        {
+                            is_adj_to_cell_outside) {
                                 out.push_back(p);
                         }
                 }
@@ -474,16 +411,13 @@ void valid_corridor_entries(const Room& room, std::vector<P>& out)
         TRACE_FUNC_END_VERBOSE;
 }
 
-bool is_choke_point(const P& p,
-                    const Array2<bool>& blocked,
-                    ChokePointData* out)
+bool is_choke_point(const P& p, const Array2<bool>& blocked, ChokePointData* out)
 {
         // Assuming that the tested position is free
         ASSERT(!blocked.at(p));
 
         // Robustness for release mode
-        if (blocked.at(p))
-        {
+        if (blocked.at(p)) {
                 // This is weird, invalidate the map
                 g_is_map_valid = false;
 
@@ -495,21 +429,15 @@ bool is_choke_point(const P& p,
         P p_side1;
         P p_side2;
 
-        for (const P& d : dir_utils::g_cardinal_list)
-        {
+        for (const P& d : dir_utils::g_cardinal_list) {
                 const P adj_p(p + d);
 
-                if (!blocked.at(adj_p))
-                {
-                        if (p_side1.x == 0)
-                        {
+                if (!blocked.at(adj_p)) {
+                        if (p_side1.x == 0) {
                                 p_side1 = adj_p;
-                        }
-                        else if (p_side2.x == 0)
-                        {
+                        } else if (p_side2.x == 0) {
                                 p_side2 = adj_p;
-                        }
-                        else // Both p0 and p1 has already been set
+                        } else // Both p0 and p1 has already been set
                         {
                                 // This is not a choke point, bye!
                                 return false;
@@ -522,8 +450,7 @@ bool is_choke_point(const P& p,
         // Check that the two sides can reach each other
         auto flood_side1 = floodfill(p_side1, blocked);
 
-        if (flood_side1.at(p_side2) == 0)
-        {
+        if (flood_side1.at(p_side2) == 0) {
                 // The two sides were already separated from each other
                 return false;
         }
@@ -536,24 +463,21 @@ bool is_choke_point(const P& p,
         // Do another floodfill from side 1
         flood_side1 = floodfill(p_side1, blocked_cpy);
 
-        if (flood_side1.at(p_side2) > 0)
-        {
+        if (flood_side1.at(p_side2) > 0) {
                 // The two sides can still reach each other - not a choke point
                 return false;
         }
 
         // OK, this is a "true" choke point, time to gather more information!
 
-        if (out)
-        {
+        if (out) {
                 out->p = p;
         }
 
         // Do a floodfill from side 2
         const auto flood_side2 = floodfill(p_side2, blocked_cpy);
 
-        if (out)
-        {
+        if (out) {
                 // Prepare for at least the worst case of push-backs
                 out->sides[0].reserve(map::nr_cells());
                 out->sides[1].reserve(map::nr_cells());
@@ -563,18 +487,13 @@ bool is_choke_point(const P& p,
                 out->sides[0].push_back(p_side1);
                 out->sides[1].push_back(p_side2);
 
-                for (int x = 0; x < map::w(); ++x)
-                {
-                        for (int y = 0; y < map::h(); ++y)
-                        {
-                                if (flood_side1.at(x, y) > 0)
-                                {
+                for (int x = 0; x < map::w(); ++x) {
+                        for (int y = 0; y < map::h(); ++y) {
+                                if (flood_side1.at(x, y) > 0) {
                                         ASSERT(flood_side2.at(x, y) == 0);
 
                                         out->sides[0].emplace_back(x, y);
-                                }
-                                else if (flood_side2.at(x, y) > 0)
-                                {
+                                } else if (flood_side2.at(x, y) > 0) {
                                         out->sides[1].emplace_back(x, y);
                                 }
                         }
@@ -602,15 +521,13 @@ void make_pathfind_corridor(
         valid_corridor_entries(room_0, p0_bucket);
         valid_corridor_entries(room_1, p1_bucket);
 
-        if (p0_bucket.empty())
-        {
+        if (p0_bucket.empty()) {
                 TRACE_FUNC_END_VERBOSE << "No entry points found in room 0"
                                        << std::endl;
                 return;
         }
 
-        if (p1_bucket.empty())
-        {
+        if (p1_bucket.empty()) {
                 TRACE_FUNC_END_VERBOSE << "No entry points found in room 1"
                                        << std::endl;
                 return;
@@ -621,14 +538,11 @@ void make_pathfind_corridor(
         TRACE_VERBOSE << "Finding shortest possible dist between entries"
                       << std::endl;
 
-        for (const P& p0 : p0_bucket)
-        {
-                for (const P& p1 : p1_bucket)
-                {
+        for (const P& p0 : p0_bucket) {
+                for (const P& p1 : p1_bucket) {
                         const int dist = king_dist(p0, p1);
 
-                        if (dist < shortest_dist)
-                        {
+                        if (dist < shortest_dist) {
                                 shortest_dist = dist;
                         }
                 }
@@ -638,16 +552,13 @@ void make_pathfind_corridor(
                       << shortest_dist << ")"
                       << std::endl;
 
-        std::vector< std::pair<P, P> > entries_bucket;
+        std::vector<std::pair<P, P>> entries_bucket;
 
-        for (const P& p0 : p0_bucket)
-        {
-                for (const P& p1 : p1_bucket)
-                {
+        for (const P& p0 : p0_bucket) {
+                for (const P& p1 : p1_bucket) {
                         const int dist = king_dist(p0, p1);
 
-                        if (dist == shortest_dist)
-                        {
+                        if (dist == shortest_dist) {
                                 entries_bucket.emplace_back(p0, p1);
                         }
                 }
@@ -667,19 +578,16 @@ void make_pathfind_corridor(
         Array2<bool> blocked_expanded(map::dims());
 
         // Entry points are the same cell (rooms are adjacent)? Then use that
-        if (p0 == p1)
-        {
+        if (p0 == p1) {
                 path.push_back(p0);
-        }
-        else // Entry points are different cells
+        } else // Entry points are different cells
         {
                 // Try to find a path to the other entry point
 
                 Array2<bool> blocked(map::dims());
 
                 // Mark all cells as blocked, which is not a wall, or is a room
-                for (size_t i = 0; i < map::nr_cells(); ++i)
-                {
+                for (size_t i = 0; i < map::nr_cells(); ++i) {
                         const bool is_wall =
                                 map::g_cells.at(i).terrain->id() ==
                                 terrain::Id::wall;
@@ -690,26 +598,22 @@ void make_pathfind_corridor(
                 }
 
                 // Search around p0 and p1 to see if they are OK to build from
-                for (const P& d : dir_utils::g_dir_list)
-                {
+                for (const P& d : dir_utils::g_dir_list) {
                         const P p(p0 + d);
 
                         const auto* const room_ptr = map::g_room_map.at(p);
 
-                        if (blocked.at(p) && (room_ptr != &room_0))
-                        {
+                        if (blocked.at(p) && (room_ptr != &room_0)) {
                                 return;
                         }
                 }
 
-                for (const P& d : dir_utils::g_dir_list)
-                {
+                for (const P& d : dir_utils::g_dir_list) {
                         const P p(p1 + d);
 
                         const auto* const room_ptr = map::g_room_map.at(p);
 
-                        if (blocked.at(p) && (room_ptr != &room_1))
-                        {
+                        if (blocked.at(p) && (room_ptr != &room_1)) {
                                 return;
                         }
                 }
@@ -762,8 +666,7 @@ void make_pathfind_corridor(
                         randomize_step_choices);
         }
 
-        if (!path.empty())
-        {
+        if (!path.empty()) {
                 path.push_back(p0);
 
                 TRACE_VERBOSE << "Check that we don't circle around the "
@@ -772,39 +675,32 @@ void make_pathfind_corridor(
 
                 std::vector<Room*> rooms {&room_0, &room_1};
 
-                for (Room* room : rooms)
-                {
+                for (Room* room : rooms) {
                         bool is_left_of_room = false;
                         bool is_right_of_room = false;
                         bool is_above_room = false;
                         bool is_below_room = false;
 
-                        for (const P& p : path)
-                        {
-                                if (p.x < room->m_r.p0.x)
-                                {
+                        for (const P& p : path) {
+                                if (p.x < room->m_r.p0.x) {
                                         is_left_of_room = true;
                                 }
 
-                                if (p.x > room->m_r.p1.x)
-                                {
+                                if (p.x > room->m_r.p1.x) {
                                         is_right_of_room = true;
                                 }
 
-                                if (p.y < room->m_r.p0.y)
-                                {
+                                if (p.y < room->m_r.p0.y) {
                                         is_above_room = true;
                                 }
 
-                                if (p.y > room->m_r.p1.y)
-                                {
+                                if (p.y > room->m_r.p1.y) {
                                         is_below_room = true;
                                 }
                         }
 
                         if ((is_left_of_room && is_right_of_room) ||
-                            (is_above_room && is_below_room))
-                        {
+                            (is_above_room && is_below_room)) {
                                 TRACE_FUNC_END_VERBOSE
                                         << "Path circled around room, "
                                         << "aborting corridor"
@@ -816,18 +712,15 @@ void make_pathfind_corridor(
 
                 std::vector<Room*> prev_links;
 
-                for (size_t i = 0; i < path.size(); ++i)
-                {
+                for (size_t i = 0; i < path.size(); ++i) {
                         const P& p(path[i]);
 
                         // If this is a late level, occasionally put floor in
                         // 3x3 cells around each path point (wide corridors for
                         // more "open" level).
                         if ((map::g_dlvl >= g_dlvl_first_late_game) &&
-                            rnd::fraction(2, 5))
-                        {
-                                for (const P d : dir_utils::g_dir_list_w_center)
-                                {
+                            rnd::fraction(2, 5)) {
+                                for (const P d : dir_utils::g_dir_list_w_center) {
                                         const P p_adj(p + d);
 
                                         const bool is_inside =
@@ -835,8 +728,7 @@ void make_pathfind_corridor(
                                                         p_adj);
 
                                         if (is_inside &&
-                                            !blocked_expanded.at(p_adj))
-                                        {
+                                            !blocked_expanded.at(p_adj)) {
                                                 map::put(new terrain::Floor(p_adj));
                                         }
                                 }
@@ -847,8 +739,7 @@ void make_pathfind_corridor(
                         // Make it possible to branch from the corridor
                         if ((i > 1) &&
                             ((int)i < (int)path.size() - 3) &&
-                            (i % 4 == 0))
-                        {
+                            (i % 4 == 0)) {
                                 Room* link =
                                         room_factory::make(
                                                 RoomType::corr_link,
@@ -864,8 +755,7 @@ void make_pathfind_corridor(
                                 room_0.m_rooms_con_to.push_back(link);
                                 room_1.m_rooms_con_to.push_back(link);
 
-                                for (Room* prev_link : prev_links)
-                                {
+                                for (Room* prev_link : prev_links) {
                                         link->m_rooms_con_to.push_back(
                                                 prev_link);
 
@@ -877,8 +767,7 @@ void make_pathfind_corridor(
                         }
                 }
 
-                if (door_proposals)
-                {
+                if (door_proposals) {
                         door_proposals->at(p0) = true;
                         door_proposals->at(p1) = true;
                 }
@@ -895,9 +784,7 @@ void make_pathfind_corridor(
         TRACE_FUNC_END_VERBOSE << "Failed to connect roooms" << std::endl;
 }
 
-std::vector<P> pathfinder_walk(const P& p0,
-                               const P& p1,
-                               const bool is_smooth)
+std::vector<P> pathfinder_walk(const P& p0, const P& p1, const bool is_smooth)
 {
         std::vector<P> result;
 
@@ -907,12 +794,10 @@ std::vector<P> pathfinder_walk(const P& p0,
 
         std::vector<P> rnd_walk_buffer;
 
-        for (const P& p : path)
-        {
+        for (const P& p : path) {
                 result.push_back(p);
 
-                if (!is_smooth && rnd::one_in(3))
-                {
+                if (!is_smooth && rnd::one_in(3)) {
                         const auto rnd_walk_path = rnd_walk(
                                 p,
                                 rnd::range(1, 6),
@@ -941,24 +826,19 @@ std::vector<P> rnd_walk(
         std::vector<P> result;
 
         const std::vector<P>& d_list =
-                allow_diagonal ?
-                dir_utils::g_dir_list :
-                dir_utils::g_cardinal_list;
+                allow_diagonal ? dir_utils::g_dir_list : dir_utils::g_cardinal_list;
 
         P p(p0);
 
-        while (len > 0)
-        {
+        while (len > 0) {
                 result.push_back(p);
 
                 --len;
 
-                while (true)
-                {
+                while (true) {
                         const P nxt_pos = p + rnd::element(d_list);
 
-                        if (is_pos_inside(nxt_pos, area))
-                        {
+                        if (is_pos_inside(nxt_pos, area)) {
                                 p = nxt_pos;
                                 break;
                         }
@@ -975,33 +855,28 @@ void make_explore_spawn_weights(
 {
         Array2<int> weight_map(map::dims());
 
-        for (size_t i = 0; i < map::nr_cells(); ++i)
-        {
+        for (size_t i = 0; i < map::nr_cells(); ++i) {
                 // Give all cells a base weight of 1
                 weight_map.at(i) = 1;
 
                 // Increase weight for dark cells
-                if (map::g_dark.at(i))
-                {
+                if (map::g_dark.at(i)) {
                         weight_map.at(i) += 10;
                 }
         }
 
         // Put extra weight for "optional" areas behind choke points
-        for (const auto& choke_point : map::g_choke_point_data)
-        {
+        for (const auto& choke_point : map::g_choke_point_data) {
                 // If the player and the stairs are on the same side of the
                 // choke point, this means that the "other" side is an optional
                 // map branch.
-                if (choke_point.player_side == choke_point.stairs_side)
-                {
+                if (choke_point.player_side == choke_point.stairs_side) {
                         ASSERT(choke_point.player_side == 0 ||
                                choke_point.player_side == 1);
 
                         // Robustness for release mode
                         if (choke_point.player_side != 0 &&
-                            choke_point.player_side != 1)
-                        {
+                            choke_point.player_side != 1) {
                                 continue;
                         }
 
@@ -1031,35 +906,30 @@ void make_explore_spawn_weights(
                                 map::g_cells.at(choke_point.p).terrain;
 
                         // Increase weight if behind hidden/stuck/metal doors
-                        if (terrain->id() == terrain::Id::door)
-                        {
+                        if (terrain->id() == terrain::Id::door) {
                                 auto* const door =
                                         static_cast<terrain::Door*>(terrain);
 
-                                if (door->is_hidden())
-                                {
+                                if (door->is_hidden()) {
                                         weight_inc += std::max(
                                                 1,
                                                 200 / weight_div);
                                 }
 
-                                if (door->is_stuck())
-                                {
+                                if (door->is_stuck()) {
                                         weight_inc += std::max(
                                                 1,
                                                 200 / weight_div);
                                 }
 
-                                if (door->type() == DoorType::metal)
-                                {
+                                if (door->type() == DoorType::metal) {
                                         weight_inc += std::max(
                                                 1,
                                                 500 / weight_div);
                                 }
                         }
 
-                        for (const P& p : other_side_positions)
-                        {
+                        for (const P& p : other_side_positions) {
                                 weight_map.at(p) += weight_inc;
                         }
                 }
@@ -1070,19 +940,15 @@ void make_explore_spawn_weights(
 
         weights_out.reserve(map::nr_cells());
 
-        for (int x = 0; x < map::w(); ++x)
-        {
-                for (int y = 0; y < map::h(); ++y)
-                {
-                        if (blocked.at(x, y))
-                        {
+        for (int x = 0; x < map::w(); ++x) {
+                for (int y = 0; y < map::h(); ++y) {
+                        if (blocked.at(x, y)) {
                                 continue;
                         }
 
                         const int weight = weight_map.at(x, y);
 
-                        if (weight > 0)
-                        {
+                        if (weight > 0) {
                                 // OK, we can spawn here, save the position and
                                 // the corresponding spawn chance weight
                                 positions_out.emplace_back(x, y);
@@ -1108,24 +974,20 @@ Array2<bool> allowed_stair_cells()
                 terrain::Id::rubble_low,
                 terrain::Id::vines,
                 terrain::Id::chains,
-                terrain::Id::trap
-        };
+                terrain::Id::trap};
 
         map_parsers::AllAdjIsAnyOfTerrains(feat_ids_ok)
                 .run(result, result.rect());
 
         // Block cells with items
-        for (size_t i = 0; i < map::nr_cells(); ++i)
-        {
-                if (map::g_cells.at(i).item)
-                {
+        for (size_t i = 0; i < map::nr_cells(); ++i) {
+                if (map::g_cells.at(i).item) {
                         result.at(i) = false;
                 }
         }
 
         // Block cells with actors
-        for (const auto* const actor : game_time::g_actors)
-        {
+        for (const auto* const actor : game_time::g_actors) {
                 const P& p(actor->m_pos);
 
                 result.at(p) = false;
@@ -1144,14 +1006,12 @@ void move_player_to_nearest_allowed_pos()
 
         auto pos_bucket = to_vec(allowed_cells, true, allowed_cells.rect());
 
-        if (pos_bucket.empty())
-        {
+        if (pos_bucket.empty()) {
                 g_is_map_valid = false;
-        }
-        else // Valid cells exists
+        } else // Valid cells exists
         {
                 TRACE << "Sorting the allowed cells vector "
-                      << "(" << pos_bucket.size() << " cells)" << std:: endl;
+                      << "(" << pos_bucket.size() << " cells)" << std::endl;
 
                 IsCloserToPos is_closer_to_origin(map::g_player->m_pos);
 
@@ -1181,17 +1041,15 @@ P make_stairs_at_random_pos()
 
         const int min_nr_ok_cells_req = 3;
 
-        if (nr_ok_cells < min_nr_ok_cells_req)
-        {
+        if (nr_ok_cells < min_nr_ok_cells_req) {
                 TRACE << "Nr available cells to place stairs too low "
                       << "(" << nr_ok_cells << "), discarding map"
-                      << std:: endl;
+                      << std::endl;
 
                 g_is_map_valid = false;
 
 #ifndef NDEBUG
-                if (init::g_is_demo_mapgen)
-                {
+                if (init::g_is_demo_mapgen) {
                         io::cover_panel(Panel::log);
                         states::draw();
                         io::draw_text(
@@ -1207,7 +1065,7 @@ P make_stairs_at_random_pos()
         }
 
         TRACE << "Sorting the allowed cells vector "
-              << "(" << pos_bucket.size() << " cells)" << std:: endl;
+              << "(" << pos_bucket.size() << " cells)" << std::endl;
 
         Array2<bool> blocks_player(map::dims());
 
@@ -1219,14 +1077,11 @@ P make_stairs_at_random_pos()
                 terrain::Id::liquid_deep,
         };
 
-        for (int x = 0; x < blocks_player.w(); ++x)
-        {
-                for (int y = 0; y < blocks_player.h(); ++y)
-                {
+        for (int x = 0; x < blocks_player.w(); ++x) {
+                for (int y = 0; y < blocks_player.h(); ++y) {
                         const P p(x, y);
 
-                        if (map_parsers::IsAnyOfTerrains(free_terrains).cell(p))
-                        {
+                        if (map_parsers::IsAnyOfTerrains(free_terrains).cell(p)) {
                                 blocks_player.at(p) = false;
                         }
                 }
@@ -1241,29 +1096,23 @@ P make_stairs_at_random_pos()
                         // If any of the two positions are unreached by the
                         // flood, assume this is furthest - otherwise compare
                         // which position is nearest on the flood
-                        if (flood.at(p1) == 0)
-                        {
+                        if (flood.at(p1) == 0) {
                                 return false;
-                        }
-                        else if (flood.at(p2) == 0)
-                        {
+                        } else if (flood.at(p2) == 0) {
                                 return true;
-                        }
-                        else
-                        {
+                        } else {
                                 return flood.at(p1) < flood.at(p2);
                         }
                 });
 
-        TRACE << "Picking one of the furthest cells" << std:: endl;
+        TRACE << "Picking one of the furthest cells" << std::endl;
 
         const int cell_idx_range_size = std::max(1, nr_ok_cells / 5);
 
         const int cell_idx = nr_ok_cells - rnd::range(1, cell_idx_range_size);
 
         if ((cell_idx < 0) ||
-            (cell_idx > (int)pos_bucket.size()))
-        {
+            (cell_idx > (int)pos_bucket.size())) {
                 ASSERT(false);
 
                 g_is_map_valid = false;
@@ -1273,7 +1122,7 @@ P make_stairs_at_random_pos()
 
         const P stairs_pos(pos_bucket[cell_idx]);
 
-        TRACE << "Spawning stairs at chosen cell" << std:: endl;
+        TRACE << "Spawning stairs at chosen cell" << std::endl;
 
         map::put(new terrain::Stairs(stairs_pos));
 
@@ -1295,17 +1144,13 @@ void reveal_doors_on_path_to_stairs(const P& stairs_pos)
 
         const std::vector<terrain::Id> free_terrains = {
                 terrain::Id::door,
-                terrain::Id::liquid_deep
-        };
+                terrain::Id::liquid_deep};
 
-        for (int x = 0; x < blocks_player.w(); ++x)
-        {
-                for (int y = 0; y < blocks_player.h(); ++y)
-                {
+        for (int x = 0; x < blocks_player.w(); ++x) {
+                for (int y = 0; y < blocks_player.h(); ++y) {
                         const P p(x, y);
 
-                        if (map_parsers::IsAnyOfTerrains(free_terrains).cell(p))
-                        {
+                        if (map_parsers::IsAnyOfTerrains(free_terrains).cell(p)) {
                                 blocks_player.at(p) = false;
                         }
                 }
@@ -1318,14 +1163,12 @@ void reveal_doors_on_path_to_stairs(const P& stairs_pos)
 
         ASSERT(!path.empty());
 
-        TRACE << "Travelling along path and revealing all doors" << std:: endl;
+        TRACE << "Travelling along path and revealing all doors" << std::endl;
 
-        for (const P& pos : path)
-        {
+        for (const P& pos : path) {
                 auto* const terrain = map::g_cells.at(pos).terrain;
 
-                if (terrain->id() == terrain::Id::door)
-                {
+                if (terrain->id() == terrain::Id::door) {
                         static_cast<terrain::Door*>(terrain)
                                 ->reveal(Verbose::no);
                 }

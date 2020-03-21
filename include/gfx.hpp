@@ -10,13 +10,10 @@
 #include <string>
 #include <unordered_map>
 
-
 struct P;
 
-
 // NOTE: When updating this, also update the two maps below
-enum class TileId
-{
+enum class TileId {
         aim_marker_head,
         aim_marker_line,
         alchemist_bench_empty,
@@ -386,8 +383,7 @@ const std::unordered_map<std::string, TileId> g_str_to_tile_id_map = {
         {"zombie_bloated", TileId::zombie_bloated},
         {"zombie_dust", TileId::zombie_dust},
         {"zombie_unarmed", TileId::zombie_unarmed},
-        {"none", TileId::END}
-};
+        {"none", TileId::END}};
 
 const std::unordered_map<TileId, std::string> g_tile_id_to_str_map = {
         {TileId::aim_marker_head, "aim_marker_head"},
@@ -572,11 +568,9 @@ const std::unordered_map<TileId, std::string> g_tile_id_to_str_map = {
         {TileId::zombie_bloated, "zombie_bloated"},
         {TileId::zombie_dust, "zombie_dust"},
         {TileId::zombie_unarmed, "zombie_unarmed"},
-        {TileId::END, "none"}
-};
+        {TileId::END, "none"}};
 
-namespace gfx
-{
+namespace gfx {
 
 P character_pos(char character);
 

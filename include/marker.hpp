@@ -15,28 +15,23 @@
 #include "random.hpp"
 #include "state.hpp"
 
-
-namespace item
-{
+namespace item {
 class Item;
 class Wpn;
 } // namespace item
 
-
 struct InputData;
-
 
 // -----------------------------------------------------------------------------
 // Abstract marker state base class
 // -----------------------------------------------------------------------------
-class MarkerState: public State
-{
+class MarkerState : public State {
 public:
         MarkerState(const P& origin) :
 
                 m_marker_render_data(P(0, 0)),
                 m_origin(origin)
-                {}
+        {}
 
         virtual ~MarkerState() = default;
 
@@ -112,8 +107,7 @@ private:
 // -----------------------------------------------------------------------------
 // View marker state
 // -----------------------------------------------------------------------------
-class Viewing: public MarkerState
-{
+class Viewing : public MarkerState {
 public:
         Viewing(const P& origin) :
                 MarkerState(origin) {}
@@ -137,8 +131,7 @@ protected:
 // -----------------------------------------------------------------------------
 // Aim (and fire) marker state
 // -----------------------------------------------------------------------------
-class Aiming: public MarkerState
-{
+class Aiming : public MarkerState {
 public:
         Aiming(const P& origin, item::Wpn& wpn) :
                 MarkerState(origin),
@@ -169,8 +162,7 @@ protected:
 // -----------------------------------------------------------------------------
 // Throw attack marker state
 // -----------------------------------------------------------------------------
-class Throwing: public MarkerState
-{
+class Throwing : public MarkerState {
 public:
         Throwing(const P& origin, item::Item& inv_item) :
                 MarkerState(origin),
@@ -201,8 +193,7 @@ protected:
 // -----------------------------------------------------------------------------
 // Throw explosive marker state
 // -----------------------------------------------------------------------------
-class ThrowingExplosive: public MarkerState
-{
+class ThrowingExplosive : public MarkerState {
 public:
         ThrowingExplosive(const P& origin, const item::Item& explosive) :
                 MarkerState(origin),
@@ -233,10 +224,9 @@ protected:
 // -----------------------------------------------------------------------------
 // Teleport control marker state
 // -----------------------------------------------------------------------------
-class CtrlTele: public MarkerState
-{
+class CtrlTele : public MarkerState {
 public:
-        CtrlTele(const P& origin, Array2<bool>  blocked);
+        CtrlTele(const P& origin, Array2<bool> blocked);
 
 protected:
         void on_start_hook() override;

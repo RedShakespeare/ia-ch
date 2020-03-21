@@ -14,54 +14,44 @@
 #include "pos.hpp"
 #include "terrain_data.hpp"
 
-
-namespace actor
-{
+namespace actor {
 class Actor;
 } // namespace actor
 
 struct R;
 struct Cell;
 
-template<typename T>
+template <typename T>
 class Array2;
-
 
 // NOTE: If append mode is used, the caller is responsible for initializing the
 // array (e.g. with a previous "overwrite" parse call)
-enum class MapParseMode
-{
+enum class MapParseMode {
         overwrite,
         append
 };
 
-enum class ParseCells
-{
+enum class ParseCells {
         no,
         yes
 };
 
-enum class ParseMobs
-{
+enum class ParseMobs {
         no,
         yes
 };
 
-enum class ParseActors
-{
+enum class ParseActors {
         no,
         yes
 };
 
-
-namespace map_parsers
-{
+namespace map_parsers {
 
 // -----------------------------------------------------------------------------
 // Map parsers (usage: create an object and call "run" or "cell")
 // -----------------------------------------------------------------------------
-class MapParser
-{
+class MapParser {
 public:
         virtual ~MapParser() = default;
 
@@ -95,9 +85,7 @@ public:
         }
 
 protected:
-        MapParser(ParseCells parse_cells,
-                  ParseMobs parse_mobs,
-                  ParseActors parse_actors) :
+        MapParser(ParseCells parse_cells, ParseMobs parse_mobs, ParseActors parse_actors) :
                 m_parse_cells(parse_cells),
                 m_parse_mobs(parse_mobs),
                 m_parse_actors(parse_actors) {}
@@ -108,8 +96,7 @@ private:
         const ParseActors m_parse_actors;
 };
 
-class BlocksLos : public MapParser
-{
+class BlocksLos : public MapParser {
 public:
         BlocksLos() :
                 MapParser(ParseCells::yes, ParseMobs::yes, ParseActors::no) {}
@@ -119,8 +106,7 @@ private:
         bool parse_mob(const terrain::Terrain& f) const override;
 };
 
-class BlocksWalking : public MapParser
-{
+class BlocksWalking : public MapParser {
 public:
         BlocksWalking(ParseActors parse_actors) :
                 MapParser(ParseCells::yes, ParseMobs::yes, parse_actors) {}
@@ -131,8 +117,7 @@ private:
         bool parse_actor(const actor::Actor& a) const override;
 };
 
-class BlocksActor : public MapParser
-{
+class BlocksActor : public MapParser {
 public:
         BlocksActor(const actor::Actor& actor, ParseActors parse_actors) :
                 MapParser(ParseCells::yes, ParseMobs::yes, parse_actors),
@@ -146,8 +131,7 @@ private:
         const actor::Actor& m_actor;
 };
 
-class BlocksProjectiles : public MapParser
-{
+class BlocksProjectiles : public MapParser {
 public:
         BlocksProjectiles() :
                 MapParser(ParseCells::yes, ParseMobs::yes, ParseActors::no) {}
@@ -157,8 +141,7 @@ private:
         bool parse_mob(const terrain::Terrain& f) const override;
 };
 
-class BlocksSound : public MapParser
-{
+class BlocksSound : public MapParser {
 public:
         BlocksSound() :
                 MapParser(ParseCells::yes, ParseMobs::yes, ParseActors::no) {}
@@ -168,8 +151,7 @@ private:
         bool parse_mob(const terrain::Terrain& f) const override;
 };
 
-class LivingActorsAdjToPos : public MapParser
-{
+class LivingActorsAdjToPos : public MapParser {
 public:
         LivingActorsAdjToPos(const P& pos) :
                 MapParser(ParseCells::no, ParseMobs::no, ParseActors::yes),
@@ -181,8 +163,7 @@ private:
         const P& m_pos;
 };
 
-class BlocksItems : public MapParser
-{
+class BlocksItems : public MapParser {
 public:
         BlocksItems() :
                 MapParser(ParseCells::yes, ParseMobs::yes, ParseActors::no) {}
@@ -192,8 +173,7 @@ private:
         bool parse_mob(const terrain::Terrain& f) const override;
 };
 
-class BlocksTerrain : public MapParser
-{
+class BlocksTerrain : public MapParser {
 public:
         BlocksTerrain() :
                 MapParser(ParseCells::yes, ParseMobs::no, ParseActors::no) {}
@@ -202,8 +182,7 @@ private:
         bool parse_cell(const Cell& c, const P& pos) const override;
 };
 
-class IsNotTerrain : public MapParser
-{
+class IsNotTerrain : public MapParser {
 public:
         IsNotTerrain(const terrain::Id id) :
                 MapParser(ParseCells::yes, ParseMobs::no, ParseActors::no),
@@ -215,10 +194,9 @@ private:
         const terrain::Id m_terrain;
 };
 
-class IsAnyOfTerrains : public MapParser
-{
+class IsAnyOfTerrains : public MapParser {
 public:
-        IsAnyOfTerrains(std::vector<terrain::Id>  terrains) :
+        IsAnyOfTerrains(std::vector<terrain::Id> terrains) :
                 MapParser(ParseCells::yes, ParseMobs::no, ParseActors::no),
                 m_terrains(std::move(terrains)) {}
 
@@ -232,10 +210,9 @@ private:
         std::vector<terrain::Id> m_terrains;
 };
 
-class AnyAdjIsAnyOfTerrains : public MapParser
-{
+class AnyAdjIsAnyOfTerrains : public MapParser {
 public:
-        AnyAdjIsAnyOfTerrains(std::vector<terrain::Id>  terrains) :
+        AnyAdjIsAnyOfTerrains(std::vector<terrain::Id> terrains) :
                 MapParser(ParseCells::yes, ParseMobs::no, ParseActors::no),
                 m_terrains(std::move(terrains)) {}
 
@@ -249,8 +226,7 @@ private:
         std::vector<terrain::Id> m_terrains;
 };
 
-class AllAdjIsTerrain : public MapParser
-{
+class AllAdjIsTerrain : public MapParser {
 public:
         AllAdjIsTerrain(const terrain::Id id) :
                 MapParser(ParseCells::yes, ParseMobs::no, ParseActors::no),
@@ -262,10 +238,9 @@ private:
         const terrain::Id m_terrain;
 };
 
-class AllAdjIsAnyOfTerrains : public MapParser
-{
+class AllAdjIsAnyOfTerrains : public MapParser {
 public:
-        AllAdjIsAnyOfTerrains(std::vector<terrain::Id>  terrains) :
+        AllAdjIsAnyOfTerrains(std::vector<terrain::Id> terrains) :
                 MapParser(ParseCells::yes, ParseMobs::no, ParseActors::no),
                 m_terrains(std::move(terrains)) {}
 
@@ -279,8 +254,7 @@ private:
         std::vector<terrain::Id> m_terrains;
 };
 
-class AllAdjIsNotTerrain : public MapParser
-{
+class AllAdjIsNotTerrain : public MapParser {
 public:
         AllAdjIsNotTerrain(const terrain::Id id) :
                 MapParser(ParseCells::yes, ParseMobs::no, ParseActors::no),
@@ -292,10 +266,9 @@ private:
         const terrain::Id m_terrain;
 };
 
-class AllAdjIsNoneOfTerrains : public MapParser
-{
+class AllAdjIsNoneOfTerrains : public MapParser {
 public:
-        AllAdjIsNoneOfTerrains(std::vector<terrain::Id>  terrains) :
+        AllAdjIsNoneOfTerrains(std::vector<terrain::Id> terrains) :
                 MapParser(ParseCells::yes, ParseMobs::no, ParseActors::no),
                 m_terrains(std::move(terrains)) {}
 
@@ -309,7 +282,6 @@ private:
         std::vector<terrain::Id> m_terrains;
 };
 
-
 // -----------------------------------------------------------------------------
 // Various utility algorithms
 // -----------------------------------------------------------------------------
@@ -321,8 +293,7 @@ Array2<bool> cells_within_dist_of_others(
         const Array2<bool>& in,
         const Range& dist_interval);
 
-void append(Array2<bool>& base,
-            const Array2<bool>& append);
+void append(Array2<bool>& base, const Array2<bool>& append);
 
 // Optimized for expanding with a distance of one
 Array2<bool> expand(
@@ -338,10 +309,8 @@ bool is_map_connected(const Array2<bool>& blocked);
 
 } // namespace map_parsers
 
-
 // Function object for sorting STL containers by distance to a position
-struct IsCloserToPos
-{
+struct IsCloserToPos {
 public:
         IsCloserToPos(const P& p) :
                 m_pos(p) {}
@@ -352,8 +321,7 @@ public:
 };
 
 // Function struct for sorting STL containers by distance to a position
-struct IsFurtherFromPos
-{
+struct IsFurtherFromPos {
 public:
         IsFurtherFromPos(const P& p) :
                 m_pos(p) {}

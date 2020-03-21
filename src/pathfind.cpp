@@ -43,14 +43,12 @@ std::vector<P> pathfind_with_flood(
 {
         std::vector<P> path;
 
-        if (p0 == p1)
-        {
+        if (p0 == p1) {
                 // Origin and target is same cell
                 return path;
         }
 
-        if (flood.at(p1) == 0)
-        {
+        if (flood.at(p1) == 0) {
                 // No path exists
                 return path;
         }
@@ -76,27 +74,23 @@ std::vector<P> pathfind_with_flood(
 
         const R rect(P(0, 0), flood.dims() - 1);
 
-        while (true)
-        {
+        while (true) {
                 const int current_val = flood.at(p);
 
                 P adj_p;
 
                 // Find valid offsets, and check if origin is reached
-                for (size_t i = 0; i < nr_dirs; ++i)
-                {
+                for (size_t i = 0; i < nr_dirs; ++i) {
                         const P& d(dirs[i]);
 
                         adj_p = p + d;
 
-                        if (adj_p == p0)
-                        {
+                        if (adj_p == p0) {
                                 // Origin reached
                                 return path;
                         }
 
-                        if (flood.rect().is_pos_inside(adj_p))
-                        {
+                        if (flood.rect().is_pos_inside(adj_p)) {
                                 const int adj_val = flood.at(adj_p);
 
                                 // Mark this as a valid travel direction if it
@@ -111,14 +105,11 @@ std::vector<P> pathfind_with_flood(
                 // Set the next position to one of the valid offsets - either
                 // pick one randomly, or iterate over the list and pick the
                 // first valid choice.
-                if (randomize_steps)
-                {
+                if (randomize_steps) {
                         std::vector<P> adj_p_bucket;
 
-                        for (size_t i = 0; i < nr_dirs; ++i)
-                        {
-                                if (valid_offsets[i])
-                                {
+                        for (size_t i = 0; i < nr_dirs; ++i) {
+                                if (valid_offsets[i]) {
                                         adj_p_bucket.push_back(p + dirs[i]);
                                 }
                         }
@@ -126,13 +117,10 @@ std::vector<P> pathfind_with_flood(
                         ASSERT(!adj_p_bucket.empty());
 
                         adj_p = rnd::element(adj_p_bucket);
-                }
-                else // Do not randomize step choices - iterate over offset list
+                } else // Do not randomize step choices - iterate over offset list
                 {
-                        for (size_t i = 0; i < nr_dirs; ++i)
-                        {
-                                if (valid_offsets[i])
-                                {
+                        for (size_t i = 0; i < nr_dirs; ++i) {
+                                if (valid_offsets[i]) {
                                         adj_p = P(p + dirs[i]);
                                         break;
                                 }

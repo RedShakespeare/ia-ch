@@ -26,23 +26,17 @@ static bool is_defender_aware_of_attack(
 {
         bool is_aware = false;
 
-        if (defender.is_player())
-        {
-                if (attacker)
-                {
+        if (defender.is_player()) {
+                if (attacker) {
                         const auto* const mon =
                                 static_cast<const actor::Mon*>(attacker);
 
                         is_aware = mon->m_player_aware_of_me_counter > 0;
-                }
-                else
-                {
+                } else {
                         // No attacker actor (e.g. a trap)
                         is_aware = true;
                 }
-        }
-        else
-        {
+        } else {
                 // Defender is monster
                 auto* const mon = static_cast<const actor::Mon*>(&defender);
 
@@ -72,7 +66,8 @@ AttData::AttData(
         dmg(0),
         is_intrinsic_att(
                 (att_item->data().type == ItemType::melee_wpn_intr) ||
-                (att_item->data().type == ItemType::ranged_wpn_intr)) {}
+                (att_item->data().type == ItemType::ranged_wpn_intr))
+{}
 
 MeleeAttData::MeleeAttData(
         actor::Actor* const the_attacker,
@@ -102,13 +97,11 @@ MeleeAttData::MeleeAttData(
         const int dodging_ability = defender->ability(AbilityId::dodging, true);
 
         // Player gets melee dodging bonus from wielding a Pitchfork
-        if (defender->is_player())
-        {
+        if (defender->is_player()) {
                 const auto* const item =
                         defender->m_inv.item_in_slot(SlotId::wpn);
 
-                if (item && (item->id() == item::Id::pitch_fork))
-                {
+                if (item && (item->id() == item::Id::pitch_fork)) {
                         dodging_mod -= 15;
                 }
         }
@@ -118,8 +111,7 @@ MeleeAttData::MeleeAttData(
                 !(defender->is_player() &&
                   player_is_handling_armor);
 
-        if (allow_positive_doge || (dodging_ability < 0))
-        {
+        if (allow_positive_doge || (dodging_ability < 0)) {
                 dodging_mod -= dodging_ability;
         }
 
@@ -130,8 +122,7 @@ MeleeAttData::MeleeAttData(
         // check if target is seen when player is attacking.
         bool can_attacker_see_tgt = true;
 
-        if (attacker && attacker->is_player())
-        {
+        if (attacker && attacker->is_player()) {
                 can_attacker_see_tgt = map::g_player->can_see_actor(*defender);
         }
 
@@ -141,54 +132,41 @@ MeleeAttData::MeleeAttData(
         bool is_big_att_bon = false;
         bool is_small_att_bon = false;
 
-        if (!is_defender_aware)
-        {
+        if (!is_defender_aware) {
                 // Give big attack bonus if defender is unaware of the attacker.
                 is_big_att_bon = true;
         }
 
-        if (!is_big_att_bon)
-        {
+        if (!is_big_att_bon) {
                 // Check if attacker gets a bonus due to a defender property.
 
-                if (defender->m_properties.has(PropId::paralyzed) ||
-                    defender->m_properties.has(PropId::nailed) ||
-                    defender->m_properties.has(PropId::fainted) ||
-                    defender->m_properties.has(PropId::entangled))
-                {
-                        // Give big attack bonus if defender is completely
-                        // unable to fight.
+                const bool has_big_bon_prop =
+                        defender->m_properties.has(PropId::paralyzed) ||
+                        defender->m_properties.has(PropId::nailed) ||
+                        defender->m_properties.has(PropId::fainted) ||
+                        defender->m_properties.has(PropId::entangled);
+
+                const bool has_small_bon_prop =
+                        defender->m_properties.has(PropId::confused) ||
+                        defender->m_properties.has(PropId::slowed) ||
+                        defender->m_properties.has(PropId::burning) ||
+                        !defender->m_properties.allow_see();
+
+                if (has_big_bon_prop) {
                         is_big_att_bon = true;
-                }
-                else if (defender->m_properties.has(PropId::confused) ||
-                         defender->m_properties.has(PropId::slowed) ||
-                         defender->m_properties.has(PropId::burning))
-                {
-                        // Give small attack bonus if defender has problems
-                        // fighting
+                } else if (has_small_bon_prop) {
                         is_small_att_bon = true;
                 }
-        }
-
-        // Give small attack bonus if defender cannot see.
-        if (!is_big_att_bon &&
-            !is_small_att_bon &&
-            !defender->m_properties.allow_see())
-        {
-                is_small_att_bon = true;
         }
 
         state_mod =
                 is_big_att_bon
                 ? 50
-                : is_small_att_bon
-                ? 20
-                : 0;
+                : (is_small_att_bon ? 20 : 0);
 
         // Lower hit chance if attacker cannot see target (e.g. attacking
         // invisible creature)
-        if (!can_attacker_see_tgt)
-        {
+        if (!can_attacker_see_tgt) {
                 state_mod -= 25;
         }
 
@@ -202,16 +180,12 @@ MeleeAttData::MeleeAttData(
                 defender->m_properties.has(PropId::ethereal) &&
                 !apply_undead_bane_bon;
 
-        if (apply_ethereal_defender_pen)
-        {
+        if (apply_ethereal_defender_pen) {
                 state_mod -= 50;
         }
 
         hit_chance_tot =
-                skill_mod
-                + wpn_mod
-                + dodging_mod
-                + state_mod;
+                skill_mod + wpn_mod + dodging_mod + state_mod;
 
         // NOTE: Total skill may be negative or above 100 (the attacker may
         // still critically hit or miss)
@@ -221,8 +195,7 @@ MeleeAttData::MeleeAttData(
         {
                 auto dmg_range = wpn.melee_dmg(attacker);
 
-                if (apply_undead_bane_bon)
-                {
+                if (apply_undead_bane_bon) {
                         dmg_range.set_plus(dmg_range.plus() + 2);
                 }
 
@@ -235,29 +208,24 @@ MeleeAttData::MeleeAttData(
                 dmg = std::max(1, dmg);
         }
 
-        if (attacker && attacker->m_properties.has(PropId::weakened))
-        {
+        if (attacker && attacker->m_properties.has(PropId::weakened)) {
                 // Weak attack (halved damage)
                 dmg = std::max(1, dmg / 2);
 
                 is_weak_attack = true;
         }
         // Attacker not weakened, or not an actor attacking (e.g. a trap)
-        else if (attacker && !is_defender_aware)
-        {
+        else if (attacker && !is_defender_aware) {
                 // The attack is a backstab
                 int dmg_pct = 150;
 
                 // Extra backstab damage from traits?
-                if (attacker && attacker->is_player())
-                {
-                        if (player_bon::has_trait(Trait::vicious))
-                        {
+                if (attacker && attacker->is_player()) {
+                        if (player_bon::has_trait(Trait::vicious)) {
                                 dmg_pct += 150;
                         }
 
-                        if (player_bon::has_trait(Trait::ruthless))
-                        {
+                        if (player_bon::has_trait(Trait::ruthless)) {
                                 dmg_pct += 150;
                         }
                 }
@@ -265,8 +233,7 @@ MeleeAttData::MeleeAttData(
                 // +300% damage if attacking with a dagger
                 const auto id = wpn.data().id;
 
-                if ((id == item::Id::dagger) || (id == item::Id::spirit_dagger))
-                {
+                if ((id == item::Id::dagger) || (id == item::Id::spirit_dagger)) {
                         dmg_pct += 300;
                 }
 
@@ -277,8 +244,7 @@ MeleeAttData::MeleeAttData(
 
         // Defender takes reduced damage from piercing attacks?
         if (defender->m_properties.has(PropId::reduced_pierce_dmg) &&
-            (wpn.data().melee.dmg_method == DmgMethod::piercing))
-        {
+            (wpn.data().melee.dmg_method == DmgMethod::piercing)) {
                 dmg = std::max(1, dmg / 4);
         }
 }
@@ -297,25 +263,18 @@ RangedAttData::RangedAttData(
 {
         // Determine aim level
         // TODO: Quick hack, Incinerators always aim at the floor
-        if (wpn.id() == item::Id::incinerator)
-        {
+        if (wpn.id() == item::Id::incinerator) {
                 aim_lvl = actor::Size::floor;
-        }
-        else
-        {
+        } else {
                 // Not incinerator
                 auto* const actor_aimed_at = map::first_actor_at_pos(aim_pos);
 
-                if (actor_aimed_at)
-                {
+                if (actor_aimed_at) {
                         aim_lvl = actor_aimed_at->m_data->actor_size;
-                }
-                else
-                {
+                } else {
                         // No actor aimed at
                         const bool is_cell_blocked =
-                                map_parsers::BlocksProjectiles().
-                                cell(aim_pos);
+                                map_parsers::BlocksProjectiles().cell(aim_pos);
 
                         aim_lvl =
                                 is_cell_blocked
@@ -326,8 +285,7 @@ RangedAttData::RangedAttData(
 
         defender = map::first_actor_at_pos(current_pos);
 
-        if (!defender || (defender == attacker))
-        {
+        if (!defender || (defender == attacker)) {
                 return;
         }
 
@@ -357,8 +315,7 @@ RangedAttData::RangedAttData(
         const int dodging_ability =
                 defender->ability(AbilityId::dodging, true);
 
-        if (allow_positive_doge || (dodging_ability < 0))
-        {
+        if (allow_positive_doge || (dodging_ability < 0)) {
                 const int defender_dodging =
                         defender->ability(
                                 AbilityId::dodging,
@@ -371,13 +328,10 @@ RangedAttData::RangedAttData(
 
         const auto effective_range = wpn.data().ranged.effective_range;
 
-        if (dist >= effective_range.min)
-        {
+        if (dist >= effective_range.min) {
                 // Normal distance modifier
-                 dist_mod = 15 - (dist * 5);
-        }
-        else
-        {
+                dist_mod = 15 - (dist * 5);
+        } else {
                 // Closer than effective range
                 dist_mod = -50 + (dist * 5);
         }
@@ -388,17 +342,13 @@ RangedAttData::RangedAttData(
 
         // Lower hit chance if attacker cannot see target (e.g.
         // attacking invisible creature)
-        if (attacker)
-        {
+        if (attacker) {
                 bool can_attacker_see_tgt = true;
 
-                if (attacker->is_player())
-                {
+                if (attacker->is_player()) {
                         can_attacker_see_tgt =
                                 map::g_player->can_see_actor(*defender);
-                }
-                else
-                {
+                } else {
                         // Attacker is monster
                         auto* const mon =
                                 static_cast<actor::Mon*>(attacker);
@@ -421,19 +371,16 @@ RangedAttData::RangedAttData(
                                         hard_blocked_los);
                 }
 
-                if (!can_attacker_see_tgt)
-                {
+                if (!can_attacker_see_tgt) {
                         state_mod -= 25;
                 }
         }
 
         // Player gets attack bonus for attacking unaware monster
-        if (attacker && attacker->is_player())
-        {
+        if (attacker && attacker->is_player()) {
                 auto* const mon = static_cast<actor::Mon*>(defender);
 
-                if (mon->m_aware_of_player_counter <= 0)
-                {
+                if (mon->m_aware_of_player_counter <= 0) {
                         state_mod += 25;
                 }
         }
@@ -446,17 +393,12 @@ RangedAttData::RangedAttData(
                 defender->m_properties.has(PropId::ethereal) &&
                 !apply_undead_bane_bon;
 
-        if (apply_ethereal_defender_pen)
-        {
+        if (apply_ethereal_defender_pen) {
                 state_mod -= 50;
         }
 
         hit_chance_tot =
-                skill_mod
-                + wpn_mod
-                + dodging_mod
-                + dist_mod
-                + state_mod;
+                skill_mod + wpn_mod + dodging_mod + dist_mod + state_mod;
 
         set_constr_in_range(5, hit_chance_tot, 99);
 
@@ -464,17 +406,15 @@ RangedAttData::RangedAttData(
 
         bool player_has_aim_bon = false;
 
-        if (attacker == map::g_player)
-        {
+        if (attacker == map::g_player) {
                 player_has_aim_bon =
-                        attacker->m_properties .has(PropId::aiming);
+                        attacker->m_properties.has(PropId::aiming);
         }
 
         auto dmg_range = wpn.ranged_dmg(attacker);
 
         if ((attacker == map::g_player) &&
-            player_bon::gets_undead_bane_bon(*defender->m_data))
-        {
+            player_bon::gets_undead_bane_bon(*defender->m_data)) {
                 dmg_range.set_plus(dmg_range.plus() + 2);
         }
 
@@ -484,15 +424,13 @@ RangedAttData::RangedAttData(
                 : dmg_range.total_range().roll();
 
         // Positions further than max range have halved damage
-        if (dist > effective_range.max)
-        {
+        if (dist > effective_range.max) {
                 dmg = std::max(1, dmg / 2);
         }
 
         // Defender takes reduced damage from piercing attacks?
         if (defender->m_properties.has(PropId::reduced_pierce_dmg) &&
-            (wpn.data().ranged.dmg_method == DmgMethod::piercing))
-        {
+            (wpn.data().ranged.dmg_method == DmgMethod::piercing)) {
                 TRACE << "Damage BEFORE piercing reduction: " << dmg << std::endl;
 
                 dmg = std::max(1, dmg / 4);
@@ -512,8 +450,7 @@ ThrowAttData::ThrowAttData(
         defender_size((actor::Size)0),
         dist_mod(0)
 {
-        if (!attacker)
-        {
+        if (!attacker) {
                 ASSERT(false);
 
                 return;
@@ -522,16 +459,13 @@ ThrowAttData::ThrowAttData(
         auto* const actor_aimed_at = map::first_actor_at_pos(aim_pos);
 
         // Determine aim level
-        if (actor_aimed_at)
-        {
+        if (actor_aimed_at) {
                 aim_lvl = actor_aimed_at->m_data->actor_size;
-        }
-        else
-        {
+        } else {
                 // Not aiming at actor
                 const bool is_cell_blocked =
                         map_parsers::BlocksProjectiles()
-                        .cell(current_pos);
+                                .cell(current_pos);
 
                 aim_lvl =
                         is_cell_blocked
@@ -541,8 +475,7 @@ ThrowAttData::ThrowAttData(
 
         defender = map::first_actor_at_pos(current_pos);
 
-        if (!defender || (defender == attacker))
-        {
+        if (!defender || (defender == attacker)) {
                 return;
         }
 
@@ -572,10 +505,10 @@ ThrowAttData::ThrowAttData(
                 !(defender->is_player() &&
                   player_is_handling_armor);
 
-        if (allow_positive_doge || (dodging_ability < 0))
-        {
+        if (allow_positive_doge || (dodging_ability < 0)) {
                 const int defender_dodging =
-                        defender->ability(AbilityId::dodging, true);;
+                        defender->ability(AbilityId::dodging, true);
+                ;
 
                 dodging_mod = -defender_dodging;
         }
@@ -584,13 +517,10 @@ ThrowAttData::ThrowAttData(
 
         const auto effective_range = item.data().ranged.effective_range;
 
-        if (dist >= effective_range.min)
-        {
+        if (dist >= effective_range.min) {
                 // Normal distance modifier
                 dist_mod = 15 - (dist * 5);
-        }
-        else
-        {
+        } else {
                 // Closer than effective range
                 dist_mod = -50 + (dist * 5);
         }
@@ -601,27 +531,23 @@ ThrowAttData::ThrowAttData(
 
         bool can_attacker_see_tgt = true;
 
-        if (attacker == map::g_player)
-        {
+        if (attacker == map::g_player) {
                 can_attacker_see_tgt =
                         map::g_player->can_see_actor(*defender);
         }
 
         // Lower hit chance if attacker cannot see target (e.g.
         // attacking invisible creature)
-        if (!can_attacker_see_tgt)
-        {
+        if (!can_attacker_see_tgt) {
                 state_mod -= 25;
         }
 
         // Player gets attack bonus for attacking unaware monster
-        if (attacker == map::g_player)
-        {
+        if (attacker == map::g_player) {
                 const auto* const mon =
                         static_cast<actor::Mon*>(defender);
 
-                if (mon->m_aware_of_player_counter <= 0)
-                {
+                if (mon->m_aware_of_player_counter <= 0) {
                         state_mod += 25;
                 }
         }
@@ -634,17 +560,12 @@ ThrowAttData::ThrowAttData(
                 defender->m_properties.has(PropId::ethereal) &&
                 !apply_undead_bane_bon;
 
-        if (apply_ethereal_defender_pen)
-        {
+        if (apply_ethereal_defender_pen) {
                 state_mod -= 50;
         }
 
         hit_chance_tot =
-                skill_mod
-                + wpn_mod
-                + dodging_mod
-                + dist_mod
-                + state_mod;
+                skill_mod + wpn_mod + dodging_mod + dist_mod + state_mod;
 
         set_constr_in_range(5, hit_chance_tot, 99);
 
@@ -652,16 +573,14 @@ ThrowAttData::ThrowAttData(
 
         bool player_has_aim_bon = false;
 
-        if (attacker == map::g_player)
-        {
+        if (attacker == map::g_player) {
                 player_has_aim_bon =
-                        attacker->m_properties .has(PropId::aiming);
+                        attacker->m_properties.has(PropId::aiming);
         }
 
         auto dmg_range = item.thrown_dmg(attacker);
 
-        if (apply_undead_bane_bon)
-        {
+        if (apply_undead_bane_bon) {
                 dmg_range.set_plus(dmg_range.plus() + 2);
         }
 
@@ -671,15 +590,13 @@ ThrowAttData::ThrowAttData(
                 : dmg_range.total_range().roll();
 
         // Positions further than max range have halved damage
-        if (dist > effective_range.max)
-        {
+        if (dist > effective_range.max) {
                 dmg = std::max(1, dmg / 2);
         }
 
         // Defender takes reduced damage from piercing attacks?
         if (defender->m_properties.has(PropId::reduced_pierce_dmg) &&
-            (item.data().ranged.dmg_method == DmgMethod::piercing))
-        {
+            (item.data().ranged.dmg_method == DmgMethod::piercing)) {
                 dmg = std::max(1, dmg / 4);
         }
 }

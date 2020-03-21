@@ -36,15 +36,12 @@
 // class, but they may have any standard room RoomType id. There may even be
 // RoomType ids which doesn't have a corresponding Room class at all.
 
-
 class Room;
 
-template<typename T>
+template <typename T>
 class Array2;
 
-
-enum class RoomType
-{
+enum class RoomType {
         // Standard rooms (standardized terrain spawning and reshaping)
         plain, // NOTE: "plain" must be the first type
         human,
@@ -80,11 +77,9 @@ const std::unordered_map<std::string, RoomType> g_str_to_room_type_map = {
         {"pool", RoomType::pool},
         {"cave", RoomType::cave},
         {"chasm", RoomType::chasm},
-        {"forest", RoomType::forest}
-};
+        {"forest", RoomType::forest}};
 
-struct RoomAutoTerrainRule
-{
+struct RoomAutoTerrainRule {
         RoomAutoTerrainRule() :
                 id(terrain::Id::END),
                 nr_allowed(0) {}
@@ -99,9 +94,7 @@ struct RoomAutoTerrainRule
         int nr_allowed;
 };
 
-
-namespace room_factory
-{
+namespace room_factory {
 
 void init_room_bucket();
 
@@ -114,8 +107,7 @@ Room* make_random_room(const R& r, IsSubRoom is_subroom);
 
 } // namespace room_factory
 
-class Room
-{
+class Room {
 public:
         Room(R r, RoomType type);
 
@@ -150,10 +142,10 @@ protected:
         void make_dark() const;
 };
 
-class StdRoom : public Room
-{
+class StdRoom : public Room {
 public:
-        StdRoom(R r, RoomType type) : Room(r, type) {}
+        StdRoom(R r, RoomType type) :
+                Room(r, type) {}
 
         virtual ~StdRoom() = default;
 
@@ -189,10 +181,10 @@ protected:
         }
 };
 
-class PlainRoom: public StdRoom
-{
+class PlainRoom : public StdRoom {
 public:
-        PlainRoom(R r) : StdRoom(r, RoomType::plain) {}
+        PlainRoom(R r) :
+                StdRoom(r, RoomType::plain) {}
 
 protected:
         std::vector<RoomAutoTerrainRule> auto_terrains_allowed() const override;
@@ -202,8 +194,7 @@ protected:
         void on_post_connect_hook(Array2<bool>& door_proposals) override;
 };
 
-class HumanRoom: public StdRoom
-{
+class HumanRoom : public StdRoom {
 public:
         HumanRoom(R r) :
                 StdRoom(r, RoomType::human) {}
@@ -218,8 +209,7 @@ protected:
         void on_post_connect_hook(Array2<bool>& door_proposals) override;
 };
 
-class JailRoom: public StdRoom
-{
+class JailRoom : public StdRoom {
 public:
         JailRoom(R r) :
                 StdRoom(r, RoomType::jail) {}
@@ -232,8 +222,7 @@ protected:
         void on_post_connect_hook(Array2<bool>& door_proposals) override;
 };
 
-class RitualRoom: public StdRoom
-{
+class RitualRoom : public StdRoom {
 public:
         RitualRoom(R r) :
                 StdRoom(r, RoomType::ritual) {}
@@ -248,8 +237,7 @@ protected:
         void on_post_connect_hook(Array2<bool>& door_proposals) override;
 };
 
-class SpiderRoom: public StdRoom
-{
+class SpiderRoom : public StdRoom {
 public:
         SpiderRoom(R r) :
                 StdRoom(r, RoomType::spider) {}
@@ -269,8 +257,7 @@ protected:
         void on_post_connect_hook(Array2<bool>& door_proposals) override;
 };
 
-class SnakePitRoom: public StdRoom
-{
+class SnakePitRoom : public StdRoom {
 public:
         SnakePitRoom(R r) :
                 StdRoom(r, RoomType::monster) {}
@@ -287,8 +274,7 @@ protected:
         void on_post_connect_hook(Array2<bool>& door_proposals) override;
 };
 
-class CryptRoom: public StdRoom
-{
+class CryptRoom : public StdRoom {
 public:
         CryptRoom(R r) :
                 StdRoom(r, RoomType::crypt) {}
@@ -303,8 +289,7 @@ protected:
         void on_post_connect_hook(Array2<bool>& door_proposals) override;
 };
 
-class MonsterRoom: public StdRoom
-{
+class MonsterRoom : public StdRoom {
 public:
         MonsterRoom(R r) :
                 StdRoom(r, RoomType::monster) {}
@@ -319,8 +304,7 @@ protected:
         void on_post_connect_hook(Array2<bool>& door_proposals) override;
 };
 
-class DampRoom: public StdRoom
-{
+class DampRoom : public StdRoom {
 public:
         DampRoom(R r) :
                 StdRoom(r, RoomType::damp) {}
@@ -335,8 +319,7 @@ protected:
         void on_post_connect_hook(Array2<bool>& door_proposals) override;
 };
 
-class PoolRoom: public StdRoom
-{
+class PoolRoom : public StdRoom {
 public:
         PoolRoom(R r) :
                 StdRoom(r, RoomType::pool) {}
@@ -351,8 +334,7 @@ protected:
         void on_post_connect_hook(Array2<bool>& door_proposals) override;
 };
 
-class CaveRoom: public StdRoom
-{
+class CaveRoom : public StdRoom {
 public:
         CaveRoom(R r) :
                 StdRoom(r, RoomType::cave) {}
@@ -367,8 +349,7 @@ protected:
         void on_post_connect_hook(Array2<bool>& door_proposals) override;
 };
 
-class ChasmRoom: public StdRoom
-{
+class ChasmRoom : public StdRoom {
 public:
         ChasmRoom(R r) :
                 StdRoom(r, RoomType::chasm) {}
@@ -383,8 +364,7 @@ protected:
         void on_post_connect_hook(Array2<bool>& door_proposals) override;
 };
 
-class ForestRoom: public StdRoom
-{
+class ForestRoom : public StdRoom {
 public:
         ForestRoom(R r) :
                 StdRoom(r, RoomType::forest) {}
@@ -399,8 +379,7 @@ protected:
         void on_post_connect_hook(Array2<bool>& door_proposals) override;
 };
 
-class TemplateRoom: public StdRoom
-{
+class TemplateRoom : public StdRoom {
 public:
         TemplateRoom(const R& r, RoomType type) :
                 StdRoom(r, type) {}
@@ -411,8 +390,7 @@ public:
         }
 };
 
-class CorrLinkRoom: public Room
-{
+class CorrLinkRoom : public Room {
 public:
         CorrLinkRoom(const R& r) :
                 Room(r, RoomType::corr_link) {}
@@ -428,8 +406,7 @@ public:
         }
 };
 
-class CrumbleRoom: public Room
-{
+class CrumbleRoom : public Room {
 public:
         CrumbleRoom(const R& r) :
                 Room(r, RoomType::crumble_room) {}
@@ -445,8 +422,7 @@ public:
         }
 };
 
-class RiverRoom: public Room
-{
+class RiverRoom : public Room {
 public:
         RiverRoom(const R& r) :
                 Room(r, RoomType::river),

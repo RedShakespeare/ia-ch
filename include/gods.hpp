@@ -10,14 +10,12 @@
 #include <string>
 #include <vector>
 
-struct God
-{
+struct God {
         std::string name;
         std::string descr;
 };
 
-namespace gods
-{
+namespace gods {
 
 const God& current_god();
 

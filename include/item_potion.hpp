@@ -12,25 +12,19 @@
 
 #include "item.hpp"
 
+namespace potion {
 
-namespace potion
-{
-
-enum class PotionAlignment
-{
+enum class PotionAlignment {
         good,
         bad
 };
-
 
 void init();
 
 void save();
 void load();
 
-
-class Potion: public item::Item
-{
+class Potion : public item::Item {
 public:
         Potion(item::ItemData* item_data);
 
@@ -77,8 +71,7 @@ private:
         int m_alignment_feeling_turn_countdown;
 };
 
-class Vitality: public Potion
-{
+class Vitality : public Potion {
 public:
         Vitality(item::ItemData* const item_data) :
                 Potion(item_data) {}
@@ -94,11 +87,10 @@ public:
 private:
         std::string descr_identified() const override
         {
-                return
-                        "This elixir heals all wounds and cures blindness, "
-                        "deafness, poisoning, infections, disease, weakening, "
-                        "and life sapping. It can even temporarily raise the "
-                        "consumer's condition past normal levels.";
+                return "This elixir heals all wounds and cures blindness, "
+                       "deafness, poisoning, infections, disease, weakening, "
+                       "and life sapping. It can even temporarily raise the "
+                       "consumer's condition past normal levels.";
         }
 
         PotionAlignment alignment() const override
@@ -109,8 +101,7 @@ private:
         void collide_hook(const P& pos, actor::Actor* actor) override;
 };
 
-class Spirit: public Potion
-{
+class Spirit : public Potion {
 public:
         Spirit(item::ItemData* const item_data) :
                 Potion(item_data) {}
@@ -137,8 +128,7 @@ private:
         void collide_hook(const P& pos, actor::Actor* actor) override;
 };
 
-class Blindness: public Potion
-{
+class Blindness : public Potion {
 public:
         Blindness(item::ItemData* const item_data) :
                 Potion(item_data) {}
@@ -165,8 +155,7 @@ private:
         void collide_hook(const P& pos, actor::Actor* actor) override;
 };
 
-class Paral: public Potion
-{
+class Paral : public Potion {
 public:
         Paral(item::ItemData* const item_data) :
                 Potion(item_data) {}
@@ -193,8 +182,7 @@ private:
         void collide_hook(const P& pos, actor::Actor* actor) override;
 };
 
-class Disease: public Potion
-{
+class Disease : public Potion {
 public:
         Disease(item::ItemData* const item_data) :
                 Potion(item_data) {}
@@ -225,8 +213,7 @@ private:
         }
 };
 
-class Conf: public Potion
-{
+class Conf : public Potion {
 public:
         Conf(item::ItemData* const item_data) :
                 Potion(item_data) {}
@@ -252,8 +239,7 @@ private:
         void collide_hook(const P& pos, actor::Actor* actor) override;
 };
 
-class Fortitude: public Potion
-{
+class Fortitude : public Potion {
 public:
         Fortitude(item::ItemData* const item_data) :
                 Potion(item_data) {}
@@ -270,9 +256,8 @@ public:
 private:
         std::string descr_identified() const override
         {
-                return
-                        "Gives the consumer complete peace of mind, and cures "
-                        "mind sapping.";
+                return "Gives the consumer complete peace of mind, and cures "
+                       "mind sapping.";
         }
 
         PotionAlignment alignment() const override
@@ -283,8 +268,7 @@ private:
         void collide_hook(const P& pos, actor::Actor* actor) override;
 };
 
-class Poison: public Potion
-{
+class Poison : public Potion {
 public:
         Poison(item::ItemData* const item_data) :
                 Potion(item_data) {}
@@ -311,8 +295,7 @@ private:
         void collide_hook(const P& pos, actor::Actor* actor) override;
 };
 
-class Insight: public Potion
-{
+class Insight : public Potion {
 public:
         Insight(item::ItemData* const item_data) :
                 Potion(item_data) {}
@@ -328,9 +311,8 @@ public:
 private:
         std::string descr_identified() const override
         {
-                return
-                        "This strange concoction causes a sudden flash of "
-                        "intuition.";
+                return "This strange concoction causes a sudden flash of "
+                       "intuition.";
         }
 
         PotionAlignment alignment() const override
@@ -345,9 +327,7 @@ private:
         }
 };
 
-
-class RFire: public Potion
-{
+class RFire : public Potion {
 public:
         RFire(item::ItemData* const item_data) :
                 Potion(item_data) {}
@@ -374,8 +354,7 @@ private:
         void collide_hook(const P& pos, actor::Actor* actor) override;
 };
 
-class Curing: public Potion
-{
+class Curing : public Potion {
 public:
         Curing(item::ItemData* const item_data) :
                 Potion(item_data) {}
@@ -391,10 +370,9 @@ public:
 private:
         std::string descr_identified() const override
         {
-                return
-                        "Cures blindness, deafness, poisoning, infections, "
-                        "disease, weakening, and life sapping, and restores "
-                        "the consumers health by a small amount.";
+                return "Cures blindness, deafness, poisoning, infections, "
+                       "disease, weakening, and life sapping, and restores "
+                       "the consumers health by a small amount.";
         }
 
         PotionAlignment alignment() const override
@@ -405,8 +383,7 @@ private:
         void collide_hook(const P& pos, actor::Actor* actor) override;
 };
 
-class RElec: public Potion
-{
+class RElec : public Potion {
 public:
         RElec(item::ItemData* const item_data) :
                 Potion(item_data) {}
@@ -433,8 +410,7 @@ private:
         void collide_hook(const P& pos, actor::Actor* actor) override;
 };
 
-class Descent: public Potion
-{
+class Descent : public Potion {
 public:
         Descent(item::ItemData* const item_data) :
                 Potion(item_data) {}
@@ -451,7 +427,7 @@ private:
         std::string descr_identified() const override
         {
                 return "A bizarre liquid that causes the consumer to "
-                        "dematerialize and sink through the ground.";
+                       "dematerialize and sink through the ground.";
         }
 
         // TODO: Not sure about the alignment for this one...
@@ -468,8 +444,7 @@ private:
 };
 
 // TODO: Should be called "Potion of Cloaking"
-class Invis: public Potion
-{
+class Invis : public Potion {
 public:
         Invis(item::ItemData* const item_data) :
                 Potion(item_data) {}
@@ -485,10 +460,9 @@ public:
 private:
         std::string descr_identified() const override
         {
-                return
-                        "Makes the consumer invisible to normal vision for a "
-                        "brief time. Attacking or casting spells immediately "
-                        "reveals the consumer.";
+                return "Makes the consumer invisible to normal vision for a "
+                       "brief time. Attacking or casting spells immediately "
+                       "reveals the consumer.";
         }
 
         PotionAlignment alignment() const override

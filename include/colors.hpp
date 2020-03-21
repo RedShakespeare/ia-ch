@@ -15,8 +15,7 @@
 //-----------------------------------------------------------------------------
 // Color
 //-----------------------------------------------------------------------------
-class Color
-{
+class Color {
 public:
         Color();
 
@@ -59,8 +58,7 @@ private:
 //-----------------------------------------------------------------------------
 // colors
 //-----------------------------------------------------------------------------
-namespace colors
-{
+namespace colors {
 
 void init();
 
@@ -119,11 +117,10 @@ Color mon_temp_property_bg();
 //-----------------------------------------------------------------------------
 // Colored string
 //-----------------------------------------------------------------------------
-struct ColoredString
-{
+struct ColoredString {
         ColoredString() = default;
 
-        ColoredString(std::string  the_str, const Color& the_color) :
+        ColoredString(std::string the_str, const Color& the_color) :
                 str(std::move(the_str)),
                 color(the_color) {}
 

@@ -32,7 +32,6 @@
 // -----------------------------------------------------------------------------
 static int s_mon_descr_x0 = 1;
 
-
 static int mon_descr_max_w()
 {
         return panels::w(Panel::screen) - 2;
@@ -42,28 +41,23 @@ static std::string get_mon_memory_turns_descr(const actor::Actor& actor)
 {
         const int nr_turns_aware = actor.m_data->nr_turns_aware;
 
-        if (nr_turns_aware <= 0)
-        {
+        if (nr_turns_aware <= 0) {
                 return "";
         }
 
         const std::string name_a = text_format::first_to_upper(actor.name_a());
 
-        if (nr_turns_aware < 50)
-        {
+        if (nr_turns_aware < 50) {
                 const std::string nr_turns_aware_str =
                         std::to_string(nr_turns_aware);
 
-                return
-                        name_a +
+                return name_a +
                         " will remember hostile creatures for at least " +
                         nr_turns_aware_str +
                         " turns.";
-        }
-        else // Very high number of turns awareness
+        } else // Very high number of turns awareness
         {
-                return
-                        name_a +
+                return name_a +
                         " remembers hostile creatures for a very long time.";
         }
 }
@@ -74,25 +68,20 @@ static std::string get_mon_dlvl_descr(const actor::Actor& actor)
 
         const int dlvl = d.spawn_min_dlvl;
 
-        if ((dlvl <= 1) || (dlvl >= g_dlvl_last))
-        {
+        if ((dlvl <= 1) || (dlvl >= g_dlvl_last)) {
                 return "";
         }
 
         const std::string dlvl_str = std::to_string(dlvl);
 
-        if (d.is_unique)
-        {
-                return
-                        d.name_the +
+        if (d.is_unique) {
+                return d.name_the +
                         " usually dwells beneath level " +
                         dlvl_str +
                         ".";
-        }
-        else // Not unique
+        } else // Not unique
         {
-                return
-                        "They usually dwell beneath level " +
+                return "They usually dwell beneath level " +
                         dlvl_str +
                         ".";
         }
@@ -100,8 +89,7 @@ static std::string get_mon_dlvl_descr(const actor::Actor& actor)
 
 static std::string mon_speed_type_to_str(const actor::Actor& actor)
 {
-        switch (actor.m_data->speed)
-        {
+        switch (actor.m_data->speed) {
         case actor::Speed::slow:
                 return "slowly";
 
@@ -126,23 +114,19 @@ static std::string get_mon_speed_descr(const actor::Actor& actor)
 
         const std::string speed_type_str = mon_speed_type_to_str(actor);
 
-        if (speed_type_str.empty())
-        {
-                return "";;
+        if (speed_type_str.empty()) {
+                return "";
+                ;
         }
 
-        if (d.is_unique)
-        {
-                return
-                        d.name_the +
+        if (d.is_unique) {
+                return d.name_the +
                         " appears to move " +
                         speed_type_str +
                         ".";
-        }
-        else // Not unique
+        } else // Not unique
         {
-                return
-                        "They appear to move " +
+                return "They appear to move " +
                         speed_type_str +
                         ".";
         }
@@ -156,8 +140,7 @@ static void mon_shock_lvl_to_str(
         shock_str_out = "";
         punct_str_out = "";
 
-        switch (actor.m_data->mon_shock_lvl)
-        {
+        switch (actor.m_data->mon_shock_lvl) {
         case ShockLvl::unsettling:
                 shock_str_out = "unsettling";
                 punct_str_out = ".";
@@ -192,24 +175,19 @@ static std::string get_mon_shock_descr(const actor::Actor& actor)
 
         mon_shock_lvl_to_str(actor, shock_str, shock_punct_str);
 
-        if (shock_str.empty())
-        {
+        if (shock_str.empty()) {
                 return "";
         }
 
-        if (actor.m_data->is_unique)
-        {
-                return
-                        actor.name_the() +
+        if (actor.m_data->is_unique) {
+                return actor.name_the() +
                         " is " +
                         shock_str +
                         " to behold" +
                         shock_punct_str;
-        }
-        else // Not unique
+        } else // Not unique
         {
-                return
-                        "They are " +
+                return "They are " +
                         shock_str +
                         " to behold" +
                         shock_punct_str;
@@ -226,8 +204,7 @@ static std::string get_melee_hit_chance_descr(actor::Actor& actor)
                 ? static_cast<const item::Wpn*>(wielded_item)
                 : &map::g_player->unarmed_wpn();
 
-        if (!player_wpn)
-        {
+        if (!player_wpn) {
                 ASSERT(false);
 
                 return "";
@@ -239,8 +216,7 @@ static std::string get_melee_hit_chance_descr(actor::Actor& actor)
                 ability_roll::hit_chance_pct_actual(
                         att_data.hit_chance_tot);
 
-        return
-                "The chance to hit " +
+        return "The chance to hit " +
                 actor.name_the() +
                 " in melee combat is currently " +
                 std::to_string(hit_chance) +
@@ -266,11 +242,10 @@ void ViewActorDescr::on_start()
                                 fixed_descr,
                                 mon_descr_max_w());
 
-                for (const auto& line : fixed_lines)
-                {
+                for (const auto& line : fixed_lines) {
                         m_lines.emplace_back(
-                                        line,
-                                        colors::text());
+                                line,
+                                colors::text());
                 }
         }
 
@@ -281,8 +256,7 @@ void ViewActorDescr::on_start()
                         ? auto_description_str()
                         : "";
 
-                if (!auto_descr.empty())
-                {
+                if (!auto_descr.empty()) {
                         m_lines.resize(m_lines.size() + 1);
 
                         const auto auto_descr_lines =
@@ -290,11 +264,10 @@ void ViewActorDescr::on_start()
                                         auto_descr,
                                         mon_descr_max_w());
 
-                        for (const auto& line : auto_descr_lines)
-                        {
+                        for (const auto& line : auto_descr_lines) {
                                 m_lines.emplace_back(
-                                                line,
-                                                colors::text());
+                                        line,
+                                        colors::text());
                         }
                 }
         }
@@ -306,13 +279,12 @@ void ViewActorDescr::on_start()
 
         auto prop_list =
                 m_actor.m_properties
-                .property_names_temporary_negative();
+                        .property_names_temporary_negative();
 
         // Remove all non-negative properties (we should not show temporary
         // spell resistance for example), and all natural properties (properties
         // which all monsters of this type starts with)
-        for (auto it = begin(prop_list); it != end(prop_list);)
-        {
+        for (auto it = begin(prop_list); it != end(prop_list);) {
                 auto* const prop = it->prop;
 
                 const auto id = prop->id();
@@ -322,12 +294,9 @@ void ViewActorDescr::on_start()
 
                 if (is_natural_prop ||
                     (prop->duration_mode() == PropDurationMode::indefinite) ||
-                    (prop->alignment() != PropAlignment::bad))
-                {
+                    (prop->alignment() != PropAlignment::bad)) {
                         it = prop_list.erase(it);
-                }
-                else
-                {
+                } else {
                         // Not a natural property
                         ++it;
                 }
@@ -335,22 +304,18 @@ void ViewActorDescr::on_start()
 
         const std::string offset = "   ";
 
-        if (prop_list.empty())
-        {
+        if (prop_list.empty()) {
                 m_lines.emplace_back(
                         offset + "None",
                         colors::text());
 
                 // End with an empty line
                 m_lines.emplace_back("", colors::text());
-        }
-        else
-        {
+        } else {
                 // Has properties
                 const int max_w_descr = (panels::x1(Panel::screen) * 3) / 4;
 
-                for (const auto& e : prop_list)
-                {
+                for (const auto& e : prop_list) {
                         const auto& title = e.title;
 
                         m_lines.emplace_back(offset + title.str, e.title.color);
@@ -360,11 +325,10 @@ void ViewActorDescr::on_start()
                                         e.descr,
                                         max_w_descr);
 
-                        for (const auto& descr_line : descr_formatted)
-                        {
+                        for (const auto& descr_line : descr_formatted) {
                                 m_lines.emplace_back(
-                                                offset + descr_line,
-                                                colors::gray());
+                                        offset + descr_line,
+                                        colors::gray());
                         }
 
                         // Add an empty line between each property, and also
@@ -388,8 +352,7 @@ void ViewActorDescr::draw()
 
         int screen_y = 1;
 
-        for (int y = m_top_idx; y <= btm_nr; ++y)
-        {
+        for (int y = m_top_idx; y <= btm_nr; ++y) {
                 const auto& line = m_lines[y];
 
                 io::draw_text(
@@ -409,18 +372,14 @@ void ViewActorDescr::update()
 
         const auto input = io::get();
 
-        switch (input.key)
-        {
+        switch (input.key) {
         case SDLK_KP_2:
         case SDLK_DOWN:
                 m_top_idx += line_jump;
 
-                if (nr_lines_tot <= max_nr_lines_on_screen())
-                {
+                if (nr_lines_tot <= max_nr_lines_on_screen()) {
                         m_top_idx = 0;
-                }
-                else
-                {
+                } else {
                         m_top_idx = std::min(
                                 nr_lines_tot - max_nr_lines_on_screen(),
                                 m_top_idx);
@@ -463,8 +422,7 @@ std::string ViewActorDescr::auto_description_str() const
                 str,
                 get_mon_memory_turns_descr(m_actor));
 
-        if (m_actor.m_data->is_undead)
-        {
+        if (m_actor.m_data->is_undead) {
                 text_format::append_with_space(str, "This creature is undead.");
         }
 
@@ -485,8 +443,7 @@ std::string ViewActorDescr::title() const
 // -----------------------------------------------------------------------------
 // Look
 // -----------------------------------------------------------------------------
-namespace look
-{
+namespace look {
 
 void print_location_info_msgs(const P& pos)
 {
@@ -494,15 +451,13 @@ void print_location_info_msgs(const P& pos)
 
         bool is_cell_seen = false;
 
-        if (map::is_pos_inside_map(pos))
-        {
+        if (map::is_pos_inside_map(pos)) {
                 cell = &map::g_cells.at(pos);
 
                 is_cell_seen = cell->is_seen_by_player;
         }
 
-        if (is_cell_seen)
-        {
+        if (is_cell_seen) {
                 // Describe terrain
                 std::string str = cell->terrain->name(Article::a);
 
@@ -516,16 +471,14 @@ void print_location_info_msgs(const P& pos)
                         CopyToMsgHistory::no);
 
                 // Describe mobile terrains
-                for (auto* mob : game_time::g_mobs)
-                {
-                        if (mob->pos() == pos)
-                        {
+                for (auto* mob : game_time::g_mobs) {
+                        if (mob->pos() == pos) {
                                 str = mob->name(Article::a);
 
                                 str = text_format::first_to_upper(str);
 
                                 msg_log::add(
-                                        str  + ".",
+                                        str + ".",
                                         colors::text(),
                                         MsgInterruptPlayer::no,
                                         MorePromptOnMsg::no,
@@ -534,8 +487,7 @@ void print_location_info_msgs(const P& pos)
                 }
 
                 // Describe darkness
-                if (map::g_dark.at(pos) && !map::g_light.at(pos))
-                {
+                if (map::g_dark.at(pos) && !map::g_light.at(pos)) {
                         msg_log::add(
                                 "It is very dark here.",
                                 colors::text(),
@@ -547,8 +499,7 @@ void print_location_info_msgs(const P& pos)
                 // Describe item
                 auto* item = cell->item;
 
-                if (item)
-                {
+                if (item) {
                         str = item->name(
                                 ItemRefType::plural,
                                 ItemRefInf::yes,
@@ -565,10 +516,8 @@ void print_location_info_msgs(const P& pos)
                 }
 
                 // Describe dead actors
-                for (auto* actor : game_time::g_actors)
-                {
-                        if (actor->is_corpse() && actor->m_pos == pos)
-                        {
+                for (auto* actor : game_time::g_actors) {
+                        if (actor->is_corpse() && actor->m_pos == pos) {
                                 ASSERT(!actor->m_data->corpse_name_a.empty());
 
                                 str = text_format::first_to_upper(
@@ -582,13 +531,11 @@ void print_location_info_msgs(const P& pos)
                                         CopyToMsgHistory::no);
                         }
                 }
-
         }
 
         print_living_actor_info_msg(pos);
 
-        if (!is_cell_seen)
-        {
+        if (!is_cell_seen) {
                 msg_log::add(
                         "I have no vision here.",
                         colors::text(),
@@ -604,13 +551,11 @@ void print_living_actor_info_msg(const P& pos)
 
         if (!actor ||
             actor->is_player() ||
-            !actor->is_alive())
-        {
+            !actor->is_alive()) {
                 return;
         }
 
-        if (map::g_player->can_see_actor(*actor))
-        {
+        if (map::g_player->can_see_actor(*actor)) {
                 const std::string str =
                         text_format::first_to_upper(
                                 actor->name_a());
@@ -621,13 +566,11 @@ void print_living_actor_info_msg(const P& pos)
                         MsgInterruptPlayer::no,
                         MorePromptOnMsg::no,
                         CopyToMsgHistory::no);
-        }
-        else // Cannot see actor
+        } else // Cannot see actor
         {
                 const auto* const mon = static_cast<actor::Mon*>(actor);
 
-                if (mon->m_player_aware_of_me_counter > 0)
-                {
+                if (mon->m_player_aware_of_me_counter > 0) {
                         msg_log::add(
                                 "There is a creature here.",
                                 colors::text(),

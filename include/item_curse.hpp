@@ -13,21 +13,15 @@
 
 #include "item_curse_ids.hpp"
 
-
-namespace item
-{
+namespace item {
 class Item;
 } // namespace item
 
-
-namespace item_curse
-{
+namespace item_curse {
 
 class CurseImpl;
 
-
-class Curse
-{
+class Curse {
 public:
         Curse() = default;
 
@@ -47,8 +41,7 @@ public:
 
         bool is_active() const
         {
-                if (!m_curse_impl)
-                {
+                if (!m_curse_impl) {
                         return false;
                 }
 
@@ -83,7 +76,6 @@ private:
         std::unique_ptr<CurseImpl> m_curse_impl {nullptr};
 };
 
-
 void init();
 
 void save();
@@ -92,9 +84,7 @@ void load();
 
 Curse try_make_random_free_curse(const item::Item& item);
 
-
-class CurseImpl
-{
+class CurseImpl {
 public:
         virtual ~CurseImpl() = default;
 
@@ -134,8 +124,7 @@ public:
         }
 };
 
-class HitChancePenalty : public CurseImpl
-{
+class HitChancePenalty : public CurseImpl {
 public:
         Id id() const override
         {
@@ -149,8 +138,7 @@ public:
         std::string descr() const override;
 };
 
-class IncreasedShock : public CurseImpl
-{
+class IncreasedShock : public CurseImpl {
 public:
         Id id() const override
         {
@@ -164,8 +152,7 @@ public:
         std::string descr() const override;
 };
 
-class Heavy : public CurseImpl
-{
+class Heavy : public CurseImpl {
 public:
         Id id() const override
         {
@@ -179,8 +166,7 @@ public:
         std::string curse_msg(const item::Item& item) const override;
 };
 
-class Shriek : public CurseImpl
-{
+class Shriek : public CurseImpl {
 public:
         Shriek();
 
@@ -201,8 +187,7 @@ private:
         std::vector<std::string> m_words {};
 };
 
-class Teleport : public CurseImpl
-{
+class Teleport : public CurseImpl {
 public:
         Id id() const override
         {
@@ -219,8 +204,7 @@ private:
         void teleport(const item::Item& item) const;
 };
 
-class Summon : public CurseImpl
-{
+class Summon : public CurseImpl {
 public:
         Id id() const override
         {
@@ -237,8 +221,7 @@ private:
         void summon(const item::Item& item) const;
 };
 
-class Fire : public CurseImpl
-{
+class Fire : public CurseImpl {
 public:
         Id id() const override
         {
@@ -255,8 +238,7 @@ private:
         void run_fire(const item::Item& item) const;
 };
 
-class CannotRead : public CurseImpl
-{
+class CannotRead : public CurseImpl {
 public:
         Id id() const override
         {
@@ -270,8 +252,7 @@ public:
         std::string descr() const override;
 };
 
-class LightSensitive : public CurseImpl
-{
+class LightSensitive : public CurseImpl {
 public:
         Id id() const override
         {

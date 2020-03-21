@@ -29,7 +29,7 @@ static const int s_snd_dist_loud = s_snd_dist_normal * 2;
 // Sound
 // -----------------------------------------------------------------------------
 Snd::Snd(
-        std::string  msg,
+        std::string msg,
         const SfxId sfx,
         const IgnoreMsgIfOriginSeen ignore_msg_if_origin_seen,
         const P& origin,
@@ -49,11 +49,9 @@ Snd::Snd(
         m_add_more_prompt_on_msg(add_more_prompt_on_msg),
         m_snd_heard_effect(std::move(snd_heard_effect))
 {
-
 }
 
-Snd::~Snd()
-= default;
+Snd::~Snd() = default;
 
 void Snd::run()
 {
@@ -62,8 +60,7 @@ void Snd::run()
 
 void Snd::on_heard(actor::Actor& actor) const
 {
-        if (m_snd_heard_effect)
-        {
+        if (m_snd_heard_effect) {
                 m_snd_heard_effect->run(actor);
         }
 }
@@ -73,11 +70,9 @@ void Snd::on_heard(actor::Actor& actor) const
 // -----------------------------------------------------------------------------
 static int s_nr_snd_msg_printed_current_turn;
 
-
 static int get_max_dist(const Snd& snd)
 {
-        return
-                snd.is_loud()
+        return snd.is_loud()
                 ? s_snd_dist_loud
                 : s_snd_dist_normal;
 }
@@ -90,8 +85,7 @@ static bool is_snd_heard_at_range(const int range, const Snd& snd)
 // -----------------------------------------------------------------------------
 // Sound emitting
 // -----------------------------------------------------------------------------
-namespace snd_emit
-{
+namespace snd_emit {
 
 void reset_nr_snd_msg_printed_current_turn()
 {
@@ -126,16 +120,14 @@ void run(Snd snd)
 
         flood.at(origin.x, origin.y) = 0;
 
-        for (auto* actor : game_time::g_actors)
-        {
+        for (auto* actor : game_time::g_actors) {
                 const int flood_val_at_actor = flood.at(actor->m_pos);
 
                 const P& actor_pos = actor->m_pos;
 
                 // Can the sound be heard at this distance?
                 if (((flood_val_at_actor == 0) && (actor_pos != origin)) ||
-                    !is_snd_heard_at_range(flood_val_at_actor, snd))
-                {
+                    !is_snd_heard_at_range(flood_val_at_actor, snd)) {
                         continue;
                 }
 
@@ -143,27 +135,22 @@ void run(Snd snd)
                 const int max_dist_short_hearing_range = 2;
 
                 if (actor->m_properties.has(PropId::short_hearing_range) &&
-                    (flood_val_at_actor > max_dist_short_hearing_range))
-                {
+                    (flood_val_at_actor > max_dist_short_hearing_range)) {
                         continue;
                 }
 
                 const bool is_origin_seen_by_player =
                         map::g_cells.at(origin).is_seen_by_player;
 
-                if (actor->is_player())
-                {
+                if (actor->is_player()) {
                         if (is_origin_seen_by_player &&
-                            snd.is_msg_ignored_if_origin_seen())
-                        {
+                            snd.is_msg_ignored_if_origin_seen()) {
                                 snd.clear_msg();
                         }
 
-                        if (!snd.msg().empty())
-                        {
+                        if (!snd.msg().empty()) {
                                 // Add a direction to the message (i.e. "(NW)")
-                                if (actor_pos != origin)
-                                {
+                                if (actor_pos != origin) {
                                         const std::string dir_str =
                                                 dir_utils::compass_dir_name(
                                                         actor_pos,
@@ -185,9 +172,7 @@ void run(Snd snd)
                                 is_origin_seen_by_player,
                                 dir_to_origin,
                                 pct_dist);
-                }
-                else
-                {
+                } else {
                         // Not player
                         auto* const mon = static_cast<actor::Mon*>(actor);
 

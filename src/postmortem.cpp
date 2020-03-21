@@ -34,12 +34,11 @@
 // -----------------------------------------------------------------------------
 static std::vector<ColoredString> s_info_lines;
 
-
 // -----------------------------------------------------------------------------
 // Postmortem menu
 // -----------------------------------------------------------------------------
 PostmortemMenu::PostmortemMenu(const IsWin is_win) :
-        
+
         m_is_win(is_win)
 {
         m_browser.reset(6);
@@ -88,14 +87,11 @@ void PostmortemMenu::on_start()
 
         int nr_kills_tot_all_mon = 0;
 
-        for (const auto& d : actor::g_data)
-        {
-                if ((d.id != actor::Id::player) && (d.nr_kills > 0))
-                {
+        for (const auto& d : actor::g_data) {
+                if ((d.id != actor::Id::player) && (d.nr_kills > 0)) {
                         nr_kills_tot_all_mon += d.nr_kills;
 
-                        if (d.is_unique)
-                        {
+                        if (d.is_unique) {
                                 unique_killed_names.push_back(d.name_a);
                         }
                 }
@@ -105,14 +101,11 @@ void PostmortemMenu::on_start()
 
         std::string bg_title;
 
-        if (highscore_entry.bg == Bg::occultist)
-        {
+        if (highscore_entry.bg == Bg::occultist) {
                 const auto domain = highscore_entry.player_occultist_domain;
 
                 bg_title = player_bon::occultist_profession_title(domain);
-        }
-        else
-        {
+        } else {
                 bg_title = player_bon::bg_title(highscore_entry.bg);
         }
 
@@ -120,74 +113,68 @@ void PostmortemMenu::on_start()
 
         const int dlvl = highscore_entry.dlvl;
 
-        if (dlvl == 0)
-        {
+        if (dlvl == 0) {
                 s_info_lines.emplace_back(
-                                offset +
+                        offset +
                                 "Died before entering the dungeon",
-                                color_info);
-        }
-        else // DLVL is at least 1
+                        color_info);
+        } else // DLVL is at least 1
         {
                 s_info_lines.emplace_back(
-                                offset +
+                        offset +
                                 "Explored to dungeon level " +
                                 std::to_string(dlvl),
-                                color_info);
-
+                        color_info);
         }
 
         const int turn_count = highscore_entry.turn_count;
 
         s_info_lines.emplace_back(
-                        offset +
+                offset +
                         "Spent " +
                         std::to_string(turn_count) +
                         " turns",
-                        color_info);
+                color_info);
 
         const int ins = highscore_entry.ins;
 
         s_info_lines.emplace_back(
-                        offset + "Was " + std::to_string(ins) + "% insane",
-                        color_info);
+                offset + "Was " + std::to_string(ins) + "% insane",
+                color_info);
 
         s_info_lines.emplace_back(
-                        offset +
+                offset +
                         "Killed " +
                         std::to_string(nr_kills_tot_all_mon) +
                         " monsters",
-                        color_info);
+                color_info);
 
         const int xp = highscore_entry.xp;
 
         s_info_lines.emplace_back(
-                        offset +
+                offset +
                         "Gained " +
                         std::to_string(xp) +
                         " experience points",
-                        color_info);
+                color_info);
 
         const int score = highscore_entry.calculate_score();
 
         s_info_lines.emplace_back(
-                        offset + "Gained a score of " + std::to_string(score),
-                        color_info);
+                offset + "Gained a score of " + std::to_string(score),
+                color_info);
 
         const std::vector<const InsSympt*> sympts =
                 insanity::active_sympts();
 
-        if (!sympts.empty())
-        {
-                for (const InsSympt* const sympt : sympts)
-                {
+        if (!sympts.empty()) {
+                for (const InsSympt* const sympt : sympts) {
                         const std::string sympt_descr = sympt->postmortem_msg();
 
-                        if (!sympt_descr.empty())
-                        {
+                        if (!sympt_descr.empty()) {
                                 s_info_lines.emplace_back(
-                                                offset + sympt_descr,
-                                                color_info);
+                                        offset + sympt_descr,
+                                        color_info);
                         }
                 }
         }
@@ -195,33 +182,26 @@ void PostmortemMenu::on_start()
         s_info_lines.emplace_back("", color_info);
 
         s_info_lines.emplace_back(
-                        "Traits gained (at character level):",
-                        color_heading);
+                "Traits gained (at character level):",
+                color_heading);
 
         const auto trait_log = player_bon::trait_log();
 
-        if (trait_log.empty())
-        {
+        if (trait_log.empty()) {
                 s_info_lines.emplace_back(offset + "None", color_info);
-        }
-        else
-        {
+        } else {
                 bool is_double_digit =
                         std::find_if(
                                 std::begin(trait_log),
                                 std::end(trait_log),
-                                [](const auto& e)
-                                {
+                                [](const auto& e) {
                                         return e.clvl_picked >= 10;
-                                })
-                        != std::end(trait_log);
+                                }) != std::end(trait_log);
 
-                for (const auto& e : trait_log)
-                {
+                for (const auto& e : trait_log) {
                         std::string clvl_str = std::to_string(e.clvl_picked);
 
-                        if (is_double_digit)
-                        {
+                        if (is_double_digit) {
                                 clvl_str =
                                         text_format::pad_before(
                                                 std::to_string(e.clvl_picked),
@@ -243,45 +223,39 @@ void PostmortemMenu::on_start()
         s_info_lines.emplace_back("", color_info);
 
         s_info_lines.emplace_back(
-                        "Unique monsters killed:",
-                        color_heading);
+                "Unique monsters killed:",
+                color_heading);
 
-        if (unique_killed_names.empty())
-        {
+        if (unique_killed_names.empty()) {
                 s_info_lines.emplace_back(
-                                offset + "None",
-                                color_info);
-        }
-        else
-        {
-                for (std::string& monster_name : unique_killed_names)
-                {
+                        offset + "None",
+                        color_info);
+        } else {
+                for (std::string& monster_name : unique_killed_names) {
                         s_info_lines.emplace_back(
-                                        offset + "" + monster_name,
-                                        color_info);
+                                offset + "" + monster_name,
+                                color_info);
                 }
         }
 
         s_info_lines.emplace_back("", color_info);
 
         s_info_lines.emplace_back(
-                        "History of " + map::g_player->name_the(),
-                        color_heading);
+                "History of " + map::g_player->name_the(),
+                color_heading);
 
         const std::vector<HistoryEvent>& events =
                 game::history();
 
         int longest_turn_w = 0;
 
-        for (const auto& event : events)
-        {
+        for (const auto& event : events) {
                 const int turn_w = std::to_string(event.turn).size();
 
                 longest_turn_w = std::max(turn_w, longest_turn_w);
         }
 
-        for (const auto& event : events)
-        {
+        for (const auto& event : events) {
                 std::string ev_str = std::to_string(event.turn);
 
                 const int turn_w = ev_str.size();
@@ -291,15 +265,15 @@ void PostmortemMenu::on_start()
                 ev_str += " " + event.msg;
 
                 s_info_lines.emplace_back(
-                                offset + ev_str,
-                                color_info);
+                        offset + ev_str,
+                        color_info);
         }
 
         s_info_lines.emplace_back("", color_info);
 
         s_info_lines.emplace_back(
-                        "Last messages:",
-                        color_heading);
+                "Last messages:",
+                color_heading);
 
         const auto& msg_history = msg_log::history();
 
@@ -311,13 +285,12 @@ void PostmortemMenu::on_start()
 
         for (size_t history_idx = history_start_idx;
              history_idx < msg_history.size();
-             ++history_idx)
-        {
+             ++history_idx) {
                 const auto& msg = msg_history[history_idx];
 
                 s_info_lines.emplace_back(
-                                offset + msg.text_with_repeats(),
-                                color_info);
+                        offset + msg.text_with_repeats(),
+                        color_info);
         }
 
         s_info_lines.emplace_back("", color_info);
@@ -326,23 +299,18 @@ void PostmortemMenu::on_start()
         make_memorial_file(game_summary_file_path);
 
         // If running text mode, load the graveyard ascii art
-        if (!config::is_tiles_mode())
-        {
+        if (!config::is_tiles_mode()) {
                 m_ascii_graveyard_lines.clear();
 
                 std::string current_line;
 
                 std::ifstream file(paths::data_dir() + "ascii_graveyard");
 
-                if (file.is_open())
-                {
-                        while (getline(file, current_line))
-                        {
+                if (file.is_open()) {
+                        while (getline(file, current_line)) {
                                 m_ascii_graveyard_lines.push_back(current_line);
                         }
-                }
-                else
-                {
+                } else {
                         TRACE << "Failed to open ascii graveyard file"
                               << std::endl;
 
@@ -363,15 +331,13 @@ void PostmortemMenu::draw()
 {
         P menu_pos;
 
-        if (config::is_tiles_mode())
-        {
+        if (config::is_tiles_mode()) {
                 io::draw_box(panels::area(Panel::screen));
 
                 menu_pos =
                         panels::center(Panel::screen)
-                        .with_offsets(-9, -4);
-        }
-        else // Text mode
+                                .with_offsets(-9, -4);
+        } else // Text mode
         {
                 // The last line is the longest (grass)
                 const int ascii_graveyard_w =
@@ -391,8 +357,7 @@ void PostmortemMenu::draw()
 
                 int y = ascii_graveyard_y0;
 
-                for (const auto& line : m_ascii_graveyard_lines)
-                {
+                for (const auto& line : m_ascii_graveyard_lines) {
                         io::draw_text(
                                 line,
                                 Panel::screen,
@@ -405,9 +370,7 @@ void PostmortemMenu::draw()
                 const std::string name = map::g_player->name_the();
 
                 const int name_x =
-                        ascii_graveyard_x0
-                        + 44
-                        - (((int)name.length() - 1) / 2);
+                        ascii_graveyard_x0 + 44 - (((int)name.length() - 1) / 2);
 
                 io::draw_text(
                         name,
@@ -426,11 +389,9 @@ void PostmortemMenu::draw()
                 "View high scores",
                 "View message log",
                 "Return to main menu",
-                "Quit the game"
-        };
+                "Quit the game"};
 
-        for (size_t i = 0; i < labels.size(); ++i)
-        {
+        for (size_t i = 0; i < labels.size(); ++i) {
                 const std::string& label = labels[i];
 
                 const Color& color =
@@ -456,8 +417,7 @@ void PostmortemMenu::make_memorial_file(const std::string path) const
         file.open(path.c_str(), std::ios::trunc);
 
         // Add info lines to file
-        for (const ColoredString& line : s_info_lines)
-        {
+        for (const ColoredString& line : s_info_lines) {
                 file << line.str << std::endl;
         }
 
@@ -471,15 +431,12 @@ void PostmortemMenu::update()
         const MenuAction action =
                 m_browser.read(input, MenuInputMode::scrolling);
 
-        switch (action)
-        {
+        switch (action) {
         case MenuAction::selected:
 
                 // Display postmortem info
-                switch (m_browser.y())
-                {
-                case 0:
-                {
+                switch (m_browser.y()) {
+                case 0: {
                         // Exit screen
                         states::pop();
 
@@ -488,44 +445,33 @@ void PostmortemMenu::update()
                         states::push(std::make_unique<NewGameState>());
 
                         audio::fade_out_music();
-                }
-                break;
+                } break;
 
-                case 1:
-                {
+                case 1: {
                         states::push(std::make_unique<PostmortemInfo>());
-                }
-                break;
+                } break;
 
                 // Show highscores
-                case 2:
-                {
+                case 2: {
                         states::push(std::make_unique<BrowseHighscore>());
-                }
-                break;
+                } break;
 
                 // Display message history
-                case 3:
-                {
+                case 3: {
                         states::push(std::make_unique<MsgHistoryState>());
-                }
-                break;
+                } break;
 
                 // Return to main menu
-                case 4:
-                {
+                case 4: {
                         // Exit screen
                         states::pop();
-                }
-                break;
+                } break;
 
                 // Quit game
-                case 5:
-                {
+                case 5: {
                         // Bye!
                         states::pop_all();
-                }
-                break;
+                } break;
                 }
                 break;
 
@@ -554,8 +500,7 @@ void PostmortemInfo::draw()
 
         for (int i = m_top_idx;
              (i < nr_lines) && ((i - m_top_idx) < max_nr_lines_on_screen());
-             ++i)
-        {
+             ++i) {
                 const auto& line = s_info_lines[i];
 
                 io::draw_text(
@@ -578,18 +523,14 @@ void PostmortemInfo::update()
 
         const auto input = io::get();
 
-        switch (input.key)
-        {
+        switch (input.key) {
         case SDLK_DOWN:
         case SDLK_KP_2:
                 m_top_idx += line_jump;
 
-                if (nr_lines <= max_nr_lines_on_screen())
-                {
+                if (nr_lines <= max_nr_lines_on_screen()) {
                         m_top_idx = 0;
-                }
-                else
-                {
+                } else {
                         m_top_idx = std::min(
                                 nr_lines - max_nr_lines_on_screen(),
                                 m_top_idx);

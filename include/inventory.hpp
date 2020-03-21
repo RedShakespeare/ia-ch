@@ -13,23 +13,18 @@
 
 #include "global.hpp"
 
-
-namespace item
-{
+namespace item {
 class Item;
 enum class Id;
 } // namespace item
 
-namespace actor
-{
+namespace actor {
 class Actor;
 } // namespace actor
 
 struct P;
 
-
-enum class SlotId
-{
+enum class SlotId {
         wpn,
         wpn_alt,
         body,
@@ -37,8 +32,7 @@ enum class SlotId
         END
 };
 
-struct InvSlot
-{
+struct InvSlot {
         InvSlot(SlotId id_, std::string name_) :
                 id(id_),
                 name(std::move(name_)),
@@ -54,8 +48,7 @@ struct InvSlot
         item::Item* item;
 };
 
-class Inventory
-{
+class Inventory {
 public:
         Inventory(actor::Actor* owning_actor);
 

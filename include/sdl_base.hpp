@@ -13,8 +13,7 @@
 
 // TODO: This can probably be merged with the io namespace
 
-namespace sdl_base
-{
+namespace sdl_base {
 
 void init();
 

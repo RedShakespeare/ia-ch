@@ -9,12 +9,9 @@
 
 #include "terrain.hpp"
 
+namespace terrain {
 
-namespace terrain
-{
-
-class Smoke: public Terrain
-{
+class Smoke : public Terrain {
 public:
         Smoke(const P& pos, const int nr_turns) :
                 Terrain(pos),
@@ -30,7 +27,7 @@ public:
                 return terrain::Id::smoke;
         }
 
-        std::string name(Article article)  const override;
+        std::string name(Article article) const override;
 
         Color color() const override;
 
@@ -42,8 +39,7 @@ protected:
         int m_nr_turns_left {-1};
 };
 
-class ForceField: public Terrain
-{
+class ForceField : public Terrain {
 public:
         ForceField(const P& pos, const int nr_turns) :
                 Terrain(pos),
@@ -61,7 +57,7 @@ public:
 
         void on_new_turn() override;
 
-        std::string name(Article article)  const override;
+        std::string name(Article article) const override;
 
         Color color() const override;
 
@@ -69,8 +65,7 @@ protected:
         int m_nr_turns_left {-1};
 };
 
-class LitDynamite: public Terrain
-{
+class LitDynamite : public Terrain {
 public:
         LitDynamite(const P& pos, const int nr_turns) :
                 Terrain(pos),
@@ -99,8 +94,7 @@ private:
         int m_nr_turns_left {-1};
 };
 
-class LitFlare: public Terrain
-{
+class LitFlare : public Terrain {
 public:
         LitFlare(const P& pos, const int nr_turns) :
                 Terrain(pos),

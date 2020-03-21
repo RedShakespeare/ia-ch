@@ -19,15 +19,11 @@
 #include "spells.hpp"
 #include "terrain_data.hpp"
 
-
 enum class SndVol;
 
+namespace item {
 
-namespace item
-{
-
-enum class Id
-{
+enum class Id {
         trapez,
 
         // Melee weapons and thrown weapons
@@ -191,8 +187,7 @@ enum class Id
         END
 };
 
-const std::unordered_map<std::string, Id> str_to_intr_item_id_map =
-{
+const std::unordered_map<std::string, Id> str_to_intr_item_id_map = {
         {"bite", Id::intr_bite},
         {"claw", Id::intr_claw},
         {"strike", Id::intr_strike},
@@ -219,9 +214,7 @@ const std::unordered_map<std::string, Id> str_to_intr_item_id_map =
         {"web_bola", Id::intr_web_bola},
 };
 
-
-enum class ItemSetId
-{
+enum class ItemSetId {
         minor_treasure,
         rare_treasure,
         supreme_treasure,
@@ -235,8 +228,7 @@ enum class ItemSetId
         high_priest_guard_rogue
 };
 
-const std::unordered_map<std::string, ItemSetId> str_to_item_set_id_map =
-{
+const std::unordered_map<std::string, ItemSetId> str_to_item_set_id_map = {
         {"minor_treasure", ItemSetId::minor_treasure},
         {"rare_treasure", ItemSetId::rare_treasure},
         {"supreme_treasure", ItemSetId::supreme_treasure},
@@ -247,32 +239,28 @@ const std::unordered_map<std::string, ItemSetId> str_to_item_set_id_map =
         {"mi_go_gun", ItemSetId::mi_go_gun},
         {"mi_go_armor", ItemSetId::mi_go_armor},
         {"high_priest_guard_war_vet", ItemSetId::high_priest_guard_war_vet},
-        {"high_priest_guard_rogue", ItemSetId::high_priest_guard_rogue}
-};
+        {"high_priest_guard_rogue", ItemSetId::high_priest_guard_rogue}};
 
-
-enum class Value
-{
+enum class Value {
         normal,
         minor_treasure,
         rare_treasure,
         supreme_treasure
 };
 
-enum Weight
-{
-        none            = 0,
-        extra_light     = 1,    // E.g. ammo
-        light           = 10,   // E.g. dynamite, daggers
-        medium          = 50,   // E.g. most firearms
-        heavy           = 100,  // E.g. heavy armor, heavy weapons
+enum Weight {
+        none = 0,
+        extra_light = 1, // E.g. ammo
+        light = 10, // E.g. dynamite, daggers
+        medium = 50, // E.g. most firearms
+        heavy = 100, // E.g. heavy armor, heavy weapons
 };
 
-struct ItemName
-{
-        ItemName(const std::string& name,
-                 const std::string& name_pl,
-                 const std::string& name_a)
+struct ItemName {
+        ItemName(
+                const std::string& name,
+                const std::string& name_pl,
+                const std::string& name_a)
         {
                 names[(size_t)ItemRefType::plain] = name;
                 names[(size_t)ItemRefType::plural] = name_pl;
@@ -281,8 +269,7 @@ struct ItemName
 
         ItemName()
         {
-                for (size_t i = 0; i < (size_t)ItemRefType::END; ++i)
-                {
+                for (size_t i = 0; i < (size_t)ItemRefType::END; ++i) {
                         names[i] = "";
                 }
         }
@@ -290,21 +277,19 @@ struct ItemName
         std::string names[(size_t)ItemRefType::END];
 };
 
-struct ItemAttMsgs
-{
+struct ItemAttMsgs {
         ItemAttMsgs() :
                 player(""),
                 other("") {}
 
-        ItemAttMsgs(std::string  player_, std::string  other_) :
+        ItemAttMsgs(std::string player_, std::string other_) :
                 player(std::move(player_)),
                 other(std::move(other_)) {}
 
         std::string player, other;
 };
 
-struct ContainerSpawnRule
-{
+struct ContainerSpawnRule {
         ContainerSpawnRule(
                 terrain::Id container_terrain_id,
                 int pct_chance_to_incl_terrain) :
@@ -315,8 +300,7 @@ struct ContainerSpawnRule
         int pct_chance_to_incl = 0;
 };
 
-struct MeleeData
-{
+struct MeleeData {
         MeleeData();
 
         bool is_melee_wpn;
@@ -338,8 +322,7 @@ struct MeleeData
         SfxId miss_sfx;
 };
 
-struct RangedData
-{
+struct RangedData {
         RangedData();
 
         bool is_ranged_wpn;
@@ -374,16 +357,14 @@ struct RangedData
         ItemAttProp prop_applied;
 };
 
-struct ArmorData
-{
+struct ArmorData {
         ArmorData();
 
         int armor_points;
         double dmg_to_durability_factor;
 };
 
-struct ItemData
-{
+struct ItemData {
 public:
         ItemData();
 
@@ -431,9 +412,7 @@ public:
         ArmorData armor;
 };
 
-
 extern ItemData g_data[(size_t)Id::END];
-
 
 void init();
 void cleanup();

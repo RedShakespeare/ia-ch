@@ -42,7 +42,8 @@ Cell::Cell() :
         is_seen_by_player(false),
 
         item(nullptr),
-        terrain(nullptr) {}
+        terrain(nullptr)
+{}
 
 Cell::~Cell()
 {
@@ -71,8 +72,7 @@ void Cell::reset()
 // -----------------------------------------------------------------------------
 // map
 // -----------------------------------------------------------------------------
-namespace map
-{
+namespace map {
 
 actor::Player* g_player = nullptr;
 
@@ -130,8 +130,7 @@ void reset(const P& dims)
 
         game_time::reset_current_actor_idx();
 
-        for (auto* room : g_room_list)
-        {
+        for (auto* room : g_room_list) {
                 delete room;
         }
 
@@ -139,8 +138,7 @@ void reset(const P& dims)
 
         g_choke_point_data.clear();
 
-        for (auto& cell : g_cells)
-        {
+        for (auto& cell : g_cells) {
                 cell.reset();
         }
 
@@ -148,8 +146,7 @@ void reset(const P& dims)
 
         g_cells.resize_no_init(dims);
 
-        for (auto& cell : g_cells)
-        {
+        for (auto& cell : g_cells) {
                 cell.reset();
         }
 
@@ -157,17 +154,14 @@ void reset(const P& dims)
         g_dark.resize(s_dims);
         g_room_map.resize(s_dims);
 
-        for (int x = 0; x < w(); ++x)
-        {
-                for (int y = 0; y < h(); ++y)
-                {
+        for (int x = 0; x < w(); ++x) {
+                for (int y = 0; y < h(); ++y) {
                         put(new terrain::Wall(P(x, y)));
                 }
         }
 
         // Occasionally set wall color to something unusual
-        if (rnd::one_in(3))
-        {
+        if (rnd::one_in(3)) {
                 std::vector<Color> wall_color_bucket = {
                         colors::red(),
                         colors::sepia(),
@@ -177,9 +171,7 @@ void reset(const P& dims)
                 };
 
                 g_wall_color = rnd::element(wall_color_bucket);
-        }
-        else
-        {
+        } else {
                 // Standard wall color
                 g_wall_color = colors::gray();
         }
@@ -223,17 +215,13 @@ terrain::Terrain* put(terrain::Terrain* const t)
         cell.terrain = t;
 
 #ifndef NDEBUG
-        if (init::g_is_demo_mapgen)
-        {
-                if (t->id() == terrain::Id::floor)
-                {
-                        if (!viewport::is_in_view(p))
-                        {
+        if (init::g_is_demo_mapgen) {
+                if (t->id() == terrain::Id::floor) {
+                        if (!viewport::is_in_view(p)) {
                                 viewport::focus_on(p);
                         }
 
-                        for (auto& shown_cell : g_cells)
-                        {
+                        for (auto& shown_cell : g_cells) {
                                 shown_cell.is_seen_by_player = true;
                                 shown_cell.is_explored = true;
                         }
@@ -273,18 +261,14 @@ void update_vision()
 
 void make_blood(const P& origin)
 {
-        for (int dx = -1; dx <= 1; ++dx)
-        {
-                for (int dy = -1; dy <= 1; ++dy)
-                {
+        for (int dx = -1; dx <= 1; ++dx) {
+                for (int dy = -1; dy <= 1; ++dy) {
                         const P c = origin + P(dx, dy);
 
                         auto* const t = g_cells.at(c).terrain;
 
-                        if (t->can_have_blood())
-                        {
-                                if (rnd::one_in(3))
-                                {
+                        if (t->can_have_blood()) {
+                                if (rnd::one_in(3)) {
                                         t->make_bloody();
                                 }
                         }
@@ -294,14 +278,11 @@ void make_blood(const P& origin)
 
 void make_gore(const P& origin)
 {
-        for (int dx = -1; dx <= 1; ++dx)
-        {
-                for (int dy = -1; dy <= 1; ++dy)
-                {
+        for (int dx = -1; dx <= 1; ++dx) {
+                for (int dy = -1; dy <= 1; ++dy) {
                         const P c = origin + P(dx, dy);
 
-                        if (rnd::one_in(3))
-                        {
+                        if (rnd::one_in(3)) {
                                 g_cells.at(c).terrain->try_put_gore();
                         }
                 }
@@ -310,10 +291,8 @@ void make_gore(const P& origin)
 
 void delete_and_remove_room_from_list(Room* const room)
 {
-        for (size_t i = 0; i < g_room_list.size(); ++i)
-        {
-                if (g_room_list[i] == room)
-                {
+        for (size_t i = 0; i < g_room_list.size(); ++i) {
+                if (g_room_list[i] == room) {
                         delete room;
                         g_room_list.erase(g_room_list.begin() + i);
                         return;
@@ -332,10 +311,8 @@ bool is_pos_seen_by_player(const P& p)
 
 actor::Actor* first_actor_at_pos(const P& pos, ActorState state)
 {
-        for (auto* const actor : game_time::g_actors)
-        {
-                if ((actor->m_pos == pos) && (actor->m_state == state))
-                {
+        for (auto* const actor : game_time::g_actors) {
+                if ((actor->m_pos == pos) && (actor->m_state == state)) {
                         return actor;
                 }
         }
@@ -345,10 +322,8 @@ actor::Actor* first_actor_at_pos(const P& pos, ActorState state)
 
 terrain::Terrain* first_mob_at_pos(const P& pos)
 {
-        for (auto* const mob : game_time::g_mobs)
-        {
-                if (mob->pos() == pos)
-                {
+        for (auto* const mob : game_time::g_mobs) {
+                if (mob->pos() == pos) {
                         return mob;
                 }
         }
@@ -362,8 +337,7 @@ void actor_cells(
 {
         out.clear();
 
-        for (const auto* const a : actors)
-        {
+        for (const auto* const a : actors) {
                 out.push_back(a->m_pos);
         }
 }
@@ -372,8 +346,7 @@ Array2<std::vector<actor::Actor*>> get_actor_array()
 {
         Array2<std::vector<actor::Actor*>> a(dims());
 
-        for (auto* actor : game_time::g_actors)
-        {
+        for (auto* actor : game_time::g_actors) {
                 const P& p = actor->m_pos;
 
                 a.at(p).push_back(actor);
@@ -386,25 +359,21 @@ actor::Actor* random_closest_actor(
         const P& c,
         const std::vector<actor::Actor*>& actors)
 {
-        if (actors.empty())
-        {
+        if (actors.empty()) {
                 return nullptr;
         }
 
-        if (actors.size() == 1)
-        {
+        if (actors.size() == 1) {
                 return actors[0];
         }
 
         // Find distance to nearest actor(s)
         int dist_to_nearest = INT_MAX;
 
-        for (auto* actor : actors)
-        {
+        for (auto* actor : actors) {
                 const int current_dist = king_dist(c, actor->m_pos);
 
-                if (current_dist < dist_to_nearest)
-                {
+                if (current_dist < dist_to_nearest) {
                         dist_to_nearest = current_dist;
                 }
         }
@@ -414,10 +383,8 @@ actor::Actor* random_closest_actor(
         // Store all actors with distance equal to the nearest distance
         std::vector<actor::Actor*> closest_actors;
 
-        for (auto* actor : actors)
-        {
-                if (king_dist(c, actor->m_pos) == dist_to_nearest)
-                {
+        for (auto* actor : actors) {
+                if (king_dist(c, actor->m_pos) == dist_to_nearest) {
                         closest_actors.push_back(actor);
                 }
         }
@@ -429,8 +396,7 @@ actor::Actor* random_closest_actor(
 
 bool is_pos_inside_map(const P& pos)
 {
-        return
-                (pos.x >= 0) &&
+        return (pos.x >= 0) &&
                 (pos.y >= 0) &&
                 (pos.x < w()) &&
                 (pos.y < h());
@@ -438,8 +404,7 @@ bool is_pos_inside_map(const P& pos)
 
 bool is_pos_inside_outer_walls(const P& pos)
 {
-        return
-                (pos.x > 0) &&
+        return (pos.x > 0) &&
                 (pos.y > 0) &&
                 (pos.x < (w() - 1)) &&
                 (pos.y < (h() - 1));
@@ -447,8 +412,7 @@ bool is_pos_inside_outer_walls(const P& pos)
 
 bool is_area_inside_map(const R& area)
 {
-        return
-                is_pos_inside_map(area.p0) &&
+        return is_pos_inside_map(area.p0) &&
                 is_pos_inside_map(area.p1);
 }
 

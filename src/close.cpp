@@ -21,17 +21,14 @@
 // -----------------------------------------------------------------------------
 static void player_try_close_or_jam_terrain(terrain::Terrain* const terrain)
 {
-        if (terrain->id() != terrain::Id::door)
-        {
+        if (terrain->id() != terrain::Id::door) {
                 const bool player_can_see =
                         map::g_player->m_properties.allow_see();
 
-                if (player_can_see)
-                {
+                if (player_can_see) {
                         msg_log::add(
                                 "I see nothing there to close or jam shut.");
-                }
-                else // Player cannot see
+                } else // Player cannot see
                 {
                         msg_log::add(
                                 "I find nothing there to close or jam shut.");
@@ -44,38 +41,32 @@ static void player_try_close_or_jam_terrain(terrain::Terrain* const terrain)
 
         auto* const door = static_cast<terrain::Door*>(terrain);
 
-        if (door->is_open())
-        {
+        if (door->is_open()) {
                 // Door is open, try to close it
                 door->try_close(map::g_player);
-        }
-        else // Door is closed - try to jam it
+        } else // Door is closed - try to jam it
         {
                 const bool has_spike =
                         map::g_player->m_inv.has_item_in_backpack(
                                 item::Id::iron_spike);
 
-                if (has_spike)
-                {
+                if (has_spike) {
                         const bool did_spike_door =
                                 door->try_jam(map::g_player);
 
-                        if (did_spike_door)
-                        {
+                        if (did_spike_door) {
                                 map::g_player->m_inv.decr_item_type_in_backpack(
                                         item::Id::iron_spike);
 
                                 const int nr_spikes_left =
                                         map::g_player->m_inv
-                                        .item_stack_size_in_backpack(
-                                                item::Id::iron_spike);
+                                                .item_stack_size_in_backpack(
+                                                        item::Id::iron_spike);
 
-                                if (nr_spikes_left == 0)
-                                {
+                                if (nr_spikes_left == 0) {
                                         msg_log::add(
                                                 "I have no iron spikes left.");
-                                }
-                                else // Has spikes left
+                                } else // Has spikes left
                                 {
                                         msg_log::add(
                                                 "I have " +
@@ -83,8 +74,7 @@ static void player_try_close_or_jam_terrain(terrain::Terrain* const terrain)
                                                 " iron spikes left.");
                                 }
                         }
-                }
-                else // Has no spikes to jam with
+                } else // Has no spikes to jam with
                 {
                         msg_log::add("I have nothing to jam the door with.");
                 }
@@ -94,8 +84,7 @@ static void player_try_close_or_jam_terrain(terrain::Terrain* const terrain)
 // -----------------------------------------------------------------------------
 // close_door
 // -----------------------------------------------------------------------------
-namespace close_door
-{
+namespace close_door {
 
 void player_try_close_or_jam()
 {
@@ -112,8 +101,7 @@ void player_try_close_or_jam()
 
         msg_log::clear();
 
-        if ((input_dir != Dir::END) && (input_dir != Dir::center))
-        {
+        if ((input_dir != Dir::END) && (input_dir != Dir::center)) {
                 // Valid direction
                 const P p(map::g_player->m_pos + dir_utils::offset(input_dir));
 

@@ -15,9 +15,7 @@
 #include "msg_log.hpp"
 #include "property_handler.hpp"
 
-
-namespace terrain
-{
+namespace terrain {
 
 Monolith::Monolith(const P& p) :
         Terrain(p),
@@ -47,21 +45,18 @@ std::string Monolith::name(const Article article) const
 
 Color Monolith::color_default() const
 {
-        return
-                m_is_activated
+        return m_is_activated
                 ? colors::gray()
                 : colors::light_cyan();
 }
 
 void Monolith::bump(actor::Actor& actor_bumping)
 {
-        if (!actor_bumping.is_player())
-        {
+        if (!actor_bumping.is_player()) {
                 return;
         }
 
-        if (!map::g_player->m_properties.allow_see())
-        {
+        if (!map::g_player->m_properties.allow_see()) {
                 msg_log::add("There is a carved rock here.");
 
                 return;
@@ -69,11 +64,9 @@ void Monolith::bump(actor::Actor& actor_bumping)
 
         msg_log::add("I recite the inscriptions on the Monolith...");
 
-        if (m_is_activated)
-        {
+        if (m_is_activated) {
                 msg_log::add("Nothing happens.");
-        }
-        else // Not yet activated
+        } else // Not yet activated
         {
                 activate();
         }

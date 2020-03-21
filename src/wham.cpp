@@ -23,8 +23,7 @@
 #include "terrain_door.hpp"
 #include "text_format.hpp"
 
-namespace wham
-{
+namespace wham {
 
 void try_sprain_player()
 {
@@ -33,28 +32,21 @@ void try_sprain_player()
 
         const bool is_player_ghoul = player_bon::bg() == Bg::ghoul;
 
-        if (is_player_ghoul || is_frenzied)
-        {
+        if (is_player_ghoul || is_frenzied) {
                 return;
         }
 
         int sprain_one_in_n;
 
-        if (player_bon::has_trait(Trait::rugged))
-        {
+        if (player_bon::has_trait(Trait::rugged)) {
                 sprain_one_in_n = 12;
-        }
-        else if (player_bon::has_trait(Trait::tough))
-        {
+        } else if (player_bon::has_trait(Trait::tough)) {
                 sprain_one_in_n = 8;
-        }
-        else
-        {
+        } else {
                 sprain_one_in_n = 4;
         }
 
-        if (rnd::one_in(sprain_one_in_n))
-        {
+        if (rnd::one_in(sprain_one_in_n)) {
                 msg_log::add("I sprain myself.", colors::msg_bad());
 
                 const int dmg = rnd::range(1, 2);
@@ -81,8 +73,7 @@ void run()
 
         msg_log::clear();
 
-        if (input_dir == Dir::END)
-        {
+        if (input_dir == Dir::END) {
                 // Invalid direction
                 io::update_screen();
 
@@ -98,21 +89,18 @@ void run()
         // Kick living actor?
         TRACE << "Checking if player is kicking a living actor" << std::endl;
 
-        if (input_dir != Dir::center)
-        {
+        if (input_dir != Dir::center) {
                 auto* living_actor =
                         map::first_actor_at_pos(att_pos, ActorState::alive);
 
-                if (living_actor)
-                {
+                if (living_actor) {
                         TRACE << "Actor found at kick pos" << std::endl;
 
                         const bool melee_allowed =
                                 map::g_player->m_properties.allow_attack_melee(
                                         Verbose::yes);
 
-                        if (melee_allowed)
-                        {
+                        if (melee_allowed) {
                                 TRACE << "Player is allowed to do melee attack"
                                       << std::endl;
 
@@ -145,15 +133,12 @@ void run()
 
         // Check all corpses here, stop at any corpse which is prioritized for
         // bashing (Zombies)
-        for (auto* const actor : game_time::g_actors)
-        {
+        for (auto* const actor : game_time::g_actors) {
                 if ((actor->m_pos == att_pos) &&
-                    (actor->m_state == ActorState::corpse))
-                {
+                    (actor->m_state == ActorState::corpse)) {
                         corpse = actor;
 
-                        if (actor->m_data->prio_corpse_bash)
-                        {
+                        if (actor->m_data->prio_corpse_bash) {
                                 break;
                         }
                 }
@@ -166,15 +151,13 @@ void run()
 
         const auto* wpn = map::g_player->m_inv.item_in_slot(SlotId::wpn);
 
-        if (!wpn)
-        {
+        if (!wpn) {
                 wpn = &map::g_player->unarmed_wpn();
         }
 
         ASSERT(wpn);
 
-        if (corpse)
-        {
+        if (corpse) {
                 const bool is_seeing_cell =
                         map::g_cells.at(att_pos).is_seen_by_player;
 
@@ -196,7 +179,7 @@ void run()
 
                 const std::string msg =
                         "I " +
-                        melee_att_msg + " "  +
+                        melee_att_msg + " " +
                         corpse_name + ".";
 
                 msg_log::add(msg);
@@ -212,36 +195,30 @@ void run()
                         DmgType::physical,
                         wpn_used_att_corpse->data().melee.dmg_method);
 
-                if (wpn_used_att_corpse == kick_wpn.get())
-                {
+                if (wpn_used_att_corpse == kick_wpn.get()) {
                         try_sprain_player();
                 }
 
-                if (corpse->m_state == ActorState::destroyed)
-                {
+                if (corpse->m_state == ActorState::destroyed) {
                         std::vector<actor::Actor*> corpses_here;
 
-                        for (auto* const actor : game_time::g_actors)
-                        {
+                        for (auto* const actor : game_time::g_actors) {
                                 if ((actor->m_pos == att_pos) &&
-                                    actor->is_corpse())
-                                {
+                                    actor->is_corpse()) {
                                         corpses_here.push_back(actor);
                                 }
                         }
 
-                        if (!corpses_here.empty())
-                        {
+                        if (!corpses_here.empty()) {
                                 msg_log::more_prompt();
                         }
 
-                        for (auto* const other_corpse : corpses_here)
-                        {
+                        for (auto* const other_corpse : corpses_here) {
                                 const std::string name =
                                         text_format::first_to_upper(
                                                 other_corpse
-                                                ->m_data
-                                                ->corpse_name_a);
+                                                        ->m_data
+                                                        ->corpse_name_a);
 
                                 msg_log::add(name + ".");
                         }
@@ -260,8 +237,7 @@ void run()
         // Attack terrain
         TRACE << "Checking if player is kicking terrain" << std::endl;
 
-        if (input_dir != Dir::center)
-        {
+        if (input_dir != Dir::center) {
                 // Decide if we should kick or use wielded weapon
                 auto* const terrain = map::g_cells.at(att_pos).terrain;
 
@@ -269,45 +245,36 @@ void run()
 
                 const auto wpn_dmg_method = wpn->data().melee.dmg_method;
 
-                if (allow_wpn_att_terrain)
-                {
-                        switch (terrain->id())
-                        {
-                        case terrain::Id::door:
-                        {
+                if (allow_wpn_att_terrain) {
+                        switch (terrain->id()) {
+                        case terrain::Id::door: {
                                 const auto* const door =
                                         static_cast<const terrain::Door*>(
                                                 terrain);
 
                                 const auto door_type = door->type();
 
-                                if (door_type == DoorType::gate)
-                                {
+                                if (door_type == DoorType::gate) {
                                         // Only allow blunt weapons for gates
                                         // (feels weird to attack a barred gate
                                         // with an axe...)
                                         allow_wpn_att_terrain =
                                                 (wpn_dmg_method ==
                                                  DmgMethod::blunt);
-                                }
-                                else // Not gate (i.e. wooden, metal)
+                                } else // Not gate (i.e. wooden, metal)
                                 {
                                         allow_wpn_att_terrain = true;
                                 }
-                        }
-                        break;
+                        } break;
 
-                        case terrain::Id::wall:
-                        {
+                        case terrain::Id::wall: {
                                 allow_wpn_att_terrain = true;
-                        }
-                        break;
+                        } break;
 
                         default:
                         {
                                 allow_wpn_att_terrain = false;
-                        }
-                        break;
+                        } break;
                         }
                 }
 

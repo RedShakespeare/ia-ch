@@ -25,9 +25,7 @@
 #include "terrain.hpp"
 #include "terrain_mob.hpp"
 
-
-namespace terrain
-{
+namespace terrain {
 
 // -----------------------------------------------------------------------------
 // Smoke
@@ -36,23 +34,18 @@ void Smoke::on_placed()
 {
         // Expire any existing smoke in the current position, and set the
         // duration of the new smoke to whatever was higher
-        for (auto* const terrain : game_time::g_mobs)
-        {
+        for (auto* const terrain : game_time::g_mobs) {
                 if ((terrain == this) ||
                     (terrain->id() != Id::smoke) ||
-                    (terrain->pos() != m_pos))
-                {
+                    (terrain->pos() != m_pos)) {
                         continue;
                 }
 
                 auto other_smoke = static_cast<Smoke*>(terrain);
 
-                if (other_smoke->m_nr_turns_left == -1)
-                {
+                if (other_smoke->m_nr_turns_left == -1) {
                         m_nr_turns_left = -1;
-                }
-                else if (m_nr_turns_left != -1)
-                {
+                } else if (m_nr_turns_left != -1) {
                         m_nr_turns_left =
                                 std::max(
                                         m_nr_turns_left,
@@ -68,8 +61,7 @@ void Smoke::on_new_turn()
         // If smoke has turns left, or is permanent, harm the actor here
         auto* actor = map::first_actor_at_pos(m_pos);
 
-        if (actor && ((m_nr_turns_left > 0) || (m_nr_turns_left == -1)))
-        {
+        if (actor && ((m_nr_turns_left > 0) || (m_nr_turns_left == -1))) {
                 const bool is_player = actor == map::g_player;
 
                 // TODO: There needs to be some criteria here, so that e.g. a
@@ -80,19 +72,19 @@ void Smoke::on_new_turn()
 
                 bool is_breath_prot = actor->m_properties.has(PropId::r_breath);
 
-                if (is_player)
-                {
+                if (is_player) {
                         auto* const head_item =
                                 map::g_player->m_inv
-                                .m_slots[(size_t)SlotId::head].item;
+                                        .m_slots[(size_t)SlotId::head]
+                                        .item;
 
                         auto* const body_item =
                                 map::g_player->m_inv
-                                .m_slots[(size_t)SlotId::body].item;
+                                        .m_slots[(size_t)SlotId::body]
+                                        .item;
 
                         if (head_item &&
-                            (head_item->data().id == item::Id::gas_mask))
-                        {
+                            (head_item->data().id == item::Id::gas_mask)) {
                                 is_blind_prot = true;
                                 is_breath_prot = true;
 
@@ -102,18 +94,15 @@ void Smoke::on_new_turn()
                         }
 
                         if (body_item &&
-                            (body_item->data().id == item::Id::armor_asb_suit))
-                        {
+                            (body_item->data().id == item::Id::armor_asb_suit)) {
                                 is_blind_prot = true;
                                 is_breath_prot = true;
                         }
                 }
 
                 // Blinded?
-                if (!is_blind_prot && rnd::one_in(4))
-                {
-                        if (is_player)
-                        {
+                if (!is_blind_prot && rnd::one_in(4)) {
+                        if (is_player) {
                                 msg_log::add("I am getting smoke in my eyes.");
                         }
 
@@ -125,18 +114,14 @@ void Smoke::on_new_turn()
                 }
 
                 // Coughing?
-                if (!is_breath_prot && rnd::one_in(4))
-                {
+                if (!is_breath_prot && rnd::one_in(4)) {
                         std::string snd_msg;
 
-                        if (is_player)
-                        {
+                        if (is_player) {
                                 msg_log::add("I cough.");
-                        }
-                        else // Is monster
+                        } else // Is monster
                         {
-                                if (actor->m_data->is_humanoid)
-                                {
+                                if (actor->m_data->is_humanoid) {
                                         snd_msg = "I hear coughing.";
                                 }
                         }
@@ -160,23 +145,20 @@ void Smoke::on_new_turn()
         }
 
         // If not permanent, count down turns left and possibly erase self
-        if (m_nr_turns_left > -1)
-        {
+        if (m_nr_turns_left > -1) {
                 --m_nr_turns_left;
 
-                if (m_nr_turns_left <= 0)
-                {
+                if (m_nr_turns_left <= 0) {
                         game_time::erase_mob(this, true);
                 }
         }
 }
 
-std::string Smoke::name(const Article article)  const
+std::string Smoke::name(const Article article) const
 {
         std::string name;
 
-        if (article == Article::the)
-        {
+        if (article == Article::the) {
                 name = "the ";
         }
 
@@ -194,20 +176,18 @@ Color Smoke::color() const
 void ForceField::on_new_turn()
 {
         // If not permanent, count down turns left and possibly erase self
-        if (m_nr_turns_left <= -1)
-        {
+        if (m_nr_turns_left <= -1) {
                 return;
         }
 
         --m_nr_turns_left;
 
-        if (m_nr_turns_left <= 0)
-        {
+        if (m_nr_turns_left <= 0) {
                 game_time::erase_mob(this, true);
         }
 }
 
-std::string ForceField::name(const Article article)  const
+std::string ForceField::name(const Article article) const
 {
         std::string name =
                 (article == Article::a)
@@ -231,8 +211,7 @@ void LitDynamite::on_new_turn()
 {
         --m_nr_turns_left;
 
-        if (m_nr_turns_left <= 0)
-        {
+        if (m_nr_turns_left <= 0) {
                 const P p(m_pos);
 
                 // Removing the dynamite before the explosion, so it can't be
@@ -242,13 +221,11 @@ void LitDynamite::on_new_turn()
 
                 // NOTE: This object is now deleted
 
-                explosion::run(p,
-                               ExplType::expl,
-                               EmitExplSnd::yes);
+                explosion::run(p, ExplType::expl, EmitExplSnd::yes);
         }
 }
 
-std::string LitDynamite::name(const Article article)  const
+std::string LitDynamite::name(const Article article) const
 {
         std::string name =
                 (article == Article::a)
@@ -270,8 +247,7 @@ void LitFlare::on_new_turn()
 {
         --m_nr_turns_left;
 
-        if (m_nr_turns_left <= 0)
-        {
+        if (m_nr_turns_left <= 0) {
                 game_time::erase_mob(this, true);
         }
 }
@@ -300,19 +276,16 @@ void LitFlare::add_light(Array2<bool>& light) const
 
         const auto light_fov = fov::run(m_pos, fov_map);
 
-        for (int y = p0.y; y <= p1.y; ++y)
-        {
-                for (int x = p0.x; x <= p1.x; ++x)
-                {
-                        if (!light_fov.at(x, y).is_blocked_hard)
-                        {
+        for (int y = p0.y; y <= p1.y; ++y) {
+                for (int x = p0.x; x <= p1.x; ++x) {
+                        if (!light_fov.at(x, y).is_blocked_hard) {
                                 light.at(x, y) = true;
                         }
                 }
         }
 }
 
-std::string LitFlare::name(const Article article)  const
+std::string LitFlare::name(const Article article) const
 {
         std::string name =
                 (article == Article::a)

@@ -14,8 +14,7 @@
 #define STRINGIFY(x) #x
 #define TO_STRING(x) STRINGIFY(x)
 
-namespace version_info
-{
+namespace version_info {
 
 // This shall be set when (and only when) building a tagged release. Use the
 // format "vMAJOR.MINOR".
@@ -37,8 +36,7 @@ std::string read_git_sha1_str_from_file()
 
         std::ifstream file(sha1_file_path);
 
-        if (!file.is_open())
-        {
+        if (!file.is_open()) {
                 TRACE << "Failed to open git sha1 file at "
                       << sha1_file_path
                       << std::endl;
@@ -52,8 +50,7 @@ std::string read_git_sha1_str_from_file()
 
         file.close();
 
-        if (sha1.empty())
-        {
+        if (sha1.empty()) {
                 return default_sha1;
         }
 

@@ -17,21 +17,18 @@
 #include "sound.hpp"
 #include "spells.hpp"
 
-struct AiAttData
-{
+struct AiAttData {
         item::Wpn* wpn = nullptr;
         bool is_melee = false;
 };
 
-struct AiAvailAttacksData
-{
+struct AiAvailAttacksData {
         std::vector<item::Wpn*> weapons = {};
         bool should_reload = false;
         bool is_melee = false;
 };
 
-struct MonSpell
-{
+struct MonSpell {
         MonSpell() :
                 spell(nullptr),
                 skill((SpellSkill)0),
@@ -42,9 +39,7 @@ struct MonSpell
         int cooldown;
 };
 
-
-namespace actor
-{
+namespace actor {
 
 std::string get_cultist_phrase();
 
@@ -52,15 +47,14 @@ std::string get_cultist_aware_msg_seen(const Actor& actor);
 
 std::string get_cultist_aware_msg_hidden();
 
-
-class Mon: public Actor
-{
+class Mon : public Actor {
 public:
         Mon();
         virtual ~Mon();
 
-        bool can_see_actor(const Actor& other,
-                           const Array2<bool>& hard_blocked_los) const;
+        bool can_see_actor(
+                const Actor& other,
+                const Array2<bool>& hard_blocked_los) const;
 
         std::vector<Actor*> seen_actors() const override;
 
@@ -87,8 +81,7 @@ public:
 
         void hear_sound(const Snd& snd);
 
-        void become_aware_player(bool is_from_seeing,
-                                 int factor = 1);
+        void become_aware_player(bool is_from_seeing, int factor = 1);
 
         void become_wary_player();
 
@@ -175,12 +168,12 @@ protected:
         int nr_mon_in_group() const;
 };
 
-class Ape: public Mon
-{
+class Ape : public Mon {
 public:
         Ape() :
 
-                m_frenzy_cooldown(0) {}
+                m_frenzy_cooldown(0)
+        {}
 
         ~Ape() = default;
 
@@ -190,12 +183,12 @@ private:
         int m_frenzy_cooldown;
 };
 
-class Khephren: public Mon
-{
+class Khephren : public Mon {
 public:
         Khephren() :
 
-                m_has_summoned_locusts(false) {}
+                m_has_summoned_locusts(false)
+        {}
         ~Khephren() = default;
 
 private:
@@ -204,18 +197,16 @@ private:
         bool m_has_summoned_locusts;
 };
 
-class StrangeColor: public Mon
-{
+class StrangeColor : public Mon {
 public:
-        StrangeColor()  = default;
+        StrangeColor() = default;
 
         ~StrangeColor() = default;
 
         Color color() const override;
 };
 
-class SpectralWpn: public Mon
-{
+class SpectralWpn : public Mon {
 public:
         SpectralWpn();
 

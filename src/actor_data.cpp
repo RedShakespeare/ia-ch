@@ -103,23 +103,20 @@ static std::unordered_map<std::string, actor::Id> str_to_actor_id_map = {
         {"the_high_priest", actor::Id::the_high_priest},
         {"high_priest_guard_war_vet", actor::Id::high_priest_guard_war_vet},
         {"high_priest_guard_rogue", actor::Id::high_priest_guard_rogue},
-        {"high_priest_guard_ghoul", actor::Id::high_priest_guard_ghoul}
-};
+        {"high_priest_guard_ghoul", actor::Id::high_priest_guard_ghoul}};
 
 static const std::unordered_map<std::string, ShockLvl> str_to_shock_lvl_map = {
         {"none", ShockLvl::none},
         {"unsettling", ShockLvl::unsettling},
         {"frightening", ShockLvl::frightening},
         {"terrifying", ShockLvl::terrifying},
-        {"mind_shattering", ShockLvl::mind_shattering}
-};
+        {"mind_shattering", ShockLvl::mind_shattering}};
 
 static const std::unordered_map<std::string, actor::Speed> str_to_speed_map = {
         {"slow", actor::Speed::slow},
         {"normal", actor::Speed::normal},
         {"fast", actor::Speed::fast},
-        {"very_fast", actor::Speed::very_fast}
-};
+        {"very_fast", actor::Speed::very_fast}};
 
 static actor::Id get_id(xml::Element* mon_e)
 {
@@ -179,8 +176,7 @@ static void dump_text(xml::Element* text_e, actor::ActorData& data)
 
         auto death_msg_e = xml::first_child(text_e, "death_message");
 
-        if (death_msg_e)
-        {
+        if (death_msg_e) {
                 data.death_msg_override = xml::get_text_str(death_msg_e);
         }
 }
@@ -316,8 +312,7 @@ static void dump_intr_attack_property(
                 attack_data.prop_applied.pct_chance_to_apply);
 
         if ((attack_data.prop_applied.pct_chance_to_apply <= 0) ||
-            (attack_data.prop_applied.pct_chance_to_apply > 100))
-        {
+            (attack_data.prop_applied.pct_chance_to_apply > 100)) {
                 TRACE_ERROR_RELEASE
                         << "Invalid attack property chance: "
                         << attack_data.prop_applied.pct_chance_to_apply
@@ -328,22 +323,16 @@ static void dump_intr_attack_property(
 
         int duration;
 
-        if (xml::try_get_attribute_int(property_e, "duration", duration))
-        {
+        if (xml::try_get_attribute_int(property_e, "duration", duration)) {
                 attack_data.prop_applied.prop->set_duration(duration);
-        }
-        else // Duration not specified as integer
+        } else // Duration not specified as integer
         {
                 // Check if duration is specified as string ("indefinite")
 
                 std::string duration_str;
 
-                if (xml::try_get_attribute_str(property_e,
-                                               "duration",
-                                               duration_str))
-                {
-                        if (duration_str == "indefinite")
-                        {
+                if (xml::try_get_attribute_str(property_e, "duration", duration_str)) {
+                        if (duration_str == "indefinite") {
                                 attack_data.prop_applied.prop
                                         ->set_indefinite();
                         }
@@ -355,8 +344,7 @@ static void dump_items(xml::Element* items_e, actor::ActorData& data)
 {
         for (auto item_set_e = xml::first_child(items_e);
              item_set_e;
-             item_set_e = xml::next_sibling(item_set_e))
-        {
+             item_set_e = xml::next_sibling(item_set_e)) {
                 actor::ActorItemSetData item_set;
 
                 const std::string id_str = xml::get_text_str(item_set_e);
@@ -386,8 +374,7 @@ static void dump_intr_attacks(xml::Element* attacks_e, actor::ActorData& data)
 {
         for (auto attack_e = xml::first_child(attacks_e);
              attack_e;
-             attack_e = xml::next_sibling(attack_e))
-        {
+             attack_e = xml::next_sibling(attack_e)) {
                 auto attack_data = std::make_unique<actor::IntrAttData>();
 
                 const std::string id_str =
@@ -402,8 +389,7 @@ static void dump_intr_attacks(xml::Element* attacks_e, actor::ActorData& data)
                 // Propertyies applied
                 for (e = xml::next_sibling(e);
                      e;
-                     e = xml::next_sibling(e))
-                {
+                     e = xml::next_sibling(e)) {
                         dump_intr_attack_property(e, *attack_data);
                 }
 
@@ -415,8 +401,7 @@ static void dump_spells(xml::Element* spells_e, actor::ActorData& data)
 {
         for (auto spell_e = xml::first_child(spells_e);
              spell_e;
-             spell_e = xml::next_sibling(spell_e))
-        {
+             spell_e = xml::next_sibling(spell_e)) {
                 actor::ActorSpellData spell_data;
 
                 const std::string id_str = xml::get_text_str(spell_e);
@@ -441,8 +426,7 @@ static void dump_properties(xml::Element* properties_e, actor::ActorData& data)
 {
         for (auto e = xml::first_child(properties_e);
              e;
-             e = xml::next_sibling(e))
-        {
+             e = xml::next_sibling(e)) {
                 const auto prop_id = g_str_to_prop_id_map.at(
                         xml::get_text_str(e));
 
@@ -461,8 +445,7 @@ static void dump_ai(xml::Element* ai_e, actor::ActorData& data)
         data.ranged_cooldown_turns = xml::get_text_int(
                 xml::first_child(ai_e, "ranged_cooldown_turns"));
 
-        for (size_t i = 0; i < (size_t)actor::AiId::END; ++i)
-        {
+        for (size_t i = 0; i < (size_t)actor::AiId::END; ++i) {
                 const std::string ai_id_str =
                         actor::g_ai_id_to_str_map.at((actor::AiId)i);
 
@@ -519,8 +502,7 @@ static void dump_spawning(xml::Element* spawn_e, actor::ActorData& data)
 
         for (auto e = xml::first_child(spawn_e, group_size_element_str);
              e;
-             e = xml::next_sibling(e, group_size_element_str))
-        {
+             e = xml::next_sibling(e, group_size_element_str)) {
                 dump_group_size(e, data);
         }
 
@@ -528,8 +510,7 @@ static void dump_spawning(xml::Element* spawn_e, actor::ActorData& data)
 
         for (auto e = xml::first_child(spawn_e, native_room_element_str);
              e;
-             e = xml::next_sibling(e, native_room_element_str))
-        {
+             e = xml::next_sibling(e, native_room_element_str)) {
                 dump_native_room(e, data);
         }
 }
@@ -538,8 +519,7 @@ static void dump_starting_allies(xml::Element* allies_e, actor::ActorData& data)
 {
         for (auto e = xml::first_child(allies_e);
              e;
-             e = xml::next_sibling(e))
-        {
+             e = xml::next_sibling(e)) {
                 const std::string id_str = xml::get_attribute_str(e, "id");
 
                 const auto id = str_to_actor_id_map.at(id_str);
@@ -558,8 +538,7 @@ static void read_actor_definitions_xml()
 
         auto mon_e = xml::first_child(top_e);
 
-        for ( ; mon_e ; mon_e = xml::next_sibling(mon_e, "monster"))
-        {
+        for (; mon_e; mon_e = xml::next_sibling(mon_e, "monster")) {
                 const actor::Id id = get_id(mon_e);
 
                 auto& data = actor::g_data[(size_t)id];
@@ -578,36 +557,31 @@ static void read_actor_definitions_xml()
 
                 auto items_e = xml::first_child(mon_e, "items");
 
-                if (items_e)
-                {
+                if (items_e) {
                         dump_items(items_e, data);
                 }
 
                 auto attacks_e = xml::first_child(mon_e, "attacks");
 
-                if (attacks_e)
-                {
+                if (attacks_e) {
                         dump_intr_attacks(attacks_e, data);
                 }
 
                 auto spells_e = xml::first_child(mon_e, "spells");
 
-                if (spells_e)
-                {
+                if (spells_e) {
                         dump_spells(spells_e, data);
                 }
 
                 auto props_e = xml::first_child(mon_e, "properties");
 
-                if (props_e)
-                {
+                if (props_e) {
                         dump_properties(props_e, data);
                 }
 
                 auto ai_e = xml::first_child(mon_e, "ai");
 
-                if (ai_e)
-                {
+                if (ai_e) {
                         dump_ai(ai_e, data);
                 }
 
@@ -615,19 +589,16 @@ static void read_actor_definitions_xml()
 
                 auto allies_e = xml::first_child(mon_e, "starting_allies");
 
-                if (allies_e)
-                {
+                if (allies_e) {
                         dump_starting_allies(allies_e, data);
                 }
         }
 } // read_actor_definitions_xml
 
-
 // -----------------------------------------------------------------------------
 // actor
 // -----------------------------------------------------------------------------
-namespace actor
-{
+namespace actor {
 
 // -----------------------------------------------------------------------------
 // ActorData
@@ -645,9 +616,7 @@ void ActorData::reset()
 
         // Default spawn group size is "alone"
         group_sizes.assign(
-        {
-                MonGroupSpawnRule(MonGroupSize::alone, 1)
-        });
+                {MonGroupSpawnRule(MonGroupSize::alone, 1)});
 
         hp = 0;
         item_sets.clear();
@@ -656,15 +625,13 @@ void ActorData::reset()
         spi = 0;
         speed = Speed::normal;
 
-        for (size_t i = 0; i < (size_t)PropId::END; ++i)
-        {
+        for (size_t i = 0; i < (size_t)PropId::END; ++i) {
                 natural_props[i] = false;
         }
 
         ability_values.reset();
 
-        for (size_t i = 0; i < (size_t)AiId::END; ++i)
-        {
+        for (size_t i = 0; i < (size_t)AiId::END; ++i) {
                 ai[i] = false;
         }
 
@@ -713,9 +680,7 @@ void ActorData::reset()
         descr = "";
 }
 
-
 ActorData g_data[(size_t)Id::END];
-
 
 void init()
 {
@@ -728,8 +693,7 @@ void init()
 
 void save()
 {
-        for (int i = 0; i < (int)Id::END; ++i)
-        {
+        for (int i = 0; i < (int)Id::END; ++i) {
                 const auto& d = g_data[i];
 
                 saving::put_int(d.nr_left_allowed_to_spawn);
@@ -740,8 +704,7 @@ void save()
 
 void load()
 {
-        for (int i = 0; i < (int)Id::END; ++i)
-        {
+        for (int i = 0; i < (int)Id::END; ++i) {
                 auto& d = g_data[i];
 
                 d.nr_left_allowed_to_spawn = saving::get_int();

@@ -12,23 +12,18 @@
 #include "array2.hpp"
 #include "global.hpp"
 
-
-namespace actor
-{
+namespace actor {
 class Mon;
 } // namespace actor
 
 struct P;
 
-
-namespace ai
-{
+namespace ai {
 
 // -----------------------------------------------------------------------------
 // Things that cost turns for the monster
 // -----------------------------------------------------------------------------
-namespace action
-{
+namespace action {
 
 bool try_cast_random_spell(actor::Mon& mon);
 
@@ -51,8 +46,7 @@ bool step_to_lair_if_los(actor::Mon& mon, const P& lair_p);
 // -----------------------------------------------------------------------------
 // Information gathering
 // -----------------------------------------------------------------------------
-namespace info
-{
+namespace info {
 
 bool look(actor::Mon& mon);
 

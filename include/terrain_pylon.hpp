@@ -11,15 +11,11 @@
 
 #include "terrain.hpp"
 
-
-namespace terrain
-{
+namespace terrain {
 
 class PylonImpl;
 
-
-enum class PylonId
-{
+enum class PylonId {
         burning,
         slow,
         terrify,
@@ -33,8 +29,7 @@ enum class PylonId
 // -----------------------------------------------------------------------------
 // Pylon
 // -----------------------------------------------------------------------------
-class Pylon: public Terrain
-{
+class Pylon : public Terrain {
 public:
         Pylon(const P& p, PylonId id);
 
@@ -49,10 +44,7 @@ public:
 
         std::string name(Article article) const override;
 
-        void on_hit(int dmg,
-                    DmgType dmg_type,
-                    DmgMethod dmg_method,
-                    actor::Actor* actor) override;
+        void on_hit(int dmg, DmgType dmg_type, DmgMethod dmg_method, actor::Actor* actor) override;
 
         void on_lever_pulled(Lever* lever) override;
 
@@ -80,8 +72,7 @@ private:
 // -----------------------------------------------------------------------------
 // Pylon implementation
 // -----------------------------------------------------------------------------
-class PylonImpl
-{
+class PylonImpl {
 public:
         PylonImpl(P p, Pylon* pylon) :
                 m_pos(p),
@@ -103,8 +94,7 @@ protected:
         Pylon* const m_pylon;
 };
 
-class PylonBurning: public PylonImpl
-{
+class PylonBurning : public PylonImpl {
 public:
         PylonBurning(P p, Pylon* pylon) :
                 PylonImpl(p, pylon) {}
@@ -112,8 +102,7 @@ public:
         void on_new_turn_activated() override;
 };
 
-class PylonTerrify: public PylonImpl
-{
+class PylonTerrify : public PylonImpl {
 public:
         PylonTerrify(P p, Pylon* pylon) :
                 PylonImpl(p, pylon) {}
@@ -121,8 +110,7 @@ public:
         void on_new_turn_activated() override;
 };
 
-class PylonInvis: public PylonImpl
-{
+class PylonInvis : public PylonImpl {
 public:
         PylonInvis(P p, Pylon* pylon) :
                 PylonImpl(p, pylon) {}
@@ -130,8 +118,7 @@ public:
         void on_new_turn_activated() override;
 };
 
-class PylonSlow: public PylonImpl
-{
+class PylonSlow : public PylonImpl {
 public:
         PylonSlow(P p, Pylon* pylon) :
                 PylonImpl(p, pylon) {}
@@ -139,8 +126,7 @@ public:
         void on_new_turn_activated() override;
 };
 
-class PylonKnockback: public PylonImpl
-{
+class PylonKnockback : public PylonImpl {
 public:
         PylonKnockback(P p, Pylon* pylon) :
                 PylonImpl(p, pylon) {}
@@ -148,8 +134,7 @@ public:
         void on_new_turn_activated() override;
 };
 
-class PylonTeleport: public PylonImpl
-{
+class PylonTeleport : public PylonImpl {
 public:
         PylonTeleport(P p, Pylon* pylon) :
                 PylonImpl(p, pylon) {}

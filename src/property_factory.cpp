@@ -8,15 +8,13 @@
 
 #include "property.hpp"
 
-namespace property_factory
-{
+namespace property_factory {
 
 Prop* make(const PropId id)
 {
         ASSERT(id != PropId::END);
 
-        switch (id)
-        {
+        switch (id) {
         case PropId::nailed:
                 return new PropNailed();
 

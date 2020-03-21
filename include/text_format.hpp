@@ -10,8 +10,7 @@
 #include <string>
 #include <vector>
 
-namespace text_format
-{
+namespace text_format {
 
 // Reads a line of space separated words, and splits them into several lines
 // with the given maximum width.  If any single word in the "line" parameter is

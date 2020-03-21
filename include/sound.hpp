@@ -12,25 +12,22 @@
 #include "item_data.hpp"
 #include "msg_log.hpp"
 
-
-namespace actor
-{
+namespace actor {
 class Actor;
 } // namespace actor
 
-
-enum class SndVol
-{
+enum class SndVol {
         low,
         high
 };
 
-enum class AlertsMon {no ,yes};
+enum class AlertsMon { no,
+                       yes };
 
-enum class IgnoreMsgIfOriginSeen {no ,yes};
+enum class IgnoreMsgIfOriginSeen { no,
+                                   yes };
 
-class SndHeardEffect
-{
+class SndHeardEffect {
 public:
         SndHeardEffect() = default;
 
@@ -42,10 +39,9 @@ public:
 // -----------------------------------------------------------------------------
 // Sound
 // -----------------------------------------------------------------------------
-class Snd
-{
+class Snd {
 public:
-        Snd(std::string  msg,
+        Snd(std::string msg,
             SfxId sfx,
             IgnoreMsgIfOriginSeen ignore_msg_if_origin_seen,
             const P& origin,
@@ -139,8 +135,7 @@ private:
 // -----------------------------------------------------------------------------
 // Sound emitting
 // -----------------------------------------------------------------------------
-namespace snd_emit
-{
+namespace snd_emit {
 
 void run(Snd snd);
 

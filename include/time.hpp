@@ -9,8 +9,7 @@
 
 #include <string>
 
-enum class TimeType
-{
+enum class TimeType {
         year,
         month,
         day,
@@ -19,8 +18,7 @@ enum class TimeType
         second
 };
 
-struct TimeData
-{
+struct TimeData {
         TimeData() = default;
 
         TimeData(
@@ -36,7 +34,8 @@ struct TimeData
                 day(day_val),
                 hour(hour_val),
                 minute(minute_val),
-                second(second_val) {}
+                second(second_val)
+        {}
 
         std::string time_str(
                 TimeType lowest,

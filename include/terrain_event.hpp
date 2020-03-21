@@ -13,15 +13,11 @@
 #include "rect.hpp"
 #include "terrain.hpp"
 
-
 // TODO: Events should probably not be terrain
 
+namespace terrain {
 
-namespace terrain
-{
-
-class Event: public Terrain
-{
+class Event : public Terrain {
 public:
         Event(const P& pos) :
                 Terrain(pos) {}
@@ -42,8 +38,7 @@ public:
         }
 };
 
-class EventWallCrumble: public Event
-{
+class EventWallCrumble : public Event {
 public:
         EventWallCrumble(
                 const P& p,
@@ -67,8 +62,7 @@ private:
         std::vector<P> m_inner_cells;
 };
 
-class EventSnakeEmerge: public Event
-{
+class EventSnakeEmerge : public Event {
 public:
         EventSnakeEmerge();
 
@@ -104,8 +98,7 @@ private:
         const int m_min_nr_snakes = 3;
 };
 
-class EventRatsInTheWallsDiscovery: public Event
-{
+class EventRatsInTheWallsDiscovery : public Event {
 public:
         EventRatsInTheWallsDiscovery(const P& terrain_pos);
 

@@ -9,8 +9,7 @@
 
 #include <string>
 
-namespace common_text
-{
+namespace common_text {
 
 extern const std::string g_screen_exit_hint;
 extern const std::string g_minimap_exit_hint;

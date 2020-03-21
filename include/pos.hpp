@@ -9,17 +9,16 @@
 
 #include "direction.hpp"
 
-struct P
-{
+struct P {
 public:
         P() = default;
 
         P(const int x_val, const int y_val) :
                 x(x_val),
-                y(y_val) {}
+                y(y_val)
+        {}
 
-        P(const P& p) 
-                = default;
+        P(const P& p) = default;
 
         // Construct from a direction -> offsets (e.g. 1, -1)
         explicit P(Dir dir);
@@ -144,29 +143,25 @@ public:
 
         bool operator==(const P p) const
         {
-                return
-                        (x == p.x) &&
-                        (y == p.y);
+                return (x == p.x) && (y == p.y);
         }
 
         bool operator!=(const P p) const
         {
-                return
-                        (x != p.x) ||
-                        (y != p.y);
+                return (x != p.x) || (y != p.y);
         }
 
         bool operator!=(const int v) const
         {
-                return
-                        (x != v) ||
-                        (y != v);
+                return (x != v) || (y != v);
         }
 
         P signs() const
         {
-                return P((x == 0) ? 0 : (x > 0) ? 1 : -1,
-                         (y == 0) ? 0 : (y > 0) ? 1 : -1);
+                const int x_sign = (x == 0) ? 0 : (x > 0) ? 1 : -1;
+                const int y_sign = (y == 0) ? 0 : (y > 0) ? 1 : -1;
+
+                return {x_sign, y_sign};
         }
 
         void set(const int new_x, const int new_y)
@@ -193,8 +188,7 @@ public:
         bool is_adjacent(const P p)
         {
                 // Do not count the same position as adjacent
-                if (p == *this)
-                {
+                if (p == *this) {
                         return false;
                 }
 
@@ -213,16 +207,15 @@ public:
         int y {0};
 };
 
-struct PosVal
-{
+struct PosVal {
         PosVal() = default;
 
         PosVal(const P pos_, const int val_) :
                 pos(pos_),
-                val(val_) {}
+                val(val_)
+        {}
 
-        PosVal(const PosVal& o) 
-                = default;
+        PosVal(const PosVal& o) = default;
 
         P pos {0, 0};
         int val {-1};

@@ -7,16 +7,12 @@
 #ifndef PICKUP_HPP
 #define PICKUP_HPP
 
-
-namespace item
-{
+namespace item {
 class Ammo;
 class Wpn;
 } // namespace item
 
-
-namespace item_pickup
-{
+namespace item_pickup {
 
 // NOTE: The "try_" functions can always be called to check if something is
 // there to be picked up or unloaded

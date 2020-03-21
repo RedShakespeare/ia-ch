@@ -28,7 +28,7 @@ static terrain::TerrainData s_data[(size_t)terrain::Id::END];
 
 static void reset_data(terrain::TerrainData& d)
 {
-        d.make_obj = [](const P & p) {(void)p; return nullptr;};
+        d.make_obj = [](const P& p) {(void)p; return nullptr; };
         d.id = terrain::Id::END;
         d.character = ' ';
         d.tile = TileId::END;
@@ -61,7 +61,7 @@ static void init_data_list()
         reset_data(d);
 
         d.id = terrain::Id::floor;
-        d.make_obj = [](const P & p) {
+        d.make_obj = [](const P& p) {
                 return new terrain::Floor(p);
         };
         d.character = '.';
@@ -71,9 +71,8 @@ static void init_data_list()
         d.can_have_gore = true;
         add_to_list_and_reset(d);
 
-
         d.id = terrain::Id::bridge;
-        d.make_obj = [](const P & p) {
+        d.make_obj = [](const P& p) {
                 return new terrain::Bridge(p);
         };
         d.move_rules.set_walkable();
@@ -81,7 +80,7 @@ static void init_data_list()
         add_to_list_and_reset(d);
 
         d.id = terrain::Id::wall;
-        d.make_obj = [](const P & p) {
+        d.make_obj = [](const P& p) {
                 return new terrain::Wall(p);
         };
         d.character = config::is_text_mode_wall_full_square() ? 10 : '#';
@@ -100,7 +99,7 @@ static void init_data_list()
         add_to_list_and_reset(d);
 
         d.id = terrain::Id::tree;
-        d.make_obj = [](const P & p) {
+        d.make_obj = [](const P& p) {
                 return new terrain::Tree(p);
         };
         d.character = '|';
@@ -120,7 +119,7 @@ static void init_data_list()
         add_to_list_and_reset(d);
 
         d.id = terrain::Id::grass;
-        d.make_obj = [](const P & p) {
+        d.make_obj = [](const P& p) {
                 return new terrain::Grass(p);
         };
         d.character = '.';
@@ -131,7 +130,7 @@ static void init_data_list()
         add_to_list_and_reset(d);
 
         d.id = terrain::Id::bush;
-        d.make_obj = [](const P & p) {
+        d.make_obj = [](const P& p) {
                 return new terrain::Bush(p);
         };
         d.character = '"';
@@ -142,7 +141,7 @@ static void init_data_list()
         add_to_list_and_reset(d);
 
         d.id = terrain::Id::vines;
-        d.make_obj = [](const P & p) {
+        d.make_obj = [](const P& p) {
                 return new terrain::Vines(p);
         };
         d.character = '"';
@@ -156,7 +155,7 @@ static void init_data_list()
         add_to_list_and_reset(d);
 
         d.id = terrain::Id::chains;
-        d.make_obj = [](const P & p) {
+        d.make_obj = [](const P& p) {
                 return new terrain::Chains(p);
         };
         d.character = '"';
@@ -170,7 +169,7 @@ static void init_data_list()
         add_to_list_and_reset(d);
 
         d.id = terrain::Id::grate;
-        d.make_obj = [](const P & p) {
+        d.make_obj = [](const P& p) {
                 return new terrain::Grate(p);
         };
         d.character = '#';
@@ -188,7 +187,7 @@ static void init_data_list()
         add_to_list_and_reset(d);
 
         d.id = terrain::Id::stairs;
-        d.make_obj = [](const P & p) {
+        d.make_obj = [](const P& p) {
                 return new terrain::Stairs(p);
         };
         d.character = '>';
@@ -202,7 +201,7 @@ static void init_data_list()
         add_to_list_and_reset(d);
 
         d.id = terrain::Id::monolith;
-        d.make_obj = [](const P & p) {
+        d.make_obj = [](const P& p) {
                 return new terrain::Monolith(p);
         };
         d.character = '|';
@@ -219,7 +218,7 @@ static void init_data_list()
         add_to_list_and_reset(d);
 
         d.id = terrain::Id::pylon;
-        d.make_obj = [](const P & p) {
+        d.make_obj = [](const P& p) {
                 return new terrain::Pylon(p, terrain::PylonId::any);
         };
         d.character = '|';
@@ -236,7 +235,7 @@ static void init_data_list()
         add_to_list_and_reset(d);
 
         d.id = terrain::Id::lever;
-        d.make_obj = [](const P & p) {
+        d.make_obj = [](const P& p) {
                 return new terrain::Lever(p);
         };
         d.character = '%';
@@ -250,7 +249,7 @@ static void init_data_list()
         add_to_list_and_reset(d);
 
         d.id = terrain::Id::brazier;
-        d.make_obj = [](const P & p) {
+        d.make_obj = [](const P& p) {
                 return new terrain::Brazier(p);
         };
         d.character = '0';
@@ -265,7 +264,7 @@ static void init_data_list()
         add_to_list_and_reset(d);
 
         d.id = terrain::Id::liquid_shallow;
-        d.make_obj = [](const P & p) {
+        d.make_obj = [](const P& p) {
                 return new terrain::LiquidShallow(p);
         };
         d.character = '~';
@@ -278,7 +277,7 @@ static void init_data_list()
         add_to_list_and_reset(d);
 
         d.id = terrain::Id::liquid_deep;
-        d.make_obj = [](const P & p) {
+        d.make_obj = [](const P& p) {
                 return new terrain::LiquidDeep(p);
         };
         d.character = '~';
@@ -291,7 +290,7 @@ static void init_data_list()
         add_to_list_and_reset(d);
 
         d.id = terrain::Id::chasm;
-        d.make_obj = [](const P & p) {
+        d.make_obj = [](const P& p) {
                 return new terrain::Chasm(p);
         };
         d.character = '.';
@@ -311,7 +310,7 @@ static void init_data_list()
         add_to_list_and_reset(d);
 
         d.id = terrain::Id::gravestone;
-        d.make_obj = [](const P & p) {
+        d.make_obj = [](const P& p) {
                 return new terrain::GraveStone(p);
         };
         d.character = ']';
@@ -328,7 +327,7 @@ static void init_data_list()
         add_to_list_and_reset(d);
 
         d.id = terrain::Id::church_bench;
-        d.make_obj = [](const P & p) {
+        d.make_obj = [](const P& p) {
                 return new terrain::ChurchBench(p);
         };
         d.character = '[';
@@ -347,7 +346,7 @@ static void init_data_list()
         add_to_list_and_reset(d);
 
         d.id = terrain::Id::carpet;
-        d.make_obj = [](const P & p) {
+        d.make_obj = [](const P& p) {
                 return new terrain::Carpet(p);
         };
         d.character = '.';
@@ -358,7 +357,7 @@ static void init_data_list()
         add_to_list_and_reset(d);
 
         d.id = terrain::Id::rubble_high;
-        d.make_obj = [](const P & p) {
+        d.make_obj = [](const P& p) {
                 return new terrain::RubbleHigh(p);
         };
         d.character = 8;
@@ -378,7 +377,7 @@ static void init_data_list()
         add_to_list_and_reset(d);
 
         d.id = terrain::Id::rubble_low;
-        d.make_obj = [](const P & p) {
+        d.make_obj = [](const P& p) {
                 return new terrain::RubbleLow(p);
         };
         d.character = ',';
@@ -389,7 +388,7 @@ static void init_data_list()
         add_to_list_and_reset(d);
 
         d.id = terrain::Id::bones;
-        d.make_obj = [](const P & p) {
+        d.make_obj = [](const P& p) {
                 return new terrain::Bones(p);
         };
         d.character = '&';
@@ -400,7 +399,7 @@ static void init_data_list()
         add_to_list_and_reset(d);
 
         d.id = terrain::Id::statue;
-        d.make_obj = [](const P & p) {
+        d.make_obj = [](const P& p) {
                 return new terrain::Statue(p);
         };
         d.character = 5; //Paragraph sign
@@ -417,7 +416,7 @@ static void init_data_list()
         add_to_list_and_reset(d);
 
         d.id = terrain::Id::cocoon;
-        d.make_obj = [](const P & p) {
+        d.make_obj = [](const P& p) {
                 return new terrain::Cocoon(p);
         };
         d.character = '8';
@@ -435,7 +434,7 @@ static void init_data_list()
         add_to_list_and_reset(d);
 
         d.id = terrain::Id::chest;
-        d.make_obj = [](const P & p) {
+        d.make_obj = [](const P& p) {
                 return new terrain::Chest(p);
         };
         d.character = '+';
@@ -449,7 +448,7 @@ static void init_data_list()
         add_to_list_and_reset(d);
 
         d.id = terrain::Id::cabinet;
-        d.make_obj = [](const P & p) {
+        d.make_obj = [](const P& p) {
                 return new terrain::Cabinet(p);
         };
         d.character = '7';
@@ -466,7 +465,7 @@ static void init_data_list()
         add_to_list_and_reset(d);
 
         d.id = terrain::Id::bookshelf;
-        d.make_obj = [](const P & p) {
+        d.make_obj = [](const P& p) {
                 return new terrain::Bookshelf(p);
         };
         d.character = '7';
@@ -483,7 +482,7 @@ static void init_data_list()
         add_to_list_and_reset(d);
 
         d.id = terrain::Id::alchemist_bench;
-        d.make_obj = [](const P & p) {
+        d.make_obj = [](const P& p) {
                 return new terrain::AlchemistBench(p);
         };
         d.character = '7';
@@ -500,7 +499,7 @@ static void init_data_list()
         add_to_list_and_reset(d);
 
         d.id = terrain::Id::fountain;
-        d.make_obj = [](const P & p) {
+        d.make_obj = [](const P& p) {
                 return new terrain::Fountain(p);
         };
         d.character = '1';
@@ -517,7 +516,7 @@ static void init_data_list()
         add_to_list_and_reset(d);
 
         d.id = terrain::Id::stalagmite;
-        d.make_obj = [](const P & p) {
+        d.make_obj = [](const P& p) {
                 return new terrain::Stalagmite(p);
         };
         d.character = ':';
@@ -534,7 +533,7 @@ static void init_data_list()
         add_to_list_and_reset(d);
 
         d.id = terrain::Id::altar;
-        d.make_obj = [](const P & p) {
+        d.make_obj = [](const P& p) {
                 return new terrain::Altar(p);
         };
         d.character = '_';
@@ -550,7 +549,7 @@ static void init_data_list()
         add_to_list_and_reset(d);
 
         d.id = terrain::Id::gong;
-        d.make_obj = [](const P & p) {
+        d.make_obj = [](const P& p) {
                 return new terrain::Gong(p);
         };
         d.character = '_';
@@ -568,7 +567,7 @@ static void init_data_list()
         add_to_list_and_reset(d);
 
         d.id = terrain::Id::tomb;
-        d.make_obj = [](const P & p) {
+        d.make_obj = [](const P& p) {
                 return new terrain::Tomb(p);
         };
         d.character = ']';
@@ -586,7 +585,7 @@ static void init_data_list()
         add_to_list_and_reset(d);
 
         d.id = terrain::Id::door;
-        d.make_obj = [](const P & p) {
+        d.make_obj = [](const P& p) {
                 return new terrain::Door(p);
         };
         d.can_have_blood = false;
@@ -597,7 +596,7 @@ static void init_data_list()
         add_to_list_and_reset(d);
 
         d.id = terrain::Id::trap;
-        d.make_obj = [](const P & p) {
+        d.make_obj = [](const P& p) {
                 return new terrain::Trap(p);
         };
         d.move_rules.set_walkable();
@@ -605,7 +604,7 @@ static void init_data_list()
         add_to_list_and_reset(d);
 
         d.id = terrain::Id::lit_dynamite;
-        d.make_obj = [](const P & p) {
+        d.make_obj = [](const P& p) {
                 return new terrain::LitDynamite(p);
         };
         d.character = '/';
@@ -618,7 +617,7 @@ static void init_data_list()
         add_to_list_and_reset(d);
 
         d.id = terrain::Id::lit_flare;
-        d.make_obj = [](const P & p) {
+        d.make_obj = [](const P& p) {
                 return new terrain::LitFlare(p);
         };
         d.character = '/';
@@ -627,7 +626,7 @@ static void init_data_list()
         add_to_list_and_reset(d);
 
         d.id = terrain::Id::smoke;
-        d.make_obj = [](const P & p) {
+        d.make_obj = [](const P& p) {
                 return new terrain::Smoke(p);
         };
         d.character = '*';
@@ -637,7 +636,7 @@ static void init_data_list()
         add_to_list_and_reset(d);
 
         d.id = terrain::Id::force_field;
-        d.make_obj = [](const P & p) {
+        d.make_obj = [](const P& p) {
                 return new terrain::ForceField(p);
         };
         d.character = '#';
@@ -655,21 +654,21 @@ static void init_data_list()
         add_to_list_and_reset(d);
 
         d.id = terrain::Id::event_wall_crumble;
-        d.make_obj = [](const P & p) {
+        d.make_obj = [](const P& p) {
                 return new terrain::EventWallCrumble(p);
         };
         d.move_rules.set_walkable();
         add_to_list_and_reset(d);
 
         d.id = terrain::Id::event_snake_emerge;
-        d.make_obj = [](const P & p) {
+        d.make_obj = [](const P& p) {
                 return new terrain::EventSnakeEmerge(p);
         };
         d.move_rules.set_walkable();
         add_to_list_and_reset(d);
 
         d.id = terrain::Id::event_rat_cave_discovery;
-        d.make_obj = [](const P & p) {
+        d.make_obj = [](const P& p) {
                 return new terrain::EventRatsInTheWallsDiscovery(p);
         };
         d.move_rules.set_walkable();
@@ -679,23 +678,19 @@ static void init_data_list()
 // -----------------------------------------------------------------------------
 // terrain
 // -----------------------------------------------------------------------------
-namespace terrain
-{
+namespace terrain {
 
 bool MoveRules::can_move(const actor::Actor& actor) const
 {
-        if (m_is_walkable)
-        {
+        if (m_is_walkable) {
                 return true;
         }
 
         // This terrain blocks walking, check if any property overrides this
         // (e.g. flying)
 
-        for (const auto id : m_props_allow_move)
-        {
-                if (actor.m_properties.has(id))
-                {
+        for (const auto id : m_props_allow_move) {
+                if (actor.m_properties.has(id)) {
                         return true;
                 }
         }

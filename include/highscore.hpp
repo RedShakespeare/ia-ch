@@ -16,8 +16,7 @@
 #include "player_bon.hpp"
 #include "state.hpp"
 
-struct HighscoreEntry
-{
+struct HighscoreEntry {
         int calculate_score() const;
 
         std::string game_summary_file_path {};
@@ -34,8 +33,7 @@ struct HighscoreEntry
         bool is_latest_entry {false};
 };
 
-namespace highscore
-{
+namespace highscore {
 
 void init();
 void cleanup();
@@ -52,11 +50,9 @@ std::vector<HighscoreEntry> entries_sorted();
 
 } // namespace highscore
 
-class BrowseHighscore: public State
-{
+class BrowseHighscore : public State {
 public:
-        BrowseHighscore() 
-                = default;
+        BrowseHighscore() = default;
 
         void on_start() override;
 
@@ -78,10 +74,9 @@ private:
         MenuBrowser m_browser;
 };
 
-class BrowseHighscoreEntry: public InfoScreenState
-{
+class BrowseHighscoreEntry : public InfoScreenState {
 public:
-        BrowseHighscoreEntry(std::string  file_path);
+        BrowseHighscoreEntry(std::string file_path);
 
         void on_start() override;
 

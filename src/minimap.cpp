@@ -22,23 +22,19 @@
 // -----------------------------------------------------------------------------
 Array2<Color> minimap_(0, 0);
 
-
 static Color map_cell_color(const Cell& map_cell, const bool is_blocked)
 {
         const auto* const terrain = map_cell.terrain;
 
         const auto terrain_id = terrain->id();
 
-        if (map_cell.item)
-        {
+        if (map_cell.item) {
                 if ((map_cell.item->data().type == ItemType::ranged_wpn) &&
-                    !map_cell.item->data().ranged.has_infinite_ammo)
-                {
+                    !map_cell.item->data().ranged.has_infinite_ammo) {
                         auto wpn =
                                 static_cast<const item::Wpn*>(map_cell.item);
 
-                        if (wpn->m_ammo_loaded == 0)
-                        {
+                        if (wpn->m_ammo_loaded == 0) {
                                 return colors::magenta();
                         }
                 }
@@ -46,41 +42,32 @@ static Color map_cell_color(const Cell& map_cell, const bool is_blocked)
                 return colors::light_magenta();
         }
 
-        if (terrain_id == terrain::Id::stairs)
-        {
+        if (terrain_id == terrain::Id::stairs) {
                 return colors::yellow();
         }
 
-        if (terrain_id == terrain::Id::door)
-        {
+        if (terrain_id == terrain::Id::door) {
                 const auto* const door =
                         static_cast<const terrain::Door*>(terrain);
 
-                if (!door->is_hidden())
-                {
-                        if (door->type() == DoorType::metal)
-                        {
+                if (!door->is_hidden()) {
+                        if (door->type() == DoorType::metal) {
                                 return colors::light_teal();
-                        }
-                        else
-                        {
+                        } else {
                                 return colors::light_white();
                         }
                 }
         }
 
-        if (terrain_id == terrain::Id::lever)
-        {
+        if (terrain_id == terrain::Id::lever) {
                 return colors::teal();
         }
 
-        if (terrain_id == terrain::Id::liquid_deep)
-        {
+        if (terrain_id == terrain::Id::liquid_deep) {
                 return colors::blue();
         }
 
-        if (is_blocked)
-        {
+        if (is_blocked) {
                 return colors::sepia();
         }
 
@@ -101,12 +88,9 @@ static R get_map_area_explored()
 
         const P& map_dims = minimap_.dims();
 
-        for (int x = 0; x < map_dims.x; ++x)
-        {
-                for (int y = 0; y < map_dims.y; ++y)
-                {
-                        if (map::g_cells.at(x, y).is_explored)
-                        {
+        for (int x = 0; x < map_dims.x; ++x) {
+                for (int y = 0; y < map_dims.y; ++y) {
+                        if (map::g_cells.at(x, y).is_explored) {
                                 area_explored.p0.x = std::min(
                                         area_explored.p0.x,
                                         x);
@@ -135,8 +119,8 @@ static R get_minimap_px_rect_on_screen(const R& map_area_explored)
 
         const P minimap_px_dims =
                 map_area_explored
-                .dims()
-                .scaled_up(px_w_per_cell);
+                        .dims()
+                        .scaled_up(px_w_per_cell);
 
         const P screen_px_dims =
                 io::gui_to_px_coords(
@@ -170,17 +154,15 @@ void ViewMinimap::draw()
 
         const R minimap_px_rect = get_minimap_px_rect_on_screen(area_explored);
 
-        for (int x = area_explored.p0.x; x <= area_explored.p1.x; ++x)
-        {
-                for (int y = area_explored.p0.y; y <= area_explored.p1.y; ++y)
-                {
+        for (int x = area_explored.p0.x; x <= area_explored.p1.x; ++x) {
+                for (int y = area_explored.p0.y; y <= area_explored.p1.y; ++y) {
                         const P pos_relative_to_explored_area =
                                 P(x, y) - area_explored.p0;
 
                         const P px_pos =
                                 pos_relative_to_explored_area
-                                .scaled_up(px_w_per_cell)
-                                .with_offsets(minimap_px_rect.p0);
+                                        .scaled_up(px_w_per_cell)
+                                        .with_offsets(minimap_px_rect.p0);
 
                         const P px_dims(px_w_per_cell, px_w_per_cell);
 
@@ -188,12 +170,9 @@ void ViewMinimap::draw()
 
                         Color color;
 
-                        if (map::g_player->m_pos == P(x, y))
-                        {
+                        if (map::g_player->m_pos == P(x, y)) {
                                 color = colors::light_green();
-                        }
-                        else
-                        {
+                        } else {
                                 color = minimap_.at(x, y);
                         }
 
@@ -206,8 +185,7 @@ void ViewMinimap::update()
 {
         const auto input = io::get();
 
-        switch (input.key)
-        {
+        switch (input.key) {
         case SDLK_SPACE:
         case SDLK_ESCAPE:
         case 'm':
@@ -223,8 +201,7 @@ void ViewMinimap::update()
 // -----------------------------------------------------------------------------
 // minimap
 // -----------------------------------------------------------------------------
-namespace minimap
-{
+namespace minimap {
 
 void clear()
 {
@@ -233,8 +210,7 @@ void clear()
 
 void update()
 {
-        if (minimap_.dims() != map::dims())
-        {
+        if (minimap_.dims() != map::dims()) {
                 minimap_.resize(map::dims());
         }
 
@@ -245,12 +221,10 @@ void update()
 
         const auto nr_cells = map::nr_cells();
 
-        for (size_t i = 0; i < nr_cells; ++i)
-        {
+        for (size_t i = 0; i < nr_cells; ++i) {
                 const auto& map_cell = map::g_cells.at(i);
 
-                if (!map_cell.is_seen_by_player)
-                {
+                if (!map_cell.is_seen_by_player) {
                         continue;
                 }
 

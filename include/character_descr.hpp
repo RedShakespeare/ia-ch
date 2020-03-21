@@ -11,12 +11,12 @@
 #include "global.hpp"
 #include "info_screen_state.hpp"
 
-class CharacterDescr: public InfoScreenState
-{
+class CharacterDescr : public InfoScreenState {
 public:
         CharacterDescr() :
-                
-                m_top_idx(0) {}
+
+                m_top_idx(0)
+        {}
 
         void on_start() override;
 

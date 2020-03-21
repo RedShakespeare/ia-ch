@@ -9,12 +9,9 @@
 
 #include <vector>
 
-
 struct P;
 
-
-namespace line_calc
-{
+namespace line_calc {
 
 void init();
 

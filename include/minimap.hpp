@@ -13,11 +13,9 @@
 // -----------------------------------------------------------------------------
 // ViewMinimap
 // -----------------------------------------------------------------------------
-class ViewMinimap : public State
-{
+class ViewMinimap : public State {
 public:
-        ViewMinimap() 
-                = default;
+        ViewMinimap() = default;
 
         StateId id() override
         {
@@ -32,8 +30,7 @@ public:
 // -----------------------------------------------------------------------------
 // minimap
 // -----------------------------------------------------------------------------
-namespace minimap
-{
+namespace minimap {
 
 void clear();
 

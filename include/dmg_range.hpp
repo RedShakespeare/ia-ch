@@ -11,9 +11,7 @@
 
 #include "random.hpp"
 
-
-class DmgRange
-{
+class DmgRange {
 public:
         DmgRange() = default;
 
@@ -22,7 +20,6 @@ public:
                 m_max(max),
                 m_plus(plus)
         {
-
         }
 
         Range total_range() const

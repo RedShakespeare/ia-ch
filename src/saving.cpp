@@ -35,8 +35,7 @@
 // Private
 // -----------------------------------------------------------------------------
 // Only used to verify that the put/get methods are not called at the wrong time
-enum class SaveLoadState
-{
+enum class SaveLoadState {
         saving,
         loading,
         stopped
@@ -44,9 +43,7 @@ enum class SaveLoadState
 
 static SaveLoadState s_state;
 
-
 static std::vector<std::string> s_lines;
-
 
 static void save_modules()
 {
@@ -119,14 +116,11 @@ static void write_file()
         // Current file content is discarded
         file.open(paths::save_file_path(), std::ios::trunc);
 
-        if (file.is_open())
-        {
-                for (size_t i = 0; i < s_lines.size(); ++i)
-                {
+        if (file.is_open()) {
+                for (size_t i = 0; i < s_lines.size(); ++i) {
                         file << s_lines[i];
 
-                        if (i != s_lines.size() - 1)
-                        {
+                        if (i != s_lines.size() - 1) {
                                 file << std::endl;
                         }
                 }
@@ -139,18 +133,15 @@ static void read_file()
 {
         std::ifstream file(paths::save_file_path());
 
-        if (file.is_open())
-        {
+        if (file.is_open()) {
                 std::string current_line;
 
-                while (getline(file, current_line))
-                {
+                while (getline(file, current_line)) {
                         s_lines.push_back(current_line);
                 }
 
                 file.close();
-        }
-        else // Could not open save file
+        } else // Could not open save file
         {
                 ASSERT(false && "Failed to open save file");
         }
@@ -159,8 +150,7 @@ static void read_file()
 // -----------------------------------------------------------------------------
 // saving
 // -----------------------------------------------------------------------------
-namespace saving
-{
+namespace saving {
 
 void init()
 {
@@ -221,16 +211,14 @@ bool is_save_available()
 {
         std::ifstream file(paths::save_file_path());
 
-        if (file.good())
-        {
+        if (file.good()) {
                 const bool is_empty =
                         file.peek() == std::ifstream::traits_type::eof();
 
                 file.close();
 
                 return !is_empty;
-        }
-        else // Failed to open file
+        } else // Failed to open file
         {
                 file.close();
 

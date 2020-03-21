@@ -38,13 +38,11 @@
 #include "saving.hpp"
 #include "sdl_base.hpp"
 
-namespace init
-{
+namespace init {
 
 bool g_is_cheat_vision_enabled = false;
 
 bool g_is_demo_mapgen = false;
-
 
 void init_io()
 {

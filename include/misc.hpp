@@ -7,11 +7,7 @@
 #ifndef MISC_HPP
 #define MISC_HPP
 
-
-
 // TODO: "misc" is not a good name...
-
-
 
 #include <string>
 #include <vector>
@@ -19,7 +15,7 @@
 struct P;
 struct R;
 
-template<typename T>
+template <typename T>
 class Array2;
 
 // TODO: Use std::clamp when available

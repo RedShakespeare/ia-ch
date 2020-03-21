@@ -939,10 +939,10 @@ static void init_data_list()
         d.descr = "";
         d.msg_start_player =
                 property_data::g_data[(size_t)PropId::light_sensitive]
-                .msg_start_player;
+                        .msg_start_player;
         d.msg_end_player =
                 property_data::g_data[(size_t)PropId::light_sensitive]
-                .msg_end_player;
+                        .msg_end_player;
         d.allow_display_turns = false;
         d.allow_test_on_bot = true;
         d.alignment = PropAlignment::bad;
@@ -962,11 +962,9 @@ static void init_data_list()
 // -----------------------------------------------------------------------------
 // property_data
 // -----------------------------------------------------------------------------
-namespace property_data
-{
+namespace property_data {
 
 PropData g_data[(size_t)PropId::END];
-
 
 void init()
 {

@@ -29,7 +29,6 @@ static const bool s_draw_text_bg = false;
 
 static const int s_text_x0 = 1;
 
-
 static int text_x1()
 {
         return panels::w(s_panel) - 2;
@@ -58,14 +57,11 @@ static void draw_player_class(int& y)
 
         const auto bg = player_bon::bg();
 
-        if (bg == Bg::occultist)
-        {
+        if (bg == Bg::occultist) {
                 const auto domain = player_bon::occultist_domain();
 
                 bg_title = player_bon::occultist_profession_title(domain);
-        }
-        else
-        {
+        } else {
                 bg_title = player_bon::bg_title(bg);
         }
 
@@ -74,8 +70,7 @@ static void draw_player_class(int& y)
                         bg_title,
                         text_x1() - s_text_x0 + 1);
 
-        for (const std::string& line : class_lines)
-        {
+        for (const std::string& line : class_lines) {
                 io::draw_text(
                         line,
                         s_panel,
@@ -242,8 +237,7 @@ static void draw_wielded_wpn(int& y)
 
         const auto* wpn = map::g_player->m_inv.item_in_slot(SlotId::wpn);
 
-        if (!wpn)
-        {
+        if (!wpn) {
                 wpn = &map::g_player->unarmed_wpn();
         }
 
@@ -288,8 +282,7 @@ static void draw_alt_wpn(int& y)
 
         const auto* wpn = map::g_player->m_inv.item_in_slot(SlotId::wpn_alt);
 
-        if (!wpn)
-        {
+        if (!wpn) {
                 wpn = &map::g_player->unarmed_wpn();
         }
 
@@ -339,14 +332,11 @@ static void draw_lantern(int& y)
 
         std::string lantern_str = "None";
 
-        if (item)
-        {
+        if (item) {
                 const auto* const lantern =
                         static_cast<const device::Lantern*>(item);
 
-                if (lantern->is_activated)
-                {
-
+                if (lantern->is_activated) {
                         color = colors::yellow();
                 }
 
@@ -377,8 +367,7 @@ static void draw_med_suppl(int& y)
         const auto* const item =
                 map::g_player->m_inv.item_in_backpack(item::Id::medical_bag);
 
-        if (item)
-        {
+        if (item) {
                 const auto* const medical_bag =
                         static_cast<const item::MedicalBag*>(item);
 
@@ -431,9 +420,7 @@ static void draw_encumbrance(int& y)
         const std::string enc_str = std::to_string(enc) + "%";
 
         const Color enc_color =
-                (enc < 100) ? colors::white() :
-                (enc < g_enc_immobile_lvl) ? colors::yellow() :
-                colors::light_red();
+                (enc < 100) ? colors::white() : (enc < g_enc_immobile_lvl) ? colors::yellow() : colors::light_red();
 
         io::draw_text_right(
                 enc_str,
@@ -450,10 +437,8 @@ static void draw_properties(int& y)
         const auto property_names =
                 map::g_player->m_properties.property_names_short();
 
-        for (const auto& name : property_names)
-        {
-                if (y >= panels::y1(s_panel))
-                {
+        for (const auto& name : property_names) {
+                if (y >= panels::y1(s_panel)) {
                         break;
                 }
 
@@ -471,8 +456,7 @@ static void draw_properties(int& y)
 // -----------------------------------------------------------------------------
 // status_lines
 // -----------------------------------------------------------------------------
-namespace status_lines
-{
+namespace status_lines {
 
 void draw()
 {

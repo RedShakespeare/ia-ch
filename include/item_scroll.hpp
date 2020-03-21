@@ -9,30 +9,23 @@
 
 #include "item.hpp"
 
-
-namespace actor
-{
+namespace actor {
 class Actor;
 } // namespace actor
 
 class Spell;
 
-
-namespace scroll
-{
+namespace scroll {
 
 const int g_low_spawn_chance = 15;
 const int g_high_spawn_chance = 35;
-
 
 void init();
 
 void save();
 void load();
 
-
-class Scroll: public item::Item
-{
+class Scroll : public item::Item {
 public:
         Scroll(item::ItemData* item_data);
 

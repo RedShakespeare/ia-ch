@@ -13,21 +13,15 @@
 #include "global.hpp"
 #include "property_data.hpp"
 
-
-namespace actor
-{
+namespace actor {
 class Actor;
 } // namespace actor
 
-
-namespace terrain
-{
+namespace terrain {
 
 class Terrain;
 
-
-enum class Id
-{
+enum class Id {
         floor,
         bridge,
         wall,
@@ -75,16 +69,13 @@ enum class Id
         END
 };
 
-enum class TerrainPlacement
-{
+enum class TerrainPlacement {
         adj_to_walls,
         away_from_walls,
         either
 };
 
-
-class MoveRules
-{
+class MoveRules {
 public:
         MoveRules()
         {
@@ -122,8 +113,7 @@ private:
         std::vector<PropId> m_props_allow_move;
 };
 
-struct TerrainData
-{
+struct TerrainData {
         std::function<Terrain*(const P& p)> make_obj;
         Id id;
         char character;
@@ -144,7 +134,6 @@ struct TerrainData
         int shock_when_adjacent;
         TerrainPlacement auto_spawn_placement;
 };
-
 
 void init();
 

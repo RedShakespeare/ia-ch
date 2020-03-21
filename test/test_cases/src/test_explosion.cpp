@@ -20,10 +20,8 @@ TEST_CASE("Explosions damage walls")
 {
         test_utils::init_all();
 
-        for (int x = 0; x < map::w(); ++x)
-        {
-                for (int y = 0; y < map::h(); ++y)
-                {
+        for (int x = 0; x < map::w(); ++x) {
+                for (int y = 0; y < map::h(); ++y) {
                         map::put(new terrain::Wall({x, y}));
                 }
         }
@@ -33,46 +31,36 @@ TEST_CASE("Explosions damage walls")
         map::put(new terrain::Floor(origin));
 
         // Run enough explosions to guarantee destroying adjacent walls
-        for (int i = 0; i < 100; ++i)
-        {
+        for (int i = 0; i < 100; ++i) {
                 explosion::run(origin, ExplType::expl);
         }
 
         int nr_destroyed = 0;
         int nr_walls = 0;
 
-        for (int x = (origin.x - 2); x <= (origin.x + 2); ++x)
-        {
-                for (int y = (origin.y - 2); y <= (origin.y + 2); ++y)
-                {
+        for (int x = (origin.x - 2); x <= (origin.x + 2); ++x) {
+                for (int y = (origin.y - 2); y <= (origin.y + 2); ++y) {
                         const P p(x, y);
 
                         const int dist = king_dist(origin, p);
 
-                        if (dist == 0)
-                        {
+                        if (dist == 0) {
                                 continue;
                         }
 
                         const auto id = map::g_cells.at(p).terrain->id();
 
-                        if (dist == 1)
-                        {
+                        if (dist == 1) {
                                 // Adjacent to center - should be destroyed
                                 REQUIRE(id != terrain::Id::wall);
-                        }
-                        else
-                        {
+                        } else {
                                 // Two steps away - should NOT be destroyed
                                 REQUIRE(id == terrain::Id::wall);
                         }
 
-                        if (id == terrain::Id::wall)
-                        {
+                        if (id == terrain::Id::wall) {
                                 ++nr_walls;
-                        }
-                        else
-                        {
+                        } else {
                                 ++nr_destroyed;
                         }
                 }
@@ -92,10 +80,8 @@ TEST_CASE("Explosions at map edge")
 
         test_utils::init_all();
 
-        for (int x = 0; x < map::w(); ++x)
-        {
-                for (int y = 0; y < map::h(); ++y)
-                {
+        for (int x = 0; x < map::w(); ++x) {
+                for (int y = 0; y < map::h(); ++y) {
                         map::put(new terrain::Wall({x, y}));
                 }
         }
@@ -108,20 +94,19 @@ TEST_CASE("Explosions at map edge")
 
         const auto wall_id = terrain::Id::wall;
 
-        REQUIRE(map::g_cells.at(x + 1, y    ).terrain->id() == wall_id);
-        REQUIRE(map::g_cells.at(x    , y + 1).terrain->id() == wall_id);
-        REQUIRE(map::g_cells.at(x - 1, y    ).terrain->id() == wall_id);
-        REQUIRE(map::g_cells.at(x    , y - 1).terrain->id() == wall_id);
+        REQUIRE(map::g_cells.at(x + 1, y).terrain->id() == wall_id);
+        REQUIRE(map::g_cells.at(x, y + 1).terrain->id() == wall_id);
+        REQUIRE(map::g_cells.at(x - 1, y).terrain->id() == wall_id);
+        REQUIRE(map::g_cells.at(x, y - 1).terrain->id() == wall_id);
 
-        for (int i = 0; i < 100; ++i)
-        {
+        for (int i = 0; i < 100; ++i) {
                 explosion::run(P(x, y), ExplType::expl);
         }
 
-        REQUIRE(map::g_cells.at(x + 1, y    ).terrain->id() != wall_id);
-        REQUIRE(map::g_cells.at(x    , y + 1).terrain->id() != wall_id);
-        REQUIRE(map::g_cells.at(x - 1, y    ).terrain->id() == wall_id);
-        REQUIRE(map::g_cells.at(x    , y - 1).terrain->id() == wall_id);
+        REQUIRE(map::g_cells.at(x + 1, y).terrain->id() != wall_id);
+        REQUIRE(map::g_cells.at(x, y + 1).terrain->id() != wall_id);
+        REQUIRE(map::g_cells.at(x - 1, y).terrain->id() == wall_id);
+        REQUIRE(map::g_cells.at(x, y - 1).terrain->id() == wall_id);
 
         // South-east edge
         x = map::w() - 2;
@@ -129,22 +114,20 @@ TEST_CASE("Explosions at map edge")
 
         map::put(new terrain::Floor(P(x, y)));
 
-        REQUIRE(map::g_cells.at(x - 1, y    ).terrain->id() == wall_id);
-        REQUIRE(map::g_cells.at(x    , y - 1).terrain->id() == wall_id);
-        REQUIRE(map::g_cells.at(x + 1, y    ).terrain->id() == wall_id);
-        REQUIRE(map::g_cells.at(x    , y + 1).terrain->id() == wall_id);
+        REQUIRE(map::g_cells.at(x - 1, y).terrain->id() == wall_id);
+        REQUIRE(map::g_cells.at(x, y - 1).terrain->id() == wall_id);
+        REQUIRE(map::g_cells.at(x + 1, y).terrain->id() == wall_id);
+        REQUIRE(map::g_cells.at(x, y + 1).terrain->id() == wall_id);
 
-        for (int i = 0; i < 100; ++i)
-        {
+        for (int i = 0; i < 100; ++i) {
                 explosion::run(P(x, y), ExplType::expl);
         }
 
-        REQUIRE(map::g_cells.at(x - 1, y    ).terrain->id() != wall_id);
-        REQUIRE(map::g_cells.at(x    , y - 1).terrain->id() != wall_id);
-        REQUIRE(map::g_cells.at(x + 1, y    ).terrain->id() == wall_id);
-        REQUIRE(map::g_cells.at(x    , y + 1).terrain->id() == wall_id);
+        REQUIRE(map::g_cells.at(x - 1, y).terrain->id() != wall_id);
+        REQUIRE(map::g_cells.at(x, y - 1).terrain->id() != wall_id);
+        REQUIRE(map::g_cells.at(x + 1, y).terrain->id() == wall_id);
+        REQUIRE(map::g_cells.at(x, y + 1).terrain->id() == wall_id);
 }
-
 
 TEST_CASE("Explosions damage actors")
 {
@@ -169,8 +152,7 @@ TEST_CASE("Explosions damage corpses")
 
         const P origin(5, 7);
 
-        for (int i = 0; i < 100; ++i)
-        {
+        for (int i = 0; i < 100; ++i) {
                 explosion::run(origin, ExplType::expl);
         }
 
@@ -178,8 +160,7 @@ TEST_CASE("Explosions damage corpses")
 
         actor::Actor* corpses[nr_corpses];
 
-        for (int i = 0; i < nr_corpses; ++i)
-        {
+        for (int i = 0; i < nr_corpses; ++i) {
                 corpses[i] =
                         actor::make(
                                 actor::Id::rat,
@@ -195,15 +176,13 @@ TEST_CASE("Explosions damage corpses")
         // Check that living and dead actors on the same cell can be destroyed
         auto* a1 = actor::make(actor::Id::rat, origin.with_x_offset(1));
 
-        for (int i = 0; i < nr_corpses; ++i)
-        {
+        for (int i = 0; i < nr_corpses; ++i) {
                 REQUIRE(corpses[i]->m_state == ActorState::corpse);
         }
 
         explosion::run(origin, ExplType::expl);
 
-        for (int i = 0; i < nr_corpses; ++i)
-        {
+        for (int i = 0; i < nr_corpses; ++i) {
                 REQUIRE(corpses[i]->m_state == ActorState::destroyed);
         }
 
@@ -222,8 +201,7 @@ TEST_CASE("Fire explosion applies burning to actors")
 
         actor::Actor* corpses[nr_corpses];
 
-        for (int i = 0; i < nr_corpses; ++i)
-        {
+        for (int i = 0; i < nr_corpses; ++i) {
                 corpses[i] =
                         actor::make(
                                 actor::Id::rat,
@@ -254,8 +232,7 @@ TEST_CASE("Fire explosion applies burning to actors")
                 ExplExclCenter::no,
                 {new PropBurning()});
 
-        for (int i = 0; i < nr_corpses; ++i)
-        {
+        for (int i = 0; i < nr_corpses; ++i) {
                 REQUIRE(corpses[i]->m_properties.has(PropId::burning));
         }
 

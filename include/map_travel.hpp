@@ -12,8 +12,7 @@
 
 #include "map_builder.hpp"
 
-namespace map_travel
-{
+namespace map_travel {
 
 void init();
 

@@ -7,31 +7,24 @@
 #ifndef ACTOR_DEATH_HPP
 #define ACTOR_DEATH_HPP
 
-
-enum class IsDestroyed
-{
+enum class IsDestroyed {
         no,
         yes
 };
 
-enum class AllowGore
-{
+enum class AllowGore {
         no,
         yes
 };
 
-enum class AllowDropItems
-{
+enum class AllowDropItems {
         no,
         yes
 };
 
-
-namespace actor
-{
+namespace actor {
 
 class Actor;
-
 
 void kill(
         Actor& actor,

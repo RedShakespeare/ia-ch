@@ -20,19 +20,16 @@
 #include "terrain.hpp"
 #include "text_format.hpp"
 
-
 // -----------------------------------------------------------------------------
 // Private
 // -----------------------------------------------------------------------------
 static bool s_available_curses[(size_t)item_curse::Id::END];
 
-
 static std::unique_ptr<item_curse::CurseImpl> make_impl(const item_curse::Id id)
 {
         std::unique_ptr<item_curse::CurseImpl> impl;
 
-        switch (id)
-        {
+        switch (id) {
         case item_curse::Id::hit_chance_penalty:
                 return std::make_unique<item_curse::HitChancePenalty>();
 
@@ -72,8 +69,7 @@ static std::unique_ptr<item_curse::CurseImpl> make_impl(const item_curse::Id id)
 // -----------------------------------------------------------------------------
 // item_curse
 // -----------------------------------------------------------------------------
-namespace item_curse
-{
+namespace item_curse {
 
 void init()
 {
@@ -85,16 +81,14 @@ void init()
 
 void save()
 {
-        for (size_t i = 0; i < (size_t)Id::END; ++i)
-        {
+        for (size_t i = 0; i < (size_t)Id::END; ++i) {
                 saving::put_bool(s_available_curses[i]);
         }
 }
 
 void load()
 {
-        for (size_t i = 0; i < (size_t)Id::END; ++i)
-        {
+        for (size_t i = 0; i < (size_t)Id::END; ++i) {
                 s_available_curses[i] = saving::get_bool();
         }
 }
@@ -105,18 +99,15 @@ Curse try_make_random_free_curse(const item::Item& item)
 
         bucket.reserve((size_t)Id::END);
 
-        for (size_t i = 0; i < (size_t)Id::END; ++i)
-        {
+        for (size_t i = 0; i < (size_t)Id::END; ++i) {
                 const auto id = (Id)i;
 
-                if (s_available_curses[i] && item.is_curse_allowed(id))
-                {
+                if (s_available_curses[i] && item.is_curse_allowed(id)) {
                         bucket.push_back(id);
                 }
         }
 
-        if (bucket.empty())
-        {
+        if (bucket.empty()) {
                 return Curse(nullptr);
         }
 
@@ -126,7 +117,6 @@ Curse try_make_random_free_curse(const item::Item& item)
 
         return Curse(make_impl(id));
 }
-
 
 // -----------------------------------------------------------------------------
 // Curse
@@ -138,13 +128,11 @@ Curse::Curse(Curse&& other) :
         m_warning_turn_countdown(other.m_warning_turn_countdown),
         m_curse_impl(std::move(other.m_curse_impl))
 {
-
 }
 
 Curse::Curse(std::unique_ptr<CurseImpl> curse_impl) :
         m_curse_impl(std::move(curse_impl))
 {
-
 }
 
 Curse& Curse::operator=(Curse&& other)
@@ -162,12 +150,9 @@ Curse& Curse::operator=(Curse&& other)
 
 Id Curse::id() const
 {
-        if (m_curse_impl)
-        {
+        if (m_curse_impl) {
                 return m_curse_impl->id();
-        }
-        else
-        {
+        } else {
                 return Id::END;
         }
 }
@@ -184,8 +169,7 @@ void Curse::save() const
 
         saving::put_int((int)curse_id);
 
-        if (m_curse_impl)
-        {
+        if (m_curse_impl) {
                 m_curse_impl->save();
         }
 }
@@ -200,12 +184,9 @@ void Curse::load()
 
         const auto curse_id = (Id)saving::get_int();
 
-        if (curse_id == Id::END)
-        {
+        if (curse_id == Id::END) {
                 m_curse_impl = nullptr;
-        }
-        else
-        {
+        } else {
                 m_curse_impl = make_impl(curse_id);
 
                 m_curse_impl->load();
@@ -214,20 +195,15 @@ void Curse::load()
 
 void Curse::on_new_turn(const item::Item& item)
 {
-        if (!m_curse_impl)
-        {
+        if (!m_curse_impl) {
                 return;
         }
 
-        if (m_dlvl_countdown == 0)
-        {
-                if (m_turn_countdown == 0)
-                {
+        if (m_dlvl_countdown == 0) {
+                if (m_turn_countdown == 0) {
                         // Curse already triggered - run new turn events
                         m_curse_impl->on_new_turn_active(item);
-                }
-                else if (m_turn_countdown == 1)
-                {
+                } else if (m_turn_countdown == 1) {
                         // Curse is triggered for the first time now
                         m_curse_impl->on_start(item);
 
@@ -241,16 +217,13 @@ void Curse::on_new_turn(const item::Item& item)
                         m_warning_turn_countdown = -1;
                 }
 
-                if (m_turn_countdown > 0)
-                {
+                if (m_turn_countdown > 0) {
                         --m_turn_countdown;
                 }
         }
 
-        if (m_warning_dlvl_countdown == 0)
-        {
-                if (m_warning_turn_countdown == 1)
-                {
+        if (m_warning_dlvl_countdown == 0) {
+                if (m_warning_turn_countdown == 1) {
                         // Warning is triggered now
                         print_warning_msg(item);
 
@@ -259,8 +232,7 @@ void Curse::on_new_turn(const item::Item& item)
                                 ShockSrc::use_strange_item);
                 }
 
-                if (m_warning_turn_countdown > 0)
-                {
+                if (m_warning_turn_countdown > 0) {
                         --m_warning_turn_countdown;
                 }
         }
@@ -278,8 +250,7 @@ void Curse::print_trigger_msg(const item::Item& item) const
 
         const auto specific_msg = m_curse_impl->curse_msg(item);
 
-        if (!specific_msg.empty())
-        {
+        if (!specific_msg.empty()) {
                 msg_log::add(m_curse_impl->curse_msg(item));
         }
 }
@@ -289,16 +260,12 @@ void Curse::print_warning_msg(const item::Item& item) const
         const auto item_name = item.name(ItemRefType::plain, ItemRefInf::none);
 
         const std::vector<std::string> msg_bucket = {
-                {
-                        "I am growing very attached to the " +
-                        item_name +
-                        "."
-                },
-                {
-                        "I am starting to think that I should hold on to the " +
-                        item_name +
-                        ", forever..."
-                },
+                {"I am growing very attached to the " +
+                 item_name +
+                 "."},
+                {"I am starting to think that I should hold on to the " +
+                 item_name +
+                 ", forever..."},
         };
 
         const auto msg = rnd::element(msg_bucket);
@@ -312,57 +279,45 @@ void Curse::print_warning_msg(const item::Item& item) const
 
 void Curse::on_player_reached_new_dlvl()
 {
-        if (!m_curse_impl)
-        {
+        if (!m_curse_impl) {
                 return;
         }
 
-        if ((m_dlvl_countdown > 0) && (m_turn_countdown > 0))
-        {
+        if ((m_dlvl_countdown > 0) && (m_turn_countdown > 0)) {
                 --m_dlvl_countdown;
         }
 
-        if ((m_warning_dlvl_countdown > 0) && (m_warning_turn_countdown > 0))
-        {
+        if ((m_warning_dlvl_countdown > 0) && (m_warning_turn_countdown > 0)) {
                 --m_warning_dlvl_countdown;
         }
 }
 
 void Curse::on_item_picked_up(const item::Item& item)
 {
-        if (!m_curse_impl)
-        {
+        if (!m_curse_impl) {
                 return;
         }
 
-        if (saving::is_loading())
-        {
+        if (saving::is_loading()) {
                 return;
         }
 
-        if (m_turn_countdown == 0)
-        {
+        if (m_turn_countdown == 0) {
                 m_curse_impl->on_start(item);
-        }
-        else if (m_turn_countdown == -1)
-        {
+        } else if (m_turn_countdown == -1) {
                 // Initialize countdowns
                 m_dlvl_countdown = rnd::range(1, 4);
                 m_turn_countdown = rnd::range(100, 300);
 
-                if (rnd::fraction(2, 3))
-                {
+                if (rnd::fraction(2, 3)) {
                         // Also initialize warning countdown
                         m_warning_dlvl_countdown =
                                 rnd::range(1, m_dlvl_countdown);
 
-                        if (m_warning_dlvl_countdown == m_dlvl_countdown)
-                        {
+                        if (m_warning_dlvl_countdown == m_dlvl_countdown) {
                                 m_warning_turn_countdown =
                                         rnd::range(50, m_turn_countdown - 10);
-                        }
-                        else
-                        {
+                        } else {
                                 m_warning_turn_countdown =
                                         rnd::range(100, 300);
                         }
@@ -372,51 +327,42 @@ void Curse::on_item_picked_up(const item::Item& item)
 
 void Curse::on_item_dropped()
 {
-        if (!m_curse_impl)
-        {
+        if (!m_curse_impl) {
                 return;
         }
 
-        if (m_turn_countdown == 0)
-        {
+        if (m_turn_countdown == 0) {
                 m_curse_impl->on_stop();
         }
 }
 
 void Curse::on_curse_end()
 {
-        if (!m_curse_impl)
-        {
+        if (!m_curse_impl) {
                 return;
         }
 
-        if (m_turn_countdown == 0)
-        {
+        if (m_turn_countdown == 0) {
                 m_curse_impl->on_stop();
         }
 }
 
 int Curse::affect_weight(const int weight) const
 {
-        if (!m_curse_impl)
-        {
+        if (!m_curse_impl) {
                 return weight;
         }
 
-        if (m_turn_countdown == 0)
-        {
+        if (m_turn_countdown == 0) {
                 return m_curse_impl->affect_weight(weight);
-        }
-        else
-        {
+        } else {
                 return weight;
         }
 }
 
 std::string Curse::descr() const
 {
-        if (!m_curse_impl)
-        {
+        if (!m_curse_impl) {
                 return "";
         }
 
@@ -446,9 +392,8 @@ void HitChancePenalty::on_stop()
 
 std::string HitChancePenalty::descr() const
 {
-        return
-                "it makes the owner less accurate (-10% hit chance with melee "
-                "and ranged attacks).";
+        return "it makes the owner less accurate (-10% hit chance with melee "
+               "and ranged attacks).";
 }
 
 // -----------------------------------------------------------------------------
@@ -500,8 +445,8 @@ std::string Heavy::curse_msg(const item::Item& item) const
 // -----------------------------------------------------------------------------
 // Shriek
 // -----------------------------------------------------------------------------
-Shriek::Shriek() 
-        
+Shriek::Shriek()
+
 {
         auto player_name =
                 text_format::all_to_upper(
@@ -581,8 +526,7 @@ Shriek::Shriek()
                 "ZATHOG",
                 "ZINDARAK",
                 "BASATAN",
-                "CTHUGHA"
-        };
+                "CTHUGHA"};
 }
 
 void Shriek::on_start(const item::Item& item)
@@ -592,8 +536,7 @@ void Shriek::on_start(const item::Item& item)
 
 void Shriek::on_new_turn_active(const item::Item& item)
 {
-        if (rnd::one_in(300))
-        {
+        if (rnd::one_in(300)) {
                 shriek(item);
         }
 }
@@ -615,14 +558,12 @@ void Shriek::shriek(const item::Item& item) const
 
         std::string phrase;
 
-        for (int i = 0; i < nr_words; ++i)
-        {
+        for (int i = 0; i < nr_words; ++i) {
                 const auto& word = rnd::element(m_words);
 
                 phrase += word + "...";
 
-                if (i < (nr_words - 1))
-                {
+                if (i < (nr_words - 1)) {
                         phrase += " ";
                 }
         }
@@ -645,9 +586,8 @@ void Shriek::shriek(const item::Item& item) const
 
 std::string Shriek::descr() const
 {
-        return
-                "it occasionally emits a disembodied voice in a horrible "
-                "shrieking tone.";
+        return "it occasionally emits a disembodied voice in a horrible "
+               "shrieking tone.";
 }
 
 // -----------------------------------------------------------------------------
@@ -660,8 +600,7 @@ void Teleport::on_start(const item::Item& item)
 
 void Teleport::on_new_turn_active(const item::Item& item)
 {
-        if (rnd::one_in(200) && map::g_player->m_properties.allow_act())
-        {
+        if (rnd::one_in(200) && map::g_player->m_properties.allow_act()) {
                 teleport(item);
         }
 }
@@ -697,8 +636,7 @@ void Summon::on_new_turn_active(const item::Item& item)
 {
         (void)item;
 
-        if (rnd::one_in(1200))
-        {
+        if (rnd::one_in(1200)) {
                 summon(item);
         }
 }
@@ -729,9 +667,8 @@ std::string Summon::curse_msg(const item::Item& item) const
 
 std::string Summon::descr() const
 {
-        return
-                "it calls deadly interdimensional beings into the existence of "
-                "the owner.";
+        return "it calls deadly interdimensional beings into the existence of "
+               "the owner.";
 }
 
 // -----------------------------------------------------------------------------
@@ -746,8 +683,7 @@ void Fire::on_new_turn_active(const item::Item& item)
 {
         (void)item;
 
-        if (rnd::one_in(300))
-        {
+        if (rnd::one_in(300)) {
                 run_fire(item);
         }
 }
@@ -773,14 +709,11 @@ void Fire::run_fire(const item::Item& item) const
 
         const int fire_cell_one_in_n = 2;
 
-        for (int x = x0; x <= x1; ++x)
-        {
-                for (int y = y0; y <= y1; ++y)
-                {
+        for (int x = x0; x <= x1; ++x) {
+                for (int y = y0; y <= y1; ++y) {
                         const P p(x, y);
 
-                        if (rnd::one_in(fire_cell_one_in_n) && (p != origin))
-                        {
+                        if (rnd::one_in(fire_cell_one_in_n) && (p != origin)) {
                                 map::g_cells.at(p).terrain->hit(
                                         1, // Doesn't matter
                                         DmgType::fire,

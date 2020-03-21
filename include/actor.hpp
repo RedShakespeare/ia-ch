@@ -18,19 +18,14 @@
 #include "property_handler.hpp"
 #include "sound.hpp"
 
-
-namespace actor
-{
+namespace actor {
 
 class Actor;
 
-
-struct SneakData
-{
+struct SneakData {
         const actor::Actor* actor_sneaking {nullptr};
         const actor::Actor* actor_searching {nullptr};
 };
-
 
 int max_hp(const Actor& actor);
 
@@ -45,9 +40,7 @@ ActionResult roll_sneak(const SneakData& data);
 
 void print_aware_invis_mon_msg(const Mon& mon);
 
-
-class Actor
-{
+class Actor {
 public:
         virtual ~Actor();
 

@@ -22,8 +22,7 @@
 // -----------------------------------------------------------------------------
 void MapControllerStd::on_start()
 {
-        if (!map::g_player->m_properties.has(PropId::deaf))
-        {
+        if (!map::g_player->m_properties.has(PropId::deaf)) {
                 audio::try_play_amb(1);
         }
 }
@@ -32,8 +31,7 @@ void MapControllerStd::on_std_turn()
 {
         const int spawn_n_turns = 275;
 
-        if (game_time::turn_nr() % spawn_n_turns == 0)
-        {
+        if (game_time::turn_nr() % spawn_n_turns == 0) {
                 populate_mon::spawn_for_repopulate_over_time();
         }
 }
@@ -42,12 +40,9 @@ void MapControllerBoss::on_start()
 {
         audio::play(SfxId::boss_voice1);
 
-        for (auto* const actor : game_time::g_actors)
-        {
-                if (!actor->is_player())
-                {
-                        static_cast<actor::Mon*>(actor)->
-                                become_aware_player(false);
+        for (auto* const actor : game_time::g_actors) {
+                if (!actor->is_player()) {
+                        static_cast<actor::Mon*>(actor)->become_aware_player(false);
                 }
         }
 }
@@ -59,17 +54,14 @@ void MapControllerBoss::on_std_turn()
         const auto terrain_at_stair_pos =
                 map::g_cells.at(stair_pos).terrain->id();
 
-        if (terrain_at_stair_pos == terrain::Id::stairs)
-        {
+        if (terrain_at_stair_pos == terrain::Id::stairs) {
                 // Stairs already created
                 return;
         }
 
-        for (const auto* const actor : game_time::g_actors)
-        {
+        for (const auto* const actor : game_time::g_actors) {
                 if ((actor->id() == actor::Id::the_high_priest) &&
-                    actor->is_alive())
-                {
+                    actor->is_alive()) {
                         // The boss is still alive
                         return;
                 }
@@ -99,8 +91,7 @@ void MapControllerBoss::on_std_turn()
 // -----------------------------------------------------------------------------
 // map_control
 // -----------------------------------------------------------------------------
-namespace map_control
-{
+namespace map_control {
 
 std::unique_ptr<MapController> g_controller = nullptr;
 

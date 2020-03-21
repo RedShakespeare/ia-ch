@@ -14,20 +14,15 @@
 #include "spells.hpp"
 #include "terrain.hpp"
 
-
-namespace item
-{
+namespace item {
 enum class Id;
 } // namespace item
 
 enum class SpellId;
 
+namespace terrain {
 
-namespace terrain
-{
-
-class Gong: public Terrain
-{
+class Gong : public Terrain {
 public:
         Gong(const P& p);
 
@@ -54,11 +49,9 @@ private:
         bool m_is_used {false};
 };
 
-namespace gong
-{
+namespace gong {
 
-enum class BonusId
-{
+enum class BonusId {
         upgrade_spell,
         gain_hp,
         gain_sp,
@@ -76,8 +69,7 @@ enum class BonusId
         undefined,
 };
 
-enum class TollId
-{
+enum class TollId {
         hp_reduced,
         sp_reduced,
         xp_reduced,
@@ -94,8 +86,7 @@ enum class TollId
         END
 };
 
-class Bonus
-{
+class Bonus {
 public:
         virtual ~Bonus() = default;
 
@@ -106,8 +97,7 @@ public:
         virtual void run_effect() = 0;
 };
 
-class Toll
-{
+class Toll {
 public:
         virtual ~Toll() = default;
 
@@ -123,8 +113,7 @@ public:
         virtual void run_effect() = 0;
 };
 
-class UpgradeSpell : public Bonus
-{
+class UpgradeSpell : public Bonus {
 public:
         UpgradeSpell();
 
@@ -143,8 +132,7 @@ private:
         SpellId m_spell_id;
 };
 
-class GainHp : public Bonus
-{
+class GainHp : public Bonus {
 public:
         BonusId id() const override
         {
@@ -156,8 +144,7 @@ public:
         void run_effect() override;
 };
 
-class GainSp : public Bonus
-{
+class GainSp : public Bonus {
 public:
         BonusId id() const override
         {
@@ -169,8 +156,7 @@ public:
         void run_effect() override;
 };
 
-class GainXp : public Bonus
-{
+class GainXp : public Bonus {
 public:
         BonusId id() const override
         {
@@ -182,8 +168,7 @@ public:
         void run_effect() override;
 };
 
-class RemoveInsanity : public Bonus
-{
+class RemoveInsanity : public Bonus {
 public:
         BonusId id() const override
         {
@@ -195,8 +180,7 @@ public:
         void run_effect() override;
 };
 
-class GainItem : public Bonus
-{
+class GainItem : public Bonus {
 public:
         GainItem();
 
@@ -215,8 +199,7 @@ private:
         item::Id m_item_id;
 };
 
-class Healed : public Bonus
-{
+class Healed : public Bonus {
 public:
         BonusId id() const override
         {
@@ -228,8 +211,7 @@ public:
         void run_effect() override;
 };
 
-class Blessed : public Bonus
-{
+class Blessed : public Bonus {
 public:
         BonusId id() const override
         {
@@ -244,8 +226,7 @@ private:
         item::Item* get_random_cursed_item() const;
 };
 
-class HpReduced : public Toll
-{
+class HpReduced : public Toll {
 public:
         TollId id() const override
         {
@@ -257,8 +238,7 @@ public:
         void run_effect() override;
 };
 
-class SpReduced : public Toll
-{
+class SpReduced : public Toll {
 public:
         TollId id() const override
         {
@@ -270,8 +250,7 @@ public:
         void run_effect() override;
 };
 
-class XpReduced : public Toll
-{
+class XpReduced : public Toll {
 public:
         TollId id() const override
         {
@@ -285,8 +264,7 @@ public:
         void run_effect() override;
 };
 
-class Deaf : public Toll
-{
+class Deaf : public Toll {
 public:
         TollId id() const override
         {
@@ -300,8 +278,7 @@ public:
         void run_effect() override;
 };
 
-class Cursed : public Toll
-{
+class Cursed : public Toll {
 public:
         TollId id() const override
         {
@@ -315,8 +292,7 @@ public:
         void run_effect() override;
 };
 
-class SpawnMonsters : public Toll
-{
+class SpawnMonsters : public Toll {
 public:
         SpawnMonsters();
 
@@ -335,8 +311,7 @@ private:
         actor::Id m_id_to_spawn {actor::Id::END};
 };
 
-class UnlearnSpell : public Toll
-{
+class UnlearnSpell : public Toll {
 public:
         UnlearnSpell();
 

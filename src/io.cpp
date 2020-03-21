@@ -60,13 +60,11 @@ static const SDL_Color s_sdl_color_black = {0, 0, 0, 0};
 
 static SDL_Event s_sdl_event;
 
-
 static void init_screen_surface(const P px_dims)
 {
         TRACE << "Initializing screen surface" << std::endl;
 
-        if (s_screen_srf)
-        {
+        if (s_screen_srf) {
                 SDL_FreeSurface(s_screen_srf);
         }
 
@@ -81,8 +79,7 @@ static void init_screen_surface(const P px_dims)
                         0x000000FF,
                         0xFF000000);
 
-        if (!s_screen_srf)
-        {
+        if (!s_screen_srf) {
                 TRACE_ERROR_RELEASE << "Failed to create screen surface"
                                     << std::endl
                                     << SDL_GetError()
@@ -98,8 +95,7 @@ static void init_window(const P px_dims)
 
         std::string title = "IA ";
 
-        if (version_info::g_version_str.empty())
-        {
+        if (version_info::g_version_str.empty()) {
                 const auto git_sha1_str =
                         version_info::read_git_sha1_str_from_file();
 
@@ -108,19 +104,15 @@ static void init_window(const P px_dims)
                         git_sha1_str +
                         ", " +
                         version_info::g_date_str;
-        }
-        else
-        {
+        } else {
                 title += version_info::g_version_str;
         }
 
-        if (s_sdl_window)
-        {
+        if (s_sdl_window) {
                 SDL_DestroyWindow(s_sdl_window);
         }
 
-        if (config::is_fullscreen())
-        {
+        if (config::is_fullscreen()) {
                 TRACE << "Fullscreen mode" << std::endl;
 
                 s_sdl_window = SDL_CreateWindow(
@@ -130,8 +122,7 @@ static void init_window(const P px_dims)
                         px_dims.x,
                         px_dims.y,
                         SDL_WINDOW_FULLSCREEN_DESKTOP);
-        }
-        else // Windowed mode
+        } else // Windowed mode
         {
                 TRACE << "Windowed mode" << std::endl;
 
@@ -144,8 +135,7 @@ static void init_window(const P px_dims)
                         SDL_WINDOW_SHOWN | SDL_WINDOW_RESIZABLE);
         }
 
-        if (!s_sdl_window)
-        {
+        if (!s_sdl_window) {
                 TRACE << "Failed to create window"
                       << std::endl
                       << SDL_GetError()
@@ -157,8 +147,7 @@ static void init_renderer(const P px_dims)
 {
         TRACE << "Initializing renderer" << std::endl;
 
-        if (s_sdl_renderer)
-        {
+        if (s_sdl_renderer) {
                 SDL_DestroyRenderer(s_sdl_renderer);
         }
 
@@ -168,8 +157,7 @@ static void init_renderer(const P px_dims)
                         -1,
                         SDL_RENDERER_SOFTWARE);
 
-        if (!s_sdl_renderer)
-        {
+        if (!s_sdl_renderer) {
                 TRACE << "Failed to create SDL renderer"
                       << std::endl
                       << SDL_GetError()
@@ -189,8 +177,7 @@ static void init_screen_texture(const P px_dims)
 {
         TRACE << "Initializing screen texture" << std::endl;
 
-        if (s_screen_texture)
-        {
+        if (s_screen_texture) {
                 SDL_DestroyTexture(s_screen_texture);
         }
 
@@ -202,8 +189,7 @@ static void init_screen_texture(const P px_dims)
                         px_dims.x,
                         px_dims.y);
 
-        if (!s_screen_texture)
-        {
+        if (!s_screen_texture) {
                 TRACE_ERROR_RELEASE << "Failed to create screen texture"
                                     << std::endl
                                     << SDL_GetError()
@@ -219,8 +205,7 @@ static P native_resolution_from_sdl()
 
         auto result = SDL_GetDesktopDisplayMode(0, &dm);
 
-        if (result != 0)
-        {
+        if (result != 0) {
                 TRACE_ERROR_RELEASE << "Failed to read native resolution"
                                     << std::endl
                                     << SDL_GetError()
@@ -262,8 +247,7 @@ static Uint32 px(const SDL_Surface& srf, const int pixel_x, const int pixel_y)
                 (pixel_y * srf.pitch) +
                 (pixel_x * s_bpp);
 
-        switch (s_bpp)
-        {
+        switch (s_bpp) {
         case 1:
                 return *p;
 
@@ -271,11 +255,9 @@ static Uint32 px(const SDL_Surface& srf, const int pixel_x, const int pixel_y)
                 return *(Uint16*)p;
 
         case 3:
-                if (SDL_BYTEORDER == SDL_BIG_ENDIAN)
-                {
+                if (SDL_BYTEORDER == SDL_BIG_ENDIAN) {
                         return p[0] << 16 | p[1] << 8 | p[2];
-                }
-                else // Little endian
+                } else // Little endian
                 {
                         return p[0] | p[1] << 8 | p[2] << 16;
                 }
@@ -333,13 +315,11 @@ static void put_px24(
                 (pixel_y * srf.pitch) +
                 (pixel_x * s_bpp);
 
-        if (SDL_BYTEORDER == SDL_BIG_ENDIAN)
-        {
+        if (SDL_BYTEORDER == SDL_BIG_ENDIAN) {
                 p[0] = (px >> 16) & 0xff;
                 p[1] = (px >> 8) & 0xff;
                 p[2] = px & 0xff;
-        }
-        else // Little endian
+        } else // Little endian
         {
                 p[0] = px & 0xff;
                 p[1] = (px >> 8) & 0xff;
@@ -379,8 +359,7 @@ static void load_contour(
         std::vector<P>& dest_px_data,
         const P cell_px_dims)
 {
-        for (const P source_px_pos : source_px_data)
-        {
+        for (const P source_px_pos : source_px_data) {
                 const int size = 1;
 
                 const int px_x0 =
@@ -390,17 +369,13 @@ static void load_contour(
                         std::max(0, source_px_pos.y - size);
 
                 const int px_x1 =
-                        std::min(cell_px_dims.x - 1,
-                                 source_px_pos.x + size);
+                        std::min(cell_px_dims.x - 1, source_px_pos.x + size);
 
                 const int px_y1 =
-                        std::min(cell_px_dims.y - 1,
-                                 source_px_pos.y + size);
+                        std::min(cell_px_dims.y - 1, source_px_pos.y + size);
 
-                for (int px_x = px_x0; px_x <= px_x1; ++px_x)
-                {
-                        for (int px_y = px_y0; px_y <= px_y1; ++px_y)
-                        {
+                for (int px_x = px_x0; px_x <= px_x1; ++px_x) {
+                        for (int px_y = px_y0; px_y <= px_y1; ++px_y) {
                                 const P p(px_x, px_y);
 
                                 // Only mark pixel as contour if it's not marked
@@ -411,8 +386,7 @@ static void load_contour(
                                                 std::end(source_px_data),
                                                 p);
 
-                                if (it == end(source_px_data))
-                                {
+                                if (it == end(source_px_data)) {
                                         dest_px_data.push_back(p);
                                 }
                         }
@@ -447,8 +421,7 @@ static void load_font()
 
         SDL_Surface* const font_srf_tmp = IMG_Load(font_path.c_str());
 
-        if (!font_srf_tmp)
-        {
+        if (!font_srf_tmp) {
                 TRACE << "Failed to load font: " << IMG_GetError() << std::endl;
 
                 PANIC;
@@ -464,10 +437,8 @@ static void load_font()
                 config::gui_cell_px_w(),
                 config::gui_cell_px_h());
 
-        for (int x = 0; x < (int)s_font_nr_x; ++x)
-        {
-                for (int y = 0; y < (int)s_font_nr_y; ++y)
-                {
+        for (int x = 0; x < (int)s_font_nr_x; ++x) {
+                for (int y = 0; y < (int)s_font_nr_y; ++y) {
                         auto& px_data = s_font_px_data[x][y];
 
                         px_data.clear();
@@ -482,12 +453,10 @@ static void load_font()
 
                         for (int sheet_x = sheet_x0;
                              sheet_x <= sheet_x1;
-                             ++sheet_x)
-                        {
+                             ++sheet_x) {
                                 for (int sheet_y = sheet_y0;
                                      sheet_y <= sheet_y1;
-                                     ++sheet_y)
-                                {
+                                     ++sheet_y) {
                                         const auto current_px =
                                                 px(*font_srf_tmp,
                                                    sheet_x,
@@ -496,8 +465,7 @@ static void load_font()
                                         const bool is_img_px =
                                                 current_px == img_color;
 
-                                        if (is_img_px)
-                                        {
+                                        if (is_img_px) {
                                                 const int x_relative =
                                                         sheet_x - sheet_x0;
 
@@ -531,8 +499,7 @@ static void load_tiles()
                 config::map_cell_px_w(),
                 config::map_cell_px_h());
 
-        for (size_t i = 0; i < (size_t)TileId::END; ++i)
-        {
+        for (size_t i = 0; i < (size_t)TileId::END; ++i) {
                 const auto id = (TileId)i;
 
                 const std::string img_name = g_tile_id_to_str_map.at(id);
@@ -544,8 +511,7 @@ static void load_tiles()
 
                 SDL_Surface* const tile_srf_tmp = IMG_Load(img_path.c_str());
 
-                if (!tile_srf_tmp)
-                {
+                if (!tile_srf_tmp) {
                         TRACE_ERROR_RELEASE
                                 << "Could not load tile image, at: "
                                 << img_path
@@ -556,8 +522,7 @@ static void load_tiles()
 
                 // Verify width and height of loaded image
                 if ((tile_srf_tmp->w != cell_px_dims.x) ||
-                    (tile_srf_tmp->h != cell_px_dims.y))
-                {
+                    (tile_srf_tmp->h != cell_px_dims.y)) {
                         TRACE_ERROR_RELEASE
                                 << "Tile image at \""
                                 << img_path
@@ -581,18 +546,15 @@ static void load_tiles()
 
                 px_data.clear();
 
-                for (int x = 0; x < cell_px_dims.x; ++x)
-                {
-                        for (int y = 0; y < cell_px_dims.y; ++y)
-                        {
+                for (int x = 0; x < cell_px_dims.x; ++x) {
+                        for (int y = 0; y < cell_px_dims.y; ++y) {
                                 const auto current_px =
                                         px(*tile_srf_tmp, x, y);
 
                                 const bool is_img_px =
                                         current_px == img_color;
 
-                                if (is_img_px)
-                                {
+                                if (is_img_px) {
                                         px_data.emplace_back(x, y);
                                 }
                         }
@@ -623,8 +585,7 @@ static void put_pixels_on_screen(
                         sdl_color.g,
                         sdl_color.b);
 
-        for (const auto p_relative : px_data)
-        {
+        for (const auto p_relative : px_data) {
                 const int screen_px_x = px_pos.x + p_relative.x;
                 const int screen_px_y = px_pos.y + p_relative.y;
 
@@ -665,8 +626,7 @@ static void draw_character_at_px(
         const bool draw_bg = true,
         const Color& bg_color = Color(0, 0, 0))
 {
-        if (draw_bg)
-        {
+        if (draw_bg) {
                 const P cell_dims(
                         config::gui_cell_px_w(),
                         config::gui_cell_px_h());
@@ -678,8 +638,7 @@ static void draw_character_at_px(
 
         // Draw contour if neither foreground/background is black
         if ((color != colors::black()) &&
-            (bg_color != colors::black()))
-        {
+            (bg_color != colors::black())) {
                 const P char_pos(gfx::character_pos(character));
 
                 const auto& contour_px_data =
@@ -737,8 +696,7 @@ static void draw_text_at_px(
         const bool draw_bg,
         const Color& bg_color)
 {
-        if ((px_pos.y < 0) || (px_pos.y >= panel_px_h(Panel::screen)))
-        {
+        if ((px_pos.y < 0) || (px_pos.y >= panel_px_h(Panel::screen))) {
                 return;
         }
 
@@ -760,10 +718,8 @@ static void draw_text_at_px(
         // fit on the screen horizontally.
         const int px_x_dots = screen_px_w - (cell_px_w * 3);
 
-        for (int i = 0; i < msg_w; ++i)
-        {
-                if (px_pos.x < 0 || px_pos.x >= screen_px_w)
-                {
+        for (int i = 0; i < msg_w; ++i) {
+                if (px_pos.x < 0 || px_pos.x >= screen_px_w) {
                         return;
                 }
 
@@ -771,17 +727,14 @@ static void draw_text_at_px(
                         !msg_w_fit_on_screen &&
                         (px_pos.x >= px_x_dots);
 
-                if (draw_dots)
-                {
+                if (draw_dots) {
                         draw_character_at_px(
                                 '.',
                                 px_pos,
                                 sdl_color_gray,
                                 draw_bg,
                                 bg_color);
-                }
-                else
-                {
+                } else {
                         // Whole message fits, or we are not yet near the edge
                         draw_character_at_px(
                                 str[i],
@@ -856,8 +809,7 @@ static void on_window_resized()
 // -----------------------------------------------------------------------------
 // io
 // -----------------------------------------------------------------------------
-namespace io
-{
+namespace io {
 
 void init()
 {
@@ -867,8 +819,7 @@ void init()
 
         P screen_px_dims;
 
-        if (config::is_fullscreen())
-        {
+        if (config::is_fullscreen()) {
                 const P resolution =
                         config::is_native_resolution_fullscreen()
                         ? native_resolution_from_sdl()
@@ -880,8 +831,7 @@ void init()
 
                 init_window(screen_px_dims);
 
-                if (!s_sdl_window)
-                {
+                if (!s_sdl_window) {
                         // Fullscreen failed, fall back on windowed mode instead
                         config::set_fullscreen(false);
                 }
@@ -890,8 +840,7 @@ void init()
         // NOTE: Fullscreen may have been disabled while attempting to set up a
         // fullscreen "window" (see above), so we check again here if fullscreen
         // is enabled
-        if (!config::is_fullscreen())
-        {
+        if (!config::is_fullscreen()) {
                 const auto min_gui_dims = io::min_screen_gui_dims();
 
                 const auto config_res =
@@ -951,8 +900,7 @@ void init()
                 init_window(screen_px_dims);
         }
 
-        if (!s_sdl_window)
-        {
+        if (!s_sdl_window) {
                 TRACE_ERROR_RELEASE << "Failed to set up window"
                                     << std::endl
                                     << SDL_GetError()
@@ -967,8 +915,7 @@ void init()
 
         TRACE << "bpp: " << s_bpp << std::endl;
 
-        switch (s_bpp)
-        {
+        switch (s_bpp) {
         case 1:
                 put_px_ptr = &put_px8;
                 break;
@@ -995,8 +942,7 @@ void init()
 
         load_font();
 
-        if (config::is_tiles_mode())
-        {
+        if (config::is_tiles_mode()) {
                 load_tiles();
 
                 load_images();
@@ -1009,32 +955,27 @@ void cleanup()
 {
         TRACE_FUNC_BEGIN;
 
-        if (s_sdl_renderer)
-        {
+        if (s_sdl_renderer) {
                 SDL_DestroyRenderer(s_sdl_renderer);
                 s_sdl_renderer = nullptr;
         }
 
-        if (s_sdl_window)
-        {
+        if (s_sdl_window) {
                 SDL_DestroyWindow(s_sdl_window);
                 s_sdl_window = nullptr;
         }
 
-        if (s_screen_texture)
-        {
+        if (s_screen_texture) {
                 SDL_DestroyTexture(s_screen_texture);
                 s_screen_texture = nullptr;
         }
 
-        if (s_screen_srf)
-        {
+        if (s_screen_srf) {
                 SDL_FreeSurface(s_screen_srf);
                 s_screen_srf = nullptr;
         }
 
-        if (s_main_menu_logo_srf)
-        {
+        if (s_main_menu_logo_srf) {
                 SDL_FreeSurface(s_main_menu_logo_srf);
                 s_main_menu_logo_srf = nullptr;
         }
@@ -1050,8 +991,7 @@ void update_screen()
 
         if (!panels::is_valid() &&
             (screen_panel_dims.x > config::gui_cell_px_w()) &&
-            (screen_panel_dims.y > config::gui_cell_px_h()))
-        {
+            (screen_panel_dims.y > config::gui_cell_px_h())) {
                 draw_text_at_px(
                         "Window too small",
                         {0, 0},
@@ -1074,11 +1014,10 @@ void update_screen()
 
         P offsets(0, 0);
 
-        if (is_centering_allowed)
-        {
+        if (is_centering_allowed) {
                 offsets =
                         (screen_srf_dims - screen_panel_dims)
-                        .scaled_down(2);
+                                .scaled_down(2);
         }
 
         SDL_Rect dstrect;
@@ -1172,8 +1111,7 @@ int map_to_px_coords_y(const int value)
 
 P gui_to_px_coords(const P pos)
 {
-        return P(gui_to_px_coords_x(pos.x),
-                 gui_to_px_coords_y(pos.y));
+        return P(gui_to_px_coords_x(pos.x), gui_to_px_coords_y(pos.y));
 }
 
 P gui_to_px_coords(const int x, const int y)
@@ -1183,8 +1121,7 @@ P gui_to_px_coords(const int x, const int y)
 
 P map_to_px_coords(const P pos)
 {
-        return P(map_to_px_coords_x(pos.x),
-                 map_to_px_coords_y(pos.y));
+        return P(map_to_px_coords_x(pos.x), map_to_px_coords_y(pos.y));
 }
 
 P map_to_px_coords(const int x, const int y)
@@ -1194,14 +1131,12 @@ P map_to_px_coords(const int x, const int y)
 
 P px_to_gui_coords(const P px_pos)
 {
-        return P(px_pos.x / config::gui_cell_px_w(),
-                 px_pos.y / config::gui_cell_px_h());
+        return P(px_pos.x / config::gui_cell_px_w(), px_pos.y / config::gui_cell_px_h());
 }
 
 P px_to_map_coords(const P px_pos)
 {
-        return P(px_pos.x / config::map_cell_px_w(),
-                 px_pos.y / config::map_cell_px_h());
+        return P(px_pos.x / config::map_cell_px_w(), px_pos.y / config::map_cell_px_h());
 }
 
 P gui_to_map_coords(const P gui_pos)
@@ -1235,15 +1170,13 @@ void draw_tile(
         const bool draw_bg,
         const Color& bg_color)
 {
-        if (!panels::is_valid())
-        {
+        if (!panels::is_valid()) {
                 return;
         }
 
         const P px_pos = map_to_px_coords(panel, pos);
 
-        if (draw_bg)
-        {
+        if (draw_bg) {
                 const P cell_dims(
                         config::map_cell_px_w(),
                         config::map_cell_px_h());
@@ -1255,8 +1188,7 @@ void draw_tile(
 
         // Draw contour if neither the foreground nor background is black
         if ((color != colors::black()) &&
-            (bg_color != colors::black()))
-        {
+            (bg_color != colors::black())) {
                 const auto& contour_px_data =
                         s_tile_contour_px_data[(size_t)tile];
 
@@ -1280,8 +1212,7 @@ void draw_character(
         const bool draw_bg,
         const Color& bg_color)
 {
-        if (!panels::is_valid())
-        {
+        if (!panels::is_valid()) {
                 return;
         }
 
@@ -1307,8 +1238,7 @@ void draw_text(
         const bool draw_bg,
         const Color& bg_color)
 {
-        if (!panels::is_valid())
-        {
+        if (!panels::is_valid()) {
                 return;
         }
 
@@ -1331,8 +1261,7 @@ void draw_text_center(
         const Color& bg_color,
         const bool is_pixel_pos_adj_allowed)
 {
-        if (!panels::is_valid())
-        {
+        if (!panels::is_valid()) {
                 return;
         }
 
@@ -1344,12 +1273,9 @@ void draw_text_center(
                 panel,
                 P(x_pos_left, pos.y));
 
-        if (is_pixel_pos_adj_allowed)
-        {
+        if (is_pixel_pos_adj_allowed) {
                 const int pixel_x_adj =
-                        ((len_half * 2) == len) ?
-                        (config::gui_cell_px_w() / 2) :
-                        0;
+                        ((len_half * 2) == len) ? (config::gui_cell_px_w() / 2) : 0;
 
                 px_pos += P(pixel_x_adj, 0);
         }
@@ -1370,8 +1296,7 @@ void draw_text_right(
         const bool draw_bg,
         const Color& bg_color)
 {
-        if (!panels::is_valid())
-        {
+        if (!panels::is_valid()) {
                 return;
         }
 
@@ -1422,8 +1347,7 @@ void draw_rectangle(const R& px_rect, const Color& color)
 
 void draw_rectangle_filled(const R& px_rect, const Color& color)
 {
-        if (!panels::is_valid())
-        {
+        if (!panels::is_valid()) {
                 return;
         }
 
@@ -1431,8 +1355,7 @@ void draw_rectangle_filled(const R& px_rect, const Color& color)
                 (Sint16)px_rect.p0.x,
                 (Sint16)px_rect.p0.y,
                 (Uint16)px_rect.w(),
-                (Uint16)px_rect.h()
-        };
+                (Uint16)px_rect.h()};
 
         const auto& sdl_color = color.sdl_color();
 
@@ -1448,8 +1371,7 @@ void draw_rectangle_filled(const R& px_rect, const Color& color)
 
 void cover_panel(const Panel panel, const Color& color)
 {
-        if (!panels::is_valid())
-        {
+        if (!panels::is_valid()) {
                 return;
         }
 
@@ -1606,15 +1528,13 @@ void draw_descr_box(const std::vector<ColoredString>& lines)
 
         P pos(0, 0);
 
-        for (const auto& line : lines)
-        {
+        for (const auto& line : lines) {
                 const auto formatted =
                         text_format::split(
                                 line.str,
                                 panels::w(Panel::item_descr));
 
-                for (const auto& formatted_line : formatted)
-                {
+                for (const auto& formatted_line : formatted) {
                         draw_text(
                                 formatted_line,
                                 Panel::item_descr,
@@ -1630,8 +1550,7 @@ void draw_descr_box(const std::vector<ColoredString>& lines)
 
 void draw_main_menu_logo()
 {
-        if (!panels::is_valid())
-        {
+        if (!panels::is_valid()) {
                 return;
         }
 
@@ -1648,8 +1567,7 @@ void draw_blast_at_cells(const std::vector<P>& positions, const Color& color)
 {
         TRACE_FUNC_BEGIN;
 
-        if (!panels::is_valid())
-        {
+        if (!panels::is_valid()) {
                 TRACE_FUNC_END;
 
                 return;
@@ -1657,10 +1575,8 @@ void draw_blast_at_cells(const std::vector<P>& positions, const Color& color)
 
         states::draw();
 
-        for (const P pos : positions)
-        {
-                if (!viewport::is_in_view(pos))
-                {
+        for (const P pos : positions) {
+                if (!viewport::is_in_view(pos)) {
                         continue;
                 }
 
@@ -1676,10 +1592,8 @@ void draw_blast_at_cells(const std::vector<P>& positions, const Color& color)
 
         sdl_base::sleep(config::delay_explosion() / 2);
 
-        for (const P pos : positions)
-        {
-                if (!viewport::is_in_view(pos))
-                {
+        for (const P pos : positions) {
+                if (!viewport::is_in_view(pos)) {
                         continue;
                 }
 
@@ -1698,26 +1612,21 @@ void draw_blast_at_cells(const std::vector<P>& positions, const Color& color)
         TRACE_FUNC_END;
 }
 
-void draw_blast_at_seen_cells(const std::vector<P>& positions,
-                              const Color& color)
+void draw_blast_at_seen_cells(const std::vector<P>& positions, const Color& color)
 {
-        if (!panels::is_valid())
-        {
+        if (!panels::is_valid()) {
                 return;
         }
 
         std::vector<P> positions_with_vision;
 
-        for (const P p : positions)
-        {
-                if (map::g_cells.at(p).is_seen_by_player)
-                {
+        for (const P p : positions) {
+                if (map::g_cells.at(p).is_seen_by_player) {
                         positions_with_vision.push_back(p);
                 }
         }
 
-        if (!positions_with_vision.empty())
-        {
+        if (!positions_with_vision.empty()) {
                 io::draw_blast_at_cells(positions_with_vision, color);
         }
 }
@@ -1726,16 +1635,14 @@ void draw_blast_at_seen_actors(
         const std::vector<actor::Actor*>& actors,
         const Color& color)
 {
-        if (!panels::is_valid())
-        {
+        if (!panels::is_valid()) {
                 return;
         }
 
         std::vector<P> positions;
 
         positions.reserve(actors.size());
-        for (auto* const actor : actors)
-        {
+        for (auto* const actor : actors) {
                 positions.push_back(actor->m_pos);
         }
 
@@ -1751,8 +1658,7 @@ void draw_symbol(
         const bool draw_bg,
         const Color& color_bg)
 {
-        if (config::is_tiles_mode())
-        {
+        if (config::is_tiles_mode()) {
                 draw_tile(
                         tile,
                         panel,
@@ -1760,9 +1666,7 @@ void draw_symbol(
                         color,
                         draw_bg,
                         color_bg);
-        }
-        else
-        {
+        } else {
                 draw_character(
                         character,
                         panel,
@@ -1780,7 +1684,8 @@ void flush_input()
 
 void clear_events()
 {
-        while (SDL_PollEvent(&s_sdl_event)) {}
+        while (SDL_PollEvent(&s_sdl_event)) {
+        }
 }
 
 InputData get()
@@ -1795,8 +1700,7 @@ InputData get()
 
         uint32_t ms_at_last_window_resize = 0;
 
-        while (!is_done)
-        {
+        while (!is_done) {
                 sdl_base::sleep(1);
 
                 const SDL_Keymod mod = SDL_GetModState();
@@ -1808,10 +1712,8 @@ InputData get()
                 const bool did_poll_event = SDL_PollEvent(&s_sdl_event);
 
                 // Handle window resizing
-                if (!config::is_fullscreen())
-                {
-                        if (is_window_resized)
-                        {
+                if (!config::is_fullscreen()) {
+                        if (is_window_resized) {
                                 on_window_resized();
 
                                 clear_screen();
@@ -1827,14 +1729,12 @@ InputData get()
                                 continue;
                         }
 
-                        if (ms_at_last_window_resize != 0)
-                        {
+                        if (ms_at_last_window_resize != 0) {
                                 const auto d =
                                         SDL_GetTicks() -
                                         ms_at_last_window_resize;
 
-                                if (d > 150)
-                                {
+                                if (d > 150) {
                                         states::draw();
 
                                         io::update_screen();
@@ -1844,35 +1744,26 @@ InputData get()
                         }
                 }
 
-                if (!did_poll_event)
-                {
+                if (!did_poll_event) {
                         continue;
                 }
 
-                switch (s_sdl_event.type)
-                {
-                case SDL_WINDOWEVENT:
-                {
-                        switch (s_sdl_event.window.event)
-                        {
-                        case SDL_WINDOWEVENT_SIZE_CHANGED:
-                        {
+                switch (s_sdl_event.type) {
+                case SDL_WINDOWEVENT: {
+                        switch (s_sdl_event.window.event) {
+                        case SDL_WINDOWEVENT_SIZE_CHANGED: {
                                 TRACE << "Window resized" << std::endl;
 
-                                if (!config::is_fullscreen())
-                                {
+                                if (!config::is_fullscreen()) {
                                         is_window_resized = true;
                                 }
-                        }
-                        break;
+                        } break;
 
-                        case SDL_WINDOWEVENT_RESTORED:
-                        {
+                        case SDL_WINDOWEVENT_RESTORED: {
                                 TRACE << "Window restored" << std::endl;
                         }
                         // Fallthrough
-                        case SDL_WINDOWEVENT_FOCUS_GAINED:
-                        {
+                        case SDL_WINDOWEVENT_FOCUS_GAINED: {
                                 TRACE << "Window gained focus" << std::endl;
 
                                 clear_events();
@@ -1880,44 +1771,34 @@ InputData get()
                                 sdl_base::sleep(100);
                         }
                         // Fallthrough
-                        case SDL_WINDOWEVENT_EXPOSED:
-                        {
+                        case SDL_WINDOWEVENT_EXPOSED: {
                                 TRACE << "Window exposed" << std::endl;
 
                                 states::draw();
 
                                 io::update_screen();
-                        }
-                        break;
+                        } break;
 
                         default:
                         {
-                        }
-                        break;
+                        } break;
                         } // window event switch
-                }
-                break; // case SDL_WINDOWEVENT
+                } break; // case SDL_WINDOWEVENT
 
-                case SDL_QUIT:
-                {
+                case SDL_QUIT: {
                         input.key = SDLK_ESCAPE;
 
                         is_done = true;
-                }
-                break;
+                } break;
 
-                case SDL_KEYDOWN:
-                {
+                case SDL_KEYDOWN: {
                         input.key = s_sdl_event.key.keysym.sym;
 
-                        switch (input.key)
-                        {
+                        switch (input.key) {
                         case SDLK_RETURN:
                         case SDLK_RETURN2:
-                        case SDLK_KP_ENTER:
-                        {
-                                if (input.is_alt_held)
-                                {
+                        case SDLK_KP_ENTER: {
+                                if (input.is_alt_held) {
                                         TRACE << "Alt-Enter pressed"
                                               << std::endl;
 
@@ -1940,15 +1821,13 @@ InputData get()
                                         flush_input();
 
                                         continue;
-                                }
-                                else // Alt is not held
+                                } else // Alt is not held
                                 {
                                         input.key = SDLK_RETURN;
 
                                         is_done = true;
                                 }
-                        }
-                        break; // case SDLK_KP_ENTER
+                        } break; // case SDLK_KP_ENTER
 
                         case SDLK_KP_6:
                         case SDLK_KP_1:
@@ -1982,29 +1861,22 @@ InputData get()
                         case SDLK_F6:
                         case SDLK_F7:
                         case SDLK_F8:
-                        case SDLK_F9:
-                        {
+                        case SDLK_F9: {
                                 is_done = true;
-                        }
-                        break;
+                        } break;
 
                         default:
                         {
-                        }
-                        break;
+                        } break;
                         } // Key down switch
-                }
-                break; // case SDL_KEYDOWN
+                } break; // case SDL_KEYDOWN
 
-                case SDL_KEYUP:
-                {
+                case SDL_KEYUP: {
                         const auto sdl_keysym = s_sdl_event.key.keysym.sym;
 
-                        switch (sdl_keysym)
-                        {
+                        switch (sdl_keysym) {
                         case SDLK_LSHIFT:
-                        case SDLK_RSHIFT:
-                        {
+                        case SDLK_RSHIFT: {
                                 // Shift released
 
                                 // On Windows, when the user presses
@@ -2015,15 +1887,12 @@ InputData get()
                                 // numpad events here.
                                 SDL_Event sdl_event_tmp;
 
-                                while (SDL_PollEvent(&sdl_event_tmp))
-                                {
-                                        if (sdl_event_tmp.type != SDL_KEYDOWN)
-                                        {
+                                while (SDL_PollEvent(&sdl_event_tmp)) {
+                                        if (sdl_event_tmp.type != SDL_KEYDOWN) {
                                                 continue;
                                         }
 
-                                        switch (sdl_event_tmp.key.keysym.sym)
-                                        {
+                                        switch (sdl_event_tmp.key.keysym.sym) {
                                         case SDLK_KP_0:
                                         case SDLK_KP_1:
                                         case SDLK_KP_2:
@@ -2033,66 +1902,48 @@ InputData get()
                                         case SDLK_KP_6:
                                         case SDLK_KP_7:
                                         case SDLK_KP_8:
-                                        case SDLK_KP_9:
-                                        {
+                                        case SDLK_KP_9: {
                                                 input.key =
                                                         sdl_event_tmp.key.keysym
-                                                        .sym;
+                                                                .sym;
 
                                                 is_done = true;
-                                        }
-                                        break;
+                                        } break;
 
                                         default:
                                         {
-                                        }
-                                        break;
+                                        } break;
                                         } // Key down switch
                                 } // while polling event
-                        }
-                        break;
+                        } break;
 
                         default:
                         {
-                        }
-                        break;
+                        } break;
                         } // Key released switch
-                }
-                break; // case SDL_KEYUP
+                } break; // case SDL_KEYUP
 
-                case SDL_TEXTINPUT:
-                {
+                case SDL_TEXTINPUT: {
                         const char c = s_sdl_event.text.text[0];
 
-                        if (c == '+' || c == '-')
-                        {
+                        if (c == '+' || c == '-') {
                                 if (config::is_fullscreen() ||
-                                    is_window_maximized())
-                                {
+                                    is_window_maximized()) {
                                         continue;
                                 }
 
                                 P gui_dims = sdl_window_gui_dims();
 
-                                if (c == '+')
-                                {
-                                        if (input.is_ctrl_held)
-                                        {
+                                if (c == '+') {
+                                        if (input.is_ctrl_held) {
                                                 ++gui_dims.y;
-                                        }
-                                        else
-                                        {
+                                        } else {
                                                 ++gui_dims.x;
                                         }
-                                }
-                                else if (c == '-')
-                                {
-                                        if (input.is_ctrl_held)
-                                        {
+                                } else if (c == '-') {
+                                        if (input.is_ctrl_held) {
                                                 --gui_dims.y;
-                                        }
-                                        else
-                                        {
+                                        } else {
                                                 --gui_dims.x;
                                         }
                                 }
@@ -2104,8 +1955,7 @@ InputData get()
                                 continue;
                         }
 
-                        if (c >= 33 && c < 126)
-                        {
+                        if (c >= 33 && c < 126) {
                                 // ASCII char entered
                                 // (Decimal unicode '!' = 33, '~' = 126)
 
@@ -2114,18 +1964,14 @@ InputData get()
                                 input.key = c;
 
                                 is_done = true;
-                        }
-                        else
-                        {
+                        } else {
                                 continue;
                         }
-                }
-                break; // case SDL_TEXT_INPUT
+                } break; // case SDL_TEXT_INPUT
 
                 default:
                 {
-                }
-                break;
+                } break;
 
                 } // event switch
 

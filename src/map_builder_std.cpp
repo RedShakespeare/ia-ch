@@ -22,8 +22,8 @@
 #ifndef NDEBUG
 #include "init.hpp"
 #include "io.hpp"
-#include "sdl_base.hpp"
 #include "query.hpp"
+#include "sdl_base.hpp"
 #endif // NDEBUG
 
 // -----------------------------------------------------------------------------
@@ -43,7 +43,7 @@ bool MapBuilderStd::build_specific()
         // NOTE: This must be called before any rooms are created
         room_factory::init_room_bucket();
 
-        TRACE << "Init regions" << std:: endl;
+        TRACE << "Init regions" << std::endl;
 
         const int split_x_interval = map::w() / 3;
         const int split_y_interval = map::h() / 3;
@@ -57,36 +57,30 @@ bool MapBuilderStd::build_specific()
         std::vector<int> x0_list = {
                 1,
                 split_x1 + 1,
-                split_x2 + 1
-        };
+                split_x2 + 1};
 
         std::vector<int> x1_list = {
                 split_x1 - 1,
                 split_x2 - 1,
-                map::w() - 2
-        };
+                map::w() - 2};
 
         std::vector<int> y0_list = {
                 1,
                 split_y1 + 1,
-                split_y2 + 1
-        };
+                split_y2 + 1};
 
         std::vector<int> y1_list = {
                 split_y1 - 1,
                 split_y2 - 1,
-                map::h() - 2
-        };
+                map::h() - 2};
 
         Region regions[3][3];
 
-        for (int x_region = 0; x_region < 3; ++x_region)
-        {
+        for (int x_region = 0; x_region < 3; ++x_region) {
                 const int x0 = x0_list[x_region];
                 const int x1 = x1_list[x_region];
 
-                for (int y_region = 0; y_region < 3; ++y_region)
-                {
+                for (int y_region = 0; y_region < 3; ++y_region) {
                         const int y0 = y0_list[y_region];
                         const int y1 = y1_list[y_region];
 
@@ -94,8 +88,7 @@ bool MapBuilderStd::build_specific()
                 }
         }
 
-        if (!mapgen::g_is_map_valid)
-        {
+        if (!mapgen::g_is_map_valid) {
                 return false;
         }
 
@@ -105,13 +98,11 @@ bool MapBuilderStd::build_specific()
         const int river_one_in_n = 12;
 
         if (map::g_dlvl >= g_dlvl_first_mid_game &&
-            rnd::one_in(river_one_in_n))
-        {
+            rnd::one_in(river_one_in_n)) {
                 mapgen::reserve_river(regions);
         }
 
-        if (!mapgen::g_is_map_valid)
-        {
+        if (!mapgen::g_is_map_valid) {
                 return false;
         }
 
@@ -120,31 +111,26 @@ bool MapBuilderStd::build_specific()
         // ---------------------------------------------------------------------
         mapgen::merge_regions(regions);
 
-        if (!mapgen::g_is_map_valid)
-        {
+        if (!mapgen::g_is_map_valid) {
                 return false;
         }
 
         // ---------------------------------------------------------------------
         // Make main rooms
         // ---------------------------------------------------------------------
-        TRACE << "Making main rooms" << std:: endl;
+        TRACE << "Making main rooms" << std::endl;
 
-        for (int x = 0; x < 3; ++x)
-        {
-                for (int y = 0; y < 3; ++y)
-                {
+        for (int x = 0; x < 3; ++x) {
+                for (int y = 0; y < 3; ++y) {
                         auto& region = regions[x][y];
 
-                        if (!region.main_room && region.is_free)
-                        {
+                        if (!region.main_room && region.is_free) {
                                 mapgen::make_room(region);
                         }
                 }
         }
 
-        if (!mapgen::g_is_map_valid)
-        {
+        if (!mapgen::g_is_map_valid) {
                 return false;
         }
 
@@ -152,14 +138,10 @@ bool MapBuilderStd::build_specific()
         // Make auxiliary rooms
         // ---------------------------------------------------------------------
 #ifndef NDEBUG
-        if (init::g_is_demo_mapgen)
-        {
+        if (init::g_is_demo_mapgen) {
                 io::cover_panel(Panel::log);
                 states::draw();
-                io::draw_text("Press any key to make aux rooms...",
-                              Panel::screen,
-                              P(0, 0),
-                              colors::white());
+                io::draw_text("Press any key to make aux rooms...", Panel::screen, P(0, 0), colors::white());
                 io::update_screen();
                 query::wait_for_key_press();
                 io::cover_panel(Panel::log);
@@ -168,25 +150,19 @@ bool MapBuilderStd::build_specific()
 
         mapgen::make_aux_rooms(regions);
 
-        if (!mapgen::g_is_map_valid)
-        {
+        if (!mapgen::g_is_map_valid) {
                 return false;
         }
 
         // ---------------------------------------------------------------------
         // Make sub-rooms
         // ---------------------------------------------------------------------
-        if (map::g_dlvl <= g_dlvl_last_mid_game)
-        {
+        if (map::g_dlvl <= g_dlvl_last_mid_game) {
 #ifndef NDEBUG
-                if (init::g_is_demo_mapgen)
-                {
+                if (init::g_is_demo_mapgen) {
                         io::cover_panel(Panel::log);
                         states::draw();
-                        io::draw_text("Press any key to make sub rooms...",
-                                      Panel::screen,
-                                      P(0, 0),
-                                      colors::white());
+                        io::draw_text("Press any key to make sub rooms...", Panel::screen, P(0, 0), colors::white());
                         io::update_screen();
                         query::wait_for_key_press();
                         io::cover_panel(Panel::log);
@@ -196,12 +172,11 @@ bool MapBuilderStd::build_specific()
                 mapgen::make_sub_rooms();
         }
 
-        if (!mapgen::g_is_map_valid)
-        {
+        if (!mapgen::g_is_map_valid) {
                 return false;
         }
 
-        TRACE << "Sorting the room list according to room type" << std:: endl;
+        TRACE << "Sorting the room list according to room type" << std::endl;
 
         // NOTE: This allows common rooms to assume that they are rectangular
         // and have their walls untouched when their reshaping functions run.
@@ -209,13 +184,11 @@ bool MapBuilderStd::build_specific()
         std::sort(
                 std::begin(map::g_room_list),
                 std::end(map::g_room_list),
-                [](const auto r0, const auto r1)
-                {
+                [](const auto r0, const auto r1) {
                         return r0->m_type < r1->m_type;
                 });
 
-        if (!mapgen::g_is_map_valid)
-        {
+        if (!mapgen::g_is_map_valid) {
                 return false;
         }
 
@@ -225,8 +198,7 @@ bool MapBuilderStd::build_specific()
         // ---------------------------------------------------------------------
         const size_t min_nr_rooms = 8;
 
-        if (map::g_room_list.size() < min_nr_rooms)
-        {
+        if (map::g_room_list.size() < min_nr_rooms) {
                 mapgen::g_is_map_valid = false;
 
                 return false;
@@ -235,11 +207,10 @@ bool MapBuilderStd::build_specific()
         // ---------------------------------------------------------------------
         // Run the pre-connect hook on all rooms
         // ---------------------------------------------------------------------
-        TRACE << "Running pre-connect for all rooms" << std:: endl;
+        TRACE << "Running pre-connect for all rooms" << std::endl;
 
 #ifndef NDEBUG
-        if (init::g_is_demo_mapgen)
-        {
+        if (init::g_is_demo_mapgen) {
                 io::cover_panel(Panel::log);
                 states::draw();
                 io::draw_text(
@@ -253,13 +224,11 @@ bool MapBuilderStd::build_specific()
         }
 #endif // NDEBUG
 
-        for (auto* const room : map::g_room_list)
-        {
+        for (auto* const room : map::g_room_list) {
                 room->on_pre_connect(mapgen::g_door_proposals);
         }
 
-        if (!mapgen::g_is_map_valid)
-        {
+        if (!mapgen::g_is_map_valid) {
                 return false;
         }
 
@@ -267,8 +236,7 @@ bool MapBuilderStd::build_specific()
         // Connect the rooms
         // ---------------------------------------------------------------------
 #ifndef NDEBUG
-        if (init::g_is_demo_mapgen)
-        {
+        if (init::g_is_demo_mapgen) {
                 io::cover_panel(Panel::log);
                 states::draw();
                 io::draw_text(
@@ -284,18 +252,16 @@ bool MapBuilderStd::build_specific()
 
         mapgen::connect_rooms();
 
-        if (!mapgen::g_is_map_valid)
-        {
+        if (!mapgen::g_is_map_valid) {
                 return false;
         }
 
         // ---------------------------------------------------------------------
         // Run the post-connect hook on all rooms
         // ---------------------------------------------------------------------
-        TRACE << "Running post-connect for all rooms" << std:: endl;
+        TRACE << "Running post-connect for all rooms" << std::endl;
 #ifndef NDEBUG
-        if (init::g_is_demo_mapgen)
-        {
+        if (init::g_is_demo_mapgen) {
                 io::cover_panel(Panel::log);
                 states::draw();
                 io::draw_text(
@@ -309,26 +275,22 @@ bool MapBuilderStd::build_specific()
         }
 #endif // NDEBUG
 
-        for (auto* const room : map::g_room_list)
-        {
+        for (auto* const room : map::g_room_list) {
                 room->on_post_connect(mapgen::g_door_proposals);
         }
 
-        if (!mapgen::g_is_map_valid)
-        {
+        if (!mapgen::g_is_map_valid) {
                 return false;
         }
 
         // ---------------------------------------------------------------------
         // Place doors
         // ---------------------------------------------------------------------
-        if (map::g_dlvl <= g_dlvl_last_mid_game)
-        {
+        if (map::g_dlvl <= g_dlvl_last_mid_game) {
                 mapgen::make_doors();
         }
 
-        if (!mapgen::g_is_map_valid)
-        {
+        if (!mapgen::g_is_map_valid) {
                 return false;
         }
 
@@ -341,8 +303,7 @@ bool MapBuilderStd::build_specific()
 
         mapgen::move_player_to_nearest_allowed_pos();
 
-        if (!mapgen::g_is_map_valid)
-        {
+        if (!mapgen::g_is_map_valid) {
                 return false;
         }
 
@@ -351,8 +312,7 @@ bool MapBuilderStd::build_specific()
         // ---------------------------------------------------------------------
         mapgen::decorate();
 
-        if (!mapgen::g_is_map_valid)
-        {
+        if (!mapgen::g_is_map_valid) {
                 return false;
         }
 
@@ -365,8 +325,7 @@ bool MapBuilderStd::build_specific()
 
         stairs_pos = mapgen::make_stairs_at_random_pos();
 
-        if (!mapgen::g_is_map_valid)
-        {
+        if (!mapgen::g_is_map_valid) {
                 return false;
         }
 
@@ -382,29 +341,22 @@ bool MapBuilderStd::build_specific()
         const std::vector<terrain::Id> free_terrains = {
                 terrain::Id::door,
                 terrain::Id::liquid_deep,
-                terrain::Id::stairs
-        };
+                terrain::Id::stairs};
 
-        for (int x = 0; x < blocked.w(); ++x)
-        {
-                for (int y = 0; y < blocked.h(); ++y)
-                {
+        for (int x = 0; x < blocked.w(); ++x) {
+                for (int y = 0; y < blocked.h(); ++y) {
                         const P p(x, y);
 
-                        if (map_parsers::IsAnyOfTerrains(free_terrains).cell(p))
-                        {
+                        if (map_parsers::IsAnyOfTerrains(free_terrains).cell(p)) {
                                 blocked.at(p) = false;
                         }
                 }
         }
 
-        for (int x = 0; x < map::w(); ++x)
-        {
-                for (int y = 0; y < map::h(); ++y)
-                {
+        for (int x = 0; x < map::w(); ++x) {
+                for (int y = 0; y < map::h(); ++y) {
                         if (blocked.at(x, y) ||
-                            !mapgen::g_door_proposals.at(x, y))
-                        {
+                            !mapgen::g_door_proposals.at(x, y)) {
                                 continue;
                         }
 
@@ -417,30 +369,24 @@ bool MapBuilderStd::build_specific()
                                         &d);
 
                         // 'is_choke_point' called above may invalidate the map
-                        if (!mapgen::g_is_map_valid)
-                        {
+                        if (!mapgen::g_is_map_valid) {
                                 return false;
                         }
 
-                        if (!is_choke)
-                        {
+                        if (!is_choke) {
                                 continue;
                         }
 
                         // Find player and stair side
-                        for (size_t side_idx = 0; side_idx < 2; ++side_idx)
-                        {
-                                for (const P& p : d.sides[side_idx])
-                                {
-                                        if (p == map::g_player->m_pos)
-                                        {
+                        for (size_t side_idx = 0; side_idx < 2; ++side_idx) {
+                                for (const P& p : d.sides[side_idx]) {
+                                        if (p == map::g_player->m_pos) {
                                                 ASSERT(d.player_side == -1);
 
                                                 d.player_side = side_idx;
                                         }
 
-                                        if (p == stairs_pos)
-                                        {
+                                        if (p == stairs_pos) {
                                                 ASSERT(d.stairs_side == -1);
 
                                                 d.stairs_side = side_idx;
@@ -453,8 +399,7 @@ bool MapBuilderStd::build_specific()
 
                         // Robustness for release mode
                         if ((d.player_side != 0 && d.player_side != 1) ||
-                            (d.stairs_side != 0 && d.stairs_side != 1))
-                        {
+                            (d.stairs_side != 0 && d.stairs_side != 1)) {
                                 // Invalidate the map
                                 mapgen::g_is_map_valid = false;
 
@@ -468,8 +413,7 @@ bool MapBuilderStd::build_specific()
         TRACE << "Found " << map::g_choke_point_data.size()
               << " choke points" << std::endl;
 
-        if (!mapgen::g_is_map_valid)
-        {
+        if (!mapgen::g_is_map_valid) {
                 return false;
         }
 
@@ -478,43 +422,36 @@ bool MapBuilderStd::build_specific()
         // ---------------------------------------------------------------------
         mapgen::make_metal_doors_and_levers();
 
-        if (!mapgen::g_is_map_valid)
-        {
+        if (!mapgen::g_is_map_valid) {
                 return false;
         }
 
         // ---------------------------------------------------------------------
         // Make some doors leading to "optional" areas secret or stuck
         // ---------------------------------------------------------------------
-        for (const auto& choke_point : map::g_choke_point_data)
-        {
-                if (choke_point.player_side != choke_point.stairs_side)
-                {
+        for (const auto& choke_point : map::g_choke_point_data) {
+                if (choke_point.player_side != choke_point.stairs_side) {
                         continue;
                 }
 
                 auto* const terrain = map::g_cells.at(choke_point.p).terrain;
 
-                if (terrain->id() == terrain::Id::door)
-                {
+                if (terrain->id() == terrain::Id::door) {
                         auto* const door = static_cast<terrain::Door*>(terrain);
 
                         if ((door->type() != DoorType::gate) &&
                             (door->type() != DoorType::metal) &&
-                            rnd::one_in(6))
-                        {
+                            rnd::one_in(6)) {
                                 door->set_secret();
                         }
 
-                        if (rnd::one_in(6))
-                        {
+                        if (rnd::one_in(6)) {
                                 door->set_stuck();
                         }
                 }
         }
 
-        if (!mapgen::g_is_map_valid)
-        {
+        if (!mapgen::g_is_map_valid) {
                 return false;
         }
 
@@ -525,8 +462,7 @@ bool MapBuilderStd::build_specific()
         // (including player side and stairs side)
         mapgen::make_monoliths();
 
-        if (!mapgen::g_is_map_valid)
-        {
+        if (!mapgen::g_is_map_valid) {
                 return false;
         }
 
@@ -535,8 +471,7 @@ bool MapBuilderStd::build_specific()
         // ---------------------------------------------------------------------
         mapgen::make_pylons_and_levers();
 
-        if (!mapgen::g_is_map_valid)
-        {
+        if (!mapgen::g_is_map_valid) {
                 return false;
         }
 
@@ -548,15 +483,13 @@ bool MapBuilderStd::build_specific()
         // ---------------------------------------------------------------------
         // Populate the map with monsters
         // ---------------------------------------------------------------------
-        for (const auto* const room : map::g_room_list)
-        {
+        for (const auto* const room : map::g_room_list) {
                 room->populate_monsters();
         }
 
         populate_mon::populate_std_lvl();
 
-        if (!mapgen::g_is_map_valid)
-        {
+        if (!mapgen::g_is_map_valid) {
                 return false;
         }
 
@@ -565,8 +498,7 @@ bool MapBuilderStd::build_specific()
         // ---------------------------------------------------------------------
         populate_traps::populate_std_lvl();
 
-        if (!mapgen::g_is_map_valid)
-        {
+        if (!mapgen::g_is_map_valid) {
                 return false;
         }
 
@@ -575,8 +507,7 @@ bool MapBuilderStd::build_specific()
         // ---------------------------------------------------------------------
         populate_items::make_items_on_floor();
 
-        if (!mapgen::g_is_map_valid)
-        {
+        if (!mapgen::g_is_map_valid) {
                 return false;
         }
 
@@ -587,54 +518,42 @@ bool MapBuilderStd::build_specific()
                 rnd::one_in(60)
                 ? 2
                 : rnd::one_in(16)
-                ? 1
-                : 0;
+                        ? 1
+                        : 0;
 
-        for (int i = 0; i < nr_snake_emerge_events_to_try; ++i)
-        {
+        for (int i = 0; i < nr_snake_emerge_events_to_try; ++i) {
                 auto* const event = new terrain::EventSnakeEmerge();
 
-                if (event->try_find_p())
-                {
+                if (event->try_find_p()) {
                         game_time::add_mob(event);
-                }
-                else
-                {
+                } else {
                         delete event;
                 }
         }
 
-        if (!mapgen::g_is_map_valid)
-        {
+        if (!mapgen::g_is_map_valid) {
                 return false;
         }
 
         // ---------------------------------------------------------------------
         // Occasionally make the whole level dark
         // ---------------------------------------------------------------------
-        if (map::g_dlvl > 1)
-        {
+        if (map::g_dlvl > 1) {
                 const int make_drk_pct =
-                        (map::g_dlvl <= g_dlvl_last_early_game) ? 1 :
-                        (map::g_dlvl <= g_dlvl_last_mid_game) ? 2 :
-                        15;
+                        (map::g_dlvl <= g_dlvl_last_early_game) ? 1 : (map::g_dlvl <= g_dlvl_last_mid_game) ? 2 : 15;
 
-                if (rnd::percent(make_drk_pct))
-                {
-                        for (size_t i = 0; i < map::nr_cells(); ++i)
-                        {
+                if (rnd::percent(make_drk_pct)) {
+                        for (size_t i = 0; i < map::nr_cells(); ++i) {
                                 map::g_dark.at(i) = true;
                         }
                 }
         }
 
-        if (!mapgen::g_is_map_valid)
-        {
+        if (!mapgen::g_is_map_valid) {
                 return false;
         }
 
-        for (auto* const room : map::g_room_list)
-        {
+        for (auto* const room : map::g_room_list) {
                 delete room;
         }
 

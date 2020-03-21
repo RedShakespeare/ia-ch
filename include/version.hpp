@@ -9,8 +9,7 @@
 
 #include <string>
 
-namespace version_info
-{
+namespace version_info {
 
 extern const std::string g_version_str;
 extern const std::string g_copyright_str;

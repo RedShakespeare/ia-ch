@@ -27,18 +27,15 @@ static const std::string s_title_prefix = "Hint: ";
 static const std::string s_msg_end =
         " (These hints can be disabled in the options menu.)";
 
-
 static std::pair<std::string, std::string> id_to_text(const hints::Id id)
 {
-        switch (id)
-        {
+        switch (id) {
         case hints::Id::altars:
                 return {
                         "Altars",
                         "All spells are cast at a higher level when standing "
                         "at an altar - this includes both spells cast from "
-                        "manuscripts and from memory."
-                };
+                        "manuscripts and from memory."};
 
         case hints::Id::fountains:
                 return {
@@ -47,8 +44,7 @@ static std::pair<std::string, std::string> id_to_text(const hints::Id id)
                         "health, spirit, and shock (but they can sometimes "
                         "have other effects, both good and bad!). Fountains "
                         "can be drunk from several times, but each time there "
-                        "is a chance that it will dry up permanently."
-                };
+                        "is a chance that it will dry up permanently."};
 
         case hints::Id::destroying_corpses:
                 return {
@@ -59,15 +55,13 @@ static std::pair<std::string, std::string> id_to_text(const hints::Id id)
                         "destroy corpses - check the item description to see "
                         "if a weapon has such a bonus. Also, a well-placed "
                         "stick of dynamite or Molotov Cocktail is usually an "
-                        "effective way of stopping persistent monsters."
-                };
+                        "effective way of stopping persistent monsters."};
 
         case hints::Id::unload_weapons:
                 return {
                         "Unloading weapons",
                         "Ammunition can be unloaded from firearms on the "
-                        "ground by pressing [u] or [G]."
-                };
+                        "ground by pressing [u] or [G]."};
 
         case hints::Id::infected:
                 return {
@@ -80,16 +74,14 @@ static std::pair<std::string, std::string> id_to_text(const hints::Id id)
                         "on interruption however). An untreated infection "
                         "will eventually turn into a disease (50% maximum "
                         "hit points), which can only be removed through "
-                        "special means such as drinking certain potions."
-                };
+                        "special means such as drinking certain potions."};
 
         case hints::Id::overburdened:
                 return {
                         "Overburdened",
                         "Carrying too much weight makes movement take twice "
                         "as much time. This is a very dangerous and "
-                        "detrimental situation."
-                };
+                        "detrimental situation."};
 
         case hints::Id::high_shock:
                 return {
@@ -98,8 +90,7 @@ static std::pair<std::string, std::string> id_to_text(const hints::Id id)
                         "will cause a sanity hit. One way to reduce shock, "
                         "and thereby avoiding or prolonging the sanity hit, "
                         "is to find a source of light - for example through "
-                        "activating an Electric Lantern or igniting a Flare."
-                };
+                        "activating an Electric Lantern or igniting a Flare."};
 
         default:
                 ASSERT(false);
@@ -110,8 +101,7 @@ static std::pair<std::string, std::string> id_to_text(const hints::Id id)
 // -----------------------------------------------------------------------------
 // hints
 // -----------------------------------------------------------------------------
-namespace hints
-{
+namespace hints {
 
 void init()
 {
@@ -120,29 +110,25 @@ void init()
 
 void save()
 {
-        for (size_t i = 0; i < (size_t)Id::END; ++i)
-        {
+        for (size_t i = 0; i < (size_t)Id::END; ++i) {
                 saving::put_bool(s_hints_displayed[i]);
         }
 }
 
 void load()
 {
-        for (size_t i = 0; i < (size_t)Id::END; ++i)
-        {
+        for (size_t i = 0; i < (size_t)Id::END; ++i) {
                 s_hints_displayed[i] = saving::get_bool();
         }
 }
 
 void display(const Id id)
 {
-        if (!config::should_display_hints())
-        {
+        if (!config::should_display_hints()) {
                 return;
         }
 
-        if (s_hints_displayed[(size_t)id])
-        {
+        if (s_hints_displayed[(size_t)id]) {
                 return;
         }
 
@@ -156,8 +142,7 @@ void display(const Id id)
 
         const auto text = id_to_text(id);
 
-        if (text.second.empty())
-        {
+        if (text.second.empty()) {
                 ASSERT(false);
 
                 return;
