@@ -450,8 +450,8 @@ void PropHandler::on_placed()
 
 void PropHandler::on_turn_begin()
 {
-        for (size_t i = 0; i < m_props.size(); /* No increment */) {
-                Prop* prop = m_props[i].get();
+        for (size_t i = 0; i < m_props.size();) {
+                auto& prop = m_props[i];
 
                 // Count down number of turns
                 if (prop->m_nr_turns_left > 0) {
@@ -470,11 +470,7 @@ void PropHandler::on_turn_begin()
 
                 const auto prop_ended = prop->on_tick();
 
-                // NOTE: The property may have removed itself at this point, if
-                // so it signals this by returning 'PropEnded::yes'
-
                 if (prop_ended == PropEnded::no) {
-                        // Property has not been removed
                         ++i;
                 }
         }
@@ -509,16 +505,12 @@ void PropHandler::on_std_turn()
 
 DidAction PropHandler::on_act()
 {
-        for (size_t i = 0; i < m_props.size(); /* No increment */) {
-                Prop* prop = m_props[i].get();
+        for (size_t i = 0; i < m_props.size();) {
+                auto& prop = m_props[i];
 
                 const auto result = prop->on_act();
 
-                // NOTE: The property may have removed itself at this point, if
-                // so it signals this by setting 'is_prop_ended' to true
-
                 if (result.prop_ended == PropEnded::no) {
-                        // Property has not been removed
                         ++i;
                 }
 
@@ -805,16 +797,12 @@ int PropHandler::affect_shock(const int shock) const
 
 void PropHandler::affect_move_dir(const P& actor_pos, Dir& dir) const
 {
-        for (size_t i = 0; i < m_props.size(); /* No increment */) {
-                Prop* prop = m_props[i].get();
+        for (size_t i = 0; i < m_props.size();) {
+                auto& prop = m_props[i];
 
                 const auto prop_ended = prop->affect_move_dir(actor_pos, dir);
 
-                // NOTE: The property may have removed itself at this point, if
-                // so it signals this by returning 'PropEnded::yes'
-
                 if (prop_ended == PropEnded::no) {
-                        // Property has not been removed
                         ++i;
                 }
         }
@@ -955,8 +943,14 @@ void PropHandler::on_death()
 {
         TRACE_FUNC_BEGIN_VERBOSE;
 
-        for (auto& prop : m_props) {
-                prop->on_death();
+        for (size_t i = 0; i < m_props.size();) {
+                auto& prop = m_props[i];
+
+                const auto prop_ended = prop->on_death();
+
+                if (prop_ended == PropEnded::no) {
+                        ++i;
+                }
         }
 
         TRACE_FUNC_END_VERBOSE;

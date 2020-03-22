@@ -214,7 +214,9 @@ PropEnded PropEntangled::affect_move_dir(const P& actor_pos, Dir& dir)
                                 text_format::first_to_upper(
                                         m_owner->name_the());
 
-                        msg_log::add(actor_name_the + " struggles to tear free.", colors::msg_good());
+                        msg_log::add(
+                                actor_name_the + " struggles to tear free.",
+                                colors::msg_good());
                 }
         }
 
@@ -415,7 +417,7 @@ void PropZuulPossessPriest::on_placed()
         }
 }
 
-void PropPossessedByZuul::on_death()
+PropEnded PropPossessedByZuul::on_death()
 {
         // An actor possessed by Zuul has died - release Zuul!
 
@@ -446,6 +448,8 @@ void PropPossessedByZuul::on_death()
                 {actor::Id::zuul},
                 map::rect())
                 .make_aware_of_player();
+
+        return PropEnded::no;
 }
 
 PropEnded PropPoisoned::on_tick()
@@ -547,7 +551,9 @@ PropEnded PropNailed::affect_move_dir(const P& actor_pos, Dir& dir)
         dir = Dir::center;
 
         if (m_owner->is_player()) {
-                msg_log::add("I struggle to tear out the spike!", colors::msg_bad());
+                msg_log::add(
+                        "I struggle to tear out the spike!",
+                        colors::msg_bad());
         } else {
                 // Is monster
                 if (map::g_player->can_see_actor(*m_owner)) {
@@ -555,7 +561,9 @@ PropEnded PropNailed::affect_move_dir(const P& actor_pos, Dir& dir)
                                 text_format::first_to_upper(
                                         m_owner->name_the());
 
-                        msg_log::add(actor_name_the + " struggles in pain!", colors::msg_good());
+                        msg_log::add(
+                                actor_name_the + " struggles in pain!",
+                                colors::msg_good());
                 }
         }
 
@@ -1414,7 +1422,7 @@ PropActResult PropVortex::on_act()
         return {};
 }
 
-void PropExplodesOnDeath::on_death()
+PropEnded PropExplodesOnDeath::on_death()
 {
         TRACE_FUNC_BEGIN;
 
@@ -1425,12 +1433,14 @@ void PropExplodesOnDeath::on_death()
         explosion::run(m_owner->m_pos, ExplType::expl);
 
         TRACE_FUNC_END;
+
+        return PropEnded::no;
 }
 
-void PropSplitsOnDeath::on_death()
+PropEnded PropSplitsOnDeath::on_death()
 {
         if (m_owner->is_player()) {
-                return;
+                return PropEnded::no;
         }
 
         const bool is_player_seeing_owner =
@@ -1460,13 +1470,15 @@ void PropSplitsOnDeath::on_death()
                         const auto* const owning_actor = m_owner;
 
                         // End this property
-                        // NOTE: This object is now deleted!
+                        // NOTE: This deletes this object!
                         m_owner->m_properties.end_prop(id());
 
                         actor::print_mon_death_msg(*owning_actor);
-                }
 
-                return;
+                        return PropEnded::yes;
+                } else {
+                        return PropEnded::no;
+                }
         }
 
         // The monster should split
@@ -1509,6 +1521,8 @@ void PropSplitsOnDeath::on_death()
         if (!leader && (spawned.monsters.size() == 2)) {
                 spawned.monsters[1]->m_leader = spawned.monsters[0];
         }
+
+        return PropEnded::no;
 }
 
 PropActResult PropCorpseEater::on_act()
@@ -1582,7 +1596,11 @@ void PropAltersEnv::on_std_turn()
                 for (int y = 0; y < blocked.h(); ++y) {
                         const P p(x, y);
 
-                        if (map_parsers::IsAnyOfTerrains(free_terrains).cell(p)) {
+                        const bool is_free_terrain =
+                                map_parsers::IsAnyOfTerrains(free_terrains)
+                                        .cell(p);
+
+                        if (is_free_terrain) {
                                 blocked.at(p) = false;
                         }
                 }
@@ -1692,8 +1710,7 @@ PropActResult PropCorpseRises::on_act()
                                 m_owner->m_data->corpse_name_the);
 
                 msg_log::add(
-                        name +
-                                " rises again!!",
+                        name + " rises again!!",
                         colors::text(),
                         MsgInterruptPlayer::yes);
 
@@ -1716,7 +1733,7 @@ PropActResult PropCorpseRises::on_act()
         return result;
 }
 
-void PropCorpseRises::on_death()
+PropEnded PropCorpseRises::on_death()
 {
         // If we have already risen before, and were killed again leaving a
         // corpse, destroy the corpse to prevent rising multiple times
@@ -1725,6 +1742,8 @@ void PropCorpseRises::on_death()
 
                 m_owner->m_properties.on_destroyed_alive();
         }
+
+        return PropEnded::no;
 }
 
 void PropSpawnsZombiePartsOnDestroyed::on_destroyed_alive()
@@ -1962,7 +1981,9 @@ PropActResult PropSpeaksCurses::on_act()
                         map::g_player->can_see_actor(*mon);
 
                 std::string snd_msg =
-                        player_see_owner ? text_format::first_to_upper(mon->name_the()) : "Someone";
+                        player_see_owner
+                        ? text_format::first_to_upper(mon->name_the())
+                        : "Someone";
 
                 snd_msg += " spews forth a litany of curses.";
 
