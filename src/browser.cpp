@@ -175,8 +175,9 @@ Range MenuBrowser::range_shown() const
         // Shown ranged defined?
         if (m_list_h >= 0) {
                 return m_range_shown;
-        } else // List height undefined (i.e. showing all)
-        {
+        } else {
+                // List height undefined (i.e. showing all)
+
                 // Just return a range of the total number of items
                 return Range(0, m_nr_items - 1);
         }

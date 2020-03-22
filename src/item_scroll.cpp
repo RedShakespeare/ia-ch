@@ -368,8 +368,8 @@ ConsumeItem Scroll::activate(actor::Actor* const actor)
                         name(ItemRefType::a, ItemRefInf::none);
 
                 msg_log::add("I read " + scroll_name + "...");
-        } else // Not already identified
-        {
+        } else {
+                // Not already identified
                 msg_log::add(
                         "I recite the forbidden incantations on the "
                         "manuscript...");

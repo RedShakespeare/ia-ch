@@ -122,8 +122,8 @@ static void init_window(const P px_dims)
                         px_dims.x,
                         px_dims.y,
                         SDL_WINDOW_FULLSCREEN_DESKTOP);
-        } else // Windowed mode
-        {
+        } else {
+                // Windowed mode
                 TRACE << "Windowed mode" << std::endl;
 
                 s_sdl_window = SDL_CreateWindow(
@@ -257,8 +257,8 @@ static Uint32 px(const SDL_Surface& srf, const int pixel_x, const int pixel_y)
         case 3:
                 if (SDL_BYTEORDER == SDL_BIG_ENDIAN) {
                         return p[0] << 16 | p[1] << 8 | p[2];
-                } else // Little endian
-                {
+                } else {
+                        // Little endian
                         return p[0] | p[1] << 8 | p[2] << 16;
                 }
                 break;
@@ -319,8 +319,8 @@ static void put_px24(
                 p[0] = (px >> 16) & 0xff;
                 p[1] = (px >> 8) & 0xff;
                 p[2] = px & 0xff;
-        } else // Little endian
-        {
+        } else {
+                // Little endian
                 p[0] = px & 0xff;
                 p[1] = (px >> 8) & 0xff;
                 p[2] = (px >> 16) & 0xff;
@@ -1821,8 +1821,8 @@ InputData get()
                                         flush_input();
 
                                         continue;
-                                } else // Alt is not held
-                                {
+                                } else {
+                                        // Alt is not held
                                         input.key = SDLK_RETURN;
 
                                         is_done = true;

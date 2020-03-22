@@ -499,8 +499,8 @@ std::string MsgHistoryState::title() const
 
         if (m_history.empty()) {
                 title = "No message history";
-        } else // History has content
-        {
+        } else {
+                // History has content
                 const std::string msg_nr_str_first =
                         std::to_string(m_top_line_nr + 1);
 

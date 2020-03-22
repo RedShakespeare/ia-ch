@@ -1390,8 +1390,8 @@ Color LiquidShallow::color_bg_default() const
 
         if (item || corpse) {
                 return color();
-        } else // Nothing is "over" the liquid
-        {
+        } else {
+                // Nothing is "over" the liquid
                 return colors::black();
         }
 }
@@ -2051,8 +2051,8 @@ Color Chains::color_bg_default() const
 
         if (item || corpse) {
                 return color();
-        } else // Nothing is "over" the chains
-        {
+        } else {
+                // Nothing is "over" the chains
                 return colors::black();
         }
 }
@@ -2066,8 +2066,7 @@ void Chains::bump(actor::Actor& actor_bumping)
 
                 if (map::g_cells.at(m_pos).is_seen_by_player) {
                         msg = "The chains rattle.";
-                } else // Not seen
-                {
+                } else {
                         msg = "I hear chains rattling.";
                 }
 
@@ -2438,8 +2437,8 @@ void ItemContainer::init(
                                 item::set_item_randomized_properties(*item);
 
                                 m_items.push_back(item);
-                        } else // Not allowed to spawn
-                        {
+                        } else {
+                                // Not allowed to spawn
                                 item_bucket.erase(begin(item_bucket) + idx);
                         }
                 }
@@ -2611,15 +2610,15 @@ Tomb::Tomb(const P& p) :
                                 m_appearance = TombAppearance::ornate;
                         }
                 }
-        } else // Do not base appearance on items - use a common appearance
-        {
+        } else {
+                // Do not base appearance on items - use a common appearance
                 m_appearance = TombAppearance::common;
         }
 
         if (m_appearance == TombAppearance::marvelous) {
                 m_trait = TombTrait::ghost;
-        } else // Randomized trait
-        {
+        } else {
+                // Randomized trait
                 std::vector<int> weights((size_t)TombTrait::END + 1, 0);
 
                 weights[(size_t)TombTrait::ghost] = 5;
@@ -2726,18 +2725,18 @@ void Tomb::bump(actor::Actor& actor_bumping)
                         msg_log::add("The tomb is empty.");
                 } else if (!map::g_cells.at(m_pos).is_seen_by_player) {
                         msg_log::add("There is a stone box here.");
-                } else // Player can see
-                {
+                } else {
+                        // Player can see
                         if (m_is_open) {
                                 player_loot();
-                        } else // Not open
-                        {
+                        } else {
+                                // Not open
                                 msg_log::add("I attempt to push the lid.");
 
                                 if (actor_bumping.m_properties.has(PropId::weakened)) {
                                         msg_log::add("It seems futile.");
-                                } else // Not weakened
-                                {
+                                } else {
+                                        // Not weakened
                                         const int bon =
                                                 player_bon::has_trait(Trait::rugged) ? 8 : player_bon::has_trait(Trait::tough) ? 4 : 0;
 
@@ -2793,8 +2792,8 @@ DidOpen Tomb::open(actor::Actor* const actor_opening)
 {
         if (m_is_open) {
                 return DidOpen::no;
-        } else // Was not already open
-        {
+        } else {
+                // Was not already open
                 m_is_open = true;
 
                 Snd snd("I hear heavy stone sliding.",
@@ -2912,8 +2911,8 @@ DidTriggerTrap Tomb::trigger_trap(actor::Actor* const actor)
                                 ExplExclCenter::no,
                                 {prop},
                                 fume_color);
-                } else // Not fumes
-                {
+                } else {
+                        // Not fumes
                         std::vector<actor::Id> mon_bucket;
 
                         for (size_t i = 0; i < size_t(actor::Id::END); ++i) {
@@ -3038,12 +3037,12 @@ void Chest::bump(actor::Actor& actor_bumping)
                         msg_log::add("The chest is empty.");
                 } else if (!map::g_cells.at(m_pos).is_seen_by_player) {
                         msg_log::add("There is a chest here.");
-                } else // Player can see
-                {
+                } else {
+                        // Player can see
                         if (m_is_locked) {
                                 msg_log::add("The chest is locked.");
-                        } else // Not locked
-                        {
+                        } else {
+                                // Not locked
                                 if (m_is_open) {
                                         player_loot();
                                 } else {
@@ -3062,8 +3061,8 @@ void Chest::player_loot()
 
         if (m_item_container.m_items.empty()) {
                 msg_log::add("There is nothing of value inside.");
-        } else // Not empty
-        {
+        } else {
+                // Not empty
                 m_item_container.open(m_pos, map::g_player);
         }
 }
@@ -3076,8 +3075,8 @@ DidOpen Chest::open(actor::Actor* const actor_opening)
 
         if (m_is_open) {
                 return DidOpen::no;
-        } else // Chest is closed
-        {
+        } else {
+                // Chest is closed
                 m_is_open = true;
 
                 if (map::g_cells.at(m_pos).is_seen_by_player) {
@@ -3104,8 +3103,8 @@ void Chest::hit(const int dmg, const DmgType dmg_type, const DmgMethod dmg_metho
                                         map::g_player);
                         } else if (m_is_open) {
                                 msg_log::add("It is already open.");
-                        } else // Is seen and closed
-                        {
+                        } else {
+                                // Is seen and closed
                                 if (m_is_locked) {
                                         ASSERT(actor);
 
@@ -3116,8 +3115,8 @@ void Chest::hit(const int dmg, const DmgType dmg_type, const DmgMethod dmg_metho
                                                 wham::try_sprain_player();
 
                                                 msg_log::add("It seems futile.");
-                                        } else // Chest can be bashed open
-                                        {
+                                        } else {
+                                                // Chest can be bashed open
                                                 if (rnd::one_in(3)) {
                                                         m_item_container.destroy_single_fragile();
                                                 }
@@ -3141,8 +3140,8 @@ void Chest::hit(const int dmg, const DmgType dmg_type, const DmgMethod dmg_metho
                                                         wham::try_sprain_player();
                                                 }
                                         }
-                                } else // Not locked
-                                {
+                                } else {
+                                        // Not locked
                                         msg_log::add("The lid slams open, then falls shut.");
                                 }
 
@@ -3193,20 +3192,16 @@ std::string Chest::name(const Article article) const
 
         if (m_matl == ChestMatl::wood) {
                 matl_str = "wooden ";
-
                 a = "a ";
-        } else // Iron
-        {
+        } else {
                 matl_str = "iron ";
-
                 a = "an ";
         }
 
         if (m_is_open) {
                 if (m_item_container.m_items.empty()) {
                         empty_str = "empty ";
-                } else // Not empty
-                {
+                } else {
                         open_str = "open ";
                 }
 
@@ -3669,8 +3664,8 @@ void Cabinet::bump(actor::Actor& actor_bumping)
                         msg_log::add("The cabinet is empty.");
                 } else if (!map::g_cells.at(m_pos).is_seen_by_player) {
                         msg_log::add("There is a cabinet here.");
-                } else // Can see
-                {
+                } else {
+                        // Can see
                         if (m_is_open) {
                                 player_loot();
                         } else {
@@ -3697,8 +3692,8 @@ DidOpen Cabinet::open(actor::Actor* const actor_opening)
 
         if (m_is_open) {
                 return DidOpen::no;
-        } else // Was not already open
-        {
+        } else {
+                // Was not already open
                 m_is_open = true;
 
                 if (map::g_cells.at(m_pos).is_seen_by_player) {
@@ -3984,8 +3979,8 @@ void Cocoon::bump(actor::Actor& actor_bumping)
                         msg_log::add("The cocoon is empty.");
                 } else if (!map::g_cells.at(m_pos).is_seen_by_player) {
                         msg_log::add("There is a cocoon here.");
-                } else // Player can see
-                {
+                } else {
+                        // Player can see
                         if (insanity::has_sympt(InsSymptId::phobia_spider)) {
                                 map::g_player->m_properties.apply(
                                         new PropTerrified());
@@ -4082,8 +4077,8 @@ DidOpen Cocoon::open(actor::Actor* const actor_opening)
 {
         if (m_is_open) {
                 return DidOpen::no;
-        } else // Was not already open
-        {
+        } else {
+                // Was not already open
                 m_is_open = true;
 
                 if (map::g_cells.at(m_pos).is_seen_by_player) {

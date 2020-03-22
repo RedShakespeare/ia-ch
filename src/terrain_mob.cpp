@@ -119,8 +119,8 @@ void Smoke::on_new_turn()
 
                         if (is_player) {
                                 msg_log::add("I cough.");
-                        } else // Is monster
-                        {
+                        } else {
+                                // Is monster
                                 if (actor->m_data->is_humanoid) {
                                         snd_msg = "I hear coughing.";
                                 }

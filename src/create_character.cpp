@@ -402,8 +402,8 @@ void PickTraitState::draw()
                         : "Which trait do you gain?";
 
                 title += " [TAB] to view unavailable traits";
-        } else // Viewing unavailable traits
-        {
+        } else {
+                // Viewing unavailable traits
                 title = "Currently unavailable traits";
 
                 title += " [TAB] to view available traits";
@@ -428,8 +428,8 @@ void PickTraitState::draw()
                 browser = &m_browser_traits_avail;
 
                 traits = &m_traits_avail;
-        } else // Viewing unavailable traits
-        {
+        } else {
+                // Viewing unavailable traits
                 browser = &m_browser_traits_unavail;
 
                 traits = &m_traits_unavail;
@@ -462,16 +462,16 @@ void PickTraitState::draw()
                 if (m_screen_mode == TraitScreenMode::pick_new) {
                         if (is_idx_marked) {
                                 color = colors::menu_highlight();
-                        } else // Not marked
-                        {
+                        } else {
+                                // Not marked
                                 color = colors::menu_dark();
                         }
-                } else // Viewing unavailable traits
-                {
+                } else {
+                        // Viewing unavailable traits
                         if (is_idx_marked) {
                                 color = colors::light_red();
-                        } else // Not marked
-                        {
+                        } else {
+                                // Not marked
                                 color = colors::red();
                         }
                 }
@@ -641,8 +641,8 @@ void EnterNameState::update()
         if (input.key == SDLK_RETURN) {
                 if (m_current_str.empty()) {
                         m_current_str = "Player";
-                } else // Player has entered a string
-                {
+                } else {
+                        // Player has entered a string
                         config::set_default_player_name(m_current_str);
                 }
 
@@ -656,11 +656,20 @@ void EnterNameState::update()
         }
 
         if (m_current_str.size() < g_player_name_max_len) {
-                if (input.key == SDLK_SPACE) {
+                const bool is_space = input.key == SDLK_SPACE;
+
+                if (is_space) {
                         m_current_str.push_back(' ');
 
                         return;
-                } else if ((input.key >= 'a' && input.key <= 'z') || (input.key >= 'A' && input.key <= 'Z') || (input.key >= '0' && input.key <= '9')) {
+                }
+
+                const bool is_valid_non_space_char =
+                        (input.key >= 'a' && input.key <= 'z') ||
+                        (input.key >= 'A' && input.key <= 'Z') ||
+                        (input.key >= '0' && input.key <= '9');
+
+                if (is_valid_non_space_char) {
                         m_current_str.push_back(input.key);
 
                         return;

@@ -52,6 +52,11 @@ public:
         Mon();
         virtual ~Mon();
 
+        virtual DidAction on_act()
+        {
+                return DidAction::no;
+        }
+
         bool can_see_actor(
                 const Actor& other,
                 const Array2<bool>& hard_blocked_los) const;
@@ -66,8 +71,6 @@ public:
         std::vector<Actor*> seeable_foes() const;
 
         bool is_sneaking() const;
-
-        void act() override;
 
         Color color() const override;
 
@@ -87,9 +90,9 @@ public:
 
         void set_player_aware_of_me(int duration_factor = 1);
 
-        void on_actor_turn() override;
+        void make_leader_aware_silent() const;
 
-        void on_std_turn() final;
+        std::vector<Actor*> unseen_foes_aware_of() const;
 
         std::string aware_msg_mon_seen() const;
 
@@ -127,16 +130,12 @@ public:
         std::vector<MonSpell> m_spells;
 
 protected:
-        std::vector<Actor*> unseen_foes_aware_of() const;
-
         // Return value 'true' means it is possible to see the other actor (i.e.
         // it's not impossible due to invisibility, etc), but the actor may or
         // may not currently be seen due to (lack of) awareness
         bool is_actor_seeable(
                 const Actor& other,
                 const Array2<bool>& hard_blocked_los) const;
-
-        void make_leader_aware_silent() const;
 
         void print_player_see_mon_become_aware_msg() const;
 
@@ -156,14 +155,6 @@ protected:
                 DmgType dmg_type,
                 DmgMethod method,
                 AllowWound allow_wound) override;
-
-        virtual DidAction on_act()
-        {
-                return DidAction::no;
-        }
-
-        // TODO: This will be removed
-        virtual void on_std_turn_hook() {}
 
         int nr_mon_in_group() const;
 };

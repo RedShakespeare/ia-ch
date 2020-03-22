@@ -66,8 +66,7 @@ void Monolith::bump(actor::Actor& actor_bumping)
 
         if (m_is_activated) {
                 msg_log::add("Nothing happens.");
-        } else // Not yet activated
-        {
+        } else {
                 activate();
         }
 }

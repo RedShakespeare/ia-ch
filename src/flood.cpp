@@ -89,8 +89,8 @@ Array2<int> floodfill(
                         if (positions.size() == next_p_idx) {
                                 // No more positions to evaluate
                                 path_exists = false;
-                        } else // There are more positions to evaluate
-                        {
+                        } else {
+                                // There are more positions to evaluate
                                 p = positions[next_p_idx];
 
                                 ++next_p_idx;

@@ -28,8 +28,8 @@ static void player_try_close_or_jam_terrain(terrain::Terrain* const terrain)
                 if (player_can_see) {
                         msg_log::add(
                                 "I see nothing there to close or jam shut.");
-                } else // Player cannot see
-                {
+                } else {
+                        // Player cannot see
                         msg_log::add(
                                 "I find nothing there to close or jam shut.");
                 }
@@ -44,8 +44,8 @@ static void player_try_close_or_jam_terrain(terrain::Terrain* const terrain)
         if (door->is_open()) {
                 // Door is open, try to close it
                 door->try_close(map::g_player);
-        } else // Door is closed - try to jam it
-        {
+        } else {
+                // Door is closed - try to jam it
                 const bool has_spike =
                         map::g_player->m_inv.has_item_in_backpack(
                                 item::Id::iron_spike);
@@ -66,16 +66,16 @@ static void player_try_close_or_jam_terrain(terrain::Terrain* const terrain)
                                 if (nr_spikes_left == 0) {
                                         msg_log::add(
                                                 "I have no iron spikes left.");
-                                } else // Has spikes left
-                                {
+                                } else {
+                                        // Has spikes left
                                         msg_log::add(
                                                 "I have " +
                                                 std::to_string(nr_spikes_left) +
                                                 " iron spikes left.");
                                 }
                         }
-                } else // Has no spikes to jam with
-                {
+                } else {
+                        // Has no spikes to jam with
                         msg_log::add("I have nothing to jam the door with.");
                 }
         }

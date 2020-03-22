@@ -1092,8 +1092,8 @@ void MindLeechSting::on_melee_hit(actor::Actor& actor_hit, const int dmg)
 
                         mon->m_properties.apply(new PropTerrified());
                 }
-        } else // Player mind can be eaten
-        {
+        } else {
+                // Player mind can be eaten
                 auto prop_mind_sap = new PropMindSap();
 
                 prop_mind_sap->set_indefinite();
@@ -1340,8 +1340,8 @@ void MedicalBag::continue_action()
 
         if (m_nr_turns_left_action <= 0) {
                 finish_current_action();
-        } else // Time still remaining on the current action
-        {
+        } else {
+                // Time still remaining on the current action
                 game_time::tick();
         }
 }

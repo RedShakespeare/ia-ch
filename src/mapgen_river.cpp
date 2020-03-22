@@ -54,6 +54,7 @@ void reserve_river(Region regions[3][3])
         const Axis axis = rnd::coin_toss() ? Axis::hor : Axis::ver;
 
         if (axis == Axis::hor) {
+                // Horizontal
                 init_room_rect(
                         room_rect.p0.x,
                         room_rect.p1.x,
@@ -61,8 +62,8 @@ void reserve_river(Region regions[3][3])
                         room_rect.p1.y,
                         P(0, 1),
                         P(2, 1));
-        } else // Vertical
-        {
+        } else {
+                // Vertical
                 init_room_rect(
                         room_rect.p0.y,
                         room_rect.p1.y,
@@ -83,9 +84,10 @@ void reserve_river(Region regions[3][3])
         river_region->is_free = false;
 
         if (axis == Axis::hor) {
+                // Horizontal
                 regions[1][1] = regions[2][1] = *river_region;
-        } else // Vertical
-        {
+        } else {
+                // Vertical
                 regions[1][1] = regions[1][2] = *river_region;
         }
 
@@ -114,12 +116,13 @@ void reserve_river(Region regions[3][3])
         };
 
         if (axis == Axis::hor) {
+                // Horizontal
                 make(room_rect.p0.x + 1,
                      room_rect.p1.x - 1,
                      room_rect.p0.y,
                      room_rect.p1.y);
-        } else // Vertical axis
-        {
+        } else {
+                // Vertical
                 make(room_rect.p0.x,
                      room_rect.p1.x,
                      room_rect.p0.y + 1,

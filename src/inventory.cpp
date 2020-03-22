@@ -63,8 +63,8 @@ void Inventory::save() const
                         saving::put_int(item->m_nr_items);
 
                         item->save();
-                } else // No item in this slot
-                {
+                } else {
+                        // No item in this slot
                         saving::put_int((int)item::Id::END);
                 }
         }
@@ -151,8 +151,8 @@ int Inventory::item_stack_size_in_backpack(const item::Id id) const
                 if (m_backpack[i]->data().id == id) {
                         if (m_backpack[i]->data().is_stackable) {
                                 return m_backpack[i]->m_nr_items;
-                        } else // Not stackable
-                        {
+                        } else {
+                                // Not stackable
                                 return 1;
                         }
                 }

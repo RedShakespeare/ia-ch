@@ -22,21 +22,11 @@ namespace actor {
 
 class Actor;
 
-struct SneakData {
-        const actor::Actor* actor_sneaking {nullptr};
-        const actor::Actor* actor_searching {nullptr};
-};
-
 int max_hp(const Actor& actor);
 
 int max_sp(const Actor& actor);
 
 void init_actor(Actor& actor, const P& pos_, ActorData& data);
-
-// This function is not concerned with whether actors are within FOV, or if they
-// are actually hidden or not. It merely performs a skill check, taking various
-// conditions such as light/dark into concern.
-ActionResult roll_sneak(const SneakData& data);
 
 void print_aware_invis_mon_msg(const Mon& mon);
 
@@ -71,8 +61,6 @@ public:
 
         void on_feed();
 
-        void on_std_turn_common();
-
         Id id() const
         {
                 return m_data->id;
@@ -95,12 +83,6 @@ public:
         bool is_player() const;
 
         std::string death_msg() const;
-
-        virtual void act() {}
-
-        virtual void on_actor_turn() {}
-
-        virtual void on_std_turn() {}
 
         virtual TileId tile() const;
 

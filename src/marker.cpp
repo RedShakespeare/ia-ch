@@ -908,8 +908,8 @@ void CtrlTele::handle_input(const InputData& input)
                 if (is_tele_success) {
                         // Teleport to this exact destination
                         teleport(*map::g_player, tgt_p, m_blocked);
-                } else // Failed to teleport (blocked or roll failed)
-                {
+                } else {
+                        // Failed to teleport (blocked or roll failed)
                         msg_log::add(
                                 "I failed to go there...",
                                 colors::white(),

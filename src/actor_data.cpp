@@ -325,8 +325,9 @@ static void dump_intr_attack_property(
 
         if (xml::try_get_attribute_int(property_e, "duration", duration)) {
                 attack_data.prop_applied.prop->set_duration(duration);
-        } else // Duration not specified as integer
-        {
+        } else {
+                // Duration not specified as integer
+
                 // Check if duration is specified as string ("indefinite")
 
                 std::string duration_str;

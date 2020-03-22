@@ -68,8 +68,8 @@ static std::vector<std::string> format_lines(
                         for (const auto& line : split_line) {
                                 formatted_lines.push_back(line);
                         }
-                } else // Do not format line
-                {
+                } else {
+                        // Do not format line
                         formatted_lines.push_back(raw_line);
                 }
         }

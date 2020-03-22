@@ -408,8 +408,8 @@ void MainMenuState::update()
                                         GameEntryMode::load_game);
 
                                 states::push(std::move(game_state));
-                        } else // No save available
-                        {
+                        } else {
+                                // No save available
                                 popup::msg("No saved game found");
                         }
                 } break;

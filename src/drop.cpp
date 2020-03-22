@@ -36,8 +36,8 @@ void drop_item_from_inv(
                 ASSERT(idx != (size_t)SlotId::END);
 
                 item_to_drop = actor.m_inv.m_slots[idx].item;
-        } else // Backpack item
-        {
+        } else {
+                // Backpack item
                 ASSERT(idx < actor.m_inv.m_backpack.size());
 
                 item_to_drop = actor.m_inv.m_backpack[idx];
@@ -66,8 +66,9 @@ void drop_item_from_inv(
                 item_ref = item_to_drop->name(ItemRefType::plural);
 
                 item_to_drop = actor.m_inv.remove_item(item_to_drop, false);
-        } else // Only some items are dropped from a stack
-        {
+        } else {
+                // Only some items are dropped from a stack
+
                 // Drop a copy of the selected item
                 item_to_keep = item_to_drop;
 
@@ -94,8 +95,8 @@ void drop_item_from_inv(
                         colors::text(),
                         MsgInterruptPlayer::no,
                         MorePromptOnMsg::yes);
-        } else // Monster is dropping item
-        {
+        } else {
+                // Monster is dropping item
                 if (map::g_player->can_see_actor(actor)) {
                         const std::string mon_name_the =
                                 text_format::first_to_upper(

@@ -64,8 +64,8 @@ static void try_make_door(const P& p)
                         const auto* const mimic = new terrain::Wall(p);
 
                         door = new terrain::Door(p, mimic, DoorType::wood);
-                } else // Barred gate
-                {
+                } else {
+                        // Barred gate
                         door = new terrain::Door(p, nullptr, DoorType::gate);
                 }
 

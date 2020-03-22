@@ -6,6 +6,7 @@
 
 #include "game.hpp"
 
+#include "actor_act.hpp"
 #include "actor_items.hpp"
 #include "actor_player.hpp"
 #include "common_text.hpp"
@@ -425,7 +426,7 @@ void GameState::update()
                         // Tell actor to "do something". If this is the player,
                         // input is read from either the player or the bot. If
                         // it's a monster, the AI handles it.
-                        actor->act();
+                        actor::act(*actor);
                 } else {
                         // Actor cannot act
 

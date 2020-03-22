@@ -812,8 +812,8 @@ void trait_prereqs(
         for (auto it = std::begin(traits_out); it != std::end(traits_out);) {
                 if (is_trait_blocked_for_bg(*it, bg)) {
                         it = traits_out.erase(it);
-                } else // Not blocked
-                {
+                } else {
+                        // Not blocked
                         ++it;
                 }
         }

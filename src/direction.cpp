@@ -136,8 +136,8 @@ P rnd_adj_pos(const P& origin, const bool is_center_allowed)
 
         if (is_center_allowed) {
                 vec = &g_dir_list_w_center;
-        } else // Center not allowed
-        {
+        } else {
+                // Center not allowed
                 vec = &g_dir_list;
         }
 

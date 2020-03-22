@@ -83,9 +83,13 @@ void cut_room_corners(const Room& room)
 
         // NOTE: The "cross" dimensons and coordinates refer to the inner
         // rectangle of the plus shape.
-        const P cross_dims(rnd::range(2, max_dims.x), rnd::range(2, max_dims.y));
+        const P cross_dims(
+                rnd::range(2, max_dims.x),
+                rnd::range(2, max_dims.y));
 
-        const P cross_x0y0(rnd::range(room_p0.x + 2, room_p1.x - cross_dims.x - 1), rnd::range(room_p0.y + 2, room_p1.y - cross_dims.y - 1));
+        const P cross_x0y0(
+                rnd::range(room_p0.x + 2, room_p1.x - cross_dims.x - 1),
+                rnd::range(room_p0.y + 2, room_p1.y - cross_dims.y - 1));
 
         const P cross_x1y1(cross_x0y0 + cross_dims - 1);
 
@@ -102,8 +106,8 @@ void cut_room_corners(const Room& room)
                                 if (rnd::coin_toss()) {
                                         c[i] = true;
                                         ++nr_corners;
-                                } else // Do not cut this corner
-                                {
+                                } else {
+                                        // Do not cut this corner
                                         c[i] = false;
                                 }
                         }
@@ -437,8 +441,9 @@ bool is_choke_point(const P& p, const Array2<bool>& blocked, ChokePointData* out
                                 p_side1 = adj_p;
                         } else if (p_side2.x == 0) {
                                 p_side2 = adj_p;
-                        } else // Both p0 and p1 has already been set
-                        {
+                        } else {
+                                // Both p0 and p1 has already been set
+
                                 // This is not a choke point, bye!
                                 return false;
                         }
@@ -580,8 +585,9 @@ void make_pathfind_corridor(
         // Entry points are the same cell (rooms are adjacent)? Then use that
         if (p0 == p1) {
                 path.push_back(p0);
-        } else // Entry points are different cells
-        {
+        } else {
+                // Entry points are different cells
+
                 // Try to find a path to the other entry point
 
                 Array2<bool> blocked(map::dims());
@@ -1008,8 +1014,8 @@ void move_player_to_nearest_allowed_pos()
 
         if (pos_bucket.empty()) {
                 g_is_map_valid = false;
-        } else // Valid cells exists
-        {
+        } else {
+                // Valid cells exists
                 TRACE << "Sorting the allowed cells vector "
                       << "(" << pos_bucket.size() << " cells)" << std::endl;
 

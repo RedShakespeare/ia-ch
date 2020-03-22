@@ -32,13 +32,13 @@ static void make_crumble_room(const R& room_area_incl_walls, const P& event_pos)
                             y == a.p0.y ||
                             y == a.p1.y) {
                                 wall_cells.push_back(p);
-                        } else // Is inner cell
-                        {
+                        } else {
+                                // Is inner cell
                                 inner_cells.push_back(p);
                         }
 
-                        // Fill the room with walls (so we don't have an inaccessible
-                        // empty room)
+                        // Fill the room with walls (so we don't have an
+                        // inaccessible empty room)
                         map::put(new terrain::Wall(p));
                 }
         }
@@ -91,13 +91,15 @@ static bool try_make_aux_room(
                 // Make a "crumble room"?
                 if (rnd::one_in(20)) {
                         Room* const room =
-                                room_factory::make(RoomType::crumble_room, aux_rect);
+                                room_factory::make(
+                                        RoomType::crumble_room,
+                                        aux_rect);
 
                         mapgen::register_room(*room);
 
                         make_crumble_room(aux_rect_with_border, door_p);
-                } else // Not "crumble room"
-                {
+                } else {
+                        // Not "crumble room"
                         mapgen::make_room(aux_rect, IsSubRoom::no);
                 }
 

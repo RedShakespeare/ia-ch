@@ -253,8 +253,8 @@ void wait_for_msg_more()
         // Determine criteria for confirming more prompt (decided by config)
         if (config::is_any_key_confirm_more()) {
                 wait_for_key_press();
-        } else // Only some keys confirm more prompts
-        {
+        } else {
+                // Only some keys confirm more prompts
                 while (true) {
                         const auto input = io::get();
 

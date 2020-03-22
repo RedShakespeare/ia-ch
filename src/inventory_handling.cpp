@@ -93,8 +93,8 @@ static bool run_drop_query(
                         TRACE_FUNC_END;
 
                         return false;
-                } else // Number to drop is at least one
-                {
+                } else {
+                        // Number to drop is at least one
                         item_drop::drop_item_from_inv(
                                 *map::g_player,
                                 inv_type,
@@ -105,8 +105,8 @@ static bool run_drop_query(
 
                         return true;
                 }
-        } else // Not a stack
-        {
+        } else {
+                // Not a stack
                 TRACE << "Item not stackable, or only one item" << std::endl;
 
                 item_drop::drop_item_from_inv(
@@ -225,8 +225,8 @@ void InvState::draw_slot(
                         *item,
                         color_item,
                         is_marked);
-        } else // No item in this slot
-        {
+        } else {
+                // No item in this slot
                 p.x += 2;
 
                 io::draw_text(
@@ -343,8 +343,9 @@ void InvState::draw_weight_pct_and_dots(
                         Panel::item_menu,
                         weight_pos,
                         weight_color);
-        } else // Zero weight, or 100% of weight
-        {
+        } else {
+                // Zero weight, or 100% of weight
+
                 // No weight percent is displayed
                 weight_str = "";
                 weight_x = panels::w(Panel::item_menu);
@@ -586,8 +587,8 @@ void BrowseInv::draw()
                                 key,
                                 is_marked,
                                 ItemRefAttInf::wpn_main_att_mode);
-                } else // This index is in backpack
-                {
+                } else {
+                        // This index is in backpack
                         const size_t backpack_idx = i - nr_slots;
 
                         draw_backpack_item(
@@ -961,8 +962,8 @@ void Drop::draw()
                                 key,
                                 is_marked,
                                 ItemRefAttInf::wpn_main_att_mode);
-                } else // This index is in backpack
-                {
+                } else {
+                        // This index is in backpack
                         const auto backpack_idx =
                                 (size_t)(i - (int)SlotId::END);
 
@@ -1436,8 +1437,8 @@ void SelectThrow::draw()
                                 key,
                                 is_marked,
                                 ItemRefAttInf::thrown);
-                } else // This index is in backpack
-                {
+                } else {
+                        // This index is in backpack
                         const size_t backpack_idx = inv_entry.relative_idx;
 
                         draw_backpack_item(
@@ -1484,8 +1485,8 @@ void SelectThrow::update()
 
         if (inv_entry_marked.is_slot) {
                 item = inv.m_slots[inv_entry_marked.relative_idx].item;
-        } else // Backpack item selected
-        {
+        } else {
+                // Backpack item selected
                 item = inv.m_backpack[inv_entry_marked.relative_idx];
         }
 
@@ -1638,8 +1639,8 @@ void SelectIdentify::draw()
                                 key,
                                 is_marked,
                                 ItemRefAttInf::wpn_main_att_mode);
-                } else // This index is in backpack
-                {
+                } else {
+                        // This index is in backpack
                         const size_t backpack_idx = inv_entry.relative_idx;
 
                         draw_backpack_item(
@@ -1691,8 +1692,8 @@ void SelectIdentify::update()
                 if (inv_entry_marked.is_slot) {
                         item_to_identify =
                                 inv.m_slots[inv_entry_marked.relative_idx].item;
-                } else // Backpack item selected
-                {
+                } else {
+                        // Backpack item selected
                         item_to_identify =
                                 inv.m_backpack[inv_entry_marked.relative_idx];
                 }

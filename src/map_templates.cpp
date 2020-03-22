@@ -244,8 +244,8 @@ static void load_room_templates()
                                 }
 
                                 templ.type = type_it->second;
-                        } else // Not a name line
-                        {
+                        } else {
+                                // Not a name line
                                 template_buffer.push_back(line);
                         }
                 }

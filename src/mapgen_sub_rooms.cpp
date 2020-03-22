@@ -192,8 +192,8 @@ void make_sub_rooms()
                                         map::put(new terrain::Floor(door_pos));
 
                                         g_door_proposals.at(door_pos) = true;
-                                } else // Place multiple "doorless" entrances
-                                {
+                                } else {
+                                        // Place multiple "doorless" entrances
                                         std::vector<P> positions_placed;
                                         const int nr_tries = rnd::range(1, 10);
 

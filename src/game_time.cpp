@@ -10,6 +10,8 @@
 
 #include "actor_mon.hpp"
 #include "actor_player.hpp"
+#include "actor_start_turn.hpp"
+#include "actor_std_turn.hpp"
 #include "audio.hpp"
 #include "init.hpp"
 #include "inventory.hpp"
@@ -168,8 +170,8 @@ static void run_std_turn_events()
                         if (s_current_actor_idx >= game_time::g_actors.size()) {
                                 s_current_actor_idx = 0;
                         }
-                } else // Actor not destroyed
-                {
+                } else {
+                        // Actor not destroyed
                         if (!actor->is_player()) {
                                 // Count down monster awareness
                                 auto* const mon =
@@ -180,7 +182,7 @@ static void run_std_turn_events()
                                 }
                         }
 
-                        actor->on_std_turn_common();
+                        actor::std_turn(*actor);
 
                         // NOTE: This may spawn new monsters, see NOTE above.
                         actor->m_properties.on_std_turn();
@@ -225,7 +227,8 @@ static void run_std_turn_events()
 
         snd_emit::reset_nr_snd_msg_printed_current_turn();
 
-        if ((map::g_dlvl > 0) && !map::g_player->m_properties.has(PropId::deaf)) {
+        if ((map::g_dlvl > 0) &&
+            !map::g_player->m_properties.has(PropId::deaf)) {
                 const int play_one_in_n = 200;
 
                 audio::try_play_amb(play_one_in_n);
@@ -457,9 +460,7 @@ void tick()
                 }
         }
 
-        next_actor->m_properties.on_turn_begin();
-
-        next_actor->on_actor_turn();
+        actor::start_turn(*next_actor);
 }
 
 void update_light_map()

@@ -108,8 +108,8 @@ std::vector<std::string> StrangeDevice::descr_hook() const
                 out.push_back(cond_str);
 
                 return out;
-        } else // Not identified
-        {
+        } else {
+                // Not identified
                 return m_data->base_descr;
         }
 }
@@ -254,8 +254,8 @@ ConsumeItem Blaster::run_effect()
 
         if (tgt_bucket.empty()) {
                 msg_log::add("It seems to peruse area.");
-        } else // Targets are available
-        {
+        } else {
+                // Targets are available
                 const std::unique_ptr<Spell> spell(
                         spell_factory::make_spell_from_id(SpellId::aza_wrath));
 
@@ -309,8 +309,8 @@ ConsumeItem Translocator::run_effect()
 
         if (seen_foes.empty()) {
                 msg_log::add("It seems to peruse area.");
-        } else // Seen targets are available
-        {
+        } else {
+                // Seen targets are available
                 for (auto* actor : seen_foes) {
                         msg_log::add(
                                 text_format::first_to_upper(actor->name_the()) +

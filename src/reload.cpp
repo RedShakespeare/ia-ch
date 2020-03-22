@@ -36,8 +36,8 @@ static void msg_reload_fumble(
 
         if (actor.is_player()) {
                 msg_log::add("I fumble with " + ammo_name + ".");
-        } else // Is monster
-        {
+        } else {
+                // Is monster
                 if (map::g_player->can_see_actor(actor)) {
                         const std::string name_the =
                                 text_format::first_to_upper(
@@ -180,8 +180,9 @@ void try_reload(actor::Actor& actor, item::Item* const item_to_reload)
                                                 ammo_backpack_idx = i;
                                         }
                                 }
-                        } else // Not using mag
-                        {
+                        } else {
+                                // Not using mag
+
                                 // Just use first item with matching ammo id
                                 ammo_item = item;
 
@@ -222,8 +223,8 @@ void try_reload(actor::Actor& actor, item::Item* const item_to_reload)
 
         if (rnd::percent(fumble_pct)) {
                 msg_reload_fumble(actor, *ammo_item);
-        } else // Not fumbling
-        {
+        } else {
+                // Not fumbling
                 bool is_mag = ammo_item->data().type == ItemType::ammo_mag;
 
                 if (is_mag) {
@@ -249,8 +250,8 @@ void try_reload(actor::Actor& actor, item::Item* const item_to_reload)
 
                                 actor.m_inv.put_in_backpack(mag_item);
                         }
-                } else // Not using mag
-                {
+                } else {
+                        // Not using mag
                         ++wpn->m_ammo_loaded;
 
                         msg_reloaded(actor, *wpn, *ammo_item);

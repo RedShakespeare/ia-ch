@@ -55,8 +55,8 @@ static std::string get_mon_memory_turns_descr(const actor::Actor& actor)
                         " will remember hostile creatures for at least " +
                         nr_turns_aware_str +
                         " turns.";
-        } else // Very high number of turns awareness
-        {
+        } else {
+                // Very high number of turns awareness
                 return name_a +
                         " remembers hostile creatures for a very long time.";
         }
@@ -79,8 +79,8 @@ static std::string get_mon_dlvl_descr(const actor::Actor& actor)
                         " usually dwells beneath level " +
                         dlvl_str +
                         ".";
-        } else // Not unique
-        {
+        } else {
+                // Not unique
                 return "They usually dwell beneath level " +
                         dlvl_str +
                         ".";
@@ -124,8 +124,8 @@ static std::string get_mon_speed_descr(const actor::Actor& actor)
                         " appears to move " +
                         speed_type_str +
                         ".";
-        } else // Not unique
-        {
+        } else {
+                // Not unique
                 return "They appear to move " +
                         speed_type_str +
                         ".";
@@ -185,8 +185,8 @@ static std::string get_mon_shock_descr(const actor::Actor& actor)
                         shock_str +
                         " to behold" +
                         shock_punct_str;
-        } else // Not unique
-        {
+        } else {
+                // Not unique
                 return "They are " +
                         shock_str +
                         " to behold" +
@@ -566,8 +566,8 @@ void print_living_actor_info_msg(const P& pos)
                         MsgInterruptPlayer::no,
                         MorePromptOnMsg::no,
                         CopyToMsgHistory::no);
-        } else // Cannot see actor
-        {
+        } else {
+                // Cannot see actor
                 const auto* const mon = static_cast<actor::Mon*>(actor);
 
                 if (mon->m_player_aware_of_me_counter > 0) {

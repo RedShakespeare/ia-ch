@@ -240,8 +240,8 @@ void MapBuilderIntroForest::handle_template_pos(const P& p, const char c)
                         } else {
                                 map::put(new terrain::Grass(p));
                         }
-                } else // Normal stone floor
-                {
+                } else {
+                        // Normal stone floor
                         map::put(new terrain::Floor(p));
                 }
         } break;

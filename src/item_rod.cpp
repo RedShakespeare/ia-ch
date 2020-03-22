@@ -240,8 +240,8 @@ ConsumeItem Rod::activate(actor::Actor* const actor)
 
         if (m_data->is_identified) {
                 map::g_player->incr_shock(8.0, ShockSrc::use_strange_item);
-        } else // Not identified
-        {
+        } else {
+                // Not identified
                 msg_log::add("Nothing happens.");
         }
 
@@ -280,8 +280,8 @@ std::vector<std::string> Rod::descr_hook() const
 {
         if (m_data->is_identified) {
                 return {descr_identified()};
-        } else // Not identified
-        {
+        } else {
+                // Not identified
                 return m_data->base_descr;
         }
 }
@@ -312,8 +312,8 @@ std::string Rod::name_inf_str() const
                 return (m_nr_charge_turns_left > 0)
                         ? "{" + charge_str + "}"
                         : "";
-        } else // Not identified
-        {
+        } else {
+                // Not identified
                 return m_data->is_tried
                         ? "{Tried}"
                         : "";

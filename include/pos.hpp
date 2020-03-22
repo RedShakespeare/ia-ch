@@ -15,8 +15,7 @@ public:
 
         P(const int x_val, const int y_val) :
                 x(x_val),
-                y(y_val)
-        {}
+                y(y_val) {}
 
         P(const P& p) = default;
 

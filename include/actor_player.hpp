@@ -70,14 +70,9 @@ public:
 
         bool is_seeing_burning_terrain() const;
 
-        void act() override;
-
         Color color() const override;
 
         SpellSkill spell_skill(SpellId id) const override;
-
-        void on_actor_turn() override;
-        void on_std_turn() override;
 
         void hear_sound(
                 const Snd& snd,
@@ -135,6 +130,12 @@ public:
 
         void update_tmp_shock();
 
+        void add_shock_from_seen_monsters();
+
+        void incr_insanity();
+
+        bool is_busy() const;
+
         // Randomly prints a message such as "I sense an object of great power
         // here" if there is a major treasure on the map (on the floor or in a
         // container), and the player is a Rogue
@@ -152,27 +153,23 @@ public:
         item::Explosive* m_active_explosive {nullptr};
         item::Item* m_last_thrown_item {nullptr};
         Actor* m_tgt {nullptr};
-        int wait_turns_left {-1};
+        int m_wait_turns_left {-1};
         int m_ins {0};
         double m_shock {0.0};
         double m_shock_tmp {0.0};
         double m_perm_shock_taken_current_turn {0.0};
+        int m_nr_turns_until_ins {-1};
+        Dir m_auto_move_dir {Dir::END};
+        bool m_has_taken_auto_move_step {false};
+        int m_nr_turns_until_rspell {-1};
+        item::Wpn* m_unarmed_wpn {nullptr};
 
 private:
-        void incr_insanity();
-
-        void reset_perm_shock_taken_current_turn()
-        {
-                m_perm_shock_taken_current_turn = 0.0;
-        }
-
         int shock_resistance(ShockSrc shock_src) const;
 
         double shock_taken_after_mods(
                 double base_shock,
                 ShockSrc shock_src) const;
-
-        void add_shock_from_seen_monsters();
 
         void on_hit(
                 int& dmg,
@@ -181,14 +178,6 @@ private:
                 AllowWound allow_wound) override;
 
         void fov_hack();
-
-        bool is_busy() const;
-
-        int m_nr_turns_until_ins {-1};
-        Dir m_auto_move_dir {Dir::END};
-        bool m_has_taken_auto_move_step {false};
-        int m_nr_turns_until_rspell {-1};
-        item::Wpn* m_unarmed_wpn {nullptr};
 };
 
 } // namespace actor

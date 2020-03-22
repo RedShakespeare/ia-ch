@@ -220,8 +220,8 @@ static void apply_explosion_property_on_pos(
                                 }
                         }
                 }
-        } else // No living actor here
-        {
+        } else {
+                // No living actor here
                 should_apply_on_living_actor = false;
         }
 

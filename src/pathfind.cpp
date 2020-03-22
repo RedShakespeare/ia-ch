@@ -117,8 +117,8 @@ std::vector<P> pathfind_with_flood(
                         ASSERT(!adj_p_bucket.empty());
 
                         adj_p = rnd::element(adj_p_bucket);
-                } else // Do not randomize step choices - iterate over offset list
-                {
+                } else {
+                        // Do not randomize step choices - iterate over offset list
                         for (size_t i = 0; i < nr_dirs; ++i) {
                                 if (valid_offsets[i]) {
                                         adj_p = P(p + dirs[i]);

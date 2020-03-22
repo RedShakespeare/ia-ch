@@ -207,8 +207,8 @@ PropEnded PropEntangled::affect_move_dir(const P& actor_pos, Dir& dir)
 
         if (m_owner->is_player()) {
                 msg_log::add("I struggle to tear free!", colors::msg_bad());
-        } else // Is monster
-        {
+        } else {
+                // Is monster
                 if (map::g_player->can_see_actor(*m_owner)) {
                         const std::string actor_name_the =
                                 text_format::first_to_upper(
@@ -548,8 +548,8 @@ PropEnded PropNailed::affect_move_dir(const P& actor_pos, Dir& dir)
 
         if (m_owner->is_player()) {
                 msg_log::add("I struggle to tear out the spike!", colors::msg_bad());
-        } else // Is monster
-        {
+        } else {
+                // Is monster
                 if (map::g_player->can_see_actor(*m_owner)) {
                         const std::string actor_name_the =
                                 text_format::first_to_upper(
@@ -636,8 +636,9 @@ void PropWound::heal_one_wound()
 
         if (m_nr_wounds > 0) {
                 msg_log::add("A wound is healed.");
-        } else // This was the last wound
-        {
+        } else {
+                // This was the last wound
+
                 // End self
                 m_owner->m_properties.end_prop(id());
         }
@@ -2083,22 +2084,6 @@ void PropAuraOfDecay::print_msg_actor_hit(const actor::Actor& actor) const
         if (actor.is_player()) {
                 msg_log::add("I am decaying!", colors::msg_bad());
         }
-        // else // Monster is hit
-        // {
-        //         const std::string actor_name =
-        //                 (actor.state() == ActorState::alive)
-        //                 ? actor.name_the()
-        //                 : actor.corpse_name_the();
-
-        //         const Color msg_color =
-        //                 (map::g_player->is_leader_of(&actor))
-        //                 ? colors::text()
-        //                 : colors::msg_good();
-
-        //         msg_log::add(
-        //                 text_format::first_to_upper(actor_name) + " decays!",
-        //                 msg_color);
-        // }
 }
 
 PropActResult PropMajorClaphamSummon::on_act()

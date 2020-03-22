@@ -118,8 +118,8 @@ void PostmortemMenu::on_start()
                         offset +
                                 "Died before entering the dungeon",
                         color_info);
-        } else // DLVL is at least 1
-        {
+        } else {
+                // DLVL is at least 1
                 s_info_lines.emplace_back(
                         offset +
                                 "Explored to dungeon level " +
@@ -337,8 +337,9 @@ void PostmortemMenu::draw()
                 menu_pos =
                         panels::center(Panel::screen)
                                 .with_offsets(-9, -4);
-        } else // Text mode
-        {
+        } else {
+                // Text mode
+
                 // The last line is the longest (grass)
                 const int ascii_graveyard_w =
                         m_ascii_graveyard_lines.back().size();

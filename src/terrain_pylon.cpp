@@ -34,8 +34,8 @@ Pylon::Pylon(const P& p, PylonId id) :
         if (id == PylonId::any) {
                 if (rnd::coin_toss()) {
                         id = PylonId::burning;
-                } else // Pick randomly
-                {
+                } else {
+                        // Pick randomly
                         id = (PylonId)rnd::range(0, (int)PylonId::END - 1);
                 }
         }

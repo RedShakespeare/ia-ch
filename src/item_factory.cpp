@@ -386,8 +386,8 @@ void set_item_randomized_properties(Item& item)
 
                 if (wpn.data().ranged.max_ammo == 1) {
                         wpn.m_ammo_loaded = rnd::coin_toss() ? 1 : 0;
-                } else // Weapon ammo capacity > 1
-                {
+                } else {
+                        // Weapon ammo capacity > 1
                         const int ammo_cap = wpn.data().ranged.max_ammo;
 
                         if (d.ranged.is_machine_gun) {
@@ -404,8 +404,8 @@ void set_item_randomized_properties(Item& item)
                                 wpn.m_ammo_loaded =
                                         rnd::range(min_scaled, cap_scaled) *
                                         g_nr_mg_projectiles;
-                        } else // Not machinegun
-                        {
+                        } else {
+                                // Not machinegun
                                 wpn.m_ammo_loaded =
                                         rnd::range(ammo_cap / 4, ammo_cap);
                         }

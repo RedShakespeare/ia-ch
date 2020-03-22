@@ -699,8 +699,8 @@ void make_for_actor(actor::Actor& actor)
 {
         if (actor.is_player()) {
                 make_for_player();
-        } else // Not player
-        {
+        } else {
+                // Not player
                 make_for_monster(actor);
         }
 }

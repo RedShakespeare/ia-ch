@@ -261,8 +261,8 @@ void run()
                                         allow_wpn_att_terrain =
                                                 (wpn_dmg_method ==
                                                  DmgMethod::blunt);
-                                } else // Not gate (i.e. wooden, metal)
-                                {
+                                } else {
+                                        // Not gate (i.e. wooden, metal)
                                         allow_wpn_att_terrain = true;
                                 }
                         } break;

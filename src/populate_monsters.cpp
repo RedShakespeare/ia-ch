@@ -154,8 +154,8 @@ static bool make_random_group_for_room(
                 TRACE_FUNC_END_VERBOSE;
 
                 return false;
-        } else // Found valid monster IDs
-        {
+        } else {
+                // Found valid monster IDs
                 const auto id = rnd::weighted_choice(id_bucket);
 
                 populate_mon::make_group_at(
@@ -260,8 +260,9 @@ void make_group_at(
 
                 if (i == 0) {
                         origin_actor = actor;
-                } else // Not origin actor
-                {
+                } else {
+                        // Not origin actor
+
                         // The monster may have been assigned a leader when
                         // placed (e.g. Ghouls allied to a player Ghoul, or
                         // other special cases). If not, we assign the origin

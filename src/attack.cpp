@@ -650,8 +650,8 @@ static void print_projectile_hit_actor_msg(const RangedAttData& att_data)
 
         if (att_data.defender->is_player()) {
                 print_projectile_hit_player_msg(att_data);
-        } else // Defender is monster
-        {
+        } else {
+                // Defender is monster
                 const P& pos = att_data.defender->m_pos;
 
                 if (!map::g_cells.at(pos).is_seen_by_player) {

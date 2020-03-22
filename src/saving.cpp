@@ -141,8 +141,8 @@ static void read_file()
                 }
 
                 file.close();
-        } else // Could not open save file
-        {
+        } else {
+                // Could not open save file
                 ASSERT(false && "Failed to open save file");
         }
 }
@@ -218,8 +218,8 @@ bool is_save_available()
                 file.close();
 
                 return !is_empty;
-        } else // Failed to open file
-        {
+        } else {
+                // Failed to open file
                 file.close();
 
                 return false;

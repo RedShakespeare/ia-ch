@@ -231,8 +231,8 @@ ConsumeItem Potion::activate(actor::Actor* const actor)
                                 name(ItemRefType::a, ItemRefInf::none);
 
                         msg_log::add("I drink " + potion_name + "...");
-                } else // Not identified
-                {
+                } else {
+                        // Not identified
                         const std::string potion_name =
                                 name(ItemRefType::plain, ItemRefInf::none);
 

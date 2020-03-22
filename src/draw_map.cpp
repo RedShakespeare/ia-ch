@@ -64,8 +64,8 @@ static void set_terrains()
                                 render_data.color_bg =
                                         terrain_color_bg;
                         }
-                } else // Has gore
-                {
+                } else {
+                        // Has gore
                         render_data.tile = gore_tile;
                         render_data.character = gore_character;
                         render_data.color = colors::red();
@@ -124,8 +124,8 @@ static void post_process_wall_tiles()
                                         render_data.tile =
                                                 wall->front_wall_tile();
                                 }
-                        } else // Cell below is not explored
-                        {
+                        } else {
+                                // Cell below is not explored
                                 if (wall) {
                                         render_data.tile =
                                                 wall->front_wall_tile();
@@ -240,13 +240,13 @@ static void set_living_seen_monster(
 
         if (map::g_player->is_leader_of(&mon)) {
                 render_data.color_bg = colors::mon_allied_bg();
-        } else // Player is not leader of monster
-        {
+        } else {
+                // Player is not leader of monster
                 if (mon.m_aware_of_player_counter <= 0) {
                         render_data.color_bg =
                                 colors::mon_unaware_bg();
-                } else // Monster is aware of player
-                {
+                } else {
+                        // Monster is aware of player
                         const bool has_temporary_negative_prop =
                                 mon.m_properties
                                         .has_temporary_negative_prop_mon();

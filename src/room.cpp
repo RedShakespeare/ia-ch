@@ -283,8 +283,8 @@ void init_room_bucket()
                 const size_t nr_plain_rooms = s_room_bucket.size() * 2;
 
                 add_to_room_bucket(RoomType::plain, nr_plain_rooms);
-        } else // Late game
-        {
+        } else {
+                // Late game
                 add_to_room_bucket(RoomType::monster, 1);
                 add_to_room_bucket(RoomType::spider, 1);
                 add_to_room_bucket(RoomType::snake_pit, 1);
@@ -382,8 +382,8 @@ Room* make_random_room(const R& r, const IsSubRoom is_subroom)
                         init_room_bucket();
 
                         s_room_bucketit = std::begin(s_room_bucket);
-                } else // There are still room types in the bucket
-                {
+                } else {
+                        // There are still room types in the bucket
                         const RoomType room_type = *s_room_bucketit;
 
                         room = make(room_type, r);
@@ -402,8 +402,8 @@ Room* make_random_room(const R& r, const IsSubRoom is_subroom)
                                                        << (int)room_type
                                                        << std::endl;
                                 break;
-                        } else // Room not allowed (e.g. wrong dimensions)
-                        {
+                        } else {
+                                // Room not allowed (e.g. wrong dimensions)
                                 delete room;
 
                                 // Try next room type in the bucket
@@ -551,8 +551,8 @@ P StdRoom::find_auto_terrain_placement(
                                         TRACE_FUNC_END_VERBOSE;
                                         return rnd::element(adj_to_walls);
                                 }
-                        } else // Coint toss
-                        {
+                        } else {
+                                // Coint toss
                                 if (is_away_from_walls_avail) {
                                         TRACE_FUNC_END_VERBOSE;
                                         return rnd::element(away_from_walls);
@@ -911,8 +911,8 @@ void SnakePitRoom::on_pre_connect_hook(Array2<bool>& door_proposals)
 
         if ((map::g_dlvl >= g_dlvl_first_late_game) || rnd::fraction(3, 4)) {
                 mapgen::cavify_room(*this);
-        } else // Late game
-        {
+        } else {
+                // Late game
                 mapgen::make_pillars_in_room(*this);
         }
 }
@@ -1070,8 +1070,8 @@ void MonsterRoom::on_pre_connect_hook(Array2<bool>& door_proposals)
                 if (rnd::fraction(1, 3)) {
                         mapgen::make_pillars_in_room(*this);
                 }
-        } else // Is late game
-        {
+        } else {
+                // Is late game
                 mapgen::cavify_room(*this);
         }
 }
@@ -1601,8 +1601,8 @@ void RiverRoom::on_pre_connect(Array2<bool>& door_proposals)
                                 Range(1, map::w() - 2),
                                 y,
                                 x);
-                } else // Vertical
-                {
+                } else {
+                        // Vertical
                         const int river_x = m_r.p0.x;
 
                         find_closest_center0(
@@ -1927,8 +1927,8 @@ void RiverRoom::on_pre_connect(Array2<bool>& door_proposals)
                                                 map::put(floor);
                                         }
                                 }
-                        } else // Vertical
-                        {
+                        } else {
+                                // Vertical
                                 for (int x = room_con0.x; x <= room_con1.x; ++x) {
                                         if (map::g_room_map.at(x, bridge_n) ==
                                             this) {
@@ -1965,8 +1965,8 @@ void RiverRoom::on_pre_connect(Array2<bool>& door_proposals)
 
         if (c_built.empty()) {
                 mapgen::g_is_map_valid = false;
-        } else // Map is valid (at least one bridge was built)
-        {
+        } else {
+                // Map is valid (at least one bridge was built)
                 Array2<bool> valid_room_entries(map::dims());
 
                 for (int x = 0; x < map::w(); ++x) {

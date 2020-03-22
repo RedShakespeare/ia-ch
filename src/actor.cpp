@@ -73,20 +73,14 @@ void init_actor(Actor& actor, const P& pos_, ActorData& data)
         } else {
                 // Is monster
                 const int hp_max_variation_pct = 25;
-
                 const int hp_range_min = (data.hp * hp_max_variation_pct) / 100;
-
                 Range hp_range(hp_range_min, data.hp + hp_range_min);
-
                 hp_range.min = std::max(1, hp_range.min);
-
                 actor.m_base_max_hp = hp_range.roll();
         }
 
         actor.m_hp = actor.m_base_max_hp;
-
         actor.m_sp = actor.m_base_max_sp = data.spi;
-
         actor.m_lair_pos = actor.m_pos;
 
         actor.m_properties.apply_natural_props_from_actor_data();
@@ -108,62 +102,6 @@ void init_actor(Actor& actor, const P& pos_, ActorData& data)
                         mon->m_leader = map::g_player;
                 }
         }
-}
-
-ActionResult roll_sneak(const SneakData& data)
-{
-        const int sneak_mod =
-                data.actor_sneaking->ability(
-                        AbilityId::stealth,
-                        true);
-
-        const int search_skill =
-                data.actor_searching->ability(AbilityId::searching, true);
-
-        const int search_mod =
-                data.actor_searching->is_player()
-                ? -search_skill
-                : 0;
-
-        const int dist =
-                king_dist(
-                        data.actor_sneaking->m_pos,
-                        data.actor_searching->m_pos);
-
-        // Distance  Sneak bonus
-        // ----------------------
-        // 1         -7
-        // 2          0
-        // 3          7
-        // 4         14
-        // 5         21
-        // 6         28
-        // 7         35
-        // 8         42
-        const int dist_mod = (dist - 2) * 7;
-
-        const bool is_lit = map::g_light.at(data.actor_sneaking->m_pos);
-        const bool is_dark = map::g_dark.at(data.actor_sneaking->m_pos);
-
-        const int lgt_mod = is_lit ? -40 : 0;
-
-        const int drk_mod = (is_dark && !is_lit) ? 10 : 0;
-
-        // NOTE: There is no need to cap the sneak value here, since there's
-        // always critical fails
-        int sneak_tot = sneak_mod + search_mod + dist_mod + lgt_mod + drk_mod;
-
-        // std::cout << "SNEAKING" << std::endl
-        //           << "------------------" << std::endl
-        //           << "sneak_skill : " << sneak_skill << std::endl
-        //           << "dist_mod    : " << dist_mod << std::endl
-        //           << "lgt_mod     : " << lgt_mod << std::endl
-        //           << "drk_mod     : " << drk_mod << std::endl
-        //           << "sneak_tot   : " << sneak_tot << std::endl;
-
-        const auto result = ability_roll::roll(sneak_tot);
-
-        return result;
 }
 
 void print_aware_invis_mon_msg(const Mon& mon)
@@ -205,61 +143,6 @@ Actor::~Actor()
 int Actor::ability(const AbilityId id, const bool is_affected_by_props) const
 {
         return m_data->ability_values.val(id, is_affected_by_props, *this);
-}
-
-void Actor::on_std_turn_common()
-{
-        // Do light damage if in lit cell
-        if (map::g_light.at(m_pos)) {
-                actor::hit(*this, 1, DmgType::light);
-        }
-
-        if (is_alive()) {
-                // Slowly decrease current HP/spirit if above max
-                const int decr_above_max_n_turns = 7;
-
-                const bool decr_this_turn =
-                        (game_time::turn_nr() % decr_above_max_n_turns) == 0;
-
-                if ((m_hp > actor::max_hp(*this)) && decr_this_turn) {
-                        --m_hp;
-                }
-
-                if ((m_sp > actor::max_sp(*this)) && decr_this_turn) {
-                        --m_sp;
-                }
-
-                // Regenerate spirit
-                int regen_spi_n_turns = 18;
-
-                if (is_player()) {
-                        if (player_bon::has_trait(Trait::stout_spirit)) {
-                                regen_spi_n_turns -= 4;
-                        }
-
-                        if (player_bon::has_trait(Trait::strong_spirit)) {
-                                regen_spi_n_turns -= 4;
-                        }
-
-                        if (player_bon::has_trait(Trait::mighty_spirit)) {
-                                regen_spi_n_turns -= 4;
-                        }
-                } else // Is monster
-                {
-                        // Monsters regen spirit very quickly, so spell casters
-                        // doesn't suddenly get completely handicapped
-                        regen_spi_n_turns = 1;
-                }
-
-                const bool regen_spi_this_turn =
-                        (game_time::turn_nr() % regen_spi_n_turns) == 0;
-
-                if (regen_spi_this_turn) {
-                        restore_sp(1, false, Verbose::no);
-                }
-        }
-
-        on_std_turn();
 }
 
 TileId Actor::tile() const
@@ -536,8 +419,8 @@ DidAction Actor::try_eat_corpse()
 
                 if (actor_is_player) {
                         msg_log::add("I feed on " + corpse_name_the + ".");
-                } else // Is monster
-                {
+                } else {
+                        // Is monster
                         if (map::g_player->can_see_actor(*this)) {
                                 const std::string actor_name_the =
                                         text_format::first_to_upper(

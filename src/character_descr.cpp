@@ -52,8 +52,8 @@ static void add_properties_descr(std::vector<ColoredString>& lines)
                         colors::text());
 
                 lines.emplace_back("", colors::text());
-        } else // Has properties
-        {
+        } else {
+                // Has properties
                 for (const auto& e : prop_list) {
                         const auto& title = e.title;
 
@@ -79,8 +79,8 @@ static void add_insanity_descr(std::vector<ColoredString>& lines)
 
         if (sympts.empty()) {
                 lines.emplace_back(s_offset + "None", colors::text());
-        } else // Has insanity symptoms
-        {
+        } else {
+                // Has insanity symptoms
                 for (const InsSympt* const sympt : sympts) {
                         const std::string sympt_descr = sympt->char_descr_msg();
 

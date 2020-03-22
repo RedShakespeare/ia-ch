@@ -179,8 +179,8 @@ void PropHandler::print_resist_msg(const Prop& prop)
                                 colors::text(),
                                 MsgInterruptPlayer::yes);
                 }
-        } else // Is a monster
-        {
+        } else {
+                // Is a monster
                 if (map::g_player->can_see_actor(*m_owner)) {
                         const auto msg = prop.m_data.msg_res_mon;
 
@@ -208,8 +208,8 @@ void PropHandler::print_start_msg(const Prop& prop)
 
                         msg_log::add(msg, colors::text(), is_interrupting);
                 }
-        } else // Is monster
-        {
+        } else {
+                // Is monster
                 if (map::g_player->can_see_actor(*m_owner)) {
                         const auto msg = prop.m_data.msg_start_mon;
 
@@ -493,8 +493,8 @@ void PropHandler::on_turn_end()
                         decr_prop_count(prop_moved->m_id);
 
                         on_prop_end(prop_moved.get(), PropEndConfig());
-                } else // Property has not been removed
-                {
+                } else {
+                        // Property has not been removed
                         ++it;
                 }
         }
@@ -555,8 +555,8 @@ std::vector<PropTextListEntry> PropHandler::property_names_temporary_negative()
 
                 if (is_temporary_negative_prop(*prop)) {
                         ++it;
-                } else // Not a temporary negative property
-                {
+                } else {
+                        // Not a temporary negative property
                         it = prop_list.erase(it);
                 }
         }
@@ -594,8 +594,9 @@ std::vector<ColoredString> PropHandler::property_names_short() const
                         if (prop->src() == PropSrc::intr) {
                                 str = text_format::all_to_upper(str);
                         }
-                } else // Not indefinite
-                {
+                } else {
+                        // Not indefinite
+
                         // Player can see number of turns left on own properties
                         // with Self-aware?
                         if (m_owner->is_player() &&
@@ -735,8 +736,8 @@ bool PropHandler::is_resisting_dmg(const DmgType dmg_type, const Verbose verbose
             (verbose == Verbose::yes)) {
                 if (m_owner->is_player()) {
                         msg_log::add(res_data.msg_resist_player);
-                } else // Is monster
-                {
+                } else {
+                        // Is monster
                         const auto* const mon =
                                 static_cast<const actor::Mon*>(m_owner);
 

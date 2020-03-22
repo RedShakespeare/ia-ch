@@ -9,6 +9,7 @@
 #include "actor_mon.hpp"
 #include "actor_move.hpp"
 #include "actor_player.hpp"
+#include "actor_sneak.hpp"
 #include "fov.hpp"
 #include "game_time.hpp"
 #include "line_calc.hpp"
@@ -507,8 +508,8 @@ bool step_to_lair_if_los(actor::Mon& mon, const P& lair_p)
 
                         if (is_blocked) {
                                 return false;
-                        } else // Step is not blocked
-                        {
+                        } else {
+                                // Step is not blocked
                                 actor::move(mon, dir_utils::dir(d));
 
                                 return true;
@@ -575,8 +576,8 @@ bool look(actor::Mon& mon)
 
                                 mon.become_wary_player();
                         }
-                } else // Other actor is monster
-                {
+                } else {
+                        // Other actor is monster
                         map::update_vision();
 
                         mon.become_aware_player(false);
@@ -774,8 +775,8 @@ std::vector<P> find_path_to_target(actor::Mon& mon)
                                         blocked.at(p) = true;
                                 }
 
-                        } else // Not a door (e.g. a wall)
-                        {
+                        } else {
+                                // Not a door (e.g. a wall)
                                 blocked.at(p) = true;
                         }
                 }

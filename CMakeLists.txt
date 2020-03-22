@@ -11,6 +11,7 @@ project(ia)
 set(COMMON_SRC
         include/ability_values.hpp
         include/actor.hpp
+        include/actor_act.hpp
         include/actor_data.hpp
         include/actor_death.hpp
         include/actor_factory.hpp
@@ -19,6 +20,9 @@ set(COMMON_SRC
         include/actor_mon.hpp
         include/actor_move.hpp
         include/actor_player.hpp
+        include/actor_sneak.hpp
+        include/actor_start_turn.hpp
+        include/actor_std_turn.hpp
         include/ai.hpp
         include/array2.hpp
         include/attack.hpp
@@ -129,6 +133,7 @@ set(COMMON_SRC
 
         src/ability_values.cpp
         src/actor.cpp
+        src/actor_act.cpp
         src/actor_data.cpp
         src/actor_death.cpp
         src/actor_factory.cpp
@@ -137,6 +142,9 @@ set(COMMON_SRC
         src/actor_mon.cpp
         src/actor_move.cpp
         src/actor_player.cpp
+        src/actor_sneak.cpp
+        src/actor_start_turn.cpp
+        src/actor_std_turn.cpp
         src/ai.cpp
         src/attack.cpp
         src/attack_data.cpp

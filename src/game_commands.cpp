@@ -440,8 +440,9 @@ void handle(const GameCmd cmd)
                                 MsgInterruptPlayer::no,
                                 MorePromptOnMsg::no,
                                 CopyToMsgHistory::no);
-                } else // We are allowed to wait
-                {
+                } else {
+                        // We are allowed to wait
+
                         // NOTE: We should not print any "wait" message here,
                         // since it would look weird in some cases - e.g. when
                         // the waiting is immediately interrupted by a message
@@ -452,7 +453,7 @@ void handle(const GameCmd cmd)
                         // pressing 'wait')
                         const int turns_to_apply = 5;
 
-                        map::g_player->wait_turns_left = turns_to_apply - 1;
+                        map::g_player->m_wait_turns_left = turns_to_apply - 1;
 
                         game_time::tick();
                 }
@@ -521,16 +522,16 @@ void handle(const GameCmd cmd)
                                         // Not enough ammo loaded - auto reload?
                                         else if (config::is_ranged_wpn_auto_reload()) {
                                                 reload::try_reload(*map::g_player, item);
-                                        } else // Not enough ammo loaded, and auto reloading disabled
-                                        {
+                                        } else {
+                                                // Not enough ammo loaded, and auto reloading disabled
                                                 msg_log::add("There is no ammo loaded.");
                                         }
-                                } else // Wielded item is not a ranged weapon
-                                {
+                                } else {
+                                        // Wielded item is not a ranged weapon
                                         msg_log::add("I am not wielding a firearm.");
                                 }
-                        } else // Not wielding any item
-                        {
+                        } else {
+                                // Not wielding any item
                                 msg_log::add("I am not wielding a weapon.");
                         }
                 }
@@ -602,8 +603,8 @@ void handle(const GameCmd cmd)
                                                 "swap to " +
                                                 alt_name_a +
                                                 ".");
-                                } else // No current alt weapon
-                                {
+                                } else {
+                                        // No current alt weapon
                                         const std::string name =
                                                 wielded->name(ItemRefType::plain);
 
@@ -614,8 +615,8 @@ void handle(const GameCmd cmd)
                                                 name +
                                                 ".");
                                 }
-                        } else // No current wielded item
-                        {
+                        } else {
+                                // No current wielded item
                                 msg_log::add("I " + swift_str + "wield " + alt_name_a + ".");
                         }
 
@@ -624,8 +625,8 @@ void handle(const GameCmd cmd)
                         if (!is_instant) {
                                 game_time::tick();
                         }
-                } else // No wielded weapon and no alt weapon
-                {
+                } else {
+                        // No wielded weapon and no alt weapon
                         msg_log::add("I have neither a wielded nor a prepared weapon.");
                 }
         } break;
@@ -653,8 +654,8 @@ void handle(const GameCmd cmd)
                         msg_log::add("Not while poisoned.");
                 } else if (map::g_player->m_properties.has(PropId::confused)) {
                         msg_log::add("Not while confused.");
-                } else // We are allowed to use auto-move
-                {
+                } else {
+                        // We are allowed to use auto-move
                         auto dir = (Dir)0;
 
                         switch (cmd) {
@@ -706,8 +707,8 @@ void handle(const GameCmd cmd)
                         states::push(
                                 std::make_unique<ThrowingExplosive>(
                                         map::g_player->m_pos, *explosive));
-                } else // Not holding explosive - run throwing attack instead
-                {
+                } else {
+                        // Not holding explosive - run throwing attack instead
                         const bool is_allowed =
                                 map::g_player->m_properties
                                         .allow_attack_ranged(Verbose::yes);
@@ -723,8 +724,8 @@ void handle(const GameCmd cmd)
                         states::push(
                                 std::make_unique<Viewing>(
                                         map::g_player->m_pos));
-                } else // Cannot see
-                {
+                } else {
+                        // Cannot see
                         msg_log::add("I cannot see.");
                 }
         } break;
@@ -752,8 +753,8 @@ void handle(const GameCmd cmd)
         case GameCmd::make_noise: {
                 if (player_bon::bg() == Bg::ghoul) {
                         msg_log::add("I let out a chilling howl.");
-                } else // Not ghoul
-                {
+                } else {
+                        // Not ghoul
                         msg_log::add("I make some noise.");
                 }
 
@@ -818,8 +819,8 @@ void handle(const GameCmd cmd)
                         }
 
                         init::g_is_cheat_vision_enabled = false;
-                } else // Cheat vision was not enabled
-                {
+                } else {
+                        // Cheat vision was not enabled
                         init::g_is_cheat_vision_enabled = true;
                 }
 

@@ -145,8 +145,8 @@ void throw_item(
                 msg_log::clear();
 
                 msg_log::add("I throw " + item_name_a + ".");
-        } else // Monster throwing
-        {
+        } else {
+                // Monster throwing
                 const P& p = path.front();
 
                 if (map::g_cells.at(p).is_seen_by_player) {
@@ -377,8 +377,8 @@ void throw_item(
             ((break_item_one_in_n != -1) &&
              rnd::one_in(break_item_one_in_n))) {
                 delete &item_thrown;
-        } else // Not destroyed
-        {
+        } else {
+                // Not destroyed
                 item_drop::drop_item_on_map(drop_pos, item_thrown);
         }
 

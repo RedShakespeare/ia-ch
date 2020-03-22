@@ -209,7 +209,9 @@ void Spell::cast(
                 TRACE << "Player casting spell" << std::endl;
 
                 const ShockSrc shock_src =
-                        (spell_src == SpellSrc::learned) ? ShockSrc::cast_intr_spell : ShockSrc::use_strange_item;
+                        (spell_src == SpellSrc::learned)
+                        ? ShockSrc::cast_intr_spell
+                        : ShockSrc::use_strange_item;
 
                 const int value = shock_value();
 
@@ -227,8 +229,8 @@ void Spell::cast(
 
                         snd_emit::run(snd);
                 }
-        } else // Caster is monster
-        {
+        } else {
+                // Caster is monster
                 TRACE << "Monster casting spell" << std::endl;
 
                 // Make sound if noisy - casting from scrolls is always noisy
@@ -248,8 +250,8 @@ void Spell::cast(
                                         mon_name =
                                                 text_format::first_to_upper(
                                                         mon->name_the());
-                                } else // Cannot see monster
-                                {
+                                } else {
+                                        // Cannot see monster
                                         mon_name =
                                                 mon->m_data->is_humanoid
                                                 ? "Someone"
@@ -331,10 +333,12 @@ std::vector<std::string> Spell::descr(
 
         if (spell_src != SpellSrc::manuscript) {
                 if (is_noisy(skill)) {
-                        lines.emplace_back("Casting this spell requires making sounds.");
-                } else // The spell is silent
-                {
-                        lines.emplace_back("This spell can be cast silently.");
+                        lines.emplace_back(
+                                "Casting this spell requires making sounds.");
+                } else {
+                        // The spell is silent
+                        lines.emplace_back(
+                                "This spell can be cast silently.");
                 }
         }
 
@@ -575,8 +579,8 @@ std::vector<std::string> Darkbolt::descr_specific(const SpellSkill skill) const
 
         if (skill == SpellSkill::master) {
                 descr.emplace_back("The target is paralyzed, and set aflame.");
-        } else // Not master
-        {
+        } else {
+                // Not master
                 descr.emplace_back("The target is paralyzed.");
         }
 
@@ -721,8 +725,8 @@ void SpellBolt::run_effect(
 
                 if (target->is_player()) {
                         msg_clr = colors::msg_bad();
-                } else // Target is monster
-                {
+                } else {
+                        // Target is monster
                         const std::string name_the =
                                 player_see_tgt
                                 ? text_format::first_to_upper(
@@ -833,8 +837,8 @@ void SpellAzaWrath::run_effect(
 
                 if (target->is_player()) {
                         msg_clr = colors::msg_bad();
-                } else // Target is monster
-                {
+                } else {
+                        // Target is monster
                         str_begin =
                                 text_format::first_to_upper(
                                         target->name_the()) +
@@ -916,8 +920,8 @@ std::vector<std::string> SpellAzaWrath::descr_specific(
 
         if (skill == SpellSkill::master) {
                 descr.emplace_back("The target is paralyzed, and set aflame.");
-        } else // Not master
-        {
+        } else {
+                // Not master
                 descr.emplace_back("The target is paralyzed.");
         }
 
@@ -1167,8 +1171,8 @@ void SpellPestilence::run_effect(
 
         if (caster->is_player()) {
                 leader = caster;
-        } else // Caster is monster
-        {
+        } else {
+                // Caster is monster
                 auto* const caster_leader =
                         static_cast<actor::Mon*>(caster)->m_leader;
 
@@ -1584,8 +1588,8 @@ void SpellOpening::run_effect(
 
         if (is_any_opened) {
                 map::update_vision();
-        } else // Nothing was opened
-        {
+        } else {
+                // Nothing was opened
                 msg_log::add("I hear faint rattling and knocking.");
         }
 }
@@ -1615,8 +1619,8 @@ std::vector<std::string> SpellOpening::descr_specific(
 
         if (range == 1) {
                 descr.emplace_back("Only adjacent objects are opened.");
-        } else // Range > 1
-        {
+        } else {
+                // Range > 1
                 descr.push_back(
                         "Opens objects within a distance of " +
                         std::to_string(range) +
@@ -2138,16 +2142,16 @@ void SpellKnockBack::run_effect(
                         }
 
                         std::swap(caster_used, target);
-                } else // No spell reflection, just abort
-                {
+                } else {
+                        // No spell reflection, just abort
                         return;
                 }
         }
 
         if (target->is_player()) {
                 msg_clr = colors::msg_bad();
-        } else // Target is monster
-        {
+        } else {
+                // Target is monster
                 target_str = target->name_the();
 
                 if (map::g_player->is_leader_of(target)) {
@@ -2532,8 +2536,8 @@ void SpellDisease::run_effect(
                         }
 
                         std::swap(caster_used, target);
-                } else // No spell reflection, just abort
-                {
+                } else {
+                        // No spell reflection, just abort
                         return;
                 }
         }
@@ -2587,15 +2591,21 @@ void SpellSummonMon::run_effect(
                         summon_bucket.push_back(actor::Id::energy_hound);
                         summon_bucket.push_back(actor::Id::fire_hound);
                 }
-        } else // Caster is monster
-        {
+        } else {
+                // Caster is monster
                 int max_dlvl_spawned =
-                        (skill == SpellSkill::basic) ? g_dlvl_last_early_game : (skill == SpellSkill::expert) ? g_dlvl_last_mid_game : g_dlvl_last;
+                        (skill == SpellSkill::basic)
+                        ? g_dlvl_last_early_game
+                        : ((skill == SpellSkill::expert)
+                                   ? g_dlvl_last_mid_game
+                                   : g_dlvl_last);
 
                 const int nr_dlvls_ood_allowed = 3;
 
                 max_dlvl_spawned =
-                        std::min(max_dlvl_spawned, map::g_dlvl + nr_dlvls_ood_allowed);
+                        std::min(
+                                max_dlvl_spawned,
+                                map::g_dlvl + nr_dlvls_ood_allowed);
 
                 const int min_dlvl_spawned = max_dlvl_spawned - 10;
 
@@ -2653,8 +2663,8 @@ void SpellSummonMon::run_effect(
 
         if (caster->is_player()) {
                 leader = caster;
-        } else // Caster is monster
-        {
+        } else {
+                // Caster is monster
                 auto* const caster_leader =
                         static_cast<actor::Mon*>(caster)->m_leader;
 
@@ -2739,8 +2749,8 @@ void SpellSummonTentacles::run_effect(
 
         if (caster->is_player()) {
                 leader = caster;
-        } else // Caster is monster
-        {
+        } else {
+                // Caster is monster
                 auto* const caster_leader =
                         static_cast<actor::Mon*>(caster)->m_leader;
 
@@ -2898,8 +2908,8 @@ void SpellMiGoHypno::run_effect(
                         }
 
                         std::swap(caster_used, target);
-                } else // No spell reflection, just abort
-                {
+                } else {
+                        // No spell reflection, just abort
                         return;
                 }
         }
@@ -2960,8 +2970,8 @@ void SpellBurn::run_effect(
                         }
 
                         std::swap(caster_used, target);
-                } else // No spell reflection, just abort
-                {
+                } else {
+                        // No spell reflection, just abort
                         return;
                 }
         }
@@ -3022,8 +3032,8 @@ void SpellDeafen::run_effect(
                         }
 
                         std::swap(caster_used, target);
-                } else // No spell reflection, just abort
-                {
+                } else {
+                        // No spell reflection, just abort
                         return;
                 }
         }
@@ -3081,8 +3091,8 @@ void SpellTransmut::run_effect(
 
         if (nr_items_before > 1) {
                 item_name_before += item_before->name(ItemRefType::plural);
-        } else // Single item
-        {
+        } else {
+                // Single item
                 item_name_before += item_before->name(ItemRefType::plain);
         }
 
@@ -3160,8 +3170,8 @@ void SpellTransmut::run_effect(
         for (auto it = std::begin(id_bucket); it != std::end(id_bucket);) {
                 if (*it == item::Id::scroll_transmut) {
                         it = id_bucket.erase(it);
-                } else // Not transmute
-                {
+                } else {
+                        // Not transmute
                         ++it;
                 }
         }
