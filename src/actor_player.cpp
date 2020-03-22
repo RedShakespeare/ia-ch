@@ -923,15 +923,16 @@ void Player::on_actor_turn()
                         }
 
                         if (is_busy() ||
-                            (config::always_warn_new_mon() && !is_old_actor_seen)) {
+                            (config::always_warn_new_mon() &&
+                             !is_old_actor_seen)) {
                                 actor_to_warn_about = actor;
                         } else {
                                 actor_to_warn_about = nullptr;
                         }
 
                         mon.m_is_msg_mon_in_view_printed = true;
-                } else // Monster is not seen
-                {
+                } else {
+                        // Monster is not seen
                         if (mon.m_player_aware_of_me_counter <= 0) {
                                 mon.m_is_msg_mon_in_view_printed = false;
                         }

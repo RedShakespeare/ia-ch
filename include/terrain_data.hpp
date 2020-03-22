@@ -75,42 +75,17 @@ enum class TerrainPlacement {
         either
 };
 
-class MoveRules {
-public:
-        MoveRules()
-        {
-                reset();
-        }
-
-        ~MoveRules() = default;
-
+struct MoveRules {
         void reset()
         {
-                m_is_walkable = false;
-
-                m_props_allow_move.clear();
-        }
-
-        void set_prop_can_move(const PropId id)
-        {
-                m_props_allow_move.push_back(id);
-        }
-
-        void set_walkable()
-        {
-                m_is_walkable = true;
-        }
-
-        bool is_walkable() const
-        {
-                return m_is_walkable;
+                is_walkable = false;
+                props_allow_move.clear();
         }
 
         bool can_move(const actor::Actor& actor) const;
 
-private:
-        bool m_is_walkable;
-        std::vector<PropId> m_props_allow_move;
+        bool is_walkable {false};
+        std::vector<PropId> props_allow_move {};
 };
 
 struct TerrainData {

@@ -23,7 +23,12 @@
 
 namespace terrain {
 
-Door::Door(const P& terrain_pos, const Wall* const mimic_terrain, DoorType type, DoorSpawnState spawn_state) :
+Door::Door(
+        const P& terrain_pos,
+        const Wall* const mimic_terrain,
+        DoorType type,
+        DoorSpawnState spawn_state) :
+
         Terrain(terrain_pos),
         m_mimic_terrain(mimic_terrain),
         m_nr_spikes(0),
@@ -393,9 +398,11 @@ bool Door::is_walkable() const
 
 bool Door::can_move(const actor::Actor& actor) const
 {
-        return m_is_open ||
+        const bool has_prop_allowing =
                 actor.m_properties.has(PropId::ethereal) ||
                 actor.m_properties.has(PropId::ooze);
+
+        return m_is_open || has_prop_allowing;
 }
 
 bool Door::is_los_passable() const

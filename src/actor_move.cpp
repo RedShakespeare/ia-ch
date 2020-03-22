@@ -193,6 +193,25 @@ static AllowAction pre_bump_terrains(actor::Actor& actor, const P& tgt)
         return result;
 }
 
+static void print_mon_enter_non_walkable_terrain_msg(
+        const actor::Actor& actor,
+        const terrain::Terrain& terrain)
+{
+        if (actor.m_properties.has(PropId::ooze)) {
+                const std::string mon_name =
+                        text_format::first_to_upper(actor.name_the());
+
+                const std::string ter_name =
+                        terrain.name(Article::the);
+
+                msg_log::add(
+                        mon_name +
+                        " seeps through " +
+                        ter_name +
+                        ".");
+        }
+}
+
 static void bump_terrains(actor::Actor& actor, const P& tgt)
 {
         const auto mobs = game_time::mobs_at_pos(tgt);
@@ -201,7 +220,15 @@ static void bump_terrains(actor::Actor& actor, const P& tgt)
                 mob->bump(actor);
         }
 
-        map::g_cells.at(tgt).terrain->bump(actor);
+        auto* const terrain = map::g_cells.at(tgt).terrain;
+
+        if (!actor.is_player() &&
+            !terrain->is_walkable() &&
+            map::g_player->can_see_actor(actor)) {
+                print_mon_enter_non_walkable_terrain_msg(actor, *terrain);
+        }
+
+        terrain->bump(actor);
 }
 
 static void on_player_waiting()
@@ -378,14 +405,7 @@ static void move_mon(actor::Mon& mon, Dir dir)
 
                 mon.m_pos = target_p;
 
-                // Bump terrains in target cell (e.g. to trigger traps)
-                const auto mobs = game_time::mobs_at_pos(mon.m_pos);
-
-                for (auto* m : mobs) {
-                        m->bump(mon);
-                }
-
-                map::g_cells.at(mon.m_pos).terrain->bump(mon);
+                bump_terrains(mon, mon.m_pos);
         }
 
         game_time::tick();

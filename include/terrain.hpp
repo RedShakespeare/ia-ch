@@ -84,7 +84,8 @@ public:
 class Terrain {
 public:
         Terrain(const P& p) :
-                m_pos(p) {}
+                m_pos(p)
+        {}
 
         Terrain() = delete;
 
@@ -134,7 +135,7 @@ public:
 
         virtual bool is_walkable() const
         {
-                return data().move_rules.is_walkable();
+                return data().move_rules.is_walkable;
         }
 
         virtual bool can_move(const actor::Actor& actor) const
@@ -219,7 +220,8 @@ public:
                 (void)verbose;
         }
 
-        virtual void on_revealed_from_searching() {}
+        virtual void on_revealed_from_searching()
+        {}
 
         virtual AllowAction pre_bump(actor::Actor& actor_bumping);
 
@@ -262,7 +264,8 @@ public:
         bool m_started_burning_this_turn {false};
 
 protected:
-        virtual void on_new_turn_hook() {}
+        virtual void on_new_turn_hook()
+        {}
 
         virtual void on_hit(
                 const int dmg,
@@ -505,7 +508,8 @@ private:
 class Brazier : public Terrain {
 public:
         Brazier(const P& p) :
-                Terrain(p) {}
+                Terrain(p)
+        {}
 
         Brazier() = delete;
 
@@ -781,7 +785,8 @@ class Bridge : public Terrain {
 public:
         Bridge(const P& p) :
                 Terrain(p),
-                m_axis(Axis::hor) {}
+                m_axis(Axis::hor)
+        {}
         Bridge() = delete;
 
         Id id() const override
