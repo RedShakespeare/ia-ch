@@ -476,7 +476,7 @@ void StdRoom::on_post_connect(Array2<bool>& door_proposals)
 
         // Do not make the room dark if it has a light source
 
-        bool has_light_source = false;
+        bool room_has_light_source = false;
 
         for (int x = m_r.p0.x; x <= m_r.p1.x; ++x) {
                 for (int y = m_r.p0.y; y <= m_r.p1.y; ++y) {
@@ -487,16 +487,16 @@ void StdRoom::on_post_connect(Array2<bool>& door_proposals)
                         const auto id = map::g_cells.at(x, y).terrain->id();
 
                         if (id == terrain::Id::brazier) {
-                                has_light_source = true;
+                                room_has_light_source = true;
                         }
                 }
         }
 
-        if (!has_light_source) {
-                int pct_chance_dark = base_pct_chance_dark(m_type) - 15;
+        if (!room_has_light_source) {
+                int pct_chance_dark = base_pct_chance_dark(m_type);
 
                 // Increase chance with deeper dungeon levels
-                pct_chance_dark += map::g_dlvl;
+                pct_chance_dark += (int)((double)map::g_dlvl * 1.25);
 
                 set_constr_in_range(0, pct_chance_dark, 100);
 

@@ -497,34 +497,13 @@ void Actor::on_feed()
 
 void Actor::add_light(Array2<bool>& light_map) const
 {
-        if (m_state == ActorState::alive && m_properties.has(PropId::radiant)) {
-                // TODO: Much of the code below is duplicated from
-                // ActorPlayer::add_light_hook(), some refactoring is needed.
+        const bool is_alive_radiant =
+                (m_state == ActorState::alive) &&
+                m_properties.has(PropId::radiant);
 
-                Array2<bool> hard_blocked(map::dims());
+        const bool is_burning = m_properties.has(PropId::burning);
 
-                const R fov_lmt = fov::fov_rect(m_pos, hard_blocked.dims());
-
-                map_parsers::BlocksLos()
-                        .run(hard_blocked,
-                             fov_lmt,
-                             MapParseMode::overwrite);
-
-                FovMap fov_map;
-                fov_map.hard_blocked = &hard_blocked;
-                fov_map.light = &map::g_light;
-                fov_map.dark = &map::g_dark;
-
-                const auto actor_fov = fov::run(m_pos, fov_map);
-
-                for (int x = fov_lmt.p0.x; x <= fov_lmt.p1.x; ++x) {
-                        for (int y = fov_lmt.p0.y; y <= fov_lmt.p1.y; ++y) {
-                                if (!actor_fov.at(x, y).is_blocked_hard) {
-                                        light_map.at(x, y) = true;
-                                }
-                        }
-                }
-        } else if (m_properties.has(PropId::burning)) {
+        if (is_alive_radiant || is_burning) {
                 for (const auto d : dir_utils::g_dir_list_w_center) {
                         light_map.at(m_pos + d) = true;
                 }

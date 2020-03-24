@@ -1077,7 +1077,7 @@ void Player::hand_att(Actor& defender)
 
 void Player::add_light_hook(Array2<bool>& light_map) const
 {
-        LgtSize lgt_size = LgtSize::none;
+        auto lgt_size = LgtSize::none;
 
         if (m_active_explosive) {
                 if (m_active_explosive->data().id == item::Id::flare) {
@@ -1087,7 +1087,7 @@ void Player::add_light_hook(Array2<bool>& light_map) const
 
         if (lgt_size != LgtSize::fov) {
                 for (auto* const item : m_inv.m_backpack) {
-                        LgtSize item_lgt_size = item->lgt_size();
+                        const auto item_lgt_size = item->lgt_size();
 
                         if ((int)lgt_size < (int)item_lgt_size) {
                                 lgt_size = item_lgt_size;
@@ -1123,10 +1123,8 @@ void Player::add_light_hook(Array2<bool>& light_map) const
         } break;
 
         case LgtSize::small:
-                for (int y = m_pos.y - 1; y <= m_pos.y + 1; ++y) {
-                        for (int x = m_pos.x - 1; x <= m_pos.x + 1; ++x) {
-                                light_map.at(x, y) = true;
-                        }
+                for (const auto d : dir_utils::g_dir_list_w_center) {
+                        light_map.at(m_pos + d) = true;
                 }
                 break;
 
