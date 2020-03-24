@@ -471,13 +471,13 @@
         </audio>
 
         <attributes>
-            <hit_points>4</hit_points>
+            <hit_points>8</hit_points>
             <spirit>8</spirit>
             <speed>normal</speed>
             <shock_level>terrifying</shock_level>
             <melee>50</melee>
             <ranged>0</ranged>
-            <dodging>-10</dodging>
+            <dodging>0</dodging>
             <stealth>0</stealth>
             <searching>0</searching>
             <can_open_doors>false</can_open_doors>
@@ -500,13 +500,15 @@
         <properties>
             <property>small_crawling</property>
             <property>darkvision</property>
+            <property>r_blind</property>
+            <property>short_hearing_range</property>
         </properties>
 
         <ai>
-            <erratic_move_percent>15</erratic_move_percent>
-            <turns_aware>5</turns_aware>
+            <erratic_move_percent>10</erratic_move_percent>
+            <turns_aware>7</turns_aware>
             <ranged_cooldown_turns>0</ranged_cooldown_turns>
-            <looks>true</looks>
+            <looks>false</looks>
             <avoids_blocking_friend>true</avoids_blocking_friend>
             <attacks>true</attacks>
             <paths_to_target_when_aware>true</paths_to_target_when_aware>
@@ -558,13 +560,13 @@
         </audio>
 
         <attributes>
-            <hit_points>4</hit_points>
+            <hit_points>6</hit_points>
             <spirit>8</spirit>
             <speed>fast</speed>
             <shock_level>frightening</shock_level>
             <melee>50</melee>
             <ranged>0</ranged>
-            <dodging>20</dodging>
+            <dodging>50</dodging>
             <stealth>0</stealth>
             <searching>0</searching>
             <can_open_doors>false</can_open_doors>
@@ -587,13 +589,14 @@
         <properties>
             <property>small_crawling</property>
             <property>darkvision</property>
+            <property>r_blind</property>
         </properties>
 
         <ai>
             <erratic_move_percent>35</erratic_move_percent>
-            <turns_aware>5</turns_aware>
+            <turns_aware>7</turns_aware>
             <ranged_cooldown_turns>0</ranged_cooldown_turns>
-            <looks>true</looks>
+            <looks>false</looks>
             <avoids_blocking_friend>true</avoids_blocking_friend>
             <attacks>true</attacks>
             <paths_to_target_when_aware>true</paths_to_target_when_aware>
