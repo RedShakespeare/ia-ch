@@ -10,8 +10,10 @@ Gameplay
 * Worm Masses and Mind Worms can no longer split while burning
 * Stuck doors are drawn with a different color, and have "stuck" added to their names if the player is adjacent to the door
 * Added trait "Crippling Strikes" - melee attacks have 60% chance to Weaken the target for 2-3 turns
+* Small crawling creatures (rats, snakes, crawling hands, etc) can pass through some terrain types such as gates and piles of debris
 
 User interface
+* Added messages when Ooze type monsters or small crawling monsters pass though things things normally cannot be walked though
 
 Bug fixes
 * Fixed a bug that prevented messages for Rogues sensing artifacts on the dungeon floor (there were only messages for sensing artifacts in item containers, such as tombs)
@@ -877,7 +879,7 @@ v13.0 (September 15, 2012)
 * Better rules for if player with phobia is considered to be in open or cramped spaces
 * Merged potion of reflexes and potion of aiming into one, and renamed it "Potion of the Cobra"
 * Teleport traps displays a popup instead of log text (it was difficult to react)
-* Open doors in ASCII mode uses ´ symbol (to differentiate from missile weapons)
+* Open doors in ASCII mode uses different symbol (to differentiate from missile weapons)
 * Damage per turn from burning is reduced
 * Fixed: Explosions crashed the game in certain situations
 * Fixed: Status effect countdown did not occur on some turns

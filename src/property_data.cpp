@@ -839,20 +839,16 @@ static void init_data_list()
         add(d);
 
         d.id = PropId::ooze;
-        d.name = "Ooze";
-        d.name_short = "Ooze";
-        d.descr =
-                "Can move through narrow cracks and crevices such as piles of "
-                "rubble, or beneath doors";
-        d.allow_display_turns = false;
+        d.allow_test_on_bot = false;
+        d.alignment = PropAlignment::neutral;
+        add(d);
+
+        d.id = PropId::small_crawling;
         d.allow_test_on_bot = false;
         d.alignment = PropAlignment::neutral;
         add(d);
 
         d.id = PropId::burrowing;
-        d.name = "Burrowing";
-        d.name_short = "Burrowing";
-        d.descr = "Can move through and destroy walls";
         d.allow_display_turns = false;
         d.allow_test_on_bot = false;
         d.alignment = PropAlignment::neutral;

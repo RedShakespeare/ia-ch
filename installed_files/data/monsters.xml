@@ -498,6 +498,7 @@
         </attacks>
 
         <properties>
+            <property>small_crawling</property>
             <property>darkvision</property>
         </properties>
 
@@ -584,6 +585,7 @@
         </attacks>
 
         <properties>
+            <property>small_crawling</property>
             <property>darkvision</property>
         </properties>
 
@@ -675,6 +677,7 @@
         </spells>
 
         <properties>
+            <property>small_crawling</property>
             <property>darkvision</property>
         </properties>
 
@@ -1222,6 +1225,7 @@
         </spells>
 
         <properties>
+            <property>small_crawling</property>
             <property>darkvision</property>
         </properties>
 
@@ -2048,6 +2052,7 @@
         </attacks>
 
         <properties>
+            <property>small_crawling</property>
             <property>darkvision</property>
         </properties>
 
@@ -2134,6 +2139,7 @@
         </attacks>
 
         <properties>
+            <property>small_crawling</property>
             <property>darkvision</property>
         </properties>
 
@@ -2226,6 +2232,7 @@
         </attacks>
 
         <properties>
+            <property>small_crawling</property>
             <property>darkvision</property>
         </properties>
 
@@ -2319,6 +2326,7 @@
         </attacks>
 
         <properties>
+            <property>small_crawling</property>
             <property>darkvision</property>
         </properties>
 
@@ -2409,6 +2417,7 @@
         </attacks>
 
         <properties>
+            <property>small_crawling</property>
             <property>darkvision</property>
         </properties>
 
@@ -4428,6 +4437,7 @@
         </attacks>
 
         <properties>
+            <property>small_crawling</property>
             <property>darkvision</property>
             <property>flying</property>
         </properties>
@@ -5162,6 +5172,7 @@
         </attacks>
 
         <properties>
+            <property>small_crawling</property>
             <property>splits_on_death</property>
             <property>darkvision</property>
             <property>r_blind</property>
@@ -5255,6 +5266,7 @@
         </attacks>
 
         <properties>
+            <property>small_crawling</property>
             <property>splits_on_death</property>
             <property>darkvision</property>
             <property>r_blind</property>

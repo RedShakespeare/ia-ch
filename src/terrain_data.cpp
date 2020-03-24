@@ -177,6 +177,7 @@ static void init_data_list()
         d.move_rules.props_allow_move.push_back(PropId::ethereal);
         d.move_rules.props_allow_move.push_back(PropId::burrowing);
         d.move_rules.props_allow_move.push_back(PropId::ooze);
+        d.move_rules.props_allow_move.push_back(PropId::small_crawling);
         d.is_los_passable = true;
         d.can_have_blood = false; // Looks weird
         d.can_have_gore = false;
@@ -365,6 +366,7 @@ static void init_data_list()
         d.move_rules.props_allow_move.push_back(PropId::ethereal);
         d.move_rules.props_allow_move.push_back(PropId::ooze);
         d.move_rules.props_allow_move.push_back(PropId::burrowing);
+        d.move_rules.props_allow_move.push_back(PropId::small_crawling);
         d.is_projectile_passable = false;
         d.is_los_passable = false;
         d.is_smoke_passable = false;

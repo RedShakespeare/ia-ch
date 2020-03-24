@@ -162,6 +162,9 @@ Prop* make(const PropId id)
         case PropId::ooze:
                 return new Prop(id);
 
+        case PropId::small_crawling:
+                return new Prop(id);
+
         case PropId::burrowing:
                 return new PropBurrowing();
 

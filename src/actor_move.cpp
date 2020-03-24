@@ -193,22 +193,51 @@ static AllowAction pre_bump_terrains(actor::Actor& actor, const P& tgt)
         return result;
 }
 
+static void print_ooze_enter_terrain_msg(
+        const actor::Actor& actor,
+        const terrain::Terrain& terrain)
+{
+        const auto mon_name = text_format::first_to_upper(actor.name_the());
+        const auto ter_name = terrain.name(Article::the);
+
+        std::string preposition = "through";
+
+        if (terrain.id() == terrain::Id::door) {
+                const auto& door =
+                        static_cast<const terrain::Door&>(terrain);
+
+                switch (door.type()) {
+                case DoorType::gate:
+                        break;
+
+                case DoorType::wood:
+                case DoorType::metal:
+                        preposition = "under";
+                        break;
+                }
+        }
+
+        msg_log::add(mon_name + " seeps " + preposition + " " + ter_name + ".");
+}
+
+static void print_small_crawling_enter_terrain_msg(
+        const actor::Actor& actor,
+        const terrain::Terrain& terrain)
+{
+        const auto mon_name = text_format::first_to_upper(actor.name_the());
+        const auto ter_name = terrain.name(Article::the);
+
+        msg_log::add(mon_name + " squirms through " + ter_name + ".");
+}
+
 static void print_mon_enter_non_walkable_terrain_msg(
         const actor::Actor& actor,
         const terrain::Terrain& terrain)
 {
         if (actor.m_properties.has(PropId::ooze)) {
-                const std::string mon_name =
-                        text_format::first_to_upper(actor.name_the());
-
-                const std::string ter_name =
-                        terrain.name(Article::the);
-
-                msg_log::add(
-                        mon_name +
-                        " seeps through " +
-                        ter_name +
-                        ".");
+                print_ooze_enter_terrain_msg(actor, terrain);
+        } else if (actor.m_properties.has(PropId::small_crawling)) {
+                print_small_crawling_enter_terrain_msg(actor, terrain);
         }
 }
 
@@ -383,18 +412,6 @@ static void move_mon(actor::Mon& mon, Dir dir)
                                 .cell(target_p);
 
                 ASSERT(!is_blocked);
-
-                const auto* const t = map::g_cells.at(target_p).terrain;
-
-                if (t->id() == terrain::Id::door) {
-                        const auto* const door =
-                                static_cast<const terrain::Door*>(t);
-
-                        ASSERT(
-                                door->is_open() ||
-                                mon.m_properties.has(PropId::ooze) ||
-                                mon.m_properties.has(PropId::ethereal));
-                }
         }
 #endif // NDEBUG
 

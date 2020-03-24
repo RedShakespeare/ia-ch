@@ -2121,7 +2121,8 @@ void Grate::on_hit(
                         const P p(m_pos + d);
 
                         if (map::is_pos_inside_map(p)) {
-                                if (map::g_cells.at(p).terrain->id() == terrain::Id::door) {
+                                if (map::g_cells.at(p).terrain->id() ==
+                                    terrain::Id::door) {
                                         map::put(new RubbleLow(p));
                                 }
                         }

@@ -398,11 +398,27 @@ bool Door::is_walkable() const
 
 bool Door::can_move(const actor::Actor& actor) const
 {
-        const bool has_prop_allowing =
-                actor.m_properties.has(PropId::ethereal) ||
-                actor.m_properties.has(PropId::ooze);
+        if (m_is_open) {
+                return true;
+        }
 
-        return m_is_open || has_prop_allowing;
+        // The door is closed
+
+        const auto& properties = actor.m_properties;
+
+        // Can move through all door types
+        if (properties.has(PropId::ethereal) ||
+            properties.has(PropId::ooze)) {
+                return true;
+        }
+
+        // Small crawling creatures can pass through gates
+        if ((m_type == DoorType::gate) &&
+            properties.has(PropId::small_crawling)) {
+                return true;
+        }
+
+        return false;
 }
 
 bool Door::is_los_passable() const

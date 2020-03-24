@@ -78,9 +78,12 @@ enum class PropId {
         short_hearing_range,
 
         // Properties describing the actors body and/or method of moving around
+        // (typically affects which terrain types the actor can move through,
+        // but may have other effects)
         flying,
         ethereal,
         ooze,
+        small_crawling,
         burrowing,
 
         // Properties mostly used for AI control
@@ -170,6 +173,7 @@ const std::unordered_map<std::string, PropId> g_str_to_prop_id_map = {
         {"see_invis", PropId::see_invis},
         {"short_hearing_range", PropId::short_hearing_range},
         {"slowed", PropId::slowed},
+        {"small_crawling", PropId::small_crawling},
         {"spawns_zombie_parts_on_destroyed",
          PropId::spawns_zombie_parts_on_destroyed},
         {"speaks_curses", PropId::speaks_curses},
