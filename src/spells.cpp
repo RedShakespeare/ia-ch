@@ -1703,7 +1703,7 @@ void SpellLight::run_effect(
         actor::Actor* const caster,
         const SpellSkill skill) const
 {
-        auto prop = property_factory::make(PropId::radiant);
+        auto prop = property_factory::make(PropId::radiant_fov);
 
         prop->set_duration(20 + (int)skill * 20);
 

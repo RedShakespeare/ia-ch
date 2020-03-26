@@ -168,7 +168,10 @@ Prop* make(const PropId id)
         case PropId::burrowing:
                 return new PropBurrowing();
 
-        case PropId::radiant:
+        case PropId::radiant_adjacent:
+                return new Prop(id);
+
+        case PropId::radiant_fov:
                 return new Prop(id);
 
         case PropId::darkvision:

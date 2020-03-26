@@ -1096,6 +1096,12 @@ void Player::add_light_hook(Array2<bool>& light_map) const
         }
 
         switch (lgt_size) {
+        case LgtSize::small: {
+                for (const auto d : dir_utils::g_dir_list_w_center) {
+                        light_map.at(m_pos + d) = true;
+                }
+        } break;
+
         case LgtSize::fov: {
                 Array2<bool> hard_blocked(map::dims());
 
@@ -1111,25 +1117,19 @@ void Player::add_light_hook(Array2<bool>& light_map) const
                 fov_map.light = &map::g_light;
                 fov_map.dark = &map::g_dark;
 
-                const auto player_fov = fov::run(m_pos, fov_map);
+                const auto actor_fov = fov::run(m_pos, fov_map);
 
                 for (int x = fov_lmt.p0.x; x <= fov_lmt.p1.x; ++x) {
                         for (int y = fov_lmt.p0.y; y <= fov_lmt.p1.y; ++y) {
-                                if (!player_fov.at(x, y).is_blocked_hard) {
+                                if (!actor_fov.at(x, y).is_blocked_hard) {
                                         light_map.at(x, y) = true;
                                 }
                         }
                 }
         } break;
 
-        case LgtSize::small:
-                for (const auto d : dir_utils::g_dir_list_w_center) {
-                        light_map.at(m_pos + d) = true;
-                }
-                break;
-
-        case LgtSize::none:
-                break;
+        case LgtSize::none: {
+        } break;
         }
 }
 

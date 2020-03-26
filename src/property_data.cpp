@@ -648,7 +648,15 @@ static void init_data_list()
         d.alignment = PropAlignment::bad;
         add(d);
 
-        d.id = PropId::radiant;
+        d.id = PropId::radiant_adjacent;
+        d.std_rnd_turns = Range(50, 100);
+        d.allow_display_turns = true;
+        d.update_vision_on_toggled = true;
+        d.allow_test_on_bot = true;
+        d.alignment = PropAlignment::neutral;
+        add(d);
+
+        d.id = PropId::radiant_fov;
         d.std_rnd_turns = Range(50, 100);
         d.name = "Radiant";
         d.name_short = "Radiant";

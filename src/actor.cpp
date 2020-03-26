@@ -497,16 +497,62 @@ void Actor::on_feed()
 
 void Actor::add_light(Array2<bool>& light_map) const
 {
-        const bool is_alive_radiant =
-                (m_state == ActorState::alive) &&
-                m_properties.has(PropId::radiant);
+        const bool is_alive = (m_state == ActorState::alive);
+
+        const bool is_alive_radiant_adj =
+                is_alive &&
+                m_properties.has(PropId::radiant_adjacent);
+
+        const bool is_alive_radiant_fov =
+                is_alive &&
+                m_properties.has(PropId::radiant_fov);
 
         const bool is_burning = m_properties.has(PropId::burning);
 
-        if (is_alive_radiant || is_burning) {
+        auto lgt_size = LgtSize::none;
+
+        if (is_alive_radiant_fov) {
+                lgt_size = LgtSize::fov;
+        } else if (is_burning || is_alive_radiant_adj) {
+                lgt_size = LgtSize::small;
+        }
+
+        // TODO: This is exactly the same code as in actor_player.cpp
+        switch (lgt_size) {
+        case LgtSize::small: {
                 for (const auto d : dir_utils::g_dir_list_w_center) {
                         light_map.at(m_pos + d) = true;
                 }
+        } break;
+
+        case LgtSize::fov: {
+                Array2<bool> hard_blocked(map::dims());
+
+                const R fov_lmt = fov::fov_rect(m_pos, hard_blocked.dims());
+
+                map_parsers::BlocksLos()
+                        .run(hard_blocked,
+                             fov_lmt,
+                             MapParseMode::overwrite);
+
+                FovMap fov_map;
+                fov_map.hard_blocked = &hard_blocked;
+                fov_map.light = &map::g_light;
+                fov_map.dark = &map::g_dark;
+
+                const auto actor_fov = fov::run(m_pos, fov_map);
+
+                for (int x = fov_lmt.p0.x; x <= fov_lmt.p1.x; ++x) {
+                        for (int y = fov_lmt.p0.y; y <= fov_lmt.p1.y; ++y) {
+                                if (!actor_fov.at(x, y).is_blocked_hard) {
+                                        light_map.at(x, y) = true;
+                                }
+                        }
+                }
+        } break;
+
+        case LgtSize::none: {
+        } break;
         }
 
         add_light_hook(light_map);
