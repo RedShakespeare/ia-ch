@@ -73,8 +73,8 @@ void init_actor(Actor& actor, const P& pos_, ActorData& data)
         } else {
                 // Is monster
                 const int hp_max_variation_pct = 25;
-                const int hp_range_min = (data.hp * hp_max_variation_pct) / 100;
-                Range hp_range(hp_range_min, data.hp + hp_range_min);
+                const int hp_variation = (data.hp * hp_max_variation_pct) / 100;
+                Range hp_range(data.hp - hp_variation, data.hp + hp_variation);
                 hp_range.min = std::max(1, hp_range.min);
                 actor.m_base_max_hp = hp_range.roll();
         }
