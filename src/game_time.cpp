@@ -173,11 +173,12 @@ static void run_std_turn_events()
                 } else {
                         // Actor not destroyed
                         if (!actor->is_player()) {
-                                // Count down monster awareness
+                                // Count down player awareness of the monster
                                 auto* const mon =
                                         static_cast<actor::Mon*>(actor);
 
-                                if (mon->m_player_aware_of_me_counter > 0) {
+                                if ((mon->m_player_aware_of_me_counter > 0) &&
+                                    !map::g_player->can_see_actor(*mon)) {
                                         --mon->m_player_aware_of_me_counter;
                                 }
                         }
