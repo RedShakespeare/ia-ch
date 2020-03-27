@@ -32,14 +32,14 @@ public:
                 return m_min;
         }
 
-        void set_base_min(const int v)
-        {
-                m_min = v;
-        }
-
         int base_max() const
         {
                 return m_max;
+        }
+
+        void set_base_min(const int v)
+        {
+                m_min = v;
         }
 
         void set_base_max(const int v)
@@ -55,6 +55,18 @@ public:
         void set_plus(const int v)
         {
                 m_plus = v;
+        }
+
+        DmgRange scaled_pct(const int pct) const
+        {
+                int new_min = (m_min * pct) / 100;
+                int new_max = (m_max * pct) / 100;
+                int new_plus = (m_plus * pct) / 100;
+
+                new_min = std::max(new_min, 1);
+                new_max = std::max(new_max, 1);
+
+                return {new_min, new_max, new_plus};
         }
 
         std::string str_plus() const;

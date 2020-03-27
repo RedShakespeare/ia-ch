@@ -1365,7 +1365,7 @@ PropActResult PropVortex::on_act()
         }
 
         if (knockback_from_pos == player_pos) {
-                return PropActResult();
+                return {};
         }
 
         TRACE << "Pos found to knockback player from: "

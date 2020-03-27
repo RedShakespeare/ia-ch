@@ -9,10 +9,15 @@
 
 #include "ability_values.hpp"
 #include "actor_data.hpp"
+#include "dmg_range.hpp"
 
 namespace actor {
 class Actor;
 } // namespace actor
+
+namespace item {
+class Item;
+} // namespace item
 
 struct P;
 
@@ -20,17 +25,12 @@ struct AttData {
 public:
         virtual ~AttData() = default;
 
-        actor::Actor* attacker;
-        actor::Actor* defender;
-        const item::Item* att_item;
-        int skill_mod;
-        int wpn_mod;
-        int dodging_mod;
-        int state_mod;
-        int hit_chance_tot;
-        ActionResult att_result;
-        int dmg;
-        bool is_intrinsic_att;
+        int hit_chance_tot {0};
+        DmgRange dmg_range {};
+        actor::Actor* attacker {nullptr};
+        actor::Actor* defender {nullptr};
+        const item::Item* att_item {nullptr};
+        bool is_intrinsic_att {false};
 
 protected:
         AttData(
@@ -48,8 +48,8 @@ public:
 
         ~MeleeAttData() = default;
 
-        bool is_backstab;
-        bool is_weak_attack;
+        bool is_backstab {false};
+        bool is_weak_attack {false};
 };
 
 struct RangedAttData : public AttData {
@@ -63,10 +63,9 @@ public:
 
         ~RangedAttData() = default;
 
-        P aim_pos;
-        actor::Size aim_lvl;
-        actor::Size defender_size;
-        int dist_mod;
+        P aim_pos {0, 0};
+        actor::Size aim_lvl {(actor::Size)0};
+        actor::Size defender_size {(actor::Size)0};
 };
 
 struct ThrowAttData : public AttData {
@@ -78,9 +77,8 @@ public:
                 const P& current_pos,
                 const item::Item& item);
 
-        actor::Size aim_lvl;
-        actor::Size defender_size;
-        int dist_mod;
+        actor::Size aim_lvl {(actor::Size)0};
+        actor::Size defender_size {(actor::Size)0};
 };
 
 #endif // ATTACK_DATA_HPP

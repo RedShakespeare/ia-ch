@@ -157,7 +157,8 @@ void throw_item(
                         msg_log::add(
                                 name_the +
                                 " throws " +
-                                item_name_a + ".");
+                                item_name_a +
+                                ".");
                 }
         }
 
@@ -196,7 +197,8 @@ void throw_item(
 
                 if (actor_here &&
                     ((pos == tgt_pos) ||
-                     (actor_here->m_data->actor_size >= actor::Size::humanoid))) {
+                     (actor_here->m_data->actor_size >=
+                      actor::Size::humanoid))) {
                         att_data =
                                 ThrowAttData(
                                         &actor_throwing,
@@ -205,7 +207,13 @@ void throw_item(
                                         pos,
                                         item_thrown);
 
-                        if (att_data.att_result >= ActionResult::success) {
+                        const auto att_result =
+                                ability_roll::roll(att_data.hit_chance_tot);
+
+                        const int dmg =
+                                att_data.dmg_range.total_range().roll();
+
+                        if (att_result >= ActionResult::success) {
                                 const bool is_potion =
                                         item_thrown_data.type ==
                                         ItemType::potion;
@@ -252,12 +260,13 @@ void throw_item(
                                                 colors::msg_good());
                                 }
 
-                                if (att_data.dmg > 0) {
+                                if (dmg > 0) {
                                         actor::hit(
                                                 *actor_here,
-                                                att_data.dmg,
+                                                dmg,
                                                 DmgType::physical,
-                                                item_thrown_data.ranged.dmg_method,
+                                                item_thrown_data.ranged
+                                                        .dmg_method,
                                                 AllowWound::yes);
                                 }
 

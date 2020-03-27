@@ -25,4 +25,4 @@ ActionResult roll_sneak(const SneakData& data);
 
 } // namespace actor
 
-#endif // ACTOR_STD_TURN_HPP
+#endif // ACTOR_SNEAK_HPP
