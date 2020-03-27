@@ -1131,6 +1131,7 @@ void init()
         d.melee.att_msgs = {"claw", ""};
         d.melee.hit_chance_mod = 20;
         d.melee.dmg = DmgRange(1, 8);
+        d.melee.is_noisy = false;
         d.melee.att_corpse = true;
         d.melee.dmg_method = DmgMethod::slashing;
         d.melee.hit_small_sfx = SfxId::hit_sharp;
