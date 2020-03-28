@@ -9,6 +9,7 @@
 #include "actor.hpp"
 #include "actor_mon.hpp"
 #include "actor_player.hpp"
+#include "global.hpp"
 #include "item.hpp"
 #include "map.hpp"
 #include "map_parsing.hpp"
@@ -157,7 +158,7 @@ MeleeAttData::MeleeAttData(
         // Lower hit chance if attacker cannot see target (e.g. attacking
         // invisible creature)
         if (!can_attacker_see_tgt) {
-                state_mod -= 25;
+                state_mod -= g_hit_chance_pen_vs_unseen;
         }
 
         // Lower hit chance if defender is ethereal (except if Bane of the
@@ -350,7 +351,7 @@ RangedAttData::RangedAttData(
                 }
 
                 if (!can_attacker_see_tgt) {
-                        state_mod -= 25;
+                        state_mod -= g_hit_chance_pen_vs_unseen;
                 }
         }
 
@@ -509,7 +510,7 @@ ThrowAttData::ThrowAttData(
         // Lower hit chance if attacker cannot see target (e.g.
         // attacking invisible creature)
         if (!can_attacker_see_tgt) {
-                state_mod -= 25;
+                state_mod -= g_hit_chance_pen_vs_unseen;
         }
 
         // Player gets attack bonus for attacking unaware monster

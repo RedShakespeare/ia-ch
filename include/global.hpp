@@ -62,6 +62,8 @@ const int g_player_carry_weight_base = 500;
 // of actors above the limit. This number is treated as a soft limit.
 const size_t g_max_nr_actors_on_map = 125;
 
+const int g_hit_chance_pen_vs_unseen = 25;
+
 // -----------------------------------------------------------------------------
 // Types
 // -----------------------------------------------------------------------------

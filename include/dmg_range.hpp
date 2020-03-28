@@ -7,6 +7,7 @@
 #ifndef DMG_RANGE_HPP
 #define DMG_RANGE_HPP
 
+#include <iostream>
 #include <string>
 
 #include "random.hpp"
@@ -20,6 +21,15 @@ public:
                 m_max(max),
                 m_plus(plus)
         {
+        }
+
+        bool operator==(const DmgRange& other) const
+        {
+                const bool min_eq = (m_min == other.m_min);
+                const bool max_eq = (m_max == other.m_max);
+                const bool plus_eq = (m_plus == other.m_plus);
+
+                return min_eq && max_eq && plus_eq;
         }
 
         Range total_range() const

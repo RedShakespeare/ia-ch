@@ -141,7 +141,11 @@ bool MapBuilderStd::build_specific()
         if (init::g_is_demo_mapgen) {
                 io::cover_panel(Panel::log);
                 states::draw();
-                io::draw_text("Press any key to make aux rooms...", Panel::screen, P(0, 0), colors::white());
+                io::draw_text(
+                        "Press any key to make aux rooms...",
+                        Panel::screen,
+                        P(0, 0),
+                        colors::white());
                 io::update_screen();
                 query::wait_for_key_press();
                 io::cover_panel(Panel::log);
@@ -162,7 +166,11 @@ bool MapBuilderStd::build_specific()
                 if (init::g_is_demo_mapgen) {
                         io::cover_panel(Panel::log);
                         states::draw();
-                        io::draw_text("Press any key to make sub rooms...", Panel::screen, P(0, 0), colors::white());
+                        io::draw_text(
+                                "Press any key to make sub rooms...",
+                                Panel::screen,
+                                P(0, 0),
+                                colors::white());
                         io::update_screen();
                         query::wait_for_key_press();
                         io::cover_panel(Panel::log);
