@@ -4,13 +4,13 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 // =============================================================================
 
-#ifndef STATUS_LINES_HPP
-#define STATUS_LINES_HPP
+#ifndef MAP_MODE_GUI_HPP
+#define MAP_MODE_GUI_HPP
 
-namespace status_lines {
+namespace map_mode_gui {
 
 void draw();
 
-} // namespace status_lines
+} // namespace map_mode_gui
 
-#endif // STATUS_LINES_HPP
+#endif // MAP_MODE_GUI_HPP

@@ -4,7 +4,7 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 // =============================================================================
 
-#include "status_lines.hpp"
+#include "map_mode_gui.hpp"
 
 #include "actor_player.hpp"
 #include "colors.hpp"
@@ -45,7 +45,7 @@ static void draw_player_name(int& y)
                 map::g_player->name_the(),
                 s_panel,
                 P(s_text_x0, y),
-                colors::light_sepia(),
+                colors::title(),
                 s_draw_text_bg);
 
         ++y;
@@ -75,7 +75,7 @@ static void draw_player_class(int& y)
                         line,
                         s_panel,
                         P(s_text_x0, y),
-                        colors::light_sepia(),
+                        colors::title(),
                         s_draw_text_bg);
 
                 ++y;
@@ -419,8 +419,15 @@ static void draw_encumbrance(int& y)
 
         const std::string enc_str = std::to_string(enc) + "%";
 
-        const Color enc_color =
-                (enc < 100) ? colors::white() : (enc < g_enc_immobile_lvl) ? colors::yellow() : colors::light_red();
+        Color enc_color;
+
+        if (enc < 100) {
+                enc_color = colors::white();
+        } else if (enc < g_enc_immobile_lvl) {
+                enc_color = colors::yellow();
+        } else {
+                enc_color = colors::light_red();
+        }
 
         io::draw_text_right(
                 enc_str,
@@ -454,9 +461,9 @@ static void draw_properties(int& y)
 }
 
 // -----------------------------------------------------------------------------
-// status_lines
+// map_mode_gui
 // -----------------------------------------------------------------------------
-namespace status_lines {
+namespace map_mode_gui {
 
 void draw()
 {
@@ -504,4 +511,4 @@ void draw()
         // io::draw_text(turn_nr_str, Panel::screen, p, colors::white());
 }
 
-} // namespace status_lines
+} // namespace map_mode_gui

@@ -235,26 +235,6 @@ static void player_sets_option(const MenuBrowser& browser)
         {
                 s_is_tiles_mode = !s_is_tiles_mode;
 
-                // If we do not have a font loaded with the same size as the
-                // tiles, use the first font with matching size
-                // if (s_is_tiles_mode &&
-                //     ((s_map_cell_px_w != tile_px_w) ||
-                //      (s_map_cell_px_h != tile_px_h)))
-                // {
-                //         for (const auto& font_name : font_image_names)
-                //         {
-                //                 const P font_dims =
-                //                         parse_dims_from_font_name(font_name);
-
-                //                 if (font_dims == P(tile_px_w, tile_px_h))
-                //                 {
-                //                         s_font_name = font_name;
-
-                //                         break;
-                //                 }
-                //         }
-                // }
-
                 update_render_dims();
 
                 sdl_base::init();
@@ -267,8 +247,11 @@ static void player_sets_option(const MenuBrowser& browser)
                 // Set next font
                 for (size_t i = 0; i < font_image_names.size(); ++i) {
                         if (s_font_name == font_image_names[i]) {
-                                s_font_name =
-                                        (i == (font_image_names.size() - 1)) ? font_image_names.front() : font_image_names[i + 1];
+                                if (i == (font_image_names.size() - 1)) {
+                                        s_font_name = font_image_names.front();
+                                } else {
+                                        s_font_name = font_image_names[i + 1];
+                                }
                                 break;
                         }
                 }
@@ -285,19 +268,6 @@ static void player_sets_option(const MenuBrowser& browser)
                                         break;
                                 }
                         }
-
-                        // Try fonts until a matching one is found
-                        // while ((s_map_cell_px_w != tile_px_w) ||
-                        //        (s_map_cell_px_h != tile_px_h))
-                        // {
-                        //         font_idx =
-                        //                 (font_idx + 1) %
-                        //                 font_image_names.size();
-
-                        //         s_font_name = font_image_names[font_idx];
-
-                        //         update_render_dims();
-                        // }
                 }
 
                 sdl_base::init();

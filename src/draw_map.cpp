@@ -309,13 +309,15 @@ static void set_unseen_cells_from_player_memory()
                 if (!cell.is_seen_by_player && cell.is_explored) {
                         render_data = s_render_array_player_memory.at(i);
 
-                        const double div = 3.0;
+                        const double div = 2.5;
 
                         render_data.color =
                                 render_data.color.fraction(div);
 
-                        render_data.color_bg =
-                                render_data.color_bg.fraction(div);
+                        if (render_data.color_bg != colors::black()) {
+                                render_data.color_bg =
+                                        render_data.color_bg.fraction(div);
+                        }
                 }
         }
 }

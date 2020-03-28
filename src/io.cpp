@@ -24,7 +24,6 @@
 #include "msg_log.hpp"
 #include "paths.hpp"
 #include "sdl_base.hpp"
-#include "status_lines.hpp"
 #include "text_format.hpp"
 #include "version.hpp"
 #include "viewport.hpp"
@@ -1018,6 +1017,19 @@ void update_screen()
                 offsets =
                         (screen_srf_dims - screen_panel_dims)
                                 .scaled_down(2);
+
+                // Since we render the screen texture with an offset, we create
+                // a blank space which we need to clear
+                const auto bg_color = colors::black();
+
+                SDL_SetRenderDrawColor(
+                        s_sdl_renderer,
+                        bg_color.r(),
+                        bg_color.g(),
+                        bg_color.b(),
+                        255);
+
+                SDL_RenderClear(s_sdl_renderer);
         }
 
         SDL_Rect dstrect;
@@ -1038,10 +1050,16 @@ void update_screen()
 
 void clear_screen()
 {
+        const auto clr = colors::black();
+
         SDL_FillRect(
                 s_screen_srf,
                 nullptr,
-                SDL_MapRGB(s_screen_srf->format, 0, 0, 0));
+                SDL_MapRGB(
+                        s_screen_srf->format,
+                        clr.r(),
+                        clr.g(),
+                        clr.b()));
 }
 
 P min_screen_gui_dims()

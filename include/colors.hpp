@@ -93,6 +93,7 @@ Color dark_gray_brown();
 Color violet();
 Color dark_violet();
 Color orange();
+Color gold();
 Color sepia();
 Color light_sepia();
 Color dark_sepia();

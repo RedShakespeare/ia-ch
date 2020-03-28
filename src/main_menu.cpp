@@ -287,7 +287,7 @@ void MainMenuState::draw()
                 ++pos.y;
         }
 
-        const Color quote_clr = colors::gray_brown().fraction(4.0);
+        const Color quote_clr = colors::gray_brown().fraction(2.0);
 
         std::vector<std::string> quote_lines;
 
@@ -314,7 +314,7 @@ void MainMenuState::draw()
         if (quote_w > 0) {
                 pos.set(
                         std::max((quote_w / 2) + 2, (screen_dims.x * 3) / 10),
-                        menu_pos.y + 2);
+                        menu_pos.y + 1);
 
                 for (const std::string& line : quote_lines) {
                         io::draw_text_center(

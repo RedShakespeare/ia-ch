@@ -19,6 +19,7 @@
 #include "map.hpp"
 #include "map_builder.hpp"
 #include "map_controller.hpp"
+#include "map_mode_gui.hpp"
 #include "map_travel.hpp"
 #include "minimap.hpp"
 #include "msg_log.hpp"
@@ -27,7 +28,6 @@
 #include "query.hpp"
 #include "saving.hpp"
 #include "sdl_base.hpp"
-#include "status_lines.hpp"
 #include "text_format.hpp"
 #include "viewport.hpp"
 
@@ -404,7 +404,7 @@ void GameState::draw()
 
         draw_map::run();
 
-        status_lines::draw();
+        map_mode_gui::draw();
 
         msg_log::draw();
 }

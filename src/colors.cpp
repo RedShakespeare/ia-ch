@@ -46,6 +46,7 @@ static SDL_Color s_dark_gray_brown;
 static SDL_Color s_violet;
 static SDL_Color s_dark_violet;
 static SDL_Color s_orange;
+static SDL_Color s_gold;
 static SDL_Color s_sepia;
 static SDL_Color s_light_sepia;
 static SDL_Color s_dark_sepia;
@@ -199,6 +200,7 @@ static void load_colors()
         load_color(colors_e, "violet", s_violet);
         load_color(colors_e, "dark_violet", s_dark_violet);
         load_color(colors_e, "orange", s_orange);
+        load_color(colors_e, "gold", s_gold);
         load_color(colors_e, "sepia", s_sepia);
         load_color(colors_e, "light_sepia", s_light_sepia);
         load_color(colors_e, "dark_sepia", s_dark_sepia);
@@ -539,6 +541,11 @@ Color dark_violet()
 Color orange()
 {
         return Color(s_orange);
+}
+
+Color gold()
+{
+        return Color(s_gold);
 }
 
 Color sepia()

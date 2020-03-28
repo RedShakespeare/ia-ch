@@ -78,6 +78,7 @@ set(COMMON_SRC
         include/map.hpp
         include/map_builder.hpp
         include/map_controller.hpp
+        include/map_mode_gui.hpp
         include/map_parsing.hpp
         include/map_templates.hpp
         include/map_travel.hpp
@@ -112,7 +113,6 @@ set(COMMON_SRC
         include/sound.hpp
         include/spells.hpp
         include/state.hpp
-        include/status_lines.hpp
         include/teleport.hpp
         include/terrain.hpp
         include/terrain_data.hpp
@@ -196,6 +196,7 @@ set(COMMON_SRC
         src/map_builder_special.cpp
         src/map_builder_std.cpp
         src/map_controller.cpp
+        src/map_mode_gui.cpp
         src/map_parsing.cpp
         src/map_templates.cpp
         src/map_travel.cpp
@@ -239,7 +240,6 @@ set(COMMON_SRC
         src/sound.cpp
         src/spells.cpp
         src/state.cpp
-        src/status_lines.cpp
         src/teleport.cpp
         src/terrain.cpp
         src/terrain_data.cpp
