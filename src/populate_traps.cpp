@@ -96,7 +96,7 @@ static std::vector<P> find_allowed_cells_in_room(
                         const P p(x, y);
 
                         if (!blocked.at(p) &&
-                            map::g_cells.at(p).terrain->can_have_terrain() &&
+                            map::g_cells.at(p).terrain->can_have_trap() &&
                             (map::g_room_map.at(p) == &room)) {
                                 positions.push_back(p);
                         }
@@ -114,7 +114,7 @@ static terrain::Trap* make_trap(const terrain::TrapId id, const P& pos)
 
         auto* const mimic = static_cast<terrain::Terrain*>(d.make_obj(pos));
 
-        if (!t->can_have_terrain()) {
+        if (!t->can_have_trap()) {
                 TRACE << "Cannot place trap on terrain id: "
                       << (int)t->id() << std::endl
                       << "Trap id: "

@@ -55,7 +55,7 @@ Trap::Trap(const P& pos, Terrain* const mimic_terrain, TrapId id) :
 
         auto* const terrain_here = map::g_cells.at(pos).terrain;
 
-        if (!terrain_here->can_have_terrain()) {
+        if (!terrain_here->can_have_trap()) {
                 TRACE << "Cannot place trap on terrain id: "
                       << (int)terrain_here->id()
                       << std::endl

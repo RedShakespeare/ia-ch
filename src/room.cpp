@@ -186,7 +186,7 @@ static void get_positions_in_room_relative_to_walls(
 
                         auto* const t = map::g_cells.at(x, y).terrain;
 
-                        if (t->is_walkable() && t->can_have_terrain()) {
+                        if (t->is_walkable() && t->is_floor_like()) {
                                 pos_bucket.emplace_back(x, y);
                         }
                 }
@@ -930,7 +930,7 @@ void SnakePitRoom::on_post_connect_hook(Array2<bool>& door_proposals)
 
                         const P p(x, y);
 
-                        if (map::g_cells.at(x, y).terrain->can_have_terrain() &&
+                        if (map::g_cells.at(x, y).terrain->is_floor_like() &&
                             rnd::coin_toss()) {
                                 map::put(new terrain::RubbleLow(p));
                         }

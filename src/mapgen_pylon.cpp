@@ -33,7 +33,7 @@ void make_pylons_and_levers()
 
         Array2<bool> blocked(map::dims());
 
-        map_parsers::BlocksTerrain()
+        map_parsers::IsNotFloorLike()
                 .run(blocked, blocked.rect());
 
         blocked = map_parsers::expand(blocked, 2);

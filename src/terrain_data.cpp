@@ -33,6 +33,7 @@ static void reset_data(terrain::TerrainData& d)
         d.character = ' ';
         d.tile = TileId::END;
         d.move_rules.reset();
+        d.is_floor_like = false;
         d.is_sound_passable = true;
         d.is_projectile_passable = true;
         d.is_los_passable = true;
@@ -40,7 +41,7 @@ static void reset_data(terrain::TerrainData& d)
         d.can_have_blood = true;
         d.can_have_gore = false;
         d.can_have_corpse = true;
-        d.can_have_terrain = true;
+        d.can_have_trap = false;
         d.can_have_item = true;
         d.matl_type = Matl::stone;
         d.msg_on_player_blocked = "The way is blocked.";
@@ -67,8 +68,10 @@ static void init_data_list()
         d.character = '.';
         d.tile = TileId::floor;
         d.move_rules.is_walkable = true;
+        d.is_floor_like = true;
         d.matl_type = Matl::stone;
         d.can_have_gore = true;
+        d.can_have_trap = true;
         add_to_list_and_reset(d);
 
         d.id = terrain::Id::bridge;
@@ -93,7 +96,6 @@ static void init_data_list()
         d.is_smoke_passable = false;
         d.can_have_gore = false;
         d.can_have_corpse = false;
-        d.can_have_terrain = false;
         d.can_have_item = false;
         d.matl_type = Matl::stone;
         add_to_list_and_reset(d);
@@ -111,7 +113,6 @@ static void init_data_list()
         d.can_have_blood = false;
         d.can_have_gore = false;
         d.can_have_corpse = false;
-        d.can_have_terrain = false;
         d.can_have_item = false;
         d.msg_on_player_blocked = "There is a tree in the way.";
         d.matl_type = Matl::wood;
@@ -125,8 +126,10 @@ static void init_data_list()
         d.character = '.';
         d.tile = TileId::floor;
         d.move_rules.is_walkable = true;
+        d.is_floor_like = true;
         d.matl_type = Matl::plant;
         d.can_have_gore = true;
+        d.can_have_trap = true;
         add_to_list_and_reset(d);
 
         d.id = terrain::Id::bush;
@@ -182,7 +185,6 @@ static void init_data_list()
         d.can_have_blood = false; // Looks weird
         d.can_have_gore = false;
         d.can_have_corpse = false;
-        d.can_have_terrain = false;
         d.can_have_item = false;
         d.matl_type = Matl::metal;
         add_to_list_and_reset(d);
@@ -196,7 +198,6 @@ static void init_data_list()
         d.can_have_blood = false;
         d.can_have_gore = false;
         d.can_have_corpse = false;
-        d.can_have_terrain = false;
         d.can_have_item = false;
         d.matl_type = Matl::stone;
         add_to_list_and_reset(d);
@@ -212,7 +213,6 @@ static void init_data_list()
         d.can_have_blood = false; // We don't want to mess with the color
         d.can_have_gore = false;
         d.can_have_corpse = false;
-        d.can_have_terrain = false;
         d.can_have_item = false;
         d.shock_when_adjacent = 10;
         d.matl_type = Matl::stone;
@@ -229,7 +229,6 @@ static void init_data_list()
         d.can_have_blood = false; // We don't want to mess with the color
         d.can_have_gore = false;
         d.can_have_corpse = false;
-        d.can_have_terrain = false;
         d.can_have_item = false;
         d.shock_when_adjacent = 10;
         d.matl_type = Matl::metal;
@@ -244,7 +243,6 @@ static void init_data_list()
         d.can_have_blood = false;
         d.can_have_gore = false;
         d.can_have_corpse = false;
-        d.can_have_terrain = false;
         d.can_have_item = false;
         d.matl_type = Matl::metal;
         add_to_list_and_reset(d);
@@ -258,7 +256,6 @@ static void init_data_list()
         d.can_have_blood = false;
         d.can_have_gore = false;
         d.can_have_corpse = false;
-        d.can_have_terrain = false;
         d.can_have_item = false;
         d.matl_type = Matl::metal;
         d.auto_spawn_placement = terrain::TerrainPlacement::away_from_walls;
@@ -273,7 +270,6 @@ static void init_data_list()
         d.move_rules.is_walkable = true;
         d.can_have_blood = false;
         d.can_have_gore = false;
-        d.can_have_terrain = false;
         d.matl_type = Matl::fluid;
         add_to_list_and_reset(d);
 
@@ -286,7 +282,6 @@ static void init_data_list()
         d.can_have_item = false;
         d.can_have_blood = false;
         d.can_have_gore = false;
-        d.can_have_terrain = false;
         d.matl_type = Matl::fluid;
         add_to_list_and_reset(d);
 
@@ -302,7 +297,6 @@ static void init_data_list()
         d.can_have_blood = false;
         d.can_have_gore = false;
         d.can_have_corpse = false;
-        d.can_have_terrain = false;
         d.msg_on_player_blocked = "A chasm lies in my way.";
         d.msg_on_player_blocked_blind =
                 "I realize I am standing on the edge of a chasm.";
@@ -321,7 +315,6 @@ static void init_data_list()
         d.can_have_blood = false;
         d.can_have_gore = false;
         d.can_have_corpse = false;
-        d.can_have_terrain = false;
         d.can_have_item = false;
         d.shock_when_adjacent = 2;
         d.matl_type = Matl::stone;
@@ -341,7 +334,6 @@ static void init_data_list()
         d.can_have_blood = false;
         d.can_have_gore = false;
         d.can_have_corpse = false;
-        d.can_have_terrain = false;
         d.can_have_item = false;
         d.matl_type = Matl::wood;
         add_to_list_and_reset(d);
@@ -352,8 +344,11 @@ static void init_data_list()
         };
         d.character = '.';
         d.tile = TileId::floor;
-        d.can_have_terrain = false;
         d.move_rules.is_walkable = true;
+        d.is_floor_like = true;
+        d.can_have_blood = true;
+        d.can_have_gore = true;
+        d.can_have_trap = true;
         d.matl_type = Matl::cloth;
         add_to_list_and_reset(d);
 
@@ -373,7 +368,6 @@ static void init_data_list()
         d.can_have_blood = false;
         d.can_have_gore = false;
         d.can_have_corpse = false;
-        d.can_have_terrain = false;
         d.can_have_item = false;
         d.matl_type = Matl::stone;
         add_to_list_and_reset(d);
@@ -385,6 +379,8 @@ static void init_data_list()
         d.character = ',';
         d.tile = TileId::rubble_low;
         d.move_rules.is_walkable = true;
+        d.is_floor_like = true;
+        d.can_have_trap = false;
         d.matl_type = Matl::stone;
         d.auto_spawn_placement = terrain::TerrainPlacement::either;
         add_to_list_and_reset(d);
@@ -396,6 +392,8 @@ static void init_data_list()
         d.character = '&';
         d.tile = TileId::corpse2;
         d.move_rules.is_walkable = true;
+        d.is_floor_like = true;
+        d.can_have_trap = true;
         d.matl_type = Matl::stone;
         d.auto_spawn_placement = terrain::TerrainPlacement::either;
         add_to_list_and_reset(d);
@@ -411,7 +409,6 @@ static void init_data_list()
         d.can_have_blood = false;
         d.can_have_gore = false;
         d.can_have_corpse = false;
-        d.can_have_terrain = false;
         d.can_have_item = false;
         d.matl_type = Matl::stone;
         d.auto_spawn_placement = terrain::TerrainPlacement::either;
@@ -428,7 +425,6 @@ static void init_data_list()
         d.can_have_blood = false;
         d.can_have_gore = false;
         d.can_have_corpse = false;
-        d.can_have_terrain = false;
         d.can_have_item = false;
         d.shock_when_adjacent = 3;
         d.matl_type = Matl::cloth;
@@ -444,7 +440,6 @@ static void init_data_list()
         d.can_have_blood = false;
         d.can_have_gore = false;
         d.can_have_corpse = false;
-        d.can_have_terrain = false;
         d.can_have_item = false;
         d.auto_spawn_placement = terrain::TerrainPlacement::adj_to_walls;
         add_to_list_and_reset(d);
@@ -460,7 +455,6 @@ static void init_data_list()
         d.can_have_blood = false;
         d.can_have_gore = false;
         d.can_have_corpse = false;
-        d.can_have_terrain = false;
         d.can_have_item = false;
         d.matl_type = Matl::wood;
         d.auto_spawn_placement = terrain::TerrainPlacement::adj_to_walls;
@@ -477,7 +471,6 @@ static void init_data_list()
         d.can_have_blood = false;
         d.can_have_gore = false;
         d.can_have_corpse = false;
-        d.can_have_terrain = false;
         d.can_have_item = false;
         d.matl_type = Matl::wood;
         d.auto_spawn_placement = terrain::TerrainPlacement::adj_to_walls;
@@ -494,7 +487,6 @@ static void init_data_list()
         d.can_have_blood = false;
         d.can_have_gore = false;
         d.can_have_corpse = false;
-        d.can_have_terrain = false;
         d.can_have_item = false;
         d.matl_type = Matl::wood;
         d.auto_spawn_placement = terrain::TerrainPlacement::either;
@@ -511,7 +503,6 @@ static void init_data_list()
         d.can_have_blood = false;
         d.can_have_gore = false;
         d.can_have_corpse = false;
-        d.can_have_terrain = false;
         d.can_have_item = false;
         d.matl_type = Matl::stone;
         d.auto_spawn_placement = terrain::TerrainPlacement::away_from_walls;
@@ -528,7 +519,6 @@ static void init_data_list()
         d.can_have_blood = true;
         d.can_have_gore = false;
         d.can_have_corpse = false;
-        d.can_have_terrain = false;
         d.can_have_item = false;
         d.matl_type = Matl::stone;
         d.auto_spawn_placement = terrain::TerrainPlacement::either;
@@ -543,7 +533,6 @@ static void init_data_list()
         d.can_have_blood = false;
         d.can_have_gore = false;
         d.can_have_corpse = false;
-        d.can_have_terrain = false;
         d.can_have_item = false;
         d.shock_when_adjacent = 10;
         d.matl_type = Matl::stone;
@@ -561,7 +550,6 @@ static void init_data_list()
         d.can_have_blood = false;
         d.can_have_gore = false;
         d.can_have_corpse = false;
-        d.can_have_terrain = false;
         d.can_have_item = false;
         d.shock_when_adjacent = 5;
         d.matl_type = Matl::metal;
@@ -579,7 +567,6 @@ static void init_data_list()
         d.can_have_blood = false;
         d.can_have_gore = false;
         d.can_have_corpse = false;
-        d.can_have_terrain = false;
         d.can_have_item = false;
         d.shock_when_adjacent = 10;
         d.matl_type = Matl::stone;
@@ -590,10 +577,11 @@ static void init_data_list()
         d.make_obj = [](const P& p) {
                 return new terrain::Door(p);
         };
+        d.is_floor_like = false;
         d.can_have_blood = false;
         d.can_have_gore = false;
         d.can_have_corpse = false;
-        d.can_have_terrain = false;
+        d.can_have_trap = false;
         d.can_have_item = false;
         add_to_list_and_reset(d);
 
@@ -602,9 +590,11 @@ static void init_data_list()
                 return new terrain::Trap(p);
         };
         d.move_rules.is_walkable = true;
-        d.can_have_terrain = false;
         add_to_list_and_reset(d);
 
+        // ---------------------------------------------------------------------
+        // Mobile terrain
+        // ---------------------------------------------------------------------
         d.id = terrain::Id::lit_dynamite;
         d.make_obj = [](const P& p) {
                 return new terrain::LitDynamite(p);
@@ -612,10 +602,6 @@ static void init_data_list()
         d.character = '/';
         d.tile = TileId::dynamite_lit;
         d.move_rules.is_walkable = true;
-        d.can_have_blood = false;
-        d.can_have_gore = false;
-        d.can_have_corpse = false;
-        d.can_have_item = false;
         add_to_list_and_reset(d);
 
         d.id = terrain::Id::lit_flare;
@@ -650,7 +636,6 @@ static void init_data_list()
         d.is_smoke_passable = false;
         d.can_have_blood = false;
         d.can_have_gore = false;
-        d.can_have_terrain = false;
         d.can_have_item = false;
         d.matl_type = Matl::metal;
         add_to_list_and_reset(d);

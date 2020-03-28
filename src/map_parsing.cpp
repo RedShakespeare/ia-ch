@@ -154,8 +154,8 @@ bool MapParser::cell(const P& pos) const
 // -----------------------------------------------------------------------------
 bool BlocksLos::parse_cell(const Cell& c, const P& pos) const
 {
-        return !map::is_pos_inside_outer_walls(pos) ||
-                !c.terrain->is_los_passable();
+        return (!map::is_pos_inside_outer_walls(pos) ||
+                !c.terrain->is_los_passable());
 }
 
 bool BlocksLos::parse_mob(const terrain::Terrain& f) const
@@ -165,8 +165,8 @@ bool BlocksLos::parse_mob(const terrain::Terrain& f) const
 
 bool BlocksWalking::parse_cell(const Cell& c, const P& pos) const
 {
-        return !map::is_pos_inside_outer_walls(pos) ||
-                !c.terrain->is_walkable();
+        return (!map::is_pos_inside_outer_walls(pos) ||
+                !c.terrain->is_walkable());
 }
 
 bool BlocksWalking::parse_mob(const terrain::Terrain& f) const
@@ -181,8 +181,8 @@ bool BlocksWalking::parse_actor(const actor::Actor& a) const
 
 bool BlocksActor::parse_cell(const Cell& c, const P& pos) const
 {
-        return !map::is_pos_inside_outer_walls(pos) ||
-                !c.terrain->can_move(m_actor);
+        return (!map::is_pos_inside_outer_walls(pos) ||
+                !c.terrain->can_move(m_actor));
 }
 
 bool BlocksActor::parse_mob(const terrain::Terrain& f) const
@@ -197,8 +197,8 @@ bool BlocksActor::parse_actor(const actor::Actor& a) const
 
 bool BlocksProjectiles::parse_cell(const Cell& c, const P& pos) const
 {
-        return !map::is_pos_inside_outer_walls(pos) ||
-                !c.terrain->is_projectile_passable();
+        return (!map::is_pos_inside_outer_walls(pos) ||
+                !c.terrain->is_projectile_passable());
 }
 
 bool BlocksProjectiles::parse_mob(const terrain::Terrain& f) const
@@ -208,8 +208,8 @@ bool BlocksProjectiles::parse_mob(const terrain::Terrain& f) const
 
 bool BlocksSound::parse_cell(const Cell& c, const P& pos) const
 {
-        return !map::is_pos_inside_outer_walls(pos) ||
-                !c.terrain->is_sound_passable();
+        return (!map::is_pos_inside_outer_walls(pos) ||
+                !c.terrain->is_sound_passable());
 }
 
 bool BlocksSound::parse_mob(const terrain::Terrain& f) const
@@ -226,10 +226,16 @@ bool LivingActorsAdjToPos::parse_actor(const actor::Actor& a) const
         return is_pos_adj(m_pos, a.m_pos, true);
 }
 
+bool BlocksTraps::parse_cell(const Cell& c, const P& pos) const
+{
+        return (!map::is_pos_inside_outer_walls(pos) ||
+                !c.terrain->can_have_trap());
+}
+
 bool BlocksItems::parse_cell(const Cell& c, const P& pos) const
 {
-        return !map::is_pos_inside_outer_walls(pos) ||
-                !c.terrain->can_have_item();
+        return (!map::is_pos_inside_outer_walls(pos) ||
+                !c.terrain->can_have_item());
 }
 
 bool BlocksItems::parse_mob(const terrain::Terrain& f) const
@@ -237,10 +243,16 @@ bool BlocksItems::parse_mob(const terrain::Terrain& f) const
         return !f.can_have_item();
 }
 
-bool BlocksTerrain::parse_cell(const Cell& c, const P& pos) const
+bool IsFloorLike::parse_cell(const Cell& c, const P& pos) const
 {
-        return !map::is_pos_inside_outer_walls(pos) ||
-                !c.terrain->can_have_terrain();
+        return (map::is_pos_inside_outer_walls(pos) &&
+                c.terrain->is_floor_like());
+}
+
+bool IsNotFloorLike::parse_cell(const Cell& c, const P& pos) const
+{
+        return (!map::is_pos_inside_outer_walls(pos) ||
+                !c.terrain->is_floor_like());
 }
 
 bool IsNotTerrain::parse_cell(const Cell& c, const P& pos) const

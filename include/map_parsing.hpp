@@ -85,7 +85,10 @@ public:
         }
 
 protected:
-        MapParser(ParseCells parse_cells, ParseMobs parse_mobs, ParseActors parse_actors) :
+        MapParser(
+                ParseCells parse_cells,
+                ParseMobs parse_mobs,
+                ParseActors parse_actors) :
                 m_parse_cells(parse_cells),
                 m_parse_mobs(parse_mobs),
                 m_parse_actors(parse_actors) {}
@@ -163,6 +166,15 @@ private:
         const P& m_pos;
 };
 
+class BlocksTraps : public MapParser {
+public:
+        BlocksTraps() :
+                MapParser(ParseCells::yes, ParseMobs::no, ParseActors::no) {}
+
+private:
+        bool parse_cell(const Cell& c, const P& pos) const override;
+};
+
 class BlocksItems : public MapParser {
 public:
         BlocksItems() :
@@ -173,9 +185,18 @@ private:
         bool parse_mob(const terrain::Terrain& f) const override;
 };
 
-class BlocksTerrain : public MapParser {
+class IsFloorLike : public MapParser {
 public:
-        BlocksTerrain() :
+        IsFloorLike() :
+                MapParser(ParseCells::yes, ParseMobs::no, ParseActors::no) {}
+
+private:
+        bool parse_cell(const Cell& c, const P& pos) const override;
+};
+
+class IsNotFloorLike : public MapParser {
+public:
+        IsNotFloorLike() :
                 MapParser(ParseCells::yes, ParseMobs::no, ParseActors::no) {}
 
 private:

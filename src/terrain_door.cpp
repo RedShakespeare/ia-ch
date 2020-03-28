@@ -534,7 +534,10 @@ Color Door::color_default() const
 
         if (m_is_hidden) {
                 color = m_mimic_terrain->color();
-        } else if (m_is_stuck && map::g_player->m_pos.is_adjacent(m_pos) && (m_type != DoorType::metal)) {
+        } else if (
+                m_is_stuck &&
+                map::g_player->m_pos.is_adjacent(m_pos) &&
+                (m_type != DoorType::metal)) {
                 // Non-metal door is stuck, and player is adjacent to it
                 color = colors::red();
         } else {
@@ -634,14 +637,16 @@ void Door::bump(actor::Actor& actor_bumping)
                               << "with vision in cell" << std::endl;
 
                         msg_log::add(
-                                terrain::data(terrain::Id::wall).msg_on_player_blocked);
+                                terrain::data(terrain::Id::wall)
+                                        .msg_on_player_blocked);
                 } else {
                         // Not seen by player
                         TRACE << "Player bumped into secret door, "
                               << "without vision in cell" << std::endl;
 
                         msg_log::add(
-                                terrain::data(terrain::Id::wall).msg_on_player_blocked_blind);
+                                terrain::data(terrain::Id::wall)
+                                        .msg_on_player_blocked_blind);
                 }
 
                 return;

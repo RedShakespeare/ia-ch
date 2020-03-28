@@ -28,7 +28,7 @@ void make_monoliths()
 
         Array2<bool> blocked(map::dims());
 
-        map_parsers::BlocksTerrain()
+        map_parsers::IsNotFloorLike()
                 .run(blocked, blocked.rect());
 
         blocked = map_parsers::expand(blocked, blocked.rect());
@@ -87,7 +87,8 @@ void make_monoliths()
                         for (size_t spawn_weight_idx = 0;
                              spawn_weight_idx < spawn_weight_positions.size();
                              ++spawn_weight_idx) {
-                                if (spawn_weight_positions[spawn_weight_idx] != p_adj) {
+                                if (spawn_weight_positions[spawn_weight_idx] !=
+                                    p_adj) {
                                         continue;
                                 }
 

@@ -98,10 +98,11 @@ struct TerrainData {
         bool is_projectile_passable;
         bool is_los_passable;
         bool is_smoke_passable;
+        bool is_floor_like;
         bool can_have_blood;
         bool can_have_gore;
         bool can_have_corpse;
-        bool can_have_terrain;
+        bool can_have_trap;
         bool can_have_item;
         Matl matl_type;
         std::string msg_on_player_blocked;

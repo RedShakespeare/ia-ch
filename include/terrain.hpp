@@ -147,6 +147,11 @@ public:
                 return data().is_sound_passable;
         }
 
+        virtual bool is_floor_like() const
+        {
+                return data().is_floor_like;
+        }
+
         virtual bool is_los_passable() const
         {
                 return data().is_los_passable;
@@ -177,11 +182,6 @@ public:
                 return data().can_have_corpse;
         }
 
-        virtual bool can_have_terrain() const
-        {
-                return data().can_have_terrain;
-        }
-
         virtual bool can_have_blood() const
         {
                 return data().can_have_blood;
@@ -190,6 +190,11 @@ public:
         virtual bool can_have_gore() const
         {
                 return data().can_have_gore;
+        }
+
+        virtual bool can_have_trap() const
+        {
+                return data().can_have_trap;
         }
 
         virtual bool can_have_item() const
