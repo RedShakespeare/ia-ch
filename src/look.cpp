@@ -272,11 +272,7 @@ void ViewActorDescr::on_start()
                 }
         }
 
-        // Add the full description
-        m_lines.resize(m_lines.size() + 1);
-
-        m_lines.emplace_back("Current properties", colors::text());
-
+        // Properties
         auto prop_list =
                 m_actor.m_properties
                         .property_names_temporary_negative();
@@ -304,15 +300,11 @@ void ViewActorDescr::on_start()
 
         const std::string offset = "   ";
 
-        if (prop_list.empty()) {
-                m_lines.emplace_back(
-                        offset + "None",
-                        colors::text());
+        if (!prop_list.empty()) {
+                m_lines.resize(m_lines.size() + 1);
 
-                // End with an empty line
-                m_lines.emplace_back("", colors::text());
-        } else {
-                // Has properties
+                m_lines.emplace_back("Current properties", colors::text());
+
                 const int max_w_descr = (panels::x1(Panel::screen) * 3) / 4;
 
                 for (const auto& e : prop_list) {
