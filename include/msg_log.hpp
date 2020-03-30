@@ -92,6 +92,8 @@ private:
 
 namespace msg_log {
 
+const size_t g_nr_log_lines = 4;
+
 void init();
 
 void draw();

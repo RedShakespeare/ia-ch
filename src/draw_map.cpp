@@ -195,8 +195,8 @@ static void set_light()
                         auto& color = s_render_array.at(i).color;
 
                         color.set_rgb(
-                                std::min(255, color.r() + 40),
-                                std::min(255, color.g() + 40),
+                                std::min(255, color.r() + 60),
+                                std::min(255, color.g() + 60),
                                 color.b());
                 }
         }
@@ -309,7 +309,7 @@ static void set_unseen_cells_from_player_memory()
                 if (!cell.is_seen_by_player && cell.is_explored) {
                         render_data = s_render_array_player_memory.at(i);
 
-                        const double div = 2.5;
+                        const double div = 2.0;
 
                         render_data.color =
                                 render_data.color.fraction(div);
@@ -345,15 +345,17 @@ static void draw_render_array()
                                         Panel::map,
                                         view_pos,
                                         render_data.color,
-                                        true, // Draw background color
+                                        io::DrawBg::yes,
                                         render_data.color_bg);
-                        } else if ((render_data.character != 0) && (render_data.character != ' ')) {
+                        } else if (
+                                (render_data.character != 0) &&
+                                (render_data.character != ' ')) {
                                 io::draw_character(
                                         render_data.character,
                                         Panel::map,
                                         view_pos,
                                         render_data.color,
-                                        true, // Draw background color
+                                        io::DrawBg::yes,
                                         render_data.color_bg);
                         }
                 }
@@ -467,8 +469,15 @@ static void draw_player_character()
                 uses_ranged_wpn = item->data().ranged.is_ranged_wpn;
         }
 
-        const TileId tile =
-                is_ghoul ? TileId::ghoul : uses_ranged_wpn ? TileId::player_firearm : TileId::player_melee;
+        TileId tile;
+
+        if (is_ghoul) {
+                tile = TileId::ghoul;
+        } else if (uses_ranged_wpn) {
+                tile = TileId::player_firearm;
+        } else {
+                tile = TileId::player_melee;
+        }
 
         const char character = '@';
 
@@ -485,7 +494,7 @@ static void draw_player_character()
                 Panel::map,
                 viewport::to_view_pos(pos),
                 color,
-                true, // Draw background color
+                io::DrawBg::yes,
                 color_bg);
 
         draw_life_bar(*map::g_player);

@@ -13,7 +13,9 @@
 
 #include "debug.hpp"
 #include "io.hpp"
+#include "panel.hpp"
 #include "pos.hpp"
+#include "rect.hpp"
 #include "text_format.hpp"
 
 // -----------------------------------------------------------------------------
@@ -132,12 +134,14 @@ void BrowseManual::on_start()
 
 void BrowseManual::draw()
 {
+        io::draw_box(panels::area(Panel::screen));
+
         io::draw_text_center(
                 "Browsing manual",
                 Panel::screen,
                 P(panels::center_x(Panel::screen), 0),
                 colors::title(),
-                true, // Draw background color
+                io::DrawBg::yes,
                 colors::black(),
                 true); // Allow pixel-level adjustment
 
@@ -153,7 +157,9 @@ void BrowseManual::draw()
                 const bool is_marked = m_browser.y() == idx;
 
                 const Color& draw_color =
-                        is_marked ? colors::menu_highlight() : colors::menu_dark();
+                        is_marked
+                        ? colors::menu_highlight()
+                        : colors::menu_dark();
 
                 const auto& page = m_pages[idx];
 
@@ -218,7 +224,9 @@ void BrowseManualPage::draw()
         const int nr_lines_tot = m_page.lines.size();
 
         const int btm_nr =
-                std::min(m_top_idx + max_nr_lines_on_screen() - 1, nr_lines_tot - 1);
+                std::min(
+                        m_top_idx + max_nr_lines_on_screen() - 1,
+                        nr_lines_tot - 1);
 
         int screen_y = 1;
 

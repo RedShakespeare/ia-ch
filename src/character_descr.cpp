@@ -63,7 +63,9 @@ static void add_properties_descr(std::vector<ColoredString>& lines)
                                 text_format::split(e.descr, s_max_w_descr);
 
                         for (const auto& descr_line : descr_formatted) {
-                                lines.emplace_back(s_offset + descr_line, color_text_dark());
+                                lines.emplace_back(
+                                        s_offset + descr_line,
+                                        color_text_dark());
                         }
 
                         lines.emplace_back("", colors::text());
@@ -85,7 +87,9 @@ static void add_insanity_descr(std::vector<ColoredString>& lines)
                         const std::string sympt_descr = sympt->char_descr_msg();
 
                         if (!sympt_descr.empty()) {
-                                lines.emplace_back(s_offset + sympt_descr, colors::text());
+                                lines.emplace_back(
+                                        s_offset + sympt_descr,
+                                        colors::text());
                         }
                 }
         }
@@ -203,7 +207,9 @@ static void add_traits_descr(std::vector<ColoredString>& lines)
                                 text_format::split(descr, s_max_w_descr);
 
                         for (const std::string& descr_line : descr_lines) {
-                                lines.emplace_back(s_offset + descr_line, color_text_dark());
+                                lines.emplace_back(
+                                        s_offset + descr_line,
+                                        color_text_dark());
                         }
 
                         lines.emplace_back("", colors::text());
@@ -213,7 +219,9 @@ static void add_traits_descr(std::vector<ColoredString>& lines)
 
 static void add_history_descr(std::vector<ColoredString>& lines)
 {
-        lines.emplace_back("History of " + map::g_player->name_the(), clr_heading());
+        lines.emplace_back(
+                "History of " + map::g_player->name_the(),
+                clr_heading());
 
         const std::vector<HistoryEvent>& events = game::history();
 

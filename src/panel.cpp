@@ -9,6 +9,7 @@
 #include "io.hpp"
 
 #include "debug.hpp"
+#include "msg_log.hpp"
 #include "rect.hpp"
 
 // -----------------------------------------------------------------------------
@@ -26,33 +27,6 @@ static void set_panel_area(
         const int y1)
 {
         s_panels[(size_t)panel] = {x0, y0, x1, y1};
-}
-
-static void set_x0(const Panel panel, int x)
-{
-        R& r = s_panels[(size_t)panel];
-
-        const int w = r.w();
-
-        r.p0.x = x;
-        r.p1.x = x + w - 1;
-}
-
-static void set_y0(const Panel panel, int y)
-{
-        R& r = s_panels[(size_t)panel];
-
-        const int h = r.h();
-
-        r.p0.y = y;
-        r.p1.y = y + h - 1;
-}
-
-static void set_w(const Panel panel, int w)
-{
-        R& r = s_panels[(size_t)panel];
-
-        r.p1.x = r.p0.x + w - 1;
 }
 
 static void finalize_screen_dims()
@@ -149,35 +123,53 @@ void init(const P max_gui_dims)
                 panel = R(0, 0, 0, 0);
         }
 
-        // (Finalized later)
-        set_panel_area(Panel::player_stats, 0, 0, 21, max_gui_dims.y - 1);
+        const int log_border_w = 60;
+        const auto log_border_x0 = (max_gui_dims.x / 2) - (log_border_w / 2);
+        const auto log_border_y0 = max_gui_dims.y - msg_log::g_nr_log_lines - 2;
+        const auto log_border_x1 = log_border_x0 + log_border_w - 1;
+        const auto log_border_y1 = max_gui_dims.y - 1;
 
-        // (Finalized later)
-        set_panel_area(Panel::log_border, 0, 0, 0, 3);
-
-        const int map_panel_w = max_gui_dims.x - w(Panel::player_stats);
-
-        const int map_panel_h = max_gui_dims.y - h(Panel::log_border);
+        set_panel_area(
+                Panel::map_gui_wpn,
+                log_border_x0 - 16,
+                0,
+                log_border_x1 + 16,
+                1);
 
         set_panel_area(
                 Panel::map,
                 0,
-                0,
-                map_panel_w - 1,
-                map_panel_h - 1);
+                1,
+                max_gui_dims.x - 1,
+                log_border_y0 - 1);
 
-        set_x0(Panel::player_stats, x1(Panel::map) + 1);
-
-        set_w(Panel::log_border, w(Panel::map));
-
-        set_y0(Panel::log_border, y1(Panel::map) + 1);
+        set_panel_area(
+                Panel::log_border,
+                log_border_x0,
+                log_border_y0,
+                log_border_x1,
+                log_border_y1);
 
         set_panel_area(
                 Panel::log,
-                x0(Panel::log_border) + 1,
-                y0(Panel::log_border) + 1,
-                x1(Panel::log_border) - 1,
-                y1(Panel::log_border) - 1);
+                log_border_x0 + 1,
+                log_border_y0 + 1,
+                log_border_x1 - 1,
+                log_border_y1 - 1);
+
+        set_panel_area(
+                Panel::map_gui_cond,
+                log_border_x0 - 16,
+                log_border_y0,
+                log_border_x0 - 2,
+                log_border_y1);
+
+        set_panel_area(
+                Panel::map_gui_progress,
+                log_border_x1 + 2,
+                log_border_y0,
+                log_border_x1 + 16,
+                log_border_y1);
 
         finalize_screen_dims();
 

@@ -497,7 +497,7 @@ void WinGameState::draw()
                                 Panel::screen,
                                 P(x0, y),
                                 colors::white(),
-                                false, // Do not draw background color
+                                io::DrawBg::no,
                                 colors::black());
 
                         ++y;
@@ -515,7 +515,7 @@ void WinGameState::draw()
                 Panel::screen,
                 P((screen_w - 1) / 2, screen_h - 2),
                 colors::menu_dark(),
-                false, // Do not draw background color
+                io::DrawBg::no,
                 colors::black(),
                 false); // Do not allow pixel-level adjustment
 }

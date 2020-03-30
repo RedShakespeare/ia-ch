@@ -559,6 +559,8 @@ void BrowseInv::draw()
 {
         io::clear_screen();
 
+        io::draw_box(panels::area(Panel::screen));
+
         const int browser_y = m_browser.y();
 
         const auto nr_slots = (size_t)SlotId::END;
@@ -831,6 +833,8 @@ void Apply::draw()
 
         io::clear_screen();
 
+        io::draw_box(panels::area(Panel::screen));
+
         const int browser_y = m_browser.y();
 
         io::draw_text_center(
@@ -935,6 +939,8 @@ void Drop::on_start()
 void Drop::draw()
 {
         io::clear_screen();
+
+        io::draw_box(panels::area(Panel::screen));
 
         io::draw_text_center(
                 "Drop which item? " + common_text::g_screen_exit_hint,
@@ -1141,6 +1147,8 @@ void Equip::on_start()
 
 void Equip::draw()
 {
+        io::draw_box(panels::area(Panel::screen));
+
         const bool has_item = !m_filtered_backpack_indexes.empty();
 
         std::string heading;
@@ -1407,6 +1415,8 @@ void SelectThrow::on_start()
 
 void SelectThrow::draw()
 {
+        io::draw_box(panels::area(Panel::screen));
+
         io::draw_text_center(
                 std::string(
                         "Throw which item? " +
@@ -1536,20 +1546,20 @@ void SelectIdentify::on_start()
 {
         map::g_player->m_inv.sort_backpack();
 
-        auto is_allowed_item_type = [](
-                                            const ItemType item_type,
-                                            const std::vector<ItemType>& allowed_item_types) {
-                if (allowed_item_types.empty()) {
-                        return true;
-                } else {
-                        const auto result = std::find(
-                                begin(allowed_item_types),
-                                end(allowed_item_types),
-                                item_type);
+        auto is_allowed_item_type =
+                [](const ItemType item_type,
+                   const std::vector<ItemType>& allowed_item_types) {
+                        if (allowed_item_types.empty()) {
+                                return true;
+                        } else {
+                                const auto result = std::find(
+                                        begin(allowed_item_types),
+                                        end(allowed_item_types),
+                                        item_type);
 
-                        return result != end(allowed_item_types);
-                }
-        };
+                                return result != end(allowed_item_types);
+                        }
+                };
 
         // Filter slots
         for (InvSlot& slot : map::g_player->m_inv.m_slots) {
@@ -1610,6 +1620,8 @@ void SelectIdentify::on_start()
 void SelectIdentify::draw()
 {
         io::clear_screen();
+
+        io::draw_box(panels::area(Panel::screen));
 
         const int browser_y = m_browser.y();
 

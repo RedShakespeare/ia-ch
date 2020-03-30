@@ -622,10 +622,10 @@ static void draw_character_at_px(
         const char character,
         const P px_pos,
         const Color& color,
-        const bool draw_bg = true,
+        const io::DrawBg draw_bg = io::DrawBg::yes,
         const Color& bg_color = Color(0, 0, 0))
 {
-        if (draw_bg) {
+        if (draw_bg == io::DrawBg::yes) {
                 const P cell_dims(
                         config::gui_cell_px_w(),
                         config::gui_cell_px_h());
@@ -692,7 +692,7 @@ static void draw_text_at_px(
         const std::string& str,
         P px_pos,
         const Color& color,
-        const bool draw_bg,
+        const io::DrawBg draw_bg,
         const Color& bg_color)
 {
         if ((px_pos.y < 0) || (px_pos.y >= panel_px_h(Panel::screen))) {
@@ -995,7 +995,7 @@ void update_screen()
                         "Window too small",
                         {0, 0},
                         colors::light_white(),
-                        false,
+                        DrawBg::no,
                         colors::black());
 
                 is_centering_allowed = false;
@@ -1068,22 +1068,14 @@ P min_screen_gui_dims()
         // * The hard minimum required number of gui cells
         // * The minimum required resolution, converted to gui cells, rounded up
 
-        // Hard minimum required gui cells
-        const int hard_min_gui_cells_x = 80;
-        const int hard_min_gui_cells_y = 25;
-
-        // Minimum required resolution
-        const int min_res_w = 800;
-        const int min_res_h = 600;
-
         const int gui_cell_w = config::gui_cell_px_w();
         const int gui_cell_h = config::gui_cell_px_h();
 
-        int min_gui_cells_x = (min_res_w + gui_cell_w - 1) / gui_cell_w;
-        int min_gui_cells_y = (min_res_h + gui_cell_h - 1) / gui_cell_h;
+        int min_gui_cells_x = (g_min_res_w + gui_cell_w - 1) / gui_cell_w;
+        int min_gui_cells_y = (g_min_res_h + gui_cell_h - 1) / gui_cell_h;
 
-        min_gui_cells_x = std::max(min_gui_cells_x, hard_min_gui_cells_x);
-        min_gui_cells_y = std::max(min_gui_cells_y, hard_min_gui_cells_y);
+        min_gui_cells_x = std::max(min_gui_cells_x, g_min_nr_gui_cells_x);
+        min_gui_cells_y = std::max(min_gui_cells_y, g_min_nr_gui_cells_y);
 
         return P(min_gui_cells_x, min_gui_cells_y);
 }
@@ -1185,7 +1177,7 @@ void draw_tile(
         const Panel panel,
         const P pos,
         const Color& color,
-        const bool draw_bg,
+        const DrawBg draw_bg,
         const Color& bg_color)
 {
         if (!panels::is_valid()) {
@@ -1194,7 +1186,7 @@ void draw_tile(
 
         const P px_pos = map_to_px_coords(panel, pos);
 
-        if (draw_bg) {
+        if (draw_bg == DrawBg::yes) {
                 const P cell_dims(
                         config::map_cell_px_w(),
                         config::map_cell_px_h());
@@ -1227,7 +1219,7 @@ void draw_character(
         const Panel panel,
         const P pos,
         const Color& color,
-        const bool draw_bg,
+        const DrawBg draw_bg,
         const Color& bg_color)
 {
         if (!panels::is_valid()) {
@@ -1253,7 +1245,7 @@ void draw_text(
         const Panel panel,
         const P pos,
         const Color& color,
-        const bool draw_bg,
+        const DrawBg draw_bg,
         const Color& bg_color)
 {
         if (!panels::is_valid()) {
@@ -1275,7 +1267,7 @@ void draw_text_center(
         const Panel panel,
         const P pos,
         const Color& color,
-        const bool draw_bg,
+        const DrawBg draw_bg,
         const Color& bg_color,
         const bool is_pixel_pos_adj_allowed)
 {
@@ -1311,7 +1303,7 @@ void draw_text_right(
         const Panel panel,
         const P pos,
         const Color& color,
-        const bool draw_bg,
+        const DrawBg draw_bg,
         const Color& bg_color)
 {
         if (!panels::is_valid()) {
@@ -1673,7 +1665,7 @@ void draw_symbol(
         const Panel panel,
         const P pos,
         const Color& color,
-        const bool draw_bg,
+        const DrawBg draw_bg,
         const Color& color_bg)
 {
         if (config::is_tiles_mode()) {

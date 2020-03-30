@@ -106,7 +106,7 @@ static void draw_menu_popup(
                         Panel::screen,
                         P(panels::center_x(Panel::screen), y),
                         colors::title(),
-                        false, // Do not draw background color
+                        io::DrawBg::no,
                         colors::black(),
                         true); // Allow pixel-level adjustmet
 
@@ -121,8 +121,8 @@ static void draw_menu_popup(
                                 line,
                                 Panel::screen,
                                 P(panels::center_x(Panel::screen), y),
-                                colors::white(),
-                                false, // Do not draw background color
+                                colors::text(),
+                                io::DrawBg::no,
                                 colors::black(),
                                 true); // Allow pixel-level adjustmet
                 } else {
@@ -131,8 +131,8 @@ static void draw_menu_popup(
                                 line,
                                 Panel::screen,
                                 P(text_x0, y),
-                                colors::white(),
-                                false); // Do not draw background color
+                                colors::text(),
+                                io::DrawBg::no);
                 }
 
                 msg_log::add_line_to_history(line);
@@ -145,15 +145,17 @@ static void draw_menu_popup(
         }
 
         for (size_t i = 0; i < choices.size(); ++i) {
-                Color color =
-                        (i == current_choice) ? colors::menu_highlight() : colors::menu_dark();
+                const Color color =
+                        (i == current_choice)
+                        ? colors::menu_highlight()
+                        : colors::menu_dark();
 
                 io::draw_text_center(
                         choices[i],
                         Panel::screen,
                         P(panels::center_x(Panel::screen), y),
                         color,
-                        false, // Do not draw background color
+                        io::DrawBg::no,
                         colors::black(),
                         true); // Allow pixel-level adjustmet
 
@@ -198,7 +200,7 @@ void msg(
                         Panel::screen,
                         P(panels::center_x(Panel::screen), y),
                         colors::title(),
-                        false, // Do not draw background color
+                        io::DrawBg::no,
                         colors::black(),
                         true); // Allow pixel-level adjustmet
         }
@@ -213,8 +215,8 @@ void msg(
                                 line,
                                 Panel::screen,
                                 P(panels::center_x(Panel::screen), y),
-                                colors::white(),
-                                false, // Do not draw background color
+                                colors::text(),
+                                io::DrawBg::no,
                                 colors::black(),
                                 true); // Allow pixel-level adjustmet
                 } else {
@@ -226,8 +228,8 @@ void msg(
                                 line,
                                 Panel::screen,
                                 P(text_x0, y),
-                                colors::white(),
-                                false); // Do not draw background color
+                                colors::text(),
+                                io::DrawBg::no);
                 }
 
                 io::update_screen();
@@ -244,7 +246,7 @@ void msg(
                 Panel::screen,
                 P(panels::center_x(Panel::screen), y),
                 colors::menu_dark(),
-                false); // Do not draw background color
+                io::DrawBg::no);
 
         io::update_screen();
 

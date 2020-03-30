@@ -20,7 +20,7 @@
 // -----------------------------------------------------------------------------
 // Private
 // -----------------------------------------------------------------------------
-Array2<Color> minimap_(0, 0);
+Array2<Color> s_minimap(0, 0);
 
 static Color map_cell_color(const Cell& map_cell, const bool is_blocked)
 {
@@ -86,7 +86,7 @@ static R get_map_area_explored()
         // Find the most top left and bottom right map cells explored
         R area_explored(INT_MAX, INT_MAX, 0, 0);
 
-        const P& map_dims = minimap_.dims();
+        const P& map_dims = s_minimap.dims();
 
         for (int x = 0; x < map_dims.x; ++x) {
                 for (int y = 0; y < map_dims.y; ++y) {
@@ -173,7 +173,7 @@ void ViewMinimap::draw()
                         if (map::g_player->m_pos == P(x, y)) {
                                 color = colors::light_green();
                         } else {
-                                color = minimap_.at(x, y);
+                                color = s_minimap.at(x, y);
                         }
 
                         io::draw_rectangle_filled(cell_px_rect, color);
@@ -205,13 +205,17 @@ namespace minimap {
 
 void clear()
 {
-        minimap_.resize(0, 0);
+        s_minimap.resize(0, 0);
 }
 
 void update()
 {
-        if (minimap_.dims() != map::dims()) {
-                minimap_.resize(map::dims());
+        if (s_minimap.dims() != map::dims()) {
+                s_minimap.resize(map::dims());
+
+                for (auto& color : s_minimap) {
+                        color = colors::black();
+                }
         }
 
         Array2<bool> blocked(map::dims());
@@ -228,7 +232,7 @@ void update()
                         continue;
                 }
 
-                minimap_.at(i) = map_cell_color(map_cell, blocked.at(i));
+                s_minimap.at(i) = map_cell_color(map_cell, blocked.at(i));
         }
 }
 

@@ -66,8 +66,9 @@ void PickBgState::update()
 
                 if (player_bon::bg() == Bg::occultist) {
                         player_bon::pick_occultist_domain(
-                                (OccultistDomain)
-                                        rnd::range(0, (int)OccultistDomain::END - 1));
+                                (OccultistDomain)rnd::range(
+                                        0,
+                                        (int)OccultistDomain::END - 1));
                 }
 
                 states::pop();
@@ -110,6 +111,8 @@ void PickBgState::update()
 
 void PickBgState::draw()
 {
+        io::draw_box(panels::area(Panel::screen));
+
         const int screen_center_x = panels::center_x(Panel::screen);
 
         io::draw_text_center(
@@ -117,7 +120,7 @@ void PickBgState::draw()
                 Panel::screen,
                 P(screen_center_x, 0),
                 colors::title(),
-                false, // Do not draw background color
+                io::DrawBg::yes,
                 colors::black(),
                 true); // Allow pixel-level adjustment
 
@@ -135,7 +138,9 @@ void PickBgState::draw()
                 const bool is_marked = bg == bg_marked;
 
                 const auto& draw_color =
-                        is_marked ? colors::menu_highlight() : colors::menu_dark();
+                        is_marked
+                        ? colors::menu_highlight()
+                        : colors::menu_dark();
 
                 io::draw_text(
                         key_str + bg_name,
@@ -225,6 +230,8 @@ void PickOccultistState::update()
 
 void PickOccultistState::draw()
 {
+        io::draw_box(panels::area(Panel::screen));
+
         const int screen_center_x = panels::center_x(Panel::screen);
 
         io::draw_text_center(
@@ -232,7 +239,7 @@ void PickOccultistState::draw()
                 Panel::screen,
                 P(screen_center_x, 0),
                 colors::title(),
-                false, // Do not draw background color
+                io::DrawBg::yes,
                 colors::black(),
                 true); // Allow pixel-level adjustment
 
@@ -393,6 +400,8 @@ void PickTraitState::update()
 
 void PickTraitState::draw()
 {
+        io::draw_box(panels::area(Panel::screen));
+
         std::string title;
 
         if (m_screen_mode == TraitScreenMode::pick_new) {
@@ -416,7 +425,7 @@ void PickTraitState::draw()
                 Panel::screen,
                 P(screen_center_x, 0),
                 colors::title(),
-                false, // Do not draw background color
+                io::DrawBg::yes,
                 colors::black(),
                 true);
 
@@ -561,7 +570,9 @@ void PickTraitState::draw()
 
                 if (trait_marked_bg_prereq != Bg::END) {
                         const auto& color =
-                                (player_bon::bg() == trait_marked_bg_prereq) ? clr_prereq_ok : clr_prereq_not_ok;
+                                (player_bon::bg() == trait_marked_bg_prereq)
+                                ? clr_prereq_ok
+                                : clr_prereq_not_ok;
 
                         const std::string bg_title =
                                 player_bon::bg_title(trait_marked_bg_prereq);
@@ -685,18 +696,23 @@ void EnterNameState::update()
 
 void EnterNameState::draw()
 {
+        io::draw_box(panels::area(Panel::screen));
+
         const int screen_center_x = panels::center_x(Panel::screen);
 
         io::draw_text_center(
                 "What is your name?",
                 Panel::screen,
                 P(screen_center_x, 0),
-                colors::title());
+                colors::title(),
+                io::DrawBg::yes);
 
         const int y_name = 3;
 
         const std::string name_str =
-                (m_current_str.size() < g_player_name_max_len) ? m_current_str + "_" : m_current_str;
+                (m_current_str.size() < g_player_name_max_len)
+                ? m_current_str + "_"
+                : m_current_str;
 
         const size_t name_x0 = screen_center_x - (g_player_name_max_len / 2);
         const size_t name_x1 = name_x0 + g_player_name_max_len - 1;

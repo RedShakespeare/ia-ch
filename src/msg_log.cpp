@@ -20,7 +20,7 @@
 // -----------------------------------------------------------------------------
 // Private
 // -----------------------------------------------------------------------------
-static std::vector<Msg> s_lines[2];
+static std::vector<Msg> s_lines[msg_log::g_nr_log_lines];
 
 static const size_t s_history_cap = 200;
 
@@ -36,6 +36,32 @@ static const int s_repeat_str_len = 4;
 static const int s_space_reserved_for_more_prompt = (int)s_more_str.size() + 1;
 
 static bool s_is_waiting_more_pompt = false;
+
+static size_t find_current_line_nr()
+{
+        if (s_lines[0].empty()) {
+                return 0;
+        }
+
+        size_t line_nr = 1;
+        while (true) {
+                if (s_lines[line_nr].empty()) {
+                        // Empty line found, return previous line number
+                        --line_nr;
+
+                        break;
+                }
+
+                if (line_nr == (msg_log::g_nr_log_lines - 1)) {
+                        // This is the last line, return this line number
+                        break;
+                }
+
+                ++line_nr;
+        }
+
+        return line_nr;
+}
 
 static int x_after_msg(const Msg* const msg)
 {
@@ -53,12 +79,14 @@ static int worst_case_msg_w_for_line_nr(
         const std::string& text)
 {
         const int space_reserved_for_more_prompt_this_line =
-                (line_nr == 0)
-                ? 0
-                : s_space_reserved_for_more_prompt;
+                (line_nr == (msg_log::g_nr_log_lines - 1))
+                ? s_space_reserved_for_more_prompt
+                : 0;
 
         const int max_w =
-                (int)text.size() + s_repeat_str_len + space_reserved_for_more_prompt_this_line;
+                (int)text.size() +
+                s_repeat_str_len +
+                space_reserved_for_more_prompt_this_line;
 
         return max_w;
 }
@@ -66,7 +94,9 @@ static int worst_case_msg_w_for_line_nr(
 static int msg_area_w_avail_for_text_part()
 {
         const int w_avail =
-                panels::w(Panel::log) - s_repeat_str_len - s_space_reserved_for_more_prompt;
+                panels::w(Panel::log) -
+                s_repeat_str_len -
+                s_space_reserved_for_more_prompt;
 
         return w_avail;
 }
@@ -121,7 +151,7 @@ static void draw_line(
                         panel,
                         pos.with_x_offset(msg.x_pos()),
                         msg.color(),
-                        false); // Do not draw background
+                        io::DrawBg::no);
         }
 }
 
@@ -129,29 +159,26 @@ static void draw_more_prompt()
 {
         int more_x0 = 0;
 
-        int line_nr =
-                s_lines[1].empty()
-                ? 0
-                : 1;
+        size_t line_nr = find_current_line_nr();
 
-        const auto& line = s_lines[(size_t)line_nr];
+        const auto& line = s_lines[line_nr];
 
         if (!line.empty()) {
                 const Msg& last_msg = line.back();
 
                 more_x0 = x_after_msg(&last_msg);
 
-                // If this is the first line, the "more" prompt text may be
-                // moved to the beginning of the second line if it does not fit
-                // on the first line. For the second line however, the "more"
-                // text MUST fit on the line (handled when adding messages).
-                if (line_nr == 0) {
+                // If this is not the last line, the "more" prompt text may be
+                // moved to the beginning of the next line if it does not fit on
+                // the current line. For the last line however, the "more" text
+                // MUST fit on the line (handled when adding messages).
+                if (line_nr != (msg_log::g_nr_log_lines - 1)) {
                         const int more_x1 =
                                 more_x0 + (int)s_more_str.size() - 1;
 
                         if (more_x1 >= panels::w(Panel::log)) {
                                 more_x0 = 0;
-                                line_nr = 1;
+                                ++line_nr;
                         }
                 }
         }
@@ -164,8 +191,8 @@ static void draw_more_prompt()
                 Panel::log,
                 P(more_x0, line_nr),
                 colors::black(),
-                true, // Draw background color
-                colors::gray());
+                io::DrawBg::yes,
+                colors::gold());
 }
 
 // -----------------------------------------------------------------------------
@@ -181,7 +208,6 @@ void init()
 
         s_history_size = 0;
         s_history_count = 0;
-
         s_is_waiting_more_pompt = false;
 }
 
@@ -193,15 +219,16 @@ void draw()
 
         io::draw_box(panels::area(Panel::log_border));
 
-        const int nr_lines_with_content =
-                s_lines[0].empty() ? 0 : s_lines[1].empty() ? 1 : 2;
+        int y = 0;
 
-        for (int i = 0; i < nr_lines_with_content; ++i) {
-                const int y_pos = i;
+        for (const auto& line : s_lines) {
+                if (line.empty()) {
+                        break;
+                }
 
-                const auto& line = s_lines[i];
+                draw_line(line, Panel::log, P(0, y));
 
-                draw_line(line, Panel::log, P(0, y_pos));
+                ++y;
         }
 
         if (s_is_waiting_more_pompt) {
@@ -219,7 +246,7 @@ void clear()
                         }
 
                         // Add cleared line to history
-                        ::s_history[s_history_count % s_history_cap] = msg;
+                        s_history[s_history_count % s_history_cap] = msg;
 
                         ++s_history_count;
 
@@ -281,17 +308,27 @@ void add(
 
         // If a single message will not fit on the next empty line in the worst
         // case (i.e. with space reserved for a repetition string, and also for
-        // a "more" prompt if the next empty line is the second line), split the
+        // a "more" prompt if the next empty line is the last line), split the
         // message into multiple sub-messages through recursive calls.
-        const int next_empty_line_nr =
-                (s_lines[0].empty() || !s_lines[1].empty())
-                ? 0
-                : 1;
+        size_t next_empty_line_nr = 0;
+        while (true) {
+                if (s_lines[next_empty_line_nr].empty()) {
+                        break;
+                }
+
+                if (next_empty_line_nr == (g_nr_log_lines - 1)) {
+                        // The last line has content - the next empty is the
+                        // first line
+                        next_empty_line_nr = 0;
+                        break;
+                }
+
+                ++next_empty_line_nr;
+        }
 
         const bool should_split =
-                worst_case_msg_w_for_line_nr(
-                        next_empty_line_nr,
-                        str) > panels::w(Panel::log);
+                worst_case_msg_w_for_line_nr(next_empty_line_nr, str) >
+                panels::w(Panel::log);
 
         if (should_split) {
                 int w_avail = msg_area_w_avail_for_text_part();
@@ -342,10 +379,25 @@ void add(
                 return;
         }
 
-        int current_line_nr =
-                s_lines[1].empty()
-                ? 0
-                : 1;
+        // Find the line number to add the message to
+        size_t current_line_nr = find_current_line_nr();
+
+        if ((current_line_nr < (g_nr_log_lines - 1)) &&
+            !s_lines[current_line_nr].empty()) {
+                // We are on a non-empty line which is *not* the last line -
+                // check if the message will fit, otherwise increment to the
+                // next line number
+                const int worst_case_w =
+                        worst_case_msg_w_for_line_nr(current_line_nr, str);
+
+                const int new_x = x_after_msg(&s_lines[current_line_nr].back());
+
+                const int worst_case_x1 = new_x + worst_case_w - 1;
+
+                if (worst_case_x1 >= panels::x1(Panel::log)) {
+                        ++current_line_nr;
+                }
+        }
 
         Msg* prev_msg = nullptr;
 
@@ -377,8 +429,8 @@ void add(
                 const int worst_case_msg_x1 = msg_x0 + worst_case_msg_w - 1;
 
                 if (worst_case_msg_x1 >= panels::w(Panel::log)) {
-                        if (current_line_nr == 0) {
-                                current_line_nr = 1;
+                        if (current_line_nr < (g_nr_log_lines - 1)) {
+                                ++current_line_nr;
                         } else {
                                 more_prompt();
 
@@ -440,7 +492,7 @@ void add_line_to_history(const std::string& line_to_add)
                 0,
                 CopyToMsgHistory::yes); // Doesn't matter at this point
 
-        ::s_history[s_history_count % s_history_cap] = {msg};
+        s_history[s_history_count % s_history_cap] = {msg};
 
         ++s_history_count;
 
@@ -462,7 +514,7 @@ std::vector<Msg> history()
         }
 
         for (size_t i = start; i < s_history_count; ++i) {
-                const auto& msg = ::s_history[i % s_history_cap];
+                const auto& msg = s_history[i % s_history_cap];
 
                 result.push_back(msg);
         }
@@ -531,7 +583,7 @@ void MsgHistoryState::draw()
                         Panel::screen,
                         P(1, y),
                         msg.color(),
-                        false); // Do not draw background
+                        io::DrawBg::no);
 
                 ++y;
         }

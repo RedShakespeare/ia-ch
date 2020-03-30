@@ -302,7 +302,7 @@ void MarkerState::draw_marker(
                                 Panel::map,
                                 view_pos,
                                 d.color,
-                                true, // Draw background color
+                                io::DrawBg::yes,
                                 d.color_bg);
                 }
         } // line loop
@@ -340,7 +340,7 @@ void MarkerState::draw_marker(
                         Panel::map,
                         viewport::to_view_pos(head_pos),
                         d.color,
-                        true, // Draw background color
+                        io::DrawBg::yes,
                         d.color_bg);
         }
 }
@@ -728,7 +728,7 @@ void ThrowingExplosive::on_draw()
         const R expl_area =
                 explosion::explosion_area(m_pos, g_expl_std_radi);
 
-        const Color color_bg = colors::red().fraction(2.0);
+        const Color color_bg = colors::red().fraction(1.5);
 
         // Draw explosion radius area overlay
         for (int y = expl_area.p0.y; y <= expl_area.p1.y; ++y) {
@@ -771,7 +771,7 @@ void ThrowingExplosive::on_draw()
                                         Panel::map,
                                         view_pos,
                                         color_fg,
-                                        true, // Draw background color
+                                        io::DrawBg::yes,
                                         color_bg);
                         }
                 }

@@ -39,6 +39,18 @@ struct InputData {
 
 namespace io {
 
+// The minimum window size is defined by whichever gives the largest window
+// width or height: the minimum number of gui cells, or the minimum resolution.
+const int g_min_nr_gui_cells_x = 92;
+const int g_min_nr_gui_cells_y = 22;
+const int g_min_res_w = 800;
+const int g_min_res_h = 600;
+
+enum class DrawBg {
+        no,
+        yes
+};
+
 void init();
 void cleanup();
 
@@ -79,7 +91,7 @@ void draw_symbol(
         Panel panel,
         P pos,
         const Color& color,
-        bool draw_bg = true,
+        DrawBg draw_bg = DrawBg::yes,
         const Color& color_bg = colors::black());
 
 void draw_tile(
@@ -87,7 +99,7 @@ void draw_tile(
         Panel panel,
         P pos,
         const Color& color,
-        bool draw_bg = true,
+        DrawBg draw_bg = DrawBg::yes,
         const Color& bg_color = colors::black());
 
 void draw_character(
@@ -95,7 +107,7 @@ void draw_character(
         Panel panel,
         P pos,
         const Color& color,
-        bool draw_bg = true,
+        DrawBg draw_bg = DrawBg::yes,
         const Color& bg_color = colors::black());
 
 void draw_text(
@@ -103,7 +115,7 @@ void draw_text(
         Panel panel,
         P pos,
         const Color& color,
-        bool draw_bg = true,
+        DrawBg draw_bg = DrawBg::yes,
         const Color& bg_color = colors::black());
 
 void draw_text_center(
@@ -111,7 +123,7 @@ void draw_text_center(
         Panel panel,
         P pos,
         const Color& color,
-        bool draw_bg = true,
+        DrawBg draw_bg = DrawBg::yes,
         const Color& bg_color = colors::black(),
         bool is_pixel_pos_adj_allowed = true);
 
@@ -120,7 +132,7 @@ void draw_text_right(
         Panel panel,
         P pos,
         const Color& color,
-        bool draw_bg = true,
+        DrawBg draw_bg = DrawBg::yes,
         const Color& bg_color = colors::black());
 
 void cover_cell(Panel panel, P offset);
@@ -165,7 +177,7 @@ void draw_main_menu_logo();
 // TODO: Perhaps add an option to draw a background color inside the box
 void draw_box(
         const R& border,
-        const Color& color = colors::dark_gray_brown());
+        const Color& color = colors::dark_sepia());
 
 // Draws a description "box" for items, spells, etc. The parameter lines may be
 // empty, in which case an empty area is drawn.

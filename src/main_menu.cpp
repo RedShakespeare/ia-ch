@@ -239,7 +239,7 @@ void MainMenuState::draw()
                         Panel::screen,
                         {panels::center_x(Panel::screen),
                          (panels::h(Panel::screen) * 3) / 12},
-                        colors::violet());
+                        colors::title());
         }
 
 #ifndef NDEBUG
@@ -248,8 +248,8 @@ void MainMenuState::draw()
                 Panel::screen,
                 P(1, 1),
                 colors::black(),
-                true, // Draw background color
-                colors::dark_yellow());
+                io::DrawBg::yes,
+                colors::yellow());
 #endif // NDEBUG
 
         const std::vector<std::string> labels = {
@@ -267,7 +267,9 @@ void MainMenuState::draw()
         // TODO: Read the logo height programmatically instead of hard coding it
         const P menu_pos(
                 (screen_dims.x * 6) / 10,
-                std::max(320 / config::gui_cell_px_h(), (screen_dims.y * 4) / 10));
+                std::max(
+                        (320 / config::gui_cell_px_h()),
+                        ((screen_dims.y * 4) / 10)));
 
         P pos = menu_pos;
 
@@ -275,7 +277,9 @@ void MainMenuState::draw()
                 const std::string label = labels[i];
 
                 const Color& color =
-                        m_browser.is_at_idx(i) ? colors::menu_highlight() : colors::menu_dark();
+                        m_browser.is_at_idx(i)
+                        ? colors::menu_highlight()
+                        : colors::menu_dark();
 
                 io::draw_text(
                         label,
@@ -287,7 +291,7 @@ void MainMenuState::draw()
                 ++pos.y;
         }
 
-        const Color quote_clr = colors::gray_brown().fraction(2.0);
+        const Color quote_clr = colors::gray_brown().fraction(1.5);
 
         std::vector<std::string> quote_lines;
 
@@ -341,19 +345,22 @@ void MainMenuState::draw()
 
         build_str += ", " + version_info::g_date_str;
 
-        io::draw_text_center(
-                version_info::g_copyright_str + "    " + build_str,
+        io::draw_text_right(
+                build_str,
                 Panel::screen,
-                P(panels::center_x(Panel::screen),
-                  panels::y1(Panel::screen) - 1),
-                colors::dark_gray());
+                {panels::x1(Panel::screen) - 1, 0},
+                colors::gray());
 
         io::draw_text_center(
-                " " + version_info::g_license_str + " ",
+                std::string(
+                        " " +
+                        version_info::g_copyright_str +
+                        "   " +
+                        version_info::g_license_str +
+                        " "),
                 Panel::screen,
-                P(panels::center_x(Panel::screen),
-                  panels::y1(Panel::screen)),
-                colors::dark_gray());
+                {panels::center_x(Panel::screen), panels::y1(Panel::screen)},
+                colors::gray());
 
         io::update_screen();
 

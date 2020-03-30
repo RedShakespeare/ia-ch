@@ -10,6 +10,7 @@
 #include "io.hpp"
 #include "panel.hpp"
 #include "pos.hpp"
+#include "rect.hpp"
 
 int InfoScreenState::max_nr_lines_on_screen() const
 {
@@ -18,6 +19,8 @@ int InfoScreenState::max_nr_lines_on_screen() const
 
 void InfoScreenState::draw_interface() const
 {
+        io::draw_box(panels::area(Panel::screen));
+
         // const int screen_w = panels::w(Panel::screen);
         const int screen_h = panels::h(Panel::screen);
 
@@ -35,7 +38,7 @@ void InfoScreenState::draw_interface() const
                 : common_text::g_screen_exit_hint;
 
         io::draw_text_center(
-                " " + cmd_info + " ",
+                cmd_info,
                 Panel::screen,
                 P(screen_center_x, screen_h - 1),
                 colors::title());

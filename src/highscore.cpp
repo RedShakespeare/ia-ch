@@ -23,6 +23,7 @@
 #include "panel.hpp"
 #include "paths.hpp"
 #include "popup.hpp"
+#include "rect.hpp"
 
 // -----------------------------------------------------------------------------
 // Private
@@ -271,6 +272,8 @@ void BrowseHighscore::draw()
                 return;
         }
 
+        io::draw_box(panels::area(Panel::screen));
+
         const Panel panel = Panel::screen;
 
         const std::string title =
@@ -281,7 +284,7 @@ void BrowseHighscore::draw()
                 panel,
                 P(panels::center_x(Panel::screen), 0),
                 colors::title(),
-                false, // Do not draw background color
+                io::DrawBg::yes,
                 colors::black(),
                 true); // Allow pixel-level adjustment
 
@@ -380,11 +383,19 @@ void BrowseHighscore::draw()
 
         // Draw "more" labels
         if (!m_browser.is_on_top_page()) {
-                io::draw_text("(More - Page Up)", Panel::screen, P(0, s_top_more_y), colors::light_white());
+                io::draw_text(
+                        "(More - Page Up)",
+                        Panel::screen,
+                        P(0, s_top_more_y),
+                        colors::light_white());
         }
 
         if (!m_browser.is_on_btm_page()) {
-                io::draw_text("(More - Page Down)", Panel::screen, P(0, get_bottom_more_y()), colors::light_white());
+                io::draw_text(
+                        "(More - Page Down)",
+                        Panel::screen,
+                        P(0, get_bottom_more_y()),
+                        colors::light_white());
         }
 }
 

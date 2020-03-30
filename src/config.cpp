@@ -20,6 +20,7 @@
 #include "paths.hpp"
 #include "pos.hpp"
 #include "query.hpp"
+#include "rect.hpp"
 #include "sdl_base.hpp"
 #include "terrain_data.hpp"
 #include "text_format.hpp"
@@ -164,8 +165,41 @@ static void set_default_variables()
 
         update_render_dims();
 
-        const int default_nr_gui_cells_x = 96;
+        const int default_nr_gui_cells_x = 92;
         const int default_nr_gui_cells_y = 30;
+
+        static_assert(
+                default_nr_gui_cells_x >= io::g_min_nr_gui_cells_x,
+                "Default gui width must be >= min gui width");
+
+        static_assert(
+                default_nr_gui_cells_y >= io::g_min_nr_gui_cells_y,
+                "Default gui height must be >= min gui height");
+
+        TRACE << "Default number of gui cells: "
+              << default_nr_gui_cells_x
+              << "x"
+              << default_nr_gui_cells_y
+              << std::endl;
+
+        const int default_res_w = default_nr_gui_cells_x * s_gui_cell_px_w;
+        const int default_res_h = default_nr_gui_cells_y * s_gui_cell_px_h;
+
+        TRACE << "Default resolution: "
+              << default_res_w
+              << "x"
+              << default_res_h
+              << std::endl;
+
+        // Minimum resolution cannot be statically asserted since it depends on
+        // the font dimensions
+        ASSERT(
+                (default_nr_gui_cells_x * s_gui_cell_px_w) >=
+                io::g_min_res_w);
+
+        ASSERT(
+                (default_nr_gui_cells_y * s_gui_cell_px_h) >=
+                io::g_min_res_h);
 
         s_screen_px_w = s_gui_cell_px_w * default_nr_gui_cells_x;
         s_screen_px_h = s_gui_cell_px_h * default_nr_gui_cells_y;
@@ -853,15 +887,20 @@ void ConfigState::update()
 
 void ConfigState::draw()
 {
+        io::draw_box(panels::area(Panel::screen));
+
         const int x1 = config::s_opt_values_x_pos;
 
         std::string str;
 
-        io::draw_text(
-                "-Options-",
+        io::draw_text_center(
+                "Options",
                 Panel::screen,
-                P(1, 0),
-                colors::white());
+                P(panels::center_x(Panel::screen), 0),
+                colors::title(),
+                io::DrawBg::yes,
+                colors::black(),
+                true); // Allow pixel-level adjustment
 
         std::string font_disp_name = config::s_font_name;
 
@@ -1018,9 +1057,12 @@ void ConfigState::draw()
                 }
         } // for each label
 
-        io::draw_text(
+        io::draw_text_center(
                 "[enter] to set option [space/esc] to exit",
                 Panel::screen,
-                P(1, panels::h(Panel::screen) - 1),
-                colors::white());
+                P(panels::center_x(Panel::screen), 0),
+                colors::title(),
+                io::DrawBg::yes,
+                colors::black(),
+                true); // Allow pixel-level adjustment
 }

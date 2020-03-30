@@ -11,11 +11,12 @@ struct PxPos;
 struct R;
 struct P;
 
-// TODO: Add *_border for other panels than log as well
 enum class Panel {
         screen,
         map,
-        player_stats,
+        map_gui_cond,
+        map_gui_progress,
+        map_gui_wpn,
         log,
         log_border,
         create_char_menu,
