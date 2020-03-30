@@ -292,7 +292,7 @@ void PickOccultistState::draw()
                         line,
                         Panel::create_char_descr,
                         P(0, y),
-                        colors::white());
+                        colors::text());
 
                 ++y;
         }
@@ -528,7 +528,7 @@ void PickTraitState::draw()
                         str,
                         Panel::create_char_descr,
                         P(0, y),
-                        colors::white());
+                        colors::text());
                 ++y;
         }
 
@@ -537,14 +537,11 @@ void PickTraitState::draw()
 
         Bg trait_marked_bg_prereq = Bg::END;
 
-        int trait_marked_clvl_prereq = -1;
-
         player_bon::trait_prereqs(
                 trait_marked,
                 player_bg,
                 trait_marked_prereqs,
-                trait_marked_bg_prereq,
-                trait_marked_clvl_prereq);
+                trait_marked_bg_prereq);
 
         const int y0_prereqs = 10;
 
@@ -552,20 +549,21 @@ void PickTraitState::draw()
 
         if (!trait_marked_prereqs.empty() ||
             trait_marked_bg_prereq != Bg::END) {
+                int x = 0;
+
                 const std::string label = "Prerequisite(s):";
 
                 io::draw_text(
                         label,
                         Panel::create_char_descr,
-                        P(0, y),
-                        colors::white());
+                        P(x, y),
+                        colors::text());
+
+                x += label.length() + 1;
 
                 std::vector<ColoredString> prereq_titles;
 
-                std::string prereq_str;
-
                 const Color& clr_prereq_ok = colors::green();
-
                 const Color& clr_prereq_not_ok = colors::red();
 
                 if (trait_marked_bg_prereq != Bg::END) {
@@ -580,12 +578,14 @@ void PickTraitState::draw()
                         prereq_titles.emplace_back(bg_title, color);
                 }
 
-                for (Trait prereq_trait : trait_marked_prereqs) {
+                for (const auto prereq_trait : trait_marked_prereqs) {
                         const bool is_picked =
                                 player_bon::has_trait(prereq_trait);
 
                         const auto& color =
-                                is_picked ? clr_prereq_ok : clr_prereq_not_ok;
+                                is_picked
+                                ? clr_prereq_ok
+                                : clr_prereq_not_ok;
 
                         const std::string trait_title =
                                 player_bon::trait_title(prereq_trait);
@@ -593,29 +593,31 @@ void PickTraitState::draw()
                         prereq_titles.emplace_back(trait_title, color);
                 }
 
-                if (trait_marked_clvl_prereq != -1) {
-                        const Color& color =
-                                (game::clvl() >= trait_marked_clvl_prereq)
-                                ? clr_prereq_ok
-                                : clr_prereq_not_ok;
+                const size_t nr_prereq_titles = prereq_titles.size();
+                for (size_t prereq_idx = 0;
+                     prereq_idx < nr_prereq_titles;
+                     ++prereq_idx) {
+                        const auto& prereq_title = prereq_titles[prereq_idx];
 
-                        const std::string clvl_title =
-                                "Character level " +
-                                std::to_string(trait_marked_clvl_prereq);
-
-                        prereq_titles.emplace_back(clvl_title, color);
-                }
-
-                const auto prereq_list_x = (int)label.size() + 1;
-
-                for (const ColoredString& prereq_title : prereq_titles) {
                         io::draw_text(
                                 prereq_title.str,
                                 Panel::create_char_descr,
-                                P(prereq_list_x, y),
+                                P(x, y),
                                 prereq_title.color);
 
-                        ++y;
+                        x += prereq_title.str.length();
+
+                        if (prereq_idx < (nr_prereq_titles - 1)) {
+                                io::draw_text(
+                                        ",",
+                                        Panel::create_char_descr,
+                                        P(x, y),
+                                        colors::text());
+
+                                ++x;
+                        }
+
+                        ++x;
                 }
         }
 }

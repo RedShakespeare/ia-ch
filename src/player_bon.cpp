@@ -634,14 +634,11 @@ void trait_prereqs(
         const Trait trait,
         const Bg bg,
         std::vector<Trait>& traits_out,
-        Bg& bg_out,
-        int& clvl_out)
+        Bg& bg_out)
 {
         traits_out.clear();
 
         bg_out = Bg::END;
-
-        clvl_out = -1;
 
         switch (trait) {
         case Trait::adept_melee:
@@ -917,16 +914,13 @@ void unpicked_traits_for_bg(
 
                 Bg bg_prereq = Bg::END;
 
-                int clvl_prereq = -1;
-
                 // NOTE: Traits blocked for the current background are not
                 // considered prerequisites
                 trait_prereqs(
                         trait,
                         bg,
                         trait_prereq_list,
-                        bg_prereq,
-                        clvl_prereq);
+                        bg_prereq);
 
                 const bool is_bg_ok =
                         (s_current_bg == bg_prereq) ||
@@ -945,10 +939,6 @@ void unpicked_traits_for_bg(
                                 break;
                         }
                 }
-
-                is_trait_prereqs_ok =
-                        is_trait_prereqs_ok &&
-                        (game::clvl() >= clvl_prereq);
 
                 if (is_trait_prereqs_ok) {
                         traits_can_be_picked_out.push_back(trait);

@@ -116,8 +116,7 @@ void trait_prereqs(
         Trait trait,
         Bg bg,
         std::vector<Trait>& traits_out,
-        Bg& bg_out,
-        int& clvl_out);
+        Bg& bg_out);
 
 Bg bg();
 
