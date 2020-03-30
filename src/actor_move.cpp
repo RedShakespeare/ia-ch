@@ -253,6 +253,7 @@ static void bump_terrains(actor::Actor& actor, const P& tgt)
 
         if (!actor.is_player() &&
             !terrain->is_walkable() &&
+            (terrain->data().matl_type != Matl::fluid) &&
             map::g_player->can_see_actor(actor)) {
                 print_mon_enter_non_walkable_terrain_msg(actor, *terrain);
         }
