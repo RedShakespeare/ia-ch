@@ -508,13 +508,13 @@ Range ForceBolt::damage(
 
         switch (skill) {
         case SpellSkill::basic:
-                return Range(3, 4);
+                return Range(3, 4); // Avg 3.5
 
         case SpellSkill::expert:
-                return Range(5, 7);
+                return Range(5, 7); // Avg 6.0
 
         case SpellSkill::master:
-                return Range(9, 12);
+                return Range(9, 12); // Avg 10.5
         }
 
         ASSERT(false);
@@ -531,36 +531,22 @@ std::vector<std::string> ForceBolt::descr_specific(const SpellSkill skill) const
 
 Range Darkbolt::damage(const SpellSkill skill, const actor::Actor& caster) const
 {
-        Range dmg;
-
-        // Skill  damage    avg
-        // -----------------------
-        // 0      4 - 9     6.5
-        // 1      6 - 12    9.0
-        // 2      8 - 15    11.5
+        (void)caster;
 
         switch (skill) {
         case SpellSkill::basic:
-                dmg = Range(4, 9);
-                break;
+                return Range(4, 9); // Avg 6.5
 
         case SpellSkill::expert:
-                dmg = Range(6, 12);
-                break;
+                return Range(5, 11); // Avg 8.0
 
         case SpellSkill::master:
-                dmg = Range(8, 15);
-                break;
+                return Range(6, 13); // Avg 9.5
         }
 
-        if (!caster.is_player()) {
-                const int mon_dmg_pct = 80;
+        ASSERT(false);
 
-                dmg.min = (dmg.min * mon_dmg_pct) / 100;
-                dmg.max = (dmg.max * mon_dmg_pct) / 100;
-        }
-
-        return dmg;
+        return Range(1, 1);
 }
 
 std::vector<std::string> Darkbolt::descr_specific(const SpellSkill skill) const
