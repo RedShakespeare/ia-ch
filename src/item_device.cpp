@@ -416,7 +416,7 @@ ConsumeItem ForceField::run_effect()
 // -----------------------------------------------------------------------------
 Lantern::Lantern(item::ItemData* const item_data) :
         Device(item_data),
-        nr_turns_left(100),
+        nr_turns_left(150),
         is_activated(false) {}
 
 std::string Lantern::name_inf_str() const

@@ -493,10 +493,10 @@ void StdRoom::on_post_connect(Array2<bool>& door_proposals)
         }
 
         if (!room_has_light_source) {
-                int pct_chance_dark = base_pct_chance_dark(m_type);
+                int pct_chance_dark = base_pct_chance_dark(m_type) - 10;
 
                 // Increase chance with deeper dungeon levels
-                pct_chance_dark += (int)((double)map::g_dlvl * 1.25);
+                pct_chance_dark += map::g_dlvl;
 
                 set_constr_in_range(0, pct_chance_dark, 100);
 
