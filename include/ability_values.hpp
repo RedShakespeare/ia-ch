@@ -24,6 +24,7 @@ enum class AbilityId {
         END
 };
 
+// TODO: Define in cpp file instead
 const std::unordered_map<std::string, AbilityId> g_str_to_ability_id_map = {
         {"melee", AbilityId::melee},
         {"ranged", AbilityId::ranged},
@@ -32,6 +33,7 @@ const std::unordered_map<std::string, AbilityId> g_str_to_ability_id_map = {
         {"searching", AbilityId::searching},
 };
 
+// TODO: Define in cpp file instead
 const std::unordered_map<AbilityId, std::string> g_ability_id_to_str_map = {
         {AbilityId::melee, "melee"},
         {AbilityId::ranged, "ranged"},

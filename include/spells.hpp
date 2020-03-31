@@ -62,6 +62,7 @@ enum class SpellId {
         END
 };
 
+// TODO: Define in cpp file instead
 const std::unordered_map<std::string, SpellId> str_to_spell_id_map = {
         {"aura_of_decay", SpellId::aura_of_decay},
         {"spectral_wpns", SpellId::spectral_wpns},
@@ -101,6 +102,7 @@ enum class SpellSkill {
         master
 };
 
+// TODO: Define in cpp file instead
 const std::unordered_map<std::string, SpellSkill> str_to_spell_skill_map = {
         {"basic", SpellSkill::basic},
         {"expert", SpellSkill::expert},

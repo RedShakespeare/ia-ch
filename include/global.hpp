@@ -13,46 +13,46 @@
 // -----------------------------------------------------------------------------
 // Data
 // -----------------------------------------------------------------------------
-const size_t g_player_name_max_len = 14;
+inline constexpr size_t g_player_name_max_len = 14;
 
 // NOTE:
 // Early = dlvl 1  - 9
 // Mid   = dlvl 10 - 19
 // Late  = dlvl 20 - 30
-const int g_dlvl_last_early_game = 9;
-const int g_dlvl_first_mid_game = g_dlvl_last_early_game + 1;
-const int g_dlvl_last_mid_game = 19;
-const int g_dlvl_first_late_game = g_dlvl_last_mid_game + 1;
-const int g_dlvl_last = 30;
+inline constexpr int g_dlvl_last_early_game = 9;
+inline constexpr int g_dlvl_first_mid_game = g_dlvl_last_early_game + 1;
+inline constexpr int g_dlvl_last_mid_game = 19;
+inline constexpr int g_dlvl_first_late_game = g_dlvl_last_mid_game + 1;
+inline constexpr int g_dlvl_last = 30;
 
-const int g_dlvl_harder_traps = 6;
+inline constexpr int g_dlvl_harder_traps = 6;
 
-const uint32_t g_ms_delay_player_unable_act = 7;
-const uint32_t g_min_ms_between_same_sfx = 60;
+inline constexpr uint32_t g_ms_delay_player_unable_act = 7;
+inline constexpr uint32_t g_min_ms_between_same_sfx = 60;
 
-const int g_fov_radi_int = 6;
-const int g_fov_w_int = (g_fov_radi_int * 2) + 1;
-const double g_fov_radi_db = (double)g_fov_radi_int;
+inline constexpr int g_fov_radi_int = 6;
+inline constexpr int g_fov_w_int = (g_fov_radi_int * 2) + 1;
+inline constexpr double g_fov_radi_db = (double)g_fov_radi_int;
 
-const int g_dynamite_fuse_turns = 5;
-const int g_expl_std_radi = 2;
+inline constexpr int g_dynamite_fuse_turns = 5;
+inline constexpr int g_expl_std_radi = 2;
 
-const int g_enc_immobile_lvl = 125;
+inline constexpr int g_enc_immobile_lvl = 125;
 
-const int g_nr_mg_projectiles = 5;
+inline constexpr int g_nr_mg_projectiles = 5;
 
-const int g_mi_go_gun_hp_drained = 3;
-const int g_mi_go_gun_regen_disabled_min_turns = 7;
-const int g_mi_go_gun_regen_disabled_max_turns = 12;
+inline constexpr int g_mi_go_gun_hp_drained = 3;
+inline constexpr int g_mi_go_gun_regen_disabled_min_turns = 7;
+inline constexpr int g_mi_go_gun_regen_disabled_max_turns = 12;
 
 // NOTE: Damage is reduced with higher distance from the center
-const int g_expl_dmg_min = 15;
-const int g_expl_dmg_max = 40;
+inline constexpr int g_expl_dmg_min = 15;
+inline constexpr int g_expl_dmg_max = 40;
 
-const int g_shock_from_obsession = 30;
+inline constexpr int g_shock_from_obsession = 30;
 
 // How many "units" of weight the player can carry, without trait modifiers etc
-const int g_player_carry_weight_base = 500;
+inline constexpr int g_player_carry_weight_base = 500;
 
 // Value used for limiting spawning over time and "breeder" monsters. The actual
 // number of actors may sometimes go a bit above this number, e.g. due to a
@@ -60,9 +60,9 @@ const int g_player_carry_weight_base = 500;
 // Summoning spells does not check this number at all (because their effects
 // should not be arbitrarily limited by this) - so that may also push the number
 // of actors above the limit. This number is treated as a soft limit.
-const size_t g_max_nr_actors_on_map = 125;
+inline constexpr size_t g_max_nr_actors_on_map = 125;
 
-const int g_hit_chance_pen_vs_unseen = 25;
+inline constexpr int g_hit_chance_pen_vs_unseen = 25;
 
 // -----------------------------------------------------------------------------
 // Types

@@ -118,6 +118,7 @@ enum class PropId {
         END
 };
 
+// TODO: Define in cpp file instead
 const std::unordered_map<std::string, PropId> g_str_to_prop_id_map = {
         {"alters_environment", PropId::alters_env},
         {"aura of decay", PropId::aura_of_decay},

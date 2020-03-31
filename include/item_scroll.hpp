@@ -17,8 +17,8 @@ class Spell;
 
 namespace scroll {
 
-const int g_low_spawn_chance = 15;
-const int g_high_spawn_chance = 35;
+inline constexpr int g_low_spawn_chance = 15;
+inline constexpr int g_high_spawn_chance = 35;
 
 void init();
 

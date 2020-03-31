@@ -115,12 +115,14 @@ enum class MonGroupSize {
         swarm
 };
 
+// TODO: Define in cpp file instead
 const std::unordered_map<std::string, MonGroupSize> g_str_to_group_size_map = {
         {"alone", MonGroupSize::alone},
         {"few", MonGroupSize::few},
         {"pack", MonGroupSize::pack},
         {"swarm", MonGroupSize::swarm}};
 
+// TODO: Define in cpp file instead
 const std::unordered_map<MonGroupSize, std::string> g_group_size_to_str_map = {
         {MonGroupSize::alone, "alone"},
         {MonGroupSize::few, "few"},
@@ -179,11 +181,13 @@ enum class Size {
         giant
 };
 
+// TODO: Define in cpp file instead
 const std::unordered_map<std::string, Size> g_str_to_actor_size_map = {
         {"floor", Size::floor},
         {"humanoid", Size::humanoid},
         {"giant", Size::giant}};
 
+// TODO: Define in cpp file instead
 const std::unordered_map<Size, std::string> g_actor_size_to_str_map = {
         {Size::floor, "floor"},
         {Size::humanoid, "humanoid"},
@@ -201,6 +205,7 @@ enum class AiId {
         END
 };
 
+// TODO: Define in cpp file instead
 const std::unordered_map<std::string, AiId> g_str_to_ai_id_map = {
         {"looks", AiId::looks},
         {"avoids_blocking_friend", AiId::avoids_blocking_friend},
@@ -211,6 +216,7 @@ const std::unordered_map<std::string, AiId> g_str_to_ai_id_map = {
         {"moves_to_leader", AiId::moves_to_leader},
         {"moves_randomly_when_unaware", AiId::moves_randomly_when_unaware}};
 
+// TODO: Define in cpp file instead
 const std::unordered_map<AiId, std::string> g_ai_id_to_str_map = {
         {AiId::looks, "looks"},
         {AiId::avoids_blocking_friend, "avoids_blocking_friend"},

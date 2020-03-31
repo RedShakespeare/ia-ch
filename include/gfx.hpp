@@ -200,6 +200,7 @@ enum class TileId {
         END
 };
 
+// TODO: Define in cpp file instead
 const std::unordered_map<std::string, TileId> g_str_to_tile_id_map = {
         {"aim_marker_head", TileId::aim_marker_head},
         {"aim_marker_line", TileId::aim_marker_line},
@@ -385,6 +386,7 @@ const std::unordered_map<std::string, TileId> g_str_to_tile_id_map = {
         {"zombie_unarmed", TileId::zombie_unarmed},
         {"none", TileId::END}};
 
+// TODO: Define in cpp file instead
 const std::unordered_map<TileId, std::string> g_tile_id_to_str_map = {
         {TileId::aim_marker_head, "aim_marker_head"},
         {TileId::aim_marker_line, "aim_marker_line"},

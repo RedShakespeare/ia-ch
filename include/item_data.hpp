@@ -187,6 +187,7 @@ enum class Id {
         END
 };
 
+// TODO: Define in cpp file instead
 const std::unordered_map<std::string, Id> str_to_intr_item_id_map = {
         {"bite", Id::intr_bite},
         {"claw", Id::intr_claw},
@@ -228,6 +229,7 @@ enum class ItemSetId {
         high_priest_guard_rogue
 };
 
+// TODO: Define in cpp file instead
 const std::unordered_map<std::string, ItemSetId> str_to_item_set_id_map = {
         {"minor_treasure", ItemSetId::minor_treasure},
         {"rare_treasure", ItemSetId::rare_treasure},

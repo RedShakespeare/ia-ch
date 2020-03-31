@@ -41,10 +41,10 @@ namespace io {
 
 // The minimum window size is defined by whichever gives the largest window
 // width or height: the minimum number of gui cells, or the minimum resolution.
-const int g_min_nr_gui_cells_x = 92;
-const int g_min_nr_gui_cells_y = 22;
-const int g_min_res_w = 800;
-const int g_min_res_h = 600;
+inline constexpr int g_min_nr_gui_cells_x = 92;
+inline constexpr int g_min_nr_gui_cells_y = 22;
+inline constexpr int g_min_res_w = 800;
+inline constexpr int g_min_res_h = 600;
 
 enum class DrawBg {
         no,

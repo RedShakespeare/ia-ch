@@ -64,6 +64,7 @@ enum class RoomType {
         river
 };
 
+// TODO: Define in cpp file instead
 const std::unordered_map<std::string, RoomType> g_str_to_room_type_map = {
         {"plain", RoomType::plain},
         {"human", RoomType::human},

@@ -27,6 +27,7 @@ enum class MenuInputMode {
         scrolling
 };
 
+// TODO: Define in cpp file instead
 const std::vector<char> std_menu_keys = {
         // NOTE: j k l is used for browsing and selecting in menus in vi mode
         'a',

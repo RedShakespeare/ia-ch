@@ -140,6 +140,7 @@ enum class SfxId {
         END
 };
 
+// TODO: Define in cpp file instead
 const std::unordered_map<std::string, SfxId> g_str_to_sfx_id_map = {
         {"dog_snarl", SfxId::dog_snarl},
         {"wolf_howl", SfxId::wolf_howl},
@@ -199,6 +200,7 @@ const std::unordered_map<std::string, SfxId> g_str_to_sfx_id_map = {
         {"menu_select", SfxId::menu_select},
         {"", SfxId::END}};
 
+// TODO: Define in cpp file instead
 const std::unordered_map<SfxId, std::string> g_sfx_id_to_str_map = {
         {SfxId::dog_snarl, "dog_snarl"},
         {SfxId::wolf_howl, "wolf_howl"},
@@ -266,7 +268,7 @@ enum class MusId {
 
 namespace audio {
 
-const int g_allocated_channels = 16;
+inline constexpr int g_allocated_channels = 16;
 
 void init();
 void cleanup();
