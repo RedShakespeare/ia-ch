@@ -310,7 +310,7 @@ add_test(IA-test ia-test)
 if(CMAKE_COMPILER_IS_GNUCXX OR(CMAKE_C_COMPILER_ID MATCHES "Clang") OR(CMAKE_CXX_COMPILER_ID MATCHES "Clang"))
 
         set(COMMON_COMPILE_FLAGS
-                -std=c++14
+                -std=c++17
                 -fno-rtti
                 -Wpedantic
                 -pedantic-errors
