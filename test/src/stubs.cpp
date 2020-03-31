@@ -105,7 +105,7 @@ void draw_symbol(
         const Panel,
         const P,
         const Color&,
-        const bool,
+        const DrawBg,
         const Color&) {}
 
 void draw_tile(
@@ -113,7 +113,7 @@ void draw_tile(
         const Panel,
         const P,
         const Color&,
-        const bool,
+        const DrawBg,
         const Color&) {}
 
 void draw_character(
@@ -121,7 +121,7 @@ void draw_character(
         const Panel,
         const P,
         const Color&,
-        const bool,
+        const DrawBg,
         const Color&) {}
 
 void draw_text(
@@ -129,7 +129,7 @@ void draw_text(
         const Panel,
         const P,
         const Color&,
-        const bool,
+        const DrawBg,
         const Color&) {}
 
 void draw_text_center(
@@ -137,7 +137,7 @@ void draw_text_center(
         const Panel,
         const P,
         const Color&,
-        const bool,
+        const DrawBg,
         const Color&,
         const bool) {}
 
@@ -146,7 +146,7 @@ void draw_text_right(
         const Panel,
         const P,
         const Color&,
-        const bool,
+        const DrawBg,
         const Color&) {}
 
 void cover_cell(const Panel, const P) {}
