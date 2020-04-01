@@ -231,7 +231,7 @@ void Door::on_hit(
                                         if (destr_chance_pct > 0) {
                                                 if (rnd::percent(destr_chance_pct)) {
                                                         Snd snd("",
-                                                                SfxId::door_break,
+                                                                audio::SfxId::door_break,
                                                                 IgnoreMsgIfOriginSeen::yes,
                                                                 m_pos,
                                                                 actor,
@@ -262,8 +262,8 @@ void Door::on_hit(
                                                         map::update_vision();
                                                 } else {
                                                         // Not destroyed
-                                                        const SfxId sfx =
-                                                                m_is_hidden ? SfxId::END : SfxId::door_bang;
+                                                        const audio::SfxId sfx =
+                                                                m_is_hidden ? audio::SfxId::END : audio::SfxId::door_bang;
 
                                                         Snd snd("",
                                                                 sfx,
@@ -279,7 +279,7 @@ void Door::on_hit(
                                                 // No chance of success
                                                 if (is_cell_seen && !m_is_hidden) {
                                                         Snd snd("",
-                                                                SfxId::door_bang,
+                                                                audio::SfxId::door_bang,
                                                                 IgnoreMsgIfOriginSeen::no,
                                                                 actor->m_pos,
                                                                 actor,
@@ -307,7 +307,7 @@ void Door::on_hit(
                                                 // nicer AI behavior (everyone near the door understands
                                                 // that it's time to run inside)
                                                 Snd snd("I hear a door crashing open!",
-                                                        SfxId::door_break,
+                                                        audio::SfxId::door_break,
                                                         IgnoreMsgIfOriginSeen::yes,
                                                         m_pos,
                                                         actor,
@@ -334,7 +334,7 @@ void Door::on_hit(
                                         } else {
                                                 // Not destroyed
                                                 Snd snd("I hear a loud banging.",
-                                                        SfxId::door_bang,
+                                                        audio::SfxId::door_bang,
                                                         IgnoreMsgIfOriginSeen::yes,
                                                         actor->m_pos,
                                                         actor,
@@ -571,9 +571,9 @@ char Door::character() const
         }
 }
 
-TileId Door::tile() const
+gfx::TileId Door::tile() const
 {
-        TileId ret = TileId::END;
+        gfx::TileId ret = gfx::TileId::END;
 
         if (m_is_hidden) {
                 ASSERT(m_type != DoorType::gate);
@@ -587,15 +587,15 @@ TileId Door::tile() const
                 case DoorType::metal: {
                         ret =
                                 m_is_open
-                                ? TileId::door_open
-                                : TileId::door_closed;
+                                ? gfx::TileId::door_open
+                                : gfx::TileId::door_closed;
                 } break;
 
                 case DoorType::gate: {
                         ret =
                                 m_is_open
-                                ? TileId::gate_open
-                                : TileId::gate_closed;
+                                ? gfx::TileId::gate_open
+                                : gfx::TileId::gate_closed;
                 } break;
                 }
         }
@@ -829,7 +829,7 @@ void Door::try_close(actor::Actor* actor_trying)
                         if (is_player) {
                                 Snd snd(
                                         "",
-                                        SfxId::door_close,
+                                        audio::SfxId::door_close,
                                         IgnoreMsgIfOriginSeen::yes,
                                         m_pos,
                                         actor_trying,
@@ -846,7 +846,7 @@ void Door::try_close(actor::Actor* actor_trying)
                                 // Monster closing
                                 Snd snd(
                                         "I hear a door closing.",
-                                        SfxId::door_close,
+                                        audio::SfxId::door_close,
                                         IgnoreMsgIfOriginSeen::yes,
                                         m_pos,
                                         actor_trying,
@@ -907,7 +907,7 @@ void Door::try_close(actor::Actor* actor_trying)
                 if (!player_bon::has_trait(Trait::silent)) {
                         Snd snd(
                                 "",
-                                SfxId::door_close,
+                                audio::SfxId::door_close,
                                 IgnoreMsgIfOriginSeen::yes,
                                 m_pos,
                                 actor_trying,
@@ -925,7 +925,7 @@ void Door::try_close(actor::Actor* actor_trying)
                 // Monster closing
                 Snd snd(
                         "I hear a door closing.",
-                        SfxId::door_close,
+                        audio::SfxId::door_close,
                         IgnoreMsgIfOriginSeen::yes,
                         m_pos,
                         actor_trying,
@@ -1001,7 +1001,7 @@ void Door::try_open(actor::Actor* actor_trying)
                         if (is_player) {
                                 if (!player_bon::has_trait(Trait::silent)) {
                                         Snd snd("",
-                                                SfxId::door_open,
+                                                audio::SfxId::door_open,
                                                 IgnoreMsgIfOriginSeen::yes,
                                                 m_pos,
                                                 actor_trying,
@@ -1018,7 +1018,7 @@ void Door::try_open(actor::Actor* actor_trying)
                         } else {
                                 // Is monster
                                 Snd snd("I hear a door open.",
-                                        SfxId::door_open,
+                                        audio::SfxId::door_open,
                                         IgnoreMsgIfOriginSeen::yes,
                                         m_pos,
                                         actor_trying,
@@ -1054,7 +1054,7 @@ void Door::try_open(actor::Actor* actor_trying)
 
                                 if (is_player) {
                                         Snd snd("",
-                                                SfxId::door_open,
+                                                audio::SfxId::door_open,
                                                 IgnoreMsgIfOriginSeen::yes,
                                                 m_pos,
                                                 actor_trying,
@@ -1070,7 +1070,7 @@ void Door::try_open(actor::Actor* actor_trying)
                                 } else {
                                         // Is monster
                                         Snd snd("I hear something open a door awkwardly.",
-                                                SfxId::door_open,
+                                                audio::SfxId::door_open,
                                                 IgnoreMsgIfOriginSeen::yes,
                                                 m_pos,
                                                 actor_trying,
@@ -1103,7 +1103,7 @@ void Door::try_open(actor::Actor* actor_trying)
                                 if (is_player) {
                                         Snd snd(
                                                 "",
-                                                SfxId::END,
+                                                audio::SfxId::END,
                                                 IgnoreMsgIfOriginSeen::yes,
                                                 m_pos,
                                                 actor_trying,
@@ -1124,7 +1124,7 @@ void Door::try_open(actor::Actor* actor_trying)
                                         // door is seen
                                         Snd snd(
                                                 "I hear something attempting to open a door.",
-                                                SfxId::END,
+                                                audio::SfxId::END,
                                                 IgnoreMsgIfOriginSeen::yes,
                                                 actor_trying->m_pos,
                                                 actor_trying,
@@ -1203,7 +1203,7 @@ DidOpen Door::open(actor::Actor* const actor_opening)
         if (m_type == DoorType::metal) {
                 Snd snd(
                         "",
-                        SfxId::END,
+                        audio::SfxId::END,
                         IgnoreMsgIfOriginSeen::yes,
                         m_pos,
                         nullptr,
@@ -1225,7 +1225,7 @@ DidClose Door::close(actor::Actor* const actor_closing)
         // TODO: This is kind of a hack...
         if (m_type == DoorType::metal) {
                 Snd snd("",
-                        SfxId::END,
+                        audio::SfxId::END,
                         IgnoreMsgIfOriginSeen::yes,
                         m_pos,
                         nullptr,

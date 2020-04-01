@@ -7,6 +7,7 @@
 #include "ability_values.hpp"
 
 #include <cmath>
+#include <unordered_map>
 
 #include "actor_player.hpp"
 #include "colors.hpp"
@@ -16,6 +17,31 @@
 #include "player_bon.hpp"
 #include "property_handler.hpp"
 
+// -----------------------------------------------------------------------------
+// Private
+// -----------------------------------------------------------------------------
+typedef std::unordered_map<std::string, AbilityId> StrToAbilityIdMap;
+
+static const StrToAbilityIdMap s_str_to_ability_id_map = {
+        {"melee", AbilityId::melee},
+        {"ranged", AbilityId::ranged},
+        {"dodging", AbilityId::dodging},
+        {"stealth", AbilityId::stealth},
+        {"searching", AbilityId::searching},
+};
+
+typedef std::unordered_map<AbilityId, std::string> AbilityIdToStrMap;
+static const AbilityIdToStrMap s_ability_id_to_str_map = {
+        {AbilityId::melee, "melee"},
+        {AbilityId::ranged, "ranged"},
+        {AbilityId::dodging, "dodging"},
+        {AbilityId::stealth, "stealth"},
+        {AbilityId::searching, "searching"},
+};
+
+// -----------------------------------------------------------------------------
+// AbilityValues
+// -----------------------------------------------------------------------------
 int AbilityValues::val(
         const AbilityId id,
         const bool is_affected_by_props,
@@ -142,6 +168,9 @@ void AbilityValues::change_val(const AbilityId ability, const int change)
         m_ability_list[(size_t)ability] += change;
 }
 
+// -----------------------------------------------------------------------------
+// ability_roll
+// -----------------------------------------------------------------------------
 namespace ability_roll {
 
 ActionResult roll(const int skill_value)

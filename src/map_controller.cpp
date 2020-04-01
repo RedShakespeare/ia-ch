@@ -38,7 +38,7 @@ void MapControllerStd::on_std_turn()
 
 void MapControllerBoss::on_start()
 {
-        audio::play(SfxId::boss_voice1);
+        audio::play(audio::SfxId::boss_voice1);
 
         for (auto* const actor : game_time::g_actors) {
                 if (!actor->is_player()) {

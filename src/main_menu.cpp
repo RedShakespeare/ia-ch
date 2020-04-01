@@ -464,10 +464,10 @@ void MainMenuState::on_start()
 
         s_current_quote = rnd::element(quotes);
 
-        audio::play_music(MusId::cthulhiana_madness);
+        audio::play_music(audio::MusId::cthulhiana_madness);
 }
 
 void MainMenuState::on_resume()
 {
-        audio::play_music(MusId::cthulhiana_madness);
+        audio::play_music(audio::MusId::cthulhiana_madness);
 }

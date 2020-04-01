@@ -570,7 +570,7 @@ void Shriek::shriek(const item::Item& item) const
 
         Snd snd(
                 phrase,
-                SfxId::END,
+                audio::SfxId::END,
                 IgnoreMsgIfOriginSeen::no,
                 map::g_player->m_pos,
                 map::g_player,

@@ -17,7 +17,7 @@ namespace popup {
 void msg(
         const std::string& msg,
         const std::string& title = "",
-        SfxId sfx = SfxId::END,
+        audio::SfxId sfx = audio::SfxId::END,
         int w_change = 0);
 
 int menu(
@@ -25,7 +25,7 @@ int menu(
         const std::vector<std::string>& choices,
         const std::string& title = "",
         int w_change = 0,
-        SfxId sfx = SfxId::END);
+        audio::SfxId sfx = audio::SfxId::END);
 
 } // namespace popup
 

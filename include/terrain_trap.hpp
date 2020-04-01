@@ -79,7 +79,7 @@ public:
 
         char character() const override;
 
-        TileId tile() const override;
+        gfx::TileId tile() const override;
 
         std::string name(Article article) const override;
 
@@ -167,7 +167,7 @@ protected:
 
         virtual Color color() const = 0;
 
-        virtual TileId tile() const = 0;
+        virtual gfx::TileId tile() const = 0;
 
         virtual char character() const
         {
@@ -201,9 +201,9 @@ protected:
 
         virtual ~MechTrapImpl() = default;
 
-        TileId tile() const override
+        gfx::TileId tile() const override
         {
-                return TileId::trap_general;
+                return gfx::TileId::trap_general;
         }
 
         bool is_magical() const override
@@ -540,9 +540,9 @@ private:
                 return false;
         }
 
-        TileId tile() const override
+        gfx::TileId tile() const override
         {
-                return TileId::web;
+                return gfx::TileId::web;
         }
 
         std::string disarm_msg() const override
@@ -579,9 +579,9 @@ protected:
                 return colors::light_red();
         }
 
-        TileId tile() const override
+        gfx::TileId tile() const override
         {
-                return TileId::elder_sign;
+                return gfx::TileId::elder_sign;
         }
 
         bool is_magical() const override

@@ -224,7 +224,7 @@ ConsumeItem Potion::activate(actor::Actor* const actor)
 
                 m_data->is_tried = true;
 
-                audio::play(SfxId::potion_quaff);
+                audio::play(audio::SfxId::potion_quaff);
 
                 if (m_data->is_identified) {
                         const std::string potion_name =

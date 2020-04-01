@@ -54,7 +54,7 @@ public:
 
         char character() const;
 
-        TileId tile() const;
+        gfx::TileId tile() const;
 
         virtual LgtSize lgt_size() const
         {

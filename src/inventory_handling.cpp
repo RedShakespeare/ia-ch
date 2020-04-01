@@ -552,7 +552,7 @@ void BrowseInv::on_start()
 
         map::g_player->m_inv.sort_backpack();
 
-        audio::play(SfxId::backpack);
+        audio::play(audio::SfxId::backpack);
 }
 
 void BrowseInv::draw()
@@ -820,7 +820,7 @@ void Apply::on_start()
 
         m_browser.disable_selection_audio();
 
-        audio::play(SfxId::backpack);
+        audio::play(audio::SfxId::backpack);
 }
 
 void Apply::draw()
@@ -933,7 +933,7 @@ void Drop::on_start()
 
         m_browser.disable_selection_audio();
 
-        audio::play(SfxId::backpack);
+        audio::play(audio::SfxId::backpack);
 }
 
 void Drop::draw()
@@ -1410,7 +1410,7 @@ void SelectThrow::on_start()
 
         m_browser.set_custom_menu_keys(custom_keys);
 
-        audio::play(SfxId::backpack);
+        audio::play(audio::SfxId::backpack);
 }
 
 void SelectThrow::draw()
@@ -1614,7 +1614,7 @@ void SelectIdentify::on_start()
 
         m_browser.disable_selection_audio();
 
-        audio::play(SfxId::backpack);
+        audio::play(audio::SfxId::backpack);
 }
 
 void SelectIdentify::draw()

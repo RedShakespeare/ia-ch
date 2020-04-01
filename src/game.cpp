@@ -358,7 +358,7 @@ void GameState::on_start()
                         popup::msg(
                                 intro_msg,
                                 "The story so far...",
-                                SfxId::END,
+                                audio::SfxId::END,
                                 14);
                 }
         }
@@ -458,7 +458,7 @@ void GameState::update()
         if (map::g_player && !map::g_player->is_alive()) {
                 TRACE << "Player died" << std::endl;
 
-                audio::play(SfxId::death);
+                audio::play(audio::SfxId::death);
 
                 msg_log::add(
                         "-I AM DEAD!-",

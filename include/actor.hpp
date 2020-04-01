@@ -84,7 +84,7 @@ public:
 
         std::string death_msg() const;
 
-        virtual TileId tile() const;
+        virtual gfx::TileId tile() const;
 
         virtual char character() const;
 

@@ -100,7 +100,7 @@ P map_to_px_coords(const Panel, const P)
 }
 
 void draw_symbol(
-        const TileId,
+        const gfx::TileId,
         const char,
         const Panel,
         const P,
@@ -109,7 +109,7 @@ void draw_symbol(
         const Color&) {}
 
 void draw_tile(
-        const TileId,
+        const gfx::TileId,
         const Panel,
         const P,
         const Color&,

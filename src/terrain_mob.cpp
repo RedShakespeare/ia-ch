@@ -133,7 +133,7 @@ void Smoke::on_new_turn()
 
                         Snd snd(
                                 snd_msg,
-                                SfxId::END,
+                                audio::SfxId::END,
                                 IgnoreMsgIfOriginSeen::yes,
                                 actor->m_pos,
                                 actor,

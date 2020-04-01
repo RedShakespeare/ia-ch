@@ -232,18 +232,9 @@ static void load_room_templates()
                                                 type_pos,
                                                 line.size() - type_pos);
 
-                                auto type_it = g_str_to_room_type_map
-                                                       .find(type_str);
-
-                                if (type_it == g_str_to_room_type_map.end()) {
-                                        TRACE_ERROR_RELEASE
-                                                << "Unrecognized room: "
-                                                << type_str << std::endl;
-
-                                        PANIC;
-                                }
-
-                                templ.type = type_it->second;
+                                templ.type =
+                                        room_factory::str_to_room_type(
+                                                type_str);
                         } else {
                                 // Not a name line
                                 template_buffer.push_back(line);

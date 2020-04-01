@@ -8,6 +8,7 @@
 
 #include <chrono>
 #include <cstdint>
+#include <unordered_map>
 
 #include "SDL_mixer.h"
 
@@ -33,7 +34,7 @@ static std::vector<Mix_Chunk*> s_audio_chunks;
 static std::vector<Mix_Music*> s_mus_chunks;
 
 // TODO: Also use std::chrono for sound effects?
-static uint32_t s_ms_at_sfx_played[(size_t)SfxId::END];
+static uint32_t s_ms_at_sfx_played[(size_t)audio::SfxId::END];
 
 static int s_current_channel = 0;
 
@@ -43,7 +44,7 @@ static auto s_seconds_at_amb_played = 0s;
 
 static int s_nr_files_loaded = 0;
 
-static void load(const SfxId sfx, const std::string& filename)
+static void load(const audio::SfxId sfx, const std::string& filename)
 {
         // Sound already loaded?
         if (s_audio_chunks[(size_t)sfx]) {
@@ -99,19 +100,16 @@ static int find_free_channel(const int from)
         return -1;
 }
 
-static std::string amb_sfx_filename(const SfxId sfx)
+static std::string amb_sfx_filename(const audio::SfxId sfx)
 {
-        const int amb_nr = (int)sfx - (int)SfxId::AMB_START;
+        const int amb_nr = (int)sfx - (int)audio::SfxId::AMB_START;
 
         const std::string padding_str =
                 (amb_nr < 10) ? "00" : (amb_nr < 100) ? "0" : "";
 
         const std::string idx_str = std::to_string(amb_nr);
 
-        return "amb_" +
-                padding_str +
-                idx_str +
-                ".ogg";
+        return "amb_" + padding_str + idx_str + ".ogg";
 }
 
 // -----------------------------------------------------------------------------
@@ -394,7 +392,8 @@ void try_play_amb(const int one_in_n_chance_to_play)
                         std::chrono::system_clock::now()
                                 .time_since_epoch());
 
-        if ((seconds_now - s_seconds_at_amb_played) > s_min_seconds_between_amb) {
+        if ((seconds_now - s_seconds_at_amb_played) >
+            s_min_seconds_between_amb) {
                 s_seconds_at_amb_played = seconds_now;
 
                 const int vol_pct = rnd::range(15, 100);

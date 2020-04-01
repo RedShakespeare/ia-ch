@@ -187,34 +187,6 @@ enum class Id {
         END
 };
 
-// TODO: Define in cpp file instead
-const std::unordered_map<std::string, Id> str_to_intr_item_id_map = {
-        {"bite", Id::intr_bite},
-        {"claw", Id::intr_claw},
-        {"strike", Id::intr_strike},
-        {"punch", Id::intr_punch},
-        {"acid_spit", Id::intr_acid_spit},
-        {"snake_venom_spit", Id::intr_snake_venom_spit},
-        {"fire_breath", Id::intr_fire_breath},
-        {"energy_breath", Id::intr_energy_breath},
-        {"raven_peck", Id::intr_raven_peck},
-        {"vampiric_bite", Id::intr_vampiric_bite},
-        {"strangle", Id::intr_strangle},
-        {"ghost_touch", Id::intr_ghost_touch},
-        {"sting", Id::intr_sting},
-        {"mind_leech_sting", Id::intr_mind_leech_sting},
-        {"spear_thrust", Id::intr_spear_thrust},
-        {"net_throw", Id::intr_net_throw},
-        {"maul", Id::intr_maul},
-        {"pus_spew", Id::intr_pus_spew},
-        {"acid_touch", Id::intr_acid_touch},
-        {"dust_engulf", Id::intr_dust_engulf},
-        {"fire_engulf", Id::intr_fire_engulf},
-        {"energy_engulf", Id::intr_energy_engulf},
-        {"spores", Id::intr_spores},
-        {"web_bola", Id::intr_web_bola},
-};
-
 enum class ItemSetId {
         minor_treasure,
         rare_treasure,
@@ -228,20 +200,6 @@ enum class ItemSetId {
         high_priest_guard_war_vet,
         high_priest_guard_rogue
 };
-
-// TODO: Define in cpp file instead
-const std::unordered_map<std::string, ItemSetId> str_to_item_set_id_map = {
-        {"minor_treasure", ItemSetId::minor_treasure},
-        {"rare_treasure", ItemSetId::rare_treasure},
-        {"supreme_treasure", ItemSetId::supreme_treasure},
-        {"firearm", ItemSetId::firearm},
-        {"spike_gun", ItemSetId::spike_gun},
-        {"zealot_spiked_mace", ItemSetId::zealot_spiked_mace},
-        {"priest_dagger", ItemSetId::priest_dagger},
-        {"mi_go_gun", ItemSetId::mi_go_gun},
-        {"mi_go_armor", ItemSetId::mi_go_armor},
-        {"high_priest_guard_war_vet", ItemSetId::high_priest_guard_war_vet},
-        {"high_priest_guard_rogue", ItemSetId::high_priest_guard_rogue}};
 
 enum class Value {
         normal,
@@ -318,10 +276,10 @@ struct MeleeData {
         bool knocks_back;
         bool att_corpse;
         bool att_terrain;
-        SfxId hit_small_sfx;
-        SfxId hit_medium_sfx;
-        SfxId hit_hard_sfx;
-        SfxId miss_sfx;
+        audio::SfxId hit_small_sfx;
+        audio::SfxId hit_medium_sfx;
+        audio::SfxId hit_hard_sfx;
+        audio::SfxId miss_sfx;
 };
 
 struct RangedData {
@@ -347,15 +305,15 @@ struct RangedData {
         DmgMethod dmg_method;
         bool has_infinite_ammo;
         char projectile_character;
-        TileId projectile_tile;
+        gfx::TileId projectile_tile;
         Color projectile_color;
         bool projectile_leaves_trail;
         ItemAttMsgs att_msgs;
         std::string snd_msg;
         SndVol snd_vol;
         bool makes_ricochet_snd;
-        SfxId att_sfx;
-        SfxId reload_sfx;
+        audio::SfxId att_sfx;
+        audio::SfxId reload_sfx;
         ItemAttProp prop_applied;
 };
 
@@ -394,11 +352,11 @@ public:
         std::vector<std::string> base_descr;
         char character;
         Color color;
-        TileId tile;
+        gfx::TileId tile;
         AttMode main_att_mode;
         SpellId spell_cast_from_scroll;
         std::string land_on_hard_snd_msg;
-        SfxId land_on_hard_sfx;
+        audio::SfxId land_on_hard_sfx;
 
         std::vector<RoomType> native_rooms;
         std::vector<terrain::Id> native_containers;
@@ -421,6 +379,10 @@ void cleanup();
 
 void save();
 void load();
+
+ItemSetId str_to_item_set_id(const std::string& str);
+
+Id str_to_intr_item_id(const std::string& str);
 
 } // namespace item
 

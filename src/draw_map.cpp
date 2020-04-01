@@ -44,7 +44,7 @@ static void set_terrains()
 
                 const auto* const t = cell.terrain;
 
-                TileId gore_tile = TileId::END;
+                gfx::TileId gore_tile = gfx::TileId::END;
 
                 char gore_character = 0;
 
@@ -53,7 +53,7 @@ static void set_terrains()
                         gore_character = t->gore_character();
                 }
 
-                if (gore_tile == TileId::END) {
+                if (gore_tile == gfx::TileId::END) {
                         render_data.tile = t->tile();
                         render_data.character = t->character();
                         render_data.color = t->color();
@@ -144,7 +144,7 @@ static void set_dead_actors()
                     !actor->is_corpse() ||
                     (actor->m_data->character == 0) ||
                     (actor->m_data->character == ' ') ||
-                    (actor->m_data->tile == TileId::END)) {
+                    (actor->m_data->tile == gfx::TileId::END)) {
                         continue;
                 }
 
@@ -207,12 +207,12 @@ static void set_mobiles()
         for (auto* mob : game_time::g_mobs) {
                 const P& p = mob->pos();
 
-                const TileId mob_tile = mob->tile();
+                const gfx::TileId mob_tile = mob->tile();
 
                 const char mob_character = mob->character();
 
                 if (map::g_cells.at(p).is_seen_by_player &&
-                    mob_tile != TileId::END &&
+                    mob_tile != gfx::TileId::END &&
                     mob_character != 0 &&
                     mob_character != ' ') {
                         auto& render_data = s_render_array.at(p);
@@ -228,7 +228,7 @@ static void set_living_seen_monster(
         const actor::Mon& mon,
         CellRenderData& render_data)
 {
-        if (mon.tile() == TileId::END ||
+        if (mon.tile() == gfx::TileId::END ||
             mon.character() == 0 ||
             mon.character() == ' ') {
                 return;
@@ -272,7 +272,7 @@ static void set_living_hidden_monster(
                 ? colors::mon_allied_bg()
                 : colors::gray();
 
-        render_data.tile = TileId::excl_mark;
+        render_data.tile = gfx::TileId::excl_mark;
         render_data.character = '!';
         render_data.color = colors::black();
         render_data.color_bg = color_bg;
@@ -339,7 +339,7 @@ static void draw_render_array()
                         auto& render_data = s_render_array.at(map_pos);
 
                         if (config::is_tiles_mode() &&
-                            (render_data.tile != TileId::END)) {
+                            (render_data.tile != gfx::TileId::END)) {
                                 io::draw_tile(
                                         render_data.tile,
                                         Panel::map,
@@ -469,14 +469,14 @@ static void draw_player_character()
                 uses_ranged_wpn = item->data().ranged.is_ranged_wpn;
         }
 
-        TileId tile;
+        gfx::TileId tile;
 
         if (is_ghoul) {
-                tile = TileId::ghoul;
+                tile = gfx::TileId::ghoul;
         } else if (uses_ranged_wpn) {
-                tile = TileId::player_firearm;
+                tile = gfx::TileId::player_firearm;
         } else {
-                tile = TileId::player_melee;
+                tile = gfx::TileId::player_melee;
         }
 
         const char character = '@';

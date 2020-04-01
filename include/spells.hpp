@@ -8,7 +8,6 @@
 #define SPELLS_HPP
 
 #include <string>
-#include <unordered_map>
 #include <vector>
 
 #include "item.hpp"
@@ -62,51 +61,11 @@ enum class SpellId {
         END
 };
 
-// TODO: Define in cpp file instead
-const std::unordered_map<std::string, SpellId> str_to_spell_id_map = {
-        {"aura_of_decay", SpellId::aura_of_decay},
-        {"spectral_wpns", SpellId::spectral_wpns},
-        {"aza_wrath", SpellId::aza_wrath},
-        {"bless", SpellId::bless},
-        {"burn", SpellId::burn},
-        {"force_bolt", SpellId::force_bolt},
-        {"darkbolt", SpellId::darkbolt},
-        {"deafen", SpellId::deafen},
-        {"disease", SpellId::disease},
-        {"premonition", SpellId::premonition},
-        {"enfeeble", SpellId::enfeeble},
-        {"frenzy", SpellId::frenzy},
-        {"heal", SpellId::heal},
-        {"identify", SpellId::identify},
-        {"knockback", SpellId::knockback},
-        {"light", SpellId::light},
-        {"mayhem", SpellId::mayhem},
-        {"mi_go_hypno", SpellId::mi_go_hypno},
-        {"opening", SpellId::opening},
-        {"pestilence", SpellId::pestilence},
-        {"res", SpellId::res},
-        {"searching", SpellId::searching},
-        {"see_invis", SpellId::see_invis},
-        {"slow", SpellId::slow},
-        {"haste", SpellId::haste},
-        {"spell_shield", SpellId::spell_shield},
-        {"summon", SpellId::summon},
-        {"summon_tentacles", SpellId::summon_tentacles},
-        {"teleport", SpellId::teleport},
-        {"terrify", SpellId::terrify},
-        {"transmut", SpellId::transmut}};
-
 enum class SpellSkill {
         basic,
         expert,
         master
 };
-
-// TODO: Define in cpp file instead
-const std::unordered_map<std::string, SpellSkill> str_to_spell_skill_map = {
-        {"basic", SpellSkill::basic},
-        {"expert", SpellSkill::expert},
-        {"master", SpellSkill::master}};
 
 enum class SpellSrc {
         learned,
@@ -123,6 +82,10 @@ enum class SpellShock {
 namespace spell_factory {
 
 Spell* make_spell_from_id(SpellId spell_id);
+
+SpellId str_to_spell_id(const std::string& str);
+
+SpellSkill str_to_spell_skill_id(const std::string& str);
 
 } // namespace spell_factory
 

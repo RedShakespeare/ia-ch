@@ -535,7 +535,7 @@ void BrowseHighscoreEntry::read_file()
                 popup::msg(
                         "Path: \"" + m_file_path + "\"",
                         "Game summary file could not be opened",
-                        SfxId::END,
+                        audio::SfxId::END,
                         20);
 
                 states::pop();

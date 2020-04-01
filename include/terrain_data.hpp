@@ -92,7 +92,7 @@ struct TerrainData {
         std::function<Terrain*(const P& p)> make_obj;
         Id id;
         char character;
-        TileId tile;
+        gfx::TileId tile;
         MoveRules move_rules;
         bool is_sound_passable;
         bool is_projectile_passable;

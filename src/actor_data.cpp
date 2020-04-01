@@ -16,6 +16,7 @@
 #include "item_data.hpp"
 #include "paths.hpp"
 #include "property.hpp"
+#include "property_data.hpp"
 #include "property_factory.hpp"
 #include "saving.hpp"
 #include "xml.hpp"
@@ -118,6 +119,64 @@ static const std::unordered_map<std::string, actor::Speed> str_to_speed_map = {
         {"fast", actor::Speed::fast},
         {"very_fast", actor::Speed::very_fast}};
 
+typedef std::unordered_map<std::string, actor::MonGroupSize>
+        StrToMonGroupSizeMap;
+
+static const StrToMonGroupSizeMap s_str_to_group_size_map = {
+        {"alone", actor::MonGroupSize::alone},
+        {"few", actor::MonGroupSize::few},
+        {"pack", actor::MonGroupSize::pack},
+        {"swarm", actor::MonGroupSize::swarm}};
+
+typedef std::unordered_map<actor::MonGroupSize, std::string>
+        MonGroupSizeToStrMap;
+
+static const MonGroupSizeToStrMap s_group_size_to_str_map = {
+        {actor::MonGroupSize::alone, "alone"},
+        {actor::MonGroupSize::few, "few"},
+        {actor::MonGroupSize::pack, "pack"},
+        {actor::MonGroupSize::swarm, "swarm"}};
+
+typedef std::unordered_map<std::string, actor::Size> StrToSizeMap;
+
+static const StrToSizeMap s_str_to_actor_size_map = {
+        {"floor", actor::Size::floor},
+        {"humanoid", actor::Size::humanoid},
+        {"giant", actor::Size::giant}};
+
+typedef std::unordered_map<actor::Size, std::string> SizeToStrMap;
+
+static const SizeToStrMap s_actor_size_to_str_map = {
+        {actor::Size::floor, "floor"},
+        {actor::Size::humanoid, "humanoid"},
+        {actor::Size::giant, "giant"}};
+
+typedef std::unordered_map<std::string, actor::AiId> StrToAiIdMap;
+
+static const StrToAiIdMap s_str_to_ai_id_map = {
+        {"looks", actor::AiId::looks},
+        {"avoids_blocking_friend", actor::AiId::avoids_blocking_friend},
+        {"attacks", actor::AiId::attacks},
+        {"paths_to_target_when_aware", actor::AiId::paths_to_target_when_aware},
+        {"moves_to_target_when_los", actor::AiId::moves_to_target_when_los},
+        {"moves_to_lair", actor::AiId::moves_to_lair},
+        {"moves_to_leader", actor::AiId::moves_to_leader},
+        {"moves_randomly_when_unaware",
+         actor::AiId::moves_randomly_when_unaware}};
+
+typedef std::unordered_map<actor::AiId, std::string> AiIdToStrMap;
+
+static const AiIdToStrMap s_ai_id_to_str_map = {
+        {actor::AiId::looks, "looks"},
+        {actor::AiId::avoids_blocking_friend, "avoids_blocking_friend"},
+        {actor::AiId::attacks, "attacks"},
+        {actor::AiId::paths_to_target_when_aware, "paths_to_target_when_aware"},
+        {actor::AiId::moves_to_target_when_los, "moves_to_target_when_los"},
+        {actor::AiId::moves_to_lair, "moves_to_lair"},
+        {actor::AiId::moves_to_leader, "moves_to_leader"},
+        {actor::AiId::moves_randomly_when_unaware,
+         "moves_randomly_when_unaware"}};
+
 static actor::Id get_id(xml::Element* mon_e)
 {
         const auto id_search = str_to_actor_id_map.find(
@@ -183,7 +242,7 @@ static void dump_text(xml::Element* text_e, actor::ActorData& data)
 
 static void dump_gfx(xml::Element* gfx_e, actor::ActorData& data)
 {
-        data.tile = g_str_to_tile_id_map.at(
+        data.tile = gfx::str_to_tile_id(
                 xml::get_text_str(
                         xml::first_child(gfx_e, "tile")));
 
@@ -201,11 +260,11 @@ static void dump_gfx(xml::Element* gfx_e, actor::ActorData& data)
 
 static void dump_audio(xml::Element* audio_e, actor::ActorData& data)
 {
-        data.aware_sfx_mon_seen = g_str_to_sfx_id_map.at(
+        data.aware_sfx_mon_seen = audio::str_to_sfx_id(
                 xml::get_text_str(
                         xml::first_child(audio_e, "aware_sfx_seen")));
 
-        data.aware_sfx_mon_hidden = g_str_to_sfx_id_map.at(
+        data.aware_sfx_mon_hidden = audio::str_to_sfx_id(
                 xml::get_text_str(
                         xml::first_child(audio_e, "aware_sfx_hidden")));
 }
@@ -260,7 +319,7 @@ static void dump_attributes(xml::Element* attrib_e, actor::ActorData& data)
         data.can_swim = xml::get_text_bool(
                 xml::first_child(attrib_e, "can_swim"));
 
-        data.actor_size = actor::g_str_to_actor_size_map.at(
+        data.actor_size = s_str_to_actor_size_map.at(
                 xml::get_text_str(xml::first_child(attrib_e, "size")));
 
         data.prevent_knockback = xml::get_text_bool(
@@ -301,7 +360,7 @@ static void dump_intr_attack_property(
         actor::IntrAttData& attack_data)
 {
         const auto prop_id =
-                g_str_to_prop_id_map.at(
+                property_data::str_to_prop_id(
                         xml::get_text_str(property_e));
 
         attack_data.prop_applied.prop.reset(property_factory::make(prop_id));
@@ -332,7 +391,10 @@ static void dump_intr_attack_property(
 
                 std::string duration_str;
 
-                if (xml::try_get_attribute_str(property_e, "duration", duration_str)) {
+                if (xml::try_get_attribute_str(
+                            property_e,
+                            "duration",
+                            duration_str)) {
                         if (duration_str == "indefinite") {
                                 attack_data.prop_applied.prop
                                         ->set_indefinite();
@@ -350,7 +412,7 @@ static void dump_items(xml::Element* items_e, actor::ActorData& data)
 
                 const std::string id_str = xml::get_text_str(item_set_e);
 
-                item_set.item_set_id = item::str_to_item_set_id_map.at(id_str);
+                item_set.item_set_id = item::str_to_item_set_id(id_str);
 
                 xml::try_get_attribute_int(
                         item_set_e,
@@ -381,7 +443,7 @@ static void dump_intr_attacks(xml::Element* attacks_e, actor::ActorData& data)
                 const std::string id_str =
                         xml::get_attribute_str(attack_e, "id");
 
-                attack_data->item_id = item::str_to_intr_item_id_map.at(id_str);
+                attack_data->item_id = item::str_to_intr_item_id(id_str);
 
                 auto e = xml::first_child(attack_e);
 
@@ -407,12 +469,15 @@ static void dump_spells(xml::Element* spells_e, actor::ActorData& data)
 
                 const std::string id_str = xml::get_text_str(spell_e);
 
-                spell_data.spell_id = str_to_spell_id_map.at(id_str);
+                spell_data.spell_id =
+                        spell_factory::str_to_spell_id(id_str);
 
                 const std::string skill_str =
                         xml::get_attribute_str(spell_e, "skill");
 
-                spell_data.spell_skill = str_to_spell_skill_map.at(skill_str);
+                spell_data.spell_skill =
+                        spell_factory::str_to_spell_skill_id(
+                                skill_str);
 
                 xml::try_get_attribute_int(
                         spell_e,
@@ -428,8 +493,9 @@ static void dump_properties(xml::Element* properties_e, actor::ActorData& data)
         for (auto e = xml::first_child(properties_e);
              e;
              e = xml::next_sibling(e)) {
-                const auto prop_id = g_str_to_prop_id_map.at(
-                        xml::get_text_str(e));
+                const auto prop_id =
+                        property_data::str_to_prop_id(
+                                xml::get_text_str(e));
 
                 data.natural_props[(size_t)prop_id] = true;
         }
@@ -448,7 +514,7 @@ static void dump_ai(xml::Element* ai_e, actor::ActorData& data)
 
         for (size_t i = 0; i < (size_t)actor::AiId::END; ++i) {
                 const std::string ai_id_str =
-                        actor::g_ai_id_to_str_map.at((actor::AiId)i);
+                        s_ai_id_to_str_map.at((actor::AiId)i);
 
                 data.ai[i] = xml::get_text_bool(
                         xml::first_child(ai_e, ai_id_str));
@@ -457,7 +523,7 @@ static void dump_ai(xml::Element* ai_e, actor::ActorData& data)
 
 static void dump_group_size(xml::Element* group_e, actor::ActorData& data)
 {
-        const auto group_size = actor::g_str_to_group_size_map.at(
+        const auto group_size = s_str_to_group_size_map.at(
                 xml::get_text_str(group_e));
 
         int weight = 1;
@@ -471,8 +537,9 @@ static void dump_native_room(
         xml::Element* native_room_e,
         actor::ActorData& data)
 {
-        const auto room_type = g_str_to_room_type_map.at(
-                xml::get_text_str(native_room_e));
+        const auto room_type =
+                room_factory::str_to_room_type(
+                        xml::get_text_str(native_room_e));
 
         data.native_rooms.push_back(room_type);
 }
@@ -611,7 +678,7 @@ void ActorData::reset()
         name_the = "";
         corpse_name_a = "";
         corpse_name_the = "";
-        tile = TileId::END;
+        tile = gfx::TileId::END;
         character = 'X';
         color = colors::yellow();
 
@@ -657,8 +724,8 @@ void ActorData::reset()
         aware_msg_mon_hidden = "";
         use_cultist_aware_msg_mon_seen = false;
         use_cultist_aware_msg_mon_hidden = false;
-        aware_sfx_mon_seen = SfxId::END;
-        aware_sfx_mon_hidden = SfxId::END;
+        aware_sfx_mon_seen = audio::SfxId::END;
+        aware_sfx_mon_hidden = audio::SfxId::END;
         spell_msg = "";
         erratic_move_pct = 0;
         mon_shock_lvl = ShockLvl::none;

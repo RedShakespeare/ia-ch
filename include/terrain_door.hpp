@@ -62,7 +62,7 @@ public:
 
         char character() const override;
 
-        TileId tile() const override;
+        gfx::TileId tile() const override;
 
         void bump(actor::Actor& actor_bumping) override;
 
@@ -122,10 +122,10 @@ public:
                 m_actor_currently_opening = nullptr;
         }
 
-        static bool is_tile_any_door(const TileId tile)
+        static bool is_tile_any_door(const gfx::TileId tile)
         {
-                return tile == TileId::door_closed ||
-                        tile == TileId::door_open;
+                return tile == gfx::TileId::door_closed ||
+                        tile == gfx::TileId::door_open;
         }
 
         const Wall* mimic() const

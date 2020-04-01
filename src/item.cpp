@@ -104,7 +104,7 @@ char Item::character() const
         return m_data->character;
 }
 
-TileId Item::tile() const
+gfx::TileId Item::tile() const
 {
         return m_data->tile;
 }
@@ -890,7 +890,7 @@ void PlayerGhoulClaw::on_melee_hit(actor::Actor& actor_hit, const int dmg)
             is_feed_needed &&
             rnd::one_in(6)) {
                 Snd snd("",
-                        SfxId::bite,
+                        audio::SfxId::bite,
                         IgnoreMsgIfOriginSeen::yes,
                         actor_hit.m_pos,
                         map::g_player,
@@ -1643,7 +1643,7 @@ void Molotov::on_std_turn_player_hold_ignited()
                 const P player_pos = map::g_player->m_pos;
 
                 Snd snd("I hear an explosion!",
-                        SfxId::explosion_molotov,
+                        audio::SfxId::explosion_molotov,
                         IgnoreMsgIfOriginSeen::yes,
                         player_pos,
                         nullptr,
@@ -1661,7 +1661,7 @@ void Molotov::on_std_turn_player_hold_ignited()
 void Molotov::on_thrown_ignited_landing(const P& p)
 {
         Snd snd("I hear an explosion!",
-                SfxId::explosion_molotov,
+                audio::SfxId::explosion_molotov,
                 IgnoreMsgIfOriginSeen::yes,
                 p,
                 nullptr,
@@ -1682,7 +1682,7 @@ void Molotov::on_player_paralyzed()
         const P player_pos = map::g_player->m_pos;
 
         Snd snd("I hear an explosion!",
-                SfxId::explosion_molotov,
+                audio::SfxId::explosion_molotov,
                 IgnoreMsgIfOriginSeen::yes,
                 player_pos,
                 nullptr,

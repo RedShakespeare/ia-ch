@@ -265,7 +265,7 @@ void Trap::trigger_start(const actor::Actor* actor)
 
                         // TODO: Make a sound effect for this
                         Snd snd(msg,
-                                SfxId::END,
+                                audio::SfxId::END,
                                 IgnoreMsgIfOriginSeen::no,
                                 m_pos,
                                 nullptr,
@@ -530,7 +530,7 @@ char Trap::character() const
                 : m_trap_impl->character();
 }
 
-TileId Trap::tile() const
+gfx::TileId Trap::tile() const
 {
         return m_is_hidden
                 ? m_mimic_terrain->tile()
@@ -795,7 +795,7 @@ void TrapGasConfusion::trigger()
         }
 
         Snd snd("I hear a burst of gas.",
-                SfxId::gas,
+                audio::SfxId::gas,
                 IgnoreMsgIfOriginSeen::yes,
                 m_pos,
                 nullptr,
@@ -819,7 +819,7 @@ void TrapGasParalyzation::trigger()
         }
 
         Snd snd("I hear a burst of gas.",
-                SfxId::gas,
+                audio::SfxId::gas,
                 IgnoreMsgIfOriginSeen::yes,
                 m_pos,
                 nullptr,
@@ -851,7 +851,7 @@ void TrapGasFear::trigger()
         }
 
         Snd snd("I hear a burst of gas.",
-                SfxId::gas,
+                audio::SfxId::gas,
                 IgnoreMsgIfOriginSeen::yes,
                 m_pos,
                 nullptr,
@@ -1197,7 +1197,7 @@ void TrapSmoke::trigger()
         }
 
         Snd snd("I hear a burst of gas.",
-                SfxId::gas,
+                audio::SfxId::gas,
                 IgnoreMsgIfOriginSeen::yes,
                 m_pos,
                 nullptr,
@@ -1220,7 +1220,7 @@ void TrapFire::trigger()
         }
 
         Snd snd("I hear a burst of flames.",
-                SfxId::END,
+                audio::SfxId::END,
                 IgnoreMsgIfOriginSeen::yes,
                 m_pos,
                 nullptr,
@@ -1249,7 +1249,7 @@ void TrapAlarm::trigger()
         }
 
         Snd snd("I hear an alarm sounding!",
-                SfxId::END,
+                audio::SfxId::END,
                 IgnoreMsgIfOriginSeen::yes,
                 m_pos,
                 nullptr,

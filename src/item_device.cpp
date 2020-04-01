@@ -166,9 +166,9 @@ ConsumeItem StrangeDevice::activate(actor::Actor* const actor)
 
         if (!should_fail) {
                 if (should_degrade) {
-                        audio::play(SfxId::strange_device_damaged);
+                        audio::play(audio::SfxId::strange_device_damaged);
                 } else {
-                        audio::play(SfxId::strange_device_activate);
+                        audio::play(audio::SfxId::strange_device_activate);
                 }
         }
 
@@ -492,7 +492,7 @@ void Lantern::toggle()
                 nr_turns_left -= 2;
         }
 
-        audio::play(SfxId::lantern);
+        audio::play(audio::SfxId::lantern);
 }
 
 void Lantern::on_std_turn_in_inv_hook(const InvType inv_type)

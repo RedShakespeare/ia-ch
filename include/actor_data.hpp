@@ -9,7 +9,6 @@
 
 #include <memory>
 #include <string>
-#include <unordered_map>
 #include <vector>
 
 #include "ability_values.hpp"
@@ -115,20 +114,6 @@ enum class MonGroupSize {
         swarm
 };
 
-// TODO: Define in cpp file instead
-const std::unordered_map<std::string, MonGroupSize> g_str_to_group_size_map = {
-        {"alone", MonGroupSize::alone},
-        {"few", MonGroupSize::few},
-        {"pack", MonGroupSize::pack},
-        {"swarm", MonGroupSize::swarm}};
-
-// TODO: Define in cpp file instead
-const std::unordered_map<MonGroupSize, std::string> g_group_size_to_str_map = {
-        {MonGroupSize::alone, "alone"},
-        {MonGroupSize::few, "few"},
-        {MonGroupSize::pack, "pack"},
-        {MonGroupSize::swarm, "swarm"}};
-
 // Each actor data entry has a list of this struct, this is used for choosing
 // group sizes when spawning monsters. The size of the group spawned is
 // determined by a weighted random choice (so that a certain monster could for
@@ -181,18 +166,6 @@ enum class Size {
         giant
 };
 
-// TODO: Define in cpp file instead
-const std::unordered_map<std::string, Size> g_str_to_actor_size_map = {
-        {"floor", Size::floor},
-        {"humanoid", Size::humanoid},
-        {"giant", Size::giant}};
-
-// TODO: Define in cpp file instead
-const std::unordered_map<Size, std::string> g_actor_size_to_str_map = {
-        {Size::floor, "floor"},
-        {Size::humanoid, "humanoid"},
-        {Size::giant, "giant"}};
-
 enum class AiId {
         looks,
         avoids_blocking_friend,
@@ -204,28 +177,6 @@ enum class AiId {
         moves_randomly_when_unaware,
         END
 };
-
-// TODO: Define in cpp file instead
-const std::unordered_map<std::string, AiId> g_str_to_ai_id_map = {
-        {"looks", AiId::looks},
-        {"avoids_blocking_friend", AiId::avoids_blocking_friend},
-        {"attacks", AiId::attacks},
-        {"paths_to_target_when_aware", AiId::paths_to_target_when_aware},
-        {"moves_to_target_when_los", AiId::moves_to_target_when_los},
-        {"moves_to_lair", AiId::moves_to_lair},
-        {"moves_to_leader", AiId::moves_to_leader},
-        {"moves_randomly_when_unaware", AiId::moves_randomly_when_unaware}};
-
-// TODO: Define in cpp file instead
-const std::unordered_map<AiId, std::string> g_ai_id_to_str_map = {
-        {AiId::looks, "looks"},
-        {AiId::avoids_blocking_friend, "avoids_blocking_friend"},
-        {AiId::attacks, "attacks"},
-        {AiId::paths_to_target_when_aware, "paths_to_target_when_aware"},
-        {AiId::moves_to_target_when_los, "moves_to_target_when_los"},
-        {AiId::moves_to_lair, "moves_to_lair"},
-        {AiId::moves_to_leader, "moves_to_leader"},
-        {AiId::moves_randomly_when_unaware, "moves_randomly_when_unaware"}};
 
 struct ActorData {
         ActorData()
@@ -240,7 +191,7 @@ struct ActorData {
         std::string name_the;
         std::string corpse_name_a;
         std::string corpse_name_the;
-        TileId tile;
+        gfx::TileId tile;
         char character;
         Color color;
         std::vector<MonGroupSpawnRule> group_sizes;
@@ -276,8 +227,8 @@ struct ActorData {
         std::string aware_msg_mon_hidden;
         bool use_cultist_aware_msg_mon_seen;
         bool use_cultist_aware_msg_mon_hidden;
-        SfxId aware_sfx_mon_seen;
-        SfxId aware_sfx_mon_hidden;
+        audio::SfxId aware_sfx_mon_seen;
+        audio::SfxId aware_sfx_mon_hidden;
         std::string spell_msg;
         std::string death_msg_override;
         int erratic_move_pct;

@@ -57,7 +57,7 @@ MenuAction MenuBrowser::read(const InputData& input, MenuInputMode mode)
         if ((input.key == SDLK_RETURN) ||
             (input.key == 'l')) {
                 if (m_play_selection_audio) {
-                        audio::play(SfxId::menu_select);
+                        audio::play(audio::SfxId::menu_select);
                 }
 
                 return MenuAction::selected;
@@ -108,7 +108,7 @@ MenuAction MenuBrowser::read(const InputData& input, MenuInputMode mode)
                 set_y(global_idx);
 
                 if (m_play_selection_audio) {
-                        audio::play(SfxId::menu_select);
+                        audio::play(audio::SfxId::menu_select);
                 }
 
                 return MenuAction::selected;
@@ -131,7 +131,7 @@ void MenuBrowser::move(const VerDir dir)
 
         update_range_shown();
 
-        audio::play(SfxId::menu_browse);
+        audio::play(audio::SfxId::menu_browse);
 }
 
 void MenuBrowser::move_page(const VerDir dir)
@@ -158,7 +158,7 @@ void MenuBrowser::move_page(const VerDir dir)
 
         update_range_shown();
 
-        audio::play(SfxId::menu_browse);
+        audio::play(audio::SfxId::menu_browse);
 }
 
 void MenuBrowser::set_y(const int y)

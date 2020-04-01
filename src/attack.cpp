@@ -50,7 +50,7 @@ struct Projectile {
         actor::Actor* actor_hit {nullptr};
         terrain::Terrain* terrain_hit {nullptr};
         bool is_seen_by_player {false};
-        TileId tile {TileId::END};
+        gfx::TileId tile {gfx::TileId::END};
         char character {-1};
         Color color {colors::white()};
         std::unique_ptr<RangedAttData> att_data {nullptr};
@@ -445,7 +445,7 @@ static void print_melee_hit_msg(const int dmg, const MeleeAttData& att_data)
         }
 }
 
-static SfxId melee_hit_sfx(const int dmg, const MeleeAttData& att_data)
+static audio::SfxId melee_hit_sfx(const int dmg, const MeleeAttData& att_data)
 {
         const auto hit_size = relative_hit_size_melee(dmg, att_data);
 
@@ -460,7 +460,7 @@ static SfxId melee_hit_sfx(const int dmg, const MeleeAttData& att_data)
                 return att_data.att_item->data().melee.hit_hard_sfx;
         }
 
-        return SfxId::END;
+        return audio::SfxId::END;
 }
 
 static AlertsMon is_melee_snd_alerting_mon(
@@ -535,7 +535,7 @@ static void emit_melee_snd(
 
         const std::string snd_msg = melee_snd_msg(att_data);
 
-        SfxId sfx = SfxId::END;
+        audio::SfxId sfx = audio::SfxId::END;
 
         if (att_result <= ActionResult::fail) {
                 sfx = att_data.att_item->data().melee.miss_sfx;
@@ -702,7 +702,7 @@ static std::unique_ptr<Snd> ranged_fire_snd(
         const std::string snd_msg = wpn.data().ranged.snd_msg;
 
         if (!snd_msg.empty()) {
-                const SfxId sfx = wpn.data().ranged.att_sfx;
+                const audio::SfxId sfx = wpn.data().ranged.att_sfx;
 
                 const SndVol vol = wpn.data().ranged.snd_vol;
 
@@ -729,7 +729,7 @@ static void emit_projectile_hit_actor_snd(const P& pos)
 {
         Snd snd(
                 "A creature is hit.",
-                SfxId::hit_small,
+                audio::SfxId::hit_small,
                 IgnoreMsgIfOriginSeen::yes,
                 pos,
                 nullptr,
@@ -748,7 +748,7 @@ static void emit_projectile_hit_terrain_snd(
                 // a ricochet sound
                 Snd snd(
                         "I hear a ricochet.",
-                        SfxId::ricochet,
+                        audio::SfxId::ricochet,
                         IgnoreMsgIfOriginSeen::yes,
                         pos,
                         nullptr,
@@ -968,13 +968,13 @@ static void init_projectiles_gfx(ProjectileFireData& fire_data)
 
         auto projectile_tile = fire_data.wpn->data().ranged.projectile_tile;
 
-        if (projectile_tile == TileId::projectile_std_front_slash) {
+        if (projectile_tile == gfx::TileId::projectile_std_front_slash) {
                 if (projectile_character == '-') {
-                        projectile_tile = TileId::projectile_std_dash;
+                        projectile_tile = gfx::TileId::projectile_std_dash;
                 } else if (projectile_character == '|') {
-                        projectile_tile = TileId::projectile_std_vertical_bar;
+                        projectile_tile = gfx::TileId::projectile_std_vertical_bar;
                 } else if (projectile_character == '\\') {
-                        projectile_tile = TileId::projectile_std_back_slash;
+                        projectile_tile = gfx::TileId::projectile_std_back_slash;
                 }
         }
 
@@ -1249,7 +1249,7 @@ static void run_projectiles_messages_and_sounds(
 
 static void draw_projectile(const Projectile& projectile)
 {
-        if (projectile.tile == TileId::END) {
+        if (projectile.tile == gfx::TileId::END) {
                 return;
         }
 
@@ -1270,7 +1270,7 @@ static void draw_projectile_hit(
         const int animation_delay)
 {
         if (config::is_tiles_mode()) {
-                projectile.tile = TileId::blast1;
+                projectile.tile = gfx::TileId::blast1;
 
                 draw_projectile(projectile);
 
@@ -1278,7 +1278,7 @@ static void draw_projectile_hit(
 
                 sdl_base::sleep(animation_delay / 2);
 
-                projectile.tile = TileId::blast2;
+                projectile.tile = gfx::TileId::blast2;
 
                 draw_projectile(projectile);
 

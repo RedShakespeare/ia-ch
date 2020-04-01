@@ -237,7 +237,7 @@ void throw_item(
 
                                 Snd snd(
                                         "A creature is hit.",
-                                        SfxId::hit_small,
+                                        audio::SfxId::hit_small,
                                         IgnoreMsgIfOriginSeen::yes,
                                         pos,
                                         nullptr,

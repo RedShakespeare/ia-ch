@@ -26,6 +26,51 @@
 // -----------------------------------------------------------------------------
 // Private
 // -----------------------------------------------------------------------------
+typedef std::unordered_map<std::string, item::Id> StrToIdMap;
+
+static const StrToIdMap s_str_to_intr_item_id_map = {
+        {"bite", item::Id::intr_bite},
+        {"claw", item::Id::intr_claw},
+        {"strike", item::Id::intr_strike},
+        {"punch", item::Id::intr_punch},
+        {"acid_spit", item::Id::intr_acid_spit},
+        {"snake_venom_spit", item::Id::intr_snake_venom_spit},
+        {"fire_breath", item::Id::intr_fire_breath},
+        {"energy_breath", item::Id::intr_energy_breath},
+        {"raven_peck", item::Id::intr_raven_peck},
+        {"vampiric_bite", item::Id::intr_vampiric_bite},
+        {"strangle", item::Id::intr_strangle},
+        {"ghost_touch", item::Id::intr_ghost_touch},
+        {"sting", item::Id::intr_sting},
+        {"mind_leech_sting", item::Id::intr_mind_leech_sting},
+        {"spear_thrust", item::Id::intr_spear_thrust},
+        {"net_throw", item::Id::intr_net_throw},
+        {"maul", item::Id::intr_maul},
+        {"pus_spew", item::Id::intr_pus_spew},
+        {"acid_touch", item::Id::intr_acid_touch},
+        {"dust_engulf", item::Id::intr_dust_engulf},
+        {"fire_engulf", item::Id::intr_fire_engulf},
+        {"energy_engulf", item::Id::intr_energy_engulf},
+        {"spores", item::Id::intr_spores},
+        {"web_bola", item::Id::intr_web_bola},
+};
+
+typedef std::unordered_map<std::string, item::ItemSetId> StrToItemSetIdMap;
+
+static const StrToItemSetIdMap s_str_to_item_set_id_map = {
+        {"minor_treasure", item::ItemSetId::minor_treasure},
+        {"rare_treasure", item::ItemSetId::rare_treasure},
+        {"supreme_treasure", item::ItemSetId::supreme_treasure},
+        {"firearm", item::ItemSetId::firearm},
+        {"spike_gun", item::ItemSetId::spike_gun},
+        {"zealot_spiked_mace", item::ItemSetId::zealot_spiked_mace},
+        {"priest_dagger", item::ItemSetId::priest_dagger},
+        {"mi_go_gun", item::ItemSetId::mi_go_gun},
+        {"mi_go_armor", item::ItemSetId::mi_go_armor},
+        {"high_priest_guard_war_vet",
+         item::ItemSetId::high_priest_guard_war_vet},
+        {"high_priest_guard_rogue", item::ItemSetId::high_priest_guard_rogue}};
+
 static void mod_spawn_chance(item::ItemData& data, const double factor)
 {
         data.chance_to_incl_in_spawn_list =
@@ -49,13 +94,13 @@ static void reset_data(item::ItemData& d, ItemType const item_type)
                 d.color = colors::white();
                 d.main_att_mode = AttMode::melee;
                 d.melee.is_melee_wpn = true;
-                d.melee.miss_sfx = SfxId::miss_medium;
-                d.melee.hit_small_sfx = SfxId::hit_small;
-                d.melee.hit_medium_sfx = SfxId::hit_medium;
-                d.melee.hit_hard_sfx = SfxId::hit_hard;
+                d.melee.miss_sfx = audio::SfxId::miss_medium;
+                d.melee.hit_small_sfx = audio::SfxId::hit_small;
+                d.melee.hit_medium_sfx = audio::SfxId::hit_medium;
+                d.melee.hit_hard_sfx = audio::SfxId::hit_hard;
                 d.ranged.is_throwable_wpn = true;
                 d.land_on_hard_snd_msg = "I hear a clanking sound.";
-                d.land_on_hard_sfx = SfxId::metal_clank;
+                d.land_on_hard_sfx = audio::SfxId::metal_clank;
                 break;
 
         case ItemType::melee_wpn_intr:
@@ -65,10 +110,10 @@ static void reset_data(item::ItemData& d, ItemType const item_type)
                 d.spawn_std_range = Range(-1, -1);
                 d.chance_to_incl_in_spawn_list = 0;
                 d.allow_spawn = false;
-                d.melee.hit_small_sfx = SfxId::hit_small;
-                d.melee.hit_medium_sfx = SfxId::hit_medium;
-                d.melee.hit_hard_sfx = SfxId::hit_hard;
-                d.melee.miss_sfx = SfxId::END;
+                d.melee.hit_small_sfx = audio::SfxId::hit_small;
+                d.melee.hit_medium_sfx = audio::SfxId::hit_medium;
+                d.melee.hit_hard_sfx = audio::SfxId::hit_hard;
+                d.melee.miss_sfx = audio::SfxId::END;
                 d.ranged.is_throwable_wpn = false;
                 break;
 
@@ -86,10 +131,10 @@ static void reset_data(item::ItemData& d, ItemType const item_type)
                 d.ranged.projectile_character = '/';
                 d.ranged.projectile_color = colors::white();
                 d.spawn_std_range.max = g_dlvl_last_mid_game;
-                d.melee.hit_small_sfx = SfxId::hit_small;
-                d.melee.hit_medium_sfx = SfxId::hit_medium;
-                d.melee.hit_hard_sfx = SfxId::hit_hard;
-                d.melee.miss_sfx = SfxId::miss_medium;
+                d.melee.hit_small_sfx = audio::SfxId::hit_small;
+                d.melee.hit_medium_sfx = audio::SfxId::hit_medium;
+                d.melee.hit_hard_sfx = audio::SfxId::hit_hard;
+                d.melee.miss_sfx = audio::SfxId::miss_medium;
                 d.ranged.snd_vol = SndVol::high;
                 break;
 
@@ -122,7 +167,7 @@ static void reset_data(item::ItemData& d, ItemType const item_type)
                 d.weight = item::Weight::extra_light;
                 d.character = '{';
                 d.color = colors::white();
-                d.tile = TileId::ammo;
+                d.tile = gfx::TileId::ammo;
                 d.spawn_std_range.max = g_dlvl_last_mid_game;
                 break;
 
@@ -152,7 +197,7 @@ static void reset_data(item::ItemData& d, ItemType const item_type)
                 d.xp_on_found = 8;
                 d.character = '?';
                 d.color = colors::white();
-                d.tile = TileId::scroll;
+                d.tile = gfx::TileId::scroll;
                 d.max_stack_at_spawn = 1;
                 d.land_on_hard_snd_msg = "";
                 d.native_containers.push_back(terrain::Id::chest);
@@ -176,7 +221,7 @@ static void reset_data(item::ItemData& d, ItemType const item_type)
                 d.is_alignment_known = false;
                 d.xp_on_found = 8;
                 d.character = '!';
-                d.tile = TileId::potion;
+                d.tile = gfx::TileId::potion;
                 d.ranged.throw_hit_chance_mod = 15;
                 d.ranged.dmg = DmgRange(1, 3);
                 d.ranged.dmg_method = DmgMethod::blunt;
@@ -209,10 +254,10 @@ static void reset_data(item::ItemData& d, ItemType const item_type)
                 d.weight = item::Weight::light;
                 d.is_identified = false;
                 d.character = '%';
-                d.tile = TileId::device1;
+                d.tile = gfx::TileId::device1;
                 d.is_stackable = false;
                 d.land_on_hard_snd_msg = "I hear a clanking sound.";
-                d.land_on_hard_sfx = SfxId::metal_clank;
+                d.land_on_hard_sfx = audio::SfxId::metal_clank;
                 d.chance_to_incl_in_spawn_list = 5;
                 d.native_containers.push_back(terrain::Id::chest);
                 d.native_containers.push_back(terrain::Id::cocoon);
@@ -231,10 +276,10 @@ static void reset_data(item::ItemData& d, ItemType const item_type)
                 d.is_identified = false;
                 d.xp_on_found = 15;
                 d.character = '%';
-                d.tile = TileId::rod;
+                d.tile = gfx::TileId::rod;
                 d.is_stackable = false;
                 d.land_on_hard_snd_msg = "I hear a clanking sound.";
-                d.land_on_hard_sfx = SfxId::metal_clank;
+                d.land_on_hard_sfx = audio::SfxId::metal_clank;
                 d.chance_to_incl_in_spawn_list = 5;
                 d.native_containers.push_back(terrain::Id::chest);
                 d.native_containers.push_back(terrain::Id::cocoon);
@@ -245,7 +290,7 @@ static void reset_data(item::ItemData& d, ItemType const item_type)
                 d.type = ItemType::armor;
                 d.weight = item::Weight::heavy;
                 d.character = '[';
-                d.tile = TileId::armor;
+                d.tile = gfx::TileId::armor;
                 d.is_stackable = false;
                 break;
 
@@ -297,7 +342,7 @@ void init()
         d.is_stackable = false;
         d.character = '*';
         d.color = colors::light_red();
-        d.tile = TileId::trapez;
+        d.tile = gfx::TileId::trapez;
         g_data[(size_t)d.id] = d;
 
         reset_data(d, ItemType::ranged_wpn);
@@ -310,7 +355,7 @@ void init()
                 "devastating. It holds two barrels, and needs to be reloaded "
                 "after both are discharged."};
         d.weight = Weight::medium;
-        d.tile = TileId::shotgun;
+        d.tile = gfx::TileId::shotgun;
         d.ranged.is_shotgun = true;
         d.melee.att_msgs = {"strike", "strikes"};
         d.ranged.max_ammo = 2;
@@ -321,9 +366,9 @@ void init()
         d.ranged.ammo_item_id = Id::shotgun_shell;
         d.ranged.att_msgs = {"fire", "fires"};
         d.ranged.snd_msg = "I hear a shotgun blast.";
-        d.ranged.att_sfx = SfxId::shotgun_sawed_off_fire;
+        d.ranged.att_sfx = audio::SfxId::shotgun_sawed_off_fire;
         d.ranged.makes_ricochet_snd = true;
-        d.ranged.reload_sfx = SfxId::shotgun_reload;
+        d.ranged.reload_sfx = audio::SfxId::shotgun_reload;
         d.spawn_std_range.min = 2;
         d.native_containers.push_back(terrain::Id::chest);
         d.native_containers.push_back(terrain::Id::cabinet);
@@ -340,7 +385,7 @@ void init()
                 "magazine into which shells are inserted. The magazine has a "
                 "capacity of 8 shells."};
         d.weight = Weight::medium;
-        d.tile = TileId::shotgun;
+        d.tile = gfx::TileId::shotgun;
         d.ranged.is_shotgun = true;
         d.melee.att_msgs = {"strike", "strikes"};
         d.ranged.max_ammo = 8;
@@ -351,9 +396,9 @@ void init()
         d.ranged.ammo_item_id = Id::shotgun_shell;
         d.ranged.att_msgs = {"fire", "fires"};
         d.ranged.snd_msg = "I hear a shotgun blast.";
-        d.ranged.att_sfx = SfxId::shotgun_pump_fire;
+        d.ranged.att_sfx = audio::SfxId::shotgun_pump_fire;
         d.ranged.makes_ricochet_snd = true;
-        d.ranged.reload_sfx = SfxId::shotgun_reload;
+        d.ranged.reload_sfx = audio::SfxId::shotgun_reload;
         d.spawn_std_range.min = 2;
         d.native_containers.push_back(terrain::Id::chest);
         d.native_containers.push_back(terrain::Id::cabinet);
@@ -379,7 +424,7 @@ void init()
                 "This hellish, experimental weapon launches an explosive "
                 "fireball. Best used with extreme caution."};
         d.weight = (Weight::medium + Weight::heavy) / 2;
-        d.tile = TileId::incinerator;
+        d.tile = gfx::TileId::incinerator;
         d.melee.att_msgs = {"strike", "strikes"};
         d.ranged.max_ammo = 5;
         d.ranged.dmg = DmgRange(1, 3);
@@ -390,7 +435,7 @@ void init()
         d.ranged.snd_msg = "I hear the blast of a launched missile.";
         d.ranged.projectile_character = '*';
         d.ranged.projectile_color = colors::light_red();
-        d.ranged.reload_sfx = SfxId::machine_gun_reload;
+        d.ranged.reload_sfx = audio::SfxId::machine_gun_reload;
         d.spawn_std_range.min = g_dlvl_first_mid_game;
         d.chance_to_incl_in_spawn_list = 35;
         d.native_containers.push_back(terrain::Id::chest);
@@ -425,7 +470,7 @@ void init()
                 "foregrip. It fires .45 ACP ammunition. The drum magazine has "
                 "a capacity of 50 rounds."};
         d.weight = Weight::medium;
-        d.tile = TileId::tommy_gun;
+        d.tile = gfx::TileId::tommy_gun;
         d.melee.att_msgs = {"strike", "strikes"};
         d.ranged.is_machine_gun = true;
         d.ranged.max_ammo = 50;
@@ -435,9 +480,9 @@ void init()
         d.ranged.ammo_item_id = Id::drum_of_bullets;
         d.ranged.att_msgs = {"fire", "fires"};
         d.ranged.snd_msg = "I hear the burst of a machine gun.";
-        d.ranged.att_sfx = SfxId::machine_gun_fire;
+        d.ranged.att_sfx = audio::SfxId::machine_gun_fire;
         d.ranged.makes_ricochet_snd = true;
-        d.ranged.reload_sfx = SfxId::machine_gun_reload;
+        d.ranged.reload_sfx = audio::SfxId::machine_gun_reload;
         d.spawn_std_range.min = 2;
         d.chance_to_incl_in_spawn_list = 75;
         d.native_containers.push_back(terrain::Id::chest);
@@ -469,7 +514,7 @@ void init()
         d.base_descr = {
                 "A six-shot double-action revolver."};
         d.weight = (Weight::light + Weight::medium) / 2;
-        d.tile = TileId::revolver;
+        d.tile = gfx::TileId::revolver;
         d.ranged.max_ammo = 6;
         d.ranged.dmg = DmgRange(5, 10);
         d.ranged.hit_chance_mod = 5;
@@ -478,9 +523,9 @@ void init()
         d.melee.att_msgs = {"strike", "strikes"};
         d.ranged.att_msgs = {"fire", "fires"};
         d.ranged.snd_msg = "I hear a revolver being fired.";
-        d.ranged.att_sfx = SfxId::revolver_fire;
+        d.ranged.att_sfx = audio::SfxId::revolver_fire;
         d.ranged.makes_ricochet_snd = true;
-        d.ranged.reload_sfx = SfxId::rifle_revolver_reload;
+        d.ranged.reload_sfx = audio::SfxId::rifle_revolver_reload;
         d.native_containers.push_back(terrain::Id::chest);
         d.native_containers.push_back(terrain::Id::cabinet);
         d.native_containers.push_back(terrain::Id::cocoon);
@@ -511,7 +556,7 @@ void init()
                 "A semi-automatic, magazine-fed pistol chambered for the .45 "
                 "ACP cartridge."};
         d.weight = (Weight::light + Weight::medium) / 2;
-        d.tile = TileId::pistol;
+        d.tile = gfx::TileId::pistol;
         d.ranged.max_ammo = 7;
         d.ranged.dmg = DmgRange(5, 12);
         d.ranged.hit_chance_mod = 0;
@@ -520,9 +565,9 @@ void init()
         d.melee.att_msgs = {"strike", "strikes"};
         d.ranged.att_msgs = {"fire", "fires"};
         d.ranged.snd_msg = "I hear a pistol being fired.";
-        d.ranged.att_sfx = SfxId::pistol_fire;
+        d.ranged.att_sfx = audio::SfxId::pistol_fire;
         d.ranged.makes_ricochet_snd = true;
-        d.ranged.reload_sfx = SfxId::pistol_reload;
+        d.ranged.reload_sfx = audio::SfxId::pistol_reload;
         d.native_containers.push_back(terrain::Id::chest);
         d.native_containers.push_back(terrain::Id::cabinet);
         d.native_containers.push_back(terrain::Id::cocoon);
@@ -551,7 +596,7 @@ void init()
 
                 "This weapon has an accuracy penalty at close ranges."};
         d.weight = Weight::medium;
-        d.tile = TileId::rifle;
+        d.tile = gfx::TileId::rifle;
         // d.color = colors::dark_brown();
         d.ranged.max_ammo = 7;
         d.ranged.dmg = DmgRange(10, 16);
@@ -561,9 +606,9 @@ void init()
         d.melee.att_msgs = {"strike", "strikes"};
         d.ranged.att_msgs = {"fire", "fires"};
         d.ranged.snd_msg = "I hear a rifle being fired.";
-        d.ranged.att_sfx = SfxId::rifle_fire;
+        d.ranged.att_sfx = audio::SfxId::rifle_fire;
         d.ranged.makes_ricochet_snd = true;
-        d.ranged.reload_sfx = SfxId::rifle_revolver_reload;
+        d.ranged.reload_sfx = audio::SfxId::rifle_revolver_reload;
         d.native_containers.push_back(terrain::Id::cabinet);
         g_data[(size_t)d.id] = d;
 
@@ -588,7 +633,7 @@ void init()
         d.base_descr = {
                 "Launches flares. Not designed to function as a weapon."};
         d.weight = (Weight::light + Weight::medium) / 2;
-        d.tile = TileId::flare_gun;
+        d.tile = gfx::TileId::flare_gun;
         d.ranged.max_ammo = 1;
         d.ranged.dmg = DmgRange(1, 3, 0);
         d.ranged.effective_range = {0, 3};
@@ -612,7 +657,7 @@ void init()
                 "seems almost to be deliberately designed for cruelty, rather "
                 "than pure stopping power."};
         d.weight = Weight::medium;
-        d.tile = TileId::tommy_gun;
+        d.tile = gfx::TileId::tommy_gun;
         d.color = colors::dark_brown();
         d.melee.att_msgs = {"strike", "strikes"};
         d.ranged.max_ammo = 12;
@@ -627,7 +672,7 @@ void init()
         d.ranged.makes_ricochet_snd = true;
         d.ranged.projectile_color = colors::gray();
         d.spawn_std_range.min = 4;
-        d.ranged.att_sfx = SfxId::spike_gun;
+        d.ranged.att_sfx = audio::SfxId::spike_gun;
         d.ranged.snd_vol = SndVol::low;
         d.native_containers.push_back(terrain::Id::chest);
         d.native_containers.push_back(terrain::Id::cabinet);
@@ -652,7 +697,7 @@ void init()
                         " turns)."};
         d.spawn_std_range = Range(-1, -1);
         d.weight = Weight::medium;
-        d.tile = TileId::mi_go_gun;
+        d.tile = gfx::TileId::mi_go_gun;
         d.color = colors::yellow();
         d.ranged.dmg = DmgRange(8, 12);
         d.ranged.hit_chance_mod = 5;
@@ -672,7 +717,7 @@ void init()
         d.melee.att_msgs = {"strike", "strikes"};
         d.ranged.att_msgs = {"fire", "fires"};
         d.ranged.snd_msg = "I hear a bolt of electricity.";
-        d.ranged.att_sfx = SfxId::mi_go_gun_fire;
+        d.ranged.att_sfx = audio::SfxId::mi_go_gun_fire;
         d.ranged.makes_ricochet_snd = false;
         g_data[(size_t)d.id] = d;
 
@@ -685,7 +730,7 @@ void init()
         d.ranged.effective_range = {0, 6};
         d.ranged.snd_msg = "I hear the launching of a projectile.";
         // TODO: Make a sound effect for this
-        d.ranged.att_sfx = SfxId::END;
+        d.ranged.att_sfx = audio::SfxId::END;
         d.ranged.makes_ricochet_snd = true;
         g_data[(size_t)d.id] = d;
 
@@ -702,9 +747,9 @@ void init()
         d.melee.dmg = DmgRange(2, 12);
         d.melee.hit_chance_mod = 85;
         d.melee.dmg_method = DmgMethod::piercing;
-        d.melee.hit_small_sfx = SfxId::hit_sharp;
-        d.melee.hit_medium_sfx = SfxId::hit_sharp;
-        d.melee.miss_sfx = SfxId::miss_heavy;
+        d.melee.hit_small_sfx = audio::SfxId::hit_sharp;
+        d.melee.hit_medium_sfx = audio::SfxId::hit_sharp;
+        d.melee.miss_sfx = audio::SfxId::miss_heavy;
         g_data[(size_t)d.id] = d;
 
         reset_data(d, ItemType::ranged_wpn);
@@ -720,7 +765,7 @@ void init()
                 "An explosive material based on nitroglycerin. The name comes "
                 "from the ancient Greek word for \"power\"."};
         d.weight = Weight::light;
-        d.tile = TileId::dynamite;
+        d.tile = gfx::TileId::dynamite;
         d.color = colors::light_red();
         d.native_containers.push_back(terrain::Id::chest);
         d.native_containers.push_back(terrain::Id::cabinet);
@@ -734,7 +779,7 @@ void init()
                 "A type of pyrotechnic that produces a brilliant light or "
                 "intense heat without an explosion."};
         d.weight = Weight::light;
-        d.tile = TileId::flare;
+        d.tile = gfx::TileId::flare;
         d.color = colors::gray();
         d.native_containers.push_back(terrain::Id::chest);
         d.native_containers.push_back(terrain::Id::cabinet);
@@ -751,7 +796,7 @@ void init()
                 "action, the cloth is lit and the bottle hurled at a target, "
                 "causing an immediate fireball followed by a raging fire."};
         d.weight = Weight::light;
-        d.tile = TileId::molotov;
+        d.tile = gfx::TileId::molotov;
         d.color = colors::white();
         d.native_containers.push_back(terrain::Id::chest);
         d.native_containers.push_back(terrain::Id::cabinet);
@@ -768,7 +813,7 @@ void init()
                 "the eyes, throat and lungs - so it is recommended to wear a "
                 "protective mask."};
         d.weight = Weight::light;
-        d.tile = TileId::flare;
+        d.tile = gfx::TileId::flare;
         d.color = colors::green();
         d.native_containers.push_back(terrain::Id::chest);
         d.native_containers.push_back(terrain::Id::cabinet);
@@ -781,7 +826,7 @@ void init()
                 "A knife specially designed and weighted so that it can be "
                 "thrown effectively."};
         d.weight = Weight::extra_light;
-        d.tile = TileId::dagger;
+        d.tile = gfx::TileId::dagger;
         d.character = '/';
         d.color = colors::white();
         d.ranged.dmg = DmgRange(2, 6);
@@ -790,7 +835,7 @@ void init()
         d.ranged.max_range = d.ranged.effective_range.max + 3;
         d.max_stack_at_spawn = 6;
         d.land_on_hard_snd_msg = "I hear a clanking sound.";
-        d.land_on_hard_sfx = SfxId::metal_clank;
+        d.land_on_hard_sfx = audio::SfxId::metal_clank;
         d.main_att_mode = AttMode::thrown;
         d.native_containers.push_back(terrain::Id::chest);
         d.native_containers.push_back(terrain::Id::cabinet);
@@ -804,7 +849,7 @@ void init()
                 "Although not a very impressive weapon, with skill they can "
                 "be used with some result."};
         d.weight = Weight::extra_light;
-        d.tile = TileId::rock;
+        d.tile = gfx::TileId::rock;
         d.character = '*';
         d.color = colors::gray();
         d.ranged.dmg = DmgRange(1, 3);
@@ -831,15 +876,15 @@ void init()
 
                 "Melee attacks with daggers are silent."};
         d.weight = Weight::light;
-        d.tile = TileId::dagger;
+        d.tile = gfx::TileId::dagger;
         d.melee.att_msgs = {"stab", "stabs"};
         d.melee.dmg = DmgRange(1, 4);
         d.melee.hit_chance_mod = 20;
         d.melee.dmg_method = DmgMethod::piercing;
         d.melee.is_noisy = false;
-        d.melee.hit_medium_sfx = SfxId::hit_sharp;
-        d.melee.hit_hard_sfx = SfxId::hit_sharp;
-        d.melee.miss_sfx = SfxId::miss_light;
+        d.melee.hit_medium_sfx = audio::SfxId::hit_sharp;
+        d.melee.hit_hard_sfx = audio::SfxId::hit_sharp;
+        d.melee.miss_sfx = audio::SfxId::miss_light;
         d.ranged.throw_hit_chance_mod = -5;
         d.ranged.effective_range = {0, 4};
         d.ranged.max_range = d.ranged.effective_range.max + 3;
@@ -859,16 +904,16 @@ void init()
 
                 "Melee attacks with hatchets are silent."};
         d.weight = Weight::light;
-        d.tile = TileId::axe;
+        d.tile = gfx::TileId::axe;
         d.melee.att_msgs = {"strike", "strikes"};
         d.melee.dmg = DmgRange(1, 5);
         d.melee.hit_chance_mod = 15;
         d.melee.att_corpse = true;
         d.melee.dmg_method = DmgMethod::slashing;
         d.melee.is_noisy = false;
-        d.melee.hit_medium_sfx = SfxId::hit_sharp;
-        d.melee.hit_hard_sfx = SfxId::hit_sharp;
-        d.melee.miss_sfx = SfxId::miss_light;
+        d.melee.hit_medium_sfx = audio::SfxId::hit_sharp;
+        d.melee.hit_hard_sfx = audio::SfxId::hit_sharp;
+        d.melee.miss_sfx = audio::SfxId::miss_light;
         d.ranged.throw_hit_chance_mod = 0;
         d.ranged.effective_range = {0, 5};
         d.ranged.max_range = d.ranged.effective_range.max + 3;
@@ -887,7 +932,7 @@ void init()
                 "Melee attacks with clubs are silent."};
         d.spawn_std_range = Range(g_dlvl_first_mid_game, g_dlvl_last);
         d.weight = Weight::medium;
-        d.tile = TileId::club;
+        d.tile = gfx::TileId::club;
         d.color = colors::brown();
         d.melee.att_msgs = {"strike", "strikes"};
         d.melee.dmg = DmgRange(2, 6);
@@ -895,13 +940,13 @@ void init()
         d.melee.att_corpse = true;
         d.melee.dmg_method = DmgMethod::blunt;
         d.melee.is_noisy = false;
-        d.melee.miss_sfx = SfxId::miss_medium;
+        d.melee.miss_sfx = audio::SfxId::miss_medium;
         d.ranged.throw_hit_chance_mod = -5;
         d.ranged.effective_range = {0, 4};
         d.ranged.max_range = d.ranged.effective_range.max + 3;
         d.ranged.dmg_method = DmgMethod::blunt;
         d.land_on_hard_snd_msg = "I hear a thudding sound.";
-        d.land_on_hard_sfx = SfxId::END;
+        d.land_on_hard_sfx = audio::SfxId::END;
         g_data[(size_t)d.id] = d;
 
         reset_data(d, ItemType::melee_wpn);
@@ -913,14 +958,14 @@ void init()
 
                 "Melee attacks with hammers are noisy."};
         d.weight = Weight::medium;
-        d.tile = TileId::hammer;
+        d.tile = gfx::TileId::hammer;
         d.melee.att_msgs = {"smash", "smashes"};
         d.melee.dmg = DmgRange(2, 8);
         d.melee.hit_chance_mod = 5;
         d.melee.att_corpse = true;
         d.melee.dmg_method = DmgMethod::blunt;
         d.melee.is_noisy = true;
-        d.melee.miss_sfx = SfxId::miss_medium;
+        d.melee.miss_sfx = audio::SfxId::miss_medium;
         d.ranged.throw_hit_chance_mod = -5;
         d.ranged.effective_range = {0, 4};
         d.ranged.max_range = d.ranged.effective_range.max + 3;
@@ -938,15 +983,15 @@ void init()
 
                 "Melee attacks with machetes are noisy."};
         d.weight = Weight::medium;
-        d.tile = TileId::machete;
+        d.tile = gfx::TileId::machete;
         d.melee.att_msgs = {"chop", "chops"};
         d.melee.dmg = DmgRange(2, 10);
         d.melee.hit_chance_mod = 0;
         d.melee.att_corpse = true;
         d.melee.dmg_method = DmgMethod::slashing;
-        d.melee.hit_small_sfx = SfxId::hit_sharp;
-        d.melee.hit_medium_sfx = SfxId::hit_sharp;
-        d.melee.miss_sfx = SfxId::miss_medium;
+        d.melee.hit_small_sfx = audio::SfxId::hit_sharp;
+        d.melee.hit_medium_sfx = audio::SfxId::hit_sharp;
+        d.melee.miss_sfx = audio::SfxId::miss_medium;
         d.melee.is_noisy = true;
         d.ranged.throw_hit_chance_mod = -5;
         d.ranged.effective_range = {0, 4};
@@ -966,14 +1011,14 @@ void init()
 
                 "Melee attacks with axes are noisy."};
         d.weight = Weight::medium;
-        d.tile = TileId::axe;
+        d.tile = gfx::TileId::axe;
         d.melee.att_msgs = {"strike", "strikes"};
         d.melee.dmg = DmgRange(2, 12);
         d.melee.hit_chance_mod = -5;
         d.melee.att_corpse = true;
         d.melee.att_terrain = true;
         d.melee.dmg_method = DmgMethod::slashing;
-        d.melee.miss_sfx = SfxId::miss_medium;
+        d.melee.miss_sfx = audio::SfxId::miss_medium;
         d.melee.is_noisy = true;
         d.ranged.throw_hit_chance_mod = -5;
         d.ranged.effective_range = {0, 4};
@@ -996,14 +1041,14 @@ void init()
 
                 "Melee attacks with spiked maces are noisy."};
         d.weight = (Weight::medium + Weight::heavy) / 2;
-        d.tile = TileId::spiked_mace;
+        d.tile = gfx::TileId::spiked_mace;
         d.melee.att_msgs = {"strike", "strikes"};
         d.melee.dmg = DmgRange(2, 14);
         d.melee.hit_chance_mod = -10;
         d.melee.att_corpse = true;
         d.melee.att_terrain = false;
         d.melee.dmg_method = DmgMethod::piercing;
-        d.melee.miss_sfx = SfxId::miss_heavy;
+        d.melee.miss_sfx = audio::SfxId::miss_heavy;
         d.melee.is_noisy = true;
         d.ranged.throw_hit_chance_mod = -5;
         d.ranged.effective_range = {0, 4};
@@ -1024,7 +1069,7 @@ void init()
                 "chance to evade melee attacks, victims are pushed back when "
                 "stabbed)."};
         d.weight = Weight::heavy;
-        d.tile = TileId::pitchfork;
+        d.tile = gfx::TileId::pitchfork;
         d.melee.att_msgs = {"strike", "strikes"};
         d.melee.dmg = DmgRange(3, 12);
         d.melee.hit_chance_mod = -15;
@@ -1032,9 +1077,9 @@ void init()
         d.melee.knocks_back = true;
         d.melee.dmg_method = DmgMethod::piercing;
         d.melee.is_noisy = true;
-        d.melee.hit_small_sfx = SfxId::hit_sharp;
-        d.melee.hit_medium_sfx = SfxId::hit_sharp;
-        d.melee.miss_sfx = SfxId::miss_heavy;
+        d.melee.hit_small_sfx = audio::SfxId::hit_sharp;
+        d.melee.hit_medium_sfx = audio::SfxId::hit_sharp;
+        d.melee.miss_sfx = audio::SfxId::miss_heavy;
         d.ranged.throw_hit_chance_mod = -10;
         d.ranged.effective_range = {0, 3};
         d.ranged.max_range = d.ranged.effective_range.max + 3;
@@ -1052,14 +1097,14 @@ void init()
                 "cumbersome to carry, and it requires some skill to use "
                 "effectively."};
         d.weight = Weight::heavy;
-        d.tile = TileId::sledge_hammer;
+        d.tile = gfx::TileId::sledge_hammer;
         d.melee.att_msgs = {"smash", "smashes"};
         d.melee.dmg = DmgRange(3, 15);
         d.melee.hit_chance_mod = -15;
         d.melee.att_corpse = true;
         d.melee.att_terrain = true;
         d.melee.dmg_method = DmgMethod::blunt;
-        d.melee.miss_sfx = SfxId::miss_heavy;
+        d.melee.miss_sfx = audio::SfxId::miss_heavy;
         d.ranged.throw_hit_chance_mod = -10;
         d.ranged.effective_range = {0, 3};
         d.ranged.max_range = d.ranged.effective_range.max + 3;
@@ -1073,7 +1118,7 @@ void init()
         d.base_descr = {
                 "Can be useful for wedging things closed."};
         d.weight = Weight::extra_light;
-        d.tile = TileId::iron_spike;
+        d.tile = gfx::TileId::iron_spike;
         d.is_stackable = true;
         d.color = colors::gray();
         d.character = '/';
@@ -1083,7 +1128,7 @@ void init()
         d.ranged.max_range = d.ranged.effective_range.max + 3;
         d.max_stack_at_spawn = 12;
         d.land_on_hard_snd_msg = "I hear a clanking sound.";
-        d.land_on_hard_sfx = SfxId::metal_clank;
+        d.land_on_hard_sfx = audio::SfxId::metal_clank;
         d.main_att_mode = AttMode::thrown;
         d.native_containers.push_back(terrain::Id::cabinet);
         d.native_containers.push_back(terrain::Id::cocoon);
@@ -1098,7 +1143,7 @@ void init()
         d.melee.dmg_method = DmgMethod::kicking;
         d.melee.att_terrain = true;
         d.melee.att_corpse = true;
-        d.melee.miss_sfx = SfxId::miss_medium;
+        d.melee.miss_sfx = audio::SfxId::miss_medium;
         g_data[(size_t)d.id] = d;
 
         reset_data(d, ItemType::melee_wpn_intr);
@@ -1122,7 +1167,7 @@ void init()
         d.melee.att_msgs = {"punch", ""};
         d.melee.hit_chance_mod = 20;
         d.melee.dmg = DmgRange(1, 1);
-        d.melee.miss_sfx = SfxId::miss_light;
+        d.melee.miss_sfx = audio::SfxId::miss_light;
         g_data[(size_t)d.id] = d;
 
         reset_data(d, ItemType::melee_wpn_intr);
@@ -1134,9 +1179,9 @@ void init()
         d.melee.is_noisy = false;
         d.melee.att_corpse = true;
         d.melee.dmg_method = DmgMethod::slashing;
-        d.melee.hit_small_sfx = SfxId::hit_sharp;
-        d.melee.hit_medium_sfx = SfxId::hit_sharp;
-        d.melee.miss_sfx = SfxId::miss_medium;
+        d.melee.hit_small_sfx = audio::SfxId::hit_sharp;
+        d.melee.hit_medium_sfx = audio::SfxId::hit_sharp;
+        d.melee.miss_sfx = audio::SfxId::miss_medium;
         g_data[(size_t)d.id] = d;
 
         reset_data(d, ItemType::melee_wpn_intr);
@@ -1189,7 +1234,7 @@ void init()
         d.ranged.snd_msg = "I hear a burst of flames.";
         d.ranged.projectile_color = colors::light_red();
         d.ranged.projectile_character = '*';
-        d.ranged.projectile_tile = TileId::blast1;
+        d.ranged.projectile_tile = gfx::TileId::blast1;
         d.ranged.projectile_leaves_trail = true;
         d.ranged.dmg_type = DmgType::fire;
         d.ranged.dmg_method = DmgMethod::elemental;
@@ -1202,7 +1247,7 @@ void init()
         d.ranged.snd_msg = "I hear a burst of lightning.";
         d.ranged.projectile_color = colors::yellow();
         d.ranged.projectile_character = '*';
-        d.ranged.projectile_tile = TileId::blast1;
+        d.ranged.projectile_tile = gfx::TileId::blast1;
         d.ranged.projectile_leaves_trail = true;
         d.ranged.dmg_type = DmgType::electric;
         d.ranged.dmg_method = DmgMethod::elemental;
@@ -1258,7 +1303,7 @@ void init()
         d.ranged.projectile_color = colors::brown();
         d.ranged.dmg_method = DmgMethod::blunt;
         d.ranged.projectile_character = '*';
-        d.ranged.projectile_tile = TileId::web;
+        d.ranged.projectile_tile = gfx::TileId::web;
         g_data[(size_t)d.id] = d;
 
         reset_data(d, ItemType::melee_wpn_intr);
@@ -1311,7 +1356,7 @@ void init()
         d.ranged.att_msgs = {"", "shoots a web bola"};
         d.ranged.snd_msg = "";
         d.ranged.projectile_color = colors::light_white();
-        d.ranged.projectile_tile = TileId::blast1;
+        d.ranged.projectile_tile = gfx::TileId::blast1;
         d.ranged.projectile_character = '*';
         d.ranged.dmg_method = DmgMethod::blunt;
         d.ranged.snd_vol = SndVol::low;
@@ -1406,7 +1451,7 @@ void init()
         d.spawn_std_range = Range(-1, -1);
         d.weight = Weight::medium;
         d.color = colors::magenta();
-        d.tile = TileId::mi_go_armor;
+        d.tile = gfx::TileId::mi_go_armor;
         d.armor.armor_points = 3;
         d.armor.dmg_to_durability_factor = 0.1;
         d.land_on_hard_snd_msg = "";
@@ -1430,7 +1475,7 @@ void init()
         d.ability_mods_while_equipped[(size_t)AbilityId::searching] = -6;
         d.is_stackable = false;
         d.color = colors::brown();
-        d.tile = TileId::gas_mask;
+        d.tile = gfx::TileId::gas_mask;
         d.character = '[';
         d.spawn_std_range = Range(1, g_dlvl_last_early_game);
         d.chance_to_incl_in_spawn_list = 50;
@@ -1682,7 +1727,7 @@ void init()
         d.spawn_std_range = Range(1, 10);
         d.chance_to_incl_in_spawn_list = 100;
         d.is_identified = true;
-        d.tile = TileId::lantern;
+        d.tile = gfx::TileId::lantern;
         d.color = colors::yellow();
         d.native_containers.push_back(terrain::Id::chest);
         d.native_containers.push_back(terrain::Id::cabinet);
@@ -1723,7 +1768,7 @@ void init()
         d.is_stackable = false;
         d.character = '%';
         d.color = colors::dark_brown();
-        d.tile = TileId::medical_bag;
+        d.tile = gfx::TileId::medical_bag;
         g_data[(size_t)d.id] = d;
 
         reset_data(d, ItemType::melee_wpn);
@@ -1740,11 +1785,11 @@ void init()
                 "wielded)."};
         d.color = colors::magenta();
         d.weight = Weight::medium;
-        d.tile = TileId::pharaoh_staff;
+        d.tile = gfx::TileId::pharaoh_staff;
         d.melee.att_msgs = {"strike", "strikes"};
         d.melee.dmg = DmgRange(2, 8, 4);
         d.melee.hit_chance_mod = 0;
-        d.melee.miss_sfx = SfxId::miss_medium;
+        d.melee.miss_sfx = audio::SfxId::miss_medium;
         d.melee.dmg_method = DmgMethod::blunt;
         d.ranged.throw_hit_chance_mod = -10;
         d.ranged.effective_range = {0, 3};
@@ -1769,7 +1814,7 @@ void init()
                 "resistance is halved."};
         d.color = colors::light_blue();
         d.weight = Weight::light;
-        d.tile = TileId::amulet;
+        d.tile = gfx::TileId::amulet;
         d.character = '"';
         d.is_unique = true;
         d.xp_on_found = 20;
@@ -1790,7 +1835,7 @@ void init()
                 "one may only be brought back once."};
         d.color = colors::light_white();
         d.weight = Weight::light;
-        d.tile = TileId::amulet;
+        d.tile = gfx::TileId::amulet;
         d.character = '"';
         d.is_unique = true;
         d.xp_on_found = 20;
@@ -1810,7 +1855,7 @@ void init()
                 "teleporting."};
         d.color = colors::orange();
         d.weight = Weight::light;
-        d.tile = TileId::amulet;
+        d.tile = gfx::TileId::amulet;
         d.character = '"';
         d.is_unique = true;
         d.xp_on_found = 20;
@@ -1832,7 +1877,7 @@ void init()
                 "brief time."};
         d.color = colors::yellow();
         d.weight = Weight::extra_light;
-        d.tile = TileId::clockwork;
+        d.tile = gfx::TileId::clockwork;
         d.character = '%';
         d.is_unique = true;
         d.xp_on_found = 20;
@@ -1855,7 +1900,7 @@ void init()
                 "other creatures with intense hatred and distrust."};
         d.color = colors::gray();
         d.weight = Weight::light;
-        d.tile = TileId::horn;
+        d.tile = gfx::TileId::horn;
         d.character = '%';
         d.is_unique = true;
         d.xp_on_found = 20;
@@ -1876,7 +1921,7 @@ void init()
                 "creatures within hearing range back to their original realm."};
         d.color = colors::magenta();
         d.weight = Weight::light;
-        d.tile = TileId::horn;
+        d.tile = gfx::TileId::horn;
         d.character = '%';
         d.is_unique = true;
         d.xp_on_found = 20;
@@ -1903,15 +1948,15 @@ void init()
                 "(in addition to the normal +50% damage from stealth attacks).",
         };
         d.weight = Weight::light;
-        d.tile = TileId::dagger;
+        d.tile = gfx::TileId::dagger;
         d.color = colors::violet();
         d.melee.att_msgs = {"stab", "stabs"};
         d.melee.dmg = DmgRange(1, 4);
         d.melee.hit_chance_mod = 20;
         d.melee.is_noisy = false;
-        d.melee.hit_medium_sfx = SfxId::hit_sharp;
-        d.melee.hit_hard_sfx = SfxId::hit_sharp;
-        d.melee.miss_sfx = SfxId::miss_light;
+        d.melee.hit_medium_sfx = audio::SfxId::hit_sharp;
+        d.melee.hit_hard_sfx = audio::SfxId::hit_sharp;
+        d.melee.miss_sfx = audio::SfxId::miss_light;
         d.melee.dmg_method = DmgMethod::piercing;
         d.ranged.throw_hit_chance_mod = -5;
         d.ranged.effective_range = {0, 4};
@@ -1933,7 +1978,7 @@ void init()
                 "+4 Hit Points, grants resistance against poison and disease."};
         d.color = colors::light_white();
         d.weight = Weight::light;
-        d.tile = TileId::orb;
+        d.tile = gfx::TileId::orb;
         d.character = '"';
         d.is_unique = true;
         d.xp_on_found = 20;
@@ -1953,7 +1998,7 @@ void init()
                 "causes paralyzation."};
         d.spawn_std_range.max = g_dlvl_last;
         d.weight = Weight::extra_light;
-        d.tile = TileId::zombie_dust;
+        d.tile = gfx::TileId::zombie_dust;
         d.character = '*';
         d.color = colors::brown();
         d.ranged.dmg = DmgRange(0, 0);
@@ -2017,6 +2062,16 @@ void load()
         }
 }
 
+ItemSetId str_to_item_set_id(const std::string& str)
+{
+        return s_str_to_item_set_id_map.at(str);
+}
+
+Id str_to_intr_item_id(const std::string& str)
+{
+        return s_str_to_intr_item_id_map.at(str);
+}
+
 MeleeData::MeleeData() :
         is_melee_wpn(false),
 
@@ -2029,10 +2084,10 @@ MeleeData::MeleeData() :
         knocks_back(false),
         att_corpse(false),
         att_terrain(false),
-        hit_small_sfx(SfxId::END),
-        hit_medium_sfx(SfxId::END),
-        hit_hard_sfx(SfxId::END),
-        miss_sfx(SfxId::END)
+        hit_small_sfx(audio::SfxId::END),
+        hit_medium_sfx(audio::SfxId::END),
+        hit_hard_sfx(audio::SfxId::END),
+        miss_sfx(audio::SfxId::END)
 {}
 
 RangedData::RangedData() :
@@ -2052,15 +2107,15 @@ RangedData::RangedData() :
         dmg_method(DmgMethod::piercing),
         has_infinite_ammo(false),
         projectile_character('/'),
-        projectile_tile(TileId::projectile_std_front_slash),
+        projectile_tile(gfx::TileId::projectile_std_front_slash),
         projectile_color(colors::white()),
         projectile_leaves_trail(false),
         att_msgs(ItemAttMsgs()),
         snd_msg(""),
         snd_vol(SndVol::low),
         makes_ricochet_snd(false),
-        att_sfx(SfxId::END),
-        reload_sfx(SfxId::END),
+        att_sfx(audio::SfxId::END),
+        reload_sfx(audio::SfxId::END),
         prop_applied(ItemAttProp())
 {
 }
@@ -2091,11 +2146,11 @@ ItemData::ItemData() :
         xp_on_found(0),
         character('X'),
         color(colors::white()),
-        tile(TileId::END),
+        tile(gfx::TileId::END),
         main_att_mode(AttMode::none),
         spell_cast_from_scroll(SpellId::END),
         land_on_hard_snd_msg("I hear a thudding sound."),
-        land_on_hard_sfx(SfxId::END),
+        land_on_hard_sfx(audio::SfxId::END),
         allow_display_dmg(true),
         melee(MeleeData()),
         ranged(RangedData()),

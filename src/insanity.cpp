@@ -43,7 +43,7 @@ void InsSympt::on_start()
         ASSERT(!heading.empty() && !msg.empty());
 
         if (!heading.empty() && !msg.empty()) {
-                popup::msg(msg, heading, SfxId::insanity_rise);
+                popup::msg(msg, heading, audio::SfxId::insanity_rise);
         }
 
         const std::string history_event_msg = history_msg();
@@ -100,7 +100,7 @@ bool InsScream::is_allowed() const
 void InsScream::on_start_hook()
 {
         Snd snd("",
-                SfxId::END,
+                audio::SfxId::END,
                 IgnoreMsgIfOriginSeen::yes,
                 map::g_player->m_pos,
                 map::g_player,
@@ -128,7 +128,7 @@ void InsBabbling::babble() const
         }
 
         Snd snd("",
-                SfxId::END,
+                audio::SfxId::END,
                 IgnoreMsgIfOriginSeen::yes,
                 map::g_player->m_pos,
                 map::g_player,
@@ -168,7 +168,7 @@ void InsFaint::on_start_hook()
 void InsLaugh::on_start_hook()
 {
         Snd snd("",
-                SfxId::END,
+                audio::SfxId::END,
                 IgnoreMsgIfOriginSeen::yes,
                 map::g_player->m_pos,
                 map::g_player,

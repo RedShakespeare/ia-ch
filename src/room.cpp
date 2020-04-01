@@ -33,6 +33,23 @@
 // -----------------------------------------------------------------------------
 static std::vector<RoomType> s_room_bucket;
 
+typedef std::unordered_map<std::string, RoomType> StrToRoomTypeMap;
+
+static const StrToRoomTypeMap s_str_to_room_type_map = {
+        {"plain", RoomType::plain},
+        {"human", RoomType::human},
+        {"ritual", RoomType::ritual},
+        {"jail", RoomType::jail},
+        {"spider", RoomType::spider},
+        {"snake_pit", RoomType::snake_pit},
+        {"crypt", RoomType::crypt},
+        {"monster", RoomType::monster},
+        {"damp", RoomType::damp},
+        {"pool", RoomType::pool},
+        {"cave", RoomType::cave},
+        {"chasm", RoomType::chasm},
+        {"forest", RoomType::forest}};
+
 static void add_to_room_bucket(const RoomType type, const size_t nr)
 {
         if (nr > 0) {
@@ -415,6 +432,11 @@ Room* make_random_room(const R& r, const IsSubRoom is_subroom)
         TRACE_FUNC_END_VERBOSE;
 
         return room;
+}
+
+RoomType str_to_room_type(const std::string& str)
+{
+        return s_str_to_room_type_map.at(str);
 }
 
 } // namespace room_factory

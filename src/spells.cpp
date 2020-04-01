@@ -7,6 +7,7 @@
 #include "spells.hpp"
 
 #include <algorithm>
+#include <unordered_map>
 #include <vector>
 
 #include "actor_factory.hpp"
@@ -45,6 +46,48 @@
 // -----------------------------------------------------------------------------
 // Private
 // -----------------------------------------------------------------------------
+typedef std::unordered_map<std::string, SpellId> StrToSpellIdMap;
+
+static const StrToSpellIdMap s_str_to_spell_id_map = {
+        {"aura_of_decay", SpellId::aura_of_decay},
+        {"spectral_wpns", SpellId::spectral_wpns},
+        {"aza_wrath", SpellId::aza_wrath},
+        {"bless", SpellId::bless},
+        {"burn", SpellId::burn},
+        {"force_bolt", SpellId::force_bolt},
+        {"darkbolt", SpellId::darkbolt},
+        {"deafen", SpellId::deafen},
+        {"disease", SpellId::disease},
+        {"premonition", SpellId::premonition},
+        {"enfeeble", SpellId::enfeeble},
+        {"frenzy", SpellId::frenzy},
+        {"heal", SpellId::heal},
+        {"identify", SpellId::identify},
+        {"knockback", SpellId::knockback},
+        {"light", SpellId::light},
+        {"mayhem", SpellId::mayhem},
+        {"mi_go_hypno", SpellId::mi_go_hypno},
+        {"opening", SpellId::opening},
+        {"pestilence", SpellId::pestilence},
+        {"res", SpellId::res},
+        {"searching", SpellId::searching},
+        {"see_invis", SpellId::see_invis},
+        {"slow", SpellId::slow},
+        {"haste", SpellId::haste},
+        {"spell_shield", SpellId::spell_shield},
+        {"summon", SpellId::summon},
+        {"summon_tentacles", SpellId::summon_tentacles},
+        {"teleport", SpellId::teleport},
+        {"terrify", SpellId::terrify},
+        {"transmut", SpellId::transmut}};
+
+typedef std::unordered_map<std::string, SpellSkill> StrToSpellSkillMap;
+
+static const StrToSpellSkillMap s_str_to_spell_skill_map = {
+        {"basic", SpellSkill::basic},
+        {"expert", SpellSkill::expert},
+        {"master", SpellSkill::master}};
+
 static const std::string s_spell_resist_msg = "The spell is resisted!";
 
 static const std::string s_spell_reflect_msg = "The spell is reflected!";
@@ -159,6 +202,16 @@ Spell* make_spell_from_id(const SpellId spell_id)
         return nullptr;
 }
 
+SpellId str_to_spell_id(const std::string& str)
+{
+        return s_str_to_spell_id_map.at(str);
+}
+
+SpellSkill str_to_spell_skill_id(const std::string& str)
+{
+        return s_str_to_spell_skill_map.at(str);
+}
+
 } // namespace spell_factory
 
 // -----------------------------------------------------------------------------
@@ -220,7 +273,7 @@ void Spell::cast(
                 // Make sound if noisy - casting from scrolls is always noisy
                 if (is_noisy(skill) || (spell_src == SpellSrc::manuscript)) {
                         Snd snd("",
-                                SfxId::spell_generic,
+                                audio::SfxId::spell_generic,
                                 IgnoreMsgIfOriginSeen::yes,
                                 caster->m_pos,
                                 caster,
@@ -262,7 +315,7 @@ void Spell::cast(
                         }
 
                         Snd snd(spell_msg,
-                                SfxId::END,
+                                audio::SfxId::END,
                                 IgnoreMsgIfOriginSeen::no,
                                 caster->m_pos,
                                 caster,
@@ -308,7 +361,7 @@ void Spell::on_resist(actor::Actor& target) const
                 msg_log::add(s_spell_resist_msg);
 
                 if (is_player) {
-                        audio::play(SfxId::spell_shield_break);
+                        audio::play(audio::SfxId::spell_shield_break);
                 }
 
                 io::draw_blast_at_cells({target.m_pos}, colors::white());
@@ -681,7 +734,7 @@ void SpellBolt::run_effect(
                                 states::draw();
 
                                 io::draw_symbol(
-                                        TileId::blast1,
+                                        gfx::TileId::blast1,
                                         '*',
                                         Panel::map,
                                         viewport::to_view_pos(p),
@@ -745,7 +798,7 @@ void SpellBolt::run_effect(
         m_impl->on_hit(*target, skill);
 
         Snd snd("",
-                SfxId::END,
+                audio::SfxId::END,
                 IgnoreMsgIfOriginSeen::yes,
                 target->m_pos,
                 nullptr,
@@ -875,7 +928,7 @@ void SpellAzaWrath::run_effect(
                 }
 
                 Snd snd("",
-                        SfxId::END,
+                        audio::SfxId::END,
                         IgnoreMsgIfOriginSeen::yes,
                         target->m_pos,
                         nullptr,
@@ -1031,7 +1084,7 @@ void SpellMayhem::run_effect(
                                 const P p(x, y);
 
                                 Snd snd("I hear an explosion!",
-                                        SfxId::explosion_molotov,
+                                        audio::SfxId::explosion_molotov,
                                         IgnoreMsgIfOriginSeen::yes,
                                         p,
                                         nullptr,
@@ -1112,7 +1165,7 @@ void SpellMayhem::run_effect(
         }
 
         Snd snd("",
-                SfxId::END,
+                audio::SfxId::END,
                 IgnoreMsgIfOriginSeen::yes,
                 caster_pos,
                 nullptr,

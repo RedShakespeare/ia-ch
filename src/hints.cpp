@@ -155,7 +155,7 @@ void display(const Id id)
         popup::msg(
                 msg,
                 title,
-                SfxId::END,
+                audio::SfxId::END,
                 4); // Width change
 
         s_hints_displayed[(size_t)id] = true;

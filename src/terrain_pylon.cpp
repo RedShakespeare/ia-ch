@@ -161,7 +161,7 @@ void Pylon::on_lever_pulled(Lever* const lever)
                 msg += "a droning sound.";
 
                 Snd snd(msg,
-                        SfxId::END, // TODO: Add a sound effect
+                        audio::SfxId::END, // TODO: Add a sound effect
                         IgnoreMsgIfOriginSeen::no,
                         m_pos,
                         nullptr,
@@ -198,7 +198,7 @@ void Pylon::add_light_hook(Array2<bool>& light) const
 //         "I hear a buzzing sound.";
 
 //     Snd snd(msg,
-//             SfxId::END, // TODO: Add a sound effect
+//             audio::SfxId::END, // TODO: Add a sound effect
 //             IgnoreMsgIfOriginSeen::no,
 //             m_pos,
 //             nullptr,

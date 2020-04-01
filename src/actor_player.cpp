@@ -449,7 +449,7 @@ void Player::incr_insanity()
                         "My mind can no longer withstand what it has grasped. "
                         "I am hopelessly lost.";
 
-                popup::msg(msg, "Insane!", SfxId::insanity_rise);
+                popup::msg(msg, "Insane!", audio::SfxId::insanity_rise);
 
                 kill(
                         *this,
@@ -933,7 +933,7 @@ void Player::hear_sound(
                 return;
         }
 
-        const SfxId sfx = snd.sfx();
+        const audio::SfxId sfx = snd.sfx();
 
         const std::string& msg = snd.msg();
 

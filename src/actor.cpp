@@ -145,10 +145,10 @@ int Actor::ability(const AbilityId id, const bool is_affected_by_props) const
         return m_data->ability_values.val(id, is_affected_by_props, *this);
 }
 
-TileId Actor::tile() const
+gfx::TileId Actor::tile() const
 {
         if (is_corpse()) {
-                return TileId::corpse2;
+                return gfx::TileId::corpse2;
         }
 
         return m_data->tile;
@@ -407,7 +407,7 @@ DidAction Actor::try_eat_corpse()
                         corpse->m_data->corpse_name_the;
 
                 Snd snd("I hear ripping and chewing.",
-                        SfxId::bite,
+                        audio::SfxId::bite,
                         IgnoreMsgIfOriginSeen::yes,
                         m_pos,
                         this,

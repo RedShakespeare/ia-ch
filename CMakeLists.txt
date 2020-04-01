@@ -30,6 +30,7 @@ set(COMMON_SRC
         include/attack.hpp
         include/attack_data.hpp
         include/audio.hpp
+        include/audio_data.hpp
         include/bot.hpp
         include/browser.hpp
         include/character_descr.hpp
@@ -150,6 +151,7 @@ set(COMMON_SRC
         src/ai.cpp
         src/attack.cpp
         src/attack_data.cpp
+        src/audio_data.cpp
         src/bot.cpp
         src/browser.cpp
         src/character_descr.cpp

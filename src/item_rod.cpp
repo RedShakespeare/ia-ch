@@ -451,7 +451,7 @@ void Shockwave::run_effect()
         }
 
         Snd snd("",
-                SfxId::END,
+                audio::SfxId::END,
                 IgnoreMsgIfOriginSeen::yes,
                 player_pos,
                 map::g_player,

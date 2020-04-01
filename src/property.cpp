@@ -1988,7 +1988,7 @@ PropActResult PropSpeaksCurses::on_act()
                 snd_msg += " spews forth a litany of curses.";
 
                 Snd snd(snd_msg,
-                        SfxId::END,
+                        audio::SfxId::END,
                         IgnoreMsgIfOriginSeen::no,
                         mon->m_pos,
                         mon,

@@ -42,7 +42,7 @@ public:
 class Snd {
 public:
         Snd(std::string msg,
-            SfxId sfx,
+            audio::SfxId sfx,
             IgnoreMsgIfOriginSeen ignore_msg_if_origin_seen,
             const P& origin,
             actor::Actor* actor_who_made_sound,
@@ -67,14 +67,14 @@ public:
                 m_msg = "";
         }
 
-        SfxId sfx() const
+        audio::SfxId sfx() const
         {
                 return m_sfx;
         }
 
         void clear_sfx()
         {
-                m_sfx = SfxId::END;
+                m_sfx = audio::SfxId::END;
         }
 
         bool is_msg_ignored_if_origin_seen() const
@@ -122,7 +122,7 @@ public:
 
 private:
         std::string m_msg;
-        SfxId m_sfx;
+        audio::SfxId m_sfx;
         IgnoreMsgIfOriginSeen m_is_msg_ignored_if_origin_seen;
         P m_origin;
         actor::Actor* m_actor_who_made_sound;

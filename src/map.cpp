@@ -229,7 +229,7 @@ terrain::Terrain* put(terrain::Terrain* const t)
                         states::draw();
 
                         io::draw_symbol(
-                                TileId::aim_marker_line,
+                                gfx::TileId::aim_marker_line,
                                 'X',
                                 Panel::map,
                                 viewport::to_view_pos(p),

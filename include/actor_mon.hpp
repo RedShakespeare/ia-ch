@@ -98,12 +98,12 @@ public:
 
         std::string aware_msg_mon_hidden() const;
 
-        virtual SfxId aware_sfx_mon_seen() const
+        virtual audio::SfxId aware_sfx_mon_seen() const
         {
                 return m_data->aware_sfx_mon_seen;
         }
 
-        virtual SfxId aware_sfx_mon_hidden() const
+        virtual audio::SfxId aware_sfx_mon_hidden() const
         {
                 return m_data->aware_sfx_mon_hidden;
         }
@@ -211,7 +211,7 @@ public:
 
         char character() const override;
 
-        TileId tile() const override;
+        gfx::TileId tile() const override;
 
         std::string descr() const override;
 

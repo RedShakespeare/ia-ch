@@ -234,7 +234,7 @@ void MarkerState::draw_marker(
                 for (int y = 0; y < map_view_dims.y; ++y) {
                         auto& d = m_marker_render_data.at(x, y);
 
-                        d.tile = TileId::END;
+                        d.tile = gfx::TileId::END;
                         d.character = 0;
                 }
         }
@@ -288,7 +288,7 @@ void MarkerState::draw_marker(
 
                         auto& d = m_marker_render_data.at(view_pos);
 
-                        d.tile = TileId::aim_marker_line;
+                        d.tile = gfx::TileId::aim_marker_line;
 
                         d.character = '*';
 
@@ -326,7 +326,7 @@ void MarkerState::draw_marker(
 
                 auto& d = m_marker_render_data.at(view_pos);
 
-                d.tile = TileId::aim_marker_head;
+                d.tile = gfx::TileId::aim_marker_head;
 
                 d.character = 'X';
 

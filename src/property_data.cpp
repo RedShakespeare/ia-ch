@@ -6,9 +6,82 @@
 
 #include "property_data.hpp"
 
+#include <unordered_map>
+
 // -----------------------------------------------------------------------------
 // Private
 // -----------------------------------------------------------------------------
+static const std::unordered_map<std::string, PropId> s_str_to_prop_id_map = {
+        {"alters_environment", PropId::alters_env},
+        {"aura of decay", PropId::aura_of_decay},
+        {"blessed", PropId::blessed},
+        {"blind", PropId::blind},
+        {"breeds", PropId::breeds},
+        {"burning", PropId::burning},
+        {"burrowing", PropId::burrowing},
+        {"cloaked", PropId::cloaked},
+        {"conflict", PropId::conflict},
+        {"confused", PropId::confused},
+        {"confuses_adjacent", PropId::confuses_adjacent},
+        {"corpse_eater", PropId::corpse_eater},
+        {"corpse_rises", PropId::corpse_rises},
+        {"corrupts_environment_color", PropId::corrupts_env_color},
+        {"cursed", PropId::cursed},
+        {"darkvision", PropId::darkvision},
+        {"deaf", PropId::deaf},
+        {"diseased", PropId::diseased},
+        {"entangled", PropId::entangled},
+        {"ethereal", PropId::ethereal},
+        {"explodes_on_death", PropId::explodes_on_death},
+        {"fainted", PropId::fainted},
+        {"flying", PropId::flying},
+        {"frenzied", PropId::frenzied},
+        {"hasted", PropId::hasted},
+        {"infected", PropId::infected},
+        {"invis", PropId::invis},
+        {"light_sensitive", PropId::light_sensitive},
+        {"magic_searching", PropId::magic_searching},
+        {"major_clapham_summon", PropId::major_clapham_summon},
+        {"ooze", PropId::ooze},
+        {"paralyzed", PropId::paralyzed},
+        {"poisoned", PropId::poisoned},
+        {"premonition", PropId::premonition},
+        {"r_acid", PropId::r_acid},
+        {"r_blind", PropId::r_blind},
+        {"r_breath", PropId::r_breath},
+        {"r_conf", PropId::r_conf},
+        {"r_disease", PropId::r_disease},
+        {"r_elec", PropId::r_elec},
+        {"r_fear", PropId::r_fear},
+        {"r_fire", PropId::r_fire},
+        {"r_para", PropId::r_para},
+        {"r_phys", PropId::r_phys},
+        {"r_poison", PropId::r_poison},
+        {"r_sleep", PropId::r_sleep},
+        {"r_slow", PropId::r_slow},
+        {"r_spell", PropId::r_spell},
+        {"radiant_adjacent", PropId::radiant_adjacent},
+        {"radiant_fov", PropId::radiant_fov},
+        {"recloaks", PropId::recloaks},
+        {"reduced_pierce_dmg", PropId::reduced_pierce_dmg},
+        {"regenerates", PropId::regenerates},
+        {"see_invis", PropId::see_invis},
+        {"short_hearing_range", PropId::short_hearing_range},
+        {"slowed", PropId::slowed},
+        {"small_crawling", PropId::small_crawling},
+        {"spawns_zombie_parts_on_destroyed",
+         PropId::spawns_zombie_parts_on_destroyed},
+        {"speaks_curses", PropId::speaks_curses},
+        {"spell_reflect", PropId::spell_reflect},
+        {"splits_on_death", PropId::splits_on_death},
+        {"stunned", PropId::stunned},
+        {"tele_ctrl", PropId::tele_ctrl},
+        {"teleports", PropId::teleports},
+        {"terrified", PropId::terrified},
+        {"vortex", PropId::vortex},
+        {"weakened", PropId::weakened},
+        {"zuul_possess_priest", PropId::zuul_possess_priest}};
+
 static void add(PropData& d)
 {
         property_data::g_data[(size_t)d.id] = d;
@@ -973,6 +1046,11 @@ PropData g_data[(size_t)PropId::END];
 void init()
 {
         init_data_list();
+}
+
+PropId str_to_prop_id(const std::string& str)
+{
+        return s_str_to_prop_id_map.at(str);
 }
 
 } // namespace property_data

@@ -24,7 +24,7 @@ class Actor;
 struct CellRenderData {
         CellRenderData& operator=(const CellRenderData&) = default;
 
-        TileId tile = TileId::END;
+        gfx::TileId tile = gfx::TileId::END;
         char character = 0;
         Color color = colors::black();
         Color color_bg = colors::black();
@@ -86,7 +86,7 @@ P gui_to_px_coords(Panel panel, P offset);
 P map_to_px_coords(Panel panel, P offset);
 
 void draw_symbol(
-        TileId tile,
+        gfx::TileId tile,
         char character,
         Panel panel,
         P pos,
@@ -95,7 +95,7 @@ void draw_symbol(
         const Color& color_bg = colors::black());
 
 void draw_tile(
-        TileId tile,
+        gfx::TileId tile,
         Panel panel,
         P pos,
         const Color& color,

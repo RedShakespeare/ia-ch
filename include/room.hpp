@@ -7,7 +7,6 @@
 #ifndef ROOM_HPP
 #define ROOM_HPP
 
-#include <unordered_map>
 #include <vector>
 
 #include "global.hpp"
@@ -64,22 +63,6 @@ enum class RoomType {
         river
 };
 
-// TODO: Define in cpp file instead
-const std::unordered_map<std::string, RoomType> g_str_to_room_type_map = {
-        {"plain", RoomType::plain},
-        {"human", RoomType::human},
-        {"ritual", RoomType::ritual},
-        {"jail", RoomType::jail},
-        {"spider", RoomType::spider},
-        {"snake_pit", RoomType::snake_pit},
-        {"crypt", RoomType::crypt},
-        {"monster", RoomType::monster},
-        {"damp", RoomType::damp},
-        {"pool", RoomType::pool},
-        {"cave", RoomType::cave},
-        {"chasm", RoomType::chasm},
-        {"forest", RoomType::forest}};
-
 struct RoomAutoTerrainRule {
         RoomAutoTerrainRule() :
                 id(terrain::Id::END),
@@ -105,6 +88,8 @@ void init_room_bucket();
 Room* make(RoomType type, const R& r);
 
 Room* make_random_room(const R& r, IsSubRoom is_subroom);
+
+RoomType str_to_room_type(const std::string& str);
 
 } // namespace room_factory
 

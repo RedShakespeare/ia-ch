@@ -276,7 +276,7 @@ void Gong::bump(actor::Actor& actor_bumping)
 
         Snd snd(
                 "The crash resonates through the air!",
-                SfxId::gong,
+                audio::SfxId::gong,
                 IgnoreMsgIfOriginSeen::no,
                 m_pos,
                 map::g_player,

@@ -603,7 +603,7 @@ bool is_map_connected(const Array2<bool>& blocked)
                                         states::draw();
 
                                         io::draw_symbol(
-                                                TileId::excl_mark,
+                                                gfx::TileId::excl_mark,
                                                 'X',
                                                 Panel::map,
                                                 viewport::to_view_pos(P(x, y)),

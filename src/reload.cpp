@@ -68,7 +68,7 @@ static void msg_reloaded(
                 // TODO: This is a hack
                 if ((wpn.id() == item::Id::revolver) &&
                     (ammo_loaded == ammo_max)) {
-                        audio::play(SfxId::revolver_spin);
+                        audio::play(audio::SfxId::revolver_spin);
                 }
 
                 if (ammo.data().type == ItemType::ammo_mag) {

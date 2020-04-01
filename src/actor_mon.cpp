@@ -539,7 +539,7 @@ void Mon::speak_phrase(const AlertsMon alerts_others)
 
         msg = text_format::first_to_upper(msg);
 
-        const SfxId sfx =
+        const audio::SfxId sfx =
                 is_seen_by_player
                 ? aware_sfx_mon_seen()
                 : aware_sfx_mon_hidden();
@@ -1098,7 +1098,7 @@ char SpectralWpn::character() const
         return item->character();
 }
 
-TileId SpectralWpn::tile() const
+gfx::TileId SpectralWpn::tile() const
 {
         auto* item = m_inv.item_in_slot(SlotId::wpn);
 

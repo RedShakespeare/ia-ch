@@ -112,7 +112,7 @@ public:
                 m_is_bloody = true;
         }
 
-        TileId gore_tile() const
+        gfx::TileId gore_tile() const
         {
                 return m_gore_tile;
         }
@@ -172,7 +172,7 @@ public:
                 return data().character;
         }
 
-        virtual TileId tile() const
+        virtual gfx::TileId tile() const
         {
                 return data().tile;
         }
@@ -307,7 +307,7 @@ protected:
         virtual int base_shock_when_adj() const;
 
         bool m_is_hidden {false};
-        TileId m_gore_tile {TileId::END};
+        gfx::TileId m_gore_tile {gfx::TileId::END};
         char m_gore_character {0};
         P m_pos;
 
@@ -335,7 +335,7 @@ public:
                 return Id::floor;
         }
 
-        TileId tile() const override;
+        gfx::TileId tile() const override;
 
         std::string name(Article article) const override;
 
@@ -392,7 +392,7 @@ public:
                 return Id::grass;
         }
 
-        TileId tile() const override;
+        gfx::TileId tile() const override;
         std::string name(Article article) const override;
 
         GrassType m_type;
@@ -555,8 +555,8 @@ public:
 
         std::string name(Article article) const override;
         char character() const override;
-        TileId front_wall_tile() const;
-        TileId top_wall_tile() const;
+        gfx::TileId front_wall_tile() const;
+        gfx::TileId top_wall_tile() const;
 
         void set_rnd_common_wall();
         void set_moss_grown();
@@ -564,8 +564,8 @@ public:
         WallType m_type;
         bool m_is_mossy;
 
-        static bool is_wall_front_tile(TileId tile);
-        static bool is_wall_top_tile(TileId tile);
+        static bool is_wall_front_tile(gfx::TileId tile);
+        static bool is_wall_top_tile(gfx::TileId tile);
 
 private:
         Color color_default() const override;
@@ -718,7 +718,7 @@ public:
 
         std::string name(Article article) const override;
 
-        TileId tile() const override;
+        gfx::TileId tile() const override;
 
         StatueType m_type;
 
@@ -796,7 +796,7 @@ public:
         }
 
         std::string name(Article article) const override;
-        TileId tile() const override;
+        gfx::TileId tile() const override;
         char character() const override;
 
         void set_axis(const Axis axis)
@@ -915,7 +915,7 @@ public:
 
         std::string name(Article article) const override;
 
-        TileId tile() const override;
+        gfx::TileId tile() const override;
 
         void toggle();
 
@@ -998,7 +998,7 @@ public:
                 return Id::tree;
         }
 
-        TileId tile() const override;
+        gfx::TileId tile() const override;
 
         std::string name(Article article) const override;
 
@@ -1051,7 +1051,7 @@ public:
         }
 
         std::string name(Article article) const override;
-        TileId tile() const override;
+        gfx::TileId tile() const override;
         void bump(actor::Actor& actor_bumping) override;
         DidOpen open(actor::Actor* actor_opening) override;
 
@@ -1094,7 +1094,7 @@ public:
 
         std::string name(Article article) const override;
 
-        TileId tile() const override;
+        gfx::TileId tile() const override;
 
         void bump(actor::Actor& actor_bumping) override;
 
@@ -1131,7 +1131,7 @@ public:
 
         std::string name(Article article) const override;
 
-        TileId tile() const override;
+        gfx::TileId tile() const override;
 
         void bump(actor::Actor& actor_bumping) override;
 
@@ -1163,7 +1163,7 @@ public:
 
         std::string name(Article article) const override;
 
-        TileId tile() const override;
+        gfx::TileId tile() const override;
 
         void bump(actor::Actor& actor_bumping) override;
 
@@ -1193,7 +1193,7 @@ public:
 
         std::string name(Article article) const override;
 
-        TileId tile() const override;
+        gfx::TileId tile() const override;
 
         void bump(actor::Actor& actor_bumping) override;
 
@@ -1293,7 +1293,7 @@ public:
 
         std::string name(Article article) const override;
 
-        TileId tile() const override;
+        gfx::TileId tile() const override;
 
         void bump(actor::Actor& actor_bumping) override;
 

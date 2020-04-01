@@ -30,7 +30,7 @@ static const int s_snd_dist_loud = s_snd_dist_normal * 2;
 // -----------------------------------------------------------------------------
 Snd::Snd(
         std::string msg,
-        const SfxId sfx,
+        const audio::SfxId sfx,
         const IgnoreMsgIfOriginSeen ignore_msg_if_origin_seen,
         const P& origin,
         actor::Actor* const actor_who_made_sound,

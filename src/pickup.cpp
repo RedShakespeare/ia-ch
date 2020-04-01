@@ -37,7 +37,7 @@ void try_pick()
 
         const std::string item_name = item->name(ItemRefType::plural);
 
-        audio::play(SfxId::pickup);
+        audio::play(audio::SfxId::pickup);
 
         msg_log::add("I pick up " + item_name + ".");
 
@@ -92,7 +92,7 @@ void try_unload_or_pick()
                 auto* const spawned_ammo = unload_ranged_wpn(*wpn);
 
                 if (spawned_ammo) {
-                        audio::play(SfxId::pickup);
+                        audio::play(audio::SfxId::pickup);
 
                         const std::string name_a =
                                 item->name(ItemRefType::a, ItemRefInf::yes);

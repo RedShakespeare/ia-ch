@@ -173,7 +173,7 @@ namespace popup {
 void msg(
         const std::string& msg,
         const std::string& title,
-        const SfxId sfx,
+        const audio::SfxId sfx,
         const int w_change)
 {
         states::draw();
@@ -190,7 +190,7 @@ void msg(
 
         int y = get_title_y(text_h);
 
-        if (sfx != SfxId::END) {
+        if (sfx != audio::SfxId::END) {
                 audio::play(sfx);
         }
 
@@ -260,7 +260,7 @@ int menu(
         const std::vector<std::string>& choices,
         const std::string& title,
         const int w_change,
-        const SfxId sfx)
+        const audio::SfxId sfx)
 {
         states::draw();
 
@@ -295,7 +295,7 @@ int menu(
 
         MenuBrowser browser(nr_choices);
 
-        if (sfx != SfxId::END) {
+        if (sfx != audio::SfxId::END) {
                 audio::play(sfx);
         }
 
@@ -308,7 +308,7 @@ int menu(
                 text_h_tot,
                 title);
 
-        audio::play(SfxId::menu_browse);
+        audio::play(audio::SfxId::menu_browse);
 
         while (true) {
                 const auto input = io::get();

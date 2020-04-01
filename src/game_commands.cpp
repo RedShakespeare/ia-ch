@@ -759,7 +759,7 @@ void handle(const GameCmd cmd)
                 }
 
                 Snd snd("",
-                        SfxId::END,
+                        audio::SfxId::END,
                         IgnoreMsgIfOriginSeen::yes,
                         map::g_player->m_pos,
                         map::g_player,

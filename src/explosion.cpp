@@ -102,8 +102,8 @@ static void draw(
         bool is_any_cell_seen_by_player = false;
 
         for (int i_anim = 0; i_anim < nr_anim_steps; i_anim++) {
-                const TileId tile =
-                        (i_anim == 0) ? TileId::blast1 : TileId::blast2;
+                const gfx::TileId tile =
+                        (i_anim == 0) ? gfx::TileId::blast1 : gfx::TileId::blast2;
 
                 const int nr_outer = pos_lists.size();
 
@@ -287,7 +287,7 @@ void run(
 
         if (emit_expl_snd == EmitExplSnd::yes) {
                 Snd snd("I hear an explosion!",
-                        SfxId::explosion,
+                        audio::SfxId::explosion,
                         IgnoreMsgIfOriginSeen::yes,
                         origin,
                         nullptr,
@@ -378,7 +378,7 @@ void run_smoke_explosion_at(const P& origin, const int radi_change)
 
         // TODO: Sound message?
         Snd snd("",
-                SfxId::END,
+                audio::SfxId::END,
                 IgnoreMsgIfOriginSeen::yes,
                 origin,
                 nullptr,

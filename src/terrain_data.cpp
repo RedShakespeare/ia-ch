@@ -31,7 +31,7 @@ static void reset_data(terrain::TerrainData& d)
         d.make_obj = [](const P& p) {(void)p; return nullptr; };
         d.id = terrain::Id::END;
         d.character = ' ';
-        d.tile = TileId::END;
+        d.tile = gfx::TileId::END;
         d.move_rules.reset();
         d.is_floor_like = false;
         d.is_sound_passable = true;
@@ -66,7 +66,7 @@ static void init_data_list()
                 return new terrain::Floor(p);
         };
         d.character = '.';
-        d.tile = TileId::floor;
+        d.tile = gfx::TileId::floor;
         d.move_rules.is_walkable = true;
         d.is_floor_like = true;
         d.matl_type = Matl::stone;
@@ -87,7 +87,7 @@ static void init_data_list()
                 return new terrain::Wall(p);
         };
         d.character = config::is_text_mode_wall_full_square() ? 10 : '#';
-        d.tile = TileId::wall_top;
+        d.tile = gfx::TileId::wall_top;
         d.move_rules.props_allow_move.push_back(PropId::ethereal);
         d.move_rules.props_allow_move.push_back(PropId::burrowing);
         d.is_sound_passable = false;
@@ -105,7 +105,7 @@ static void init_data_list()
                 return new terrain::Tree(p);
         };
         d.character = '|';
-        d.tile = TileId::tree;
+        d.tile = gfx::TileId::tree;
         d.move_rules.props_allow_move.push_back(PropId::ethereal);
         d.is_sound_passable = false;
         d.is_projectile_passable = false;
@@ -124,7 +124,7 @@ static void init_data_list()
                 return new terrain::Grass(p);
         };
         d.character = '.';
-        d.tile = TileId::floor;
+        d.tile = gfx::TileId::floor;
         d.move_rules.is_walkable = true;
         d.is_floor_like = true;
         d.matl_type = Matl::plant;
@@ -137,7 +137,7 @@ static void init_data_list()
                 return new terrain::Bush(p);
         };
         d.character = '"';
-        d.tile = TileId::bush;
+        d.tile = gfx::TileId::bush;
         d.move_rules.is_walkable = true;
         d.is_los_passable = false;
         d.matl_type = Matl::plant;
@@ -148,7 +148,7 @@ static void init_data_list()
                 return new terrain::Vines(p);
         };
         d.character = '"';
-        d.tile = TileId::vines;
+        d.tile = gfx::TileId::vines;
         d.move_rules.is_walkable = true;
         d.is_los_passable = false;
         d.can_have_blood = false;
@@ -162,7 +162,7 @@ static void init_data_list()
                 return new terrain::Chains(p);
         };
         d.character = '"';
-        d.tile = TileId::chains;
+        d.tile = gfx::TileId::chains;
         d.move_rules.is_walkable = true;
         d.is_los_passable = true;
         d.is_projectile_passable = true;
@@ -176,7 +176,7 @@ static void init_data_list()
                 return new terrain::Grate(p);
         };
         d.character = '#';
-        d.tile = TileId::grate;
+        d.tile = gfx::TileId::grate;
         d.move_rules.props_allow_move.push_back(PropId::ethereal);
         d.move_rules.props_allow_move.push_back(PropId::burrowing);
         d.move_rules.props_allow_move.push_back(PropId::ooze);
@@ -194,7 +194,7 @@ static void init_data_list()
                 return new terrain::Stairs(p);
         };
         d.character = '>';
-        d.tile = TileId::stairs_down;
+        d.tile = gfx::TileId::stairs_down;
         d.can_have_blood = false;
         d.can_have_gore = false;
         d.can_have_corpse = false;
@@ -207,7 +207,7 @@ static void init_data_list()
                 return new terrain::Monolith(p);
         };
         d.character = '|';
-        d.tile = TileId::monolith;
+        d.tile = gfx::TileId::monolith;
         d.is_projectile_passable = false;
         d.is_los_passable = false;
         d.can_have_blood = false; // We don't want to mess with the color
@@ -223,7 +223,7 @@ static void init_data_list()
                 return new terrain::Pylon(p, terrain::PylonId::any);
         };
         d.character = '|';
-        d.tile = TileId::pylon;
+        d.tile = gfx::TileId::pylon;
         d.is_projectile_passable = false;
         d.is_los_passable = false;
         d.can_have_blood = false; // We don't want to mess with the color
@@ -239,7 +239,7 @@ static void init_data_list()
                 return new terrain::Lever(p);
         };
         d.character = '%';
-        d.tile = TileId::lever_left;
+        d.tile = gfx::TileId::lever_left;
         d.can_have_blood = false;
         d.can_have_gore = false;
         d.can_have_corpse = false;
@@ -252,7 +252,7 @@ static void init_data_list()
                 return new terrain::Brazier(p);
         };
         d.character = '0';
-        d.tile = TileId::brazier;
+        d.tile = gfx::TileId::brazier;
         d.can_have_blood = false;
         d.can_have_gore = false;
         d.can_have_corpse = false;
@@ -266,7 +266,7 @@ static void init_data_list()
                 return new terrain::LiquidShallow(p);
         };
         d.character = '~';
-        d.tile = TileId::water;
+        d.tile = gfx::TileId::water;
         d.move_rules.is_walkable = true;
         d.can_have_blood = false;
         d.can_have_gore = false;
@@ -278,7 +278,7 @@ static void init_data_list()
                 return new terrain::LiquidDeep(p);
         };
         d.character = '~';
-        d.tile = TileId::water;
+        d.tile = gfx::TileId::water;
         d.can_have_item = false;
         d.can_have_blood = false;
         d.can_have_gore = false;
@@ -290,7 +290,7 @@ static void init_data_list()
                 return new terrain::Chasm(p);
         };
         d.character = '.';
-        d.tile = TileId::floor;
+        d.tile = gfx::TileId::floor;
         d.move_rules.props_allow_move.push_back(PropId::ethereal);
         d.move_rules.props_allow_move.push_back(PropId::flying);
         d.can_have_item = false;
@@ -309,7 +309,7 @@ static void init_data_list()
                 return new terrain::GraveStone(p);
         };
         d.character = ']';
-        d.tile = TileId::grave_stone;
+        d.tile = gfx::TileId::grave_stone;
         d.move_rules.props_allow_move.push_back(PropId::ethereal);
         d.move_rules.props_allow_move.push_back(PropId::flying);
         d.can_have_blood = false;
@@ -325,7 +325,7 @@ static void init_data_list()
                 return new terrain::ChurchBench(p);
         };
         d.character = '[';
-        d.tile = TileId::church_bench;
+        d.tile = gfx::TileId::church_bench;
         d.move_rules.props_allow_move.push_back(PropId::ethereal);
         d.move_rules.props_allow_move.push_back(PropId::flying);
         d.move_rules.props_allow_move.push_back(PropId::ooze);
@@ -343,7 +343,7 @@ static void init_data_list()
                 return new terrain::Carpet(p);
         };
         d.character = '.';
-        d.tile = TileId::floor;
+        d.tile = gfx::TileId::floor;
         d.move_rules.is_walkable = true;
         d.is_floor_like = true;
         d.can_have_blood = true;
@@ -357,7 +357,7 @@ static void init_data_list()
                 return new terrain::RubbleHigh(p);
         };
         d.character = 8;
-        d.tile = TileId::rubble_high;
+        d.tile = gfx::TileId::rubble_high;
         d.move_rules.props_allow_move.push_back(PropId::ethereal);
         d.move_rules.props_allow_move.push_back(PropId::ooze);
         d.move_rules.props_allow_move.push_back(PropId::burrowing);
@@ -377,7 +377,7 @@ static void init_data_list()
                 return new terrain::RubbleLow(p);
         };
         d.character = ',';
-        d.tile = TileId::rubble_low;
+        d.tile = gfx::TileId::rubble_low;
         d.move_rules.is_walkable = true;
         d.is_floor_like = true;
         d.can_have_trap = false;
@@ -390,7 +390,7 @@ static void init_data_list()
                 return new terrain::Bones(p);
         };
         d.character = '&';
-        d.tile = TileId::corpse2;
+        d.tile = gfx::TileId::corpse2;
         d.move_rules.is_walkable = true;
         d.is_floor_like = true;
         d.can_have_trap = true;
@@ -403,7 +403,7 @@ static void init_data_list()
                 return new terrain::Statue(p);
         };
         d.character = 5; //Paragraph sign
-        d.tile = TileId::witch_or_warlock;
+        d.tile = gfx::TileId::witch_or_warlock;
         d.is_projectile_passable = false;
         d.is_los_passable = false;
         d.can_have_blood = false;
@@ -419,7 +419,7 @@ static void init_data_list()
                 return new terrain::Cocoon(p);
         };
         d.character = '8';
-        d.tile = TileId::cocoon_closed;
+        d.tile = gfx::TileId::cocoon_closed;
         d.is_projectile_passable = true;
         d.is_los_passable = false;
         d.can_have_blood = false;
@@ -436,7 +436,7 @@ static void init_data_list()
                 return new terrain::Chest(p);
         };
         d.character = '+';
-        d.tile = TileId::chest_closed;
+        d.tile = gfx::TileId::chest_closed;
         d.can_have_blood = false;
         d.can_have_gore = false;
         d.can_have_corpse = false;
@@ -449,7 +449,7 @@ static void init_data_list()
                 return new terrain::Cabinet(p);
         };
         d.character = '7';
-        d.tile = TileId::cabinet_closed;
+        d.tile = gfx::TileId::cabinet_closed;
         d.is_projectile_passable = false;
         d.is_los_passable = false;
         d.can_have_blood = false;
@@ -465,7 +465,7 @@ static void init_data_list()
                 return new terrain::Bookshelf(p);
         };
         d.character = '7';
-        d.tile = TileId::bookshelf_full;
+        d.tile = gfx::TileId::bookshelf_full;
         d.is_projectile_passable = false;
         d.is_los_passable = false;
         d.can_have_blood = false;
@@ -481,7 +481,7 @@ static void init_data_list()
                 return new terrain::AlchemistBench(p);
         };
         d.character = '7';
-        d.tile = TileId::alchemist_bench_full;
+        d.tile = gfx::TileId::alchemist_bench_full;
         d.is_projectile_passable = false;
         d.is_los_passable = true;
         d.can_have_blood = false;
@@ -497,7 +497,7 @@ static void init_data_list()
                 return new terrain::Fountain(p);
         };
         d.character = '1';
-        d.tile = TileId::fountain;
+        d.tile = gfx::TileId::fountain;
         d.is_projectile_passable = false;
         d.is_los_passable = false;
         d.can_have_blood = false;
@@ -513,7 +513,7 @@ static void init_data_list()
                 return new terrain::Stalagmite(p);
         };
         d.character = ':';
-        d.tile = TileId::stalagmite;
+        d.tile = gfx::TileId::stalagmite;
         d.is_projectile_passable = false;
         d.is_los_passable = false;
         d.can_have_blood = true;
@@ -529,7 +529,7 @@ static void init_data_list()
                 return new terrain::Altar(p);
         };
         d.character = '_';
-        d.tile = TileId::altar;
+        d.tile = gfx::TileId::altar;
         d.can_have_blood = false;
         d.can_have_gore = false;
         d.can_have_corpse = false;
@@ -544,7 +544,7 @@ static void init_data_list()
                 return new terrain::Gong(p);
         };
         d.character = '_';
-        d.tile = TileId::gong;
+        d.tile = gfx::TileId::gong;
         d.is_los_passable = true;
         d.is_projectile_passable = true;
         d.can_have_blood = false;
@@ -561,7 +561,7 @@ static void init_data_list()
                 return new terrain::Tomb(p);
         };
         d.character = ']';
-        d.tile = TileId::tomb_closed;
+        d.tile = gfx::TileId::tomb_closed;
         d.move_rules.props_allow_move.push_back(PropId::ethereal);
         d.move_rules.props_allow_move.push_back(PropId::flying);
         d.can_have_blood = false;
@@ -600,7 +600,7 @@ static void init_data_list()
                 return new terrain::LitDynamite(p);
         };
         d.character = '/';
-        d.tile = TileId::dynamite_lit;
+        d.tile = gfx::TileId::dynamite_lit;
         d.move_rules.is_walkable = true;
         add_to_list_and_reset(d);
 
@@ -609,7 +609,7 @@ static void init_data_list()
                 return new terrain::LitFlare(p);
         };
         d.character = '/';
-        d.tile = TileId::flare_lit;
+        d.tile = gfx::TileId::flare_lit;
         d.move_rules.is_walkable = true;
         add_to_list_and_reset(d);
 
@@ -618,7 +618,7 @@ static void init_data_list()
                 return new terrain::Smoke(p);
         };
         d.character = '*';
-        d.tile = TileId::smoke;
+        d.tile = gfx::TileId::smoke;
         d.move_rules.is_walkable = true;
         d.is_los_passable = false;
         add_to_list_and_reset(d);
@@ -628,7 +628,7 @@ static void init_data_list()
                 return new terrain::ForceField(p);
         };
         d.character = '#';
-        d.tile = TileId::square_checkered;
+        d.tile = gfx::TileId::square_checkered;
         d.move_rules.reset();
         d.is_sound_passable = false;
         d.is_projectile_passable = false;

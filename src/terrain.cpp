@@ -295,7 +295,7 @@ void Terrain::hit(
 
                         msg_log::add("*Whoosh!*");
 
-                        audio::play(SfxId::miss_medium);
+                        audio::play(audio::SfxId::miss_medium);
                 }
         }
 
@@ -358,35 +358,35 @@ void Terrain::try_put_gore()
 
         switch (roll_tile) {
         case 1:
-                m_gore_tile = TileId::gore1;
+                m_gore_tile = gfx::TileId::gore1;
                 break;
 
         case 2:
-                m_gore_tile = TileId::gore2;
+                m_gore_tile = gfx::TileId::gore2;
                 break;
 
         case 3:
-                m_gore_tile = TileId::gore3;
+                m_gore_tile = gfx::TileId::gore3;
                 break;
 
         case 4:
-                m_gore_tile = TileId::gore4;
+                m_gore_tile = gfx::TileId::gore4;
                 break;
 
         case 5:
-                m_gore_tile = TileId::gore5;
+                m_gore_tile = gfx::TileId::gore5;
                 break;
 
         case 6:
-                m_gore_tile = TileId::gore6;
+                m_gore_tile = gfx::TileId::gore6;
                 break;
 
         case 7:
-                m_gore_tile = TileId::gore7;
+                m_gore_tile = gfx::TileId::gore7;
                 break;
 
         case 8:
-                m_gore_tile = TileId::gore8;
+                m_gore_tile = gfx::TileId::gore8;
                 break;
 
         default:
@@ -445,7 +445,7 @@ Color Terrain::color_bg() const
 
 void Terrain::clear_gore()
 {
-        m_gore_tile = TileId::END;
+        m_gore_tile = gfx::TileId::END;
         m_gore_character = ' ';
         m_is_bloody = false;
 }
@@ -495,10 +495,10 @@ void Floor::on_hit(
         }
 }
 
-TileId Floor::tile() const
+gfx::TileId Floor::tile() const
 {
         return m_burn_state == BurnState::has_burned
-                ? TileId::scorched_ground
+                ? gfx::TileId::scorched_ground
                 : data().tile;
 }
 
@@ -603,21 +603,21 @@ void Wall::on_hit(
         }
 }
 
-bool Wall::is_wall_front_tile(const TileId tile)
+bool Wall::is_wall_front_tile(const gfx::TileId tile)
 {
-        return tile == TileId::wall_front ||
-                tile == TileId::wall_front_alt1 ||
-                tile == TileId::wall_front_alt2 ||
-                tile == TileId::cave_wall_front ||
-                tile == TileId::egypt_wall_front;
+        return tile == gfx::TileId::wall_front ||
+                tile == gfx::TileId::wall_front_alt1 ||
+                tile == gfx::TileId::wall_front_alt2 ||
+                tile == gfx::TileId::cave_wall_front ||
+                tile == gfx::TileId::egypt_wall_front;
 }
 
-bool Wall::is_wall_top_tile(const TileId tile)
+bool Wall::is_wall_top_tile(const gfx::TileId tile)
 {
-        return tile == TileId::wall_top ||
-                tile == TileId::cave_wall_top ||
-                tile == TileId::egypt_wall_top ||
-                tile == TileId::rubble_high;
+        return tile == gfx::TileId::wall_top ||
+                tile == gfx::TileId::cave_wall_top ||
+                tile == gfx::TileId::egypt_wall_top ||
+                tile == gfx::TileId::rubble_high;
 }
 
 std::string Wall::name(const Article article) const
@@ -682,62 +682,62 @@ char Wall::character() const
                 : '#';
 }
 
-TileId Wall::front_wall_tile() const
+gfx::TileId Wall::front_wall_tile() const
 {
         if (config::is_tiles_wall_full_square()) {
                 switch (m_type) {
                 case WallType::common:
                 case WallType::common_alt:
-                        return TileId::wall_top;
+                        return gfx::TileId::wall_top;
 
                 case WallType::cliff:
                 case WallType::cave:
-                        return TileId::cave_wall_top;
+                        return gfx::TileId::cave_wall_top;
 
                 case WallType::leng_monestary:
                 case WallType::egypt:
-                        return TileId::egypt_wall_top;
+                        return gfx::TileId::egypt_wall_top;
                 }
         } else {
                 switch (m_type) {
                 case WallType::common:
-                        return TileId::wall_front;
+                        return gfx::TileId::wall_front;
 
                 case WallType::common_alt:
-                        return TileId::wall_front_alt1;
+                        return gfx::TileId::wall_front_alt1;
 
                 case WallType::cliff:
                 case WallType::cave:
-                        return TileId::cave_wall_front;
+                        return gfx::TileId::cave_wall_front;
 
                 case WallType::leng_monestary:
                 case WallType::egypt:
-                        return TileId::egypt_wall_front;
+                        return gfx::TileId::egypt_wall_front;
                 }
         }
 
         ASSERT(false && "Failed to set front wall tile");
-        return TileId::END;
+        return gfx::TileId::END;
 }
 
-TileId Wall::top_wall_tile() const
+gfx::TileId Wall::top_wall_tile() const
 {
         switch (m_type) {
         case WallType::common:
         case WallType::common_alt:
-                return TileId::wall_top;
+                return gfx::TileId::wall_top;
 
         case WallType::cliff:
         case WallType::cave:
-                return TileId::cave_wall_top;
+                return gfx::TileId::cave_wall_top;
 
         case WallType::leng_monestary:
         case WallType::egypt:
-                return TileId::egypt_wall_top;
+                return gfx::TileId::egypt_wall_top;
         }
 
         ASSERT(false && "Failed to set top wall tile");
-        return TileId::END;
+        return gfx::TileId::END;
 }
 
 void Wall::set_rnd_common_wall()
@@ -999,7 +999,7 @@ void Statue::on_hit(
 
         Snd snd(
                 "I hear a crash.",
-                SfxId::statue_crash,
+                audio::SfxId::statue_crash,
                 IgnoreMsgIfOriginSeen::yes,
                 m_pos,
                 actor,
@@ -1069,11 +1069,11 @@ std::string Statue::name(const Article article) const
         return ret;
 }
 
-TileId Statue::tile() const
+gfx::TileId Statue::tile() const
 {
         return (m_type == StatueType::common)
-                ? TileId::witch_or_warlock
-                : TileId::ghoul;
+                ? gfx::TileId::witch_or_warlock
+                : gfx::TileId::ghoul;
 }
 
 Color Statue::color_default() const
@@ -1192,11 +1192,11 @@ Color Stairs::color_default() const
 // -----------------------------------------------------------------------------
 // Bridge
 // -----------------------------------------------------------------------------
-TileId Bridge::tile() const
+gfx::TileId Bridge::tile() const
 {
         return (m_axis == Axis::hor)
-                ? TileId::hangbridge_hor
-                : TileId::hangbridge_ver;
+                ? gfx::TileId::hangbridge_hor
+                : gfx::TileId::hangbridge_ver;
 }
 
 void Bridge::on_hit(
@@ -1284,7 +1284,7 @@ void LiquidShallow::bump(actor::Actor& actor_bumping)
                 // Make a sound, unless the player is Silent
                 if (!player_bon::has_trait(Trait::silent)) {
                         Snd snd("",
-                                SfxId::END,
+                                audio::SfxId::END,
                                 IgnoreMsgIfOriginSeen::no,
                                 actor_bumping.m_pos,
                                 &actor_bumping,
@@ -1483,7 +1483,7 @@ void LiquidDeep::bump(actor::Actor& actor_bumping)
 
                 if (!player_bon::has_trait(Trait::silent)) {
                         Snd snd("",
-                                SfxId::END,
+                                audio::SfxId::END,
                                 IgnoreMsgIfOriginSeen::no,
                                 actor_bumping.m_pos,
                                 &actor_bumping,
@@ -1647,11 +1647,11 @@ Color Lever::color_default() const
         return m_is_left_pos ? colors::gray() : colors::white();
 }
 
-TileId Lever::tile() const
+gfx::TileId Lever::tile() const
 {
         return m_is_left_pos
-                ? TileId::lever_left
-                : TileId::lever_right;
+                ? gfx::TileId::lever_left
+                : gfx::TileId::lever_right;
 }
 
 void Lever::bump(actor::Actor& actor_bumping)
@@ -1689,7 +1689,7 @@ void Lever::bump(actor::Actor& actor_bumping)
         msg_log::add("I pull the lever.");
 
         Snd snd("",
-                SfxId::lever_pull,
+                audio::SfxId::lever_pull,
                 IgnoreMsgIfOriginSeen::yes,
                 m_pos,
                 map::g_player,
@@ -1831,10 +1831,10 @@ void Grass::on_hit(
         }
 }
 
-TileId Grass::tile() const
+gfx::TileId Grass::tile() const
 {
         return (m_burn_state == BurnState::has_burned)
-                ? TileId::scorched_ground
+                ? gfx::TileId::scorched_ground
                 : data().tile;
 }
 
@@ -2076,7 +2076,7 @@ void Chains::bump(actor::Actor& actor_bumping)
                         : AlertsMon::no;
 
                 Snd snd(msg,
-                        SfxId::chains,
+                        audio::SfxId::chains,
                         IgnoreMsgIfOriginSeen::no,
                         actor_bumping.m_pos,
                         &actor_bumping,
@@ -2219,11 +2219,11 @@ WasDestroyed Tree::on_finished_burning()
         return WasDestroyed::no;
 }
 
-TileId Tree::tile() const
+gfx::TileId Tree::tile() const
 {
         return is_fungi()
-                ? TileId::tree_fungi
-                : TileId::tree;
+                ? gfx::TileId::tree_fungi
+                : gfx::TileId::tree;
 }
 
 std::string Tree::name(const Article article) const
@@ -2299,7 +2299,7 @@ void Brazier::on_hit(
                 }
 
                 Snd snd("I hear a crash.",
-                        SfxId::END,
+                        audio::SfxId::END,
                         IgnoreMsgIfOriginSeen::yes,
                         m_pos,
                         actor,
@@ -2508,7 +2508,7 @@ void ItemContainer::open(
                 msg_log::clear();
 
                 if (answer == BinaryAnswer::yes) {
-                        audio::play(SfxId::pickup);
+                        audio::play(audio::SfxId::pickup);
 
                         map::g_player->m_inv.put_in_backpack(item);
                 } else if (answer == BinaryAnswer::no) {
@@ -2520,7 +2520,7 @@ void ItemContainer::open(
                         ASSERT(is_unloadable_wpn);
 
                         if (is_unloadable_wpn) {
-                                audio::play(SfxId::pickup);
+                                audio::play(audio::SfxId::pickup);
 
                                 auto* const spawned_ammo =
                                         item_pickup::unload_ranged_wpn(*wpn);
@@ -2692,11 +2692,11 @@ std::string Tomb::name(const Article article) const
         return a + empty_str + open_str + appear_str + "tomb";
 }
 
-TileId Tomb::tile() const
+gfx::TileId Tomb::tile() const
 {
         return m_is_open
-                ? TileId::tomb_open
-                : TileId::tomb_closed;
+                ? gfx::TileId::tomb_open
+                : gfx::TileId::tomb_closed;
 }
 
 Color Tomb::color_default() const
@@ -2798,7 +2798,7 @@ DidOpen Tomb::open(actor::Actor* const actor_opening)
                 m_is_open = true;
 
                 Snd snd("I hear heavy stone sliding.",
-                        SfxId::tomb_open,
+                        audio::SfxId::tomb_open,
                         IgnoreMsgIfOriginSeen::yes,
                         m_pos,
                         map::g_player,
@@ -2875,7 +2875,7 @@ DidTriggerTrap Tomb::trigger_trap(actor::Actor* const actor)
                         }
 
                         Snd snd("I hear a burst of gas.",
-                                SfxId::gas,
+                                audio::SfxId::gas,
                                 IgnoreMsgIfOriginSeen::yes,
                                 m_pos,
                                 nullptr,
@@ -3147,7 +3147,7 @@ void Chest::hit(const int dmg, const DmgType dmg_type, const DmgMethod dmg_metho
                                 }
 
                                 Snd snd("",
-                                        SfxId::END,
+                                        audio::SfxId::END,
                                         IgnoreMsgIfOriginSeen::yes,
                                         m_pos,
                                         map::g_player,
@@ -3220,11 +3220,11 @@ std::string Chest::name(const Article article) const
         return a + locked_str + empty_str + open_str + matl_str + "chest";
 }
 
-TileId Chest::tile() const
+gfx::TileId Chest::tile() const
 {
         return m_is_open
-                ? TileId::chest_open
-                : TileId::chest_closed;
+                ? gfx::TileId::chest_open
+                : gfx::TileId::chest_closed;
 }
 
 Color Chest::color_default() const
@@ -3383,7 +3383,7 @@ void Fountain::bump(actor::Actor& actor_bumping)
         msg_log::clear();
         msg_log::add("I drink from the fountain...");
 
-        audio::play(SfxId::fountain_drink);
+        audio::play(audio::SfxId::fountain_drink);
 
         switch (m_fountain_effect) {
         case FountainEffect::refreshing: {
@@ -3716,11 +3716,11 @@ std::string Cabinet::name(const Article article) const
         return ret + "cabinet";
 }
 
-TileId Cabinet::tile() const
+gfx::TileId Cabinet::tile() const
 {
         return m_is_open
-                ? TileId::cabinet_open
-                : TileId::cabinet_closed;
+                ? gfx::TileId::cabinet_open
+                : gfx::TileId::cabinet_closed;
 }
 
 Color Cabinet::color_default() const
@@ -3813,11 +3813,11 @@ std::string Bookshelf::name(const Article article) const
         return ret + "bookshelf";
 }
 
-TileId Bookshelf::tile() const
+gfx::TileId Bookshelf::tile() const
 {
         return m_is_looted
-                ? TileId::bookshelf_empty
-                : TileId::bookshelf_full;
+                ? gfx::TileId::bookshelf_empty
+                : gfx::TileId::bookshelf_full;
 }
 
 Color Bookshelf::color_default() const
@@ -3916,11 +3916,11 @@ std::string AlchemistBench::name(const Article article) const
         return a + mod + "alchemist's workbench";
 }
 
-TileId AlchemistBench::tile() const
+gfx::TileId AlchemistBench::tile() const
 {
         return m_is_looted
-                ? TileId::alchemist_bench_empty
-                : TileId::alchemist_bench_full;
+                ? gfx::TileId::alchemist_bench_empty
+                : gfx::TileId::alchemist_bench_full;
 }
 
 Color AlchemistBench::color_default() const
@@ -4103,11 +4103,11 @@ std::string Cocoon::name(const Article article) const
         return ret + "cocoon";
 }
 
-TileId Cocoon::tile() const
+gfx::TileId Cocoon::tile() const
 {
         return m_is_open
-                ? TileId::cocoon_open
-                : TileId::cocoon_closed;
+                ? gfx::TileId::cocoon_open
+                : gfx::TileId::cocoon_closed;
 }
 
 Color Cocoon::color_default() const

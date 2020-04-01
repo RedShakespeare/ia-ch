@@ -75,7 +75,7 @@ void Monolith::activate()
 {
         msg_log::add("I feel powerful!");
 
-        audio::play(SfxId::monolith);
+        audio::play(audio::SfxId::monolith);
 
         game::incr_player_xp(20);
 

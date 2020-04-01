@@ -142,7 +142,7 @@ void kill(
                 TRACE_VERBOSE << "Emitting death sound" << std::endl;
 
                 Snd snd("I hear agonized screaming.",
-                        SfxId::END,
+                        audio::SfxId::END,
                         IgnoreMsgIfOriginSeen::yes,
                         actor.m_pos,
                         &actor,

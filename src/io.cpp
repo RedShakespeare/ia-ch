@@ -49,10 +49,10 @@ static SDL_Surface* s_main_menu_logo_srf = nullptr;
 static const size_t s_font_nr_x = 16;
 static const size_t s_font_nr_y = 7;
 
-static std::vector<P> s_tile_px_data[(size_t)TileId::END];
+static std::vector<P> s_tile_px_data[(size_t)gfx::TileId::END];
 static std::vector<P> s_font_px_data[s_font_nr_x][s_font_nr_y];
 
-static std::vector<P> s_tile_contour_px_data[(size_t)TileId::END];
+static std::vector<P> s_tile_contour_px_data[(size_t)gfx::TileId::END];
 static std::vector<P> s_font_contour_px_data[s_font_nr_x][s_font_nr_y];
 
 static const SDL_Color s_sdl_color_black = {0, 0, 0, 0};
@@ -498,10 +498,10 @@ static void load_tiles()
                 config::map_cell_px_w(),
                 config::map_cell_px_h());
 
-        for (size_t i = 0; i < (size_t)TileId::END; ++i) {
-                const auto id = (TileId)i;
+        for (size_t i = 0; i < (size_t)gfx::TileId::END; ++i) {
+                const auto id = (gfx::TileId)i;
 
-                const std::string img_name = g_tile_id_to_str_map.at(id);
+                const std::string img_name = gfx::tile_id_to_str(id);
 
                 const std::string img_path =
                         paths::tiles_dir() +
@@ -597,7 +597,7 @@ static void put_pixels_on_screen(
 }
 
 static void put_pixels_on_screen(
-        const TileId tile,
+        const gfx::TileId tile,
         const P px_pos,
         const Color& color)
 {
@@ -1173,7 +1173,7 @@ P map_to_px_coords(const Panel panel, const P offset)
 }
 
 void draw_tile(
-        const TileId tile,
+        const gfx::TileId tile,
         const Panel panel,
         const P pos,
         const Color& color,
@@ -1459,14 +1459,14 @@ void draw_box(const R& border, const Color& color)
         // for (int y = y0_vert; y <= y1_vert; ++y)
         // {
         //         draw_symbol(
-        //                 TileId::popup_ver,
+        //                 gfx::TileId::popup_ver,
         //                 '|',
         //                 panel,
         //                 P(border.p0.x, y),
         //                 color);
 
         //         draw_symbol(
-        //                 TileId::popup_ver,
+        //                 gfx::TileId::popup_ver,
         //                 '|',
         //                 panel,
         //                 P(border.p1.x, y),
@@ -1480,14 +1480,14 @@ void draw_box(const R& border, const Color& color)
         // for (int x = x0_vert; x <= x1_vert; ++x)
         // {
         //         draw_symbol(
-        //                 TileId::popup_hor,
+        //                 gfx::TileId::popup_hor,
         //                 '-',
         //                 panel,
         //                 P(x, border.p0.y),
         //                 color);
 
         //         draw_symbol(
-        //                 TileId::popup_hor,
+        //                 gfx::TileId::popup_hor,
         //                 '-',
         //                 panel,
         //                 P(x, border.p1.y),
@@ -1504,28 +1504,28 @@ void draw_box(const R& border, const Color& color)
 
         // Corners
         // draw_symbol(
-        //         TileId::popup_top_l,
+        //         gfx::TileId::popup_top_l,
         //         '+',
         //         panel,
         //         corners[0],
         //         color);
 
         // draw_symbol(
-        //         TileId::popup_top_r,
+        //         gfx::TileId::popup_top_r,
         //         '+',
         //         panel,
         //         corners[1],
         //         color);
 
         // draw_symbol(
-        //         TileId::popup_btm_l,
+        //         gfx::TileId::popup_btm_l,
         //         '+',
         //         panel,
         //         corners[2],
         //         color);
 
         // draw_symbol(
-        //         TileId::popup_btm_r,
+        //         gfx::TileId::popup_btm_r,
         //         '+',
         //         panel,
         //         corners[3],
@@ -1591,7 +1591,7 @@ void draw_blast_at_cells(const std::vector<P>& positions, const Color& color)
                 }
 
                 draw_symbol(
-                        TileId::blast1,
+                        gfx::TileId::blast1,
                         '*',
                         Panel::map,
                         viewport::to_view_pos(pos),
@@ -1608,7 +1608,7 @@ void draw_blast_at_cells(const std::vector<P>& positions, const Color& color)
                 }
 
                 draw_symbol(
-                        TileId::blast2,
+                        gfx::TileId::blast2,
                         '*',
                         Panel::map,
                         viewport::to_view_pos(pos),
@@ -1660,7 +1660,7 @@ void draw_blast_at_seen_actors(
 }
 
 void draw_symbol(
-        const TileId tile,
+        const gfx::TileId tile,
         const char character,
         const Panel panel,
         const P pos,

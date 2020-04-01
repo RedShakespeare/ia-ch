@@ -116,7 +116,7 @@ ActorDied hit(
                             (method == DmgMethod::slashing) ||
                             (method == DmgMethod::piercing)) {
                                 Snd snd("*Crack!*",
-                                        SfxId::hit_corpse_break,
+                                        audio::SfxId::hit_corpse_break,
                                         IgnoreMsgIfOriginSeen::yes,
                                         actor.m_pos,
                                         nullptr,
@@ -154,7 +154,7 @@ ActorDied hit(
                                         : "*Chop!*";
 
                                 Snd snd(msg,
-                                        SfxId::hit_medium,
+                                        audio::SfxId::hit_medium,
                                         IgnoreMsgIfOriginSeen::yes,
                                         actor.m_pos,
                                         nullptr,
