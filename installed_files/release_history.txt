@@ -13,11 +13,7 @@ Gameplay
 * Small crawling creatures (rats, snakes, crawling hands, etc) can pass through some terrain types such as gates and piles of debris
 
 User interface
-* Rearranged the user interface for better information density
-* The full names of the wielded and alt weapons are printed in the gui
-* Many stats like hit points and spirit points have graphical bars
-* The color scheme is updated with a background color that is not 100% black
-* The message log uses four lines instead of two (thus causing much fewer "more" prompts)
+* The message log uses three lines instead of two (thus causing much fewer "more" prompts)
 * Added messages when Ooze type monsters or small crawling monsters pass though things things normally cannot be walked though
 
 Bug fixes

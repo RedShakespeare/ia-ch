@@ -168,13 +168,8 @@ static void set_default_variables()
         const int default_nr_gui_cells_x = 92;
         const int default_nr_gui_cells_y = 30;
 
-        static_assert(
-                default_nr_gui_cells_x >= io::g_min_nr_gui_cells_x,
-                "Default gui width must be >= min gui width");
-
-        static_assert(
-                default_nr_gui_cells_y >= io::g_min_nr_gui_cells_y,
-                "Default gui height must be >= min gui height");
+        static_assert(default_nr_gui_cells_x >= io::g_min_nr_gui_cells_x);
+        static_assert(default_nr_gui_cells_y >= io::g_min_nr_gui_cells_y);
 
         TRACE << "Default number of gui cells: "
               << default_nr_gui_cells_x
@@ -1034,7 +1029,12 @@ void ConfigState::draw()
                         ? colors::menu_highlight()
                         : colors::menu_dark();
 
-                const auto y = config::s_opt_y0 + (int)i;
+                auto y = config::s_opt_y0 + (int)i;
+
+                // Create some distance to "reset to defaults"
+                if (i == (labels.size() - 1)) {
+                        ++y;
+                }
 
                 io::draw_text(
                         str_l,

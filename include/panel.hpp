@@ -14,9 +14,8 @@ struct P;
 enum class Panel {
         screen,
         map,
-        map_gui_cond,
-        map_gui_progress,
-        map_gui_wpn,
+        map_gui_stats,
+        map_gui_stats_border,
         log,
         log_border,
         create_char_menu,

@@ -92,7 +92,7 @@ private:
 
 namespace msg_log {
 
-inline constexpr size_t g_nr_log_lines = 4;
+inline constexpr size_t g_nr_log_lines = 3;
 
 void init();
 

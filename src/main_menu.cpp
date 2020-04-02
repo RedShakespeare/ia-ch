@@ -355,7 +355,7 @@ void MainMenuState::draw()
                 std::string(
                         " " +
                         version_info::g_copyright_str +
-                        "   " +
+                        ", " +
                         version_info::g_license_str +
                         " "),
                 Panel::screen,

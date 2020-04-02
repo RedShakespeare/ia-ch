@@ -142,6 +142,8 @@ static R get_minimap_px_rect_on_screen(const R& map_area_explored)
 // -----------------------------------------------------------------------------
 void ViewMinimap::draw()
 {
+        io::draw_box(panels::area(Panel::screen));
+
         io::draw_text_center(
                 "Viewing minimap " + common_text::g_minimap_exit_hint,
                 Panel::screen,

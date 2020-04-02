@@ -192,7 +192,7 @@ static void draw_more_prompt()
                 P(more_x0, line_nr),
                 colors::black(),
                 io::DrawBg::yes,
-                colors::gold());
+                colors::gray());
 }
 
 // -----------------------------------------------------------------------------

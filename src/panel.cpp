@@ -123,24 +123,23 @@ void init(const P max_gui_dims)
                 panel = R(0, 0, 0, 0);
         }
 
-        const int log_border_w = 60;
-        const auto log_border_x0 = (max_gui_dims.x / 2) - (log_border_w / 2);
-        const auto log_border_y0 = max_gui_dims.y - msg_log::g_nr_log_lines - 2;
-        const auto log_border_x1 = log_border_x0 + log_border_w - 1;
-        const auto log_border_y1 = max_gui_dims.y - 1;
+        const int map_gui_stats_border_w = 22;
 
-        set_panel_area(
-                Panel::map_gui_wpn,
-                log_border_x0 - 16,
-                0,
-                log_border_x1 + 16,
-                1);
+        const int map_gui_border_x0 = max_gui_dims.x - map_gui_stats_border_w;
+        const int map_gui_border_y0 = 0;
+        const int map_gui_border_x1 = max_gui_dims.x - 1;
+        const int map_gui_border_y1 = max_gui_dims.y - 1;
+
+        const int log_border_x0 = 0;
+        const int log_border_y0 = max_gui_dims.y - msg_log::g_nr_log_lines - 2;
+        const int log_border_x1 = map_gui_border_x0 - 1;
+        const int log_border_y1 = max_gui_dims.y - 1;
 
         set_panel_area(
                 Panel::map,
                 0,
-                1,
-                max_gui_dims.x - 1,
+                0,
+                max_gui_dims.x - map_gui_stats_border_w - 1,
                 log_border_y0 - 1);
 
         set_panel_area(
@@ -158,18 +157,18 @@ void init(const P max_gui_dims)
                 log_border_y1 - 1);
 
         set_panel_area(
-                Panel::map_gui_cond,
-                log_border_x0 - 16,
-                log_border_y0,
-                log_border_x0 - 2,
-                log_border_y1);
+                Panel::map_gui_stats_border,
+                map_gui_border_x0,
+                map_gui_border_y0,
+                map_gui_border_x1,
+                map_gui_border_y1);
 
         set_panel_area(
-                Panel::map_gui_progress,
-                log_border_x1 + 2,
-                log_border_y0,
-                log_border_x1 + 16,
-                log_border_y1);
+                Panel::map_gui_stats,
+                map_gui_border_x0 + 1,
+                map_gui_border_y0 + 1,
+                map_gui_border_x1 - 1,
+                map_gui_border_y1 - 1);
 
         finalize_screen_dims();
 

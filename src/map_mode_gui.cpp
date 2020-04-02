@@ -25,7 +25,7 @@
 // -----------------------------------------------------------------------------
 static Color label_color()
 {
-        return colors::text();
+        return colors::dark_sepia();
 }
 
 static Color info_color()
@@ -33,47 +33,72 @@ static Color info_color()
         return colors::text();
 }
 
-static void draw_bar(
-        int pct_filled,
-        const P& pos,
-        const int w_tot,
-        const Panel panel,
-        const Color& color)
+// static void draw_bar(
+//         int pct_filled,
+//         const P& pos,
+//         const int w_tot,
+//         const Panel panel,
+//         const Color& color)
+// {
+//         if (pct_filled <= 0) {
+//                 return;
+//         }
+
+//         pct_filled = std::min(pct_filled, 100);
+
+//         const auto px_x0y0 =
+//                 io::gui_to_px_coords(panel, pos)
+//                         .with_offsets(0, 3);
+
+//         const auto px_x1y1 =
+//                 io::gui_to_px_coords(
+//                         panel,
+//                         {pos.x + w_tot, pos.y + 1})
+//                         .with_offsets(-1, -3);
+
+//         const int px_w_tot = px_x1y1.x - px_x0y0.x + 1;
+//         const int px_w_filled = (px_w_tot * pct_filled) / 100;
+//         const int px_x1_filled = px_x0y0.x + px_w_filled - 1;
+//         const P px_x1y1_filled(px_x1_filled, px_x1y1.y);
+
+//         io::draw_rectangle_filled(
+//                 {px_x0y0, px_x1y1_filled},
+//                 color);
+// }
+
+static std::string make_wpn_dmg_str(const item::Item& wpn)
 {
-        if (pct_filled <= 0) {
-                return;
-        }
+        const ItemRefAttInf att_inf =
+                (wpn.data().main_att_mode == AttMode::thrown)
+                ? ItemRefAttInf::melee
+                : ItemRefAttInf::wpn_main_att_mode;
 
-        pct_filled = std::min(pct_filled, 100);
+        const auto wpn_dmg_str =
+                wpn.dmg_str(
+                        att_inf,
+                        ItemRefDmg::average_and_melee_plus);
 
-        const auto px_x0y0 =
-                io::gui_to_px_coords(panel, pos)
-                        .with_offsets(0, 3);
+        const auto wpn_hit_mod_str = wpn.hit_mod_str(att_inf);
 
-        const auto px_x1y1 =
-                io::gui_to_px_coords(
-                        panel,
-                        {pos.x + w_tot, pos.y + 1})
-                        .with_offsets(-1, -3);
+        const auto wpn_inf_str = wpn.name_inf_str();
 
-        const int px_w_tot = px_x1y1.x - px_x0y0.x + 1;
-        const int px_w_filled = (px_w_tot * pct_filled) / 100;
-        const int px_x1_filled = px_x0y0.x + px_w_filled - 1;
-        const P px_x1y1_filled(px_x1_filled, px_x1y1.y);
+        std::string wpn_str;
 
-        io::draw_rectangle_filled(
-                {px_x0y0, px_x1y1_filled},
-                color);
+        text_format::append_with_space(wpn_str, wpn_dmg_str);
+        text_format::append_with_space(wpn_str, wpn_hit_mod_str);
+        text_format::append_with_space(wpn_str, wpn_inf_str);
+
+        return wpn_str;
 }
 
-static void draw_wielded_wpn(const int x, const Panel panel)
+static void draw_wielded_wpn(const int y, const Panel panel)
 {
-        const std::string label = "Weapon:";
+        const std::string label = "Wpn";
 
         io::draw_text(
                 label,
                 panel,
-                {x, 0},
+                {0, y},
                 label_color(),
                 io::DrawBg::no);
 
@@ -83,30 +108,25 @@ static void draw_wielded_wpn(const int x, const Panel panel)
                 wpn = &map::g_player->unarmed_wpn();
         }
 
-        std::string wpn_str =
-                text_format::first_to_upper(
-                        wpn->name(
-                                ItemRefType::plain,
-                                ItemRefInf::yes,
-                                ItemRefAttInf::wpn_main_att_mode));
+        const auto wpn_str = make_wpn_dmg_str(*wpn);
 
-        io::draw_text(
+        io::draw_text_right(
                 wpn_str,
                 panel,
-                {x + (int)label.length() + 1, 0},
+                {panels::w(panel) - 1, y},
                 info_color(),
                 io::DrawBg::no);
 }
 
-static void draw_alt_wpn(const int x, const Panel panel)
+static void draw_alt_wpn(const int y, const Panel panel)
 {
-        const std::string label = "Alt:";
+        const std::string label = "Alt";
 
         io::draw_text(
                 label,
                 panel,
-                {x, 0},
-                label_color().fraction(2.0),
+                {0, y},
+                label_color(),
                 io::DrawBg::no);
 
         const auto* wpn = map::g_player->m_inv.item_in_slot(SlotId::wpn_alt);
@@ -115,17 +135,12 @@ static void draw_alt_wpn(const int x, const Panel panel)
                 wpn = &map::g_player->unarmed_wpn();
         }
 
-        std::string wpn_str =
-                text_format::first_to_upper(
-                        wpn->name(
-                                ItemRefType::plain,
-                                ItemRefInf::yes,
-                                ItemRefAttInf::wpn_main_att_mode));
+        const auto wpn_str = make_wpn_dmg_str(*wpn);
 
-        io::draw_text(
+        io::draw_text_right(
                 wpn_str,
                 panel,
-                {x + (int)label.length() + 1, 0},
+                {panels::w(panel) - 1, y},
                 info_color().fraction(2.0),
                 io::DrawBg::no);
 }
@@ -135,17 +150,17 @@ static void draw_hp(const int y, const Panel panel)
         const int hp = map::g_player->m_hp;
         const int max_hp = actor::max_hp(*map::g_player);
 
-        const int hp_pct = (hp * 100) / max_hp;
+        // const int hp_pct = (hp * 100) / max_hp;
 
-        draw_bar(
-                hp_pct,
-                {0, y},
-                panels::w(panel),
-                panel,
-                colors::red().fraction(1.5));
+        // draw_bar(
+        //         hp_pct,
+        //         {0, y},
+        //         panels::w(panel),
+        //         panel,
+        //         colors::red().fraction(1.5));
 
         io::draw_text(
-                "Health:",
+                "Health",
                 panel,
                 {0, y},
                 label_color(),
@@ -160,7 +175,7 @@ static void draw_hp(const int y, const Panel panel)
                 str,
                 panel,
                 {panels::w(panel) - 1, y},
-                info_color(),
+                colors::light_red(),
                 io::DrawBg::no);
 }
 
@@ -169,17 +184,17 @@ static void draw_sp(const int y, const Panel panel)
         const int sp = map::g_player->m_sp;
         const int max_sp = actor::max_sp(*map::g_player);
 
-        const int sp_pct = (sp * 100) / max_sp;
+        // const int sp_pct = (sp * 100) / max_sp;
 
-        draw_bar(
-                sp_pct,
-                {0, y},
-                panels::w(panel),
-                panel,
-                colors::blue().fraction(1.25));
+        // draw_bar(
+        //         sp_pct,
+        //         {0, y},
+        //         panels::w(panel),
+        //         panel,
+        //         colors::blue().fraction(1.25));
 
         io::draw_text(
-                "Spirit:",
+                "Spirit",
                 panel,
                 {0, y},
                 label_color(),
@@ -194,7 +209,7 @@ static void draw_sp(const int y, const Panel panel)
                 str,
                 panel,
                 {panels::w(panel) - 1, y},
-                info_color(),
+                colors::light_blue(),
                 io::DrawBg::no);
 }
 
@@ -202,15 +217,15 @@ static void draw_shock(const int y, const Panel panel)
 {
         const int shock_pct = std::min(999, map::g_player->shock_tot());
 
-        draw_bar(
-                shock_pct,
-                {0, y},
-                panels::w(panel),
-                panel,
-                colors::magenta().fraction(1.25));
+        // draw_bar(
+        //         shock_pct,
+        //         {0, y},
+        //         panels::w(panel),
+        //         panel,
+        //         colors::magenta().fraction(2));
 
         io::draw_text(
-                "Shock:",
+                "Shock",
                 panel,
                 {0, y},
                 label_color(),
@@ -222,7 +237,7 @@ static void draw_shock(const int y, const Panel panel)
                 shock_str,
                 panel,
                 {panels::w(panel) - 1, y},
-                info_color(),
+                colors::magenta(),
                 io::DrawBg::no);
 }
 
@@ -230,15 +245,15 @@ static void draw_insanity(const int y, const Panel panel)
 {
         const int ins_pct = map::g_player->ins();
 
-        draw_bar(
-                ins_pct,
-                {0, y},
-                panels::w(panel),
-                panel,
-                colors::magenta().fraction(1.25));
+        // draw_bar(
+        //         ins_pct,
+        //         {0, y},
+        //         panels::w(panel),
+        //         panel,
+        //         colors::magenta().fraction(2));
 
         io::draw_text(
-                "Insanity:",
+                "Insanity",
                 panel,
                 {0, y},
                 label_color(),
@@ -250,7 +265,7 @@ static void draw_insanity(const int y, const Panel panel)
                 ins_str,
                 panel,
                 {panels::w(panel) - 1, y},
-                info_color(),
+                colors::magenta(),
                 io::DrawBg::no);
 }
 
@@ -258,15 +273,15 @@ static void draw_weight(const int y, const Panel panel)
 {
         const int weight_pct = map::g_player->enc_percent();
 
-        draw_bar(
-                weight_pct,
-                {0, y},
-                panels::w(panel),
-                panel,
-                colors::cyan().fraction(2.0));
+        // draw_bar(
+        //         weight_pct,
+        //         {0, y},
+        //         panels::w(panel),
+        //         panel,
+        //         colors::cyan().fraction(2.0));
 
         io::draw_text(
-                "Weight:",
+                "Weight",
                 panel,
                 {0, y},
                 label_color(),
@@ -285,7 +300,7 @@ static void draw_weight(const int y, const Panel panel)
 static void draw_armor(const int y, const Panel panel)
 {
         io::draw_text(
-                "Armor:",
+                "Armor",
                 panel,
                 {0, y},
                 label_color(),
@@ -304,11 +319,11 @@ static void draw_armor(const int y, const Panel panel)
 
 static void draw_name(const int y, const Panel panel)
 {
-        io::draw_text(
+        io::draw_text_center(
                 map::g_player->name_the(),
                 panel,
-                {0, y},
-                colors::title(),
+                {panels::w(panel) / 2, y},
+                colors::light_sepia(),
                 io::DrawBg::no);
 }
 
@@ -326,11 +341,11 @@ static void draw_class(const int y, const Panel panel)
                 bg_title = player_bon::bg_title(bg);
         }
 
-        io::draw_text(
+        io::draw_text_center(
                 bg_title,
                 panel,
-                {0, y},
-                colors::title(),
+                {panels::w(panel) / 2, y},
+                colors::light_sepia(),
                 io::DrawBg::no);
 }
 
@@ -338,15 +353,15 @@ static void draw_char_lvl_and_xp(const int y, const Panel panel)
 {
         const int xp_pct = game::xp_pct();
 
-        draw_bar(
-                xp_pct,
-                {0, y},
-                panels::w(panel),
-                panel,
-                colors::green().fraction(1.25));
+        // draw_bar(
+        //         xp_pct,
+        //         {0, y},
+        //         panels::w(panel),
+        //         panel,
+        //         colors::green().fraction(1.25));
 
         io::draw_text(
-                "Level:",
+                "Level",
                 panel,
                 {0, y},
                 label_color(),
@@ -372,7 +387,7 @@ static void draw_char_lvl_and_xp(const int y, const Panel panel)
 static void draw_dlvl(const int y, const Panel panel)
 {
         io::draw_text(
-                "Depth:",
+                "Depth",
                 panel,
                 {0, y},
                 label_color(),
@@ -391,7 +406,7 @@ static void draw_dlvl(const int y, const Panel panel)
 static void draw_lantern(const int y, const Panel panel)
 {
         io::draw_text(
-                "Lantern:",
+                "Lantern",
                 panel,
                 {0, y},
                 label_color(),
@@ -426,7 +441,7 @@ static void draw_lantern(const int y, const Panel panel)
 static void draw_med_suppl(const int y, const Panel panel)
 {
         io::draw_text(
-                "Med Suppl:",
+                "Med Suppl",
                 panel,
                 {0, y},
                 label_color(),
@@ -465,10 +480,9 @@ static void draw_properties(int y, const Panel panel)
                 io::draw_text(
                         name.str,
                         panel,
-                        // TODO: Make a separate property panel
-                        {panels::x0(Panel::map_gui_wpn), y},
+                        {0, y},
                         name.color,
-                        io::DrawBg::yes,
+                        io::DrawBg::no,
                         colors::black());
 
                 ++y;
@@ -482,43 +496,39 @@ namespace map_mode_gui {
 
 void draw()
 {
-        io::cover_panel(Panel::map_gui_cond, colors::black());
+        io::cover_panel(
+                Panel::map_gui_stats_border,
+                colors::extra_dark_gray());
 
-        // Weapon panel
-        auto panel = Panel::map_gui_wpn;
-        int x = 0;
+        io::draw_box(panels::area(Panel::map_gui_stats_border));
 
-        draw_wielded_wpn(x, panel);
+        const auto panel = Panel::map_gui_stats;
 
-        x = 45;
-
-        draw_alt_wpn(x, panel);
-
-        // Condition panel
         int y = 0;
-        panel = Panel::map_gui_cond;
-
-        draw_hp(y++, panel);
-        draw_sp(y++, panel);
-        draw_shock(y++, panel);
-        draw_insanity(y++, panel);
-        draw_weight(y++, panel);
-        draw_armor(y++, panel);
-
-        // Progress panel
-        y = 0;
-        panel = Panel::map_gui_progress;
 
         draw_name(y++, panel);
         draw_class(y++, panel);
         draw_char_lvl_and_xp(y++, panel);
         draw_dlvl(y++, panel);
+        draw_hp(y++, panel);
+        draw_sp(y++, panel);
+        draw_shock(y++, panel);
+        draw_insanity(y++, panel);
+
+        ++y;
+
+        draw_wielded_wpn(y++, panel);
+        draw_alt_wpn(y++, panel);
+
+        ++y;
+
         draw_lantern(y++, panel);
         draw_med_suppl(y++, panel);
+        draw_armor(y++, panel);
+        draw_weight(y++, panel);
 
-        // Properties
-        panel = Panel::map;
-        y = 1;
+        ++y;
+
         draw_properties(y, panel);
 
         // Turn number

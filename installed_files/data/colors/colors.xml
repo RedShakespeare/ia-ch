@@ -1,7 +1,7 @@
 <colors>
     <!-- BLACK -->
     <!-- Color 0 -->
-    <color name="black" rgb_hex="011418"/>
+    <color name="black" rgb_hex="000000"/>
     <!-- Color 8 -->
     <color name="gray" rgb_hex="808080"/>
 
@@ -67,7 +67,7 @@
 
     <color name="sepia" rgb_hex="887239"/>
     <color name="light_sepia" rgb_hex="e1cd9a"/>
-    <color name="dark_sepia" rgb_hex="5d543c"/>
+    <color name="dark_sepia" rgb_hex="423c2b"/>
 
     <color name="teal" rgb_hex="399d98"/>
     <color name="light_teal" rgb_hex="58e2e4"/>

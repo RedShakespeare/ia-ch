@@ -371,7 +371,8 @@ void PostmortemMenu::draw()
                 const std::string name = map::g_player->name_the();
 
                 const int name_x =
-                        ascii_graveyard_x0 + 44 - (((int)name.length() - 1) / 2);
+                        ascii_graveyard_x0 + 44 -
+                        (((int)name.length() - 1) / 2);
 
                 io::draw_text(
                         name,
@@ -507,7 +508,7 @@ void PostmortemInfo::draw()
                 io::draw_text(
                         line.str,
                         Panel::screen,
-                        P(0, screen_y),
+                        P(1, screen_y),
                         line.color);
 
                 ++screen_y;

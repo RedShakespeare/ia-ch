@@ -543,7 +543,7 @@ Color Door::color_default() const
         } else {
                 switch (m_type) {
                 case DoorType::wood:
-                        color = colors::brown();
+                        color = colors::dark_brown();
                         break;
 
                 case DoorType::metal:

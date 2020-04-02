@@ -288,7 +288,7 @@ void CharacterDescr::draw()
         for (int i = m_top_idx; i <= btm_nr; ++i) {
                 const ColoredString& line = m_lines[i];
 
-                io::draw_text(line.str, Panel::screen, P(0, y_pos), line.color);
+                io::draw_text(line.str, Panel::screen, P(1, y_pos), line.color);
 
                 ++y_pos;
         }
