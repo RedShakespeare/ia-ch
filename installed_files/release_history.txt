@@ -14,6 +14,7 @@ Gameplay
 
 User interface
 * The message log uses three lines instead of two (thus causing much fewer "more" prompts)
+* Improved the graphics of the borders around popups and panels
 * Added messages when Ooze type monsters or small crawling monsters pass though things things normally cannot be walked though
 
 Bug fixes

@@ -188,10 +188,6 @@ void draw_blast_at_seen_actors(
 
 void draw_main_menu_logo() {}
 
-void draw_box(
-        const R&,
-        const Color&) {}
-
 void draw_descr_box(const std::vector<ColoredString>&) {}
 
 void flush_input() {}

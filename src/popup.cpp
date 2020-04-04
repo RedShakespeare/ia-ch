@@ -10,6 +10,7 @@
 #include "browser.hpp"
 #include "common_text.hpp"
 #include "config.hpp"
+#include "draw_box.hpp"
 #include "io.hpp"
 #include "msg_log.hpp"
 #include "panel.hpp"
@@ -54,7 +55,7 @@ static int get_title_y(const int text_h)
         return title_y;
 }
 
-static void draw_box(const int text_w, const int text_h)
+static void draw_popup_box(const int text_w, const int text_h)
 {
         const int box_w = get_box_w(text_w + 2);
         const int box_h = get_box_h(text_h);
@@ -73,7 +74,7 @@ static void draw_box(const int text_w, const int text_h)
                 rect,
                 colors::extra_dark_gray());
 
-        io::draw_box(rect);
+        draw_box(rect, colors::gray());
 }
 
 static void draw_menu_popup(
@@ -96,7 +97,7 @@ static void draw_menu_popup(
                 text_w += 2;
         }
 
-        draw_box(text_w, text_h);
+        draw_popup_box(text_w, text_h);
 
         int y = get_title_y(text_h);
 
@@ -186,7 +187,7 @@ void msg(
 
         const int text_h = (int)lines.size() + 3;
 
-        draw_box(text_w, text_h);
+        draw_popup_box(text_w, text_h);
 
         int y = get_title_y(text_h);
 

@@ -8,6 +8,7 @@
 
 #include "actor_player.hpp"
 #include "browser.hpp"
+#include "draw_box.hpp"
 #include "game.hpp"
 #include "global.hpp"
 #include "init.hpp"
@@ -111,12 +112,12 @@ void PickBgState::update()
 
 void PickBgState::draw()
 {
-        io::draw_box(panels::area(Panel::screen));
+        draw_box(panels::area(Panel::screen));
 
         const int screen_center_x = panels::center_x(Panel::screen);
 
         io::draw_text_center(
-                "What is your background?",
+                " What is your background? ",
                 Panel::screen,
                 P(screen_center_x, 0),
                 colors::title(),
@@ -230,12 +231,12 @@ void PickOccultistState::update()
 
 void PickOccultistState::draw()
 {
-        io::draw_box(panels::area(Panel::screen));
+        draw_box(panels::area(Panel::screen));
 
         const int screen_center_x = panels::center_x(Panel::screen);
 
         io::draw_text_center(
-                "What is your spell domain?",
+                " What is your spell domain? ",
                 Panel::screen,
                 P(screen_center_x, 0),
                 colors::title(),
@@ -400,7 +401,7 @@ void PickTraitState::update()
 
 void PickTraitState::draw()
 {
-        io::draw_box(panels::area(Panel::screen));
+        draw_box(panels::area(Panel::screen));
 
         std::string title;
 
@@ -421,7 +422,7 @@ void PickTraitState::draw()
         const int screen_center_x = panels::center_x(Panel::screen);
 
         io::draw_text_center(
-                title,
+                " " + title + " ",
                 Panel::screen,
                 P(screen_center_x, 0),
                 colors::title(),
@@ -698,12 +699,12 @@ void EnterNameState::update()
 
 void EnterNameState::draw()
 {
-        io::draw_box(panels::area(Panel::screen));
+        draw_box(panels::area(Panel::screen));
 
         const int screen_center_x = panels::center_x(Panel::screen);
 
         io::draw_text_center(
-                "What is your name?",
+                " What is your name? ",
                 Panel::screen,
                 P(screen_center_x, 0),
                 colors::title(),
@@ -729,5 +730,5 @@ void EnterNameState::draw()
                 P((int)name_x0 - 1, y_name - 1),
                 P((int)name_x1 + 1, y_name + 1));
 
-        io::draw_box(box_rect);
+        draw_box(box_rect);
 }

@@ -10,6 +10,7 @@
 #include <vector>
 
 #include "actor_player.hpp"
+#include "draw_box.hpp"
 #include "init.hpp"
 #include "io.hpp"
 #include "map.hpp"
@@ -217,7 +218,7 @@ void draw()
                 Panel::log_border,
                 colors::extra_dark_gray());
 
-        io::draw_box(panels::area(Panel::log_border));
+        draw_box(panels::area(Panel::log_border));
 
         int y = 0;
 

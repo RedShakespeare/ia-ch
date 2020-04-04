@@ -16,6 +16,7 @@
 #include "colors.hpp"
 #include "gfx.hpp"
 #include "panel.hpp"
+#include "rect.hpp"
 
 namespace actor {
 class Actor;
@@ -61,6 +62,8 @@ void clear_screen();
 void on_fullscreen_toggled();
 
 P min_screen_gui_dims();
+
+R gui_to_px_rect(const R rect);
 
 // Scale from gui/map cell coordinate(s) to pixel coordinate(s)
 int gui_to_px_coords_x(int value);
@@ -173,11 +176,6 @@ void draw_blast_at_seen_actors(
         const Color& color);
 
 void draw_main_menu_logo();
-
-// TODO: Perhaps add an option to draw a background color inside the box
-void draw_box(
-        const R& border,
-        const Color& color = colors::dark_sepia());
 
 // Draws a description "box" for items, spells, etc. The parameter lines may be
 // empty, in which case an empty area is drawn.

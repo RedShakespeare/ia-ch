@@ -12,6 +12,7 @@
 #include <vector>
 
 #include "debug.hpp"
+#include "draw_box.hpp"
 #include "io.hpp"
 #include "panel.hpp"
 #include "pos.hpp"
@@ -134,10 +135,10 @@ void BrowseManual::on_start()
 
 void BrowseManual::draw()
 {
-        io::draw_box(panels::area(Panel::screen));
+        draw_box(panels::area(Panel::screen));
 
         io::draw_text_center(
-                "Browsing manual",
+                " Browsing manual ",
                 Panel::screen,
                 P(panels::center_x(Panel::screen), 0),
                 colors::title(),
@@ -166,7 +167,7 @@ void BrowseManual::draw()
                 const int y = labels_y0 + idx;
 
                 io::draw_text(
-                        key_str + page.title,
+                        " " + key_str + page.title + " ",
                         Panel::screen,
                         P(s_manual_text_x0, y),
                         draw_color);

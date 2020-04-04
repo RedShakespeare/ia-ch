@@ -8,6 +8,7 @@
 
 #include "actor_player.hpp"
 #include "colors.hpp"
+#include "draw_box.hpp"
 #include "game.hpp"
 #include "game_time.hpp"
 #include "inventory.hpp"
@@ -500,7 +501,7 @@ void draw()
                 Panel::map_gui_stats_border,
                 colors::extra_dark_gray());
 
-        io::draw_box(panels::area(Panel::map_gui_stats_border));
+        draw_box(panels::area(Panel::map_gui_stats_border));
 
         const auto panel = Panel::map_gui_stats;
 

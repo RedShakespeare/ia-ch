@@ -10,6 +10,7 @@
 
 #include "actor_player.hpp"
 #include "common_text.hpp"
+#include "draw_box.hpp"
 #include "io.hpp"
 #include "map.hpp"
 #include "map_parsing.hpp"
@@ -142,10 +143,10 @@ static R get_minimap_px_rect_on_screen(const R& map_area_explored)
 // -----------------------------------------------------------------------------
 void ViewMinimap::draw()
 {
-        io::draw_box(panels::area(Panel::screen));
+        draw_box(panels::area(Panel::screen));
 
         io::draw_text_center(
-                "Viewing minimap " + common_text::g_minimap_exit_hint,
+                " Viewing minimap " + common_text::g_minimap_exit_hint + " ",
                 Panel::screen,
                 P(panels::center_x(Panel::screen), 0),
                 colors::title());

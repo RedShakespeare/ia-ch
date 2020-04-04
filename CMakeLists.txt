@@ -43,6 +43,7 @@ set(COMMON_SRC
         include/direction.hpp
         include/disarm.hpp
         include/dmg_range.hpp
+        include/draw_box.hpp
         include/draw_map.hpp
         include/drop.hpp
         include/explosion.hpp
@@ -164,6 +165,7 @@ set(COMMON_SRC
         src/direction.cpp
         src/disarm.cpp
         src/dmg_range.cpp
+        src/draw_box.cpp
         src/draw_map.cpp
         src/drop.cpp
         src/explosion.cpp

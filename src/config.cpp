@@ -12,6 +12,7 @@
 #include "audio.hpp"
 #include "browser.hpp"
 #include "debug.hpp"
+#include "draw_box.hpp"
 #include "hints.hpp"
 #include "init.hpp"
 #include "io.hpp"
@@ -882,14 +883,14 @@ void ConfigState::update()
 
 void ConfigState::draw()
 {
-        io::draw_box(panels::area(Panel::screen));
+        draw_box(panels::area(Panel::screen));
 
         const int x1 = config::s_opt_values_x_pos;
 
         std::string str;
 
         io::draw_text_center(
-                "Options",
+                " [enter] to set option [space/esc] to exit ",
                 Panel::screen,
                 P(panels::center_x(Panel::screen), 0),
                 colors::title(),
@@ -1056,13 +1057,4 @@ void ConfigState::draw()
                                 color);
                 }
         } // for each label
-
-        io::draw_text_center(
-                "[enter] to set option [space/esc] to exit",
-                Panel::screen,
-                P(panels::center_x(Panel::screen), 0),
-                colors::title(),
-                io::DrawBg::yes,
-                colors::black(),
-                true); // Allow pixel-level adjustment
 }

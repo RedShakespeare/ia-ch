@@ -7,6 +7,7 @@
 #include "info_screen_state.hpp"
 
 #include "common_text.hpp"
+#include "draw_box.hpp"
 #include "io.hpp"
 #include "panel.hpp"
 #include "pos.hpp"
@@ -19,7 +20,7 @@ int InfoScreenState::max_nr_lines_on_screen() const
 
 void InfoScreenState::draw_interface() const
 {
-        io::draw_box(panels::area(Panel::screen));
+        draw_box(panels::area(Panel::screen));
 
         // const int screen_w = panels::w(Panel::screen);
         const int screen_h = panels::h(Panel::screen);

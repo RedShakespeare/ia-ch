@@ -13,6 +13,7 @@
 #include <vector>
 
 #include "actor_player.hpp"
+#include "draw_box.hpp"
 #include "game.hpp"
 #include "game_time.hpp"
 #include "highscore.hpp"
@@ -272,7 +273,7 @@ void BrowseHighscore::draw()
                 return;
         }
 
-        io::draw_box(panels::area(Panel::screen));
+        draw_box(panels::area(Panel::screen));
 
         const Panel panel = Panel::screen;
 
@@ -280,7 +281,7 @@ void BrowseHighscore::draw()
                 "Browsing high scores [select] to view game summary";
 
         io::draw_text_center(
-                title,
+                " " + title + " ",
                 panel,
                 P(panels::center_x(Panel::screen), 0),
                 colors::title(),

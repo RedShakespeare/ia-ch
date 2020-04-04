@@ -16,6 +16,7 @@
 #include "audio.hpp"
 #include "browser.hpp"
 #include "common_text.hpp"
+#include "draw_box.hpp"
 #include "drop.hpp"
 #include "game_time.hpp"
 #include "io.hpp"
@@ -559,14 +560,14 @@ void BrowseInv::draw()
 {
         io::clear_screen();
 
-        io::draw_box(panels::area(Panel::screen));
+        draw_box(panels::area(Panel::screen));
 
         const int browser_y = m_browser.y();
 
         const auto nr_slots = (size_t)SlotId::END;
 
         io::draw_text_center(
-                "Browsing inventory " + common_text::g_screen_exit_hint,
+                " Browsing inventory " + common_text::g_screen_exit_hint + " ",
                 Panel::screen,
                 P(panels::center_x(Panel::screen), 0),
                 colors::title());
@@ -833,12 +834,12 @@ void Apply::draw()
 
         io::clear_screen();
 
-        io::draw_box(panels::area(Panel::screen));
+        draw_box(panels::area(Panel::screen));
 
         const int browser_y = m_browser.y();
 
         io::draw_text_center(
-                "Apply which item? " + common_text::g_screen_exit_hint,
+                " Apply which item? " + common_text::g_screen_exit_hint + " ",
                 Panel::screen,
                 P(panels::center_x(Panel::screen), 0),
                 colors::title());
@@ -940,10 +941,10 @@ void Drop::draw()
 {
         io::clear_screen();
 
-        io::draw_box(panels::area(Panel::screen));
+        draw_box(panels::area(Panel::screen));
 
         io::draw_text_center(
-                "Drop which item? " + common_text::g_screen_exit_hint,
+                " Drop which item? " + common_text::g_screen_exit_hint + " ",
                 Panel::screen,
                 P(panels::center_x(Panel::screen), 0),
                 colors::title());
@@ -1147,7 +1148,7 @@ void Equip::on_start()
 
 void Equip::draw()
 {
-        io::draw_box(panels::area(Panel::screen));
+        draw_box(panels::area(Panel::screen));
 
         const bool has_item = !m_filtered_backpack_indexes.empty();
 
@@ -1188,7 +1189,7 @@ void Equip::draw()
 
         if (!has_item) {
                 io::draw_text(
-                        heading + " " + common_text::g_any_key_hint,
+                        " " + heading + " " + common_text::g_any_key_hint + " ",
                         Panel::screen,
                         P(0, 0),
                         colors::light_white());
@@ -1199,7 +1200,7 @@ void Equip::draw()
         // An item is available
 
         io::draw_text_center(
-                heading + " " + common_text::g_screen_exit_hint,
+                " " + heading + " " + common_text::g_screen_exit_hint + " ",
                 Panel::screen,
                 P(panels::center_x(Panel::screen), 0),
                 colors::title());
@@ -1415,12 +1416,13 @@ void SelectThrow::on_start()
 
 void SelectThrow::draw()
 {
-        io::draw_box(panels::area(Panel::screen));
+        draw_box(panels::area(Panel::screen));
 
         io::draw_text_center(
                 std::string(
-                        "Throw which item? " +
-                        common_text::g_screen_exit_hint),
+                        " Throw which item? " +
+                        common_text::g_screen_exit_hint) +
+                        " ",
                 Panel::screen,
                 P(panels::center_x(Panel::screen), 0),
                 colors::title());
@@ -1621,12 +1623,12 @@ void SelectIdentify::draw()
 {
         io::clear_screen();
 
-        io::draw_box(panels::area(Panel::screen));
+        draw_box(panels::area(Panel::screen));
 
         const int browser_y = m_browser.y();
 
         io::draw_text_center(
-                "Identify which item?",
+                " Identify which item? ",
                 Panel::screen,
                 P(panels::center_x(Panel::screen), 0),
                 colors::title());

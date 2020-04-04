@@ -13,6 +13,7 @@
 #include "audio.hpp"
 #include "colors.hpp"
 #include "create_character.hpp"
+#include "draw_box.hpp"
 #include "game.hpp"
 #include "game_time.hpp"
 #include "highscore.hpp"
@@ -227,7 +228,7 @@ void MainMenuState::draw()
         io::clear_screen();
 
         if (config::is_tiles_mode()) {
-                io::draw_box(panels::area(Panel::screen));
+                draw_box(panels::area(Panel::screen));
         }
 
         if (config::is_tiles_mode()) {
@@ -239,7 +240,7 @@ void MainMenuState::draw()
                         Panel::screen,
                         {panels::center_x(Panel::screen),
                          (panels::h(Panel::screen) * 3) / 12},
-                        colors::title());
+                        colors::gold());
         }
 
 #ifndef NDEBUG
@@ -346,7 +347,7 @@ void MainMenuState::draw()
         build_str += ", " + version_info::g_date_str;
 
         io::draw_text_right(
-                build_str,
+                " " + build_str + " ",
                 Panel::screen,
                 {panels::x1(Panel::screen) - 1, 0},
                 colors::gray());

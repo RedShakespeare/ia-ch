@@ -655,24 +655,6 @@ static void draw_character_at_px(
                 color);
 }
 
-static R gui_to_px_rect(const R rect)
-{
-        const int gui_cell_px_w = config::gui_cell_px_w();
-        const int gui_cell_px_h = config::gui_cell_px_h();
-
-        R px_rect;
-
-        px_rect = rect.scaled_up(gui_cell_px_w, gui_cell_px_h);
-
-        // We must include ALL pixels in the given gui area
-        px_rect.p1 =
-                px_rect.p1.with_offsets(
-                        gui_cell_px_w - 1,
-                        gui_cell_px_h - 1);
-
-        return px_rect;
-}
-
 static int panel_px_w(const Panel panel)
 {
         return io::gui_to_px_coords_x(panels::w(panel));
@@ -1099,6 +1081,22 @@ void on_fullscreen_toggled()
         update_screen();
 }
 
+R gui_to_px_rect(const R rect)
+{
+        const int gui_cell_px_w = config::gui_cell_px_w();
+        const int gui_cell_px_h = config::gui_cell_px_h();
+
+        R px_rect = rect.scaled_up(gui_cell_px_w, gui_cell_px_h);
+
+        // We must include ALL pixels in the given gui area
+        px_rect.p1 =
+                px_rect.p1.with_offsets(
+                        gui_cell_px_w - 1,
+                        gui_cell_px_h - 1);
+
+        return px_rect;
+}
+
 int gui_to_px_coords_x(const int value)
 {
         return value * config::gui_cell_px_w();
@@ -1419,117 +1417,6 @@ void cover_area(
 void cover_cell(const Panel panel, const P offset)
 {
         cover_area(panel, offset, P(1, 1));
-}
-
-void draw_box(const R& border, const Color& color)
-{
-        const R outer_px_border = gui_to_px_rect(border);
-
-        const int gui_cell_w = config::gui_cell_px_w();
-        const int gui_cell_h = config::gui_cell_px_h();
-
-        const int x_offset = gui_cell_w / 2;
-        const int y_offset = gui_cell_h / 2;
-
-        const int x0 = outer_px_border.p0.x + x_offset;
-        const int y0 = outer_px_border.p0.y + y_offset;
-        const int x1 = outer_px_border.p1.x - x_offset;
-        const int y1 = outer_px_border.p1.y - y_offset;
-
-        draw_rectangle_filled(
-                R(x0, y0, x1, y0),
-                color);
-
-        draw_rectangle_filled(
-                R(x0, y1, x1, y1),
-                color);
-
-        draw_rectangle_filled(
-                R(x0, y0, x0, y1),
-                color);
-
-        draw_rectangle_filled(
-                R(x1, y0, x1, y1),
-                color);
-
-        // Vertical bars
-        // const int y0_vert = border.p0.y + 1;
-        // const int y1_vert = border.p1.y - 1;
-
-        // for (int y = y0_vert; y <= y1_vert; ++y)
-        // {
-        //         draw_symbol(
-        //                 gfx::TileId::popup_ver,
-        //                 '|',
-        //                 panel,
-        //                 P(border.p0.x, y),
-        //                 color);
-
-        //         draw_symbol(
-        //                 gfx::TileId::popup_ver,
-        //                 '|',
-        //                 panel,
-        //                 P(border.p1.x, y),
-        //                 color);
-        // }
-
-        // Horizontal bars
-        // const int x0_vert = border.p0.x + 1;
-        // const int x1_vert = border.p1.x - 1;
-
-        // for (int x = x0_vert; x <= x1_vert; ++x)
-        // {
-        //         draw_symbol(
-        //                 gfx::TileId::popup_hor,
-        //                 '-',
-        //                 panel,
-        //                 P(x, border.p0.y),
-        //                 color);
-
-        //         draw_symbol(
-        //                 gfx::TileId::popup_hor,
-        //                 '-',
-        //                 panel,
-        //                 P(x, border.p1.y),
-        //                 color);
-        // }
-
-        // const std::vector<P> corners
-        // {
-        //         {border.p0.x, border.p0.y}, //Top left
-        //         {border.p1.x, border.p0.y}, //Top right
-        //         {border.p0.x, border.p1.y}, //Btm left
-        //         {border.p1.x, border.p1.y}  //Brm right
-        // };
-
-        // Corners
-        // draw_symbol(
-        //         gfx::TileId::popup_top_l,
-        //         '+',
-        //         panel,
-        //         corners[0],
-        //         color);
-
-        // draw_symbol(
-        //         gfx::TileId::popup_top_r,
-        //         '+',
-        //         panel,
-        //         corners[1],
-        //         color);
-
-        // draw_symbol(
-        //         gfx::TileId::popup_btm_l,
-        //         '+',
-        //         panel,
-        //         corners[2],
-        //         color);
-
-        // draw_symbol(
-        //         gfx::TileId::popup_btm_r,
-        //         '+',
-        //         panel,
-        //         corners[3],
-        //         color);
 }
 
 void draw_descr_box(const std::vector<ColoredString>& lines)

@@ -15,6 +15,7 @@
 #include "audio.hpp"
 #include "browser.hpp"
 #include "create_character.hpp"
+#include "draw_box.hpp"
 #include "draw_map.hpp"
 #include "game.hpp"
 #include "highscore.hpp"
@@ -332,7 +333,7 @@ void PostmortemMenu::draw()
         P menu_pos;
 
         if (config::is_tiles_mode()) {
-                io::draw_box(panels::area(Panel::screen));
+                draw_box(panels::area(Panel::screen));
 
                 menu_pos =
                         panels::center(Panel::screen)
