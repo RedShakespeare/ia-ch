@@ -34,6 +34,13 @@ P min_screen_gui_dims()
         return {};
 }
 
+R gui_to_px_rect(const R rect)
+{
+        (void)rect;
+
+        return {};
+}
+
 int gui_to_px_coords_x(const int)
 {
         return 0;
