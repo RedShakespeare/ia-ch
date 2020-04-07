@@ -33,6 +33,7 @@ set(COMMON_SRC
         include/audio_data.hpp
         include/bot.hpp
         include/browser.hpp
+        include/bsp.hpp
         include/character_descr.hpp
         include/close.hpp
         include/colors.hpp
@@ -155,6 +156,7 @@ set(COMMON_SRC
         src/audio_data.cpp
         src/bot.cpp
         src/browser.cpp
+        src/bsp.cpp
         src/character_descr.cpp
         src/close.cpp
         src/colors.cpp
@@ -207,6 +209,7 @@ set(COMMON_SRC
         src/map_templates.cpp
         src/map_travel.cpp
         src/mapgen_aux_rooms.cpp
+        src/mapgen_bsp_split_rooms.cpp
         src/mapgen_connect_rooms.cpp
         src/mapgen_decorate.cpp
         src/mapgen_doors.cpp

@@ -135,6 +135,17 @@ bool MapBuilderStd::build_specific()
         }
 
         // ---------------------------------------------------------------------
+        // If there are too few rooms at this point, invalidate the map
+        // ---------------------------------------------------------------------
+        const size_t min_nr_rooms = 5;
+
+        if (map::g_room_list.size() < min_nr_rooms) {
+                mapgen::g_is_map_valid = false;
+
+                return false;
+        }
+
+        // ---------------------------------------------------------------------
         // Make auxiliary rooms
         // ---------------------------------------------------------------------
 #ifndef NDEBUG
@@ -153,6 +164,17 @@ bool MapBuilderStd::build_specific()
 #endif // NDEBUG
 
         mapgen::make_aux_rooms(regions);
+
+        if (!mapgen::g_is_map_valid) {
+                return false;
+        }
+
+        // ---------------------------------------------------------------------
+        // BSP split rooms
+        // ---------------------------------------------------------------------
+        if (map::g_dlvl <= g_dlvl_last_mid_game) {
+                mapgen::bsp_split_rooms();
+        }
 
         if (!mapgen::g_is_map_valid) {
                 return false;
@@ -184,8 +206,9 @@ bool MapBuilderStd::build_specific()
                 return false;
         }
 
-        TRACE << "Sorting the room list according to room type" << std::endl;
-
+        // ---------------------------------------------------------------------
+        // Sort rooms according to room type
+        // ---------------------------------------------------------------------
         // NOTE: This allows common rooms to assume that they are rectangular
         // and have their walls untouched when their reshaping functions run.
 
@@ -197,18 +220,6 @@ bool MapBuilderStd::build_specific()
                 });
 
         if (!mapgen::g_is_map_valid) {
-                return false;
-        }
-
-        // ---------------------------------------------------------------------
-        // If there are too few rooms at this point (including main rooms,
-        // sub rooms, aux rooms, ...), then invalidate the map
-        // ---------------------------------------------------------------------
-        const size_t min_nr_rooms = 8;
-
-        if (map::g_room_list.size() < min_nr_rooms) {
-                mapgen::g_is_map_valid = false;
-
                 return false;
         }
 
@@ -351,11 +362,14 @@ bool MapBuilderStd::build_specific()
                 terrain::Id::liquid_deep,
                 terrain::Id::stairs};
 
+        const auto is_free_terrain_parser =
+                map_parsers::IsAnyOfTerrains(free_terrains);
+
         for (int x = 0; x < blocked.w(); ++x) {
                 for (int y = 0; y < blocked.h(); ++y) {
                         const P p(x, y);
 
-                        if (map_parsers::IsAnyOfTerrains(free_terrains).cell(p)) {
+                        if (is_free_terrain_parser.cell(p)) {
                                 blocked.at(p) = false;
                         }
                 }
@@ -547,8 +561,15 @@ bool MapBuilderStd::build_specific()
         // Occasionally make the whole level dark
         // ---------------------------------------------------------------------
         if (map::g_dlvl > 1) {
-                const int make_drk_pct =
-                        (map::g_dlvl <= g_dlvl_last_early_game) ? 1 : (map::g_dlvl <= g_dlvl_last_mid_game) ? 2 : 15;
+                int make_drk_pct;
+
+                if (map::g_dlvl <= g_dlvl_last_early_game) {
+                        make_drk_pct = 1;
+                } else if (map::g_dlvl <= g_dlvl_last_mid_game) {
+                        make_drk_pct = 2;
+                } else {
+                        make_drk_pct = 15;
+                }
 
                 if (rnd::percent(make_drk_pct)) {
                         for (size_t i = 0; i < map::nr_cells(); ++i) {

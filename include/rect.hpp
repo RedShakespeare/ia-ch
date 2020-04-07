@@ -7,6 +7,8 @@
 #ifndef RECT_HPP
 #define RECT_HPP
 
+#include <vector>
+
 #include "pos.hpp"
 
 struct R {
@@ -93,6 +95,21 @@ public:
                 return {
                         p0.scaled_up(x_factor, y_factor),
                         p1.scaled_up(x_factor, y_factor)};
+        }
+
+        std::vector<P> positions() const
+        {
+                std::vector<P> result;
+
+                result.reserve(area());
+
+                for (int x = p0.x; x <= p1.x; ++x) {
+                        for (int y = p0.y; y <= p1.y; ++y) {
+                                result.push_back({x, y});
+                        }
+                }
+
+                return result;
         }
 
         P p0 {};

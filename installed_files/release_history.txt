@@ -11,11 +11,12 @@ Gameplay
 * Stuck doors are drawn with a different color, and have "stuck" added to their names if the player is adjacent to the door
 * Added trait "Crippling Strikes" - melee attacks have 60% chance to Weaken the target for 2-3 turns
 * Small crawling creatures (rats, snakes, crawling hands, etc) can pass through some terrain types such as gates and piles of debris
+* The standard map generator can now also BSP split rooms, for more map variety
 
 User interface
 * The message log uses three lines instead of two (thus causing much fewer "more" prompts)
 * Improved the graphics of the borders around popups and panels
-* Added messages when Ooze type monsters or small crawling monsters pass though things things normally cannot be walked though
+* Added messages when Ooze type monsters or small crawling monsters pass though things normally cannot be walked though
 
 Bug fixes
 * Fixed a bug that prevented messages for Rogues sensing artifacts on the dungeon floor (there were only messages for sensing artifacts in item containers, such as tombs)

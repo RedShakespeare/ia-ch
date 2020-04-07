@@ -205,17 +205,19 @@ void make_pillars_in_room(const Room& room)
         const P& room_p0(room.m_r.p0);
         const P& room_p1(room.m_r.p1);
 
-        auto is_free = [](const P& p) {
+        auto allow_place_at = [](const P& p) {
                 for (const P& d : dir_utils::g_dir_list_w_center) {
                         const P check_p(p + d);
 
                         const terrain::Id id =
                                 map::g_cells.at(check_p).terrain->id();
 
-                        if (id == terrain::Id::wall) {
+                        if ((id == terrain::Id::wall) ||
+                            (id == terrain::Id::grate)) {
                                 return false;
                         }
                 }
+
                 return true;
         };
 
@@ -233,9 +235,15 @@ void make_pillars_in_room(const Room& room)
                 for (int x = room_p0.x + 1; x <= room_p1.x - 1; x += dx) {
                         const P p(x, y);
 
-                        if (is_free(p) && rnd::one_in(place_one_in_n)) {
-                                map::put(new terrain::Wall(p));
+                        if (!rnd::one_in(place_one_in_n)) {
+                                continue;
                         }
+
+                        if (!allow_place_at(p)) {
+                                continue;
+                        }
+
+                        map::put(new terrain::Wall(p));
                 }
         }
 }
@@ -415,7 +423,47 @@ void valid_corridor_entries(const Room& room, std::vector<P>& out)
         TRACE_FUNC_END_VERBOSE;
 }
 
-bool is_choke_point(const P& p, const Array2<bool>& blocked, ChokePointData* out)
+bool is_passage(const P& pos, const Array2<bool>& blocked)
+{
+        ASSERT(pos.x > 0);
+        ASSERT(pos.y > 0);
+        ASSERT(pos.x < blocked.w());
+        ASSERT(pos.y < blocked.h());
+
+        bool is_passage_ver = true;
+        bool is_passage_hor = true;
+
+        for (int d = -1; d <= 1; d++) {
+                if (blocked.at({pos.x + d, pos.y})) {
+                        // Blocked by wall in horziontal direction
+                        is_passage_hor = false;
+                }
+
+                if (blocked.at({pos.x, pos.y + d})) {
+                        // Blocked by wall in vertical direction
+                        is_passage_ver = false;
+                }
+
+                if (d != 0) {
+                        if (!blocked.at({pos.x, pos.y + d})) {
+                                // Not surrounded by walls vertically
+                                is_passage_hor = false;
+                        }
+
+                        if (!blocked.at({pos.x + d, pos.y})) {
+                                // Not surrounded by walls horizontally
+                                is_passage_ver = false;
+                        }
+                }
+        }
+
+        return is_passage_hor || is_passage_ver;
+}
+
+bool is_choke_point(
+        const P& p,
+        const Array2<bool>& blocked,
+        ChokePointData* out)
 {
         // Assuming that the tested position is free
         ASSERT(!blocked.at(p));

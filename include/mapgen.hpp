@@ -9,6 +9,7 @@
 
 #include <vector>
 
+#include "array2.hpp"
 #include "map.hpp"
 #include "map_templates.hpp"
 
@@ -59,7 +60,11 @@ void reserve_river(Region regions[3][3]);
 
 void make_sub_rooms();
 
+void bsp_split_rooms();
+
 void decorate();
+
+bool allow_make_grate_at(const P& pos, const Array2<bool>& blocked);
 
 void make_doors();
 
@@ -105,6 +110,19 @@ void connect_rooms();
 void valid_corridor_entries(
         const Room& room,
         std::vector<P>& out);
+
+// Used for finding suitable door positions, i.e. positions such as:
+// .#.
+// .x.
+// .#.
+//
+// ('#' = blocked, '.' = free)
+//
+// NOTE: Only the cells at or adjacent to 'pos' are checked. Therefore,
+// 'blocked' may be just a tiny 3x3 array (if so, 'pos' must be the center
+// position!), or it can be a full sized map.
+//
+bool is_passage(const P& pos, const Array2<bool>& blocked);
 
 bool is_choke_point(
         const P& p,
