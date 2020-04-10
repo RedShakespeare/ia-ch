@@ -52,6 +52,7 @@ set(COMMON_SRC
         include/fov.hpp
         include/game.hpp
         include/game_commands.hpp
+        include/game_over.hpp
         include/game_time.hpp
         include/gfx.hpp
         include/global.hpp
@@ -175,6 +176,7 @@ set(COMMON_SRC
         src/fov.cpp
         src/game.cpp
         src/game_commands.cpp
+        src/game_over.cpp
         src/game_time.cpp
         src/gfx.cpp
         src/gods.cpp

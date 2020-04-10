@@ -13,6 +13,8 @@ namespace common_text {
 
 extern const std::string g_screen_exit_hint;
 extern const std::string g_minimap_exit_hint;
+extern const std::string g_postmortem_exit_hint;
+extern const std::string g_scroll_hint;
 extern const std::string g_scrollable_info_screen_hint;
 extern const std::string g_next_page_up_hint;
 extern const std::string g_next_page_down_hint;

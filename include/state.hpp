@@ -31,7 +31,6 @@ enum class StateId {
         pick_name,
         pick_trait,
         postmortem_info,
-        postmortem_menu,
         view_actor,
         view_minimap
 };

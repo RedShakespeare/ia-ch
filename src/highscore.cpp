@@ -13,6 +13,7 @@
 #include <vector>
 
 #include "actor_player.hpp"
+#include "common_text.hpp"
 #include "draw_box.hpp"
 #include "game.hpp"
 #include "game_time.hpp"
@@ -167,18 +168,23 @@ int HighscoreEntry::calculate_score() const
         };
 
         const double xp_factor = 1.0 + xp_db;
-
         const double dlvl_factor = 1.0 + (dlvl_db / dlvl_last_db);
-
         const double turns_factor = calc_turns_factor(turns_db);
-
         const double turns_factor_win = win ? calc_turns_factor(0.0) : 1.0;
-
         const double sanity_factor = calc_sanity_factor(ins_db);
-
         const double sanity_factor_win = win ? calc_sanity_factor(0.0) : 1.0;
 
-        return (int)(xp_factor * dlvl_factor * turns_factor * turns_factor_win * sanity_factor * sanity_factor_win);
+        const double result_db =
+                xp_factor *
+                dlvl_factor *
+                turns_factor *
+                turns_factor_win *
+                sanity_factor *
+                sanity_factor_win;
+
+        const int result = (int)result_db;
+
+        return result;
 }
 
 // -----------------------------------------------------------------------------
@@ -277,13 +283,22 @@ void BrowseHighscore::draw()
 
         const Panel panel = Panel::screen;
 
-        const std::string title =
-                "Browsing high scores [select] to view game summary";
+        io::draw_text_center(
+                " Browsing high scores ",
+                panel,
+                {panels::center_x(Panel::screen), 0},
+                colors::title(),
+                io::DrawBg::yes,
+                colors::black(),
+                true); // Allow pixel-level adjustment
 
         io::draw_text_center(
-                " " + title + " ",
+                std::string(
+                        " [select] to view game summary " +
+                        common_text::g_screen_exit_hint +
+                        " "),
                 panel,
-                P(panels::center_x(Panel::screen), 0),
+                {panels::center_x(Panel::screen), panels::y1(Panel::screen)},
                 colors::title(),
                 io::DrawBg::yes,
                 colors::black(),

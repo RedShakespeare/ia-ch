@@ -13,6 +13,7 @@
 #include "create_character.hpp"
 #include "draw_map.hpp"
 #include "game_commands.hpp"
+#include "game_over.hpp"
 #include "game_time.hpp"
 #include "init.hpp"
 #include "io.hpp"
@@ -470,7 +471,7 @@ void GameState::update()
 
                 states::pop();
 
-                states::push(std::make_unique<PostmortemMenu>(IsWin::no));
+                on_game_over(IsWin::no);
 
                 return;
         }

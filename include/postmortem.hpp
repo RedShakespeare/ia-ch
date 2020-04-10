@@ -7,40 +7,19 @@
 #ifndef POSTMORTEM_HPP
 #define POSTMORTEM_HPP
 
+#include <string>
+#include <vector>
+
 #include "browser.hpp"
+#include "colors.hpp"
 #include "global.hpp"
 #include "info_screen_state.hpp"
 #include "state.hpp"
 
-class PostmortemMenu : public State {
-public:
-        PostmortemMenu(IsWin is_win);
-
-        void on_start() override;
-
-        void on_popped() override;
-
-        void draw() override;
-
-        void update() override;
-
-        StateId id() override;
-
-private:
-        void make_memorial_file(std::string path) const;
-
-        MenuBrowser m_browser;
-
-        IsWin m_is_win;
-
-        std::vector<std::string> m_ascii_graveyard_lines;
-};
-
 class PostmortemInfo : public InfoScreenState {
 public:
-        PostmortemInfo() :
-                m_top_idx(0)
-        {}
+        PostmortemInfo(const std::vector<ColoredString>& lines) :
+                m_lines(lines) {}
 
         void draw() override;
 
@@ -59,7 +38,8 @@ private:
                 return InfoScreenType::scrolling;
         }
 
-        int m_top_idx;
+        const std::vector<ColoredString> m_lines {};
+        int m_top_idx {0};
 };
 
 #endif // POSTMORTEM_HPP

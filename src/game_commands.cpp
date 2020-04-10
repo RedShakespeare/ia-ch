@@ -18,6 +18,7 @@
 #include "config.hpp"
 #include "disarm.hpp"
 #include "game.hpp"
+#include "game_over.hpp"
 #include "game_time.hpp"
 #include "init.hpp"
 #include "item_factory.hpp"
@@ -555,12 +556,9 @@ void handle(const GameCmd cmd)
 
                         states::pop();
 
-                        states::push(
-                                std::make_unique<PostmortemMenu>(
-                                        IsWin::yes));
+                        on_game_over(IsWin::yes);
 
-                        states::push(
-                                std::make_unique<WinGameState>());
+                        states::push(std::make_unique<WinGameState>());
 
                         return;
                 }

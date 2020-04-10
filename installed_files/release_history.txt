@@ -18,6 +18,7 @@ User interface
 * Improved the graphics of the borders around popups and panels
 * Added messages when Ooze type monsters or small crawling monsters pass though things normally cannot be walked though
 * All menus have shortcut keys
+* Removed the "game over" menu - instead the game summary is first shown, then the high scores, then you return to the main menu
 
 Bug fixes
 * Fixed a bug that prevented messages for Rogues sensing artifacts on the dungeon floor (there were only messages for sensing artifacts in item containers, such as tombs)
