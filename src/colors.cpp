@@ -54,9 +54,12 @@ static SDL_Color s_teal;
 static SDL_Color s_light_teal;
 static SDL_Color s_dark_teal;
 
+// Defined in colors_gui.xml
 static SDL_Color s_text;
 static SDL_Color s_menu_highlight;
 static SDL_Color s_menu_dark;
+static SDL_Color s_menu_key_highlight;
+static SDL_Color s_menu_key_dark;
 static SDL_Color s_title;
 static SDL_Color s_msg_good;
 static SDL_Color s_msg_bad;
@@ -156,7 +159,7 @@ static void load_gui_color(
                       << "name: \"" << name << "\""
                       << std::endl;
 
-                const auto color = colors::name_to_color(name);
+                const auto color = colors::name_to_color(name).value();
 
                 target_color = color.sdl_color();
 
@@ -220,6 +223,8 @@ static void load_gui_colors()
         load_gui_color(gui_e, "text", s_text);
         load_gui_color(gui_e, "menu_highlight", s_menu_highlight);
         load_gui_color(gui_e, "menu_dark", s_menu_dark);
+        load_gui_color(gui_e, "menu_key_highlight", s_menu_key_highlight);
+        load_gui_color(gui_e, "menu_key_dark", s_menu_key_dark);
         load_gui_color(gui_e, "title", s_title);
         load_gui_color(gui_e, "message_good", s_msg_good);
         load_gui_color(gui_e, "message_bad", s_msg_bad);
@@ -233,24 +238,17 @@ static void load_gui_colors()
 // Color
 //-----------------------------------------------------------------------------
 Color::Color() :
-        m_sdl_color({0, 0, 0, 0}),
-        m_is_defined(false)
+        m_sdl_color({0, 0, 0, 0})
 {
 }
 
-Color::Color(const Color& other)
-
-        = default;
-
 Color::Color(uint8_t r, uint8_t g, uint8_t b) :
-        m_sdl_color({r, g, b, 0}),
-        m_is_defined(true)
+        m_sdl_color({r, g, b, 0})
 {
 }
 
 Color::Color(const SDL_Color& sdl_color) :
-        m_sdl_color(sdl_color),
-        m_is_defined(true)
+        m_sdl_color(sdl_color)
 {
 }
 
@@ -263,23 +261,24 @@ Color& Color::operator=(const Color& other)
         }
 
         m_sdl_color = other.m_sdl_color;
-        m_is_defined = other.m_is_defined;
 
         return *this;
 }
 
 bool Color::operator==(const Color& other) const
 {
-        return m_sdl_color.r == other.m_sdl_color.r &&
+        return (
+                m_sdl_color.r == other.m_sdl_color.r &&
                 m_sdl_color.g == other.m_sdl_color.g &&
-                m_sdl_color.b == other.m_sdl_color.b;
+                m_sdl_color.b == other.m_sdl_color.b);
 }
 
 bool Color::operator!=(const Color& other) const
 {
-        return m_sdl_color.r != other.m_sdl_color.r ||
+        return (
+                m_sdl_color.r != other.m_sdl_color.r ||
                 m_sdl_color.g != other.m_sdl_color.g ||
-                m_sdl_color.b != other.m_sdl_color.b;
+                m_sdl_color.b != other.m_sdl_color.b);
 }
 
 Color Color::fraction(const double div)
@@ -292,16 +291,11 @@ Color Color::fraction(const double div)
         return result;
 }
 
-bool Color::is_defined() const
-{
-        return m_is_defined;
-}
-
 void Color::clear()
 {
-        m_sdl_color.r = m_sdl_color.g = m_sdl_color.b = 0;
-
-        m_is_defined = false;
+        m_sdl_color.r = 0;
+        m_sdl_color.g = 0;
+        m_sdl_color.b = 0;
 }
 
 SDL_Color Color::sdl_color() const
@@ -329,8 +323,6 @@ void Color::set_rgb(const uint8_t r, const uint8_t g, const uint8_t b)
         m_sdl_color.r = r;
         m_sdl_color.g = g;
         m_sdl_color.b = b;
-
-        m_is_defined = true;
 }
 
 void Color::randomize_rgb(const int range)
@@ -364,7 +356,7 @@ void init()
         TRACE_FUNC_END;
 }
 
-Color name_to_color(const std::string& name)
+std::optional<Color> name_to_color(const std::string& name)
 {
         auto search = std::find_if(
                 std::begin(s_str_color_pairs),
@@ -374,12 +366,7 @@ Color name_to_color(const std::string& name)
                 });
 
         if (search == std::end(s_str_color_pairs)) {
-                TRACE << "No color definition stored for color with name: "
-                      << name << std::endl;
-
-                ASSERT(false);
-
-                return Color();
+                return {};
         }
 
         return search->second;
@@ -415,167 +402,167 @@ std::string color_to_name(const Color& color)
 //-----------------------------------------------------------------------------
 Color black()
 {
-        return Color(s_black);
+        return {s_black};
 }
 
 Color extra_dark_gray()
 {
-        return Color(s_extra_dark_gray);
+        return {s_extra_dark_gray};
 }
 
 Color dark_gray()
 {
-        return Color(s_dark_gray);
+        return {s_dark_gray};
 }
 
 Color gray()
 {
-        return Color(s_gray);
+        return {s_gray};
 }
 
 Color white()
 {
-        return Color(s_white);
+        return {s_white};
 }
 
 Color light_white()
 {
-        return Color(s_light_white);
+        return {s_light_white};
 }
 
 Color red()
 {
-        return Color(s_red);
+        return {s_red};
 }
 
 Color light_red()
 {
-        return Color(s_light_red);
+        return {s_light_red};
 }
 
 Color dark_green()
 {
-        return Color(s_dark_green);
+        return {s_dark_green};
 }
 
 Color green()
 {
-        return Color(s_green);
+        return {s_green};
 }
 
 Color light_green()
 {
-        return Color(s_light_green);
+        return {s_light_green};
 }
 
 Color dark_yellow()
 {
-        return Color(s_dark_yellow);
+        return {s_dark_yellow};
 }
 
 Color yellow()
 {
-        return Color(s_yellow);
+        return {s_yellow};
 }
 
 Color blue()
 {
-        return Color(s_blue);
+        return {s_blue};
 }
 
 Color light_blue()
 {
-        return Color(s_light_blue);
+        return {s_light_blue};
 }
 
 Color magenta()
 {
-        return Color(s_magenta);
+        return {s_magenta};
 }
 
 Color light_magenta()
 {
-        return Color(s_light_magenta);
+        return {s_light_magenta};
 }
 
 Color cyan()
 {
-        return Color(s_cyan);
+        return {s_cyan};
 }
 
 Color light_cyan()
 {
-        return Color(s_light_cyan);
+        return {s_light_cyan};
 }
 
 Color brown()
 {
-        return Color(s_brown);
+        return {s_brown};
 }
 
 Color dark_brown()
 {
-        return Color(s_dark_brown);
+        return {s_dark_brown};
 }
 
 Color gray_brown()
 {
-        return Color(s_gray_brown);
+        return {s_gray_brown};
 }
 
 Color dark_gray_brown()
 {
-        return Color(s_dark_gray_brown);
+        return {s_dark_gray_brown};
 }
 
 Color violet()
 {
-        return Color(s_violet);
+        return {s_violet};
 }
 
 Color dark_violet()
 {
-        return Color(s_dark_violet);
+        return {s_dark_violet};
 }
 
 Color orange()
 {
-        return Color(s_orange);
+        return {s_orange};
 }
 
 Color gold()
 {
-        return Color(s_gold);
+        return {s_gold};
 }
 
 Color sepia()
 {
-        return Color(s_sepia);
+        return {s_sepia};
 }
 
 Color light_sepia()
 {
-        return Color(s_light_sepia);
+        return {s_light_sepia};
 }
 
 Color dark_sepia()
 {
-        return Color(s_dark_sepia);
+        return {s_dark_sepia};
 }
 
 Color teal()
 {
-        return Color(s_teal);
+        return {s_teal};
 }
 
 Color light_teal()
 {
-        return Color(s_light_teal);
+        return {s_light_teal};
 }
 
 Color dark_teal()
 {
-        return Color(s_dark_teal);
+        return {s_dark_teal};
 }
 
 //-----------------------------------------------------------------------------
@@ -583,52 +570,62 @@ Color dark_teal()
 //-----------------------------------------------------------------------------
 Color text()
 {
-        return Color(s_text);
+        return {s_text};
 }
 
 Color menu_highlight()
 {
-        return Color(s_menu_highlight);
+        return {s_menu_highlight};
 }
 
 Color menu_dark()
 {
-        return Color(s_menu_dark);
+        return {s_menu_dark};
+}
+
+Color menu_key_highlight()
+{
+        return {s_menu_key_highlight};
+}
+
+Color menu_key_dark()
+{
+        return {s_menu_key_dark};
 }
 
 Color title()
 {
-        return Color(s_title);
+        return {s_title};
 }
 
 Color msg_good()
 {
-        return Color(s_msg_good);
+        return {s_msg_good};
 }
 
 Color msg_bad()
 {
-        return Color(s_msg_bad);
+        return {s_msg_bad};
 }
 
 Color msg_note()
 {
-        return Color(s_msg_note);
+        return {s_msg_note};
 }
 
 Color mon_unaware_bg()
 {
-        return Color(s_mon_unaware_bg);
+        return {s_mon_unaware_bg};
 }
 
 Color mon_allied_bg()
 {
-        return Color(s_mon_allied_bg);
+        return {s_mon_allied_bg};
 }
 
 Color mon_temp_property_bg()
 {
-        return Color(s_mon_temp_property_bg);
+        return {s_mon_temp_property_bg};
 }
 
 } // namespace colors

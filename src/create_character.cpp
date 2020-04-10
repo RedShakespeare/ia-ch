@@ -132,22 +132,35 @@ void PickBgState::draw()
         // Backgrounds
         for (const auto bg : m_bgs) {
                 const auto key_str =
+                        std::string("(") +
                         m_browser.menu_keys()[y] +
-                        std::string {") "};
+                        std::string(")");
 
-                const std::string bg_name = player_bon::bg_title(bg);
-                const bool is_marked = bg == bg_marked;
+                const auto bg_name = player_bon::bg_title(bg);
 
-                const auto& draw_color =
+                const bool is_marked = (bg == bg_marked);
+
+                auto color =
+                        is_marked
+                        ? colors::menu_key_highlight()
+                        : colors::menu_key_dark();
+
+                io::draw_text(
+                        key_str,
+                        Panel::create_char_menu,
+                        P(0, y),
+                        color);
+
+                color =
                         is_marked
                         ? colors::menu_highlight()
                         : colors::menu_dark();
 
                 io::draw_text(
-                        key_str + bg_name,
+                        bg_name,
                         Panel::create_char_menu,
-                        P(0, y),
-                        draw_color);
+                        P(key_str.length() + 1, y),
+                        color);
 
                 ++y;
         }
@@ -250,25 +263,36 @@ void PickOccultistState::draw()
 
         // Domains
         for (const auto domain : m_domains) {
-                const auto key_str =
+                auto str =
+                        std::string("(") +
                         m_browser.menu_keys()[y] +
-                        std::string {") "};
+                        std::string(")");
 
-                const std::string domain_name =
-                        player_bon::spell_domain_title(domain);
+                const bool is_marked = (domain == domain_marked);
 
-                const bool is_marked = domain == domain_marked;
+                auto color =
+                        is_marked
+                        ? colors::menu_key_highlight()
+                        : colors::menu_key_dark();
 
-                const auto& draw_color =
+                io::draw_text(
+                        str,
+                        Panel::create_char_menu,
+                        P(0, y),
+                        color);
+
+                str = player_bon::spell_domain_title(domain);
+
+                color =
                         is_marked
                         ? colors::menu_highlight()
                         : colors::menu_dark();
 
                 io::draw_text(
-                        key_str + domain_name,
+                        str,
                         Panel::create_char_menu,
-                        P(0, y),
-                        draw_color);
+                        P(4, y),
+                        color);
 
                 ++y;
         }
@@ -367,8 +391,11 @@ void PickTraitState::update()
                                 const auto result =
                                         popup::menu(
                                                 "",
-                                                {"Yes", "No"},
-                                                "Gain trait \"" + name + "\"?");
+                                                {"(Y)es", "(N)o"},
+                                                "Gain trait \"" + name + "\"?",
+                                                0,
+                                                audio::SfxId::END,
+                                                {'y', 'n'});
 
                                 should_pick_trait = (result == 0);
                         }
@@ -458,38 +485,50 @@ void PickTraitState::draw()
         // Traits
         for (int i = idx_range_shown.min; i <= idx_range_shown.max; ++i) {
                 const auto key_str =
+                        std::string("(") +
                         browser->menu_keys()[y] +
-                        std::string {") "};
+                        std::string(")");
 
-                const Trait trait = traits->at(i);
+                const auto trait = traits->at(i);
 
-                std::string trait_name = player_bon::trait_title(trait);
+                auto trait_name = player_bon::trait_title(trait);
 
-                const bool is_idx_marked = browser_y == i;
+                const bool is_idx_marked = (browser_y == i);
 
-                Color color = colors::light_magenta();
+                Color color_key;
+                Color color;
 
                 if (m_screen_mode == TraitScreenMode::pick_new) {
                         if (is_idx_marked) {
+                                color_key = colors::menu_key_highlight();
                                 color = colors::menu_highlight();
                         } else {
                                 // Not marked
+                                color_key = colors::menu_key_dark();
                                 color = colors::menu_dark();
                         }
                 } else {
                         // Viewing unavailable traits
                         if (is_idx_marked) {
+                                color_key = colors::menu_key_highlight();
                                 color = colors::light_red();
                         } else {
                                 // Not marked
+                                color_key = colors::menu_key_dark();
                                 color = colors::red();
                         }
                 }
 
                 io::draw_text(
-                        key_str + trait_name,
+                        key_str,
                         Panel::create_char_menu,
                         P(0, y),
+                        color_key);
+
+                io::draw_text(
+                        trait_name,
+                        Panel::create_char_menu,
+                        P(key_str.length() + 1, y),
                         color);
 
                 ++y;

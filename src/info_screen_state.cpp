@@ -22,9 +22,6 @@ void InfoScreenState::draw_interface() const
 {
         draw_box(panels::area(Panel::screen));
 
-        // const int screen_w = panels::w(Panel::screen);
-        const int screen_h = panels::h(Panel::screen);
-
         const int screen_center_x = panels::center_x(Panel::screen);
 
         io::draw_text_center(
@@ -39,8 +36,8 @@ void InfoScreenState::draw_interface() const
                 : common_text::g_screen_exit_hint;
 
         io::draw_text_center(
-                cmd_info,
+                " " + cmd_info + " ",
                 Panel::screen,
-                P(screen_center_x, screen_h - 1),
+                P(screen_center_x, panels::y1(Panel::screen)),
                 colors::title());
 }

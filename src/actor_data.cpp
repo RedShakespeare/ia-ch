@@ -189,31 +189,47 @@ static actor::Id get_id(xml::Element* mon_e)
 
 static void dump_text(xml::Element* text_e, actor::ActorData& data)
 {
-        data.name_a = xml::get_text_str(
-                xml::first_child(text_e, "name_a"));
+        data.name_a =
+                xml::get_text_str(
+                        xml::first_child(
+                                text_e, "name_a"));
 
-        data.name_the = xml::get_text_str(
-                xml::first_child(text_e, "name_the"));
+        data.name_the =
+                xml::get_text_str(
+                        xml::first_child(
+                                text_e, "name_the"));
 
-        data.corpse_name_a = xml::get_text_str(
-                xml::first_child(text_e, "corpse_name_a"));
+        data.corpse_name_a =
+                xml::get_text_str(
+                        xml::first_child(
+                                text_e, "corpse_name_a"));
 
-        data.corpse_name_the = xml::get_text_str(
-                xml::first_child(text_e, "corpse_name_the"));
+        data.corpse_name_the =
+                xml::get_text_str(
+                        xml::first_child(
+                                text_e, "corpse_name_the"));
 
-        data.descr = xml::get_text_str(
-                xml::first_child(text_e, "description"));
+        data.descr =
+                xml::get_text_str(
+                        xml::first_child(
+                                text_e, "description"));
 
-        data.allow_generated_descr = xml::get_text_bool(
-                xml::first_child(text_e, "allow_generated_description"));
+        data.allow_generated_descr =
+                xml::get_text_bool(
+                        xml::first_child(
+                                text_e, "allow_generated_description"));
 
-        data.wary_msg = xml::get_text_str(
-                xml::first_child(text_e, "wary_message"));
+        data.wary_msg =
+                xml::get_text_str(
+                        xml::first_child(
+                                text_e, "wary_message"));
 
         auto aware_msg_seen_e =
-                xml::first_child(text_e, "aware_message_seen");
+                xml::first_child(
+                        text_e, "aware_message_seen");
 
-        data.aware_msg_mon_seen = xml::get_text_str(aware_msg_seen_e);
+        data.aware_msg_mon_seen =
+                xml::get_text_str(aware_msg_seen_e);
 
         xml::try_get_attribute_bool(
                 aware_msg_seen_e,
@@ -221,7 +237,8 @@ static void dump_text(xml::Element* text_e, actor::ActorData& data)
                 data.use_cultist_aware_msg_mon_seen);
 
         auto aware_msg_hidden_e =
-                xml::first_child(text_e, "aware_message_hidden");
+                xml::first_child(
+                        text_e, "aware_message_hidden");
 
         data.aware_msg_mon_hidden = xml::get_text_str(aware_msg_hidden_e);
 
@@ -230,8 +247,10 @@ static void dump_text(xml::Element* text_e, actor::ActorData& data)
                 "use_cultist_messages",
                 data.use_cultist_aware_msg_mon_hidden);
 
-        data.spell_msg = xml::get_text_str(
-                xml::first_child(text_e, "spell_message"));
+        data.spell_msg =
+                xml::get_text_str(
+                        xml::first_child(
+                                text_e, "spell_message"));
 
         auto death_msg_e = xml::first_child(text_e, "death_message");
 
@@ -242,88 +261,120 @@ static void dump_text(xml::Element* text_e, actor::ActorData& data)
 
 static void dump_gfx(xml::Element* gfx_e, actor::ActorData& data)
 {
-        data.tile = gfx::str_to_tile_id(
-                xml::get_text_str(
-                        xml::first_child(gfx_e, "tile")));
+        data.tile =
+                gfx::str_to_tile_id(
+                        xml::get_text_str(
+                                xml::first_child(gfx_e, "tile")));
 
-        const std::string char_str = xml::get_text_str(
-                xml::first_child(gfx_e, "character"));
+        const std::string char_str =
+                xml::get_text_str(
+                        xml::first_child(
+                                gfx_e, "character"));
 
         ASSERT(char_str.length() == 1);
 
         data.character = char_str[0];
 
-        data.color = colors::name_to_color(
-                xml::get_text_str(
-                        xml::first_child(gfx_e, "color")));
+        data.color =
+                colors::name_to_color(
+                        xml::get_text_str(
+                                xml::first_child(gfx_e, "color")))
+                        .value();
 }
 
 static void dump_audio(xml::Element* audio_e, actor::ActorData& data)
 {
-        data.aware_sfx_mon_seen = audio::str_to_sfx_id(
-                xml::get_text_str(
-                        xml::first_child(audio_e, "aware_sfx_seen")));
+        data.aware_sfx_mon_seen =
+                audio::str_to_sfx_id(
+                        xml::get_text_str(
+                                xml::first_child(
+                                        audio_e, "aware_sfx_seen")));
 
-        data.aware_sfx_mon_hidden = audio::str_to_sfx_id(
-                xml::get_text_str(
-                        xml::first_child(audio_e, "aware_sfx_hidden")));
+        data.aware_sfx_mon_hidden =
+                audio::str_to_sfx_id(
+                        xml::get_text_str(
+                                xml::first_child(
+                                        audio_e, "aware_sfx_hidden")));
 }
 
 static void dump_attributes(xml::Element* attrib_e, actor::ActorData& data)
 {
-        data.hp = xml::get_text_int(
-                xml::first_child(attrib_e, "hit_points"));
+        data.hp =
+                xml::get_text_int(
+                        xml::first_child(
+                                attrib_e, "hit_points"));
 
-        data.spi = xml::get_text_int(
-                xml::first_child(attrib_e, "spirit"));
+        data.spi =
+                xml::get_text_int(
+                        xml::first_child(
+                                attrib_e, "spirit"));
 
-        data.speed = str_to_speed_map.at(
-                xml::get_text_str(
-                        xml::first_child(attrib_e, "speed")));
+        data.speed =
+                str_to_speed_map.at(
+                        xml::get_text_str(
+                                xml::first_child(
+                                        attrib_e, "speed")));
 
-        data.mon_shock_lvl = str_to_shock_lvl_map.at(
-                xml::get_text_str(
-                        xml::first_child(attrib_e, "shock_level")));
+        data.mon_shock_lvl =
+                str_to_shock_lvl_map.at(
+                        xml::get_text_str(
+                                xml::first_child(
+                                        attrib_e, "shock_level")));
 
         data.ability_values.set_val(
                 AbilityId::melee,
                 xml::get_text_int(
-                        xml::first_child(attrib_e, "melee")));
+                        xml::first_child(
+                                attrib_e, "melee")));
 
         data.ability_values.set_val(
                 AbilityId::ranged,
                 xml::get_text_int(
-                        xml::first_child(attrib_e, "ranged")));
+                        xml::first_child(
+                                attrib_e, "ranged")));
 
         data.ability_values.set_val(
                 AbilityId::dodging,
                 xml::get_text_int(
-                        xml::first_child(attrib_e, "dodging")));
+                        xml::first_child(
+                                attrib_e, "dodging")));
 
         data.ability_values.set_val(
                 AbilityId::stealth,
                 xml::get_text_int(
-                        xml::first_child(attrib_e, "stealth")));
+                        xml::first_child(
+                                attrib_e, "stealth")));
 
         data.ability_values.set_val(
                 AbilityId::searching,
                 xml::get_text_int(
-                        xml::first_child(attrib_e, "searching")));
+                        xml::first_child(
+                                attrib_e, "searching")));
 
-        data.can_open_doors = xml::get_text_bool(
-                xml::first_child(attrib_e, "can_open_doors"));
+        data.can_open_doors =
+                xml::get_text_bool(
+                        xml::first_child(
+                                attrib_e, "can_open_doors"));
 
-        data.can_bash_doors = xml::get_text_bool(
-                xml::first_child(attrib_e, "can_bash_doors"));
+        data.can_bash_doors =
+                xml::get_text_bool(
+                        xml::first_child(
+                                attrib_e, "can_bash_doors"));
 
-        data.can_swim = xml::get_text_bool(
-                xml::first_child(attrib_e, "can_swim"));
+        data.can_swim =
+                xml::get_text_bool(
+                        xml::first_child(
+                                attrib_e, "can_swim"));
 
-        data.actor_size = s_str_to_actor_size_map.at(
-                xml::get_text_str(xml::first_child(attrib_e, "size")));
+        data.actor_size =
+                s_str_to_actor_size_map.at(
+                        xml::get_text_str(xml::first_child(
+                                attrib_e, "size")));
 
-        data.prevent_knockback = xml::get_text_bool(
-                xml::first_child(attrib_e, "always_prevent_knockback"));
+        data.prevent_knockback =
+                xml::get_text_bool(
+                        xml::first_child(
+                                attrib_e, "always_prevent_knockback"));
 
         data.is_humanoid = xml::has_child(attrib_e, "humanoid");
 
@@ -345,14 +396,20 @@ static void dump_attributes(xml::Element* attrib_e, actor::ActorData& data)
 
         data.is_amphibian = xml::has_child(attrib_e, "amphibian");
 
-        data.can_bleed = xml::get_text_bool(
-                xml::first_child(attrib_e, "can_bleed"));
+        data.can_bleed =
+                xml::get_text_bool(
+                        xml::first_child(
+                                attrib_e, "can_bleed"));
 
-        data.can_leave_corpse = xml::get_text_bool(
-                xml::first_child(attrib_e, "can_leave_corpse"));
+        data.can_leave_corpse =
+                xml::get_text_bool(
+                        xml::first_child(
+                                attrib_e, "can_leave_corpse"));
 
-        data.prio_corpse_bash = xml::get_text_bool(
-                xml::first_child(attrib_e, "prioritize_destroying_corpse"));
+        data.prio_corpse_bash =
+                xml::get_text_bool(
+                        xml::first_child(
+                                attrib_e, "prioritize_destroying_corpse"));
 }
 
 static void dump_intr_attack_property(
@@ -503,28 +560,37 @@ static void dump_properties(xml::Element* properties_e, actor::ActorData& data)
 
 static void dump_ai(xml::Element* ai_e, actor::ActorData& data)
 {
-        data.erratic_move_pct = xml::get_text_int(
-                xml::first_child(ai_e, "erratic_move_percent"));
+        data.erratic_move_pct =
+                xml::get_text_int(
+                        xml::first_child(
+                                ai_e, "erratic_move_percent"));
 
-        data.nr_turns_aware = xml::get_text_int(
-                xml::first_child(ai_e, "turns_aware"));
+        data.nr_turns_aware =
+                xml::get_text_int(
+                        xml::first_child(
+                                ai_e, "turns_aware"));
 
-        data.ranged_cooldown_turns = xml::get_text_int(
-                xml::first_child(ai_e, "ranged_cooldown_turns"));
+        data.ranged_cooldown_turns =
+                xml::get_text_int(
+                        xml::first_child(
+                                ai_e, "ranged_cooldown_turns"));
 
         for (size_t i = 0; i < (size_t)actor::AiId::END; ++i) {
                 const std::string ai_id_str =
                         s_ai_id_to_str_map.at((actor::AiId)i);
 
-                data.ai[i] = xml::get_text_bool(
-                        xml::first_child(ai_e, ai_id_str));
+                data.ai[i] =
+                        xml::get_text_bool(
+                                xml::first_child(
+                                        ai_e, ai_id_str));
         }
 }
 
 static void dump_group_size(xml::Element* group_e, actor::ActorData& data)
 {
-        const auto group_size = s_str_to_group_size_map.at(
-                xml::get_text_str(group_e));
+        const auto group_size =
+                s_str_to_group_size_map.at(
+                        xml::get_text_str(group_e));
 
         int weight = 1;
 
@@ -546,25 +612,37 @@ static void dump_native_room(
 
 static void dump_spawning(xml::Element* spawn_e, actor::ActorData& data)
 {
-        data.spawn_min_dlvl = xml::get_text_int(
-                xml::first_child(spawn_e, "min_dungeon_level"));
+        data.spawn_min_dlvl =
+                xml::get_text_int(
+                        xml::first_child(
+                                spawn_e, "min_dungeon_level"));
 
-        data.spawn_max_dlvl = xml::get_text_int(
-                xml::first_child(spawn_e, "max_dungeon_level"));
+        data.spawn_max_dlvl =
+                xml::get_text_int(
+                        xml::first_child(
+                                spawn_e, "max_dungeon_level"));
 
-        data.spawn_weight = xml::get_text_int(
-                xml::first_child(spawn_e, "spawn_weight"));
+        data.spawn_weight =
+                xml::get_text_int(
+                        xml::first_child(
+                                spawn_e, "spawn_weight"));
 
-        data.is_auto_spawn_allowed = xml::get_text_bool(
-                xml::first_child(spawn_e, "auto_spawn"));
+        data.is_auto_spawn_allowed =
+                xml::get_text_bool(
+                        xml::first_child(
+                                spawn_e, "auto_spawn"));
 
-        data.can_be_summoned_by_mon = xml::get_text_bool(
-                xml::first_child(spawn_e, "can_be_summoned_by_monster"));
+        data.can_be_summoned_by_mon =
+                xml::get_text_bool(
+                        xml::first_child(
+                                spawn_e, "can_be_summoned_by_monster"));
 
         data.is_unique = xml::has_child(spawn_e, "unique");
 
-        data.nr_left_allowed_to_spawn = xml::get_text_int(
-                xml::first_child(spawn_e, "nr_allowed_to_spawn"));
+        data.nr_left_allowed_to_spawn =
+                xml::get_text_int(
+                        xml::first_child(
+                                spawn_e, "nr_allowed_to_spawn"));
 
         const std::string group_size_element_str = "group_size";
 

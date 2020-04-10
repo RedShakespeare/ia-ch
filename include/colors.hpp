@@ -7,6 +7,7 @@
 #ifndef COLORS_HPP
 #define COLORS_HPP
 
+#include <optional>
 #include <string>
 #include <utility>
 
@@ -19,7 +20,7 @@ class Color {
 public:
         Color();
 
-        Color(const Color& other);
+        Color(const Color& other) = default;
 
         Color(uint8_t r, uint8_t g, uint8_t b);
 
@@ -35,8 +36,6 @@ public:
 
         Color fraction(double div);
 
-        bool is_defined() const;
-
         void clear();
 
         SDL_Color sdl_color() const;
@@ -51,8 +50,6 @@ public:
 
 private:
         SDL_Color m_sdl_color;
-
-        bool m_is_defined;
 };
 
 //-----------------------------------------------------------------------------
@@ -62,7 +59,7 @@ namespace colors {
 
 void init();
 
-Color name_to_color(const std::string& name);
+std::optional<Color> name_to_color(const std::string& name);
 
 std::string color_to_name(const Color& color);
 
@@ -105,6 +102,8 @@ Color dark_teal();
 Color text();
 Color menu_highlight();
 Color menu_dark();
+Color menu_key_highlight();
+Color menu_key_dark();
 Color title();
 Color msg_good();
 Color msg_bad();

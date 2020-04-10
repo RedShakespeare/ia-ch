@@ -22,6 +22,11 @@
 // -----------------------------------------------------------------------------
 // Private
 // -----------------------------------------------------------------------------
+enum class HighlightMenuKeys {
+        no,
+        yes
+};
+
 static const int s_text_w_default = 39;
 
 static const uint32_t s_msg_line_delay = 50;
@@ -84,7 +89,8 @@ static void draw_menu_popup(
         int text_w,
         const int text_x0,
         const int text_h,
-        const std::string& title)
+        const std::string& title,
+        const HighlightMenuKeys highlight_keys)
 {
         // If no message lines, set width to widest menu option or title with
         if (lines.empty()) {
@@ -145,20 +151,61 @@ static void draw_menu_popup(
                 ++y;
         }
 
+        int longest_choice_len = 0;
+
+        std::for_each(
+                std::begin(choices),
+                std::end(choices),
+                [&longest_choice_len](const auto& choice_str) {
+                        longest_choice_len =
+                                std::max(
+                                        longest_choice_len,
+                                        (int)choice_str.length());
+                });
+
+        const int choice_x_pos =
+                panels::center_x(Panel::screen) -
+                (longest_choice_len / 2);
+
         for (size_t i = 0; i < choices.size(); ++i) {
-                const Color color =
+                const auto choice_str = choices[i];
+
+                int choice_suffix_start = 0;
+                int draw_x_pos = choice_x_pos;
+
+                if (highlight_keys == HighlightMenuKeys::yes) {
+                        auto key_str = choice_str.substr(0, 3);
+
+                        const auto key_color =
+                                (i == current_choice)
+                                ? colors::menu_key_highlight()
+                                : colors::menu_key_dark();
+
+                        io::draw_text(
+                                key_str,
+                                Panel::screen,
+                                {draw_x_pos, y},
+                                key_color);
+
+                        choice_suffix_start = key_str.length();
+                        draw_x_pos = choice_x_pos + key_str.length();
+                }
+
+                const auto choice_suffix =
+                        choice_str.substr(
+                                choice_suffix_start,
+                                std::string::npos);
+
+                const auto color =
                         (i == current_choice)
                         ? colors::menu_highlight()
                         : colors::menu_dark();
 
-                io::draw_text_center(
-                        choices[i],
+                io::draw_text(
+                        choice_suffix,
                         Panel::screen,
-                        P(panels::center_x(Panel::screen), y),
-                        color,
-                        io::DrawBg::no,
-                        colors::black(),
-                        true); // Allow pixel-level adjustmet
+                        {draw_x_pos, y},
+                        color);
 
                 ++y;
         }
@@ -171,6 +218,8 @@ static void draw_menu_popup(
 // -----------------------------------------------------------------------------
 namespace popup {
 
+// TODO: Instead of this sh***y "w_change", the popup should calculate a good
+// size itself (not breaking lines before the last word of a sentence, etc).
 void msg(
         const std::string& msg,
         const std::string& title,
@@ -256,12 +305,15 @@ void msg(
         query::wait_for_confirm();
 }
 
+// TODO: Instead of this sh***y "w_change", the popup should calculate a good
+// size itself (not breaking lines before the last word of a sentence, etc).
 int menu(
         const std::string& msg,
         const std::vector<std::string>& choices,
         const std::string& title,
         const int w_change,
-        const audio::SfxId sfx)
+        const audio::SfxId sfx,
+        const std::vector<char>& menu_keys)
 {
         states::draw();
 
@@ -295,6 +347,14 @@ int menu(
                 nr_choices;
 
         MenuBrowser browser(nr_choices);
+        auto highlight_keys = HighlightMenuKeys::no;
+        auto input_mode = MenuInputMode::scrolling;
+
+        if (!menu_keys.empty()) {
+                browser.set_custom_menu_keys(menu_keys);
+                highlight_keys = HighlightMenuKeys::yes;
+                input_mode = MenuInputMode::scrolling_and_letters;
+        }
 
         if (sfx != audio::SfxId::END) {
                 audio::play(sfx);
@@ -307,15 +367,14 @@ int menu(
                 text_w,
                 get_x0(text_w),
                 text_h_tot,
-                title);
+                title,
+                highlight_keys);
 
         audio::play(audio::SfxId::menu_browse);
 
         while (true) {
                 const auto input = io::get();
-
-                const MenuAction action =
-                        browser.read(input, MenuInputMode::scrolling);
+                const auto action = browser.read(input, input_mode);
 
                 switch (action) {
                 case MenuAction::moved:
@@ -326,7 +385,8 @@ int menu(
                                 text_w,
                                 get_x0(text_w),
                                 text_h_tot,
-                                title);
+                                title,
+                                highlight_keys);
                         break;
 
                 case MenuAction::esc:

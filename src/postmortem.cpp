@@ -39,10 +39,10 @@ static std::vector<ColoredString> s_info_lines;
 // Postmortem menu
 // -----------------------------------------------------------------------------
 PostmortemMenu::PostmortemMenu(const IsWin is_win) :
-
+        m_browser(6),
         m_is_win(is_win)
 {
-        m_browser.reset(6);
+        m_browser.set_custom_menu_keys({'n', 'g', 'h', 'm', 'r', 'q'});
 }
 
 StateId PostmortemMenu::id()
@@ -387,25 +387,40 @@ void PostmortemMenu::draw()
         }
 
         std::vector<std::string> labels = {
-                "New journey",
-                "Show game summary",
-                "View high scores",
-                "View message log",
-                "Return to main menu",
-                "Quit the game"};
+                "(N)ew journey",
+                "(G)ame summary",
+                "(H)igh scores",
+                "(M)essage log",
+                "(R)eturn to main menu",
+                "(Q)uit the game"};
 
         for (size_t i = 0; i < labels.size(); ++i) {
                 const std::string& label = labels[i];
 
-                const Color& color =
+                auto str = label.substr(0, 3);
+
+                auto color =
+                        m_browser.is_at_idx(i)
+                        ? colors::menu_key_highlight()
+                        : colors::menu_key_dark();
+
+                io::draw_text(
+                        str,
+                        Panel::screen,
+                        menu_pos,
+                        color);
+
+                str = label.substr(3, std::string::npos);
+
+                color =
                         m_browser.is_at_idx(i)
                         ? colors::menu_highlight()
                         : colors::menu_dark();
 
                 io::draw_text(
-                        label,
+                        str,
                         Panel::screen,
-                        menu_pos,
+                        menu_pos.with_x_offset(3),
                         color);
 
                 ++menu_pos.y;
@@ -432,7 +447,9 @@ void PostmortemMenu::update()
         const auto input = io::get();
 
         const MenuAction action =
-                m_browser.read(input, MenuInputMode::scrolling);
+                m_browser.read(
+                        input,
+                        MenuInputMode::scrolling_and_letters);
 
         switch (action) {
         case MenuAction::selected:

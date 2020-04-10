@@ -481,7 +481,7 @@ void BrowseHighscoreEntry::draw()
                 io::draw_text(
                         m_lines[i],
                         Panel::screen,
-                        P(0, screen_y),
+                        P(1, screen_y),
                         colors::text());
 
                 ++screen_y;

@@ -156,16 +156,16 @@ void InvState::draw_slot(
         const ItemRefAttInf att_inf) const
 {
         // Draw key
-        const Color color =
+        auto color =
                 is_marked
-                ? colors::light_white()
-                : colors::menu_dark();
+                ? colors::menu_key_highlight()
+                : colors::menu_key_dark();
 
         P p(0, y);
 
-        std::string key_str = "?) ";
+        std::string key_str = "(?)";
 
-        key_str[0] = key;
+        key_str[1] = key;
 
         io::draw_text(
                 key_str,
@@ -173,12 +173,17 @@ void InvState::draw_slot(
                 p,
                 color);
 
-        p.x += 3;
+        p.x += key_str.length() + 1;
 
         // Draw slot label
         const InvSlot& slot = map::g_player->m_inv.m_slots[(size_t)id];
 
         const std::string slot_name = slot.name;
+
+        color =
+                is_marked
+                ? colors::light_white()
+                : colors::menu_dark();
 
         io::draw_text(
                 slot_name,
@@ -207,7 +212,7 @@ void InvState::draw_slot(
 
                 item_name = text_format::first_to_upper(item_name);
 
-                const Color color_item =
+                const auto color_item =
                         is_marked
                         ? colors::light_white()
                         : item->interface_color();
@@ -250,14 +255,14 @@ void InvState::draw_backpack_item(
         const ItemRefAttInf att_info) const
 {
         // Draw key
-        const Color color =
+        const auto color =
                 is_marked
-                ? colors::light_white()
-                : colors::menu_dark();
+                ? colors::menu_key_highlight()
+                : colors::menu_key_dark();
 
-        std::string key_str = "?) ";
+        std::string key_str = "(?)";
 
-        key_str[0] = key;
+        key_str[1] = key;
 
         P p(0, y);
 
@@ -267,7 +272,7 @@ void InvState::draw_backpack_item(
                 p,
                 color);
 
-        p.x += 3;
+        p.x += key_str.length() + 1;
 
         // Draw item
         const auto* const item = map::g_player->m_inv.m_backpack[backpack_idx];
@@ -285,7 +290,7 @@ void InvState::draw_backpack_item(
 
         cap_str_to_menu_x1(item_name, p.x);
 
-        const Color color_item =
+        const auto color_item =
                 is_marked
                 ? colors::light_white()
                 : item->interface_color();
@@ -334,7 +339,7 @@ void InvState::draw_weight_pct_and_dots(
         if (item_weight_pct > 0 && item_weight_pct < 100) {
                 const P weight_pos(weight_x, item_pos.y);
 
-                const Color weight_color =
+                const auto weight_color =
                         is_marked
                         ? colors::light_white()
                         : colors::menu_dark();
@@ -369,7 +374,7 @@ void InvState::draw_weight_pct_and_dots(
 
         const std::string dots_str(dots_w, '.');
 
-        Color dots_color =
+        auto dots_color =
                 is_marked
                 ? colors::white()
                 : item_name_color;

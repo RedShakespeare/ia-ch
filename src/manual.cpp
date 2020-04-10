@@ -11,6 +11,7 @@
 #include <fstream>
 #include <vector>
 
+#include "common_text.hpp"
 #include "debug.hpp"
 #include "draw_box.hpp"
 #include "io.hpp"
@@ -90,7 +91,9 @@ static std::vector<ManualPage> init_pages(
         const std::string delim(80, '-');
 
         // Sort the parsed lines into different pages
-        for (size_t line_idx = 0; line_idx < formatted_lines.size(); ++line_idx) {
+        for (size_t line_idx = 0;
+             line_idx < formatted_lines.size();
+             ++line_idx) {
                 if (formatted_lines[line_idx] == delim) {
                         if (!current_page.lines.empty()) {
                                 pages.push_back(current_page);
@@ -146,31 +149,52 @@ void BrowseManual::draw()
                 colors::black(),
                 true); // Allow pixel-level adjustment
 
+        io::draw_text_center(
+                " " + common_text::g_screen_exit_hint + " ",
+                Panel::screen,
+                P(panels::center_x(Panel::screen), panels::y1(Panel::screen)),
+                colors::title(),
+                io::DrawBg::yes,
+                colors::black(),
+                true); // Allow pixel-level adjustment
+
         const int nr_pages = m_pages.size();
 
         const int labels_y0 = 1;
 
         for (int idx = 0; idx < (int)nr_pages; ++idx) {
-                const auto key_str =
-                        m_browser.menu_keys()[idx] +
-                        std::string {") "};
-
                 const bool is_marked = m_browser.y() == idx;
 
-                const Color& draw_color =
+                const int y = labels_y0 + idx;
+
+                auto str =
+                        std::string("(") +
+                        m_browser.menu_keys()[idx] +
+                        std::string(")");
+
+                auto color =
+                        is_marked
+                        ? colors::menu_key_highlight()
+                        : colors::menu_key_dark();
+
+                io::draw_text(
+                        str,
+                        Panel::screen,
+                        P(s_manual_text_x0, y),
+                        color);
+
+                const auto& page = m_pages[idx];
+
+                color =
                         is_marked
                         ? colors::menu_highlight()
                         : colors::menu_dark();
 
-                const auto& page = m_pages[idx];
-
-                const int y = labels_y0 + idx;
-
                 io::draw_text(
-                        " " + key_str + page.title + " ",
+                        page.title,
                         Panel::screen,
-                        P(s_manual_text_x0, y),
-                        draw_color);
+                        P(s_manual_text_x0 + 4, y),
+                        color);
         }
 }
 

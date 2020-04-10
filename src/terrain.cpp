@@ -1138,13 +1138,19 @@ void Stairs::bump(actor::Actor& actor_bumping)
 {
         if (actor_bumping.is_player()) {
                 const std::vector<std::string> choices = {
-                        "Descend",
-                        "Save and quit",
-                        "Cancel"};
+                        "(D)escend",
+                        "(S)ave and quit",
+                        "(C)ancel"};
 
                 const std::string title = "A staircase leading downwards";
 
-                const int choice = popup::menu("", choices, title);
+                const int choice = popup::menu(
+                        "",
+                        choices,
+                        title,
+                        0,
+                        audio::SfxId::END,
+                        {'d', 's', 'c'});
 
                 switch (choice) {
                 case 0:

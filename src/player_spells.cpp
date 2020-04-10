@@ -13,6 +13,7 @@
 #include "actor_player.hpp"
 #include "browser.hpp"
 #include "common_text.hpp"
+#include "draw_box.hpp"
 #include "init.hpp"
 #include "inventory.hpp"
 #include "io.hpp"
@@ -296,10 +297,12 @@ void BrowseSpell::on_start()
 
 void BrowseSpell::draw()
 {
+        draw_box(panels::area(Panel::screen));
+
         const int nr_spells = s_learned_spells.size();
 
         io::draw_text_center(
-                "Use which power?",
+                " Use which power? ",
                 Panel::screen,
                 P(panels::center_x(Panel::screen), 0),
                 colors::title());
@@ -307,28 +310,24 @@ void BrowseSpell::draw()
         P p(0, 1);
 
         for (int i = 0; i < nr_spells; ++i) {
-                std::string key_str = "?) ";
+                std::string key_str = "(?)";
 
-                key_str[0] = m_browser.menu_keys()[i];
+                key_str[1] = m_browser.menu_keys()[i];
 
-                const int current_idx = i;
-
-                const bool is_idx_marked = m_browser.is_at_idx(current_idx);
+                const bool is_marked = m_browser.is_at_idx(i);
 
                 auto* const spell = s_learned_spells[i];
-
                 const auto name = spell->name();
 
-                const int spi_label_x = 24;
-
-                const int skill_label_x = spi_label_x + 10;
+                constexpr int spi_label_x = 24;
+                constexpr int skill_label_x = spi_label_x + 10;
 
                 p.x = 0;
 
-                const Color color =
-                        is_idx_marked
-                        ? colors::menu_highlight()
-                        : colors::menu_dark();
+                auto color =
+                        is_marked
+                        ? colors::menu_key_highlight()
+                        : colors::menu_key_dark();
 
                 io::draw_text(
                         key_str,
@@ -336,7 +335,12 @@ void BrowseSpell::draw()
                         p,
                         color);
 
-                p.x = key_str.size();
+                p.x = key_str.size() + 1;
+
+                color =
+                        is_marked
+                        ? colors::menu_highlight()
+                        : colors::menu_dark();
 
                 io::draw_text(
                         name,
@@ -426,7 +430,7 @@ void BrowseSpell::draw()
                                 colors::white());
                 }
 
-                if (is_idx_marked) {
+                if (is_marked) {
                         const auto descr =
                                 spell->descr(skill, SpellSrc::learned);
 

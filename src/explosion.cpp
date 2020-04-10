@@ -6,6 +6,8 @@
 
 #include "explosion.hpp"
 
+#include <optional>
+
 #include "actor_hit.hpp"
 #include "actor_player.hpp"
 #include "game.hpp"
@@ -81,19 +83,12 @@ static std::vector<std::vector<P>> cells_reached(
 static void draw(
         const std::vector<std::vector<P>>& pos_lists,
         const Array2<bool>& blocked,
-        const Color color_override)
+        const std::optional<Color>& color_override)
 {
         states::draw();
 
-        const Color& color_inner =
-                color_override.is_defined()
-                ? color_override
-                : colors::yellow();
-
-        const Color& color_outer =
-                color_override.is_defined()
-                ? color_override
-                : colors::light_red();
+        const auto color_inner = color_override.value_or(colors::yellow());
+        const auto color_outer = color_override.value_or(colors::light_red());
 
         const bool is_tiles = config::is_tiles_mode();
 
@@ -103,7 +98,9 @@ static void draw(
 
         for (int i_anim = 0; i_anim < nr_anim_steps; i_anim++) {
                 const gfx::TileId tile =
-                        (i_anim == 0) ? gfx::TileId::blast1 : gfx::TileId::blast2;
+                        (i_anim == 0)
+                        ? gfx::TileId::blast1
+                        : gfx::TileId::blast2;
 
                 const int nr_outer = pos_lists.size();
 
@@ -267,7 +264,7 @@ void run(
         const int radi_change,
         const ExplExclCenter exclude_center,
         std::vector<Prop*> properties_applied,
-        const Color color_override,
+        const std::optional<Color>& color_override,
         const ExplIsGas is_gas)
 {
         const int radi = g_expl_std_radi + radi_change;

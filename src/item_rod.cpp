@@ -155,13 +155,16 @@ void save()
 
                 if (d.type == ItemType::rod) {
                         saving::put_str(
-                                d.base_name_un_id.names[(size_t)ItemRefType::plain]);
+                                d.base_name_un_id
+                                        .names[(size_t)ItemRefType::plain]);
 
                         saving::put_str(
-                                d.base_name_un_id.names[(size_t)ItemRefType::plural]);
+                                d.base_name_un_id
+                                        .names[(size_t)ItemRefType::plural]);
 
                         saving::put_str(
-                                d.base_name_un_id.names[(size_t)ItemRefType::a]);
+                                d.base_name_un_id
+                                        .names[(size_t)ItemRefType::a]);
 
                         saving::put_str(colors::color_to_name(d.color));
                 }
@@ -183,7 +186,9 @@ void load()
                         d.base_name_un_id.names[(size_t)ItemRefType::a] =
                                 saving::get_str();
 
-                        d.color = colors::name_to_color(saving::get_str());
+                        d.color =
+                                colors::name_to_color(saving::get_str())
+                                        .value();
                 }
         }
 }

@@ -11,6 +11,7 @@
 #include "actor_factory.hpp"
 #include "actor_move.hpp"
 #include "actor_player.hpp"
+#include "audio_data.hpp"
 #include "character_descr.hpp"
 #include "close.hpp"
 #include "common_text.hpp"
@@ -44,14 +45,17 @@
 static void query_quit()
 {
         const auto quit_choices = std::vector<std::string> {
-                "Yes",
-                "No"};
+                "(Y)es",
+                "(N)o"};
 
         const int quit_choice =
                 popup::menu(
                         "Save and highscore are not kept.",
                         quit_choices,
-                        "Quit the current game?");
+                        "Quit the current game?",
+                        0,
+                        audio::SfxId::END,
+                        {'y', 'n'});
 
         if (quit_choice == 0) {
                 // Choosing to quit the game deletes the save
@@ -777,20 +781,27 @@ void handle(const GameCmd cmd)
 
         case GameCmd::game_menu: {
                 const auto choices = std::vector<std::string> {
-                        "Options",
-                        "Tome of Wisdom",
-                        "Quit",
-                        "Cancel",
+                        "(T)ome of Wisdom",
+                        "(O)ptions",
+                        "(Q)uit",
+                        "(C)ancel",
                 };
 
-                const int choice = popup::menu("", choices);
+                const int choice =
+                        popup::menu(
+                                "",
+                                choices,
+                                "",
+                                0,
+                                audio::SfxId::END,
+                                {'t', 'o', 'q', 'c'});
 
                 if (choice == 0) {
-                        // Options
-                        states::push(std::make_unique<ConfigState>());
-                } else if (choice == 1) {
                         // Manual
                         states::push(std::make_unique<BrowseManual>());
+                } else if (choice == 1) {
+                        // Options
+                        states::push(std::make_unique<ConfigState>());
                 } else if (choice == 2) {
                         // Quit
                         query_quit();

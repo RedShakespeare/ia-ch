@@ -214,6 +214,7 @@ static const std::vector<std::string> quotes =
 MainMenuState::MainMenuState() :
         m_browser(MenuBrowser(6))
 {
+        m_browser.set_custom_menu_keys({'n', 'r', 't', 'o', 'g', 'e'});
 }
 
 MainMenuState::~MainMenuState() = default;
@@ -254,12 +255,12 @@ void MainMenuState::draw()
 #endif // NDEBUG
 
         const std::vector<std::string> labels = {
-                "New journey",
-                "Resurrect",
-                "Tome of Wisdom",
-                "Options",
-                "Graveyard",
-                "Escape to reality"};
+                "(N)ew journey",
+                "(R)esurrect",
+                "(T)ome of Wisdom",
+                "(O)ptions",
+                "(G)raveyard",
+                "(E)scape to reality"};
 
         const P screen_dims = panels::dims(Panel::screen);
 
@@ -267,7 +268,7 @@ void MainMenuState::draw()
         // at least at this height, plus a little more
         // TODO: Read the logo height programmatically instead of hard coding it
         const P menu_pos(
-                (screen_dims.x * 6) / 10,
+                (screen_dims.x * 13) / 20,
                 std::max(
                         (320 / config::gui_cell_px_h()),
                         ((screen_dims.y * 4) / 10)));
@@ -277,18 +278,27 @@ void MainMenuState::draw()
         for (size_t i = 0; i < labels.size(); ++i) {
                 const std::string label = labels[i];
 
-                const Color& color =
-                        m_browser.is_at_idx(i)
+                const bool is_marked = m_browser.is_at_idx(i);
+
+                auto str = label.substr(0, 3);
+
+                auto color =
+                        is_marked
+                        ? colors::menu_key_highlight()
+                        : colors::menu_key_dark();
+
+                io::draw_text(str, Panel::screen, pos, color);
+
+                str = label.substr(3, std::string::npos);
+
+                color =
+                        is_marked
                         ? colors::menu_highlight()
                         : colors::menu_dark();
 
-                io::draw_text(
-                        label,
-                        Panel::screen,
-                        pos,
-                        color);
+                io::draw_text(str, Panel::screen, pos.with_x_offset(3), color);
 
-                ++pos.x;
+                // ++pos.x;
                 ++pos.y;
         }
 
@@ -372,7 +382,9 @@ void MainMenuState::update()
         const auto input = io::get();
 
         const MenuAction action =
-                m_browser.read(input, MenuInputMode::scrolling);
+                m_browser.read(
+                        input,
+                        MenuInputMode::scrolling_and_letters);
 
         switch (action) {
         case MenuAction::selected:
@@ -385,8 +397,11 @@ void MainMenuState::update()
                                 if (saving::is_save_available()) {
                                         const int choice = popup::menu(
                                                 "Start a new game?",
-                                                {"Yes", "No"},
-                                                "A saved game exists");
+                                                {"(Y)es", "(N)o"},
+                                                "A saved game exists",
+                                                0,
+                                                audio::SfxId::END,
+                                                {'y', 'n'});
 
                                         if (choice == 1) {
                                                 return;

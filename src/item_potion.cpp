@@ -161,7 +161,9 @@ void load()
                         d.base_name_un_id.names[(size_t)ItemRefType::a] =
                                 saving::get_str();
 
-                        d.color = colors::name_to_color(saving::get_str());
+                        d.color =
+                                colors::name_to_color(saving::get_str())
+                                        .value();
                 }
         }
 }

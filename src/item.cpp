@@ -1561,7 +1561,9 @@ void Dynamite::on_std_turn_player_hold_ignited()
                 fuse_msg += "***";
 
                 const auto more_prompt =
-                        (m_fuse_turns <= 2) ? MorePromptOnMsg::yes : MorePromptOnMsg::no;
+                        (m_fuse_turns <= 2)
+                        ? MorePromptOnMsg::yes
+                        : MorePromptOnMsg::no;
 
                 msg_log::add(
                         fuse_msg,
@@ -1652,7 +1654,13 @@ void Molotov::on_std_turn_player_hold_ignited()
 
                 snd.run();
 
-                explosion::run(player_pos, ExplType::apply_prop, EmitExplSnd::no, 0, ExplExclCenter::no, {new PropBurning()});
+                explosion::run(
+                        player_pos,
+                        ExplType::apply_prop,
+                        EmitExplSnd::no,
+                        0,
+                        ExplExclCenter::no,
+                        {new PropBurning()});
 
                 delete this;
         }

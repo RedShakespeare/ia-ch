@@ -10,7 +10,7 @@
 #include <string>
 #include <vector>
 
-#include "audio.hpp"
+#include "audio_data.hpp"
 
 namespace popup {
 
@@ -25,7 +25,8 @@ int menu(
         const std::vector<std::string>& choices,
         const std::string& title = "",
         int w_change = 0,
-        audio::SfxId sfx = audio::SfxId::END);
+        audio::SfxId sfx = audio::SfxId::END,
+        const std::vector<char>& menu_keys = {});
 
 } // namespace popup
 

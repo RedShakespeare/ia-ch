@@ -11,6 +11,7 @@
 
 #include "audio.hpp"
 #include "browser.hpp"
+#include "common_text.hpp"
 #include "debug.hpp"
 #include "draw_box.hpp"
 #include "hints.hpp"
@@ -887,12 +888,22 @@ void ConfigState::draw()
 
         const int x1 = config::s_opt_values_x_pos;
 
-        std::string str;
-
         io::draw_text_center(
-                " [enter] to set option [space/esc] to exit ",
+                " Options ",
                 Panel::screen,
                 P(panels::center_x(Panel::screen), 0),
+                colors::title(),
+                io::DrawBg::yes,
+                colors::black(),
+                true); // Allow pixel-level adjustment
+
+        io::draw_text_center(
+                std::string(
+                        " [enter] to set option " +
+                        common_text::g_screen_exit_hint +
+                        " "),
+                Panel::screen,
+                P(panels::center_x(Panel::screen), panels::y1(Panel::screen)),
                 colors::title(),
                 io::DrawBg::yes,
                 colors::black(),

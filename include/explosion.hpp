@@ -9,6 +9,8 @@
 
 #include <vector>
 
+#include <optional>
+
 #include "audio.hpp"
 #include "colors.hpp"
 #include "global.hpp"
@@ -51,7 +53,7 @@ void run(
         int radi_change = 0,
         ExplExclCenter exclude_center = ExplExclCenter::no,
         std::vector<Prop*> properties_applied = {},
-        Color color_override = Color(),
+        const std::optional<Color>& color_override = {},
         ExplIsGas is_gas = ExplIsGas::no);
 
 void run_smoke_explosion_at(const P& origin, int radi_change = 0);
