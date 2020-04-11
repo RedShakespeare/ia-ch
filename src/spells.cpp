@@ -1912,7 +1912,8 @@ std::vector<std::string> SpellHaste::descr_specific(
 {
         std::vector<std::string> descr;
 
-        descr.emplace_back("Time slows down relative to the caster's perspective.");
+        descr.emplace_back(
+                "Time slows down relative to the caster's perspective.");
 
         Range duration_range;
         duration_range.min = 5 * ((int)skill + 1);
@@ -2400,12 +2401,15 @@ std::vector<std::string> SpellSlow::descr_specific(
 
         std::vector<std::string> descr;
 
-        descr.emplace_back("Causes the spells victim's to move more slowly.");
+        descr.emplace_back(
+                "Causes the spell's victims to move more slowly.");
 
         if (skill == SpellSkill::basic) {
-                descr.emplace_back("Affects one random visible hostile creature.");
+                descr.emplace_back(
+                        "Affects one random visible hostile creature.");
         } else {
-                descr.emplace_back("Affects all visible hostile creatures.");
+                descr.emplace_back(
+                        "Affects all visible hostile creatures.");
         }
 
         Range duration_range;
