@@ -506,11 +506,13 @@ static void player_sets_option(
 
         case 22: {
                 // Reset to defaults
-                set_default_variables();
-                update_render_dims();
-                sdl_base::init();
-                io::init();
-                audio::init();
+                if (direction == OptionToggleDirecton::enter) {
+                        set_default_variables();
+                        update_render_dims();
+                        sdl_base::init();
+                        io::init();
+                        audio::init();
+                }
         } break;
 
         default:

@@ -64,6 +64,7 @@ MenuAction MenuBrowser::read(const InputData& input, MenuInputMode mode)
         if (m_use_left_right_keys) {
                 // Left/right keys are used
                 if ((input.key == SDLK_LEFT) ||
+                    (input.key == SDLK_KP_4) ||
                     (input.key == 'h')) {
                         if (m_play_selection_audio) {
                                 audio::play(audio::SfxId::menu_select);
@@ -73,6 +74,7 @@ MenuAction MenuBrowser::read(const InputData& input, MenuInputMode mode)
                 }
 
                 if ((input.key == SDLK_RIGHT) ||
+                    (input.key == SDLK_KP_6) ||
                     (input.key == 'l')) {
                         if (m_play_selection_audio) {
                                 audio::play(audio::SfxId::menu_select);
