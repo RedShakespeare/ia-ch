@@ -82,8 +82,7 @@ static bool run_drop_query(
                         query::number(
                                 nr_query_pos,
                                 colors::light_white(),
-                                0,
-                                3,
+                                {0, item.m_nr_items},
                                 item.m_nr_items,
                                 false);
 

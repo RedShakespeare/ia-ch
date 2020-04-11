@@ -18,6 +18,8 @@ enum class MenuAction {
         none,
         moved,
         selected,
+        left,
+        right,
         space,
         esc
 };
@@ -147,6 +149,11 @@ public:
                 m_play_selection_audio = false;
         }
 
+        void enable_left_right_keys()
+        {
+                m_use_left_right_keys = true;
+        }
+
 private:
         void set_y_nearest_valid();
 
@@ -158,6 +165,7 @@ private:
         int m_list_h {-1};
         Range m_range_shown {-1, -1};
         bool m_play_selection_audio {true};
+        bool m_use_left_right_keys {false};
 };
 
 #endif // BROWSER_HPP

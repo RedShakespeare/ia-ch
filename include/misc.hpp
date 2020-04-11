@@ -18,27 +18,6 @@ struct R;
 template <typename T>
 class Array2;
 
-// TODO: Use std::clamp when available
-void set_constr_in_range(
-        int min,
-        int& val,
-        int max);
-
-void set_constr_in_range(
-        double min,
-        double& val,
-        double max);
-
-int constr_in_range(
-        int min,
-        int val,
-        int max);
-
-int constr_in_range(
-        double min,
-        double val,
-        double max);
-
 // Takes a boolean map array, and populates a vector with positions inside the
 // given area matching the specified value to store (true/false).
 std::vector<P> to_vec(

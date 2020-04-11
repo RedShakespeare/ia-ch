@@ -26,7 +26,6 @@
 #include "map_parsing.hpp"
 #include "map_travel.hpp"
 #include "marker.hpp"
-#include "misc.hpp"
 #include "msg_log.hpp"
 #include "popup.hpp"
 #include "property.hpp"
@@ -399,7 +398,7 @@ DidAction Actor::try_eat_corpse()
                 const int corpse_max_hp = corpse->m_base_max_hp;
 
                 const int destr_one_in_n =
-                        constr_in_range(1, corpse_max_hp / 4, 8);
+                        std::clamp(corpse_max_hp / 4, 1, 8);
 
                 const bool is_destroyed = rnd::one_in(destr_one_in_n);
 

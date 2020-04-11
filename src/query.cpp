@@ -115,8 +115,7 @@ InputData letter(const bool accept_enter)
 int number(
         const P& pos,
         const Color color,
-        const int min,
-        const int max_nr_digits,
+        const Range& allowed_range,
         const int default_value,
         const bool cancel_returns_default)
 {
@@ -124,7 +123,25 @@ int number(
                 return 0;
         }
 
-        int ret_num = std::max(min, default_value);
+        int ret_num =
+                std::clamp(
+                        default_value,
+                        allowed_range.min,
+                        allowed_range.max);
+
+        int max_nr_digits = 0;
+
+        {
+                int v = allowed_range.max;
+                while (true) {
+                        v /= 10;
+                        ++max_nr_digits;
+
+                        if (v == 0) {
+                                break;
+                        }
+                }
+        }
 
         io::cover_area(Panel::screen, pos, P(max_nr_digits + 1, 1));
 
@@ -186,7 +203,13 @@ int number(
                 }
 
                 if (input.key == SDLK_RETURN) {
-                        return std::max(min, ret_num);
+                        ret_num =
+                                std::clamp(
+                                        ret_num,
+                                        allowed_range.min,
+                                        allowed_range.max);
+
+                        return ret_num;
                 }
 
                 if ((input.key == SDLK_SPACE) || (input.key == SDLK_ESCAPE)) {
@@ -202,7 +225,10 @@ int number(
                 if (input.key == SDLK_BACKSPACE) {
                         ret_num = ret_num / 10;
 
-                        io::cover_area(Panel::screen, pos, P(max_nr_digits + 1, 1));
+                        io::cover_area(
+                                Panel::screen,
+                                pos,
+                                P(max_nr_digits + 1, 1));
 
                         io::draw_text(
                                 std::string(
@@ -221,9 +247,16 @@ int number(
                 if (current_num_digits < max_nr_digits) {
                         int current_digit = input.key - '0';
 
-                        ret_num = std::max(min, ret_num * 10 + current_digit);
+                        ret_num =
+                                std::clamp(
+                                        (ret_num * 10) + current_digit,
+                                        allowed_range.min,
+                                        allowed_range.max);
 
-                        io::cover_area(Panel::screen, pos, P(max_nr_digits + 1, 1));
+                        io::cover_area(
+                                Panel::screen,
+                                pos,
+                                P(max_nr_digits + 1, 1));
 
                         io::draw_text(
                                 std::string(

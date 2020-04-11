@@ -362,7 +362,7 @@ int Player::shock_resistance(const ShockSrc shock_src) const
                 break;
         }
 
-        return constr_in_range(0, res, 100);
+        return std::clamp(res, 0, 100);
 }
 
 double Player::shock_taken_after_mods(
@@ -750,7 +750,8 @@ void Player::update_tmp_shock()
                         const P p(m_pos + d);
 
                         const auto terrain_shock_db =
-                                (double)map::g_cells.at(p).terrain->shock_when_adj();
+                                (double)map::g_cells.at(p)
+                                        .terrain->shock_when_adj();
 
                         m_shock_tmp += shock_taken_after_mods(
                                 terrain_shock_db,
@@ -764,9 +765,9 @@ void Player::update_tmp_shock()
 
         const double shock_tmp_max = 100.0 - m_shock;
 
-        constr_in_range(
-                shock_tmp_min,
+        m_shock_tmp = std::clamp(
                 m_shock_tmp,
+                shock_tmp_min,
                 shock_tmp_max);
 }
 

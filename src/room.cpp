@@ -520,7 +520,7 @@ void StdRoom::on_post_connect(Array2<bool>& door_proposals)
                 // Increase chance with deeper dungeon levels
                 pct_chance_dark += map::g_dlvl;
 
-                set_constr_in_range(0, pct_chance_dark, 100);
+                pct_chance_dark = std::clamp(pct_chance_dark, 0, 100);
 
                 if (rnd::percent(pct_chance_dark)) {
                         make_dark();

@@ -49,9 +49,9 @@ static WeightedItems<actor::Id> valid_auto_spawn_monsters(
         WeightedItems<actor::Id> weighted_ids;
 
         const int effective_dlvl =
-                constr_in_range(
-                        1,
+                std::clamp(
                         map::g_dlvl + nr_lvls_out_of_depth,
+                        1,
                         g_dlvl_last);
 
         // Get list of actors currently on the level to help avoid spawning
@@ -288,10 +288,10 @@ std::vector<P> make_sorted_free_cells(
 
         const P dims = blocked.dims();
 
-        const int x0 = constr_in_range(1, origin.x - radi, dims.x - 2);
-        const int y0 = constr_in_range(1, origin.y - radi, dims.y - 2);
-        const int x1 = constr_in_range(1, origin.x + radi, dims.x - 2);
-        const int y1 = constr_in_range(1, origin.y + radi, dims.y - 2);
+        const int x0 = std::clamp(origin.x - radi, 1, dims.x - 2);
+        const int y0 = std::clamp(origin.y - radi, 1, dims.y - 2);
+        const int x1 = std::clamp(origin.x + radi, 1, dims.x - 2);
+        const int y1 = std::clamp(origin.y + radi, 1, dims.y - 2);
 
         for (int x = x0; x <= x1; ++x) {
                 for (int y = y0; y <= y1; ++y) {

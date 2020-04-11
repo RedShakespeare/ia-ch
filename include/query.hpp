@@ -9,6 +9,7 @@
 
 #include "colors.hpp"
 #include "direction.hpp"
+#include "random.hpp"
 
 struct InputData;
 
@@ -51,8 +52,7 @@ InputData letter(bool accept_enter);
 int number(
         const P& pos,
         Color color,
-        int min,
-        int max_nr_digits,
+        const Range& allowed_range,
         int default_value,
         bool cancel_returns_default);
 

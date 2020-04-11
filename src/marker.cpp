@@ -849,7 +849,7 @@ int CtrlTele::chance_of_success_pct(const P& tgt) const
 {
         const int dist = king_dist(map::g_player->m_pos, tgt);
 
-        const int chance = constr_in_range(25, 100 - dist, 95);
+        const int chance = std::clamp(100 - dist, 25, 95);
 
         return chance;
 }

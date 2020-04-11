@@ -23,6 +23,9 @@ const std::string g_minimap_exit_hint =
 const std::string g_postmortem_exit_hint =
         "[space, esc] to show high scores";
 
+const std::string g_set_option_hint =
+        "[enter, left, right] to set option";
+
 const std::string g_scroll_hint =
         "[2/8, down/up] to scroll";
 

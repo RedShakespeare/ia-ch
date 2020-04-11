@@ -878,9 +878,8 @@ void handle(const GameCmd cmd)
                         query::number(
                                 P(query_str.size(), 0),
                                 colors::light_white(),
-                                0,
-                                (int)actor::Id::END,
-                                0,
+                                {0, (int)actor::Id::END},
+                                (int)actor::Id::zombie,
                                 false);
 
                 const auto mon_id = (actor::Id)idx;

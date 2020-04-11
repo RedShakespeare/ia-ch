@@ -438,15 +438,15 @@ void InsShadows::on_start_hook()
 {
         TRACE_FUNC_BEGIN;
 
-        const int nr_shadows_lower = 2;
+        const int nr_shadows_min = 2;
 
-        const int nr_shadows_upper =
-                constr_in_range(
-                        nr_shadows_lower,
+        const int nr_shadows_max =
+                std::clamp(
                         map::g_dlvl - 2,
+                        nr_shadows_min,
                         8);
 
-        const size_t nr = rnd::range(nr_shadows_lower, nr_shadows_upper);
+        const size_t nr = rnd::range(nr_shadows_min, nr_shadows_max);
 
         auto summoned =
                 actor::spawn(

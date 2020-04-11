@@ -28,6 +28,13 @@ MenuAction MenuBrowser::read(const InputData& input, MenuInputMode mode)
         // NOTE: j k l are reserved for browsing with vi keys (not included in
         // the standard menu key letters)
 
+        // Using both shortcut keys and left/right keys is not allowed; It is
+        // enough that j k l are reserved from being used as a shortcut keys,
+        // 'h' should not also be reserved.
+        ASSERT(!(
+                (mode == MenuInputMode::scrolling_and_letters) &&
+                m_use_left_right_keys));
+
         if ((input.key == SDLK_UP) ||
             (input.key == SDLK_KP_8) ||
             (input.key == 'k')) {
@@ -54,8 +61,37 @@ MenuAction MenuBrowser::read(const InputData& input, MenuInputMode mode)
                 return MenuAction::moved;
         }
 
-        if ((input.key == SDLK_RETURN) ||
-            (input.key == 'l')) {
+        if (m_use_left_right_keys) {
+                // Left/right keys are used
+                if ((input.key == SDLK_LEFT) ||
+                    (input.key == 'h')) {
+                        if (m_play_selection_audio) {
+                                audio::play(audio::SfxId::menu_select);
+                        }
+
+                        return MenuAction::left;
+                }
+
+                if ((input.key == SDLK_RIGHT) ||
+                    (input.key == 'l')) {
+                        if (m_play_selection_audio) {
+                                audio::play(audio::SfxId::menu_select);
+                        }
+
+                        return MenuAction::right;
+                }
+        } else {
+                // Left/right keys are not used - consider 'l' as "selected"
+                if (input.key == 'l') {
+                        if (m_play_selection_audio) {
+                                audio::play(audio::SfxId::menu_select);
+                        }
+
+                        return MenuAction::selected;
+                }
+        }
+
+        if (input.key == SDLK_RETURN) {
                 if (m_play_selection_audio) {
                         audio::play(audio::SfxId::menu_select);
                 }
@@ -71,6 +107,7 @@ MenuAction MenuBrowser::read(const InputData& input, MenuInputMode mode)
                 return MenuAction::esc;
         }
 
+        // Handle shortcut keys
         if (mode == MenuInputMode::scrolling_and_letters) {
                 const char c = (char)input.key;
 
@@ -196,7 +233,7 @@ void MenuBrowser::update_range_shown()
 
 void MenuBrowser::set_y_nearest_valid()
 {
-        set_constr_in_range(0, m_y, m_nr_items - 1);
+        m_y = std::clamp(m_y, 0, m_nr_items - 1);
 }
 
 int MenuBrowser::nr_items_shown() const

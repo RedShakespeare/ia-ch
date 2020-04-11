@@ -333,9 +333,9 @@ void Color::randomize_rgb(const int range)
         const int new_g = (int)m_sdl_color.g + random.roll();
         const int new_b = (int)m_sdl_color.b + random.roll();
 
-        m_sdl_color.r = (uint8_t)constr_in_range(0, new_r, 255);
-        m_sdl_color.g = (uint8_t)constr_in_range(0, new_g, 255);
-        m_sdl_color.b = (uint8_t)constr_in_range(0, new_b, 255);
+        m_sdl_color.r = (uint8_t)std::clamp(new_r, 0, 255);
+        m_sdl_color.g = (uint8_t)std::clamp(new_g, 0, 255);
+        m_sdl_color.b = (uint8_t)std::clamp(new_b, 0, 255);
 }
 
 // -----------------------------------------------------------------------------

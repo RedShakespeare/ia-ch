@@ -13,39 +13,10 @@
 #include "array2.hpp"
 #include "rect.hpp"
 
-void set_constr_in_range(const int min, int& val, const int max)
-{
-        if (max >= min) {
-                val = std::min(max, std::max(val, min));
-        }
-}
-
-void set_constr_in_range(const double min, double& val, const double max)
-{
-        if (max > min) {
-                val = std::min(max, std::max(val, min));
-        }
-}
-
-int constr_in_range(const int min, const int val, const int max)
-{
-        if (max < min) {
-                return -1;
-        }
-
-        return std::min(max, std::max(val, min));
-}
-
-int constr_in_range(const double min, const double val, const double max)
-{
-        if (max < min) {
-                return -1;
-        }
-
-        return std::min(max, std::max(val, min));
-}
-
-std::vector<P> to_vec(const Array2<bool>& a, const bool value_to_store, const R& area_to_parse)
+std::vector<P> to_vec(
+        const Array2<bool>& a,
+        const bool value_to_store,
+        const R& area_to_parse)
 {
         std::vector<P> result;
 
@@ -71,7 +42,10 @@ bool is_pos_inside(const P& pos, const R& area)
                 pos.y <= area.p1.y;
 }
 
-bool is_area_inside(const R& inner, const R& outer, const bool count_equal_as_inside)
+bool is_area_inside(
+        const R& inner,
+        const R& outer,
+        const bool count_equal_as_inside)
 {
         if (count_equal_as_inside) {
                 return inner.p0.x >= outer.p0.x &&

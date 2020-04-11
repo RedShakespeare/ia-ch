@@ -383,7 +383,7 @@ RangedAttData::RangedAttData(
                 dist_mod +
                 state_mod;
 
-        set_constr_in_range(5, hit_chance_tot, 99);
+        hit_chance_tot = std::clamp(hit_chance_tot, 5, 99);
 
         dmg_range = wpn.ranged_dmg(attacker);
 
@@ -542,7 +542,7 @@ ThrowAttData::ThrowAttData(
                 dist_mod +
                 state_mod;
 
-        set_constr_in_range(5, hit_chance_tot, 99);
+        hit_chance_tot = std::clamp(hit_chance_tot, 5, 99);
 
         dmg_range = item.thrown_dmg(attacker);
 

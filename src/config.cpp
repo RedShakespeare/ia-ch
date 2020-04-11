@@ -28,9 +28,13 @@
 #include "text_format.hpp"
 
 // -----------------------------------------------------------------------------
-// Config
+// Private
 // -----------------------------------------------------------------------------
-namespace config {
+enum class OptionToggleDirecton {
+        enter,
+        left,
+        right
+};
 
 static const std::vector<std::string> font_image_names = {
         "8x12_DOS.png",
@@ -84,7 +88,7 @@ static P parse_dims_from_font_name(std::string font_name)
         char ch = font_name.front();
 
         while (ch < '0' || ch > '9') {
-                font_name.erase(begin(font_name));
+                font_name.erase(std::begin(font_name));
 
                 ch = font_name.front();
         }
@@ -92,21 +96,21 @@ static P parse_dims_from_font_name(std::string font_name)
         std::string w_str;
 
         while (ch != 'x') {
-                font_name.erase(begin(font_name));
+                font_name.erase(std::begin(font_name));
 
                 w_str += ch;
 
                 ch = font_name.front();
         }
 
-        font_name.erase(begin(font_name));
+        font_name.erase(std::begin(font_name));
 
         ch = font_name.front();
 
         std::string h_str;
 
         while (ch != '_' && ch != '.') {
-                font_name.erase(begin(font_name));
+                font_name.erase(std::begin(font_name));
 
                 h_str += ch;
 
@@ -231,90 +235,107 @@ static void set_default_variables()
         TRACE_FUNC_END;
 }
 
-static void player_sets_option(const MenuBrowser& browser)
+static void player_sets_option(
+        const MenuBrowser& browser,
+        const OptionToggleDirecton direction)
 {
         switch (browser.y()) {
-        case 0: // Input mode
-        {
-                const auto input_mode_nr = (int)s_input_mode;
-
+        case 0: {
+                // Input mode
+                auto input_mode_nr = (int)s_input_mode;
                 const auto nr_input_modes = (int)InputMode::END;
 
-                s_input_mode = (InputMode)((input_mode_nr + 1) % nr_input_modes);
+                if ((direction == OptionToggleDirecton::enter) ||
+                    (direction == OptionToggleDirecton::right)) {
+                        // Enter or right
+                        if (input_mode_nr < (nr_input_modes - 1)) {
+                                ++input_mode_nr;
+                        } else {
+                                input_mode_nr = 0;
+                        }
+                } else {
+                        // Left
+                        if (input_mode_nr > 0) {
+                                --input_mode_nr;
+                        } else {
+                                input_mode_nr = nr_input_modes - 1;
+                        }
+                }
+
+                s_input_mode = (InputMode)(input_mode_nr);
         } break;
 
-        case 1: // Audio
-        {
+        case 1: {
+                // Audio
                 s_is_audio_enabled = !s_is_audio_enabled;
-
                 audio::init();
         } break;
 
-        case 2: // Ambient audio
-        {
+        case 2: {
+                // Ambient audio
                 s_is_amb_audio_enabled = !s_is_amb_audio_enabled;
-
                 audio::init();
         } break;
 
-        case 3: // Ambient audio
-        {
+        case 3: {
+                // Ambient audio
                 s_is_amb_audio_preloaded = !s_is_amb_audio_preloaded;
         } break;
 
-        case 4: // Tiles mode
-        {
+        case 4: {
+                // Tiles mode
                 s_is_tiles_mode = !s_is_tiles_mode;
-
                 update_render_dims();
-
                 sdl_base::init();
-
                 io::init();
         } break;
 
-        case 5: // Font
-        {
-                // Set next font
-                for (size_t i = 0; i < font_image_names.size(); ++i) {
-                        if (s_font_name == font_image_names[i]) {
-                                if (i == (font_image_names.size() - 1)) {
-                                        s_font_name = font_image_names.front();
-                                } else {
-                                        s_font_name = font_image_names[i + 1];
-                                }
+        case 5: {
+                // Font
+
+                // Find current font index
+                size_t font_idx = 0;
+
+                const size_t nr_fonts = std::size(font_image_names);
+
+                for (; font_idx < nr_fonts; ++font_idx) {
+                        if (font_image_names[font_idx] == s_font_name) {
                                 break;
                         }
                 }
 
-                update_render_dims();
-
-                // In tiles mode, find a font with matching size
-                if (s_is_tiles_mode) {
-                        // Find index of currently used font
-                        size_t font_idx = 0;
-
-                        for (; font_idx < font_image_names.size(); ++font_idx) {
-                                if (s_font_name == font_image_names[font_idx]) {
-                                        break;
-                                }
+                if ((direction == OptionToggleDirecton::enter) ||
+                    (direction == OptionToggleDirecton::right)) {
+                        // Enter or right
+                        if (font_idx < (nr_fonts - 1)) {
+                                ++font_idx;
+                        } else {
+                                font_idx = 0;
+                        }
+                } else {
+                        // Left
+                        if (font_idx > 0) {
+                                --font_idx;
+                        } else {
+                                font_idx = nr_fonts - 1;
                         }
                 }
 
-                sdl_base::init();
+                s_font_name = font_image_names[font_idx];
 
+                update_render_dims();
+                sdl_base::init();
                 io::init();
         } break;
 
-        case 6: // Fullscreen
-        {
-                set_fullscreen(!s_is_fullscreen);
-
+        case 6: {
+                // Fullscreen
+                config::set_fullscreen(!s_is_fullscreen);
                 io::on_fullscreen_toggled();
         } break;
 
-        case 7: // Use native resolution in fullscreen
-        {
+        case 7: {
+                // Use native resolution in fullscreen
                 s_is_native_resolution_fullscreen =
                         !s_is_native_resolution_fullscreen;
 
@@ -323,125 +344,172 @@ static void player_sets_option(const MenuBrowser& browser)
                 }
         } break;
 
-        case 8: // Tiles mode wall symbol
-        {
+        case 8: {
+                // Tiles mode wall symbol
                 s_is_tiles_wall_full_square = !s_is_tiles_wall_full_square;
         } break;
 
-        case 9: // Text mode wall symbol
-        {
+        case 9: {
+                // Text mode wall symbol
                 s_is_text_mode_wall_full_square =
                         !s_is_text_mode_wall_full_square;
         } break;
 
-        case 10: // Skip intro level
-        {
+        case 10: {
+                // Skip intro level
                 s_is_intro_lvl_skipped = !s_is_intro_lvl_skipped;
         } break;
 
-        case 11: // Skip intro popup
-        {
+        case 11: {
+                // Skip intro popup
                 s_is_intro_popup_skipped = !s_is_intro_popup_skipped;
         } break;
 
-        case 12: // Confirm "more" with any key
-        {
+        case 12: {
+                // Confirm "more" with any key
                 s_is_any_key_confirm_more = !s_is_any_key_confirm_more;
         } break;
 
-        case 13: // Display hints
-        {
+        case 13: {
+                // Display hints
                 s_display_hints = !s_display_hints;
 
                 hints::init();
         } break;
 
-        case 14: // Always warn when a new monster appears
-        {
+        case 14: {
+                // Always warn when a new monster appears
                 s_always_warn_new_mon = !s_always_warn_new_mon;
         } break;
 
-        case 15: // Print warning when lighting explovies
-        {
+        case 15: {
+                // Print warning when lighting explovies
                 s_is_light_explosive_prompt = !s_is_light_explosive_prompt;
         } break;
 
-        case 16: // Print warning when drinking known malign potions
-        {
+        case 16: {
+                // Print warning when drinking known malign potions
                 s_is_drink_malign_pot_prompt = !s_is_drink_malign_pot_prompt;
         } break;
 
-        case 17: // Print warning when melee attacking with ranged weapons
-        {
+        case 17: {
+                // Print warning when melee attacking with ranged weapons
                 s_is_ranged_wpn_meleee_prompt = !s_is_ranged_wpn_meleee_prompt;
         } break;
 
-        case 18: // Ranged weapon auto reload
-        {
+        case 18: {
+                // Ranged weapon auto reload
                 s_is_ranged_wpn_auto_reload = !s_is_ranged_wpn_auto_reload;
         } break;
 
-        case 19: // Projectile delay
-        {
+        case 19: {
+                // Projectile delay
                 const P p(s_opt_values_x_pos, s_opt_y0 + browser.y());
 
-                const int nr = query::number(
-                        p,
-                        colors::menu_highlight(),
-                        1,
-                        3,
-                        s_delay_projectile_draw,
-                        true);
+                const Range allowed_range(0, 900);
 
-                if (nr != -1) {
-                        s_delay_projectile_draw = nr;
+                if (direction == OptionToggleDirecton::enter) {
+                        // Enter
+                        const int nr =
+                                query::number(
+                                        p,
+                                        colors::menu_highlight(),
+                                        allowed_range,
+                                        s_delay_projectile_draw,
+                                        true);
+
+                        if (nr != -1) {
+                                s_delay_projectile_draw = nr;
+                        }
+                } else if (direction == OptionToggleDirecton::left) {
+                        // Left
+                        s_delay_projectile_draw -= 10;
+                } else {
+                        // Right
+                        s_delay_projectile_draw += 10;
                 }
+
+                s_delay_projectile_draw =
+                        std::clamp(
+                                s_delay_projectile_draw,
+                                allowed_range.min,
+                                allowed_range.max);
         } break;
 
-        case 20: // Shotgun delay
-        {
+        case 20: {
+                // Shotgun delay
                 const P p(s_opt_values_x_pos, s_opt_y0 + browser.y());
 
-                const int nr = query::number(
-                        p,
-                        colors::menu_highlight(),
-                        1,
-                        3,
-                        s_delay_shotgun,
-                        true);
+                const Range allowed_range(0, 900);
 
-                if (nr != -1) {
-                        s_delay_shotgun = nr;
+                if (direction == OptionToggleDirecton::enter) {
+                        // Enter
+                        const int nr =
+                                query::number(
+                                        p,
+                                        colors::menu_highlight(),
+                                        allowed_range,
+                                        s_delay_shotgun,
+                                        true);
+
+                        if (nr != -1) {
+                                s_delay_shotgun = nr;
+                        }
+                } else if (direction == OptionToggleDirecton::left) {
+                        // Left
+                        s_delay_shotgun -= 10;
+                } else {
+                        // Right
+                        s_delay_shotgun += 10;
                 }
+
+                s_delay_shotgun =
+                        std::clamp(
+                                s_delay_shotgun,
+                                allowed_range.min,
+                                allowed_range.max);
         } break;
 
-        case 21: // Explosion delay
-        {
+        case 21: {
+                // Explosion delay
                 const P p(s_opt_values_x_pos, s_opt_y0 + browser.y());
 
-                const int nr = query::number(
-                        p,
-                        colors::menu_highlight(),
-                        1,
-                        3,
-                        s_delay_explosion,
-                        true);
+                const Range allowed_range(0, 900);
 
-                if (nr != -1) {
-                        s_delay_explosion = nr;
+                if (direction == OptionToggleDirecton::enter) {
+                        // Enter
+                        const int nr =
+                                query::number(
+                                        p,
+                                        colors::menu_highlight(),
+                                        allowed_range,
+                                        s_delay_explosion,
+                                        true);
+
+                        if (nr != -1) {
+                                s_delay_explosion = nr;
+                        }
+                } else if (direction == OptionToggleDirecton::left) {
+                        // Left
+                        s_delay_explosion -= 10;
+                } else {
+                        // Right
+                        s_delay_explosion += 10;
                 }
+
+                s_delay_explosion =
+                        std::clamp(
+                                s_delay_explosion,
+                                allowed_range.min,
+                                allowed_range.max);
         } break;
 
-        case 22: // Reset to defaults
-        {
+        case 22: {
+                // Reset to defaults
                 set_default_variables();
-
                 update_render_dims();
-
                 sdl_base::init();
-
                 io::init();
-
                 audio::init();
         } break;
 
@@ -622,6 +690,11 @@ static std::vector<std::string> lines_from_variables()
         return lines;
 }
 
+// -----------------------------------------------------------------------------
+// Config
+// -----------------------------------------------------------------------------
+namespace config {
+
 void init()
 {
         s_font_name = "";
@@ -640,7 +713,7 @@ void init()
         }
 
         update_render_dims();
-}
+} // namespace configvoidinit()
 
 InputMode input_mode()
 {
@@ -841,6 +914,7 @@ ConfigState::ConfigState() :
 
         m_browser(23)
 {
+        m_browser.enable_left_right_keys();
 }
 
 StateId ConfigState::id()
@@ -855,6 +929,8 @@ void ConfigState::update()
         const MenuAction action =
                 m_browser.read(input, MenuInputMode::scrolling);
 
+        bool did_set_option = false;
+
         switch (action) {
         case MenuAction::esc:
         case MenuAction::space: {
@@ -868,17 +944,30 @@ void ConfigState::update()
         } break;
 
         case MenuAction::selected: {
-                config::player_sets_option(m_browser);
+                player_sets_option(m_browser, OptionToggleDirecton::enter);
+                did_set_option = true;
+        } break;
 
-                const auto lines = config::lines_from_variables();
+        case MenuAction::left: {
+                player_sets_option(m_browser, OptionToggleDirecton::left);
+                did_set_option = true;
+        } break;
 
-                config::write_lines_to_file(lines);
-
-                io::flush_input();
+        case MenuAction::right: {
+                player_sets_option(m_browser, OptionToggleDirecton::right);
+                did_set_option = true;
         } break;
 
         default:
                 break;
+        }
+
+        if (did_set_option) {
+                const auto lines = lines_from_variables();
+
+                write_lines_to_file(lines);
+
+                io::flush_input();
         }
 }
 
@@ -886,7 +975,7 @@ void ConfigState::draw()
 {
         draw_box(panels::area(Panel::screen));
 
-        const int x1 = config::s_opt_values_x_pos;
+        const int x1 = s_opt_values_x_pos;
 
         io::draw_text_center(
                 " Options ",
@@ -899,7 +988,9 @@ void ConfigState::draw()
 
         io::draw_text_center(
                 std::string(
-                        " [enter] to set option " +
+                        " " +
+                        common_text::g_set_option_hint +
+                        " " +
                         common_text::g_screen_exit_hint +
                         " "),
                 Panel::screen,
@@ -909,11 +1000,11 @@ void ConfigState::draw()
                 colors::black(),
                 true); // Allow pixel-level adjustment
 
-        std::string font_disp_name = config::s_font_name;
+        std::string font_disp_name = s_font_name;
 
         std::string input_mode_value_str;
 
-        switch (config::s_input_mode) {
+        switch (s_input_mode) {
         case InputMode::standard:
                 input_mode_value_str = "Default (numpad or arrows)";
                 break;
@@ -932,100 +1023,100 @@ void ConfigState::draw()
                  input_mode_value_str},
 
                 {"Enable audio",
-                 config::s_is_audio_enabled
+                 s_is_audio_enabled
                          ? "Yes"
                          : "No"},
 
                 {"Play ambient sounds",
-                 config::s_is_amb_audio_enabled
+                 s_is_amb_audio_enabled
                          ? "Yes"
                          : "No"},
 
                 {"Preload ambient sounds at game startup",
-                 config::s_is_amb_audio_preloaded
+                 s_is_amb_audio_preloaded
                          ? "Yes"
                          : "No"},
 
                 {"Use tile set",
-                 config::s_is_tiles_mode
+                 s_is_tiles_mode
                          ? "Yes"
                          : "No"},
 
                 {"Font", font_disp_name},
 
                 {"Fullscreen",
-                 config::s_is_fullscreen
+                 s_is_fullscreen
                          ? "Yes"
                          : "No"},
 
                 {"Use native resolution in fullscreen",
-                 config::s_is_native_resolution_fullscreen
+                 s_is_native_resolution_fullscreen
                          ? "Yes"
                          : "No (Stretch)"},
 
                 {"Tiles mode wall symbol",
-                 config::s_is_tiles_wall_full_square
+                 s_is_tiles_wall_full_square
                          ? "Full square"
                          : "Pseudo-3D"},
 
                 {"Text mode wall symbol",
-                 config::s_is_text_mode_wall_full_square
+                 s_is_text_mode_wall_full_square
                          ? "Full square"
                          : "Hash sign"},
 
                 {"Skip intro level",
-                 config::s_is_intro_lvl_skipped
+                 s_is_intro_lvl_skipped
                          ? "Yes"
                          : "No"},
 
                 {"Skip intro popup",
-                 config::s_is_intro_popup_skipped
+                 s_is_intro_popup_skipped
                          ? "Yes"
                          : "No"},
 
                 {"Any key confirms \"-More-\" prompts",
-                 config::s_is_any_key_confirm_more
+                 s_is_any_key_confirm_more
                          ? "Yes"
                          : "No"},
 
                 {"Display hints",
-                 config::s_display_hints
+                 s_display_hints
                          ? "Yes"
                          : "No"},
 
                 {"Always warn when new monster is seen",
-                 config::s_always_warn_new_mon
+                 s_always_warn_new_mon
                          ? "Yes"
                          : "No"},
 
                 {"Warn when lighting explosives",
-                 config::s_is_light_explosive_prompt
+                 s_is_light_explosive_prompt
                          ? "Yes"
                          : "No"},
 
                 {"Warn when drinking malign potions",
-                 config::s_is_drink_malign_pot_prompt
+                 s_is_drink_malign_pot_prompt
                          ? "Yes"
                          : "No"},
 
                 {"Ranged weapon melee attack warning",
-                 config::s_is_ranged_wpn_meleee_prompt
+                 s_is_ranged_wpn_meleee_prompt
                          ? "Yes"
                          : "No"},
 
                 {"Ranged weapon auto reload",
-                 config::s_is_ranged_wpn_auto_reload
+                 s_is_ranged_wpn_auto_reload
                          ? "Yes"
                          : "No"},
 
                 {"Projectile delay (ms)",
-                 std::to_string(config::s_delay_projectile_draw)},
+                 std::to_string(s_delay_projectile_draw)},
 
                 {"Shotgun delay (ms)",
-                 std::to_string(config::s_delay_shotgun)},
+                 std::to_string(s_delay_shotgun)},
 
                 {"Explosion delay (ms)",
-                 std::to_string(config::s_delay_explosion)},
+                 std::to_string(s_delay_explosion)},
 
                 {"Reset to defaults",
                  ""}};
@@ -1041,7 +1132,7 @@ void ConfigState::draw()
                         ? colors::menu_highlight()
                         : colors::menu_dark();
 
-                auto y = config::s_opt_y0 + (int)i;
+                auto y = s_opt_y0 + (int)i;
 
                 // Create some distance to "reset to defaults"
                 if (i == (labels.size() - 1)) {

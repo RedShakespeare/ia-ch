@@ -455,7 +455,7 @@ static void mon_act(actor::Mon& mon)
                 erratic_move_pct += 50;
         }
 
-        set_constr_in_range(0, erratic_move_pct, 95);
+        erratic_move_pct = std::clamp(erratic_move_pct, 0, 95);
 
         // Occasionally move erratically
         if (mon.m_data->ai[(size_t)actor::AiId::moves_randomly_when_unaware] &&

@@ -396,6 +396,8 @@ int menu(
                 case MenuAction::selected:
                         return browser.y();
 
+                case MenuAction::left:
+                case MenuAction::right:
                 case MenuAction::none:
                         break;
                 }

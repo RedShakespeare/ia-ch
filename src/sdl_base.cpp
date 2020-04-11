@@ -92,7 +92,8 @@ void cleanup()
 
 void sleep(const uint32_t duration)
 {
-        if (config::is_bot_playing()) {
+        if ((duration == 0) ||
+            config::is_bot_playing()) {
                 return;
         }
 

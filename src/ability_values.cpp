@@ -13,7 +13,6 @@
 #include "colors.hpp"
 #include "debug.hpp"
 #include "map.hpp"
-#include "misc.hpp"
 #include "player_bon.hpp"
 #include "property_handler.hpp"
 
@@ -230,7 +229,7 @@ ActionResult roll(const int skill_value)
 
 int hit_chance_pct_actual(const int value)
 {
-        return constr_in_range(2, value, 98);
+        return std::clamp(value, 2, 98);
 }
 
 } // namespace ability_roll
