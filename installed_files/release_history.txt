@@ -20,6 +20,7 @@ User interface
 * All menus have shortcut keys
 * Removed the "game over" menu - instead the game summary is first shown, then the high scores, then you return to the main menu
 * In the options menu, left and right can also be used to change option values
+* Added the comma key as an alternative pick up command
 
 Bug fixes
 * Fixed a bug that prevented messages for Rogues sensing artifacts on the dungeon floor (there were only messages for sensing artifacts in item containers, such as tombs)

@@ -6,7 +6,7 @@ Gameplay commands:
    c         Close door, or jam closed door with an iron spike
    d         Drop item
    f         Aim/fire weapon
-   g         Pick up item
+   g (,)     Pick up item
    h (M)     Message history
    i         Inventory (wield, equip, remove, consume, or activate items)
    k (w)     Kick or strike objects, or destroy corpses

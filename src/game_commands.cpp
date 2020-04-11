@@ -191,6 +191,7 @@ static GameCmd to_cmd_default(const InputData& input)
                 return GameCmd::fire;
 
         case 'g':
+        case ',':
                 return GameCmd::get;
 
         case 'i':
