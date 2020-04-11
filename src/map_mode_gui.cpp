@@ -103,19 +103,31 @@ static void draw_wielded_wpn(const int y, const Panel panel)
                 label_color(),
                 io::DrawBg::no);
 
-        const auto* wpn = map::g_player->m_inv.item_in_slot(SlotId::wpn);
+        const auto* item = map::g_player->m_inv.item_in_slot(SlotId::wpn);
 
-        if (!wpn) {
-                wpn = &map::g_player->unarmed_wpn();
+        if (!item) {
+                item = &map::g_player->unarmed_wpn();
         }
 
-        const auto wpn_str = make_wpn_dmg_str(*wpn);
+        const auto wpn_str = make_wpn_dmg_str(*item);
+
+        auto color = info_color();
+
+        if (item->data().ranged.is_ranged_wpn &&
+            !item->data().ranged.has_infinite_ammo &&
+            (item->data().ranged.max_ammo > 0)) {
+                const auto* const wpn = static_cast<const item::Wpn*>(item);
+
+                if (wpn->m_ammo_loaded == 0) {
+                        color = colors::yellow();
+                }
+        }
 
         io::draw_text_right(
                 wpn_str,
                 panel,
                 {panels::w(panel) - 1, y},
-                info_color(),
+                color,
                 io::DrawBg::no);
 }
 
@@ -130,28 +142,40 @@ static void draw_alt_wpn(const int y, const Panel panel)
                 label_color(),
                 io::DrawBg::no);
 
-        const auto* wpn = map::g_player->m_inv.item_in_slot(SlotId::wpn_alt);
+        const auto* item = map::g_player->m_inv.item_in_slot(SlotId::wpn_alt);
 
-        if (!wpn) {
-                wpn = &map::g_player->unarmed_wpn();
+        if (!item) {
+                item = &map::g_player->unarmed_wpn();
         }
 
-        const auto wpn_str = make_wpn_dmg_str(*wpn);
+        const auto wpn_str = make_wpn_dmg_str(*item);
+
+        auto color = info_color();
+
+        if (item->data().ranged.is_ranged_wpn &&
+            !item->data().ranged.has_infinite_ammo &&
+            (item->data().ranged.max_ammo > 0)) {
+                const auto* const wpn = static_cast<const item::Wpn*>(item);
+
+                if (wpn->m_ammo_loaded == 0) {
+                        color = colors::yellow();
+                }
+        }
 
         io::draw_text_right(
                 wpn_str,
                 panel,
                 {panels::w(panel) - 1, y},
-                info_color().fraction(2.0),
+                color.fraction(2.0),
                 io::DrawBg::no);
 }
 
 static void draw_hp(const int y, const Panel panel)
 {
-        const int hp = map::g_player->m_hp;
-        const int max_hp = actor::max_hp(*map::g_player);
+        const auto hp = map::g_player->m_hp;
+        const auto max_hp = actor::max_hp(*map::g_player);
 
-        // const int hp_pct = (hp * 100) / max_hp;
+        const auto hp_pct = (hp * 100) / max_hp;
 
         // draw_bar(
         //         hp_pct,
@@ -167,56 +191,80 @@ static void draw_hp(const int y, const Panel panel)
                 label_color(),
                 io::DrawBg::no);
 
-        const std::string str =
-                std::to_string(hp) +
-                "/" +
-                std::to_string(max_hp);
+        const auto hp_str = std::to_string(hp);
+        const auto max_hp_str = std::to_string(max_hp);
 
-        io::draw_text_right(
-                str,
+        const auto hp_str_w = (int)hp_str.length();
+        const auto max_hp_str_w = (int)max_hp_str.length();
+        const auto tot_w = hp_str_w + 1 + max_hp_str_w;
+        const auto hp_x = panels::w(panel) - tot_w;
+
+        const auto tint_pct = std::min(100 - hp_pct, 60);
+
+        io::draw_text(
+                hp_str,
                 panel,
-                {panels::w(panel) - 1, y},
+                {hp_x, y},
+                colors::light_red().tinted(tint_pct),
+                io::DrawBg::no);
+
+        io::draw_text(
+                "/" + max_hp_str,
+                panel,
+                {hp_x + hp_str_w, y},
                 colors::light_red(),
                 io::DrawBg::no);
 }
 
 static void draw_sp(const int y, const Panel panel)
 {
-        const int sp = map::g_player->m_sp;
-        const int max_sp = actor::max_sp(*map::g_player);
+        const auto sp = map::g_player->m_sp;
+        const auto max_sp = actor::max_sp(*map::g_player);
 
-        // const int sp_pct = (sp * 100) / max_sp;
+        const auto sp_pct = (sp * 100) / max_sp;
 
         // draw_bar(
         //         sp_pct,
         //         {0, y},
         //         panels::w(panel),
         //         panel,
-        //         colors::blue().fraction(1.25));
+        //         colors::blue().fraction(1.5));
 
         io::draw_text(
-                "Spirit",
+                "Health",
                 panel,
                 {0, y},
                 label_color(),
                 io::DrawBg::no);
 
-        const std::string str =
-                std::to_string(sp) +
-                "/" +
-                std::to_string(max_sp);
+        const auto sp_str = std::to_string(sp);
+        const auto max_sp_str = std::to_string(max_sp);
 
-        io::draw_text_right(
-                str,
+        const auto sp_str_w = (int)sp_str.length();
+        const auto max_sp_str_w = (int)max_sp_str.length();
+        const auto tot_w = sp_str_w + 1 + max_sp_str_w;
+        const auto sp_x = panels::w(panel) - tot_w;
+
+        const auto tint_pct = std::min(100 - sp_pct, 60);
+
+        io::draw_text(
+                sp_str,
                 panel,
-                {panels::w(panel) - 1, y},
+                {sp_x, y},
+                colors::light_blue().tinted(tint_pct),
+                io::DrawBg::no);
+
+        io::draw_text(
+                "/" + max_sp_str,
+                panel,
+                {sp_x + sp_str_w, y},
                 colors::light_blue(),
                 io::DrawBg::no);
 }
 
 static void draw_shock(const int y, const Panel panel)
 {
-        const int shock_pct = std::min(999, map::g_player->shock_tot());
+        const auto shock_pct = std::min(999, map::g_player->shock_tot());
 
         // draw_bar(
         //         shock_pct,
@@ -232,7 +280,7 @@ static void draw_shock(const int y, const Panel panel)
                 label_color(),
                 io::DrawBg::no);
 
-        const std::string shock_str = std::to_string(shock_pct) + "%";
+        const auto shock_str = std::to_string(shock_pct) + "%";
 
         io::draw_text_right(
                 shock_str,
@@ -244,7 +292,7 @@ static void draw_shock(const int y, const Panel panel)
 
 static void draw_insanity(const int y, const Panel panel)
 {
-        const int ins_pct = map::g_player->ins();
+        const auto ins_pct = map::g_player->ins();
 
         // draw_bar(
         //         ins_pct,
@@ -260,19 +308,19 @@ static void draw_insanity(const int y, const Panel panel)
                 label_color(),
                 io::DrawBg::no);
 
-        const std::string ins_str = std::to_string(ins_pct) + "%";
+        const auto ins_str = std::to_string(ins_pct) + "%";
 
         io::draw_text_right(
                 ins_str,
                 panel,
                 {panels::w(panel) - 1, y},
-                colors::magenta(),
+                colors::magenta().fraction(1.5),
                 io::DrawBg::no);
 }
 
 static void draw_weight(const int y, const Panel panel)
 {
-        const int weight_pct = map::g_player->enc_percent();
+        const auto weight_pct = map::g_player->enc_percent();
 
         // draw_bar(
         //         weight_pct,
@@ -288,7 +336,7 @@ static void draw_weight(const int y, const Panel panel)
                 label_color(),
                 io::DrawBg::no);
 
-        const std::string enc_str = std::to_string(weight_pct) + "%";
+        const auto enc_str = std::to_string(weight_pct) + "%";
 
         io::draw_text_right(
                 enc_str,
@@ -352,7 +400,11 @@ static void draw_class(const int y, const Panel panel)
 
 static void draw_char_lvl_and_xp(const int y, const Panel panel)
 {
-        const int xp_pct = game::xp_pct();
+        const auto clvl = game::clvl();
+
+        const bool is_max_lvl = clvl >= g_player_max_clvl;
+
+        const int xp_pct = std::clamp(game::xp_pct(), 0, 100);
 
         // draw_bar(
         //         xp_pct,
@@ -368,21 +420,34 @@ static void draw_char_lvl_and_xp(const int y, const Panel panel)
                 label_color(),
                 io::DrawBg::no);
 
-        std::string xp_str = std::to_string(game::clvl());
+        const auto clvl_str = std::to_string(clvl);
 
-        if (xp_pct < 100) {
-                xp_str +=
-                        " (" +
-                        std::to_string(game::xp_pct()) +
-                        "%)";
+        std::string xp_str;
+
+        if (!is_max_lvl) {
+                xp_str = " (" + std::to_string(xp_pct) + "%)";
         }
 
-        io::draw_text_right(
-                xp_str,
+        const auto clvl_w = (int)clvl_str.length();
+        const auto xp_w = (int)xp_str.length();
+        const auto tot_w = clvl_w + xp_w;
+        const auto clvl_x = panels::w(panel) - tot_w;
+
+        io::draw_text(
+                clvl_str,
                 panel,
-                {panels::w(panel) - 1, y},
+                {clvl_x, y},
                 info_color(),
                 io::DrawBg::no);
+
+        if (!is_max_lvl) {
+                io::draw_text(
+                        xp_str,
+                        panel,
+                        {clvl_x + clvl_w, y},
+                        colors::green().tinted(100 - xp_pct),
+                        io::DrawBg::no);
+        }
 }
 
 static void draw_dlvl(const int y, const Panel panel)
@@ -394,13 +459,19 @@ static void draw_dlvl(const int y, const Panel panel)
                 label_color(),
                 io::DrawBg::no);
 
-        std::string dlvl_str = std::to_string(map::g_dlvl);
+        const auto dlvl = (int)map::g_dlvl;
+
+        const auto dlvl_str = std::to_string(dlvl);
+
+        const auto max_dlvl = g_dlvl_last;
+        const auto dlvl_pct = std::clamp((dlvl * 100) / max_dlvl, 0, 100);
+        const auto shade_pct = (dlvl_pct * 5) / 8;
 
         io::draw_text_right(
                 dlvl_str,
                 panel,
                 {panels::w(panel) - 1, y},
-                info_color(),
+                info_color().shaded(shade_pct),
                 io::DrawBg::no);
 }
 

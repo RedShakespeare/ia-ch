@@ -281,14 +281,52 @@ bool Color::operator!=(const Color& other) const
                 m_sdl_color.b != other.m_sdl_color.b);
 }
 
-Color Color::fraction(const double div)
+Color Color::fraction(const double div) const
 {
         auto result =
-                Color((uint8_t)((double)m_sdl_color.r / div),
-                      (uint8_t)((double)m_sdl_color.g / div),
-                      (uint8_t)((double)m_sdl_color.b / div));
+                Color(
+                        (uint8_t)((double)m_sdl_color.r / div),
+                        (uint8_t)((double)m_sdl_color.g / div),
+                        (uint8_t)((double)m_sdl_color.b / div));
 
         return result;
+}
+
+Color Color::shaded(int pct) const
+{
+        pct = std::clamp(pct, 0, 100);
+
+        const double f = (double)(100 - pct) / 100.0;
+
+        auto result =
+                Color(
+                        (uint8_t)((double)m_sdl_color.r * f),
+                        (uint8_t)((double)m_sdl_color.g * f),
+                        (uint8_t)((double)m_sdl_color.b * f));
+
+        return result;
+}
+
+Color Color::tinted(int pct) const
+{
+        pct = std::clamp(pct, 0, 100);
+
+        const double f = (double)pct / 100.0;
+
+        const auto current_r = m_sdl_color.r;
+        const auto current_g = m_sdl_color.g;
+        const auto current_b = m_sdl_color.b;
+
+        const auto new_r =
+                (uint8_t)((double)current_r + ((double)(255 - current_r) * f));
+
+        const auto new_g =
+                (uint8_t)((double)current_g + ((double)(255 - current_g) * f));
+
+        const auto new_b =
+                (uint8_t)((double)current_b + ((double)(255 - current_b) * f));
+
+        return Color(new_r, new_g, new_b);
 }
 
 void Color::clear()

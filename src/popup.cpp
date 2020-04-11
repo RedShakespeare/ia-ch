@@ -185,7 +185,8 @@ static void draw_menu_popup(
                                 key_str,
                                 Panel::screen,
                                 {draw_x_pos, y},
-                                key_color);
+                                key_color,
+                                io::DrawBg::no);
 
                         choice_suffix_start = key_str.length();
                         draw_x_pos = choice_x_pos + key_str.length();
@@ -205,7 +206,8 @@ static void draw_menu_popup(
                         choice_suffix,
                         Panel::screen,
                         {draw_x_pos, y},
-                        color);
+                        color,
+                        io::DrawBg::no);
 
                 ++y;
         }

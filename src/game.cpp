@@ -35,8 +35,6 @@
 // -----------------------------------------------------------------------------
 // Private
 // -----------------------------------------------------------------------------
-static const int s_player_max_clvl = 12;
-
 static int s_clvl = 0;
 static int s_xp_pct = 0;
 static int s_xp_accum = 0;
@@ -164,7 +162,7 @@ void incr_player_xp(const int xp_gained, const Verbose verbose)
         s_xp_accum += xp_gained;
 
         while (s_xp_pct >= 100) {
-                if (s_clvl < s_player_max_clvl) {
+                if (s_clvl < g_player_max_clvl) {
                         ++s_clvl;
 
                         msg_log::add(

@@ -64,6 +64,8 @@ inline constexpr size_t g_max_nr_actors_on_map = 125;
 
 inline constexpr int g_hit_chance_pen_vs_unseen = 25;
 
+inline constexpr int g_player_max_clvl = 12;
+
 // -----------------------------------------------------------------------------
 // Types
 // -----------------------------------------------------------------------------

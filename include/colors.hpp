@@ -34,7 +34,11 @@ public:
 
         bool operator!=(const Color& other) const;
 
-        Color fraction(double div);
+        Color fraction(double div) const;
+
+        Color shaded(int pct) const;
+
+        Color tinted(int pct) const;
 
         void clear();
 
