@@ -133,20 +133,64 @@ make_all_allowed_bonuses()
         return bonuses;
 }
 
-static bool is_toll_allowing_bonus(
+static bool is_toll_blacklist_allowing_bonus(
         const terrain::gong::Toll& toll,
         const terrain::gong::BonusId bonus_id)
 {
         const auto bonuses_not_allowed_with =
                 toll.bonuses_not_allowed_with();
 
-        const bool is_allowing_bonus =
+        const auto search =
                 std::find(
                         std::begin(bonuses_not_allowed_with),
                         std::end(bonuses_not_allowed_with),
-                        bonus_id) == std::end(bonuses_not_allowed_with);
+                        bonus_id);
 
-        return is_allowing_bonus;
+        const bool is_in_blacklist =
+                (search != std::end(bonuses_not_allowed_with));
+
+        return !is_in_blacklist;
+}
+
+static bool is_toll_whitelist_allowing_bonus(
+        const terrain::gong::Toll& toll,
+        const terrain::gong::BonusId bonus_id)
+{
+        const auto bonuses_only_allowed_with =
+                toll.bonuses_only_allowed_with();
+
+        if (bonuses_only_allowed_with.empty()) {
+                // The toll does not have a bonus whitelist
+                return true;
+        }
+
+        // The toll has a bonus whitelist
+
+        const auto search =
+                std::find(
+                        std::begin(bonuses_only_allowed_with),
+                        std::end(bonuses_only_allowed_with),
+                        bonus_id);
+
+        const bool is_in_whitelist =
+                (search != std::end(bonuses_only_allowed_with));
+
+        return is_in_whitelist;
+}
+
+static bool is_toll_allowing_bonus(
+        const terrain::gong::Toll& toll,
+        const terrain::gong::BonusId bonus_id)
+{
+        if (!is_toll_blacklist_allowing_bonus(toll, bonus_id)) {
+                return false;
+        }
+
+        if (!is_toll_whitelist_allowing_bonus(toll, bonus_id)) {
+                return false;
+        }
+
+        return true;
 }
 
 static std::vector<std::unique_ptr<terrain::gong::Toll>> make_all_allowed_tolls(
@@ -386,7 +430,7 @@ bool GainHp::is_allowed() const
 
 void GainHp::run_effect()
 {
-        map::g_player->change_max_hp(rnd::range(1, 3));
+        map::g_player->change_max_hp(2);
 }
 
 // -----------------------------------------------------------------------------
@@ -399,7 +443,7 @@ bool GainSp::is_allowed() const
 
 void GainSp::run_effect()
 {
-        map::g_player->change_max_sp(rnd::range(1, 2));
+        map::g_player->change_max_sp(1);
 }
 
 // -----------------------------------------------------------------------------
@@ -588,27 +632,27 @@ item::Item* Blessed::get_random_cursed_item() const
 // -----------------------------------------------------------------------------
 // HP reduced
 // -----------------------------------------------------------------------------
-std::vector<BonusId> HpReduced::bonuses_not_allowed_with() const
+std::vector<BonusId> HpReduced::bonuses_only_allowed_with() const
 {
-        return {BonusId::gain_hp};
+        return {BonusId::gain_sp};
 }
 
 void HpReduced::run_effect()
 {
-        map::g_player->change_max_hp(-(rnd::range(1, 3)));
+        map::g_player->change_max_hp(-2);
 }
 
 // -----------------------------------------------------------------------------
 // SP reduced
 // -----------------------------------------------------------------------------
-std::vector<BonusId> SpReduced::bonuses_not_allowed_with() const
+std::vector<BonusId> SpReduced::bonuses_only_allowed_with() const
 {
-        return {BonusId::gain_sp};
+        return {BonusId::gain_hp};
 }
 
 void SpReduced::run_effect()
 {
-        map::g_player->change_max_sp(-(rnd::range(1, 2)));
+        map::g_player->change_max_sp(-1);
 }
 
 // -----------------------------------------------------------------------------
@@ -639,11 +683,6 @@ bool Deaf::is_allowed() const
         const auto prop = map::g_player->m_properties.prop(PropId::deaf);
 
         return !prop || (prop->duration_mode() != PropDurationMode::indefinite);
-}
-
-std::vector<BonusId> Deaf::bonuses_not_allowed_with() const
-{
-        return {};
 }
 
 void Deaf::run_effect()
@@ -707,11 +746,6 @@ SpawnMonsters::SpawnMonsters()
 bool SpawnMonsters::is_allowed() const
 {
         return m_id_to_spawn != actor::Id::END;
-}
-
-std::vector<BonusId> SpawnMonsters::bonuses_not_allowed_with() const
-{
-        return {};
 }
 
 void SpawnMonsters::run_effect()

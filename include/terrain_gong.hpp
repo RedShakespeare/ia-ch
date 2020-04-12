@@ -108,7 +108,15 @@ public:
                 return true;
         }
 
-        virtual std::vector<BonusId> bonuses_not_allowed_with() const = 0;
+        virtual std::vector<BonusId> bonuses_not_allowed_with() const
+        {
+                return {};
+        }
+
+        virtual std::vector<BonusId> bonuses_only_allowed_with() const
+        {
+                return {};
+        }
 
         virtual void run_effect() = 0;
 };
@@ -233,7 +241,7 @@ public:
                 return TollId::hp_reduced;
         }
 
-        std::vector<BonusId> bonuses_not_allowed_with() const override;
+        std::vector<BonusId> bonuses_only_allowed_with() const override;
 
         void run_effect() override;
 };
@@ -245,7 +253,7 @@ public:
                 return TollId::sp_reduced;
         }
 
-        std::vector<BonusId> bonuses_not_allowed_with() const override;
+        std::vector<BonusId> bonuses_only_allowed_with() const override;
 
         void run_effect() override;
 };
@@ -272,8 +280,6 @@ public:
         }
 
         bool is_allowed() const override;
-
-        std::vector<BonusId> bonuses_not_allowed_with() const override;
 
         void run_effect() override;
 };
@@ -302,8 +308,6 @@ public:
         }
 
         bool is_allowed() const override;
-
-        std::vector<BonusId> bonuses_not_allowed_with() const override;
 
         void run_effect() override;
 
