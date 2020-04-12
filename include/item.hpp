@@ -120,12 +120,9 @@ public:
 
         void on_player_reached_new_dlvl();
 
-        virtual void on_projectile_blocked(
-                const P& prev_pos,
-                const P& current_pos)
+        virtual void on_projectile_blocked(const P& pos)
         {
-                (void)prev_pos;
-                (void)current_pos;
+                (void)pos;
         }
 
         virtual void on_melee_hit(actor::Actor& actor_hit, const int dmg)
@@ -417,9 +414,7 @@ public:
         Incinerator(ItemData* item_data);
         ~Incinerator() = default;
 
-        void on_projectile_blocked(
-                const P& prev_pos,
-                const P& current_pos) override;
+        void on_projectile_blocked(const P& pos) override;
 };
 
 class MiGoGun : public Wpn {

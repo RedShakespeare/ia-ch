@@ -191,7 +191,10 @@ MonSpawnResult spawn(
                 return MonSpawnResult();
         }
 
-        std::sort(begin(free_positions), end(free_positions), IsCloserToPos(origin));
+        std::sort(
+                std::begin(free_positions),
+                std::end(free_positions),
+                IsCloserToPos(origin));
 
         const auto result = spawn_at_positions(free_positions, monster_ids);
 

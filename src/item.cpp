@@ -1006,13 +1006,9 @@ void MiGoGun::pre_ranged_attack()
 Incinerator::Incinerator(ItemData* const item_data) :
         Wpn(item_data) {}
 
-void Incinerator::on_projectile_blocked(
-        const P& prev_pos,
-        const P& current_pos)
+void Incinerator::on_projectile_blocked(const P& pos)
 {
-        (void)current_pos;
-
-        explosion::run(prev_pos, ExplType::expl);
+        explosion::run(pos, ExplType::expl);
 }
 
 // -----------------------------------------------------------------------------

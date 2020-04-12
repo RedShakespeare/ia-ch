@@ -870,22 +870,23 @@ static void hit_actor_with_projectile(
                 mon.set_player_aware_of_me();
         }
 
-        auto died = ActorDied::no;
-
         if (projectile.dmg > 0) {
-                died =
-                        actor::hit(
-                                *projectile.actor_hit,
-                                projectile.dmg,
-                                wpn.data().ranged.dmg_type,
-                                wpn.data().ranged.dmg_method,
-                                AllowWound::yes);
+                actor::hit(
+                        *projectile.actor_hit,
+                        projectile.dmg,
+                        wpn.data().ranged.dmg_type,
+                        wpn.data().ranged.dmg_method,
+                        AllowWound::yes);
         }
 
-        // NOTE: This is run regardless of if defender died or not
+        // NOTE: This is run regardless of if the defender died or not
         wpn.on_ranged_hit(*projectile.actor_hit);
 
-        if (died == ActorDied::no) {
+        ASSERT(projectile.pos == projectile.actor_hit->m_pos);
+
+        wpn.on_projectile_blocked(projectile.pos);
+
+        if (projectile.actor_hit->is_alive()) {
                 auto att_prop =
                         wpn.prop_applied_on_ranged(
                                 projectile.att_data->attacker);
@@ -912,10 +913,12 @@ static void hit_actor_with_projectile(
 }
 
 static void hit_terrain_with_projectile(
-        const P& prev_pos,
-        const P& current_pos,
+        const P& projectile_pos,
+        const P& terrain_pos,
         item::Wpn& wpn)
 {
+        (void)terrain_pos;
+
         // TODO: This was in the 'shotgun' function (but only the shotgun was
         // calling the terrain 'hit' method in attack.cpp - the normal
         // projectile firing did not do this). Reimplement somehow.
@@ -925,7 +928,7 @@ static void hit_terrain_with_projectile(
         //         DmgMethod::shotgun,
         //         nullptr);
 
-        wpn.on_projectile_blocked(prev_pos, current_pos);
+        wpn.on_projectile_blocked(projectile_pos);
 }
 
 static void init_projectiles_gfx(ProjectileFireData& fire_data)
@@ -1085,13 +1088,25 @@ static void run_projectile_hits(ProjectileFireData& fire_data)
                                 continue;
                         }
 
-                        const P& prev_pos = fire_data.path[prev_idx];
+                        P current_pos;
+                        P terrain_pos;
 
-                        const P& current_pos = projectile.pos;
+                        if (projectile.terrain_hit->is_projectile_passable()) {
+                                // The terrain does not block projectiles -
+                                // assuming this is floor
+                                current_pos = projectile.pos;
+                                terrain_pos = current_pos;
+                        } else {
+                                // The terrain blocks projectiles (e.g. a wall),
+                                // do not consider the projectile to be inside
+                                // the terrain, but in the cell before it
+                                current_pos = fire_data.path[prev_idx];
+                                terrain_pos = projectile.pos;
+                        }
 
                         hit_terrain_with_projectile(
-                                prev_pos,
                                 current_pos,
+                                terrain_pos,
                                 *fire_data.wpn);
 
                         projectile.is_dead = true;
