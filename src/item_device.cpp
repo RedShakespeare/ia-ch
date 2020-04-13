@@ -155,8 +155,8 @@ ConsumeItem StrangeDevice::activate(actor::Actor* const actor)
         } break;
 
         case Condition::fine: {
-                should_warn = (rnd == 3) || (rnd == 4);
-                should_degrade = (rnd <= 2);
+                should_warn = (rnd == 5) || (rnd == 6);
+                should_degrade = (rnd <= 4);
         } break;
         }
 
