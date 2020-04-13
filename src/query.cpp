@@ -143,15 +143,24 @@ int number(
                 }
         }
 
-        io::cover_area(Panel::screen, pos, P(max_nr_digits + 1, 1));
+        // Adjust for underscore
+        const int max_input_str_len = max_nr_digits + 1;
 
-        const std::string str =
-                ((ret_num == 0)
-                         ? ""
-                         : std::to_string(ret_num)) +
-                "_";
+        io::cover_area(Panel::screen, pos, {max_input_str_len, 1});
 
-        io::draw_text(str, Panel::screen, pos, color);
+        auto make_input_str = [](const int v) {
+                std::string nr_str;
+
+                if (v > 0) {
+                        nr_str = std::to_string(v);
+                }
+
+                return nr_str + "_";
+        };
+
+        auto input_str = make_input_str(ret_num);
+
+        io::draw_text(input_str, Panel::screen, pos, color);
 
         io::update_screen();
 
@@ -213,14 +222,13 @@ int number(
                 }
 
                 if ((input.key == SDLK_SPACE) || (input.key == SDLK_ESCAPE)) {
-                        return cancel_returns_default
-                                ? default_value
-                                : -1;
+                        return cancel_returns_default ? default_value : -1;
                 }
 
-                const std::string ret_num_str = std::to_string(ret_num);
+                const auto ret_num_str = std::to_string(ret_num);
 
-                const int current_num_digits = ret_num_str.size();
+                // Adjust for the underscore
+                const auto current_num_digits = (int)ret_num_str.size() - 1;
 
                 if (input.key == SDLK_BACKSPACE) {
                         ret_num = ret_num / 10;
@@ -228,23 +236,14 @@ int number(
                         io::cover_area(
                                 Panel::screen,
                                 pos,
-                                P(max_nr_digits + 1, 1));
+                                {max_input_str_len, 1});
 
-                        io::draw_text(
-                                std::string(
-                                        ((ret_num == 0)
-                                                 ? ""
-                                                 : std::to_string(ret_num)) +
-                                        "_"),
-                                Panel::screen,
-                                pos,
-                                color);
+                        input_str = make_input_str(ret_num);
+
+                        io::draw_text(input_str, Panel::screen, pos, color);
 
                         io::update_screen();
-                        continue;
-                }
-
-                if (current_num_digits < max_nr_digits) {
+                } else if (current_num_digits < max_nr_digits) {
                         int current_digit = input.key - '0';
 
                         ret_num =
@@ -256,17 +255,11 @@ int number(
                         io::cover_area(
                                 Panel::screen,
                                 pos,
-                                P(max_nr_digits + 1, 1));
+                                P(max_input_str_len, 1));
 
-                        io::draw_text(
-                                std::string(
-                                        ((ret_num == 0)
-                                                 ? ""
-                                                 : std::to_string(ret_num)) +
-                                        "_"),
-                                Panel::screen,
-                                pos,
-                                color);
+                        input_str = make_input_str(ret_num);
+
+                        io::draw_text(input_str, Panel::screen, pos, color);
 
                         io::update_screen();
                 }
