@@ -702,37 +702,21 @@ void Player::update_tmp_shock()
 {
         m_shock_tmp = 0.0;
 
-        const int tot_shock_before = shock_tot();
-
-        // Minimum temporary shock
-
-        // NOTE: In case the total shock is currently at 100, we do NOT want to
-        // allow lowering the shock e.g. by turning on the Electric Lantern,
-        // since you could interrupt the 3 turns countdown until the insanity
-        // event happens just by turning the lantern on for one turn. Therefore
-        // we only allow negative temporary shock while below 100%.
-        double shock_tmp_min =
-                (tot_shock_before < 100)
-                ? -999.0
-                : 0.0;
-
-        // "Obessions" raise the minimum temporary shock
+        // "Obessions" raise temporary shock
         if (insanity::has_sympt(InsSymptId::sadism) ||
             insanity::has_sympt(InsSymptId::masoch)) {
-                m_shock_tmp = std::max(
-                        m_shock_tmp,
-                        (double)g_shock_from_obsession);
-
-                shock_tmp_min = (double)g_shock_from_obsession;
+                m_shock_tmp += (double)g_shock_from_obsession;
         }
 
         if (m_properties.allow_see()) {
+                const bool is_ghoul = player_bon::bg() != Bg::ghoul;
+
                 // Shock reduction from light?
                 if (map::g_light.at(m_pos)) {
                         m_shock_tmp -= 20.0;
                 }
                 // Not lit - shock from darkness?
-                else if (map::g_dark.at(m_pos) && (player_bon::bg() != Bg::ghoul)) {
+                else if (map::g_dark.at(m_pos) && !is_ghoul) {
                         double shock_value = 20.0;
 
                         if (insanity::has_sympt(InsSymptId::phobia_dark)) {
@@ -746,29 +730,23 @@ void Player::update_tmp_shock()
                 }
 
                 // Temporary shock from seen terrains?
-                for (const P& d : dir_utils::g_dir_list_w_center) {
-                        const P p(m_pos + d);
+                for (const auto& d : dir_utils::g_dir_list_w_center) {
+                        const auto p(m_pos + d);
 
                         const auto terrain_shock_db =
                                 (double)map::g_cells.at(p)
                                         .terrain->shock_when_adj();
 
-                        m_shock_tmp += shock_taken_after_mods(
-                                terrain_shock_db,
-                                ShockSrc::misc);
+                        m_shock_tmp +=
+                                shock_taken_after_mods(
+                                        terrain_shock_db,
+                                        ShockSrc::misc);
                 }
         }
         // Is blind
         else if (!m_properties.has(PropId::fainted)) {
                 m_shock_tmp += shock_taken_after_mods(30.0, ShockSrc::misc);
         }
-
-        const double shock_tmp_max = 100.0 - m_shock;
-
-        m_shock_tmp = std::clamp(
-                m_shock_tmp,
-                shock_tmp_min,
-                shock_tmp_max);
 }
 
 int Player::shock_tot() const
