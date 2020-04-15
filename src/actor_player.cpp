@@ -709,7 +709,7 @@ void Player::update_tmp_shock()
         }
 
         if (m_properties.allow_see()) {
-                const bool is_ghoul = player_bon::bg() != Bg::ghoul;
+                const bool is_ghoul = (player_bon::bg() == Bg::ghoul);
 
                 // Shock reduction from light?
                 if (map::g_light.at(m_pos)) {
