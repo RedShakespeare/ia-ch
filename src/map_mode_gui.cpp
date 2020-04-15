@@ -231,7 +231,7 @@ static void draw_sp(const int y, const Panel panel)
         //         colors::blue().fraction(1.5));
 
         io::draw_text(
-                "Health",
+                "Spirit",
                 panel,
                 {0, y},
                 label_color(),
