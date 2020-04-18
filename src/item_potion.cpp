@@ -8,6 +8,7 @@
 
 #include "actor_mon.hpp"
 #include "actor_player.hpp"
+#include "actor_see.hpp"
 #include "audio.hpp"
 #include "common_text.hpp"
 #include "game.hpp"
@@ -375,7 +376,7 @@ void Potion::on_collide(const P& pos, actor::Actor* const actor)
 
                 if (mon->m_player_aware_of_me_counter > 0) {
                         const std::string actor_name =
-                                map::g_player->can_see_actor(*actor)
+                                actor::can_player_see_actor(*actor)
                                 ? actor->name_the()
                                 : "it";
 
@@ -436,7 +437,7 @@ void Vitality::quaff_impl(actor::Actor& actor)
 
         actor.restore_hp(hp_restored, true);
 
-        if (map::g_player->can_see_actor(actor)) {
+        if (actor::can_player_see_actor(actor)) {
                 identify(Verbose::yes);
         }
 }
@@ -461,7 +462,7 @@ void Spirit::quaff_impl(actor::Actor& actor)
 
         actor.restore_sp(sp_restored, true);
 
-        if (map::g_player->can_see_actor(actor)) {
+        if (actor::can_player_see_actor(actor)) {
                 identify(Verbose::yes);
         }
 }
@@ -479,7 +480,7 @@ void Blindness::quaff_impl(actor::Actor& actor)
 {
         actor.m_properties.apply(new PropBlind());
 
-        if (map::g_player->can_see_actor(actor)) {
+        if (actor::can_player_see_actor(actor)) {
                 identify(Verbose::yes);
         }
 }
@@ -497,7 +498,7 @@ void Paral::quaff_impl(actor::Actor& actor)
 {
         actor.m_properties.apply(new PropParalyzed());
 
-        if (map::g_player->can_see_actor(actor)) {
+        if (actor::can_player_see_actor(actor)) {
                 identify(Verbose::yes);
         }
 }
@@ -515,7 +516,7 @@ void Disease::quaff_impl(actor::Actor& actor)
 {
         actor.m_properties.apply(new PropDiseased());
 
-        if (map::g_player->can_see_actor(actor)) {
+        if (actor::can_player_see_actor(actor)) {
                 identify(Verbose::yes);
         }
 }
@@ -524,7 +525,7 @@ void Conf::quaff_impl(actor::Actor& actor)
 {
         actor.m_properties.apply(new PropConfused());
 
-        if (map::g_player->can_see_actor(actor)) {
+        if (actor::can_player_see_actor(actor)) {
                 identify(Verbose::yes);
         }
 }
@@ -575,7 +576,7 @@ void Fortitude::quaff_impl(actor::Actor& actor)
                 msg_log::add("I feel more at ease.");
         }
 
-        if (map::g_player->can_see_actor(actor)) {
+        if (actor::can_player_see_actor(actor)) {
                 identify(Verbose::yes);
         }
 }
@@ -593,7 +594,7 @@ void Poison::quaff_impl(actor::Actor& actor)
 {
         actor.m_properties.apply(new PropPoisoned());
 
-        if (map::g_player->can_see_actor(actor)) {
+        if (actor::can_player_see_actor(actor)) {
                 identify(Verbose::yes);
         }
 }
@@ -611,7 +612,7 @@ void RFire::quaff_impl(actor::Actor& actor)
 {
         actor.m_properties.apply(new PropRFire());
 
-        if (map::g_player->can_see_actor(actor)) {
+        if (actor::can_player_see_actor(actor)) {
                 identify(Verbose::yes);
         }
 }
@@ -656,7 +657,7 @@ void Curing::quaff_impl(actor::Actor& actor)
         }
 
         if (is_noticable &&
-            map::g_player->can_see_actor(actor)) {
+            actor::can_player_see_actor(actor)) {
                 identify(Verbose::yes);
         }
 }
@@ -674,7 +675,7 @@ void RElec::quaff_impl(actor::Actor& actor)
 {
         actor.m_properties.apply(new PropRElec());
 
-        if (map::g_player->can_see_actor(actor)) {
+        if (actor::can_player_see_actor(actor)) {
                 identify(Verbose::yes);
         }
 }
@@ -732,7 +733,7 @@ void Invis::quaff_impl(actor::Actor& actor)
 {
         actor.m_properties.apply(property_factory::make(PropId::cloaked));
 
-        if (map::g_player->can_see_actor(actor)) {
+        if (actor::can_player_see_actor(actor)) {
                 identify(Verbose::yes);
         }
 }

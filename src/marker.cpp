@@ -11,6 +11,7 @@
 #include <vector>
 
 #include "actor_player.hpp"
+#include "actor_see.hpp"
 #include "attack.hpp"
 #include "attack_data.hpp"
 #include "common_text.hpp"
@@ -369,7 +370,7 @@ bool MarkerState::try_go_to_tgt()
                 return false;
         }
 
-        const auto seen_foes = map::g_player->seen_foes();
+        const auto seen_foes = actor::seen_foes(*map::g_player);
 
         if (!seen_foes.empty()) {
                 for (auto* const actor : seen_foes) {
@@ -386,7 +387,7 @@ bool MarkerState::try_go_to_tgt()
 
 void MarkerState::try_go_to_closest_enemy()
 {
-        const auto seen_foes = map::g_player->seen_foes();
+        const auto seen_foes = actor::seen_foes(*map::g_player);
 
         std::vector<P> seen_foes_cells;
 
@@ -413,7 +414,7 @@ void Viewing::on_moved()
 
         if (actor &&
             !actor->is_player() &&
-            map::g_player->can_see_actor(*actor)) {
+            actor::can_player_see_actor(*actor)) {
                 // TODO: This should not be specified here
                 const auto view_key = 'v';
 
@@ -461,7 +462,7 @@ void Viewing::handle_input(const InputData& input)
 
                 if (actor &&
                     actor != map::g_player &&
-                    map::g_player->can_see_actor(*actor)) {
+                    actor::can_player_see_actor(*actor)) {
                         msg_log::clear();
 
                         std::unique_ptr<ViewActorDescr>
@@ -490,7 +491,7 @@ void Aiming::on_moved()
 
                 if (actor &&
                     !actor->is_player() &&
-                    map::g_player->can_see_actor(*actor)) {
+                    actor::can_player_see_actor(*actor)) {
                         RangedAttData att_data(
                                 map::g_player,
                                 m_origin,
@@ -563,7 +564,7 @@ void Aiming::handle_input(const InputData& input)
 
                         auto* const actor = map::first_actor_at_pos(m_pos);
 
-                        if (actor && map::g_player->can_see_actor(*actor)) {
+                        if (actor && actor::can_player_see_actor(*actor)) {
                                 map::g_player->m_tgt = actor;
                         }
 
@@ -610,7 +611,7 @@ void Throwing::on_moved()
 
                 if (actor &&
                     !actor->is_player() &&
-                    map::g_player->can_see_actor(*actor)) {
+                    actor::can_player_see_actor(*actor)) {
                         ThrowAttData att_data(
                                 map::g_player,
                                 m_origin,
@@ -671,7 +672,7 @@ void Throwing::handle_input(const InputData& input)
 
                         auto* const actor = map::first_actor_at_pos(m_pos);
 
-                        if (actor && map::g_player->can_see_actor(*actor)) {
+                        if (actor && actor::can_player_see_actor(*actor)) {
                                 map::g_player->m_tgt = actor;
                         }
 

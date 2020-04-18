@@ -9,6 +9,7 @@
 #include "actor.hpp"
 #include "actor_death.hpp"
 #include "actor_player.hpp"
+#include "actor_see.hpp"
 #include "map.hpp"
 #include "msg_log.hpp"
 #include "terrain.hpp"
@@ -40,7 +41,9 @@ static int hit_armor(actor::Actor& actor, int dmg)
 
                                 if (actor.is_player()) {
                                         const std::string armor_name =
-                                                armor->name(ItemRefType::plain, ItemRefInf::none);
+                                                armor->name(
+                                                        ItemRefType::plain,
+                                                        ItemRefInf::none);
 
                                         msg_log::add(
                                                 "My " +
@@ -307,7 +310,7 @@ ActorDied hit_sp(
                 msg_log::add(
                         "All my spirit is depleted, I am devoid of life!",
                         colors::msg_bad());
-        } else if (map::g_player->can_see_actor(actor)) {
+        } else if (can_player_see_actor(actor)) {
                 const std::string actor_name_the =
                         text_format::first_to_upper(
                                 actor.name_the());

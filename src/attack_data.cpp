@@ -9,6 +9,7 @@
 #include "actor.hpp"
 #include "actor_mon.hpp"
 #include "actor_player.hpp"
+#include "actor_see.hpp"
 #include "global.hpp"
 #include "item.hpp"
 #include "map.hpp"
@@ -114,7 +115,7 @@ MeleeAttData::MeleeAttData(
         bool can_attacker_see_tgt = true;
 
         if (attacker && attacker->is_player()) {
-                can_attacker_see_tgt = map::g_player->can_see_actor(*defender);
+                can_attacker_see_tgt = can_player_see_actor(*defender);
         }
 
         // Check for extra attack bonuses, such as defender being immobilized.
@@ -326,7 +327,7 @@ RangedAttData::RangedAttData(
 
                 if (attacker->is_player()) {
                         can_attacker_see_tgt =
-                                map::g_player->can_see_actor(*defender);
+                                can_player_see_actor(*defender);
                 } else {
                         // Attacker is monster
                         auto* const mon =
@@ -345,7 +346,8 @@ RangedAttData::RangedAttData(
                                      MapParseMode::overwrite);
 
                         can_attacker_see_tgt =
-                                mon->can_see_actor(
+                                can_mon_see_actor(
+                                        *mon,
                                         *defender,
                                         hard_blocked_los);
                 }
@@ -504,7 +506,7 @@ ThrowAttData::ThrowAttData(
 
         if (attacker == map::g_player) {
                 can_attacker_see_tgt =
-                        map::g_player->can_see_actor(*defender);
+                        can_player_see_actor(*defender);
         }
 
         // Lower hit chance if attacker cannot see target (e.g.

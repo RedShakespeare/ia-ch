@@ -10,6 +10,7 @@
 #include <string>
 
 #include "actor_player.hpp"
+#include "actor_see.hpp"
 #include "audio.hpp"
 #include "game.hpp"
 #include "game_time.hpp"
@@ -38,7 +39,7 @@ static void msg_reload_fumble(
                 msg_log::add("I fumble with " + ammo_name + ".");
         } else {
                 // Is monster
-                if (map::g_player->can_see_actor(actor)) {
+                if (actor::can_player_see_actor(actor)) {
                         const std::string name_the =
                                 text_format::first_to_upper(
                                         actor.name_the());
@@ -98,7 +99,7 @@ static void msg_reloaded(
                 }
         } else {
                 // Is monster
-                if (map::g_player->can_see_actor(actor)) {
+                if (actor::can_player_see_actor(actor)) {
                         const std::string name_the =
                                 text_format::first_to_upper(
                                         actor.name_the());

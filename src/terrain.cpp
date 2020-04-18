@@ -12,6 +12,7 @@
 #include "actor_hit.hpp"
 #include "actor_mon.hpp"
 #include "actor_player.hpp"
+#include "actor_see.hpp"
 #include "common_text.hpp"
 #include "drop.hpp"
 #include "explosion.hpp"
@@ -46,7 +47,7 @@ static void scorch_actor(actor::Actor& actor)
                 msg_log::add(
                         "I am scorched by flames.",
                         colors::msg_bad());
-        } else if (map::g_player->can_see_actor(actor)) {
+        } else if (actor::can_player_see_actor(actor)) {
                 const std::string name_the =
                         text_format::first_to_upper(
                                 actor.name_the());
@@ -1021,7 +1022,7 @@ void Statue::on_hit(
                                 msg_log::add("It falls on me!");
                         } else {
                                 const bool is_player_seeing_actor =
-                                        map::g_player->can_see_actor(
+                                        actor::can_player_see_actor(
                                                 *actor_behind);
 
                                 if (is_player_seeing_actor) {

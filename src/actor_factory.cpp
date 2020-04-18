@@ -12,6 +12,7 @@
 #include "actor_data.hpp"
 #include "actor_mon.hpp"
 #include "actor_player.hpp"
+#include "actor_see.hpp"
 #include "game_time.hpp"
 #include "init.hpp"
 #include "io.hpp"
@@ -71,7 +72,7 @@ static actor::Mon* spawn_at(const P& pos, const actor::Id id)
 
         auto* const mon = static_cast<actor::Mon*>(actor);
 
-        if (map::g_player->can_see_actor(*mon)) {
+        if (can_player_see_actor(*mon)) {
                 mon->set_player_aware_of_me();
         }
 

@@ -12,6 +12,7 @@
 #include "actor_hit.hpp"
 #include "actor_mon.hpp"
 #include "actor_player.hpp"
+#include "actor_see.hpp"
 #include "common_text.hpp"
 #include "explosion.hpp"
 #include "fov.hpp"
@@ -68,7 +69,10 @@ void PharaohStaff::on_std_turn_in_inv_hook(const InvType inv_type)
                 }
 
                 const bool mon_see_player =
-                        mon->can_see_actor(*map::g_player, blocked_los);
+                        actor::can_mon_see_actor(
+                                *mon,
+                                *map::g_player,
+                                blocked_los);
 
                 if (!mon_see_player) {
                         continue;
@@ -95,7 +99,7 @@ void PharaohStaff::on_mon_see_player_carrying(actor::Mon& mon) const
         if (rnd::percent(convert_pct_chance)) {
                 mon.m_leader = map::g_player;
 
-                if (map::g_player->can_see_actor(mon)) {
+                if (actor::can_player_see_actor(mon)) {
                         const auto name_the =
                                 text_format::first_to_upper(
                                         mon.name_the());
@@ -227,7 +231,7 @@ ConsumeItem HornOfMalice::activate(actor::Actor* const actor)
 void HornOfBanishmentHeard::run(actor::Actor& actor) const
 {
         if (actor.m_properties.has(PropId::summoned)) {
-                if (map::g_player->can_see_actor(actor)) {
+                if (actor::can_player_see_actor(actor)) {
                         const std::string name_the =
                                 text_format::first_to_upper(
                                         actor.name_the());

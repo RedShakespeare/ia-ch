@@ -7,6 +7,7 @@
 #include "disarm.hpp"
 
 #include "actor_player.hpp"
+#include "actor_see.hpp"
 #include "common_text.hpp"
 #include "game_time.hpp"
 #include "inventory.hpp"
@@ -82,7 +83,7 @@ void player_disarm()
         const auto* const actor_on_trap = map::first_actor_at_pos(pos);
 
         if (actor_on_trap && !actor_on_trap->is_player()) {
-                if (map::g_player->can_see_actor(*actor_on_trap)) {
+                if (can_player_see_actor(*actor_on_trap)) {
                         msg_log::add("It's blocked.");
                 } else {
                         msg_log::add("Something is blocking it.");

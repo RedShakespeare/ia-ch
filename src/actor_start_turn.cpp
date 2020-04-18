@@ -9,6 +9,7 @@
 #include "actor.hpp"
 #include "actor_mon.hpp"
 #include "actor_player.hpp"
+#include "actor_see.hpp"
 #include "actor_sneak.hpp"
 #include "common_text.hpp"
 #include "flood.hpp"
@@ -71,7 +72,7 @@ static bool should_burning_terrain_interrupt_player()
 {
         const bool should_interrupt =
                 map::g_player->is_busy() &&
-                map::g_player->is_seeing_burning_terrain();
+                actor::is_player_seeing_burning_terrain();
 
         return should_interrupt;
 }
@@ -229,7 +230,7 @@ static void player_discover_monsters()
 
                 auto& mon = static_cast<actor::Mon&>(*actor);
 
-                if (map::g_player->can_see_actor(*actor)) {
+                if (can_player_see_actor(*actor)) {
                         if (mon.m_is_msg_mon_in_view_printed) {
                                 is_any_mon_already_seen = true;
                         }
@@ -376,8 +377,6 @@ static void player_start_turn()
 {
         auto& player = *map::g_player;
 
-        player.m_perm_shock_taken_current_turn = 0.0;
-
         player.update_fov();
 
         player.update_mon_awareness();
@@ -394,7 +393,7 @@ static void player_start_turn()
 
         player.mon_feeling();
 
-        const auto my_seen_foes = player.seen_foes();
+        const auto my_seen_foes = seen_foes(player);
 
         for (auto* actor : my_seen_foes) {
                 static_cast<actor::Mon*>(actor)->set_player_aware_of_me();

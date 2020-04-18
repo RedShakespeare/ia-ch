@@ -13,6 +13,7 @@
 #include "actor_hit.hpp"
 #include "actor_mon.hpp"
 #include "actor_player.hpp"
+#include "actor_see.hpp"
 #include "attack_data.hpp"
 #include "drop.hpp"
 #include "explosion.hpp"
@@ -248,7 +249,7 @@ void throw_item(
 
                                 if (player_see_cell) {
                                         const std::string defender_name =
-                                                map::g_player->can_see_actor(
+                                                actor::can_player_see_actor(
                                                         *actor_here)
                                                 ? text_format::first_to_upper(
                                                           actor_here->name_the())

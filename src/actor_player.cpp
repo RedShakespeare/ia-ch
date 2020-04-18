@@ -13,6 +13,7 @@
 #include "actor_factory.hpp"
 #include "actor_mon.hpp"
 #include "actor_move.hpp"
+#include "actor_see.hpp"
 #include "attack.hpp"
 #include "audio.hpp"
 #include "bot.hpp"
@@ -156,94 +157,6 @@ void Player::load()
 
                 m_data->ability_values.set_val((AbilityId)i, v);
         }
-}
-
-bool Player::can_see_actor(const Actor& other) const
-{
-        if (this == &other) {
-                return true;
-        }
-
-        if (init::g_is_cheat_vision_enabled) {
-                return true;
-        }
-
-        const Cell& cell = map::g_cells.at(other.m_pos);
-
-        // Dead actors are seen if the cell is seen
-        if (!other.is_alive() &&
-            cell.is_seen_by_player) {
-                return true;
-        }
-
-        // Player is blind?
-        if (!m_properties.allow_see()) {
-                return false;
-        }
-
-        const Mon* const mon = static_cast<const Mon*>(&other);
-
-        // LOS blocked hard (e.g. a wall)?
-        if (cell.player_los.is_blocked_hard) {
-                return false;
-        }
-
-        const bool can_see_invis = m_properties.has(PropId::see_invis);
-
-        // Monster is invisible, and player cannot see invisible?
-        if ((other.m_properties.has(PropId::invis) ||
-             other.m_properties.has(PropId::cloaked)) &&
-            !can_see_invis) {
-                return false;
-        }
-
-        // Blocked by darkness, and not seeing monster with infravision?
-        const bool has_darkvision = m_properties.has(PropId::darkvision);
-
-        const bool can_see_other_in_drk = can_see_invis || has_darkvision;
-
-        if (cell.player_los.is_blocked_by_dark && !can_see_other_in_drk) {
-                return false;
-        }
-
-        if (mon->is_sneaking() && !can_see_invis) {
-                return false;
-        }
-
-        // OK, all checks passed, actor can bee seen!
-        return true;
-}
-
-std::vector<Actor*> Player::seen_actors() const
-{
-        std::vector<Actor*> out;
-
-        for (Actor* actor : game_time::g_actors) {
-                if ((actor != this) &&
-                    actor->is_alive()) {
-                        if (can_see_actor(*actor)) {
-                                out.push_back(actor);
-                        }
-                }
-        }
-
-        return out;
-}
-
-std::vector<Actor*> Player::seen_foes() const
-{
-        std::vector<Actor*> out;
-
-        for (Actor* actor : game_time::g_actors) {
-                if ((actor != this) &&
-                    actor->is_alive() &&
-                    map::g_player->can_see_actor(*actor) &&
-                    !is_leader_of(actor)) {
-                        out.push_back(actor);
-                }
-        }
-
-        return out;
 }
 
 void Player::on_hit(
@@ -408,8 +321,6 @@ void Player::incr_shock(double shock, ShockSrc shock_src)
         shock = shock_taken_after_mods(shock, shock_src);
 
         m_shock += shock;
-
-        m_perm_shock_taken_current_turn += shock;
 
         m_shock = std::max(0.0, m_shock);
 }
@@ -592,32 +503,6 @@ void Player::set_auto_move(const Dir dir)
         m_has_taken_auto_move_step = false;
 }
 
-bool Player::is_seeing_burning_terrain() const
-{
-        const R fov_r = fov::fov_rect(m_pos, map::dims());
-
-        bool is_fire_found = false;
-
-        for (int x = fov_r.p0.x; x <= fov_r.p1.x; ++x) {
-                for (int y = fov_r.p0.y; y <= fov_r.p1.y; ++y) {
-                        const auto& cell = map::g_cells.at(x, y);
-
-                        if (cell.is_seen_by_player &&
-                            (cell.terrain->m_burn_state == BurnState::burning)) {
-                                is_fire_found = true;
-
-                                break;
-                        }
-                }
-
-                if (is_fire_found) {
-                        break;
-                }
-        }
-
-        return is_fire_found;
-}
-
 bool Player::is_busy() const
 {
         return m_active_medical_bag ||
@@ -651,7 +536,7 @@ void Player::add_shock_from_seen_monsters()
 
                 ShockLvl shock_lvl = ShockLvl::none;
 
-                if (can_see_actor(*mon)) {
+                if (can_player_see_actor(*mon)) {
                         shock_lvl = mon->m_data->mon_shock_lvl;
                 } else {
                         // Monster cannot be seen
@@ -989,9 +874,9 @@ SpellSkill Player::spell_skill(const SpellId id) const
 void Player::auto_melee()
 {
         if (m_tgt &&
-            m_tgt->m_state == ActorState::alive &&
+            (m_tgt->m_state == ActorState::alive) &&
             is_pos_adj(m_pos, m_tgt->m_pos, false) &&
-            can_see_actor(*m_tgt)) {
+            can_player_see_actor(*m_tgt)) {
                 move(*this, dir_utils::dir(m_tgt->m_pos - m_pos));
 
                 return;
@@ -1001,7 +886,9 @@ void Player::auto_melee()
         for (const P& d : dir_utils::g_dir_list) {
                 Actor* const actor = map::first_actor_at_pos(m_pos + d);
 
-                if (actor && !is_leader_of(actor) && can_see_actor(*actor)) {
+                if (actor &&
+                    !is_leader_of(actor) &&
+                    can_player_see_actor(*actor)) {
                         m_tgt = actor;
 
                         move(*this, dir_utils::dir(d));
@@ -1285,7 +1172,7 @@ void Player::fov_hack()
 
 void Player::update_mon_awareness()
 {
-        const auto my_seen_actors = seen_actors();
+        const auto my_seen_actors = seen_actors(*this);
 
         for (Actor* const actor : my_seen_actors) {
                 static_cast<Mon*>(actor)->set_player_aware_of_me();

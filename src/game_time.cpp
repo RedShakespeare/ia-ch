@@ -10,6 +10,7 @@
 
 #include "actor_mon.hpp"
 #include "actor_player.hpp"
+#include "actor_see.hpp"
 #include "actor_start_turn.hpp"
 #include "actor_std_turn.hpp"
 #include "audio.hpp"
@@ -178,7 +179,7 @@ static void run_std_turn_events()
                                         static_cast<actor::Mon*>(actor);
 
                                 if ((mon->m_player_aware_of_me_counter > 0) &&
-                                    !map::g_player->can_see_actor(*mon)) {
+                                    !actor::can_player_see_actor(*mon)) {
                                         --mon->m_player_aware_of_me_counter;
                                 }
                         }

@@ -11,6 +11,7 @@
 
 #include "actor_mon.hpp"
 #include "actor_player.hpp"
+#include "actor_see.hpp"
 #include "attack_data.hpp"
 #include "game_time.hpp"
 #include "inventory.hpp"
@@ -547,7 +548,7 @@ void print_living_actor_info_msg(const P& pos)
                 return;
         }
 
-        if (map::g_player->can_see_actor(*actor)) {
+        if (actor::can_player_see_actor(*actor)) {
                 const std::string str =
                         text_format::first_to_upper(
                                 actor->name_a());

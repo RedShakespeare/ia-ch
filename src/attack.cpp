@@ -10,6 +10,7 @@
 #include "actor_hit.hpp"
 #include "actor_mon.hpp"
 #include "actor_player.hpp"
+#include "actor_see.hpp"
 #include "attack_data.hpp"
 #include "drop.hpp"
 #include "game_time.hpp"
@@ -38,8 +39,6 @@
 // Private
 // -----------------------------------------------------------------------------
 static const int s_nr_cell_jumps_mg_projectiles = 2;
-
-namespace {
 
 struct Projectile {
         P pos {0, 0};
@@ -72,8 +71,6 @@ enum class HitSize {
         medium,
         hard
 };
-
-} // namespace
 
 static size_t nr_projectiles_for_ranged_weapon(const item::Wpn& wpn)
 {
@@ -150,10 +147,10 @@ static void print_mon_melee_miss_msg(const MeleeAttData& att_data)
         }
 
         const bool is_player_seeing_attacker =
-                map::g_player->can_see_actor(*att_data.attacker);
+                can_player_see_actor(*att_data.attacker);
 
         const bool is_player_seeing_defender =
-                map::g_player->can_see_actor(*att_data.defender);
+                can_player_see_actor(*att_data.defender);
 
         const bool is_attacker_pos_seen =
                 map::g_cells.at(att_data.attacker->m_pos).is_seen_by_player;
@@ -210,7 +207,7 @@ static void print_player_melee_hit_msg(
 
         std::string other_name;
 
-        if (map::g_player->can_see_actor(*att_data.defender)) {
+        if (can_player_see_actor(*att_data.defender)) {
                 other_name = att_data.defender->name_the();
         } else {
                 // Player cannot see defender
@@ -282,10 +279,10 @@ static void print_mon_melee_hit_msg(const int dmg, const MeleeAttData& att_data)
         }
 
         const bool is_player_seeing_attacker =
-                map::g_player->can_see_actor(*att_data.attacker);
+                can_player_see_actor(*att_data.attacker);
 
         const bool is_player_seeing_defender =
-                map::g_player->can_see_actor(*att_data.defender);
+                can_player_see_actor(*att_data.defender);
 
         const bool is_attacker_pos_seen =
                 map::g_cells.at(att_data.attacker->m_pos).is_seen_by_player;
@@ -439,7 +436,7 @@ static void print_melee_hit_msg(const int dmg, const MeleeAttData& att_data)
                 // No attacker (e.g. trap attack)
                 if (att_data.defender->is_player()) {
                         print_no_attacker_hit_player_melee_msg(dmg, att_data);
-                } else if (map::g_player->can_see_actor(*att_data.defender)) {
+                } else if (can_player_see_actor(*att_data.defender)) {
                         print_no_attacker_hit_mon_melee_msg(dmg, att_data);
                 }
         }
@@ -552,10 +549,10 @@ static void emit_melee_snd(
 
         if (att_data.attacker) {
                 const bool is_player_seeing_defender =
-                        map::g_player->can_see_actor(*att_data.defender);
+                        can_player_see_actor(*att_data.defender);
 
                 const bool is_player_seeing_attacker =
-                        map::g_player->can_see_actor(*att_data.attacker);
+                        can_player_see_actor(*att_data.attacker);
 
                 if (!is_player_seeing_attacker && !is_player_seeing_defender) {
                         // Two unseen monsters fighting each other - always
@@ -585,7 +582,7 @@ static void print_player_fire_ranged_msg(const item::Wpn& wpn)
 
 static void print_mon_fire_ranged_msg(const RangedAttData& att_data)
 {
-        if (!map::g_player->can_see_actor(*att_data.attacker)) {
+        if (!can_player_see_actor(*att_data.attacker)) {
                 return;
         }
 
@@ -659,7 +656,7 @@ static void print_projectile_hit_mon_msg(const Projectile& projectile)
 
         const auto& defender = *projectile.att_data->defender;
 
-        if (map::g_player->can_see_actor(defender)) {
+        if (can_player_see_actor(defender)) {
                 other_name =
                         text_format::first_to_upper(
                                 defender.name_the());

@@ -9,6 +9,7 @@
 #include "actor_hit.hpp"
 #include "actor_mon.hpp"
 #include "actor_player.hpp"
+#include "actor_see.hpp"
 #include "fov.hpp"
 #include "game.hpp"
 #include "game_time.hpp"
@@ -436,7 +437,7 @@ void Shockwave::run_effect()
                         continue;
                 }
 
-                if (map::g_player->can_see_actor(*actor)) {
+                if (actor::can_player_see_actor(*actor)) {
                         std::string msg =
                                 text_format::first_to_upper(actor->name_the()) +
                                 " is hit!";

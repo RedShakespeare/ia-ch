@@ -14,6 +14,7 @@
 #include "actor_hit.hpp"
 #include "actor_mon.hpp"
 #include "actor_player.hpp"
+#include "actor_see.hpp"
 #include "explosion.hpp"
 #include "game_time.hpp"
 #include "hints.hpp"
@@ -169,7 +170,7 @@ PropEnded PropEntangled::on_tick()
 
         if (m_owner->is_player()) {
                 msg_log::add("I am drowning!", colors::msg_bad());
-        } else if (map::g_player->can_see_actor(*m_owner)) {
+        } else if (actor::can_player_see_actor(*m_owner)) {
                 const auto name_the =
                         text_format::first_to_upper(
                                 m_owner->name_the());
@@ -209,7 +210,7 @@ PropEnded PropEntangled::affect_move_dir(const P& actor_pos, Dir& dir)
                 msg_log::add("I struggle to tear free!", colors::msg_bad());
         } else {
                 // Is monster
-                if (map::g_player->can_see_actor(*m_owner)) {
+                if (actor::can_player_see_actor(*m_owner)) {
                         const std::string actor_name_the =
                                 text_format::first_to_upper(
                                         m_owner->name_the());
@@ -421,7 +422,7 @@ PropEnded PropPossessedByZuul::on_death()
 {
         // An actor possessed by Zuul has died - release Zuul!
 
-        if (map::g_player->can_see_actor(*m_owner)) {
+        if (actor::can_player_see_actor(*m_owner)) {
                 const std::string& name1 =
                         text_format::first_to_upper(
                                 m_owner->name_the());
@@ -490,7 +491,7 @@ PropEnded PropPoisoned::on_tick()
                         "I am suffering from the poison!",
                         colors::msg_bad(),
                         MsgInterruptPlayer::yes);
-        } else if (map::g_player->can_see_actor(*m_owner)) {
+        } else if (actor::can_player_see_actor(*m_owner)) {
                 // Is seen monster
                 const std::string actor_name_the =
                         text_format::first_to_upper(
@@ -556,7 +557,7 @@ PropEnded PropNailed::affect_move_dir(const P& actor_pos, Dir& dir)
                         colors::msg_bad());
         } else {
                 // Is monster
-                if (map::g_player->can_see_actor(*m_owner)) {
+                if (actor::can_player_see_actor(*m_owner)) {
                         const std::string actor_name_the =
                                 text_format::first_to_upper(
                                         m_owner->name_the());
@@ -579,7 +580,7 @@ PropEnded PropNailed::affect_move_dir(const P& actor_pos, Dir& dir)
         if (m_nr_spikes > 0) {
                 if (m_owner->is_player()) {
                         msg_log::add("I rip out a spike from my flesh!");
-                } else if (map::g_player->can_see_actor(*m_owner)) {
+                } else if (actor::can_player_see_actor(*m_owner)) {
                         const std::string actor_name_the =
                                 text_format::first_to_upper(
                                         m_owner->name_the());
@@ -836,7 +837,7 @@ PropEnded PropFrenzied::affect_move_dir(const P& actor_pos, Dir& dir)
                 return PropEnded::no;
         }
 
-        const auto seen_foes = m_owner->seen_foes();
+        const auto seen_foes = actor::seen_foes(*m_owner);
 
         if (seen_foes.empty()) {
                 return PropEnded::no;
@@ -1028,7 +1029,7 @@ PropEnded PropParalyzed::on_tick()
 
         if (m_owner->is_player()) {
                 msg_log::add("I am drowning!", colors::msg_bad());
-        } else if (map::g_player->can_see_actor(*m_owner)) {
+        } else if (actor::can_player_see_actor(*m_owner)) {
                 const auto name_the =
                         text_format::first_to_upper(
                                 m_owner->name_the());
@@ -1384,12 +1385,12 @@ PropActResult PropVortex::on_act()
                      fov_rect,
                      MapParseMode::overwrite);
 
-        if (mon->can_see_actor(*(map::g_player), blocked_los)) {
+        if (actor::can_mon_see_actor(*mon, *map::g_player, blocked_los)) {
                 TRACE << "Is seeing player" << std::endl;
 
                 mon->set_player_aware_of_me();
 
-                if (map::g_player->can_see_actor(*mon)) {
+                if (actor::can_player_see_actor(*mon)) {
                         const auto name_the = text_format::first_to_upper(
                                 m_owner->name_the());
 
@@ -1444,7 +1445,7 @@ PropEnded PropSplitsOnDeath::on_death()
         }
 
         const bool is_player_seeing_owner =
-                map::g_player->can_see_actor(*m_owner);
+                actor::can_player_see_actor(*m_owner);
 
         const int actor_max_hp = actor::max_hp(*m_owner);
 
@@ -1678,7 +1679,7 @@ PropActResult PropCorpseRises::on_act()
                 return {};
         }
 
-        const bool is_seen_by_player = map::g_player->can_see_actor(*m_owner);
+        const bool is_seen_by_player = actor::can_player_see_actor(*m_owner);
 
         if (is_seen_by_player) {
                 hints::display(hints::Id::destroying_corpses);
@@ -1916,7 +1917,7 @@ void PropBreeds::on_std_turn()
 
                         spawned_mon->m_properties.apply(prop_waiting);
 
-                        if (map::g_player->can_see_actor(*spawned_mon)) {
+                        if (actor::can_player_see_actor(*spawned_mon)) {
                                 const auto name =
                                         text_format::first_to_upper(
                                                 spawned_mon->name_a());
@@ -1933,7 +1934,7 @@ void PropBreeds::on_std_turn()
 void PropConfusesAdjacent::on_std_turn()
 {
         if (!m_owner->is_alive() ||
-            !map::g_player->can_see_actor(*m_owner) ||
+            !actor::can_player_see_actor(*m_owner) ||
             !map::g_player->m_pos.is_adjacent(m_owner->m_pos)) {
                 return;
         }
@@ -1976,9 +1977,9 @@ PropActResult PropSpeaksCurses::on_act()
                      fov_rect,
                      MapParseMode::overwrite);
 
-        if (mon->can_see_actor(*map::g_player, blocked_los)) {
+        if (actor::can_mon_see_actor(*mon, *map::g_player, blocked_los)) {
                 const bool player_see_owner =
-                        map::g_player->can_see_actor(*mon);
+                        actor::can_player_see_actor(*mon);
 
                 std::string snd_msg =
                         player_see_owner
@@ -2044,7 +2045,7 @@ void PropAuraOfDecay::run_effect_on_actors() const
                 }
 
                 const bool player_see_target =
-                        map::g_player->can_see_actor(*actor);
+                        actor::can_player_see_actor(*actor);
 
                 if (player_see_target) {
                         print_msg_actor_hit(*actor);
@@ -2129,7 +2130,7 @@ PropActResult PropMajorClaphamSummon::on_act()
                      fov_rect,
                      MapParseMode::overwrite);
 
-        if (!mon->can_see_actor(*(map::g_player), blocked_los)) {
+        if (!actor::can_mon_see_actor(*mon, *map::g_player, blocked_los)) {
                 return {};
         }
 

@@ -11,6 +11,7 @@
 #include "actor_factory.hpp"
 #include "actor_move.hpp"
 #include "actor_player.hpp"
+#include "actor_see.hpp"
 #include "audio_data.hpp"
 #include "character_descr.hpp"
 #include "close.hpp"
@@ -425,14 +426,14 @@ void handle(const GameCmd cmd)
         } break;
 
         case GameCmd::wait_long: {
-                if (map::g_player->is_seeing_burning_terrain()) {
+                if (actor::is_player_seeing_burning_terrain()) {
                         msg_log::add(
                                 common_text::g_fire_prevent_cmd,
                                 colors::text(),
                                 MsgInterruptPlayer::no,
                                 MorePromptOnMsg::no,
                                 CopyToMsgHistory::no);
-                } else if (!map::g_player->seen_foes().empty()) {
+                } else if (!actor::seen_foes(*map::g_player).empty()) {
                         msg_log::add(
                                 common_text::g_mon_prevent_cmd,
                                 colors::text(),
@@ -642,9 +643,9 @@ void handle(const GameCmd cmd)
         case GameCmd::auto_move_down_right:
         case GameCmd::auto_move_down_left:
         case GameCmd::auto_move_up_left: {
-                if (map::g_player->is_seeing_burning_terrain()) {
+                if (actor::is_player_seeing_burning_terrain()) {
                         msg_log::add(common_text::g_fire_prevent_cmd);
-                } else if (!map::g_player->seen_foes().empty()) {
+                } else if (!actor::seen_foes(*map::g_player).empty()) {
                         msg_log::add(
                                 common_text::g_mon_prevent_cmd,
                                 colors::text(),

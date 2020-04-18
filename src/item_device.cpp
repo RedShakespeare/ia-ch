@@ -13,6 +13,7 @@
 #include "actor_hit.hpp"
 #include "actor_mon.hpp"
 #include "actor_player.hpp"
+#include "actor_see.hpp"
 #include "audio.hpp"
 #include "game.hpp"
 #include "game_time.hpp"
@@ -250,7 +251,7 @@ std::string StrangeDevice::name_inf_str() const
 // -----------------------------------------------------------------------------
 ConsumeItem Blaster::run_effect()
 {
-        const auto tgt_bucket = map::g_player->seen_foes();
+        const auto tgt_bucket = actor::seen_foes(*map::g_player);
 
         if (tgt_bucket.empty()) {
                 msg_log::add("It seems to peruse area.");
@@ -303,9 +304,7 @@ ConsumeItem Rejuvenator::run_effect()
 // -----------------------------------------------------------------------------
 ConsumeItem Translocator::run_effect()
 {
-        auto* const player = map::g_player;
-
-        const auto seen_foes = player->seen_foes();
+        const auto seen_foes = actor::seen_foes(*map::g_player);
 
         if (seen_foes.empty()) {
                 msg_log::add("It seems to peruse area.");

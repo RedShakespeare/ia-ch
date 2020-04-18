@@ -12,6 +12,7 @@
 
 #include "actor_factory.hpp"
 #include "actor_player.hpp"
+#include "actor_see.hpp"
 #include "ai.hpp"
 #include "attack.hpp"
 #include "drop.hpp"
@@ -172,7 +173,7 @@ Mon::~Mon()
         }
 }
 
-std::vector<Actor*> Mon::unseen_foes_aware_of() const
+std::vector<Actor*> Mon::foes_aware_of() const
 {
         std::vector<Actor*> result;
 
@@ -218,204 +219,6 @@ std::vector<Actor*> Mon::unseen_foes_aware_of() const
         }
 
         return result;
-}
-
-bool Mon::can_see_actor(
-        const Actor& other,
-        const Array2<bool>& hard_blocked_los) const
-{
-        const bool is_seeable = is_actor_seeable(other, hard_blocked_los);
-
-        if (!is_seeable) {
-                return false;
-        }
-
-        if (is_actor_my_leader(map::g_player)) {
-                // Monster is allied to player
-
-                if (other.is_player()) {
-                        // Player-allied monster looking at the player
-
-                        return true;
-                } else {
-                        // Player-allied monster looking at other monster
-
-                        const auto* const other_mon =
-                                static_cast<const Mon*>(&other);
-
-                        return other_mon->m_player_aware_of_me_counter > 0;
-                }
-        } else {
-                // Monster is hostile to player
-                return m_aware_of_player_counter > 0;
-        }
-
-        return true;
-}
-
-bool Mon::is_actor_seeable(
-        const Actor& other,
-        const Array2<bool>& hard_blocked_los) const
-{
-        if ((this == &other) || (!other.is_alive())) {
-                return true;
-        }
-
-        // Outside FOV range?
-        if (!fov::is_in_fov_range(m_pos, other.m_pos)) {
-                // Other actor is outside FOV range
-                return false;
-        }
-
-        // Monster is blind?
-        if (!m_properties.allow_see()) {
-                return false;
-        }
-
-        FovMap fov_map;
-        fov_map.hard_blocked = &hard_blocked_los;
-        fov_map.light = &map::g_light;
-        fov_map.dark = &map::g_dark;
-
-        const LosResult los = fov::check_cell(m_pos, other.m_pos, fov_map);
-
-        // LOS blocked hard (e.g. a wall or smoke)?
-        if (los.is_blocked_hard) {
-                return false;
-        }
-
-        const bool can_see_invis = m_properties.has(PropId::see_invis);
-
-        // Actor is invisible, and monster cannot see invisible?
-        if ((other.m_properties.has(PropId::invis) ||
-             other.m_properties.has(PropId::cloaked)) &&
-            !can_see_invis) {
-                return false;
-        }
-
-        bool has_darkvision = m_properties.has(PropId::darkvision);
-
-        const bool can_see_other_in_dark = can_see_invis || has_darkvision;
-
-        // Blocked by darkness, and not seeing actor with infravision?
-        if (los.is_blocked_by_dark && !can_see_other_in_dark) {
-                return false;
-        }
-
-        // OK, all checks passed, actor can bee seen
-        return true;
-}
-
-std::vector<Actor*> Mon::seen_actors() const
-{
-        std::vector<Actor*> out;
-
-        Array2<bool> blocked_los(map::dims());
-
-        R los_rect(
-                std::max(0, m_pos.x - g_fov_radi_int),
-                std::max(0, m_pos.y - g_fov_radi_int),
-                std::min(map::w() - 1, m_pos.x + g_fov_radi_int),
-                std::min(map::h() - 1, m_pos.y + g_fov_radi_int));
-
-        map_parsers::BlocksLos()
-                .run(blocked_los,
-                     los_rect,
-                     MapParseMode::overwrite);
-
-        for (Actor* actor : game_time::g_actors) {
-                if ((actor != this) && actor->is_alive()) {
-                        const Mon* const mon = static_cast<const Mon*>(this);
-
-                        if (mon->can_see_actor(*actor, blocked_los)) {
-                                out.push_back(actor);
-                        }
-                }
-        }
-
-        return out;
-}
-
-std::vector<Actor*> Mon::seen_foes() const
-{
-        std::vector<Actor*> out;
-
-        Array2<bool> blocked_los(map::dims());
-
-        R los_rect(
-                std::max(0, m_pos.x - g_fov_radi_int),
-                std::max(0, m_pos.y - g_fov_radi_int),
-                std::min(map::w() - 1, m_pos.x + g_fov_radi_int),
-                std::min(map::h() - 1, m_pos.y + g_fov_radi_int));
-
-        map_parsers::BlocksLos()
-                .run(blocked_los,
-                     los_rect,
-                     MapParseMode::overwrite);
-
-        for (Actor* actor : game_time::g_actors) {
-                if ((actor != this) &&
-                    actor->is_alive()) {
-                        const bool is_hostile_to_player =
-                                !is_actor_my_leader(map::g_player);
-
-                        const bool is_other_hostile_to_player =
-                                actor->is_player()
-                                ? false
-                                : !actor->is_actor_my_leader(map::g_player);
-
-                        const bool is_enemy =
-                                is_hostile_to_player !=
-                                is_other_hostile_to_player;
-
-                        const Mon* const mon = static_cast<const Mon*>(this);
-
-                        if (is_enemy &&
-                            mon->can_see_actor(*actor, blocked_los)) {
-                                out.push_back(actor);
-                        }
-                }
-        }
-
-        return out;
-}
-
-std::vector<Actor*> Mon::seeable_foes() const
-{
-        std::vector<Actor*> out;
-
-        Array2<bool> blocked_los(map::dims());
-
-        const R fov_rect = fov::fov_rect(m_pos, blocked_los.dims());
-
-        map_parsers::BlocksLos()
-                .run(blocked_los,
-                     fov_rect,
-                     MapParseMode::overwrite);
-
-        for (Actor* actor : game_time::g_actors) {
-                if ((actor != this) &&
-                    actor->is_alive()) {
-                        const bool is_hostile_to_player =
-                                !is_actor_my_leader(map::g_player);
-
-                        const bool is_other_hostile_to_player =
-                                actor->is_player()
-                                ? false
-                                : !actor->is_actor_my_leader(map::g_player);
-
-                        const bool is_enemy =
-                                is_hostile_to_player !=
-                                is_other_hostile_to_player;
-
-                        if (is_enemy &&
-                            is_actor_seeable(*actor, blocked_los)) {
-                                out.push_back(actor);
-                        }
-                }
-        }
-
-        return out;
 }
 
 bool Mon::is_sneaking() const
@@ -530,7 +333,7 @@ void Mon::hear_sound(const Snd& snd)
 
 void Mon::speak_phrase(const AlertsMon alerts_others)
 {
-        const bool is_seen_by_player = map::g_player->can_see_actor(*this);
+        const bool is_seen_by_player = can_player_see_actor(*this);
 
         std::string msg =
                 is_seen_by_player
@@ -599,7 +402,7 @@ void Mon::become_aware_player(const bool is_from_seeing, const int factor)
 
         if (aware_counter_before <= 0) {
                 if (is_from_seeing &&
-                    map::g_player->can_see_actor(*this)) {
+                    can_player_see_actor(*this)) {
                         print_player_see_mon_become_aware_msg();
                 }
 
@@ -624,7 +427,7 @@ void Mon::become_wary_player()
                 std::max(nr_turns, wary_counter_before);
 
         if (wary_counter_before <= 0) {
-                if (map::g_player->can_see_actor(*this)) {
+                if (can_player_see_actor(*this)) {
                         print_player_see_mon_become_wary_msg();
                 }
 
@@ -967,7 +770,7 @@ DidAction Khephren::on_act()
                      fov_rect,
                      MapParseMode::overwrite);
 
-        if (!can_see_actor(*(map::g_player), blocked)) {
+        if (!can_mon_see_actor(*this, *map::g_player, blocked)) {
                 return DidAction::no;
         }
 

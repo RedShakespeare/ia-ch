@@ -11,6 +11,7 @@
 #include "actor_factory.hpp"
 #include "actor_hit.hpp"
 #include "actor_player.hpp"
+#include "actor_see.hpp"
 #include "common_text.hpp"
 #include "explosion.hpp"
 #include "game.hpp"
@@ -1072,7 +1073,7 @@ void MindLeechSting::on_melee_hit(actor::Actor& actor_hit, const int dmg)
         if (map::g_player->ins() >= 50 ||
             map::g_player->m_properties.has(PropId::confused) ||
             map::g_player->m_properties.has(PropId::frenzied)) {
-                const bool player_see_mon = map::g_player->can_see_actor(*mon);
+                const bool player_see_mon = actor::can_player_see_actor(*mon);
 
                 if (player_see_mon) {
                         const std::string mon_name_the =
@@ -1237,13 +1238,13 @@ ConsumeItem MedicalBag::activate(actor::Actor* const actor)
                 m_current_action = MedBagAction::END;
 
                 return ConsumeItem::no;
-        } else if (map::g_player->is_seeing_burning_terrain()) {
+        } else if (actor::is_player_seeing_burning_terrain()) {
                 msg_log::add(common_text::g_fire_prevent_cmd);
 
                 m_current_action = MedBagAction::END;
 
                 return ConsumeItem::no;
-        } else if (!map::g_player->seen_foes().empty()) {
+        } else if (!actor::seen_foes(*map::g_player).empty()) {
                 msg_log::add(
                         common_text::g_mon_prevent_cmd,
                         colors::text(),

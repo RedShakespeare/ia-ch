@@ -62,14 +62,6 @@ public:
 
         void update_mon_awareness();
 
-        bool can_see_actor(const Actor& other) const;
-
-        std::vector<Actor*> seen_actors() const override;
-
-        std::vector<Actor*> seen_foes() const override;
-
-        bool is_seeing_burning_terrain() const;
-
         Color color() const override;
 
         SpellSkill spell_skill(SpellId id) const override;
@@ -89,12 +81,6 @@ public:
         void restore_shock(
                 int amount_restored,
                 bool is_temp_shock_restored);
-
-        // Used for determining if '!'-marks should be drawn over the player
-        double perm_shock_taken_current_turn() const
-        {
-                return m_perm_shock_taken_current_turn;
-        }
 
         int shock_tot() const;
 
@@ -157,7 +143,6 @@ public:
         int m_ins {0};
         double m_shock {0.0};
         double m_shock_tmp {0.0};
-        double m_perm_shock_taken_current_turn {0.0};
         int m_nr_turns_until_ins {-1};
         Dir m_auto_move_dir {Dir::END};
         bool m_has_taken_auto_move_step {false};

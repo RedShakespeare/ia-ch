@@ -9,6 +9,7 @@
 #include "actor.hpp"
 #include "actor_mon.hpp"
 #include "actor_player.hpp"
+#include "actor_see.hpp"
 #include "game_time.hpp"
 #include "io.hpp"
 #include "map.hpp"
@@ -291,7 +292,7 @@ static void set_living_monsters()
 
                 const auto* const mon = static_cast<const actor::Mon*>(actor);
 
-                if (map::g_player->can_see_actor(*actor)) {
+                if (can_player_see_actor(*actor)) {
                         set_living_seen_monster(*mon, render_data);
                 } else {
                         set_living_hidden_monster(*mon, render_data);
@@ -441,7 +442,7 @@ static void draw_monster_life_bars()
         for (auto* actor : game_time::g_actors) {
                 if (!actor->is_player() &&
                     actor->is_alive() &&
-                    map::g_player->can_see_actor(*actor)) {
+                    can_player_see_actor(*actor)) {
                         draw_life_bar(*actor);
                 }
         }

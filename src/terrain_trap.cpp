@@ -12,6 +12,7 @@
 #include "actor_hit.hpp"
 #include "actor_mon.hpp"
 #include "actor_player.hpp"
+#include "actor_see.hpp"
 #include "attack.hpp"
 #include "common_text.hpp"
 #include "drop.hpp"
@@ -927,16 +928,11 @@ void TrapTeleport::trigger()
                 return;
         }
 
-        const bool is_player = actor_here->is_player();
-
-        const bool can_see = actor_here->m_properties.allow_see();
-
-        const bool player_sees_actor =
-                map::g_player->can_see_actor(*actor_here);
-
-        const std::string actor_name = actor_here->name_the();
-
-        const bool is_hidden = m_base_trap->is_hidden();
+        const auto is_player = actor_here->is_player();
+        const auto can_see = actor_here->m_properties.allow_see();
+        const auto player_sees_actor = actor::can_player_see_actor(*actor_here);
+        const auto actor_name = actor_here->name_the();
+        const auto is_hidden = m_base_trap->is_hidden();
 
         if (is_player) {
                 map::update_vision();
@@ -1055,7 +1051,7 @@ void TrapSummonMon::trigger()
 
                                 mon->m_properties.apply(prop_waiting);
 
-                                if (map::g_player->can_see_actor(*mon)) {
+                                if (actor::can_player_see_actor(*mon)) {
                                         states::draw();
 
                                         const std::string name_a =
@@ -1284,7 +1280,7 @@ void TrapWeb::trigger()
                 }
         } else {
                 // Is a monster
-                if (map::g_player->can_see_actor(*actor_here)) {
+                if (actor::can_player_see_actor(*actor_here)) {
                         const std::string actor_name =
                                 text_format::first_to_upper(
                                         actor_here->name_the());

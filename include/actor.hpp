@@ -124,10 +124,6 @@ public:
 
         virtual Color color() const = 0;
 
-        virtual std::vector<Actor*> seen_actors() const = 0;
-
-        virtual std::vector<Actor*> seen_foes() const = 0;
-
         virtual SpellSkill spell_skill(SpellId id) const = 0;
 
         virtual bool is_leader_of(const Actor* actor) const = 0;

@@ -9,6 +9,7 @@
 #include "actor_factory.hpp"
 #include "actor_mon.hpp"
 #include "actor_player.hpp"
+#include "actor_see.hpp"
 #include "game.hpp"
 #include "game_time.hpp"
 #include "init.hpp"
@@ -470,7 +471,7 @@ void InsShadows::on_start_hook()
 
         map::update_vision();
 
-        const auto player_seen_foes = map::g_player->seen_foes();
+        const auto player_seen_foes = actor::seen_foes(*map::g_player);
 
         for (auto* const actor : player_seen_foes) {
                 static_cast<actor::Mon*>(actor)->set_player_aware_of_me();

@@ -22,6 +22,7 @@ set(COMMON_SRC
         include/actor_mon.hpp
         include/actor_move.hpp
         include/actor_player.hpp
+        include/actor_see.hpp
         include/actor_sneak.hpp
         include/actor_start_turn.hpp
         include/actor_std_turn.hpp
@@ -148,6 +149,7 @@ set(COMMON_SRC
         src/actor_mon.cpp
         src/actor_move.cpp
         src/actor_player.cpp
+        src/actor_see.cpp
         src/actor_sneak.cpp
         src/actor_start_turn.cpp
         src/actor_std_turn.cpp

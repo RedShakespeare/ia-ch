@@ -9,6 +9,7 @@
 #include "actor.hpp"
 #include "actor_mon.hpp"
 #include "actor_player.hpp"
+#include "actor_see.hpp"
 #include "attack.hpp"
 #include "common_text.hpp"
 #include "game_time.hpp"
@@ -33,7 +34,7 @@ static BinaryAnswer query_player_attack_mon_with_ranged_wpn(
 {
         const std::string wpn_name = wpn.name(ItemRefType::a);
 
-        const bool can_see_mon = map::g_player->can_see_actor(mon);
+        const bool can_see_mon = can_player_see_actor(mon);
 
         const std::string mon_name =
                 can_see_mon
@@ -112,7 +113,7 @@ static void player_bump_allied_mon(actor::Mon& mon)
 {
         if (mon.m_player_aware_of_me_counter > 0) {
                 std::string mon_name =
-                        map::g_player->can_see_actor(mon)
+                        can_player_see_actor(mon)
                         ? mon.name_a()
                         : "it";
 
@@ -254,7 +255,7 @@ static void bump_terrains(actor::Actor& actor, const P& tgt)
         if (!actor.is_player() &&
             !terrain->is_walkable() &&
             (terrain->data().matl_type != Matl::fluid) &&
-            map::g_player->can_see_actor(actor)) {
+            can_player_see_actor(actor)) {
                 print_mon_enter_non_walkable_terrain_msg(actor, *terrain);
         }
 
@@ -272,7 +273,7 @@ static void on_player_waiting()
 
         if (did_action == DidAction::no) {
                 // Reorganize pistol magazines?
-                const auto seen_foes = map::g_player->seen_foes();
+                const auto seen_foes = actor::seen_foes(*map::g_player);
 
                 if (seen_foes.empty()) {
                         reload::player_arrange_pistol_mags();

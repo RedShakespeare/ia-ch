@@ -9,6 +9,7 @@
 #include "actor.hpp"
 #include "actor_mon.hpp"
 #include "actor_player.hpp"
+#include "actor_see.hpp"
 #include "game.hpp"
 #include "map.hpp"
 #include "msg_log.hpp"
@@ -181,7 +182,7 @@ void PropHandler::print_resist_msg(const Prop& prop)
                 }
         } else {
                 // Is a monster
-                if (map::g_player->can_see_actor(*m_owner)) {
+                if (actor::can_player_see_actor(*m_owner)) {
                         const auto msg = prop.m_data.msg_res_mon;
 
                         if (!msg.empty()) {
@@ -210,7 +211,7 @@ void PropHandler::print_start_msg(const Prop& prop)
                 }
         } else {
                 // Is monster
-                if (map::g_player->can_see_actor(*m_owner)) {
+                if (actor::can_player_see_actor(*m_owner)) {
                         const auto msg = prop.m_data.msg_start_mon;
 
                         if (!msg.empty()) {
@@ -383,7 +384,7 @@ void PropHandler::on_prop_end(
                         }
                 }
                 // Not player
-                else if (map::g_player->can_see_actor(*m_owner)) {
+                else if (actor::can_player_see_actor(*m_owner)) {
                         const auto msg = prop->m_data.msg_end_mon;
 
                         if (!msg.empty()) {
@@ -712,7 +713,9 @@ bool PropHandler::is_resisting_prop(const PropId id) const
         return false;
 }
 
-bool PropHandler::is_resisting_dmg(const DmgType dmg_type, const Verbose verbose) const
+bool PropHandler::is_resisting_dmg(
+        const DmgType dmg_type,
+        const Verbose verbose) const
 {
         DmgResistData res_data;
 
@@ -735,7 +738,7 @@ bool PropHandler::is_resisting_dmg(const DmgType dmg_type, const Verbose verbose
 
                         if (mon->m_player_aware_of_me_counter > 0) {
                                 const bool can_player_see_mon =
-                                        map::g_player->can_see_actor(*m_owner);
+                                        actor::can_player_see_actor(*m_owner);
 
                                 const std::string mon_name =
                                         can_player_see_mon
@@ -743,7 +746,10 @@ bool PropHandler::is_resisting_dmg(const DmgType dmg_type, const Verbose verbose
                                                   m_owner->name_the())
                                         : "It";
 
-                                msg_log::add(mon_name + " " + res_data.msg_resist_mon);
+                                msg_log::add(
+                                        mon_name +
+                                        " " +
+                                        res_data.msg_resist_mon);
                         }
                 }
         }

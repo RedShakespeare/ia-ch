@@ -57,19 +57,6 @@ public:
                 return DidAction::no;
         }
 
-        bool can_see_actor(
-                const Actor& other,
-                const Array2<bool>& hard_blocked_los) const;
-
-        std::vector<Actor*> seen_actors() const override;
-
-        std::vector<Actor*> seen_foes() const override;
-
-        // Actors which are possible to see (i.e. not impossible due to
-        // invisibility, etc), but may or may not currently be seen due to
-        // (lack of) awareness
-        std::vector<Actor*> seeable_foes() const;
-
         bool is_sneaking() const;
 
         Color color() const override;
@@ -92,7 +79,7 @@ public:
 
         void make_leader_aware_silent() const;
 
-        std::vector<Actor*> unseen_foes_aware_of() const;
+        std::vector<Actor*> foes_aware_of() const;
 
         std::string aware_msg_mon_seen() const;
 
@@ -130,13 +117,6 @@ public:
         std::vector<MonSpell> m_spells;
 
 protected:
-        // Return value 'true' means it is possible to see the other actor (i.e.
-        // it's not impossible due to invisibility, etc), but the actor may or
-        // may not currently be seen due to (lack of) awareness
-        bool is_actor_seeable(
-                const Actor& other,
-                const Array2<bool>& hard_blocked_los) const;
-
         void print_player_see_mon_become_aware_msg() const;
 
         void print_player_see_mon_become_wary_msg() const;

@@ -10,6 +10,7 @@
 #include "actor_mon.hpp"
 #include "actor_move.hpp"
 #include "actor_player.hpp"
+#include "actor_see.hpp"
 #include "ai.hpp"
 #include "bot.hpp"
 #include "config.hpp"
@@ -329,18 +330,18 @@ static void mon_act(actor::Mon& mon)
         std::vector<actor::Actor*> target_bucket;
 
         if (mon.m_properties.has(PropId::conflict)) {
-                target_bucket = mon.seen_actors();
+                target_bucket = seen_actors(mon);
 
                 mon.m_is_target_seen = !target_bucket.empty();
         } else {
                 // Not conflicted
-                target_bucket = mon.seen_foes();
+                target_bucket = seen_foes(mon);
 
                 if (target_bucket.empty()) {
                         // There are no seen foes
                         mon.m_is_target_seen = false;
 
-                        target_bucket = mon.unseen_foes_aware_of();
+                        target_bucket = mon.foes_aware_of();
                 } else {
                         // There are seen foes
                         mon.m_is_target_seen = true;

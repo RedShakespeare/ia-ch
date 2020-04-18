@@ -13,6 +13,7 @@
 #include "actor_items.hpp"
 #include "actor_mon.hpp"
 #include "actor_player.hpp"
+#include "actor_see.hpp"
 #include "drop.hpp"
 #include "explosion.hpp"
 #include "fov.hpp"
@@ -193,7 +194,7 @@ bool Actor::restore_hp(
         if ((verbose == Verbose::yes) && is_hp_gained) {
                 if (is_player()) {
                         msg_log::add("I feel healthier!", colors::msg_good());
-                } else if (map::g_player->can_see_actor(*this)) {
+                } else if (can_player_see_actor(*this)) {
                         const std::string actor_name_the =
                                 text_format::first_to_upper(
                                         m_data->name_the);
@@ -231,7 +232,7 @@ bool Actor::restore_sp(
                                 "I feel more spirited!",
                                 colors::msg_good());
                 } else {
-                        if (map::g_player->can_see_actor(*this)) {
+                        if (can_player_see_actor(*this)) {
                                 const std::string actor_name_the =
                                         text_format::first_to_upper(
                                                 m_data->name_the);
@@ -264,7 +265,7 @@ void Actor::change_max_hp(const int change, const Verbose verbose)
                                 "I feel frailer!",
                                 colors::msg_bad());
                 }
-        } else if (map::g_player->can_see_actor(*this)) {
+        } else if (can_player_see_actor(*this)) {
                 const std::string actor_name_the =
                         text_format::first_to_upper(
                                 name_the());
@@ -295,7 +296,7 @@ void Actor::change_max_sp(const int change, const Verbose verbose)
                                 "My spirit is weaker!",
                                 colors::msg_bad());
                 }
-        } else if (map::g_player->can_see_actor(*this)) {
+        } else if (can_player_see_actor(*this)) {
                 const std::string actor_name_the =
                         text_format::first_to_upper(
                                 name_the());
@@ -420,7 +421,7 @@ DidAction Actor::try_eat_corpse()
                         msg_log::add("I feed on " + corpse_name_the + ".");
                 } else {
                         // Is monster
-                        if (map::g_player->can_see_actor(*this)) {
+                        if (can_player_see_actor(*this)) {
                                 const std::string actor_name_the =
                                         text_format::first_to_upper(
                                                 name_the());

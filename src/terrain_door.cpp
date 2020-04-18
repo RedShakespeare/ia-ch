@@ -8,6 +8,7 @@
 
 #include "actor.hpp"
 #include "actor_player.hpp"
+#include "actor_see.hpp"
 #include "debug.hpp"
 #include "game.hpp"
 #include "game_time.hpp"
@@ -316,7 +317,7 @@ void Door::on_hit(
 
                                                 snd.run();
 
-                                                if (map::g_player->can_see_actor(*actor)) {
+                                                if (actor::can_player_see_actor(*actor)) {
                                                         msg_log::add(
                                                                 "The " +
                                                                 base_name_short() +
@@ -736,7 +737,7 @@ void Door::try_close(actor::Actor* actor_trying)
         const bool player_see_tryer =
                 is_player
                 ? true
-                : map::g_player->can_see_actor(*actor_trying);
+                : actor::can_player_see_actor(*actor_trying);
 
         // Already closed?
         if (!m_is_open) {
@@ -964,7 +965,7 @@ void Door::try_open(actor::Actor* actor_trying)
         const bool player_see_tryer =
                 is_player
                 ? true
-                : map::g_player->can_see_actor(*actor_trying);
+                : actor::can_player_see_actor(*actor_trying);
 
         if (is_player && (m_type == DoorType::metal)) {
                 if (!player_see_door) {

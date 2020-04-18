@@ -9,6 +9,7 @@
 #include "actor.hpp"
 #include "actor_mon.hpp"
 #include "actor_player.hpp"
+#include "actor_see.hpp"
 #include "drop.hpp"
 #include "game.hpp"
 #include "game_time.hpp"
@@ -133,7 +134,7 @@ void kill(
                         map::g_player->m_tgt = nullptr;
                 }
 
-                if (map::g_player->can_see_actor(actor)) {
+                if (can_player_see_actor(actor)) {
                         print_mon_death_msg(actor);
                 }
         }

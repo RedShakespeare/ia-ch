@@ -10,6 +10,7 @@
 #include <string>
 
 #include "actor_player.hpp"
+#include "actor_see.hpp"
 #include "game_time.hpp"
 #include "init.hpp"
 #include "inventory.hpp"
@@ -97,7 +98,7 @@ void drop_item_from_inv(
                         MorePromptOnMsg::yes);
         } else {
                 // Monster is dropping item
-                if (map::g_player->can_see_actor(actor)) {
+                if (can_player_see_actor(actor)) {
                         const std::string mon_name_the =
                                 text_format::first_to_upper(
                                         actor.name_the());

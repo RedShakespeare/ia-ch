@@ -12,6 +12,7 @@
 #include "actor_death.hpp"
 #include "actor_mon.hpp"
 #include "actor_player.hpp"
+#include "actor_see.hpp"
 #include "attack.hpp"
 #include "config.hpp"
 #include "game_time.hpp"
@@ -101,7 +102,7 @@ void run(
         const bool player_can_see_defender =
                 is_defender_player
                 ? true
-                : map::g_player->can_see_actor(defender);
+                : actor::can_player_see_actor(defender);
 
         bool player_is_aware_of_defender = true;
 

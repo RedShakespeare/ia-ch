@@ -14,6 +14,7 @@
 #include "actor_hit.hpp"
 #include "actor_mon.hpp"
 #include "actor_player.hpp"
+#include "actor_see.hpp"
 #include "explosion.hpp"
 #include "flood.hpp"
 #include "game.hpp"
@@ -292,7 +293,7 @@ void Spell::cast(
                         auto* const mon = static_cast<actor::Mon*>(caster);
 
                         const bool is_mon_seen =
-                                map::g_player->can_see_actor(*mon);
+                                actor::can_player_see_actor(*mon);
 
                         std::string spell_msg = mon->m_data->spell_msg;
 
@@ -355,7 +356,7 @@ void Spell::on_resist(actor::Actor& target) const
 {
         const bool is_player = target.is_player();
 
-        const bool player_see_target = map::g_player->can_see_actor(target);
+        const bool player_see_target = actor::can_player_see_actor(target);
 
         if (player_see_target) {
                 msg_log::add(s_spell_resist_msg);
@@ -665,7 +666,7 @@ void SpellBolt::run_effect(
 
         std::vector<actor::Actor*> target_bucket;
 
-        target_bucket = caster->seen_foes();
+        target_bucket = actor::seen_foes(*caster);
 
         if (target_bucket.empty()) {
                 if (caster->is_player()) {
@@ -688,7 +689,7 @@ void SpellBolt::run_effect(
 
                 // Spell reflection?
                 if (target->m_properties.has(PropId::spell_reflect)) {
-                        if (map::g_player->can_see_actor(*target)) {
+                        if (actor::can_player_see_actor(*target)) {
                                 msg_log::add(
                                         s_spell_reflect_msg,
                                         colors::text(),
@@ -753,7 +754,7 @@ void SpellBolt::run_effect(
         const bool player_see_cell =
                 map::g_cells.at(target_p).is_seen_by_player;
 
-        const bool player_see_tgt = map::g_player->can_see_actor(*target);
+        const bool player_see_tgt = actor::can_player_see_actor(*target);
 
         if (player_see_tgt || player_see_cell) {
                 io::draw_blast_at_cells({target->m_pos}, colors::magenta());
@@ -836,7 +837,7 @@ void SpellAzaWrath::run_effect(
         //     }
         // }
 
-        const auto targets = caster->seen_foes();
+        const auto targets = actor::seen_foes(*caster);
 
         if (targets.empty()) {
                 if (caster->is_player()) {
@@ -855,7 +856,7 @@ void SpellAzaWrath::run_effect(
 
                         // Spell reflection?
                         if (target->m_properties.has(PropId::spell_reflect)) {
-                                if (map::g_player->can_see_actor(*target)) {
+                                if (actor::can_player_see_actor(*target)) {
                                         msg_log::add(
                                                 s_spell_reflect_msg,
                                                 colors::white(),
@@ -888,7 +889,7 @@ void SpellAzaWrath::run_effect(
                         }
                 }
 
-                if (map::g_player->can_see_actor(*target)) {
+                if (actor::can_player_see_actor(*target)) {
                         msg_log::add(
                                 str_begin + " struck by a roaring blast!",
                                 msg_clr);
@@ -1000,7 +1001,7 @@ void SpellMayhem::run_effect(
 
         const bool is_player = caster->is_player();
 
-        if (map::g_player->can_see_actor(*caster)) {
+        if (actor::can_player_see_actor(*caster)) {
                 std::string caster_name =
                         is_player ? "me" : caster->name_the();
 
@@ -1243,7 +1244,7 @@ void SpellPestilence::run_effect(
 
                         mon->m_properties.apply(prop_waiting);
 
-                        if (map::g_player->can_see_actor(*mon)) {
+                        if (actor::can_player_see_actor(*mon)) {
                                 is_any_seen_by_player = true;
                         }
 
@@ -1270,7 +1271,7 @@ void SpellPestilence::run_effect(
                 std::string caster_str = "me";
 
                 if (!caster->is_player()) {
-                        if (map::g_player->can_see_actor(*caster)) {
+                        if (actor::can_player_see_actor(*caster)) {
                                 caster_str = caster->name_the();
                         } else {
                                 caster_str = "it";
@@ -1399,7 +1400,7 @@ void SpellSpectralWpns::run_effect(
                                         Verbose::no);
                         }
 
-                        if (map::g_player->can_see_actor(*mon)) {
+                        if (actor::can_player_see_actor(*mon)) {
                                 msg_log::add(mon->name_a() + " appears!");
                         }
                 };
@@ -2173,7 +2174,7 @@ void SpellKnockBack::run_effect(
 
                 // Spell reflection?
                 if (target->m_properties.has(PropId::spell_reflect)) {
-                        if (map::g_player->can_see_actor(*target)) {
+                        if (actor::can_player_see_actor(*target)) {
                                 msg_log::add(
                                         s_spell_reflect_msg,
                                         colors::text(),
@@ -2199,7 +2200,7 @@ void SpellKnockBack::run_effect(
                 }
         }
 
-        if (map::g_player->can_see_actor(*target)) {
+        if (actor::can_player_see_actor(*target)) {
                 msg_log::add("A force pushes " + target_str + "!", msg_clr);
         }
 
@@ -2236,7 +2237,7 @@ void SpellEnfeeble::run_effect(
 
         const int duration = duration_range.roll();
 
-        auto targets = caster->seen_foes();
+        auto targets = actor::seen_foes(*caster);
 
         if (targets.empty()) {
                 msg_log::add(
@@ -2264,7 +2265,7 @@ void SpellEnfeeble::run_effect(
 
                         // Spell reflection?
                         if (target->m_properties.has(PropId::spell_reflect)) {
-                                if (map::g_player->can_see_actor(*target)) {
+                                if (actor::can_player_see_actor(*target)) {
                                         msg_log::add(
                                                 s_spell_reflect_msg,
                                                 colors::text(),
@@ -2343,7 +2344,7 @@ void SpellSlow::run_effect(
 
         const int duration = duration_range.roll();
 
-        auto targets = caster->seen_foes();
+        auto targets = actor::seen_foes(*caster);
 
         if (targets.empty()) {
                 msg_log::add(
@@ -2371,7 +2372,7 @@ void SpellSlow::run_effect(
 
                         // Spell reflection?
                         if (target->m_properties.has(PropId::spell_reflect)) {
-                                if (map::g_player->can_see_actor(*target)) {
+                                if (actor::can_player_see_actor(*target)) {
                                         msg_log::add(
                                                 s_spell_reflect_msg,
                                                 colors::text(),
@@ -2459,7 +2460,7 @@ void SpellTerrify::run_effect(
 
         const int duration = duration_range.roll();
 
-        auto targets = caster->seen_foes();
+        auto targets = actor::seen_foes(*caster);
 
         if (targets.empty()) {
                 msg_log::add("The bugs on the ground suddenly scatter away.");
@@ -2486,7 +2487,7 @@ void SpellTerrify::run_effect(
 
                         // Spell reflection?
                         if (target->m_properties.has(PropId::spell_reflect)) {
-                                if (map::g_player->can_see_actor(*target)) {
+                                if (actor::can_player_see_actor(*target)) {
                                         msg_log::add(
                                                 s_spell_reflect_msg,
                                                 colors::text(),
@@ -2570,7 +2571,7 @@ void SpellDisease::run_effect(
 
                 // Spell reflection?
                 if (target->m_properties.has(PropId::spell_reflect)) {
-                        if (map::g_player->can_see_actor(*target)) {
+                        if (actor::can_player_see_actor(*target)) {
                                 msg_log::add(
                                         s_spell_reflect_msg,
                                         colors::text(),
@@ -2591,7 +2592,7 @@ void SpellDisease::run_effect(
                 actor_name = target->name_the();
         }
 
-        if (map::g_player->can_see_actor(*target)) {
+        if (actor::can_player_see_actor(*target)) {
                 msg_log::add(
                         "A horrible disease is starting to afflict " +
                         actor_name +
@@ -2744,7 +2745,7 @@ void SpellSummonMon::run_effect(
 
         auto* const mon = summoned.monsters[0];
 
-        if (map::g_player->can_see_actor(*mon)) {
+        if (actor::can_player_see_actor(*mon)) {
                 msg_log::add(
                         text_format::first_to_upper(
                                 mon->name_a()) +
@@ -2830,7 +2831,7 @@ void SpellSummonTentacles::run_effect(
 
         auto* const mon = summoned.monsters[0];
 
-        if (map::g_player->can_see_actor(*mon)) {
+        if (actor::can_player_see_actor(*mon)) {
                 msg_log::add("Monstrous tentacles rises up from the ground!");
         }
 }
@@ -2942,7 +2943,7 @@ void SpellMiGoHypno::run_effect(
 
                 // Spell reflection?
                 if (target->m_properties.has(PropId::spell_reflect)) {
-                        if (map::g_player->can_see_actor(*target)) {
+                        if (actor::can_player_see_actor(*target)) {
                                 msg_log::add(
                                         s_spell_reflect_msg,
                                         colors::text(),
@@ -3004,7 +3005,7 @@ void SpellBurn::run_effect(
 
                 // Spell reflection?
                 if (target->m_properties.has(PropId::spell_reflect)) {
-                        if (map::g_player->can_see_actor(*target)) {
+                        if (actor::can_player_see_actor(*target)) {
                                 msg_log::add(
                                         s_spell_reflect_msg,
                                         colors::text(),
@@ -3025,7 +3026,7 @@ void SpellBurn::run_effect(
                 target_str = target->name_the();
         }
 
-        if (map::g_player->can_see_actor(*target)) {
+        if (actor::can_player_see_actor(*target)) {
                 msg_log::add("Flames are rising around " + target_str + "!");
         }
 
@@ -3066,7 +3067,7 @@ void SpellDeafen::run_effect(
 
                 // Spell reflection?
                 if (target->m_properties.has(PropId::spell_reflect)) {
-                        if (map::g_player->can_see_actor(*target)) {
+                        if (actor::can_player_see_actor(*target)) {
                                 msg_log::add(
                                         s_spell_reflect_msg,
                                         colors::text(),

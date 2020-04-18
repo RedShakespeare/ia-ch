@@ -6,9 +6,11 @@
 
 #include "ai.hpp"
 
+#include "actor.hpp"
 #include "actor_mon.hpp"
 #include "actor_move.hpp"
 #include "actor_player.hpp"
+#include "actor_see.hpp"
 #include "actor_sneak.hpp"
 #include "fov.hpp"
 #include "game_time.hpp"
@@ -66,7 +68,7 @@ bool try_cast_random_spell(actor::Mon& mon)
                      is_low_hp &&
                      rnd::one_in(20))) {
                         if (!has_spi &&
-                            map::g_player->can_see_actor(mon)) {
+                            actor::can_player_see_actor(mon)) {
                                 const std::string mon_name_the =
                                         text_format::first_to_upper(
                                                 mon.name_the());
@@ -142,7 +144,7 @@ bool handle_closed_blocking_door(actor::Mon& mon, std::vector<P> path)
                         ++mon.m_aware_of_player_counter;
                 }
 
-                if (map::g_player->can_see_actor(mon)) {
+                if (actor::can_player_see_actor(mon)) {
                         const std::string mon_name_the =
                                 text_format::first_to_upper(
                                         mon.name_the());
@@ -254,7 +256,7 @@ bool make_room_for_friend(actor::Mon& mon)
         map_parsers::BlocksLos()
                 .run(blocked_los, blocked_los.rect());
 
-        if (!mon.can_see_actor(*map::g_player, blocked_los)) {
+        if (!can_mon_see_actor(mon, *map::g_player, blocked_los)) {
                 return false;
         }
 
@@ -262,104 +264,108 @@ bool make_room_for_friend(actor::Mon& mon)
 
         // Check if there is an allied monster that we should move away for
         for (auto* other_actor : game_time::g_actors) {
-                if (other_actor != &mon &&
-                    other_actor->is_alive() &&
-                    !other_actor->is_player() &&
-                    !map::g_player->is_leader_of(other_actor)) {
-                        auto* const other_mon = static_cast<actor::Mon*>(other_actor);
+                if (other_actor == &mon ||
+                    !other_actor->is_alive() ||
+                    other_actor->is_player() ||
+                    map::g_player->is_leader_of(other_actor)) {
+                        continue;
+                }
 
-                        const bool is_other_adj =
-                                is_pos_adj(mon.m_pos, other_mon->m_pos, false);
+                auto* const other_mon = static_cast<actor::Mon*>(other_actor);
 
-                        // TODO: It's probably better to check LOS than vision
-                        // here? We don't want to move out of the way for a
-                        // blind monster.
-                        const bool is_other_seeing_player =
-                                other_mon->can_see_actor(*map::g_player, blocked_los);
+                const bool is_other_adj =
+                        is_pos_adj(mon.m_pos, other_mon->m_pos, false);
 
-                        /*
-                          Do we have this situation?
-                          #####
-                          #.A.#
-                          #@#B#
-                          #####
-                        */
-                        const bool is_other_adj_with_no_player_los =
-                                is_other_adj && !is_other_seeing_player;
+                // TODO: It's probably better to check LOS than vision
+                // here? We don't want to move out of the way for a
+                // blind monster.
+                const bool is_other_seeing_player =
+                        actor::can_mon_see_actor(
+                                *other_mon,
+                                *map::g_player,
+                                blocked_los);
 
-                        // We consider moving out of the way if the other
-                        // monster EITHER:
-                        //  * Is seeing the player and we are blocking it, OR
-                        //  * Is adjacent to us, and is not seeing the player.
-                        const bool is_between =
-                                is_pos_on_line(
-                                        mon.m_pos,
-                                        other_mon->m_pos,
-                                        player_p);
+                /*
+                  Do we have this situation?
+                  #####
+                  #.A.#
+                  #@#B#
+                  #####
+                */
+                const bool is_other_adj_with_no_player_los =
+                        is_other_adj && !is_other_seeing_player;
 
-                        if ((is_other_seeing_player && is_between) ||
-                            is_other_adj_with_no_player_los) {
-                                // We are blocking a friend! Try to find an
-                                // adjacent free cell, which:
-                                // * Is NOT further away from the player than
-                                //   our current position, and
-                                // * Is not also blocking another monster
+                // We consider moving out of the way if the other
+                // monster EITHER:
+                //  * Is seeing the player and we are blocking it, OR
+                //  * Is adjacent to us, and is not seeing the player.
+                const bool is_between =
+                        is_pos_on_line(
+                                mon.m_pos,
+                                other_mon->m_pos,
+                                player_p);
 
-                                // NOTE: We do not care whether the target cell
-                                // has LOS to the player or not. If we move into
-                                // a cell without LOS, it will appear as if we
-                                // are dodging in and out of cover. It lets us
-                                // move towards the player with less time in the
-                                // player's LOS, and allows blocked ranged
-                                // monsters to shoot at the player.
+                if ((is_other_seeing_player && is_between) ||
+                    is_other_adj_with_no_player_los) {
+                        // We are blocking a friend! Try to find an adjacent
+                        // free cell, which:
+                        // * Is NOT further away from the player than our
+                        //   current position, and
+                        // * Is not also blocking another monster
 
-                                // Get a list of neighbouring free cells
-                                auto pos_bucket = move_bucket(mon);
+                        // NOTE: We do not care whether the target cell has LOS
+                        // to the player or not. If we move into a cell without
+                        // LOS, it will appear as if we are dodging in and out
+                        // of cover. It lets us move towards the player with
+                        // less time in the player's LOS, and allows blocked
+                        // ranged monsters to shoot at the player.
 
-                                // Sort the list by distance to player
-                                IsCloserToPos cmp(player_p);
-                                sort(pos_bucket.begin(), pos_bucket.end(), cmp);
+                        // Get a list of neighbouring free cells
+                        auto pos_bucket = move_bucket(mon);
 
-                                // Try to find a position not blocking a third
-                                // allied monster
-                                for (const auto& target_p : pos_bucket) {
-                                        bool is_p_ok = true;
+                        // Sort the list by distance to player
+                        IsCloserToPos cmp(player_p);
+                        sort(pos_bucket.begin(), pos_bucket.end(), cmp);
 
-                                        for (auto* actor3 : game_time::g_actors) {
-                                                // NOTE: The third actor here can include the original
-                                                // blocked "other" actor, since we must also check if we
-                                                // block that actor from the target position
-                                                if (actor3 != &mon &&
-                                                    actor3->is_alive() &&
-                                                    !actor3->is_player() &&
-                                                    !map::g_player->is_leader_of(actor3)) {
-                                                        auto* const mon3 = static_cast<actor::Mon*>(actor3);
+                        // Try to find a position not blocking a third
+                        // allied monster
+                        for (const auto& target_p : pos_bucket) {
+                                bool is_p_ok = true;
 
-                                                        const bool other_is_seeing_player =
-                                                                mon3->can_see_actor(*map::g_player, blocked_los);
+                                for (auto* actor3 : game_time::g_actors) {
+                                        // NOTE: The third actor here can include the original
+                                        // blocked "other" actor, since we must also check if we
+                                        // block that actor from the target position
+                                        if (actor3 != &mon &&
+                                            actor3->is_alive() &&
+                                            !actor3->is_player() &&
+                                            !map::g_player->is_leader_of(actor3)) {
+                                                auto* const mon3 = static_cast<actor::Mon*>(actor3);
 
-                                                        // TODO: We also need to check that we don't move
-                                                        // into a cell which is adjacent to a third
-                                                        // monster, who does not have LOS to player!
-                                                        // As it is now, we may move out of the way
-                                                        // for one such monster, only to block
-                                                        // another in the same way!
+                                                const bool other_is_seeing_player =
+                                                        actor::can_mon_see_actor(*mon3, *map::g_player, blocked_los);
 
-                                                        if (other_is_seeing_player &&
-                                                            is_pos_on_line(target_p, mon3->m_pos, player_p)) {
-                                                                is_p_ok = false;
-                                                                break;
-                                                        }
+                                                // TODO: We also need to check that we don't move
+                                                // into a cell which is adjacent to a third
+                                                // monster, who does not have LOS to player.
+                                                // As it is now, we may move out of the way
+                                                // for one such monster, only to block
+                                                // another in the same way.
+
+                                                if (other_is_seeing_player &&
+                                                    is_pos_on_line(target_p, mon3->m_pos, player_p)) {
+                                                        is_p_ok = false;
+                                                        break;
                                                 }
                                         }
+                                }
 
-                                        if (is_p_ok) {
-                                                const P offset = target_p - mon.m_pos;
+                                if (is_p_ok) {
+                                        const P offset = target_p - mon.m_pos;
 
-                                                actor::move(mon, dir_utils::dir(offset));
+                                        actor::move(mon, dir_utils::dir(offset));
 
-                                                return true;
-                                        }
+                                        return true;
                                 }
                         }
                 }
@@ -532,7 +538,7 @@ bool look(actor::Mon& mon)
 
         const bool was_aware_before = mon.m_aware_of_player_counter > 0;
 
-        auto seeable_foes = mon.seeable_foes();
+        auto seeable_foes = actor::seeable_foes_for_mon(mon);
 
         if (seeable_foes.empty()) {
                 return false;

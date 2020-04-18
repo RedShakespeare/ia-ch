@@ -10,6 +10,7 @@
 
 #include "actor_mon.hpp"
 #include "actor_player.hpp"
+#include "actor_see.hpp"
 #include "common_text.hpp"
 #include "flood.hpp"
 #include "game_time.hpp"
@@ -78,7 +79,7 @@ static void make_all_mon_not_seeing_player_unaware()
 
                 auto* const mon = static_cast<actor::Mon*>(other_actor);
 
-                if (!mon->can_see_actor(*map::g_player, blocks_los)) {
+                if (!can_mon_see_actor(*mon, *map::g_player, blocks_los)) {
                         mon->m_aware_of_player_counter = 0;
                 }
         }
@@ -86,7 +87,7 @@ static void make_all_mon_not_seeing_player_unaware()
 
 static void make_player_aware_of_all_seen_mon()
 {
-        const auto player_seen_actors = map::g_player->seen_actors();
+        const auto player_seen_actors = actor::seen_actors(*map::g_player);
 
         for (auto* const actor : player_seen_actors) {
                 static_cast<actor::Mon*>(actor)->set_player_aware_of_me();
@@ -207,7 +208,7 @@ void teleport(actor::Actor& actor, const ShouldCtrlTele ctrl_tele)
 
 void teleport(actor::Actor& actor, P p, const Array2<bool>& blocked)
 {
-        if (!actor.is_player() && map::g_player->can_see_actor(actor)) {
+        if (!actor.is_player() && actor::can_player_see_actor(actor)) {
                 const std::string actor_name_the =
                         text_format::first_to_upper(
                                 actor.name_the());

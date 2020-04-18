@@ -105,7 +105,7 @@ public:
 
                 for (int x = p0.x; x <= p1.x; ++x) {
                         for (int y = p0.y; y <= p1.y; ++y) {
-                                result.push_back({x, y});
+                                result.emplace_back(x, y);
                         }
                 }
 
