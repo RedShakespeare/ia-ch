@@ -27,8 +27,7 @@
 // -----------------------------------------------------------------------------
 // Private
 // -----------------------------------------------------------------------------
-static void
-player_act()
+static void player_act()
 {
         actor::Player& player = *map::g_player;
 
@@ -61,7 +60,8 @@ player_act()
                                         InvType::slots,
                                         (size_t)SlotId::body);
 
-                                player.m_is_dropping_armor_from_body_slot = false;
+                                player.m_is_dropping_armor_from_body_slot =
+                                        false;
                         } else {
                                 // Taking off armor
                                 player.m_inv.unequip_slot(SlotId::body);
@@ -280,10 +280,7 @@ static void mon_act(actor::Mon& mon)
         // Sanity check - verify that monster's leader does not have a leader
         // (never allowed)
         if (mon.m_leader && !is_player_leader) {
-                const auto* const leader_mon =
-                        static_cast<actor::Mon*>(mon.m_leader);
-
-                const auto* const leader_leader = leader_mon->m_leader;
+                const auto* const leader_leader = mon.m_leader->m_leader;
 
                 if (leader_leader) {
                         TRACE << "Monster with name '"
@@ -299,7 +296,8 @@ static void mon_act(actor::Mon& mon)
                               << mon.m_properties.has(PropId::summoned)
                               << std::endl
                               << "Leader is summoned?: "
-                              << leader_mon->m_properties.has(PropId::summoned)
+                              << mon.m_leader->m_properties.has(
+                                         PropId::summoned)
                               << std::endl
                               << "Leader's leader is summoned?: "
                               << leader_leader->m_properties.has(
@@ -311,19 +309,19 @@ static void mon_act(actor::Mon& mon)
         }
 #endif // NDEBUG
 
-        if ((mon.m_wary_of_player_counter <= 0) &&
-            (mon.m_aware_of_player_counter <= 0) &&
+        if (!mon.is_aware_of_player() &&
+            !mon.is_wary_of_player() &&
             !is_player_leader) {
-                mon.m_waiting = !mon.m_waiting;
+                mon.m_ai_state.waiting = !mon.m_ai_state.waiting;
 
-                if (mon.m_waiting) {
+                if (mon.m_ai_state.waiting) {
                         game_time::tick();
 
                         return;
                 }
         } else {
                 // Is wary/aware, or player is leader
-                mon.m_waiting = false;
+                mon.m_ai_state.waiting = false;
         }
 
         // Pick a target
@@ -332,19 +330,21 @@ static void mon_act(actor::Mon& mon)
         if (mon.m_properties.has(PropId::conflict)) {
                 target_bucket = seen_actors(mon);
 
-                mon.m_is_target_seen = !target_bucket.empty();
+                mon.m_ai_state.is_target_seen = !target_bucket.empty();
         } else {
                 // Not conflicted
                 target_bucket = seen_foes(mon);
 
                 if (target_bucket.empty()) {
                         // There are no seen foes
-                        mon.m_is_target_seen = false;
+                        mon.m_ai_state.is_target_seen = false;
 
-                        target_bucket = mon.foes_aware_of();
+                        target_bucket =
+                                static_cast<actor::Mon&>(mon)
+                                        .foes_aware_of();
                 } else {
                         // There are seen foes
-                        mon.m_is_target_seen = true;
+                        mon.m_ai_state.is_target_seen = true;
                 }
         }
 
@@ -354,16 +354,15 @@ static void mon_act(actor::Mon& mon)
         // This could perhaps lead to especially dumb situations if the monster
         // does not move by pathding, and considers an enemy behind a wall to be
         // closer than another enemy who is in the same room.
-        mon.m_target = map::random_closest_actor(mon.m_pos, target_bucket);
+        mon.m_ai_state.target =
+                map::random_closest_actor(mon.m_pos, target_bucket);
 
-        if ((mon.m_wary_of_player_counter > 0) ||
-            (mon.m_aware_of_player_counter > 0)) {
-                mon.m_is_roaming_allowed = MonRoamingAllowed::yes;
+        if (mon.is_aware_of_player() || mon.is_wary_of_player()) {
+                mon.m_ai_state.is_roaming_allowed = MonRoamingAllowed::yes;
 
                 if (mon.m_leader && mon.m_leader->is_alive()) {
                         // Monster has a living leader
-                        if ((mon.m_aware_of_player_counter > 0) &&
-                            !is_player_leader) {
+                        if (mon.is_aware_of_player() && !is_player_leader) {
                                 mon.make_leader_aware_silent();
                         }
                 } else {
@@ -381,7 +380,7 @@ static void mon_act(actor::Mon& mon)
         // ---------------------------------------------------------------------
         // TODO: This will be removed eventually
         if ((mon.m_leader != map::g_player) &&
-            (!mon.m_target || mon.m_target->is_player())) {
+            (!mon.m_ai_state.target || mon.m_ai_state.target->is_player())) {
                 if (mon.on_act() == DidAction::yes) {
                         return;
                 }
@@ -403,37 +402,39 @@ static void mon_act(actor::Mon& mon)
 
         if (mon.m_data->ai[(size_t)actor::AiId::avoids_blocking_friend] &&
             !is_player_leader &&
-            (mon.m_target == map::g_player) &&
-            mon.m_is_target_seen &&
+            (mon.m_ai_state.target == map::g_player) &&
+            mon.m_ai_state.is_target_seen &&
             rnd::coin_toss()) {
-                if (ai::action::make_room_for_friend(mon)) {
+                const auto did_act = ai::action::make_room_for_friend(mon);
+
+                if (did_act == DidAction::yes) {
                         return;
                 }
         }
 
         // Cast instead of attacking?
         if (rnd::one_in(5)) {
-                const bool did_cast = ai::action::try_cast_random_spell(mon);
+                const auto did_act = ai::action::try_cast_random_spell(mon);
 
-                if (did_cast) {
+                if (did_act == DidAction::yes) {
                         return;
                 }
         }
 
         if (mon.m_data->ai[(size_t)actor::AiId::attacks] &&
-            mon.m_target &&
-            mon.m_is_target_seen) {
-                const auto did_attack = mon.try_attack(*mon.m_target);
+            mon.m_ai_state.target &&
+            mon.m_ai_state.is_target_seen) {
+                const auto did_act = mon.try_attack(*mon.m_ai_state.target);
 
-                if (did_attack == DidAction::yes) {
+                if (did_act == DidAction::yes) {
                         return;
                 }
         }
 
         if (rnd::fraction(3, 4)) {
-                const bool did_cast = ai::action::try_cast_random_spell(mon);
+                const auto did_act = ai::action::try_cast_random_spell(mon);
 
-                if (did_cast) {
+                if (did_act == DidAction::yes) {
                         return;
                 }
         }
@@ -461,7 +462,9 @@ static void mon_act(actor::Mon& mon)
         // Occasionally move erratically
         if (mon.m_data->ai[(size_t)actor::AiId::moves_randomly_when_unaware] &&
             rnd::percent(erratic_move_pct)) {
-                if (ai::action::move_to_random_adj_cell(mon)) {
+                const auto did_act = ai::action::move_to_random_adj_cell(mon);
+
+                if (did_act == DidAction::yes) {
                         return;
                 }
         }
@@ -470,7 +473,9 @@ static void mon_act(actor::Mon& mon)
 
         if (mon.m_data->ai[(size_t)actor::AiId::moves_to_target_when_los] &&
             !is_terrified) {
-                if (ai::action::move_to_target_simple(mon)) {
+                const auto did_act = ai::action::move_to_target_simple(mon);
+
+                if (did_act == DidAction::yes) {
                         return;
                 }
         }
@@ -483,12 +488,21 @@ static void mon_act(actor::Mon& mon)
                 path = ai::info::find_path_to_target(mon);
         }
 
-        if (ai::action::handle_closed_blocking_door(mon, path)) {
-                return;
+        {
+                const auto did_act =
+                        ai::action::handle_closed_blocking_door(mon, path);
+
+                if (did_act == DidAction::yes) {
+                        return;
+                }
         }
 
-        if (ai::action::step_path(mon, path)) {
-                return;
+        {
+                const auto did_act = ai::action::step_path(mon, path);
+
+                if (did_act == DidAction::yes) {
+                        return;
+                }
         }
 
         if ((mon.m_data->ai[(size_t)actor::AiId::moves_to_leader] ||
@@ -496,25 +510,35 @@ static void mon_act(actor::Mon& mon)
             !is_terrified) {
                 path = ai::info::find_path_to_leader(mon);
 
-                if (ai::action::step_path(mon, path)) {
+                const auto did_act = ai::action::step_path(mon, path);
+
+                if (did_act == DidAction::yes) {
                         return;
                 }
         }
 
         if (mon.m_data->ai[(size_t)actor::AiId::moves_to_lair] &&
             !is_player_leader &&
-            (!mon.m_target || mon.m_target->is_player())) {
-                if (ai::action::step_to_lair_if_los(mon, mon.m_lair_pos)) {
+            (!mon.m_ai_state.target || mon.m_ai_state.target->is_player())) {
+                auto did_act =
+                        ai::action::step_to_lair_if_los(
+                                mon,
+                                mon.m_ai_state.spawn_pos);
+
+                if (did_act == DidAction::yes) {
                         return;
                 } else {
                         // No LOS to lair
 
                         // Try to use pathfinder to travel to lair
-                        path = ai::info::find_path_to_lair_if_no_los(
-                                mon,
-                                mon.m_lair_pos);
+                        path =
+                                ai::info::find_path_to_lair_if_no_los(
+                                        mon,
+                                        mon.m_ai_state.spawn_pos);
 
-                        if (ai::action::step_path(mon, path)) {
+                        did_act = ai::action::step_path(mon, path);
+
+                        if (did_act == DidAction::yes) {
                                 return;
                         }
                 }
@@ -523,7 +547,9 @@ static void mon_act(actor::Mon& mon)
         // When unaware, move randomly
         if (mon.m_data->ai[(size_t)actor::AiId::moves_randomly_when_unaware] &&
             (!is_player_leader || rnd::one_in(8))) {
-                if (ai::action::move_to_random_adj_cell(mon)) {
+                const auto did_act = ai::action::move_to_random_adj_cell(mon);
+
+                if (did_act == DidAction::yes) {
                         return;
                 }
         }

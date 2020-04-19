@@ -13,7 +13,6 @@
 
 namespace actor {
 class Actor;
-class Mon;
 } // namespace actor
 
 namespace item {
@@ -28,7 +27,7 @@ public:
         void on_std_turn_in_inv_hook(InvType inv_type) override;
 
 private:
-        void on_mon_see_player_carrying(actor::Mon& mon) const;
+        void on_mon_see_player_carrying(actor::Actor& mon) const;
 };
 
 // -----------------------------------------------------------------------------

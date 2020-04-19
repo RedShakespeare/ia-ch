@@ -448,11 +448,12 @@ void EventRatsInTheWallsDiscovery::on_new_turn()
                         ShockSrc::misc);
 
                 for (auto* const actor : game_time::g_actors) {
-                        if (!actor->is_player()) {
-                                static_cast<actor::Mon*>(actor)
-                                        ->m_is_roaming_allowed =
-                                        MonRoamingAllowed::yes;
+                        if (actor->is_player()) {
+                                continue;
                         }
+
+                        actor->m_ai_state.is_roaming_allowed =
+                                MonRoamingAllowed::yes;
                 }
 
                 game_time::erase_mob(this, true);

@@ -54,10 +54,10 @@ TEST_CASE("Spider web")
                 auto* const mon = static_cast<actor::Mon*>(actor);
 
                 // Requirement for triggering traps
-                mon->m_is_target_seen = true;
+                mon->m_ai_state.is_target_seen = true;
 
                 // Awareness > 0 required for triggering trap
-                mon->m_aware_of_player_counter = 42;
+                mon->m_mon_aware_state.aware_counter = 42;
 
                 // Move the monster into the trap, and back again
                 mon->m_pos = pos_l;

@@ -733,10 +733,7 @@ bool PropHandler::is_resisting_dmg(
                         msg_log::add(res_data.msg_resist_player);
                 } else {
                         // Is monster
-                        const auto* const mon =
-                                static_cast<const actor::Mon*>(m_owner);
-
-                        if (mon->m_player_aware_of_me_counter > 0) {
+                        if (m_owner->is_player_aware_of_me()) {
                                 const bool can_player_see_mon =
                                         actor::can_player_see_actor(*m_owner);
 

@@ -25,21 +25,21 @@ namespace ai {
 // -----------------------------------------------------------------------------
 namespace action {
 
-bool try_cast_random_spell(actor::Mon& mon);
+DidAction try_cast_random_spell(actor::Mon& mon);
 
-bool handle_closed_blocking_door(actor::Mon& mon, std::vector<P> path);
+DidAction handle_closed_blocking_door(actor::Mon& mon, std::vector<P> path);
 
-bool handle_inventory(actor::Mon& mon);
+DidAction handle_inventory(actor::Mon& mon);
 
-bool make_room_for_friend(actor::Mon& mon);
+DidAction make_room_for_friend(actor::Mon& mon);
 
-bool move_to_random_adj_cell(actor::Mon& mon);
+DidAction move_to_random_adj_cell(actor::Mon& mon);
 
-bool move_to_target_simple(actor::Mon& mon);
+DidAction move_to_target_simple(actor::Mon& mon);
 
-bool step_path(actor::Mon& mon, std::vector<P>& path);
+DidAction step_path(actor::Mon& mon, std::vector<P>& path);
 
-bool step_to_lair_if_los(actor::Mon& mon, const P& lair_p);
+DidAction step_to_lair_if_los(actor::Mon& mon, const P& lair_p);
 
 } // namespace action
 
@@ -59,7 +59,6 @@ std::vector<P> find_path_to_target(actor::Mon& mon);
 void set_special_blocked_cells(actor::Mon& mon, Array2<bool>& a);
 
 } // namespace info
-
 } // namespace ai
 
 #endif // AI_HPP

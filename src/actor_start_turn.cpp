@@ -140,10 +140,9 @@ static bool should_vigilant_make_aware_of_unseeable_mon(
 
 static void make_aware_of_unseeable_mon_by_vigilant(actor::Mon& mon)
 {
-        const bool is_cell_seen =
-                map::g_cells.at(mon.m_pos).is_seen_by_player;
+        const bool is_cell_seen = map::g_cells.at(mon.m_pos).is_seen_by_player;
 
-        if (mon.m_player_aware_of_me_counter <= 0) {
+        if (!mon.is_player_aware_of_me()) {
                 if (is_cell_seen) {
                         // The cell is seen - the monster must be invisible
                         ASSERT(mon.m_properties.has(PropId::invis));
@@ -172,7 +171,7 @@ static void on_player_spot_sneaking_mon(actor::Mon& mon)
                 MsgInterruptPlayer::yes,
                 MorePromptOnMsg::yes);
 
-        mon.m_is_msg_mon_in_view_printed = true;
+        mon.m_mon_aware_state.is_msg_mon_in_view_printed = true;
 }
 
 static bool player_try_spot_sneaking_mon(
@@ -231,11 +230,13 @@ static void player_discover_monsters()
                 auto& mon = static_cast<actor::Mon&>(*actor);
 
                 if (can_player_see_actor(*actor)) {
-                        if (mon.m_is_msg_mon_in_view_printed) {
+                        if (mon.m_mon_aware_state
+                                    .is_msg_mon_in_view_printed) {
                                 is_any_mon_already_seen = true;
                         }
 
-                        mon.m_is_msg_mon_in_view_printed = true;
+                        mon.m_mon_aware_state
+                                .is_msg_mon_in_view_printed = true;
 
                         const bool should_warn =
                                 map::g_player->is_busy() ||
@@ -251,10 +252,12 @@ static void player_discover_monsters()
                                 seen_mon_to_warn_about = nullptr;
                         }
 
-                        mon.m_is_player_feeling_msg_allowed = false;
+                        mon.m_mon_aware_state
+                                .is_player_feeling_msg_allowed = false;
                 } else {
-                        if (mon.m_player_aware_of_me_counter <= 0) {
-                                mon.m_is_msg_mon_in_view_printed = false;
+                        if (!mon.is_player_aware_of_me()) {
+                                mon.m_mon_aware_state
+                                        .is_msg_mon_in_view_printed = false;
                         }
 
                         const bool is_vigilant_detect_unseeable =
@@ -432,9 +435,9 @@ static void player_start_turn()
 
 static void mon_start_turn(actor::Mon& mon)
 {
-        if (mon.m_aware_of_player_counter > 0) {
-                --mon.m_wary_of_player_counter;
-                --mon.m_aware_of_player_counter;
+        if (mon.is_aware_of_player()) {
+                --mon.m_mon_aware_state.aware_counter;
+                --mon.m_mon_aware_state.wary_counter;
         }
 }
 

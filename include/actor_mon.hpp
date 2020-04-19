@@ -15,7 +15,6 @@
 #include "global.hpp"
 #include "item.hpp"
 #include "sound.hpp"
-#include "spells.hpp"
 
 struct AiAttData {
         item::Wpn* wpn = nullptr;
@@ -28,17 +27,6 @@ struct AiAvailAttacksData {
         bool is_melee = false;
 };
 
-struct MonSpell {
-        MonSpell() :
-                spell(nullptr),
-                skill((SpellSkill)0),
-                cooldown(-1) {}
-
-        Spell* spell;
-        SpellSkill skill;
-        int cooldown;
-};
-
 namespace actor {
 
 std::string get_cultist_phrase();
@@ -49,7 +37,6 @@ std::string get_cultist_aware_msg_hidden();
 
 class Mon : public Actor {
 public:
-        Mon();
         virtual ~Mon();
 
         virtual DidAction on_act()
@@ -101,20 +88,6 @@ public:
         bool is_actor_my_leader(const Actor* actor) const override;
 
         void add_spell(SpellSkill skill, Spell* spell);
-
-        int m_wary_of_player_counter;
-        int m_aware_of_player_counter;
-        int m_player_aware_of_me_counter;
-        bool m_is_msg_mon_in_view_printed;
-        bool m_is_player_feeling_msg_allowed;
-        Dir m_last_dir_moved;
-        MonRoamingAllowed m_is_roaming_allowed;
-        Actor* m_leader;
-        Actor* m_target;
-        bool m_is_target_seen;
-        bool m_waiting;
-
-        std::vector<MonSpell> m_spells;
 
 protected:
         void print_player_see_mon_become_aware_msg() const;

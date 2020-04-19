@@ -17,10 +17,34 @@
 #include "inventory.hpp"
 #include "property_handler.hpp"
 #include "sound.hpp"
+#include "spells.hpp"
 
 namespace actor {
 
 class Actor;
+
+struct AiState {
+        Actor* target {nullptr};
+        bool is_target_seen {false};
+        MonRoamingAllowed is_roaming_allowed {MonRoamingAllowed::yes};
+        P spawn_pos {};
+        Dir last_dir_moved {Dir::center};
+        bool waiting {false};
+};
+
+struct AwareState {
+        int wary_counter {0};
+        int aware_counter {0};
+        int player_aware_of_me_counter {0};
+        bool is_msg_mon_in_view_printed {false};
+        bool is_player_feeling_msg_allowed {true};
+};
+
+struct MonSpell {
+        Spell* spell {nullptr};
+        SpellSkill skill {(SpellSkill)0};
+        int cooldown {-1};
+};
 
 int max_hp(const Actor& actor);
 
@@ -126,6 +150,21 @@ public:
 
         virtual SpellSkill spell_skill(SpellId id) const = 0;
 
+        bool is_aware_of_player() const
+        {
+                return m_mon_aware_state.aware_counter > 0;
+        }
+
+        bool is_wary_of_player() const
+        {
+                return m_mon_aware_state.wary_counter > 0;
+        }
+
+        bool is_player_aware_of_me() const
+        {
+                return m_mon_aware_state.player_aware_of_me_counter > 0;
+        }
+
         virtual bool is_leader_of(const Actor* actor) const = 0;
 
         virtual bool is_actor_my_leader(const Actor* actor) const = 0;
@@ -140,8 +179,13 @@ public:
         Inventory m_inv {this};
         ActorData* m_data {nullptr};
         int m_delay {0};
-        P m_lair_pos {};
         P m_opening_door_pos {-1, -1};
+
+        // Monster specific data
+        AiState m_ai_state {};
+        AwareState m_mon_aware_state {};
+        Actor* m_leader {nullptr};
+        std::vector<MonSpell> m_mon_spells {};
 
 protected:
         // Damages worn armor, and returns damage after armor absorbs damage

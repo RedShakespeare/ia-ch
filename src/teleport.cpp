@@ -36,12 +36,12 @@ static bool is_void_traveler_affecting_player_teleport(
                 (actor_id == actor::Id::void_traveler) ||
                 (actor_id == actor::Id::elder_void_traveler);
 
-        return is_void_traveler &&
+        return (
+                is_void_traveler &&
                 (actor.m_state == ActorState::alive) &&
                 actor.m_properties.allow_act() &&
                 !actor.is_actor_my_leader(map::g_player) &&
-                (static_cast<const actor::Mon&>(actor)
-                         .m_aware_of_player_counter > 0);
+                actor.is_aware_of_player());
 }
 
 static std::vector<P> get_free_positions_around_pos(
@@ -72,15 +72,19 @@ static void make_all_mon_not_seeing_player_unaware()
                      r,
                      MapParseMode::overwrite);
 
-        for (auto* const other_actor : game_time::g_actors) {
-                if (other_actor == map::g_player) {
+        for (auto* const mon : game_time::g_actors) {
+                if (mon == map::g_player) {
                         continue;
                 }
 
-                auto* const mon = static_cast<actor::Mon*>(other_actor);
+                const bool can_mon_see_player =
+                        can_mon_see_actor(
+                                *mon,
+                                *map::g_player,
+                                blocks_los);
 
-                if (!can_mon_see_actor(*mon, *map::g_player, blocks_los)) {
-                        mon->m_aware_of_player_counter = 0;
+                if (!can_mon_see_player) {
+                        mon->m_mon_aware_state.aware_counter = 0;
                 }
         }
 }
@@ -220,8 +224,7 @@ void teleport(actor::Actor& actor, P p, const Array2<bool>& blocked)
         }
 
         if (!actor.is_player()) {
-                static_cast<actor::Mon&>(actor)
-                        .m_player_aware_of_me_counter = 0;
+                actor.m_mon_aware_state.player_aware_of_me_counter = 0;
         }
 
         actor.m_properties.end_prop(

@@ -149,26 +149,9 @@ std::string get_cultist_aware_msg_hidden()
 // -----------------------------------------------------------------------------
 // Monster
 // -----------------------------------------------------------------------------
-Mon::Mon() :
-
-        m_wary_of_player_counter(0),
-        m_aware_of_player_counter(0),
-        m_player_aware_of_me_counter(0),
-        m_is_msg_mon_in_view_printed(false),
-        m_is_player_feeling_msg_allowed(true),
-        m_last_dir_moved(Dir::center),
-        m_is_roaming_allowed(MonRoamingAllowed::yes),
-        m_leader(nullptr),
-        m_target(nullptr),
-        m_is_target_seen(false),
-        m_waiting(false)
-
-{
-}
-
 Mon::~Mon()
 {
-        for (auto& spell : m_spells) {
+        for (auto& spell : m_mon_spells) {
                 delete spell.spell;
         }
 }
@@ -193,21 +176,16 @@ std::vector<Actor*> Mon::foes_aware_of() const
 
                 // Add all player-hostile monsters which the player is aware of
                 for (Actor* const actor : game_time::g_actors) {
-                        const P& p = actor->m_pos;
-
                         if (!actor->is_player() &&
                             !actor->is_actor_my_leader(map::g_player) &&
-                            (flood.at(p) > 0)) {
-                                auto* const mon = static_cast<Mon*>(actor);
-
-                                if (mon->m_player_aware_of_me_counter > 0) {
-                                        result.push_back(actor);
-                                }
+                            (flood.at(actor->m_pos) > 0) &&
+                            actor->is_aware_of_player()) {
+                                result.push_back(actor);
                         }
                 }
         }
         // Player is not my leader
-        else if (m_aware_of_player_counter > 0) {
+        else if (is_aware_of_player()) {
                 result.push_back(map::g_player);
 
                 for (Actor* const actor : game_time::g_actors) {
@@ -232,10 +210,11 @@ bool Mon::is_sneaking() const
 
         const int stealth_current = ability(AbilityId::stealth, true);
 
-        return (m_player_aware_of_me_counter <= 0) &&
+        return (
+                (!is_player_aware_of_me()) &&
                 (stealth_base > 0) &&
                 (stealth_current > 0) &&
-                !is_actor_my_leader(map::g_player);
+                !is_actor_my_leader(map::g_player));
 }
 
 void Mon::make_leader_aware_silent() const
@@ -246,12 +225,12 @@ void Mon::make_leader_aware_silent() const
                 return;
         }
 
-        Mon* const leader_mon = static_cast<Mon*>(m_leader);
+        auto* const leader_mon = static_cast<Mon*>(m_leader);
 
-        leader_mon->m_aware_of_player_counter =
+        leader_mon->m_mon_aware_state.aware_counter =
                 std::max(
                         leader_mon->m_data->nr_turns_aware,
-                        leader_mon->m_aware_of_player_counter);
+                        leader_mon->m_mon_aware_state.aware_counter);
 }
 
 void Mon::on_hit(
@@ -265,10 +244,10 @@ void Mon::on_hit(
         (void)method;
         (void)allow_wound;
 
-        m_aware_of_player_counter =
+        m_mon_aware_state.aware_counter =
                 std::max(
                         m_data->nr_turns_aware,
-                        m_aware_of_player_counter);
+                        m_mon_aware_state.aware_counter);
 }
 
 Color Mon::color() const
@@ -290,7 +269,7 @@ SpellSkill Mon::spell_skill(const SpellId id) const
 {
         (void)id;
 
-        for (const auto& spell : m_spells) {
+        for (const auto& spell : m_mon_spells) {
                 if (spell.spell->id() == id) {
                         return spell.skill;
                 }
@@ -316,7 +295,7 @@ void Mon::hear_sound(const Snd& snd)
         }
 
         if (is_alive() && snd.is_alerting_mon()) {
-                const bool was_aware_before = (m_aware_of_player_counter > 0);
+                const bool was_aware_before = is_aware_of_player();
 
                 become_aware_player(false);
 
@@ -393,12 +372,12 @@ void Mon::become_aware_player(const bool is_from_seeing, const int factor)
 
         const int nr_turns = m_data->nr_turns_aware * factor;
 
-        const int aware_counter_before = m_aware_of_player_counter;
+        const int aware_counter_before = m_mon_aware_state.aware_counter;
 
-        m_aware_of_player_counter =
+        m_mon_aware_state.aware_counter =
                 std::max(nr_turns, aware_counter_before);
 
-        m_wary_of_player_counter = m_aware_of_player_counter;
+        m_mon_aware_state.wary_counter = m_mon_aware_state.aware_counter;
 
         if (aware_counter_before <= 0) {
                 if (is_from_seeing &&
@@ -421,9 +400,9 @@ void Mon::become_wary_player()
         // NOTE: Reusing aware duration to determine number of wary turns
         const int nr_turns = m_data->nr_turns_aware;
 
-        const int wary_counter_before = m_wary_of_player_counter;
+        const int wary_counter_before = m_mon_aware_state.wary_counter;
 
-        m_wary_of_player_counter =
+        m_mon_aware_state.wary_counter =
                 std::max(nr_turns, wary_counter_before);
 
         if (wary_counter_before <= 0) {
@@ -474,15 +453,19 @@ void Mon::set_player_aware_of_me(int duration_factor)
                 nr_turns *= 8;
         }
 
-        m_player_aware_of_me_counter =
-                std::max(m_player_aware_of_me_counter, nr_turns);
+        m_mon_aware_state.player_aware_of_me_counter =
+                std::max(
+                        nr_turns,
+                        m_mon_aware_state.player_aware_of_me_counter);
 }
 
 DidAction Mon::try_attack(Actor& defender)
 {
-        if (m_state != ActorState::alive ||
-            ((m_aware_of_player_counter <= 0) &&
-             (m_leader != map::g_player))) {
+        if (m_state != ActorState::alive) {
+                return DidAction::no;
+        }
+
+        if (!is_aware_of_player() && (m_leader != map::g_player)) {
                 return DidAction::no;
         }
 
@@ -727,13 +710,13 @@ int Mon::nr_mon_in_group() const
 void Mon::add_spell(SpellSkill skill, Spell* const spell)
 {
         const auto search = std::find_if(
-                begin(m_spells),
-                end(m_spells),
+                std::begin(m_mon_spells),
+                std::end(m_mon_spells),
                 [spell](MonSpell& spell_entry) {
                         return spell_entry.spell->id() == spell->id();
                 });
 
-        if (search != end(m_spells)) {
+        if (search != std::end(m_mon_spells)) {
                 delete spell;
 
                 return;
@@ -745,7 +728,7 @@ void Mon::add_spell(SpellSkill skill, Spell* const spell)
 
         spell_entry.skill = skill;
 
-        m_spells.push_back(spell_entry);
+        m_mon_spells.push_back(spell_entry);
 }
 
 // -----------------------------------------------------------------------------
@@ -754,10 +737,9 @@ void Mon::add_spell(SpellSkill skill, Spell* const spell)
 // TODO: This should either be a property or be controlled by the map
 DidAction Khephren::on_act()
 {
-        // Summon locusts
-        if (!is_alive() ||
-            (m_aware_of_player_counter <= 0) ||
-            m_has_summoned_locusts) {
+        // Try summoning locusts
+
+        if (!is_alive() || !is_aware_of_player() || m_has_summoned_locusts) {
                 return DidAction::no;
         }
 
@@ -817,7 +799,7 @@ DidAction Ape::on_act()
         }
 
         if ((m_frenzy_cooldown <= 0) &&
-            m_target &&
+            m_ai_state.target &&
             (m_hp <= (actor::max_hp(*this) / 2))) {
                 m_frenzy_cooldown = 30;
 

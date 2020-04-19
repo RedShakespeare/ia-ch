@@ -535,9 +535,7 @@ void PropTerrified::on_applied()
         // favors stepping in the same direction as the last move).
 
         if (!m_owner->is_player()) {
-                auto* const mon = static_cast<actor::Mon*>(m_owner);
-
-                mon->m_last_dir_moved = Dir::center;
+                m_owner->m_ai_state.last_dir_moved = Dir::center;
         }
 }
 
@@ -1328,16 +1326,13 @@ PropActResult PropVortex::on_act()
                 --pull_cooldown;
         }
 
-        auto* const mon = static_cast<actor::Mon*>(m_owner);
-
-        if ((mon->m_aware_of_player_counter <= 0) ||
-            (pull_cooldown > 0)) {
+        if (!m_owner->is_aware_of_player() || (pull_cooldown > 0)) {
                 return {};
         }
 
         const P& player_pos = map::g_player->m_pos;
 
-        if (is_pos_adj(mon->m_pos, player_pos, true) ||
+        if (is_pos_adj(m_owner->m_pos, player_pos, true) ||
             !rnd::coin_toss()) {
                 return {};
         }
@@ -1345,9 +1340,9 @@ PropActResult PropVortex::on_act()
         TRACE << "Monster with vortex property attempting to pull player"
               << std::endl;
 
-        const P delta = player_pos - mon->m_pos;
+        const auto delta = player_pos - m_owner->m_pos;
 
-        P knockback_from_pos = player_pos;
+        auto knockback_from_pos = player_pos;
 
         if (delta.x > 1) {
                 ++knockback_from_pos.x;
@@ -1378,19 +1373,19 @@ PropActResult PropVortex::on_act()
 
         Array2<bool> blocked_los(map::dims());
 
-        const R fov_rect = fov::fov_rect(mon->m_pos, blocked_los.dims());
+        const R fov_rect = fov::fov_rect(m_owner->m_pos, blocked_los.dims());
 
         map_parsers::BlocksLos()
                 .run(blocked_los,
                      fov_rect,
                      MapParseMode::overwrite);
 
-        if (actor::can_mon_see_actor(*mon, *map::g_player, blocked_los)) {
+        if (actor::can_mon_see_actor(*m_owner, *map::g_player, blocked_los)) {
                 TRACE << "Is seeing player" << std::endl;
 
-                mon->set_player_aware_of_me();
+                static_cast<actor::Mon*>(m_owner)->set_player_aware_of_me();
 
-                if (actor::can_player_see_actor(*mon)) {
+                if (actor::can_player_see_actor(*m_owner)) {
                         const auto name_the = text_format::first_to_upper(
                                 m_owner->name_the());
 
@@ -1491,7 +1486,7 @@ PropEnded PropSplitsOnDeath::on_death()
                 msg_log::add(name + " splits.");
         }
 
-        auto* const leader = static_cast<actor::Mon*>(m_owner)->m_leader;
+        auto* const leader = m_owner->m_leader;
 
         const auto spawned =
                 actor::spawn(pos, {2, m_owner->id()}, map::rect())
@@ -1515,7 +1510,8 @@ PropEnded PropSplitsOnDeath::on_death()
                         }
 
                         // Do not print a new "monster in view" message
-                        mon->m_is_msg_mon_in_view_printed = true;
+                        mon->m_mon_aware_state
+                                .is_msg_mon_in_view_printed = true;
                 });
 
         // If no leader yet, set the first actor as leader of the second
@@ -1892,18 +1888,16 @@ void PropBreeds::on_std_turn()
                 return;
         }
 
-        auto* const mon = static_cast<actor::Mon*>(m_owner);
-
         auto* const leader_of_spawned_mon =
-                mon->m_leader
-                ? mon->m_leader
-                : mon;
+                m_owner->m_leader
+                ? m_owner->m_leader
+                : m_owner;
 
-        const auto area_allowed = R(mon->m_pos - 1, mon->m_pos + 1);
+        const auto area_allowed = R(m_owner->m_pos - 1, m_owner->m_pos + 1);
 
         auto spawned =
                 actor::spawn_random_position(
-                        {mon->id()},
+                        {m_owner->id()},
                         area_allowed)
                         .set_leader(leader_of_spawned_mon);
 
@@ -1926,7 +1920,7 @@ void PropBreeds::on_std_turn()
                         }
                 });
 
-        if (mon->m_aware_of_player_counter > 0) {
+        if (m_owner->is_aware_of_player()) {
                 spawned.make_aware_of_player();
         }
 }
@@ -1960,39 +1954,38 @@ PropActResult PropSpeaksCurses::on_act()
                 return {};
         }
 
-        auto* const mon = static_cast<actor::Mon*>(m_owner);
-
-        if (!mon->is_alive() ||
-            (mon->m_aware_of_player_counter <= 0) ||
+        if (!m_owner->is_alive() ||
+            m_owner->is_aware_of_player() ||
             !rnd::one_in(3)) {
                 return {};
         }
 
         Array2<bool> blocked_los(map::dims());
 
-        const R fov_rect = fov::fov_rect(mon->m_pos, blocked_los.dims());
+        const R fov_rect = fov::fov_rect(m_owner->m_pos, blocked_los.dims());
 
         map_parsers::BlocksLos()
                 .run(blocked_los,
                      fov_rect,
                      MapParseMode::overwrite);
 
-        if (actor::can_mon_see_actor(*mon, *map::g_player, blocked_los)) {
+        if (actor::can_mon_see_actor(*m_owner, *map::g_player, blocked_los)) {
                 const bool player_see_owner =
-                        actor::can_player_see_actor(*mon);
+                        actor::can_player_see_actor(*m_owner);
 
                 std::string snd_msg =
                         player_see_owner
-                        ? text_format::first_to_upper(mon->name_the())
+                        ? text_format::first_to_upper(m_owner->name_the())
                         : "Someone";
 
                 snd_msg += " spews forth a litany of curses.";
 
-                Snd snd(snd_msg,
+                Snd snd(
+                        snd_msg,
                         audio::SfxId::END,
                         IgnoreMsgIfOriginSeen::no,
-                        mon->m_pos,
-                        mon,
+                        m_owner->m_pos,
+                        m_owner,
                         SndVol::high,
                         AlertsMon::no);
 
@@ -2114,27 +2107,24 @@ PropActResult PropMajorClaphamSummon::on_act()
                 return {};
         }
 
-        auto* const mon = static_cast<actor::Mon*>(m_owner);
-
-        if (!mon->is_alive() ||
-            (mon->m_aware_of_player_counter <= 0)) {
+        if (!m_owner->is_alive() || !m_owner->is_aware_of_player()) {
                 return {};
         }
 
         Array2<bool> blocked_los(map::dims());
 
-        const R fov_rect = fov::fov_rect(mon->m_pos, blocked_los.dims());
+        const R fov_rect = fov::fov_rect(m_owner->m_pos, blocked_los.dims());
 
         map_parsers::BlocksLos()
                 .run(blocked_los,
                      fov_rect,
                      MapParseMode::overwrite);
 
-        if (!actor::can_mon_see_actor(*mon, *map::g_player, blocked_los)) {
+        if (!actor::can_mon_see_actor(*m_owner, *map::g_player, blocked_los)) {
                 return {};
         }
 
-        mon->set_player_aware_of_me();
+        static_cast<actor::Mon*>(m_owner)->set_player_aware_of_me();
 
         msg_log::add("Major Clapham Lee calls forth his Tomb-Legions!");
 
@@ -2157,9 +2147,9 @@ PropActResult PropMajorClaphamSummon::on_act()
         }
 
         auto spawned =
-                actor::spawn(mon->m_pos, ids_to_summon, map::rect())
+                actor::spawn(m_owner->m_pos, ids_to_summon, map::rect())
                         .make_aware_of_player()
-                        .set_leader(mon);
+                        .set_leader(m_owner);
 
         std::for_each(
                 std::begin(spawned.monsters),
@@ -2171,12 +2161,13 @@ PropActResult PropMajorClaphamSummon::on_act()
 
                         spawned_mon->m_properties.apply(prop_summoned);
 
-                        spawned_mon->m_is_player_feeling_msg_allowed = false;
+                        spawned_mon->m_mon_aware_state
+                                .is_player_feeling_msg_allowed = false;
                 });
 
         map::g_player->incr_shock(ShockLvl::terrifying, ShockSrc::misc);
 
-        mon->m_properties.end_prop(id());
+        m_owner->m_properties.end_prop(id());
 
         game_time::tick();
 

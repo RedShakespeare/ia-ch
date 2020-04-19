@@ -270,18 +270,12 @@ bool can_mon_see_actor(
 
                 // Player-allied monster looking at other monster
 
-                const auto* const other_mon = static_cast<const Mon*>(&other);
-
-                return (other_mon->m_player_aware_of_me_counter > 0);
+                return other.is_player_aware_of_me();
         }
 
         // Monster is hostile to player
 
-        const int aware_counter =
-                static_cast<const actor::Mon&>(mon)
-                        .m_aware_of_player_counter;
-
-        return aware_counter > 0;
+        return mon.is_aware_of_player();
 }
 
 std::vector<Actor*> seen_actors(const Actor& actor)

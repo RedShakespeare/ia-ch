@@ -51,11 +51,11 @@ static void show_map_and_freeze(const std::string& msg)
         }
 
         for (auto* const actor : game_time::g_actors) {
-                if (!actor->is_player()) {
-                        auto* const mon = static_cast<actor::Mon*>(actor);
-
-                        mon->m_player_aware_of_me_counter = 999;
+                if (actor->is_player()) {
+                        continue;
                 }
+
+                actor->m_mon_aware_state.player_aware_of_me_counter = 999;
         }
 
         while (true) {

@@ -394,13 +394,12 @@ void CloudMinds::run_effect()
         msg_log::add("I vanish from the minds of my enemies.");
 
         for (auto* actor : game_time::g_actors) {
-                if (!actor->is_player()) {
-                        auto* const mon = static_cast<actor::Mon*>(actor);
-
-                        mon->m_aware_of_player_counter = 0;
-
-                        mon->m_wary_of_player_counter = 0;
+                if (actor->is_player()) {
+                        continue;
                 }
+
+                actor->m_mon_aware_state.aware_counter = 0;
+                actor->m_mon_aware_state.wary_counter = 0;
         }
 
         identify(Verbose::yes);

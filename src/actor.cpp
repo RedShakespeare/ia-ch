@@ -81,7 +81,7 @@ void init_actor(Actor& actor, const P& pos_, ActorData& data)
 
         actor.m_hp = actor.m_base_max_hp;
         actor.m_sp = actor.m_base_max_sp = data.spi;
-        actor.m_lair_pos = actor.m_pos;
+        actor.m_ai_state.spawn_pos = actor.m_pos;
 
         actor.m_properties.apply_natural_props_from_actor_data();
 

@@ -254,9 +254,7 @@ void make_group_at(
 
                 auto* const actor = actor::make(id, p);
 
-                auto* const mon = static_cast<actor::Mon*>(actor);
-
-                mon->m_is_roaming_allowed = is_roaming_allowed;
+                actor->m_ai_state.is_roaming_allowed = is_roaming_allowed;
 
                 if (i == 0) {
                         origin_actor = actor;
@@ -267,8 +265,8 @@ void make_group_at(
                         // placed (e.g. Ghouls allied to a player Ghoul, or
                         // other special cases). If not, we assign the origin
                         // monster as leader of this group.
-                        if (!mon->m_leader) {
-                                mon->m_leader = origin_actor;
+                        if (!actor->m_leader) {
+                                actor->m_leader = origin_actor;
                         }
                 }
 

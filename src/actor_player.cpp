@@ -459,15 +459,15 @@ void Player::mon_feeling()
                         continue;
                 }
 
-                auto* mon = static_cast<Mon*>(actor);
-
                 // Print monster feeling for monsters spawned during the level?
                 // (We do the actual printing once, after the loop, so that we
                 // don't print something like "A chill runs down my spine (x2)")
-                if (mon->m_data->is_unique &&
-                    mon->m_is_player_feeling_msg_allowed) {
+                if (actor->m_data->is_unique &&
+                    actor->m_mon_aware_state.is_player_feeling_msg_allowed) {
                         print_unique_mon_feeling = true;
-                        mon->m_is_player_feeling_msg_allowed = false;
+
+                        actor->m_mon_aware_state
+                                .is_player_feeling_msg_allowed = false;
                 }
         }
 
@@ -530,7 +530,7 @@ void Player::add_shock_from_seen_monsters()
 
                 Mon* mon = static_cast<Mon*>(actor);
 
-                if (mon->m_player_aware_of_me_counter <= 0) {
+                if (!mon->is_player_aware_of_me()) {
                         continue;
                 }
 

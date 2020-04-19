@@ -375,13 +375,11 @@ void Trap::bump(actor::Actor& actor_bumping)
         }
 
         if (!actor_bumping.is_player()) {
-                const auto& mon = static_cast<const actor::Mon&>(actor_bumping);
-
                 // Put some extra restrictions on monsters triggering traps.
                 // This helps prevent stupid situations like a group of monsters
                 // in a small room repeatedly triggering a trap.
-                if (!mon.m_is_target_seen ||
-                    (mon.m_aware_of_player_counter <= 0) ||
+                if (!actor_bumping.m_ai_state.is_target_seen ||
+                    !actor_bumping.is_aware_of_player() ||
                     is_hidden()) {
                         TRACE_FUNC_END_VERBOSE;
 

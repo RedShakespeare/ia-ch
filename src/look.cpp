@@ -561,9 +561,7 @@ void print_living_actor_info_msg(const P& pos)
                         CopyToMsgHistory::no);
         } else {
                 // Cannot see actor
-                const auto* const mon = static_cast<actor::Mon*>(actor);
-
-                if (mon->m_player_aware_of_me_counter > 0) {
+                if (actor->is_player_aware_of_me()) {
                         msg_log::add(
                                 "There is a creature here.",
                                 colors::text(),

@@ -466,7 +466,7 @@ void InsShadows::on_start_hook()
 
                         mon->m_properties.apply(prop);
 
-                        mon->m_player_aware_of_me_counter = 0;
+                        mon->m_mon_aware_state.player_aware_of_me_counter = 0;
                 });
 
         map::update_vision();

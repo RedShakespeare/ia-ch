@@ -50,10 +50,10 @@ TEST_CASE("Melee attack data")
 
         map::g_player->update_fov();
 
-        mon_1.m_aware_of_player_counter = 1;
-        mon_1.m_player_aware_of_me_counter = 1;
-        mon_2.m_aware_of_player_counter = 1;
-        mon_2.m_player_aware_of_me_counter = 1;
+        mon_1.m_mon_aware_state.aware_counter = 1;
+        mon_1.m_mon_aware_state.player_aware_of_me_counter = 1;
+        mon_2.m_mon_aware_state.aware_counter = 1;
+        mon_2.m_mon_aware_state.player_aware_of_me_counter = 1;
 
         auto& wpn = static_cast<item::Wpn&>(*item::make(item::Id::axe));
 
@@ -134,8 +134,8 @@ TEST_CASE("Melee attack data has reduced damage with weakened player")
 
         map::g_player->update_fov();
 
-        mon.m_aware_of_player_counter = 1;
-        mon.m_player_aware_of_me_counter = 1;
+        mon.m_mon_aware_state.aware_counter = 1;
+        mon.m_mon_aware_state.player_aware_of_me_counter = 1;
 
         auto& wpn = static_cast<item::Wpn&>(*item::make(item::Id::axe));
 
@@ -174,8 +174,8 @@ TEST_CASE("Melee attack data has reduced damage against pierce resistance")
 
         map::g_player->update_fov();
 
-        mon.m_aware_of_player_counter = 1;
-        mon.m_player_aware_of_me_counter = 1;
+        mon.m_mon_aware_state.aware_counter = 1;
+        mon.m_mon_aware_state.player_aware_of_me_counter = 1;
 
         // Use pointy weapon
         auto& wpn = static_cast<item::Wpn&>(*item::make(item::Id::dagger));
@@ -226,10 +226,10 @@ TEST_CASE("Ranged attack data")
 
         map::g_player->update_fov();
 
-        mon_1.m_aware_of_player_counter = 1;
-        mon_1.m_player_aware_of_me_counter = 1;
-        mon_2.m_aware_of_player_counter = 1;
-        mon_2.m_player_aware_of_me_counter = 1;
+        mon_1.m_mon_aware_state.aware_counter = 1;
+        mon_1.m_mon_aware_state.player_aware_of_me_counter = 1;
+        mon_2.m_mon_aware_state.aware_counter = 1;
+        mon_2.m_mon_aware_state.player_aware_of_me_counter = 1;
 
         auto& wpn = static_cast<item::Wpn&>(*item::make(item::Id::pistol));
 
@@ -333,10 +333,10 @@ TEST_CASE("Throwing attack data")
 
         map::g_player->update_fov();
 
-        mon_1.m_aware_of_player_counter = 1;
-        mon_1.m_player_aware_of_me_counter = 1;
-        mon_2.m_aware_of_player_counter = 1;
-        mon_2.m_player_aware_of_me_counter = 1;
+        mon_1.m_mon_aware_state.aware_counter = 1;
+        mon_1.m_mon_aware_state.player_aware_of_me_counter = 1;
+        mon_2.m_mon_aware_state.aware_counter = 1;
+        mon_2.m_mon_aware_state.player_aware_of_me_counter = 1;
 
         auto& item = *item::make(item::Id::thr_knife);
 

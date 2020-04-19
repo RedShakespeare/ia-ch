@@ -53,8 +53,8 @@ static bool try_use_talisman_of_resurrection(actor::Actor& actor)
                 if (!a->is_player()) {
                         auto* const mon = static_cast<actor::Mon*>(a);
 
-                        mon->m_aware_of_player_counter = 0;
-                        mon->m_wary_of_player_counter = 0;
+                        mon->m_mon_aware_state.aware_counter = 0;
+                        mon->m_mon_aware_state.wary_counter = 0;
                 }
         }
 

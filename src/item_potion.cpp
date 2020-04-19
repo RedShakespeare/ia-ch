@@ -372,9 +372,7 @@ void Potion::on_collide(const P& pos, actor::Actor* const actor)
         if (actor) {
                 ASSERT(actor->is_alive());
 
-                auto* const mon = static_cast<actor::Mon*>(actor);
-
-                if (mon->m_player_aware_of_me_counter > 0) {
+                if (actor->is_player_aware_of_me()) {
                         const std::string actor_name =
                                 actor::can_player_see_actor(*actor)
                                 ? actor->name_the()
@@ -385,7 +383,8 @@ void Potion::on_collide(const P& pos, actor::Actor* const actor)
                                 actor_name +
                                 ".");
 
-                        mon->set_player_aware_of_me();
+                        static_cast<actor::Mon*>(actor)
+                                ->set_player_aware_of_me();
                 }
 
                 collide_hook(pos, actor);

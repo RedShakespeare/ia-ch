@@ -121,7 +121,7 @@ MonSpawnResult& MonSpawnResult::make_aware_of_player()
                 std::begin(monsters),
                 std::end(monsters),
                 [](auto mon) {
-                        mon->m_aware_of_player_counter =
+                        mon->m_mon_aware_state.aware_counter =
                                 mon->m_data->nr_turns_aware;
                 });
 

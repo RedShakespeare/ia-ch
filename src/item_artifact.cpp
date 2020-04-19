@@ -62,15 +62,13 @@ void PharaohStaff::on_std_turn_in_inv_hook(const InvType inv_type)
                         continue;
                 }
 
-                auto* const mon = static_cast<actor::Mon*>(actor);
-
-                if (mon->m_aware_of_player_counter <= 0) {
+                if (!actor->is_aware_of_player()) {
                         continue;
                 }
 
                 const bool mon_see_player =
                         actor::can_mon_see_actor(
-                                *mon,
+                                *actor,
                                 *map::g_player,
                                 blocked_los);
 
@@ -78,11 +76,11 @@ void PharaohStaff::on_std_turn_in_inv_hook(const InvType inv_type)
                         continue;
                 }
 
-                on_mon_see_player_carrying(*mon);
+                on_mon_see_player_carrying(*actor);
         }
 }
 
-void PharaohStaff::on_mon_see_player_carrying(actor::Mon& mon) const
+void PharaohStaff::on_mon_see_player_carrying(actor::Actor& mon) const
 {
         // TODO: Consider an "is_mummy" actor data field
         if ((mon.id() != actor::Id::mummy) &&

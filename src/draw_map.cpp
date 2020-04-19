@@ -226,7 +226,7 @@ static void set_mobiles()
 }
 
 static void set_living_seen_monster(
-        const actor::Mon& mon,
+        const actor::Actor& mon,
         CellRenderData& render_data)
 {
         if (mon.tile() == gfx::TileId::END ||
@@ -240,13 +240,11 @@ static void set_living_seen_monster(
         render_data.character = mon.character();
 
         if (map::g_player->is_leader_of(&mon)) {
+                // The monster is player-friendly
                 render_data.color_bg = colors::mon_allied_bg();
         } else {
-                // Player is not leader of monster
-                if (mon.m_aware_of_player_counter <= 0) {
-                        render_data.color_bg =
-                                colors::mon_unaware_bg();
-                } else {
+                // The monster is hostile
+                if (mon.is_aware_of_player()) {
                         // Monster is aware of player
                         const bool has_temporary_negative_prop =
                                 mon.m_properties
@@ -256,6 +254,9 @@ static void set_living_seen_monster(
                                 render_data.color_bg =
                                         colors::mon_temp_property_bg();
                         }
+                } else {
+                        // Monster is not aware of the player
+                        render_data.color_bg = colors::mon_unaware_bg();
                 }
         }
 }
@@ -264,7 +265,7 @@ static void set_living_hidden_monster(
         const actor::Mon& mon,
         CellRenderData& render_data)
 {
-        if (mon.m_player_aware_of_me_counter <= 0) {
+        if (!mon.is_player_aware_of_me()) {
                 return;
         }
 

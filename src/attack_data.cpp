@@ -26,26 +26,29 @@ static bool is_defender_aware_of_attack(
         const actor::Actor* const attacker,
         const actor::Actor& defender)
 {
-        bool is_aware = false;
+        if (!attacker) {
+                return true;
+        } else if (defender.is_player()) {
+                // Monster attacking player
+                return attacker->is_player_aware_of_me();
+        } else if (attacker->is_player()) {
+                // Player attacking monster
+                return (
+                        defender.is_aware_of_player() ||
+                        defender.is_actor_my_leader(map::g_player));
+        } else if (defender.is_actor_my_leader(map::g_player)) {
+                // Hostile monster attacking player-allied monster
 
-        if (defender.is_player()) {
-                if (attacker) {
-                        const auto* const mon =
-                                static_cast<const actor::Mon*>(attacker);
-
-                        is_aware = mon->m_player_aware_of_me_counter > 0;
-                } else {
-                        // No attacker actor (e.g. a trap)
-                        is_aware = true;
-                }
+                // The player-allied monster is considered aware, if the player
+                // is aware of the attacker
+                return attacker->is_player_aware_of_me();
         } else {
-                // Defender is monster
-                auto* const mon = static_cast<const actor::Mon*>(&defender);
+                // Player-allied monster attacking hostile monster
 
-                is_aware = mon->m_aware_of_player_counter > 0;
+                // The hostile monster is considererd aware, if it is aware of
+                // the player
+                return attacker->is_aware_of_player();
         }
-
-        return is_aware;
 }
 
 // -----------------------------------------------------------------------------
@@ -330,9 +333,6 @@ RangedAttData::RangedAttData(
                                 can_player_see_actor(*defender);
                 } else {
                         // Attacker is monster
-                        auto* const mon =
-                                static_cast<actor::Mon*>(attacker);
-
                         Array2<bool> hard_blocked_los(map::dims());
 
                         const R fov_rect =
@@ -347,7 +347,7 @@ RangedAttData::RangedAttData(
 
                         can_attacker_see_tgt =
                                 can_mon_see_actor(
-                                        *mon,
+                                        *attacker,
                                         *defender,
                                         hard_blocked_los);
                 }
@@ -359,9 +359,7 @@ RangedAttData::RangedAttData(
 
         // Player gets attack bonus for attacking unaware monster
         if (attacker && attacker->is_player()) {
-                auto* const mon = static_cast<actor::Mon*>(defender);
-
-                if (mon->m_aware_of_player_counter <= 0) {
+                if (!defender->is_aware_of_player()) {
                         state_mod += 25;
                 }
         }
@@ -517,10 +515,7 @@ ThrowAttData::ThrowAttData(
 
         // Player gets attack bonus for attacking unaware monster
         if (attacker == map::g_player) {
-                const auto* const mon =
-                        static_cast<actor::Mon*>(defender);
-
-                if (mon->m_aware_of_player_counter <= 0) {
+                if (!defender->is_aware_of_player()) {
                         state_mod += 25;
                 }
         }

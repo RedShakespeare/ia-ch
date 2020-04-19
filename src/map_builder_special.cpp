@@ -453,7 +453,7 @@ void MapBuilderEgypt::handle_template_pos(const P& p, const char c)
                 if (actor_id != actor::Id::END) {
                         auto* const actor = actor::make(actor_id, p);
 
-                        static_cast<actor::Mon*>(actor)->m_is_roaming_allowed =
+                        actor->m_ai_state.is_roaming_allowed =
                                 MonRoamingAllowed::no;
                 }
         } break;
@@ -596,10 +596,11 @@ void MapBuilderRatCave::on_template_built()
 {
         // Set all actors to non-roaming (they will be set to roaming later)
         for (auto* const actor : game_time::g_actors) {
-                if (!actor->is_player()) {
-                        static_cast<actor::Mon*>(actor)->m_is_roaming_allowed =
-                                MonRoamingAllowed::no;
+                if (actor->is_player()) {
+                        continue;
                 }
+
+                actor->m_ai_state.is_roaming_allowed = MonRoamingAllowed::no;
         }
 
         populate_items::make_items_on_floor();

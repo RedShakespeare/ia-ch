@@ -107,11 +107,7 @@ void run(
         bool player_is_aware_of_defender = true;
 
         if (!is_defender_player) {
-                const auto* const mon =
-                        static_cast<const actor::Mon*>(&defender);
-
-                player_is_aware_of_defender =
-                        mon->m_aware_of_player_counter > 0;
+                player_is_aware_of_defender = defender.is_player_aware_of_me();
         }
 
         std::string defender_name =
@@ -143,7 +139,9 @@ void run(
                         msg_log::add(
                                 "I perish in the depths!",
                                 colors::msg_bad());
-                } else if (player_is_aware_of_defender && tgt_cell.is_seen_by_player) {
+                } else if (
+                        player_is_aware_of_defender &&
+                        tgt_cell.is_seen_by_player) {
                         msg_log::add(
                                 defender_name + " perishes in the depths.",
                                 colors::msg_good());

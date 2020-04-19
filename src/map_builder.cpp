@@ -113,7 +113,8 @@ void MapBuilder::build()
                         std::begin(summoned.monsters),
                         std::end(summoned.monsters),
                         [](auto* mon) {
-                                mon->m_is_player_feeling_msg_allowed = false;
+                                mon->m_mon_aware_state
+                                        .is_player_feeling_msg_allowed = false;
                         });
         }
 

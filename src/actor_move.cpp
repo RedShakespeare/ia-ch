@@ -111,7 +111,7 @@ static void player_bump_unkown_hostile_mon(actor::Mon& mon)
 
 static void player_bump_allied_mon(actor::Mon& mon)
 {
-        if (mon.m_player_aware_of_me_counter > 0) {
+        if (mon.is_player_aware_of_me()) {
                 std::string mon_name =
                         can_player_see_actor(mon)
                         ? mon.name_a()
@@ -293,13 +293,9 @@ static void move_player_non_center_direction(const P& tgt)
                 static_cast<actor::Mon*>(
                         map::first_actor_at_pos(tgt));
 
-        const auto is_aware_of_mon =
-                mon &&
-                (mon->m_player_aware_of_me_counter > 0);
+        const auto is_aware_of_mon = (mon && mon->is_player_aware_of_me());
 
-        if (mon &&
-            !player.is_leader_of(mon) &&
-            is_aware_of_mon) {
+        if (mon && !player.is_leader_of(mon) && is_aware_of_mon) {
                 player_bump_known_hostile_mon(*mon);
 
                 return;
@@ -401,7 +397,7 @@ static void move_mon(actor::Mon& mon, Dir dir)
         mon.m_properties.affect_move_dir(mon.m_pos, dir);
 
         // Movement direction is stored for AI purposes
-        mon.m_last_dir_moved = dir;
+        mon.m_ai_state.last_dir_moved = dir;
 
         const P target_p(mon.m_pos + dir_utils::offset(dir));
 

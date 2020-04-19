@@ -193,7 +193,7 @@ static void player_std_turn()
 static void mon_std_turn(actor::Mon& mon)
 {
         // Countdown all spell cooldowns
-        for (auto& spell : mon.m_spells) {
+        for (auto& spell : mon.m_mon_spells) {
                 int& cooldown = spell.cooldown;
 
                 if (cooldown > 0) {
@@ -206,7 +206,7 @@ static void mon_std_turn(actor::Mon& mon)
         if (mon.is_alive() &&
             mon.m_data->ai[(size_t)actor::AiId::looks] &&
             (mon.m_leader != map::g_player) &&
-            (!mon.m_target || mon.m_target->is_player())) {
+            (!mon.m_ai_state.target || mon.m_ai_state.target->is_player())) {
                 const bool did_become_aware_now = ai::info::look(mon);
 
                 // If the monster became aware, give it some reaction time
