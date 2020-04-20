@@ -60,6 +60,7 @@ Item* make(const Id item_id, const int nr_items)
         case Id::player_kick:
         case Id::player_stomp:
         case Id::player_punch:
+        case Id::intr_kick:
         case Id::intr_bite:
         case Id::intr_claw:
         case Id::intr_strike:

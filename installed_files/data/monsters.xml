@@ -834,7 +834,7 @@
         </audio>
 
         <attributes>
-            <hit_points>4</hit_points>
+            <hit_points>7</hit_points>
             <spirit>12</spirit>
             <speed>normal</speed>
             <shock_level>none</shock_level>
@@ -853,6 +853,12 @@
             <can_leave_corpse>true</can_leave_corpse>
             <prioritize_destroying_corpse>false</prioritize_destroying_corpse>
         </attributes>
+
+        <attacks>
+            <attack id="kick">
+                <damage>2</damage>
+            </attack>
+        </attacks>
 
         <items>
             <item_set>firearm</item_set>

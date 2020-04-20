@@ -8,6 +8,7 @@ Gameplay
 * The stealth penalty in lit positions is much higher than before (see also bug fixes below concerning stealth and darkness)
 * Updated Worm Masses and Mind Worms - they are now blind, slow (instead of normal speed), have much more hit points, are unsettling (causes shock to see), take much less damage from piercing attacks (such as pistol shots or dagger strikes), and have a very limited hearing range
 * Worm Masses and Mind Worms can no longer split while burning
+* Cultists have a kick attack
 * Stuck doors are drawn with a different color, and have "stuck" added to their names if the player is adjacent to the door
 * Added trait "Crippling Strikes" - melee attacks have 60% chance to Weaken the target for 2-3 turns
 * Small crawling creatures (rats, snakes, crawling hands, etc) can pass through some terrain types such as gates and piles of debris

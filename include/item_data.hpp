@@ -79,6 +79,7 @@ enum class Id {
 
         // Intrinsic attacks for monsters
         // NOTE: There is a string -> id map below for these entries
+        intr_kick,
         intr_bite,
         intr_claw,
         intr_strike,

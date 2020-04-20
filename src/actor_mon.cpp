@@ -454,9 +454,9 @@ DidAction Mon::try_attack(Actor& defender)
 
         map::update_vision();
 
-        const AiAvailAttacksData my_avail_attacks = avail_attacks(defender);
+        const auto my_avail_attacks = avail_attacks(defender);
 
-        const AiAttData att = choose_attack(my_avail_attacks);
+        const auto att = choose_attack(my_avail_attacks);
 
         if (!att.wpn) {
                 return DidAction::no;
@@ -636,12 +636,14 @@ std::vector<item::Wpn*> Mon::avail_intr_ranged() const
 
 bool Mon::should_reload(const item::Wpn& wpn) const
 {
-        // TODO: This could be made more sophisticated, e.g. if the monster does
-        // not see any enemies it should reload even if the weapon is not
-        // completely empty
-        return (wpn.m_ammo_loaded == 0) &&
+        // TODO: If the monster does not see any enemies it should reload even
+        // if the weapon is not completely empty
+        // TODO: Reloading should not be handled here, it should be done as a
+        // separate action
+        return (
+                (wpn.m_ammo_loaded == 0) &&
                 !wpn.data().ranged.has_infinite_ammo &&
-                m_inv.has_ammo_for_firearm_in_inventory();
+                m_inv.has_ammo_for_firearm_in_inventory());
 }
 
 AiAttData Mon::choose_attack(const AiAvailAttacksData& avail_attacks) const

@@ -29,6 +29,7 @@
 typedef std::unordered_map<std::string, item::Id> StrToIdMap;
 
 static const StrToIdMap s_str_to_intr_item_id_map = {
+        {"kick", item::Id::intr_kick},
         {"bite", item::Id::intr_bite},
         {"claw", item::Id::intr_claw},
         {"strike", item::Id::intr_strike},
@@ -1182,6 +1183,13 @@ void init()
         d.melee.hit_small_sfx = audio::SfxId::hit_sharp;
         d.melee.hit_medium_sfx = audio::SfxId::hit_sharp;
         d.melee.miss_sfx = audio::SfxId::miss_medium;
+        g_data[(size_t)d.id] = d;
+
+        reset_data(d, ItemType::melee_wpn_intr);
+        d.id = Id::intr_kick;
+        d.melee.att_msgs = {"", "kicks"};
+        d.melee.dmg_method = DmgMethod::blunt;
+        d.melee.knocks_back = true;
         g_data[(size_t)d.id] = d;
 
         reset_data(d, ItemType::melee_wpn_intr);
