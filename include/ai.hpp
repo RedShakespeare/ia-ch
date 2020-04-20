@@ -27,7 +27,7 @@ namespace action {
 
 DidAction try_cast_random_spell(actor::Mon& mon);
 
-DidAction handle_closed_blocking_door(actor::Mon& mon, std::vector<P> path);
+DidAction handle_closed_blocking_door(actor::Mon& mon, std::vector<P>& path);
 
 DidAction handle_inventory(actor::Mon& mon);
 
@@ -37,7 +37,7 @@ DidAction move_to_random_adj_cell(actor::Mon& mon);
 
 DidAction move_to_target_simple(actor::Mon& mon);
 
-DidAction step_path(actor::Mon& mon, std::vector<P>& path);
+DidAction step_path(actor::Mon& mon, const std::vector<P>& path);
 
 DidAction step_to_lair_if_los(actor::Mon& mon, const P& lair_p);
 

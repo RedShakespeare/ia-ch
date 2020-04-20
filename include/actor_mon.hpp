@@ -64,8 +64,6 @@ public:
 
         void set_player_aware_of_me(int duration_factor = 1);
 
-        void make_leader_aware_silent() const;
-
         std::vector<Actor*> foes_aware_of() const;
 
         std::string aware_msg_mon_seen() const;

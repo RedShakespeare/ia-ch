@@ -29,7 +29,10 @@ struct AiState {
         MonRoamingAllowed is_roaming_allowed {MonRoamingAllowed::yes};
         P spawn_pos {};
         Dir last_dir_moved {Dir::center};
-        bool waiting {false};
+
+        // AI creatures pauses every second step while not aware or wary, this
+        // tracks the state of the pausing
+        bool is_waiting {false};
 };
 
 struct AwareState {

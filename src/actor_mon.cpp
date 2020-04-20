@@ -217,22 +217,6 @@ bool Mon::is_sneaking() const
                 !is_actor_my_leader(map::g_player));
 }
 
-void Mon::make_leader_aware_silent() const
-{
-        ASSERT(m_leader);
-
-        if (!m_leader) {
-                return;
-        }
-
-        auto* const leader_mon = static_cast<Mon*>(m_leader);
-
-        leader_mon->m_mon_aware_state.aware_counter =
-                std::max(
-                        leader_mon->m_data->nr_turns_aware,
-                        leader_mon->m_mon_aware_state.aware_counter);
-}
-
 void Mon::on_hit(
         int& dmg,
         const DmgType dmg_type,
@@ -380,8 +364,7 @@ void Mon::become_aware_player(const bool is_from_seeing, const int factor)
         m_mon_aware_state.wary_counter = m_mon_aware_state.aware_counter;
 
         if (aware_counter_before <= 0) {
-                if (is_from_seeing &&
-                    can_player_see_actor(*this)) {
+                if (is_from_seeing && can_player_see_actor(*this)) {
                         print_player_see_mon_become_aware_msg();
                 }
 

@@ -158,7 +158,7 @@ DidAction try_cast_random_spell(actor::Mon& mon)
         return DidAction::no;
 }
 
-DidAction handle_closed_blocking_door(actor::Mon& mon, std::vector<P> path)
+DidAction handle_closed_blocking_door(actor::Mon& mon, std::vector<P>& path)
 {
         if (!mon.is_alive() || path.empty()) {
                 return DidAction::no;
@@ -476,7 +476,7 @@ DidAction move_to_target_simple(actor::Mon& mon)
         return DidAction::no;
 }
 
-DidAction step_path(actor::Mon& mon, std::vector<P>& path)
+DidAction step_path(actor::Mon& mon, const std::vector<P>& path)
 {
         if (mon.is_alive() &&
             !path.empty()) {
@@ -663,9 +663,10 @@ std::vector<P> find_path_to_leader(actor::Mon& mon)
         const R fov_lmt = fov::fov_rect(mon.m_pos, blocked.dims());
 
         map_parsers::BlocksLos()
-                .run(blocked,
-                     fov_lmt,
-                     MapParseMode::overwrite);
+                .run(
+                        blocked,
+                        fov_lmt,
+                        MapParseMode::overwrite);
 
         FovMap fov_map;
         fov_map.hard_blocked = &blocked;
@@ -680,12 +681,15 @@ std::vector<P> find_path_to_leader(actor::Mon& mon)
         }
 
         map_parsers::BlocksActor(mon, ParseActors::no)
-                .run(blocked, blocked.rect());
+                .run(
+                        blocked,
+                        blocked.rect());
 
         map_parsers::LivingActorsAdjToPos(mon.m_pos)
-                .run(blocked,
-                     blocked.rect(),
-                     MapParseMode::append);
+                .run(
+                        blocked,
+                        blocked.rect(),
+                        MapParseMode::append);
 
         const auto path = pathfind(mon.m_pos, leader->m_pos, blocked);
 

@@ -312,16 +312,16 @@ static void mon_act(actor::Mon& mon)
         if (!mon.is_aware_of_player() &&
             !mon.is_wary_of_player() &&
             !is_player_leader) {
-                mon.m_ai_state.waiting = !mon.m_ai_state.waiting;
+                mon.m_ai_state.is_waiting = !mon.m_ai_state.is_waiting;
 
-                if (mon.m_ai_state.waiting) {
+                if (mon.m_ai_state.is_waiting) {
                         game_time::tick();
 
                         return;
                 }
         } else {
                 // Is wary/aware, or player is leader
-                mon.m_ai_state.waiting = false;
+                mon.m_ai_state.is_waiting = false;
         }
 
         // Pick a target
@@ -360,18 +360,15 @@ static void mon_act(actor::Mon& mon)
         if (mon.is_aware_of_player() || mon.is_wary_of_player()) {
                 mon.m_ai_state.is_roaming_allowed = MonRoamingAllowed::yes;
 
-                if (mon.m_leader && mon.m_leader->is_alive()) {
-                        // Monster has a living leader
-                        if (mon.is_aware_of_player() && !is_player_leader) {
-                                mon.make_leader_aware_silent();
-                        }
-                } else {
-                        // Monster does not have a living leader
+                // Occasionally make a sound - but only if the monster does not
+                // have a leader - otherwise it gets very spammy
+                const bool has_living_leader =
+                        mon.m_leader && mon.m_leader->is_alive();
 
-                        // Monster is wary or aware - occasionally make a sound
-                        if (mon.is_alive() && rnd::one_in(12)) {
-                                mon.speak_phrase(AlertsMon::no);
-                        }
+                if (!has_living_leader &&
+                    mon.is_alive() &&
+                    rnd::one_in(12)) {
+                        mon.speak_phrase(AlertsMon::no);
                 }
         }
 
@@ -544,7 +541,6 @@ static void mon_act(actor::Mon& mon)
                 }
         }
 
-        // When unaware, move randomly
         if (mon.m_data->ai[(size_t)actor::AiId::moves_randomly_when_unaware] &&
             (!is_player_leader || rnd::one_in(8))) {
                 const auto did_act = ai::action::move_to_random_adj_cell(mon);
