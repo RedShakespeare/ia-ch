@@ -98,6 +98,28 @@ static bool is_trait_blocked_for_bg(const Trait trait, const Bg bg)
         return false;
 }
 
+static void incr_occultist_spells()
+{
+        for (int id = 0; id < (int)SpellId::END; ++id) {
+                const std::unique_ptr<Spell> spell(
+                        spell_factory::make_spell_from_id(
+                                (SpellId)id));
+
+                const bool is_learnable =
+                        spell->player_can_learn();
+
+                const bool is_matching_domain =
+                        (spell->domain() == s_current_occultist_domain);
+
+                if (is_learnable && is_matching_domain) {
+                        player_spells::incr_spell_skill((SpellId)id);
+                }
+        }
+}
+
+// -----------------------------------------------------------------------------
+// player_bon
+// -----------------------------------------------------------------------------
 namespace player_bon {
 
 void init()
@@ -387,7 +409,7 @@ std::vector<ColoredString> bg_descr(const Bg id)
                 put("");
                 put("Can dispel magic traps, doing so grants Spirit Points");
                 put("");
-                put("+2 Spirit Points (in addition to \"Stout Spirit\")");
+                put("+3 Spirit Points (in addition to \"Stout Spirit\")");
                 put("");
                 put("-2 Hit Points");
                 put("");
@@ -868,6 +890,7 @@ std::vector<OccultistDomain> pickable_occultist_domains()
         std::vector<OccultistDomain> result;
 
         result.reserve((int)OccultistDomain::END);
+
         for (int i = 0; i < (int)OccultistDomain::END; ++i) {
                 result.push_back((OccultistDomain)i);
         }
@@ -979,7 +1002,7 @@ void pick_bg(const Bg bg)
         case Bg::occultist: {
                 pick_trait(Trait::stout_spirit);
 
-                map::g_player->change_max_sp(2, Verbose::no);
+                map::g_player->change_max_sp(3, Verbose::no);
 
                 map::g_player->change_max_hp(-2, Verbose::no);
         } break;
@@ -1041,20 +1064,7 @@ void on_player_gained_lvl(const int new_lvl)
                         (new_lvl == 8);
 
                 if (is_occultist_spell_incr_lvl) {
-                        for (int spell_id = 0;
-                             spell_id < (int)SpellId::END;
-                             ++spell_id) {
-                                const std::unique_ptr<Spell> spell(
-                                        spell_factory::make_spell_from_id(
-                                                (SpellId)spell_id));
-
-                                if (spell->player_can_learn() &&
-                                    (spell->domain() ==
-                                     s_current_occultist_domain)) {
-                                        player_spells::incr_spell_skill(
-                                                (SpellId)spell_id);
-                                }
-                        }
+                        incr_occultist_spells();
                 }
         }
 }

@@ -29,7 +29,7 @@
 
         <attributes>
             <hit_points>14</hit_points>
-            <spirit>4</spirit>
+            <spirit>3</spirit>
             <speed>normal</speed>
             <shock_level>none</shock_level>
             <melee>0</melee>
