@@ -13,6 +13,7 @@ Gameplay
 * Added trait "Crippling Strikes" - melee attacks have 60% chance to Weaken the target for 2-3 turns
 * Small crawling creatures (rats, snakes, crawling hands, etc) can pass through some terrain types such as gates and piles of debris
 * The standard map generator can now also BSP split rooms, for more map variety
+* The Searching spell has been removed, and is instead a permanent ability for the Clairvoyant Occultist (upgraded at levels 4 and 8)
 
 User interface
 * The message log uses three lines instead of two (thus causing much fewer "more" prompts)

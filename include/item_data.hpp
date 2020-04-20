@@ -128,7 +128,6 @@ enum class Id {
         scroll_pest,
         scroll_premonition,
         scroll_res,
-        scroll_searching,
         scroll_see_invis,
         scroll_slow,
         scroll_haste,

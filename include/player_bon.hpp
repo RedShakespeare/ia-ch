@@ -4,6 +4,9 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 // =============================================================================
 
+// TODO: Player bonuses should be represented by classes, wich hooks such as
+// "on_picked", "on_player_gained_lvl".
+
 #ifndef PLAYER_BON_HPP
 #define PLAYER_BON_HPP
 
@@ -109,12 +112,14 @@ std::vector<OccultistDomain> pickable_occultist_domains();
 
 void unpicked_traits_for_bg(
         Bg bg,
+        OccultistDomain occultist_domain,
         std::vector<Trait>& traits_can_be_picked_out,
         std::vector<Trait>& traits_prereqs_not_met_out);
 
 void trait_prereqs(
         Trait trait,
         Bg bg,
+        OccultistDomain occultist_domain,
         std::vector<Trait>& traits_out,
         Bg& bg_out);
 

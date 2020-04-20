@@ -71,7 +71,6 @@ static const StrToSpellIdMap s_str_to_spell_id_map = {
         {"opening", SpellId::opening},
         {"pestilence", SpellId::pestilence},
         {"res", SpellId::res},
-        {"searching", SpellId::searching},
         {"see_invis", SpellId::see_invis},
         {"slow", SpellId::slow},
         {"haste", SpellId::haste},
@@ -148,9 +147,6 @@ Spell* make_spell_from_id(const SpellId spell_id)
 
         case SpellId::spectral_wpns:
                 return new SpellSpectralWpns();
-
-        case SpellId::searching:
-                return new SpellSearching();
 
         case SpellId::opening:
                 return new SpellOpening();
@@ -1451,73 +1447,6 @@ std::vector<std::string> SpellSpectralWpns::descr_specific(
         if (skill == SpellSkill::master) {
                 descr.emplace_back("The weapons are hasted.");
         }
-
-        return descr;
-}
-
-// -----------------------------------------------------------------------------
-// Searching
-// -----------------------------------------------------------------------------
-int SpellSearching::max_spi_cost(const SpellSkill skill) const
-{
-        (void)skill;
-
-        return 4;
-}
-
-void SpellSearching::run_effect(
-        actor::Actor* const caster,
-        const SpellSkill skill) const
-{
-        const int range = 4 + (int)skill * 2;
-
-        const int nr_turns = ((int)skill + 1) * 40;
-
-        auto prop = new PropMagicSearching();
-
-        prop->set_range(range);
-
-        prop->set_duration(nr_turns);
-
-        if (skill >= SpellSkill::expert) {
-                prop->set_allow_reveal_items();
-        }
-
-        if (skill == SpellSkill::master) {
-                prop->set_allow_reveal_creatures();
-        }
-
-        caster->m_properties.apply(prop);
-}
-
-std::vector<std::string> SpellSearching::descr_specific(
-        const SpellSkill skill) const
-{
-        std::vector<std::string> descr;
-
-        descr.emplace_back(
-                "Reveals the presence of doors, traps, stairs, and other "
-                "locations of interest in the surrounding area.");
-
-        if (skill == SpellSkill::expert) {
-                descr.emplace_back("Also reveals items.");
-        } else if (skill == SpellSkill::master) {
-                descr.emplace_back("Also reveals items and creatures.");
-        }
-
-        const int range = 4 + (int)skill * 2;
-
-        descr.push_back(
-                "The spell has a range of " +
-                std::to_string(range) +
-                " cells.");
-
-        const int nr_turns = ((int)skill + 1) * 40;
-
-        descr.push_back(
-                "The spell lasts " +
-                std::to_string(nr_turns) +
-                " turns.");
 
         return descr;
 }

@@ -42,7 +42,6 @@ enum class SpellId {
         mayhem,
         opening,
         res,
-        searching,
         see_invis,
         transmut,
 
@@ -823,58 +822,6 @@ private:
                 (void)skill;
 
                 return true;
-        }
-};
-
-class SpellSearching : public Spell {
-public:
-        SpellSearching() = default;
-
-        bool mon_can_learn() const override
-        {
-                return false;
-        }
-
-        bool player_can_learn() const override
-        {
-                return true;
-        }
-
-        std::string name() const override
-        {
-                return "Searching";
-        }
-
-        SpellId id() const override
-        {
-                return SpellId::searching;
-        }
-
-        OccultistDomain domain() const override
-        {
-                return OccultistDomain::clairvoyant;
-        }
-
-        SpellShock shock_type() const override
-        {
-                return SpellShock::mild;
-        }
-
-        std::vector<std::string> descr_specific(
-                SpellSkill skill) const override;
-
-        void run_effect(
-                actor::Actor* caster,
-                SpellSkill skill) const override;
-
-private:
-        int max_spi_cost(SpellSkill skill) const override;
-
-        bool is_noisy(const SpellSkill skill) const override
-        {
-                (void)skill;
-
-                return false;
         }
 };
 

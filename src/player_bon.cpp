@@ -29,11 +29,17 @@ static bool s_traits[(size_t)Trait::END];
 
 static std::vector<player_bon::TraitLogEntry> s_trait_log;
 
-static Bg s_current_bg = Bg::END;
+static auto s_current_bg = Bg::END;
 
-static OccultistDomain s_current_occultist_domain = OccultistDomain::END;
+static auto s_current_occultist_domain = OccultistDomain::END;
 
-static bool is_trait_blocked_for_bg(const Trait trait, const Bg bg)
+static const int s_occultist_upgrade_lvl_1 = 4;
+static const int s_occultist_upgrade_lvl_2 = 8;
+
+static bool is_trait_blocked_for_bg(
+        const Trait trait,
+        const Bg bg,
+        const OccultistDomain occultist_domain)
 {
         switch (trait) {
         case Trait::adept_melee:
@@ -45,7 +51,11 @@ static bool is_trait_blocked_for_bg(const Trait trait, const Bg bg)
         case Trait::foul:
         case Trait::toxic:
         case Trait::indomitable_fury:
+                break;
+
         case Trait::vigilant:
+                return occultist_domain == OccultistDomain::clairvoyant;
+
         case Trait::self_aware:
         case Trait::stout_spirit:
         case Trait::strong_spirit:
@@ -483,17 +493,22 @@ std::string occultist_domain_descr(const OccultistDomain domain)
 {
         switch (domain) {
         case OccultistDomain::clairvoyant:
-                return "Specialize in detection and learning.";
+                return "Specializes in detection and learning. "
+                       "Has an intrinsic ability to detect doors, traps, "
+                       "stairs, and other locations of interest in the "
+                       "surrounding area. At character level 4, this ability "
+                       "also reveals items, and at level 8 it reveals "
+                       "creatures.";
 
         case OccultistDomain::enchanter:
-                return "Specialize in aiding, debilitating, entrancing, and "
+                return "Specializes in aiding, debilitating, entrancing, and "
                        "beguiling.";
 
         case OccultistDomain::invoker:
-                return "Specialize in channeling destructive powers.";
+                return "Specializes in channeling destructive powers.";
 
         case OccultistDomain::transmuter:
-                return "Specialize in manipulating matter, energy, and time.";
+                return "Specializes in manipulating matter, energy, and time.";
 
         case OccultistDomain::END:
                 ASSERT(false);
@@ -655,6 +670,7 @@ std::string trait_descr(const Trait id)
 void trait_prereqs(
         const Trait trait,
         const Bg bg,
+        const OccultistDomain occultist_domain,
         std::vector<Trait>& traits_out,
         Bg& bg_out)
 {
@@ -829,7 +845,7 @@ void trait_prereqs(
         // Remove traits which are blocked for this background (prerequisites
         // are considered fulfilled)
         for (auto it = std::begin(traits_out); it != std::end(traits_out);) {
-                if (is_trait_blocked_for_bg(*it, bg)) {
+                if (is_trait_blocked_for_bg(*it, bg, occultist_domain)) {
                         it = traits_out.erase(it);
                 } else {
                         // Not blocked
@@ -912,6 +928,7 @@ std::vector<OccultistDomain> pickable_occultist_domains()
 
 void unpicked_traits_for_bg(
         const Bg bg,
+        const OccultistDomain occultist_domain,
         std::vector<Trait>& traits_can_be_picked_out,
         std::vector<Trait>& traits_prereqs_not_met_out)
 {
@@ -925,7 +942,10 @@ void unpicked_traits_for_bg(
 
                 // Check if trait is explicitly blocked for this background
                 const bool is_blocked_for_bg =
-                        is_trait_blocked_for_bg(trait, bg);
+                        is_trait_blocked_for_bg(
+                                trait,
+                                bg,
+                                occultist_domain);
 
                 if (is_blocked_for_bg) {
                         continue;
@@ -942,6 +962,7 @@ void unpicked_traits_for_bg(
                 trait_prereqs(
                         trait,
                         bg,
+                        occultist_domain,
                         trait_prereq_list,
                         bg_prereq);
 
@@ -1054,18 +1075,98 @@ void pick_occultist_domain(const OccultistDomain domain)
         ASSERT(domain != OccultistDomain::END);
 
         s_current_occultist_domain = domain;
+
+        switch (domain) {
+        case OccultistDomain::clairvoyant: {
+                auto prop =
+                        static_cast<PropMagicSearching*>(
+                                property_factory::make(
+                                        PropId::magic_searching));
+
+                prop->set_indefinite();
+
+                prop->set_range(g_fov_radi_int);
+
+                map::g_player->m_properties.apply(
+                        prop,
+                        PropSrc::intr,
+                        true,
+                        Verbose::no);
+        } break;
+
+        case OccultistDomain::enchanter: {
+        } break;
+
+        case OccultistDomain::invoker: {
+        } break;
+
+        case OccultistDomain::transmuter: {
+        } break;
+
+        case OccultistDomain::END: {
+                ASSERT(false);
+        } break;
+        }
 }
 
 void on_player_gained_lvl(const int new_lvl)
 {
-        if (s_current_bg == Bg::occultist) {
+        switch (s_current_bg) {
+        case Bg::ghoul: {
+        } break;
+
+        case Bg::occultist: {
                 const bool is_occultist_spell_incr_lvl =
-                        (new_lvl == 4) ||
-                        (new_lvl == 8);
+                        (new_lvl == s_occultist_upgrade_lvl_1) ||
+                        (new_lvl == s_occultist_upgrade_lvl_2);
 
                 if (is_occultist_spell_incr_lvl) {
                         incr_occultist_spells();
                 }
+
+                switch (s_current_occultist_domain) {
+                case OccultistDomain::clairvoyant: {
+                        auto* const prop =
+                                map::g_player->m_properties.prop(
+                                        PropId::magic_searching);
+
+                        ASSERT(prop);
+
+                        auto* const searching =
+                                static_cast<PropMagicSearching*>(prop);
+
+                        if (new_lvl == s_occultist_upgrade_lvl_1) {
+                                searching->set_allow_reveal_items();
+
+                        } else if (new_lvl == s_occultist_upgrade_lvl_2) {
+                                searching->set_allow_reveal_creatures();
+                        }
+                } break;
+
+                case OccultistDomain::enchanter: {
+                } break;
+
+                case OccultistDomain::invoker: {
+                } break;
+
+                case OccultistDomain::transmuter: {
+                } break;
+
+                case OccultistDomain::END: {
+                        ASSERT(false);
+                } break;
+                }
+        } break;
+
+        case Bg::rogue: {
+        } break;
+
+        case Bg::war_vet: {
+        } break;
+
+        case Bg::END: {
+                ASSERT(false);
+        } break;
         }
 }
 

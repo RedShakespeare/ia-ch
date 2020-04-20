@@ -328,10 +328,9 @@ void PickOccultistState::draw()
 // -----------------------------------------------------------------------------
 void PickTraitState::on_start()
 {
-        const auto player_bg = player_bon::bg();
-
         player_bon::unpicked_traits_for_bg(
-                player_bg,
+                player_bon::bg(),
+                player_bon::occultist_domain(),
                 m_traits_avail,
                 m_traits_unavail);
 
@@ -476,8 +475,6 @@ void PickTraitState::draw()
 
         const Trait trait_marked = traits->at(browser_y);
 
-        const auto player_bg = player_bon::bg();
-
         int y = 0;
 
         const Range idx_range_shown = browser->range_shown();
@@ -579,7 +576,8 @@ void PickTraitState::draw()
 
         player_bon::trait_prereqs(
                 trait_marked,
-                player_bg,
+                player_bon::bg(),
+                player_bon::occultist_domain(),
                 trait_marked_prereqs,
                 trait_marked_bg_prereq);
 

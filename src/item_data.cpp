@@ -1527,11 +1527,6 @@ void init()
         g_data[(size_t)d.id] = d;
 
         reset_data(d, ItemType::scroll);
-        d.id = Id::scroll_searching;
-        d.spell_cast_from_scroll = SpellId::searching;
-        g_data[(size_t)d.id] = d;
-
-        reset_data(d, ItemType::scroll);
         d.id = Id::scroll_bless;
         d.spell_cast_from_scroll = SpellId::bless;
         g_data[(size_t)d.id] = d;

@@ -176,7 +176,6 @@ Item* make(const Id item_id, const int nr_items)
         case Id::scroll_enfeeble:
         case Id::scroll_slow:
         case Id::scroll_terrify:
-        case Id::scroll_searching:
         case Id::scroll_bless:
         case Id::scroll_darkbolt:
         case Id::scroll_aza_wrath:
