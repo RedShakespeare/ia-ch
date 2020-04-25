@@ -3364,7 +3364,7 @@ void Fountain::bump(actor::Actor& actor_bumping)
                 const std::string msg =
                         ("There is " +
                          name_a +
-                         " fountain here. Drink from it? ") +
+                         " here. Drink from it? ") +
                         common_text::g_yes_or_no_hint;
 
                 msg_log::add(
