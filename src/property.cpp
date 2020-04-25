@@ -2023,6 +2023,10 @@ int PropAuraOfDecay::range() const
 
 void PropAuraOfDecay::on_std_turn()
 {
+        if (!m_owner->is_alive()) {
+                return;
+        }
+
         run_effect_on_actors();
 
         run_effect_on_env();
@@ -2031,16 +2035,13 @@ void PropAuraOfDecay::on_std_turn()
 void PropAuraOfDecay::run_effect_on_actors() const
 {
         for (auto* const actor : game_time::g_actors) {
-                if (actor == m_owner ||
-                    actor->m_state == ActorState::destroyed ||
-                    king_dist(m_owner->m_pos, actor->m_pos) > range()) {
+                if ((actor == m_owner) ||
+                    (actor->m_state == ActorState::destroyed) ||
+                    (king_dist(m_owner->m_pos, actor->m_pos) > range())) {
                         continue;
                 }
 
-                const bool player_see_target =
-                        actor::can_player_see_actor(*actor);
-
-                if (player_see_target) {
+                if (actor::can_player_see_actor(*actor)) {
                         print_msg_actor_hit(*actor);
                 }
 
@@ -2065,9 +2066,9 @@ void PropAuraOfDecay::run_effect_on_env() const
 
                 const auto id = terrain->id();
 
-                if ((id == terrain::Id::wall ||
-                     id == terrain::Id::rubble_high ||
-                     id == terrain::Id::door) &&
+                if (((id == terrain::Id::wall) ||
+                     (id == terrain::Id::rubble_high) ||
+                     (id == terrain::Id::door)) &&
                     rnd::one_in(250)) {
                         if (cell.is_seen_by_player) {
                                 const std::string name =

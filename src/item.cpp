@@ -1641,7 +1641,8 @@ void Molotov::on_std_turn_player_hold_ignited()
 
                 const P player_pos = map::g_player->m_pos;
 
-                Snd snd("I hear an explosion!",
+                Snd snd(
+                        "I hear an explosion!",
                         audio::SfxId::explosion_molotov,
                         IgnoreMsgIfOriginSeen::yes,
                         player_pos,
@@ -1665,7 +1666,8 @@ void Molotov::on_std_turn_player_hold_ignited()
 
 void Molotov::on_thrown_ignited_landing(const P& p)
 {
-        Snd snd("I hear an explosion!",
+        Snd snd(
+                "I hear an explosion!",
                 audio::SfxId::explosion_molotov,
                 IgnoreMsgIfOriginSeen::yes,
                 p,
@@ -1675,7 +1677,13 @@ void Molotov::on_thrown_ignited_landing(const P& p)
 
         snd.run();
 
-        explosion::run(p, ExplType::apply_prop, EmitExplSnd::no, 0, ExplExclCenter::no, {new PropBurning()});
+        explosion::run(
+                p,
+                ExplType::apply_prop,
+                EmitExplSnd::no,
+                0,
+                ExplExclCenter::no,
+                {new PropBurning()});
 }
 
 void Molotov::on_player_paralyzed()
@@ -1686,7 +1694,8 @@ void Molotov::on_player_paralyzed()
 
         const P player_pos = map::g_player->m_pos;
 
-        Snd snd("I hear an explosion!",
+        Snd snd(
+                "I hear an explosion!",
                 audio::SfxId::explosion_molotov,
                 IgnoreMsgIfOriginSeen::yes,
                 player_pos,
@@ -1696,7 +1705,13 @@ void Molotov::on_player_paralyzed()
 
         snd.run();
 
-        explosion::run(player_pos, ExplType::apply_prop, EmitExplSnd::no, 0, ExplExclCenter::no, {new PropBurning()});
+        explosion::run(
+                player_pos,
+                ExplType::apply_prop,
+                EmitExplSnd::no,
+                0,
+                ExplExclCenter::no,
+                {new PropBurning()});
 
         delete this;
 }
