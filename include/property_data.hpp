@@ -137,7 +137,6 @@ struct PropData {
                 msg_res_mon(""),
                 historic_msg_start_permanent(""),
                 historic_msg_end_permanent(""),
-                is_making_mon_aware(false),
                 allow_display_turns(true),
                 update_vision_on_toggled(false),
                 allow_test_on_bot(false),
@@ -156,7 +155,6 @@ struct PropData {
         std::string msg_res_mon;
         std::string historic_msg_start_permanent;
         std::string historic_msg_end_permanent;
-        bool is_making_mon_aware;
         bool allow_display_turns;
         bool update_vision_on_toggled;
         bool allow_test_on_bot;

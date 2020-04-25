@@ -217,23 +217,6 @@ bool Mon::is_sneaking() const
                 !is_actor_my_leader(map::g_player));
 }
 
-void Mon::on_hit(
-        int& dmg,
-        const DmgType dmg_type,
-        const DmgMethod method,
-        const AllowWound allow_wound)
-{
-        (void)dmg;
-        (void)dmg_type;
-        (void)method;
-        (void)allow_wound;
-
-        m_mon_aware_state.aware_counter =
-                std::max(
-                        m_data->nr_turns_aware,
-                        m_mon_aware_state.aware_counter);
-}
-
 Color Mon::color() const
 {
         if (m_state != ActorState::alive) {

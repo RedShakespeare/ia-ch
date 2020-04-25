@@ -295,7 +295,6 @@ static void init_data_list()
         d.msg_end_mon = "can see again.";
         d.historic_msg_start_permanent = "I became permanently blind";
         d.historic_msg_end_permanent = "My sight came back";
-        d.is_making_mon_aware = true;
         d.allow_display_turns = true;
         d.allow_test_on_bot = true;
         d.alignment = PropAlignment::bad;
@@ -324,7 +323,6 @@ static void init_data_list()
         d.msg_end_mon = "wakes up.";
         d.msg_res_player = "I resist fainting.";
         d.msg_res_mon = "resists fainting.";
-        d.is_making_mon_aware = true;
         d.allow_display_turns = true;
         d.allow_test_on_bot = true;
         d.alignment = PropAlignment::bad;
@@ -343,7 +341,6 @@ static void init_data_list()
         d.msg_end_mon = "is no longer burning.";
         d.msg_res_player = "I resist burning.";
         d.msg_res_mon = "resists burning.";
-        d.is_making_mon_aware = true;
         d.allow_display_turns = true;
         d.update_vision_on_toggled = true;
         d.allow_test_on_bot = true;
@@ -361,7 +358,6 @@ static void init_data_list()
         d.msg_end_mon = "is cleansed from poisoning.";
         d.msg_res_player = "I resist poisoning.";
         d.msg_res_mon = "resists poisoning.";
-        d.is_making_mon_aware = true;
         d.allow_display_turns = true;
         d.allow_test_on_bot = true;
         d.alignment = PropAlignment::bad;
@@ -378,7 +374,6 @@ static void init_data_list()
         d.msg_end_mon = "can move again.";
         d.msg_res_player = "I resist paralyzation.";
         d.msg_res_mon = "resists paralyzation.";
-        d.is_making_mon_aware = true;
         d.allow_display_turns = true;
         d.allow_test_on_bot = true;
         d.alignment = PropAlignment::bad;
@@ -397,7 +392,6 @@ static void init_data_list()
         d.msg_end_mon = "is no longer terrified.";
         d.msg_res_player = "I resist fear.";
         d.msg_res_mon = "resists fear.";
-        d.is_making_mon_aware = true;
         d.allow_display_turns = true;
         d.allow_test_on_bot = true;
         d.alignment = PropAlignment::bad;
@@ -416,7 +410,6 @@ static void init_data_list()
         d.msg_end_mon = "is no longer confused.";
         d.msg_res_player = "I manage to keep my head together.";
         d.msg_res_mon = "resists confusion.";
-        d.is_making_mon_aware = true;
         d.allow_display_turns = true;
         d.allow_test_on_bot = true;
         d.alignment = PropAlignment::bad;
@@ -432,7 +425,6 @@ static void init_data_list()
         d.msg_end_mon = "is no longer stunned.";
         d.msg_res_player = "I resist stunning.";
         d.msg_res_mon = "resists stunning.";
-        d.is_making_mon_aware = true;
         d.allow_display_turns = true;
         d.allow_test_on_bot = true;
         d.alignment = PropAlignment::bad;
@@ -451,7 +443,6 @@ static void init_data_list()
         d.msg_res_mon = "resists slowing.";
         d.historic_msg_start_permanent = "I became perpetually slowed";
         d.historic_msg_end_permanent = "My slowness ceased";
-        d.is_making_mon_aware = true;
         d.allow_display_turns = true;
         d.allow_test_on_bot = true;
         d.alignment = PropAlignment::bad;
@@ -468,7 +459,6 @@ static void init_data_list()
         d.msg_end_mon = "slows down.";
         d.historic_msg_start_permanent = "I became perpetually hasted";
         d.historic_msg_end_permanent = "My hastiness ceased";
-        d.is_making_mon_aware = true;
         d.allow_display_turns = true;
         d.allow_test_on_bot = true;
         d.alignment = PropAlignment::good;
@@ -496,7 +486,6 @@ static void init_data_list()
         d.id = PropId::flared;
         d.std_rnd_turns = Range(3, 4);
         d.msg_start_mon = "is perforated by a flare!";
-        d.is_making_mon_aware = true;
         d.allow_display_turns = false;
         d.update_vision_on_toggled = true;
         d.alignment = PropAlignment::bad;
@@ -509,7 +498,6 @@ static void init_data_list()
         d.msg_start_mon = "is fastened by a spike.";
         d.msg_end_player = "I tear free!";
         d.msg_end_mon = "tears free!";
-        d.is_making_mon_aware = true;
         d.allow_display_turns = false;
         d.alignment = PropAlignment::bad;
         add(d);
@@ -576,7 +564,6 @@ static void init_data_list()
         d.msg_start_mon = "is infected.";
         d.msg_end_player = "My infection is cured!";
         d.msg_end_mon = "is no longer infected.";
-        d.is_making_mon_aware = true;
         d.allow_display_turns = false;
         d.allow_test_on_bot = true;
         d.alignment = PropAlignment::bad;
@@ -595,7 +582,6 @@ static void init_data_list()
         d.msg_res_mon = "resists disease.";
         d.historic_msg_start_permanent = "I caught a horrible disease";
         d.historic_msg_end_permanent = "I was cured from a horrible disease";
-        d.is_making_mon_aware = true;
         d.allow_display_turns = true;
         d.allow_test_on_bot = true;
         d.alignment = PropAlignment::bad;
@@ -625,7 +611,6 @@ static void init_data_list()
         d.msg_end_mon = "looks stronger!";
         d.msg_res_player = "I resist weakness.";
         d.msg_res_mon = "resists weakness.";
-        d.is_making_mon_aware = true;
         d.allow_display_turns = true;
         d.allow_test_on_bot = true;
         d.alignment = PropAlignment::bad;
@@ -716,7 +701,6 @@ static void init_data_list()
         d.msg_start_mon = "is entangled.";
         d.msg_end_player = "I tear free!";
         d.msg_end_mon = "tears free!";
-        d.is_making_mon_aware = true;
         d.allow_display_turns = false;
         d.alignment = PropAlignment::bad;
         add(d);
@@ -835,7 +819,6 @@ static void init_data_list()
         d.std_rnd_turns = Range(10, 20);
         d.msg_start_mon = "Looks conflicted.";
         d.msg_end_mon = "Looks more determined.";
-        d.is_making_mon_aware = true;
         d.allow_display_turns = false;
         d.alignment = PropAlignment::bad;
         add(d);
@@ -849,7 +832,6 @@ static void init_data_list()
         d.msg_start_mon = "appears to exude death and decay.";
         d.msg_end_player = "The decay subsides.";
         d.msg_end_mon = "no longer exudes decay.";
-        d.is_making_mon_aware = true;
         d.allow_display_turns = true;
         d.allow_test_on_bot = true;
         d.alignment = PropAlignment::good;

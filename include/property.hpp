@@ -131,11 +131,6 @@ public:
                 return m_data.allow_display_turns;
         }
 
-        virtual bool is_making_mon_aware() const
-        {
-                return m_data.is_making_mon_aware;
-        }
-
         virtual std::string name() const
         {
                 return m_data.name;

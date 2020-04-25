@@ -461,14 +461,6 @@ void PropHandler::on_turn_begin()
                         --prop->m_nr_turns_left;
                 }
 
-                // Aggravates monster?
-                if (!m_owner->is_player() &&
-                    prop->is_making_mon_aware()) {
-                        auto* mon = static_cast<actor::Mon*>(m_owner);
-
-                        mon->become_aware_player(false);
-                }
-
                 const auto prop_ended = prop->on_tick();
 
                 if (prop_ended == PropEnded::no) {

@@ -229,6 +229,8 @@ static void set_living_seen_monster(
         const actor::Actor& mon,
         CellRenderData& render_data)
 {
+        TRACE_FUNC_BEGIN;
+
         if (mon.tile() == gfx::TileId::END ||
             mon.character() == 0 ||
             mon.character() == ' ') {
@@ -245,6 +247,8 @@ static void set_living_seen_monster(
         } else {
                 // The monster is hostile
                 if (mon.is_aware_of_player()) {
+                        TRACE << "IS aware of player" << std::endl;
+
                         // Monster is aware of player
                         const bool has_temporary_negative_prop =
                                 mon.m_properties
@@ -255,14 +259,18 @@ static void set_living_seen_monster(
                                         colors::mon_temp_property_bg();
                         }
                 } else {
+                        TRACE << "NOT aware of player" << std::endl;
+
                         // Monster is not aware of the player
                         render_data.color_bg = colors::mon_unaware_bg();
                 }
         }
+
+        TRACE_FUNC_END;
 }
 
 static void set_living_hidden_monster(
-        const actor::Mon& mon,
+        const actor::Actor& mon,
         CellRenderData& render_data)
 {
         if (!mon.is_player_aware_of_me()) {
@@ -291,12 +299,10 @@ static void set_living_monsters()
 
                 auto& render_data = s_render_array.at(pos);
 
-                const auto* const mon = static_cast<const actor::Mon*>(actor);
-
                 if (can_player_see_actor(*actor)) {
-                        set_living_seen_monster(*mon, render_data);
+                        set_living_seen_monster(*actor, render_data);
                 } else {
-                        set_living_hidden_monster(*mon, render_data);
+                        set_living_hidden_monster(*actor, render_data);
                 }
         }
 }

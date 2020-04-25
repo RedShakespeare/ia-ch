@@ -101,12 +101,6 @@ protected:
 
         bool should_reload(const item::Wpn& wpn) const;
 
-        void on_hit(
-                int& dmg,
-                DmgType dmg_type,
-                DmgMethod method,
-                AllowWound allow_wound) override;
-
         int nr_mon_in_group() const;
 };
 
