@@ -42,19 +42,9 @@ static bool is_trait_blocked_for_bg(
         const OccultistDomain occultist_domain)
 {
         switch (trait) {
-        case Trait::adept_melee:
-        case Trait::expert_melee:
-        case Trait::master_melee:
-        case Trait::cool_headed:
-        case Trait::courageous:
-        case Trait::ravenous:
-        case Trait::foul:
-        case Trait::toxic:
-        case Trait::indomitable_fury:
-                break;
-
-        case Trait::vigilant:
+        case Trait::vigilant: {
                 return occultist_domain == OccultistDomain::clairvoyant;
+        } break;
 
         case Trait::self_aware:
         case Trait::stout_spirit:
@@ -65,20 +55,27 @@ static bool is_trait_blocked_for_bg(
         case Trait::silent:
         case Trait::vicious:
         case Trait::ruthless:
-        case Trait::treasure_hunter:
-        case Trait::undead_bane:
-        case Trait::absorb:
-        case Trait::tough:
-        case Trait::rugged:
-        case Trait::thick_skinned:
-        case Trait::resistant:
-        case Trait::strong_backed:
-        case Trait::dexterous:
-        case Trait::lithe:
-        case Trait::crippling_strikes:
-        case Trait::fearless:
-        case Trait::steady_aimer:
-                break;
+        case Trait::treasure_hunter: {
+                switch (bg) {
+                case Bg::ghoul:
+                case Bg::war_vet:
+                        return true;
+
+                case Bg::occultist:
+                        return (
+                                occultist_domain !=
+                                OccultistDomain::clairvoyant);
+
+                case Bg::rogue:
+                        return false;
+
+                case Bg::END:
+                        break;
+                }
+
+                ASSERT(false);
+                return false;
+        } break;
 
         case Trait::adept_marksman:
         case Trait::expert_marksman:
@@ -101,8 +98,29 @@ static bool is_trait_blocked_for_bg(
                 return bg == Bg::ghoul;
                 break;
 
-        case Trait::END:
-                break;
+        case Trait::adept_melee:
+        case Trait::expert_melee:
+        case Trait::master_melee:
+        case Trait::cool_headed:
+        case Trait::courageous:
+        case Trait::ravenous:
+        case Trait::foul:
+        case Trait::toxic:
+        case Trait::undead_bane:
+        case Trait::absorb:
+        case Trait::tough:
+        case Trait::rugged:
+        case Trait::thick_skinned:
+        case Trait::resistant:
+        case Trait::strong_backed:
+        case Trait::dexterous:
+        case Trait::lithe:
+        case Trait::crippling_strikes:
+        case Trait::fearless:
+        case Trait::steady_aimer:
+        case Trait::indomitable_fury:
+        case Trait::END: {
+        } break;
         }
 
         return false;
