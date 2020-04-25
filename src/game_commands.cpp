@@ -426,30 +426,23 @@ void handle(const GameCmd cmd)
         } break;
 
         case GameCmd::wait_long: {
+                bool is_allowed = true;
+                std::string prevent_msg = "";
                 if (actor::is_player_seeing_burning_terrain()) {
-                        msg_log::add(
-                                common_text::g_fire_prevent_cmd,
-                                colors::text(),
-                                MsgInterruptPlayer::no,
-                                MorePromptOnMsg::no,
-                                CopyToMsgHistory::no);
+                        is_allowed = false;
+                        prevent_msg = common_text::g_fire_prevent_cmd;
                 } else if (!actor::seen_foes(*map::g_player).empty()) {
-                        msg_log::add(
-                                common_text::g_mon_prevent_cmd,
-                                colors::text(),
-                                MsgInterruptPlayer::no,
-                                MorePromptOnMsg::no,
-                                CopyToMsgHistory::no);
+                        is_allowed = false;
+                        prevent_msg = common_text::g_mon_prevent_cmd;
                 } else if (map::g_player->shock_tot() >= 100) {
-                        msg_log::add(
-                                common_text::g_shock_prevent_cmd,
-                                colors::text(),
-                                MsgInterruptPlayer::no,
-                                MorePromptOnMsg::no,
-                                CopyToMsgHistory::no);
-                } else {
-                        // We are allowed to wait
+                        is_allowed = false;
+                        prevent_msg = common_text::g_shock_prevent_cmd;
+                } else if (map::g_player->m_properties.has(PropId::infected)) {
+                        is_allowed = false;
+                        prevent_msg = "Not while infected.";
+                }
 
+                if (is_allowed) {
                         // NOTE: We should not print any "wait" message here,
                         // since it would look weird in some cases - e.g. when
                         // the waiting is immediately interrupted by a message
@@ -463,6 +456,14 @@ void handle(const GameCmd cmd)
                         map::g_player->m_wait_turns_left = turns_to_apply - 1;
 
                         game_time::tick();
+                } else {
+                        // Not allowed to long-wait
+                        msg_log::add(
+                                prevent_msg,
+                                colors::text(),
+                                MsgInterruptPlayer::no,
+                                MorePromptOnMsg::no,
+                                CopyToMsgHistory::no);
                 }
         } break;
 
@@ -643,23 +644,29 @@ void handle(const GameCmd cmd)
         case GameCmd::auto_move_down_right:
         case GameCmd::auto_move_down_left:
         case GameCmd::auto_move_up_left: {
+                bool is_allowed = true;
+                std::string prevent_msg = "";
                 if (actor::is_player_seeing_burning_terrain()) {
-                        msg_log::add(common_text::g_fire_prevent_cmd);
+                        is_allowed = false;
+                        prevent_msg = common_text::g_fire_prevent_cmd;
                 } else if (!actor::seen_foes(*map::g_player).empty()) {
-                        msg_log::add(
-                                common_text::g_mon_prevent_cmd,
-                                colors::text(),
-                                MsgInterruptPlayer::no,
-                                MorePromptOnMsg::no,
-                                CopyToMsgHistory::no);
+                        is_allowed = false;
+                        prevent_msg = common_text::g_mon_prevent_cmd;
                 } else if (!map::g_player->m_properties.allow_see()) {
-                        msg_log::add("Not while blind.");
+                        is_allowed = false;
+                        prevent_msg = "Not while blind.";
                 } else if (map::g_player->m_properties.has(PropId::poisoned)) {
-                        msg_log::add("Not while poisoned.");
+                        is_allowed = false;
+                        prevent_msg = "Not while poisoned.";
                 } else if (map::g_player->m_properties.has(PropId::confused)) {
-                        msg_log::add("Not while confused.");
-                } else {
-                        // We are allowed to use auto-move
+                        is_allowed = false;
+                        prevent_msg = "Not while confused.";
+                } else if (map::g_player->m_properties.has(PropId::infected)) {
+                        is_allowed = false;
+                        prevent_msg = "Not while infected.";
+                }
+
+                if (is_allowed) {
                         auto dir = (Dir)0;
 
                         switch (cmd) {
@@ -696,11 +703,20 @@ void handle(const GameCmd cmd)
                                 break;
 
                         default:
-                                PANIC;
+                                ASSERT(false);
+                                dir = Dir::right;
                                 break;
                         }
 
                         map::g_player->set_auto_move(dir);
+                } else {
+                        // Not allowed to use auto-move
+                        msg_log::add(
+                                prevent_msg,
+                                colors::text(),
+                                MsgInterruptPlayer::no,
+                                MorePromptOnMsg::no,
+                                CopyToMsgHistory::no);
                 }
         } break;
 
