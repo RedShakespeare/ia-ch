@@ -198,9 +198,7 @@ void Door::on_hit(
                         ASSERT(actor);
 
                         const bool is_player = actor == map::g_player;
-
                         const bool is_cell_seen = map::is_pos_seen_by_player(m_pos);
-
                         const bool is_weak = actor->m_properties.has(PropId::weakened);
 
                         switch (m_type) {
@@ -223,7 +221,7 @@ void Door::on_hit(
                                                 destr_chance_pct += 30;
                                         }
 
-                                        if (is_weak) {
+                                        if (is_weak || is_hidden()) {
                                                 destr_chance_pct = 0;
                                         }
 
@@ -371,6 +369,7 @@ void Door::on_hit(
             dmg_type == DmgType::fire &&
             matl() == Matl::wood) {
                 try_start_burning(true);
+                reveal(Verbose::yes);
         }
 
 } // on_hit

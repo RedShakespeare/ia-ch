@@ -144,7 +144,8 @@ TEST_CASE("Saving and loading the game")
 
                 item->set_curse(
                         item_curse::Curse(
-                                std::make_unique<item_curse::HitChancePenalty>()));
+                                std::make_unique<
+                                        item_curse::HitChancePenalty>()));
 
                 inv.put_in_backpack(item);
 
@@ -226,10 +227,10 @@ TEST_CASE("Saving and loading the game")
                 REQUIRE(!item::g_data[(size_t)item::Id::scroll_opening]
                                  .is_spell_domain_known);
 
-                REQUIRE(!item::g_data[(size_t)item::Id::scroll_searching]
+                REQUIRE(!item::g_data[(size_t)item::Id::scroll_summon_mon]
                                  .is_spell_domain_known);
 
-                REQUIRE(!item::g_data[(size_t)item::Id::scroll_searching]
+                REQUIRE(!item::g_data[(size_t)item::Id::scroll_summon_mon]
                                  .is_identified);
 
                 // Player
