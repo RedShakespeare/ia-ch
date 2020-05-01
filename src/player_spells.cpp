@@ -55,8 +55,7 @@ static void try_cast(Spell* const spell)
         msg_log::clear();
 
         const auto skill = map::g_player->spell_skill(spell->id());
-
-        const Range spi_cost_range = spell->spi_cost(skill);
+        const auto spi_cost_range = spell->spi_cost(skill);
 
         if (spi_cost_range.max >= map::g_player->m_sp) {
                 const std::string msg =
@@ -307,7 +306,7 @@ void BrowseSpell::draw()
                 P(panels::center_x(Panel::screen), 0),
                 colors::title());
 
-        P p(0, 1);
+        P p(0, 0);
 
         for (int i = 0; i < nr_spells; ++i) {
                 std::string key_str = "(?)";
@@ -356,50 +355,42 @@ void BrowseSpell::draw()
                         fill_str.push_back('.');
                 }
 
-                const Color fill_color = colors::gray().fraction(3.0);
-
-                io::draw_text(
-                        fill_str,
-                        Panel::item_menu,
-                        P(p.x + (int)name.size(), p.y),
-                        fill_color);
-
-                p.x = spi_label_x;
-
-                std::string str = "SP: ";
-
-                io::draw_text(
-                        str,
-                        Panel::item_menu,
-                        p,
-                        colors::dark_gray());
-
-                p.x += str.size();
-
                 const SpellId id = spell->id();
-
                 const auto skill = player_spells::spell_skill(id);
-
                 const Range spi_cost = spell->spi_cost(skill);
 
-                const std::string lower_str = std::to_string(spi_cost.min);
-                const std::string upper_str = std::to_string(spi_cost.max);
+                if (spi_cost.min > 0) {
+                        const Color fill_color = colors::gray().fraction(3.0);
 
-                str =
-                        (spi_cost.max == 1)
-                        ? "1"
-                        : (lower_str + "-" + upper_str);
+                        io::draw_text(
+                                fill_str,
+                                Panel::item_menu,
+                                P(p.x + (int)name.size(), p.y),
+                                fill_color);
 
-                io::draw_text(
-                        str,
-                        Panel::item_menu,
-                        p,
-                        colors::white());
+                        p.x = spi_label_x;
+
+                        std::string str = "SP: ";
+
+                        io::draw_text(
+                                str,
+                                Panel::item_menu,
+                                p,
+                                colors::dark_gray());
+
+                        p.x += str.size();
+
+                        io::draw_text(
+                                spi_cost.str(),
+                                Panel::item_menu,
+                                p,
+                                colors::white());
+                }
 
                 if (spell->can_be_improved_with_skill()) {
                         p.x = skill_label_x;
 
-                        str = "Skill: ";
+                        std::string str = "Skill: ";
 
                         io::draw_text(
                                 str,

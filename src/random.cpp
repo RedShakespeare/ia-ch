@@ -29,9 +29,10 @@ std::string Range::str() const
         if (min_actual == max_actual) {
                 return std::to_string(min_actual);
         } else {
-                return std::to_string(min_actual) +
+                return (
+                        std::to_string(min_actual) +
                         "-" +
-                        std::to_string(max_actual);
+                        std::to_string(max_actual));
         }
 }
 

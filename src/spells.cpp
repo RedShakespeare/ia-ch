@@ -224,11 +224,10 @@ StateId BrowseSpell::id()
 // -----------------------------------------------------------------------------
 Range Spell::spi_cost(const SpellSkill skill) const
 {
-        const int cost_max = std::max(1, max_spi_cost(skill));
+        const int cost_max = max_spi_cost(skill);
+        const int cost_min = (cost_max + 1) / 2;
 
-        const int cost_min = std::max(1, (cost_max + 1) / 2);
-
-        return Range(cost_min, cost_max);
+        return {cost_min, cost_max};
 }
 
 void Spell::cast(
@@ -326,9 +325,11 @@ void Spell::cast(
         bool allow_cast = true;
 
         if (spell_src == SpellSrc::learned) {
-                const Range cost = spi_cost(skill);
+                const auto cost = spi_cost(skill);
 
-                actor::hit_sp(*caster, cost.roll(), Verbose::no);
+                if (cost.min > 0) {
+                        actor::hit_sp(*caster, cost.roll(), Verbose::no);
+                }
 
                 // Check properties which MAY allow casting with a random chance
                 allow_cast =
@@ -561,18 +562,18 @@ Range ForceBolt::damage(
 
         switch (skill) {
         case SpellSkill::basic:
-                return Range(3, 4); // Avg 3.5
+                return {3, 4}; // Avg 3.5
 
         case SpellSkill::expert:
-                return Range(5, 7); // Avg 6.0
+                return {5, 7}; // Avg 6.0
 
         case SpellSkill::master:
-                return Range(9, 12); // Avg 10.5
+                return {9, 12}; // Avg 10.5
         }
 
         ASSERT(false);
 
-        return Range(1, 1);
+        return {1, 1};
 }
 
 std::vector<std::string> ForceBolt::descr_specific(const SpellSkill skill) const
@@ -588,18 +589,18 @@ Range Darkbolt::damage(const SpellSkill skill, const actor::Actor& caster) const
 
         switch (skill) {
         case SpellSkill::basic:
-                return Range(4, 9); // Avg 6.5
+                return {4, 9}; // Avg 6.5
 
         case SpellSkill::expert:
-                return Range(5, 11); // Avg 8.0
+                return {5, 11}; // Avg 8.0
 
         case SpellSkill::master:
-                return Range(6, 13); // Avg 9.5
+                return {6, 13}; // Avg 9.5
         }
 
         ASSERT(false);
 
-        return Range(1, 1);
+        return {1, 1};
 }
 
 std::vector<std::string> Darkbolt::descr_specific(const SpellSkill skill) const
