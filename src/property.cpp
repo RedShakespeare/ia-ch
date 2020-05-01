@@ -303,14 +303,19 @@ PropEnded PropInfected::on_tick()
                 return PropEnded::no;
         }
 
-        const int allow_disease_below_turns_left = 50;
+        if ((m_nr_turns_left < 20) &&
+            !has_warned &&
+            rnd::coin_toss()) {
+                msg_log::add(
+                        "My infection is getting worse!",
+                        colors::msg_note(),
+                        MsgInterruptPlayer::no,
+                        MorePromptOnMsg::yes);
 
-        const int apply_disease_one_in_n = m_nr_turns_left - 1;
+                has_warned = true;
+        }
 
-        const bool apply_disease =
-                (m_nr_turns_left <= allow_disease_below_turns_left) &&
-                ((apply_disease_one_in_n <= 0) ||
-                 rnd::one_in(apply_disease_one_in_n));
+        const bool apply_disease = (m_nr_turns_left <= 1);
 
         if (apply_disease) {
                 auto* const owner = m_owner;

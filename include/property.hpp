@@ -81,6 +81,10 @@ public:
                 return m_id;
         }
 
+        virtual void save() const {}
+
+        virtual void load() {}
+
         int nr_turns_left() const
         {
                 return m_nr_turns_left;
@@ -112,10 +116,6 @@ public:
                 return m_src;
         }
 
-        virtual void save() const {}
-
-        virtual void load() {}
-
         virtual bool is_finished() const
         {
                 return m_nr_turns_left == 0;
@@ -124,6 +124,11 @@ public:
         virtual PropAlignment alignment() const
         {
                 return m_data.alignment;
+        }
+
+        virtual std::optional<Color> color_override() const
+        {
+                return {};
         }
 
         virtual bool allow_display_turns() const
@@ -352,9 +357,17 @@ public:
         PropInfected() :
                 Prop(PropId::infected) {}
 
+        std::optional<Color> color_override() const override
+        {
+                return colors::orange();
+        }
+
         PropEnded on_tick() override;
 
         void on_applied() override;
+
+private:
+        bool has_warned {false};
 };
 
 class PropDiseased : public Prop {

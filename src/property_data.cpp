@@ -556,7 +556,7 @@ static void init_data_list()
         add(d);
 
         d.id = PropId::infected;
-        d.std_rnd_turns = Range(100, 100);
+        d.std_rnd_turns = Range(50, 100);
         d.name = "Infected";
         d.name_short = "Infected";
         d.descr = "A nasty infection, this should be treated immediately";

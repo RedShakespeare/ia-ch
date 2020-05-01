@@ -884,7 +884,7 @@ void handle(const GameCmd cmd)
         } break;
 
         case GameCmd::debug_f8: {
-                map::g_player->m_properties.apply(new PropCursed());
+                map::g_player->m_properties.apply(new PropInfected());
         } break;
 
         case GameCmd::debug_f9: {

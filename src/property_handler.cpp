@@ -247,12 +247,23 @@ bool PropHandler::try_apply_more_on_existing_intr_prop(
                         old_prop->m_duration_mode =
                                 PropDurationMode::indefinite;
                 } else if (!old_is_permanent) {
-                        // Both the old and new property are temporary, use the
-                        // longest duration of the two
-                        old_prop->m_nr_turns_left =
-                                std::max(
-                                        old_prop->m_nr_turns_left,
-                                        new_prop.m_nr_turns_left);
+                        // Both the old and new property are temporary
+
+                        // TODO: This is a hack - infection countdown should not
+                        // be reset when another infection is applied
+                        if (new_prop.id() == PropId::infected) {
+                                // Use shortest duration
+                                old_prop->m_nr_turns_left =
+                                        std::min(
+                                                old_prop->m_nr_turns_left,
+                                                new_prop.m_nr_turns_left);
+                        } else {
+                                // Use longest duration
+                                old_prop->m_nr_turns_left =
+                                        std::max(
+                                                old_prop->m_nr_turns_left,
+                                                new_prop.m_nr_turns_left);
+                        }
                 }
 
                 if (verbose == Verbose::yes) {
@@ -611,11 +622,15 @@ std::vector<ColoredString> PropHandler::property_names_short() const
                         }
                 }
 
-                const PropAlignment alignment = prop->alignment();
+                const auto alignment = prop->alignment();
 
                 Color color;
 
-                if (alignment == PropAlignment::good) {
+                auto color_override = prop->color_override();
+
+                if (color_override) {
+                        color = color_override.value();
+                } else if (alignment == PropAlignment::good) {
                         color = colors::msg_good();
                 } else if (alignment == PropAlignment::bad) {
                         color = colors::msg_bad();
@@ -629,7 +644,7 @@ std::vector<ColoredString> PropHandler::property_names_short() const
         return line;
 }
 
-// TODO: Lots of copy paste from 'text_line' above, refactor
+// TODO: Lots of copy paste here, refactor
 std::vector<PropTextListEntry> PropHandler::property_names_and_descr() const
 {
         std::vector<PropTextListEntry> list;
@@ -666,7 +681,11 @@ std::vector<PropTextListEntry> PropHandler::property_names_and_descr() const
 
                 Color color;
 
-                if (alignment == PropAlignment::good) {
+                auto color_override = prop->color_override();
+
+                if (color_override) {
+                        color = color_override.value();
+                } else if (alignment == PropAlignment::good) {
                         color = colors::msg_good();
                 } else if (alignment == PropAlignment::bad) {
                         color = colors::msg_bad();
