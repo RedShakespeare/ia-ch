@@ -55,6 +55,8 @@ static bool is_trait_blocked_for_bg(
         case Trait::silent:
         case Trait::vicious:
         case Trait::ruthless:
+                break;
+
         case Trait::treasure_hunter: {
                 switch (bg) {
                 case Bg::ghoul:
