@@ -269,6 +269,9 @@ void throw_item(
                                                 item_thrown_data.ranged
                                                         .dmg_method,
                                                 AllowWound::yes);
+
+                                        static_cast<actor::Mon*>(actor_here)
+                                                ->become_aware_player(false);
                                 }
 
                                 item_thrown.on_ranged_hit(*actor_here);
