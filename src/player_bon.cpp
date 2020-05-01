@@ -46,17 +46,6 @@ static bool is_trait_blocked_for_bg(
                 return occultist_domain == OccultistDomain::clairvoyant;
         } break;
 
-        case Trait::self_aware:
-        case Trait::stout_spirit:
-        case Trait::strong_spirit:
-        case Trait::mighty_spirit:
-        case Trait::stealthy:
-        case Trait::imperceptible:
-        case Trait::silent:
-        case Trait::vicious:
-        case Trait::ruthless:
-                break;
-
         case Trait::treasure_hunter: {
                 switch (bg) {
                 case Bg::ghoul:
@@ -100,6 +89,15 @@ static bool is_trait_blocked_for_bg(
                 return bg == Bg::ghoul;
                 break;
 
+        case Trait::self_aware:
+        case Trait::stout_spirit:
+        case Trait::strong_spirit:
+        case Trait::mighty_spirit:
+        case Trait::stealthy:
+        case Trait::imperceptible:
+        case Trait::silent:
+        case Trait::vicious:
+        case Trait::ruthless:
         case Trait::adept_melee:
         case Trait::expert_melee:
         case Trait::master_melee:

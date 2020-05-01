@@ -560,7 +560,7 @@
         </audio>
 
         <attributes>
-            <hit_points>6</hit_points>
+            <hit_points>3</hit_points>
             <spirit>8</spirit>
             <speed>fast</speed>
             <shock_level>frightening</shock_level>
@@ -582,7 +582,7 @@
 
         <attacks>
             <attack id="strangle">
-                <damage>3</damage>
+                <damage>2</damage>
             </attack>
         </attacks>
 
@@ -2212,7 +2212,7 @@
         </audio>
 
         <attributes>
-            <hit_points>6</hit_points>
+            <hit_points>4</hit_points>
             <spirit>0</spirit>
             <speed>normal</speed>
             <shock_level>none</shock_level>
@@ -2303,7 +2303,7 @@
         </audio>
 
         <attributes>
-            <hit_points>6</hit_points>
+            <hit_points>4</hit_points>
             <spirit>0</spirit>
             <speed>normal</speed>
             <shock_level>none</shock_level>
@@ -2397,7 +2397,7 @@
         </audio>
 
         <attributes>
-            <hit_points>6</hit_points>
+            <hit_points>4</hit_points>
             <spirit>0</spirit>
             <speed>normal</speed>
             <shock_level>none</shock_level>
@@ -3525,11 +3525,11 @@
         </audio>
 
         <attributes>
-            <hit_points>4</hit_points>
+            <hit_points>6</hit_points>
             <spirit>2</spirit>
             <speed>fast</speed>
             <shock_level>none</shock_level>
-            <melee>50</melee>
+            <melee>40</melee>
             <ranged>0</ranged>
             <dodging>20</dodging>
             <stealth>0</stealth>
