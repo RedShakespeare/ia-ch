@@ -297,50 +297,54 @@ PropEnded PropInfected::on_tick()
         ASSERT(!m_owner->m_properties.has(PropId::diseased));
 #endif // NDEBUG
 
-        if (map::g_player->m_active_medical_bag) {
-                ++m_nr_turns_left;
+        if (m_owner->is_player()) {
+                if (map::g_player->m_active_medical_bag) {
+                        ++m_nr_turns_left;
 
-                return PropEnded::no;
-        }
+                        return PropEnded::no;
+                }
 
-        if ((m_nr_turns_left < 20) &&
-            !has_warned &&
-            rnd::coin_toss()) {
-                msg_log::add(
-                        "My infection is getting worse!",
-                        colors::msg_note(),
-                        MsgInterruptPlayer::no,
-                        MorePromptOnMsg::yes);
+                if ((m_nr_turns_left < 20) &&
+                    !has_warned &&
+                    rnd::coin_toss()) {
+                        msg_log::add(
+                                "My infection is getting worse!",
+                                colors::msg_note(),
+                                MsgInterruptPlayer::no,
+                                MorePromptOnMsg::yes);
 
-                has_warned = true;
+                        has_warned = true;
+                }
         }
 
         const bool apply_disease = (m_nr_turns_left <= 1);
 
-        if (apply_disease) {
-                auto* const owner = m_owner;
-
-                owner->m_properties.end_prop(
-                        id(),
-                        PropEndConfig(
-                                PropEndAllowCallEndHook::no,
-                                PropEndAllowMsg::no,
-                                PropEndAllowHistoricMsg::yes));
-
-                // NOTE: This property is now deleted
-
-                auto prop_diseased = new PropDiseased();
-
-                prop_diseased->set_indefinite();
-
-                owner->m_properties.apply(prop_diseased);
-
-                msg_log::more_prompt();
-
-                return PropEnded::yes;
+        if (!apply_disease) {
+                return PropEnded::no;
         }
 
-        return PropEnded::no;
+        // Time to apply disease
+
+        auto* const owner = m_owner;
+
+        owner->m_properties.end_prop(
+                id(),
+                PropEndConfig(
+                        PropEndAllowCallEndHook::no,
+                        PropEndAllowMsg::no,
+                        PropEndAllowHistoricMsg::yes));
+
+        // NOTE: This property is now deleted
+
+        auto prop_diseased = new PropDiseased();
+
+        prop_diseased->set_indefinite();
+
+        owner->m_properties.apply(prop_diseased);
+
+        msg_log::more_prompt();
+
+        return PropEnded::yes;
 }
 
 void PropInfected::on_applied()
