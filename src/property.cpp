@@ -2057,6 +2057,11 @@ void PropAuraOfDecay::run_effect_on_actors() const
                 const int dmg = rnd::range(1, m_max_dmg);
 
                 actor::hit(*actor, dmg, DmgType::physical);
+
+                if (!actor->is_player()) {
+                        static_cast<actor::Mon*>(actor)
+                                ->become_aware_player(false);
+                }
         }
 }
 

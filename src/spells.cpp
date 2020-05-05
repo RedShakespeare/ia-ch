@@ -268,7 +268,8 @@ void Spell::cast(
 
                 // Make sound if noisy - casting from scrolls is always noisy
                 if (is_noisy(skill) || (spell_src == SpellSrc::manuscript)) {
-                        Snd snd("",
+                        Snd snd(
+                                "",
                                 audio::SfxId::spell_generic,
                                 IgnoreMsgIfOriginSeen::yes,
                                 caster->m_pos,
@@ -310,7 +311,8 @@ void Spell::cast(
                                 spell_msg = mon_name + " " + spell_msg;
                         }
 
-                        Snd snd(spell_msg,
+                        Snd snd(
+                                spell_msg,
                                 audio::SfxId::END,
                                 IgnoreMsgIfOriginSeen::no,
                                 caster->m_pos,
@@ -798,6 +800,10 @@ void SpellBolt::run_effect(
 
         m_impl->on_hit(*target, skill);
 
+        if (!target->is_player()) {
+                static_cast<actor::Mon*>(target)->become_aware_player(false);
+        }
+
         Snd snd("",
                 audio::SfxId::END,
                 IgnoreMsgIfOriginSeen::yes,
@@ -911,6 +917,11 @@ void SpellAzaWrath::run_effect(
                         DmgMethod::END,
                         AllowWound::no);
 
+                if (!target->is_player()) {
+                        static_cast<actor::Mon*>(target)
+                                ->become_aware_player(false);
+                }
+
                 if (target->is_alive()) {
                         auto prop = new PropParalyzed();
 
@@ -928,7 +939,8 @@ void SpellAzaWrath::run_effect(
                         target->m_properties.apply(prop);
                 }
 
-                Snd snd("",
+                Snd snd(
+                        "",
                         audio::SfxId::END,
                         IgnoreMsgIfOriginSeen::yes,
                         target->m_pos,
@@ -2092,18 +2104,13 @@ void SpellKnockBack::run_effect(
 
         ASSERT(!caster->is_player());
 
-        Color msg_clr = colors::msg_good();
-
+        auto msg_clr = colors::msg_good();
         std::string target_str = "me";
-
         auto* caster_used = caster;
-
         auto* const mon = static_cast<actor::Mon*>(caster_used);
-
         auto* target = mon->m_ai_state.target;
 
         ASSERT(target);
-
         ASSERT(mon->m_ai_state.is_target_seen);
 
         // Spell resistance?
@@ -2143,6 +2150,11 @@ void SpellKnockBack::run_effect(
         }
 
         knockback::run(*target, caster->m_pos, false);
+
+        if (!target->is_player()) {
+                static_cast<actor::Mon*>(target)
+                        ->become_aware_player(false);
+        }
 }
 
 bool SpellKnockBack::allow_mon_cast_now(actor::Mon& mon) const
@@ -2223,6 +2235,11 @@ void SpellEnfeeble::run_effect(
                 prop->set_duration(duration);
 
                 target->m_properties.apply(prop);
+
+                if (!target->is_player()) {
+                        static_cast<actor::Mon*>(target)
+                                ->become_aware_player(false);
+                }
         }
 }
 
@@ -2330,6 +2347,11 @@ void SpellSlow::run_effect(
                 prop->set_duration(duration);
 
                 target->m_properties.apply(prop);
+
+                if (!target->is_player()) {
+                        static_cast<actor::Mon*>(target)
+                                ->become_aware_player(false);
+                }
         }
 }
 
@@ -2445,6 +2467,11 @@ void SpellTerrify::run_effect(
                 prop->set_duration(duration);
 
                 target->m_properties.apply(prop);
+
+                if (!target->is_player()) {
+                        static_cast<actor::Mon*>(target)
+                                ->become_aware_player(false);
+                }
         }
 }
 
@@ -2540,6 +2567,11 @@ void SpellDisease::run_effect(
         }
 
         target->m_properties.apply(new PropDiseased());
+
+        if (!target->is_player()) {
+                static_cast<actor::Mon*>(target)
+                        ->become_aware_player(false);
+        }
 }
 
 bool SpellDisease::allow_mon_cast_now(actor::Mon& mon) const
@@ -2911,6 +2943,11 @@ void SpellMiGoHypno::run_effect(
         } else {
                 msg_log::add("I feel dizzy.");
         }
+
+        if (!target->is_player()) {
+                static_cast<actor::Mon*>(target)
+                        ->become_aware_player(false);
+        }
 }
 
 bool SpellMiGoHypno::allow_mon_cast_now(actor::Mon& mon) const
@@ -2975,6 +3012,11 @@ void SpellBurn::run_effect(
         prop->set_duration(2 + (int)skill);
 
         target->m_properties.apply(prop);
+
+        if (!target->is_player()) {
+                static_cast<actor::Mon*>(target)
+                        ->become_aware_player(false);
+        }
 }
 
 bool SpellBurn::allow_mon_cast_now(actor::Mon& mon) const
@@ -3027,6 +3069,11 @@ void SpellDeafen::run_effect(
         prop->set_duration(75 + (int)skill * 75);
 
         target->m_properties.apply(prop);
+
+        if (!target->is_player()) {
+                static_cast<actor::Mon*>(target)
+                        ->become_aware_player(false);
+        }
 }
 
 bool SpellDeafen::allow_mon_cast_now(actor::Mon& mon) const
