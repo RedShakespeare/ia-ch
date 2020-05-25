@@ -1669,7 +1669,7 @@ void SpellBless::run_effect(
 {
         auto prop = new PropBlessed();
 
-        prop->set_duration(20 + (int)skill * 100);
+        prop->set_duration(20 + (int)skill * 60);
 
         caster->m_properties.apply(prop);
 }
