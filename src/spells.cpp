@@ -1360,7 +1360,7 @@ void SpellSpectralWpns::run_effect(
         // Cap the number of weapons spawned
         rnd::shuffle(weapons);
 
-        const size_t nr_weapons_max = 2 + (int)skill;
+        const size_t nr_weapons_max = 1 + (int)skill;
 
         if (nr_weapons_max < weapons.size()) {
                 weapons.resize(nr_weapons_max);
@@ -1439,19 +1439,29 @@ std::vector<std::string> SpellSpectralWpns::descr_specific(
         std::vector<std::string> descr;
 
         descr.emplace_back(
-                "Conjures ghostly copies of all carried weapons, which will "
-                "float through the air and protect their master. The weapons "
-                "almost always hit their target, but they quickly "
-                "dematerialize when damaged. It is only possible to create "
-                "copies of basic melee weapons - \"modern\" mechanisms such as "
-                "pistols or machine guns are far too complex.");
+                "Conjures ghostly copies of carried weapons, which will float "
+                "through the air and protect their master. The weapons almost "
+                "always hit their target, but they quickly dematerialize when "
+                "damaged. It is only possible to create copies of basic "
+                "melee weapons - \"modern\" mechanisms such as pistols or "
+                "machine guns are far too complex.");
 
-        const size_t nr_weapons_max = 2 + (int)skill;
+        const size_t nr_weapons_max = 1 + (int)skill;
 
-        descr.push_back(
+        std::string nr_summoned_descr =
                 "A maximum of " +
                 std::to_string(nr_weapons_max) +
-                " weapons are spawned on casting the spell.");
+                " ";
+
+        if (nr_weapons_max == 1) {
+                nr_summoned_descr += "weapon is";
+        } else {
+                nr_summoned_descr += "weapons are";
+        }
+
+        nr_summoned_descr += " spawned on casting the spell.";
+
+        descr.push_back(nr_summoned_descr);
 
         if (skill >= SpellSkill::expert) {
                 descr.emplace_back("The weapons can see invisible creatures.");
