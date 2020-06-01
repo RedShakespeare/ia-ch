@@ -244,14 +244,25 @@ void MainMenuState::draw()
                         colors::gold());
         }
 
+        if (config::is_gj_mode()) {
+                io::draw_text(
+                        "GJ MODE ENABLED",
+                        Panel::screen,
+                        P(1, 1),
+                        colors::black(),
+                        io::DrawBg::yes,
+                        colors::yellow());
+        }
 #ifndef NDEBUG
-        io::draw_text(
-                "DEBUG MODE",
-                Panel::screen,
-                P(1, 1),
-                colors::black(),
-                io::DrawBg::yes,
-                colors::yellow());
+        else {
+                io::draw_text(
+                        "DEBUG MODE",
+                        Panel::screen,
+                        P(1, 1),
+                        colors::black(),
+                        io::DrawBg::yes,
+                        colors::yellow());
+        }
 #endif // NDEBUG
 
         const std::vector<std::string> labels = {

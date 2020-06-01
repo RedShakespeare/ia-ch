@@ -48,11 +48,15 @@ static WeightedItems<actor::Id> valid_auto_spawn_monsters(
 {
         WeightedItems<actor::Id> weighted_ids;
 
-        const int effective_dlvl =
+        int effective_dlvl =
                 std::clamp(
                         map::g_dlvl + nr_lvls_out_of_depth,
                         1,
                         g_dlvl_last);
+
+        if (config::is_gj_mode()) {
+                effective_dlvl = rnd::range(effective_dlvl, g_dlvl_last);
+        }
 
         // Get list of actors currently on the level to help avoid spawning
         // multiple unique monsters of the same id

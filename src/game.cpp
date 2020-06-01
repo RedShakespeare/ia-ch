@@ -26,6 +26,8 @@
 #include "msg_log.hpp"
 #include "popup.hpp"
 #include "postmortem.hpp"
+#include "property.hpp"
+#include "property_factory.hpp"
 #include "query.hpp"
 #include "saving.hpp"
 #include "sdl_base.hpp"
@@ -42,7 +44,7 @@ static TimeData s_start_time;
 
 static std::vector<HistoryEvent> s_history_events;
 
-static const std::string intro_msg =
+static const std::string s_intro_msg =
         "I stand at the end of a cobbled forest path, before me lies a shunned "
         "and decrepit old church building. This is the access point to the "
         "domains of the abhorred \"Cult of Starry Wisdom\". "
@@ -51,7 +53,7 @@ static const std::string intro_msg =
         "destiny, an artifact of non-human origin called \"The shining "
         "Trapezohedron\" - a window to all the secrets of the universe!";
 
-static const std::vector<std::string> win_msg = {
+static const std::vector<std::string> s_win_msg = {
         {"As I approach the crystal, an eerie glow illuminates the area. I "
          "notice a figure observing me from the edge of the light. There is no "
          "doubt concerning the nature of this entity; it is the Faceless God "
@@ -355,7 +357,7 @@ void GameState::on_start()
                         io::clear_screen();
 
                         popup::msg(
-                                intro_msg,
+                                s_intro_msg,
                                 "The story so far...",
                                 audio::SfxId::END,
                                 14);
@@ -380,6 +382,22 @@ void GameState::on_start()
                 if (map_control::g_controller) {
                         map_control::g_controller->on_start();
                 }
+        }
+
+        if (config::is_gj_mode() &&
+            (m_entry_mode == GameEntryMode::new_game)) {
+                // Start with some disadvantages
+                auto* const cursed = property_factory::make(PropId::cursed);
+                cursed->set_indefinite();
+
+                auto* const diseased = property_factory::make(PropId::diseased);
+                diseased->set_indefinite();
+
+                auto* const burning = property_factory::make(PropId::burning);
+
+                map::g_player->m_properties.apply(cursed);
+                map::g_player->m_properties.apply(diseased);
+                map::g_player->m_properties.apply(burning);
         }
 
         s_start_time = current_time();
@@ -486,7 +504,7 @@ void WinGameState::draw()
 
         int y = 2;
 
-        for (const std::string& section_msg : win_msg) {
+        for (const std::string& section_msg : s_win_msg) {
                 const auto section_lines =
                         text_format::split(section_msg, max_w);
 

@@ -72,6 +72,7 @@ static int s_delay_shotgun = -1;
 static int s_delay_explosion = -1;
 static std::string s_default_player_name;
 static bool s_is_bot_playing = false;
+static bool s_is_gj_mode = false;
 static bool s_is_audio_enabled = false;
 static bool s_is_amb_audio_enabled = false;
 static bool s_is_amb_audio_preloaded = false;
@@ -701,6 +702,7 @@ void init()
 {
         s_font_name = "";
         s_is_bot_playing = false;
+        s_is_gj_mode = false;
 
         set_default_variables();
 
@@ -823,6 +825,16 @@ bool is_bot_playing()
 void toggle_bot_playing()
 {
         s_is_bot_playing = !s_is_bot_playing;
+}
+
+bool is_gj_mode()
+{
+        return s_is_gj_mode;
+}
+
+void toggle_gj_mode()
+{
+        s_is_gj_mode = !s_is_gj_mode;
 }
 
 bool is_light_explosive_prompt()

@@ -39,6 +39,11 @@ int main(int argc, char** argv)
                 if (arg_str == "--bot") {
                         config::toggle_bot_playing();
                 }
+
+                // Extra challenge for user "GJ" from the Discord chat ;-)
+                if (arg_str == "--gj") {
+                        config::toggle_gj_mode();
+                }
         }
 #endif // NDEBUG
 

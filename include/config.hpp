@@ -45,6 +45,8 @@ bool is_amb_audio_enabled();
 bool is_amb_audio_preloaded();
 bool is_bot_playing();
 void toggle_bot_playing();
+bool is_gj_mode();
+void toggle_gj_mode();
 bool is_light_explosive_prompt();
 bool is_drink_malign_pot_prompt();
 bool is_ranged_wpn_meleee_prompt();

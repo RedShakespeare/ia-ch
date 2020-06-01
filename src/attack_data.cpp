@@ -231,6 +231,12 @@ MeleeAttData::MeleeAttData(
             (wpn.data().melee.dmg_method == DmgMethod::piercing)) {
                 dmg_range = dmg_range.scaled_pct(25);
         }
+
+        if (config::is_gj_mode() &&
+            attacker &&
+            defender->is_player()) {
+                dmg_range = dmg_range.scaled_pct(200);
+        }
 }
 
 RangedAttData::RangedAttData(
@@ -410,6 +416,12 @@ RangedAttData::RangedAttData(
             (wpn.data().ranged.dmg_method == DmgMethod::piercing)) {
                 dmg_range.scaled_pct(25);
         }
+
+        if (config::is_gj_mode() &&
+            attacker &&
+            defender->is_player()) {
+                dmg_range = dmg_range.scaled_pct(200);
+        }
 }
 
 ThrowAttData::ThrowAttData(
@@ -564,5 +576,11 @@ ThrowAttData::ThrowAttData(
         if (defender->m_properties.has(PropId::reduced_pierce_dmg) &&
             (item.data().ranged.dmg_method == DmgMethod::piercing)) {
                 dmg_range.scaled_pct(25);
+        }
+
+        if (config::is_gj_mode() &&
+            attacker &&
+            defender->is_player()) {
+                dmg_range = dmg_range.scaled_pct(200);
         }
 }
