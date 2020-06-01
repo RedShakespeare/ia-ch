@@ -554,7 +554,7 @@ bool look(actor::Mon& mon)
         }
 
         if (mon.is_aware_of_player()) {
-                mon.become_aware_player(false);
+                mon.become_aware_player(actor::AwareSource::other);
 
                 return false;
         }
@@ -583,7 +583,8 @@ bool look(actor::Mon& mon)
                         if (become_aware) {
                                 map::update_vision();
 
-                                mon.become_aware_player(true);
+                                mon.become_aware_player(
+                                        actor::AwareSource::seeing);
                         }
                         // Not aware, just become wary if non-critical fail
                         else if (is_non_critical_fail) {
@@ -595,7 +596,7 @@ bool look(actor::Mon& mon)
                         // Other actor is monster
                         map::update_vision();
 
-                        mon.become_aware_player(false);
+                        mon.become_aware_player(actor::AwareSource::other);
                 }
 
                 // Did the monster become aware?

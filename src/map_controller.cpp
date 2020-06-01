@@ -42,7 +42,7 @@ void MapControllerBoss::on_start()
 
         for (auto* const actor : game_time::g_actors) {
                 if (!actor->is_player()) {
-                        static_cast<actor::Mon*>(actor)->become_aware_player(false);
+                        static_cast<actor::Mon*>(actor)->become_aware_player(actor::AwareSource::other);
                 }
         }
 }

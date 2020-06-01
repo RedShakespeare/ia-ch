@@ -7,6 +7,7 @@ Gameplay
 * Changed Electric Gun damage from 4-13 to 8-12
 * The stealth penalty in lit positions is much higher than before (see also bug fixes below concerning stealth and darkness)
 * Monsters no longer become aware of the player from negative properties (burning, infections, etc) or from taking damage (it is the attack actions and sounds which makes them aware), so now it is possible to for example throw a Molotov Cocktail at a monster, and escape with Cloud Minds while it is burning
+* Monsters now pause a turn when becoming aware of the player regardless of the reason for awareness - previously they only paused when becoming aware from hearing a sound
 * Updated Worm Masses and Mind Worms - they are now blind, slow (instead of normal speed), have much more hit points, are unsettling (causes shock to see), take much less damage from piercing attacks (such as pistol shots or dagger strikes), and have a very limited hearing range
 * Worm Masses and Mind Worms can no longer split while burning
 * Cultists have a kick attack

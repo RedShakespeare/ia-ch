@@ -1308,7 +1308,7 @@ void TrapWeb::trigger()
 
                         auto* const mon = static_cast<actor::Mon*>(actor);
 
-                        mon->become_aware_player(false);
+                        mon->become_aware_player(actor::AwareSource::other);
                 }
         }
 

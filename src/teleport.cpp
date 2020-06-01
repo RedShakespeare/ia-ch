@@ -266,7 +266,7 @@ void teleport(actor::Actor& actor, P p, const Array2<bool>& blocked)
                                 " intercepts my teleportation!");
 
                         static_cast<actor::Mon*>(other_actor)
-                                ->become_aware_player(false);
+                                ->become_aware_player(actor::AwareSource::other);
 
                         is_affected_by_void_traveler = true;
 

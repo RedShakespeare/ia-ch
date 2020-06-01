@@ -34,6 +34,7 @@
 #include "popup.hpp"
 #include "property.hpp"
 #include "property_data.hpp"
+#include "property_factory.hpp"
 #include "property_handler.hpp"
 #include "reload.hpp"
 #include "sound.hpp"
@@ -262,18 +263,7 @@ void Mon::hear_sound(const Snd& snd)
         }
 
         if (is_alive() && snd.is_alerting_mon()) {
-                const bool was_aware_before = is_aware_of_player();
-
-                become_aware_player(false);
-
-                // Give the monster some reaction time
-                if (!was_aware_before && !is_actor_my_leader(map::g_player)) {
-                        auto prop = new PropWaiting();
-
-                        prop->set_duration(1);
-
-                        m_properties.apply(prop);
-                }
+                become_aware_player(AwareSource::other);
         }
 }
 
@@ -331,7 +321,7 @@ std::string Mon::aware_msg_mon_hidden() const
         return m_data->aware_msg_mon_hidden;
 }
 
-void Mon::become_aware_player(const bool is_from_seeing, const int factor)
+void Mon::become_aware_player(const AwareSource source, const int factor)
 {
         if (!is_alive() || is_actor_my_leader(map::g_player)) {
                 return;
@@ -341,18 +331,32 @@ void Mon::become_aware_player(const bool is_from_seeing, const int factor)
 
         const int aware_counter_before = m_mon_aware_state.aware_counter;
 
+        const bool was_aware_before = is_aware_of_player();
+
         m_mon_aware_state.aware_counter =
                 std::max(nr_turns, aware_counter_before);
 
         m_mon_aware_state.wary_counter = m_mon_aware_state.aware_counter;
 
-        if (aware_counter_before <= 0) {
-                if (is_from_seeing && can_player_see_actor(*this)) {
+        if (!was_aware_before) {
+                // Monster became aware now
+                if ((source == AwareSource::seeing) &&
+                    can_player_see_actor(*this)) {
                         print_player_see_mon_become_aware_msg();
                 }
 
                 if (rnd::coin_toss()) {
                         speak_phrase(AlertsMon::yes);
+                }
+
+                // Give the monster some reaction time
+                if (!is_actor_my_leader(map::g_player)) {
+                        auto* const prop =
+                                property_factory::make(PropId::waiting);
+
+                        prop->set_duration(1);
+
+                        m_properties.apply(prop);
                 }
         }
 }

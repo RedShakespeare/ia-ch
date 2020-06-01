@@ -1725,7 +1725,7 @@ PropActResult PropCorpseRises::on_act()
                         ShockSrc::see_mon);
         }
 
-        static_cast<actor::Mon*>(m_owner)->become_aware_player(false);
+        static_cast<actor::Mon*>(m_owner)->become_aware_player(actor::AwareSource::other);
 
         game_time::tick();
 
@@ -2060,7 +2060,7 @@ void PropAuraOfDecay::run_effect_on_actors() const
 
                 if (!actor->is_player()) {
                         static_cast<actor::Mon*>(actor)
-                                ->become_aware_player(false);
+                                ->become_aware_player(actor::AwareSource::other);
                 }
         }
 }

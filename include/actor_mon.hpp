@@ -29,6 +29,11 @@ struct AiAvailAttacksData {
 
 namespace actor {
 
+enum class AwareSource {
+        seeing,
+        other
+};
+
 std::string get_cultist_phrase();
 
 std::string get_cultist_aware_msg_seen(const Actor& actor);
@@ -58,7 +63,7 @@ public:
 
         void hear_sound(const Snd& snd);
 
-        void become_aware_player(bool is_from_seeing, int factor = 1);
+        void become_aware_player(AwareSource source, int factor = 1);
 
         void become_wary_player();
 

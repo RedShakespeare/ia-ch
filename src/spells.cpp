@@ -801,7 +801,7 @@ void SpellBolt::run_effect(
         m_impl->on_hit(*target, skill);
 
         if (!target->is_player()) {
-                static_cast<actor::Mon*>(target)->become_aware_player(false);
+                static_cast<actor::Mon*>(target)->become_aware_player(actor::AwareSource::other);
         }
 
         Snd snd("",
@@ -919,7 +919,7 @@ void SpellAzaWrath::run_effect(
 
                 if (!target->is_player()) {
                         static_cast<actor::Mon*>(target)
-                                ->become_aware_player(false);
+                                ->become_aware_player(actor::AwareSource::other);
                 }
 
                 if (target->is_alive()) {
@@ -2163,7 +2163,7 @@ void SpellKnockBack::run_effect(
 
         if (!target->is_player()) {
                 static_cast<actor::Mon*>(target)
-                        ->become_aware_player(false);
+                        ->become_aware_player(actor::AwareSource::other);
         }
 }
 
@@ -2248,7 +2248,7 @@ void SpellEnfeeble::run_effect(
 
                 if (!target->is_player()) {
                         static_cast<actor::Mon*>(target)
-                                ->become_aware_player(false);
+                                ->become_aware_player(actor::AwareSource::other);
                 }
         }
 }
@@ -2360,7 +2360,7 @@ void SpellSlow::run_effect(
 
                 if (!target->is_player()) {
                         static_cast<actor::Mon*>(target)
-                                ->become_aware_player(false);
+                                ->become_aware_player(actor::AwareSource::other);
                 }
         }
 }
@@ -2480,7 +2480,7 @@ void SpellTerrify::run_effect(
 
                 if (!target->is_player()) {
                         static_cast<actor::Mon*>(target)
-                                ->become_aware_player(false);
+                                ->become_aware_player(actor::AwareSource::other);
                 }
         }
 }
@@ -2580,7 +2580,7 @@ void SpellDisease::run_effect(
 
         if (!target->is_player()) {
                 static_cast<actor::Mon*>(target)
-                        ->become_aware_player(false);
+                        ->become_aware_player(actor::AwareSource::other);
         }
 }
 
@@ -2956,7 +2956,7 @@ void SpellMiGoHypno::run_effect(
 
         if (!target->is_player()) {
                 static_cast<actor::Mon*>(target)
-                        ->become_aware_player(false);
+                        ->become_aware_player(actor::AwareSource::other);
         }
 }
 
@@ -3025,7 +3025,7 @@ void SpellBurn::run_effect(
 
         if (!target->is_player()) {
                 static_cast<actor::Mon*>(target)
-                        ->become_aware_player(false);
+                        ->become_aware_player(actor::AwareSource::other);
         }
 }
 
@@ -3082,7 +3082,7 @@ void SpellDeafen::run_effect(
 
         if (!target->is_player()) {
                 static_cast<actor::Mon*>(target)
-                        ->become_aware_player(false);
+                        ->become_aware_player(actor::AwareSource::other);
         }
 }
 

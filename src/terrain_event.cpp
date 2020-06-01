@@ -206,7 +206,7 @@ void EventWallCrumble::on_new_turn()
 
         // Make the monsters aware of the player
         for (auto* const mon : mon_spawned) {
-                mon->become_aware_player(false);
+                mon->become_aware_player(actor::AwareSource::other);
         }
 
         map::g_player->incr_shock(ShockLvl::terrifying, ShockSrc::see_mon);
@@ -411,7 +411,7 @@ void EventSnakeEmerge::on_new_turn()
 
                 actor->m_properties.apply(prop);
 
-                static_cast<actor::Mon*>(actor)->become_aware_player(false);
+                static_cast<actor::Mon*>(actor)->become_aware_player(actor::AwareSource::other);
         }
 
         game_time::erase_mob(this, true);

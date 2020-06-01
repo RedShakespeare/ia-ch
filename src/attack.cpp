@@ -1529,7 +1529,8 @@ void melee(
 {
         if (attacker && (attacker != map::g_player)) {
                 // Attacker is a monster, bump monster player awareness
-                static_cast<actor::Mon*>(attacker)->become_aware_player(false);
+                static_cast<actor::Mon*>(attacker)
+                        ->become_aware_player(actor::AwareSource::other);
         }
 
         map::update_vision();
@@ -1589,7 +1590,8 @@ void melee(
                 } else {
                         // A monster was attacked (by player or another monster)
                         static_cast<actor::Mon&>(defender)
-                                .become_aware_player(false);
+                                .become_aware_player(
+                                        actor::AwareSource::other);
                 }
 
                 // Attacking ends cloaking
@@ -1643,7 +1645,8 @@ DidAction ranged(
 
                 if (!attacker->is_player()) {
                         static_cast<actor::Mon*>(attacker)
-                                ->become_aware_player(false);
+                                ->become_aware_player(
+                                        actor::AwareSource::other);
                 }
 
                 game_time::tick();
