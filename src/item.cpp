@@ -906,7 +906,8 @@ void PlayerGhoulClaw::on_melee_hit(actor::Actor& actor_hit, const int dmg)
 
         if (actor_hit.is_alive()) {
                 // Poison victim from Ghoul Toxic trait?
-                if (player_bon::has_trait(Trait::toxic) && rnd::one_in(4)) {
+                if (player_bon::has_trait(Trait::toxic) &&
+                    rnd::fraction(3, 4)) {
                         actor_hit.m_properties.apply(new PropPoisoned());
                 }
 

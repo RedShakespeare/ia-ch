@@ -670,7 +670,7 @@ std::string trait_descr(const Trait id)
 
         case Trait::toxic:
                 return "+1 claw damage, you are immune to poison, and attacks "
-                       "with your claws occasionally poisons your victims";
+                       "with your claws often poisons your victims";
 
         case Trait::indomitable_fury:
                 return "While Frenzied, you are immune to Wounds, and your "
