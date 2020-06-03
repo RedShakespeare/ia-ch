@@ -58,6 +58,7 @@ struct Projectile {
 struct ProjectileFireData {
         std::vector<Projectile> projectiles {};
         std::vector<P> path {};
+        std::vector<actor::Actor*> actors_seen;
         P origin {0, 0};
         P aim_pos {0, 0};
         actor::Actor* attacker = nullptr;
@@ -709,14 +710,15 @@ static std::unique_ptr<Snd> ranged_fire_snd(
                         snd_msg_used = "";
                 }
 
-                snd = std::make_unique<Snd>(
-                        snd_msg_used,
-                        sfx,
-                        IgnoreMsgIfOriginSeen::yes,
-                        origin,
-                        att_data.attacker,
-                        vol,
-                        AlertsMon::yes);
+                snd =
+                        std::make_unique<Snd>(
+                                snd_msg_used,
+                                sfx,
+                                IgnoreMsgIfOriginSeen::yes,
+                                origin,
+                                att_data.attacker,
+                                vol,
+                                AlertsMon::yes);
         }
 
         return snd;
@@ -1149,6 +1151,13 @@ static void update_projectile_states(ProjectileFireData& fire_data)
                                 projectile_pos,
                                 *fire_data.wpn);
 
+                if (projectile.att_data->defender) {
+                        // The projectile is at a potential target to attack,
+                        // store information about an encountered actor.
+                        fire_data.actors_seen.push_back(
+                                projectile.att_data->defender);
+                }
+
                 const auto att_result =
                         ability_roll::roll(projectile.att_data->hit_chance_tot);
 
@@ -1229,10 +1238,11 @@ static void run_projectiles_messages_and_sounds(
                         // bonuses against unaware monsters.
                         // An extra sound is run when the attack ends (without a
                         // message or audio), which may alert monsters.
-                        auto snd = ranged_fire_snd(
-                                *projectile.att_data,
-                                *fire_data.wpn,
-                                fire_data.origin);
+                        auto snd =
+                                ranged_fire_snd(
+                                        *projectile.att_data,
+                                        *fire_data.wpn,
+                                        fire_data.origin);
 
                         if (snd) {
                                 snd->set_alerts_mon(AlertsMon::no);
@@ -1361,7 +1371,7 @@ static bool is_any_projectile_seen(const std::vector<Projectile>& projectiles)
         return false;
 }
 
-static void fire_projectiles(
+static ProjectileFireData fire_projectiles(
         actor::Actor* const attacker,
         item::Wpn& wpn,
         const P& origin,
@@ -1387,10 +1397,11 @@ static void fire_projectiles(
                         const auto& att_data =
                                 *fire_data.projectiles[0].att_data;
 
-                        auto snd = ranged_fire_snd(
-                                att_data,
-                                *fire_data.wpn,
-                                fire_data.origin);
+                        auto snd =
+                                ranged_fire_snd(
+                                        att_data,
+                                        *fire_data.wpn,
+                                        fire_data.origin);
 
                         if (snd) {
                                 snd->clear_msg();
@@ -1400,7 +1411,7 @@ static void fire_projectiles(
                                 snd->run();
                         }
 
-                        return;
+                        return fire_data;
                 }
 
                 update_projectile_states(fire_data);
@@ -1415,6 +1426,8 @@ static void fire_projectiles(
                         sdl_base::sleep(fire_data.animation_delay);
                 }
         }
+
+        return {};
 }
 
 static void melee_hit_actor(
@@ -1528,9 +1541,10 @@ void melee(
         item::Wpn& wpn)
 {
         if (attacker && (attacker != map::g_player)) {
-                // Attacker is a monster, bump monster player awareness
+                // A monster attacked, bump monster awareness
                 static_cast<actor::Mon*>(attacker)
-                        ->become_aware_player(actor::AwareSource::other);
+                        ->become_aware_player(
+                                actor::AwareSource::other);
         }
 
         map::update_vision();
@@ -1591,7 +1605,7 @@ void melee(
                         // A monster was attacked (by player or another monster)
                         static_cast<actor::Mon&>(defender)
                                 .become_aware_player(
-                                        actor::AwareSource::other);
+                                        actor::AwareSource::attacked);
                 }
 
                 // Attacking ends cloaking
@@ -1615,14 +1629,17 @@ DidAction ranged(
 
         const int nr_projectiles = nr_projectiles_for_ranged_weapon(wpn);
 
+        ProjectileFireData projectile_data;
+
         if ((wpn.m_ammo_loaded >= nr_projectiles) || has_inf_ammo) {
                 wpn.pre_ranged_attack();
 
-                fire_projectiles(
-                        attacker,
-                        wpn,
-                        origin,
-                        aim_pos);
+                projectile_data =
+                        fire_projectiles(
+                                attacker,
+                                wpn,
+                                origin,
+                                aim_pos);
 
                 did_attack = DidAction::yes;
 
@@ -1643,7 +1660,23 @@ DidAction ranged(
                 // Attacking ends cloaking
                 attacker->m_properties.end_prop(PropId::cloaked);
 
+                if (attacker->is_player() ||
+                    attacker->is_actor_my_leader(map::g_player)) {
+                        // Attacker is player, or a monster allied to the
+                        // player, alert all encountered monsters
+                        for (auto* const actor : projectile_data.actors_seen) {
+                                if (actor->is_player()) {
+                                        continue;
+                                }
+
+                                static_cast<actor::Mon*>(actor)
+                                        ->become_aware_player(
+                                                actor::AwareSource::attacked);
+                        }
+                }
+
                 if (!attacker->is_player()) {
+                        // A monster attacked, bump its awareness
                         static_cast<actor::Mon*>(attacker)
                                 ->become_aware_player(
                                         actor::AwareSource::other);

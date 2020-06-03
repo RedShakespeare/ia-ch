@@ -31,6 +31,8 @@ namespace actor {
 
 enum class AwareSource {
         seeing,
+        attacked,
+        spell_victim,
         other
 };
 

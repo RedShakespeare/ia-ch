@@ -271,7 +271,8 @@ void throw_item(
                                                 AllowWound::yes);
 
                                         static_cast<actor::Mon*>(actor_here)
-                                                ->become_aware_player(actor::AwareSource::other);
+                                                ->become_aware_player(
+                                                        actor::AwareSource::attacked);
                                 }
 
                                 item_thrown.on_ranged_hit(*actor_here);
