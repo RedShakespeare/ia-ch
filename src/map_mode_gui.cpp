@@ -8,6 +8,7 @@
 
 #include "actor_player.hpp"
 #include "colors.hpp"
+#include "config.hpp"
 #include "draw_box.hpp"
 #include "game.hpp"
 #include "game_time.hpp"
@@ -614,6 +615,16 @@ void draw()
         // io::draw_text(":", Panel::screen, p, colors::dark_gray());
         // ++p.x;
         // io::draw_text(turn_nr_str, Panel::screen, p, colors::white());
+
+        if (config::is_gj_mode()) {
+                draw_text_right(
+                        "GJ MODE ENABLED",
+                        Panel::screen,
+                        {panels::x1(Panel::screen), 0},
+                        colors::black(),
+                        io::DrawBg::yes,
+                        colors::gold());
+        }
 }
 
 } // namespace map_mode_gui

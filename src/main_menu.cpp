@@ -251,7 +251,7 @@ void MainMenuState::draw()
                         P(1, 1),
                         colors::black(),
                         io::DrawBg::yes,
-                        colors::yellow());
+                        colors::gold());
         }
 #ifndef NDEBUG
         else {
@@ -261,7 +261,7 @@ void MainMenuState::draw()
                         P(1, 1),
                         colors::black(),
                         io::DrawBg::yes,
-                        colors::yellow());
+                        colors::gold());
         }
 #endif // NDEBUG
 

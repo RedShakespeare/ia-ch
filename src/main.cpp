@@ -25,13 +25,10 @@ int main(int argc, char** argv)
 
         init::init_io();
 
-#ifdef NDEBUG
-        (void)argc;
-        (void)argv;
-#else // NDEBUG
         for (int arg_nr = 0; arg_nr < argc; ++arg_nr) {
                 const std::string arg_str = std::string(argv[arg_nr]);
 
+#ifndef NDEBUG
                 if (arg_str == "--demo-mapgen") {
                         init::g_is_demo_mapgen = true;
                 }
@@ -39,13 +36,13 @@ int main(int argc, char** argv)
                 if (arg_str == "--bot") {
                         config::toggle_bot_playing();
                 }
+#endif // NDEBUG
 
                 // Extra challenge for user "GJ" from the Discord chat ;-)
                 if (arg_str == "--gj") {
                         config::toggle_gj_mode();
                 }
         }
-#endif // NDEBUG
 
         init::init_game();
 

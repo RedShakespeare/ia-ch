@@ -393,11 +393,10 @@ void GameState::on_start()
                 auto* const diseased = property_factory::make(PropId::diseased);
                 diseased->set_indefinite();
 
-                auto* const burning = property_factory::make(PropId::burning);
-
                 map::g_player->m_properties.apply(cursed);
                 map::g_player->m_properties.apply(diseased);
-                map::g_player->m_properties.apply(burning);
+
+                map::g_player->change_max_hp(-4, Verbose::yes);
         }
 
         s_start_time = current_time();
