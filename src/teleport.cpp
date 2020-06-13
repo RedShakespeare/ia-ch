@@ -139,50 +139,64 @@ static bool should_player_ctrl_tele(const ShouldCtrlTele ctrl_tele)
 // -----------------------------------------------------------------------------
 // teleport
 // -----------------------------------------------------------------------------
-void teleport(actor::Actor& actor, const ShouldCtrlTele ctrl_tele)
+void teleport(
+        actor::Actor& actor,
+        const ShouldCtrlTele ctrl_tele,
+        const int max_dist)
 {
-        Array2<bool> blocks_flood(map::dims());
+        Array2<bool> blocked(map::dims());
 
         map_parsers::BlocksActor(actor, ParseActors::no)
-                .run(blocks_flood, blocks_flood.rect());
+                .run(blocked, blocked.rect());
 
-        const size_t len = map::nr_cells();
+        const size_t nr_map_cells = map::nr_cells();
 
         // Allow teleporting past non-metal doors for the player, and past any
         // door for monsters
-        for (size_t i = 0; i < len; ++i) {
+        for (size_t i = 0; i < nr_map_cells; ++i) {
                 const auto* const r = map::g_cells.at(i).terrain;
 
-                if (r->id() == terrain::Id::door) {
-                        const auto* const door =
-                                static_cast<const terrain::Door*>(r);
-
-                        if ((door->type() != DoorType::metal) ||
-                            !actor.is_player()) {
-                                blocks_flood.at(i) = false;
-                        }
+                if (r->id() != terrain::Id::door) {
+                        // Not a door
+                        continue;
                 }
+
+                const auto* const door = static_cast<const terrain::Door*>(r);
+
+                if ((door->type() == DoorType::metal) && actor.is_player()) {
+                        // Metal door, player teleporting - keep it blocked
+                        continue;
+                }
+
+                blocked.at(i) = false;
         }
 
         // Allow teleporting past Force Fields, since they are temporary
         for (const auto* const mob : game_time::g_mobs) {
                 if (mob->id() == terrain::Id::force_field) {
-                        blocks_flood.at(mob->pos()) = false;
+                        blocked.at(mob->pos()) = false;
                 }
         }
 
-        const auto flood = floodfill(actor.m_pos, blocks_flood);
+        const auto flood = floodfill(actor.m_pos, blocked);
 
-        Array2<bool> blocked(map::dims());
+        for (auto p : map::g_cells.rect().positions()) {
+                if (flood.at(p) <= 0) {
+                        blocked.at(p) = true;
+                }
+
+                // Limit distance?
+                if (max_dist > 0) {
+                        const int dist = king_dist(actor.m_pos, p);
+
+                        if (dist > max_dist) {
+                                blocked.at(p) = true;
+                        }
+                }
+        }
 
         map_parsers::BlocksActor(actor, ParseActors::yes)
-                .run(blocked, blocked.rect());
-
-        for (size_t i = 0; i < len; ++i) {
-                if (flood.at(i) <= 0) {
-                        blocked.at(i) = true;
-                }
-        }
+                .run(blocked, blocked.rect(), MapParseMode::append);
 
         blocked.at(actor.m_pos) = false;
 
@@ -191,7 +205,8 @@ void teleport(actor::Actor& actor, const ShouldCtrlTele ctrl_tele)
                 auto tele_ctrl_state =
                         std::make_unique<CtrlTele>(
                                 actor.m_pos,
-                                blocked);
+                                blocked,
+                                max_dist);
 
                 states::push(std::move(tele_ctrl_state));
 

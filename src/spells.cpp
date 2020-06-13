@@ -2011,21 +2011,33 @@ void SpellTeleport::run_effect(
         const SpellSkill skill) const
 {
         if ((int)skill >= (int)SpellSkill::expert) {
-                auto prop = property_factory::make(PropId::invis);
+                auto* const invis = property_factory::make(PropId::invis);
 
-                prop->set_duration(3);
+                invis->set_duration(3);
 
-                caster->m_properties.apply(prop);
+                caster->m_properties.apply(invis);
         }
 
-        auto should_ctrl = ShouldCtrlTele::if_tele_ctrl_prop;
+        const int max_d = max_dist(skill);
 
-        if ((skill == SpellSkill::master) &&
-            (caster == map::g_player)) {
-                should_ctrl = ShouldCtrlTele::always;
+        teleport(*caster, ShouldCtrlTele::if_tele_ctrl_prop, max_d);
+}
+
+int SpellTeleport::max_dist(const SpellSkill skill) const
+{
+        switch (skill) {
+        case SpellSkill::basic:
+                return 6;
+
+        case SpellSkill::expert:
+                return 12;
+
+        case SpellSkill::master:
+                return 18;
         }
 
-        teleport(*caster, should_ctrl);
+        ASSERT(false);
+        return -1;
 }
 
 bool SpellTeleport::allow_mon_cast_now(actor::Mon& mon) const
@@ -2046,6 +2058,13 @@ std::vector<std::string> SpellTeleport::descr_specific(
         descr.emplace_back(
                 "Instantly moves the caster to a different position.");
 
+        const int dist = max_dist(skill);
+
+        descr.emplace_back(
+                "Maximum teleport distance is " +
+                std::to_string(dist) +
+                " cells.");
+
         if ((int)skill >= (int)SpellSkill::expert) {
                 const int nr_turns = 3;
 
@@ -2053,11 +2072,6 @@ std::vector<std::string> SpellTeleport::descr_specific(
                         "On teleporting, the caster is invisible for " +
                         std::to_string(nr_turns) +
                         " turns.");
-        }
-
-        if (skill == SpellSkill::master) {
-                descr.emplace_back(
-                        "The caster can control the teleport destination.");
         }
 
         return descr;

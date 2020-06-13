@@ -19,7 +19,8 @@ class Array2;
 
 void teleport(
         actor::Actor& actor,
-        ShouldCtrlTele ctrl_tele = ShouldCtrlTele::if_tele_ctrl_prop);
+        ShouldCtrlTele ctrl_tele = ShouldCtrlTele::if_tele_ctrl_prop,
+        int max_dist = -1);
 
 void teleport(
         actor::Actor& actor,

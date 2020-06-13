@@ -840,8 +840,10 @@ int ThrowingExplosive::max_king_dist() const
 // -----------------------------------------------------------------------------
 // Teleport control marker state
 // -----------------------------------------------------------------------------
-CtrlTele::CtrlTele(const P& origin, Array2<bool> blocked) :
+CtrlTele::CtrlTele(const P& origin, Array2<bool> blocked, const int max_dist) :
         MarkerState(origin),
+        m_origin(origin),
+        m_max_dist(max_dist),
         m_blocked(std::move(blocked))
 {
 }
@@ -850,9 +852,12 @@ int CtrlTele::chance_of_success_pct(const P& tgt) const
 {
         const int dist = king_dist(map::g_player->m_pos, tgt);
 
-        const int chance = std::clamp(100 - dist, 25, 95);
-
-        return chance;
+        if ((m_max_dist > 0) && king_dist(m_origin, tgt) > m_max_dist) {
+                // Target is too far away
+                return 0;
+        } else {
+                return std::clamp(100 - dist, 25, 95);
+        }
 }
 
 void CtrlTele::on_start_hook()

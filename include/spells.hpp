@@ -1189,7 +1189,7 @@ public:
 
         int mon_cooldown() const override
         {
-                return 30;
+                return 20;
         }
 
         bool mon_can_learn() const override
@@ -1234,7 +1234,7 @@ private:
         {
                 (void)skill;
 
-                return 10;
+                return 8;
         }
 
         bool is_noisy(const SpellSkill skill) const override
@@ -1243,6 +1243,8 @@ private:
 
                 return true;
         }
+
+        int max_dist(const SpellSkill skill) const;
 };
 
 class SpellSeeInvis : public Spell {

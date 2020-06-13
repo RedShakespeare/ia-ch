@@ -226,7 +226,7 @@ protected:
 // -----------------------------------------------------------------------------
 class CtrlTele : public MarkerState {
 public:
-        CtrlTele(const P& origin, Array2<bool> blocked);
+        CtrlTele(const P& origin, Array2<bool> blocked, int max_dist = -1);
 
 protected:
         void on_start_hook() override;
@@ -238,6 +238,8 @@ protected:
 private:
         int chance_of_success_pct(const P& tgt) const;
 
+        P m_origin;
+        int m_max_dist;
         Array2<bool> m_blocked;
 };
 
