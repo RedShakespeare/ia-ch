@@ -1678,7 +1678,7 @@
             <hit_points>16</hit_points>
             <spirit>0</spirit>
             <speed>fast</speed>
-            <shock_level>none</shock_level>
+            <shock_level>unsettling</shock_level>
             <melee>70</melee>
             <ranged>0</ranged>
             <dodging>10</dodging>
@@ -1767,7 +1767,7 @@
             <hit_points>16</hit_points>
             <spirit>0</spirit>
             <speed>fast</speed>
-            <shock_level>none</shock_level>
+            <shock_level>unsettling</shock_level>
             <melee>70</melee>
             <ranged>0</ranged>
             <dodging>10</dodging>
@@ -1856,7 +1856,7 @@
             <hit_points>16</hit_points>
             <spirit>0</spirit>
             <speed>fast</speed>
-            <shock_level>none</shock_level>
+            <shock_level>unsettling</shock_level>
             <melee>70</melee>
             <ranged>0</ranged>
             <dodging>10</dodging>
@@ -1945,7 +1945,7 @@
             <hit_points>6</hit_points>
             <spirit>0</spirit>
             <speed>fast</speed>
-            <shock_level>none</shock_level>
+            <shock_level>frightening</shock_level>
             <melee>70</melee>
             <ranged>0</ranged>
             <dodging>30</dodging>
