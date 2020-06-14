@@ -372,7 +372,7 @@ private:
         {
                 return "Cures blindness, deafness, poisoning, infections, "
                        "disease, weakening, and life sapping, and restores "
-                       "the consumers health by a small amount.";
+                       "the consumer's health by a small amount.";
         }
 
         PotionAlignment alignment() const override
