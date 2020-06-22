@@ -61,6 +61,7 @@ static std::unordered_map<std::string, actor::Id> str_to_actor_id_map = {
         {"energy_hound", actor::Id::energy_hound},
         {"zuul", actor::Id::zuul},
         {"ghost", actor::Id::ghost},
+        {"wraith", actor::Id::wraith},
         {"void_traveler", actor::Id::void_traveler},
         {"elder_void_traveler", actor::Id::elder_void_traveler},
         {"raven", actor::Id::raven},
@@ -101,6 +102,7 @@ static std::unordered_map<std::string, actor::Id> str_to_actor_id_map = {
         {"death_fiend", actor::Id::death_fiend},
         {"khaga_offspring", actor::Id::khaga_offspring},
         {"khaga", actor::Id::khaga},
+        {"shapeshifter", actor::Id::shapeshifter},
         {"the_high_priest", actor::Id::the_high_priest},
         {"high_priest_guard_war_vet", actor::Id::high_priest_guard_war_vet},
         {"high_priest_guard_rogue", actor::Id::high_priest_guard_rogue},
@@ -271,9 +273,13 @@ static void dump_gfx(xml::Element* gfx_e, actor::ActorData& data)
                         xml::first_child(
                                 gfx_e, "character"));
 
-        ASSERT(char_str.length() == 1);
+        if (char_str.empty()) {
+                data.character = 0;
+        } else {
+                ASSERT(char_str.length() == 1);
 
-        data.character = char_str[0];
+                data.character = char_str[0];
+        }
 
         data.color =
                 colors::name_to_color(
@@ -637,6 +643,11 @@ static void dump_spawning(xml::Element* spawn_e, actor::ActorData& data)
                         xml::first_child(
                                 spawn_e, "can_be_summoned_by_monster"));
 
+        data.can_be_shapeshifted_into =
+                xml::get_text_bool(
+                        xml::first_child(
+                                spawn_e, "can_be_shapeshifted_into"));
+
         data.is_unique = xml::has_child(spawn_e, "unique");
 
         data.nr_left_allowed_to_spawn =
@@ -818,6 +829,7 @@ void ActorData::reset()
         is_reptile = false;
         is_amphibian = false;
         can_be_summoned_by_mon = false;
+        can_be_shapeshifted_into = false;
         can_bleed = true;
         can_leave_corpse = true;
         prio_corpse_bash = false;

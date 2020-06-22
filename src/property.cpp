@@ -462,6 +462,121 @@ PropEnded PropPossessedByZuul::on_death()
         return PropEnded::no;
 }
 
+void PropShapeshifts::on_placed()
+{
+        // NOTE: This function will only ever run for the original shapeshifter
+        // monster, never for the monsters shapeshifted into.
+
+        // The shapeshifter should change into something else asap.
+        m_countdown = 0;
+}
+
+void PropShapeshifts::on_std_turn()
+{
+        if (!m_owner->is_alive()) {
+                return;
+        }
+
+        if (!m_owner->m_properties.allow_act()) {
+                return;
+        }
+
+        --m_countdown;
+
+        if (m_countdown <= 0) {
+                shapeshift(Verbose::yes);
+        }
+}
+
+PropEnded PropShapeshifts::on_death()
+{
+        m_owner->m_state = ActorState::destroyed;
+
+        const auto spawned =
+                actor::spawn(
+                        m_owner->m_pos,
+                        {actor::Id::shapeshifter},
+                        map::rect());
+
+        ASSERT(!spawned.monsters.empty());
+
+        if (!spawned.monsters.empty()) {
+                auto* const shapeshifter = spawned.monsters[0];
+
+                shapeshifter->m_state = ActorState::corpse;
+                shapeshifter->m_properties.end_prop(PropId::shapeshifts);
+        }
+
+        return PropEnded::no;
+}
+
+void PropShapeshifts::shapeshift(const Verbose verbose) const
+{
+        std::vector<actor::Id> mon_id_bucket;
+
+        for (const auto& d : actor::g_data) {
+                const Range allowed_mon_depth_range(
+                        d.spawn_min_dlvl - 4,
+                        d.spawn_max_dlvl);
+
+                if (!d.can_be_shapeshifted_into ||
+                    (d.id == m_owner->id()) ||
+                    (d.id == actor::Id::shapeshifter) ||
+                    !d.is_auto_spawn_allowed ||
+                    d.is_unique ||
+                    !allowed_mon_depth_range.is_in_range(map::g_dlvl)) {
+                        continue;
+                }
+
+                mon_id_bucket.push_back(d.id);
+        }
+
+        if (mon_id_bucket.empty()) {
+                return;
+        }
+
+        if ((verbose == Verbose::yes) &&
+            actor::can_player_see_actor(*m_owner)) {
+                msg_log::add("It changes shape!");
+
+                io::draw_blast_at_cells({m_owner->m_pos}, colors::yellow());
+        }
+
+        m_owner->m_state = ActorState::destroyed;
+
+        const auto spawned =
+                actor::spawn(
+                        m_owner->m_pos,
+                        {rnd::element(mon_id_bucket)},
+                        map::rect());
+
+        if (spawned.monsters.empty()) {
+                return;
+        }
+
+        auto* const mon = spawned.monsters[0];
+
+        // Set same percentage of hit points as the previous monster
+        const int hp_pct = (m_owner->m_hp * 100) / actor::max_hp(*m_owner);
+        mon->m_hp = (actor::max_hp(*mon) * hp_pct) / 100;
+
+        // Set same awareness as the previous monster
+        mon->m_mon_aware_state.aware_counter =
+                m_owner->m_mon_aware_state.aware_counter;
+
+        mon->m_mon_aware_state.wary_counter =
+                m_owner->m_mon_aware_state.wary_counter;
+
+        // Apply shapeshifting on the new monster
+        auto* const shapeshifts =
+                static_cast<PropShapeshifts*>(
+                        property_factory::make(PropId::shapeshifts));
+
+        shapeshifts->m_countdown = rnd::range(2, 6);
+
+        mon->m_properties.apply(shapeshifts);
+}
+
 PropEnded PropPoisoned::on_tick()
 {
         if (!m_owner->is_alive()) {
@@ -1725,7 +1840,8 @@ PropActResult PropCorpseRises::on_act()
                         ShockSrc::see_mon);
         }
 
-        static_cast<actor::Mon*>(m_owner)->become_aware_player(actor::AwareSource::other);
+        static_cast<actor::Mon*>(m_owner)
+                ->become_aware_player(actor::AwareSource::other);
 
         game_time::tick();
 

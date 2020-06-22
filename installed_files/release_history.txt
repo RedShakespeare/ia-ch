@@ -6,6 +6,7 @@ Gameplay
 * The Electric Gun also disables passive hit point regeneration for a number of turns
 * Changed Electric Gun damage from 4-13 to 8-12
 * The stealth penalty in lit positions is much higher than before (see also bug fixes below concerning stealth and darkness)
+* Added more monsters - for example, the Wraith has been re-added (slightly different than before)
 * Monsters no longer become aware of the player from negative properties (burning, infections, etc) or from taking damage (it is the attack actions and sounds which makes them aware), so now it is possible to for example throw a Molotov Cocktail at a monster, and escape with Cloud Minds while it is burning
 * Updated Worm Masses and Mind Worms - they are now blind, slow (instead of normal speed), have much more hit points, are unsettling (causes shock to see), take much less damage from piercing attacks (such as pistol shots or dagger strikes), and have a very limited hearing range
 * Worm Masses and Mind Worms can no longer split while burning

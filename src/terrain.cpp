@@ -2881,7 +2881,8 @@ DidTriggerTrap Tomb::trigger_trap(actor::Actor* const actor)
                                         MorePromptOnMsg::yes);
                         }
 
-                        Snd snd("I hear a burst of gas.",
+                        Snd snd(
+                                "I hear a burst of gas.",
                                 audio::SfxId::gas,
                                 IgnoreMsgIfOriginSeen::yes,
                                 m_pos,

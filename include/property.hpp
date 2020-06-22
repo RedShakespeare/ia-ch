@@ -419,6 +419,23 @@ public:
         }
 };
 
+class PropShapeshifts : public Prop {
+public:
+        PropShapeshifts() :
+                Prop(PropId::shapeshifts) {}
+
+        void on_placed() override;
+
+        void on_std_turn() override;
+
+        PropEnded on_death() override;
+
+private:
+        void shapeshift(Verbose verbose) const;
+
+        int m_countdown {-1};
+};
+
 class PropPoisoned : public Prop {
 public:
         PropPoisoned() :
@@ -686,7 +703,12 @@ public:
 
         std::string msg_end_player() const override
         {
-                return (m_nr_wounds > 1) ? "All my wounds are healed!" : "A wound is healed!";
+                const auto str =
+                        (m_nr_wounds > 1)
+                        ? "All my wounds are healed!"
+                        : "A wound is healed!";
+
+                return str;
         }
 
         std::string name_short() const override

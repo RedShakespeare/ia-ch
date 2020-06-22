@@ -150,6 +150,9 @@ Prop* make(const PropId id)
         case PropId::possessed_by_zuul:
                 return new PropPossessedByZuul();
 
+        case PropId::shapeshifts:
+                return new PropShapeshifts();
+
         case PropId::major_clapham_summon:
                 return new PropMajorClaphamSummon();
 

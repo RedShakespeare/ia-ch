@@ -140,9 +140,8 @@ void kill(
         }
 
         if (!actor.is_player() && actor.m_data->is_humanoid) {
-                TRACE_VERBOSE << "Emitting death sound" << std::endl;
-
-                Snd snd("I hear agonized screaming.",
+                Snd snd(
+                        "I hear agonized screaming.",
                         audio::SfxId::END,
                         IgnoreMsgIfOriginSeen::yes,
                         actor.m_pos,
@@ -175,7 +174,8 @@ void kill(
 
         actor.m_properties.on_death();
 
-        if (!actor.is_player()) {
+        if (!actor.is_player() &&
+            !actor.m_properties.has(PropId::shapeshifts)) {
                 if (allow_drop_items == AllowDropItems::yes) {
                         actor.m_inv.drop_all_non_intrinsic(actor.m_pos);
                 }

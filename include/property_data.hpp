@@ -96,6 +96,7 @@ enum class PropId {
         descend,
         zuul_possess_priest,
         possessed_by_zuul,
+        shapeshifts, // For the Shapeshifter monster
         major_clapham_summon,
         aiming,
         nailed,

@@ -88,6 +88,7 @@ static const StrToTileIdMap s_str_to_tile_id_map = {
         {"gate_closed", gfx::TileId::gate_closed},
         {"gate_open", gfx::TileId::gate_open},
         {"ghost", gfx::TileId::ghost},
+        {"wraith", gfx::TileId::wraith},
         {"ghoul", gfx::TileId::ghoul},
         {"giant_spider", gfx::TileId::giant_spider},
         {"gore1", gfx::TileId::gore1},
@@ -193,12 +194,11 @@ static const StrToTileIdMap s_str_to_tile_id_map = {
         {"weight", gfx::TileId::weight},
         {"witch_or_warlock", gfx::TileId::witch_or_warlock},
         {"wolf", gfx::TileId::wolf},
-        {"wraith", gfx::TileId::wraith},
         {"zombie_armed", gfx::TileId::zombie_armed},
         {"zombie_bloated", gfx::TileId::zombie_bloated},
         {"zombie_dust", gfx::TileId::zombie_dust},
         {"zombie_unarmed", gfx::TileId::zombie_unarmed},
-        {"none", gfx::TileId::END}};
+        {"", gfx::TileId::END}};
 
 typedef std::unordered_map<gfx::TileId, std::string> TileIdToStrMap;
 
@@ -385,7 +385,7 @@ static const TileIdToStrMap s_tile_id_to_str_map = {
         {gfx::TileId::zombie_bloated, "zombie_bloated"},
         {gfx::TileId::zombie_dust, "zombie_dust"},
         {gfx::TileId::zombie_unarmed, "zombie_unarmed"},
-        {gfx::TileId::END, "none"}};
+        {gfx::TileId::END, ""}};
 
 // -----------------------------------------------------------------------------
 // gfx

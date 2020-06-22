@@ -54,6 +54,7 @@ enum class Id {
         energy_hound,
         zuul,
         ghost,
+        wraith,
         mi_go,
         mi_go_commander,
         flying_polyp,
@@ -99,6 +100,7 @@ enum class Id {
         death_fiend,
         khaga_offspring,
         khaga,
+        shapeshifter,
         the_high_priest,
         high_priest_guard_war_vet,
         high_priest_guard_rogue,
@@ -244,6 +246,7 @@ struct ActorData {
         bool is_reptile;
         bool is_amphibian;
         bool can_be_summoned_by_mon;
+        bool can_be_shapeshifted_into;
         bool can_bleed;
         bool can_leave_corpse;
         bool prio_corpse_bash;
