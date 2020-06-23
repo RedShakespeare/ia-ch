@@ -7205,17 +7205,17 @@
             <name_the>the Shapeshifter</name_the>
             <corpse_name_a>a Shapeshifter corpse</corpse_name_a>
             <corpse_name_the>the Shapeshifter corpse</corpse_name_the>
-            <description></description>
-            <allow_generated_description>false</allow_generated_description>
-            <wary_message></wary_message>
+            <description>A gelatinous worm which constantly contorts and mutates itself into different beings. Destroying the mutated form will revert the creature back to its original shape.</description>
+            <allow_generated_description>true</allow_generated_description>
+            <wary_message>seems aggravated.</wary_message>
             <aware_message_seen></aware_message_seen>
             <aware_message_hidden></aware_message_hidden>
             <spell_message></spell_message>
         </text>
 
         <graphics>
-            <tile>rat</tile>
-            <character>r</character>
+            <tile>shapeshifter</tile>
+            <character>W</character>
             <color>yellow</color>
         </graphics>
 
@@ -7225,22 +7225,20 @@
         </audio>
 
         <attributes>
-            <hit_points>1</hit_points>
-            <spirit>1</spirit>
+            <hit_points>12</hit_points>
+            <spirit>12</spirit>
             <speed>normal</speed>
-            <shock_level>none</shock_level>
+            <shock_level>frightening</shock_level>
             <melee>0</melee>
             <ranged>0</ranged>
-            <dodging>0</dodging>
+            <dodging>-30</dodging>
             <stealth>0</stealth>
             <searching>0</searching>
-            <can_open_doors>true</can_open_doors>
-            <can_bash_doors>true</can_bash_doors>
-            <can_swim>true</can_swim>
+            <can_open_doors>false</can_open_doors>
+            <can_bash_doors>false</can_bash_doors>
+            <can_swim>false</can_swim>
             <size>humanoid</size>
             <always_prevent_knockback>false</always_prevent_knockback>
-            <humanoid/>
-            <undead/>
             <can_bleed>true</can_bleed>
             <can_leave_corpse>true</can_leave_corpse>
             <prioritize_destroying_corpse>false</prioritize_destroying_corpse>
@@ -7257,12 +7255,12 @@
         </properties>
 
         <ai>
-            <erratic_move_percent>0</erratic_move_percent>
-            <turns_aware>9999</turns_aware>
+            <erratic_move_percent>50</erratic_move_percent>
+            <turns_aware>6</turns_aware>
             <ranged_cooldown_turns>0</ranged_cooldown_turns>
             <looks>true</looks>
             <avoids_blocking_friend>false</avoids_blocking_friend>
-            <attacks>true</attacks>
+            <attacks>false</attacks>
             <paths_to_target_when_aware>false</paths_to_target_when_aware>
             <moves_to_target_when_los>true</moves_to_target_when_los>
             <moves_to_lair>false</moves_to_lair>

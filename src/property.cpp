@@ -503,8 +503,18 @@ PropEnded PropShapeshifts::on_death()
         if (!spawned.monsters.empty()) {
                 auto* const shapeshifter = spawned.monsters[0];
 
-                shapeshifter->m_state = ActorState::corpse;
+                shapeshifter->m_mon_aware_state.aware_counter =
+                        m_owner->m_mon_aware_state.aware_counter;
+
+                shapeshifter->m_mon_aware_state.wary_counter =
+                        m_owner->m_mon_aware_state.wary_counter;
+
+                // No more shapeshifting
                 shapeshifter->m_properties.end_prop(PropId::shapeshifts);
+
+                // It's affraid!
+                shapeshifter->m_properties.apply(
+                        property_factory::make(PropId::terrified));
         }
 
         return PropEnded::no;
@@ -556,8 +566,11 @@ void PropShapeshifts::shapeshift(const Verbose verbose) const
 
         auto* const mon = spawned.monsters[0];
 
-        // Set same percentage of hit points as the previous monster
-        const int hp_pct = (m_owner->m_hp * 100) / actor::max_hp(*m_owner);
+        // Set HP percentage a bit higher than the previous monster
+        int hp_pct = (m_owner->m_hp * 100) / actor::max_hp(*m_owner);
+
+        hp_pct = std::min(100, hp_pct + 15);
+
         mon->m_hp = (actor::max_hp(*mon) * hp_pct) / 100;
 
         // Set same awareness as the previous monster

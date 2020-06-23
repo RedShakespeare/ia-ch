@@ -160,6 +160,7 @@ enum class TileId {
         scorched_ground,
         scroll,
         shadow,
+        shapeshifter,
         shotgun,
         sledge_hammer,
         smoke,
