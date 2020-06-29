@@ -279,25 +279,25 @@ void throw_item(
 
                                 is_actor_hit = true;
 
-                                // If throwing a potion on an actor, let it make
-                                // stuff happen
-
                                 // TODO: Couldn't the potion handle this itself
                                 // via "on_ranged_hit" called above? It would be
                                 // good to make the throwing code more generic,
                                 // it should not know about potions!
                                 if (is_potion) {
-                                        auto* const potion =
-                                                static_cast<potion::Potion*>(
-                                                        &item_thrown);
+                                        if (actor_here->m_state == ActorState::alive) {
+                                                // Apply potion effects
+                                                auto* const potion =
+                                                        static_cast<potion::Potion*>(
+                                                                &item_thrown);
 
-                                        potion->on_collide(pos, actor_here);
+                                                potion->on_collide(pos, actor_here);
+
+                                                // Attacking ends cloaking
+                                                actor_throwing.m_properties
+                                                        .end_prop(PropId::cloaked);
+                                        }
 
                                         delete &item_thrown;
-
-                                        // Attacking ends cloaking
-                                        actor_throwing.m_properties
-                                                .end_prop(PropId::cloaked);
 
                                         game_time::tick();
 
