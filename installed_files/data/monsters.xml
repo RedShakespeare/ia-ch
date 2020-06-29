@@ -7205,7 +7205,7 @@
             <name_the>the Shapeshifter</name_the>
             <corpse_name_a>a Shapeshifter corpse</corpse_name_a>
             <corpse_name_the>the Shapeshifter corpse</corpse_name_the>
-            <description>A gelatinous worm which constantly contorts and mutates itself into different beings. Destroying the mutated form will revert the creature back to its original shape.</description>
+            <description>A gelatinous worm which contorts and mutates itself into different beings. Destroying the mutated form will revert the creature back to its original shape.</description>
             <allow_generated_description>true</allow_generated_description>
             <wary_message>seems aggravated.</wary_message>
             <aware_message_seen></aware_message_seen>
