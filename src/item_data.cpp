@@ -745,7 +745,7 @@ void init()
         d.id = Id::trap_spear;
         d.allow_spawn = false;
         d.weight = Weight::heavy;
-        d.melee.dmg = DmgRange(2, 12);
+        d.melee.dmg = DmgRange(6, 8);
         d.melee.hit_chance_mod = 85;
         d.melee.dmg_method = DmgMethod::piercing;
         d.melee.hit_small_sfx = audio::SfxId::hit_sharp;

@@ -660,7 +660,8 @@ void TrapDart::trigger()
         }
 
         if (origin_cell.is_seen_by_player) {
-                const std::string name = origin_cell.terrain->name(Article::the);
+                const std::string name =
+                        origin_cell.terrain->name(Article::the);
 
                 msg_log::add("A dart is launched from " + name + "!");
         }
