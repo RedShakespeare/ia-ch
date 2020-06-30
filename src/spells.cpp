@@ -2027,13 +2027,13 @@ int SpellTeleport::max_dist(const SpellSkill skill) const
 {
         switch (skill) {
         case SpellSkill::basic:
-                return 6;
+                return 5;
 
         case SpellSkill::expert:
-                return 12;
+                return 10;
 
         case SpellSkill::master:
-                return 18;
+                return 15;
         }
 
         ASSERT(false);

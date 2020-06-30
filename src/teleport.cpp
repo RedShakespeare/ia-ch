@@ -136,6 +136,40 @@ static bool should_player_ctrl_tele(const ShouldCtrlTele ctrl_tele)
         return false;
 }
 
+static void filter_out_near(const P& origin, std::vector<P>& positions)
+{
+        // Find the distance of the furthest position, so that we know the
+        // highest possible minimum distance
+        int furthest_dist = 0;
+
+        for (const auto& p : positions) {
+                const int d = king_dist(origin, p);
+
+                furthest_dist = std::max(d, furthest_dist);
+        }
+
+        int min_dist;
+
+        {
+                const int desired_min_dist = g_fov_radi_int;
+
+                min_dist = std::min(desired_min_dist, furthest_dist);
+        }
+
+        // Remove all positions close than the minimum distance
+        for (auto it = std::begin(positions); it != std::end(positions);) {
+                const auto p = *it;
+
+                const int d = king_dist(origin, p);
+
+                if (d < min_dist) {
+                        positions.erase(it);
+                } else {
+                        ++it;
+                }
+        }
+}
+
 // -----------------------------------------------------------------------------
 // teleport
 // -----------------------------------------------------------------------------
@@ -214,7 +248,9 @@ void teleport(
         }
 
         // No teleport control - teleport randomly
-        const auto pos_bucket = to_vec(blocked, false, blocked.rect());
+        auto pos_bucket = to_vec(blocked, false, blocked.rect());
+
+        filter_out_near(actor.m_pos, pos_bucket);
 
         if (pos_bucket.empty()) {
                 return;
