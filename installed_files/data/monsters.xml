@@ -7277,6 +7277,13 @@
             <can_be_shapeshifted_into>false</can_be_shapeshifted_into>
             <nr_allowed_to_spawn>-1</nr_allowed_to_spawn>
             <group_size>alone</group_size>
+            <native_room>plain</native_room>
+            <native_room>human</native_room>
+            <native_room>ritual</native_room>
+            <native_room>jail</native_room>
+            <native_room>monster</native_room>
+            <native_room>cave</native_room>
+            <native_room>forest</native_room>
         </spawning>
     </monster>
 

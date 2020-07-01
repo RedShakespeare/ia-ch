@@ -467,6 +467,8 @@ void PropShapeshifts::on_placed()
         // NOTE: This function will only ever run for the original shapeshifter
         // monster, never for the monsters shapeshifted into.
 
+        set_indefinite();
+
         // The shapeshifter should change into something else asap.
         m_countdown = 0;
 }
@@ -542,6 +544,8 @@ void PropShapeshifts::shapeshift(const Verbose verbose) const
         }
 
         if (mon_id_bucket.empty()) {
+                ASSERT(false);
+
                 return;
         }
 
@@ -561,6 +565,8 @@ void PropShapeshifts::shapeshift(const Verbose verbose) const
                         map::rect());
 
         if (spawned.monsters.empty()) {
+                ASSERT(false);
+
                 return;
         }
 
@@ -569,9 +575,9 @@ void PropShapeshifts::shapeshift(const Verbose verbose) const
         // Set HP percentage a bit higher than the previous monster
         int hp_pct = (m_owner->m_hp * 100) / actor::max_hp(*m_owner);
 
-        hp_pct = std::min(100, hp_pct + 15);
+        hp_pct = std::clamp(1, hp_pct + 15, 100);
 
-        mon->m_hp = (actor::max_hp(*mon) * hp_pct) / 100;
+        mon->m_hp = std::max(1, (actor::max_hp(*mon) * hp_pct) / 100);
 
         // Set same awareness as the previous monster
         mon->m_mon_aware_state.aware_counter =
@@ -585,7 +591,9 @@ void PropShapeshifts::shapeshift(const Verbose verbose) const
                 static_cast<PropShapeshifts*>(
                         property_factory::make(PropId::shapeshifts));
 
-        shapeshifts->m_countdown = rnd::range(2, 6);
+        shapeshifts->set_indefinite();
+
+        shapeshifts->m_countdown = rnd::range(3, 5);
 
         mon->m_properties.apply(shapeshifts);
 }
