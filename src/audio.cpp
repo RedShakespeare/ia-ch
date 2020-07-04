@@ -396,7 +396,7 @@ void try_play_amb(const int one_in_n_chance_to_play)
             s_min_seconds_between_amb) {
                 s_seconds_at_amb_played = seconds_now;
 
-                const int vol_pct = rnd::range(15, 100);
+                const int vol_pct = rnd::range(25, 100);
 
                 const int first_int = (int)SfxId::AMB_START + 1;
 
