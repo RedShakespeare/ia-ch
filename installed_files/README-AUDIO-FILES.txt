@@ -94,19 +94,19 @@ License:             Attribution 3.0 Unported (CC BY 3.0)
 
 File:                amb_011.ogg
 Source:              https://freesound.org/people/blaukreuz/sounds/79707/
-Author:              blaukreuz
+Author:              blaukreuz (username on freesound.org)
 Original title:      cavernscape.wav
 License:             CC0 1.0 Universal (CC0 1.0)
 
 File:                amb_012.ogg
 Source:              https://freesound.org/people/CGEffex/sounds/93833/
-Author:              CGEffex
+Author:              CGEffex (username on freesound.org)
 Original title:      Chitter ambiance5.flac
 License:             Attribution 3.0 Unported (CC BY 3.0)
 
 File:                amb_013.ogg
 Source:              https://freesound.org/people/poots/sounds/123093/
-Author:              poots
+Author:              poots (username on freesound.org)
 Original title:      deep_under.wav
 License:             Attribution 3.0 Unported (CC BY 3.0)
 
@@ -165,40 +165,40 @@ Original title:      ???
 License:             ???
 
 File:                amb_023.ogg
-Source:              ???
-Author:              ???
-Original title:      ???
-License:             ???
+Source:              https://freesound.org/people/BillKace/sounds/168623/
+Author:              BillKace (username on freesound.org)
+Original title:      Dark Damp Dungeon.mp3
+License:             Attribution-NonCommercial 3.0 Unported (CC BY-NC 3.0)
 
 File:                amb_024.ogg
-Source:              ???
-Author:              ???
-Original title:      ???
-License:             ???
+Source:              https://freesound.org/people/yottasounds/sounds/174458/
+Author:              yottasounds (username on freesound.org)
+Original title:      cave wind 10.wav
+License:             CC0 1.0 Universal (CC0 1.0)
 
 File:                amb_025.ogg
-Source:              ???
-Author:              ???
-Original title:      ???
-License:             ???
+Source:              https://freesound.org/people/klankbeeld/sounds/179059/
+Author:              klankbeeld (username on freesound.org)
+Original title:      horror ambience 39 130206_02.wav
+License:             Attribution 3.0 Unported (CC BY 3.0)
 
 File:                amb_026.ogg
-Source:              ???
-Author:              ???
-Original title:      ???
-License:             ???
+Source:              https://freesound.org/people/qubodup/sounds/188330/
+Author:              qubodup  (username on freesound.org)
+Original title:      Long Psycho Horror Transition.flac
+License:             Attribution 3.0 Unported (CC BY 3.0)
 
 File:                amb_027.ogg
-Source:              ???
-Author:              ???
-Original title:      ???
-License:             ???
+Source:              https://freesound.org/people/Hitrison/sounds/192155/
+Author:              Hitrison  (username on freesound.org)
+Original title:      Picking at a Giant Fan
+License:             CC0 1.0 Universal (CC0 1.0)
 
 File:                amb_028.ogg
-Source:              ???
-Author:              ???
-Original title:      ???
-License:             ???
+Source:              https://freesound.org/people/Autistic%20Lucario/sounds/195687/
+Author:              Autistic Lucario  (username on freesound.org)
+Original title:      Taffer Sound #1 - Creepy Noise 1
+License:             CC0 1.0 Universal (CC0 1.0)
 
 File:                amb_029.ogg
 Source:              ???
@@ -207,10 +207,10 @@ Original title:      ???
 License:             ???
 
 File:                amb_030.ogg
-Source:              ???
-Author:              ???
-Original title:      ???
-License:             ???
+Source:              https://freesound.org/people/Blu3hand/sounds/188176/
+Author:              Blu3hand  (username on freesound.org)
+Original title:      Untitled cave
+License:             Attribution 3.0 Unported (CC BY 3.0)
 
 File:                amb_031.ogg
 Source:              https://www.pmsfx.com/free
@@ -243,10 +243,10 @@ Original title:      01804 strange appear.wav
 License:             Attribution-NonCommercial 3.0 Unported (CC BY-NC 3.0)
 
 File:                amb_036.ogg
-Source:              ???
-Author:              ???
-Original title:      ???
-License:             ???
+Source:              https://freesound.org/people/theneedle.tv/sounds/335155/
+Author:              theneedle.tv  (username on freesound.org)
+Original title:      Descent 01.wav
+License:             CC0 1.0 Universal (CC0 1.0)
 
 File:                amb_037.ogg
 Source:              https://www.freesound.org/people/Robinhood76/sounds/148087
@@ -315,16 +315,16 @@ Original title:      Dramatic Hit
 License:             CC0 1.0 Universal (CC0 1.0)
 
 File:                amb_048.ogg
-Source:              ???
-Author:              ???
-Original title:      ???
-License:             ???
+Source:              https://freesound.org/people/Jovica/sounds/6686/
+Author:              Jovica  (username on freesound.org)
+Original title:      SteamPipe 8 GhostWhistle E3.wav
+License:             Attribution 3.0 Unported (CC BY 3.0)
 
 File:                amb_049.ogg
-Source:              ???
-Author:              ???
-Original title:      ???
-License:             ???
+Source:              https://freesound.org/people/LloydEvans09/sounds/185817/
+Author:              LloydEvans09  (username on freesound.org)
+Original title:      Cymbal Stress
+License:             CC0 1.0 Universal (CC0 1.0)
 
 File:                sfx_ape.ogg
 Source:              https://www.freesound.org/people/Mings/sounds/160380
@@ -370,10 +370,11 @@ License:             Attribution 3.0 Unported (CC BY 3.0)
 Changes made:        Cut most of the sound
 
 File:                sfx_door_bang.ogg
-Source:              ???
-Author:              ???
-Original title:      ???
-License:             ???
+Source:              https://freesound.org/people/mlestn1/sounds/83241/
+Author:              mlestn1 (username on freesound.org)
+Original title:      dungeondoorknock.wav
+License:             CC0 1.0 Universal (CC0 1.0)
+Changes made:        Cut most of the sound
 
 File:                sfx_door_break.ogg
 Source:              https://freesound.org/people/Eneasz/sounds/161873/
@@ -382,16 +383,18 @@ Original title:      wooden door smash open.wav
 License:             Attribution-NonCommercial 3.0 Unported (CC BY-NC 3.0)
 
 File:                sfx_door_close.ogg
-Source:              ???
-Author:              ???
-Original title:      ???
-License:             ???
+Source:              https://freesound.org/people/arnaud%20coutancier/sounds/46201/
+Author:              arnaud coutancier (username on freesound.org)
+Original title:      wooden door & steps porte en bois & pas
+License:             Attribution-NonCommercial 3.0 Unported (CC BY-NC 3.0)
+Changes made:        Cut most of the sound
 
 File:                sfx_door_open.ogg
-Source:              ???
-Author:              ???
-Original title:      ???
-License:             ???
+Source:              https://freesound.org/people/arnaud%20coutancier/sounds/46201/
+Author:              arnaud coutancier (username on freesound.org)
+Original title:      wooden door & steps porte en bois & pas
+License:             Attribution-NonCommercial 3.0 Unported (CC BY-NC 3.0)
+Changes made:        Cut most of the sound
 
 File:                sfx_electric_lantern.ogg
 Source:              https://freesound.org/people/joedeshon/sounds/139062/
@@ -491,22 +494,24 @@ Original title:      ???
 License:             ???
 
 File:                sfx_insanity_rising.ogg
-Source:              ???
-Author:              ???
-Original title:      ???
-License:             ???
+Source:              https://freesound.org/people/cameronmusic/sounds/138409/
+Author:              cameronmusic (username on freesound.org)
+Original title:      bad things coming.wav
+License:             Attribution 3.0 Unported (CC BY 3.0)
 
 File:                sfx_machine_gun_fire.ogg
-Source:              ???
-Author:              ???
-Original title:      ???
-License:             ???
+Source:              https://freesound.org/people/poissonmort/sounds/160772/
+Author:              poissonmort (username on freesound.org)
+Original title:      Maxim Russian machinegun very near
+License:             Attribution 3.0 Unported (CC BY 3.0)
+Changes made:        Cut most of the sound
 
 File:                sfx_machine_gun_reload.ogg
-Source:              ???
-Author:              ???
-Original title:      ???
-License:             ???
+Source:              https://freesound.org/people/ermfilm/sounds/162535/
+Author:              ermfilm (username on freesound.org)
+Original title:      AK47_RELOAD_96kHz-24bit.wav
+License:             Attribution 3.0 Unported (CC BY 3.0)
+Changes made:        Cut most of the sound
 
 File:                sfx_metal_clank.ogg
 Source:              https://freesound.org/people/Project_Trident/sounds/140321/
@@ -539,9 +544,9 @@ Original title:      ???
 License:             ???
 
 File:                sfx_ooze_gurgle.ogg
-Source:              https://freesound.org/people/kvgarlic/sounds/172730/
-Author:              kvgarlic
-Original title:      CoffePotSequenceMrCoffeeMakerDec2012.wav
+Source:              https://freesound.org/people/MegaPenguin13/sounds/118203/
+Author:              MegaPenguin13 (username on freesound.org)
+Original title:      Coffee Maker Brewing.aif
 License:             CC0 1.0 Universal (CC0 1.0)
 Changes made:        Cut most of the sound, applied lots of effects
 
@@ -597,10 +602,10 @@ Original title:      PotionDrinkLONG.wav
 License:             Attribution 3.0 Unported (CC BY 3.0)
 
 File:                sfx_ricochet.ogg
-Source:              ???
-Author:              ???
-Original title:      ???
-License:             ???
+Source:              https://freesound.org/people/cedarstudios/sounds/148840/
+Author:              cedarstudios (username on freesound.org)
+Original title:      ricochet.mp3
+License:             CC0 1.0 Universal (CC0 1.0)
 
 File:                sfx_shotgun_pump_fire.ogg
 Source:              https://freesound.org/people/Pyrocamancer/sounds/137034/
