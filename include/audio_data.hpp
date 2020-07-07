@@ -67,7 +67,6 @@ enum class SfxId {
         boss_voice2,
         chains,
         statue_crash,
-        glop,
         lever_pull,
         monolith,
         thunder,

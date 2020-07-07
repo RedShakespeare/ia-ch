@@ -112,8 +112,8 @@ License:             Attribution 3.0 Unported (CC BY 3.0)
 
 File:                amb_014.ogg
 Source:              Created for Infra Arcana
-Author:              ???
-Original title:      ???
+Author:              -
+Original title:      -
 License:             ???
 
 File:                amb_015.ogg
@@ -160,8 +160,8 @@ EULA:                https://www.pmsfx.com/legal-1
 
 File:                amb_022.ogg
 Source:              Created for Infra Arcana
-Author:              ???
-Original title:      ???
+Author:              -
+Original title:      -
 License:             ???
 
 File:                amb_023.ogg
@@ -348,12 +348,14 @@ Changes made:        Cut most of the sound, lowered pitch
 
 File:                sfx_boss_voice1.ogg
 Source:              Created for Infra Arcana
-Author:              Martin Törnqvist
+Author:              -
+Original title:      -
 License:             ???
 
 File:                sfx_boss_voice2.ogg
 Source:              Created for Infra Arcana
-Author:              Martin Törnqvist
+Author:              -
+Original title:      -
 License:             ???
 
 File:                sfx_death.ogg
@@ -403,9 +405,9 @@ Original title:      electrical_switch_02.wav
 License:             Attribution 3.0 Unported (CC BY 3.0)
 
 File:                sfx_explosion_molotov.ogg
-Source:              ???
-Author:              ???
-Original title:      ???
+Source:              Created for Infra Arcana
+Author:              -
+Original title:      -
 License:             ???
 
 File:                sfx_explosion.ogg
@@ -428,10 +430,11 @@ Original title:      Gong Hit
 License:             Attribution 3.0 Unported (CC BY 3.0)
 
 File:                sfx_flapping_wings.ogg
-Source:              ???
-Author:              ???
-Original title:      ???
-License:             ???
+Source:              https://freesound.org/people/treyc/sounds/123912/
+Author:              treyc (username on freesound.org)
+Original title:      BatsFlap.wav
+License:             Sampling Plus 1.0
+Changes made:        Cut parts of the sound
 
 File:                sfx_fountain_drink.ogg
 Source(1):           https://www.freesound.org/people/Abolla/sounds/213193
@@ -445,41 +448,37 @@ License(2):          Sampling Plus 1.0
 Changes made:        Mixed small samples of files 1 and 2 above
 
 File:                sfx_ghoul_growl.ogg
-Source:              ???
-Author:              ???
-Original title:      ???
-License:             ???
-
-File:                sfx_glop.ogg
-Source:              ???
-Author:              ???
-Original title:      ???
+Source:              Created for Infra Arcana
+Author:              -
+Original title:      -
 License:             ???
 
 File:                sfx_hiss.ogg
 Source:              https://freesound.org/people/Kjell%20Persson/sounds/33458
-Author:              Kjell Persson
+Author:              Kjell Persson (username on freesound.org)
 Original title:      Boa Constrictor.wav
 License:             Attribution 3.0 Unported (CC BY 3.0)
 Changes made:        Cut most of the sound
 
 File:                sfx_hit_corpse_break.ogg
-Source:              ???
-Author:              ???
-Original title:      ???
-License:             ???
+Source:              https://freesound.org/people/satanicupsman/sounds/144015/
+Author:              satanicupsman (username on freesound.org)
+Original title:      punch
+License:             CC0 1.0 Universal (CC0 1.0)
 
 File:                sfx_hit_hard.ogg
-Source:              ???
-Author:              ???
-Original title:      ???
-License:             ???
+Source:              https://freesound.org/people/kuzyaburst/sounds/196120/
+Author:              kuzyaburst (username on freesound.org)
+Original title:      Painful Sounding Punches
+License:             Attribution 3.0 Unported (CC BY 3.0)
+Changes made:        Cut most of the sound, applied effects
 
 File:                sfx_hit_medium.ogg
-Source:              ???
-Author:              ???
-Original title:      ???
-License:             ???
+Source:              https://freesound.org/people/kuzyaburst/sounds/196120/
+Author:              kuzyaburst (username on freesound.org)
+Original title:      Painful Sounding Punches
+License:             Attribution 3.0 Unported (CC BY 3.0)
+Changes made:        Cut most of the sound, applied effects
 
 File:                sfx_hit_sharp.ogg
 Source:              https://freesound.org/people/JoelAudio/sounds/77611/
@@ -488,10 +487,11 @@ Original title:      SFX_ATTACK_SWORD_001.wav
 License:             Attribution 3.0 Unported (CC BY 3.0)
 
 File:                sfx_hit_small.ogg
-Source:              ???
-Author:              ???
-Original title:      ???
-License:             ???
+Source:              https://freesound.org/people/kuzyaburst/sounds/196120/
+Author:              kuzyaburst (username on freesound.org)
+Original title:      Painful Sounding Punches
+License:             Attribution 3.0 Unported (CC BY 3.0)
+Changes made:        Cut most of the sound, applied effects
 
 File:                sfx_insanity_rising.ogg
 Source:              https://freesound.org/people/cameronmusic/sounds/138409/
@@ -526,29 +526,29 @@ Original title:      BFG Laser
 License:             CC0 1.0 Universal (CC0 1.0)
 
 File:                sfx_miss_heavy.ogg
-Source:              ???
-Author:              ???
-Original title:      ???
-License:             ???
+Source:              https://freesound.org/people/qubodup/sounds/60009/
+Author:              qubodup (username on freesound.org)
+Original title:      swosh-22.flac
+License:             CC0 1.0 Universal (CC0 1.0)
 
 File:                sfx_miss_light.ogg
-Source:              ???
-Author:              ???
-Original title:      ???
-License:             ???
+Source:              https://freesound.org/people/qubodup/sounds/59988/
+Author:              qubodup (username on freesound.org)
+Original title:      SWOSH-01 44.1kHz.flac
+License:             CC0 1.0 Universal (CC0 1.0)
 
 File:                sfx_miss_medium.ogg
-Source:              ???
-Author:              ???
-Original title:      ???
-License:             ???
+Source:              https://freesound.org/people/qubodup/sounds/60009/
+Author:              qubodup (username on freesound.org)
+Original title:      swosh-22.flac
+License:             CC0 1.0 Universal (CC0 1.0)
 
 File:                sfx_ooze_gurgle.ogg
 Source:              https://freesound.org/people/MegaPenguin13/sounds/118203/
 Author:              MegaPenguin13 (username on freesound.org)
 Original title:      Coffee Maker Brewing.aif
 License:             CC0 1.0 Universal (CC0 1.0)
-Changes made:        Cut most of the sound, applied lots of effects
+Changes made:        Cut most of the sound, applied effects
 
 File:                sfx_pickup.ogg
 Source:              https://freesound.org/people/redjim/sounds/32578/
@@ -621,10 +621,11 @@ License:             CC0 1.0 Universal (CC0 1.0)
 Changes made:        Cut most of the sound
 
 File:                sfx_shotgun_sawed_off_fire.ogg
-Source:              ???
-Author:              ???
-Original title:      ???
-License:             ???
+Source:              https://freesound.org/people/lensflare8642/sounds/145209/
+Author:              lensflare8642 (username on freesound.org)
+Original title:      shotgun sounds
+License:             CC0 1.0 Universal (CC0 1.0)
+Changes made:        Cut most of the sound
 
 File:                sfx_spell_generic.ogg
 Source:              https://freesound.org/people/RICHERlandTV/sounds/216089/
@@ -653,9 +654,9 @@ Original title:      ???
 License:             ???
 
 File:                sfx_zombie_growl.ogg
-Source:              ???
-Author:              ???
-Original title:      ???
+Source:              Created for Infra Arcana
+Author:              -
+Original title:      -
 License:             ???
 
 File:                sfx_spell_shield_break.ogg
@@ -725,7 +726,7 @@ Original title:      PM_SB_DESIGNED_IMPACT_106 Impact brick rock dirt gravel des
 EULA:                https://www.pmsfx.com/legal-1
 
 File:                musica_cthulhiana_fragment_madness.ogg
-Source:              ???
-Author:              ???
-Original title:      ???
-License:             ???
+Source:              Track "Madness" from music album "Fragment" (2010, Prowler/Ghost Records)
+Author:              Musica Cthulhiana
+Original title:      -
+Used with permission from Musica Cthulhiana

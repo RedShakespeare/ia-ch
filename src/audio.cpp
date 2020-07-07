@@ -187,7 +187,6 @@ void init()
         load(SfxId::boss_voice2, "sfx_boss_voice2.ogg");
         load(SfxId::chains, "sfx_chains.ogg");
         load(SfxId::statue_crash, "sfx_statue_crash.ogg");
-        load(SfxId::glop, "sfx_glop.ogg");
         load(SfxId::lever_pull, "sfx_lever_pull.ogg");
         load(SfxId::monolith, "sfx_monolith.ogg");
         load(SfxId::thunder, "sfx_thunder.ogg");
