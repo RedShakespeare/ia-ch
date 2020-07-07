@@ -15,7 +15,6 @@ typedef std::unordered_map<std::string, audio::SfxId> StrToSfxIdMap;
 
 static const StrToSfxIdMap s_str_to_sfx_id_map = {
         {"dog_snarl", audio::SfxId::dog_snarl},
-        {"wolf_howl", audio::SfxId::wolf_howl},
         {"hiss", audio::SfxId::hiss},
         {"zombie_growl", audio::SfxId::zombie_growl},
         {"ghoul_growl", audio::SfxId::ghoul_growl},
@@ -75,7 +74,6 @@ typedef std::unordered_map<audio::SfxId, std::string> SfxIdToStrMap;
 
 static const SfxIdToStrMap s_sfx_id_to_str_map = {
         {audio::SfxId::dog_snarl, "dog_snarl"},
-        {audio::SfxId::wolf_howl, "wolf_howl"},
         {audio::SfxId::hiss, "hiss"},
         {audio::SfxId::zombie_growl, "zombie_growl"},
         {audio::SfxId::ghoul_growl, "ghoul_growl"},

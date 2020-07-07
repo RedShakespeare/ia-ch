@@ -647,12 +647,6 @@ Author:              Timbre (username on freesound.org)
 Original title:      brick becomes slab.wav
 License:             Attribution-NonCommercial 3.0 Unported (CC BY-NC 3.0)
 
-File:                sfx_wolf_howl.ogg
-Source:              ???
-Author:              ???
-Original title:      ???
-License:             ???
-
 File:                sfx_zombie_growl.ogg
 Source:              Created for Infra Arcana
 Author:              -

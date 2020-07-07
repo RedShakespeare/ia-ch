@@ -3270,7 +3270,7 @@
             <allow_generated_description>true</allow_generated_description>
             <wary_message>looks wary.</wary_message>
             <aware_message_seen>growls.</aware_message_seen>
-            <aware_message_hidden>I hear a chilling howl.</aware_message_hidden>
+            <aware_message_hidden>I hear a chilling growl.</aware_message_hidden>
             <spell_message></spell_message>
         </text>
 
@@ -3282,7 +3282,7 @@
 
         <audio>
             <aware_sfx_seen>ghoul_growl</aware_sfx_seen>
-            <aware_sfx_hidden>wolf_howl</aware_sfx_hidden>
+            <aware_sfx_hidden>ghoul_growl</aware_sfx_hidden>
         </audio>
 
         <attributes>
@@ -3547,7 +3547,7 @@
             <allow_generated_description>true</allow_generated_description>
             <wary_message>looks wary.</wary_message>
             <aware_message_seen>snarls.</aware_message_seen>
-            <aware_message_hidden>I hear a chilling howl.</aware_message_hidden>
+            <aware_message_hidden>I hear snarling.</aware_message_hidden>
             <spell_message></spell_message>
         </text>
 
@@ -3559,7 +3559,7 @@
 
         <audio>
             <aware_sfx_seen>dog_snarl</aware_sfx_seen>
-            <aware_sfx_hidden>wolf_howl</aware_sfx_hidden>
+            <aware_sfx_hidden>dog_snarl</aware_sfx_hidden>
         </audio>
 
         <attributes>

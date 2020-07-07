@@ -139,7 +139,6 @@ void init()
 
         // Monster sounds
         load(SfxId::dog_snarl, "sfx_dog_snarl.ogg");
-        load(SfxId::wolf_howl, "sfx_wolf_howl.ogg");
         load(SfxId::hiss, "sfx_hiss.ogg");
         load(SfxId::zombie_growl, "sfx_zombie_growl.ogg");
         load(SfxId::ghoul_growl, "sfx_ghoul_growl.ogg");

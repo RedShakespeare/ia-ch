@@ -19,7 +19,6 @@ enum class MusId {
 enum class SfxId {
         // Monster sounds
         dog_snarl,
-        wolf_howl,
         hiss,
         zombie_growl,
         ghoul_growl,
