@@ -9,6 +9,7 @@
 #include <algorithm>
 #include <climits>
 #include <numeric>
+#include <unordered_map>
 
 #include "actor_factory.hpp"
 #include "actor_player.hpp"

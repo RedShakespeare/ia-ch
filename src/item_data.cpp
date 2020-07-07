@@ -8,6 +8,7 @@
 
 #include <climits>
 #include <iostream>
+#include <unordered_map>
 
 #include "actor_data.hpp"
 #include "actor_player.hpp"
