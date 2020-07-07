@@ -86,9 +86,6 @@ enum class SfxId {
         menu_select,
 
         // Ambient sounds
-        // TODO: This is ugly, there is no reason to enumerate the ambient
-        // sounds, try to get rid of them (push the ambient audio chunks to a
-        // separate vector instead of a fixed size array)
         AMB_START,
         amb001,
         amb002,
@@ -137,8 +134,6 @@ enum class SfxId {
         amb045,
         amb046,
         amb047,
-        amb048,
-        amb049,
 
         END
 };

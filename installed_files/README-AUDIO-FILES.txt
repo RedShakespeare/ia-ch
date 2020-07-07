@@ -201,10 +201,10 @@ Original title:      Taffer Sound #1 - Creepy Noise 1
 License:             CC0 1.0 Universal (CC0 1.0)
 
 File:                amb_029.ogg
-Source:              ???
-Author:              ???
-Original title:      ???
-License:             ???
+Source:              https://freesound.org/people/LloydEvans09/sounds/185817/
+Author:              LloydEvans09  (username on freesound.org)
+Original title:      Cymbal Stress
+License:             CC0 1.0 Universal (CC0 1.0)
 
 File:                amb_030.ogg
 Source:              https://freesound.org/people/Blu3hand/sounds/188176/
@@ -255,10 +255,10 @@ Original title:      04711 Trailer hit - mystic metal.wav
 License:             Attribution-NonCommercial 3.0 Unported (CC BY-NC 3.0)
 
 File:                amb_038.ogg
-Source:              ???
-Author:              ???
-Original title:      ???
-License:             ???
+Source:              https://freesound.org/people/Jovica/sounds/6686/
+Author:              Jovica  (username on freesound.org)
+Original title:      SteamPipe 8 GhostWhistle E3.wav
+License:             Attribution 3.0 Unported (CC BY 3.0)
 
 File:                amb_039.ogg
 Source:              https://www.freesound.org/people/Jovica/sounds/6673
@@ -312,18 +312,6 @@ File:                amb_047.ogg
 Source:              https://www.freesound.org/people/qubodup/sounds/222517
 Author:              qubodup (username on freesound.org)
 Original title:      Dramatic Hit
-License:             CC0 1.0 Universal (CC0 1.0)
-
-File:                amb_048.ogg
-Source:              https://freesound.org/people/Jovica/sounds/6686/
-Author:              Jovica  (username on freesound.org)
-Original title:      SteamPipe 8 GhostWhistle E3.wav
-License:             Attribution 3.0 Unported (CC BY 3.0)
-
-File:                amb_049.ogg
-Source:              https://freesound.org/people/LloydEvans09/sounds/185817/
-Author:              LloydEvans09  (username on freesound.org)
-Original title:      Cymbal Stress
 License:             CC0 1.0 Universal (CC0 1.0)
 
 File:                sfx_ape.ogg
