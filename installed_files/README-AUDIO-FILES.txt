@@ -113,7 +113,7 @@ License:             Attribution 3.0 Unported (CC BY 3.0)
 File:                amb_014.ogg
 Source:              Created for Infra Arcana
 Author:              -
-Original title:      -
+Author:              Søren ("Lizzle Bizzle")
 License:             ???
 
 File:                amb_015.ogg
@@ -161,7 +161,7 @@ EULA:                https://www.pmsfx.com/legal-1
 File:                amb_022.ogg
 Source:              Created for Infra Arcana
 Author:              -
-Original title:      -
+Author:              Søren ("Lizzle Bizzle")
 License:             ???
 
 File:                amb_023.ogg
@@ -357,18 +357,6 @@ Author:              Søren ("Lizzle Bizzle")
 License:             ???
 
 File:                amb_055.ogg
-Source:              Created for Infra Arcana
-Author:              -
-Author:              Søren ("Lizzle Bizzle")
-License:             ???
-
-File:                amb_056.ogg
-Source:              Created for Infra Arcana
-Author:              -
-Author:              Søren ("Lizzle Bizzle")
-License:             ???
-
-File:                amb_057.ogg
 Source:              Created for Infra Arcana
 Author:              -
 Author:              Søren ("Lizzle Bizzle")
