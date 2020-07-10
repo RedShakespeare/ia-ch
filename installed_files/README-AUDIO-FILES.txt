@@ -336,13 +336,13 @@ Changes made:        Cut most of the sound, lowered pitch
 
 File:                sfx_boss_voice1.ogg
 Source:              Created for Infra Arcana
-Author:              -
+Author:              Martin Törnqvist
 Original title:      -
 License:             ???
 
 File:                sfx_boss_voice2.ogg
 Source:              Created for Infra Arcana
-Author:              -
+Author:              Martin Törnqvist
 Original title:      -
 License:             ???
 
@@ -394,7 +394,7 @@ License:             Attribution 3.0 Unported (CC BY 3.0)
 
 File:                sfx_explosion_molotov.ogg
 Source:              Created for Infra Arcana
-Author:              -
+Author:              Søren ("Lizzle Bizzle")
 Original title:      -
 License:             ???
 
@@ -437,7 +437,7 @@ Changes made:        Mixed small samples of files 1 and 2 above
 
 File:                sfx_ghoul_growl.ogg
 Source:              Created for Infra Arcana
-Author:              -
+Author:              Søren ("Lizzle Bizzle")
 Original title:      -
 License:             ???
 
@@ -637,7 +637,7 @@ License:             Attribution-NonCommercial 3.0 Unported (CC BY-NC 3.0)
 
 File:                sfx_zombie_growl.ogg
 Source:              Created for Infra Arcana
-Author:              -
+Author:              Søren ("Lizzle Bizzle")
 Original title:      -
 License:             ???
 
