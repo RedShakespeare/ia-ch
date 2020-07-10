@@ -56,6 +56,8 @@ static void load(const audio::SfxId sfx, const std::string& filename)
 
         const std::string file_rel_path = paths::audio_dir() + filename;
 
+        TRACE << "Loading audio file: " << file_rel_path << std::endl;
+
         s_audio_chunks[(size_t)sfx] = Mix_LoadWAV(file_rel_path.c_str());
 
         if (!s_audio_chunks[(size_t)sfx]) {
