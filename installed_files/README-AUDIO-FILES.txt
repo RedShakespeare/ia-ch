@@ -314,6 +314,66 @@ Author:              qubodup (username on freesound.org)
 Original title:      Dramatic Hit
 License:             CC0 1.0 Universal (CC0 1.0)
 
+File:                amb_048.ogg
+Source:              Created for Infra Arcana
+Author:              -
+Author:              Søren ("Lizzle Bizzle")
+License:             ???
+
+File:                amb_049.ogg
+Source:              Created for Infra Arcana
+Author:              -
+Author:              Søren ("Lizzle Bizzle")
+License:             ???
+
+File:                amb_050.ogg
+Source:              Created for Infra Arcana
+Author:              -
+Author:              Søren ("Lizzle Bizzle")
+License:             ???
+
+File:                amb_051.ogg
+Source:              Created for Infra Arcana
+Author:              -
+Author:              Søren ("Lizzle Bizzle")
+License:             ???
+
+File:                amb_052.ogg
+Source:              Created for Infra Arcana
+Author:              -
+Author:              Søren ("Lizzle Bizzle")
+License:             ???
+
+File:                amb_053.ogg
+Source:              Created for Infra Arcana
+Author:              -
+Author:              Søren ("Lizzle Bizzle")
+License:             ???
+
+File:                amb_054.ogg
+Source:              Created for Infra Arcana
+Author:              -
+Author:              Søren ("Lizzle Bizzle")
+License:             ???
+
+File:                amb_055.ogg
+Source:              Created for Infra Arcana
+Author:              -
+Author:              Søren ("Lizzle Bizzle")
+License:             ???
+
+File:                amb_056.ogg
+Source:              Created for Infra Arcana
+Author:              -
+Author:              Søren ("Lizzle Bizzle")
+License:             ???
+
+File:                amb_057.ogg
+Source:              Created for Infra Arcana
+Author:              -
+Author:              Søren ("Lizzle Bizzle")
+License:             ???
+
 File:                sfx_ape.ogg
 Source:              https://www.freesound.org/people/Mings/sounds/160380
 Author:              Mings (username on freesound.org)

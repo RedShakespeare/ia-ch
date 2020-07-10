@@ -134,6 +134,16 @@ enum class SfxId {
         amb045,
         amb046,
         amb047,
+        amb048,
+        amb049,
+        amb050,
+        amb051,
+        amb052,
+        amb053,
+        amb054,
+        amb055,
+        amb056,
+        amb057,
 
         END
 };
