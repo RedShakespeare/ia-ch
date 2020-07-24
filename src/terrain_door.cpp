@@ -660,12 +660,17 @@ void Door::bump(actor::Actor& actor_bumping)
 
 void Door::reveal(const Verbose verbose)
 {
+        const bool is_hidden_before = m_is_hidden;
+
         m_is_hidden = false;
 
-        if ((verbose == Verbose::yes) &&
+        if (is_hidden_before &&
+            (verbose == Verbose::yes) &&
             map::g_cells.at(m_pos).is_seen_by_player) {
                 msg_log::add("A secret is revealed.");
         }
+
+        m_is_hidden = false;
 }
 
 void Door::on_revealed_from_searching()

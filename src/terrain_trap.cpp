@@ -459,28 +459,29 @@ void Trap::reveal(const Verbose verbose)
 {
         TRACE_FUNC_BEGIN_VERBOSE;
 
+        const bool is_hidden_before = m_is_hidden;
+
         m_is_hidden = false;
 
         clear_gore();
 
-        if (map::g_cells.at(m_pos).is_seen_by_player) {
+        if (is_hidden_before &&
+            (verbose == Verbose::yes) &&
+            map::g_cells.at(m_pos).is_seen_by_player) {
                 states::draw();
 
-                if (verbose == Verbose::yes) {
-                        std::string msg;
+                std::string msg;
 
-                        const std::string trap_name_a =
-                                m_trap_impl->name(Article::a);
+                const std::string trap_name_a = m_trap_impl->name(Article::a);
 
-                        if (m_pos == map::g_player->m_pos) {
-                                msg += "There is " + trap_name_a + " here!";
-                        } else {
-                                // Trap is not at player position
-                                msg = "I spot " + trap_name_a + ".";
-                        }
-
-                        msg_log::add(msg);
+                if (m_pos == map::g_player->m_pos) {
+                        msg = "There is " + trap_name_a + " here!";
+                } else {
+                        // Trap is not at player position
+                        msg = "I spot " + trap_name_a + ".";
                 }
+
+                msg_log::add(msg);
         }
 
         TRACE_FUNC_END_VERBOSE;
