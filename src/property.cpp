@@ -564,7 +564,7 @@ void PropShapeshifts::shapeshift(const Verbose verbose) const
                         {rnd::element(mon_id_bucket)},
                         map::rect());
 
-        if (spawned.monsters.empty()) {
+        if (spawned.monsters.size() != 1) {
                 ASSERT(false);
 
                 return;
@@ -573,29 +573,44 @@ void PropShapeshifts::shapeshift(const Verbose verbose) const
         auto* const mon = spawned.monsters[0];
 
         // Set HP percentage a bit higher than the previous monster
-        int hp_pct = (m_owner->m_hp * 100) / actor::max_hp(*m_owner);
+        {
+                const int max_hp_prev = std::max(1, actor::max_hp(*m_owner));
+                const int hp_pct_prev = (m_owner->m_hp * 100) / max_hp_prev;
+                const int hp_pct_new = std::clamp(1, hp_pct_prev + 15, 100);
 
-        hp_pct = std::clamp(1, hp_pct + 15, 100);
+                mon->m_hp = (actor::max_hp(*mon) * hp_pct_new) / 100;
 
-        mon->m_hp = std::max(1, (actor::max_hp(*mon) * hp_pct) / 100);
+                // New HP value should be > 0, and also not "unreasonably" high
+                const int allowed_hp_lower = 1;
+                const int allowed_hp_upper = 1000;
+
+                ASSERT(mon->m_hp >= allowed_hp_lower);
+                ASSERT(mon->m_hp <= allowed_hp_upper);
+
+                std::clamp(allowed_hp_lower, mon->m_hp, allowed_hp_upper);
+        }
 
         // Set same awareness as the previous monster
-        mon->m_mon_aware_state.aware_counter =
-                m_owner->m_mon_aware_state.aware_counter;
+        {
+                mon->m_mon_aware_state.aware_counter =
+                        m_owner->m_mon_aware_state.aware_counter;
 
-        mon->m_mon_aware_state.wary_counter =
-                m_owner->m_mon_aware_state.wary_counter;
+                mon->m_mon_aware_state.wary_counter =
+                        m_owner->m_mon_aware_state.wary_counter;
+        }
 
         // Apply shapeshifting on the new monster
-        auto* const shapeshifts =
-                static_cast<PropShapeshifts*>(
-                        property_factory::make(PropId::shapeshifts));
+        {
+                auto* const shapeshifts =
+                        static_cast<PropShapeshifts*>(
+                                property_factory::make(PropId::shapeshifts));
 
-        shapeshifts->set_indefinite();
+                shapeshifts->set_indefinite();
 
-        shapeshifts->m_countdown = rnd::range(3, 5);
+                shapeshifts->m_countdown = rnd::range(3, 5);
 
-        mon->m_properties.apply(shapeshifts);
+                mon->m_properties.apply(shapeshifts);
+        }
 }
 
 PropEnded PropPoisoned::on_tick()
