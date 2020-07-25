@@ -123,7 +123,7 @@ set(COMMON_SRC
         include/teleport.hpp
         include/terrain.hpp
         include/terrain_data.hpp
-        include/terrain_dmg.hpp
+        # include/terrain_dmg.hpp
         include/terrain_door.hpp
         include/terrain_event.hpp
         include/terrain_gong.hpp
@@ -257,7 +257,7 @@ set(COMMON_SRC
         src/teleport.cpp
         src/terrain.cpp
         src/terrain_data.cpp
-        src/terrain_dmg.cpp
+        # src/terrain_dmg.cpp
         src/terrain_door.cpp
         src/terrain_event.cpp
         src/terrain_gong.cpp
