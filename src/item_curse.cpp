@@ -713,11 +713,11 @@ void Fire::run_fire(const item::Item& item) const
                 for (int y = y0; y <= y1; ++y) {
                         const P p(x, y);
 
-                        if (rnd::one_in(fire_cell_one_in_n) && (p != origin)) {
+                        if (rnd::one_in(fire_cell_one_in_n) &&
+                            (p != origin)) {
                                 map::g_cells.at(p).terrain->hit(
-                                        1, // Doesn't matter
                                         DmgType::fire,
-                                        DmgMethod::elemental);
+                                        nullptr);
                         }
                 }
         }

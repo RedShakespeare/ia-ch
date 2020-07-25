@@ -138,12 +138,10 @@ public:
         virtual void on_hit(
                 int& dmg,
                 const DmgType dmg_type,
-                const DmgMethod method,
                 const AllowWound allow_wound)
         {
                 (void)dmg;
                 (void)dmg_type;
-                (void)method;
                 (void)allow_wound;
         }
 

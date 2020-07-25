@@ -74,7 +74,6 @@ ActorDied hit(
         Actor& actor,
         int dmg,
         const DmgType dmg_type,
-        const DmgMethod method,
         const AllowWound allow_wound)
 {
         if (actor.m_state == ActorState::destroyed) {
@@ -114,10 +113,10 @@ ActorDied hit(
                 const int num = std::min(dmg * 4, den);
 
                 if (rnd::fraction(num, den)) {
-                        if ((method == DmgMethod::kicking) ||
-                            (method == DmgMethod::blunt) ||
-                            (method == DmgMethod::slashing) ||
-                            (method == DmgMethod::piercing)) {
+                        if ((dmg_type == DmgType::kicking) ||
+                            (dmg_type == DmgType::blunt) ||
+                            (dmg_type == DmgType::slashing) ||
+                            (dmg_type == DmgType::piercing)) {
                                 Snd snd("*Crack!*",
                                         audio::SfxId::hit_corpse_break,
                                         IgnoreMsgIfOriginSeen::yes,
@@ -146,17 +145,21 @@ ActorDied hit(
                         }
                 } else {
                         // Not destroyed
-                        if ((method == DmgMethod::kicking) ||
-                            (method == DmgMethod::blunt) ||
-                            (method == DmgMethod::slashing) ||
-                            (method == DmgMethod::piercing)) {
-                                const std::string msg =
-                                        ((method == DmgMethod::blunt) ||
-                                         (method == DmgMethod::kicking))
-                                        ? "*Thud!*"
-                                        : "*Chop!*";
+                        if ((dmg_type == DmgType::kicking) ||
+                            (dmg_type == DmgType::blunt) ||
+                            (dmg_type == DmgType::slashing) ||
+                            (dmg_type == DmgType::piercing)) {
+                                std::string msg;
 
-                                Snd snd(msg,
+                                if ((dmg_type == DmgType::blunt) ||
+                                    (dmg_type == DmgType::kicking)) {
+                                        msg = "*Thud!*";
+                                } else {
+                                        msg = "*Chop!*";
+                                }
+
+                                Snd snd(
+                                        msg,
                                         audio::SfxId::hit_medium,
                                         IgnoreMsgIfOriginSeen::yes,
                                         actor.m_pos,
@@ -191,7 +194,7 @@ ActorDied hit(
         // TODO: Perhaps allow zero damage?
         dmg = std::max(1, dmg);
 
-        if (dmg_type == DmgType::physical) {
+        if (is_physical_dmg_type(dmg_type)) {
                 dmg = hit_armor(actor, dmg);
         }
 
@@ -205,7 +208,7 @@ ActorDied hit(
 
         dmg = std::max(1, dmg);
 
-        actor.on_hit(dmg, dmg_type, method, allow_wound);
+        actor.on_hit(dmg, dmg_type, allow_wound);
 
         actor.m_properties.on_hit();
 

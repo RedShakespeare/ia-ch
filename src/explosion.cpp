@@ -152,13 +152,9 @@ static void apply_explosion_on_pos(
         const int dmg = dmg_range.roll();
 
         // Damage environment
-        Cell& cell = map::g_cells.at(pos);
+        auto& cell = map::g_cells.at(pos);
 
-        cell.terrain->hit(
-                dmg,
-                DmgType::physical,
-                DmgMethod::explosion,
-                nullptr);
+        cell.terrain->hit(DmgType::explosion, nullptr);
 
         // Damage living actor
         if (living_actor) {
@@ -168,7 +164,7 @@ static void apply_explosion_on_pos(
                                 colors::msg_bad());
                 }
 
-                actor::hit(*living_actor, dmg, DmgType::physical);
+                actor::hit(*living_actor, dmg, DmgType::explosion);
 
                 if (living_actor->is_alive() && living_actor->is_player()) {
                         // Player survived being hit by an explosion, that's
@@ -179,7 +175,7 @@ static void apply_explosion_on_pos(
 
         // Damage dead actors
         for (auto* corpse : corpses_here) {
-                actor::hit(*corpse, dmg, DmgType::physical);
+                actor::hit(*corpse, dmg, DmgType::explosion);
         }
 
         // Add smoke
@@ -235,11 +231,7 @@ static void apply_explosion_property_on_pos(
         if (property->id() == PropId::burning) {
                 Cell& cell = map::g_cells.at(pos);
 
-                cell.terrain->hit(
-                        1, // Doesn't matter
-                        DmgType::fire,
-                        DmgMethod::elemental,
-                        nullptr);
+                cell.terrain->hit(DmgType::fire, nullptr);
 
                 for (auto* corpse : corpses_here) {
                         Prop* const prop_cpy =

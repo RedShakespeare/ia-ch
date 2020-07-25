@@ -79,7 +79,9 @@ PylonImpl* Pylon::make_pylon_impl_from_id(const PylonId id)
 std::string Pylon::name(const Article article) const
 {
         std::string str =
-                ((article == Article::a) ? (m_is_activated ? "an " : "a ") : "the ");
+                ((article == Article::a)
+                         ? (m_is_activated ? "an " : "a ")
+                         : "the ");
 
         str +=
                 m_is_activated ? "activated " : "deactivated ";
@@ -94,11 +96,13 @@ Color Pylon::color_default() const
         return m_is_activated ? colors::light_red() : colors::gray();
 }
 
-void Pylon::on_hit(const int dmg, const DmgType dmg_type, const DmgMethod dmg_method, actor::Actor* const actor)
+void Pylon::on_hit(
+        const DmgType dmg_type,
+        actor::Actor* const actor,
+        const int dmg)
 {
         (void)dmg;
         (void)dmg_type;
-        (void)dmg_method;
         (void)actor;
 
         // TODO
@@ -296,9 +300,8 @@ void PylonBurning::on_new_turn_activated()
         for (size_t i = 0; i < map::nr_cells(); ++i) {
                 if (flood.at(i) > 0) {
                         map::g_cells.at(i).terrain->hit(
-                                1, // Doesn't matter
                                 DmgType::fire,
-                                DmgMethod::elemental);
+                                nullptr);
                 }
         }
 

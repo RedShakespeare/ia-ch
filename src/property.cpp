@@ -178,7 +178,7 @@ PropEnded PropEntangled::on_tick()
                 msg_log::add(name_the + " is drowning.", colors::msg_good());
         }
 
-        actor::hit(*m_owner, 1, DmgType::physical);
+        actor::hit(*m_owner, 1, DmgType::pure);
 
         return PropEnded::no;
 }
@@ -726,10 +726,9 @@ PropEnded PropNailed::affect_move_dir(const P& actor_pos, Dir& dir)
                 }
         }
 
-        actor::hit(*m_owner, rnd::range(1, 3), DmgType::physical);
+        actor::hit(*m_owner, rnd::range(1, 3), DmgType::pure);
 
-        if (!m_owner->is_alive() ||
-            !rnd::one_in(4)) {
+        if (!m_owner->is_alive() || !rnd::one_in(4)) {
                 return PropEnded::no;
         }
 
@@ -1195,7 +1194,7 @@ PropEnded PropParalyzed::on_tick()
                 msg_log::add(name_the + " is drowning.", colors::msg_good());
         }
 
-        actor::hit(*m_owner, 1, DmgType::physical);
+        actor::hit(*m_owner, 1, DmgType::pure);
 
         return PropEnded::no;
 }
@@ -1323,7 +1322,7 @@ DmgResistData PropRPhys::is_resisting_dmg(const DmgType dmg_type) const
 {
         DmgResistData d;
 
-        d.is_resisted = (dmg_type == DmgType::physical);
+        d.is_resisted = is_physical_dmg_type(dmg_type);
 
         d.msg_resist_player = "I resist harm.";
 
@@ -1461,10 +1460,7 @@ PropEnded PropBurrowing::on_tick()
 {
         const P& p = m_owner->m_pos;
 
-        map::g_cells.at(p).terrain->hit(
-                1, // Doesn't matter
-                DmgType::physical,
-                DmgMethod::forced);
+        map::g_cells.at(p).terrain->hit(DmgType::pure, nullptr);
 
         return PropEnded::no;
 }
@@ -2208,11 +2204,12 @@ void PropAuraOfDecay::run_effect_on_actors() const
 
                 const int dmg = rnd::range(1, m_max_dmg);
 
-                actor::hit(*actor, dmg, DmgType::physical);
+                actor::hit(*actor, dmg, DmgType::pure);
 
                 if (!actor->is_player()) {
                         static_cast<actor::Mon*>(actor)
-                                ->become_aware_player(actor::AwareSource::other);
+                                ->become_aware_player(
+                                        actor::AwareSource::other);
                 }
         }
 }
@@ -2246,10 +2243,7 @@ void PropAuraOfDecay::run_effect_on_env() const
                                 msg_log::more_prompt();
                         }
 
-                        terrain->hit(
-                                1, // Doesn't actually matter
-                                DmgType::physical,
-                                DmgMethod::forced);
+                        terrain->hit(DmgType::pure, nullptr);
                 } else if (id == terrain::Id::floor && rnd::one_in(100)) {
                         map::put(new terrain::RubbleLow(p));
                 } else if (id == terrain::Id::grass && rnd::one_in(10)) {

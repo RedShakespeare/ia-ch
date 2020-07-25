@@ -118,7 +118,7 @@ void init()
                         s_rod_looks.erase(s_rod_looks.begin() + idx);
 
                         // True name
-                        const Rod* const rod =
+                        const auto* const rod =
                                 static_cast<const Rod*>(
                                         item::make(d.id, 1));
 
@@ -417,10 +417,7 @@ void Shockwave::run_effect()
 
                 auto* const terrain = map::g_cells.at(p).terrain;
 
-                terrain->hit(
-                        1, // Doesn't matter
-                        DmgType::physical,
-                        DmgMethod::explosion);
+                terrain->hit(DmgType::explosion, nullptr);
         }
 
         for (actor::Actor* actor : game_time::g_actors) {
@@ -447,12 +444,16 @@ void Shockwave::run_effect()
                         msg_log::add(msg);
                 }
 
-                actor::hit(*actor, rnd::range(1, 6), DmgType::physical);
+                actor::hit(*actor, rnd::range(1, 6), DmgType::explosion);
 
                 // Surived the damage? Knock the monster back
                 if (actor->is_alive()) {
-                        knockback::run(*actor, player_pos, false, Verbose::yes,
-                                       1); // 1 extra turn paralyzed
+                        knockback::run(
+                                *actor,
+                                player_pos,
+                                false,
+                                Verbose::yes,
+                                1); // 1 extra turn paralyzed
                 }
         }
 

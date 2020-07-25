@@ -28,7 +28,6 @@ class Array2;
 
 enum class AllowAction;
 enum class Article;
-enum class DmgMethod;
 enum class DmgType;
 enum class Matl;
 enum class Verbose;
@@ -214,10 +213,9 @@ public:
         virtual void on_new_turn();
 
         virtual void hit(
-                int dmg,
                 DmgType dmg_type,
-                DmgMethod dmg_method,
-                actor::Actor* actor = nullptr);
+                actor::Actor* actor,
+                int dmg = -1);
 
         virtual void reveal(const Verbose verbose)
         {
@@ -270,15 +268,13 @@ protected:
         virtual void on_new_turn_hook() {}
 
         virtual void on_hit(
-                const int dmg,
                 const DmgType dmg_type,
-                const DmgMethod dmg_method,
-                actor::Actor* const actor)
+                actor::Actor* const actor,
+                int dmg = -1)
         {
-                (void)dmg;
                 (void)dmg_type;
-                (void)dmg_method;
                 (void)actor;
+                (void)dmg;
         }
 
         virtual Color color_default() const
@@ -345,10 +341,9 @@ private:
         Color color_default() const override;
 
         void on_hit(
-                int dmg,
                 DmgType dmg_type,
-                DmgMethod dmg_method,
-                actor::Actor* actor) override;
+                actor::Actor* actor,
+                int dmg = -1) override;
 };
 
 class Carpet : public Terrain {
@@ -370,10 +365,9 @@ private:
         Color color_default() const override;
 
         void on_hit(
-                int dmg,
                 DmgType dmg_type,
-                DmgMethod dmg_method,
-                actor::Actor* actor) override;
+                actor::Actor* actor,
+                int dmg = -1) override;
 };
 
 enum class GrassType {
@@ -401,10 +395,9 @@ private:
         Color color_default() const override;
 
         void on_hit(
-                int dmg,
                 DmgType dmg_type,
-                DmgMethod dmg_method,
-                actor::Actor* actor) override;
+                actor::Actor* actor,
+                int dmg = -1) override;
 };
 
 class Bush : public Terrain {
@@ -427,10 +420,9 @@ private:
         Color color_default() const override;
 
         void on_hit(
-                int dmg,
                 DmgType dmg_type,
-                DmgMethod dmg_method,
-                actor::Actor* actor) override;
+                actor::Actor* actor,
+                int dmg = -1) override;
 };
 
 class Vines : public Terrain {
@@ -451,10 +443,9 @@ private:
         Color color_default() const override;
 
         void on_hit(
-                int dmg,
                 DmgType dmg_type,
-                DmgMethod dmg_method,
-                actor::Actor* actor) override;
+                actor::Actor* actor,
+                int dmg = -1) override;
 };
 
 class Chains : public Terrain {
@@ -478,10 +469,9 @@ private:
         Color color_bg_default() const override;
 
         void on_hit(
-                int dmg,
                 DmgType dmg_type,
-                DmgMethod dmg_method,
-                actor::Actor* actor) override;
+                actor::Actor* actor,
+                int dmg = -1) override;
 };
 
 class Grate : public Terrain {
@@ -501,10 +491,9 @@ private:
         Color color_default() const override;
 
         void on_hit(
-                int dmg,
                 DmgType dmg_type,
-                DmgMethod dmg_method,
-                actor::Actor* actor) override;
+                actor::Actor* actor,
+                int dmg = -1) override;
 };
 
 class Brazier : public Terrain {
@@ -525,10 +514,9 @@ private:
         Color color_default() const override;
 
         void on_hit(
-                int dmg,
                 DmgType dmg_type,
-                DmgMethod dmg_method,
-                actor::Actor* actor) override;
+                actor::Actor* actor,
+                int dmg = -1) override;
 
         void add_light_hook(Array2<bool>& light) const override;
 };
@@ -571,10 +559,9 @@ private:
         Color color_default() const override;
 
         void on_hit(
-                int dmg,
                 DmgType dmg_type,
-                DmgMethod dmg_method,
-                actor::Actor* actor) override;
+                actor::Actor* actor,
+                int dmg = -1) override;
 };
 
 class RubbleLow : public Terrain {
@@ -594,10 +581,9 @@ private:
         Color color_default() const override;
 
         void on_hit(
-                int dmg,
                 DmgType dmg_type,
-                DmgMethod dmg_method,
-                actor::Actor* actor) override;
+                actor::Actor* actor,
+                int dmg = -1) override;
 };
 
 class Bones : public Terrain {
@@ -617,10 +603,9 @@ private:
         Color color_default() const override;
 
         void on_hit(
-                int dmg,
                 DmgType dmg_type,
-                DmgMethod dmg_method,
-                actor::Actor* actor) override;
+                actor::Actor* actor,
+                int dmg = -1) override;
 };
 
 class RubbleHigh : public Terrain {
@@ -640,10 +625,9 @@ private:
         Color color_default() const override;
 
         void on_hit(
-                int dmg,
                 DmgType dmg_type,
-                DmgMethod dmg_method,
-                actor::Actor* actor) override;
+                actor::Actor* actor,
+                int dmg = -1) override;
 };
 
 class GraveStone : public Terrain {
@@ -670,10 +654,9 @@ private:
         Color color_default() const override;
 
         void on_hit(
-                int dmg,
                 DmgType dmg_type,
-                DmgMethod dmg_method,
-                actor::Actor* actor) override;
+                actor::Actor* actor,
+                int dmg = -1) override;
 
         std::string m_inscr;
 };
@@ -695,10 +678,9 @@ private:
         Color color_default() const override;
 
         void on_hit(
-                int dmg,
                 DmgType dmg_type,
-                DmgMethod dmg_method,
-                actor::Actor* actor) override;
+                actor::Actor* actor,
+                int dmg = -1) override;
 };
 
 enum class StatueType {
@@ -726,10 +708,9 @@ private:
         Color color_default() const override;
 
         void on_hit(
-                int dmg,
                 DmgType dmg_type,
-                DmgMethod dmg_method,
-                actor::Actor* actor) override;
+                actor::Actor* actor,
+                int dmg = -1) override;
 
         int base_shock_when_adj() const override;
 };
@@ -750,10 +731,9 @@ private:
         Color color_default() const override;
 
         void on_hit(
-                int dmg,
                 DmgType dmg_type,
-                DmgMethod dmg_method,
-                actor::Actor* actor) override;
+                actor::Actor* actor,
+                int dmg = -1) override;
 };
 
 class Stairs : public Terrain {
@@ -776,10 +756,9 @@ private:
         Color color_default() const override;
 
         void on_hit(
-                int dmg,
                 DmgType dmg_type,
-                DmgMethod dmg_method,
-                actor::Actor* actor) override;
+                actor::Actor* actor,
+                int dmg = -1) override;
 };
 
 class Bridge : public Terrain {
@@ -808,10 +787,9 @@ private:
         Color color_default() const override;
 
         void on_hit(
-                int dmg,
                 DmgType dmg_type,
-                DmgMethod dmg_method,
-                actor::Actor* actor) override;
+                actor::Actor* actor,
+                int dmg = -1) override;
 
         Axis m_axis;
 };
@@ -838,10 +816,9 @@ private:
         Color color_bg_default() const override;
 
         void on_hit(
-                int dmg,
                 DmgType dmg_type,
-                DmgMethod dmg_method,
-                actor::Actor* actor) override;
+                actor::Actor* actor,
+                int dmg = -1) override;
 
         void run_magic_pool_effects_on_player();
 };
@@ -872,10 +849,9 @@ private:
         Color color_default() const override;
 
         void on_hit(
-                int dmg,
                 DmgType dmg_type,
-                DmgMethod dmg_method,
-                actor::Actor* actor) override;
+                actor::Actor* actor,
+                int dmg = -1) override;
 
         bool must_swim_on_enter(const actor::Actor& actor) const;
 };
@@ -896,10 +872,9 @@ private:
         Color color_default() const override;
 
         void on_hit(
-                int dmg,
                 DmgType dmg_type,
-                DmgMethod dmg_method,
-                actor::Actor* actor) override;
+                actor::Actor* actor,
+                int dmg = -1) override;
 };
 
 class Lever : public Terrain {
@@ -951,10 +926,9 @@ private:
         Color color_default() const override;
 
         void on_hit(
-                int dmg,
                 DmgType dmg_type,
-                DmgMethod dmg_method,
-                actor::Actor* actor) override;
+                actor::Actor* actor,
+                int dmg = -1) override;
 
         bool m_is_left_pos;
 
@@ -982,10 +956,9 @@ private:
         Color color_default() const override;
 
         void on_hit(
-                int dmg,
                 DmgType dmg_type,
-                DmgMethod dmg_method,
-                actor::Actor* actor) override;
+                actor::Actor* actor,
+                int dmg = -1) override;
 };
 
 class Tree : public Terrain {
@@ -1008,10 +981,9 @@ private:
         Color color_default() const override;
 
         void on_hit(
-                int dmg,
                 DmgType dmg_type,
-                DmgMethod dmg_method,
-                actor::Actor* actor) override;
+                actor::Actor* actor,
+                int dmg = -1) override;
 
         bool is_fungi() const;
 
@@ -1059,10 +1031,9 @@ private:
         Color color_default() const override;
 
         void on_hit(
-                int dmg,
                 DmgType dmg_type,
-                DmgMethod dmg_method,
-                actor::Actor* actor) override;
+                actor::Actor* actor,
+                int dmg = -1) override;
 
         DidTriggerTrap trigger_trap(actor::Actor* actor) override;
 
@@ -1100,16 +1071,18 @@ public:
 
         DidOpen open(actor::Actor* actor_opening) override;
 
-        void hit(int dmg, DmgType dmg_type, DmgMethod dmg_method, actor::Actor* actor) override;
+        void hit(
+                DmgType dmg_type,
+                actor::Actor* actor,
+                int dmg = -1) override;
 
 private:
         Color color_default() const override;
 
         void on_hit(
-                int dmg,
                 DmgType dmg_type,
-                DmgMethod dmg_method,
-                actor::Actor* actor) override;
+                actor::Actor* actor,
+                int dmg = -1) override;
 
         void player_loot();
 
@@ -1141,10 +1114,9 @@ private:
         Color color_default() const override;
 
         void on_hit(
-                int dmg,
                 DmgType dmg_type,
-                DmgMethod dmg_method,
-                actor::Actor* actor) override;
+                actor::Actor* actor,
+                int dmg = -1) override;
 
         void player_loot();
 
@@ -1171,10 +1143,9 @@ private:
         Color color_default() const override;
 
         void on_hit(
-                int dmg,
                 DmgType dmg_type,
-                DmgMethod dmg_method,
-                actor::Actor* actor) override;
+                actor::Actor* actor,
+                int dmg = -1) override;
 
         void player_loot();
 
@@ -1201,10 +1172,9 @@ private:
         Color color_default() const override;
 
         void on_hit(
-                int dmg,
                 DmgType dmg_type,
-                DmgMethod dmg_method,
-                actor::Actor* actor) override;
+                actor::Actor* actor,
+                int dmg = -1) override;
 
         void player_loot();
 
@@ -1270,10 +1240,9 @@ private:
         std::string type_indefinite_article() const;
 
         void on_hit(
-                int dmg,
                 DmgType dmg_type,
-                DmgMethod dmg_method,
-                actor::Actor* actor) override;
+                actor::Actor* actor,
+                int dmg = -1) override;
 
         FountainEffect m_fountain_effect {FountainEffect::END};
         bool m_has_drinks_left {true};
@@ -1303,10 +1272,9 @@ private:
         Color color_default() const override;
 
         void on_hit(
-                int dmg,
                 DmgType dmg_type,
-                DmgMethod dmg_method,
-                actor::Actor* actor) override;
+                actor::Actor* actor,
+                int dmg = -1) override;
 
         void player_loot();
 

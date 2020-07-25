@@ -390,11 +390,7 @@ void act()
                         }
 
                         if (door->is_stuck()) {
-                                t->hit(
-                                        6, // Arbitrary
-                                        DmgType::physical,
-                                        DmgMethod::blunt,
-                                        map::g_player);
+                                t->hit(DmgType::blunt, map::g_player);
 
                                 return;
                         }

@@ -159,7 +159,6 @@ private:
         void on_hit(
                 int& dmg,
                 DmgType dmg_type,
-                DmgMethod method,
                 AllowWound allow_wound) override;
 
         void fov_hack();

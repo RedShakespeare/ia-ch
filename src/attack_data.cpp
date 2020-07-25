@@ -228,7 +228,7 @@ MeleeAttData::MeleeAttData(
 
         // Defender takes reduced damage from piercing attacks?
         if (defender->m_properties.has(PropId::reduced_pierce_dmg) &&
-            (wpn.data().melee.dmg_method == DmgMethod::piercing)) {
+            (wpn.data().melee.dmg_type == DmgType::piercing)) {
                 dmg_range = dmg_range.scaled_pct(25);
         }
 
@@ -413,7 +413,7 @@ RangedAttData::RangedAttData(
 
         // Defender takes reduced damage from piercing attacks?
         if (defender->m_properties.has(PropId::reduced_pierce_dmg) &&
-            (wpn.data().ranged.dmg_method == DmgMethod::piercing)) {
+            (wpn.data().ranged.dmg_type == DmgType::piercing)) {
                 dmg_range.scaled_pct(25);
         }
 
@@ -574,7 +574,7 @@ ThrowAttData::ThrowAttData(
 
         // Defender takes reduced damage from piercing attacks?
         if (defender->m_properties.has(PropId::reduced_pierce_dmg) &&
-            (item.data().ranged.dmg_method == DmgMethod::piercing)) {
+            (item.data().ranged.dmg_type == DmgType::piercing)) {
                 dmg_range.scaled_pct(25);
         }
 

@@ -272,7 +272,6 @@ struct MeleeData {
         ItemAttMsgs att_msgs;
         ItemAttProp prop_applied;
         DmgType dmg_type;
-        DmgMethod dmg_method;
         bool knocks_back;
         bool att_corpse;
         bool att_terrain;
@@ -302,7 +301,6 @@ struct RangedData {
         bool knocks_back;
         Id ammo_item_id;
         DmgType dmg_type;
-        DmgMethod dmg_method;
         bool has_infinite_ammo;
         char projectile_character;
         gfx::TileId projectile_tile;

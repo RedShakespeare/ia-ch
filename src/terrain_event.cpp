@@ -142,11 +142,7 @@ void EventWallCrumble::on_new_turn()
 
                 auto* const t = map::g_cells.at(p).terrain;
 
-                t->hit(
-                        1, // Doesn't matter
-                        DmgType::physical,
-                        DmgMethod::forced,
-                        nullptr);
+                t->hit(DmgType::pure, nullptr);
         }
 
         // Destroy the inner walls
@@ -157,10 +153,7 @@ void EventWallCrumble::on_new_turn()
 
                 auto* const t = map::g_cells.at(p).terrain;
 
-                t->hit(1, // Doesn't matter
-                       DmgType::physical,
-                       DmgMethod::forced,
-                       nullptr);
+                t->hit(DmgType::pure, nullptr);
 
                 if (rnd::one_in(8)) {
                         map::make_gore(p);

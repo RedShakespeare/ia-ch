@@ -265,9 +265,7 @@ void throw_item(
                                         actor::hit(
                                                 *actor_here,
                                                 dmg,
-                                                DmgType::physical,
-                                                item_thrown_data.ranged
-                                                        .dmg_method,
+                                                item_thrown_data.ranged.dmg_type,
                                                 AllowWound::yes);
 
                                         static_cast<actor::Mon*>(actor_here)

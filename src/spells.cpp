@@ -794,8 +794,7 @@ void SpellBolt::run_effect(
         actor::hit(
                 *target,
                 dmg_range.roll(),
-                DmgType::physical,
-                DmgMethod::END,
+                DmgType::blunt,
                 AllowWound::no);
 
         m_impl->on_hit(*target, skill);
@@ -820,10 +819,6 @@ void SpellBolt::run_effect(
 
 bool SpellBolt::allow_mon_cast_now(actor::Mon& mon) const
 {
-        // NOTE: Monsters with master spell skill level COULD cast this spell
-        // without LOS to the player, but we do not allow the AI to do this,
-        // since it would probably be very hard or annoying for the player to
-        // deal with
         return mon.m_ai_state.target && mon.m_ai_state.is_target_seen;
 }
 
@@ -916,8 +911,7 @@ void SpellAzaWrath::run_effect(
                 actor::hit(
                         *target,
                         dmg_range.roll(),
-                        DmgType::physical,
-                        DmgMethod::END,
+                        DmgType::explosion,
                         AllowWound::no);
 
                 if (!target->is_player()) {
@@ -1139,7 +1133,8 @@ void SpellMayhem::run_effect(
                                 for (const P& d : dir_utils::g_dir_list) {
                                         const P p_adj(P(x, y) + d);
 
-                                        const auto& cell = map::g_cells.at(p_adj);
+                                        const auto& cell =
+                                                map::g_cells.at(p_adj);
 
                                         if (cell.terrain->is_walkable()) {
                                                 is_adj_to_walkable_cell = true;
@@ -1148,9 +1143,7 @@ void SpellMayhem::run_effect(
 
                                 if (is_adj_to_walkable_cell) {
                                         map::g_cells.at(x, y).terrain->hit(
-                                                1, // Damage (doesn't matter)
-                                                DmgType::physical,
-                                                DmgMethod::explosion,
+                                                DmgType::explosion,
                                                 nullptr);
                                 }
                         }
@@ -1173,11 +1166,7 @@ void SpellMayhem::run_effect(
 
                         if ((P(x, y) != caster->m_pos) &&
                             rnd::one_in(6)) {
-                                t->hit(
-                                        1, // Damage (doesn't matter)
-                                        DmgType::fire,
-                                        DmgMethod::elemental,
-                                        nullptr);
+                                t->hit(DmgType::fire, nullptr);
                         }
                 }
         }
@@ -1201,7 +1190,8 @@ std::vector<std::string> SpellMayhem::descr_specific(
 
         std::vector<std::string> descr;
 
-        descr.emplace_back("Blasts the surrounding area with terrible force.");
+        descr.emplace_back(
+                "Blasts the surrounding area with terrible force.");
 
         descr.emplace_back(
                 "Higher skill levels increases the magnitude of the "

@@ -36,7 +36,7 @@ static bool is_allowed_use_wpn_on_terrain(
                 return false;
         }
 
-        const auto wpn_dmg_method = wpn.data().melee.dmg_method;
+        const auto wpn_dmg_type = wpn.data().melee.dmg_type;
 
         switch (terrain.id()) {
         case terrain::Id::door: {
@@ -55,7 +55,7 @@ static bool is_allowed_use_wpn_on_terrain(
                                 // (feels weird to attack a barred gate
                                 // with an axe...)
                                 allow_wpn_att_terrain =
-                                        (wpn_dmg_method == DmgMethod::blunt);
+                                        (wpn_dmg_type == DmgType::blunt);
                         } else {
                                 // Not gate (i.e. wooden, metal)
                                 allow_wpn_att_terrain = true;
@@ -136,11 +136,7 @@ static void player_attack_corpse(
 
         const int dmg = dmg_range.total_range().roll();
 
-        actor::hit(
-                mon,
-                dmg,
-                DmgType::physical,
-                wpn_used_att_corpse.data().melee.dmg_method);
+        actor::hit(mon, dmg, wpn_used_att_corpse.data().melee.dmg_type);
 
         if (&wpn_used_att_corpse == &kick_wpn) {
                 wham::try_sprain_player();
@@ -194,10 +190,9 @@ static void player_attack_terrain(
         const int dmg = dmg_range.total_range().roll();
 
         terrain->hit(
-                dmg,
-                DmgType::physical,
-                wpn_used_att_terrain->data().melee.dmg_method,
-                map::g_player);
+                wpn_used_att_terrain->data().melee.dmg_type,
+                map::g_player,
+                dmg);
 
         // Attacking ends cloaking
         map::g_player->m_properties.end_prop(PropId::cloaked);

@@ -22,7 +22,6 @@ ActorDied hit(
         Actor& actor,
         int dmg,
         DmgType dmg_type,
-        DmgMethod method = DmgMethod::END,
         AllowWound allow_wound = AllowWound::yes);
 
 ActorDied hit_sp(

@@ -162,17 +162,14 @@ void Player::load()
 void Player::on_hit(
         int& dmg,
         const DmgType dmg_type,
-        const DmgMethod method,
         const AllowWound allow_wound)
 {
-        (void)method;
-
         if (!insanity::has_sympt(InsSymptId::masoch)) {
                 incr_shock(1, ShockSrc::misc);
         }
 
         const bool is_enough_dmg_for_wound = dmg >= s_min_dmg_to_wound;
-        const bool is_physical = dmg_type == DmgType::physical;
+        const bool is_physical = is_physical_dmg_type(dmg_type);
 
         // Ghoul trait Indomitable Fury grants immunity to wounds while frenzied
         const bool is_ghoul_resist_wound =

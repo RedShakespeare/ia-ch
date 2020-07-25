@@ -874,7 +874,6 @@ static void hit_actor_with_projectile(
                         *projectile.actor_hit,
                         projectile.dmg,
                         wpn.data().ranged.dmg_type,
-                        wpn.data().ranged.dmg_method,
                         AllowWound::yes);
         }
 
@@ -1442,22 +1441,18 @@ static void melee_hit_actor(
                 wpn.data().type == ItemType::ranged_wpn;
 
         const AllowWound allow_wound =
-                is_ranged_wpn ? AllowWound::no : AllowWound::yes;
+                is_ranged_wpn
+                ? AllowWound::no
+                : AllowWound::yes;
 
         const auto dmg_type = wpn.data().melee.dmg_type;
-        const auto dmg_method = wpn.data().melee.dmg_method;
 
-        actor::hit(
-                defender,
-                dmg,
-                dmg_type,
-                dmg_method,
-                allow_wound);
+        actor::hit(defender, dmg, dmg_type, allow_wound);
 
         if (defender.m_data->can_bleed &&
-            (dmg_type == DmgType::physical ||
-             dmg_type == DmgType::pure ||
-             dmg_type == DmgType::light)) {
+            (is_physical_dmg_type(dmg_type) ||
+             (dmg_type == DmgType::pure) ||
+             (dmg_type == DmgType::light))) {
                 map::make_blood(defender.m_pos);
         }
 

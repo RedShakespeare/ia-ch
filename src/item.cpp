@@ -988,7 +988,6 @@ void MiGoGun::pre_ranged_attack()
                 *m_actor_carrying,
                 g_mi_go_gun_hp_drained,
                 DmgType::pure,
-                DmgMethod::forced,
                 AllowWound::no);
 
         auto disabled_regen =

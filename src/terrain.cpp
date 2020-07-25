@@ -195,10 +195,7 @@ void Terrain::on_new_turn()
                         if (map::is_pos_inside_map(p)) {
                                 auto& cell = map::g_cells.at(p);
 
-                                cell.terrain->hit(
-                                        1, // Damage
-                                        DmgType::fire,
-                                        DmgMethod::elemental);
+                                cell.terrain->hit(DmgType::fire, nullptr);
 
                                 if (cell.terrain->m_burn_state == BurnState::burning) {
                                         cell.terrain->m_started_burning_this_turn = true;
@@ -256,24 +253,23 @@ WasDestroyed Terrain::on_finished_burning()
 }
 
 void Terrain::hit(
-        const int dmg,
         const DmgType dmg_type,
-        const DmgMethod dmg_method,
-        actor::Actor* actor)
+        actor::Actor* actor,
+        const int dmg)
 {
         bool is_terrain_hit = true;
 
         if ((actor == map::g_player) &&
-            ((dmg_method == DmgMethod::kicking) ||
-             (dmg_method == DmgMethod::blunt) ||
-             (dmg_method == DmgMethod::slashing))) {
+            ((dmg_type == DmgType::kicking) ||
+             (dmg_type == DmgType::blunt) ||
+             (dmg_type == DmgType::slashing))) {
                 const bool is_blocking =
                         !is_walkable() &&
                         (id() != terrain::Id::stairs) &&
                         (id() != terrain::Id::liquid_deep);
 
                 if (is_blocking) {
-                        if (dmg_method == DmgMethod::kicking) {
+                        if (dmg_type == DmgType::kicking) {
                                 const bool can_see_terrain =
                                         !map::g_cells.at(m_pos)
                                                  .is_seen_by_player;
@@ -301,11 +297,7 @@ void Terrain::hit(
         }
 
         if (is_terrain_hit) {
-                on_hit(
-                        dmg,
-                        dmg_type,
-                        dmg_method,
-                        actor);
+                on_hit(dmg_type, actor, dmg);
         }
 }
 
@@ -479,15 +471,13 @@ Floor::Floor(const P& p) :
         m_type(FloorType::common) {}
 
 void Floor::on_hit(
-        const int dmg,
         const DmgType dmg_type,
-        const DmgMethod dmg_method,
-        actor::Actor* const actor)
+        actor::Actor* const actor,
+        const int dmg)
 {
         (void)dmg;
 
-        if (dmg_type == DmgType::fire &&
-            dmg_method == DmgMethod::elemental) {
+        if (dmg_type == DmgType::fire) {
                 (void)actor;
 
                 if (rnd::one_in(3)) {
@@ -550,11 +540,11 @@ Wall::Wall(const P& p) :
         m_is_mossy(false) {}
 
 void Wall::on_hit(
-        const int dmg,
         const DmgType dmg_type,
-        const DmgMethod dmg_method,
-        actor::Actor* const actor)
+        actor::Actor* const actor,
+        const int dmg)
 {
+        (void)dmg;
         (void)dmg;
         (void)actor;
 
@@ -584,24 +574,22 @@ void Wall::on_hit(
                 }
         };
 
-        if (dmg_type == DmgType::physical) {
-                if (dmg_method == DmgMethod::forced) {
-                        destr_adj_doors();
-                        make_low_rubble_and_rocks();
-                }
-
-                if (dmg_method == DmgMethod::explosion) {
-                        destr_adj_doors();
-
-                        if (rnd::coin_toss()) {
-                                make_low_rubble_and_rocks();
-                        } else {
-                                map::put(new RubbleHigh(m_pos));
-                        }
-                }
-
-                map::update_vision();
+        if (dmg_type == DmgType::pure) {
+                destr_adj_doors();
+                make_low_rubble_and_rocks();
         }
+
+        if (dmg_type == DmgType::explosion) {
+                destr_adj_doors();
+
+                if (rnd::coin_toss()) {
+                        make_low_rubble_and_rocks();
+                } else {
+                        map::put(new RubbleHigh(m_pos));
+                }
+        }
+
+        map::update_vision();
 }
 
 bool Wall::is_wall_front_tile(const gfx::TileId tile)
@@ -761,10 +749,9 @@ RubbleHigh::RubbleHigh(const P& p) :
         Terrain(p) {}
 
 void RubbleHigh::on_hit(
-        const int dmg,
         const DmgType dmg_type,
-        const DmgMethod dmg_method,
-        actor::Actor* const actor)
+        actor::Actor* const actor,
+        const int dmg)
 {
         (void)dmg;
         (void)actor;
@@ -783,14 +770,12 @@ void RubbleHigh::on_hit(
                 map::update_vision();
         };
 
-        if (dmg_type == DmgType::physical) {
-                if (dmg_method == DmgMethod::forced) {
-                        make_low_rubble_and_rocks();
-                }
+        if (dmg_type == DmgType::pure) {
+                make_low_rubble_and_rocks();
+        }
 
-                if (dmg_method == DmgMethod::explosion) {
-                        make_low_rubble_and_rocks();
-                }
+        if (dmg_type == DmgType::explosion) {
+                make_low_rubble_and_rocks();
         }
 }
 
@@ -814,15 +799,14 @@ RubbleLow::RubbleLow(const P& p) :
         Terrain(p) {}
 
 void RubbleLow::on_hit(
-        const int dmg,
         const DmgType dmg_type,
-        const DmgMethod dmg_method,
-        actor::Actor* const actor)
+        actor::Actor* const actor,
+        const int dmg)
 {
         (void)dmg;
         (void)actor;
 
-        if (dmg_type == DmgType::fire && dmg_method == DmgMethod::elemental) {
+        if (dmg_type == DmgType::fire) {
                 try_start_burning(false);
         }
 }
@@ -855,14 +839,12 @@ Bones::Bones(const P& p) :
         Terrain(p) {}
 
 void Bones::on_hit(
-        const int dmg,
         const DmgType dmg_type,
-        const DmgMethod dmg_method,
-        actor::Actor* const actor)
+        actor::Actor* const actor,
+        const int dmg)
 {
         (void)dmg;
         (void)dmg_type;
-        (void)dmg_method;
         (void)actor;
 }
 
@@ -889,14 +871,12 @@ GraveStone::GraveStone(const P& p) :
         Terrain(p) {}
 
 void GraveStone::on_hit(
-        const int dmg,
         const DmgType dmg_type,
-        const DmgMethod dmg_method,
-        actor::Actor* const actor)
+        actor::Actor* const actor,
+        const int dmg)
 {
         (void)dmg;
         (void)dmg_type;
-        (void)dmg_method;
         (void)actor;
 }
 
@@ -926,14 +906,12 @@ ChurchBench::ChurchBench(const P& p) :
         Terrain(p) {}
 
 void ChurchBench::on_hit(
-        const int dmg,
         const DmgType dmg_type,
-        const DmgMethod dmg_method,
-        actor::Actor* const actor)
+        actor::Actor* const actor,
+        const int dmg)
 {
         (void)dmg;
         (void)dmg_type;
-        (void)dmg_method;
         (void)actor;
 }
 
@@ -969,15 +947,13 @@ int Statue::base_shock_when_adj() const
 }
 
 void Statue::on_hit(
-        const int dmg,
         const DmgType dmg_type,
-        const DmgMethod dmg_method,
-        actor::Actor* const actor)
+        actor::Actor* const actor,
+        const int dmg)
 {
         (void)dmg;
 
-        if ((dmg_type != DmgType::physical) ||
-            (dmg_method != DmgMethod::kicking)) {
+        if (dmg_type != DmgType::kicking) {
                 return;
         }
 
@@ -1036,7 +1012,7 @@ void Statue::on_hit(
                         actor::hit(
                                 *actor_behind,
                                 rnd::range(3, 15),
-                                DmgType::physical);
+                                DmgType::blunt);
                 }
         }
 
@@ -1089,14 +1065,12 @@ Stalagmite::Stalagmite(const P& p) :
         Terrain(p) {}
 
 void Stalagmite::on_hit(
-        const int dmg,
         const DmgType dmg_type,
-        const DmgMethod dmg_method,
-        actor::Actor* const actor)
+        actor::Actor* const actor,
+        const int dmg)
 {
         (void)dmg;
         (void)dmg_type;
-        (void)dmg_method;
         (void)actor;
 }
 
@@ -1119,14 +1093,12 @@ Stairs::Stairs(const P& p) :
         Terrain(p) {}
 
 void Stairs::on_hit(
-        const int dmg,
         const DmgType dmg_type,
-        const DmgMethod dmg_method,
-        actor::Actor* const actor)
+        actor::Actor* const actor,
+        const int dmg)
 {
         (void)dmg;
         (void)dmg_type;
-        (void)dmg_method;
         (void)actor;
 }
 
@@ -1207,14 +1179,12 @@ gfx::TileId Bridge::tile() const
 }
 
 void Bridge::on_hit(
-        const int dmg,
         const DmgType dmg_type,
-        const DmgMethod dmg_method,
-        actor::Actor* const actor)
+        actor::Actor* const actor,
+        const int dmg)
 {
         (void)dmg;
         (void)dmg_type;
-        (void)dmg_method;
         (void)actor;
 }
 
@@ -1245,14 +1215,12 @@ LiquidShallow::LiquidShallow(const P& p) :
         m_type(LiquidType::water) {}
 
 void LiquidShallow::on_hit(
-        const int dmg,
         const DmgType dmg_type,
-        const DmgMethod dmg_method,
-        actor::Actor* const actor)
+        actor::Actor* const actor,
+        const int dmg)
 {
         (void)dmg;
         (void)dmg_type;
-        (void)dmg_method;
         (void)actor;
 }
 
@@ -1411,14 +1379,12 @@ LiquidDeep::LiquidDeep(const P& p) :
         m_type(LiquidType::water) {}
 
 void LiquidDeep::on_hit(
-        const int dmg,
         const DmgType dmg_type,
-        const DmgMethod dmg_method,
-        actor::Actor* const actor)
+        actor::Actor* const actor,
+        const int dmg)
 {
         (void)dmg;
         (void)dmg_type;
-        (void)dmg_method;
         (void)actor;
 }
 
@@ -1590,14 +1556,12 @@ Chasm::Chasm(const P& p) :
         Terrain(p) {}
 
 void Chasm::on_hit(
-        const int dmg,
         const DmgType dmg_type,
-        const DmgMethod dmg_method,
-        actor::Actor* const actor)
+        actor::Actor* const actor,
+        const int dmg)
 {
         (void)dmg;
         (void)dmg_type;
-        (void)dmg_method;
         (void)actor;
 }
 
@@ -1622,14 +1586,12 @@ Lever::Lever(const P& p) :
         m_linked_terrain(nullptr) {}
 
 void Lever::on_hit(
-        const int dmg,
         const DmgType dmg_type,
-        const DmgMethod dmg_method,
-        actor::Actor* const actor)
+        actor::Actor* const actor,
+        const int dmg)
 {
         (void)dmg;
         (void)dmg_type;
-        (void)dmg_method;
         (void)actor;
 }
 
@@ -1734,14 +1696,12 @@ Altar::Altar(const P& p) :
         Terrain(p) {}
 
 void Altar::on_hit(
-        const int dmg,
         const DmgType dmg_type,
-        const DmgMethod dmg_method,
-        actor::Actor* const actor)
+        actor::Actor* const actor,
+        const int dmg)
 {
         (void)dmg;
         (void)dmg_type;
-        (void)dmg_method;
         (void)actor;
 }
 
@@ -1772,16 +1732,14 @@ Carpet::Carpet(const P& p) :
         Terrain(p) {}
 
 void Carpet::on_hit(
-        const int dmg,
         const DmgType dmg_type,
-        const DmgMethod dmg_method,
-        actor::Actor* const actor)
+        actor::Actor* const actor,
+        const int dmg)
 {
+        (void)actor;
         (void)dmg;
 
-        if ((dmg_type == DmgType::fire) &&
-            (dmg_method == DmgMethod::elemental)) {
-                (void)actor;
+        if (dmg_type == DmgType::fire) {
                 try_start_burning(false);
         }
 }
@@ -1824,25 +1782,25 @@ Grass::Grass(const P& p) :
 }
 
 void Grass::on_hit(
-        const int dmg,
         const DmgType dmg_type,
-        const DmgMethod dmg_method,
-        actor::Actor* const actor)
+        actor::Actor* const actor,
+        const int dmg)
 {
+        (void)actor;
         (void)dmg;
 
-        if ((dmg_type == DmgType::fire) &&
-            (dmg_method == DmgMethod::elemental)) {
-                (void)actor;
+        if (dmg_type == DmgType::fire) {
                 try_start_burning(false);
         }
 }
 
 gfx::TileId Grass::tile() const
 {
-        return (m_burn_state == BurnState::has_burned)
-                ? gfx::TileId::scorched_ground
-                : data().tile;
+        if (m_burn_state == BurnState::has_burned) {
+                return gfx::TileId::scorched_ground;
+        } else {
+                return data().tile;
+        }
 }
 
 std::string Grass::name(const Article article) const
@@ -1904,16 +1862,14 @@ Bush::Bush(const P& p) :
 }
 
 void Bush::on_hit(
-        const int dmg,
         const DmgType dmg_type,
-        const DmgMethod dmg_method,
-        actor::Actor* const actor)
+        actor::Actor* const actor,
+        const int dmg)
 {
+        (void)actor;
         (void)dmg;
 
-        if ((dmg_type == DmgType::fire) &&
-            (dmg_method == DmgMethod::elemental)) {
-                (void)actor;
+        if (dmg_type == DmgType::fire) {
                 try_start_burning(false);
         }
 }
@@ -1979,16 +1935,14 @@ Vines::Vines(const P& p) :
         Terrain(p) {}
 
 void Vines::on_hit(
-        const int dmg,
         const DmgType dmg_type,
-        const DmgMethod dmg_method,
-        actor::Actor* const actor)
+        actor::Actor* const actor,
+        const int dmg)
 {
+        (void)actor;
         (void)dmg;
 
-        if ((dmg_type == DmgType::fire) &&
-            (dmg_method == DmgMethod::elemental)) {
-                (void)actor;
+        if (dmg_type == DmgType::fire) {
                 try_start_burning(false);
         }
 }
@@ -2095,14 +2049,12 @@ void Chains::bump(actor::Actor& actor_bumping)
 }
 
 void Chains::on_hit(
-        const int dmg,
         const DmgType dmg_type,
-        const DmgMethod dmg_method,
-        actor::Actor* const actor)
+        actor::Actor* const actor,
+        const int dmg)
 {
         (void)dmg;
         (void)dmg_type;
-        (void)dmg_method;
         (void)actor;
 }
 
@@ -2113,12 +2065,12 @@ Grate::Grate(const P& p) :
         Terrain(p) {}
 
 void Grate::on_hit(
-        const int dmg,
         const DmgType dmg_type,
-        const DmgMethod dmg_method,
-        actor::Actor* const actor)
+        actor::Actor* const actor,
+        const int dmg)
 {
         (void)dmg;
+
         (void)actor;
 
         // TODO: This is copy pasted - it should be handled better!
@@ -2136,15 +2088,13 @@ void Grate::on_hit(
                 }
         };
 
-        if (dmg_type == DmgType::physical) {
-                if ((dmg_method == DmgMethod::forced) ||
-                    (dmg_method == DmgMethod::explosion)) {
-                        destr_adj_doors();
+        if ((dmg_type == DmgType::pure) ||
+            (dmg_type == DmgType::explosion)) {
+                destr_adj_doors();
 
-                        map::put(new RubbleLow(m_pos));
+                map::put(new RubbleLow(m_pos));
 
-                        map::update_vision();
-                }
+                map::update_vision();
         }
 }
 
@@ -2192,20 +2142,16 @@ Tree::Tree(const P& p) :
 }
 
 void Tree::on_hit(
-        const int dmg,
         const DmgType dmg_type,
-        const DmgMethod dmg_method,
-        actor::Actor* const actor)
+        actor::Actor* const actor,
+        const int dmg)
 {
+        (void)actor;
         (void)dmg;
 
         if ((dmg_type == DmgType::fire) &&
-            (dmg_method == DmgMethod::elemental)) {
-                (void)actor;
-
-                if (rnd::fraction(2, 3)) {
-                        try_start_burning(false);
-                }
+            (rnd::fraction(2, 3))) {
+                try_start_burning(false);
         }
 }
 
@@ -2280,15 +2226,13 @@ std::string Brazier::name(const Article article) const
 }
 
 void Brazier::on_hit(
-        const int dmg,
         const DmgType dmg_type,
-        const DmgMethod dmg_method,
-        actor::Actor* const actor)
+        actor::Actor* const actor,
+        const int dmg)
 {
         (void)dmg;
 
-        if ((dmg_type == DmgType::physical) &&
-            (dmg_method == DmgMethod::kicking)) {
+        if (dmg_type == DmgType::kicking) {
                 ASSERT(actor);
 
                 if (actor->m_properties.has(PropId::weakened)) {
@@ -2414,8 +2358,11 @@ void ItemContainer::init(
                         }
 
                         const bool can_spawn_in_container =
-                                std::find(begin(item_d.native_containers), end(item_d.native_containers), terrain_id) !=
-                                end(item_d.native_containers);
+                                std::find(
+                                        std::begin(item_d.native_containers),
+                                        std::end(item_d.native_containers),
+                                        terrain_id) !=
+                                std::end(item_d.native_containers);
 
                         if (!can_spawn_in_container) {
                                 // Item not allowed to spawn in this terrain -
@@ -2640,14 +2587,12 @@ Tomb::Tomb(const P& p) :
 }
 
 void Tomb::on_hit(
-        const int dmg,
         const DmgType dmg_type,
-        const DmgMethod dmg_method,
-        actor::Actor* const actor)
+        actor::Actor* const actor,
+        const int dmg)
 {
         (void)dmg;
         (void)dmg_type;
-        (void)dmg_method;
         (void)actor;
 }
 
@@ -3096,98 +3041,98 @@ DidOpen Chest::open(actor::Actor* const actor_opening)
         }
 }
 
-void Chest::hit(const int dmg, const DmgType dmg_type, const DmgMethod dmg_method, actor::Actor* const actor)
+void Chest::hit(
+        const DmgType dmg_type,
+        actor::Actor* const actor,
+        const int dmg)
 {
-        switch (dmg_type) {
-        case DmgType::physical: {
-                switch (dmg_method) {
-                case DmgMethod::kicking: {
-                        if (!map::g_cells.at(m_pos).is_seen_by_player) {
-                                // If player is blind, call the parent hit function instead
-                                // (generic kicking)
-                                Terrain::hit(
-                                        dmg,
-                                        dmg_type,
-                                        dmg_method,
-                                        map::g_player);
-                        } else if (m_is_open) {
-                                msg_log::add("It is already open.");
-                        } else {
-                                // Is seen and closed
-                                if (m_is_locked) {
-                                        ASSERT(actor);
+        (void)dmg;
 
-                                        msg_log::add("I kick the lid.");
+        if (dmg_type != DmgType::kicking) {
+                return;
+        }
 
-                                        if (actor->m_properties.has(PropId::weakened) ||
-                                            (m_matl == ChestMatl::iron)) {
-                                                wham::try_sprain_player();
+        if (!map::g_cells.at(m_pos).is_seen_by_player) {
+                // If player is blind, call the parent hit function instead
+                // (generic kicking)
+                Terrain::hit(dmg_type, map::g_player);
 
-                                                msg_log::add("It seems futile.");
-                                        } else {
-                                                // Chest can be bashed open
-                                                if (rnd::one_in(3)) {
-                                                        m_item_container.destroy_single_fragile();
-                                                }
+                return;
+        }
 
-                                                const int open_one_in_n =
-                                                        player_bon::has_trait(Trait::rugged) ? 2 : player_bon::has_trait(Trait::tough) ? 3 : 4;
+        if (m_is_open) {
+                msg_log::add("It is already open.");
 
-                                                if (rnd::one_in(open_one_in_n)) {
-                                                        msg_log::add(
-                                                                "The lock breaks and the lid flies open!",
-                                                                colors::text(),
-                                                                MsgInterruptPlayer::no,
-                                                                MorePromptOnMsg::yes);
+                return;
+        }
 
-                                                        m_is_locked = false;
+        // Is seen and closed
+        if (m_is_locked) {
+                ASSERT(actor);
 
-                                                        m_is_open = true;
-                                                } else {
-                                                        msg_log::add("The lock resists.");
+                msg_log::add("I kick the lid.");
 
-                                                        wham::try_sprain_player();
-                                                }
-                                        }
-                                } else {
-                                        // Not locked
-                                        msg_log::add("The lid slams open, then falls shut.");
-                                }
+                if (actor->m_properties.has(PropId::weakened) ||
+                    (m_matl == ChestMatl::iron)) {
+                        wham::try_sprain_player();
 
-                                Snd snd("",
-                                        audio::SfxId::END,
-                                        IgnoreMsgIfOriginSeen::yes,
-                                        m_pos,
-                                        map::g_player,
-                                        SndVol::high,
-                                        AlertsMon::yes);
-
-                                snd.run();
+                        msg_log::add("It seems futile.");
+                } else {
+                        // Chest can be bashed open
+                        if (rnd::one_in(3)) {
+                                m_item_container.destroy_single_fragile();
                         }
-                } break; // Kick
 
-                default:
-                        break;
+                        int open_one_in_n;
 
-                } // Damage method
+                        if (player_bon::has_trait(Trait::rugged)) {
+                                open_one_in_n = 2;
+                        } else if (player_bon::has_trait(Trait::tough)) {
+                                open_one_in_n = 3;
+                        } else {
+                                open_one_in_n = 4;
+                        }
 
-        } // Physical damage
+                        if (rnd::one_in(open_one_in_n)) {
+                                msg_log::add(
+                                        "The lock breaks and the lid flies open!",
+                                        colors::text(),
+                                        MsgInterruptPlayer::no,
+                                        MorePromptOnMsg::yes);
 
-        default:
-                break;
+                                m_is_locked = false;
 
-        } // Damage type
+                                m_is_open = true;
+                        } else {
+                                msg_log::add("The lock resists.");
+
+                                wham::try_sprain_player();
+                        }
+                }
+        } else {
+                // Not locked
+                msg_log::add("The lid slams open, then falls shut.");
+        }
+
+        Snd snd(
+                "",
+                audio::SfxId::END,
+                IgnoreMsgIfOriginSeen::yes,
+                m_pos,
+                map::g_player,
+                SndVol::high,
+                AlertsMon::yes);
+
+        snd.run();
 }
 
 void Chest::on_hit(
-        const int dmg,
         const DmgType dmg_type,
-        const DmgMethod dmg_method,
-        actor::Actor* const actor)
+        actor::Actor* const actor,
+        const int dmg)
 {
         (void)dmg;
         (void)dmg_type;
-        (void)dmg_method;
         (void)actor;
 }
 
@@ -3280,14 +3225,12 @@ Fountain::Fountain(const P& p) :
 }
 
 void Fountain::on_hit(
-        const int dmg,
         const DmgType dmg_type,
-        const DmgMethod dmg_method,
-        actor::Actor* const actor)
+        actor::Actor* const actor,
+        const int dmg)
 {
         (void)dmg;
         (void)dmg_type;
-        (void)dmg_method;
         (void)actor;
 }
 
@@ -3655,14 +3598,12 @@ Cabinet::Cabinet(const P& p) :
 }
 
 void Cabinet::on_hit(
-        const int dmg,
         const DmgType dmg_type,
-        const DmgMethod dmg_method,
-        actor::Actor* const actor)
+        actor::Actor* const actor,
+        const int dmg)
 {
         (void)dmg;
         (void)dmg_type;
-        (void)dmg_method;
         (void)actor;
 }
 
@@ -3767,14 +3708,12 @@ Bookshelf::Bookshelf(const P& p) :
 }
 
 void Bookshelf::on_hit(
-        const int dmg,
         const DmgType dmg_type,
-        const DmgMethod dmg_method,
-        actor::Actor* const actor)
+        actor::Actor* const actor,
+        const int dmg)
 {
         (void)dmg;
         (void)dmg_type;
-        (void)dmg_method;
         (void)actor;
 }
 
@@ -3864,14 +3803,12 @@ AlchemistBench::AlchemistBench(const P& p) :
 }
 
 void AlchemistBench::on_hit(
-        const int dmg,
         const DmgType dmg_type,
-        const DmgMethod dmg_method,
-        actor::Actor* const actor)
+        actor::Actor* const actor,
+        const int dmg)
 {
         (void)dmg;
         (void)dmg_type;
-        (void)dmg_method;
         (void)actor;
 }
 
@@ -3970,14 +3907,12 @@ Cocoon::Cocoon(const P& p) :
 }
 
 void Cocoon::on_hit(
-        const int dmg,
         const DmgType dmg_type,
-        const DmgMethod dmg_method,
-        actor::Actor* const actor)
+        actor::Actor* const actor,
+        const int dmg)
 {
         (void)dmg;
         (void)dmg_type;
-        (void)dmg_method;
         (void)actor;
 }
 

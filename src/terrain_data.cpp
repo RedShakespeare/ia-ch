@@ -28,25 +28,7 @@ static terrain::TerrainData s_data[(size_t)terrain::Id::END];
 
 static void reset_data(terrain::TerrainData& d)
 {
-        d.make_obj = [](const P& p) {(void)p; return nullptr; };
-        d.id = terrain::Id::END;
-        d.character = ' ';
-        d.tile = gfx::TileId::END;
-        d.move_rules.reset();
-        d.is_floor_like = false;
-        d.is_sound_passable = true;
-        d.is_projectile_passable = true;
-        d.is_los_passable = true;
-        d.is_smoke_passable = true;
-        d.can_have_blood = true;
-        d.can_have_gore = false;
-        d.can_have_corpse = true;
-        d.can_have_trap = false;
-        d.can_have_item = true;
-        d.matl_type = Matl::stone;
-        d.msg_on_player_blocked = "The way is blocked.";
-        d.msg_on_player_blocked_blind = "I bump into something.";
-        d.shock_when_adjacent = 0;
+        d = terrain::TerrainData();
 }
 
 static void add_to_list_and_reset(terrain::TerrainData& d)

@@ -140,13 +140,11 @@ Door::~Door()
 }
 
 void Door::on_hit(
-        const int dmg,
         const DmgType dmg_type,
-        const DmgMethod dmg_method,
-        actor::Actor* const actor)
+        actor::Actor* const actor,
+        const int dmg)
 {
-        if (dmg_method == DmgMethod::forced) {
-                // Forced
+        if (dmg_type == DmgType::pure) {
                 map::put(new RubbleLow(m_pos));
 
                 map::update_vision();
@@ -154,177 +152,107 @@ void Door::on_hit(
                 return;
         }
 
-        if (dmg_type == DmgType::physical) {
-                // Shotgun
-                if (dmg_method == DmgMethod::shotgun) {
-                        if (!m_is_open) {
-                                switch (m_type) {
-                                case DoorType::wood:
-                                case DoorType::gate: {
-                                        if (map::is_pos_seen_by_player(m_pos)) {
-                                                const std::string a =
-                                                        m_is_hidden
-                                                        ? "A "
-                                                        : "The ";
-
-                                                msg_log::add(
-                                                        a +
-                                                        base_name_short() +
-                                                        " is blown to pieces!");
-                                        }
-
-                                        map::put(new RubbleLow(m_pos));
-
-                                        map::update_vision();
-
-                                        return;
-                                } break;
-
-                                case DoorType::metal:
-                                        break;
-                                }
-                        }
-                }
-
-                // Explosion
-                if (dmg_method == DmgMethod::explosion) {
-                        //TODO
-                }
-
-                // Kicking, blunt (sledgehammers), or slashing (axes)
-                if ((dmg_method == DmgMethod::kicking) ||
-                    (dmg_method == DmgMethod::blunt) ||
-                    (dmg_method == DmgMethod::slashing)) {
-                        ASSERT(actor);
-
-                        const bool is_player = actor == map::g_player;
-                        const bool is_cell_seen = map::is_pos_seen_by_player(m_pos);
-                        const bool is_weak = actor->m_properties.has(PropId::weakened);
-
+        if (dmg_type == DmgType::shotgun) {
+                if (!m_is_open) {
                         switch (m_type) {
                         case DoorType::wood:
                         case DoorType::gate: {
-                                if (is_player) {
-                                        int destr_chance_pct = 25 + (dmg * 5) - (m_nr_spikes * 4);
+                                if (map::is_pos_seen_by_player(m_pos)) {
+                                        const std::string a =
+                                                m_is_hidden
+                                                ? "A "
+                                                : "The ";
 
-                                        destr_chance_pct = std::max(1, destr_chance_pct);
+                                        msg_log::add(
+                                                a +
+                                                base_name_short() +
+                                                " is blown to pieces!");
+                                }
 
-                                        if (player_bon::has_trait(Trait::tough)) {
-                                                destr_chance_pct += 15;
-                                        }
+                                map::put(new RubbleLow(m_pos));
 
-                                        if (player_bon::has_trait(Trait::rugged)) {
-                                                destr_chance_pct += 15;
-                                        }
+                                map::update_vision();
 
-                                        if (actor->m_properties.has(PropId::frenzied)) {
-                                                destr_chance_pct += 30;
-                                        }
+                                return;
+                        } break;
 
-                                        if (is_weak || is_hidden()) {
-                                                destr_chance_pct = 0;
-                                        }
+                        case DoorType::metal:
+                                break;
+                        }
+                }
+        }
 
-                                        destr_chance_pct = std::min(100, destr_chance_pct);
+        if (dmg_type == DmgType::explosion) {
+                //TODO
+        }
 
-                                        if (destr_chance_pct > 0) {
-                                                if (rnd::percent(destr_chance_pct)) {
-                                                        Snd snd("",
-                                                                audio::SfxId::door_break,
-                                                                IgnoreMsgIfOriginSeen::yes,
-                                                                m_pos,
-                                                                actor,
-                                                                SndVol::low,
-                                                                AlertsMon::yes);
+        // Kicking, blunt (sledgehammers), or slashing (axes)
+        if ((dmg_type == DmgType::kicking) ||
+            (dmg_type == DmgType::blunt) ||
+            (dmg_type == DmgType::slashing)) {
+                ASSERT(actor);
 
-                                                        snd.run();
+                const bool is_player = actor == map::g_player;
+                const bool is_cell_seen = map::is_pos_seen_by_player(m_pos);
+                const bool is_weak = actor->m_properties.has(PropId::weakened);
 
-                                                        if (is_cell_seen) {
-                                                                if (m_is_hidden) {
-                                                                        msg_log::add(
-                                                                                "A " +
-                                                                                base_name_short() +
-                                                                                " crashes open!");
-                                                                } else {
-                                                                        msg_log::add(
-                                                                                "The " +
-                                                                                base_name_short() +
-                                                                                " crashes open!");
-                                                                }
-                                                        } else {
-                                                                // Cell not seen
-                                                                msg_log::add("I feel a door crashing open!");
-                                                        }
+                switch (m_type) {
+                case DoorType::wood:
+                case DoorType::gate: {
+                        if (is_player) {
+                                int destr_chance_pct =
+                                        25 +
+                                        (dmg * 5) -
+                                        (m_nr_spikes * 4);
 
-                                                        map::put(new RubbleLow(m_pos));
+                                destr_chance_pct = std::max(1, destr_chance_pct);
 
-                                                        map::update_vision();
-                                                } else {
-                                                        // Not destroyed
-                                                        const audio::SfxId sfx =
-                                                                m_is_hidden ? audio::SfxId::END : audio::SfxId::door_bang;
+                                if (player_bon::has_trait(Trait::tough)) {
+                                        destr_chance_pct += 15;
+                                }
 
-                                                        Snd snd("",
-                                                                sfx,
-                                                                IgnoreMsgIfOriginSeen::no,
-                                                                m_pos,
-                                                                actor,
-                                                                SndVol::low,
-                                                                AlertsMon::yes);
+                                if (player_bon::has_trait(Trait::rugged)) {
+                                        destr_chance_pct += 15;
+                                }
 
-                                                        snd.run();
-                                                }
-                                        } else {
-                                                // No chance of success
-                                                if (is_cell_seen && !m_is_hidden) {
-                                                        Snd snd("",
-                                                                audio::SfxId::door_bang,
-                                                                IgnoreMsgIfOriginSeen::no,
-                                                                actor->m_pos,
-                                                                actor,
-                                                                SndVol::low,
-                                                                AlertsMon::yes);
+                                if (actor->m_properties.has(PropId::frenzied)) {
+                                        destr_chance_pct += 30;
+                                }
 
-                                                        snd.run();
+                                if (is_weak || is_hidden()) {
+                                        destr_chance_pct = 0;
+                                }
 
-                                                        msg_log::add("It seems futile.");
-                                                }
-                                        }
-                                } else {
-                                        // Is monster
-                                        int destr_chance_pct = 7 - (m_nr_spikes * 2);
+                                destr_chance_pct = std::min(100, destr_chance_pct);
 
-                                        destr_chance_pct = std::max(1, destr_chance_pct);
-
-                                        if (is_weak) {
-                                                destr_chance_pct = 0;
-                                        }
-
+                                if (destr_chance_pct > 0) {
                                         if (rnd::percent(destr_chance_pct)) {
-                                                // NOTE: When it's a monster bashing down the door, we
-                                                // make the sound alert other monsters - since causes
-                                                // nicer AI behavior (everyone near the door understands
-                                                // that it's time to run inside)
-                                                Snd snd("I hear a door crashing open!",
+                                                Snd snd(
+                                                        "",
                                                         audio::SfxId::door_break,
                                                         IgnoreMsgIfOriginSeen::yes,
                                                         m_pos,
                                                         actor,
-                                                        SndVol::high,
+                                                        SndVol::low,
                                                         AlertsMon::yes);
 
                                                 snd.run();
 
-                                                if (actor::can_player_see_actor(*actor)) {
-                                                        msg_log::add(
-                                                                "The " +
-                                                                base_name_short() +
-                                                                " crashes open!");
-                                                } else if (is_cell_seen) {
-                                                        msg_log::add(
-                                                                "A " +
-                                                                base_name_short() +
-                                                                " crashes open!");
+                                                if (is_cell_seen) {
+                                                        if (m_is_hidden) {
+                                                                msg_log::add(
+                                                                        "A " +
+                                                                        base_name_short() +
+                                                                        " crashes open!");
+                                                        } else {
+                                                                msg_log::add(
+                                                                        "The " +
+                                                                        base_name_short() +
+                                                                        " crashes open!");
+                                                        }
+                                                } else {
+                                                        // Cell not seen
+                                                        msg_log::add("I feel a door crashing open!");
                                                 }
 
                                                 map::put(new RubbleLow(m_pos));
@@ -332,46 +260,110 @@ void Door::on_hit(
                                                 map::update_vision();
                                         } else {
                                                 // Not destroyed
-                                                Snd snd("I hear a loud banging.",
-                                                        audio::SfxId::door_bang,
-                                                        IgnoreMsgIfOriginSeen::yes,
-                                                        actor->m_pos,
+                                                const audio::SfxId sfx =
+                                                        m_is_hidden ? audio::SfxId::END : audio::SfxId::door_bang;
+
+                                                Snd snd("",
+                                                        sfx,
+                                                        IgnoreMsgIfOriginSeen::no,
+                                                        m_pos,
                                                         actor,
-                                                        SndVol::high,
-                                                        AlertsMon::no);
+                                                        SndVol::low,
+                                                        AlertsMon::yes);
 
                                                 snd.run();
                                         }
+                                } else {
+                                        // No chance of success
+                                        if (is_cell_seen && !m_is_hidden) {
+                                                Snd snd("",
+                                                        audio::SfxId::door_bang,
+                                                        IgnoreMsgIfOriginSeen::no,
+                                                        actor->m_pos,
+                                                        actor,
+                                                        SndVol::low,
+                                                        AlertsMon::yes);
+
+                                                snd.run();
+
+                                                msg_log::add("It seems futile.");
+                                        }
+                                }
+                        } else {
+                                // Is monster
+                                int destr_chance_pct = 7 - (m_nr_spikes * 2);
+
+                                destr_chance_pct = std::max(1, destr_chance_pct);
+
+                                if (is_weak) {
+                                        destr_chance_pct = 0;
                                 }
 
-                        } break; // wood, gate
+                                if (rnd::percent(destr_chance_pct)) {
+                                        // NOTE: When it's a monster bashing down the door, we
+                                        // make the sound alert other monsters - since causes
+                                        // nicer AI behavior (everyone near the door understands
+                                        // that it's time to run inside)
+                                        Snd snd("I hear a door crashing open!",
+                                                audio::SfxId::door_break,
+                                                IgnoreMsgIfOriginSeen::yes,
+                                                m_pos,
+                                                actor,
+                                                SndVol::high,
+                                                AlertsMon::yes);
 
-                        case DoorType::metal: {
-                                if (is_player &&
-                                    is_cell_seen &&
-                                    !m_is_hidden) {
-                                        msg_log::add(
-                                                "It seems futile.",
-                                                colors::msg_note(),
-                                                MsgInterruptPlayer::no,
-                                                MorePromptOnMsg::yes);
+                                        snd.run();
+
+                                        if (actor::can_player_see_actor(*actor)) {
+                                                msg_log::add(
+                                                        "The " +
+                                                        base_name_short() +
+                                                        " crashes open!");
+                                        } else if (is_cell_seen) {
+                                                msg_log::add(
+                                                        "A " +
+                                                        base_name_short() +
+                                                        " crashes open!");
+                                        }
+
+                                        map::put(new RubbleLow(m_pos));
+
+                                        map::update_vision();
+                                } else {
+                                        // Not destroyed
+                                        Snd snd("I hear a loud banging.",
+                                                audio::SfxId::door_bang,
+                                                IgnoreMsgIfOriginSeen::yes,
+                                                actor->m_pos,
+                                                actor,
+                                                SndVol::high,
+                                                AlertsMon::no);
+
+                                        snd.run();
                                 }
-                        } break; // metal
+                        }
 
-                        } // Door type switch
+                } break; // wood, gate
 
-                } // Blunt or slashing damage method
+                case DoorType::metal: {
+                        if (is_player &&
+                            is_cell_seen &&
+                            !m_is_hidden) {
+                                msg_log::add(
+                                        "It seems futile.",
+                                        colors::msg_note(),
+                                        MsgInterruptPlayer::no,
+                                        MorePromptOnMsg::yes);
+                        }
+                } break; // metal
 
-        } // Physical damage
+                } // Door type switch
+        }
 
-        // Fire
-        if (dmg_method == DmgMethod::elemental &&
-            dmg_type == DmgType::fire &&
-            matl() == Matl::wood) {
+        if ((dmg_type == DmgType::fire) && (matl() == Matl::wood)) {
                 try_start_burning(true);
                 reveal(Verbose::yes);
         }
-
 } // on_hit
 
 WasDestroyed Door::on_finished_burning()

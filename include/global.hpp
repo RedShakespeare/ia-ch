@@ -162,7 +162,12 @@ enum class Condition {
 };
 
 enum class DmgType {
-        physical,
+        piercing,
+        slashing,
+        blunt,
+        kicking,
+        explosion,
+        shotgun,
         fire,
         acid,
         electric,
@@ -172,17 +177,51 @@ enum class DmgType {
         END
 };
 
-enum class DmgMethod {
-        piercing,
-        slashing,
-        blunt,
-        kicking,
-        explosion,
-        shotgun,
-        elemental,
-        forced, // Guaranteed to detroy the terrain (silently - no messages)
-        END
-};
+constexpr bool is_physical_dmg_type(const DmgType type)
+{
+        switch (type) {
+        case DmgType::piercing:
+                return true;
+
+        case DmgType::slashing:
+                return true;
+
+        case DmgType::blunt:
+                return true;
+
+        case DmgType::kicking:
+                return true;
+
+        case DmgType::explosion:
+                return true;
+
+        case DmgType::shotgun:
+                return true;
+
+        case DmgType::fire:
+                return false;
+
+        case DmgType::acid:
+                return false;
+
+        case DmgType::electric:
+                return false;
+
+        case DmgType::spirit:
+                return false;
+
+        case DmgType::light:
+                return false;
+
+        case DmgType::pure:
+                return false;
+
+        case DmgType::END:
+                return false;
+        }
+
+        return false;
+}
 
 enum class AttMode {
         none,

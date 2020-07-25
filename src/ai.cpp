@@ -230,11 +230,7 @@ DidAction handle_closed_blocking_door(actor::Mon& mon, std::vector<P>& path)
                                 "!");
                 }
 
-                door->hit(
-                        1, // Doesn't matter
-                        DmgType::physical,
-                        DmgMethod::blunt,
-                        &mon);
+                door->hit(DmgType::blunt, &mon);
 
                 game_time::tick();
 

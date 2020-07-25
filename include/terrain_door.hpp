@@ -142,10 +142,9 @@ private:
         Color color_default() const override;
 
         void on_hit(
-                int dmg,
                 DmgType dmg_type,
-                DmgMethod dmg_method,
-                actor::Actor* actor) override;
+                actor::Actor* actor,
+                int dmg = -1) override;
 
         const Wall* const m_mimic_terrain {nullptr};
 

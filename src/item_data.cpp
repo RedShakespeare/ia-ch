@@ -128,6 +128,7 @@ static void reset_data(item::ItemData& d, ItemType const item_type)
                 d.color = colors::white();
                 d.melee.is_melee_wpn = true;
                 d.melee.dmg = DmgRange(1, 3);
+                d.melee.dmg_type = DmgType::blunt;
                 d.main_att_mode = AttMode::ranged;
                 d.ranged.is_ranged_wpn = true;
                 d.ranged.projectile_character = '/';
@@ -226,7 +227,7 @@ static void reset_data(item::ItemData& d, ItemType const item_type)
                 d.tile = gfx::TileId::potion;
                 d.ranged.throw_hit_chance_mod = 15;
                 d.ranged.dmg = DmgRange(1, 3);
-                d.ranged.dmg_method = DmgMethod::blunt;
+                d.ranged.dmg_type = DmgType::blunt;
                 d.ranged.always_break_on_throw = true;
                 d.max_stack_at_spawn = 1;
                 d.land_on_hard_snd_msg = "";
@@ -350,7 +351,9 @@ void init()
         reset_data(d, ItemType::ranged_wpn);
         d.id = Id::sawed_off;
         d.base_name = {
-                "Sawed-off Shotgun", "Sawed-off shotguns", "a Sawed-off Shotgun"};
+                "Sawed-off Shotgun",
+                "Sawed-off shotguns",
+                "a Sawed-off Shotgun"};
         d.base_descr = {
                 "Compared to a standard shotgun, the sawed-off has a shorter "
                 "effective range - however, at close range it is more "
@@ -364,7 +367,7 @@ void init()
         d.ranged.dmg = DmgRange(8, 24);
         d.ranged.hit_chance_mod = 0;
         d.ranged.effective_range = {0, 3};
-        d.ranged.dmg_method = DmgMethod::shotgun;
+        d.ranged.dmg_type = DmgType::shotgun;
         d.ranged.ammo_item_id = Id::shotgun_shell;
         d.ranged.att_msgs = {"fire", "fires"};
         d.ranged.snd_msg = "I hear a shotgun blast.";
@@ -394,7 +397,7 @@ void init()
         d.ranged.dmg = DmgRange(6, 18);
         d.ranged.hit_chance_mod = 0;
         d.ranged.effective_range = {0, 5};
-        d.ranged.dmg_method = DmgMethod::shotgun;
+        d.ranged.dmg_type = DmgType::shotgun;
         d.ranged.ammo_item_id = Id::shotgun_shell;
         d.ranged.att_msgs = {"fire", "fires"};
         d.ranged.snd_msg = "I hear a shotgun blast.";
@@ -666,7 +669,7 @@ void init()
         d.ranged.dmg = DmgRange(1, 7, 0);
         d.ranged.hit_chance_mod = 0;
         d.ranged.effective_range = {0, 4};
-        d.ranged.dmg_type = DmgType::physical;
+        d.ranged.dmg_type = DmgType::piercing;
         d.ranged.knocks_back = true;
         d.ranged.ammo_item_id = Id::iron_spike;
         d.ranged.att_msgs = {"fire", "fires"};
@@ -712,7 +715,6 @@ void init()
                 d.ranged.prop_applied = ItemAttProp(prop);
         }
         d.ranged.dmg_type = DmgType::electric;
-        d.ranged.dmg_method = DmgMethod::elemental;
         d.ranged.has_infinite_ammo = true;
         d.ranged.projectile_leaves_trail = true;
         d.ranged.projectile_color = colors::yellow();
@@ -748,7 +750,7 @@ void init()
         d.weight = Weight::heavy;
         d.melee.dmg = DmgRange(6, 8);
         d.melee.hit_chance_mod = 85;
-        d.melee.dmg_method = DmgMethod::piercing;
+        d.melee.dmg_type = DmgType::piercing;
         d.melee.hit_small_sfx = audio::SfxId::hit_sharp;
         d.melee.hit_medium_sfx = audio::SfxId::hit_sharp;
         d.melee.miss_sfx = audio::SfxId::miss_heavy;
@@ -857,7 +859,7 @@ void init()
         d.ranged.dmg = DmgRange(1, 3);
         d.ranged.effective_range = {0, 4};
         d.ranged.max_range = d.ranged.effective_range.max + 3;
-        d.ranged.dmg_method = DmgMethod::blunt;
+        d.ranged.dmg_type = DmgType::blunt;
         d.max_stack_at_spawn = 3;
         d.main_att_mode = AttMode::thrown;
         d.native_containers.push_back(terrain::Id::cabinet);
@@ -882,7 +884,7 @@ void init()
         d.melee.att_msgs = {"stab", "stabs"};
         d.melee.dmg = DmgRange(1, 4);
         d.melee.hit_chance_mod = 20;
-        d.melee.dmg_method = DmgMethod::piercing;
+        d.melee.dmg_type = DmgType::piercing;
         d.melee.is_noisy = false;
         d.melee.hit_medium_sfx = audio::SfxId::hit_sharp;
         d.melee.hit_hard_sfx = audio::SfxId::hit_sharp;
@@ -911,7 +913,7 @@ void init()
         d.melee.dmg = DmgRange(1, 5);
         d.melee.hit_chance_mod = 15;
         d.melee.att_corpse = true;
-        d.melee.dmg_method = DmgMethod::slashing;
+        d.melee.dmg_type = DmgType::slashing;
         d.melee.is_noisy = false;
         d.melee.hit_medium_sfx = audio::SfxId::hit_sharp;
         d.melee.hit_hard_sfx = audio::SfxId::hit_sharp;
@@ -919,7 +921,7 @@ void init()
         d.ranged.throw_hit_chance_mod = 0;
         d.ranged.effective_range = {0, 5};
         d.ranged.max_range = d.ranged.effective_range.max + 3;
-        d.ranged.dmg_method = DmgMethod::slashing;
+        d.ranged.dmg_type = DmgType::slashing;
         d.native_containers.push_back(terrain::Id::chest);
         d.native_containers.push_back(terrain::Id::cabinet);
         d.native_containers.push_back(terrain::Id::cocoon);
@@ -940,13 +942,13 @@ void init()
         d.melee.dmg = DmgRange(2, 6);
         d.melee.hit_chance_mod = 10;
         d.melee.att_corpse = true;
-        d.melee.dmg_method = DmgMethod::blunt;
+        d.melee.dmg_type = DmgType::blunt;
         d.melee.is_noisy = false;
         d.melee.miss_sfx = audio::SfxId::miss_medium;
         d.ranged.throw_hit_chance_mod = -5;
         d.ranged.effective_range = {0, 4};
         d.ranged.max_range = d.ranged.effective_range.max + 3;
-        d.ranged.dmg_method = DmgMethod::blunt;
+        d.ranged.dmg_type = DmgType::blunt;
         d.land_on_hard_snd_msg = "I hear a thudding sound.";
         d.land_on_hard_sfx = audio::SfxId::END;
         g_data[(size_t)d.id] = d;
@@ -965,13 +967,13 @@ void init()
         d.melee.dmg = DmgRange(2, 8);
         d.melee.hit_chance_mod = 5;
         d.melee.att_corpse = true;
-        d.melee.dmg_method = DmgMethod::blunt;
+        d.melee.dmg_type = DmgType::blunt;
         d.melee.is_noisy = true;
         d.melee.miss_sfx = audio::SfxId::miss_medium;
         d.ranged.throw_hit_chance_mod = -5;
         d.ranged.effective_range = {0, 4};
         d.ranged.max_range = d.ranged.effective_range.max + 3;
-        d.ranged.dmg_method = DmgMethod::blunt;
+        d.ranged.dmg_type = DmgType::blunt;
         d.native_containers.push_back(terrain::Id::cabinet);
         d.native_containers.push_back(terrain::Id::cocoon);
         g_data[(size_t)d.id] = d;
@@ -990,7 +992,7 @@ void init()
         d.melee.dmg = DmgRange(2, 10);
         d.melee.hit_chance_mod = 0;
         d.melee.att_corpse = true;
-        d.melee.dmg_method = DmgMethod::slashing;
+        d.melee.dmg_type = DmgType::slashing;
         d.melee.hit_small_sfx = audio::SfxId::hit_sharp;
         d.melee.hit_medium_sfx = audio::SfxId::hit_sharp;
         d.melee.miss_sfx = audio::SfxId::miss_medium;
@@ -998,7 +1000,7 @@ void init()
         d.ranged.throw_hit_chance_mod = -5;
         d.ranged.effective_range = {0, 4};
         d.ranged.max_range = d.ranged.effective_range.max + 3;
-        d.ranged.dmg_method = DmgMethod::slashing;
+        d.ranged.dmg_type = DmgType::slashing;
         d.native_containers.push_back(terrain::Id::cabinet);
         d.native_containers.push_back(terrain::Id::cocoon);
         g_data[(size_t)d.id] = d;
@@ -1019,12 +1021,12 @@ void init()
         d.melee.hit_chance_mod = -5;
         d.melee.att_corpse = true;
         d.melee.att_terrain = true;
-        d.melee.dmg_method = DmgMethod::slashing;
+        d.melee.dmg_type = DmgType::slashing;
         d.melee.miss_sfx = audio::SfxId::miss_medium;
         d.melee.is_noisy = true;
         d.ranged.throw_hit_chance_mod = -5;
         d.ranged.effective_range = {0, 4};
-        d.ranged.dmg_method = DmgMethod::slashing;
+        d.ranged.dmg_type = DmgType::slashing;
         d.ranged.max_range = d.ranged.effective_range.max + 3;
         d.native_containers.push_back(terrain::Id::cabinet);
         d.native_containers.push_back(terrain::Id::tomb);
@@ -1049,13 +1051,13 @@ void init()
         d.melee.hit_chance_mod = -10;
         d.melee.att_corpse = true;
         d.melee.att_terrain = false;
-        d.melee.dmg_method = DmgMethod::piercing;
+        d.melee.dmg_type = DmgType::piercing;
         d.melee.miss_sfx = audio::SfxId::miss_heavy;
         d.melee.is_noisy = true;
         d.ranged.throw_hit_chance_mod = -5;
         d.ranged.effective_range = {0, 4};
         d.ranged.max_range = d.ranged.effective_range.max + 3;
-        d.ranged.dmg_method = DmgMethod::blunt;
+        d.ranged.dmg_type = DmgType::piercing;
         d.native_containers.push_back(terrain::Id::cabinet);
         d.native_containers.push_back(terrain::Id::tomb);
         d.native_containers.push_back(terrain::Id::cocoon);
@@ -1077,7 +1079,7 @@ void init()
         d.melee.hit_chance_mod = -15;
         d.melee.att_corpse = true;
         d.melee.knocks_back = true;
-        d.melee.dmg_method = DmgMethod::piercing;
+        d.melee.dmg_type = DmgType::piercing;
         d.melee.is_noisy = true;
         d.melee.hit_small_sfx = audio::SfxId::hit_sharp;
         d.melee.hit_medium_sfx = audio::SfxId::hit_sharp;
@@ -1085,7 +1087,7 @@ void init()
         d.ranged.throw_hit_chance_mod = -10;
         d.ranged.effective_range = {0, 3};
         d.ranged.max_range = d.ranged.effective_range.max + 3;
-        d.ranged.dmg_method = DmgMethod::piercing;
+        d.ranged.dmg_type = DmgType::piercing;
         d.native_containers.push_back(terrain::Id::cabinet);
         d.native_containers.push_back(terrain::Id::cocoon);
         g_data[(size_t)d.id] = d;
@@ -1105,12 +1107,12 @@ void init()
         d.melee.hit_chance_mod = -15;
         d.melee.att_corpse = true;
         d.melee.att_terrain = true;
-        d.melee.dmg_method = DmgMethod::blunt;
+        d.melee.dmg_type = DmgType::blunt;
         d.melee.miss_sfx = audio::SfxId::miss_heavy;
         d.ranged.throw_hit_chance_mod = -10;
         d.ranged.effective_range = {0, 3};
         d.ranged.max_range = d.ranged.effective_range.max + 3;
-        d.ranged.dmg_method = DmgMethod::blunt;
+        d.ranged.dmg_type = DmgType::blunt;
         d.native_containers.push_back(terrain::Id::cabinet);
         g_data[(size_t)d.id] = d;
 
@@ -1142,7 +1144,7 @@ void init()
         d.melee.hit_chance_mod = 15;
         d.melee.dmg = DmgRange(1, 2);
         d.melee.knocks_back = true;
-        d.melee.dmg_method = DmgMethod::kicking;
+        d.melee.dmg_type = DmgType::kicking;
         d.melee.att_terrain = true;
         d.melee.att_corpse = true;
         d.melee.miss_sfx = audio::SfxId::miss_medium;
@@ -1157,7 +1159,7 @@ void init()
                 g_data[(size_t)Id::player_kick].melee.dmg;
         d.melee.miss_sfx =
                 g_data[(size_t)Id::player_kick].melee.miss_sfx;
-        d.melee.dmg_method = DmgMethod::kicking;
+        d.melee.dmg_type = DmgType::kicking;
         d.melee.knocks_back = false;
         d.melee.att_terrain = false;
         d.melee.att_corpse = false;
@@ -1180,7 +1182,7 @@ void init()
         d.melee.dmg = DmgRange(1, 8);
         d.melee.is_noisy = false;
         d.melee.att_corpse = true;
-        d.melee.dmg_method = DmgMethod::slashing;
+        d.melee.dmg_type = DmgType::slashing;
         d.melee.hit_small_sfx = audio::SfxId::hit_sharp;
         d.melee.hit_medium_sfx = audio::SfxId::hit_sharp;
         d.melee.miss_sfx = audio::SfxId::miss_medium;
@@ -1189,32 +1191,32 @@ void init()
         reset_data(d, ItemType::melee_wpn_intr);
         d.id = Id::intr_kick;
         d.melee.att_msgs = {"", "kicks"};
-        d.melee.dmg_method = DmgMethod::blunt;
+        d.melee.dmg_type = DmgType::blunt;
         d.melee.knocks_back = true;
         g_data[(size_t)d.id] = d;
 
         reset_data(d, ItemType::melee_wpn_intr);
         d.id = Id::intr_bite;
         d.melee.att_msgs = {"", "bites"};
-        d.melee.dmg_method = DmgMethod::piercing;
+        d.melee.dmg_type = DmgType::piercing;
         g_data[(size_t)d.id] = d;
 
         reset_data(d, ItemType::melee_wpn_intr);
         d.id = Id::intr_claw;
         d.melee.att_msgs = {"", "claws"};
-        d.melee.dmg_method = DmgMethod::slashing;
+        d.melee.dmg_type = DmgType::slashing;
         g_data[(size_t)d.id] = d;
 
         reset_data(d, ItemType::melee_wpn_intr);
         d.id = Id::intr_strike;
         d.melee.att_msgs = {"", "strikes"};
-        d.melee.dmg_method = DmgMethod::blunt;
+        d.melee.dmg_type = DmgType::blunt;
         g_data[(size_t)d.id] = d;
 
         reset_data(d, ItemType::melee_wpn_intr);
         d.id = Id::intr_punch;
         d.melee.att_msgs = {"", "punches"};
-        d.melee.dmg_method = DmgMethod::blunt;
+        d.melee.dmg_type = DmgType::blunt;
         g_data[(size_t)d.id] = d;
 
         reset_data(d, ItemType::ranged_wpn_intr);
@@ -1223,7 +1225,6 @@ void init()
         d.ranged.snd_msg = "I hear spitting.";
         d.ranged.projectile_color = colors::light_green();
         d.ranged.dmg_type = DmgType::acid;
-        d.ranged.dmg_method = DmgMethod::elemental;
         d.ranged.projectile_character = '*';
         g_data[(size_t)d.id] = d;
 
@@ -1232,8 +1233,7 @@ void init()
         d.ranged.att_msgs = {"", "spits venom"};
         d.ranged.snd_msg = "I hear hissing and spitting.";
         d.ranged.projectile_color = colors::light_green();
-        d.ranged.dmg_type = DmgType::physical;
-        d.ranged.dmg_method = DmgMethod::piercing;
+        d.ranged.dmg_type = DmgType::piercing;
         d.ranged.projectile_character = '*';
         g_data[(size_t)d.id] = d;
 
@@ -1246,8 +1246,6 @@ void init()
         d.ranged.projectile_tile = gfx::TileId::blast1;
         d.ranged.projectile_leaves_trail = true;
         d.ranged.dmg_type = DmgType::fire;
-        d.ranged.dmg_method = DmgMethod::elemental;
-        ;
         g_data[(size_t)d.id] = d;
 
         reset_data(d, ItemType::ranged_wpn_intr);
@@ -1259,50 +1257,48 @@ void init()
         d.ranged.projectile_tile = gfx::TileId::blast1;
         d.ranged.projectile_leaves_trail = true;
         d.ranged.dmg_type = DmgType::electric;
-        d.ranged.dmg_method = DmgMethod::elemental;
         g_data[(size_t)d.id] = d;
 
         reset_data(d, ItemType::melee_wpn_intr);
         d.id = Id::intr_raven_peck;
         d.melee.att_msgs = {"", "pecks"};
-        d.melee.dmg_method = DmgMethod::piercing;
+        d.melee.dmg_type = DmgType::piercing;
         g_data[(size_t)d.id] = d;
 
         reset_data(d, ItemType::melee_wpn_intr);
         d.id = Id::intr_vampiric_bite;
         d.melee.att_msgs = {"", "bites"};
-        d.melee.dmg_method = DmgMethod::piercing;
+        d.melee.dmg_type = DmgType::piercing;
         g_data[(size_t)d.id] = d;
 
         reset_data(d, ItemType::melee_wpn_intr);
         d.id = Id::intr_strangle;
         d.melee.att_msgs = {"", "strangles"};
-        d.melee.dmg_method = DmgMethod::blunt;
+        d.melee.dmg_type = DmgType::blunt;
         g_data[(size_t)d.id] = d;
 
         reset_data(d, ItemType::melee_wpn_intr);
         d.id = Id::intr_ghost_touch;
         d.melee.att_msgs = {"", "reaches for"};
         d.melee.dmg_type = DmgType::spirit;
-        d.melee.dmg_method = DmgMethod::blunt;
         g_data[(size_t)d.id] = d;
 
         reset_data(d, ItemType::melee_wpn_intr);
         d.id = Id::intr_sting;
         d.melee.att_msgs = {"", "stings"};
-        d.melee.dmg_method = DmgMethod::piercing;
+        d.melee.dmg_type = DmgType::piercing;
         g_data[(size_t)d.id] = d;
 
         reset_data(d, ItemType::melee_wpn_intr);
         d.id = Id::intr_mind_leech_sting;
         d.melee.att_msgs = {"", "stings"};
-        d.melee.dmg_method = DmgMethod::piercing;
+        d.melee.dmg_type = DmgType::piercing;
         g_data[(size_t)d.id] = d;
 
         reset_data(d, ItemType::melee_wpn_intr);
         d.id = Id::intr_spear_thrust;
         d.melee.att_msgs = {"", "strikes"};
-        d.melee.dmg_method = DmgMethod::piercing;
+        d.melee.dmg_type = DmgType::piercing;
         g_data[(size_t)d.id] = d;
 
         reset_data(d, ItemType::ranged_wpn_intr);
@@ -1310,7 +1306,7 @@ void init()
         d.ranged.att_msgs = {"", "throws a net"};
         d.ranged.snd_msg = "I hear a whooshing sound.";
         d.ranged.projectile_color = colors::brown();
-        d.ranged.dmg_method = DmgMethod::blunt;
+        d.ranged.dmg_type = DmgType::blunt;
         d.ranged.projectile_character = '*';
         d.ranged.projectile_tile = gfx::TileId::web;
         g_data[(size_t)d.id] = d;
@@ -1318,46 +1314,43 @@ void init()
         reset_data(d, ItemType::melee_wpn_intr);
         d.id = Id::intr_maul;
         d.melee.att_msgs = {"", "mauls"};
-        d.melee.dmg_method = DmgMethod::blunt;
+        d.melee.dmg_type = DmgType::blunt;
         g_data[(size_t)d.id] = d;
 
         reset_data(d, ItemType::melee_wpn_intr);
         d.id = Id::intr_pus_spew;
         d.melee.att_msgs = {"", "spews pus on"};
-        d.melee.dmg_method = DmgMethod::blunt;
+        d.melee.dmg_type = DmgType::blunt;
         g_data[(size_t)d.id] = d;
 
         reset_data(d, ItemType::melee_wpn_intr);
         d.id = Id::intr_acid_touch;
         d.melee.att_msgs = {"", "touches"};
         d.melee.dmg_type = DmgType::acid;
-        d.melee.dmg_method = DmgMethod::elemental;
         g_data[(size_t)d.id] = d;
 
         reset_data(d, ItemType::melee_wpn_intr);
         d.id = Id::intr_dust_engulf;
         d.melee.att_msgs = {"", "engulfs"};
-        d.melee.dmg_method = DmgMethod::elemental;
+        d.melee.dmg_type = DmgType::blunt;
         g_data[(size_t)d.id] = d;
 
         reset_data(d, ItemType::melee_wpn_intr);
         d.id = Id::intr_fire_engulf;
         d.melee.att_msgs = {"", "engulfs"};
-        d.melee.dmg_method = DmgMethod::elemental;
         d.melee.dmg_type = DmgType::fire;
         g_data[(size_t)d.id] = d;
 
         reset_data(d, ItemType::melee_wpn_intr);
         d.id = Id::intr_energy_engulf;
         d.melee.att_msgs = {"", "engulfs"};
-        d.melee.dmg_method = DmgMethod::elemental;
         d.melee.dmg_type = DmgType::electric;
         g_data[(size_t)d.id] = d;
 
         reset_data(d, ItemType::melee_wpn_intr);
         d.id = Id::intr_spores;
         d.melee.att_msgs = {"", "releases spores"};
-        d.melee.dmg_method = DmgMethod::blunt;
+        d.melee.dmg_type = DmgType::blunt;
         g_data[(size_t)d.id] = d;
 
         reset_data(d, ItemType::ranged_wpn_intr);
@@ -1367,7 +1360,7 @@ void init()
         d.ranged.projectile_color = colors::light_white();
         d.ranged.projectile_tile = gfx::TileId::blast1;
         d.ranged.projectile_character = '*';
-        d.ranged.dmg_method = DmgMethod::blunt;
+        d.ranged.dmg_type = DmgType::blunt;
         d.ranged.snd_vol = SndVol::low;
         g_data[(size_t)d.id] = d;
 
@@ -1794,11 +1787,11 @@ void init()
         d.melee.dmg = DmgRange(2, 8, 4);
         d.melee.hit_chance_mod = 0;
         d.melee.miss_sfx = audio::SfxId::miss_medium;
-        d.melee.dmg_method = DmgMethod::blunt;
+        d.melee.dmg_type = DmgType::blunt;
         d.ranged.throw_hit_chance_mod = -10;
         d.ranged.effective_range = {0, 3};
         d.ranged.max_range = d.ranged.effective_range.max + 3;
-        d.ranged.dmg_method = DmgMethod::blunt;
+        d.ranged.dmg_type = DmgType::blunt;
         d.is_unique = true;
         d.xp_on_found = 20;
         d.value = Value::supreme_treasure;
@@ -1961,7 +1954,7 @@ void init()
         d.melee.hit_medium_sfx = audio::SfxId::hit_sharp;
         d.melee.hit_hard_sfx = audio::SfxId::hit_sharp;
         d.melee.miss_sfx = audio::SfxId::miss_light;
-        d.melee.dmg_method = DmgMethod::piercing;
+        d.melee.dmg_type = DmgType::piercing;
         d.ranged.throw_hit_chance_mod = -5;
         d.ranged.effective_range = {0, 4};
         d.ranged.max_range = d.ranged.effective_range.max + 3;
@@ -2010,7 +2003,7 @@ void init()
         d.ranged.always_break_on_throw = true;
         d.ranged.effective_range = {-1, -1};
         d.ranged.max_range = 3;
-        d.ranged.dmg_method = DmgMethod::blunt;
+        d.ranged.dmg_type = DmgType::blunt;
         d.max_stack_at_spawn = 1;
         d.main_att_mode = AttMode::thrown;
         d.chance_to_incl_in_spawn_list = 35;
@@ -2083,8 +2076,7 @@ MeleeData::MeleeData() :
         is_noisy(true),
         att_msgs(ItemAttMsgs()),
         prop_applied(ItemAttProp()),
-        dmg_type(DmgType::physical),
-        dmg_method(DmgMethod::slashing),
+        dmg_type(DmgType::slashing),
         knocks_back(false),
         att_corpse(false),
         att_terrain(false),
@@ -2107,8 +2099,7 @@ RangedData::RangedData() :
         max_range(g_fov_radi_int * 2),
         knocks_back(false),
         ammo_item_id(Id::END),
-        dmg_type(DmgType::physical),
-        dmg_method(DmgMethod::piercing),
+        dmg_type(DmgType::piercing),
         has_infinite_ammo(false),
         projectile_character('/'),
         projectile_tile(gfx::TileId::projectile_std_front_slash),

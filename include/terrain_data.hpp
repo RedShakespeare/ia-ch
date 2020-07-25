@@ -89,26 +89,31 @@ struct MoveRules {
 };
 
 struct TerrainData {
-        std::function<Terrain*(const P& p)> make_obj;
-        Id id;
-        char character;
-        gfx::TileId tile;
-        MoveRules move_rules;
-        bool is_sound_passable;
-        bool is_projectile_passable;
-        bool is_los_passable;
-        bool is_smoke_passable;
-        bool is_floor_like;
-        bool can_have_blood;
-        bool can_have_gore;
-        bool can_have_corpse;
-        bool can_have_trap;
-        bool can_have_item;
-        Matl matl_type;
-        std::string msg_on_player_blocked;
-        std::string msg_on_player_blocked_blind;
-        int shock_when_adjacent;
-        TerrainPlacement auto_spawn_placement;
+        std::function<Terrain*(const P& p)> make_obj {
+                [](const P& p) {
+                        (void)p;
+                        return nullptr;
+                }};
+
+        Id id {Id::END};
+        char character {'x'};
+        gfx::TileId tile {gfx::TileId::END};
+        MoveRules move_rules {};
+        bool is_sound_passable {false};
+        bool is_projectile_passable {true};
+        bool is_los_passable {true};
+        bool is_smoke_passable {true};
+        bool is_floor_like {false};
+        bool can_have_blood {true};
+        bool can_have_gore {false};
+        bool can_have_corpse {true};
+        bool can_have_trap {false};
+        bool can_have_item {true};
+        Matl matl_type {Matl::stone};
+        std::string msg_on_player_blocked {"The way is blocked."};
+        std::string msg_on_player_blocked_blind {"I bump into something."};
+        int shock_when_adjacent {0};
+        TerrainPlacement auto_spawn_placement {TerrainPlacement::either};
 };
 
 void init();
