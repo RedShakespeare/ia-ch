@@ -34,6 +34,7 @@
 #include "query.hpp"
 #include "saving.hpp"
 #include "sound.hpp"
+#include "terrain_dmg.hpp"
 #include "terrain_mob.hpp"
 #include "text_format.hpp"
 #include "wham.hpp"
@@ -226,14 +227,15 @@ void Terrain::on_new_turn()
         on_new_turn_hook();
 }
 
-void Terrain::try_start_burning(const bool is_msg_allowed)
+void Terrain::try_start_burning(const Verbose verbose)
 {
         clear_gore();
 
         if ((m_burn_state == BurnState::not_burned) ||
             ((m_burn_state == BurnState::has_burned) &&
              rnd::one_in(3))) {
-                if (map::is_pos_seen_by_player(m_pos) && is_msg_allowed) {
+                if (map::is_pos_seen_by_player(m_pos) &&
+                    (verbose == Verbose::yes)) {
                         std::string str = name(Article::the) + " catches fire.";
 
                         str[0] = toupper(str[0]);
@@ -245,7 +247,7 @@ void Terrain::try_start_burning(const bool is_msg_allowed)
 
                 m_started_burning_this_turn = true;
         }
-}
+} // namespace terrain
 
 WasDestroyed Terrain::on_finished_burning()
 {
@@ -259,40 +261,49 @@ void Terrain::hit(
 {
         bool is_terrain_hit = true;
 
-        if ((actor == map::g_player) &&
-            ((dmg_type == DmgType::kicking) ||
-             (dmg_type == DmgType::blunt) ||
-             (dmg_type == DmgType::slashing))) {
-                const bool is_blocking =
-                        !is_walkable() &&
-                        (id() != terrain::Id::stairs) &&
-                        (id() != terrain::Id::liquid_deep);
+        if (actor == map::g_player) {
+                switch (dmg_type) {
+                case DmgType::kicking:
+                case DmgType::blunt:
+                case DmgType::slashing: {
+                        const bool is_blocking =
+                                !is_walkable() &&
+                                (id() != terrain::Id::stairs) &&
+                                (id() != terrain::Id::liquid_deep);
 
-                if (is_blocking) {
-                        if (dmg_type == DmgType::kicking) {
-                                const bool can_see_terrain =
-                                        !map::g_cells.at(m_pos)
-                                                 .is_seen_by_player;
+                        if (is_blocking) {
+                                if (dmg_type == DmgType::kicking) {
+                                        const bool can_see_terrain =
+                                                !map::g_cells.at(m_pos)
+                                                         .is_seen_by_player;
 
-                                const std::string terrain_name =
-                                        can_see_terrain
-                                        ? "something"
-                                        : name(Article::the);
+                                        const std::string terrain_name =
+                                                can_see_terrain
+                                                ? "something"
+                                                : name(Article::the);
 
-                                msg_log::add("I kick " + terrain_name + "!");
+                                        msg_log::add(
+                                                "I kick " +
+                                                terrain_name +
+                                                "!");
 
-                                wham::try_sprain_player();
+                                        wham::try_sprain_player();
+                                } else {
+                                        // Not kicking
+                                        msg_log::add("*WHAM!*");
+                                }
                         } else {
-                                // Not kicking
-                                msg_log::add("*WHAM!*");
+                                // The terrain is not blocking
+                                is_terrain_hit = false;
+
+                                msg_log::add("*Whoosh!*");
+
+                                audio::play(audio::SfxId::miss_medium);
                         }
-                } else {
-                        // The terrain is not blocking
-                        is_terrain_hit = false;
+                } break;
 
-                        msg_log::add("*Whoosh!*");
-
-                        audio::play(audio::SfxId::miss_medium);
+                default: {
+                } break;
                 }
         }
 
@@ -475,14 +486,18 @@ void Floor::on_hit(
         actor::Actor* const actor,
         const int dmg)
 {
+        (void)actor;
         (void)dmg;
 
-        if (dmg_type == DmgType::fire) {
-                (void)actor;
-
+        switch (dmg_type) {
+        case DmgType::fire:
                 if (rnd::one_in(3)) {
-                        try_start_burning(false);
+                        try_start_burning(Verbose::no);
                 }
+                break;
+
+        default:
+                break;
         }
 }
 
@@ -545,68 +560,54 @@ void Wall::on_hit(
         const int dmg)
 {
         (void)dmg;
-        (void)dmg;
         (void)actor;
 
-        // TODO: This is copy pasted - it should be handled better!
+        switch (dmg_type) {
+        case DmgType::pure:
+        case DmgType::explosion: {
+                destr_all_adj_doors(m_pos);
 
-        auto destr_adj_doors = [&]() {
-                for (const P& d : dir_utils::g_cardinal_list) {
-                        const P p(m_pos + d);
-
-                        if (map::is_pos_inside_map(p)) {
-                                if (map::g_cells.at(p).terrain->id() ==
-                                    terrain::Id::door) {
-                                        map::put(new RubbleLow(p));
-                                }
-                        }
-                }
-        };
-
-        auto make_low_rubble_and_rocks = [&]() {
-                const P p(m_pos);
-                map::put(new RubbleLow(p));
-
-                // NOTE: Object is now deleted!
-
-                if (rnd::one_in(4)) {
-                        item::make_item_on_floor(item::Id::rock, p);
-                }
-        };
-
-        if (dmg_type == DmgType::pure) {
-                destr_adj_doors();
-                make_low_rubble_and_rocks();
-        }
-
-        if (dmg_type == DmgType::explosion) {
-                destr_adj_doors();
-
-                if (rnd::coin_toss()) {
-                        make_low_rubble_and_rocks();
+                if ((dmg_type == DmgType::pure) || rnd::coin_toss()) {
+                        destr_stone_wall(m_pos);
                 } else {
                         map::put(new RubbleHigh(m_pos));
                 }
-        }
 
-        map::update_vision();
+                map::update_vision();
+        } break;
+
+        default: {
+        } break;
+        }
 }
 
 bool Wall::is_wall_front_tile(const gfx::TileId tile)
 {
-        return tile == gfx::TileId::wall_front ||
-                tile == gfx::TileId::wall_front_alt1 ||
-                tile == gfx::TileId::wall_front_alt2 ||
-                tile == gfx::TileId::cave_wall_front ||
-                tile == gfx::TileId::egypt_wall_front;
+        switch (tile) {
+        case gfx::TileId::wall_front:
+        case gfx::TileId::wall_front_alt1:
+        case gfx::TileId::wall_front_alt2:
+        case gfx::TileId::cave_wall_front:
+        case gfx::TileId::egypt_wall_front:
+                return true;
+
+        default:
+                return false;
+        }
 }
 
 bool Wall::is_wall_top_tile(const gfx::TileId tile)
 {
-        return tile == gfx::TileId::wall_top ||
-                tile == gfx::TileId::cave_wall_top ||
-                tile == gfx::TileId::egypt_wall_top ||
-                tile == gfx::TileId::rubble_high;
+        switch (tile) {
+        case gfx::TileId::wall_top:
+        case gfx::TileId::cave_wall_top:
+        case gfx::TileId::egypt_wall_top:
+        case gfx::TileId::rubble_high:
+                return true;
+
+        default:
+                return false;
+        }
 }
 
 std::string Wall::name(const Article article) const
@@ -756,26 +757,15 @@ void RubbleHigh::on_hit(
         (void)dmg;
         (void)actor;
 
-        auto make_low_rubble_and_rocks = [&]() {
-                const P p(m_pos);
-
-                map::put(new RubbleLow(p));
-
-                // NOTE: "this" is now deleted!
-
-                if (rnd::one_in(4)) {
-                        item::make_item_on_floor(item::Id::rock, p);
-                }
-
+        switch (dmg_type) {
+        case DmgType::pure:
+        case DmgType::explosion:
+                destr_stone_wall(m_pos);
                 map::update_vision();
-        };
+                break;
 
-        if (dmg_type == DmgType::pure) {
-                make_low_rubble_and_rocks();
-        }
-
-        if (dmg_type == DmgType::explosion) {
-                make_low_rubble_and_rocks();
+        default:
+                break;
         }
 }
 
@@ -806,8 +796,13 @@ void RubbleLow::on_hit(
         (void)dmg;
         (void)actor;
 
-        if (dmg_type == DmgType::fire) {
-                try_start_burning(false);
+        switch (dmg_type) {
+        case DmgType::fire:
+                try_start_burning(Verbose::no);
+                break;
+
+        default:
+                break;
         }
 }
 
@@ -910,9 +905,23 @@ void ChurchBench::on_hit(
         actor::Actor* const actor,
         const int dmg)
 {
-        (void)dmg;
-        (void)dmg_type;
         (void)actor;
+        (void)dmg;
+
+        switch (dmg_type) {
+        case DmgType::explosion:
+        case DmgType::pure:
+                map::put(new RubbleLow(m_pos));
+                map::update_vision();
+                break;
+
+        case DmgType::fire:
+                try_start_burning(Verbose::yes);
+                break;
+
+        default:
+                break;
+        }
 }
 
 std::string ChurchBench::name(const Article article) const
@@ -953,50 +962,52 @@ void Statue::on_hit(
 {
         (void)dmg;
 
-        if (dmg_type != DmgType::kicking) {
-                return;
-        }
+        switch (dmg_type) {
+        case DmgType::kicking: {
+                ASSERT(actor);
 
-        ASSERT(actor);
+                if (actor->m_properties.has(PropId::weakened)) {
+                        msg_log::add("It wiggles a bit.");
 
-        if (actor->m_properties.has(PropId::weakened)) {
-                msg_log::add("It wiggles a bit.");
+                        return;
+                }
 
-                return;
-        }
+                const AlertsMon alerts_mon =
+                        (actor == map::g_player)
+                        ? AlertsMon::yes
+                        : AlertsMon::no;
 
-        const AlertsMon alerts_mon =
-                (actor == map::g_player)
-                ? AlertsMon::yes
-                : AlertsMon::no;
+                if (map::g_cells.at(m_pos).is_seen_by_player) {
+                        msg_log::add("It topples over.");
+                }
 
-        if (map::g_cells.at(m_pos).is_seen_by_player) {
-                msg_log::add("It topples over.");
-        }
+                Snd snd(
+                        "I hear a crash.",
+                        audio::SfxId::statue_crash,
+                        IgnoreMsgIfOriginSeen::yes,
+                        m_pos,
+                        actor,
+                        SndVol::low,
+                        alerts_mon);
 
-        Snd snd(
-                "I hear a crash.",
-                audio::SfxId::statue_crash,
-                IgnoreMsgIfOriginSeen::yes,
-                m_pos,
-                actor,
-                SndVol::low,
-                alerts_mon);
+                snd_emit::run(snd);
 
-        snd_emit::run(snd);
+                const P dst_pos = m_pos + (m_pos - actor->m_pos);
 
-        const P dst_pos = m_pos + (m_pos - actor->m_pos);
+                map::put(new RubbleLow(m_pos));
 
-        map::put(new RubbleLow(m_pos)); // NOTE: "this" is now deleted!
+                // NOTE: This object is now deleted!
 
-        actor::Actor* const actor_behind =
-                map::first_actor_at_pos(dst_pos);
+                actor::Actor* const actor_behind =
+                        map::first_actor_at_pos(dst_pos);
 
-        if (actor_behind && actor_behind->is_alive()) {
-                if (!actor_behind->m_properties.has(PropId::ethereal)) {
-                        if (actor_behind == map::g_player) {
+                if (actor_behind &&
+                    actor_behind->is_alive() &&
+                    !actor_behind->m_properties.has(PropId::ethereal)) {
+                        if (actor_behind->is_player()) {
                                 msg_log::add("It falls on me!");
                         } else {
+                                // Monster is hit
                                 const bool is_player_seeing_actor =
                                         actor::can_player_see_actor(
                                                 *actor_behind);
@@ -1014,19 +1025,29 @@ void Statue::on_hit(
                                 rnd::range(3, 15),
                                 DmgType::blunt);
                 }
+
+                const auto terrain_id = map::g_cells.at(dst_pos).terrain->id();
+
+                // NOTE: This is kinda hacky, but the rubble is mostly just for
+                // decoration anyway, so it doesn't really matter.
+                if (terrain_id == terrain::Id::floor ||
+                    terrain_id == terrain::Id::grass ||
+                    terrain_id == terrain::Id::carpet) {
+                        map::put(new RubbleLow(dst_pos));
+                }
+
+                map::update_vision();
+        } break;
+
+        case DmgType::explosion:
+        case DmgType::pure: {
+                map::put(new RubbleLow(m_pos));
+                map::update_vision();
+        } break;
+
+        default: {
+        } break;
         }
-
-        const auto terrain_id = map::g_cells.at(dst_pos).terrain->id();
-
-        // NOTE: This is kinda hacky, but the rubble is mostly just for
-        // decoration anyway, so it doesn't really matter.
-        if (terrain_id == terrain::Id::floor ||
-            terrain_id == terrain::Id::grass ||
-            terrain_id == terrain::Id::carpet) {
-                map::put(new RubbleLow(dst_pos));
-        }
-
-        map::update_vision();
 }
 
 std::string Statue::name(const Article article) const
@@ -1070,8 +1091,18 @@ void Stalagmite::on_hit(
         const int dmg)
 {
         (void)dmg;
-        (void)dmg_type;
         (void)actor;
+
+        switch (dmg_type) {
+        case DmgType::pure:
+        case DmgType::explosion:
+                map::put(new RubbleLow(m_pos));
+                map::update_vision();
+                break;
+
+        default:
+                break;
+        }
 }
 
 std::string Stalagmite::name(const Article article) const
@@ -1701,8 +1732,18 @@ void Altar::on_hit(
         const int dmg)
 {
         (void)dmg;
-        (void)dmg_type;
         (void)actor;
+
+        switch (dmg_type) {
+        case DmgType::explosion:
+        case DmgType::pure:
+                map::put(new RubbleLow(m_pos));
+                map::update_vision();
+                break;
+
+        default:
+                break;
+        }
 }
 
 void Altar::on_new_turn()
@@ -1739,8 +1780,10 @@ void Carpet::on_hit(
         (void)actor;
         (void)dmg;
 
-        if (dmg_type == DmgType::fire) {
-                try_start_burning(false);
+        switch (dmg_type) {
+        default:
+                try_start_burning(Verbose::no);
+                break;
         }
 }
 
@@ -1789,8 +1832,13 @@ void Grass::on_hit(
         (void)actor;
         (void)dmg;
 
-        if (dmg_type == DmgType::fire) {
-                try_start_burning(false);
+        switch (dmg_type) {
+        case DmgType::fire:
+                try_start_burning(Verbose::no);
+                break;
+
+        default:
+                break;
         }
 }
 
@@ -1869,8 +1917,13 @@ void Bush::on_hit(
         (void)actor;
         (void)dmg;
 
-        if (dmg_type == DmgType::fire) {
-                try_start_burning(false);
+        switch (dmg_type) {
+        case DmgType::fire:
+                try_start_burning(Verbose::no);
+                break;
+
+        default:
+                break;
         }
 }
 
@@ -1942,8 +1995,19 @@ void Vines::on_hit(
         (void)actor;
         (void)dmg;
 
-        if (dmg_type == DmgType::fire) {
-                try_start_burning(false);
+        switch (dmg_type) {
+        case DmgType::explosion:
+        case DmgType::pure:
+                map::put(new RubbleLow(m_pos));
+                map::update_vision();
+                break;
+
+        case DmgType::fire:
+                try_start_burning(Verbose::no);
+                break;
+
+        default:
+                break;
         }
 }
 
@@ -2053,9 +2117,19 @@ void Chains::on_hit(
         actor::Actor* const actor,
         const int dmg)
 {
-        (void)dmg;
-        (void)dmg_type;
         (void)actor;
+        (void)dmg;
+
+        switch (dmg_type) {
+        case DmgType::explosion:
+        case DmgType::pure:
+                map::put(new RubbleLow(m_pos));
+                map::update_vision();
+                break;
+
+        default:
+                break;
+        }
 }
 
 // -----------------------------------------------------------------------------
@@ -2070,31 +2144,18 @@ void Grate::on_hit(
         const int dmg)
 {
         (void)dmg;
-
         (void)actor;
 
-        // TODO: This is copy pasted - it should be handled better!
-
-        auto destr_adj_doors = [&]() {
-                for (const P& d : dir_utils::g_cardinal_list) {
-                        const P p(m_pos + d);
-
-                        if (map::is_pos_inside_map(p)) {
-                                if (map::g_cells.at(p).terrain->id() ==
-                                    terrain::Id::door) {
-                                        map::put(new RubbleLow(p));
-                                }
-                        }
-                }
-        };
-
-        if ((dmg_type == DmgType::pure) ||
-            (dmg_type == DmgType::explosion)) {
-                destr_adj_doors();
-
+        switch (dmg_type) {
+        case DmgType::pure:
+        case DmgType::explosion:
+                destr_all_adj_doors(m_pos);
                 map::put(new RubbleLow(m_pos));
-
                 map::update_vision();
+                break;
+
+        default:
+                break;
         }
 }
 
@@ -2149,27 +2210,33 @@ void Tree::on_hit(
         (void)actor;
         (void)dmg;
 
-        if ((dmg_type == DmgType::fire) &&
-            (rnd::fraction(2, 3))) {
-                try_start_burning(false);
+        switch (dmg_type) {
+        case DmgType::fire:
+                if (rnd::fraction(2, 3)) {
+                        try_start_burning(Verbose::no);
+                }
+                break;
+
+        default:
+                break;
         }
 }
 
 WasDestroyed Tree::on_finished_burning()
 {
-        if (map::is_pos_inside_outer_walls(m_pos)) {
-                auto* const grass = new Grass(m_pos);
-
-                grass->m_burn_state = BurnState::has_burned;
-
-                map::put(grass);
-
-                map::update_vision();
-
-                return WasDestroyed::yes;
+        if (!map::is_pos_inside_outer_walls(m_pos)) {
+                return WasDestroyed::no;
         }
 
-        return WasDestroyed::no;
+        auto* const grass = new Grass(m_pos);
+
+        grass->m_burn_state = BurnState::has_burned;
+
+        map::put(grass);
+
+        map::update_vision();
+
+        return WasDestroyed::yes;
 }
 
 gfx::TileId Tree::tile() const
@@ -2232,7 +2299,8 @@ void Brazier::on_hit(
 {
         (void)dmg;
 
-        if (dmg_type == DmgType::kicking) {
+        switch (dmg_type) {
+        case DmgType::kicking: {
                 ASSERT(actor);
 
                 if (actor->m_properties.has(PropId::weakened)) {
@@ -2295,6 +2363,16 @@ void Brazier::on_hit(
                 }
 
                 map::update_vision();
+        } break;
+
+        case DmgType::explosion:
+        case DmgType::pure: {
+                map::put(new RubbleLow(m_pos));
+                map::update_vision();
+        } break;
+
+        default: {
+        } break;
         }
 }
 
@@ -2317,11 +2395,7 @@ Color Brazier::color_default() const
 // -----------------------------------------------------------------------------
 ItemContainer::ItemContainer()
 {
-        for (auto* item : m_items) {
-                delete item;
-        }
-
-        m_items.clear();
+        clear();
 }
 
 ItemContainer::~ItemContainer()
@@ -2494,6 +2568,15 @@ void ItemContainer::open(
         m_items.clear();
 }
 
+void ItemContainer::clear()
+{
+        for (auto* item : m_items) {
+                delete item;
+        }
+
+        m_items.clear();
+}
+
 void ItemContainer::destroy_single_fragile()
 {
         // TODO: Generalize this (something like "is_fragile" item data)
@@ -2503,7 +2586,8 @@ void ItemContainer::destroy_single_fragile()
 
                 const auto& d = item->data();
 
-                if ((d.type == ItemType::potion) || (d.id == item::Id::molotov)) {
+                if ((d.type == ItemType::potion) ||
+                    (d.id == item::Id::molotov)) {
                         delete item;
                         m_items.erase(m_items.begin() + i);
                         msg_log::add("I hear a muffled shatter.");
@@ -2554,7 +2638,7 @@ Tomb::Tomb(const P& p) :
         if (rnd::one_in(4)) {
                 // Base appearance on value of contained items
 
-                for (auto* item : m_item_container.m_items) {
+                for (const auto* item : m_item_container.items()) {
                         const auto item_value = item->data().value;
 
                         if (item_value == item::Value::supreme_treasure) {
@@ -2592,15 +2676,23 @@ void Tomb::on_hit(
         const int dmg)
 {
         (void)dmg;
-        (void)dmg_type;
         (void)actor;
+
+        switch (dmg_type) {
+        case DmgType::explosion:
+        case DmgType::pure:
+                map::put(new RubbleLow(m_pos));
+                map::update_vision();
+                break;
+
+        default:
+                break;
+        }
 }
 
 std::string Tomb::name(const Article article) const
 {
-        const bool is_empty =
-                m_is_open &&
-                m_item_container.m_items.empty();
+        const bool is_empty = m_is_open && m_item_container.is_empty();
 
         const std::string empty_str =
                 is_empty
@@ -2674,7 +2766,7 @@ Color Tomb::color_default() const
 void Tomb::bump(actor::Actor& actor_bumping)
 {
         if (actor_bumping.is_player()) {
-                if (m_item_container.m_items.empty() && m_is_open) {
+                if (m_item_container.is_empty() && m_is_open) {
                         msg_log::add("The tomb is empty.");
                 } else if (!map::g_cells.at(m_pos).is_seen_by_player) {
                         msg_log::add("There is a stone box here.");
@@ -2690,8 +2782,15 @@ void Tomb::bump(actor::Actor& actor_bumping)
                                         msg_log::add("It seems futile.");
                                 } else {
                                         // Not weakened
-                                        const int bon =
-                                                player_bon::has_trait(Trait::rugged) ? 8 : player_bon::has_trait(Trait::tough) ? 4 : 0;
+                                        int bon;
+
+                                        if (player_bon::has_trait(Trait::rugged)) {
+                                                bon = 8;
+                                        } else if (player_bon::has_trait(Trait::tough)) {
+                                                bon = 4;
+                                        } else {
+                                                bon = 0;
+                                        }
 
                                         TRACE << "Base chance to push lid is: 1 in "
                                               << m_push_lid_one_in_n << std::endl;
@@ -2734,7 +2833,7 @@ void Tomb::player_loot()
 {
         msg_log::add("I peer inside the tomb.");
 
-        if (m_item_container.m_items.empty()) {
+        if (m_item_container.is_empty()) {
                 msg_log::add("There is nothing of value inside.");
         } else {
                 m_item_container.open(m_pos, map::g_player);
@@ -2977,7 +3076,7 @@ Chest::Chest(const P& p) :
                 rnd::range(nr_items_min, nr_items_max));
 
         const int locked_numer =
-                m_item_container.m_items.empty()
+                m_item_container.is_empty()
                 ? 1
                 : std::min(8, map::g_dlvl);
 
@@ -2986,34 +3085,49 @@ Chest::Chest(const P& p) :
 
 void Chest::bump(actor::Actor& actor_bumping)
 {
-        if (actor_bumping.is_player()) {
-                if (m_item_container.m_items.empty() && m_is_open) {
-                        msg_log::add("The chest is empty.");
-                } else if (!map::g_cells.at(m_pos).is_seen_by_player) {
-                        msg_log::add("There is a chest here.");
-                } else {
-                        // Player can see
-                        if (m_is_locked) {
-                                msg_log::add("The chest is locked.");
-                        } else {
-                                // Not locked
-                                if (m_is_open) {
-                                        player_loot();
-                                } else {
-                                        open(map::g_player);
-                                }
-
-                                game_time::tick();
-                        }
-                }
+        if (!actor_bumping.is_player()) {
+                return;
         }
+
+        if (!map::g_cells.at(m_pos).is_seen_by_player) {
+                msg_log::add("There is a chest here.");
+
+                return;
+        }
+
+        if (m_burn_state == BurnState::burning) {
+                msg_log::add("The chest is on fire.");
+
+                return;
+        }
+
+        if (m_item_container.is_empty() && m_is_open) {
+                msg_log::add("The chest is empty.");
+
+                return;
+        }
+
+        if (m_is_locked) {
+                msg_log::add("The chest is locked.");
+
+                return;
+        }
+
+        // Not locked
+        if (m_is_open) {
+                player_loot();
+        } else {
+                open(map::g_player);
+        }
+
+        game_time::tick();
 }
 
 void Chest::player_loot()
 {
         msg_log::add("I search the chest.");
 
-        if (m_item_container.m_items.empty()) {
+        if (m_item_container.is_empty()) {
                 msg_log::add("There is nothing of value inside.");
         } else {
                 // Not empty
@@ -3047,15 +3161,68 @@ void Chest::hit(
         const int dmg)
 {
         (void)dmg;
+        (void)actor;
 
-        if (dmg_type != DmgType::kicking) {
-                return;
+        switch (dmg_type) {
+        case DmgType::kicking:
+                on_player_kick();
+                break;
+
+        default:
+                break;
+        }
+}
+
+void Chest::on_hit(
+        const DmgType dmg_type,
+        actor::Actor* const actor,
+        const int dmg)
+{
+        (void)dmg;
+        (void)actor;
+
+        switch (dmg_type) {
+        case DmgType::explosion:
+        case DmgType::pure:
+                map::put(new RubbleLow(m_pos));
+                map::update_vision();
+                break;
+
+        case DmgType::fire:
+                if (m_matl == ChestMatl::wood) {
+                        m_item_container.clear();
+                        try_start_burning(Verbose::yes);
+                }
+                break;
+
+        default:
+                break;
+        }
+}
+
+WasDestroyed Chest::on_finished_burning()
+{
+        if (map::is_pos_seen_by_player(m_pos)) {
+                msg_log::add("The chest burns down.");
         }
 
+        auto* const rubble = new RubbleLow(m_pos);
+
+        rubble->m_burn_state = BurnState::has_burned;
+
+        map::put(rubble);
+
+        map::update_vision();
+
+        return WasDestroyed::yes;
+}
+
+void Chest::on_player_kick()
+{
         if (!map::g_cells.at(m_pos).is_seen_by_player) {
-                // If player is blind, call the parent hit function instead
-                // (generic kicking)
-                Terrain::hit(dmg_type, map::g_player);
+                // If player is blind, call the parent hit function
+                // instead (generic kicking)
+                Terrain::hit(DmgType::kicking, map::g_player);
 
                 return;
         }
@@ -3064,54 +3231,6 @@ void Chest::hit(
                 msg_log::add("It is already open.");
 
                 return;
-        }
-
-        // Is seen and closed
-        if (m_is_locked) {
-                ASSERT(actor);
-
-                msg_log::add("I kick the lid.");
-
-                if (actor->m_properties.has(PropId::weakened) ||
-                    (m_matl == ChestMatl::iron)) {
-                        wham::try_sprain_player();
-
-                        msg_log::add("It seems futile.");
-                } else {
-                        // Chest can be bashed open
-                        if (rnd::one_in(3)) {
-                                m_item_container.destroy_single_fragile();
-                        }
-
-                        int open_one_in_n;
-
-                        if (player_bon::has_trait(Trait::rugged)) {
-                                open_one_in_n = 2;
-                        } else if (player_bon::has_trait(Trait::tough)) {
-                                open_one_in_n = 3;
-                        } else {
-                                open_one_in_n = 4;
-                        }
-
-                        if (rnd::one_in(open_one_in_n)) {
-                                msg_log::add(
-                                        "The lock breaks and the lid flies open!",
-                                        colors::text(),
-                                        MsgInterruptPlayer::no,
-                                        MorePromptOnMsg::yes);
-
-                                m_is_locked = false;
-
-                                m_is_open = true;
-                        } else {
-                                msg_log::add("The lock resists.");
-
-                                wham::try_sprain_player();
-                        }
-                }
-        } else {
-                // Not locked
-                msg_log::add("The lid slams open, then falls shut.");
         }
 
         Snd snd(
@@ -3123,17 +3242,61 @@ void Chest::hit(
                 SndVol::high,
                 AlertsMon::yes);
 
-        snd.run();
-}
+        // Is seen and closed
+        if (!m_is_locked) {
+                msg_log::add("The lid slams open, then falls shut.");
 
-void Chest::on_hit(
-        const DmgType dmg_type,
-        actor::Actor* const actor,
-        const int dmg)
-{
-        (void)dmg;
-        (void)dmg_type;
-        (void)actor;
+                snd.run();
+
+                return;
+        }
+
+        // Is locked
+
+        msg_log::add("I kick the lid.");
+
+        if (map::g_player->m_properties.has(PropId::weakened) ||
+            (m_matl == ChestMatl::iron)) {
+                wham::try_sprain_player();
+
+                msg_log::add("It seems futile.");
+
+                snd.run();
+
+                return;
+        }
+
+        // Chest can be bashed open
+        if (rnd::one_in(3)) {
+                m_item_container.destroy_single_fragile();
+        }
+
+        int open_one_in_n;
+
+        if (player_bon::has_trait(Trait::rugged)) {
+                open_one_in_n = 2;
+        } else if (player_bon::has_trait(Trait::tough)) {
+                open_one_in_n = 3;
+        } else {
+                open_one_in_n = 4;
+        }
+
+        if (rnd::one_in(open_one_in_n)) {
+                msg_log::add(
+                        "The lock breaks and the lid flies open!",
+                        colors::text(),
+                        MsgInterruptPlayer::no,
+                        MorePromptOnMsg::yes);
+
+                m_is_locked = false;
+                m_is_open = true;
+        } else {
+                msg_log::add("The lock resists.");
+
+                wham::try_sprain_player();
+        }
+
+        snd.run();
 }
 
 std::string Chest::name(const Article article) const
@@ -3153,7 +3316,7 @@ std::string Chest::name(const Article article) const
         }
 
         if (m_is_open) {
-                if (m_item_container.m_items.empty()) {
+                if (m_item_container.is_empty()) {
                         empty_str = "empty ";
                 } else {
                         open_str = "open ";
@@ -3230,8 +3393,18 @@ void Fountain::on_hit(
         const int dmg)
 {
         (void)dmg;
-        (void)dmg_type;
         (void)actor;
+
+        switch (dmg_type) {
+        case DmgType::explosion:
+        case DmgType::pure:
+                map::put(new RubbleLow(m_pos));
+                map::update_vision();
+                break;
+
+        default:
+                break;
+        }
 }
 
 Color Fountain::color_default() const
@@ -3602,26 +3775,71 @@ void Cabinet::on_hit(
         actor::Actor* const actor,
         const int dmg)
 {
-        (void)dmg;
-        (void)dmg_type;
         (void)actor;
+        (void)dmg;
+
+        switch (dmg_type) {
+        case DmgType::explosion:
+        case DmgType::pure:
+                map::put(new RubbleLow(m_pos));
+                map::update_vision();
+                break;
+
+        case DmgType::fire:
+                m_item_container.clear();
+                try_start_burning(Verbose::yes);
+                break;
+
+        default:
+                break;
+        }
+}
+
+WasDestroyed Cabinet::on_finished_burning()
+{
+        if (map::is_pos_seen_by_player(m_pos)) {
+                msg_log::add("The cabinet burns down.");
+        }
+
+        auto* const rubble = new RubbleLow(m_pos);
+
+        rubble->m_burn_state = BurnState::has_burned;
+
+        map::put(rubble);
+
+        map::update_vision();
+
+        return WasDestroyed::yes;
 }
 
 void Cabinet::bump(actor::Actor& actor_bumping)
 {
-        if (actor_bumping.is_player()) {
-                if (m_item_container.m_items.empty() && m_is_open) {
-                        msg_log::add("The cabinet is empty.");
-                } else if (!map::g_cells.at(m_pos).is_seen_by_player) {
-                        msg_log::add("There is a cabinet here.");
-                } else {
-                        // Can see
-                        if (m_is_open) {
-                                player_loot();
-                        } else {
-                                open(map::g_player);
-                        }
-                }
+        if (!actor_bumping.is_player()) {
+                return;
+        }
+
+        if (!map::g_cells.at(m_pos).is_seen_by_player) {
+                msg_log::add("There is a cabinet here.");
+
+                return;
+        }
+
+        if (m_burn_state == BurnState::burning) {
+                msg_log::add("The cabinet is on fire.");
+
+                return;
+        }
+
+        if (m_item_container.is_empty() && m_is_open) {
+                msg_log::add("The cabinet is empty.");
+
+                return;
+        }
+
+        if (m_is_open) {
+                player_loot();
+        } else {
+                open(map::g_player);
         }
 }
 
@@ -3629,7 +3847,7 @@ void Cabinet::player_loot()
 {
         msg_log::add("I search the cabinet.");
 
-        if (m_item_container.m_items.empty()) {
+        if (m_item_container.is_empty()) {
                 msg_log::add("There is nothing of value inside.");
         } else {
                 m_item_container.open(m_pos, map::g_player);
@@ -3713,22 +3931,69 @@ void Bookshelf::on_hit(
         const int dmg)
 {
         (void)dmg;
-        (void)dmg_type;
         (void)actor;
+
+        switch (dmg_type) {
+        case DmgType::explosion:
+        case DmgType::pure:
+                map::put(new RubbleLow(m_pos));
+                map::update_vision();
+                break;
+
+        case DmgType::fire:
+                m_item_container.clear();
+                m_is_looted = true;
+                try_start_burning(Verbose::yes);
+                break;
+
+        default:
+                break;
+        }
+}
+
+WasDestroyed Bookshelf::on_finished_burning()
+{
+        if (map::is_pos_seen_by_player(m_pos)) {
+                msg_log::add("The bookshelf burns down.");
+        }
+
+        auto* const rubble = new RubbleLow(m_pos);
+
+        rubble->m_burn_state = BurnState::has_burned;
+
+        map::put(rubble);
+
+        map::update_vision();
+
+        return WasDestroyed::yes;
 }
 
 void Bookshelf::bump(actor::Actor& actor_bumping)
 {
-        if (actor_bumping.is_player()) {
-                if (m_item_container.m_items.empty() && m_is_looted) {
-                        msg_log::add("The bookshelf is empty.");
-                } else if (!map::g_cells.at(m_pos).is_seen_by_player) {
-                        msg_log::add("There is a bookshelf here.");
-                }
-                // Can see
-                else if (!m_is_looted) {
-                        player_loot();
-                }
+        if (!actor_bumping.is_player()) {
+                return;
+        }
+
+        if (!map::g_cells.at(m_pos).is_seen_by_player) {
+                msg_log::add("There is a bookshelf here.");
+
+                return;
+        }
+
+        if (m_burn_state == BurnState::burning) {
+                msg_log::add("The bookshelf is on fire.");
+
+                return;
+        }
+
+        if (m_item_container.is_empty() && m_is_looted) {
+                msg_log::add("The bookshelf is empty.");
+
+                return;
+        }
+
+        if (!m_is_looted) {
+                player_loot();
         }
 }
 
@@ -3742,7 +4007,7 @@ void Bookshelf::player_loot()
 
         m_is_looted = true;
 
-        if (m_item_container.m_items.empty()) {
+        if (m_item_container.is_empty()) {
                 msg_log::add("There is nothing of interest.");
         } else {
                 m_item_container.open(m_pos, map::g_player);
@@ -3807,23 +4072,70 @@ void AlchemistBench::on_hit(
         actor::Actor* const actor,
         const int dmg)
 {
-        (void)dmg;
-        (void)dmg_type;
         (void)actor;
+        (void)dmg;
+
+        switch (dmg_type) {
+        case DmgType::explosion:
+        case DmgType::pure:
+                map::put(new RubbleLow(m_pos));
+                map::update_vision();
+                break;
+
+        case DmgType::fire:
+                m_item_container.clear();
+                m_is_looted = true;
+                try_start_burning(Verbose::yes);
+                break;
+
+        default:
+                break;
+        }
+}
+
+WasDestroyed AlchemistBench::on_finished_burning()
+{
+        if (map::is_pos_seen_by_player(m_pos)) {
+                msg_log::add("The alchemist's workbench burns down.");
+        }
+
+        auto* const rubble = new RubbleLow(m_pos);
+
+        rubble->m_burn_state = BurnState::has_burned;
+
+        map::put(rubble);
+
+        map::update_vision();
+
+        return WasDestroyed::yes;
 }
 
 void AlchemistBench::bump(actor::Actor& actor_bumping)
 {
-        if (actor_bumping.is_player()) {
-                if (m_item_container.m_items.empty() && m_is_looted) {
-                        msg_log::add("The bench is empty.");
-                } else if (!map::g_cells.at(m_pos).is_seen_by_player) {
-                        msg_log::add("There is a wooden bench here.");
-                }
-                // Can see
-                else if (!m_is_looted) {
-                        player_loot();
-                }
+        if (!actor_bumping.is_player()) {
+                return;
+        }
+
+        if (!map::g_cells.at(m_pos).is_seen_by_player) {
+                msg_log::add("There is a wooden bench here.");
+
+                return;
+        }
+
+        if (m_burn_state == BurnState::burning) {
+                msg_log::add("The alchemist's workbench is on fire.");
+
+                return;
+        }
+
+        if (m_item_container.is_empty() && m_is_looted) {
+                msg_log::add("The alchemist's workbench is empty.");
+
+                return;
+        }
+
+        if (!m_is_looted) {
+                player_loot();
         }
 }
 
@@ -3837,7 +4149,7 @@ void AlchemistBench::player_loot()
 
         m_is_looted = true;
 
-        if (m_item_container.m_items.empty()) {
+        if (m_item_container.is_empty()) {
                 msg_log::add("There is nothing of interest.");
         } else {
                 m_item_container.open(m_pos, map::g_player);
@@ -3911,31 +4223,76 @@ void Cocoon::on_hit(
         actor::Actor* const actor,
         const int dmg)
 {
-        (void)dmg;
-        (void)dmg_type;
         (void)actor;
+        (void)dmg;
+
+        switch (dmg_type) {
+        case DmgType::explosion:
+        case DmgType::pure:
+                map::put(new RubbleLow(m_pos));
+                map::update_vision();
+                break;
+
+        case DmgType::fire:
+                m_item_container.clear();
+                try_start_burning(Verbose::yes);
+                break;
+
+        default:
+                break;
+        }
+}
+
+WasDestroyed Cocoon::on_finished_burning()
+{
+        if (map::is_pos_seen_by_player(m_pos)) {
+                msg_log::add("The cocoon burns down.");
+        }
+
+        auto* const rubble = new RubbleLow(m_pos);
+
+        rubble->m_burn_state = BurnState::has_burned;
+
+        map::put(rubble);
+
+        map::update_vision();
+
+        return WasDestroyed::yes;
 }
 
 void Cocoon::bump(actor::Actor& actor_bumping)
 {
-        if (actor_bumping.is_player()) {
-                if (m_item_container.m_items.empty() && m_is_open) {
-                        msg_log::add("The cocoon is empty.");
-                } else if (!map::g_cells.at(m_pos).is_seen_by_player) {
-                        msg_log::add("There is a cocoon here.");
-                } else {
-                        // Player can see
-                        if (insanity::has_sympt(InsSymptId::phobia_spider)) {
-                                map::g_player->m_properties.apply(
-                                        new PropTerrified());
-                        }
+        if (!actor_bumping.is_player()) {
+                return;
+        }
 
-                        if (m_is_open) {
-                                player_loot();
-                        } else {
-                                open(map::g_player);
-                        }
-                }
+        if (!map::g_cells.at(m_pos).is_seen_by_player) {
+                msg_log::add("There is a cocoon here.");
+
+                return;
+        }
+
+        if (m_burn_state == BurnState::burning) {
+                msg_log::add("The cocoon is on fire.");
+
+                return;
+        }
+
+        if (m_item_container.is_empty() && m_is_open) {
+                msg_log::add("The cocoon is empty.");
+
+                return;
+        }
+
+        if (insanity::has_sympt(InsSymptId::phobia_spider)) {
+                map::g_player->m_properties.apply(
+                        new PropTerrified());
+        }
+
+        if (m_is_open) {
+                player_loot();
+        } else {
+                open(map::g_player);
         }
 }
 
@@ -4010,7 +4367,7 @@ void Cocoon::player_loot()
 {
         msg_log::add("I search the Cocoon.");
 
-        if (m_item_container.m_items.empty()) {
+        if (m_item_container.is_empty()) {
                 msg_log::add("It is empty.");
         } else {
                 m_item_container.open(m_pos, map::g_player);

@@ -1288,6 +1288,8 @@ private:
 
         void run_effect_on_env() const;
 
+        void run_effect_on_env_at(const P& p) const;
+
         void print_msg_actor_hit(const actor::Actor& actor) const;
 
         int m_max_dmg {1};

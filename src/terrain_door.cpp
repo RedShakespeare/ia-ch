@@ -361,7 +361,7 @@ void Door::on_hit(
         }
 
         if ((dmg_type == DmgType::fire) && (matl() == Matl::wood)) {
-                try_start_burning(true);
+                try_start_burning(Verbose::yes);
                 reveal(Verbose::yes);
         }
 } // on_hit

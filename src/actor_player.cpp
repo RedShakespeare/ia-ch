@@ -398,9 +398,9 @@ void Player::item_feeling()
                 }
 
                 // Nice item in container?
-                const auto& cont_items = cell.terrain->m_item_container.m_items;
+                const auto& items = cell.terrain->m_item_container.items();
 
-                for (const auto* const item : cont_items) {
+                for (const auto* const item : items) {
                         if (is_nice(*item)) {
                                 print_feeling = true;
 

@@ -2223,18 +2223,40 @@ void PropAuraOfDecay::run_effect_on_env() const
                         continue;
                 }
 
-                auto& cell = map::g_cells.at(p);
+                run_effect_on_env_at(p);
+        }
+}
 
-                auto* const terrain = cell.terrain;
+void PropAuraOfDecay::run_effect_on_env_at(const P& p) const
+{
+        auto& cell = map::g_cells.at(p);
 
-                const auto id = terrain->id();
+        auto* const terrain = cell.terrain;
 
-                if (((id == terrain::Id::wall) ||
-                     (id == terrain::Id::rubble_high) ||
-                     (id == terrain::Id::door)) &&
-                    rnd::one_in(250)) {
+        const auto id = terrain->id();
+
+        switch (id) {
+        case terrain::Id::floor: {
+                if (rnd::one_in(100)) {
+                        map::put(new terrain::RubbleLow(p));
+                }
+        } break;
+
+        case terrain::Id::grass: {
+                if (rnd::one_in(10)) {
+                        static_cast<terrain::Grass*>(terrain)->m_type =
+                                terrain::GrassType::withered;
+                }
+        } break;
+
+        case terrain::Id::fountain: {
+                static_cast<terrain::Fountain*>(terrain)->curse();
+        } break;
+
+        default: {
+                if (rnd::one_in(250)) {
                         if (cell.is_seen_by_player) {
-                                const std::string name =
+                                const auto name =
                                         text_format::first_to_upper(
                                                 terrain->name(Article::the));
 
@@ -2244,14 +2266,8 @@ void PropAuraOfDecay::run_effect_on_env() const
                         }
 
                         terrain->hit(DmgType::pure, nullptr);
-                } else if (id == terrain::Id::floor && rnd::one_in(100)) {
-                        map::put(new terrain::RubbleLow(p));
-                } else if (id == terrain::Id::grass && rnd::one_in(10)) {
-                        static_cast<terrain::Grass*>(terrain)->m_type =
-                                terrain::GrassType::withered;
-                } else if (id == terrain::Id::fountain) {
-                        static_cast<terrain::Fountain*>(terrain)->curse();
                 }
+        } break;
         }
 }
 

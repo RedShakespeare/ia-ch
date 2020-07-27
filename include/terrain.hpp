@@ -73,10 +73,23 @@ public:
 
         void init(Id terrain_id, int nr_items_to_attempt);
 
+        const std::vector<item::Item*>& items() const
+        {
+                return m_items;
+        }
+
+        bool is_empty() const
+        {
+                return m_items.empty();
+        }
+
         void open(const P& terrain_pos, actor::Actor* actor_opening);
+
+        void clear();
 
         void destroy_single_fragile();
 
+private:
         std::vector<item::Item*> m_items;
 };
 
@@ -284,7 +297,7 @@ protected:
 
         virtual Color color_bg_default() const;
 
-        void try_start_burning(bool is_msg_allowed);
+        void try_start_burning(Verbose verbose);
 
         virtual WasDestroyed on_finished_burning();
 
@@ -1076,6 +1089,8 @@ public:
                 actor::Actor* actor,
                 int dmg = -1) override;
 
+        WasDestroyed on_finished_burning() override;
+
 private:
         Color color_default() const override;
 
@@ -1083,6 +1098,8 @@ private:
                 DmgType dmg_type,
                 actor::Actor* actor,
                 int dmg = -1) override;
+
+        void on_player_kick();
 
         void player_loot();
 
@@ -1109,6 +1126,8 @@ public:
         void bump(actor::Actor& actor_bumping) override;
 
         DidOpen open(actor::Actor* actor_opening) override;
+
+        WasDestroyed on_finished_burning() override;
 
 private:
         Color color_default() const override;
@@ -1139,6 +1158,8 @@ public:
 
         void bump(actor::Actor& actor_bumping) override;
 
+        WasDestroyed on_finished_burning() override;
+
 private:
         Color color_default() const override;
 
@@ -1167,6 +1188,8 @@ public:
         gfx::TileId tile() const override;
 
         void bump(actor::Actor& actor_bumping) override;
+
+        WasDestroyed on_finished_burning() override;
 
 private:
         Color color_default() const override;
@@ -1267,6 +1290,8 @@ public:
         void bump(actor::Actor& actor_bumping) override;
 
         DidOpen open(actor::Actor* actor_opening) override;
+
+        WasDestroyed on_finished_burning() override;
 
 private:
         Color color_default() const override;

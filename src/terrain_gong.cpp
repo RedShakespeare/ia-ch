@@ -349,8 +349,18 @@ void Gong::on_hit(
         const int dmg)
 {
         (void)dmg;
-        (void)dmg_type;
         (void)actor;
+
+        switch (dmg_type) {
+        case DmgType::explosion:
+        case DmgType::pure:
+                map::put(new RubbleLow(m_pos));
+                map::update_vision();
+                break;
+
+        default:
+                break;
+        }
 }
 
 std::string Gong::name(const Article article) const
