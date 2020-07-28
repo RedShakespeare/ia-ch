@@ -99,7 +99,7 @@ struct TerrainData {
         char character {'x'};
         gfx::TileId tile {gfx::TileId::END};
         MoveRules move_rules {};
-        bool is_sound_passable {false};
+        bool is_sound_passable {true};
         bool is_projectile_passable {true};
         bool is_los_passable {true};
         bool is_smoke_passable {true};
