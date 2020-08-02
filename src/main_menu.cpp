@@ -37,7 +37,7 @@ static std::string s_git_sha1_str;
 static std::string s_current_quote;
 
 // TODO: This should be loaded from a text file
-static const std::vector<std::string> quotes =
+static const std::vector<std::string> s_quotes =
         {
                 {"Happy is the tomb where no wizard hath lain and happy the town at night "
                  "whose wizards are all ashes."},
@@ -55,10 +55,6 @@ static const std::vector<std::string> quotes =
                 {"Sometimes I believe that this less material life is our truer life, and "
                  "that our vain presence on the terraqueous globe is itself the secondary "
                  "or merely virtual phenomenon."},
-
-                {"Life is a hideous thing, and from the background behind what we know of "
-                 "it peer daemoniacal hints of truth which make it sometimes a "
-                 "thousandfold more hideous."},
 
                 {"Science, already oppressive with its shocking revelations, will perhaps "
                  "be the ultimate exterminator of our human species, if separate species "
@@ -105,8 +101,6 @@ static const std::vector<std::string> quotes =
 
                 {"What I learned and saw in those hours of impious exploration can never "
                  "be told, for want of symbols or suggestions in any language."},
-
-                {"From even the greatest of horrors irony is seldom absent."},
 
                 {"The most merciful thing in the world, I think, is the inability of the "
                  "human mind to correlate all its contents."},
@@ -313,7 +307,7 @@ void MainMenuState::draw()
                 ++pos.y;
         }
 
-        const Color quote_clr = colors::gray_brown().fraction(1.5);
+        const Color quote_clr = colors::gray_brown().fraction(1.75);
 
         std::vector<std::string> quote_lines;
 
@@ -322,7 +316,10 @@ void MainMenuState::draw()
         // Decrease quote width until we find a width that doesn't leave a
         // "tiny" string on the last line (looks very ugly),
         while (quote_w != 0) {
-                quote_lines = text_format::split(s_current_quote, quote_w);
+                quote_lines =
+                        text_format::split(
+                                "\"" + s_current_quote + "\"",
+                                quote_w);
 
                 const size_t min_str_w_last_line = 20;
 
@@ -338,9 +335,21 @@ void MainMenuState::draw()
         }
 
         if (quote_w > 0) {
+                int quote_y;
+
+                if (quote_lines.size() < (labels.size() - 1)) {
+                        quote_y = menu_pos.y + 1;
+                } else if (quote_lines.size() > (labels.size() + 1)) {
+                        quote_y = menu_pos.y - 1;
+                } else {
+                        // Number of quote lines is within +/- 1 difference from
+                        // number of main menu labels
+                        quote_y = menu_pos.y;
+                }
+
                 pos.set(
                         std::max((quote_w / 2) + 2, (screen_dims.x * 3) / 10),
-                        menu_pos.y + 1);
+                        quote_y);
 
                 for (const std::string& line : quote_lines) {
                         io::draw_text_center(
@@ -489,7 +498,7 @@ void MainMenuState::on_start()
 {
         s_git_sha1_str = version_info::read_git_sha1_str_from_file();
 
-        s_current_quote = rnd::element(quotes);
+        s_current_quote = rnd::element(s_quotes);
 
         audio::play_music(audio::MusId::cthulhiana_madness);
 }
