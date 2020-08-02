@@ -35,7 +35,7 @@ void set_spell_skill(SpellId id, SpellSkill val);
 
 bool is_spell_learned(SpellId id);
 
-bool is_player_adj_to_altar();
+bool is_getting_altar_bonus();
 
 } // namespace player_spells
 

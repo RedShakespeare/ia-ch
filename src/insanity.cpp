@@ -392,9 +392,10 @@ bool InsPhobiaDark::is_allowed() const
         const bool has_phobia = insanity::has_sympt_type(InsSymptType::phobia);
         const bool is_rfear = map::g_player->m_properties.has(PropId::r_fear);
 
-        return (player_bon::bg() != Bg::ghoul) &&
+        return (
+                !player_bon::is_bg(Bg::ghoul) &&
                 !is_rfear &&
-                (!has_phobia || rnd::one_in(20));
+                (!has_phobia || rnd::one_in(20)));
 }
 
 void InsPhobiaDark::on_new_player_turn(

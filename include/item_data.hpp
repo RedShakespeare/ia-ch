@@ -174,6 +174,7 @@ enum class Id {
         medical_bag,
 
         // Artifacts
+        holy_symbol,
         clockwork,
         horn_of_banishment,
         horn_of_malice,

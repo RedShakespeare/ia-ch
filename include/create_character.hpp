@@ -68,11 +68,18 @@ private:
 
 class PickTraitState : public State {
 public:
+        PickTraitState(const std::string& title) :
+                m_title(title)
+        {
+        }
+
         void on_start() override;
 
         void update() override;
 
         void draw() override;
+
+        void on_window_resized() override;
 
         StateId id() override
         {
@@ -80,6 +87,8 @@ public:
         }
 
 private:
+        void init_browsers();
+
         MenuBrowser m_browser_traits_avail {};
         MenuBrowser m_browser_traits_unavail {};
 
@@ -87,6 +96,8 @@ private:
         std::vector<Trait> m_traits_unavail {};
 
         TraitScreenMode m_screen_mode {TraitScreenMode::pick_new};
+
+        std::string m_title;
 };
 
 class EnterNameState : public State {

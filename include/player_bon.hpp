@@ -58,6 +58,22 @@ enum class Trait {
         undead_bane,
         elec_incl,
 
+        // Unique for Exorcist
+        cast_bless_i,
+        cast_bless_ii,
+        cast_cleansing_fire_i,
+        cast_cleansing_fire_ii,
+        cast_heal_i,
+        cast_heal_ii,
+        cast_light_i,
+        cast_light_ii,
+        cast_sanctuary_i,
+        cast_sanctuary_ii,
+        cast_see_invisible_i,
+        cast_see_invisible_ii,
+        cast_purge,
+        prolonged_life,
+
         // Unique for Ghoul
         ravenous,
         foul,
@@ -75,6 +91,7 @@ enum class Trait {
 };
 
 enum class Bg {
+        exorcist,
         ghoul,
         occultist,
         rogue,
@@ -126,6 +143,8 @@ void trait_prereqs(
 Bg bg();
 
 OccultistDomain occultist_domain();
+
+bool is_bg(Bg bg);
 
 bool has_trait(Trait id);
 

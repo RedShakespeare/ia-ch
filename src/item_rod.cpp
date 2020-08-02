@@ -219,8 +219,7 @@ ConsumeItem Rod::activate(actor::Actor* const actor)
 
         // Prevent using it if still charging, and identified (player character
         // knows that it's useless)
-        if ((m_nr_charge_turns_left > 0) &&
-            m_data->is_identified) {
+        if ((m_nr_charge_turns_left > 0) && m_data->is_identified) {
                 const std::string rod_name =
                         name(ItemRefType::plain, ItemRefInf::none);
 
@@ -274,11 +273,12 @@ void Rod::on_std_turn_in_inv_hook(const InvType inv_type)
         --m_nr_charge_turns_left;
 
         if (m_nr_charge_turns_left == 0) {
-                const std::string rod_name =
-                        name(ItemRefType::plain,
-                             ItemRefInf::none);
+                const std::string my_name =
+                        name(
+                                ItemRefType::plain,
+                                ItemRefInf::none);
 
-                msg_log::add("The " + rod_name + " has finished charging.");
+                msg_log::add("The " + my_name + " has finished charging.");
         }
 }
 
@@ -312,17 +312,17 @@ void Rod::identify(const Verbose verbose)
 std::string Rod::name_inf_str() const
 {
         if (m_data->is_identified) {
-                const std::string charge_str =
-                        std::to_string(m_nr_charge_turns_left);
+                if (m_nr_charge_turns_left > 0) {
+                        const auto turns_left_str =
+                                std::to_string(m_nr_charge_turns_left);
 
-                return (m_nr_charge_turns_left > 0)
-                        ? "{" + charge_str + "}"
-                        : "";
+                        return "{" + turns_left_str + "}";
+                } else {
+                        return "";
+                }
         } else {
                 // Not identified
-                return m_data->is_tried
-                        ? "{Tried}"
-                        : "";
+                return m_data->is_tried ? "{Tried}" : "";
         }
 }
 

@@ -204,7 +204,8 @@ ConsumeItem HornOfMalice::activate(actor::Actor* const actor)
         auto effect = std::shared_ptr<SndHeardEffect>(
                 new HornOfMaliceHeard);
 
-        Snd snd("The Horn of Malice resounds!",
+        Snd snd(
+                "The Horn of Malice resounds!",
                 audio::SfxId::END, // TODO: Make a sound effect
                 IgnoreMsgIfOriginSeen::no,
                 map::g_player->m_pos,
@@ -214,7 +215,7 @@ ConsumeItem HornOfMalice::activate(actor::Actor* const actor)
                 MorePromptOnMsg::no,
                 effect);
 
-        snd_emit::run(snd);
+        snd.run();
 
         --m_charges;
 
@@ -278,7 +279,8 @@ ConsumeItem HornOfBanishment::activate(actor::Actor* const actor)
         auto effect = std::shared_ptr<SndHeardEffect>(
                 new HornOfBanishmentHeard);
 
-        Snd snd("The Horn of Banishment resounds!",
+        Snd snd(
+                "The Horn of Banishment resounds!",
                 audio::SfxId::END, // TODO: Make a sound effect
                 IgnoreMsgIfOriginSeen::no,
                 map::g_player->m_pos,
@@ -288,13 +290,173 @@ ConsumeItem HornOfBanishment::activate(actor::Actor* const actor)
                 MorePromptOnMsg::no,
                 effect);
 
-        snd_emit::run(snd);
+        snd.run();
 
         --m_charges;
 
         game_time::tick();
 
         return ConsumeItem::no;
+}
+
+// -----------------------------------------------------------------------------
+// Holy Symbol
+// -----------------------------------------------------------------------------
+HolySymbol::HolySymbol(ItemData* item_data) :
+        Item(item_data)
+{
+}
+
+ConsumeItem HolySymbol::activate(actor::Actor* actor)
+{
+        (void)actor;
+
+        if (!map::g_player->m_properties.allow_pray(Verbose::yes)) {
+                return ConsumeItem::no;
+        }
+
+        if (m_has_failed_attempt) {
+                msg_log::add(
+                        "I have no faith that this would help me at "
+                        "the moment.");
+
+                return ConsumeItem::no;
+        }
+
+        // Is not in failed state
+
+        const std::string my_name =
+                name(
+                        ItemRefType::plain,
+                        ItemRefInf::none);
+
+        std::string pray_msg = "";
+
+        if (map::g_player->m_properties.has(PropId::terrified)) {
+                pray_msg = "With trembling hands ";
+        }
+
+        pray_msg += "I make a prayer over the " + my_name + "...";
+
+        msg_log::add(
+                pray_msg,
+                colors::text(),
+                MsgInterruptPlayer::no,
+                MorePromptOnMsg::yes);
+
+        // If the item is still charging, roll for success
+        if ((m_nr_charge_turns_left > 0) && !rnd::percent(25)) {
+                // Failed!
+                m_has_failed_attempt = true;
+
+                // Set a recharge duration that is longer than normal
+                m_nr_charge_turns_left = nr_turns_to_recharge().max;
+
+                const int duration_pct = rnd::range(175, 200);
+
+                m_nr_charge_turns_left =
+                        (m_nr_charge_turns_left * duration_pct) / 100;
+
+                msg_log::add("This feels useless!");
+
+                map::g_player->incr_shock(
+                        ShockLvl::frightening,
+                        ShockSrc::misc);
+
+                game_time::tick();
+
+                return ConsumeItem::no;
+        }
+
+        // Item can be used
+
+        m_nr_charge_turns_left = nr_turns_to_recharge().roll();
+
+        run_effect();
+
+        game_time::tick();
+
+        return ConsumeItem::no;
+}
+
+void HolySymbol::on_std_turn_in_inv_hook(InvType inv_type)
+{
+        (void)inv_type;
+
+        // Already fully charged?
+        if (m_nr_charge_turns_left == 0) {
+                return;
+        }
+
+        ASSERT(m_nr_charge_turns_left > 0);
+
+        --m_nr_charge_turns_left;
+
+        if (m_nr_charge_turns_left == 0) {
+                m_has_failed_attempt = false;
+
+                const std::string my_name =
+                        name(
+                                ItemRefType::plain,
+                                ItemRefInf::none);
+
+                msg_log::add(
+                        "I feel like praying over the " +
+                        my_name +
+                        " would be beneficent again.");
+        }
+}
+
+std::string HolySymbol::name_inf_str() const
+{
+        if (m_nr_charge_turns_left <= 0) {
+                return "";
+        }
+
+        const auto turns_left_str = std::to_string(m_nr_charge_turns_left);
+
+        std::string str = "{" + turns_left_str;
+
+        if (m_has_failed_attempt) {
+                str += ", failed";
+        }
+
+        str += "}";
+
+        return str;
+}
+
+void HolySymbol::save_hook() const
+{
+        saving::put_int(m_nr_charge_turns_left);
+        saving::put_bool(m_has_failed_attempt);
+}
+
+void HolySymbol::load_hook()
+{
+        m_nr_charge_turns_left = saving::get_int();
+        m_has_failed_attempt = saving::get_bool();
+}
+
+void HolySymbol::run_effect()
+{
+        map::g_player->restore_sp(rnd::range(1, 4));
+
+        const int prop_duration = rnd::range(6, 12);
+
+        auto r_fear = property_factory::make(PropId::r_fear);
+        auto r_shock = property_factory::make(PropId::r_shock);
+
+        r_fear->set_duration(prop_duration);
+        r_shock->set_duration(prop_duration);
+
+        map::g_player->m_properties.apply(r_fear);
+        map::g_player->m_properties.apply(r_shock);
+}
+
+Range HolySymbol::nr_turns_to_recharge() const
+{
+        return {125, 175};
 }
 
 // -----------------------------------------------------------------------------

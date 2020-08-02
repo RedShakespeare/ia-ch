@@ -919,8 +919,16 @@ bool PropConfused::allow_read_absolute(const Verbose verbose) const
 bool PropConfused::allow_cast_intr_spell_absolute(
         const Verbose verbose) const
 {
-        if (m_owner->is_player() &&
-            (verbose == Verbose::yes)) {
+        if (m_owner->is_player() && (verbose == Verbose::yes)) {
+                msg_log::add("I am too confused to concentrate!");
+        }
+
+        return false;
+}
+
+bool PropConfused::allow_pray(Verbose verbose) const
+{
+        if (m_owner->is_player() && (verbose == Verbose::yes)) {
                 msg_log::add("I am too confused to concentrate!");
         }
 
@@ -1083,8 +1091,16 @@ bool PropFrenzied::allow_read_absolute(const Verbose verbose) const
 bool PropFrenzied::allow_cast_intr_spell_absolute(
         const Verbose verbose) const
 {
-        if (m_owner->is_player() &&
-            (verbose == Verbose::yes)) {
+        if (m_owner->is_player() && (verbose == Verbose::yes)) {
+                msg_log::add("I am too enraged to concentrate!");
+        }
+
+        return false;
+}
+
+bool PropFrenzied::allow_pray(Verbose verbose) const
+{
+        if (m_owner->is_player() && (verbose == Verbose::yes)) {
                 msg_log::add("I am too enraged to concentrate!");
         }
 
@@ -1105,8 +1121,7 @@ PropEnded PropBurning::on_tick()
 bool PropBurning::allow_read_chance(const Verbose verbose) const
 {
         if (!rnd::coin_toss()) {
-                if (m_owner->is_player() &&
-                    (verbose == Verbose::yes)) {
+                if (m_owner->is_player() && (verbose == Verbose::yes)) {
                         msg_log::add("I fail to concentrate!");
                 }
 
@@ -1128,6 +1143,15 @@ bool PropBurning::allow_cast_intr_spell_chance(const Verbose verbose) const
         }
 
         return true;
+}
+
+bool PropBurning::allow_pray(Verbose verbose) const
+{
+        if (m_owner->is_player() && (verbose == Verbose::yes)) {
+                msg_log::add("I am burning!");
+        }
+
+        return false;
 }
 
 bool PropBurning::allow_attack_ranged(const Verbose verbose) const
@@ -1165,8 +1189,7 @@ PropActResult PropRecloaks::on_act()
 
 bool PropBlind::allow_read_absolute(const Verbose verbose) const
 {
-        if (m_owner->is_player() &&
-            (verbose == Verbose::yes)) {
+        if (m_owner->is_player() && (verbose == Verbose::yes)) {
                 msg_log::add("I cannot read while blind.");
         }
 
@@ -1467,8 +1490,6 @@ PropEnded PropBurrowing::on_tick()
 
 PropActResult PropVortex::on_act()
 {
-        TRACE_FUNC_BEGIN;
-
         // Not supported yet
         if (m_owner->is_player()) {
                 return {};

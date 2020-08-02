@@ -38,11 +38,6 @@ enum class BurnState {
         has_burned
 };
 
-enum class WasDestroyed {
-        no,
-        yes
-};
-
 enum class DidTriggerTrap {
         no,
         yes
@@ -90,6 +85,8 @@ public:
         void destroy_single_fragile();
 
 private:
+        void on_item_found(item::Item* item, const P& terrain_pos);
+
         std::vector<item::Item*> m_items;
 };
 
@@ -960,6 +957,8 @@ public:
         {
                 return Id::altar;
         }
+
+        void bump(actor::Actor& actor_bumping) override;
 
         void on_new_turn() override;
 

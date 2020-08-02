@@ -15,9 +15,11 @@
 #include "common_text.hpp"
 #include "explosion.hpp"
 #include "game.hpp"
+#include "game_over.hpp"
 #include "game_time.hpp"
 #include "global.hpp"
 #include "io.hpp"
+#include "item.hpp"
 #include "item_curse.hpp"
 #include "item_data.hpp"
 #include "item_factory.hpp"
@@ -637,6 +639,29 @@ void Item::clear_carrier_props()
         ASSERT(m_actor_carrying);
 
         m_actor_carrying->m_properties.remove_props_for_item(this);
+}
+
+// -----------------------------------------------------------------------------
+// Trapezohedron
+// -----------------------------------------------------------------------------
+Trapez::Trapez(ItemData* item_data) :
+        Item(item_data)
+{
+}
+
+ItemPrePickResult Trapez::pre_pickup_hook()
+{
+        game::add_history_event("Beheld The Shining Trapezohedron");
+
+        saving::erase_save();
+
+        states::pop();
+
+        on_game_over(IsWin::yes);
+
+        states::push(std::make_unique<WinGameState>());
+
+        return ItemPrePickResult::do_nothing;
 }
 
 // -----------------------------------------------------------------------------

@@ -8,6 +8,7 @@
 
 #include "actor_player.hpp"
 #include "browser.hpp"
+#include "common_text.hpp"
 #include "draw_box.hpp"
 #include "game.hpp"
 #include "global.hpp"
@@ -26,8 +27,13 @@
 void NewGameState::on_pushed()
 {
         states::push(std::make_unique<GameState>(GameEntryMode::new_game));
+
         states::push(std::make_unique<EnterNameState>());
-        states::push(std::make_unique<PickTraitState>());
+
+        states::push(
+                std::make_unique<PickTraitState>(
+                        "Which extra trait do you start with?"));
+
         states::push(std::make_unique<PickBgState>());
 }
 
@@ -179,9 +185,10 @@ void PickBgState::draw()
                         continue;
                 }
 
-                const auto formatted_lines = text_format::split(
-                        descr_entry.str,
-                        panels::w(Panel::create_char_descr));
+                const auto formatted_lines =
+                        text_format::split(
+                                descr_entry.str,
+                                panels::w(Panel::create_char_descr));
 
                 for (const std::string& line : formatted_lines) {
                         io::draw_text(
@@ -334,11 +341,24 @@ void PickTraitState::on_start()
                 m_traits_avail,
                 m_traits_unavail);
 
+        init_browsers();
+}
+
+void PickTraitState::on_window_resized()
+{
+        init_browsers();
+}
+
+void PickTraitState::init_browsers()
+{
         const int choices_h = panels::h(Panel::create_char_menu);
 
         m_browser_traits_avail.reset(m_traits_avail.size(), choices_h);
 
         m_browser_traits_unavail.reset(m_traits_unavail.size(), choices_h);
+
+        m_browser_traits_avail.set_y(0);
+        m_browser_traits_unavail.set_y(0);
 }
 
 void PickTraitState::update()
@@ -429,26 +449,21 @@ void PickTraitState::draw()
 {
         draw_box(panels::area(Panel::screen));
 
-        std::string title;
+        std::string full_title;
 
         if (m_screen_mode == TraitScreenMode::pick_new) {
-                title =
-                        states::contains_state(StateId::pick_name)
-                        ? "Which extra trait do you start with?"
-                        : "Which trait do you gain?";
-
-                title += " [TAB] to view unavailable traits";
+                full_title = m_title + " [TAB] to view unavailable traits";
         } else {
                 // Viewing unavailable traits
-                title = "Currently unavailable traits";
-
-                title += " [TAB] to view available traits";
+                full_title =
+                        "Currently unavailable traits "
+                        "[TAB] to view available traits";
         }
 
         const int screen_center_x = panels::center_x(Panel::screen);
 
         io::draw_text_center(
-                " " + title + " ",
+                " " + full_title + " ",
                 Panel::screen,
                 P(screen_center_x, 0),
                 colors::title(),
@@ -462,12 +477,10 @@ void PickTraitState::draw()
 
         if (m_screen_mode == TraitScreenMode::pick_new) {
                 browser = &m_browser_traits_avail;
-
                 traits = &m_traits_avail;
         } else {
                 // Viewing unavailable traits
                 browser = &m_browser_traits_unavail;
-
                 traits = &m_traits_unavail;
         }
 
@@ -532,23 +545,21 @@ void PickTraitState::draw()
         }
 
         // Draw "more" labels
-        // if (!browser->is_on_top_page())
-        // {
-        //         io::draw_text(
-        //                 "(More - Page Up)",
-        //                 Panel::screen,
-        //                 P(opt_x0_, top_more_y_),
-        //                 colors::light_white());
-        // }
+        if (!browser->is_on_top_page()) {
+                io::draw_text(
+                        common_text::g_next_page_up_hint,
+                        Panel::create_char_menu,
+                        {0, -1},
+                        colors::light_white());
+        }
 
-        // if (!browser->is_on_btm_page())
-        // {
-        //         io::draw_text(
-        //                 "(More - Page Down)",
-        //                 Panel::screen,
-        //                 P(opt_x0_, btm_more_y_),
-        //                 colors::light_white());
-        // }
+        if (!browser->is_on_btm_page()) {
+                io::draw_text(
+                        common_text::g_next_page_down_hint,
+                        Panel::create_char_menu,
+                        {0, panels::h(Panel::create_char_menu)},
+                        colors::light_white());
+        }
 
         // Description
         y = 0;
@@ -632,6 +643,7 @@ void PickTraitState::draw()
                 }
 
                 const size_t nr_prereq_titles = prereq_titles.size();
+
                 for (size_t prereq_idx = 0;
                      prereq_idx < nr_prereq_titles;
                      ++prereq_idx) {

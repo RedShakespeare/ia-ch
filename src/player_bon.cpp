@@ -33,6 +33,10 @@ static auto s_current_bg = Bg::END;
 
 static auto s_current_occultist_domain = OccultistDomain::END;
 
+static const int s_exorcist_bon_trait_lvl_1 = 2;
+static const int s_exorcist_bon_trait_lvl_2 = 4;
+static const int s_exorcist_bon_trait_lvl_3 = 6;
+
 static const int s_occultist_upgrade_lvl_1 = 4;
 static const int s_occultist_upgrade_lvl_2 = 8;
 
@@ -48,6 +52,7 @@ static bool is_trait_blocked_for_bg(
 
         case Trait::treasure_hunter: {
                 switch (bg) {
+                case Bg::exorcist:
                 case Bg::ghoul:
                 case Bg::war_vet:
                         return true;
@@ -119,6 +124,20 @@ static bool is_trait_blocked_for_bg(
         case Trait::fearless:
         case Trait::steady_aimer:
         case Trait::indomitable_fury:
+        case Trait::cast_bless_i:
+        case Trait::cast_bless_ii:
+        case Trait::cast_cleansing_fire_i:
+        case Trait::cast_cleansing_fire_ii:
+        case Trait::cast_heal_i:
+        case Trait::cast_heal_ii:
+        case Trait::cast_light_i:
+        case Trait::cast_light_ii:
+        case Trait::cast_sanctuary_i:
+        case Trait::cast_sanctuary_ii:
+        case Trait::cast_see_invisible_i:
+        case Trait::cast_see_invisible_ii:
+        case Trait::cast_purge:
+        case Trait::prolonged_life:
         case Trait::END: {
         } break;
         }
@@ -129,9 +148,7 @@ static bool is_trait_blocked_for_bg(
 static void incr_occultist_spells()
 {
         for (int id = 0; id < (int)SpellId::END; ++id) {
-                const std::unique_ptr<Spell> spell(
-                        spell_factory::make_spell_from_id(
-                                (SpellId)id));
+                const std::unique_ptr<Spell> spell(spells::make((SpellId)id));
 
                 const bool is_learnable =
                         spell->player_can_learn();
@@ -206,11 +223,14 @@ void load()
 std::string bg_title(const Bg id)
 {
         switch (id) {
-        case Bg::occultist:
-                return "Occultist";
+        case Bg::exorcist:
+                return "Exorcist";
 
         case Bg::ghoul:
                 return "Ghoul";
+
+        case Bg::occultist:
+                return "Occultist";
 
         case Bg::rogue:
                 return "Rogue";
@@ -239,9 +259,6 @@ std::string spell_domain_title(const OccultistDomain domain)
         case OccultistDomain::invoker:
                 return "Invocation";
 
-                // case OccultistDomain::summoner:
-                //         return "Summoning";
-
         case OccultistDomain::transmuter:
                 return "Transmutation";
 
@@ -265,9 +282,6 @@ std::string occultist_profession_title(const OccultistDomain domain)
 
         case OccultistDomain::invoker:
                 return "Invoker";
-
-                // case OccultistDomain::summoner:
-                //         return "Summoner";
 
         case OccultistDomain::transmuter:
                 return "Transmuter";
@@ -401,6 +415,48 @@ std::string trait_title(const Trait id)
         case Trait::indomitable_fury:
                 return "Indomitable Fury";
 
+        case Trait::cast_bless_i:
+                return "Cast Bless";
+
+        case Trait::cast_bless_ii:
+                return "Cast Bless II";
+
+        case Trait::cast_cleansing_fire_i:
+                return "Cast Cleansing Fire";
+
+        case Trait::cast_cleansing_fire_ii:
+                return "Cast Cleansing Fire II";
+
+        case Trait::cast_heal_i:
+                return "Cast Heal";
+
+        case Trait::cast_heal_ii:
+                return "Cast Heal II";
+
+        case Trait::cast_light_i:
+                return "Cast Light";
+
+        case Trait::cast_light_ii:
+                return "Cast Light II";
+
+        case Trait::cast_sanctuary_i:
+                return "Cast Sanctuary";
+
+        case Trait::cast_sanctuary_ii:
+                return "Cast Sanctuary II";
+
+        case Trait::cast_see_invisible_i:
+                return "Cast See Invisible";
+
+        case Trait::cast_see_invisible_ii:
+                return "Cast See Invisible II";
+
+        case Trait::cast_purge:
+                return "Cast Purge";
+
+        case Trait::prolonged_life:
+                return "Prolonged Life";
+
         case Trait::END:
                 break;
         }
@@ -424,37 +480,41 @@ std::vector<ColoredString> bg_descr(const Bg id)
         };
 
         switch (id) {
-        case Bg::occultist:
-                put("Specializes in a spell domain (selected at character "
-                    "creation). "
-                    "At character levels 4 and 8, all spells belonging to the "
-                    "chosen domain are cast with greater power. "
-                    "This choice also determines starting spells.");
+        case Bg::exorcist:
+                put("Starts with a Holy Symbol, which can restore "
+                    "spirit points and grant resistance against "
+                    "shock and fear");
                 put("");
-                put("-50% shock taken from casting spells, and from carrying, "
-                    "using or identifying strange items (e.g. drinking a "
-                    "potion or carrying a disturbing artifact)");
+                put("Cannot use manuscripts, altars, monoliths, or gongs, "
+                    "but gains experience and spirit points for destroying "
+                    "these (manuscripts are destroyed when picking them up)");
                 put("");
-                put("Can dispel magic traps, doing so grants Spirit Points");
+                put("Spirit points gained above the maximum level can be kept "
+                    "indefinitely until they are spent");
                 put("");
-                put("+3 Spirit Points (in addition to \"Stout Spirit\")");
-                put("");
-                put("-2 Hit Points");
+                put("Gains a bonus trait at character levels " +
+                    std::to_string(s_exorcist_bon_trait_lvl_1) +
+                    ", " +
+                    std::to_string(s_exorcist_bon_trait_lvl_2) +
+                    ", and " +
+                    std::to_string(s_exorcist_bon_trait_lvl_3));
                 put("");
                 put_trait(Trait::stout_spirit);
+                put("");
+                put_trait(Trait::undead_bane);
                 break;
 
         case Bg::ghoul:
-                put("Does not regenerate Hit Points and cannot use medical "
+                put("Does not regenerate hit points and cannot use medical "
                     "equipment - heals by feeding on corpses (feeding is done "
                     "while waiting on a corpse)");
                 put("");
-                put("Can incite Frenzy at will, and does not become Weakened "
-                    "when Frenzy ends");
+                put("Can incite frenzy at will, and does not become weakened "
+                    "when frenzy ends");
                 put("");
-                put("+6 Hit Points");
+                put("+6 hit points");
                 put("");
-                put("Is immune to Disease and Infections");
+                put("Is immune to disease and infections");
                 put("");
                 put("Does not get sprains");
                 put("");
@@ -464,7 +524,30 @@ std::vector<ColoredString> bg_descr(const Bg id)
                 put("");
                 put("-15% hit chance with firearms and thrown weapons");
                 put("");
-                put("All Ghouls are allied");
+                put("All ghouls are allied");
+                break;
+
+        case Bg::occultist:
+                put("Specializes in a spell domain (selected at character "
+                    "creation). At character levels " +
+                    std::to_string(s_occultist_upgrade_lvl_1) +
+                    " and " +
+                    std::to_string(s_occultist_upgrade_lvl_2) +
+                    ", all spells "
+                    "belonging to the chosen domain are cast with greater "
+                    "power. This choice also determines starting spells");
+                put("");
+                put("-50% shock taken from casting spells, and from carrying, "
+                    "using or identifying strange items (e.g. drinking a "
+                    "potion or carrying a disturbing artifact)");
+                put("");
+                put("Can dispel magic traps, doing so grants spirit points");
+                put("");
+                put("+3 spirit points (in addition to \"Stout Spirit\")");
+                put("");
+                put("-2 hit points");
+                put("");
+                put_trait(Trait::stout_spirit);
                 break;
 
         case Bg::rogue:
@@ -516,17 +599,17 @@ std::string occultist_domain_descr(const OccultistDomain domain)
                        "stairs, and other locations of interest in the "
                        "surrounding area. At character level 4, this ability "
                        "also reveals items, and at level 8 it reveals "
-                       "creatures.";
+                       "creatures";
 
         case OccultistDomain::enchanter:
                 return "Specializes in aiding, debilitating, entrancing, and "
-                       "beguiling.";
+                       "beguiling";
 
         case OccultistDomain::invoker:
-                return "Specializes in channeling destructive powers.";
+                return "Specializes in channeling destructive powers";
 
         case OccultistDomain::transmuter:
-                return "Specializes in manipulating matter, energy, and time.";
+                return "Specializes in manipulating matter, energy, and time";
 
         case OccultistDomain::END:
                 ASSERT(false);
@@ -538,6 +621,33 @@ std::string occultist_domain_descr(const OccultistDomain domain)
 
 std::string trait_descr(const Trait id)
 {
+        auto descr_for_spell_trait =
+                [](const SpellId spell_id, const SpellSkill skill) {
+                        std::unique_ptr<Spell> spell(spells::make(spell_id));
+
+                        std::string str =
+                                "Gain the ability to cast \"" +
+                                spell->name() +
+                                "\"";
+
+                        if (spell->can_be_improved_with_skill()) {
+                                str +=
+                                        " at " +
+                                        spells::skill_to_str(skill) +
+                                        " level";
+                        }
+
+                        str += " -";
+
+                        const auto descr = spell->descr_specific(skill);
+
+                        for (const auto& line : descr) {
+                                str += " " + line;
+                        }
+
+                        return str;
+                };
+
         switch (id) {
         case Trait::adept_melee:
         case Trait::expert_melee:
@@ -559,22 +669,22 @@ std::string trait_descr(const Trait id)
                 return "+20% shock resistance";
 
         case Trait::absorb:
-                return "1-6 Spirit Points are restored each time a spell is "
-                       "resisted by Spell Resistance (granted by Spirit "
+                return "1-6 spirit points are restored each time a spell is "
+                       "resisted by spell resistance (granted by spirit "
                        "traits, or the Spell Shield spell)";
 
         case Trait::tough:
         case Trait::rugged:
-                return "+4 Hit Points, less likely to sprain when kicking, "
+                return "+4 hit points, less likely to sprain when kicking, "
                        "more likely to succeed with object interactions "
                        "requiring strength (e.g. bashing things open)";
 
         case Trait::thick_skinned:
-                return "+1 Armor Point (physical damage reduced by 1 point)";
+                return "+1 armor point (physical damage reduced by 1 point)";
 
         case Trait::resistant:
                 return "Halved damage from fire and electricity (at least 1 "
-                       "damage taken)";
+                       "damage is taken)";
 
         case Trait::strong_backed:
                 return "+50% carry weight limit";
@@ -586,7 +696,7 @@ std::string trait_descr(const Trait id)
         case Trait::crippling_strikes:
                 return "Your melee attacks have 60% chance to Weaken the "
                        "target creature for 2-3 turns (reducing their "
-                       "melee damage by half).";
+                       "melee damage by half)";
 
         case Trait::fearless:
                 return "You cannot become terrified, +10% shock resistance";
@@ -601,46 +711,44 @@ std::string trait_descr(const Trait id)
                        "or behind a door, etc";
 
         case Trait::rapid_recoverer:
-                return "You regenerate 1 Hit Point every second turn";
+                return "You regenerate 1 hit point every second turn";
 
         case Trait::survivalist:
                 return "You cannot become diseased, wounds do not affect "
                        "your combat abilities, and their negative effect on "
-                       "Hit Points and regeneration is halved";
+                       "hit points and regeneration is halved";
 
         case Trait::self_aware:
                 return "You cannot become confused, the number of remaining "
                        "turns for status effects are displayed";
 
         case Trait::stout_spirit:
-                return "+2 Spirit Points, increased Spirit regeneration rate, "
+                return "+2 spirit points, increased spirit regeneration rate, "
                        "you can defy harmful spells (it takes 125-150 turns "
                        "to regain spell resistance after a spell is blocked)";
 
         case Trait::strong_spirit:
-                return "+2 Spirit Points, increased Spirit regeneration rate, "
+                return "+2 spirit points, increased spirit regeneration rate, "
                        "it takes 75-100 turns to regain spell resistance "
                        "after a spell is blocked";
 
         case Trait::mighty_spirit:
-                return "+2 Spirit Points, increased Spirit regeneration rate, "
+                return "+2 spirit points, increased spirit regeneration rate, "
                        "it takes 25-50 turns to regain spell resistance "
                        "after a spell is blocked";
 
         case Trait::stealthy:
-                return "+45% chance to avoid detection (per monster and turn)";
+                return "+45% chance to avoid detection by sight";
 
         case Trait::imperceptible:
-                return "+45% chance to avoid detection (per monster and turn)";
+                return "+45% chance to avoid detection by sight";
 
         case Trait::silent:
                 return "All your melee attacks are silent, and creatures are "
-                       "not alerted when you open or close doors, wade, or "
-                       "swim ";
+                       "not alerted when you handle doors, wade, or swim";
 
         case Trait::vicious:
-                return "+150% backstab damage (in addition to the basic +50% "
-                       "damage from stealth attacks)";
+                return "+150% backstab damage (in addition to the normal +50%)";
 
         case Trait::ruthless:
                 return "+150% backstab damage";
@@ -654,10 +762,9 @@ std::string trait_descr(const Trait id)
                        "monsters (Ghosts)";
 
         case Trait::elec_incl:
-                return "Rods recharge twice as fast, Strange Devices are less "
-                       "likely to malfunction or break, Electric Lanterns "
-                       "last twice as long, +1 damage with electricity "
-                       "weapons";
+                return "Rods recharge twice as fast, strange devices are less "
+                       "likely to malfunction or break, electric lanterns "
+                       "last twice as long, +1 damage with electricity weapons";
 
         case Trait::ravenous:
                 return "You occasionally feed on living victims when "
@@ -673,8 +780,90 @@ std::string trait_descr(const Trait id)
                        "with your claws often poisons your victims";
 
         case Trait::indomitable_fury:
-                return "While Frenzied, you are immune to Wounds, and your "
+                return "While frenzied, you are immune to wounds, and your "
                        "attacks cause fear";
+
+        case Trait::cast_bless_i:
+                return (
+                        descr_for_spell_trait(
+                                SpellId::bless,
+                                SpellSkill::basic));
+
+        case Trait::cast_bless_ii:
+                return (
+                        descr_for_spell_trait(
+                                SpellId::bless,
+                                SpellSkill::expert));
+
+        case Trait::cast_cleansing_fire_i:
+                return (
+                        descr_for_spell_trait(
+                                SpellId::cleansing_fire,
+                                SpellSkill::basic));
+
+        case Trait::cast_cleansing_fire_ii:
+                return (
+                        descr_for_spell_trait(
+                                SpellId::cleansing_fire,
+                                SpellSkill::expert));
+
+        case Trait::cast_heal_i:
+                return (
+                        descr_for_spell_trait(
+                                SpellId::heal,
+                                SpellSkill::basic));
+
+        case Trait::cast_heal_ii:
+                return (
+                        descr_for_spell_trait(
+                                SpellId::heal,
+                                SpellSkill::expert));
+
+        case Trait::cast_light_i:
+                return (
+                        descr_for_spell_trait(
+                                SpellId::light,
+                                SpellSkill::basic));
+
+        case Trait::cast_light_ii:
+                return (
+                        descr_for_spell_trait(
+                                SpellId::light,
+                                SpellSkill::expert));
+
+        case Trait::cast_sanctuary_i:
+                return (
+                        descr_for_spell_trait(
+                                SpellId::sanctuary,
+                                SpellSkill::basic));
+
+        case Trait::cast_sanctuary_ii:
+                return (
+                        descr_for_spell_trait(
+                                SpellId::sanctuary,
+                                SpellSkill::expert));
+
+        case Trait::cast_see_invisible_i:
+                return (
+                        descr_for_spell_trait(
+                                SpellId::see_invis,
+                                SpellSkill::basic));
+
+        case Trait::cast_see_invisible_ii:
+                return (
+                        descr_for_spell_trait(
+                                SpellId::see_invis,
+                                SpellSkill::expert));
+
+        case Trait::cast_purge:
+                return (
+                        descr_for_spell_trait(
+                                SpellId::purge,
+                                SpellSkill::basic));
+
+        case Trait::prolonged_life:
+                return "Any fatal damage received is instead drained fom your "
+                       "spirit points";
 
         case Trait::END:
                 break;
@@ -856,6 +1045,68 @@ void trait_prereqs(
                 bg_out = Bg::ghoul;
                 break;
 
+        case Trait::cast_bless_i:
+                bg_out = Bg::exorcist;
+                break;
+
+        case Trait::cast_bless_ii:
+                traits_out.push_back(Trait::cast_bless_i);
+                bg_out = Bg::exorcist;
+                break;
+
+        case Trait::cast_cleansing_fire_i:
+                bg_out = Bg::exorcist;
+                break;
+
+        case Trait::cast_cleansing_fire_ii:
+                traits_out.push_back(Trait::cast_cleansing_fire_i);
+                bg_out = Bg::exorcist;
+                break;
+
+        case Trait::cast_heal_i:
+                bg_out = Bg::exorcist;
+                break;
+
+        case Trait::cast_heal_ii:
+                traits_out.push_back(Trait::cast_heal_i);
+                bg_out = Bg::exorcist;
+                break;
+
+        case Trait::cast_light_i:
+                bg_out = Bg::exorcist;
+                break;
+
+        case Trait::cast_light_ii:
+                traits_out.push_back(Trait::cast_light_i);
+                bg_out = Bg::exorcist;
+                break;
+
+        case Trait::cast_sanctuary_i:
+                bg_out = Bg::exorcist;
+                break;
+
+        case Trait::cast_sanctuary_ii:
+                traits_out.push_back(Trait::cast_sanctuary_i);
+                bg_out = Bg::exorcist;
+                break;
+
+        case Trait::cast_see_invisible_i:
+                bg_out = Bg::exorcist;
+                break;
+
+        case Trait::cast_see_invisible_ii:
+                traits_out.push_back(Trait::cast_see_invisible_i);
+                bg_out = Bg::exorcist;
+                break;
+
+        case Trait::cast_purge:
+                bg_out = Bg::exorcist;
+                break;
+
+        case Trait::prolonged_life:
+                bg_out = Bg::exorcist;
+                break;
+
         case Trait::END:
                 break;
         }
@@ -892,8 +1143,17 @@ OccultistDomain occultist_domain()
         return s_current_occultist_domain;
 }
 
+bool is_bg(Bg bg)
+{
+        ASSERT(bg != Bg::END);
+
+        return bg == s_current_bg;
+}
+
 bool has_trait(const Trait id)
 {
+        ASSERT(id != Trait::END);
+
         return s_traits[(size_t)id];
 }
 
@@ -1038,12 +1298,16 @@ void pick_bg(const Bg bg)
         s_current_bg = bg;
 
         switch (s_current_bg) {
-        case Bg::occultist: {
+        case Bg::exorcist: {
                 pick_trait(Trait::stout_spirit);
+                pick_trait(Trait::undead_bane);
 
-                map::g_player->change_max_sp(3, Verbose::no);
-
-                map::g_player->change_max_hp(-2, Verbose::no);
+                // Mark all scrolls as found, so they do not yield XP
+                for (auto& d : item::g_data) {
+                        if (d.type == ItemType::scroll) {
+                                d.is_found = true;
+                        }
+                }
         } break;
 
         case Bg::ghoul: {
@@ -1070,6 +1334,14 @@ void pick_bg(const Bg bg)
                 player_spells::learn_spell(SpellId::frenzy, Verbose::no);
 
                 map::g_player->change_max_hp(6, Verbose::no);
+        } break;
+
+        case Bg::occultist: {
+                pick_trait(Trait::stout_spirit);
+
+                map::g_player->change_max_sp(3, Verbose::no);
+
+                map::g_player->change_max_hp(-2, Verbose::no);
         } break;
 
         case Bg::rogue: {
@@ -1130,6 +1402,19 @@ void pick_occultist_domain(const OccultistDomain domain)
 void on_player_gained_lvl(const int new_lvl)
 {
         switch (s_current_bg) {
+        case Bg::exorcist: {
+                const bool is_exorcist_extra_trait =
+                        (new_lvl == s_exorcist_bon_trait_lvl_1) ||
+                        (new_lvl == s_exorcist_bon_trait_lvl_2) ||
+                        (new_lvl == s_exorcist_bon_trait_lvl_3);
+
+                if (is_exorcist_extra_trait) {
+                        states::push(
+                                std::make_unique<PickTraitState>(
+                                        "You gain an extra trait!"));
+                }
+        } break;
+
         case Bg::ghoul: {
         } break;
 
@@ -1298,6 +1583,78 @@ void pick_trait(const Trait id)
                         true,
                         Verbose::no);
         } break;
+
+        case Trait::cast_bless_i:
+                player_spells::learn_spell(
+                        SpellId::bless,
+                        Verbose::no);
+                break;
+
+        case Trait::cast_bless_ii:
+                player_spells::incr_spell_skill(
+                        SpellId::bless);
+                break;
+
+        case Trait::cast_cleansing_fire_i:
+                player_spells::learn_spell(
+                        SpellId::cleansing_fire,
+                        Verbose::no);
+                break;
+
+        case Trait::cast_cleansing_fire_ii:
+                player_spells::incr_spell_skill(
+                        SpellId::cleansing_fire);
+                break;
+
+        case Trait::cast_heal_i:
+                player_spells::learn_spell(
+                        SpellId::heal,
+                        Verbose::no);
+                break;
+
+        case Trait::cast_heal_ii:
+                player_spells::incr_spell_skill(
+                        SpellId::heal);
+                break;
+
+        case Trait::cast_light_i:
+                player_spells::learn_spell(
+                        SpellId::light,
+                        Verbose::no);
+                break;
+
+        case Trait::cast_light_ii:
+                player_spells::incr_spell_skill(
+                        SpellId::light);
+                break;
+
+        case Trait::cast_sanctuary_i:
+                player_spells::learn_spell(
+                        SpellId::sanctuary,
+                        Verbose::no);
+                break;
+
+        case Trait::cast_sanctuary_ii:
+                player_spells::incr_spell_skill(
+                        SpellId::sanctuary);
+                break;
+
+        case Trait::cast_see_invisible_i:
+                player_spells::learn_spell(
+                        SpellId::see_invis,
+                        Verbose::no);
+                break;
+
+        case Trait::cast_see_invisible_ii:
+                player_spells::incr_spell_skill(
+                        SpellId::see_invis);
+                break;
+
+        case Trait::cast_purge:
+                player_spells::learn_spell(
+                        SpellId::purge,
+                        Verbose::no);
+                break;
 
         default:
                 break;

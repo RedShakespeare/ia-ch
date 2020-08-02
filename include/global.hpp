@@ -98,6 +98,17 @@ enum class DidAction {
         yes
 };
 
+enum class WasDestroyed {
+        no,
+        yes
+};
+
+enum class ItemPrePickResult {
+        do_pickup,
+        destroy_item,
+        do_nothing
+};
+
 enum class PassTime {
         no,
         yes

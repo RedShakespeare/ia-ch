@@ -1603,8 +1603,9 @@ void melee(
                                         actor::AwareSource::attacked);
                 }
 
-                // Attacking ends cloaking
+                // Attacking ends cloaking and sanctuary
                 attacker->m_properties.end_prop(PropId::cloaked);
+                attacker->m_properties.end_prop(PropId::sanctuary);
 
                 game_time::tick();
         }
@@ -1652,8 +1653,9 @@ DidAction ranged(
         states::draw();
 
         if ((did_attack == DidAction::yes) && attacker) {
-                // Attacking ends cloaking
+                // Attacking ends cloaking and sanctuary
                 attacker->m_properties.end_prop(PropId::cloaked);
+                attacker->m_properties.end_prop(PropId::sanctuary);
 
                 if (attacker->is_player() ||
                     attacker->is_actor_my_leader(map::g_player)) {

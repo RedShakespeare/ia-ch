@@ -136,7 +136,7 @@ public:
         }
 
         virtual void on_hit(
-                int& dmg,
+                const int dmg,
                 const DmgType dmg_type,
                 const AllowWound allow_wound)
         {

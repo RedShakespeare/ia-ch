@@ -160,7 +160,7 @@ void Player::load()
 }
 
 void Player::on_hit(
-        int& dmg,
+        const int dmg,
         const DmgType dmg_type,
         const AllowWound allow_wound)
 {
@@ -168,7 +168,7 @@ void Player::on_hit(
                 incr_shock(1, ShockSrc::misc);
         }
 
-        const bool is_enough_dmg_for_wound = dmg >= s_min_dmg_to_wound;
+        const bool is_enough_dmg_for_wound = (dmg >= s_min_dmg_to_wound);
         const bool is_physical = is_physical_dmg_type(dmg_type);
 
         // Ghoul trait Indomitable Fury grants immunity to wounds while frenzied
@@ -315,6 +315,11 @@ double Player::shock_lvl_to_value(const ShockLvl shock_lvl) const
 
 void Player::incr_shock(double shock, ShockSrc shock_src)
 {
+        if (m_properties.has(PropId::r_shock)) {
+                // Player is shock resistant
+                return;
+        }
+
         shock = shock_taken_after_mods(shock, shock_src);
 
         m_shock += shock;
@@ -582,32 +587,33 @@ void Player::add_shock_from_seen_monsters()
 
 void Player::update_tmp_shock()
 {
-        m_shock_tmp = 0.0;
+        double increased_tmp_shock = 0.0;
+        double reduced_tmp_shock = 0.0;
 
         // "Obessions" raise temporary shock
         if (insanity::has_sympt(InsSymptId::sadism) ||
             insanity::has_sympt(InsSymptId::masoch)) {
-                m_shock_tmp += (double)g_shock_from_obsession;
+                increased_tmp_shock += (double)g_shock_from_obsession;
         }
 
         if (m_properties.allow_see()) {
-                const bool is_ghoul = (player_bon::bg() == Bg::ghoul);
+                const bool is_ghoul = player_bon::is_bg(Bg::ghoul);
 
                 // Shock reduction from light?
                 if (map::g_light.at(m_pos)) {
-                        m_shock_tmp -= 20.0;
+                        reduced_tmp_shock += 20.0;
                 }
                 // Not lit - shock from darkness?
                 else if (map::g_dark.at(m_pos) && !is_ghoul) {
-                        double shock_value = 20.0;
+                        double tmp_shock_dark = 20.0;
 
                         if (insanity::has_sympt(InsSymptId::phobia_dark)) {
-                                shock_value = 30.0;
+                                tmp_shock_dark = 30.0;
                         }
 
-                        m_shock_tmp +=
+                        increased_tmp_shock +=
                                 shock_taken_after_mods(
-                                        shock_value,
+                                        tmp_shock_dark,
                                         ShockSrc::misc);
                 }
 
@@ -619,7 +625,7 @@ void Player::update_tmp_shock()
                                 (double)map::g_cells.at(p)
                                         .terrain->shock_when_adj();
 
-                        m_shock_tmp +=
+                        increased_tmp_shock +=
                                 shock_taken_after_mods(
                                         terrain_shock_db,
                                         ShockSrc::misc);
@@ -627,8 +633,18 @@ void Player::update_tmp_shock()
         }
         // Is blind
         else if (!m_properties.has(PropId::fainted)) {
-                m_shock_tmp += shock_taken_after_mods(30.0, ShockSrc::misc);
+                increased_tmp_shock +=
+                        shock_taken_after_mods(
+                                30.0,
+                                ShockSrc::misc);
         }
+
+        if (m_properties.has(PropId::r_shock)) {
+                // Player is shock resistant, only allow reducing shock
+                increased_tmp_shock = 0.0;
+        }
+
+        m_shock_tmp = increased_tmp_shock - reduced_tmp_shock;
 }
 
 int Player::shock_tot() const

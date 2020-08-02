@@ -295,6 +295,11 @@ static void on_player_shock_over_limit()
 {
         auto& player = *map::g_player;
 
+        if (player.m_properties.has(PropId::r_shock)) {
+                // Player is shock resistant, pause the countdown
+                return;
+        }
+
         hints::display(hints::Id::high_shock);
 
         player.m_nr_turns_until_ins =

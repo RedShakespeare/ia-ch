@@ -131,7 +131,7 @@ static void player_walk_on_item(item::Item* const item)
 
         // Only print the item name if the item will not be "found" by stepping
         // on it, otherwise there would be redundant messages, e.g. "A Muddy
-        // Potion." -> "I have found a Muddy Potion!"
+        // Potion." --> "I have found a Muddy Potion!"
         if ((item->data().xp_on_found <= 0) || item->data().is_found) {
                 std::string item_name =
                         item->name(
@@ -345,6 +345,9 @@ static void move_player_non_center_direction(const P& tgt)
                 player_walk_on_item(map::g_cells.at(player.m_pos).item);
 
                 print_corpses_at_player_msgs();
+
+                // Moving ends sanctuary
+                player.m_properties.end_prop(PropId::sanctuary);
         }
 
         bump_terrains(player, tgt);

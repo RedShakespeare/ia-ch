@@ -157,7 +157,7 @@ private:
                 ShockSrc shock_src) const;
 
         void on_hit(
-                int& dmg,
+                int dmg,
                 DmgType dmg_type,
                 AllowWound allow_wound) override;
 

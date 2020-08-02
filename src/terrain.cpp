@@ -70,7 +70,7 @@ namespace terrain {
 void Terrain::bump(actor::Actor& actor_bumping)
 {
         if (!can_move(actor_bumping) && actor_bumping.is_player()) {
-                if (map::g_cells.at(m_pos).is_seen_by_player) {
+                if (map::is_pos_seen_by_player(m_pos)) {
                         msg_log::add(data().msg_on_player_blocked);
                 } else {
                         msg_log::add(data().msg_on_player_blocked_blind);
@@ -911,6 +911,10 @@ void ChurchBench::on_hit(
         switch (dmg_type) {
         case DmgType::explosion:
         case DmgType::pure:
+                if (map::is_pos_seen_by_player(m_pos)) {
+                        msg_log::add("The church bench is destroyed.");
+                }
+
                 map::put(new RubbleLow(m_pos));
                 map::update_vision();
                 break;
@@ -1737,8 +1741,24 @@ void Altar::on_hit(
         switch (dmg_type) {
         case DmgType::explosion:
         case DmgType::pure:
+                if (map::is_pos_seen_by_player(m_pos)) {
+                        msg_log::add("The altar is destroyed.");
+                }
+
                 map::put(new RubbleLow(m_pos));
                 map::update_vision();
+
+                if (player_bon::is_bg(Bg::exorcist)) {
+                        const auto msg = rnd::element(
+                                common_text::g_exorcist_purge_phrases);
+
+                        msg_log::add(msg);
+
+                        game::incr_player_xp(8);
+
+                        map::g_player->restore_sp(999, false);
+                        map::g_player->restore_sp(12, true);
+                }
                 break;
 
         default:
@@ -1749,9 +1769,30 @@ void Altar::on_hit(
 void Altar::on_new_turn()
 {
         if (map::g_player->m_pos.is_adjacent(m_pos) &&
-            map::g_cells.at(m_pos).is_seen_by_player) {
+            map::is_pos_seen_by_player(m_pos) &&
+            !player_bon::is_bg(Bg::exorcist)) {
                 hints::display(hints::Id::altars);
         }
+}
+
+void Altar::bump(actor::Actor& actor_bumping)
+{
+        if (!actor_bumping.is_player()) {
+                return;
+        }
+
+        if (player_bon::is_bg(Bg::exorcist) &&
+            map::is_pos_seen_by_player(m_pos)) {
+                // Exorcist player is bumping a seen altar
+                msg_log::add(
+                        "A diabolic altar has been raised here, it must be "
+                        "destroyed!");
+
+                return;
+        }
+
+        // Nothing special happening - use standard bump handling
+        Terrain::bump(actor_bumping);
 }
 
 std::string Altar::name(const Article article) const
@@ -2490,82 +2531,102 @@ void ItemContainer::open(
         }
 
         for (auto* item : m_items) {
-                msg_log::clear();
-
-                const std::string name =
-                        item->name(
-                                ItemRefType::plural,
-                                ItemRefInf::yes,
-                                ItemRefAttInf::wpn_main_att_mode);
-
-                const std::string msg =
-                        "Pick up " +
-                        name +
-                        "? " +
-                        common_text::g_yes_or_no_hint;
-
-                msg_log::add(
-                        msg,
-                        colors::light_white(),
-                        MsgInterruptPlayer::no,
-                        MorePromptOnMsg::no,
-                        CopyToMsgHistory::no);
-
-                const auto& data = item->data();
-
-                auto* wpn =
-                        data.ranged.is_ranged_wpn
-                        ? static_cast<item::Wpn*>(item)
-                        : nullptr;
-
-                const bool is_unloadable_wpn =
-                        wpn &&
-                        (wpn->m_ammo_loaded > 0) &&
-                        !data.ranged.has_infinite_ammo;
-
-                if (is_unloadable_wpn) {
-                        msg_log::add("Unload? [u]");
-                }
-
-                const BinaryAnswer answer =
-                        query::yes_or_no(
-                                is_unloadable_wpn
-                                        ? 'u'
-                                        : -1);
-
-                msg_log::clear();
-
-                if (answer == BinaryAnswer::yes) {
-                        audio::play(audio::SfxId::pickup);
-
-                        map::g_player->m_inv.put_in_backpack(item);
-                } else if (answer == BinaryAnswer::no) {
-                        item_drop::drop_item_on_map(terrain_pos, *item);
-
-                        item->on_player_found();
-                } else {
-                        // Special key (unload in this case)
-                        ASSERT(is_unloadable_wpn);
-
-                        if (is_unloadable_wpn) {
-                                audio::play(audio::SfxId::pickup);
-
-                                auto* const spawned_ammo =
-                                        item_pickup::unload_ranged_wpn(*wpn);
-
-                                map::g_player->m_inv.put_in_backpack(
-                                        spawned_ammo);
-
-                                item_drop::drop_item_on_map(terrain_pos, *wpn);
-                        }
-                }
-
-                msg_log::more_prompt();
+                on_item_found(item, terrain_pos);
         }
 
         msg_log::add("There are no more items of interest.");
 
         m_items.clear();
+}
+
+void ItemContainer::on_item_found(
+        item::Item* const item,
+        const P& terrain_pos)
+{
+        msg_log::clear();
+
+        const std::string name =
+                item->name(
+                        ItemRefType::plural,
+                        ItemRefInf::yes,
+                        ItemRefAttInf::wpn_main_att_mode);
+
+        const std::string msg =
+                "Pick up " +
+                name +
+                "? " +
+                common_text::g_yes_or_no_hint;
+
+        msg_log::add(
+                msg,
+                colors::light_white(),
+                MsgInterruptPlayer::no,
+                MorePromptOnMsg::no,
+                CopyToMsgHistory::no);
+
+        const auto& data = item->data();
+
+        auto* wpn =
+                data.ranged.is_ranged_wpn
+                ? static_cast<item::Wpn*>(item)
+                : nullptr;
+
+        const bool is_unloadable_wpn =
+                wpn &&
+                (wpn->m_ammo_loaded > 0) &&
+                !data.ranged.has_infinite_ammo;
+
+        if (is_unloadable_wpn) {
+                msg_log::add("Unload? [u]");
+        }
+
+        const BinaryAnswer answer =
+                query::yes_or_no(
+                        is_unloadable_wpn
+                                ? 'u'
+                                : -1);
+
+        msg_log::clear();
+
+        if (answer == BinaryAnswer::yes) {
+                const auto pre_pickup_result = item->pre_pickup_hook();
+
+                switch (pre_pickup_result) {
+                case ItemPrePickResult::do_pickup: {
+                        audio::play(audio::SfxId::pickup);
+
+                        map::g_player->m_inv.put_in_backpack(item);
+                } break;
+
+                case ItemPrePickResult::destroy_item: {
+                        delete item;
+                } break;
+
+                case ItemPrePickResult::do_nothing: {
+                } break;
+                }
+        } else if (answer == BinaryAnswer::no) {
+                item_drop::drop_item_on_map(terrain_pos, *item);
+
+                item->on_player_found();
+        } else {
+                // Special key (unload in this case)
+                ASSERT(is_unloadable_wpn);
+
+                if (is_unloadable_wpn) {
+                        audio::play(audio::SfxId::pickup);
+
+                        auto* const spawned_ammo =
+                                item_pickup::unload_ranged_wpn(*wpn);
+
+                        map::g_player->m_inv.put_in_backpack(
+                                spawned_ammo);
+
+                        item_drop::drop_item_on_map(terrain_pos, *wpn);
+                }
+        }
+
+        msg_log::more_prompt();
 }
 
 void ItemContainer::clear()
@@ -2681,6 +2742,10 @@ void Tomb::on_hit(
         switch (dmg_type) {
         case DmgType::explosion:
         case DmgType::pure:
+                if (map::is_pos_seen_by_player(m_pos)) {
+                        msg_log::add("The tomb is destroyed.");
+                }
+
                 map::put(new RubbleLow(m_pos));
                 map::update_vision();
                 break;
@@ -3184,6 +3249,10 @@ void Chest::on_hit(
         switch (dmg_type) {
         case DmgType::explosion:
         case DmgType::pure:
+                if (map::is_pos_seen_by_player(m_pos)) {
+                        msg_log::add("The chest is destroyed.");
+                }
+
                 map::put(new RubbleLow(m_pos));
                 map::update_vision();
                 break;
@@ -3398,6 +3467,10 @@ void Fountain::on_hit(
         switch (dmg_type) {
         case DmgType::explosion:
         case DmgType::pure:
+                if (map::is_pos_seen_by_player(m_pos)) {
+                        msg_log::add("The fountain is destroyed.");
+                }
+
                 map::put(new RubbleLow(m_pos));
                 map::update_vision();
                 break;
@@ -3781,6 +3854,10 @@ void Cabinet::on_hit(
         switch (dmg_type) {
         case DmgType::explosion:
         case DmgType::pure:
+                if (map::is_pos_seen_by_player(m_pos)) {
+                        msg_log::add("The cabinet is destroyed.");
+                }
+
                 map::put(new RubbleLow(m_pos));
                 map::update_vision();
                 break;
@@ -3936,6 +4013,10 @@ void Bookshelf::on_hit(
         switch (dmg_type) {
         case DmgType::explosion:
         case DmgType::pure:
+                if (map::is_pos_seen_by_player(m_pos)) {
+                        msg_log::add("The bookshelf is destroyed.");
+                }
+
                 map::put(new RubbleLow(m_pos));
                 map::update_vision();
                 break;
@@ -4078,6 +4159,10 @@ void AlchemistBench::on_hit(
         switch (dmg_type) {
         case DmgType::explosion:
         case DmgType::pure:
+                if (map::is_pos_seen_by_player(m_pos)) {
+                        msg_log::add("The alchemist's workbench is destroyed.");
+                }
+
                 map::put(new RubbleLow(m_pos));
                 map::update_vision();
                 break;
@@ -4229,6 +4314,10 @@ void Cocoon::on_hit(
         switch (dmg_type) {
         case DmgType::explosion:
         case DmgType::pure:
+                if (map::is_pos_seen_by_player(m_pos)) {
+                        msg_log::add("The cocoon is destroyed.");
+                }
+
                 map::put(new RubbleLow(m_pos));
                 map::update_vision();
                 break;

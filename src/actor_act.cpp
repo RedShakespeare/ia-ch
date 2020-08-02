@@ -27,6 +27,23 @@
 // -----------------------------------------------------------------------------
 // Private
 // -----------------------------------------------------------------------------
+static void remove_player_with_sanctuary(std::vector<actor::Actor*>& actors)
+{
+        if (!map::g_player->m_properties.has(PropId::sanctuary)) {
+                return;
+        }
+
+        for (auto it = std::begin(actors); it != std::end(actors); ++it) {
+                auto* const actor = *it;
+
+                if (actor->is_player()) {
+                        actors.erase(it);
+
+                        return;
+                }
+        }
+}
+
 static void player_act()
 {
         actor::Player& player = *map::g_player;
@@ -330,10 +347,14 @@ static void mon_act(actor::Mon& mon)
         if (mon.m_properties.has(PropId::conflict)) {
                 target_bucket = seen_actors(mon);
 
+                remove_player_with_sanctuary(target_bucket);
+
                 mon.m_ai_state.is_target_seen = !target_bucket.empty();
         } else {
                 // Not conflicted
                 target_bucket = seen_foes(mon);
+
+                remove_player_with_sanctuary(target_bucket);
 
                 if (target_bucket.empty()) {
                         // There are no seen foes
@@ -342,6 +363,8 @@ static void mon_act(actor::Mon& mon)
                         target_bucket =
                                 static_cast<actor::Mon&>(mon)
                                         .foes_aware_of();
+
+                        remove_player_with_sanctuary(target_bucket);
                 } else {
                         // There are seen foes
                         mon.m_ai_state.is_target_seen = true;

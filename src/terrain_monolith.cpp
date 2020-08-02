@@ -10,6 +10,7 @@
 #include "actor_factory.hpp"
 #include "actor_mon.hpp"
 #include "actor_player.hpp"
+#include "common_text.hpp"
 #include "game.hpp"
 #include "map.hpp"
 #include "msg_log.hpp"
@@ -32,8 +33,24 @@ void Monolith::on_hit(
         switch (dmg_type) {
         case DmgType::explosion:
         case DmgType::pure:
+                if (map::is_pos_seen_by_player(m_pos)) {
+                        msg_log::add("The monolith is destroyed.");
+                }
+
                 map::put(new RubbleLow(m_pos));
                 map::update_vision();
+
+                if (player_bon::is_bg(Bg::exorcist)) {
+                        const auto msg = rnd::element(
+                                common_text::g_exorcist_purge_phrases);
+
+                        msg_log::add(msg);
+
+                        game::incr_player_xp(8);
+
+                        map::g_player->restore_sp(999, false);
+                        map::g_player->restore_sp(12, true);
+                }
                 break;
 
         default:
@@ -66,6 +83,14 @@ void Monolith::bump(actor::Actor& actor_bumping)
 
         if (!map::g_player->m_properties.allow_see()) {
                 msg_log::add("There is a carved rock here.");
+
+                return;
+        }
+
+        if (player_bon::is_bg(Bg::exorcist)) {
+                msg_log::add(
+                        "This rock is defiled with blasphemous carvings, "
+                        "it must be destroyed!");
 
                 return;
         }

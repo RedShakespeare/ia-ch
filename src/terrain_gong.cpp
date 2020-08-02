@@ -296,24 +296,30 @@ void Gong::bump(actor::Actor& actor_bumping)
         if (!map::g_cells.at(m_pos).is_seen_by_player) {
                 msg_log::clear();
 
-                const std::string msg =
-                        "There is a temple gong here. Strike it? " +
-                        common_text::g_yes_or_no_hint;
+                msg_log::add("There is a temple gong here.");
 
-                msg_log::add(
-                        msg,
-                        colors::light_white(),
-                        MsgInterruptPlayer::no,
-                        MorePromptOnMsg::no,
-                        CopyToMsgHistory::no);
+                if (!player_bon::is_bg(Bg::exorcist)) {
+                        msg_log::add(
+                                "Strike it? " + common_text::g_yes_or_no_hint,
+                                colors::light_white(),
+                                MsgInterruptPlayer::no,
+                                MorePromptOnMsg::no,
+                                CopyToMsgHistory::no);
 
-                const auto answer = query::yes_or_no();
+                        const auto answer = query::yes_or_no();
 
-                if (answer == BinaryAnswer::no) {
-                        msg_log::clear();
+                        if (answer == BinaryAnswer::no) {
+                                msg_log::clear();
 
-                        return;
+                                return;
+                        }
                 }
+        }
+
+        if (player_bon::is_bg(Bg::exorcist)) {
+                msg_log::add("This unholy instrument must be destroyed!");
+
+                return;
         }
 
         msg_log::add("I strike the temple gong!");
@@ -354,8 +360,24 @@ void Gong::on_hit(
         switch (dmg_type) {
         case DmgType::explosion:
         case DmgType::pure:
+                if (map::is_pos_seen_by_player(m_pos)) {
+                        msg_log::add("The gong is destroyed.");
+                }
+
                 map::put(new RubbleLow(m_pos));
                 map::update_vision();
+
+                if (player_bon::is_bg(Bg::exorcist)) {
+                        const auto msg = rnd::element(
+                                common_text::g_exorcist_purge_phrases);
+
+                        msg_log::add(msg);
+
+                        game::incr_player_xp(8);
+
+                        map::g_player->restore_sp(999, false);
+                        map::g_player->restore_sp(12, true);
+                }
                 break;
 
         default:
@@ -415,8 +437,7 @@ std::vector<SpellId> UpgradeSpell::find_spells_can_upgrade() const
         for (int i = 0; i < (int)SpellId::END; ++i) {
                 const auto id = (SpellId)i;
 
-                std::unique_ptr<const Spell> spell(
-                        spell_factory::make_spell_from_id(id));
+                std::unique_ptr<const Spell> spell(spells::make(id));
 
                 if (player_spells::is_spell_learned(id) &&
                     (player_spells::spell_skill(id) != SpellSkill::master) &&

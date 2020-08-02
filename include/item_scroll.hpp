@@ -52,6 +52,8 @@ public:
 
         void on_actor_turn_in_inv_hook(InvType inv_type) override;
 
+        ItemPrePickResult pre_pickup_hook() override;
+
         void identify(Verbose verbose) override;
 
         Spell* make_spell() const;

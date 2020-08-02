@@ -130,6 +130,7 @@ enum class TileId {
         ooze,
         orb,
         phantasm,
+        holy_symbol,
         pharaoh_staff,
         pillar,
         pillar_broken,

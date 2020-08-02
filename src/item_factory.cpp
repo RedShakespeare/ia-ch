@@ -31,7 +31,7 @@ Item* make(const Id item_id, const int nr_items)
 
         switch (item_id) {
         case Id::trapez:
-                r = new Item(d);
+                r = new Trapez(d);
                 break;
 
         case Id::sawed_off:
@@ -319,6 +319,10 @@ Item* make(const Id item_id, const int nr_items)
 
         case Id::horn_of_banishment:
                 r = new HornOfBanishment(d);
+                break;
+
+        case Id::holy_symbol:
+                r = new HolySymbol(d);
                 break;
 
         case Id::clockwork:

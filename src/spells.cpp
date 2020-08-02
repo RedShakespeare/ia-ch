@@ -61,6 +61,9 @@ static const StrToSpellIdMap s_str_to_spell_id_map = {
         {"disease", SpellId::disease},
         {"premonition", SpellId::premonition},
         {"enfeeble", SpellId::enfeeble},
+        {"cleansing_fire", SpellId::cleansing_fire},
+        {"sanctuary", SpellId::sanctuary},
+        {"purge", SpellId::purge},
         {"frenzy", SpellId::frenzy},
         {"heal", SpellId::heal},
         {"identify", SpellId::identify},
@@ -93,11 +96,11 @@ static const std::string s_spell_resist_msg = "The spell is resisted!";
 static const std::string s_spell_reflect_msg = "The spell is reflected!";
 
 // -----------------------------------------------------------------------------
-// spell_factory
+// spells
 // -----------------------------------------------------------------------------
-namespace spell_factory {
+namespace spells {
 
-Spell* make_spell_from_id(const SpellId spell_id)
+Spell* make(const SpellId spell_id)
 {
         switch (spell_id) {
         case SpellId::aura_of_decay:
@@ -150,6 +153,15 @@ Spell* make_spell_from_id(const SpellId spell_id)
 
         case SpellId::opening:
                 return new SpellOpening();
+
+        case SpellId::cleansing_fire:
+                return new SpellCleansingFire();
+
+        case SpellId::sanctuary:
+                return new SpellSanctuary();
+
+        case SpellId::purge:
+                return new SpellPurge();
 
         case SpellId::frenzy:
                 return new SpellFrenzy();
@@ -209,7 +221,25 @@ SpellSkill str_to_spell_skill_id(const std::string& str)
         return s_str_to_spell_skill_map.at(str);
 }
 
-} // namespace spell_factory
+std::string skill_to_str(const SpellSkill skill)
+{
+        switch (skill) {
+        case SpellSkill::basic:
+                return "basic";
+
+        case SpellSkill::expert:
+                return "expert";
+
+        case SpellSkill::master:
+                return "master";
+        }
+
+        ASSERT(false);
+
+        return "";
+}
+
+} // namespace spells
 
 // -----------------------------------------------------------------------------
 // BrowseSpell
@@ -395,36 +425,26 @@ std::vector<std::string> Spell::descr(
                 }
         }
 
-        const std::string domain_str = domain_descr();
+        if (!player_bon::is_bg(Bg::exorcist)) {
+                const std::string domain_str = domain_descr();
 
-        if (!domain_str.empty()) {
-                lines.push_back(domain_str);
+                if (!domain_str.empty()) {
+                        lines.push_back(domain_str);
+                }
         }
 
         if (can_be_improved_with_skill()) {
-                std::string skill_str;
-
-                switch (skill) {
-                case SpellSkill::basic:
-                        skill_str = "Basic";
-                        break;
-
-                case SpellSkill::expert:
-                        skill_str = "Expert";
-                        break;
-
-                case SpellSkill::master:
-                        skill_str = "Master";
-                        break;
-                }
+                std::string skill_str =
+                        text_format::first_to_upper(
+                                spells::skill_to_str(skill));
 
                 const bool is_scroll =
                         (spell_src == SpellSrc::manuscript);
 
-                const bool is_at_altar =
-                        (player_spells::is_player_adj_to_altar());
+                const bool is_altar_bonus =
+                        player_spells::is_getting_altar_bonus();
 
-                if (is_scroll || is_at_altar) {
+                if (is_scroll || is_altar_bonus) {
                         skill_str += " (";
                 }
 
@@ -432,7 +452,7 @@ std::vector<std::string> Spell::descr(
                         skill_str += "casting from manuscript";
                 }
 
-                if (is_at_altar) {
+                if (is_altar_bonus) {
                         if (is_scroll) {
                                 skill_str += ", ";
                         }
@@ -440,7 +460,7 @@ std::vector<std::string> Spell::descr(
                         skill_str += "standing at altar";
                 }
 
-                if (is_scroll || is_at_altar) {
+                if (is_scroll || is_altar_bonus) {
                         skill_str += ")";
                 }
 
@@ -1631,6 +1651,231 @@ bool SpellOpening::is_noisy(const SpellSkill skill) const
 }
 
 // -----------------------------------------------------------------------------
+// Exorcist Cleansing Fire
+// -----------------------------------------------------------------------------
+Range SpellCleansingFire::burn_duration_range() const
+{
+        return {2, 5};
+}
+
+void SpellCleansingFire::run_effect(
+        actor::Actor* caster,
+        SpellSkill skill) const
+{
+        if (!caster) {
+                return;
+        }
+
+        std::vector<actor::Actor*> targets;
+
+        const auto seen_foes = actor::seen_foes(*caster);
+
+        if (seen_foes.empty()) {
+                return;
+        }
+
+        if (skill == SpellSkill::basic) {
+                targets.push_back(rnd::element(seen_foes));
+        } else {
+                // Skill greater than basic - target all seen foes
+                targets = seen_foes;
+        }
+
+        for (auto* const actor : targets) {
+                for (const auto& d : dir_utils::g_dir_list) {
+                        const auto p = actor->m_pos + d;
+
+                        // Hit the terrain with burning several times, to
+                        // increase the chance of it catching fire
+                        for (int i = 0; i < 6; ++i) {
+                                map::g_cells.at(p).terrain->hit(
+                                        DmgType::fire,
+                                        nullptr);
+                        }
+                }
+
+                auto* const burning = property_factory::make(PropId::burning);
+
+                burning->set_duration(burn_duration_range().roll());
+
+                actor->m_properties.apply(burning);
+        }
+}
+
+std::vector<std::string> SpellCleansingFire::descr_specific(
+        SpellSkill skill) const
+{
+        std::vector<std::string> descr;
+
+        descr.emplace_back(
+                "Causes the spell's victims to burn for " +
+                burn_duration_range().str() +
+                " turns, and scorches the ground around them with fire "
+                "(be careful with hitting adjacent creatures).");
+
+        if (skill == SpellSkill::basic) {
+                descr.emplace_back(
+                        "Affects one random visible hostile creature.");
+        } else {
+                descr.emplace_back(
+                        "Affects all visible hostile creatures.");
+        }
+
+        return descr;
+}
+
+// -----------------------------------------------------------------------------
+// Exorcist Sanctuary
+// -----------------------------------------------------------------------------
+int SpellSanctuary::duration(const SpellSkill skill) const
+{
+        if (skill == SpellSkill::basic) {
+                return 4;
+        } else {
+                return 8;
+        }
+}
+
+void SpellSanctuary::run_effect(
+        actor::Actor* caster,
+        SpellSkill skill) const
+{
+        if (!caster) {
+                return;
+        }
+
+        const int prop_duration = duration(skill);
+
+        auto* const sanctuary = property_factory::make(PropId::sanctuary);
+
+        sanctuary->set_duration(prop_duration);
+
+        caster->m_properties.apply(sanctuary);
+}
+
+std::vector<std::string> SpellSanctuary::descr_specific(
+        SpellSkill skill) const
+{
+        std::vector<std::string> descr;
+
+        descr.emplace_back(
+                "The caster is ignored by all hostile creatures for the "
+                "duration of the spell. The effect is interrupted if the "
+                "caster moves or performs a melee or ranged attack.");
+
+        descr.emplace_back(
+                "The spell lasts for " +
+                std::to_string(duration(skill)) +
+                " turns.");
+
+        return descr;
+}
+
+// -----------------------------------------------------------------------------
+// Exorcist Purge
+// -----------------------------------------------------------------------------
+Range SpellPurge::dmg_range() const
+{
+        return {3, 6};
+}
+
+Range SpellPurge::fear_duration_range() const
+{
+        return {2, 4};
+}
+
+void SpellPurge::run_effect(
+        actor::Actor* caster,
+        SpellSkill skill) const
+{
+        (void)skill;
+
+        if (!caster) {
+                return;
+        }
+
+        for (const auto& d : dir_utils::g_dir_list) {
+                const auto p = caster->m_pos + d;
+
+                auto* const terrain = map::g_cells.at(p).terrain;
+
+                switch (terrain->id()) {
+                case terrain::Id::altar:
+                case terrain::Id::monolith:
+                case terrain::Id::gong: {
+                        if (map::is_pos_seen_by_player(p)) {
+                                io::draw_blast_at_cells(
+                                        {p},
+                                        colors::light_white());
+                        }
+
+                        terrain->hit(DmgType::pure, caster);
+                } break;
+
+                default: {
+                } break;
+                }
+        }
+
+        for (auto* const actor : game_time::g_actors) {
+                if ((actor != caster) &&
+                    actor->m_pos.is_adjacent(caster->m_pos) &&
+                    actor->m_data->is_undead) {
+                        // Is adjacent undead creature
+
+                        if (actor::can_player_see_actor(*actor)) {
+                                const auto name =
+                                        text_format::first_to_upper(
+                                                actor->name_the());
+
+                                msg_log::add(
+                                        name + " is struck.",
+                                        colors::msg_good());
+
+                                io::draw_blast_at_cells(
+                                        {actor->m_pos},
+                                        colors::light_white());
+                        }
+
+                        actor::hit(*actor, dmg_range().roll(), DmgType::pure);
+
+                        if (actor->is_alive()) {
+                                auto* const fear =
+                                        property_factory::make(
+                                                PropId::terrified);
+
+                                fear->set_duration(
+                                        fear_duration_range().roll());
+
+                                actor->m_properties.apply(fear);
+                        }
+                }
+        }
+}
+
+std::vector<std::string> SpellPurge::descr_specific(
+        SpellSkill skill) const
+{
+        (void)skill;
+
+        std::vector<std::string> descr;
+
+        descr.emplace_back(
+                "Destroys any altars, monoliths, or gongs adjacent to the "
+                "caster.");
+
+        descr.emplace_back(
+                "All undead creatures adjacent to the caster (seen or not) are "
+                "struck with " +
+                dmg_range().str() +
+                " damage, and become terrified for " +
+                fear_duration_range().str() +
+                " turns (unless they resist fear).");
+
+        return descr;
+}
+
+// -----------------------------------------------------------------------------
 // Ghoul frenzy
 // -----------------------------------------------------------------------------
 void SpellFrenzy::run_effect(
@@ -1675,7 +1920,9 @@ std::vector<std::string> SpellBless::descr_specific(
 {
         std::vector<std::string> descr;
 
-        descr.emplace_back("Bends reality in favor of the caster.");
+        descr.emplace_back(
+                "The caster becomes more lucky (+10% to hit chance, "
+                "evasion, stealth, and searching).");
 
         const int nr_turns = 20 + (int)skill * 60;
 
@@ -1703,13 +1950,13 @@ void SpellLight::run_effect(
         if (skill == SpellSkill::master) {
                 auto* const blind = new PropBlind();
 
-                blind->set_duration(blind->nr_turns_left() / 4);
+                blind->set_duration(std::max(1, blind->nr_turns_left() / 4));
 
                 explosion::run(
                         caster->m_pos,
                         ExplType::apply_prop,
                         EmitExplSnd::no,
-                        0,
+                        -1,
                         ExplExclCenter::yes,
                         {blind},
                         colors::yellow());
@@ -1766,8 +2013,7 @@ std::vector<std::string> SpellSeeInvis::descr_specific(
         std::vector<std::string> descr;
 
         descr.emplace_back(
-                "Grants the caster the ability to see that which is "
-                "normally invisible.");
+                "Grants the caster the ability to see the invisible.");
 
         const Range duration_range =
                 (skill == SpellSkill::basic)
@@ -2421,6 +2667,15 @@ bool SpellSlow::allow_mon_cast_now(actor::Mon& mon) const
 // -----------------------------------------------------------------------------
 // Terrify
 // -----------------------------------------------------------------------------
+Range SpellTerrify::duration_range(SpellSkill skill) const
+{
+        Range range;
+        range.min = 6 * ((int)skill + 1);
+        range.max = range.min * 2;
+
+        return range;
+}
+
 int SpellTerrify::max_spi_cost(const SpellSkill skill) const
 {
         (void)skill;
@@ -2437,12 +2692,6 @@ void SpellTerrify::run_effect(
         actor::Actor* const caster,
         const SpellSkill skill) const
 {
-        Range duration_range;
-        duration_range.min = 10 * ((int)skill + 1);
-        duration_range.max = duration_range.min * 2;
-
-        const int duration = duration_range.roll();
-
         auto targets = actor::seen_foes(*caster);
 
         if (targets.empty()) {
@@ -2487,7 +2736,8 @@ void SpellTerrify::run_effect(
 
                 auto* const prop = new PropTerrified();
 
-                prop->set_duration(duration);
+                prop->set_duration(
+                        duration_range(skill).roll());
 
                 target->m_properties.apply(prop);
 
@@ -2518,13 +2768,9 @@ std::vector<std::string> SpellTerrify::descr_specific(
                         "Affects all visible hostile creatures.");
         }
 
-        Range duration_range;
-        duration_range.min = 10 * ((int)skill + 1);
-        duration_range.max = duration_range.min * 2;
-
         descr.push_back(
                 "The spell lasts " +
-                duration_range.str() +
+                duration_range(skill).str() +
                 " turns.");
 
         return descr;

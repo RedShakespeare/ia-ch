@@ -44,7 +44,7 @@ static TimeData s_start_time;
 
 static std::vector<HistoryEvent> s_history_events;
 
-static const std::string s_intro_msg =
+static const std::string s_intro_msg_default =
         "I stand at the end of a cobbled forest path, before me lies a shunned "
         "and decrepit old church building. This is the access point to the "
         "domains of the abhorred \"Cult of Starry Wisdom\". "
@@ -53,25 +53,37 @@ static const std::string s_intro_msg =
         "destiny, an artifact of non-human origin called \"The shining "
         "Trapezohedron\" - a window to all the secrets of the universe!";
 
-static const std::vector<std::string> s_win_msg = {
-        {"As I approach the crystal, an eerie glow illuminates the area. I "
-         "notice a figure observing me from the edge of the light. There is no "
-         "doubt concerning the nature of this entity; it is the Faceless God "
-         "who dwells in the depths of the earth - Nyarlathotep!"},
+static const std::string s_intro_msg_exorcist =
+        "I stand at the end of a cobbled forest path, before me lies a shunned "
+        "and decrepit old church building. This is the access point to the "
+        "domains of the abhorred \"Cult of Starry Wisdom\". "
+        "I am determined to enter these sprawling catacombs and purge them of "
+        "the corruption that dwells within. At the depths of the abyss lies, "
+        "an artifact of non-human origin called \"The shining Trapezohedron\" "
+        "- rumored to be a window to all the secrets of the universe. "
+        "This must be destroyed, so that none more may be tempted by "
+        "its deceitful promises!";
 
-        {"I panic. Why is it I find myself here, stumbling around in darkness? "
-         "Is this all part of a plan? The being beckons me to gaze into the "
-         "stone."},
+static const std::vector<std::string> s_win_msg_default = {
+        {"As I approach the crystal, an eerie glow illuminates the area. "
+         "I notice a figure observing me from the edge of the light. There is "
+         "no doubt concerning the nature of this entity; it is the "
+         "Faceless God who dwells in the depths of the earth - Nyarlathotep!"},
 
-        {"In the radiance I see visions beyond eternity, visions of unreal "
-         "reality, visions of the brightest light of day and the darkest night "
-         "of madness. There is only onward now, I have to see, I have to KNOW."},
+        {"I panic. Why is it I find myself here, stumbling around in "
+         "darkness? Is this all part of a plan? The being beckons me to "
+         "gaze into the stone."},
+
+        {"In the radiance I see visions beyond eternity, visions of "
+         "unreal reality, visions of the brightest light of day and the "
+         "darkest night of madness. There is only onward now, I have to see, "
+         "I have to KNOW."},
 
         {"So I make a pact with the Fiend."},
 
-        {"I now harness the shadows that stride from world to world to sow "
-         "death and madness. The destinies of all things on earth, living and "
-         "dead, are mine."}};
+        {"I now harness the shadows that stride from world to world to "
+         "sow death and madness. The destinies of all things on earth, "
+         "living and dead, are mine."}};
 
 // -----------------------------------------------------------------------------
 // game
@@ -206,7 +218,9 @@ void incr_player_xp(const int xp_gained, const Verbose verbose)
 
                         player_bon::on_player_gained_lvl(s_clvl);
 
-                        states::push(std::make_unique<PickTraitState>());
+                        states::push(
+                                std::make_unique<PickTraitState>(
+                                        "Which trait do you gain?"));
                 }
 
                 s_xp_pct -= 100;
@@ -356,8 +370,20 @@ void GameState::on_start()
                     !config::is_intro_popup_skipped()) {
                         io::clear_screen();
 
+                        std::string intro_msg;
+
+                        switch (player_bon::bg()) {
+                        case Bg::exorcist:
+                                intro_msg = s_intro_msg_exorcist;
+                                break;
+
+                        default:
+                                intro_msg = s_intro_msg_default;
+                                break;
+                        }
+
                         popup::msg(
-                                s_intro_msg,
+                                intro_msg,
                                 "The story so far...",
                                 audio::SfxId::END,
                                 14);
@@ -503,7 +529,16 @@ void WinGameState::draw()
 
         int y = 2;
 
-        for (const std::string& section_msg : s_win_msg) {
+        std::vector<std::string> win_msg;
+
+        // TODO: Different win message for Exorcist?
+        switch (player_bon::bg()) {
+        default:
+                win_msg = s_win_msg_default;
+                break;
+        }
+
+        for (const std::string& section_msg : win_msg) {
                 const auto section_lines =
                         text_format::split(section_msg, max_w);
 

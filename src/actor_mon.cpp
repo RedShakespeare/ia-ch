@@ -125,9 +125,9 @@ std::string get_cultist_phrase()
                 };
 
                 phrase_bucket.insert(
-                        end(phrase_bucket),
-                        begin(god_phrases),
-                        end(god_phrases));
+                        std::end(phrase_bucket),
+                        std::begin(god_phrases),
+                        std::end(god_phrases));
         }
 
         return rnd::element(phrase_bucket);
@@ -256,8 +256,8 @@ void Mon::hear_sound(const Snd& snd)
 
         snd.on_heard(*this);
 
-        // The monster may have become deaf through the sound callback (e.g.
-        // from the Horn of Deafening artifact)
+        // NOTE: The monster may have become deaf through the sound callback
+        // above (e.g.  from the Horn of Deafening artifact)
         if (m_properties.has(PropId::deaf)) {
                 return;
         }

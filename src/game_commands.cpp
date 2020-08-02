@@ -546,26 +546,6 @@ void handle(const GameCmd cmd)
         } break;
 
         case GameCmd::get: {
-                const P& p = map::g_player->m_pos;
-
-                auto* const item_at_player = map::g_cells.at(p).item;
-
-                if (item_at_player &&
-                    item_at_player->data().id == item::Id::trapez) {
-                        game::add_history_event(
-                                "Beheld The Shining Trapezohedron");
-
-                        saving::erase_save();
-
-                        states::pop();
-
-                        on_game_over(IsWin::yes);
-
-                        states::push(std::make_unique<WinGameState>());
-
-                        return;
-                }
-
                 item_pickup::try_pick();
         } break;
 
@@ -774,11 +754,11 @@ void handle(const GameCmd cmd)
                 if (player_bon::bg() == Bg::ghoul) {
                         msg_log::add("I let out a chilling howl.");
                 } else {
-                        // Not ghoul
                         msg_log::add("I make some noise.");
                 }
 
-                Snd snd("",
+                Snd snd(
+                        "",
                         audio::SfxId::END,
                         IgnoreMsgIfOriginSeen::yes,
                         map::g_player->m_pos,

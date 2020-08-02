@@ -290,9 +290,9 @@ void throw_item(
 
                                                 potion->on_collide(pos, actor_here);
 
-                                                // Attacking ends cloaking
-                                                actor_throwing.m_properties
-                                                        .end_prop(PropId::cloaked);
+                                                // Attacking ends cloaking and sanctuary
+                                                actor_throwing.m_properties.end_prop(PropId::cloaked);
+                                                actor_throwing.m_properties.end_prop(PropId::sanctuary);
                                         }
 
                                         delete &item_thrown;
@@ -361,8 +361,9 @@ void throw_item(
 
                 delete &item_thrown;
 
-                // Attacking ends cloaking
+                // Attacking ends cloaking and sanctuary
                 actor_throwing.m_properties.end_prop(PropId::cloaked);
+                actor_throwing.m_properties.end_prop(PropId::sanctuary);
 
                 game_time::tick();
 
@@ -444,8 +445,9 @@ void throw_item(
                 }
         }
 
-        // Attacking ends cloaking
+        // Attacking ends cloaking and sanctuary
         actor_throwing.m_properties.end_prop(PropId::cloaked);
+        actor_throwing.m_properties.end_prop(PropId::sanctuary);
 
         game_time::tick();
 

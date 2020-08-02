@@ -189,6 +189,9 @@ Prop* make(const PropId id)
         case PropId::r_para:
                 return new PropRPara();
 
+        case PropId::r_shock:
+                return new Prop(PropId::r_shock);
+
         case PropId::tele_ctrl:
                 return new Prop(id);
 
@@ -283,6 +286,9 @@ Prop* make(const PropId id)
                 return new Prop(id);
 
         case PropId::disabled_hp_regen:
+                return new Prop(id);
+
+        case PropId::sanctuary:
                 return new Prop(id);
 
         case PropId::END:

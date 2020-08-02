@@ -12,13 +12,13 @@
     <!-- Color 1 -->
     <color name="red" rgb_hex="800000"/>
     <!-- Color 9 -->
-    <color name="light_red" rgb_hex="ff0000"/>
+    <color name="light_red" rgb_hex="ff1919"/>
 
     <!-- GREEN -->
     <!-- Color 2 -->
     <color name="green" rgb_hex="008000"/>
     <!-- Color 10 -->
-    <color name="light_green" rgb_hex="00ff00"/>
+    <color name="light_green" rgb_hex="19ff19"/>
     <color name="dark_green" rgb_hex="004000"/>
 
     <!-- YELLOW -->
@@ -26,7 +26,7 @@
     <!-- Color 3 -->
     <color name="dark_yellow" rgb_hex="cdcd00"/>
     <!-- Color 11 -->
-    <color name="yellow" rgb_hex="ffff00"/>
+    <color name="yellow" rgb_hex="ffff19"/>
 
     <!-- BLUE -->
     <!-- Color 4 -->
@@ -38,13 +38,13 @@
     <!-- Color 5 -->
     <color name="magenta" rgb_hex="8b008b"/>
     <!-- Color 13 -->
-    <color name="light_magenta" rgb_hex="ff00ff"/>
+    <color name="light_magenta" rgb_hex="ff19ff"/>
 
     <!-- CYAN -->
     <!-- Color 6 -->
     <color name="cyan" rgb_hex="008080"/>
     <!-- Color 14 -->
-    <color name="light_cyan" rgb_hex="00ffff"/>
+    <color name="light_cyan" rgb_hex="19ffff"/>
 
     <!-- WHITE -->
     <!-- Color 7 -->

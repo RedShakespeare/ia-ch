@@ -258,7 +258,7 @@ ConsumeItem Blaster::run_effect()
         } else {
                 // Targets are available
                 const std::unique_ptr<Spell> spell(
-                        spell_factory::make_spell_from_id(SpellId::aza_wrath));
+                        spells::make(SpellId::aza_wrath));
 
                 spell->cast(
                         map::g_player,

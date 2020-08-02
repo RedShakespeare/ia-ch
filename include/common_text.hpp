@@ -8,6 +8,7 @@
 #define COMMON_TEXT_HPP
 
 #include <string>
+#include <vector>
 
 namespace common_text {
 
@@ -28,6 +29,8 @@ extern const std::string g_mon_prevent_cmd;
 extern const std::string g_fire_prevent_cmd;
 extern const std::string g_shock_prevent_cmd;
 extern const std::string g_mon_disappear;
+
+extern const std::vector<std::string> g_exorcist_purge_phrases;
 
 } // namespace common_text
 

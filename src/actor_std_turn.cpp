@@ -206,17 +206,9 @@ static void mon_std_turn(actor::Mon& mon)
         if (mon.is_alive() &&
             mon.m_data->ai[(size_t)actor::AiId::looks] &&
             (mon.m_leader != map::g_player) &&
+            !map::g_player->m_properties.has(PropId::sanctuary) &&
             (!mon.m_ai_state.target || mon.m_ai_state.target->is_player())) {
-                const bool did_become_aware_now = ai::info::look(mon);
-
-                // If the monster became aware, give it some reaction time
-                if (did_become_aware_now) {
-                        auto prop = new PropWaiting();
-
-                        prop->set_duration(1);
-
-                        mon.m_properties.apply(prop);
-                }
+                ai::info::look(mon);
         }
 }
 
@@ -227,50 +219,58 @@ static void std_turn_common(actor::Actor& actor)
                 actor::hit(actor, 1, DmgType::light);
         }
 
-        if (actor.is_alive()) {
-                // Slowly decrease current HP/spirit if above max
-                const int decr_above_max_n_turns = 7;
+        if (!actor.is_alive()) {
+                return;
+        }
 
-                const bool decr_this_turn =
-                        (game_time::turn_nr() % decr_above_max_n_turns) == 0;
+        // Slowly decrease current HP/spirit if above max
+        const int decr_above_max_n_turns = 7;
 
-                if ((actor.m_hp > actor::max_hp(actor)) && decr_this_turn) {
-                        --actor.m_hp;
+        const bool decr_this_turn =
+                ((game_time::turn_nr() % decr_above_max_n_turns) == 0);
+
+        const bool is_hp_above_max = (actor.m_hp > actor::max_hp(actor));
+
+        if (is_hp_above_max && decr_this_turn) {
+                --actor.m_hp;
+        }
+
+        const bool is_sp_above_max = (actor.m_sp > actor::max_sp(actor));
+
+        const bool is_exorcist = player_bon::is_bg(Bg::exorcist);
+
+        if (!is_exorcist && is_sp_above_max && decr_this_turn) {
+                --actor.m_sp;
+        }
+
+        // Regenerate spirit
+        int regen_sp_n_turns = 18;
+
+        if (actor.is_player()) {
+                if (player_bon::has_trait(Trait::stout_spirit)) {
+                        regen_sp_n_turns -= 4;
                 }
 
-                if ((actor.m_sp > actor::max_sp(actor)) && decr_this_turn) {
-                        --actor.m_sp;
+                if (player_bon::has_trait(Trait::strong_spirit)) {
+                        regen_sp_n_turns -= 4;
                 }
 
-                // Regenerate spirit
-                int regen_spi_n_turns = 18;
-
-                if (actor.is_player()) {
-                        if (player_bon::has_trait(Trait::stout_spirit)) {
-                                regen_spi_n_turns -= 4;
-                        }
-
-                        if (player_bon::has_trait(Trait::strong_spirit)) {
-                                regen_spi_n_turns -= 4;
-                        }
-
-                        if (player_bon::has_trait(Trait::mighty_spirit)) {
-                                regen_spi_n_turns -= 4;
-                        }
-                } else {
-                        // Is monster
-
-                        // Monsters regen spirit very quickly, so spell casters
-                        // doesn't suddenly get completely handicapped
-                        regen_spi_n_turns = 1;
+                if (player_bon::has_trait(Trait::mighty_spirit)) {
+                        regen_sp_n_turns -= 4;
                 }
+        } else {
+                // Is monster
 
-                const bool regen_spi_this_turn =
-                        (game_time::turn_nr() % regen_spi_n_turns) == 0;
+                // Monsters regen spirit very quickly, so spell casters
+                // doesn't suddenly get completely handicapped
+                regen_sp_n_turns = 1;
+        }
 
-                if (regen_spi_this_turn) {
-                        actor.restore_sp(1, false, Verbose::no);
-                }
+        const bool regen_sp_this_turn =
+                ((game_time::turn_nr() % regen_sp_n_turns) == 0);
+
+        if (regen_sp_this_turn) {
+                actor.restore_sp(1, false, Verbose::no);
         }
 }
 

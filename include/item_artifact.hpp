@@ -135,6 +135,32 @@ private:
 };
 
 // -----------------------------------------------------------------------------
+// Holy Symbol
+// -----------------------------------------------------------------------------
+class HolySymbol : public Item {
+public:
+        HolySymbol(ItemData* item_data);
+
+        ConsumeItem activate(actor::Actor* actor) override;
+
+        void on_std_turn_in_inv_hook(InvType inv_type) override;
+
+        std::string name_inf_str() const override;
+
+        void save_hook() const override;
+
+        void load_hook() override;
+
+private:
+        void run_effect();
+
+        Range nr_turns_to_recharge() const;
+
+        int m_nr_charge_turns_left {0};
+        bool m_has_failed_attempt {false};
+};
+
+// -----------------------------------------------------------------------------
 // Arcane Clockwork
 // -----------------------------------------------------------------------------
 class Clockwork : public Item {

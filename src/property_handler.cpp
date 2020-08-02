@@ -946,6 +946,17 @@ bool PropHandler::allow_eat(const Verbose verbose) const
         return true;
 }
 
+bool PropHandler::allow_pray(const Verbose verbose) const
+{
+        for (auto& prop : m_props) {
+                if (!prop->allow_pray(verbose)) {
+                        return false;
+                }
+        }
+
+        return true;
+}
+
 void PropHandler::on_hit()
 {
         for (auto& prop : m_props) {

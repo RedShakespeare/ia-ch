@@ -36,7 +36,7 @@ static SpellSkill player_skill_for_scroll(SpellId spell_id)
 
         // Raise the skill one level if at an altar
         if ((skill != SpellSkill::master) &&
-            player_spells::is_player_adj_to_altar()) {
+            player_spells::is_getting_altar_bonus()) {
                 skill = (SpellSkill)((int)skill + 1);
         }
 
@@ -339,6 +339,24 @@ void Scroll::on_actor_turn_in_inv_hook(const InvType inv_type)
         }
 }
 
+ItemPrePickResult Scroll::pre_pickup_hook()
+{
+        if (!player_bon::is_bg(Bg::exorcist)) {
+                return ItemPrePickResult::do_pickup;
+        }
+
+        // Is exorcist
+
+        msg_log::add("I destroy the profane text!");
+
+        game::incr_player_xp(3);
+
+        map::g_player->restore_sp(999, false);
+        map::g_player->restore_sp(12, true);
+
+        return ItemPrePickResult::destroy_item;
+}
+
 ConsumeItem Scroll::activate(actor::Actor* const actor)
 {
         TRACE_FUNC_BEGIN;
@@ -415,8 +433,7 @@ ConsumeItem Scroll::activate(actor::Actor* const actor)
 
 Spell* Scroll::make_spell() const
 {
-        return spell_factory::make_spell_from_id(
-                m_data->spell_cast_from_scroll);
+        return spells::make(m_data->spell_cast_from_scroll);
 }
 
 void Scroll::identify(const Verbose verbose)

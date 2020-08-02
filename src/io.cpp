@@ -92,17 +92,18 @@ static void init_window(const P px_dims)
 {
         TRACE << "Initializing window" << std::endl;
 
-        std::string title = "IA ";
+        std::string title = "Infra Arcana ";
 
         if (version_info::g_version_str.empty()) {
                 const auto git_sha1_str =
                         version_info::read_git_sha1_str_from_file();
 
                 title +=
-                        "build " +
+                        "(build " +
                         git_sha1_str +
                         ", " +
-                        version_info::g_date_str;
+                        version_info::g_date_str +
+                        ")";
         } else {
                 title += version_info::g_version_str;
         }

@@ -22,6 +22,7 @@ enum class PropId {
         r_conf,
         r_breath,
         r_disease,
+        r_shock,
         // NOTE: The purpose of this is only to prevent blindness for "eyeless"
         // monsters (e.g. constructs such as animated weapons), and is only
         // intended as a natural property - not for e.g. gas masks.
@@ -113,6 +114,7 @@ enum class PropId {
         cannot_read_curse,
         light_sensitive_curse, // This is just a copy of light_sensitive
         disabled_hp_regen,
+        sanctuary,
 
         END
 };

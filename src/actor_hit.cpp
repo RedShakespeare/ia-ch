@@ -87,7 +87,6 @@ ActorDied hit(
                     !actor.m_properties.has(PropId::light_sensitive_curse)) {
                         return ActorDied::no;
                 } else if (actor.is_player()) {
-                        // Subtle difference ;-)
                         msg_log::add(
                                 "I am wracked by light!",
                                 colors::msg_bad());
@@ -207,6 +206,28 @@ ActorDied hit(
         }
 
         dmg = std::max(1, dmg);
+
+        // Soaking up damage with SP instead due ot Prolonged Life trait?
+        if (actor.is_player() &&
+            player_bon::has_trait(Trait::prolonged_life)) {
+                const int missing_hp = dmg - actor.m_hp + 1;
+
+                if (missing_hp > 0) {
+                        // This hit would kill the player
+
+                        // Soak up as much damage as possible with SP instead
+                        // (but never reduce SP below 1)
+                        const int sp_dmg = std::min(missing_hp, actor.m_sp - 1);
+
+                        actor.m_sp -= sp_dmg;
+
+                        dmg -= sp_dmg;
+
+                        if (dmg <= 0) {
+                                return ActorDied::no;
+                        }
+                }
+        }
 
         actor.on_hit(dmg, dmg_type, allow_wound);
 

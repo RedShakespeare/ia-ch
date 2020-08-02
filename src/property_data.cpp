@@ -60,6 +60,7 @@ static const std::unordered_map<std::string, PropId> s_str_to_prop_id_map = {
         {"r_sleep", PropId::r_sleep},
         {"r_slow", PropId::r_slow},
         {"r_spell", PropId::r_spell},
+        {"r_shock", PropId::r_shock},
         {"radiant_adjacent", PropId::radiant_adjacent},
         {"radiant_fov", PropId::radiant_fov},
         {"recloaks", PropId::recloaks},
@@ -183,7 +184,7 @@ static void init_data_list()
         d.name = "Fear Resistance";
         d.name_short = "Fear Res.";
         d.descr = "Unaffected by fear";
-        d.msg_start_player = "I feel resistant to fear.";
+        d.msg_start_player = "I cannot be swayed by fear.";
         d.msg_start_mon = "is resistant to fear.";
         d.msg_end_player = "I feel vulnerable to fear.";
         d.msg_end_mon = "is vulnerable to fear.";
@@ -269,6 +270,21 @@ static void init_data_list()
         d.msg_end_player = "I feel vulnerable to spells.";
         d.msg_end_mon = "is vulnerable to spells.";
         d.allow_test_on_bot = false;
+        d.alignment = PropAlignment::good;
+        add(d);
+
+        d.id = PropId::r_shock;
+        d.std_rnd_turns = Range(8, 12);
+        d.name = "Shock Resistance";
+        d.name_short = "Shock Res.";
+        d.descr = "Unaffected by shocking events";
+        d.msg_start_player = "Nothing can disturb my mind!";
+        d.msg_start_mon = "";
+        d.msg_end_player =
+                "I feel susceptible to the horrors of this place again.";
+        d.msg_end_mon = "";
+        d.allow_display_turns = true;
+        d.allow_test_on_bot = true;
         d.alignment = PropAlignment::good;
         add(d);
 
@@ -507,7 +523,7 @@ static void init_data_list()
         d.name = "Wounded";
         d.descr =
                 "For each wound: -5% melee hit chance, -5% chance to evade "
-                "attacks, -10% Hit Points, and reduced Hit Point generation "
+                "attacks, -10% hit points, and reduced hit point generation "
                 "rate - also, walking takes extra turns if more than two "
                 "wounds are received";
         d.msg_start_player = "I am wounded!";
@@ -519,7 +535,7 @@ static void init_data_list()
 
         d.id = PropId::hp_sap;
         d.name = "Life Sapped";
-        d.descr = "Fewer Hit Points";
+        d.descr = "Fewer hit points";
         d.msg_start_player = "My life force is sapped!";
         d.msg_start_mon = "is sapped of life.";
         d.msg_end_player = "My life force returns.";
@@ -533,7 +549,7 @@ static void init_data_list()
 
         d.id = PropId::spi_sap;
         d.name = "Spirit Sapped";
-        d.descr = "Fewer Spirit Points";
+        d.descr = "Fewer spirit points";
         d.msg_start_player = "My spirit is sapped!";
         d.msg_start_mon = "is sapped of spirit.";
         d.msg_end_player = "My spirit returns.";
@@ -639,9 +655,7 @@ static void init_data_list()
         d.std_rnd_turns = Range(400, 600);
         d.name = "Blessed";
         d.name_short = "Blessed";
-        d.descr =
-                "+10% to melee hit chance, ranged hit chance, evasion, "
-                "stealth, and searching";
+        d.descr = "+10% to hit chance, evasion, stealth, and searching";
         d.msg_start_player = "I feel luckier.";
         d.msg_end_player = "I have normal luck.";
         d.historic_msg_start_permanent = "I received a great blessing";
@@ -655,9 +669,7 @@ static void init_data_list()
         d.std_rnd_turns = Range(50, 100);
         d.name = "Cursed";
         d.name_short = "Cursed";
-        d.descr =
-                "-10% to melee hit chance, ranged hit chance, evasion, "
-                "stealth, and searching";
+        d.descr = "-10% to hit chance, evasion, stealth, and searching";
         d.msg_start_player = "I feel misfortunate.";
         d.msg_end_player = "I feel more fortunate.";
         d.msg_res_player = "I resist misfortune.";
@@ -1022,6 +1034,21 @@ static void init_data_list()
         d.allow_display_turns = true;
         d.allow_test_on_bot = true;
         d.alignment = PropAlignment::bad;
+        add(d);
+
+        d.id = PropId::sanctuary;
+        d.std_rnd_turns = Range(5, 7);
+        d.name = "Sanctuary";
+        d.name_short = "Sanctuary";
+        d.descr =
+                "Is ignored by all hostile creatures, ends if moving or "
+                "performing a melee or ranged attack.";
+        d.msg_start_player = "I feel very secure.";
+        d.msg_end_player = "I feel much less secure.";
+        d.allow_display_turns = true;
+        d.update_vision_on_toggled = false;
+        d.allow_test_on_bot = true;
+        d.alignment = PropAlignment::good;
         add(d);
 }
 

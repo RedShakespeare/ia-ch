@@ -249,6 +249,12 @@ public:
                 return true;
         }
 
+        virtual bool allow_pray(const Verbose verbose) const
+        {
+                (void)verbose;
+                return true;
+        }
+
         virtual bool allow_eat(const Verbose verbose) const
         {
                 (void)verbose;
@@ -622,6 +628,8 @@ public:
         bool allow_cast_intr_spell_chance(
                 Verbose verbose) const override;
 
+        bool allow_pray(Verbose verbose) const override;
+
         int ability_mod(const AbilityId ability) const override
         {
                 (void)ability;
@@ -658,8 +666,8 @@ public:
         bool allow_attack_melee(Verbose verbose) const override;
         bool allow_attack_ranged(Verbose verbose) const override;
         bool allow_read_absolute(Verbose verbose) const override;
-        bool allow_cast_intr_spell_absolute(
-                Verbose verbose) const override;
+        bool allow_cast_intr_spell_absolute(Verbose verbose) const override;
+        bool allow_pray(Verbose verbose) const override;
 };
 
 class PropNailed : public Prop {
@@ -994,8 +1002,8 @@ public:
         PropEnded affect_move_dir(const P& actor_pos, Dir& dir) override;
 
         bool allow_read_absolute(Verbose verbose) const override;
-        bool allow_cast_intr_spell_absolute(
-                Verbose verbose) const override;
+        bool allow_cast_intr_spell_absolute(Verbose verbose) const override;
+        bool allow_pray(Verbose verbose) const override;
 
         bool is_resisting_other_prop(PropId prop_id) const override;
 

@@ -52,28 +52,29 @@ void init()
         TRACE_FUNC_BEGIN;
 
         // Init possible potion colors and fake names
-        s_potion_looks.assign({{"Golden", "a Golden", colors::yellow()},
-                               {"Yellow", "a Yellow", colors::yellow()},
-                               {"Dark", "a Dark", colors::gray()},
-                               {"Black", "a Black", colors::gray()},
-                               {"Oily", "an Oily", colors::gray()},
-                               {"Smoky", "a Smoky", colors::white()},
-                               {"Slimy", "a Slimy", colors::green()},
-                               {"Green", "a Green", colors::light_green()},
-                               {"Fiery", "a Fiery", colors::light_red()},
-                               {"Murky", "a Murky", colors::dark_brown()},
-                               {"Muddy", "a Muddy", colors::brown()},
-                               {"Violet", "a Violet", colors::violet()},
-                               {"Orange", "an Orange", colors::orange()},
-                               {"Watery", "a Watery", colors::light_blue()},
-                               {"Metallic", "a Metallic", colors::gray()},
-                               {"Clear", "a Clear", colors::light_white()},
-                               {"Misty", "a Misty", colors::light_white()},
-                               {"Bloody", "a Bloody", colors::red()},
-                               {"Magenta", "a Magenta", colors::magenta()},
-                               {"Clotted", "a Clotted", colors::green()},
-                               {"Moldy", "a Moldy", colors::brown()},
-                               {"Frothy", "a Frothy", colors::white()}});
+        s_potion_looks.assign(
+                {{"Golden", "a Golden", colors::yellow()},
+                 {"Yellow", "a Yellow", colors::yellow()},
+                 {"Dark", "a Dark", colors::gray()},
+                 {"Black", "a Black", colors::gray()},
+                 {"Oily", "an Oily", colors::gray()},
+                 {"Smoky", "a Smoky", colors::white()},
+                 {"Slimy", "a Slimy", colors::green()},
+                 {"Green", "a Green", colors::light_green()},
+                 {"Fiery", "a Fiery", colors::light_red()},
+                 {"Murky", "a Murky", colors::dark_brown()},
+                 {"Muddy", "a Muddy", colors::brown()},
+                 {"Violet", "a Violet", colors::violet()},
+                 {"Orange", "an Orange", colors::orange()},
+                 {"Watery", "a Watery", colors::light_blue()},
+                 {"Metallic", "a Metallic", colors::gray()},
+                 {"Clear", "a Clear", colors::light_white()},
+                 {"Misty", "a Misty", colors::light_white()},
+                 {"Bloody", "a Bloody", colors::red()},
+                 {"Magenta", "a Magenta", colors::magenta()},
+                 {"Clotted", "a Clotted", colors::green()},
+                 {"Moldy", "a Moldy", colors::brown()},
+                 {"Frothy", "a Frothy", colors::white()}});
 
         for (auto& d : item::g_data) {
                 if (d.type == ItemType::potion) {
@@ -83,7 +84,8 @@ void init()
 
                         PotionLook& look = s_potion_looks[idx];
 
-                        d.base_name_un_id.names[(size_t)ItemRefType::plain] = look.name_plain + " Potion";
+                        d.base_name_un_id.names[(size_t)ItemRefType::plain] =
+                                look.name_plain + " Potion";
 
                         d.base_name_un_id.names[(size_t)ItemRefType::plural] =
                                 look.name_plain + " Potions";
@@ -132,18 +134,20 @@ void save()
         for (int i = 0; i < (int)item::Id::END; ++i) {
                 auto& d = item::g_data[i];
 
-                if (d.type == ItemType::potion) {
-                        saving::put_str(
-                                d.base_name_un_id.names[(size_t)ItemRefType::plain]);
-
-                        saving::put_str(
-                                d.base_name_un_id.names[(size_t)ItemRefType::plural]);
-
-                        saving::put_str(
-                                d.base_name_un_id.names[(size_t)ItemRefType::a]);
-
-                        saving::put_str(colors::color_to_name(d.color));
+                if (d.type != ItemType::potion) {
+                        continue;
                 }
+
+                saving::put_str(
+                        d.base_name_un_id.names[(size_t)ItemRefType::plain]);
+
+                saving::put_str(
+                        d.base_name_un_id.names[(size_t)ItemRefType::plural]);
+
+                saving::put_str(
+                        d.base_name_un_id.names[(size_t)ItemRefType::a]);
+
+                saving::put_str(colors::color_to_name(d.color));
         }
 }
 
@@ -243,7 +247,9 @@ ConsumeItem Potion::activate(actor::Actor* const actor)
                                 "I drink an unknown " + potion_name + "...");
                 }
 
-                map::g_player->incr_shock(ShockLvl::terrifying, ShockSrc::use_strange_item);
+                map::g_player->incr_shock(
+                        ShockLvl::terrifying,
+                        ShockSrc::use_strange_item);
 
                 if (!map::g_player->is_alive()) {
                         return ConsumeItem::yes;

@@ -18,6 +18,7 @@
 #include "map.hpp"
 #include "msg_log.hpp"
 #include "query.hpp"
+#include "state.hpp"
 
 namespace item_pickup {
 
@@ -35,19 +36,38 @@ void try_pick()
                 return;
         }
 
-        const std::string item_name = item->name(ItemRefType::plural);
+        const auto pre_pickup_result = item->pre_pickup_hook();
 
-        audio::play(audio::SfxId::pickup);
+        auto& cell = map::g_cells.at(pos);
 
-        msg_log::add("I pick up " + item_name + ".");
+        switch (pre_pickup_result) {
+        case ItemPrePickResult::do_pickup: {
+                audio::play(audio::SfxId::pickup);
 
-        // NOTE: This calls the items pickup hook, which may destroy the item
-        // (e.g. combine with others)
-        map::g_player->m_inv.put_in_backpack(item);
+                const std::string item_name = item->name(ItemRefType::plural);
 
-        map::g_cells.at(pos).item = nullptr;
+                msg_log::add("I pick up " + item_name + ".");
 
-        game_time::tick();
+                // NOTE: This may destroy the item (e.g. combine with others)
+                map::g_player->m_inv.put_in_backpack(item);
+
+                cell.item = nullptr;
+        } break;
+
+        case ItemPrePickResult::destroy_item: {
+                delete item;
+                cell.item = nullptr;
+        } break;
+
+        case ItemPrePickResult::do_nothing: {
+        } break;
+        }
+
+        // NOTE: The player might have won the game by picking up the
+        // Trapezohedron, if so do not tick time
+        if (states::contains_state(StateId::game)) {
+                game_time::tick();
+        }
 }
 
 item::Ammo* unload_ranged_wpn(item::Wpn& wpn)

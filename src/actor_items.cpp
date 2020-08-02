@@ -43,6 +43,41 @@ static void learn_spell_player(const SpellId spell)
         }
 }
 
+static void make_for_player_exorcist()
+{
+        auto& inv = map::g_player->m_inv;
+
+        auto* const hatchet = item::make(item::Id::hatchet);
+
+        inv.put_in_slot(
+                SlotId::wpn,
+                hatchet,
+                Verbose::no);
+
+        inv.put_in_slot(
+                SlotId::wpn_alt,
+                item::make(item::Id::revolver),
+                Verbose::no);
+
+        auto revolver_bullets = item::make(item::Id::revolver_bullet);
+
+        revolver_bullets->m_nr_items = 8;
+
+        inv.put_in_backpack(revolver_bullets);
+
+        inv.put_in_backpack(item::make(item::Id::iron_spike, 6));
+
+        map::g_player->set_unarmed_wpn(
+                static_cast<item::Wpn*>(
+                        item::make(item::Id::player_punch)));
+
+        inv.put_in_backpack(item::make(item::Id::dynamite, 4));
+        inv.put_in_backpack(item::make(item::Id::molotov, 2));
+        inv.put_in_backpack(item::make(item::Id::medical_bag));
+        inv.put_in_backpack(item::make(item::Id::lantern));
+        inv.put_in_backpack(item::make(item::Id::holy_symbol));
+}
+
 static void make_for_player_occultist_common()
 {
         auto& inv = map::g_player->m_inv;
@@ -229,6 +264,10 @@ static void make_for_player_ghoul()
 static void make_for_player()
 {
         switch (player_bon::bg()) {
+        case Bg::exorcist: {
+                make_for_player_exorcist();
+        } break;
+
         case Bg::occultist:
                 make_for_player_occultist_common();
 
@@ -672,9 +711,7 @@ static void make_monster_spells(actor::Actor& actor)
                         continue;
                 }
 
-                Spell* const spell =
-                        spell_factory::make_spell_from_id(
-                                spell_data.spell_id);
+                auto* const spell = spells::make(spell_data.spell_id);
 
                 mon->add_spell(spell_data.spell_skill, spell);
         }

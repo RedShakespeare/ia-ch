@@ -111,19 +111,20 @@ void run(Snd snd)
 
         const int snd_max_dist = get_max_dist(snd);
 
-        const auto flood = floodfill(
-                origin,
-                blocked,
-                snd_max_dist,
-                P(-1, -1),
-                true);
+        const auto flood =
+                floodfill(
+                        origin,
+                        blocked,
+                        snd_max_dist,
+                        P(-1, -1),
+                        true);
 
         flood.at(origin.x, origin.y) = 0;
 
         for (auto* actor : game_time::g_actors) {
-                const int flood_val_at_actor = flood.at(actor->m_pos);
-
                 const P& actor_pos = actor->m_pos;
+
+                const int flood_val_at_actor = flood.at(actor_pos);
 
                 // Can the sound be heard at this distance?
                 if (((flood_val_at_actor == 0) && (actor_pos != origin)) ||

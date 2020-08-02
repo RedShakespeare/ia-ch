@@ -21,9 +21,13 @@ R fov_rect(const P& p, const P& map_dims)
 {
         const int radi = g_fov_radi_int;
 
-        const P p0(std::max(0, p.x - radi), std::max(0, p.y - radi));
+        const P p0(
+                std::max(0, p.x - radi),
+                std::max(0, p.y - radi));
 
-        const P p1(std::min(map_dims.x - 1, p.x + radi), std::min(map_dims.y - 1, p.y + radi));
+        const P p1(
+                std::min(map_dims.x - 1, p.x + radi),
+                std::min(map_dims.y - 1, p.y + radi));
 
         return R(p0, p1);
 }

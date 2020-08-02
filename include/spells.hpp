@@ -45,6 +45,11 @@ enum class SpellId {
         see_invis,
         transmut,
 
+        // Exorcist background
+        cleansing_fire,
+        sanctuary,
+        purge,
+
         // Ghoul background
         frenzy,
 
@@ -78,15 +83,17 @@ enum class SpellShock {
         severe
 };
 
-namespace spell_factory {
+namespace spells {
 
-Spell* make_spell_from_id(SpellId spell_id);
+Spell* make(SpellId spell_id);
 
 SpellId str_to_spell_id(const std::string& str);
 
 SpellSkill str_to_spell_skill_id(const std::string& str);
 
-} // namespace spell_factory
+std::string skill_to_str(SpellSkill skill);
+
+} // namespace spells
 
 class Spell {
 public:
@@ -131,6 +138,9 @@ public:
 
         std::string domain_descr() const;
 
+        virtual std::vector<std::string> descr_specific(
+                SpellSkill skill) const = 0;
+
         Range spi_cost(SpellSkill skill) const;
 
         int shock_value() const;
@@ -143,9 +153,6 @@ public:
 
 protected:
         virtual int max_spi_cost(SpellSkill skill) const = 0;
-
-        virtual std::vector<std::string> descr_specific(
-                SpellSkill skill) const = 0;
 
         virtual bool is_noisy(SpellSkill skill) const = 0;
 
@@ -318,6 +325,8 @@ protected:
 
                 return true;
         }
+
+        Range duration_range(SpellSkill skill) const;
 };
 
 class SpellAuraOfDecay : public Spell {
@@ -875,6 +884,200 @@ private:
         }
 
         bool is_noisy(SpellSkill skill) const override;
+};
+
+class SpellCleansingFire : public Spell {
+public:
+        SpellCleansingFire() = default;
+
+        bool mon_can_learn() const override
+        {
+                return false;
+        }
+
+        bool player_can_learn() const override
+        {
+                return true;
+        }
+
+        std::string name() const override
+        {
+                return "Cleansing Fire";
+        }
+
+        SpellId id() const override
+        {
+                return SpellId::cleansing_fire;
+        }
+
+        OccultistDomain domain() const override
+        {
+                return OccultistDomain::END;
+        }
+
+        bool can_be_improved_with_skill() const override
+        {
+                return true;
+        }
+
+        SpellShock shock_type() const override
+        {
+                return SpellShock::disturbing;
+        }
+
+        std::vector<std::string> descr_specific(
+                SpellSkill skill) const override;
+
+        void run_effect(
+                actor::Actor* caster,
+                SpellSkill skill) const override;
+
+private:
+        int max_spi_cost(const SpellSkill skill) const override
+        {
+                (void)skill;
+
+                return 7;
+        }
+
+        bool is_noisy(const SpellSkill skill) const override
+        {
+                (void)skill;
+
+                return true;
+        }
+
+        Range burn_duration_range() const;
+};
+
+class SpellSanctuary : public Spell {
+public:
+        SpellSanctuary() = default;
+
+        bool mon_can_learn() const override
+        {
+                return false;
+        }
+
+        bool player_can_learn() const override
+        {
+                return true;
+        }
+
+        std::string name() const override
+        {
+                return "Sanctuary";
+        }
+
+        SpellId id() const override
+        {
+                return SpellId::sanctuary;
+        }
+
+        OccultistDomain domain() const override
+        {
+                return OccultistDomain::END;
+        }
+
+        bool can_be_improved_with_skill() const override
+        {
+                return true;
+        }
+
+        SpellShock shock_type() const override
+        {
+                return SpellShock::mild;
+        }
+
+        std::vector<std::string> descr_specific(
+                SpellSkill skill) const override;
+
+        void run_effect(
+                actor::Actor* caster,
+                SpellSkill skill) const override;
+
+private:
+        int max_spi_cost(const SpellSkill skill) const override
+        {
+                (void)skill;
+
+                return 5;
+        }
+
+        bool is_noisy(const SpellSkill skill) const override
+        {
+                (void)skill;
+
+                return false;
+        }
+
+        int duration(const SpellSkill skill) const;
+};
+
+class SpellPurge : public Spell {
+public:
+        SpellPurge() = default;
+
+        bool mon_can_learn() const override
+        {
+                return false;
+        }
+
+        bool player_can_learn() const override
+        {
+                return true;
+        }
+
+        std::string name() const override
+        {
+                return "Purge";
+        }
+
+        SpellId id() const override
+        {
+                return SpellId::purge;
+        }
+
+        OccultistDomain domain() const override
+        {
+                return OccultistDomain::END;
+        }
+
+        bool can_be_improved_with_skill() const override
+        {
+                return false;
+        }
+
+        SpellShock shock_type() const override
+        {
+                return SpellShock::mild;
+        }
+
+        std::vector<std::string> descr_specific(
+                SpellSkill skill) const override;
+
+        void run_effect(
+                actor::Actor* caster,
+                SpellSkill skill) const override;
+
+private:
+        int max_spi_cost(const SpellSkill skill) const override
+        {
+                (void)skill;
+
+                return 4;
+        }
+
+        bool is_noisy(const SpellSkill skill) const override
+        {
+                (void)skill;
+
+                return true;
+        }
+
+        Range dmg_range() const;
+
+        Range fear_duration_range() const;
 };
 
 class SpellFrenzy : public Spell {

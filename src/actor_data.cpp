@@ -532,14 +532,13 @@ static void dump_spells(xml::Element* spells_e, actor::ActorData& data)
 
                 const std::string id_str = xml::get_text_str(spell_e);
 
-                spell_data.spell_id =
-                        spell_factory::str_to_spell_id(id_str);
+                spell_data.spell_id = spells::str_to_spell_id(id_str);
 
                 const std::string skill_str =
                         xml::get_attribute_str(spell_e, "skill");
 
                 spell_data.spell_skill =
-                        spell_factory::str_to_spell_skill_id(
+                        spells::str_to_spell_skill_id(
                                 skill_str);
 
                 xml::try_get_attribute_int(

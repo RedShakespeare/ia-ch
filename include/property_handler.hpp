@@ -144,6 +144,7 @@ public:
         bool allow_act() const;
         bool allow_speak(Verbose verbose) const;
         bool allow_eat(Verbose verbose) const; // Also for drinking
+        bool allow_pray(Verbose verbose) const; // Pray over the Holy Symbol
 
         // NOTE: The allow_*_absolute methods below answer if some action could
         // EVER be performed, and the allow_*_chance methods allows the action

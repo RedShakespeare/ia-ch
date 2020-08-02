@@ -694,7 +694,7 @@ void init()
 
                 ("The weapon does not use ammunition, instead it draws "
                  "power from the life force of the wielder "
-                 "(3 Hit Points drained per attack, passive Hit Point "
+                 "(3 hit points drained per attack, passive hit point "
                  "regeneration is disabled for ") +
                         Range(g_mi_go_gun_regen_disabled_min_turns,
                               g_mi_go_gun_regen_disabled_max_turns)
@@ -1862,6 +1862,37 @@ void init()
         g_data[(size_t)d.id] = d;
 
         reset_data(d, ItemType::general);
+        d.id = Id::holy_symbol;
+        d.base_name = {
+                "Holy Symbol",
+                "",
+                "a Holy Symbol",
+        };
+        d.base_descr = {
+                "A focal point providing strength and guidance for the "
+                "spirit and mind.",
+
+                "Praying over the symbol restores 1-4 spirit points, and "
+                "grants complete resistance against shock and fear for "
+                "6-12 turns.",
+
+                "Some time must pass before the prayer is guaranteed to have "
+                "an effect again, however it can be attempted before this "
+                "time has passed (with 25% chance to succeed). If an early "
+                "attempt fails, faith in the symbol is temporarily lost, and "
+                "it will take long before the symbol can be used again."};
+        d.color = colors::gold();
+        d.weight = Weight::extra_light;
+        d.tile = gfx::TileId::holy_symbol;
+        d.character = '%';
+        d.is_unique = true;
+        d.value = Value::supreme_treasure;
+        d.has_std_activate = true;
+        d.chance_to_incl_in_spawn_list = 0;
+        d.allow_spawn = false;
+        g_data[(size_t)d.id] = d;
+
+        reset_data(d, ItemType::general);
         d.id = Id::clockwork;
         d.base_name = {
                 "Arcane Clockwork",
@@ -1972,7 +2003,7 @@ void init()
                 "",
                 "the Orb of Life"};
         d.base_descr = {
-                "+4 Hit Points, grants resistance against poison and disease."};
+                "+4 hit points, grants resistance against poison and disease."};
         d.color = colors::light_white();
         d.weight = Weight::light;
         d.tile = gfx::TileId::orb;

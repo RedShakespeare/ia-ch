@@ -10,9 +10,11 @@
 #include "colors.hpp"
 #include "dmg_range.hpp"
 #include "gfx.hpp"
+#include "global.hpp"
 #include "inventory_handling.hpp"
 #include "item_att_property.hpp"
 #include "item_curse.hpp"
+#include "pos.hpp"
 #include "random.hpp"
 
 namespace actor {
@@ -99,6 +101,11 @@ public:
         void on_std_turn_in_inv(InvType inv_type);
 
         void on_actor_turn_in_inv(InvType inv_type);
+
+        virtual ItemPrePickResult pre_pickup_hook()
+        {
+                return ItemPrePickResult::do_pickup;
+        }
 
         void on_pickup(actor::Actor& actor);
 
@@ -286,6 +293,13 @@ private:
         std::vector<Prop*> m_carrier_props {};
 
         item_curse::Curse m_curse {};
+};
+
+class Trapez : public Item {
+public:
+        Trapez(ItemData* item_data);
+
+        ItemPrePickResult pre_pickup_hook() override;
 };
 
 class Armor : public Item {

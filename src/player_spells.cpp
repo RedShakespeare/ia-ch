@@ -128,8 +128,7 @@ void load()
         for (int i = 0; i < nr_spells; ++i) {
                 const auto id = (SpellId)saving::get_int();
 
-                s_learned_spells.push_back(
-                        spell_factory::make_spell_from_id(id));
+                s_learned_spells.push_back(spells::make(id));
         }
 
         for (size_t i = 0; i < (size_t)SpellId::END; ++i) {
@@ -157,7 +156,7 @@ void learn_spell(const SpellId id, const Verbose verbose)
                 return;
         }
 
-        Spell* const spell = spell_factory::make_spell_from_id(id);
+        Spell* const spell = spells::make(id);
 
         const bool player_can_learn = spell->player_can_learn();
 
@@ -243,7 +242,7 @@ SpellSkill spell_skill(const SpellId id)
 
         auto skill = s_spell_skills[(size_t)id];
 
-        if ((skill != SpellSkill::master) && is_player_adj_to_altar()) {
+        if ((skill != SpellSkill::master) && is_getting_altar_bonus()) {
                 skill = (SpellSkill)((int)skill + 1);
         }
 
@@ -261,9 +260,13 @@ void set_spell_skill(const SpellId id, const SpellSkill val)
         s_spell_skills[(size_t)id] = val;
 }
 
-bool is_player_adj_to_altar()
+bool is_getting_altar_bonus()
 {
-        for (const auto d : dir_utils::g_dir_list) {
+        if (player_bon::is_bg(Bg::exorcist)) {
+                return false;
+        }
+
+        for (const auto& d : dir_utils::g_dir_list) {
                 const auto p = map::g_player->m_pos + d;
 
                 if (map::g_cells.at(p).terrain->id() == terrain::Id::altar) {
