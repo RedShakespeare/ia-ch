@@ -217,11 +217,22 @@ static std::string get_melee_hit_chance_descr(actor::Actor& actor)
                 ability_roll::hit_chance_pct_actual(
                         att_data.hit_chance_tot);
 
-        return "The chance to hit " +
+        std::string descr =
+                "The chance to hit " +
                 actor.name_the() +
                 " in melee combat is currently " +
                 std::to_string(hit_chance) +
-                "%.";
+                "%";
+
+        if (att_data.is_backstab) {
+                // TODO: Display what the hit chance would be if they were not
+                // unaware, e.g. "otherwise it would be 40%"
+                descr += " (because they are unaware)";
+        }
+
+        descr += ".";
+
+        return descr;
 }
 
 // -----------------------------------------------------------------------------
