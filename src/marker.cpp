@@ -43,8 +43,7 @@ StateId MarkerState::id()
 
 void MarkerState::on_start()
 {
-        m_marker_render_data.resize(
-                viewport::get_map_view_area().dims());
+        init_marker_render_data();
 
         m_pos = map::g_player->m_pos;
 
@@ -65,6 +64,24 @@ void MarkerState::on_start()
         on_start_hook();
 
         on_moved();
+}
+
+void MarkerState::init_marker_render_data()
+{
+        m_marker_render_data.resize(
+                viewport::get_map_view_area().dims());
+}
+
+void MarkerState::on_window_resized()
+{
+        // This is safe and convenient:
+        m_pos = map::g_player->m_pos;
+
+        viewport::focus_on(m_pos);
+
+        init_marker_render_data();
+
+        msg_log::clear();
 }
 
 void MarkerState::on_popped()

@@ -46,6 +46,8 @@ public:
                 return true;
         }
 
+        void on_window_resized() override;
+
         void update() final;
 
         StateId id() final;
@@ -97,6 +99,8 @@ protected:
         P m_pos;
 
 private:
+        void init_marker_render_data();
+
         void move(Dir dir, int nr_steps = 1);
 
         bool try_go_to_tgt();

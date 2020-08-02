@@ -31,11 +31,9 @@
 // -----------------------------------------------------------------------------
 // private
 // -----------------------------------------------------------------------------
-static int s_mon_descr_x0 = 1;
-
 static int mon_descr_max_w()
 {
-        return panels::w(Panel::screen) - 2;
+        return io::g_min_nr_gui_cells_x - 2;
 }
 
 static std::string get_mon_memory_turns_descr(const actor::Actor& actor)
@@ -76,15 +74,17 @@ static std::string get_mon_dlvl_descr(const actor::Actor& actor)
         const std::string dlvl_str = std::to_string(dlvl);
 
         if (d.is_unique) {
-                return d.name_the +
+                return (
+                        d.name_the +
                         " usually dwells beneath level " +
                         dlvl_str +
-                        ".";
+                        ".");
         } else {
                 // Not unique
-                return "They usually dwell beneath level " +
+                return (
+                        "They usually dwell beneath level " +
                         dlvl_str +
-                        ".";
+                        ".");
         }
 }
 
@@ -362,7 +362,7 @@ void ViewActorDescr::draw()
                 io::draw_text(
                         line.str,
                         Panel::screen,
-                        P(s_mon_descr_x0, screen_y),
+                        P(1, screen_y),
                         line.color);
 
                 ++screen_y;

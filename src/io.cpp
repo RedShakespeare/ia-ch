@@ -149,6 +149,9 @@ static void init_renderer(const P px_dims)
 
         if (s_sdl_renderer) {
                 SDL_DestroyRenderer(s_sdl_renderer);
+
+                // NOTE: The above call also frees the texture
+                s_screen_texture = nullptr;
         }
 
         s_sdl_renderer =
