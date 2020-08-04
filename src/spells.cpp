@@ -1730,9 +1730,9 @@ std::vector<std::string> SpellCleansingFire::descr_specific(
 int SpellSanctuary::duration(const SpellSkill skill) const
 {
         if (skill == SpellSkill::basic) {
-                return 4;
+                return 5;
         } else {
-                return 8;
+                return 10;
         }
 }
 

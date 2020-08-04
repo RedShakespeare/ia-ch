@@ -73,10 +73,22 @@ static bool is_trait_blocked_for_bg(
                 return false;
         } break;
 
+        case Trait::expert_melee:
+        case Trait::master_melee:
+                return bg == Bg::exorcist;
+
         case Trait::adept_marksman:
-        case Trait::expert_marksman:
-        case Trait::master_marksman:
                 return bg == Bg::ghoul;
+
+        case Trait::expert_marksman:
+                return (
+                        (bg == Bg::ghoul) ||
+                        (bg == Bg::exorcist));
+
+        case Trait::master_marksman:
+                return (
+                        (bg == Bg::ghoul) ||
+                        (bg == Bg::exorcist));
 
         case Trait::healer:
                 // Cannot use Medial Bag
@@ -104,8 +116,6 @@ static bool is_trait_blocked_for_bg(
         case Trait::vicious:
         case Trait::ruthless:
         case Trait::adept_melee:
-        case Trait::expert_melee:
-        case Trait::master_melee:
         case Trait::cool_headed:
         case Trait::courageous:
         case Trait::ravenous:
