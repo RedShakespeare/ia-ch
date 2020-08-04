@@ -71,6 +71,7 @@ enum class PropId {
         corpse_rises,
         spawns_zombie_parts_on_destroyed,
         breeds,
+        vomits_ooze, // Gla'Suu
         confuses_adjacent, // "Strange color" confusing player when seen
         speaks_curses,
         aura_of_decay, // Damages adjacent hostile creatures

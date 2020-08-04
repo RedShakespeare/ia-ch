@@ -231,6 +231,9 @@ Prop* make(const PropId id)
         case PropId::breeds:
                 return new PropBreeds();
 
+        case PropId::vomits_ooze:
+                return new PropVomitsOoze();
+
         case PropId::confuses_adjacent:
                 return new PropConfusesAdjacent();
 

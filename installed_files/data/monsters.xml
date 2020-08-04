@@ -5785,7 +5785,7 @@
         </audio>
 
         <attributes>
-            <hit_points>16</hit_points>
+            <hit_points>12</hit_points>
             <spirit>12</spirit>
             <speed>slow</speed>
             <shock_level>unsettling</shock_level>
@@ -5837,7 +5837,7 @@
 
         <spawning>
             <min_dungeon_level>2</min_dungeon_level>
-            <max_dungeon_level>3</max_dungeon_level>
+            <max_dungeon_level>6</max_dungeon_level>
             <spawn_weight>100</spawn_weight>
             <auto_spawn>true</auto_spawn>
             <can_be_summoned_by_monster>true</can_be_summoned_by_monster>
@@ -5881,7 +5881,7 @@
         </audio>
 
         <attributes>
-            <hit_points>12</hit_points>
+            <hit_points>8</hit_points>
             <spirit>12</spirit>
             <speed>slow</speed>
             <shock_level>frightening</shock_level>
@@ -5933,7 +5933,7 @@
 
         <spawning>
             <min_dungeon_level>4</min_dungeon_level>
-            <max_dungeon_level>6</max_dungeon_level>
+            <max_dungeon_level>10</max_dungeon_level>
             <spawn_weight>100</spawn_weight>
             <auto_spawn>true</auto_spawn>
             <can_be_summoned_by_monster>false</can_be_summoned_by_monster>
@@ -5977,7 +5977,7 @@
         </audio>
 
         <attributes>
-            <hit_points>18</hit_points>
+            <hit_points>14</hit_points>
             <spirit>12</spirit>
             <speed>slow</speed>
             <shock_level>frightening</shock_level>
@@ -6029,8 +6029,8 @@
         </ai>
 
         <spawning>
-            <min_dungeon_level>5</min_dungeon_level>
-            <max_dungeon_level>7</max_dungeon_level>
+            <min_dungeon_level>4</min_dungeon_level>
+            <max_dungeon_level>10</max_dungeon_level>
             <spawn_weight>100</spawn_weight>
             <auto_spawn>true</auto_spawn>
             <can_be_summoned_by_monster>true</can_be_summoned_by_monster>
@@ -6074,7 +6074,7 @@
         </audio>
 
         <attributes>
-            <hit_points>20</hit_points>
+            <hit_points>16</hit_points>
             <spirit>12</spirit>
             <speed>slow</speed>
             <shock_level>frightening</shock_level>
@@ -6127,7 +6127,7 @@
 
         <spawning>
             <min_dungeon_level>7</min_dungeon_level>
-            <max_dungeon_level>9</max_dungeon_level>
+            <max_dungeon_level>12</max_dungeon_level>
             <spawn_weight>100</spawn_weight>
             <auto_spawn>true</auto_spawn>
             <can_be_summoned_by_monster>true</can_be_summoned_by_monster>
@@ -6138,6 +6138,94 @@
             <native_room>plain</native_room>
             <native_room>damp</native_room>
             <native_room>chasm</native_room>
+        </spawning>
+    </monster>
+
+    <!--************************************************************-->
+    <!-- glasuu -->
+    <!--************************************************************-->
+    <monster id="glasuu">
+        <text>
+            <name_a>a Gla'Suu</name_a>
+            <name_the>the Gla'Suu</name_the>
+            <corpse_name_a>a Gla'Suu corpse</corpse_name_a>
+            <corpse_name_the>the Gla'Suu corpse</corpse_name_the>
+            <description>A loathsome beast hauling around a great sagging body on strained legs. Through its translucent, stretched skin the vile content of the creatures husk is clearly visible: carrion, human remains in various states of decomposition, trash, and sewage - along with other less recognizable things. Its head droops to the ground, where a tentacled mouth devours whatever filth it happens upon. It occasionally spews forth half-solid chunks of ooze, which after fermenting in the remarkable conditions of the creature's bowels, takes on a form of life of it's own - hunting for biological matter to decompose in order to feed its creator.</description>
+            <allow_generated_description>true</allow_generated_description>
+            <wary_message>seems disturbed.</wary_message>
+            <aware_message_seen></aware_message_seen>
+            <aware_message_hidden></aware_message_hidden>
+            <spell_message></spell_message>
+        </text>
+
+        <graphics>
+            <tile>glasuu</tile>
+            <character>W</character>
+            <color>light_white</color>
+        </graphics>
+
+        <audio>
+            <aware_sfx_seen></aware_sfx_seen>
+            <aware_sfx_hidden></aware_sfx_hidden>
+        </audio>
+
+        <attributes>
+            <hit_points>40</hit_points>
+            <spirit>40</spirit>
+            <speed>slow</speed>
+            <shock_level>terrifying</shock_level>
+            <melee>0</melee>
+            <ranged>0</ranged>
+            <dodging>-20</dodging>
+            <stealth>0</stealth>
+            <searching>0</searching>
+            <can_open_doors>false</can_open_doors>
+            <can_bash_doors>true</can_bash_doors>
+            <can_swim>false</can_swim>
+            <size>humanoid</size>
+            <always_prevent_knockback>false</always_prevent_knockback>
+            <can_bleed>true</can_bleed>
+            <can_leave_corpse>true</can_leave_corpse>
+            <prioritize_destroying_corpse>false</prioritize_destroying_corpse>
+        </attributes>
+
+        <attacks>
+        </attacks>
+
+        <properties>
+            <property>corpse_eater</property>
+            <property>vomits_ooze</property>
+            <property>r_poison</property>
+            <property>r_disease</property>
+        </properties>
+
+        <ai>
+            <erratic_move_percent>50</erratic_move_percent>
+            <turns_aware>5</turns_aware>
+            <ranged_cooldown_turns>0</ranged_cooldown_turns>
+            <looks>true</looks>
+            <avoids_blocking_friend>false</avoids_blocking_friend>
+            <attacks>false</attacks>
+            <paths_to_target_when_aware>false</paths_to_target_when_aware>
+            <moves_to_target_when_los>false</moves_to_target_when_los>
+            <moves_to_lair>false</moves_to_lair>
+            <moves_to_leader>false</moves_to_leader>
+            <moves_randomly_when_unaware>true</moves_randomly_when_unaware>
+        </ai>
+
+        <spawning>
+            <min_dungeon_level>3</min_dungeon_level>
+            <max_dungeon_level>12</max_dungeon_level>
+            <spawn_weight>100</spawn_weight>
+            <auto_spawn>true</auto_spawn>
+            <can_be_summoned_by_monster>true</can_be_summoned_by_monster>
+            <can_be_shapeshifted_into>true</can_be_shapeshifted_into>
+            <nr_allowed_to_spawn>-1</nr_allowed_to_spawn>
+            <group_size>alone</group_size>
+            <native_room>plain</native_room>
+            <native_room>monster</native_room>
+            <native_room>cave</native_room>
+            <native_room>damp</native_room>
         </spawning>
     </monster>
 

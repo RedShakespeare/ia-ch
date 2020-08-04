@@ -27,6 +27,7 @@
 // -----------------------------------------------------------------------------
 static actor::Actor* make_actor_from_id(const actor::Id id)
 {
+        // TODO: Try to get rid of all these subclasses
         switch (id) {
         case actor::Id::player:
                 return new actor::Player();

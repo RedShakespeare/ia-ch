@@ -1257,6 +1257,17 @@ public:
         void on_std_turn() override;
 };
 
+class PropVomitsOoze : public Prop {
+public:
+        PropVomitsOoze() :
+                Prop(PropId::vomits_ooze) {}
+
+        void on_std_turn() override;
+
+private:
+        bool m_has_triggered_before {false};
+};
+
 class PropConfusesAdjacent : public Prop {
 public:
         PropConfusesAdjacent() :

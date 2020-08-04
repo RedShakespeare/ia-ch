@@ -90,6 +90,7 @@ static std::unordered_map<std::string, actor::Id> str_to_actor_id_map = {
         {"ooze_clear", actor::Id::ooze_clear},
         {"ooze_putrid", actor::Id::ooze_putrid},
         {"ooze_poison", actor::Id::ooze_poison},
+        {"glasuu", actor::Id::glasuu},
         {"strange_color", actor::Id::strange_color},
         {"chthonian", actor::Id::chthonian},
         {"hunting_horror", actor::Id::hunting_horror},

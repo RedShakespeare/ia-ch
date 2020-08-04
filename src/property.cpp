@@ -2061,6 +2061,7 @@ void PropBreeds::on_std_turn()
         if (m_owner->is_player() ||
             !m_owner->is_alive() ||
             m_owner->m_properties.has(PropId::burning) ||
+            m_owner->m_properties.has(PropId::paralyzed) ||
             (game_time::g_actors.size() >= g_max_nr_actors_on_map) ||
             !rnd::one_in(spawn_new_one_in_n)) {
                 return;
@@ -2101,6 +2102,93 @@ void PropBreeds::on_std_turn()
         if (m_owner->is_aware_of_player()) {
                 spawned.make_aware_of_player();
         }
+}
+
+void PropVomitsOoze::on_std_turn()
+{
+        const int spawn_new_one_in_n =
+                m_has_triggered_before
+                ? 15
+                : 5;
+
+        if (m_owner->is_player() ||
+            !m_owner->is_alive() ||
+            !m_owner->is_aware_of_player() ||
+            m_owner->m_properties.has(PropId::burning) ||
+            m_owner->m_properties.has(PropId::paralyzed) ||
+            (game_time::g_actors.size() >= g_max_nr_actors_on_map) ||
+            !rnd::one_in(spawn_new_one_in_n)) {
+                return;
+        }
+
+        const auto area_allowed = R(m_owner->m_pos - 1, m_owner->m_pos + 1);
+
+        actor::Id ooze_ids[] = {
+                actor::Id::ooze_black,
+                actor::Id::ooze_putrid,
+                actor::Id::ooze_clear,
+                actor::Id::ooze_poison};
+
+        std::vector<actor::Id> id_bucket;
+
+        for (const auto id : ooze_ids) {
+                const auto& d = actor::g_data[(size_t)id];
+
+                if (map::g_dlvl >= d.spawn_min_dlvl) {
+                        id_bucket.push_back(id);
+                }
+        }
+
+        // Robustness - always allow at least Black Ooze
+        if (id_bucket.empty()) {
+                id_bucket.push_back(actor::Id::ooze_black);
+        }
+
+        actor::Id id_to_spawn = rnd::element(id_bucket);
+
+        auto* const leader =
+                m_owner->m_leader
+                ? m_owner->m_leader
+                : m_owner;
+
+        auto spawned =
+                actor::spawn_random_position(
+                        {id_to_spawn},
+                        area_allowed)
+                        .set_leader(leader);
+
+        std::for_each(
+                std::begin(spawned.monsters),
+                std::end(spawned.monsters),
+                [this](auto* const spawned_mon) {
+                        auto prop_waiting = new PropWaiting();
+
+                        prop_waiting->set_duration(1);
+
+                        spawned_mon->m_properties.apply(prop_waiting);
+
+                        if (actor::can_player_see_actor(*m_owner) &&
+                            actor::can_player_see_actor(*spawned_mon)) {
+                                const auto parent_name =
+                                        text_format::first_to_upper(
+                                                m_owner->name_the());
+
+                                const auto spawned_name =
+                                        spawned_mon->name_a();
+
+                                msg_log::add(
+                                        parent_name +
+                                        " spews " +
+                                        spawned_name +
+                                        ".");
+                        }
+                });
+
+        if (m_owner->is_aware_of_player()) {
+                spawned.make_aware_of_player();
+        }
+
+        m_has_triggered_before = true;
 }
 
 void PropConfusesAdjacent::on_std_turn()

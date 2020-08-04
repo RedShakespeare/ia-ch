@@ -88,6 +88,7 @@ enum class Id {
         ooze_clear,
         ooze_putrid,
         ooze_poison,
+        glasuu,
         strange_color,
         chthonian,
         hunting_horror,
