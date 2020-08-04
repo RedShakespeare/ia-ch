@@ -329,13 +329,15 @@ void InvState::draw_weight_pct_and_dots(
                 item_weight_pct = (item.weight() * 100) / weight_carried_tot;
         }
 
-        std::string weight_str = std::to_string(item_weight_pct) + "%";
-
-        int weight_x = panels::w(Panel::item_menu) - (int)weight_str.size();
-
         ASSERT(item_weight_pct >= 0 && item_weight_pct <= 100);
 
+        std::string weight_str;
+        int weight_x;
+
         if (item_weight_pct > 0 && item_weight_pct < 100) {
+                weight_str = std::to_string(item_weight_pct) + "%";
+                weight_x = panels::w(Panel::item_menu) - (int)weight_str.size();
+
                 const P weight_pos(weight_x, item_pos.y);
 
                 const auto weight_color =
@@ -359,27 +361,25 @@ void InvState::draw_weight_pct_and_dots(
         int dots_x = item_pos.x + (int)item_name_len;
         int dots_w = weight_x - dots_x;
 
-        if (dots_w == 0) {
-                // Item name fits exactly, just skip drawing dots
-                return;
-        }
+        std::string dots_str;
+        Color dots_color;
 
-        if (dots_w < 0) {
-                // Item name does not fit at all, draw dots until the weight %
-                dots_w = 3;
-                const int dots_x1 = weight_x - 1;
-                dots_x = dots_x1 - dots_w + 1;
-        }
+        // At least one dot must be drawn, otherwise we truncate the name
+        if (dots_w > 0) {
+                // Item name fits
+                dots_str = std::string(dots_w, '.');
 
-        const std::string dots_str(dots_w, '.');
+                dots_color =
+                        is_marked
+                        ? colors::white()
+                        : item_name_color.fraction(2.0);
+        } else {
+                // Item name does not fit
+                dots_str = " (...) ";
+                dots_w = dots_str.size();
+                dots_x = weight_x - dots_w;
 
-        auto dots_color =
-                is_marked
-                ? colors::white()
-                : item_name_color;
-
-        if (!is_marked) {
-                dots_color = dots_color.fraction(2.0);
+                dots_color = colors::gray();
         }
 
         io::draw_text(

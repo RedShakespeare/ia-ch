@@ -699,9 +699,11 @@ static void draw_text_at_px(
         const int msg_px_x1 = px_pos.x + msg_px_w - 1;
         const bool msg_w_fit_on_screen = msg_px_x1 < screen_px_w;
 
-        // X position to start drawing dots instead when the message does not
-        // fit on the screen horizontally.
-        const int px_x_dots = screen_px_w - (cell_px_w * 3);
+        // X position to start drawing dots ("(..)") instead when the message
+        // does not fit on the screen horizontally.
+        const char dots[] = "(...)";
+        size_t dots_idx = 0;
+        const int px_x_dots = screen_px_w - (cell_px_w * 5);
 
         for (int i = 0; i < msg_w; ++i) {
                 if (px_pos.x < 0 || px_pos.x >= screen_px_w) {
@@ -714,11 +716,13 @@ static void draw_text_at_px(
 
                 if (draw_dots) {
                         draw_character_at_px(
-                                '.',
+                                dots[dots_idx],
                                 px_pos,
                                 sdl_color_gray,
                                 draw_bg,
                                 bg_color);
+
+                        ++dots_idx;
                 } else {
                         // Whole message fits, or we are not yet near the edge
                         draw_character_at_px(
