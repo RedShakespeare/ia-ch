@@ -5366,8 +5366,7 @@
             <can_be_summoned_by_monster>true</can_be_summoned_by_monster>
             <can_be_shapeshifted_into>false</can_be_shapeshifted_into>
             <nr_allowed_to_spawn>-1</nr_allowed_to_spawn>
-            <group_size weight="8">few</group_size>
-            <group_size weight="1">pack</group_size>
+            <group_size>few</group_size>
             <native_room>plain</native_room>
             <native_room>monster</native_room>
             <native_room>cave</native_room>
@@ -5461,8 +5460,7 @@
             <can_be_summoned_by_monster>true</can_be_summoned_by_monster>
             <can_be_shapeshifted_into>false</can_be_shapeshifted_into>
             <nr_allowed_to_spawn>-1</nr_allowed_to_spawn>
-            <group_size weight="8">few</group_size>
-            <group_size weight="1">pack</group_size>
+            <group_size>few</group_size>
             <native_room>plain</native_room>
             <native_room>monster</native_room>
             <native_room>cave</native_room>

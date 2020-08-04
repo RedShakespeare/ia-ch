@@ -880,8 +880,6 @@ static void hit_actor_with_projectile(
         // NOTE: This is run regardless of if the defender died or not
         wpn.on_ranged_hit(*projectile.actor_hit);
 
-        ASSERT(projectile.pos == projectile.actor_hit->m_pos);
-
         wpn.on_projectile_blocked(projectile.pos);
 
         if (projectile.actor_hit->is_alive()) {
