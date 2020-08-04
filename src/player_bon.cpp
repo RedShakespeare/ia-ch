@@ -74,8 +74,12 @@ static bool is_trait_blocked_for_bg(
         } break;
 
         case Trait::expert_melee:
-        case Trait::master_melee:
                 return bg == Bg::exorcist;
+
+        case Trait::master_melee:
+                return (
+                        (bg == Bg::exorcist) ||
+                        (bg == Bg::occultist));
 
         case Trait::adept_marksman:
                 return bg == Bg::ghoul;
@@ -88,7 +92,8 @@ static bool is_trait_blocked_for_bg(
         case Trait::master_marksman:
                 return (
                         (bg == Bg::ghoul) ||
-                        (bg == Bg::exorcist));
+                        (bg == Bg::exorcist) ||
+                        (bg == Bg::occultist));
 
         case Trait::healer:
                 // Cannot use Medial Bag
