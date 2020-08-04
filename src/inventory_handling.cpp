@@ -481,8 +481,9 @@ void InvState::draw_detailed_item_descr(
 
                 if (can_att_terrain || can_att_corpse) {
                         att_obj_str +=
-                                " more effectively (bonus is based on attack "
-                                "damage).";
+                                " more effectively (while the weapon is "
+                                "wielded, its attack damage is automatically "
+                                "used instead of the kick damage).";
 
                         lines.emplace_back(
                                 att_obj_str,
