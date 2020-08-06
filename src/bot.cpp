@@ -31,7 +31,6 @@
 #include "property_data.hpp"
 #include "property_factory.hpp"
 #include "property_handler.hpp"
-#include "sdl_base.hpp"
 #include "teleport.hpp"
 #include "terrain.hpp"
 #include "terrain_door.hpp"
@@ -67,7 +66,7 @@ static void show_map_and_freeze(const std::string& msg)
 
                 io::update_screen();
 
-                sdl_base::sleep(1);
+                io::sleep(1);
 
                 io::flush_input();
         }

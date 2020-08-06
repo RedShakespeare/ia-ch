@@ -15,7 +15,6 @@
 #include "msg_log.hpp"
 #include "popup.hpp"
 #include "saving.hpp"
-#include "sdl_base.hpp"
 
 // -----------------------------------------------------------------------------
 // Private
@@ -138,7 +137,7 @@ void display(const Id id)
         states::draw();
         io::update_screen();
 
-        sdl_base::sleep(100);
+        io::sleep(100);
 
         const auto text = id_to_text(id);
 

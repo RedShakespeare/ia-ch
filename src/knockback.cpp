@@ -22,7 +22,6 @@
 #include "msg_log.hpp"
 #include "property.hpp"
 #include "property_data.hpp"
-#include "sdl_base.hpp"
 #include "terrain.hpp"
 #include "terrain_mob.hpp"
 #include "terrain_trap.hpp"

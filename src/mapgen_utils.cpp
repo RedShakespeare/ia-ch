@@ -26,7 +26,6 @@
 
 #ifndef NDEBUG
 #include "io.hpp"
-#include "sdl_base.hpp"
 #endif // NDEBUG
 
 namespace mapgen {
@@ -1112,7 +1111,7 @@ P make_stairs_at_random_pos()
                                 P(0, 0),
                                 colors::light_red());
                         io::update_screen();
-                        sdl_base::sleep(8000);
+                        io::sleep(8000);
                 }
 #endif // NDEBUG
                 return P(-1, -1);

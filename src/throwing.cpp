@@ -31,7 +31,6 @@
 #include "player_bon.hpp"
 #include "property_data.hpp"
 #include "property_handler.hpp"
-#include "sdl_base.hpp"
 #include "terrain.hpp"
 #include "terrain_mob.hpp"
 #include "text_format.hpp"
@@ -92,7 +91,7 @@ void player_throw_lit_explosive(const P& aim_cell)
 
                                 io::update_screen();
 
-                                sdl_base::sleep(
+                                io::sleep(
                                         config::delay_projectile_draw());
                         }
                 }
@@ -340,7 +339,7 @@ void throw_item(
 
                         io::update_screen();
 
-                        sdl_base::sleep(config::delay_projectile_draw());
+                        io::sleep(config::delay_projectile_draw());
                 }
 
                 if ((pos == tgt_pos) &&

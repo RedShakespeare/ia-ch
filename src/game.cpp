@@ -30,7 +30,6 @@
 #include "property_factory.hpp"
 #include "query.hpp"
 #include "saving.hpp"
-#include "sdl_base.hpp"
 #include "text_format.hpp"
 #include "viewport.hpp"
 
@@ -473,7 +472,7 @@ void GameState::update()
                         // Actor cannot act
 
                         if (actor->is_player()) {
-                                sdl_base::sleep(g_ms_delay_player_unable_act);
+                                io::sleep(g_ms_delay_player_unable_act);
                         }
 
                         game_time::tick();

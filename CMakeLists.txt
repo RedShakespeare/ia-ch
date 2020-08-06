@@ -116,7 +116,6 @@ set(COMMON_SRC
         include/reload.hpp
         include/room.hpp
         include/saving.hpp
-        include/sdl_base.hpp
         include/sound.hpp
         include/spells.hpp
         include/state.hpp
@@ -282,7 +281,12 @@ SET(SRC
 
         src/audio.cpp
         src/io.cpp
-        src/sdl_base.cpp
+        src/io_coordinates.cpp
+        src/io_input.cpp
+        src/io_misc_utils.cpp
+        src/io_primitives.cpp
+        src/io_px_manip.cpp
+        src/io_text.cpp
 
         src/main.cpp
         )

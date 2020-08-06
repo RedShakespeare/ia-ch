@@ -38,7 +38,6 @@
 #include "property_data.hpp"
 #include "property_factory.hpp"
 #include "property_handler.hpp"
-#include "sdl_base.hpp"
 #include "teleport.hpp"
 #include "terrain_door.hpp"
 #include "text_format.hpp"
@@ -765,7 +764,7 @@ void SpellBolt::run_effect(
 
                                 io::update_screen();
 
-                                sdl_base::sleep(
+                                io::sleep(
                                         config::delay_projectile_draw());
                         }
                 }

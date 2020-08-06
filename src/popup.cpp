@@ -16,7 +16,6 @@
 #include "panel.hpp"
 #include "query.hpp"
 #include "rect.hpp"
-#include "sdl_base.hpp"
 #include "text_format.hpp"
 
 // -----------------------------------------------------------------------------
@@ -286,7 +285,7 @@ void msg(
 
                 io::update_screen();
 
-                sdl_base::sleep(s_msg_line_delay);
+                io::sleep(s_msg_line_delay);
 
                 msg_log::add_line_to_history(line);
         }

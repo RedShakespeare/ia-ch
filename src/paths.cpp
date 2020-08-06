@@ -7,7 +7,7 @@
 #include "paths.hpp"
 
 #include "debug.hpp"
-#include "sdl_base.hpp"
+#include "io.hpp"
 
 namespace paths {
 
@@ -53,7 +53,7 @@ std::string data_dir()
 
 std::string user_dir()
 {
-        const auto path_str = sdl_base::sdl_pref_dir();
+        const auto path_str = io::sdl_pref_dir();
 
         TRACE << "User data directory: " << path_str << std::endl;
 

@@ -18,7 +18,6 @@
 #include "popup.hpp"
 #include "property.hpp"
 #include "property_handler.hpp"
-#include "sdl_base.hpp"
 #include "terrain.hpp"
 
 namespace terrain {

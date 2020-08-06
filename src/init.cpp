@@ -36,7 +36,6 @@
 #include "property_data.hpp"
 #include "query.hpp"
 #include "saving.hpp"
-#include "sdl_base.hpp"
 
 namespace init {
 
@@ -48,7 +47,6 @@ void init_io()
 {
         TRACE_FUNC_BEGIN;
 
-        sdl_base::init();
         config::init();
         io::init();
         colors::init();
@@ -77,7 +75,6 @@ void cleanup_io()
         audio::cleanup();
         query::cleanup();
         io::cleanup();
-        sdl_base::cleanup();
 
         TRACE_FUNC_END;
 }

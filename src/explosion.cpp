@@ -21,7 +21,6 @@
 #include "player_bon.hpp"
 #include "property.hpp"
 #include "property_factory.hpp"
-#include "sdl_base.hpp"
 #include "terrain.hpp"
 #include "terrain_mob.hpp"
 #include "viewport.hpp"
@@ -133,7 +132,7 @@ static void draw(
                 if (is_any_cell_seen_by_player) {
                         io::update_screen();
 
-                        sdl_base::sleep(
+                        io::sleep(
                                 config::delay_explosion() / nr_anim_steps);
                 }
         }

@@ -23,7 +23,6 @@
 #include "pos.hpp"
 #include "query.hpp"
 #include "rect.hpp"
-#include "sdl_base.hpp"
 #include "terrain_data.hpp"
 #include "text_format.hpp"
 
@@ -287,7 +286,7 @@ static void player_sets_option(
                 // Tiles mode
                 s_is_tiles_mode = !s_is_tiles_mode;
                 update_render_dims();
-                sdl_base::init();
+                io::init();
                 io::init();
         } break;
 
@@ -325,7 +324,7 @@ static void player_sets_option(
                 s_font_name = font_image_names[font_idx];
 
                 update_render_dims();
-                sdl_base::init();
+                io::init();
                 io::init();
         } break;
 
@@ -510,7 +509,7 @@ static void player_sets_option(
                 if (direction == OptionToggleDirecton::enter) {
                         set_default_variables();
                         update_render_dims();
-                        sdl_base::init();
+                        io::init();
                         io::init();
                         audio::init();
                 }

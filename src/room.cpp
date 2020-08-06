@@ -26,7 +26,6 @@
 
 #ifndef NDEBUG
 #include "io.hpp"
-#include "sdl_base.hpp"
 #endif // NDEBUG
 
 // -----------------------------------------------------------------------------
@@ -1824,7 +1823,7 @@ void RiverRoom::on_pre_connect(Array2<bool>& door_proposals)
                                 if (valid_room_entries0.at(x, y) ||
                                     valid_room_entries1.at(x, y)) {
                                         io::update_screen();
-                                        sdl_base::sleep(100);
+                                        io::sleep(100);
                                 }
                         }
                 }
@@ -1926,7 +1925,7 @@ void RiverRoom::on_pre_connect(Array2<bool>& door_proposals)
 
                                 io::update_screen();
 
-                                sdl_base::sleep(2000);
+                                io::sleep(2000);
                         }
 #endif // NDEBUG
 

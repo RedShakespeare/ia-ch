@@ -23,7 +23,6 @@
 #include "init.hpp"
 #include "io.hpp"
 #include "query.hpp"
-#include "sdl_base.hpp"
 #endif // NDEBUG
 
 // -----------------------------------------------------------------------------

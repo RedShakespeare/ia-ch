@@ -28,7 +28,6 @@
 #include "property_data.hpp"
 #include "property_factory.hpp"
 #include "property_handler.hpp"
-#include "sdl_base.hpp"
 #include "terrain.hpp"
 #include "terrain_mob.hpp"
 #include "terrain_trap.hpp"
@@ -1295,7 +1294,7 @@ static void draw_projectile_hit(
 
                 io::update_screen();
 
-                sdl_base::sleep(animation_delay / 2);
+                io::sleep(animation_delay / 2);
 
                 projectile.tile = gfx::TileId::blast2;
 
@@ -1303,7 +1302,7 @@ static void draw_projectile_hit(
 
                 io::update_screen();
 
-                sdl_base::sleep(animation_delay / 2);
+                io::sleep(animation_delay / 2);
         } else {
                 // Text mode
                 projectile.character = '*';
@@ -1312,7 +1311,7 @@ static void draw_projectile_hit(
 
                 io::update_screen();
 
-                sdl_base::sleep(animation_delay);
+                io::sleep(animation_delay);
         }
 }
 
@@ -1420,7 +1419,7 @@ static ProjectileFireData fire_projectiles(
                 run_projectile_hits(fire_data);
 
                 if (is_any_projectile_seen(fire_data.projectiles)) {
-                        sdl_base::sleep(fire_data.animation_delay);
+                        io::sleep(fire_data.animation_delay);
                 }
         }
 

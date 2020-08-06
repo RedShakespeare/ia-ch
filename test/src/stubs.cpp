@@ -9,7 +9,6 @@
 #include "panel.hpp"
 #include "pos.hpp"
 #include "rect.hpp"
-#include "sdl_base.hpp"
 
 // -----------------------------------------------------------------------------
 // io
@@ -210,25 +209,14 @@ InputData get()
         return d;
 }
 
-} // namespace io
-
-// -----------------------------------------------------------------------------
-// sdl_base
-// -----------------------------------------------------------------------------
-namespace sdl_base {
-
-void init() {}
-
-void cleanup() {}
-
-void sleep(const Uint32) {}
-
 std::string sdl_pref_dir()
 {
         return "./";
 }
 
-} // namespace sdl_base
+void sleep(const Uint32) {}
+
+} // namespace io
 
 // -----------------------------------------------------------------------------
 // audio

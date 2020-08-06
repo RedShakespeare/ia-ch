@@ -181,6 +181,10 @@ void draw_main_menu_logo();
 // empty, in which case an empty area is drawn.
 void draw_descr_box(const std::vector<ColoredString>& lines);
 
+std::string sdl_pref_dir();
+
+void sleep(uint32_t duration);
+
 // ----------------------------------------
 // TODO: WTF is the difference between these two functions?
 void flush_input();

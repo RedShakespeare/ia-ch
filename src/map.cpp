@@ -25,7 +25,6 @@
 #include "terrain_mob.hpp"
 
 #ifndef NDEBUG
-#include "sdl_base.hpp"
 #include "viewport.hpp"
 #endif // NDEBUG
 
@@ -238,7 +237,7 @@ terrain::Terrain* put(terrain::Terrain* const t)
                         io::update_screen();
 
                         // NOTE: Delay must be > 1 for user input to be read
-                        sdl_base::sleep(3);
+                        io::sleep(3);
                 }
         }
 #endif // NDEBUG

@@ -20,7 +20,6 @@
 
 #ifndef NDEBUG
 #include "io.hpp"
-#include "sdl_base.hpp"
 #include "viewport.hpp"
 #endif // NDEBUG
 
@@ -611,7 +610,7 @@ bool is_map_connected(const Array2<bool>& blocked)
 
                                         io::update_screen();
 
-                                        sdl_base::sleep(3);
+                                        io::sleep(3);
                                 }
 #endif // NDEBUG
 
