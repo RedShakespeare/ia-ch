@@ -117,7 +117,7 @@ void draw_symbol(
 void draw_tile(
         const gfx::TileId,
         const Panel,
-        const P,
+        P,
         const Color&,
         const DrawBg,
         const Color&) {}
@@ -172,13 +172,9 @@ void cover_area(
         const P,
         const Color&) {}
 
-void draw_rectangle(
-        const R&,
-        const Color&) {}
+void draw_rectangle(R, const Color&) {}
 
-void draw_rectangle_filled(
-        const R&,
-        const Color&) {}
+void draw_rectangle_filled(R, const Color&) {}
 
 void draw_blast_at_cells(
         const std::vector<P>&,
@@ -192,7 +188,7 @@ void draw_blast_at_seen_actors(
         const std::vector<actor::Actor*>&,
         const Color&) {}
 
-void draw_main_menu_logo() {}
+void draw_logo() {}
 
 void draw_descr_box(const std::vector<ColoredString>&) {}
 

@@ -17,7 +17,6 @@
 #include "init.hpp"
 #include "inventory.hpp"
 #include "inventory_handling.hpp"
-#include "io.hpp"
 #include "item.hpp"
 #include "map.hpp"
 #include "map_controller.hpp"

@@ -227,7 +227,7 @@ void MainMenuState::draw()
         }
 
         if (config::is_tiles_mode()) {
-                io::draw_main_menu_logo();
+                io::draw_logo();
         } else {
                 // Text mode
                 io::draw_text_center(

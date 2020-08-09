@@ -33,6 +33,7 @@
 #include "player_spells.hpp"
 #include "popup.hpp"
 #include "postmortem.hpp"
+#include "property_factory.hpp"
 #include "query.hpp"
 #include "reload.hpp"
 #include "saving.hpp"
@@ -860,6 +861,9 @@ void handle(const GameCmd cmd)
         } break;
 
         case GameCmd::debug_f7: {
+                map::g_player->m_properties.apply(
+                        property_factory::make(PropId::r_conf));
+
                 teleport(*map::g_player);
         } break;
 

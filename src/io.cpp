@@ -18,7 +18,178 @@
 // -----------------------------------------------------------------------------
 // Private
 // -----------------------------------------------------------------------------
-static const SDL_Color s_sdl_color_black = {0, 0, 0, 0};
+static SDL_Surface* load_surface(const std::string& path)
+{
+        auto* const surface = IMG_Load(path.c_str());
+
+        if (!surface) {
+                TRACE_ERROR_RELEASE
+                        << "Failed to load surface from path '"
+                        << path
+                        << "': "
+                        << IMG_GetError()
+                        << std::endl;
+
+                PANIC;
+        }
+
+        return surface;
+}
+
+static void swap_surface_color(
+        SDL_Surface& surface,
+        const Color& color_before,
+        const Color& color_after)
+{
+        for (int x = 0; x < surface.w; ++x) {
+                for (int y = 0; y < surface.h; ++y) {
+                        const P p(x, y);
+
+                        const auto color = io::read_px_on_surface(surface, p);
+
+                        if (color == color_before) {
+                                io::put_px_on_surface(surface, p, color_after);
+                        }
+                }
+        }
+}
+
+static bool should_put_contour_at(
+        const SDL_Surface& surface,
+        const P& surface_px_pos,
+        const R& surface_px_rect,
+        const Color& bg_color)
+{
+        // Only allow drawing a contour at pixels with the background color
+        {
+                const auto color =
+                        io::read_px_on_surface(
+                                surface,
+                                surface_px_pos);
+
+                if (color != bg_color) {
+                        return false;
+                }
+        }
+
+        // Draw a contour here if it has a neighbour with different color than
+        // the background or contour color (i.e. if it has a neighbour with a
+        // color that will be drawn to the screen)
+        for (const auto& d : dir_utils::g_dir_list) {
+                const auto adj_p = surface_px_pos + d;
+
+                if (!surface_px_rect.is_pos_inside(adj_p)) {
+                        continue;
+                }
+
+                const auto adj_color = io::read_px_on_surface(surface, adj_p);
+
+                if ((adj_color == bg_color) || (adj_color == colors::black())) {
+                        continue;
+                }
+
+                return true;
+        }
+
+        return false;
+}
+
+static void draw_black_contour_for_surface(
+        SDL_Surface& surface,
+        const Color& bg_color)
+{
+        const R surface_px_rect({0, 0}, {surface.w - 1, surface.h - 1});
+
+        for (const auto& surface_px_pos : surface_px_rect.positions()) {
+                const bool should_put_contour =
+                        should_put_contour_at(
+                                surface,
+                                surface_px_pos,
+                                surface_px_rect,
+                                bg_color);
+
+                if (should_put_contour) {
+                        io::put_px_on_surface(
+                                surface,
+                                surface_px_pos,
+                                colors::black());
+                }
+        }
+}
+
+static void verify_texture_size(
+        SDL_Texture* texture,
+        const P& expected_size,
+        const std::string img_path)
+{
+        P size;
+
+        SDL_QueryTexture(texture, nullptr, nullptr, &size.x, &size.y);
+
+        // Verify width and height of loaded image
+        if (size != expected_size) {
+                TRACE_ERROR_RELEASE
+                        << "Tile image at \""
+                        << img_path
+                        << "\" has wrong size: "
+                        << size.x
+                        << "x"
+                        << size.x
+                        << ", expected: "
+                        << expected_size.x
+                        << "x"
+                        << expected_size.y
+                        << std::endl;
+
+                PANIC;
+        }
+}
+
+static SDL_Texture* create_texture_from_surface(SDL_Surface& surface)
+{
+        auto* const texture =
+                SDL_CreateTextureFromSurface(
+                        io::g_sdl_renderer,
+                        &surface);
+
+        if (!texture) {
+                TRACE_ERROR_RELEASE
+                        << "Failed to create texture from surface: "
+                        << IMG_GetError()
+                        << std::endl;
+
+                PANIC;
+        }
+
+        return texture;
+}
+
+static void set_surface_color_key(SDL_Surface& surface, const Color& color)
+{
+        const int v =
+                SDL_MapRGB(
+                        surface.format,
+                        color.r(),
+                        color.g(),
+                        color.b());
+
+        const bool enable_color_key = true;
+
+        SDL_SetColorKey(&surface, enable_color_key, v);
+}
+
+static SDL_Texture* load_texture(const std::string& path)
+{
+        auto* const surface = load_surface(path);
+
+        set_surface_color_key(*surface, colors::black());
+
+        auto* const texture = create_texture_from_surface(*surface);
+
+        SDL_FreeSurface(surface);
+
+        return texture;
+}
 
 static SDL_Renderer* create_renderer(const P& px_dims)
 {
@@ -42,70 +213,11 @@ static SDL_Renderer* create_renderer(const P& px_dims)
 
         SDL_RenderSetLogicalSize(renderer, px_dims.x, px_dims.y);
 
-        // SDL_RenderSetIntegerScale(renderer, SDL_TRUE);
-
         SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "0");
 
         TRACE_FUNC_END;
 
         return renderer;
-}
-
-static SDL_Texture* create_texture(const P& px_dims)
-{
-        TRACE_FUNC_BEGIN;
-
-        auto* const texture =
-                SDL_CreateTexture(
-                        io::g_sdl_renderer,
-                        SDL_PIXELFORMAT_ARGB8888,
-                        SDL_TEXTUREACCESS_STREAMING,
-                        px_dims.x,
-                        px_dims.y);
-
-        if (!texture) {
-                TRACE_ERROR_RELEASE
-                        << "Failed to create texture"
-                        << std::endl
-                        << SDL_GetError()
-                        << std::endl;
-
-                PANIC;
-        }
-
-        TRACE_FUNC_END;
-
-        return texture;
-}
-
-static SDL_Surface* create_surface(const P px_dims)
-{
-        TRACE_FUNC_BEGIN;
-
-        auto* surface =
-                SDL_CreateRGBSurface(
-                        0,
-                        px_dims.x,
-                        px_dims.y,
-                        32,
-                        0x00FF0000,
-                        0x0000FF00,
-                        0x000000FF,
-                        0xFF000000);
-
-        if (!surface) {
-                TRACE_ERROR_RELEASE
-                        << "Failed to create surface"
-                        << std::endl
-                        << SDL_GetError()
-                        << std::endl;
-
-                PANIC;
-        }
-
-        TRACE_FUNC_END;
-
-        return surface;
 }
 
 static void cleanup_sdl()
@@ -130,19 +242,21 @@ static void init_sdl()
         cleanup_sdl();
 
         if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO | SDL_INIT_EVENTS) == -1) {
-                TRACE_ERROR_RELEASE << "Failed to init SDL"
-                                    << std::endl
-                                    << SDL_GetError()
-                                    << std::endl;
+                TRACE_ERROR_RELEASE
+                        << "Failed to init SDL"
+                        << std::endl
+                        << SDL_GetError()
+                        << std::endl;
 
                 PANIC;
         }
 
         if (IMG_Init(IMG_INIT_PNG) == -1) {
-                TRACE_ERROR_RELEASE << "Failed to init SDL_image"
-                                    << std::endl
-                                    << SDL_GetError()
-                                    << std::endl;
+                TRACE_ERROR_RELEASE
+                        << "Failed to init SDL_image"
+                        << std::endl
+                        << SDL_GetError()
+                        << std::endl;
 
                 PANIC;
         }
@@ -160,28 +274,16 @@ static void init_sdl()
                         audio_buffers);
 
         if (result == -1) {
-                TRACE_ERROR_RELEASE << "Failed to init SDL_mixer"
-                                    << std::endl
-                                    << SDL_GetError()
-                                    << std::endl;
+                TRACE_ERROR_RELEASE
+                        << "Failed to init SDL_mixer"
+                        << std::endl
+                        << SDL_GetError()
+                        << std::endl;
 
                 ASSERT(false);
         }
 
         Mix_AllocateChannels(audio::g_allocated_channels);
-
-        TRACE_FUNC_END;
-}
-
-static void init_screen_surface(const P& px_dims)
-{
-        TRACE_FUNC_BEGIN;
-
-        if (io::g_screen_srf) {
-                SDL_FreeSurface(io::g_screen_srf);
-        }
-
-        io::g_screen_srf = create_surface(px_dims);
 
         TRACE_FUNC_END;
 }
@@ -251,25 +353,9 @@ static void init_renderer(const P& px_dims)
 
         if (io::g_sdl_renderer) {
                 SDL_DestroyRenderer(io::g_sdl_renderer);
-
-                // NOTE: The above call also frees the texture
-                io::g_screen_texture = nullptr;
         }
 
         io::g_sdl_renderer = create_renderer(px_dims);
-
-        TRACE_FUNC_END;
-}
-
-static void init_screen_texture(const P& px_dims)
-{
-        TRACE_FUNC_BEGIN;
-
-        if (io::g_screen_texture) {
-                SDL_DestroyTexture(io::g_screen_texture);
-        }
-
-        io::g_screen_texture = create_texture(px_dims);
 
         TRACE_FUNC_END;
 }
@@ -293,74 +379,33 @@ static P native_resolution_from_sdl()
         return {display_mode.w, display_mode.h};
 }
 
-static void blit_surface(SDL_Surface& srf, const P px_pos)
+static void update_rendering_offsets()
 {
-        SDL_Rect dst_rect;
+        const auto screen_panel_dims = io::panel_px_dims(Panel::screen);
 
-        dst_rect.x = px_pos.x;
-        dst_rect.y = px_pos.y;
-        dst_rect.w = srf.w;
-        dst_rect.h = srf.h;
+        const bool is_centering_allowed = panels::is_valid();
 
-        SDL_BlitSurface(&srf, nullptr, io::g_screen_srf, &dst_rect);
-}
+        if (is_centering_allowed) {
+                P window_dims;
 
-static void load_contour(
-        const std::vector<P>& source_px_data,
-        std::vector<P>& dest_px_data,
-        const P cell_px_dims)
-{
-        for (const P& source_px_pos : source_px_data) {
-                const int size = 1;
+                SDL_GetWindowSize(
+                        io::g_sdl_window,
+                        &window_dims.x,
+                        &window_dims.y);
 
-                const int px_x0 =
-                        std::max(0, source_px_pos.x - size);
+                const P extra_space(window_dims - screen_panel_dims);
 
-                const int px_y0 =
-                        std::max(0, source_px_pos.y - size);
-
-                const int px_x1 =
-                        std::min(cell_px_dims.x - 1, source_px_pos.x + size);
-
-                const int px_y1 =
-                        std::min(cell_px_dims.y - 1, source_px_pos.y + size);
-
-                for (int px_x = px_x0; px_x <= px_x1; ++px_x) {
-                        for (int px_y = px_y0; px_y <= px_y1; ++px_y) {
-                                const P p(px_x, px_y);
-
-                                // Only mark pixel as contour if it's not marked
-                                // on the source
-                                const auto it =
-                                        std::find(
-                                                std::begin(source_px_data),
-                                                std::end(source_px_data),
-                                                p);
-
-                                if (it == end(source_px_data)) {
-                                        dest_px_data.push_back(p);
-                                }
-                        }
-                }
+                io::g_rendering_px_offset = extra_space.scaled_down(2);
+        } else {
+                io::g_rendering_px_offset.set(0, 0);
         }
 }
 
-static void load_images()
+static void load_logo()
 {
         TRACE_FUNC_BEGIN;
 
-        // Main menu logo
-        SDL_Surface* tmp_srf = IMG_Load(paths::logo_img_path().c_str());
-
-        ASSERT(tmp_srf && "Failed to load main menu logo image");
-
-        io::g_main_menu_logo_srf =
-                SDL_ConvertSurface(
-                        tmp_srf,
-                        io::g_screen_srf->format,
-                        0);
-
-        SDL_FreeSurface(tmp_srf);
+        io::g_logo_texture = load_texture(paths::logo_img_path().c_str());
 
         TRACE_FUNC_END;
 }
@@ -369,82 +414,47 @@ static void load_font()
 {
         TRACE_FUNC_BEGIN;
 
-        const std::string font_path =
-                paths::fonts_dir() +
-                config::font_name();
+        const auto font_path = paths::fonts_dir() + config::font_name();
 
-        SDL_Surface* const font_srf_tmp = IMG_Load(font_path.c_str());
+        auto* const surface = load_surface(font_path);
 
-        if (!font_srf_tmp) {
-                TRACE_ERROR_RELEASE
-                        << "Failed to load font: "
-                        << IMG_GetError()
-                        << std::endl;
+        swap_surface_color(*surface, colors::black(), colors::magenta());
 
-                PANIC;
-        }
+        set_surface_color_key(*surface, colors::magenta());
 
-        const auto img_color =
-                SDL_MapRGB(
-                        font_srf_tmp->format,
-                        255,
-                        255,
-                        255);
+        // Create the non-contour font texture version
+        io::g_font_texture =
+                create_texture_from_surface(*surface);
 
-        const P cell_px_dims(
-                config::gui_cell_px_w(),
-                config::gui_cell_px_h());
+        draw_black_contour_for_surface(*surface, colors::magenta());
 
-        for (int x = 0; x < (int)io::g_font_nr_x; ++x) {
-                for (int y = 0; y < (int)io::g_font_nr_y; ++y) {
-                        auto& px_data = io::g_font_px_data[x][y];
-
-                        px_data.clear();
-
-                        const int sheet_x0 = x * cell_px_dims.x;
-                        const int sheet_y0 = y * cell_px_dims.y;
-                        const int sheet_x1 = sheet_x0 + cell_px_dims.x - 1;
-                        const int sheet_y1 = sheet_y0 + cell_px_dims.y - 1;
-
-                        for (int sheet_x = sheet_x0;
-                             sheet_x <= sheet_x1;
-                             ++sheet_x) {
-                                for (int sheet_y = sheet_y0;
-                                     sheet_y <= sheet_y1;
-                                     ++sheet_y) {
-                                        const auto current_px =
-                                                io::px(
-                                                        *font_srf_tmp,
-                                                        sheet_x,
-                                                        sheet_y);
-
-                                        const bool is_img_px =
-                                                current_px == img_color;
-
-                                        if (is_img_px) {
-                                                const int x_relative =
-                                                        sheet_x - sheet_x0;
-
-                                                const int y_relative =
-                                                        sheet_y - sheet_y0;
-
-                                                px_data.emplace_back(
-                                                        x_relative,
-                                                        y_relative);
-                                        }
-                                }
-                        }
-
-                        load_contour(
-                                px_data,
-                                io::g_font_contour_px_data[x][y],
-                                cell_px_dims);
-                }
-        }
-
-        SDL_FreeSurface(font_srf_tmp);
+        // Create the font texture version with contour
+        io::g_font_texture_with_contours =
+                create_texture_from_surface(*surface);
 
         TRACE_FUNC_END;
+}
+
+static void load_tile(const gfx::TileId id, const P& cell_px_dims)
+{
+        const std::string img_name = gfx::tile_id_to_str(id);
+        const std::string img_path = paths::tiles_dir() + img_name + ".png";
+
+        auto* const surface = load_surface(img_path);
+
+        swap_surface_color(*surface, colors::black(), colors::magenta());
+
+        set_surface_color_key(*surface, colors::magenta());
+
+        draw_black_contour_for_surface(*surface, colors::magenta());
+
+        auto* const texture = create_texture_from_surface(*surface);
+
+        SDL_FreeSurface(surface);
+
+        io::g_tile_textures[(size_t)id] = texture;
+
+        verify_texture_size(texture, cell_px_dims, img_path);
 }
 
 static void load_tiles()
@@ -456,79 +466,7 @@ static void load_tiles()
                 config::map_cell_px_h());
 
         for (size_t i = 0; i < (size_t)gfx::TileId::END; ++i) {
-                const auto id = (gfx::TileId)i;
-
-                const std::string img_name = gfx::tile_id_to_str(id);
-
-                const std::string img_path =
-                        paths::tiles_dir() +
-                        img_name +
-                        ".png";
-
-                SDL_Surface* const tile_srf_tmp = IMG_Load(img_path.c_str());
-
-                if (!tile_srf_tmp) {
-                        TRACE_ERROR_RELEASE
-                                << "Could not load tile image, at: "
-                                << img_path
-                                << std::endl;
-
-                        PANIC;
-                }
-
-                // Verify width and height of loaded image
-                if ((tile_srf_tmp->w != cell_px_dims.x) ||
-                    (tile_srf_tmp->h != cell_px_dims.y)) {
-                        TRACE_ERROR_RELEASE
-                                << "Tile image at \""
-                                << img_path
-                                << "\" has wrong size: "
-                                << tile_srf_tmp->w
-                                << "x"
-                                << tile_srf_tmp->h
-                                << ", expected: "
-                                << cell_px_dims.x
-                                << "x"
-                                << cell_px_dims.y
-                                << std::endl;
-
-                        PANIC;
-                }
-
-                const auto img_color =
-                        SDL_MapRGB(
-                                tile_srf_tmp->format,
-                                255,
-                                255,
-                                255);
-
-                auto& px_data = io::g_tile_px_data[i];
-
-                px_data.clear();
-
-                for (int x = 0; x < cell_px_dims.x; ++x) {
-                        for (int y = 0; y < cell_px_dims.y; ++y) {
-                                const auto current_px =
-                                        io::px(
-                                                *tile_srf_tmp,
-                                                x,
-                                                y);
-
-                                const bool is_img_px =
-                                        current_px == img_color;
-
-                                if (is_img_px) {
-                                        px_data.emplace_back(x, y);
-                                }
-                        }
-                }
-
-                load_contour(
-                        px_data,
-                        io::g_tile_contour_px_data[i],
-                        cell_px_dims);
-
-                SDL_FreeSurface(tile_srf_tmp);
+                load_tile((gfx::TileId)i, cell_px_dims);
         }
 
         TRACE_FUNC_END;
@@ -548,20 +486,14 @@ static P sdl_window_px_dims()
 // -----------------------------------------------------------------------------
 namespace io {
 
-int g_bpp = -1;
-
 SDL_Window* g_sdl_window = nullptr;
 SDL_Renderer* g_sdl_renderer = nullptr;
-SDL_Surface* g_screen_srf = nullptr;
-SDL_Texture* g_screen_texture = nullptr;
+SDL_Texture* g_font_texture_with_contours = nullptr;
+SDL_Texture* g_font_texture = nullptr;
+SDL_Texture* g_tile_textures[(size_t)gfx::TileId::END] = {};
+SDL_Texture* g_logo_texture = nullptr;
 
-SDL_Surface* g_main_menu_logo_srf = nullptr;
-
-std::vector<P> g_tile_px_data[(size_t)gfx::TileId::END];
-std::vector<P> g_font_px_data[g_font_nr_x][g_font_nr_y];
-
-std::vector<P> g_tile_contour_px_data[(size_t)gfx::TileId::END];
-std::vector<P> g_font_contour_px_data[g_font_nr_x][g_font_nr_y];
+P g_rendering_px_offset = {};
 
 void init()
 {
@@ -666,23 +598,15 @@ void init()
 
         init_renderer(screen_px_dims);
 
-        init_screen_surface(screen_px_dims);
-
-        g_bpp = g_screen_srf->format->BytesPerPixel;
-
-        TRACE << "bpp: " << g_bpp << std::endl;
-
-        init_px_manip();
-
-        init_screen_texture(screen_px_dims);
-
         load_font();
 
         if (config::is_tiles_mode()) {
                 load_tiles();
 
-                load_images();
+                load_logo();
         }
+
+        update_rendering_offsets();
 
         TRACE_FUNC_END;
 }
@@ -694,24 +618,11 @@ void cleanup()
         if (g_sdl_renderer) {
                 SDL_DestroyRenderer(g_sdl_renderer);
                 g_sdl_renderer = nullptr;
-
-                // NOTE: The above call also frees the texture
-                io::g_screen_texture = nullptr;
         }
 
         if (g_sdl_window) {
                 SDL_DestroyWindow(g_sdl_window);
                 g_sdl_window = nullptr;
-        }
-
-        if (g_screen_srf) {
-                SDL_FreeSurface(g_screen_srf);
-                g_screen_srf = nullptr;
-        }
-
-        if (g_main_menu_logo_srf) {
-                SDL_FreeSurface(g_main_menu_logo_srf);
-                g_main_menu_logo_srf = nullptr;
         }
 
         cleanup_sdl();
@@ -723,8 +634,6 @@ void update_screen()
 {
         const auto screen_panel_dims = panel_px_dims(Panel::screen);
 
-        bool is_centering_allowed = true;
-
         if (!panels::is_valid() &&
             (screen_panel_dims.x > config::gui_cell_px_w()) &&
             (screen_panel_dims.y > config::gui_cell_px_h())) {
@@ -734,67 +643,16 @@ void update_screen()
                         colors::light_white(),
                         DrawBg::no,
                         colors::black());
-
-                is_centering_allowed = false;
         }
-
-        SDL_UpdateTexture(
-                g_screen_texture,
-                nullptr,
-                g_screen_srf->pixels,
-                g_screen_srf->pitch);
-
-        const auto screen_srf_dims =
-                P(g_screen_srf->w,
-                  g_screen_srf->h);
-
-        P offsets(0, 0);
-
-        if (is_centering_allowed) {
-                offsets = (screen_srf_dims - screen_panel_dims).scaled_down(2);
-
-                // Since we render the screen texture with an offset, we create
-                // a blank space which we need to clear
-                const auto bg_color = colors::black();
-
-                SDL_SetRenderDrawColor(
-                        g_sdl_renderer,
-                        bg_color.r(),
-                        bg_color.g(),
-                        bg_color.b(),
-                        255);
-
-                SDL_RenderClear(g_sdl_renderer);
-        }
-
-        SDL_Rect dstrect;
-
-        dstrect.x = offsets.x;
-        dstrect.y = offsets.y;
-        dstrect.w = g_screen_srf->w;
-        dstrect.h = g_screen_srf->h;
-
-        SDL_RenderCopy(
-                g_sdl_renderer,
-                g_screen_texture,
-                nullptr,
-                &dstrect);
 
         SDL_RenderPresent(g_sdl_renderer);
 }
 
 void clear_screen()
 {
-        const auto clr = colors::black();
+        SDL_SetRenderDrawColor(g_sdl_renderer, 0u, 0u, 0u, 0xFFu);
 
-        SDL_FillRect(
-                g_screen_srf,
-                nullptr,
-                SDL_MapRGB(
-                        g_screen_srf->format,
-                        clr.r(),
-                        clr.g(),
-                        clr.b()));
+        SDL_RenderClear(g_sdl_renderer);
 }
 
 P min_screen_gui_dims()
@@ -834,6 +692,65 @@ void on_fullscreen_toggled()
         update_screen();
 }
 
+void draw_character_at_px(
+        const char character,
+        P px_pos,
+        const Color& color,
+        const io::DrawBg draw_bg,
+        const Color& bg_color)
+{
+        const int gui_cell_px_w = config::gui_cell_px_w();
+        const int gui_cell_px_h = config::gui_cell_px_h();
+
+        if (draw_bg == io::DrawBg::yes) {
+                const P cell_dims(
+                        gui_cell_px_w,
+                        gui_cell_px_h);
+
+                io::draw_rectangle_filled(
+                        {px_pos, px_pos + cell_dims - 1},
+                        bg_color);
+        }
+
+        // NOTE: We must set this offset *after* drawing the rectangle above,
+        // since that function will compensate for the offsets as well
+        px_pos = px_pos.with_offsets(g_rendering_px_offset);
+
+        SDL_Rect render_rect;
+
+        render_rect.x = px_pos.x;
+        render_rect.y = px_pos.y;
+        render_rect.w = gui_cell_px_w;
+        render_rect.h = gui_cell_px_h;
+
+        auto char_px_pos =
+                gfx::character_pos(character)
+                        .scaled_up(
+                                gui_cell_px_w,
+                                gui_cell_px_h);
+
+        SDL_Rect clip_rect;
+
+        clip_rect.x = char_px_pos.x;
+        clip_rect.y = char_px_pos.y;
+        clip_rect.w = gui_cell_px_w;
+        clip_rect.h = gui_cell_px_h;
+
+        SDL_Texture* texture;
+
+        if ((color == colors::black()) || (bg_color == colors::black())) {
+                // Foreground or background is black - no contours
+                texture = g_font_texture;
+        } else {
+                // Both foreground and background are non-black - use contours
+                texture = g_font_texture_with_contours;
+        }
+
+        SDL_SetTextureColorMod(texture, color.r(), color.g(), color.b());
+
+        SDL_RenderCopy(g_sdl_renderer, texture, &clip_rect, &render_rect);
+}
+
 void draw_tile(
         const gfx::TileId tile,
         const Panel panel,
@@ -846,7 +763,10 @@ void draw_tile(
                 return;
         }
 
-        const P px_pos = map_to_px_coords(panel, pos);
+        P px_pos = map_to_px_coords(panel, pos);
+
+        const int map_cell_px_w = config::map_cell_px_w();
+        const int map_cell_px_h = config::map_cell_px_h();
 
         if (draw_bg == DrawBg::yes) {
                 const P cell_dims(
@@ -858,22 +778,30 @@ void draw_tile(
                         bg_color);
         }
 
-        // Draw contour if neither the foreground nor background is black
-        if ((color != colors::black()) &&
-            (bg_color != colors::black())) {
-                const auto& contour_px_data =
-                        g_tile_contour_px_data[(size_t)tile];
+        // NOTE: We must set this offset *after* drawing the rectangle above,
+        // since that function will compensate for the offsets as well
+        px_pos = px_pos.with_offsets(g_rendering_px_offset);
 
-                put_pixels_on_screen(
-                        contour_px_data,
-                        px_pos,
-                        s_sdl_color_black);
-        }
+        SDL_Rect render_rect;
 
-        put_pixels_on_screen(
-                tile,
-                px_pos,
-                color.sdl_color());
+        render_rect.x = px_pos.x;
+        render_rect.y = px_pos.y;
+        render_rect.w = map_cell_px_w;
+        render_rect.h = map_cell_px_h;
+
+        auto* const texture = g_tile_textures[(size_t)tile];
+
+        SDL_SetTextureColorMod(
+                texture,
+                color.r(),
+                color.g(),
+                color.b());
+
+        SDL_RenderCopy(
+                g_sdl_renderer,
+                texture,
+                nullptr, // No clipping needed, drawing whole texture
+                &render_rect);
 }
 
 void cover_panel(const Panel panel, const Color& color)
@@ -896,7 +824,9 @@ void cover_area(
 
         const R screen_area = area.with_offset(panel_p0);
 
-        const R px_area = gui_to_px_rect(screen_area);
+        const R px_area =
+                gui_to_px_rect(screen_area)
+                        .with_offset(g_rendering_px_offset);
 
         draw_rectangle_filled(px_area, color);
 }
@@ -907,10 +837,9 @@ void cover_area(
         const P dims,
         const Color& color)
 {
-        cover_area(
-                panel,
-                {offset, offset + dims - 1},
-                color);
+        const auto area = R(offset, offset + dims - 1);
+
+        cover_area(panel, area, color);
 }
 
 void cover_cell(const Panel panel, const P offset)
@@ -918,7 +847,7 @@ void cover_cell(const Panel panel, const P offset)
         cover_area(panel, offset, P(1, 1));
 }
 
-void draw_main_menu_logo()
+void draw_logo()
 {
         if (!panels::is_valid()) {
                 return;
@@ -926,11 +855,27 @@ void draw_main_menu_logo()
 
         const int screen_px_w = panel_px_w(Panel::screen);
 
-        const int logo_px_h = g_main_menu_logo_srf->w;
+        int img_w = 0;
+        int img_h = 0;
 
-        const P px_pos((screen_px_w - logo_px_h) / 2, 0);
+        SDL_QueryTexture(g_logo_texture, nullptr, nullptr, &img_w, &img_h);
 
-        blit_surface(*g_main_menu_logo_srf, px_pos);
+        const auto px_pos =
+                P((screen_px_w - img_w) / 2, 0)
+                        .with_offsets(g_rendering_px_offset);
+
+        SDL_Rect rect;
+
+        rect.x = px_pos.x;
+        rect.y = 0;
+        rect.w = img_w;
+        rect.h = img_h;
+
+        SDL_RenderCopy(
+                g_sdl_renderer,
+                g_logo_texture,
+                nullptr, // No clipping needed, drawing whole texture
+                &rect);
 }
 
 void try_set_window_gui_cells(P new_gui_dims)
@@ -947,7 +892,7 @@ void try_set_window_gui_cells(P new_gui_dims)
 
 void on_window_resized()
 {
-        P new_px_dims = sdl_window_px_dims();
+        const auto new_px_dims = sdl_window_px_dims();
 
         config::set_screen_px_w(new_px_dims.x);
         config::set_screen_px_h(new_px_dims.y);
@@ -960,11 +905,9 @@ void on_window_resized()
 
         panels::init(io::px_to_gui_coords(new_px_dims));
 
-        init_renderer(new_px_dims);
+        SDL_RenderSetLogicalSize(g_sdl_renderer, new_px_dims.x, new_px_dims.y);
 
-        init_screen_surface(new_px_dims);
-
-        init_screen_texture(new_px_dims);
+        update_rendering_offsets();
 
         states::on_window_resized();
 }

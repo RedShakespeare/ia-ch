@@ -48,8 +48,8 @@ void init_io()
         TRACE_FUNC_BEGIN;
 
         config::init();
-        io::init();
         colors::init();
+        io::init();
 
         io::clear_screen();
 

@@ -78,7 +78,7 @@ InputData get()
                                         SDL_GetTicks() -
                                         ms_at_last_window_resize;
 
-                                if (d > 150) {
+                                if (d > 400) {
                                         states::draw();
 
                                         io::update_screen();

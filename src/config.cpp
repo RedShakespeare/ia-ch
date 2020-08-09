@@ -35,6 +35,11 @@ enum class OptionToggleDirecton {
         right
 };
 
+// TODO: Use this font:
+// "12x22_monospace_medium.png"
+// .ttf downloaded from: https://www.1001fonts.com/monospace-font.html
+// '%', and maybe '#' needs some adjusting though...
+
 static const std::vector<std::string> font_image_names = {
         "8x12_DOS.png",
         "11x19.png",
@@ -123,7 +128,7 @@ static P parse_dims_from_font_name(std::string font_name)
         const int w = to_int(w_str);
         const int h = to_int(h_str);
 
-        return P(w, h);
+        return {w, h};
 }
 
 static void update_render_dims()
@@ -131,7 +136,6 @@ static void update_render_dims()
         TRACE_FUNC_BEGIN;
 
         if (s_is_tiles_mode) {
-                // TODO: Temporary solution
                 const P font_dims = parse_dims_from_font_name(s_font_name);
 
                 s_gui_cell_px_w = font_dims.x;
@@ -190,6 +194,12 @@ static void set_default_variables()
               << default_res_w
               << "x"
               << default_res_h
+              << std::endl;
+
+        TRACE << "Minimum required resolution: "
+              << io::g_min_res_w
+              << "x"
+              << io::g_min_res_h
               << std::endl;
 
         // Minimum resolution cannot be statically asserted since it depends on

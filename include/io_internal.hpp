@@ -10,45 +10,34 @@
 #include "io.hpp"
 
 #include "colors.hpp"
+#include "gfx.hpp"
 #include "panel.hpp"
 #include "pos.hpp"
 
 namespace io {
-
-extern int g_bpp;
 
 inline constexpr size_t g_font_nr_x = 16;
 inline constexpr size_t g_font_nr_y = 7;
 
 extern SDL_Window* g_sdl_window;
 extern SDL_Renderer* g_sdl_renderer;
-extern SDL_Surface* g_screen_srf;
-extern SDL_Texture* g_screen_texture;
 
-extern SDL_Surface* g_main_menu_logo_srf;
+// The font texture has a version with black contours, and one without contours
+extern SDL_Texture* g_font_texture_with_contours;
+extern SDL_Texture* g_font_texture;
 
-extern std::vector<P> g_tile_px_data[(size_t)gfx::TileId::END];
-extern std::vector<P> g_font_px_data[g_font_nr_x][g_font_nr_y];
+// All tile textures have contours
+extern SDL_Texture* g_tile_textures[(size_t)gfx::TileId::END];
 
-extern std::vector<P> g_tile_contour_px_data[(size_t)gfx::TileId::END];
-extern std::vector<P> g_font_contour_px_data[g_font_nr_x][g_font_nr_y];
+extern SDL_Texture* g_logo_texture;
 
-void init_px_manip();
+// Used for centering the rendering area on the screen
+extern P g_rendering_px_offset;
 
-Uint32 px(const SDL_Surface& srf, const int pixel_x, const int pixel_y);
+Color read_px_on_surface(const SDL_Surface& surface, const P& px_pos);
 
-void put_pixels_on_screen(
-        const std::vector<P> px_data,
-        const P& px_pos,
-        const Color& color);
-
-void put_pixels_on_screen(
-        const char character,
-        const P& px_pos,
-        const Color& color);
-
-void put_pixels_on_screen(
-        const gfx::TileId tile,
+void put_px_on_surface(
+        SDL_Surface& surface,
         const P& px_pos,
         const Color& color);
 
@@ -63,6 +52,13 @@ P sdl_window_gui_dims();
 int panel_px_w(Panel panel);
 int panel_px_h(Panel panel);
 P panel_px_dims(Panel panel);
+
+void draw_character_at_px(
+        char character,
+        P px_pos,
+        const Color& color,
+        io::DrawBg draw_bg = io::DrawBg::yes,
+        const Color& bg_color = {0, 0, 0});
 
 void draw_text_at_px(
         const std::string& str,

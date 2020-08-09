@@ -155,13 +155,9 @@ void cover_area(
         P dims,
         const Color& color = colors::black());
 
-void draw_rectangle(
-        const R& px_rect,
-        const Color& color);
+void draw_rectangle(R px_rect, const Color& color);
 
-void draw_rectangle_filled(
-        const R& px_rect,
-        const Color& color);
+void draw_rectangle_filled(R px_rect, const Color& color);
 
 void draw_blast_at_cells(
         const std::vector<P>& positions,
@@ -175,7 +171,7 @@ void draw_blast_at_seen_actors(
         const std::vector<actor::Actor*>& actors,
         const Color& color);
 
-void draw_main_menu_logo();
+void draw_logo();
 
 // Draws a description "box" for items, spells, etc. The parameter lines may be
 // empty, in which case an empty area is drawn.

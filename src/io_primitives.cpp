@@ -16,59 +16,46 @@
 // -----------------------------------------------------------------------------
 namespace io {
 
-void draw_rectangle(const R& px_rect, const Color& color)
+void draw_rectangle(R px_rect, const Color& color)
 {
-        draw_rectangle_filled(
-                R(px_rect.p0.x,
-                  px_rect.p0.y,
-                  px_rect.p1.x,
-                  px_rect.p0.y),
-                color);
+        px_rect = px_rect.with_offset(g_rendering_px_offset);
 
-        draw_rectangle_filled(
-                R(px_rect.p0.x,
-                  px_rect.p1.y,
-                  px_rect.p1.x,
-                  px_rect.p1.y),
-                color);
+        SDL_Rect rect;
 
-        draw_rectangle_filled(
-                R(px_rect.p0.x,
-                  px_rect.p0.y,
-                  px_rect.p0.x,
-                  px_rect.p1.y),
-                color);
+        rect.x = px_rect.p0.x;
+        rect.y = px_rect.p0.y;
+        rect.w = px_rect.w();
+        rect.h = px_rect.h();
 
-        draw_rectangle_filled(
-                R(px_rect.p1.x,
-                  px_rect.p0.y,
-                  px_rect.p1.x,
-                  px_rect.p1.y),
-                color);
+        SDL_SetRenderDrawColor(
+                g_sdl_renderer,
+                color.r(),
+                color.g(),
+                color.b(),
+                0xFFu);
+
+        SDL_RenderDrawRect(g_sdl_renderer, &rect);
 }
 
-void draw_rectangle_filled(const R& px_rect, const Color& color)
+void draw_rectangle_filled(R px_rect, const Color& color)
 {
-        if (!panels::is_valid()) {
-                return;
-        }
+        px_rect = px_rect.with_offset(g_rendering_px_offset);
 
-        SDL_Rect sdl_rect = {
-                (Sint16)px_rect.p0.x,
-                (Sint16)px_rect.p0.y,
-                (Uint16)px_rect.w(),
-                (Uint16)px_rect.h()};
+        SDL_Rect rect;
 
-        const auto& sdl_color = color.sdl_color();
+        rect.x = px_rect.p0.x;
+        rect.y = px_rect.p0.y;
+        rect.w = px_rect.w();
+        rect.h = px_rect.h();
 
-        SDL_FillRect(
-                io::g_screen_srf,
-                &sdl_rect,
-                SDL_MapRGB(
-                        io::g_screen_srf->format,
-                        sdl_color.r,
-                        sdl_color.g,
-                        sdl_color.b));
+        SDL_SetRenderDrawColor(
+                g_sdl_renderer,
+                color.r(),
+                color.g(),
+                color.b(),
+                0xFFu);
+
+        SDL_RenderFillRect(g_sdl_renderer, &rect);
 }
 
 } // namespace io

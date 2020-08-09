@@ -12,55 +12,44 @@
 // -----------------------------------------------------------------------------
 // Private
 // -----------------------------------------------------------------------------
-// Pointer to function used for writing pixels on the screen (there are
-// different variants depending on bpp)
-static void (*put_px_ptr)(
-        const SDL_Surface& srf,
-        int pixel_x,
-        int pixel_y,
-        Uint32 px) = nullptr;
-
 static void put_px8(
-        const SDL_Surface& srf,
-        const int pixel_x,
-        const int pixel_y,
+        const SDL_Surface& surface,
+        const P& px_pos,
         const Uint32 px)
 {
         // p is the address to the pixel we want to set
-        Uint8* const p =
-                (Uint8*)srf.pixels +
-                (pixel_y * srf.pitch) +
-                (pixel_x * io::g_bpp);
+        auto* const p =
+                (Uint8*)surface.pixels +
+                (px_pos.y * surface.pitch) +
+                (px_pos.x * surface.format->BytesPerPixel);
 
         *p = px;
 }
 
 static void put_px16(
-        const SDL_Surface& srf,
-        const int pixel_x,
-        const int pixel_y,
+        const SDL_Surface& surface,
+        const P& px_pos,
         const Uint32 px)
 {
         // p is the address to the pixel we want to set
-        Uint8* const p =
-                (Uint8*)srf.pixels +
-                (pixel_y * srf.pitch) +
-                (pixel_x * io::g_bpp);
+        auto* const p =
+                (Uint8*)surface.pixels +
+                (px_pos.y * surface.pitch) +
+                (px_pos.x * surface.format->BytesPerPixel);
 
         *(Uint16*)p = px;
 }
 
 static void put_px24(
-        const SDL_Surface& srf,
-        const int pixel_x,
-        const int pixel_y,
+        const SDL_Surface& surface,
+        const P& px_pos,
         const Uint32 px)
 {
         // p is the address to the pixel we want to set
-        Uint8* const p =
-                (Uint8*)srf.pixels +
-                (pixel_y * srf.pitch) +
-                (pixel_x * io::g_bpp);
+        auto* const p =
+                (Uint8*)surface.pixels +
+                (px_pos.y * surface.pitch) +
+                (px_pos.x * surface.format->BytesPerPixel);
 
         if (SDL_BYTEORDER == SDL_BIG_ENDIAN) {
                 p[0] = (px >> 16) & 0xff;
@@ -75,16 +64,15 @@ static void put_px24(
 }
 
 static void put_px32(
-        const SDL_Surface& srf,
-        const int pixel_x,
-        const int pixel_y,
+        const SDL_Surface& surface,
+        const P& px_pos,
         const Uint32 px)
 {
         // p is the address to the pixel we want to set
-        Uint8* const p =
-                (Uint8*)srf.pixels +
-                (pixel_y * srf.pitch) +
-                (pixel_x * io::g_bpp);
+        auto* const p =
+                (Uint8*)surface.pixels +
+                (px_pos.y * surface.pitch) +
+                (px_pos.x * surface.format->BytesPerPixel);
 
         *(Uint32*)p = px;
 }
@@ -94,107 +82,101 @@ static void put_px32(
 // -----------------------------------------------------------------------------
 namespace io {
 
-void init_px_manip()
-{
-        switch (g_bpp) {
-        case 1:
-                put_px_ptr = &put_px8;
-                break;
-
-        case 2:
-                put_px_ptr = &put_px16;
-                break;
-
-        case 3:
-                put_px_ptr = &put_px24;
-                break;
-
-        case 4:
-                put_px_ptr = &put_px32;
-                break;
-
-        default:
-                TRACE_ERROR_RELEASE << "Invalid bpp: " << g_bpp << std::endl;
-                PANIC;
-        }
-}
-
-Uint32 px(const SDL_Surface& srf, const int pixel_x, const int pixel_y)
+Color read_px_on_surface(const SDL_Surface& surface, const P& px_pos)
 {
         // 'p' is the address to the pixel we want to retrieve
         Uint8* p =
-                (Uint8*)srf.pixels +
-                (pixel_y * srf.pitch) +
-                (pixel_x * io::g_bpp);
+                (Uint8*)surface.pixels +
+                (px_pos.y * surface.pitch) +
+                (px_pos.x * surface.format->BytesPerPixel);
 
-        switch (io::g_bpp) {
+        int v;
+
+        switch (surface.format->BytesPerPixel) {
         case 1:
-                return *p;
+                v = *p;
+                break;
 
         case 2:
-                return *(Uint16*)p;
+                v = *(Uint16*)p;
+                break;
 
         case 3:
                 if (SDL_BYTEORDER == SDL_BIG_ENDIAN) {
-                        return p[0] << 16 | p[1] << 8 | p[2];
+                        v = p[0] << 16 | p[1] << 8 | p[2];
                 } else {
                         // Little endian
-                        return p[0] | p[1] << 8 | p[2] << 16;
+                        v = p[0] | p[1] << 8 | p[2] << 16;
                 }
                 break;
 
         case 4:
-                return *(uint32_t*)p;
+                v = *(uint32_t*)p;
+                break;
 
         default:
+                TRACE_ERROR_RELEASE
+                        << "Unexpected bpp: "
+                        << (int)surface.format->BytesPerPixel
+                        << std::endl;
+
+                PANIC;
+
+                v = 0;
+
                 break;
         }
 
-        return -1;
+        SDL_Color sdl_color;
+
+        SDL_GetRGB(
+                v,
+                surface.format,
+                &sdl_color.r,
+                &sdl_color.g,
+                &sdl_color.b);
+
+        return Color(sdl_color);
 }
 
-void put_pixels_on_screen(
-        const std::vector<P> px_data,
+void put_px_on_surface(
+        SDL_Surface& surface,
         const P& px_pos,
         const Color& color)
 {
-        const auto sdl_color = color.sdl_color();
-
-        const int px_color =
+        const int v =
                 SDL_MapRGB(
-                        g_screen_srf->format,
-                        sdl_color.r,
-                        sdl_color.g,
-                        sdl_color.b);
+                        surface.format,
+                        color.r(),
+                        color.g(),
+                        color.b());
 
-        for (const auto& p_relative : px_data) {
-                const int screen_px_x = px_pos.x + p_relative.x;
-                const int screen_px_y = px_pos.y + p_relative.y;
+        switch (surface.format->BytesPerPixel) {
+        case 1:
+                put_px8(surface, px_pos, v);
+                break;
 
-                put_px_ptr(*g_screen_srf, screen_px_x, screen_px_y, px_color);
+        case 2:
+                put_px16(surface, px_pos, v);
+                break;
+
+        case 3:
+                put_px24(surface, px_pos, v);
+                break;
+
+        case 4:
+                put_px32(surface, px_pos, v);
+                break;
+
+        default:
+                TRACE_ERROR_RELEASE
+                        << "Unexpected bpp: "
+                        << (int)surface.format->BytesPerPixel
+                        << std::endl;
+
+                PANIC;
+                break;
         }
-}
-
-void put_pixels_on_screen(
-        const char character,
-        const P& px_pos,
-        const Color& color)
-{
-        const P sheet_pos(gfx::character_pos(character));
-
-        const auto& pixel_data = g_font_px_data[sheet_pos.x][sheet_pos.y];
-
-        put_pixels_on_screen(pixel_data, px_pos, color);
-}
-
-void put_pixels_on_screen(
-        const gfx::TileId tile,
-        const P& px_pos,
-        const Color& color)
-{
-        const auto& pixel_data = g_tile_px_data[(size_t)tile];
-
-        put_pixels_on_screen(pixel_data, px_pos, color);
 }
 
 } // namespace io

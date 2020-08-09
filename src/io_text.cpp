@@ -12,38 +12,6 @@
 // -----------------------------------------------------------------------------
 // Private
 // -----------------------------------------------------------------------------
-static const SDL_Color s_sdl_color_black = {0, 0, 0, 0};
-
-static void draw_character_at_px(
-        const char character,
-        const P px_pos,
-        const Color& color,
-        const io::DrawBg draw_bg = io::DrawBg::yes,
-        const Color& bg_color = Color(0, 0, 0))
-{
-        if (draw_bg == io::DrawBg::yes) {
-                const P cell_dims(
-                        config::gui_cell_px_w(),
-                        config::gui_cell_px_h());
-
-                io::draw_rectangle_filled(
-                        {px_pos, px_pos + cell_dims - 1},
-                        bg_color);
-        }
-
-        // Draw contour if neither foreground/background is black
-        if ((color != colors::black()) &&
-            (bg_color != colors::black())) {
-                const P char_pos(gfx::character_pos(character));
-
-                const auto& contour =
-                        io::g_font_contour_px_data[char_pos.x][char_pos.y];
-
-                io::put_pixels_on_screen(contour, px_pos, s_sdl_color_black);
-        }
-
-        io::put_pixels_on_screen(character, px_pos, color);
-}
 
 // -----------------------------------------------------------------------------
 // io
