@@ -574,7 +574,7 @@ void PropShapeshifts::shapeshift(const Verbose verbose) const
 
         // Set HP percentage a bit higher than the previous monster
         {
-                const int max_hp_prev = std::max(1, actor::max_hp(*m_owner));
+                const int max_hp_prev = std::max(1, m_owner->m_data->hp);
                 const int hp_pct_prev = (m_owner->m_hp * 100) / max_hp_prev;
                 const int hp_pct_new = std::clamp(1, hp_pct_prev + 15, 100);
 
