@@ -1726,12 +1726,12 @@ std::vector<std::string> SpellCleansingFire::descr_specific(
 // -----------------------------------------------------------------------------
 // Exorcist Sanctuary
 // -----------------------------------------------------------------------------
-int SpellSanctuary::duration(const SpellSkill skill) const
+Range SpellSanctuary::duration(const SpellSkill skill) const
 {
         if (skill == SpellSkill::basic) {
-                return 5;
+                return {3, 5};
         } else {
-                return 10;
+                return {5, 10};
         }
 }
 
@@ -1743,11 +1743,11 @@ void SpellSanctuary::run_effect(
                 return;
         }
 
-        const int prop_duration = duration(skill);
+        const auto prop_duration = duration(skill);
 
         auto* const sanctuary = property_factory::make(PropId::sanctuary);
 
-        sanctuary->set_duration(prop_duration);
+        sanctuary->set_duration(prop_duration.roll());
 
         caster->m_properties.apply(sanctuary);
 }
@@ -1764,7 +1764,7 @@ std::vector<std::string> SpellSanctuary::descr_specific(
 
         descr.emplace_back(
                 "The spell lasts for " +
-                std::to_string(duration(skill)) +
+                duration(skill).str() +
                 " turns.");
 
         return descr;

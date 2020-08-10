@@ -1011,7 +1011,7 @@ private:
                 return false;
         }
 
-        int duration(const SpellSkill skill) const;
+        Range duration(const SpellSkill skill) const;
 };
 
 class SpellPurge : public Spell {
