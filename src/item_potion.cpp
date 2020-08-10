@@ -339,7 +339,8 @@ void Potion::on_actor_turn_in_inv_hook(const InvType inv_type)
 
         if (d.is_alignment_known ||
             d.is_identified ||
-            (m_alignment_feeling_dlvl_countdown > 0)) {
+            (m_alignment_feeling_dlvl_countdown > 0) ||
+            !map::g_player->m_properties.allow_act()) {
                 return;
         }
 

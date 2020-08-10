@@ -297,7 +297,8 @@ void Scroll::on_actor_turn_in_inv_hook(const InvType inv_type)
 
         if (d.is_spell_domain_known ||
             d.is_identified ||
-            (m_domain_feeling_dlvl_countdown > 0)) {
+            (m_domain_feeling_dlvl_countdown > 0) ||
+            !map::g_player->m_properties.allow_act()) {
                 return;
         }
 
