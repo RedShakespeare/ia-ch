@@ -1196,7 +1196,7 @@
             <name_the>Brown Jenkin</name_the>
             <corpse_name_a>the corpse of Brown Jenkin</corpse_name_a>
             <corpse_name_the>the corpse of Brown Jenkin</corpse_name_the>
-            <description>"That object - no larger than a good sized rat and quaintly called by the townspeople, "Brown Jenkin" - seemed to have been the fruit of a remarkable case of sympathetic herd-delusion, for in 1692, no less than eleven persons had testified to glimpsing it. There were recent rumors, too, with a baffling and disconcerting amount of agreement. Witnesses said it had long hair and the shape of a rat, but that its sharp-toothed, bearded face was evilly human while its paws were like tiny human hands. It took messages betwixt old Keziah and the devil, and was nursed on the witch's blood, which it sucked like a vampire. Its voice was a kind of loathsome titter, and could speak all languages." H.P.Lovecraft -"Dreams in the witch house".</description>
+            <description>This man-rodent beast slinks through cracks in the church's walls and pounces on its victims, raking at their flesh with its undeveloped limbs. Being the black matron's mongrel of choice, it titters senselessly whenever it feasts on her blood.</description>
             <allow_generated_description>true</allow_generated_description>
             <wary_message>seems aggravated.</wary_message>
             <aware_message_seen>titters in a loathsome voice.</aware_message_seen>
@@ -6148,7 +6148,7 @@
             <name_the>the Gla'Suu</name_the>
             <corpse_name_a>a Gla'Suu corpse</corpse_name_a>
             <corpse_name_the>the Gla'Suu corpse</corpse_name_the>
-            <description>A loathsome beast hauling around a great sagging body on strained legs. Through its translucent, stretched skin the vile content of the creatures husk is clearly visible: carrion, human remains in various states of decomposition, trash, and sewage - along with other less recognizable things. Its head droops to the ground, where a tentacled mouth devours whatever filth it happens upon. It occasionally spews forth half-solid chunks of ooze, which after fermenting in the remarkable conditions of the creature's bowels, takes on a form of life of it's own - hunting for biological matter to decompose in order to feed its creator.</description>
+            <description>A loathsome beast hauling around a great sagging body on strained legs. Through its translucent, stretched skin the vile content of the creature's husk is clearly visible: carrion, human remains in various states of decomposition, trash, and sewage - along with other less recognizable things. Its head droops to the ground, where a tentacled mouth devours whatever filth it happens upon. It occasionally spews forth half-solid chunks of ooze, which after fermenting in the remarkable conditions of the creature's bowels, takes on a form of life of it's own - hunting for biological matter to decompose in order to feed its creator.</description>
             <allow_generated_description>true</allow_generated_description>
             <wary_message>seems disturbed.</wary_message>
             <aware_message_seen></aware_message_seen>
