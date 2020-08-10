@@ -268,6 +268,9 @@ static GameCmd to_cmd_default(const InputData& input)
 
         case SDLK_F9:
                 return GameCmd::debug_f9;
+
+        case SDLK_F10:
+                return GameCmd::debug_f10;
 #endif // NDEBUG
 
         default:
@@ -895,6 +898,21 @@ void handle(const GameCmd cmd)
                         {mon_id},
                         map::rect());
         } break;
+
+        case GameCmd::debug_f10: {
+                std::string msg = "Listing all monsters (ID#  Name):";
+
+                for (const auto& d : actor::g_data) {
+                        msg +=
+                                "\n" +
+                                std::to_string((size_t)d.id) +
+                                "  " +
+                                d.name_a;
+                }
+
+                TRACE << msg << std::endl;
+        }
+
 #endif // NDEBUG
 
         } // switch

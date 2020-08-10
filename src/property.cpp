@@ -580,14 +580,8 @@ void PropShapeshifts::shapeshift(const Verbose verbose) const
 
                 mon->m_hp = (actor::max_hp(*mon) * hp_pct_new) / 100;
 
-                // New HP value should be > 0, and also not "unreasonably" high
-                const int allowed_hp_lower = 1;
-                const int allowed_hp_upper = 1000;
-
-                ASSERT(mon->m_hp >= allowed_hp_lower);
-                ASSERT(mon->m_hp <= allowed_hp_upper);
-
-                std::clamp(allowed_hp_lower, mon->m_hp, allowed_hp_upper);
+                // New HP value should be >= 0, and also not "unreasonably" high
+                mon->m_hp = std::clamp(1, mon->m_hp, 10'000);
         }
 
         // Set same awareness as the previous monster

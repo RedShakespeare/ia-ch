@@ -205,7 +205,8 @@ InputData get()
                         case SDLK_F6:
                         case SDLK_F7:
                         case SDLK_F8:
-                        case SDLK_F9: {
+                        case SDLK_F9:
+                        case SDLK_F10: {
                                 is_done = true;
                         } break;
 

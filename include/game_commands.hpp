@@ -66,6 +66,7 @@ enum class GameCmd {
         debug_f7,
         debug_f8,
         debug_f9,
+        debug_f10,
 #endif // NDEBUG
 };
 
