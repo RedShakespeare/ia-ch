@@ -123,6 +123,45 @@ int number(
                 return 0;
         }
 
+        auto make_input_str = [](
+                                      const int v,
+                                      const bool has_player_entered_value) {
+                std::string nr_str;
+
+                if (v > 0) {
+                        nr_str = std::to_string(v);
+                }
+
+                if (has_player_entered_value) {
+                        nr_str += "_";
+                }
+
+                return nr_str;
+        };
+
+        auto draw = [color, pos](
+                            const std::string& input_str,
+                            const bool has_player_entered_value) {
+                Color fg_color;
+                Color bg_color;
+
+                if (has_player_entered_value) {
+                        fg_color = color;
+                        bg_color = colors::black();
+                } else {
+                        fg_color = colors::black();
+                        bg_color = colors::gray();
+                }
+
+                io::draw_text(
+                        input_str,
+                        Panel::screen,
+                        pos,
+                        fg_color,
+                        io::DrawBg::yes,
+                        bg_color);
+        };
+
         int ret_num =
                 std::clamp(
                         default_value,
@@ -148,19 +187,11 @@ int number(
 
         io::cover_area(Panel::screen, pos, {max_input_str_len, 1});
 
-        auto make_input_str = [](const int v) {
-                std::string nr_str;
+        bool has_player_entered_value = false;
 
-                if (v > 0) {
-                        nr_str = std::to_string(v);
-                }
+        auto input_str = make_input_str(ret_num, has_player_entered_value);
 
-                return nr_str + "_";
-        };
-
-        auto input_str = make_input_str(ret_num);
-
-        io::draw_text(input_str, Panel::screen, pos, color);
+        draw(input_str, has_player_entered_value);
 
         io::update_screen();
 
@@ -225,12 +256,9 @@ int number(
                         return cancel_returns_default ? default_value : -1;
                 }
 
-                const auto ret_num_str = std::to_string(ret_num);
-
-                // Adjust for the underscore
-                const auto current_num_digits = (int)ret_num_str.size() - 1;
-
                 if (input.key == SDLK_BACKSPACE) {
+                        has_player_entered_value = true;
+
                         ret_num = ret_num / 10;
 
                         io::cover_area(
@@ -238,12 +266,44 @@ int number(
                                 pos,
                                 {max_input_str_len, 1});
 
-                        input_str = make_input_str(ret_num);
+                        input_str =
+                                make_input_str(
+                                        ret_num,
+                                        has_player_entered_value);
 
-                        io::draw_text(input_str, Panel::screen, pos, color);
+                        draw(input_str, has_player_entered_value);
 
                         io::update_screen();
-                } else if (current_num_digits < max_nr_digits) {
+
+                        continue;
+                }
+
+                if (!has_player_entered_value) {
+                        ret_num = 0;
+
+                        io::cover_area(
+                                Panel::screen,
+                                pos,
+                                {max_input_str_len, 1});
+
+                        input_str =
+                                make_input_str(
+                                        ret_num,
+                                        has_player_entered_value);
+
+                        draw(input_str, has_player_entered_value);
+
+                        io::update_screen();
+                }
+
+                const auto ret_num_str = std::to_string(ret_num);
+
+                // Adjust for the underscore
+                const auto current_num_digits = (int)ret_num_str.size() - 1;
+
+                if (current_num_digits < max_nr_digits) {
+                        has_player_entered_value = true;
+
                         int current_digit = input.key - '0';
 
                         ret_num =
@@ -257,11 +317,16 @@ int number(
                                 pos,
                                 P(max_input_str_len, 1));
 
-                        input_str = make_input_str(ret_num);
+                        input_str =
+                                make_input_str(
+                                        ret_num,
+                                        has_player_entered_value);
 
-                        io::draw_text(input_str, Panel::screen, pos, color);
+                        draw(input_str, has_player_entered_value);
 
                         io::update_screen();
+
+                        continue;
                 }
         }
 
