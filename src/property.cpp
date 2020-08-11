@@ -578,17 +578,6 @@ void PropShapeshifts::shapeshift(const Verbose verbose) const
                 const int hp_pct_prev = (m_owner->m_hp * 100) / max_hp_prev;
                 const int hp_pct_new = std::clamp(hp_pct_prev + 15, 1, 100);
 
-                TRACE
-                        << "max_hp_prev: "
-                        << max_hp_prev
-                        << "   m_owner->m_hp: "
-                        << m_owner->m_hp
-                        << "   hp_pct_prev: "
-                        << hp_pct_prev
-                        << "   hp_pct_new: "
-                        << hp_pct_new
-                        << std::endl;
-
                 mon->m_hp = (actor::max_hp(*mon) * hp_pct_new) / 100;
 
                 // New HP value should be >= 0, and also not "unreasonably" high
