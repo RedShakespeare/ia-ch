@@ -117,8 +117,6 @@ public:
                 return 3;
         }
 
-        virtual bool mon_can_learn() const = 0;
-
         virtual bool player_can_learn() const = 0;
 
         virtual std::string name() const = 0;
@@ -187,11 +185,6 @@ public:
                 return SpellShock::mild;
         }
 
-        bool mon_can_learn() const override
-        {
-                return true;
-        }
-
         bool player_can_learn() const override
         {
                 return true;
@@ -241,11 +234,6 @@ public:
         SpellShock shock_type() const override
         {
                 return SpellShock::mild;
-        }
-
-        bool mon_can_learn() const override
-        {
-                return true;
         }
 
         bool player_can_learn() const override
@@ -299,11 +287,6 @@ public:
                 return SpellShock::disturbing;
         }
 
-        bool mon_can_learn() const override
-        {
-                return true;
-        }
-
         bool player_can_learn() const override
         {
                 return true;
@@ -336,11 +319,6 @@ public:
         bool allow_mon_cast_now(actor::Mon& mon) const override;
 
         int mon_cooldown() const override;
-
-        bool mon_can_learn() const override
-        {
-                return true;
-        }
 
         bool player_can_learn() const override
         {
@@ -401,8 +379,6 @@ public:
 
         virtual int mon_cooldown() const = 0;
 
-        virtual bool mon_can_learn() const = 0;
-
         virtual bool player_can_learn() const = 0;
 
         virtual std::string name() const = 0;
@@ -439,11 +415,6 @@ public:
         int mon_cooldown() const override
         {
                 return 3;
-        }
-
-        bool mon_can_learn() const override
-        {
-                return true;
         }
 
         bool player_can_learn() const override
@@ -494,11 +465,6 @@ public:
                 return 5;
         }
 
-        bool mon_can_learn() const override
-        {
-                return true;
-        }
-
         bool player_can_learn() const override
         {
                 return true;
@@ -537,11 +503,6 @@ public:
         int mon_cooldown() const override
         {
                 return m_impl->mon_cooldown();
-        }
-
-        bool mon_can_learn() const override
-        {
-                return m_impl->mon_can_learn();
         }
 
         bool player_can_learn() const override
@@ -606,11 +567,6 @@ public:
                 return 6;
         }
 
-        bool mon_can_learn() const override
-        {
-                return false;
-        }
-
         bool player_can_learn() const override
         {
                 return true;
@@ -664,11 +620,6 @@ public:
         SpellMayhem() = default;
 
         bool allow_mon_cast_now(actor::Mon& mon) const override;
-
-        bool mon_can_learn() const override
-        {
-                return false;
-        }
 
         bool player_can_learn() const override
         {
@@ -724,11 +675,6 @@ public:
                 return 21;
         }
 
-        bool mon_can_learn() const override
-        {
-                return true;
-        }
-
         bool player_can_learn() const override
         {
                 return true;
@@ -780,11 +726,6 @@ private:
 class SpellSpectralWpns : public Spell {
 public:
         SpellSpectralWpns() = default;
-
-        bool mon_can_learn() const override
-        {
-                return false;
-        }
 
         bool player_can_learn() const override
         {
@@ -838,11 +779,6 @@ class SpellOpening : public Spell {
 public:
         SpellOpening() = default;
 
-        bool mon_can_learn() const override
-        {
-                return false;
-        }
-
         bool player_can_learn() const override
         {
                 return true;
@@ -889,11 +825,6 @@ private:
 class SpellCleansingFire : public Spell {
 public:
         SpellCleansingFire() = default;
-
-        bool mon_can_learn() const override
-        {
-                return false;
-        }
 
         bool player_can_learn() const override
         {
@@ -954,11 +885,6 @@ class SpellSanctuary : public Spell {
 public:
         SpellSanctuary() = default;
 
-        bool mon_can_learn() const override
-        {
-                return false;
-        }
-
         bool player_can_learn() const override
         {
                 return true;
@@ -1017,11 +943,6 @@ private:
 class SpellPurge : public Spell {
 public:
         SpellPurge() = default;
-
-        bool mon_can_learn() const override
-        {
-                return false;
-        }
 
         bool player_can_learn() const override
         {
@@ -1084,11 +1005,6 @@ class SpellFrenzy : public Spell {
 public:
         SpellFrenzy() = default;
 
-        bool mon_can_learn() const override
-        {
-                return false;
-        }
-
         bool player_can_learn() const override
         {
                 return true;
@@ -1146,11 +1062,6 @@ class SpellBless : public Spell {
 public:
         SpellBless() = default;
 
-        bool mon_can_learn() const override
-        {
-                return false;
-        }
-
         bool player_can_learn() const override
         {
                 return true;
@@ -1206,11 +1117,6 @@ class SpellTransmut : public Spell {
 public:
         SpellTransmut() = default;
 
-        bool mon_can_learn() const override
-        {
-                return false;
-        }
-
         bool player_can_learn() const override
         {
                 return true;
@@ -1262,11 +1168,6 @@ private:
 class SpellLight : public Spell {
 public:
         SpellLight() = default;
-
-        bool mon_can_learn() const override
-        {
-                return false;
-        }
         bool player_can_learn() const override
         {
                 return true;
@@ -1324,11 +1225,6 @@ public:
         int mon_cooldown() const override
         {
                 return 5;
-        }
-
-        bool mon_can_learn() const override
-        {
-                return true;
         }
 
         bool player_can_learn() const override
@@ -1395,11 +1291,6 @@ public:
                 return 20;
         }
 
-        bool mon_can_learn() const override
-        {
-                return true;
-        }
-
         bool player_can_learn() const override
         {
                 return true;
@@ -1461,11 +1352,6 @@ public:
                 return 30;
         }
 
-        bool mon_can_learn() const override
-        {
-                return false;
-        }
-
         bool player_can_learn() const override
         {
                 return true;
@@ -1525,11 +1411,6 @@ public:
                 return 3;
         }
 
-        bool mon_can_learn() const override
-        {
-                return true;
-        }
-
         bool player_can_learn() const override
         {
                 return true;
@@ -1581,11 +1462,6 @@ public:
 
         int mon_cooldown() const override;
 
-        bool mon_can_learn() const override
-        {
-                return true;
-        }
-
         bool player_can_learn() const override
         {
                 return true;
@@ -1633,11 +1509,6 @@ class SpellPremonition : public Spell {
 public:
         SpellPremonition() = default;
 
-        bool mon_can_learn() const override
-        {
-                return false;
-        }
-
         bool player_can_learn() const override
         {
                 return true;
@@ -1684,11 +1555,6 @@ private:
 class SpellIdentify : public Spell {
 public:
         SpellIdentify() = default;
-
-        bool mon_can_learn() const override
-        {
-                return false;
-        }
 
         bool player_can_learn() const override
         {
@@ -1742,11 +1608,6 @@ public:
         int mon_cooldown() const override
         {
                 return 20;
-        }
-
-        bool mon_can_learn() const override
-        {
-                return true;
         }
 
         bool player_can_learn() const override
@@ -1806,11 +1667,6 @@ public:
         int mon_cooldown() const override
         {
                 return 10;
-        }
-
-        bool mon_can_learn() const override
-        {
-                return true;
         }
 
         bool player_can_learn() const override
@@ -1877,11 +1733,6 @@ public:
                 return 8;
         }
 
-        bool mon_can_learn() const override
-        {
-                return true;
-        }
-
         bool player_can_learn() const override
         {
                 return true;
@@ -1939,11 +1790,6 @@ public:
         int mon_cooldown() const override
         {
                 return 3;
-        }
-
-        bool mon_can_learn() const override
-        {
-                return true;
         }
 
         bool player_can_learn() const override
@@ -2010,11 +1856,6 @@ public:
                 return 6;
         }
 
-        bool mon_can_learn() const override
-        {
-                return true;
-        }
-
         bool player_can_learn() const override
         {
                 return true;
@@ -2072,11 +1913,6 @@ public:
         int mon_cooldown() const override
         {
                 return 5;
-        }
-
-        bool mon_can_learn() const override
-        {
-                return true;
         }
 
         bool player_can_learn() const override
@@ -2143,11 +1979,6 @@ public:
                 return 9;
         }
 
-        bool mon_can_learn() const override
-        {
-                return true;
-        }
-
         bool player_can_learn() const override
         {
                 return false;
@@ -2210,11 +2041,6 @@ public:
         int mon_cooldown() const override
         {
                 return 5;
-        }
-
-        bool mon_can_learn() const override
-        {
-                return true;
         }
 
         bool player_can_learn() const override
