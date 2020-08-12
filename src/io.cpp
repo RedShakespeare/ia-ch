@@ -383,7 +383,9 @@ static void update_rendering_offsets()
 {
         const auto screen_panel_dims = io::panel_px_dims(Panel::screen);
 
-        const bool is_centering_allowed = panels::is_valid();
+        const bool is_centering_allowed =
+                panels::is_valid() &&
+                !config::is_fullscreen();
 
         if (is_centering_allowed) {
                 P window_dims;
