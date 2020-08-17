@@ -432,31 +432,7 @@ static void load_font()
 {
         TRACE_FUNC_BEGIN;
 
-        const auto font_path = paths::fonts_dir() + config::font_name();
-
-        auto* const surface = load_surface(font_path);
-
-        swap_surface_color(*surface, colors::black(), colors::magenta());
-
-        set_surface_color_key(*surface, colors::magenta());
-
-        // Create the non-contour font texture version
-        io::g_font_texture =
-                create_texture_from_surface(*surface);
-
-        draw_black_contour_for_surface(*surface, colors::magenta());
-
-        // Create the font texture version with contour
-        io::g_font_texture_with_contours =
-                create_texture_from_surface(*surface);
-
-        TRACE_FUNC_END;
-}
-
-static void load_tile(const gfx::TileId id, const P& cell_px_dims)
-{
-        const std::string img_name = gfx::tile_id_to_str(id);
-        const std::string img_path = paths::tiles_dir() + img_name + ".png";
+        const auto img_path = paths::fonts_dir() + config::font_name();
 
         auto* const surface = load_surface(img_path);
 
@@ -464,15 +440,49 @@ static void load_tile(const gfx::TileId id, const P& cell_px_dims)
 
         set_surface_color_key(*surface, colors::magenta());
 
+        // Create the non-contour version
+        auto* texture = create_texture_from_surface(*surface);
+
+        io::g_font_texture = texture;
+
         draw_black_contour_for_surface(*surface, colors::magenta());
 
-        auto* const texture = create_texture_from_surface(*surface);
+        // Create the version with contour
+        texture = create_texture_from_surface(*surface);
+
+        io::g_font_texture_with_contours = texture;
 
         SDL_FreeSurface(surface);
 
+        TRACE_FUNC_END;
+}
+
+static void load_tile(const gfx::TileId id, const P& cell_px_dims)
+{
+        const auto img_name = gfx::tile_id_to_str(id);
+        const auto img_path = paths::tiles_dir() + img_name + ".png";
+
+        auto* const surface = load_surface(img_path);
+
+        swap_surface_color(*surface, colors::black(), colors::magenta());
+
+        set_surface_color_key(*surface, colors::magenta());
+
+        // Create the non-contour version
+        auto* texture = create_texture_from_surface(*surface);
+
         io::g_tile_textures[(size_t)id] = texture;
 
+        draw_black_contour_for_surface(*surface, colors::magenta());
+
+        // Create the version with contour
+        texture = create_texture_from_surface(*surface);
+
+        io::g_tile_textures_with_contours[(size_t)id] = texture;
+
         verify_texture_size(texture, cell_px_dims, img_path);
+
+        SDL_FreeSurface(surface);
 }
 
 static void load_tiles()
@@ -500,6 +510,7 @@ SDL_Renderer* g_sdl_renderer = nullptr;
 SDL_Texture* g_font_texture_with_contours = nullptr;
 SDL_Texture* g_font_texture = nullptr;
 SDL_Texture* g_tile_textures[(size_t)gfx::TileId::END] = {};
+SDL_Texture* g_tile_textures_with_contours[(size_t)gfx::TileId::END] = {};
 SDL_Texture* g_logo_texture = nullptr;
 
 P g_rendering_px_offset = {};
@@ -851,7 +862,15 @@ void draw_tile(
         render_rect.w = map_cell_px_dims.x;
         render_rect.h = map_cell_px_dims.y;
 
-        auto* const texture = g_tile_textures[(size_t)tile];
+        SDL_Texture* texture;
+
+        if ((color == colors::black()) || (bg_color == colors::black())) {
+                // Foreground or background is black - no contours
+                texture = g_tile_textures[(size_t)tile];
+        } else {
+                // Both foreground and background are non-black - use contours
+                texture = g_tile_textures_with_contours[(size_t)tile];
+        }
 
         SDL_SetTextureColorMod(texture, color.r(), color.g(), color.b());
 

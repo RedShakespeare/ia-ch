@@ -22,11 +22,10 @@ inline constexpr size_t g_font_nr_y = 7;
 extern SDL_Window* g_sdl_window;
 extern SDL_Renderer* g_sdl_renderer;
 
-// The font texture has a version with black contours, and one without contours
 extern SDL_Texture* g_font_texture_with_contours;
 extern SDL_Texture* g_font_texture;
 
-// All tile textures have contours
+extern SDL_Texture* g_tile_textures_with_contours[(size_t)gfx::TileId::END];
 extern SDL_Texture* g_tile_textures[(size_t)gfx::TileId::END];
 
 extern SDL_Texture* g_logo_texture;
