@@ -11,6 +11,8 @@
 
 #include "pos.hpp"
 
+#include <iostream>
+
 struct R {
 public:
         R() = default;
@@ -90,11 +92,20 @@ public:
                         p1 + P(x_offset, y_offset)};
         }
 
+        R scaled_up(const int factor) const
+        {
+                return scaled_up(factor, factor);
+        }
+
         R scaled_up(const int x_factor, const int y_factor) const
         {
-                return {
-                        p0.scaled_up(x_factor, y_factor),
-                        p1.scaled_up(x_factor, y_factor)};
+                const auto new_p0 = p0.scaled_up(x_factor, y_factor);
+
+                const auto new_dims = dims().scaled_up(x_factor, y_factor);
+
+                const R scaled_rect(new_p0, new_p0 + new_dims - 1);
+
+                return scaled_rect;
         }
 
         std::vector<P> positions() const

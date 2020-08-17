@@ -22,7 +22,7 @@ public:
         // Construct from a direction -> offsets (e.g. 1, -1)
         explicit P(Dir dir);
 
-        P& operator=(const P p)
+        P& operator=(const P& p)
         {
                 x = p.x;
                 y = p.y;
@@ -33,7 +33,7 @@ public:
         // Assign from a direction -> offsets (e.g. 1, -1)
         P& operator=(Dir dir);
 
-        P& operator+=(const P p)
+        P& operator+=(const P& p)
         {
                 x += p.x;
                 y += p.y;
@@ -44,7 +44,7 @@ public:
         // Add a direction offset (e.g. 1, -1)
         P& operator+=(Dir dir);
 
-        P& operator-=(const P p)
+        P& operator-=(const P& p)
         {
                 x -= p.x;
                 y -= p.y;
@@ -68,7 +68,7 @@ public:
                 return *this;
         }
 
-        P operator+(const P p) const
+        P operator+(const P& p) const
         {
                 return P(x + p.x, y + p.y);
         }
@@ -80,7 +80,7 @@ public:
 
         P operator+(Dir dir) const;
 
-        P operator-(const P p) const
+        P operator-(const P& p) const
         {
                 return P(x - p.x, y - p.y);
         }
@@ -110,7 +110,7 @@ public:
                 return P(x, y + offset);
         }
 
-        P scaled_up(const P p) const
+        P scaled_up(const P& p) const
         {
                 return P(x * p.x, y * p.y);
         }
@@ -135,17 +135,17 @@ public:
                 return P(x / v, y / v);
         }
 
-        P scaled_down(const P denoms) const
+        P scaled_down(const P& denoms) const
         {
                 return P(x / denoms.x, y / denoms.y);
         }
 
-        bool operator==(const P p) const
+        bool operator==(const P& p) const
         {
                 return (x == p.x) && (y == p.y);
         }
 
-        bool operator!=(const P p) const
+        bool operator!=(const P& p) const
         {
                 return (x != p.x) || (y != p.y);
         }
@@ -169,7 +169,7 @@ public:
                 y = new_y;
         }
 
-        void set(const P p)
+        void set(const P& p)
         {
                 x = p.x;
                 y = p.y;
@@ -184,7 +184,7 @@ public:
                 set(tmp);
         }
 
-        bool is_adjacent(const P p)
+        bool is_adjacent(const P& p)
         {
                 // Do not count the same position as adjacent
                 if (p == *this) {
@@ -209,7 +209,7 @@ public:
 struct PosVal {
         PosVal() = default;
 
-        PosVal(const P pos_, const int val_) :
+        PosVal(const P& pos_, const int val_) :
                 pos(pos_),
                 val(val_)
         {}

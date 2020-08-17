@@ -250,9 +250,17 @@ void MainMenuState::draw()
 #ifndef NDEBUG
         else {
                 io::draw_text(
-                        "DEBUG MODE",
+                        " DEBUG ",
                         Panel::screen,
                         P(1, 1),
+                        colors::black(),
+                        io::DrawBg::yes,
+                        colors::gold());
+
+                io::draw_text(
+                        "  MODE ",
+                        Panel::screen,
+                        P(1, 2),
                         colors::black(),
                         io::DrawBg::yes,
                         colors::gold());

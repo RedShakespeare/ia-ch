@@ -269,7 +269,7 @@ static void set_living_hidden_monster(
                 return;
         }
 
-        const Color color_bg =
+        const auto color_bg =
                 map::g_player->is_leader_of(&mon)
                 ? colors::mon_allied_bg()
                 : colors::gray();

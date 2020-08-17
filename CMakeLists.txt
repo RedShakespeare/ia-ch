@@ -354,6 +354,10 @@ if(CMAKE_COMPILER_IS_GNUCXX OR(CMAKE_C_COMPILER_ID MATCHES "Clang") OR(CMAKE_CXX
                 -g
                 # -fsanitize=undefined
                 # -fno-sanitize=vptr  # Requires RTTI
+                #
+                # Uncomment to generate gmon.out for gprof (must also be done for linker
+                # flags, see below)
+                # -pg
                 )
 
         set(RELEASE_COMPILE_FLAGS

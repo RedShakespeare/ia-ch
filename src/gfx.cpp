@@ -8,6 +8,7 @@
 
 #include <unordered_map>
 
+#include "config.hpp"
 #include "pos.hpp"
 
 // -----------------------------------------------------------------------------
@@ -400,9 +401,10 @@ namespace gfx {
 
 P character_pos(const char character)
 {
-        // TODO: Use this in the future (just put the glyphs on one line, sorted
-        // according to their ASCII values):
-        // return {character - '!' + 1, 0};
+        // TODO: Temporary hack:
+        if (config::font_name() == "8x17_terminus.png") {
+                return {character - '!' + 1, 0};
+        }
 
         switch (character) {
         case ' ':

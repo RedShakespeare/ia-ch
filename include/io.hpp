@@ -100,7 +100,7 @@ void draw_symbol(
 void draw_tile(
         gfx::TileId tile,
         Panel panel,
-        P pos,
+        const P& pos,
         const Color& color,
         DrawBg draw_bg = DrawBg::yes,
         const Color& bg_color = colors::black());
@@ -138,7 +138,7 @@ void draw_text_right(
         DrawBg draw_bg = DrawBg::yes,
         const Color& bg_color = colors::black());
 
-void cover_cell(Panel panel, P offset);
+void cover_cell(Panel panel, const P& offset);
 
 void cover_panel(
         Panel panel,
@@ -146,13 +146,13 @@ void cover_panel(
 
 void cover_area(
         Panel panel,
-        R area,
+        const R& area,
         const Color& color = colors::black());
 
 void cover_area(
         Panel panel,
-        P offset,
-        P dims,
+        const P& offset,
+        const P& dims,
         const Color& color = colors::black());
 
 void draw_rectangle(R px_rect, const Color& color);

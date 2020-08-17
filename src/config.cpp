@@ -35,12 +35,8 @@ enum class OptionToggleDirecton {
         right
 };
 
-// TODO: Use this font:
-// "12x22_monospace_medium.png"
-// .ttf downloaded from: https://www.1001fonts.com/monospace-font.html
-// '%', and maybe '#' needs some adjusting though...
-
 static const std::vector<std::string> font_image_names = {
+        "8x17_terminus.png",
         "8x12_DOS.png",
         "11x19.png",
         "11x22.png",
@@ -59,7 +55,8 @@ static const int s_opt_values_x_pos = 44;
 static InputMode s_input_mode = InputMode::standard;
 static std::string s_font_name;
 static bool s_is_fullscreen = false;
-static bool s_is_native_resolution_fullscreen = false;
+static bool s_is_2x_scale_fullscreen_requested = false;
+static bool s_is_2x_scale_fullscreen_enabled = false;
 static bool s_is_tiles_wall_full_square = false;
 static bool s_is_text_mode_wall_full_square = false;
 static bool s_is_light_explosive_prompt = false;
@@ -136,7 +133,7 @@ static void update_render_dims()
         TRACE_FUNC_BEGIN;
 
         if (s_is_tiles_mode) {
-                const P font_dims = parse_dims_from_font_name(s_font_name);
+                const auto font_dims = parse_dims_from_font_name(s_font_name);
 
                 s_gui_cell_px_w = font_dims.x;
                 s_gui_cell_px_h = font_dims.y;
@@ -225,7 +222,8 @@ static void set_default_variables()
         s_is_amb_audio_enabled = true;
         s_is_amb_audio_preloaded = false;
         s_is_fullscreen = false;
-        s_is_native_resolution_fullscreen = false;
+        s_is_2x_scale_fullscreen_requested = true;
+        s_is_2x_scale_fullscreen_enabled = true;
         s_is_tiles_wall_full_square = false;
         s_is_text_mode_wall_full_square = true;
         s_is_intro_lvl_skipped = false;
@@ -295,6 +293,11 @@ static void player_sets_option(
         case 4: {
                 // Tiles mode
                 s_is_tiles_mode = !s_is_tiles_mode;
+
+                // Attempt to use 2x scaling if requested
+                s_is_2x_scale_fullscreen_enabled =
+                        s_is_2x_scale_fullscreen_requested;
+
                 update_render_dims();
                 io::init();
                 io::init();
@@ -333,21 +336,33 @@ static void player_sets_option(
 
                 s_font_name = font_image_names[font_idx];
 
+                // Attempt to use 2x scaling if requested
+                s_is_2x_scale_fullscreen_enabled =
+                        s_is_2x_scale_fullscreen_requested;
+
                 update_render_dims();
-                io::init();
                 io::init();
         } break;
 
         case 6: {
                 // Fullscreen
                 config::set_fullscreen(!s_is_fullscreen);
+
+                // Attempt to use 2x scaling if requested
+                s_is_2x_scale_fullscreen_enabled =
+                        s_is_2x_scale_fullscreen_requested;
+
                 io::on_fullscreen_toggled();
         } break;
 
         case 7: {
-                // Use native resolution in fullscreen
-                s_is_native_resolution_fullscreen =
-                        !s_is_native_resolution_fullscreen;
+                // Use 2x scaling in fullscreen
+                s_is_2x_scale_fullscreen_requested =
+                        !s_is_2x_scale_fullscreen_requested;
+
+                // Attempt to use 2x scaling if requested
+                s_is_2x_scale_fullscreen_enabled =
+                        s_is_2x_scale_fullscreen_requested;
 
                 if (s_is_fullscreen) {
                         io::on_fullscreen_toggled();
@@ -581,7 +596,10 @@ static void set_variables_from_lines(std::vector<std::string>& lines)
         s_is_fullscreen = lines.front() == "1";
         lines.erase(std::begin(lines));
 
-        s_is_native_resolution_fullscreen = lines.front() == "1";
+        s_is_2x_scale_fullscreen_requested = lines.front() == "1";
+        lines.erase(std::begin(lines));
+
+        s_is_2x_scale_fullscreen_enabled = lines.front() == "1";
         lines.erase(std::begin(lines));
 
         s_is_tiles_wall_full_square = lines.front() == "1";
@@ -672,7 +690,8 @@ static std::vector<std::string> lines_from_variables()
         lines.emplace_back(s_is_tiles_mode ? "1" : "0");
         lines.push_back(s_font_name);
         lines.emplace_back(s_is_fullscreen ? "1" : "0");
-        lines.emplace_back(s_is_native_resolution_fullscreen ? "1" : "0");
+        lines.emplace_back(s_is_2x_scale_fullscreen_requested ? "1" : "0");
+        lines.emplace_back(s_is_2x_scale_fullscreen_enabled ? "1" : "0");
         lines.emplace_back(s_is_tiles_wall_full_square ? "1" : "0");
         lines.emplace_back(s_is_text_mode_wall_full_square ? "1" : "0");
         lines.emplace_back(s_is_intro_lvl_skipped ? "1" : "0");
@@ -748,9 +767,14 @@ bool is_fullscreen()
         return s_is_fullscreen;
 }
 
-bool is_native_resolution_fullscreen()
+bool is_2x_scale_fullscreen_requested()
 {
-        return s_is_native_resolution_fullscreen;
+        return s_is_2x_scale_fullscreen_requested;
+}
+
+bool is_2x_scale_fullscreen_enabled()
+{
+        return s_is_2x_scale_fullscreen_enabled;
 }
 
 void set_screen_px_w(const int w)
@@ -928,6 +952,15 @@ void set_fullscreen(const bool value)
         write_lines_to_file(lines);
 }
 
+void set_2x_scale_fullscreen_enabled(const bool value)
+{
+        s_is_2x_scale_fullscreen_enabled = value;
+
+        const auto lines = lines_from_variables();
+
+        write_lines_to_file(lines);
+}
+
 } // namespace config
 
 // -----------------------------------------------------------------------------
@@ -1072,10 +1105,10 @@ void ConfigState::draw()
                          ? "Yes"
                          : "No"},
 
-                {"Use native resolution in fullscreen",
-                 s_is_native_resolution_fullscreen
-                         ? "Yes"
-                         : "No (Stretch)"},
+                {"Scale graphics 2x in fullscreen",
+                 s_is_2x_scale_fullscreen_requested
+                         ? "Yes (if possible)"
+                         : "No"},
 
                 {"Tiles mode wall symbol",
                  s_is_tiles_wall_full_square

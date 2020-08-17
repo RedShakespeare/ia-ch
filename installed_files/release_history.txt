@@ -24,6 +24,7 @@ Gameplay
 * A lot more terrain objects can be destroyed or lit on fire (for example altars or monoliths are destroyed by explosions, and wooden chests or bookshelves can be lit on fire)
 
 User interface
+* Instead of the "stretched" fullscreen mode option, there is now an option for attempting to scale the graphics to 2x size when running fullscreen (if the graphics can be scaled depends on the user's resolution, and the current font)
 * The message log uses three lines instead of two (thus causing much fewer "more" prompts)
 * Improved the graphics of the borders around popups and panels
 * Added messages when Ooze type monsters or small crawling monsters pass though things normally cannot be walked though

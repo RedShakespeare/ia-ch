@@ -227,13 +227,25 @@ void draw_box(R border, const Color& color)
 
         const P cell_dims(cell_w, cell_h);
 
+        if ((cell_w <= 8) || (cell_h <= 8)) {
+                // GUI cells too small to draw a box properly with fancy
+                // graphics, draw a simple rectangle box instead
+                const auto cell_dims_half = cell_dims.scaled_down(2);
+                border.p0 = border.p0 + cell_dims_half;
+                border.p1 = border.p1 - cell_dims_half;
+
+                io::draw_rectangle(border, color);
+
+                return;
+        }
+
         const int corner_r_x0 = border.p1.x - cell_w + 1;
         const int corner_btm_y0 = border.p1.y - cell_h + 1;
 
         const P corner_top_l_p = border.p0;
-        const P corner_btm_l_p = P(border.p0.x, corner_btm_y0);
-        const P corner_top_r_p = P(corner_r_x0, border.p0.y);
-        const P corner_btm_r_p = P(corner_r_x0, corner_btm_y0);
+        const P corner_btm_l_p = {border.p0.x, corner_btm_y0};
+        const P corner_top_r_p = {corner_r_x0, border.p0.y};
+        const P corner_btm_r_p = {corner_r_x0, corner_btm_y0};
 
         const int line_w = border.w() - (cell_w * 2);
         const int line_h = border.h() - (cell_h * 2);

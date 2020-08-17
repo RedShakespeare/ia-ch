@@ -84,7 +84,7 @@ static void validate_panels(const P max_gui_dims)
 
         if ((screen.p1.x + 1) < min_gui_dims.x ||
             (screen.p1.y + 1) < min_gui_dims.y) {
-                TRACE << "Window too small for static minimum screen limit: "
+                TRACE << "Window too small for minimum screen limit: "
                       << min_gui_dims.x
                       << ", "
                       << min_gui_dims.y
