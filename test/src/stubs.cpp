@@ -109,7 +109,7 @@ void draw_symbol(
         const gfx::TileId,
         const char,
         const Panel,
-        const P,
+        P,
         const Color&,
         const DrawBg,
         const Color&) {}
@@ -117,7 +117,7 @@ void draw_symbol(
 void draw_tile(
         const gfx::TileId,
         const Panel,
-        P,
+        const P&,
         const Color&,
         const DrawBg,
         const Color&) {}
@@ -125,7 +125,7 @@ void draw_tile(
 void draw_character(
         const char,
         const Panel,
-        const P,
+        P,
         const Color&,
         const DrawBg,
         const Color&) {}
@@ -133,7 +133,7 @@ void draw_character(
 void draw_text(
         const std::string&,
         const Panel,
-        const P,
+        P,
         const Color&,
         const DrawBg,
         const Color&) {}
@@ -141,7 +141,7 @@ void draw_text(
 void draw_text_center(
         const std::string&,
         const Panel,
-        const P,
+        P,
         const Color&,
         const DrawBg,
         const Color&,
@@ -150,12 +150,12 @@ void draw_text_center(
 void draw_text_right(
         const std::string&,
         const Panel,
-        const P,
+        P,
         const Color&,
         const DrawBg,
         const Color&) {}
 
-void cover_cell(const Panel, const P) {}
+void cover_cell(const Panel, const P&) {}
 
 void cover_panel(
         const Panel,
@@ -163,13 +163,13 @@ void cover_panel(
 
 void cover_area(
         const Panel,
-        const R,
+        const R&,
         const Color&) {}
 
 void cover_area(
         const Panel,
-        const P,
-        const P,
+        const P&,
+        const P&,
         const Color&) {}
 
 void draw_rectangle(R, const Color&) {}
