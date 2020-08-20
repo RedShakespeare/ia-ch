@@ -1145,20 +1145,15 @@ void Stairs::on_new_turn_hook()
 void Stairs::bump(actor::Actor& actor_bumping)
 {
         if (actor_bumping.is_player()) {
-                const std::vector<std::string> choices = {
-                        "(D)escend",
-                        "(S)ave and quit",
-                        "(C)ancel"};
+                int choice;
 
-                const std::string title = "A staircase leading downwards";
-
-                const int choice = popup::menu(
-                        "",
-                        choices,
-                        title,
-                        0,
-                        audio::SfxId::END,
-                        {'d', 's', 'c'});
+                popup::Popup(popup::AddToMsgHistory::no)
+                        .set_title("A staircase leading downwards")
+                        .set_menu(
+                                {"(D)escend", "(S)ave and quit", "(C)ancel"},
+                                {'d', 's', 'c'},
+                                &choice)
+                        .run();
 
                 switch (choice) {
                 case 0:

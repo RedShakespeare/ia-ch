@@ -120,7 +120,7 @@ static std::vector<ManualPage> init_pages(
 // -----------------------------------------------------------------------------
 // Browse manual
 // -----------------------------------------------------------------------------
-StateId BrowseManual::id()
+StateId BrowseManual::id() const
 {
         return StateId::manual;
 }
@@ -237,7 +237,7 @@ void BrowseManual::update()
 // -----------------------------------------------------------------------------
 // Manual page
 // -----------------------------------------------------------------------------
-StateId BrowseManualPage::id()
+StateId BrowseManualPage::id() const
 {
         return StateId::manual_page;
 }

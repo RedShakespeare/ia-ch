@@ -44,7 +44,11 @@ void InsSympt::on_start()
         ASSERT(!heading.empty() && !msg.empty());
 
         if (!heading.empty() && !msg.empty()) {
-                popup::msg(msg, heading, audio::SfxId::insanity_rise);
+                popup::Popup(popup::AddToMsgHistory::yes)
+                        .set_title(heading)
+                        .set_msg(msg)
+                        .set_sfx(audio::SfxId::insanity_rise)
+                        .run();
         }
 
         const std::string history_event_msg = history_msg();

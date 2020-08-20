@@ -26,7 +26,8 @@ Gameplay
 User interface
 * Instead of the "stretched" fullscreen mode option, there is now an option for attempting to scale the graphics to 2x size when running fullscreen (if the graphics can be scaled depends on the user's resolution, and the current font)
 * The message log uses three lines instead of two (thus causing much fewer "more" prompts)
-* Improved the graphics of the borders around popups and panels
+* Fixed problem with popups not being re-drawn correctly when alt-tabbing back to the game
+* Improved the border graphics
 * Added messages when Ooze type monsters or small crawling monsters pass though things normally cannot be walked though
 * All menus have shortcut keys (either with "(Y)es (N)o" style, or "a) b) c) ...")
 * Removed the "game over" menu - instead the game summary is first shown, then the high scores, then you return to the main menu

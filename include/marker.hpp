@@ -50,7 +50,7 @@ public:
 
         void update() final;
 
-        StateId id() final;
+        StateId id() const final;
 
 protected:
         virtual void on_start_hook() {}

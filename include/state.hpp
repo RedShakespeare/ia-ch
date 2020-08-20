@@ -14,25 +14,26 @@ enum class StateId {
         browse_highscore_entry,
         browse_spells,
         config,
-        descript,
         game,
-        win_game,
         highscore,
         inventory,
+        main_menu,
         manual,
         manual_page,
         marker,
-        menu,
-        message,
+        message_history,
         new_game,
         new_level,
         pick_background,
         pick_background_occultist,
         pick_name,
         pick_trait,
+        player_character_descr,
+        popup,
         postmortem_info,
         view_actor,
-        view_minimap
+        view_minimap,
+        win_game, // TODO: This should just be a popup
 };
 
 class State {
@@ -88,7 +89,7 @@ public:
                 return m_has_started;
         }
 
-        virtual StateId id() = 0;
+        virtual StateId id() const = 0;
 
 private:
         bool m_has_started {false};
@@ -99,6 +100,10 @@ namespace states {
 void init();
 
 void cleanup();
+
+void run();
+
+void run_until_state_done(std::unique_ptr<State> state);
 
 void start();
 
@@ -116,11 +121,13 @@ void pop_all();
 
 bool is_empty();
 
-bool is_current_state(const State& state);
+bool is_current_state(const State* state);
 
 void pop_until(StateId id);
 
 bool contains_state(StateId id);
+
+bool contains_state(const State* state);
 
 } // namespace states
 

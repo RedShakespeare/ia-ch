@@ -362,7 +362,10 @@ void Player::incr_insanity()
                         "My mind can no longer withstand what it has grasped. "
                         "I am hopelessly lost.";
 
-                popup::msg(msg, "Insane!", audio::SfxId::insanity_rise);
+                popup::Popup(popup::AddToMsgHistory::yes)
+                        .set_msg(msg)
+                        .set_title("Insane!")
+                        .run();
 
                 kill(
                         *this,

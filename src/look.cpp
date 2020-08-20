@@ -236,7 +236,7 @@ static std::string get_melee_hit_chance_descr(actor::Actor& actor)
 // -----------------------------------------------------------------------------
 // View actor description
 // -----------------------------------------------------------------------------
-StateId ViewActorDescr::id()
+StateId ViewActorDescr::id() const
 {
         return StateId::view_actor;
 }

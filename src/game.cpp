@@ -345,7 +345,7 @@ const std::vector<HistoryEvent>& history()
 // -----------------------------------------------------------------------------
 // Game state
 // -----------------------------------------------------------------------------
-StateId GameState::id()
+StateId GameState::id() const
 {
         return StateId::game;
 }
@@ -381,11 +381,10 @@ void GameState::on_start()
                                 break;
                         }
 
-                        popup::msg(
-                                intro_msg,
-                                "The story so far...",
-                                audio::SfxId::END,
-                                14);
+                        popup::Popup(popup::AddToMsgHistory::yes)
+                                .set_title("The story so far...")
+                                .set_msg(intro_msg)
+                                .run();
                 }
         }
 
@@ -433,7 +432,7 @@ void GameState::draw()
                 return;
         }
 
-        if (states::is_current_state(*this)) {
+        if (states::is_current_state(this)) {
 #ifndef NDEBUG
                 if (!init::g_is_demo_mapgen) {
 #endif // NDEBUG
@@ -586,7 +585,7 @@ void WinGameState::update()
         }
 }
 
-StateId WinGameState::id()
+StateId WinGameState::id() const
 {
         return StateId::win_game;
 }

@@ -17,7 +17,7 @@
 // -----------------------------------------------------------------------------
 // Postmortem info
 // -----------------------------------------------------------------------------
-StateId PostmortemInfo::id()
+StateId PostmortemInfo::id() const
 {
         return StateId::postmortem_info;
 }

@@ -49,7 +49,7 @@ public:
 
         void update() override;
 
-        StateId id() override;
+        StateId id() const override;
 
 private:
         MenuBrowser m_browser {};

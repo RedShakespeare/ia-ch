@@ -6,17 +6,33 @@
 
 #include "state.hpp"
 
-#include "io.hpp"
-
 #include "debug.hpp"
+#include "io.hpp"
 
 // -----------------------------------------------------------------------------
 // Private
 // -----------------------------------------------------------------------------
 static std::vector<std::unique_ptr<State>> s_current_states;
 
+static void run_state_iteration()
+{
+        states::start();
+
+        if (states::is_empty()) {
+                return;
+        }
+
+        io::clear_screen();
+
+        states::draw();
+
+        io::update_screen();
+
+        states::update();
+}
+
 //-----------------------------------------------------------------------------
-// State keeping
+// states
 //-----------------------------------------------------------------------------
 namespace states {
 
@@ -38,10 +54,35 @@ void cleanup()
         TRACE_FUNC_END;
 }
 
+void run()
+{
+        TRACE_FUNC_BEGIN;
+
+        while (!is_empty()) {
+                run_state_iteration();
+        }
+
+        TRACE_FUNC_END;
+}
+
+void run_until_state_done(std::unique_ptr<State> state)
+{
+        TRACE_FUNC_BEGIN;
+
+        auto state_addr = state.get();
+
+        push(std::move(state));
+
+        while (contains_state(state_addr)) {
+                run_state_iteration();
+        }
+
+        TRACE_FUNC_END;
+}
+
 void start()
 {
-        while (!s_current_states.empty() &&
-               !s_current_states.back()->has_started()) {
+        while (!is_empty() && !s_current_states.back()->has_started()) {
                 auto& state = s_current_states.back();
 
                 state->set_started();
@@ -54,7 +95,7 @@ void start()
 
 void draw()
 {
-        if (s_current_states.empty()) {
+        if (is_empty()) {
                 return;
         }
 
@@ -97,7 +138,7 @@ void on_window_resized()
 
 void update()
 {
-        if (s_current_states.empty()) {
+        if (is_empty()) {
                 return;
         }
 
@@ -109,7 +150,7 @@ void push(std::unique_ptr<State> state)
         TRACE_FUNC_BEGIN;
 
         // Pause the current state
-        if (!s_current_states.empty()) {
+        if (!is_empty()) {
                 s_current_states.back()->on_pause();
         }
 
@@ -126,7 +167,7 @@ void pop()
 {
         TRACE_FUNC_BEGIN;
 
-        if (s_current_states.empty()) {
+        if (is_empty()) {
                 TRACE_FUNC_END;
 
                 return;
@@ -136,7 +177,7 @@ void pop()
 
         s_current_states.pop_back();
 
-        if (!s_current_states.empty()) {
+        if (!is_empty()) {
                 s_current_states.back()->on_resume();
         }
 
@@ -149,7 +190,7 @@ void pop_all()
 {
         TRACE_FUNC_BEGIN;
 
-        while (!s_current_states.empty()) {
+        while (!is_empty()) {
                 s_current_states.back()->on_popped();
 
                 s_current_states.pop_back();
@@ -162,6 +203,17 @@ bool contains_state(const StateId id)
 {
         for (auto& state : s_current_states) {
                 if (state->id() == id) {
+                        return true;
+                }
+        }
+
+        return false;
+}
+
+bool contains_state(const State* const state)
+{
+        for (auto& state_found : s_current_states) {
+                if (state_found.get() == state) {
                         return true;
                 }
         }
@@ -186,13 +238,13 @@ void pop_until(const StateId id)
         TRACE_FUNC_END;
 }
 
-bool is_current_state(const State& state)
+bool is_current_state(const State* const state)
 {
         if (is_empty()) {
                 return false;
         }
 
-        return &state == s_current_states.back().get();
+        return state == s_current_states.back().get();
 }
 
 bool is_empty()

@@ -973,7 +973,7 @@ ConfigState::ConfigState() :
         m_browser.enable_left_right_keys();
 }
 
-StateId ConfigState::id()
+StateId ConfigState::id() const
 {
         return StateId::config;
 }

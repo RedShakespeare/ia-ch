@@ -142,7 +142,7 @@ InvState::InvState()
 
         = default;
 
-StateId InvState::id()
+StateId InvState::id() const
 {
         return StateId::inventory;
 }
@@ -833,7 +833,7 @@ void Apply::draw()
 {
         // Only draw this state if it's the current state, so that messages
         // can be drawn on the map
-        if (!states::is_current_state(*this)) {
+        if (!states::is_current_state(this)) {
                 return;
         }
 

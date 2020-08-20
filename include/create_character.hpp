@@ -22,7 +22,7 @@ public:
 
         void on_resume() override;
 
-        StateId id() override
+        StateId id() const override
         {
                 return StateId::new_game;
         }
@@ -36,7 +36,7 @@ public:
 
         void draw() override;
 
-        StateId id() override
+        StateId id() const override
         {
                 return StateId::pick_background;
         }
@@ -55,7 +55,7 @@ public:
 
         void draw() override;
 
-        StateId id() override
+        StateId id() const override
         {
                 return StateId::pick_background_occultist;
         }
@@ -81,7 +81,7 @@ public:
 
         void on_window_resized() override;
 
-        StateId id() override
+        StateId id() const override
         {
                 return StateId::pick_trait;
         }
@@ -108,7 +108,7 @@ public:
 
         void draw() override;
 
-        StateId id() override
+        StateId id() const override
         {
                 return StateId::pick_name;
         }

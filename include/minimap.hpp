@@ -17,7 +17,7 @@ class ViewMinimap : public State {
 public:
         ViewMinimap() = default;
 
-        StateId id() override
+        StateId id() const override
         {
                 return StateId::view_minimap;
         }

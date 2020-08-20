@@ -375,8 +375,8 @@ void EventSnakeEmerge::on_new_turn()
 
         if (!seen_tgt_positions.empty()) {
                 msg_log::add(
-                        "Suddenly, vicious snakes slither up from cracks in "
-                        "the floor!",
+                        {"Suddenly, vicious snakes slither up from cracks in "
+                         "the floor!"},
                         colors::msg_note(),
                         MsgInterruptPlayer::yes,
                         MorePromptOnMsg::yes);
@@ -403,7 +403,9 @@ void EventSnakeEmerge::on_new_turn()
 
                 actor->m_properties.apply(prop);
 
-                static_cast<actor::Mon*>(actor)->become_aware_player(actor::AwareSource::other);
+                static_cast<actor::Mon*>(actor)
+                        ->become_aware_player(
+                                actor::AwareSource::other);
         }
 
         game_time::erase_mob(this, true);
@@ -426,14 +428,17 @@ void EventRatsInTheWallsDiscovery::on_new_turn()
             (map::g_player->m_pos.x > m_pos.x)) {
                 map::update_vision();
 
-                const std::string str =
+                const auto msg =
                         "Before me lies a twilit grotto of enormous height. "
                         "An insane tangle of human bones extends for yards "
                         "like a foamy sea - invariably in postures of demoniac "
                         "frenzy, either fighting off some menace or clutching "
                         "other forms with cannibal intent.";
 
-                popup::msg(str, "A gruesome discovery...");
+                popup::Popup(popup::AddToMsgHistory::yes)
+                        .set_title("A gruesome discovery...")
+                        .set_msg(msg)
+                        .run();
 
                 map::g_player->incr_shock(
                         ShockLvl::mind_shattering,

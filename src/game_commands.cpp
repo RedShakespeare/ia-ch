@@ -47,20 +47,18 @@
 // -----------------------------------------------------------------------------
 static void query_quit()
 {
-        const auto quit_choices = std::vector<std::string> {
-                "(Y)es",
-                "(N)o"};
+        int choice;
 
-        const int quit_choice =
-                popup::menu(
-                        "Save and highscore are not kept.",
-                        quit_choices,
-                        "Quit the current game?",
-                        0,
-                        audio::SfxId::END,
-                        {'y', 'n'});
+        popup::Popup(popup::AddToMsgHistory::no)
+                .set_title("Quit the current game?")
+                .set_msg("Save and highscore are not kept.")
+                .set_menu(
+                        {"(Y)es", "(N)o"},
+                        {'y', 'n'},
+                        &choice)
+                .run();
 
-        if (quit_choice == 0) {
+        if (choice == 0) {
                 // Choosing to quit the game deletes the save
                 saving::erase_save();
 
@@ -787,14 +785,14 @@ void handle(const GameCmd cmd)
                         "(C)ancel",
                 };
 
-                const int choice =
-                        popup::menu(
-                                "",
+                int choice;
+
+                popup::Popup(popup::AddToMsgHistory::no)
+                        .set_menu(
                                 choices,
-                                "",
-                                0,
-                                audio::SfxId::END,
-                                {'t', 'o', 'q', 'c'});
+                                {'t', 'o', 'q', 'c'},
+                                &choice)
+                        .run();
 
                 if (choice == 0) {
                         // Manual

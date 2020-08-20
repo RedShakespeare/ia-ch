@@ -47,7 +47,10 @@ static bool try_use_talisman_of_resurrection(actor::Actor& actor)
                 "Strange emptiness surrounds me. An eternity passes as I lay "
                 "frozen in a world of shadows. Suddenly I awake!";
 
-        popup::msg(msg, "Dead");
+        popup::Popup(popup::AddToMsgHistory::yes)
+                .set_msg(msg)
+                .set_title("Dead")
+                .run();
 
         for (auto* const a : game_time::g_actors) {
                 if (!a->is_player()) {
@@ -58,10 +61,7 @@ static bool try_use_talisman_of_resurrection(actor::Actor& actor)
                 }
         }
 
-        actor.restore_hp(
-                999,
-                false,
-                Verbose::no);
+        actor.restore_hp(999, false, Verbose::no);
 
         actor.m_properties.end_prop(
                 PropId::wound,

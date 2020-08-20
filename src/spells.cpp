@@ -243,7 +243,7 @@ std::string skill_to_str(const SpellSkill skill)
 // -----------------------------------------------------------------------------
 // BrowseSpell
 // -----------------------------------------------------------------------------
-StateId BrowseSpell::id()
+StateId BrowseSpell::id() const
 {
         return StateId::browse_spells;
 }

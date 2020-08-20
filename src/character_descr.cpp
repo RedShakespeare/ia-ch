@@ -251,9 +251,9 @@ static void add_history_descr(std::vector<ColoredString>& lines)
 // -----------------------------------------------------------------------------
 // Character description
 // -----------------------------------------------------------------------------
-StateId CharacterDescr::id()
+StateId CharacterDescr::id() const
 {
-        return StateId::descript;
+        return StateId::player_character_descr;
 }
 
 void CharacterDescr::on_start()

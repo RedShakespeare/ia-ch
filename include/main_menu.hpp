@@ -24,7 +24,7 @@ public:
 
         void on_resume() override;
 
-        StateId id() override;
+        StateId id() const override;
 
 private:
         MenuBrowser m_browser;

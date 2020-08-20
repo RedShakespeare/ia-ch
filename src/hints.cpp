@@ -147,15 +147,10 @@ void display(const Id id)
                 return;
         }
 
-        const auto title = s_title_prefix + text.first;
-
-        const auto msg = text.second + s_msg_end;
-
-        popup::msg(
-                msg,
-                title,
-                audio::SfxId::END,
-                4); // Width change
+        popup::Popup(popup::AddToMsgHistory::yes)
+                .set_title(s_title_prefix + text.first)
+                .set_msg(text.second + s_msg_end)
+                .run();
 
         s_hints_displayed[(size_t)id] = true;
 }

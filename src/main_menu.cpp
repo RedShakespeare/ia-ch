@@ -202,6 +202,22 @@ static const std::vector<std::string> s_quotes =
                  "strange things have had a chance to grow and linger because they have "
                  "never been stirred up."}};
 
+static bool query_overwrite_savefile()
+{
+        int choice;
+
+        popup::Popup(popup::AddToMsgHistory::no)
+                .set_title("A saved game exists")
+                .set_msg("Start a new game?")
+                .set_menu(
+                        {"(Y)es", "(N)o"},
+                        {'y', 'n'},
+                        &choice)
+                .run();
+
+        return (choice == 1);
+}
+
 // -----------------------------------------------------------------------------
 // Main menu state
 // -----------------------------------------------------------------------------
@@ -213,9 +229,9 @@ MainMenuState::MainMenuState() :
 
 MainMenuState::~MainMenuState() = default;
 
-StateId MainMenuState::id()
+StateId MainMenuState::id() const
 {
-        return StateId::menu;
+        return StateId::main_menu;
 }
 
 void MainMenuState::draw()
@@ -423,15 +439,10 @@ void MainMenuState::update()
 #endif // NDEBUG
                         {
                                 if (saving::is_save_available()) {
-                                        const int choice = popup::menu(
-                                                "Start a new game?",
-                                                {"(Y)es", "(N)o"},
-                                                "A saved game exists",
-                                                0,
-                                                audio::SfxId::END,
-                                                {'y', 'n'});
+                                        const bool should_proceed =
+                                                query_overwrite_savefile();
 
-                                        if (choice == 1) {
+                                        if (!should_proceed) {
                                                 return;
                                         }
                                 }
@@ -461,7 +472,9 @@ void MainMenuState::update()
                                 states::push(std::move(game_state));
                         } else {
                                 // No save available
-                                popup::msg("No saved game found");
+                                popup::Popup(popup::AddToMsgHistory::no)
+                                        .set_msg("No saved game found")
+                                        .run();
                         }
                 } break;
 

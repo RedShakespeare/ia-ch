@@ -108,7 +108,7 @@ void PickBgState::update()
         } break;
 
         case MenuAction::esc: {
-                states::pop_until(StateId::menu);
+                states::pop_until(StateId::main_menu);
         } break;
 
         default:
@@ -241,7 +241,7 @@ void PickOccultistState::update()
         } break;
 
         case MenuAction::esc: {
-                states::pop_until(StateId::menu);
+                states::pop_until(StateId::main_menu);
         } break;
 
         default:
@@ -407,16 +407,20 @@ void PickTraitState::update()
                         if (!is_character_creation) {
                                 states::draw();
 
-                                const auto result =
-                                        popup::menu(
-                                                "",
-                                                {"(Y)es", "(N)o"},
-                                                "Gain trait \"" + name + "\"?",
-                                                0,
-                                                audio::SfxId::END,
-                                                {'y', 'n'});
+                                const std::string title =
+                                        "Gain trait \"" + name + "\"?";
 
-                                should_pick_trait = (result == 0);
+                                int choice;
+
+                                popup::Popup(popup::AddToMsgHistory::no)
+                                        .set_title(title)
+                                        .set_menu(
+                                                {"(Y)es", "(N)o"},
+                                                {'y', 'n'},
+                                                &choice)
+                                        .run();
+
+                                should_pick_trait = (choice == 0);
                         }
 
                         if (should_pick_trait) {
@@ -436,7 +440,7 @@ void PickTraitState::update()
 
         case MenuAction::esc: {
                 if (states::contains_state(StateId::pick_name)) {
-                        states::pop_until(StateId::menu);
+                        states::pop_until(StateId::main_menu);
                 }
         }
 
@@ -697,7 +701,7 @@ void EnterNameState::update()
         const auto input = io::get();
 
         if (input.key == SDLK_ESCAPE) {
-                states::pop_until(StateId::menu);
+                states::pop_until(StateId::main_menu);
                 return;
         }
 

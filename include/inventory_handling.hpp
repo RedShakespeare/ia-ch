@@ -34,7 +34,7 @@ public:
 
         virtual ~InvState() = default;
 
-        StateId id() override;
+        StateId id() const override;
 
 protected:
         void draw_slot(

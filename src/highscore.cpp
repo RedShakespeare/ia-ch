@@ -259,7 +259,7 @@ std::vector<HighscoreEntry> entries_sorted()
 // -----------------------------------------------------------------------------
 // Browse highscore
 // -----------------------------------------------------------------------------
-StateId BrowseHighscore::id()
+StateId BrowseHighscore::id() const
 {
         return StateId::highscore;
 }
@@ -418,7 +418,9 @@ void BrowseHighscore::draw()
 void BrowseHighscore::update()
 {
         if (m_entries.empty()) {
-                popup::msg("No high score entries found.");
+                popup::Popup(popup::AddToMsgHistory::no)
+                        .set_msg("No high score entries found.")
+                        .run();
 
                 // Exit screen
                 states::pop();
@@ -469,7 +471,7 @@ BrowseHighscoreEntry::BrowseHighscoreEntry(std::string file_path) :
         m_top_idx(0)
 {}
 
-StateId BrowseHighscoreEntry::id()
+StateId BrowseHighscoreEntry::id() const
 {
         return StateId::browse_highscore_entry;
 }
@@ -548,11 +550,10 @@ void BrowseHighscoreEntry::read_file()
         std::ifstream file(m_file_path);
 
         if (!file.is_open()) {
-                popup::msg(
-                        "Path: \"" + m_file_path + "\"",
-                        "Game summary file could not be opened",
-                        audio::SfxId::END,
-                        20);
+                popup::Popup(popup::AddToMsgHistory::no)
+                        .set_title("Game summary file could not be opened")
+                        .set_msg("Path: \"" + m_file_path + "\"")
+                        .run();
 
                 states::pop();
 
