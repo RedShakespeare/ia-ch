@@ -368,12 +368,13 @@ void Gong::on_hit(
                 map::update_vision();
 
                 if (player_bon::is_bg(Bg::exorcist)) {
-                        const auto msg = rnd::element(
-                                common_text::g_exorcist_purge_phrases);
+                        const auto msg =
+                                rnd::element(
+                                        common_text::g_exorcist_purge_phrases);
 
                         msg_log::add(msg);
 
-                        game::incr_player_xp(8);
+                        game::incr_player_xp(10);
 
                         map::g_player->restore_sp(999, false);
                         map::g_player->restore_sp(12, true);
