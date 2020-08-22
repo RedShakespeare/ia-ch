@@ -1681,6 +1681,27 @@ void SpellCleansingFire::run_effect(
         }
 
         for (auto* const actor : targets) {
+                // Spell resistance?
+                if (actor->m_properties.has(PropId::r_spell)) {
+                        on_resist(*actor);
+
+                        // Spell reflection?
+                        if (actor->m_properties.has(PropId::spell_reflect)) {
+                                if (actor::can_player_see_actor(*actor)) {
+                                        msg_log::add(
+                                                s_spell_reflect_msg,
+                                                colors::text(),
+                                                MsgInterruptPlayer::no,
+                                                MorePromptOnMsg::yes);
+                                }
+
+                                // Run effect with the target as caster instead
+                                run_effect(actor, skill);
+                        }
+
+                        continue;
+                }
+
                 for (const auto& d : dir_utils::g_dir_list) {
                         const auto p = actor->m_pos + d;
 
