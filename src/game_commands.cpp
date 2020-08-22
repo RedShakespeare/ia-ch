@@ -68,6 +68,81 @@ static void query_quit()
         }
 }
 
+static bool allow_player_fire_mi_go_gun()
+{
+        const bool has_enough_hp =
+                (map::g_player->m_hp > g_mi_go_gun_hp_drained);
+
+        if (has_enough_hp) {
+                return true;
+        } else {
+                // Not enough HP - allow firing the gun if player has the
+                // Prolonged Life trait and enough SP instead
+                const bool has_prolonged_life =
+                        player_bon::has_trait(Trait::prolonged_life);
+
+                const int hp = map::g_player->m_hp;
+                const int sp = map::g_player->m_sp;
+
+                const bool has_enough_hp_and_sp =
+                        ((hp + sp - 1) > g_mi_go_gun_hp_drained);
+
+                return (has_prolonged_life && has_enough_hp_and_sp);
+        }
+}
+
+static void handle_fire_command()
+{
+        if (!map::g_player->m_properties.allow_attack_ranged(Verbose::yes)) {
+                return;
+        }
+
+        auto* const item = map::g_player->m_inv.item_in_slot(SlotId::wpn);
+
+        if (!item) {
+                msg_log::add("I am not wielding a weapon.");
+
+                return;
+        }
+
+        const auto& item_data = item->data();
+
+        if (!item_data.ranged.is_ranged_wpn) {
+                msg_log::add("I am not wielding a firearm.");
+
+                return;
+        }
+
+        auto* wpn = static_cast<item::Wpn*>(item);
+
+        if ((wpn->m_ammo_loaded >= 1) ||
+            item_data.ranged.has_infinite_ammo) {
+                if ((wpn->data().id == item::Id::mi_go_gun) &&
+                    !allow_player_fire_mi_go_gun()) {
+                        msg_log::add("Firing the gun now would destroy me.");
+
+                        return;
+                }
+
+                states::push(
+                        std::make_unique<Aiming>(
+                                map::g_player->m_pos,
+                                *wpn));
+
+                return;
+        }
+
+        // Not enough ammo loaded - auto reload?
+        if (config::is_ranged_wpn_auto_reload()) {
+                reload::try_reload(*map::g_player, item);
+
+                return;
+        }
+
+        // Not enough ammo loaded, and auto reloading is disabled
+        msg_log::add("There is no ammo loaded.");
+}
+
 static GameCmd to_cmd_default(const InputData& input)
 {
         // When running on windows, with numlock enabled, each numpad key press
@@ -497,54 +572,7 @@ void handle(const GameCmd cmd)
         } break;
 
         case GameCmd::fire: {
-                const bool is_allowed =
-                        map::g_player->m_properties
-                                .allow_attack_ranged(Verbose::yes);
-
-                if (is_allowed) {
-                        auto* const item =
-                                map::g_player->m_inv.item_in_slot(SlotId::wpn);
-
-                        if (item) {
-                                const auto& item_data = item->data();
-
-                                if (item_data.ranged.is_ranged_wpn) {
-                                        auto* wpn = static_cast<item::Wpn*>(item);
-
-                                        if ((wpn->m_ammo_loaded >= 1) ||
-                                            item_data.ranged.has_infinite_ammo) {
-                                                // Not enough health for Mi-go gun?
-
-                                                // TODO: This doesn't belong here - refactor
-                                                if (wpn->data().id == item::Id::mi_go_gun) {
-                                                        if (map::g_player->m_hp <= g_mi_go_gun_hp_drained) {
-                                                                msg_log::add(
-                                                                        "I don't have enough health to fire it.");
-
-                                                                return;
-                                                        }
-                                                }
-
-                                                states::push(
-                                                        std::make_unique<Aiming>(
-                                                                map::g_player->m_pos, *wpn));
-                                        }
-                                        // Not enough ammo loaded - auto reload?
-                                        else if (config::is_ranged_wpn_auto_reload()) {
-                                                reload::try_reload(*map::g_player, item);
-                                        } else {
-                                                // Not enough ammo loaded, and auto reloading disabled
-                                                msg_log::add("There is no ammo loaded.");
-                                        }
-                                } else {
-                                        // Wielded item is not a ranged weapon
-                                        msg_log::add("I am not wielding a firearm.");
-                                }
-                        } else {
-                                // Not wielding any item
-                                msg_log::add("I am not wielding a weapon.");
-                        }
-                }
+                handle_fire_command();
         } break;
 
         case GameCmd::get: {
@@ -847,6 +875,10 @@ void handle(const GameCmd cmd)
 
                 item::make_item_on_floor(
                         item::Id::incinerator,
+                        map::g_player->m_pos);
+
+                item::make_item_on_floor(
+                        item::Id::mi_go_gun,
                         map::g_player->m_pos);
 
                 for (size_t i = 0; i < (size_t)item::Id::END; ++i) {

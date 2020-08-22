@@ -86,9 +86,9 @@ static void player_bump_known_hostile_mon(actor::Mon& mon)
                 const auto answer =
                         query_player_attack_mon_with_ranged_wpn(wpn, mon);
 
-                if (answer == BinaryAnswer::no) {
-                        msg_log::clear();
+                msg_log::clear();
 
+                if (answer == BinaryAnswer::no) {
                         return;
                 }
         }

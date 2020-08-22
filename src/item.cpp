@@ -1003,11 +1003,12 @@ void MiGoGun::pre_ranged_attack()
 
         const auto wpn_name = name(ItemRefType::plain, ItemRefInf::none);
 
-        msg_log::add(
-                {"The " +
-                 wpn_name +
-                 " draws power from my life force!"},
-                colors::msg_bad());
+        const auto msg =
+                "The " +
+                wpn_name +
+                " feeds on my energy!";
+
+        msg_log::add(msg, colors::msg_bad());
 
         actor::hit(
                 *m_actor_carrying,
