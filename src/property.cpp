@@ -2215,7 +2215,7 @@ PropActResult PropSpeaksCurses::on_act()
         }
 
         if (!m_owner->is_alive() ||
-            m_owner->is_aware_of_player() ||
+            !m_owner->is_aware_of_player() ||
             !rnd::one_in(3)) {
                 return {};
         }
@@ -2224,10 +2224,10 @@ PropActResult PropSpeaksCurses::on_act()
 
         const R fov_rect = fov::fov_rect(m_owner->m_pos, blocked_los.dims());
 
-        map_parsers::BlocksLos()
-                .run(blocked_los,
-                     fov_rect,
-                     MapParseMode::overwrite);
+        map_parsers::BlocksLos().run(
+                blocked_los,
+                fov_rect,
+                MapParseMode::overwrite);
 
         if (actor::can_mon_see_actor(*m_owner, *map::g_player, blocked_los)) {
                 const bool player_see_owner =
