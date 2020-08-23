@@ -215,7 +215,7 @@ static bool query_overwrite_savefile()
                         &choice)
                 .run();
 
-        return (choice == 1);
+        return (choice == 0);
 }
 
 // -----------------------------------------------------------------------------
