@@ -149,8 +149,8 @@ int number(
                         fg_color = color;
                         bg_color = colors::black();
                 } else {
-                        fg_color = colors::black();
-                        bg_color = colors::gray();
+                        fg_color = colors::light_white();
+                        bg_color = colors::blue();
                 }
 
                 io::draw_text(

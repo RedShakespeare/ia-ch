@@ -58,7 +58,8 @@ static bool should_put_contour_at(
         const SDL_Surface& surface,
         const P& surface_px_pos,
         const R& surface_px_rect,
-        const Color& bg_color)
+        const Color& bg_color,
+        const Color& contour_color)
 {
         // Only allow drawing a contour at pixels with the same color as the
         // background color parameter
@@ -85,7 +86,7 @@ static bool should_put_contour_at(
 
                 const auto adj_color = io::read_px_on_surface(surface, adj_p);
 
-                if ((adj_color == bg_color) || (adj_color == colors::black())) {
+                if ((adj_color == bg_color) || (adj_color == contour_color)) {
                         continue;
                 }
 
@@ -101,19 +102,22 @@ static void draw_black_contour_for_surface(
 {
         const R surface_px_rect({0, 0}, {surface.w - 1, surface.h - 1});
 
+        const auto contour_color = colors::black();
+
         for (const auto& surface_px_pos : surface_px_rect.positions()) {
                 const bool should_put_contour =
                         should_put_contour_at(
                                 surface,
                                 surface_px_pos,
                                 surface_px_rect,
-                                bg_color);
+                                bg_color,
+                                contour_color);
 
                 if (should_put_contour) {
                         io::put_px_on_surface(
                                 surface,
                                 surface_px_pos,
-                                colors::black());
+                                contour_color);
                 }
         }
 }
@@ -220,11 +224,6 @@ static SDL_Renderer* create_renderer()
 
                 PANIC;
         }
-
-        // TODO: Needed?
-        // SDL_RenderSetLogicalSize(renderer, px_dims.x, px_dims.y);
-
-        // SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "0");
 
         TRACE_FUNC_END;
 
@@ -759,6 +758,12 @@ void draw_character_at_px(
         const io::DrawBg draw_bg,
         const Color& bg_color)
 {
+        // TODO: Black foreground looks terrible with grayscale shaded font
+        // image (all shades of white are colored black). The current solution
+        // to this is to simply never use black foreground, since it's not
+        // really necessary.
+        ASSERT(color != colors::black());
+
         P gui_cell_px_dims(config::gui_cell_px_w(), config::gui_cell_px_h());
 
         if (draw_bg == io::DrawBg::yes) {
@@ -770,9 +775,11 @@ void draw_character_at_px(
         }
 
         // Set up the texture clip rectangle, before calculating scaling
-        const auto char_px_pos =
-                gfx::character_pos(character)
-                        .scaled_up(gui_cell_px_dims);
+        // NOTE: We expect one pixel separator between each glyph
+        auto char_px_pos = gfx::character_pos(character);
+
+        char_px_pos.x *= gui_cell_px_dims.x + 1;
+        char_px_pos.y *= gui_cell_px_dims.y;
 
         SDL_Rect clip_rect;
 
@@ -804,11 +811,11 @@ void draw_character_at_px(
 
         SDL_Texture* texture;
 
-        if ((color == colors::black()) || (bg_color == colors::black())) {
-                // Foreground or background is black - no contours
+        // TODO: If black foreground will not be allowed, the contour version
+        // can probably always be used
+        if (/* (color == colors::black()) || */ (bg_color == colors::black())) {
                 texture = g_font_texture;
         } else {
-                // Both foreground and background are non-black - use contours
                 texture = g_font_texture_with_contours;
         }
 
@@ -998,9 +1005,6 @@ void on_window_resized()
               << std::endl;
 
         panels::init(io::px_to_gui_coords(new_px_dims));
-
-        // TODO: Needed?
-        // SDL_RenderSetLogicalSize(g_sdl_renderer, new_px_dims.x, new_px_dims.y);
 
         update_rendering_offsets();
 

@@ -1,6 +1,5 @@
-------------------------------------------------------------------------
 GENERAL INFORMATION
-------------------------------------------------------------------------
+
 This file lists all audio files stored in the Infra Arcana source code
 repository (https://gitlab.com/martin-tornqvist/ia), and distributed
 with executable builds of the project. For each audio file, an
@@ -14,6 +13,8 @@ information is wrong (for example due to a false claim by a user on
 Freesound that they are the original author of a sound), please notify
 me at email address m.tornq@gmail.com, so that I can take action such as
 updating the attribution or removing the audio file.
+
+LICENSES USED
 
 The following licenses are used and referred to in the list below:
 
@@ -29,9 +30,8 @@ https://creativecommons.org/licenses/by-nc/3.0
 Sampling Plus 1.0
 https://creativecommons.org/licenses/sampling+/1.0
 
-------------------------------------------------------------------------
 AUDIO FILES INCLUDED WITH INFRA ARCANA
-------------------------------------------------------------------------
+
 File:                amb_001.ogg
 Source:              https://freesound.org/people/Connum/sounds/17332/
 Author:              Connum (username on freesound.org)

@@ -64,6 +64,7 @@ static SDL_Color s_title;
 static SDL_Color s_msg_good;
 static SDL_Color s_msg_bad;
 static SDL_Color s_msg_note;
+static SDL_Color s_msg_more;
 static SDL_Color s_mon_unaware_bg;
 static SDL_Color s_mon_allied_bg;
 static SDL_Color s_mon_temp_property_bg;
@@ -229,6 +230,7 @@ static void load_gui_colors()
         load_gui_color(gui_e, "message_good", s_msg_good);
         load_gui_color(gui_e, "message_bad", s_msg_bad);
         load_gui_color(gui_e, "message_note", s_msg_note);
+        load_gui_color(gui_e, "message_more", s_msg_more);
         load_gui_color(gui_e, "monster_unaware", s_mon_unaware_bg);
         load_gui_color(gui_e, "monster_allied", s_mon_allied_bg);
         load_gui_color(gui_e, "monster_temp_property", s_mon_temp_property_bg);
@@ -649,6 +651,11 @@ Color msg_bad()
 Color msg_note()
 {
         return {s_msg_note};
+}
+
+Color msg_more()
+{
+        return {s_msg_more};
 }
 
 Color mon_unaware_bg()

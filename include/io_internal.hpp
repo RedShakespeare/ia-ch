@@ -16,9 +16,6 @@
 
 namespace io {
 
-inline constexpr size_t g_font_nr_x = 16;
-inline constexpr size_t g_font_nr_y = 7;
-
 extern SDL_Window* g_sdl_window;
 extern SDL_Renderer* g_sdl_renderer;
 

@@ -256,30 +256,24 @@ void MainMenuState::draw()
 
         if (config::is_gj_mode()) {
                 io::draw_text(
-                        "GJ MODE ENABLED",
+                        "### GJ MODE ENABLED ###",
                         Panel::screen,
-                        P(1, 1),
-                        colors::black(),
-                        io::DrawBg::yes,
-                        colors::gold());
+                        {1, 1},
+                        colors::yellow());
         }
 #ifndef NDEBUG
         else {
                 io::draw_text(
-                        " DEBUG ",
+                        "### DEBUG ###",
                         Panel::screen,
-                        P(1, 1),
-                        colors::black(),
-                        io::DrawBg::yes,
-                        colors::gold());
+                        {1, 1},
+                        colors::yellow());
 
                 io::draw_text(
-                        "  MODE ",
+                        "###  MODE ###",
                         Panel::screen,
-                        P(1, 2),
-                        colors::black(),
-                        io::DrawBg::yes,
-                        colors::gold());
+                        {1, 2},
+                        colors::yellow());
         }
 #endif // NDEBUG
 

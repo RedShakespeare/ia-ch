@@ -272,11 +272,11 @@ static void set_living_hidden_monster(
         const auto color_bg =
                 map::g_player->is_leader_of(&mon)
                 ? colors::mon_allied_bg()
-                : colors::gray();
+                : colors::dark_gray();
 
         render_data.tile = gfx::TileId::excl_mark;
         render_data.character = '!';
-        render_data.color = colors::black();
+        render_data.color = colors::white();
         render_data.color_bg = color_bg;
 }
 

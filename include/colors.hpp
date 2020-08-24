@@ -112,6 +112,7 @@ Color title();
 Color msg_good();
 Color msg_bad();
 Color msg_note();
+Color msg_more();
 Color mon_unaware_bg();
 Color mon_allied_bg();
 Color mon_temp_property_bg();

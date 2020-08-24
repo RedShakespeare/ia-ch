@@ -37,16 +37,10 @@ enum class OptionToggleDirecton {
 
 static const std::vector<std::string> font_image_names = {
         "8x17_terminus.png",
-        "8x12_DOS.png",
-        "11x19.png",
-        "11x22.png",
-        "12x24.png",
-        "16x24_v1.png",
-        "16x24_v2.png",
-        "16x24_v3.png",
-        "16x24_DOS.png",
-        "16x24_typewriter_v1.png",
-        "16x24_typewriter_v2.png",
+        "10x24_dejavu_sans_mono_book.png",
+        "12x22_monospace_medium.png",
+        "12x24_dejavu_sans_mono_book.png",
+        "13x24_dejavu_sans_mono_book.png",
 };
 
 static const int s_opt_y0 = 1;
@@ -168,7 +162,7 @@ static void set_default_variables()
         s_input_mode = InputMode::standard;
 
         s_is_tiles_mode = true;
-        s_font_name = "12x24.png";
+        s_font_name = "12x22_monospace_medium.png";
 
         update_render_dims();
 

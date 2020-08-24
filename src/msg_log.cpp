@@ -30,7 +30,7 @@ static size_t s_history_count = 0;
 
 static Msg s_history[s_history_cap];
 
-static const std::string s_more_str = "-More-";
+static const std::string s_more_str = "-more-";
 
 static const int s_repeat_str_len = 4;
 
@@ -184,16 +184,16 @@ static void draw_more_prompt()
                 }
         }
 
-        ASSERT((more_x0 + (int)s_more_str.size()) <=
-               (panels::w(Panel::log)));
+        ASSERT(
+                (more_x0 + (int)s_more_str.size()) <=
+                (panels::w(Panel::log)));
 
         io::draw_text(
                 s_more_str,
                 Panel::log,
-                P(more_x0, line_nr),
-                colors::black(),
-                io::DrawBg::yes,
-                colors::gray());
+                {more_x0, (int)line_nr},
+                colors::msg_more(),
+                io::DrawBg::no);
 }
 
 // -----------------------------------------------------------------------------

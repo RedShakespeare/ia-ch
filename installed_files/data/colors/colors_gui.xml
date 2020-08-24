@@ -8,6 +8,7 @@
     <text_color type="message_good" color="light_green"/>
     <text_color type="message_bad" color="light_red"/>
     <text_color type="message_note" color="orange"/>
+    <text_color type="message_more" color="gold"/>
     <text_color type="monster_unaware" color="blue"/>
     <text_color type="monster_allied" color="green"/>
     <text_color type="monster_temp_property" color="magenta"/>
