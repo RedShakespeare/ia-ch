@@ -1654,7 +1654,7 @@ bool SpellOpening::is_noisy(const SpellSkill skill) const
 // -----------------------------------------------------------------------------
 Range SpellCleansingFire::burn_duration_range() const
 {
-        return {2, 5};
+        return {3, 5};
 }
 
 void SpellCleansingFire::run_effect(

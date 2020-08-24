@@ -353,7 +353,7 @@ ItemPrePickResult Scroll::pre_pickup_hook()
         game::incr_player_xp(5);
 
         map::g_player->restore_sp(999, false);
-        map::g_player->restore_sp(10, true);
+        map::g_player->restore_sp(7, true);
 
         return ItemPrePickResult::destroy_item;
 }

@@ -1758,7 +1758,7 @@ void Altar::on_hit(
                         game::incr_player_xp(10);
 
                         map::g_player->restore_sp(999, false);
-                        map::g_player->restore_sp(12, true);
+                        map::g_player->restore_sp(10, true);
                 }
                 break;
 

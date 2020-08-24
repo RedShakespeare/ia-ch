@@ -47,10 +47,10 @@ void Monolith::on_hit(
 
                         msg_log::add(msg);
 
-                        game::incr_player_xp(10);
+                        game::incr_player_xp(15);
 
                         map::g_player->restore_sp(999, false);
-                        map::g_player->restore_sp(12, true);
+                        map::g_player->restore_sp(10, true);
                 }
                 break;
 
