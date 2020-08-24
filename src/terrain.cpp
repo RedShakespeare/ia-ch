@@ -1198,6 +1198,11 @@ Color Stairs::color_default() const
         return colors::yellow();
 }
 
+void Stairs::add_light_hook(Array2<bool>& light) const
+{
+        light.at(m_pos) = true;
+}
+
 // -----------------------------------------------------------------------------
 // Bridge
 // -----------------------------------------------------------------------------
