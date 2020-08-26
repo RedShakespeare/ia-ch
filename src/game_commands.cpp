@@ -881,6 +881,10 @@ void handle(const GameCmd cmd)
                         item::Id::mi_go_gun,
                         map::g_player->m_pos);
 
+                item::make_item_on_floor(
+                        item::Id::machine_gun,
+                        map::g_player->m_pos);
+
                 for (size_t i = 0; i < (size_t)item::Id::END; ++i) {
                         const auto& item_data = item::g_data[i];
 

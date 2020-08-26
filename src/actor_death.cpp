@@ -108,7 +108,6 @@ static void move_actor_to_pos_can_have_corpse(actor::Actor& actor)
 // -----------------------------------------------------------------------------
 namespace actor {
 
-// TODO: Split into smaller functions
 void kill(
         actor::Actor& actor,
         const IsDestroyed is_destroyed,

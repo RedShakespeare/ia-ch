@@ -244,29 +244,38 @@ RangedAttData::RangedAttData(
         const P& attacker_origin,
         const P& the_aim_pos,
         const P& current_pos,
-        const item::Wpn& wpn) :
+        const item::Wpn& wpn,
+        std::optional<actor::Size> aim_lvl_override) :
         AttData(the_attacker, nullptr, wpn),
         aim_pos(the_aim_pos)
 {
         // Determine aim level
-        // TODO: Quick hack, Incinerators always aim at the floor
-        if (wpn.id() == item::Id::incinerator) {
-                aim_lvl = actor::Size::floor;
+        if (aim_lvl_override) {
+                aim_lvl = aim_lvl_override.value();
         } else {
-                // Not incinerator
-                auto* const actor_aimed_at = map::first_actor_at_pos(aim_pos);
+                // Aim level not overriden by caller
 
-                if (actor_aimed_at) {
-                        aim_lvl = actor_aimed_at->m_data->actor_size;
+                // TODO: Quick hack, Incinerators always aim at the floor
+                if (wpn.id() == item::Id::incinerator) {
+                        aim_lvl = actor::Size::floor;
                 } else {
-                        // No actor aimed at
-                        const bool is_cell_blocked =
-                                map_parsers::BlocksProjectiles().cell(aim_pos);
+                        // Not incinerator
+                        auto* const actor_aimed_at =
+                                map::first_actor_at_pos(aim_pos);
 
-                        aim_lvl =
-                                is_cell_blocked
-                                ? actor::Size::humanoid
-                                : actor::Size::floor;
+                        if (actor_aimed_at) {
+                                aim_lvl = actor_aimed_at->m_data->actor_size;
+                        } else {
+                                // No actor aimed at
+                                const bool is_cell_blocked =
+                                        map_parsers::BlocksProjectiles()
+                                                .cell(aim_pos);
+
+                                aim_lvl =
+                                        is_cell_blocked
+                                        ? actor::Size::humanoid
+                                        : actor::Size::floor;
+                        }
                 }
         }
 

@@ -517,6 +517,14 @@ PropEnded PropShapeshifts::on_death()
                 // It's affraid!
                 shapeshifter->m_properties.apply(
                         property_factory::make(PropId::terrified));
+
+                // Make the Shapeshifter skip a turn - it looks better if it
+                // doesn't immediately move to an adjacent cell when spawning
+                auto* const waiting = property_factory::make(PropId::waiting);
+
+                waiting->set_duration(1);
+
+                shapeshifter->m_properties.apply(waiting);
         }
 
         return PropEnded::no;

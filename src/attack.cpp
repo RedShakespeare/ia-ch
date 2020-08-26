@@ -52,6 +52,46 @@ struct Projectile {
         char character {-1};
         Color color {colors::white()};
         std::unique_ptr<RangedAttData> att_data {nullptr};
+
+#ifndef NDEBUG
+        friend std::ostream& operator<<(
+                std::ostream& os,
+                const Projectile& p)
+        {
+                os
+                        << "POS: "
+                        << "{"
+                        << p.pos.x
+                        << " ,"
+                        << p.pos.y
+                        << "}"
+                        << " - PATH IDX: "
+                        << p.path_idx
+                        << " - OBSTRUCTED AT IDX: "
+                        << p.obstructed_in_path_idx;
+
+                const auto live_str =
+                        p.is_dead
+                        ? " - DEAD"
+                        : " - LIVE";
+
+                os << live_str;
+
+                if (p.actor_hit) {
+                        os
+                                << " - ACTOR HIT: "
+                                << p.actor_hit->name_a();
+                }
+
+                if (p.terrain_hit) {
+                        os
+                                << " - TERRAIN HIT: "
+                                << p.terrain_hit->name(Article::a);
+                }
+
+                return os;
+        }
+#endif // NDEBUG
 };
 
 struct ProjectileFireData {
@@ -60,10 +100,62 @@ struct ProjectileFireData {
         std::vector<actor::Actor*> actors_seen;
         P origin {0, 0};
         P aim_pos {0, 0};
+        actor::Size aim_lvl {(actor::Size)0};
         actor::Actor* attacker = nullptr;
         item::Wpn* wpn = nullptr;
         int animation_delay = 0;
         bool projectile_animation_leaves_trail = false;
+
+#ifndef NDEBUG
+        friend std::ostream& operator<<(
+                std::ostream& os,
+                const ProjectileFireData& d)
+        {
+                os
+                        << "PROJECTILE FIRE DATA:"
+                        << std::endl
+                        << "ORIGIN: "
+                        << "{"
+                        << d.origin.x
+                        << " ,"
+                        << d.origin.y
+                        << "}"
+                        << std::endl
+                        << "AIM POS: "
+                        << "{"
+                        << d.aim_pos.x
+                        << " ,"
+                        << d.aim_pos.y
+                        << "}"
+                        << std::endl
+                        << "AIM LVL: "
+                        << (int)d.aim_lvl
+                        << std::endl;
+
+                os << "PATH: ";
+
+                for (const auto& p : d.path) {
+                        os
+                                << "{"
+                                << p.x
+                                << " ,"
+                                << p.y
+                                << "} ";
+                }
+
+                os << std::endl;
+
+                os
+                        << "PROJECTILES:"
+                        << std::endl;
+
+                for (const auto& proj : d.projectiles) {
+                        os << "    " << proj << std::endl;
+                }
+
+                return os;
+        }
+#endif // NDEBUG
 };
 
 enum class HitSize {
@@ -813,9 +905,9 @@ static terrain::Terrain* get_ground_blocking_projectile(
 
         if (has_hit_ground) {
                 return map::g_cells.at(pos).terrain;
+        } else {
+                return nullptr;
         }
-
-        return nullptr;
 }
 
 static void try_apply_attack_property_on_actor(
@@ -1018,20 +1110,19 @@ static ProjectileFireData init_projectiles_fire_data(
                 // to enter the path)
                 proj.path_idx = -((int)i * s_nr_cell_jumps_mg_projectiles) - 1;
 
-                auto att_data =
-                        new RangedAttData(
+                proj.att_data =
+                        std::make_unique<RangedAttData>(
                                 fire_data.attacker,
                                 fire_data.origin,
                                 fire_data.aim_pos,
                                 fire_data.origin, // Current position
-                                *fire_data.wpn);
-
-                proj.att_data.reset(att_data);
+                                *fire_data.wpn,
+                                std::nullopt); // Undefined aim level
         }
 
-        const auto aim_lvl = fire_data.projectiles[0].att_data->aim_lvl;
+        fire_data.aim_lvl = fire_data.projectiles[0].att_data->aim_lvl;
 
-        const bool stop_at_target = (aim_lvl == actor::Size::floor);
+        const bool stop_at_target = (fire_data.aim_lvl == actor::Size::floor);
 
         fire_data.path =
                 line_calc::calc_new_line(
@@ -1118,6 +1209,22 @@ static void advance_projectiles_on_path(ProjectileFireData& fire_data)
                         continue;
                 }
 
+                if (projectile.path_idx == (int)fire_data.path.size() - 1) {
+                        // Projectile is already at the maximum path index.
+                        // This situation is unexpected - consider it a critical
+                        // error in debug mode, and just kill the projectile in
+                        // release mode.
+#ifndef NDEBUG
+                        TRACE << fire_data;
+
+                        ASSERT(false);
+#endif // NDEBUG
+
+                        projectile.is_dead = true;
+
+                        continue;
+                }
+
                 ++projectile.path_idx;
 
                 if (projectile.path_idx >= 0) {
@@ -1136,7 +1243,7 @@ static void update_projectile_states(ProjectileFireData& fire_data)
                         continue;
                 }
 
-                const P& projectile_pos =
+                const auto& projectile_pos =
                         fire_data.path[projectile.path_idx];
 
                 projectile.att_data =
@@ -1145,7 +1252,8 @@ static void update_projectile_states(ProjectileFireData& fire_data)
                                 fire_data.origin,
                                 fire_data.aim_pos,
                                 projectile_pos,
-                                *fire_data.wpn);
+                                *fire_data.wpn,
+                                fire_data.aim_lvl);
 
                 if (projectile.att_data->defender) {
                         // The projectile is at a potential target to attack,
@@ -1164,7 +1272,7 @@ static void update_projectile_states(ProjectileFireData& fire_data)
                         map::g_cells.at(projectile_pos)
                                 .is_seen_by_player;
 
-                // Projectile out of range?
+                // Projectile out of weapon max range?
                 const int max_range = fire_data.wpn->data().ranged.max_range;
 
                 if (king_dist(fire_data.origin, projectile_pos) > max_range) {
@@ -1209,7 +1317,8 @@ static void update_projectile_states(ProjectileFireData& fire_data)
                                 projectile.color =
                                         projectile.terrain_hit->color();
                         } else {
-                                projectile.color = colors::yellow();
+                                projectile.color =
+                                        colors::yellow();
                         }
 
                         continue;

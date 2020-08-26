@@ -7,6 +7,8 @@
 #ifndef ATTACK_DATA_HPP
 #define ATTACK_DATA_HPP
 
+#include <optional>
+
 #include "ability_values.hpp"
 #include "actor_data.hpp"
 #include "dmg_range.hpp"
@@ -59,7 +61,8 @@ public:
                 const P& attacker_origin,
                 const P& aim_pos,
                 const P& current_pos,
-                const item::Wpn& wpn);
+                const item::Wpn& wpn,
+                std::optional<actor::Size> aim_lvl_override = std::nullopt);
 
         ~RangedAttData() = default;
 
