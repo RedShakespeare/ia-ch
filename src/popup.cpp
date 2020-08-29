@@ -8,6 +8,7 @@
 
 #include "audio.hpp"
 #include "browser.hpp"
+#include "colors.hpp"
 #include "common_text.hpp"
 #include "config.hpp"
 #include "draw_box.hpp"
@@ -25,8 +26,6 @@ enum class HighlightMenuKeys {
         no,
         yes
 };
-
-static const int s_text_w_default = 39;
 
 static int get_x0(const int width)
 {
@@ -47,26 +46,30 @@ static int get_title_y(const int text_h)
         return title_y;
 }
 
-static void draw_popup_box(const int text_w, const int text_h)
+static int max_msg_w()
 {
-        const int box_w = text_w + 4;
-        const int box_h = text_h + 2;
+        return io::g_min_nr_gui_cells_x - 6;
+}
 
-        const int x0 = get_x0(box_w);
+static void draw_horizontal_line(const int line_w, const int line_y)
+{
+        const P cell_px_dims(
+                config::gui_cell_px_w(),
+                config::gui_cell_px_h());
 
-        const int y0 = get_box_y0(box_h);
+        const auto screen_center_x = panels::center_x(Panel::screen);
 
-        const int x1 = x0 + box_w - 1;
-        const int y1 = y0 + box_h - 1;
+        const auto p0 =
+                P(screen_center_x - (line_w / 2), line_y)
+                        .scaled_up(cell_px_dims)
+                        .with_y_offset(cell_px_dims.y / 2);
 
-        const R rect(x0, y0, x1, y1);
+        const auto p1 =
+                P(screen_center_x + (line_w / 2), line_y)
+                        .scaled_up(cell_px_dims)
+                        .with_y_offset(cell_px_dims.y / 2);
 
-        io::cover_area(
-                Panel::screen,
-                rect,
-                colors::extra_dark_gray());
-
-        draw_box(rect, colors::gray());
+        io::draw_rectangle({p0, p1}, colors::dark_gray());
 }
 
 // -----------------------------------------------------------------------------
@@ -148,12 +151,12 @@ void PopupState::on_start()
                 }
 
                 if (!m_msg.empty()) {
-                        const auto lines =
+                        const auto msg_lines =
                                 text_format::split(
                                         m_msg,
                                         io::g_min_nr_gui_cells_x - 2);
 
-                        for (const auto& line : lines) {
+                        for (const auto& line : msg_lines) {
                                 msg_log::add_line_to_history(line);
                         }
                 }
@@ -177,46 +180,64 @@ void PopupState::draw()
 
 void PopupState::draw_msg_popup() const
 {
-        const auto text_w = s_text_w_default;
-        const auto lines = text_format::split(m_msg, text_w);
-        const auto text_h = (int)lines.size() + 3;
+        const auto text_max_w = max_msg_w();
+        const auto msg_lines = text_format::split(m_msg, text_max_w);
+        const auto text_h = (int)msg_lines.size() + 3;
 
-        draw_popup_box(text_w, text_h);
+        int horizontal_line_w = 0;
+
+        const auto msg_line_w =
+                (msg_lines.size() == 1)
+                ? (int)msg_lines[0].size()
+                : text_max_w;
+
+        horizontal_line_w =
+                std::max(
+                        (int)m_title.size() + 12,
+                        msg_line_w);
+
+        horizontal_line_w = std::min(horizontal_line_w, text_max_w);
+
+        io::clear_screen();
+
+        draw_box(panels::area(Panel::screen));
 
         auto y = get_title_y(text_h);
 
+        draw_horizontal_line(horizontal_line_w, y);
+
         if (!m_title.empty()) {
                 io::draw_text_center(
-                        m_title,
+                        " " + m_title + " ",
                         Panel::screen,
-                        P(panels::center_x(Panel::screen), y),
+                        {panels::center_x(Panel::screen), y},
                         colors::title(),
-                        io::DrawBg::no,
+                        io::DrawBg::yes,
                         colors::black(),
                         true); // Allow pixel-level adjustmet
         }
 
-        const bool show_msg_centered = lines.size() == 1;
+        const bool show_msg_centered = msg_lines.size() == 1;
 
-        for (const std::string& line : lines) {
+        for (const std::string& line : msg_lines) {
                 ++y;
 
                 if (show_msg_centered) {
                         io::draw_text_center(
                                 line,
                                 Panel::screen,
-                                P(panels::center_x(Panel::screen), y),
+                                {panels::center_x(Panel::screen), y},
                                 colors::text(),
                                 io::DrawBg::no,
                                 colors::black(),
                                 true); // Allow pixel-level adjustmet
                 } else {
-                        const int text_x0 = get_x0(s_text_w_default);
+                        const auto text_x0 = get_x0(text_max_w);
 
                         io::draw_text(
                                 line,
                                 Panel::screen,
-                                P(text_x0, y),
+                                {text_x0, y},
                                 colors::text(),
                                 io::DrawBg::no);
                 }
@@ -224,20 +245,23 @@ void PopupState::draw_msg_popup() const
 
         y += 2;
 
+        draw_horizontal_line(horizontal_line_w, y);
+
         io::draw_text_center(
-                common_text::g_confirm_hint,
+                " " + common_text::g_confirm_hint + " ",
                 Panel::screen,
-                P(panels::center_x(Panel::screen), y),
+                {panels::center_x(Panel::screen), y},
                 colors::menu_dark(),
-                io::DrawBg::no);
+                io::DrawBg::yes,
+                colors::black());
 }
 
 void PopupState::draw_menu_popup() const
 {
-        int text_w = s_text_w_default;
-        const auto lines = text_format::split(m_msg, text_w);
+        const auto text_max_w = max_msg_w();
+        const auto msg_lines = text_format::split(m_msg, text_max_w);
+        const auto nr_msg_lines = (int)msg_lines.size();
         const auto title_h = m_title.empty() ? 0 : 1;
-        const auto nr_msg_lines = (int)lines.size();
 
         const auto nr_blank_lines =
                 ((nr_msg_lines == 0) && (title_h == 0))
@@ -252,39 +276,69 @@ void PopupState::draw_menu_popup() const
                 nr_blank_lines +
                 nr_choices;
 
-        // If no message lines, set width to title with or widest menu option
-        if (lines.empty()) {
-                text_w = m_title.size();
+        int choice_lines_max_w = 0;
 
-                for (const std::string& s : m_menu_choices) {
-                        text_w = std::max(text_w, (int)s.size());
-                }
+        std::for_each(
+                std::begin(m_menu_choices),
+                std::end(m_menu_choices),
+                [&choice_lines_max_w](const auto& choice_str) {
+                        choice_lines_max_w =
+                                std::max(
+                                        choice_lines_max_w,
+                                        (int)choice_str.length());
+                });
 
-                text_w += 2;
+        int horizontal_line_w = 0;
+
+        if (nr_msg_lines <= 1) {
+                const auto msg_line_w =
+                        (nr_msg_lines == 0)
+                        ? 0
+                        : (int)msg_lines[0].size();
+
+                const auto title_w = (int)m_title.size();
+
+                horizontal_line_w =
+                        std::max(
+                                {title_w,
+                                 choice_lines_max_w,
+                                 msg_line_w});
+
+                // Make the horizontal line somewhat wider than the title or
+                // widest choice string
+                horizontal_line_w += 12;
+
+                // ...but not wider than the maximum text width
+                horizontal_line_w = std::min(horizontal_line_w, text_max_w);
+        } else {
+                // More than one message line
+                horizontal_line_w = text_max_w;
         }
 
-        draw_popup_box(text_w, text_h_tot);
+        io::clear_screen();
+
+        draw_box(panels::area(Panel::screen));
 
         int y = get_title_y(text_h_tot);
 
+        draw_horizontal_line(horizontal_line_w, y);
+
         if (!m_title.empty()) {
                 io::draw_text_center(
-                        m_title,
+                        " " + m_title + " ",
                         Panel::screen,
                         {panels::center_x(Panel::screen), y},
                         colors::title(),
-                        io::DrawBg::no,
+                        io::DrawBg::yes,
                         colors::black(),
                         true); // Allow pixel-level adjustmet
-
-                ++y;
         }
 
-        const bool show_msg_centered = (lines.size() == 1);
+        ++y;
 
-        auto text_x0 = get_x0(text_w);
+        const bool show_msg_centered = (msg_lines.size() == 1);
 
-        for (const std::string& line : lines) {
+        for (const std::string& line : msg_lines) {
                 if (show_msg_centered) {
                         io::draw_text_center(
                                 line,
@@ -296,6 +350,8 @@ void PopupState::draw_menu_popup() const
                                 true); // Allow pixel-level adjustmet
                 } else {
                         // Draw the message with left alignment
+                        const auto text_x0 = get_x0(text_max_w);
+
                         io::draw_text(
                                 line,
                                 Panel::screen,
@@ -307,25 +363,13 @@ void PopupState::draw_menu_popup() const
                 ++y;
         }
 
-        if (!lines.empty() || !m_title.empty()) {
+        if (!msg_lines.empty() || !m_title.empty()) {
                 ++y;
         }
 
-        int longest_choice_len = 0;
-
-        std::for_each(
-                std::begin(m_menu_choices),
-                std::end(m_menu_choices),
-                [&longest_choice_len](const auto& choice_str) {
-                        longest_choice_len =
-                                std::max(
-                                        longest_choice_len,
-                                        (int)choice_str.length());
-                });
-
         const int choice_x_pos =
                 panels::center_x(Panel::screen) -
-                (longest_choice_len / 2);
+                (choice_lines_max_w / 2);
 
         for (size_t i = 0; i < m_menu_choices.size(); ++i) {
                 const auto choice_str = m_menu_choices[i];
@@ -368,6 +412,8 @@ void PopupState::draw_menu_popup() const
 
                 ++y;
         }
+
+        draw_horizontal_line(horizontal_line_w, y);
 
         io::update_screen();
 }
