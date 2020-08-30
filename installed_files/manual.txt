@@ -4,6 +4,7 @@ Command list
 Gameplay commands:
    a         INVENTORY, only showing items that can be CONSUMED or ACTIVATED
    c         CLOSE DOOR, or jam closed door with an iron spike
+   C (@)     Character information
    d         DROP item
    f         AIM/FIRE weapon
    g (,)     PICK UP item
@@ -15,13 +16,12 @@ Gameplay commands:
    p         DISARM trap
    r         Reload
    s         Wait five turns
-   t         THROW item, throw lit explosive
+   t         THROW item, throw lit EXPLOSIVE
    u (G)     UNLOAD firearm on the ground, or pick up item
    v         VIEW descriptions of things on the map
    x         CAST spell
    z         SWAP to readied weapon
    Q         Quit
-   @         Character information
    Shift     Hold while pressing a move key to move until interrupted
    Tab       Melee attack adjacent monster
 

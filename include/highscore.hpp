@@ -56,6 +56,8 @@ public:
 
         void on_start() override;
 
+        void on_window_resized() override;
+
         void draw() override;
 
         void update() override;
@@ -79,6 +81,8 @@ public:
         BrowseHighscoreEntry(std::string file_path);
 
         void on_start() override;
+
+        void on_window_resized() override;
 
         void draw() override;
 

@@ -186,17 +186,26 @@ void PopupState::draw_msg_popup() const
 
         int horizontal_line_w = 0;
 
-        const auto msg_line_w =
-                (msg_lines.size() == 1)
-                ? (int)msg_lines[0].size()
-                : text_max_w;
+        {
+                const auto msg_line_w =
+                        (msg_lines.size() == 1)
+                        ? (int)msg_lines[0].size()
+                        : text_max_w;
 
-        horizontal_line_w =
-                std::max(
-                        (int)m_title.size() + 12,
-                        msg_line_w);
+                const auto confirm_line_w =
+                        (int)common_text::g_confirm_hint.size();
 
-        horizontal_line_w = std::min(horizontal_line_w, text_max_w);
+                const int title_padding = 12;
+                const int confirm_padding = title_padding;
+
+                horizontal_line_w =
+                        std::max(
+                                {(int)m_title.size() + title_padding,
+                                 msg_line_w,
+                                 confirm_line_w + confirm_padding});
+
+                horizontal_line_w = std::min(horizontal_line_w, text_max_w);
+        }
 
         io::clear_screen();
 

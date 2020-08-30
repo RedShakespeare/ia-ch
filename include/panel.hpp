@@ -22,6 +22,7 @@ enum class Panel {
         create_char_descr,
         item_menu,
         item_descr,
+        info_screen_content,
         END
 };
 

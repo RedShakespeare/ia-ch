@@ -30,18 +30,9 @@
 // -----------------------------------------------------------------------------
 // Private
 // -----------------------------------------------------------------------------
-static const int s_top_more_y = 1;
-
-static const int s_entries_y0 = s_top_more_y + 1;
-
-static int get_bottom_more_y()
+static int max_nr_entries_on_screen()
 {
-        return panels::h(Panel::screen) - 1;
-}
-
-static int get_max_nr_entries_on_screen()
-{
-        return get_bottom_more_y() - s_entries_y0;
+        return panels::h(Panel::info_screen_content) - 1;
 }
 
 static void sort_entries(std::vector<HighscoreEntry>& entries)
@@ -270,7 +261,12 @@ void BrowseHighscore::on_start()
 
         sort_entries(m_entries);
 
-        m_browser.reset(m_entries.size(), get_max_nr_entries_on_screen());
+        m_browser.reset(m_entries.size(), max_nr_entries_on_screen());
+}
+
+void BrowseHighscore::on_window_resized()
+{
+        m_browser.reset(m_entries.size(), max_nr_entries_on_screen());
 }
 
 void BrowseHighscore::draw()
@@ -281,11 +277,9 @@ void BrowseHighscore::draw()
 
         draw_box(panels::area(Panel::screen));
 
-        const Panel panel = Panel::screen;
-
         io::draw_text_center(
                 " Browsing high scores ",
-                panel,
+                Panel::screen,
                 {panels::center_x(Panel::screen), 0},
                 colors::title(),
                 io::DrawBg::yes,
@@ -297,7 +291,7 @@ void BrowseHighscore::draw()
                         " [select] to view game summary " +
                         common_text::g_screen_exit_hint +
                         " "),
-                panel,
+                Panel::screen,
                 {panels::center_x(Panel::screen), panels::y1(Panel::screen)},
                 colors::title(),
                 io::DrawBg::yes,
@@ -305,8 +299,6 @@ void BrowseHighscore::draw()
                 true); // Allow pixel-level adjustment
 
         const Color& label_clr = colors::white();
-
-        const int labels_y = 1;
 
         const int x_date = 1;
         const int x_name = x_date + 12;
@@ -329,22 +321,20 @@ void BrowseHighscore::draw()
         for (const auto& label : labels) {
                 io::draw_text(
                         label.first,
-                        panel,
-                        P(label.second, labels_y),
+                        Panel::info_screen_content,
+                        {label.second, 0},
                         label_clr);
         }
 
-        const int browser_y = m_browser.y();
-
-        int y = s_entries_y0;
+        int y = 1;
 
         const Range idx_range_shown = m_browser.range_shown();
 
         for (int i = idx_range_shown.min; i <= idx_range_shown.max; ++i) {
                 const auto& entry = m_entries[i];
 
-                const std::string date = entry.date;
-                const std::string name = entry.name;
+                const auto& date = entry.date;
+                const auto& name = entry.name;
 
                 std::string bg_title;
 
@@ -355,44 +345,40 @@ void BrowseHighscore::draw()
                         bg_title = player_bon::bg_title(entry.bg);
                 }
 
-                const std::string lvl = std::to_string(entry.lvl);
-                const std::string dlvl = std::to_string(entry.dlvl);
-                const std::string turns = std::to_string(entry.turn_count);
-                const std::string ins = std::to_string(entry.ins);
+                const auto lvl = std::to_string(entry.lvl);
+                const auto dlvl = std::to_string(entry.dlvl);
+                const auto turns = std::to_string(entry.turn_count);
+                const auto ins = std::to_string(entry.ins);
+                const auto win = (entry.is_win == IsWin::yes) ? "Yes" : "No";
+                const auto score = std::to_string(entry.calculate_score());
 
-                const std::string win =
-                        (entry.is_win == IsWin::yes)
-                        ? "Yes"
-                        : "No";
-
-                const std::string score =
-                        std::to_string(entry.calculate_score());
-
-                const bool is_idx_marked = browser_y == i;
+                const bool is_marked = m_browser.is_at_idx(i);
 
                 Color color;
 
                 if (entry.is_latest_entry) {
                         color =
-                                is_idx_marked
+                                is_marked
                                 ? colors::light_green()
                                 : colors::green();
                 } else {
                         color =
-                                is_idx_marked
+                                is_marked
                                 ? colors::menu_highlight()
                                 : colors::menu_dark();
                 }
 
-                io::draw_text(date, panel, P(x_date, y), color);
-                io::draw_text(name, panel, P(x_name, y), color);
-                io::draw_text(bg_title, panel, P(x_bg, y), color);
-                io::draw_text(lvl, panel, P(x_lvl, y), color);
-                io::draw_text(dlvl, panel, P(x_dlvl, y), color);
-                io::draw_text(turns, panel, P(x_turns, y), color);
-                io::draw_text(ins + "%", panel, P(x_ins, y), color);
-                io::draw_text(win, panel, P(x_win, y), color);
-                io::draw_text(score, panel, P(x_score, y), color);
+                const auto panel = Panel::info_screen_content;
+
+                io::draw_text(date, panel, {x_date, y}, color);
+                io::draw_text(name, panel, {x_name, y}, color);
+                io::draw_text(bg_title, panel, {x_bg, y}, color);
+                io::draw_text(lvl, panel, {x_lvl, y}, color);
+                io::draw_text(dlvl, panel, {x_dlvl, y}, color);
+                io::draw_text(turns, panel, {x_turns, y}, color);
+                io::draw_text(ins + "%", panel, {x_ins, y}, color);
+                io::draw_text(win, panel, {x_win, y}, color);
+                io::draw_text(score, panel, {x_score, y}, color);
 
                 ++y;
         }
@@ -402,7 +388,7 @@ void BrowseHighscore::draw()
                 io::draw_text(
                         "(More - Page Up)",
                         Panel::screen,
-                        P(0, s_top_more_y),
+                        {0, 1},
                         colors::light_white());
         }
 
@@ -410,7 +396,7 @@ void BrowseHighscore::draw()
                 io::draw_text(
                         "(More - Page Down)",
                         Panel::screen,
-                        P(0, get_bottom_more_y()),
+                        {0, panels::y1(Panel::screen)},
                         colors::light_white());
         }
 }
@@ -481,6 +467,11 @@ void BrowseHighscoreEntry::on_start()
         read_file();
 }
 
+void BrowseHighscoreEntry::on_window_resized()
+{
+        m_top_idx = 0;
+}
+
 void BrowseHighscoreEntry::draw()
 {
         draw_interface();
@@ -492,16 +483,16 @@ void BrowseHighscoreEntry::draw()
                         m_top_idx + max_nr_lines_on_screen() - 1,
                         nr_lines_tot - 1);
 
-        int screen_y = 1;
+        int y = 0;
 
         for (int i = m_top_idx; i <= btm_nr; ++i) {
                 io::draw_text(
                         m_lines[i],
-                        Panel::screen,
-                        P(1, screen_y),
+                        Panel::info_screen_content,
+                        {0, y},
                         colors::text());
 
-                ++screen_y;
+                ++y;
         }
 }
 

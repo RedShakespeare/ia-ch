@@ -43,7 +43,6 @@ static const std::vector<std::string> font_image_names = {
         "13x24_dejavu_sans_mono_book.png",
 };
 
-static const int s_opt_y0 = 1;
 static const int s_opt_values_x_pos = 44;
 
 static InputMode s_input_mode = InputMode::standard;
@@ -166,8 +165,8 @@ static void set_default_variables()
 
         update_render_dims();
 
-        const int default_nr_gui_cells_x = 92;
-        const int default_nr_gui_cells_y = 30;
+        const int default_nr_gui_cells_x = 90;
+        const int default_nr_gui_cells_y = 32;
 
         static_assert(default_nr_gui_cells_x >= io::g_min_nr_gui_cells_x);
         static_assert(default_nr_gui_cells_y >= io::g_min_nr_gui_cells_y);
@@ -423,7 +422,7 @@ static void player_sets_option(
 
         case 19: {
                 // Projectile delay
-                const P p(s_opt_values_x_pos, s_opt_y0 + browser.y());
+                const P p(s_opt_values_x_pos, browser.y());
 
                 const Range allowed_range(0, 900);
 
@@ -457,7 +456,7 @@ static void player_sets_option(
 
         case 20: {
                 // Shotgun delay
-                const P p(s_opt_values_x_pos, s_opt_y0 + browser.y());
+                const P p(s_opt_values_x_pos, browser.y());
 
                 const Range allowed_range(0, 900);
 
@@ -491,7 +490,7 @@ static void player_sets_option(
 
         case 21: {
                 // Explosion delay
-                const P p(s_opt_values_x_pos, s_opt_y0 + browser.y());
+                const P p(s_opt_values_x_pos, browser.y());
 
                 const Range allowed_range(0, 900);
 
@@ -1025,12 +1024,10 @@ void ConfigState::draw()
 {
         draw_box(panels::area(Panel::screen));
 
-        const int x1 = s_opt_values_x_pos;
-
         io::draw_text_center(
                 " Options ",
                 Panel::screen,
-                P(panels::center_x(Panel::screen), 0),
+                {panels::center_x(Panel::screen), 0},
                 colors::title(),
                 io::DrawBg::yes,
                 colors::black(),
@@ -1044,7 +1041,7 @@ void ConfigState::draw()
                         common_text::g_screen_exit_hint +
                         " "),
                 Panel::screen,
-                P(panels::center_x(Panel::screen), panels::y1(Panel::screen)),
+                {panels::center_x(Panel::screen), panels::y1(Panel::screen)},
                 colors::title(),
                 io::DrawBg::yes,
                 colors::black(),
@@ -1171,42 +1168,41 @@ void ConfigState::draw()
                 {"Reset to defaults",
                  ""}};
 
-        for (size_t i = 0; i < labels.size(); ++i) {
-                const auto& label = labels[i];
+        auto y = 0;
 
-                const std::string& str_l = label.first;
-                const std::string& str_r = label.second;
-
-                const auto& color =
-                        (m_browser.y() == (int)i)
-                        ? colors::menu_highlight()
-                        : colors::menu_dark();
-
-                auto y = s_opt_y0 + (int)i;
+        for (auto i = 0; i < (int)labels.size(); ++i) {
+                const auto label = labels[i];
 
                 // Create some distance to "reset to defaults"
-                if (i == (labels.size() - 1)) {
+                if (i == ((int)labels.size() - 1)) {
                         ++y;
                 }
 
+                const auto& color =
+                        (m_browser.is_at_idx((int)i))
+                        ? colors::menu_highlight()
+                        : colors::menu_dark();
+
                 io::draw_text(
-                        str_l,
-                        Panel::screen,
-                        P(1, y),
+                        label.first,
+                        Panel::info_screen_content,
+                        {0, y},
                         color);
 
-                if (!str_r.empty()) {
+                if (!label.second.empty()) {
                         io::draw_text(
                                 ":",
-                                Panel::screen,
-                                P(x1 - 2, y),
+                                Panel::info_screen_content,
+                                {s_opt_values_x_pos - 2, y},
                                 color);
 
                         io::draw_text(
-                                str_r,
-                                Panel::screen,
-                                P(x1, y),
+                                label.second,
+                                Panel::info_screen_content,
+                                {s_opt_values_x_pos, y},
                                 color);
                 }
-        } // for each label
+
+                ++y;
+        }
 }

@@ -23,10 +23,6 @@
 // -----------------------------------------------------------------------------
 // Private
 // -----------------------------------------------------------------------------
-static const int s_manual_text_x0 = 1;
-static const int s_manual_text_x1 = 78; // TODO: Set from standard value
-static const int s_manual_text_w = s_manual_text_x1 - s_manual_text_x0 + 1;
-
 static std::vector<std::string> read_manual_file()
 {
         std::vector<std::string> lines;
@@ -66,8 +62,7 @@ static std::vector<std::string> format_lines(
                 if (should_format_line) {
                         const auto split_line = text_format::split(
                                 raw_line,
-                                s_manual_text_w
-                                /* panels::w(Panel::screen) */);
+                                panels::w(Panel::info_screen_content));
 
                         for (const auto& line : split_line) {
                                 formatted_lines.push_back(line);
@@ -143,7 +138,7 @@ void BrowseManual::draw()
         io::draw_text_center(
                 " Browsing manual ",
                 Panel::screen,
-                P(panels::center_x(Panel::screen), 0),
+                {panels::center_x(Panel::screen), 0},
                 colors::title(),
                 io::DrawBg::yes,
                 colors::black(),
@@ -152,7 +147,7 @@ void BrowseManual::draw()
         io::draw_text_center(
                 " " + common_text::g_screen_exit_hint + " ",
                 Panel::screen,
-                P(panels::center_x(Panel::screen), panels::y1(Panel::screen)),
+                {panels::center_x(Panel::screen), panels::y1(Panel::screen)},
                 colors::title(),
                 io::DrawBg::yes,
                 colors::black(),
@@ -180,7 +175,7 @@ void BrowseManual::draw()
                 io::draw_text(
                         str,
                         Panel::screen,
-                        P(s_manual_text_x0, y),
+                        {1, y},
                         color);
 
                 const auto& page = m_pages[idx];
@@ -193,7 +188,7 @@ void BrowseManual::draw()
                 io::draw_text(
                         page.title,
                         Panel::screen,
-                        P(s_manual_text_x0 + 4, y),
+                        {5, y},
                         color);
         }
 }
@@ -259,7 +254,7 @@ void BrowseManualPage::draw()
                 io::draw_text(
                         m_page.lines[i],
                         Panel::screen,
-                        P(s_manual_text_x0, screen_y),
+                        {panels::x0(Panel::info_screen_content), screen_y},
                         colors::text());
 
                 ++screen_y;

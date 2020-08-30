@@ -23,15 +23,9 @@
 // -----------------------------------------------------------------------------
 // Private
 // -----------------------------------------------------------------------------
-static const std::string s_offset = "   ";
-
-// TODO: Magic number, this should be based on the minimum required
-// window width instead (e.g. 3/4 of this width)
-static const int s_max_w_descr = 60;
-
 static Color clr_heading()
 {
-        return colors::light_white();
+        return colors::menu_highlight();
 }
 
 static Color color_text_dark()
@@ -39,16 +33,24 @@ static Color color_text_dark()
         return colors::gray();
 }
 
+static int max_descr_w()
+{
+        return panels::w(Panel::info_screen_content);
+}
+
 static void add_properties_descr(std::vector<ColoredString>& lines)
 {
-        lines.emplace_back("Current properties", clr_heading());
+        lines.emplace_back(
+                "Current properties",
+                clr_heading());
 
         const auto prop_list =
-                map::g_player->m_properties.property_names_and_descr();
+                map::g_player->m_properties
+                        .property_names_and_descr();
 
         if (prop_list.empty()) {
                 lines.emplace_back(
-                        s_offset + "None",
+                        "None",
                         colors::text());
 
                 lines.emplace_back("", colors::text());
@@ -57,14 +59,18 @@ static void add_properties_descr(std::vector<ColoredString>& lines)
                 for (const auto& e : prop_list) {
                         const auto& title = e.title;
 
-                        lines.emplace_back(s_offset + title.str, title.color);
+                        lines.emplace_back(
+                                title.str,
+                                title.color);
 
                         const auto descr_formatted =
-                                text_format::split(e.descr, s_max_w_descr);
+                                text_format::split(
+                                        e.descr,
+                                        max_descr_w());
 
                         for (const auto& descr_line : descr_formatted) {
                                 lines.emplace_back(
-                                        s_offset + descr_line,
+                                        descr_line,
                                         color_text_dark());
                         }
 
@@ -75,20 +81,22 @@ static void add_properties_descr(std::vector<ColoredString>& lines)
 
 static void add_insanity_descr(std::vector<ColoredString>& lines)
 {
-        lines.emplace_back("Mental disorders", clr_heading());
+        lines.emplace_back(
+                "Mental disorders",
+                clr_heading());
 
         const std::vector<const InsSympt*> sympts = insanity::active_sympts();
 
         if (sympts.empty()) {
-                lines.emplace_back(s_offset + "None", colors::text());
+                lines.emplace_back("None", colors::text());
         } else {
                 // Has insanity symptoms
                 for (const InsSympt* const sympt : sympts) {
-                        const std::string sympt_descr = sympt->char_descr_msg();
+                        const auto sympt_descr = sympt->char_descr_msg();
 
                         if (!sympt_descr.empty()) {
                                 lines.emplace_back(
-                                        s_offset + sympt_descr,
+                                        sympt_descr,
                                         colors::text());
                         }
                 }
@@ -99,7 +107,9 @@ static void add_insanity_descr(std::vector<ColoredString>& lines)
 
 static void add_potion_descr(std::vector<ColoredString>& lines)
 {
-        lines.emplace_back("Potion knowledge", clr_heading());
+        lines.emplace_back(
+                "Potion knowledge",
+                clr_heading());
 
         std::vector<ColoredString> potion_list;
 
@@ -114,16 +124,17 @@ static void add_potion_descr(std::vector<ColoredString>& lines)
 
                 auto* item = item::make(d.id);
 
-                const std::string name =
-                        item->name(ItemRefType::plain);
+                const auto name = item->name(ItemRefType::plain);
 
-                potion_list.emplace_back(s_offset + name, d.color);
+                potion_list.emplace_back(name, d.color);
 
                 delete item;
         }
 
         if (potion_list.empty()) {
-                lines.emplace_back(s_offset + "No known potions", colors::text());
+                lines.emplace_back(
+                        "No known potions",
+                        colors::text());
         } else {
                 sort(potion_list.begin(),
                      potion_list.end(),
@@ -142,7 +153,9 @@ static void add_potion_descr(std::vector<ColoredString>& lines)
 
 static void add_scroll_descr(std::vector<ColoredString>& lines)
 {
-        lines.emplace_back("Manuscript knowledge", clr_heading());
+        lines.emplace_back(
+                "Manuscript knowledge",
+                clr_heading());
 
         std::vector<ColoredString> manuscript_list;
 
@@ -161,7 +174,7 @@ static void add_scroll_descr(std::vector<ColoredString>& lines)
                         item->name(ItemRefType::plain);
 
                 manuscript_list.emplace_back(
-                        s_offset + name,
+                        name,
                         item->interface_color());
 
                 delete item;
@@ -169,7 +182,7 @@ static void add_scroll_descr(std::vector<ColoredString>& lines)
 
         if (manuscript_list.empty()) {
                 lines.emplace_back(
-                        s_offset + "No known manuscripts",
+                        "No known manuscripts",
                         colors::text());
         } else {
                 sort(manuscript_list.begin(),
@@ -189,7 +202,9 @@ static void add_scroll_descr(std::vector<ColoredString>& lines)
 
 static void add_traits_descr(std::vector<ColoredString>& lines)
 {
-        lines.emplace_back("Traits gained", clr_heading());
+        lines.emplace_back(
+                "Traits gained",
+                clr_heading());
 
         for (size_t i = 0; i < (size_t)Trait::END; ++i) {
                 if (player_bon::has_trait((Trait)i)) {
@@ -201,14 +216,18 @@ static void add_traits_descr(std::vector<ColoredString>& lines)
                         const std::string descr =
                                 player_bon::trait_descr(trait);
 
-                        lines.emplace_back(s_offset + title, colors::text());
+                        lines.emplace_back(
+                                title,
+                                colors::text());
 
                         const auto descr_lines =
-                                text_format::split(descr, s_max_w_descr);
+                                text_format::split(
+                                        descr,
+                                        max_descr_w());
 
                         for (const std::string& descr_line : descr_lines) {
                                 lines.emplace_back(
-                                        s_offset + descr_line,
+                                        descr_line,
                                         color_text_dark());
                         }
 
@@ -242,7 +261,7 @@ static void add_history_descr(std::vector<ColoredString>& lines)
 
                 ev_str += " " + event.msg;
 
-                lines.emplace_back(s_offset + ev_str, colors::text());
+                lines.emplace_back(ev_str, colors::text());
         }
 
         lines.emplace_back("", colors::text());
@@ -277,7 +296,7 @@ void CharacterDescr::draw()
 {
         draw_interface();
 
-        int y_pos = 1;
+        int y = 0;
 
         const int nr_lines_tot = m_lines.size();
 
@@ -288,9 +307,13 @@ void CharacterDescr::draw()
         for (int i = m_top_idx; i <= btm_nr; ++i) {
                 const ColoredString& line = m_lines[i];
 
-                io::draw_text(line.str, Panel::screen, P(1, y_pos), line.color);
+                io::draw_text(
+                        line.str,
+                        Panel::info_screen_content,
+                        {0, y},
+                        line.color);
 
-                ++y_pos;
+                ++y;
         }
 }
 

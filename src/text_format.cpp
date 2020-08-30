@@ -178,7 +178,7 @@ std::string first_to_upper(const std::string& str)
         return result;
 }
 
-std::string all_to_upper(const std::string& str)
+std::string to_upper(const std::string& str)
 {
         auto result = str;
 

@@ -45,9 +45,8 @@ static std::vector<ColoredString> make_game_summary_lines(
 {
         std::vector<ColoredString> lines;
 
-        const Color color_heading = colors::light_white();
-        const Color color_info = colors::white();
-        const std::string offset = "   ";
+        const auto color_heading = colors::menu_highlight();
+        const auto color_info = colors::white();
 
         std::vector<std::string> unique_killed_names;
 
@@ -83,53 +82,41 @@ static std::vector<ColoredString> make_game_summary_lines(
 
         if (dlvl == 0) {
                 lines.emplace_back(
-                        offset +
-                                "Died before entering the dungeon",
+                        "Died before entering the dungeon",
                         color_info);
         } else {
                 // DLVL is at least 1
                 lines.emplace_back(
-                        offset +
-                                "Explored to dungeon level " +
-                                std::to_string(dlvl),
+                        "Explored to dungeon level " + std::to_string(dlvl),
                         color_info);
         }
 
         const int turn_count = highscore_entry.turn_count;
 
         lines.emplace_back(
-                offset +
-                        "Spent " +
-                        std::to_string(turn_count) +
-                        " turns",
+                "Spent " + std::to_string(turn_count) + " turns",
                 color_info);
 
         const int ins = highscore_entry.ins;
 
         lines.emplace_back(
-                offset + "Was " + std::to_string(ins) + "% insane",
+                "Was " + std::to_string(ins) + "% insane",
                 color_info);
 
         lines.emplace_back(
-                offset +
-                        "Killed " +
-                        std::to_string(nr_kills_tot_all_mon) +
-                        " monsters",
+                "Killed " + std::to_string(nr_kills_tot_all_mon) + " monsters",
                 color_info);
 
         const int xp = highscore_entry.xp;
 
         lines.emplace_back(
-                offset +
-                        "Gained " +
-                        std::to_string(xp) +
-                        " experience points",
+                "Gained " + std::to_string(xp) + " experience points",
                 color_info);
 
         const int score = highscore_entry.calculate_score();
 
         lines.emplace_back(
-                offset + "Gained a score of " + std::to_string(score),
+                "Gained a score of " + std::to_string(score),
                 color_info);
 
         const std::vector<const InsSympt*> sympts =
@@ -140,9 +127,7 @@ static std::vector<ColoredString> make_game_summary_lines(
                         const std::string sympt_descr = sympt->postmortem_msg();
 
                         if (!sympt_descr.empty()) {
-                                lines.emplace_back(
-                                        offset + sympt_descr,
-                                        color_info);
+                                lines.emplace_back(sympt_descr, color_info);
                         }
                 }
         }
@@ -150,13 +135,13 @@ static std::vector<ColoredString> make_game_summary_lines(
         lines.emplace_back("", color_info);
 
         lines.emplace_back(
-                "Traits gained (at character level):",
+                "Traits gained (at character level)",
                 color_heading);
 
         const auto trait_log = player_bon::trait_log();
 
         if (trait_log.empty()) {
-                lines.emplace_back(offset + "None", color_info);
+                lines.emplace_back("None", color_info);
         } else {
                 bool is_double_digit =
                         std::find_if(
@@ -184,27 +169,21 @@ static std::vector<ColoredString> make_game_summary_lines(
                                 " " +
                                 title;
 
-                        lines.emplace_back(
-                                offset + str,
-                                color_info);
+                        lines.emplace_back(str, color_info);
                 }
         }
 
         lines.emplace_back("", color_info);
 
         lines.emplace_back(
-                "Unique monsters killed:",
+                "Unique monsters killed",
                 color_heading);
 
         if (unique_killed_names.empty()) {
-                lines.emplace_back(
-                        offset + "None",
-                        color_info);
+                lines.emplace_back("None", color_info);
         } else {
                 for (std::string& monster_name : unique_killed_names) {
-                        lines.emplace_back(
-                                offset + "" + monster_name,
-                                color_info);
+                        lines.emplace_back(monster_name, color_info);
                 }
         }
 
@@ -234,15 +213,13 @@ static std::vector<ColoredString> make_game_summary_lines(
 
                 ev_str += " " + event.msg;
 
-                lines.emplace_back(
-                        offset + ev_str,
-                        color_info);
+                lines.emplace_back(ev_str, color_info);
         }
 
         lines.emplace_back("", color_info);
 
         lines.emplace_back(
-                "Last messages:",
+                "Last messages",
                 color_heading);
 
         const auto& msg_history = msg_log::history();
@@ -258,9 +235,7 @@ static std::vector<ColoredString> make_game_summary_lines(
              ++history_idx) {
                 const auto& msg = msg_history[history_idx];
 
-                lines.emplace_back(
-                        offset + msg.text_with_repeats(),
-                        color_info);
+                lines.emplace_back(msg.text_with_repeats(), color_info);
         }
 
         lines.emplace_back("", color_info);

@@ -10,7 +10,7 @@
 
     <!-- RED -->
     <!-- Color 1 -->
-    <color name="red" rgb_hex="800000"/>
+    <color name="red" rgb_hex="8b120b"/>
     <!-- Color 9 -->
     <color name="light_red" rgb_hex="ff1919"/>
 
@@ -65,9 +65,9 @@
     <color name="orange" rgb_hex="ff8000"/>
     <color name="gold" rgb_hex="eec900"/>
 
-    <color name="sepia" rgb_hex="887239"/>
+    <color name="sepia" rgb_hex="a58d53"/>
     <color name="light_sepia" rgb_hex="e1cd9a"/>
-    <color name="dark_sepia" rgb_hex="423c2b"/>
+    <color name="dark_sepia" rgb_hex="645e4b"/>
 
     <color name="teal" rgb_hex="399d98"/>
     <color name="light_teal" rgb_hex="58e2e4"/>

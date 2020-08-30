@@ -293,6 +293,7 @@ static GameCmd to_cmd_default(const InputData& input)
         case 'x':
                 return GameCmd::cast_spell;
 
+        case 'C':
         case '@':
                 return GameCmd::char_descr;
 

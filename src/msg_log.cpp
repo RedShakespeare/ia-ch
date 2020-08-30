@@ -125,7 +125,7 @@ static bool allow_convert_to_frenzied_str(const std::string& str)
 static std::string convert_to_frenzied_str(const std::string& str)
 {
         // Convert to upper case
-        std::string frenzied_str = text_format::all_to_upper(str);
+        std::string frenzied_str = text_format::to_upper(str);
 
         // Do not put "!" if string contains "..."
         if (frenzied_str.find("...") == std::string::npos) {

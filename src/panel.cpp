@@ -172,18 +172,39 @@ void init(const P max_gui_dims)
 
         finalize_screen_dims();
 
+        constexpr int create_char_tot_w = io::g_min_nr_gui_cells_x - 2;
+
+        constexpr int create_char_menu_w = 25;
+
+        constexpr int create_char_descr_w =
+                create_char_tot_w - create_char_menu_w - 1;
+
+        const int screen_center_x = center_x(Panel::screen);
+
+        const int create_char_menu_x0 =
+                screen_center_x - ((create_char_tot_w / 2) - 1);
+
+        const int create_char_menu_x1 =
+                create_char_menu_x0 + create_char_menu_w - 1;
+
+        const int create_char_descr_x0 =
+                create_char_menu_x1 + 2;
+
+        const int create_char_descr_x1 =
+                create_char_descr_x0 + create_char_descr_w - 1;
+
         set_panel_area(
                 Panel::create_char_menu,
-                1,
+                create_char_menu_x0,
                 2,
-                26,
+                create_char_menu_x1,
                 y1(Panel::screen) - 1);
 
         set_panel_area(
                 Panel::create_char_descr,
-                x1(Panel::create_char_menu) + 2,
+                create_char_descr_x0,
                 2,
-                x1(Panel::screen) - 1,
+                create_char_descr_x1,
                 y1(Panel::screen) - 1);
 
         set_panel_area(
@@ -198,6 +219,21 @@ void init(const P max_gui_dims)
                 x1(Panel::item_menu) + 2,
                 1,
                 x1(Panel::screen) - 1,
+                y1(Panel::screen) - 1);
+
+        constexpr int info_screen_w = io::g_min_nr_gui_cells_x - 2;
+
+        const int info_screen_x0 =
+                screen_center_x - ((info_screen_w / 2) - 1);
+
+        const int info_screen_x1 =
+                info_screen_x0 + info_screen_w - 1;
+
+        set_panel_area(
+                Panel::info_screen_content,
+                info_screen_x0,
+                1,
+                info_screen_x1,
                 y1(Panel::screen) - 1);
 
         validate_panels(max_gui_dims);

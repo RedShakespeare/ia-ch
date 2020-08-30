@@ -125,7 +125,7 @@ void PickBgState::draw()
         io::draw_text_center(
                 " What is your background? ",
                 Panel::screen,
-                P(screen_center_x, 0),
+                {screen_center_x, 0},
                 colors::title(),
                 io::DrawBg::yes,
                 colors::black(),
@@ -154,7 +154,7 @@ void PickBgState::draw()
                 io::draw_text(
                         key_str,
                         Panel::create_char_menu,
-                        P(0, y),
+                        {0, y},
                         color);
 
                 color =
@@ -165,7 +165,7 @@ void PickBgState::draw()
                 io::draw_text(
                         bg_name,
                         Panel::create_char_menu,
-                        P(key_str.length() + 1, y),
+                        {(int)key_str.length() + 1, y},
                         color);
 
                 ++y;
@@ -194,7 +194,7 @@ void PickBgState::draw()
                         io::draw_text(
                                 line,
                                 Panel::create_char_descr,
-                                P(0, y),
+                                {0, y},
                                 descr_entry.color);
 
                         ++y;
@@ -258,7 +258,7 @@ void PickOccultistState::draw()
         io::draw_text_center(
                 " What is your spell domain? ",
                 Panel::screen,
-                P(screen_center_x, 0),
+                {screen_center_x, 0},
                 colors::title(),
                 io::DrawBg::yes,
                 colors::black(),
@@ -285,7 +285,7 @@ void PickOccultistState::draw()
                 io::draw_text(
                         str,
                         Panel::create_char_menu,
-                        P(0, y),
+                        {0, y},
                         color);
 
                 str = player_bon::spell_domain_title(domain);
@@ -298,7 +298,7 @@ void PickOccultistState::draw()
                 io::draw_text(
                         str,
                         Panel::create_char_menu,
-                        P(4, y),
+                        {4, y},
                         color);
 
                 ++y;
@@ -323,7 +323,7 @@ void PickOccultistState::draw()
                 io::draw_text(
                         line,
                         Panel::create_char_descr,
-                        P(0, y),
+                        {0, y},
                         colors::text());
 
                 ++y;
@@ -469,7 +469,7 @@ void PickTraitState::draw()
         io::draw_text_center(
                 " " + full_title + " ",
                 Panel::screen,
-                P(screen_center_x, 0),
+                {screen_center_x, 0},
                 colors::title(),
                 io::DrawBg::yes,
                 colors::black(),
@@ -536,13 +536,13 @@ void PickTraitState::draw()
                 io::draw_text(
                         key_str,
                         Panel::create_char_menu,
-                        P(0, y),
+                        {0, y},
                         color_key);
 
                 io::draw_text(
                         trait_name,
                         Panel::create_char_menu,
-                        P(key_str.length() + 1, y),
+                        {(int)key_str.length() + 1, y},
                         color);
 
                 ++y;
@@ -579,7 +579,7 @@ void PickTraitState::draw()
                 io::draw_text(
                         str,
                         Panel::create_char_descr,
-                        P(0, y),
+                        {0, y},
                         colors::text());
                 ++y;
         }
@@ -609,7 +609,7 @@ void PickTraitState::draw()
                 io::draw_text(
                         label,
                         Panel::create_char_descr,
-                        P(x, y),
+                        {x, y},
                         colors::text());
 
                 x += label.length() + 1;
@@ -656,7 +656,7 @@ void PickTraitState::draw()
                         io::draw_text(
                                 prereq_title.str,
                                 Panel::create_char_descr,
-                                P(x, y),
+                                {x, y},
                                 prereq_title.color);
 
                         x += prereq_title.str.length();
@@ -665,7 +665,7 @@ void PickTraitState::draw()
                                 io::draw_text(
                                         ",",
                                         Panel::create_char_descr,
-                                        P(x, y),
+                                        {x, y},
                                         colors::text());
 
                                 ++x;
@@ -759,7 +759,7 @@ void EnterNameState::draw()
         io::draw_text_center(
                 " What is your name? ",
                 Panel::screen,
-                P(screen_center_x, 0),
+                {screen_center_x, 0},
                 colors::title(),
                 io::DrawBg::yes);
 
@@ -770,18 +770,18 @@ void EnterNameState::draw()
                 ? m_current_str + "_"
                 : m_current_str;
 
-        const size_t name_x0 = screen_center_x - (g_player_name_max_len / 2);
-        const size_t name_x1 = name_x0 + g_player_name_max_len - 1;
+        const auto name_x0 = screen_center_x - ((int)g_player_name_max_len / 2);
+        const auto name_x1 = name_x0 + (int)g_player_name_max_len - 1;
 
         io::draw_text(
                 name_str,
                 Panel::screen,
-                P(name_x0, y_name),
+                {name_x0, y_name},
                 colors::menu_highlight());
 
         R box_rect(
-                P((int)name_x0 - 1, y_name - 1),
-                P((int)name_x1 + 1, y_name + 1));
+                {(int)name_x0 - 1, y_name - 1},
+                {(int)name_x1 + 1, y_name + 1});
 
         draw_box(box_rect);
 }

@@ -66,7 +66,7 @@ public:
 
         bool draw_overlayed() const override
         {
-                return true;
+                return false;
         }
 
         void on_window_resized() override;

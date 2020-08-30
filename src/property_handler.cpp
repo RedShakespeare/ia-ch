@@ -588,7 +588,7 @@ std::vector<ColoredString> PropHandler::property_names_short() const
 
                 if (prop->m_duration_mode == PropDurationMode::indefinite) {
                         if (prop->src() == PropSrc::intr) {
-                                str = text_format::all_to_upper(str);
+                                str = text_format::to_upper(str);
                         }
                 } else {
                         // Not indefinite

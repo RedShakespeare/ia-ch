@@ -37,7 +37,7 @@ std::string pad_after(
 
 std::string first_to_lower(const std::string& str);
 std::string first_to_upper(const std::string& str);
-std::string all_to_upper(const std::string& str);
+std::string to_upper(const std::string& str);
 
 void append_with_space(
         std::string& base_str,

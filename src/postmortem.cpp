@@ -33,7 +33,7 @@ void PostmortemInfo::draw()
         io::draw_text_center(
                 " " + title() + " ",
                 Panel::screen,
-                P(screen_center_x, 0),
+                {screen_center_x, 0},
                 colors::title());
 
         const auto command_info =
@@ -44,12 +44,12 @@ void PostmortemInfo::draw()
         io::draw_text_center(
                 " " + command_info + " ",
                 Panel::screen,
-                P(screen_center_x, panels::y1(Panel::screen)),
+                {screen_center_x, panels::y1(Panel::screen)},
                 colors::title());
 
         const int nr_lines = (int)m_lines.size();
 
-        int screen_y = 1;
+        int y = 0;
 
         for (int i = m_top_idx;
              (i < nr_lines) && ((i - m_top_idx) < max_nr_lines_on_screen());
@@ -58,11 +58,11 @@ void PostmortemInfo::draw()
 
                 io::draw_text(
                         line.str,
-                        Panel::screen,
-                        P(1, screen_y),
+                        Panel::info_screen_content,
+                        {0, y},
                         line.color);
 
-                ++screen_y;
+                ++y;
         }
 
         io::update_screen();
