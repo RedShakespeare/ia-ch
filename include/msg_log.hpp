@@ -129,6 +129,8 @@ public:
 
         void on_start() override;
 
+        void on_window_resized() override;
+
         void draw() override;
 
         void update() override;
@@ -136,6 +138,8 @@ public:
         StateId id() const override;
 
 private:
+        void init_top_btm_line_numbers();
+
         std::string title() const override;
 
         InfoScreenType type() const override

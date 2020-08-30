@@ -227,7 +227,7 @@ void draw()
                         break;
                 }
 
-                draw_line(line, Panel::log, P(0, y));
+                draw_line(line, Panel::log, {0, y});
 
                 ++y;
         }
@@ -533,10 +533,8 @@ StateId MsgHistoryState::id() const
         return StateId::message_history;
 }
 
-void MsgHistoryState::on_start()
+void MsgHistoryState::init_top_btm_line_numbers()
 {
-        m_history = msg_log::history();
-
         const int history_size = m_history.size();
 
         m_top_line_nr = history_size - max_nr_lines_on_screen();
@@ -544,6 +542,18 @@ void MsgHistoryState::on_start()
 
         m_btm_line_nr = m_top_line_nr + max_nr_lines_on_screen();
         m_btm_line_nr = std::min(history_size - 1, m_btm_line_nr);
+}
+
+void MsgHistoryState::on_start()
+{
+        m_history = msg_log::history();
+
+        init_top_btm_line_numbers();
+}
+
+void MsgHistoryState::on_window_resized()
+{
+        init_top_btm_line_numbers();
 }
 
 std::string MsgHistoryState::title() const
@@ -574,15 +584,15 @@ void MsgHistoryState::draw()
 {
         draw_interface();
 
-        int y = 1;
+        int y = 0;
 
         for (int i = m_top_line_nr; i <= m_btm_line_nr; ++i) {
                 const auto& msg = m_history[i];
 
                 io::draw_text(
                         msg.text_with_repeats(),
-                        Panel::screen,
-                        P(1, y),
+                        Panel::info_screen_content,
+                        {0, y},
                         msg.color(),
                         io::DrawBg::no);
 
