@@ -114,7 +114,7 @@ namespace player_bon {
 
 struct TraitLogEntry {
         Trait trait_id {Trait::END};
-        int clvl_picked = 0;
+        int clvl_picked {0};
 };
 
 void init();
@@ -127,12 +127,14 @@ std::vector<Bg> pickable_bgs();
 
 std::vector<OccultistDomain> pickable_occultist_domains();
 
+// TODO: Return a data structure instead
 void unpicked_traits_for_bg(
         Bg bg,
         OccultistDomain occultist_domain,
         std::vector<Trait>& traits_can_be_picked_out,
         std::vector<Trait>& traits_prereqs_not_met_out);
 
+// TODO: Return a data structure instead
 void trait_prereqs(
         Trait trait,
         Bg bg,
