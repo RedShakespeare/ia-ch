@@ -525,11 +525,11 @@ void PickTraitState::draw()
                         // Viewing unavailable traits
                         if (is_idx_marked) {
                                 color_key = colors::menu_key_highlight();
-                                color = colors::light_red();
+                                color = colors::menu_highlight();
                         } else {
                                 // Not marked
                                 color_key = colors::menu_key_dark();
-                                color = colors::red();
+                                color = colors::light_red();
                         }
                 }
 
@@ -616,8 +616,8 @@ void PickTraitState::draw()
 
                 std::vector<ColoredString> prereq_titles;
 
-                const Color& clr_prereq_ok = colors::green();
-                const Color& clr_prereq_not_ok = colors::red();
+                const auto& clr_prereq_ok = colors::light_green();
+                const auto& clr_prereq_not_ok = colors::light_red();
 
                 if (trait_marked_bg_prereq != Bg::END) {
                         const auto& color =
