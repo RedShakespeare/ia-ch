@@ -86,11 +86,6 @@ public:
                 m_has_started = true;
         }
 
-        bool has_started()
-        {
-                return m_has_started;
-        }
-
         virtual StateId id() const = 0;
 
 private:
