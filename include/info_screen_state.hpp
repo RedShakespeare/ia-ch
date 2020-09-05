@@ -19,8 +19,6 @@ public:
         InfoScreenState() = default;
 
 protected:
-        int max_nr_lines_on_screen() const;
-
         void draw_interface() const;
 
         virtual std::string title() const = 0;

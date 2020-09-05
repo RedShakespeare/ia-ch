@@ -245,7 +245,7 @@ void BrowseManualPage::draw()
 
         const int btm_nr =
                 std::min(
-                        m_top_idx + max_nr_lines_on_screen() - 1,
+                        m_top_idx + panels::h(Panel::info_screen_content) - 1,
                         nr_lines_tot - 1);
 
         int screen_y = 1;
@@ -271,31 +271,33 @@ void BrowseManualPage::update()
 
         switch (input.key) {
         case SDLK_KP_2:
-        case SDLK_DOWN:
+        case SDLK_DOWN: {
                 m_top_idx += line_jump;
 
-                if (nr_lines_tot <= max_nr_lines_on_screen()) {
+                const int panel_h = panels::h(Panel::info_screen_content);
+
+                if (nr_lines_tot <= panel_h) {
                         m_top_idx = 0;
                 } else {
                         m_top_idx = std::min(
-                                nr_lines_tot - max_nr_lines_on_screen(),
+                                nr_lines_tot - panel_h,
                                 m_top_idx);
                 }
-                break;
+        } break;
 
         case SDLK_KP_8:
-        case SDLK_UP:
+        case SDLK_UP: {
                 m_top_idx = std::max(0, m_top_idx - line_jump);
-                break;
+        } break;
 
         case SDLK_SPACE:
-        case SDLK_ESCAPE:
+        case SDLK_ESCAPE: {
                 // Exit screen
                 states::pop();
-                break;
+        } break;
 
-        default:
-                break;
+        default: {
+        } break;
         }
 }
 

@@ -54,7 +54,8 @@ static void player_std_turn()
         if (player.m_properties.has(PropId::r_spell)) {
                 // We already have spell resistance (e.g. from casting the Spell
                 // Shield spell), (re)set the cooldown to max number of turns
-                player.m_nr_turns_until_rspell = nr_turns_to_recharge_spell_shield;
+                player.m_nr_turns_until_rspell =
+                        nr_turns_to_recharge_spell_shield;
         } else if (player_bon::has_trait(Trait::stout_spirit)) {
                 // Spell shield not active, and we have at least stout spirit
                 if (player.m_nr_turns_until_rspell <= 0) {

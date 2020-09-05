@@ -89,7 +89,7 @@ static void add(PropData& d)
 {
         property_data::g_data[(size_t)d.id] = d;
 
-        d = PropData();
+        d = {};
 }
 
 static void init_data_list()

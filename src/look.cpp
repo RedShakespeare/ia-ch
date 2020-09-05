@@ -31,11 +31,6 @@
 // -----------------------------------------------------------------------------
 // private
 // -----------------------------------------------------------------------------
-static int mon_descr_max_w()
-{
-        return io::g_min_nr_gui_cells_x - 2;
-}
-
 static std::string get_mon_memory_turns_descr(const actor::Actor& actor)
 {
         const int nr_turns_aware = actor.m_data->nr_turns_aware;
@@ -250,7 +245,7 @@ void ViewActorDescr::on_start()
                 const auto fixed_lines =
                         text_format::split(
                                 fixed_descr,
-                                mon_descr_max_w());
+                                panels::w(Panel::info_screen_content));
 
                 for (const auto& line : fixed_lines) {
                         m_lines.emplace_back(
@@ -272,7 +267,7 @@ void ViewActorDescr::on_start()
                         const auto auto_descr_lines =
                                 text_format::split(
                                         auto_descr,
-                                        mon_descr_max_w());
+                                        panels::w(Panel::info_screen_content));
 
                         for (const auto& line : auto_descr_lines) {
                                 m_lines.emplace_back(
@@ -315,7 +310,8 @@ void ViewActorDescr::on_start()
 
                 m_lines.emplace_back("Current properties", colors::text());
 
-                const int max_w_descr = (panels::x1(Panel::screen) * 3) / 4;
+                const int max_w_descr =
+                        (panels::x1(Panel::info_screen_content) * 3) / 4;
 
                 for (const auto& e : prop_list) {
                         const auto& title = e.title;
@@ -346,61 +342,66 @@ void ViewActorDescr::draw()
 
         draw_interface();
 
-        const int nr_lines_tot = m_lines.size();
+        const auto nr_lines = m_lines.size();
 
-        int btm_nr = std::min(
-                m_top_idx + max_nr_lines_on_screen() - 1,
-                nr_lines_tot - 1);
+        const auto panel_h = panels::h(Panel::info_screen_content);
 
-        int screen_y = 1;
+        size_t btm_nr =
+                std::min(
+                        m_top_idx + panel_h - 1,
+                        (int)nr_lines - 1);
 
-        for (int y = m_top_idx; y <= btm_nr; ++y) {
-                const auto& line = m_lines[y];
+        int y = 0;
+
+        for (size_t idx = m_top_idx; idx <= btm_nr; ++idx) {
+                const auto& line = m_lines[idx];
 
                 io::draw_text(
                         line.str,
-                        Panel::screen,
-                        P(1, screen_y),
+                        Panel::info_screen_content,
+                        {0, y},
                         line.color);
 
-                ++screen_y;
+                ++y;
         }
 }
 
 void ViewActorDescr::update()
 {
         const int line_jump = 3;
-        const int nr_lines_tot = m_lines.size();
+        const int nr_lines = m_lines.size();
 
         const auto input = io::get();
 
         switch (input.key) {
         case SDLK_KP_2:
-        case SDLK_DOWN:
+        case SDLK_DOWN: {
                 m_top_idx += line_jump;
 
-                if (nr_lines_tot <= max_nr_lines_on_screen()) {
+                const int panel_h = panels::h(Panel::info_screen_content);
+
+                if (nr_lines <= panel_h) {
                         m_top_idx = 0;
                 } else {
                         m_top_idx = std::min(
-                                nr_lines_tot - max_nr_lines_on_screen(),
+                                nr_lines - panel_h,
                                 m_top_idx);
                 }
-                break;
+        } break;
 
         case SDLK_KP_8:
-        case SDLK_UP:
+        case SDLK_UP: {
                 m_top_idx = std::max(0, m_top_idx - line_jump);
-                break;
+        } break;
 
         case SDLK_SPACE:
-        case SDLK_ESCAPE:
+        case SDLK_ESCAPE: {
                 // Exit screen
                 states::pop();
-                break;
+        } break;
 
-        default:
-                break;
+        default: {
+        } break;
         }
 }
 

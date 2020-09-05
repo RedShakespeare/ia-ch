@@ -174,7 +174,7 @@ void init(const P max_gui_dims)
 
         constexpr int create_char_tot_w = io::g_min_nr_gui_cells_x - 2;
 
-        constexpr int create_char_menu_w = 25;
+        constexpr int create_char_menu_w = 26;
 
         constexpr int create_char_descr_w =
                 create_char_tot_w - create_char_menu_w - 1;

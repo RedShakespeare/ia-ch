@@ -537,10 +537,12 @@ void MsgHistoryState::init_top_btm_line_numbers()
 {
         const int history_size = m_history.size();
 
-        m_top_line_nr = history_size - max_nr_lines_on_screen();
+        const int panel_h = panels::h(Panel::info_screen_content);
+
+        m_top_line_nr = history_size - panel_h;
         m_top_line_nr = std::max(0, m_top_line_nr);
 
-        m_btm_line_nr = m_top_line_nr + max_nr_lines_on_screen();
+        m_btm_line_nr = m_top_line_nr + panel_h;
         m_btm_line_nr = std::min(history_size - 1, m_btm_line_nr);
 }
 
@@ -608,22 +610,21 @@ void MsgHistoryState::update()
 
         const auto input = io::get();
 
+        const int panel_h = panels::h(Panel::info_screen_content);
+
         switch (input.key) {
         case SDLK_DOWN:
         case SDLK_KP_2: {
                 m_top_line_nr += line_jump;
 
-                const int top_nr_max =
-                        std::max(0, history_size - max_nr_lines_on_screen());
+                const int top_nr_max = std::max(0, history_size - panel_h);
 
-                m_top_line_nr =
-                        std::min(top_nr_max, m_top_line_nr);
+                m_top_line_nr = std::min(top_nr_max, m_top_line_nr);
         } break;
 
         case SDLK_UP:
         case SDLK_KP_8: {
-                m_top_line_nr =
-                        std::max(0, m_top_line_nr - line_jump);
+                m_top_line_nr = std::max(0, m_top_line_nr - line_jump);
         } break;
 
         case SDLK_SPACE:
@@ -638,6 +639,6 @@ void MsgHistoryState::update()
         }
 
         m_btm_line_nr = std::min(
-                m_top_line_nr + max_nr_lines_on_screen() - 1,
+                m_top_line_nr + panel_h - 1,
                 history_size - 1);
 }

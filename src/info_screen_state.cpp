@@ -13,11 +13,6 @@
 #include "pos.hpp"
 #include "rect.hpp"
 
-int InfoScreenState::max_nr_lines_on_screen() const
-{
-        return panels::h(Panel::info_screen_content);
-}
-
 void InfoScreenState::draw_interface() const
 {
         draw_box(panels::area(Panel::screen));
