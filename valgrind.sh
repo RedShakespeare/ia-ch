@@ -1,4 +1,4 @@
-#!/usr/bin/env /bash
+#!/usr/bin/env sh
 
 if [ "x$1" = "x-h" ]; then
     echo "Usage: valgrind.sh [-s]"

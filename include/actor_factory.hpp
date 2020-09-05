@@ -12,23 +12,25 @@
 struct P;
 struct R;
 
-namespace actor {
-
+namespace actor
+{
 class Actor;
 class Mon;
 
 enum class Id;
 
-enum class MakeMonAware {
+enum class MakeMonAware
+{
         no,
         yes
 };
 
-struct MonSpawnResult {
+struct MonSpawnResult
+{
 public:
         MonSpawnResult() = default;
 
-        MonSpawnResult& set_leader(Actor* leader);
+        MonSpawnResult& set_leader( Actor* leader );
 
         MonSpawnResult& make_aware_of_player();
 
@@ -37,17 +39,17 @@ public:
 
 void delete_all_mon();
 
-Actor* make(Id id, const P& pos);
+Actor* make( Id id, const P& pos );
 
 MonSpawnResult spawn(
         const P& origin,
         const std::vector<Id>& monster_ids,
-        const R& area_allowed);
+        const R& area_allowed );
 
 MonSpawnResult spawn_random_position(
         const std::vector<Id>& monster_ids,
-        const R& area_allowed);
+        const R& area_allowed );
 
-} // namespace actor
+}  // namespace actor
 
-#endif // ACTOR_FACTORY_HPP
+#endif  // ACTOR_FACTORY_HPP

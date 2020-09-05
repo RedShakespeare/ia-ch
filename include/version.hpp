@@ -9,8 +9,8 @@
 
 #include <string>
 
-namespace version_info {
-
+namespace version_info
+{
 extern const std::string g_version_str;
 extern const std::string g_copyright_str;
 extern const std::string g_license_str;
@@ -18,6 +18,6 @@ extern const std::string g_date_str;
 
 std::string read_git_sha1_str_from_file();
 
-} // namespace version_info
+}  // namespace version_info
 
-#endif // VERSION_HPP
+#endif  // VERSION_HPP

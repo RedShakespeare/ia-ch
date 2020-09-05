@@ -18,11 +18,12 @@
 // -----------------------------------------------------------------------------
 // Private
 // -----------------------------------------------------------------------------
-static SDL_Surface* load_surface(const std::string& path)
+static SDL_Surface* load_surface( const std::string& path )
 {
-        auto* const surface = IMG_Load(path.c_str());
+        auto* const surface = IMG_Load( path.c_str() );
 
-        if (!surface) {
+        if ( ! surface )
+        {
                 TRACE_ERROR_RELEASE
                         << "Failed to load surface from path '"
                         << path
@@ -39,16 +40,19 @@ static SDL_Surface* load_surface(const std::string& path)
 static void swap_surface_color(
         SDL_Surface& surface,
         const Color& color_before,
-        const Color& color_after)
+        const Color& color_after )
 {
-        for (int x = 0; x < surface.w; ++x) {
-                for (int y = 0; y < surface.h; ++y) {
-                        const P p(x, y);
+        for ( int x = 0; x < surface.w; ++x )
+        {
+                for ( int y = 0; y < surface.h; ++y )
+                {
+                        const P p( x, y );
 
-                        const auto color = io::read_px_on_surface(surface, p);
+                        const auto color = io::read_px_on_surface( surface, p );
 
-                        if (color == color_before) {
-                                io::put_px_on_surface(surface, p, color_after);
+                        if ( color == color_before )
+                        {
+                                io::put_px_on_surface( surface, p, color_after );
                         }
                 }
         }
@@ -59,7 +63,7 @@ static bool should_put_contour_at(
         const P& surface_px_pos,
         const R& surface_px_rect,
         const Color& bg_color,
-        const Color& contour_color)
+        const Color& contour_color )
 {
         // Only allow drawing a contour at pixels with the same color as the
         // background color parameter
@@ -67,9 +71,10 @@ static bool should_put_contour_at(
                 const auto color =
                         io::read_px_on_surface(
                                 surface,
-                                surface_px_pos);
+                                surface_px_pos );
 
-                if (color != bg_color) {
+                if ( color != bg_color )
+                {
                         return false;
                 }
         }
@@ -77,16 +82,19 @@ static bool should_put_contour_at(
         // Draw a contour here if it has a neighbour with different color than
         // the background or contour color (i.e. if it has a neighbour with a
         // color that will be drawn to the screen)
-        for (const auto& d : dir_utils::g_dir_list) {
+        for ( const auto& d : dir_utils::g_dir_list )
+        {
                 const auto adj_p = surface_px_pos + d;
 
-                if (!surface_px_rect.is_pos_inside(adj_p)) {
+                if ( ! surface_px_rect.is_pos_inside( adj_p ) )
+                {
                         continue;
                 }
 
-                const auto adj_color = io::read_px_on_surface(surface, adj_p);
+                const auto adj_color = io::read_px_on_surface( surface, adj_p );
 
-                if ((adj_color == bg_color) || (adj_color == contour_color)) {
+                if ( ( adj_color == bg_color ) || ( adj_color == contour_color ) )
+                {
                         continue;
                 }
 
@@ -98,26 +106,28 @@ static bool should_put_contour_at(
 
 static void draw_black_contour_for_surface(
         SDL_Surface& surface,
-        const Color& bg_color)
+        const Color& bg_color )
 {
-        const R surface_px_rect({0, 0}, {surface.w - 1, surface.h - 1});
+        const R surface_px_rect( { 0, 0 }, { surface.w - 1, surface.h - 1 } );
 
         const auto contour_color = colors::black();
 
-        for (const auto& surface_px_pos : surface_px_rect.positions()) {
+        for ( const auto& surface_px_pos : surface_px_rect.positions() )
+        {
                 const bool should_put_contour =
                         should_put_contour_at(
                                 surface,
                                 surface_px_pos,
                                 surface_px_rect,
                                 bg_color,
-                                contour_color);
+                                contour_color );
 
-                if (should_put_contour) {
+                if ( should_put_contour )
+                {
                         io::put_px_on_surface(
                                 surface,
                                 surface_px_pos,
-                                contour_color);
+                                contour_color );
                 }
         }
 }
@@ -125,14 +135,15 @@ static void draw_black_contour_for_surface(
 static void verify_texture_size(
         SDL_Texture* texture,
         const P& expected_size,
-        const std::string img_path)
+        const std::string img_path )
 {
         P size;
 
-        SDL_QueryTexture(texture, nullptr, nullptr, &size.x, &size.y);
+        SDL_QueryTexture( texture, nullptr, nullptr, &size.x, &size.y );
 
         // Verify width and height of loaded image
-        if (size != expected_size) {
+        if ( size != expected_size )
+        {
                 TRACE_ERROR_RELEASE
                         << "Tile image at \""
                         << img_path
@@ -150,14 +161,15 @@ static void verify_texture_size(
         }
 }
 
-static SDL_Texture* create_texture_from_surface(SDL_Surface& surface)
+static SDL_Texture* create_texture_from_surface( SDL_Surface& surface )
 {
         auto* const texture =
                 SDL_CreateTextureFromSurface(
                         io::g_sdl_renderer,
-                        &surface);
+                        &surface );
 
-        if (!texture) {
+        if ( ! texture )
+        {
                 TRACE_ERROR_RELEASE
                         << "Failed to create texture from surface: "
                         << IMG_GetError()
@@ -169,29 +181,29 @@ static SDL_Texture* create_texture_from_surface(SDL_Surface& surface)
         return texture;
 }
 
-static void set_surface_color_key(SDL_Surface& surface, const Color& color)
+static void set_surface_color_key( SDL_Surface& surface, const Color& color )
 {
         const int v =
                 SDL_MapRGB(
                         surface.format,
                         color.r(),
                         color.g(),
-                        color.b());
+                        color.b() );
 
         const bool enable_color_key = true;
 
-        SDL_SetColorKey(&surface, enable_color_key, v);
+        SDL_SetColorKey( &surface, enable_color_key, v );
 }
 
-static SDL_Texture* load_texture(const std::string& path)
+static SDL_Texture* load_texture( const std::string& path )
 {
-        auto* const surface = load_surface(path);
+        auto* const surface = load_surface( path );
 
-        set_surface_color_key(*surface, colors::black());
+        set_surface_color_key( *surface, colors::black() );
 
-        auto* const texture = create_texture_from_surface(*surface);
+        auto* const texture = create_texture_from_surface( *surface );
 
-        SDL_FreeSurface(surface);
+        SDL_FreeSurface( surface );
 
         return texture;
 }
@@ -200,7 +212,7 @@ static P sdl_window_px_dims()
 {
         P px_dims;
 
-        SDL_GetWindowSize(io::g_sdl_window, &px_dims.x, &px_dims.y);
+        SDL_GetWindowSize( io::g_sdl_window, &px_dims.x, &px_dims.y );
 
         return px_dims;
 }
@@ -213,9 +225,10 @@ static SDL_Renderer* create_renderer()
                 SDL_CreateRenderer(
                         io::g_sdl_window,
                         -1,
-                        SDL_RENDERER_SOFTWARE);
+                        SDL_RENDERER_SOFTWARE );
 
-        if (!renderer) {
+        if ( ! renderer )
+        {
                 TRACE_ERROR_RELEASE
                         << "Failed to create SDL renderer"
                         << std::endl
@@ -232,13 +245,14 @@ static SDL_Renderer* create_renderer()
 
 static void cleanup_sdl()
 {
-        if (!SDL_WasInit(SDL_INIT_EVERYTHING)) {
+        if ( ! SDL_WasInit( SDL_INIT_EVERYTHING ) )
+        {
                 return;
         }
 
         IMG_Quit();
 
-        Mix_AllocateChannels(0);
+        Mix_AllocateChannels( 0 );
 
         Mix_CloseAudio();
 
@@ -251,7 +265,13 @@ static void init_sdl()
 
         cleanup_sdl();
 
-        if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO | SDL_INIT_EVENTS) == -1) {
+        const uint32_t sdl_init_flags =
+                SDL_INIT_VIDEO |
+                SDL_INIT_AUDIO |
+                SDL_INIT_EVENTS;
+
+        if ( SDL_Init( sdl_init_flags ) == -1 )
+        {
                 TRACE_ERROR_RELEASE
                         << "Failed to init SDL"
                         << std::endl
@@ -261,7 +281,10 @@ static void init_sdl()
                 PANIC;
         }
 
-        if (IMG_Init(IMG_INIT_PNG) == -1) {
+        const uint32_t sdl_img_flags = IMG_INIT_PNG;
+
+        if ( IMG_Init( sdl_img_flags ) == -1 )
+        {
                 TRACE_ERROR_RELEASE
                         << "Failed to init SDL_image"
                         << std::endl
@@ -281,24 +304,25 @@ static void init_sdl()
                         audio_freq,
                         audio_format,
                         audio_channels,
-                        audio_buffers);
+                        audio_buffers );
 
-        if (result == -1) {
+        if ( result == -1 )
+        {
                 TRACE_ERROR_RELEASE
                         << "Failed to init SDL_mixer"
                         << std::endl
                         << SDL_GetError()
                         << std::endl;
 
-                ASSERT(false);
+                ASSERT( false );
         }
 
-        Mix_AllocateChannels(audio::g_allocated_channels);
+        Mix_AllocateChannels( audio::g_allocated_channels );
 
         TRACE_FUNC_END;
 }
 
-static void init_window(const P& px_dims)
+static void init_window( const P& px_dims )
 {
         TRACE_FUNC_BEGIN;
 
@@ -311,7 +335,8 @@ static void init_window(const P& px_dims)
 
         std::string title = "Infra Arcana ";
 
-        if (version_info::g_version_str.empty()) {
+        if ( version_info::g_version_str.empty() )
+        {
                 const auto git_sha1_str =
                         version_info::read_git_sha1_str_from_file();
 
@@ -321,21 +346,28 @@ static void init_window(const P& px_dims)
                         ", " +
                         version_info::g_date_str +
                         ")";
-        } else {
+        }
+        else
+        {
+                // Version string defined
                 title += version_info::g_version_str;
         }
 
-        if (io::g_sdl_window) {
-                SDL_DestroyWindow(io::g_sdl_window);
+        if ( io::g_sdl_window )
+        {
+                SDL_DestroyWindow( io::g_sdl_window );
         }
 
         uint32_t sdl_window_flags;
 
-        if (config::is_fullscreen()) {
+        if ( config::is_fullscreen() )
+        {
                 TRACE << "Fullscreen mode" << std::endl;
 
                 sdl_window_flags = SDL_WINDOW_FULLSCREEN_DESKTOP;
-        } else {
+        }
+        else
+        {
                 TRACE << "Windowed mode" << std::endl;
 
                 sdl_window_flags = SDL_WINDOW_SHOWN | SDL_WINDOW_RESIZABLE;
@@ -348,9 +380,10 @@ static void init_window(const P& px_dims)
                         SDL_WINDOWPOS_CENTERED,
                         px_dims.x,
                         px_dims.y,
-                        sdl_window_flags);
+                        sdl_window_flags );
 
-        if (!io::g_sdl_window) {
+        if ( ! io::g_sdl_window )
+        {
                 TRACE
                         << "Failed to create window: "
                         << std::endl
@@ -365,8 +398,9 @@ static void init_renderer()
 {
         TRACE_FUNC_BEGIN;
 
-        if (io::g_sdl_renderer) {
-                SDL_DestroyRenderer(io::g_sdl_renderer);
+        if ( io::g_sdl_renderer )
+        {
+                SDL_DestroyRenderer( io::g_sdl_renderer );
         }
 
         io::g_sdl_renderer = create_renderer();
@@ -378,9 +412,10 @@ static P native_resolution_from_sdl()
 {
         SDL_DisplayMode display_mode;
 
-        const auto result = SDL_GetDesktopDisplayMode(0, &display_mode);
+        const auto result = SDL_GetDesktopDisplayMode( 0, &display_mode );
 
-        if (result != 0) {
+        if ( result != 0 )
+        {
                 TRACE_ERROR_RELEASE
                         << "Failed to read native resolution"
                         << std::endl
@@ -390,31 +425,34 @@ static P native_resolution_from_sdl()
                 PANIC;
         }
 
-        return {display_mode.w, display_mode.h};
+        return { display_mode.w, display_mode.h };
 }
 
 static void update_rendering_offsets()
 {
-        const auto screen_panel_dims = io::panel_px_dims(Panel::screen);
+        const auto screen_panel_dims = io::panel_px_dims( Panel::screen );
 
         // TODO: Is centering needed in fullscreen?
         const bool is_centering_allowed =
                 panels::is_valid() &&
-                !config::is_fullscreen();
+                ! config::is_fullscreen();
 
-        if (is_centering_allowed) {
+        if ( is_centering_allowed )
+        {
                 P window_dims;
 
                 SDL_GetWindowSize(
                         io::g_sdl_window,
                         &window_dims.x,
-                        &window_dims.y);
+                        &window_dims.y );
 
-                const P extra_space(window_dims - screen_panel_dims);
+                const P extra_space( window_dims - screen_panel_dims );
 
-                io::g_rendering_px_offset = extra_space.scaled_down(2);
-        } else {
-                io::g_rendering_px_offset.set(0, 0);
+                io::g_rendering_px_offset = extra_space.scaled_down( 2 );
+        }
+        else
+        {
+                io::g_rendering_px_offset.set( 0, 0 );
         }
 }
 
@@ -422,7 +460,7 @@ static void load_logo()
 {
         TRACE_FUNC_BEGIN;
 
-        io::g_logo_texture = load_texture(paths::logo_img_path().c_str());
+        io::g_logo_texture = load_texture( paths::logo_img_path().c_str() );
 
         TRACE_FUNC_END;
 }
@@ -433,55 +471,55 @@ static void load_font()
 
         const auto img_path = paths::fonts_dir() + config::font_name();
 
-        auto* const surface = load_surface(img_path);
+        auto* const surface = load_surface( img_path );
 
-        swap_surface_color(*surface, colors::black(), colors::magenta());
+        swap_surface_color( *surface, colors::black(), colors::magenta() );
 
-        set_surface_color_key(*surface, colors::magenta());
+        set_surface_color_key( *surface, colors::magenta() );
 
         // Create the non-contour version
-        auto* texture = create_texture_from_surface(*surface);
+        auto* texture = create_texture_from_surface( *surface );
 
         io::g_font_texture = texture;
 
-        draw_black_contour_for_surface(*surface, colors::magenta());
+        draw_black_contour_for_surface( *surface, colors::magenta() );
 
         // Create the version with contour
-        texture = create_texture_from_surface(*surface);
+        texture = create_texture_from_surface( *surface );
 
         io::g_font_texture_with_contours = texture;
 
-        SDL_FreeSurface(surface);
+        SDL_FreeSurface( surface );
 
         TRACE_FUNC_END;
 }
 
-static void load_tile(const gfx::TileId id, const P& cell_px_dims)
+static void load_tile( const gfx::TileId id, const P& cell_px_dims )
 {
-        const auto img_name = gfx::tile_id_to_str(id);
+        const auto img_name = gfx::tile_id_to_str( id );
         const auto img_path = paths::tiles_dir() + img_name + ".png";
 
-        auto* const surface = load_surface(img_path);
+        auto* const surface = load_surface( img_path );
 
-        swap_surface_color(*surface, colors::black(), colors::magenta());
+        swap_surface_color( *surface, colors::black(), colors::magenta() );
 
-        set_surface_color_key(*surface, colors::magenta());
+        set_surface_color_key( *surface, colors::magenta() );
 
         // Create the non-contour version
-        auto* texture = create_texture_from_surface(*surface);
+        auto* texture = create_texture_from_surface( *surface );
 
-        io::g_tile_textures[(size_t)id] = texture;
+        io::g_tile_textures[ (size_t)id ] = texture;
 
-        draw_black_contour_for_surface(*surface, colors::magenta());
+        draw_black_contour_for_surface( *surface, colors::magenta() );
 
         // Create the version with contour
-        texture = create_texture_from_surface(*surface);
+        texture = create_texture_from_surface( *surface );
 
-        io::g_tile_textures_with_contours[(size_t)id] = texture;
+        io::g_tile_textures_with_contours[ (size_t)id ] = texture;
 
-        verify_texture_size(texture, cell_px_dims, img_path);
+        verify_texture_size( texture, cell_px_dims, img_path );
 
-        SDL_FreeSurface(surface);
+        SDL_FreeSurface( surface );
 }
 
 static void load_tiles()
@@ -490,10 +528,11 @@ static void load_tiles()
 
         const P cell_px_dims(
                 config::map_cell_px_w(),
-                config::map_cell_px_h());
+                config::map_cell_px_h() );
 
-        for (size_t i = 0; i < (size_t)gfx::TileId::END; ++i) {
-                load_tile((gfx::TileId)i, cell_px_dims);
+        for ( size_t i = 0; i < (size_t)gfx::TileId::END; ++i )
+        {
+                load_tile( (gfx::TileId)i, cell_px_dims );
         }
 
         TRACE_FUNC_END;
@@ -502,14 +541,14 @@ static void load_tiles()
 // -----------------------------------------------------------------------------
 // io
 // -----------------------------------------------------------------------------
-namespace io {
-
+namespace io
+{
 SDL_Window* g_sdl_window = nullptr;
 SDL_Renderer* g_sdl_renderer = nullptr;
 SDL_Texture* g_font_texture_with_contours = nullptr;
 SDL_Texture* g_font_texture = nullptr;
-SDL_Texture* g_tile_textures[(size_t)gfx::TileId::END] = {};
-SDL_Texture* g_tile_textures_with_contours[(size_t)gfx::TileId::END] = {};
+SDL_Texture* g_tile_textures[ (size_t)gfx::TileId::END ] = {};
+SDL_Texture* g_tile_textures_with_contours[ (size_t)gfx::TileId::END ] = {};
 SDL_Texture* g_logo_texture = nullptr;
 
 P g_rendering_px_offset = {};
@@ -522,7 +561,8 @@ void init()
 
         init_sdl();
 
-        if (config::is_fullscreen()) {
+        if ( config::is_fullscreen() )
+        {
                 TRACE << "Initializing with fullscreen" << std::endl;
 
                 const auto native_resolution = native_resolution_from_sdl();
@@ -536,8 +576,9 @@ void init()
 
                 auto window_resolution = native_resolution;
 
-                if (config::is_2x_scale_fullscreen_enabled()) {
-                        window_resolution = window_resolution.scaled_down(2);
+                if ( config::is_2x_scale_fullscreen_enabled() )
+                {
+                        window_resolution = window_resolution.scaled_down( 2 );
                 }
 
                 TRACE
@@ -547,10 +588,11 @@ void init()
                         << window_resolution.y
                         << std::endl;
 
-                panels::init(io::px_to_gui_coords(window_resolution));
+                panels::init( io::px_to_gui_coords( window_resolution ) );
 
-                if (!panels::is_valid() &&
-                    config::is_2x_scale_fullscreen_enabled()) {
+                if ( ! panels::is_valid() &&
+                     config::is_2x_scale_fullscreen_enabled() )
+                {
                         TRACE
                                 << "2x scaled fullscreen not possible, "
                                    "disabling 2x scaling"
@@ -558,35 +600,40 @@ void init()
 
                         // Disable the actual scaling setting (but keep the user
                         // option to request 2x scaling enabled)
-                        config::set_2x_scale_fullscreen_enabled(false);
+                        config::set_2x_scale_fullscreen_enabled( false );
 
                         window_resolution = native_resolution;
 
-                        panels::init(io::px_to_gui_coords(window_resolution));
+                        panels::init(
+                                io::px_to_gui_coords(
+                                        window_resolution ) );
                 }
 
-                if (panels::is_valid()) {
+                if ( panels::is_valid() )
+                {
                         // The panels think we're OK - try creating the window
-                        init_window(window_resolution);
+                        init_window( window_resolution );
                 }
 
-                if (!g_sdl_window) {
+                if ( ! g_sdl_window )
+                {
                         // Fullscreen failed, fall back on windowed mode instead
-                        config::set_fullscreen(false);
+                        config::set_fullscreen( false );
                 }
         }
 
         // NOTE: Fullscreen may have been disabled while attempting to set up a
         // fullscreen "window" (see above), so we check again here if fullscreen
         // is enabled
-        if (!config::is_fullscreen()) {
+        if ( ! config::is_fullscreen() )
+        {
                 const auto min_gui_dims = io::min_screen_gui_dims();
 
                 const auto config_res =
-                        P(config::screen_px_w(),
-                          config::screen_px_h());
+                        P( config::screen_px_w(),
+                           config::screen_px_h() );
 
-                const auto config_gui_dims = px_to_gui_coords(config_res);
+                const auto config_gui_dims = px_to_gui_coords( config_res );
 
                 const auto native_res = native_resolution_from_sdl();
 
@@ -615,8 +662,8 @@ void init()
                       << std::endl;
 
                 const auto screen_gui_dims_used =
-                        ((config_res.x <= native_res.x) &&
-                         (config_res.y <= native_res.y))
+                        ( ( config_res.x <= native_res.x ) &&
+                          ( config_res.y <= native_res.y ) )
                         ? config_gui_dims
                         : min_gui_dims;
 
@@ -628,18 +675,20 @@ void init()
                       << screen_gui_dims_used.y
                       << std::endl;
 
-                panels::init(screen_gui_dims_used);
+                panels::init( screen_gui_dims_used );
 
-                const auto screen_panel_px_dims = panel_px_dims(Panel::screen);
+                const auto screen_panel_px_dims =
+                        panel_px_dims( Panel::screen );
 
                 const P window_px_dims(
-                        std::max(screen_panel_px_dims.x, config_res.x),
-                        std::max(screen_panel_px_dims.y, config_res.y));
+                        std::max( screen_panel_px_dims.x, config_res.x ),
+                        std::max( screen_panel_px_dims.y, config_res.y ) );
 
-                init_window(window_px_dims);
+                init_window( window_px_dims );
         }
 
-        if (!g_sdl_window) {
+        if ( ! g_sdl_window )
+        {
                 TRACE_ERROR_RELEASE
                         << "Failed to set up window"
                         << std::endl
@@ -653,7 +702,8 @@ void init()
 
         load_font();
 
-        if (config::is_tiles_mode()) {
+        if ( config::is_tiles_mode() )
+        {
                 load_tiles();
 
                 load_logo();
@@ -668,13 +718,15 @@ void cleanup()
 {
         TRACE_FUNC_BEGIN;
 
-        if (g_sdl_renderer) {
-                SDL_DestroyRenderer(g_sdl_renderer);
+        if ( g_sdl_renderer )
+        {
+                SDL_DestroyRenderer( g_sdl_renderer );
                 g_sdl_renderer = nullptr;
         }
 
-        if (g_sdl_window) {
-                SDL_DestroyWindow(g_sdl_window);
+        if ( g_sdl_window )
+        {
+                SDL_DestroyWindow( g_sdl_window );
                 g_sdl_window = nullptr;
         }
 
@@ -685,27 +737,28 @@ void cleanup()
 
 void update_screen()
 {
-        const auto screen_panel_dims = panel_px_dims(Panel::screen);
+        const auto screen_panel_dims = panel_px_dims( Panel::screen );
 
-        if (!panels::is_valid() &&
-            (screen_panel_dims.x > config::gui_cell_px_w()) &&
-            (screen_panel_dims.y > config::gui_cell_px_h())) {
+        if ( ! panels::is_valid() &&
+             ( screen_panel_dims.x > config::gui_cell_px_w() ) &&
+             ( screen_panel_dims.y > config::gui_cell_px_h() ) )
+        {
                 draw_text_at_px(
                         "Window too small",
-                        {0, 0},
+                        { 0, 0 },
                         colors::light_white(),
                         DrawBg::no,
-                        colors::black());
+                        colors::black() );
         }
 
-        SDL_RenderPresent(g_sdl_renderer);
+        SDL_RenderPresent( g_sdl_renderer );
 }
 
 void clear_screen()
 {
-        SDL_SetRenderDrawColor(g_sdl_renderer, 0u, 0u, 0u, 0xFFu);
+        SDL_SetRenderDrawColor( g_sdl_renderer, 0u, 0u, 0u, 0xFFu );
 
-        SDL_RenderClear(g_sdl_renderer);
+        SDL_RenderClear( g_sdl_renderer );
 }
 
 P min_screen_gui_dims()
@@ -716,20 +769,21 @@ P min_screen_gui_dims()
 
         P gui_cell_px_dims(
                 config::gui_cell_px_w(),
-                config::gui_cell_px_h());
+                config::gui_cell_px_h() );
 
-        if (config::is_fullscreen() &&
-            config::is_2x_scale_fullscreen_enabled()) {
-                gui_cell_px_dims = gui_cell_px_dims.scaled_up(2);
+        if ( config::is_fullscreen() &&
+             config::is_2x_scale_fullscreen_enabled() )
+        {
+                gui_cell_px_dims = gui_cell_px_dims.scaled_up( 2 );
         }
 
         P min_nr_gui_cells(
-                (g_min_res_w + gui_cell_px_dims.x - 1) / gui_cell_px_dims.x,
-                (g_min_res_h + gui_cell_px_dims.y - 1) / gui_cell_px_dims.y);
+                ( g_min_res_w + gui_cell_px_dims.x - 1 ) / gui_cell_px_dims.x,
+                ( g_min_res_h + gui_cell_px_dims.y - 1 ) / gui_cell_px_dims.y );
 
         min_nr_gui_cells.set(
-                std::max(min_nr_gui_cells.x, g_min_nr_gui_cells_x),
-                std::max(min_nr_gui_cells.y, g_min_nr_gui_cells_y));
+                std::max( min_nr_gui_cells.x, g_min_nr_gui_cells_x ),
+                std::max( min_nr_gui_cells.y, g_min_nr_gui_cells_y ) );
 
         return min_nr_gui_cells;
 }
@@ -756,27 +810,28 @@ void draw_character_at_px(
         P px_pos,
         const Color& color,
         const io::DrawBg draw_bg,
-        const Color& bg_color)
+        const Color& bg_color )
 {
         // TODO: Black foreground looks terrible with grayscale shaded font
         // image (all shades of white are colored black). The current solution
         // to this is to simply never use black foreground, since it's not
         // really necessary.
-        ASSERT(color != colors::black());
+        ASSERT( color != colors::black() );
 
-        P gui_cell_px_dims(config::gui_cell_px_w(), config::gui_cell_px_h());
+        P gui_cell_px_dims( config::gui_cell_px_w(), config::gui_cell_px_h() );
 
-        if (draw_bg == io::DrawBg::yes) {
+        if ( draw_bg == io::DrawBg::yes )
+        {
                 // NOTE: No rendering offsets or scaling calculated yet, the
                 // rectangle function performs its own offsets and scaling
                 io::draw_rectangle_filled(
-                        {px_pos, px_pos + gui_cell_px_dims - 1},
-                        bg_color);
+                        { px_pos, px_pos + gui_cell_px_dims - 1 },
+                        bg_color );
         }
 
         // Set up the texture clip rectangle, before calculating scaling
         // NOTE: We expect one pixel separator between each glyph
-        auto char_px_pos = gfx::character_pos(character);
+        auto char_px_pos = gfx::character_pos( character );
 
         char_px_pos.x *= gui_cell_px_dims.x + 1;
         char_px_pos.y *= gui_cell_px_dims.y;
@@ -791,16 +846,17 @@ void draw_character_at_px(
         // * Now apply offset and scaling, if needed *
 
         // Scaling
-        if (config::is_fullscreen() &&
-            config::is_2x_scale_fullscreen_enabled()) {
+        if ( config::is_fullscreen() &&
+             config::is_2x_scale_fullscreen_enabled() )
+        {
                 // We are running fullscreen 2x scale - scale up the position
                 // and rendering size
-                px_pos = px_pos.scaled_up(2);
-                gui_cell_px_dims = gui_cell_px_dims.scaled_up(2);
+                px_pos = px_pos.scaled_up( 2 );
+                gui_cell_px_dims = gui_cell_px_dims.scaled_up( 2 );
         }
 
         // Apply rendering offsets (to center the graphics in the window)
-        px_pos = px_pos.with_offsets(g_rendering_px_offset);
+        px_pos = px_pos.with_offsets( g_rendering_px_offset );
 
         SDL_Rect render_rect;
 
@@ -813,15 +869,19 @@ void draw_character_at_px(
 
         // TODO: If black foreground will not be allowed, the contour version
         // can probably always be used
-        if (/* (color == colors::black()) || */ (bg_color == colors::black())) {
+        if ( /* (color == colors::black()) || */
+             ( bg_color == colors::black() ) )
+        {
                 texture = g_font_texture;
-        } else {
+        }
+        else
+        {
                 texture = g_font_texture_with_contours;
         }
 
-        SDL_SetTextureColorMod(texture, color.r(), color.g(), color.b());
+        SDL_SetTextureColorMod( texture, color.r(), color.g(), color.b() );
 
-        SDL_RenderCopy(g_sdl_renderer, texture, &clip_rect, &render_rect);
+        SDL_RenderCopy( g_sdl_renderer, texture, &clip_rect, &render_rect );
 }
 
 void draw_tile(
@@ -830,37 +890,40 @@ void draw_tile(
         const P& pos,
         const Color& color,
         const DrawBg draw_bg,
-        const Color& bg_color)
+        const Color& bg_color )
 {
-        if (!panels::is_valid()) {
+        if ( ! panels::is_valid() )
+        {
                 return;
         }
 
-        P px_pos = map_to_px_coords(panel, pos);
+        P px_pos = map_to_px_coords( panel, pos );
 
-        P map_cell_px_dims(config::map_cell_px_w(), config::map_cell_px_h());
+        P map_cell_px_dims( config::map_cell_px_w(), config::map_cell_px_h() );
 
-        if (draw_bg == DrawBg::yes) {
+        if ( draw_bg == DrawBg::yes )
+        {
                 // NOTE: No rendering offsets or scaling calculated yet, the
                 // rectangle function performs its own offsets and scaling
                 draw_rectangle_filled(
-                        {px_pos, px_pos + map_cell_px_dims - 1},
-                        bg_color);
+                        { px_pos, px_pos + map_cell_px_dims - 1 },
+                        bg_color );
         }
 
         // * Now apply offset and scaling, if needed *
 
         // Scaling
-        if (config::is_fullscreen() &&
-            config::is_2x_scale_fullscreen_enabled()) {
+        if ( config::is_fullscreen() &&
+             config::is_2x_scale_fullscreen_enabled() )
+        {
                 // We are running fullscreen 2x scale - scale up the position
                 // and rendering size
-                px_pos = px_pos.scaled_up(2);
-                map_cell_px_dims = map_cell_px_dims.scaled_up(2);
+                px_pos = px_pos.scaled_up( 2 );
+                map_cell_px_dims = map_cell_px_dims.scaled_up( 2 );
         }
 
         // Apply rendering offsets (to center the graphics in the window)
-        px_pos = px_pos.with_offsets(g_rendering_px_offset);
+        px_pos = px_pos.with_offsets( g_rendering_px_offset );
 
         SDL_Rect render_rect;
 
@@ -871,74 +934,79 @@ void draw_tile(
 
         SDL_Texture* texture;
 
-        if ((color == colors::black()) || (bg_color == colors::black())) {
+        if ( ( color == colors::black() ) || ( bg_color == colors::black() ) )
+        {
                 // Foreground or background is black - no contours
-                texture = g_tile_textures[(size_t)tile];
-        } else {
+                texture = g_tile_textures[ (size_t)tile ];
+        }
+        else
+        {
                 // Both foreground and background are non-black - use contours
-                texture = g_tile_textures_with_contours[(size_t)tile];
+                texture = g_tile_textures_with_contours[ (size_t)tile ];
         }
 
-        SDL_SetTextureColorMod(texture, color.r(), color.g(), color.b());
+        SDL_SetTextureColorMod( texture, color.r(), color.g(), color.b() );
 
         SDL_RenderCopy(
                 g_sdl_renderer,
                 texture,
-                nullptr, // No clipping needed, drawing whole texture
-                &render_rect);
+                nullptr,  // No clipping needed, drawing whole texture
+                &render_rect );
 }
 
-void cover_panel(const Panel panel, const Color& color)
+void cover_panel( const Panel panel, const Color& color )
 {
-        if (!panels::is_valid()) {
+        if ( ! panels::is_valid() )
+        {
                 return;
         }
 
-        const auto px_area = gui_to_px_rect(panels::area(panel));
+        const auto px_area = gui_to_px_rect( panels::area( panel ) );
 
-        draw_rectangle_filled(px_area, color);
+        draw_rectangle_filled( px_area, color );
 }
 
 void cover_area(
         const Panel panel,
         const R& area,
-        const Color& color)
+        const Color& color )
 {
-        const auto panel_p0 = panels::p0(panel);
+        const auto panel_p0 = panels::p0( panel );
 
-        const auto screen_area = area.with_offset(panel_p0);
+        const auto screen_area = area.with_offset( panel_p0 );
 
         const auto px_area =
-                gui_to_px_rect(screen_area)
-                        .with_offset(g_rendering_px_offset);
+                gui_to_px_rect( screen_area )
+                        .with_offset( g_rendering_px_offset );
 
-        draw_rectangle_filled(px_area, color);
+        draw_rectangle_filled( px_area, color );
 }
 
 void cover_area(
         const Panel panel,
         const P& offset,
         const P& dims,
-        const Color& color)
+        const Color& color )
 {
-        const auto area = R(offset, offset + dims - 1);
+        const auto area = R( offset, offset + dims - 1 );
 
-        cover_area(panel, area, color);
+        cover_area( panel, area, color );
 }
 
-void cover_cell(const Panel panel, const P& offset)
+void cover_cell( const Panel panel, const P& offset )
 {
-        cover_area(panel, offset, {1, 1});
+        cover_area( panel, offset, { 1, 1 } );
 }
 
 void draw_logo()
 {
-        if (!panels::is_valid()) {
+        if ( ! panels::is_valid() )
+        {
                 return;
         }
 
         // Set pixel position *before* applying rendering offset and scaling
-        const int screen_px_w = panel_px_w(Panel::screen);
+        const int screen_px_w = panel_px_w( Panel::screen );
 
         P img_px_dims;
 
@@ -947,23 +1015,24 @@ void draw_logo()
                 nullptr,
                 nullptr,
                 &img_px_dims.x,
-                &img_px_dims.y);
+                &img_px_dims.y );
 
-        P px_pos((screen_px_w - img_px_dims.x) / 2, 0);
+        P px_pos( ( screen_px_w - img_px_dims.x ) / 2, 0 );
 
         // * Now apply offset and scaling, if needed *
 
         // Scaling
-        if (config::is_fullscreen() &&
-            config::is_2x_scale_fullscreen_enabled()) {
+        if ( config::is_fullscreen() &&
+             config::is_2x_scale_fullscreen_enabled() )
+        {
                 // We are running fullscreen 2x scale - scale up the position
                 // and rendering size
-                px_pos = px_pos.scaled_up(2);
-                img_px_dims = img_px_dims.scaled_up(2);
+                px_pos = px_pos.scaled_up( 2 );
+                img_px_dims = img_px_dims.scaled_up( 2 );
         }
 
         // Apply rendering offsets (to center the graphics in the window)
-        px_pos = px_pos.with_offsets(g_rendering_px_offset);
+        px_pos = px_pos.with_offsets( g_rendering_px_offset );
 
         SDL_Rect render_rect;
 
@@ -975,28 +1044,28 @@ void draw_logo()
         SDL_RenderCopy(
                 g_sdl_renderer,
                 g_logo_texture,
-                nullptr, // No clipping needed, drawing whole texture
-                &render_rect);
+                nullptr,  // No clipping needed, drawing whole texture
+                &render_rect );
 }
 
-void try_set_window_gui_cells(P new_gui_dims)
+void try_set_window_gui_cells( P new_gui_dims )
 {
         const P min_gui_dims = io::min_screen_gui_dims();
 
-        new_gui_dims.x = std::max(new_gui_dims.x, min_gui_dims.x);
-        new_gui_dims.y = std::max(new_gui_dims.y, min_gui_dims.y);
+        new_gui_dims.x = std::max( new_gui_dims.x, min_gui_dims.x );
+        new_gui_dims.y = std::max( new_gui_dims.y, min_gui_dims.y );
 
-        const P new_px_dims = io::gui_to_px_coords(new_gui_dims);
+        const P new_px_dims = io::gui_to_px_coords( new_gui_dims );
 
-        SDL_SetWindowSize(g_sdl_window, new_px_dims.x, new_px_dims.y);
+        SDL_SetWindowSize( g_sdl_window, new_px_dims.x, new_px_dims.y );
 }
 
 void on_window_resized()
 {
         const auto new_px_dims = sdl_window_px_dims();
 
-        config::set_screen_px_w(new_px_dims.x);
-        config::set_screen_px_h(new_px_dims.y);
+        config::set_screen_px_w( new_px_dims.x );
+        config::set_screen_px_h( new_px_dims.y );
 
         TRACE << "New window size: "
               << new_px_dims.x
@@ -1004,7 +1073,7 @@ void on_window_resized()
               << new_px_dims.y
               << std::endl;
 
-        panels::init(io::px_to_gui_coords(new_px_dims));
+        panels::init( io::px_to_gui_coords( new_px_dims ) );
 
         update_rendering_offsets();
 
@@ -1022,58 +1091,66 @@ bool is_window_maximized()
         //
         // Is this an SDL bug?
         //
-        return SDL_GetWindowFlags(g_sdl_window) & SDL_WINDOW_MAXIMIZED;
+        return SDL_GetWindowFlags( g_sdl_window ) & SDL_WINDOW_MAXIMIZED;
 }
 
 P sdl_window_gui_dims()
 {
         const P px_dims = sdl_window_px_dims();
 
-        return io::px_to_gui_coords(px_dims);
+        return io::px_to_gui_coords( px_dims );
 }
 
 std::string sdl_pref_dir()
 {
         std::string version_str;
 
-        if (version_info::g_version_str.empty()) {
+        if ( version_info::g_version_str.empty() )
+        {
                 version_str = version_info::read_git_sha1_str_from_file();
-        } else {
+        }
+        else
+        {
                 version_str = version_info::g_version_str;
         }
 
         const auto path_ptr =
                 // NOTE: This is somewhat of a hack, see the function arguments
                 SDL_GetPrefPath(
-                        "infra_arcana", // "Organization"
-                        version_str.c_str()); // "Application"
+                        "infra_arcana",  // "Organization"
+                        version_str.c_str() );  // "Application"
 
         const std::string path_str = path_ptr;
 
-        SDL_free(path_ptr);
+        SDL_free( path_ptr );
 
         TRACE << "User data directory: " << path_str << std::endl;
 
         return path_str;
 }
 
-void sleep(const uint32_t duration)
+void sleep( const uint32_t duration )
 {
-        if ((duration == 0) ||
-            config::is_bot_playing()) {
+        if ( ( duration == 0 ) ||
+             config::is_bot_playing() )
+        {
                 return;
         }
 
-        if (duration == 1) {
-                SDL_Delay(duration);
-        } else {
+        if ( duration == 1 )
+        {
+                SDL_Delay( duration );
+        }
+        else
+        {
                 // Duration longer than 1 ms
                 const Uint32 wait_until = SDL_GetTicks() + duration;
 
-                while (SDL_GetTicks() < wait_until) {
+                while ( SDL_GetTicks() < wait_until )
+                {
                         SDL_PumpEvents();
                 }
         }
 }
 
-} // namespace io
+}  // namespace io

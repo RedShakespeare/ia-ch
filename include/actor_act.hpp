@@ -7,12 +7,12 @@
 #ifndef ACTOR_ACT_HPP
 #define ACTOR_ACT_HPP
 
-namespace actor {
-
+namespace actor
+{
 class Actor;
 
-void act(Actor& actor);
+void act( Actor& actor );
 
-} // namespace actor
+}  // namespace actor
 
-#endif // ACTOR_ACT_HPP
+#endif  // ACTOR_ACT_HPP

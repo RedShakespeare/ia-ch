@@ -10,6 +10,6 @@
 #include "colors.hpp"
 #include "rect.hpp"
 
-void draw_box(R border, const Color& color = colors::dark_gray());
+void draw_box( R border, const Color& color = colors::dark_gray() );
 
-#endif // DRAW_BOX_HPP
+#endif  // DRAW_BOX_HPP

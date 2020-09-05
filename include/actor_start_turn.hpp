@@ -7,12 +7,12 @@
 #ifndef ACTOR_START_TURN_HPP
 #define ACTOR_START_TURN_HPP
 
-namespace actor {
-
+namespace actor
+{
 class Actor;
 
-void start_turn(Actor& actor);
+void start_turn( Actor& actor );
 
-} // namespace actor
+}  // namespace actor
 
-#endif // ACTOR_START_TURN_HPP
+#endif  // ACTOR_START_TURN_HPP

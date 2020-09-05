@@ -11,10 +11,11 @@
 
 struct P;
 
-namespace gfx {
-
+namespace gfx
+{
 // NOTE: When updating this, also update the translation tables in the cpp file
-enum class TileId {
+enum class TileId
+{
         aim_marker_head,
         aim_marker_line,
         alchemist_bench_empty,
@@ -204,12 +205,12 @@ enum class TileId {
         END
 };
 
-P character_pos(char character);
+P character_pos( char character );
 
-TileId str_to_tile_id(const std::string& str);
+TileId str_to_tile_id( const std::string& str );
 
-std::string tile_id_to_str(TileId id);
+std::string tile_id_to_str( TileId id );
 
-} // namespace gfx
+}  // namespace gfx
 
-#endif // GFX_HPP
+#endif  // GFX_HPP

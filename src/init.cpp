@@ -37,8 +37,8 @@
 #include "query.hpp"
 #include "saving.hpp"
 
-namespace init {
-
+namespace init
+{
 bool g_is_cheat_vision_enabled = false;
 
 bool g_is_demo_mapgen = false;
@@ -57,8 +57,8 @@ void init_io()
         io::draw_text_center(
                 "Loading...",
                 Panel::screen,
-                panels::center(Panel::screen),
-                colors::menu_dark());
+                panels::center( Panel::screen ),
+                colors::menu_dark() );
 
         io::update_screen();
 
@@ -141,4 +141,4 @@ void cleanup_session()
         TRACE_FUNC_END;
 }
 
-} // namespace init
+}  // namespace init

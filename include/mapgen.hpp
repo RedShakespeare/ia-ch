@@ -15,17 +15,18 @@
 
 class Room;
 
-struct Region {
+struct Region
+{
 public:
-        Region(const R& rect) :
-                main_room(nullptr),
-                r(rect),
-                is_free(true) {}
+        Region( const R& rect ) :
+                main_room( nullptr ),
+                r( rect ),
+                is_free( true ) {}
 
         Region() :
-                main_room(nullptr),
+                main_room( nullptr ),
 
-                is_free(true)
+                is_free( true )
         {}
 
         R rnd_room_rect() const;
@@ -35,8 +36,8 @@ public:
         bool is_free;
 };
 
-namespace mapgen {
-
+namespace mapgen
+{
 // This variable is checked at certain points to see if the current map has been
 // flagged as "failed". Setting 'is_map_valid' to false will generally stop map
 // generation, discard the map, and trigger generation of a new map.
@@ -52,11 +53,11 @@ bool make_std_lvl();
 //------------------------------------------------------------------------------
 // Map generation steps (in no particular order)
 //------------------------------------------------------------------------------
-void merge_regions(Region regions[3][3]);
+void merge_regions( Region regions[ 3 ][ 3 ] );
 
-void make_aux_rooms(Region regions[3][3]);
+void make_aux_rooms( Region regions[ 3 ][ 3 ] );
 
-void reserve_river(Region regions[3][3]);
+void reserve_river( Region regions[ 3 ][ 3 ] );
 
 void make_sub_rooms();
 
@@ -64,7 +65,7 @@ void bsp_split_rooms();
 
 void decorate();
 
-bool allow_make_grate_at(const P& pos, const Array2<bool>& blocked);
+bool allow_make_grate_at( const P& pos, const Array2<bool>& blocked );
 
 void make_doors();
 
@@ -83,24 +84,24 @@ void make_pylons_and_levers();
 // reference. For other reshape functions, the room may expand beyond its
 // initial rectangle, so in those cases the functions need to modify the data of
 // the room object.
-void cut_room_corners(const Room& room);
-void make_pillars_in_room(const Room& room);
-void cavify_room(Room& room);
+void cut_room_corners( const Room& room );
+void make_pillars_in_room( const Room& room );
+void cavify_room( Room& room );
 
 //------------------------------------------------------------------------------
 // Room creation
 //------------------------------------------------------------------------------
 // NOTE: All "make_room..." functions handle all the necessary steps such as
 // creating floor on the map, creating room objects and registering them, et c.
-Room* make_room(Region& region);
+Room* make_room( Region& region );
 
-Room* make_room(const R& r, IsSubRoom is_sub_room);
+Room* make_room( const R& r, IsSubRoom is_sub_room );
 
 // Low level functions related to room creation - these are only necessary when
 // creating rooms by other methods than the "make_room" functions above.
-void register_room(Room& room);
+void register_room( Room& room );
 
-void make_floor(const Room& room);
+void make_floor( const Room& room );
 
 //------------------------------------------------------------------------------
 // Misc utils
@@ -109,7 +110,7 @@ void connect_rooms();
 
 void valid_corridor_entries(
         const Room& room,
-        std::vector<P>& out);
+        std::vector<P>& out );
 
 // Used for finding suitable door positions, i.e. positions such as:
 // .#.
@@ -122,35 +123,35 @@ void valid_corridor_entries(
 // 'blocked' may be just a tiny 3x3 array (if so, 'pos' must be the center
 // position!), or it can be a full sized map.
 //
-bool is_passage(const P& pos, const Array2<bool>& blocked);
+bool is_passage( const P& pos, const Array2<bool>& blocked );
 
 bool is_choke_point(
         const P& p,
         const Array2<bool>& blocked,
-        ChokePointData* out);
+        ChokePointData* out );
 
 void make_pathfind_corridor(
         Room& room_0,
         Room& room_1,
-        const Array2<bool>* door_proposals = nullptr);
+        const Array2<bool>* door_proposals = nullptr );
 
 std::vector<P> rnd_walk(
         const P& p0,
         int len,
         R area,
-        bool allow_diagonal = true);
+        bool allow_diagonal = true );
 
 std::vector<P> pathfinder_walk(
         const P& p0,
         const P& p1,
-        bool is_smooth);
+        bool is_smooth );
 
 // Generates a map of spawn chance weights, with emphasis on hidden, optional,
 // or hard to reach areas - this can be used e.g. to place items or levers.
 void make_explore_spawn_weights(
         const Array2<bool>& blocked,
         std::vector<P>& positions_out,
-        std::vector<int>& weights_out);
+        std::vector<int>& weights_out );
 
 Array2<bool> allowed_stair_cells();
 
@@ -158,8 +159,8 @@ void move_player_to_nearest_allowed_pos();
 
 P make_stairs_at_random_pos();
 
-void reveal_doors_on_path_to_stairs(const P& stairs_pos);
+void reveal_doors_on_path_to_stairs( const P& stairs_pos );
 
-} // namespace mapgen
+}  // namespace mapgen
 
-#endif // MAPGEN_HPP
+#endif  // MAPGEN_HPP

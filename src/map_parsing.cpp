@@ -21,54 +21,63 @@
 #ifndef NDEBUG
 #include "io.hpp"
 #include "viewport.hpp"
-#endif // NDEBUG
+#endif  // NDEBUG
 
-namespace map_parsers {
-
+namespace map_parsers
+{
 // -----------------------------------------------------------------------------
 // Base class
 // -----------------------------------------------------------------------------
 void MapParser::run(
         Array2<bool>& out,
         const R& area_to_parse_cells,
-        const MapParseMode write_rule)
+        const MapParseMode write_rule )
 {
-        ASSERT(m_parse_cells == ParseCells::yes ||
-               m_parse_mobs == ParseMobs::yes ||
-               m_parse_actors == ParseActors::yes);
+        ASSERT( m_parse_cells == ParseCells::yes ||
+                m_parse_mobs == ParseMobs::yes ||
+                m_parse_actors == ParseActors::yes );
 
         const bool allow_write_false =
                 write_rule == MapParseMode::overwrite;
 
-        if (m_parse_cells == ParseCells::yes) {
-                for (int x = area_to_parse_cells.p0.x;
-                     x <= area_to_parse_cells.p1.x;
-                     ++x) {
-                        for (int y = area_to_parse_cells.p0.y;
-                             y <= area_to_parse_cells.p1.y;
-                             ++y) {
-                                const auto& c = map::g_cells.at(x, y);
+        if ( m_parse_cells == ParseCells::yes )
+        {
+                for ( int x = area_to_parse_cells.p0.x;
+                      x <= area_to_parse_cells.p1.x;
+                      ++x )
+                {
+                        for ( int y = area_to_parse_cells.p0.y;
+                              y <= area_to_parse_cells.p1.y;
+                              ++y )
+                        {
+                                const auto& c = map::g_cells.at( x, y );
 
-                                const bool is_match = parse_cell(c, P(x, y));
+                                const bool is_match = parse_cell( c, P( x, y ) );
 
-                                if (is_match || allow_write_false) {
-                                        out.at(x, y) = is_match;
+                                if ( is_match || allow_write_false )
+                                {
+                                        out.at( x, y ) = is_match;
                                 }
                         }
                 }
         }
 
-        if (m_parse_mobs == ParseMobs::yes) {
-                for (auto* mob : game_time::g_mobs) {
+        if ( m_parse_mobs == ParseMobs::yes )
+        {
+                for ( auto* mob : game_time::g_mobs )
+                {
                         const P& p = mob->pos();
 
-                        if (area_to_parse_cells.is_pos_inside(p)) {
-                                const bool is_match = parse_mob(*mob);
+                        if ( area_to_parse_cells.is_pos_inside( p ) )
+                        {
+                                const bool is_match = parse_mob( *mob );
 
-                                if (is_match || allow_write_false) {
-                                        bool& v = out.at(p);
+                                if ( is_match || allow_write_false )
+                                {
+                                        bool& v = out.at( p );
 
-                                        if (!v) {
+                                        if ( ! v )
+                                        {
                                                 v = is_match;
                                         }
                                 }
@@ -76,17 +85,22 @@ void MapParser::run(
                 }
         }
 
-        if (m_parse_actors == ParseActors::yes) {
-                for (auto* actor : game_time::g_actors) {
+        if ( m_parse_actors == ParseActors::yes )
+        {
+                for ( auto* actor : game_time::g_actors )
+                {
                         const P& p = actor->m_pos;
 
-                        if (area_to_parse_cells.is_pos_inside(p)) {
-                                const bool is_match = parse_actor(*actor);
+                        if ( area_to_parse_cells.is_pos_inside( p ) )
+                        {
+                                const bool is_match = parse_actor( *actor );
 
-                                if (is_match || allow_write_false) {
-                                        bool& v = out.at(p);
+                                if ( is_match || allow_write_false )
+                                {
+                                        bool& v = out.at( p );
 
-                                        if (!v) {
+                                        if ( ! v )
+                                        {
                                                 v = is_match;
                                         }
                                 }
@@ -94,34 +108,40 @@ void MapParser::run(
                 }
         }
 
-} // run
+}  // run
 
-bool MapParser::cell(const P& pos) const
+bool MapParser::cell( const P& pos ) const
 {
-        ASSERT(m_parse_cells == ParseCells::yes ||
-               m_parse_mobs == ParseMobs::yes ||
-               m_parse_actors == ParseActors::yes);
+        ASSERT( m_parse_cells == ParseCells::yes ||
+                m_parse_mobs == ParseMobs::yes ||
+                m_parse_actors == ParseActors::yes );
 
         bool r = false;
 
-        if (m_parse_cells == ParseCells::yes) {
-                const auto& c = map::g_cells.at(pos);
+        if ( m_parse_cells == ParseCells::yes )
+        {
+                const auto& c = map::g_cells.at( pos );
 
-                const bool is_match = parse_cell(c, pos);
+                const bool is_match = parse_cell( c, pos );
 
-                if (is_match) {
+                if ( is_match )
+                {
                         r = true;
                 }
         }
 
-        if (m_parse_mobs == ParseMobs::yes) {
-                for (auto* mob : game_time::g_mobs) {
+        if ( m_parse_mobs == ParseMobs::yes )
+        {
+                for ( auto* mob : game_time::g_mobs )
+                {
                         const P& mob_p = mob->pos();
 
-                        if (mob_p == pos) {
-                                const bool is_match = parse_mob(*mob);
+                        if ( mob_p == pos )
+                        {
+                                const bool is_match = parse_mob( *mob );
 
-                                if (is_match) {
+                                if ( is_match )
+                                {
                                         r = true;
                                         break;
                                 }
@@ -129,14 +149,18 @@ bool MapParser::cell(const P& pos) const
                 }
         }
 
-        if (m_parse_actors == ParseActors::yes) {
-                for (auto* actor : game_time::g_actors) {
+        if ( m_parse_actors == ParseActors::yes )
+        {
+                for ( auto* actor : game_time::g_actors )
+                {
                         const P& actor_pos = actor->m_pos;
 
-                        if (actor_pos == pos) {
-                                const bool is_match = parse_actor(*actor);
+                        if ( actor_pos == pos )
+                        {
+                                const bool is_match = parse_actor( *actor );
 
-                                if (is_match) {
+                                if ( is_match )
+                                {
                                         r = true;
                                         break;
                                 }
@@ -146,127 +170,130 @@ bool MapParser::cell(const P& pos) const
 
         return r;
 
-} // cell
+}  // cell
 
 // -----------------------------------------------------------------------------
 // Map parsers
 // -----------------------------------------------------------------------------
-bool BlocksLos::parse_cell(const Cell& c, const P& pos) const
+bool BlocksLos::parse_cell( const Cell& c, const P& pos ) const
 {
-        return (!map::is_pos_inside_outer_walls(pos) ||
-                !c.terrain->is_los_passable());
+        return ( ! map::is_pos_inside_outer_walls( pos ) ||
+                 ! c.terrain->is_los_passable() );
 }
 
-bool BlocksLos::parse_mob(const terrain::Terrain& f) const
+bool BlocksLos::parse_mob( const terrain::Terrain& f ) const
 {
-        return !f.is_los_passable();
+        return ! f.is_los_passable();
 }
 
-bool BlocksWalking::parse_cell(const Cell& c, const P& pos) const
+bool BlocksWalking::parse_cell( const Cell& c, const P& pos ) const
 {
-        return (!map::is_pos_inside_outer_walls(pos) ||
-                !c.terrain->is_walkable());
+        return ( ! map::is_pos_inside_outer_walls( pos ) ||
+                 ! c.terrain->is_walkable() );
 }
 
-bool BlocksWalking::parse_mob(const terrain::Terrain& f) const
+bool BlocksWalking::parse_mob( const terrain::Terrain& f ) const
 {
-        return !f.is_walkable();
+        return ! f.is_walkable();
 }
 
-bool BlocksWalking::parse_actor(const actor::Actor& a) const
+bool BlocksWalking::parse_actor( const actor::Actor& a ) const
 {
         return a.is_alive();
 }
 
-bool BlocksActor::parse_cell(const Cell& c, const P& pos) const
+bool BlocksActor::parse_cell( const Cell& c, const P& pos ) const
 {
-        return (!map::is_pos_inside_outer_walls(pos) ||
-                !c.terrain->can_move(m_actor));
+        return ( ! map::is_pos_inside_outer_walls( pos ) ||
+                 ! c.terrain->can_move( m_actor ) );
 }
 
-bool BlocksActor::parse_mob(const terrain::Terrain& f) const
+bool BlocksActor::parse_mob( const terrain::Terrain& f ) const
 {
-        return !f.can_move(m_actor);
+        return ! f.can_move( m_actor );
 }
 
-bool BlocksActor::parse_actor(const actor::Actor& a) const
+bool BlocksActor::parse_actor( const actor::Actor& a ) const
 {
         return a.is_alive();
 }
 
-bool BlocksProjectiles::parse_cell(const Cell& c, const P& pos) const
+bool BlocksProjectiles::parse_cell( const Cell& c, const P& pos ) const
 {
-        return (!map::is_pos_inside_outer_walls(pos) ||
-                !c.terrain->is_projectile_passable());
+        return ( ! map::is_pos_inside_outer_walls( pos ) ||
+                 ! c.terrain->is_projectile_passable() );
 }
 
-bool BlocksProjectiles::parse_mob(const terrain::Terrain& f) const
+bool BlocksProjectiles::parse_mob( const terrain::Terrain& f ) const
 {
-        return !f.is_projectile_passable();
+        return ! f.is_projectile_passable();
 }
 
-bool BlocksSound::parse_cell(const Cell& c, const P& pos) const
+bool BlocksSound::parse_cell( const Cell& c, const P& pos ) const
 {
-        return (!map::is_pos_inside_outer_walls(pos) ||
-                !c.terrain->is_sound_passable());
+        return ( ! map::is_pos_inside_outer_walls( pos ) ||
+                 ! c.terrain->is_sound_passable() );
 }
 
-bool BlocksSound::parse_mob(const terrain::Terrain& f) const
+bool BlocksSound::parse_mob( const terrain::Terrain& f ) const
 {
-        return !f.is_sound_passable();
+        return ! f.is_sound_passable();
 }
 
-bool LivingActorsAdjToPos::parse_actor(const actor::Actor& a) const
+bool LivingActorsAdjToPos::parse_actor( const actor::Actor& a ) const
 {
-        if (!a.is_alive()) {
+        if ( ! a.is_alive() )
+        {
                 return false;
         }
 
-        return is_pos_adj(m_pos, a.m_pos, true);
+        return is_pos_adj( m_pos, a.m_pos, true );
 }
 
-bool BlocksTraps::parse_cell(const Cell& c, const P& pos) const
+bool BlocksTraps::parse_cell( const Cell& c, const P& pos ) const
 {
-        return (!map::is_pos_inside_outer_walls(pos) ||
-                !c.terrain->can_have_trap());
+        return ( ! map::is_pos_inside_outer_walls( pos ) ||
+                 ! c.terrain->can_have_trap() );
 }
 
-bool BlocksItems::parse_cell(const Cell& c, const P& pos) const
+bool BlocksItems::parse_cell( const Cell& c, const P& pos ) const
 {
-        return (!map::is_pos_inside_outer_walls(pos) ||
-                !c.terrain->can_have_item());
+        return ( ! map::is_pos_inside_outer_walls( pos ) ||
+                 ! c.terrain->can_have_item() );
 }
 
-bool BlocksItems::parse_mob(const terrain::Terrain& f) const
+bool BlocksItems::parse_mob( const terrain::Terrain& f ) const
 {
-        return !f.can_have_item();
+        return ! f.can_have_item();
 }
 
-bool IsFloorLike::parse_cell(const Cell& c, const P& pos) const
+bool IsFloorLike::parse_cell( const Cell& c, const P& pos ) const
 {
-        return (map::is_pos_inside_outer_walls(pos) &&
-                c.terrain->is_floor_like());
+        return ( map::is_pos_inside_outer_walls( pos ) &&
+                 c.terrain->is_floor_like() );
 }
 
-bool IsNotFloorLike::parse_cell(const Cell& c, const P& pos) const
+bool IsNotFloorLike::parse_cell( const Cell& c, const P& pos ) const
 {
-        return (!map::is_pos_inside_outer_walls(pos) ||
-                !c.terrain->is_floor_like());
+        return ( ! map::is_pos_inside_outer_walls( pos ) ||
+                 ! c.terrain->is_floor_like() );
 }
 
-bool IsNotTerrain::parse_cell(const Cell& c, const P& pos) const
+bool IsNotTerrain::parse_cell( const Cell& c, const P& pos ) const
 {
         (void)pos;
 
         return c.terrain->id() != m_terrain;
 }
 
-bool IsAnyOfTerrains::parse_cell(const Cell& c, const P& pos) const
+bool IsAnyOfTerrains::parse_cell( const Cell& c, const P& pos ) const
 {
         (void)pos;
 
-        for (auto t : m_terrains) {
-                if (t == c.terrain->id()) {
+        for ( auto t : m_terrains )
+        {
+                if ( t == c.terrain->id() )
+                {
                         return true;
                 }
         }
@@ -274,24 +301,27 @@ bool IsAnyOfTerrains::parse_cell(const Cell& c, const P& pos) const
         return false;
 }
 
-bool AnyAdjIsAnyOfTerrains::parse_cell(const Cell& c, const P& pos) const
+bool AnyAdjIsAnyOfTerrains::parse_cell( const Cell& c, const P& pos ) const
 {
         (void)c;
 
-        if (!map::is_pos_inside_outer_walls(pos)) {
+        if ( ! map::is_pos_inside_outer_walls( pos ) )
+        {
                 return false;
         }
 
-        for (const auto& d : dir_utils::g_dir_list_w_center) {
-                const auto id_here = map::g_cells.at(pos + d).terrain->id();
+        for ( const auto& d : dir_utils::g_dir_list_w_center )
+        {
+                const auto id_here = map::g_cells.at( pos + d ).terrain->id();
 
                 const auto search_result =
                         std::find(
-                                std::begin(m_terrains),
-                                std::end(m_terrains),
-                                id_here);
+                                std::begin( m_terrains ),
+                                std::end( m_terrains ),
+                                id_here );
 
-                if (search_result != std::end(m_terrains)) {
+                if ( search_result != std::end( m_terrains ) )
+                {
                         return true;
                 }
         }
@@ -299,16 +329,19 @@ bool AnyAdjIsAnyOfTerrains::parse_cell(const Cell& c, const P& pos) const
         return false;
 }
 
-bool AllAdjIsTerrain::parse_cell(const Cell& c, const P& pos) const
+bool AllAdjIsTerrain::parse_cell( const Cell& c, const P& pos ) const
 {
         (void)c;
 
-        if (!map::is_pos_inside_outer_walls(pos)) {
+        if ( ! map::is_pos_inside_outer_walls( pos ) )
+        {
                 return false;
         }
 
-        for (const auto& d : dir_utils::g_dir_list_w_center) {
-                if (map::g_cells.at(pos + d).terrain->id() != m_terrain) {
+        for ( const auto& d : dir_utils::g_dir_list_w_center )
+        {
+                if ( map::g_cells.at( pos + d ).terrain->id() != m_terrain )
+                {
                         return false;
                 }
         }
@@ -316,28 +349,33 @@ bool AllAdjIsTerrain::parse_cell(const Cell& c, const P& pos) const
         return true;
 }
 
-bool AllAdjIsAnyOfTerrains::parse_cell(const Cell& c, const P& pos) const
+bool AllAdjIsAnyOfTerrains::parse_cell( const Cell& c, const P& pos ) const
 {
         (void)c;
 
-        if (!map::is_pos_inside_outer_walls(pos)) {
+        if ( ! map::is_pos_inside_outer_walls( pos ) )
+        {
                 return false;
         }
 
-        for (const auto& d : dir_utils::g_dir_list_w_center) {
-                const auto current_id = map::g_cells.at(pos + d).terrain->id();
+        for ( const auto& d : dir_utils::g_dir_list_w_center )
+        {
+                const auto current_id = map::g_cells.at( pos + d ).terrain->id();
 
                 bool is_match = false;
 
-                for (auto t : m_terrains) {
-                        if (t == current_id) {
+                for ( auto t : m_terrains )
+                {
+                        if ( t == current_id )
+                        {
                                 is_match = true;
 
                                 break;
                         }
                 }
 
-                if (!is_match) {
+                if ( ! is_match )
+                {
                         return false;
                 }
         }
@@ -345,19 +383,22 @@ bool AllAdjIsAnyOfTerrains::parse_cell(const Cell& c, const P& pos) const
         return true;
 }
 
-bool AllAdjIsNotTerrain::parse_cell(const Cell& c, const P& pos) const
+bool AllAdjIsNotTerrain::parse_cell( const Cell& c, const P& pos ) const
 {
         (void)c;
 
-        if (pos.x <= 0 ||
-            pos.x >= map::w() - 1 ||
-            pos.y <= 0 ||
-            pos.y >= map::h() - 1) {
+        if ( pos.x <= 0 ||
+             pos.x >= map::w() - 1 ||
+             pos.y <= 0 ||
+             pos.y >= map::h() - 1 )
+        {
                 return false;
         }
 
-        for (const auto& d : dir_utils::g_dir_list_w_center) {
-                if (map::g_cells.at(pos + d).terrain->id() == m_terrain) {
+        for ( const auto& d : dir_utils::g_dir_list_w_center )
+        {
+                if ( map::g_cells.at( pos + d ).terrain->id() == m_terrain )
+                {
                         return false;
                 }
         }
@@ -365,22 +406,26 @@ bool AllAdjIsNotTerrain::parse_cell(const Cell& c, const P& pos) const
         return true;
 }
 
-bool AllAdjIsNoneOfTerrains::parse_cell(const Cell& c, const P& pos) const
+bool AllAdjIsNoneOfTerrains::parse_cell( const Cell& c, const P& pos ) const
 {
         (void)c;
 
-        if (pos.x <= 0 ||
-            pos.x >= map::w() - 1 ||
-            pos.y <= 0 ||
-            pos.y >= map::h() - 1) {
+        if ( pos.x <= 0 ||
+             pos.x >= map::w() - 1 ||
+             pos.y <= 0 ||
+             pos.y >= map::h() - 1 )
+        {
                 return false;
         }
 
-        for (const auto& d : dir_utils::g_dir_list_w_center) {
-                const auto current_id = map::g_cells.at(pos + d).terrain->id();
+        for ( const auto& d : dir_utils::g_dir_list_w_center )
+        {
+                const auto current_id = map::g_cells.at( pos + d ).terrain->id();
 
-                for (auto t : m_terrains) {
-                        if (t == current_id) {
+                for ( auto t : m_terrains )
+                {
+                        if ( t == current_id )
+                        {
                                 return false;
                         }
                 }
@@ -394,131 +439,149 @@ bool AllAdjIsNoneOfTerrains::parse_cell(const Cell& c, const P& pos) const
 // -----------------------------------------------------------------------------
 Array2<bool> cells_within_dist_of_others(
         const Array2<bool>& in,
-        const Range& dist_interval)
+        const Range& dist_interval )
 {
         const P dims = in.dims();
 
-        Array2<bool> result(dims);
+        Array2<bool> result( dims );
 
-        for (int x_outer = 0; x_outer < dims.x; x_outer++) {
-                for (int y_outer = 0; y_outer < dims.y; y_outer++) {
-                        if (result.at(x_outer, y_outer)) {
+        for ( int x_outer = 0; x_outer < dims.x; x_outer++ )
+        {
+                for ( int y_outer = 0; y_outer < dims.y; y_outer++ )
+                {
+                        if ( result.at( x_outer, y_outer ) )
+                        {
                                 continue;
                         }
 
-                        for (int d = dist_interval.min;
-                             d <= dist_interval.max;
-                             d++) {
-                                P p0(std::max(0, x_outer - d),
-                                     std::max(0, y_outer - d));
+                        for ( int d = dist_interval.min;
+                              d <= dist_interval.max;
+                              d++ )
+                        {
+                                P p0( std::max( 0, x_outer - d ),
+                                      std::max( 0, y_outer - d ) );
 
-                                P p1(std::min(dims.x - 1, x_outer + d),
-                                     std::min(dims.y - 1, y_outer + d));
+                                P p1( std::min( dims.x - 1, x_outer + d ),
+                                      std::min( dims.y - 1, y_outer + d ) );
 
-                                for (int x = p0.x; x <= p1.x; ++x) {
-                                        if (!in.at(x, p0.y) && !in.at(x, p1.y)) {
+                                for ( int x = p0.x; x <= p1.x; ++x )
+                                {
+                                        if ( ! in.at( x, p0.y ) && ! in.at( x, p1.y ) )
+                                        {
                                                 continue;
                                         }
 
-                                        result.at(x_outer, y_outer) = true;
+                                        result.at( x_outer, y_outer ) = true;
                                         break;
                                 }
 
-                                for (int y = p0.y; y <= p1.y; ++y) {
-                                        if (!in.at(p0.x, y) && !in.at(p1.x, y)) {
+                                for ( int y = p0.y; y <= p1.y; ++y )
+                                {
+                                        if ( ! in.at( p0.x, y ) && ! in.at( p1.x, y ) )
+                                        {
                                                 continue;
                                         }
 
-                                        result.at(x_outer, y_outer) = true;
+                                        result.at( x_outer, y_outer ) = true;
                                         break;
                                 }
-                        } // distance loop
-                } // outer y loop
-        } // outer x loop
+                        }  // distance loop
+                }  // outer y loop
+        }  // outer x loop
 
         return result;
 
-} // cells_within_dist_of_others
+}  // cells_within_dist_of_others
 
-void append(Array2<bool>& base, const Array2<bool>& append)
+void append( Array2<bool>& base, const Array2<bool>& append )
 {
-        for (size_t i = 0; i < map::nr_cells(); ++i) {
-                if (append.at(i)) {
-                        base.at(i) = true;
+        for ( size_t i = 0; i < map::nr_cells(); ++i )
+        {
+                if ( append.at( i ) )
+                {
+                        base.at( i ) = true;
                 }
         }
 }
 
-Array2<bool> expand(const Array2<bool>& in, const R& area_allowed_to_modify)
+Array2<bool> expand( const Array2<bool>& in, const R& area_allowed_to_modify )
 {
         const P dims = in.dims();
 
-        Array2<bool> result(dims);
+        Array2<bool> result( dims );
 
         const int x0 = std::max(
                 0,
-                area_allowed_to_modify.p0.x);
+                area_allowed_to_modify.p0.x );
 
         const int y0 = std::max(
                 0,
-                area_allowed_to_modify.p0.y);
+                area_allowed_to_modify.p0.y );
 
         const int x1 = std::min(
                 dims.x - 1,
-                area_allowed_to_modify.p1.x);
+                area_allowed_to_modify.p1.x );
 
         const int y1 = std::min(
                 dims.y - 1,
-                area_allowed_to_modify.p1.y);
+                area_allowed_to_modify.p1.y );
 
-        for (int x = x0; x <= x1; ++x) {
-                for (int y = y0; y <= y1; ++y) {
-                        result.at(x, y) = false;
+        for ( int x = x0; x <= x1; ++x )
+        {
+                for ( int y = y0; y <= y1; ++y )
+                {
+                        result.at( x, y ) = false;
 
                         // Search all cells adjacent to the current position for
                         // any cell which is "true" in the input arry.
-                        const int cmp_x0 = std::max(x - 1, 0);
-                        const int cmp_y0 = std::max(y - 1, 0);
-                        const int cmp_x1 = std::min(x + 1, dims.x - 1);
-                        const int cmp_y1 = std::min(y + 1, dims.y - 1);
+                        const int cmp_x0 = std::max( x - 1, 0 );
+                        const int cmp_y0 = std::max( y - 1, 0 );
+                        const int cmp_x1 = std::min( x + 1, dims.x - 1 );
+                        const int cmp_y1 = std::min( y + 1, dims.y - 1 );
 
-                        for (int cmp_x = cmp_x0;
-                             cmp_x <= cmp_x1;
-                             ++cmp_x) {
+                        for ( int cmp_x = cmp_x0;
+                              cmp_x <= cmp_x1;
+                              ++cmp_x )
+                        {
                                 bool is_found = false;
 
-                                for (int cmp_y = cmp_y0;
-                                     cmp_y <= cmp_y1;
-                                     ++cmp_y) {
-                                        if (in.at(cmp_x, cmp_y)) {
-                                                result.at(x, y) = true;
+                                for ( int cmp_y = cmp_y0;
+                                      cmp_y <= cmp_y1;
+                                      ++cmp_y )
+                                {
+                                        if ( in.at( cmp_x, cmp_y ) )
+                                        {
+                                                result.at( x, y ) = true;
 
                                                 is_found = true;
 
                                                 break;
                                         }
-                                } // Compare y loop
+                                }  // Compare y loop
 
-                                if (is_found) {
+                                if ( is_found )
+                                {
                                         break;
                                 }
-                        } // Compare x loop
-                } // y loop
-        } // x loop
+                        }  // Compare x loop
+                }  // y loop
+        }  // x loop
 
         return result;
 
-} // expand
+}  // expand
 
-Array2<bool> expand(const Array2<bool>& in, const int dist)
+Array2<bool> expand( const Array2<bool>& in, const int dist )
 {
         const P dims = in.dims();
 
-        Array2<bool> result(dims);
+        Array2<bool> result( dims );
 
-        for (int x = 0; x < dims.x; ++x) {
-                for (int y = 0; y < dims.y; ++y) {
-                        result.at(x, y) = false;
+        for ( int x = 0; x < dims.x; ++x )
+        {
+                for ( int y = 0; y < dims.y; ++y )
+                {
+                        result.at( x, y ) = false;
 
                         const int x0 = x - dist;
                         const int y0 = y - dist;
@@ -530,24 +593,28 @@ Array2<bool> expand(const Array2<bool>& in, const int dist)
                         const int cmp_x1 = x1 > dims.x - 1 ? dims.x - 1 : x1;
                         const int cmp_y1 = y1 > dims.y - 1 ? dims.y - 1 : y1;
 
-                        for (int cmp_y = cmp_y0;
-                             cmp_y <= cmp_y1;
-                             ++cmp_y) {
+                        for ( int cmp_y = cmp_y0;
+                              cmp_y <= cmp_y1;
+                              ++cmp_y )
+                        {
                                 bool is_found = false;
 
-                                for (int cmp_x = cmp_x0;
-                                     cmp_x <= cmp_x1;
-                                     ++cmp_x) {
-                                        if (!in.at(cmp_x, cmp_y)) {
+                                for ( int cmp_x = cmp_x0;
+                                      cmp_x <= cmp_x1;
+                                      ++cmp_x )
+                                {
+                                        if ( ! in.at( cmp_x, cmp_y ) )
+                                        {
                                                 continue;
                                         }
 
-                                        is_found = result.at(x, y) = true;
+                                        is_found = result.at( x, y ) = true;
 
                                         break;
                                 }
 
-                                if (is_found) {
+                                if ( is_found )
+                                {
                                         break;
                                 }
                         }
@@ -556,47 +623,56 @@ Array2<bool> expand(const Array2<bool>& in, const int dist)
 
         return result;
 
-} // expand
+}  // expand
 
-bool is_map_connected(const Array2<bool>& blocked)
+bool is_map_connected( const Array2<bool>& blocked )
 {
-        P origin(-1, -1);
+        P origin( -1, -1 );
 
         const P dims = blocked.dims();
 
-        for (int x = 1; x < dims.x - 1; ++x) {
-                for (int y = 1; y < dims.y - 1; ++y) {
-                        if (!blocked.at(x, y)) {
-                                origin.set(x, y);
+        for ( int x = 1; x < dims.x - 1; ++x )
+        {
+                for ( int y = 1; y < dims.y - 1; ++y )
+                {
+                        if ( ! blocked.at( x, y ) )
+                        {
+                                origin.set( x, y );
                                 break;
                         }
                 }
 
-                if (origin.x != -1) {
+                if ( origin.x != -1 )
+                {
                         break;
                 }
         }
 
-        ASSERT(map::is_pos_inside_outer_walls(origin));
+        ASSERT( map::is_pos_inside_outer_walls( origin ) );
 
         const auto flood = floodfill(
                 origin,
                 blocked,
                 INT_MAX,
-                P(-1, -1),
-                true);
+                P( -1, -1 ),
+                true );
 
         // NOTE: We can skip to origin.x immediately, since this is guaranteed
         // to be the leftmost non-blocked cell.
-        for (int x = origin.x; x < dims.x - 1; ++x) {
-                for (int y = 1; y < dims.y - 1; ++y) {
-                        if (flood.at(x, y) == 0 &&
-                            !blocked.at(x, y) &&
-                            P(x, y) != origin) {
+        for ( int x = origin.x; x < dims.x - 1; ++x )
+        {
+                for ( int y = 1; y < dims.y - 1; ++y )
+                {
+                        if ( flood.at( x, y ) == 0 &&
+                             ! blocked.at( x, y ) &&
+                             P( x, y ) != origin )
+                        {
 #ifndef NDEBUG
-                                if (init::g_is_demo_mapgen) {
-                                        if (!viewport::is_in_view(P(x, y))) {
-                                                viewport::focus_on(P(x, y));
+                                if ( init::g_is_demo_mapgen )
+                                {
+                                        if ( ! viewport::is_in_view( P( x, y ) ) )
+                                        {
+                                                viewport::focus_on( P( x, y ) );
                                         }
 
                                         states::draw();
@@ -605,14 +681,14 @@ bool is_map_connected(const Array2<bool>& blocked)
                                                 gfx::TileId::excl_mark,
                                                 'X',
                                                 Panel::map,
-                                                viewport::to_view_pos(P(x, y)),
-                                                colors::light_red());
+                                                viewport::to_view_pos( P( x, y ) ),
+                                                colors::light_red() );
 
                                         io::update_screen();
 
-                                        io::sleep(3);
+                                        io::sleep( 3 );
                                 }
-#endif // NDEBUG
+#endif  // NDEBUG
 
                                 return false;
                         }
@@ -621,17 +697,17 @@ bool is_map_connected(const Array2<bool>& blocked)
 
         return true;
 
-} // is_map_connected
+}  // is_map_connected
 
-} // namespace map_parsers
+}  // namespace map_parsers
 
 // -----------------------------------------------------------------------------
 // Is closer to pos
 // -----------------------------------------------------------------------------
-bool IsCloserToPos::operator()(const P& p1, const P& p2)
+bool IsCloserToPos::operator()( const P& p1, const P& p2 )
 {
-        const int king_dist1 = king_dist(m_pos.x, m_pos.y, p1.x, p1.y);
-        const int king_dist2 = king_dist(m_pos.x, m_pos.y, p2.x, p2.y);
+        const int king_dist1 = king_dist( m_pos.x, m_pos.y, p1.x, p1.y );
+        const int king_dist2 = king_dist( m_pos.x, m_pos.y, p2.x, p2.y );
 
         return king_dist1 < king_dist2;
 }
@@ -639,10 +715,10 @@ bool IsCloserToPos::operator()(const P& p1, const P& p2)
 // -----------------------------------------------------------------------------
 // Is further from pos
 // -----------------------------------------------------------------------------
-bool IsFurtherFromPos::operator()(const P& p1, const P& p2)
+bool IsFurtherFromPos::operator()( const P& p1, const P& p2 )
 {
-        const int king_dist1 = king_dist(m_pos.x, m_pos.y, p1.x, p1.y);
-        const int king_dist2 = king_dist(m_pos.x, m_pos.y, p2.x, p2.y);
+        const int king_dist1 = king_dist( m_pos.x, m_pos.y, p1.x, p1.y );
+        const int king_dist2 = king_dist( m_pos.x, m_pos.y, p2.x, p2.y );
 
         return king_dist1 > king_dist2;
 }

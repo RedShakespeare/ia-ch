@@ -7,10 +7,10 @@
 #ifndef MAP_MODE_GUI_HPP
 #define MAP_MODE_GUI_HPP
 
-namespace map_mode_gui {
-
+namespace map_mode_gui
+{
 void draw();
 
-} // namespace map_mode_gui
+}  // namespace map_mode_gui
 
-#endif // MAP_MODE_GUI_HPP
+#endif  // MAP_MODE_GUI_HPP

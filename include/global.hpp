@@ -31,7 +31,7 @@ inline constexpr uint32_t g_ms_delay_player_unable_act = 7;
 inline constexpr uint32_t g_min_ms_between_same_sfx = 60;
 
 inline constexpr int g_fov_radi_int = 6;
-inline constexpr int g_fov_w_int = (g_fov_radi_int * 2) + 1;
+inline constexpr int g_fov_w_int = ( g_fov_radi_int * 2 ) + 1;
 inline constexpr double g_fov_radi_db = (double)g_fov_radi_int;
 
 inline constexpr int g_dynamite_fuse_turns = 5;
@@ -73,65 +73,77 @@ inline constexpr int g_player_max_clvl = 12;
 // applying to enable/disable printing to the message log, animating, or other
 // such "side effects". For example when loading a saved game, we may want to do
 // these things silently.
-enum class Verbose {
+enum class Verbose
+{
         no,
         yes,
 };
 
-enum class UpdateScreen {
+enum class UpdateScreen
+{
         no,
         yes
 };
 
-enum class InvType {
+enum class InvType
+{
         slots,
         backpack
 };
 
-enum class AllowAction {
+enum class AllowAction
+{
         no,
         yes
 };
 
-enum class DidAction {
+enum class DidAction
+{
         no,
         yes
 };
 
-enum class WasDestroyed {
+enum class WasDestroyed
+{
         no,
         yes
 };
 
-enum class ItemPrePickResult {
+enum class ItemPrePickResult
+{
         do_pickup,
         destroy_item,
         do_nothing
 };
 
-enum class PassTime {
+enum class PassTime
+{
         no,
         yes
 };
 
-enum class ConsumeItem {
+enum class ConsumeItem
+{
         no,
         yes
 };
 
-enum class ItemRefType {
+enum class ItemRefType
+{
         plain,
         a,
         plural,
         END
 };
 
-enum class ItemRefInf {
+enum class ItemRefInf
+{
         none,
         yes
 };
 
-enum class ItemRefAttInf {
+enum class ItemRefAttInf
+{
         none,
         wpn_main_att_mode,
         melee,
@@ -139,40 +151,46 @@ enum class ItemRefAttInf {
         thrown
 };
 
-enum class ItemRefDmg {
+enum class ItemRefDmg
+{
         average,
         average_and_melee_plus,
         range,
 };
 
-enum class Article {
+enum class Article
+{
         a,
         the
 };
 
-enum class Matl {
+enum class Matl
+{
         empty,
         stone,
         metal,
-        plant, // Grass, bushes, reeds, vines, fungi...
-        wood, // Trees, doors, benches...
-        cloth, // Carpet, silk (cocoons)...
+        plant,  // Grass, bushes, reeds, vines, fungi...
+        wood,  // Trees, doors, benches...
+        cloth,  // Carpet, silk (cocoons)...
         fluid
 };
 
-enum class LiquidType {
+enum class LiquidType
+{
         water,
         mud,
         magic_water
 };
 
-enum class Condition {
+enum class Condition
+{
         breaking,
         shoddy,
         fine
 };
 
-enum class DmgType {
+enum class DmgType
+{
         piercing,
         slashing,
         blunt,
@@ -188,9 +206,10 @@ enum class DmgType {
         END
 };
 
-constexpr bool is_physical_dmg_type(const DmgType type)
+constexpr bool is_physical_dmg_type( const DmgType type )
 {
-        switch (type) {
+        switch ( type )
+        {
         case DmgType::piercing:
                 return true;
 
@@ -234,19 +253,22 @@ constexpr bool is_physical_dmg_type(const DmgType type)
         return false;
 }
 
-enum class AttMode {
+enum class AttMode
+{
         none,
         melee,
         thrown,
         ranged
 };
 
-enum class AllowWound {
+enum class AllowWound
+{
         no,
         yes
 };
 
-enum class ShockLvl {
+enum class ShockLvl
+{
         none,
         unsettling,
         frightening,
@@ -255,22 +277,26 @@ enum class ShockLvl {
         END
 };
 
-enum class MonRoamingAllowed {
+enum class MonRoamingAllowed
+{
         no,
         yes
 };
 
-enum class GameEntryMode {
+enum class GameEntryMode
+{
         new_game,
         load_game
 };
 
-enum class IsWin {
+enum class IsWin
+{
         no,
         yes
 };
 
-enum class SpawnRate {
+enum class SpawnRate
+{
         never,
         extremely_rare,
         very_rare,
@@ -279,40 +305,47 @@ enum class SpawnRate {
         very_common
 };
 
-enum class VerDir {
+enum class VerDir
+{
         up,
         down
 };
 
-enum class ActorState {
+enum class ActorState
+{
         alive,
         corpse,
         destroyed
 };
 
-enum class ShouldCtrlTele {
+enum class ShouldCtrlTele
+{
         if_tele_ctrl_prop,
         never,
         always
 };
 
-enum class Axis {
+enum class Axis
+{
         hor,
         ver
 };
 
-enum class IsSubRoom {
+enum class IsSubRoom
+{
         no,
         yes
 };
 
-enum class LgtSize {
+enum class LgtSize
+{
         none,
-        small, // 3x3
+        small,  // 3x3
         fov
 };
 
-enum class ItemType {
+enum class ItemType
+{
         general,
         melee_wpn,
         ranged_wpn,
@@ -332,4 +365,4 @@ enum class ItemType {
         ranged_wpn_intr
 };
 
-#endif // GLOBAL_HPP
+#endif  // GLOBAL_HPP

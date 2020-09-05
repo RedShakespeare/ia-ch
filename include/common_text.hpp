@@ -10,8 +10,8 @@
 #include <string>
 #include <vector>
 
-namespace common_text {
-
+namespace common_text
+{
 extern const std::string g_screen_exit_hint;
 extern const std::string g_minimap_exit_hint;
 extern const std::string g_postmortem_exit_hint;
@@ -32,6 +32,6 @@ extern const std::string g_mon_disappear;
 
 extern const std::vector<std::string> g_exorcist_purge_phrases;
 
-} // namespace common_text
+}  // namespace common_text
 
-#endif // COMMON_TEXT_HPP
+#endif  // COMMON_TEXT_HPP

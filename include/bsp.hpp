@@ -12,9 +12,10 @@
 
 #include "rect.hpp"
 
-namespace bsp {
-
-struct BlockedSplitPositions {
+namespace bsp
+{
+struct BlockedSplitPositions
+{
         std::vector<int> x {};
         std::vector<int> y {};
 };
@@ -22,8 +23,8 @@ struct BlockedSplitPositions {
 std::vector<R> try_split(
         const R& rect,
         const int child_min_size,
-        const BlockedSplitPositions& blocked_split_positions);
+        const BlockedSplitPositions& blocked_split_positions );
 
-} // namespace bsp
+}  // namespace bsp
 
-#endif // BSP_HPP
+#endif  // BSP_HPP

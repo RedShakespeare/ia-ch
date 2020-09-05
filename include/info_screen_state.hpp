@@ -9,12 +9,14 @@
 
 #include "state.hpp"
 
-enum class InfoScreenType {
+enum class InfoScreenType
+{
         scrolling,
         single_screen
 };
 
-class InfoScreenState : public State {
+class InfoScreenState : public State
+{
 public:
         InfoScreenState() = default;
 
@@ -26,4 +28,4 @@ protected:
         virtual InfoScreenType type() const = 0;
 };
 
-#endif // INFO_SCREEN_STATE_HPP
+#endif  // INFO_SCREEN_STATE_HPP

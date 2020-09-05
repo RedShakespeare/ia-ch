@@ -7,12 +7,12 @@
 #ifndef WHAM_HPP
 #define WHAM_HPP
 
-namespace wham {
-
+namespace wham
+{
 void try_sprain_player();
 
 void run();
 
-} // namespace wham
+}  // namespace wham
 
-#endif // WHAM_HPP
+#endif  // WHAM_HPP

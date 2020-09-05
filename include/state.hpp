@@ -10,7 +10,8 @@
 #include <memory>
 #include <vector>
 
-enum class StateId {
+enum class StateId
+{
         browse_highscore_entry,
         browse_spells,
         config,
@@ -33,10 +34,11 @@ enum class StateId {
         postmortem_info,
         view_actor,
         view_minimap,
-        win_game, // TODO: This should just be a popup
+        win_game,  // TODO: This should just be a popup
 };
 
-class State {
+class State
+{
 public:
         virtual ~State() = default;
 
@@ -92,18 +94,18 @@ public:
         virtual StateId id() const = 0;
 
 private:
-        bool m_has_started {false};
+        bool m_has_started { false };
 };
 
-namespace states {
-
+namespace states
+{
 void init();
 
 void cleanup();
 
 void run();
 
-void run_until_state_done(std::unique_ptr<State> state);
+void run_until_state_done( std::unique_ptr<State> state );
 
 void start();
 
@@ -113,7 +115,7 @@ void on_window_resized();
 
 void update();
 
-void push(std::unique_ptr<State> state);
+void push( std::unique_ptr<State> state );
 
 void pop();
 
@@ -121,14 +123,14 @@ void pop_all();
 
 bool is_empty();
 
-bool is_current_state(const State* state);
+bool is_current_state( const State* state );
 
-void pop_until(StateId id);
+void pop_until( StateId id );
 
-bool contains_state(StateId id);
+bool contains_state( StateId id );
 
-bool contains_state(const State* state);
+bool contains_state( const State* state );
 
-} // namespace states
+}  // namespace states
 
-#endif // STATE_HPP
+#endif  // STATE_HPP

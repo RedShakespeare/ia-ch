@@ -15,7 +15,7 @@ static void on_assert_failed(
         const char* const check_str,
         const char* const file,
         const int line,
-        const char* const func)
+        const char* const func )
 {
         std::cerr << std::endl
                   << file << ", "
@@ -32,7 +32,7 @@ static void on_assert_failed(
                   << std::endl
                   << std::endl;
 
-        assert(false);
+        assert( false );
 }
 
 // -----------------------------------------------------------------------------
@@ -43,9 +43,10 @@ void assert_impl(
         const char* const check_str,
         const char* const file,
         const int line,
-        const char* const func)
+        const char* const func )
 {
-        if (!check) {
-                on_assert_failed(check_str, file, line, func);
+        if ( ! check )
+        {
+                on_assert_failed( check_str, file, line, func );
         }
 }

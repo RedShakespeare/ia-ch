@@ -36,11 +36,11 @@
 #include "text_format.hpp"
 #include "viewport.hpp"
 
-namespace throwing {
-
-void player_throw_lit_explosive(const P& aim_cell)
+namespace throwing
 {
-        ASSERT(map::g_player->m_active_explosive);
+void player_throw_lit_explosive( const P& aim_cell )
+{
+        ASSERT( map::g_player->m_active_explosive );
 
         auto* const explosive = map::g_player->m_active_explosive;
 
@@ -52,16 +52,18 @@ void player_throw_lit_explosive(const P& aim_cell)
                         aim_cell,
                         true,
                         max_range,
-                        false);
+                        false );
 
         // Remove cells after blocked cells
-        for (size_t i = 1; i < path.size(); ++i) {
-                const P p = path[i];
+        for ( size_t i = 1; i < path.size(); ++i )
+        {
+                const P p = path[ i ];
 
-                const auto* t = map::g_cells.at(p).terrain;
+                const auto* t = map::g_cells.at( p ).terrain;
 
-                if (!t->is_projectile_passable()) {
-                        path.resize(i);
+                if ( ! t->is_projectile_passable() )
+                {
+                        path.resize( i );
                         break;
                 }
         }
@@ -71,37 +73,41 @@ void player_throw_lit_explosive(const P& aim_cell)
                 ? P()
                 : path.back();
 
-        msg_log::add(explosive->str_on_player_throw());
+        msg_log::add( explosive->str_on_player_throw() );
 
         // Render
-        if (path.size() > 1) {
+        if ( path.size() > 1 )
+        {
                 const auto color = explosive->ignited_projectile_color();
 
-                for (const P& p : path) {
+                for ( const P& p : path )
+                {
                         states::draw();
 
-                        if (map::g_cells.at(p).is_seen_by_player &&
-                            viewport::is_in_view(p)) {
+                        if ( map::g_cells.at( p ).is_seen_by_player &&
+                             viewport::is_in_view( p ) )
+                        {
                                 io::draw_symbol(
                                         explosive->tile(),
                                         explosive->character(),
                                         Panel::map,
-                                        viewport::to_view_pos(p),
-                                        color);
+                                        viewport::to_view_pos( p ),
+                                        color );
 
                                 io::update_screen();
 
                                 io::sleep(
-                                        config::delay_projectile_draw());
+                                        config::delay_projectile_draw() );
                         }
                 }
         }
 
-        const auto f_id = map::g_cells.at(end_pos).terrain->id();
+        const auto f_id = map::g_cells.at( end_pos ).terrain->id();
 
-        if (f_id != terrain::Id::chasm &&
-            f_id != terrain::Id::liquid_deep) {
-                explosive->on_thrown_ignited_landing(end_pos);
+        if ( f_id != terrain::Id::chasm &&
+             f_id != terrain::Id::liquid_deep )
+        {
+                explosive->on_thrown_ignited_landing( end_pos );
         }
 
         delete explosive;
@@ -114,7 +120,7 @@ void player_throw_lit_explosive(const P& aim_cell)
 void throw_item(
         actor::Actor& actor_throwing,
         const P& tgt_pos,
-        item::Item& item_thrown)
+        item::Item& item_thrown )
 {
         TRACE_FUNC_BEGIN;
 
@@ -123,7 +129,7 @@ void throw_item(
                 actor_throwing.m_pos,
                 tgt_pos,
                 actor_throwing.m_pos,
-                item_thrown);
+                item_thrown );
 
         TRACE << "Calculating throwing path" << std::endl;
 
@@ -133,32 +139,36 @@ void throw_item(
                         tgt_pos,
                         false,
                         999,
-                        false);
+                        false );
 
         TRACE << "Throwing path size: " << path.size() << std::endl;
 
         const auto& item_thrown_data = item_thrown.data();
 
-        const std::string item_name_a = item_thrown.name(ItemRefType::a);
+        const std::string item_name_a = item_thrown.name( ItemRefType::a );
 
-        if (&actor_throwing == map::g_player) {
+        if ( &actor_throwing == map::g_player )
+        {
                 msg_log::clear();
 
-                msg_log::add("I throw " + item_name_a + ".");
-        } else {
+                msg_log::add( "I throw " + item_name_a + "." );
+        }
+        else
+        {
                 // Monster throwing
                 const P& p = path.front();
 
-                if (map::g_cells.at(p).is_seen_by_player) {
+                if ( map::g_cells.at( p ).is_seen_by_player )
+                {
                         const std::string name_the =
                                 text_format::first_to_upper(
-                                        actor_throwing.name_the());
+                                        actor_throwing.name_the() );
 
                         msg_log::add(
                                 name_the +
                                 " throws " +
                                 item_name_a +
-                                ".");
+                                "." );
                 }
         }
 
@@ -170,11 +180,12 @@ void throw_item(
 
         int break_item_one_in_n = -1;
 
-        P pos(-1, -1);
+        P pos( -1, -1 );
 
-        P drop_pos(-1, -1);
+        P drop_pos( -1, -1 );
 
-        for (size_t path_idx = 1; path_idx < path.size(); ++path_idx) {
+        for ( size_t path_idx = 1; path_idx < path.size(); ++path_idx )
+        {
                 states::draw();
 
                 // Have we gone out of range?
@@ -182,57 +193,61 @@ void throw_item(
                         const int max_range =
                                 item_thrown.data().ranged.max_range;
 
-                        const P current_pos = path[path_idx];
+                        const P current_pos = path[ path_idx ];
 
-                        if (king_dist(path[0], current_pos) > max_range) {
+                        if ( king_dist( path[ 0 ], current_pos ) > max_range )
+                        {
                                 break;
                         }
                 }
 
-                pos = path[path_idx];
+                pos = path[ path_idx ];
 
                 drop_pos = pos;
 
-                auto* const actor_here = map::first_actor_at_pos(pos);
+                auto* const actor_here = map::first_actor_at_pos( pos );
 
-                if (actor_here &&
-                    ((pos == tgt_pos) ||
-                     (actor_here->m_data->actor_size >=
-                      actor::Size::humanoid))) {
+                if ( actor_here &&
+                     ( ( pos == tgt_pos ) ||
+                       ( actor_here->m_data->actor_size >=
+                         actor::Size::humanoid ) ) )
+                {
                         att_data =
                                 ThrowAttData(
                                         &actor_throwing,
                                         actor_throwing.m_pos,
                                         tgt_pos,
                                         pos,
-                                        item_thrown);
+                                        item_thrown );
 
                         const auto att_result =
-                                ability_roll::roll(att_data.hit_chance_tot);
+                                ability_roll::roll( att_data.hit_chance_tot );
 
                         const int dmg =
                                 att_data.dmg_range.total_range().roll();
 
-                        if (att_result >= ActionResult::success) {
+                        if ( att_result >= ActionResult::success )
+                        {
                                 const bool is_potion =
                                         item_thrown_data.type ==
                                         ItemType::potion;
 
                                 const bool player_see_cell =
-                                        map::g_cells.at(pos).is_seen_by_player;
+                                        map::g_cells.at( pos ).is_seen_by_player;
 
-                                if (player_see_cell) {
+                                if ( player_see_cell )
+                                {
                                         const Color hit_color =
                                                 is_potion
                                                 ? item_color
                                                 : colors::light_red();
 
                                         io::draw_blast_at_cells(
-                                                {pos},
-                                                hit_color);
+                                                { pos },
+                                                hit_color );
                                 }
 
-                                static_cast<actor::Mon*>(actor_here)
+                                static_cast<actor::Mon*>( actor_here )
                                         ->set_player_aware_of_me();
 
                                 Snd snd(
@@ -242,37 +257,39 @@ void throw_item(
                                         pos,
                                         nullptr,
                                         SndVol::low,
-                                        AlertsMon::no);
+                                        AlertsMon::no );
 
                                 snd.run();
 
-                                if (player_see_cell) {
+                                if ( player_see_cell )
+                                {
                                         const std::string defender_name =
                                                 actor::can_player_see_actor(
-                                                        *actor_here)
+                                                        *actor_here )
                                                 ? text_format::first_to_upper(
-                                                          actor_here->name_the())
+                                                          actor_here->name_the() )
                                                 : "An unseen creature";
 
                                         msg_log::add(
-                                                (defender_name +
-                                                 " is hit."),
-                                                colors::msg_good());
+                                                ( defender_name +
+                                                  " is hit." ),
+                                                colors::msg_good() );
                                 }
 
-                                if (dmg > 0) {
+                                if ( dmg > 0 )
+                                {
                                         actor::hit(
                                                 *actor_here,
                                                 dmg,
                                                 item_thrown_data.ranged.dmg_type,
-                                                AllowWound::yes);
+                                                AllowWound::yes );
 
-                                        static_cast<actor::Mon*>(actor_here)
+                                        static_cast<actor::Mon*>( actor_here )
                                                 ->become_aware_player(
-                                                        actor::AwareSource::attacked);
+                                                        actor::AwareSource::attacked );
                                 }
 
-                                item_thrown.on_ranged_hit(*actor_here);
+                                item_thrown.on_ranged_hit( *actor_here );
 
                                 is_actor_hit = true;
 
@@ -280,18 +297,20 @@ void throw_item(
                                 // via "on_ranged_hit" called above? It would be
                                 // good to make the throwing code more generic,
                                 // it should not know about potions!
-                                if (is_potion) {
-                                        if (actor_here->m_state == ActorState::alive) {
+                                if ( is_potion )
+                                {
+                                        if ( actor_here->m_state == ActorState::alive )
+                                        {
                                                 // Apply potion effects
                                                 auto* const potion =
                                                         static_cast<potion::Potion*>(
-                                                                &item_thrown);
+                                                                &item_thrown );
 
-                                                potion->on_collide(pos, actor_here);
+                                                potion->on_collide( pos, actor_here );
 
                                                 // Attacking ends cloaking and sanctuary
-                                                actor_throwing.m_properties.end_prop(PropId::cloaked);
-                                                actor_throwing.m_properties.end_prop(PropId::sanctuary);
+                                                actor_throwing.m_properties.end_prop( PropId::cloaked );
+                                                actor_throwing.m_properties.end_prop( PropId::sanctuary );
                                         }
 
                                         delete &item_thrown;
@@ -311,58 +330,63 @@ void throw_item(
                                         item_thrown_data.type ==
                                         ItemType::throwing_wpn;
 
-                                if (!always_break_on_throw && is_throwing_wpn) {
+                                if ( ! always_break_on_throw && is_throwing_wpn )
+                                {
                                         break_item_one_in_n = 4;
                                 }
 
                                 break;
                         }
-                } // if actor hit
+                }  // if actor hit
 
-                const auto* terrain_here = map::g_cells.at(pos).terrain;
+                const auto* terrain_here = map::g_cells.at( pos ).terrain;
 
-                if (!terrain_here->is_projectile_passable()) {
+                if ( ! terrain_here->is_projectile_passable() )
+                {
                         // Drop item before the wall, not on the wall
-                        drop_pos = path[path_idx - 1];
+                        drop_pos = path[ path_idx - 1 ];
 
                         break;
                 }
 
-                if (map::g_cells.at(pos).is_seen_by_player &&
-                    viewport::is_in_view(pos)) {
+                if ( map::g_cells.at( pos ).is_seen_by_player &&
+                     viewport::is_in_view( pos ) )
+                {
                         io::draw_symbol(
                                 item_thrown.tile(),
                                 item_thrown.character(),
                                 Panel::map,
-                                viewport::to_view_pos(pos),
-                                item_color);
+                                viewport::to_view_pos( pos ),
+                                item_color );
 
                         io::update_screen();
 
-                        io::sleep(config::delay_projectile_draw());
+                        io::sleep( config::delay_projectile_draw() );
                 }
 
-                if ((pos == tgt_pos) &&
-                    (att_data.aim_lvl == actor::Size::floor)) {
+                if ( ( pos == tgt_pos ) &&
+                     ( att_data.aim_lvl == actor::Size::floor ) )
+                {
                         break;
                 }
-        } // path loop
+        }  // path loop
 
         // If potion, collide it on the landscape
-        if (item_thrown_data.type == ItemType::potion) {
+        if ( item_thrown_data.type == ItemType::potion )
+        {
                 const Color hit_color = item_color;
 
-                io::draw_blast_at_seen_cells({pos}, hit_color);
+                io::draw_blast_at_seen_cells( { pos }, hit_color );
 
-                auto* const potion = static_cast<potion::Potion*>(&item_thrown);
+                auto* const potion = static_cast<potion::Potion*>( &item_thrown );
 
-                potion->on_collide(pos, nullptr);
+                potion->on_collide( pos, nullptr );
 
                 delete &item_thrown;
 
                 // Attacking ends cloaking and sanctuary
-                actor_throwing.m_properties.end_prop(PropId::cloaked);
-                actor_throwing.m_properties.end_prop(PropId::sanctuary);
+                actor_throwing.m_properties.end_prop( PropId::cloaked );
+                actor_throwing.m_properties.end_prop( PropId::sanctuary );
 
                 game_time::tick();
 
@@ -373,31 +397,35 @@ void throw_item(
 
         // Set a collision sound effect (this may not necessarily get executed)
         const AlertsMon alerts =
-                (&actor_throwing == map::g_player)
+                ( &actor_throwing == map::g_player )
                 ? AlertsMon::yes
                 : AlertsMon::no;
 
-        Snd snd(item_thrown_data.land_on_hard_snd_msg,
-                item_thrown_data.land_on_hard_sfx,
-                IgnoreMsgIfOriginSeen::yes,
-                drop_pos,
-                nullptr,
-                SndVol::low,
-                alerts);
+        Snd snd( item_thrown_data.land_on_hard_snd_msg,
+                 item_thrown_data.land_on_hard_sfx,
+                 IgnoreMsgIfOriginSeen::yes,
+                 drop_pos,
+                 nullptr,
+                 SndVol::low,
+                 alerts );
 
-        if (item_thrown.data().ranged.always_break_on_throw ||
-            ((break_item_one_in_n != -1) &&
-             rnd::one_in(break_item_one_in_n))) {
+        if ( item_thrown.data().ranged.always_break_on_throw ||
+             ( ( break_item_one_in_n != -1 ) &&
+               rnd::one_in( break_item_one_in_n ) ) )
+        {
                 delete &item_thrown;
-        } else {
+        }
+        else
+        {
                 // Not destroyed
-                item_drop::drop_item_on_map(drop_pos, item_thrown);
+                item_drop::drop_item_on_map( drop_pos, item_thrown );
         }
 
-        auto is_noisy_matl = [](const Matl matl) {
+        auto is_noisy_matl = []( const Matl matl ) {
                 bool is_noisy = false;
 
-                switch (matl) {
+                switch ( matl )
+                {
                 case Matl::empty:
                         is_noisy = false;
                         break;
@@ -430,27 +458,29 @@ void throw_item(
                 return is_noisy;
         };
 
-        if (!is_actor_hit) {
+        if ( ! is_actor_hit )
+        {
                 const Matl matl_at_last_pos =
-                        map::g_cells.at(pos).terrain->matl();
+                        map::g_cells.at( pos ).terrain->matl();
 
                 const Matl matl_at_drop_pos =
-                        map::g_cells.at(drop_pos).terrain->matl();
+                        map::g_cells.at( drop_pos ).terrain->matl();
 
-                if (is_noisy_matl(matl_at_last_pos) ||
-                    is_noisy_matl(matl_at_drop_pos)) {
+                if ( is_noisy_matl( matl_at_last_pos ) ||
+                     is_noisy_matl( matl_at_drop_pos ) )
+                {
                         // OK, run the sound that we set up earlier
                         snd.run();
                 }
         }
 
         // Attacking ends cloaking and sanctuary
-        actor_throwing.m_properties.end_prop(PropId::cloaked);
-        actor_throwing.m_properties.end_prop(PropId::sanctuary);
+        actor_throwing.m_properties.end_prop( PropId::cloaked );
+        actor_throwing.m_properties.end_prop( PropId::sanctuary );
 
         game_time::tick();
 
         TRACE_FUNC_END;
 }
 
-} // namespace throwing
+}  // namespace throwing

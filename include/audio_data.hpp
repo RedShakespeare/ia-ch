@@ -9,14 +9,16 @@
 
 #include <string>
 
-namespace audio {
-
-enum class MusId {
+namespace audio
+{
+enum class MusId
+{
         cthulhiana_madness,
         END
 };
 
-enum class SfxId {
+enum class SfxId
+{
         // Monster sounds
         dog_snarl,
         hiss,
@@ -146,10 +148,10 @@ enum class SfxId {
         END
 };
 
-SfxId str_to_sfx_id(const std::string& str);
+SfxId str_to_sfx_id( const std::string& str );
 
-std::string sfx_id_to_str(SfxId id);
+std::string sfx_id_to_str( SfxId id );
 
-} // namespace audio
+}  // namespace audio
 
-#endif // AUDIO_DATA_HPP
+#endif  // AUDIO_DATA_HPP

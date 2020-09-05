@@ -9,6 +9,6 @@
 
 #include "global.hpp"
 
-void on_game_over(IsWin is_win);
+void on_game_over( IsWin is_win );
 
-#endif // GAME_OVER_HPP
+#endif  // GAME_OVER_HPP

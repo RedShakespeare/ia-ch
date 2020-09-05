@@ -13,7 +13,8 @@
 // -----------------------------------------------------------------------------
 // ViewMinimap
 // -----------------------------------------------------------------------------
-class ViewMinimap : public State {
+class ViewMinimap : public State
+{
 public:
         ViewMinimap() = default;
 
@@ -30,12 +31,12 @@ public:
 // -----------------------------------------------------------------------------
 // minimap
 // -----------------------------------------------------------------------------
-namespace minimap {
-
+namespace minimap
+{
 void clear();
 
 void update();
 
-} // namespace minimap
+}  // namespace minimap
 
-#endif // MINIMAP_HPP
+#endif  // MINIMAP_HPP

@@ -9,21 +9,22 @@
 
 #include "global.hpp"
 
-namespace actor {
+namespace actor
+{
 class Actor;
-} // namespace actor
+}  // namespace actor
 
 struct P;
 
-namespace knockback {
-
+namespace knockback
+{
 void run(
         actor::Actor& defender,
         const P& attacked_from_pos,
         bool is_spike_gun,
         Verbose verbose = Verbose::yes,
-        int paralyze_extra_turns = 0);
+        int paralyze_extra_turns = 0 );
 
-} // namespace knockback
+}  // namespace knockback
 
-#endif // KNOCKBACK_HPP
+#endif  // KNOCKBACK_HPP

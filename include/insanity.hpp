@@ -10,11 +10,13 @@
 #include <string>
 #include <vector>
 
-namespace actor {
+namespace actor
+{
 class Actor;
-} // namespace actor
+}  // namespace actor
 
-enum class InsSymptId {
+enum class InsSymptId
+{
         reduce_xp,
         scream,
         babbling,
@@ -30,19 +32,21 @@ enum class InsSymptId {
         masoch,
         sadism,
         shadows,
-        paranoia, // Invisible stalker spawned
+        paranoia,  // Invisible stalker spawned
         confusion,
         frenzy,
         strange_sensation,
         END
 };
 
-enum class InsSymptType {
+enum class InsSymptType
+{
         phobia,
         misc
 };
 
-class InsSympt {
+class InsSympt
+{
 public:
         InsSympt() = default;
 
@@ -68,7 +72,7 @@ public:
         void on_end();
 
         virtual void on_new_player_turn(
-                const std::vector<actor::Actor*>& seen_foes)
+                const std::vector<actor::Actor*>& seen_foes )
         {
                 (void)seen_foes;
         }
@@ -104,7 +108,8 @@ protected:
         }
 };
 
-class InsReduceXp : public InsSympt {
+class InsReduceXp : public InsSympt
+{
 public:
         InsReduceXp() = default;
 
@@ -141,7 +146,8 @@ protected:
         }
 };
 
-class InsScream : public InsSympt {
+class InsScream : public InsSympt
+{
 public:
         InsScream() = default;
 
@@ -178,7 +184,8 @@ protected:
         }
 };
 
-class InsBabbling : public InsSympt {
+class InsBabbling : public InsSympt
+{
 public:
         InsBabbling() = default;
 
@@ -198,7 +205,7 @@ public:
         }
 
         void on_new_player_turn(
-                const std::vector<actor::Actor*>& seen_foes) override;
+                const std::vector<actor::Actor*>& seen_foes ) override;
 
         std::string char_descr_msg() const override
         {
@@ -241,7 +248,8 @@ protected:
         }
 };
 
-class InsFaint : public InsSympt {
+class InsFaint : public InsSympt
+{
 public:
         InsFaint() = default;
 
@@ -281,7 +289,8 @@ protected:
         }
 };
 
-class InsLaugh : public InsSympt {
+class InsLaugh : public InsSympt
+{
 public:
         InsLaugh() = default;
 
@@ -319,7 +328,8 @@ protected:
         }
 };
 
-class InsPhobiaRat : public InsSympt {
+class InsPhobiaRat : public InsSympt
+{
 public:
         InsPhobiaRat() = default;
 
@@ -339,7 +349,7 @@ public:
         }
 
         void on_new_player_turn(
-                const std::vector<actor::Actor*>& seen_foes) override;
+                const std::vector<actor::Actor*>& seen_foes ) override;
 
         void on_permanent_rfear() override;
 
@@ -382,7 +392,8 @@ protected:
         }
 };
 
-class InsPhobiaSpider : public InsSympt {
+class InsPhobiaSpider : public InsSympt
+{
 public:
         InsPhobiaSpider() = default;
 
@@ -402,7 +413,7 @@ public:
         }
 
         void on_new_player_turn(
-                const std::vector<actor::Actor*>& seen_foes) override;
+                const std::vector<actor::Actor*>& seen_foes ) override;
 
         void on_permanent_rfear() override;
 
@@ -445,7 +456,8 @@ protected:
         }
 };
 
-class InsPhobiaReptileAndAmph : public InsSympt {
+class InsPhobiaReptileAndAmph : public InsSympt
+{
 public:
         InsPhobiaReptileAndAmph() = default;
 
@@ -465,7 +477,7 @@ public:
         }
 
         void on_new_player_turn(
-                const std::vector<actor::Actor*>& seen_foes) override;
+                const std::vector<actor::Actor*>& seen_foes ) override;
 
         void on_permanent_rfear() override;
 
@@ -508,7 +520,8 @@ protected:
         }
 };
 
-class InsPhobiaCanine : public InsSympt {
+class InsPhobiaCanine : public InsSympt
+{
 public:
         InsPhobiaCanine() = default;
 
@@ -528,7 +541,7 @@ public:
         }
 
         void on_new_player_turn(
-                const std::vector<actor::Actor*>& seen_foes) override;
+                const std::vector<actor::Actor*>& seen_foes ) override;
 
         void on_permanent_rfear() override;
 
@@ -571,7 +584,8 @@ protected:
         }
 };
 
-class InsPhobiaDead : public InsSympt {
+class InsPhobiaDead : public InsSympt
+{
 public:
         InsPhobiaDead() = default;
 
@@ -591,7 +605,7 @@ public:
         }
 
         void on_new_player_turn(
-                const std::vector<actor::Actor*>& seen_foes) override;
+                const std::vector<actor::Actor*>& seen_foes ) override;
 
         void on_permanent_rfear() override;
 
@@ -634,7 +648,8 @@ protected:
         }
 };
 
-class InsPhobiaDeep : public InsSympt {
+class InsPhobiaDeep : public InsSympt
+{
 public:
         InsPhobiaDeep() = default;
 
@@ -654,7 +669,7 @@ public:
         }
 
         void on_new_player_turn(
-                const std::vector<actor::Actor*>& seen_foes) override;
+                const std::vector<actor::Actor*>& seen_foes ) override;
 
         void on_permanent_rfear() override;
 
@@ -697,7 +712,8 @@ protected:
         }
 };
 
-class InsPhobiaDark : public InsSympt {
+class InsPhobiaDark : public InsSympt
+{
 public:
         InsPhobiaDark() = default;
 
@@ -717,7 +733,7 @@ public:
         }
 
         void on_new_player_turn(
-                const std::vector<actor::Actor*>& seen_foes) override;
+                const std::vector<actor::Actor*>& seen_foes ) override;
 
         void on_permanent_rfear() override;
 
@@ -760,7 +776,8 @@ protected:
         }
 };
 
-class InsMasoch : public InsSympt {
+class InsMasoch : public InsSympt
+{
 public:
         InsMasoch() = default;
 
@@ -821,7 +838,8 @@ protected:
         }
 };
 
-class InsSadism : public InsSympt {
+class InsSadism : public InsSympt
+{
 public:
         InsSadism() = default;
 
@@ -882,7 +900,8 @@ protected:
         }
 };
 
-class InsShadows : public InsSympt {
+class InsShadows : public InsSympt
+{
 public:
         InsShadows() = default;
 
@@ -920,7 +939,8 @@ protected:
         }
 };
 
-class InsParanoia : public InsSympt {
+class InsParanoia : public InsSympt
+{
 public:
         InsParanoia() = default;
 
@@ -959,7 +979,8 @@ protected:
         }
 };
 
-class InsConfusion : public InsSympt {
+class InsConfusion : public InsSympt
+{
 public:
         InsConfusion() = default;
 
@@ -1000,7 +1021,8 @@ protected:
         }
 };
 
-class InsFrenzy : public InsSympt {
+class InsFrenzy : public InsSympt
+{
 public:
         InsFrenzy() = default;
 
@@ -1040,7 +1062,8 @@ protected:
         }
 };
 
-class InsStrangeSensation : public InsSympt {
+class InsStrangeSensation : public InsSympt
+{
 public:
         InsStrangeSensation() = default;
 
@@ -1077,8 +1100,8 @@ protected:
         }
 };
 
-namespace insanity {
-
+namespace insanity
+{
 void init();
 void cleanup();
 
@@ -1087,19 +1110,19 @@ void load();
 
 void run_sympt();
 
-bool has_sympt(InsSymptId id);
+bool has_sympt( InsSymptId id );
 
-bool has_sympt_type(InsSymptType type);
+bool has_sympt_type( InsSymptType type );
 
 std::vector<const InsSympt*> active_sympts();
 
 void on_new_player_turn(
-        const std::vector<actor::Actor*>& seen_foes);
+        const std::vector<actor::Actor*>& seen_foes );
 
 void on_permanent_rfear();
 
-void end_sympt(InsSymptId id);
+void end_sympt( InsSymptId id );
 
-} // namespace insanity
+}  // namespace insanity
 
-#endif // INSANITY_HPP
+#endif  // INSANITY_HPP

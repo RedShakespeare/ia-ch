@@ -12,36 +12,38 @@
 
 #include "item.hpp"
 
-namespace device {
-
-class Device : public item::Item {
+namespace device
+{
+class Device : public item::Item
+{
 public:
-        Device(item::ItemData* item_data);
+        Device( item::ItemData* item_data );
 
         virtual ~Device() = default;
 
-        ConsumeItem activate(actor::Actor* actor) override = 0;
+        ConsumeItem activate( actor::Actor* actor ) override = 0;
 
         Color interface_color() const final
         {
                 return colors::cyan();
         }
 
-        void on_std_turn_in_inv_hook(const InvType inv_type) override
+        void on_std_turn_in_inv_hook( const InvType inv_type ) override
         {
                 (void)inv_type;
         }
 
-        void identify(Verbose verbose) override;
+        void identify( Verbose verbose ) override;
 };
 
-class StrangeDevice : public Device {
+class StrangeDevice : public Device
+{
 public:
-        StrangeDevice(item::ItemData* item_data);
+        StrangeDevice( item::ItemData* item_data );
 
         std::vector<std::string> descr_hook() const final;
 
-        ConsumeItem activate(actor::Actor* actor) override;
+        ConsumeItem activate( actor::Actor* actor ) override;
 
         std::string name_inf_str() const override;
 
@@ -56,10 +58,11 @@ private:
         virtual ConsumeItem run_effect() = 0;
 };
 
-class Blaster : public StrangeDevice {
+class Blaster : public StrangeDevice
+{
 public:
-        Blaster(item::ItemData* const item_data) :
-                StrangeDevice(item_data) {}
+        Blaster( item::ItemData* const item_data ) :
+                StrangeDevice( item_data ) {}
 
         ~Blaster() override = default;
 
@@ -73,10 +76,11 @@ private:
         ConsumeItem run_effect() override;
 };
 
-class Rejuvenator : public StrangeDevice {
+class Rejuvenator : public StrangeDevice
+{
 public:
-        Rejuvenator(item::ItemData* const item_data) :
-                StrangeDevice(item_data) {}
+        Rejuvenator( item::ItemData* const item_data ) :
+                StrangeDevice( item_data ) {}
 
         ~Rejuvenator() override = default;
 
@@ -91,10 +95,11 @@ private:
         ConsumeItem run_effect() override;
 };
 
-class Translocator : public StrangeDevice {
+class Translocator : public StrangeDevice
+{
 public:
-        Translocator(item::ItemData* const item_data) :
-                StrangeDevice(item_data) {}
+        Translocator( item::ItemData* const item_data ) :
+                StrangeDevice( item_data ) {}
 
         ~Translocator() override = default;
 
@@ -108,10 +113,11 @@ private:
         ConsumeItem run_effect() override;
 };
 
-class SentryDrone : public StrangeDevice {
+class SentryDrone : public StrangeDevice
+{
 public:
-        SentryDrone(item::ItemData* const item_data) :
-                StrangeDevice(item_data) {}
+        SentryDrone( item::ItemData* const item_data ) :
+                StrangeDevice( item_data ) {}
 
         ~SentryDrone() override = default;
 
@@ -125,10 +131,11 @@ private:
         ConsumeItem run_effect() override;
 };
 
-class Deafening : public StrangeDevice {
+class Deafening : public StrangeDevice
+{
 public:
-        Deafening(item::ItemData* const item_data) :
-                StrangeDevice(item_data) {}
+        Deafening( item::ItemData* const item_data ) :
+                StrangeDevice( item_data ) {}
 
         ~Deafening() override = default;
 
@@ -143,10 +150,11 @@ private:
         ConsumeItem run_effect() override;
 };
 
-class ForceField : public StrangeDevice {
+class ForceField : public StrangeDevice
+{
 public:
-        ForceField(item::ItemData* const item_data) :
-                StrangeDevice(item_data) {}
+        ForceField( item::ItemData* const item_data ) :
+                StrangeDevice( item_data ) {}
 
         ~ForceField() override = default;
 
@@ -163,17 +171,18 @@ private:
         ConsumeItem run_effect() override;
 };
 
-class Lantern : public Device {
+class Lantern : public Device
+{
 public:
-        Lantern(item::ItemData* item_data);
+        Lantern( item::ItemData* item_data );
 
         ~Lantern() override = default;
 
         std::string name_inf_str() const override;
 
-        ConsumeItem activate(actor::Actor* actor) override;
+        ConsumeItem activate( actor::Actor* actor ) override;
 
-        void on_std_turn_in_inv_hook(InvType inv_type) override;
+        void on_std_turn_in_inv_hook( InvType inv_type ) override;
 
         void on_pickup_hook() override;
 
@@ -189,6 +198,6 @@ private:
         void toggle();
 };
 
-} // namespace device
+}  // namespace device
 
-#endif // ITEM_DEVICE_HPP
+#endif  // ITEM_DEVICE_HPP

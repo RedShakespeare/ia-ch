@@ -12,53 +12,54 @@
 #include "array2.hpp"
 #include "global.hpp"
 
-namespace actor {
+namespace actor
+{
 class Mon;
-} // namespace actor
+}  // namespace actor
 
 struct P;
 
-namespace ai {
-
+namespace ai
+{
 // -----------------------------------------------------------------------------
 // Things that cost turns for the monster
 // -----------------------------------------------------------------------------
-namespace action {
+namespace action
+{
+DidAction try_cast_random_spell( actor::Mon& mon );
 
-DidAction try_cast_random_spell(actor::Mon& mon);
+DidAction handle_closed_blocking_door( actor::Mon& mon, std::vector<P>& path );
 
-DidAction handle_closed_blocking_door(actor::Mon& mon, std::vector<P>& path);
+DidAction handle_inventory( actor::Mon& mon );
 
-DidAction handle_inventory(actor::Mon& mon);
+DidAction make_room_for_friend( actor::Mon& mon );
 
-DidAction make_room_for_friend(actor::Mon& mon);
+DidAction move_to_random_adj_cell( actor::Mon& mon );
 
-DidAction move_to_random_adj_cell(actor::Mon& mon);
+DidAction move_to_target_simple( actor::Mon& mon );
 
-DidAction move_to_target_simple(actor::Mon& mon);
+DidAction step_path( actor::Mon& mon, const std::vector<P>& path );
 
-DidAction step_path(actor::Mon& mon, const std::vector<P>& path);
+DidAction step_to_lair_if_los( actor::Mon& mon, const P& lair_p );
 
-DidAction step_to_lair_if_los(actor::Mon& mon, const P& lair_p);
-
-} // namespace action
+}  // namespace action
 
 // -----------------------------------------------------------------------------
 // Information gathering
 // -----------------------------------------------------------------------------
-namespace info {
+namespace info
+{
+bool look( actor::Mon& mon );
 
-bool look(actor::Mon& mon);
+std::vector<P> find_path_to_lair_if_no_los( actor::Mon& mon, const P& lair_p );
 
-std::vector<P> find_path_to_lair_if_no_los(actor::Mon& mon, const P& lair_p);
+std::vector<P> find_path_to_leader( actor::Mon& mon );
 
-std::vector<P> find_path_to_leader(actor::Mon& mon);
+std::vector<P> find_path_to_target( actor::Mon& mon );
 
-std::vector<P> find_path_to_target(actor::Mon& mon);
+void set_special_blocked_cells( actor::Mon& mon, Array2<bool>& a );
 
-void set_special_blocked_cells(actor::Mon& mon, Array2<bool>& a);
+}  // namespace info
+}  // namespace ai
 
-} // namespace info
-} // namespace ai
-
-#endif // AI_HPP
+#endif  // AI_HPP

@@ -10,17 +10,18 @@
 #include <string>
 #include <vector>
 
-struct God {
+struct God
+{
         std::string name;
         std::string descr;
 };
 
-namespace gods {
-
+namespace gods
+{
 const God& current_god();
 
 void set_random_god();
 
-} // namespace gods
+}  // namespace gods
 
-#endif // GODS_HPP
+#endif  // GODS_HPP

@@ -9,7 +9,8 @@
 
 #include "terrain.hpp"
 
-enum class DoorSpawnState {
+enum class DoorSpawnState
+{
         open,
         closed,
         stuck,
@@ -18,28 +19,30 @@ enum class DoorSpawnState {
         any
 };
 
-enum class DoorType {
+enum class DoorType
+{
         wood,
         metal,
         gate
 };
 
-namespace terrain {
-
-class Door : public Terrain {
+namespace terrain
+{
+class Door : public Terrain
+{
 public:
-        Door(const P& terrain_pos,
+        Door( const P& terrain_pos,
 
-             // NOTE: This should always be nullptr if type is "gate"
-             const Wall* mimic_terrain,
+              // NOTE: This should always be nullptr if type is "gate"
+              const Wall* mimic_terrain,
 
-             DoorType type = DoorType::wood,
+              DoorType type = DoorType::wood,
 
-             // NOTE: For gates, this should never be any "secret" variant
-             DoorSpawnState spawn_state = DoorSpawnState::any);
+              // NOTE: For gates, this should never be any "secret" variant
+              DoorSpawnState spawn_state = DoorSpawnState::any );
 
-        Door(const P& terrain_pos) :
-                Terrain(terrain_pos) {}
+        Door( const P& terrain_pos ) :
+                Terrain( terrain_pos ) {}
 
         Door() = delete;
 
@@ -52,11 +55,11 @@ public:
 
         // Sometimes we want to refer to a door as just a "door", instead of
         // something verbose like "the open wooden door".
-        std::string base_name() const; // E.g. "wooden door"
+        std::string base_name() const;  // E.g. "wooden door"
 
-        std::string base_name_short() const; // E.g. "door"
+        std::string base_name_short() const;  // E.g. "door"
 
-        std::string name(Article article) const override;
+        std::string name( Article article ) const override;
 
         WasDestroyed on_finished_burning() override;
 
@@ -64,11 +67,11 @@ public:
 
         gfx::TileId tile() const override;
 
-        void bump(actor::Actor& actor_bumping) override;
+        void bump( actor::Actor& actor_bumping ) override;
 
         bool is_walkable() const override;
 
-        bool can_move(const actor::Actor& actor) const override;
+        bool can_move( const actor::Actor& actor ) const override;
 
         bool is_los_passable() const override;
 
@@ -76,13 +79,13 @@ public:
 
         bool is_smoke_passable() const override;
 
-        void try_open(actor::Actor* actor_trying);
+        void try_open( actor::Actor* actor_trying );
 
-        void try_close(actor::Actor* actor_trying);
+        void try_close( actor::Actor* actor_trying );
 
-        bool try_jam(actor::Actor* actor_trying);
+        bool try_jam( actor::Actor* actor_trying );
 
-        void on_lever_pulled(Lever* lever) override;
+        void on_lever_pulled( Lever* lever ) override;
 
         bool is_open() const
         {
@@ -96,7 +99,7 @@ public:
 
         Matl matl() const override;
 
-        void reveal(Verbose verbose) override;
+        void reveal( Verbose verbose ) override;
 
         void on_revealed_from_searching() override;
 
@@ -108,9 +111,9 @@ public:
                 m_is_stuck = true;
         }
 
-        DidOpen open(actor::Actor* actor_opening) override;
+        DidOpen open( actor::Actor* actor_opening ) override;
 
-        DidClose close(actor::Actor* actor_closing) override;
+        DidClose close( actor::Actor* actor_closing ) override;
 
         actor::Actor* actor_currently_opening() const
         {
@@ -122,7 +125,7 @@ public:
                 m_actor_currently_opening = nullptr;
         }
 
-        static bool is_tile_any_door(const gfx::TileId tile)
+        static bool is_tile_any_door( const gfx::TileId tile )
         {
                 return tile == gfx::TileId::door_closed ||
                         tile == gfx::TileId::door_open;
@@ -144,21 +147,21 @@ private:
         void on_hit(
                 DmgType dmg_type,
                 actor::Actor* actor,
-                int dmg = -1) override;
+                int dmg = -1 ) override;
 
-        const Wall* const m_mimic_terrain {nullptr};
+        const Wall* const m_mimic_terrain { nullptr };
 
-        int m_nr_spikes {0};
+        int m_nr_spikes { 0 };
 
-        bool m_is_open {false};
-        bool m_is_stuck {false};
+        bool m_is_open { false };
+        bool m_is_stuck { false };
 
-        DoorType m_type {DoorType::wood};
+        DoorType m_type { DoorType::wood };
 
-        actor::Actor* m_actor_currently_opening {nullptr};
+        actor::Actor* m_actor_currently_opening { nullptr };
 
-}; // Door
+};  // Door
 
-} // namespace terrain
+}  // namespace terrain
 
-#endif // TERRAIN_DOOR_HPP
+#endif  // TERRAIN_DOOR_HPP

@@ -20,9 +20,10 @@
 #include "room.hpp"
 #include "spells.hpp"
 
-namespace actor {
-
-enum class Id {
+namespace actor
+{
+enum class Id
+{
         player,
         zombie,
         bloated_zombie,
@@ -69,7 +70,7 @@ enum class Id {
         raven,
         giant_bat,
         vampire_bat,
-        abaxu, // Unique bat
+        abaxu,  // Unique bat
         giant_mantis,
         locust,
         mummy,
@@ -110,7 +111,8 @@ enum class Id {
         END
 };
 
-enum class MonGroupSize {
+enum class MonGroupSize
+{
         alone,
         few,
         pack,
@@ -121,55 +123,62 @@ enum class MonGroupSize {
 // group sizes when spawning monsters. The size of the group spawned is
 // determined by a weighted random choice (so that a certain monster could for
 // example usually spawn alone, but on some rare occasions spawn in big groups).
-struct MonGroupSpawnRule {
+struct MonGroupSpawnRule
+{
         MonGroupSpawnRule() :
-                group_size(MonGroupSize::alone),
-                weight(1) {}
+                group_size( MonGroupSize::alone ),
+                weight( 1 ) {}
 
-        MonGroupSpawnRule(MonGroupSize group_size_type, int spawn_weight) :
-                group_size(group_size_type),
-                weight(spawn_weight) {}
+        MonGroupSpawnRule( MonGroupSize group_size_type, int spawn_weight ) :
+                group_size( group_size_type ),
+                weight( spawn_weight ) {}
 
         MonGroupSize group_size;
         int weight;
 };
 
-struct ActorItemSetData {
-        item::ItemSetId item_set_id {(item::ItemSetId)0};
-        int pct_chance_to_spawn {100};
-        Range nr_spawned_range {1, 1};
+struct ActorItemSetData
+{
+        item::ItemSetId item_set_id { (item::ItemSetId)0 };
+        int pct_chance_to_spawn { 100 };
+        Range nr_spawned_range { 1, 1 };
 };
 
-struct IntrAttData {
+struct IntrAttData
+{
         IntrAttData() = default;
 
         ~IntrAttData() = default;
 
-        item::Id item_id {item::Id::END};
-        int dmg {0};
+        item::Id item_id { item::Id::END };
+        int dmg { 0 };
         ItemAttProp prop_applied {};
 };
 
-struct ActorSpellData {
-        SpellId spell_id {SpellId::END};
-        SpellSkill spell_skill {SpellSkill::basic};
-        int pct_chance_to_know {100};
+struct ActorSpellData
+{
+        SpellId spell_id { SpellId::END };
+        SpellSkill spell_skill { SpellSkill::basic };
+        int pct_chance_to_know { 100 };
 };
 
-enum class Speed {
+enum class Speed
+{
         slow,
         normal,
         fast,
         very_fast,
 };
 
-enum class Size {
+enum class Size
+{
         floor,
         humanoid,
         giant
 };
 
-enum class AiId {
+enum class AiId
+{
         looks,
         avoids_blocking_friend,
         attacks,
@@ -181,7 +190,8 @@ enum class AiId {
         END
 };
 
-struct ActorData {
+struct ActorData
+{
         ActorData()
         {
                 reset();
@@ -205,8 +215,8 @@ struct ActorData {
         std::vector<ActorSpellData> spells;
         Speed speed;
         AbilityValues ability_values;
-        bool natural_props[(size_t)PropId::END];
-        bool ai[(size_t)AiId::END];
+        bool natural_props[ (size_t)PropId::END ];
+        bool ai[ (size_t)AiId::END ];
         int nr_turns_aware;
         int ranged_cooldown_turns;
         int spawn_min_dlvl, spawn_max_dlvl;
@@ -255,13 +265,13 @@ struct ActorData {
         std::vector<Id> starting_allies;
 };
 
-extern ActorData g_data[(size_t)Id::END];
+extern ActorData g_data[ (size_t)Id::END ];
 
 void init();
 
 void save();
 void load();
 
-} // namespace actor
+}  // namespace actor
 
-#endif // ACTOR_DATA_HPP
+#endif  // ACTOR_DATA_HPP

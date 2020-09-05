@@ -11,8 +11,8 @@
 
 struct P;
 
-namespace line_calc {
-
+namespace line_calc
+{
 void init();
 
 std::vector<P> calc_new_line(
@@ -20,12 +20,12 @@ std::vector<P> calc_new_line(
         const P& target,
         bool should_stop_at_target,
         int king_dist_limit,
-        bool allow_outside_map);
+        bool allow_outside_map );
 
 const std::vector<P>* fov_delta_line(
         const P& delta,
-        const double& max_dist_abs);
+        const double& max_dist_abs );
 
-} // namespace line_calc
+}  // namespace line_calc
 
-#endif // LINE_CALC_HPP
+#endif  // LINE_CALC_HPP

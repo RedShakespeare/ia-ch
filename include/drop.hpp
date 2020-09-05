@@ -9,28 +9,30 @@
 
 #include "global.hpp"
 
-namespace item {
+namespace item
+{
 class Item;
-} // namespace item
+}  // namespace item
 
-namespace actor {
+namespace actor
+{
 class Actor;
-} // namespace actor
+}  // namespace actor
 
 struct P;
 
-namespace item_drop {
-
+namespace item_drop
+{
 // This function places the item as close to the origin as possible, but never
 // on top of other items, unless they can be stacked.
-item::Item* drop_item_on_map(const P& intended_pos, item::Item& item);
+item::Item* drop_item_on_map( const P& intended_pos, item::Item& item );
 
 void drop_item_from_inv(
         actor::Actor& actor,
         InvType inv_type,
         size_t idx,
-        int nr_items_to_drop = -1);
+        int nr_items_to_drop = -1 );
 
-} // namespace item_drop
+}  // namespace item_drop
 
 #endif

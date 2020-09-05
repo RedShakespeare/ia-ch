@@ -10,9 +10,10 @@
 #include "global.hpp"
 #include "pos.hpp"
 
-namespace actor {
+namespace actor
+{
 class Actor;
-} // namespace actor
+}  // namespace actor
 
 template <typename T>
 class Array2;
@@ -20,11 +21,11 @@ class Array2;
 void teleport(
         actor::Actor& actor,
         ShouldCtrlTele ctrl_tele = ShouldCtrlTele::if_tele_ctrl_prop,
-        int max_dist = -1);
+        int max_dist = -1 );
 
 void teleport(
         actor::Actor& actor,
         P p,
-        const Array2<bool>& blocked);
+        const Array2<bool>& blocked );
 
-#endif // TELEPORT_HPP
+#endif  // TELEPORT_HPP

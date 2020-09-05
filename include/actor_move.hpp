@@ -9,12 +9,12 @@
 
 #include "direction.hpp"
 
-namespace actor {
-
+namespace actor
+{
 class Actor;
 
-void move(Actor& actor, Dir dir);
+void move( Actor& actor, Dir dir );
 
-} // namespace actor
+}  // namespace actor
 
-#endif // ACTOR_MOVE_HPP
+#endif  // ACTOR_MOVE_HPP

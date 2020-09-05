@@ -17,7 +17,7 @@
 #ifdef _WIN32
 #undef main
 #endif
-int main(int argc, char** argv)
+int main( int argc, char** argv )
 {
         TRACE_FUNC_BEGIN;
 
@@ -25,28 +25,32 @@ int main(int argc, char** argv)
 
         init::init_io();
 
-        for (int arg_nr = 0; arg_nr < argc; ++arg_nr) {
-                const std::string arg_str = std::string(argv[arg_nr]);
+        for ( int arg_nr = 0; arg_nr < argc; ++arg_nr )
+        {
+                const std::string arg_str = std::string( argv[ arg_nr ] );
 
 #ifndef NDEBUG
-                if (arg_str == "--demo-mapgen") {
+                if ( arg_str == "--demo-mapgen" )
+                {
                         init::g_is_demo_mapgen = true;
                 }
 
-                if (arg_str == "--bot") {
+                if ( arg_str == "--bot" )
+                {
                         config::toggle_bot_playing();
                 }
-#endif // NDEBUG
+#endif  // NDEBUG
 
                 // Extra challenge for user "GJ" from the Discord chat ;-)
-                if (arg_str == "--gj") {
+                if ( arg_str == "--gj" )
+                {
                         config::toggle_gj_mode();
                 }
         }
 
         init::init_game();
 
-        states::push(std::make_unique<MainMenuState>());
+        states::push( std::make_unique<MainMenuState>() );
 
         states::run();
 

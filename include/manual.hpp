@@ -15,13 +15,15 @@
 #include "info_screen_state.hpp"
 #include "state.hpp"
 
-struct ManualPage {
+struct ManualPage
+{
         std::string title = "";
 
         std::vector<std::string> lines = {};
 };
 
-class BrowseManual : public State {
+class BrowseManual : public State
+{
 public:
         BrowseManual() = default;
 
@@ -43,12 +45,13 @@ private:
         std::vector<ManualPage> m_pages;
 };
 
-class BrowseManualPage : public InfoScreenState {
+class BrowseManualPage : public InfoScreenState
+{
 public:
-        BrowseManualPage(const ManualPage& page) :
+        BrowseManualPage( const ManualPage& page ) :
 
-                m_page(page),
-                m_top_idx(0)
+                m_page( page ),
+                m_top_idx( 0 )
         {}
 
         void draw() override;
@@ -70,4 +73,4 @@ private:
         int m_top_idx;
 };
 
-#endif // MANUAL_HPP
+#endif  // MANUAL_HPP

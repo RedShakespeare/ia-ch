@@ -9,11 +9,12 @@
 
 #include "terrain.hpp"
 
-namespace terrain {
-
-class Monolith : public Terrain {
+namespace terrain
+{
+class Monolith : public Terrain
+{
 public:
-        Monolith(const P& p);
+        Monolith( const P& p );
         Monolith() = delete;
         ~Monolith() = default;
 
@@ -22,9 +23,9 @@ public:
                 return Id::monolith;
         }
 
-        std::string name(Article article) const override;
+        std::string name( Article article ) const override;
 
-        void bump(actor::Actor& actor_bumping) override;
+        void bump( actor::Actor& actor_bumping ) override;
 
 private:
         Color color_default() const override;
@@ -32,13 +33,13 @@ private:
         void on_hit(
                 DmgType dmg_type,
                 actor::Actor* actor,
-                int dmg = -1) override;
+                int dmg = -1 ) override;
 
         void activate();
 
         bool m_is_activated;
 };
 
-} // namespace terrain
+}  // namespace terrain
 
-#endif // TERRAIN_MONOLITH_HPP
+#endif  // TERRAIN_MONOLITH_HPP

@@ -7,8 +7,8 @@
 #ifndef INIT_HPP
 #define INIT_HPP
 
-namespace init {
-
+namespace init
+{
 extern bool g_is_cheat_vision_enabled;
 extern bool g_is_demo_mapgen;
 
@@ -21,6 +21,6 @@ void cleanup_game();
 void init_session();
 void cleanup_session();
 
-} // namespace init
+}  // namespace init
 
 #endif

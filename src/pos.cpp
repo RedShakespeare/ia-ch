@@ -6,30 +6,30 @@
 
 #include "pos.hpp"
 
-P::P(const Dir dir) :
-        x(0),
-        y(0)
+P::P( const Dir dir ) :
+        x( 0 ),
+        y( 0 )
 {
-        set(dir_utils::offset(dir));
+        set( dir_utils::offset( dir ) );
 }
 
-P& P::operator=(const Dir dir)
+P& P::operator=( const Dir dir )
 {
-        set(dir_utils::offset(dir));
+        set( dir_utils::offset( dir ) );
 
         return *this;
 }
 
-P& P::operator+=(const Dir dir)
+P& P::operator+=( const Dir dir )
 {
-        *this += dir_utils::offset(dir);
+        *this += dir_utils::offset( dir );
 
         return *this;
 }
 
-P P::operator+(const Dir dir) const
+P P::operator+( const Dir dir ) const
 {
-        P result(*this);
+        P result( *this );
 
         result += dir;
 
@@ -38,5 +38,5 @@ P P::operator+(const Dir dir) const
 
 Dir P::to_dir()
 {
-        return dir_utils::dir(*this);
+        return dir_utils::dir( *this );
 }

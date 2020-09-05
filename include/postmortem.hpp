@@ -16,10 +16,11 @@
 #include "info_screen_state.hpp"
 #include "state.hpp"
 
-class PostmortemInfo : public InfoScreenState {
+class PostmortemInfo : public InfoScreenState
+{
 public:
-        PostmortemInfo(const std::vector<ColoredString>& lines) :
-                m_lines(lines) {}
+        PostmortemInfo( const std::vector<ColoredString>& lines ) :
+                m_lines( lines ) {}
 
         void draw() override;
 
@@ -39,7 +40,7 @@ private:
         }
 
         const std::vector<ColoredString> m_lines {};
-        int m_top_idx {0};
+        int m_top_idx { 0 };
 };
 
-#endif // POSTMORTEM_HPP
+#endif  // POSTMORTEM_HPP

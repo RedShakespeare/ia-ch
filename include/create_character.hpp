@@ -11,12 +11,14 @@
 #include "player_bon.hpp"
 #include "state.hpp"
 
-enum class TraitScreenMode {
+enum class TraitScreenMode
+{
         pick_new,
         view_unavail
 };
 
-class NewGameState : public State {
+class NewGameState : public State
+{
 public:
         void on_pushed() override;
 
@@ -28,7 +30,8 @@ public:
         }
 };
 
-class PickBgState : public State {
+class PickBgState : public State
+{
 public:
         void on_start() override;
 
@@ -47,7 +50,8 @@ private:
         std::vector<Bg> m_bgs {};
 };
 
-class PickOccultistState : public State {
+class PickOccultistState : public State
+{
 public:
         void on_start() override;
 
@@ -66,10 +70,11 @@ private:
         std::vector<OccultistDomain> m_domains {};
 };
 
-class PickTraitState : public State {
+class PickTraitState : public State
+{
 public:
-        PickTraitState(const std::string& title) :
-                m_title(title)
+        PickTraitState( const std::string& title ) :
+                m_title( title )
         {
         }
 
@@ -95,12 +100,13 @@ private:
         std::vector<Trait> m_traits_avail {};
         std::vector<Trait> m_traits_unavail {};
 
-        TraitScreenMode m_screen_mode {TraitScreenMode::pick_new};
+        TraitScreenMode m_screen_mode { TraitScreenMode::pick_new };
 
         std::string m_title;
 };
 
-class EnterNameState : public State {
+class EnterNameState : public State
+{
 public:
         void on_start() override;
 
@@ -117,4 +123,4 @@ private:
         std::string m_current_str {};
 };
 
-#endif // CREATE_CHARACTER_HPP
+#endif  // CREATE_CHARACTER_HPP

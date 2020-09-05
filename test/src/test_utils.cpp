@@ -15,25 +15,30 @@
 
 static void put_floor_and_walls_on_map()
 {
-        for (int x = 0; x < map::w(); ++x) {
-                for (int y = 0; y < map::h(); ++y) {
+        for ( int x = 0; x < map::w(); ++x )
+        {
+                for ( int y = 0; y < map::h(); ++y )
+                {
                         const bool is_on_edge =
-                                (x == 0) ||
-                                (y == 0) ||
-                                (x == (map::w() - 1)) ||
-                                (y == (map::h() - 1));
+                                ( x == 0 ) ||
+                                ( y == 0 ) ||
+                                ( x == ( map::w() - 1 ) ) ||
+                                ( y == ( map::h() - 1 ) );
 
-                        if (is_on_edge) {
-                                map::put(new terrain::Wall({x, y}));
-                        } else {
-                                map::put(new terrain::Floor({x, y}));
+                        if ( is_on_edge )
+                        {
+                                map::put( new terrain::Wall( { x, y } ) );
+                        }
+                        else
+                        {
+                                map::put( new terrain::Floor( { x, y } ) );
                         }
                 }
         }
 }
 
-namespace test_utils {
-
+namespace test_utils
+{
 void init_all()
 {
         rnd::seed();
@@ -45,7 +50,7 @@ void init_all()
         // To return default answers (e.g. "yes" from yes/no questions)
         query::cleanup();
 
-        map::reset({100, 100});
+        map::reset( { 100, 100 } );
 
         put_floor_and_walls_on_map();
 
@@ -59,4 +64,4 @@ void cleanup_all()
         init::cleanup_io();
 }
 
-} // namespace test_utils
+}  // namespace test_utils

@@ -22,8 +22,9 @@
 // -----------------------------------------------------------------------------
 void MapControllerStd::on_start()
 {
-        if (!map::g_player->m_properties.has(PropId::deaf)) {
-                audio::try_play_amb(1);
+        if ( ! map::g_player->m_properties.has( PropId::deaf ) )
+        {
+                audio::try_play_amb( 1 );
         }
 }
 
@@ -31,37 +32,43 @@ void MapControllerStd::on_std_turn()
 {
         const int spawn_n_turns = 275;
 
-        if (game_time::turn_nr() % spawn_n_turns == 0) {
+        if ( game_time::turn_nr() % spawn_n_turns == 0 )
+        {
                 populate_mon::spawn_for_repopulate_over_time();
         }
 }
 
 void MapControllerBoss::on_start()
 {
-        audio::play(audio::SfxId::boss_voice1);
+        audio::play( audio::SfxId::boss_voice1 );
 
-        for (auto* const actor : game_time::g_actors) {
-                if (!actor->is_player()) {
-                        static_cast<actor::Mon*>(actor)->become_aware_player(actor::AwareSource::other);
+        for ( auto* const actor : game_time::g_actors )
+        {
+                if ( ! actor->is_player() )
+                {
+                        static_cast<actor::Mon*>( actor )->become_aware_player( actor::AwareSource::other );
                 }
         }
 }
 
 void MapControllerBoss::on_std_turn()
 {
-        const P stair_pos(map::w() - 2, 11);
+        const P stair_pos( map::w() - 2, 11 );
 
         const auto terrain_at_stair_pos =
-                map::g_cells.at(stair_pos).terrain->id();
+                map::g_cells.at( stair_pos ).terrain->id();
 
-        if (terrain_at_stair_pos == terrain::Id::stairs) {
+        if ( terrain_at_stair_pos == terrain::Id::stairs )
+        {
                 // Stairs already created
                 return;
         }
 
-        for (const auto* const actor : game_time::g_actors) {
-                if ((actor->id() == actor::Id::the_high_priest) &&
-                    actor->is_alive()) {
+        for ( const auto* const actor : game_time::g_actors )
+        {
+                if ( ( actor->id() == actor::Id::the_high_priest ) &&
+                     actor->is_alive() )
+                {
                         // The boss is still alive
                         return;
                 }
@@ -73,11 +80,11 @@ void MapControllerBoss::on_std_turn()
                 "The ground rumbles...",
                 colors::white(),
                 MsgInterruptPlayer::no,
-                MorePromptOnMsg::yes);
+                MorePromptOnMsg::yes );
 
-        map::put(new terrain::Stairs(stair_pos));
+        map::put( new terrain::Stairs( stair_pos ) );
 
-        map::put(new terrain::RubbleLow(stair_pos - P(1, 0)));
+        map::put( new terrain::RubbleLow( stair_pos - P( 1, 0 ) ) );
 
         // TODO: This was in the 'on_death' hook for TheHighPriest - it should
         // be a property if this event should still exist
@@ -91,8 +98,8 @@ void MapControllerBoss::on_std_turn()
 // -----------------------------------------------------------------------------
 // map_control
 // -----------------------------------------------------------------------------
-namespace map_control {
-
+namespace map_control
+{
 std::unique_ptr<MapController> g_controller = nullptr;
 
-} // namespace map_control
+}  // namespace map_control

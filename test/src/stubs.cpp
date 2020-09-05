@@ -13,11 +13,11 @@
 // -----------------------------------------------------------------------------
 // io
 // -----------------------------------------------------------------------------
-namespace io {
-
+namespace io
+{
 void init()
 {
-        panels::init({100, 100});
+        panels::init( { 100, 100 } );
 }
 
 void cleanup() {}
@@ -33,74 +33,74 @@ P min_screen_gui_dims()
         return {};
 }
 
-R gui_to_px_rect(const R rect)
+R gui_to_px_rect( const R rect )
 {
         (void)rect;
 
         return {};
 }
 
-int gui_to_px_coords_x(const int)
+int gui_to_px_coords_x( const int )
 {
         return 0;
 }
 
-int gui_to_px_coords_y(const int)
+int gui_to_px_coords_y( const int )
 {
         return 0;
 }
 
-int map_to_px_coords_x(const int)
+int map_to_px_coords_x( const int )
 {
         return 0;
 }
 
-int map_to_px_coords_y(const int)
+int map_to_px_coords_y( const int )
 {
         return 0;
 }
 
-P gui_to_px_coords(const P)
+P gui_to_px_coords( const P )
 {
         return {};
 }
 
-P gui_to_px_coords(const int, const int)
+P gui_to_px_coords( const int, const int )
 {
         return {};
 }
 
-P map_to_px_coords(const P)
+P map_to_px_coords( const P )
 {
         return {};
 }
 
-P map_to_px_coords(const int, const int)
+P map_to_px_coords( const int, const int )
 {
         return {};
 }
 
-P px_to_gui_coords(const P)
+P px_to_gui_coords( const P )
 {
         return {};
 }
 
-P px_to_map_coords(const P)
+P px_to_map_coords( const P )
 {
         return {};
 }
 
-P gui_to_map_coords(const P)
+P gui_to_map_coords( const P )
 {
         return {};
 }
 
-P gui_to_px_coords(const Panel, const P)
+P gui_to_px_coords( const Panel, const P )
 {
         return {};
 }
 
-P map_to_px_coords(const Panel, const P)
+P map_to_px_coords( const Panel, const P )
 {
         return {};
 }
@@ -112,7 +112,7 @@ void draw_symbol(
         P,
         const Color&,
         const DrawBg,
-        const Color&) {}
+        const Color& ) {}
 
 void draw_tile(
         const gfx::TileId,
@@ -120,7 +120,7 @@ void draw_tile(
         const P&,
         const Color&,
         const DrawBg,
-        const Color&) {}
+        const Color& ) {}
 
 void draw_character(
         const char,
@@ -128,7 +128,7 @@ void draw_character(
         P,
         const Color&,
         const DrawBg,
-        const Color&) {}
+        const Color& ) {}
 
 void draw_text(
         const std::string&,
@@ -136,7 +136,7 @@ void draw_text(
         P,
         const Color&,
         const DrawBg,
-        const Color&) {}
+        const Color& ) {}
 
 void draw_text_center(
         const std::string&,
@@ -145,7 +145,7 @@ void draw_text_center(
         const Color&,
         const DrawBg,
         const Color&,
-        const bool) {}
+        const bool ) {}
 
 void draw_text_right(
         const std::string&,
@@ -153,44 +153,44 @@ void draw_text_right(
         P,
         const Color&,
         const DrawBg,
-        const Color&) {}
+        const Color& ) {}
 
-void cover_cell(const Panel, const P&) {}
+void cover_cell( const Panel, const P& ) {}
 
 void cover_panel(
         const Panel,
-        const Color&) {}
+        const Color& ) {}
 
 void cover_area(
         const Panel,
         const R&,
-        const Color&) {}
+        const Color& ) {}
 
 void cover_area(
         const Panel,
         const P&,
         const P&,
-        const Color&) {}
+        const Color& ) {}
 
-void draw_rectangle(R, const Color&) {}
+void draw_rectangle( R, const Color& ) {}
 
-void draw_rectangle_filled(R, const Color&) {}
+void draw_rectangle_filled( R, const Color& ) {}
 
 void draw_blast_at_cells(
         const std::vector<P>&,
-        const Color&) {}
+        const Color& ) {}
 
 void draw_blast_at_seen_cells(
         const std::vector<P>&,
-        const Color&) {}
+        const Color& ) {}
 
 void draw_blast_at_seen_actors(
         const std::vector<actor::Actor*>&,
-        const Color&) {}
+        const Color& ) {}
 
 void draw_logo() {}
 
-void draw_descr_box(const std::vector<ColoredString>&) {}
+void draw_descr_box( const std::vector<ColoredString>& ) {}
 
 void flush_input() {}
 
@@ -210,27 +210,27 @@ std::string sdl_pref_dir()
         return "./";
 }
 
-void sleep(const Uint32) {}
+void sleep( const Uint32 ) {}
 
-} // namespace io
+}  // namespace io
 
 // -----------------------------------------------------------------------------
 // audio
 // -----------------------------------------------------------------------------
-namespace audio {
-
+namespace audio
+{
 void init() {}
 
 void cleanup() {}
 
-void play(const SfxId, const int, const int) {}
+void play( const SfxId, const int, const int ) {}
 
-void play(const SfxId, const Dir, const int) {}
+void play( const SfxId, const Dir, const int ) {}
 
-void try_play_amb(const int) {}
+void try_play_amb( const int ) {}
 
-void play_music(const MusId) {}
+void play_music( const MusId ) {}
 
 void fade_out_music() {}
 
-} // namespace audio
+}  // namespace audio

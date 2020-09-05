@@ -16,29 +16,30 @@
 //-----------------------------------------------------------------------------
 // Color
 //-----------------------------------------------------------------------------
-class Color {
+class Color
+{
 public:
         Color();
 
-        Color(const Color& other) = default;
+        Color( const Color& other ) = default;
 
-        Color(uint8_t r, uint8_t g, uint8_t b);
+        Color( uint8_t r, uint8_t g, uint8_t b );
 
-        Color(const SDL_Color& sdl_color);
+        Color( const SDL_Color& sdl_color );
 
         ~Color();
 
-        Color& operator=(const Color& other);
+        Color& operator=( const Color& other );
 
-        bool operator==(const Color& other) const;
+        bool operator==( const Color& other ) const;
 
-        bool operator!=(const Color& other) const;
+        bool operator!=( const Color& other ) const;
 
-        Color fraction(double div) const;
+        Color fraction( double div ) const;
 
-        Color shaded(int pct) const;
+        Color shaded( int pct ) const;
 
-        Color tinted(int pct) const;
+        Color tinted( int pct ) const;
 
         void clear();
 
@@ -48,9 +49,9 @@ public:
         uint8_t g() const;
         uint8_t b() const;
 
-        void set_rgb(uint8_t r, uint8_t g, uint8_t b);
+        void set_rgb( uint8_t r, uint8_t g, uint8_t b );
 
-        void randomize_rgb(int range);
+        void randomize_rgb( int range );
 
 private:
         SDL_Color m_sdl_color;
@@ -59,13 +60,13 @@ private:
 //-----------------------------------------------------------------------------
 // colors
 //-----------------------------------------------------------------------------
-namespace colors {
-
+namespace colors
+{
 void init();
 
-std::optional<Color> name_to_color(const std::string& name);
+std::optional<Color> name_to_color( const std::string& name );
 
-std::string color_to_name(const Color& color);
+std::string color_to_name( const Color& color );
 
 // Available colors
 Color black();
@@ -117,22 +118,23 @@ Color mon_unaware_bg();
 Color mon_allied_bg();
 Color mon_temp_property_bg();
 
-} // namespace colors
+}  // namespace colors
 
 //-----------------------------------------------------------------------------
 // Colored string
 //-----------------------------------------------------------------------------
-struct ColoredString {
+struct ColoredString
+{
         ColoredString() = default;
 
-        ColoredString(std::string the_str, const Color& the_color) :
-                str(std::move(the_str)),
-                color(the_color) {}
+        ColoredString( std::string the_str, const Color& the_color ) :
+                str( std::move( the_str ) ),
+                color( the_color ) {}
 
-        ColoredString& operator=(const ColoredString& other) = default;
+        ColoredString& operator=( const ColoredString& other ) = default;
 
         std::string str {};
-        Color color {colors::white()};
+        Color color { colors::white() };
 };
 
-#endif // COLORS_HPP
+#endif  // COLORS_HPP

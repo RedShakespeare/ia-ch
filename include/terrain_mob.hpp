@@ -9,16 +9,17 @@
 
 #include "terrain.hpp"
 
-namespace terrain {
-
-class Smoke : public Terrain {
+namespace terrain
+{
+class Smoke : public Terrain
+{
 public:
-        Smoke(const P& pos, const int nr_turns) :
-                Terrain(pos),
-                m_nr_turns_left(nr_turns) {}
+        Smoke( const P& pos, const int nr_turns ) :
+                Terrain( pos ),
+                m_nr_turns_left( nr_turns ) {}
 
-        Smoke(const P& pos) :
-                Terrain(pos) {}
+        Smoke( const P& pos ) :
+                Terrain( pos ) {}
 
         ~Smoke() = default;
 
@@ -27,7 +28,7 @@ public:
                 return terrain::Id::smoke;
         }
 
-        std::string name(Article article) const override;
+        std::string name( Article article ) const override;
 
         Color color() const override;
 
@@ -36,17 +37,18 @@ public:
         void on_new_turn() override;
 
 protected:
-        int m_nr_turns_left {-1};
+        int m_nr_turns_left { -1 };
 };
 
-class ForceField : public Terrain {
+class ForceField : public Terrain
+{
 public:
-        ForceField(const P& pos, const int nr_turns) :
-                Terrain(pos),
-                m_nr_turns_left(nr_turns) {}
+        ForceField( const P& pos, const int nr_turns ) :
+                Terrain( pos ),
+                m_nr_turns_left( nr_turns ) {}
 
-        ForceField(const P& pos) :
-                Terrain(pos) {}
+        ForceField( const P& pos ) :
+                Terrain( pos ) {}
 
         ~ForceField() = default;
 
@@ -57,22 +59,23 @@ public:
 
         void on_new_turn() override;
 
-        std::string name(Article article) const override;
+        std::string name( Article article ) const override;
 
         Color color() const override;
 
 protected:
-        int m_nr_turns_left {-1};
+        int m_nr_turns_left { -1 };
 };
 
-class LitDynamite : public Terrain {
+class LitDynamite : public Terrain
+{
 public:
-        LitDynamite(const P& pos, const int nr_turns) :
-                Terrain(pos),
-                m_nr_turns_left(nr_turns) {}
+        LitDynamite( const P& pos, const int nr_turns ) :
+                Terrain( pos ),
+                m_nr_turns_left( nr_turns ) {}
 
-        LitDynamite(const P& pos) :
-                Terrain(pos) {}
+        LitDynamite( const P& pos ) :
+                Terrain( pos ) {}
 
         ~LitDynamite() = default;
 
@@ -81,7 +84,7 @@ public:
                 return terrain::Id::lit_dynamite;
         }
 
-        std::string name(Article article) const override;
+        std::string name( Article article ) const override;
 
         Color color() const override;
 
@@ -91,17 +94,18 @@ public:
         void on_new_turn() override;
 
 private:
-        int m_nr_turns_left {-1};
+        int m_nr_turns_left { -1 };
 };
 
-class LitFlare : public Terrain {
+class LitFlare : public Terrain
+{
 public:
-        LitFlare(const P& pos, const int nr_turns) :
-                Terrain(pos),
-                m_nr_turns_left(nr_turns) {}
+        LitFlare( const P& pos, const int nr_turns ) :
+                Terrain( pos ),
+                m_nr_turns_left( nr_turns ) {}
 
-        LitFlare(const P& pos) :
-                Terrain(pos) {}
+        LitFlare( const P& pos ) :
+                Terrain( pos ) {}
 
         ~LitFlare() = default;
 
@@ -110,18 +114,18 @@ public:
                 return terrain::Id::lit_flare;
         }
 
-        std::string name(Article article) const override;
+        std::string name( Article article ) const override;
 
         Color color() const override;
 
         void on_new_turn() override;
 
-        void add_light(Array2<bool>& light) const override;
+        void add_light( Array2<bool>& light ) const override;
 
 private:
-        int m_nr_turns_left {-1};
+        int m_nr_turns_left { -1 };
 };
 
-} // namespace terrain
+}  // namespace terrain
 
-#endif // TERRAIN_MOB_HPP
+#endif  // TERRAIN_MOB_HPP

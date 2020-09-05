@@ -8,15 +8,16 @@
 
 #include "debug.hpp"
 
-namespace mapgen {
-
-void merge_regions(Region regions[3][3])
+namespace mapgen
+{
+void merge_regions( Region regions[ 3 ][ 3 ] )
 {
         TRACE_FUNC_BEGIN;
 
-        const int nr_merges_to_make = rnd::range_binom(0, 3, 0.5);
+        const int nr_merges_to_make = rnd::range_binom( 0, 3, 0.5 );
 
-        if (nr_merges_to_make == 0) {
+        if ( nr_merges_to_make == 0 )
+        {
                 return;
         }
 
@@ -32,27 +33,32 @@ void merge_regions(Region regions[3][3])
         // The elements of this vector corresponds to sets of region indexes
         std::vector<R> merge_idx_bucket;
 
-        for (int idx_w = idx_w_min; idx_w <= idx_w_max; ++idx_w) {
-                for (int idx_h = idx_h_min; idx_h <= idx_h_max; ++idx_h) {
+        for ( int idx_w = idx_w_min; idx_w <= idx_w_max; ++idx_w )
+        {
+                for ( int idx_h = idx_h_min; idx_h <= idx_h_max; ++idx_h )
+                {
                         // Avoid merging 1x1
-                        if (idx_w == 1 && idx_h == 1) {
+                        if ( idx_w == 1 && idx_h == 1 )
+                        {
                                 continue;
                         }
 
                         const int check_start_x1 = 3 - idx_w;
                         const int check_start_y1 = 3 - idx_h;
 
-                        for (int start_x = 0; start_x <= check_start_x1; ++start_x) {
-                                for (int start_y = 0; start_y <= check_start_y1; ++start_y) {
-                                        const P start_p(start_x, start_y);
+                        for ( int start_x = 0; start_x <= check_start_x1; ++start_x )
+                        {
+                                for ( int start_y = 0; start_y <= check_start_y1; ++start_y )
+                                {
+                                        const P start_p( start_x, start_y );
 
-                                        const P dim(idx_w, idx_h);
+                                        const P dim( idx_w, idx_h );
 
-                                        const R r(start_p, start_p + dim - 1);
+                                        const R r( start_p, start_p + dim - 1 );
 
-                                        ASSERT(r.p1.x < 3 && r.p1.y < 3);
+                                        ASSERT( r.p1.x < 3 && r.p1.y < 3 );
 
-                                        merge_idx_bucket.push_back(r);
+                                        merge_idx_bucket.push_back( r );
                                 }
                         }
                 }
@@ -60,10 +66,13 @@ void merge_regions(Region regions[3][3])
 
         // Make merges
 
-        auto is_regions_free = [&regions](const R& r) {
-                for (int x = r.p0.x; x <= r.p1.x; ++x) {
-                        for (int y = r.p0.y; y <= r.p1.y; ++y) {
-                                if (!regions[x][y].is_free) {
+        auto is_regions_free = [ &regions ]( const R& r ) {
+                for ( int x = r.p0.x; x <= r.p1.x; ++x )
+                {
+                        for ( int y = r.p0.y; y <= r.p1.y; ++y )
+                        {
+                                if ( ! regions[ x ][ y ].is_free )
+                                {
                                         return false;
                                 }
                         }
@@ -72,23 +81,26 @@ void merge_regions(Region regions[3][3])
                 return true;
         };
 
-        for (int merge_nr = 0; merge_nr < nr_merges_to_make; /* No increment */) {
-                if (merge_idx_bucket.empty()) {
+        for ( int merge_nr = 0; merge_nr < nr_merges_to_make; /* No increment */ )
+        {
+                if ( merge_idx_bucket.empty() )
+                {
                         // No more merges possible
                         return;
                 }
 
                 const size_t bucket_idx =
-                        rnd::range(0, (int)merge_idx_bucket.size() - 1);
+                        rnd::range( 0, (int)merge_idx_bucket.size() - 1 );
 
-                const R idx_r = merge_idx_bucket[bucket_idx];
+                const R idx_r = merge_idx_bucket[ bucket_idx ];
 
                 // If the regions are not free (could be because it was blocked
                 // before we started, or because we have blocked it with another
                 // merge), discard it from the bucket
-                if (!is_regions_free(idx_r)) {
+                if ( ! is_regions_free( idx_r ) )
+                {
                         merge_idx_bucket.erase(
-                                std::begin(merge_idx_bucket) + bucket_idx);
+                                std::begin( merge_idx_bucket ) + bucket_idx );
 
                         continue;
                 }
@@ -102,28 +114,31 @@ void merge_regions(Region regions[3][3])
                       << std::endl;
 
                 // NOTE: Region 0 is the top left region, region 1 is the bottom right
-                auto& region_0 = regions[idx_r.p0.x][idx_r.p0.y];
-                auto& region_1 = regions[idx_r.p1.x][idx_r.p1.y];
+                auto& region_0 = regions[ idx_r.p0.x ][ idx_r.p0.y ];
+                auto& region_1 = regions[ idx_r.p1.x ][ idx_r.p1.y ];
 
                 // Expand region 1 over all areas
-                region_0.r = R(region_0.r.p0, region_1.r.p1);
+                region_0.r = R( region_0.r.p0, region_1.r.p1 );
 
                 // Set all other regions to blocked, ant to cover no space on the map
-                for (int x = idx_r.p0.x; x <= idx_r.p1.x; ++x) {
-                        for (int y = idx_r.p0.y; y <= idx_r.p1.y; ++y) {
-                                const P idx_p(x, y);
+                for ( int x = idx_r.p0.x; x <= idx_r.p1.x; ++x )
+                {
+                        for ( int y = idx_r.p0.y; y <= idx_r.p1.y; ++y )
+                        {
+                                const P idx_p( x, y );
 
-                                auto& reg = regions[idx_p.x][idx_p.y];
+                                auto& reg = regions[ idx_p.x ][ idx_p.y ];
 
-                                if (idx_p != idx_r.p0) {
+                                if ( idx_p != idx_r.p0 )
+                                {
                                         reg.is_free = false;
 
-                                        reg.r = R(-1, -1, -1, -1);
+                                        reg.r = R( -1, -1, -1, -1 );
                                 }
                         }
                 }
 
-                make_room(region_0);
+                make_room( region_0 );
 
                 // Merge successful
                 ++merge_nr;
@@ -131,6 +146,6 @@ void merge_regions(Region regions[3][3])
 
         TRACE_FUNC_END;
 
-} // merge_regions
+}  // merge_regions
 
-} // namespace mapgen
+}  // namespace mapgen

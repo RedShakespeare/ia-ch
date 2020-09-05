@@ -25,417 +25,422 @@
 // Private
 // -----------------------------------------------------------------------------
 static std::unordered_map<std::string, actor::Id> str_to_actor_id_map = {
-        {"player", actor::Id::player},
-        {"zombie", actor::Id::zombie},
-        {"bloated_zombie", actor::Id::bloated_zombie},
-        {"crawling_intestines", actor::Id::crawling_intestines},
-        {"crawling_hand", actor::Id::crawling_hand},
-        {"thing", actor::Id::thing},
-        {"floating_skull", actor::Id::floating_skull},
-        {"cultist", actor::Id::cultist},
-        {"zealot", actor::Id::zealot},
-        {"cultist_priest", actor::Id::cultist_priest},
-        {"cultist_wizard", actor::Id::cultist_wizard},
-        {"cultist_arch_wizard", actor::Id::cultist_arch_wizard},
-        {"bog_tcher", actor::Id::bog_tcher},
-        {"rat", actor::Id::rat},
-        {"rat_thing", actor::Id::rat_thing},
-        {"green_spider", actor::Id::green_spider},
-        {"white_spider", actor::Id::white_spider},
-        {"red_spider", actor::Id::red_spider},
-        {"shadow_spider", actor::Id::shadow_spider},
-        {"leng_spider", actor::Id::leng_spider},
-        {"pit_viper", actor::Id::pit_viper},
-        {"spitting_cobra", actor::Id::spitting_cobra},
-        {"black_mamba", actor::Id::black_mamba},
-        {"mi_go", actor::Id::mi_go},
-        {"mi_go_commander", actor::Id::mi_go_commander},
-        {"flying_polyp", actor::Id::flying_polyp},
-        {"greater_polyp", actor::Id::greater_polyp},
-        {"mind_leech", actor::Id::mind_leech},
-        {"ghoul", actor::Id::ghoul},
-        {"shadow", actor::Id::shadow},
-        {"invis_stalker", actor::Id::invis_stalker},
-        {"wolf", actor::Id::wolf},
-        {"fire_hound", actor::Id::fire_hound},
-        {"energy_hound", actor::Id::energy_hound},
-        {"zuul", actor::Id::zuul},
-        {"ghost", actor::Id::ghost},
-        {"wraith", actor::Id::wraith},
-        {"void_traveler", actor::Id::void_traveler},
-        {"elder_void_traveler", actor::Id::elder_void_traveler},
-        {"raven", actor::Id::raven},
-        {"giant_bat", actor::Id::giant_bat},
-        {"vampire_bat", actor::Id::vampire_bat},
-        {"abaxu", actor::Id::abaxu},
-        {"giant_mantis", actor::Id::giant_mantis},
-        {"locust", actor::Id::locust},
-        {"mummy", actor::Id::mummy},
-        {"croc_head_mummy", actor::Id::croc_head_mummy},
-        {"khephren", actor::Id::khephren},
-        {"nitokris", actor::Id::nitokris},
-        {"deep_one", actor::Id::deep_one},
-        {"niduza", actor::Id::niduza},
-        {"ape", actor::Id::ape},
-        {"keziah_mason", actor::Id::keziah_mason},
-        {"brown_jenkin", actor::Id::brown_jenkin},
-        {"major_clapham_lee", actor::Id::major_clapham_lee},
-        {"dean_halsey", actor::Id::dean_halsey},
-        {"worm_mass", actor::Id::worm_mass},
-        {"mind_worms", actor::Id::mind_worms},
-        {"dust_vortex", actor::Id::dust_vortex},
-        {"fire_vortex", actor::Id::fire_vortex},
-        {"energy_vortex", actor::Id::energy_vortex},
-        {"ooze_black", actor::Id::ooze_black},
-        {"ooze_clear", actor::Id::ooze_clear},
-        {"ooze_putrid", actor::Id::ooze_putrid},
-        {"ooze_poison", actor::Id::ooze_poison},
-        {"glasuu", actor::Id::glasuu},
-        {"strange_color", actor::Id::strange_color},
-        {"chthonian", actor::Id::chthonian},
-        {"hunting_horror", actor::Id::hunting_horror},
-        {"sentry_drone", actor::Id::sentry_drone},
-        {"spectral_wpn", actor::Id::spectral_wpn},
-        {"mold", actor::Id::mold},
-        {"gas_spore", actor::Id::gas_spore},
-        {"tentacles", actor::Id::tentacles},
-        {"warping_aberrance", actor::Id::warping_aberrance},
-        {"death_fiend", actor::Id::death_fiend},
-        {"khaga_offspring", actor::Id::khaga_offspring},
-        {"khaga", actor::Id::khaga},
-        {"shapeshifter", actor::Id::shapeshifter},
-        {"the_high_priest", actor::Id::the_high_priest},
-        {"high_priest_guard_war_vet", actor::Id::high_priest_guard_war_vet},
-        {"high_priest_guard_rogue", actor::Id::high_priest_guard_rogue},
-        {"high_priest_guard_ghoul", actor::Id::high_priest_guard_ghoul}};
+        { "player", actor::Id::player },
+        { "zombie", actor::Id::zombie },
+        { "bloated_zombie", actor::Id::bloated_zombie },
+        { "crawling_intestines", actor::Id::crawling_intestines },
+        { "crawling_hand", actor::Id::crawling_hand },
+        { "thing", actor::Id::thing },
+        { "floating_skull", actor::Id::floating_skull },
+        { "cultist", actor::Id::cultist },
+        { "zealot", actor::Id::zealot },
+        { "cultist_priest", actor::Id::cultist_priest },
+        { "cultist_wizard", actor::Id::cultist_wizard },
+        { "cultist_arch_wizard", actor::Id::cultist_arch_wizard },
+        { "bog_tcher", actor::Id::bog_tcher },
+        { "rat", actor::Id::rat },
+        { "rat_thing", actor::Id::rat_thing },
+        { "green_spider", actor::Id::green_spider },
+        { "white_spider", actor::Id::white_spider },
+        { "red_spider", actor::Id::red_spider },
+        { "shadow_spider", actor::Id::shadow_spider },
+        { "leng_spider", actor::Id::leng_spider },
+        { "pit_viper", actor::Id::pit_viper },
+        { "spitting_cobra", actor::Id::spitting_cobra },
+        { "black_mamba", actor::Id::black_mamba },
+        { "mi_go", actor::Id::mi_go },
+        { "mi_go_commander", actor::Id::mi_go_commander },
+        { "flying_polyp", actor::Id::flying_polyp },
+        { "greater_polyp", actor::Id::greater_polyp },
+        { "mind_leech", actor::Id::mind_leech },
+        { "ghoul", actor::Id::ghoul },
+        { "shadow", actor::Id::shadow },
+        { "invis_stalker", actor::Id::invis_stalker },
+        { "wolf", actor::Id::wolf },
+        { "fire_hound", actor::Id::fire_hound },
+        { "energy_hound", actor::Id::energy_hound },
+        { "zuul", actor::Id::zuul },
+        { "ghost", actor::Id::ghost },
+        { "wraith", actor::Id::wraith },
+        { "void_traveler", actor::Id::void_traveler },
+        { "elder_void_traveler", actor::Id::elder_void_traveler },
+        { "raven", actor::Id::raven },
+        { "giant_bat", actor::Id::giant_bat },
+        { "vampire_bat", actor::Id::vampire_bat },
+        { "abaxu", actor::Id::abaxu },
+        { "giant_mantis", actor::Id::giant_mantis },
+        { "locust", actor::Id::locust },
+        { "mummy", actor::Id::mummy },
+        { "croc_head_mummy", actor::Id::croc_head_mummy },
+        { "khephren", actor::Id::khephren },
+        { "nitokris", actor::Id::nitokris },
+        { "deep_one", actor::Id::deep_one },
+        { "niduza", actor::Id::niduza },
+        { "ape", actor::Id::ape },
+        { "keziah_mason", actor::Id::keziah_mason },
+        { "brown_jenkin", actor::Id::brown_jenkin },
+        { "major_clapham_lee", actor::Id::major_clapham_lee },
+        { "dean_halsey", actor::Id::dean_halsey },
+        { "worm_mass", actor::Id::worm_mass },
+        { "mind_worms", actor::Id::mind_worms },
+        { "dust_vortex", actor::Id::dust_vortex },
+        { "fire_vortex", actor::Id::fire_vortex },
+        { "energy_vortex", actor::Id::energy_vortex },
+        { "ooze_black", actor::Id::ooze_black },
+        { "ooze_clear", actor::Id::ooze_clear },
+        { "ooze_putrid", actor::Id::ooze_putrid },
+        { "ooze_poison", actor::Id::ooze_poison },
+        { "glasuu", actor::Id::glasuu },
+        { "strange_color", actor::Id::strange_color },
+        { "chthonian", actor::Id::chthonian },
+        { "hunting_horror", actor::Id::hunting_horror },
+        { "sentry_drone", actor::Id::sentry_drone },
+        { "spectral_wpn", actor::Id::spectral_wpn },
+        { "mold", actor::Id::mold },
+        { "gas_spore", actor::Id::gas_spore },
+        { "tentacles", actor::Id::tentacles },
+        { "warping_aberrance", actor::Id::warping_aberrance },
+        { "death_fiend", actor::Id::death_fiend },
+        { "khaga_offspring", actor::Id::khaga_offspring },
+        { "khaga", actor::Id::khaga },
+        { "shapeshifter", actor::Id::shapeshifter },
+        { "the_high_priest", actor::Id::the_high_priest },
+        { "high_priest_guard_war_vet", actor::Id::high_priest_guard_war_vet },
+        { "high_priest_guard_rogue", actor::Id::high_priest_guard_rogue },
+        { "high_priest_guard_ghoul", actor::Id::high_priest_guard_ghoul } };
 
 static const std::unordered_map<std::string, ShockLvl> str_to_shock_lvl_map = {
-        {"none", ShockLvl::none},
-        {"unsettling", ShockLvl::unsettling},
-        {"frightening", ShockLvl::frightening},
-        {"terrifying", ShockLvl::terrifying},
-        {"mind_shattering", ShockLvl::mind_shattering}};
+        { "none", ShockLvl::none },
+        { "unsettling", ShockLvl::unsettling },
+        { "frightening", ShockLvl::frightening },
+        { "terrifying", ShockLvl::terrifying },
+        { "mind_shattering", ShockLvl::mind_shattering } };
 
 static const std::unordered_map<std::string, actor::Speed> str_to_speed_map = {
-        {"slow", actor::Speed::slow},
-        {"normal", actor::Speed::normal},
-        {"fast", actor::Speed::fast},
-        {"very_fast", actor::Speed::very_fast}};
+        { "slow", actor::Speed::slow },
+        { "normal", actor::Speed::normal },
+        { "fast", actor::Speed::fast },
+        { "very_fast", actor::Speed::very_fast } };
 
 typedef std::unordered_map<std::string, actor::MonGroupSize>
         StrToMonGroupSizeMap;
 
 static const StrToMonGroupSizeMap s_str_to_group_size_map = {
-        {"alone", actor::MonGroupSize::alone},
-        {"few", actor::MonGroupSize::few},
-        {"pack", actor::MonGroupSize::pack},
-        {"swarm", actor::MonGroupSize::swarm}};
+        { "alone", actor::MonGroupSize::alone },
+        { "few", actor::MonGroupSize::few },
+        { "pack", actor::MonGroupSize::pack },
+        { "swarm", actor::MonGroupSize::swarm } };
 
 typedef std::unordered_map<actor::MonGroupSize, std::string>
         MonGroupSizeToStrMap;
 
 static const MonGroupSizeToStrMap s_group_size_to_str_map = {
-        {actor::MonGroupSize::alone, "alone"},
-        {actor::MonGroupSize::few, "few"},
-        {actor::MonGroupSize::pack, "pack"},
-        {actor::MonGroupSize::swarm, "swarm"}};
+        { actor::MonGroupSize::alone, "alone" },
+        { actor::MonGroupSize::few, "few" },
+        { actor::MonGroupSize::pack, "pack" },
+        { actor::MonGroupSize::swarm, "swarm" } };
 
 typedef std::unordered_map<std::string, actor::Size> StrToSizeMap;
 
 static const StrToSizeMap s_str_to_actor_size_map = {
-        {"floor", actor::Size::floor},
-        {"humanoid", actor::Size::humanoid},
-        {"giant", actor::Size::giant}};
+        { "floor", actor::Size::floor },
+        { "humanoid", actor::Size::humanoid },
+        { "giant", actor::Size::giant } };
 
 typedef std::unordered_map<actor::Size, std::string> SizeToStrMap;
 
 static const SizeToStrMap s_actor_size_to_str_map = {
-        {actor::Size::floor, "floor"},
-        {actor::Size::humanoid, "humanoid"},
-        {actor::Size::giant, "giant"}};
+        { actor::Size::floor, "floor" },
+        { actor::Size::humanoid, "humanoid" },
+        { actor::Size::giant, "giant" } };
 
 typedef std::unordered_map<std::string, actor::AiId> StrToAiIdMap;
 
 static const StrToAiIdMap s_str_to_ai_id_map = {
-        {"looks", actor::AiId::looks},
-        {"avoids_blocking_friend", actor::AiId::avoids_blocking_friend},
-        {"attacks", actor::AiId::attacks},
-        {"paths_to_target_when_aware", actor::AiId::paths_to_target_when_aware},
-        {"moves_to_target_when_los", actor::AiId::moves_to_target_when_los},
-        {"moves_to_lair", actor::AiId::moves_to_lair},
-        {"moves_to_leader", actor::AiId::moves_to_leader},
-        {"moves_randomly_when_unaware",
-         actor::AiId::moves_randomly_when_unaware}};
+        { "looks", actor::AiId::looks },
+        { "avoids_blocking_friend", actor::AiId::avoids_blocking_friend },
+        { "attacks", actor::AiId::attacks },
+        { "paths_to_target_when_aware", actor::AiId::paths_to_target_when_aware },
+        { "moves_to_target_when_los", actor::AiId::moves_to_target_when_los },
+        { "moves_to_lair", actor::AiId::moves_to_lair },
+        { "moves_to_leader", actor::AiId::moves_to_leader },
+        { "moves_randomly_when_unaware",
+          actor::AiId::moves_randomly_when_unaware } };
 
 typedef std::unordered_map<actor::AiId, std::string> AiIdToStrMap;
 
 static const AiIdToStrMap s_ai_id_to_str_map = {
-        {actor::AiId::looks, "looks"},
-        {actor::AiId::avoids_blocking_friend, "avoids_blocking_friend"},
-        {actor::AiId::attacks, "attacks"},
-        {actor::AiId::paths_to_target_when_aware, "paths_to_target_when_aware"},
-        {actor::AiId::moves_to_target_when_los, "moves_to_target_when_los"},
-        {actor::AiId::moves_to_lair, "moves_to_lair"},
-        {actor::AiId::moves_to_leader, "moves_to_leader"},
-        {actor::AiId::moves_randomly_when_unaware,
-         "moves_randomly_when_unaware"}};
+        { actor::AiId::looks, "looks" },
+        { actor::AiId::avoids_blocking_friend, "avoids_blocking_friend" },
+        { actor::AiId::attacks, "attacks" },
+        { actor::AiId::paths_to_target_when_aware, "paths_to_target_when_aware" },
+        { actor::AiId::moves_to_target_when_los, "moves_to_target_when_los" },
+        { actor::AiId::moves_to_lair, "moves_to_lair" },
+        { actor::AiId::moves_to_leader, "moves_to_leader" },
+        { actor::AiId::moves_randomly_when_unaware,
+          "moves_randomly_when_unaware" } };
 
-static actor::Id get_id(xml::Element* mon_e)
+static actor::Id get_id( xml::Element* mon_e )
 {
         const auto id_search = str_to_actor_id_map.find(
-                xml::get_attribute_str(mon_e, "id"));
+                xml::get_attribute_str( mon_e, "id" ) );
 
-        ASSERT(id_search != std::end(str_to_actor_id_map));
+        ASSERT( id_search != std::end( str_to_actor_id_map ) );
 
         return id_search->second;
 }
 
-static void dump_text(xml::Element* text_e, actor::ActorData& data)
+static void dump_text( xml::Element* text_e, actor::ActorData& data )
 {
         data.name_a =
                 xml::get_text_str(
                         xml::first_child(
-                                text_e, "name_a"));
+                                text_e, "name_a" ) );
 
         data.name_the =
                 xml::get_text_str(
                         xml::first_child(
-                                text_e, "name_the"));
+                                text_e, "name_the" ) );
 
         data.corpse_name_a =
                 xml::get_text_str(
                         xml::first_child(
-                                text_e, "corpse_name_a"));
+                                text_e, "corpse_name_a" ) );
 
         data.corpse_name_the =
                 xml::get_text_str(
                         xml::first_child(
-                                text_e, "corpse_name_the"));
+                                text_e, "corpse_name_the" ) );
 
         data.descr =
                 xml::get_text_str(
                         xml::first_child(
-                                text_e, "description"));
+                                text_e, "description" ) );
 
         data.allow_generated_descr =
                 xml::get_text_bool(
                         xml::first_child(
-                                text_e, "allow_generated_description"));
+                                text_e, "allow_generated_description" ) );
 
         data.wary_msg =
                 xml::get_text_str(
                         xml::first_child(
-                                text_e, "wary_message"));
+                                text_e, "wary_message" ) );
 
         auto aware_msg_seen_e =
                 xml::first_child(
-                        text_e, "aware_message_seen");
+                        text_e, "aware_message_seen" );
 
         data.aware_msg_mon_seen =
-                xml::get_text_str(aware_msg_seen_e);
+                xml::get_text_str( aware_msg_seen_e );
 
         xml::try_get_attribute_bool(
                 aware_msg_seen_e,
                 "use_cultist_messages",
-                data.use_cultist_aware_msg_mon_seen);
+                data.use_cultist_aware_msg_mon_seen );
 
         auto aware_msg_hidden_e =
                 xml::first_child(
-                        text_e, "aware_message_hidden");
+                        text_e, "aware_message_hidden" );
 
-        data.aware_msg_mon_hidden = xml::get_text_str(aware_msg_hidden_e);
+        data.aware_msg_mon_hidden = xml::get_text_str( aware_msg_hidden_e );
 
         xml::try_get_attribute_bool(
                 aware_msg_hidden_e,
                 "use_cultist_messages",
-                data.use_cultist_aware_msg_mon_hidden);
+                data.use_cultist_aware_msg_mon_hidden );
 
         data.spell_msg =
                 xml::get_text_str(
                         xml::first_child(
-                                text_e, "spell_message"));
+                                text_e, "spell_message" ) );
 
-        auto death_msg_e = xml::first_child(text_e, "death_message");
+        auto death_msg_e = xml::first_child( text_e, "death_message" );
 
-        if (death_msg_e) {
-                data.death_msg_override = xml::get_text_str(death_msg_e);
+        if ( death_msg_e )
+        {
+                data.death_msg_override = xml::get_text_str( death_msg_e );
         }
 }
 
-static void dump_gfx(xml::Element* gfx_e, actor::ActorData& data)
+static void dump_gfx( xml::Element* gfx_e, actor::ActorData& data )
 {
         data.tile =
                 gfx::str_to_tile_id(
                         xml::get_text_str(
-                                xml::first_child(gfx_e, "tile")));
+                                xml::first_child( gfx_e, "tile" ) ) );
 
         const std::string char_str =
                 xml::get_text_str(
                         xml::first_child(
-                                gfx_e, "character"));
+                                gfx_e, "character" ) );
 
-        if (char_str.empty()) {
+        if ( char_str.empty() )
+        {
                 data.character = 0;
-        } else {
-                ASSERT(char_str.length() == 1);
+        }
+        else
+        {
+                ASSERT( char_str.length() == 1 );
 
-                data.character = char_str[0];
+                data.character = char_str[ 0 ];
         }
 
         data.color =
                 colors::name_to_color(
                         xml::get_text_str(
-                                xml::first_child(gfx_e, "color")))
+                                xml::first_child( gfx_e, "color" ) ) )
                         .value();
 }
 
-static void dump_audio(xml::Element* audio_e, actor::ActorData& data)
+static void dump_audio( xml::Element* audio_e, actor::ActorData& data )
 {
         data.aware_sfx_mon_seen =
                 audio::str_to_sfx_id(
                         xml::get_text_str(
                                 xml::first_child(
-                                        audio_e, "aware_sfx_seen")));
+                                        audio_e, "aware_sfx_seen" ) ) );
 
         data.aware_sfx_mon_hidden =
                 audio::str_to_sfx_id(
                         xml::get_text_str(
                                 xml::first_child(
-                                        audio_e, "aware_sfx_hidden")));
+                                        audio_e, "aware_sfx_hidden" ) ) );
 }
 
-static void dump_attributes(xml::Element* attrib_e, actor::ActorData& data)
+static void dump_attributes( xml::Element* attrib_e, actor::ActorData& data )
 {
         data.hp =
                 xml::get_text_int(
                         xml::first_child(
-                                attrib_e, "hit_points"));
+                                attrib_e, "hit_points" ) );
 
         data.spi =
                 xml::get_text_int(
                         xml::first_child(
-                                attrib_e, "spirit"));
+                                attrib_e, "spirit" ) );
 
         data.speed =
                 str_to_speed_map.at(
                         xml::get_text_str(
                                 xml::first_child(
-                                        attrib_e, "speed")));
+                                        attrib_e, "speed" ) ) );
 
         data.mon_shock_lvl =
                 str_to_shock_lvl_map.at(
                         xml::get_text_str(
                                 xml::first_child(
-                                        attrib_e, "shock_level")));
+                                        attrib_e, "shock_level" ) ) );
 
         data.ability_values.set_val(
                 AbilityId::melee,
                 xml::get_text_int(
                         xml::first_child(
-                                attrib_e, "melee")));
+                                attrib_e, "melee" ) ) );
 
         data.ability_values.set_val(
                 AbilityId::ranged,
                 xml::get_text_int(
                         xml::first_child(
-                                attrib_e, "ranged")));
+                                attrib_e, "ranged" ) ) );
 
         data.ability_values.set_val(
                 AbilityId::dodging,
                 xml::get_text_int(
                         xml::first_child(
-                                attrib_e, "dodging")));
+                                attrib_e, "dodging" ) ) );
 
         data.ability_values.set_val(
                 AbilityId::stealth,
                 xml::get_text_int(
                         xml::first_child(
-                                attrib_e, "stealth")));
+                                attrib_e, "stealth" ) ) );
 
         data.ability_values.set_val(
                 AbilityId::searching,
                 xml::get_text_int(
                         xml::first_child(
-                                attrib_e, "searching")));
+                                attrib_e, "searching" ) ) );
 
         data.can_open_doors =
                 xml::get_text_bool(
                         xml::first_child(
-                                attrib_e, "can_open_doors"));
+                                attrib_e, "can_open_doors" ) );
 
         data.can_bash_doors =
                 xml::get_text_bool(
                         xml::first_child(
-                                attrib_e, "can_bash_doors"));
+                                attrib_e, "can_bash_doors" ) );
 
         data.can_swim =
                 xml::get_text_bool(
                         xml::first_child(
-                                attrib_e, "can_swim"));
+                                attrib_e, "can_swim" ) );
 
         data.actor_size =
                 s_str_to_actor_size_map.at(
-                        xml::get_text_str(xml::first_child(
-                                attrib_e, "size")));
+                        xml::get_text_str( xml::first_child(
+                                attrib_e, "size" ) ) );
 
         data.prevent_knockback =
                 xml::get_text_bool(
                         xml::first_child(
-                                attrib_e, "always_prevent_knockback"));
+                                attrib_e, "always_prevent_knockback" ) );
 
-        data.is_humanoid = xml::has_child(attrib_e, "humanoid");
+        data.is_humanoid = xml::has_child( attrib_e, "humanoid" );
 
-        data.is_rat = xml::has_child(attrib_e, "rat");
+        data.is_rat = xml::has_child( attrib_e, "rat" );
 
-        data.is_canine = xml::has_child(attrib_e, "canine");
+        data.is_canine = xml::has_child( attrib_e, "canine" );
 
-        data.is_spider = xml::has_child(attrib_e, "spider");
+        data.is_spider = xml::has_child( attrib_e, "spider" );
 
-        data.is_undead = xml::has_child(attrib_e, "undead");
+        data.is_undead = xml::has_child( attrib_e, "undead" );
 
-        data.is_ghost = xml::has_child(attrib_e, "ghost");
+        data.is_ghost = xml::has_child( attrib_e, "ghost" );
 
-        data.is_ghoul = xml::has_child(attrib_e, "ghoul");
+        data.is_ghoul = xml::has_child( attrib_e, "ghoul" );
 
-        data.is_snake = xml::has_child(attrib_e, "snake");
+        data.is_snake = xml::has_child( attrib_e, "snake" );
 
-        data.is_reptile = xml::has_child(attrib_e, "reptile");
+        data.is_reptile = xml::has_child( attrib_e, "reptile" );
 
-        data.is_amphibian = xml::has_child(attrib_e, "amphibian");
+        data.is_amphibian = xml::has_child( attrib_e, "amphibian" );
 
         data.can_bleed =
                 xml::get_text_bool(
                         xml::first_child(
-                                attrib_e, "can_bleed"));
+                                attrib_e, "can_bleed" ) );
 
         data.can_leave_corpse =
                 xml::get_text_bool(
                         xml::first_child(
-                                attrib_e, "can_leave_corpse"));
+                                attrib_e, "can_leave_corpse" ) );
 
         data.prio_corpse_bash =
                 xml::get_text_bool(
                         xml::first_child(
-                                attrib_e, "prioritize_destroying_corpse"));
+                                attrib_e, "prioritize_destroying_corpse" ) );
 }
 
 static void dump_intr_attack_property(
         xml::Element* property_e,
-        actor::IntrAttData& attack_data)
+        actor::IntrAttData& attack_data )
 {
         const auto prop_id =
                 property_data::str_to_prop_id(
-                        xml::get_text_str(property_e));
+                        xml::get_text_str( property_e ) );
 
-        attack_data.prop_applied.prop.reset(property_factory::make(prop_id));
+        attack_data.prop_applied.prop.reset( property_factory::make( prop_id ) );
 
         xml::try_get_attribute_int(
                 property_e,
                 "percent_chance",
-                attack_data.prop_applied.pct_chance_to_apply);
+                attack_data.prop_applied.pct_chance_to_apply );
 
-        if ((attack_data.prop_applied.pct_chance_to_apply <= 0) ||
-            (attack_data.prop_applied.pct_chance_to_apply > 100)) {
+        if ( ( attack_data.prop_applied.pct_chance_to_apply <= 0 ) ||
+             ( attack_data.prop_applied.pct_chance_to_apply > 100 ) )
+        {
                 TRACE_ERROR_RELEASE
                         << "Invalid attack property chance: "
                         << attack_data.prop_applied.pct_chance_to_apply
@@ -446,20 +451,25 @@ static void dump_intr_attack_property(
 
         int duration;
 
-        if (xml::try_get_attribute_int(property_e, "duration", duration)) {
-                attack_data.prop_applied.prop->set_duration(duration);
-        } else {
+        if ( xml::try_get_attribute_int( property_e, "duration", duration ) )
+        {
+                attack_data.prop_applied.prop->set_duration( duration );
+        }
+        else
+        {
                 // Duration not specified as integer
 
                 // Check if duration is specified as string ("indefinite")
 
                 std::string duration_str;
 
-                if (xml::try_get_attribute_str(
-                            property_e,
-                            "duration",
-                            duration_str)) {
-                        if (duration_str == "indefinite") {
+                if ( xml::try_get_attribute_str(
+                             property_e,
+                             "duration",
+                             duration_str ) )
+                {
+                        if ( duration_str == "indefinite" )
+                        {
                                 attack_data.prop_applied.prop
                                         ->set_indefinite();
                         }
@@ -467,221 +477,230 @@ static void dump_intr_attack_property(
         }
 }
 
-static void dump_items(xml::Element* items_e, actor::ActorData& data)
+static void dump_items( xml::Element* items_e, actor::ActorData& data )
 {
-        for (auto item_set_e = xml::first_child(items_e);
-             item_set_e;
-             item_set_e = xml::next_sibling(item_set_e)) {
+        for ( auto item_set_e = xml::first_child( items_e );
+              item_set_e;
+              item_set_e = xml::next_sibling( item_set_e ) )
+        {
                 actor::ActorItemSetData item_set;
 
-                const std::string id_str = xml::get_text_str(item_set_e);
+                const std::string id_str = xml::get_text_str( item_set_e );
 
-                item_set.item_set_id = item::str_to_item_set_id(id_str);
+                item_set.item_set_id = item::str_to_item_set_id( id_str );
 
                 xml::try_get_attribute_int(
                         item_set_e,
                         "percent_chance",
-                        item_set.pct_chance_to_spawn);
+                        item_set.pct_chance_to_spawn );
 
                 xml::try_get_attribute_int(
                         item_set_e,
                         "min",
-                        item_set.nr_spawned_range.min);
+                        item_set.nr_spawned_range.min );
 
                 xml::try_get_attribute_int(
                         item_set_e,
                         "max",
-                        item_set.nr_spawned_range.max);
+                        item_set.nr_spawned_range.max );
 
-                data.item_sets.push_back(item_set);
+                data.item_sets.push_back( item_set );
         }
 }
 
-static void dump_intr_attacks(xml::Element* attacks_e, actor::ActorData& data)
+static void dump_intr_attacks( xml::Element* attacks_e, actor::ActorData& data )
 {
-        for (auto attack_e = xml::first_child(attacks_e);
-             attack_e;
-             attack_e = xml::next_sibling(attack_e)) {
+        for ( auto attack_e = xml::first_child( attacks_e );
+              attack_e;
+              attack_e = xml::next_sibling( attack_e ) )
+        {
                 auto attack_data = std::make_unique<actor::IntrAttData>();
 
                 const std::string id_str =
-                        xml::get_attribute_str(attack_e, "id");
+                        xml::get_attribute_str( attack_e, "id" );
 
-                attack_data->item_id = item::str_to_intr_item_id(id_str);
+                attack_data->item_id = item::str_to_intr_item_id( id_str );
 
-                auto e = xml::first_child(attack_e);
+                auto e = xml::first_child( attack_e );
 
-                attack_data->dmg = xml::get_text_int(e);
+                attack_data->dmg = xml::get_text_int( e );
 
                 // Propertyies applied
-                for (e = xml::next_sibling(e);
-                     e;
-                     e = xml::next_sibling(e)) {
-                        dump_intr_attack_property(e, *attack_data);
+                for ( e = xml::next_sibling( e );
+                      e;
+                      e = xml::next_sibling( e ) )
+                {
+                        dump_intr_attack_property( e, *attack_data );
                 }
 
-                data.intr_attacks.push_back(std::move(attack_data));
+                data.intr_attacks.push_back( std::move( attack_data ) );
         }
 }
 
-static void dump_spells(xml::Element* spells_e, actor::ActorData& data)
+static void dump_spells( xml::Element* spells_e, actor::ActorData& data )
 {
-        for (auto spell_e = xml::first_child(spells_e);
-             spell_e;
-             spell_e = xml::next_sibling(spell_e)) {
+        for ( auto spell_e = xml::first_child( spells_e );
+              spell_e;
+              spell_e = xml::next_sibling( spell_e ) )
+        {
                 actor::ActorSpellData spell_data;
 
-                const std::string id_str = xml::get_text_str(spell_e);
+                const std::string id_str = xml::get_text_str( spell_e );
 
-                spell_data.spell_id = spells::str_to_spell_id(id_str);
+                spell_data.spell_id = spells::str_to_spell_id( id_str );
 
                 const std::string skill_str =
-                        xml::get_attribute_str(spell_e, "skill");
+                        xml::get_attribute_str( spell_e, "skill" );
 
                 spell_data.spell_skill =
                         spells::str_to_spell_skill_id(
-                                skill_str);
+                                skill_str );
 
                 xml::try_get_attribute_int(
                         spell_e,
                         "percent_chance",
-                        spell_data.pct_chance_to_know);
+                        spell_data.pct_chance_to_know );
 
-                data.spells.push_back(spell_data);
+                data.spells.push_back( spell_data );
         }
 }
 
-static void dump_properties(xml::Element* properties_e, actor::ActorData& data)
+static void dump_properties( xml::Element* properties_e, actor::ActorData& data )
 {
-        for (auto e = xml::first_child(properties_e);
-             e;
-             e = xml::next_sibling(e)) {
+        for ( auto e = xml::first_child( properties_e );
+              e;
+              e = xml::next_sibling( e ) )
+        {
                 const auto prop_id =
                         property_data::str_to_prop_id(
-                                xml::get_text_str(e));
+                                xml::get_text_str( e ) );
 
-                data.natural_props[(size_t)prop_id] = true;
+                data.natural_props[ (size_t)prop_id ] = true;
         }
 }
 
-static void dump_ai(xml::Element* ai_e, actor::ActorData& data)
+static void dump_ai( xml::Element* ai_e, actor::ActorData& data )
 {
         data.erratic_move_pct =
                 xml::get_text_int(
                         xml::first_child(
-                                ai_e, "erratic_move_percent"));
+                                ai_e, "erratic_move_percent" ) );
 
         data.nr_turns_aware =
                 xml::get_text_int(
                         xml::first_child(
-                                ai_e, "turns_aware"));
+                                ai_e, "turns_aware" ) );
 
         data.ranged_cooldown_turns =
                 xml::get_text_int(
                         xml::first_child(
-                                ai_e, "ranged_cooldown_turns"));
+                                ai_e, "ranged_cooldown_turns" ) );
 
-        for (size_t i = 0; i < (size_t)actor::AiId::END; ++i) {
+        for ( size_t i = 0; i < (size_t)actor::AiId::END; ++i )
+        {
                 const std::string ai_id_str =
-                        s_ai_id_to_str_map.at((actor::AiId)i);
+                        s_ai_id_to_str_map.at( (actor::AiId)i );
 
-                data.ai[i] =
+                data.ai[ i ] =
                         xml::get_text_bool(
                                 xml::first_child(
-                                        ai_e, ai_id_str));
+                                        ai_e, ai_id_str ) );
         }
 }
 
-static void dump_group_size(xml::Element* group_e, actor::ActorData& data)
+static void dump_group_size( xml::Element* group_e, actor::ActorData& data )
 {
         const auto group_size =
                 s_str_to_group_size_map.at(
-                        xml::get_text_str(group_e));
+                        xml::get_text_str( group_e ) );
 
         int weight = 1;
 
-        xml::try_get_attribute_int(group_e, "weight", weight);
+        xml::try_get_attribute_int( group_e, "weight", weight );
 
-        data.group_sizes.emplace_back(group_size, weight);
+        data.group_sizes.emplace_back( group_size, weight );
 }
 
 static void dump_native_room(
         xml::Element* native_room_e,
-        actor::ActorData& data)
+        actor::ActorData& data )
 {
         const auto room_type =
                 room_factory::str_to_room_type(
-                        xml::get_text_str(native_room_e));
+                        xml::get_text_str( native_room_e ) );
 
-        data.native_rooms.push_back(room_type);
+        data.native_rooms.push_back( room_type );
 }
 
-static void dump_spawning(xml::Element* spawn_e, actor::ActorData& data)
+static void dump_spawning( xml::Element* spawn_e, actor::ActorData& data )
 {
         data.spawn_min_dlvl =
                 xml::get_text_int(
                         xml::first_child(
-                                spawn_e, "min_dungeon_level"));
+                                spawn_e, "min_dungeon_level" ) );
 
         data.spawn_max_dlvl =
                 xml::get_text_int(
                         xml::first_child(
-                                spawn_e, "max_dungeon_level"));
+                                spawn_e, "max_dungeon_level" ) );
 
         data.spawn_weight =
                 xml::get_text_int(
                         xml::first_child(
-                                spawn_e, "spawn_weight"));
+                                spawn_e, "spawn_weight" ) );
 
         data.is_auto_spawn_allowed =
                 xml::get_text_bool(
                         xml::first_child(
-                                spawn_e, "auto_spawn"));
+                                spawn_e, "auto_spawn" ) );
 
         data.can_be_summoned_by_mon =
                 xml::get_text_bool(
                         xml::first_child(
-                                spawn_e, "can_be_summoned_by_monster"));
+                                spawn_e, "can_be_summoned_by_monster" ) );
 
         data.can_be_shapeshifted_into =
                 xml::get_text_bool(
                         xml::first_child(
-                                spawn_e, "can_be_shapeshifted_into"));
+                                spawn_e, "can_be_shapeshifted_into" ) );
 
-        data.is_unique = xml::has_child(spawn_e, "unique");
+        data.is_unique = xml::has_child( spawn_e, "unique" );
 
         data.nr_left_allowed_to_spawn =
                 xml::get_text_int(
                         xml::first_child(
-                                spawn_e, "nr_allowed_to_spawn"));
+                                spawn_e, "nr_allowed_to_spawn" ) );
 
         const std::string group_size_element_str = "group_size";
 
-        for (auto e = xml::first_child(spawn_e, group_size_element_str);
-             e;
-             e = xml::next_sibling(e, group_size_element_str)) {
-                dump_group_size(e, data);
+        for ( auto e = xml::first_child( spawn_e, group_size_element_str );
+              e;
+              e = xml::next_sibling( e, group_size_element_str ) )
+        {
+                dump_group_size( e, data );
         }
 
         const std::string native_room_element_str = "native_room";
 
-        for (auto e = xml::first_child(spawn_e, native_room_element_str);
-             e;
-             e = xml::next_sibling(e, native_room_element_str)) {
-                dump_native_room(e, data);
+        for ( auto e = xml::first_child( spawn_e, native_room_element_str );
+              e;
+              e = xml::next_sibling( e, native_room_element_str ) )
+        {
+                dump_native_room( e, data );
         }
 }
 
-static void dump_starting_allies(xml::Element* allies_e, actor::ActorData& data)
+static void dump_starting_allies( xml::Element* allies_e, actor::ActorData& data )
 {
-        for (auto e = xml::first_child(allies_e);
-             e;
-             e = xml::next_sibling(e)) {
-                const std::string id_str = xml::get_attribute_str(e, "id");
+        for ( auto e = xml::first_child( allies_e );
+              e;
+              e = xml::next_sibling( e ) )
+        {
+                const std::string id_str = xml::get_attribute_str( e, "id" );
 
-                const auto id = str_to_actor_id_map.at(id_str);
+                const auto id = str_to_actor_id_map.at( id_str );
 
-                data.starting_allies.push_back(id);
+                data.starting_allies.push_back( id );
         }
 }
 
@@ -689,74 +708,81 @@ static void read_actor_definitions_xml()
 {
         xml::Doc doc;
 
-        xml::load_file(paths::data_dir() + "monsters.xml", doc);
+        xml::load_file( paths::data_dir() + "monsters.xml", doc );
 
-        auto top_e = xml::first_child(doc);
+        auto top_e = xml::first_child( doc );
 
-        auto mon_e = xml::first_child(top_e);
+        auto mon_e = xml::first_child( top_e );
 
-        for (; mon_e; mon_e = xml::next_sibling(mon_e, "monster")) {
-                const actor::Id id = get_id(mon_e);
+        for ( ; mon_e; mon_e = xml::next_sibling( mon_e, "monster" ) )
+        {
+                const actor::Id id = get_id( mon_e );
 
-                auto& data = actor::g_data[(size_t)id];
+                auto& data = actor::g_data[ (size_t)id ];
 
                 data.reset();
 
                 data.id = id;
 
-                dump_text(xml::first_child(mon_e, "text"), data);
+                dump_text( xml::first_child( mon_e, "text" ), data );
 
-                dump_gfx(xml::first_child(mon_e, "graphics"), data);
+                dump_gfx( xml::first_child( mon_e, "graphics" ), data );
 
-                dump_audio(xml::first_child(mon_e, "audio"), data);
+                dump_audio( xml::first_child( mon_e, "audio" ), data );
 
-                dump_attributes(xml::first_child(mon_e, "attributes"), data);
+                dump_attributes( xml::first_child( mon_e, "attributes" ), data );
 
-                auto items_e = xml::first_child(mon_e, "items");
+                auto items_e = xml::first_child( mon_e, "items" );
 
-                if (items_e) {
-                        dump_items(items_e, data);
+                if ( items_e )
+                {
+                        dump_items( items_e, data );
                 }
 
-                auto attacks_e = xml::first_child(mon_e, "attacks");
+                auto attacks_e = xml::first_child( mon_e, "attacks" );
 
-                if (attacks_e) {
-                        dump_intr_attacks(attacks_e, data);
+                if ( attacks_e )
+                {
+                        dump_intr_attacks( attacks_e, data );
                 }
 
-                auto spells_e = xml::first_child(mon_e, "spells");
+                auto spells_e = xml::first_child( mon_e, "spells" );
 
-                if (spells_e) {
-                        dump_spells(spells_e, data);
+                if ( spells_e )
+                {
+                        dump_spells( spells_e, data );
                 }
 
-                auto props_e = xml::first_child(mon_e, "properties");
+                auto props_e = xml::first_child( mon_e, "properties" );
 
-                if (props_e) {
-                        dump_properties(props_e, data);
+                if ( props_e )
+                {
+                        dump_properties( props_e, data );
                 }
 
-                auto ai_e = xml::first_child(mon_e, "ai");
+                auto ai_e = xml::first_child( mon_e, "ai" );
 
-                if (ai_e) {
-                        dump_ai(ai_e, data);
+                if ( ai_e )
+                {
+                        dump_ai( ai_e, data );
                 }
 
-                dump_spawning(xml::first_child(mon_e, "spawning"), data);
+                dump_spawning( xml::first_child( mon_e, "spawning" ), data );
 
-                auto allies_e = xml::first_child(mon_e, "starting_allies");
+                auto allies_e = xml::first_child( mon_e, "starting_allies" );
 
-                if (allies_e) {
-                        dump_starting_allies(allies_e, data);
+                if ( allies_e )
+                {
+                        dump_starting_allies( allies_e, data );
                 }
         }
-} // read_actor_definitions_xml
+}  // read_actor_definitions_xml
 
 // -----------------------------------------------------------------------------
 // actor
 // -----------------------------------------------------------------------------
-namespace actor {
-
+namespace actor
+{
 // -----------------------------------------------------------------------------
 // ActorData
 // -----------------------------------------------------------------------------
@@ -773,7 +799,7 @@ void ActorData::reset()
 
         // Default spawn group size is "alone"
         group_sizes.assign(
-                {MonGroupSpawnRule(MonGroupSize::alone, 1)});
+                { MonGroupSpawnRule( MonGroupSize::alone, 1 ) } );
 
         hp = 0;
         item_sets.clear();
@@ -782,17 +808,19 @@ void ActorData::reset()
         spi = 0;
         speed = Speed::normal;
 
-        for (size_t i = 0; i < (size_t)PropId::END; ++i) {
-                natural_props[i] = false;
+        for ( size_t i = 0; i < (size_t)PropId::END; ++i )
+        {
+                natural_props[ i ] = false;
         }
 
         ability_values.reset();
 
-        for (size_t i = 0; i < (size_t)AiId::END; ++i) {
-                ai[i] = false;
+        for ( size_t i = 0; i < (size_t)AiId::END; ++i )
+        {
+                ai[ i ] = false;
         }
 
-        ai[(size_t)AiId::moves_randomly_when_unaware] = true;
+        ai[ (size_t)AiId::moves_randomly_when_unaware ] = true;
 
         nr_turns_aware = 0;
         ranged_cooldown_turns = 0;
@@ -838,7 +866,7 @@ void ActorData::reset()
         descr = "";
 }
 
-ActorData g_data[(size_t)Id::END];
+ActorData g_data[ (size_t)Id::END ];
 
 void init()
 {
@@ -851,19 +879,21 @@ void init()
 
 void save()
 {
-        for (int i = 0; i < (int)Id::END; ++i) {
-                const auto& d = g_data[i];
+        for ( int i = 0; i < (int)Id::END; ++i )
+        {
+                const auto& d = g_data[ i ];
 
-                saving::put_int(d.nr_left_allowed_to_spawn);
-                saving::put_int(d.nr_kills);
-                saving::put_bool(d.has_player_seen);
+                saving::put_int( d.nr_left_allowed_to_spawn );
+                saving::put_int( d.nr_kills );
+                saving::put_bool( d.has_player_seen );
         }
 }
 
 void load()
 {
-        for (int i = 0; i < (int)Id::END; ++i) {
-                auto& d = g_data[i];
+        for ( int i = 0; i < (int)Id::END; ++i )
+        {
+                auto& d = g_data[ i ];
 
                 d.nr_left_allowed_to_spawn = saving::get_int();
                 d.nr_kills = saving::get_int();
@@ -871,4 +901,4 @@ void load()
         }
 }
 
-} // namespace actor
+}  // namespace actor

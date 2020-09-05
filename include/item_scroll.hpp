@@ -9,14 +9,15 @@
 
 #include "item.hpp"
 
-namespace actor {
+namespace actor
+{
 class Actor;
-} // namespace actor
+}  // namespace actor
 
 class Spell;
 
-namespace scroll {
-
+namespace scroll
+{
 inline constexpr int g_low_spawn_chance = 10;
 inline constexpr int g_high_spawn_chance = 40;
 
@@ -25,9 +26,10 @@ void init();
 void save();
 void load();
 
-class Scroll : public item::Item {
+class Scroll : public item::Item
+{
 public:
-        Scroll(item::ItemData* item_data);
+        Scroll( item::ItemData* item_data );
 
         ~Scroll() = default;
 
@@ -42,7 +44,7 @@ public:
 
         std::string name_inf_str() const override;
 
-        ConsumeItem activate(actor::Actor* actor) override;
+        ConsumeItem activate( actor::Actor* actor ) override;
 
         std::string real_name() const;
 
@@ -50,11 +52,11 @@ public:
 
         void on_player_reached_new_dlvl_hook() final;
 
-        void on_actor_turn_in_inv_hook(InvType inv_type) override;
+        void on_actor_turn_in_inv_hook( InvType inv_type ) override;
 
         ItemPrePickResult pre_pickup_hook() override;
 
-        void identify(Verbose verbose) override;
+        void identify( Verbose verbose ) override;
 
         Spell* make_spell() const;
 
@@ -63,6 +65,6 @@ private:
         int m_domain_feeling_turn_countdown;
 };
 
-} // namespace scroll
+}  // namespace scroll
 
-#endif // ITEM_SCROLL_HPP
+#endif  // ITEM_SCROLL_HPP

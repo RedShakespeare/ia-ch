@@ -16,25 +16,26 @@
 #include "player_bon.hpp"
 #include "state.hpp"
 
-struct HighscoreEntry {
+struct HighscoreEntry
+{
         int calculate_score() const;
 
         std::string game_summary_file_path {};
         std::string date {};
         std::string name {};
-        int xp {0};
-        int lvl {0};
-        int dlvl {0};
-        int turn_count {0};
-        int ins {0};
-        IsWin is_win {IsWin::no};
-        Bg bg {Bg::END};
-        OccultistDomain player_occultist_domain {OccultistDomain::END};
-        bool is_latest_entry {false};
+        int xp { 0 };
+        int lvl { 0 };
+        int dlvl { 0 };
+        int turn_count { 0 };
+        int ins { 0 };
+        IsWin is_win { IsWin::no };
+        Bg bg { Bg::END };
+        OccultistDomain player_occultist_domain { OccultistDomain::END };
+        bool is_latest_entry { false };
 };
 
-namespace highscore {
-
+namespace highscore
+{
 void init();
 void cleanup();
 
@@ -42,15 +43,16 @@ void cleanup();
 // highscore info based on the current game - it has no side effects
 HighscoreEntry make_entry_from_current_game_data(
         std::string game_summary_file_path,
-        IsWin is_win);
+        IsWin is_win );
 
-void append_entry_to_highscores_file(HighscoreEntry& entry);
+void append_entry_to_highscores_file( HighscoreEntry& entry );
 
 std::vector<HighscoreEntry> entries_sorted();
 
-} // namespace highscore
+}  // namespace highscore
 
-class BrowseHighscore : public State {
+class BrowseHighscore : public State
+{
 public:
         BrowseHighscore() = default;
 
@@ -76,9 +78,10 @@ private:
         MenuBrowser m_browser;
 };
 
-class BrowseHighscoreEntry : public InfoScreenState {
+class BrowseHighscoreEntry : public InfoScreenState
+{
 public:
-        BrowseHighscoreEntry(std::string file_path);
+        BrowseHighscoreEntry( std::string file_path );
 
         void on_start() override;
 
@@ -110,4 +113,4 @@ private:
         int m_top_idx;
 };
 
-#endif // HIGHSCORE_HPP
+#endif  // HIGHSCORE_HPP

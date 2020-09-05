@@ -17,13 +17,15 @@
 
 #include "global.hpp"
 
-namespace actor {
+namespace actor
+{
 struct ActorData;
-} // namespace actor
+}  // namespace actor
 
 struct ColoredString;
 
-enum class Trait {
+enum class Trait
+{
         // Common (except some traits can be blocked for certain backgrounds)
         adept_melee,
         expert_melee,
@@ -90,7 +92,8 @@ enum class Trait {
         END
 };
 
-enum class Bg {
+enum class Bg
+{
         exorcist,
         ghoul,
         occultist,
@@ -100,7 +103,8 @@ enum class Bg {
         END
 };
 
-enum class OccultistDomain {
+enum class OccultistDomain
+{
         clairvoyant,
         enchanter,
         invoker,
@@ -110,11 +114,12 @@ enum class OccultistDomain {
         END
 };
 
-namespace player_bon {
-
-struct TraitLogEntry {
-        Trait trait_id {Trait::END};
-        int clvl_picked {0};
+namespace player_bon
+{
+struct TraitLogEntry
+{
+        Trait trait_id { Trait::END };
+        int clvl_picked { 0 };
 };
 
 void init();
@@ -132,7 +137,7 @@ void unpicked_traits_for_bg(
         Bg bg,
         OccultistDomain occultist_domain,
         std::vector<Trait>& traits_can_be_picked_out,
-        std::vector<Trait>& traits_prereqs_not_met_out);
+        std::vector<Trait>& traits_prereqs_not_met_out );
 
 // TODO: Return a data structure instead
 void trait_prereqs(
@@ -140,47 +145,47 @@ void trait_prereqs(
         Bg bg,
         OccultistDomain occultist_domain,
         std::vector<Trait>& traits_out,
-        Bg& bg_out);
+        Bg& bg_out );
 
 Bg bg();
 
 OccultistDomain occultist_domain();
 
-bool is_bg(Bg bg);
+bool is_bg( Bg bg );
 
-bool has_trait(Trait id);
+bool has_trait( Trait id );
 
-std::string trait_title(Trait id);
+std::string trait_title( Trait id );
 
-std::string trait_descr(Trait id);
+std::string trait_descr( Trait id );
 
-std::string bg_title(Bg id);
+std::string bg_title( Bg id );
 
-std::string spell_domain_title(OccultistDomain domain);
+std::string spell_domain_title( OccultistDomain domain );
 
-std::string occultist_profession_title(OccultistDomain domain);
+std::string occultist_profession_title( OccultistDomain domain );
 
 // NOTE: The string vector returned is not formatted. Each line still needs to
 // be formatted by the caller. The reason for using a vector instead of a string
 // is to separate the text into paragraphs.
-std::vector<ColoredString> bg_descr(Bg id);
+std::vector<ColoredString> bg_descr( Bg id );
 
-std::string occultist_domain_descr(OccultistDomain domain);
+std::string occultist_domain_descr( OccultistDomain domain );
 
 std::vector<TraitLogEntry> trait_log();
 
-void pick_trait(Trait id);
+void pick_trait( Trait id );
 
-void pick_bg(Bg bg);
+void pick_bg( Bg bg );
 
-void pick_occultist_domain(OccultistDomain domain);
+void pick_occultist_domain( OccultistDomain domain );
 
-void on_player_gained_lvl(int new_lvl);
+void on_player_gained_lvl( int new_lvl );
 
 void set_all_traits_to_picked();
 
-bool gets_undead_bane_bon(const actor::ActorData& actor_data);
+bool gets_undead_bane_bon( const actor::ActorData& actor_data );
 
-} // namespace player_bon
+}  // namespace player_bon
 
-#endif // PLAYER_BON_HPP
+#endif  // PLAYER_BON_HPP

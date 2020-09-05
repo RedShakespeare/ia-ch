@@ -14,21 +14,23 @@
 #include "state.hpp"
 #include "time.hpp"
 
-namespace actor {
+namespace actor
+{
 class Actor;
-} // namespace actor
+}  // namespace actor
 
-struct HistoryEvent {
-        HistoryEvent(const std::string history_msg, const int turn_nr) :
-                msg(history_msg),
-                turn(turn_nr) {}
+struct HistoryEvent
+{
+        HistoryEvent( const std::string history_msg, const int turn_nr ) :
+                msg( history_msg ),
+                turn( turn_nr ) {}
 
         const std::string msg;
         const int turn;
 };
 
-namespace game {
-
+namespace game
+{
 void init();
 
 void save();
@@ -39,35 +41,36 @@ int xp_pct();
 int xp_accumulated();
 TimeData start_time();
 
-void on_mon_seen(actor::Actor& actor);
+void on_mon_seen( actor::Actor& actor );
 
-void on_mon_killed(actor::Actor& actor);
+void on_mon_killed( actor::Actor& actor );
 
 void set_start_time_to_now();
 
 void incr_player_xp(
         int xp_gained,
-        Verbose verbose = Verbose::yes);
+        Verbose verbose = Verbose::yes );
 
-void decr_player_xp(int xp_lost);
+void decr_player_xp( int xp_lost );
 
 // This function has no side effects except for incrementing the clvl value
 void incr_clvl_number();
 
-void add_history_event(std::string msg);
+void add_history_event( std::string msg );
 
 const std::vector<HistoryEvent>& history();
 
-} // namespace game
+}  // namespace game
 
 // -----------------------------------------------------------------------------
 // Game state
 // -----------------------------------------------------------------------------
-class GameState : public State {
+class GameState : public State
+{
 public:
-        GameState(GameEntryMode entry_mode) :
+        GameState( GameEntryMode entry_mode ) :
 
-                m_entry_mode(entry_mode)
+                m_entry_mode( entry_mode )
         {}
 
         void on_start() override;
@@ -87,7 +90,8 @@ private:
 // -----------------------------------------------------------------------------
 // Win game state
 // -----------------------------------------------------------------------------
-class WinGameState : public State {
+class WinGameState : public State
+{
 public:
         WinGameState() = default;
 
@@ -98,4 +102,4 @@ public:
         StateId id() const override;
 };
 
-#endif // GAME_HPP
+#endif  // GAME_HPP

@@ -14,7 +14,8 @@
 
 struct InputData;
 
-enum class MenuAction {
+enum class MenuAction
+{
         none,
         moved,
         selected,
@@ -24,7 +25,8 @@ enum class MenuAction {
         esc
 };
 
-enum class MenuInputMode {
+enum class MenuInputMode
+{
         scrolling_and_letters,
         scrolling
 };
@@ -86,29 +88,30 @@ const std::vector<char> std_menu_keys = {
 };
 
 // TODO: There's probably some public methods here that could be private/removed
-class MenuBrowser {
+class MenuBrowser
+{
 public:
-        MenuBrowser(const int nr_items, const int list_h = -1)
+        MenuBrowser( const int nr_items, const int list_h = -1 )
         {
-                reset(nr_items, list_h);
+                reset( nr_items, list_h );
         }
 
         MenuBrowser() = default;
 
-        MenuBrowser& operator=(const MenuBrowser&) = default;
+        MenuBrowser& operator=( const MenuBrowser& ) = default;
 
-        MenuAction read(const InputData& input, MenuInputMode mode);
+        MenuAction read( const InputData& input, MenuInputMode mode );
 
-        void move(VerDir dir);
+        void move( VerDir dir );
 
-        void move_page(VerDir dir);
+        void move_page( VerDir dir );
 
         int y() const
         {
                 return m_y;
         }
 
-        void set_y(int y);
+        void set_y( int y );
 
         Range range_shown() const;
 
@@ -127,19 +130,19 @@ public:
                 return m_nr_items;
         }
 
-        bool is_at_idx(const int idx) const
+        bool is_at_idx( const int idx ) const
         {
                 return m_y == idx;
         }
 
-        void reset(int nr_items, int list_h = -1);
+        void reset( int nr_items, int list_h = -1 );
 
         const std::vector<char>& menu_keys() const
         {
                 return m_menu_keys;
         }
 
-        void set_custom_menu_keys(const std::vector<char>& keys)
+        void set_custom_menu_keys( const std::vector<char>& keys )
         {
                 m_menu_keys = keys;
         }
@@ -159,13 +162,13 @@ private:
 
         void update_range_shown();
 
-        std::vector<char> m_menu_keys {std_menu_keys};
-        int m_nr_items {0};
-        int m_y {0};
-        int m_list_h {-1};
-        Range m_range_shown {-1, -1};
-        bool m_play_selection_audio {true};
-        bool m_use_left_right_keys {false};
+        std::vector<char> m_menu_keys { std_menu_keys };
+        int m_nr_items { 0 };
+        int m_y { 0 };
+        int m_list_h { -1 };
+        Range m_range_shown { -1, -1 };
+        bool m_play_selection_audio { true };
+        bool m_use_left_right_keys { false };
 };
 
-#endif // BROWSER_HPP
+#endif  // BROWSER_HPP

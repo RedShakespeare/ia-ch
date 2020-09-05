@@ -15,18 +15,19 @@
 
 // TODO: Events should probably not be terrain
 
-namespace terrain {
-
-class Event : public Terrain {
+namespace terrain
+{
+class Event : public Terrain
+{
 public:
-        Event(const P& pos) :
-                Terrain(pos) {}
+        Event( const P& pos ) :
+                Terrain( pos ) {}
 
         virtual ~Event() = default;
 
         void on_new_turn() override = 0;
 
-        std::string name(const Article article) const final
+        std::string name( const Article article ) const final
         {
                 (void)article;
                 return "";
@@ -38,15 +39,16 @@ public:
         }
 };
 
-class EventWallCrumble : public Event {
+class EventWallCrumble : public Event
+{
 public:
         EventWallCrumble(
                 const P& p,
                 std::vector<P>& walls,
-                std::vector<P>& inner);
+                std::vector<P>& inner );
 
-        EventWallCrumble(const P& p) :
-                Event(p) {}
+        EventWallCrumble( const P& p ) :
+                Event( p ) {}
 
         ~EventWallCrumble() = default;
 
@@ -62,12 +64,13 @@ private:
         std::vector<P> m_inner_cells;
 };
 
-class EventSnakeEmerge : public Event {
+class EventSnakeEmerge : public Event
+{
 public:
         EventSnakeEmerge();
 
-        EventSnakeEmerge(const P& p) :
-                Event(p) {}
+        EventSnakeEmerge( const P& p ) :
+                Event( p ) {}
 
         ~EventSnakeEmerge() = default;
 
@@ -81,26 +84,27 @@ public:
         void on_new_turn() override;
 
 private:
-        R allowed_emerge_rect(const P& p) const;
+        R allowed_emerge_rect( const P& p ) const;
 
-        bool is_ok_terrain_at(const P& p) const;
+        bool is_ok_terrain_at( const P& p ) const;
 
-        Array2<bool> blocked_cells(const R& r) const;
+        Array2<bool> blocked_cells( const R& r ) const;
 
         std::vector<P> emerge_p_bucket(
                 const P& p,
                 const Array2<bool>& blocked,
-                const R& allowed_area) const;
+                const R& allowed_area ) const;
 
         const Range allowed_emerge_dist_range =
-                Range(2, g_fov_radi_int - 1);
+                Range( 2, g_fov_radi_int - 1 );
 
         const int m_min_nr_snakes = 3;
 };
 
-class EventRatsInTheWallsDiscovery : public Event {
+class EventRatsInTheWallsDiscovery : public Event
+{
 public:
-        EventRatsInTheWallsDiscovery(const P& terrain_pos);
+        EventRatsInTheWallsDiscovery( const P& terrain_pos );
 
         Id id() const override
         {
@@ -110,6 +114,6 @@ public:
         void on_new_turn() override;
 };
 
-} // namespace terrain
+}  // namespace terrain
 
-#endif // TERRAIN_EVENT_HPP
+#endif  // TERRAIN_EVENT_HPP

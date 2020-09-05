@@ -12,7 +12,8 @@
 
 struct P;
 
-enum class Dir {
+enum class Dir
+{
         down_left = 1,
         down = 2,
         down_right = 3,
@@ -25,25 +26,25 @@ enum class Dir {
         END
 };
 
-namespace dir_utils {
-
+namespace dir_utils
+{
 extern const std::vector<P> g_cardinal_list;
 extern const std::vector<P> g_cardinal_list_w_center;
 extern const std::vector<P> g_dir_list;
 extern const std::vector<P> g_dir_list_w_center;
 
-Dir dir(const P& offset_values);
+Dir dir( const P& offset_values );
 
-P offset(Dir dir);
+P offset( Dir dir );
 
-P rnd_adj_pos(const P& origin, bool is_center_allowed);
+P rnd_adj_pos( const P& origin, bool is_center_allowed );
 
-std::string compass_dir_name(const P& from_pos, const P& to_pos);
+std::string compass_dir_name( const P& from_pos, const P& to_pos );
 
-std::string compass_dir_name(Dir dir);
+std::string compass_dir_name( Dir dir );
 
-std::string compass_dir_name(const P& offs);
+std::string compass_dir_name( const P& offs );
 
-} // namespace dir_utils
+}  // namespace dir_utils
 
-#endif // DIRECTION_HPP
+#endif  // DIRECTION_HPP

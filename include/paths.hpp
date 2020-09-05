@@ -9,8 +9,8 @@
 
 #include <string>
 
-namespace paths {
-
+namespace paths
+{
 std::string gfx_dir();
 
 std::string fonts_dir();
@@ -32,6 +32,6 @@ std::string config_file_path();
 
 std::string highscores_file_path();
 
-} // namespace paths
+}  // namespace paths
 
-#endif // PATHS_HPP
+#endif  // PATHS_HPP

@@ -8,13 +8,14 @@
 
 #include "property.hpp"
 
-namespace property_factory {
-
-Prop* make(const PropId id)
+namespace property_factory
 {
-        ASSERT(id != PropId::END);
+Prop* make( const PropId id )
+{
+        ASSERT( id != PropId::END );
 
-        switch (id) {
+        switch ( id )
+        {
         case PropId::nailed:
                 return new PropNailed();
 
@@ -25,7 +26,7 @@ Prop* make(const PropId id)
                 return new PropBlind();
 
         case PropId::deaf:
-                return new Prop(id);
+                return new Prop( id );
 
         case PropId::burning:
                 return new PropBurning();
@@ -40,13 +41,13 @@ Prop* make(const PropId id)
                 return new PropTerrified();
 
         case PropId::weakened:
-                return new Prop(id);
+                return new Prop( id );
 
         case PropId::confused:
                 return new PropConfused();
 
         case PropId::stunned:
-                return new Prop(id);
+                return new Prop( id );
 
         case PropId::waiting:
                 return new PropWaiting();
@@ -133,7 +134,7 @@ Prop* make(const PropId id)
                 return new PropRFire();
 
         case PropId::r_spell:
-                return new Prop(id);
+                return new Prop( id );
 
         case PropId::r_poison:
                 return new PropRPoison();
@@ -142,7 +143,7 @@ Prop* make(const PropId id)
                 return new PropRSleep();
 
         case PropId::light_sensitive:
-                return new Prop(id);
+                return new Prop( id );
 
         case PropId::zuul_possess_priest:
                 return new PropZuulPossessPriest();
@@ -157,28 +158,28 @@ Prop* make(const PropId id)
                 return new PropMajorClaphamSummon();
 
         case PropId::flying:
-                return new Prop(id);
+                return new Prop( id );
 
         case PropId::ethereal:
-                return new Prop(id);
+                return new Prop( id );
 
         case PropId::ooze:
-                return new Prop(id);
+                return new Prop( id );
 
         case PropId::small_crawling:
-                return new Prop(id);
+                return new Prop( id );
 
         case PropId::burrowing:
                 return new PropBurrowing();
 
         case PropId::radiant_adjacent:
-                return new Prop(id);
+                return new Prop( id );
 
         case PropId::radiant_fov:
-                return new Prop(id);
+                return new Prop( id );
 
         case PropId::darkvision:
-                return new Prop(id);
+                return new Prop( id );
 
         case PropId::r_disease:
                 return new PropRDisease();
@@ -190,16 +191,16 @@ Prop* make(const PropId id)
                 return new PropRPara();
 
         case PropId::r_shock:
-                return new Prop(PropId::r_shock);
+                return new Prop( PropId::r_shock );
 
         case PropId::tele_ctrl:
-                return new Prop(id);
+                return new Prop( id );
 
         case PropId::spell_reflect:
-                return new Prop(id);
+                return new Prop( id );
 
         case PropId::conflict:
-                return new Prop(id);
+                return new Prop( id );
 
         case PropId::vortex:
                 return new PropVortex();
@@ -244,19 +245,19 @@ Prop* make(const PropId id)
                 return new PropAuraOfDecay();
 
         case PropId::reduced_pierce_dmg:
-                return new Prop(id);
+                return new Prop( id );
 
         case PropId::short_hearing_range:
-                return new Prop(id);
+                return new Prop( id );
 
         case PropId::spawns_zombie_parts_on_destroyed:
                 return new PropSpawnsZombiePartsOnDestroyed();
 
         case PropId::invis:
-                return new Prop(id);
+                return new Prop( id );
 
         case PropId::cloaked:
-                return new Prop(id);
+                return new Prop( id );
 
         case PropId::recloaks:
                 return new PropRecloaks();
@@ -286,13 +287,13 @@ Prop* make(const PropId id)
                 return new PropCannotReadCurse();
 
         case PropId::light_sensitive_curse:
-                return new Prop(id);
+                return new Prop( id );
 
         case PropId::disabled_hp_regen:
-                return new Prop(id);
+                return new Prop( id );
 
         case PropId::sanctuary:
-                return new Prop(id);
+                return new Prop( id );
 
         case PropId::END:
                 break;
@@ -301,4 +302,4 @@ Prop* make(const PropId id)
         return nullptr;
 }
 
-} // namespace property_factory
+}  // namespace property_factory

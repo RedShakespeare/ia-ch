@@ -18,18 +18,20 @@
 #include "query.hpp"
 #include "terrain_trap.hpp"
 
-namespace disarm {
-
+namespace disarm
+{
 void player_disarm()
 {
-        if (!map::g_player->m_properties.allow_see()) {
-                msg_log::add("Not while blind.");
+        if ( ! map::g_player->m_properties.allow_see() )
+        {
+                msg_log::add( "Not while blind." );
 
                 return;
         }
 
-        if (map::g_player->m_properties.has(PropId::entangled)) {
-                msg_log::add("Not while entangled.");
+        if ( map::g_player->m_properties.has( PropId::entangled ) )
+        {
+                msg_log::add( "Not while entangled." );
 
                 return;
         }
@@ -39,39 +41,43 @@ void player_disarm()
                 colors::light_white(),
                 MsgInterruptPlayer::no,
                 MorePromptOnMsg::no,
-                CopyToMsgHistory::no);
+                CopyToMsgHistory::no );
 
-        const auto input_dir = query::dir(AllowCenter::yes);
+        const auto input_dir = query::dir( AllowCenter::yes );
 
         msg_log::clear();
 
-        if (input_dir == Dir::END) {
+        if ( input_dir == Dir::END )
+        {
                 return;
         }
 
-        const auto pos = map::g_player->m_pos + dir_utils::offset(input_dir);
+        const auto pos = map::g_player->m_pos + dir_utils::offset( input_dir );
 
-        if (!map::g_cells.at(pos).is_seen_by_player) {
-                msg_log::add("I cannot see there.");
+        if ( ! map::g_cells.at( pos ).is_seen_by_player )
+        {
+                msg_log::add( "I cannot see there." );
 
                 return;
         }
 
-        auto* const terrain = map::g_cells.at(pos).terrain;
+        auto* const terrain = map::g_cells.at( pos ).terrain;
 
         terrain::Trap* trap = nullptr;
 
-        if (terrain->id() == terrain::Id::trap) {
-                trap = static_cast<terrain::Trap*>(terrain);
+        if ( terrain->id() == terrain::Id::trap )
+        {
+                trap = static_cast<terrain::Trap*>( terrain );
         }
 
-        if (!trap || trap->is_hidden()) {
+        if ( ! trap || trap->is_hidden() )
+        {
                 msg_log::add(
                         common_text::g_disarm_no_trap,
                         colors::text(),
                         MsgInterruptPlayer::no,
                         MorePromptOnMsg::no,
-                        CopyToMsgHistory::no);
+                        CopyToMsgHistory::no );
 
                 states::draw();
 
@@ -80,13 +86,17 @@ void player_disarm()
 
         // There is a known and seen trap here
 
-        const auto* const actor_on_trap = map::first_actor_at_pos(pos);
+        const auto* const actor_on_trap = map::first_actor_at_pos( pos );
 
-        if (actor_on_trap && !actor_on_trap->is_player()) {
-                if (can_player_see_actor(*actor_on_trap)) {
-                        msg_log::add("It's blocked.");
-                } else {
-                        msg_log::add("Something is blocking it.");
+        if ( actor_on_trap && ! actor_on_trap->is_player() )
+        {
+                if ( can_player_see_actor( *actor_on_trap ) )
+                {
+                        msg_log::add( "It's blocked." );
+                }
+                else
+                {
+                        msg_log::add( "Something is blocking it." );
                 }
 
                 return;
@@ -96,6 +106,6 @@ void player_disarm()
 
         game_time::tick();
 
-} // player_disarm
+}  // player_disarm
 
-} // namespace disarm
+}  // namespace disarm

@@ -15,31 +15,32 @@
 
 class Spell;
 
-namespace player_spells {
-
+namespace player_spells
+{
 void init();
 void cleanup();
 
 void save();
 void load();
 
-void learn_spell(SpellId id, Verbose verbose);
+void learn_spell( SpellId id, Verbose verbose );
 
-void unlearn_spell(SpellId id, Verbose verbose);
+void unlearn_spell( SpellId id, Verbose verbose );
 
-void incr_spell_skill(SpellId id);
+void incr_spell_skill( SpellId id );
 
-SpellSkill spell_skill(SpellId id);
+SpellSkill spell_skill( SpellId id );
 
-void set_spell_skill(SpellId id, SpellSkill val);
+void set_spell_skill( SpellId id, SpellSkill val );
 
-bool is_spell_learned(SpellId id);
+bool is_spell_learned( SpellId id );
 
 bool is_getting_altar_bonus();
 
-} // namespace player_spells
+}  // namespace player_spells
 
-class BrowseSpell : public State {
+class BrowseSpell : public State
+{
 public:
         BrowseSpell() = default;
 
@@ -55,4 +56,4 @@ private:
         MenuBrowser m_browser {};
 };
 
-#endif // PLAYER_SPELLS_HPP
+#endif  // PLAYER_SPELLS_HPP

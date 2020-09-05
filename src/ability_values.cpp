@@ -22,20 +22,20 @@
 typedef std::unordered_map<std::string, AbilityId> StrToAbilityIdMap;
 
 static const StrToAbilityIdMap s_str_to_ability_id_map = {
-        {"melee", AbilityId::melee},
-        {"ranged", AbilityId::ranged},
-        {"dodging", AbilityId::dodging},
-        {"stealth", AbilityId::stealth},
-        {"searching", AbilityId::searching},
+        { "melee", AbilityId::melee },
+        { "ranged", AbilityId::ranged },
+        { "dodging", AbilityId::dodging },
+        { "stealth", AbilityId::stealth },
+        { "searching", AbilityId::searching },
 };
 
 typedef std::unordered_map<AbilityId, std::string> AbilityIdToStrMap;
 static const AbilityIdToStrMap s_ability_id_to_str_map = {
-        {AbilityId::melee, "melee"},
-        {AbilityId::ranged, "ranged"},
-        {AbilityId::dodging, "dodging"},
-        {AbilityId::stealth, "stealth"},
-        {AbilityId::searching, "searching"},
+        { AbilityId::melee, "melee" },
+        { AbilityId::ranged, "ranged" },
+        { AbilityId::dodging, "dodging" },
+        { AbilityId::stealth, "stealth" },
+        { AbilityId::searching, "searching" },
 };
 
 // -----------------------------------------------------------------------------
@@ -44,104 +44,128 @@ static const AbilityIdToStrMap s_ability_id_to_str_map = {
 int AbilityValues::val(
         const AbilityId id,
         const bool is_affected_by_props,
-        const actor::Actor& actor) const
+        const actor::Actor& actor ) const
 {
-        int ret = m_ability_list[(size_t)id];
+        int ret = m_ability_list[ (size_t)id ];
 
-        if (actor.is_player()) {
-                ASSERT(ret == 0);
+        if ( actor.is_player() )
+        {
+                ASSERT( ret == 0 );
         }
 
-        if (is_affected_by_props) {
-                ret += actor.m_properties.ability_mod(id);
+        if ( is_affected_by_props )
+        {
+                ret += actor.m_properties.ability_mod( id );
         }
 
-        if (actor.is_player()) {
+        if ( actor.is_player() )
+        {
                 // TODO: This should probably also be included for monsters,
                 // especially if they should be able to wear armor
-                for (const InvSlot& slot : actor.m_inv.m_slots) {
-                        if (!slot.item) {
+                for ( const InvSlot& slot : actor.m_inv.m_slots )
+                {
+                        if ( ! slot.item )
+                        {
                                 continue;
                         }
 
                         auto& d = slot.item->data();
 
-                        ret += d.ability_mods_while_equipped[(size_t)id];
+                        ret += d.ability_mods_while_equipped[ (size_t)id ];
                 }
 
-                switch (id) {
+                switch ( id )
+                {
                 case AbilityId::searching: {
                         ret += 10;
 
-                        if (player_bon::bg() == Bg::rogue) {
+                        if ( player_bon::bg() == Bg::rogue )
+                        {
                                 ret += 10;
                         }
-                } break;
+                }
+                break;
 
                 case AbilityId::melee: {
                         ret += 60;
 
-                        if (player_bon::has_trait(Trait::adept_melee)) {
+                        if ( player_bon::has_trait( Trait::adept_melee ) )
+                        {
                                 ret += 10;
                         }
 
-                        if (player_bon::has_trait(Trait::expert_melee)) {
+                        if ( player_bon::has_trait( Trait::expert_melee ) )
+                        {
                                 ret += 10;
                         }
 
-                        if (player_bon::has_trait(Trait::master_melee)) {
+                        if ( player_bon::has_trait( Trait::master_melee ) )
+                        {
                                 ret += 10;
                         }
-                } break;
+                }
+                break;
 
                 case AbilityId::ranged: {
                         ret += 70;
 
-                        if (player_bon::has_trait(Trait::adept_marksman)) {
+                        if ( player_bon::has_trait( Trait::adept_marksman ) )
+                        {
                                 ret += 10;
                         }
 
-                        if (player_bon::has_trait(Trait::expert_marksman)) {
+                        if ( player_bon::has_trait( Trait::expert_marksman ) )
+                        {
                                 ret += 10;
                         }
 
-                        if (player_bon::has_trait(Trait::expert_marksman)) {
+                        if ( player_bon::has_trait( Trait::expert_marksman ) )
+                        {
                                 ret += 10;
                         }
 
-                        if (player_bon::bg() == Bg::ghoul) {
+                        if ( player_bon::bg() == Bg::ghoul )
+                        {
                                 ret -= 15;
                         }
-                } break;
+                }
+                break;
 
                 case AbilityId::dodging: {
-                        if (player_bon::has_trait(Trait::dexterous)) {
+                        if ( player_bon::has_trait( Trait::dexterous ) )
+                        {
                                 ret += 25;
                         }
 
-                        if (player_bon::has_trait(Trait::lithe)) {
+                        if ( player_bon::has_trait( Trait::lithe ) )
+                        {
                                 ret += 25;
                         }
-                } break;
+                }
+                break;
 
                 case AbilityId::stealth: {
-                        if (player_bon::has_trait(Trait::stealthy)) {
+                        if ( player_bon::has_trait( Trait::stealthy ) )
+                        {
                                 ret += 45;
                         }
 
-                        if (player_bon::has_trait(Trait::imperceptible)) {
+                        if ( player_bon::has_trait( Trait::imperceptible ) )
+                        {
                                 ret += 45;
                         }
-                } break;
+                }
+                break;
 
                 case AbilityId::END:
                         break;
                 }
 
-                if (id == AbilityId::searching) {
+                if ( id == AbilityId::searching )
+                {
                         // Searching must ALWAYS be at least 1, to avoid
                         // trapping the player
-                        ret = std::max(1, ret);
+                        ret = std::max( 1, ret );
                 }
         }
 
@@ -152,27 +176,28 @@ int AbilityValues::val(
 
 void AbilityValues::reset()
 {
-        for (size_t i = 0; i < (size_t)AbilityId::END; ++i) {
-                m_ability_list[i] = 0;
+        for ( size_t i = 0; i < (size_t)AbilityId::END; ++i )
+        {
+                m_ability_list[ i ] = 0;
         }
 }
 
-void AbilityValues::set_val(const AbilityId ability, const int val)
+void AbilityValues::set_val( const AbilityId ability, const int val )
 {
-        m_ability_list[(size_t)ability] = val;
+        m_ability_list[ (size_t)ability ] = val;
 }
 
-void AbilityValues::change_val(const AbilityId ability, const int change)
+void AbilityValues::change_val( const AbilityId ability, const int change )
 {
-        m_ability_list[(size_t)ability] += change;
+        m_ability_list[ (size_t)ability ] += change;
 }
 
 // -----------------------------------------------------------------------------
 // ability_roll
 // -----------------------------------------------------------------------------
-namespace ability_roll {
-
-ActionResult roll(const int skill_value)
+namespace ability_roll
+{
+ActionResult roll( const int skill_value )
 {
         // Example:
         // ------------
@@ -188,48 +213,53 @@ ActionResult roll(const int skill_value)
         const int succ_cri_lmt = 2;
 
         const int succ_big_lmt =
-                std::ceil((double)skill_value / 2.0);
+                std::ceil( (double)skill_value / 2.0 );
 
         const int succ_nrm_lmt = skill_value;
 
         const int fail_nrm_lmt =
-                std::ceil(100.0 - ((double)(100 - skill_value) / 2.0));
+                std::ceil( 100.0 - ( (double)( 100 - skill_value ) / 2.0 ) );
 
         const int fail_big_lmt = 98;
 
-        const int roll = rnd::range(1, 100);
+        const int roll = rnd::range( 1, 100 );
 
         // NOTE: We check critical success and fail first, since they should be
         // completely unaffected by skill values - they can always happen, and
         // always have the same chance to happen, regardless of skills
-        if (roll <= succ_cri_lmt) {
+        if ( roll <= succ_cri_lmt )
+        {
                 return ActionResult::success_critical;
         }
 
-        if (roll > fail_big_lmt) {
+        if ( roll > fail_big_lmt )
+        {
                 return ActionResult::fail_critical;
         }
 
-        if (roll <= succ_big_lmt) {
+        if ( roll <= succ_big_lmt )
+        {
                 return ActionResult::success_big;
         }
 
-        if (roll <= succ_nrm_lmt) {
+        if ( roll <= succ_nrm_lmt )
+        {
                 return ActionResult::success;
         }
 
-        if (roll <= fail_nrm_lmt) {
+        if ( roll <= fail_nrm_lmt )
+        {
                 return ActionResult::fail;
         }
 
-        ASSERT(roll <= fail_big_lmt);
+        ASSERT( roll <= fail_big_lmt );
 
         return ActionResult::fail_big;
 }
 
-int hit_chance_pct_actual(const int value)
+int hit_chance_pct_actual( const int value )
 {
-        return std::clamp(value, 2, 98);
+        return std::clamp( value, 2, 98 );
 }
 
-} // namespace ability_roll
+}  // namespace ability_roll

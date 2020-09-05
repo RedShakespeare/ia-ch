@@ -9,36 +9,38 @@
 
 #include "global.hpp"
 
-namespace item {
+namespace item
+{
 class Wpn;
-} // namespace item
+}  // namespace item
 
-namespace actor {
+namespace actor
+{
 class Actor;
-} // namespace actor
+}  // namespace actor
 
 struct P;
 
-namespace attack {
-
+namespace attack
+{
 // NOTE: Attacker origin is needed since attacker may be a null pointer.
 void melee(
         actor::Actor* attacker,
         const P& attacker_origin,
         actor::Actor& defender,
-        item::Wpn& wpn);
+        item::Wpn& wpn );
 
 DidAction ranged(
         actor::Actor* attacker,
         const P& origin,
         const P& aim_pos,
-        item::Wpn& wpn);
+        item::Wpn& wpn );
 
 void ranged_hit_chance(
         const actor::Actor& attacker,
         const actor::Actor& defender,
-        const item::Wpn& wpn);
+        const item::Wpn& wpn );
 
-} // namespace attack
+}  // namespace attack
 
-#endif // ATTACK_HPP
+#endif  // ATTACK_HPP

@@ -10,7 +10,8 @@
 #include "browser.hpp"
 #include "state.hpp"
 
-class MainMenuState : public State {
+class MainMenuState : public State
+{
 public:
         MainMenuState();
 
@@ -30,4 +31,4 @@ private:
         MenuBrowser m_browser;
 };
 
-#endif // MAIN_MENU_HPP
+#endif  // MAIN_MENU_HPP

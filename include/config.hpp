@@ -12,15 +12,16 @@
 #include "browser.hpp"
 #include "state.hpp"
 
-enum class InputMode {
+enum class InputMode
+{
         standard,
         vi_keys,
 
         END
 };
 
-namespace config {
-
+namespace config
+{
 void init();
 
 InputMode input_mode();
@@ -29,19 +30,19 @@ bool is_tiles_mode();
 
 std::string font_name();
 
-void set_fullscreen(bool value);
+void set_fullscreen( bool value );
 
 bool is_fullscreen();
 
 bool is_2x_scale_fullscreen_requested();
 
-void set_2x_scale_fullscreen_enabled(bool value);
+void set_2x_scale_fullscreen_enabled( bool value );
 
 bool is_2x_scale_fullscreen_enabled();
 
-void set_screen_px_w(int w);
+void set_screen_px_w( int w );
 
-void set_screen_px_h(int h);
+void set_screen_px_h( int h );
 
 int screen_px_w();
 
@@ -97,13 +98,14 @@ int delay_shotgun();
 
 int delay_explosion();
 
-void set_default_player_name(const std::string& name);
+void set_default_player_name( const std::string& name );
 
 std::string default_player_name();
 
-} // namespace config
+}  // namespace config
 
-class ConfigState : public State {
+class ConfigState : public State
+{
 public:
         ConfigState();
 
@@ -117,4 +119,4 @@ private:
         MenuBrowser m_browser;
 };
 
-#endif // CONFIG_HPP
+#endif  // CONFIG_HPP

@@ -17,7 +17,8 @@
 class MapController;
 class MapBuilder;
 
-enum class MapType {
+enum class MapType
+{
         deep_one_lair,
         magic_pool,
         egypt,
@@ -31,16 +32,17 @@ enum class MapType {
 // -----------------------------------------------------------------------------
 // map_builder
 // -----------------------------------------------------------------------------
-namespace map_builder {
+namespace map_builder
+{
+std::unique_ptr<MapBuilder> make( MapType map_type );
 
-std::unique_ptr<MapBuilder> make(MapType map_type);
-
-} // namespace map_builder
+}  // namespace map_builder
 
 // -----------------------------------------------------------------------------
 // MapBuilder
 // -----------------------------------------------------------------------------
-class MapBuilder {
+class MapBuilder
+{
 public:
         virtual ~MapBuilder() = default;
 
@@ -55,7 +57,8 @@ private:
 // -----------------------------------------------------------------------------
 // MapBuilderTemplateLevel
 // -----------------------------------------------------------------------------
-class MapBuilderTemplateLevel : public MapBuilder {
+class MapBuilderTemplateLevel : public MapBuilder
+{
 public:
         virtual ~MapBuilderTemplateLevel() = default;
 
@@ -75,17 +78,18 @@ private:
                 return true;
         }
 
-        virtual void handle_template_pos(const P& p, char c) = 0;
+        virtual void handle_template_pos( const P& p, char c ) = 0;
 
         virtual void on_template_built() {}
 
-        Array2<char> m_template {P(0, 0)};
+        Array2<char> m_template { P( 0, 0 ) };
 };
 
 // -----------------------------------------------------------------------------
 // MapBuilderStd
 // -----------------------------------------------------------------------------
-class MapBuilderStd : public MapBuilder {
+class MapBuilderStd : public MapBuilder
+{
 public:
         ~MapBuilderStd() = default;
 
@@ -98,7 +102,8 @@ private:
 // -----------------------------------------------------------------------------
 // MapBuilderDeepOneLair
 // -----------------------------------------------------------------------------
-class MapBuilderDeepOneLair : public MapBuilderTemplateLevel {
+class MapBuilderDeepOneLair : public MapBuilderTemplateLevel
+{
 public:
         MapBuilderDeepOneLair();
 
@@ -115,7 +120,7 @@ private:
                 return true;
         }
 
-        void handle_template_pos(const P& p, char c) override;
+        void handle_template_pos( const P& p, char c ) override;
 
         void on_template_built() override;
 
@@ -125,7 +130,8 @@ private:
 // -----------------------------------------------------------------------------
 // MapBuilderMagicPool
 // -----------------------------------------------------------------------------
-class MapBuilderMagicPool : public MapBuilderTemplateLevel {
+class MapBuilderMagicPool : public MapBuilderTemplateLevel
+{
 public:
         MapBuilderMagicPool();
 
@@ -142,7 +148,7 @@ private:
                 return true;
         }
 
-        void handle_template_pos(const P& p, char c) override;
+        void handle_template_pos( const P& p, char c ) override;
 
         void on_template_built() override;
 };
@@ -150,7 +156,8 @@ private:
 // -----------------------------------------------------------------------------
 // MapBuilderIntroForest
 // -----------------------------------------------------------------------------
-class MapBuilderIntroForest : public MapBuilderTemplateLevel {
+class MapBuilderIntroForest : public MapBuilderTemplateLevel
+{
 public:
         MapBuilderIntroForest() = default;
 
@@ -167,7 +174,7 @@ private:
                 return false;
         }
 
-        void handle_template_pos(const P& p, char c) override;
+        void handle_template_pos( const P& p, char c ) override;
 
         void on_template_built() override;
 
@@ -177,7 +184,8 @@ private:
 // -----------------------------------------------------------------------------
 // MapBuilderEgypt
 // -----------------------------------------------------------------------------
-class MapBuilderEgypt : public MapBuilderTemplateLevel {
+class MapBuilderEgypt : public MapBuilderTemplateLevel
+{
 public:
         MapBuilderEgypt();
 
@@ -189,7 +197,7 @@ private:
                 return LevelTemplId::egypt;
         }
 
-        void handle_template_pos(const P& p, char c) override;
+        void handle_template_pos( const P& p, char c ) override;
 
         void on_template_built() override;
 
@@ -199,7 +207,8 @@ private:
 // -----------------------------------------------------------------------------
 // MapBuilderRatCave
 // -----------------------------------------------------------------------------
-class MapBuilderRatCave : public MapBuilderTemplateLevel {
+class MapBuilderRatCave : public MapBuilderTemplateLevel
+{
 public:
         MapBuilderRatCave() = default;
 
@@ -211,7 +220,7 @@ private:
                 return LevelTemplId::rat_cave;
         }
 
-        void handle_template_pos(const P& p, char c) override;
+        void handle_template_pos( const P& p, char c ) override;
 
         void on_template_built() override;
 };
@@ -219,7 +228,8 @@ private:
 // -----------------------------------------------------------------------------
 // MapBuilderBoss
 // -----------------------------------------------------------------------------
-class MapBuilderBoss : public MapBuilderTemplateLevel {
+class MapBuilderBoss : public MapBuilderTemplateLevel
+{
 public:
         MapBuilderBoss() = default;
 
@@ -236,7 +246,7 @@ private:
                 return false;
         }
 
-        void handle_template_pos(const P& p, char c) override;
+        void handle_template_pos( const P& p, char c ) override;
 
         void on_template_built() override;
 
@@ -246,7 +256,8 @@ private:
 // -----------------------------------------------------------------------------
 // MapBuilderTrapez
 // -----------------------------------------------------------------------------
-class MapBuilderTrapez : public MapBuilderTemplateLevel {
+class MapBuilderTrapez : public MapBuilderTemplateLevel
+{
 public:
         MapBuilderTrapez() = default;
 
@@ -258,7 +269,7 @@ private:
                 return LevelTemplId::trapez;
         }
 
-        void handle_template_pos(const P& p, char c) override;
+        void handle_template_pos( const P& p, char c ) override;
 };
 
-#endif // MAP_BUILDER_HPP
+#endif  // MAP_BUILDER_HPP

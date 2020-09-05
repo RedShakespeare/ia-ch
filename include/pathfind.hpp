@@ -24,17 +24,17 @@ class Array2;
 // can produces nicer results in some cases (e.g. corridors).
 //------------------------------------------------------------------------------
 std::vector<P> pathfind(
-        const P& p0, // Origin
-        const P& p1, // Target
-        const Array2<bool>& blocked, // Blocked cells
-        bool allow_diagonal = true, // Cardinals only?
-        bool randomize_steps = false); // See above
+        const P& p0,  // Origin
+        const P& p1,  // Target
+        const Array2<bool>& blocked,  // Blocked cells
+        bool allow_diagonal = true,  // Cardinals only?
+        bool randomize_steps = false );  // See above
 
 std::vector<P> pathfind_with_flood(
-        const P& p0, // Origin
-        const P& p1, // Target
-        const Array2<int>& flood, // Floodfill
-        bool allow_diagonal = true, // Cardinals only?
-        bool randomize_steps = false); // See above
+        const P& p0,  // Origin
+        const P& p1,  // Target
+        const Array2<int>& flood,  // Floodfill
+        bool allow_diagonal = true,  // Cardinals only?
+        bool randomize_steps = false );  // See above
 
-#endif // PATHFIND_HPP
+#endif  // PATHFIND_HPP

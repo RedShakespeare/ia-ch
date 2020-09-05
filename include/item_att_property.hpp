@@ -11,14 +11,15 @@
 
 #include "property.hpp"
 
-struct ItemAttProp {
+struct ItemAttProp
+{
         ItemAttProp() :
-                prop(nullptr),
-                pct_chance_to_apply(100) {}
+                prop( nullptr ),
+                pct_chance_to_apply( 100 ) {}
 
-        ItemAttProp(Prop* const property) :
-                prop(property),
-                pct_chance_to_apply(100) {}
+        ItemAttProp( Prop* const property ) :
+                prop( property ),
+                pct_chance_to_apply( 100 ) {}
 
         ~ItemAttProp() = default;
 
@@ -27,4 +28,4 @@ struct ItemAttProp {
         int pct_chance_to_apply;
 };
 
-#endif // ITEM_ATT_PROPERTY_HPP
+#endif  // ITEM_ATT_PROPERTY_HPP

@@ -9,7 +9,8 @@
 
 struct InputData;
 
-enum class GameCmd {
+enum class GameCmd
+{
         undefined,
 
         none,
@@ -67,16 +68,16 @@ enum class GameCmd {
         debug_f8,
         debug_f9,
         debug_f10,
-#endif // NDEBUG
+#endif  // NDEBUG
 };
 
-namespace game_commands {
-
+namespace game_commands
+{
 // NOTE: This is a pure function, except for reading the options
-GameCmd to_cmd(const InputData& input);
+GameCmd to_cmd( const InputData& input );
 
-void handle(GameCmd cmd);
+void handle( GameCmd cmd );
 
-} // namespace game_commands
+}  // namespace game_commands
 
-#endif // GAME_COMMANDS_HPP
+#endif  // GAME_COMMANDS_HPP

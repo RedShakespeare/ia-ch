@@ -12,8 +12,8 @@
 
 #include "map_builder.hpp"
 
-namespace map_travel {
-
+namespace map_travel
+{
 void init();
 
 void save();
@@ -23,6 +23,6 @@ void try_use_down_stairs();
 
 void go_to_nxt();
 
-} // namespace map_travel
+}  // namespace map_travel
 
-#endif // MAP_TRAVEL_HPP
+#endif  // MAP_TRAVEL_HPP

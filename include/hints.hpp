@@ -7,9 +7,10 @@
 #ifndef HINTS_HPP
 #define HINTS_HPP
 
-namespace hints {
-
-enum Id {
+namespace hints
+{
+enum Id
+{
         altars,
         fountains,
         destroying_corpses,
@@ -27,8 +28,8 @@ void save();
 
 void load();
 
-void display(Id id);
+void display( Id id );
 
-} // namespace hints
+}  // namespace hints
 
-#endif // HINTS_HPP
+#endif  // HINTS_HPP

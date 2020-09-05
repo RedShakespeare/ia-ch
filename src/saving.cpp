@@ -35,7 +35,8 @@
 // Private
 // -----------------------------------------------------------------------------
 // Only used to verify that the put/get methods are not called at the wrong time
-enum class SaveLoadState {
+enum class SaveLoadState
+{
         saving,
         loading,
         stopped
@@ -49,9 +50,9 @@ static void save_modules()
 {
         TRACE_FUNC_BEGIN;
 
-        ASSERT(s_lines.empty());
+        ASSERT( s_lines.empty() );
 
-        saving::put_str(map::g_player->name_a());
+        saving::put_str( map::g_player->name_a() );
 
         game::save();
         scroll::save();
@@ -78,11 +79,11 @@ static void load_modules()
 {
         TRACE_FUNC_BEGIN;
 
-        ASSERT(!s_lines.empty());
+        ASSERT( ! s_lines.empty() );
 
         const std::string player_name = saving::get_str();
 
-        ASSERT(!player_name.empty());
+        ASSERT( ! player_name.empty() );
 
         map::g_player->m_data->name_a = player_name;
 
@@ -114,13 +115,16 @@ static void write_file()
         std::ofstream file;
 
         // Current file content is discarded
-        file.open(paths::save_file_path(), std::ios::trunc);
+        file.open( paths::save_file_path(), std::ios::trunc );
 
-        if (file.is_open()) {
-                for (size_t i = 0; i < s_lines.size(); ++i) {
-                        file << s_lines[i];
+        if ( file.is_open() )
+        {
+                for ( size_t i = 0; i < s_lines.size(); ++i )
+                {
+                        file << s_lines[ i ];
 
-                        if (i != s_lines.size() - 1) {
+                        if ( i != s_lines.size() - 1 )
+                        {
                                 file << std::endl;
                         }
                 }
@@ -131,27 +135,31 @@ static void write_file()
 
 static void read_file()
 {
-        std::ifstream file(paths::save_file_path());
+        std::ifstream file( paths::save_file_path() );
 
-        if (file.is_open()) {
+        if ( file.is_open() )
+        {
                 std::string current_line;
 
-                while (getline(file, current_line)) {
-                        s_lines.push_back(current_line);
+                while ( getline( file, current_line ) )
+                {
+                        s_lines.push_back( current_line );
                 }
 
                 file.close();
-        } else {
+        }
+        else
+        {
                 // Could not open save file
-                ASSERT(false && "Failed to open save file");
+                ASSERT( false && "Failed to open save file" );
         }
 }
 
 // -----------------------------------------------------------------------------
 // saving
 // -----------------------------------------------------------------------------
-namespace saving {
-
+namespace saving
+{
 void init()
 {
         s_lines.clear();
@@ -161,8 +169,8 @@ void init()
 
 void save_game()
 {
-        ASSERT(s_state == SaveLoadState::stopped);
-        ASSERT(s_lines.empty());
+        ASSERT( s_state == SaveLoadState::stopped );
+        ASSERT( s_lines.empty() );
 
         s_state = SaveLoadState::saving;
 
@@ -180,15 +188,15 @@ void save_game()
 
 void load_game()
 {
-        ASSERT(s_state == SaveLoadState::stopped);
-        ASSERT(s_lines.empty());
+        ASSERT( s_state == SaveLoadState::stopped );
+        ASSERT( s_lines.empty() );
 
         s_state = SaveLoadState::loading;
 
         // Read the save file to the save lines
         read_file();
 
-        ASSERT(!s_lines.empty());
+        ASSERT( ! s_lines.empty() );
 
         // Tell all modules to set up their state from the save lines (via the
         // read functions of this module)
@@ -196,7 +204,7 @@ void load_game()
 
         s_state = SaveLoadState::stopped;
 
-        ASSERT(s_lines.empty());
+        ASSERT( s_lines.empty() );
 }
 
 void erase_save()
@@ -209,16 +217,19 @@ void erase_save()
 
 bool is_save_available()
 {
-        std::ifstream file(paths::save_file_path());
+        std::ifstream file( paths::save_file_path() );
 
-        if (file.good()) {
+        if ( file.good() )
+        {
                 const bool is_empty =
                         file.peek() == std::ifstream::traits_type::eof();
 
                 file.close();
 
-                return !is_empty;
-        } else {
+                return ! is_empty;
+        }
+        else
+        {
                 // Failed to open file
                 file.close();
 
@@ -231,40 +242,40 @@ bool is_loading()
         return s_state == SaveLoadState::loading;
 }
 
-void put_str(const std::string str)
+void put_str( const std::string str )
 {
-        ASSERT(s_state == SaveLoadState::saving);
+        ASSERT( s_state == SaveLoadState::saving );
 
-        s_lines.push_back(str);
+        s_lines.push_back( str );
 }
 
-void put_int(const int v)
+void put_int( const int v )
 {
-        put_str(std::to_string(v));
+        put_str( std::to_string( v ) );
 }
 
-void put_bool(const bool v)
+void put_bool( const bool v )
 {
         const std::string str = v ? "T" : "F";
 
-        put_str(str);
+        put_str( str );
 }
 
 std::string get_str()
 {
-        ASSERT(s_state == SaveLoadState::loading);
-        ASSERT(!s_lines.empty());
+        ASSERT( s_state == SaveLoadState::loading );
+        ASSERT( ! s_lines.empty() );
 
         const std::string str = s_lines.front();
 
-        s_lines.erase(std::begin(s_lines));
+        s_lines.erase( std::begin( s_lines ) );
 
         return str;
 }
 
 int get_int()
 {
-        return to_int(get_str());
+        return to_int( get_str() );
 }
 
 bool get_bool()
@@ -272,4 +283,4 @@ bool get_bool()
         return get_str() == "T";
 }
 
-} // namespace saving
+}  // namespace saving

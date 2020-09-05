@@ -7,14 +7,15 @@
 #ifndef ACTOR_ITEMS_HPP
 #define ACTOR_ITEMS_HPP
 
-namespace actor {
+namespace actor
+{
 class Actor;
-} // namespace actor
+}  // namespace actor
 
-namespace actor_items {
+namespace actor_items
+{
+void make_for_actor( actor::Actor& actor );
 
-void make_for_actor(actor::Actor& actor);
+}  // namespace actor_items
 
-} // namespace actor_items
-
-#endif // ACTOR_ITEMS_HPP
+#endif  // ACTOR_ITEMS_HPP

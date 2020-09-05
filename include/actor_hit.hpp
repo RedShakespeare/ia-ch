@@ -9,26 +9,27 @@
 
 #include "global.hpp"
 
-enum class ActorDied {
+enum class ActorDied
+{
         no,
         yes
 };
 
-namespace actor {
-
+namespace actor
+{
 class Actor;
 
 ActorDied hit(
         Actor& actor,
         int dmg,
         DmgType dmg_type,
-        AllowWound allow_wound = AllowWound::yes);
+        AllowWound allow_wound = AllowWound::yes );
 
 ActorDied hit_sp(
         Actor& actor,
         int dmg,
-        Verbose verbose = Verbose::yes);
+        Verbose verbose = Verbose::yes );
 
-} // namespace actor
+}  // namespace actor
 
-#endif // ACTOR_HIT_HPP
+#endif  // ACTOR_HIT_HPP

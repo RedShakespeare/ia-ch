@@ -17,13 +17,13 @@
 #include "terrain.hpp"
 #include "test_utils.hpp"
 
-TEST_CASE("Properties from item applied and removed for actor")
+TEST_CASE( "Properties from item applied and removed for actor" )
 {
         test_utils::init_all();
 
         auto& inv = map::g_player->m_inv;
 
-        InvSlot& body_slot = inv.m_slots[(size_t)SlotId::body];
+        InvSlot& body_slot = inv.m_slots[ (size_t)SlotId::body ];
 
         delete body_slot.item;
 
@@ -31,117 +31,128 @@ TEST_CASE("Properties from item applied and removed for actor")
 
         auto& props = map::g_player->m_properties;
 
-        for (size_t i = 0; i < (size_t)PropId::END; ++i) {
-                REQUIRE(!props.has((PropId)i));
+        for ( size_t i = 0; i < (size_t)PropId::END; ++i )
+        {
+                REQUIRE( ! props.has( (PropId)i ) );
         }
 
         // Wear asbesthos suit
-        auto* item = item::make(item::Id::armor_asb_suit);
+        auto* item = item::make( item::Id::armor_asb_suit );
 
         inv.put_in_slot(
                 SlotId::body,
                 item,
-                Verbose::yes);
+                Verbose::yes );
 
         // Check that the expected properties are applied
         int nr_props = 0;
 
-        for (size_t i = 0u; i < (size_t)PropId::END; ++i) {
-                if (props.has((PropId)i)) {
+        for ( size_t i = 0u; i < (size_t)PropId::END; ++i )
+        {
+                if ( props.has( (PropId)i ) )
+                {
                         ++nr_props;
                 }
         }
 
-        REQUIRE(nr_props == 3);
+        REQUIRE( nr_props == 3 );
 
-        REQUIRE(props.has(PropId::r_fire));
-        REQUIRE(props.has(PropId::r_elec));
-        REQUIRE(props.has(PropId::r_acid));
+        REQUIRE( props.has( PropId::r_fire ) );
+        REQUIRE( props.has( PropId::r_elec ) );
+        REQUIRE( props.has( PropId::r_acid ) );
 
         // Take off asbeshos suit
-        inv.unequip_slot(SlotId::body);
+        inv.unequip_slot( SlotId::body );
 
-        REQUIRE(inv.backpack_idx(item::Id::armor_asb_suit) != -1);
+        REQUIRE( inv.backpack_idx( item::Id::armor_asb_suit ) != -1 );
 
         // Check that the properties are cleared
-        for (int i = 0; i < (int)PropId::END; ++i) {
-                REQUIRE(!props.has((PropId)i));
+        for ( int i = 0; i < (int)PropId::END; ++i )
+        {
+                REQUIRE( ! props.has( (PropId)i ) );
         }
 
         // Wear the asbeshos suit again
         inv.equip_backpack_item(
-                inv.backpack_idx(item::Id::armor_asb_suit),
-                SlotId::body);
+                inv.backpack_idx( item::Id::armor_asb_suit ),
+                SlotId::body );
 
         // Check that the props are applied
         nr_props = 0;
 
-        for (int i = 0; i < (int)PropId::END; ++i) {
-                if (props.has((PropId)i)) {
+        for ( int i = 0; i < (int)PropId::END; ++i )
+        {
+                if ( props.has( (PropId)i ) )
+                {
                         ++nr_props;
                 }
         }
 
-        REQUIRE(nr_props == 3);
+        REQUIRE( nr_props == 3 );
 
-        REQUIRE(props.has(PropId::r_fire));
-        REQUIRE(props.has(PropId::r_elec));
-        REQUIRE(props.has(PropId::r_acid));
+        REQUIRE( props.has( PropId::r_fire ) );
+        REQUIRE( props.has( PropId::r_elec ) );
+        REQUIRE( props.has( PropId::r_acid ) );
 
         // Drop the asbeshos suit on the ground
         item_drop::drop_item_from_inv(
                 *map::g_player,
                 InvType::slots,
                 (int)SlotId::body,
-                1);
+                1 );
 
-        REQUIRE(!body_slot.item);
+        REQUIRE( ! body_slot.item );
 
-        Cell& cell = map::g_cells.at(map::g_player->m_pos);
-        REQUIRE(cell.item);
+        Cell& cell = map::g_cells.at( map::g_player->m_pos );
+        REQUIRE( cell.item );
 
         // Check that the properties are cleared
-        for (int i = 0; i < (int)PropId::END; ++i) {
-                REQUIRE(!props.has((PropId)i));
+        for ( int i = 0; i < (int)PropId::END; ++i )
+        {
+                REQUIRE( ! props.has( (PropId)i ) );
         }
 
         // Wear the same dropped asbesthos suit again
         inv.put_in_slot(
                 SlotId::body,
                 cell.item,
-                Verbose::yes);
+                Verbose::yes );
 
         cell.item = nullptr;
 
         // Check that the properties are applied
         nr_props = 0;
 
-        for (int i = 0; i < (int)PropId::END; ++i) {
-                if (props.has((PropId)i)) {
+        for ( int i = 0; i < (int)PropId::END; ++i )
+        {
+                if ( props.has( (PropId)i ) )
+                {
                         ++nr_props;
                 }
         }
 
-        REQUIRE(nr_props == 3);
+        REQUIRE( nr_props == 3 );
 
-        REQUIRE(props.has(PropId::r_fire));
-        REQUIRE(props.has(PropId::r_elec));
-        REQUIRE(props.has(PropId::r_acid));
+        REQUIRE( props.has( PropId::r_fire ) );
+        REQUIRE( props.has( PropId::r_elec ) );
+        REQUIRE( props.has( PropId::r_acid ) );
 
         // Destroy the asbesthos suit by explosions
-        for (int i = 0; i < 10; ++i) {
-                map::g_player->restore_hp(99999, true /* Restoring above max */);
+        for ( int i = 0; i < 10; ++i )
+        {
+                map::g_player->restore_hp( 99999, true /* Restoring above max */ );
 
-                explosion::run(map::g_player->m_pos, ExplType::expl);
+                explosion::run( map::g_player->m_pos, ExplType::expl );
 
-                props.end_prop(PropId::wound);
+                props.end_prop( PropId::wound );
         }
 
-        REQUIRE(!body_slot.item);
+        REQUIRE( ! body_slot.item );
 
         // Check that the properties are cleared
-        for (int i = 0; i < (int)PropId::END; ++i) {
-                REQUIRE(!props.has((PropId)i));
+        for ( int i = 0; i < (int)PropId::END; ++i )
+        {
+                REQUIRE( ! props.has( (PropId)i ) );
         }
 
         test_utils::cleanup_all();

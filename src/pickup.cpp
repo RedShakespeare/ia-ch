@@ -20,106 +20,118 @@
 #include "query.hpp"
 #include "state.hpp"
 
-namespace item_pickup {
-
+namespace item_pickup
+{
 void try_pick()
 {
         msg_log::clear();
 
         const P& pos = map::g_player->m_pos;
 
-        auto* const item = map::g_cells.at(pos).item;
+        auto* const item = map::g_cells.at( pos ).item;
 
-        if (!item) {
-                msg_log::add("I see nothing to pick up here.");
+        if ( ! item )
+        {
+                msg_log::add( "I see nothing to pick up here." );
 
                 return;
         }
 
         const auto pre_pickup_result = item->pre_pickup_hook();
 
-        auto& cell = map::g_cells.at(pos);
+        auto& cell = map::g_cells.at( pos );
 
-        switch (pre_pickup_result) {
+        switch ( pre_pickup_result )
+        {
         case ItemPrePickResult::do_pickup: {
-                audio::play(audio::SfxId::pickup);
+                audio::play( audio::SfxId::pickup );
 
-                const std::string item_name = item->name(ItemRefType::plural);
+                const std::string item_name = item->name( ItemRefType::plural );
 
-                msg_log::add("I pick up " + item_name + ".");
+                msg_log::add( "I pick up " + item_name + "." );
 
                 // NOTE: This may destroy the item (e.g. combine with others)
-                map::g_player->m_inv.put_in_backpack(item);
+                map::g_player->m_inv.put_in_backpack( item );
 
                 cell.item = nullptr;
-        } break;
+        }
+        break;
 
         case ItemPrePickResult::destroy_item: {
                 delete item;
                 cell.item = nullptr;
-        } break;
+        }
+        break;
 
         case ItemPrePickResult::do_nothing: {
-        } break;
+        }
+        break;
         }
 
         // NOTE: The player might have won the game by picking up the
         // Trapezohedron, if so do not tick time
-        if (states::contains_state(StateId::game)) {
+        if ( states::contains_state( StateId::game ) )
+        {
                 game_time::tick();
         }
 }
 
-item::Ammo* unload_ranged_wpn(item::Wpn& wpn)
+item::Ammo* unload_ranged_wpn( item::Wpn& wpn )
 {
-        ASSERT(!wpn.data().ranged.has_infinite_ammo);
+        ASSERT( ! wpn.data().ranged.has_infinite_ammo );
 
         const int nr_ammo_loaded = wpn.m_ammo_loaded;
 
-        if (nr_ammo_loaded == 0) {
+        if ( nr_ammo_loaded == 0 )
+        {
                 return nullptr;
         }
 
         const auto ammo_id = wpn.data().ranged.ammo_item_id;
 
-        auto& ammo_data = item::g_data[(size_t)ammo_id];
+        auto& ammo_data = item::g_data[ (size_t)ammo_id ];
 
-        auto* spawned_ammo = item::make(ammo_id);
+        auto* spawned_ammo = item::make( ammo_id );
 
-        if (ammo_data.type == ItemType::ammo_mag) {
+        if ( ammo_data.type == ItemType::ammo_mag )
+        {
                 // Unload a mag
-                static_cast<item::AmmoMag*>(spawned_ammo)->m_ammo =
+                static_cast<item::AmmoMag*>( spawned_ammo )->m_ammo =
                         nr_ammo_loaded;
-        } else {
+        }
+        else
+        {
                 // Unload loose ammo
                 spawned_ammo->m_nr_items = nr_ammo_loaded;
         }
 
         wpn.m_ammo_loaded = 0;
 
-        return static_cast<item::Ammo*>(spawned_ammo);
+        return static_cast<item::Ammo*>( spawned_ammo );
 }
 
 void try_unload_or_pick()
 {
-        auto* item = map::g_cells.at(map::g_player->m_pos).item;
+        auto* item = map::g_cells.at( map::g_player->m_pos ).item;
 
-        if (item &&
-            item->data().ranged.is_ranged_wpn &&
-            !item->data().ranged.has_infinite_ammo) {
-                auto* const wpn = static_cast<item::Wpn*>(item);
+        if ( item &&
+             item->data().ranged.is_ranged_wpn &&
+             ! item->data().ranged.has_infinite_ammo )
+        {
+                auto* const wpn = static_cast<item::Wpn*>( item );
 
-                auto* const spawned_ammo = unload_ranged_wpn(*wpn);
+                auto* const spawned_ammo = unload_ranged_wpn( *wpn );
 
-                if (spawned_ammo) {
-                        audio::play(audio::SfxId::pickup);
+                if ( spawned_ammo )
+                {
+                        audio::play( audio::SfxId::pickup );
 
                         const std::string name_a =
-                                item->name(ItemRefType::a, ItemRefInf::yes);
+                                item->name( ItemRefType::a, ItemRefInf::yes );
 
-                        msg_log::add("I unload " + name_a + ".");
+                        msg_log::add( "I unload " + name_a + "." );
 
-                        map::g_player->m_inv.put_in_backpack(spawned_ammo);
+                        map::g_player->m_inv.put_in_backpack( spawned_ammo );
 
                         game_time::tick();
 
@@ -132,4 +144,4 @@ void try_unload_or_pick()
         try_pick();
 }
 
-} // namespace item_pickup
+}  // namespace item_pickup

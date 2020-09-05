@@ -9,20 +9,21 @@
 
 #include "direction.hpp"
 
-struct P {
+struct P
+{
 public:
         P() = default;
 
-        P(const int x_val, const int y_val) :
-                x(x_val),
-                y(y_val) {}
+        P( const int x_val, const int y_val ) :
+                x( x_val ),
+                y( y_val ) {}
 
-        P(const P& p) = default;
+        P( const P& p ) = default;
 
         // Construct from a direction -> offsets (e.g. 1, -1)
-        explicit P(Dir dir);
+        explicit P( Dir dir );
 
-        P& operator=(const P& p)
+        P& operator=( const P& p )
         {
                 x = p.x;
                 y = p.y;
@@ -31,9 +32,9 @@ public:
         }
 
         // Assign from a direction -> offsets (e.g. 1, -1)
-        P& operator=(Dir dir);
+        P& operator=( Dir dir );
 
-        P& operator+=(const P& p)
+        P& operator+=( const P& p )
         {
                 x += p.x;
                 y += p.y;
@@ -42,9 +43,9 @@ public:
         }
 
         // Add a direction offset (e.g. 1, -1)
-        P& operator+=(Dir dir);
+        P& operator+=( Dir dir );
 
-        P& operator-=(const P& p)
+        P& operator-=( const P& p )
         {
                 x -= p.x;
                 y -= p.y;
@@ -68,133 +69,134 @@ public:
                 return *this;
         }
 
-        P operator+(const P& p) const
+        P operator+( const P& p ) const
         {
-                return P(x + p.x, y + p.y);
+                return P( x + p.x, y + p.y );
         }
 
-        P operator+(const int v) const
+        P operator+( const int v ) const
         {
-                return P(x + v, y + v);
+                return P( x + v, y + v );
         }
 
-        P operator+(Dir dir) const;
+        P operator+( Dir dir ) const;
 
-        P operator-(const P& p) const
+        P operator-( const P& p ) const
         {
-                return P(x - p.x, y - p.y);
+                return P( x - p.x, y - p.y );
         }
 
-        P operator-(const int v) const
+        P operator-( const int v ) const
         {
-                return P(x - v, y - v);
+                return P( x - v, y - v );
         }
 
-        P with_offsets(const int x_offset, const int y_offset) const
+        P with_offsets( const int x_offset, const int y_offset ) const
         {
-                return P(x + x_offset, y + y_offset);
+                return P( x + x_offset, y + y_offset );
         }
 
-        P with_offsets(const P& offsets) const
+        P with_offsets( const P& offsets ) const
         {
-                return P(x + offsets.x, y + offsets.y);
+                return P( x + offsets.x, y + offsets.y );
         }
 
-        P with_x_offset(const int offset) const
+        P with_x_offset( const int offset ) const
         {
-                return P(x + offset, y);
+                return P( x + offset, y );
         }
 
-        P with_y_offset(const int offset) const
+        P with_y_offset( const int offset ) const
         {
-                return P(x, y + offset);
+                return P( x, y + offset );
         }
 
-        P scaled_up(const P& p) const
+        P scaled_up( const P& p ) const
         {
-                return P(x * p.x, y * p.y);
+                return P( x * p.x, y * p.y );
         }
 
-        P scaled_up(const int x_factor, const int y_factor) const
+        P scaled_up( const int x_factor, const int y_factor ) const
         {
-                return P(x * x_factor, y * y_factor);
+                return P( x * x_factor, y * y_factor );
         }
 
-        P scaled_up(const int v) const
+        P scaled_up( const int v ) const
         {
-                return P(x * v, y * v);
+                return P( x * v, y * v );
         }
 
-        P scaled_down(const int x_denom, const int y_denom) const
+        P scaled_down( const int x_denom, const int y_denom ) const
         {
-                return P(x / x_denom, y / y_denom);
+                return P( x / x_denom, y / y_denom );
         }
 
-        P scaled_down(const int v) const
+        P scaled_down( const int v ) const
         {
-                return P(x / v, y / v);
+                return P( x / v, y / v );
         }
 
-        P scaled_down(const P& denoms) const
+        P scaled_down( const P& denoms ) const
         {
-                return P(x / denoms.x, y / denoms.y);
+                return P( x / denoms.x, y / denoms.y );
         }
 
-        bool operator==(const P& p) const
+        bool operator==( const P& p ) const
         {
-                return (x == p.x) && (y == p.y);
+                return ( x == p.x ) && ( y == p.y );
         }
 
-        bool operator!=(const P& p) const
+        bool operator!=( const P& p ) const
         {
-                return (x != p.x) || (y != p.y);
+                return ( x != p.x ) || ( y != p.y );
         }
 
-        bool operator!=(const int v) const
+        bool operator!=( const int v ) const
         {
-                return (x != v) || (y != v);
+                return ( x != v ) || ( y != v );
         }
 
         P signs() const
         {
-                const int x_sign = (x == 0) ? 0 : (x > 0) ? 1 : -1;
-                const int y_sign = (y == 0) ? 0 : (y > 0) ? 1 : -1;
+                const int x_sign = ( x == 0 ) ? 0 : ( x > 0 ) ? 1 : -1;
+                const int y_sign = ( y == 0 ) ? 0 : ( y > 0 ) ? 1 : -1;
 
-                return {x_sign, y_sign};
+                return { x_sign, y_sign };
         }
 
-        void set(const int new_x, const int new_y)
+        void set( const int new_x, const int new_y )
         {
                 x = new_x;
                 y = new_y;
         }
 
-        void set(const P& p)
+        void set( const P& p )
         {
                 x = p.x;
                 y = p.y;
         }
 
-        void swap(P& p)
+        void swap( P& p )
         {
-                P tmp(p);
+                P tmp( p );
 
                 p = *this;
 
-                set(tmp);
+                set( tmp );
         }
 
-        bool is_adjacent(const P& p)
+        bool is_adjacent( const P& p )
         {
                 // Do not count the same position as adjacent
-                if (p == *this) {
+                if ( p == *this )
+                {
                         return false;
                 }
 
                 const auto d = *this - p;
 
-                const bool x_adj = (d.x >= -1) && (d.x <= 1);
-                const bool y_adj = (d.y >= -1) && (d.y <= 1);
+                const bool x_adj = ( d.x >= -1 ) && ( d.x <= 1 );
+                const bool y_adj = ( d.y >= -1 ) && ( d.y <= 1 );
 
                 return x_adj && y_adj;
         }
@@ -202,22 +204,23 @@ public:
         // NOTE: This assumes that both x and y is -1, 0, or 1
         Dir to_dir();
 
-        int x {0};
-        int y {0};
+        int x { 0 };
+        int y { 0 };
 };
 
-struct PosVal {
+struct PosVal
+{
         PosVal() = default;
 
-        PosVal(const P& pos_, const int val_) :
-                pos(pos_),
-                val(val_)
+        PosVal( const P& pos_, const int val_ ) :
+                pos( pos_ ),
+                val( val_ )
         {}
 
-        PosVal(const PosVal& o) = default;
+        PosVal( const PosVal& o ) = default;
 
-        P pos {0, 0};
-        int val {-1};
+        P pos { 0, 0 };
+        int val { -1 };
 };
 
-#endif // POS_HPP
+#endif  // POS_HPP

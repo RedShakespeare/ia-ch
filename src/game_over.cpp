@@ -25,15 +25,16 @@
 // -----------------------------------------------------------------------------
 static void make_memorial_file(
         const std::vector<ColoredString>& lines,
-        const std::string path)
+        const std::string path )
 {
         // Write memorial file
         std::ofstream file;
 
-        file.open(path.c_str(), std::ios::trunc);
+        file.open( path.c_str(), std::ios::trunc );
 
         // Add info lines to file
-        for (const auto& line : lines) {
+        for ( const auto& line : lines )
+        {
                 file << line.str << std::endl;
         }
 
@@ -41,7 +42,7 @@ static void make_memorial_file(
 }
 
 static std::vector<ColoredString> make_game_summary_lines(
-        const HighscoreEntry& highscore_entry)
+        const HighscoreEntry& highscore_entry )
 {
         std::vector<ColoredString> lines;
 
@@ -52,12 +53,15 @@ static std::vector<ColoredString> make_game_summary_lines(
 
         int nr_kills_tot_all_mon = 0;
 
-        for (const auto& d : actor::g_data) {
-                if ((d.id != actor::Id::player) && (d.nr_kills > 0)) {
+        for ( const auto& d : actor::g_data )
+        {
+                if ( ( d.id != actor::Id::player ) && ( d.nr_kills > 0 ) )
+                {
                         nr_kills_tot_all_mon += d.nr_kills;
 
-                        if (d.is_unique) {
-                                unique_killed_names.push_back(d.name_a);
+                        if ( d.is_unique )
+                        {
+                                unique_killed_names.push_back( d.name_a );
                         }
                 }
         }
@@ -66,161 +70,181 @@ static std::vector<ColoredString> make_game_summary_lines(
 
         std::string bg_title;
 
-        if (highscore_entry.bg == Bg::occultist) {
+        if ( highscore_entry.bg == Bg::occultist )
+        {
                 const auto domain = highscore_entry.player_occultist_domain;
 
-                bg_title = player_bon::occultist_profession_title(domain);
-        } else {
-                bg_title = player_bon::bg_title(highscore_entry.bg);
+                bg_title = player_bon::occultist_profession_title( domain );
+        }
+        else
+        {
+                bg_title = player_bon::bg_title( highscore_entry.bg );
         }
 
         lines.emplace_back(
                 name + " (" + bg_title + ")",
-                color_heading);
+                color_heading );
 
         const int dlvl = highscore_entry.dlvl;
 
-        if (dlvl == 0) {
+        if ( dlvl == 0 )
+        {
                 lines.emplace_back(
                         "Died before entering the dungeon",
-                        color_info);
-        } else {
+                        color_info );
+        }
+        else
+        {
                 // DLVL is at least 1
                 lines.emplace_back(
-                        "Explored to dungeon level " + std::to_string(dlvl),
-                        color_info);
+                        "Explored to dungeon level " + std::to_string( dlvl ),
+                        color_info );
         }
 
         const int turn_count = highscore_entry.turn_count;
 
         lines.emplace_back(
-                "Spent " + std::to_string(turn_count) + " turns",
-                color_info);
+                "Spent " + std::to_string( turn_count ) + " turns",
+                color_info );
 
         const int ins = highscore_entry.ins;
 
         lines.emplace_back(
-                "Was " + std::to_string(ins) + "% insane",
-                color_info);
+                "Was " + std::to_string( ins ) + "% insane",
+                color_info );
 
         lines.emplace_back(
-                "Killed " + std::to_string(nr_kills_tot_all_mon) + " monsters",
-                color_info);
+                "Killed " + std::to_string( nr_kills_tot_all_mon ) + " monsters",
+                color_info );
 
         const int xp = highscore_entry.xp;
 
         lines.emplace_back(
-                "Gained " + std::to_string(xp) + " experience points",
-                color_info);
+                "Gained " + std::to_string( xp ) + " experience points",
+                color_info );
 
         const int score = highscore_entry.calculate_score();
 
         lines.emplace_back(
-                "Gained a score of " + std::to_string(score),
-                color_info);
+                "Gained a score of " + std::to_string( score ),
+                color_info );
 
         const std::vector<const InsSympt*> sympts =
                 insanity::active_sympts();
 
-        if (!sympts.empty()) {
-                for (const InsSympt* const sympt : sympts) {
+        if ( ! sympts.empty() )
+        {
+                for ( const InsSympt* const sympt : sympts )
+                {
                         const std::string sympt_descr = sympt->postmortem_msg();
 
-                        if (!sympt_descr.empty()) {
-                                lines.emplace_back(sympt_descr, color_info);
+                        if ( ! sympt_descr.empty() )
+                        {
+                                lines.emplace_back( sympt_descr, color_info );
                         }
                 }
         }
 
-        lines.emplace_back("", color_info);
+        lines.emplace_back( "", color_info );
 
         lines.emplace_back(
                 "Traits gained (at character level)",
-                color_heading);
+                color_heading );
 
         const auto trait_log = player_bon::trait_log();
 
-        if (trait_log.empty()) {
-                lines.emplace_back("None", color_info);
-        } else {
+        if ( trait_log.empty() )
+        {
+                lines.emplace_back( "None", color_info );
+        }
+        else
+        {
                 bool is_double_digit =
                         std::find_if(
-                                std::begin(trait_log),
-                                std::end(trait_log),
-                                [](const auto& e) {
+                                std::begin( trait_log ),
+                                std::end( trait_log ),
+                                []( const auto& e ) {
                                         return e.clvl_picked >= 10;
-                                }) != std::end(trait_log);
+                                } ) != std::end( trait_log );
 
-                for (const auto& e : trait_log) {
-                        std::string clvl_str = std::to_string(e.clvl_picked);
+                for ( const auto& e : trait_log )
+                {
+                        std::string clvl_str = std::to_string( e.clvl_picked );
 
-                        if (is_double_digit) {
+                        if ( is_double_digit )
+                        {
                                 clvl_str =
                                         text_format::pad_before(
-                                                std::to_string(e.clvl_picked),
-                                                2);
+                                                std::to_string( e.clvl_picked ),
+                                                2 );
                         }
 
                         const std::string title =
-                                player_bon::trait_title(e.trait_id);
+                                player_bon::trait_title( e.trait_id );
 
                         const std::string str =
                                 clvl_str +
                                 " " +
                                 title;
 
-                        lines.emplace_back(str, color_info);
+                        lines.emplace_back( str, color_info );
                 }
         }
 
-        lines.emplace_back("", color_info);
+        lines.emplace_back( "", color_info );
 
         lines.emplace_back(
                 "Unique monsters killed",
-                color_heading);
+                color_heading );
 
-        if (unique_killed_names.empty()) {
-                lines.emplace_back("None", color_info);
-        } else {
-                for (std::string& monster_name : unique_killed_names) {
-                        lines.emplace_back(monster_name, color_info);
+        if ( unique_killed_names.empty() )
+        {
+                lines.emplace_back( "None", color_info );
+        }
+        else
+        {
+                for ( std::string& monster_name : unique_killed_names )
+                {
+                        lines.emplace_back( monster_name, color_info );
                 }
         }
 
-        lines.emplace_back("", color_info);
+        lines.emplace_back( "", color_info );
 
         lines.emplace_back(
                 "History of " + map::g_player->name_the(),
-                color_heading);
+                color_heading );
 
         const std::vector<HistoryEvent>& events =
                 game::history();
 
         int longest_turn_w = 0;
 
-        for (const auto& event : events) {
-                const int turn_w = std::to_string(event.turn).size();
+        for ( const auto& event : events )
+        {
+                const int turn_w = std::to_string( event.turn ).size();
 
-                longest_turn_w = std::max(turn_w, longest_turn_w);
+                longest_turn_w = std::max( turn_w, longest_turn_w );
         }
 
-        for (const auto& event : events) {
-                std::string ev_str = std::to_string(event.turn);
+        for ( const auto& event : events )
+        {
+                std::string ev_str = std::to_string( event.turn );
 
                 const int turn_w = ev_str.size();
 
-                ev_str.append(longest_turn_w - turn_w, ' ');
+                ev_str.append( longest_turn_w - turn_w, ' ' );
 
                 ev_str += " " + event.msg;
 
-                lines.emplace_back(ev_str, color_info);
+                lines.emplace_back( ev_str, color_info );
         }
 
-        lines.emplace_back("", color_info);
+        lines.emplace_back( "", color_info );
 
         lines.emplace_back(
                 "Last messages",
-                color_heading);
+                color_heading );
 
         const auto& msg_history = msg_log::history();
 
@@ -228,17 +252,18 @@ static std::vector<ColoredString> make_game_summary_lines(
 
         int history_start_idx = std::max(
                 0,
-                (int)msg_history.size() - max_nr_messages_to_show);
+                (int)msg_history.size() - max_nr_messages_to_show );
 
-        for (size_t history_idx = history_start_idx;
-             history_idx < msg_history.size();
-             ++history_idx) {
-                const auto& msg = msg_history[history_idx];
+        for ( size_t history_idx = history_start_idx;
+              history_idx < msg_history.size();
+              ++history_idx )
+        {
+                const auto& msg = msg_history[ history_idx ];
 
-                lines.emplace_back(msg.text_with_repeats(), color_info);
+                lines.emplace_back( msg.text_with_repeats(), color_info );
         }
 
-        lines.emplace_back("", color_info);
+        lines.emplace_back( "", color_info );
 
         return lines;
 }
@@ -246,10 +271,10 @@ static std::vector<ColoredString> make_game_summary_lines(
 // -----------------------------------------------------------------------------
 // Public
 // -----------------------------------------------------------------------------
-void on_game_over(const IsWin is_win)
+void on_game_over( const IsWin is_win )
 {
         const auto game_summary_time_stamp =
-                game::start_time().time_str(TimeType::second, false);
+                game::start_time().time_str( TimeType::second, false );
 
         const auto game_summary_filename =
                 map::g_player->name_a() +
@@ -264,27 +289,27 @@ void on_game_over(const IsWin is_win)
         auto highscore_entry =
                 highscore::make_entry_from_current_game_data(
                         game_summary_file_path,
-                        is_win);
+                        is_win );
 
-        highscore::append_entry_to_highscores_file(highscore_entry);
+        highscore::append_entry_to_highscores_file( highscore_entry );
 
         const auto game_summary_lines =
                 make_game_summary_lines(
-                        highscore_entry);
+                        highscore_entry );
 
         // Dump the lines to a memorial file
         make_memorial_file(
                 game_summary_lines,
-                game_summary_file_path);
+                game_summary_file_path );
 
         // From now on the session data is not needed anymore
         init::cleanup_session();
 
         // Show game summary first, then highscores
         states::push(
-                std::make_unique<BrowseHighscore>());
+                std::make_unique<BrowseHighscore>() );
 
         states::push(
                 std::make_unique<PostmortemInfo>(
-                        game_summary_lines));
+                        game_summary_lines ) );
 }

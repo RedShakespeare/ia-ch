@@ -7,12 +7,12 @@
 #ifndef ACTOR_STD_TURN_HPP
 #define ACTOR_STD_TURN_HPP
 
-namespace actor {
-
+namespace actor
+{
 class Actor;
 
-void std_turn(Actor& actor);
+void std_turn( Actor& actor );
 
-} // namespace actor
+}  // namespace actor
 
-#endif // ACTOR_STD_TURN_HPP
+#endif  // ACTOR_STD_TURN_HPP

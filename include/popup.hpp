@@ -15,9 +15,10 @@
 #include "browser.hpp"
 #include "state.hpp"
 
-namespace popup {
-
-enum class AddToMsgHistory {
+namespace popup
+{
+enum class AddToMsgHistory
+{
         no,
         yes
 };
@@ -33,32 +34,34 @@ class PopupState;
 // (since the PopupState data is private with no setters, only the Popup friend
 // class can configure them), and therefore the only way to display popups is
 // via the Popup class. So this should make things pretty fail safe.
-class Popup {
+class Popup
+{
 public:
-        Popup(AddToMsgHistory add_to_msg_history);
+        Popup( AddToMsgHistory add_to_msg_history );
 
         ~Popup();
 
         void run();
 
-        Popup& set_title(const std::string& title);
+        Popup& set_title( const std::string& title );
 
-        Popup& set_msg(const std::string& msg);
+        Popup& set_msg( const std::string& msg );
 
         Popup& set_menu(
                 const std::vector<std::string>& choices,
                 const std::vector<char>& menu_keys,
-                int* menu_choice_result);
+                int* menu_choice_result );
 
-        Popup& set_sfx(audio::SfxId sfx);
+        Popup& set_sfx( audio::SfxId sfx );
 
 private:
         std::unique_ptr<PopupState> m_popup_state {};
 };
 
-class PopupState : public State {
+class PopupState : public State
+{
 public:
-        PopupState(AddToMsgHistory add_to_msg_history);
+        PopupState( AddToMsgHistory add_to_msg_history );
 
         void on_start() override;
 
@@ -84,15 +87,15 @@ private:
 
         std::string m_title {};
         std::string m_msg {};
-        audio::SfxId m_sfx {audio::SfxId::END};
+        audio::SfxId m_sfx { audio::SfxId::END };
         std::vector<std::string> m_menu_choices {};
         std::vector<char> m_menu_keys {};
-        int* m_menu_choice_result {nullptr};
+        int* m_menu_choice_result { nullptr };
         MenuBrowser m_browser {};
 
         const AddToMsgHistory m_add_to_msg_history;
 };
 
-} // namespace popup
+}  // namespace popup
 
-#endif // POPUP_HPP
+#endif  // POPUP_HPP

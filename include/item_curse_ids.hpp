@@ -7,9 +7,10 @@
 #ifndef ITEM_CURSE_IDS_HPP
 #define ITEM_CURSE_IDS_HPP
 
-namespace item_curse {
-
-enum class Id {
+namespace item_curse
+{
+enum class Id
+{
         hit_chance_penalty,
         increased_shock,
         heavy,
@@ -23,6 +24,6 @@ enum class Id {
         END
 };
 
-} // namespace item_curse
+}  // namespace item_curse
 
-#endif // ITEM_CURSE_IDS_HPP
+#endif  // ITEM_CURSE_IDS_HPP

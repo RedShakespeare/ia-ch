@@ -15,20 +15,23 @@
 
 class Color;
 
-enum class InvScr {
+enum class InvScr
+{
         inv,
         equip,
         apply,
         none
 };
 
-struct FilteredInvEntry {
+struct FilteredInvEntry
+{
         // Index relatie to slot list or relative to backpack list
-        size_t relative_idx {0};
-        bool is_slot {false};
+        size_t relative_idx { 0 };
+        bool is_slot { false };
 };
 
-class InvState : public State {
+class InvState : public State
+{
 public:
         InvState();
 
@@ -42,16 +45,16 @@ protected:
                 int y,
                 char key,
                 bool is_marked,
-                ItemRefAttInf att_info) const;
+                ItemRefAttInf att_info ) const;
 
         void draw_backpack_item(
                 size_t backpack_idx,
                 int y,
                 char key,
                 bool is_marked,
-                ItemRefAttInf att_info) const;
+                ItemRefAttInf att_info ) const;
 
-        void activate(size_t backpack_idx);
+        void activate( size_t backpack_idx );
 
         MenuBrowser m_browser;
 
@@ -60,16 +63,17 @@ protected:
                 size_t item_name_len,
                 const item::Item& item,
                 const Color& item_name_color_id,
-                bool is_marked) const;
+                bool is_marked ) const;
 
         // void draw_item_symbol(const item::Item& item, const P& p) const;
 
         void draw_detailed_item_descr(
                 const item::Item* item,
-                ItemRefAttInf att_inf) const;
+                ItemRefAttInf att_inf ) const;
 };
 
-class BrowseInv : public InvState {
+class BrowseInv : public InvState
+{
 public:
         BrowseInv() = default;
 
@@ -83,10 +87,11 @@ private:
         void on_body_slot_item_selected() const;
 
         void on_equipable_backpack_item_selected(
-                size_t backpack_idx) const;
+                size_t backpack_idx ) const;
 };
 
-class Apply : public InvState {
+class Apply : public InvState
+{
 public:
         Apply() = default;
 
@@ -100,7 +105,8 @@ private:
         std::vector<size_t> m_filtered_backpack_indexes {};
 };
 
-class Drop : public InvState {
+class Drop : public InvState
+{
 public:
         Drop() = default;
 
@@ -111,11 +117,12 @@ public:
         void update() override;
 };
 
-class Equip : public InvState {
+class Equip : public InvState
+{
 public:
-        Equip(InvSlot& slot) :
+        Equip( InvSlot& slot ) :
 
-                m_slot_to_equip(slot)
+                m_slot_to_equip( slot )
         {}
 
         void on_start() override;
@@ -130,7 +137,8 @@ private:
         InvSlot& m_slot_to_equip;
 };
 
-class SelectThrow : public InvState {
+class SelectThrow : public InvState
+{
 public:
         SelectThrow() = default;
 
@@ -144,11 +152,12 @@ private:
         std::vector<FilteredInvEntry> m_filtered_inv {};
 };
 
-class SelectIdentify : public InvState {
+class SelectIdentify : public InvState
+{
 public:
-        SelectIdentify(std::vector<ItemType> item_types_allowed = {}) :
+        SelectIdentify( std::vector<ItemType> item_types_allowed = {} ) :
 
-                m_item_types_allowed(std::move(item_types_allowed))
+                m_item_types_allowed( std::move( item_types_allowed ) )
         {}
 
         void on_start() override;
@@ -162,4 +171,4 @@ private:
         std::vector<FilteredInvEntry> m_filtered_inv {};
 };
 
-#endif // INVENTORY_HANDLING_HPP
+#endif  // INVENTORY_HANDLING_HPP

@@ -21,9 +21,10 @@
 
 enum class SndVol;
 
-namespace item {
-
-enum class Id {
+namespace item
+{
+enum class Id
+{
         trapez,
 
         // Melee weapons and thrown weapons
@@ -145,7 +146,7 @@ enum class Id {
         potion_descent,
         potion_fortitude,
         potion_insight,
-        potion_invis, // TODO: Should be called "Potion of Cloaking"
+        potion_invis,  // TODO: Should be called "Potion of Cloaking"
         potion_paralyze,
         potion_poison,
         potion_r_elec,
@@ -188,7 +189,8 @@ enum class Id {
         END
 };
 
-enum class ItemSetId {
+enum class ItemSetId
+{
         minor_treasure,
         rare_treasure,
         supreme_treasure,
@@ -202,66 +204,73 @@ enum class ItemSetId {
         high_priest_guard_rogue
 };
 
-enum class Value {
+enum class Value
+{
         normal,
         minor_treasure,
         rare_treasure,
         supreme_treasure
 };
 
-enum Weight {
+enum Weight
+{
         none = 0,
-        extra_light = 1, // E.g. ammo
-        light = 10, // E.g. dynamite, daggers
-        medium = 50, // E.g. most firearms
-        heavy = 100, // E.g. heavy armor, heavy weapons
+        extra_light = 1,  // E.g. ammo
+        light = 10,  // E.g. dynamite, daggers
+        medium = 50,  // E.g. most firearms
+        heavy = 100,  // E.g. heavy armor, heavy weapons
 };
 
-struct ItemName {
+struct ItemName
+{
         ItemName(
                 const std::string& name,
                 const std::string& name_pl,
-                const std::string& name_a)
+                const std::string& name_a )
         {
-                names[(size_t)ItemRefType::plain] = name;
-                names[(size_t)ItemRefType::plural] = name_pl;
-                names[(size_t)ItemRefType::a] = name_a;
+                names[ (size_t)ItemRefType::plain ] = name;
+                names[ (size_t)ItemRefType::plural ] = name_pl;
+                names[ (size_t)ItemRefType::a ] = name_a;
         }
 
         ItemName()
         {
-                for (size_t i = 0; i < (size_t)ItemRefType::END; ++i) {
-                        names[i] = "";
+                for ( size_t i = 0; i < (size_t)ItemRefType::END; ++i )
+                {
+                        names[ i ] = "";
                 }
         }
 
-        std::string names[(size_t)ItemRefType::END];
+        std::string names[ (size_t)ItemRefType::END ];
 };
 
-struct ItemAttMsgs {
+struct ItemAttMsgs
+{
         ItemAttMsgs() :
-                player(""),
-                other("") {}
+                player( "" ),
+                other( "" ) {}
 
-        ItemAttMsgs(std::string player_, std::string other_) :
-                player(std::move(player_)),
-                other(std::move(other_)) {}
+        ItemAttMsgs( std::string player_, std::string other_ ) :
+                player( std::move( player_ ) ),
+                other( std::move( other_ ) ) {}
 
         std::string player, other;
 };
 
-struct ContainerSpawnRule {
+struct ContainerSpawnRule
+{
         ContainerSpawnRule(
                 terrain::Id container_terrain_id,
-                int pct_chance_to_incl_terrain) :
-                terrain_id(container_terrain_id),
-                pct_chance_to_incl(pct_chance_to_incl_terrain) {}
+                int pct_chance_to_incl_terrain ) :
+                terrain_id( container_terrain_id ),
+                pct_chance_to_incl( pct_chance_to_incl_terrain ) {}
 
         terrain::Id terrain_id = terrain::Id::END;
         int pct_chance_to_incl = 0;
 };
 
-struct MeleeData {
+struct MeleeData
+{
         MeleeData();
 
         bool is_melee_wpn;
@@ -282,7 +291,8 @@ struct MeleeData {
         audio::SfxId miss_sfx;
 };
 
-struct RangedData {
+struct RangedData
+{
         RangedData();
 
         bool is_ranged_wpn;
@@ -316,22 +326,24 @@ struct RangedData {
         ItemAttProp prop_applied;
 };
 
-struct ArmorData {
+struct ArmorData
+{
         ArmorData();
 
         int armor_points;
         double dmg_to_durability_factor;
 };
 
-struct ItemData {
+struct ItemData
+{
 public:
         ItemData();
 
         Id id;
         ItemType type;
         bool is_intr;
-        bool has_std_activate; // E.g. potions and scrolls
-        bool is_prio_in_backpack_list; // E.g. Medical Bag
+        bool has_std_activate;  // E.g. potions and scrolls
+        bool is_prio_in_backpack_list;  // E.g. Medical Bag
         Value value;
         int weight;
         bool is_unique;
@@ -341,10 +353,10 @@ public:
         int chance_to_incl_in_spawn_list;
         bool is_stackable;
         bool is_identified;
-        bool is_alignment_known; // Used for Potions
-        bool is_spell_domain_known; // Used for Scrolls
+        bool is_alignment_known;  // Used for Potions
+        bool is_spell_domain_known;  // Used for Scrolls
         bool is_tried;
-        bool is_found; // Was seen on map or in inventory
+        bool is_found;  // Was seen on map or in inventory
         int xp_on_found;
         ItemName base_name;
         ItemName base_name_un_id;
@@ -360,7 +372,7 @@ public:
         std::vector<RoomType> native_rooms;
         std::vector<terrain::Id> native_containers;
 
-        int ability_mods_while_equipped[(size_t)AbilityId::END];
+        int ability_mods_while_equipped[ (size_t)AbilityId::END ];
 
         bool allow_display_dmg;
 
@@ -371,7 +383,7 @@ public:
         ArmorData armor;
 };
 
-extern ItemData g_data[(size_t)Id::END];
+extern ItemData g_data[ (size_t)Id::END ];
 
 void init();
 void cleanup();
@@ -379,10 +391,10 @@ void cleanup();
 void save();
 void load();
 
-ItemSetId str_to_item_set_id(const std::string& str);
+ItemSetId str_to_item_set_id( const std::string& str );
 
-Id str_to_intr_item_id(const std::string& str);
+Id str_to_intr_item_id( const std::string& str );
 
-} // namespace item
+}  // namespace item
 
-#endif // ITEM_DATA_HPP
+#endif  // ITEM_DATA_HPP

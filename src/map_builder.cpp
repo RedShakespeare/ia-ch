@@ -8,7 +8,7 @@
 
 #ifndef NDEBUG
 #include <chrono>
-#endif // NDEBUG
+#endif  // NDEBUG
 
 #include "actor.hpp"
 #include "actor_factory.hpp"
@@ -24,11 +24,12 @@
 // -----------------------------------------------------------------------------
 // map_builder
 // -----------------------------------------------------------------------------
-namespace map_builder {
-
-std::unique_ptr<MapBuilder> make(const MapType map_type)
+namespace map_builder
 {
-        switch (map_type) {
+std::unique_ptr<MapBuilder> make( const MapType map_type )
+{
+        switch ( map_type )
+        {
         case MapType::deep_one_lair:
                 return std::make_unique<MapBuilderDeepOneLair>();
 
@@ -57,7 +58,7 @@ std::unique_ptr<MapBuilder> make(const MapType map_type)
         return nullptr;
 }
 
-} // namespace map_builder
+}  // namespace map_builder
 
 // -----------------------------------------------------------------------------
 // MapBuilder
@@ -71,22 +72,26 @@ void MapBuilder::build()
 #ifndef NDEBUG
         int nr_attempts = 0;
         auto start_time = std::chrono::steady_clock::now();
-#endif // NDEBUG
+#endif  // NDEBUG
 
         // TODO: When the map is invalid, any unique items spawned are lost
         // forever. Currently, the only effect of this should be that slightly
         // fewever unique items are found by the player.
 
-        while (!map_ok) {
+        while ( ! map_ok )
+        {
 #ifndef NDEBUG
                 ++nr_attempts;
-#endif // NDEBUG
+#endif  // NDEBUG
 
                 map_ok = build_specific();
 
-                if (map_ok) {
+                if ( map_ok )
+                {
                         map_templates::on_map_ok();
-                } else {
+                }
+                else
+                {
                         map_templates::on_map_discarded();
                 }
         }
@@ -94,28 +99,30 @@ void MapBuilder::build()
         gods::set_random_god();
 
         // Spawn starting allies
-        for (size_t i = 0; i < game_time::g_actors.size(); ++i) {
-                auto* const actor = game_time::g_actors[i];
+        for ( size_t i = 0; i < game_time::g_actors.size(); ++i )
+        {
+                auto* const actor = game_time::g_actors[ i ];
 
                 const auto& allies = actor->m_data->starting_allies;
 
-                if (allies.empty()) {
+                if ( allies.empty() )
+                {
                         continue;
                 }
 
                 auto summoned = actor::spawn(
                                         actor->m_pos,
                                         allies,
-                                        map::rect())
-                                        .set_leader(actor);
+                                        map::rect() )
+                                        .set_leader( actor );
 
                 std::for_each(
-                        std::begin(summoned.monsters),
-                        std::end(summoned.monsters),
-                        [](auto* mon) {
+                        std::begin( summoned.monsters ),
+                        std::end( summoned.monsters ),
+                        []( auto* mon ) {
                                 mon->m_mon_aware_state
                                         .is_player_feeling_msg_allowed = false;
-                        });
+                        } );
         }
 
         map_control::g_controller = map_controller();
@@ -124,14 +131,14 @@ void MapBuilder::build()
         auto diff_time = std::chrono::steady_clock::now() - start_time;
 
         const double duration =
-                std::chrono::duration<double, std::milli>(diff_time)
+                std::chrono::duration<double, std::milli>( diff_time )
                         .count();
 
         TRACE << "Map built after " << nr_attempts << " attempt(s)."
               << std::endl
               << "Total time taken: " << duration << " ms"
               << std::endl;
-#endif // NDEBUG
+#endif  // NDEBUG
 
         TRACE_FUNC_END;
 }
@@ -146,34 +153,40 @@ std::unique_ptr<MapController> MapBuilder::map_controller() const
 // -----------------------------------------------------------------------------
 bool MapBuilderTemplateLevel::build_specific()
 {
-        m_template = map_templates::level_templ(template_id());
+        m_template = map_templates::level_templ( template_id() );
 
-        if (allow_transform_template()) {
-                if (rnd::coin_toss()) {
+        if ( allow_transform_template() )
+        {
+                if ( rnd::coin_toss() )
+                {
                         m_template.rotate_cw();
                 }
 
-                if (rnd::coin_toss()) {
+                if ( rnd::coin_toss() )
+                {
                         m_template.flip_hor();
                 }
 
-                if (rnd::coin_toss()) {
+                if ( rnd::coin_toss() )
+                {
                         m_template.flip_ver();
                 }
         }
 
         const P templ_dims = m_template.dims();
 
-        map::reset(templ_dims);
+        map::reset( templ_dims );
 
         // Move away the player, to avoid placing monsters on the player
-        map::g_player->m_pos.set(0, 0);
+        map::g_player->m_pos.set( 0, 0 );
 
-        for (int x = 0; x < templ_dims.x; ++x) {
-                for (int y = 0; y < templ_dims.y; ++y) {
-                        const P p(x, y);
+        for ( int x = 0; x < templ_dims.x; ++x )
+        {
+                for ( int y = 0; y < templ_dims.y; ++y )
+                {
+                        const P p( x, y );
 
-                        handle_template_pos(p, m_template.at(p));
+                        handle_template_pos( p, m_template.at( p ) );
                 }
         }
 

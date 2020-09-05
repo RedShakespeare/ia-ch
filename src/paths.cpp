@@ -9,8 +9,8 @@
 #include "debug.hpp"
 #include "io.hpp"
 
-namespace paths {
-
+namespace paths
+{
 std::string gfx_dir()
 {
         return "gfx/";
@@ -75,4 +75,4 @@ std::string highscores_file_path()
         return user_dir() + "highscores";
 }
 
-} // namespace paths
+}  // namespace paths

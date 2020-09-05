@@ -11,31 +11,34 @@
 #include "item_curse_ids.hpp"
 #include "sound.hpp"
 
-namespace actor {
+namespace actor
+{
 class Actor;
-} // namespace actor
+}  // namespace actor
 
-namespace item {
-
+namespace item
+{
 // -----------------------------------------------------------------------------
 // Staff of the Pharaohs
 // -----------------------------------------------------------------------------
-class PharaohStaff : public Wpn {
+class PharaohStaff : public Wpn
+{
 public:
-        PharaohStaff(ItemData* item_data);
+        PharaohStaff( ItemData* item_data );
 
-        void on_std_turn_in_inv_hook(InvType inv_type) override;
+        void on_std_turn_in_inv_hook( InvType inv_type ) override;
 
 private:
-        void on_mon_see_player_carrying(actor::Actor& mon) const;
+        void on_mon_see_player_carrying( actor::Actor& mon ) const;
 };
 
 // -----------------------------------------------------------------------------
 // Talisman of Reflection
 // -----------------------------------------------------------------------------
-class ReflTalisman : public Item {
+class ReflTalisman : public Item
+{
 public:
-        ReflTalisman(ItemData* item_data);
+        ReflTalisman( ItemData* item_data );
 
 private:
         void on_pickup_hook() override;
@@ -46,11 +49,12 @@ private:
 // -----------------------------------------------------------------------------
 // Talisman of Resurrection
 // -----------------------------------------------------------------------------
-class ResurrectTalisman : public Item {
+class ResurrectTalisman : public Item
+{
 public:
-        ResurrectTalisman(ItemData* item_data);
+        ResurrectTalisman( ItemData* item_data );
 
-        bool is_curse_allowed(item_curse::Id id) const override
+        bool is_curse_allowed( item_curse::Id id ) const override
         {
                 (void)id;
 
@@ -63,11 +67,12 @@ public:
 // -----------------------------------------------------------------------------
 // Talisman of Teleportation Control
 // -----------------------------------------------------------------------------
-class TeleCtrlTalisman : public Item {
+class TeleCtrlTalisman : public Item
+{
 public:
-        TeleCtrlTalisman(ItemData* item_data);
+        TeleCtrlTalisman( ItemData* item_data );
 
-        bool is_curse_allowed(item_curse::Id id) const override
+        bool is_curse_allowed( item_curse::Id id ) const override
         {
                 return id != item_curse::Id::teleport;
         }
@@ -81,18 +86,20 @@ private:
 // -----------------------------------------------------------------------------
 // Horn of Malice
 // -----------------------------------------------------------------------------
-class HornOfMaliceHeard : public SndHeardEffect {
+class HornOfMaliceHeard : public SndHeardEffect
+{
 public:
         HornOfMaliceHeard() = default;
 
         ~HornOfMaliceHeard() = default;
 
-        void run(actor::Actor& actor) const override;
+        void run( actor::Actor& actor ) const override;
 };
 
-class HornOfMalice : public Item {
+class HornOfMalice : public Item
+{
 public:
-        HornOfMalice(ItemData* item_data);
+        HornOfMalice( ItemData* item_data );
 
         std::string name_inf_str() const override;
 
@@ -100,7 +107,7 @@ public:
 
         void load_hook() override;
 
-        ConsumeItem activate(actor::Actor* actor) override;
+        ConsumeItem activate( actor::Actor* actor ) override;
 
 private:
         int m_charges;
@@ -109,18 +116,20 @@ private:
 // -----------------------------------------------------------------------------
 // Horn of Banishment
 // -----------------------------------------------------------------------------
-class HornOfBanishmentHeard : public SndHeardEffect {
+class HornOfBanishmentHeard : public SndHeardEffect
+{
 public:
         HornOfBanishmentHeard() = default;
 
         ~HornOfBanishmentHeard() = default;
 
-        void run(actor::Actor& actor) const override;
+        void run( actor::Actor& actor ) const override;
 };
 
-class HornOfBanishment : public Item {
+class HornOfBanishment : public Item
+{
 public:
-        HornOfBanishment(ItemData* item_data);
+        HornOfBanishment( ItemData* item_data );
 
         std::string name_inf_str() const override;
 
@@ -128,7 +137,7 @@ public:
 
         void load_hook() override;
 
-        ConsumeItem activate(actor::Actor* actor) override;
+        ConsumeItem activate( actor::Actor* actor ) override;
 
 private:
         int m_charges;
@@ -137,13 +146,14 @@ private:
 // -----------------------------------------------------------------------------
 // Holy Symbol
 // -----------------------------------------------------------------------------
-class HolySymbol : public Item {
+class HolySymbol : public Item
+{
 public:
-        HolySymbol(ItemData* item_data);
+        HolySymbol( ItemData* item_data );
 
-        ConsumeItem activate(actor::Actor* actor) override;
+        ConsumeItem activate( actor::Actor* actor ) override;
 
-        void on_std_turn_in_inv_hook(InvType inv_type) override;
+        void on_std_turn_in_inv_hook( InvType inv_type ) override;
 
         std::string name_inf_str() const override;
 
@@ -156,18 +166,19 @@ private:
 
         Range nr_turns_to_recharge() const;
 
-        int m_nr_charge_turns_left {0};
-        bool m_has_failed_attempt {false};
+        int m_nr_charge_turns_left { 0 };
+        bool m_has_failed_attempt { false };
 };
 
 // -----------------------------------------------------------------------------
 // Arcane Clockwork
 // -----------------------------------------------------------------------------
-class Clockwork : public Item {
+class Clockwork : public Item
+{
 public:
-        Clockwork(ItemData* item_data);
+        Clockwork( ItemData* item_data );
 
-        ConsumeItem activate(actor::Actor* actor) override;
+        ConsumeItem activate( actor::Actor* actor ) override;
 
         std::string name_inf_str() const override;
 
@@ -182,22 +193,24 @@ private:
 // -----------------------------------------------------------------------------
 // Spirit Dagger
 // -----------------------------------------------------------------------------
-class SpiritDagger : public Wpn {
+class SpiritDagger : public Wpn
+{
 public:
-        SpiritDagger(ItemData* item_data);
+        SpiritDagger( ItemData* item_data );
 
 protected:
         void specific_dmg_mod(
                 DmgRange& range,
-                const actor::Actor* actor) const override;
+                const actor::Actor* actor ) const override;
 };
 
 // -----------------------------------------------------------------------------
 // Orb of Life
 // -----------------------------------------------------------------------------
-class OrbOfLife : public Item {
+class OrbOfLife : public Item
+{
 public:
-        OrbOfLife(ItemData* item_data);
+        OrbOfLife( ItemData* item_data );
 
 private:
         void on_pickup_hook() override;
@@ -205,6 +218,6 @@ private:
         void on_removed_from_inv_hook() override;
 };
 
-} // namespace item
+}  // namespace item
 
-#endif // ITEM_ARTIFACT_HPP
+#endif  // ITEM_ARTIFACT_HPP

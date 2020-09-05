@@ -9,7 +9,8 @@
 
 #include <string>
 
-enum class TimeType {
+enum class TimeType
+{
         year,
         month,
         day,
@@ -18,7 +19,8 @@ enum class TimeType {
         second
 };
 
-struct TimeData {
+struct TimeData
+{
         TimeData() = default;
 
         TimeData(
@@ -27,19 +29,19 @@ struct TimeData {
                 int day_val,
                 int hour_val,
                 int minute_val,
-                int second_val) :
+                int second_val ) :
 
-                year(year_val),
-                month(month_val),
-                day(day_val),
-                hour(hour_val),
-                minute(minute_val),
-                second(second_val)
+                year( year_val ),
+                month( month_val ),
+                day( day_val ),
+                hour( hour_val ),
+                minute( minute_val ),
+                second( second_val )
         {}
 
         std::string time_str(
                 TimeType lowest,
-                bool add_separators) const;
+                bool add_separators ) const;
 
         int year;
         int month;
@@ -51,4 +53,4 @@ struct TimeData {
 
 TimeData current_time();
 
-#endif // TIME_HPP
+#endif  // TIME_HPP
