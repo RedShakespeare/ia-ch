@@ -260,9 +260,7 @@ MeleeAttData::MeleeAttData(
                 dmg_range = dmg_range.scaled_pct( 25 );
         }
 
-        if ( config::is_gj_mode() &&
-             attacker &&
-             defender->is_player() )
+        if ( config::is_gj_mode() && attacker && defender->is_player() )
         {
                 dmg_range = dmg_range.scaled_pct( 200 );
         }
@@ -472,19 +470,17 @@ RangedAttData::RangedAttData(
         // Positions further than max range have halved damage
         if ( dist > effective_range.max )
         {
-                dmg_range.scaled_pct( 50 );
+                dmg_range = dmg_range.scaled_pct( 50 );
         }
 
         // Defender takes reduced damage from piercing attacks?
         if ( defender->m_properties.has( PropId::reduced_pierce_dmg ) &&
              ( wpn.data().ranged.dmg_type == DmgType::piercing ) )
         {
-                dmg_range.scaled_pct( 25 );
+                dmg_range = dmg_range.scaled_pct( 25 );
         }
 
-        if ( config::is_gj_mode() &&
-             attacker &&
-             defender->is_player() )
+        if ( config::is_gj_mode() && attacker && defender->is_player() )
         {
                 dmg_range = dmg_range.scaled_pct( 200 );
         }
@@ -652,19 +648,17 @@ ThrowAttData::ThrowAttData(
         // Positions further than max range have halved damage
         if ( dist > effective_range.max )
         {
-                dmg_range.scaled_pct( 50 );
+                dmg_range = dmg_range.scaled_pct( 50 );
         }
 
         // Defender takes reduced damage from piercing attacks?
         if ( defender->m_properties.has( PropId::reduced_pierce_dmg ) &&
              ( item.data().ranged.dmg_type == DmgType::piercing ) )
         {
-                dmg_range.scaled_pct( 25 );
+                dmg_range = dmg_range.scaled_pct( 25 );
         }
 
-        if ( config::is_gj_mode() &&
-             attacker &&
-             defender->is_player() )
+        if ( config::is_gj_mode() && attacker && defender->is_player() )
         {
                 dmg_range = dmg_range.scaled_pct( 200 );
         }
