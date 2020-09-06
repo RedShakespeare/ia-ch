@@ -178,6 +178,7 @@ static void set_default_variables()
         static_assert( default_nr_gui_cells_x >= io::g_min_nr_gui_cells_x );
         static_assert( default_nr_gui_cells_y >= io::g_min_nr_gui_cells_y );
 
+#ifndef NDEBUG
         TRACE << "Default number of gui cells: "
               << default_nr_gui_cells_x
               << "x"
@@ -208,6 +209,7 @@ static void set_default_variables()
         ASSERT(
                 ( default_nr_gui_cells_y * s_gui_cell_px_h ) >=
                 io::g_min_res_h );
+#endif  // NDEBUG
 
         s_screen_px_w = s_gui_cell_px_w * default_nr_gui_cells_x;
         s_screen_px_h = s_gui_cell_px_h * default_nr_gui_cells_y;

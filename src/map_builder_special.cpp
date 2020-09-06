@@ -41,7 +41,7 @@ void MapBuilderDeepOneLair::handle_template_pos( const P& p, const char c )
         case 'd':
         case '%':  // TODO: Just put random blood/gore on the level instead?
         case 'B': {
-                auto floor = new terrain::Floor( p );
+                auto* floor = new terrain::Floor( p );
 
                 floor->m_type = terrain::FloorType::cave;
 
@@ -76,7 +76,7 @@ void MapBuilderDeepOneLair::handle_template_pos( const P& p, const char c )
         case '#':
         case '1':
         case '2': {
-                terrain::Terrain* t;
+                terrain::Terrain* t = nullptr;
 
                 if ( c == m_passage_symbol )
                 {
@@ -175,7 +175,7 @@ void MapBuilderMagicPool::handle_template_pos( const P& p, const char c )
         {
         case '@':
         case '.': {
-                auto floor = new terrain::Floor( p );
+                auto* floor = new terrain::Floor( p );
 
                 floor->m_type = terrain::FloorType::cave;
 
@@ -189,7 +189,7 @@ void MapBuilderMagicPool::handle_template_pos( const P& p, const char c )
         break;
 
         case '#': {
-                auto wall = new terrain::Wall( p );
+                auto* wall = new terrain::Wall( p );
 
                 wall->m_type = terrain::WallType::cave;
 
@@ -349,7 +349,7 @@ void MapBuilderIntroForest::handle_template_pos( const P& p, const char c )
         break;
 
         case '~': {
-                auto liquid = new terrain::LiquidDeep( p );
+                auto* liquid = new terrain::LiquidDeep( p );
 
                 liquid->m_type = LiquidType::water;
 
@@ -358,7 +358,7 @@ void MapBuilderIntroForest::handle_template_pos( const P& p, const char c )
         break;
 
         case '%': {
-                auto liquid = new terrain::LiquidShallow( p );
+                auto* liquid = new terrain::LiquidShallow( p );
 
                 liquid->m_type = LiquidType::water;
 
@@ -568,7 +568,7 @@ void MapBuilderEgypt::handle_template_pos( const P& p, const char c )
         break;
 
         case '~': {
-                auto liquid = new terrain::LiquidShallow( p );
+                auto* liquid = new terrain::LiquidShallow( p );
 
                 liquid->m_type = LiquidType::water;
 
@@ -635,7 +635,7 @@ void MapBuilderRatCave::handle_template_pos( const P& p, const char c )
                                 actor = actor::make( actor::Id::rat, p );
                         }
 
-                        auto prop = new PropFrenzied();
+                        auto* prop = new PropFrenzied();
 
                         prop->set_indefinite();
 

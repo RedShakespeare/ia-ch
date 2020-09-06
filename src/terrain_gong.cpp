@@ -755,7 +755,7 @@ void XpReduced::run_effect()
 // -----------------------------------------------------------------------------
 bool Deaf::is_allowed() const
 {
-        const auto prop = map::g_player->m_properties.prop( PropId::deaf );
+        auto* const prop = map::g_player->m_properties.prop( PropId::deaf );
 
         return ! prop || ( prop->duration_mode() != PropDurationMode::indefinite );
 }
@@ -774,7 +774,7 @@ void Deaf::run_effect()
 // -----------------------------------------------------------------------------
 bool Cursed::is_allowed() const
 {
-        const auto prop = map::g_player->m_properties.prop( PropId::cursed );
+        auto* const prop = map::g_player->m_properties.prop( PropId::cursed );
 
         return ! prop || ( prop->duration_mode() != PropDurationMode::indefinite );
 }
@@ -849,7 +849,7 @@ void SpawnMonsters::run_effect()
                 std::begin( mon_summoned.monsters ),
                 std::end( mon_summoned.monsters ),
                 []( auto* const mon ) {
-                        auto prop_waiting = new PropWaiting();
+                        auto* prop_waiting = new PropWaiting();
 
                         prop_waiting->set_duration( 2 );
 

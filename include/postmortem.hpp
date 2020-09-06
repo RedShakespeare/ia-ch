@@ -8,6 +8,7 @@
 #define POSTMORTEM_HPP
 
 #include <string>
+#include <utility>
 #include <vector>
 
 #include "browser.hpp"
@@ -19,8 +20,8 @@
 class PostmortemInfo : public InfoScreenState
 {
 public:
-        PostmortemInfo( const std::vector<ColoredString>& lines ) :
-                m_lines( lines ) {}
+        PostmortemInfo( std::vector<ColoredString> lines ) :
+                m_lines( std::move( lines ) ) {}
 
         void draw() override;
 

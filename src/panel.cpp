@@ -138,8 +138,10 @@ void init( const P max_gui_dims )
         const int map_gui_border_x1 = max_gui_dims.x - 1;
         const int map_gui_border_y1 = max_gui_dims.y - 1;
 
+        const auto nr_log_lines = (int)msg_log::g_nr_log_lines;
+
         const int log_border_x0 = 0;
-        const int log_border_y0 = max_gui_dims.y - msg_log::g_nr_log_lines - 2;
+        const int log_border_y0 = max_gui_dims.y - nr_log_lines - 2;
         const int log_border_x1 = map_gui_border_x0 - 1;
         const int log_border_y1 = max_gui_dims.y - 1;
 

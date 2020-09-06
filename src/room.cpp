@@ -1736,8 +1736,8 @@ void RiverRoom::on_pre_connect( Array2<bool>& door_proposals )
 
         // Using nestled scope to avoid declaring x and y at function scope
         {
-                int x;
-                int y;
+                int x = 0;
+                int y = 0;
 
                 // i_outer and i_inner should be references to x or y.
                 auto find_closest_center0 =
@@ -1898,8 +1898,8 @@ void RiverRoom::on_pre_connect( Array2<bool>& door_proposals )
 
         // Scoping to avoid declaring x and y at function scope
         {
-                int x;
-                int y;
+                int x = 0;
+                int y = 0;
 
                 // i_outer and i_inner should be references to x or y.
                 auto mark_sides =

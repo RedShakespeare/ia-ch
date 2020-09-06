@@ -1249,7 +1249,7 @@ void Stairs::bump( actor::Actor& actor_bumping )
 {
         if ( actor_bumping.is_player() )
         {
-                int choice;
+                int choice = 0;
 
                 popup::Popup( popup::AddToMsgHistory::no )
                         .set_title( "A staircase leading downwards" )
@@ -3099,7 +3099,7 @@ void Tomb::bump( actor::Actor& actor_bumping )
                                 else
                                 {
                                         // Not weakened
-                                        int bon;
+                                        int bon = 0;
 
                                         if ( player_bon::has_trait( Trait::rugged ) )
                                         {
@@ -3368,7 +3368,7 @@ DidTriggerTrap Tomb::trigger_trap( actor::Actor* const actor )
                         std::begin( summoned.monsters ),
                         std::end( summoned.monsters ),
                         [ this ]( auto* const mon ) {
-                                auto prop = new PropWaiting();
+                                auto* prop = new PropWaiting();
 
                                 prop->set_duration( 1 );
 
@@ -3661,7 +3661,7 @@ void Chest::on_player_kick()
                 m_item_container.destroy_single_fragile();
         }
 
-        int open_one_in_n;
+        int open_one_in_n = 0;
 
         if ( player_bon::has_trait( Trait::rugged ) )
         {
@@ -3991,7 +3991,7 @@ void Fountain::bump( actor::Actor& actor_bumping )
         break;
 
         case FountainEffect::faint: {
-                auto prop = new PropFainted();
+                auto* prop = new PropFainted();
 
                 prop->set_duration( 10 );
 

@@ -49,7 +49,7 @@ InputData get()
         {
                 io::sleep( 1 );
 
-                const SDL_Keymod mod = SDL_GetModState();
+                const auto mod = SDL_GetModState();
 
                 input.is_shift_held = mod & KMOD_SHIFT;
                 input.is_ctrl_held = mod & KMOD_CTRL;
@@ -301,7 +301,8 @@ InputData get()
                 break;  // case SDL_KEYUP
 
                 case SDL_TEXTINPUT: {
-                        const char c = s_sdl_event.text.text[ 0 ];
+                        const auto c =
+                                (unsigned char)s_sdl_event.text.text[ 0 ];
 
                         if ( c == '+' || c == '-' )
                         {

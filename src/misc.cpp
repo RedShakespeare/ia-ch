@@ -121,7 +121,7 @@ bool is_pos_adj( const P& pos1, const P& pos2, const bool count_same_cell_as_adj
 
 int to_int( const std::string& in )
 {
-        int _nr;
+        int _nr = 0;
         std::istringstream buffer( in );
         buffer >> _nr;
         return _nr;

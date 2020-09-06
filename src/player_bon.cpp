@@ -196,7 +196,7 @@ static void init_trait_data()
         d.title = "Fearless";
         d.descr = "You cannot become terrified, +10% shock resistance";
         d.on_picked = []() {
-                auto prop = new PropRFear();
+                auto* prop = new PropRFear();
 
                 prop->set_indefinite();
 
@@ -255,7 +255,7 @@ static void init_trait_data()
                 "You cannot become confused, the number of remaining turns "
                 "for status effects are displayed";
         d.on_picked = []() {
-                auto prop = new PropRConf();
+                auto* prop = new PropRConf();
 
                 prop->set_indefinite();
 
@@ -293,7 +293,7 @@ static void init_trait_data()
                 "abilities, and their negative effect on hit points and "
                 "regeneration is halved";
         d.on_picked = []() {
-                auto prop = new PropRDisease();
+                auto* prop = new PropRDisease();
 
                 prop->set_indefinite();
 
@@ -315,7 +315,7 @@ static void init_trait_data()
                 "can defy harmful spells (it takes 125-150 turns to regain "
                 "spell resistance after a spell is blocked)";
         d.on_picked = []() {
-                auto prop = property_factory::make( PropId::r_spell );
+                auto* prop = property_factory::make( PropId::r_spell );
 
                 prop->set_indefinite();
 
@@ -1279,7 +1279,7 @@ void pick_bg( const Bg bg )
         break;
 
         case Bg::ghoul: {
-                auto prop_r_disease = new PropRDisease();
+                auto* prop_r_disease = new PropRDisease();
 
                 prop_r_disease->set_indefinite();
 
@@ -1289,7 +1289,7 @@ void pick_bg( const Bg bg )
                         true,
                         Verbose::no );
 
-                auto prop_darkvis = property_factory::make( PropId::darkvision );
+                auto* prop_darkvis = property_factory::make( PropId::darkvision );
 
                 prop_darkvis->set_indefinite();
 
@@ -1341,7 +1341,7 @@ void pick_occultist_domain( const OccultistDomain domain )
         switch ( domain )
         {
         case OccultistDomain::clairvoyant: {
-                auto prop =
+                auto* prop =
                         static_cast<PropMagicSearching*>(
                                 property_factory::make(
                                         PropId::magic_searching ) );

@@ -415,7 +415,7 @@ void Bless::run_effect()
 {
         const int nr_turns = rnd::range( 8, 12 );
 
-        auto prop = new PropBlessed();
+        auto* prop = new PropBlessed();
 
         prop->set_duration( nr_turns );
 

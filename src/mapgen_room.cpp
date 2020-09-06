@@ -195,7 +195,7 @@ Room* make_room( Region& region )
 
                 if ( templ )
                 {
-                        auto& symbols = templ->symbols;
+                        const auto& symbols = templ->symbols;
 
                         if ( ( symbols.dims().x > max_dims.x ) ||
                              ( symbols.dims().y > max_dims.y ) )

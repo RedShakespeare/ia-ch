@@ -106,7 +106,7 @@ static void load_color(
         const std::string& name,
         SDL_Color& target_color )
 {
-        for ( auto e = xml::first_child( colors_e );
+        for ( auto* e = xml::first_child( colors_e );
               e;
               e = xml::next_sibling( e ) )
         {
@@ -146,7 +146,7 @@ static void load_gui_color(
         const std::string type,
         SDL_Color& target_color )
 {
-        for ( auto e = xml::first_child( gui_e );
+        for ( auto* e = xml::first_child( gui_e );
               e;
               e = xml::next_sibling( e ) )
         {
@@ -182,7 +182,7 @@ static void load_colors()
 
         xml::load_file( paths::data_dir() + "colors/colors.xml", doc );
 
-        auto colors_e = xml::first_child( doc );
+        auto* colors_e = xml::first_child( doc );
 
         load_color( colors_e, "black", s_black );
         load_color( colors_e, "extra_dark_gray", s_extra_dark_gray );
@@ -225,7 +225,7 @@ static void load_gui_colors()
 
         xml::load_file( paths::data_dir() + "colors/colors_gui.xml", doc );
 
-        auto gui_e = xml::first_child( doc );
+        auto* gui_e = xml::first_child( doc );
 
         load_gui_color( gui_e, "text", s_text );
         load_gui_color( gui_e, "menu_highlight", s_menu_highlight );
@@ -259,8 +259,6 @@ Color::Color( const SDL_Color& sdl_color ) :
         m_sdl_color( sdl_color )
 {
 }
-
-Color::~Color() = default;
 
 Color& Color::operator=( const Color& other )
 {
@@ -431,6 +429,7 @@ std::string color_to_name( const Color& color )
 
         if ( search == std::end( s_str_color_pairs ) )
         {
+#ifndef NDEBUG
                 const auto sdl_color = color.sdl_color();
 
                 TRACE << "No color name stored for color with RGB: "
@@ -439,6 +438,7 @@ std::string color_to_name( const Color& color )
                       << sdl_color.b << std::endl;
 
                 ASSERT( false );
+#endif  // NDEBUG
 
                 return "";
         }

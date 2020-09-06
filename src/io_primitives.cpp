@@ -48,7 +48,7 @@ void draw_rectangle( R px_rect, const Color& color )
                         color.r(),
                         color.g(),
                         color.b(),
-                        0xFFu );
+                        0xFFU );
 
                 SDL_RenderDrawRect( g_sdl_renderer, &rect );
 
@@ -79,7 +79,7 @@ void draw_rectangle_filled( R px_rect, const Color& color )
                 color.r(),
                 color.g(),
                 color.b(),
-                0xFFu );
+                0xFFU );
 
         SDL_RenderFillRect( g_sdl_renderer, &rect );
 }

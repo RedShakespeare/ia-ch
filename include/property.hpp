@@ -749,7 +749,7 @@ public:
 
         std::string msg_end_player() const override
         {
-                const auto str =
+                const auto* const str =
                         ( m_nr_wounds > 1 )
                         ? "All my wounds are healed!"
                         : "A wound is healed!";

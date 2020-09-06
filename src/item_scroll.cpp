@@ -249,9 +249,7 @@ std::string Scroll::real_name() const
 {
         const std::unique_ptr<const Spell> spell( make_spell() );
 
-        const std::string scroll_name = spell->name();
-
-        return scroll_name;
+        return spell->name();
 }
 
 std::vector<std::string> Scroll::descr_hook() const
@@ -262,9 +260,7 @@ std::vector<std::string> Scroll::descr_hook() const
         {
                 const auto skill = player_skill_for_scroll( spell->id() );
 
-                const auto descr = spell->descr( skill, SpellSrc::manuscript );
-
-                return descr;
+                return spell->descr( skill, SpellSrc::manuscript );
         }
         else
         {

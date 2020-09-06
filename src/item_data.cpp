@@ -57,7 +57,7 @@ static const StrToIdMap s_str_to_intr_item_id_map = {
         { "web_bola", item::Id::intr_web_bola },
 };
 
-typedef std::unordered_map<std::string, item::ItemSetId> StrToItemSetIdMap;
+using StrToItemSetIdMap = std::unordered_map<std::string, item::ItemSetId>;
 
 static const StrToItemSetIdMap s_str_to_item_set_id_map = {
         { "minor_treasure", item::ItemSetId::minor_treasure },
@@ -709,7 +709,7 @@ void init()
         d.ranged.hit_chance_mod = 5;
         d.ranged.effective_range = { 0, 4 };
         {
-                auto prop = new PropParalyzed();
+                auto* prop = new PropParalyzed();
 
                 prop->set_duration( 2 );
 
@@ -2109,8 +2109,7 @@ MeleeData::MeleeData() :
 
         hit_chance_mod( 0 ),
         is_noisy( true ),
-        att_msgs( ItemAttMsgs() ),
-        prop_applied( ItemAttProp() ),
+
         dmg_type( DmgType::slashing ),
         knocks_back( false ),
         att_corpse( false ),
@@ -2140,13 +2139,13 @@ RangedData::RangedData() :
         projectile_tile( gfx::TileId::projectile_std_front_slash ),
         projectile_color( colors::white() ),
         projectile_leaves_trail( false ),
-        att_msgs( ItemAttMsgs() ),
+
         snd_msg( "" ),
         snd_vol( SndVol::low ),
         makes_ricochet_snd( false ),
         att_sfx( audio::SfxId::END ),
-        reload_sfx( audio::SfxId::END ),
-        prop_applied( ItemAttProp() )
+        reload_sfx( audio::SfxId::END )
+
 {
 }
 

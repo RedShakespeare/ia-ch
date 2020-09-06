@@ -61,7 +61,7 @@ static void make_for_player_exorcist()
                 item::make( item::Id::revolver ),
                 Verbose::no );
 
-        auto revolver_bullets = item::make( item::Id::revolver_bullet );
+        auto* revolver_bullets = item::make( item::Id::revolver_bullet );
 
         revolver_bullets->m_nr_items = 8;
 
@@ -94,7 +94,7 @@ static void make_for_player_occultist_common()
                 item::make( item::Id::revolver ),
                 Verbose::no );
 
-        auto revolver_bullets = item::make( item::Id::revolver_bullet );
+        auto* revolver_bullets = item::make( item::Id::revolver_bullet );
 
         revolver_bullets->m_nr_items = 8;
 
@@ -173,7 +173,7 @@ static void make_for_player_rogue()
                 item::make( item::Id::revolver ),
                 Verbose::no );
 
-        auto revolver_bullets = item::make( item::Id::revolver_bullet );
+        auto* revolver_bullets = item::make( item::Id::revolver_bullet );
 
         revolver_bullets->m_nr_items = 8;
 
@@ -418,8 +418,8 @@ static void make_item_set_firearm( actor::Actor& actor )
         // On early dungeon levels, lean heavily towards revolvers and pistols
         const bool is_low_dlvl = map::g_dlvl < 4;
 
-        int revolver_weight;
-        int pistol_weight;
+        int revolver_weight = 0;
+        int pistol_weight = 0;
 
         if ( is_low_dlvl )
         {

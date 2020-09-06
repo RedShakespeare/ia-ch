@@ -93,7 +93,7 @@ public:
 
         void auto_melee();
 
-        item::Wpn& unarmed_wpn();
+        item::Wpn& unarmed_wpn() const;
 
         void set_unarmed_wpn( item::Wpn* wpn )
         {

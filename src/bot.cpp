@@ -300,7 +300,7 @@ void act()
         // Apply permanent paralysis resistance, to avoid getting stuck
         if ( ! map::g_player->m_properties.has( PropId::r_para ) )
         {
-                auto prop = new PropRPara();
+                auto* prop = new PropRPara();
 
                 prop->set_indefinite();
 
@@ -310,7 +310,7 @@ void act()
         // Occasionally apply fear resistance to avoid getting stuck
         if ( rnd::one_in( 7 ) )
         {
-                auto prop = new PropRFear();
+                auto* prop = new PropRFear();
 
                 prop->set_duration( 4 );
 

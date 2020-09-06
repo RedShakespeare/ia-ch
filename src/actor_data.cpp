@@ -131,8 +131,7 @@ static const StrToMonGroupSizeMap s_str_to_group_size_map = {
         { "pack", actor::MonGroupSize::pack },
         { "swarm", actor::MonGroupSize::swarm } };
 
-typedef std::unordered_map<actor::MonGroupSize, std::string>
-        MonGroupSizeToStrMap;
+using MonGroupSizeToStrMap = std::unordered_map<actor::MonGroupSize, std::string>;
 
 static const MonGroupSizeToStrMap s_group_size_to_str_map = {
         { actor::MonGroupSize::alone, "alone" },
@@ -140,21 +139,21 @@ static const MonGroupSizeToStrMap s_group_size_to_str_map = {
         { actor::MonGroupSize::pack, "pack" },
         { actor::MonGroupSize::swarm, "swarm" } };
 
-typedef std::unordered_map<std::string, actor::Size> StrToSizeMap;
+using StrToSizeMap = std::unordered_map<std::string, actor::Size>;
 
 static const StrToSizeMap s_str_to_actor_size_map = {
         { "floor", actor::Size::floor },
         { "humanoid", actor::Size::humanoid },
         { "giant", actor::Size::giant } };
 
-typedef std::unordered_map<actor::Size, std::string> SizeToStrMap;
+using SizeToStrMap = std::unordered_map<actor::Size, std::string>;
 
 static const SizeToStrMap s_actor_size_to_str_map = {
         { actor::Size::floor, "floor" },
         { actor::Size::humanoid, "humanoid" },
         { actor::Size::giant, "giant" } };
 
-typedef std::unordered_map<std::string, actor::AiId> StrToAiIdMap;
+using StrToAiIdMap = std::unordered_map<std::string, actor::AiId>;
 
 static const StrToAiIdMap s_str_to_ai_id_map = {
         { "looks", actor::AiId::looks },
@@ -167,7 +166,7 @@ static const StrToAiIdMap s_str_to_ai_id_map = {
         { "moves_randomly_when_unaware",
           actor::AiId::moves_randomly_when_unaware } };
 
-typedef std::unordered_map<actor::AiId, std::string> AiIdToStrMap;
+using AiIdToStrMap = std::unordered_map<actor::AiId, std::string>;
 
 static const AiIdToStrMap s_ai_id_to_str_map = {
         { actor::AiId::looks, "looks" },
@@ -227,7 +226,7 @@ static void dump_text( xml::Element* text_e, actor::ActorData& data )
                         xml::first_child(
                                 text_e, "wary_message" ) );
 
-        auto aware_msg_seen_e =
+        auto* aware_msg_seen_e =
                 xml::first_child(
                         text_e, "aware_message_seen" );
 
@@ -239,7 +238,7 @@ static void dump_text( xml::Element* text_e, actor::ActorData& data )
                 "use_cultist_messages",
                 data.use_cultist_aware_msg_mon_seen );
 
-        auto aware_msg_hidden_e =
+        auto* aware_msg_hidden_e =
                 xml::first_child(
                         text_e, "aware_message_hidden" );
 
@@ -255,7 +254,7 @@ static void dump_text( xml::Element* text_e, actor::ActorData& data )
                         xml::first_child(
                                 text_e, "spell_message" ) );
 
-        auto death_msg_e = xml::first_child( text_e, "death_message" );
+        auto* death_msg_e = xml::first_child( text_e, "death_message" );
 
         if ( death_msg_e )
         {
@@ -449,7 +448,7 @@ static void dump_intr_attack_property(
                 PANIC;
         }
 
-        int duration;
+        int duration = 0;
 
         if ( xml::try_get_attribute_int( property_e, "duration", duration ) )
         {
@@ -479,7 +478,7 @@ static void dump_intr_attack_property(
 
 static void dump_items( xml::Element* items_e, actor::ActorData& data )
 {
-        for ( auto item_set_e = xml::first_child( items_e );
+        for ( auto* item_set_e = xml::first_child( items_e );
               item_set_e;
               item_set_e = xml::next_sibling( item_set_e ) )
         {
@@ -510,7 +509,7 @@ static void dump_items( xml::Element* items_e, actor::ActorData& data )
 
 static void dump_intr_attacks( xml::Element* attacks_e, actor::ActorData& data )
 {
-        for ( auto attack_e = xml::first_child( attacks_e );
+        for ( auto* attack_e = xml::first_child( attacks_e );
               attack_e;
               attack_e = xml::next_sibling( attack_e ) )
         {
@@ -521,7 +520,7 @@ static void dump_intr_attacks( xml::Element* attacks_e, actor::ActorData& data )
 
                 attack_data->item_id = item::str_to_intr_item_id( id_str );
 
-                auto e = xml::first_child( attack_e );
+                auto* e = xml::first_child( attack_e );
 
                 attack_data->dmg = xml::get_text_int( e );
 
@@ -539,7 +538,7 @@ static void dump_intr_attacks( xml::Element* attacks_e, actor::ActorData& data )
 
 static void dump_spells( xml::Element* spells_e, actor::ActorData& data )
 {
-        for ( auto spell_e = xml::first_child( spells_e );
+        for ( auto* spell_e = xml::first_child( spells_e );
               spell_e;
               spell_e = xml::next_sibling( spell_e ) )
         {
@@ -567,7 +566,7 @@ static void dump_spells( xml::Element* spells_e, actor::ActorData& data )
 
 static void dump_properties( xml::Element* properties_e, actor::ActorData& data )
 {
-        for ( auto e = xml::first_child( properties_e );
+        for ( auto* e = xml::first_child( properties_e );
               e;
               e = xml::next_sibling( e ) )
         {
@@ -673,7 +672,7 @@ static void dump_spawning( xml::Element* spawn_e, actor::ActorData& data )
 
         const std::string group_size_element_str = "group_size";
 
-        for ( auto e = xml::first_child( spawn_e, group_size_element_str );
+        for ( auto* e = xml::first_child( spawn_e, group_size_element_str );
               e;
               e = xml::next_sibling( e, group_size_element_str ) )
         {
@@ -682,7 +681,7 @@ static void dump_spawning( xml::Element* spawn_e, actor::ActorData& data )
 
         const std::string native_room_element_str = "native_room";
 
-        for ( auto e = xml::first_child( spawn_e, native_room_element_str );
+        for ( auto* e = xml::first_child( spawn_e, native_room_element_str );
               e;
               e = xml::next_sibling( e, native_room_element_str ) )
         {
@@ -692,7 +691,7 @@ static void dump_spawning( xml::Element* spawn_e, actor::ActorData& data )
 
 static void dump_starting_allies( xml::Element* allies_e, actor::ActorData& data )
 {
-        for ( auto e = xml::first_child( allies_e );
+        for ( auto* e = xml::first_child( allies_e );
               e;
               e = xml::next_sibling( e ) )
         {
@@ -710,9 +709,9 @@ static void read_actor_definitions_xml()
 
         xml::load_file( paths::data_dir() + "monsters.xml", doc );
 
-        auto top_e = xml::first_child( doc );
+        auto* top_e = xml::first_child( doc );
 
-        auto mon_e = xml::first_child( top_e );
+        auto* mon_e = xml::first_child( top_e );
 
         for ( ; mon_e; mon_e = xml::next_sibling( mon_e, "monster" ) )
         {
@@ -732,35 +731,35 @@ static void read_actor_definitions_xml()
 
                 dump_attributes( xml::first_child( mon_e, "attributes" ), data );
 
-                auto items_e = xml::first_child( mon_e, "items" );
+                auto* items_e = xml::first_child( mon_e, "items" );
 
                 if ( items_e )
                 {
                         dump_items( items_e, data );
                 }
 
-                auto attacks_e = xml::first_child( mon_e, "attacks" );
+                auto* attacks_e = xml::first_child( mon_e, "attacks" );
 
                 if ( attacks_e )
                 {
                         dump_intr_attacks( attacks_e, data );
                 }
 
-                auto spells_e = xml::first_child( mon_e, "spells" );
+                auto* spells_e = xml::first_child( mon_e, "spells" );
 
                 if ( spells_e )
                 {
                         dump_spells( spells_e, data );
                 }
 
-                auto props_e = xml::first_child( mon_e, "properties" );
+                auto* props_e = xml::first_child( mon_e, "properties" );
 
                 if ( props_e )
                 {
                         dump_properties( props_e, data );
                 }
 
-                auto ai_e = xml::first_child( mon_e, "ai" );
+                auto* ai_e = xml::first_child( mon_e, "ai" );
 
                 if ( ai_e )
                 {
@@ -769,7 +768,7 @@ static void read_actor_definitions_xml()
 
                 dump_spawning( xml::first_child( mon_e, "spawning" ), data );
 
-                auto allies_e = xml::first_child( mon_e, "starting_allies" );
+                auto* allies_e = xml::first_child( mon_e, "starting_allies" );
 
                 if ( allies_e )
                 {

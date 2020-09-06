@@ -1484,7 +1484,7 @@ static void update_projectile_states( ProjectileFireData& fire_data )
 static void run_projectiles_messages_and_sounds(
         const ProjectileFireData& fire_data )
 {
-        for ( auto& projectile : fire_data.projectiles )
+        for ( const auto& projectile : fire_data.projectiles )
         {
                 if ( projectile.is_dead )
                 {
@@ -1769,7 +1769,7 @@ static void melee_hit_actor(
                      ! defender.m_properties.has( PropId::splits_on_death ) &&
                      rnd::percent( 60 ) )
                 {
-                        auto weak = property_factory::make( PropId::weakened );
+                        auto* weak = property_factory::make( PropId::weakened );
 
                         weak->set_duration( rnd::range( 2, 3 ) );
 

@@ -47,7 +47,7 @@
 // -----------------------------------------------------------------------------
 static void query_quit()
 {
-        int choice;
+        int choice = 0;
 
         popup::Popup( popup::AddToMsgHistory::no )
                 .set_title( "Quit the current game?" )
@@ -566,7 +566,7 @@ void handle( const GameCmd cmd )
 
         case GameCmd::wait_long: {
                 bool is_allowed = true;
-                std::string prevent_msg = "";
+                std::string prevent_msg;
                 if ( actor::is_player_seeing_burning_terrain() )
                 {
                         is_allowed = false;
@@ -750,7 +750,7 @@ void handle( const GameCmd cmd )
         case GameCmd::auto_move_down_left:
         case GameCmd::auto_move_up_left: {
                 bool is_allowed = true;
-                std::string prevent_msg = "";
+                std::string prevent_msg;
                 if ( actor::is_player_seeing_burning_terrain() )
                 {
                         is_allowed = false;
@@ -943,7 +943,7 @@ void handle( const GameCmd cmd )
                         "(C)ancel",
                 };
 
-                int choice;
+                int choice = 0;
 
                 popup::Popup( popup::AddToMsgHistory::no )
                         .set_menu(

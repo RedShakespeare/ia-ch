@@ -25,15 +25,13 @@ std::vector<P> pathfind(
                         p1,
                         allow_diagonal );
 
-        const auto path =
+        return (
                 pathfind_with_flood(
                         p0,
                         p1,
                         flood,
                         allow_diagonal,
-                        randomize_steps );
-
-        return path;
+                        randomize_steps ) );
 }
 
 std::vector<P> pathfind_with_flood(

@@ -551,7 +551,7 @@ DidAction Mon::try_attack( Actor& defender )
 
                 if ( m_data->ranged_cooldown_turns > 0 )
                 {
-                        auto prop = new PropDisabledRanged();
+                        auto* prop = new PropDisabledRanged();
 
                         prop->set_duration( m_data->ranged_cooldown_turns );
 
@@ -852,7 +852,7 @@ DidAction Khephren::on_act()
                 std::begin( summoned.monsters ),
                 std::end( summoned.monsters ),
                 []( Mon* const mon ) {
-                        auto prop = new PropSummoned();
+                        auto* prop = new PropSummoned();
 
                         prop->set_indefinite();
 
@@ -880,7 +880,7 @@ DidAction Ape::on_act()
         {
                 m_frenzy_cooldown = 30;
 
-                auto prop = new PropFrenzied();
+                auto* prop = new PropFrenzied();
 
                 prop->set_duration( rnd::range( 4, 6 ) );
 
@@ -906,9 +906,9 @@ Color StrangeColor::color() const
         return color;
 }
 
-SpectralWpn::SpectralWpn() :
-        Mon()
-{}
+SpectralWpn::SpectralWpn()
+
+        = default;
 
 void SpectralWpn::on_death()
 {

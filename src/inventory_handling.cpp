@@ -179,7 +179,7 @@ void InvState::draw_slot(
                 p,
                 color );
 
-        p.x += key_str.length() + 1;
+        p.x += (int)key_str.length() + 1;
 
         // Draw slot label
         const InvSlot& slot = map::g_player->m_inv.m_slots[ (size_t)id ];
@@ -282,7 +282,7 @@ void InvState::draw_backpack_item(
                 p,
                 color );
 
-        p.x += key_str.length() + 1;
+        p.x += (int)key_str.length() + 1;
 
         // Draw item
         const auto* const item = map::g_player->m_inv.m_backpack[ backpack_idx ];
@@ -345,7 +345,7 @@ void InvState::draw_weight_pct_and_dots(
         ASSERT( item_weight_pct >= 0 && item_weight_pct <= 100 );
 
         std::string weight_str;
-        int weight_x;
+        int weight_x = 0;
 
         if ( item_weight_pct > 0 && item_weight_pct < 100 )
         {
@@ -1863,7 +1863,7 @@ void SelectIdentify::update()
         case MenuAction::selected: {
                 const auto& inv_entry_marked = m_filtered_inv[ m_browser.y() ];
 
-                item::Item* item_to_identify;
+                item::Item* item_to_identify = nullptr;
 
                 if ( inv_entry_marked.is_slot )
                 {

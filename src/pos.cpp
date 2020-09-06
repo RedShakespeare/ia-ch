@@ -36,7 +36,7 @@ P P::operator+( const Dir dir ) const
         return result;
 }
 
-Dir P::to_dir()
+Dir P::to_dir() const
 {
         return dir_utils::dir( *this );
 }

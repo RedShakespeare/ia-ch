@@ -310,7 +310,7 @@ void ViewActorDescr::on_start()
         // which all monsters of this type starts with)
         for ( auto it = begin( prop_list ); it != end( prop_list ); )
         {
-                auto* const prop = it->prop;
+                const auto* const prop = it->prop;
 
                 const auto id = prop->id();
 
@@ -466,7 +466,9 @@ std::string ViewActorDescr::auto_description_str() const
 
         if ( m_actor.m_data->is_undead )
         {
-                text_format::append_with_space( str, "This creature is undead." );
+                text_format::append_with_space(
+                        str,
+                        "This creature is undead." );
         }
 
         text_format::append_with_space( str, get_mon_shock_descr( m_actor ) );
@@ -476,11 +478,7 @@ std::string ViewActorDescr::auto_description_str() const
 
 std::string ViewActorDescr::title() const
 {
-        const std::string mon_name =
-                text_format::first_to_upper(
-                        m_actor.name_a() );
-
-        return mon_name;
+        return text_format::first_to_upper( m_actor.name_a() );
 }
 
 // -----------------------------------------------------------------------------

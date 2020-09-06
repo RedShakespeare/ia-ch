@@ -593,9 +593,9 @@ void Conf::collide_hook( const P& pos, actor::Actor* const actor )
 
 void Fortitude::quaff_impl( actor::Actor& actor )
 {
-        auto prop_r_fear = new PropRFear();
-        auto prop_r_conf = new PropRConf();
-        auto prop_r_sleep = new PropRSleep();
+        auto* prop_r_fear = new PropRFear();
+        auto* prop_r_conf = new PropRConf();
+        auto* prop_r_sleep = new PropRSleep();
 
         // The duration of the last two properties is decided by the randomized
         // duration of the first property

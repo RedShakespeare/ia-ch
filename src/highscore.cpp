@@ -359,7 +359,7 @@ void BrowseHighscore::draw()
                 const auto dlvl = std::to_string( entry.dlvl );
                 const auto turns = std::to_string( entry.turn_count );
                 const auto ins = std::to_string( entry.ins );
-                const auto win = ( entry.is_win == IsWin::yes ) ? "Yes" : "No";
+                const auto* const win = ( entry.is_win == IsWin::yes ) ? "Yes" : "No";
                 const auto score = std::to_string( entry.calculate_score() );
 
                 const bool is_marked = m_browser.is_at_idx( i );

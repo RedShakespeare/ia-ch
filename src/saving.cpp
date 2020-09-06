@@ -266,7 +266,7 @@ std::string get_str()
         ASSERT( s_state == SaveLoadState::loading );
         ASSERT( ! s_lines.empty() );
 
-        const std::string str = s_lines.front();
+        auto str = s_lines.front();
 
         s_lines.erase( std::begin( s_lines ) );
 

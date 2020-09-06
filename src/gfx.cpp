@@ -204,7 +204,7 @@ static const StrToTileIdMap s_str_to_tile_id_map = {
         { "zombie_unarmed", gfx::TileId::zombie_unarmed },
         { "", gfx::TileId::END } };
 
-typedef std::unordered_map<gfx::TileId, std::string> TileIdToStrMap;
+using TileIdToStrMap = std::unordered_map<gfx::TileId, std::string>;
 
 static const TileIdToStrMap s_tile_id_to_str_map = {
         { gfx::TileId::aim_marker_head, "aim_marker_head" },

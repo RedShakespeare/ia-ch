@@ -282,7 +282,7 @@ void PylonBurning::on_new_turn_activated()
 
         for ( size_t i = 0; i < map::nr_cells(); ++i )
         {
-                const auto t = map::g_cells.at( i ).terrain;
+                auto* const t = map::g_cells.at( i ).terrain;
 
                 if ( t->id() == terrain::Id::chasm ||
                      t->id() == terrain::Id::liquid_deep )
@@ -338,7 +338,7 @@ void PylonBurning::on_new_turn_activated()
 
         auto actors = living_actors_reached();
 
-        for ( auto actor : actors )
+        for ( auto* actor : actors )
         {
                 actor->m_properties.apply( new PropBurning() );
         }
@@ -353,7 +353,7 @@ void PylonInvis::on_new_turn_activated()
 
         auto actors = living_actors_reached();
 
-        for ( auto actor : actors )
+        for ( auto* actor : actors )
         {
                 actor->m_properties.apply(
                         property_factory::make( PropId::invis ) );
@@ -369,7 +369,7 @@ void PylonSlow::on_new_turn_activated()
 
         auto actors = living_actors_reached();
 
-        for ( auto actor : actors )
+        for ( auto* actor : actors )
         {
                 actor->m_properties.apply( new PropSlowed() );
         }
@@ -389,7 +389,7 @@ void PylonKnockback::on_new_turn_activated()
 
         auto actors = living_actors_reached();
 
-        for ( auto actor : actors )
+        for ( auto* actor : actors )
         {
                 knockback::run(
                         *actor,
@@ -414,7 +414,7 @@ void PylonTeleport::on_new_turn_activated()
 
         auto actors = living_actors_reached();
 
-        for ( auto actor : actors )
+        for ( auto* actor : actors )
         {
                 teleport( *actor );
         }
@@ -429,7 +429,7 @@ void PylonTerrify::on_new_turn_activated()
 
         auto actors = living_actors_reached();
 
-        for ( auto actor : actors )
+        for ( auto* actor : actors )
         {
                 actor->m_properties.apply( new PropTerrified() );
         }

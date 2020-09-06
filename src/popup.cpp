@@ -425,7 +425,7 @@ void PopupState::draw_menu_popup() const
 
                 const auto choice_suffix_start = key_str.length();
 
-                draw_x_pos = choice_x_pos + key_str.length();
+                draw_x_pos = choice_x_pos + (int)key_str.length();
 
                 const auto choice_suffix =
                         choice_str.substr(

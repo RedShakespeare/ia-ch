@@ -367,7 +367,7 @@ void BrowseSpell::draw()
                         p,
                         color );
 
-                p.x = key_str.size() + 1;
+                p.x = (int)key_str.size() + 1;
 
                 color =
                         is_marked

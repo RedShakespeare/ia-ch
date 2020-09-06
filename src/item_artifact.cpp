@@ -126,7 +126,7 @@ ReflTalisman::ReflTalisman( ItemData* const item_data ) :
 
 void ReflTalisman::on_pickup_hook()
 {
-        auto prop = property_factory::make( PropId::spell_reflect );
+        auto* prop = property_factory::make( PropId::spell_reflect );
 
         prop->set_indefinite();
 
@@ -156,7 +156,7 @@ TeleCtrlTalisman::TeleCtrlTalisman( ItemData* const item_data ) :
 
 void TeleCtrlTalisman::on_pickup_hook()
 {
-        auto prop = property_factory::make( PropId::tele_ctrl );
+        auto* prop = property_factory::make( PropId::tele_ctrl );
 
         prop->set_indefinite();
 
@@ -346,7 +346,7 @@ ConsumeItem HolySymbol::activate( actor::Actor* actor )
                         ItemRefType::plain,
                         ItemRefInf::none );
 
-        std::string pray_msg = "";
+        std::string pray_msg;
 
         if ( map::g_player->m_properties.has( PropId::terrified ) )
         {
@@ -466,8 +466,8 @@ void HolySymbol::run_effect()
 
         const int prop_duration = rnd::range( 6, 12 );
 
-        auto r_fear = property_factory::make( PropId::r_fear );
-        auto r_shock = property_factory::make( PropId::r_shock );
+        auto* r_fear = property_factory::make( PropId::r_fear );
+        auto* r_shock = property_factory::make( PropId::r_shock );
 
         r_fear->set_duration( prop_duration );
         r_shock->set_duration( prop_duration );
@@ -581,13 +581,13 @@ void OrbOfLife::on_pickup_hook()
 {
         map::g_player->change_max_hp( 4, Verbose::yes );
 
-        auto prop_r_poison = new PropRPoison();
+        auto* prop_r_poison = new PropRPoison();
 
         prop_r_poison->set_indefinite();
 
         add_carrier_prop( prop_r_poison, Verbose::yes );
 
-        auto prop_r_disease = new PropRDisease();
+        auto* prop_r_disease = new PropRDisease();
 
         prop_r_disease->set_indefinite();
 

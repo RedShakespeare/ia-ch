@@ -1,3 +1,6 @@
+#ifndef TERRAIN_DMG_HPP
+#define TERRAIN_DMG_HPP
+
 // =============================================================================
 // Copyright 2011-2020 Martin Törnqvist <m.tornq@gmail.com>
 //
@@ -13,3 +16,5 @@ void destr_all_adj_doors( const P& p );
 void destr_stone_wall( const P& p );
 
 }  // namespace terrain
+
+#endif

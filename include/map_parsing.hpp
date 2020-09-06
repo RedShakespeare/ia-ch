@@ -360,7 +360,7 @@ public:
         IsCloserToPos( const P& p ) :
                 m_pos( p ) {}
 
-        bool operator()( const P& p1, const P& p2 );
+        bool operator()( const P& p1, const P& p2 ) const;
 
         P m_pos;
 };
@@ -372,7 +372,7 @@ public:
         IsFurtherFromPos( const P& p ) :
                 m_pos( p ) {}
 
-        bool operator()( const P& p1, const P& p2 );
+        bool operator()( const P& p1, const P& p2 ) const;
 
         P m_pos;
 };

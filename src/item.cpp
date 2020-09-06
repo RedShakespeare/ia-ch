@@ -230,7 +230,7 @@ DmgRange Item::thrown_dmg( const actor::Actor* const attacker ) const
 ItemAttProp& Item::prop_applied_on_melee(
         const actor::Actor* const attacker ) const
 {
-        const auto intr = prop_applied_intr_attack( attacker );
+        auto* const intr = prop_applied_intr_attack( attacker );
 
         if ( intr )
         {
@@ -243,7 +243,7 @@ ItemAttProp& Item::prop_applied_on_melee(
 ItemAttProp& Item::prop_applied_on_ranged(
         const actor::Actor* const attacker ) const
 {
-        const auto intr = prop_applied_intr_attack( attacker );
+        auto* const intr = prop_applied_intr_attack( attacker );
 
         if ( intr )
         {
@@ -821,9 +821,9 @@ void ArmorAsbSuit::on_equip_hook( const Verbose verbose )
 {
         (void)verbose;
 
-        auto prop_r_fire = new PropRFire();
-        auto prop_r_acid = new PropRAcid();
-        auto prop_r_elec = new PropRElec();
+        auto* prop_r_fire = new PropRFire();
+        auto* prop_r_acid = new PropRAcid();
+        auto* prop_r_elec = new PropRElec();
 
         prop_r_fire->set_indefinite();
         prop_r_acid->set_indefinite();
@@ -939,7 +939,7 @@ void SpikedMace::on_melee_hit( actor::Actor& actor_hit, const int dmg )
 
         if ( rnd::percent( stun_pct ) )
         {
-                auto prop = new PropParalyzed();
+                auto* prop = new PropParalyzed();
 
                 prop->set_duration( 2 );
 
@@ -1092,7 +1092,7 @@ void MiGoGun::pre_ranged_attack()
                 DmgType::pure,
                 AllowWound::no );
 
-        auto disabled_regen =
+        auto* disabled_regen =
                 property_factory::make( PropId::disabled_hp_regen );
 
         disabled_regen->set_duration(
@@ -1138,7 +1138,7 @@ void RavenPeck::on_melee_hit( actor::Actor& actor_hit, const int dmg )
 
         if ( rnd::coin_toss() )
         {
-                auto const prop = new PropBlind();
+                auto* const prop = new PropBlind();
 
                 prop->set_duration( 2 );
 
@@ -1203,14 +1203,14 @@ void MindLeechSting::on_melee_hit( actor::Actor& actor_hit, const int dmg )
         else
         {
                 // Player mind can be eaten
-                auto prop_mind_sap = new PropMindSap();
+                auto* prop_mind_sap = new PropMindSap();
 
                 prop_mind_sap->set_indefinite();
 
                 map::g_player->m_properties.apply( prop_mind_sap );
 
                 // Make the monster pause, so things don't get too crazy
-                auto prop_waiting = new PropWaiting();
+                auto* prop_waiting = new PropWaiting();
 
                 prop_waiting->set_duration( 2 );
 
@@ -1265,7 +1265,7 @@ void SnakeVenomSpit::on_ranged_hit( actor::Actor& actor_hit )
                 return;
         }
 
-        auto prop = new PropBlind();
+        auto* prop = new PropBlind();
 
         prop->set_duration( 7 );
 

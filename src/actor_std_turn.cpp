@@ -70,7 +70,7 @@ static void player_std_turn()
                         if ( player.m_nr_turns_until_rspell == 0 )
                         {
                                 // Cooldown has finished
-                                auto prop =
+                                auto* prop =
                                         property_factory::make( PropId::r_spell );
 
                                 prop->set_indefinite();
@@ -103,7 +103,7 @@ static void player_std_turn()
              ! player.m_properties.has( PropId::disabled_hp_regen ) &&
              ( player_bon::bg() != Bg::ghoul ) )
         {
-                int nr_turns_per_hp;
+                int nr_turns_per_hp = 0;
 
                 // Rapid Recoverer trait affects hp regen?
                 if ( player_bon::has_trait( Trait::rapid_recoverer ) )

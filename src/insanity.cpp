@@ -495,7 +495,7 @@ void InsShadows::on_start_hook()
                 std::begin( summoned.monsters ),
                 std::end( summoned.monsters ),
                 []( auto* const mon ) {
-                        auto prop = new PropWaiting();
+                        auto* prop = new PropWaiting();
 
                         prop->set_duration( 1 );
 
@@ -540,7 +540,7 @@ void InsParanoia::on_start_hook()
                 std::begin( summoned.monsters ),
                 std::end( summoned.monsters ),
                 []( auto* const mon ) {
-                        auto prop = new PropWaiting();
+                        auto* prop = new PropWaiting();
 
                         prop->set_duration( 1 );
 

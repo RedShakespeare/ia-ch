@@ -791,7 +791,7 @@ public:
 
         void on_new_turn_hook() override;
 
-        virtual void add_light_hook( Array2<bool>& light ) const override;
+        void add_light_hook( Array2<bool>& light ) const override;
 
 private:
         Color color_default() const override;

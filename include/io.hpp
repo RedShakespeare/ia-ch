@@ -67,7 +67,7 @@ void on_fullscreen_toggled();
 
 P min_screen_gui_dims();
 
-R gui_to_px_rect( const R rect );
+R gui_to_px_rect( R rect );
 
 // Scale from gui/map cell coordinate(s) to pixel coordinate(s)
 int gui_to_px_coords_x( int value );

@@ -71,7 +71,7 @@ void run_until_state_done( std::unique_ptr<State> state )
 {
         TRACE_FUNC_BEGIN;
 
-        auto state_addr = state.get();
+        auto* state_addr = state.get();
 
         push( std::move( state ) );
 

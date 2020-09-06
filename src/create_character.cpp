@@ -432,7 +432,7 @@ void PickTraitState::update()
                                 const std::string title =
                                         "Gain trait \"" + name + "\"?";
 
-                                int choice;
+                                int choice = 0;
 
                                 popup::Popup( popup::AddToMsgHistory::no )
                                         .set_title( title )
@@ -504,9 +504,9 @@ void PickTraitState::draw()
                 colors::black(),
                 true );
 
-        MenuBrowser* browser;
+        MenuBrowser* browser = nullptr;
 
-        std::vector<Trait>* traits;
+        std::vector<Trait>* traits = nullptr;
 
         if ( m_screen_mode == TraitScreenMode::pick_new )
         {
@@ -658,7 +658,7 @@ void PickTraitState::draw()
                         { x, y },
                         colors::text() );
 
-                x += label.length() + 1;
+                x += (int)label.length() + 1;
 
                 std::vector<ColoredString> prereq_titles;
 

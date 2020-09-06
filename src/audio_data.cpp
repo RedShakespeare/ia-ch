@@ -70,7 +70,7 @@ static const StrToSfxIdMap s_str_to_sfx_id_map = {
         { "menu_select", audio::SfxId::menu_select },
         { "", audio::SfxId::END } };
 
-typedef std::unordered_map<audio::SfxId, std::string> SfxIdToStrMap;
+using SfxIdToStrMap = std::unordered_map<audio::SfxId, std::string>;
 
 static const SfxIdToStrMap s_sfx_id_to_str_map = {
         { audio::SfxId::dog_snarl, "dog_snarl" },

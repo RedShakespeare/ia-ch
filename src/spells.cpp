@@ -83,7 +83,7 @@ static const StrToSpellIdMap s_str_to_spell_id_map = {
         { "terrify", SpellId::terrify },
         { "transmut", SpellId::transmut } };
 
-typedef std::unordered_map<std::string, SpellSkill> StrToSpellSkillMap;
+using StrToSpellSkillMap = std::unordered_map<std::string, SpellSkill>;
 
 static const StrToSpellSkillMap s_str_to_spell_skill_map = {
         { "basic", SpellSkill::basic },
@@ -560,7 +560,7 @@ void SpellAuraOfDecay::run_effect(
         duration_range.min = 20 * ( (int)skill + 1 );
         duration_range.max = duration_range.min * 2;
 
-        auto prop = new PropAuraOfDecay();
+        auto* prop = new PropAuraOfDecay();
 
         prop->set_duration( duration_range.roll() );
 
@@ -694,7 +694,7 @@ void Darkbolt::on_hit( actor::Actor& actor_hit, const SpellSkill skill ) const
                 return;
         }
 
-        auto paralyzed = new PropParalyzed();
+        auto* paralyzed = new PropParalyzed();
 
         paralyzed->set_duration( rnd::range( 1, 2 ) );
 
@@ -702,7 +702,7 @@ void Darkbolt::on_hit( actor::Actor& actor_hit, const SpellSkill skill ) const
 
         if ( skill == SpellSkill::master )
         {
-                auto burning = new PropBurning();
+                auto* burning = new PropBurning();
 
                 burning->set_duration( rnd::range( 2, 3 ) );
 
@@ -1008,7 +1008,7 @@ void SpellAzaWrath::run_effect(
 
                 if ( target->is_alive() )
                 {
-                        auto prop = new PropParalyzed();
+                        auto* prop = new PropParalyzed();
 
                         prop->set_duration( 1 );
 
@@ -1018,7 +1018,7 @@ void SpellAzaWrath::run_effect(
                 if ( ( skill == SpellSkill::master ) &&
                      target->is_alive() )
                 {
-                        auto prop = new PropBurning();
+                        auto* prop = new PropBurning();
 
                         prop->set_duration( 2 );
 
@@ -1362,7 +1362,7 @@ void SpellPestilence::run_effect(
                 [ skill, &is_any_seen_by_player ]( auto* const mon ) {
                         mon->m_properties.apply( new PropSummoned() );
 
-                        auto prop_waiting = new PropWaiting();
+                        auto* prop_waiting = new PropWaiting();
 
                         prop_waiting->set_duration( 2 );
 
@@ -1376,7 +1376,7 @@ void SpellPestilence::run_effect(
                         // Haste the rats if master
                         if ( skill == SpellSkill::master )
                         {
-                                auto prop_hasted = new PropHasted();
+                                auto* prop_hasted = new PropHasted();
 
                                 prop_hasted->set_indefinite();
 
@@ -1510,7 +1510,7 @@ void SpellSpectralWpns::run_effect(
 
                         mon->m_properties.apply( new PropSummoned() );
 
-                        auto prop_waiting = new PropWaiting();
+                        auto* prop_waiting = new PropWaiting();
 
                         prop_waiting->set_duration( 1 );
 
@@ -1518,7 +1518,7 @@ void SpellSpectralWpns::run_effect(
 
                         if ( skill >= SpellSkill::expert )
                         {
-                                auto prop = new PropSeeInvis();
+                                auto* prop = new PropSeeInvis();
 
                                 prop->set_indefinite();
 
@@ -1531,7 +1531,7 @@ void SpellSpectralWpns::run_effect(
 
                         if ( skill == SpellSkill::master )
                         {
-                                auto prop = new PropHasted();
+                                auto* prop = new PropHasted();
 
                                 prop->set_indefinite();
 
@@ -2073,7 +2073,7 @@ void SpellFrenzy::run_effect(
 {
         (void)skill;
 
-        auto prop = new PropFrenzied();
+        auto* prop = new PropFrenzied();
 
         prop->set_duration( rnd::range( 30, 40 ) );
 
@@ -2097,7 +2097,7 @@ void SpellBless::run_effect(
         actor::Actor* const caster,
         const SpellSkill skill ) const
 {
-        auto prop = new PropBlessed();
+        auto* prop = new PropBlessed();
 
         prop->set_duration( 20 + (int)skill * 60 );
 
@@ -2130,7 +2130,7 @@ void SpellLight::run_effect(
         actor::Actor* const caster,
         const SpellSkill skill ) const
 {
-        auto prop = property_factory::make( PropId::radiant_fov );
+        auto* prop = property_factory::make( PropId::radiant_fov );
 
         prop->set_duration( 20 + (int)skill * 20 );
 
@@ -2191,7 +2191,7 @@ void SpellSeeInvis::run_effect(
                         ? Range( 40, 80 )
                         : Range( 400, 600 );
 
-        auto prop = new PropSeeInvis();
+        auto* prop = new PropSeeInvis();
 
         prop->set_duration( duration_range.roll() );
 
@@ -2240,7 +2240,7 @@ void SpellSpellShield::run_effect(
 {
         (void)skill;
 
-        auto prop = property_factory::make( PropId::r_spell );
+        auto* prop = property_factory::make( PropId::r_spell );
 
         prop->set_indefinite();
 
@@ -2290,7 +2290,7 @@ void SpellHaste::run_effect(
 
         const int duration = duration_range.roll();
 
-        auto prop = new PropHasted();
+        auto* prop = new PropHasted();
 
         prop->set_duration( duration );
 
@@ -2344,7 +2344,7 @@ void SpellPremonition::run_effect(
         duration_range.min = 4 + (int)skill * 4;
         duration_range.max = duration_range.min * 2;
 
-        auto prop = new PropPremonition();
+        auto* prop = new PropPremonition();
 
         prop->set_duration( duration_range.roll() );
 
@@ -2519,8 +2519,8 @@ void SpellRes::run_effect(
 {
         int nr_turns = 15 + (int)skill * 35;
 
-        auto prop_r_fire = new PropRFire;
-        auto prop_r_elec = new PropRElec;
+        auto* prop_r_fire = new PropRFire;
+        auto* prop_r_elec = new PropRElec;
 
         prop_r_fire->set_duration( nr_turns );
         prop_r_elec->set_duration( nr_turns );
@@ -3240,7 +3240,7 @@ void SpellSummonMon::run_effect(
                 []( auto* const mon ) {
                         mon->m_properties.apply( new PropSummoned() );
 
-                        auto prop_waiting = new PropWaiting();
+                        auto* prop_waiting = new PropWaiting();
 
                         prop_waiting->set_duration( 2 );
 
@@ -3332,7 +3332,7 @@ void SpellSummonTentacles::run_effect(
                 []( auto* const mon ) {
                         mon->m_properties.apply( new PropSummoned() );
 
-                        auto prop_waiting = new PropWaiting();
+                        auto* prop_waiting = new PropWaiting();
 
                         prop_waiting->set_duration( 2 );
 
@@ -3493,7 +3493,7 @@ void SpellMiGoHypno::run_effect(
 
         if ( rnd::coin_toss() )
         {
-                auto prop_fainted = new PropFainted();
+                auto* prop_fainted = new PropFainted();
 
                 prop_fainted->set_duration( rnd::range( 2, 10 ) );
 
@@ -3576,7 +3576,7 @@ void SpellBurn::run_effect(
                 msg_log::add( "Flames are rising around " + target_str + "!" );
         }
 
-        auto prop = new PropBurning();
+        auto* prop = new PropBurning();
 
         prop->set_duration( 2 + (int)skill );
 
@@ -3640,7 +3640,7 @@ void SpellDeafen::run_effect(
                 }
         }
 
-        auto prop = property_factory::make( PropId::deaf );
+        auto* prop = property_factory::make( PropId::deaf );
 
         prop->set_duration( 75 + (int)skill * 75 );
 

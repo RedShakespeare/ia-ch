@@ -108,7 +108,7 @@ static void confuse_player()
 {
         msg_log::add( "I suddenly find myself in a different location!" );
 
-        auto prop = new PropConfused();
+        auto* prop = new PropConfused();
 
         prop->set_duration( 8 );
 
@@ -156,7 +156,7 @@ static void filter_out_near( const P& origin, std::vector<P>& positions )
                 furthest_dist = std::max( d, furthest_dist );
         }
 
-        int min_dist;
+        int min_dist = 0;
 
         {
                 const int desired_min_dist = g_fov_radi_int;

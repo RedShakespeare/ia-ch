@@ -695,9 +695,7 @@ std::vector<P> find_path_to_lair_if_no_los( actor::Mon& mon, const P& lair_p )
                       blocked.rect(),
                       MapParseMode::append );
 
-        const auto path = pathfind( mon.m_pos, lair_p, blocked );
-
-        return path;
+        return pathfind( mon.m_pos, lair_p, blocked );
 }
 
 std::vector<P> find_path_to_leader( actor::Mon& mon )
@@ -748,9 +746,7 @@ std::vector<P> find_path_to_leader( actor::Mon& mon )
                         blocked.rect(),
                         MapParseMode::append );
 
-        const auto path = pathfind( mon.m_pos, leader->m_pos, blocked );
-
-        return path;
+        return pathfind( mon.m_pos, leader->m_pos, blocked );
 }
 
 std::vector<P> find_path_to_target( actor::Mon& mon )
@@ -880,10 +876,7 @@ std::vector<P> find_path_to_target( actor::Mon& mon )
                       blocked.rect(),
                       MapParseMode::append );
 
-        // Find a path
-        const auto path = pathfind( mon.m_pos, target.m_pos, blocked );
-
-        return path;
+        return pathfind( mon.m_pos, target.m_pos, blocked );
 }
 
 }  // namespace info

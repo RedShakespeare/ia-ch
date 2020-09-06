@@ -7,6 +7,8 @@
 #ifndef CREATE_CHARACTER_HPP
 #define CREATE_CHARACTER_HPP
 
+#include <utility>
+
 #include "browser.hpp"
 #include "player_bon.hpp"
 #include "state.hpp"
@@ -73,8 +75,8 @@ private:
 class PickTraitState : public State
 {
 public:
-        PickTraitState( const std::string& title ) :
-                m_title( title )
+        PickTraitState( std::string title ) :
+                m_title( std::move( title ) )
         {
         }
 

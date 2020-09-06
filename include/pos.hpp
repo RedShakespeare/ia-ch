@@ -23,13 +23,7 @@ public:
         // Construct from a direction -> offsets (e.g. 1, -1)
         explicit P( Dir dir );
 
-        P& operator=( const P& p )
-        {
-                x = p.x;
-                y = p.y;
-
-                return *this;
-        }
+        P& operator=( const P& p ) = default;
 
         // Assign from a direction -> offsets (e.g. 1, -1)
         P& operator=( Dir dir );
@@ -185,7 +179,7 @@ public:
                 set( tmp );
         }
 
-        bool is_adjacent( const P& p )
+        bool is_adjacent( const P& p ) const
         {
                 // Do not count the same position as adjacent
                 if ( p == *this )
@@ -202,7 +196,7 @@ public:
         }
 
         // NOTE: This assumes that both x and y is -1, 0, or 1
-        Dir to_dir();
+        Dir to_dir() const;
 
         int x { 0 };
         int y { 0 };

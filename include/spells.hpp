@@ -958,7 +958,7 @@ private:
                 return false;
         }
 
-        Range duration( const SpellSkill skill ) const;
+        Range duration( SpellSkill skill ) const;
 };
 
 class SpellPurge : public Spell
@@ -1366,7 +1366,7 @@ private:
                 return true;
         }
 
-        int max_dist( const SpellSkill skill ) const;
+        int max_dist( SpellSkill skill ) const;
 };
 
 class SpellSeeInvis : public Spell

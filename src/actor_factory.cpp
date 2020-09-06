@@ -57,13 +57,9 @@ static std::vector<P> free_spawn_positions( const R& area )
         Array2<bool> blocked( map::dims() );
 
         map_parsers::BlocksWalking( ParseActors::yes )
-                .run( blocked,
-                      area,
-                      MapParseMode::overwrite );
+                .run( blocked, area, MapParseMode::overwrite );
 
-        const auto free_positions = to_vec( blocked, false, area );
-
-        return free_positions;
+        return to_vec( blocked, false, area );
 }
 
 static actor::Mon* spawn_at( const P& pos, const actor::Id id )
@@ -209,11 +205,9 @@ MonSpawnResult spawn(
                 std::end( free_positions ),
                 IsCloserToPos( origin ) );
 
-        const auto result = spawn_at_positions( free_positions, monster_ids );
-
         TRACE_FUNC_END;
 
-        return result;
+        return spawn_at_positions( free_positions, monster_ids );
 }
 
 MonSpawnResult spawn_random_position(
@@ -231,11 +225,9 @@ MonSpawnResult spawn_random_position(
 
         rnd::shuffle( free_positions );
 
-        const auto result = spawn_at_positions( free_positions, monster_ids );
-
         TRACE_FUNC_END;
 
-        return result;
+        return spawn_at_positions( free_positions, monster_ids );
 }
 
 }  // namespace actor

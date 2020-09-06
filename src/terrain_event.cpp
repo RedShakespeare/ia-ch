@@ -438,7 +438,7 @@ void EventSnakeEmerge::on_new_turn()
 
                 auto* const actor = actor::make( id, p );
 
-                auto prop = new PropWaiting();
+                auto* prop = new PropWaiting();
 
                 prop->set_duration( 2 );
 
@@ -470,7 +470,7 @@ void EventRatsInTheWallsDiscovery::on_new_turn()
         {
                 map::update_vision();
 
-                const auto msg =
+                const auto* const msg =
                         "Before me lies a twilit grotto of enormous height. "
                         "An insane tangle of human bones extends for yards "
                         "like a foamy sea - invariably in postures of demoniac "

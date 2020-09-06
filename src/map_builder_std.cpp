@@ -625,7 +625,7 @@ bool MapBuilderStd::build_specific()
         // ---------------------------------------------------------------------
         if ( map::g_dlvl > 1 )
         {
-                int make_drk_pct;
+                int make_drk_pct = 0;
 
                 if ( map::g_dlvl <= g_dlvl_last_early_game )
                 {

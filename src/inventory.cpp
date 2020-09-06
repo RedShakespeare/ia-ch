@@ -813,7 +813,7 @@ int Inventory::total_item_weight() const
                 }
         }
 
-        for ( const auto item : m_backpack )
+        for ( auto* const item : m_backpack )
         {
                 weight += item->weight();
         }

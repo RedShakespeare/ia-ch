@@ -53,7 +53,7 @@ std::string data_dir()
 
 std::string user_dir()
 {
-        const auto path_str = io::sdl_pref_dir();
+        auto path_str = io::sdl_pref_dir();
 
         TRACE << "User data directory: " << path_str << std::endl;
 

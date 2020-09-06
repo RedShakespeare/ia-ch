@@ -359,7 +359,7 @@ PropEnded PropInfected::on_tick()
 
         // NOTE: This property is now deleted
 
-        auto prop_diseased = new PropDiseased();
+        auto* prop_diseased = new PropDiseased();
 
         prop_diseased->set_indefinite();
 
@@ -667,8 +667,8 @@ PropEnded PropPoisoned::on_tick()
 
         const auto owner_hp = m_owner->m_hp;
 
-        int dmg;
-        int pct_chance;
+        int dmg = 0;
+        int pct_chance = 0;
 
         if ( m_owner->is_player() )
         {
@@ -1266,7 +1266,7 @@ PropActResult PropRecloaks::on_act()
              ! m_owner->m_properties.has( PropId::cloaked ) &&
              rnd::one_in( 8 ) )
         {
-                auto prop_cloaked = property_factory::make( PropId::cloaked );
+                auto* prop_cloaked = property_factory::make( PropId::cloaked );
 
                 prop_cloaked->set_indefinite();
 
@@ -1801,7 +1801,7 @@ PropEnded PropSplitsOnDeath::on_death()
                 std::begin( spawned.monsters ),
                 std::end( spawned.monsters ),
                 []( auto* const mon ) {
-                        auto prop_waiting = new PropWaiting();
+                        auto* prop_waiting = new PropWaiting();
 
                         prop_waiting->set_duration( 1 );
 
@@ -1918,7 +1918,7 @@ void PropAltersEnv::on_std_turn()
 
         Array2<bool> has_actor( map::dims() );
 
-        for ( auto actor : game_time::g_actors )
+        for ( auto* actor : game_time::g_actors )
         {
                 has_actor.at( actor->m_pos ) = true;
         }
@@ -2244,7 +2244,7 @@ void PropBreeds::on_std_turn()
                 std::begin( spawned.monsters ),
                 std::end( spawned.monsters ),
                 []( auto* const spawned_mon ) {
-                        auto prop_waiting = new PropWaiting();
+                        auto* prop_waiting = new PropWaiting();
 
                         prop_waiting->set_duration( 2 );
 
@@ -2327,7 +2327,7 @@ void PropVomitsOoze::on_std_turn()
                 std::begin( spawned.monsters ),
                 std::end( spawned.monsters ),
                 [ this ]( auto* const spawned_mon ) {
-                        auto prop_waiting = new PropWaiting();
+                        auto* prop_waiting = new PropWaiting();
 
                         prop_waiting->set_duration( 1 );
 
@@ -2377,7 +2377,7 @@ void PropConfusesAdjacent::on_std_turn()
                 msg_log::add( msg );
         }
 
-        auto prop_confusd = new PropConfused();
+        auto* prop_confusd = new PropConfused();
 
         prop_confusd->set_duration( rnd::range( 8, 12 ) );
 
@@ -2635,7 +2635,7 @@ PropActResult PropMajorClaphamSummon::on_act()
                 std::begin( spawned.monsters ),
                 std::end( spawned.monsters ),
                 []( auto* const spawned_mon ) {
-                        auto prop_summoned = new PropSummoned();
+                        auto* prop_summoned = new PropSummoned();
 
                         prop_summoned->set_indefinite();
 

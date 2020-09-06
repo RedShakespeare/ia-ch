@@ -113,7 +113,7 @@ static void post_process_wall_tiles()
                                 }
                                 else if ( id == terrain::Id::door )
                                 {
-                                        auto door = static_cast<const terrain::Door*>( t );
+                                        const auto* door = static_cast<const terrain::Door*>( t );
 
                                         if ( door->is_hidden() )
                                         {

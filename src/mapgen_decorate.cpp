@@ -53,7 +53,7 @@ static bool is_cave_floor( const P& p )
 
         if ( t.id() == terrain::Id::floor )
         {
-                auto* floor = static_cast<const terrain::Floor*>( &t );
+                const auto* floor = static_cast<const terrain::Floor*>( &t );
 
                 if ( floor->m_type == terrain::FloorType::cave )
                 {

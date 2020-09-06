@@ -364,7 +364,7 @@ RangedAttData::RangedAttData(
 
         const auto effective_range = wpn.data().ranged.effective_range;
 
-        int dist_mod;
+        int dist_mod = 0;
 
         if ( dist >= effective_range.min )
         {
@@ -460,7 +460,8 @@ RangedAttData::RangedAttData(
         }
 
         const bool is_player_with_aiming_prop =
-                ( attacker == map::g_player ) &&
+                attacker &&
+                attacker->is_player() &&
                 attacker->m_properties.has( PropId::aiming );
 
         if ( is_player_with_aiming_prop )
@@ -569,7 +570,7 @@ ThrowAttData::ThrowAttData(
 
         const auto effective_range = item.data().ranged.effective_range;
 
-        int dist_mod;
+        int dist_mod = 0;
 
         if ( dist >= effective_range.min )
         {

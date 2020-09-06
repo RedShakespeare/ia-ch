@@ -235,7 +235,7 @@ void try_sprain_player()
                 return;
         }
 
-        int sprain_one_in_n;
+        int sprain_one_in_n = 0;
 
         if ( player_bon::has_trait( Trait::rugged ) )
         {
@@ -339,14 +339,14 @@ void run()
 
         if ( corpse )
         {
-                player_attack_corpse( *corpse, att_pos, *wpn, *kick_wpn.get() );
+                player_attack_corpse( *corpse, att_pos, *wpn, *kick_wpn );
 
                 return;
         }
 
         if ( input_dir != Dir::center )
         {
-                player_attack_terrain( att_pos, *wpn, *kick_wpn.get() );
+                player_attack_terrain( att_pos, *wpn, *kick_wpn );
         }
 }
 

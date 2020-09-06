@@ -704,7 +704,7 @@ bool is_map_connected( const Array2<bool>& blocked )
 // -----------------------------------------------------------------------------
 // Is closer to pos
 // -----------------------------------------------------------------------------
-bool IsCloserToPos::operator()( const P& p1, const P& p2 )
+bool IsCloserToPos::operator()( const P& p1, const P& p2 ) const
 {
         const int king_dist1 = king_dist( m_pos.x, m_pos.y, p1.x, p1.y );
         const int king_dist2 = king_dist( m_pos.x, m_pos.y, p2.x, p2.y );
@@ -715,7 +715,7 @@ bool IsCloserToPos::operator()( const P& p1, const P& p2 )
 // -----------------------------------------------------------------------------
 // Is further from pos
 // -----------------------------------------------------------------------------
-bool IsFurtherFromPos::operator()( const P& p1, const P& p2 )
+bool IsFurtherFromPos::operator()( const P& p1, const P& p2 ) const
 {
         const int king_dist1 = king_dist( m_pos.x, m_pos.y, p1.x, p1.y );
         const int king_dist2 = king_dist( m_pos.x, m_pos.y, p2.x, p2.y );

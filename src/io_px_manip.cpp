@@ -93,7 +93,7 @@ Color read_px_on_surface( const SDL_Surface& surface, const P& px_pos )
                 ( px_pos.y * surface.pitch ) +
                 ( px_pos.x * surface.format->BytesPerPixel );
 
-        int v;
+        int v = 0;
 
         switch ( surface.format->BytesPerPixel )
         {

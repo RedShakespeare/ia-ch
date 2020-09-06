@@ -58,6 +58,19 @@ struct ChokePointData
                 sides[ 1 ].resize( 0 );
         }
 
+        ChokePointData( const ChokePointData& other )
+        {
+                if ( &other == this )
+                {
+                        return;
+                }
+
+                p = other.p;
+
+                sides[ 0 ] = other.sides[ 0 ];
+                sides[ 1 ] = other.sides[ 1 ];
+        }
+
         ChokePointData& operator=( const ChokePointData& other )
         {
                 if ( &other == this )

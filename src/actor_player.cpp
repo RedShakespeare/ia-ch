@@ -1026,7 +1026,7 @@ void Player::kick_mon( Actor& defender )
         delete kick_wpn;
 }
 
-item::Wpn& Player::unarmed_wpn()
+item::Wpn& Player::unarmed_wpn() const
 {
         ASSERT( m_unarmed_wpn );
 

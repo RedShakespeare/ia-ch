@@ -151,7 +151,7 @@ int get_attribute_int( const Element* const e, const std::string name )
 
 bool try_get_attribute_str( const Element* const e, const std::string name, std::string& result )
 {
-        auto str = e->Attribute( name.c_str() );
+        const auto* str = e->Attribute( name.c_str() );
 
         if ( str )
         {

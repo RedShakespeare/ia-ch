@@ -59,7 +59,7 @@ void PropHandler::save() const
 
         int nr_intr_props_ = 0;
 
-        for ( auto& prop : m_props )
+        for ( const auto& prop : m_props )
         {
                 if ( prop->m_src == PropSrc::intr )
                 {
@@ -69,7 +69,7 @@ void PropHandler::save() const
 
         saving::put_int( nr_intr_props_ );
 
-        for ( auto& prop : m_props )
+        for ( const auto& prop : m_props )
         {
                 if ( prop->m_src == PropSrc::intr )
                 {
@@ -351,7 +351,7 @@ Prop* PropHandler::prop( const PropId id ) const
 {
         if ( has( id ) )
         {
-                for ( auto& prop : m_props )
+                for ( const auto& prop : m_props )
                 {
                         if ( prop->m_id == id )
                         {
@@ -623,7 +623,7 @@ std::vector<PropTextListEntry> PropHandler::property_names_temporary_negative()
         // which all monsters of this type starts with)
         for ( auto it = begin( prop_list ); it != end( prop_list ); )
         {
-                auto* const prop = it->prop;
+                const auto* const prop = it->prop;
 
                 if ( is_temporary_negative_prop( *prop ) )
                 {
@@ -658,7 +658,7 @@ std::vector<ColoredString> PropHandler::property_names_short() const
 {
         std::vector<ColoredString> line;
 
-        for ( auto& prop : m_props )
+        for ( const auto& prop : m_props )
         {
                 std::string str = prop->name_short();
 
@@ -820,7 +820,7 @@ std::vector<PropTextListEntry> PropHandler::property_names_and_descr() const
 
 bool PropHandler::is_resisting_prop( const PropId id ) const
 {
-        for ( auto& prop : m_props )
+        for ( const auto& prop : m_props )
         {
                 if ( prop->is_resisting_other_prop( id ) )
                 {
@@ -837,7 +837,7 @@ bool PropHandler::is_resisting_dmg(
 {
         DmgResistData res_data;
 
-        for ( auto& prop : m_props )
+        for ( const auto& prop : m_props )
         {
                 res_data = prop->is_resisting_dmg( dmg_type );
 
@@ -881,7 +881,7 @@ bool PropHandler::is_resisting_dmg(
 
 bool PropHandler::allow_see() const
 {
-        for ( auto& prop : m_props )
+        for ( const auto& prop : m_props )
         {
                 if ( ! prop->allow_see() )
                 {
@@ -896,7 +896,7 @@ int PropHandler::affect_max_hp( const int hp_max ) const
 {
         int new_hp_max = hp_max;
 
-        for ( auto& prop : m_props )
+        for ( const auto& prop : m_props )
         {
                 new_hp_max = prop->affect_max_hp( new_hp_max );
         }
@@ -908,7 +908,7 @@ int PropHandler::affect_max_spi( const int spi_max ) const
 {
         int new_spi_max = spi_max;
 
-        for ( auto& prop : m_props )
+        for ( const auto& prop : m_props )
         {
                 new_spi_max = prop->affect_max_spi( new_spi_max );
         }
@@ -920,7 +920,7 @@ int PropHandler::affect_shock( const int shock ) const
 {
         int new_shock = shock;
 
-        for ( auto& prop : m_props )
+        for ( const auto& prop : m_props )
         {
                 new_shock = prop->affect_shock( new_shock );
         }
@@ -932,7 +932,7 @@ void PropHandler::affect_move_dir( const P& actor_pos, Dir& dir ) const
 {
         for ( size_t i = 0; i < m_props.size(); )
         {
-                auto& prop = m_props[ i ];
+                const auto& prop = m_props[ i ];
 
                 const auto prop_ended = prop->affect_move_dir( actor_pos, dir );
 
@@ -945,7 +945,7 @@ void PropHandler::affect_move_dir( const P& actor_pos, Dir& dir ) const
 
 bool PropHandler::allow_attack( const Verbose verbose ) const
 {
-        for ( auto& prop : m_props )
+        for ( const auto& prop : m_props )
         {
                 if ( ! prop->allow_attack_melee( verbose ) &&
                      ! prop->allow_attack_ranged( verbose ) )
@@ -959,7 +959,7 @@ bool PropHandler::allow_attack( const Verbose verbose ) const
 
 bool PropHandler::allow_attack_melee( const Verbose verbose ) const
 {
-        for ( auto& prop : m_props )
+        for ( const auto& prop : m_props )
         {
                 if ( ! prop->allow_attack_melee( verbose ) )
                 {
@@ -972,7 +972,7 @@ bool PropHandler::allow_attack_melee( const Verbose verbose ) const
 
 bool PropHandler::allow_attack_ranged( const Verbose verbose ) const
 {
-        for ( auto& prop : m_props )
+        for ( const auto& prop : m_props )
         {
                 if ( ! prop->allow_attack_ranged( verbose ) )
                 {
@@ -985,7 +985,7 @@ bool PropHandler::allow_attack_ranged( const Verbose verbose ) const
 
 bool PropHandler::allow_move() const
 {
-        for ( auto& prop : m_props )
+        for ( const auto& prop : m_props )
         {
                 if ( ! prop->allow_move() )
                 {
@@ -998,7 +998,7 @@ bool PropHandler::allow_move() const
 
 bool PropHandler::allow_act() const
 {
-        for ( auto& prop : m_props )
+        for ( const auto& prop : m_props )
         {
                 if ( ! prop->allow_act() )
                 {
@@ -1011,7 +1011,7 @@ bool PropHandler::allow_act() const
 
 bool PropHandler::allow_read_absolute( const Verbose verbose ) const
 {
-        for ( auto& prop : m_props )
+        for ( const auto& prop : m_props )
         {
                 if ( ! prop->allow_read_absolute( verbose ) )
                 {
@@ -1024,7 +1024,7 @@ bool PropHandler::allow_read_absolute( const Verbose verbose ) const
 
 bool PropHandler::allow_read_chance( const Verbose verbose ) const
 {
-        for ( auto& prop : m_props )
+        for ( const auto& prop : m_props )
         {
                 if ( ! prop->allow_read_chance( verbose ) )
                 {
@@ -1038,7 +1038,7 @@ bool PropHandler::allow_read_chance( const Verbose verbose ) const
 bool PropHandler::allow_cast_intr_spell_absolute(
         const Verbose verbose ) const
 {
-        for ( auto& prop : m_props )
+        for ( const auto& prop : m_props )
         {
                 if ( ! prop->allow_cast_intr_spell_absolute( verbose ) )
                 {
@@ -1052,7 +1052,7 @@ bool PropHandler::allow_cast_intr_spell_absolute(
 bool PropHandler::allow_cast_intr_spell_chance(
         const Verbose verbose ) const
 {
-        for ( auto& prop : m_props )
+        for ( const auto& prop : m_props )
         {
                 if ( ! prop->allow_cast_intr_spell_chance( verbose ) )
                 {
@@ -1065,7 +1065,7 @@ bool PropHandler::allow_cast_intr_spell_chance(
 
 bool PropHandler::allow_speak( const Verbose verbose ) const
 {
-        for ( auto& prop : m_props )
+        for ( const auto& prop : m_props )
         {
                 if ( ! prop->allow_speak( verbose ) )
                 {
@@ -1078,7 +1078,7 @@ bool PropHandler::allow_speak( const Verbose verbose ) const
 
 bool PropHandler::allow_eat( const Verbose verbose ) const
 {
-        for ( auto& prop : m_props )
+        for ( const auto& prop : m_props )
         {
                 if ( ! prop->allow_eat( verbose ) )
                 {
@@ -1091,7 +1091,7 @@ bool PropHandler::allow_eat( const Verbose verbose ) const
 
 bool PropHandler::allow_pray( const Verbose verbose ) const
 {
-        for ( auto& prop : m_props )
+        for ( const auto& prop : m_props )
         {
                 if ( ! prop->allow_pray( verbose ) )
                 {
@@ -1157,7 +1157,7 @@ int PropHandler::ability_mod( const AbilityId ability ) const
 {
         int modifier = 0;
 
-        for ( auto& prop : m_props )
+        for ( const auto& prop : m_props )
         {
                 modifier += prop->ability_mod( ability );
         }
@@ -1169,7 +1169,7 @@ bool PropHandler::affect_actor_color( Color& color ) const
 {
         bool did_affect_color = false;
 
-        for ( auto& prop : m_props )
+        for ( const auto& prop : m_props )
         {
                 if ( prop->affect_actor_color( color ) )
                 {

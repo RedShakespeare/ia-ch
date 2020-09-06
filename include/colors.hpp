@@ -27,7 +27,7 @@ public:
 
         Color( const SDL_Color& sdl_color );
 
-        ~Color();
+        ~Color() = default;
 
         Color& operator=( const Color& other );
 

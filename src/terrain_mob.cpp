@@ -43,7 +43,7 @@ void Smoke::on_placed()
                         continue;
                 }
 
-                auto other_smoke = static_cast<Smoke*>( terrain );
+                auto* other_smoke = static_cast<Smoke*>( terrain );
 
                 if ( other_smoke->m_nr_turns_left == -1 )
                 {
@@ -117,7 +117,7 @@ void Smoke::on_new_turn()
                                 msg_log::add( "I am getting smoke in my eyes." );
                         }
 
-                        auto prop = new PropBlind();
+                        auto* prop = new PropBlind();
 
                         prop->set_duration( rnd::range( 1, 3 ) );
 

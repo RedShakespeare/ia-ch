@@ -29,7 +29,7 @@ static const StrToAbilityIdMap s_str_to_ability_id_map = {
         { "searching", AbilityId::searching },
 };
 
-typedef std::unordered_map<AbilityId, std::string> AbilityIdToStrMap;
+using AbilityIdToStrMap = std::unordered_map<AbilityId, std::string>;
 static const AbilityIdToStrMap s_ability_id_to_str_map = {
         { AbilityId::melee, "melee" },
         { AbilityId::ranged, "ranged" },

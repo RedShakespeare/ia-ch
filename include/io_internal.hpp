@@ -60,9 +60,9 @@ void draw_text_at_px(
         const std::string& str,
         P px_pos,
         const Color& color,
-        const DrawBg draw_bg,
+        DrawBg draw_bg,
         const Color& bg_color );
 
 }  // namespace io
 
-#endif  // IO_HPP
+#endif  // IO_INTERNAL_HPP

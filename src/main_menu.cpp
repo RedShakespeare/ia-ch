@@ -204,7 +204,7 @@ static const std::vector<std::string> s_quotes =
 
 static bool query_overwrite_savefile()
 {
-        int choice;
+        int choice = 0;
 
         popup::Popup( popup::AddToMsgHistory::no )
                 .set_title( "A saved game exists" )
@@ -363,7 +363,7 @@ void MainMenuState::draw()
 
         if ( quote_w > 0 )
         {
-                int quote_y;
+                int quote_y = 0;
 
                 if ( quote_lines.size() < ( labels.size() - 1 ) )
                 {

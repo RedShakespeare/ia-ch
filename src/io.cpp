@@ -358,7 +358,7 @@ static void init_window( const P& px_dims )
                 SDL_DestroyWindow( io::g_sdl_window );
         }
 
-        uint32_t sdl_window_flags;
+        uint32_t sdl_window_flags = 0;
 
         if ( config::is_fullscreen() )
         {
@@ -460,7 +460,7 @@ static void load_logo()
 {
         TRACE_FUNC_BEGIN;
 
-        io::g_logo_texture = load_texture( paths::logo_img_path().c_str() );
+        io::g_logo_texture = load_texture( paths::logo_img_path() );
 
         TRACE_FUNC_END;
 }
@@ -756,7 +756,7 @@ void update_screen()
 
 void clear_screen()
 {
-        SDL_SetRenderDrawColor( g_sdl_renderer, 0u, 0u, 0u, 0xFFu );
+        SDL_SetRenderDrawColor( g_sdl_renderer, 0U, 0U, 0U, 0xFFU );
 
         SDL_RenderClear( g_sdl_renderer );
 }
@@ -865,7 +865,7 @@ void draw_character_at_px(
         render_rect.w = gui_cell_px_dims.x;
         render_rect.h = gui_cell_px_dims.y;
 
-        SDL_Texture* texture;
+        SDL_Texture* texture = nullptr;
 
         // TODO: If black foreground will not be allowed, the contour version
         // can probably always be used
@@ -932,7 +932,7 @@ void draw_tile(
         render_rect.w = map_cell_px_dims.x;
         render_rect.h = map_cell_px_dims.y;
 
-        SDL_Texture* texture;
+        SDL_Texture* texture = nullptr;
 
         if ( ( color == colors::black() ) || ( bg_color == colors::black() ) )
         {
@@ -1114,13 +1114,14 @@ std::string sdl_pref_dir()
                 version_str = version_info::g_version_str;
         }
 
-        const auto path_ptr =
+        auto* const path_ptr =
                 // NOTE: This is somewhat of a hack, see the function arguments
                 SDL_GetPrefPath(
                         "infra_arcana",  // "Organization"
                         version_str.c_str() );  // "Application"
 
-        const std::string path_str = path_ptr;
+        // NOTE: Using non-const value to allow move on return
+        std::string path_str = path_ptr;
 
         SDL_free( path_ptr );
 
@@ -1131,20 +1132,18 @@ std::string sdl_pref_dir()
 
 void sleep( const uint32_t duration )
 {
-        if ( ( duration == 0 ) ||
-             config::is_bot_playing() )
+        if ( ( duration == 0 ) || config::is_bot_playing() )
         {
                 return;
         }
-
-        if ( duration == 1 )
+        else if ( duration == 1 )
         {
                 SDL_Delay( duration );
         }
         else
         {
                 // Duration longer than 1 ms
-                const Uint32 wait_until = SDL_GetTicks() + duration;
+                const auto wait_until = SDL_GetTicks() + duration;
 
                 while ( SDL_GetTicks() < wait_until )
                 {

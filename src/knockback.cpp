@@ -87,7 +87,7 @@ void run(
                 {
                         if ( ! tgt_cell.terrain->is_projectile_passable() )
                         {
-                                auto prop = new PropNailed();
+                                auto* prop = new PropNailed();
 
                                 prop->set_indefinite();
 
@@ -132,7 +132,7 @@ void run(
                 }
         }
 
-        auto prop = new PropParalyzed();
+        auto* prop = new PropParalyzed();
 
         prop->set_duration( 1 + paralyze_extra_turns );
 

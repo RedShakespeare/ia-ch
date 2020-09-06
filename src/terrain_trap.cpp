@@ -1131,13 +1131,13 @@ void TrapSummonMon::trigger()
                         std::begin( summoned.monsters ),
                         std::end( summoned.monsters ),
                         []( auto* const mon ) {
-                                auto prop_summoned = new PropSummoned();
+                                auto* prop_summoned = new PropSummoned();
 
                                 prop_summoned->set_indefinite();
 
                                 mon->m_properties.apply( prop_summoned );
 
-                                auto prop_waiting = new PropWaiting();
+                                auto* prop_waiting = new PropWaiting();
 
                                 prop_waiting->set_duration( 2 );
 
