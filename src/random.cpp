@@ -145,7 +145,7 @@ bool percent( const int pct_chance )
         return pct_chance >= range( 1, 100 );
 }
 
-int weighted_choice( const std::vector<int> weights )
+int weighted_choice( const std::vector<int>& weights )
 {
         ASSERT( ! weights.empty() );
 

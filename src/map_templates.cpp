@@ -87,7 +87,7 @@ static size_t max_length( const std::vector<std::string>& lines )
 
 static Array2<char> load_level_template( const LevelTemplId id )
 {
-        const std::string filename = level_id_to_filename.at( id );
+        const std::string& filename = level_id_to_filename.at( id );
 
         std::ifstream ifs( paths::data_dir() + "map/levels/" + filename );
 

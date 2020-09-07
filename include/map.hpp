@@ -49,24 +49,13 @@ struct Cell
 
 struct ChokePointData
 {
-        ChokePointData() :
+        ChokePointData() = default;
 
-                player_side( -1 ),
-                stairs_side( -1 )
+        ChokePointData( const ChokePointData& other ) :
+                p( other.p ),
+                player_side( other.player_side ),
+                stairs_side( other.stairs_side )
         {
-                sides[ 0 ].resize( 0 );
-                sides[ 1 ].resize( 0 );
-        }
-
-        ChokePointData( const ChokePointData& other )
-        {
-                if ( &other == this )
-                {
-                        return;
-                }
-
-                p = other.p;
-
                 sides[ 0 ] = other.sides[ 0 ];
                 sides[ 1 ] = other.sides[ 1 ];
         }
@@ -80,19 +69,22 @@ struct ChokePointData
 
                 p = other.p;
 
+                player_side = other.player_side;
+                stairs_side = other.stairs_side;
+
                 sides[ 0 ] = other.sides[ 0 ];
                 sides[ 1 ] = other.sides[ 1 ];
 
                 return *this;
         }
 
-        P p;
+        P p {};
 
-        // These shall only ever have a value of 0 or 1
-        int player_side;
-        int stairs_side;
+        // These shall only ever have a value of 0 or 1 (or -1 when undefined)
+        int player_side { -1 };
+        int stairs_side { -1 };
 
-        std::vector<P> sides[ 2 ];
+        std::vector<P> sides[ 2 ] {};
 };
 
 namespace map

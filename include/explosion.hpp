@@ -56,7 +56,7 @@ void run(
         EmitExplSnd emit_expl_snd = EmitExplSnd::yes,
         int radi_change = 0,
         ExplExclCenter exclude_center = ExplExclCenter::no,
-        std::vector<Prop*> properties_applied = {},
+        const std::vector<Prop*>& properties_applied = {},
         const std::optional<Color>& color_override = {},
         ExplIsGas is_gas = ExplIsGas::no );
 

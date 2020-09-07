@@ -112,7 +112,7 @@ void run( Snd snd )
 
         const int snd_max_dist = get_max_dist( snd );
 
-        const auto flood =
+        auto flood =
                 floodfill(
                         origin,
                         blocked,
@@ -129,7 +129,8 @@ void run( Snd snd )
                 const int flood_val_at_actor = flood.at( actor_pos );
 
                 // Can the sound be heard at this distance?
-                if ( ( ( flood_val_at_actor == 0 ) && ( actor_pos != origin ) ) ||
+                if ( ( ( flood_val_at_actor == 0 ) &&
+                       ( actor_pos != origin ) ) ||
                      ! is_snd_heard_at_range( flood_val_at_actor, snd ) )
                 {
                         continue;

@@ -637,11 +637,12 @@ bool is_choke_point(
 void make_pathfind_corridor(
         Room& room_0,
         Room& room_1,
-        const Array2<bool>* const door_proposals )
+        Array2<bool>* const door_proposals )
 {
-        TRACE_FUNC_BEGIN_VERBOSE << "Making corridor between rooms "
-                                 << &room_0 << " and " << &room_1
-                                 << std::endl;
+        TRACE_FUNC_BEGIN_VERBOSE
+                << "Making corridor between rooms "
+                << &room_0 << " and " << &room_1
+                << std::endl;
 
         ASSERT( map::is_area_inside_map( room_0.m_r ) );
         ASSERT( map::is_area_inside_map( room_1.m_r ) );
@@ -654,22 +655,25 @@ void make_pathfind_corridor(
 
         if ( p0_bucket.empty() )
         {
-                TRACE_FUNC_END_VERBOSE << "No entry points found in room 0"
-                                       << std::endl;
+                TRACE_FUNC_END_VERBOSE
+                        << "No entry points found in room 0"
+                        << std::endl;
                 return;
         }
 
         if ( p1_bucket.empty() )
         {
-                TRACE_FUNC_END_VERBOSE << "No entry points found in room 1"
-                                       << std::endl;
+                TRACE_FUNC_END_VERBOSE
+                        << "No entry points found in room 1"
+                        << std::endl;
                 return;
         }
 
         int shortest_dist = INT_MAX;
 
-        TRACE_VERBOSE << "Finding shortest possible dist between entries"
-                      << std::endl;
+        TRACE_VERBOSE
+                << "Finding shortest possible dist between entries"
+                << std::endl;
 
         for ( const P& p0 : p0_bucket )
         {
@@ -684,9 +688,10 @@ void make_pathfind_corridor(
                 }
         }
 
-        TRACE_VERBOSE << "Storing entry pairs with shortest dist ("
-                      << shortest_dist << ")"
-                      << std::endl;
+        TRACE_VERBOSE
+                << "Storing entry pairs with shortest dist ("
+                << shortest_dist << ")"
+                << std::endl;
 
         std::vector<std::pair<P, P>> entries_bucket;
 
@@ -798,7 +803,8 @@ void make_pathfind_corridor(
                 blocked_expanded.at( p1 ) = false;
 
                 // Allowing diagonal steps creates a more "cave like" path
-                const bool allow_diagonal = ( map::g_dlvl >= g_dlvl_first_late_game );
+                const bool allow_diagonal =
+                        ( map::g_dlvl >= g_dlvl_first_late_game );
 
                 // Randomizing step choices (i.e. when to change directions)
                 // creates more "snaky" paths (note that this does NOT create
@@ -818,9 +824,10 @@ void make_pathfind_corridor(
         {
                 path.push_back( p0 );
 
-                TRACE_VERBOSE << "Check that we don't circle around the "
-                              << "origin or target room (looks bad)"
-                              << std::endl;
+                TRACE_VERBOSE
+                        << "Check that we don't circle around the "
+                        << "origin or target room (looks bad)"
+                        << std::endl;
 
                 std::vector<Room*> rooms { &room_0, &room_1 };
 

@@ -74,7 +74,7 @@ static SDL_Color s_mon_temp_property_bg;
 // -----------------------------------------------------------------------------
 static std::vector<std::pair<std::string, Color>> s_str_color_pairs;
 
-static SDL_Color rgb_hex_str_to_sdl_color( const std::string str )
+static SDL_Color rgb_hex_str_to_sdl_color( const std::string& str )
 {
         if ( str.size() != 6 )
         {
@@ -143,7 +143,7 @@ static void load_color(
 
 static void load_gui_color(
         xml::Element* gui_e,
-        const std::string type,
+        const std::string& type,
         SDL_Color& target_color )
 {
         for ( auto* e = xml::first_child( gui_e );

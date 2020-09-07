@@ -4,7 +4,11 @@ Checks: >
     *,
 
 
+
     -modernize-use-nodiscard,
+
+
+
 
     -bugprone-branch-clone,
     -cert-dcl58-cpp,
@@ -63,10 +67,7 @@ Checks: >
     -modernize-loop-convert,
     -modernize-use-default-member-init,
     -modernize-use-trailing-return-type,
-    -performance-inefficient-string-concatenation,
     -performance-noexcept-move-constructor,
-    -performance-unnecessary-copy-initialization,
-    -performance-unnecessary-value-param,
     -readability-braces-around-statements,
     -readability-convert-member-functions-to-static,
     -readability-else-after-return,

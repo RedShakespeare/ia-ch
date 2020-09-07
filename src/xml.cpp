@@ -49,17 +49,17 @@ Element* first_child( Doc& doc )
         return doc.FirstChildElement();
 }
 
-Element* first_child( Element* e, const std::string name )
+Element* first_child( Element* e, const std::string& name )
 {
         return e->FirstChildElement( to_c_str( name ) );
 }
 
-bool has_child( Element* e, const std::string name )
+bool has_child( Element* e, const std::string& name )
 {
         return e->FirstChildElement( to_c_str( name ) ) != nullptr;
 }
 
-Element* next_sibling( Element* e, const std::string name )
+Element* next_sibling( Element* e, const std::string& name )
 {
         return e->NextSiblingElement( to_c_str( name ) );
 }
@@ -120,12 +120,12 @@ int get_text_int( const Element* const e )
         return value;
 }
 
-std::string get_attribute_str( const Element* const e, const std::string name )
+std::string get_attribute_str( const Element* const e, const std::string& name )
 {
         return e->Attribute( to_c_str( name ) );
 }
 
-int get_attribute_int( const Element* const e, const std::string name )
+int get_attribute_int( const Element* const e, const std::string& name )
 {
         int result = 0;
 
@@ -149,7 +149,10 @@ int get_attribute_int( const Element* const e, const std::string name )
         return result;
 }
 
-bool try_get_attribute_str( const Element* const e, const std::string name, std::string& result )
+bool try_get_attribute_str(
+        const Element* const e,
+        const std::string& name,
+        std::string& result )
 {
         const auto* str = e->Attribute( name.c_str() );
 
@@ -163,14 +166,20 @@ bool try_get_attribute_str( const Element* const e, const std::string name, std:
         return false;
 }
 
-bool try_get_attribute_int( const Element* const e, const std::string name, int& result )
+bool try_get_attribute_int(
+        const Element* const e,
+        const std::string& name,
+        int& result )
 {
         auto conv_result = e->QueryAttribute( name.c_str(), &result );
 
         return ( conv_result == tinyxml2::XML_SUCCESS );
 }
 
-bool try_get_attribute_bool( const Element* const e, const std::string name, bool& result )
+bool try_get_attribute_bool(
+        const Element* const e,
+        const std::string& name,
+        bool& result )
 {
         auto conv_result = e->QueryAttribute( name.c_str(), &result );
 

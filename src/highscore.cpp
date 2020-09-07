@@ -195,7 +195,7 @@ void cleanup()
 }
 
 HighscoreEntry make_entry_from_current_game_data(
-        const std::string game_summary_file_path,
+        const std::string& game_summary_file_path,
         const IsWin is_win )
 {
         HighscoreEntry e;

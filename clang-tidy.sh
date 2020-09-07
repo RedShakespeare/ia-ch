@@ -3,7 +3,7 @@
 set -eu
 
 # Extra parameters can be added as arguments to this script, e.g.:
-# $ ./clang-tidy.sh -fix src/item_data.cpp
+# $ ./clang-tidy.sh -fix
 
 # This expects the files .clang-tidy and compile_commands.json
 # run-clang-tidy -j=4 -style=None -extra-arg=-Wno-unknown-warning-option $*

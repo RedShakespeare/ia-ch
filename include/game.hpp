@@ -8,6 +8,7 @@
 #define GAME_HPP
 
 #include <string>
+#include <utility>
 #include <vector>
 
 #include "global.hpp"
@@ -21,8 +22,8 @@ class Actor;
 
 struct HistoryEvent
 {
-        HistoryEvent( const std::string history_msg, const int turn_nr ) :
-                msg( history_msg ),
+        HistoryEvent( std::string  history_msg, const int turn_nr ) :
+                msg(std::move( history_msg )),
                 turn( turn_nr ) {}
 
         const std::string msg;
@@ -56,7 +57,7 @@ void decr_player_xp( int xp_lost );
 // This function has no side effects except for incrementing the clvl value
 void incr_clvl_number();
 
-void add_history_event( std::string msg );
+void add_history_event( const std::string& msg );
 
 const std::vector<HistoryEvent>& history();
 

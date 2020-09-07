@@ -135,7 +135,7 @@ static void draw_black_contour_for_surface(
 static void verify_texture_size(
         SDL_Texture* texture,
         const P& expected_size,
-        const std::string img_path )
+        const std::string& img_path )
 {
         P size;
 

@@ -61,7 +61,7 @@ static void make_crumble_room( const R& room_area_incl_walls, const P& event_pos
 static bool try_make_aux_room(
         const P& p,
         const P& d,
-        const Array2<bool>& blocked,
+        Array2<bool>& blocked,
         const P& door_p )
 {
         const R aux_rect( p, p + d - 1 );

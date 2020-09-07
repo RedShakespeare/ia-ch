@@ -133,7 +133,7 @@ bool is_choke_point(
 void make_pathfind_corridor(
         Room& room_0,
         Room& room_1,
-        const Array2<bool>* door_proposals = nullptr );
+        Array2<bool>* door_proposals = nullptr );
 
 std::vector<P> rnd_walk(
         const P& p0,

@@ -24,7 +24,7 @@ public:
 
         Array2( const int w, const int h )
         {
-                resize( P( w, h ) );
+                resize( { w, h } );
         }
 
         Array2( const Array2<T>& other )
@@ -85,17 +85,32 @@ public:
                 return *this;
         }
 
-        T& at( const P& p ) const
+        T& at( const P& p )
         {
                 return get_element_ref( p );
         }
 
-        T& at( const int x, const int y ) const
+        const T& at( const P& p ) const
         {
-                return get_element_ref( P( x, y ) );
+                return get_element_ref( p );
         }
 
-        T& at( const size_t idx ) const
+        T& at( const int x, const int y )
+        {
+                return get_element_ref( { x, y } );
+        }
+
+        const T& at( const int x, const int y ) const
+        {
+                return get_element_ref( { x, y } );
+        }
+
+        T& at( const size_t idx )
+        {
+                return m_data[ idx ];
+        }
+
+        const T& at( const size_t idx ) const
         {
                 return m_data[ idx ];
         }
@@ -128,7 +143,7 @@ public:
 
         void resize( const int w, const int h )
         {
-                resize( P( w, h ) );
+                resize( { w, h } );
         }
 
         void resize( const P& dims, const T value )
@@ -140,7 +155,7 @@ public:
 
         void resize( const int w, const int h, const T value )
         {
-                resize( P( w, h ), value );
+                resize( { w, h }, value );
         }
 
         void resize_no_init( const P& dims )
@@ -288,7 +303,7 @@ private:
 
         size_t pos_to_idx( const int x, const int y ) const
         {
-                return pos_to_idx( P( x, y ) );
+                return pos_to_idx( { x, y } );
         }
 
         T* m_data { nullptr };

@@ -242,7 +242,7 @@ bool is_loading()
         return s_state == SaveLoadState::loading;
 }
 
-void put_str( const std::string str )
+void put_str( const std::string& str )
 {
         ASSERT( s_state == SaveLoadState::saving );
 

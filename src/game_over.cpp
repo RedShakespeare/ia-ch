@@ -25,7 +25,7 @@
 // -----------------------------------------------------------------------------
 static void make_memorial_file(
         const std::vector<ColoredString>& lines,
-        const std::string path )
+        const std::string& path )
 {
         // Write memorial file
         std::ofstream file;

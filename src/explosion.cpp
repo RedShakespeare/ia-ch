@@ -155,7 +155,7 @@ static void apply_explosion_on_pos(
         const P& pos,
         const int current_dist,
         actor::Actor* living_actor,
-        std::vector<actor::Actor*> corpses_here )
+        const std::vector<actor::Actor*>& corpses_here )
 {
         const Range dmg_range(
                 g_expl_dmg_min - current_dist,
@@ -205,7 +205,7 @@ static void apply_explosion_property_on_pos(
         const P& pos,
         Prop* property,
         actor::Actor* living_actor,
-        std::vector<actor::Actor*> corpses_here,
+        const std::vector<actor::Actor*>& corpses_here,
         const ExplIsGas is_gas )
 {
         bool should_apply_on_living_actor = true;
@@ -282,7 +282,7 @@ void run(
         const EmitExplSnd emit_expl_snd,
         const int radi_change,
         const ExplExclCenter exclude_center,
-        std::vector<Prop*> properties_applied,
+        const std::vector<Prop*>& properties_applied,
         const std::optional<Color>& color_override,
         const ExplIsGas is_gas )
 {

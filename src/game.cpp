@@ -333,7 +333,7 @@ void on_mon_killed( actor::Actor& actor )
         }
 }
 
-void add_history_event( const std::string msg )
+void add_history_event( const std::string& msg )
 {
         if ( saving::is_loading() )
         {
