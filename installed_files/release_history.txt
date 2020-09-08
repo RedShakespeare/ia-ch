@@ -36,6 +36,7 @@ User interface
 * All menus have shortcut keys (either with "(Y)es (N)o" style, or "a) b) c) ...")
 * Removed the "game over" menu - instead the game summary is first shown, then the high scores, then you return to the main menu
 * In the options menu, left and right can also be used to change option values
+* Added a warning when the player attempts to fire/throw outside the effective range, informing the player that the attack will do 50% damage
 * Added ',' (comma) as an alternative pick up command
 * 'C' is now the standard key for the character info screen, with '@' as alternative key
 * Using coloring more for the player stats to convey information (such as drawing the current hit points paler the closer to zero they are, or drawing the weapon info as yellow if ammo is depleted)

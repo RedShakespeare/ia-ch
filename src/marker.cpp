@@ -28,10 +28,15 @@
 #include "map_parsing.hpp"
 #include "misc.hpp"
 #include "msg_log.hpp"
+#include "query.hpp"
 #include "teleport.hpp"
 #include "terrain.hpp"
 #include "throwing.hpp"
 #include "viewport.hpp"
+
+// -----------------------------------------------------------------------------
+// Private
+// -----------------------------------------------------------------------------
 
 // -----------------------------------------------------------------------------
 // Marker state
@@ -535,9 +540,12 @@ void Aiming::on_moved()
 {
         look::print_living_actor_info_msg( m_pos );
 
-        const bool is_in_range = king_dist( m_origin, m_pos ) <= max_king_dist();
+        const int dist = king_dist( m_origin, m_pos );
 
-        if ( is_in_range )
+        const bool is_in_max_range =
+                ( dist <= max_king_dist() );
+
+        if ( is_in_max_range )
         {
                 auto* const actor = map::first_actor_at_pos( m_pos );
 
@@ -616,31 +624,61 @@ void Aiming::handle_input( const InputData& input )
 
         if ( ( game_cmd == GameCmd::fire ) || ( input.key == SDLK_RETURN ) )
         {
-                if ( m_pos != map::g_player->m_pos )
+                if ( m_pos == map::g_player->m_pos )
                 {
+                        return;
+                }
+
+                msg_log::clear();
+
+                const int dist = king_dist( m_origin, m_pos );
+
+                const bool is_in_effective_range =
+                        effective_king_dist_range()
+                                .is_in_range( dist );
+
+                const bool is_in_max_range =
+                        ( dist <= max_king_dist() );
+
+                if ( ! is_in_effective_range && is_in_max_range )
+                {
+                        const std::string msg =
+                                "Aiming outside effective weapon range "
+                                "(50% damage) fire anyway? " +
+                                common_text::g_yes_or_no_hint;
+
+                        msg_log::add( msg );
+
+                        const auto answer = query::yes_or_no();
+
                         msg_log::clear();
 
-                        auto* const actor = map::first_actor_at_pos( m_pos );
-
-                        if ( actor && actor::can_player_see_actor( *actor ) )
+                        if ( answer == BinaryAnswer::no )
                         {
-                                map::g_player->m_tgt = actor;
+                                return;
                         }
-
-                        const P pos = m_pos;
-
-                        auto* const wpn = &m_wpn;
-
-                        states::pop();
-
-                        // NOTE: This object is now destroyed
-
-                        attack::ranged(
-                                map::g_player,
-                                map::g_player->m_pos,
-                                pos,
-                                *wpn );
                 }
+
+                auto* const actor = map::first_actor_at_pos( m_pos );
+
+                if ( actor && actor::can_player_see_actor( *actor ) )
+                {
+                        map::g_player->m_tgt = actor;
+                }
+
+                const auto pos = m_pos;
+
+                auto* const wpn = &m_wpn;
+
+                states::pop();
+
+                // NOTE: This object is now destroyed
+
+                attack::ranged(
+                        map::g_player,
+                        map::g_player->m_pos,
+                        pos,
+                        *wpn );
         }
         else if ( ( input.key == SDLK_ESCAPE ) || ( input.key == SDLK_SPACE ) )
         {
@@ -665,7 +703,9 @@ void Throwing::on_moved()
 {
         look::print_living_actor_info_msg( m_pos );
 
-        const bool is_in_range = king_dist( m_origin, m_pos ) <= max_king_dist();
+        const bool is_in_range =
+                king_dist( m_origin, m_pos ) <=
+                max_king_dist();
 
         if ( is_in_range )
         {
@@ -729,41 +769,72 @@ void Throwing::handle_input( const InputData& input )
 {
         const auto game_cmd = game_commands::to_cmd( input );
 
-        if ( ( game_cmd == GameCmd::throw_item ) || ( input.key == SDLK_RETURN ) )
+        if ( ( game_cmd == GameCmd::throw_item ) ||
+             ( input.key == SDLK_RETURN ) )
         {
-                if ( m_pos != map::g_player->m_pos )
+                if ( m_pos == map::g_player->m_pos )
                 {
+                        return;
+                }
+
+                msg_log::clear();
+
+                const int dist = king_dist( m_origin, m_pos );
+
+                const bool is_in_effective_range =
+                        effective_king_dist_range()
+                                .is_in_range( dist );
+
+                const bool is_in_max_range =
+                        ( dist <= max_king_dist() );
+
+                if ( ! is_in_effective_range && is_in_max_range )
+                {
+                        const std::string msg =
+                                "Aiming outside effective weapon range "
+                                "(50% damage) throw anyway? " +
+                                common_text::g_yes_or_no_hint;
+
+                        msg_log::add( msg );
+
+                        const auto answer = query::yes_or_no();
+
                         msg_log::clear();
 
-                        auto* const actor = map::first_actor_at_pos( m_pos );
-
-                        if ( actor && actor::can_player_see_actor( *actor ) )
+                        if ( answer == BinaryAnswer::no )
                         {
-                                map::g_player->m_tgt = actor;
+                                return;
                         }
-
-                        const P pos = m_pos;
-
-                        auto* item_to_throw = item::copy_item( *m_inv_item );
-
-                        item_to_throw->m_nr_items = 1;
-
-                        item_to_throw->clear_actor_carrying();
-
-                        m_inv_item = map::g_player->m_inv.decr_item( m_inv_item );
-
-                        map::g_player->m_last_thrown_item = m_inv_item;
-
-                        states::pop();
-
-                        // NOTE: This object is now destroyed
-
-                        // Perform the actual throwing
-                        throwing::throw_item(
-                                *map::g_player,
-                                pos,
-                                *item_to_throw );
                 }
+
+                auto* const actor = map::first_actor_at_pos( m_pos );
+
+                if ( actor && actor::can_player_see_actor( *actor ) )
+                {
+                        map::g_player->m_tgt = actor;
+                }
+
+                auto* item_to_throw = item::copy_item( *m_inv_item );
+
+                item_to_throw->m_nr_items = 1;
+
+                item_to_throw->clear_actor_carrying();
+
+                m_inv_item = map::g_player->m_inv.decr_item( m_inv_item );
+
+                map::g_player->m_last_thrown_item = m_inv_item;
+
+                const auto pos = m_pos;
+
+                states::pop();
+
+                // NOTE: This object is now destroyed
+
+                // Perform the actual throwing
+                throwing::throw_item(
+                        *map::g_player,
+                        pos,
+                        *item_to_throw );
         }
         else if ( ( input.key == SDLK_ESCAPE ) || ( input.key == SDLK_SPACE ) )
         {

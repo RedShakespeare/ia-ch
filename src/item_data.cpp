@@ -482,7 +482,7 @@ void init()
         d.ranged.max_ammo = 50;
         d.ranged.dmg = DmgRange( 4, 6 );
         d.ranged.hit_chance_mod = -10;
-        d.ranged.effective_range = { 0, 8 };
+        d.ranged.effective_range = { 0, 5 };
         d.ranged.ammo_item_id = Id::drum_of_bullets;
         d.ranged.att_msgs = { "fire", "fires" };
         d.ranged.snd_msg = "I hear the burst of a machine gun.";
@@ -524,7 +524,7 @@ void init()
         d.ranged.max_ammo = 6;
         d.ranged.dmg = DmgRange( 5, 10 );
         d.ranged.hit_chance_mod = 5;
-        d.ranged.effective_range = { 0, 6 };
+        d.ranged.effective_range = { 0, 5 };
         d.ranged.ammo_item_id = Id::revolver_bullet;
         d.melee.att_msgs = { "strike", "strikes" };
         d.ranged.att_msgs = { "fire", "fires" };
@@ -566,7 +566,7 @@ void init()
         d.ranged.max_ammo = 7;
         d.ranged.dmg = DmgRange( 5, 12 );
         d.ranged.hit_chance_mod = 0;
-        d.ranged.effective_range = { 0, 6 };
+        d.ranged.effective_range = { 0, 5 };
         d.ranged.ammo_item_id = Id::pistol_mag;
         d.melee.att_msgs = { "strike", "strikes" };
         d.ranged.att_msgs = { "fire", "fires" };
@@ -836,7 +836,7 @@ void init()
         d.color = colors::white();
         d.ranged.dmg = DmgRange( 2, 6 );
         d.ranged.throw_hit_chance_mod = 10;
-        d.ranged.effective_range = { 0, 5 };
+        d.ranged.effective_range = { 0, 4 };
         d.ranged.max_range = d.ranged.effective_range.max + 3;
         d.max_stack_at_spawn = 6;
         d.land_on_hard_snd_msg = "I hear a clanking sound.";
@@ -858,7 +858,7 @@ void init()
         d.character = '*';
         d.color = colors::gray();
         d.ranged.dmg = DmgRange( 1, 3 );
-        d.ranged.effective_range = { 0, 4 };
+        d.ranged.effective_range = { 0, 3 };
         d.ranged.max_range = d.ranged.effective_range.max + 3;
         d.ranged.dmg_type = DmgType::blunt;
         d.max_stack_at_spawn = 3;
@@ -891,7 +891,7 @@ void init()
         d.melee.hit_hard_sfx = audio::SfxId::hit_sharp;
         d.melee.miss_sfx = audio::SfxId::miss_light;
         d.ranged.throw_hit_chance_mod = -5;
-        d.ranged.effective_range = { 0, 4 };
+        d.ranged.effective_range = { 0, 3 };
         d.ranged.max_range = d.ranged.effective_range.max + 3;
         d.native_containers.push_back( terrain::Id::chest );
         d.native_containers.push_back( terrain::Id::cabinet );
@@ -920,7 +920,7 @@ void init()
         d.melee.hit_hard_sfx = audio::SfxId::hit_sharp;
         d.melee.miss_sfx = audio::SfxId::miss_light;
         d.ranged.throw_hit_chance_mod = 0;
-        d.ranged.effective_range = { 0, 5 };
+        d.ranged.effective_range = { 0, 4 };
         d.ranged.max_range = d.ranged.effective_range.max + 3;
         d.ranged.dmg_type = DmgType::slashing;
         d.native_containers.push_back( terrain::Id::chest );
@@ -947,7 +947,7 @@ void init()
         d.melee.is_noisy = false;
         d.melee.miss_sfx = audio::SfxId::miss_medium;
         d.ranged.throw_hit_chance_mod = -5;
-        d.ranged.effective_range = { 0, 4 };
+        d.ranged.effective_range = { 0, 3 };
         d.ranged.max_range = d.ranged.effective_range.max + 3;
         d.ranged.dmg_type = DmgType::blunt;
         d.land_on_hard_snd_msg = "I hear a thudding sound.";
@@ -972,7 +972,7 @@ void init()
         d.melee.is_noisy = true;
         d.melee.miss_sfx = audio::SfxId::miss_medium;
         d.ranged.throw_hit_chance_mod = -5;
-        d.ranged.effective_range = { 0, 4 };
+        d.ranged.effective_range = { 0, 3 };
         d.ranged.max_range = d.ranged.effective_range.max + 3;
         d.ranged.dmg_type = DmgType::blunt;
         d.native_containers.push_back( terrain::Id::cabinet );
@@ -999,7 +999,7 @@ void init()
         d.melee.miss_sfx = audio::SfxId::miss_medium;
         d.melee.is_noisy = true;
         d.ranged.throw_hit_chance_mod = -5;
-        d.ranged.effective_range = { 0, 4 };
+        d.ranged.effective_range = { 0, 3 };
         d.ranged.max_range = d.ranged.effective_range.max + 3;
         d.ranged.dmg_type = DmgType::slashing;
         d.native_containers.push_back( terrain::Id::cabinet );
@@ -1026,7 +1026,7 @@ void init()
         d.melee.miss_sfx = audio::SfxId::miss_medium;
         d.melee.is_noisy = true;
         d.ranged.throw_hit_chance_mod = -5;
-        d.ranged.effective_range = { 0, 4 };
+        d.ranged.effective_range = { 0, 3 };
         d.ranged.dmg_type = DmgType::slashing;
         d.ranged.max_range = d.ranged.effective_range.max + 3;
         d.native_containers.push_back( terrain::Id::cabinet );
@@ -1056,7 +1056,7 @@ void init()
         d.melee.miss_sfx = audio::SfxId::miss_heavy;
         d.melee.is_noisy = true;
         d.ranged.throw_hit_chance_mod = -5;
-        d.ranged.effective_range = { 0, 4 };
+        d.ranged.effective_range = { 0, 3 };
         d.ranged.max_range = d.ranged.effective_range.max + 3;
         d.ranged.dmg_type = DmgType::piercing;
         d.native_containers.push_back( terrain::Id::cabinet );
@@ -1988,7 +1988,7 @@ void init()
         d.melee.miss_sfx = audio::SfxId::miss_light;
         d.melee.dmg_type = DmgType::piercing;
         d.ranged.throw_hit_chance_mod = -5;
-        d.ranged.effective_range = { 0, 4 };
+        d.ranged.effective_range = { 0, 3 };
         d.ranged.max_range = d.ranged.effective_range.max + 3;
         d.is_unique = true;
         d.xp_on_found = 20;

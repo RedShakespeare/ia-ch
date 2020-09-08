@@ -122,35 +122,35 @@ static void handle_fire_command()
 
         auto* wpn = static_cast<item::Wpn*>( item );
 
-        if ( ( wpn->m_ammo_loaded >= 1 ) ||
-             item_data.ranged.has_infinite_ammo )
+        if ( ( wpn->m_ammo_loaded <= 0 ) &&
+             ! item_data.ranged.has_infinite_ammo )
         {
-                if ( ( wpn->data().id == item::Id::mi_go_gun ) &&
-                     ! allow_player_fire_mi_go_gun() )
+                // Not enough ammo loaded - auto reload?
+                if ( config::is_ranged_wpn_auto_reload() )
                 {
-                        msg_log::add( "Firing the gun now would destroy me." );
-
-                        return;
+                        reload::try_reload( *map::g_player, item );
+                }
+                else
+                {
+                        msg_log::add( "There is no ammo loaded." );
                 }
 
-                states::push(
-                        std::make_unique<Aiming>(
-                                map::g_player->m_pos,
-                                *wpn ) );
-
                 return;
         }
 
-        // Not enough ammo loaded - auto reload?
-        if ( config::is_ranged_wpn_auto_reload() )
+        if ( ( wpn->data().id == item::Id::mi_go_gun ) &&
+             ! allow_player_fire_mi_go_gun() )
         {
-                reload::try_reload( *map::g_player, item );
+                msg_log::add( "Firing the gun now would destroy me." );
 
                 return;
         }
 
-        // Not enough ammo loaded, and auto reloading is disabled
-        msg_log::add( "There is no ammo loaded." );
+        // OK - we can fire the gun.
+        states::push(
+                std::make_unique<Aiming>(
+                        map::g_player->m_pos,
+                        *wpn ) );
 }
 
 static GameCmd to_cmd_default( const InputData& input )
@@ -1066,12 +1066,12 @@ void handle( const GameCmd cmd )
                 io::draw_text(
                         query_str,
                         Panel::screen,
-                        P( 0, 0 ),
+                        { 0, 0 },
                         colors::yellow() );
 
                 const int idx =
                         query::number(
-                                P( query_str.size(), 0 ),
+                                { (int)query_str.size(), 0 },
                                 colors::light_white(),
                                 { 0, (int)actor::Id::END },
                                 (int)actor::Id::zombie,

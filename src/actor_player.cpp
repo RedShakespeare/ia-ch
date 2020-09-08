@@ -813,8 +813,8 @@ void Player::interrupt_actions()
                                 CopyToMsgHistory::no );
 
                         should_continue_handling_armor =
-                                ( query::yes_or_no( -1, AllowSpaceCancel::no ) ==
-                                  BinaryAnswer::yes );
+                                query::yes_or_no( -1, AllowSpaceCancel::no ) ==
+                                BinaryAnswer::yes;
 
                         msg_log::clear();
                 }
