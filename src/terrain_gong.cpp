@@ -454,7 +454,7 @@ bool UpgradeSpell::is_allowed() const
 
 void UpgradeSpell::run_effect()
 {
-        player_spells::incr_spell_skill( m_spell_id );
+        player_spells::incr_spell_skill( m_spell_id, Verbose::yes );
 }
 
 std::vector<SpellId> UpgradeSpell::find_spells_can_upgrade() const
@@ -467,14 +467,25 @@ std::vector<SpellId> UpgradeSpell::find_spells_can_upgrade() const
         {
                 const auto id = (SpellId)i;
 
-                std::unique_ptr<const Spell> spell( spells::make( id ) );
-
-                if ( player_spells::is_spell_learned( id ) &&
-                     ( player_spells::spell_skill( id ) != SpellSkill::master ) &&
-                     spell->can_be_improved_with_skill() )
+                if ( ! player_spells::is_spell_learned( id ) )
                 {
-                        spells.push_back( id );
+                        continue;
                 }
+
+                if ( player_spells::spell_skill( id ) == SpellSkill::master )
+                {
+                        continue;
+                }
+
+                const std::unique_ptr<const Spell> spell( spells::make( id ) );
+
+                if ( ! spell->can_be_improved_with_skill() )
+                {
+                        continue;
+                }
+
+                // Spell can be improved
+                spells.push_back( id );
         }
 
         return spells;

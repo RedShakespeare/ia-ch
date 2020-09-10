@@ -424,7 +424,8 @@ static void init_trait_data()
         d.descr =
                 "+2 melee and ranged attack damage against all undead "
                 "monsters, +50% hit chance against ethereal undead monsters";
-        d.trait_prereqs = { Trait::tough, Trait::fearless, Trait::stout_spirit };
+        d.trait_prereqs =
+                { Trait::tough, Trait::fearless, Trait::stout_spirit };
         set_trait_data( d );
 
         // --- Electrically Inclined ---
@@ -461,7 +462,8 @@ static void init_trait_data()
                         SpellSkill::expert );
         d.on_picked = []() {
                 player_spells::incr_spell_skill(
-                        SpellId::bless );
+                        SpellId::bless,
+                        Verbose::no );
         };
         d.trait_prereqs = { Trait::cast_bless_i };
         d.bg_prereq = Bg::exorcist;
@@ -491,7 +493,8 @@ static void init_trait_data()
                         SpellSkill::expert );
         d.on_picked = []() {
                 player_spells::incr_spell_skill(
-                        SpellId::cleansing_fire );
+                        SpellId::cleansing_fire,
+                        Verbose::no );
         };
         d.trait_prereqs = { Trait::cast_cleansing_fire_i };
         d.bg_prereq = Bg::exorcist;
@@ -521,7 +524,8 @@ static void init_trait_data()
                         SpellSkill::expert );
         d.on_picked = []() {
                 player_spells::incr_spell_skill(
-                        SpellId::heal );
+                        SpellId::heal,
+                        Verbose::no );
         };
         d.trait_prereqs = { Trait::cast_heal_i };
         d.bg_prereq = Bg::exorcist;
@@ -551,7 +555,8 @@ static void init_trait_data()
                         SpellSkill::expert );
         d.on_picked = []() {
                 player_spells::incr_spell_skill(
-                        SpellId::light );
+                        SpellId::light,
+                        Verbose::no );
         };
         d.trait_prereqs = { Trait::cast_light_i };
         d.bg_prereq = Bg::exorcist;
@@ -581,7 +586,8 @@ static void init_trait_data()
                         SpellSkill::expert );
         d.on_picked = []() {
                 player_spells::incr_spell_skill(
-                        SpellId::sanctuary );
+                        SpellId::sanctuary,
+                        Verbose::no );
         };
         d.trait_prereqs = { Trait::cast_sanctuary_i };
         d.bg_prereq = Bg::exorcist;
@@ -611,7 +617,8 @@ static void init_trait_data()
                         SpellSkill::expert );
         d.on_picked = []() {
                 player_spells::incr_spell_skill(
-                        SpellId::see_invis );
+                        SpellId::see_invis,
+                        Verbose::no );
         };
         d.trait_prereqs = { Trait::cast_see_invisible_i };
         d.bg_prereq = Bg::exorcist;
@@ -734,7 +741,8 @@ static void incr_occultist_spells()
 {
         for ( int id = 0; id < (int)SpellId::END; ++id )
         {
-                const std::unique_ptr<Spell> spell( spells::make( (SpellId)id ) );
+                const std::unique_ptr<Spell>
+                        spell( spells::make( (SpellId)id ) );
 
                 const bool is_learnable =
                         spell->player_can_learn();
@@ -744,7 +752,9 @@ static void incr_occultist_spells()
 
                 if ( is_learnable && is_matching_domain )
                 {
-                        player_spells::incr_spell_skill( (SpellId)id );
+                        player_spells::incr_spell_skill(
+                                (SpellId)id,
+                                Verbose::yes );
                 }
         }
 }

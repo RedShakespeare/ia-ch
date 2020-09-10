@@ -23,6 +23,7 @@ Gameplay
 * The Ghoul trait "Toxic" now has 75% chance to apply poison, instead of 25%
 * A lot more terrain objects can be destroyed or lit on fire (for example altars or monoliths are destroyed by explosions, and wooden chests or bookshelves can be lit on fire)
 * The stairs position is always lit, to make it less tedious to discover in huge dark rooms
+* Added a message when spells are upgraded (e.g. by a Gong)
 
 User interface
 * All fonts have been replaced with new ones (the reason for this is that the origins and license information of the previous ones was unknown - now this information is clearly listed in a font license text file distributed with the game)

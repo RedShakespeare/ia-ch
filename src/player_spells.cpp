@@ -202,7 +202,8 @@ void unlearn_spell( const SpellId id, const Verbose verbose )
 
         auto spell_iterator = std::begin( s_learned_spells );
 
-        for ( ; spell_iterator != std::end( s_learned_spells ); ++spell_iterator )
+        for ( ; spell_iterator != std::end( s_learned_spells );
+              ++spell_iterator )
         {
                 if ( ( *spell_iterator )->id() == id )
                 {
@@ -224,7 +225,7 @@ void unlearn_spell( const SpellId id, const Verbose verbose )
                 const auto name = spell->name();
 
                 msg_log::add(
-                        "I no longer recall how to cast the spell " +
+                        "I no longer recall how to cast " +
                         name +
                         "!" );
         }
@@ -234,13 +235,14 @@ void unlearn_spell( const SpellId id, const Verbose verbose )
         s_learned_spells.erase( spell_iterator );
 }
 
-void incr_spell_skill( const SpellId id )
+void incr_spell_skill( const SpellId id, const Verbose verbose )
 {
         ASSERT( id != SpellId::END );
 
-        TRACE << "Increasing spell skill for spell id: "
-              << (int)id
-              << std::endl;
+        TRACE
+                << "Increasing spell skill for spell id: "
+                << (int)id
+                << std::endl;
 
         auto& skill = s_spell_skills[ (size_t)id ];
 
@@ -249,6 +251,18 @@ void incr_spell_skill( const SpellId id )
         if ( skill != SpellSkill::master )
         {
                 skill = ( SpellSkill )( (int)skill + 1 );
+        }
+
+        if ( is_spell_learned( id ) && ( verbose == Verbose::yes ) )
+        {
+                const std::unique_ptr<const Spell> spell( spells::make( id ) );
+
+                const auto name = spell->name();
+
+                msg_log::add(
+                        "I am more skilled at casting " +
+                        name +
+                        "!" );
         }
 
         TRACE << "skill after: " << (int)skill << std::endl;
