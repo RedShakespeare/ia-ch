@@ -26,9 +26,11 @@ void init();
 
 InputMode input_mode();
 
-bool is_tiles_mode();
-
 std::string font_name();
+
+bool always_center_view_on_player();
+
+bool is_tiles_mode();
 
 void set_fullscreen( bool value );
 

@@ -52,7 +52,7 @@ void MapParser::run(
                         {
                                 const auto& c = map::g_cells.at( x, y );
 
-                                const bool is_match = parse_cell( c, P( x, y ) );
+                                const bool is_match = parse_cell( c, { x, y } );
 
                                 if ( is_match || allow_write_false )
                                 {
@@ -650,12 +650,13 @@ bool is_map_connected( const Array2<bool>& blocked )
 
         ASSERT( map::is_pos_inside_outer_walls( origin ) );
 
-        const auto flood = floodfill(
-                origin,
-                blocked,
-                INT_MAX,
-                P( -1, -1 ),
-                true );
+        const auto flood =
+                floodfill(
+                        origin,
+                        blocked,
+                        INT_MAX,
+                        { -1, -1 },
+                        true );
 
         // NOTE: We can skip to origin.x immediately, since this is guaranteed
         // to be the leftmost non-blocked cell.
@@ -663,17 +664,16 @@ bool is_map_connected( const Array2<bool>& blocked )
         {
                 for ( int y = 1; y < dims.y - 1; ++y )
                 {
-                        if ( flood.at( x, y ) == 0 &&
+                        if ( ( flood.at( x, y ) == 0 ) &&
                              ! blocked.at( x, y ) &&
-                             P( x, y ) != origin )
+                             ( P( x, y ) != origin ) )
                         {
 #ifndef NDEBUG
                                 if ( init::g_is_demo_mapgen )
                                 {
-                                        if ( ! viewport::is_in_view( P( x, y ) ) )
-                                        {
-                                                viewport::focus_on( P( x, y ) );
-                                        }
+                                        viewport::show(
+                                                { x, y },
+                                                viewport::ForceCentering::no );
 
                                         states::draw();
 
@@ -681,7 +681,7 @@ bool is_map_connected( const Array2<bool>& blocked )
                                                 gfx::TileId::excl_mark,
                                                 'X',
                                                 Panel::map,
-                                                viewport::to_view_pos( P( x, y ) ),
+                                                viewport::to_view_pos( { x, y } ),
                                                 colors::light_red() );
 
                                         io::update_screen();
@@ -689,7 +689,6 @@ bool is_map_connected( const Array2<bool>& blocked )
                                         io::sleep( 3 );
                                 }
 #endif  // NDEBUG
-
                                 return false;
                         }
                 }

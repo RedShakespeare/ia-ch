@@ -48,6 +48,8 @@ static const int s_opt_values_x_pos = 44;
 
 static InputMode s_input_mode = InputMode::standard;
 static std::string s_font_name;
+static bool s_always_center_view_on_player = false;
+static bool s_is_tiles_mode = false;
 static bool s_is_fullscreen = false;
 static bool s_is_2x_scale_fullscreen_requested = false;
 static bool s_is_2x_scale_fullscreen_enabled = false;
@@ -71,7 +73,6 @@ static bool s_is_gj_mode = false;
 static bool s_is_audio_enabled = false;
 static bool s_is_amb_audio_enabled = false;
 static bool s_is_amb_audio_preloaded = false;
-static bool s_is_tiles_mode = false;
 static int s_screen_px_w = -1;
 static int s_screen_px_h = -1;
 static int s_gui_cell_px_w = -1;
@@ -140,7 +141,7 @@ static void update_render_dims()
         }
         else
         {
-                const P font_dims = parse_dims_from_font_name( s_font_name );
+                const auto font_dims = parse_dims_from_font_name( s_font_name );
 
                 s_gui_cell_px_w = s_map_cell_px_w = font_dims.x;
                 s_gui_cell_px_h = s_map_cell_px_h = font_dims.y;
@@ -167,8 +168,11 @@ static void set_default_variables()
 
         s_input_mode = InputMode::standard;
 
-        s_is_tiles_mode = true;
         s_font_name = "12x22_monospace_medium.png";
+
+        s_always_center_view_on_player = false;
+
+        s_is_tiles_mode = true;
 
         update_render_dims();
 
@@ -289,6 +293,7 @@ static void player_sets_option(
         case 1: {
                 // Audio
                 s_is_audio_enabled = ! s_is_audio_enabled;
+
                 audio::init();
         }
         break;
@@ -296,6 +301,7 @@ static void player_sets_option(
         case 2: {
                 // Ambient audio
                 s_is_amb_audio_enabled = ! s_is_amb_audio_enabled;
+
                 audio::init();
         }
         break;
@@ -307,6 +313,13 @@ static void player_sets_option(
         break;
 
         case 4: {
+                // Always center view_on_player
+                s_always_center_view_on_player =
+                        ! s_always_center_view_on_player;
+        }
+        break;
+
+        case 5: {
                 // Tiles mode
                 s_is_tiles_mode = ! s_is_tiles_mode;
 
@@ -316,11 +329,10 @@ static void player_sets_option(
 
                 update_render_dims();
                 io::init();
-                io::init();
         }
         break;
 
-        case 5: {
+        case 6: {
                 // Font
 
                 // Find current font index
@@ -373,7 +385,7 @@ static void player_sets_option(
         }
         break;
 
-        case 6: {
+        case 7: {
                 // Fullscreen
                 config::set_fullscreen( ! s_is_fullscreen );
 
@@ -385,7 +397,7 @@ static void player_sets_option(
         }
         break;
 
-        case 7: {
+        case 8: {
                 // Use 2x scaling in fullscreen
                 s_is_2x_scale_fullscreen_requested =
                         ! s_is_2x_scale_fullscreen_requested;
@@ -401,38 +413,38 @@ static void player_sets_option(
         }
         break;
 
-        case 8: {
+        case 9: {
                 // Tiles mode wall symbol
                 s_is_tiles_wall_full_square = ! s_is_tiles_wall_full_square;
         }
         break;
 
-        case 9: {
+        case 10: {
                 // Text mode wall symbol
                 s_is_text_mode_wall_full_square =
                         ! s_is_text_mode_wall_full_square;
         }
         break;
 
-        case 10: {
+        case 11: {
                 // Skip intro level
                 s_is_intro_lvl_skipped = ! s_is_intro_lvl_skipped;
         }
         break;
 
-        case 11: {
+        case 12: {
                 // Skip intro popup
                 s_is_intro_popup_skipped = ! s_is_intro_popup_skipped;
         }
         break;
 
-        case 12: {
+        case 13: {
                 // Confirm "more" with any key
                 s_is_any_key_confirm_more = ! s_is_any_key_confirm_more;
         }
         break;
 
-        case 13: {
+        case 14: {
                 // Display hints
                 s_display_hints = ! s_display_hints;
 
@@ -440,37 +452,37 @@ static void player_sets_option(
         }
         break;
 
-        case 14: {
+        case 15: {
                 // Always warn when a new monster appears
                 s_always_warn_new_mon = ! s_always_warn_new_mon;
         }
         break;
 
-        case 15: {
+        case 16: {
                 // Print warning when lighting explovies
                 s_is_light_explosive_prompt = ! s_is_light_explosive_prompt;
         }
         break;
 
-        case 16: {
+        case 17: {
                 // Print warning when drinking known malign potions
                 s_is_drink_malign_pot_prompt = ! s_is_drink_malign_pot_prompt;
         }
         break;
 
-        case 17: {
+        case 18: {
                 // Print warning when melee attacking with ranged weapons
                 s_is_ranged_wpn_meleee_prompt = ! s_is_ranged_wpn_meleee_prompt;
         }
         break;
 
-        case 18: {
+        case 19: {
                 // Ranged weapon auto reload
                 s_is_ranged_wpn_auto_reload = ! s_is_ranged_wpn_auto_reload;
         }
         break;
 
-        case 19: {
+        case 20: {
                 // Projectile delay
                 const P p( s_opt_values_x_pos, browser.y() );
 
@@ -511,7 +523,7 @@ static void player_sets_option(
         }
         break;
 
-        case 20: {
+        case 21: {
                 // Shotgun delay
                 const P p( s_opt_values_x_pos, browser.y() );
 
@@ -552,7 +564,7 @@ static void player_sets_option(
         }
         break;
 
-        case 21: {
+        case 22: {
                 // Explosion delay
                 const P p( s_opt_values_x_pos, browser.y() );
 
@@ -593,7 +605,7 @@ static void player_sets_option(
         }
         break;
 
-        case 22: {
+        case 23: {
                 // Reset to defaults
                 if ( direction == OptionToggleDirecton::enter )
                 {
@@ -652,6 +664,9 @@ static void set_variables_from_lines( std::vector<std::string>& lines )
         lines.erase( std::begin( lines ) );
 
         s_screen_px_h = to_int( lines.front() );
+        lines.erase( std::begin( lines ) );
+
+        s_always_center_view_on_player = lines.front() == "1";
         lines.erase( std::begin( lines ) );
 
         s_is_tiles_mode = lines.front() == "1";
@@ -759,6 +774,7 @@ static std::vector<std::string> lines_from_variables()
         lines.emplace_back( s_is_amb_audio_preloaded ? "1" : "0" );
         lines.push_back( std::to_string( s_screen_px_w ) );
         lines.push_back( std::to_string( s_screen_px_h ) );
+        lines.emplace_back( s_always_center_view_on_player ? "1" : "0" );
         lines.emplace_back( s_is_tiles_mode ? "1" : "0" );
         lines.push_back( s_font_name );
         lines.emplace_back( s_is_fullscreen ? "1" : "0" );
@@ -826,6 +842,11 @@ void init()
 InputMode input_mode()
 {
         return s_input_mode;
+}
+
+bool always_center_view_on_player()
+{
+        return s_always_center_view_on_player;
 }
 
 bool is_tiles_mode()
@@ -1044,7 +1065,7 @@ void set_2x_scale_fullscreen_enabled( const bool value )
 // -----------------------------------------------------------------------------
 ConfigState::ConfigState() :
 
-        m_browser( 23 )
+        m_browser( 24 )
 {
         m_browser.enable_left_right_keys();
 }
@@ -1171,6 +1192,11 @@ void ConfigState::draw()
 
                 { "Preload ambient sounds at game startup",
                   s_is_amb_audio_preloaded
+                          ? "Yes"
+                          : "No" },
+
+                { "Always center view on player",
+                  s_always_center_view_on_player
                           ? "Yes"
                           : "No" },
 

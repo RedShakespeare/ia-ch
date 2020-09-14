@@ -226,10 +226,7 @@ terrain::Terrain* put( terrain::Terrain* const t )
         {
                 if ( t->id() == terrain::Id::floor )
                 {
-                        if ( ! viewport::is_in_view( p ) )
-                        {
-                                viewport::focus_on( p );
-                        }
+                        viewport::show( p, viewport::ForceCentering::no );
 
                         for ( auto& shown_cell : g_cells )
                         {

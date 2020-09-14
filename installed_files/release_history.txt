@@ -27,6 +27,7 @@ Gameplay
 
 User interface
 * All fonts have been replaced with new ones (the reason for this is that the origins and license information of the previous ones was unknown - now this information is clearly listed in a font license text file distributed with the game)
+* Added an option to toggle if the view should always be centerd on the player (default is to always center)
 * Changed the appearance of popups
 * Fixed problem with popups not being re-drawn correctly when alt-tabbing back to the game
 * Many screens such as the background/trait screens and character info screen use a nicer positioning for drawing (most significantly, if the screen is wider than necessary, the text is drawn centered on the x-axis), and they handle window resizing better

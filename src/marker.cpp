@@ -84,7 +84,7 @@ void MarkerState::on_window_resized()
         // This is safe and convenient:
         m_pos = map::g_player->m_pos;
 
-        viewport::focus_on( m_pos );
+        viewport::show( m_pos, viewport::ForceCentering::no );
 
         init_marker_render_data();
 
@@ -99,7 +99,7 @@ void MarkerState::draw()
 {
         if ( ! viewport::is_in_view( m_pos ) )
         {
-                viewport::focus_on( m_pos );
+                viewport::show( m_pos, viewport::ForceCentering::yes );
         }
 
         auto line =

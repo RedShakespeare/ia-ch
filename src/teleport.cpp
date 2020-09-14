@@ -23,6 +23,7 @@
 #include "terrain_door.hpp"
 #include "terrain_mob.hpp"
 #include "text_format.hpp"
+#include "viewport.hpp"
 
 // -----------------------------------------------------------------------------
 // Private
@@ -279,7 +280,7 @@ void teleport(
                 return;
         }
 
-        const P tgt_pos = rnd::element( pos_bucket );
+        const auto tgt_pos = rnd::element( pos_bucket );
 
         teleport( actor, tgt_pos, blocked );
 }
@@ -346,7 +347,8 @@ void teleport( actor::Actor& actor, P p, const Array2<bool>& blocked )
                                 " intercepts my teleportation!" );
 
                         static_cast<actor::Mon*>( other_actor )
-                                ->become_aware_player( actor::AwareSource::other );
+                                ->become_aware_player(
+                                        actor::AwareSource::other );
 
                         is_affected_by_void_traveler = true;
 
@@ -359,6 +361,13 @@ void teleport( actor::Actor& actor, P p, const Array2<bool>& blocked )
 
         // Update actor position to new position
         actor.m_pos = p;
+
+        if ( actor.is_player() )
+        {
+                viewport::show(
+                        map::g_player->m_pos,
+                        viewport::ForceCentering::yes );
+        }
 
         map::update_vision();
 

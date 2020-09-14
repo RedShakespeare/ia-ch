@@ -67,7 +67,8 @@ static const std::vector<std::string> s_win_msg_default = {
         { "As I approach the crystal, an eerie glow illuminates the area. "
           "I notice a figure observing me from the edge of the light. There is "
           "no doubt concerning the nature of this entity; it is the "
-          "Faceless God who dwells in the depths of the earth - Nyarlathotep!" },
+          "Faceless God who dwells in the depths of the earth - "
+          "Nyarlathotep!" },
 
         { "I panic. Why is it I find myself here, stumbling around in "
           "darkness? Is this all part of a plan? The being beckons me to "
@@ -419,6 +420,10 @@ void GameState::on_start()
 
                 minimap::clear();
 
+                viewport::show(
+                        map::g_player->m_pos,
+                        viewport::ForceCentering::yes );
+
                 map::update_vision();
 
                 if ( map_control::g_controller )
@@ -431,10 +436,14 @@ void GameState::on_start()
              ( m_entry_mode == GameEntryMode::new_game ) )
         {
                 // Start with some disadvantages
-                auto* const cursed = property_factory::make( PropId::cursed );
+                auto* const cursed =
+                        property_factory::make( PropId::cursed );
+
                 cursed->set_indefinite();
 
-                auto* const diseased = property_factory::make( PropId::diseased );
+                auto* const diseased =
+                        property_factory::make( PropId::diseased );
+
                 diseased->set_indefinite();
 
                 map::g_player->m_properties.apply( cursed );
@@ -459,7 +468,9 @@ void GameState::draw()
                 if ( ! init::g_is_demo_mapgen )
                 {
 #endif  // NDEBUG
-                        viewport::focus_on( map::g_player->m_pos );
+                        viewport::show(
+                                map::g_player->m_pos,
+                                viewport::ForceCentering::no );
 #ifndef NDEBUG
                 }
 #endif  // NDEBUG

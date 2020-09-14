@@ -26,17 +26,18 @@
 // -----------------------------------------------------------------------------
 static bool try_use_talisman_of_resurrection( actor::Actor& actor )
 {
+        const auto artifact_id = item::Id::resurrect_talisman;
+
         // Player has the Talisman of Resurrection, and died of physical damage?
         if ( ! actor.is_player() ||
-             ! actor.m_inv.has_item_in_backpack( item::Id::resurrect_talisman ) ||
+             ! actor.m_inv.has_item_in_backpack( artifact_id ) ||
              ( map::g_player->ins() >= 100 ) ||
              ( actor.m_sp <= 0 ) )
         {
                 return false;
         }
 
-        actor.m_inv.decr_item_type_in_backpack(
-                item::Id::resurrect_talisman );
+        actor.m_inv.decr_item_type_in_backpack( artifact_id );
 
         msg_log::more_prompt();
 
@@ -74,7 +75,8 @@ static bool try_use_talisman_of_resurrection( actor::Actor& actor )
                         PropEndAllowHistoricMsg::no ) );
 
         // If player died due to falling down a chasm, go to next level
-        if ( map::g_cells.at( actor.m_pos ).terrain->id() == terrain::Id::chasm )
+        if ( map::g_cells.at( actor.m_pos ).terrain->id() ==
+             terrain::Id::chasm )
         {
                 map_travel::go_to_nxt();
         }

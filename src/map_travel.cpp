@@ -26,6 +26,7 @@
 #include "property_handler.hpp"
 #include "saving.hpp"
 #include "terrain.hpp"
+#include "viewport.hpp"
 
 // -----------------------------------------------------------------------------
 // Private
@@ -147,6 +148,8 @@ void go_to_nxt()
         game_time::g_is_magic_descend_nxt_std_turn = false;
 
         map::g_player->m_tgt = nullptr;
+
+        viewport::show( map::g_player->m_pos, viewport::ForceCentering::yes );
 
         map::update_vision();
 
