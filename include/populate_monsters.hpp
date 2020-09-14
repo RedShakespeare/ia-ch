@@ -28,11 +28,11 @@ void make_group_at(
         actor::Id id,
         const std::vector<P>& sorted_free_cells,
         Array2<bool>* blocked_out,
-        MonRoamingAllowed roaming_allowed );
+        MonRoamingAllowed roaming_allowed);
 
 std::vector<P> make_sorted_free_cells(
         const P& origin,
-        const Array2<bool>& blocked );
+        const Array2<bool>& blocked);
 
 // Unwalkable terrain or too close to the player
 Array2<bool> forbidden_spawn_positions();
@@ -43,7 +43,7 @@ void populate_std_lvl();
 
 // Convenient function for special levels which should auto-spawn monsters
 // instead of according to design (or in addition to hand-placed monsters)
-void populate_lvl_as_room_types( const std::vector<RoomType>& room_types );
+void populate_lvl_as_room_types(const std::vector<RoomType>& room_types);
 
 }  // namespace populate_mon
 

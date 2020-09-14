@@ -27,9 +27,9 @@ enum class LevelTemplId
 struct RoomTempl
 {
         RoomTempl() :
-                symbols( P( 0, 0 ) ),
-                type( (RoomType)0 ),
-                base_templ_idx( 0 ) {}
+                symbols(P(0, 0)),
+                type((RoomType)0),
+                base_templ_idx(0) {}
 
         Array2<char> symbols;
 
@@ -56,13 +56,13 @@ void save();
 
 void load();
 
-const Array2<char>& level_templ( LevelTemplId id );
+const Array2<char>& level_templ(LevelTemplId id);
 
-RoomTempl* random_room_templ( const P& max_dims );
+RoomTempl* random_room_templ(const P& max_dims);
 
 void clear_base_room_templates_used();
 
-void on_base_room_template_placed( const RoomTempl& templ );
+void on_base_room_template_placed(const RoomTempl& templ);
 
 void on_map_discarded();
 

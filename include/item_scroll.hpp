@@ -29,7 +29,7 @@ void load();
 class Scroll : public item::Item
 {
 public:
-        Scroll( item::ItemData* item_data );
+        Scroll(item::ItemData* item_data);
 
         ~Scroll() = default;
 
@@ -44,7 +44,7 @@ public:
 
         std::string name_inf_str() const override;
 
-        ConsumeItem activate( actor::Actor* actor ) override;
+        ConsumeItem activate(actor::Actor* actor) override;
 
         std::string real_name() const;
 
@@ -52,11 +52,11 @@ public:
 
         void on_player_reached_new_dlvl_hook() final;
 
-        void on_actor_turn_in_inv_hook( InvType inv_type ) override;
+        void on_actor_turn_in_inv_hook(InvType inv_type) override;
 
         ItemPrePickResult pre_pickup_hook() override;
 
-        void identify( Verbose verbose ) override;
+        void identify(Verbose verbose) override;
 
         Spell* make_spell() const;
 

@@ -11,7 +11,7 @@ namespace actor
 {
 class Actor;
 
-void act( Actor& actor );
+void act(Actor& actor);
 
 }  // namespace actor
 

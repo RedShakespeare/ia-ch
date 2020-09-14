@@ -58,11 +58,11 @@ void run(
         ExplExclCenter exclude_center = ExplExclCenter::no,
         const std::vector<Prop*>& properties_applied = {},
         const std::optional<Color>& color_override = {},
-        ExplIsGas is_gas = ExplIsGas::no );
+        ExplIsGas is_gas = ExplIsGas::no);
 
-void run_smoke_explosion_at( const P& origin, int radi_change = 0 );
+void run_smoke_explosion_at(const P& origin, int radi_change = 0);
 
-R explosion_area( const P& c, int radi );
+R explosion_area(const P& c, int radi);
 
 }  // namespace explosion
 

@@ -72,7 +72,7 @@ public:
         void on_end();
 
         virtual void on_new_player_turn(
-                const std::vector<actor::Actor*>& seen_foes )
+                const std::vector<actor::Actor*>& seen_foes)
         {
                 (void)seen_foes;
         }
@@ -205,7 +205,7 @@ public:
         }
 
         void on_new_player_turn(
-                const std::vector<actor::Actor*>& seen_foes ) override;
+                const std::vector<actor::Actor*>& seen_foes) override;
 
         std::string char_descr_msg() const override
         {
@@ -349,7 +349,7 @@ public:
         }
 
         void on_new_player_turn(
-                const std::vector<actor::Actor*>& seen_foes ) override;
+                const std::vector<actor::Actor*>& seen_foes) override;
 
         void on_permanent_rfear() override;
 
@@ -413,7 +413,7 @@ public:
         }
 
         void on_new_player_turn(
-                const std::vector<actor::Actor*>& seen_foes ) override;
+                const std::vector<actor::Actor*>& seen_foes) override;
 
         void on_permanent_rfear() override;
 
@@ -477,7 +477,7 @@ public:
         }
 
         void on_new_player_turn(
-                const std::vector<actor::Actor*>& seen_foes ) override;
+                const std::vector<actor::Actor*>& seen_foes) override;
 
         void on_permanent_rfear() override;
 
@@ -541,7 +541,7 @@ public:
         }
 
         void on_new_player_turn(
-                const std::vector<actor::Actor*>& seen_foes ) override;
+                const std::vector<actor::Actor*>& seen_foes) override;
 
         void on_permanent_rfear() override;
 
@@ -605,7 +605,7 @@ public:
         }
 
         void on_new_player_turn(
-                const std::vector<actor::Actor*>& seen_foes ) override;
+                const std::vector<actor::Actor*>& seen_foes) override;
 
         void on_permanent_rfear() override;
 
@@ -669,7 +669,7 @@ public:
         }
 
         void on_new_player_turn(
-                const std::vector<actor::Actor*>& seen_foes ) override;
+                const std::vector<actor::Actor*>& seen_foes) override;
 
         void on_permanent_rfear() override;
 
@@ -733,7 +733,7 @@ public:
         }
 
         void on_new_player_turn(
-                const std::vector<actor::Actor*>& seen_foes ) override;
+                const std::vector<actor::Actor*>& seen_foes) override;
 
         void on_permanent_rfear() override;
 
@@ -1110,18 +1110,18 @@ void load();
 
 void run_sympt();
 
-bool has_sympt( InsSymptId id );
+bool has_sympt(InsSymptId id);
 
-bool has_sympt_type( InsSymptType type );
+bool has_sympt_type(InsSymptType type);
 
 std::vector<const InsSympt*> active_sympts();
 
 void on_new_player_turn(
-        const std::vector<actor::Actor*>& seen_foes );
+        const std::vector<actor::Actor*>& seen_foes);
 
 void on_permanent_rfear();
 
-void end_sympt( InsSymptId id );
+void end_sympt(InsSymptId id);
 
 }  // namespace insanity
 

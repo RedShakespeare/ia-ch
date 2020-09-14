@@ -19,14 +19,14 @@ inline constexpr int g_allocated_channels = 16;
 void init();
 void cleanup();
 
-void play( SfxId sfx, int vol_pct_tot = 100, int vol_pct_l = 50 );
+void play(SfxId sfx, int vol_pct_tot = 100, int vol_pct_l = 50);
 
-void play( SfxId sfx, Dir dir, int distance_pct );
+void play(SfxId sfx, Dir dir, int distance_pct);
 
-void try_play_amb( int one_in_n_chance_to_play );
+void try_play_amb(int one_in_n_chance_to_play);
 
 // Plays music if not already playing any music
-void play_music( MusId mus );
+void play_music(MusId mus);
 
 void fade_out_music();
 

@@ -28,7 +28,7 @@ void flush_input()
 
 void clear_events()
 {
-        while ( SDL_PollEvent( &s_sdl_event ) )
+        while (SDL_PollEvent(&s_sdl_event))
         {
         }
 }
@@ -45,9 +45,9 @@ InputData get()
 
         uint32_t ms_at_last_window_resize = 0;
 
-        while ( ! is_done )
+        while (!is_done)
         {
-                io::sleep( 1 );
+                io::sleep(1);
 
                 const auto mod = SDL_GetModState();
 
@@ -55,12 +55,12 @@ InputData get()
                 input.is_ctrl_held = mod & KMOD_CTRL;
                 input.is_alt_held = mod & KMOD_ALT;
 
-                const bool did_poll_event = SDL_PollEvent( &s_sdl_event );
+                const bool did_poll_event = SDL_PollEvent(&s_sdl_event);
 
                 // Handle window resizing
-                if ( ! config::is_fullscreen() )
+                if (!config::is_fullscreen())
                 {
-                        if ( is_window_resized )
+                        if (is_window_resized)
                         {
                                 on_window_resized();
 
@@ -77,13 +77,13 @@ InputData get()
                                 continue;
                         }
 
-                        if ( ms_at_last_window_resize != 0 )
+                        if (ms_at_last_window_resize != 0)
                         {
                                 const auto d =
                                         SDL_GetTicks() -
                                         ms_at_last_window_resize;
 
-                                if ( d > 400 )
+                                if (d > 400)
                                 {
                                         states::draw();
 
@@ -94,39 +94,44 @@ InputData get()
                         }
                 }
 
-                if ( ! did_poll_event )
+                if (!did_poll_event)
                 {
                         continue;
                 }
 
-                switch ( s_sdl_event.type )
+                switch (s_sdl_event.type)
                 {
-                case SDL_WINDOWEVENT: {
-                        switch ( s_sdl_event.window.event )
+                case SDL_WINDOWEVENT:
+                {
+                        switch (s_sdl_event.window.event)
                         {
-                        case SDL_WINDOWEVENT_SIZE_CHANGED: {
+                        case SDL_WINDOWEVENT_SIZE_CHANGED:
+                        {
                                 TRACE << "Window resized" << std::endl;
 
-                                if ( ! config::is_fullscreen() )
+                                if (!config::is_fullscreen())
                                 {
                                         is_window_resized = true;
                                 }
                         }
                         break;
 
-                        case SDL_WINDOWEVENT_RESTORED: {
+                        case SDL_WINDOWEVENT_RESTORED:
+                        {
                                 TRACE << "Window restored" << std::endl;
                         }
                         // Fallthrough
-                        case SDL_WINDOWEVENT_FOCUS_GAINED: {
+                        case SDL_WINDOWEVENT_FOCUS_GAINED:
+                        {
                                 TRACE << "Window gained focus" << std::endl;
 
                                 clear_events();
 
-                                io::sleep( 100 );
+                                io::sleep(100);
                         }
                         // Fallthrough
-                        case SDL_WINDOWEVENT_EXPOSED: {
+                        case SDL_WINDOWEVENT_EXPOSED:
+                        {
                                 TRACE << "Window exposed" << std::endl;
 
                                 states::draw();
@@ -143,28 +148,31 @@ InputData get()
                 }
                 break;  // case SDL_WINDOWEVENT
 
-                case SDL_QUIT: {
+                case SDL_QUIT:
+                {
                         input.key = SDLK_ESCAPE;
 
                         is_done = true;
                 }
                 break;
 
-                case SDL_KEYDOWN: {
+                case SDL_KEYDOWN:
+                {
                         input.key = s_sdl_event.key.keysym.sym;
 
-                        switch ( input.key )
+                        switch (input.key)
                         {
                         case SDLK_RETURN:
                         case SDLK_RETURN2:
-                        case SDLK_KP_ENTER: {
-                                if ( input.is_alt_held )
+                        case SDLK_KP_ENTER:
+                        {
+                                if (input.is_alt_held)
                                 {
                                         TRACE << "Alt-Enter pressed"
                                               << std::endl;
 
                                         config::set_fullscreen(
-                                                ! config::is_fullscreen() );
+                                                !config::is_fullscreen());
 
                                         on_fullscreen_toggled();
 
@@ -175,7 +183,7 @@ InputData get()
                                         // fullscreen, and must be cleared here
                                         // manually. Don't know if this is an
                                         // issue in the IA code, or an SDL bug.
-                                        SDL_SetModState( KMOD_NONE );
+                                        SDL_SetModState(KMOD_NONE);
 
                                         clear_events();
 
@@ -226,7 +234,8 @@ InputData get()
                         case SDLK_F7:
                         case SDLK_F8:
                         case SDLK_F9:
-                        case SDLK_F10: {
+                        case SDLK_F10:
+                        {
                                 is_done = true;
                         }
                         break;
@@ -239,13 +248,15 @@ InputData get()
                 }
                 break;  // case SDL_KEYDOWN
 
-                case SDL_KEYUP: {
+                case SDL_KEYUP:
+                {
                         const auto sdl_keysym = s_sdl_event.key.keysym.sym;
 
-                        switch ( sdl_keysym )
+                        switch (sdl_keysym)
                         {
                         case SDLK_LSHIFT:
-                        case SDLK_RSHIFT: {
+                        case SDLK_RSHIFT:
+                        {
                                 // Shift released
 
                                 // On Windows, when the user presses
@@ -256,14 +267,14 @@ InputData get()
                                 // numpad events here.
                                 SDL_Event sdl_event_tmp;
 
-                                while ( SDL_PollEvent( &sdl_event_tmp ) )
+                                while (SDL_PollEvent(&sdl_event_tmp))
                                 {
-                                        if ( sdl_event_tmp.type != SDL_KEYDOWN )
+                                        if (sdl_event_tmp.type != SDL_KEYDOWN)
                                         {
                                                 continue;
                                         }
 
-                                        switch ( sdl_event_tmp.key.keysym.sym )
+                                        switch (sdl_event_tmp.key.keysym.sym)
                                         {
                                         case SDLK_KP_0:
                                         case SDLK_KP_1:
@@ -274,7 +285,8 @@ InputData get()
                                         case SDLK_KP_6:
                                         case SDLK_KP_7:
                                         case SDLK_KP_8:
-                                        case SDLK_KP_9: {
+                                        case SDLK_KP_9:
+                                        {
                                                 input.key =
                                                         sdl_event_tmp.key.keysym
                                                                 .sym;
@@ -300,23 +312,24 @@ InputData get()
                 }
                 break;  // case SDL_KEYUP
 
-                case SDL_TEXTINPUT: {
+                case SDL_TEXTINPUT:
+                {
                         const auto c =
-                                (unsigned char)s_sdl_event.text.text[ 0 ];
+                                (unsigned char)s_sdl_event.text.text[0];
 
-                        if ( c == '+' || c == '-' )
+                        if (c == '+' || c == '-')
                         {
-                                if ( config::is_fullscreen() ||
-                                     is_window_maximized() )
+                                if (config::is_fullscreen() ||
+                                    is_window_maximized())
                                 {
                                         continue;
                                 }
 
                                 P gui_dims = sdl_window_gui_dims();
 
-                                if ( c == '+' )
+                                if (c == '+')
                                 {
-                                        if ( input.is_ctrl_held )
+                                        if (input.is_ctrl_held)
                                         {
                                                 ++gui_dims.y;
                                         }
@@ -325,9 +338,9 @@ InputData get()
                                                 ++gui_dims.x;
                                         }
                                 }
-                                else if ( c == '-' )
+                                else if (c == '-')
                                 {
-                                        if ( input.is_ctrl_held )
+                                        if (input.is_ctrl_held)
                                         {
                                                 --gui_dims.y;
                                         }
@@ -337,14 +350,14 @@ InputData get()
                                         }
                                 }
 
-                                try_set_window_gui_cells( gui_dims );
+                                try_set_window_gui_cells(gui_dims);
 
                                 is_window_resized = true;
 
                                 continue;
                         }
 
-                        if ( c >= 33 && c < 126 )
+                        if (c >= 33 && c < 126)
                         {
                                 // ASCII char entered
                                 // (Decimal unicode '!' = 33, '~' = 126)

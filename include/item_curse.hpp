@@ -27,13 +27,13 @@ class Curse
 public:
         Curse() = default;
 
-        Curse( Curse&& other );
+        Curse(Curse&& other);
 
-        Curse( std::unique_ptr<CurseImpl> curse_impl );
+        Curse(std::unique_ptr<CurseImpl> curse_impl);
 
-        Curse& operator=( Curse&& other );
+        Curse& operator=(Curse&& other);
 
-        Curse& operator=( Curse& ) = delete;
+        Curse& operator=(Curse&) = delete;
 
         Id id() const;
 
@@ -43,7 +43,7 @@ public:
 
         bool is_active() const
         {
-                if ( ! m_curse_impl )
+                if (!m_curse_impl)
                 {
                         return false;
                 }
@@ -51,32 +51,32 @@ public:
                 return m_turn_countdown == 0;
         }
 
-        void on_new_turn( const item::Item& item );
+        void on_new_turn(const item::Item& item);
 
         void on_player_reached_new_dlvl();
 
-        void on_item_picked_up( const item::Item& item );
+        void on_item_picked_up(const item::Item& item);
 
         void on_item_dropped();
 
         void on_curse_end();
 
-        int affect_weight( int weight ) const;
+        int affect_weight(int weight) const;
 
         std::string descr() const;
 
 private:
-        void print_trigger_msg( const item::Item& item ) const;
+        void print_trigger_msg(const item::Item& item) const;
 
-        void print_warning_msg( const item::Item& item ) const;
+        void print_warning_msg(const item::Item& item) const;
 
-        int m_dlvl_countdown { -1 };
-        int m_turn_countdown { -1 };
+        int m_dlvl_countdown {-1};
+        int m_turn_countdown {-1};
 
-        int m_warning_dlvl_countdown { -1 };
-        int m_warning_turn_countdown { -1 };
+        int m_warning_dlvl_countdown {-1};
+        int m_warning_turn_countdown {-1};
 
-        std::unique_ptr<CurseImpl> m_curse_impl { nullptr };
+        std::unique_ptr<CurseImpl> m_curse_impl {nullptr};
 };
 
 void init();
@@ -85,7 +85,7 @@ void save();
 
 void load();
 
-Curse try_make_random_free_curse( const item::Item& item );
+Curse try_make_random_free_curse(const item::Item& item);
 
 class CurseImpl
 {
@@ -98,19 +98,19 @@ public:
 
         virtual void load() {}
 
-        virtual void on_new_turn_active( const item::Item& item )
+        virtual void on_new_turn_active(const item::Item& item)
         {
                 (void)item;
         }
 
-        virtual void on_start( const item::Item& item )
+        virtual void on_start(const item::Item& item)
         {
                 (void)item;
         }
 
         virtual void on_stop() {}
 
-        virtual int affect_weight( const int weight )
+        virtual int affect_weight(const int weight)
         {
                 return weight;
         }
@@ -120,7 +120,7 @@ public:
         // NOTE: This is only necessary to implement if the curse message itself
         // does not print a message (e.g. a curse lowering the player's HP will
         // trigger a message about this, so it does not need a specific message)
-        virtual std::string curse_msg( const item::Item& item ) const
+        virtual std::string curse_msg(const item::Item& item) const
         {
                 (void)item;
 
@@ -136,7 +136,7 @@ public:
                 return Id::hit_chance_penalty;
         }
 
-        void on_start( const item::Item& item ) override;
+        void on_start(const item::Item& item) override;
 
         void on_stop() override;
 
@@ -151,7 +151,7 @@ public:
                 return Id::increased_shock;
         }
 
-        void on_start( const item::Item& item ) override;
+        void on_start(const item::Item& item) override;
 
         void on_stop() override;
 
@@ -166,11 +166,11 @@ public:
                 return Id::heavy;
         }
 
-        int affect_weight( int weight ) override;
+        int affect_weight(int weight) override;
 
         std::string descr() const override;
 
-        std::string curse_msg( const item::Item& item ) const override;
+        std::string curse_msg(const item::Item& item) const override;
 };
 
 class Shriek : public CurseImpl
@@ -183,14 +183,14 @@ public:
                 return Id::shriek;
         }
 
-        void on_start( const item::Item& item ) override;
+        void on_start(const item::Item& item) override;
 
-        void on_new_turn_active( const item::Item& item ) override;
+        void on_new_turn_active(const item::Item& item) override;
 
         std::string descr() const override;
 
 private:
-        void shriek( const item::Item& item ) const;
+        void shriek(const item::Item& item) const;
 
         std::vector<std::string> m_words {};
 };
@@ -203,14 +203,14 @@ public:
                 return Id::teleport;
         }
 
-        void on_start( const item::Item& item ) override;
+        void on_start(const item::Item& item) override;
 
-        void on_new_turn_active( const item::Item& item ) override;
+        void on_new_turn_active(const item::Item& item) override;
 
         std::string descr() const override;
 
 private:
-        void teleport( const item::Item& item ) const;
+        void teleport(const item::Item& item) const;
 };
 
 class Summon : public CurseImpl
@@ -221,14 +221,14 @@ public:
                 return Id::summon;
         }
 
-        void on_new_turn_active( const item::Item& item ) override;
+        void on_new_turn_active(const item::Item& item) override;
 
-        std::string curse_msg( const item::Item& item ) const override;
+        std::string curse_msg(const item::Item& item) const override;
 
         std::string descr() const override;
 
 private:
-        void summon( const item::Item& item ) const;
+        void summon(const item::Item& item) const;
 };
 
 class Fire : public CurseImpl
@@ -239,14 +239,14 @@ public:
                 return Id::fire;
         }
 
-        void on_start( const item::Item& item ) override;
+        void on_start(const item::Item& item) override;
 
-        void on_new_turn_active( const item::Item& item ) override;
+        void on_new_turn_active(const item::Item& item) override;
 
         std::string descr() const override;
 
 private:
-        void run_fire( const item::Item& item ) const;
+        void run_fire(const item::Item& item) const;
 };
 
 class CannotRead : public CurseImpl
@@ -257,7 +257,7 @@ public:
                 return Id::cannot_read;
         }
 
-        void on_start( const item::Item& item ) override;
+        void on_start(const item::Item& item) override;
 
         void on_stop() override;
 
@@ -272,7 +272,7 @@ public:
                 return Id::light_sensitive;
         }
 
-        void on_start( const item::Item& item ) override;
+        void on_start(const item::Item& item) override;
 
         void on_stop() override;
 

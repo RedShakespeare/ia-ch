@@ -42,22 +42,22 @@ void wait_for_key_press();
 
 BinaryAnswer yes_or_no(
         char key_for_special_event = -1,
-        AllowSpaceCancel allow_space_cancel = AllowSpaceCancel::yes );
+        AllowSpaceCancel allow_space_cancel = AllowSpaceCancel::yes);
 
-Dir dir( AllowCenter allow_center );
+Dir dir(AllowCenter allow_center);
 
 void wait_for_msg_more();
 
 void wait_for_confirm();
 
-InputData letter( bool accept_enter );
+InputData letter(bool accept_enter);
 
 int number(
         const P& pos,
         Color color,
         const Range& allowed_range,
         int default_value,
-        bool cancel_returns_default );
+        bool cancel_returns_default);
 
 }  // namespace query
 

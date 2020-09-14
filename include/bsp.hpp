@@ -23,7 +23,7 @@ struct BlockedSplitPositions
 std::vector<R> try_split(
         const R& rect,
         int child_min_size,
-        const BlockedSplitPositions& blocked_split_positions );
+        const BlockedSplitPositions& blocked_split_positions);
 
 }  // namespace bsp
 

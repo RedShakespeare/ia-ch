@@ -11,9 +11,9 @@
 
 namespace terrain
 {
-void destr_all_adj_doors( const P& p );
+void destr_all_adj_doors(const P& p);
 
-void destr_stone_wall( const P& p );
+void destr_stone_wall(const P& p);
 
 }  // namespace terrain
 

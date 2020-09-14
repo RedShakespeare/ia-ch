@@ -31,21 +31,21 @@
 // -----------------------------------------------------------------------------
 // private
 // -----------------------------------------------------------------------------
-static std::string get_mon_memory_turns_descr( const actor::Actor& actor )
+static std::string get_mon_memory_turns_descr(const actor::Actor& actor)
 {
         const int nr_turns_aware = actor.m_data->nr_turns_aware;
 
-        if ( nr_turns_aware <= 0 )
+        if (nr_turns_aware <= 0)
         {
                 return "";
         }
 
-        const std::string name_a = text_format::first_to_upper( actor.name_a() );
+        const std::string name_a = text_format::first_to_upper(actor.name_a());
 
-        if ( nr_turns_aware < 50 )
+        if (nr_turns_aware < 50)
         {
                 const std::string nr_turns_aware_str =
-                        std::to_string( nr_turns_aware );
+                        std::to_string(nr_turns_aware);
 
                 return name_a +
                         " will remember hostile creatures for at least " +
@@ -60,26 +60,26 @@ static std::string get_mon_memory_turns_descr( const actor::Actor& actor )
         }
 }
 
-static std::string get_mon_dlvl_descr( const actor::Actor& actor )
+static std::string get_mon_dlvl_descr(const actor::Actor& actor)
 {
         const auto& d = *actor.m_data;
 
         const int dlvl = d.spawn_min_dlvl;
 
-        if ( ( dlvl <= 1 ) || ( dlvl >= g_dlvl_last ) )
+        if ((dlvl <= 1) || (dlvl >= g_dlvl_last))
         {
                 return "";
         }
 
-        const std::string dlvl_str = std::to_string( dlvl );
+        const std::string dlvl_str = std::to_string(dlvl);
 
-        if ( d.is_unique )
+        if (d.is_unique)
         {
                 return (
                         d.name_the +
                         " usually dwells beneath level " +
                         dlvl_str +
-                        "." );
+                        ".");
         }
         else
         {
@@ -87,13 +87,13 @@ static std::string get_mon_dlvl_descr( const actor::Actor& actor )
                 return (
                         "They usually dwell beneath level " +
                         dlvl_str +
-                        "." );
+                        ".");
         }
 }
 
-static std::string mon_speed_type_to_str( const actor::Actor& actor )
+static std::string mon_speed_type_to_str(const actor::Actor& actor)
 {
-        switch ( actor.m_data->speed )
+        switch (actor.m_data->speed)
         {
         case actor::Speed::slow:
                 return "slowly";
@@ -108,24 +108,24 @@ static std::string mon_speed_type_to_str( const actor::Actor& actor )
                 return "very swiftly";
         }
 
-        ASSERT( false );
+        ASSERT(false);
 
         return "";
 }
 
-static std::string get_mon_speed_descr( const actor::Actor& actor )
+static std::string get_mon_speed_descr(const actor::Actor& actor)
 {
         const auto& d = *actor.m_data;
 
-        const std::string speed_type_str = mon_speed_type_to_str( actor );
+        const std::string speed_type_str = mon_speed_type_to_str(actor);
 
-        if ( speed_type_str.empty() )
+        if (speed_type_str.empty())
         {
                 return "";
                 ;
         }
 
-        if ( d.is_unique )
+        if (d.is_unique)
         {
                 return d.name_the +
                         " appears to move " +
@@ -144,12 +144,12 @@ static std::string get_mon_speed_descr( const actor::Actor& actor )
 static void mon_shock_lvl_to_str(
         const actor::Actor& actor,
         std::string& shock_str_out,
-        std::string& punct_str_out )
+        std::string& punct_str_out)
 {
         shock_str_out = "";
         punct_str_out = "";
 
-        switch ( actor.m_data->mon_shock_lvl )
+        switch (actor.m_data->mon_shock_lvl)
         {
         case ShockLvl::unsettling:
                 shock_str_out = "unsettling";
@@ -177,20 +177,20 @@ static void mon_shock_lvl_to_str(
         }
 }
 
-static std::string get_mon_shock_descr( const actor::Actor& actor )
+static std::string get_mon_shock_descr(const actor::Actor& actor)
 {
         std::string shock_str;
 
         std::string shock_punct_str;
 
-        mon_shock_lvl_to_str( actor, shock_str, shock_punct_str );
+        mon_shock_lvl_to_str(actor, shock_str, shock_punct_str);
 
-        if ( shock_str.empty() )
+        if (shock_str.empty())
         {
                 return "";
         }
 
-        if ( actor.m_data->is_unique )
+        if (actor.m_data->is_unique)
         {
                 return actor.name_the() +
                         " is " +
@@ -208,37 +208,37 @@ static std::string get_mon_shock_descr( const actor::Actor& actor )
         }
 }
 
-static std::string get_melee_hit_chance_descr( actor::Actor& actor )
+static std::string get_melee_hit_chance_descr(actor::Actor& actor)
 {
         const auto* wielded_item =
-                map::g_player->m_inv.item_in_slot( SlotId::wpn );
+                map::g_player->m_inv.item_in_slot(SlotId::wpn);
 
         const auto* const player_wpn =
                 wielded_item
-                ? static_cast<const item::Wpn*>( wielded_item )
+                ? static_cast<const item::Wpn*>(wielded_item)
                 : &map::g_player->unarmed_wpn();
 
-        if ( ! player_wpn )
+        if (!player_wpn)
         {
-                ASSERT( false );
+                ASSERT(false);
 
                 return "";
         }
 
-        const MeleeAttData att_data( map::g_player, actor, *player_wpn );
+        const MeleeAttData att_data(map::g_player, actor, *player_wpn);
 
         const int hit_chance =
                 ability_roll::hit_chance_pct_actual(
-                        att_data.hit_chance_tot );
+                        att_data.hit_chance_tot);
 
         std::string descr =
                 "The chance to hit " +
                 actor.name_the() +
                 " in melee combat is currently " +
-                std::to_string( hit_chance ) +
+                std::to_string(hit_chance) +
                 "%";
 
-        if ( att_data.is_backstab )
+        if (att_data.is_backstab)
         {
                 descr += " (because they are unaware)";
         }
@@ -265,13 +265,13 @@ void ViewActorDescr::on_start()
                 const auto fixed_lines =
                         text_format::split(
                                 fixed_descr,
-                                panels::w( Panel::info_screen_content ) );
+                                panels::w(Panel::info_screen_content));
 
-                for ( const auto& line : fixed_lines )
+                for (const auto& line : fixed_lines)
                 {
                         m_lines.emplace_back(
                                 line,
-                                colors::text() );
+                                colors::text());
                 }
         }
 
@@ -282,20 +282,20 @@ void ViewActorDescr::on_start()
                         ? auto_description_str()
                         : "";
 
-                if ( ! auto_descr.empty() )
+                if (!auto_descr.empty())
                 {
-                        m_lines.resize( m_lines.size() + 1 );
+                        m_lines.resize(m_lines.size() + 1);
 
                         const auto auto_descr_lines =
                                 text_format::split(
                                         auto_descr,
-                                        panels::w( Panel::info_screen_content ) );
+                                        panels::w(Panel::info_screen_content));
 
-                        for ( const auto& line : auto_descr_lines )
+                        for (const auto& line : auto_descr_lines)
                         {
                                 m_lines.emplace_back(
                                         line,
-                                        colors::text() );
+                                        colors::text());
                         }
                 }
         }
@@ -308,20 +308,20 @@ void ViewActorDescr::on_start()
         // Remove all non-negative properties (we should not show temporary
         // spell resistance for example), and all natural properties (properties
         // which all monsters of this type starts with)
-        for ( auto it = begin( prop_list ); it != end( prop_list ); )
+        for (auto it = begin(prop_list); it != end(prop_list);)
         {
                 const auto* const prop = it->prop;
 
                 const auto id = prop->id();
 
                 const bool is_natural_prop =
-                        m_actor.m_data->natural_props[ (size_t)id ];
+                        m_actor.m_data->natural_props[(size_t)id];
 
-                if ( is_natural_prop ||
-                     ( prop->duration_mode() == PropDurationMode::indefinite ) ||
-                     ( prop->alignment() != PropAlignment::bad ) )
+                if (is_natural_prop ||
+                    (prop->duration_mode() == PropDurationMode::indefinite) ||
+                    (prop->alignment() != PropAlignment::bad))
                 {
-                        it = prop_list.erase( it );
+                        it = prop_list.erase(it);
                 }
                 else
                 {
@@ -332,66 +332,66 @@ void ViewActorDescr::on_start()
 
         const std::string offset = "   ";
 
-        if ( ! prop_list.empty() )
+        if (!prop_list.empty())
         {
-                m_lines.resize( m_lines.size() + 1 );
+                m_lines.resize(m_lines.size() + 1);
 
-                m_lines.emplace_back( "Current properties", colors::text() );
+                m_lines.emplace_back("Current properties", colors::text());
 
                 const int max_w_descr =
-                        ( panels::x1( Panel::info_screen_content ) * 3 ) / 4;
+                        (panels::x1(Panel::info_screen_content) * 3) / 4;
 
-                for ( const auto& e : prop_list )
+                for (const auto& e : prop_list)
                 {
                         const auto& title = e.title;
 
-                        m_lines.emplace_back( offset + title.str, e.title.color );
+                        m_lines.emplace_back(offset + title.str, e.title.color);
 
                         const auto descr_formatted =
                                 text_format::split(
                                         e.descr,
-                                        max_w_descr );
+                                        max_w_descr);
 
-                        for ( const auto& descr_line : descr_formatted )
+                        for (const auto& descr_line : descr_formatted)
                         {
                                 m_lines.emplace_back(
                                         offset + descr_line,
-                                        colors::gray() );
+                                        colors::gray());
                         }
 
                         // Add an empty line between each property, and also
                         // after the last one
-                        m_lines.emplace_back( "", colors::text() );
+                        m_lines.emplace_back("", colors::text());
                 }
         }
 }
 
 void ViewActorDescr::draw()
 {
-        io::cover_panel( Panel::screen );
+        io::cover_panel(Panel::screen);
 
         draw_interface();
 
         const auto nr_lines = m_lines.size();
 
-        const auto panel_h = panels::h( Panel::info_screen_content );
+        const auto panel_h = panels::h(Panel::info_screen_content);
 
         size_t btm_nr =
                 std::min(
                         m_top_idx + panel_h - 1,
-                        (int)nr_lines - 1 );
+                        (int)nr_lines - 1);
 
         int y = 0;
 
-        for ( size_t idx = m_top_idx; idx <= btm_nr; ++idx )
+        for (size_t idx = m_top_idx; idx <= btm_nr; ++idx)
         {
-                const auto& line = m_lines[ idx ];
+                const auto& line = m_lines[idx];
 
                 io::draw_text(
                         line.str,
                         Panel::info_screen_content,
-                        { 0, y },
-                        line.color );
+                        {0, y},
+                        line.color);
 
                 ++y;
         }
@@ -404,15 +404,16 @@ void ViewActorDescr::update()
 
         const auto input = io::get();
 
-        switch ( input.key )
+        switch (input.key)
         {
         case SDLK_KP_2:
-        case SDLK_DOWN: {
+        case SDLK_DOWN:
+        {
                 m_top_idx += line_jump;
 
-                const int panel_h = panels::h( Panel::info_screen_content );
+                const int panel_h = panels::h(Panel::info_screen_content);
 
-                if ( nr_lines <= panel_h )
+                if (nr_lines <= panel_h)
                 {
                         m_top_idx = 0;
                 }
@@ -420,25 +421,28 @@ void ViewActorDescr::update()
                 {
                         m_top_idx = std::min(
                                 nr_lines - panel_h,
-                                m_top_idx );
+                                m_top_idx);
                 }
         }
         break;
 
         case SDLK_KP_8:
-        case SDLK_UP: {
-                m_top_idx = std::max( 0, m_top_idx - line_jump );
+        case SDLK_UP:
+        {
+                m_top_idx = std::max(0, m_top_idx - line_jump);
         }
         break;
 
         case SDLK_SPACE:
-        case SDLK_ESCAPE: {
+        case SDLK_ESCAPE:
+        {
                 // Exit screen
                 states::pop();
         }
         break;
 
-        default: {
+        default:
+        {
         }
         break;
         }
@@ -450,35 +454,35 @@ std::string ViewActorDescr::auto_description_str() const
 
         text_format::append_with_space(
                 str,
-                get_melee_hit_chance_descr( m_actor ) );
+                get_melee_hit_chance_descr(m_actor));
 
         text_format::append_with_space(
                 str,
-                get_mon_dlvl_descr( m_actor ) );
+                get_mon_dlvl_descr(m_actor));
 
         text_format::append_with_space(
                 str,
-                get_mon_speed_descr( m_actor ) );
+                get_mon_speed_descr(m_actor));
 
         text_format::append_with_space(
                 str,
-                get_mon_memory_turns_descr( m_actor ) );
+                get_mon_memory_turns_descr(m_actor));
 
-        if ( m_actor.m_data->is_undead )
+        if (m_actor.m_data->is_undead)
         {
                 text_format::append_with_space(
                         str,
-                        "This creature is undead." );
+                        "This creature is undead.");
         }
 
-        text_format::append_with_space( str, get_mon_shock_descr( m_actor ) );
+        text_format::append_with_space(str, get_mon_shock_descr(m_actor));
 
         return str;
 }
 
 std::string ViewActorDescr::title() const
 {
-        return text_format::first_to_upper( m_actor.name_a() );
+        return text_format::first_to_upper(m_actor.name_a());
 }
 
 // -----------------------------------------------------------------------------
@@ -486,150 +490,150 @@ std::string ViewActorDescr::title() const
 // -----------------------------------------------------------------------------
 namespace look
 {
-void print_location_info_msgs( const P& pos )
+void print_location_info_msgs(const P& pos)
 {
         Cell* cell = nullptr;
 
         bool is_cell_seen = false;
 
-        if ( map::is_pos_inside_map( pos ) )
+        if (map::is_pos_inside_map(pos))
         {
-                cell = &map::g_cells.at( pos );
+                cell = &map::g_cells.at(pos);
 
                 is_cell_seen = cell->is_seen_by_player;
         }
 
-        if ( is_cell_seen )
+        if (is_cell_seen)
         {
                 // Describe terrain
-                std::string str = cell->terrain->name( Article::a );
+                std::string str = cell->terrain->name(Article::a);
 
-                str = text_format::first_to_upper( str );
+                str = text_format::first_to_upper(str);
 
                 msg_log::add(
                         str + ".",
                         colors::text(),
                         MsgInterruptPlayer::no,
                         MorePromptOnMsg::no,
-                        CopyToMsgHistory::no );
+                        CopyToMsgHistory::no);
 
                 // Describe mobile terrains
-                for ( auto* mob : game_time::g_mobs )
+                for (auto* mob : game_time::g_mobs)
                 {
-                        if ( mob->pos() == pos )
+                        if (mob->pos() == pos)
                         {
-                                str = mob->name( Article::a );
+                                str = mob->name(Article::a);
 
-                                str = text_format::first_to_upper( str );
+                                str = text_format::first_to_upper(str);
 
                                 msg_log::add(
                                         str + ".",
                                         colors::text(),
                                         MsgInterruptPlayer::no,
                                         MorePromptOnMsg::no,
-                                        CopyToMsgHistory::no );
+                                        CopyToMsgHistory::no);
                         }
                 }
 
                 // Describe darkness
-                if ( map::g_dark.at( pos ) && ! map::g_light.at( pos ) )
+                if (map::g_dark.at(pos) && !map::g_light.at(pos))
                 {
                         msg_log::add(
                                 "It is very dark here.",
                                 colors::text(),
                                 MsgInterruptPlayer::no,
                                 MorePromptOnMsg::no,
-                                CopyToMsgHistory::no );
+                                CopyToMsgHistory::no);
                 }
 
                 // Describe item
                 auto* item = cell->item;
 
-                if ( item )
+                if (item)
                 {
                         str = item->name(
                                 ItemRefType::plural,
                                 ItemRefInf::yes,
-                                ItemRefAttInf::wpn_main_att_mode );
+                                ItemRefAttInf::wpn_main_att_mode);
 
-                        str = text_format::first_to_upper( str );
+                        str = text_format::first_to_upper(str);
 
                         msg_log::add(
                                 str + ".",
                                 colors::text(),
                                 MsgInterruptPlayer::no,
                                 MorePromptOnMsg::no,
-                                CopyToMsgHistory::no );
+                                CopyToMsgHistory::no);
                 }
 
                 // Describe dead actors
-                for ( auto* actor : game_time::g_actors )
+                for (auto* actor : game_time::g_actors)
                 {
-                        if ( actor->is_corpse() && actor->m_pos == pos )
+                        if (actor->is_corpse() && actor->m_pos == pos)
                         {
-                                ASSERT( ! actor->m_data->corpse_name_a.empty() );
+                                ASSERT(!actor->m_data->corpse_name_a.empty());
 
                                 str = text_format::first_to_upper(
-                                        actor->m_data->corpse_name_a );
+                                        actor->m_data->corpse_name_a);
 
                                 msg_log::add(
                                         str + ".",
                                         colors::text(),
                                         MsgInterruptPlayer::no,
                                         MorePromptOnMsg::no,
-                                        CopyToMsgHistory::no );
+                                        CopyToMsgHistory::no);
                         }
                 }
         }
 
-        print_living_actor_info_msg( pos );
+        print_living_actor_info_msg(pos);
 
-        if ( ! is_cell_seen )
+        if (!is_cell_seen)
         {
                 msg_log::add(
                         "I have no vision here.",
                         colors::text(),
                         MsgInterruptPlayer::no,
                         MorePromptOnMsg::no,
-                        CopyToMsgHistory::no );
+                        CopyToMsgHistory::no);
         }
 }
 
-void print_living_actor_info_msg( const P& pos )
+void print_living_actor_info_msg(const P& pos)
 {
-        auto* actor = map::first_actor_at_pos( pos );
+        auto* actor = map::first_actor_at_pos(pos);
 
-        if ( ! actor ||
-             actor->is_player() ||
-             ! actor->is_alive() )
+        if (!actor ||
+            actor->is_player() ||
+            !actor->is_alive())
         {
                 return;
         }
 
-        if ( actor::can_player_see_actor( *actor ) )
+        if (actor::can_player_see_actor(*actor))
         {
                 const std::string str =
                         text_format::first_to_upper(
-                                actor->name_a() );
+                                actor->name_a());
 
                 msg_log::add(
                         str + ".",
                         colors::text(),
                         MsgInterruptPlayer::no,
                         MorePromptOnMsg::no,
-                        CopyToMsgHistory::no );
+                        CopyToMsgHistory::no);
         }
         else
         {
                 // Cannot see actor
-                if ( actor->is_player_aware_of_me() )
+                if (actor->is_player_aware_of_me())
                 {
                         msg_log::add(
                                 "There is a creature here.",
                                 colors::text(),
                                 MsgInterruptPlayer::no,
                                 MorePromptOnMsg::no,
-                                CopyToMsgHistory::no );
+                                CopyToMsgHistory::no);
                 }
         }
 }

@@ -29,35 +29,35 @@ enum class Panel
 
 namespace panels
 {
-void init( P max_gui_dims );
+void init(P max_gui_dims);
 
 bool is_valid();
 
-R area( Panel panel );
+R area(Panel panel);
 
-P dims( Panel panel );
+P dims(Panel panel);
 
-P p0( Panel panel );
+P p0(Panel panel);
 
-P p1( Panel panel );
+P p1(Panel panel);
 
-int x0( Panel panel );
+int x0(Panel panel);
 
-int y0( Panel panel );
+int y0(Panel panel);
 
-int x1( Panel panel );
+int x1(Panel panel);
 
-int y1( Panel panel );
+int y1(Panel panel);
 
-int w( Panel panel );
+int w(Panel panel);
 
-int h( Panel panel );
+int h(Panel panel);
 
-int center_x( Panel panel );
+int center_x(Panel panel);
 
-int center_y( Panel panel );
+int center_y(Panel panel);
 
-P center( Panel panel );
+P center(Panel panel);
 
 }  // namespace panels
 

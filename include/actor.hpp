@@ -25,40 +25,40 @@ class Actor;
 
 struct AiState
 {
-        Actor* target { nullptr };
-        bool is_target_seen { false };
-        MonRoamingAllowed is_roaming_allowed { MonRoamingAllowed::yes };
+        Actor* target {nullptr};
+        bool is_target_seen {false};
+        MonRoamingAllowed is_roaming_allowed {MonRoamingAllowed::yes};
         P spawn_pos {};
-        Dir last_dir_moved { Dir::center };
+        Dir last_dir_moved {Dir::center};
 
         // AI creatures pauses every second step while not aware or wary, this
         // tracks the state of the pausing
-        bool is_waiting { false };
+        bool is_waiting {false};
 };
 
 struct AwareState
 {
-        int wary_counter { 0 };
-        int aware_counter { 0 };
-        int player_aware_of_me_counter { 0 };
-        bool is_msg_mon_in_view_printed { false };
-        bool is_player_feeling_msg_allowed { true };
+        int wary_counter {0};
+        int aware_counter {0};
+        int player_aware_of_me_counter {0};
+        bool is_msg_mon_in_view_printed {false};
+        bool is_player_feeling_msg_allowed {true};
 };
 
 struct MonSpell
 {
-        Spell* spell { nullptr };
-        SpellSkill skill { (SpellSkill)0 };
-        int cooldown { -1 };
+        Spell* spell {nullptr};
+        SpellSkill skill {(SpellSkill)0};
+        int cooldown {-1};
 };
 
-int max_hp( const Actor& actor );
+int max_hp(const Actor& actor);
 
-int max_sp( const Actor& actor );
+int max_sp(const Actor& actor);
 
-void init_actor( Actor& actor, const P& pos_, ActorData& data );
+void init_actor(Actor& actor, const P& pos_, ActorData& data);
 
-void print_aware_invis_mon_msg( const Mon& mon );
+void print_aware_invis_mon_msg(const Mon& mon);
 
 class Actor
 {
@@ -67,25 +67,25 @@ public:
 
         int ability(
                 AbilityId id,
-                bool is_affected_by_props ) const;
+                bool is_affected_by_props) const;
 
         bool restore_hp(
                 int hp_restored,
                 bool is_allowed_above_max = false,
-                Verbose verbose = Verbose::yes );
+                Verbose verbose = Verbose::yes);
 
         bool restore_sp(
                 int spi_restored,
                 bool is_allowed_above_max = false,
-                Verbose verbose = Verbose::yes );
+                Verbose verbose = Verbose::yes);
 
         void change_max_hp(
                 int change,
-                Verbose verbose = Verbose::yes );
+                Verbose verbose = Verbose::yes);
 
         void change_max_sp(
                 int change,
-                Verbose verbose = Verbose::yes );
+                Verbose verbose = Verbose::yes);
 
         // Used by Ghoul class and Ghoul monsters
         DidAction try_eat_corpse();
@@ -99,7 +99,7 @@ public:
 
         int armor_points() const;
 
-        void add_light( Array2<bool>& light_map ) const;
+        void add_light(Array2<bool>& light_map) const;
 
         bool is_alive() const
         {
@@ -134,7 +134,7 @@ public:
                 return m_data->descr;
         }
 
-        virtual void add_light_hook( Array2<bool>& light ) const
+        virtual void add_light_hook(Array2<bool>& light) const
         {
                 (void)light;
         }
@@ -142,7 +142,7 @@ public:
         virtual void on_hit(
                 const int dmg,
                 const DmgType dmg_type,
-                const AllowWound allow_wound )
+                const AllowWound allow_wound)
         {
                 (void)dmg;
                 (void)dmg_type;
@@ -153,7 +153,7 @@ public:
 
         virtual Color color() const = 0;
 
-        virtual SpellSkill spell_skill( SpellId id ) const = 0;
+        virtual SpellSkill spell_skill(SpellId id) const = 0;
 
         bool is_aware_of_player() const
         {
@@ -170,31 +170,31 @@ public:
                 return m_mon_aware_state.player_aware_of_me_counter > 0;
         }
 
-        virtual bool is_leader_of( const Actor* actor ) const = 0;
+        virtual bool is_leader_of(const Actor* actor) const = 0;
 
-        virtual bool is_actor_my_leader( const Actor* actor ) const = 0;
+        virtual bool is_actor_my_leader(const Actor* actor) const = 0;
 
         P m_pos {};
-        ActorState m_state { ActorState::alive };
-        int m_hp { -1 };
-        int m_base_max_hp { -1 };
-        int m_sp { -1 };
-        int m_base_max_sp { -1 };
-        PropHandler m_properties { this };
-        Inventory m_inv { this };
-        ActorData* m_data { nullptr };
-        int m_delay { 0 };
-        P m_opening_door_pos { -1, -1 };
+        ActorState m_state {ActorState::alive};
+        int m_hp {-1};
+        int m_base_max_hp {-1};
+        int m_sp {-1};
+        int m_base_max_sp {-1};
+        PropHandler m_properties {this};
+        Inventory m_inv {this};
+        ActorData* m_data {nullptr};
+        int m_delay {0};
+        P m_opening_door_pos {-1, -1};
 
         // Monster specific data
         AiState m_ai_state {};
         AwareState m_mon_aware_state {};
-        Actor* m_leader { nullptr };
+        Actor* m_leader {nullptr};
         std::vector<MonSpell> m_mon_spells {};
 
 protected:
         // Damages worn armor, and returns damage after armor absorbs damage
-        int hit_armor( int dmg );
+        int hit_armor(int dmg);
 };
 
 }  // namespace actor

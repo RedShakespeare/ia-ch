@@ -23,17 +23,17 @@ void cleanup();
 void save();
 void load();
 
-void learn_spell( SpellId id, Verbose verbose );
+void learn_spell(SpellId id, Verbose verbose);
 
-void unlearn_spell( SpellId id, Verbose verbose );
+void unlearn_spell(SpellId id, Verbose verbose);
 
-void incr_spell_skill( SpellId id, Verbose verbose );
+void incr_spell_skill(SpellId id, Verbose verbose);
 
-SpellSkill spell_skill( SpellId id );
+SpellSkill spell_skill(SpellId id);
 
-void set_spell_skill( SpellId id, SpellSkill val );
+void set_spell_skill(SpellId id, SpellSkill val);
 
-bool is_spell_learned( SpellId id );
+bool is_spell_learned(SpellId id);
 
 bool is_getting_altar_bonus();
 

@@ -44,36 +44,36 @@ public:
                 reset();
         }
 
-        AbilityValues& operator=( const AbilityValues& other ) = default;
+        AbilityValues& operator=(const AbilityValues& other) = default;
 
         void reset();
 
-        int val( AbilityId id,
-                 bool is_affected_by_props,
-                 const actor::Actor& actor ) const;
+        int val(AbilityId id,
+                bool is_affected_by_props,
+                const actor::Actor& actor) const;
 
-        int raw_val( const AbilityId id ) const
+        int raw_val(const AbilityId id) const
         {
-                return m_ability_list[ (size_t)id ];
+                return m_ability_list[(size_t)id];
         }
 
-        void set_val( AbilityId ability, int val );
+        void set_val(AbilityId ability, int val);
 
-        void change_val( AbilityId ability, int change );
+        void change_val(AbilityId ability, int change);
 
 private:
-        int m_ability_list[ (size_t)AbilityId::END ];
+        int m_ability_list[(size_t)AbilityId::END];
 };
 
 namespace ability_roll
 {
-ActionResult roll( int skill_value );
+ActionResult roll(int skill_value);
 
 // Intended for presenting hit chance values to the player (when aiming etc).
 // The parameter value (which could for example be > 100% due to bonuses) is
 // clamped within the actual possible hit chance range, considering critical
 // hits and misses.
-int hit_chance_pct_actual( int value );
+int hit_chance_pct_actual(int value);
 
 }  // namespace ability_roll
 

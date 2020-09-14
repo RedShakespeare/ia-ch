@@ -23,7 +23,7 @@ void run(
         const P& attacked_from_pos,
         bool is_spike_gun,
         Verbose verbose = Verbose::yes,
-        int paralyze_extra_turns = 0 );
+        int paralyze_extra_turns = 0);
 
 }  // namespace knockback
 

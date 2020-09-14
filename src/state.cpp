@@ -18,7 +18,7 @@ static void run_state_iteration()
 {
         states::start();
 
-        if ( states::is_empty() )
+        if (states::is_empty())
         {
                 return;
         }
@@ -50,7 +50,7 @@ void cleanup()
 {
         TRACE_FUNC_BEGIN;
 
-        s_current_states.resize( 0 );
+        s_current_states.resize(0);
 
         TRACE_FUNC_END;
 }
@@ -59,7 +59,7 @@ void run()
 {
         TRACE_FUNC_BEGIN;
 
-        while ( ! is_empty() )
+        while (!is_empty())
         {
                 run_state_iteration();
         }
@@ -67,15 +67,15 @@ void run()
         TRACE_FUNC_END;
 }
 
-void run_until_state_done( std::unique_ptr<State> state )
+void run_until_state_done(std::unique_ptr<State> state)
 {
         TRACE_FUNC_BEGIN;
 
         auto* state_addr = state.get();
 
-        push( std::move( state ) );
+        push(std::move(state));
 
-        while ( contains_state( state_addr ) )
+        while (contains_state(state_addr))
         {
                 run_state_iteration();
         }
@@ -85,7 +85,7 @@ void run_until_state_done( std::unique_ptr<State> state )
 
 void start()
 {
-        while ( ! is_empty() && ! s_current_states.back()->has_started() )
+        while (!is_empty() && !s_current_states.back()->has_started())
         {
                 auto& state = s_current_states.back();
 
@@ -99,15 +99,15 @@ void start()
 
 void draw()
 {
-        if ( is_empty() )
+        if (is_empty())
         {
                 return;
         }
 
         // Find the first state from the end which is NOT drawn overlayed
-        auto draw_from = std::end( s_current_states );
+        auto draw_from = std::end(s_current_states);
 
-        while ( draw_from != std::begin( s_current_states ) )
+        while (draw_from != std::begin(s_current_states))
         {
                 --draw_from;
 
@@ -115,15 +115,15 @@ void draw()
 
                 // If not drawn overlayed, draw from this state as bottom layer
                 // (but only if the state has been started, see note below)
-                if ( ! state_ptr->draw_overlayed() &&
-                     state_ptr->has_started() )
+                if (!state_ptr->draw_overlayed() &&
+                    state_ptr->has_started())
                 {
                         break;
                 }
         }
 
         // Draw every state from this (non-overlayed) state onward
-        for ( ; draw_from != std::end( s_current_states ); ++draw_from )
+        for (; draw_from != std::end(s_current_states); ++draw_from)
         {
                 const auto& state_ptr = *draw_from;
 
@@ -131,7 +131,7 @@ void draw()
                 // to set up menus etc in their start function, and expect the
                 // chance to do so before drawing is called)
 
-                if ( state_ptr->has_started() )
+                if (state_ptr->has_started())
                 {
                         state_ptr->draw();
                 }
@@ -140,7 +140,7 @@ void draw()
 
 void on_window_resized()
 {
-        for ( auto& state : s_current_states )
+        for (auto& state : s_current_states)
         {
                 state->on_window_resized();
         }
@@ -148,7 +148,7 @@ void on_window_resized()
 
 void update()
 {
-        if ( is_empty() )
+        if (is_empty())
         {
                 return;
         }
@@ -156,17 +156,17 @@ void update()
         s_current_states.back()->update();
 }
 
-void push( std::unique_ptr<State> state )
+void push(std::unique_ptr<State> state)
 {
         TRACE_FUNC_BEGIN;
 
         // Pause the current state
-        if ( ! is_empty() )
+        if (!is_empty())
         {
                 s_current_states.back()->on_pause();
         }
 
-        s_current_states.push_back( std::move( state ) );
+        s_current_states.push_back(std::move(state));
 
         s_current_states.back()->on_pushed();
 
@@ -179,7 +179,7 @@ void pop()
 {
         TRACE_FUNC_BEGIN;
 
-        if ( is_empty() )
+        if (is_empty())
         {
                 TRACE_FUNC_END;
 
@@ -190,7 +190,7 @@ void pop()
 
         s_current_states.pop_back();
 
-        if ( ! is_empty() )
+        if (!is_empty())
         {
                 s_current_states.back()->on_resume();
         }
@@ -204,7 +204,7 @@ void pop_all()
 {
         TRACE_FUNC_BEGIN;
 
-        while ( ! is_empty() )
+        while (!is_empty())
         {
                 s_current_states.back()->on_popped();
 
@@ -214,11 +214,11 @@ void pop_all()
         TRACE_FUNC_END;
 }
 
-bool contains_state( const StateId id )
+bool contains_state(const StateId id)
 {
-        for ( auto& state : s_current_states )
+        for (auto& state : s_current_states)
         {
-                if ( state->id() == id )
+                if (state->id() == id)
                 {
                         return true;
                 }
@@ -227,11 +227,11 @@ bool contains_state( const StateId id )
         return false;
 }
 
-bool contains_state( const State* const state )
+bool contains_state(const State* const state)
 {
-        for ( auto& state_found : s_current_states )
+        for (auto& state_found : s_current_states)
         {
-                if ( state_found.get() == state )
+                if (state_found.get() == state)
                 {
                         return true;
                 }
@@ -240,18 +240,18 @@ bool contains_state( const State* const state )
         return false;
 }
 
-void pop_until( const StateId id )
+void pop_until(const StateId id)
 {
         TRACE_FUNC_BEGIN;
 
-        if ( is_empty() || ! contains_state( id ) )
+        if (is_empty() || !contains_state(id))
         {
-                ASSERT( false );
+                ASSERT(false);
 
                 return;
         }
 
-        while ( s_current_states.back().get()->id() != id )
+        while (s_current_states.back().get()->id() != id)
         {
                 pop();
         }
@@ -259,9 +259,9 @@ void pop_until( const StateId id )
         TRACE_FUNC_END;
 }
 
-bool is_current_state( const State* const state )
+bool is_current_state(const State* const state)
 {
-        if ( is_empty() )
+        if (is_empty())
         {
                 return false;
         }

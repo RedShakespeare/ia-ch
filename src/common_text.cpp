@@ -65,6 +65,6 @@ const std::vector<std::string> g_exorcist_purge_phrases = {
         "This place feels more serene now.",
         "The sanctity of this place has been somewhat restored.",
         "A great wickedness has been extinguished.",
-        "I sense a stillness permeating throughout the area." };
+        "I sense a stillness permeating throughout the area."};
 
 }  // namespace common_text

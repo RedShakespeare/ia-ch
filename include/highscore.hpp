@@ -23,15 +23,15 @@ struct HighscoreEntry
         std::string game_summary_file_path {};
         std::string date {};
         std::string name {};
-        int xp { 0 };
-        int lvl { 0 };
-        int dlvl { 0 };
-        int turn_count { 0 };
-        int ins { 0 };
-        IsWin is_win { IsWin::no };
-        Bg bg { Bg::END };
-        OccultistDomain player_occultist_domain { OccultistDomain::END };
-        bool is_latest_entry { false };
+        int xp {0};
+        int lvl {0};
+        int dlvl {0};
+        int turn_count {0};
+        int ins {0};
+        IsWin is_win {IsWin::no};
+        Bg bg {Bg::END};
+        OccultistDomain player_occultist_domain {OccultistDomain::END};
+        bool is_latest_entry {false};
 };
 
 namespace highscore
@@ -43,9 +43,9 @@ void cleanup();
 // highscore info based on the current game - it has no side effects
 HighscoreEntry make_entry_from_current_game_data(
         const std::string& game_summary_file_path,
-        IsWin is_win );
+        IsWin is_win);
 
-void append_entry_to_highscores_file( HighscoreEntry& entry );
+void append_entry_to_highscores_file(HighscoreEntry& entry);
 
 std::vector<HighscoreEntry> entries_sorted();
 
@@ -81,7 +81,7 @@ private:
 class BrowseHighscoreEntry : public InfoScreenState
 {
 public:
-        BrowseHighscoreEntry( std::string file_path );
+        BrowseHighscoreEntry(std::string file_path);
 
         void on_start() override;
 

@@ -18,46 +18,46 @@
 #include "property_handler.hpp"
 #include "test_utils.hpp"
 
-TEST_CASE( "Activate curse" )
+TEST_CASE("Activate curse")
 {
         test_utils::init_all();
 
         auto& props = map::g_player->m_properties;
 
-        for ( size_t i = 0; i < (size_t)PropId::END; ++i )
+        for (size_t i = 0; i < (size_t)PropId::END; ++i)
         {
-                REQUIRE( ! props.has( (PropId)i ) );
+                REQUIRE(!props.has((PropId)i));
         }
 
-        auto* const item = item::make( item::Id::horn_of_malice );
+        auto* const item = item::make(item::Id::horn_of_malice);
 
         item->set_curse(
                 item_curse::Curse(
-                        std::make_unique<item_curse::CannotRead>() ) );
+                        std::make_unique<item_curse::CannotRead>()));
 
-        map::g_player->m_inv.put_in_backpack( item );
+        map::g_player->m_inv.put_in_backpack(item);
 
-        REQUIRE( ! item->current_curse().is_active() );
+        REQUIRE(!item->current_curse().is_active());
 
-        REQUIRE( ! map::g_player->m_properties.has( PropId::cannot_read_curse ) );
+        REQUIRE(!map::g_player->m_properties.has(PropId::cannot_read_curse));
 
-        for ( int i = 0; i < 10; ++i )
+        for (int i = 0; i < 10; ++i)
         {
                 item->current_curse().on_player_reached_new_dlvl();
         }
 
-        REQUIRE( ! item->current_curse().is_active() );
+        REQUIRE(!item->current_curse().is_active());
 
-        REQUIRE( ! map::g_player->m_properties.has( PropId::cannot_read_curse ) );
+        REQUIRE(!map::g_player->m_properties.has(PropId::cannot_read_curse));
 
-        for ( int i = 0; i < 5000; ++i )
+        for (int i = 0; i < 5000; ++i)
         {
-                item->current_curse().on_new_turn( *item );
+                item->current_curse().on_new_turn(*item);
         }
 
-        REQUIRE( item->current_curse().is_active() );
+        REQUIRE(item->current_curse().is_active());
 
-        REQUIRE( map::g_player->m_properties.has( PropId::cannot_read_curse ) );
+        REQUIRE(map::g_player->m_properties.has(PropId::cannot_read_curse));
 
         test_utils::cleanup_all();
 }

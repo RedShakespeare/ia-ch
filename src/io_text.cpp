@@ -24,14 +24,14 @@ void draw_character(
         const P pos,
         const Color& color,
         const DrawBg draw_bg,
-        const Color& bg_color )
+        const Color& bg_color)
 {
-        if ( ! panels::is_valid() )
+        if (!panels::is_valid())
         {
                 return;
         }
 
-        const auto px_pos = gui_to_px_coords( panel, pos );
+        const auto px_pos = gui_to_px_coords(panel, pos);
 
         const auto sdl_color = color.sdl_color();
         const auto sdl_color_bg = bg_color.sdl_color();
@@ -41,7 +41,7 @@ void draw_character(
                 px_pos,
                 sdl_color,
                 draw_bg,
-                sdl_color_bg );
+                sdl_color_bg);
 }
 
 void draw_text_at_px(
@@ -49,9 +49,9 @@ void draw_text_at_px(
         P px_pos,
         const Color& color,
         const io::DrawBg draw_bg,
-        const Color& bg_color )
+        const Color& bg_color)
 {
-        if ( ( px_pos.y < 0 ) || ( px_pos.y >= panel_px_h( Panel::screen ) ) )
+        if ((px_pos.y < 0) || (px_pos.y >= panel_px_h(Panel::screen)))
         {
                 return;
         }
@@ -65,7 +65,7 @@ void draw_text_at_px(
 
         const auto sdl_color_gray = colors::gray();
 
-        const int screen_px_w = panel_px_w( Panel::screen );
+        const int screen_px_w = panel_px_w(Panel::screen);
         const int msg_px_x1 = px_pos.x + msg_px_w - 1;
         const bool msg_w_fit_on_screen = msg_px_x1 < screen_px_w;
 
@@ -73,27 +73,27 @@ void draw_text_at_px(
         // does not fit on the screen horizontally.
         const char dots[] = "(...)";
         size_t dots_idx = 0;
-        const int px_x_dots = screen_px_w - ( cell_px_w * 5 );
+        const int px_x_dots = screen_px_w - (cell_px_w * 5);
 
-        for ( int i = 0; i < msg_w; ++i )
+        for (int i = 0; i < msg_w; ++i)
         {
-                if ( px_pos.x < 0 || px_pos.x >= screen_px_w )
+                if (px_pos.x < 0 || px_pos.x >= screen_px_w)
                 {
                         return;
                 }
 
                 const bool draw_dots =
-                        ! msg_w_fit_on_screen &&
-                        ( px_pos.x >= px_x_dots );
+                        !msg_w_fit_on_screen &&
+                        (px_pos.x >= px_x_dots);
 
-                if ( draw_dots )
+                if (draw_dots)
                 {
                         draw_character_at_px(
-                                dots[ dots_idx ],
+                                dots[dots_idx],
                                 px_pos,
                                 sdl_color_gray,
                                 draw_bg,
-                                bg_color );
+                                bg_color);
 
                         ++dots_idx;
                 }
@@ -101,11 +101,11 @@ void draw_text_at_px(
                 {
                         // Whole message fits, or we are not yet near the edge
                         draw_character_at_px(
-                                str[ i ],
+                                str[i],
                                 px_pos,
                                 sdl_color,
                                 draw_bg,
-                                sdl_bg_color );
+                                sdl_bg_color);
                 }
 
                 px_pos.x += cell_px_w;
@@ -118,16 +118,16 @@ void draw_text(
         const P pos,
         const Color& color,
         const DrawBg draw_bg,
-        const Color& bg_color )
+        const Color& bg_color)
 {
-        if ( ! panels::is_valid() )
+        if (!panels::is_valid())
         {
                 return;
         }
 
-        P px_pos = gui_to_px_coords( panel, pos );
+        P px_pos = gui_to_px_coords(panel, pos);
 
-        draw_text_at_px( str, px_pos, color, draw_bg, bg_color );
+        draw_text_at_px(str, px_pos, color, draw_bg, bg_color);
 }
 
 void draw_text_center(
@@ -137,9 +137,9 @@ void draw_text_center(
         const Color& color,
         const DrawBg draw_bg,
         const Color& bg_color,
-        const bool is_pixel_pos_adj_allowed )
+        const bool is_pixel_pos_adj_allowed)
 {
-        if ( ! panels::is_valid() )
+        if (!panels::is_valid())
         {
                 return;
         }
@@ -151,19 +151,19 @@ void draw_text_center(
         auto px_pos =
                 gui_to_px_coords(
                         panel,
-                        P( x_pos_left, pos.y ) );
+                        P(x_pos_left, pos.y));
 
-        if ( is_pixel_pos_adj_allowed )
+        if (is_pixel_pos_adj_allowed)
         {
                 const int pixel_x_adj =
-                        ( ( len_half * 2 ) == len )
-                        ? ( config::gui_cell_px_w() / 2 )
+                        ((len_half * 2) == len)
+                        ? (config::gui_cell_px_w() / 2)
                         : 0;
 
-                px_pos += P( pixel_x_adj, 0 );
+                px_pos += P(pixel_x_adj, 0);
         }
 
-        draw_text_at_px( str, px_pos, color, draw_bg, bg_color );
+        draw_text_at_px(str, px_pos, color, draw_bg, bg_color);
 }
 
 void draw_text_right(
@@ -172,9 +172,9 @@ void draw_text_right(
         const P pos,
         const Color& color,
         const DrawBg draw_bg,
-        const Color& bg_color )
+        const Color& bg_color)
 {
-        if ( ! panels::is_valid() )
+        if (!panels::is_valid())
         {
                 return;
         }
@@ -184,9 +184,9 @@ void draw_text_right(
         auto px_pos =
                 gui_to_px_coords(
                         panel,
-                        P( x_pos_left, pos.y ) );
+                        P(x_pos_left, pos.y));
 
-        draw_text_at_px( str, px_pos, color, draw_bg, bg_color );
+        draw_text_at_px(str, px_pos, color, draw_bg, bg_color);
 }
 
 }  // namespace io

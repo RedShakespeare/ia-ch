@@ -46,83 +46,83 @@ void init()
         s_rod_looks.clear();
 
         s_rod_looks.push_back(
-                { "Iron", "an Iron", colors::gray() } );
+                {"Iron", "an Iron", colors::gray()});
 
         s_rod_looks.push_back(
-                { "Zinc", "a Zinc", colors::light_white() } );
+                {"Zinc", "a Zinc", colors::light_white()});
 
         s_rod_looks.push_back(
-                { "Chromium", "a Chromium", colors::light_white() } );
+                {"Chromium", "a Chromium", colors::light_white()});
 
         s_rod_looks.push_back(
-                { "Tin", "a Tin", colors::light_white() } );
+                {"Tin", "a Tin", colors::light_white()});
 
         s_rod_looks.push_back(
-                { "Silver", "a Silver", colors::light_white() } );
+                {"Silver", "a Silver", colors::light_white()});
 
         s_rod_looks.push_back(
-                { "Golden", "a Golden", colors::yellow() } );
+                {"Golden", "a Golden", colors::yellow()});
 
         s_rod_looks.push_back(
-                { "Nickel", "a Nickel", colors::light_white() } );
+                {"Nickel", "a Nickel", colors::light_white()});
 
         s_rod_looks.push_back(
-                { "Copper", "a Copper", colors::brown() } );
+                {"Copper", "a Copper", colors::brown()});
 
         s_rod_looks.push_back(
-                { "Lead", "a Lead", colors::gray() } );
+                {"Lead", "a Lead", colors::gray()});
 
         s_rod_looks.push_back(
-                { "Tungsten", "a Tungsten", colors::white() } );
+                {"Tungsten", "a Tungsten", colors::white()});
 
         s_rod_looks.push_back(
-                { "Platinum", "a Platinum", colors::light_white() } );
+                {"Platinum", "a Platinum", colors::light_white()});
 
         s_rod_looks.push_back(
-                { "Lithium", "a Lithium", colors::white() } );
+                {"Lithium", "a Lithium", colors::white()});
 
         s_rod_looks.push_back(
-                { "Zirconium", "a Zirconium", colors::white() } );
+                {"Zirconium", "a Zirconium", colors::white()});
 
         s_rod_looks.push_back(
-                { "Gallium", "a Gallium", colors::light_white() } );
+                {"Gallium", "a Gallium", colors::light_white()});
 
         s_rod_looks.push_back(
-                { "Cobalt", "a Cobalt", colors::light_blue() } );
+                {"Cobalt", "a Cobalt", colors::light_blue()});
 
         s_rod_looks.push_back(
-                { "Titanium", "a Titanium", colors::light_white() } );
+                {"Titanium", "a Titanium", colors::light_white()});
 
         s_rod_looks.push_back(
-                { "Magnesium", "a Magnesium", colors::white() } );
+                {"Magnesium", "a Magnesium", colors::white()});
 
-        for ( auto& d : item::g_data )
+        for (auto& d : item::g_data)
         {
-                if ( d.type == ItemType::rod )
+                if (d.type == ItemType::rod)
                 {
                         // Color and false name
                         const size_t idx =
-                                rnd::range( 0, (int)s_rod_looks.size() - 1 );
+                                rnd::range(0, (int)s_rod_looks.size() - 1);
 
-                        RodLook& look = s_rod_looks[ idx ];
+                        RodLook& look = s_rod_looks[idx];
 
-                        d.base_name_un_id.names[ (size_t)ItemRefType::plain ] =
+                        d.base_name_un_id.names[(size_t)ItemRefType::plain] =
                                 look.name_plain + " Rod";
 
-                        d.base_name_un_id.names[ (size_t)ItemRefType::plural ] =
+                        d.base_name_un_id.names[(size_t)ItemRefType::plural] =
                                 look.name_plain + " Rods";
 
-                        d.base_name_un_id.names[ (size_t)ItemRefType::a ] =
+                        d.base_name_un_id.names[(size_t)ItemRefType::a] =
                                 look.name_a + " Rod";
 
                         d.color = look.color;
 
-                        s_rod_looks.erase( s_rod_looks.begin() + idx );
+                        s_rod_looks.erase(s_rod_looks.begin() + idx);
 
                         // True name
                         const auto* const rod =
                                 static_cast<const Rod*>(
-                                        item::make( d.id, 1 ) );
+                                        item::make(d.id, 1));
 
                         const std::string real_type_name = rod->real_name();
 
@@ -137,13 +137,13 @@ void init()
                         const std::string real_name_a =
                                 "a Rod of " + real_type_name;
 
-                        d.base_name.names[ (size_t)ItemRefType::plain ] =
+                        d.base_name.names[(size_t)ItemRefType::plain] =
                                 real_name;
 
-                        d.base_name.names[ (size_t)ItemRefType::plural ] =
+                        d.base_name.names[(size_t)ItemRefType::plural] =
                                 real_name_plural;
 
-                        d.base_name.names[ (size_t)ItemRefType::a ] =
+                        d.base_name.names[(size_t)ItemRefType::a] =
                                 real_name_a;
                 }
         }
@@ -153,48 +153,48 @@ void init()
 
 void save()
 {
-        for ( int i = 0; i < (int)item::Id::END; ++i )
+        for (int i = 0; i < (int)item::Id::END; ++i)
         {
-                auto& d = item::g_data[ i ];
+                auto& d = item::g_data[i];
 
-                if ( d.type == ItemType::rod )
+                if (d.type == ItemType::rod)
                 {
                         saving::put_str(
                                 d.base_name_un_id
-                                        .names[ (size_t)ItemRefType::plain ] );
+                                        .names[(size_t)ItemRefType::plain]);
 
                         saving::put_str(
                                 d.base_name_un_id
-                                        .names[ (size_t)ItemRefType::plural ] );
+                                        .names[(size_t)ItemRefType::plural]);
 
                         saving::put_str(
                                 d.base_name_un_id
-                                        .names[ (size_t)ItemRefType::a ] );
+                                        .names[(size_t)ItemRefType::a]);
 
-                        saving::put_str( colors::color_to_name( d.color ) );
+                        saving::put_str(colors::color_to_name(d.color));
                 }
         }
 }
 
 void load()
 {
-        for ( int i = 0; i < (int)item::Id::END; ++i )
+        for (int i = 0; i < (int)item::Id::END; ++i)
         {
-                auto& d = item::g_data[ i ];
+                auto& d = item::g_data[i];
 
-                if ( d.type == ItemType::rod )
+                if (d.type == ItemType::rod)
                 {
-                        d.base_name_un_id.names[ (size_t)ItemRefType::plain ] =
+                        d.base_name_un_id.names[(size_t)ItemRefType::plain] =
                                 saving::get_str();
 
-                        d.base_name_un_id.names[ (size_t)ItemRefType::plural ] =
+                        d.base_name_un_id.names[(size_t)ItemRefType::plural] =
                                 saving::get_str();
 
-                        d.base_name_un_id.names[ (size_t)ItemRefType::a ] =
+                        d.base_name_un_id.names[(size_t)ItemRefType::a] =
                                 saving::get_str();
 
                         d.color =
-                                colors::name_to_color( saving::get_str() )
+                                colors::name_to_color(saving::get_str())
                                         .value();
                 }
         }
@@ -202,7 +202,7 @@ void load()
 
 void Rod::save_hook() const
 {
-        saving::put_int( m_nr_charge_turns_left );
+        saving::put_int(m_nr_charge_turns_left);
 }
 
 void Rod::load_hook()
@@ -214,24 +214,24 @@ void Rod::set_max_charge_turns_left()
 {
         m_nr_charge_turns_left = nr_turns_to_recharge();
 
-        if ( player_bon::has_trait( Trait::elec_incl ) )
+        if (player_bon::has_trait(Trait::elec_incl))
         {
                 m_nr_charge_turns_left /= 2;
         }
 }
 
-ConsumeItem Rod::activate( actor::Actor* const actor )
+ConsumeItem Rod::activate(actor::Actor* const actor)
 {
         (void)actor;
 
         // Prevent using it if still charging, and identified (player character
         // knows that it's useless)
-        if ( ( m_nr_charge_turns_left > 0 ) && m_data->is_identified )
+        if ((m_nr_charge_turns_left > 0) && m_data->is_identified)
         {
                 const std::string rod_name =
-                        name( ItemRefType::plain, ItemRefInf::none );
+                        name(ItemRefType::plain, ItemRefInf::none);
 
-                msg_log::add( "The " + rod_name + " is still charging." );
+                msg_log::add("The " + rod_name + " is still charging.");
 
                 return ConsumeItem::no;
         }
@@ -241,28 +241,28 @@ ConsumeItem Rod::activate( actor::Actor* const actor )
         // TODO: Sfx
 
         const std::string rod_name_a =
-                name( ItemRefType::a, ItemRefInf::none );
+                name(ItemRefType::a, ItemRefInf::none);
 
-        msg_log::add( "I activate " + rod_name_a + "..." );
+        msg_log::add("I activate " + rod_name_a + "...");
 
-        if ( m_nr_charge_turns_left == 0 )
+        if (m_nr_charge_turns_left == 0)
         {
                 run_effect();
 
                 set_max_charge_turns_left();
         }
 
-        if ( m_data->is_identified )
+        if (m_data->is_identified)
         {
-                map::g_player->incr_shock( 8.0, ShockSrc::use_strange_item );
+                map::g_player->incr_shock(8.0, ShockSrc::use_strange_item);
         }
         else
         {
                 // Not identified
-                msg_log::add( "Nothing happens." );
+                msg_log::add("Nothing happens.");
         }
 
-        if ( map::g_player->is_alive() )
+        if (map::g_player->is_alive())
         {
                 game_time::tick();
         }
@@ -270,38 +270,38 @@ ConsumeItem Rod::activate( actor::Actor* const actor )
         return ConsumeItem::no;
 }
 
-void Rod::on_std_turn_in_inv_hook( const InvType inv_type )
+void Rod::on_std_turn_in_inv_hook(const InvType inv_type)
 {
         (void)inv_type;
 
         // Already fully charged?
-        if ( m_nr_charge_turns_left == 0 )
+        if (m_nr_charge_turns_left == 0)
         {
                 return;
         }
 
         // All charges not finished, continue countdown
 
-        ASSERT( m_nr_charge_turns_left > 0 );
+        ASSERT(m_nr_charge_turns_left > 0);
 
         --m_nr_charge_turns_left;
 
-        if ( m_nr_charge_turns_left == 0 )
+        if (m_nr_charge_turns_left == 0)
         {
                 const std::string my_name =
                         name(
                                 ItemRefType::plain,
-                                ItemRefInf::none );
+                                ItemRefInf::none);
 
-                msg_log::add( "The " + my_name + " has finished charging." );
+                msg_log::add("The " + my_name + " has finished charging.");
         }
 }
 
 std::vector<std::string> Rod::descr_hook() const
 {
-        if ( m_data->is_identified )
+        if (m_data->is_identified)
         {
-                return { descr_identified() };
+                return {descr_identified()};
         }
         else
         {
@@ -310,33 +310,33 @@ std::vector<std::string> Rod::descr_hook() const
         }
 }
 
-void Rod::identify( const Verbose verbose )
+void Rod::identify(const Verbose verbose)
 {
-        if ( ! m_data->is_identified )
+        if (!m_data->is_identified)
         {
                 m_data->is_identified = true;
 
-                if ( verbose == Verbose::yes )
+                if (verbose == Verbose::yes)
                 {
                         const std::string name_after =
-                                name( ItemRefType::a,
-                                      ItemRefInf::none );
+                                name(ItemRefType::a,
+                                     ItemRefInf::none);
 
-                        msg_log::add( "I have identified " + name_after + "." );
+                        msg_log::add("I have identified " + name_after + ".");
 
-                        game::add_history_event( "Identified " + name_after );
+                        game::add_history_event("Identified " + name_after);
                 }
         }
 }
 
 std::string Rod::name_inf_str() const
 {
-        if ( m_data->is_identified )
+        if (m_data->is_identified)
         {
-                if ( m_nr_charge_turns_left > 0 )
+                if (m_nr_charge_turns_left > 0)
                 {
                         const auto turns_left_str =
-                                std::to_string( m_nr_charge_turns_left );
+                                std::to_string(m_nr_charge_turns_left);
 
                         return "{" + turns_left_str + "}";
                 }
@@ -363,74 +363,74 @@ void Curing::run_effect()
                 PropId::infected,
                 PropId::diseased,
                 PropId::weakened,
-                PropId::hp_sap };
+                PropId::hp_sap};
 
         bool is_something_healed = false;
 
-        for ( PropId prop_id : props_can_heal )
+        for (PropId prop_id : props_can_heal)
         {
-                if ( player.m_properties.end_prop( prop_id ) )
+                if (player.m_properties.end_prop(prop_id))
                 {
                         is_something_healed = true;
                 }
         }
 
-        if ( player.restore_hp( 3, false /* Not allowed above max */ ) )
+        if (player.restore_hp(3, false /* Not allowed above max */))
         {
                 is_something_healed = true;
         }
 
-        if ( ! is_something_healed )
+        if (!is_something_healed)
         {
-                msg_log::add( "I feel fine." );
+                msg_log::add("I feel fine.");
         }
 
-        identify( Verbose::yes );
+        identify(Verbose::yes);
 }
 
 void Opening::run_effect()
 {
         bool is_any_opened = false;
 
-        for ( auto& cell : map::g_cells )
+        for (auto& cell : map::g_cells)
         {
-                if ( cell.is_seen_by_player )
+                if (cell.is_seen_by_player)
                 {
-                        DidOpen did_open = cell.terrain->open( nullptr );
+                        DidOpen did_open = cell.terrain->open(nullptr);
 
-                        if ( did_open == DidOpen::yes )
+                        if (did_open == DidOpen::yes)
                         {
                                 is_any_opened = true;
                         }
                 }
         }
 
-        if ( is_any_opened )
+        if (is_any_opened)
         {
-                identify( Verbose::yes );
+                identify(Verbose::yes);
         }
 }
 
 void Bless::run_effect()
 {
-        const int nr_turns = rnd::range( 8, 12 );
+        const int nr_turns = rnd::range(8, 12);
 
         auto* prop = new PropBlessed();
 
-        prop->set_duration( nr_turns );
+        prop->set_duration(nr_turns);
 
-        map::g_player->m_properties.apply( prop );
+        map::g_player->m_properties.apply(prop);
 
-        identify( Verbose::yes );
+        identify(Verbose::yes);
 }
 
 void CloudMinds::run_effect()
 {
-        msg_log::add( "I vanish from the minds of my enemies." );
+        msg_log::add("I vanish from the minds of my enemies.");
 
-        for ( auto* actor : game_time::g_actors )
+        for (auto* actor : game_time::g_actors)
         {
-                if ( actor->is_player() )
+                if (actor->is_player())
                 {
                         continue;
                 }
@@ -439,77 +439,77 @@ void CloudMinds::run_effect()
                 actor->m_mon_aware_state.wary_counter = 0;
         }
 
-        identify( Verbose::yes );
+        identify(Verbose::yes);
 }
 
 void Shockwave::run_effect()
 {
-        msg_log::add( "It triggers a shock wave around me." );
+        msg_log::add("It triggers a shock wave around me.");
 
         const P& player_pos = map::g_player->m_pos;
 
-        for ( const P& d : dir_utils::g_dir_list )
+        for (const P& d : dir_utils::g_dir_list)
         {
-                const P p( player_pos + d );
+                const P p(player_pos + d);
 
-                auto* const terrain = map::g_cells.at( p ).terrain;
+                auto* const terrain = map::g_cells.at(p).terrain;
 
-                terrain->hit( DmgType::explosion, nullptr );
+                terrain->hit(DmgType::explosion, nullptr);
         }
 
-        for ( actor::Actor* actor : game_time::g_actors )
+        for (actor::Actor* actor : game_time::g_actors)
         {
-                if ( actor->is_player() ||
-                     ! actor->is_alive() )
+                if (actor->is_player() ||
+                    !actor->is_alive())
                 {
                         continue;
                 }
 
                 const P& other_pos = actor->m_pos;
 
-                const bool is_adj = is_pos_adj( player_pos, other_pos, false );
+                const bool is_adj = is_pos_adj(player_pos, other_pos, false);
 
-                if ( ! is_adj )
+                if (!is_adj)
                 {
                         continue;
                 }
 
-                if ( actor::can_player_see_actor( *actor ) )
+                if (actor::can_player_see_actor(*actor))
                 {
                         std::string msg =
-                                text_format::first_to_upper( actor->name_the() ) +
+                                text_format::first_to_upper(actor->name_the()) +
                                 " is hit!";
 
-                        msg = text_format::first_to_upper( msg );
+                        msg = text_format::first_to_upper(msg);
 
-                        msg_log::add( msg );
+                        msg_log::add(msg);
                 }
 
-                actor::hit( *actor, rnd::range( 1, 6 ), DmgType::explosion );
+                actor::hit(*actor, rnd::range(1, 6), DmgType::explosion);
 
                 // Surived the damage? Knock the monster back
-                if ( actor->is_alive() )
+                if (actor->is_alive())
                 {
                         knockback::run(
                                 *actor,
                                 player_pos,
                                 false,
                                 Verbose::yes,
-                                1 );  // 1 extra turn paralyzed
+                                1);  // 1 extra turn paralyzed
                 }
         }
 
-        Snd snd( "",
-                 audio::SfxId::END,
-                 IgnoreMsgIfOriginSeen::yes,
-                 player_pos,
-                 map::g_player,
-                 SndVol::high,
-                 AlertsMon::yes );
+        Snd snd("",
+                audio::SfxId::END,
+                IgnoreMsgIfOriginSeen::yes,
+                player_pos,
+                map::g_player,
+                SndVol::high,
+                AlertsMon::yes);
 
         snd.run();
 
-        identify( Verbose::yes );
+        identify(Verbose::yes);
 }
 
 }  // namespace rod

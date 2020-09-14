@@ -19,9 +19,9 @@ void clear();
 
 void run();
 
-const CellRenderData& get_drawn_cell( int x, int y );
+const CellRenderData& get_drawn_cell(int x, int y);
 
-const CellRenderData& get_drawn_cell_player_memory( int x, int y );
+const CellRenderData& get_drawn_cell_player_memory(int x, int y);
 
 }  // namespace draw_map
 

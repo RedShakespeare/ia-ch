@@ -23,13 +23,13 @@
 // -----------------------------------------------------------------------------
 // Private
 // -----------------------------------------------------------------------------
-static bool s_available_curses[ (size_t)item_curse::Id::END ];
+static bool s_available_curses[(size_t)item_curse::Id::END];
 
-static std::unique_ptr<item_curse::CurseImpl> make_impl( const item_curse::Id id )
+static std::unique_ptr<item_curse::CurseImpl> make_impl(const item_curse::Id id)
 {
         std::unique_ptr<item_curse::CurseImpl> impl;
 
-        switch ( id )
+        switch (id)
         {
         case item_curse::Id::hit_chance_penalty:
                 return std::make_unique<item_curse::HitChancePenalty>();
@@ -62,7 +62,7 @@ static std::unique_ptr<item_curse::CurseImpl> make_impl( const item_curse::Id id
                 break;
         }
 
-        ASSERT( false );
+        ASSERT(false);
 
         return nullptr;
 }
@@ -75,73 +75,73 @@ namespace item_curse
 void init()
 {
         std::fill(
-                std::begin( s_available_curses ),
-                std::end( s_available_curses ),
-                true );
+                std::begin(s_available_curses),
+                std::end(s_available_curses),
+                true);
 }
 
 void save()
 {
-        for ( size_t i = 0; i < (size_t)Id::END; ++i )
+        for (size_t i = 0; i < (size_t)Id::END; ++i)
         {
-                saving::put_bool( s_available_curses[ i ] );
+                saving::put_bool(s_available_curses[i]);
         }
 }
 
 void load()
 {
-        for ( size_t i = 0; i < (size_t)Id::END; ++i )
+        for (size_t i = 0; i < (size_t)Id::END; ++i)
         {
-                s_available_curses[ i ] = saving::get_bool();
+                s_available_curses[i] = saving::get_bool();
         }
 }
 
-Curse try_make_random_free_curse( const item::Item& item )
+Curse try_make_random_free_curse(const item::Item& item)
 {
         std::vector<Id> bucket;
 
-        bucket.reserve( (size_t)Id::END );
+        bucket.reserve((size_t)Id::END);
 
-        for ( size_t i = 0; i < (size_t)Id::END; ++i )
+        for (size_t i = 0; i < (size_t)Id::END; ++i)
         {
                 const auto id = (Id)i;
 
-                if ( s_available_curses[ i ] && item.is_curse_allowed( id ) )
+                if (s_available_curses[i] && item.is_curse_allowed(id))
                 {
-                        bucket.push_back( id );
+                        bucket.push_back(id);
                 }
         }
 
-        if ( bucket.empty() )
+        if (bucket.empty())
         {
-                return Curse( nullptr );
+                return Curse(nullptr);
         }
 
-        const auto id = rnd::element( bucket );
+        const auto id = rnd::element(bucket);
 
-        s_available_curses[ (size_t)id ] = false;
+        s_available_curses[(size_t)id] = false;
 
-        return Curse( make_impl( id ) );
+        return Curse(make_impl(id));
 }
 
 // -----------------------------------------------------------------------------
 // Curse
 // -----------------------------------------------------------------------------
-Curse::Curse( Curse&& other ) :
-        m_dlvl_countdown( other.m_dlvl_countdown ),
-        m_turn_countdown( other.m_turn_countdown ),
-        m_warning_dlvl_countdown( other.m_warning_dlvl_countdown ),
-        m_warning_turn_countdown( other.m_warning_turn_countdown ),
-        m_curse_impl( std::move( other.m_curse_impl ) )
+Curse::Curse(Curse&& other) :
+        m_dlvl_countdown(other.m_dlvl_countdown),
+        m_turn_countdown(other.m_turn_countdown),
+        m_warning_dlvl_countdown(other.m_warning_dlvl_countdown),
+        m_warning_turn_countdown(other.m_warning_turn_countdown),
+        m_curse_impl(std::move(other.m_curse_impl))
 {
 }
 
-Curse::Curse( std::unique_ptr<CurseImpl> curse_impl ) :
-        m_curse_impl( std::move( curse_impl ) )
+Curse::Curse(std::unique_ptr<CurseImpl> curse_impl) :
+        m_curse_impl(std::move(curse_impl))
 {
 }
 
-Curse& Curse::operator=( Curse&& other )
+Curse& Curse::operator=(Curse&& other)
 {
         m_dlvl_countdown = other.m_dlvl_countdown;
         m_turn_countdown = other.m_turn_countdown;
@@ -149,14 +149,14 @@ Curse& Curse::operator=( Curse&& other )
         m_warning_dlvl_countdown = other.m_warning_dlvl_countdown;
         m_warning_turn_countdown = other.m_warning_turn_countdown;
 
-        m_curse_impl = std::move( other.m_curse_impl );
+        m_curse_impl = std::move(other.m_curse_impl);
 
         return *this;
 }
 
 Id Curse::id() const
 {
-        if ( m_curse_impl )
+        if (m_curse_impl)
         {
                 return m_curse_impl->id();
         }
@@ -168,17 +168,17 @@ Id Curse::id() const
 
 void Curse::save() const
 {
-        saving::put_int( m_dlvl_countdown );
-        saving::put_int( m_turn_countdown );
+        saving::put_int(m_dlvl_countdown);
+        saving::put_int(m_turn_countdown);
 
-        saving::put_int( m_warning_dlvl_countdown );
-        saving::put_int( m_warning_turn_countdown );
+        saving::put_int(m_warning_dlvl_countdown);
+        saving::put_int(m_warning_turn_countdown);
 
         const auto curse_id = id();
 
-        saving::put_int( (int)curse_id );
+        saving::put_int((int)curse_id);
 
-        if ( m_curse_impl )
+        if (m_curse_impl)
         {
                 m_curse_impl->save();
         }
@@ -194,167 +194,167 @@ void Curse::load()
 
         const auto curse_id = (Id)saving::get_int();
 
-        if ( curse_id == Id::END )
+        if (curse_id == Id::END)
         {
                 m_curse_impl = nullptr;
         }
         else
         {
-                m_curse_impl = make_impl( curse_id );
+                m_curse_impl = make_impl(curse_id);
 
                 m_curse_impl->load();
         }
 }
 
-void Curse::on_new_turn( const item::Item& item )
+void Curse::on_new_turn(const item::Item& item)
 {
-        if ( ! m_curse_impl )
+        if (!m_curse_impl)
         {
                 return;
         }
 
-        if ( m_dlvl_countdown == 0 )
+        if (m_dlvl_countdown == 0)
         {
-                if ( m_turn_countdown == 0 )
+                if (m_turn_countdown == 0)
                 {
                         // Curse already triggered - run new turn events
-                        m_curse_impl->on_new_turn_active( item );
+                        m_curse_impl->on_new_turn_active(item);
                 }
-                else if ( m_turn_countdown == 1 )
+                else if (m_turn_countdown == 1)
                 {
                         // Curse is triggered for the first time now
-                        m_curse_impl->on_start( item );
+                        m_curse_impl->on_start(item);
 
-                        print_trigger_msg( item );
+                        print_trigger_msg(item);
 
                         map::g_player->incr_shock(
                                 ShockLvl::frightening,
-                                ShockSrc::use_strange_item );
+                                ShockSrc::use_strange_item);
 
                         m_warning_dlvl_countdown = -1;
                         m_warning_turn_countdown = -1;
                 }
 
-                if ( m_turn_countdown > 0 )
+                if (m_turn_countdown > 0)
                 {
                         --m_turn_countdown;
                 }
         }
 
-        if ( m_warning_dlvl_countdown == 0 )
+        if (m_warning_dlvl_countdown == 0)
         {
-                if ( m_warning_turn_countdown == 1 )
+                if (m_warning_turn_countdown == 1)
                 {
                         // Warning is triggered now
-                        print_warning_msg( item );
+                        print_warning_msg(item);
 
                         map::g_player->incr_shock(
                                 ShockLvl::unsettling,
-                                ShockSrc::use_strange_item );
+                                ShockSrc::use_strange_item);
                 }
 
-                if ( m_warning_turn_countdown > 0 )
+                if (m_warning_turn_countdown > 0)
                 {
                         --m_warning_turn_countdown;
                 }
         }
 }
 
-void Curse::print_trigger_msg( const item::Item& item ) const
+void Curse::print_trigger_msg(const item::Item& item) const
 {
-        const auto item_name = item.name( ItemRefType::plain, ItemRefInf::none );
+        const auto item_name = item.name(ItemRefType::plain, ItemRefInf::none);
 
         msg_log::add(
                 "A curse lies upon the " + item_name + "!",
                 colors::msg_note(),
                 MsgInterruptPlayer::no,
-                MorePromptOnMsg::yes );
+                MorePromptOnMsg::yes);
 
-        const auto specific_msg = m_curse_impl->curse_msg( item );
+        const auto specific_msg = m_curse_impl->curse_msg(item);
 
-        if ( ! specific_msg.empty() )
+        if (!specific_msg.empty())
         {
-                msg_log::add( m_curse_impl->curse_msg( item ) );
+                msg_log::add(m_curse_impl->curse_msg(item));
         }
 }
 
-void Curse::print_warning_msg( const item::Item& item ) const
+void Curse::print_warning_msg(const item::Item& item) const
 {
-        const auto item_name = item.name( ItemRefType::plain, ItemRefInf::none );
+        const auto item_name = item.name(ItemRefType::plain, ItemRefInf::none);
 
         const std::vector<std::string> msg_bucket = {
-                { "I am growing very attached to the " +
-                  item_name +
-                  "." },
-                { "I am starting to think that I should hold on to the " +
-                  item_name +
-                  ", forever..." },
+                {"I am growing very attached to the " +
+                 item_name +
+                 "."},
+                {"I am starting to think that I should hold on to the " +
+                 item_name +
+                 ", forever..."},
         };
 
-        const auto msg = rnd::element( msg_bucket );
+        const auto msg = rnd::element(msg_bucket);
 
         msg_log::add(
                 msg,
                 colors::msg_note(),
                 MsgInterruptPlayer::no,
-                MorePromptOnMsg::yes );
+                MorePromptOnMsg::yes);
 }
 
 void Curse::on_player_reached_new_dlvl()
 {
-        if ( ! m_curse_impl )
+        if (!m_curse_impl)
         {
                 return;
         }
 
-        if ( ( m_dlvl_countdown > 0 ) && ( m_turn_countdown > 0 ) )
+        if ((m_dlvl_countdown > 0) && (m_turn_countdown > 0))
         {
                 --m_dlvl_countdown;
         }
 
-        if ( ( m_warning_dlvl_countdown > 0 ) && ( m_warning_turn_countdown > 0 ) )
+        if ((m_warning_dlvl_countdown > 0) && (m_warning_turn_countdown > 0))
         {
                 --m_warning_dlvl_countdown;
         }
 }
 
-void Curse::on_item_picked_up( const item::Item& item )
+void Curse::on_item_picked_up(const item::Item& item)
 {
-        if ( ! m_curse_impl )
+        if (!m_curse_impl)
         {
                 return;
         }
 
-        if ( saving::is_loading() )
+        if (saving::is_loading())
         {
                 return;
         }
 
-        if ( m_turn_countdown == 0 )
+        if (m_turn_countdown == 0)
         {
-                m_curse_impl->on_start( item );
+                m_curse_impl->on_start(item);
         }
-        else if ( m_turn_countdown == -1 )
+        else if (m_turn_countdown == -1)
         {
                 // Initialize countdowns
-                m_dlvl_countdown = rnd::range( 1, 4 );
-                m_turn_countdown = rnd::range( 100, 300 );
+                m_dlvl_countdown = rnd::range(1, 4);
+                m_turn_countdown = rnd::range(100, 300);
 
-                if ( rnd::fraction( 2, 3 ) )
+                if (rnd::fraction(2, 3))
                 {
                         // Also initialize warning countdown
                         m_warning_dlvl_countdown =
-                                rnd::range( 1, m_dlvl_countdown );
+                                rnd::range(1, m_dlvl_countdown);
 
-                        if ( m_warning_dlvl_countdown == m_dlvl_countdown )
+                        if (m_warning_dlvl_countdown == m_dlvl_countdown)
                         {
                                 m_warning_turn_countdown =
-                                        rnd::range( 50, m_turn_countdown - 10 );
+                                        rnd::range(50, m_turn_countdown - 10);
                         }
                         else
                         {
                                 m_warning_turn_countdown =
-                                        rnd::range( 100, 300 );
+                                        rnd::range(100, 300);
                         }
                 }
         }
@@ -362,12 +362,12 @@ void Curse::on_item_picked_up( const item::Item& item )
 
 void Curse::on_item_dropped()
 {
-        if ( ! m_curse_impl )
+        if (!m_curse_impl)
         {
                 return;
         }
 
-        if ( m_turn_countdown == 0 )
+        if (m_turn_countdown == 0)
         {
                 m_curse_impl->on_stop();
         }
@@ -375,27 +375,27 @@ void Curse::on_item_dropped()
 
 void Curse::on_curse_end()
 {
-        if ( ! m_curse_impl )
+        if (!m_curse_impl)
         {
                 return;
         }
 
-        if ( m_turn_countdown == 0 )
+        if (m_turn_countdown == 0)
         {
                 m_curse_impl->on_stop();
         }
 }
 
-int Curse::affect_weight( const int weight ) const
+int Curse::affect_weight(const int weight) const
 {
-        if ( ! m_curse_impl )
+        if (!m_curse_impl)
         {
                 return weight;
         }
 
-        if ( m_turn_countdown == 0 )
+        if (m_turn_countdown == 0)
         {
-                return m_curse_impl->affect_weight( weight );
+                return m_curse_impl->affect_weight(weight);
         }
         else
         {
@@ -405,7 +405,7 @@ int Curse::affect_weight( const int weight ) const
 
 std::string Curse::descr() const
 {
-        if ( ! m_curse_impl )
+        if (!m_curse_impl)
         {
                 return "";
         }
@@ -416,22 +416,22 @@ std::string Curse::descr() const
 // -----------------------------------------------------------------------------
 // Hit chance penalty
 // -----------------------------------------------------------------------------
-void HitChancePenalty::on_start( const item::Item& item )
+void HitChancePenalty::on_start(const item::Item& item)
 {
         (void)item;
 
         auto* const prop = property_factory::make(
-                PropId::hit_chance_penalty_curse );
+                PropId::hit_chance_penalty_curse);
 
         prop->set_indefinite();
 
-        map::g_player->m_properties.apply( prop );
+        map::g_player->m_properties.apply(prop);
 }
 
 void HitChancePenalty::on_stop()
 {
         map::g_player->m_properties.end_prop(
-                PropId::hit_chance_penalty_curse );
+                PropId::hit_chance_penalty_curse);
 }
 
 std::string HitChancePenalty::descr() const
@@ -443,22 +443,22 @@ std::string HitChancePenalty::descr() const
 // -----------------------------------------------------------------------------
 // Increased shock
 // -----------------------------------------------------------------------------
-void IncreasedShock::on_start( const item::Item& item )
+void IncreasedShock::on_start(const item::Item& item)
 {
         (void)item;
 
         auto* const prop = property_factory::make(
-                PropId::increased_shock_curse );
+                PropId::increased_shock_curse);
 
         prop->set_indefinite();
 
-        map::g_player->m_properties.apply( prop );
+        map::g_player->m_properties.apply(prop);
 }
 
 void IncreasedShock::on_stop()
 {
         map::g_player->m_properties.end_prop(
-                PropId::increased_shock_curse );
+                PropId::increased_shock_curse);
 }
 
 std::string IncreasedShock::descr() const
@@ -469,7 +469,7 @@ std::string IncreasedShock::descr() const
 // -----------------------------------------------------------------------------
 // Heavy
 // -----------------------------------------------------------------------------
-int Heavy::affect_weight( const int weight )
+int Heavy::affect_weight(const int weight)
 {
         return weight + (int)item::Weight::medium;
 }
@@ -479,9 +479,9 @@ std::string Heavy::descr() const
         return "it is inexplicably heavy for its size.";
 }
 
-std::string Heavy::curse_msg( const item::Item& item ) const
+std::string Heavy::curse_msg(const item::Item& item) const
 {
-        const auto name = item.name( ItemRefType::plain, ItemRefInf::none );
+        const auto name = item.name(ItemRefType::plain, ItemRefInf::none);
 
         return "The " + name + " suddenly feels much heavier to carry.";
 }
@@ -492,7 +492,7 @@ std::string Heavy::curse_msg( const item::Item& item ) const
 Shriek::Shriek()
 
 {
-        auto player_name = text_format::to_upper( map::g_player->name_the() );
+        auto player_name = text_format::to_upper(map::g_player->name_the());
 
         m_words = {
                 player_name,
@@ -568,46 +568,46 @@ Shriek::Shriek()
                 "ZATHOG",
                 "ZINDARAK",
                 "BASATAN",
-                "CTHUGHA" };
+                "CTHUGHA"};
 }
 
-void Shriek::on_start( const item::Item& item )
+void Shriek::on_start(const item::Item& item)
 {
-        shriek( item );
+        shriek(item);
 }
 
-void Shriek::on_new_turn_active( const item::Item& item )
+void Shriek::on_new_turn_active(const item::Item& item)
 {
-        if ( rnd::one_in( 300 ) )
+        if (rnd::one_in(300))
         {
-                shriek( item );
+                shriek(item);
         }
 }
 
-void Shriek::shriek( const item::Item& item ) const
+void Shriek::shriek(const item::Item& item) const
 {
         const std::string name =
                 item.name(
                         ItemRefType::plain,
-                        ItemRefInf::none );
+                        ItemRefInf::none);
 
         msg_log::add(
                 "The " + name + " shrieks...",
                 colors::text(),
                 MsgInterruptPlayer::no,
-                MorePromptOnMsg::yes );
+                MorePromptOnMsg::yes);
 
-        const int nr_words = rnd::range( 2, 4 );
+        const int nr_words = rnd::range(2, 4);
 
         std::string phrase;
 
-        for ( int i = 0; i < nr_words; ++i )
+        for (int i = 0; i < nr_words; ++i)
         {
-                const auto& word = rnd::element( m_words );
+                const auto& word = rnd::element(m_words);
 
                 phrase += word + "...";
 
-                if ( i < ( nr_words - 1 ) )
+                if (i < (nr_words - 1))
                 {
                         phrase += " ";
                 }
@@ -620,11 +620,11 @@ void Shriek::shriek( const item::Item& item ) const
                 map::g_player->m_pos,
                 map::g_player,
                 SndVol::high,
-                AlertsMon::yes );
+                AlertsMon::yes);
 
-        snd_emit::run( snd );
+        snd_emit::run(snd);
 
-        map::g_player->incr_shock( ShockLvl::unsettling, ShockSrc::misc );
+        map::g_player->incr_shock(ShockLvl::unsettling, ShockSrc::misc);
 
         msg_log::more_prompt();
 }
@@ -638,36 +638,36 @@ std::string Shriek::descr() const
 // -----------------------------------------------------------------------------
 // Teleport
 // -----------------------------------------------------------------------------
-void Teleport::on_start( const item::Item& item )
+void Teleport::on_start(const item::Item& item)
 {
-        teleport( item );
+        teleport(item);
 }
 
-void Teleport::on_new_turn_active( const item::Item& item )
+void Teleport::on_new_turn_active(const item::Item& item)
 {
-        if ( rnd::one_in( 200 ) && map::g_player->m_properties.allow_act() )
+        if (rnd::one_in(200) && map::g_player->m_properties.allow_act())
         {
-                teleport( item );
+                teleport(item);
         }
 }
 
-void Teleport::teleport( const item::Item& item ) const
+void Teleport::teleport(const item::Item& item) const
 {
-        const auto name = item.name( ItemRefType::plain, ItemRefInf::none );
+        const auto name = item.name(ItemRefType::plain, ItemRefInf::none);
 
         msg_log::add(
                 "I somehow sense that a burst of energy is discharged "
                 "from the " +
                 name +
-                "." );
+                ".");
 
         msg_log::add(
                 "I am being teleported...",
                 colors::text(),
                 MsgInterruptPlayer::yes,
-                MorePromptOnMsg::yes );
+                MorePromptOnMsg::yes);
 
-        ::teleport( *map::g_player );
+        ::teleport(*map::g_player);
 }
 
 std::string Teleport::descr() const
@@ -678,17 +678,17 @@ std::string Teleport::descr() const
 // -----------------------------------------------------------------------------
 // Summon
 // -----------------------------------------------------------------------------
-void Summon::on_new_turn_active( const item::Item& item )
+void Summon::on_new_turn_active(const item::Item& item)
 {
         (void)item;
 
-        if ( rnd::one_in( 1200 ) )
+        if (rnd::one_in(1200))
         {
-                summon( item );
+                summon(item);
         }
 }
 
-void Summon::summon( const item::Item& item ) const
+void Summon::summon(const item::Item& item) const
 {
         (void)item;
 
@@ -696,16 +696,16 @@ void Summon::summon( const item::Item& item ) const
                 "There is a loud whistling sound.",
                 colors::text(),
                 MsgInterruptPlayer::no,
-                MorePromptOnMsg::yes );
+                MorePromptOnMsg::yes);
 
         actor::spawn(
                 map::g_player->m_pos,
-                { 1, actor::Id::greater_polyp },
-                map::rect() )
+                {1, actor::Id::greater_polyp},
+                map::rect())
                 .make_aware_of_player();
 }
 
-std::string Summon::curse_msg( const item::Item& item ) const
+std::string Summon::curse_msg(const item::Item& item) const
 {
         (void)item;
 
@@ -721,22 +721,22 @@ std::string Summon::descr() const
 // -----------------------------------------------------------------------------
 // Fire
 // -----------------------------------------------------------------------------
-void Fire::on_start( const item::Item& item )
+void Fire::on_start(const item::Item& item)
 {
-        run_fire( item );
+        run_fire(item);
 }
 
-void Fire::on_new_turn_active( const item::Item& item )
+void Fire::on_new_turn_active(const item::Item& item)
 {
         (void)item;
 
-        if ( rnd::one_in( 300 ) )
+        if (rnd::one_in(300))
         {
-                run_fire( item );
+                run_fire(item);
         }
 }
 
-void Fire::run_fire( const item::Item& item ) const
+void Fire::run_fire(const item::Item& item) const
 {
         (void)item;
 
@@ -744,31 +744,31 @@ void Fire::run_fire( const item::Item& item ) const
                 "The surrounding area suddenly burst into flames!",
                 colors::text(),
                 MsgInterruptPlayer::no,
-                MorePromptOnMsg::yes );
+                MorePromptOnMsg::yes);
 
         const int d = g_fov_radi_int - 2;
 
         const auto& origin = map::g_player->m_pos;
 
-        const int x0 = std::max( 1, origin.x - d );
-        const int y0 = std::max( 1, origin.y - d );
-        const int x1 = std::min( map::w() - 2, origin.x + d );
-        const int y1 = std::min( map::h() - 2, origin.y + d );
+        const int x0 = std::max(1, origin.x - d);
+        const int y0 = std::max(1, origin.y - d);
+        const int x1 = std::min(map::w() - 2, origin.x + d);
+        const int y1 = std::min(map::h() - 2, origin.y + d);
 
         const int fire_cell_one_in_n = 2;
 
-        for ( int x = x0; x <= x1; ++x )
+        for (int x = x0; x <= x1; ++x)
         {
-                for ( int y = y0; y <= y1; ++y )
+                for (int y = y0; y <= y1; ++y)
                 {
-                        const P p( x, y );
+                        const P p(x, y);
 
-                        if ( rnd::one_in( fire_cell_one_in_n ) &&
-                             ( p != origin ) )
+                        if (rnd::one_in(fire_cell_one_in_n) &&
+                            (p != origin))
                         {
-                                map::g_cells.at( p ).terrain->hit(
+                                map::g_cells.at(p).terrain->hit(
                                         DmgType::fire,
-                                        nullptr );
+                                        nullptr);
                         }
                 }
         }
@@ -782,22 +782,22 @@ std::string Fire::descr() const
 // -----------------------------------------------------------------------------
 // Cannot read
 // -----------------------------------------------------------------------------
-void CannotRead::on_start( const item::Item& item )
+void CannotRead::on_start(const item::Item& item)
 {
         (void)item;
 
         auto* const prop = property_factory::make(
-                PropId::cannot_read_curse );
+                PropId::cannot_read_curse);
 
         prop->set_indefinite();
 
-        map::g_player->m_properties.apply( prop );
+        map::g_player->m_properties.apply(prop);
 }
 
 void CannotRead::on_stop()
 {
         map::g_player->m_properties.end_prop(
-                PropId::cannot_read_curse );
+                PropId::cannot_read_curse);
 }
 
 std::string CannotRead::descr() const
@@ -808,22 +808,22 @@ std::string CannotRead::descr() const
 // -----------------------------------------------------------------------------
 // Light sensitive
 // -----------------------------------------------------------------------------
-void LightSensitive::on_start( const item::Item& item )
+void LightSensitive::on_start(const item::Item& item)
 {
         (void)item;
 
         auto* const prop = property_factory::make(
-                PropId::light_sensitive_curse );
+                PropId::light_sensitive_curse);
 
         prop->set_indefinite();
 
-        map::g_player->m_properties.apply( prop );
+        map::g_player->m_properties.apply(prop);
 }
 
 void LightSensitive::on_stop()
 {
         map::g_player->m_properties.end_prop(
-                PropId::light_sensitive_curse );
+                PropId::light_sensitive_curse);
 }
 
 std::string LightSensitive::descr() const

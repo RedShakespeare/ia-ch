@@ -42,7 +42,7 @@ public:
 
         virtual ~SndHeardEffect() = default;
 
-        virtual void run( actor::Actor& actor ) const = 0;
+        virtual void run(actor::Actor& actor) const = 0;
 };
 
 // -----------------------------------------------------------------------------
@@ -51,15 +51,15 @@ public:
 class Snd
 {
 public:
-        Snd( std::string msg,
-             audio::SfxId sfx,
-             IgnoreMsgIfOriginSeen ignore_msg_if_origin_seen,
-             const P& origin,
-             actor::Actor* actor_who_made_sound,
-             SndVol vol,
-             AlertsMon alerting_mon,
-             MorePromptOnMsg add_more_prompt_on_msg = MorePromptOnMsg::no,
-             std::shared_ptr<SndHeardEffect> snd_heard_effect = nullptr );
+        Snd(std::string msg,
+            audio::SfxId sfx,
+            IgnoreMsgIfOriginSeen ignore_msg_if_origin_seen,
+            const P& origin,
+            actor::Actor* actor_who_made_sound,
+            SndVol vol,
+            AlertsMon alerting_mon,
+            MorePromptOnMsg add_more_prompt_on_msg = MorePromptOnMsg::no,
+            std::shared_ptr<SndHeardEffect> snd_heard_effect = nullptr);
 
         Snd() = default;
 
@@ -98,7 +98,7 @@ public:
                 return m_is_alerting_mon == AlertsMon::yes;
         }
 
-        void set_alerts_mon( AlertsMon alerts )
+        void set_alerts_mon(AlertsMon alerts)
         {
                 m_is_alerting_mon = alerts;
         }
@@ -123,12 +123,12 @@ public:
                 return m_vol == SndVol::high;
         }
 
-        void add_string( const std::string& str )
+        void add_string(const std::string& str)
         {
                 m_msg += str;
         }
 
-        void on_heard( actor::Actor& actor ) const;
+        void on_heard(actor::Actor& actor) const;
 
 private:
         std::string m_msg;
@@ -147,7 +147,7 @@ private:
 // -----------------------------------------------------------------------------
 namespace snd_emit
 {
-void run( Snd snd );
+void run(Snd snd);
 
 void reset_nr_snd_msg_printed_current_turn();
 

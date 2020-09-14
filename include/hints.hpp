@@ -28,7 +28,7 @@ void save();
 
 void load();
 
-void display( Id id );
+void display(Id id);
 
 }  // namespace hints
 

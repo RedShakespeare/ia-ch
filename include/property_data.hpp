@@ -131,23 +131,23 @@ enum class PropAlignment
 struct PropData
 {
         PropData() :
-                id( PropId::END ),
-                std_rnd_turns( Range( 10, 10 ) ),
-                name( "" ),
-                name_short( "" ),
-                descr( "" ),
-                msg_start_player( "" ),
-                msg_start_mon( "" ),
-                msg_end_player( "" ),
-                msg_end_mon( "" ),
-                msg_res_player( "" ),
-                msg_res_mon( "" ),
-                historic_msg_start_permanent( "" ),
-                historic_msg_end_permanent( "" ),
-                allow_display_turns( true ),
-                update_vision_on_toggled( false ),
-                allow_test_on_bot( false ),
-                alignment( PropAlignment::neutral ) {}
+                id(PropId::END),
+                std_rnd_turns(Range(10, 10)),
+                name(""),
+                name_short(""),
+                descr(""),
+                msg_start_player(""),
+                msg_start_mon(""),
+                msg_end_player(""),
+                msg_end_mon(""),
+                msg_res_player(""),
+                msg_res_mon(""),
+                historic_msg_start_permanent(""),
+                historic_msg_end_permanent(""),
+                allow_display_turns(true),
+                update_vision_on_toggled(false),
+                allow_test_on_bot(false),
+                alignment(PropAlignment::neutral) {}
 
         PropId id;
         Range std_rnd_turns;
@@ -170,11 +170,11 @@ struct PropData
 
 namespace property_data
 {
-extern PropData g_data[ (size_t)PropId::END ];
+extern PropData g_data[(size_t)PropId::END];
 
 void init();
 
-PropId str_to_prop_id( const std::string& str );
+PropId str_to_prop_id(const std::string& str);
 
 }  // namespace property_data
 

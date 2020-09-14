@@ -74,9 +74,9 @@ enum class GameCmd
 namespace game_commands
 {
 // NOTE: This is a pure function, except for reading the options
-GameCmd to_cmd( const InputData& input );
+GameCmd to_cmd(const InputData& input);
 
-void handle( GameCmd cmd );
+void handle(GameCmd cmd);
 
 }  // namespace game_commands
 

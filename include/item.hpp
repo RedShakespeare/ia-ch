@@ -39,11 +39,11 @@ enum class ItemActivateRetType
 class Item
 {
 public:
-        Item( ItemData* item_data );
+        Item(ItemData* item_data);
 
-        Item( Item& other ) = delete;
+        Item(Item& other) = delete;
 
-        Item& operator=( const Item& other );
+        Item& operator=(const Item& other);
 
         virtual ~Item();
 
@@ -69,15 +69,15 @@ public:
         std::string name(
                 ItemRefType ref_type,
                 ItemRefInf inf = ItemRefInf::yes,
-                ItemRefAttInf att_inf = ItemRefAttInf::none ) const;
+                ItemRefAttInf att_inf = ItemRefAttInf::none) const;
 
         std::vector<std::string> descr() const;
 
-        std::string hit_mod_str( ItemRefAttInf att_inf ) const;
+        std::string hit_mod_str(ItemRefAttInf att_inf) const;
 
         std::string dmg_str(
                 ItemRefAttInf att_inf,
-                ItemRefDmg dmg_value ) const;
+                ItemRefDmg dmg_value) const;
 
         // E.g. "{Off}" for Lanterns, or "4/7" for Pistols
         virtual std::string name_inf_str() const
@@ -85,7 +85,7 @@ public:
                 return "";
         }
 
-        virtual void identify( const Verbose verbose )
+        virtual void identify(const Verbose verbose)
         {
                 (void)verbose;
         }
@@ -94,26 +94,26 @@ public:
 
         std::string weight_str() const;
 
-        virtual ConsumeItem activate( actor::Actor* actor );
+        virtual ConsumeItem activate(actor::Actor* actor);
 
         virtual Color interface_color() const
         {
                 return colors::dark_yellow();
         }
 
-        void on_std_turn_in_inv( InvType inv_type );
+        void on_std_turn_in_inv(InvType inv_type);
 
-        void on_actor_turn_in_inv( InvType inv_type );
+        void on_actor_turn_in_inv(InvType inv_type);
 
         virtual ItemPrePickResult pre_pickup_hook()
         {
                 return ItemPrePickResult::do_pickup;
         }
 
-        void on_pickup( actor::Actor& actor );
+        void on_pickup(actor::Actor& actor);
 
         // "on_pickup()" should be called before this
-        void on_equip( Verbose verbose );
+        void on_equip(Verbose verbose);
 
         void on_unequip();
 
@@ -130,12 +130,12 @@ public:
 
         void on_player_reached_new_dlvl();
 
-        virtual void on_projectile_blocked( const P& pos )
+        virtual void on_projectile_blocked(const P& pos)
         {
                 (void)pos;
         }
 
-        virtual void on_melee_hit( actor::Actor& actor_hit, const int dmg )
+        virtual void on_melee_hit(actor::Actor& actor_hit, const int dmg)
         {
                 (void)actor_hit;
                 (void)dmg;
@@ -145,19 +145,19 @@ public:
         {
         }
 
-        void set_melee_base_dmg( const DmgRange& range )
+        void set_melee_base_dmg(const DmgRange& range)
         {
                 m_melee_base_dmg = range;
         }
 
-        void set_ranged_base_dmg( const DmgRange& range )
+        void set_ranged_base_dmg(const DmgRange& range)
         {
                 m_ranged_base_dmg = range;
         }
 
-        void set_melee_plus( const int plus )
+        void set_melee_plus(const int plus)
         {
-                m_melee_base_dmg.set_plus( plus );
+                m_melee_base_dmg.set_plus(plus);
         }
 
         void set_random_melee_plus();
@@ -167,31 +167,31 @@ public:
                 return m_melee_base_dmg;
         }
 
-        DmgRange melee_dmg( const actor::Actor* attacker ) const;
-        DmgRange ranged_dmg( const actor::Actor* attacker ) const;
-        DmgRange thrown_dmg( const actor::Actor* attacker ) const;
+        DmgRange melee_dmg(const actor::Actor* attacker) const;
+        DmgRange ranged_dmg(const actor::Actor* attacker) const;
+        DmgRange thrown_dmg(const actor::Actor* attacker) const;
 
         ItemAttProp& prop_applied_on_melee(
-                const actor::Actor* attacker ) const;
+                const actor::Actor* attacker) const;
 
         ItemAttProp& prop_applied_on_ranged(
-                const actor::Actor* attacker ) const;
+                const actor::Actor* attacker) const;
 
-        virtual void on_melee_kill( actor::Actor& actor_killed )
+        virtual void on_melee_kill(actor::Actor& actor_killed)
         {
                 (void)actor_killed;
         }
 
-        virtual void on_ranged_hit( actor::Actor& actor_hit )
+        virtual void on_ranged_hit(actor::Actor& actor_hit)
         {
                 (void)actor_hit;
         }
 
-        void add_carrier_prop( Prop* prop, Verbose verbose );
+        void add_carrier_prop(Prop* prop, Verbose verbose);
 
         void clear_carrier_props();
 
-        virtual int hp_regen_change( const InvType inv_type ) const
+        virtual int hp_regen_change(const InvType inv_type) const
         {
                 (void)inv_type;
                 return 0;
@@ -212,7 +212,7 @@ public:
                 return m_carrier_props;
         }
 
-        virtual bool is_curse_allowed( item_curse::Id id ) const
+        virtual bool is_curse_allowed(item_curse::Id id) const
         {
                 (void)id;
 
@@ -221,7 +221,7 @@ public:
 
         bool is_cursed() const
         {
-                return ( m_curse.id() != item_curse::Id::END );
+                return (m_curse.id() != item_curse::Id::END);
         }
 
         item_curse::Curse& current_curse()
@@ -229,9 +229,9 @@ public:
                 return m_curse;
         }
 
-        void set_curse( item_curse::Curse&& curse )
+        void set_curse(item_curse::Curse&& curse)
         {
-                m_curse = std::move( curse );
+                m_curse = std::move(curse);
         }
 
         void remove_curse()
@@ -239,7 +239,7 @@ public:
                 m_curse = item_curse::Curse();
         }
 
-        int m_nr_items { 1 };
+        int m_nr_items {1};
 
 protected:
         virtual void save_hook() const {}
@@ -248,19 +248,19 @@ protected:
 
         virtual std::vector<std::string> descr_hook() const;
 
-        virtual void on_std_turn_in_inv_hook( const InvType inv_type )
+        virtual void on_std_turn_in_inv_hook(const InvType inv_type)
         {
                 (void)inv_type;
         }
 
-        virtual void on_actor_turn_in_inv_hook( const InvType inv_type )
+        virtual void on_actor_turn_in_inv_hook(const InvType inv_type)
         {
                 (void)inv_type;
         }
 
         virtual void on_pickup_hook() {}
 
-        virtual void on_equip_hook( const Verbose verbose )
+        virtual void on_equip_hook(const Verbose verbose)
         {
                 (void)verbose;
         }
@@ -273,18 +273,18 @@ protected:
 
         virtual void specific_dmg_mod(
                 DmgRange& range,
-                const actor::Actor* const actor ) const
+                const actor::Actor* const actor) const
         {
                 (void)range;
                 (void)actor;
         }
 
         ItemAttProp* prop_applied_intr_attack(
-                const actor::Actor* attacker ) const;
+                const actor::Actor* attacker) const;
 
         ItemData* m_data;
 
-        actor::Actor* m_actor_carrying { nullptr };
+        actor::Actor* m_actor_carrying {nullptr};
 
         // Base damage (not including actor properties, player traits, etc)
         DmgRange m_melee_base_dmg;
@@ -301,7 +301,7 @@ private:
 class Trapez : public Item
 {
 public:
-        Trapez( ItemData* item_data );
+        Trapez(ItemData* item_data);
 
         ItemPrePickResult pre_pickup_hook() override;
 };
@@ -309,7 +309,7 @@ public:
 class Armor : public Item
 {
 public:
-        Armor( ItemData* item_data );
+        Armor(ItemData* item_data);
 
         ~Armor() = default;
 
@@ -340,7 +340,7 @@ public:
                 return armor_points() <= 0;
         }
 
-        void hit( int dmg );
+        void hit(int dmg);
 
 protected:
         int m_dur;
@@ -349,12 +349,12 @@ protected:
 class ArmorAsbSuit : public Armor
 {
 public:
-        ArmorAsbSuit( ItemData* const item_data ) :
-                Armor( item_data ) {}
+        ArmorAsbSuit(ItemData* const item_data) :
+                Armor(item_data) {}
 
         ~ArmorAsbSuit() = default;
 
-        void on_equip_hook( Verbose verbose ) override;
+        void on_equip_hook(Verbose verbose) override;
 
 private:
         void on_unequip_hook() override;
@@ -363,22 +363,22 @@ private:
 class ArmorMiGo : public Armor
 {
 public:
-        ArmorMiGo( ItemData* const item_data ) :
-                Armor( item_data ) {}
+        ArmorMiGo(ItemData* const item_data) :
+                Armor(item_data) {}
 
         ~ArmorMiGo() = default;
 
-        void on_equip_hook( Verbose verbose ) override;
+        void on_equip_hook(Verbose verbose) override;
 };
 
 class Wpn : public Item
 {
 public:
-        Wpn( ItemData* item_data );
+        Wpn(ItemData* item_data);
 
         virtual ~Wpn() = default;
 
-        Wpn& operator=( const Wpn& other ) = delete;
+        Wpn& operator=(const Wpn& other) = delete;
 
         void save_hook() const override;
         void load_hook() override;
@@ -406,47 +406,47 @@ protected:
 class SpikedMace : public Wpn
 {
 public:
-        SpikedMace( ItemData* const item_data ) :
-                Wpn( item_data ) {}
+        SpikedMace(ItemData* const item_data) :
+                Wpn(item_data) {}
 
 private:
-        void on_melee_hit( actor::Actor& actor_hit, int dmg ) override;
+        void on_melee_hit(actor::Actor& actor_hit, int dmg) override;
 };
 
 class PlayerGhoulClaw : public Wpn
 {
 public:
-        PlayerGhoulClaw( ItemData* const item_data ) :
-                Wpn( item_data ) {}
+        PlayerGhoulClaw(ItemData* const item_data) :
+                Wpn(item_data) {}
 
 private:
-        void on_melee_hit( actor::Actor& actor_hit, int dmg ) override;
+        void on_melee_hit(actor::Actor& actor_hit, int dmg) override;
 
-        void on_melee_kill( actor::Actor& actor_killed ) override;
+        void on_melee_kill(actor::Actor& actor_killed) override;
 };
 
 class ZombieDust : public Wpn
 {
 public:
-        ZombieDust( ItemData* const item_data ) :
-                Wpn( item_data ) {}
+        ZombieDust(ItemData* const item_data) :
+                Wpn(item_data) {}
 
-        void on_ranged_hit( actor::Actor& actor_hit ) override;
+        void on_ranged_hit(actor::Actor& actor_hit) override;
 };
 
 class Incinerator : public Wpn
 {
 public:
-        Incinerator( ItemData* item_data );
+        Incinerator(ItemData* item_data);
         ~Incinerator() = default;
 
-        void on_projectile_blocked( const P& pos ) override;
+        void on_projectile_blocked(const P& pos) override;
 };
 
 class MiGoGun : public Wpn
 {
 public:
-        MiGoGun( ItemData* item_data );
+        MiGoGun(ItemData* item_data);
         ~MiGoGun() = default;
 
         void pre_ranged_attack() override;
@@ -454,59 +454,59 @@ public:
 protected:
         void specific_dmg_mod(
                 DmgRange& range,
-                const actor::Actor* actor ) const override;
+                const actor::Actor* actor) const override;
 };
 
 class RavenPeck : public Wpn
 {
 public:
-        RavenPeck( ItemData* const item_data ) :
-                Wpn( item_data ) {}
+        RavenPeck(ItemData* const item_data) :
+                Wpn(item_data) {}
 
-        void on_melee_hit( actor::Actor& actor_hit, int dmg ) override;
+        void on_melee_hit(actor::Actor& actor_hit, int dmg) override;
 };
 
 class VampiricBite : public Wpn
 {
 public:
-        VampiricBite( ItemData* const item_data ) :
-                Wpn( item_data ) {}
+        VampiricBite(ItemData* const item_data) :
+                Wpn(item_data) {}
 
-        void on_melee_hit( actor::Actor& actor_hit, int dmg ) override;
+        void on_melee_hit(actor::Actor& actor_hit, int dmg) override;
 };
 
 class MindLeechSting : public Wpn
 {
 public:
-        MindLeechSting( ItemData* const item_data ) :
-                Wpn( item_data ) {}
+        MindLeechSting(ItemData* const item_data) :
+                Wpn(item_data) {}
 
-        void on_melee_hit( actor::Actor& actor_hit, int dmg ) override;
+        void on_melee_hit(actor::Actor& actor_hit, int dmg) override;
 };
 
 class DustEngulf : public Wpn
 {
 public:
-        DustEngulf( ItemData* const item_data ) :
-                Wpn( item_data ) {}
+        DustEngulf(ItemData* const item_data) :
+                Wpn(item_data) {}
 
-        void on_melee_hit( actor::Actor& actor_hit, int dmg ) override;
+        void on_melee_hit(actor::Actor& actor_hit, int dmg) override;
 };
 
 class SnakeVenomSpit : public Wpn
 {
 public:
-        SnakeVenomSpit( ItemData* const item_data ) :
-                Wpn( item_data ) {}
+        SnakeVenomSpit(ItemData* const item_data) :
+                Wpn(item_data) {}
 
-        void on_ranged_hit( actor::Actor& actor_hit ) override;
+        void on_ranged_hit(actor::Actor& actor_hit) override;
 };
 
 class Ammo : public Item
 {
 public:
-        Ammo( ItemData* const item_data ) :
-                Item( item_data ) {}
+        Ammo(ItemData* const item_data) :
+                Item(item_data) {}
 
         virtual ~Ammo() = default;
 
@@ -519,13 +519,13 @@ public:
 class AmmoMag : public Ammo
 {
 public:
-        AmmoMag( ItemData* item_data );
+        AmmoMag(ItemData* item_data);
 
         ~AmmoMag() = default;
 
         std::string name_inf_str() const override
         {
-                return "{" + std::to_string( m_ammo ) + "}";
+                return "{" + std::to_string(m_ammo) + "}";
         }
 
         void set_full_ammo();
@@ -547,7 +547,7 @@ enum class MedBagAction
 class MedicalBag : public Item
 {
 public:
-        MedicalBag( ItemData* item_data );
+        MedicalBag(ItemData* item_data);
 
         ~MedicalBag() = default;
 
@@ -562,12 +562,12 @@ public:
 
         std::string name_inf_str() const override
         {
-                return "{" + std::to_string( m_nr_supplies ) + "}";
+                return "{" + std::to_string(m_nr_supplies) + "}";
         }
 
         void on_pickup_hook() override;
 
-        ConsumeItem activate( actor::Actor* actor ) override;
+        ConsumeItem activate(actor::Actor* actor) override;
 
         void continue_action();
 
@@ -580,9 +580,9 @@ public:
 protected:
         MedBagAction choose_action() const;
 
-        int tot_suppl_for_action( MedBagAction action ) const;
+        int tot_suppl_for_action(MedBagAction action) const;
 
-        int tot_turns_for_action( MedBagAction action ) const;
+        int tot_turns_for_action(MedBagAction action) const;
 
         int m_nr_turns_left_action;
 
@@ -592,8 +592,8 @@ protected:
 class Headwear : public Item
 {
 public:
-        Headwear( ItemData* item_data ) :
-                Item( item_data ) {}
+        Headwear(ItemData* item_data) :
+                Item(item_data) {}
 
         Color interface_color() const override
         {
@@ -604,20 +604,20 @@ public:
 class GasMask : public Headwear
 {
 public:
-        GasMask( ItemData* item_data ) :
-                Headwear( item_data ),
-                m_nr_turns_left( 60 ) {}
+        GasMask(ItemData* item_data) :
+                Headwear(item_data),
+                m_nr_turns_left(60) {}
 
         std::string name_inf_str() const override
         {
-                return "{" + std::to_string( m_nr_turns_left ) + "}";
+                return "{" + std::to_string(m_nr_turns_left) + "}";
         }
 
-        void on_equip_hook( Verbose verbose ) override;
+        void on_equip_hook(Verbose verbose) override;
 
         void on_unequip_hook() override;
 
-        void decr_turns_left( Inventory& carrier_inv );
+        void decr_turns_left(Inventory& carrier_inv);
 
 protected:
         int m_nr_turns_left;
@@ -630,7 +630,7 @@ public:
 
         Explosive() = delete;
 
-        ConsumeItem activate( actor::Actor* actor ) final;
+        ConsumeItem activate(actor::Actor* actor) final;
 
         Color interface_color() const final
         {
@@ -638,15 +638,15 @@ public:
         }
 
         virtual void on_std_turn_player_hold_ignited() = 0;
-        virtual void on_thrown_ignited_landing( const P& p ) = 0;
+        virtual void on_thrown_ignited_landing(const P& p) = 0;
         virtual void on_player_paralyzed() = 0;
         virtual Color ignited_projectile_color() const = 0;
         virtual std::string str_on_player_throw() const = 0;
 
 protected:
-        Explosive( ItemData* const item_data ) :
-                Item( item_data ),
-                m_fuse_turns( -1 ) {}
+        Explosive(ItemData* const item_data) :
+                Item(item_data),
+                m_fuse_turns(-1) {}
 
         virtual int std_fuse_turns() const = 0;
         virtual void on_player_ignite() const = 0;
@@ -657,10 +657,10 @@ protected:
 class Dynamite : public Explosive
 {
 public:
-        Dynamite( ItemData* const item_data ) :
-                Explosive( item_data ) {}
+        Dynamite(ItemData* const item_data) :
+                Explosive(item_data) {}
 
-        void on_thrown_ignited_landing( const P& p ) override;
+        void on_thrown_ignited_landing(const P& p) override;
         void on_std_turn_player_hold_ignited() override;
         void on_player_paralyzed() override;
 
@@ -686,10 +686,10 @@ protected:
 class Molotov : public Explosive
 {
 public:
-        Molotov( ItemData* const item_data ) :
-                Explosive( item_data ) {}
+        Molotov(ItemData* const item_data) :
+                Explosive(item_data) {}
 
-        void on_thrown_ignited_landing( const P& p ) override;
+        void on_thrown_ignited_landing(const P& p) override;
         void on_std_turn_player_hold_ignited() override;
         void on_player_paralyzed() override;
 
@@ -714,10 +714,10 @@ protected:
 class Flare : public Explosive
 {
 public:
-        Flare( ItemData* const item_data ) :
-                Explosive( item_data ) {}
+        Flare(ItemData* const item_data) :
+                Explosive(item_data) {}
 
-        void on_thrown_ignited_landing( const P& p ) override;
+        void on_thrown_ignited_landing(const P& p) override;
         void on_std_turn_player_hold_ignited() override;
         void on_player_paralyzed() override;
 
@@ -742,10 +742,10 @@ protected:
 class SmokeGrenade : public Explosive
 {
 public:
-        SmokeGrenade( ItemData* const item_data ) :
-                Explosive( item_data ) {}
+        SmokeGrenade(ItemData* const item_data) :
+                Explosive(item_data) {}
 
-        void on_thrown_ignited_landing( const P& p ) override;
+        void on_thrown_ignited_landing(const P& p) override;
         void on_std_turn_player_hold_ignited() override;
         void on_player_paralyzed() override;
 

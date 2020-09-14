@@ -24,12 +24,12 @@ namespace item
 class PharaohStaff : public Wpn
 {
 public:
-        PharaohStaff( ItemData* item_data );
+        PharaohStaff(ItemData* item_data);
 
-        void on_std_turn_in_inv_hook( InvType inv_type ) override;
+        void on_std_turn_in_inv_hook(InvType inv_type) override;
 
 private:
-        void on_mon_see_player_carrying( actor::Actor& mon ) const;
+        void on_mon_see_player_carrying(actor::Actor& mon) const;
 };
 
 // -----------------------------------------------------------------------------
@@ -38,7 +38,7 @@ private:
 class ReflTalisman : public Item
 {
 public:
-        ReflTalisman( ItemData* item_data );
+        ReflTalisman(ItemData* item_data);
 
 private:
         void on_pickup_hook() override;
@@ -52,9 +52,9 @@ private:
 class ResurrectTalisman : public Item
 {
 public:
-        ResurrectTalisman( ItemData* item_data );
+        ResurrectTalisman(ItemData* item_data);
 
-        bool is_curse_allowed( item_curse::Id id ) const override
+        bool is_curse_allowed(item_curse::Id id) const override
         {
                 (void)id;
 
@@ -70,9 +70,9 @@ public:
 class TeleCtrlTalisman : public Item
 {
 public:
-        TeleCtrlTalisman( ItemData* item_data );
+        TeleCtrlTalisman(ItemData* item_data);
 
-        bool is_curse_allowed( item_curse::Id id ) const override
+        bool is_curse_allowed(item_curse::Id id) const override
         {
                 return id != item_curse::Id::teleport;
         }
@@ -93,13 +93,13 @@ public:
 
         ~HornOfMaliceHeard() = default;
 
-        void run( actor::Actor& actor ) const override;
+        void run(actor::Actor& actor) const override;
 };
 
 class HornOfMalice : public Item
 {
 public:
-        HornOfMalice( ItemData* item_data );
+        HornOfMalice(ItemData* item_data);
 
         std::string name_inf_str() const override;
 
@@ -107,7 +107,7 @@ public:
 
         void load_hook() override;
 
-        ConsumeItem activate( actor::Actor* actor ) override;
+        ConsumeItem activate(actor::Actor* actor) override;
 
 private:
         int m_charges;
@@ -123,13 +123,13 @@ public:
 
         ~HornOfBanishmentHeard() = default;
 
-        void run( actor::Actor& actor ) const override;
+        void run(actor::Actor& actor) const override;
 };
 
 class HornOfBanishment : public Item
 {
 public:
-        HornOfBanishment( ItemData* item_data );
+        HornOfBanishment(ItemData* item_data);
 
         std::string name_inf_str() const override;
 
@@ -137,7 +137,7 @@ public:
 
         void load_hook() override;
 
-        ConsumeItem activate( actor::Actor* actor ) override;
+        ConsumeItem activate(actor::Actor* actor) override;
 
 private:
         int m_charges;
@@ -149,11 +149,11 @@ private:
 class HolySymbol : public Item
 {
 public:
-        HolySymbol( ItemData* item_data );
+        HolySymbol(ItemData* item_data);
 
-        ConsumeItem activate( actor::Actor* actor ) override;
+        ConsumeItem activate(actor::Actor* actor) override;
 
-        void on_std_turn_in_inv_hook( InvType inv_type ) override;
+        void on_std_turn_in_inv_hook(InvType inv_type) override;
 
         std::string name_inf_str() const override;
 
@@ -166,8 +166,8 @@ private:
 
         Range nr_turns_to_recharge() const;
 
-        int m_nr_charge_turns_left { 0 };
-        bool m_has_failed_attempt { false };
+        int m_nr_charge_turns_left {0};
+        bool m_has_failed_attempt {false};
 };
 
 // -----------------------------------------------------------------------------
@@ -176,9 +176,9 @@ private:
 class Clockwork : public Item
 {
 public:
-        Clockwork( ItemData* item_data );
+        Clockwork(ItemData* item_data);
 
-        ConsumeItem activate( actor::Actor* actor ) override;
+        ConsumeItem activate(actor::Actor* actor) override;
 
         std::string name_inf_str() const override;
 
@@ -196,12 +196,12 @@ private:
 class SpiritDagger : public Wpn
 {
 public:
-        SpiritDagger( ItemData* item_data );
+        SpiritDagger(ItemData* item_data);
 
 protected:
         void specific_dmg_mod(
                 DmgRange& range,
-                const actor::Actor* actor ) const override;
+                const actor::Actor* actor) const override;
 };
 
 // -----------------------------------------------------------------------------
@@ -210,7 +210,7 @@ protected:
 class OrbOfLife : public Item
 {
 public:
-        OrbOfLife( ItemData* item_data );
+        OrbOfLife(ItemData* item_data);
 
 private:
         void on_pickup_hook() override;

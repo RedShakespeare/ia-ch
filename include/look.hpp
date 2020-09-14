@@ -22,9 +22,9 @@ struct P;
 class ViewActorDescr : public InfoScreenState
 {
 public:
-        ViewActorDescr( actor::Actor& actor ) :
+        ViewActorDescr(actor::Actor& actor) :
 
-                m_actor( actor )
+                m_actor(actor)
         {}
 
         void on_start() override;
@@ -47,16 +47,16 @@ private:
 
         std::vector<ColoredString> m_lines {};
 
-        int m_top_idx { 0 };
+        int m_top_idx {0};
 
         actor::Actor& m_actor;
 };
 
 namespace look
 {
-void print_location_info_msgs( const P& pos );
+void print_location_info_msgs(const P& pos);
 
-void print_living_actor_info_msg( const P& pos );
+void print_living_actor_info_msg(const P& pos);
 
 }  // namespace look
 

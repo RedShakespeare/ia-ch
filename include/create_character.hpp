@@ -75,8 +75,8 @@ private:
 class PickTraitState : public State
 {
 public:
-        PickTraitState( std::string title ) :
-                m_title( std::move( title ) )
+        PickTraitState(std::string title) :
+                m_title(std::move(title))
         {
         }
 
@@ -102,7 +102,7 @@ private:
         std::vector<Trait> m_traits_avail {};
         std::vector<Trait> m_traits_unavail {};
 
-        TraitScreenMode m_screen_mode { TraitScreenMode::pick_new };
+        TraitScreenMode m_screen_mode {TraitScreenMode::pick_new};
 
         std::string m_title;
 };

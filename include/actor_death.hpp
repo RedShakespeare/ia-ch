@@ -33,11 +33,11 @@ void kill(
         Actor& actor,
         IsDestroyed is_destroyed,
         AllowGore allow_gore,
-        AllowDropItems allow_drop_items );
+        AllowDropItems allow_drop_items);
 
-void print_mon_death_msg( const actor::Actor& actor );
+void print_mon_death_msg(const actor::Actor& actor);
 
-void unset_actor_as_leader_for_all_mon( Actor& actor );
+void unset_actor_as_leader_for_all_mon(Actor& actor);
 
 }  // namespace actor
 

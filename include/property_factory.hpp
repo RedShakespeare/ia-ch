@@ -13,7 +13,7 @@ class Prop;
 
 namespace property_factory
 {
-Prop* make( PropId id );
+Prop* make(PropId id);
 
 }  // namespace property_factory
 

@@ -32,19 +32,19 @@ bool always_center_view_on_player();
 
 bool is_tiles_mode();
 
-void set_fullscreen( bool value );
+void set_fullscreen(bool value);
 
 bool is_fullscreen();
 
 bool is_2x_scale_fullscreen_requested();
 
-void set_2x_scale_fullscreen_enabled( bool value );
+void set_2x_scale_fullscreen_enabled(bool value);
 
 bool is_2x_scale_fullscreen_enabled();
 
-void set_screen_px_w( int w );
+void set_screen_px_w(int w);
 
-void set_screen_px_h( int h );
+void set_screen_px_h(int h);
 
 int screen_px_w();
 
@@ -100,7 +100,7 @@ int delay_shotgun();
 
 int delay_explosion();
 
-void set_default_player_name( const std::string& name );
+void set_default_player_name(const std::string& name);
 
 std::string default_player_name();
 

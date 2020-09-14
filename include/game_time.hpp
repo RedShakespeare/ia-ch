@@ -34,7 +34,7 @@ void cleanup();
 void save();
 void load();
 
-void add_actor( actor::Actor* actor );
+void add_actor(actor::Actor* actor);
 
 void tick();
 
@@ -42,11 +42,11 @@ int turn_nr();
 
 actor::Actor* current_actor();
 
-std::vector<terrain::Terrain*> mobs_at_pos( const P& p );
+std::vector<terrain::Terrain*> mobs_at_pos(const P& p);
 
-void add_mob( terrain::Terrain* t );
+void add_mob(terrain::Terrain* t);
 
-void erase_mob( terrain::Terrain* f, bool destroy_object );
+void erase_mob(terrain::Terrain* f, bool destroy_object);
 
 void erase_all_mobs();
 

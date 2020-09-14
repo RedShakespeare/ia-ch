@@ -42,27 +42,27 @@
 // -----------------------------------------------------------------------------
 // Private
 // -----------------------------------------------------------------------------
-static void scorch_actor( actor::Actor& actor )
+static void scorch_actor(actor::Actor& actor)
 {
-        if ( actor.is_player() )
+        if (actor.is_player())
         {
                 msg_log::add(
                         "I am scorched by flames.",
-                        colors::msg_bad() );
+                        colors::msg_bad());
         }
-        else if ( actor::can_player_see_actor( actor ) )
+        else if (actor::can_player_see_actor(actor))
         {
                 const std::string name_the =
                         text_format::first_to_upper(
-                                actor.name_the() );
+                                actor.name_the());
 
                 msg_log::add(
                         name_the +
                                 " is scorched by flames.",
-                        colors::msg_good() );
+                        colors::msg_good());
         }
 
-        actor::hit( actor, 1, DmgType::fire );
+        actor::hit(actor, 1, DmgType::fire);
 }
 
 // -----------------------------------------------------------------------------
@@ -70,34 +70,34 @@ static void scorch_actor( actor::Actor& actor )
 // -----------------------------------------------------------------------------
 namespace terrain
 {
-void Terrain::bump( actor::Actor& actor_bumping )
+void Terrain::bump(actor::Actor& actor_bumping)
 {
-        if ( ! can_move( actor_bumping ) && actor_bumping.is_player() )
+        if (!can_move(actor_bumping) && actor_bumping.is_player())
         {
-                if ( map::is_pos_seen_by_player( m_pos ) )
+                if (map::is_pos_seen_by_player(m_pos))
                 {
-                        msg_log::add( data().msg_on_player_blocked );
+                        msg_log::add(data().msg_on_player_blocked);
                 }
                 else
                 {
-                        msg_log::add( data().msg_on_player_blocked_blind );
+                        msg_log::add(data().msg_on_player_blocked_blind);
                 }
         }
 }
 
-AllowAction Terrain::pre_bump( actor::Actor& actor_bumping )
+AllowAction Terrain::pre_bump(actor::Actor& actor_bumping)
 {
-        if ( ! actor_bumping.is_player() ||
-             actor_bumping.m_properties.has( PropId::confused ) )
+        if (!actor_bumping.is_player() ||
+            actor_bumping.m_properties.has(PropId::confused))
         {
                 return AllowAction::yes;
         }
 
-        if ( ( m_burn_state == BurnState::burning ) &&
-             ! actor_bumping.m_properties.has( PropId::r_fire ) &&
-             ! actor_bumping.m_properties.has( PropId::flying ) &&
-             can_move( actor_bumping ) &&
-             map::g_cells.at( m_pos ).is_seen_by_player )
+        if ((m_burn_state == BurnState::burning) &&
+            !actor_bumping.m_properties.has(PropId::r_fire) &&
+            !actor_bumping.m_properties.has(PropId::flying) &&
+            can_move(actor_bumping) &&
+            map::g_cells.at(m_pos).is_seen_by_player)
         {
                 const std::string msg =
                         "Step into the flames? " +
@@ -108,13 +108,13 @@ AllowAction Terrain::pre_bump( actor::Actor& actor_bumping )
                         colors::light_white(),
                         MsgInterruptPlayer::no,
                         MorePromptOnMsg::no,
-                        CopyToMsgHistory::no );
+                        CopyToMsgHistory::no);
 
                 const auto query_result = query::yes_or_no();
 
                 msg_log::clear();
 
-                return ( query_result == BinaryAnswer::no )
+                return (query_result == BinaryAnswer::no)
                         ? AllowAction::no
                         : AllowAction::yes;
         }
@@ -124,32 +124,32 @@ AllowAction Terrain::pre_bump( actor::Actor& actor_bumping )
 
 void Terrain::on_new_turn()
 {
-        if ( m_nr_turns_color_corrupted > 0 )
+        if (m_nr_turns_color_corrupted > 0)
         {
                 --m_nr_turns_color_corrupted;
         }
 
-        if ( ( m_burn_state == BurnState::burning ) &&
-             ! m_started_burning_this_turn )
+        if ((m_burn_state == BurnState::burning) &&
+            !m_started_burning_this_turn)
         {
                 clear_gore();
 
                 // TODO: Hit dead actors
 
                 // Hit actor standing on terrain
-                auto* actor = map::first_actor_at_pos( m_pos );
+                auto* actor = map::first_actor_at_pos(m_pos);
 
-                if ( actor )
+                if (actor)
                 {
                         // Occasionally try to set actor on fire, otherwise just
                         // do small fire damage
-                        if ( rnd::one_in( 4 ) )
+                        if (rnd::one_in(4))
                         {
-                                actor->m_properties.apply( new PropBurning() );
+                                actor->m_properties.apply(new PropBurning());
                         }
                         else
                         {
-                                scorch_actor( *actor );
+                                scorch_actor(*actor);
                         }
                 }
 
@@ -157,7 +157,7 @@ void Terrain::on_new_turn()
                 int finish_burning_one_in_n = 1;
                 int hit_adjacent_one_in_n = 1;
 
-                switch ( matl() )
+                switch (matl())
                 {
                 case Matl::fluid:
                 case Matl::empty:
@@ -191,59 +191,59 @@ void Terrain::on_new_turn()
                         break;
                 }
 
-                if ( rnd::one_in( finish_burning_one_in_n ) )
+                if (rnd::one_in(finish_burning_one_in_n))
                 {
                         m_burn_state = BurnState::has_burned;
 
-                        if ( on_finished_burning() == WasDestroyed::yes )
+                        if (on_finished_burning() == WasDestroyed::yes)
                         {
                                 return;
                         }
                 }
 
                 // Hit actors and adjacent terrains?
-                if ( rnd::one_in( hit_adjacent_one_in_n ) )
+                if (rnd::one_in(hit_adjacent_one_in_n))
                 {
-                        actor = map::first_actor_at_pos( m_pos );
+                        actor = map::first_actor_at_pos(m_pos);
 
-                        if ( actor )
+                        if (actor)
                         {
-                                scorch_actor( *actor );
+                                scorch_actor(*actor);
                         }
 
-                        const P p( dir_utils::rnd_adj_pos( m_pos, false ) );
+                        const P p(dir_utils::rnd_adj_pos(m_pos, false));
 
-                        if ( map::is_pos_inside_map( p ) )
+                        if (map::is_pos_inside_map(p))
                         {
-                                auto& cell = map::g_cells.at( p );
+                                auto& cell = map::g_cells.at(p);
 
-                                cell.terrain->hit( DmgType::fire, nullptr );
+                                cell.terrain->hit(DmgType::fire, nullptr);
 
-                                if ( cell.terrain->m_burn_state == BurnState::burning )
+                                if (cell.terrain->m_burn_state == BurnState::burning)
                                 {
                                         cell.terrain->m_started_burning_this_turn = true;
 
-                                        if ( map::g_player->m_pos == p )
+                                        if (map::g_player->m_pos == p)
                                         {
                                                 msg_log::add(
                                                         "Fire has spread here!",
                                                         colors::msg_note(),
                                                         MsgInterruptPlayer::yes,
-                                                        MorePromptOnMsg::yes );
+                                                        MorePromptOnMsg::yes);
                                         }
                                 }
                         }
                 }
 
                 // Create smoke?
-                if ( rnd::one_in( 20 ) )
+                if (rnd::one_in(20))
                 {
-                        const P p( dir_utils::rnd_adj_pos( m_pos, true ) );
+                        const P p(dir_utils::rnd_adj_pos(m_pos, true));
 
-                        if ( map::is_pos_inside_map( p ) &&
-                             ! map_parsers::BlocksProjectiles().cell( p ) )
+                        if (map::is_pos_inside_map(p) &&
+                            !map_parsers::BlocksProjectiles().cell(p))
                         {
-                                game_time::add_mob( new Smoke( p, 10 ) );
+                                game_time::add_mob(new Smoke(p, 10));
                         }
                 }
         }
@@ -252,22 +252,22 @@ void Terrain::on_new_turn()
         on_new_turn_hook();
 }
 
-void Terrain::try_start_burning( const Verbose verbose )
+void Terrain::try_start_burning(const Verbose verbose)
 {
         clear_gore();
 
-        if ( ( m_burn_state == BurnState::not_burned ) ||
-             ( ( m_burn_state == BurnState::has_burned ) &&
-               rnd::one_in( 3 ) ) )
+        if ((m_burn_state == BurnState::not_burned) ||
+            ((m_burn_state == BurnState::has_burned) &&
+             rnd::one_in(3)))
         {
-                if ( map::is_pos_seen_by_player( m_pos ) &&
-                     ( verbose == Verbose::yes ) )
+                if (map::is_pos_seen_by_player(m_pos) &&
+                    (verbose == Verbose::yes))
                 {
-                        std::string str = name( Article::the ) + " catches fire.";
+                        std::string str = name(Article::the) + " catches fire.";
 
-                        str[ 0 ] = toupper( str[ 0 ] );
+                        str[0] = toupper(str[0]);
 
-                        msg_log::add( str );
+                        msg_log::add(str);
                 }
 
                 m_burn_state = BurnState::burning;
@@ -284,46 +284,47 @@ WasDestroyed Terrain::on_finished_burning()
 void Terrain::hit(
         const DmgType dmg_type,
         actor::Actor* actor,
-        const int dmg )
+        const int dmg)
 {
         bool is_terrain_hit = true;
 
-        if ( actor == map::g_player )
+        if (actor == map::g_player)
         {
-                switch ( dmg_type )
+                switch (dmg_type)
                 {
                 case DmgType::kicking:
                 case DmgType::blunt:
-                case DmgType::slashing: {
+                case DmgType::slashing:
+                {
                         const bool is_blocking =
-                                ! is_walkable() &&
-                                ( id() != terrain::Id::stairs ) &&
-                                ( id() != terrain::Id::liquid_deep );
+                                !is_walkable() &&
+                                (id() != terrain::Id::stairs) &&
+                                (id() != terrain::Id::liquid_deep);
 
-                        if ( is_blocking )
+                        if (is_blocking)
                         {
-                                if ( dmg_type == DmgType::kicking )
+                                if (dmg_type == DmgType::kicking)
                                 {
                                         const bool can_see_terrain =
-                                                ! map::g_cells.at( m_pos )
-                                                          .is_seen_by_player;
+                                                !map::g_cells.at(m_pos)
+                                                         .is_seen_by_player;
 
                                         const std::string terrain_name =
                                                 can_see_terrain
                                                 ? "something"
-                                                : name( Article::the );
+                                                : name(Article::the);
 
                                         msg_log::add(
                                                 "I kick " +
                                                 terrain_name +
-                                                "!" );
+                                                "!");
 
                                         wham::try_sprain_player();
                                 }
                                 else
                                 {
                                         // Not kicking
-                                        msg_log::add( "*WHAM!*" );
+                                        msg_log::add("*WHAM!*");
                                 }
                         }
                         else
@@ -331,22 +332,23 @@ void Terrain::hit(
                                 // The terrain is not blocking
                                 is_terrain_hit = false;
 
-                                msg_log::add( "*Whoosh!*" );
+                                msg_log::add("*Whoosh!*");
 
-                                audio::play( audio::SfxId::miss_medium );
+                                audio::play(audio::SfxId::miss_medium);
                         }
                 }
                 break;
 
-                default: {
+                default:
+                {
                 }
                 break;
                 }
         }
 
-        if ( is_terrain_hit )
+        if (is_terrain_hit)
         {
-                on_hit( dmg_type, actor, dmg );
+                on_hit(dmg_type, actor, dmg);
         }
 }
 
@@ -354,7 +356,7 @@ int Terrain::shock_when_adj() const
 {
         int shock = base_shock_when_adj();
 
-        if ( m_nr_turns_color_corrupted > 0 )
+        if (m_nr_turns_color_corrupted > 0)
         {
                 shock += 5;
         }
@@ -369,14 +371,14 @@ int Terrain::base_shock_when_adj() const
 
 void Terrain::try_put_gore()
 {
-        if ( ! data().can_have_gore )
+        if (!data().can_have_gore)
         {
                 return;
         }
 
-        const int roll_character = rnd::range( 1, 4 );
+        const int roll_character = rnd::range(1, 4);
 
-        switch ( roll_character )
+        switch (roll_character)
         {
         case 1:
                 m_gore_character = ',';
@@ -395,13 +397,13 @@ void Terrain::try_put_gore()
                 break;
 
         default:
-                ASSERT( false );
+                ASSERT(false);
                 break;
         }
 
-        const int roll_tile = rnd::range( 1, 8 );
+        const int roll_tile = rnd::range(1, 8);
 
-        switch ( roll_tile )
+        switch (roll_tile)
         {
         case 1:
                 m_gore_tile = gfx::TileId::gore1;
@@ -436,43 +438,43 @@ void Terrain::try_put_gore()
                 break;
 
         default:
-                ASSERT( false );
+                ASSERT(false);
                 break;
         }
 }
 
 void Terrain::corrupt_color()
 {
-        m_nr_turns_color_corrupted = rnd::range( 200, 220 );
+        m_nr_turns_color_corrupted = rnd::range(200, 220);
 }
 
 Color Terrain::color() const
 {
-        if ( m_burn_state == BurnState::burning )
+        if (m_burn_state == BurnState::burning)
         {
                 return colors::orange();
         }
         else
         {
                 // Not burning
-                if ( m_nr_turns_color_corrupted > 0 )
+                if (m_nr_turns_color_corrupted > 0)
                 {
                         Color color = colors::light_magenta();
 
                         color.set_rgb(
-                                rnd::range( 40, 255 ),
-                                rnd::range( 40, 255 ),
-                                rnd::range( 40, 255 ) );
+                                rnd::range(40, 255),
+                                rnd::range(40, 255),
+                                rnd::range(40, 255));
 
                         return color;
                 }
-                else if ( m_is_bloody )
+                else if (m_is_bloody)
                 {
                         return colors::light_red();
                 }
                 else
                 {
-                        return ( m_burn_state == BurnState::not_burned )
+                        return (m_burn_state == BurnState::not_burned)
                                 ? color_default()
                                 : colors::dark_gray();
                 }
@@ -481,19 +483,19 @@ Color Terrain::color() const
 
 Color Terrain::color_bg() const
 {
-        switch ( m_burn_state )
+        switch (m_burn_state)
         {
         case BurnState::not_burned:
         case BurnState::has_burned:
                 return color_bg_default();
 
         case BurnState::burning:
-                auto color = Color( (uint8_t)rnd::range( 32, 255 ), 0, 0 );
+                auto color = Color((uint8_t)rnd::range(32, 255), 0, 0);
 
                 return color;
         }
 
-        ASSERT( false && "Failed to set color" );
+        ASSERT(false && "Failed to set color");
 
         return colors::yellow();
 }
@@ -505,22 +507,22 @@ void Terrain::clear_gore()
         m_is_bloody = false;
 }
 
-void Terrain::add_light( Array2<bool>& light ) const
+void Terrain::add_light(Array2<bool>& light) const
 {
-        if ( m_burn_state == BurnState::burning )
+        if (m_burn_state == BurnState::burning)
         {
-                for ( const P& d : dir_utils::g_dir_list_w_center )
+                for (const P& d : dir_utils::g_dir_list_w_center)
                 {
-                        const P p( m_pos + d );
+                        const P p(m_pos + d);
 
-                        if ( map::is_pos_inside_map( p ) )
+                        if (map::is_pos_inside_map(p))
                         {
-                                light.at( p ) = true;
+                                light.at(p) = true;
                         }
                 }
         }
 
-        add_light_hook( light );
+        add_light_hook(light);
 }
 
 Color Terrain::color_bg_default() const
@@ -531,24 +533,24 @@ Color Terrain::color_bg_default() const
 // -----------------------------------------------------------------------------
 // Floor
 // -----------------------------------------------------------------------------
-Floor::Floor( const P& p ) :
-        Terrain( p ),
-        m_type( FloorType::common ) {}
+Floor::Floor(const P& p) :
+        Terrain(p),
+        m_type(FloorType::common) {}
 
 void Floor::on_hit(
         const DmgType dmg_type,
         actor::Actor* const actor,
-        const int dmg )
+        const int dmg)
 {
         (void)actor;
         (void)dmg;
 
-        switch ( dmg_type )
+        switch (dmg_type)
         {
         case DmgType::fire:
-                if ( rnd::one_in( 3 ) )
+                if (rnd::one_in(3))
                 {
-                        try_start_burning( Verbose::no );
+                        try_start_burning(Verbose::no);
                 }
                 break;
 
@@ -564,22 +566,22 @@ gfx::TileId Floor::tile() const
                 : data().tile;
 }
 
-std::string Floor::name( const Article article ) const
+std::string Floor::name(const Article article) const
 {
-        std::string ret = ( article == Article::a ) ? "" : "the ";
+        std::string ret = (article == Article::a) ? "" : "the ";
 
-        if ( m_burn_state == BurnState::burning )
+        if (m_burn_state == BurnState::burning)
         {
                 ret += "flames";
         }
         else
         {
-                if ( m_burn_state == BurnState::has_burned )
+                if (m_burn_state == BurnState::has_burned)
                 {
                         ret += "scorched ";
                 }
 
-                switch ( m_type )
+                switch (m_type)
                 {
                 case FloorType::common:
                         ret += "stone floor";
@@ -590,9 +592,9 @@ std::string Floor::name( const Article article ) const
                         break;
 
                 case FloorType::stone_path:
-                        if ( article == Article::a )
+                        if (article == Article::a)
                         {
-                                ret.insert( 0, "a " );
+                                ret.insert(0, "a ");
                         }
 
                         ret += "stone path";
@@ -611,47 +613,49 @@ Color Floor::color_default() const
 // -----------------------------------------------------------------------------
 // Wall
 // -----------------------------------------------------------------------------
-Wall::Wall( const P& p ) :
-        Terrain( p ),
-        m_type( WallType::common ),
-        m_is_mossy( false ) {}
+Wall::Wall(const P& p) :
+        Terrain(p),
+        m_type(WallType::common),
+        m_is_mossy(false) {}
 
 void Wall::on_hit(
         const DmgType dmg_type,
         actor::Actor* const actor,
-        const int dmg )
+        const int dmg)
 {
         (void)dmg;
         (void)actor;
 
-        switch ( dmg_type )
+        switch (dmg_type)
         {
         case DmgType::pure:
-        case DmgType::explosion: {
-                destr_all_adj_doors( m_pos );
+        case DmgType::explosion:
+        {
+                destr_all_adj_doors(m_pos);
 
-                if ( ( dmg_type == DmgType::pure ) || rnd::coin_toss() )
+                if ((dmg_type == DmgType::pure) || rnd::coin_toss())
                 {
-                        destr_stone_wall( m_pos );
+                        destr_stone_wall(m_pos);
                 }
                 else
                 {
-                        map::put( new RubbleHigh( m_pos ) );
+                        map::put(new RubbleHigh(m_pos));
                 }
 
                 map::update_vision();
         }
         break;
 
-        default: {
+        default:
+        {
         }
         break;
         }
 }
 
-bool Wall::is_wall_front_tile( const gfx::TileId tile )
+bool Wall::is_wall_front_tile(const gfx::TileId tile)
 {
-        switch ( tile )
+        switch (tile)
         {
         case gfx::TileId::wall_front:
         case gfx::TileId::wall_front_alt1:
@@ -665,9 +669,9 @@ bool Wall::is_wall_front_tile( const gfx::TileId tile )
         }
 }
 
-bool Wall::is_wall_top_tile( const gfx::TileId tile )
+bool Wall::is_wall_top_tile(const gfx::TileId tile)
 {
-        switch ( tile )
+        switch (tile)
         {
         case gfx::TileId::wall_top:
         case gfx::TileId::cave_wall_top:
@@ -680,16 +684,16 @@ bool Wall::is_wall_top_tile( const gfx::TileId tile )
         }
 }
 
-std::string Wall::name( const Article article ) const
+std::string Wall::name(const Article article) const
 {
-        std::string ret = ( article == Article::a ) ? "a " : "the ";
+        std::string ret = (article == Article::a) ? "a " : "the ";
 
-        if ( m_is_mossy )
+        if (m_is_mossy)
         {
                 ret += "moss-grown ";
         }
 
-        switch ( m_type )
+        switch (m_type)
         {
         case WallType::common:
         case WallType::common_alt:
@@ -712,12 +716,12 @@ std::string Wall::name( const Article article ) const
 
 Color Wall::color_default() const
 {
-        if ( m_is_mossy )
+        if (m_is_mossy)
         {
                 return colors::dark_green();
         }
 
-        switch ( m_type )
+        switch (m_type)
         {
         case WallType::cliff:
                 return colors::dark_gray();
@@ -735,7 +739,7 @@ Color Wall::color_default() const
                 return colors::red();
         }
 
-        ASSERT( false && "Failed to set color" );
+        ASSERT(false && "Failed to set color");
         return colors::yellow();
 }
 
@@ -748,9 +752,9 @@ char Wall::character() const
 
 gfx::TileId Wall::front_wall_tile() const
 {
-        if ( config::is_tiles_wall_full_square() )
+        if (config::is_tiles_wall_full_square())
         {
-                switch ( m_type )
+                switch (m_type)
                 {
                 case WallType::common:
                 case WallType::common_alt:
@@ -767,7 +771,7 @@ gfx::TileId Wall::front_wall_tile() const
         }
         else
         {
-                switch ( m_type )
+                switch (m_type)
                 {
                 case WallType::common:
                         return gfx::TileId::wall_front;
@@ -785,13 +789,13 @@ gfx::TileId Wall::front_wall_tile() const
                 }
         }
 
-        ASSERT( false && "Failed to set front wall tile" );
+        ASSERT(false && "Failed to set front wall tile");
         return gfx::TileId::END;
 }
 
 gfx::TileId Wall::top_wall_tile() const
 {
-        switch ( m_type )
+        switch (m_type)
         {
         case WallType::common:
         case WallType::common_alt:
@@ -806,14 +810,14 @@ gfx::TileId Wall::top_wall_tile() const
                 return gfx::TileId::egypt_wall_top;
         }
 
-        ASSERT( false && "Failed to set top wall tile" );
+        ASSERT(false && "Failed to set top wall tile");
         return gfx::TileId::END;
 }
 
 void Wall::set_rnd_common_wall()
 {
         m_type =
-                ( rnd::one_in( 6 ) )
+                (rnd::one_in(6))
                 ? WallType::common_alt
                 : WallType::common;
 }
@@ -826,22 +830,22 @@ void Wall::set_moss_grown()
 // -----------------------------------------------------------------------------
 // High rubble
 // -----------------------------------------------------------------------------
-RubbleHigh::RubbleHigh( const P& p ) :
-        Terrain( p ) {}
+RubbleHigh::RubbleHigh(const P& p) :
+        Terrain(p) {}
 
 void RubbleHigh::on_hit(
         const DmgType dmg_type,
         actor::Actor* const actor,
-        const int dmg )
+        const int dmg)
 {
         (void)dmg;
         (void)actor;
 
-        switch ( dmg_type )
+        switch (dmg_type)
         {
         case DmgType::pure:
         case DmgType::explosion:
-                destr_stone_wall( m_pos );
+                destr_stone_wall(m_pos);
                 map::update_vision();
                 break;
 
@@ -850,9 +854,9 @@ void RubbleHigh::on_hit(
         }
 }
 
-std::string RubbleHigh::name( const Article article ) const
+std::string RubbleHigh::name(const Article article) const
 {
-        std::string a = ( article == Article::a ) ? "a " : "the ";
+        std::string a = (article == Article::a) ? "a " : "the ";
 
         return a + "big pile of debris";
 }
@@ -866,21 +870,21 @@ Color RubbleHigh::color_default() const
 // -----------------------------------------------------------------------------
 // Low rubble
 // -----------------------------------------------------------------------------
-RubbleLow::RubbleLow( const P& p ) :
-        Terrain( p ) {}
+RubbleLow::RubbleLow(const P& p) :
+        Terrain(p) {}
 
 void RubbleLow::on_hit(
         const DmgType dmg_type,
         actor::Actor* const actor,
-        const int dmg )
+        const int dmg)
 {
         (void)dmg;
         (void)actor;
 
-        switch ( dmg_type )
+        switch (dmg_type)
         {
         case DmgType::fire:
-                try_start_burning( Verbose::no );
+                try_start_burning(Verbose::no);
                 break;
 
         default:
@@ -888,16 +892,16 @@ void RubbleLow::on_hit(
         }
 }
 
-std::string RubbleLow::name( const Article article ) const
+std::string RubbleLow::name(const Article article) const
 {
         std::string ret;
 
-        if ( article == Article::the )
+        if (article == Article::the)
         {
                 ret += "the ";
         }
 
-        if ( m_burn_state == BurnState::burning )
+        if (m_burn_state == BurnState::burning)
         {
                 ret += "burning ";
         }
@@ -914,24 +918,24 @@ Color RubbleLow::color_default() const
 // -----------------------------------------------------------------------------
 // Bones
 // -----------------------------------------------------------------------------
-Bones::Bones( const P& p ) :
-        Terrain( p ) {}
+Bones::Bones(const P& p) :
+        Terrain(p) {}
 
 void Bones::on_hit(
         const DmgType dmg_type,
         actor::Actor* const actor,
-        const int dmg )
+        const int dmg)
 {
         (void)dmg;
         (void)dmg_type;
         (void)actor;
 }
 
-std::string Bones::name( const Article article ) const
+std::string Bones::name(const Article article) const
 {
         std::string ret;
 
-        if ( article == Article::the )
+        if (article == Article::the)
         {
                 ret += "the ";
         }
@@ -947,30 +951,30 @@ Color Bones::color_default() const
 // -----------------------------------------------------------------------------
 // Grave
 // -----------------------------------------------------------------------------
-GraveStone::GraveStone( const P& p ) :
-        Terrain( p ) {}
+GraveStone::GraveStone(const P& p) :
+        Terrain(p) {}
 
 void GraveStone::on_hit(
         const DmgType dmg_type,
         actor::Actor* const actor,
-        const int dmg )
+        const int dmg)
 {
         (void)dmg;
         (void)dmg_type;
         (void)actor;
 }
 
-void GraveStone::bump( actor::Actor& actor_bumping )
+void GraveStone::bump(actor::Actor& actor_bumping)
 {
-        if ( actor_bumping.is_player() )
+        if (actor_bumping.is_player())
         {
-                msg_log::add( m_inscr );
+                msg_log::add(m_inscr);
         }
 }
 
-std::string GraveStone::name( const Article article ) const
+std::string GraveStone::name(const Article article) const
 {
-        const std::string a = ( article == Article::a ) ? "a " : "the ";
+        const std::string a = (article == Article::a) ? "a " : "the ";
 
         return a + "gravestone; " + m_inscr;
 }
@@ -983,32 +987,32 @@ Color GraveStone::color_default() const
 // -----------------------------------------------------------------------------
 // Church bench
 // -----------------------------------------------------------------------------
-ChurchBench::ChurchBench( const P& p ) :
-        Terrain( p ) {}
+ChurchBench::ChurchBench(const P& p) :
+        Terrain(p) {}
 
 void ChurchBench::on_hit(
         const DmgType dmg_type,
         actor::Actor* const actor,
-        const int dmg )
+        const int dmg)
 {
         (void)actor;
         (void)dmg;
 
-        switch ( dmg_type )
+        switch (dmg_type)
         {
         case DmgType::explosion:
         case DmgType::pure:
-                if ( map::is_pos_seen_by_player( m_pos ) )
+                if (map::is_pos_seen_by_player(m_pos))
                 {
-                        msg_log::add( "The church bench is destroyed." );
+                        msg_log::add("The church bench is destroyed.");
                 }
 
-                map::put( new RubbleLow( m_pos ) );
+                map::put(new RubbleLow(m_pos));
                 map::update_vision();
                 break;
 
         case DmgType::fire:
-                try_start_burning( Verbose::yes );
+                try_start_burning(Verbose::yes);
                 break;
 
         default:
@@ -1016,9 +1020,9 @@ void ChurchBench::on_hit(
         }
 }
 
-std::string ChurchBench::name( const Article article ) const
+std::string ChurchBench::name(const Article article) const
 {
-        const std::string a = ( article == Article::a ) ? "a " : "the ";
+        const std::string a = (article == Article::a) ? "a " : "the ";
 
         return a + "church bench";
 }
@@ -1031,16 +1035,16 @@ Color ChurchBench::color_default() const
 // -----------------------------------------------------------------------------
 // Statue
 // -----------------------------------------------------------------------------
-Statue::Statue( const P& p ) :
-        Terrain( p ),
-        m_type( rnd::one_in( 8 ) ? StatueType::ghoul : StatueType::common )
+Statue::Statue(const P& p) :
+        Terrain(p),
+        m_type(rnd::one_in(8) ? StatueType::ghoul : StatueType::common)
 {
 }
 
 int Statue::base_shock_when_adj() const
 {
         // Non-ghoul players are scared of Ghoul statues
-        if ( m_type == StatueType::ghoul && player_bon::bg() != Bg::ghoul )
+        if (m_type == StatueType::ghoul && player_bon::bg() != Bg::ghoul)
         {
                 return 10;
         }
@@ -1051,30 +1055,31 @@ int Statue::base_shock_when_adj() const
 void Statue::on_hit(
         const DmgType dmg_type,
         actor::Actor* const actor,
-        const int dmg )
+        const int dmg)
 {
         (void)dmg;
 
-        switch ( dmg_type )
+        switch (dmg_type)
         {
-        case DmgType::kicking: {
-                ASSERT( actor );
+        case DmgType::kicking:
+        {
+                ASSERT(actor);
 
-                if ( actor->m_properties.has( PropId::weakened ) )
+                if (actor->m_properties.has(PropId::weakened))
                 {
-                        msg_log::add( "It wiggles a bit." );
+                        msg_log::add("It wiggles a bit.");
 
                         return;
                 }
 
                 const AlertsMon alerts_mon =
-                        ( actor == map::g_player )
+                        (actor == map::g_player)
                         ? AlertsMon::yes
                         : AlertsMon::no;
 
-                if ( map::g_cells.at( m_pos ).is_seen_by_player )
+                if (map::g_cells.at(m_pos).is_seen_by_player)
                 {
-                        msg_log::add( "It topples over." );
+                        msg_log::add("It topples over.");
                 }
 
                 Snd snd(
@@ -1084,58 +1089,58 @@ void Statue::on_hit(
                         m_pos,
                         actor,
                         SndVol::low,
-                        alerts_mon );
+                        alerts_mon);
 
-                snd_emit::run( snd );
+                snd_emit::run(snd);
 
-                const P dst_pos = m_pos + ( m_pos - actor->m_pos );
+                const P dst_pos = m_pos + (m_pos - actor->m_pos);
 
-                map::put( new RubbleLow( m_pos ) );
+                map::put(new RubbleLow(m_pos));
 
                 // NOTE: This object is now deleted!
 
                 actor::Actor* const actor_behind =
-                        map::first_actor_at_pos( dst_pos );
+                        map::first_actor_at_pos(dst_pos);
 
-                if ( actor_behind &&
-                     actor_behind->is_alive() &&
-                     ! actor_behind->m_properties.has( PropId::ethereal ) )
+                if (actor_behind &&
+                    actor_behind->is_alive() &&
+                    !actor_behind->m_properties.has(PropId::ethereal))
                 {
-                        if ( actor_behind->is_player() )
+                        if (actor_behind->is_player())
                         {
-                                msg_log::add( "It falls on me!" );
+                                msg_log::add("It falls on me!");
                         }
                         else
                         {
                                 // Monster is hit
                                 const bool is_player_seeing_actor =
                                         actor::can_player_see_actor(
-                                                *actor_behind );
+                                                *actor_behind);
 
-                                if ( is_player_seeing_actor )
+                                if (is_player_seeing_actor)
                                 {
                                         msg_log::add(
                                                 "It falls on " +
                                                 actor_behind->name_a() +
-                                                "." );
+                                                ".");
                                 }
                         }
 
                         actor::hit(
                                 *actor_behind,
-                                rnd::range( 3, 15 ),
-                                DmgType::blunt );
+                                rnd::range(3, 15),
+                                DmgType::blunt);
                 }
 
-                const auto terrain_id = map::g_cells.at( dst_pos ).terrain->id();
+                const auto terrain_id = map::g_cells.at(dst_pos).terrain->id();
 
                 // NOTE: This is kinda hacky, but the rubble is mostly just for
                 // decoration anyway, so it doesn't really matter.
-                if ( terrain_id == terrain::Id::floor ||
-                     terrain_id == terrain::Id::grass ||
-                     terrain_id == terrain::Id::carpet )
+                if (terrain_id == terrain::Id::floor ||
+                    terrain_id == terrain::Id::grass ||
+                    terrain_id == terrain::Id::carpet)
                 {
-                        map::put( new RubbleLow( dst_pos ) );
+                        map::put(new RubbleLow(dst_pos));
                 }
 
                 map::update_vision();
@@ -1143,23 +1148,25 @@ void Statue::on_hit(
         break;
 
         case DmgType::explosion:
-        case DmgType::pure: {
-                map::put( new RubbleLow( m_pos ) );
+        case DmgType::pure:
+        {
+                map::put(new RubbleLow(m_pos));
                 map::update_vision();
         }
         break;
 
-        default: {
+        default:
+        {
         }
         break;
         }
 }
 
-std::string Statue::name( const Article article ) const
+std::string Statue::name(const Article article) const
 {
-        std::string ret = ( article == Article::a ) ? "a " : "the ";
+        std::string ret = (article == Article::a) ? "a " : "the ";
 
-        switch ( m_type )
+        switch (m_type)
         {
         case StatueType::common:
                 ret += "statue";
@@ -1175,7 +1182,7 @@ std::string Statue::name( const Article article ) const
 
 gfx::TileId Statue::tile() const
 {
-        return ( m_type == StatueType::common )
+        return (m_type == StatueType::common)
                 ? gfx::TileId::witch_or_warlock
                 : gfx::TileId::ghoul;
 }
@@ -1188,22 +1195,22 @@ Color Statue::color_default() const
 // -----------------------------------------------------------------------------
 // Stalagmite
 // -----------------------------------------------------------------------------
-Stalagmite::Stalagmite( const P& p ) :
-        Terrain( p ) {}
+Stalagmite::Stalagmite(const P& p) :
+        Terrain(p) {}
 
 void Stalagmite::on_hit(
         const DmgType dmg_type,
         actor::Actor* const actor,
-        const int dmg )
+        const int dmg)
 {
         (void)dmg;
         (void)actor;
 
-        switch ( dmg_type )
+        switch (dmg_type)
         {
         case DmgType::pure:
         case DmgType::explosion:
-                map::put( new RubbleLow( m_pos ) );
+                map::put(new RubbleLow(m_pos));
                 map::update_vision();
                 break;
 
@@ -1212,9 +1219,9 @@ void Stalagmite::on_hit(
         }
 }
 
-std::string Stalagmite::name( const Article article ) const
+std::string Stalagmite::name(const Article article) const
 {
-        std::string a = ( article == Article::a ) ? "a " : "the ";
+        std::string a = (article == Article::a) ? "a " : "the ";
 
         return a + "stalagmite";
 }
@@ -1227,13 +1234,13 @@ Color Stalagmite::color_default() const
 // -----------------------------------------------------------------------------
 // Stairs
 // -----------------------------------------------------------------------------
-Stairs::Stairs( const P& p ) :
-        Terrain( p ) {}
+Stairs::Stairs(const P& p) :
+        Terrain(p) {}
 
 void Stairs::on_hit(
         const DmgType dmg_type,
         actor::Actor* const actor,
-        const int dmg )
+        const int dmg)
 {
         (void)dmg;
         (void)dmg_type;
@@ -1242,31 +1249,31 @@ void Stairs::on_hit(
 
 void Stairs::on_new_turn_hook()
 {
-        ASSERT( ! map::g_cells.at( m_pos ).item );
+        ASSERT(!map::g_cells.at(m_pos).item);
 }
 
-void Stairs::bump( actor::Actor& actor_bumping )
+void Stairs::bump(actor::Actor& actor_bumping)
 {
-        if ( actor_bumping.is_player() )
+        if (actor_bumping.is_player())
         {
                 int choice = 0;
 
-                popup::Popup( popup::AddToMsgHistory::no )
-                        .set_title( "A staircase leading downwards" )
+                popup::Popup(popup::AddToMsgHistory::no)
+                        .set_title("A staircase leading downwards")
                         .set_menu(
-                                { "(D)escend", "(S)ave and quit", "(C)ancel" },
-                                { 'd', 's', 'c' },
-                                &choice )
+                                {"(D)escend", "(S)ave and quit", "(C)ancel"},
+                                {'d', 's', 'c'},
+                                &choice)
                         .run();
 
-                switch ( choice )
+                switch (choice)
                 {
                 case 0:
                         map::g_player->m_pos = m_pos;
 
                         msg_log::clear();
 
-                        msg_log::add( "I descend the stairs." );
+                        msg_log::add("I descend the stairs.");
 
                         // Always auto-save the game when descending
                         // NOTE: We descend one dlvl when loading the game, so
@@ -1291,9 +1298,9 @@ void Stairs::bump( actor::Actor& actor_bumping )
         }
 }
 
-std::string Stairs::name( const Article article ) const
+std::string Stairs::name(const Article article) const
 {
-        std::string a = ( article == Article::a ) ? "a " : "the ";
+        std::string a = (article == Article::a) ? "a " : "the ";
 
         return a + "downward staircase";
 }
@@ -1303,9 +1310,9 @@ Color Stairs::color_default() const
         return colors::yellow();
 }
 
-void Stairs::add_light_hook( Array2<bool>& light ) const
+void Stairs::add_light_hook(Array2<bool>& light) const
 {
-        light.at( m_pos ) = true;
+        light.at(m_pos) = true;
 }
 
 // -----------------------------------------------------------------------------
@@ -1313,7 +1320,7 @@ void Stairs::add_light_hook( Array2<bool>& light ) const
 // -----------------------------------------------------------------------------
 gfx::TileId Bridge::tile() const
 {
-        return ( m_axis == Axis::hor )
+        return (m_axis == Axis::hor)
                 ? gfx::TileId::hangbridge_hor
                 : gfx::TileId::hangbridge_ver;
 }
@@ -1321,7 +1328,7 @@ gfx::TileId Bridge::tile() const
 void Bridge::on_hit(
         const DmgType dmg_type,
         actor::Actor* const actor,
-        const int dmg )
+        const int dmg)
 {
         (void)dmg;
         (void)dmg_type;
@@ -1330,14 +1337,14 @@ void Bridge::on_hit(
 
 char Bridge::character() const
 {
-        return ( m_axis == Axis::hor )
+        return (m_axis == Axis::hor)
                 ? '|'
                 : '=';
 }
 
-std::string Bridge::name( const Article article ) const
+std::string Bridge::name(const Article article) const
 {
-        std::string a = ( article == Article::a ) ? "a " : "the ";
+        std::string a = (article == Article::a) ? "a " : "the ";
 
         return a + "bridge";
 }
@@ -1350,36 +1357,36 @@ Color Bridge::color_default() const
 // -----------------------------------------------------------------------------
 // Shallow liquid
 // -----------------------------------------------------------------------------
-LiquidShallow::LiquidShallow( const P& p ) :
-        Terrain( p ),
-        m_type( LiquidType::water ) {}
+LiquidShallow::LiquidShallow(const P& p) :
+        Terrain(p),
+        m_type(LiquidType::water) {}
 
 void LiquidShallow::on_hit(
         const DmgType dmg_type,
         actor::Actor* const actor,
-        const int dmg )
+        const int dmg)
 {
         (void)dmg;
         (void)dmg_type;
         (void)actor;
 }
 
-void LiquidShallow::bump( actor::Actor& actor_bumping )
+void LiquidShallow::bump(actor::Actor& actor_bumping)
 {
-        if ( actor_bumping.m_properties.has( PropId::ethereal ) ||
-             actor_bumping.m_properties.has( PropId::flying ) ||
-             actor_bumping.m_data->is_amphibian )
+        if (actor_bumping.m_properties.has(PropId::ethereal) ||
+            actor_bumping.m_properties.has(PropId::flying) ||
+            actor_bumping.m_data->is_amphibian)
         {
                 return;
         }
 
-        actor_bumping.m_properties.apply( new PropWaiting() );
+        actor_bumping.m_properties.apply(new PropWaiting());
 
-        if ( actor_bumping.is_player() )
+        if (actor_bumping.is_player())
         {
                 std::string type_str;
 
-                switch ( m_type )
+                switch (m_type)
                 {
                 case LiquidType::water:
                         type_str = "water";
@@ -1397,23 +1404,23 @@ void LiquidShallow::bump( actor::Actor& actor_bumping )
                 msg_log::add(
                         "I wade slowly through the knee high " +
                         type_str +
-                        "." );
+                        ".");
 
                 // Make a sound, unless the player is Silent
-                if ( ! player_bon::has_trait( Trait::silent ) )
+                if (!player_bon::has_trait(Trait::silent))
                 {
-                        Snd snd( "",
-                                 audio::SfxId::END,
-                                 IgnoreMsgIfOriginSeen::no,
-                                 actor_bumping.m_pos,
-                                 &actor_bumping,
-                                 SndVol::low,
-                                 AlertsMon::yes );
+                        Snd snd("",
+                                audio::SfxId::END,
+                                IgnoreMsgIfOriginSeen::no,
+                                actor_bumping.m_pos,
+                                &actor_bumping,
+                                SndVol::low,
+                                AlertsMon::yes);
 
-                        snd_emit::run( snd );
+                        snd_emit::run(snd);
                 }
 
-                if ( m_type == LiquidType::magic_water )
+                if (m_type == LiquidType::magic_water)
                 {
                         run_magic_pool_effects_on_player();
                 }
@@ -1424,34 +1431,34 @@ void LiquidShallow::run_magic_pool_effects_on_player()
 {
         std::vector<item::Item*> cursed_items;
 
-        for ( const auto& slot : map::g_player->m_inv.m_slots )
+        for (const auto& slot : map::g_player->m_inv.m_slots)
         {
-                if ( slot.item && slot.item->is_cursed() )
+                if (slot.item && slot.item->is_cursed())
                 {
-                        cursed_items.push_back( slot.item );
+                        cursed_items.push_back(slot.item);
                 }
         }
 
-        for ( auto* const item : map::g_player->m_inv.m_backpack )
+        for (auto* const item : map::g_player->m_inv.m_backpack)
         {
-                if ( item->is_cursed() )
+                if (item->is_cursed())
                 {
-                        cursed_items.push_back( item );
+                        cursed_items.push_back(item);
                 }
         }
 
-        map::g_player->m_properties.end_prop( PropId::cursed );
-        map::g_player->m_properties.end_prop( PropId::diseased );
-        map::g_player->m_properties.end_prop( PropId::wound );
+        map::g_player->m_properties.end_prop(PropId::cursed);
+        map::g_player->m_properties.end_prop(PropId::diseased);
+        map::g_player->m_properties.end_prop(PropId::wound);
 
-        for ( auto* const item : cursed_items )
+        for (auto* const item : cursed_items)
         {
                 const auto name =
                         item->name(
                                 ItemRefType::plain,
-                                ItemRefInf::none );
+                                ItemRefInf::none);
 
-                msg_log::add( "The " + name + " seems cleansed!" );
+                msg_log::add("The " + name + " seems cleansed!");
 
                 item->current_curse().on_curse_end();
 
@@ -1459,16 +1466,16 @@ void LiquidShallow::run_magic_pool_effects_on_player()
         }
 }
 
-std::string LiquidShallow::name( const Article article ) const
+std::string LiquidShallow::name(const Article article) const
 {
         std::string ret;
 
-        if ( article == Article::the )
+        if (article == Article::the)
         {
                 ret += "the ";
         }
 
-        switch ( m_type )
+        switch (m_type)
         {
         case LiquidType::water:
                 ret += "shallow water";
@@ -1488,7 +1495,7 @@ std::string LiquidShallow::name( const Article article ) const
 
 Color LiquidShallow::color_default() const
 {
-        switch ( m_type )
+        switch (m_type)
         {
         case LiquidType::water:
                 return colors::light_blue();
@@ -1503,20 +1510,20 @@ Color LiquidShallow::color_default() const
                 break;
         }
 
-        ASSERT( false && "Failed to set color" );
+        ASSERT(false && "Failed to set color");
         return colors::yellow();
 }
 
 Color LiquidShallow::color_bg_default() const
 {
-        const auto* const item = map::g_cells.at( m_pos ).item;
+        const auto* const item = map::g_cells.at(m_pos).item;
 
         const auto* const corpse =
                 map::first_actor_at_pos(
                         m_pos,
-                        ActorState::corpse );
+                        ActorState::corpse);
 
-        if ( item || corpse )
+        if (item || corpse)
         {
                 return color();
         }
@@ -1530,41 +1537,41 @@ Color LiquidShallow::color_bg_default() const
 // -----------------------------------------------------------------------------
 // Deep liquid
 // -----------------------------------------------------------------------------
-LiquidDeep::LiquidDeep( const P& p ) :
-        Terrain( p ),
-        m_type( LiquidType::water ) {}
+LiquidDeep::LiquidDeep(const P& p) :
+        Terrain(p),
+        m_type(LiquidType::water) {}
 
 void LiquidDeep::on_hit(
         const DmgType dmg_type,
         actor::Actor* const actor,
-        const int dmg )
+        const int dmg)
 {
         (void)dmg;
         (void)dmg_type;
         (void)actor;
 }
 
-bool LiquidDeep::must_swim_on_enter( const actor::Actor& actor ) const
+bool LiquidDeep::must_swim_on_enter(const actor::Actor& actor) const
 {
-        return ! actor.m_properties.has( PropId::ethereal ) &&
-                ! actor.m_properties.has( PropId::flying );
+        return !actor.m_properties.has(PropId::ethereal) &&
+                !actor.m_properties.has(PropId::flying);
 }
 
-AllowAction LiquidDeep::pre_bump( actor::Actor& actor_bumping )
+AllowAction LiquidDeep::pre_bump(actor::Actor& actor_bumping)
 {
-        if ( ! actor_bumping.is_player() ||
-             actor_bumping.m_properties.has( PropId::confused ) )
+        if (!actor_bumping.is_player() ||
+            actor_bumping.m_properties.has(PropId::confused))
         {
                 return AllowAction::yes;
         }
 
-        if ( map::g_player->m_active_explosive )
+        if (map::g_player->m_active_explosive)
         {
                 const std::string explosive_name =
                         map::g_player->m_active_explosive->name(
-                                ItemRefType::plain );
+                                ItemRefType::plain);
 
-                const std::string liquid_name_the = name( Article::the );
+                const std::string liquid_name_the = name(Article::the);
 
                 const std::string msg =
                         "Swim through " +
@@ -1579,13 +1586,13 @@ AllowAction LiquidDeep::pre_bump( actor::Actor& actor_bumping )
                         colors::light_white(),
                         MsgInterruptPlayer::no,
                         MorePromptOnMsg::no,
-                        CopyToMsgHistory::no );
+                        CopyToMsgHistory::no);
 
                 const auto result = query::yes_or_no();
 
                 msg_log::clear();
 
-                return ( result == BinaryAnswer::no )
+                return (result == BinaryAnswer::no)
                         ? AllowAction::no
                         : AllowAction::yes;
         }
@@ -1593,79 +1600,79 @@ AllowAction LiquidDeep::pre_bump( actor::Actor& actor_bumping )
         return AllowAction::yes;
 }
 
-void LiquidDeep::bump( actor::Actor& actor_bumping )
+void LiquidDeep::bump(actor::Actor& actor_bumping)
 {
-        const bool must_swim = must_swim_on_enter( actor_bumping );
+        const bool must_swim = must_swim_on_enter(actor_bumping);
 
         const bool is_amphibian = actor_bumping.m_data->is_amphibian;
 
-        if ( must_swim && ! is_amphibian )
+        if (must_swim && !is_amphibian)
         {
                 auto* const waiting = new PropWaiting();
 
-                waiting->set_duration( 1 );
+                waiting->set_duration(1);
 
-                actor_bumping.m_properties.apply( waiting );
+                actor_bumping.m_properties.apply(waiting);
         }
 
-        if ( must_swim && actor_bumping.is_player() )
+        if (must_swim && actor_bumping.is_player())
         {
-                const std::string liquid_name_the = name( Article::the );
+                const std::string liquid_name_the = name(Article::the);
 
-                msg_log::add( "I swim through " + liquid_name_the + "." );
+                msg_log::add("I swim through " + liquid_name_the + ".");
 
-                if ( ! player_bon::has_trait( Trait::silent ) )
+                if (!player_bon::has_trait(Trait::silent))
                 {
-                        Snd snd( "",
-                                 audio::SfxId::END,
-                                 IgnoreMsgIfOriginSeen::no,
-                                 actor_bumping.m_pos,
-                                 &actor_bumping,
-                                 SndVol::low,
-                                 AlertsMon::yes );
+                        Snd snd("",
+                                audio::SfxId::END,
+                                IgnoreMsgIfOriginSeen::no,
+                                actor_bumping.m_pos,
+                                &actor_bumping,
+                                SndVol::low,
+                                AlertsMon::yes);
 
-                        snd_emit::run( snd );
+                        snd_emit::run(snd);
                 }
 
-                if ( map::g_player->m_active_explosive )
+                if (map::g_player->m_active_explosive)
                 {
                         const std::string expl_name =
                                 map::g_player->m_active_explosive->name(
-                                        ItemRefType::plain );
+                                        ItemRefType::plain);
 
-                        msg_log::add( "The " + expl_name + " is extinguished." );
+                        msg_log::add("The " + expl_name + " is extinguished.");
 
                         map::g_player->m_active_explosive = nullptr;
                 }
         }
 
-        if ( must_swim && ! actor_bumping.m_properties.has( PropId::swimming ) )
+        if (must_swim && !actor_bumping.m_properties.has(PropId::swimming))
         {
                 auto* const swimming = new PropSwimming();
 
                 swimming->set_indefinite();
 
-                actor_bumping.m_properties.apply( swimming );
+                actor_bumping.m_properties.apply(swimming);
         }
 }
 
-void LiquidDeep::on_leave( actor::Actor& actor_leaving )
+void LiquidDeep::on_leave(actor::Actor& actor_leaving)
 {
-        actor_leaving.m_properties.end_prop( PropId::swimming );
+        actor_leaving.m_properties.end_prop(PropId::swimming);
 }
 
-std::string LiquidDeep::name( const Article article ) const
+std::string LiquidDeep::name(const Article article) const
 {
         std::string ret;
 
-        if ( article == Article::the )
+        if (article == Article::the)
         {
                 ret += "the ";
         }
 
         ret += "deep ";
 
-        switch ( m_type )
+        switch (m_type)
         {
         case LiquidType::water:
                 ret += "water";
@@ -1677,7 +1684,7 @@ std::string LiquidDeep::name( const Article article ) const
 
         case LiquidType::magic_water:
                 // Should not happen
-                ASSERT( false );
+                ASSERT(false);
 
                 ret += "water";
                 break;
@@ -1688,7 +1695,7 @@ std::string LiquidDeep::name( const Article article ) const
 
 Color LiquidDeep::color_default() const
 {
-        switch ( m_type )
+        switch (m_type)
         {
         case LiquidType::water:
                 return colors::blue();
@@ -1698,42 +1705,42 @@ Color LiquidDeep::color_default() const
 
         case LiquidType::magic_water:
                 // Should not happen
-                ASSERT( false );
+                ASSERT(false);
 
                 return colors::blue();
         }
 
-        ASSERT( false );
+        ASSERT(false);
 
         return colors::blue();
 }
 
-bool LiquidDeep::can_move( const actor::Actor& actor ) const
+bool LiquidDeep::can_move(const actor::Actor& actor) const
 {
         return actor.m_data->can_swim ||
-                actor.m_properties.has( PropId::flying ) ||
-                actor.m_properties.has( PropId::ethereal );
+                actor.m_properties.has(PropId::flying) ||
+                actor.m_properties.has(PropId::ethereal);
 }
 
 // -----------------------------------------------------------------------------
 // Chasm
 // -----------------------------------------------------------------------------
-Chasm::Chasm( const P& p ) :
-        Terrain( p ) {}
+Chasm::Chasm(const P& p) :
+        Terrain(p) {}
 
 void Chasm::on_hit(
         const DmgType dmg_type,
         actor::Actor* const actor,
-        const int dmg )
+        const int dmg)
 {
         (void)dmg;
         (void)dmg_type;
         (void)actor;
 }
 
-std::string Chasm::name( const Article article ) const
+std::string Chasm::name(const Article article) const
 {
-        std::string a = ( article == Article::a ) ? "a " : "the ";
+        std::string a = (article == Article::a) ? "a " : "the ";
 
         return a + "chasm";
 }
@@ -1746,24 +1753,24 @@ Color Chasm::color_default() const
 // -----------------------------------------------------------------------------
 // Lever
 // -----------------------------------------------------------------------------
-Lever::Lever( const P& p ) :
-        Terrain( p ),
-        m_is_left_pos( true ),
-        m_linked_terrain( nullptr ) {}
+Lever::Lever(const P& p) :
+        Terrain(p),
+        m_is_left_pos(true),
+        m_linked_terrain(nullptr) {}
 
 void Lever::on_hit(
         const DmgType dmg_type,
         actor::Actor* const actor,
-        const int dmg )
+        const int dmg)
 {
         (void)dmg;
         (void)dmg_type;
         (void)actor;
 }
 
-std::string Lever::name( const Article article ) const
+std::string Lever::name(const Article article) const
 {
-        std::string ret = ( article == Article::a ) ? "a" : "the";
+        std::string ret = (article == Article::a) ? "a" : "the";
 
         ret += " lever (in ";
 
@@ -1789,14 +1796,14 @@ gfx::TileId Lever::tile() const
                 : gfx::TileId::lever_right;
 }
 
-void Lever::bump( actor::Actor& actor_bumping )
+void Lever::bump(actor::Actor& actor_bumping)
 {
         (void)actor_bumping;
 
         TRACE_FUNC_BEGIN;
 
         // If player is blind, ask it they really want to pull the lever
-        if ( ! map::g_cells.at( m_pos ).is_seen_by_player )
+        if (!map::g_cells.at(m_pos).is_seen_by_player)
         {
                 msg_log::clear();
 
@@ -1809,11 +1816,11 @@ void Lever::bump( actor::Actor& actor_bumping )
                         colors::light_white(),
                         MsgInterruptPlayer::no,
                         MorePromptOnMsg::no,
-                        CopyToMsgHistory::no );
+                        CopyToMsgHistory::no);
 
                 const auto answer = query::yes_or_no();
 
-                if ( answer == BinaryAnswer::no )
+                if (answer == BinaryAnswer::no)
                 {
                         msg_log::clear();
 
@@ -1823,15 +1830,15 @@ void Lever::bump( actor::Actor& actor_bumping )
                 }
         }
 
-        msg_log::add( "I pull the lever." );
+        msg_log::add("I pull the lever.");
 
-        Snd snd( "",
-                 audio::SfxId::lever_pull,
-                 IgnoreMsgIfOriginSeen::yes,
-                 m_pos,
-                 map::g_player,
-                 SndVol::low,
-                 AlertsMon::yes );
+        Snd snd("",
+                audio::SfxId::lever_pull,
+                IgnoreMsgIfOriginSeen::yes,
+                m_pos,
+                map::g_player,
+                SndVol::low,
+                AlertsMon::yes);
 
         snd.run();
 
@@ -1844,16 +1851,16 @@ void Lever::bump( actor::Actor& actor_bumping )
 
 void Lever::toggle()
 {
-        m_is_left_pos = ! m_is_left_pos;
+        m_is_left_pos = !m_is_left_pos;
 
         // Signal that the lever has been pulled to any linked terrain
-        if ( m_linked_terrain )
+        if (m_linked_terrain)
         {
-                m_linked_terrain->on_lever_pulled( this );
+                m_linked_terrain->on_lever_pulled(this);
         }
 
         // Set all sibblings to same status as this lever
-        for ( auto* const sibbling : m_sibblings )
+        for (auto* const sibbling : m_sibblings)
         {
                 sibbling->m_is_left_pos = m_is_left_pos;
         }
@@ -1862,41 +1869,41 @@ void Lever::toggle()
 // -----------------------------------------------------------------------------
 // Altar
 // -----------------------------------------------------------------------------
-Altar::Altar( const P& p ) :
-        Terrain( p ) {}
+Altar::Altar(const P& p) :
+        Terrain(p) {}
 
 void Altar::on_hit(
         const DmgType dmg_type,
         actor::Actor* const actor,
-        const int dmg )
+        const int dmg)
 {
         (void)dmg;
         (void)actor;
 
-        switch ( dmg_type )
+        switch (dmg_type)
         {
         case DmgType::explosion:
         case DmgType::pure:
-                if ( map::is_pos_seen_by_player( m_pos ) )
+                if (map::is_pos_seen_by_player(m_pos))
                 {
-                        msg_log::add( "The altar is destroyed." );
+                        msg_log::add("The altar is destroyed.");
                 }
 
-                map::put( new RubbleLow( m_pos ) );
+                map::put(new RubbleLow(m_pos));
                 map::update_vision();
 
-                if ( player_bon::is_bg( Bg::exorcist ) )
+                if (player_bon::is_bg(Bg::exorcist))
                 {
                         const auto msg =
                                 rnd::element(
-                                        common_text::g_exorcist_purge_phrases );
+                                        common_text::g_exorcist_purge_phrases);
 
-                        msg_log::add( msg );
+                        msg_log::add(msg);
 
-                        game::incr_player_xp( 10 );
+                        game::incr_player_xp(10);
 
-                        map::g_player->restore_sp( 999, false );
-                        map::g_player->restore_sp( 10, true );
+                        map::g_player->restore_sp(999, false);
+                        map::g_player->restore_sp(10, true);
                 }
                 break;
 
@@ -1907,39 +1914,39 @@ void Altar::on_hit(
 
 void Altar::on_new_turn()
 {
-        if ( map::g_player->m_pos.is_adjacent( m_pos ) &&
-             map::is_pos_seen_by_player( m_pos ) &&
-             ! player_bon::is_bg( Bg::exorcist ) )
+        if (map::g_player->m_pos.is_adjacent(m_pos) &&
+            map::is_pos_seen_by_player(m_pos) &&
+            !player_bon::is_bg(Bg::exorcist))
         {
-                hints::display( hints::Id::altars );
+                hints::display(hints::Id::altars);
         }
 }
 
-void Altar::bump( actor::Actor& actor_bumping )
+void Altar::bump(actor::Actor& actor_bumping)
 {
-        if ( ! actor_bumping.is_player() )
+        if (!actor_bumping.is_player())
         {
                 return;
         }
 
-        if ( player_bon::is_bg( Bg::exorcist ) &&
-             map::is_pos_seen_by_player( m_pos ) )
+        if (player_bon::is_bg(Bg::exorcist) &&
+            map::is_pos_seen_by_player(m_pos))
         {
                 // Exorcist player is bumping a seen altar
                 msg_log::add(
                         "A diabolic altar has been raised here, it must be "
-                        "destroyed!" );
+                        "destroyed!");
 
                 return;
         }
 
         // Nothing special happening - use standard bump handling
-        Terrain::bump( actor_bumping );
+        Terrain::bump(actor_bumping);
 }
 
-std::string Altar::name( const Article article ) const
+std::string Altar::name(const Article article) const
 {
-        std::string ret = ( article == Article::a ) ? "an " : "the ";
+        std::string ret = (article == Article::a) ? "an " : "the ";
 
         return ret + "altar";
 }
@@ -1952,39 +1959,39 @@ Color Altar::color_default() const
 // -----------------------------------------------------------------------------
 // Carpet
 // -----------------------------------------------------------------------------
-Carpet::Carpet( const P& p ) :
-        Terrain( p ) {}
+Carpet::Carpet(const P& p) :
+        Terrain(p) {}
 
 void Carpet::on_hit(
         const DmgType dmg_type,
         actor::Actor* const actor,
-        const int dmg )
+        const int dmg)
 {
         (void)actor;
         (void)dmg;
 
-        switch ( dmg_type )
+        switch (dmg_type)
         {
         default:
-                try_start_burning( Verbose::no );
+                try_start_burning(Verbose::no);
                 break;
         }
 }
 
 WasDestroyed Carpet::on_finished_burning()
 {
-        auto* const floor = new Floor( m_pos );
+        auto* const floor = new Floor(m_pos);
 
         floor->m_burn_state = BurnState::has_burned;
 
-        map::put( floor );
+        map::put(floor);
 
         return WasDestroyed::yes;
 }
 
-std::string Carpet::name( const Article article ) const
+std::string Carpet::name(const Article article) const
 {
-        std::string ret = ( article == Article::a )
+        std::string ret = (article == Article::a)
                 ? ""
                 : "the ";
 
@@ -1999,11 +2006,11 @@ Color Carpet::color_default() const
 // -----------------------------------------------------------------------------
 // Grass
 // -----------------------------------------------------------------------------
-Grass::Grass( const P& p ) :
-        Terrain( p ),
-        m_type( GrassType::common )
+Grass::Grass(const P& p) :
+        Terrain(p),
+        m_type(GrassType::common)
 {
-        if ( rnd::one_in( 5 ) )
+        if (rnd::one_in(5))
         {
                 m_type = GrassType::withered;
         }
@@ -2012,15 +2019,15 @@ Grass::Grass( const P& p ) :
 void Grass::on_hit(
         const DmgType dmg_type,
         actor::Actor* const actor,
-        const int dmg )
+        const int dmg)
 {
         (void)actor;
         (void)dmg;
 
-        switch ( dmg_type )
+        switch (dmg_type)
         {
         case DmgType::fire:
-                try_start_burning( Verbose::no );
+                try_start_burning(Verbose::no);
                 break;
 
         default:
@@ -2030,7 +2037,7 @@ void Grass::on_hit(
 
 gfx::TileId Grass::tile() const
 {
-        if ( m_burn_state == BurnState::has_burned )
+        if (m_burn_state == BurnState::has_burned)
         {
                 return gfx::TileId::scorched_ground;
         }
@@ -2040,19 +2047,19 @@ gfx::TileId Grass::tile() const
         }
 }
 
-std::string Grass::name( const Article article ) const
+std::string Grass::name(const Article article) const
 {
         std::string ret;
 
-        if ( article == Article::the )
+        if (article == Article::the)
         {
                 ret += "the ";
         }
 
-        switch ( m_burn_state )
+        switch (m_burn_state)
         {
         case BurnState::not_burned:
-                switch ( m_type )
+                switch (m_type)
                 {
                 case GrassType::common:
                         return ret + "grass";
@@ -2069,13 +2076,13 @@ std::string Grass::name( const Article article ) const
                 return ret + "scorched ground";
         }
 
-        ASSERT( "Failed to set name" && false );
+        ASSERT("Failed to set name" && false);
         return "";
 }
 
 Color Grass::color_default() const
 {
-        switch ( m_type )
+        switch (m_type)
         {
         case GrassType::common:
                 return colors::green();
@@ -2086,18 +2093,18 @@ Color Grass::color_default() const
                 break;
         }
 
-        ASSERT( false && "Failed to set color" );
+        ASSERT(false && "Failed to set color");
         return colors::yellow();
 }
 
 // -----------------------------------------------------------------------------
 // Bush
 // -----------------------------------------------------------------------------
-Bush::Bush( const P& p ) :
-        Terrain( p ),
-        m_type( GrassType::common )
+Bush::Bush(const P& p) :
+        Terrain(p),
+        m_type(GrassType::common)
 {
-        if ( rnd::one_in( 5 ) )
+        if (rnd::one_in(5))
         {
                 m_type = GrassType::withered;
         }
@@ -2106,15 +2113,15 @@ Bush::Bush( const P& p ) :
 void Bush::on_hit(
         const DmgType dmg_type,
         actor::Actor* const actor,
-        const int dmg )
+        const int dmg)
 {
         (void)actor;
         (void)dmg;
 
-        switch ( dmg_type )
+        switch (dmg_type)
         {
         case DmgType::fire:
-                try_start_burning( Verbose::no );
+                try_start_burning(Verbose::no);
                 break;
 
         default:
@@ -2124,23 +2131,23 @@ void Bush::on_hit(
 
 WasDestroyed Bush::on_finished_burning()
 {
-        auto* const grass = new Grass( m_pos );
+        auto* const grass = new Grass(m_pos);
 
         grass->m_burn_state = BurnState::has_burned;
 
-        map::put( grass );
+        map::put(grass);
 
         return WasDestroyed::yes;
 }
 
-std::string Bush::name( const Article article ) const
+std::string Bush::name(const Article article) const
 {
-        std::string ret = ( article == Article::a ) ? "a " : "the ";
+        std::string ret = (article == Article::a) ? "a " : "the ";
 
-        switch ( m_burn_state )
+        switch (m_burn_state)
         {
         case BurnState::not_burned:
-                switch ( m_type )
+                switch (m_type)
                 {
                 case GrassType::common:
                         return ret + "shrub";
@@ -2158,13 +2165,13 @@ std::string Bush::name( const Article article ) const
                 break;
         }
 
-        ASSERT( "Failed to set name" && false );
+        ASSERT("Failed to set name" && false);
         return "";
 }
 
 Color Bush::color_default() const
 {
-        switch ( m_type )
+        switch (m_type)
         {
         case GrassType::common:
                 return colors::green();
@@ -2175,34 +2182,34 @@ Color Bush::color_default() const
                 break;
         }
 
-        ASSERT( false && "Failed to set color" );
+        ASSERT(false && "Failed to set color");
         return colors::yellow();
 }
 
 // -----------------------------------------------------------------------------
 // Vines
 // -----------------------------------------------------------------------------
-Vines::Vines( const P& p ) :
-        Terrain( p ) {}
+Vines::Vines(const P& p) :
+        Terrain(p) {}
 
 void Vines::on_hit(
         const DmgType dmg_type,
         actor::Actor* const actor,
-        const int dmg )
+        const int dmg)
 {
         (void)actor;
         (void)dmg;
 
-        switch ( dmg_type )
+        switch (dmg_type)
         {
         case DmgType::explosion:
         case DmgType::pure:
-                map::put( new RubbleLow( m_pos ) );
+                map::put(new RubbleLow(m_pos));
                 map::update_vision();
                 break;
 
         case DmgType::fire:
-                try_start_burning( Verbose::no );
+                try_start_burning(Verbose::no);
                 break;
 
         default:
@@ -2212,20 +2219,20 @@ void Vines::on_hit(
 
 WasDestroyed Vines::on_finished_burning()
 {
-        auto* const floor = new Floor( m_pos );
+        auto* const floor = new Floor(m_pos);
 
         floor->m_burn_state = BurnState::has_burned;
 
-        map::put( floor );
+        map::put(floor);
 
         return WasDestroyed::yes;
 }
 
-std::string Vines::name( const Article article ) const
+std::string Vines::name(const Article article) const
 {
-        std::string ret = ( article == Article::a ) ? "" : "the ";
+        std::string ret = (article == Article::a) ? "" : "the ";
 
-        switch ( m_burn_state )
+        switch (m_burn_state)
         {
         case BurnState::not_burned:
                 return ret + "hanging vines";
@@ -2238,7 +2245,7 @@ std::string Vines::name( const Article article ) const
                 break;
         }
 
-        ASSERT( "Failed to set name" && false );
+        ASSERT("Failed to set name" && false);
         return "";
 }
 
@@ -2250,12 +2257,12 @@ Color Vines::color_default() const
 // -----------------------------------------------------------------------------
 // Chains
 // -----------------------------------------------------------------------------
-Chains::Chains( const P& p ) :
-        Terrain( p ) {}
+Chains::Chains(const P& p) :
+        Terrain(p) {}
 
-std::string Chains::name( const Article article ) const
+std::string Chains::name(const Article article) const
 {
-        std::string a = ( article == Article::a ) ? "" : "the ";
+        std::string a = (article == Article::a) ? "" : "the ";
 
         return a + "rusty chains";
 }
@@ -2267,14 +2274,14 @@ Color Chains::color_default() const
 
 Color Chains::color_bg_default() const
 {
-        const auto* const item = map::g_cells.at( m_pos ).item;
+        const auto* const item = map::g_cells.at(m_pos).item;
 
         const auto* const corpse =
                 map::first_actor_at_pos(
                         m_pos,
-                        ActorState::corpse );
+                        ActorState::corpse);
 
-        if ( item || corpse )
+        if (item || corpse)
         {
                 return color();
         }
@@ -2285,15 +2292,15 @@ Color Chains::color_bg_default() const
         }
 }
 
-void Chains::bump( actor::Actor& actor_bumping )
+void Chains::bump(actor::Actor& actor_bumping)
 {
-        if ( actor_bumping.m_data->actor_size > actor::Size::floor &&
-             ! actor_bumping.m_properties.has( PropId::ethereal ) &&
-             ! actor_bumping.m_properties.has( PropId::ooze ) )
+        if (actor_bumping.m_data->actor_size > actor::Size::floor &&
+            !actor_bumping.m_properties.has(PropId::ethereal) &&
+            !actor_bumping.m_properties.has(PropId::ooze))
         {
                 std::string msg;
 
-                if ( map::g_cells.at( m_pos ).is_seen_by_player )
+                if (map::g_cells.at(m_pos).is_seen_by_player)
                 {
                         msg = "The chains rattle.";
                 }
@@ -2307,31 +2314,31 @@ void Chains::bump( actor::Actor& actor_bumping )
                         ? AlertsMon::yes
                         : AlertsMon::no;
 
-                Snd snd( msg,
-                         audio::SfxId::chains,
-                         IgnoreMsgIfOriginSeen::no,
-                         actor_bumping.m_pos,
-                         &actor_bumping,
-                         SndVol::low,
-                         alerts_mon );
+                Snd snd(msg,
+                        audio::SfxId::chains,
+                        IgnoreMsgIfOriginSeen::no,
+                        actor_bumping.m_pos,
+                        &actor_bumping,
+                        SndVol::low,
+                        alerts_mon);
 
-                snd_emit::run( snd );
+                snd_emit::run(snd);
         }
 }
 
 void Chains::on_hit(
         const DmgType dmg_type,
         actor::Actor* const actor,
-        const int dmg )
+        const int dmg)
 {
         (void)actor;
         (void)dmg;
 
-        switch ( dmg_type )
+        switch (dmg_type)
         {
         case DmgType::explosion:
         case DmgType::pure:
-                map::put( new RubbleLow( m_pos ) );
+                map::put(new RubbleLow(m_pos));
                 map::update_vision();
                 break;
 
@@ -2343,23 +2350,23 @@ void Chains::on_hit(
 // -----------------------------------------------------------------------------
 // Grate
 // -----------------------------------------------------------------------------
-Grate::Grate( const P& p ) :
-        Terrain( p ) {}
+Grate::Grate(const P& p) :
+        Terrain(p) {}
 
 void Grate::on_hit(
         const DmgType dmg_type,
         actor::Actor* const actor,
-        const int dmg )
+        const int dmg)
 {
         (void)dmg;
         (void)actor;
 
-        switch ( dmg_type )
+        switch (dmg_type)
         {
         case DmgType::pure:
         case DmgType::explosion:
-                destr_all_adj_doors( m_pos );
-                map::put( new RubbleLow( m_pos ) );
+                destr_all_adj_doors(m_pos);
+                map::put(new RubbleLow(m_pos));
                 map::update_vision();
                 break;
 
@@ -2368,9 +2375,9 @@ void Grate::on_hit(
         }
 }
 
-std::string Grate::name( const Article article ) const
+std::string Grate::name(const Article article) const
 {
-        std::string a = ( article == Article::a ) ? "a " : "the ";
+        std::string a = (article == Article::a) ? "a " : "the ";
 
         return a + "grate";
 }
@@ -2383,30 +2390,30 @@ Color Grate::color_default() const
 // -----------------------------------------------------------------------------
 // Tree
 // -----------------------------------------------------------------------------
-Tree::Tree( const P& p ) :
-        Terrain( p )
+Tree::Tree(const P& p) :
+        Terrain(p)
 {
-        if ( is_fungi() )
+        if (is_fungi())
         {
                 const std::vector<Color> base_color_bucket = {
                         colors::white(),
                         colors::cyan(),
                         colors::gray_brown(),
                         colors::orange(),
-                        colors::green() };
+                        colors::green()};
 
                 const std::vector<int> weights = {
                         100,
                         10,
                         10,
                         1,
-                        1 };
+                        1};
 
-                const size_t choice = rnd::weighted_choice( weights );
+                const size_t choice = rnd::weighted_choice(weights);
 
-                m_color = base_color_bucket[ choice ];
+                m_color = base_color_bucket[choice];
 
-                m_color.randomize_rgb( 20 );
+                m_color.randomize_rgb(20);
         }
         else
         {
@@ -2417,17 +2424,17 @@ Tree::Tree( const P& p ) :
 void Tree::on_hit(
         const DmgType dmg_type,
         actor::Actor* const actor,
-        const int dmg )
+        const int dmg)
 {
         (void)actor;
         (void)dmg;
 
-        switch ( dmg_type )
+        switch (dmg_type)
         {
         case DmgType::fire:
-                if ( rnd::fraction( 2, 3 ) )
+                if (rnd::fraction(2, 3))
                 {
-                        try_start_burning( Verbose::no );
+                        try_start_burning(Verbose::no);
                 }
                 break;
 
@@ -2438,16 +2445,16 @@ void Tree::on_hit(
 
 WasDestroyed Tree::on_finished_burning()
 {
-        if ( ! map::is_pos_inside_outer_walls( m_pos ) )
+        if (!map::is_pos_inside_outer_walls(m_pos))
         {
                 return WasDestroyed::no;
         }
 
-        auto* const grass = new Grass( m_pos );
+        auto* const grass = new Grass(m_pos);
 
         grass->m_burn_state = BurnState::has_burned;
 
-        map::put( grass );
+        map::put(grass);
 
         map::update_vision();
 
@@ -2461,11 +2468,11 @@ gfx::TileId Tree::tile() const
                 : gfx::TileId::tree;
 }
 
-std::string Tree::name( const Article article ) const
+std::string Tree::name(const Article article) const
 {
-        std::string result = ( article == Article::a ) ? "a " : "the ";
+        std::string result = (article == Article::a) ? "a " : "the ";
 
-        switch ( m_burn_state )
+        switch (m_burn_state)
         {
         case BurnState::not_burned:
                 break;
@@ -2479,7 +2486,7 @@ std::string Tree::name( const Article article ) const
                 break;
         }
 
-        if ( is_fungi() )
+        if (is_fungi())
         {
                 result += "giant fungi";
         }
@@ -2498,15 +2505,15 @@ Color Tree::color_default() const
 
 bool Tree::is_fungi() const
 {
-        return ( map::g_dlvl > 1 );
+        return (map::g_dlvl > 1);
 }
 
 // -----------------------------------------------------------------------------
 // Brazier
 // -----------------------------------------------------------------------------
-std::string Brazier::name( const Article article ) const
+std::string Brazier::name(const Article article) const
 {
-        std::string a = ( article == Article::a ) ? "a " : "the ";
+        std::string a = (article == Article::a) ? "a " : "the ";
 
         return a + "brazier";
 }
@@ -2514,59 +2521,60 @@ std::string Brazier::name( const Article article ) const
 void Brazier::on_hit(
         const DmgType dmg_type,
         actor::Actor* const actor,
-        const int dmg )
+        const int dmg)
 {
         (void)dmg;
 
-        switch ( dmg_type )
+        switch (dmg_type)
         {
-        case DmgType::kicking: {
-                ASSERT( actor );
+        case DmgType::kicking:
+        {
+                ASSERT(actor);
 
-                if ( actor->m_properties.has( PropId::weakened ) )
+                if (actor->m_properties.has(PropId::weakened))
                 {
-                        msg_log::add( "It wiggles a bit." );
+                        msg_log::add("It wiggles a bit.");
                         return;
                 }
 
                 const AlertsMon alerts_mon =
-                        ( actor == map::g_player )
+                        (actor == map::g_player)
                         ? AlertsMon::yes
                         : AlertsMon::no;
 
-                if ( map::g_cells.at( m_pos ).is_seen_by_player )
+                if (map::g_cells.at(m_pos).is_seen_by_player)
                 {
-                        msg_log::add( "It topples over." );
+                        msg_log::add("It topples over.");
                 }
 
-                Snd snd( "I hear a crash.",
-                         audio::SfxId::END,
-                         IgnoreMsgIfOriginSeen::yes,
-                         m_pos,
-                         actor,
-                         SndVol::low,
-                         alerts_mon );
+                Snd snd("I hear a crash.",
+                        audio::SfxId::END,
+                        IgnoreMsgIfOriginSeen::yes,
+                        m_pos,
+                        actor,
+                        SndVol::low,
+                        alerts_mon);
 
-                snd_emit::run( snd );
+                snd_emit::run(snd);
 
-                const P dst_pos = m_pos + ( m_pos - actor->m_pos );
+                const P dst_pos = m_pos + (m_pos - actor->m_pos);
 
                 const P my_pos = m_pos;
 
-                map::put( new RubbleLow( m_pos ) );
+                map::put(new RubbleLow(m_pos));
 
                 // NOTE: "this" is now deleted!
 
-                const auto* const tgt_f = map::g_cells.at( dst_pos ).terrain;
+                const auto* const tgt_f = map::g_cells.at(dst_pos).terrain;
 
-                if ( tgt_f->id() != terrain::Id::chasm &&
-                     tgt_f->id() != terrain::Id::liquid_deep )
+                if (tgt_f->id() != terrain::Id::chasm &&
+                    tgt_f->id() != terrain::Id::liquid_deep)
                 {
                         P expl_pos;
 
                         int expl_d = 0;
 
-                        if ( tgt_f->is_projectile_passable() )
+                        if (tgt_f->is_projectile_passable())
                         {
                                 expl_pos = dst_pos;
                                 expl_d = -1;
@@ -2585,7 +2593,7 @@ void Brazier::on_hit(
                                 EmitExplSnd::no,
                                 expl_d,
                                 ExplExclCenter::no,
-                                { new PropBurning() } );
+                                {new PropBurning()});
                 }
 
                 map::update_vision();
@@ -2593,25 +2601,27 @@ void Brazier::on_hit(
         break;
 
         case DmgType::explosion:
-        case DmgType::pure: {
-                map::put( new RubbleLow( m_pos ) );
+        case DmgType::pure:
+        {
+                map::put(new RubbleLow(m_pos));
                 map::update_vision();
         }
         break;
 
-        default: {
+        default:
+        {
         }
         break;
         }
 }
 
-void Brazier::add_light_hook( Array2<bool>& light ) const
+void Brazier::add_light_hook(Array2<bool>& light) const
 {
-        for ( const P& d : dir_utils::g_dir_list_w_center )
+        for (const P& d : dir_utils::g_dir_list_w_center)
         {
-                const P p( m_pos + d );
+                const P p(m_pos + d);
 
-                light.at( p ) = true;
+                light.at(p) = true;
         }
 }
 
@@ -2630,7 +2640,7 @@ ItemContainer::ItemContainer()
 
 ItemContainer::~ItemContainer()
 {
-        for ( auto* item : m_items )
+        for (auto* item : m_items)
         {
                 delete item;
         }
@@ -2638,30 +2648,30 @@ ItemContainer::~ItemContainer()
 
 void ItemContainer::init(
         const terrain::Id terrain_id,
-        const int nr_items_to_attempt )
+        const int nr_items_to_attempt)
 {
-        for ( auto* item : m_items )
+        for (auto* item : m_items)
         {
                 delete item;
         }
 
         m_items.clear();
 
-        if ( nr_items_to_attempt <= 0 )
+        if (nr_items_to_attempt <= 0)
         {
                 return;
         }
 
         // Try until actually succeeded to add at least one item
-        while ( m_items.empty() )
+        while (m_items.empty())
         {
                 std::vector<item::Id> item_bucket;
 
-                for ( size_t i = 0; i < (size_t)item::Id::END; ++i )
+                for (size_t i = 0; i < (size_t)item::Id::END; ++i)
                 {
-                        auto& item_d = item::g_data[ i ];
+                        auto& item_d = item::g_data[i];
 
-                        if ( ! item_d.allow_spawn )
+                        if (!item_d.allow_spawn)
                         {
                                 // Item not allowed to spawn - next item!
                                 continue;
@@ -2669,49 +2679,49 @@ void ItemContainer::init(
 
                         const bool can_spawn_in_container =
                                 std::find(
-                                        std::begin( item_d.native_containers ),
-                                        std::end( item_d.native_containers ),
-                                        terrain_id ) !=
-                                std::end( item_d.native_containers );
+                                        std::begin(item_d.native_containers),
+                                        std::end(item_d.native_containers),
+                                        terrain_id) !=
+                                std::end(item_d.native_containers);
 
-                        if ( ! can_spawn_in_container )
+                        if (!can_spawn_in_container)
                         {
                                 // Item not allowed to spawn in this terrain -
                                 // next item!
                                 continue;
                         }
 
-                        if ( rnd::percent( item_d.chance_to_incl_in_spawn_list ) )
+                        if (rnd::percent(item_d.chance_to_incl_in_spawn_list))
                         {
-                                item_bucket.push_back( item::Id( i ) );
+                                item_bucket.push_back(item::Id(i));
                         }
                 }
 
-                for ( int i = 0; i < nr_items_to_attempt; ++i )
+                for (int i = 0; i < nr_items_to_attempt; ++i)
                 {
-                        if ( item_bucket.empty() )
+                        if (item_bucket.empty())
                         {
                                 break;
                         }
 
                         const int idx =
-                                rnd::range( 0, (int)item_bucket.size() - 1 );
+                                rnd::range(0, (int)item_bucket.size() - 1);
 
-                        const auto id = item_bucket[ idx ];
+                        const auto id = item_bucket[idx];
 
                         // Is this item still allowed to spawn (perhaps unique)?
-                        if ( item::g_data[ (size_t)id ].allow_spawn )
+                        if (item::g_data[(size_t)id].allow_spawn)
                         {
-                                auto* item = item::make( item_bucket[ idx ] );
+                                auto* item = item::make(item_bucket[idx]);
 
-                                item::set_item_randomized_properties( *item );
+                                item::set_item_randomized_properties(*item);
 
-                                m_items.push_back( item );
+                                m_items.push_back(item);
                         }
                         else
                         {
                                 // Not allowed to spawn
-                                item_bucket.erase( begin( item_bucket ) + idx );
+                                item_bucket.erase(begin(item_bucket) + idx);
                         }
                 }
         }
@@ -2719,14 +2729,14 @@ void ItemContainer::init(
 
 void ItemContainer::open(
         const P& terrain_pos,
-        actor::Actor* const actor_opening )
+        actor::Actor* const actor_opening)
 {
-        if ( ! actor_opening )
+        if (!actor_opening)
         {
                 // Not opened by an actor (probably opened by the opening spell)
-                for ( auto* item : m_items )
+                for (auto* item : m_items)
                 {
-                        item_drop::drop_item_on_map( terrain_pos, *item );
+                        item_drop::drop_item_on_map(terrain_pos, *item);
                 }
 
                 m_items.clear();
@@ -2734,19 +2744,19 @@ void ItemContainer::open(
                 return;
         }
 
-        for ( auto* item : m_items )
+        for (auto* item : m_items)
         {
-                on_item_found( item, terrain_pos );
+                on_item_found(item, terrain_pos);
         }
 
-        msg_log::add( "There are no more items of interest." );
+        msg_log::add("There are no more items of interest.");
 
         m_items.clear();
 }
 
 void ItemContainer::on_item_found(
         item::Item* const item,
-        const P& terrain_pos )
+        const P& terrain_pos)
 {
         msg_log::clear();
 
@@ -2754,7 +2764,7 @@ void ItemContainer::on_item_found(
                 item->name(
                         ItemRefType::plural,
                         ItemRefInf::yes,
-                        ItemRefAttInf::wpn_main_att_mode );
+                        ItemRefAttInf::wpn_main_att_mode);
 
         const std::string msg =
                 "Pick up " +
@@ -2767,78 +2777,81 @@ void ItemContainer::on_item_found(
                 colors::light_white(),
                 MsgInterruptPlayer::no,
                 MorePromptOnMsg::no,
-                CopyToMsgHistory::no );
+                CopyToMsgHistory::no);
 
         const auto& data = item->data();
 
         auto* wpn =
                 data.ranged.is_ranged_wpn
-                ? static_cast<item::Wpn*>( item )
+                ? static_cast<item::Wpn*>(item)
                 : nullptr;
 
         const bool is_unloadable_wpn =
                 wpn &&
-                ( wpn->m_ammo_loaded > 0 ) &&
-                ! data.ranged.has_infinite_ammo;
+                (wpn->m_ammo_loaded > 0) &&
+                !data.ranged.has_infinite_ammo;
 
-        if ( is_unloadable_wpn )
+        if (is_unloadable_wpn)
         {
-                msg_log::add( "Unload? [u]" );
+                msg_log::add("Unload? [u]");
         }
 
         const BinaryAnswer answer =
                 query::yes_or_no(
                         is_unloadable_wpn
                                 ? 'u'
-                                : -1 );
+                                : -1);
 
         msg_log::clear();
 
-        if ( answer == BinaryAnswer::yes )
+        if (answer == BinaryAnswer::yes)
         {
                 const auto pre_pickup_result = item->pre_pickup_hook();
 
-                switch ( pre_pickup_result )
+                switch (pre_pickup_result)
                 {
-                case ItemPrePickResult::do_pickup: {
-                        audio::play( audio::SfxId::pickup );
+                case ItemPrePickResult::do_pickup:
+                {
+                        audio::play(audio::SfxId::pickup);
 
-                        map::g_player->m_inv.put_in_backpack( item );
+                        map::g_player->m_inv.put_in_backpack(item);
                 }
                 break;
 
-                case ItemPrePickResult::destroy_item: {
+                case ItemPrePickResult::destroy_item:
+                {
                         delete item;
                 }
                 break;
 
-                case ItemPrePickResult::do_nothing: {
+                case ItemPrePickResult::do_nothing:
+                {
                 }
                 break;
                 }
         }
-        else if ( answer == BinaryAnswer::no )
+        else if (answer == BinaryAnswer::no)
         {
-                item_drop::drop_item_on_map( terrain_pos, *item );
+                item_drop::drop_item_on_map(terrain_pos, *item);
 
                 item->on_player_found();
         }
         else
         {
                 // Special key (unload in this case)
-                ASSERT( is_unloadable_wpn );
+                ASSERT(is_unloadable_wpn);
 
-                if ( is_unloadable_wpn )
+                if (is_unloadable_wpn)
                 {
-                        audio::play( audio::SfxId::pickup );
+                        audio::play(audio::SfxId::pickup);
 
                         auto* const spawned_ammo =
-                                item_pickup::unload_ranged_wpn( *wpn );
+                                item_pickup::unload_ranged_wpn(*wpn);
 
                         map::g_player->m_inv.put_in_backpack(
-                                spawned_ammo );
+                                spawned_ammo);
 
-                        item_drop::drop_item_on_map( terrain_pos, *wpn );
+                        item_drop::drop_item_on_map(terrain_pos, *wpn);
                 }
         }
 
@@ -2847,7 +2860,7 @@ void ItemContainer::on_item_found(
 
 void ItemContainer::clear()
 {
-        for ( auto* item : m_items )
+        for (auto* item : m_items)
         {
                 delete item;
         }
@@ -2859,18 +2872,18 @@ void ItemContainer::destroy_single_fragile()
 {
         // TODO: Generalize this (something like "is_fragile" item data)
 
-        for ( size_t i = 0; i < m_items.size(); ++i )
+        for (size_t i = 0; i < m_items.size(); ++i)
         {
-                auto* const item = m_items[ i ];
+                auto* const item = m_items[i];
 
                 const auto& d = item->data();
 
-                if ( ( d.type == ItemType::potion ) ||
-                     ( d.id == item::Id::molotov ) )
+                if ((d.type == ItemType::potion) ||
+                    (d.id == item::Id::molotov))
                 {
                         delete item;
-                        m_items.erase( m_items.begin() + i );
-                        msg_log::add( "I hear a muffled shatter." );
+                        m_items.erase(m_items.begin() + i);
+                        msg_log::add("I hear a muffled shatter.");
                         break;
                 }
         }
@@ -2879,17 +2892,17 @@ void ItemContainer::destroy_single_fragile()
 // -----------------------------------------------------------------------------
 // Tomb
 // -----------------------------------------------------------------------------
-Tomb::Tomb( const P& p ) :
-        Terrain( p ),
-        m_is_open( false ),
-        m_is_trait_known( false ),
-        m_push_lid_one_in_n( rnd::range( 4, 10 ) ),
-        m_appearance( TombAppearance::common ),
-        m_trait( TombTrait::END )
+Tomb::Tomb(const P& p) :
+        Terrain(p),
+        m_is_open(false),
+        m_is_trait_known(false),
+        m_push_lid_one_in_n(rnd::range(4, 10)),
+        m_appearance(TombAppearance::common),
+        m_trait(TombTrait::END)
 {
         // Contained items
         const int nr_items_min =
-                rnd::one_in( 4 )
+                rnd::one_in(4)
                 ? 0
                 : 1;
 
@@ -2897,19 +2910,19 @@ Tomb::Tomb( const P& p ) :
 
         int incr_max_items_one_in = 12;
 
-        if ( player_bon::has_trait( Trait::treasure_hunter ) )
+        if (player_bon::has_trait(Trait::treasure_hunter))
         {
                 incr_max_items_one_in /= 2;
         }
 
-        if ( rnd::one_in( incr_max_items_one_in ) )
+        if (rnd::one_in(incr_max_items_one_in))
         {
                 ++nr_items_max;
         }
 
         m_item_container.init(
                 terrain::Id::tomb,
-                rnd::range( nr_items_min, nr_items_max ) );
+                rnd::range(nr_items_min, nr_items_max));
 
         // Set appearance - sometimes we base the appearance on the value of the
         // contained items, and sometimes we set a "common" appearance
@@ -2917,21 +2930,21 @@ Tomb::Tomb( const P& p ) :
         // ALWAYS reflects the items. I.e. if the tomb is "common" it *may*
         // contain good items, if it's nicer than "common" it's guaranteed to
         // have good items.
-        if ( rnd::one_in( 4 ) )
+        if (rnd::one_in(4))
         {
                 // Base appearance on value of contained items
 
-                for ( const auto* item : m_item_container.items() )
+                for (const auto* item : m_item_container.items())
                 {
                         const auto item_value = item->data().value;
 
-                        if ( item_value == item::Value::supreme_treasure )
+                        if (item_value == item::Value::supreme_treasure)
                         {
                                 m_appearance = TombAppearance::marvelous;
 
                                 break;
                         }
-                        else if ( item_value >= item::Value::minor_treasure )
+                        else if (item_value >= item::Value::minor_treasure)
                         {
                                 m_appearance = TombAppearance::ornate;
                         }
@@ -2943,43 +2956,43 @@ Tomb::Tomb( const P& p ) :
                 m_appearance = TombAppearance::common;
         }
 
-        if ( m_appearance == TombAppearance::marvelous )
+        if (m_appearance == TombAppearance::marvelous)
         {
                 m_trait = TombTrait::ghost;
         }
         else
         {
                 // Randomized trait
-                std::vector<int> weights( (size_t)TombTrait::END + 1, 0 );
+                std::vector<int> weights((size_t)TombTrait::END + 1, 0);
 
-                weights[ (size_t)TombTrait::ghost ] = 5;
-                weights[ (size_t)TombTrait::other_undead ] = 3;
-                weights[ (size_t)TombTrait::stench ] = 2;
-                weights[ (size_t)TombTrait::cursed ] = 1;
-                weights[ (size_t)TombTrait::END ] = 2;
+                weights[(size_t)TombTrait::ghost] = 5;
+                weights[(size_t)TombTrait::other_undead] = 3;
+                weights[(size_t)TombTrait::stench] = 2;
+                weights[(size_t)TombTrait::cursed] = 1;
+                weights[(size_t)TombTrait::END] = 2;
 
-                m_trait = TombTrait( rnd::weighted_choice( weights ) );
+                m_trait = TombTrait(rnd::weighted_choice(weights));
         }
 }
 
 void Tomb::on_hit(
         const DmgType dmg_type,
         actor::Actor* const actor,
-        const int dmg )
+        const int dmg)
 {
         (void)dmg;
         (void)actor;
 
-        switch ( dmg_type )
+        switch (dmg_type)
         {
         case DmgType::explosion:
         case DmgType::pure:
-                if ( map::is_pos_seen_by_player( m_pos ) )
+                if (map::is_pos_seen_by_player(m_pos))
                 {
-                        msg_log::add( "The tomb is destroyed." );
+                        msg_log::add("The tomb is destroyed.");
                 }
 
-                map::put( new RubbleLow( m_pos ) );
+                map::put(new RubbleLow(m_pos));
                 map::update_vision();
                 break;
 
@@ -2988,7 +3001,7 @@ void Tomb::on_hit(
         }
 }
 
-std::string Tomb::name( const Article article ) const
+std::string Tomb::name(const Article article) const
 {
         const bool is_empty = m_is_open && m_item_container.is_empty();
 
@@ -2998,16 +3011,16 @@ std::string Tomb::name( const Article article ) const
                 : "";
 
         const std::string open_str =
-                ( m_is_open && ! is_empty )
+                (m_is_open && !is_empty)
                 ? "open "
                 : "";
 
         std::string a;
 
-        if ( article == Article::a )
+        if (article == Article::a)
         {
                 a =
-                        ( m_is_open || ( m_appearance == TombAppearance::ornate ) )
+                        (m_is_open || (m_appearance == TombAppearance::ornate))
                         ? "an "
                         : "a ";
         }
@@ -3018,12 +3031,13 @@ std::string Tomb::name( const Article article ) const
 
         std::string appear_str;
 
-        if ( ! is_empty )
+        if (!is_empty)
         {
-                switch ( m_appearance )
+                switch (m_appearance)
                 {
                 case TombAppearance::common:
-                case TombAppearance::END: {
+                case TombAppearance::END:
+                {
                 }
                 break;
 
@@ -3049,7 +3063,7 @@ gfx::TileId Tomb::tile() const
 
 Color Tomb::color_default() const
 {
-        switch ( m_appearance )
+        switch (m_appearance)
         {
         case TombAppearance::common:
                 return colors::gray();
@@ -3064,48 +3078,48 @@ Color Tomb::color_default() const
                 break;
         }
 
-        ASSERT( "Failed to set Tomb color" && false );
+        ASSERT("Failed to set Tomb color" && false);
         return colors::black();
 }
 
-void Tomb::bump( actor::Actor& actor_bumping )
+void Tomb::bump(actor::Actor& actor_bumping)
 {
-        if ( actor_bumping.is_player() )
+        if (actor_bumping.is_player())
         {
-                if ( m_item_container.is_empty() && m_is_open )
+                if (m_item_container.is_empty() && m_is_open)
                 {
-                        msg_log::add( "The tomb is empty." );
+                        msg_log::add("The tomb is empty.");
                 }
-                else if ( ! map::g_cells.at( m_pos ).is_seen_by_player )
+                else if (!map::g_cells.at(m_pos).is_seen_by_player)
                 {
-                        msg_log::add( "There is a stone box here." );
+                        msg_log::add("There is a stone box here.");
                 }
                 else
                 {
                         // Player can see
-                        if ( m_is_open )
+                        if (m_is_open)
                         {
                                 player_loot();
                         }
                         else
                         {
                                 // Not open
-                                msg_log::add( "I attempt to push the lid." );
+                                msg_log::add("I attempt to push the lid.");
 
-                                if ( actor_bumping.m_properties.has( PropId::weakened ) )
+                                if (actor_bumping.m_properties.has(PropId::weakened))
                                 {
-                                        msg_log::add( "It seems futile." );
+                                        msg_log::add("It seems futile.");
                                 }
                                 else
                                 {
                                         // Not weakened
                                         int bon = 0;
 
-                                        if ( player_bon::has_trait( Trait::rugged ) )
+                                        if (player_bon::has_trait(Trait::rugged))
                                         {
                                                 bon = 8;
                                         }
-                                        else if ( player_bon::has_trait( Trait::tough ) )
+                                        else if (player_bon::has_trait(Trait::tough))
                                         {
                                                 bon = 4;
                                         }
@@ -3121,23 +3135,23 @@ void Tomb::bump( actor::Actor& actor_bumping )
                                               << bon << std::endl;
 
                                         const int roll_tot =
-                                                rnd::range( 1, m_push_lid_one_in_n ) + bon;
+                                                rnd::range(1, m_push_lid_one_in_n) + bon;
 
                                         TRACE << "Roll + bonus = " << roll_tot << std::endl;
 
                                         bool is_success = false;
 
-                                        if ( roll_tot < ( m_push_lid_one_in_n - 9 ) )
+                                        if (roll_tot < (m_push_lid_one_in_n - 9))
                                         {
-                                                msg_log::add( "It does not yield at all." );
+                                                msg_log::add("It does not yield at all.");
                                         }
-                                        else if ( roll_tot < ( m_push_lid_one_in_n - 2 ) )
+                                        else if (roll_tot < (m_push_lid_one_in_n - 2))
                                         {
-                                                msg_log::add( "It resists." );
+                                                msg_log::add("It resists.");
                                         }
-                                        else if ( roll_tot == ( m_push_lid_one_in_n - 2 ) )
+                                        else if (roll_tot == (m_push_lid_one_in_n - 2))
                                         {
-                                                msg_log::add( "It moves a little!" );
+                                                msg_log::add("It moves a little!");
                                                 --m_push_lid_one_in_n;
                                         }
                                         else
@@ -3145,9 +3159,9 @@ void Tomb::bump( actor::Actor& actor_bumping )
                                                 is_success = true;
                                         }
 
-                                        if ( is_success )
+                                        if (is_success)
                                         {
-                                                open( map::g_player );
+                                                open(map::g_player);
                                         }
                                         else
                                         {
@@ -3163,21 +3177,21 @@ void Tomb::bump( actor::Actor& actor_bumping )
 
 void Tomb::player_loot()
 {
-        msg_log::add( "I peer inside the tomb." );
+        msg_log::add("I peer inside the tomb.");
 
-        if ( m_item_container.is_empty() )
+        if (m_item_container.is_empty())
         {
-                msg_log::add( "There is nothing of value inside." );
+                msg_log::add("There is nothing of value inside.");
         }
         else
         {
-                m_item_container.open( m_pos, map::g_player );
+                m_item_container.open(m_pos, map::g_player);
         }
 }
 
-DidOpen Tomb::open( actor::Actor* const actor_opening )
+DidOpen Tomb::open(actor::Actor* const actor_opening)
 {
-        if ( m_is_open )
+        if (m_is_open)
         {
                 return DidOpen::no;
         }
@@ -3186,28 +3200,28 @@ DidOpen Tomb::open( actor::Actor* const actor_opening )
                 // Was not already open
                 m_is_open = true;
 
-                Snd snd( "I hear heavy stone sliding.",
-                         audio::SfxId::tomb_open,
-                         IgnoreMsgIfOriginSeen::yes,
-                         m_pos,
-                         map::g_player,
-                         SndVol::high,
-                         AlertsMon::yes );
+                Snd snd("I hear heavy stone sliding.",
+                        audio::SfxId::tomb_open,
+                        IgnoreMsgIfOriginSeen::yes,
+                        m_pos,
+                        map::g_player,
+                        SndVol::high,
+                        AlertsMon::yes);
 
                 snd.run();
 
-                if ( map::g_cells.at( m_pos ).is_seen_by_player )
+                if (map::g_cells.at(m_pos).is_seen_by_player)
                 {
-                        msg_log::add( "The lid comes off." );
+                        msg_log::add("The lid comes off.");
                 }
 
-                trigger_trap( actor_opening );
+                trigger_trap(actor_opening);
 
                 return DidOpen::yes;
         }
 }
 
-DidTriggerTrap Tomb::trigger_trap( actor::Actor* const actor )
+DidTriggerTrap Tomb::trigger_trap(actor::Actor* const actor)
 {
         TRACE_FUNC_BEGIN;
 
@@ -3217,11 +3231,12 @@ DidTriggerTrap Tomb::trigger_trap( actor::Actor* const actor )
 
         auto id_to_spawn = actor::Id::END;
 
-        const bool is_seen = map::g_cells.at( m_pos ).is_seen_by_player;
+        const bool is_seen = map::g_cells.at(m_pos).is_seen_by_player;
 
-        switch ( m_trait )
+        switch (m_trait)
         {
-        case TombTrait::ghost: {
+        case TombTrait::ghost:
+        {
                 id_to_spawn = actor::Id::ghost;
 
                 const std::string msg = "The air suddenly feels colder.";
@@ -3230,20 +3245,21 @@ DidTriggerTrap Tomb::trigger_trap( actor::Actor* const actor )
                         msg,
                         colors::white(),
                         MsgInterruptPlayer::no,
-                        MorePromptOnMsg::yes );
+                        MorePromptOnMsg::yes);
 
                 did_trigger_trap = DidTriggerTrap::yes;
         }
         break;
 
-        case TombTrait::other_undead: {
+        case TombTrait::other_undead:
+        {
                 std::vector<actor::Id> mon_bucket = {
                         actor::Id::mummy,
                         actor::Id::croc_head_mummy,
                         actor::Id::zombie,
-                        actor::Id::floating_skull };
+                        actor::Id::floating_skull};
 
-                id_to_spawn = rnd::element( mon_bucket );
+                id_to_spawn = rnd::element(mon_bucket);
 
                 const std::string msg = "Something rises from the tomb!";
 
@@ -3251,22 +3267,23 @@ DidTriggerTrap Tomb::trigger_trap( actor::Actor* const actor )
                         msg,
                         colors::white(),
                         MsgInterruptPlayer::no,
-                        MorePromptOnMsg::yes );
+                        MorePromptOnMsg::yes);
 
                 did_trigger_trap = DidTriggerTrap::yes;
         }
         break;
 
-        case TombTrait::stench: {
-                if ( rnd::coin_toss() )
+        case TombTrait::stench:
+        {
+                if (rnd::coin_toss())
                 {
-                        if ( is_seen )
+                        if (is_seen)
                         {
                                 msg_log::add(
                                         "Fumes burst out from the tomb!",
                                         colors::white(),
                                         MsgInterruptPlayer::no,
-                                        MorePromptOnMsg::yes );
+                                        MorePromptOnMsg::yes);
                         }
 
                         Snd snd(
@@ -3276,23 +3293,23 @@ DidTriggerTrap Tomb::trigger_trap( actor::Actor* const actor )
                                 m_pos,
                                 nullptr,
                                 SndVol::low,
-                                AlertsMon::yes );
+                                AlertsMon::yes);
 
-                        snd_emit::run( snd );
+                        snd_emit::run(snd);
 
                         Prop* prop = nullptr;
 
                         Color fume_color = colors::magenta();
 
-                        const int rnd = rnd::range( 1, 100 );
+                        const int rnd = rnd::range(1, 100);
 
-                        if ( rnd < 20 )
+                        if (rnd < 20)
                         {
                                 prop = new PropPoisoned();
 
                                 fume_color = colors::light_green();
                         }
-                        else if ( rnd < 40 )
+                        else if (rnd < 40)
                         {
                                 prop = new PropDiseased();
 
@@ -3302,7 +3319,7 @@ DidTriggerTrap Tomb::trigger_trap( actor::Actor* const actor )
                         {
                                 prop = new PropParalyzed();
 
-                                prop->set_duration( prop->nr_turns_left() * 2 );
+                                prop->set_duration(prop->nr_turns_left() * 2);
                         }
 
                         explosion::run(
@@ -3311,35 +3328,35 @@ DidTriggerTrap Tomb::trigger_trap( actor::Actor* const actor )
                                 EmitExplSnd::no,
                                 0,
                                 ExplExclCenter::no,
-                                { prop },
-                                fume_color );
+                                {prop},
+                                fume_color);
                 }
                 else
                 {
                         // Not fumes
                         std::vector<actor::Id> mon_bucket;
 
-                        for ( size_t i = 0; i < size_t( actor::Id::END ); ++i )
+                        for (size_t i = 0; i < size_t(actor::Id::END); ++i)
                         {
-                                const auto& d = actor::g_data[ i ];
+                                const auto& d = actor::g_data[i];
 
-                                if ( d.natural_props[ (size_t)PropId::ooze ] &&
-                                     d.is_auto_spawn_allowed &&
-                                     ! d.is_unique )
+                                if (d.natural_props[(size_t)PropId::ooze] &&
+                                    d.is_auto_spawn_allowed &&
+                                    !d.is_unique)
                                 {
-                                        mon_bucket.push_back( (actor::Id)i );
+                                        mon_bucket.push_back((actor::Id)i);
                                 }
                         }
 
-                        id_to_spawn = rnd::element( mon_bucket );
+                        id_to_spawn = rnd::element(mon_bucket);
 
-                        if ( is_seen )
+                        if (is_seen)
                         {
                                 msg_log::add(
                                         "Something repulsive creeps up from the tomb!",
                                         colors::white(),
                                         MsgInterruptPlayer::no,
-                                        MorePromptOnMsg::yes );
+                                        MorePromptOnMsg::yes);
                         }
                 }
 
@@ -3347,8 +3364,9 @@ DidTriggerTrap Tomb::trigger_trap( actor::Actor* const actor )
         }
         break;
 
-        case TombTrait::cursed: {
-                map::g_player->m_properties.apply( new PropCursed() );
+        case TombTrait::cursed:
+        {
+                map::g_player->m_properties.apply(new PropCursed());
 
                 did_trigger_trap = DidTriggerTrap::yes;
         }
@@ -3358,34 +3376,34 @@ DidTriggerTrap Tomb::trigger_trap( actor::Actor* const actor )
                 break;
         }
 
-        if ( id_to_spawn != actor::Id::END )
+        if (id_to_spawn != actor::Id::END)
         {
                 const auto summoned =
-                        actor::spawn( m_pos, { id_to_spawn }, map::rect() )
+                        actor::spawn(m_pos, {id_to_spawn}, map::rect())
                                 .make_aware_of_player();
 
                 std::for_each(
-                        std::begin( summoned.monsters ),
-                        std::end( summoned.monsters ),
-                        [ this ]( auto* const mon ) {
+                        std::begin(summoned.monsters),
+                        std::end(summoned.monsters),
+                        [this](auto* const mon) {
                                 auto* prop = new PropWaiting();
 
-                                prop->set_duration( 1 );
+                                prop->set_duration(1);
 
-                                mon->m_properties.apply( prop );
+                                mon->m_properties.apply(prop);
 
-                                if ( m_appearance == TombAppearance::marvelous )
+                                if (m_appearance == TombAppearance::marvelous)
                                 {
                                         mon->change_max_hp(
                                                 mon->m_hp,
-                                                Verbose::no );
+                                                Verbose::no);
 
                                         mon->restore_hp(
                                                 999,
                                                 false,
-                                                Verbose::no );
+                                                Verbose::no);
                                 }
-                        } );
+                        });
         }
 
         m_trait = TombTrait::END;
@@ -3400,21 +3418,21 @@ DidTriggerTrap Tomb::trigger_trap( actor::Actor* const actor )
 // -----------------------------------------------------------------------------
 // Chest
 // -----------------------------------------------------------------------------
-Chest::Chest( const P& p ) :
-        Terrain( p ),
-        m_is_open( false ),
-        m_is_locked( false ),
-        m_matl( ChestMatl::wood )
+Chest::Chest(const P& p) :
+        Terrain(p),
+        m_is_open(false),
+        m_is_locked(false),
+        m_matl(ChestMatl::wood)
 {
-        if ( map::g_dlvl >= 3 &&
-             rnd::fraction( 2, 3 ) )
+        if (map::g_dlvl >= 3 &&
+            rnd::fraction(2, 3))
         {
                 m_matl = ChestMatl::iron;
         }
 
         // Contained items
         const int nr_items_min =
-                rnd::one_in( 4 )
+                rnd::one_in(4)
                 ? 0
                 : 1;
 
@@ -3422,71 +3440,71 @@ Chest::Chest( const P& p ) :
 
         int incr_max_items_one_in = 12;
 
-        if ( player_bon::has_trait( Trait::treasure_hunter ) )
+        if (player_bon::has_trait(Trait::treasure_hunter))
         {
                 incr_max_items_one_in /= 2;
         }
 
-        if ( rnd::one_in( incr_max_items_one_in ) )
+        if (rnd::one_in(incr_max_items_one_in))
         {
                 ++nr_items_max;
         }
 
         m_item_container.init(
                 terrain::Id::chest,
-                rnd::range( nr_items_min, nr_items_max ) );
+                rnd::range(nr_items_min, nr_items_max));
 
         const int locked_numer =
                 m_item_container.is_empty()
                 ? 1
-                : std::min( 8, map::g_dlvl );
+                : std::min(8, map::g_dlvl);
 
-        m_is_locked = rnd::fraction( locked_numer, 10 );
+        m_is_locked = rnd::fraction(locked_numer, 10);
 }
 
-void Chest::bump( actor::Actor& actor_bumping )
+void Chest::bump(actor::Actor& actor_bumping)
 {
-        if ( ! actor_bumping.is_player() )
+        if (!actor_bumping.is_player())
         {
                 return;
         }
 
-        if ( ! map::g_cells.at( m_pos ).is_seen_by_player )
+        if (!map::g_cells.at(m_pos).is_seen_by_player)
         {
-                msg_log::add( "There is a chest here." );
+                msg_log::add("There is a chest here.");
 
                 return;
         }
 
-        if ( m_burn_state == BurnState::burning )
+        if (m_burn_state == BurnState::burning)
         {
-                msg_log::add( "The chest is on fire." );
+                msg_log::add("The chest is on fire.");
 
                 return;
         }
 
-        if ( m_item_container.is_empty() && m_is_open )
+        if (m_item_container.is_empty() && m_is_open)
         {
-                msg_log::add( "The chest is empty." );
+                msg_log::add("The chest is empty.");
 
                 return;
         }
 
-        if ( m_is_locked )
+        if (m_is_locked)
         {
-                msg_log::add( "The chest is locked." );
+                msg_log::add("The chest is locked.");
 
                 return;
         }
 
         // Not locked
-        if ( m_is_open )
+        if (m_is_open)
         {
                 player_loot();
         }
         else
         {
-                open( map::g_player );
+                open(map::g_player);
         }
 
         game_time::tick();
@@ -3494,26 +3512,26 @@ void Chest::bump( actor::Actor& actor_bumping )
 
 void Chest::player_loot()
 {
-        msg_log::add( "I search the chest." );
+        msg_log::add("I search the chest.");
 
-        if ( m_item_container.is_empty() )
+        if (m_item_container.is_empty())
         {
-                msg_log::add( "There is nothing of value inside." );
+                msg_log::add("There is nothing of value inside.");
         }
         else
         {
                 // Not empty
-                m_item_container.open( m_pos, map::g_player );
+                m_item_container.open(m_pos, map::g_player);
         }
 }
 
-DidOpen Chest::open( actor::Actor* const actor_opening )
+DidOpen Chest::open(actor::Actor* const actor_opening)
 {
         (void)actor_opening;
 
         m_is_locked = false;
 
-        if ( m_is_open )
+        if (m_is_open)
         {
                 return DidOpen::no;
         }
@@ -3522,9 +3540,9 @@ DidOpen Chest::open( actor::Actor* const actor_opening )
                 // Chest is closed
                 m_is_open = true;
 
-                if ( map::g_cells.at( m_pos ).is_seen_by_player )
+                if (map::g_cells.at(m_pos).is_seen_by_player)
                 {
-                        msg_log::add( "The chest opens." );
+                        msg_log::add("The chest opens.");
                 }
 
                 return DidOpen::yes;
@@ -3534,12 +3552,12 @@ DidOpen Chest::open( actor::Actor* const actor_opening )
 void Chest::hit(
         const DmgType dmg_type,
         actor::Actor* const actor,
-        const int dmg )
+        const int dmg)
 {
         (void)dmg;
         (void)actor;
 
-        switch ( dmg_type )
+        switch (dmg_type)
         {
         case DmgType::kicking:
                 on_player_kick();
@@ -3553,29 +3571,29 @@ void Chest::hit(
 void Chest::on_hit(
         const DmgType dmg_type,
         actor::Actor* const actor,
-        const int dmg )
+        const int dmg)
 {
         (void)dmg;
         (void)actor;
 
-        switch ( dmg_type )
+        switch (dmg_type)
         {
         case DmgType::explosion:
         case DmgType::pure:
-                if ( map::is_pos_seen_by_player( m_pos ) )
+                if (map::is_pos_seen_by_player(m_pos))
                 {
-                        msg_log::add( "The chest is destroyed." );
+                        msg_log::add("The chest is destroyed.");
                 }
 
-                map::put( new RubbleLow( m_pos ) );
+                map::put(new RubbleLow(m_pos));
                 map::update_vision();
                 break;
 
         case DmgType::fire:
-                if ( m_matl == ChestMatl::wood )
+                if (m_matl == ChestMatl::wood)
                 {
                         m_item_container.clear();
-                        try_start_burning( Verbose::yes );
+                        try_start_burning(Verbose::yes);
                 }
                 break;
 
@@ -3586,16 +3604,16 @@ void Chest::on_hit(
 
 WasDestroyed Chest::on_finished_burning()
 {
-        if ( map::is_pos_seen_by_player( m_pos ) )
+        if (map::is_pos_seen_by_player(m_pos))
         {
-                msg_log::add( "The chest burns down." );
+                msg_log::add("The chest burns down.");
         }
 
-        auto* const rubble = new RubbleLow( m_pos );
+        auto* const rubble = new RubbleLow(m_pos);
 
         rubble->m_burn_state = BurnState::has_burned;
 
-        map::put( rubble );
+        map::put(rubble);
 
         map::update_vision();
 
@@ -3604,18 +3622,18 @@ WasDestroyed Chest::on_finished_burning()
 
 void Chest::on_player_kick()
 {
-        if ( ! map::g_cells.at( m_pos ).is_seen_by_player )
+        if (!map::g_cells.at(m_pos).is_seen_by_player)
         {
                 // If player is blind, call the parent hit function
                 // instead (generic kicking)
-                Terrain::hit( DmgType::kicking, map::g_player );
+                Terrain::hit(DmgType::kicking, map::g_player);
 
                 return;
         }
 
-        if ( m_is_open )
+        if (m_is_open)
         {
-                msg_log::add( "It is already open." );
+                msg_log::add("It is already open.");
 
                 return;
         }
@@ -3627,12 +3645,12 @@ void Chest::on_player_kick()
                 m_pos,
                 map::g_player,
                 SndVol::high,
-                AlertsMon::yes );
+                AlertsMon::yes);
 
         // Is seen and closed
-        if ( ! m_is_locked )
+        if (!m_is_locked)
         {
-                msg_log::add( "The lid slams open, then falls shut." );
+                msg_log::add("The lid slams open, then falls shut.");
 
                 snd.run();
 
@@ -3641,14 +3659,14 @@ void Chest::on_player_kick()
 
         // Is locked
 
-        msg_log::add( "I kick the lid." );
+        msg_log::add("I kick the lid.");
 
-        if ( map::g_player->m_properties.has( PropId::weakened ) ||
-             ( m_matl == ChestMatl::iron ) )
+        if (map::g_player->m_properties.has(PropId::weakened) ||
+            (m_matl == ChestMatl::iron))
         {
                 wham::try_sprain_player();
 
-                msg_log::add( "It seems futile." );
+                msg_log::add("It seems futile.");
 
                 snd.run();
 
@@ -3656,18 +3674,18 @@ void Chest::on_player_kick()
         }
 
         // Chest can be bashed open
-        if ( rnd::one_in( 3 ) )
+        if (rnd::one_in(3))
         {
                 m_item_container.destroy_single_fragile();
         }
 
         int open_one_in_n = 0;
 
-        if ( player_bon::has_trait( Trait::rugged ) )
+        if (player_bon::has_trait(Trait::rugged))
         {
                 open_one_in_n = 2;
         }
-        else if ( player_bon::has_trait( Trait::tough ) )
+        else if (player_bon::has_trait(Trait::tough))
         {
                 open_one_in_n = 3;
         }
@@ -3676,20 +3694,20 @@ void Chest::on_player_kick()
                 open_one_in_n = 4;
         }
 
-        if ( rnd::one_in( open_one_in_n ) )
+        if (rnd::one_in(open_one_in_n))
         {
                 msg_log::add(
                         "The lock breaks and the lid flies open!",
                         colors::text(),
                         MsgInterruptPlayer::no,
-                        MorePromptOnMsg::yes );
+                        MorePromptOnMsg::yes);
 
                 m_is_locked = false;
                 m_is_open = true;
         }
         else
         {
-                msg_log::add( "The lock resists." );
+                msg_log::add("The lock resists.");
 
                 wham::try_sprain_player();
         }
@@ -3697,7 +3715,7 @@ void Chest::on_player_kick()
         snd.run();
 }
 
-std::string Chest::name( const Article article ) const
+std::string Chest::name(const Article article) const
 {
         std::string matl_str;
         std::string locked_str;
@@ -3705,7 +3723,7 @@ std::string Chest::name( const Article article ) const
         std::string open_str;
         std::string a;
 
-        if ( m_matl == ChestMatl::wood )
+        if (m_matl == ChestMatl::wood)
         {
                 matl_str = "wooden ";
                 a = "a ";
@@ -3716,9 +3734,9 @@ std::string Chest::name( const Article article ) const
                 a = "an ";
         }
 
-        if ( m_is_open )
+        if (m_is_open)
         {
-                if ( m_item_container.is_empty() )
+                if (m_item_container.is_empty())
                 {
                         empty_str = "empty ";
                 }
@@ -3729,14 +3747,14 @@ std::string Chest::name( const Article article ) const
 
                 a = "an ";
         }
-        else if ( m_is_locked )
+        else if (m_is_locked)
         {
                 locked_str = "locked ";
 
                 a = "a ";
         }
 
-        if ( article == Article::the )
+        if (article == Article::the)
         {
                 a = "the ";
         }
@@ -3753,7 +3771,7 @@ gfx::TileId Chest::tile() const
 
 Color Chest::color_default() const
 {
-        return ( m_matl == ChestMatl::wood )
+        return (m_matl == ChestMatl::wood)
                 ? colors::dark_brown()
                 : colors::gray();
 }
@@ -3761,8 +3779,8 @@ Color Chest::color_default() const
 // -----------------------------------------------------------------------------
 // Fountain
 // -----------------------------------------------------------------------------
-Fountain::Fountain( const P& p ) :
-        Terrain( p )
+Fountain::Fountain(const P& p) :
+        Terrain(p)
 {
         std::vector<int> weights = {
                 4,  // Refreshing
@@ -3770,31 +3788,34 @@ Fountain::Fountain( const P& p ) :
                 1,  // Bad effect
         };
 
-        const int choice = rnd::weighted_choice( weights );
+        const int choice = rnd::weighted_choice(weights);
 
-        switch ( choice )
+        switch (choice)
         {
-        case 0: {
+        case 0:
+        {
                 m_fountain_effect = FountainEffect::refreshing;
         }
         break;
 
-        case 1: {
+        case 1:
+        {
                 m_fountain_effect = FountainEffect::xp;
         }
         break;
 
-        case 2: {
+        case 2:
+        {
                 const int min = (int)FountainEffect::START_OF_BAD_EFFECTS + 1;
                 const int max = (int)FountainEffect::END - 1;
 
-                m_fountain_effect = (FountainEffect)rnd::range( min, max );
+                m_fountain_effect = (FountainEffect)rnd::range(min, max);
         }
         break;
 
         default:
         {
-                ASSERT( false );
+                ASSERT(false);
         }
         break;
         }
@@ -3803,21 +3824,21 @@ Fountain::Fountain( const P& p ) :
 void Fountain::on_hit(
         const DmgType dmg_type,
         actor::Actor* const actor,
-        const int dmg )
+        const int dmg)
 {
         (void)dmg;
         (void)actor;
 
-        switch ( dmg_type )
+        switch (dmg_type)
         {
         case DmgType::explosion:
         case DmgType::pure:
-                if ( map::is_pos_seen_by_player( m_pos ) )
+                if (map::is_pos_seen_by_player(m_pos))
                 {
-                        msg_log::add( "The fountain is destroyed." );
+                        msg_log::add("The fountain is destroyed.");
                 }
 
-                map::put( new RubbleLow( m_pos ) );
+                map::put(new RubbleLow(m_pos));
                 map::update_vision();
                 break;
 
@@ -3828,9 +3849,9 @@ void Fountain::on_hit(
 
 Color Fountain::color_default() const
 {
-        if ( m_has_drinks_left )
+        if (m_has_drinks_left)
         {
-                if ( m_is_tried )
+                if (m_is_tried)
                 {
                         // Has drinks left, tried
                         const auto is_bad =
@@ -3854,15 +3875,15 @@ Color Fountain::color_default() const
         }
 }
 
-std::string Fountain::name( const Article article ) const
+std::string Fountain::name(const Article article) const
 {
         std::string type_str;
 
         std::string indefinite_article = "a";
 
-        if ( m_has_drinks_left )
+        if (m_has_drinks_left)
         {
-                if ( m_is_tried )
+                if (m_is_tried)
                 {
                         type_str = type_name();
 
@@ -3875,11 +3896,11 @@ std::string Fountain::name( const Article article ) const
         }
 
         const std::string a =
-                ( article == Article::a )
+                (article == Article::a)
                 ? indefinite_article
                 : "the";
 
-        if ( ! type_str.empty() )
+        if (!type_str.empty())
         {
                 type_str = " " + type_str;
         }
@@ -3887,34 +3908,34 @@ std::string Fountain::name( const Article article ) const
         return a + type_str + " fountain";
 }
 
-void Fountain::bump( actor::Actor& actor_bumping )
+void Fountain::bump(actor::Actor& actor_bumping)
 {
-        if ( ! actor_bumping.is_player() )
+        if (!actor_bumping.is_player())
         {
                 return;
         }
 
-        if ( ! m_has_drinks_left )
+        if (!m_has_drinks_left)
         {
-                msg_log::add( "The fountain is dried-up." );
+                msg_log::add("The fountain is dried-up.");
 
                 return;
         }
 
         PropHandler& properties = map::g_player->m_properties;
 
-        if ( ! map::g_cells.at( m_pos ).is_seen_by_player )
+        if (!map::g_cells.at(m_pos).is_seen_by_player)
         {
                 msg_log::clear();
 
                 const std::string name_a =
                         text_format::first_to_lower(
-                                name( Article::a ) );
+                                name(Article::a));
 
                 const std::string msg =
-                        ( "There is " +
-                          name_a +
-                          " here. Drink from it? " ) +
+                        ("There is " +
+                         name_a +
+                         " here. Drink from it? ") +
                         common_text::g_yes_or_no_hint;
 
                 msg_log::add(
@@ -3922,11 +3943,11 @@ void Fountain::bump( actor::Actor& actor_bumping )
                         colors::light_white(),
                         MsgInterruptPlayer::no,
                         MorePromptOnMsg::no,
-                        CopyToMsgHistory::no );
+                        CopyToMsgHistory::no);
 
                 const auto answer = query::yes_or_no();
 
-                if ( answer == BinaryAnswer::no )
+                if (answer == BinaryAnswer::no)
                 {
                         msg_log::clear();
 
@@ -3934,68 +3955,77 @@ void Fountain::bump( actor::Actor& actor_bumping )
                 }
         }
 
-        if ( ! properties.allow_eat( Verbose::yes ) )
+        if (!properties.allow_eat(Verbose::yes))
         {
                 return;
         }
 
         msg_log::clear();
-        msg_log::add( "I drink from the fountain..." );
+        msg_log::add("I drink from the fountain...");
 
-        audio::play( audio::SfxId::fountain_drink );
+        audio::play(audio::SfxId::fountain_drink);
 
-        switch ( m_fountain_effect )
+        switch (m_fountain_effect)
         {
-        case FountainEffect::refreshing: {
-                msg_log::add( "It's very refreshing." );
-                map::g_player->restore_hp( 1, false, Verbose::no );
-                map::g_player->restore_sp( 1, false, Verbose::no );
-                map::g_player->restore_shock( 5, true );
+        case FountainEffect::refreshing:
+        {
+                msg_log::add("It's very refreshing.");
+                map::g_player->restore_hp(1, false, Verbose::no);
+                map::g_player->restore_sp(1, false, Verbose::no);
+                map::g_player->restore_shock(5, true);
         }
         break;
 
-        case FountainEffect::xp: {
-                msg_log::add( "I feel more powerful!" );
-                game::incr_player_xp( 1 );
+        case FountainEffect::xp:
+        {
+                msg_log::add("I feel more powerful!");
+                game::incr_player_xp(1);
         }
         break;
 
-        case FountainEffect::curse: {
-                properties.apply( new PropCursed() );
+        case FountainEffect::curse:
+        {
+                properties.apply(new PropCursed());
         }
         break;
 
-        case FountainEffect::disease: {
-                properties.apply( new PropDiseased() );
+        case FountainEffect::disease:
+        {
+                properties.apply(new PropDiseased());
         }
         break;
 
-        case FountainEffect::poison: {
-                properties.apply( new PropPoisoned() );
+        case FountainEffect::poison:
+        {
+                properties.apply(new PropPoisoned());
         }
         break;
 
-        case FountainEffect::frenzy: {
-                properties.apply( new PropFrenzied() );
+        case FountainEffect::frenzy:
+        {
+                properties.apply(new PropFrenzied());
         }
         break;
 
-        case FountainEffect::paralyze: {
-                properties.apply( new PropParalyzed() );
+        case FountainEffect::paralyze:
+        {
+                properties.apply(new PropParalyzed());
         }
         break;
 
-        case FountainEffect::blind: {
-                properties.apply( new PropBlind() );
+        case FountainEffect::blind:
+        {
+                properties.apply(new PropBlind());
         }
         break;
 
-        case FountainEffect::faint: {
+        case FountainEffect::faint:
+        {
                 auto* prop = new PropFainted();
 
-                prop->set_duration( 10 );
+                prop->set_duration(10);
 
-                properties.apply( prop );
+                properties.apply(prop);
         }
         break;
 
@@ -4008,11 +4038,11 @@ void Fountain::bump( actor::Actor& actor_bumping )
 
         const int dry_one_in_n = 3;
 
-        if ( rnd::one_in( dry_one_in_n ) )
+        if (rnd::one_in(dry_one_in_n))
         {
                 m_has_drinks_left = false;
 
-                msg_log::add( "The fountain dries up." );
+                msg_log::add("The fountain dries up.");
         }
 
         game_time::tick();
@@ -4020,16 +4050,16 @@ void Fountain::bump( actor::Actor& actor_bumping )
 
 void Fountain::on_new_turn()
 {
-        if ( map::g_player->m_pos.is_adjacent( m_pos ) &&
-             map::g_cells.at( m_pos ).is_seen_by_player )
+        if (map::g_player->m_pos.is_adjacent(m_pos) &&
+            map::g_cells.at(m_pos).is_seen_by_player)
         {
-                hints::display( hints::Id::fountains );
+                hints::display(hints::Id::fountains);
         }
 }
 
 void Fountain::bless()
 {
-        if ( ! has_drinks_left() )
+        if (!has_drinks_left())
         {
                 return;
         }
@@ -4038,7 +4068,7 @@ void Fountain::bless()
                 m_fountain_effect >
                 FountainEffect::START_OF_BAD_EFFECTS;
 
-        if ( ! is_bad_effect )
+        if (!is_bad_effect)
         {
                 return;
         }
@@ -4047,21 +4077,21 @@ void Fountain::bless()
 
         m_fountain_effect = FountainEffect::refreshing;
 
-        if ( map::g_cells.at( m_pos ).is_seen_by_player )
+        if (map::g_cells.at(m_pos).is_seen_by_player)
         {
                 const std::string name_the =
                         text_format::first_to_lower(
-                                name( Article::the ) );
+                                name(Article::the));
 
                 msg_log::add(
                         "The water in " + name_the +
-                        " seems clearer." );
+                        " seems clearer.");
         }
 }
 
 void Fountain::curse()
 {
-        if ( ! has_drinks_left() )
+        if (!has_drinks_left())
         {
                 return;
         }
@@ -4070,7 +4100,7 @@ void Fountain::curse()
                 m_fountain_effect <
                 FountainEffect::START_OF_BAD_EFFECTS;
 
-        if ( ! is_good_effect )
+        if (!is_good_effect)
         {
                 return;
         }
@@ -4080,24 +4110,24 @@ void Fountain::curse()
         const int min = (int)FountainEffect::START_OF_BAD_EFFECTS + 1;
         const int max = (int)FountainEffect::END - 1;
 
-        m_fountain_effect = (FountainEffect)rnd::range( min, max );
+        m_fountain_effect = (FountainEffect)rnd::range(min, max);
 
-        if ( map::g_cells.at( m_pos ).is_seen_by_player )
+        if (map::g_cells.at(m_pos).is_seen_by_player)
         {
                 std::string name_the =
                         text_format::first_to_lower(
-                                name( Article::the ) );
+                                name(Article::the));
 
                 msg_log::add(
                         "The water in " +
                         name_the +
-                        " seems murkier." );
+                        " seems murkier.");
         }
 }
 
 std::string Fountain::type_name() const
 {
-        switch ( m_fountain_effect )
+        switch (m_fountain_effect)
         {
         case FountainEffect::refreshing:
                 return "refreshing";
@@ -4140,14 +4170,14 @@ std::string Fountain::type_name() const
                 break;
         }
 
-        ASSERT( false );
+        ASSERT(false);
 
         return "";
 }
 
 std::string Fountain::type_indefinite_article() const
 {
-        switch ( m_fountain_effect )
+        switch (m_fountain_effect)
         {
         case FountainEffect::refreshing:
                 return "a";
@@ -4190,7 +4220,7 @@ std::string Fountain::type_indefinite_article() const
                 break;
         }
 
-        ASSERT( false );
+        ASSERT(false);
 
         return "";
 }
@@ -4198,9 +4228,9 @@ std::string Fountain::type_indefinite_article() const
 // -----------------------------------------------------------------------------
 // Cabinet
 // -----------------------------------------------------------------------------
-Cabinet::Cabinet( const P& p ) :
-        Terrain( p ),
-        m_is_open( false )
+Cabinet::Cabinet(const P& p) :
+        Terrain(p),
+        m_is_open(false)
 {
         // Contained items
         const int nr_items_min =
@@ -4212,45 +4242,45 @@ Cabinet::Cabinet( const P& p ) :
 
         int incr_max_items_one_in = 12;
 
-        if ( player_bon::has_trait( Trait::treasure_hunter ) )
+        if (player_bon::has_trait(Trait::treasure_hunter))
         {
                 incr_max_items_one_in /= 2;
         }
 
-        if ( rnd::one_in( incr_max_items_one_in ) )
+        if (rnd::one_in(incr_max_items_one_in))
         {
                 ++nr_items_max;
         }
 
         m_item_container.init(
                 terrain::Id::cabinet,
-                rnd::range( nr_items_min, nr_items_max ) );
+                rnd::range(nr_items_min, nr_items_max));
 }
 
 void Cabinet::on_hit(
         const DmgType dmg_type,
         actor::Actor* const actor,
-        const int dmg )
+        const int dmg)
 {
         (void)actor;
         (void)dmg;
 
-        switch ( dmg_type )
+        switch (dmg_type)
         {
         case DmgType::explosion:
         case DmgType::pure:
-                if ( map::is_pos_seen_by_player( m_pos ) )
+                if (map::is_pos_seen_by_player(m_pos))
                 {
-                        msg_log::add( "The cabinet is destroyed." );
+                        msg_log::add("The cabinet is destroyed.");
                 }
 
-                map::put( new RubbleLow( m_pos ) );
+                map::put(new RubbleLow(m_pos));
                 map::update_vision();
                 break;
 
         case DmgType::fire:
                 m_item_container.clear();
-                try_start_burning( Verbose::yes );
+                try_start_burning(Verbose::yes);
                 break;
 
         default:
@@ -4260,79 +4290,79 @@ void Cabinet::on_hit(
 
 WasDestroyed Cabinet::on_finished_burning()
 {
-        if ( map::is_pos_seen_by_player( m_pos ) )
+        if (map::is_pos_seen_by_player(m_pos))
         {
-                msg_log::add( "The cabinet burns down." );
+                msg_log::add("The cabinet burns down.");
         }
 
-        auto* const rubble = new RubbleLow( m_pos );
+        auto* const rubble = new RubbleLow(m_pos);
 
         rubble->m_burn_state = BurnState::has_burned;
 
-        map::put( rubble );
+        map::put(rubble);
 
         map::update_vision();
 
         return WasDestroyed::yes;
 }
 
-void Cabinet::bump( actor::Actor& actor_bumping )
+void Cabinet::bump(actor::Actor& actor_bumping)
 {
-        if ( ! actor_bumping.is_player() )
+        if (!actor_bumping.is_player())
         {
                 return;
         }
 
-        if ( ! map::g_cells.at( m_pos ).is_seen_by_player )
+        if (!map::g_cells.at(m_pos).is_seen_by_player)
         {
-                msg_log::add( "There is a cabinet here." );
+                msg_log::add("There is a cabinet here.");
 
                 return;
         }
 
-        if ( m_burn_state == BurnState::burning )
+        if (m_burn_state == BurnState::burning)
         {
-                msg_log::add( "The cabinet is on fire." );
+                msg_log::add("The cabinet is on fire.");
 
                 return;
         }
 
-        if ( m_item_container.is_empty() && m_is_open )
+        if (m_item_container.is_empty() && m_is_open)
         {
-                msg_log::add( "The cabinet is empty." );
+                msg_log::add("The cabinet is empty.");
 
                 return;
         }
 
-        if ( m_is_open )
+        if (m_is_open)
         {
                 player_loot();
         }
         else
         {
-                open( map::g_player );
+                open(map::g_player);
         }
 }
 
 void Cabinet::player_loot()
 {
-        msg_log::add( "I search the cabinet." );
+        msg_log::add("I search the cabinet.");
 
-        if ( m_item_container.is_empty() )
+        if (m_item_container.is_empty())
         {
-                msg_log::add( "There is nothing of value inside." );
+                msg_log::add("There is nothing of value inside.");
         }
         else
         {
-                m_item_container.open( m_pos, map::g_player );
+                m_item_container.open(m_pos, map::g_player);
         }
 }
 
-DidOpen Cabinet::open( actor::Actor* const actor_opening )
+DidOpen Cabinet::open(actor::Actor* const actor_opening)
 {
         (void)actor_opening;
 
-        if ( m_is_open )
+        if (m_is_open)
         {
                 return DidOpen::no;
         }
@@ -4341,20 +4371,20 @@ DidOpen Cabinet::open( actor::Actor* const actor_opening )
                 // Was not already open
                 m_is_open = true;
 
-                if ( map::g_cells.at( m_pos ).is_seen_by_player )
+                if (map::g_cells.at(m_pos).is_seen_by_player)
                 {
-                        msg_log::add( "The cabinet opens." );
+                        msg_log::add("The cabinet opens.");
                 }
 
                 return DidOpen::yes;
         }
 }
 
-std::string Cabinet::name( const Article article ) const
+std::string Cabinet::name(const Article article) const
 {
-        std::string ret = ( article == Article::a ) ? "a " : "the ";
+        std::string ret = (article == Article::a) ? "a " : "the ";
 
-        if ( m_burn_state == BurnState::burning )
+        if (m_burn_state == BurnState::burning)
         {
                 ret += "burning ";
         }
@@ -4377,9 +4407,9 @@ Color Cabinet::color_default() const
 // -----------------------------------------------------------------------------
 // Bookshelf
 // -----------------------------------------------------------------------------
-Bookshelf::Bookshelf( const P& p ) :
-        Terrain( p ),
-        m_is_looted( false )
+Bookshelf::Bookshelf(const P& p) :
+        Terrain(p),
+        m_is_looted(false)
 {
         // Contained items
         const int nr_items_min =
@@ -4391,46 +4421,46 @@ Bookshelf::Bookshelf( const P& p ) :
 
         int incr_max_items_one_in = 12;
 
-        if ( player_bon::has_trait( Trait::treasure_hunter ) )
+        if (player_bon::has_trait(Trait::treasure_hunter))
         {
                 incr_max_items_one_in /= 2;
         }
 
-        if ( rnd::one_in( incr_max_items_one_in ) )
+        if (rnd::one_in(incr_max_items_one_in))
         {
                 ++nr_items_max;
         }
 
         m_item_container.init(
                 terrain::Id::bookshelf,
-                rnd::range( nr_items_min, nr_items_max ) );
+                rnd::range(nr_items_min, nr_items_max));
 }
 
 void Bookshelf::on_hit(
         const DmgType dmg_type,
         actor::Actor* const actor,
-        const int dmg )
+        const int dmg)
 {
         (void)dmg;
         (void)actor;
 
-        switch ( dmg_type )
+        switch (dmg_type)
         {
         case DmgType::explosion:
         case DmgType::pure:
-                if ( map::is_pos_seen_by_player( m_pos ) )
+                if (map::is_pos_seen_by_player(m_pos))
                 {
-                        msg_log::add( "The bookshelf is destroyed." );
+                        msg_log::add("The bookshelf is destroyed.");
                 }
 
-                map::put( new RubbleLow( m_pos ) );
+                map::put(new RubbleLow(m_pos));
                 map::update_vision();
                 break;
 
         case DmgType::fire:
                 m_item_container.clear();
                 m_is_looted = true;
-                try_start_burning( Verbose::yes );
+                try_start_burning(Verbose::yes);
                 break;
 
         default:
@@ -4440,51 +4470,51 @@ void Bookshelf::on_hit(
 
 WasDestroyed Bookshelf::on_finished_burning()
 {
-        if ( map::is_pos_seen_by_player( m_pos ) )
+        if (map::is_pos_seen_by_player(m_pos))
         {
-                msg_log::add( "The bookshelf burns down." );
+                msg_log::add("The bookshelf burns down.");
         }
 
-        auto* const rubble = new RubbleLow( m_pos );
+        auto* const rubble = new RubbleLow(m_pos);
 
         rubble->m_burn_state = BurnState::has_burned;
 
-        map::put( rubble );
+        map::put(rubble);
 
         map::update_vision();
 
         return WasDestroyed::yes;
 }
 
-void Bookshelf::bump( actor::Actor& actor_bumping )
+void Bookshelf::bump(actor::Actor& actor_bumping)
 {
-        if ( ! actor_bumping.is_player() )
+        if (!actor_bumping.is_player())
         {
                 return;
         }
 
-        if ( ! map::g_cells.at( m_pos ).is_seen_by_player )
+        if (!map::g_cells.at(m_pos).is_seen_by_player)
         {
-                msg_log::add( "There is a bookshelf here." );
+                msg_log::add("There is a bookshelf here.");
 
                 return;
         }
 
-        if ( m_burn_state == BurnState::burning )
+        if (m_burn_state == BurnState::burning)
         {
-                msg_log::add( "The bookshelf is on fire." );
+                msg_log::add("The bookshelf is on fire.");
 
                 return;
         }
 
-        if ( m_item_container.is_empty() && m_is_looted )
+        if (m_item_container.is_empty() && m_is_looted)
         {
-                msg_log::add( "The bookshelf is empty." );
+                msg_log::add("The bookshelf is empty.");
 
                 return;
         }
 
-        if ( ! m_is_looted )
+        if (!m_is_looted)
         {
                 player_loot();
         }
@@ -4496,25 +4526,25 @@ void Bookshelf::player_loot()
                 "I search the bookshelf.",
                 colors::text(),
                 MsgInterruptPlayer::no,
-                MorePromptOnMsg::yes );
+                MorePromptOnMsg::yes);
 
         m_is_looted = true;
 
-        if ( m_item_container.is_empty() )
+        if (m_item_container.is_empty())
         {
-                msg_log::add( "There is nothing of interest." );
+                msg_log::add("There is nothing of interest.");
         }
         else
         {
-                m_item_container.open( m_pos, map::g_player );
+                m_item_container.open(m_pos, map::g_player);
         }
 }
 
-std::string Bookshelf::name( const Article article ) const
+std::string Bookshelf::name(const Article article) const
 {
-        std::string ret = ( article == Article::a ) ? "a " : "the ";
+        std::string ret = (article == Article::a) ? "a " : "the ";
 
-        if ( m_burn_state == BurnState::burning )
+        if (m_burn_state == BurnState::burning)
         {
                 ret += "burning ";
         }
@@ -4537,9 +4567,9 @@ Color Bookshelf::color_default() const
 // -----------------------------------------------------------------------------
 // AlchemistBench
 // -----------------------------------------------------------------------------
-AlchemistBench::AlchemistBench( const P& p ) :
-        Terrain( p ),
-        m_is_looted( false )
+AlchemistBench::AlchemistBench(const P& p) :
+        Terrain(p),
+        m_is_looted(false)
 {
         // Contained items
         const int nr_items_min =
@@ -4551,46 +4581,46 @@ AlchemistBench::AlchemistBench( const P& p ) :
 
         int incr_max_items_one_in = 12;
 
-        if ( player_bon::has_trait( Trait::treasure_hunter ) )
+        if (player_bon::has_trait(Trait::treasure_hunter))
         {
                 incr_max_items_one_in /= 2;
         }
 
-        if ( rnd::one_in( incr_max_items_one_in ) )
+        if (rnd::one_in(incr_max_items_one_in))
         {
                 ++nr_items_max;
         }
 
         m_item_container.init(
                 terrain::Id::alchemist_bench,
-                rnd::range( nr_items_min, nr_items_max ) );
+                rnd::range(nr_items_min, nr_items_max));
 }
 
 void AlchemistBench::on_hit(
         const DmgType dmg_type,
         actor::Actor* const actor,
-        const int dmg )
+        const int dmg)
 {
         (void)actor;
         (void)dmg;
 
-        switch ( dmg_type )
+        switch (dmg_type)
         {
         case DmgType::explosion:
         case DmgType::pure:
-                if ( map::is_pos_seen_by_player( m_pos ) )
+                if (map::is_pos_seen_by_player(m_pos))
                 {
-                        msg_log::add( "The alchemist's workbench is destroyed." );
+                        msg_log::add("The alchemist's workbench is destroyed.");
                 }
 
-                map::put( new RubbleLow( m_pos ) );
+                map::put(new RubbleLow(m_pos));
                 map::update_vision();
                 break;
 
         case DmgType::fire:
                 m_item_container.clear();
                 m_is_looted = true;
-                try_start_burning( Verbose::yes );
+                try_start_burning(Verbose::yes);
                 break;
 
         default:
@@ -4600,51 +4630,51 @@ void AlchemistBench::on_hit(
 
 WasDestroyed AlchemistBench::on_finished_burning()
 {
-        if ( map::is_pos_seen_by_player( m_pos ) )
+        if (map::is_pos_seen_by_player(m_pos))
         {
-                msg_log::add( "The alchemist's workbench burns down." );
+                msg_log::add("The alchemist's workbench burns down.");
         }
 
-        auto* const rubble = new RubbleLow( m_pos );
+        auto* const rubble = new RubbleLow(m_pos);
 
         rubble->m_burn_state = BurnState::has_burned;
 
-        map::put( rubble );
+        map::put(rubble);
 
         map::update_vision();
 
         return WasDestroyed::yes;
 }
 
-void AlchemistBench::bump( actor::Actor& actor_bumping )
+void AlchemistBench::bump(actor::Actor& actor_bumping)
 {
-        if ( ! actor_bumping.is_player() )
+        if (!actor_bumping.is_player())
         {
                 return;
         }
 
-        if ( ! map::g_cells.at( m_pos ).is_seen_by_player )
+        if (!map::g_cells.at(m_pos).is_seen_by_player)
         {
-                msg_log::add( "There is a wooden bench here." );
+                msg_log::add("There is a wooden bench here.");
 
                 return;
         }
 
-        if ( m_burn_state == BurnState::burning )
+        if (m_burn_state == BurnState::burning)
         {
-                msg_log::add( "The alchemist's workbench is on fire." );
+                msg_log::add("The alchemist's workbench is on fire.");
 
                 return;
         }
 
-        if ( m_item_container.is_empty() && m_is_looted )
+        if (m_item_container.is_empty() && m_is_looted)
         {
-                msg_log::add( "The alchemist's workbench is empty." );
+                msg_log::add("The alchemist's workbench is empty.");
 
                 return;
         }
 
-        if ( ! m_is_looted )
+        if (!m_is_looted)
         {
                 player_loot();
         }
@@ -4656,29 +4686,29 @@ void AlchemistBench::player_loot()
                 "I search the alchemist's workbench.",
                 colors::text(),
                 MsgInterruptPlayer::no,
-                MorePromptOnMsg::yes );
+                MorePromptOnMsg::yes);
 
         m_is_looted = true;
 
-        if ( m_item_container.is_empty() )
+        if (m_item_container.is_empty())
         {
-                msg_log::add( "There is nothing of interest." );
+                msg_log::add("There is nothing of interest.");
         }
         else
         {
-                m_item_container.open( m_pos, map::g_player );
+                m_item_container.open(m_pos, map::g_player);
         }
 }
 
-std::string AlchemistBench::name( const Article article ) const
+std::string AlchemistBench::name(const Article article) const
 {
-        std::string a = ( article == Article::a ) ? "an " : "the ";
+        std::string a = (article == Article::a) ? "an " : "the ";
 
         std::string mod;
 
-        if ( m_burn_state == BurnState::burning )
+        if (m_burn_state == BurnState::burning)
         {
-                if ( article == Article::a )
+                if (article == Article::a)
                 {
                         a = "a ";
                 }
@@ -4704,21 +4734,21 @@ Color AlchemistBench::color_default() const
 // -----------------------------------------------------------------------------
 // Cocoon
 // -----------------------------------------------------------------------------
-Cocoon::Cocoon( const P& p ) :
-        Terrain( p ),
-        m_is_trapped( rnd::fraction( 6, 10 ) ),
-        m_is_open( false )
+Cocoon::Cocoon(const P& p) :
+        Terrain(p),
+        m_is_trapped(rnd::fraction(6, 10)),
+        m_is_open(false)
 {
-        if ( m_is_trapped )
+        if (m_is_trapped)
         {
-                m_item_container.init( terrain::Id::cocoon, 0 );
+                m_item_container.init(terrain::Id::cocoon, 0);
         }
         else
         {
                 const bool is_treasure_hunter =
-                        player_bon::has_trait( Trait::treasure_hunter );
+                        player_bon::has_trait(Trait::treasure_hunter);
 
-                const Fraction fraction_empty( 6, 10 );
+                const Fraction fraction_empty(6, 10);
 
                 const int nr_items_min =
                         fraction_empty.roll()
@@ -4727,40 +4757,40 @@ Cocoon::Cocoon( const P& p ) :
 
                 const int nr_items_max =
                         nr_items_min +
-                        ( is_treasure_hunter
-                                  ? 1
-                                  : 0 );
+                        (is_treasure_hunter
+                                 ? 1
+                                 : 0);
 
                 m_item_container.init(
                         terrain::Id::cocoon,
-                        rnd::range( nr_items_min, nr_items_max ) );
+                        rnd::range(nr_items_min, nr_items_max));
         }
 }
 
 void Cocoon::on_hit(
         const DmgType dmg_type,
         actor::Actor* const actor,
-        const int dmg )
+        const int dmg)
 {
         (void)actor;
         (void)dmg;
 
-        switch ( dmg_type )
+        switch (dmg_type)
         {
         case DmgType::explosion:
         case DmgType::pure:
-                if ( map::is_pos_seen_by_player( m_pos ) )
+                if (map::is_pos_seen_by_player(m_pos))
                 {
-                        msg_log::add( "The cocoon is destroyed." );
+                        msg_log::add("The cocoon is destroyed.");
                 }
 
-                map::put( new RubbleLow( m_pos ) );
+                map::put(new RubbleLow(m_pos));
                 map::update_vision();
                 break;
 
         case DmgType::fire:
                 m_item_container.clear();
-                try_start_burning( Verbose::yes );
+                try_start_burning(Verbose::yes);
                 break;
 
         default:
@@ -4770,128 +4800,128 @@ void Cocoon::on_hit(
 
 WasDestroyed Cocoon::on_finished_burning()
 {
-        if ( map::is_pos_seen_by_player( m_pos ) )
+        if (map::is_pos_seen_by_player(m_pos))
         {
-                msg_log::add( "The cocoon burns down." );
+                msg_log::add("The cocoon burns down.");
         }
 
-        auto* const rubble = new RubbleLow( m_pos );
+        auto* const rubble = new RubbleLow(m_pos);
 
         rubble->m_burn_state = BurnState::has_burned;
 
-        map::put( rubble );
+        map::put(rubble);
 
         map::update_vision();
 
         return WasDestroyed::yes;
 }
 
-void Cocoon::bump( actor::Actor& actor_bumping )
+void Cocoon::bump(actor::Actor& actor_bumping)
 {
-        if ( ! actor_bumping.is_player() )
+        if (!actor_bumping.is_player())
         {
                 return;
         }
 
-        if ( ! map::g_cells.at( m_pos ).is_seen_by_player )
+        if (!map::g_cells.at(m_pos).is_seen_by_player)
         {
-                msg_log::add( "There is a cocoon here." );
+                msg_log::add("There is a cocoon here.");
 
                 return;
         }
 
-        if ( m_burn_state == BurnState::burning )
+        if (m_burn_state == BurnState::burning)
         {
-                msg_log::add( "The cocoon is on fire." );
+                msg_log::add("The cocoon is on fire.");
 
                 return;
         }
 
-        if ( m_item_container.is_empty() && m_is_open )
+        if (m_item_container.is_empty() && m_is_open)
         {
-                msg_log::add( "The cocoon is empty." );
+                msg_log::add("The cocoon is empty.");
 
                 return;
         }
 
-        if ( insanity::has_sympt( InsSymptId::phobia_spider ) )
+        if (insanity::has_sympt(InsSymptId::phobia_spider))
         {
                 map::g_player->m_properties.apply(
-                        new PropTerrified() );
+                        new PropTerrified());
         }
 
-        if ( m_is_open )
+        if (m_is_open)
         {
                 player_loot();
         }
         else
         {
-                open( map::g_player );
+                open(map::g_player);
         }
 }
 
-DidTriggerTrap Cocoon::trigger_trap( actor::Actor* const actor )
+DidTriggerTrap Cocoon::trigger_trap(actor::Actor* const actor)
 {
         (void)actor;
 
-        if ( m_is_trapped )
+        if (m_is_trapped)
         {
-                const int rnd = rnd::range( 1, 100 );
+                const int rnd = rnd::range(1, 100);
 
-                if ( rnd < 15 )
+                if (rnd < 15)
                 {
                         // A dead body
                         msg_log::add(
-                                "There is a half-dissolved human body inside!" );
+                                "There is a half-dissolved human body inside!");
 
                         map::g_player->incr_shock(
                                 ShockLvl::terrifying,
-                                ShockSrc::misc );
+                                ShockSrc::misc);
 
                         m_is_trapped = false;
 
                         return DidTriggerTrap::yes;
                 }
-                else if ( rnd < 50 )
+                else if (rnd < 50)
                 {
                         // Spiders
                         TRACE << "Attempting to spawn spiders" << std::endl;
                         std::vector<actor::Id> spawn_bucket;
 
-                        for ( int i = 0; i < (int)actor::Id::END; ++i )
+                        for (int i = 0; i < (int)actor::Id::END; ++i)
                         {
-                                const auto& d = actor::g_data[ i ];
+                                const auto& d = actor::g_data[i];
 
-                                if ( d.is_spider &&
-                                     d.actor_size == actor::Size::floor &&
-                                     d.is_auto_spawn_allowed &&
-                                     ! d.is_unique )
+                                if (d.is_spider &&
+                                    d.actor_size == actor::Size::floor &&
+                                    d.is_auto_spawn_allowed &&
+                                    !d.is_unique)
                                 {
-                                        spawn_bucket.push_back( d.id );
+                                        spawn_bucket.push_back(d.id);
                                 }
                         }
 
                         const int nr_candidates = spawn_bucket.size();
 
-                        if ( nr_candidates > 0 )
+                        if (nr_candidates > 0)
                         {
                                 TRACE << "Spawn candidates found, attempting to place"
                                       << std::endl;
 
-                                msg_log::add( "There are spiders inside!" );
+                                msg_log::add("There are spiders inside!");
 
-                                const size_t nr_spiders = rnd::range( 2, 5 );
+                                const size_t nr_spiders = rnd::range(2, 5);
 
                                 const int idx =
-                                        rnd::range( 0, nr_candidates - 1 );
+                                        rnd::range(0, nr_candidates - 1);
 
                                 const actor::Id actor_id_to_summon =
-                                        spawn_bucket[ idx ];
+                                        spawn_bucket[idx];
 
                                 actor::spawn(
                                         m_pos,
-                                        { nr_spiders, actor_id_to_summon },
-                                        map::rect() )
+                                        {nr_spiders, actor_id_to_summon},
+                                        map::rect())
                                         .make_aware_of_player();
 
                                 m_is_trapped = false;
@@ -4906,21 +4936,21 @@ DidTriggerTrap Cocoon::trigger_trap( actor::Actor* const actor )
 
 void Cocoon::player_loot()
 {
-        msg_log::add( "I search the Cocoon." );
+        msg_log::add("I search the Cocoon.");
 
-        if ( m_item_container.is_empty() )
+        if (m_item_container.is_empty())
         {
-                msg_log::add( "It is empty." );
+                msg_log::add("It is empty.");
         }
         else
         {
-                m_item_container.open( m_pos, map::g_player );
+                m_item_container.open(m_pos, map::g_player);
         }
 }
 
-DidOpen Cocoon::open( actor::Actor* const actor_opening )
+DidOpen Cocoon::open(actor::Actor* const actor_opening)
 {
-        if ( m_is_open )
+        if (m_is_open)
         {
                 return DidOpen::no;
         }
@@ -4929,22 +4959,22 @@ DidOpen Cocoon::open( actor::Actor* const actor_opening )
                 // Was not already open
                 m_is_open = true;
 
-                if ( map::g_cells.at( m_pos ).is_seen_by_player )
+                if (map::g_cells.at(m_pos).is_seen_by_player)
                 {
-                        msg_log::add( "The cocoon opens." );
+                        msg_log::add("The cocoon opens.");
                 }
 
-                trigger_trap( actor_opening );
+                trigger_trap(actor_opening);
 
                 return DidOpen::yes;
         }
 }
 
-std::string Cocoon::name( const Article article ) const
+std::string Cocoon::name(const Article article) const
 {
-        std::string ret = ( article == Article::a ) ? "a " : "the ";
+        std::string ret = (article == Article::a) ? "a " : "the ";
 
-        if ( m_burn_state == BurnState::burning )
+        if (m_burn_state == BurnState::burning)
         {
                 ret += "burning ";
         }

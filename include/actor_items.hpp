@@ -14,7 +14,7 @@ class Actor;
 
 namespace actor_items
 {
-void make_for_actor( actor::Actor& actor );
+void make_for_actor(actor::Actor& actor);
 
 }  // namespace actor_items
 

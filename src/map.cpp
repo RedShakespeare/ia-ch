@@ -31,17 +31,17 @@
 // -----------------------------------------------------------------------------
 // Private
 // -----------------------------------------------------------------------------
-static P s_dims( 0, 0 );
+static P s_dims(0, 0);
 
 // -----------------------------------------------------------------------------
 // Cell
 // -----------------------------------------------------------------------------
 Cell::Cell() :
-        is_explored( false ),
-        is_seen_by_player( false ),
+        is_explored(false),
+        is_seen_by_player(false),
 
-        item( nullptr ),
-        terrain( nullptr )
+        item(nullptr),
+        terrain(nullptr)
 {}
 
 Cell::~Cell()
@@ -79,16 +79,16 @@ int g_dlvl = 0;
 
 Color g_wall_color;
 
-Array2<Cell> g_cells( 0, 0 );
+Array2<Cell> g_cells(0, 0);
 
-Array2<bool> g_light( 0, 0 );
-Array2<bool> g_dark( 0, 0 );
+Array2<bool> g_light(0, 0);
+Array2<bool> g_dark(0, 0);
 
-Array2<Color> g_minimap( 0, 0 );
+Array2<Color> g_minimap(0, 0);
 
 std::vector<Room*> g_room_list;
 
-Array2<Room*> g_room_map( 0, 0 );
+Array2<Room*> g_room_map(0, 0);
 
 std::vector<ChokePointData> g_choke_point_data;
 
@@ -98,14 +98,14 @@ void init()
 
         g_room_list.clear();
 
-        actor::Actor* actor = actor::make( actor::Id::player, { 0, 0 } );
+        actor::Actor* actor = actor::make(actor::Id::player, {0, 0});
 
-        g_player = static_cast<actor::Player*>( actor );
+        g_player = static_cast<actor::Player*>(actor);
 }
 
 void cleanup()
 {
-        reset( P( 0, 0 ) );
+        reset(P(0, 0));
 
         // NOTE: The player object is deleted elsewhere
         g_player = nullptr;
@@ -113,7 +113,7 @@ void cleanup()
 
 void save()
 {
-        saving::put_int( g_dlvl );
+        saving::put_int(g_dlvl);
 }
 
 void load()
@@ -121,7 +121,7 @@ void load()
         g_dlvl = saving::get_int();
 }
 
-void reset( const P& dims )
+void reset(const P& dims)
 {
         actor::delete_all_mon();
 
@@ -129,7 +129,7 @@ void reset( const P& dims )
 
         game_time::reset_current_actor_idx();
 
-        for ( auto* room : g_room_list )
+        for (auto* room : g_room_list)
         {
                 delete room;
         }
@@ -138,34 +138,34 @@ void reset( const P& dims )
 
         g_choke_point_data.clear();
 
-        for ( auto& cell : g_cells )
+        for (auto& cell : g_cells)
         {
                 cell.reset();
         }
 
         s_dims = dims;
 
-        g_cells.resize_no_init( dims );
+        g_cells.resize_no_init(dims);
 
-        for ( auto& cell : g_cells )
+        for (auto& cell : g_cells)
         {
                 cell.reset();
         }
 
-        g_light.resize( s_dims );
-        g_dark.resize( s_dims );
-        g_room_map.resize( s_dims );
+        g_light.resize(s_dims);
+        g_dark.resize(s_dims);
+        g_room_map.resize(s_dims);
 
-        for ( int x = 0; x < w(); ++x )
+        for (int x = 0; x < w(); ++x)
         {
-                for ( int y = 0; y < h(); ++y )
+                for (int y = 0; y < h(); ++y)
                 {
-                        put( new terrain::Wall( P( x, y ) ) );
+                        put(new terrain::Wall(P(x, y)));
                 }
         }
 
         // Occasionally set wall color to something unusual
-        if ( rnd::one_in( 3 ) )
+        if (rnd::one_in(3))
         {
                 std::vector<Color> wall_color_bucket = {
                         colors::red(),
@@ -175,7 +175,7 @@ void reset( const P& dims )
                         colors::gray_brown(),
                 };
 
-                g_wall_color = rnd::element( wall_color_bucket );
+                g_wall_color = rnd::element(wall_color_bucket);
         }
         else
         {
@@ -201,7 +201,7 @@ P dims()
 
 R rect()
 {
-        return R( { 0, 0 }, s_dims - 1 );
+        return R({0, 0}, s_dims - 1);
 }
 
 size_t nr_cells()
@@ -209,26 +209,26 @@ size_t nr_cells()
         return g_cells.length();
 }
 
-terrain::Terrain* put( terrain::Terrain* const t )
+terrain::Terrain* put(terrain::Terrain* const t)
 {
-        ASSERT( t );
+        ASSERT(t);
 
         const P p = t->pos();
 
-        Cell& cell = g_cells.at( p );
+        Cell& cell = g_cells.at(p);
 
         delete cell.terrain;
 
         cell.terrain = t;
 
 #ifndef NDEBUG
-        if ( init::g_is_demo_mapgen )
+        if (init::g_is_demo_mapgen)
         {
-                if ( t->id() == terrain::Id::floor )
+                if (t->id() == terrain::Id::floor)
                 {
-                        viewport::show( p, viewport::ForceCentering::no );
+                        viewport::show(p, viewport::ForceCentering::no);
 
-                        for ( auto& shown_cell : g_cells )
+                        for (auto& shown_cell : g_cells)
                         {
                                 shown_cell.is_seen_by_player = true;
                                 shown_cell.is_explored = true;
@@ -240,13 +240,13 @@ terrain::Terrain* put( terrain::Terrain* const t )
                                 gfx::TileId::aim_marker_line,
                                 'X',
                                 Panel::map,
-                                viewport::to_view_pos( p ),
-                                colors::yellow() );
+                                viewport::to_view_pos(p),
+                                colors::yellow());
 
                         io::update_screen();
 
                         // NOTE: Delay must be > 1 for user input to be read
-                        io::sleep( 3 );
+                        io::sleep(3);
                 }
         }
 #endif  // NDEBUG
@@ -267,19 +267,19 @@ void update_vision()
         states::draw();
 }
 
-void make_blood( const P& origin )
+void make_blood(const P& origin)
 {
-        for ( int dx = -1; dx <= 1; ++dx )
+        for (int dx = -1; dx <= 1; ++dx)
         {
-                for ( int dy = -1; dy <= 1; ++dy )
+                for (int dy = -1; dy <= 1; ++dy)
                 {
-                        const P c = origin + P( dx, dy );
+                        const P c = origin + P(dx, dy);
 
-                        auto* const t = g_cells.at( c ).terrain;
+                        auto* const t = g_cells.at(c).terrain;
 
-                        if ( t->can_have_blood() )
+                        if (t->can_have_blood())
                         {
-                                if ( rnd::one_in( 3 ) )
+                                if (rnd::one_in(3))
                                 {
                                         t->make_bloody();
                                 }
@@ -288,49 +288,49 @@ void make_blood( const P& origin )
         }
 }
 
-void make_gore( const P& origin )
+void make_gore(const P& origin)
 {
-        for ( int dx = -1; dx <= 1; ++dx )
+        for (int dx = -1; dx <= 1; ++dx)
         {
-                for ( int dy = -1; dy <= 1; ++dy )
+                for (int dy = -1; dy <= 1; ++dy)
                 {
-                        const P c = origin + P( dx, dy );
+                        const P c = origin + P(dx, dy);
 
-                        if ( rnd::one_in( 3 ) )
+                        if (rnd::one_in(3))
                         {
-                                g_cells.at( c ).terrain->try_put_gore();
+                                g_cells.at(c).terrain->try_put_gore();
                         }
                 }
         }
 }
 
-void delete_and_remove_room_from_list( Room* const room )
+void delete_and_remove_room_from_list(Room* const room)
 {
-        for ( size_t i = 0; i < g_room_list.size(); ++i )
+        for (size_t i = 0; i < g_room_list.size(); ++i)
         {
-                if ( g_room_list[ i ] == room )
+                if (g_room_list[i] == room)
                 {
                         delete room;
-                        g_room_list.erase( g_room_list.begin() + i );
+                        g_room_list.erase(g_room_list.begin() + i);
                         return;
                 }
         }
 
-        ASSERT( false && "Tried to remove non-existing room" );
+        ASSERT(false && "Tried to remove non-existing room");
 }
 
-bool is_pos_seen_by_player( const P& p )
+bool is_pos_seen_by_player(const P& p)
 {
-        ASSERT( is_pos_inside_map( p ) );
+        ASSERT(is_pos_inside_map(p));
 
-        return g_cells.at( p ).is_seen_by_player;
+        return g_cells.at(p).is_seen_by_player;
 }
 
-actor::Actor* first_actor_at_pos( const P& pos, ActorState state )
+actor::Actor* first_actor_at_pos(const P& pos, ActorState state)
 {
-        for ( auto* const actor : game_time::g_actors )
+        for (auto* const actor : game_time::g_actors)
         {
-                if ( ( actor->m_pos == pos ) && ( actor->m_state == state ) )
+                if ((actor->m_pos == pos) && (actor->m_state == state))
                 {
                         return actor;
                 }
@@ -339,11 +339,11 @@ actor::Actor* first_actor_at_pos( const P& pos, ActorState state )
         return nullptr;
 }
 
-terrain::Terrain* first_mob_at_pos( const P& pos )
+terrain::Terrain* first_mob_at_pos(const P& pos)
 {
-        for ( auto* const mob : game_time::g_mobs )
+        for (auto* const mob : game_time::g_mobs)
         {
-                if ( mob->pos() == pos )
+                if (mob->pos() == pos)
                 {
                         return mob;
                 }
@@ -354,25 +354,25 @@ terrain::Terrain* first_mob_at_pos( const P& pos )
 
 void actor_cells(
         const std::vector<actor::Actor*>& actors,
-        std::vector<P>& out )
+        std::vector<P>& out)
 {
         out.clear();
 
-        for ( const auto* const a : actors )
+        for (const auto* const a : actors)
         {
-                out.push_back( a->m_pos );
+                out.push_back(a->m_pos);
         }
 }
 
 Array2<std::vector<actor::Actor*>> get_actor_array()
 {
-        Array2<std::vector<actor::Actor*>> a( dims() );
+        Array2<std::vector<actor::Actor*>> a(dims());
 
-        for ( auto* actor : game_time::g_actors )
+        for (auto* actor : game_time::g_actors)
         {
                 const P& p = actor->m_pos;
 
-                a.at( p ).push_back( actor );
+                a.at(p).push_back(actor);
         }
 
         return a;
@@ -380,69 +380,69 @@ Array2<std::vector<actor::Actor*>> get_actor_array()
 
 actor::Actor* random_closest_actor(
         const P& c,
-        const std::vector<actor::Actor*>& actors )
+        const std::vector<actor::Actor*>& actors)
 {
-        if ( actors.empty() )
+        if (actors.empty())
         {
                 return nullptr;
         }
 
-        if ( actors.size() == 1 )
+        if (actors.size() == 1)
         {
-                return actors[ 0 ];
+                return actors[0];
         }
 
         // Find distance to nearest actor(s)
         int dist_to_nearest = INT_MAX;
 
-        for ( auto* actor : actors )
+        for (auto* actor : actors)
         {
-                const int current_dist = king_dist( c, actor->m_pos );
+                const int current_dist = king_dist(c, actor->m_pos);
 
-                if ( current_dist < dist_to_nearest )
+                if (current_dist < dist_to_nearest)
                 {
                         dist_to_nearest = current_dist;
                 }
         }
 
-        ASSERT( dist_to_nearest != INT_MAX );
+        ASSERT(dist_to_nearest != INT_MAX);
 
         // Store all actors with distance equal to the nearest distance
         std::vector<actor::Actor*> closest_actors;
 
-        for ( auto* actor : actors )
+        for (auto* actor : actors)
         {
-                if ( king_dist( c, actor->m_pos ) == dist_to_nearest )
+                if (king_dist(c, actor->m_pos) == dist_to_nearest)
                 {
-                        closest_actors.push_back( actor );
+                        closest_actors.push_back(actor);
                 }
         }
 
-        ASSERT( ! closest_actors.empty() );
+        ASSERT(!closest_actors.empty());
 
-        return rnd::element( closest_actors );
+        return rnd::element(closest_actors);
 }
 
-bool is_pos_inside_map( const P& pos )
+bool is_pos_inside_map(const P& pos)
 {
-        return ( pos.x >= 0 ) &&
-                ( pos.y >= 0 ) &&
-                ( pos.x < w() ) &&
-                ( pos.y < h() );
+        return (pos.x >= 0) &&
+                (pos.y >= 0) &&
+                (pos.x < w()) &&
+                (pos.y < h());
 }
 
-bool is_pos_inside_outer_walls( const P& pos )
+bool is_pos_inside_outer_walls(const P& pos)
 {
-        return ( pos.x > 0 ) &&
-                ( pos.y > 0 ) &&
-                ( pos.x < ( w() - 1 ) ) &&
-                ( pos.y < ( h() - 1 ) );
+        return (pos.x > 0) &&
+                (pos.y > 0) &&
+                (pos.x < (w() - 1)) &&
+                (pos.y < (h() - 1));
 }
 
-bool is_area_inside_map( const R& area )
+bool is_area_inside_map(const R& area)
 {
-        return is_pos_inside_map( area.p0 ) &&
-                is_pos_inside_map( area.p1 );
+        return is_pos_inside_map(area.p0) &&
+                is_pos_inside_map(area.p1);
 }
 
 }  // namespace map

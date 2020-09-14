@@ -29,19 +29,19 @@ struct TimeData
                 int day_val,
                 int hour_val,
                 int minute_val,
-                int second_val ) :
+                int second_val) :
 
-                year( year_val ),
-                month( month_val ),
-                day( day_val ),
-                hour( hour_val ),
-                minute( minute_val ),
-                second( second_val )
+                year(year_val),
+                month(month_val),
+                day(day_val),
+                hour(hour_val),
+                minute(minute_val),
+                second(second_val)
         {}
 
         std::string time_str(
                 TimeType lowest,
-                bool add_separators ) const;
+                bool add_separators) const;
 
         int year;
         int month;

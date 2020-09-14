@@ -148,9 +148,9 @@ enum class SfxId
         END
 };
 
-SfxId str_to_sfx_id( const std::string& str );
+SfxId str_to_sfx_id(const std::string& str);
 
-std::string sfx_id_to_str( SfxId id );
+std::string sfx_id_to_str(SfxId id);
 
 }  // namespace audio
 

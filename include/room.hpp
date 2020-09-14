@@ -67,14 +67,14 @@ enum class RoomType
 struct RoomAutoTerrainRule
 {
         RoomAutoTerrainRule() :
-                id( terrain::Id::END ),
-                nr_allowed( 0 ) {}
+                id(terrain::Id::END),
+                nr_allowed(0) {}
 
         RoomAutoTerrainRule(
                 const terrain::Id terrain_id,
-                const int nr_terrains_allowed ) :
-                id( terrain_id ),
-                nr_allowed( nr_terrains_allowed ) {}
+                const int nr_terrains_allowed) :
+                id(terrain_id),
+                nr_allowed(nr_terrains_allowed) {}
 
         terrain::Id id;
         int nr_allowed;
@@ -87,18 +87,18 @@ void init_room_bucket();
 // NOTE: These functions do not make rooms on the map, just create Room objects.
 // Use the "make_room..." functions in the map generator for a convenient way to
 // generate rooms on the map.
-Room* make( RoomType type, const R& r );
+Room* make(RoomType type, const R& r);
 
-Room* make_random_room( const R& r, IsSubRoom is_subroom );
+Room* make_random_room(const R& r, IsSubRoom is_subroom);
 
-RoomType str_to_room_type( const std::string& str );
+RoomType str_to_room_type(const std::string& str);
 
 }  // namespace room_factory
 
 class Room
 {
 public:
-        Room( R r, RoomType type );
+        Room(R r, RoomType type);
 
         Room() = delete;
 
@@ -106,8 +106,8 @@ public:
 
         std::vector<P> positions_in_room() const;
 
-        virtual void on_pre_connect( Array2<bool>& door_proposals ) = 0;
-        virtual void on_post_connect( Array2<bool>& door_proposals ) = 0;
+        virtual void on_pre_connect(Array2<bool>& door_proposals) = 0;
+        virtual void on_post_connect(Array2<bool>& door_proposals) = 0;
 
         virtual void populate_monsters() const {}
 
@@ -134,13 +134,13 @@ protected:
 class StdRoom : public Room
 {
 public:
-        StdRoom( R r, RoomType type ) :
-                Room( r, type ) {}
+        StdRoom(R r, RoomType type) :
+                Room(r, type) {}
 
         virtual ~StdRoom() = default;
 
-        void on_pre_connect( Array2<bool>& door_proposals ) final;
-        void on_post_connect( Array2<bool>& door_proposals ) final;
+        void on_pre_connect(Array2<bool>& door_proposals) final;
+        void on_post_connect(Array2<bool>& door_proposals) final;
 
         virtual bool is_allowed() const
         {
@@ -156,16 +156,16 @@ protected:
         P find_auto_terrain_placement(
                 const std::vector<P>& adj_to_walls,
                 const std::vector<P>& away_from_walls,
-                terrain::Id id ) const;
+                terrain::Id id) const;
 
         void place_auto_terrains();
 
-        virtual void on_pre_connect_hook( Array2<bool>& door_proposals )
+        virtual void on_pre_connect_hook(Array2<bool>& door_proposals)
         {
                 (void)door_proposals;
         }
 
-        virtual void on_post_connect_hook( Array2<bool>& door_proposals )
+        virtual void on_post_connect_hook(Array2<bool>& door_proposals)
         {
                 (void)door_proposals;
         }
@@ -174,68 +174,68 @@ protected:
 class PlainRoom : public StdRoom
 {
 public:
-        PlainRoom( R r ) :
-                StdRoom( r, RoomType::plain ) {}
+        PlainRoom(R r) :
+                StdRoom(r, RoomType::plain) {}
 
 protected:
         std::vector<RoomAutoTerrainRule> auto_terrains_allowed() const override;
 
-        void on_pre_connect_hook( Array2<bool>& door_proposals ) override;
+        void on_pre_connect_hook(Array2<bool>& door_proposals) override;
 
-        void on_post_connect_hook( Array2<bool>& door_proposals ) override;
+        void on_post_connect_hook(Array2<bool>& door_proposals) override;
 };
 
 class HumanRoom : public StdRoom
 {
 public:
-        HumanRoom( R r ) :
-                StdRoom( r, RoomType::human ) {}
+        HumanRoom(R r) :
+                StdRoom(r, RoomType::human) {}
 
         bool is_allowed() const override;
 
 protected:
         std::vector<RoomAutoTerrainRule> auto_terrains_allowed() const override;
 
-        void on_pre_connect_hook( Array2<bool>& door_proposals ) override;
+        void on_pre_connect_hook(Array2<bool>& door_proposals) override;
 
-        void on_post_connect_hook( Array2<bool>& door_proposals ) override;
+        void on_post_connect_hook(Array2<bool>& door_proposals) override;
 };
 
 class JailRoom : public StdRoom
 {
 public:
-        JailRoom( R r ) :
-                StdRoom( r, RoomType::jail ) {}
+        JailRoom(R r) :
+                StdRoom(r, RoomType::jail) {}
 
 protected:
         std::vector<RoomAutoTerrainRule> auto_terrains_allowed() const override;
 
-        void on_pre_connect_hook( Array2<bool>& door_proposals ) override;
+        void on_pre_connect_hook(Array2<bool>& door_proposals) override;
 
-        void on_post_connect_hook( Array2<bool>& door_proposals ) override;
+        void on_post_connect_hook(Array2<bool>& door_proposals) override;
 };
 
 class RitualRoom : public StdRoom
 {
 public:
-        RitualRoom( R r ) :
-                StdRoom( r, RoomType::ritual ) {}
+        RitualRoom(R r) :
+                StdRoom(r, RoomType::ritual) {}
 
         bool is_allowed() const override;
 
 protected:
         std::vector<RoomAutoTerrainRule> auto_terrains_allowed() const override;
 
-        void on_pre_connect_hook( Array2<bool>& door_proposals ) override;
+        void on_pre_connect_hook(Array2<bool>& door_proposals) override;
 
-        void on_post_connect_hook( Array2<bool>& door_proposals ) override;
+        void on_post_connect_hook(Array2<bool>& door_proposals) override;
 };
 
 class SpiderRoom : public StdRoom
 {
 public:
-        SpiderRoom( R r ) :
-                StdRoom( r, RoomType::spider ) {}
+        SpiderRoom(R r) :
+                StdRoom(r, RoomType::spider) {}
 
         bool is_allowed() const override;
 
@@ -247,16 +247,16 @@ public:
 protected:
         std::vector<RoomAutoTerrainRule> auto_terrains_allowed() const override;
 
-        void on_pre_connect_hook( Array2<bool>& door_proposals ) override;
+        void on_pre_connect_hook(Array2<bool>& door_proposals) override;
 
-        void on_post_connect_hook( Array2<bool>& door_proposals ) override;
+        void on_post_connect_hook(Array2<bool>& door_proposals) override;
 };
 
 class SnakePitRoom : public StdRoom
 {
 public:
-        SnakePitRoom( R r ) :
-                StdRoom( r, RoomType::monster ) {}
+        SnakePitRoom(R r) :
+                StdRoom(r, RoomType::monster) {}
 
         bool is_allowed() const override;
 
@@ -265,128 +265,128 @@ public:
 protected:
         std::vector<RoomAutoTerrainRule> auto_terrains_allowed() const override;
 
-        void on_pre_connect_hook( Array2<bool>& door_proposals ) override;
+        void on_pre_connect_hook(Array2<bool>& door_proposals) override;
 
-        void on_post_connect_hook( Array2<bool>& door_proposals ) override;
+        void on_post_connect_hook(Array2<bool>& door_proposals) override;
 };
 
 class CryptRoom : public StdRoom
 {
 public:
-        CryptRoom( R r ) :
-                StdRoom( r, RoomType::crypt ) {}
+        CryptRoom(R r) :
+                StdRoom(r, RoomType::crypt) {}
 
         bool is_allowed() const override;
 
 protected:
         std::vector<RoomAutoTerrainRule> auto_terrains_allowed() const override;
 
-        void on_pre_connect_hook( Array2<bool>& door_proposals ) override;
+        void on_pre_connect_hook(Array2<bool>& door_proposals) override;
 
-        void on_post_connect_hook( Array2<bool>& door_proposals ) override;
+        void on_post_connect_hook(Array2<bool>& door_proposals) override;
 };
 
 class MonsterRoom : public StdRoom
 {
 public:
-        MonsterRoom( R r ) :
-                StdRoom( r, RoomType::monster ) {}
+        MonsterRoom(R r) :
+                StdRoom(r, RoomType::monster) {}
 
         bool is_allowed() const override;
 
 protected:
         std::vector<RoomAutoTerrainRule> auto_terrains_allowed() const override;
 
-        void on_pre_connect_hook( Array2<bool>& door_proposals ) override;
+        void on_pre_connect_hook(Array2<bool>& door_proposals) override;
 
-        void on_post_connect_hook( Array2<bool>& door_proposals ) override;
+        void on_post_connect_hook(Array2<bool>& door_proposals) override;
 };
 
 class DampRoom : public StdRoom
 {
 public:
-        DampRoom( R r ) :
-                StdRoom( r, RoomType::damp ) {}
+        DampRoom(R r) :
+                StdRoom(r, RoomType::damp) {}
 
         bool is_allowed() const override;
 
 protected:
         std::vector<RoomAutoTerrainRule> auto_terrains_allowed() const override;
 
-        void on_pre_connect_hook( Array2<bool>& door_proposals ) override;
+        void on_pre_connect_hook(Array2<bool>& door_proposals) override;
 
-        void on_post_connect_hook( Array2<bool>& door_proposals ) override;
+        void on_post_connect_hook(Array2<bool>& door_proposals) override;
 };
 
 class PoolRoom : public StdRoom
 {
 public:
-        PoolRoom( R r ) :
-                StdRoom( r, RoomType::pool ) {}
+        PoolRoom(R r) :
+                StdRoom(r, RoomType::pool) {}
 
         bool is_allowed() const override;
 
 protected:
         std::vector<RoomAutoTerrainRule> auto_terrains_allowed() const override;
 
-        void on_pre_connect_hook( Array2<bool>& door_proposals ) override;
+        void on_pre_connect_hook(Array2<bool>& door_proposals) override;
 
-        void on_post_connect_hook( Array2<bool>& door_proposals ) override;
+        void on_post_connect_hook(Array2<bool>& door_proposals) override;
 };
 
 class CaveRoom : public StdRoom
 {
 public:
-        CaveRoom( R r ) :
-                StdRoom( r, RoomType::cave ) {}
+        CaveRoom(R r) :
+                StdRoom(r, RoomType::cave) {}
 
         bool is_allowed() const override;
 
 protected:
         std::vector<RoomAutoTerrainRule> auto_terrains_allowed() const override;
 
-        void on_pre_connect_hook( Array2<bool>& door_proposals ) override;
+        void on_pre_connect_hook(Array2<bool>& door_proposals) override;
 
-        void on_post_connect_hook( Array2<bool>& door_proposals ) override;
+        void on_post_connect_hook(Array2<bool>& door_proposals) override;
 };
 
 class ChasmRoom : public StdRoom
 {
 public:
-        ChasmRoom( R r ) :
-                StdRoom( r, RoomType::chasm ) {}
+        ChasmRoom(R r) :
+                StdRoom(r, RoomType::chasm) {}
 
         bool is_allowed() const override;
 
 protected:
         std::vector<RoomAutoTerrainRule> auto_terrains_allowed() const override;
 
-        void on_pre_connect_hook( Array2<bool>& door_proposals ) override;
+        void on_pre_connect_hook(Array2<bool>& door_proposals) override;
 
-        void on_post_connect_hook( Array2<bool>& door_proposals ) override;
+        void on_post_connect_hook(Array2<bool>& door_proposals) override;
 };
 
 class ForestRoom : public StdRoom
 {
 public:
-        ForestRoom( R r ) :
-                StdRoom( r, RoomType::forest ) {}
+        ForestRoom(R r) :
+                StdRoom(r, RoomType::forest) {}
 
         bool is_allowed() const override;
 
 protected:
         std::vector<RoomAutoTerrainRule> auto_terrains_allowed() const override;
 
-        void on_pre_connect_hook( Array2<bool>& door_proposals ) override;
+        void on_pre_connect_hook(Array2<bool>& door_proposals) override;
 
-        void on_post_connect_hook( Array2<bool>& door_proposals ) override;
+        void on_post_connect_hook(Array2<bool>& door_proposals) override;
 };
 
 class TemplateRoom : public StdRoom
 {
 public:
-        TemplateRoom( const R& r, RoomType type ) :
-                StdRoom( r, type ) {}
+        TemplateRoom(const R& r, RoomType type) :
+                StdRoom(r, type) {}
 
         bool allow_sub_rooms() const override
         {
@@ -397,15 +397,15 @@ public:
 class CorrLinkRoom : public Room
 {
 public:
-        CorrLinkRoom( const R& r ) :
-                Room( r, RoomType::corr_link ) {}
+        CorrLinkRoom(const R& r) :
+                Room(r, RoomType::corr_link) {}
 
-        void on_pre_connect( Array2<bool>& door_proposals ) override
+        void on_pre_connect(Array2<bool>& door_proposals) override
         {
                 (void)door_proposals;
         }
 
-        void on_post_connect( Array2<bool>& door_proposals ) override
+        void on_post_connect(Array2<bool>& door_proposals) override
         {
                 (void)door_proposals;
         }
@@ -414,15 +414,15 @@ public:
 class CrumbleRoom : public Room
 {
 public:
-        CrumbleRoom( const R& r ) :
-                Room( r, RoomType::crumble_room ) {}
+        CrumbleRoom(const R& r) :
+                Room(r, RoomType::crumble_room) {}
 
-        void on_pre_connect( Array2<bool>& door_proposals ) override
+        void on_pre_connect(Array2<bool>& door_proposals) override
         {
                 (void)door_proposals;
         }
 
-        void on_post_connect( Array2<bool>& door_proposals ) override
+        void on_post_connect(Array2<bool>& door_proposals) override
         {
                 (void)door_proposals;
         }
@@ -431,13 +431,13 @@ public:
 class RiverRoom : public Room
 {
 public:
-        RiverRoom( const R& r ) :
-                Room( r, RoomType::river ),
-                m_axis( Axis::hor ) {}
+        RiverRoom(const R& r) :
+                Room(r, RoomType::river),
+                m_axis(Axis::hor) {}
 
-        void on_pre_connect( Array2<bool>& door_proposals ) override;
+        void on_pre_connect(Array2<bool>& door_proposals) override;
 
-        void on_post_connect( Array2<bool>& door_proposals ) override
+        void on_post_connect(Array2<bool>& door_proposals) override
         {
                 (void)door_proposals;
         }

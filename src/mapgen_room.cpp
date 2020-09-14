@@ -16,97 +16,109 @@
 // -----------------------------------------------------------------------------
 static void put_templ_terrains(
         const Array2<char>& templ,
-        const P& p0 )
+        const P& p0)
 {
-        const P dims( templ.dims() );
+        const P dims(templ.dims());
 
-        for ( int templ_x = 0; templ_x < dims.x; ++templ_x )
+        for (int templ_x = 0; templ_x < dims.x; ++templ_x)
         {
-                for ( int templ_y = 0; templ_y < dims.y; ++templ_y )
+                for (int templ_y = 0; templ_y < dims.y; ++templ_y)
                 {
-                        const P templ_p( templ_x, templ_y );
+                        const P templ_p(templ_x, templ_y);
 
-                        const P p( p0 + templ_p );
+                        const P p(p0 + templ_p);
 
-                        const char c = templ.at( templ_p );
+                        const char c = templ.at(templ_p);
 
                         bool is_room_cell = true;
 
-                        switch ( c )
+                        switch (c)
                         {
-                        case '.': {
-                                map::put( new terrain::Floor( p ) );
+                        case '.':
+                        {
+                                map::put(new terrain::Floor(p));
                         }
                         break;
 
-                        case '#': {
-                                map::put( new terrain::Wall( p ) );
+                        case '#':
+                        {
+                                map::put(new terrain::Wall(p));
 
                                 is_room_cell = false;
                         }
                         break;
 
-                        case '-': {
-                                map::put( new terrain::Altar( p ) );
+                        case '-':
+                        {
+                                map::put(new terrain::Altar(p));
                         }
                         break;
 
-                        case '~': {
-                                auto* liquid = new terrain::LiquidShallow( p );
+                        case '~':
+                        {
+                                auto* liquid = new terrain::LiquidShallow(p);
 
                                 liquid->m_type = LiquidType::water;
 
-                                map::put( liquid );
+                                map::put(liquid);
                         }
                         break;
 
-                        case '0': {
-                                map::put( new terrain::Brazier( p ) );
+                        case '0':
+                        {
+                                map::put(new terrain::Brazier(p));
                         }
                         break;
 
-                        case 'P': {
-                                map::put( new terrain::Statue( p ) );
+                        case 'P':
+                        {
+                                map::put(new terrain::Statue(p));
                         }
                         break;
 
-                        case '+': {
-                                auto* mimic = new terrain::Wall( p );
+                        case '+':
+                        {
+                                auto* mimic = new terrain::Wall(p);
 
                                 map::put(
                                         new terrain::Door(
                                                 p,
                                                 mimic,
-                                                DoorType::wood ) );
+                                                DoorType::wood));
                         }
                         break;
 
-                        case 'x': {
+                        case 'x':
+                        {
                                 map::put(
                                         new terrain::Door(
                                                 p,
                                                 nullptr,
-                                                DoorType::gate ) );
+                                                DoorType::gate));
                         }
                         break;
 
-                        case '=': {
-                                map::put( new terrain::Grate( p ) );
+                        case '=':
+                        {
+                                map::put(new terrain::Grate(p));
                         }
                         break;
 
-                        case '"': {
-                                map::put( new terrain::Vines( p ) );
+                        case '"':
+                        {
+                                map::put(new terrain::Vines(p));
                         }
                         break;
 
-                        case '*': {
-                                map::put( new terrain::Chains( p ) );
+                        case '*':
+                        {
+                                map::put(new terrain::Chains(p));
                         }
                         break;
 
                         // (Space)
-                        case ' ': {
+                        case ' ':
+                        {
                                 // Do nothing
 
                                 is_room_cell = false;
@@ -128,7 +140,7 @@ static void put_templ_terrains(
                                 // Release mode robustness: invalidate the map
                                 mapgen::g_is_map_valid = false;
 
-                                ASSERT( false );
+                                ASSERT(false);
 
                                 return;
                         }
@@ -136,34 +148,34 @@ static void put_templ_terrains(
 
                         }  // switch
 
-                        if ( ! is_room_cell )
+                        if (!is_room_cell)
                         {
-                                map::g_room_map.at( p ) = nullptr;
+                                map::g_room_map.at(p) = nullptr;
                         }
                 }  // y loop
         }  // x loop
 }
 
-static Room* make_template_room( const RoomTempl& templ, Region& region )
+static Room* make_template_room(const RoomTempl& templ, Region& region)
 {
-        const P dims( templ.symbols.dims() );
+        const P dims(templ.symbols.dims());
 
         // Random position inside the region
-        const P p0( region.r.p0.x + rnd::range( 0, region.r.w() - dims.x ), region.r.p0.y + rnd::range( 0, region.r.h() - dims.y ) );
+        const P p0(region.r.p0.x + rnd::range(0, region.r.w() - dims.x), region.r.p0.y + rnd::range(0, region.r.h() - dims.y));
 
-        const P p1( p0.x + dims.x - 1, p0.y + dims.y - 1 );
+        const P p1(p0.x + dims.x - 1, p0.y + dims.y - 1);
 
-        const R r( p0, p1 );
+        const R r(p0, p1);
 
-        auto* room = new TemplateRoom( r, templ.type );
+        auto* room = new TemplateRoom(r, templ.type);
 
-        mapgen::register_room( *room );
+        mapgen::register_room(*room);
 
         // Place terrains on the map based on the template
 
         // NOTE: This must be done AFTER "register_room", since it may remove
         // some of its cells from the global room map (e.g. untouched cells)
-        put_templ_terrains( templ.symbols, p0 );
+        put_templ_terrains(templ.symbols, p0);
 
         region.main_room = room;
         region.is_free = false;
@@ -177,38 +189,38 @@ static Room* make_template_room( const RoomTempl& templ, Region& region )
 // -----------------------------------------------------------------------------
 namespace mapgen
 {
-Room* make_room( Region& region )
+Room* make_room(Region& region)
 {
-        ASSERT( ! region.main_room );
+        ASSERT(!region.main_room);
 
-        ASSERT( region.is_free );
+        ASSERT(region.is_free);
 
         const int templ_room_one_in_n = 7;
 
         // Make a templated room?
-        if ( ( map::g_dlvl <= g_dlvl_last_mid_game ) &&
-             rnd::one_in( templ_room_one_in_n ) )
+        if ((map::g_dlvl <= g_dlvl_last_mid_game) &&
+            rnd::one_in(templ_room_one_in_n))
         {
-                const P max_dims( region.r.dims() );
+                const P max_dims(region.r.dims());
 
-                const auto* templ = map_templates::random_room_templ( max_dims );
+                const auto* templ = map_templates::random_room_templ(max_dims);
 
-                if ( templ )
+                if (templ)
                 {
                         const auto& symbols = templ->symbols;
 
-                        if ( ( symbols.dims().x > max_dims.x ) ||
-                             ( symbols.dims().y > max_dims.y ) )
+                        if ((symbols.dims().x > max_dims.x) ||
+                            (symbols.dims().y > max_dims.y))
                         {
-                                ASSERT( false );
+                                ASSERT(false);
                         }
                         else
                         {
                                 Room* const room =
-                                        make_template_room( *templ, region );
+                                        make_template_room(*templ, region);
 
                                 map_templates::on_base_room_template_placed(
-                                        *templ );
+                                        *templ);
 
                                 return room;
                         }
@@ -222,11 +234,11 @@ Room* make_room( Region& region )
 
         const R room_rect = region.rnd_room_rect();
 
-        auto* room = room_factory::make_random_room( room_rect, IsSubRoom::no );
+        auto* room = room_factory::make_random_room(room_rect, IsSubRoom::no);
 
-        register_room( *room );
+        register_room(*room);
 
-        make_floor( *room );
+        make_floor(*room);
 
         region.main_room = room;
         region.is_free = false;
@@ -234,13 +246,13 @@ Room* make_room( Region& region )
         return room;
 }
 
-Room* make_room( const R& r, const IsSubRoom is_sub_room )
+Room* make_room(const R& r, const IsSubRoom is_sub_room)
 {
-        auto* room = room_factory::make_random_room( r, is_sub_room );
+        auto* room = room_factory::make_random_room(r, is_sub_room);
 
-        register_room( *room );
+        register_room(*room);
 
-        make_floor( *room );
+        make_floor(*room);
 
         return room;
 }

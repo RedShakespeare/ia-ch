@@ -23,12 +23,12 @@ ActorDied hit(
         Actor& actor,
         int dmg,
         DmgType dmg_type,
-        AllowWound allow_wound = AllowWound::yes );
+        AllowWound allow_wound = AllowWound::yes);
 
 ActorDied hit_sp(
         Actor& actor,
         int dmg,
-        Verbose verbose = Verbose::yes );
+        Verbose verbose = Verbose::yes);
 
 }  // namespace actor
 

@@ -34,7 +34,7 @@ enum class MapType
 // -----------------------------------------------------------------------------
 namespace map_builder
 {
-std::unique_ptr<MapBuilder> make( MapType map_type );
+std::unique_ptr<MapBuilder> make(MapType map_type);
 
 }  // namespace map_builder
 
@@ -78,11 +78,11 @@ private:
                 return true;
         }
 
-        virtual void handle_template_pos( const P& p, char c ) = 0;
+        virtual void handle_template_pos(const P& p, char c) = 0;
 
         virtual void on_template_built() {}
 
-        Array2<char> m_template { P( 0, 0 ) };
+        Array2<char> m_template {P(0, 0)};
 };
 
 // -----------------------------------------------------------------------------
@@ -120,7 +120,7 @@ private:
                 return true;
         }
 
-        void handle_template_pos( const P& p, char c ) override;
+        void handle_template_pos(const P& p, char c) override;
 
         void on_template_built() override;
 
@@ -148,7 +148,7 @@ private:
                 return true;
         }
 
-        void handle_template_pos( const P& p, char c ) override;
+        void handle_template_pos(const P& p, char c) override;
 
         void on_template_built() override;
 };
@@ -174,7 +174,7 @@ private:
                 return false;
         }
 
-        void handle_template_pos( const P& p, char c ) override;
+        void handle_template_pos(const P& p, char c) override;
 
         void on_template_built() override;
 
@@ -197,7 +197,7 @@ private:
                 return LevelTemplId::egypt;
         }
 
-        void handle_template_pos( const P& p, char c ) override;
+        void handle_template_pos(const P& p, char c) override;
 
         void on_template_built() override;
 
@@ -220,7 +220,7 @@ private:
                 return LevelTemplId::rat_cave;
         }
 
-        void handle_template_pos( const P& p, char c ) override;
+        void handle_template_pos(const P& p, char c) override;
 
         void on_template_built() override;
 };
@@ -246,7 +246,7 @@ private:
                 return false;
         }
 
-        void handle_template_pos( const P& p, char c ) override;
+        void handle_template_pos(const P& p, char c) override;
 
         void on_template_built() override;
 
@@ -269,7 +269,7 @@ private:
                 return LevelTemplId::trapez;
         }
 
-        void handle_template_pos( const P& p, char c ) override;
+        void handle_template_pos(const P& p, char c) override;
 };
 
 #endif  // MAP_BUILDER_HPP

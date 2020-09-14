@@ -126,12 +126,12 @@ enum class MonGroupSize
 struct MonGroupSpawnRule
 {
         MonGroupSpawnRule() :
-                group_size( MonGroupSize::alone ),
-                weight( 1 ) {}
+                group_size(MonGroupSize::alone),
+                weight(1) {}
 
-        MonGroupSpawnRule( MonGroupSize group_size_type, int spawn_weight ) :
-                group_size( group_size_type ),
-                weight( spawn_weight ) {}
+        MonGroupSpawnRule(MonGroupSize group_size_type, int spawn_weight) :
+                group_size(group_size_type),
+                weight(spawn_weight) {}
 
         MonGroupSize group_size;
         int weight;
@@ -139,9 +139,9 @@ struct MonGroupSpawnRule
 
 struct ActorItemSetData
 {
-        item::ItemSetId item_set_id { (item::ItemSetId)0 };
-        int pct_chance_to_spawn { 100 };
-        Range nr_spawned_range { 1, 1 };
+        item::ItemSetId item_set_id {(item::ItemSetId)0};
+        int pct_chance_to_spawn {100};
+        Range nr_spawned_range {1, 1};
 };
 
 struct IntrAttData
@@ -150,16 +150,16 @@ struct IntrAttData
 
         ~IntrAttData() = default;
 
-        item::Id item_id { item::Id::END };
-        int dmg { 0 };
+        item::Id item_id {item::Id::END};
+        int dmg {0};
         ItemAttProp prop_applied {};
 };
 
 struct ActorSpellData
 {
-        SpellId spell_id { SpellId::END };
-        SpellSkill spell_skill { SpellSkill::basic };
-        int pct_chance_to_know { 100 };
+        SpellId spell_id {SpellId::END};
+        SpellSkill spell_skill {SpellSkill::basic};
+        int pct_chance_to_know {100};
 };
 
 enum class Speed
@@ -215,8 +215,8 @@ struct ActorData
         std::vector<ActorSpellData> spells;
         Speed speed;
         AbilityValues ability_values;
-        bool natural_props[ (size_t)PropId::END ];
-        bool ai[ (size_t)AiId::END ];
+        bool natural_props[(size_t)PropId::END];
+        bool ai[(size_t)AiId::END];
         int nr_turns_aware;
         int ranged_cooldown_turns;
         int spawn_min_dlvl, spawn_max_dlvl;
@@ -265,7 +265,7 @@ struct ActorData
         std::vector<Id> starting_allies;
 };
 
-extern ActorData g_data[ (size_t)Id::END ];
+extern ActorData g_data[(size_t)Id::END];
 
 void init();
 

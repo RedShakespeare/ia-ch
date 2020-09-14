@@ -20,8 +20,8 @@
 class PostmortemInfo : public InfoScreenState
 {
 public:
-        PostmortemInfo( std::vector<ColoredString> lines ) :
-                m_lines( std::move( lines ) ) {}
+        PostmortemInfo(std::vector<ColoredString> lines) :
+                m_lines(std::move(lines)) {}
 
         void draw() override;
 
@@ -41,7 +41,7 @@ private:
         }
 
         const std::vector<ColoredString> m_lines {};
-        int m_top_idx { 0 };
+        int m_top_idx {0};
 };
 
 #endif  // POSTMORTEM_HPP

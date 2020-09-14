@@ -205,11 +205,11 @@ enum class TileId
         END
 };
 
-P character_pos( char character );
+P character_pos(char character);
 
-TileId str_to_tile_id( const std::string& str );
+TileId str_to_tile_id(const std::string& str);
 
-std::string tile_id_to_str( TileId id );
+std::string tile_id_to_str(TileId id);
 
 }  // namespace gfx
 

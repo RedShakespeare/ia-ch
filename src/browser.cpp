@@ -15,15 +15,15 @@
 // -----------------------------------------------------------------------------
 // Private
 // -----------------------------------------------------------------------------
-static int nr_menu_keys_avail( const std::vector<char>& menu_keys )
+static int nr_menu_keys_avail(const std::vector<char>& menu_keys)
 {
-        return (int)std::distance( std::begin( menu_keys ), std::end( menu_keys ) );
+        return (int)std::distance(std::begin(menu_keys), std::end(menu_keys));
 }
 
 // -----------------------------------------------------------------------------
 // MenuBrowser
 // -----------------------------------------------------------------------------
-MenuAction MenuBrowser::read( const InputData& input, MenuInputMode mode )
+MenuAction MenuBrowser::read(const InputData& input, MenuInputMode mode)
 {
         // NOTE: j k l are reserved for browsing with vi keys (not included in
         // the standard menu key letters)
@@ -31,62 +31,62 @@ MenuAction MenuBrowser::read( const InputData& input, MenuInputMode mode )
         // Using both shortcut keys and left/right keys is not allowed; It is
         // enough that j k l are reserved from being used as a shortcut keys,
         // 'h' should not also be reserved.
-        ASSERT( ! (
-                ( mode == MenuInputMode::scrolling_and_letters ) &&
-                m_use_left_right_keys ) );
+        ASSERT(!(
+                (mode == MenuInputMode::scrolling_and_letters) &&
+                m_use_left_right_keys));
 
-        if ( ( input.key == SDLK_UP ) ||
-             ( input.key == SDLK_KP_8 ) ||
-             ( input.key == 'k' ) )
+        if ((input.key == SDLK_UP) ||
+            (input.key == SDLK_KP_8) ||
+            (input.key == 'k'))
         {
-                move( VerDir::up );
+                move(VerDir::up);
                 return MenuAction::moved;
         }
 
-        if ( ( input.key == SDLK_DOWN ) ||
-             ( input.key == SDLK_KP_2 ) ||
-             ( input.key == 'j' ) )
+        if ((input.key == SDLK_DOWN) ||
+            (input.key == SDLK_KP_2) ||
+            (input.key == 'j'))
         {
-                move( VerDir::down );
+                move(VerDir::down);
                 return MenuAction::moved;
         }
 
-        if ( ( input.key == SDLK_PAGEUP ) ||
-             ( input.key == '<' ) )
+        if ((input.key == SDLK_PAGEUP) ||
+            (input.key == '<'))
         {
-                move_page( VerDir::up );
+                move_page(VerDir::up);
                 return MenuAction::moved;
         }
 
-        if ( ( input.key == SDLK_PAGEDOWN ) ||
-             ( input.key == '>' ) )
+        if ((input.key == SDLK_PAGEDOWN) ||
+            (input.key == '>'))
         {
-                move_page( VerDir::down );
+                move_page(VerDir::down);
                 return MenuAction::moved;
         }
 
-        if ( m_use_left_right_keys )
+        if (m_use_left_right_keys)
         {
                 // Left/right keys are used
-                if ( ( input.key == SDLK_LEFT ) ||
-                     ( input.key == SDLK_KP_4 ) ||
-                     ( input.key == 'h' ) )
+                if ((input.key == SDLK_LEFT) ||
+                    (input.key == SDLK_KP_4) ||
+                    (input.key == 'h'))
                 {
-                        if ( m_play_selection_audio )
+                        if (m_play_selection_audio)
                         {
-                                audio::play( audio::SfxId::menu_select );
+                                audio::play(audio::SfxId::menu_select);
                         }
 
                         return MenuAction::left;
                 }
 
-                if ( ( input.key == SDLK_RIGHT ) ||
-                     ( input.key == SDLK_KP_6 ) ||
-                     ( input.key == 'l' ) )
+                if ((input.key == SDLK_RIGHT) ||
+                    (input.key == SDLK_KP_6) ||
+                    (input.key == 'l'))
                 {
-                        if ( m_play_selection_audio )
+                        if (m_play_selection_audio)
                         {
-                                audio::play( audio::SfxId::menu_select );
+                                audio::play(audio::SfxId::menu_select);
                         }
 
                         return MenuAction::right;
@@ -95,49 +95,49 @@ MenuAction MenuBrowser::read( const InputData& input, MenuInputMode mode )
         else
         {
                 // Left/right keys are not used - consider 'l' as "selected"
-                if ( input.key == 'l' )
+                if (input.key == 'l')
                 {
-                        if ( m_play_selection_audio )
+                        if (m_play_selection_audio)
                         {
-                                audio::play( audio::SfxId::menu_select );
+                                audio::play(audio::SfxId::menu_select);
                         }
 
                         return MenuAction::selected;
                 }
         }
 
-        if ( input.key == SDLK_RETURN )
+        if (input.key == SDLK_RETURN)
         {
-                if ( m_play_selection_audio )
+                if (m_play_selection_audio)
                 {
-                        audio::play( audio::SfxId::menu_select );
+                        audio::play(audio::SfxId::menu_select);
                 }
 
                 return MenuAction::selected;
         }
 
-        if ( input.key == SDLK_SPACE )
+        if (input.key == SDLK_SPACE)
         {
                 return MenuAction::space;
         }
 
-        if ( input.key == SDLK_ESCAPE )
+        if (input.key == SDLK_ESCAPE)
         {
                 return MenuAction::esc;
         }
 
         // Handle shortcut keys
-        if ( mode == MenuInputMode::scrolling_and_letters )
+        if (mode == MenuInputMode::scrolling_and_letters)
         {
                 const char c = (char)input.key;
 
                 const auto find_result =
                         std::find(
-                                std::begin( m_menu_keys ),
-                                std::end( m_menu_keys ),
-                                c );
+                                std::begin(m_menu_keys),
+                                std::end(m_menu_keys),
+                                c);
 
-                if ( find_result == std::end( m_menu_keys ) )
+                if (find_result == std::end(m_menu_keys))
                 {
                         // Not a valid menu key, ever
                         return MenuAction::none;
@@ -145,7 +145,7 @@ MenuAction MenuBrowser::read( const InputData& input, MenuInputMode mode )
 
 #ifndef NDEBUG
                 // Should never be used as letters (reserved for browsing)
-                if ( ( c == 'j' ) || ( c == 'k' ) || ( c == 'l' ) )
+                if ((c == 'j') || (c == 'k') || (c == 'l'))
                 {
                         PANIC;
                 }
@@ -153,10 +153,10 @@ MenuAction MenuBrowser::read( const InputData& input, MenuInputMode mode )
 
                 const auto relative_idx =
                         (int)std::distance(
-                                std::begin( m_menu_keys ),
-                                find_result );
+                                std::begin(m_menu_keys),
+                                find_result);
 
-                if ( relative_idx >= nr_items_shown() )
+                if (relative_idx >= nr_items_shown())
                 {
                         // The key is not in the range of shown items
                         return MenuAction::none;
@@ -165,11 +165,11 @@ MenuAction MenuBrowser::read( const InputData& input, MenuInputMode mode )
                 // OK, the user did select an item
                 const int global_idx = top_idx_shown() + relative_idx;
 
-                set_y( global_idx );
+                set_y(global_idx);
 
-                if ( m_play_selection_audio )
+                if (m_play_selection_audio)
                 {
-                        audio::play( audio::SfxId::menu_select );
+                        audio::play(audio::SfxId::menu_select);
                 }
 
                 return MenuAction::selected;
@@ -178,32 +178,32 @@ MenuAction MenuBrowser::read( const InputData& input, MenuInputMode mode )
         return MenuAction::none;
 }
 
-void MenuBrowser::move( const VerDir dir )
+void MenuBrowser::move(const VerDir dir)
 {
         const int last_idx = m_nr_items - 1;
 
-        if ( dir == VerDir::up )
+        if (dir == VerDir::up)
         {
                 // Up
-                m_y = m_y == 0 ? last_idx : ( m_y - 1 );
+                m_y = m_y == 0 ? last_idx : (m_y - 1);
         }
         else
         {
                 // Down
-                m_y = m_y == last_idx ? 0 : ( m_y + 1 );
+                m_y = m_y == last_idx ? 0 : (m_y + 1);
         }
 
         update_range_shown();
 
-        audio::play( audio::SfxId::menu_browse );
+        audio::play(audio::SfxId::menu_browse);
 }
 
-void MenuBrowser::move_page( const VerDir dir )
+void MenuBrowser::move_page(const VerDir dir)
 {
-        if ( dir == VerDir::up )
+        if (dir == VerDir::up)
         {
                 // Up
-                if ( m_list_h >= 0 )
+                if (m_list_h >= 0)
                 {
                         m_y -= m_list_h;
                 }
@@ -216,7 +216,7 @@ void MenuBrowser::move_page( const VerDir dir )
         else
         {
                 // Down
-                if ( m_list_h >= 0 )
+                if (m_list_h >= 0)
                 {
                         m_y += m_list_h;
                 }
@@ -231,10 +231,10 @@ void MenuBrowser::move_page( const VerDir dir )
 
         update_range_shown();
 
-        audio::play( audio::SfxId::menu_browse );
+        audio::play(audio::SfxId::menu_browse);
 }
 
-void MenuBrowser::set_y( const int y )
+void MenuBrowser::set_y(const int y)
 {
         m_y = y;
 
@@ -246,7 +246,7 @@ void MenuBrowser::set_y( const int y )
 Range MenuBrowser::range_shown() const
 {
         // Shown ranged defined?
-        if ( m_list_h >= 0 )
+        if (m_list_h >= 0)
         {
                 return m_range_shown;
         }
@@ -255,30 +255,30 @@ Range MenuBrowser::range_shown() const
                 // List height undefined (i.e. showing all)
 
                 // Just return a range of the total number of items
-                return Range( 0, m_nr_items - 1 );
+                return Range(0, m_nr_items - 1);
         }
 }
 
 void MenuBrowser::update_range_shown()
 {
         // Shown ranged defined?
-        if ( m_list_h >= 0 )
+        if (m_list_h >= 0)
         {
-                const int top = ( m_y / m_list_h ) * m_list_h;
-                const int btm = std::min( top + m_list_h, m_nr_items ) - 1;
+                const int top = (m_y / m_list_h) * m_list_h;
+                const int btm = std::min(top + m_list_h, m_nr_items) - 1;
 
-                m_range_shown.set( top, btm );
+                m_range_shown.set(top, btm);
         }
 }
 
 void MenuBrowser::set_y_nearest_valid()
 {
-        m_y = std::clamp( m_y, 0, m_nr_items - 1 );
+        m_y = std::clamp(m_y, 0, m_nr_items - 1);
 }
 
 int MenuBrowser::nr_items_shown() const
 {
-        if ( m_list_h >= 0 )
+        if (m_list_h >= 0)
         {
                 // The list height has been defined
                 return m_range_shown.len();
@@ -294,7 +294,7 @@ int MenuBrowser::nr_items_shown() const
 int MenuBrowser::top_idx_shown() const
 {
         // Shown ranged defined?
-        if ( m_list_h >= 0 )
+        if (m_list_h >= 0)
         {
                 // List height undefined (i.e. showing all)
                 return m_range_shown.min;
@@ -309,7 +309,7 @@ int MenuBrowser::top_idx_shown() const
 int MenuBrowser::btm_idx_shown() const
 {
         // Shown ranged defined?
-        if ( m_list_h >= 0 )
+        if (m_list_h >= 0)
         {
                 return m_range_shown.max;
         }
@@ -323,7 +323,7 @@ int MenuBrowser::btm_idx_shown() const
 bool MenuBrowser::is_on_top_page() const
 {
         // Shown ranged defined?
-        if ( m_list_h >= 0 )
+        if (m_list_h >= 0)
         {
                 return m_range_shown.min == 0;
         }
@@ -337,7 +337,7 @@ bool MenuBrowser::is_on_top_page() const
 bool MenuBrowser::is_on_btm_page() const
 {
         // Shown ranged defined?
-        if ( m_list_h >= 0 )
+        if (m_list_h >= 0)
         {
                 return m_range_shown.max == m_nr_items - 1;
         }
@@ -348,7 +348,7 @@ bool MenuBrowser::is_on_btm_page() const
         }
 }
 
-void MenuBrowser::reset( const int nr_items, const int list_h )
+void MenuBrowser::reset(const int nr_items, const int list_h)
 {
         m_nr_items = nr_items;
 
@@ -356,7 +356,7 @@ void MenuBrowser::reset( const int nr_items, const int list_h )
         // number of menu selection keys available (note that the client asks
         // the browser how many items should actually be drawn, so this capping
         // should be reflected for all clients).
-        m_list_h = std::min( list_h, nr_menu_keys_avail( m_menu_keys ) );
+        m_list_h = std::min(list_h, nr_menu_keys_avail(m_menu_keys));
 
         set_y_nearest_valid();
 

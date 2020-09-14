@@ -226,33 +226,33 @@ struct ItemName
         ItemName(
                 const std::string& name,
                 const std::string& name_pl,
-                const std::string& name_a )
+                const std::string& name_a)
         {
-                names[ (size_t)ItemRefType::plain ] = name;
-                names[ (size_t)ItemRefType::plural ] = name_pl;
-                names[ (size_t)ItemRefType::a ] = name_a;
+                names[(size_t)ItemRefType::plain] = name;
+                names[(size_t)ItemRefType::plural] = name_pl;
+                names[(size_t)ItemRefType::a] = name_a;
         }
 
         ItemName()
         {
-                for ( size_t i = 0; i < (size_t)ItemRefType::END; ++i )
+                for (size_t i = 0; i < (size_t)ItemRefType::END; ++i)
                 {
-                        names[ i ] = "";
+                        names[i] = "";
                 }
         }
 
-        std::string names[ (size_t)ItemRefType::END ];
+        std::string names[(size_t)ItemRefType::END];
 };
 
 struct ItemAttMsgs
 {
         ItemAttMsgs() :
-                player( "" ),
-                other( "" ) {}
+                player(""),
+                other("") {}
 
-        ItemAttMsgs( std::string player_, std::string other_ ) :
-                player( std::move( player_ ) ),
-                other( std::move( other_ ) ) {}
+        ItemAttMsgs(std::string player_, std::string other_) :
+                player(std::move(player_)),
+                other(std::move(other_)) {}
 
         std::string player, other;
 };
@@ -261,9 +261,9 @@ struct ContainerSpawnRule
 {
         ContainerSpawnRule(
                 terrain::Id container_terrain_id,
-                int pct_chance_to_incl_terrain ) :
-                terrain_id( container_terrain_id ),
-                pct_chance_to_incl( pct_chance_to_incl_terrain ) {}
+                int pct_chance_to_incl_terrain) :
+                terrain_id(container_terrain_id),
+                pct_chance_to_incl(pct_chance_to_incl_terrain) {}
 
         terrain::Id terrain_id = terrain::Id::END;
         int pct_chance_to_incl = 0;
@@ -372,7 +372,7 @@ public:
         std::vector<RoomType> native_rooms;
         std::vector<terrain::Id> native_containers;
 
-        int ability_mods_while_equipped[ (size_t)AbilityId::END ];
+        int ability_mods_while_equipped[(size_t)AbilityId::END];
 
         bool allow_display_dmg;
 
@@ -383,7 +383,7 @@ public:
         ArmorData armor;
 };
 
-extern ItemData g_data[ (size_t)Id::END ];
+extern ItemData g_data[(size_t)Id::END];
 
 void init();
 void cleanup();
@@ -391,9 +391,9 @@ void cleanup();
 void save();
 void load();
 
-ItemSetId str_to_item_set_id( const std::string& str );
+ItemSetId str_to_item_set_id(const std::string& str);
 
-Id str_to_intr_item_id( const std::string& str );
+Id str_to_intr_item_id(const std::string& str);
 
 }  // namespace item
 

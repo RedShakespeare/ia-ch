@@ -31,9 +31,9 @@ void load();
 class Rod : public item::Item
 {
 public:
-        Rod( item::ItemData* const item_data ) :
-                Item( item_data ),
-                m_nr_charge_turns_left( 0 ) {}
+        Rod(item::ItemData* const item_data) :
+                Item(item_data),
+                m_nr_charge_turns_left(0) {}
 
         virtual ~Rod() = default;
 
@@ -41,7 +41,7 @@ public:
 
         void load_hook() final;
 
-        ConsumeItem activate( actor::Actor* actor ) final;
+        ConsumeItem activate(actor::Actor* actor) final;
 
         Color interface_color() const final
         {
@@ -50,11 +50,11 @@ public:
 
         std::string name_inf_str() const final;
 
-        void on_std_turn_in_inv_hook( InvType inv_type ) final;
+        void on_std_turn_in_inv_hook(InvType inv_type) final;
 
         std::vector<std::string> descr_hook() const final;
 
-        void identify( Verbose verbose ) final;
+        void identify(Verbose verbose) final;
 
         virtual std::string real_name() const = 0;
 
@@ -77,8 +77,8 @@ private:
 class Curing : public Rod
 {
 public:
-        Curing( item::ItemData* const item_data ) :
-                Rod( item_data ) {}
+        Curing(item::ItemData* const item_data) :
+                Rod(item_data) {}
 
         ~Curing() = default;
 
@@ -102,8 +102,8 @@ protected:
 class Opening : public Rod
 {
 public:
-        Opening( item::ItemData* const item_data ) :
-                Rod( item_data ) {}
+        Opening(item::ItemData* const item_data) :
+                Rod(item_data) {}
 
         ~Opening() = default;
 
@@ -126,8 +126,8 @@ protected:
 class Bless : public Rod
 {
 public:
-        Bless( item::ItemData* const item_data ) :
-                Rod( item_data ) {}
+        Bless(item::ItemData* const item_data) :
+                Rod(item_data) {}
 
         ~Bless() = default;
 
@@ -149,8 +149,8 @@ protected:
 class CloudMinds : public Rod
 {
 public:
-        CloudMinds( item::ItemData* const item_data ) :
-                Rod( item_data ) {}
+        CloudMinds(item::ItemData* const item_data) :
+                Rod(item_data) {}
 
         ~CloudMinds() = default;
 
@@ -178,8 +178,8 @@ protected:
 class Shockwave : public Rod
 {
 public:
-        Shockwave( item::ItemData* const item_data ) :
-                Rod( item_data ) {}
+        Shockwave(item::ItemData* const item_data) :
+                Rod(item_data) {}
 
         ~Shockwave() = default;
 

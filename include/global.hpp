@@ -31,7 +31,7 @@ inline constexpr uint32_t g_ms_delay_player_unable_act = 7;
 inline constexpr uint32_t g_min_ms_between_same_sfx = 60;
 
 inline constexpr int g_fov_radi_int = 6;
-inline constexpr int g_fov_w_int = ( g_fov_radi_int * 2 ) + 1;
+inline constexpr int g_fov_w_int = (g_fov_radi_int * 2) + 1;
 inline constexpr double g_fov_radi_db = (double)g_fov_radi_int;
 
 inline constexpr int g_dynamite_fuse_turns = 5;
@@ -206,9 +206,9 @@ enum class DmgType
         END
 };
 
-constexpr bool is_physical_dmg_type( const DmgType type )
+constexpr bool is_physical_dmg_type(const DmgType type)
 {
-        switch ( type )
+        switch (type)
         {
         case DmgType::piercing:
                 return true;

@@ -51,18 +51,18 @@ struct ChokePointData
 {
         ChokePointData() = default;
 
-        ChokePointData( const ChokePointData& other ) :
-                p( other.p ),
-                player_side( other.player_side ),
-                stairs_side( other.stairs_side )
+        ChokePointData(const ChokePointData& other) :
+                p(other.p),
+                player_side(other.player_side),
+                stairs_side(other.stairs_side)
         {
-                sides[ 0 ] = other.sides[ 0 ];
-                sides[ 1 ] = other.sides[ 1 ];
+                sides[0] = other.sides[0];
+                sides[1] = other.sides[1];
         }
 
-        ChokePointData& operator=( const ChokePointData& other )
+        ChokePointData& operator=(const ChokePointData& other)
         {
-                if ( &other == this )
+                if (&other == this)
                 {
                         return *this;
                 }
@@ -72,8 +72,8 @@ struct ChokePointData
                 player_side = other.player_side;
                 stairs_side = other.stairs_side;
 
-                sides[ 0 ] = other.sides[ 0 ];
-                sides[ 1 ] = other.sides[ 1 ];
+                sides[0] = other.sides[0];
+                sides[1] = other.sides[1];
 
                 return *this;
         }
@@ -81,10 +81,10 @@ struct ChokePointData
         P p {};
 
         // These shall only ever have a value of 0 or 1 (or -1 when undefined)
-        int player_side { -1 };
-        int stairs_side { -1 };
+        int player_side {-1};
+        int stairs_side {-1};
 
-        std::vector<P> sides[ 2 ] {};
+        std::vector<P> sides[2] {};
 };
 
 namespace map
@@ -116,7 +116,7 @@ void cleanup();
 void save();
 void load();
 
-void reset( const P& dims );
+void reset(const P& dims);
 
 int w();
 
@@ -128,40 +128,40 @@ R rect();
 
 size_t nr_cells();
 
-terrain::Terrain* put( terrain::Terrain* terrain );
+terrain::Terrain* put(terrain::Terrain* terrain);
 
 // This should be called when e.g. a door closes, or a wall is destoyed -
 // updates light map, player fov (etc).
 void update_vision();
 
-void make_blood( const P& origin );
-void make_gore( const P& origin );
+void make_blood(const P& origin);
+void make_gore(const P& origin);
 
-void delete_and_remove_room_from_list( Room* room );
+void delete_and_remove_room_from_list(Room* room);
 
-bool is_pos_seen_by_player( const P& p );
+bool is_pos_seen_by_player(const P& p);
 
 actor::Actor* first_actor_at_pos(
         const P& pos,
-        ActorState state = ActorState::alive );
+        ActorState state = ActorState::alive);
 
-terrain::Terrain* first_mob_at_pos( const P& pos );
+terrain::Terrain* first_mob_at_pos(const P& pos);
 
 void actor_cells(
         const std::vector<actor::Actor*>& actors,
-        std::vector<P>& out );
+        std::vector<P>& out);
 
 Array2<std::vector<actor::Actor*>> get_actor_array();
 
 actor::Actor* random_closest_actor(
         const P& c,
-        const std::vector<actor::Actor*>& actors );
+        const std::vector<actor::Actor*>& actors);
 
-bool is_pos_inside_map( const P& pos );
+bool is_pos_inside_map(const P& pos);
 
-bool is_pos_inside_outer_walls( const P& pos );
+bool is_pos_inside_outer_walls(const P& pos);
 
-bool is_area_inside_map( const R& area );
+bool is_area_inside_map(const R& area);
 
 }  // namespace map
 

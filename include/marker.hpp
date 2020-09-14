@@ -29,10 +29,10 @@ struct InputData;
 class MarkerState : public State
 {
 public:
-        MarkerState( const P& origin ) :
+        MarkerState(const P& origin) :
 
-                m_marker_render_data( P( 0, 0 ) ),
-                m_origin( origin )
+                m_marker_render_data(P(0, 0)),
+                m_origin(origin)
         {}
 
         virtual ~MarkerState() = default;
@@ -62,10 +62,10 @@ protected:
                 int orange_until_including_king_dist,
                 int orange_from_king_dist,
                 int red_from_king_dist,
-                int red_from_idx );
+                int red_from_idx);
 
         // Fire etc
-        virtual void handle_input( const InputData& input ) = 0;
+        virtual void handle_input(const InputData& input) = 0;
 
         // Print messages
         virtual void on_moved() = 0;
@@ -85,7 +85,7 @@ protected:
 
         virtual Range effective_king_dist_range() const
         {
-                return { -1, -1 };
+                return {-1, -1};
         }
 
         virtual int max_king_dist() const
@@ -103,7 +103,7 @@ protected:
 private:
         void init_marker_render_data();
 
-        void move( Dir dir, int nr_steps = 1 );
+        void move(Dir dir, int nr_steps = 1);
 
         bool try_go_to_tgt();
 
@@ -116,13 +116,13 @@ private:
 class Viewing : public MarkerState
 {
 public:
-        Viewing( const P& origin ) :
-                MarkerState( origin ) {}
+        Viewing(const P& origin) :
+                MarkerState(origin) {}
 
 protected:
         void on_moved() override;
 
-        void handle_input( const InputData& input ) override;
+        void handle_input(const InputData& input) override;
 
         bool use_player_tgt() const override
         {
@@ -141,14 +141,14 @@ protected:
 class Aiming : public MarkerState
 {
 public:
-        Aiming( const P& origin, item::Wpn& wpn ) :
-                MarkerState( origin ),
-                m_wpn( wpn ) {}
+        Aiming(const P& origin, item::Wpn& wpn) :
+                MarkerState(origin),
+                m_wpn(wpn) {}
 
 protected:
         void on_moved() override;
 
-        void handle_input( const InputData& input ) override;
+        void handle_input(const InputData& input) override;
 
         bool use_player_tgt() const override
         {
@@ -173,14 +173,14 @@ protected:
 class Throwing : public MarkerState
 {
 public:
-        Throwing( const P& origin, item::Item& inv_item ) :
-                MarkerState( origin ),
-                m_inv_item( &inv_item ) {}
+        Throwing(const P& origin, item::Item& inv_item) :
+                MarkerState(origin),
+                m_inv_item(&inv_item) {}
 
 protected:
         void on_moved() override;
 
-        void handle_input( const InputData& input ) override;
+        void handle_input(const InputData& input) override;
 
         bool use_player_tgt() const override
         {
@@ -205,16 +205,16 @@ protected:
 class ThrowingExplosive : public MarkerState
 {
 public:
-        ThrowingExplosive( const P& origin, const item::Item& explosive ) :
-                MarkerState( origin ),
-                m_explosive( explosive ) {}
+        ThrowingExplosive(const P& origin, const item::Item& explosive) :
+                MarkerState(origin),
+                m_explosive(explosive) {}
 
 protected:
         void on_draw() override;
 
         void on_moved() override;
 
-        void handle_input( const InputData& input ) override;
+        void handle_input(const InputData& input) override;
 
         bool use_player_tgt() const override
         {
@@ -237,17 +237,17 @@ protected:
 class CtrlTele : public MarkerState
 {
 public:
-        CtrlTele( const P& origin, Array2<bool> blocked, int max_dist = -1 );
+        CtrlTele(const P& origin, Array2<bool> blocked, int max_dist = -1);
 
 protected:
         void on_start_hook() override;
 
         void on_moved() override;
 
-        void handle_input( const InputData& input ) override;
+        void handle_input(const InputData& input) override;
 
 private:
-        int chance_of_success_pct( const P& tgt ) const;
+        int chance_of_success_pct(const P& tgt) const;
 
         P m_origin;
         int m_max_dist;

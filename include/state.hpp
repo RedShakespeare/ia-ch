@@ -89,7 +89,7 @@ public:
         virtual StateId id() const = 0;
 
 private:
-        bool m_has_started { false };
+        bool m_has_started {false};
 };
 
 namespace states
@@ -100,7 +100,7 @@ void cleanup();
 
 void run();
 
-void run_until_state_done( std::unique_ptr<State> state );
+void run_until_state_done(std::unique_ptr<State> state);
 
 void start();
 
@@ -110,7 +110,7 @@ void on_window_resized();
 
 void update();
 
-void push( std::unique_ptr<State> state );
+void push(std::unique_ptr<State> state);
 
 void pop();
 
@@ -118,13 +118,13 @@ void pop_all();
 
 bool is_empty();
 
-bool is_current_state( const State* state );
+bool is_current_state(const State* state);
 
-void pop_until( StateId id );
+void pop_until(StateId id);
 
-bool contains_state( StateId id );
+bool contains_state(StateId id);
 
-bool contains_state( const State* state );
+bool contains_state(const State* state);
 
 }  // namespace states
 

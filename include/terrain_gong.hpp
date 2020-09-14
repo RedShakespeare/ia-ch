@@ -26,7 +26,7 @@ namespace terrain
 class Gong : public Terrain
 {
 public:
-        Gong( const P& p );
+        Gong(const P& p);
 
         Gong() = delete;
 
@@ -35,9 +35,9 @@ public:
                 return Id::gong;
         }
 
-        std::string name( Article article ) const override;
+        std::string name(Article article) const override;
 
-        void bump( actor::Actor& actor_bumping ) override;
+        void bump(actor::Actor& actor_bumping) override;
 
 private:
         Color color_default() const override;
@@ -45,9 +45,9 @@ private:
         void on_hit(
                 DmgType dmg_type,
                 actor::Actor* actor,
-                int dmg = -1 ) override;
+                int dmg = -1) override;
 
-        bool m_is_used { false };
+        bool m_is_used {false};
 };
 
 namespace gong
@@ -331,7 +331,7 @@ public:
         void run_effect() override;
 
 private:
-        actor::Id m_id_to_spawn { actor::Id::END };
+        actor::Id m_id_to_spawn {actor::Id::END};
 };
 
 class UnlearnSpell : public Toll
@@ -353,7 +353,7 @@ public:
 private:
         std::vector<SpellId> make_spell_bucket() const;
 
-        SpellId m_spell_to_unlearn { SpellId::END };
+        SpellId m_spell_to_unlearn {SpellId::END};
 };
 
 }  // namespace gong

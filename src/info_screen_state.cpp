@@ -15,24 +15,24 @@
 
 void InfoScreenState::draw_interface() const
 {
-        draw_box( panels::area( Panel::screen ) );
+        draw_box(panels::area(Panel::screen));
 
-        const int screen_center_x = panels::center_x( Panel::screen );
+        const int screen_center_x = panels::center_x(Panel::screen);
 
         io::draw_text_center(
                 " " + title() + " ",
                 Panel::screen,
-                P( screen_center_x, 0 ),
-                colors::title() );
+                P(screen_center_x, 0),
+                colors::title());
 
         const std::string cmd_info =
-                ( type() == InfoScreenType::scrolling )
+                (type() == InfoScreenType::scrolling)
                 ? common_text::g_scrollable_info_screen_hint
                 : common_text::g_screen_exit_hint;
 
         io::draw_text_center(
                 " " + cmd_info + " ",
                 Panel::screen,
-                P( screen_center_x, panels::y1( Panel::screen ) ),
-                colors::title() );
+                P(screen_center_x, panels::y1(Panel::screen)),
+                colors::title());
 }

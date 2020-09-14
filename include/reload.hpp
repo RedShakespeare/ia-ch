@@ -19,7 +19,7 @@ class Actor;
 
 namespace reload
 {
-void try_reload( actor::Actor& actor, item::Item* item_to_reload );
+void try_reload(actor::Actor& actor, item::Item* item_to_reload);
 
 void player_arrange_pistol_mags();
 

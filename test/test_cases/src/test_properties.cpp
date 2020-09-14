@@ -15,26 +15,26 @@
 #include "property_handler.hpp"
 #include "test_utils.hpp"
 
-TEST_CASE( "Infection triggers disease" )
+TEST_CASE("Infection triggers disease")
 {
         test_utils::init_all();
 
         auto& properties = map::g_player->m_properties;
 
-        properties.apply( new PropInfected() );
+        properties.apply(new PropInfected());
 
-        REQUIRE( properties.has( PropId::infected ) );
-        REQUIRE( ! properties.has( PropId::diseased ) );
+        REQUIRE(properties.has(PropId::infected));
+        REQUIRE(!properties.has(PropId::diseased));
 
         // Tick the infected property enough to no longer exist (could use
         // while-true loop, but this could cause a failing test to get stuck)
-        for ( int i = 0; i < 100000; ++i )
+        for (int i = 0; i < 100000; ++i)
         {
                 properties.on_turn_begin();
         }
 
-        REQUIRE( ! properties.has( PropId::infected ) );
-        REQUIRE( properties.has( PropId::diseased ) );
+        REQUIRE(!properties.has(PropId::infected));
+        REQUIRE(properties.has(PropId::diseased));
 
         test_utils::cleanup_all();
 }

@@ -19,13 +19,13 @@
 #include "terrain_trap.hpp"
 #include "test_utils.hpp"
 
-TEST_CASE( "Spider web" )
+TEST_CASE("Spider web")
 {
         // Test that a monster can get stuck in a spider web, and that they can
         // break free
 
-        const P pos_l( 5, 7 );
-        const P pos_r( 6, 7 );
+        const P pos_l(5, 7);
+        const P pos_r(6, 7);
 
         // TODO: Is getting stuck deterministic now? Perhaps there is no need to
         // run this in a loop?
@@ -33,26 +33,26 @@ TEST_CASE( "Spider web" )
         bool tested_stuck = false;
         bool tested_unstuck = false;
 
-        while ( ! ( tested_stuck && tested_unstuck ) )
+        while (!(tested_stuck && tested_unstuck))
         {
                 test_utils::init_all();
 
-                map::put( new terrain::Floor( pos_l ) );
+                map::put(new terrain::Floor(pos_l));
 
                 {
                         auto* const web = new terrain::Trap(
                                 pos_r,
-                                new terrain::Floor( pos_r ),
-                                terrain::TrapId::web );
+                                new terrain::Floor(pos_r),
+                                terrain::TrapId::web);
 
-                        map::put( web );
+                        map::put(web);
 
-                        web->reveal( Verbose::no );
+                        web->reveal(Verbose::no);
                 }
 
-                auto* const actor = actor::make( actor::Id::zombie, pos_l );
+                auto* const actor = actor::make(actor::Id::zombie, pos_l);
 
-                auto* const mon = static_cast<actor::Mon*>( actor );
+                auto* const mon = static_cast<actor::Mon*>(actor);
 
                 // Requirement for triggering traps
                 mon->m_ai_state.is_target_seen = true;
@@ -62,140 +62,140 @@ TEST_CASE( "Spider web" )
 
                 // Move the monster into the trap, and back again
                 mon->m_pos = pos_l;
-                actor::move( *mon, Dir::right );
+                actor::move(*mon, Dir::right);
 
                 // It should never be possible to move on the first try
-                REQUIRE( mon->m_pos == pos_r );
+                REQUIRE(mon->m_pos == pos_r);
 
-                REQUIRE( mon->m_properties.has( PropId::entangled ) );
+                REQUIRE(mon->m_properties.has(PropId::entangled));
 
                 // This may or may not unstuck the monster
-                actor::move( *mon, Dir::left );
+                actor::move(*mon, Dir::left);
 
                 // If the move above did unstuck the monster, this command will
                 // move it one step to the left
-                actor::move( *mon, Dir::left );
+                actor::move(*mon, Dir::left);
 
-                if ( mon->m_pos == pos_r )
+                if (mon->m_pos == pos_r)
                 {
                         tested_stuck = true;
                 }
-                else if ( mon->m_pos == pos_l )
+                else if (mon->m_pos == pos_l)
                 {
                         tested_unstuck = true;
 
-                        REQUIRE( ! mon->m_properties.has( PropId::entangled ) );
+                        REQUIRE(!mon->m_properties.has(PropId::entangled));
                 }
 
                 test_utils::cleanup_all();
         }
 
-        REQUIRE( tested_stuck );
-        REQUIRE( tested_unstuck );
+        REQUIRE(tested_stuck);
+        REQUIRE(tested_unstuck);
 }
 
-TEST_CASE( "Unlearn spells" )
+TEST_CASE("Unlearn spells")
 {
         // Test that the unlearn spell trap can unlearn spells
 
-        const P pos_l( 5, 7 );
-        const P pos_r( 6, 7 );
+        const P pos_l(5, 7);
+        const P pos_r(6, 7);
 
         test_utils::init_all();
 
-        map::put( new terrain::Floor( pos_l ) );
+        map::put(new terrain::Floor(pos_l));
 
         {
                 auto* const unlearn_trap = new terrain::Trap(
                         pos_r,
-                        new terrain::Floor( pos_r ),
-                        terrain::TrapId::unlearn_spell );
+                        new terrain::Floor(pos_r),
+                        terrain::TrapId::unlearn_spell);
 
-                map::put( unlearn_trap );
+                map::put(unlearn_trap);
 
-                unlearn_trap->reveal( Verbose::no );
+                unlearn_trap->reveal(Verbose::no);
         }
 
-        player_spells::learn_spell( SpellId::darkbolt, Verbose::no );
-        player_spells::learn_spell( SpellId::heal, Verbose::no );
+        player_spells::learn_spell(SpellId::darkbolt, Verbose::no);
+        player_spells::learn_spell(SpellId::heal, Verbose::no);
 
-        REQUIRE( player_spells::is_spell_learned( SpellId::darkbolt ) );
-        REQUIRE( player_spells::is_spell_learned( SpellId::heal ) );
+        REQUIRE(player_spells::is_spell_learned(SpellId::darkbolt));
+        REQUIRE(player_spells::is_spell_learned(SpellId::heal));
 
         // Step into the trap
         map::g_player->m_pos = pos_l;
-        actor::move( *map::g_player, Dir::right );
+        actor::move(*map::g_player, Dir::right);
 
-        REQUIRE( map::g_player->m_pos == pos_r );
+        REQUIRE(map::g_player->m_pos == pos_r);
 
         // Now only one spell should be learned
         const int nr_learned_after_first_trigger =
-                (int)player_spells::is_spell_learned( SpellId::darkbolt ) +
-                (int)player_spells::is_spell_learned( SpellId::heal );
+                (int)player_spells::is_spell_learned(SpellId::darkbolt) +
+                (int)player_spells::is_spell_learned(SpellId::heal);
 
-        REQUIRE( nr_learned_after_first_trigger == 1 );
+        REQUIRE(nr_learned_after_first_trigger == 1);
 
         // Step into the trap again
         map::g_player->m_pos = pos_l;
-        actor::move( *map::g_player, Dir::right );
+        actor::move(*map::g_player, Dir::right);
 
-        REQUIRE( map::g_player->m_pos == pos_r );
+        REQUIRE(map::g_player->m_pos == pos_r);
 
         // Now both spells should be unlearned
-        REQUIRE( ! player_spells::is_spell_learned( SpellId::darkbolt ) );
-        REQUIRE( ! player_spells::is_spell_learned( SpellId::heal ) );
+        REQUIRE(!player_spells::is_spell_learned(SpellId::darkbolt));
+        REQUIRE(!player_spells::is_spell_learned(SpellId::heal));
 
         test_utils::cleanup_all();
 }
 
-TEST_CASE( "Do not unlearn frenzy" )
+TEST_CASE("Do not unlearn frenzy")
 {
         // Test that the unlearn spell trap will not unlearn Ghoul Frenzy
 
-        const P pos_l( 5, 7 );
-        const P pos_r( 6, 7 );
+        const P pos_l(5, 7);
+        const P pos_r(6, 7);
 
         test_utils::init_all();
 
-        map::put( new terrain::Floor( pos_l ) );
+        map::put(new terrain::Floor(pos_l));
 
         {
                 auto* const unlearn_trap = new terrain::Trap(
                         pos_r,
-                        new terrain::Floor( pos_r ),
-                        terrain::TrapId::unlearn_spell );
+                        new terrain::Floor(pos_r),
+                        terrain::TrapId::unlearn_spell);
 
-                map::put( unlearn_trap );
+                map::put(unlearn_trap);
 
-                unlearn_trap->reveal( Verbose::no );
+                unlearn_trap->reveal(Verbose::no);
         }
 
-        player_bon::pick_bg( Bg::ghoul );
+        player_bon::pick_bg(Bg::ghoul);
 
-        player_spells::learn_spell( SpellId::darkbolt, Verbose::no );
+        player_spells::learn_spell(SpellId::darkbolt, Verbose::no);
 
-        REQUIRE( player_spells::is_spell_learned( SpellId::darkbolt ) );
-        REQUIRE( player_spells::is_spell_learned( SpellId::frenzy ) );
+        REQUIRE(player_spells::is_spell_learned(SpellId::darkbolt));
+        REQUIRE(player_spells::is_spell_learned(SpellId::frenzy));
 
         // Step into the trap
         map::g_player->m_pos = pos_l;
-        actor::move( *map::g_player, Dir::right );
+        actor::move(*map::g_player, Dir::right);
 
-        REQUIRE( map::g_player->m_pos == pos_r );
+        REQUIRE(map::g_player->m_pos == pos_r);
 
         // Only frenzy should be learned now
-        REQUIRE( ! player_spells::is_spell_learned( SpellId::darkbolt ) );
-        REQUIRE( player_spells::is_spell_learned( SpellId::frenzy ) );
+        REQUIRE(!player_spells::is_spell_learned(SpellId::darkbolt));
+        REQUIRE(player_spells::is_spell_learned(SpellId::frenzy));
 
         // Step into the trap again
         map::g_player->m_pos = pos_l;
-        actor::move( *map::g_player, Dir::right );
+        actor::move(*map::g_player, Dir::right);
 
-        REQUIRE( map::g_player->m_pos == pos_r );
+        REQUIRE(map::g_player->m_pos == pos_r);
 
         // Still only frenzy should be learned
-        REQUIRE( ! player_spells::is_spell_learned( SpellId::darkbolt ) );
-        REQUIRE( player_spells::is_spell_learned( SpellId::frenzy ) );
+        REQUIRE(!player_spells::is_spell_learned(SpellId::darkbolt));
+        REQUIRE(player_spells::is_spell_learned(SpellId::frenzy));
 
         test_utils::cleanup_all();
 }

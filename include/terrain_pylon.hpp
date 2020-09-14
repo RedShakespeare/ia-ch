@@ -33,7 +33,7 @@ enum class PylonId
 class Pylon : public Terrain
 {
 public:
-        Pylon( const P& p, PylonId id );
+        Pylon(const P& p, PylonId id);
 
         Pylon() = delete;
 
@@ -44,16 +44,16 @@ public:
                 return Id::pylon;
         }
 
-        std::string name( Article article ) const override;
+        std::string name(Article article) const override;
 
         void on_hit(
                 DmgType dmg_type,
                 actor::Actor* actor,
-                int dmg = -1 ) override;
+                int dmg = -1) override;
 
-        void on_lever_pulled( Lever* lever ) override;
+        void on_lever_pulled(Lever* lever) override;
 
-        void add_light_hook( Array2<bool>& light ) const override;
+        void add_light_hook(Array2<bool>& light) const override;
 
         int nr_turns_active() const
         {
@@ -61,7 +61,7 @@ public:
         }
 
 private:
-        PylonImpl* make_pylon_impl_from_id( PylonId id );
+        PylonImpl* make_pylon_impl_from_id(PylonId id);
 
         void on_new_turn_hook() override;
 
@@ -80,9 +80,9 @@ private:
 class PylonImpl
 {
 public:
-        PylonImpl( P p, Pylon* pylon ) :
-                m_pos( p ),
-                m_pylon( pylon ) {}
+        PylonImpl(P p, Pylon* pylon) :
+                m_pos(p),
+                m_pylon(pylon) {}
 
         virtual ~PylonImpl() = default;
 
@@ -103,8 +103,8 @@ protected:
 class PylonBurning : public PylonImpl
 {
 public:
-        PylonBurning( P p, Pylon* pylon ) :
-                PylonImpl( p, pylon ) {}
+        PylonBurning(P p, Pylon* pylon) :
+                PylonImpl(p, pylon) {}
 
         void on_new_turn_activated() override;
 };
@@ -112,8 +112,8 @@ public:
 class PylonTerrify : public PylonImpl
 {
 public:
-        PylonTerrify( P p, Pylon* pylon ) :
-                PylonImpl( p, pylon ) {}
+        PylonTerrify(P p, Pylon* pylon) :
+                PylonImpl(p, pylon) {}
 
         void on_new_turn_activated() override;
 };
@@ -121,8 +121,8 @@ public:
 class PylonInvis : public PylonImpl
 {
 public:
-        PylonInvis( P p, Pylon* pylon ) :
-                PylonImpl( p, pylon ) {}
+        PylonInvis(P p, Pylon* pylon) :
+                PylonImpl(p, pylon) {}
 
         void on_new_turn_activated() override;
 };
@@ -130,8 +130,8 @@ public:
 class PylonSlow : public PylonImpl
 {
 public:
-        PylonSlow( P p, Pylon* pylon ) :
-                PylonImpl( p, pylon ) {}
+        PylonSlow(P p, Pylon* pylon) :
+                PylonImpl(p, pylon) {}
 
         void on_new_turn_activated() override;
 };
@@ -139,8 +139,8 @@ public:
 class PylonKnockback : public PylonImpl
 {
 public:
-        PylonKnockback( P p, Pylon* pylon ) :
-                PylonImpl( p, pylon ) {}
+        PylonKnockback(P p, Pylon* pylon) :
+                PylonImpl(p, pylon) {}
 
         void on_new_turn_activated() override;
 };
@@ -148,8 +148,8 @@ public:
 class PylonTeleport : public PylonImpl
 {
 public:
-        PylonTeleport( P p, Pylon* pylon ) :
-                PylonImpl( p, pylon ) {}
+        PylonTeleport(P p, Pylon* pylon) :
+                PylonImpl(p, pylon) {}
 
         void on_new_turn_activated() override;
 };

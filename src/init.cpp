@@ -57,8 +57,8 @@ void init_io()
         io::draw_text_center(
                 "Loading...",
                 Panel::screen,
-                panels::center( Panel::screen ),
-                colors::menu_dark() );
+                panels::center(Panel::screen),
+                colors::menu_dark());
 
         io::update_screen();
 

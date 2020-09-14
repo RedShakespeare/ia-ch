@@ -48,10 +48,10 @@ private:
 class BrowseManualPage : public InfoScreenState
 {
 public:
-        BrowseManualPage( const ManualPage& page ) :
+        BrowseManualPage(const ManualPage& page) :
 
-                m_page( page ),
-                m_top_idx( 0 )
+                m_page(page),
+                m_top_idx(0)
         {}
 
         void draw() override;

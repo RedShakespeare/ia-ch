@@ -11,7 +11,7 @@ namespace actor
 {
 class Actor;
 
-void start_turn( Actor& actor );
+void start_turn(Actor& actor);
 
 }  // namespace actor
 

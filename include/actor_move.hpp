@@ -13,7 +13,7 @@ namespace actor
 {
 class Actor;
 
-void move( Actor& actor, Dir dir );
+void move(Actor& actor, Dir dir);
 
 }  // namespace actor
 

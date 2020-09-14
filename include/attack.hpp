@@ -28,18 +28,18 @@ void melee(
         actor::Actor* attacker,
         const P& attacker_origin,
         actor::Actor& defender,
-        item::Wpn& wpn );
+        item::Wpn& wpn);
 
 DidAction ranged(
         actor::Actor* attacker,
         const P& origin,
         const P& aim_pos,
-        item::Wpn& wpn );
+        item::Wpn& wpn);
 
 void ranged_hit_chance(
         const actor::Actor& attacker,
         const actor::Actor& defender,
-        const item::Wpn& wpn );
+        const item::Wpn& wpn);
 
 }  // namespace attack
 

@@ -14,12 +14,12 @@
 struct ItemAttProp
 {
         ItemAttProp() :
-                prop( nullptr ),
-                pct_chance_to_apply( 100 ) {}
+                prop(nullptr),
+                pct_chance_to_apply(100) {}
 
-        ItemAttProp( Prop* const property ) :
-                prop( property ),
-                pct_chance_to_apply( 100 ) {}
+        ItemAttProp(Prop* const property) :
+                prop(property),
+                pct_chance_to_apply(100) {}
 
         ~ItemAttProp() = default;
 

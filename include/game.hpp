@@ -22,9 +22,9 @@ class Actor;
 
 struct HistoryEvent
 {
-        HistoryEvent( std::string  history_msg, const int turn_nr ) :
-                msg(std::move( history_msg )),
-                turn( turn_nr ) {}
+        HistoryEvent(std::string history_msg, const int turn_nr) :
+                msg(std::move(history_msg)),
+                turn(turn_nr) {}
 
         const std::string msg;
         const int turn;
@@ -42,22 +42,22 @@ int xp_pct();
 int xp_accumulated();
 TimeData start_time();
 
-void on_mon_seen( actor::Actor& actor );
+void on_mon_seen(actor::Actor& actor);
 
-void on_mon_killed( actor::Actor& actor );
+void on_mon_killed(actor::Actor& actor);
 
 void set_start_time_to_now();
 
 void incr_player_xp(
         int xp_gained,
-        Verbose verbose = Verbose::yes );
+        Verbose verbose = Verbose::yes);
 
-void decr_player_xp( int xp_lost );
+void decr_player_xp(int xp_lost);
 
 // This function has no side effects except for incrementing the clvl value
 void incr_clvl_number();
 
-void add_history_event( const std::string& msg );
+void add_history_event(const std::string& msg);
 
 const std::vector<HistoryEvent>& history();
 
@@ -69,9 +69,9 @@ const std::vector<HistoryEvent>& history();
 class GameState : public State
 {
 public:
-        GameState( GameEntryMode entry_mode ) :
+        GameState(GameEntryMode entry_mode) :
 
-                m_entry_mode( entry_mode )
+                m_entry_mode(entry_mode)
         {}
 
         void on_start() override;

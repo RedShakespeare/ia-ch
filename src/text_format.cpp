@@ -15,17 +15,17 @@
 // -----------------------------------------------------------------------------
 
 // Reads and removes the first word of the string.
-static std::string read_and_remove_word( std::string& line )
+static std::string read_and_remove_word(std::string& line)
 {
         std::string str;
 
-        for ( auto it = std::begin( line ); it != std::end( line ); )
+        for (auto it = std::begin(line); it != std::end(line);)
         {
                 const char current_char = *it;
 
-                line.erase( it );
+                line.erase(it);
 
-                if ( current_char == ' ' )
+                if (current_char == ' ')
                 {
                         break;
                 }
@@ -39,9 +39,9 @@ static std::string read_and_remove_word( std::string& line )
 static bool is_word_fit(
         const std::string& current_string,
         const std::string& word_to_fit,
-        const size_t max_w )
+        const size_t max_w)
 {
-        return ( current_string.size() + word_to_fit.size() + 1 ) <= max_w;
+        return (current_string.size() + word_to_fit.size() + 1) <= max_w;
 }
 
 // -----------------------------------------------------------------------------
@@ -49,60 +49,60 @@ static bool is_word_fit(
 // -----------------------------------------------------------------------------
 namespace text_format
 {
-std::vector<std::string> split( std::string line, const int max_w )
+std::vector<std::string> split(std::string line, const int max_w)
 {
-        if ( line.empty() )
+        if (line.empty())
         {
                 return {};
         }
 
-        std::string current_word = read_and_remove_word( line );
+        std::string current_word = read_and_remove_word(line);
 
-        if ( line.empty() )
+        if (line.empty())
         {
-                return { current_word };
+                return {current_word};
         }
 
-        std::vector<std::string> result = { "" };
+        std::vector<std::string> result = {""};
 
         size_t current_row_idx = 0;
 
-        while ( ! current_word.empty() )
+        while (!current_word.empty())
         {
-                if ( ! is_word_fit( result[ current_row_idx ], current_word, max_w ) )
+                if (!is_word_fit(result[current_row_idx], current_word, max_w))
                 {
                         // Word did not fit on current line, make a new line
                         ++current_row_idx;
 
-                        result.emplace_back( "" );
+                        result.emplace_back("");
                 }
 
                 // If this is not the first word on the current line, add a
                 // space before the word
-                if ( ! result[ current_row_idx ].empty() )
+                if (!result[current_row_idx].empty())
                 {
-                        result[ current_row_idx ] += " ";
+                        result[current_row_idx] += " ";
                 }
 
-                result[ current_row_idx ] += current_word;
+                result[current_row_idx] += current_word;
 
-                current_word = read_and_remove_word( line );
+                current_word = read_and_remove_word(line);
         }
 
         return result;
 }
 
-std::vector<std::string> space_separated_list( const std::string& line )
+std::vector<std::string> space_separated_list(const std::string& line)
 {
         std::vector<std::string> result;
 
         std::string current_line;
 
-        for ( char c : line )
+        for (char c : line)
         {
-                if ( c == ' ' )
+                if (c == ' ')
                 {
-                        result.push_back( current_line );
+                        result.push_back(current_line);
 
                         current_line = "";
                 }
@@ -118,11 +118,11 @@ std::vector<std::string> space_separated_list( const std::string& line )
 std::string replace_all(
         const std::string& line,
         const std::string& from,
-        const std::string& to )
+        const std::string& to)
 {
         std::string result;
 
-        if ( from.empty() )
+        if (from.empty())
         {
                 return result;
         }
@@ -131,9 +131,9 @@ std::string replace_all(
 
         size_t start_pos = 0;
 
-        while ( ( start_pos = result.find( from, start_pos ) ) != std::string::npos )
+        while ((start_pos = result.find(from, start_pos)) != std::string::npos)
         {
-                result.replace( start_pos, from.length(), to );
+                result.replace(start_pos, from.length(), to);
 
                 start_pos += to.length();
         }
@@ -144,13 +144,13 @@ std::string replace_all(
 std::string pad_before(
         const std::string& str,
         const size_t tot_w,
-        const char c )
+        const char c)
 {
         auto result = str;
 
-        if ( tot_w > str.size() )
+        if (tot_w > str.size())
         {
-                result.insert( 0, tot_w - str.size(), c );
+                result.insert(0, tot_w - str.size(), c);
         }
 
         return result;
@@ -159,60 +159,60 @@ std::string pad_before(
 std::string pad_after(
         const std::string& str,
         const size_t tot_w,
-        const char c )
+        const char c)
 {
         auto result = str;
 
-        if ( tot_w > str.size() )
+        if (tot_w > str.size())
         {
-                result.insert( result.size(), tot_w - str.size(), c );
+                result.insert(result.size(), tot_w - str.size(), c);
         }
 
         return result;
 }
 
-std::string first_to_lower( const std::string& str )
+std::string first_to_lower(const std::string& str)
 {
         auto result = str;
 
-        if ( ! result.empty() )
+        if (!result.empty())
         {
-                result[ 0 ] = tolower( result[ 0 ] );
+                result[0] = tolower(result[0]);
         }
 
         return result;
 }
 
-std::string first_to_upper( const std::string& str )
+std::string first_to_upper(const std::string& str)
 {
         auto result = str;
 
-        if ( ! result.empty() )
+        if (!result.empty())
         {
-                result[ 0 ] = toupper( result[ 0 ] );
+                result[0] = toupper(result[0]);
         }
 
         return result;
 }
 
-std::string to_upper( const std::string& str )
+std::string to_upper(const std::string& str)
 {
         auto result = str;
 
         transform(
-                std::begin( result ),
-                std::end( result ),
-                std::begin( result ),
-                ::toupper );
+                std::begin(result),
+                std::end(result),
+                std::begin(result),
+                ::toupper);
 
         return result;
 }
 
 void append_with_space(
         std::string& base_str,
-        const std::string& addition )
+        const std::string& addition)
 {
-        if ( ! base_str.empty() && ! addition.empty() )
+        if (!base_str.empty() && !addition.empty())
         {
                 base_str += " ";
         }

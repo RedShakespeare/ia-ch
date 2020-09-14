@@ -18,23 +18,23 @@
 // -----------------------------------------------------------------------------
 namespace io
 {
-void draw_rectangle( R px_rect, const Color& color )
+void draw_rectangle(R px_rect, const Color& color)
 {
         // NOTE: To handle graphics scaling, we draw an extra inner rectangle -
         // this is somewhat hacky, but it fulfills the purpose...
         int nr_rects = 1;
 
-        if ( config::is_fullscreen() &&
-             config::is_2x_scale_fullscreen_enabled() )
+        if (config::is_fullscreen() &&
+            config::is_2x_scale_fullscreen_enabled())
         {
-                px_rect = px_rect.scaled_up( 2 );
+                px_rect = px_rect.scaled_up(2);
 
                 nr_rects = 2;
         }
 
-        px_rect = px_rect.with_offset( g_rendering_px_offset );
+        px_rect = px_rect.with_offset(g_rendering_px_offset);
 
-        for ( int i = 0; i < nr_rects; ++i )
+        for (int i = 0; i < nr_rects; ++i)
         {
                 SDL_Rect rect;
 
@@ -48,24 +48,24 @@ void draw_rectangle( R px_rect, const Color& color )
                         color.r(),
                         color.g(),
                         color.b(),
-                        0xFFU );
+                        0xFFU);
 
-                SDL_RenderDrawRect( g_sdl_renderer, &rect );
+                SDL_RenderDrawRect(g_sdl_renderer, &rect);
 
                 px_rect.p0 = px_rect.p0 + 1;
                 px_rect.p1 = px_rect.p1 - 1;
         }
 }
 
-void draw_rectangle_filled( R px_rect, const Color& color )
+void draw_rectangle_filled(R px_rect, const Color& color)
 {
-        if ( config::is_fullscreen() &&
-             config::is_2x_scale_fullscreen_enabled() )
+        if (config::is_fullscreen() &&
+            config::is_2x_scale_fullscreen_enabled())
         {
-                px_rect = px_rect.scaled_up( 2 );
+                px_rect = px_rect.scaled_up(2);
         }
 
-        px_rect = px_rect.with_offset( g_rendering_px_offset );
+        px_rect = px_rect.with_offset(g_rendering_px_offset);
 
         SDL_Rect rect;
 
@@ -79,9 +79,9 @@ void draw_rectangle_filled( R px_rect, const Color& color )
                 color.r(),
                 color.g(),
                 color.b(),
-                0xFFU );
+                0xFFU);
 
-        SDL_RenderFillRect( g_sdl_renderer, &rect );
+        SDL_RenderFillRect(g_sdl_renderer, &rect);
 }
 
 }  // namespace io

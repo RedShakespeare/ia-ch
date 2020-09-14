@@ -90,13 +90,13 @@ enum class SpellShock
 
 namespace spells
 {
-Spell* make( SpellId spell_id );
+Spell* make(SpellId spell_id);
 
-SpellId str_to_spell_id( const std::string& str );
+SpellId str_to_spell_id(const std::string& str);
 
-SpellSkill str_to_spell_skill_id( const std::string& str );
+SpellSkill str_to_spell_skill_id(const std::string& str);
 
-std::string skill_to_str( SpellSkill skill );
+std::string skill_to_str(SpellSkill skill);
 
 }  // namespace spells
 
@@ -110,9 +110,9 @@ public:
         void cast(
                 actor::Actor* caster,
                 SpellSkill skill,
-                SpellSrc spell_src ) const;
+                SpellSrc spell_src) const;
 
-        virtual bool allow_mon_cast_now( actor::Mon& mon ) const
+        virtual bool allow_mon_cast_now(actor::Mon& mon) const
         {
                 (void)mon;
                 return false;
@@ -138,14 +138,14 @@ public:
 
         std::vector<std::string> descr(
                 SpellSkill skill,
-                SpellSrc spell_src ) const;
+                SpellSrc spell_src) const;
 
         std::string domain_descr() const;
 
         virtual std::vector<std::string> descr_specific(
-                SpellSkill skill ) const = 0;
+                SpellSkill skill) const = 0;
 
-        Range spi_cost( SpellSkill skill ) const;
+        Range spi_cost(SpellSkill skill) const;
 
         int shock_value() const;
 
@@ -153,14 +153,14 @@ public:
 
         virtual void run_effect(
                 actor::Actor* caster,
-                SpellSkill skill ) const = 0;
+                SpellSkill skill) const = 0;
 
 protected:
-        virtual int max_spi_cost( SpellSkill skill ) const = 0;
+        virtual int max_spi_cost(SpellSkill skill) const = 0;
 
-        virtual bool is_noisy( SpellSkill skill ) const = 0;
+        virtual bool is_noisy(SpellSkill skill) const = 0;
 
-        void on_resist( actor::Actor& target ) const;
+        void on_resist(actor::Actor& target) const;
 };
 
 class SpellEnfeeble : public Spell
@@ -168,7 +168,7 @@ class SpellEnfeeble : public Spell
 public:
         SpellEnfeeble() = default;
 
-        bool allow_mon_cast_now( actor::Mon& mon ) const override;
+        bool allow_mon_cast_now(actor::Mon& mon) const override;
 
         int mon_cooldown() const override;
 
@@ -198,16 +198,16 @@ public:
         }
 
         std::vector<std::string> descr_specific(
-                SpellSkill skill ) const override;
+                SpellSkill skill) const override;
 
         void run_effect(
                 actor::Actor* caster,
-                SpellSkill skill ) const override;
+                SpellSkill skill) const override;
 
 protected:
-        int max_spi_cost( SpellSkill skill ) const override;
+        int max_spi_cost(SpellSkill skill) const override;
 
-        bool is_noisy( const SpellSkill skill ) const override
+        bool is_noisy(const SpellSkill skill) const override
         {
                 (void)skill;
 
@@ -220,7 +220,7 @@ class SpellSlow : public Spell
 public:
         SpellSlow() = default;
 
-        bool allow_mon_cast_now( actor::Mon& mon ) const override;
+        bool allow_mon_cast_now(actor::Mon& mon) const override;
 
         int mon_cooldown() const override;
 
@@ -250,16 +250,16 @@ public:
         }
 
         std::vector<std::string> descr_specific(
-                SpellSkill skill ) const override;
+                SpellSkill skill) const override;
 
         void run_effect(
                 actor::Actor* caster,
-                SpellSkill skill ) const override;
+                SpellSkill skill) const override;
 
 protected:
-        int max_spi_cost( SpellSkill skill ) const override;
+        int max_spi_cost(SpellSkill skill) const override;
 
-        bool is_noisy( const SpellSkill skill ) const override
+        bool is_noisy(const SpellSkill skill) const override
         {
                 (void)skill;
 
@@ -272,7 +272,7 @@ class SpellTerrify : public Spell
 public:
         SpellTerrify() = default;
 
-        bool allow_mon_cast_now( actor::Mon& mon ) const override;
+        bool allow_mon_cast_now(actor::Mon& mon) const override;
 
         int mon_cooldown() const override;
 
@@ -302,23 +302,23 @@ public:
         }
 
         std::vector<std::string> descr_specific(
-                SpellSkill skill ) const override;
+                SpellSkill skill) const override;
 
         void run_effect(
                 actor::Actor* caster,
-                SpellSkill skill ) const override;
+                SpellSkill skill) const override;
 
 protected:
-        int max_spi_cost( SpellSkill skill ) const override;
+        int max_spi_cost(SpellSkill skill) const override;
 
-        bool is_noisy( const SpellSkill skill ) const override
+        bool is_noisy(const SpellSkill skill) const override
         {
                 (void)skill;
 
                 return true;
         }
 
-        Range duration_range( SpellSkill skill ) const;
+        Range duration_range(SpellSkill skill) const;
 };
 
 class SpellAuraOfDecay : public Spell
@@ -326,7 +326,7 @@ class SpellAuraOfDecay : public Spell
 public:
         SpellAuraOfDecay() = default;
 
-        bool allow_mon_cast_now( actor::Mon& mon ) const override;
+        bool allow_mon_cast_now(actor::Mon& mon) const override;
 
         int mon_cooldown() const override;
 
@@ -356,16 +356,16 @@ public:
         }
 
         std::vector<std::string> descr_specific(
-                SpellSkill skill ) const override;
+                SpellSkill skill) const override;
 
         void run_effect(
                 actor::Actor* caster,
-                SpellSkill skill ) const override;
+                SpellSkill skill) const override;
 
 private:
-        int max_spi_cost( SpellSkill skill ) const override;
+        int max_spi_cost(SpellSkill skill) const override;
 
-        bool is_noisy( const SpellSkill skill ) const override
+        bool is_noisy(const SpellSkill skill) const override
         {
                 (void)skill;
 
@@ -380,11 +380,11 @@ public:
 
         virtual Range damage(
                 SpellSkill skill,
-                const actor::Actor& caster ) const = 0;
+                const actor::Actor& caster) const = 0;
 
         virtual void on_hit(
                 actor::Actor& actor_hit,
-                SpellSkill skill ) const = 0;
+                SpellSkill skill) const = 0;
 
         virtual std::string hit_msg_ending() const = 0;
 
@@ -397,9 +397,9 @@ public:
         virtual SpellId id() const = 0;
 
         virtual std::vector<std::string> descr_specific(
-                SpellSkill skill ) const = 0;
+                SpellSkill skill) const = 0;
 
-        virtual int max_spi_cost( SpellSkill skill ) const = 0;
+        virtual int max_spi_cost(SpellSkill skill) const = 0;
 };
 
 class ForceBolt : public BoltImpl
@@ -409,11 +409,11 @@ public:
 
         Range damage(
                 SpellSkill skill,
-                const actor::Actor& caster ) const override;
+                const actor::Actor& caster) const override;
 
         void on_hit(
                 actor::Actor& actor_hit,
-                const SpellSkill skill ) const override
+                const SpellSkill skill) const override
         {
                 (void)actor_hit;
                 (void)skill;
@@ -445,9 +445,9 @@ public:
         }
 
         std::vector<std::string> descr_specific(
-                SpellSkill skill ) const override;
+                SpellSkill skill) const override;
 
-        int max_spi_cost( const SpellSkill skill ) const override
+        int max_spi_cost(const SpellSkill skill) const override
         {
                 (void)skill;
 
@@ -462,11 +462,11 @@ public:
 
         Range damage(
                 SpellSkill skill,
-                const actor::Actor& caster ) const override;
+                const actor::Actor& caster) const override;
 
         void on_hit(
                 actor::Actor& actor_hit,
-                SpellSkill skill ) const override;
+                SpellSkill skill) const override;
 
         std::string hit_msg_ending() const override
         {
@@ -494,9 +494,9 @@ public:
         }
 
         std::vector<std::string> descr_specific(
-                SpellSkill skill ) const override;
+                SpellSkill skill) const override;
 
-        int max_spi_cost( const SpellSkill skill ) const override
+        int max_spi_cost(const SpellSkill skill) const override
         {
                 (void)skill;
 
@@ -507,12 +507,12 @@ public:
 class SpellBolt : public Spell
 {
 public:
-        SpellBolt( BoltImpl* impl ) :
+        SpellBolt(BoltImpl* impl) :
 
-                m_impl( impl )
+                m_impl(impl)
         {}
 
-        bool allow_mon_cast_now( actor::Mon& mon ) const override;
+        bool allow_mon_cast_now(actor::Mon& mon) const override;
 
         int mon_cooldown() const override
         {
@@ -545,22 +545,22 @@ public:
         }
 
         std::vector<std::string> descr_specific(
-                const SpellSkill skill ) const override
+                const SpellSkill skill) const override
         {
-                return m_impl->descr_specific( skill );
+                return m_impl->descr_specific(skill);
         }
 
         void run_effect(
                 actor::Actor* caster,
-                SpellSkill skill ) const override;
+                SpellSkill skill) const override;
 
 private:
-        int max_spi_cost( const SpellSkill skill ) const override
+        int max_spi_cost(const SpellSkill skill) const override
         {
-                return m_impl->max_spi_cost( skill );
+                return m_impl->max_spi_cost(skill);
         }
 
-        bool is_noisy( const SpellSkill skill ) const override
+        bool is_noisy(const SpellSkill skill) const override
         {
                 (void)skill;
 
@@ -575,7 +575,7 @@ class SpellAzaWrath : public Spell
 public:
         SpellAzaWrath() = default;
 
-        bool allow_mon_cast_now( actor::Mon& mon ) const override;
+        bool allow_mon_cast_now(actor::Mon& mon) const override;
 
         int mon_cooldown() const override
         {
@@ -608,21 +608,21 @@ public:
         }
 
         std::vector<std::string> descr_specific(
-                SpellSkill skill ) const override;
+                SpellSkill skill) const override;
 
         void run_effect(
                 actor::Actor* caster,
-                SpellSkill skill ) const override;
+                SpellSkill skill) const override;
 
 private:
-        int max_spi_cost( const SpellSkill skill ) const override
+        int max_spi_cost(const SpellSkill skill) const override
         {
                 (void)skill;
 
                 return 8;
         }
 
-        bool is_noisy( const SpellSkill skill ) const override
+        bool is_noisy(const SpellSkill skill) const override
         {
                 (void)skill;
 
@@ -635,7 +635,7 @@ class SpellMayhem : public Spell
 public:
         SpellMayhem() = default;
 
-        bool allow_mon_cast_now( actor::Mon& mon ) const override;
+        bool allow_mon_cast_now(actor::Mon& mon) const override;
 
         bool player_can_learn() const override
         {
@@ -663,16 +663,16 @@ public:
         }
 
         std::vector<std::string> descr_specific(
-                SpellSkill skill ) const override;
+                SpellSkill skill) const override;
 
         void run_effect(
                 actor::Actor* caster,
-                SpellSkill skill ) const override;
+                SpellSkill skill) const override;
 
 private:
-        int max_spi_cost( SpellSkill skill ) const override;
+        int max_spi_cost(SpellSkill skill) const override;
 
-        bool is_noisy( const SpellSkill skill ) const override
+        bool is_noisy(const SpellSkill skill) const override
         {
                 (void)skill;
 
@@ -685,7 +685,7 @@ class SpellPestilence : public Spell
 public:
         SpellPestilence() = default;
 
-        bool allow_mon_cast_now( actor::Mon& mon ) const override;
+        bool allow_mon_cast_now(actor::Mon& mon) const override;
 
         int mon_cooldown() const override
         {
@@ -718,21 +718,21 @@ public:
         }
 
         std::vector<std::string> descr_specific(
-                SpellSkill skill ) const override;
+                SpellSkill skill) const override;
 
         void run_effect(
                 actor::Actor* caster,
-                SpellSkill skill ) const override;
+                SpellSkill skill) const override;
 
 private:
-        int max_spi_cost( const SpellSkill skill ) const override
+        int max_spi_cost(const SpellSkill skill) const override
         {
                 (void)skill;
 
                 return 6;
         }
 
-        bool is_noisy( const SpellSkill skill ) const override
+        bool is_noisy(const SpellSkill skill) const override
         {
                 (void)skill;
 
@@ -771,21 +771,21 @@ public:
         }
 
         std::vector<std::string> descr_specific(
-                SpellSkill skill ) const override;
+                SpellSkill skill) const override;
 
         void run_effect(
                 actor::Actor* caster,
-                SpellSkill skill ) const override;
+                SpellSkill skill) const override;
 
 private:
-        int max_spi_cost( const SpellSkill skill ) const override
+        int max_spi_cost(const SpellSkill skill) const override
         {
                 (void)skill;
 
                 return 6;
         }
 
-        bool is_noisy( const SpellSkill skill ) const override
+        bool is_noisy(const SpellSkill skill) const override
         {
                 (void)skill;
 
@@ -824,21 +824,21 @@ public:
         }
 
         std::vector<std::string> descr_specific(
-                SpellSkill skill ) const override;
+                SpellSkill skill) const override;
 
         void run_effect(
                 actor::Actor* caster,
-                SpellSkill skill ) const override;
+                SpellSkill skill) const override;
 
 private:
-        int max_spi_cost( const SpellSkill skill ) const override
+        int max_spi_cost(const SpellSkill skill) const override
         {
                 (void)skill;
 
                 return 4;
         }
 
-        bool is_noisy( SpellSkill skill ) const override;
+        bool is_noisy(SpellSkill skill) const override;
 };
 
 class SpellCleansingFire : public Spell
@@ -877,21 +877,21 @@ public:
         }
 
         std::vector<std::string> descr_specific(
-                SpellSkill skill ) const override;
+                SpellSkill skill) const override;
 
         void run_effect(
                 actor::Actor* caster,
-                SpellSkill skill ) const override;
+                SpellSkill skill) const override;
 
 private:
-        int max_spi_cost( const SpellSkill skill ) const override
+        int max_spi_cost(const SpellSkill skill) const override
         {
                 (void)skill;
 
                 return 7;
         }
 
-        bool is_noisy( const SpellSkill skill ) const override
+        bool is_noisy(const SpellSkill skill) const override
         {
                 (void)skill;
 
@@ -937,28 +937,28 @@ public:
         }
 
         std::vector<std::string> descr_specific(
-                SpellSkill skill ) const override;
+                SpellSkill skill) const override;
 
         void run_effect(
                 actor::Actor* caster,
-                SpellSkill skill ) const override;
+                SpellSkill skill) const override;
 
 private:
-        int max_spi_cost( const SpellSkill skill ) const override
+        int max_spi_cost(const SpellSkill skill) const override
         {
                 (void)skill;
 
                 return 5;
         }
 
-        bool is_noisy( const SpellSkill skill ) const override
+        bool is_noisy(const SpellSkill skill) const override
         {
                 (void)skill;
 
                 return false;
         }
 
-        Range duration( SpellSkill skill ) const;
+        Range duration(SpellSkill skill) const;
 };
 
 class SpellPurge : public Spell
@@ -997,21 +997,21 @@ public:
         }
 
         std::vector<std::string> descr_specific(
-                SpellSkill skill ) const override;
+                SpellSkill skill) const override;
 
         void run_effect(
                 actor::Actor* caster,
-                SpellSkill skill ) const override;
+                SpellSkill skill) const override;
 
 private:
-        int max_spi_cost( const SpellSkill skill ) const override
+        int max_spi_cost(const SpellSkill skill) const override
         {
                 (void)skill;
 
                 return 4;
         }
 
-        bool is_noisy( const SpellSkill skill ) const override
+        bool is_noisy(const SpellSkill skill) const override
         {
                 (void)skill;
 
@@ -1059,21 +1059,21 @@ public:
         }
 
         std::vector<std::string> descr_specific(
-                SpellSkill skill ) const override;
+                SpellSkill skill) const override;
 
         void run_effect(
                 actor::Actor* caster,
-                SpellSkill skill ) const override;
+                SpellSkill skill) const override;
 
 private:
-        int max_spi_cost( const SpellSkill skill ) const override
+        int max_spi_cost(const SpellSkill skill) const override
         {
                 (void)skill;
 
                 return 0;
         }
 
-        bool is_noisy( const SpellSkill skill ) const override
+        bool is_noisy(const SpellSkill skill) const override
         {
                 (void)skill;
 
@@ -1115,21 +1115,21 @@ public:
         }
 
         std::vector<std::string> descr_specific(
-                SpellSkill skill ) const override;
+                SpellSkill skill) const override;
 
         void run_effect(
                 actor::Actor* caster,
-                SpellSkill skill ) const override;
+                SpellSkill skill) const override;
 
 private:
-        int max_spi_cost( const SpellSkill skill ) const override
+        int max_spi_cost(const SpellSkill skill) const override
         {
                 (void)skill;
 
                 return 8;
         }
 
-        bool is_noisy( const SpellSkill skill ) const override
+        bool is_noisy(const SpellSkill skill) const override
         {
                 (void)skill;
 
@@ -1168,21 +1168,21 @@ public:
         }
 
         std::vector<std::string> descr_specific(
-                SpellSkill skill ) const override;
+                SpellSkill skill) const override;
 
         void run_effect(
                 actor::Actor* caster,
-                SpellSkill skill ) const override;
+                SpellSkill skill) const override;
 
 private:
-        int max_spi_cost( const SpellSkill skill ) const override
+        int max_spi_cost(const SpellSkill skill) const override
         {
                 (void)skill;
 
                 return 4;
         }
 
-        bool is_noisy( const SpellSkill skill ) const override
+        bool is_noisy(const SpellSkill skill) const override
         {
                 (void)skill;
 
@@ -1220,21 +1220,21 @@ public:
         }
 
         std::vector<std::string> descr_specific(
-                SpellSkill skill ) const override;
+                SpellSkill skill) const override;
 
         void run_effect(
                 actor::Actor* caster,
-                SpellSkill skill ) const override;
+                SpellSkill skill) const override;
 
 private:
-        int max_spi_cost( const SpellSkill skill ) const override
+        int max_spi_cost(const SpellSkill skill) const override
         {
                 (void)skill;
 
                 return 4;
         }
 
-        bool is_noisy( const SpellSkill skill ) const override
+        bool is_noisy(const SpellSkill skill) const override
         {
                 (void)skill;
 
@@ -1247,7 +1247,7 @@ class SpellKnockBack : public Spell
 public:
         SpellKnockBack() = default;
 
-        bool allow_mon_cast_now( actor::Mon& mon ) const override;
+        bool allow_mon_cast_now(actor::Mon& mon) const override;
 
         int mon_cooldown() const override
         {
@@ -1280,26 +1280,26 @@ public:
         }
 
         std::vector<std::string> descr_specific(
-                const SpellSkill skill ) const override
+                const SpellSkill skill) const override
         {
                 (void)skill;
 
-                return { "" };
+                return {""};
         }
 
         void run_effect(
                 actor::Actor* caster,
-                SpellSkill skill ) const override;
+                SpellSkill skill) const override;
 
 private:
-        int max_spi_cost( const SpellSkill skill ) const override
+        int max_spi_cost(const SpellSkill skill) const override
         {
                 (void)skill;
 
                 return 8;
         }
 
-        bool is_noisy( const SpellSkill skill ) const override
+        bool is_noisy(const SpellSkill skill) const override
         {
                 (void)skill;
 
@@ -1312,7 +1312,7 @@ class SpellTeleport : public Spell
 public:
         SpellTeleport() = default;
 
-        bool allow_mon_cast_now( actor::Mon& mon ) const override;
+        bool allow_mon_cast_now(actor::Mon& mon) const override;
 
         int mon_cooldown() const override
         {
@@ -1345,28 +1345,28 @@ public:
         }
 
         std::vector<std::string> descr_specific(
-                SpellSkill skill ) const override;
+                SpellSkill skill) const override;
 
         void run_effect(
                 actor::Actor* caster,
-                SpellSkill skill ) const override;
+                SpellSkill skill) const override;
 
 private:
-        int max_spi_cost( const SpellSkill skill ) const override
+        int max_spi_cost(const SpellSkill skill) const override
         {
                 (void)skill;
 
                 return 8;
         }
 
-        bool is_noisy( const SpellSkill skill ) const override
+        bool is_noisy(const SpellSkill skill) const override
         {
                 (void)skill;
 
                 return true;
         }
 
-        int max_dist( SpellSkill skill ) const;
+        int max_dist(SpellSkill skill) const;
 };
 
 class SpellSeeInvis : public Spell
@@ -1374,7 +1374,7 @@ class SpellSeeInvis : public Spell
 public:
         SpellSeeInvis() = default;
 
-        bool allow_mon_cast_now( actor::Mon& mon ) const override;
+        bool allow_mon_cast_now(actor::Mon& mon) const override;
 
         int mon_cooldown() const override
         {
@@ -1407,21 +1407,21 @@ public:
         }
 
         std::vector<std::string> descr_specific(
-                SpellSkill skill ) const override;
+                SpellSkill skill) const override;
 
         void run_effect(
                 actor::Actor* caster,
-                SpellSkill skill ) const override;
+                SpellSkill skill) const override;
 
 private:
-        int max_spi_cost( const SpellSkill skill ) const override
+        int max_spi_cost(const SpellSkill skill) const override
         {
                 (void)skill;
 
                 return 8;
         }
 
-        bool is_noisy( const SpellSkill skill ) const override
+        bool is_noisy(const SpellSkill skill) const override
         {
                 (void)skill;
 
@@ -1434,7 +1434,7 @@ class SpellSpellShield : public Spell
 public:
         SpellSpellShield() = default;
 
-        bool allow_mon_cast_now( actor::Mon& mon ) const override;
+        bool allow_mon_cast_now(actor::Mon& mon) const override;
 
         int mon_cooldown() const override
         {
@@ -1467,16 +1467,16 @@ public:
         }
 
         std::vector<std::string> descr_specific(
-                SpellSkill skill ) const override;
+                SpellSkill skill) const override;
 
         void run_effect(
                 actor::Actor* caster,
-                SpellSkill skill ) const override;
+                SpellSkill skill) const override;
 
 private:
-        int max_spi_cost( SpellSkill skill ) const override;
+        int max_spi_cost(SpellSkill skill) const override;
 
-        bool is_noisy( const SpellSkill skill ) const override
+        bool is_noisy(const SpellSkill skill) const override
         {
                 (void)skill;
 
@@ -1489,7 +1489,7 @@ class SpellHaste : public Spell
 public:
         SpellHaste() = default;
 
-        bool allow_mon_cast_now( actor::Mon& mon ) const override;
+        bool allow_mon_cast_now(actor::Mon& mon) const override;
 
         int mon_cooldown() const override;
 
@@ -1519,16 +1519,16 @@ public:
         }
 
         std::vector<std::string> descr_specific(
-                SpellSkill skill ) const override;
+                SpellSkill skill) const override;
 
         void run_effect(
                 actor::Actor* caster,
-                SpellSkill skill ) const override;
+                SpellSkill skill) const override;
 
 private:
-        int max_spi_cost( SpellSkill skill ) const override;
+        int max_spi_cost(SpellSkill skill) const override;
 
-        bool is_noisy( const SpellSkill skill ) const override
+        bool is_noisy(const SpellSkill skill) const override
         {
                 (void)skill;
 
@@ -1567,16 +1567,16 @@ public:
         }
 
         std::vector<std::string> descr_specific(
-                SpellSkill skill ) const override;
+                SpellSkill skill) const override;
 
         void run_effect(
                 actor::Actor* caster,
-                SpellSkill skill ) const override;
+                SpellSkill skill) const override;
 
 private:
-        int max_spi_cost( SpellSkill skill ) const override;
+        int max_spi_cost(SpellSkill skill) const override;
 
-        bool is_noisy( const SpellSkill skill ) const override
+        bool is_noisy(const SpellSkill skill) const override
         {
                 (void)skill;
 
@@ -1615,16 +1615,16 @@ public:
         }
 
         std::vector<std::string> descr_specific(
-                SpellSkill skill ) const override;
+                SpellSkill skill) const override;
 
         void run_effect(
                 actor::Actor* caster,
-                SpellSkill skill ) const override;
+                SpellSkill skill) const override;
 
 private:
-        int max_spi_cost( SpellSkill skill ) const override;
+        int max_spi_cost(SpellSkill skill) const override;
 
-        bool is_noisy( const SpellSkill skill ) const override
+        bool is_noisy(const SpellSkill skill) const override
         {
                 (void)skill;
 
@@ -1637,7 +1637,7 @@ class SpellRes : public Spell
 public:
         SpellRes() = default;
 
-        bool allow_mon_cast_now( actor::Mon& mon ) const override;
+        bool allow_mon_cast_now(actor::Mon& mon) const override;
 
         int mon_cooldown() const override
         {
@@ -1670,21 +1670,21 @@ public:
         }
 
         std::vector<std::string> descr_specific(
-                SpellSkill skill ) const override;
+                SpellSkill skill) const override;
 
         void run_effect(
                 actor::Actor* caster,
-                SpellSkill skill ) const override;
+                SpellSkill skill) const override;
 
 private:
-        int max_spi_cost( const SpellSkill skill ) const override
+        int max_spi_cost(const SpellSkill skill) const override
         {
                 (void)skill;
 
                 return 7;
         }
 
-        bool is_noisy( const SpellSkill skill ) const override
+        bool is_noisy(const SpellSkill skill) const override
         {
                 (void)skill;
 
@@ -1697,7 +1697,7 @@ class SpellDisease : public Spell
 public:
         SpellDisease() = default;
 
-        bool allow_mon_cast_now( actor::Mon& mon ) const override;
+        bool allow_mon_cast_now(actor::Mon& mon) const override;
 
         int mon_cooldown() const override
         {
@@ -1730,26 +1730,26 @@ public:
         }
 
         std::vector<std::string> descr_specific(
-                const SpellSkill skill ) const override
+                const SpellSkill skill) const override
         {
                 (void)skill;
 
-                return { "" };
+                return {""};
         }
 
         void run_effect(
                 actor::Actor* caster,
-                SpellSkill skill ) const override;
+                SpellSkill skill) const override;
 
 private:
-        int max_spi_cost( const SpellSkill skill ) const override
+        int max_spi_cost(const SpellSkill skill) const override
         {
                 (void)skill;
 
                 return 7;
         }
 
-        bool is_noisy( const SpellSkill skill ) const override
+        bool is_noisy(const SpellSkill skill) const override
         {
                 (void)skill;
 
@@ -1762,7 +1762,7 @@ class SpellSummonMon : public Spell
 public:
         SpellSummonMon() = default;
 
-        bool allow_mon_cast_now( actor::Mon& mon ) const override;
+        bool allow_mon_cast_now(actor::Mon& mon) const override;
 
         int mon_cooldown() const override
         {
@@ -1795,21 +1795,21 @@ public:
         }
 
         std::vector<std::string> descr_specific(
-                SpellSkill skill ) const override;
+                SpellSkill skill) const override;
 
         void run_effect(
                 actor::Actor* caster,
-                SpellSkill skill ) const override;
+                SpellSkill skill) const override;
 
 private:
-        int max_spi_cost( const SpellSkill skill ) const override
+        int max_spi_cost(const SpellSkill skill) const override
         {
                 (void)skill;
 
                 return 6;
         }
 
-        bool is_noisy( const SpellSkill skill ) const override
+        bool is_noisy(const SpellSkill skill) const override
         {
                 (void)skill;
 
@@ -1822,7 +1822,7 @@ class SpellSummonTentacles : public Spell
 public:
         SpellSummonTentacles() = default;
 
-        bool allow_mon_cast_now( actor::Mon& mon ) const override;
+        bool allow_mon_cast_now(actor::Mon& mon) const override;
 
         int mon_cooldown() const override
         {
@@ -1855,7 +1855,7 @@ public:
         }
 
         std::vector<std::string> descr_specific(
-                const SpellSkill skill ) const override
+                const SpellSkill skill) const override
         {
                 (void)skill;
 
@@ -1864,17 +1864,17 @@ public:
 
         void run_effect(
                 actor::Actor* caster,
-                SpellSkill skill ) const override;
+                SpellSkill skill) const override;
 
 private:
-        int max_spi_cost( const SpellSkill skill ) const override
+        int max_spi_cost(const SpellSkill skill) const override
         {
                 (void)skill;
 
                 return 6;
         }
 
-        bool is_noisy( const SpellSkill skill ) const override
+        bool is_noisy(const SpellSkill skill) const override
         {
                 (void)skill;
 
@@ -1887,7 +1887,7 @@ class SpellHeal : public Spell
 public:
         SpellHeal() = default;
 
-        bool allow_mon_cast_now( actor::Mon& mon ) const override;
+        bool allow_mon_cast_now(actor::Mon& mon) const override;
 
         int mon_cooldown() const override
         {
@@ -1920,21 +1920,21 @@ public:
         }
 
         std::vector<std::string> descr_specific(
-                SpellSkill skill ) const override;
+                SpellSkill skill) const override;
 
         void run_effect(
                 actor::Actor* caster,
-                SpellSkill skill ) const override;
+                SpellSkill skill) const override;
 
 private:
-        int max_spi_cost( const SpellSkill skill ) const override
+        int max_spi_cost(const SpellSkill skill) const override
         {
                 (void)skill;
 
                 return 6;
         }
 
-        bool is_noisy( const SpellSkill skill ) const override
+        bool is_noisy(const SpellSkill skill) const override
         {
                 (void)skill;
 
@@ -1947,7 +1947,7 @@ class SpellMiGoHypno : public Spell
 public:
         SpellMiGoHypno() = default;
 
-        bool allow_mon_cast_now( actor::Mon& mon ) const override;
+        bool allow_mon_cast_now(actor::Mon& mon) const override;
 
         int mon_cooldown() const override
         {
@@ -1980,26 +1980,26 @@ public:
         }
 
         std::vector<std::string> descr_specific(
-                const SpellSkill skill ) const override
+                const SpellSkill skill) const override
         {
                 (void)skill;
 
-                return { "" };
+                return {""};
         }
 
         void run_effect(
                 actor::Actor* caster,
-                SpellSkill skill ) const override;
+                SpellSkill skill) const override;
 
 private:
-        int max_spi_cost( const SpellSkill skill ) const override
+        int max_spi_cost(const SpellSkill skill) const override
         {
                 (void)skill;
 
                 return 7;
         }
 
-        bool is_noisy( const SpellSkill skill ) const override
+        bool is_noisy(const SpellSkill skill) const override
         {
                 (void)skill;
 
@@ -2012,7 +2012,7 @@ class SpellBurn : public Spell
 public:
         SpellBurn() = default;
 
-        bool allow_mon_cast_now( actor::Mon& mon ) const override;
+        bool allow_mon_cast_now(actor::Mon& mon) const override;
 
         int mon_cooldown() const override
         {
@@ -2045,26 +2045,26 @@ public:
         }
 
         std::vector<std::string> descr_specific(
-                const SpellSkill skill ) const override
+                const SpellSkill skill) const override
         {
                 (void)skill;
 
-                return { "" };
+                return {""};
         }
 
         void run_effect(
                 actor::Actor* caster,
-                SpellSkill skill ) const override;
+                SpellSkill skill) const override;
 
 private:
-        int max_spi_cost( const SpellSkill skill ) const override
+        int max_spi_cost(const SpellSkill skill) const override
         {
                 (void)skill;
 
                 return 7;
         }
 
-        bool is_noisy( const SpellSkill skill ) const override
+        bool is_noisy(const SpellSkill skill) const override
         {
                 (void)skill;
 
@@ -2077,7 +2077,7 @@ class SpellDeafen : public Spell
 public:
         SpellDeafen() = default;
 
-        bool allow_mon_cast_now( actor::Mon& mon ) const override;
+        bool allow_mon_cast_now(actor::Mon& mon) const override;
 
         int mon_cooldown() const override
         {
@@ -2110,26 +2110,26 @@ public:
         }
 
         std::vector<std::string> descr_specific(
-                const SpellSkill skill ) const override
+                const SpellSkill skill) const override
         {
                 (void)skill;
 
-                return { "" };
+                return {""};
         }
 
         void run_effect(
                 actor::Actor* caster,
-                SpellSkill skill ) const override;
+                SpellSkill skill) const override;
 
 private:
-        int max_spi_cost( const SpellSkill skill ) const override
+        int max_spi_cost(const SpellSkill skill) const override
         {
                 (void)skill;
 
                 return 4;
         }
 
-        bool is_noisy( const SpellSkill skill ) const override
+        bool is_noisy(const SpellSkill skill) const override
         {
                 (void)skill;
 
