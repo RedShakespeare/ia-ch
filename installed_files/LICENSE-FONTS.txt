@@ -32,4 +32,9 @@ File(s):             10x24_dejavu_sans_mono_book.png
                      13x24_dejavu_sans_mono_book.png
 Source:              https://www.1001fonts.com/dejavu-sans-font.html
 Original name:       DejaVu Sans Font Family
-License:             See LICENSE-DEJAVU.txt
+License:             See LICENSE-FONT-DEJAVU.txt
+
+File(s):             13x24_special_elite.png
+Source:              https://www.1001fonts.com/special-elite-font.html
+Original name:       Special Elite Font
+License:             See LICENSE-FONT-SPECIAL-ELITE.txt

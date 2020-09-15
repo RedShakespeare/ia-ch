@@ -42,6 +42,7 @@ static const std::vector<std::string> font_image_names = {
         "12x22_monospace_medium.png",
         "12x24_dejavu_sans_mono_book.png",
         "13x24_dejavu_sans_mono_book.png",
+        "13x24_special_elite.png",
 };
 
 static const int s_opt_values_x_pos = 44;
@@ -170,7 +171,7 @@ static void set_default_variables()
 
         s_font_name = "12x22_monospace_medium.png";
 
-        s_always_center_view_on_player = false;
+        s_always_center_view_on_player = true;
 
         s_is_tiles_mode = true;
 
