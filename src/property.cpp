@@ -170,6 +170,13 @@ void PropCursed::curse_adjacent() const
 
 PropEnded PropEntangled::on_tick()
 {
+        // Handle drowning
+
+        if (!m_owner->is_alive())
+        {
+                return PropEnded::no;
+        }
+
         if (!m_owner->m_properties.has(PropId::swimming))
         {
                 return PropEnded::no;
@@ -1302,6 +1309,13 @@ bool PropBlind::should_update_vision_on_toggled() const
 
 PropEnded PropParalyzed::on_tick()
 {
+        // Handle drowning
+
+        if (!m_owner->is_alive())
+        {
+                return PropEnded::no;
+        }
+
         if (!m_owner->m_properties.has(PropId::swimming))
         {
                 return PropEnded::no;
