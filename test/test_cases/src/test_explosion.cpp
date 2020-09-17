@@ -9,10 +9,13 @@
 #include "actor.hpp"
 #include "actor_death.hpp"
 #include "actor_factory.hpp"
+#include "actor_player.hpp"
 #include "explosion.hpp"
+#include "item_factory.hpp"
 #include "map.hpp"
 #include "misc.hpp"
 #include "property.hpp"
+#include "property_factory.hpp"
 #include "terrain.hpp"
 #include "test_utils.hpp"
 
@@ -260,6 +263,149 @@ TEST_CASE("Fire explosion applies burning to actors")
 
         REQUIRE(a1->m_properties.has(PropId::burning));
         REQUIRE(a2->m_properties.has(PropId::burning));
+
+        test_utils::cleanup_all();
+}
+
+TEST_CASE("Gas explosions not affecting gas immune creatures")
+{
+        test_utils::init_all();
+
+        auto run_explosion = [](const P& pos) {
+                auto* const prop = property_factory::make(PropId::confused);
+
+                explosion::run(
+                        pos,
+                        ExplType::apply_prop,
+                        EmitExplSnd::no,
+                        0,
+                        ExplExclCenter::no,
+                        {prop},
+                        {},
+                        ExplIsGas::yes);
+        };
+
+        const P origin(5, 7);
+
+        map::put(new terrain::Floor(origin));
+
+        auto* const actor = actor::make(actor::Id::zombie, origin);
+
+        REQUIRE(!actor->m_properties.has(PropId::confused));
+
+        run_explosion(origin);
+
+        REQUIRE(actor->m_properties.has(PropId::confused));
+
+        actor->m_properties.end_prop(PropId::confused);
+
+        REQUIRE(!actor->m_properties.has(PropId::confused));
+
+        actor->m_properties.apply(property_factory::make(PropId::r_breath));
+
+        run_explosion(origin);
+
+        REQUIRE(!actor->m_properties.has(PropId::confused));
+
+        test_utils::cleanup_all();
+}
+
+TEST_CASE("Gas mask protects against gas explosions")
+{
+        test_utils::init_all();
+
+        auto run_explosion = [](const P& pos) {
+                auto* const prop = property_factory::make(PropId::confused);
+
+                explosion::run(
+                        pos,
+                        ExplType::apply_prop,
+                        EmitExplSnd::no,
+                        0,
+                        ExplExclCenter::no,
+                        {prop},
+                        {},
+                        ExplIsGas::yes);
+        };
+
+        const P origin(5, 7);
+
+        map::put(new terrain::Floor(origin));
+
+        auto& player = *map::g_player;
+
+        map::g_player->m_pos = origin;
+
+        player.m_inv.drop_all_non_intrinsic(origin);
+
+        REQUIRE(!player.m_properties.has(PropId::confused));
+
+        run_explosion(origin);
+
+        REQUIRE(player.m_properties.has(PropId::confused));
+
+        player.m_properties.end_prop(PropId::confused);
+
+        REQUIRE(!player.m_properties.has(PropId::confused));
+
+        player.m_inv.put_in_slot(
+                SlotId::head,
+                item::make(item::Id::gas_mask),
+                Verbose::no);
+
+        run_explosion(origin);
+
+        REQUIRE(!player.m_properties.has(PropId::confused));
+
+        test_utils::cleanup_all();
+}
+
+TEST_CASE("Asbestos suite protects against gas explosions")
+{
+        test_utils::init_all();
+
+        auto run_explosion = [](const P& pos) {
+                auto* const prop = property_factory::make(PropId::confused);
+
+                explosion::run(
+                        pos,
+                        ExplType::apply_prop,
+                        EmitExplSnd::no,
+                        0,
+                        ExplExclCenter::no,
+                        {prop},
+                        {},
+                        ExplIsGas::yes);
+        };
+
+        const P origin(5, 7);
+
+        map::put(new terrain::Floor(origin));
+
+        auto& player = *map::g_player;
+
+        map::g_player->m_pos = origin;
+
+        player.m_inv.drop_all_non_intrinsic(origin);
+
+        REQUIRE(!player.m_properties.has(PropId::confused));
+
+        run_explosion(origin);
+
+        REQUIRE(player.m_properties.has(PropId::confused));
+
+        player.m_properties.end_prop(PropId::confused);
+
+        REQUIRE(!player.m_properties.has(PropId::confused));
+
+        player.m_inv.put_in_slot(
+                SlotId::body,
+                item::make(item::Id::armor_asb_suit),
+                Verbose::no);
+
+        run_explosion(origin);
+
+        REQUIRE(!player.m_properties.has(PropId::confused));
 
         test_utils::cleanup_all();
 }

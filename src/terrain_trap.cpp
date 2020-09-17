@@ -863,7 +863,8 @@ void TrapGasConfusion::trigger()
                         "A burst of gas is released from a vent in the floor!");
         }
 
-        Snd snd("I hear a burst of gas.",
+        Snd snd(
+                "I hear a burst of gas.",
                 audio::SfxId::gas,
                 IgnoreMsgIfOriginSeen::yes,
                 m_pos,
@@ -873,7 +874,15 @@ void TrapGasConfusion::trigger()
 
         snd_emit::run(snd);
 
-        explosion::run(m_pos, ExplType::apply_prop, EmitExplSnd::no, -1, ExplExclCenter::no, {new PropConfused()}, colors::magenta(), ExplIsGas::yes);
+        explosion::run(
+                m_pos,
+                ExplType::apply_prop,
+                EmitExplSnd::no,
+                -1,
+                ExplExclCenter::no,
+                {new PropConfused()},
+                colors::magenta(),
+                ExplIsGas::yes);
 
         TRACE_FUNC_END_VERBOSE;
 }
@@ -888,7 +897,8 @@ void TrapGasParalyzation::trigger()
                         "A burst of gas is released from a vent in the floor!");
         }
 
-        Snd snd("I hear a burst of gas.",
+        Snd snd(
+                "I hear a burst of gas.",
                 audio::SfxId::gas,
                 IgnoreMsgIfOriginSeen::yes,
                 m_pos,
@@ -896,7 +906,7 @@ void TrapGasParalyzation::trigger()
                 SndVol::low,
                 AlertsMon::yes);
 
-        snd_emit::run(snd);
+        snd.run();
 
         explosion::run(
                 m_pos,
@@ -921,7 +931,8 @@ void TrapGasFear::trigger()
                         "A burst of gas is released from a vent in the floor!");
         }
 
-        Snd snd("I hear a burst of gas.",
+        Snd snd(
+                "I hear a burst of gas.",
                 audio::SfxId::gas,
                 IgnoreMsgIfOriginSeen::yes,
                 m_pos,
@@ -929,7 +940,7 @@ void TrapGasFear::trigger()
                 SndVol::low,
                 AlertsMon::yes);
 
-        snd_emit::run(snd);
+        snd.run();
 
         explosion::run(
                 m_pos,
@@ -1298,7 +1309,8 @@ void TrapSmoke::trigger()
                         "floor!");
         }
 
-        Snd snd("I hear a burst of gas.",
+        Snd snd(
+                "I hear a burst of gas.",
                 audio::SfxId::gas,
                 IgnoreMsgIfOriginSeen::yes,
                 m_pos,

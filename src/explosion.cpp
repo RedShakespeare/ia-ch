@@ -28,6 +28,46 @@
 // -----------------------------------------------------------------------------
 // Private
 // -----------------------------------------------------------------------------
+static bool is_player_protected_from_gas()
+{
+        // Do not apply effect if wearing Asbestos Suite
+        // or Gas Mask, and this is a gas explosion
+        const auto* const body_item =
+                map::g_player->m_inv.item_in_slot(
+                        SlotId::body);
+
+        if (body_item && (body_item->id() == item::Id::armor_asb_suit))
+        {
+                return true;
+        }
+
+        const auto* const head_item =
+                map::g_player->m_inv.item_in_slot(
+                        SlotId::head);
+
+        if (head_item && (head_item->id() == item::Id::gas_mask))
+        {
+                return true;
+        }
+
+        return false;
+}
+
+static bool is_actor_gas_immune(const actor::Actor& actor)
+{
+        if (actor.m_properties.has(PropId::r_breath))
+        {
+                return true;
+        }
+
+        if (actor.is_player() && is_player_protected_from_gas())
+        {
+                return true;
+        }
+
+        return false;
+}
+
 static std::vector<std::vector<P>> cells_reached(
         const R& area,
         const P& origin,
@@ -208,60 +248,31 @@ static void apply_explosion_property_on_pos(
         const std::vector<actor::Actor*>& corpses_here,
         const ExplIsGas is_gas)
 {
-        bool should_apply_on_living_actor = true;
-
-        if (living_actor)
-        {
-                if (is_gas == ExplIsGas::yes)
-                {
-                        if (living_actor->m_properties.has(PropId::r_breath))
-                        {
-                                should_apply_on_living_actor = false;
-                        }
-
-                        if (living_actor == map::g_player)
-                        {
-                                // Do not apply effect if wearing Gas Mask, and
-                                // this is a gas explosion
-                                const auto* const head_item =
-                                        map::g_player->m_inv.item_in_slot(
-                                                SlotId::head);
-
-                                if ((is_gas == ExplIsGas::yes) &&
-                                    head_item &&
-                                    (head_item->id() == item::Id::gas_mask))
-                                {
-                                        should_apply_on_living_actor = false;
-                                }
-                        }
-                }
-        }
-        else
-        {
-                // No living actor here
-                should_apply_on_living_actor = false;
-        }
+        // TODO: Add a test that checks gas immunity
+        const bool should_apply_on_living_actor =
+                living_actor &&
+                !((is_gas == ExplIsGas::yes) &&
+                  is_actor_gas_immune(*living_actor));
 
         if (should_apply_on_living_actor)
         {
-                Prop* const prop_cpy = property_factory::make(property->id());
+                auto* const prop_cpy = property_factory::make(property->id());
 
                 prop_cpy->set_duration(property->nr_turns_left());
 
                 living_actor->m_properties.apply(prop_cpy);
         }
 
-        // If property is burning, also apply it to corpses and the
-        // environment
+        // If property is burning, also apply it to corpses and the environment
         if (property->id() == PropId::burning)
         {
-                Cell& cell = map::g_cells.at(pos);
+                auto& cell = map::g_cells.at(pos);
 
                 cell.terrain->hit(DmgType::fire, nullptr);
 
                 for (auto* corpse : corpses_here)
                 {
-                        Prop* const prop_cpy =
+                        auto* const prop_cpy =
                                 property_factory::make(property->id());
 
                         prop_cpy->set_duration(property->nr_turns_left());

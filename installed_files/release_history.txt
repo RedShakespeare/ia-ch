@@ -46,8 +46,9 @@ User interface
 
 Bug fixes
 * Fixed a bug that prevented messages for Rogues sensing artifacts on the dungeon floor (there were only messages for sensing artifacts in item containers, such as tombs)
-* Fixed a bug which prevented darkness from giving a stealth bonus
-* Fixed a bug which inverted the effect of the Silent trait for melee attacks - i.e. attacks were noisy with the Silent trait picked, and vice versa
+* Darkness did not give a stealth bonus
+* The effect of the Silent trait was inverted for melee attacks  - i.e. attacks were noisy with the Silent trait picked, and vice versa
+* The Asbestos Suite was not protecting against gas explosions (from gas traps)
 
 --------------------------------------------------------------
 v20.0 (December 17, 2019)

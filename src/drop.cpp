@@ -153,10 +153,11 @@ item::Item* drop_item_on_map(const P& intended_pos, item::Item& item)
                 free_cell_array.at(i) = t->can_have_item();
         }
 
-        auto free_cells = to_vec(
-                free_cell_array,
-                true,
-                free_cell_array.rect());
+        auto free_cells =
+                to_vec(
+                        free_cell_array,
+                        true,
+                        free_cell_array.rect());
 
         if (free_cells.empty())
         {
@@ -170,7 +171,10 @@ item::Item* drop_item_on_map(const P& intended_pos, item::Item& item)
         // Sort the vector according to distance to origin
         IsCloserToPos is_closer_to_origin(intended_pos);
 
-        sort(begin(free_cells), end(free_cells), is_closer_to_origin);
+        std::sort(
+                std::begin(free_cells),
+                std::end(free_cells),
+                is_closer_to_origin);
 
         const bool is_stackable_type = item.data().is_stackable;
 
@@ -180,8 +184,8 @@ item::Item* drop_item_on_map(const P& intended_pos, item::Item& item)
         // be stacked, and a cell B which is empty, and A and B are of equal
         // distance to the origin, then we ALWAYS prefer cell A.
         // In other words, try to drop as near as possible, but prefer stacking.
-        for (auto outer_it = begin(free_cells);
-             outer_it != end(free_cells);
+        for (auto outer_it = std::begin(free_cells);
+             outer_it != std::end(free_cells);
              ++outer_it)
         {
                 const P& p = *outer_it;
