@@ -73,7 +73,7 @@ void make_metal_doors_and_levers();
 
 void make_monoliths();
 
-void make_pylons_and_levers();
+void make_pylons();
 
 //------------------------------------------------------------------------------
 // Room reshaping utils (called by the room objects)

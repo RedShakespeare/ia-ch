@@ -17,14 +17,12 @@ class PylonImpl;
 
 enum class PylonId
 {
-        burning,
         slow,
+        haste,
         terrify,
         invis,
         knockback,
-        teleport,
         END,
-        any
 };
 
 // -----------------------------------------------------------------------------
@@ -33,7 +31,7 @@ enum class PylonId
 class Pylon : public Terrain
 {
 public:
-        Pylon(const P& p, PylonId id);
+        Pylon(const P& p);
 
         Pylon() = delete;
 
@@ -51,14 +49,7 @@ public:
                 actor::Actor* actor,
                 int dmg = -1) override;
 
-        void on_lever_pulled(Lever* lever) override;
-
         void add_light_hook(Array2<bool>& light) const override;
-
-        int nr_turns_active() const
-        {
-                return m_nr_turns_active;
-        }
 
 private:
         PylonImpl* make_pylon_impl_from_id(PylonId id);
@@ -68,10 +59,6 @@ private:
         Color color_default() const override;
 
         std::unique_ptr<PylonImpl> m_pylon_impl;
-
-        bool m_is_activated;
-
-        int m_nr_turns_active;
 };
 
 // -----------------------------------------------------------------------------
@@ -98,15 +85,6 @@ protected:
         P m_pos;
 
         Pylon* const m_pylon;
-};
-
-class PylonBurning : public PylonImpl
-{
-public:
-        PylonBurning(P p, Pylon* pylon) :
-                PylonImpl(p, pylon) {}
-
-        void on_new_turn_activated() override;
 };
 
 class PylonTerrify : public PylonImpl
@@ -136,19 +114,19 @@ public:
         void on_new_turn_activated() override;
 };
 
-class PylonKnockback : public PylonImpl
+class PylonHaste : public PylonImpl
 {
 public:
-        PylonKnockback(P p, Pylon* pylon) :
+        PylonHaste(P p, Pylon* pylon) :
                 PylonImpl(p, pylon) {}
 
         void on_new_turn_activated() override;
 };
 
-class PylonTeleport : public PylonImpl
+class PylonKnockback : public PylonImpl
 {
 public:
-        PylonTeleport(P p, Pylon* pylon) :
+        PylonKnockback(P p, Pylon* pylon) :
                 PylonImpl(p, pylon) {}
 
         void on_new_turn_activated() override;

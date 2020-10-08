@@ -7,6 +7,7 @@
 #include "mapgen.hpp"
 
 #include "actor.hpp"
+#include "actor_player.hpp"
 #include "flood.hpp"
 #include "game_time.hpp"
 #include "map_parsing.hpp"
@@ -15,7 +16,7 @@
 
 namespace mapgen
 {
-void make_pylons_and_levers()
+void make_pylons()
 {
         // Never make Pylons late game (theme)
         if (map::g_dlvl >= g_dlvl_first_late_game)
@@ -25,8 +26,8 @@ void make_pylons_and_levers()
 
         // Determine number of Pylons to place, by a weighted choice
         std::vector<int> nr_weights = {
-                40,  // 0 pylon(s)
-                4,  // 1 -
+                20,  // 0 pylon(s)
+                5,  // 1 -
                 1,  // 2 -
         };
 
@@ -37,6 +38,10 @@ void make_pylons_and_levers()
         map_parsers::IsNotFloorLike()
                 .run(blocked, blocked.rect());
 
+        // Block player cell before expanding the blocked cells
+        blocked.at(map::g_player->m_pos) = true;
+
+        // Expand the blocked cells to block around them as well
         blocked = map_parsers::expand(blocked, 2);
 
         for (auto* const actor : game_time::g_actors)
@@ -55,78 +60,16 @@ void make_pylons_and_levers()
                         return;
                 }
 
-                const P pylon_p = rnd::element(p_bucket);
+                const auto pylon_p = rnd::element(p_bucket);
 
                 // Do not try this position again, regardless if we place this
                 // pylon or not
                 blocked.at(pylon_p) = true;
 
-                // Find position for lever
-                std::vector<P> lever_pos_bucket;
-
-                {
-                        const int lever_max_dist = 4;
-
-                        const auto flood = floodfill(
-                                pylon_p,
-                                blocked,
-                                lever_max_dist);
-
-                        // Reserve worst case of push-backs
-                        const int side = (lever_max_dist + 1) * 2;
-
-                        lever_pos_bucket.reserve((side * side) - 1);
-
-                        const int x0 = std::max(
-                                0,
-                                pylon_p.x - lever_max_dist);
-
-                        const int y0 = std::max(
-                                0,
-                                pylon_p.y - lever_max_dist);
-
-                        const int x1 = std::min(
-                                map::w() - 1,
-                                pylon_p.x + lever_max_dist);
-
-                        const int y1 = std::min(
-                                map::h() - 1,
-                                pylon_p.y + lever_max_dist);
-
-                        for (int x = x0; x <= x1; ++x)
-                        {
-                                for (int y = y0; y <= y1; ++y)
-                                {
-                                        if (flood.at(x, y) > 0)
-                                        {
-                                                lever_pos_bucket.emplace_back(
-                                                        P(x, y));
-                                        }
-                                }
-                        }
-                }
-
-                if (lever_pos_bucket.empty())
-                {
-                        // Cannot place a Lever near this Pylon - too bad, next!
-                        continue;
-                }
-
-                const P lever_p = rnd::element(lever_pos_bucket);
-
                 // OK, valid positions found - place Pylon and Lever
-                auto* const pylon =
-                        new terrain::Pylon(
-                                pylon_p,
-                                terrain::PylonId::any);
-
-                auto* const lever = new terrain::Lever(lever_p);
-
-                lever->set_linked_terrain(*pylon);
+                auto* const pylon = new terrain::Pylon(pylon_p);
 
                 map::g_cells.at(pylon_p).terrain = pylon;
-
-                map::g_cells.at(lever_p).terrain = lever;
 
                 // Don't place other pylons too near
                 {

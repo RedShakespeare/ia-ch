@@ -202,7 +202,7 @@ static void init_data_list()
 
         d.id = terrain::Id::pylon;
         d.make_obj = [](const P& p) {
-                return new terrain::Pylon(p, terrain::PylonId::any);
+                return new terrain::Pylon(p);
         };
         d.character = '|';
         d.tile = gfx::TileId::pylon;
