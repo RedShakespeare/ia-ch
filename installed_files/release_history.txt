@@ -50,6 +50,7 @@ Bug fixes
 * Darkness did not give a stealth bonus
 * The effect of the Silent trait was inverted for melee attacks  - i.e. attacks were noisy with the Silent trait picked, and vice versa
 * The Asbestos Suite was not protecting against gas explosions (from gas traps)
+* Energy Vortex attacks now has a paralyzing effect as they were supposed to have, instead of burning
 
 --------------------------------------------------------------
 v20.0 (December 17, 2019)
