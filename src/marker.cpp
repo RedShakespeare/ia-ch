@@ -640,7 +640,9 @@ void Aiming::handle_input(const InputData& input)
                 const bool is_in_max_range =
                         (dist <= max_king_dist());
 
-                if (!is_in_effective_range && is_in_max_range)
+                if (!is_in_effective_range &&
+                    is_in_max_range &&
+                    (m_wpn.data().ranged.effective_range.max > 0))
                 {
                         const std::string msg =
                                 "Aiming outside effective weapon range "
@@ -788,7 +790,9 @@ void Throwing::handle_input(const InputData& input)
                 const bool is_in_max_range =
                         (dist <= max_king_dist());
 
-                if (!is_in_effective_range && is_in_max_range)
+                if (!is_in_effective_range &&
+                    is_in_max_range &&
+                    (m_inv_item->data().ranged.effective_range.max > 0))
                 {
                         const std::string msg =
                                 "Aiming outside effective weapon range "
