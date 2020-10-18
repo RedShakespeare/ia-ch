@@ -6,6 +6,7 @@ Gameplay
 * Added weapons "S&W Model 10 Revolver" and "Winchester Rifle"
 * The Electric Gun also disables passive hit point regeneration for a number of turns
 * Changed Electric Gun damage from 4-13 to 8-12
+* The Talisman of Resurrection now also teleports the player when activated, to avoid causing the player to just wake up in the same situation that killed them to begin with
 * The stealth penalty in lit positions is much higher than before (see also bug fixes below concerning stealth and darkness)
 * Added more monsters
 * Monsters no longer become aware of the player from negative properties (burning, infections, etc) or from taking damage (it is the attack actions and sounds which makes them aware), so now it is possible to for example throw a Molotov Cocktail at a monster, and escape with Cloud Minds while it is burning
@@ -19,12 +20,12 @@ Gameplay
 * The Searching spell has been removed, and is instead a permanent ability for the Clairvoyant Occultist (upgraded at levels 4 and 8)
 * Reduced the maximum number of weapons summoned by Spectral Weapons for basic/expert/master skill level to 1/2/3 (from 2/3/4)
 * The Teleport spell has a distance limit, which is increased with higher skill levels - also reduced the spirit cost of the spell
+* Added a message when spells are upgraded (e.g. by a Gong)
 * The Ghoul ability "Frenzy" no longer costs spirit to use
 * The Ghoul trait "Toxic" now has 75% chance to apply poison, instead of 25%
 * A lot more terrain objects can be destroyed or lit on fire (for example altars or monoliths are destroyed by explosions, and wooden chests or bookshelves can be lit on fire)
 * The stairs position is always lit, to make it less tedious to discover in huge dark rooms
 * Pylons are now always activated, instead of being activated by a switch - also removed some pylon types which wouldn't work well if they were always activated (e.g. burning)
-* Added a message when spells are upgraded (e.g. by a Gong)
 
 User interface
 * All fonts have been replaced with new ones (the reason for this is that the origins and license information of the previous ones was unknown - now this information is clearly listed in a font license text file distributed with the game)

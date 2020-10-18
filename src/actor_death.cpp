@@ -19,6 +19,7 @@
 #include "map_travel.hpp"
 #include "msg_log.hpp"
 #include "popup.hpp"
+#include "teleport.hpp"
 #include "terrain.hpp"
 
 // -----------------------------------------------------------------------------
@@ -74,11 +75,16 @@ static bool try_use_talisman_of_resurrection(actor::Actor& actor)
                         PropEndAllowMsg::no,
                         PropEndAllowHistoricMsg::no));
 
-        // If player died due to falling down a chasm, go to next level
-        if (map::g_cells.at(actor.m_pos).terrain->id() ==
-            terrain::Id::chasm)
+        if (map::g_cells.at(actor.m_pos).terrain->id() == terrain::Id::chasm)
         {
+                // Player died due to falling down a chasm - go to next level
                 map_travel::go_to_nxt();
+        }
+        else
+        {
+                // Player died on current level - teleport the player so they
+                // don't just wake up in the same bad situation again
+                teleport(*map::g_player, ShouldCtrlTele::never);
         }
 
         msg_log::add("I LIVE AGAIN!");
