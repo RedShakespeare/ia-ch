@@ -71,6 +71,7 @@ enum class Id
         giant_bat,
         vampire_bat,
         abaxu,  // Unique bat
+        byakhee,
         giant_mantis,
         locust,
         mummy,

@@ -68,6 +68,7 @@ static std::unordered_map<std::string, actor::Id> str_to_actor_id_map = {
         {"giant_bat", actor::Id::giant_bat},
         {"vampire_bat", actor::Id::vampire_bat},
         {"abaxu", actor::Id::abaxu},
+        {"byakhee", actor::Id::byakhee},
         {"giant_mantis", actor::Id::giant_mantis},
         {"locust", actor::Id::locust},
         {"mummy", actor::Id::mummy},
@@ -705,9 +706,15 @@ static void dump_starting_allies(xml::Element* allies_e, actor::ActorData& data)
 
 static void read_actor_definitions_xml()
 {
+        TRACE_FUNC_BEGIN;
+
         xml::Doc doc;
 
-        xml::load_file(paths::data_dir() + "monsters.xml", doc);
+        const std::string file_path = paths::data_dir() + "monsters.xml";
+
+        TRACE << "Loading " << file_path << std::endl;
+
+        xml::load_file(file_path, doc);
 
         auto* top_e = xml::first_child(doc);
 
@@ -715,7 +722,11 @@ static void read_actor_definitions_xml()
 
         for (; mon_e; mon_e = xml::next_sibling(mon_e, "monster"))
         {
+                TRACE << "Reading monster data" << std::endl;
+
                 const actor::Id id = get_id(mon_e);
+
+                TRACE << "Monster ID = " << (int)id << std::endl;
 
                 auto& data = actor::g_data[(size_t)id];
 
@@ -723,13 +734,23 @@ static void read_actor_definitions_xml()
 
                 data.id = id;
 
+                TRACE << "Reading text data" << std::endl;
+
                 dump_text(xml::first_child(mon_e, "text"), data);
+
+                TRACE << "Reading graphics data" << std::endl;
 
                 dump_gfx(xml::first_child(mon_e, "graphics"), data);
 
+                TRACE << "Reading audio data" << std::endl;
+
                 dump_audio(xml::first_child(mon_e, "audio"), data);
 
+                TRACE << "Reading attributes data" << std::endl;
+
                 dump_attributes(xml::first_child(mon_e, "attributes"), data);
+
+                TRACE << "Reading items data" << std::endl;
 
                 auto* items_e = xml::first_child(mon_e, "items");
 
@@ -738,12 +759,16 @@ static void read_actor_definitions_xml()
                         dump_items(items_e, data);
                 }
 
+                TRACE << "Reading attacks data" << std::endl;
+
                 auto* attacks_e = xml::first_child(mon_e, "attacks");
 
                 if (attacks_e)
                 {
                         dump_intr_attacks(attacks_e, data);
                 }
+
+                TRACE << "Reading spells data" << std::endl;
 
                 auto* spells_e = xml::first_child(mon_e, "spells");
 
@@ -752,12 +777,16 @@ static void read_actor_definitions_xml()
                         dump_spells(spells_e, data);
                 }
 
+                TRACE << "Reading properties data" << std::endl;
+
                 auto* props_e = xml::first_child(mon_e, "properties");
 
                 if (props_e)
                 {
                         dump_properties(props_e, data);
                 }
+
+                TRACE << "Reading AI data" << std::endl;
 
                 auto* ai_e = xml::first_child(mon_e, "ai");
 
@@ -766,7 +795,11 @@ static void read_actor_definitions_xml()
                         dump_ai(ai_e, data);
                 }
 
+                TRACE << "Reading spawning data" << std::endl;
+
                 dump_spawning(xml::first_child(mon_e, "spawning"), data);
+
+                TRACE << "Reading starting allies data" << std::endl;
 
                 auto* allies_e = xml::first_child(mon_e, "starting_allies");
 
@@ -775,6 +808,9 @@ static void read_actor_definitions_xml()
                         dump_starting_allies(allies_e, data);
                 }
         }
+
+        TRACE_FUNC_END;
+
 }  // read_actor_definitions_xml
 
 // -----------------------------------------------------------------------------

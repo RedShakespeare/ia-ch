@@ -4358,6 +4358,96 @@
     </monster>
 
     <!--************************************************************-->
+    <!-- byakhee -->
+    <!--************************************************************-->
+    <monster id="byakhee">
+        <text>
+            <name_a>a Byakhee</name_a>
+            <name_the>the Byakhee</name_the>
+            <corpse_name_a>a Byakhee corpse</corpse_name_a>
+            <corpse_name_the>the Byakhee corpse</corpse_name_the>
+            <description>"There flapped rhythmically a horde of tame, trained, hybrid winged things... not altogether crows, nor moles, nor buzzards, nor ants, nor decomposed human beings, but something I cannot and must not recall."-H.P. Lovecraft, "The Festival".</description>
+            <allow_generated_description>true</allow_generated_description>
+            <wary_message>looks wary.</wary_message>
+            <aware_message_seen></aware_message_seen>
+            <aware_message_hidden>I hear the flapping of great wings.</aware_message_hidden>
+            <spell_message></spell_message>
+        </text>
+
+        <graphics>
+            <tile>byakhee</tile>
+            <character>B</character>
+            <color>dark_brown</color>
+        </graphics>
+
+        <audio>
+            <aware_sfx_seen>flapping_wings</aware_sfx_seen>
+            <aware_sfx_hidden>flapping_wings</aware_sfx_hidden>
+        </audio>
+
+        <attributes>
+            <hit_points>32</hit_points>
+            <spirit>20</spirit>
+            <speed>fast</speed>
+            <shock_level>terrifying</shock_level>
+            <melee>70</melee>
+            <ranged>0</ranged>
+            <dodging>30</dodging>
+            <stealth>0</stealth>
+            <searching>0</searching>
+            <can_open_doors>false</can_open_doors>
+            <can_bash_doors>true</can_bash_doors>
+            <can_swim>false</can_swim>
+            <size>humanoid</size>
+            <always_prevent_knockback>false</always_prevent_knockback>
+            <can_bleed>true</can_bleed>
+            <can_leave_corpse>true</can_leave_corpse>
+            <prioritize_destroying_corpse>false</prioritize_destroying_corpse>
+        </attributes>
+
+        <attacks>
+            <attack id="claw">
+                <damage>9</damage>
+            </attack>
+        </attacks>
+
+        <properties>
+            <property>darkvision</property>
+            <property>flying</property>
+        </properties>
+
+        <ai>
+            <erratic_move_percent>15</erratic_move_percent>
+            <turns_aware>5</turns_aware>
+            <ranged_cooldown_turns>0</ranged_cooldown_turns>
+            <looks>true</looks>
+            <avoids_blocking_friend>true</avoids_blocking_friend>
+            <attacks>true</attacks>
+            <paths_to_target_when_aware>true</paths_to_target_when_aware>
+            <moves_to_target_when_los>true</moves_to_target_when_los>
+            <moves_to_lair>false</moves_to_lair>
+            <moves_to_leader>true</moves_to_leader>
+            <moves_randomly_when_unaware>true</moves_randomly_when_unaware>
+        </ai>
+
+        <spawning>
+            <min_dungeon_level>6</min_dungeon_level>
+            <max_dungeon_level>27</max_dungeon_level>
+            <spawn_weight>100</spawn_weight>
+            <auto_spawn>true</auto_spawn>
+            <can_be_summoned_by_monster>true</can_be_summoned_by_monster>
+            <can_be_shapeshifted_into>true</can_be_shapeshifted_into>
+            <nr_allowed_to_spawn>-1</nr_allowed_to_spawn>
+            <group_size weight="4">alone</group_size>
+            <group_size weight="1">few</group_size>
+            <native_room>cave</native_room>
+            <native_room>plain</native_room>
+            <native_room>forest</native_room>
+            <native_room>chasm</native_room>
+        </spawning>
+    </monster>
+    
+    <!--************************************************************-->
     <!-- warping_aberrance -->
     <!--************************************************************-->
     <monster id="warping_aberrance">
