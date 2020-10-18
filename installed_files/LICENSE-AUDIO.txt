@@ -716,6 +716,12 @@ Original title:      SS BOOM 01.wav
 License:             Attribution 3.0 Unported (CC BY 3.0)
 Changes made:        Cut part of the sound and applied fade-out
 
+File:                sfx_mechanical_trap_trigger.ogg
+Source:              https://freesound.org/people/Yarmonics/sounds/441853/
+Author:              Yarmonics (username on freesound.org)
+Original title:      SF_2s quick metal click.wav
+License:             CC0 1.0 Universal (CC0 1.0)
+
 File:                sfx_monolith.ogg
 Source:              https://freesound.org/people/Goup_1/sounds/195396
 Author:              Goup_1 (username on freesound.org)

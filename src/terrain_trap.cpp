@@ -263,50 +263,46 @@ void Trap::trigger_start(const actor::Actor* actor)
         {
                 // TODO: Play sfx for magic traps (if player)
         }
-        else
+        else if (type() != TrapId::web)
         {
-                // Not magical
-                if (type() != TrapId::web)
+                // Not magical, not spider web
+                std::string msg = "I hear a click.";
+
+                auto alerts = AlertsMon::no;
+
+                if (actor == map::g_player)
                 {
-                        std::string msg = "I hear a click.";
+                        alerts = AlertsMon::yes;
 
-                        auto alerts = AlertsMon::no;
+                        // If player triggering, use more foreboding message
+                        msg += "..";
+                }
 
-                        if (actor == map::g_player)
+                Snd snd(
+                        msg,
+                        audio::SfxId::mechanical_trap_trigger,
+                        IgnoreMsgIfOriginSeen::no,
+                        m_pos,
+                        nullptr,
+                        SndVol::low,
+                        alerts);
+
+                snd.run();
+
+                if (actor == map::g_player)
+                {
+                        const bool is_deaf =
+                                map::g_player->m_properties.has(
+                                        PropId::deaf);
+
+                        if (is_deaf)
                         {
-                                alerts = AlertsMon::yes;
-
-                                // If player is triggering, make the message a
-                                // bit more "foreboding"
-                                msg += "..";
+                                msg_log::add(
+                                        "I feel the ground shifting "
+                                        "slightly under my foot.");
                         }
 
-                        // TODO: Make a sound effect for this
-                        Snd snd(msg,
-                                audio::SfxId::END,
-                                IgnoreMsgIfOriginSeen::no,
-                                m_pos,
-                                nullptr,
-                                SndVol::low,
-                                alerts);
-
-                        snd_emit::run(snd);
-
-                        if (actor == map::g_player)
-                        {
-                                const bool is_deaf =
-                                        map::g_player->m_properties.has(
-                                                PropId::deaf);
-
-                                if (is_deaf)
-                                {
-                                        msg_log::add(
-                                                "I feel the ground shifting "
-                                                "slightly under my foot.");
-                                }
-
-                                msg_log::more_prompt();
-                        }
+                        msg_log::more_prompt();
                 }
         }
 
@@ -872,7 +868,7 @@ void TrapGasConfusion::trigger()
                 SndVol::low,
                 AlertsMon::yes);
 
-        snd_emit::run(snd);
+        snd.run();
 
         explosion::run(
                 m_pos,
@@ -1318,7 +1314,7 @@ void TrapSmoke::trigger()
                 SndVol::low,
                 AlertsMon::yes);
 
-        snd_emit::run(snd);
+        snd.run();
 
         explosion::run_smoke_explosion_at(m_pos);
 
@@ -1334,7 +1330,8 @@ void TrapFire::trigger()
                 msg_log::add("Flames burst out from a vent in the floor!");
         }
 
-        Snd snd("I hear a burst of flames.",
+        Snd snd(
+                "I hear a burst of flames.",
                 audio::SfxId::END,
                 IgnoreMsgIfOriginSeen::yes,
                 m_pos,
@@ -1342,7 +1339,7 @@ void TrapFire::trigger()
                 SndVol::low,
                 AlertsMon::yes);
 
-        snd_emit::run(snd);
+        snd.run();
 
         explosion::run(
                 m_pos,
@@ -1364,7 +1361,8 @@ void TrapAlarm::trigger()
                 msg_log::add("An alarm sounds!");
         }
 
-        Snd snd("I hear an alarm sounding!",
+        Snd snd(
+                "I hear an alarm sounding!",
                 audio::SfxId::END,
                 IgnoreMsgIfOriginSeen::yes,
                 m_pos,
@@ -1372,7 +1370,7 @@ void TrapAlarm::trigger()
                 SndVol::high,
                 AlertsMon::yes);
 
-        snd_emit::run(snd);
+        snd.run();
 
         TRACE_FUNC_END_VERBOSE;
 }

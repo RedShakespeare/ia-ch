@@ -72,6 +72,7 @@ enum class SfxId
         monolith,
         thunder,
         gong,
+        mechanical_trap_trigger,
 
         // User interface sounds
         backpack,
