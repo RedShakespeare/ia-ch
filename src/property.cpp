@@ -1889,14 +1889,9 @@ PropActResult PropTeleports::on_act()
 
 PropActResult PropCorruptsEnvColor::on_act()
 {
-        const auto pos = m_owner->m_pos;
+        auto* const terrain = map::g_cells.at(m_owner->m_pos).terrain;
 
-        auto* terrain = map::g_cells.at(pos).terrain;
-
-        if (terrain->id() != terrain::Id::chasm)
-        {
-                terrain->corrupt_color();
-        }
+        terrain->try_corrupt_color();
 
         return {};
 }
@@ -1913,9 +1908,12 @@ void PropAltersEnv::on_std_turn()
                 terrain::Id::liquid_deep,
         };
 
-        for (int x = 0; x < blocked.w(); ++x)
+        const int blocked_w = blocked.w();
+        const int blocked_h = blocked.h();
+
+        for (int x = 0; x < blocked_w; ++x)
         {
-                for (int y = 0; y < blocked.h(); ++y)
+                for (int y = 0; y < blocked_h; ++y)
                 {
                         const P p(x, y);
 
@@ -1934,61 +1932,55 @@ void PropAltersEnv::on_std_turn()
 
         for (auto* actor : game_time::g_actors)
         {
-                has_actor.at(actor->m_pos) = true;
+                if (actor->m_state != ActorState::destroyed)
+                {
+                        has_actor.at(actor->m_pos) = true;
+                }
         }
 
         const int r = 3;
 
-        const int x0 = std::max(
-                1,
-                m_owner->m_pos.x - r);
+        const R area(
+                std::max(1, m_owner->m_pos.x - r),
+                std::max(1, m_owner->m_pos.y - r),
+                std::min(map::w() - 2, m_owner->m_pos.x + r),
+                std::min(map::h() - 2, m_owner->m_pos.y + r));
 
-        const int y0 = std::max(
-                1,
-                m_owner->m_pos.y - r);
-
-        const int x1 = std::min(
-                map::w() - 2,
-                m_owner->m_pos.x + r);
-
-        const int y1 = std::min(
-                map::h() - 2,
-                m_owner->m_pos.y + r);
-
-        for (int x = x0; x <= x1; ++x)
+        for (const auto& p : area.positions())
         {
-                for (int y = y0; y <= y1; ++y)
+                if (has_actor.at(p) ||
+                    map::g_cells.at(p).item ||
+                    !rnd::one_in(6))
                 {
-                        if (has_actor.at(x, y) ||
-                            map::g_cells.at(x, y).item ||
-                            !rnd::one_in(6))
+                        continue;
+                }
+
+                const auto terrain_id = map::g_cells.at(p).terrain->id();
+
+                if (terrain_id == terrain::Id::wall)
+                {
+                        blocked.at(p) = false;
+
+                        if (map_parsers::is_map_connected(blocked))
                         {
-                                continue;
+                                map::put(new terrain::Floor(p));
                         }
-
-                        const P pos(x, y);
-
-                        const auto current_id =
-                                map::g_cells.at(x, y).terrain->id();
-
-                        if (current_id == terrain::Id::wall)
+                        else
                         {
-                                map::put(new terrain::Floor(pos));
-
-                                blocked.at(x, y) = false;
+                                blocked.at(p) = true;
                         }
-                        else if (current_id == terrain::Id::floor)
-                        {
-                                blocked.at(x, y) = true;
+                }
+                else if (terrain_id == terrain::Id::floor)
+                {
+                        blocked.at(p) = true;
 
-                                if (map_parsers::is_map_connected(blocked))
-                                {
-                                        map::put(new terrain::Wall(pos));
-                                }
-                                else
-                                {
-                                        blocked.at(x, y) = false;
-                                }
+                        if (map_parsers::is_map_connected(blocked))
+                        {
+                                map::put(new terrain::RubbleHigh(p));
+                        }
+                        else
+                        {
+                                blocked.at(p) = false;
                         }
                 }
         }

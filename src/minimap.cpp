@@ -58,7 +58,7 @@ static Color map_cell_color(const Cell& map_cell, const bool is_blocked)
 
                 if (!door->is_hidden())
                 {
-                        if (door->type() == DoorType::metal)
+                        if (door->type() == terrain::DoorType::metal)
                         {
                                 return colors::light_teal();
                         }

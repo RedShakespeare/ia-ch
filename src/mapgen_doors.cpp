@@ -72,12 +72,20 @@ static void try_make_door(const P& p)
                 {
                         const auto* const mimic = new terrain::Wall(p);
 
-                        door = new terrain::Door(p, mimic, DoorType::wood);
+                        door =
+                                new terrain::Door(
+                                        p,
+                                        mimic,
+                                        terrain::DoorType::wood);
                 }
                 else
                 {
                         // Barred gate
-                        door = new terrain::Door(p, nullptr, DoorType::gate);
+                        door =
+                                new terrain::Door(
+                                        p,
+                                        nullptr,
+                                        terrain::DoorType::gate);
                 }
 
                 map::put(door);
@@ -216,7 +224,8 @@ void make_metal_doors_and_levers()
                                         static_cast<const terrain::Door*>(r);
 
                                 const bool is_metal =
-                                        door->type() == DoorType::metal;
+                                        door->type() ==
+                                        terrain::DoorType::metal;
 
                                 blocks_reaching_levers.at(cell_idx) = is_metal;
                         }
@@ -242,7 +251,8 @@ void make_metal_doors_and_levers()
                                         const auto* const door =
                                                 static_cast<const terrain::Door*>(r);
 
-                                        if (door->type() == DoorType::metal)
+                                        if (door->type() ==
+                                            terrain::DoorType::metal)
                                         {
                                                 // There is already a metal door
                                                 // here, try next chokepoint
@@ -355,8 +365,8 @@ void make_metal_doors_and_levers()
                         auto* door = new terrain::Door(
                                 door_p,
                                 nullptr,  // No mimic needed
-                                DoorType::metal,
-                                DoorSpawnState::closed);
+                                terrain::DoorType::metal,
+                                terrain::DoorSpawnState::closed);
 
                         map::put(door);
 

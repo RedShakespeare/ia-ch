@@ -1105,7 +1105,7 @@ void make_explore_spawn_weights(
                                                 200 / weight_div);
                                 }
 
-                                if (door->type() == DoorType::metal)
+                                if (door->type() == terrain::DoorType::metal)
                                 {
                                         weight_inc += std::max(
                                                 1,

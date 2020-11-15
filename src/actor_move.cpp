@@ -222,11 +222,11 @@ static void print_ooze_enter_terrain_msg(
 
                 switch (door.type())
                 {
-                case DoorType::gate:
+                case terrain::DoorType::gate:
                         break;
 
-                case DoorType::wood:
-                case DoorType::metal:
+                case terrain::DoorType::wood:
+                case terrain::DoorType::metal:
                         preposition = "under";
                         break;
                 }

@@ -145,7 +145,7 @@ public:
         virtual std::vector<std::string> descr_specific(
                 SpellSkill skill) const = 0;
 
-        Range spi_cost(SpellSkill skill) const;
+        Range spi_cost_range(SpellSkill skill) const;
 
         int shock_value() const;
 
@@ -156,7 +156,7 @@ public:
                 SpellSkill skill) const = 0;
 
 protected:
-        virtual int max_spi_cost(SpellSkill skill) const = 0;
+        virtual int base_max_spi_cost(SpellSkill skill) const = 0;
 
         virtual bool is_noisy(SpellSkill skill) const = 0;
 
@@ -205,7 +205,7 @@ public:
                 SpellSkill skill) const override;
 
 protected:
-        int max_spi_cost(SpellSkill skill) const override;
+        int base_max_spi_cost(SpellSkill skill) const override;
 
         bool is_noisy(const SpellSkill skill) const override
         {
@@ -257,7 +257,7 @@ public:
                 SpellSkill skill) const override;
 
 protected:
-        int max_spi_cost(SpellSkill skill) const override;
+        int base_max_spi_cost(SpellSkill skill) const override;
 
         bool is_noisy(const SpellSkill skill) const override
         {
@@ -309,7 +309,7 @@ public:
                 SpellSkill skill) const override;
 
 protected:
-        int max_spi_cost(SpellSkill skill) const override;
+        int base_max_spi_cost(SpellSkill skill) const override;
 
         bool is_noisy(const SpellSkill skill) const override
         {
@@ -363,7 +363,7 @@ public:
                 SpellSkill skill) const override;
 
 private:
-        int max_spi_cost(SpellSkill skill) const override;
+        int base_max_spi_cost(SpellSkill skill) const override;
 
         bool is_noisy(const SpellSkill skill) const override
         {
@@ -399,7 +399,7 @@ public:
         virtual std::vector<std::string> descr_specific(
                 SpellSkill skill) const = 0;
 
-        virtual int max_spi_cost(SpellSkill skill) const = 0;
+        virtual int base_max_spi_cost(SpellSkill skill) const = 0;
 };
 
 class ForceBolt : public BoltImpl
@@ -447,7 +447,7 @@ public:
         std::vector<std::string> descr_specific(
                 SpellSkill skill) const override;
 
-        int max_spi_cost(const SpellSkill skill) const override
+        int base_max_spi_cost(const SpellSkill skill) const override
         {
                 (void)skill;
 
@@ -496,7 +496,7 @@ public:
         std::vector<std::string> descr_specific(
                 SpellSkill skill) const override;
 
-        int max_spi_cost(const SpellSkill skill) const override
+        int base_max_spi_cost(const SpellSkill skill) const override
         {
                 (void)skill;
 
@@ -555,9 +555,9 @@ public:
                 SpellSkill skill) const override;
 
 private:
-        int max_spi_cost(const SpellSkill skill) const override
+        int base_max_spi_cost(const SpellSkill skill) const override
         {
-                return m_impl->max_spi_cost(skill);
+                return m_impl->base_max_spi_cost(skill);
         }
 
         bool is_noisy(const SpellSkill skill) const override
@@ -615,7 +615,7 @@ public:
                 SpellSkill skill) const override;
 
 private:
-        int max_spi_cost(const SpellSkill skill) const override
+        int base_max_spi_cost(const SpellSkill skill) const override
         {
                 (void)skill;
 
@@ -670,7 +670,7 @@ public:
                 SpellSkill skill) const override;
 
 private:
-        int max_spi_cost(SpellSkill skill) const override;
+        int base_max_spi_cost(SpellSkill skill) const override;
 
         bool is_noisy(const SpellSkill skill) const override
         {
@@ -725,7 +725,7 @@ public:
                 SpellSkill skill) const override;
 
 private:
-        int max_spi_cost(const SpellSkill skill) const override
+        int base_max_spi_cost(const SpellSkill skill) const override
         {
                 (void)skill;
 
@@ -778,7 +778,7 @@ public:
                 SpellSkill skill) const override;
 
 private:
-        int max_spi_cost(const SpellSkill skill) const override
+        int base_max_spi_cost(const SpellSkill skill) const override
         {
                 (void)skill;
 
@@ -831,7 +831,7 @@ public:
                 SpellSkill skill) const override;
 
 private:
-        int max_spi_cost(const SpellSkill skill) const override
+        int base_max_spi_cost(const SpellSkill skill) const override
         {
                 (void)skill;
 
@@ -884,7 +884,7 @@ public:
                 SpellSkill skill) const override;
 
 private:
-        int max_spi_cost(const SpellSkill skill) const override
+        int base_max_spi_cost(const SpellSkill skill) const override
         {
                 (void)skill;
 
@@ -944,7 +944,7 @@ public:
                 SpellSkill skill) const override;
 
 private:
-        int max_spi_cost(const SpellSkill skill) const override
+        int base_max_spi_cost(const SpellSkill skill) const override
         {
                 (void)skill;
 
@@ -1004,7 +1004,7 @@ public:
                 SpellSkill skill) const override;
 
 private:
-        int max_spi_cost(const SpellSkill skill) const override
+        int base_max_spi_cost(const SpellSkill skill) const override
         {
                 (void)skill;
 
@@ -1066,7 +1066,7 @@ public:
                 SpellSkill skill) const override;
 
 private:
-        int max_spi_cost(const SpellSkill skill) const override
+        int base_max_spi_cost(const SpellSkill skill) const override
         {
                 (void)skill;
 
@@ -1122,7 +1122,7 @@ public:
                 SpellSkill skill) const override;
 
 private:
-        int max_spi_cost(const SpellSkill skill) const override
+        int base_max_spi_cost(const SpellSkill skill) const override
         {
                 (void)skill;
 
@@ -1175,7 +1175,7 @@ public:
                 SpellSkill skill) const override;
 
 private:
-        int max_spi_cost(const SpellSkill skill) const override
+        int base_max_spi_cost(const SpellSkill skill) const override
         {
                 (void)skill;
 
@@ -1227,7 +1227,7 @@ public:
                 SpellSkill skill) const override;
 
 private:
-        int max_spi_cost(const SpellSkill skill) const override
+        int base_max_spi_cost(const SpellSkill skill) const override
         {
                 (void)skill;
 
@@ -1292,7 +1292,7 @@ public:
                 SpellSkill skill) const override;
 
 private:
-        int max_spi_cost(const SpellSkill skill) const override
+        int base_max_spi_cost(const SpellSkill skill) const override
         {
                 (void)skill;
 
@@ -1352,7 +1352,7 @@ public:
                 SpellSkill skill) const override;
 
 private:
-        int max_spi_cost(const SpellSkill skill) const override
+        int base_max_spi_cost(const SpellSkill skill) const override
         {
                 (void)skill;
 
@@ -1414,7 +1414,7 @@ public:
                 SpellSkill skill) const override;
 
 private:
-        int max_spi_cost(const SpellSkill skill) const override
+        int base_max_spi_cost(const SpellSkill skill) const override
         {
                 (void)skill;
 
@@ -1474,7 +1474,7 @@ public:
                 SpellSkill skill) const override;
 
 private:
-        int max_spi_cost(SpellSkill skill) const override;
+        int base_max_spi_cost(SpellSkill skill) const override;
 
         bool is_noisy(const SpellSkill skill) const override
         {
@@ -1526,7 +1526,7 @@ public:
                 SpellSkill skill) const override;
 
 private:
-        int max_spi_cost(SpellSkill skill) const override;
+        int base_max_spi_cost(SpellSkill skill) const override;
 
         bool is_noisy(const SpellSkill skill) const override
         {
@@ -1574,7 +1574,7 @@ public:
                 SpellSkill skill) const override;
 
 private:
-        int max_spi_cost(SpellSkill skill) const override;
+        int base_max_spi_cost(SpellSkill skill) const override;
 
         bool is_noisy(const SpellSkill skill) const override
         {
@@ -1622,7 +1622,7 @@ public:
                 SpellSkill skill) const override;
 
 private:
-        int max_spi_cost(SpellSkill skill) const override;
+        int base_max_spi_cost(SpellSkill skill) const override;
 
         bool is_noisy(const SpellSkill skill) const override
         {
@@ -1677,7 +1677,7 @@ public:
                 SpellSkill skill) const override;
 
 private:
-        int max_spi_cost(const SpellSkill skill) const override
+        int base_max_spi_cost(const SpellSkill skill) const override
         {
                 (void)skill;
 
@@ -1742,7 +1742,7 @@ public:
                 SpellSkill skill) const override;
 
 private:
-        int max_spi_cost(const SpellSkill skill) const override
+        int base_max_spi_cost(const SpellSkill skill) const override
         {
                 (void)skill;
 
@@ -1802,7 +1802,7 @@ public:
                 SpellSkill skill) const override;
 
 private:
-        int max_spi_cost(const SpellSkill skill) const override
+        int base_max_spi_cost(const SpellSkill skill) const override
         {
                 (void)skill;
 
@@ -1867,7 +1867,7 @@ public:
                 SpellSkill skill) const override;
 
 private:
-        int max_spi_cost(const SpellSkill skill) const override
+        int base_max_spi_cost(const SpellSkill skill) const override
         {
                 (void)skill;
 
@@ -1927,7 +1927,7 @@ public:
                 SpellSkill skill) const override;
 
 private:
-        int max_spi_cost(const SpellSkill skill) const override
+        int base_max_spi_cost(const SpellSkill skill) const override
         {
                 (void)skill;
 
@@ -1992,7 +1992,7 @@ public:
                 SpellSkill skill) const override;
 
 private:
-        int max_spi_cost(const SpellSkill skill) const override
+        int base_max_spi_cost(const SpellSkill skill) const override
         {
                 (void)skill;
 
@@ -2057,7 +2057,7 @@ public:
                 SpellSkill skill) const override;
 
 private:
-        int max_spi_cost(const SpellSkill skill) const override
+        int base_max_spi_cost(const SpellSkill skill) const override
         {
                 (void)skill;
 
@@ -2122,7 +2122,7 @@ public:
                 SpellSkill skill) const override;
 
 private:
-        int max_spi_cost(const SpellSkill skill) const override
+        int base_max_spi_cost(const SpellSkill skill) const override
         {
                 (void)skill;
 

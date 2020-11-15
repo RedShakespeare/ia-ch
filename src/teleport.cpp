@@ -215,7 +215,8 @@ void teleport(
 
                 const auto* const door = static_cast<const terrain::Door*>(r);
 
-                if ((door->type() == DoorType::metal) && actor.is_player())
+                if ((door->type() == terrain::DoorType::metal) &&
+                    actor.is_player())
                 {
                         // Metal door, player teleporting - keep it blocked
                         continue;

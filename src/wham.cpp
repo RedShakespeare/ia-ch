@@ -56,7 +56,7 @@ static bool is_allowed_use_wpn_on_terrain(
 
                         const auto door_type = door.type();
 
-                        if (door_type == DoorType::gate)
+                        if (door_type == terrain::DoorType::gate)
                         {
                                 // Only allow blunt weapons for gates
                                 // (feels weird to attack a barred gate

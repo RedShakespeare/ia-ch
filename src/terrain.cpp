@@ -30,6 +30,7 @@
 #include "popup.hpp"
 #include "property.hpp"
 #include "property_data.hpp"
+#include "property_factory.hpp"
 #include "property_handler.hpp"
 #include "query.hpp"
 #include "saving.hpp"
@@ -356,9 +357,17 @@ int Terrain::shock_when_adj() const
 {
         int shock = base_shock_when_adj();
 
-        if (m_nr_turns_color_corrupted > 0)
+        if (is_corrupted_color())
         {
-                shock += 5;
+                shock += 6;
+        }
+        else if (has_gore())
+        {
+                shock += 3;
+        }
+        else if (is_bloody())
+        {
+                shock += 1;
         }
 
         return shock;
@@ -369,9 +378,22 @@ int Terrain::base_shock_when_adj() const
         return data().shock_when_adjacent;
 }
 
+void Terrain::try_make_bloody()
+{
+        if (can_have_blood())
+        {
+                m_is_bloody = true;
+        }
+}
+
+bool Terrain::is_bloody() const
+{
+        return m_is_bloody;
+}
+
 void Terrain::try_put_gore()
 {
-        if (!data().can_have_gore)
+        if (!can_have_gore())
         {
                 return;
         }
@@ -443,9 +465,25 @@ void Terrain::try_put_gore()
         }
 }
 
-void Terrain::corrupt_color()
+bool Terrain::has_gore() const
 {
+        // TODO: This is hacky
+        return (m_gore_tile != gfx::TileId::END);
+}
+
+void Terrain::try_corrupt_color()
+{
+        if (id() == terrain::Id::chasm)
+        {
+                return;
+        }
+
         m_nr_turns_color_corrupted = rnd::range(200, 220);
+}
+
+bool Terrain::is_corrupted_color() const
+{
+        return (m_nr_turns_color_corrupted > 0);
 }
 
 Color Terrain::color() const
@@ -457,7 +495,7 @@ Color Terrain::color() const
         else
         {
                 // Not burning
-                if (m_nr_turns_color_corrupted > 0)
+                if (is_corrupted_color())
                 {
                         Color color = colors::light_magenta();
 
@@ -1052,6 +1090,94 @@ int Statue::base_shock_when_adj() const
         return 0;
 }
 
+void Statue::topple(
+        const Dir direction,
+        actor::Actor* const actor_toppling)
+{
+        const AlertsMon alerts_mon =
+                (actor_toppling == map::g_player)
+                ? AlertsMon::yes
+                : AlertsMon::no;
+
+        if (map::g_cells.at(m_pos).is_seen_by_player)
+        {
+                msg_log::add("The statue topples over.");
+        }
+
+        Snd snd(
+                "I hear a crash.",
+                audio::SfxId::statue_crash,
+                IgnoreMsgIfOriginSeen::yes,
+                m_pos,
+                actor_toppling,
+                SndVol::low,
+                alerts_mon);
+
+        snd_emit::run(snd);
+
+        const auto dst_pos = m_pos + dir_utils::offset(direction);
+
+        map::put(new RubbleLow(m_pos));
+
+        // NOTE: This object is now deleted!
+
+        actor::Actor* const actor_behind =
+                map::first_actor_at_pos(dst_pos);
+
+        if (actor_behind &&
+            actor_behind->is_alive() &&
+            !actor_behind->m_properties.has(PropId::ethereal))
+        {
+                if (actor_behind->is_player())
+                {
+                        msg_log::add("It falls on me!");
+                }
+                else
+                {
+                        // Monster is hit
+                        const bool is_player_seeing_actor =
+                                actor::can_player_see_actor(
+                                        *actor_behind);
+
+                        if (is_player_seeing_actor)
+                        {
+                                msg_log::add(
+                                        "It falls on " +
+                                        actor_behind->name_a() +
+                                        ".");
+                        }
+                }
+
+                actor::hit(
+                        *actor_behind,
+                        rnd::range(3, 6),
+                        DmgType::blunt);
+
+                if (actor_behind->is_alive())
+                {
+                        auto* const paralyzed =
+                                property_factory::make(PropId::paralyzed);
+
+                        paralyzed->set_duration(rnd::range(2, 3));
+
+                        actor_behind->m_properties.apply(paralyzed);
+                }
+        }
+
+        const auto terrain_id = map::g_cells.at(dst_pos).terrain->id();
+
+        // NOTE: This is kinda hacky, but the rubble is mostly just for
+        // decoration anyway, so it doesn't really matter.
+        if (terrain_id == terrain::Id::floor ||
+            terrain_id == terrain::Id::grass ||
+            terrain_id == terrain::Id::carpet)
+        {
+                map::put(new RubbleLow(dst_pos));
+        }
+
+        map::update_vision();
+}
+
 void Statue::on_hit(
         const DmgType dmg_type,
         actor::Actor* const actor,
@@ -1072,78 +1198,10 @@ void Statue::on_hit(
                         return;
                 }
 
-                const AlertsMon alerts_mon =
-                        (actor == map::g_player)
-                        ? AlertsMon::yes
-                        : AlertsMon::no;
+                const auto direction = dir_utils::dir(m_pos - actor->m_pos);
 
-                if (map::g_cells.at(m_pos).is_seen_by_player)
-                {
-                        msg_log::add("It topples over.");
-                }
-
-                Snd snd(
-                        "I hear a crash.",
-                        audio::SfxId::statue_crash,
-                        IgnoreMsgIfOriginSeen::yes,
-                        m_pos,
-                        actor,
-                        SndVol::low,
-                        alerts_mon);
-
-                snd_emit::run(snd);
-
-                const P dst_pos = m_pos + (m_pos - actor->m_pos);
-
-                map::put(new RubbleLow(m_pos));
-
-                // NOTE: This object is now deleted!
-
-                actor::Actor* const actor_behind =
-                        map::first_actor_at_pos(dst_pos);
-
-                if (actor_behind &&
-                    actor_behind->is_alive() &&
-                    !actor_behind->m_properties.has(PropId::ethereal))
-                {
-                        if (actor_behind->is_player())
-                        {
-                                msg_log::add("It falls on me!");
-                        }
-                        else
-                        {
-                                // Monster is hit
-                                const bool is_player_seeing_actor =
-                                        actor::can_player_see_actor(
-                                                *actor_behind);
-
-                                if (is_player_seeing_actor)
-                                {
-                                        msg_log::add(
-                                                "It falls on " +
-                                                actor_behind->name_a() +
-                                                ".");
-                                }
-                        }
-
-                        actor::hit(
-                                *actor_behind,
-                                rnd::range(3, 15),
-                                DmgType::blunt);
-                }
-
-                const auto terrain_id = map::g_cells.at(dst_pos).terrain->id();
-
-                // NOTE: This is kinda hacky, but the rubble is mostly just for
-                // decoration anyway, so it doesn't really matter.
-                if (terrain_id == terrain::Id::floor ||
-                    terrain_id == terrain::Id::grass ||
-                    terrain_id == terrain::Id::carpet)
-                {
-                        map::put(new RubbleLow(dst_pos));
-                }
-
-                map::update_vision();
+                // NOTE: This call deletes the object!
+                topple(direction, actor);
         }
         break;
 

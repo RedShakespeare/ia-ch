@@ -7,9 +7,11 @@
 #include "spells.hpp"
 
 #include <algorithm>
+#include <functional>
 #include <unordered_map>
 #include <vector>
 
+#include "actor_death.hpp"
 #include "actor_factory.hpp"
 #include "actor_hit.hpp"
 #include "actor_mon.hpp"
@@ -39,6 +41,7 @@
 #include "property_factory.hpp"
 #include "property_handler.hpp"
 #include "teleport.hpp"
+#include "terrain.hpp"
 #include "terrain_door.hpp"
 #include "text_format.hpp"
 #include "viewport.hpp"
@@ -93,6 +96,553 @@ static const StrToSpellSkillMap s_str_to_spell_skill_map = {
 static const std::string s_spell_resist_msg = "The spell is resisted!";
 
 static const std::string s_spell_reflect_msg = "The spell is reflected!";
+
+namespace spell_side_effects
+{
+struct Context
+{
+        Context(actor::Actor& spell_caster,
+                const std::vector<P>& caster_nearby_positions) :
+                caster(spell_caster),
+                nearby_positions(caster_nearby_positions) {}
+
+        actor::Actor& caster;
+        const std::vector<P>& nearby_positions;
+};
+
+static void spawn_monsters(const Context& context)
+{
+        TRACE_FUNC_BEGIN;
+
+        const auto p = rnd::element(context.nearby_positions);
+
+        const auto id = actor::Id::tentacles;
+
+        auto spawned = actor::spawn(p, {id}, map::rect());
+
+        for (auto* const actor : spawned.monsters)
+        {
+                auto* const conflicted =
+                        property_factory::make(PropId::conflict);
+
+                conflicted->set_indefinite();
+
+                actor->m_properties.apply(
+                        conflicted,
+                        PropSrc::intr,
+                        false,
+                        Verbose::no);
+
+                auto* const waiting =
+                        property_factory::make(PropId::waiting);
+
+                waiting->set_duration(2);
+
+                actor->m_properties.apply(waiting);
+
+                auto* const summoned =
+                        property_factory::make(PropId::summoned);
+
+                summoned->set_duration(rnd::range(3, 20));
+
+                actor->m_properties.apply(summoned);
+        }
+
+        TRACE_FUNC_END;
+}
+
+static void swap_wall_floor(const Context& context)
+{
+        TRACE_FUNC_BEGIN;
+
+        // TODO: This is pretty much copy/pasted from the "Alter Environment"
+        // property, consider refactoring.
+        // Alternatively, maybe just apply that property on the caster instead.
+
+        Array2<bool> blocked(map::dims());
+
+        map_parsers::BlocksWalking(ParseActors::no)
+                .run(blocked, blocked.rect());
+
+        const std::vector<terrain::Id> free_terrains = {
+                terrain::Id::door,
+                terrain::Id::liquid_deep,
+        };
+
+        for (const P& p : blocked.rect().positions())
+        {
+                const bool is_free_terrain =
+                        map_parsers::IsAnyOfTerrains(free_terrains)
+                                .cell(p);
+
+                if (is_free_terrain)
+                {
+                        blocked.at(p) = false;
+                }
+        }
+
+        Array2<bool> has_actor(map::dims());
+
+        for (auto* actor : game_time::g_actors)
+        {
+                if (actor->m_state != ActorState::destroyed)
+                {
+                        has_actor.at(actor->m_pos) = true;
+                }
+        }
+
+        for (const auto& p : context.nearby_positions)
+        {
+                if (!map::is_pos_inside_outer_walls(p) ||
+                    has_actor.at(p) ||
+                    map::g_cells.at(p).item ||
+                    !rnd::one_in(14))
+                {
+                        continue;
+                }
+
+                const auto terrain_id = map::g_cells.at(p).terrain->id();
+
+                if (terrain_id == terrain::Id::wall)
+                {
+                        blocked.at(p) = false;
+
+                        if (map_parsers::is_map_connected(blocked))
+                        {
+                                map::put(new terrain::Floor(p));
+                        }
+                        else
+                        {
+                                blocked.at(p) = true;
+                        }
+                }
+                else if (terrain_id == terrain::Id::floor)
+                {
+                        blocked.at(p) = true;
+
+                        if (map_parsers::is_map_connected(blocked))
+                        {
+                                map::put(new terrain::RubbleHigh(p));
+                        }
+                        else
+                        {
+                                blocked.at(p) = false;
+                        }
+                }
+        }
+
+        TRACE_FUNC_END;
+}  // swap_wall_floor
+
+static void ignite_terrain(const Context& context)
+{
+        TRACE_FUNC_BEGIN;
+
+        Array2<bool> has_actor(map::dims());
+
+        for (auto* actor : game_time::g_actors)
+        {
+                if (actor->m_state != ActorState::destroyed)
+                {
+                        has_actor.at(actor->m_pos) = true;
+                }
+        }
+
+        for (const auto& p : context.nearby_positions)
+        {
+                if (has_actor.at(p))
+                {
+                        continue;
+                }
+
+                if (!rnd::one_in(14))
+                {
+                        continue;
+                }
+
+                auto* const terrain = map::g_cells.at(p).terrain;
+
+                terrain->hit(DmgType::fire, nullptr);
+        }
+
+        TRACE_FUNC_END;
+}
+
+static void open_close_doors(const Context& context)
+{
+        TRACE_FUNC_BEGIN;
+
+        // Open or close doors
+        const bool should_open = (bool)rnd::coin_toss();
+
+        Array2<bool> has_actor(map::dims());
+
+        for (auto* actor : game_time::g_actors)
+        {
+                if (actor->m_state != ActorState::destroyed)
+                {
+                        has_actor.at(actor->m_pos) = true;
+                }
+        }
+
+        for (const auto& p : context.nearby_positions)
+        {
+                if (has_actor.at(p) || map::g_cells.at(p).item)
+                {
+                        continue;
+                }
+
+                auto* const terrain = map::g_cells.at(p).terrain;
+
+                if (terrain->id() != terrain::Id::door)
+                {
+                        continue;
+                }
+
+                if (static_cast<terrain::Door*>(terrain)->type() ==
+                    terrain::DoorType::metal)
+                {
+                        continue;
+                }
+
+                if (should_open)
+                {
+                        terrain->open(nullptr);
+                }
+                else
+                {
+                        terrain->close(nullptr);
+                }
+        }
+
+        TRACE_FUNC_END;
+}
+
+static void flay_human(const Context& context)
+{
+        TRACE_FUNC_BEGIN;
+
+        auto actors = actor::seen_actors(context.caster);
+
+        actors.push_back(&context.caster);
+
+        rnd::shuffle(actors);
+
+        actor::Actor* target_actor = nullptr;
+
+        for (auto* const actor : actors)
+        {
+                const auto* const actor_data = actor->m_data;
+
+                const auto& properties = actor->m_properties;
+
+                // NOTE: The target may be the caster, if caster is a monster
+                if (!actor->is_player() &&
+                    actor->is_alive() &&
+                    actor_data->is_humanoid &&
+                    !actor_data->is_undead &&
+                    !actor_data->is_unique &&
+                    !properties.has(PropId::ethereal) &&
+                    !properties.has(PropId::possessed_by_zuul) &&
+                    !properties.has(PropId::spawns_zombie_parts_on_destroyed))
+                {
+                        target_actor = actor;
+
+                        break;
+                }
+        }
+
+        if (!target_actor)
+        {
+                return;
+        }
+
+        if (actor::can_player_see_actor(*target_actor))
+        {
+                const auto name =
+                        text_format::first_to_upper(
+                                target_actor->name_the());
+
+                msg_log::add(name + " is suddenly flayed alive!");
+        }
+
+        actor::kill(
+                *target_actor,
+                IsDestroyed::yes,
+                AllowGore::yes,
+                AllowDropItems::yes);
+
+        actor::spawn(
+                target_actor->m_pos,
+                {actor::Id::crawling_intestines},
+                map::rect());
+
+        TRACE_FUNC_END;
+}
+
+static void create_water(const Context& context)
+{
+        TRACE_FUNC_BEGIN;
+
+        for (const auto& p : context.nearby_positions)
+        {
+                if ((map::g_cells.at(p).terrain->id() != terrain::Id::floor) ||
+                    !rnd::one_in(8))
+                {
+                        continue;
+                }
+
+                auto* const liquid = new terrain::LiquidShallow(p);
+
+                liquid->m_type = LiquidType::water;
+
+                map::put(liquid);
+        }
+
+        TRACE_FUNC_END;
+}
+
+static void create_trees(const Context& context)
+{
+        TRACE_FUNC_BEGIN;
+
+        Array2<bool> blocked(map::dims());
+
+        map_parsers::BlocksWalking(ParseActors::no)
+                .run(blocked, blocked.rect());
+
+        const std::vector<terrain::Id> free_terrains = {
+                terrain::Id::door,
+                terrain::Id::liquid_deep,
+        };
+
+        for (const P& p : blocked.rect().positions())
+        {
+                const bool is_free_terrain =
+                        map_parsers::IsAnyOfTerrains(free_terrains)
+                                .cell(p);
+
+                if (is_free_terrain)
+                {
+                        blocked.at(p) = false;
+                }
+        }
+
+        std::vector<P> tree_pos_bucket;
+
+        for (const auto& p : context.nearby_positions)
+        {
+                const bool is_floor_like =
+                        map::g_cells.at(p).terrain->data().is_floor_like;
+
+                const bool is_adj_to_lever =
+                        map_parsers::AnyAdjIsAnyOfTerrains(terrain::Id::lever)
+                                .cell(p);
+
+                if (blocked.at(p) || !is_floor_like || is_adj_to_lever)
+                {
+                        continue;
+                }
+
+                tree_pos_bucket.push_back(p);
+
+                map::put(new terrain::Grass(p));
+        }
+
+        Array2<bool> has_actor(map::dims());
+
+        for (auto* actor : game_time::g_actors)
+        {
+                if (actor->m_state != ActorState::destroyed)
+                {
+                        has_actor.at(actor->m_pos) = true;
+                }
+        }
+
+        int nr_trees_placed = 0;
+
+        const int tree_one_in_n = rnd::range(1, 20);
+
+        TRACE << "tree_one_in_n: " << tree_one_in_n << std::endl;
+
+        while (!tree_pos_bucket.empty())
+        {
+                const auto p = tree_pos_bucket.back();
+
+                tree_pos_bucket.pop_back();
+
+                if (has_actor.at(p) ||
+                    !rnd::one_in(tree_one_in_n))
+                {
+                        continue;
+                }
+
+                blocked.at(p) = true;
+
+                if (map_parsers::is_map_connected(blocked))
+                {
+                        map::put(new terrain::Tree(p));
+
+                        ++nr_trees_placed;
+                }
+                else
+                {
+                        blocked.at(p) = false;
+                }
+        }
+
+        TRACE_FUNC_END;
+}
+
+static void create_doors(const Context& context)
+{
+        TRACE_FUNC_BEGIN;
+
+        const auto adj_door_checker =
+                map_parsers::AnyAdjIsAnyOfTerrains(terrain::Id::door);
+
+        const auto adj_floor_checker =
+                map_parsers::AnyAdjIsAnyOfTerrains(terrain::Id::floor);
+
+        for (const auto& p : context.nearby_positions)
+        {
+                const auto id = map::g_cells.at(p).terrain->id();
+
+                if (!rnd::one_in(2) ||
+                    (id != terrain::Id::wall) ||
+                    adj_door_checker.cell(p) ||
+                    !adj_floor_checker.cell(p))
+                {
+                        continue;
+                }
+
+                const auto* const mimic = new terrain::Wall(p);
+
+                auto* const door =
+                        new terrain::Door(
+                                p,
+                                mimic,
+                                terrain::DoorType::wood,
+                                terrain::DoorSpawnState::closed);
+
+                map::put(door);
+        }
+
+        TRACE_FUNC_END;
+}
+
+static void create_dark_void(const Context& context)
+{
+        TRACE_FUNC_BEGIN;
+
+        std::vector<P> sorted_positions = context.nearby_positions;
+
+        std::sort(
+                std::begin(sorted_positions),
+                std::end(sorted_positions),
+                [context](const auto& p1, const auto& p2) {
+                        const auto caster_p = context.caster.m_pos;
+
+                        const int d1 = king_dist(p1, caster_p);
+                        const int d2 = king_dist(p2, caster_p);
+
+                        return d1 < d2;
+                });
+
+        Array2<bool> blocked(map::dims());
+
+        map_parsers::BlocksWalking(ParseActors::no)
+                .run(blocked, blocked.rect());
+
+        const std::vector<terrain::Id> free_terrains = {
+                terrain::Id::door,
+                terrain::Id::liquid_deep,
+        };
+
+        for (const P& p : blocked.rect().positions())
+        {
+                const bool is_free_terrain =
+                        map_parsers::IsAnyOfTerrains(free_terrains)
+                                .cell(p);
+
+                if (is_free_terrain)
+                {
+                        blocked.at(p) = false;
+                }
+        }
+
+        for (const auto& p : sorted_positions)
+        {
+                if (!map::is_pos_inside_outer_walls(p))
+                {
+                        continue;
+                }
+
+                map::g_dark.at(p) = true;
+                map::g_light.at(p) = false;
+
+                if (map::g_cells.at(p).terrain->id() == terrain::Id::wall)
+                {
+                        blocked.at(p) = false;
+
+                        if (map_parsers::is_map_connected(blocked))
+                        {
+                                map::put(new terrain::Floor(p));
+                        }
+                        else
+                        {
+                                blocked.at(p) = true;
+                        }
+                }
+        }
+
+        TRACE_FUNC_END;
+}
+
+static void push_statue(const Context& context)
+{
+        TRACE_FUNC_BEGIN;
+
+        for (const auto& p : context.nearby_positions)
+        {
+                auto* const terrain = map::g_cells.at(p).terrain;
+
+                if (terrain->id() != terrain::Id::statue)
+                {
+                        continue;
+                }
+
+                auto* const statue = static_cast<terrain::Statue*>(terrain);
+
+                const auto direction =
+                        dir_utils::dir(
+                                rnd::element(
+                                        dir_utils::g_dir_list));
+
+                statue->topple(direction);
+
+                break;
+        }
+
+        TRACE_FUNC_END;
+}
+
+using SpellSideEffect = std::function<void(const Context&)>;
+
+static const std::vector<SpellSideEffect> s_spell_side_effects {
+        create_dark_void,
+        create_doors,
+        create_trees,
+        create_water,
+        flay_human,
+        ignite_terrain,
+        open_close_doors,
+        push_statue,
+        spawn_monsters,
+        swap_wall_floor,
+};
+
+}  // namespace spell_side_effects
 
 // -----------------------------------------------------------------------------
 // spells
@@ -253,9 +803,9 @@ StateId BrowseSpell::id() const
 // -----------------------------------------------------------------------------
 // Spell
 // -----------------------------------------------------------------------------
-Range Spell::spi_cost(const SpellSkill skill) const
+Range Spell::spi_cost_range(const SpellSkill skill) const
 {
-        const int cost_max = max_spi_cost(skill);
+        const int cost_max = base_max_spi_cost(skill);
         const int cost_min = (cost_max + 1) / 2;
 
         return {cost_min, cost_max};
@@ -369,11 +919,11 @@ void Spell::cast(
 
         if (spell_src == SpellSrc::learned)
         {
-                const auto cost = spi_cost(skill);
+                const auto cost_range = spi_cost_range(skill);
 
-                if (cost.min > 0)
+                if (cost_range.min > 0)
                 {
-                        actor::hit_sp(*caster, cost.roll(), Verbose::no);
+                        actor::hit_sp(*caster, cost_range.roll(), Verbose::no);
                 }
 
                 // Check properties which MAY allow casting with a random chance
@@ -385,10 +935,37 @@ void Spell::cast(
         if (allow_cast && caster->is_alive())
         {
                 run_effect(caster, skill);
+
+                // Casting spells ends cloaking
+                caster->m_properties.end_prop(PropId::cloaked);
         }
 
-        // Casting spells ends cloaking
-        caster->m_properties.end_prop(PropId::cloaked);
+        if (caster->is_player() &&
+            caster->is_alive() &&
+            allow_cast &&
+            (base_max_spi_cost(skill) > 0) &&
+            rnd::one_in(5))
+        {
+                // Run a random side effect
+                const int d = 3;
+
+                const R rect(
+                        {std::max(0, caster->m_pos.x - d),
+                         std::max(0, caster->m_pos.y - d)},
+                        {std::min(map::w() - 1, caster->m_pos.x + d),
+                         std::min(map::h() - 1, caster->m_pos.y + d)});
+
+                auto nearby_positions = rect.positions();
+
+                rnd::shuffle(nearby_positions);
+
+                const auto& side_effect =
+                        rnd::element(spell_side_effects::s_spell_side_effects);
+
+                TRACE << "Running spell side effect" << std::endl;
+
+                side_effect({*caster, nearby_positions});
+        }
 
         game_time::tick();
 
@@ -543,7 +1120,7 @@ int Spell::shock_value() const
 // -----------------------------------------------------------------------------
 // Aura of Decay
 // -----------------------------------------------------------------------------
-int SpellAuraOfDecay::max_spi_cost(const SpellSkill skill) const
+int SpellAuraOfDecay::base_max_spi_cost(const SpellSkill skill) const
 {
         (void)skill;
 
@@ -1077,7 +1654,7 @@ bool SpellAzaWrath::allow_mon_cast_now(actor::Mon& mon) const
 // -----------------------------------------------------------------------------
 // Mayhem
 // -----------------------------------------------------------------------------
-int SpellMayhem::max_spi_cost(const SpellSkill skill) const
+int SpellMayhem::base_max_spi_cost(const SpellSkill skill) const
 {
         (void)skill;
 
@@ -1114,51 +1691,35 @@ void SpellMayhem::run_effect(
 
         const int destr_radi = g_fov_radi_int + (int)skill * 2;
 
-        const int x0 = std::max(
-                1,
-                caster_pos.x - destr_radi);
+        const R area(
+                std::max(1, caster_pos.x - destr_radi),
+                std::max(1, caster_pos.y - destr_radi),
+                std::min(map::w() - 1, caster_pos.x + destr_radi) - 1,
+                std::min(map::h() - 1, caster_pos.y + destr_radi) - 1);
 
-        const int y0 = std::max(
-                1,
-                caster_pos.y - destr_radi);
-
-        const int x1 = std::min(
-                               map::w() - 1,
-                               caster_pos.x + destr_radi) -
-                1;
-
-        const int y1 = std::min(
-                               map::h() - 1,
-                               caster_pos.y + destr_radi) -
-                1;
+        const auto positions = area.positions();
 
         // Run explosions
         std::vector<P> p_bucket;
 
         const int expl_radi_diff = -1;
 
-        for (int x = x0; x <= x1; ++x)
+        for (const auto& p : positions)
         {
-                for (int y = y0; y <= y1; ++y)
+                const auto* const terrain = map::g_cells.at(p).terrain;
+
+                if (!terrain->is_walkable())
                 {
-                        const auto* const t = map::g_cells.at(x, y).terrain;
+                        continue;
+                }
 
-                        if (!t->is_walkable())
-                        {
-                                continue;
-                        }
+                const int dist = king_dist(caster_pos, p);
 
-                        const P p(x, y);
+                const int min_dist = g_expl_std_radi + 1 + expl_radi_diff;
 
-                        const int dist = king_dist(caster_pos, p);
-
-                        const int min_dist =
-                                g_expl_std_radi + 1 + expl_radi_diff;
-
-                        if (dist >= min_dist)
-                        {
-                                p_bucket.push_back(p);
-                        }
+                if (dist >= min_dist)
+                {
+                        p_bucket.push_back(p);
                 }
         }
 
@@ -1185,37 +1746,32 @@ void SpellMayhem::run_effect(
         }
 
         // Explode braziers
-        for (int x = x0; x <= x1; ++x)
+        for (const auto& p : positions)
         {
-                for (int y = y0; y <= y1; ++y)
+                const auto terrain_id = map::g_cells.at(p).terrain->id();
+
+                if (terrain_id == terrain::Id::brazier)
                 {
-                        const auto id = map::g_cells.at(x, y).terrain->id();
+                        Snd snd(
+                                "I hear an explosion!",
+                                audio::SfxId::explosion_molotov,
+                                IgnoreMsgIfOriginSeen::yes,
+                                p,
+                                nullptr,
+                                SndVol::high,
+                                AlertsMon::yes);
 
-                        if (id == terrain::Id::brazier)
-                        {
-                                const P p(x, y);
+                        snd.run();
 
-                                Snd snd(
-                                        "I hear an explosion!",
-                                        audio::SfxId::explosion_molotov,
-                                        IgnoreMsgIfOriginSeen::yes,
-                                        p,
-                                        nullptr,
-                                        SndVol::high,
-                                        AlertsMon::yes);
+                        map::put(new terrain::RubbleLow(p));
 
-                                snd.run();
-
-                                map::put(new terrain::RubbleLow(p));
-
-                                explosion::run(
-                                        p,
-                                        ExplType::apply_prop,
-                                        EmitExplSnd::yes,
-                                        0,
-                                        ExplExclCenter::yes,
-                                        {new PropBurning()});
-                        }
+                        explosion::run(
+                                p,
+                                ExplType::apply_prop,
+                                EmitExplSnd::yes,
+                                0,
+                                ExplExclCenter::yes,
+                                {new PropBurning()});
                 }
         }
 
@@ -1224,63 +1780,54 @@ void SpellMayhem::run_effect(
 
         for (int i = 0; i < nr_sweeps; ++i)
         {
-                for (int x = x0; x <= x1; ++x)
+                for (const auto& p : positions)
                 {
-                        for (int y = y0; y <= y1; ++y)
+                        if (!rnd::one_in(8))
                         {
-                                if (!rnd::one_in(8))
+                                continue;
+                        }
+
+                        bool is_adj_to_walkable_cell = false;
+
+                        for (const P& d : dir_utils::g_dir_list)
+                        {
+                                const P p_adj(p + d);
+
+                                const auto& cell = map::g_cells.at(p_adj);
+
+                                if (cell.terrain->is_walkable())
                                 {
-                                        continue;
+                                        is_adj_to_walkable_cell = true;
                                 }
+                        }
 
-                                bool is_adj_to_walkable_cell = false;
-
-                                for (const P& d : dir_utils::g_dir_list)
-                                {
-                                        const P p_adj(P(x, y) + d);
-
-                                        const auto& cell =
-                                                map::g_cells.at(p_adj);
-
-                                        if (cell.terrain->is_walkable())
-                                        {
-                                                is_adj_to_walkable_cell = true;
-                                        }
-                                }
-
-                                if (is_adj_to_walkable_cell)
-                                {
-                                        map::g_cells.at(x, y).terrain->hit(
-                                                DmgType::explosion,
-                                                nullptr);
-                                }
+                        if (is_adj_to_walkable_cell)
+                        {
+                                map::g_cells.at(p).terrain->hit(
+                                        DmgType::explosion,
+                                        nullptr);
                         }
                 }
         }
 
         // Put blood, and set stuff on fire
-        for (int x = x0; x <= x1; ++x)
+        for (const auto& p : positions)
         {
-                for (int y = y0; y <= y1; ++y)
+                auto* const terrain = map::g_cells.at(p).terrain;
+
+                if (rnd::one_in(10))
                 {
-                        auto* const t = map::g_cells.at(x, y).terrain;
+                        terrain->try_make_bloody();
 
-                        if (t->can_have_blood() &&
-                            rnd::one_in(10))
+                        if (rnd::one_in(3))
                         {
-                                t->make_bloody();
-
-                                if (rnd::one_in(3))
-                                {
-                                        t->try_put_gore();
-                                }
+                                terrain->try_put_gore();
                         }
+                }
 
-                        if ((P(x, y) != caster->m_pos) &&
-                            rnd::one_in(6))
-                        {
-                                t->hit(DmgType::fire, nullptr);
-                        }
+                if ((p != caster->m_pos) && rnd::one_in(6))
+                {
+                        terrain->hit(DmgType::fire, nullptr);
                 }
         }
 
@@ -1360,7 +1907,8 @@ void SpellPestilence::run_effect(
                 std::begin(mon_summoned.monsters),
                 std::end(mon_summoned.monsters),
                 [skill, &is_any_seen_by_player](auto* const mon) {
-                        mon->m_properties.apply(new PropSummoned());
+                        mon->m_properties.apply(
+                                property_factory::make(PropId::summoned));
 
                         auto* prop_waiting = new PropWaiting();
 
@@ -1624,108 +2172,91 @@ void SpellOpening::run_effect(
         const int orig_x = map::g_player->m_pos.x;
         const int orig_y = map::g_player->m_pos.y;
 
-        const int x0 = std::max(
-                0,
-                orig_x - range);
-
-        const int y0 = std::max(
-                0,
-                orig_y - range);
-
-        const int x1 = std::min(
-                map::w() - 1,
-                orig_x + range);
-
-        const int y1 = std::min(
-                map::h() - 1,
-                orig_y + range);
+        const R area(
+                std::max(0, orig_x - range),
+                std::max(0, orig_y - range),
+                std::min(map::w() - 1, orig_x + range),
+                std::min(map::h() - 1, orig_y + range));
 
         bool is_any_opened = false;
 
         const int chance_to_open = 50 + (int)skill * 25;
 
         // TODO: Way too much nested scope here!
-
-        for (int x = x0; x <= x1; ++x)
+        for (const auto& p : area.positions())
         {
-                for (int y = y0; y <= y1; ++y)
+                if (!rnd::percent(chance_to_open))
                 {
-                        if (!rnd::percent(chance_to_open))
+                        continue;
+                }
+
+                auto* const terrain = map::g_cells.at(p).terrain;
+
+                auto did_open = DidOpen::no;
+
+                bool is_metal_door = false;
+
+                // Is this a metal door?
+                if (terrain->id() == terrain::Id::door)
+                {
+                        auto* const door =
+                                static_cast<terrain::Door*>(terrain);
+
+                        is_metal_door = (door->type() == terrain::DoorType::metal);
+
+                        // If at least expert skill, then metal doors
+                        // are also opened
+                        if (is_metal_door &&
+                            !door->is_open() &&
+                            ((int)skill >= (int)SpellSkill::expert))
                         {
-                                continue;
-                        }
-
-                        const auto& cell = map::g_cells.at(x, y);
-
-                        auto* const t = cell.terrain;
-
-                        auto did_open = DidOpen::no;
-
-                        bool is_metal_door = false;
-
-                        // Is this a metal door?
-                        if (t->id() == terrain::Id::door)
-                        {
-                                auto* const door = static_cast<terrain::Door*>(t);
-
-                                is_metal_door =
-                                        (door->type() == DoorType::metal);
-
-                                // If at least expert skill, then metal doors
-                                // are also opened
-                                if (is_metal_door &&
-                                    !door->is_open() &&
-                                    ((int)skill >= (int)SpellSkill::expert))
+                                for (int x_lever = 0;
+                                     x_lever < map::w();
+                                     ++x_lever)
                                 {
-                                        for (int x_lever = 0;
-                                             x_lever < map::w();
-                                             ++x_lever)
+                                        for (int y_lever = 0;
+                                             y_lever < map::h();
+                                             ++y_lever)
                                         {
-                                                for (int y_lever = 0;
-                                                     y_lever < map::h();
-                                                     ++y_lever)
+                                                auto* const f_lever =
+                                                        map::g_cells.at(x_lever, y_lever)
+                                                                .terrain;
+
+                                                if (f_lever->id() !=
+                                                    terrain::Id::lever)
                                                 {
-                                                        auto* const f_lever =
-                                                                map::g_cells.at(x_lever, y_lever)
-                                                                        .terrain;
+                                                        continue;
+                                                }
 
-                                                        if (f_lever->id() !=
-                                                            terrain::Id::lever)
-                                                        {
-                                                                continue;
-                                                        }
+                                                auto* const lever =
+                                                        static_cast<terrain::Lever*>(f_lever);
 
-                                                        auto* const lever =
-                                                                static_cast<terrain::Lever*>(f_lever);
-
-                                                        if (lever->is_linked_to(*t))
-                                                        {
-                                                                lever->toggle();
-
-                                                                did_open = DidOpen::yes;
-
-                                                                break;
-                                                        }
-                                                }  // Lever y loop
-
-                                                if (did_open == DidOpen::yes)
+                                                if (lever->is_linked_to(*terrain))
                                                 {
+                                                        lever->toggle();
+
+                                                        did_open = DidOpen::yes;
+
                                                         break;
                                                 }
-                                        }  // Lever x loop
-                                }
-                        }
+                                        }  // Lever y loop
 
-                        if ((did_open != DidOpen::yes) &&
-                            !is_metal_door)
-                        {
-                                did_open = cell.terrain->open(nullptr);
+                                        if (did_open == DidOpen::yes)
+                                        {
+                                                break;
+                                        }
+                                }  // Lever x loop
                         }
+                }
 
-                        if (did_open == DidOpen::yes)
-                        {
-                                is_any_opened = true;
-                        }
+                if ((did_open != DidOpen::yes) && !is_metal_door)
+                {
+                        did_open = terrain->open(nullptr);
+                }
+
+                if (did_open == DidOpen::yes)
+                {
+                        is_any_opened = true;
                 }
         }
 
@@ -1854,7 +2385,7 @@ void SpellCleansingFire::run_effect(
 
                 for (const auto& d : dir_utils::g_dir_list)
                 {
-                        const auto p = actor->m_pos + d;
+                        const auto p(actor->m_pos + d);
 
                         // Hit the terrain with burning several times, to
                         // increase the chance of it catching fire
@@ -1976,7 +2507,7 @@ void SpellPurge::run_effect(
 
         for (const auto& d : dir_utils::g_dir_list)
         {
-                const auto p = caster->m_pos + d;
+                const auto p(caster->m_pos + d);
 
                 auto* const terrain = map::g_cells.at(p).terrain;
 
@@ -2190,8 +2721,8 @@ void SpellSeeInvis::run_effect(
                 (skill == SpellSkill::basic)
                 ? Range(5, 8)
                 : (skill == SpellSkill::expert)
-                        ? Range(40, 80)
-                        : Range(400, 600);
+                ? Range(40, 80)
+                : Range(400, 600);
 
         auto* prop = new PropSeeInvis();
 
@@ -2212,8 +2743,8 @@ std::vector<std::string> SpellSeeInvis::descr_specific(
                 (skill == SpellSkill::basic)
                 ? Range(5, 8)
                 : (skill == SpellSkill::expert)
-                        ? Range(40, 80)
-                        : Range(400, 600);
+                ? Range(40, 80)
+                : Range(400, 600);
 
         descr.push_back("The spell lasts " + duration_range.str() + " turns.");
 
@@ -2231,7 +2762,7 @@ bool SpellSeeInvis::allow_mon_cast_now(actor::Mon& mon) const
 // -----------------------------------------------------------------------------
 // Spell Shield
 // -----------------------------------------------------------------------------
-int SpellSpellShield::max_spi_cost(const SpellSkill skill) const
+int SpellSpellShield::base_max_spi_cost(const SpellSkill skill) const
 {
         return 5 - (int)skill;
 }
@@ -2275,7 +2806,7 @@ bool SpellSpellShield::allow_mon_cast_now(actor::Mon& mon) const
 // -----------------------------------------------------------------------------
 // Haste
 // -----------------------------------------------------------------------------
-int SpellHaste::max_spi_cost(const SpellSkill skill) const
+int SpellHaste::base_max_spi_cost(const SpellSkill skill) const
 {
         (void)skill;
 
@@ -2331,7 +2862,7 @@ bool SpellHaste::allow_mon_cast_now(actor::Mon& mon) const
 // -----------------------------------------------------------------------------
 // Premonition
 // -----------------------------------------------------------------------------
-int SpellPremonition::max_spi_cost(const SpellSkill skill) const
+int SpellPremonition::base_max_spi_cost(const SpellSkill skill) const
 {
         (void)skill;
 
@@ -2378,7 +2909,7 @@ std::vector<std::string> SpellPremonition::descr_specific(
 // -----------------------------------------------------------------------------
 // Identify
 // -----------------------------------------------------------------------------
-int SpellIdentify::max_spi_cost(const SpellSkill skill) const
+int SpellIdentify::base_max_spi_cost(const SpellSkill skill) const
 {
         (void)skill;
 
@@ -2642,7 +3173,7 @@ bool SpellKnockBack::allow_mon_cast_now(actor::Mon& mon) const
 // -----------------------------------------------------------------------------
 // Enfeeble
 // -----------------------------------------------------------------------------
-int SpellEnfeeble::max_spi_cost(const SpellSkill skill) const
+int SpellEnfeeble::base_max_spi_cost(const SpellSkill skill) const
 {
         (void)skill;
 
@@ -2770,7 +3301,7 @@ bool SpellEnfeeble::allow_mon_cast_now(actor::Mon& mon) const
 // -----------------------------------------------------------------------------
 // Slow
 // -----------------------------------------------------------------------------
-int SpellSlow::max_spi_cost(const SpellSkill skill) const
+int SpellSlow::base_max_spi_cost(const SpellSkill skill) const
 {
         (void)skill;
 
@@ -2906,7 +3437,7 @@ Range SpellTerrify::duration_range(SpellSkill skill) const
         return range;
 }
 
-int SpellTerrify::max_spi_cost(const SpellSkill skill) const
+int SpellTerrify::base_max_spi_cost(const SpellSkill skill) const
 {
         (void)skill;
 

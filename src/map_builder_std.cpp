@@ -510,8 +510,8 @@ bool MapBuilderStd::build_specific()
                 {
                         auto* const door = static_cast<terrain::Door*>(terrain);
 
-                        if ((door->type() != DoorType::gate) &&
-                            (door->type() != DoorType::metal) &&
+                        if ((door->type() != terrain::DoorType::gate) &&
+                            (door->type() != terrain::DoorType::metal) &&
                             rnd::one_in(6))
                         {
                                 door->set_secret();
@@ -598,8 +598,8 @@ bool MapBuilderStd::build_specific()
                 rnd::one_in(60)
                 ? 2
                 : rnd::one_in(16)
-                        ? 1
-                        : 0;
+                ? 1
+                : 0;
 
         for (int i = 0; i < nr_snake_emerge_events_to_try; ++i)
         {

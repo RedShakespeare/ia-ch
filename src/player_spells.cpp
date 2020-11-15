@@ -57,7 +57,7 @@ static void try_cast(Spell* const spell)
         msg_log::clear();
 
         const auto skill = map::g_player->spell_skill(spell->id());
-        const auto spi_cost_range = spell->spi_cost(skill);
+        const auto spi_cost_range = spell->spi_cost_range(skill);
 
         if (spi_cost_range.max >= map::g_player->m_sp)
         {
@@ -403,9 +403,9 @@ void BrowseSpell::draw()
                         fill_str.push_back('.');
                 }
 
-                const SpellId id = spell->id();
+                const auto id = spell->id();
                 const auto skill = player_spells::spell_skill(id);
-                const Range spi_cost = spell->spi_cost(skill);
+                const auto spi_cost = spell->spi_cost_range(skill);
 
                 if (spi_cost.min > 0)
                 {

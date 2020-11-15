@@ -679,13 +679,13 @@ void Player::update_tmp_shock()
                 {
                         const auto p(m_pos + d);
 
-                        const auto terrain_shock_db =
-                                (double)map::g_cells.at(p)
-                                        .terrain->shock_when_adj();
+                        const auto* const t = map::g_cells.at(p).terrain;
+
+                        const int terrain_shock = (double)t->shock_when_adj();
 
                         increased_tmp_shock +=
                                 shock_taken_after_mods(
-                                        terrain_shock_db,
+                                        (double)terrain_shock,
                                         ShockSrc::misc);
                 }
         }

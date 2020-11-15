@@ -84,7 +84,7 @@ static void put_templ_terrains(
                                         new terrain::Door(
                                                 p,
                                                 mimic,
-                                                DoorType::wood));
+                                                terrain::DoorType::wood));
                         }
                         break;
 
@@ -94,7 +94,7 @@ static void put_templ_terrains(
                                         new terrain::Door(
                                                 p,
                                                 nullptr,
-                                                DoorType::gate));
+                                                terrain::DoorType::gate));
                         }
                         break;
 

@@ -9,6 +9,8 @@
 
 #include "terrain.hpp"
 
+namespace terrain
+{
 enum class DoorSpawnState
 {
         open,
@@ -26,20 +28,19 @@ enum class DoorType
         gate
 };
 
-namespace terrain
-{
 class Door : public Terrain
 {
 public:
-        Door(const P& terrain_pos,
+        Door(
+                const P& terrain_pos,
 
-             // NOTE: This should always be nullptr if type is "gate"
-             const Wall* mimic_terrain,
+                // NOTE: This should always be nullptr if type is "gate"
+                const Wall* mimic_terrain,
 
-             DoorType type = DoorType::wood,
+                DoorType type = DoorType::wood,
 
-             // NOTE: For gates, this should never be any "secret" variant
-             DoorSpawnState spawn_state = DoorSpawnState::any);
+                // NOTE: For gates, this should never be any "secret" variant
+                DoorSpawnState spawn_state = DoorSpawnState::any);
 
         Door(const P& terrain_pos) :
                 Terrain(terrain_pos) {}

@@ -269,22 +269,16 @@ void update_vision()
 
 void make_blood(const P& origin)
 {
-        for (int dx = -1; dx <= 1; ++dx)
+        for (const auto& d : dir_utils::g_dir_list_w_center)
         {
-                for (int dy = -1; dy <= 1; ++dy)
+                if (!rnd::one_in(3))
                 {
-                        const P c = origin + P(dx, dy);
-
-                        auto* const t = g_cells.at(c).terrain;
-
-                        if (t->can_have_blood())
-                        {
-                                if (rnd::one_in(3))
-                                {
-                                        t->make_bloody();
-                                }
-                        }
+                        continue;
                 }
+
+                const auto p = origin + d;
+
+                g_cells.at(p).terrain->try_make_bloody();
         }
 }
 
@@ -425,24 +419,25 @@ actor::Actor* random_closest_actor(
 
 bool is_pos_inside_map(const P& pos)
 {
-        return (pos.x >= 0) &&
+        return (
+                (pos.x >= 0) &&
                 (pos.y >= 0) &&
                 (pos.x < w()) &&
-                (pos.y < h());
+                (pos.y < h()));
 }
 
 bool is_pos_inside_outer_walls(const P& pos)
 {
-        return (pos.x > 0) &&
+        return (
+                (pos.x > 0) &&
                 (pos.y > 0) &&
                 (pos.x < (w() - 1)) &&
-                (pos.y < (h() - 1));
+                (pos.y < (h() - 1)));
 }
 
 bool is_area_inside_map(const R& area)
 {
-        return is_pos_inside_map(area.p0) &&
-                is_pos_inside_map(area.p1);
+        return is_pos_inside_map(area.p0) && is_pos_inside_map(area.p1);
 }
 
 }  // namespace map

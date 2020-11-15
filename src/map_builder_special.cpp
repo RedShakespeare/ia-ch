@@ -122,8 +122,8 @@ void MapBuilderDeepOneLair::handle_template_pos(const P& p, const char c)
                         new terrain::Door(
                                 p,
                                 nullptr,
-                                DoorType::gate,
-                                DoorSpawnState::closed);
+                                terrain::DoorType::gate,
+                                terrain::DoorSpawnState::closed);
 
                 map::put(door);
         }
@@ -432,8 +432,8 @@ void MapBuilderIntroForest::handle_template_pos(const P& p, const char c)
                         new terrain::Door(
                                 p,
                                 new terrain::Wall(p),
-                                DoorType::wood,
-                                DoorSpawnState::closed);
+                                terrain::DoorType::wood,
+                                terrain::DoorSpawnState::closed);
 
                 map::put(door);
         }
@@ -597,8 +597,8 @@ void MapBuilderEgypt::handle_template_pos(const P& p, const char c)
                         new terrain::Door(
                                 p,
                                 new terrain::Wall(p),
-                                DoorType::wood,
-                                DoorSpawnState::closed);
+                                terrain::DoorType::wood,
+                                terrain::DoorSpawnState::closed);
 
                 map::put(door);
         }

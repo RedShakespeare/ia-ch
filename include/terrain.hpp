@@ -122,12 +122,13 @@ public:
                 return m_is_hidden;
         }
 
+        void try_make_bloody();
+
         void try_put_gore();
 
-        void make_bloody()
-        {
-                m_is_bloody = true;
-        }
+        bool is_bloody() const;
+
+        bool has_gore() const;
 
         gfx::TileId gore_tile() const
         {
@@ -141,7 +142,9 @@ public:
 
         void clear_gore();
 
-        void corrupt_color();
+        void try_corrupt_color();
+
+        bool is_corrupted_color() const;
 
         int shock_when_adj() const;
 
@@ -738,6 +741,10 @@ public:
         std::string name(Article article) const override;
 
         gfx::TileId tile() const override;
+
+        void topple(
+                const Dir direction,
+                actor::Actor* const actor_toppling = nullptr);
 
         StatueType m_type;
 

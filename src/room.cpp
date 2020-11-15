@@ -725,12 +725,24 @@ void StdRoom::place_auto_terrains()
 // -----------------------------------------------------------------------------
 std::vector<RoomAutoTerrainRule> PlainRoom::auto_terrains_allowed() const
 {
-        const int fountain_one_in_n =
-                (map::g_dlvl <= 4) ? 7 : (map::g_dlvl <= g_dlvl_last_mid_game) ? 10 : 20;
+        int fountain_one_in_n = 0;
+
+        if (map::g_dlvl <= 4)
+        {
+                fountain_one_in_n = 7;
+        }
+        else if (map::g_dlvl <= g_dlvl_last_mid_game)
+        {
+                fountain_one_in_n = 10;
+        }
+        else
+        {
+                fountain_one_in_n = 20;
+        }
 
         return {
                 {terrain::Id::brazier, rnd::one_in(4) ? 1 : 0},
-                {terrain::Id::statue, rnd::one_in(7) ? rnd::range(1, 2) : 0},
+                {terrain::Id::statue, rnd::one_in(7) ? rnd::range(1, 4) : 0},
                 {terrain::Id::fountain, rnd::one_in(fountain_one_in_n) ? 1 : 0},
                 {terrain::Id::chains, rnd::one_in(7) ? rnd::range(1, 2) : 0}};
 }
@@ -763,7 +775,7 @@ std::vector<RoomAutoTerrainRule> HumanRoom::auto_terrains_allowed() const
         std::vector<RoomAutoTerrainRule> result;
 
         result.emplace_back(terrain::Id::brazier, rnd::range(0, 2));
-        result.emplace_back(terrain::Id::statue, rnd::range(0, 2));
+        result.emplace_back(terrain::Id::statue, rnd::range(0, 4));
 
         // Control how many item container terrains that can spawn in the room
         std::vector<terrain::Id> item_containers = {
@@ -1561,40 +1573,46 @@ void ForestRoom::on_post_connect_hook(Array2<bool>& door_proposals)
 
         Array2<bool> blocked(map::dims());
 
-        map_parsers::BlocksWalking(ParseActors::no)
-                .run(blocked, blocked.rect());
+        const std::vector<terrain::Id> free_terrains = {
+                terrain::Id::door,
+                terrain::Id::liquid_deep,
+        };
 
-        // Do not consider doors blocking
-        for (size_t i = 0; i < map::nr_cells(); ++i)
+        for (const P& p : blocked.rect().positions())
         {
-                if (map::g_cells.at(i).terrain->id() == terrain::Id::door)
+                const bool is_free_terrain =
+                        map_parsers::IsAnyOfTerrains(free_terrains)
+                                .cell(p);
+
+                if (is_free_terrain)
                 {
-                        blocked.at(i) = false;
+                        blocked.at(p) = false;
                 }
         }
 
         std::vector<P> tree_pos_bucket;
 
-        for (int x = m_r.p0.x; x <= m_r.p1.x; ++x)
+        for (const auto& p : m_r.positions())
         {
-                for (int y = m_r.p0.y; y <= m_r.p1.y; ++y)
+                const bool is_floor_like =
+                        map::g_cells.at(p).terrain->data().is_floor_like;
+
+                const bool is_this_room = (map::g_room_map.at(p) == this);
+
+                if (blocked.at(p) || !is_floor_like || !is_this_room)
                 {
-                        if (!blocked.at(x, y) &&
-                            map::g_room_map.at(x, y) == this)
-                        {
-                                const P p(x, y);
+                        continue;
+                }
 
-                                tree_pos_bucket.push_back(p);
+                tree_pos_bucket.push_back(p);
 
-                                if (rnd::one_in(10))
-                                {
-                                        map::put(new terrain::Bush(p));
-                                }
-                                else
-                                {
-                                        map::put(new terrain::Grass(p));
-                                }
-                        }
+                if (rnd::one_in(10))
+                {
+                        map::put(new terrain::Bush(p));
+                }
+                else
+                {
+                        map::put(new terrain::Grass(p));
                 }
         }
 
@@ -1606,24 +1624,26 @@ void ForestRoom::on_post_connect_hook(Array2<bool>& door_proposals)
 
         while (!tree_pos_bucket.empty())
         {
-                const P p = tree_pos_bucket.back();
+                const auto p = tree_pos_bucket.back();
 
                 tree_pos_bucket.pop_back();
 
-                if (rnd::one_in(tree_one_in_n))
+                if (!rnd::one_in(tree_one_in_n))
                 {
-                        blocked.at(p) = true;
+                        continue;
+                }
 
-                        if (map_parsers::is_map_connected(blocked))
-                        {
-                                map::put(new terrain::Tree(p));
+                blocked.at(p) = true;
 
-                                ++nr_trees_placed;
-                        }
-                        else
-                        {
-                                blocked.at(p) = false;
-                        }
+                if (map_parsers::is_map_connected(blocked))
+                {
+                        map::put(new terrain::Tree(p));
+
+                        ++nr_trees_placed;
+                }
+                else
+                {
+                        blocked.at(p) = false;
                 }
         }
 }

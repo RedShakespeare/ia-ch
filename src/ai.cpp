@@ -127,7 +127,7 @@ DidAction try_cast_random_spell(actor::Mon& mon)
                 }
 
                 const int spell_max_spi =
-                        spell.spell->spi_cost(spell.skill).max;
+                        spell.spell->spi_cost_range(spell.skill).max;
 
                 const int max_hp = actor::max_hp(mon);
 
@@ -189,9 +189,9 @@ DidAction handle_closed_blocking_door(actor::Mon& mon, std::vector<P>& path)
         auto* const door = static_cast<terrain::Door*>(t);
 
         // There should never be a path past metal doors
-        ASSERT(door->type() != DoorType::metal);
+        ASSERT(door->type() != terrain::DoorType::metal);
 
-        if (door->type() == DoorType::metal)
+        if (door->type() == terrain::DoorType::metal)
         {
                 return DidAction::no;
         }
@@ -834,7 +834,7 @@ std::vector<P> find_path_to_target(actor::Mon& mon)
 
                                 bool should_door_block = false;
 
-                                if (door->type() == DoorType::metal)
+                                if (door->type() == terrain::DoorType::metal)
                                 {
                                         // Metal door
                                         should_door_block = true;

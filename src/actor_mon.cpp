@@ -61,7 +61,7 @@ static void unblock_passable_doors(
 
                 const auto* const door = static_cast<const terrain::Door*>(t);
 
-                if (door->type() == DoorType::metal)
+                if (door->type() == terrain::DoorType::metal)
                 {
                         continue;
                 }

@@ -559,7 +559,6 @@ static void init_data_list()
         d.make_obj = [](const P& p) {
                 return new terrain::Door(p);
         };
-        d.is_floor_like = false;
         d.can_have_blood = false;
         d.can_have_gore = false;
         d.can_have_corpse = false;
