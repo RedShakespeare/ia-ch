@@ -361,7 +361,9 @@ static void make_random_item_to_backpack(
         actor.m_inv.put_in_backpack(item);
 }
 
-static void make_item_set_minor_treasure(actor::Actor& actor)
+static void make_item_set_treasure(
+        const item::Value value,
+        actor::Actor& actor)
 {
         std::vector<item::Id> item_bucket;
 
@@ -369,47 +371,29 @@ static void make_item_set_minor_treasure(actor::Actor& actor)
         {
                 const auto& d = item::g_data[i];
 
-                if (d.value == item::Value::minor_treasure)
+                if ((d.chance_to_incl_in_spawn_list > 0) &&
+                    (d.value == value))
                 {
                         item_bucket.push_back((item::Id)i);
                 }
         }
 
         make_random_item_to_backpack(actor, item_bucket);
+}
+
+static void make_item_set_minor_treasure(actor::Actor& actor)
+{
+        make_item_set_treasure(item::Value::minor_treasure, actor);
 }
 
 static void make_item_set_rare_treasure(actor::Actor& actor)
 {
-        std::vector<item::Id> item_bucket;
-
-        for (int i = 0; i < (int)item::Id::END; ++i)
-        {
-                const auto& d = item::g_data[i];
-
-                if (d.value == item::Value::rare_treasure)
-                {
-                        item_bucket.push_back((item::Id)i);
-                }
-        }
-
-        make_random_item_to_backpack(actor, item_bucket);
+        make_item_set_treasure(item::Value::rare_treasure, actor);
 }
 
 static void make_item_set_supreme_treasure(actor::Actor& actor)
 {
-        std::vector<item::Id> item_bucket;
-
-        for (int i = 0; i < (int)item::Id::END; ++i)
-        {
-                const auto& d = item::g_data[i];
-
-                if (d.value == item::Value::supreme_treasure)
-                {
-                        item_bucket.push_back((item::Id)i);
-                }
-        }
-
-        make_random_item_to_backpack(actor, item_bucket);
+        make_item_set_treasure(item::Value::supreme_treasure, actor);
 }
 
 static void make_item_set_firearm(actor::Actor& actor)
@@ -602,6 +586,29 @@ static void make_item_set_zealot_spiked_mace(actor::Actor& actor)
         actor.m_inv.put_in_slot(SlotId::wpn, item, Verbose::no);
 }
 
+static void make_item_set_witches_eye(actor::Actor& actor)
+{
+        if (player_bon::is_bg(Bg::occultist) &&
+            (player_bon::occultist_domain() == OccultistDomain::clairvoyant))
+        {
+                // Player is clairvoyant occultist, and thus already has
+                // permanent magic searching - this does not work well with
+                // providing temporary magic searching - just discard the item.
+                return;
+        }
+
+        auto* item = item::make(item::Id::witches_eye);
+
+        actor.m_inv.put_in_backpack(item);
+}
+
+static void make_item_set_fluctuating_material(actor::Actor& actor)
+{
+        auto* item = item::make(item::Id::fluctuating_material);
+
+        actor.m_inv.put_in_backpack(item);
+}
+
 static void make_item_set_priest_dagger(actor::Actor& actor)
 {
         auto* item = item::make(item::Id::dagger);
@@ -685,6 +692,14 @@ static void make_monster_item_sets(actor::Actor& actor)
 
                         case item::ItemSetId::spike_gun:
                                 make_item_set_spike_gun(actor);
+                                break;
+
+                        case item::ItemSetId::witches_eye:
+                                make_item_set_witches_eye(actor);
+                                break;
+
+                        case item::ItemSetId::fluctuating_material:
+                                make_item_set_fluctuating_material(actor);
                                 break;
 
                         case item::ItemSetId::zealot_spiked_mace:

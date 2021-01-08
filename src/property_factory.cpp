@@ -46,6 +46,12 @@ Prop* make(const PropId id)
         case PropId::confused:
                 return new PropConfused();
 
+        case PropId::hallucinating:
+                return new PropHallucinating();
+
+        case PropId::astral_opium_addiction:
+                return new PropAstralOpiumAddict();
+
         case PropId::stunned:
                 return new Prop(id);
 

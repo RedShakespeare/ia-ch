@@ -24,6 +24,7 @@
 #include "line_calc.hpp"
 #include "map.hpp"
 #include "map_parsing.hpp"
+#include "mapgen.hpp"
 #include "misc.hpp"
 #include "msg_log.hpp"
 #include "property_data.hpp"
@@ -40,6 +41,7 @@ Prop::Prop(PropId id) :
         m_id(id),
         m_data(property_data::g_data[(size_t)id]),
         m_nr_turns_left(m_data.std_rnd_turns.roll()),
+        m_nr_dlvls_left(m_data.std_rnd_dlvls.roll()),
         m_duration_mode(PropDurationMode::standard),
         m_owner(nullptr),
         m_src(PropSrc::END),
@@ -1082,6 +1084,221 @@ PropEnded PropConfused::affect_move_dir(const P& actor_pos, Dir& dir)
         return PropEnded::no;
 }
 
+void PropHallucinating::on_applied()
+{
+        apply_fake_actor_data();
+
+        create_fake_stairs();
+}
+
+void PropHallucinating::on_std_turn()
+{
+        if (rnd::one_in(10))
+        {
+                apply_fake_actor_data();
+        }
+
+        if (rnd::one_in(250))
+        {
+                create_fake_stairs();
+        }
+}
+
+void PropHallucinating::on_end()
+{
+        clear_fake_actor_data();
+
+        clear_all_fake_stairs();
+}
+
+void PropHallucinating::apply_fake_actor_data() const
+{
+        const auto allowed_data = get_allowed_fake_mon_data();
+
+        if (allowed_data.empty())
+        {
+                ASSERT(false);
+
+                return;
+        }
+
+        for (auto* const actor : game_time::g_actors)
+        {
+                if (!actor->is_player())
+                {
+                        actor->m_mimic_data = rnd::element(allowed_data);
+                }
+        }
+}
+
+void PropHallucinating::clear_fake_actor_data() const
+{
+        for (auto* const actor : game_time::g_actors)
+        {
+                if (!actor->is_player())
+                {
+                        actor->m_mimic_data = nullptr;
+                }
+        }
+}
+
+std::vector<const actor::ActorData*>
+PropHallucinating::get_allowed_fake_mon_data() const
+{
+        std::vector<const actor::ActorData*> result;
+
+        for (const auto& d : actor::g_data)
+        {
+                if (d.id == actor::Id::player)
+                {
+                        continue;
+                }
+
+                const bool gives_xp = (d.mon_shock_lvl > ShockLvl::none);
+
+                if (gives_xp && !d.has_player_seen)
+                {
+                        continue;
+                }
+
+                result.push_back(&d);
+        }
+
+        return result;
+}
+
+void PropHallucinating::create_fake_stairs() const
+{
+        const bool was_valid_before = mapgen::g_is_map_valid;
+
+        const auto p = mapgen::make_stairs_at_random_pos();
+
+        // It's OK to fail placing the stairs, don't let this invalidate the map
+        // (although map validity probably doesn't matter at all at this point).
+        mapgen::g_is_map_valid = was_valid_before;
+
+        if ((p.x > 0) && (p.y > 0))
+        {
+                auto* const terrain = map::g_cells.at(p).terrain;
+
+                if (terrain->id() != terrain::Id::stairs)
+                {
+                        ASSERT(false);
+
+                        return;
+                }
+
+                auto* const stairs = static_cast<terrain::Stairs*>(terrain);
+
+                stairs->set_fake();
+        }
+}
+
+void PropHallucinating::clear_all_fake_stairs() const
+{
+        for (auto& cell : map::g_cells)
+        {
+                auto* const terrain = cell.terrain;
+
+                if (terrain->id() != terrain::Id::stairs)
+                {
+                        continue;
+                }
+
+                // Is stairs
+
+                const auto* const stairs =
+                        static_cast<const terrain::Stairs*>(terrain);
+
+                if (!stairs->is_fake())
+                {
+                        continue;
+                }
+
+                // Is fake stairs
+
+                map::put(new terrain::RubbleLow(terrain->pos()));
+        }
+}
+
+std::string PropAstralOpiumAddict::name_short() const
+{
+        std::string str = m_data.name_short;
+
+        if (is_active())
+        {
+                str += "(" + std::to_string(m_shock_lvl) + "%)";
+        }
+
+        return str;
+}
+
+void PropAstralOpiumAddict::on_applied()
+{
+        reset_penalty_countdown();
+
+        m_shock_lvl = 10;
+}
+
+void PropAstralOpiumAddict::on_std_turn()
+{
+        if ((m_nr_dlvls_to_penalty == 0) && (m_nr_turns_to_penalty > 0))
+        {
+                --m_nr_turns_to_penalty;
+
+                if (m_nr_turns_to_penalty == 0)
+                {
+                        msg_log::add(
+                                "I crave Astral Opium!!",
+                                colors::msg_note(),
+                                MsgInterruptPlayer::no,
+                                MorePromptOnMsg::yes);
+                }
+        }
+}
+
+void PropAstralOpiumAddict::on_new_dlvl()
+{
+        if (m_nr_dlvls_to_penalty > 0)
+        {
+                --m_nr_dlvls_to_penalty;
+        }
+}
+
+void PropAstralOpiumAddict::on_more(const Prop& new_prop)
+{
+        (void)new_prop;
+
+        msg_log::add("I need more!!");
+
+        reset_penalty_countdown();
+
+        m_shock_lvl += 5;
+}
+
+void PropAstralOpiumAddict::reset_penalty_countdown()
+{
+        m_nr_dlvls_to_penalty = rnd::range(0, 1);
+        m_nr_turns_to_penalty = rnd::range(50, 75);
+}
+
+bool PropAstralOpiumAddict::is_active() const
+{
+        return ((m_nr_dlvls_to_penalty == 0) && (m_nr_turns_to_penalty == 0));
+}
+
+int PropAstralOpiumAddict::affect_shock(const int shock) const
+{
+        int result = shock;
+
+        if (is_active())
+        {
+                result += m_shock_lvl;
+        }
+
+        return result;
+}
+
 PropEnded PropFrenzied::affect_move_dir(const P& actor_pos, Dir& dir)
 {
         if (!m_owner->is_player() ||
@@ -1106,9 +1323,10 @@ PropEnded PropFrenzied::affect_move_dir(const P& actor_pos, Dir& dir)
                 seen_foes_cells.push_back(actor->m_pos);
         }
 
-        sort(begin(seen_foes_cells),
-             end(seen_foes_cells),
-             IsCloserToPos(actor_pos));
+        std::sort(
+                std::begin(seen_foes_cells),
+                std::end(seen_foes_cells),
+                IsCloserToPos(actor_pos));
 
         const P& closest_mon_pos = seen_foes_cells[0];
 

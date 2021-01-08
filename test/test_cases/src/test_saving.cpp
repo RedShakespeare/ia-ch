@@ -53,6 +53,10 @@ TEST_CASE("Saving and loading the game")
 
                 player_bon::pick_trait(Trait::resistant);
 
+                game::incr_clvl_number();
+
+                player_bon::remove_trait(Trait::resistant);
+
                 // Player inventory
                 auto& inv = map::g_player->m_inv;
 
@@ -251,22 +255,26 @@ TEST_CASE("Saving and loading the game")
                 // Traits
                 REQUIRE(player_bon::has_trait(Trait::healer));
 
-                REQUIRE(player_bon::has_trait(Trait::resistant));
+                REQUIRE(!player_bon::has_trait(Trait::resistant));
 
                 REQUIRE(!player_bon::has_trait(Trait::vigilant));
 
                 const auto trait_log = player_bon::trait_log();
 
-                REQUIRE(trait_log.size() == 3);
+                REQUIRE(trait_log.size() == 4);
 
-                REQUIRE(trait_log[0].clvl_picked == 0);
+                REQUIRE(trait_log[0].clvl == 0);
                 REQUIRE(trait_log[0].trait_id == Trait::stealthy);
 
-                REQUIRE(trait_log[1].clvl_picked == 1);
+                REQUIRE(trait_log[1].clvl == 1);
                 REQUIRE(trait_log[1].trait_id == Trait::healer);
 
-                REQUIRE(trait_log[2].clvl_picked == 4);
+                REQUIRE(trait_log[2].clvl == 4);
                 REQUIRE(trait_log[2].trait_id == Trait::resistant);
+
+                REQUIRE(trait_log[3].clvl == 5);
+                REQUIRE(trait_log[3].trait_id == Trait::resistant);
+                REQUIRE(trait_log[3].is_removal);
 
                 // Player inventory
                 const auto& inv = map::g_player->m_inv;

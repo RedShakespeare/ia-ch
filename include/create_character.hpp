@@ -96,6 +96,17 @@ public:
 private:
         void init_browsers();
 
+        void draw_trait_menu_item(
+                const Trait trait,
+                const int y,
+                const bool is_marked,
+                const MenuBrowser& browser) const;
+
+        int draw_trait_prereq_info(
+                const player_bon::TraitPrereqData& prereq_data,
+                int x,
+                const int y) const;
+
         MenuBrowser m_browser_traits_avail {};
         MenuBrowser m_browser_traits_unavail {};
 
@@ -105,6 +116,36 @@ private:
         TraitScreenMode m_screen_mode {TraitScreenMode::pick_new};
 
         std::string m_title;
+};
+
+class RemoveTraitState : public State
+{
+public:
+        void on_start() override;
+
+        void update() override;
+
+        void draw() override;
+
+        void on_window_resized() override;
+
+        StateId id() const override
+        {
+                return StateId::remove_trait;
+        }
+
+private:
+        void init_browser();
+
+        void draw_trait_menu_item(
+                const Trait trait,
+                const int y,
+                const bool is_marked,
+                const MenuBrowser& browser) const;
+
+        MenuBrowser m_browser {};
+
+        std::vector<Trait> m_traits_can_be_removed {};
 };
 
 class EnterNameState : public State

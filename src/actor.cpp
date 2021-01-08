@@ -165,7 +165,12 @@ gfx::TileId Actor::tile() const
                 return gfx::TileId::corpse2;
         }
 
-        return m_data->tile;
+        auto* const data =
+                m_mimic_data
+                ? m_mimic_data
+                : m_data;
+
+        return data->tile;
 }
 
 char Actor::character() const
@@ -175,7 +180,42 @@ char Actor::character() const
                 return '&';
         }
 
-        return m_data->character;
+        auto* const data =
+                m_mimic_data
+                ? m_mimic_data
+                : m_data;
+
+        return data->character;
+}
+
+std::string Actor::name_the() const
+{
+        auto* const data =
+                m_mimic_data
+                ? m_mimic_data
+                : m_data;
+
+        return data->name_the;
+}
+
+std::string Actor::name_a() const
+{
+        auto* const data =
+                m_mimic_data
+                ? m_mimic_data
+                : m_data;
+
+        return data->name_a;
+}
+
+std::string Actor::descr() const
+{
+        auto* const data =
+                m_mimic_data
+                ? m_mimic_data
+                : m_data;
+
+        return data->descr;
 }
 
 bool Actor::restore_hp(
@@ -467,7 +507,8 @@ DidAction Actor::try_eat_corpse()
                 const std::string corpse_name_the =
                         corpse->m_data->corpse_name_the;
 
-                Snd snd("I hear ripping and chewing.",
+                Snd snd(
+                        "I hear ripping and chewing.",
                         audio::SfxId::bite,
                         IgnoreMsgIfOriginSeen::yes,
                         m_pos,

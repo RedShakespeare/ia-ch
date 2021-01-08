@@ -425,15 +425,6 @@ private:
         void on_melee_kill(actor::Actor& actor_killed) override;
 };
 
-class ZombieDust : public Wpn
-{
-public:
-        ZombieDust(ItemData* const item_data) :
-                Wpn(item_data) {}
-
-        void on_ranged_hit(actor::Actor& actor_hit) override;
-};
-
 class Incinerator : public Wpn
 {
 public:

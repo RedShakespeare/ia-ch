@@ -800,6 +800,16 @@ public:
 
         void add_light_hook(Array2<bool>& light) const override;
 
+        void set_fake()
+        {
+                m_is_fake = true;
+        }
+
+        bool is_fake() const
+        {
+                return m_is_fake;
+        }
+
 private:
         Color color_default() const override;
 
@@ -807,6 +817,10 @@ private:
                 DmgType dmg_type,
                 actor::Actor* actor,
                 int dmg = -1) override;
+
+        void player_use_fake_stairs();
+
+        bool m_is_fake {false};
 };
 
 class Bridge : public Terrain

@@ -356,11 +356,13 @@ void PickOccultistState::draw()
 // -----------------------------------------------------------------------------
 void PickTraitState::on_start()
 {
-        player_bon::unpicked_traits_for_bg(
-                player_bon::bg(),
-                player_bon::occultist_domain(),
-                m_traits_avail,
-                m_traits_unavail);
+        const auto unpicked_traits_data =
+                player_bon::unpicked_traits(
+                        player_bon::bg(),
+                        player_bon::occultist_domain());
+
+        m_traits_avail = unpicked_traits_data.traits_can_be_picked;
+        m_traits_unavail = unpicked_traits_data.traits_prereqs_not_met;
 
         init_browsers();
 }
@@ -526,72 +528,22 @@ void PickTraitState::draw()
                 traits = &m_traits_unavail;
         }
 
-        const int browser_y = browser->y();
+        const auto browser_y = browser->y();
 
-        const Trait trait_marked = traits->at(browser_y);
+        const auto trait_marked = traits->at(browser_y);
+
+        const auto idx_range_shown = browser->range_shown();
 
         int y = 0;
-
-        const Range idx_range_shown = browser->range_shown();
 
         // Traits
         for (int i = idx_range_shown.min; i <= idx_range_shown.max; ++i)
         {
-                const auto key_str =
-                        std::string("(") +
-                        browser->menu_keys()[y] +
-                        std::string(")");
-
                 const auto trait = traits->at(i);
-
-                auto trait_name = player_bon::trait_title(trait);
 
                 const bool is_idx_marked = (browser_y == i);
 
-                Color color_key;
-                Color color;
-
-                if (m_screen_mode == TraitScreenMode::pick_new)
-                {
-                        if (is_idx_marked)
-                        {
-                                color_key = colors::menu_key_highlight();
-                                color = colors::menu_highlight();
-                        }
-                        else
-                        {
-                                // Not marked
-                                color_key = colors::menu_key_dark();
-                                color = colors::menu_dark();
-                        }
-                }
-                else
-                {
-                        // Viewing unavailable traits
-                        if (is_idx_marked)
-                        {
-                                color_key = colors::menu_key_highlight();
-                                color = colors::menu_highlight();
-                        }
-                        else
-                        {
-                                // Not marked
-                                color_key = colors::menu_key_dark();
-                                color = colors::light_red();
-                        }
-                }
-
-                io::draw_text(
-                        key_str,
-                        Panel::create_char_menu,
-                        {0, y},
-                        color_key);
-
-                io::draw_text(
-                        trait_name,
-                        Panel::create_char_menu,
-                        {(int)key_str.length() + 1, y},
-                        color);
+                draw_trait_menu_item(trait, y, is_idx_marked, *browser);
 
                 ++y;
         }
@@ -636,23 +588,17 @@ void PickTraitState::draw()
         }
 
         // Prerequisites
-        std::vector<Trait> trait_marked_prereqs;
-
-        Bg trait_marked_bg_prereq = Bg::END;
-
-        player_bon::trait_prereqs(
-                trait_marked,
-                player_bon::bg(),
-                player_bon::occultist_domain(),
-                trait_marked_prereqs,
-                trait_marked_bg_prereq);
+        const auto prereq_data =
+                player_bon::trait_prereqs(
+                        trait_marked,
+                        player_bon::bg(),
+                        player_bon::occultist_domain());
 
         const int y0_prereqs = 10;
 
         y = y0_prereqs;
 
-        if (!trait_marked_prereqs.empty() ||
-            trait_marked_bg_prereq != Bg::END)
+        if (!prereq_data.traits.empty() || prereq_data.bg != Bg::END)
         {
                 int x = 0;
 
@@ -666,70 +612,340 @@ void PickTraitState::draw()
 
                 x += (int)label.length() + 1;
 
-                std::vector<ColoredString> prereq_titles;
+                x = draw_trait_prereq_info(prereq_data, x, y);
+        }
+}
 
-                const auto& clr_prereq_ok = colors::light_green();
-                const auto& clr_prereq_not_ok = colors::light_red();
+void PickTraitState::draw_trait_menu_item(
+        const Trait trait,
+        const int y,
+        const bool is_marked,
+        const MenuBrowser& browser) const
+{
+        const auto key_str =
+                std::string("(") +
+                browser.menu_keys()[y] +
+                std::string(")");
 
-                if (trait_marked_bg_prereq != Bg::END)
+        auto trait_name = player_bon::trait_title(trait);
+
+        Color color_key;
+        Color color;
+
+        if (m_screen_mode == TraitScreenMode::pick_new)
+        {
+                if (is_marked)
                 {
-                        const auto& color =
-                                (player_bon::bg() == trait_marked_bg_prereq)
-                                ? clr_prereq_ok
-                                : clr_prereq_not_ok;
-
-                        const std::string bg_title =
-                                player_bon::bg_title(trait_marked_bg_prereq);
-
-                        prereq_titles.emplace_back(bg_title, color);
+                        color_key = colors::menu_key_highlight();
+                        color = colors::menu_highlight();
                 }
-
-                for (const auto prereq_trait : trait_marked_prereqs)
+                else
                 {
-                        const bool is_picked =
-                                player_bon::has_trait(prereq_trait);
-
-                        const auto& color =
-                                is_picked
-                                ? clr_prereq_ok
-                                : clr_prereq_not_ok;
-
-                        const std::string trait_title =
-                                player_bon::trait_title(prereq_trait);
-
-                        prereq_titles.emplace_back(trait_title, color);
+                        // Not marked
+                        color_key = colors::menu_key_dark();
+                        color = colors::menu_dark();
                 }
-
-                const size_t nr_prereq_titles = prereq_titles.size();
-
-                for (size_t prereq_idx = 0;
-                     prereq_idx < nr_prereq_titles;
-                     ++prereq_idx)
+        }
+        else
+        {
+                // Viewing unavailable traits
+                if (is_marked)
                 {
-                        const auto& prereq_title = prereq_titles[prereq_idx];
+                        color_key = colors::menu_key_highlight();
+                        color = colors::menu_highlight();
+                }
+                else
+                {
+                        // Not marked
+                        color_key = colors::menu_key_dark();
+                        color = colors::light_red();
+                }
+        }
 
+        io::draw_text(
+                key_str,
+                Panel::create_char_menu,
+                {0, y},
+                color_key);
+
+        io::draw_text(
+                trait_name,
+                Panel::create_char_menu,
+                {(int)key_str.length() + 1, y},
+                color);
+}
+
+int PickTraitState::draw_trait_prereq_info(
+        const player_bon::TraitPrereqData& prereq_data,
+        int x,
+        const int y) const
+{
+        std::vector<ColoredString> prereq_titles;
+
+        const auto& clr_prereq_ok = colors::light_green();
+        const auto& clr_prereq_not_ok = colors::light_red();
+
+        if (prereq_data.bg != Bg::END)
+        {
+                const auto& color =
+                        (player_bon::bg() == prereq_data.bg)
+                        ? clr_prereq_ok
+                        : clr_prereq_not_ok;
+
+                const std::string bg_title =
+                        player_bon::bg_title(prereq_data.bg);
+
+                prereq_titles.emplace_back(bg_title, color);
+        }
+
+        for (const auto prereq_trait : prereq_data.traits)
+        {
+                const bool is_picked =
+                        player_bon::has_trait(prereq_trait);
+
+                const auto& color =
+                        is_picked
+                        ? clr_prereq_ok
+                        : clr_prereq_not_ok;
+
+                const std::string trait_title =
+                        player_bon::trait_title(prereq_trait);
+
+                prereq_titles.emplace_back(trait_title, color);
+        }
+
+        const size_t nr_prereq_titles = prereq_titles.size();
+
+        for (size_t prereq_idx = 0;
+             prereq_idx < nr_prereq_titles;
+             ++prereq_idx)
+        {
+                const auto& prereq_title = prereq_titles[prereq_idx];
+
+                io::draw_text(
+                        prereq_title.str,
+                        Panel::create_char_descr,
+                        {x, y},
+                        prereq_title.color);
+
+                x += prereq_title.str.length();
+
+                if (prereq_idx < (nr_prereq_titles - 1))
+                {
                         io::draw_text(
-                                prereq_title.str,
+                                ",",
                                 Panel::create_char_descr,
                                 {x, y},
-                                prereq_title.color);
-
-                        x += prereq_title.str.length();
-
-                        if (prereq_idx < (nr_prereq_titles - 1))
-                        {
-                                io::draw_text(
-                                        ",",
-                                        Panel::create_char_descr,
-                                        {x, y},
-                                        colors::text());
-
-                                ++x;
-                        }
+                                colors::text());
 
                         ++x;
                 }
+
+                ++x;
         }
+
+        return x;
+}
+
+// -----------------------------------------------------------------------------
+// Remove trait state
+// -----------------------------------------------------------------------------
+void RemoveTraitState::on_start()
+{
+        m_traits_can_be_removed = player_bon::traits_can_be_removed();
+
+        init_browser();
+}
+
+void RemoveTraitState::on_window_resized()
+{
+        init_browser();
+}
+
+void RemoveTraitState::init_browser()
+{
+        const int choices_h = panels::h(Panel::create_char_menu);
+
+        m_browser.reset(m_traits_can_be_removed.size(), choices_h);
+
+        m_browser.set_y(0);
+}
+
+void RemoveTraitState::update()
+{
+        if (config::is_bot_playing())
+        {
+                states::pop();
+
+                return;
+        }
+
+        const auto input = io::get();
+
+        const auto action =
+                m_browser.read(
+                        input,
+                        MenuInputMode::scrolling_and_letters);
+
+        switch (action)
+        {
+        case MenuAction::selected:
+        {
+                const auto trait = m_traits_can_be_removed[m_browser.y()];
+
+                const auto name = player_bon::trait_title(trait);
+
+                bool should_remove_trait = true;
+
+                states::draw();
+
+                const auto title = "Remove trait \"" + name + "\"?";
+
+                int choice = 0;
+
+                popup::Popup(popup::AddToMsgHistory::no)
+                        .set_title(title)
+                        .set_menu(
+                                {"(Y)es", "(N)o"},
+                                {'y', 'n'},
+                                &choice)
+                        .run();
+
+                should_remove_trait = (choice == 0);
+
+                if (should_remove_trait)
+                {
+                        player_bon::remove_trait(trait);
+
+                        game::add_history_event(
+                                "Lost trait \"" +
+                                name +
+                                "\"");
+
+                        states::pop();
+                }
+        }
+        break;
+
+        default:
+                break;
+        }
+}
+
+void RemoveTraitState::draw()
+{
+        draw_box(panels::area(Panel::screen));
+
+        const int screen_center_x = panels::center_x(Panel::screen);
+
+        io::draw_text_center(
+                " Lose which trait? ",
+                Panel::screen,
+                {screen_center_x, 0},
+                colors::title(),
+                io::DrawBg::yes,
+                colors::black(),
+                true);
+
+        const auto browser_y = m_browser.y();
+
+        const auto trait_marked = m_traits_can_be_removed.at(browser_y);
+
+        const auto idx_range_shown = m_browser.range_shown();
+
+        int y = 0;
+
+        // Traits
+        for (int i = idx_range_shown.min; i <= idx_range_shown.max; ++i)
+        {
+                const auto trait = m_traits_can_be_removed[i];
+
+                const bool is_idx_marked = (browser_y == i);
+
+                draw_trait_menu_item(trait, y, is_idx_marked, m_browser);
+
+                ++y;
+        }
+
+        // Draw "more" labels
+        if (!m_browser.is_on_top_page())
+        {
+                io::draw_text(
+                        common_text::g_next_page_up_hint,
+                        Panel::create_char_menu,
+                        {0, -1},
+                        colors::light_white());
+        }
+
+        if (!m_browser.is_on_btm_page())
+        {
+                io::draw_text(
+                        common_text::g_next_page_down_hint,
+                        Panel::create_char_menu,
+                        {0, panels::h(Panel::create_char_menu)},
+                        colors::light_white());
+        }
+
+        // Description
+        y = 0;
+
+        std::string descr = player_bon::trait_descr(trait_marked);
+
+        const auto formatted_descr =
+                text_format::split(
+                        descr,
+                        panels::w(Panel::create_char_descr));
+
+        for (const std::string& str : formatted_descr)
+        {
+                io::draw_text(
+                        str,
+                        Panel::create_char_descr,
+                        {0, y},
+                        colors::text());
+                ++y;
+        }
+}
+
+void RemoveTraitState::draw_trait_menu_item(
+        const Trait trait,
+        const int y,
+        const bool is_marked,
+        const MenuBrowser& browser) const
+{
+        const auto key_str =
+                std::string("(") +
+                browser.menu_keys()[y] +
+                std::string(")");
+
+        auto trait_name = player_bon::trait_title(trait);
+
+        Color color_key;
+        Color color;
+
+        if (is_marked)
+        {
+                color_key = colors::menu_key_highlight();
+                color = colors::menu_highlight();
+        }
+        else
+        {
+                // Not marked
+                color_key = colors::menu_key_dark();
+                color = colors::menu_dark();
+        }
+
+        io::draw_text(
+                key_str,
+                Panel::create_char_menu,
+                {0, y},
+                color_key);
+
+        io::draw_text(
+                trait_name,
+                Panel::create_char_menu,
+                {(int)key_str.length() + 1, y},
+                color);
 }
 
 // -----------------------------------------------------------------------------

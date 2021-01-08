@@ -51,15 +51,18 @@ public:
 class Snd
 {
 public:
-        Snd(std::string msg,
-            audio::SfxId sfx,
-            IgnoreMsgIfOriginSeen ignore_msg_if_origin_seen,
-            const P& origin,
-            actor::Actor* actor_who_made_sound,
-            SndVol vol,
-            AlertsMon alerting_mon,
-            MorePromptOnMsg add_more_prompt_on_msg = MorePromptOnMsg::no,
-            std::shared_ptr<SndHeardEffect> snd_heard_effect = nullptr);
+        // TODO: This constructor is terrible, consider just using a default
+        // constructor and require configuration by separate function calls.
+        Snd(
+                std::string msg,
+                audio::SfxId sfx,
+                IgnoreMsgIfOriginSeen ignore_msg_if_origin_seen,
+                const P& origin,
+                actor::Actor* actor_who_made_sound,
+                SndVol vol,
+                AlertsMon alerting_mon,
+                MorePromptOnMsg add_more_prompt_on_msg = MorePromptOnMsg::no,
+                std::shared_ptr<SndHeardEffect> snd_heard_effect = nullptr);
 
         Snd() = default;
 

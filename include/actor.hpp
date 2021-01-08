@@ -119,20 +119,11 @@ public:
 
         virtual char character() const;
 
-        virtual std::string name_the() const
-        {
-                return m_data->name_the;
-        }
+        virtual std::string name_the() const;
 
-        virtual std::string name_a() const
-        {
-                return m_data->name_a;
-        }
+        virtual std::string name_a() const;
 
-        virtual std::string descr() const
-        {
-                return m_data->descr;
-        }
+        virtual std::string descr() const;
 
         virtual void add_light_hook(Array2<bool>& light) const
         {
@@ -148,8 +139,6 @@ public:
                 (void)dmg_type;
                 (void)allow_wound;
         }
-
-        virtual void on_death() {}
 
         virtual Color color() const = 0;
 
@@ -191,6 +180,7 @@ public:
         AwareState m_mon_aware_state {};
         Actor* m_leader {nullptr};
         std::vector<MonSpell> m_mon_spells {};
+        const ActorData* m_mimic_data {nullptr};  // Hallucination
 
 protected:
         // Damages worn armor, and returns damage after armor absorbs damage

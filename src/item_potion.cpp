@@ -610,9 +610,9 @@ void Fortitude::quaff_impl(actor::Actor& actor)
         actor.m_properties.apply(prop_r_sleep);
 
         actor.m_properties.end_prop(PropId::frenzied);
+        actor.m_properties.end_prop(PropId::hallucinating);
         actor.m_properties.end_prop(PropId::mind_sap);
 
-        // Remove a random insanity symptom if this is the player
         if (actor.is_player())
         {
                 const std::vector<const InsSympt*> sympts =

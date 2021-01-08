@@ -1052,17 +1052,6 @@ void PlayerGhoulClaw::on_melee_kill(actor::Actor& actor_killed)
 }
 
 // -----------------------------------------------------------------------------
-// Zombie Dust
-// -----------------------------------------------------------------------------
-void ZombieDust::on_ranged_hit(actor::Actor& actor_hit)
-{
-        if (actor_hit.is_alive() && !actor_hit.m_data->is_undead)
-        {
-                actor_hit.m_properties.apply(new PropParalyzed());
-        }
-}
-
-// -----------------------------------------------------------------------------
 // Mi-go Electric Gun
 // -----------------------------------------------------------------------------
 MiGoGun::MiGoGun(ItemData* const item_data) :

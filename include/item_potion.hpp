@@ -90,10 +90,11 @@ public:
 private:
         std::string descr_identified() const override
         {
-                return "This elixir heals all wounds and cures blindness, "
-                       "deafness, poisoning, infections, disease, weakening, "
-                       "and life sapping. It can even temporarily raise the "
-                       "consumer's condition past normal levels.";
+                return (
+                        "This elixir heals all wounds and cures blindness, "
+                        "deafness, poisoning, infections, disease, weakening, "
+                        "and life sapping. It can even temporarily raise the "
+                        "consumer's condition past normal levels.");
         }
 
         PotionAlignment alignment() const override
@@ -265,8 +266,9 @@ public:
 private:
         std::string descr_identified() const override
         {
-                return "Gives the consumer complete peace of mind, and cures "
-                       "mind sapping.";
+                return (
+                        "Gives the consumer complete peace and clarity of "
+                        "mind, and cures mind sapping.");
         }
 
         PotionAlignment alignment() const override
@@ -322,8 +324,9 @@ public:
 private:
         std::string descr_identified() const override
         {
-                return "This strange concoction causes a sudden flash of "
-                       "intuition.";
+                return (
+                        "This strange concoction causes a sudden flash of "
+                        "intuition.");
         }
 
         PotionAlignment alignment() const override
@@ -383,9 +386,10 @@ public:
 private:
         std::string descr_identified() const override
         {
-                return "Cures blindness, deafness, poisoning, infections, "
-                       "disease, weakening, and life sapping, and restores "
-                       "the consumer's health by a small amount.";
+                return (
+                        "Cures blindness, deafness, poisoning, infections, "
+                        "disease, weakening, and life sapping, and restores "
+                        "the consumer's health by a small amount.");
         }
 
         PotionAlignment alignment() const override
@@ -441,8 +445,9 @@ public:
 private:
         std::string descr_identified() const override
         {
-                return "A bizarre liquid that causes the consumer to "
-                       "dematerialize and sink through the ground.";
+                return (
+                        "A bizarre liquid that causes the consumer to "
+                        "dematerialize and sink through the ground.");
         }
 
         // TODO: Not sure about the alignment for this one...
@@ -476,9 +481,10 @@ public:
 private:
         std::string descr_identified() const override
         {
-                return "Makes the consumer invisible to normal vision for a "
-                       "brief time. Attacking or casting spells immediately "
-                       "reveals the consumer.";
+                return (
+                        "Makes the consumer invisible to normal vision for a "
+                        "brief time. Attacking or casting spells immediately "
+                        "reveals the consumer.");
         }
 
         PotionAlignment alignment() const override

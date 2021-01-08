@@ -40,7 +40,6 @@ enum class Id
         pitch_fork,
         sledge_hammer,
         thr_knife,
-        zombie_dust,
 
         // Ranged weapons, ammo
         sawed_off,
@@ -79,7 +78,7 @@ enum class Id
         player_ghoul_claw,
 
         // Intrinsic attacks for monsters
-        // NOTE: There is a string -> id map below for these entries
+        // NOTE: There is a string -> id map for these entries
         intr_kick,
         intr_bite,
         intr_claw,
@@ -186,6 +185,15 @@ enum class Id
         spirit_dagger,
         tele_ctrl_talisman,
 
+        // Other Curiosities
+        zombie_dust,
+        witches_eye,
+        // flask_of_damning,
+        // obsidian_charm,
+        fluctuating_material,
+        // bat_wing_salve,
+        astral_opium,
+
         END
 };
 
@@ -196,12 +204,14 @@ enum class ItemSetId
         supreme_treasure,
         firearm,
         spike_gun,
+        witches_eye,
+        fluctuating_material,
         zealot_spiked_mace,
         priest_dagger,
         mi_go_gun,
         mi_go_armor,
         high_priest_guard_war_vet,
-        high_priest_guard_rogue
+        high_priest_guard_rogue,
 };
 
 enum class Value

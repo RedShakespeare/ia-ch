@@ -18,8 +18,8 @@
 
 struct AiAttData
 {
-        item::Wpn* wpn = nullptr;
-        bool is_melee = false;
+        item::Wpn* wpn {nullptr};
+        bool is_melee {false};
 };
 
 struct AiAvailAttacksData
@@ -117,33 +117,20 @@ protected:
 
 class Ape : public Mon
 {
-public:
-        Ape() :
-
-                m_frenzy_cooldown(0)
-        {}
-
-        ~Ape() = default;
-
 private:
+        // TODO: This should be a property
         DidAction on_act() override;
 
-        int m_frenzy_cooldown;
+        int m_frenzy_cooldown {0};
 };
 
 class Khephren : public Mon
 {
-public:
-        Khephren() :
-
-                m_has_summoned_locusts(false)
-        {}
-        ~Khephren() = default;
-
 private:
+        // TODO: This should be a property
         DidAction on_act() override;
 
-        bool m_has_summoned_locusts;
+        bool m_has_summoned_locusts {false};
 };
 
 class StrangeColor : public Mon
@@ -153,17 +140,16 @@ public:
 
         ~StrangeColor() = default;
 
+        // TODO: This should be a property
         Color color() const override;
 };
 
 class SpectralWpn : public Mon
 {
 public:
-        SpectralWpn();
+        SpectralWpn() = default;
 
         ~SpectralWpn() = default;
-
-        void on_death() override;
 
         std::string name_the() const override;
 
@@ -174,9 +160,6 @@ public:
         gfx::TileId tile() const override;
 
         std::string descr() const override;
-
-private:
-        std::unique_ptr<item::Item> m_discarded_item {};
 };
 
 }  // namespace actor

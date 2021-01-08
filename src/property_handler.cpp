@@ -75,6 +75,7 @@ void PropHandler::save() const
                 {
                         saving::put_int((int)prop->m_id);
                         saving::put_int(prop->m_nr_turns_left);
+                        saving::put_int(prop->m_nr_dlvls_left);
 
                         prop->save();
                 }
@@ -95,6 +96,8 @@ void PropHandler::load()
 
                 const int nr_turns = saving::get_int();
 
+                const int nr_dlvls = saving::get_int();
+
                 Prop* const prop = property_factory::make(prop_id);
 
                 if (nr_turns == -1)
@@ -104,6 +107,8 @@ void PropHandler::load()
                 else
                 {
                         prop->set_duration(nr_turns);
+
+                        prop->m_nr_dlvls_left = nr_dlvls;
                 }
 
                 prop->m_owner = m_owner;
@@ -271,6 +276,14 @@ bool PropHandler::try_apply_more_on_existing_intr_prop(
                         continue;
                 }
 
+                // Found another intrinsic property of same type
+
+                // Use longest dungeon level duration
+                old_prop->m_nr_dlvls_left =
+                        std::max(
+                                new_prop.m_nr_dlvls_left,
+                                old_prop->m_nr_dlvls_left);
+
                 const bool old_is_permanent = old_prop->m_nr_turns_left < 0;
                 const bool new_is_permanent = new_prop.m_nr_turns_left < 0;
 
@@ -285,8 +298,8 @@ bool PropHandler::try_apply_more_on_existing_intr_prop(
                 {
                         // Both the old and new property are temporary
 
-                        // TODO: This is a hack - infection countdown should not
-                        // be reset when another infection is applied
+                        // TODO: This is a hack to avoid resetting infection
+                        // countdown when another infection is applied
                         if (new_prop.id() == PropId::infected)
                         {
                                 // Use shortest duration
@@ -524,14 +537,27 @@ void PropHandler::on_placed()
         }
 }
 
+void PropHandler::on_new_dlvl()
+{
+        for (auto& prop : m_props)
+        {
+                if (prop->m_nr_dlvls_left > 0)
+                {
+                        --prop->m_nr_dlvls_left;
+
+                        prop->on_new_dlvl();
+                }
+        }
+}
+
 void PropHandler::on_turn_begin()
 {
         for (size_t i = 0; i < m_props.size();)
         {
                 auto& prop = m_props[i];
 
-                // Count down number of turns
-                if (prop->m_nr_turns_left > 0)
+                if ((prop->m_nr_dlvls_left <= 0) &&
+                    (prop->m_nr_turns_left > 0))
                 {
                         ASSERT(prop->m_src == PropSrc::intr);
 

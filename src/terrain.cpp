@@ -1329,6 +1329,14 @@ void Stairs::bump(actor::Actor& actor_bumping)
                 case 0:
                         map::g_player->m_pos = m_pos;
 
+                        if (is_fake())
+                        {
+                                // NOTE: This destroys this object
+                                player_use_fake_stairs();
+
+                                return;
+                        }
+
                         msg_log::clear();
 
                         msg_log::add("I descend the stairs.");
@@ -1344,6 +1352,14 @@ void Stairs::bump(actor::Actor& actor_bumping)
                 case 1:
                         map::g_player->m_pos = m_pos;
 
+                        if (is_fake())
+                        {
+                                // NOTE: This destroys this object
+                                player_use_fake_stairs();
+
+                                return;
+                        }
+
                         saving::save_game();
 
                         states::pop();
@@ -1354,6 +1370,29 @@ void Stairs::bump(actor::Actor& actor_bumping)
                         break;
                 }
         }
+}
+
+void Stairs::player_use_fake_stairs()
+{
+        const auto msg =
+                "As I descend the stairs and observe my surroundings, to my "
+                "great bewilderment I realize that I have stepped out into "
+                "the very same ground from which I started my downward climb! "
+                "Turning around, the stairs are nowhere to be found.";
+
+        popup::Popup(popup::AddToMsgHistory::yes)
+                .set_msg(msg)
+                .run();
+
+        map::put(new Floor(m_pos));
+
+        auto* prop = new PropConfused();
+
+        prop->set_duration(8);
+
+        map::g_player->m_properties.apply(prop);
+
+        map::g_player->incr_shock(ShockLvl::unsettling, ShockSrc::misc);
 }
 
 std::string Stairs::name(const Article article) const

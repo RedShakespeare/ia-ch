@@ -49,16 +49,9 @@ enum class PropEndAllowHistoricMsg
 
 struct PropTextListEntry
 {
-        PropTextListEntry() :
-
-                prop(nullptr)
-        {}
-
-        ColoredString title;
-
-        std::string descr;
-
-        const Prop* prop;
+        ColoredString title {};
+        std::string descr {};
+        const Prop* prop {nullptr};
 };
 
 struct PropEndConfig
@@ -176,6 +169,8 @@ public:
         bool affect_actor_color(Color& color) const;
 
         void on_placed();
+
+        void on_new_dlvl();
 
         // Called when the actors turn begins/ends
         void on_turn_begin();

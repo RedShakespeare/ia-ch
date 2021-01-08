@@ -100,7 +100,7 @@ static void init_data_list()
         d.std_rnd_turns = Range(50, 100);
         d.name = "Physical Resistance";
         d.name_short = "Physical Res.";
-        d.descr = "Cannot be harmed by plain physical force";
+        d.descr = "Cannot be harmed by plain physical force.";
         d.msg_start_player = "I feel resistant to physical harm.";
         d.msg_start_mon = "is resistant to physical harm.";
         d.msg_end_player = "I feel vulnerable to physical harm.";
@@ -114,7 +114,7 @@ static void init_data_list()
         d.std_rnd_turns = Range(50, 100);
         d.name = "Fire Resistance";
         d.name_short = "Fire Res.";
-        d.descr = "Cannot be harmed by fire";
+        d.descr = "Cannot be harmed by fire.";
         d.msg_start_player = "I feel resistant to fire.";
         d.msg_start_mon = "is resistant to fire.";
         d.msg_end_player = "I feel vulnerable to fire.";
@@ -128,7 +128,7 @@ static void init_data_list()
         d.std_rnd_turns = Range(50, 100);
         d.name = "Poison Resistance";
         d.name_short = "Poison Res.";
-        d.descr = "Cannot be harmed by poison";
+        d.descr = "Cannot be harmed by poison.";
         d.msg_start_player = "I feel resistant to poison.";
         d.msg_start_mon = "is resistant to poison.";
         d.msg_end_player = "I feel vulnerable to poison.";
@@ -142,7 +142,7 @@ static void init_data_list()
         d.std_rnd_turns = Range(50, 100);
         d.name = "Electric Resistance";
         d.name_short = "Electric Res.";
-        d.descr = "Cannot be harmed by electricity";
+        d.descr = "Cannot be harmed by electricity.";
         d.msg_start_player = "I feel resistant to electricity.";
         d.msg_start_mon = "is resistant to electricity.";
         d.msg_end_player = "I feel vulnerable to electricity.";
@@ -156,7 +156,7 @@ static void init_data_list()
         d.std_rnd_turns = Range(50, 100);
         d.name = "Acid Resistance";
         d.name_short = "Acid Res.";
-        d.descr = "Cannot be harmed by acid";
+        d.descr = "Cannot be harmed by acid.";
         d.msg_start_player = "I feel resistant to acid.";
         d.msg_start_mon = "is resistant to acid.";
         d.msg_end_player = "I feel vulnerable to acid.";
@@ -170,7 +170,7 @@ static void init_data_list()
         d.std_rnd_turns = Range(50, 100);
         d.name = "Sleep Resistance";
         d.name_short = "Sleep Res.";
-        d.descr = "Cannot faint or become hypnotized";
+        d.descr = "Cannot faint or become hypnotized.";
         d.msg_start_player = "I feel wide awake.";
         d.msg_start_mon = "is wide awake.";
         d.msg_end_player = "I feel less awake.";
@@ -184,7 +184,7 @@ static void init_data_list()
         d.std_rnd_turns = Range(50, 100);
         d.name = "Fear Resistance";
         d.name_short = "Fear Res.";
-        d.descr = "Unaffected by fear";
+        d.descr = "Unaffected by fear.";
         d.msg_start_player = "I cannot be swayed by fear.";
         d.msg_start_mon = "is resistant to fear.";
         d.msg_end_player = "I feel vulnerable to fear.";
@@ -198,7 +198,7 @@ static void init_data_list()
         d.std_rnd_turns = Range(50, 100);
         d.name = "Slow Resistance";
         d.name_short = "Slow Res.";
-        d.descr = "Cannot be magically slowed";
+        d.descr = "Cannot be magically slowed.";
         d.msg_start_player = "I feel steadfast.";
         d.msg_end_player = "I feel more susceptible to time.";
         d.allow_display_turns = true;
@@ -210,7 +210,7 @@ static void init_data_list()
         d.std_rnd_turns = Range(50, 100);
         d.name = "Confusion Resistance";
         d.name_short = "Confusion Res.";
-        d.descr = "Cannot become confused";
+        d.descr = "Cannot become confused.";
         d.msg_start_player = "I feel resistant to confusion.";
         d.msg_start_mon = "is resistant to confusion.";
         d.msg_end_player = "I feel vulnerable to confusion.";
@@ -224,7 +224,7 @@ static void init_data_list()
         d.std_rnd_turns = Range(50, 100);
         d.name = "Disease Resistance";
         d.name_short = "Disease Res.";
-        d.descr = "Cannot become diseased";
+        d.descr = "Cannot become diseased.";
         d.msg_start_player = "I feel resistant to disease.";
         d.msg_start_mon = "is resistant to disease.";
         d.msg_end_player = "I feel vulnerable to disease.";
@@ -237,7 +237,7 @@ static void init_data_list()
         d.id = PropId::r_blind;
         d.name = "Blindness Resistance";
         d.name_short = "Blindness Res.";
-        d.descr = "Cannot be blinded";
+        d.descr = "Cannot be blinded.";
         d.allow_display_turns = false;
         d.allow_test_on_bot = false;
         d.alignment = PropAlignment::good;
@@ -246,7 +246,7 @@ static void init_data_list()
         d.id = PropId::r_para;
         d.name = "Paralysis Resistance";
         d.name_short = "Paralysis Res.";
-        d.descr = "Cannot be paralyzed";
+        d.descr = "Cannot be paralyzed.";
         d.allow_display_turns = false;
         d.allow_test_on_bot = false;
         d.alignment = PropAlignment::good;
@@ -254,7 +254,7 @@ static void init_data_list()
 
         d.id = PropId::r_breath;
         d.std_rnd_turns = Range(50, 100);
-        d.descr = "Cannot be harmed by constricted breathing";
+        d.descr = "Cannot be harmed by constricted breathing.";
         d.msg_start_player = "I can breath without harm.";
         d.msg_start_mon = "can breath without harm.";
         d.allow_display_turns = true;
@@ -265,7 +265,7 @@ static void init_data_list()
         d.id = PropId::r_spell;
         d.name = "Spell Resistance";
         d.name_short = "Spell Res.";
-        d.descr = "Cannot be affected by harmful spells";
+        d.descr = "Cannot be affected by harmful spells.";
         d.msg_start_player = "I defy harmful spells!";
         d.msg_start_mon = "is defying harmful spells.";
         d.msg_end_player = "I feel vulnerable to spells.";
@@ -278,7 +278,7 @@ static void init_data_list()
         d.std_rnd_turns = Range(8, 12);
         d.name = "Shock Resistance";
         d.name_short = "Shock Res.";
-        d.descr = "Unaffected by shocking events";
+        d.descr = "Unaffected by shocking events.";
         d.msg_start_player = "Nothing can disturb my mind!";
         d.msg_start_mon = "";
         d.msg_end_player =
@@ -293,7 +293,7 @@ static void init_data_list()
         d.std_rnd_turns = Range(50, 100);
         d.name = "Light Sensitive";
         d.name_short = "Light Sensitive";
-        d.descr = "Is vulnerable to light";
+        d.descr = "Is vulnerable to light.";
         d.msg_start_player = "I feel vulnerable to light!";
         d.msg_start_mon = "is vulnerable to light.";
         d.msg_end_player = "I no longer feel vulnerable to light.";
@@ -306,7 +306,7 @@ static void init_data_list()
         d.std_rnd_turns = Range(20, 30);
         d.name = "Blind";
         d.name_short = "Blind";
-        d.descr = "Cannot see, -20% hit chance, -50% chance to evade attacks";
+        d.descr = "Cannot see, -20% hit chance, -50% chance to evade attacks.";
         d.msg_start_player = "I am blinded!";
         d.msg_start_mon = "is blinded.";
         d.msg_end_player = "I can see again!";
@@ -352,7 +352,7 @@ static void init_data_list()
         d.name_short = "Burning";
         d.descr =
                 "Takes damage each turn, 50% chance to fail when attempting to "
-                "read or cast spells";
+                "read or cast spells.";
         d.msg_start_player = "I am Burning!";
         d.msg_start_mon = "is burning.";
         d.msg_end_player = "The flames are put out.";
@@ -369,7 +369,7 @@ static void init_data_list()
         d.std_rnd_turns = Range(40, 80);
         d.name = "Poisoned";
         d.name_short = "Poisoned";
-        d.descr = "Takes damage each turn";
+        d.descr = "Takes damage each turn.";
         d.msg_start_player = "I am poisoned!";
         d.msg_start_mon = "is poisoned.";
         d.msg_end_player = "My body is cleansed from poisoning!";
@@ -385,7 +385,7 @@ static void init_data_list()
         d.std_rnd_turns = Range(3, 5);
         d.name = "Paralyzed";
         d.name_short = "Paralyzed";
-        d.descr = "Cannot move";
+        d.descr = "Cannot move.";
         d.msg_start_player = "I am paralyzed!";
         d.msg_start_mon = "is paralyzed.";
         d.msg_end_player = "I can move again!";
@@ -403,7 +403,7 @@ static void init_data_list()
         d.name_short = "Terrified";
         d.descr =
                 "Cannot perform melee attacks, -20% ranged hit chance, +20% "
-                "chance to evade attacks";
+                "chance to evade attacks.";
         d.msg_start_player = "I am terrified!";
         d.msg_start_mon = "looks terrified.";
         d.msg_end_player = "I am no longer terrified!";
@@ -421,7 +421,7 @@ static void init_data_list()
         d.name_short = "Confused";
         d.descr =
                 "Occasionally moving in random directions, cannot read or "
-                "cast spells, cannot search for hidden doors or traps";
+                "cast spells, cannot search for hidden doors or traps.";
         d.msg_start_player = "I am confused!";
         d.msg_start_mon = "looks confused.";
         d.msg_end_player = "I come to my senses.";
@@ -430,6 +430,44 @@ static void init_data_list()
         d.msg_res_mon = "resists confusion.";
         d.allow_display_turns = true;
         d.allow_test_on_bot = true;
+        d.alignment = PropAlignment::bad;
+        add(d);
+
+        d.id = PropId::hallucinating;
+        d.std_rnd_turns = Range(200, 300);
+        d.name = "Hallucinating";
+        d.name_short = "Halluc.";
+        d.descr = "The senses cannot always be trusted.";
+        d.msg_start_player = "I am starting to doubt my senses.";
+        d.msg_start_mon = "";
+        d.msg_end_player = "I feel more sure of my senses.";
+        d.msg_end_mon = "";
+        d.msg_res_player = "I manage to maintain a grip on what is real.";
+        d.msg_res_mon = "";
+        d.allow_display_turns = true;
+        d.allow_test_on_bot = true;
+        d.alignment = PropAlignment::bad;
+        add(d);
+
+        d.id = PropId::astral_opium_addiction;
+        d.std_rnd_turns = Range(100, 200);
+        d.std_rnd_dlvls = Range(2, 5);
+        d.name = "Astral Opium Addiction";
+        d.name_short = "Addict";
+        d.descr =
+                "Addicted to Astral Opium - the addiction will cease "
+                "eventually if Astral Opium is not used again, however the "
+                "abstinence will soon cause withdrawal symptoms "
+                "(increased minimum shock).";
+        d.msg_start_player = "That felt amazing!";
+        d.msg_start_mon = "";
+        d.msg_end_player =
+                "I suddenly realize that I no longer crave Astral Opium.";
+        d.msg_end_mon = "";
+        d.msg_res_player = "";
+        d.msg_res_mon = "";
+        d.allow_display_turns = false;
+        d.allow_test_on_bot = false;
         d.alignment = PropAlignment::bad;
         add(d);
 
@@ -452,7 +490,7 @@ static void init_data_list()
         d.std_rnd_turns = Range(16, 24);
         d.name = "Slowed";
         d.name_short = "Slowed";
-        d.descr = "Moves slower";
+        d.descr = "Moves slower.";
         d.msg_start_player = "Everything around me seems to speed up.";
         d.msg_start_mon = "slows down.";
         d.msg_end_player = "Everything around me seems to slow down.";
@@ -470,7 +508,7 @@ static void init_data_list()
         d.std_rnd_turns = Range(12, 16);
         d.name = "Hasted";
         d.name_short = "Hasted";
-        d.descr = "Moves faster";
+        d.descr = "Moves faster.";
         d.msg_start_player = "Everything around me seems to slow down.";
         d.msg_start_mon = "speeds up.";
         d.msg_end_player = "Everything around me seems to speed up.";
@@ -486,7 +524,7 @@ static void init_data_list()
         d.std_rnd_turns = Range(7, 11);
         d.name = "Extra Hasted";
         d.name_short = "Extra Hasted";
-        d.descr = "Moves very fast";
+        d.descr = "Moves very fast.";
         d.msg_start_player = "Everything around me suddenly seems very still.";
         d.allow_display_turns = true;
         d.allow_test_on_bot = true;
@@ -497,7 +535,7 @@ static void init_data_list()
         d.std_rnd_turns = Range(80, 120);
         d.msg_end_mon = "suddenly disappears.";
         d.name = "Summoned";
-        d.descr = "Was magically summoned here";
+        d.descr = "Was magically summoned here.";
         d.alignment = PropAlignment::neutral;
         add(d);
 
@@ -511,7 +549,8 @@ static void init_data_list()
 
         d.id = PropId::nailed;
         d.name = "Nailed";
-        d.descr = "Fastened by a spike - tearing it out will be rather painful";
+        d.descr =
+                "Fastened by a spike. Tearing it out will be rather painful.";
         d.msg_start_player = "I am fastened by a spike!";
         d.msg_start_mon = "is fastened by a spike.";
         d.msg_end_player = "I tear free!";
@@ -526,7 +565,7 @@ static void init_data_list()
                 "For each wound: -5% melee hit chance, -5% chance to evade "
                 "attacks, -10% hit points, and reduced hit point generation "
                 "rate - also, walking takes extra turns if more than two "
-                "wounds are received";
+                "wounds are received.";
         d.msg_start_player = "I am wounded!";
         d.msg_res_player = "I resist wounding!";
         d.allow_display_turns = false;
@@ -536,7 +575,7 @@ static void init_data_list()
 
         d.id = PropId::hp_sap;
         d.name = "Life Sapped";
-        d.descr = "Fewer hit points";
+        d.descr = "Fewer hit points.";
         d.msg_start_player = "My life force is sapped!";
         d.msg_start_mon = "is sapped of life.";
         d.msg_end_player = "My life force returns.";
@@ -550,7 +589,7 @@ static void init_data_list()
 
         d.id = PropId::spi_sap;
         d.name = "Spirit Sapped";
-        d.descr = "Fewer spirit points";
+        d.descr = "Fewer spirit points.";
         d.msg_start_player = "My spirit is sapped!";
         d.msg_start_mon = "is sapped of spirit.";
         d.msg_end_player = "My spirit returns.";
@@ -564,7 +603,7 @@ static void init_data_list()
 
         d.id = PropId::mind_sap;
         d.name = "Mind Sapped";
-        d.descr = "Increased Shock";
+        d.descr = "Increased Shock.";
         d.msg_start_player = "My mind is sapped!";
         d.msg_end_player = "My mind returns.";
         d.msg_res_player = "I resist sapping.";
@@ -577,7 +616,7 @@ static void init_data_list()
         d.std_rnd_turns = Range(50, 100);
         d.name = "Infected";
         d.name_short = "Infected";
-        d.descr = "A nasty infection, this should be treated immediately";
+        d.descr = "A nasty infection, this should be treated immediately.";
         d.msg_start_player = "I am infected!";
         d.msg_start_mon = "is infected.";
         d.msg_end_player = "My infection is cured!";
@@ -591,7 +630,7 @@ static void init_data_list()
         d.std_rnd_turns = Range(50, 100);
         d.name = "Diseased";
         d.name_short = "Diseased";
-        d.descr = "-50% maximum hit points";
+        d.descr = "-50% maximum hit points.";
         d.msg_start_player = "I am diseased!";
         d.msg_start_mon = "is diseased.";
         d.msg_end_player = "My disease is cured!";
@@ -609,7 +648,7 @@ static void init_data_list()
         d.std_rnd_turns = Range(20, 30);
         d.name = "Descending";
         d.name_short = "Descending";
-        d.descr = "Soon moved to a deeper level";
+        d.descr = "Soon moved to a deeper level.";
         d.msg_start_player = "I feel a sinking sensation.";
         d.allow_display_turns = true;
         d.allow_test_on_bot = false;
@@ -622,7 +661,7 @@ static void init_data_list()
         d.name_short = "Weakened";
         d.descr =
                 "Halved melee damage, cannot bash doors or chests open, knock "
-                "heavy objects over, etc";
+                "heavy objects over, etc.";
         d.msg_start_player = "I feel weaker.";
         d.msg_start_mon = "looks weaker.";
         d.msg_end_player = "I feel stronger!";
@@ -642,7 +681,7 @@ static void init_data_list()
                 "Cannot move away from seen enemies, moves faster, +1 melee "
                 "damage, +10% melee hit chance, immune to confusion, fainting, "
                 "fear, and weakening, cannot read or cast spells, becomes "
-                "weakened when the frenzy ends";
+                "weakened when the frenzy ends.";
         d.msg_start_player = "I feel ferocious!!!";
         d.msg_start_mon = "Looks ferocious!";
         d.msg_end_player = "I calm down.";
@@ -656,7 +695,7 @@ static void init_data_list()
         d.std_rnd_turns = Range(400, 600);
         d.name = "Blessed";
         d.name_short = "Blessed";
-        d.descr = "+10% to hit chance, evasion, stealth, and searching";
+        d.descr = "+10% to hit chance, evasion, stealth, and searching.";
         d.msg_start_player = "I feel luckier.";
         d.msg_end_player = "I have normal luck.";
         d.historic_msg_start_permanent = "I received a great blessing";
@@ -670,7 +709,7 @@ static void init_data_list()
         d.std_rnd_turns = Range(50, 100);
         d.name = "Cursed";
         d.name_short = "Cursed";
-        d.descr = "-10% to hit chance, evasion, stealth, and searching";
+        d.descr = "-10% to hit chance, evasion, stealth, and searching.";
         d.msg_start_player = "I feel misfortunate.";
         d.msg_end_player = "I feel more fortunate.";
         d.msg_res_player = "I resist misfortune.";
@@ -685,7 +724,7 @@ static void init_data_list()
         d.std_rnd_turns = Range(5, 9);
         d.name = "Premonition";
         d.name_short = "Premonition";
-        d.descr = "+75% chance to evade attacks";
+        d.descr = "+75% chance to evade attacks.";
         d.msg_start_player = "I feel unassailable.";
         d.msg_end_player = "I feel more vulnerable.";
         d.allow_display_turns = true;
@@ -699,7 +738,7 @@ static void init_data_list()
         d.name_short = "Magic Searching";
         d.descr =
                 "Magically detects objects and creatures in the surrounding "
-                "area";
+                "area.";
         d.msg_start_player = "Hidden secrets are revealed to me.";
         d.msg_end_player = "I can no longer see hidden things.";
         d.allow_display_turns = true;
@@ -710,7 +749,7 @@ static void init_data_list()
         d.id = PropId::entangled;
         d.name = "Entangled";
         d.name_short = "Entangled";
-        d.descr = "Entangled in something";
+        d.descr = "Entangled in something.";
         d.msg_start_player = "I am entangled!";
         d.msg_start_mon = "is entangled.";
         d.msg_end_player = "I tear free!";
@@ -731,7 +770,7 @@ static void init_data_list()
         d.std_rnd_turns = Range(50, 100);
         d.name = "Radiant";
         d.name_short = "Radiant";
-        d.descr = "Emanating a bright light";
+        d.descr = "Emanating a bright light.";
         d.msg_start_player = "A bright light shines around me.";
         d.msg_end_player = "It suddenly gets darker.";
         d.allow_display_turns = true;
@@ -744,7 +783,7 @@ static void init_data_list()
         d.std_rnd_turns = Range(50, 100);
         d.name = "Invisible";
         d.name_short = "Invisible";
-        d.descr = "Cannot be detected by normal sight";
+        d.descr = "Cannot be detected by normal sight.";
         d.msg_start_player = "I am out of sight!";
         d.msg_start_mon = "is out of sight!";
         d.msg_end_player = "I am visible.";
@@ -761,7 +800,7 @@ static void init_data_list()
         d.name_short = "Cloaked";
         d.descr =
                 "Cannot be detected by normal sight, ends if attacking or "
-                "casting spells";
+                "casting spells.";
         d.msg_start_player = "I am out of sight!";
         d.msg_start_mon = "is out of sight!";
         d.msg_end_player = "I am visible.";
@@ -779,7 +818,7 @@ static void init_data_list()
         d.std_rnd_turns = Range(50, 100);
         d.name = "See Invisible";
         d.name_short = "See Invisible";
-        d.descr = "Can see invisible creatures, cannot be blinded";
+        d.descr = "Can see invisible creatures, cannot be blinded.";
         d.msg_start_player = "My eyes perceive the invisible.";
         d.msg_start_mon = "seems very keen.";
         d.msg_end_player = "My eyes can no longer perceive the invisible.";
@@ -802,7 +841,7 @@ static void init_data_list()
         d.std_rnd_turns = Range(50, 100);
         d.name = "Teleport control";
         d.name_short = "Teleport control";
-        d.descr = "Can control teleport destination";
+        d.descr = "Can control teleport destination.";
         d.msg_start_player = "I feel in control.";
         d.msg_end_player = "I feel less in control.";
         d.allow_display_turns = true;
@@ -821,7 +860,7 @@ static void init_data_list()
         d.std_rnd_turns = Range(1, 1);
         d.name = "Aiming";
         d.name_short = "Aiming";
-        d.descr = "Increased range attack effectiveness";
+        d.descr = "Increased range attack effectiveness.";
         d.allow_display_turns = false;
         d.alignment = PropAlignment::good;
         add(d);
@@ -829,7 +868,7 @@ static void init_data_list()
         d.id = PropId::conflict;
         d.name = "Conflicted";
         d.name_short = "Conflicted";
-        d.descr = "Considers every creature as an enemy";
+        d.descr = "Considers every creature as an enemy.";
         d.std_rnd_turns = Range(10, 20);
         d.msg_start_mon = "Looks conflicted.";
         d.msg_end_mon = "Looks more determined.";
@@ -841,7 +880,7 @@ static void init_data_list()
         d.std_rnd_turns = Range(6, 12);
         d.name = "Aura of Decay";
         d.name_short = "Aura of Decay";
-        d.descr = "Adjacent creatures take damage";
+        d.descr = "Adjacent creatures take damage.";
         d.msg_start_player = "Withering surrounds me.";
         d.msg_start_mon = "appears to exude death and decay.";
         d.msg_end_player = "The decay subsides.";
@@ -908,7 +947,7 @@ static void init_data_list()
         d.id = PropId::flying;
         d.name = "Flying";
         d.name_short = "Flying";
-        d.descr = "Can fly over low obstacles";
+        d.descr = "Can fly over low obstacles.";
         d.allow_display_turns = false;
         d.allow_test_on_bot = false;
         d.alignment = PropAlignment::neutral;
@@ -918,7 +957,8 @@ static void init_data_list()
         d.name = "Ethereal";
         d.name_short = "Ethereal";
         d.descr =
-                "Can pass through solid objects, +50% chance to evade attacks";
+                "Can pass through solid objects, "
+                "+50% chance to evade attacks.";
         d.allow_display_turns = false;
         d.allow_test_on_bot = false;
         d.alignment = PropAlignment::neutral;
@@ -970,7 +1010,7 @@ static void init_data_list()
         d.name_short = "Swimming";
         d.descr =
                 "Cannot read, fire ranged weapons, or light explosives, "
-                "-10% melee hit chance, -10% chance to evade attacks";
+                "-10% melee hit chance, -10% chance to evade attacks.";
         d.allow_display_turns = false;
         d.allow_test_on_bot = false;
         d.alignment = PropAlignment::neutral;
@@ -1045,8 +1085,8 @@ static void init_data_list()
         d.name = "Sanctuary";
         d.name_short = "Sanctuary";
         d.descr =
-                "Is ignored by all hostile creatures, ends if moving or "
-                "performing a melee or ranged attack.";
+                "Is ignored by all hostile creatures. The effect ends if "
+                "moving or performing a melee or ranged attack.";
         d.msg_start_player = "I feel very secure.";
         d.msg_end_player = "I feel much less secure.";
         d.allow_display_turns = true;

@@ -164,28 +164,34 @@ static std::vector<ColoredString> make_game_summary_lines(
                                 std::begin(trait_log),
                                 std::end(trait_log),
                                 [](const auto& e) {
-                                        return e.clvl_picked >= 10;
+                                        return e.clvl >= 10;
                                 }) != std::end(trait_log);
 
                 for (const auto& e : trait_log)
                 {
-                        std::string clvl_str = std::to_string(e.clvl_picked);
+                        std::string clvl_str = std::to_string(e.clvl);
 
                         if (is_double_digit)
                         {
                                 clvl_str =
                                         text_format::pad_before(
-                                                std::to_string(e.clvl_picked),
+                                                std::to_string(e.clvl),
                                                 2);
                         }
 
                         const std::string title =
                                 player_bon::trait_title(e.trait_id);
 
+                        const std::string removed_str =
+                                e.is_removal
+                                ? " - REMOVED"
+                                : "";
+
                         const std::string str =
                                 clvl_str +
                                 " " +
-                                title;
+                                title +
+                                removed_str;
 
                         lines.emplace_back(str, color_info);
                 }

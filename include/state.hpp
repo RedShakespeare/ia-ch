@@ -32,6 +32,7 @@ enum class StateId
         player_character_descr,
         popup,
         postmortem_info,
+        remove_trait,
         view_actor,
         view_minimap,
         win_game,  // TODO: This should just be a popup

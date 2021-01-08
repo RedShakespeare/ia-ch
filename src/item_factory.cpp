@@ -11,6 +11,7 @@
 #include "game_time.hpp"
 #include "init.hpp"
 #include "item_artifact.hpp"
+#include "item_curio.hpp"
 #include "item_curse.hpp"
 #include "item_data.hpp"
 #include "item_device.hpp"
@@ -110,6 +111,30 @@ Item* make(const Id item_id, const int nr_items)
 
         case Id::zombie_dust:
                 r = new ZombieDust(d);
+                break;
+
+        case Id::witches_eye:
+                r = new WitchesEye(d);
+                break;
+
+                // case Id::flask_of_damning:
+                //         r = new FlaskOfDamning(d);
+                //         break;
+
+                // case Id::obsidian_charm:
+                //         r = new ObsidianCharm(d);
+                //         break;
+
+        case Id::fluctuating_material:
+                r = new FluctuatingMaterial(d);
+                break;
+
+                // case Id::bat_wing_salve:
+                //         r = new BatWingSalve(d);
+                //         break;
+
+        case Id::astral_opium:
+                r = new AstralOpium(d);
                 break;
 
         case Id::dynamite:

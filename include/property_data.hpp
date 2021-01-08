@@ -46,6 +46,7 @@ enum class PropId
         paralyzed,
         terrified,
         confused,
+        hallucinating,
         stunned,
         slowed,
         hasted,
@@ -117,6 +118,7 @@ enum class PropId
         light_sensitive_curse,  // This is just a copy of light_sensitive
         disabled_hp_regen,
         sanctuary,
+        astral_opium_addiction,
 
         END
 };
@@ -130,42 +132,24 @@ enum class PropAlignment
 
 struct PropData
 {
-        PropData() :
-                id(PropId::END),
-                std_rnd_turns(Range(10, 10)),
-                name(""),
-                name_short(""),
-                descr(""),
-                msg_start_player(""),
-                msg_start_mon(""),
-                msg_end_player(""),
-                msg_end_mon(""),
-                msg_res_player(""),
-                msg_res_mon(""),
-                historic_msg_start_permanent(""),
-                historic_msg_end_permanent(""),
-                allow_display_turns(true),
-                update_vision_on_toggled(false),
-                allow_test_on_bot(false),
-                alignment(PropAlignment::neutral) {}
-
-        PropId id;
-        Range std_rnd_turns;
-        std::string name;
-        std::string name_short;
-        std::string descr;
-        std::string msg_start_player;
-        std::string msg_start_mon;
-        std::string msg_end_player;
-        std::string msg_end_mon;
-        std::string msg_res_player;
-        std::string msg_res_mon;
-        std::string historic_msg_start_permanent;
-        std::string historic_msg_end_permanent;
-        bool allow_display_turns;
-        bool update_vision_on_toggled;
-        bool allow_test_on_bot;
-        PropAlignment alignment;
+        PropId id {PropId::END};
+        Range std_rnd_turns {10, 10};
+        Range std_rnd_dlvls {0, 0};
+        std::string name {};
+        std::string name_short {};
+        std::string descr {};
+        std::string msg_start_player {};
+        std::string msg_start_mon {};
+        std::string msg_end_player {};
+        std::string msg_end_mon {};
+        std::string msg_res_player {};
+        std::string msg_res_mon {};
+        std::string historic_msg_start_permanent {};
+        std::string historic_msg_end_permanent {};
+        bool allow_display_turns {true};
+        bool update_vision_on_toggled {false};
+        bool allow_test_on_bot {false};
+        PropAlignment alignment {PropAlignment::neutral};
 };
 
 namespace property_data

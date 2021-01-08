@@ -33,6 +33,7 @@ struct TraitData
         std::string title {};
         std::string descr {};
         std::function<void()> on_picked {};
+        std::function<void()> on_removed {};
         std::vector<Trait> trait_prereqs {};
         Bg bg_prereq {Bg::END};
         std::vector<Bg> blocked_for_bgs {};
@@ -206,6 +207,9 @@ static void init_trait_data()
                         true,
                         Verbose::no);
         };
+        d.on_removed = []() {
+                map::g_player->m_properties.end_prop(PropId::r_fear);
+        };
         d.trait_prereqs = {Trait::cool_headed};
         set_trait_data(d);
 
@@ -265,6 +269,9 @@ static void init_trait_data()
                         true,
                         Verbose::no);
         };
+        d.on_removed = []() {
+                map::g_player->m_properties.end_prop(PropId::r_conf);
+        };
         d.trait_prereqs = {Trait::stout_spirit, Trait::cool_headed};
         set_trait_data(d);
 
@@ -303,6 +310,9 @@ static void init_trait_data()
                         true,
                         Verbose::no);
         };
+        d.on_removed = []() {
+                map::g_player->m_properties.end_prop(PropId::r_disease);
+        };
         d.trait_prereqs = {Trait::healer};
         d.blocked_for_bgs = {Bg::ghoul};
         set_trait_data(d);
@@ -335,6 +345,9 @@ static void init_trait_data()
                         spi_incr,
                         false,  // Not allowed above max
                         Verbose::no);
+        };
+        d.on_removed = []() {
+                map::g_player->change_max_sp(-2, Verbose::no);
         };
         set_trait_data(d);
 
@@ -379,14 +392,15 @@ static void init_trait_data()
         d.on_picked = []() {
                 const int hp_incr = 4;
 
-                map::g_player->change_max_hp(
-                        hp_incr,
-                        Verbose::no);
+                map::g_player->change_max_hp(hp_incr, Verbose::no);
 
                 map::g_player->restore_hp(
                         hp_incr,
                         false,  // Not allowed above max
                         Verbose::no);
+        };
+        d.on_removed = []() {
+                map::g_player->change_max_hp(-4, Verbose::no);
         };
         set_trait_data(d);
 
@@ -450,6 +464,11 @@ static void init_trait_data()
                         SpellId::bless,
                         Verbose::no);
         };
+        d.on_removed = []() {
+                player_spells::unlearn_spell(
+                        SpellId::bless,
+                        Verbose::no);
+        };
         d.bg_prereq = Bg::exorcist;
         set_trait_data(d);
 
@@ -465,6 +484,11 @@ static void init_trait_data()
                         SpellId::bless,
                         Verbose::no);
         };
+        d.on_removed = []() {
+                player_spells::set_spell_skill(
+                        SpellId::bless,
+                        SpellSkill::basic);
+        };
         d.trait_prereqs = {Trait::cast_bless_i};
         d.bg_prereq = Bg::exorcist;
         set_trait_data(d);
@@ -478,6 +502,11 @@ static void init_trait_data()
                         SpellSkill::basic);
         d.on_picked = []() {
                 player_spells::learn_spell(
+                        SpellId::cleansing_fire,
+                        Verbose::no);
+        };
+        d.on_removed = []() {
+                player_spells::unlearn_spell(
                         SpellId::cleansing_fire,
                         Verbose::no);
         };
@@ -496,6 +525,11 @@ static void init_trait_data()
                         SpellId::cleansing_fire,
                         Verbose::no);
         };
+        d.on_removed = []() {
+                player_spells::set_spell_skill(
+                        SpellId::cleansing_fire,
+                        SpellSkill::basic);
+        };
         d.trait_prereqs = {Trait::cast_cleansing_fire_i};
         d.bg_prereq = Bg::exorcist;
         set_trait_data(d);
@@ -509,6 +543,11 @@ static void init_trait_data()
                         SpellSkill::basic);
         d.on_picked = []() {
                 player_spells::learn_spell(
+                        SpellId::heal,
+                        Verbose::no);
+        };
+        d.on_removed = []() {
+                player_spells::unlearn_spell(
                         SpellId::heal,
                         Verbose::no);
         };
@@ -527,6 +566,11 @@ static void init_trait_data()
                         SpellId::heal,
                         Verbose::no);
         };
+        d.on_removed = []() {
+                player_spells::set_spell_skill(
+                        SpellId::heal,
+                        SpellSkill::basic);
+        };
         d.trait_prereqs = {Trait::cast_heal_i};
         d.bg_prereq = Bg::exorcist;
         set_trait_data(d);
@@ -540,6 +584,11 @@ static void init_trait_data()
                         SpellSkill::basic);
         d.on_picked = []() {
                 player_spells::learn_spell(
+                        SpellId::light,
+                        Verbose::no);
+        };
+        d.on_removed = []() {
+                player_spells::unlearn_spell(
                         SpellId::light,
                         Verbose::no);
         };
@@ -558,6 +607,11 @@ static void init_trait_data()
                         SpellId::light,
                         Verbose::no);
         };
+        d.on_removed = []() {
+                player_spells::set_spell_skill(
+                        SpellId::light,
+                        SpellSkill::basic);
+        };
         d.trait_prereqs = {Trait::cast_light_i};
         d.bg_prereq = Bg::exorcist;
         set_trait_data(d);
@@ -571,6 +625,11 @@ static void init_trait_data()
                         SpellSkill::basic);
         d.on_picked = []() {
                 player_spells::learn_spell(
+                        SpellId::sanctuary,
+                        Verbose::no);
+        };
+        d.on_removed = []() {
+                player_spells::unlearn_spell(
                         SpellId::sanctuary,
                         Verbose::no);
         };
@@ -589,6 +648,11 @@ static void init_trait_data()
                         SpellId::sanctuary,
                         Verbose::no);
         };
+        d.on_removed = []() {
+                player_spells::set_spell_skill(
+                        SpellId::sanctuary,
+                        SpellSkill::basic);
+        };
         d.trait_prereqs = {Trait::cast_sanctuary_i};
         d.bg_prereq = Bg::exorcist;
         set_trait_data(d);
@@ -602,6 +666,11 @@ static void init_trait_data()
                         SpellSkill::basic);
         d.on_picked = []() {
                 player_spells::learn_spell(
+                        SpellId::see_invis,
+                        Verbose::no);
+        };
+        d.on_removed = []() {
+                player_spells::unlearn_spell(
                         SpellId::see_invis,
                         Verbose::no);
         };
@@ -620,6 +689,11 @@ static void init_trait_data()
                         SpellId::see_invis,
                         Verbose::no);
         };
+        d.on_removed = []() {
+                player_spells::set_spell_skill(
+                        SpellId::see_invis,
+                        SpellSkill::basic);
+        };
         d.trait_prereqs = {Trait::cast_see_invisible_i};
         d.bg_prereq = Bg::exorcist;
         set_trait_data(d);
@@ -633,6 +707,11 @@ static void init_trait_data()
                         SpellSkill::basic);
         d.on_picked = []() {
                 player_spells::learn_spell(
+                        SpellId::purge,
+                        Verbose::no);
+        };
+        d.on_removed = []() {
+                player_spells::unlearn_spell(
                         SpellId::purge,
                         Verbose::no);
         };
@@ -790,9 +869,11 @@ void save()
 
         for (const auto& e : s_trait_log)
         {
-                saving::put_int(e.clvl_picked);
+                saving::put_int(e.clvl);
 
                 saving::put_int((int)e.trait_id);
+
+                saving::put_bool(e.is_removal);
         }
 }
 
@@ -813,9 +894,11 @@ void load()
 
         for (auto& e : s_trait_log)
         {
-                e.clvl_picked = saving::get_int();
+                e.clvl = saving::get_int();
 
                 e.trait_id = (Trait)saving::get_int();
+
+                e.is_removal = saving::get_bool();
         }
 }
 
@@ -1062,25 +1145,26 @@ std::string trait_descr(const Trait id)
         return trait_data(id).descr;
 }
 
-void trait_prereqs(
+TraitPrereqData trait_prereqs(
         const Trait trait,
         const Bg bg,
-        const OccultistDomain occultist_domain,
-        std::vector<Trait>& traits_out,
-        Bg& bg_out)
+        const OccultistDomain occultist_domain)
 {
         const auto& d = trait_data(trait);
 
-        traits_out = d.trait_prereqs;
-        bg_out = d.bg_prereq;
+        TraitPrereqData result;
+
+        result.traits = d.trait_prereqs;
+        result.bg = d.bg_prereq;
 
         // Remove traits which are blocked for this background (prerequisites
         // are considered fulfilled)
-        for (auto it = std::begin(traits_out); it != std::end(traits_out);)
+        for (auto it = std::begin(result.traits);
+             it != std::end(result.traits);)
         {
                 if (is_trait_blocked_for_bg(*it, bg, occultist_domain))
                 {
-                        it = traits_out.erase(it);
+                        it = result.traits.erase(it);
                 }
                 else
                 {
@@ -1091,13 +1175,15 @@ void trait_prereqs(
 
         // Sort lexicographically
         std::sort(
-                std::begin(traits_out),
-                std::end(traits_out),
+                std::begin(result.traits),
+                std::end(result.traits),
                 [](const Trait& t1, const Trait& t2) {
                         const std::string str1 = trait_title(t1);
                         const std::string str2 = trait_title(t2);
                         return str1 < str2;
                 });
+
+        return result;
 }
 
 Bg bg()
@@ -1172,15 +1258,14 @@ std::vector<OccultistDomain> pickable_occultist_domains()
         return result;
 }
 
-void unpicked_traits_for_bg(
+UnpickedTraitsData unpicked_traits(
         const Bg bg,
-        const OccultistDomain occultist_domain,
-        std::vector<Trait>& traits_can_be_picked_out,
-        std::vector<Trait>& traits_prereqs_not_met_out)
+        const OccultistDomain occultist_domain)
 {
+        UnpickedTraitsData result;
+
         for (const auto& d : s_trait_data)
         {
-                // Already picked?
                 if (d.is_picked)
                 {
                         continue;
@@ -1200,22 +1285,17 @@ void unpicked_traits_for_bg(
 
                 // Check trait prerequisites (traits and background)
 
-                std::vector<Trait> trait_prereq_list;
-
-                auto bg_prereq = Bg::END;
-
                 // NOTE: Traits blocked for the current background are not
                 // considered prerequisites
-                trait_prereqs(
-                        d.id,
-                        bg,
-                        occultist_domain,
-                        trait_prereq_list,
-                        bg_prereq);
+                const auto prereq_data =
+                        trait_prereqs(
+                                d.id,
+                                bg,
+                                occultist_domain);
 
                 const bool is_bg_ok =
-                        (s_player_bg == bg_prereq) ||
-                        (bg_prereq == Bg::END);
+                        (s_player_bg == prereq_data.bg) ||
+                        (prereq_data.bg == Bg::END);
 
                 if (!is_bg_ok)
                 {
@@ -1224,7 +1304,7 @@ void unpicked_traits_for_bg(
 
                 bool is_trait_prereqs_ok = true;
 
-                for (const auto& prereq : trait_prereq_list)
+                for (const auto& prereq : prereq_data.traits)
                 {
                         if (!trait_data(prereq).is_picked)
                         {
@@ -1236,19 +1316,19 @@ void unpicked_traits_for_bg(
 
                 if (is_trait_prereqs_ok)
                 {
-                        traits_can_be_picked_out.push_back(d.id);
+                        result.traits_can_be_picked.push_back(d.id);
                 }
                 else
                 {
-                        traits_prereqs_not_met_out.push_back(d.id);
+                        result.traits_prereqs_not_met.push_back(d.id);
                 }
 
         }  // Trait loop
 
         // Sort lexicographically
         std::sort(
-                std::begin(traits_can_be_picked_out),
-                std::end(traits_can_be_picked_out),
+                std::begin(result.traits_can_be_picked),
+                std::end(result.traits_can_be_picked),
                 [](const Trait& t1, const Trait& t2) {
                         const std::string str1 = trait_title(t1);
                         const std::string str2 = trait_title(t2);
@@ -1256,14 +1336,60 @@ void unpicked_traits_for_bg(
                 });
 
         std::sort(
-                std::begin(traits_prereqs_not_met_out),
-                std::end(traits_prereqs_not_met_out),
+                std::begin(result.traits_prereqs_not_met),
+                std::end(result.traits_prereqs_not_met),
                 [](const Trait& t1, const Trait& t2) {
                         const std::string str1 = trait_title(t1);
                         const std::string str2 = trait_title(t2);
                         return str1 < str2;
                 });
-}  // namespace player_bon
+
+        return result;
+}  // unpicked_traits
+
+std::vector<Trait> traits_can_be_removed()
+{
+        std::vector<Trait> result;
+
+        for (const auto& d : s_trait_data)
+        {
+                if (!d.is_picked)
+                {
+                        continue;
+                }
+
+                bool is_blocking_other_trait = false;
+
+                for (const auto& d_other : s_trait_data)
+                {
+                        if (!d_other.is_picked)
+                        {
+                                continue;
+                        }
+
+                        const auto match =
+                                std::find(
+                                        std::begin(d_other.trait_prereqs),
+                                        std::end(d_other.trait_prereqs),
+                                        d.id);
+
+                        if (match != std::end(d_other.trait_prereqs))
+                        {
+                                is_blocking_other_trait = true;
+                                break;
+                        }
+                }
+
+                if (is_blocking_other_trait)
+                {
+                        continue;
+                }
+
+                result.push_back(d.id);
+        }
+
+        return result;
+}
 
 void pick_bg(const Bg bg)
 {
@@ -1516,7 +1642,8 @@ void pick_trait(const Trait id)
         TraitLogEntry trait_log_entry;
 
         trait_log_entry.trait_id = id;
-        trait_log_entry.clvl_picked = game::clvl();
+        trait_log_entry.clvl = game::clvl();
+        trait_log_entry.is_removal = false;
 
         s_trait_log.push_back(trait_log_entry);
 
@@ -1526,6 +1653,32 @@ void pick_trait(const Trait id)
         {
                 // Has trait pick function
                 trait_data(id).on_picked();
+        }
+}
+
+void remove_trait(const Trait id)
+{
+        ASSERT(id != Trait::END);
+
+        trait_data(id).is_picked = false;
+
+        TraitLogEntry trait_log_entry;
+
+        trait_log_entry.trait_id = id;
+        trait_log_entry.clvl = game::clvl();
+        trait_log_entry.is_removal = true;
+
+        s_trait_log.push_back(trait_log_entry);
+
+        const auto& d = trait_data(id);
+
+        // If the trait applies effects when picked, it must also revert those
+        ASSERT(!(d.on_picked && !d.on_removed));
+
+        if (d.on_removed)
+        {
+                // Has trait removal function
+                trait_data(id).on_removed();
         }
 }
 

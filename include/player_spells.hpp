@@ -29,6 +29,8 @@ void unlearn_spell(SpellId id, Verbose verbose);
 
 void incr_spell_skill(SpellId id, Verbose verbose);
 
+void reduce_spell_skill(SpellId id, Verbose verbose);
+
 SpellSkill spell_skill(SpellId id);
 
 void set_spell_skill(SpellId id, SpellSkill val);

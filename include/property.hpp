@@ -21,6 +21,11 @@ namespace item
 class Item;
 }  // namespace item
 
+namespace actor
+{
+struct ActorData;
+}  // namespace actor
+
 struct P;
 
 // -----------------------------------------------------------------------------
@@ -47,14 +52,10 @@ enum class PropDurationMode
 
 struct DmgResistData
 {
-        DmgResistData() :
-                is_resisted(false)
-        {}
-
-        bool is_resisted;
-        std::string msg_resist_player;
+        bool is_resisted {false};
+        std::string msg_resist_player {};
         // Not including monster name, e.g. " seems unaffected"
-        std::string msg_resist_mon;
+        std::string msg_resist_mon {};
 };
 
 enum class PropEnded
@@ -65,12 +66,8 @@ enum class PropEnded
 
 struct PropActResult
 {
-        PropActResult() :
-                did_action(DidAction::no),
-                prop_ended(PropEnded::no) {}
-
-        DidAction did_action;
-        PropEnded prop_ended;
+        DidAction did_action {DidAction::no};
+        PropEnded prop_ended {PropEnded::no};
 };
 
 // -----------------------------------------------------------------------------
@@ -213,6 +210,10 @@ public:
                 return PropEnded::no;
         }
 
+        virtual void on_new_dlvl()
+        {
+        }
+
         virtual void on_destroyed_alive() {}
 
         virtual void on_destroyed_corpse() {}
@@ -328,6 +329,7 @@ protected:
         const PropData& m_data;
 
         int m_nr_turns_left;
+        int m_nr_dlvls_left;
 
         PropDurationMode m_duration_mode;
 
@@ -704,6 +706,58 @@ public:
         bool allow_read_absolute(Verbose verbose) const override;
         bool allow_cast_intr_spell_absolute(Verbose verbose) const override;
         bool allow_pray(Verbose verbose) const override;
+};
+
+class PropHallucinating : public Prop
+{
+public:
+        PropHallucinating() :
+                Prop(PropId::hallucinating) {}
+
+        void on_applied() override;
+
+        void on_std_turn() override;
+
+        void on_end() override;
+
+private:
+        void apply_fake_actor_data() const;
+
+        void clear_fake_actor_data() const;
+
+        void create_fake_stairs() const;
+
+        void clear_all_fake_stairs() const;
+
+        std::vector<const actor::ActorData*> get_allowed_fake_mon_data() const;
+};
+
+class PropAstralOpiumAddict : public Prop
+{
+public:
+        PropAstralOpiumAddict() :
+                Prop(PropId::astral_opium_addiction) {}
+
+        std::string name_short() const override;
+
+        void on_applied() override;
+
+        void on_std_turn() override;
+
+        void on_new_dlvl() override;
+
+        void on_more(const Prop& new_prop) override;
+
+        int affect_shock(int shock) const override;
+
+private:
+        bool is_active() const;
+
+        void reset_penalty_countdown();
+
+        int m_shock_lvl {0};
+        int m_nr_dlvls_to_penalty {-1};
+        int m_nr_turns_to_penalty {-1};
 };
 
 class PropNailed : public Prop

@@ -119,7 +119,20 @@ namespace player_bon
 struct TraitLogEntry
 {
         Trait trait_id {Trait::END};
-        int clvl_picked {0};
+        int clvl {0};
+        bool is_removal {false};
+};
+
+struct UnpickedTraitsData
+{
+        std::vector<Trait> traits_can_be_picked;
+        std::vector<Trait> traits_prereqs_not_met;
+};
+
+struct TraitPrereqData
+{
+        std::vector<Trait> traits;
+        Bg bg;
 };
 
 void init();
@@ -132,20 +145,16 @@ std::vector<Bg> pickable_bgs();
 
 std::vector<OccultistDomain> pickable_occultist_domains();
 
-// TODO: Return a data structure instead
-void unpicked_traits_for_bg(
+UnpickedTraitsData unpicked_traits(
         Bg bg,
-        OccultistDomain occultist_domain,
-        std::vector<Trait>& traits_can_be_picked_out,
-        std::vector<Trait>& traits_prereqs_not_met_out);
+        OccultistDomain occultist_domain);
 
-// TODO: Return a data structure instead
-void trait_prereqs(
+TraitPrereqData trait_prereqs(
         Trait trait,
         Bg bg,
-        OccultistDomain occultist_domain,
-        std::vector<Trait>& traits_out,
-        Bg& bg_out);
+        OccultistDomain occultist_domain);
+
+std::vector<Trait> traits_can_be_removed();
 
 Bg bg();
 
@@ -175,6 +184,8 @@ std::string occultist_domain_descr(OccultistDomain domain);
 std::vector<TraitLogEntry> trait_log();
 
 void pick_trait(Trait id);
+
+void remove_trait(Trait id);
 
 void pick_bg(Bg bg);
 

@@ -232,7 +232,7 @@ bool Mon::is_sneaking() const
 
 Color Mon::color() const
 {
-        if (m_state != ActorState::alive)
+        if (!is_alive())
         {
                 return m_data->color;
         }
@@ -244,7 +244,12 @@ Color Mon::color() const
                 return tmp_color;
         }
 
-        return m_data->color;
+        auto* const data =
+                m_mimic_data
+                ? m_mimic_data
+                : m_data;
+
+        return data->color;
 }
 
 SpellSkill Mon::spell_skill(const SpellId id) const
@@ -499,7 +504,7 @@ void Mon::set_player_aware_of_me(int duration_factor)
 
 DidAction Mon::try_attack(Actor& defender)
 {
-        if (m_state != ActorState::alive)
+        if (!is_alive())
         {
                 return DidAction::no;
         }
@@ -866,7 +871,6 @@ DidAction Khephren::on_act()
         return DidAction::yes;
 }
 
-// TODO: Make this into a spell instead
 DidAction Ape::on_act()
 {
         if (m_frenzy_cooldown > 0)
@@ -906,33 +910,17 @@ Color StrangeColor::color() const
         return color;
 }
 
-SpectralWpn::SpectralWpn()
-
-        = default;
-
-void SpectralWpn::on_death()
-{
-        // Remove the item from the inventory to avoid dropping it on the floor
-        // (but do not yet delete the item, in case it's still being used in the
-        // the call stack)
-        auto* const item =
-                m_inv.remove_item_in_slot(
-                        SlotId::wpn,
-                        false);  // Do not delete the item
-
-        m_discarded_item.reset(item);
-}
-
 std::string SpectralWpn::name_the() const
 {
         auto* item = m_inv.item_in_slot(SlotId::wpn);
 
         ASSERT(item);
 
-        const std::string name = item->name(
-                ItemRefType::plain,
-                ItemRefInf::yes,
-                ItemRefAttInf::none);
+        const std::string name =
+                item->name(
+                        ItemRefType::plain,
+                        ItemRefInf::yes,
+                        ItemRefAttInf::none);
 
         return "The Spectral " + name;
 }
@@ -943,10 +931,11 @@ std::string SpectralWpn::name_a() const
 
         ASSERT(item);
 
-        const std::string name = item->name(
-                ItemRefType::plain,
-                ItemRefInf::yes,
-                ItemRefAttInf::none);
+        const std::string name =
+                item->name(
+                        ItemRefType::plain,
+                        ItemRefInf::yes,
+                        ItemRefAttInf::none);
 
         return "A Spectral " + name;
 }
@@ -975,10 +964,11 @@ std::string SpectralWpn::descr() const
 
         ASSERT(item);
 
-        std::string str = item->name(
-                ItemRefType::a,
-                ItemRefInf::yes,
-                ItemRefAttInf::none);
+        std::string str =
+                item->name(
+                        ItemRefType::a,
+                        ItemRefInf::yes,
+                        ItemRefAttInf::none);
 
         str = text_format::first_to_upper(str);
 

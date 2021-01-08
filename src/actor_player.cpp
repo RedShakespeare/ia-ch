@@ -480,6 +480,8 @@ void Player::on_new_dlvl_reached()
         {
                 item->on_player_reached_new_dlvl();
         }
+
+        m_properties.on_new_dlvl();
 }
 
 void Player::mon_feeling()

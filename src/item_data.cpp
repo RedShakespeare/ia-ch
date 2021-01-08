@@ -65,6 +65,8 @@ static const StrToItemSetIdMap s_str_to_item_set_id_map = {
         {"supreme_treasure", item::ItemSetId::supreme_treasure},
         {"firearm", item::ItemSetId::firearm},
         {"spike_gun", item::ItemSetId::spike_gun},
+        {"witches_eye", item::ItemSetId::witches_eye},
+        {"fluctuating_material", item::ItemSetId::fluctuating_material},
         {"zealot_spiked_mace", item::ItemSetId::zealot_spiked_mace},
         {"priest_dagger", item::ItemSetId::priest_dagger},
         {"mi_go_gun", item::ItemSetId::mi_go_gun},
@@ -2041,6 +2043,156 @@ void init()
         d.chance_to_incl_in_spawn_list = 35;
         d.native_containers.push_back(terrain::Id::chest);
         d.native_containers.push_back(terrain::Id::cabinet);
+        g_data[(size_t)d.id] = d;
+
+        reset_data(d, ItemType::general);
+        d.id = Id::witches_eye;
+        d.base_name = {"Witches' Eye", "Witches' Eyes", "a Witches' Eye"};
+        d.base_descr = {
+                "The eye of a powerful witch. Clutching it in one's hand will "
+                "temporarily grant magical vision - doors, traps, stairs, and "
+                "other locations of interest are detected in the "
+                "surrounding area, and the presence of all items and creatures "
+                "are revealed."};
+        d.type = ItemType::general;
+        d.value = item::Value::minor_treasure;
+        d.weight = Weight::extra_light;
+        d.has_std_activate = true;
+        d.color = colors::light_green();
+        d.tile = gfx::TileId::witches_eye;
+        d.character = '%';
+        d.max_stack_at_spawn = 1;
+        d.chance_to_incl_in_spawn_list = 0;
+        d.spawn_std_range = Range(-1, -1);
+        d.allow_spawn = false;
+        d.is_stackable = false;
+        d.land_on_hard_snd_msg = "";
+        g_data[(size_t)d.id] = d;
+
+        // reset_data(d, ItemType::general);
+        // d.id = Id::flask_of_damning;
+        // d.base_name = {
+        //         "Flask of Damning",
+        //         "Flasks of Damning",
+        //         "a Flask of Damning"};
+        // d.base_descr = {
+        //         "TBD"};
+        // d.type = ItemType::general;
+        // d.value = item::Value::minor_treasure;
+        // d.weight = Weight::light;
+        // d.has_std_activate = true;
+        // d.color = colors::gray();
+        // // d.tile = TBD
+        // // d.character = TBD
+        // d.chance_to_incl_in_spawn_list = 60;
+        // d.allow_spawn = true;
+        // d.is_stackable = true;
+        // d.land_on_hard_snd_msg = "I hear a clanking sound.";
+        // g_data[(size_t)d.id] = d;
+
+        // reset_data(d, ItemType::general);
+        // d.id = Id::obsidian_charm;
+        // d.base_name = {
+        //         "Obsidian Charm",
+        //         "Obsidian Charms",
+        //         "an Obsidian Charm"};
+        // d.base_descr = {
+        //         "TBD"};
+        // d.type = ItemType::general;
+        // d.value = item::Value::minor_treasure;
+        // d.weight = Weight::extra_light;
+        // d.has_std_activate = true;
+        // d.color = colors::dark_gray();
+        // d.tile = gfx::TileId::obsidian_charm;
+        // d.character = '%';
+        // d.max_stack_at_spawn = 3;
+        // d.chance_to_incl_in_spawn_list = 60;
+        // d.allow_spawn = true;
+        // d.is_stackable = true;
+        // d.land_on_hard_snd_msg = "I hear a thud.";
+        // g_data[(size_t)d.id] = d;
+
+        reset_data(d, ItemType::general);
+        d.id = Id::fluctuating_material;
+        d.base_name = {
+                "Fluctuating Material",
+                "Pieces of Fluctuating Material",
+                "a Fluctuating Material"};
+        d.base_descr = {
+                "It is difficult to tell whether it is stone, metal, "
+                "or perhaps even something organic. It seems to be "
+                "ever-changing, internally twisting, turning, and flowing.",
+
+                "Glancing at the material is like looking into a "
+                "kaleidoscope - and it feels like gazing too deep will "
+                "transmute the very nature of the observer (choose one trait "
+                "to remove, and then pick a new one)."};
+        d.type = ItemType::general;
+        d.value = item::Value::minor_treasure;
+        d.weight = Weight::extra_light;
+        d.has_std_activate = true;
+        d.color = colors::yellow();
+        d.tile = gfx::TileId::fluctuating_material;
+        d.character = '%';
+        d.max_stack_at_spawn = 1;
+        d.chance_to_incl_in_spawn_list = 0;
+        d.spawn_std_range = Range(-1, -1);
+        d.allow_spawn = false;
+        d.is_stackable = true;
+        d.land_on_hard_snd_msg = "I hear a thud.";
+        g_data[(size_t)d.id] = d;
+
+        // reset_data(d, ItemType::general);
+        // d.id = Id::bat_wing_salve;
+        // d.base_name = {
+        //         "Bat Wing Salve",
+        //         "Bat Wing Salves",
+        //         "a Bat Wing Salve"};
+        // d.base_descr = {
+        //         "TBD"};
+        // d.type = ItemType::general;
+        // d.value = item::Value::minor_treasure;
+        // d.weight = Weight::extra_light;
+        // d.has_std_activate = true;
+        // d.color = colors::gray();
+        // d.tile = gfx::TileId::bat_wing_salve;
+        // d.character = '%';
+        // d.max_stack_at_spawn = 1;
+        // d.chance_to_incl_in_spawn_list = 60;
+        // d.allow_spawn = true;
+        // d.is_stackable = true;
+        // d.land_on_hard_snd_msg = "I hear a thud.";
+        // g_data[(size_t)d.id] = d;
+
+        reset_data(d, ItemType::general);
+        d.id = Id::astral_opium;
+        d.base_name = {
+                "Astral Opium",
+                "Astral Opium Doses",
+                "an Astral Opium Dose"};
+        d.base_descr = {
+                "A drug extracted from plants of extraterrestrial origin. "
+                "It leaves the user in a perfectly serene state, free from all "
+                "fear.",
+
+                "There is a price for this however, since it causes "
+                "intense hallucinogenic delusions, and it is also severely "
+                "addictive."};
+        d.type = ItemType::general;
+        d.is_stackable = true;
+        d.chance_to_incl_in_spawn_list = 40;
+        d.allow_spawn = true;
+        d.max_stack_at_spawn = 3;
+        d.value = item::Value::minor_treasure;
+        d.weight = Weight::extra_light;
+        d.has_std_activate = true;
+        d.color = colors::yellow();
+        d.tile = gfx::TileId::astral_opium;
+        d.character = '%';
+        d.land_on_hard_snd_msg = "I hear a clanking sound.";
+        d.native_containers.push_back(terrain::Id::chest);
+        d.native_containers.push_back(terrain::Id::cabinet);
+        d.native_containers.push_back(terrain::Id::cocoon);
         g_data[(size_t)d.id] = d;
 
         TRACE_FUNC_END;

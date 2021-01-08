@@ -1077,10 +1077,10 @@ void handle(const GameCmd cmd)
                         const auto& item_data = item::g_data[i];
 
                         if ((item_data.value != item::Value::normal) &&
-                            item_data.allow_spawn)
+                            !item_data.is_intr)
                         {
                                 item::make_item_on_floor(
-                                        item::Id(i),
+                                        (item::Id)i,
                                         map::g_player->m_pos);
                         }
                 }

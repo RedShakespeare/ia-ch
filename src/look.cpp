@@ -192,19 +192,21 @@ static std::string get_mon_shock_descr(const actor::Actor& actor)
 
         if (actor.m_data->is_unique)
         {
-                return actor.name_the() +
+                return (
+                        actor.name_the() +
                         " is " +
                         shock_str +
                         " to behold" +
-                        shock_punct_str;
+                        shock_punct_str);
         }
         else
         {
                 // Not unique
-                return "They are " +
+                return (
+                        "They are " +
                         shock_str +
                         " to behold" +
-                        shock_punct_str;
+                        shock_punct_str);
         }
 }
 
@@ -551,10 +553,11 @@ void print_location_info_msgs(const P& pos)
 
                 if (item)
                 {
-                        str = item->name(
-                                ItemRefType::plural,
-                                ItemRefInf::yes,
-                                ItemRefAttInf::wpn_main_att_mode);
+                        str =
+                                item->name(
+                                        ItemRefType::plural,
+                                        ItemRefInf::yes,
+                                        ItemRefAttInf::wpn_main_att_mode);
 
                         str = text_format::first_to_upper(str);
 
