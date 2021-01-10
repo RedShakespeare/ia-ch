@@ -1147,9 +1147,12 @@ PropHallucinating::get_allowed_fake_mon_data() const
 {
         std::vector<const actor::ActorData*> result;
 
+        result.reserve((size_t)actor::Id::END);
+
         for (const auto& d : actor::g_data)
         {
-                if (d.id == actor::Id::player)
+                if ((d.id == actor::Id::player) ||
+                    (d.id == actor::Id::spectral_wpn))
                 {
                         continue;
                 }
