@@ -194,6 +194,7 @@ void kill(
                 }
         }
 
+        actor.on_death();
         actor.m_properties.on_death();
 
         if (!actor.is_player() &&

@@ -140,6 +140,8 @@ public:
                 (void)allow_wound;
         }
 
+        virtual void on_death() {};
+
         virtual Color color() const = 0;
 
         virtual SpellSkill spell_skill(SpellId id) const = 0;

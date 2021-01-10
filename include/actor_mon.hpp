@@ -151,6 +151,8 @@ public:
 
         ~SpectralWpn() = default;
 
+        void on_death() override;
+
         std::string name_the() const override;
 
         std::string name_a() const override;
@@ -160,6 +162,9 @@ public:
         gfx::TileId tile() const override;
 
         std::string descr() const override;
+
+private:
+        std::unique_ptr<item::Item> m_discarded_item {};
 };
 
 }  // namespace actor

@@ -910,6 +910,19 @@ Color StrangeColor::color() const
         return color;
 }
 
+void SpectralWpn::on_death()
+{
+        // Remove the item from the inventory to avoid dropping it on the floor
+        // (but do not yet delete the item, in case it's still being used in the
+        // the call stack)
+        auto* const item =
+                m_inv.remove_item_in_slot(
+                        SlotId::wpn,
+                        false);  // Do not delete the item
+
+        m_discarded_item.reset(item);
+}
+
 std::string SpectralWpn::name_the() const
 {
         auto* item = m_inv.item_in_slot(SlotId::wpn);
