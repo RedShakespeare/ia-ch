@@ -204,7 +204,6 @@ static const StrToTileIdMap s_str_to_tile_id_map = {
         {"witches_eye", gfx::TileId::witches_eye},
         {"crystal", gfx::TileId::crystal},
         {"fluct_material", gfx::TileId::fluctuating_material},
-        {"bat_wing_salve", gfx::TileId::bat_wing_salve},
         {"astral_opium", gfx::TileId::astral_opium},
         {"", gfx::TileId::END}};
 
@@ -398,7 +397,6 @@ static const TileIdToStrMap s_tile_id_to_str_map = {
         {gfx::TileId::zombie_unarmed, "zombie_unarmed"},
         {gfx::TileId::witches_eye, "witches_eye"},
         {gfx::TileId::fluctuating_material, "fluct_material"},
-        {gfx::TileId::bat_wing_salve, "bat_wing_salve"},
         {gfx::TileId::astral_opium, "astral_opium"},
         {gfx::TileId::END, ""}};
 

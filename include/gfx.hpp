@@ -30,7 +30,6 @@ enum class TileId
         axe,
         barrel,
         bat,
-        bat_wing_salve,
         blast1,
         blast2,
         bog_tcher,
