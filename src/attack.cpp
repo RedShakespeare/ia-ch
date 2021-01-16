@@ -50,7 +50,7 @@ struct Projectile
         terrain::Terrain* terrain_hit {nullptr};
         bool is_seen_by_player {false};
         gfx::TileId tile {gfx::TileId::END};
-        char character {-1};
+        signed char character {-1};
         Color color {colors::white()};
         std::unique_ptr<RangedAttData> att_data {nullptr};
 
