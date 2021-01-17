@@ -46,7 +46,6 @@ static const std::unordered_map<std::string, PropId> s_str_to_prop_id_map = {
         {"ooze", PropId::ooze},
         {"paralyzed", PropId::paralyzed},
         {"poisoned", PropId::poisoned},
-        {"hallucinating", PropId::hallucinating},
         {"premonition", PropId::premonition},
         {"r_acid", PropId::r_acid},
         {"r_blind", PropId::r_blind},
