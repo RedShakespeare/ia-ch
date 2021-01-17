@@ -38,10 +38,15 @@ struct TraitData
         Bg bg_prereq {Bg::END};
         std::vector<Bg> blocked_for_bgs {};
         std::vector<OccultistDomain> blocked_for_occultist_domains {};
-        bool is_picked {false};
 };
 
 static TraitData s_trait_data[(size_t)Trait::END];
+
+// NOTE: This is stored separately from the trait data since we sometimes need
+// to update the trait data (e.g. to update trait descriptions containing
+// information on the player's current spirit for spell traits). Bundling the
+// picked state with the other trait data would be confusing and inconvenient.
+static bool s_traits_picked[(size_t)Trait::END];
 
 static std::vector<player_bon::TraitLogEntry> s_trait_log;
 
@@ -83,6 +88,19 @@ static std::string trait_descr_for_spell(
                 str += " " + line;
         }
 
+        const auto cost_str = spell->spi_cost_range(skill).str();
+        const auto sp_str = std::to_string(map::g_player->m_sp);
+        const auto max_sp_str = std::to_string(actor::max_sp(*map::g_player));
+
+        str +=
+                " This spell costs " +
+                cost_str +
+                " spirit to cast, you currently have " +
+                sp_str +
+                "/" +
+                max_sp_str +
+                " spirit.";
+
         return str;
 }
 
@@ -102,7 +120,7 @@ static void set_trait_data(TraitData& d)
         d = {};
 }
 
-static void init_trait_data()
+static void update_trait_data()
 {
         for (auto& d : s_trait_data)
         {
@@ -849,7 +867,12 @@ void init()
 
         s_player_occultist_domain = OccultistDomain::END;
 
-        init_trait_data();
+        for (size_t i = 0; i < (size_t)Trait::END; ++i)
+        {
+                s_traits_picked[i] = false;
+        }
+
+        update_trait_data();
 
         s_trait_log.clear();
 }
@@ -860,9 +883,9 @@ void save()
 
         saving::put_int((int)s_player_occultist_domain);
 
-        for (const auto& d : s_trait_data)
+        for (size_t i = 0; i < (size_t)Trait::END; ++i)
         {
-                saving::put_bool(d.is_picked);
+                saving::put_bool(s_traits_picked[i]);
         }
 
         saving::put_int(s_trait_log.size());
@@ -883,9 +906,9 @@ void load()
 
         s_player_occultist_domain = (OccultistDomain)saving::get_int();
 
-        for (auto& d : s_trait_data)
+        for (size_t i = 0; i < (size_t)Trait::END; ++i)
         {
-                d.is_picked = saving::get_bool();
+                s_traits_picked[i] = saving::get_bool();
         }
 
         const int nr_trait_log_entries = saving::get_int();
@@ -1205,7 +1228,7 @@ bool is_bg(Bg bg)
 
 bool has_trait(const Trait id)
 {
-        return trait_data(id).is_picked;
+        return s_traits_picked[(size_t)id];
 }
 
 std::vector<Bg> pickable_bgs()
@@ -1262,11 +1285,13 @@ UnpickedTraitsData unpicked_traits(
         const Bg bg,
         const OccultistDomain occultist_domain)
 {
+        update_trait_data();
+
         UnpickedTraitsData result;
 
         for (const auto& d : s_trait_data)
         {
-                if (d.is_picked)
+                if (s_traits_picked[(size_t)d.id])
                 {
                         continue;
                 }
@@ -1306,10 +1331,9 @@ UnpickedTraitsData unpicked_traits(
 
                 for (const auto& prereq : prereq_data.traits)
                 {
-                        if (!trait_data(prereq).is_picked)
+                        if (!s_traits_picked[(size_t)prereq])
                         {
                                 is_trait_prereqs_ok = false;
-
                                 break;
                         }
                 }
@@ -1349,11 +1373,13 @@ UnpickedTraitsData unpicked_traits(
 
 std::vector<Trait> traits_can_be_removed()
 {
+        update_trait_data();
+
         std::vector<Trait> result;
 
         for (const auto& d : s_trait_data)
         {
-                if (!d.is_picked)
+                if (!s_traits_picked[(size_t)d.id])
                 {
                         continue;
                 }
@@ -1362,7 +1388,7 @@ std::vector<Trait> traits_can_be_removed()
 
                 for (const auto& d_other : s_trait_data)
                 {
-                        if (!d_other.is_picked)
+                        if (!s_traits_picked[(size_t)d_other.id])
                         {
                                 continue;
                         }
@@ -1627,9 +1653,9 @@ void on_player_gained_lvl(const int new_lvl)
 
 void set_all_traits_to_picked()
 {
-        for (auto& d : s_trait_data)
+        for (size_t i = 0; i < (size_t)Trait::END; ++i)
         {
-                d.is_picked = true;
+                s_traits_picked[i] = true;
         }
 }
 
@@ -1637,7 +1663,7 @@ void pick_trait(const Trait id)
 {
         ASSERT(id != Trait::END);
 
-        trait_data(id).is_picked = true;
+        s_traits_picked[(size_t)id] = true;
 
         TraitLogEntry trait_log_entry;
 
@@ -1660,7 +1686,7 @@ void remove_trait(const Trait id)
 {
         ASSERT(id != Trait::END);
 
-        trait_data(id).is_picked = false;
+        s_traits_picked[(size_t)id] = false;
 
         TraitLogEntry trait_log_entry;
 
