@@ -267,7 +267,10 @@ static void update_trait_data()
         d.title = "Treasure Hunter";
         d.descr = "You tend to find more items";
         d.blocked_for_bgs = {Bg::exorcist, Bg::ghoul, Bg::war_vet};
-        d.blocked_for_occultist_domains = {OccultistDomain::clairvoyant};
+        d.blocked_for_occultist_domains = {
+                OccultistDomain::enchanter,
+                OccultistDomain::invoker,
+                OccultistDomain::transmuter};
         set_trait_data(d);
 
         // --- Self-aware ---
