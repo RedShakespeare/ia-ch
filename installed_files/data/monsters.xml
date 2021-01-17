@@ -7001,7 +7001,7 @@
             <name_the>the Mold</name_the>
             <corpse_name_a></corpse_name_a>
             <corpse_name_the></corpse_name_the>
-            <description>A sickly growth thriving in damp areas. It produces toxic spores which it stores in its slimy heads.</description>
+            <description>A sickly growth thriving in damp areas. It produces toxic spores which it stores in its slimy heads This toxin is not only damaging, but is also strongly hallucinogenic.</description>
             <allow_generated_description>false</allow_generated_description>
             <wary_message>seems disturbed.</wary_message>
             <aware_message_seen></aware_message_seen>
@@ -7013,7 +7013,7 @@
         <graphics>
             <tile>fungi</tile>
             <character>e</character>
-            <color>light_green</color>
+            <color>orange</color>
         </graphics>
 
         <audio>
@@ -7044,6 +7044,7 @@
         <attacks>
             <attack id="spores">
                 <damage>1</damage>
+                <property_applied duration="60">hallucinating</property_applied>
                 <property_applied duration="12">poisoned</property_applied>
             </attack>
         </attacks>
