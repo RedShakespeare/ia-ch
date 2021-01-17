@@ -8,6 +8,7 @@
 
 #include <algorithm>
 #include <functional>
+#include <string>
 #include <unordered_map>
 #include <vector>
 
@@ -110,6 +111,11 @@ struct Context
         const std::vector<P>& nearby_positions;
 };
 
+static void print_side_effect_trigger_message()
+{
+        msg_log::add("An unexpected effect was induced by the spell.");
+}
+
 static void spawn_monsters(const Context& context)
 {
         TRACE_FUNC_BEGIN;
@@ -120,8 +126,16 @@ static void spawn_monsters(const Context& context)
 
         auto spawned = actor::spawn(p, {id}, map::rect());
 
+        bool printed_msg = false;
+
         for (auto* const actor : spawned.monsters)
         {
+                if (!printed_msg)
+                {
+                        print_side_effect_trigger_message();
+                        printed_msg = true;
+                }
+
                 auto* const conflicted =
                         property_factory::make(PropId::conflict);
 
@@ -158,6 +172,8 @@ static void swap_wall_floor(const Context& context)
         // TODO: This is pretty much copy/pasted from the "Alter Environment"
         // property, consider refactoring.
         // Alternatively, maybe just apply that property on the caster instead.
+
+        print_side_effect_trigger_message();
 
         Array2<bool> blocked(map::dims());
 
@@ -213,6 +229,7 @@ static void swap_wall_floor(const Context& context)
                         }
                         else
                         {
+                                // Map would not be connected
                                 blocked.at(p) = true;
                         }
                 }
@@ -226,6 +243,7 @@ static void swap_wall_floor(const Context& context)
                         }
                         else
                         {
+                                // Map would not be connected
                                 blocked.at(p) = false;
                         }
                 }
@@ -248,6 +266,7 @@ static void ignite_terrain(const Context& context)
                 }
         }
 
+        bool printed_msg = false;
         for (const auto& p : context.nearby_positions)
         {
                 if (has_actor.at(p))
@@ -258,6 +277,12 @@ static void ignite_terrain(const Context& context)
                 if (!rnd::one_in(14))
                 {
                         continue;
+                }
+
+                if (!printed_msg)
+                {
+                        print_side_effect_trigger_message();
+                        printed_msg = true;
                 }
 
                 auto* const terrain = map::g_cells.at(p).terrain;
@@ -285,6 +310,7 @@ static void open_close_doors(const Context& context)
                 }
         }
 
+        bool printed_msg = false;
         for (const auto& p : context.nearby_positions)
         {
                 if (has_actor.at(p) || map::g_cells.at(p).item)
@@ -303,6 +329,12 @@ static void open_close_doors(const Context& context)
                     terrain::DoorType::metal)
                 {
                         continue;
+                }
+
+                if (!printed_msg)
+                {
+                        print_side_effect_trigger_message();
+                        printed_msg = true;
                 }
 
                 if (should_open)
@@ -357,6 +389,8 @@ static void flay_human(const Context& context)
                 return;
         }
 
+        print_side_effect_trigger_message();
+
         if (actor::can_player_see_actor(*target_actor))
         {
                 const auto name =
@@ -384,12 +418,20 @@ static void create_water(const Context& context)
 {
         TRACE_FUNC_BEGIN;
 
+        bool printed_msg = false;
+
         for (const auto& p : context.nearby_positions)
         {
                 if ((map::g_cells.at(p).terrain->id() != terrain::Id::floor) ||
                     !rnd::one_in(8))
                 {
                         continue;
+                }
+
+                if (!printed_msg)
+                {
+                        print_side_effect_trigger_message();
+                        printed_msg = true;
                 }
 
                 auto* const liquid = new terrain::LiquidShallow(p);
@@ -405,6 +447,8 @@ static void create_water(const Context& context)
 static void create_trees(const Context& context)
 {
         TRACE_FUNC_BEGIN;
+
+        print_side_effect_trigger_message();
 
         Array2<bool> blocked(map::dims());
 
@@ -471,8 +515,7 @@ static void create_trees(const Context& context)
 
                 tree_pos_bucket.pop_back();
 
-                if (has_actor.at(p) ||
-                    !rnd::one_in(tree_one_in_n))
+                if (has_actor.at(p) || !rnd::one_in(tree_one_in_n))
                 {
                         continue;
                 }
@@ -504,6 +547,7 @@ static void create_doors(const Context& context)
         const auto adj_floor_checker =
                 map_parsers::AnyAdjIsAnyOfTerrains(terrain::Id::floor);
 
+        bool printed_msg = false;
         for (const auto& p : context.nearby_positions)
         {
                 const auto id = map::g_cells.at(p).terrain->id();
@@ -514,6 +558,12 @@ static void create_doors(const Context& context)
                     !adj_floor_checker.cell(p))
                 {
                         continue;
+                }
+
+                if (!printed_msg)
+                {
+                        print_side_effect_trigger_message();
+                        printed_msg = true;
                 }
 
                 const auto* const mimic = new terrain::Wall(p);
@@ -571,6 +621,8 @@ static void create_dark_void(const Context& context)
                 }
         }
 
+        print_side_effect_trigger_message();
+
         for (const auto& p : sorted_positions)
         {
                 if (!map::is_pos_inside_outer_walls(p))
@@ -603,6 +655,8 @@ static void push_statue(const Context& context)
 {
         TRACE_FUNC_BEGIN;
 
+        bool printed_msg = false;
+
         for (const auto& p : context.nearby_positions)
         {
                 auto* const terrain = map::g_cells.at(p).terrain;
@@ -610,6 +664,12 @@ static void push_statue(const Context& context)
                 if (terrain->id() != terrain::Id::statue)
                 {
                         continue;
+                }
+
+                if (!printed_msg)
+                {
+                        print_side_effect_trigger_message();
+                        printed_msg = true;
                 }
 
                 auto* const statue = static_cast<terrain::Statue*>(terrain);
@@ -944,7 +1004,7 @@ void Spell::cast(
             caster->is_alive() &&
             allow_cast &&
             (base_max_spi_cost(skill) > 0) &&
-            rnd::one_in(10))
+            rnd::one_in(6))
         {
                 // Run a random side effect
                 const int d = 3;

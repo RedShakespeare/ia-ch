@@ -35,7 +35,7 @@ enum class SpellId
         terrify,
 
         // Player only
-        spectral_wpns,  // TODO: Enable for monsters
+        spectral_wpns,
         aza_wrath,
         bless,
         premonition,
