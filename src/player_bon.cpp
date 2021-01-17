@@ -215,7 +215,7 @@ static void update_trait_data()
         d.title = "Fearless";
         d.descr = "You cannot become terrified, +10% shock resistance";
         d.on_picked = []() {
-                auto* prop = new PropRFear();
+                auto* prop = property_factory::make(PropId::r_fear);
 
                 prop->set_indefinite();
 
@@ -280,7 +280,7 @@ static void update_trait_data()
                 "You cannot become confused, the number of remaining turns "
                 "for status effects are displayed";
         d.on_picked = []() {
-                auto* prop = new PropRConf();
+                auto* prop = property_factory::make(PropId::r_conf);
 
                 prop->set_indefinite();
 
@@ -321,7 +321,7 @@ static void update_trait_data()
                 "abilities, and their negative effect on hit points and "
                 "regeneration is halved";
         d.on_picked = []() {
-                auto* prop = new PropRDisease();
+                auto* prop = property_factory::make(PropId::r_disease);
 
                 prop->set_indefinite();
 
@@ -774,6 +774,20 @@ static void update_trait_data()
         d.descr =
                 "+1 claw damage, you are immune to poison, and attacks with "
                 "your claws often poisons your victims";
+        d.on_picked = []() {
+                auto* prop = property_factory::make(PropId::r_poison);
+
+                prop->set_indefinite();
+
+                map::g_player->m_properties.apply(
+                        prop,
+                        PropSrc::intr,
+                        true,
+                        Verbose::no);
+        };
+        d.on_removed = []() {
+                map::g_player->m_properties.end_prop(PropId::r_poison);
+        };
         d.trait_prereqs = {Trait::foul};
         d.bg_prereq = Bg::ghoul;
         set_trait_data(d);
@@ -1446,7 +1460,8 @@ void pick_bg(const Bg bg)
 
         case Bg::ghoul:
         {
-                auto* prop_r_disease = new PropRDisease();
+                auto* prop_r_disease =
+                        property_factory::make(PropId::r_disease);
 
                 prop_r_disease->set_indefinite();
 
@@ -1456,7 +1471,8 @@ void pick_bg(const Bg bg)
                         true,
                         Verbose::no);
 
-                auto* prop_darkvis = property_factory::make(PropId::darkvision);
+                auto* prop_darkvis =
+                        property_factory::make(PropId::darkvision);
 
                 prop_darkvis->set_indefinite();
 
