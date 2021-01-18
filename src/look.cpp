@@ -31,9 +31,11 @@
 // -----------------------------------------------------------------------------
 // private
 // -----------------------------------------------------------------------------
-static std::string get_mon_memory_turns_descr(const actor::Actor& actor)
+static std::string get_mon_memory_turns_descr(
+        const actor::ActorData& actor_data,
+        const actor::Actor& actor)
 {
-        const int nr_turns_aware = actor.m_data->nr_turns_aware;
+        const int nr_turns_aware = actor_data.nr_turns_aware;
 
         if (nr_turns_aware <= 0)
         {
@@ -60,11 +62,11 @@ static std::string get_mon_memory_turns_descr(const actor::Actor& actor)
         }
 }
 
-static std::string get_mon_dlvl_descr(const actor::Actor& actor)
+static std::string get_mon_dlvl_descr(
+        const actor::ActorData& actor_data,
+        const actor::Actor& actor)
 {
-        const auto& d = *actor.m_data;
-
-        const int dlvl = d.spawn_min_dlvl;
+        const int dlvl = actor_data.spawn_min_dlvl;
 
         if ((dlvl <= 1) || (dlvl >= g_dlvl_last))
         {
@@ -73,10 +75,10 @@ static std::string get_mon_dlvl_descr(const actor::Actor& actor)
 
         const std::string dlvl_str = std::to_string(dlvl);
 
-        if (d.is_unique)
+        if (actor_data.is_unique)
         {
                 return (
-                        d.name_the +
+                        actor.name_the() +
                         " usually dwells beneath level " +
                         dlvl_str +
                         ".");
@@ -91,9 +93,9 @@ static std::string get_mon_dlvl_descr(const actor::Actor& actor)
         }
 }
 
-static std::string mon_speed_type_to_str(const actor::Actor& actor)
+static std::string mon_speed_type_to_str(const actor::ActorData& actor_data)
 {
-        switch (actor.m_data->speed)
+        switch (actor_data.speed)
         {
         case actor::Speed::slow:
                 return "slowly";
@@ -113,43 +115,44 @@ static std::string mon_speed_type_to_str(const actor::Actor& actor)
         return "";
 }
 
-static std::string get_mon_speed_descr(const actor::Actor& actor)
+static std::string get_mon_speed_descr(
+        const actor::ActorData& actor_data,
+        const actor::Actor& actor)
 {
-        const auto& d = *actor.m_data;
-
-        const std::string speed_type_str = mon_speed_type_to_str(actor);
+        const std::string speed_type_str = mon_speed_type_to_str(actor_data);
 
         if (speed_type_str.empty())
         {
                 return "";
-                ;
         }
 
-        if (d.is_unique)
+        if (actor_data.is_unique)
         {
-                return d.name_the +
+                return (
+                        actor.name_the() +
                         " appears to move " +
                         speed_type_str +
-                        ".";
+                        ".");
         }
         else
         {
                 // Not unique
-                return "They appear to move " +
+                return (
+                        "They appear to move " +
                         speed_type_str +
-                        ".";
+                        ".");
         }
 }
 
 static void mon_shock_lvl_to_str(
-        const actor::Actor& actor,
+        const actor::ActorData& actor_data,
         std::string& shock_str_out,
         std::string& punct_str_out)
 {
         shock_str_out = "";
         punct_str_out = "";
 
-        switch (actor.m_data->mon_shock_lvl)
+        switch (actor_data.mon_shock_lvl)
         {
         case ShockLvl::unsettling:
                 shock_str_out = "unsettling";
@@ -177,20 +180,22 @@ static void mon_shock_lvl_to_str(
         }
 }
 
-static std::string get_mon_shock_descr(const actor::Actor& actor)
+static std::string get_mon_shock_descr(
+        const actor::ActorData& actor_data,
+        const actor::Actor& actor)
 {
         std::string shock_str;
 
         std::string shock_punct_str;
 
-        mon_shock_lvl_to_str(actor, shock_str, shock_punct_str);
+        mon_shock_lvl_to_str(actor_data, shock_str, shock_punct_str);
 
         if (shock_str.empty())
         {
                 return "";
         }
 
-        if (actor.m_data->is_unique)
+        if (actor_data.is_unique)
         {
                 return (
                         actor.name_the() +
@@ -260,6 +265,11 @@ StateId ViewActorDescr::id() const
 
 void ViewActorDescr::on_start()
 {
+        const auto* const actor_data =
+                m_actor.m_mimic_data
+                ? m_actor.m_mimic_data
+                : m_actor.m_data;
+
         // Fixed decription
         const auto fixed_descr = m_actor.descr();
 
@@ -280,7 +290,7 @@ void ViewActorDescr::on_start()
         // Auto description
         {
                 const auto auto_descr =
-                        m_actor.m_data->allow_generated_descr
+                        actor_data->allow_generated_descr
                         ? auto_description_str()
                         : "";
 
@@ -310,14 +320,13 @@ void ViewActorDescr::on_start()
         // Remove all non-negative properties (we should not show temporary
         // spell resistance for example), and all natural properties (properties
         // which all monsters of this type starts with)
-        for (auto it = begin(prop_list); it != end(prop_list);)
+        for (auto it = std::begin(prop_list); it != std::end(prop_list);)
         {
                 const auto* const prop = it->prop;
 
-                const auto id = prop->id();
-
+                // NOTE: Using the real actor's data here is intentional
                 const bool is_natural_prop =
-                        m_actor.m_data->natural_props[(size_t)id];
+                        m_actor.m_data->natural_props[(size_t)prop->id()];
 
                 if (is_natural_prop ||
                     (prop->duration_mode() == PropDurationMode::indefinite) ||
@@ -454,30 +463,37 @@ std::string ViewActorDescr::auto_description_str() const
 {
         std::string str;
 
+        const auto& actor_data =
+                m_actor.m_mimic_data
+                ? *m_actor.m_mimic_data
+                : *m_actor.m_data;
+
         text_format::append_with_space(
                 str,
                 get_melee_hit_chance_descr(m_actor));
 
         text_format::append_with_space(
                 str,
-                get_mon_dlvl_descr(m_actor));
+                get_mon_dlvl_descr(actor_data, m_actor));
 
         text_format::append_with_space(
                 str,
-                get_mon_speed_descr(m_actor));
+                get_mon_speed_descr(actor_data, m_actor));
 
         text_format::append_with_space(
                 str,
-                get_mon_memory_turns_descr(m_actor));
+                get_mon_memory_turns_descr(actor_data, m_actor));
 
-        if (m_actor.m_data->is_undead)
+        if (actor_data.is_undead)
         {
                 text_format::append_with_space(
                         str,
                         "This creature is undead.");
         }
 
-        text_format::append_with_space(str, get_mon_shock_descr(m_actor));
+        text_format::append_with_space(
+                str,
+                get_mon_shock_descr(actor_data, m_actor));
 
         return str;
 }

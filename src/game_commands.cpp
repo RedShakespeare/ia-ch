@@ -1098,7 +1098,8 @@ void handle(const GameCmd cmd)
 
         case GameCmd::debug_f8:
         {
-                map::g_player->m_properties.apply(new PropInfected());
+                map::g_player->m_properties.apply(
+                        property_factory::make(PropId::hallucinating));
         }
         break;
 
