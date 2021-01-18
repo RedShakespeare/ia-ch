@@ -97,6 +97,7 @@ enum class Id
         sentry_drone,
         spectral_wpn,
         mold,
+        mold_halluc,
         gas_spore,
         tentacles,
         warping_aberrance,

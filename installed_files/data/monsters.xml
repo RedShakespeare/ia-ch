@@ -7091,6 +7091,104 @@
     </monster>
 
     <!--************************************************************-->
+    <!-- mold_halluc -->
+    <!--************************************************************-->
+    <monster id="mold_halluc">
+        <text>
+            <name_a>Hallucinogenic Mold</name_a>
+            <name_the>the Hallucinogenic Mold</name_the>
+            <corpse_name_a></corpse_name_a>
+            <corpse_name_the></corpse_name_the>
+            <description>A sickly growth thriving in damp areas. The toxic spores of this particular species are strongly hallucinogenic.</description>
+            <allow_generated_description>false</allow_generated_description>
+            <wary_message>seems disturbed.</wary_message>
+            <aware_message_seen></aware_message_seen>
+            <aware_message_hidden></aware_message_hidden>
+            <spell_message></spell_message>
+            <death_message>is destroyed.</death_message>
+        </text>
+
+        <graphics>
+            <tile>fungi</tile>
+            <character>e</character>
+            <color>orange</color>
+        </graphics>
+
+        <audio>
+            <aware_sfx_seen></aware_sfx_seen>
+            <aware_sfx_hidden></aware_sfx_hidden>
+        </audio>
+
+        <attributes>
+            <hit_points>1</hit_points>
+            <spirit>1</spirit>
+            <speed>slow</speed>
+            <shock_level>none</shock_level>
+            <melee>90</melee>
+            <ranged>0</ranged>
+            <dodging>-50</dodging>
+            <stealth>0</stealth>
+            <searching>0</searching>
+            <can_open_doors>false</can_open_doors>
+            <can_bash_doors>false</can_bash_doors>
+            <can_swim>false</can_swim>
+            <size>floor</size>
+            <always_prevent_knockback>true</always_prevent_knockback>
+            <can_bleed>false</can_bleed>
+            <can_leave_corpse>false</can_leave_corpse>
+            <prioritize_destroying_corpse>false</prioritize_destroying_corpse>
+        </attributes>
+
+        <attacks>
+            <attack id="spores">
+                <damage>1</damage>
+                <property_applied duration="40">hallucinating</property_applied>
+            </attack>
+        </attacks>
+
+        <properties>
+            <property>breeds</property>
+            <property>r_poison</property>
+            <property>r_sleep</property>
+            <property>r_fear</property>
+            <property>r_conf</property>
+            <property>r_breath</property>
+            <property>r_disease</property>
+            <property>r_blind</property>
+            <property>short_hearing_range</property>
+        </properties>
+
+        <ai>
+            <erratic_move_percent>0</erratic_move_percent>
+            <turns_aware>10</turns_aware>
+            <ranged_cooldown_turns>0</ranged_cooldown_turns>
+            <looks>false</looks>
+            <avoids_blocking_friend>false</avoids_blocking_friend>
+            <attacks>true</attacks>
+            <paths_to_target_when_aware>false</paths_to_target_when_aware>
+            <moves_to_target_when_los>false</moves_to_target_when_los>
+            <moves_to_lair>false</moves_to_lair>
+            <moves_to_leader>false</moves_to_leader>
+            <moves_randomly_when_unaware>false</moves_randomly_when_unaware>
+        </ai>
+
+        <spawning>
+            <min_dungeon_level>3</min_dungeon_level>
+            <max_dungeon_level>8</max_dungeon_level>
+            <spawn_weight>100</spawn_weight>
+            <auto_spawn>true</auto_spawn>
+            <can_be_summoned_by_monster>false</can_be_summoned_by_monster>
+            <can_be_shapeshifted_into>false</can_be_shapeshifted_into>
+            <nr_allowed_to_spawn>-1</nr_allowed_to_spawn>
+            <group_size>few</group_size>
+            <native_room>cave</native_room>
+            <native_room>damp</native_room>
+            <native_room>forest</native_room>
+            <native_room>chasm</native_room>
+        </spawning>
+    </monster>
+
+    <!--************************************************************-->
     <!-- tentacles -->
     <!--************************************************************-->
     <monster id="tentacles">
