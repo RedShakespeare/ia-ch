@@ -56,9 +56,10 @@ static bool s_is_2x_scale_fullscreen_requested = false;
 static bool s_is_2x_scale_fullscreen_enabled = false;
 static bool s_is_tiles_wall_full_square = false;
 static bool s_is_text_mode_wall_full_square = false;
-static bool s_is_light_explosive_prompt = false;
-static bool s_is_drink_malign_pot_prompt = false;
-static bool s_is_ranged_wpn_meleee_prompt = false;
+static bool s_warn_on_throw_valuable = false;
+static bool s_warn_on_light_explosive = false;
+static bool s_warn_on_drink_malign_potion = false;
+static bool s_warn_on_ranged_wpn_melee = false;
 static bool s_is_ranged_wpn_auto_reload = false;
 static bool s_is_intro_lvl_skipped = false;
 static bool s_is_intro_popup_skipped = false;
@@ -238,9 +239,10 @@ static void set_default_variables()
         s_is_any_key_confirm_more = false;
         s_display_hints = true;
         s_always_warn_new_mon = true;
-        s_is_light_explosive_prompt = false;
-        s_is_drink_malign_pot_prompt = true;
-        s_is_ranged_wpn_meleee_prompt = true;
+        s_warn_on_throw_valuable = true;
+        s_warn_on_light_explosive = false;
+        s_warn_on_drink_malign_potion = true;
+        s_warn_on_ranged_wpn_melee = true;
         s_is_ranged_wpn_auto_reload = false;
         s_delay_projectile_draw = 20;
         s_delay_shotgun = 75;
@@ -477,33 +479,40 @@ static void player_sets_option(
 
         case 16:
         {
-                // Print warning when lighting explovies
-                s_is_light_explosive_prompt = !s_is_light_explosive_prompt;
+                // Warn when throwing valuable items
+                s_warn_on_throw_valuable = !s_warn_on_throw_valuable;
         }
         break;
 
         case 17:
         {
-                // Print warning when drinking known malign potions
-                s_is_drink_malign_pot_prompt = !s_is_drink_malign_pot_prompt;
+                // Warn when lighting explovies
+                s_warn_on_light_explosive = !s_warn_on_light_explosive;
         }
         break;
 
         case 18:
         {
-                // Print warning when melee attacking with ranged weapons
-                s_is_ranged_wpn_meleee_prompt = !s_is_ranged_wpn_meleee_prompt;
+                // Warn when drinking known malign potions
+                s_warn_on_drink_malign_potion = !s_warn_on_drink_malign_potion;
         }
         break;
 
         case 19:
+        {
+                // Print warning when melee attacking with ranged weapons
+                s_warn_on_ranged_wpn_melee = !s_warn_on_ranged_wpn_melee;
+        }
+        break;
+
+        case 20:
         {
                 // Ranged weapon auto reload
                 s_is_ranged_wpn_auto_reload = !s_is_ranged_wpn_auto_reload;
         }
         break;
 
-        case 20:
+        case 21:
         {
                 // Projectile delay
                 const P p(s_opt_values_x_pos, browser.y());
@@ -545,7 +554,7 @@ static void player_sets_option(
         }
         break;
 
-        case 21:
+        case 22:
         {
                 // Shotgun delay
                 const P p(s_opt_values_x_pos, browser.y());
@@ -587,7 +596,7 @@ static void player_sets_option(
         }
         break;
 
-        case 22:
+        case 23:
         {
                 // Explosion delay
                 const P p(s_opt_values_x_pos, browser.y());
@@ -629,7 +638,7 @@ static void player_sets_option(
         }
         break;
 
-        case 23:
+        case 24:
         {
                 // Reset to defaults
                 if (direction == OptionToggleDirecton::enter)
@@ -732,13 +741,16 @@ static void set_variables_from_lines(std::vector<std::string>& lines)
         s_always_warn_new_mon = lines.front() == "1";
         lines.erase(std::begin(lines));
 
-        s_is_light_explosive_prompt = lines.front() == "1";
+        s_warn_on_throw_valuable = lines.front() == "1";
         lines.erase(std::begin(lines));
 
-        s_is_drink_malign_pot_prompt = lines.front() == "1";
+        s_warn_on_light_explosive = lines.front() == "1";
         lines.erase(std::begin(lines));
 
-        s_is_ranged_wpn_meleee_prompt = lines.front() == "1";
+        s_warn_on_drink_malign_potion = lines.front() == "1";
+        lines.erase(std::begin(lines));
+
+        s_warn_on_ranged_wpn_melee = lines.front() == "1";
         lines.erase(std::begin(lines));
 
         s_is_ranged_wpn_auto_reload = lines.front() == "1";
@@ -812,9 +824,10 @@ static std::vector<std::string> lines_from_variables()
         lines.emplace_back(s_is_any_key_confirm_more ? "1" : "0");
         lines.emplace_back(s_display_hints ? "1" : "0");
         lines.emplace_back(s_always_warn_new_mon ? "1" : "0");
-        lines.emplace_back(s_is_light_explosive_prompt ? "1" : "0");
-        lines.emplace_back(s_is_drink_malign_pot_prompt ? "1" : "0");
-        lines.emplace_back(s_is_ranged_wpn_meleee_prompt ? "1" : "0");
+        lines.emplace_back(s_warn_on_throw_valuable ? "1" : "0");
+        lines.emplace_back(s_warn_on_light_explosive ? "1" : "0");
+        lines.emplace_back(s_warn_on_drink_malign_potion ? "1" : "0");
+        lines.emplace_back(s_warn_on_ranged_wpn_melee ? "1" : "0");
         lines.emplace_back(s_is_ranged_wpn_auto_reload ? "1" : "0");
         lines.push_back(std::to_string(s_delay_projectile_draw));
         lines.push_back(std::to_string(s_delay_shotgun));
@@ -992,19 +1005,24 @@ void toggle_gj_mode()
         s_is_gj_mode = !s_is_gj_mode;
 }
 
-bool is_light_explosive_prompt()
+bool warn_on_throw_valuable()
 {
-        return s_is_light_explosive_prompt;
+        return s_warn_on_throw_valuable;
 }
 
-bool is_drink_malign_pot_prompt()
+bool warn_on_light_explosive()
 {
-        return s_is_drink_malign_pot_prompt;
+        return s_warn_on_light_explosive;
 }
 
-bool is_ranged_wpn_meleee_prompt()
+bool warn_on_drink_malign_potion()
 {
-        return s_is_ranged_wpn_meleee_prompt;
+        return s_warn_on_drink_malign_potion;
+}
+
+bool warn_on_ranged_wpn_melee()
+{
+        return s_warn_on_ranged_wpn_melee;
 }
 
 bool is_ranged_wpn_auto_reload()
@@ -1090,7 +1108,7 @@ void set_2x_scale_fullscreen_enabled(const bool value)
 // -----------------------------------------------------------------------------
 ConfigState::ConfigState() :
 
-        m_browser(24)
+        m_browser(25)
 {
         m_browser.enable_left_right_keys();
 }
@@ -1281,18 +1299,23 @@ void ConfigState::draw()
                          ? "Yes"
                          : "No"},
 
+                {"Warn when throwing \"valuable\" items",
+                 s_warn_on_throw_valuable
+                         ? "Yes"
+                         : "No"},
+
                 {"Warn when lighting explosives",
-                 s_is_light_explosive_prompt
+                 s_warn_on_light_explosive
                          ? "Yes"
                          : "No"},
 
                 {"Warn when drinking malign potions",
-                 s_is_drink_malign_pot_prompt
+                 s_warn_on_drink_malign_potion
                          ? "Yes"
                          : "No"},
 
                 {"Ranged weapon melee attack warning",
-                 s_is_ranged_wpn_meleee_prompt
+                 s_warn_on_ranged_wpn_melee
                          ? "Yes"
                          : "No"},
 

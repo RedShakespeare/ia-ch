@@ -1641,7 +1641,7 @@ ConsumeItem Explosive::activate(actor::Actor* const actor)
                 return ConsumeItem::no;
         }
 
-        if (config::is_light_explosive_prompt())
+        if (config::warn_on_light_explosive())
         {
                 const std::string name = this->name(ItemRefType::a);
 

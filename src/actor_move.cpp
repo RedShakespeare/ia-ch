@@ -84,7 +84,7 @@ static void player_bump_known_hostile_mon(actor::Mon& mon)
         // If this is also a ranged weapon, ask if player really
         // intended to use it as melee weapon
         if (wpn.data().ranged.is_ranged_wpn &&
-            config::is_ranged_wpn_meleee_prompt())
+            config::warn_on_ranged_wpn_melee())
         {
                 const auto answer =
                         query_player_attack_mon_with_ranged_wpn(wpn, mon);

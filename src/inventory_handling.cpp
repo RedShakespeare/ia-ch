@@ -63,7 +63,7 @@ static bool run_drop_query(
                 io::draw_text(
                         drop_str,
                         Panel::screen,
-                        P(0, 0),
+                        {0, 0},
                         colors::light_white());
 
                 io::update_screen();
@@ -1665,17 +1665,49 @@ void SelectThrow::update()
         {
                 states::pop();
 
+                const auto name =
+                        item->name(
+                                ItemRefType::plain,
+                                ItemRefInf::none,
+                                ItemRefAttInf::none);
+
                 if (item->current_curse().is_active())
                 {
-                        const auto name =
-                                item->name(
-                                        ItemRefType::plain,
-                                        ItemRefInf::none,
-                                        ItemRefAttInf::none);
-
                         msg_log::add("I refuse to throw the " + name + "!");
 
                         return;
+                }
+
+                const bool is_potion = (item->data().type == ItemType::potion);
+
+                const bool is_equipped =
+                        ((item == inv.item_in_slot(SlotId::wpn)) ||
+                         (item == inv.item_in_slot(SlotId::wpn_alt)));
+
+                if (config::warn_on_throw_valuable() &&
+                    (is_potion || is_equipped))
+                {
+                        const std::string msg =
+                                "Throw the " +
+                                name +
+                                "? " +
+                                common_text::g_yes_or_no_hint;
+
+                        msg_log::add(
+                                msg,
+                                colors::light_white(),
+                                MsgInterruptPlayer::no,
+                                MorePromptOnMsg::no,
+                                CopyToMsgHistory::no);
+
+                        const auto answer = query::yes_or_no();
+
+                        msg_log::clear();
+
+                        if (answer == BinaryAnswer::no)
+                        {
+                                return;
+                        }
                 }
 
                 states::push(

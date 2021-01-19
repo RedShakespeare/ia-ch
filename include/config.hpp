@@ -76,11 +76,13 @@ bool is_gj_mode();
 
 void toggle_gj_mode();
 
-bool is_light_explosive_prompt();
+bool warn_on_throw_valuable();
 
-bool is_drink_malign_pot_prompt();
+bool warn_on_light_explosive();
 
-bool is_ranged_wpn_meleee_prompt();
+bool warn_on_drink_malign_potion();
+
+bool warn_on_ranged_wpn_melee();
 
 bool is_ranged_wpn_auto_reload();
 

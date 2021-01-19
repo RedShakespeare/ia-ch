@@ -213,7 +213,7 @@ ConsumeItem Potion::activate(actor::Actor* const actor)
                 // Really quaff a known malign potion?
                 if ((alignment() == PotionAlignment::bad) &&
                     m_data->is_alignment_known &&
-                    config::is_drink_malign_pot_prompt())
+                    config::warn_on_drink_malign_potion())
                 {
                         const std::string name = this->name(ItemRefType::a);
 
