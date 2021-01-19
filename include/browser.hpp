@@ -147,6 +147,8 @@ public:
                 m_menu_keys = keys;
         }
 
+        void remove_key(const char key);
+
         void disable_selection_audio()
         {
                 m_play_selection_audio = false;

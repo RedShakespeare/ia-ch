@@ -362,3 +362,17 @@ void MenuBrowser::reset(const int nr_items, const int list_h)
 
         update_range_shown();
 }
+
+void MenuBrowser::remove_key(const char key)
+{
+        const auto it =
+                std::find(
+                        std::begin(m_menu_keys),
+                        std::end(m_menu_keys),
+                        key);
+
+        if (it != std::end(m_menu_keys))
+        {
+                m_menu_keys.erase(it);
+        }
+}

@@ -589,6 +589,10 @@ void BrowseInv::on_start()
 
         m_browser.disable_selection_audio();
 
+        // Remove the "browse inventory" key, to avoid player key press
+        // misstakes, and to allow using this key for closing the menu
+        m_browser.remove_key('i');
+
         map::g_player->m_inv.sort_backpack();
 
         audio::play(audio::SfxId::backpack);
@@ -670,6 +674,14 @@ void BrowseInv::draw()
 void BrowseInv::update()
 {
         const auto input = io::get();
+
+        if (input.key == 'i')
+        {
+                // Exit screen
+                states::pop();
+
+                return;
+        }
 
         auto& inv = map::g_player->m_inv;
 
@@ -1528,31 +1540,22 @@ void SelectThrow::on_start()
 
         m_browser.disable_selection_audio();
 
-        // Set up custom menu keys - a specific key is always reserved for the
+        // Set up custom menu keys - the throwing key is always reserved for the
         // last thrown item (if any), and never used for throwing any other item
-        auto custom_keys = m_browser.menu_keys();
-
         const char throw_key = 't';
 
-        {
-                const auto it =
-                        std::find(
-                                std::begin(custom_keys),
-                                std::end(custom_keys),
-                                throw_key);
-
-                if (it != std::end(custom_keys))
-                {
-                        custom_keys.erase(it);
-                }
-        }
+        m_browser.remove_key(throw_key);
 
         if (map::g_player->m_last_thrown_item)
         {
-                custom_keys.insert(std::begin(custom_keys), throw_key);
-        }
+                // A "last thrown item" exists, re-insert the throw key at the
+                // beginning of the key list (so that it's currently selected)
+                auto custom_keys = m_browser.menu_keys();
 
-        m_browser.set_custom_menu_keys(custom_keys);
+                custom_keys.insert(std::begin(custom_keys), throw_key);
+
+                m_browser.set_custom_menu_keys(custom_keys);
+        }
 
         audio::play(audio::SfxId::backpack);
 }
