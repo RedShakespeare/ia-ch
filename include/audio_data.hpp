@@ -73,6 +73,8 @@ enum class SfxId
         thunder,
         gong,
         mechanical_trap_trigger,
+        wade,
+        swim,
 
         // User interface sounds
         backpack,

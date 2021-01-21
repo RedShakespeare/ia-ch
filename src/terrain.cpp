@@ -1477,7 +1477,8 @@ void LiquidShallow::bump(actor::Actor& actor_bumping)
                 return;
         }
 
-        actor_bumping.m_properties.apply(new PropWaiting());
+        actor_bumping.m_properties.apply(
+                property_factory::make(PropId::waiting));
 
         if (actor_bumping.is_player())
         {
@@ -1486,15 +1487,12 @@ void LiquidShallow::bump(actor::Actor& actor_bumping)
                 switch (m_type)
                 {
                 case LiquidType::water:
+                case LiquidType::magic_water:
                         type_str = "water";
                         break;
 
                 case LiquidType::mud:
                         type_str = "mud";
-                        break;
-
-                case LiquidType::magic_water:
-                        type_str = "water";
                         break;
                 }
 
@@ -1502,25 +1500,33 @@ void LiquidShallow::bump(actor::Actor& actor_bumping)
                         "I wade slowly through the knee high " +
                         type_str +
                         ".");
+        }
 
-                // Make a sound, unless the player is Silent
-                if (!player_bon::has_trait(Trait::silent))
-                {
-                        Snd snd("",
-                                audio::SfxId::END,
-                                IgnoreMsgIfOriginSeen::no,
-                                actor_bumping.m_pos,
-                                &actor_bumping,
-                                SndVol::low,
-                                AlertsMon::yes);
+        // Make a sound, unless player with Silent trait
+        if (!player_bon::has_trait(Trait::silent) ||
+            !actor_bumping.is_player())
+        {
+                const std::string msg =
+                        actor_bumping.is_player()
+                        ? ""
+                        : "I hear a splash.";
 
-                        snd_emit::run(snd);
-                }
+                Snd snd(
+                        msg,
+                        audio::SfxId::wade,
+                        IgnoreMsgIfOriginSeen::yes,
+                        actor_bumping.m_pos,
+                        &actor_bumping,
+                        SndVol::low,
+                        AlertsMon::yes);
 
-                if (m_type == LiquidType::magic_water)
-                {
-                        run_magic_pool_effects_on_player();
-                }
+                snd_emit::run(snd);
+        }
+
+        if (actor_bumping.is_player() &&
+            (m_type == LiquidType::magic_water))
+        {
+                run_magic_pool_effects_on_player();
         }
 }
 
@@ -1712,40 +1718,59 @@ void LiquidDeep::bump(actor::Actor& actor_bumping)
                 actor_bumping.m_properties.apply(waiting);
         }
 
-        if (must_swim && actor_bumping.is_player())
+        if (!must_swim)
         {
-                const std::string liquid_name_the = name(Article::the);
-
-                msg_log::add("I swim through " + liquid_name_the + ".");
-
-                if (!player_bon::has_trait(Trait::silent))
-                {
-                        Snd snd("",
-                                audio::SfxId::END,
-                                IgnoreMsgIfOriginSeen::no,
-                                actor_bumping.m_pos,
-                                &actor_bumping,
-                                SndVol::low,
-                                AlertsMon::yes);
-
-                        snd_emit::run(snd);
-                }
-
-                if (map::g_player->m_active_explosive)
-                {
-                        const std::string expl_name =
-                                map::g_player->m_active_explosive->name(
-                                        ItemRefType::plain);
-
-                        msg_log::add("The " + expl_name + " is extinguished.");
-
-                        map::g_player->m_active_explosive = nullptr;
-                }
+                return;
         }
 
-        if (must_swim && !actor_bumping.m_properties.has(PropId::swimming))
+        if (actor_bumping.is_player())
         {
-                auto* const swimming = new PropSwimming();
+                const std::string liquid_name_the =
+                        name(Article::the);
+
+                msg_log::add(
+                        "I swim through " +
+                        liquid_name_the +
+                        ".");
+        }
+
+        // Make a sound, unless player with Silent trait
+        if (!player_bon::has_trait(Trait::silent) ||
+            !actor_bumping.is_player())
+        {
+                const std::string msg =
+                        actor_bumping.is_player()
+                        ? ""
+                        : "I hear a splash.";
+
+                Snd snd(
+                        msg,
+                        audio::SfxId::swim,
+                        IgnoreMsgIfOriginSeen::yes,
+                        actor_bumping.m_pos,
+                        &actor_bumping,
+                        SndVol::low,
+                        AlertsMon::yes);
+
+                snd_emit::run(snd);
+        }
+
+        if (actor_bumping.is_player() &&
+            map::g_player->m_active_explosive)
+        {
+                const std::string expl_name =
+                        map::g_player->m_active_explosive->name(
+                                ItemRefType::plain);
+
+                msg_log::add("The " + expl_name + " is extinguished.");
+
+                map::g_player->m_active_explosive = nullptr;
+        }
+
+        if (!actor_bumping.m_properties.has(PropId::swimming))
+        {
+                auto* const swimming =
+                        property_factory::make(PropId::swimming);
 
                 swimming->set_indefinite();
 
@@ -2411,7 +2436,8 @@ void Chains::bump(actor::Actor& actor_bumping)
                         ? AlertsMon::yes
                         : AlertsMon::no;
 
-                Snd snd(msg,
+                Snd snd(
+                        msg,
                         audio::SfxId::chains,
                         IgnoreMsgIfOriginSeen::no,
                         actor_bumping.m_pos,

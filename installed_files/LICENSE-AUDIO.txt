@@ -761,6 +761,20 @@ Author:              Phil Michalski
 Original title:      PM_SB_DESIGNED_IMPACT_106 Impact brick rock dirt gravel designed multi LFE.wav
 EULA:                https://www.pmsfx.com/legal-1
 
+File:                sfx_wade.ogg
+Source:              https://freesound.org/people/InspectorJ/sounds/352099/
+Author:              InspectorJ (username on freesound.org)
+License:             Attribution 3.0 Unported (CC BY 3.0)
+Original title:      Splash, Jumping, C.wav
+Changes made:        Cut most of the sound
+
+File:                sfx_swim.ogg
+Source:              https://freesound.org/people/InspectorJ/sounds/352099/
+Author:              InspectorJ (username on freesound.org)
+License:             Attribution 3.0 Unported (CC BY 3.0)
+Original title:      Splash, Jumping, C.wav
+Changes made:        Cut most of the sound, reduced the speed
+
 File:                musica_cthulhiana_fragment_madness.ogg
 Source:              Track "Madness" from music album "Fragment" (2010, Prowler/Ghost Records)
 Author:              Musica Cthulhiana

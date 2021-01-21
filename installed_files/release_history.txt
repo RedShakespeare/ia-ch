@@ -9,6 +9,7 @@ Gameplay
 * Changed Electric Gun damage from 4-13 to 8-12
 * The Talisman of Resurrection now also teleports the player when activated, to avoid causing the player to just wake up in the same situation that killed them to begin with
 * The stealth penalty in lit positions is much higher than before (see also bug fixes below concerning stealth and darkness)
+* Added more sound effects
 * Added more monsters
 * Monsters no longer become aware of the player from negative properties (burning, infections, etc) or from taking damage (it is the attack actions and sounds which makes them aware), so now it is possible to for example throw a Molotov Cocktail at a monster, and escape with Cloud Minds while it is burning
 * Updated Worm Masses and Mind Worms - they are now blind, slow (instead of normal speed), have much more hit points, are unsettling (causes shock to see), take much less damage from piercing attacks (such as pistol shots or dagger strikes), and have a very limited hearing range
@@ -49,7 +50,6 @@ User interface
 * 'C' is now the standard key for the character info screen, with '@' as alternative key
 * Using coloring more for the player stats to convey information (such as drawing the current hit points paler the closer to zero they are, or drawing the weapon info as yellow if ammo is depleted)
 * The infection status effect is drawn with orange color instead of the usual red, to make it more noticeable and to hint that it will get worse and not better over time - also added a warning message when infection nearly triggers DISEASE
-* Added more sound effects
 
 Bug fixes
 * Fixed a bug that prevented messages for Rogues sensing artifacts on the dungeon floor (there were only messages for sensing artifacts in item containers, such as tombs)

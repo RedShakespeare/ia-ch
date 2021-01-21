@@ -112,7 +112,8 @@ static std::string amb_sfx_filename(const audio::SfxId sfx)
         const int amb_nr = (int)sfx - (int)audio::SfxId::AMB_START;
 
         const std::string padding_str =
-                (amb_nr < 10) ? "00" : (amb_nr < 100) ? "0" : "";
+                (amb_nr < 10) ? "00" : (amb_nr < 100) ? "0"
+                                                      : "";
 
         const std::string idx_str = std::to_string(amb_nr);
 
@@ -200,6 +201,8 @@ void init()
         load(SfxId::thunder, "sfx_thunder.ogg");
         load(SfxId::gong, "sfx_gong.ogg");
         load(SfxId::mechanical_trap_trigger, "sfx_mechanical_trap_trigger.ogg");
+        load(SfxId::wade, "sfx_wade.ogg");
+        load(SfxId::swim, "sfx_swim.ogg");
 
         // User interface sounds
         load(SfxId::backpack, "sfx_backpack.ogg");
