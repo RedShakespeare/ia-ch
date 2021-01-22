@@ -118,7 +118,9 @@ ConsumeItem FluctuatingMaterial::activate(actor::Actor* actor)
                 ShockLvl::terrifying,
                 ShockSrc::use_strange_item);
 
-        return ConsumeItem::no;
+        // TODO: Print a message that the item disappears
+
+        return ConsumeItem::yes;
 }
 
 // -----------------------------------------------------------------------------
