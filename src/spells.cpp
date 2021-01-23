@@ -337,6 +337,8 @@ static void open_close_doors(const Context& context)
                         printed_msg = true;
                 }
 
+                // NOTE: Metal doors are skipped, so it's OK to just run
+                // open/close here
                 if (should_open)
                 {
                         terrain->open(nullptr);
@@ -704,6 +706,42 @@ static const std::vector<SpellSideEffect> s_spell_side_effects {
 
 }  // namespace spell_side_effects
 
+static terrain::DidOpen run_opening_spell_for_metal_door(
+        const terrain::Terrain& door)
+{
+        // Find ANY lever for this door, and toggle it.
+        //
+        // NOTE: If there are more levers connected to this door, this is OK
+        // since the lever will set its sibblings to the same position.
+        //
+        for (const auto& p : map::rect().positions())
+        {
+                const auto& cell = map::g_cells.at(p);
+
+                if (cell.terrain->id() != terrain::Id::lever)
+                {
+                        continue;
+                }
+
+                auto* const lever = static_cast<terrain::Lever*>(cell.terrain);
+
+                if (!lever->is_linked_to(door))
+                {
+                        continue;
+                }
+
+                lever->toggle();
+
+                return terrain::DidOpen::yes;
+        }
+
+        // Reaching this point means we didn't find a lever for the metal door,
+        // which is not supposed to happen.
+        ASSERT(false);
+
+        return terrain::DidOpen::no;
+}
+
 // -----------------------------------------------------------------------------
 // spells
 // -----------------------------------------------------------------------------
@@ -848,6 +886,46 @@ std::string skill_to_str(const SpellSkill skill)
         ASSERT(false);
 
         return "";
+}
+
+terrain::DidOpen run_opening_spell_effect_at(
+        const P& pos,
+        const int chance,
+        const SpellSkill skill)
+{
+        if (!rnd::percent(chance))
+        {
+                return terrain::DidOpen::no;
+        }
+
+        auto* const terrain = map::g_cells.at(pos).terrain;
+
+        if (terrain->id() == terrain::Id::door)
+        {
+                auto* const door = static_cast<terrain::Door*>(terrain);
+
+                if ((door->type() == terrain::DoorType::metal))
+                {
+                        const bool is_skill_enough =
+                                ((int)skill >= (int)SpellSkill::expert);
+
+                        if (is_skill_enough && !door->is_open())
+                        {
+                                const auto did_open =
+                                        run_opening_spell_for_metal_door(*door);
+
+                                return did_open;
+                        }
+                        else
+                        {
+                                return terrain::DidOpen::no;
+                        }
+                }
+        }
+
+        const auto did_open = terrain->open(nullptr);
+
+        return did_open;
 }
 
 }  // namespace spells
@@ -2240,81 +2318,17 @@ void SpellOpening::run_effect(
 
         bool is_any_opened = false;
 
-        const int chance_to_open = 50 + (int)skill * 25;
+        const int chance = 50 + (int)skill * 25;
 
-        // TODO: Way too much nested scope here!
         for (const auto& p : area.positions())
         {
-                if (!rnd::percent(chance_to_open))
-                {
-                        continue;
-                }
+                const auto did_open =
+                        spells::run_opening_spell_effect_at(
+                                p,
+                                chance,
+                                skill);
 
-                auto* const terrain = map::g_cells.at(p).terrain;
-
-                auto did_open = DidOpen::no;
-
-                bool is_metal_door = false;
-
-                // Is this a metal door?
-                if (terrain->id() == terrain::Id::door)
-                {
-                        auto* const door =
-                                static_cast<terrain::Door*>(terrain);
-
-                        is_metal_door = (door->type() == terrain::DoorType::metal);
-
-                        // If at least expert skill, then metal doors
-                        // are also opened
-                        if (is_metal_door &&
-                            !door->is_open() &&
-                            ((int)skill >= (int)SpellSkill::expert))
-                        {
-                                for (int x_lever = 0;
-                                     x_lever < map::w();
-                                     ++x_lever)
-                                {
-                                        for (int y_lever = 0;
-                                             y_lever < map::h();
-                                             ++y_lever)
-                                        {
-                                                auto* const f_lever =
-                                                        map::g_cells.at(x_lever, y_lever)
-                                                                .terrain;
-
-                                                if (f_lever->id() !=
-                                                    terrain::Id::lever)
-                                                {
-                                                        continue;
-                                                }
-
-                                                auto* const lever =
-                                                        static_cast<terrain::Lever*>(f_lever);
-
-                                                if (lever->is_linked_to(*terrain))
-                                                {
-                                                        lever->toggle();
-
-                                                        did_open = DidOpen::yes;
-
-                                                        break;
-                                                }
-                                        }  // Lever y loop
-
-                                        if (did_open == DidOpen::yes)
-                                        {
-                                                break;
-                                        }
-                                }  // Lever x loop
-                        }
-                }
-
-                if ((did_open != DidOpen::yes) && !is_metal_door)
-                {
-                        did_open = terrain->open(nullptr);
-                }
-
-                if (did_open == DidOpen::yes)
+                if (did_open == terrain::DidOpen::yes)
                 {
                         is_any_opened = true;
                 }

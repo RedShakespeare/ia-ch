@@ -394,17 +394,10 @@ bool is_player_seeing_burning_terrain()
         {
                 const auto& cell = map::g_cells.at(pos);
 
-                if (!cell.is_seen_by_player)
+                if (cell.is_seen_by_player && cell.terrain->is_burning())
                 {
-                        continue;
+                        return true;
                 }
-
-                if (cell.terrain->m_burn_state != BurnState::burning)
-                {
-                        continue;
-                }
-
-                return true;
         }
 
         return false;

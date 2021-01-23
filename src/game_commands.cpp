@@ -657,7 +657,7 @@ void handle(const GameCmd cmd)
 
         case GameCmd::close:
         {
-                close_door::player_try_close_or_jam();
+                close::player_try_close_or_jam();
         }
         break;
 

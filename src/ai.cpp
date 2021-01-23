@@ -214,7 +214,7 @@ DidAction handle_closed_blocking_door(actor::Mon& mon, std::vector<P>& path)
         // Open the door?
         if (mon_can_open && !is_stuck)
         {
-                door->try_open(&mon);
+                door->actor_try_open(mon);
 
                 return DidAction::yes;
         }

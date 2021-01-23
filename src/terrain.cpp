@@ -1908,14 +1908,26 @@ std::string Lever::name(const Article article) const
 
 Color Lever::color_default() const
 {
-        return m_is_left_pos ? colors::gray() : colors::white();
+        if (m_is_left_pos)
+        {
+                return colors::gray();
+        }
+        else
+        {
+                return colors::white();
+        }
 }
 
 gfx::TileId Lever::tile() const
 {
-        return m_is_left_pos
-                ? gfx::TileId::lever_left
-                : gfx::TileId::lever_right;
+        if (m_is_left_pos)
+        {
+                return gfx::TileId::lever_left;
+        }
+        else
+        {
+                return gfx::TileId::lever_right;
+        }
 }
 
 void Lever::bump(actor::Actor& actor_bumping)
@@ -1954,7 +1966,8 @@ void Lever::bump(actor::Actor& actor_bumping)
 
         msg_log::add("I pull the lever.");
 
-        Snd snd("",
+        Snd snd(
+                "",
                 audio::SfxId::lever_pull,
                 IgnoreMsgIfOriginSeen::yes,
                 m_pos,

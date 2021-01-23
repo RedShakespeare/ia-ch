@@ -735,7 +735,7 @@ void Door::bump(actor::Actor& actor_bumping)
 
         if (!m_is_open)
         {
-                try_open(&actor_bumping);
+                actor_try_open(actor_bumping);
         }
 
 }  // bump
@@ -769,11 +769,11 @@ void Door::set_secret()
         m_is_hidden = true;
 }
 
-bool Door::try_jam(actor::Actor* actor_trying)
+bool Door::actor_try_jam(actor::Actor& actor_trying)
 {
-        const bool is_player = actor_trying == map::g_player;
+        const bool is_player = actor_trying.is_player();
 
-        const bool tryer_is_blind = !actor_trying->m_properties.allow_see();
+        const bool tryer_is_blind = !actor_trying.m_properties.allow_see();
 
         if (m_is_hidden || m_is_open)
         {
@@ -802,13 +802,13 @@ bool Door::try_jam(actor::Actor* actor_trying)
         return true;
 }
 
-void Door::try_close(actor::Actor* actor_trying)
+void Door::actor_try_close(actor::Actor& actor_trying)
 {
         // TODO: Refactor this function
 
-        const bool is_player = actor_trying == map::g_player;
+        const bool is_player = actor_trying.is_player();
 
-        const bool tryer_is_blind = !actor_trying->m_properties.allow_see();
+        const bool tryer_is_blind = !actor_trying.m_properties.allow_see();
 
         if (is_player && (m_type == DoorType::metal))
         {
@@ -830,7 +830,7 @@ void Door::try_close(actor::Actor* actor_trying)
         const bool player_see_tryer =
                 is_player
                 ? true
-                : actor::can_player_see_actor(*actor_trying);
+                : actor::can_player_see_actor(actor_trying);
 
         // Already closed?
         if (!m_is_open)
@@ -853,7 +853,7 @@ void Door::try_close(actor::Actor* actor_trying)
 
         // Currently being opened by another actor?
         if (m_actor_currently_opening &&
-            (m_actor_currently_opening != actor_trying))
+            (m_actor_currently_opening != &actor_trying))
         {
                 TRACE << "Door marked as currently being opened, checking if "
                          "opening actor still exists and is alive"
@@ -948,7 +948,7 @@ void Door::try_close(actor::Actor* actor_trying)
                                         audio::SfxId::door_close,
                                         IgnoreMsgIfOriginSeen::yes,
                                         m_pos,
-                                        actor_trying,
+                                        &actor_trying,
                                         SndVol::low,
                                         AlertsMon::yes);
 
@@ -967,7 +967,7 @@ void Door::try_close(actor::Actor* actor_trying)
                                         audio::SfxId::door_close,
                                         IgnoreMsgIfOriginSeen::yes,
                                         m_pos,
-                                        actor_trying,
+                                        &actor_trying,
                                         SndVol::low,
                                         AlertsMon::no);
 
@@ -977,7 +977,7 @@ void Door::try_close(actor::Actor* actor_trying)
                                 {
                                         const std::string actor_name_the =
                                                 text_format::first_to_upper(
-                                                        actor_trying->name_the());
+                                                        actor_trying.name_the());
 
                                         msg_log::add(
                                                 actor_name_the +
@@ -1006,7 +1006,7 @@ void Door::try_close(actor::Actor* actor_trying)
                                 {
                                         const std::string actor_name_the =
                                                 text_format::first_to_upper(
-                                                        actor_trying->name_the());
+                                                        actor_trying.name_the());
 
                                         msg_log::add(
                                                 actor_name_the +
@@ -1037,7 +1037,7 @@ void Door::try_close(actor::Actor* actor_trying)
                                 audio::SfxId::door_close,
                                 IgnoreMsgIfOriginSeen::yes,
                                 m_pos,
-                                actor_trying,
+                                &actor_trying,
                                 SndVol::low,
                                 AlertsMon::yes);
 
@@ -1057,7 +1057,7 @@ void Door::try_close(actor::Actor* actor_trying)
                         audio::SfxId::door_close,
                         IgnoreMsgIfOriginSeen::yes,
                         m_pos,
-                        actor_trying,
+                        &actor_trying,
                         SndVol::low,
                         AlertsMon::no);
 
@@ -1067,7 +1067,7 @@ void Door::try_close(actor::Actor* actor_trying)
                 {
                         const std::string actor_name_the =
                                 text_format::first_to_upper(
-                                        actor_trying->name_the());
+                                        actor_trying.name_the());
 
                         msg_log::add(
                                 actor_name_the +
@@ -1079,13 +1079,13 @@ void Door::try_close(actor::Actor* actor_trying)
 
         game_time::tick();
 
-}  // try_close
+}  // actor_try_close
 
-void Door::try_open(actor::Actor* actor_trying)
+void Door::actor_try_open(actor::Actor& actor_trying)
 {
         TRACE_FUNC_BEGIN;
 
-        const bool is_player = actor_trying == map::g_player;
+        const bool is_player = actor_trying.is_player();
 
         const bool player_see_door =
                 map::g_cells.at(m_pos)
@@ -1094,7 +1094,7 @@ void Door::try_open(actor::Actor* actor_trying)
         const bool player_see_tryer =
                 is_player
                 ? true
-                : actor::can_player_see_actor(*actor_trying);
+                : actor::can_player_see_actor(actor_trying);
 
         if (is_player && (m_type == DoorType::metal))
         {
@@ -1128,7 +1128,7 @@ void Door::try_open(actor::Actor* actor_trying)
                 TRACE << "Is not stuck" << std::endl;
 
                 const bool tryer_can_see =
-                        actor_trying->m_properties.allow_see();
+                        actor_trying.m_properties.allow_see();
 
                 if (tryer_can_see)
                 {
@@ -1139,11 +1139,12 @@ void Door::try_open(actor::Actor* actor_trying)
                         {
                                 if (!player_bon::has_trait(Trait::silent))
                                 {
-                                        Snd snd("",
+                                        Snd snd(
+                                                "",
                                                 audio::SfxId::door_open,
                                                 IgnoreMsgIfOriginSeen::yes,
                                                 m_pos,
-                                                actor_trying,
+                                                &actor_trying,
                                                 SndVol::low,
                                                 AlertsMon::yes);
 
@@ -1158,11 +1159,12 @@ void Door::try_open(actor::Actor* actor_trying)
                         else
                         {
                                 // Is monster
-                                Snd snd("I hear a door open.",
+                                Snd snd(
+                                        "I hear a door open.",
                                         audio::SfxId::door_open,
                                         IgnoreMsgIfOriginSeen::yes,
                                         m_pos,
-                                        actor_trying,
+                                        &actor_trying,
                                         SndVol::low,
                                         AlertsMon::no);
 
@@ -1172,7 +1174,7 @@ void Door::try_open(actor::Actor* actor_trying)
                                 {
                                         const std::string actor_name_the =
                                                 text_format::first_to_upper(
-                                                        actor_trying->name_the());
+                                                        actor_trying.name_the());
 
                                         msg_log::add(
                                                 actor_name_the +
@@ -1201,11 +1203,12 @@ void Door::try_open(actor::Actor* actor_trying)
 
                                 if (is_player)
                                 {
-                                        Snd snd("",
+                                        Snd snd(
+                                                "",
                                                 audio::SfxId::door_open,
                                                 IgnoreMsgIfOriginSeen::yes,
                                                 m_pos,
-                                                actor_trying,
+                                                &actor_trying,
                                                 SndVol::low,
                                                 AlertsMon::yes);
 
@@ -1219,11 +1222,12 @@ void Door::try_open(actor::Actor* actor_trying)
                                 else
                                 {
                                         // Is monster
-                                        Snd snd("I hear something open a door awkwardly.",
+                                        Snd snd(
+                                                "I hear something open a door awkwardly.",
                                                 audio::SfxId::door_open,
                                                 IgnoreMsgIfOriginSeen::yes,
                                                 m_pos,
-                                                actor_trying,
+                                                &actor_trying,
                                                 SndVol::low,
                                                 AlertsMon::no);
 
@@ -1233,7 +1237,7 @@ void Door::try_open(actor::Actor* actor_trying)
                                         {
                                                 const std::string actor_name_the =
                                                         text_format::first_to_upper(
-                                                                actor_trying->name_the());
+                                                                actor_trying.name_the());
 
                                                 msg_log::add(
                                                         actor_name_the +
@@ -1262,7 +1266,7 @@ void Door::try_open(actor::Actor* actor_trying)
                                                 audio::SfxId::END,
                                                 IgnoreMsgIfOriginSeen::yes,
                                                 m_pos,
-                                                actor_trying,
+                                                &actor_trying,
                                                 SndVol::low,
                                                 AlertsMon::yes);
 
@@ -1284,8 +1288,8 @@ void Door::try_open(actor::Actor* actor_trying)
                                                 "I hear something attempting to open a door.",
                                                 audio::SfxId::END,
                                                 IgnoreMsgIfOriginSeen::yes,
-                                                actor_trying->m_pos,
-                                                actor_trying,
+                                                actor_trying.m_pos,
+                                                &actor_trying,
                                                 SndVol::low,
                                                 AlertsMon::no);
 
@@ -1295,7 +1299,7 @@ void Door::try_open(actor::Actor* actor_trying)
                                         {
                                                 const std::string actor_name_the =
                                                         text_format::first_to_upper(
-                                                                actor_trying->name_the());
+                                                                actor_trying.name_the());
 
                                                 msg_log::add(
                                                         actor_name_the +
@@ -1321,16 +1325,16 @@ void Door::try_open(actor::Actor* actor_trying)
                         reveal(Verbose::yes);
                 }
 
-                m_actor_currently_opening = actor_trying;
+                m_actor_currently_opening = &actor_trying;
 
-                actor_trying->m_opening_door_pos = m_pos;
+                actor_trying.m_opening_door_pos = m_pos;
 
                 game_time::tick();
 
                 map::update_vision();
         }
 
-}  // try_open
+}  // actor_try_open
 
 void Door::on_lever_pulled(Lever* const lever)
 {
@@ -1342,7 +1346,6 @@ void Door::on_lever_pulled(Lever* const lever)
         }
         else
         {
-                // Closed
                 open(nullptr);
         }
 }
@@ -1352,19 +1355,15 @@ DidOpen Door::open(actor::Actor* const actor_opening)
         (void)actor_opening;
 
         m_is_open = true;
-
         m_is_hidden = false;
-
         m_is_stuck = false;
 
         if (actor_opening)
         {
                 m_actor_currently_opening = actor_opening;
-
                 actor_opening->m_opening_door_pos = m_pos;
         }
 
-        // TODO: This is kind of a hack...
         if (m_type == DoorType::metal)
         {
                 Snd snd(
@@ -1388,10 +1387,10 @@ DidClose Door::close(actor::Actor* const actor_closing)
 
         m_is_open = false;
 
-        // TODO: This is kind of a hack...
         if (m_type == DoorType::metal)
         {
-                Snd snd("",
+                Snd snd(
+                        "",
                         audio::SfxId::END,
                         IgnoreMsgIfOriginSeen::yes,
                         m_pos,

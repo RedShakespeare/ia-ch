@@ -19,6 +19,11 @@ class Actor;
 class Mon;
 }  // namespace actor
 
+namespace terrain
+{
+enum class DidOpen;
+}  // namespace terrain
+
 enum class SpellId
 {
         // Available for player and monsters
@@ -97,6 +102,11 @@ SpellId str_to_spell_id(const std::string& str);
 SpellSkill str_to_spell_skill_id(const std::string& str);
 
 std::string skill_to_str(SpellSkill skill);
+
+terrain::DidOpen run_opening_spell_effect_at(
+        const P& pos,
+        const int chance,
+        const SpellSkill skill);
 
 }  // namespace spells
 

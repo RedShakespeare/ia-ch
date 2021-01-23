@@ -25,7 +25,7 @@ TEST_CASE("Test light map")
 
         auto* const burn_f = map::g_cells.at(burn_pos).terrain;
 
-        while (burn_f->m_burn_state != BurnState::burning)
+        while (!burn_f->is_burning())
         {
                 burn_f->hit(DmgType::fire, nullptr);
         }

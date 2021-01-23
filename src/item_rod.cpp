@@ -25,6 +25,7 @@
 #include "property_data.hpp"
 #include "property_handler.hpp"
 #include "saving.hpp"
+#include "spells.hpp"
 #include "terrain.hpp"
 #include "text_format.hpp"
 
@@ -392,16 +393,26 @@ void Opening::run_effect()
 {
         bool is_any_opened = false;
 
-        for (auto& cell : map::g_cells)
-        {
-                if (cell.is_seen_by_player)
-                {
-                        DidOpen did_open = cell.terrain->open(nullptr);
+        const int chance = 100;
 
-                        if (did_open == DidOpen::yes)
-                        {
-                                is_any_opened = true;
-                        }
+        for (const auto& p : map::rect().positions())
+        {
+                const auto& cell = map::g_cells.at(p);
+
+                if (!cell.is_seen_by_player)
+                {
+                        continue;
+                }
+
+                const auto did_open =
+                        spells::run_opening_spell_effect_at(
+                                p,
+                                chance,
+                                SpellSkill::master);
+
+                if (did_open == terrain::DidOpen::yes)
+                {
+                        is_any_opened = true;
                 }
         }
 

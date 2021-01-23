@@ -226,7 +226,7 @@ static void player_act()
                                         (target_terrain_id == terrain::Id::chains) ||
                                         (target_terrain_id == terrain::Id::liquid_shallow) ||
                                         (target_terrain_id == terrain::Id::vines) ||
-                                        (target_cell.terrain->m_burn_state == BurnState::burning);
+                                        (target_cell.terrain->is_burning());
                         }
 
                         if (should_abort)

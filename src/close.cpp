@@ -48,7 +48,7 @@ static void player_try_close_or_jam_terrain(terrain::Terrain* const terrain)
         if (door->is_open())
         {
                 // Door is open, try to close it
-                door->try_close(map::g_player);
+                door->actor_try_close(*map::g_player);
         }
         else
         {
@@ -60,7 +60,7 @@ static void player_try_close_or_jam_terrain(terrain::Terrain* const terrain)
                 if (has_spike)
                 {
                         const bool did_spike_door =
-                                door->try_jam(map::g_player);
+                                door->actor_try_jam(*map::g_player);
 
                         if (did_spike_door)
                         {
@@ -96,9 +96,9 @@ static void player_try_close_or_jam_terrain(terrain::Terrain* const terrain)
 }  // player_try_close_or_jam_terrain
 
 // -----------------------------------------------------------------------------
-// close_door
+// close
 // -----------------------------------------------------------------------------
-namespace close_door
+namespace close
 {
 void player_try_close_or_jam()
 {
@@ -124,4 +124,4 @@ void player_try_close_or_jam()
         }
 }
 
-}  // namespace close_door
+}  // namespace close

@@ -211,7 +211,7 @@ static void run_std_turn_events()
         // Allow already burning terrains to damage stuff, spread fire, etc
         for (auto& cell : map::g_cells)
         {
-                if (cell.terrain->m_burn_state == BurnState::burning)
+                if (cell.terrain->is_burning())
                 {
                         cell.terrain->m_started_burning_this_turn = false;
                 }

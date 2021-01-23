@@ -80,11 +80,9 @@ public:
 
         bool is_smoke_passable() const override;
 
-        void try_open(actor::Actor* actor_trying);
-
-        void try_close(actor::Actor* actor_trying);
-
-        bool try_jam(actor::Actor* actor_trying);
+        void actor_try_open(actor::Actor& actor_trying);
+        void actor_try_close(actor::Actor& actor_trying);
+        bool actor_try_jam(actor::Actor& actor_trying);
 
         void on_lever_pulled(Lever* lever) override;
 
@@ -112,8 +110,10 @@ public:
                 m_is_stuck = true;
         }
 
+        // NOTE: These do not affect levers - they only open or close the door
+        // itself. Do NOT just call these functions from e.g. an opening spell
+        // or other such effect, since it will leave the levers inverted.
         DidOpen open(actor::Actor* actor_opening) override;
-
         DidClose close(actor::Actor* actor_closing) override;
 
         actor::Actor* actor_currently_opening() const

@@ -34,6 +34,8 @@ enum class DmgType;
 enum class Matl;
 enum class Verbose;
 
+namespace terrain
+{
 enum class BurnState
 {
         not_burned,
@@ -59,8 +61,6 @@ enum class DidClose
         yes
 };
 
-namespace terrain
-{
 class Terrain;
 enum class Id;
 struct TerrainData;
@@ -120,6 +120,11 @@ public:
         bool is_hidden() const
         {
                 return m_is_hidden;
+        }
+
+        bool is_burning() const
+        {
+                return m_burn_state == BurnState::burning;
         }
 
         void try_make_bloody();

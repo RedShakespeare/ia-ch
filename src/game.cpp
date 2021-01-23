@@ -252,63 +252,72 @@ void incr_clvl_number()
 
 void on_mon_seen(actor::Actor& actor)
 {
+        if (actor.m_mimic_data)
+        {
+                // Player is hallucinating the appearance of this monster - do
+                // not give experience for discovering the actual monster.
+                return;
+        }
+
         auto& d = *actor.m_data;
 
-        if (!d.has_player_seen)
+        if (d.has_player_seen)
         {
-                d.has_player_seen = true;
-
-                // Give XP based on monster shock rating
-                int xp_gained = 0;
-
-                switch (d.mon_shock_lvl)
-                {
-                case ShockLvl::unsettling:
-                        xp_gained = 3;
-                        break;
-
-                case ShockLvl::frightening:
-                        xp_gained = 5;
-                        break;
-
-                case ShockLvl::terrifying:
-                        xp_gained = 10;
-                        break;
-
-                case ShockLvl::mind_shattering:
-                        xp_gained = 20;
-                        break;
-
-                case ShockLvl::none:
-                case ShockLvl::END:
-                        break;
-                }
-
-                if (xp_gained > 0)
-                {
-                        const std::string name = actor.name_a();
-
-                        msg_log::add("I have discovered " + name + "!");
-
-                        incr_player_xp(xp_gained);
-
-                        msg_log::more_prompt();
-
-                        add_history_event("Discovered " + name);
-
-                        // We also cause some shock the first time
-                        double shock_value =
-                                map::g_player->shock_lvl_to_value(
-                                        d.mon_shock_lvl);
-
-                        // Dampen the progression a bit
-                        shock_value = pow(shock_value, 0.9);
-
-                        map::g_player->incr_shock(
-                                shock_value,
-                                ShockSrc::see_mon);
-                }
+                return;
         }
+
+        d.has_player_seen = true;
+
+        // Give XP based on monster shock rating
+        int xp_gained = 0;
+
+        switch (d.mon_shock_lvl)
+        {
+        case ShockLvl::unsettling:
+                xp_gained = 3;
+                break;
+
+        case ShockLvl::frightening:
+                xp_gained = 5;
+                break;
+
+        case ShockLvl::terrifying:
+                xp_gained = 10;
+                break;
+
+        case ShockLvl::mind_shattering:
+                xp_gained = 20;
+                break;
+
+        case ShockLvl::none:
+        case ShockLvl::END:
+                break;
+        }
+
+        if (xp_gained <= 0)
+        {
+                return;
+        }
+
+        const std::string name = actor.name_a();
+
+        msg_log::add("I have discovered " + name + "!");
+
+        incr_player_xp(xp_gained);
+
+        msg_log::more_prompt();
+
+        add_history_event("Discovered " + name);
+
+        // We also cause some shock the first time
+        double shock_value =
+                map::g_player->shock_lvl_to_value(
+                        d.mon_shock_lvl);
+
+        // Dampen the progression a bit
+        shock_value = pow(shock_value, 0.9);
+
+        map::g_player->incr_shock(shock_value, ShockSrc::see_mon);
 }
 
 void on_mon_killed(actor::Actor& actor)
