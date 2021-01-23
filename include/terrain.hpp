@@ -25,6 +25,8 @@ namespace item
 class Item;
 }  // namespace item
 
+enum class Bg;
+
 template <typename T>
 class Array2;
 
@@ -700,7 +702,7 @@ private:
                 actor::Actor* actor,
                 int dmg = -1) override;
 
-        std::string m_inscr;
+        std::string m_inscr {};
 };
 
 class ChurchBench : public Terrain
@@ -745,13 +747,25 @@ public:
 
         std::string name(Article article) const override;
 
+        void bump(actor::Actor& actor_bumping) override;
+
+        void set_type(const StatueType type)
+        {
+                m_type = type;
+        }
+
+        void set_inscription(const std::string& str)
+        {
+                m_inscr = str;
+        }
+
+        void set_player_bg(const Bg bg);
+
         gfx::TileId tile() const override;
 
         void topple(
                 const Dir direction,
                 actor::Actor* const actor_toppling = nullptr);
-
-        StatueType m_type;
 
 private:
         Color color_default() const override;
@@ -762,6 +776,10 @@ private:
                 int dmg = -1) override;
 
         int base_shock_when_adj() const override;
+
+        StatueType m_type;
+        std::string m_inscr {};
+        Bg m_player_bg;
 };
 
 class Stalagmite : public Terrain

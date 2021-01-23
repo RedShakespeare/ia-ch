@@ -179,6 +179,7 @@ private:
         void on_template_built() override;
 
         std::vector<P> m_possible_grave_positions {};
+        std::vector<P> m_possible_statue_positions {};
 };
 
 // -----------------------------------------------------------------------------

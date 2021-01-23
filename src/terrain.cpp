@@ -27,6 +27,7 @@
 #include "map_travel.hpp"
 #include "msg_log.hpp"
 #include "pickup.hpp"
+#include "player_bon.hpp"
 #include "popup.hpp"
 #include "property.hpp"
 #include "property_data.hpp"
@@ -1014,7 +1015,7 @@ std::string GraveStone::name(const Article article) const
 {
         const std::string a = (article == Article::a) ? "a " : "the ";
 
-        return a + "gravestone; " + m_inscr;
+        return a + "gravestone (\"" + m_inscr + "\")";
 }
 
 Color GraveStone::color_default() const
@@ -1075,19 +1076,22 @@ Color ChurchBench::color_default() const
 // -----------------------------------------------------------------------------
 Statue::Statue(const P& p) :
         Terrain(p),
-        m_type(rnd::one_in(8) ? StatueType::ghoul : StatueType::common)
+        m_type(rnd::one_in(8) ? StatueType::ghoul : StatueType::common),
+        m_player_bg(Bg::END)
 {
 }
 
 int Statue::base_shock_when_adj() const
 {
         // Non-ghoul players are scared of Ghoul statues
-        if (m_type == StatueType::ghoul && player_bon::bg() != Bg::ghoul)
+        if (m_type == StatueType::ghoul && player_bon::is_bg(Bg::ghoul))
         {
                 return 10;
         }
-
-        return 0;
+        else
+        {
+                return 0;
+        }
 }
 
 void Statue::topple(
@@ -1220,6 +1224,14 @@ void Statue::on_hit(
         }
 }
 
+void Statue::bump(actor::Actor& actor_bumping)
+{
+        if ((m_inscr != "") && actor_bumping.is_player())
+        {
+                msg_log::add(m_inscr);
+        }
+}
+
 std::string Statue::name(const Article article) const
 {
         std::string ret = (article == Article::a) ? "a " : "the ";
@@ -1235,19 +1247,51 @@ std::string Statue::name(const Article article) const
                 break;
         }
 
+        if (m_inscr != "")
+        {
+                ret += " (\"" + m_inscr + "\")";
+        }
+
         return ret;
 }
 
 gfx::TileId Statue::tile() const
 {
-        return (m_type == StatueType::common)
-                ? gfx::TileId::witch_or_warlock
-                : gfx::TileId::ghoul;
+        if (m_player_bg == Bg::ghoul)
+        {
+                return gfx::TileId::ghoul;
+        }
+        else if (m_player_bg != Bg::END)
+        {
+                return gfx::TileId::player_melee;
+        }
+        else if (m_type == StatueType::ghoul)
+        {
+                return gfx::TileId::ghoul;
+        }
+        else
+        {
+                return gfx::TileId::witch_or_warlock;
+        }
 }
 
 Color Statue::color_default() const
 {
-        return colors::white();
+        if (m_player_bg == Bg::END)
+        {
+                return colors::white();
+        }
+        else
+        {
+                // The statue will be drawn with a player tile - make it more
+                // distinct from the player character
+                return colors::gray();
+        }
+}
+
+void Statue::set_player_bg(const Bg bg)
+{
+        m_player_bg = bg;
 }
 
 // -----------------------------------------------------------------------------

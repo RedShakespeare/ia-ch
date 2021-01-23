@@ -24,6 +24,93 @@
 #include "terrain_monolith.hpp"
 
 // -----------------------------------------------------------------------------
+// Private
+// -----------------------------------------------------------------------------
+static void put_intro_forest_graves(
+        const std::vector<P> available_positions,
+        const std::vector<HighscoreEntry>& highscores)
+{
+        size_t entry_idx = 0;
+
+        // NOTE: Here we assume the following:
+        // * The positions are sorted from left to right
+        // * The highscore entries are sorted from highest to lowest
+        for (auto it = std::rbegin(available_positions);
+             it != std::rend(available_positions);
+             ++it)
+        {
+                const P& pos = *it;
+
+                auto* const grave = new terrain::GraveStone(pos);
+
+                const auto& entry = highscores[entry_idx];
+
+                grave->set_inscription(
+                        "RIP " +
+                        entry.name +
+                        ", " +
+                        player_bon::bg_title(entry.bg) +
+                        ", " +
+                        entry.date +
+                        ", " +
+                        "Score: " +
+                        std::to_string(entry.calculate_score()));
+
+                map::put(grave);
+
+                ++entry_idx;
+
+                if (entry_idx == highscores.size())
+                {
+                        break;
+                }
+        }
+}
+
+static void put_intro_forest_statues(
+        const std::vector<P> available_positions,
+        const std::vector<HighscoreEntry>& highscores)
+{
+        size_t entry_idx = 0;
+
+        // NOTE: Here we assume the following:
+        // * The positions are sorted from left to right
+        // * The highscore entries are sorted from highest to lowest
+        for (auto it = std::rbegin(available_positions);
+             it != std::rend(available_positions);
+             ++it)
+        {
+                const P& pos = *it;
+
+                auto* const statue = new terrain::Statue(pos);
+
+                const auto& entry = highscores[entry_idx];
+
+                statue->set_player_bg(entry.bg);
+                statue->set_type(terrain::StatueType::common);
+
+                statue->set_inscription(
+                        entry.name +
+                        ", " +
+                        player_bon::bg_title(entry.bg) +
+                        ", " +
+                        entry.date +
+                        ", " +
+                        "Score: " +
+                        std::to_string(entry.calculate_score()));
+
+                map::put(statue);
+
+                ++entry_idx;
+
+                if (entry_idx == highscores.size())
+                {
+                        break;
+                }
+        }
+}
+
+// -----------------------------------------------------------------------------
 // MapBuilderDeepOneLair
 // -----------------------------------------------------------------------------
 MapBuilderDeepOneLair::MapBuilderDeepOneLair() :
@@ -287,6 +374,12 @@ void MapBuilderIntroForest::handle_template_pos(const P& p, const char c)
         }
         break;
 
+        case 'W':
+        {
+                // Store this position for placing player statues
+                m_possible_statue_positions.push_back(p);
+        }
+        // fallthrough
         case '.':
         {
                 if (rnd::one_in(6))
@@ -455,50 +548,38 @@ void MapBuilderIntroForest::handle_template_pos(const P& p, const char c)
 
 void MapBuilderIntroForest::on_template_built()
 {
-        const auto highscore_entries = highscore::entries_sorted();
-        const size_t nr_highscore_entries = highscore_entries.size();
+        const auto highscores = highscore::entries_sorted();
 
-        if (nr_highscore_entries <= 0)
+        std::vector<HighscoreEntry> highscores_lose;
+        std::vector<HighscoreEntry> highscores_win;
+
+        highscores_lose.reserve(highscores.size());
+        highscores_win.reserve(highscores.size());
+
+        for (const auto& e : highscores)
         {
-                return;
+                if (e.is_win == IsWin::no)
+                {
+                        highscores_lose.push_back(e);
+                }
+                else
+                {
+                        highscores_win.push_back(e);
+                }
         }
 
-        size_t entry_idx = 0;
-        size_t nr_placed = 0;
-
-        // NOTE: This assumes that the grave positions are added from left to
-        // right when building the template. Here we iterate backwards over the
-        // positions, starting with the highest score.
-        for (auto it = std::rbegin(m_possible_grave_positions);
-             it != std::rend(m_possible_grave_positions);
-             ++it)
+        if (!highscores_lose.empty())
         {
-                const P& pos = *it;
+                put_intro_forest_graves(
+                        m_possible_grave_positions,
+                        highscores_lose);
+        }
 
-                auto* grave = new terrain::GraveStone(pos);
-
-                const auto entry = highscore_entries[entry_idx];
-                const auto name = entry.name;
-                const auto date_str = entry.date;
-                const auto score_str = std::to_string(entry.calculate_score());
-                const auto class_str = player_bon::bg_title(entry.bg);
-
-                grave->set_inscription(
-                        "RIP " +
-                        name + ", " +
-                        class_str + ", " +
-                        date_str + ", " +
-                        "Score: " + score_str);
-
-                map::put(grave);
-
-                ++nr_placed;
-                ++entry_idx;
-
-                if (nr_placed == nr_highscore_entries)
-                {
-                        break;
-                }
+        if (!highscores_win.empty())
+        {
+                put_intro_forest_statues(
+                        m_possible_statue_positions,
+                        highscores_win);
         }
 }
 
