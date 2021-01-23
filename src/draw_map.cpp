@@ -518,34 +518,31 @@ static void draw_player_character()
                 return;
         }
 
-        auto* item = map::g_player->m_inv.item_in_slot(SlotId::wpn);
-
-        const bool is_ghoul = player_bon::bg() == Bg::ghoul;
-
         const Color color = map::g_player->color();
-
         Color color_bg = colors::black();
-
-        bool uses_ranged_wpn = false;
-
-        if (item)
-        {
-                uses_ranged_wpn = item->data().ranged.is_ranged_wpn;
-        }
 
         gfx::TileId tile;
 
-        if (is_ghoul)
+        if (player_bon::is_bg(Bg::ghoul))
         {
                 tile = gfx::TileId::ghoul;
         }
-        else if (uses_ranged_wpn)
-        {
-                tile = gfx::TileId::player_firearm;
-        }
         else
         {
-                tile = gfx::TileId::player_melee;
+                auto* item = map::g_player->m_inv.item_in_slot(SlotId::wpn);
+
+                if (item && item->data().ranged.is_ranged_wpn)
+                {
+                        tile = gfx::TileId::player_firearm;
+                }
+                else if (item)
+                {
+                        tile = gfx::TileId::player_melee;
+                }
+                else
+                {
+                        tile = gfx::TileId::player_unarmed;
+                }
         }
 
         const char character = '@';

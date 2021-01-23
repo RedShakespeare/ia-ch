@@ -143,6 +143,7 @@ enum class TileId
         pitchfork,
         player_firearm,
         player_melee,
+        player_unarmed,
         polyp,
         potion,
         projectile_std_back_slash,
