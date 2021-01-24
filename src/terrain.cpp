@@ -221,7 +221,7 @@ void Terrain::on_new_turn()
 
                                 cell.terrain->hit(DmgType::fire, nullptr);
 
-                                if (cell.terrain->m_burn_state == BurnState::burning)
+                                if (cell.terrain->is_burning())
                                 {
                                         cell.terrain->m_started_burning_this_turn = true;
 
@@ -1083,8 +1083,11 @@ Statue::Statue(const P& p) :
 
 int Statue::base_shock_when_adj() const
 {
-        // Non-ghoul players are scared of Ghoul statues
-        if (m_type == StatueType::ghoul && player_bon::is_bg(Bg::ghoul))
+        const bool is_ghoul_statue =
+                (m_type == StatueType::ghoul) ||
+                (m_player_bg == Bg::ghoul);
+
+        if (is_ghoul_statue && !player_bon::is_bg(Bg::ghoul))
         {
                 return 10;
         }
@@ -1229,6 +1232,10 @@ void Statue::bump(actor::Actor& actor_bumping)
         if ((m_inscr != "") && actor_bumping.is_player())
         {
                 msg_log::add(m_inscr);
+        }
+        else
+        {
+                Terrain::bump(actor_bumping);
         }
 }
 
