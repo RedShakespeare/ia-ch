@@ -1082,7 +1082,7 @@ void Spell::cast(
             caster->is_alive() &&
             allow_cast &&
             (base_max_spi_cost(skill) > 0) &&
-            rnd::one_in(6))
+            rnd::one_in(10))
         {
                 // Run a random side effect
                 const int d = 3;
