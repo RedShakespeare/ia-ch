@@ -103,6 +103,19 @@ static void erase_finished_flahes()
 {
         for (auto it = std::begin(s_flashes); it != std::end(s_flashes);) {
                 if (it->alpha_pct <= 0) {
+                        // TODO: The flash lifetimes vary a bit, it is very slightly noticeable. A
+                        // solution is probably to have an individual timer for each flash animation
+                        // object, instead of a global pace (i.e. move
+                        // "s_last_flash_animation_step_ms" as data per flash object instead).
+                        //
+                        // Also it could possibly be a problem that flash animations don't run
+                        // during other animations such as explosions?
+                        //
+                        TRACE
+                                << "Flash lifetime: "
+                                << it->last_draw_ms - it->first_draw_ms
+                                << std::endl;
+
                         s_flashes.erase(it);
                 }
                 else {
@@ -143,21 +156,18 @@ namespace io
 void init_animation()
 {
         for (size_t i = 0; i < (size_t)GraphicsCycle::END; ++i) {
-                auto& delay = s_graphics_cycle_delay_ms[i];
+                uint32_t& delay = s_graphics_cycle_delay_ms[i];
 
                 const auto cycle = (GraphicsCycle)i;
 
+                // NOTE: Keep the slow cycle as a multiple of the fast cycle.
                 switch (cycle) {
                 case GraphicsCycle::fast:
-                        delay = 200;
+                        delay = 300;
                         break;
 
                 case GraphicsCycle::slow:
-                        delay = 500;
-                        break;
-
-                case GraphicsCycle::very_slow:
-                        delay = 1400;
+                        delay = 1200;
                         break;
 
                 case GraphicsCycle::END:
@@ -174,7 +184,7 @@ bool step_graphics_cycling()
 {
         bool did_step = false;
 
-        const auto current_time_ms = SDL_GetTicks();
+        const uint32_t current_time_ms = SDL_GetTicks();
 
         for (size_t i = 0; i < (size_t)io::GraphicsCycle::END; ++i) {
                 const auto d = current_time_ms - s_last_graphics_cycle_ms[i];
@@ -272,10 +282,18 @@ void draw_flash_animations()
         // elements (like flashing text):
         set_clip_rect_to_panel(Panel::map);
 
-        for (const FlashData& flash : s_flashes) {
+        for (/*TODO: Debugging: const*/ FlashData& flash : s_flashes) {
                 const auto a = (uint8_t)((255 * flash.alpha_pct) / 100);
 
                 draw_rectangle_filled(flash.px_rect, flash.color, a);
+
+                // -------------------------------------------------
+                // TODO: Debugging:
+                flash.last_draw_ms = SDL_GetTicks();
+                if (flash.first_draw_ms == 0) {
+                        flash.first_draw_ms = flash.last_draw_ms;
+                }
+                // -------------------------------------------------
         }
 
         disable_clip_rect();

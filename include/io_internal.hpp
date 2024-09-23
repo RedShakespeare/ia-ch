@@ -38,6 +38,10 @@ struct FlashData
         Color color {};
         int alpha_pct {0};
         int alpha_pct_decr_step {-1};
+
+        // TODO: For debug
+        uint32_t first_draw_ms {0};
+        uint32_t last_draw_ms {0};
 };
 
 extern SDL_Window* g_sdl_window;
