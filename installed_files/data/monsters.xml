@@ -1136,6 +1136,112 @@ SPDX-License-Identifier: AGPL-3.0-or-later
         </spawning>
     </monster>
 
+    <!-- TODO: Also add MON_BONE_HORROR, MON_BONE_TITAN -->
+    <!--************************************************************-->
+    <!-- MON_BONE_THRALL -->
+    <!--************************************************************-->
+    <monster id="MON_BONE_THRALL">
+        <text>
+            <name_a>a Bone Thrall</name_a>
+            <name_the>the Bone Thrall</name_the>
+            <corpse_name_a></corpse_name_a>
+            <corpse_name_the></corpse_name_the>
+            <description>TODO.</description>
+            <allow_wielded_weapon_description>false</allow_wielded_weapon_description>
+            <allow_speed_description>true</allow_speed_description>
+            <wary_message>looks wary.</wary_message>
+            <smell_message></smell_message>
+            <aware_message_seen>clatters and thrashes violently.</aware_message_seen>
+            <aware_message_hidden>I hear clattering of bones.</aware_message_hidden>
+            <spell_message></spell_message>
+            <death_message>crumbles into splinters and dust.</death_message>
+        </text>
+
+        <graphics>
+            <!-- TODO: Make a unique tile -->
+            <tile>TILE_BONE_THRALL</tile>
+            <character>U</character>
+            <color>COLOR_LIGHT_WHITE</color>
+        </graphics>
+
+        <audio>
+            <!-- TODO: Add clatter sound effects -->
+            <aware_sfx_seen>SFX_BONE_CLATTER</aware_sfx_seen>
+            <aware_sfx_hidden>SFX_BONE_CLATTER</aware_sfx_hidden>
+        </audio>
+
+        <attributes>
+            <hit_points>12</hit_points>
+            <spirit>14</spirit>
+            <speed>MONSPEED_SLOW</speed>
+            <shock_level>MONSHOCK_FRIGHTENING</shock_level>
+            <melee>60</melee>
+            <ranged>0</ranged>
+            <dodging>0</dodging>
+            <stealth>0</stealth>
+            <searching>0</searching>
+            <can_open_doors>false</can_open_doors>
+            <can_bash_doors>true</can_bash_doors>
+            <size>MONSIZE_HUMANOID</size>
+            <always_prevent_knockback>false</always_prevent_knockback>
+            <humanoid/>
+            <undead/>
+            <can_bleed>false</can_bleed>
+            <can_leave_corpse>false</can_leave_corpse>
+            <prioritize_destroying_corpse>true</prioritize_destroying_corpse>
+        </attributes>
+
+        <attacks>
+            <attack id="ITEMINTR_CLAW">
+                <damage>7</damage>
+            </attack>
+        </attacks>
+
+        <properties>
+            <property>PROP_REDUCED_PIERCE_DMG</property>
+            <property>PROP_DARKVISION</property>
+            <property>PROP_R_BLIND</property>
+            <property>PROP_R_POISON</property>
+            <property>PROP_R_DISEASE</property>
+            <property>PROP_R_BREATH</property>
+            <property>PROP_R_ELEC</property>
+            <property>PROP_R_FIRE</property>
+        </properties>
+
+        <ai>
+            <erratic_move_percent>5</erratic_move_percent>
+            <turns_aware>16</turns_aware>
+            <ranged_cooldown_turns>0</ranged_cooldown_turns>
+            <is_pausing_on_player_seen>false</is_pausing_on_player_seen>
+            <looks>true</looks>
+            <avoids_blocking_friend>true</avoids_blocking_friend>
+            <attacks>true</attacks>
+            <paths_to_target_when_aware>true</paths_to_target_when_aware>
+            <moves_to_target_when_los>true</moves_to_target_when_los>
+            <moves_to_lair>false</moves_to_lair>
+            <moves_to_leader>true</moves_to_leader>
+            <moves_randomly_when_unaware>true</moves_randomly_when_unaware>
+        </ai>
+
+        <spawning>
+            <min_dungeon_level>1</min_dungeon_level>
+            <max_dungeon_level>19</max_dungeon_level>
+            <spawn_weight>100</spawn_weight>
+            <auto_spawn>true</auto_spawn>
+            <can_be_summoned_by_monster>true</can_be_summoned_by_monster>
+            <can_be_shapeshifted_into>false</can_be_shapeshifted_into>
+            <nr_allowed_to_spawn>-1</nr_allowed_to_spawn>
+            <group_size weight="20">MONGROUPSIZE_ALONE</group_size>
+            <group_size weight="60" required_dungeon_level="2">MONGROUPSIZE_FEW</group_size>
+            <group_size weight="20" required_dungeon_level="3">MONGROUPSIZE_PACK</group_size>
+            <group_size weight="1"  required_dungeon_level="3">MONGROUPSIZE_SWARM</group_size>
+            <native_room>ROOM_PLAIN</native_room>
+            <native_room>ROOM_MONSTER</native_room>
+            <native_room>ROOM_CRYPT</native_room>
+            <native_room>ROOM_JAIL</native_room>
+        </spawning>
+    </monster>
+    
     <!--************************************************************-->
     <!-- MON_CULTIST -->
     <!--************************************************************-->
