@@ -7,7 +7,7 @@ Clone the IA repository on GitLab:
     https://gitlab.com/martin-tornqvist/ia
 
 ## Which branch should I build?
-**develop** - If you want to try out new features early (the develop branch should be relatively stable and bug free, feel free to open issues if you encounter bugs or crashes).
+**main** - If you want to try out new features early (the main branch should be relatively stable and bug free, feel free to open issues if you encounter bugs or crashes).
 
 **tags (v15.0, v16.0, etc)** - If you want to build one of the official releases (note that the build method may be very different for older versions).
 
