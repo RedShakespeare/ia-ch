@@ -59,6 +59,8 @@ static bool query_overwrite_savefile()
         return (choice == 0);
 }
 
+static Color s_logo_color;
+
 // -----------------------------------------------------------------------------
 // Main menu state
 // -----------------------------------------------------------------------------
@@ -82,7 +84,10 @@ void MainMenuState::draw()
         }
 
         if (config::is_tiles_mode()) {
-                io::draw_logo();
+                if (s_logo_color.r() == 0) {
+                        s_logo_color = colors::light_white();
+                }
+                io::draw_logo(s_logo_color);
         }
         else {
                 // Text mode
@@ -132,7 +137,7 @@ void MainMenuState::draw()
         P pos = menu_pos;
 
         for (size_t i = 0; i < labels.size(); ++i) {
-                const std::string label = labels[i];
+                const std::string& label = labels[i];
 
                 const bool is_marked = m_browser.is_at_idx((int)i);
 
@@ -246,6 +251,15 @@ void MainMenuState::draw()
                 colors::gray());
 
 }  // draw
+
+void MainMenuState::cycle_graphics(const io::GraphicsCycle cycle)
+{
+        if (cycle == io::GraphicsCycle::fast) {
+                if (s_logo_color.r() != 0) {
+                        s_logo_color.randomize_rgb(2);
+                }
+        }
+}
 
 void MainMenuState::update()
 {

@@ -370,12 +370,7 @@ static void load_logo()
 {
         TRACE_FUNC_BEGIN;
 
-        // Use a smaller image if graphics are scaled, otherwise the logo looks
-        // gigantic.
-        const std::string img_path =
-                (config::video_scale_factor() == 1)
-                ? paths::logo_img_path()
-                : paths::logo_small_img_path();
+        const std::string img_path = paths::logo_img_path();
 
         io::g_logo_texture = load_texture(img_path);
 
@@ -825,7 +820,7 @@ void cover_cell(const Panel panel, const P& offset)
         cover_area(panel, offset, {1, 1});
 }
 
-void draw_logo()
+void draw_logo(Color color)
 {
         // Set pixel position *before* applying rendering offset and scaling
         const int screen_px_w = panel_px_w(Panel::screen);
@@ -839,7 +834,7 @@ void draw_logo()
                 &img_px_dims.x,
                 &img_px_dims.y);
 
-        P px_pos((screen_px_w - img_px_dims.x) / 2, 0);
+        P px_pos((screen_px_w - img_px_dims.x) / 2, gui_to_px_coords_y(1));
 
         // * Now apply offset and scaling *
 
@@ -859,9 +854,9 @@ void draw_logo()
         render_rect.w = img_px_dims.x;
         render_rect.h = img_px_dims.y;
 
-        const int mod_value = std::min(255, (config::brightness_pct() * 255) / 100);
+        color = color.with_brightness(config::brightness_pct());
 
-        SDL_SetTextureColorMod(g_logo_texture, mod_value, mod_value, mod_value);
+        SDL_SetTextureColorMod(g_logo_texture, color.r(), color.g(), color.b());
 
         SDL_RenderCopy(g_sdl_renderer, g_logo_texture, nullptr, &render_rect);
 }

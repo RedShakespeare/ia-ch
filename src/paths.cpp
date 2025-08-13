@@ -297,11 +297,6 @@ std::string logo_img_path()
         return images_dir() + "/main_menu_logo.png";
 }
 
-std::string logo_small_img_path()
-{
-        return images_dir() + "/main_menu_logo_small.png";
-}
-
 std::string audio_dir()
 {
         return "audio/";

@@ -19,6 +19,8 @@ public:
 
         void draw() override;
 
+        void cycle_graphics(io::GraphicsCycle cycle);
+
         void update() override;
 
         void on_start() override;

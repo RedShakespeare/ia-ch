@@ -204,7 +204,7 @@ void draw_rectangle_filled_mod_blending(
         const Color& color,
         uint8_t alpha = SDL_ALPHA_OPAQUE);
 
-void draw_logo();
+void draw_logo(Color color);
 
 // Draws a description "box" for items, spells, etc. The parameter lines may be
 // empty, in which case an empty area is drawn.
