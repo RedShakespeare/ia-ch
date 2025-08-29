@@ -302,6 +302,15 @@ bool is_current_state(const State* const state)
         return state == s_current_states.back().get();
 }
 
+bool is_current_state(const StateId id)
+{
+        if (is_empty()) {
+                return false;
+        }
+
+        return s_current_states.back().get()->id() == id;
+}
+
 State* current_state()
 {
         if (is_empty()) {

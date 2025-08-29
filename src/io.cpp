@@ -459,6 +459,16 @@ static void load_tiles()
 // -----------------------------------------------------------------------------
 namespace io
 {
+// Q Controls
+bool is_right_held = false;
+bool is_left_held = false;
+bool is_up_held = false;
+bool is_down_held = false;
+bool is_up_right_held = false;
+bool is_up_left_held = false;
+bool is_down_right_held = false;
+bool is_down_left_held = false;
+
 SDL_Texture* g_font_texture_with_contours = nullptr;
 SDL_Texture* g_font_texture = nullptr;
 SDL_Texture* g_tile_textures[(size_t)gfx::TileId::END] = {};

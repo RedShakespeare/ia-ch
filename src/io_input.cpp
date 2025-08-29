@@ -232,15 +232,47 @@ static void handle_keydown_event()
                 handle_keydown_enter_event();
         } break;
 
-        case SDLK_KP_6:
-        case SDLK_KP_1:
-        case SDLK_KP_2:
-        case SDLK_KP_3:
-        case SDLK_KP_4:
+        case SDLK_KP_6: {
+                io::is_right_held = true;
+                s_is_done_reading_input = true;
+        } break;
+
+        case SDLK_KP_1: {
+                io::is_down_left_held = true;
+                s_is_done_reading_input = true;
+        } break;
+
+        case SDLK_KP_2: {
+                io::is_down_held = true;
+                s_is_done_reading_input = true;
+        } break;
+
+        case SDLK_KP_3: {
+                io::is_down_right_held = true;
+                s_is_done_reading_input = true;
+        } break;
+
+        case SDLK_KP_4: {
+                io::is_left_held = true;
+                s_is_done_reading_input = true;
+        } break;
+
+        case SDLK_KP_7: {
+                io::is_up_left_held = true;
+                s_is_done_reading_input = true;
+        } break;
+
+        case SDLK_KP_8: {
+                io::is_up_held = true;
+                s_is_done_reading_input = true;
+        } break;
+
+        case SDLK_KP_9: {
+                io::is_up_right_held = true;
+                s_is_done_reading_input = true;
+        } break;
+
         case SDLK_KP_5:
-        case SDLK_KP_7:
-        case SDLK_KP_8:
-        case SDLK_KP_9:
         case SDLK_KP_0:
         case SDLK_SPACE:
         case SDLK_BACKSPACE:
@@ -283,6 +315,38 @@ static void handle_keyup_event()
         case SDLK_LSHIFT:
         case SDLK_RSHIFT: {
                 on_shift_released();
+        } break;
+
+        case SDLK_KP_6: {
+                io::is_right_held = false;
+        } break;
+
+        case SDLK_KP_4: {
+                io::is_left_held = false;
+        } break;
+
+        case SDLK_KP_8: {
+                io::is_up_held = false;
+        } break;
+
+        case SDLK_KP_2: {
+                io::is_down_held = false;
+        } break;
+
+        case SDLK_KP_7: {
+                io::is_up_left_held = false;
+        } break;
+
+        case SDLK_KP_9: {
+                io::is_up_right_held = false;
+        } break;
+
+        case SDLK_KP_1: {
+                io::is_down_left_held = false;
+        } break;
+
+        case SDLK_KP_3: {
+                io::is_down_right_held = false;
         } break;
 
         default:

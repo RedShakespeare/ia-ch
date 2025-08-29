@@ -658,6 +658,76 @@ static void draw_player_character()
         draw_obj.draw();
 }
 
+// Intended to be used when controller support input mode is enabled. Draws a dot in the currently
+// pending direction when movement keys are held down.
+static void draw_player_pending_direction()
+{
+        const actor::Actor& player = *map::g_player;
+
+        if (!viewport::is_in_view(player.m_pos)) {
+                return;
+        }
+
+        const P player_px_pos = io::map_to_px_coords(viewport::to_view_pos(map::g_player->m_pos));
+
+        const int cell_px_w = config::map_cell_px_w();
+        const int cell_px_h = config::map_cell_px_h();
+
+        const int half_cell_px_w = cell_px_w / 2;
+        const int half_cell_px_h = cell_px_h / 2;
+
+        P px_pos(player_px_pos.with_offsets(half_cell_px_w, half_cell_px_h));
+
+        bool is_any_held = false;
+
+        if ((io::is_right_held +
+             io::is_left_held +
+             io::is_down_held +
+             io::is_up_held +
+             io::is_down_right_held +
+             io::is_up_right_held +
+             io::is_down_left_held +
+             io::is_up_left_held) > 1) {
+                return;
+        }
+
+        const int extra_offset = 2;
+
+        if (io::is_right_held || io::is_down_right_held || io::is_up_right_held) {
+                px_pos.x += half_cell_px_w - 1 + extra_offset;
+                is_any_held = true;
+        }
+
+        if (io::is_left_held || io::is_down_left_held || io::is_up_left_held) {
+                px_pos.x -= half_cell_px_w + extra_offset;
+                is_any_held = true;
+        }
+
+        if (io::is_down_held || io::is_down_right_held || io::is_down_left_held) {
+                px_pos.y += half_cell_px_h - 1 + extra_offset;
+                is_any_held = true;
+        }
+
+        if (io::is_up_held || io::is_up_right_held || io::is_up_left_held) {
+                px_pos.y -= half_cell_px_h + extra_offset + 2;
+                is_any_held = true;
+        }
+
+        // Add even more offset if the direction is straight up (due to how the player graphics are
+        // designed it can otherwise overlap with the player head).
+        if (io::is_up_held) {
+                px_pos.y -= 1;
+        }
+
+        if (!is_any_held) {
+                return;
+        }
+
+        const Color& color = colors::yellow();
+
+        io::draw_rectangle_filled({px_pos - 2, px_pos + 2}, color);
+}
+
 // -----------------------------------------------------------------------------
 // draw_map
 // -----------------------------------------------------------------------------
@@ -676,6 +746,11 @@ void run()
         draw_living_monsters();
 
         draw_player_character();
+
+        if (config::input_mode() == InputMode::controller_support &&
+            states::is_current_state(StateId::game)) {
+                draw_player_pending_direction();
+        }
 
 #ifndef NDEBUG
         io::g_allow_render = true;

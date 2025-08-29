@@ -1048,8 +1048,18 @@ std::string InputModeOption::name() const
 std::string InputModeOption::descr() const
 {
         return (
-                "Use default input mode (numerical keypad or arrow keys), or "
-                "\"Vi-keys\". See the game manual for more information.");
+                "Use any of the following input modes:"
+                "\n\n{COLOR_LIGHT_WHITE}Default:{color_reset} "
+                "Numerical keypad or arrow keys"
+                "\n\n{COLOR_LIGHT_WHITE}Vi-keys:{color_reset} "
+                "hjkl for orthogonal movement and yubn for diagonal movement."
+                "\n\n{COLOR_LIGHT_WHITE}Controller support:{color_reset} "
+                "Intended to be used for cases such as binding a "
+                "controller stick to the numpad's 8 directional keys. "
+                "Movement requires confirmation with the [q] key. "
+                "Only pressing [q] issues a wait command."
+                "\n\nSee the game manual for more information "
+                "on game input.");
 }
 
 std::string InputModeOption::value_str() const
@@ -1060,6 +1070,9 @@ std::string InputModeOption::value_str() const
 
         case InputMode::vi_keys:
                 return "Vi-keys";
+
+        case InputMode::controller_support:
+                return "Controller support";
 
         case InputMode::END:
                 break;

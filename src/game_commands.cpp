@@ -12,6 +12,7 @@
 #include <memory>
 #include <ostream>
 #include <string>
+#include <tuple>
 #include <unordered_map>
 #include <utility>
 #include <vector>
@@ -36,7 +37,6 @@
 #include "debug.hpp"
 #include "direction.hpp"
 #include "disarm.hpp"
-#include "explosion.hpp"
 #include "game.hpp"
 #include "game_summary_data.hpp"
 #include "game_time.hpp"
@@ -710,6 +710,88 @@ static GameCmd to_cmd_vi(const io::InputData& input)
 
 }  // to_cmd_vi
 
+static GameCmd to_cmd_controller_support(const io::InputData& input)
+{
+        // Overriden keys for controller support mode
+
+        if (!states::is_current_state(StateId::game)) {
+                // In other states than the game state (e.g. using the marker to aim a firearm),
+                // just use the default keys instead, without requiring movement confirmation.
+                return to_cmd_default(input);
+        }
+
+        if (input.key >= '0' && input.key <= '9') {
+                return GameCmd::none;
+        }
+
+        // Refuse any commands if multiple direction keys are held (mostly applicable if someone
+        // would use this controller mode with a keyboard for some reason).
+        if ((io::is_right_held +
+             io::is_left_held +
+             io::is_down_held +
+             io::is_up_held +
+             io::is_down_right_held +
+             io::is_up_right_held +
+             io::is_down_left_held +
+             io::is_up_left_held) > 1) {
+                return GameCmd::none;
+        }
+
+        switch (input.key) {
+        case 'q':
+                if (io::is_right_held) {
+                        return GameCmd::right;
+                }
+                else if (io::is_left_held) {
+                        return GameCmd::left;
+                }
+                else if (io::is_up_held) {
+                        return GameCmd::up;
+                }
+                else if (io::is_down_held) {
+                        return GameCmd::down;
+                }
+                else if (io::is_up_right_held) {
+                        return GameCmd::up_right;
+                }
+                else if (io::is_up_left_held) {
+                        return GameCmd::up_left;
+                }
+                else if (io::is_down_right_held) {
+                        return GameCmd::down_right;
+                }
+                else if (io::is_down_left_held) {
+                        return GameCmd::down_left;
+                }
+                else {
+                        return GameCmd::wait;
+                }
+                break;
+        case SDLK_KP_1:
+                return GameCmd::none;
+        case SDLK_KP_2:
+                return GameCmd::none;
+        case SDLK_KP_3:
+                return GameCmd::none;
+        case SDLK_KP_4:
+                return GameCmd::none;
+        case SDLK_KP_5:
+                return GameCmd::none;
+        case SDLK_KP_6:
+                return GameCmd::none;
+        case SDLK_KP_7:
+                return GameCmd::none;
+        case SDLK_KP_8:
+                return GameCmd::none;
+        case SDLK_KP_9:
+                return GameCmd::none;
+        }
+
+        // Input not overriden, delegate to default keys.
+        return to_cmd_default(input);
+
+}  // to_cmd_q
+
 // -----------------------------------------------------------------------------
 // game_commands
 // -----------------------------------------------------------------------------
@@ -723,6 +805,9 @@ GameCmd to_cmd(const io::InputData& input)
 
         case InputMode::vi_keys:
                 return to_cmd_vi(input);
+
+        case InputMode::controller_support:
+                return to_cmd_controller_support(input);
 
         case InputMode::END:
                 break;
@@ -818,14 +903,12 @@ void handle(const GameCmd cmd)
                 }
 
                 if (is_allowed) {
-                        // NOTE: We should not print any "wait" message here,
-                        // since it would look weird in some cases - e.g. when
-                        // the waiting is immediately interrupted by a message
-                        // from rearranging pistol magazines.
+                        // NOTE: We should not print any "wait" message here, since it would look
+                        // weird in some cases - e.g. when the waiting is immediately interrupted by
+                        // a message from rearranging pistol magazines.
 
-                        // NOTE: A 'long wait' merely performs "move" into the
-                        // center position a number of turns (i.e. the same as
-                        // pressing 'wait')
+                        // NOTE: A 'long wait' merely performs "move" into the center position a
+                        // number of turns (i.e. the same as pressing 'wait').
                         const int turns_to_apply = 5;
 
                         actor::player_state::g_wait_turns_left = (turns_to_apply - 1);

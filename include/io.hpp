@@ -26,6 +26,7 @@ class Actor;
 
 namespace io
 {
+
 // Character indicating a filled square
 inline constexpr char g_filled_rect_char = 1;
 
@@ -230,6 +231,16 @@ void sleep(uint32_t duration);
 void clear_input();
 
 InputData read_input();
+
+// Q Controls
+extern bool is_right_held;
+extern bool is_left_held;
+extern bool is_up_held;
+extern bool is_down_held;
+extern bool is_up_right_held;
+extern bool is_up_left_held;
+extern bool is_down_right_held;
+extern bool is_down_left_held;
 
 }  // namespace io
 

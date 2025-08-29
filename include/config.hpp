@@ -21,6 +21,7 @@ enum class InputMode
 {
         standard,
         vi_keys,
+        controller_support,
 
         END
 };

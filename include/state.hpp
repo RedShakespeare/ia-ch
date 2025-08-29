@@ -152,6 +152,8 @@ bool is_empty();
 
 bool is_current_state(const State* state);
 
+bool is_current_state(StateId id);
+
 State* current_state();
 
 void pop_until(StateId id);
