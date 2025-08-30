@@ -3193,7 +3193,7 @@ void ItemContainer::on_item_found(
                 !data.ranged.has_infinite_ammo;
 
         if (is_unloadable_wpn) {
-                msg_log::add("Unload? [u]");
+                msg_log::add("Unload? [u]", colors::light_white());
         }
 
         auto answer = BinaryAnswer::no;

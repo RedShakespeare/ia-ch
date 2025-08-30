@@ -62,33 +62,33 @@ BinaryAnswer yes_or_no(
         while (true) {
                 input = io::read_input();
 
-                const bool is_special_key_pressed =
-                        key_for_special_event.has_value() &&
-                        (input.key == key_for_special_event.value());
-
                 const bool is_canceled_with_space =
                         (input.key == SDLK_SPACE) &&
                         (allow_space_cancel == AllowSpaceCancel::yes);
 
-                if ((input.key == 'y') ||
+                if (is_canceled_with_space ||
                     (input.key == 'n') ||
-                    (input.key == SDLK_ESCAPE) ||
-                    is_canceled_with_space ||
-                    is_special_key_pressed) {
-                        break;
+                    (input.key == SDLK_ESCAPE)) {
+                        return BinaryAnswer::no;
+                }
+
+                if ((input.key == 'y') ||
+                    (input.key == SDLK_RETURN)) {
+                        return BinaryAnswer::yes;
+                }
+
+                const bool is_special_key_pressed =
+                        key_for_special_event.has_value() &&
+                        (input.key == key_for_special_event.value());
+
+                if (is_special_key_pressed) {
+                        return BinaryAnswer::special;
                 }
         }
 
-        if (key_for_special_event.has_value() &&
-            (input.key == key_for_special_event.value())) {
-                return BinaryAnswer::special;
-        }
-        else if (input.key == 'y') {
-                return BinaryAnswer::yes;
-        }
-        else {
-                return BinaryAnswer::no;
-        }
+        ASSERT(false);
+
+        return BinaryAnswer::no;
 }
 
 io::InputData letter(const bool accept_enter)

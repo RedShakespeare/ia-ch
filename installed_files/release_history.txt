@@ -11,6 +11,9 @@
 # Design
 - Replaced the main menu logo with a new one.
 
+# Convenience / quality of life features
+- All "y/n" prompts can now also be accepted with the enter key.
+
 ##############################
 # Fixes
 ##############################
