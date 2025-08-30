@@ -101,38 +101,32 @@ static void update_flash_with_actor(io::FlashData& flash)
 
 static void erase_finished_flashes()
 {
-        for (auto it = std::begin(s_flashes); it != std::end(s_flashes);) {
-                if (it->alpha_pct <= 0) {
-                        s_flashes.erase(it);
-                }
-                else {
-                        ++it;
-                }
-        }
+        s_flashes.erase(
+                std::remove_if(
+                        std::begin(s_flashes),
+                        std::end(s_flashes),
+                        [](auto const& f) { return f.alpha_pct <= 0; }),
+                s_flashes.end());
 }
 
 static void erase_flashes_at(const P& pos)
 {
-        for (auto it = std::begin(s_flashes); it != std::end(s_flashes);) {
-                if (it->pos == pos) {
-                        s_flashes.erase(it);
-                }
-                else {
-                        ++it;
-                }
-        }
+        s_flashes.erase(
+                std::remove_if(
+                        std::begin(s_flashes),
+                        std::end(s_flashes),
+                        [pos](auto const& f) { return f.pos == pos; }),
+                s_flashes.end());
 }
 
 static void erase_flashes_with_actor(const actor::Actor* const actor)
 {
-        for (auto it = std::begin(s_flashes); it != std::end(s_flashes);) {
-                if (it->actor_flashed_at == actor) {
-                        s_flashes.erase(it);
-                }
-                else {
-                        ++it;
-                }
-        }
+        s_flashes.erase(
+                std::remove_if(
+                        std::begin(s_flashes),
+                        std::end(s_flashes),
+                        [actor](auto const& f) { return f.actor_flashed_at == actor; }),
+                s_flashes.end());
 }
 
 // -----------------------------------------------------------------------------
