@@ -738,7 +738,7 @@ static GameCmd to_cmd_controller_support(const io::InputData& input)
         }
 
         switch (input.key) {
-        case 'q':
+        case SDLK_RETURN:
                 if (io::is_right_held) {
                         return GameCmd::right;
                 }
@@ -790,7 +790,7 @@ static GameCmd to_cmd_controller_support(const io::InputData& input)
         // Input not overriden, delegate to default keys.
         return to_cmd_default(input);
 
-}  // to_cmd_q
+}  // to_cmd_controller_support
 
 // -----------------------------------------------------------------------------
 // game_commands

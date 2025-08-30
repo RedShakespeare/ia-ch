@@ -72,7 +72,7 @@ As an alternative, for keyboards without a numpad (e.g. some laptop keyboards), 
 
 The "k" and "j" keys can be used to scroll up and down in menus, and "l" selects the currently marked entry (as an alternative to the enter key).
 
-There is also a Controller Support mode, which can be enabled in the options menu. This mode is intended for cases such as binding a controller stick to the numpad's eight directional keys (see the movement layout above). In this mode, you must press the [q] key while holding a direction in order to execute a move. Only pressing [q] without a direction executes a "wait" command. While a direction is held, a small symbol appears to indicate the active input. Note that this confirmation is also required when choosing a direction for actions such as kicking.
+There is also a Controller Support mode, which can be enabled in the options menu. This mode is intended for cases such as binding a controller stick to the numpad's eight directional keys (see the movement layout above). In this mode, you must press the [Enter] key while holding a direction in order to execute a move. Only pressing [Enter] without a direction executes a "wait" command. While a direction is held, a small symbol appears to indicate the active input. Note that this confirmation is also required when choosing a direction for actions such as kicking.
 
 --------------------------------------------------------------------------------
 Environment interaction

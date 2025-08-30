@@ -1056,8 +1056,8 @@ std::string InputModeOption::descr() const
                 "\n\n{COLOR_LIGHT_WHITE}Controller support:{color_reset} "
                 "Intended to be used for cases such as binding a "
                 "controller stick to the numpad's 8 directional keys. "
-                "Movement requires confirmation with the [q] key. "
-                "Only pressing [q] issues a wait command."
+                "Movement requires confirmation with the [Enter] key. "
+                "Only pressing [Enter] issues a wait command."
                 "\n\nSee the game manual for more information "
                 "on game input.");
 }
