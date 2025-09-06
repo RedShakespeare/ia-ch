@@ -388,7 +388,10 @@ add_executable(ia-test ${TEST_SRC})
 set_target_properties(ia PROPERTIES OUTPUT_NAME ia)
 
 if(${CMAKE_MAJOR_VERSION}.${CMAKE_MINOR_VERSION} GREATER_EQUAL 3.20)
-        message(STATUS "cmake version >= 3.20, setting EXPORT_COMPILE_COMMANDS" for target ia-debug)
+        # NOTE: This is used for things like IWYU (include-what-you-use). The ia-debug target is
+        # used here because that target typically always has stricly more header includes than
+        # release builds.
+        message(STATUS "cmake version >= 3.20, setting EXPORT_COMPILE_COMMANDS for target ia-debug")
 
         set_target_properties(ia-debug PROPERTIES OUTPUT_NAME ia-debug EXPORT_COMPILE_COMMANDS 1)
 else()

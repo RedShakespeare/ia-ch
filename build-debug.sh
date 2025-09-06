@@ -4,6 +4,10 @@ set -xue
 
 # NOTE: "$*" allows adding extra arguments.
 
-cmake -B build -DCMAKE_EXPORT_COMPILE_COMMANDS=1 -DIA_DEBUG_SANITIZE=0 $*
+# NOTE: Define as -DCMAKE_EXPORT_COMPILE_COMMANDS=1 to export compile commands (this is not needed
+# on cmake >= 3.20, then this is set up in CMakeLists.txt instead).
+export_compile_commands_opt=""
+
+cmake -B build ${export_compile_commands_opt} -DIA_DEBUG_SANITIZE=0 $*
 
 cmake --build build --target ia-debug -- -j$(nproc)
