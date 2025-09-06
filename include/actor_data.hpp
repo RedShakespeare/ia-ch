@@ -14,16 +14,29 @@
 #include <vector>
 
 #include "ability_values.hpp"
-#include "audio_data.hpp"
 #include "colors.hpp"
-#include "gfx.hpp"
-#include "global.hpp"
 #include "item_att_property.hpp"
 #include "item_data.hpp"
 #include "property_data.hpp"
 #include "random.hpp"
-#include "room.hpp"
 #include "spells.hpp"
+
+enum class MonShockLvl;
+
+namespace audio
+{
+enum class SfxId;
+}  // namespace audio
+
+namespace gfx
+{
+enum class TileId;
+}  // namespace gfx
+
+namespace room
+{
+enum class RoomType;
+}  // namespace room
 
 namespace actor
 {

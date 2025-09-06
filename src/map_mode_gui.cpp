@@ -12,7 +12,7 @@
 
 #include "actor.hpp"
 #include "actor_player_state.hpp"
-#include "actor_see.hpp"
+#include "array2.hpp"
 #include "colors.hpp"
 #include "config.hpp"
 #include "draw_box.hpp"
@@ -23,12 +23,12 @@
 #include "io.hpp"
 #include "item.hpp"
 #include "item_data.hpp"
-#include "item_device.hpp"
 #include "item_misc.hpp"
 #include "item_weapon.hpp"
 #include "map.hpp"
 #include "panel.hpp"
 #include "player_bon.hpp"
+#include "pos.hpp"
 #include "property_handler.hpp"
 #include "rect.hpp"
 #include "room.hpp"
@@ -469,12 +469,10 @@ static void draw_dlvl(const int y, const Panel panel)
                 label_color(),
                 io::DrawBg::no);
 
-        const int dlvl = (int)map::g_dlvl;
-
-        const std::string dlvl_str = std::to_string(dlvl);
+        const std::string dlvl_str = std::to_string(map::g_dlvl);
 
         const int max_dlvl = g_dlvl_last;
-        const int dlvl_pct = std::clamp((dlvl * 100) / max_dlvl, 0, 100);
+        const int dlvl_pct = std::clamp((map::g_dlvl * 100) / max_dlvl, 0, 100);
         const int shade_pct = (dlvl_pct * 5) / 8;
 
         io::draw_text_right(
@@ -554,9 +552,7 @@ static void draw_properties(int y, const Panel panel)
         auto property_names = properties.property_names_short();
 
         if (map::g_dark.at(map::g_player->m_pos)) {
-                const ColoredString dark = {
-                        "DARK AREA",
-                        colors::gray()};
+                const ColoredString dark = {"DARK AREA", colors::gray()};
 
                 property_names.push_back(dark);
         }
@@ -637,11 +633,7 @@ void draw()
         const room::Room* const room = map::g_room_map.at(map::g_player->m_pos);
 
         if (room) {
-                const std::string room_name = room::room_type_to_str(room->m_type);
-
-                text_format::append_with_space(
-                        debug_str,
-                        room::room_type_to_str(room->m_type));
+                text_format::append_with_space(debug_str, room::room_type_to_str(room->m_type));
         }
 
         io::draw_text(

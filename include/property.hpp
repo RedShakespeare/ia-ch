@@ -63,9 +63,9 @@ enum class PropDurationMode
 struct DmgResistData
 {
         bool is_resisted {false};
-        std::string msg_resist_player {};
+        std::string msg_resist_player;
         // Not including monster name, e.g. "seems unaffected"
-        std::string msg_resist_mon {};
+        std::string msg_resist_mon;
 };
 
 enum class PropEnded
@@ -141,7 +141,7 @@ public:
 
         virtual PropAlignment alignment() const
         {
-                return m_data.alignment;
+                return m_data->alignment;
         }
 
         virtual void cycle_graphics() {}
@@ -153,32 +153,32 @@ public:
 
         virtual bool allow_display_turns() const
         {
-                return m_data.allow_display_turns;
+                return m_data->allow_display_turns;
         }
 
         virtual std::string name() const
         {
-                return m_data.name;
+                return m_data->name;
         }
 
         virtual std::string name_short() const
         {
-                return m_data.name_short;
+                return m_data->name_short;
         }
 
         std::string descr() const
         {
-                return m_data.descr;
+                return m_data->descr;
         }
 
         virtual std::string msg_end_player() const
         {
-                return m_data.msg_end_player;
+                return m_data->msg_end_player;
         }
 
         virtual bool should_update_vision_on_toggled() const
         {
-                return m_data.update_vision_on_toggled;
+                return m_data->update_vision_on_toggled;
         }
 
         virtual bool allow_see() const
@@ -412,8 +412,8 @@ public:
 protected:
         friend class PropHandler;
 
-        const Id m_id;
-        const PropData& m_data;
+        Id m_id;
+        const PropData* m_data;
 
         int m_nr_turns_left;
         int m_nr_dlvls_left;
@@ -541,7 +541,7 @@ private:
 
         int m_countdown {-1};
 
-        std::vector<std::string> m_allowed_mon_ids {};
+        std::vector<std::string> m_allowed_mon_ids;
 };
 
 class ZealotStop : public Prop
@@ -1460,17 +1460,15 @@ class CorpseRises : public Prop
 {
 public:
         CorpseRises() :
-                Prop(Id::corpse_rises),
-                m_has_risen(false),
-                m_nr_turns_until_allow_rise(2) {}
+                Prop(Id::corpse_rises) {}
 
         PropActResult on_act() override;
 
         void on_death() override;
 
 private:
-        bool m_has_risen;
-        int m_nr_turns_until_allow_rise;
+        bool m_has_risen {false};
+        int m_nr_turns_until_allow_rise {2};
 };
 
 class SpawnsZombiePartsOnDestroyed : public Prop
@@ -1705,7 +1703,7 @@ public:
         std::optional<std::string> override_actor_descr() const override;
 
 private:
-        std::unique_ptr<item::Item> m_discarded_item {};
+        std::unique_ptr<item::Item> m_discarded_item;
         std::string get_weapon_name() const;
 };
 

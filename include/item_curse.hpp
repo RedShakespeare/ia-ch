@@ -191,7 +191,7 @@ public:
 private:
         void shriek(const item::Item& item) const;
 
-        std::vector<std::string> m_words {};
+        std::vector<std::string> m_words;
 };
 
 class Teleport : public CurseImpl

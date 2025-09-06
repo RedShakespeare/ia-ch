@@ -128,7 +128,7 @@ void Mirror::hit(
 
 std::string Mirror::name(const Article article) const
 {
-        std::string str = article == Article::a ? "a " : "the ";
+        const std::string str = article == Article::a ? "a " : "the ";
 
         return str + "hazy mirror";
 }

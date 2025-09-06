@@ -230,8 +230,7 @@ static void set_bg_color_obscured_terrain(
                 }
         } break;
 
-        default:
-        {
+        default: {
         } break;
         }
 }

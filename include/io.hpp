@@ -232,7 +232,7 @@ void clear_input();
 
 InputData read_input();
 
-// Q Controls
+// For controller support mode
 extern bool is_right_held;
 extern bool is_left_held;
 extern bool is_up_held;

@@ -132,7 +132,7 @@ void MainMenuState::draw()
 
         const P screen_dims = panels::dims(Panel::screen);
 
-        P menu_pos((screen_dims.x * 13) / 20, screen_dims.y / 2);
+        const P menu_pos((screen_dims.x * 13) / 20, screen_dims.y / 2);
 
         P pos = menu_pos;
 

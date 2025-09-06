@@ -7,6 +7,7 @@
 #include <cstddef>
 
 #include "actor.hpp"
+#include "actor_data.hpp"
 #include "actor_death.hpp"
 #include "actor_factory.hpp"
 #include "attack.hpp"

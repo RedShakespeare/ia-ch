@@ -459,7 +459,7 @@ static void load_tiles()
 // -----------------------------------------------------------------------------
 namespace io
 {
-// Q Controls
+// For controller support mode
 bool is_right_held = false;
 bool is_left_held = false;
 bool is_up_held = false;

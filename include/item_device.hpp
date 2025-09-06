@@ -62,7 +62,7 @@ public:
         Blaster(item::ItemData* const item_data) :
                 Device(item_data) {}
 
-        ~Blaster() override = default;
+        ~Blaster() = default;
 
 private:
         std::string descr_identified() const override;
@@ -76,7 +76,7 @@ public:
         Rejuvenator(item::ItemData* const item_data) :
                 Device(item_data) {}
 
-        ~Rejuvenator() override = default;
+        ~Rejuvenator() = default;
 
 private:
         std::string descr_identified() const override;
@@ -90,7 +90,7 @@ public:
         Translocator(item::ItemData* const item_data) :
                 Device(item_data) {}
 
-        ~Translocator() override = default;
+        ~Translocator() = default;
 
 private:
         std::string descr_identified() const override;
@@ -104,7 +104,7 @@ public:
         SentryDrone(item::ItemData* const item_data) :
                 Device(item_data) {}
 
-        ~SentryDrone() override = default;
+        ~SentryDrone() = default;
 
 private:
         std::string descr_identified() const override
@@ -122,7 +122,7 @@ public:
         ForceField(item::ItemData* const item_data) :
                 Device(item_data) {}
 
-        ~ForceField() override = default;
+        ~ForceField() = default;
 
 private:
         std::string descr_identified() const override;

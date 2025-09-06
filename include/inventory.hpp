@@ -41,13 +41,12 @@ struct InvSlot
 {
         InvSlot(SlotId slot_id, std::string slot_name) :
                 id(slot_id),
-                name(std::move(slot_name)),
-                item(nullptr) {}
+                name(std::move(slot_name)) {}
 
         InvSlot() = default;
 
         SlotId id {SlotId::wpn};
-        std::string name {};
+        std::string name;
         item::Item* item {nullptr};
 };
 
@@ -166,13 +165,12 @@ private:
 
         size_t move_from_slot_to_backpack(SlotId id);
 
-        // Checks if the item is stackable, and if so attempts to stack it with
-        // another item of the same type in the backpack. The item pointer is
-        // still valid if a stack occurs (it is the other item that gets
-        // destroyed)
+        // Checks if the item is stackable, and if so attempts to stack it with another item of the
+        // same type in the backpack. The item pointer is still valid if a stack occurs (it is the
+        // other item that gets destroyed).
         bool try_stack_in_backpack(item::Item* item);
 
-        actor::Actor* const m_owning_actor;
+        actor::Actor* m_owning_actor;
 };
 
 #endif  // INVENTORY_HPP

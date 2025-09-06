@@ -236,9 +236,9 @@ void run_alter_env_effect(const P& origin, const int change_pos_one_in_n)
 
 Prop::Prop(Id id) :
         m_id(id),
-        m_data(g_data[(size_t)id]),
-        m_nr_turns_left(m_data.std_rnd_turns.roll()),
-        m_nr_dlvls_left(m_data.std_rnd_dlvls.roll())
+        m_data(&g_data[(size_t)id]),
+        m_nr_turns_left(m_data->std_rnd_turns.roll()),
+        m_nr_dlvls_left(m_data->std_rnd_dlvls.roll())
 {
 }
 
@@ -1727,7 +1727,7 @@ void AstralOpiumAddict::load()
 
 std::string AstralOpiumAddict::name_short() const
 {
-        std::string str = m_data.name_short;
+        std::string str = m_data->name_short;
 
         if (is_active()) {
                 str += "(" + std::to_string(m_shock_lvl) + "%)";
@@ -3349,8 +3349,7 @@ void AuraOfDecay::run_effect_on_env_at(const P& p) const
                 }
         } break;
 
-        default:
-        {
+        default: {
         } break;
         }
 }

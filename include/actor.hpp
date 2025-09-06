@@ -11,7 +11,6 @@
 #include <vector>
 
 #include "ability_values.hpp"
-#include "actor_data.hpp"
 #include "colors.hpp"
 #include "direction.hpp"
 #include "gfx.hpp"
@@ -19,7 +18,6 @@
 #include "inventory.hpp"
 #include "pos.hpp"
 #include "property_handler.hpp"
-#include "sound.hpp"
 #include "spells.hpp"
 
 template <typename T>
@@ -30,16 +28,20 @@ namespace item
 class Wpn;
 }  // namespace item
 
+enum class AlertsMon;
+
 namespace actor
 {
 class Actor;
+enum class AiId;
+struct ActorData;
 
 struct AiState
 {
         Actor* target {nullptr};
         bool is_target_seen {false};
         MonRoamingAllowed is_roaming_allowed {MonRoamingAllowed::yes};
-        P spawn_pos {};
+        P spawn_pos;
         Dir last_dir_moved {Dir::center};
 
         // AI creatures pauses every second step while not aware or wary, this
@@ -85,7 +87,7 @@ struct AiAttData
 
 struct AiAvailAttacksData
 {
-        std::vector<item::Wpn*> weapons = {};
+        std::vector<item::Wpn*> weapons;
         bool should_reload = false;
         bool is_melee = false;
 };
@@ -270,7 +272,7 @@ public:
         bool has_ai(actor::AiId id) const;
 
         // Common creature state (for player and monsters)
-        P m_pos {};
+        P m_pos;
         ActorState m_state {ActorState::alive};
         int m_hp {-1};
         int m_base_max_hp {-1};
@@ -289,7 +291,7 @@ public:
         AiState m_ai_state {};
         AwareState m_mon_aware_state {};
         Actor* m_leader {nullptr};
-        std::vector<MonSpell> m_mon_spells {};
+        std::vector<MonSpell> m_mon_spells;
         const ActorData* m_mimic_data {nullptr};  // Hallucination
 
 private:

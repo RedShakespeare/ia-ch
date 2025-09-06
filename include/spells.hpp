@@ -1092,11 +1092,6 @@ public:
                 return SpellDomain::END;
         }
 
-        bool can_be_improved_with_skill() const override
-        {
-                return true;
-        }
-
         SpellShock shock_type() const override
         {
                 return SpellShock::disturbing;
@@ -1153,11 +1148,6 @@ public:
         SpellDomain domain() const override
         {
                 return SpellDomain::END;
-        }
-
-        bool can_be_improved_with_skill() const override
-        {
-                return true;
         }
 
         SpellShock shock_type() const override

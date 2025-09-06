@@ -325,9 +325,9 @@ protected:
 private:
         // Properties to apply on owning actor (when e.g. wearing the item, or
         // just keeping it in the inventory).
-        std::vector<prop::Prop*> m_carrier_props {};
+        std::vector<prop::Prop*> m_carrier_props;
 
-        item_curse::Curse m_curse {};
+        item_curse::Curse m_curse;
 };
 
 }  // namespace item

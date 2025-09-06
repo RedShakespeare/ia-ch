@@ -324,7 +324,7 @@ Range MenuBrowser::range_shown() const
 void MenuBrowser::update_range_shown()
 {
         // Shown ranged defined?
-        if (m_list_h >= 0) {
+        if (m_list_h > 0) {
                 const int top = (m_y / m_list_h) * m_list_h;
                 const int btm = std::min(top + m_list_h, m_nr_items) - 1;
 
@@ -339,8 +339,7 @@ int MenuBrowser::nr_items_shown() const
                 return m_range_shown.len();
         }
         else {
-                // List height undefined (i.e. showing all) - just return total
-                // number of items
+                // List height undefined (i.e. showing all) - just return total number of items
                 return m_nr_items;
         }
 }

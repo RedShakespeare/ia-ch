@@ -148,13 +148,13 @@ public:
                 return true;
         }
 
-        R m_r {};
-        const RoomType m_type {(RoomType)0};
+        R m_r;
+        RoomType m_type {(RoomType)0};
         bool m_is_sub_room {false};
         bool m_is_split_top_room {false};  // Has been split into smaller rooms?
         bool m_is_split_sub_room {false};  // Is smaller room split from another room?
-        std::vector<Room*> m_rooms_con_to {};
-        std::vector<Room*> m_sub_rooms {};
+        std::vector<Room*> m_rooms_con_to;
+        std::vector<Room*> m_sub_rooms;
 
 protected:
         virtual void on_pre_connect_hook(Array2<bool>& door_proposals)
@@ -441,8 +441,7 @@ class RiverRoom : public Room
 {
 public:
         RiverRoom(const R& r) :
-                Room(r, RoomType::river),
-                m_axis(Axis::hor) {}
+                Room(r, RoomType::river) {}
 
         void on_pre_connect_hook(Array2<bool>& door_proposals) override;
 
@@ -451,7 +450,7 @@ public:
                 (void)door_proposals;
         }
 
-        Axis m_axis;
+        Axis m_axis {Axis::hor};
 };
 
 }  // namespace room

@@ -48,8 +48,7 @@ void Armor::hit(const int dmg)
 
         ASSERT(m_actor_carrying);
 
-        if (actor::is_player(m_actor_carrying) &&
-            player_bon::is_bg(Bg::war_vet)) {
+        if (actor::is_player(m_actor_carrying) && player_bon::is_bg(Bg::war_vet)) {
                 war_vet_k = 0.5;
         }
 

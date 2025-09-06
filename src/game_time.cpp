@@ -347,7 +347,7 @@ int turn_nr()
 void erase_all_destroyed_actors()
 {
         for (size_t i = 0; i < g_actors.size(); /* No increment */) {
-                actor::Actor* const actor = game_time::g_actors[i];
+                const actor::Actor* const actor = game_time::g_actors[i];
 
                 if (actor->m_state == ActorState::destroyed) {
                         erase_destroyed_actor(actor, i);
@@ -426,7 +426,7 @@ void add_actor(actor::Actor* actor)
         // ASSERT(map::is_pos_inside_map(actor->m_pos));
 
 #ifndef NDEBUG
-        for (actor::Actor* const existing_actor : g_actors) {
+        for (const actor::Actor* const existing_actor : g_actors) {
                 ASSERT(actor != existing_actor);
 
                 if (actor::is_alive(*actor) && actor::is_alive(*existing_actor)) {

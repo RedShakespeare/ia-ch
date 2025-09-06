@@ -103,9 +103,9 @@ static const std::pair<prop::Id, std::string> s_custom_props[] = {
 
 struct MonShockStrings
 {
-        std::string color_fmt_str {};
-        std::string shock_str {};
-        std::string punct_str {};
+        std::string color_fmt_str;
+        std::string shock_str;
+        std::string punct_str;
 };
 
 static std::string get_mon_memory_turns_descr(
@@ -626,7 +626,7 @@ static std::string temporary_properties_str(actor::Actor& actor)
         std::string str;
 
         // Properties
-        std::vector<prop::PropListEntry> prop_list = temporary_properties_to_show(actor);
+        const std::vector<prop::PropListEntry> prop_list = temporary_properties_to_show(actor);
 
         for (const prop::PropListEntry& entry : prop_list) {
                 if (!str.empty()) {
@@ -726,8 +726,7 @@ void ViewActorDescr::update()
                 states::pop();
         } break;
 
-        default:
-        {
+        default: {
         } break;
         }
 }

@@ -8,6 +8,7 @@
 #include "actor_factory.hpp"
 #include "actor_move.hpp"
 #include "catch.hpp"
+#include "item_data.hpp"
 #include "item_factory.hpp"
 #include "map.hpp"
 #include "msg_log.hpp"

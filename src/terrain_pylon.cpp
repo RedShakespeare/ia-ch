@@ -63,9 +63,9 @@ struct PylonAppearance
                 tile = (gfx::TileId)saving::get_int();
         }
 
-        std::string name_plain {};
-        std::string name_a {};
-        Color color {};
+        std::string name_plain;
+        std::string name_a;
+        Color color;
         gfx::TileId tile {};
 };
 
@@ -620,8 +620,7 @@ void Pylon::hit(
                 map::update_terrain(make(Id::rubble_low, m_pos));
         } break;
 
-        default:
-        {
+        default: {
         } break;
         }
 }

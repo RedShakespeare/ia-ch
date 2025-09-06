@@ -274,6 +274,7 @@ Actor* make(const std::string& id, const P& pos)
                         << "'" << id << "'" << std::endl;
 
                 PANIC;
+                return nullptr;
         }
 
         init_actor(*actor, pos, data_result->second);

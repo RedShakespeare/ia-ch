@@ -8,6 +8,7 @@
 
 #include <algorithm>
 #include <cmath>
+#include <cstddef>
 #include <string>
 #include <unordered_map>
 
@@ -63,7 +64,7 @@ int AbilityValues::val(
                                 continue;
                         }
 
-                        auto& d = slot.item->data();
+                        const auto& d = slot.item->data();
 
                         ret += d.ability_mods_while_equipped[(size_t)id];
                 }
@@ -126,8 +127,7 @@ int AbilityValues::val(
                 case AbilityId::stealth: {
                         // TODO: This is hacky and should be generalized
                         // (e.g. an "ability_mods_while_carried" function).
-                        if (actor.m_inv.has_item_in_backpack(
-                                    item::Id::necronomicon)) {
+                        if (actor.m_inv.has_item_in_backpack(item::Id::necronomicon)) {
                                 ret -= 20;
                         }
 

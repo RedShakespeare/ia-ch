@@ -102,7 +102,7 @@ protected:
         std::string m_title {};
         std::string m_msg {};
         audio::SfxId m_sfx {audio::SfxId::END};
-        AddToMsgHistory m_add_to_msg_history;
+        AddToMsgHistory m_add_to_msg_history {AddToMsgHistory::yes};
 };
 
 class MsgPopupState : public PopupState

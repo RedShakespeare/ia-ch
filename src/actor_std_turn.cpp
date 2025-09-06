@@ -143,7 +143,7 @@ static int calc_player_turns_per_hp_regen_rate()
                 nr_wounds /= 2;
         }
 
-        int wound_turns_penalty = nr_wounds * 4;
+        const int wound_turns_penalty = nr_wounds * 4;
 
         nr_turns_per_hp += wound_turns_penalty;
 
@@ -308,7 +308,7 @@ static void player_regen_meditative_focused()
 
 static void player_std_turn()
 {
-        actor::Actor& player = *map::g_player;
+        const actor::Actor& player = *map::g_player;
 
 #ifndef NDEBUG
         // Disease and infection should not be active at the same time

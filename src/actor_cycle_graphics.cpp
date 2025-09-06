@@ -10,7 +10,6 @@
 #include "actor_player_state.hpp"
 #include "colors.hpp"
 #include "io.hpp"
-#include "map.hpp"
 #include "property_handler.hpp"
 #include "random.hpp"
 

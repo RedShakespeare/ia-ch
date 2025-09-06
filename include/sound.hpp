@@ -138,12 +138,12 @@ public:
 
 private:
         std::string m_msg;
-        audio::SfxId m_sfx;
-        IgnoreMsgIfOriginSeen m_is_msg_ignored_if_origin_seen;
+        audio::SfxId m_sfx {audio::SfxId::END};
+        IgnoreMsgIfOriginSeen m_is_msg_ignored_if_origin_seen {IgnoreMsgIfOriginSeen::no};
         P m_origin;
-        actor::Actor* m_actor_who_made_sound;
-        SndVol m_vol;
-        AlertsMon m_is_alerting_mon;
+        actor::Actor* m_actor_who_made_sound {nullptr};
+        SndVol m_vol {SndVol::low};
+        AlertsMon m_is_alerting_mon {AlertsMon::no};
         std::shared_ptr<SndHeardEffect> m_snd_heard_effect;
 };
 

@@ -64,8 +64,7 @@ static bool line_has_content(const std::string& line)
 
 static void trim_trailing_whitespace(std::string& line)
 {
-        const size_t end_pos =
-                line.find_last_not_of(s_whitespace_chars);
+        const size_t end_pos = line.find_last_not_of(s_whitespace_chars);
 
         line = line.substr(0, end_pos + 1);
 }

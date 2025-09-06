@@ -99,7 +99,7 @@ std::vector<std::string> split_by_delim(
         std::vector<std::string> result;
         std::string current_line;
 
-        for (char c : line) {
+        for (const char c : line) {
                 if (c == delim) {
                         result.push_back(current_line);
                         current_line = "";
@@ -179,7 +179,7 @@ std::string first_to_lower(const std::string& str)
         std::string result = str;
 
         if (!result.empty()) {
-                result[0] = tolower(result[0]);
+                result[0] = (char)tolower(result[0]);
         }
 
         return result;
@@ -190,7 +190,7 @@ std::string first_to_upper(const std::string& str)
         std::string result = str;
 
         if (!result.empty()) {
-                result[0] = toupper(result[0]);
+                result[0] = (char)toupper(result[0]);
         }
 
         return result;

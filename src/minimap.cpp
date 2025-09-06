@@ -109,8 +109,8 @@ static R get_minimap_px_rect_on_screen(
         const P screen_px_dims = io::gui_to_px_coords(panels::dims(Panel::screen));
 
         P minimap_p0(
-                screen_px_dims.x / 2 - minimap_px_dims.x / 2,
-                screen_px_dims.y / 2 - minimap_px_dims.y / 2);
+                (screen_px_dims.x / 2) - (minimap_px_dims.x / 2),
+                (screen_px_dims.y / 2) - (minimap_px_dims.y / 2));
 
         minimap_p0.x = std::max(io::gui_to_px_coords_x(minimap_min_allowed_x0), minimap_p0.x);
 
@@ -278,7 +278,7 @@ static LegendSet find_legend_data()
 // that the minimap is drawn to the right of this point.
 static int draw_legend()
 {
-        LegendSet legend = find_legend_data();
+        const LegendSet legend = find_legend_data();
 
         const int rect_x0 = 2;
         const int text_x0 = 4;

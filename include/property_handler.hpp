@@ -58,8 +58,8 @@ enum class PropEndAllowHistoricMsg
 
 struct PropListEntry
 {
-        ColoredString title {};
-        std::string descr {};
+        ColoredString title;
+        std::string descr;
         const Prop* prop {nullptr};
 };
 
@@ -75,14 +75,9 @@ struct PropEndConfig
                 allow_msg(msg_allowed),
                 allow_historic_msg(historic_msg_allowed) {}
 
-        const PropEndAllowCallEndHook allow_end_hook {
-                PropEndAllowCallEndHook::yes};
-
-        const PropEndAllowMsg allow_msg = {
-                PropEndAllowMsg::yes};
-
-        const PropEndAllowHistoricMsg allow_historic_msg {
-                PropEndAllowHistoricMsg::yes};
+        PropEndAllowCallEndHook allow_end_hook {PropEndAllowCallEndHook::yes};
+        PropEndAllowMsg allow_msg = {PropEndAllowMsg::yes};
+        PropEndAllowHistoricMsg allow_historic_msg {PropEndAllowHistoricMsg::yes};
 };
 
 // Each actor has an instance of this

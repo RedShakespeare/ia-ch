@@ -14,6 +14,7 @@
 #include <vector>
 
 #include "actor.hpp"
+#include "actor_data.hpp"
 #include "actor_player_state.hpp"
 #include "debug.hpp"
 #include "draw_map.hpp"
@@ -22,6 +23,7 @@
 #include "global.hpp"
 #include "insanity.hpp"
 #include "io.hpp"
+#include "item_data.hpp"
 #include "map.hpp"
 #include "map_builder.hpp"
 #include "map_controller.hpp"

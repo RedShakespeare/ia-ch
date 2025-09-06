@@ -453,6 +453,8 @@ Color name_to_color(const std::string& name)
                         << "'" << name << "'" << std::endl;
 
                 PANIC;
+
+                return {};
         }
 
         return search->second;

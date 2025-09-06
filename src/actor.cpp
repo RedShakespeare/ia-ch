@@ -35,7 +35,7 @@ Actor::~Actor()
         }
 
         // Free monster spells.
-        for (auto& spell : m_mon_spells) {
+        for (const auto& spell : m_mon_spells) {
                 delete spell.spell;
         }
 }

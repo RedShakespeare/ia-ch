@@ -121,9 +121,9 @@ static void get_positions_in_room_relative_to_walls(
         adj_to_walls.clear();
         away_from_walls.clear();
 
-        std::vector<P> pos_bucket = find_all_walkable_foor_in_room(room);
+        const std::vector<P> pos_bucket = find_all_walkable_foor_in_room(room);
 
-        for (P& pos : pos_bucket) {
+        for (const P& pos : pos_bucket) {
                 const int nr_r = walk_blockers_in_front_of_dir(Dir::right, pos);
                 const int nr_d = walk_blockers_in_front_of_dir(Dir::down, pos);
                 const int nr_l = walk_blockers_in_front_of_dir(Dir::left, pos);

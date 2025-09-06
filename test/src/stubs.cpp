@@ -31,6 +31,15 @@ namespace io
 {
 bool g_allow_render = true;
 
+bool is_right_held = false;
+bool is_left_held = false;
+bool is_up_held = false;
+bool is_down_held = false;
+bool is_up_right_held = false;
+bool is_up_left_held = false;
+bool is_down_right_held = false;
+bool is_down_left_held = false;
+
 void init_sdl() {}
 
 void init_other()
@@ -188,7 +197,7 @@ void CharacterDrawObj::draw() const {}
 
 void MapDrawObj::draw() const {}
 
-void draw_logo() {}
+void draw_logo(Color) {}
 
 void clear_input() {}
 

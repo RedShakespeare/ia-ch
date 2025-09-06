@@ -304,7 +304,7 @@ void PropHandler::apply(
 
                 if (did_apply_more) {
                         if (actor::is_player(m_owner) &&
-                            prop->m_data.force_interrupt_player_on_start) {
+                            prop->m_data->force_interrupt_player_on_start) {
                                 map::g_player->interrupt_actions(ForceInterruptActions::yes);
                         }
 
@@ -333,7 +333,7 @@ void PropHandler::apply(
 
         if ((prop->duration_mode() == PropDurationMode::indefinite) &&
             (actor::is_player(m_owner))) {
-                const auto& msg = prop->m_data.historic_msg_start_permanent;
+                const auto& msg = prop->m_data->historic_msg_start_permanent;
 
                 if (!msg.empty()) {
                         game::add_history_event(msg);
@@ -347,7 +347,7 @@ void PropHandler::apply(
         }
 
         if (actor::is_player(m_owner) &&
-            prop->m_data.force_interrupt_player_on_start) {
+            prop->m_data->force_interrupt_player_on_start) {
                 map::g_player->interrupt_actions(ForceInterruptActions::yes);
         }
 
@@ -367,7 +367,7 @@ void PropHandler::apply(
 void PropHandler::print_resist_msg(const Prop& prop)
 {
         if (actor::is_player(m_owner)) {
-                const auto msg = prop.m_data.msg_res_player;
+                const auto msg = prop.m_data->msg_res_player;
 
                 if (!msg.empty()) {
                         msg_log::add(
@@ -379,7 +379,7 @@ void PropHandler::print_resist_msg(const Prop& prop)
         else {
                 // Is a monster
                 if (actor::can_player_see_actor(*m_owner)) {
-                        const auto msg = prop.m_data.msg_res_mon;
+                        const auto msg = prop.m_data->msg_res_mon;
 
                         if (!msg.empty()) {
                                 const std::string monster_name =
@@ -395,7 +395,7 @@ void PropHandler::print_resist_msg(const Prop& prop)
 void PropHandler::print_start_msg(const Prop& prop)
 {
         if (actor::is_player(m_owner)) {
-                const auto msg = prop.m_data.msg_start_player;
+                const auto msg = prop.m_data->msg_start_player;
 
                 if (!msg.empty()) {
                         // TODO: We should also force interrupt if the player
@@ -411,7 +411,7 @@ void PropHandler::print_start_msg(const Prop& prop)
         else {
                 // Is monster
                 if (actor::can_player_see_actor(*m_owner)) {
-                        const auto msg = prop.m_data.msg_start_mon;
+                        const auto msg = prop.m_data->msg_start_mon;
 
                         if (!msg.empty()) {
                                 const std::string actor_name_the =
@@ -461,7 +461,7 @@ bool PropHandler::try_apply_more_on_existing_intr_prop(
         else if (!old_is_permanent) {
                 // Both the old and new property are temporary.
 
-                switch (old_prop->m_data.duration_on_more) {
+                switch (old_prop->m_data->duration_on_more) {
                 case DurationOnMoreBehavior::longest:
                         old_prop->m_nr_turns_left = longest_duration(*old_prop, new_prop);
                         break;
@@ -487,7 +487,7 @@ bool PropHandler::try_apply_more_on_existing_intr_prop(
         if (actor::is_player(m_owner) && !old_is_permanent && new_is_permanent) {
                 // The property was temporary and became permanent, log a historic event for
                 // applying a permanent property.
-                const std::string& msg = old_prop->m_data.historic_msg_start_permanent;
+                const std::string& msg = old_prop->m_data->historic_msg_start_permanent;
 
                 if (!msg.empty()) {
                         game::add_history_event(msg);
@@ -604,15 +604,14 @@ void PropHandler::on_prop_end(
                 }
                 // Not player
                 else if (actor::can_player_see_actor(*m_owner)) {
-                        const auto msg = prop->m_data.msg_end_mon;
+                        const auto msg = prop->m_data->msg_end_mon;
 
                         if (!msg.empty()) {
                                 const std::string actor_name_the =
                                         text_format::first_to_upper(
                                                 actor::name_the(*m_owner));
 
-                                msg_log::add(
-                                        actor_name_the + " " + msg);
+                                msg_log::add(actor_name_the + " " + msg);
                         }
                 }
         }
@@ -625,7 +624,7 @@ void PropHandler::on_prop_end(
             actor::is_player(m_owner) &&
             (prop->duration_mode() == PropDurationMode::indefinite)) {
                 // A permanent property has ended, log a historic event
-                const auto& msg = prop->m_data.historic_msg_end_permanent;
+                const auto& msg = prop->m_data->historic_msg_end_permanent;
 
                 if (!msg.empty()) {
                         game::add_history_event(msg);

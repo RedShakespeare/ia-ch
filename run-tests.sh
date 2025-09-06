@@ -8,7 +8,9 @@ root_dir=${PWD}
 
 cd build
 
-# ctest --verbose
-./ia-test --use-colour=no -D 3 --abort $*
+# Define as "--use-colour=no" do disable colors
+color_opt=""
+
+./ia-test ${color_opt} -D 3 --abort $*
 
 cd ${root_dir}

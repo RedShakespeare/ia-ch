@@ -162,7 +162,7 @@ struct WeightedItems
         }
 
         std::vector<T> items = {};
-        std::vector<int> weights = {};
+        std::vector<int> weights;
 };
 
 #endif  // RANDOM_HPP

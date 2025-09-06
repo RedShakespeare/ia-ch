@@ -102,7 +102,7 @@ struct MoveRules
         bool is_property_allowing_move(prop::Id id) const;
 
         bool is_walkable {false};
-        std::vector<prop::Id> props_allow_move {};
+        std::vector<prop::Id> props_allow_move;
 };
 
 struct TerrainData

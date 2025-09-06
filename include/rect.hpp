@@ -126,8 +126,8 @@ public:
                 return result;
         }
 
-        P p0 {};
-        P p1 {};
+        P p0;
+        P p1;
 };
 
 #endif  // RECT_HPP

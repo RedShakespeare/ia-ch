@@ -29,6 +29,7 @@
 #include "property.hpp"
 #include "property_factory.hpp"
 #include "property_handler.hpp"
+#include "sound.hpp"
 #include "terrain.hpp"
 
 // -----------------------------------------------------------------------------

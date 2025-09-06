@@ -80,7 +80,7 @@ static std::vector<actor::Actor*> actors_reached_by_onyx_drop()
 }
 
 static void apply_properties_with_equal_duration(
-        const std::vector<prop::Id> ids,
+        const std::vector<prop::Id>& ids,
         actor::Actor& actor)
 {
         std::vector<prop::Prop*> props_applied;

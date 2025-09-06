@@ -169,9 +169,7 @@ struct ColoredString
                 str(std::move(the_str)),
                 color(the_color) {}
 
-        ColoredString& operator=(const ColoredString& other) = default;
-
-        std::string str {};
+        std::string str;
         Color color {colors::white()};
 };
 

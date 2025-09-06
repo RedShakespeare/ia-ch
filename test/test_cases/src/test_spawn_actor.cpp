@@ -7,6 +7,7 @@
 #include "catch.hpp"
 
 #include "actor.hpp"
+#include "actor_data.hpp"
 #include "actor_factory.hpp"
 #include "game_time.hpp"
 #include "map.hpp"

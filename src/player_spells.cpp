@@ -25,6 +25,7 @@
 #include "direction.hpp"
 #include "draw_box.hpp"
 #include "io.hpp"
+#include "item_data.hpp"
 #include "map.hpp"
 #include "msg_log.hpp"
 #include "panel.hpp"

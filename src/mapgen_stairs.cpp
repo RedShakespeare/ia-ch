@@ -97,8 +97,7 @@ P make_stairs_at_random_pos()
 
         const int cell_idx = nr_ok_cells - rnd::range(1, cell_idx_range_size);
 
-        if ((cell_idx < 0) ||
-            (cell_idx > (int)pos_bucket.size())) {
+        if ((cell_idx < 0) || (cell_idx >= (int)pos_bucket.size())) {
                 ASSERT(false);
 
                 g_is_map_valid = false;

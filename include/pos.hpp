@@ -156,8 +156,23 @@ public:
 
         P signs() const
         {
-                const int x_sign = (x == 0) ? 0 : ((x > 0) ? 1 : -1);
-                const int y_sign = (y == 0) ? 0 : ((y > 0) ? 1 : -1);
+                int x_sign = 0;
+
+                if (x > 0) {
+                        x_sign = 1;
+                }
+                else if (x < 0) {
+                        x_sign = -1;
+                }
+
+                int y_sign = 0;
+
+                if (y > 0) {
+                        y_sign = 1;
+                }
+                else if (y < 0) {
+                        y_sign = -1;
+                }
 
                 return {x_sign, y_sign};
         }
@@ -176,7 +191,7 @@ public:
 
         void swap(P& p)
         {
-                P tmp(p);
+                const P tmp(p);
 
                 p = *this;
 

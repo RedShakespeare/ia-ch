@@ -292,8 +292,8 @@ struct ItemAttackMsgs
                 player(std::move(player_)),
                 other(std::move(other_)) {}
 
-        std::string player {};
-        std::string other {};
+        std::string player;
+        std::string other;
 };
 
 struct ContainerSpawnRule

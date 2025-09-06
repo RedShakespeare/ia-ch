@@ -271,12 +271,12 @@ void BrowseHighscore::on_start()
 
         sort_entries(m_entries);
 
-        m_browser.reset(m_entries.size(), max_nr_entries_on_screen());
+        m_browser.reset((int)m_entries.size(), max_nr_entries_on_screen());
 }
 
 void BrowseHighscore::on_window_resized()
 {
-        m_browser.reset(m_entries.size(), max_nr_entries_on_screen());
+        m_browser.reset((int)m_entries.size(), max_nr_entries_on_screen());
 }
 
 void BrowseHighscore::draw()
@@ -484,9 +484,9 @@ void BrowseHighscoreEntry::draw()
 {
         draw_interface();
 
-        const int nr_lines_tot = m_lines.size();
+        const int nr_lines_tot = (int)m_lines.size();
 
-        int btm_nr =
+        const int btm_nr =
                 std::min(
                         m_top_idx + panels::h(Panel::info_screen_content) - 1,
                         nr_lines_tot - 1);
@@ -522,8 +522,6 @@ void BrowseHighscoreEntry::read_file()
         }
 
         std::string current_line;
-
-        std::vector<std::string> formatted;
 
         while (getline(file, current_line)) {
                 m_lines.push_back(current_line);

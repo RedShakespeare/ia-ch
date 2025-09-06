@@ -100,7 +100,7 @@ class Lantern : public Item
 public:
         Lantern(item::ItemData* item_data);
 
-        ~Lantern() override = default;
+        ~Lantern() = default;
 
         void save_hook() const override;
 

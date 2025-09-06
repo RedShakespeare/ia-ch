@@ -80,6 +80,7 @@ Item& Item::operator=(const Item& other)
         m_carrier_props = other.m_carrier_props;
         m_base_melee_dmg = other.m_base_melee_dmg;
         m_base_ranged_dmg = other.m_base_ranged_dmg;
+        m_durability = other.m_durability;
 
         return *this;
 }

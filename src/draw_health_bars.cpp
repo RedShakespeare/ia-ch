@@ -30,7 +30,7 @@ static int health_bar_length(const actor::Actor& actor)
         const int actor_hp_max = actor::max_hp(actor);
 
         if (actor_hp < actor_hp_max) {
-                int hp_percent = (actor_hp * 100) / actor_hp_max;
+                const int hp_percent = (actor_hp * 100) / actor_hp_max;
 
                 return ((config::map_cell_px_w() - 2) * hp_percent) / 100;
         }

@@ -23,7 +23,7 @@
 // -----------------------------------------------------------------------------
 static std::string s_user_dir;
 
-std::queue<std::string> s_pending_error_messages;
+static std::queue<std::string> s_pending_error_messages;
 
 // Can be used by the player for overriding the user data directory.
 const static std::string s_user_data_ini_file_name = "user_data.ini";
@@ -40,7 +40,8 @@ static bool ensure_writable_location(const std::string& path)
                 << std::endl;
 
         try {
-                std::filesystem::path temp_file_path = std::filesystem::path(path) / "test.tmp";
+                const std::filesystem::path temp_file_path =
+                        std::filesystem::path(path) / "test.tmp";
 
                 std::filesystem::create_directories(temp_file_path.parent_path());
 
@@ -90,7 +91,7 @@ static std::string read_user_dir_from_ini_file()
         // exists files are placed in it. Why is the SDL_GetPrefPath directory automatically created
         // but not e.g. "~/foo" specified in user_data.ini?
 
-        mINI::INIFile user_data_ini(s_user_data_ini_file_name);
+        const mINI::INIFile user_data_ini(s_user_data_ini_file_name);
         mINI::INIStructure ini;
         user_data_ini.read(ini);
 
@@ -174,7 +175,7 @@ void init()
                 TRACE << "Path from " << s_user_data_ini_file_name << " is empty" << std::endl;
         }
         else {
-                bool is_writable = ensure_writable_location(user_dir);
+                const bool is_writable = ensure_writable_location(user_dir);
 
                 if (is_writable) {
                         TRACE
@@ -208,7 +209,7 @@ void init()
 
                 user_dir = io::sdl_pref_dir();
 
-                bool is_writable = ensure_writable_location(user_dir);
+                const bool is_writable = ensure_writable_location(user_dir);
 
                 if (is_writable) {
                         TRACE << "Will use path from SDL_GetPrefPath for user data" << std::endl;
@@ -230,7 +231,7 @@ void init()
 
                 user_dir = "user_data/";
 
-                bool is_writable = ensure_writable_location(user_dir);
+                const bool is_writable = ensure_writable_location(user_dir);
 
                 if (is_writable) {
                         TRACE << "Will use path in game directory for user data" << std::endl;
