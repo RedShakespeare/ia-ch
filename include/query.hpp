@@ -56,6 +56,8 @@ BinaryAnswer yes_or_no(
         std::optional<char> key_for_special_event = std::nullopt,
         AllowSpaceCancel allow_space_cancel = AllowSpaceCancel::yes);
 
+bool is_waiting_for_yes_no();
+
 Dir dir(AllowCenter allow_center);
 
 void wait_for_msg_more();

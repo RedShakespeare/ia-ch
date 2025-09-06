@@ -232,15 +232,7 @@ void clear_input();
 
 InputData read_input();
 
-// For controller support mode
-extern bool is_right_held;
-extern bool is_left_held;
-extern bool is_up_held;
-extern bool is_down_held;
-extern bool is_up_right_held;
-extern bool is_up_left_held;
-extern bool is_down_right_held;
-extern bool is_down_left_held;
+Dir controller_support_mode_dir_held();
 
 }  // namespace io
 

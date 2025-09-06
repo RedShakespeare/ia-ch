@@ -25,10 +25,12 @@
 #include "item_data.hpp"
 #include "map.hpp"
 #include "misc.hpp"
+#include "msg_log.hpp"
 #include "player_bon.hpp"
 #include "pos.hpp"
 #include "property_data.hpp"
 #include "property_handler.hpp"
+#include "query.hpp"
 #include "rect.hpp"
 #include "terrain.hpp"
 #include "terrain_data.hpp"
@@ -583,11 +585,10 @@ static void draw_unseen_cells_from_player_memory()
 {
         R view = viewport::get_map_view_area();
 
-        // Also draw a little bit outside the viewport - we allow showing a
-        // fraction of tiles if the map panel size is not aligned with a whole
-        // number of map tiles (for example 15.6 map tiles can be shown on the Y
-        // axis). The drawing is clipped to the map panel, so pixels outside the
-        // map panel will not be drawn.
+        // Also draw a little bit outside the viewport - we allow showing a fraction of tiles if the
+        // map panel size is not aligned with a whole number of map tiles (for example 15.6 map
+        // tiles can be shown on the Y axis). The drawing is clipped to the map panel, so pixels
+        // outside the map panel will not be drawn.
         view.p1 = view.p1.with_offsets(2, 2);
 
         for (int x = view.p0.x; x < view.p1.x; ++x) {
@@ -667,6 +668,12 @@ static void draw_player_pending_direction()
                 return;
         }
 
+        const Dir dir = io::controller_support_mode_dir_held();
+
+        if (dir == Dir::END) {
+                return;
+        }
+
         const P player_px_pos = io::map_to_px_coords(viewport::to_view_pos(map::g_player->m_pos));
 
         const int cell_px_w = config::map_cell_px_w();
@@ -679,42 +686,31 @@ static void draw_player_pending_direction()
 
         bool is_any_held = false;
 
-        if ((io::is_right_held +
-             io::is_left_held +
-             io::is_down_held +
-             io::is_up_held +
-             io::is_down_right_held +
-             io::is_up_right_held +
-             io::is_down_left_held +
-             io::is_up_left_held) > 1) {
-                return;
-        }
-
         const int extra_offset = 2;
 
-        if (io::is_right_held || io::is_down_right_held || io::is_up_right_held) {
+        const P offsets = dir_utils::offset(dir);
+
+        if (offsets.x > 0) {
                 px_pos.x += half_cell_px_w - 1 + extra_offset;
                 is_any_held = true;
         }
-
-        if (io::is_left_held || io::is_down_left_held || io::is_up_left_held) {
+        else if (offsets.x < 0) {
                 px_pos.x -= half_cell_px_w + extra_offset;
                 is_any_held = true;
         }
 
-        if (io::is_down_held || io::is_down_right_held || io::is_down_left_held) {
+        if (offsets.y > 0) {
                 px_pos.y += half_cell_px_h - 1 + extra_offset;
                 is_any_held = true;
         }
-
-        if (io::is_up_held || io::is_up_right_held || io::is_up_left_held) {
+        else if (offsets.y < 0) {
                 px_pos.y -= half_cell_px_h + extra_offset + 2;
                 is_any_held = true;
         }
 
         // Add even more offset if the direction is straight up (due to how the player graphics are
         // designed it can otherwise overlap with the player head).
-        if (io::is_up_held) {
+        if (dir == Dir::up) {
                 px_pos.y -= 1;
         }
 
@@ -747,7 +743,9 @@ void run()
         draw_player_character();
 
         if (config::input_mode() == InputMode::controller_support &&
-            states::is_current_state(StateId::game)) {
+            states::is_current_state(StateId::game) &&
+            !msg_log::is_waiting_more_prompt() &&
+            !query::is_waiting_for_yes_no()) {
                 draw_player_pending_direction();
         }
 

@@ -21,6 +21,8 @@
 // -----------------------------------------------------------------------------
 static bool s_is_inited = false;
 
+static bool s_is_waiting_for_yes_no = false;
+
 // -----------------------------------------------------------------------------
 // query
 // -----------------------------------------------------------------------------
@@ -54,10 +56,14 @@ BinaryAnswer yes_or_no(
                 return BinaryAnswer::yes;
         }
 
+        s_is_waiting_for_yes_no = true;
+
         states::draw();
         io::update_screen();
 
         io::InputData input;
+
+        BinaryAnswer result = BinaryAnswer::no;
 
         while (true) {
                 input = io::read_input();
@@ -69,12 +75,14 @@ BinaryAnswer yes_or_no(
                 if (is_canceled_with_space ||
                     (input.key == 'n') ||
                     (input.key == SDLK_ESCAPE)) {
-                        return BinaryAnswer::no;
+                        result = BinaryAnswer::no;
+                        break;
                 }
 
                 if ((input.key == 'y') ||
                     (input.key == SDLK_RETURN)) {
-                        return BinaryAnswer::yes;
+                        result = BinaryAnswer::yes;
+                        break;
                 }
 
                 const bool is_special_key_pressed =
@@ -82,13 +90,19 @@ BinaryAnswer yes_or_no(
                         (input.key == key_for_special_event.value());
 
                 if (is_special_key_pressed) {
-                        return BinaryAnswer::special;
+                        result = BinaryAnswer::special;
+                        break;
                 }
         }
 
-        ASSERT(false);
+        s_is_waiting_for_yes_no = false;
 
-        return BinaryAnswer::no;
+        return result;
+}
+
+bool is_waiting_for_yes_no()
+{
+        return s_is_waiting_for_yes_no;
 }
 
 io::InputData letter(const bool accept_enter)

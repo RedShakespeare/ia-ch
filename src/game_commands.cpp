@@ -724,43 +724,32 @@ static GameCmd to_cmd_controller_support(const io::InputData& input)
                 return GameCmd::none;
         }
 
-        // Refuse any commands if multiple direction keys are held (mostly applicable if someone
-        // would use this controller mode with a keyboard for some reason).
-        if ((io::is_right_held +
-             io::is_left_held +
-             io::is_down_held +
-             io::is_up_held +
-             io::is_down_right_held +
-             io::is_up_right_held +
-             io::is_down_left_held +
-             io::is_up_left_held) > 1) {
-                return GameCmd::none;
-        }
+        const Dir dir = io::controller_support_mode_dir_held();
 
         switch (input.key) {
         case SDLK_RETURN:
-                if (io::is_right_held) {
+                if (dir == Dir::right) {
                         return GameCmd::right;
                 }
-                else if (io::is_left_held) {
+                else if (dir == Dir::left) {
                         return GameCmd::left;
                 }
-                else if (io::is_up_held) {
+                else if (dir == Dir::up) {
                         return GameCmd::up;
                 }
-                else if (io::is_down_held) {
+                else if (dir == Dir::down) {
                         return GameCmd::down;
                 }
-                else if (io::is_up_right_held) {
+                else if (dir == Dir::up_right) {
                         return GameCmd::up_right;
                 }
-                else if (io::is_up_left_held) {
+                else if (dir == Dir::up_left) {
                         return GameCmd::up_left;
                 }
-                else if (io::is_down_right_held) {
+                else if (dir == Dir::down_right) {
                         return GameCmd::down_right;
                 }
-                else if (io::is_down_left_held) {
+                else if (dir == Dir::down_left) {
                         return GameCmd::down_left;
                 }
                 else {

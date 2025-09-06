@@ -656,6 +656,11 @@ void more_prompt()
         clear();
 }
 
+bool is_waiting_more_prompt()
+{
+        return s_is_waiting_more_pompt;
+}
+
 void newline()
 {
         const auto line_nr = find_current_line_nr();

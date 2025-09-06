@@ -134,6 +134,8 @@ void add(
 // prompt will be run, and the log is cleared. If the log happens to be empty, nothing is done.
 void more_prompt();
 
+bool is_waiting_more_prompt();
+
 void newline();
 
 void clear();
