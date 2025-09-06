@@ -49,11 +49,11 @@ On macOS, using [Homebrew](https://brew.sh/):
 
 Now you can build IA (stand in the root of the IA repo and run these commands):
 
-    mkdir -p build && cd build && cmake .. && make ia
+    cmake -B build && cmake --build build --target ia
 
 Alternatively, you can build the bundled SDL source code and link it statically:
 
-    mkdir build && cd build && cmake -DIA_BUILD_STATIC_SDL=ON .. && make ia
+    cmake -B build && cmake --build build --target ia -DIA_BUILD_STATIC_SDL=ON
 
 ### Windows
 You need CMake, and some IDE or build tools of your choice (such as [Code::Blocks](http://www.codeblocks.org), or [Visual Studio](https://www.visualstudio.com/)).
