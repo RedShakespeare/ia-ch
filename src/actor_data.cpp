@@ -336,7 +336,7 @@ static void dump_intr_attack_property(
                 TRACE_ERROR_RELEASE
                         << "Invalid attack property chance: "
                         << attack_data.prop_applied.pct_chance_to_apply
-                        << std::endl;
+                        << "\n";
 
                 PANIC;
         }
@@ -629,7 +629,7 @@ static void read_actor_definitions_xml()
 
         const std::string file_path = paths::data_dir() + "monsters.xml";
 
-        TRACE << "Loading " << file_path << std::endl;
+        TRACE << "Loading " << file_path << "\n";
 
         xml::load_file(file_path, doc);
 
@@ -637,12 +637,12 @@ static void read_actor_definitions_xml()
 
         auto* mon_e = xml::first_child(top_e);
 
-        TRACE << "Reading monster data" << std::endl;
+        TRACE << "Reading monster data" << "\n";
 
         for (; mon_e; mon_e = xml::next_sibling(mon_e, "monster")) {
                 const std::string id = xml::get_attribute_str(mon_e, "id");
 
-                TRACE << "Reading monster data for ID: " << id << std::endl;
+                TRACE << "Reading monster data for ID: " << id << "\n";
 
                 actor::ActorData& data = actor::g_data[id];
 

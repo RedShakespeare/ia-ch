@@ -273,7 +273,7 @@ Room* make(const RoomType type, const R& r)
 
                 // Does not have room classes
         case RoomType::END_OF_STD_ROOMS:
-                TRACE << "Illegal room type id: " << (int)type << std::endl;
+                TRACE << "Illegal room type id: " << (int)type << "\n";
 
                 ASSERT(false);
 
@@ -1506,7 +1506,7 @@ void RiverRoom::on_pre_connect_hook(Array2<bool>& door_proposals)
 
         const bool is_hor = m_axis == Axis::hor;
 
-        TRACE << "Finding room centers" << std::endl;
+        TRACE << "Finding room centers" << "\n";
         Array2<bool> centers(map::dims());
 
         for (Room* const room : map::g_room_list) {
@@ -1519,7 +1519,7 @@ void RiverRoom::on_pre_connect_hook(Array2<bool>& door_proposals)
 
         TRACE << "Finding closest room center coordinates on both sides "
                  "(y coordinate if horizontal river, x if vertical)"
-              << std::endl;
+              << "\n";
 
         int closest_center0 = -1;
         int closest_center1 = -1;
@@ -1611,7 +1611,7 @@ void RiverRoom::on_pre_connect_hook(Array2<bool>& door_proposals)
                 }
         }
 
-        TRACE << "Expanding and filling river" << std::endl;
+        TRACE << "Expanding and filling river" << "\n";
 
         Array2<bool> blocked(map::dims());
 
@@ -1661,7 +1661,7 @@ void RiverRoom::on_pre_connect_hook(Array2<bool>& door_proposals)
                 }
         }
 
-        TRACE << "Making bridge(s)" << std::endl;
+        TRACE << "Making bridge(s)" << "\n";
 
         // Mark which side each position belongs to
         enum Side
@@ -1863,9 +1863,9 @@ void RiverRoom::on_pre_connect_hook(Array2<bool>& door_proposals)
                 if (room_con0.x != -1 && room_con1.x != -1) {
                         TRACE << "Found valid connection pair at: "
                               << room_con0.x << "," << room_con0.y << " / "
-                              << room_con1.x << "," << room_con1.y << std::endl
+                              << room_con1.x << "," << room_con1.y << "\n"
                               << "Making bridge at pos: " << bridge_n
-                              << std::endl;
+                              << "\n";
 
                         if (is_hor) {
                                 for (int y = room_con0.y; y <= room_con1.y; ++y) {
@@ -1919,14 +1919,14 @@ void RiverRoom::on_pre_connect_hook(Array2<bool>& door_proposals)
                 }
 
                 if (int(c_built.size()) >= max_nr_bridges) {
-                        TRACE << "Enough bridges built" << std::endl;
+                        TRACE << "Enough bridges built" << "\n";
                         break;
                 }
         }
 
         TRACE << "Bridges built/attempted: "
               << c_built.size() << "/"
-              << max_nr_bridges << std::endl;
+              << max_nr_bridges << "\n";
 
         if (c_built.empty()) {
                 mapgen::g_is_map_valid = false;

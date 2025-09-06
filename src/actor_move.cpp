@@ -480,7 +480,7 @@ static void sanity_check_mon_direction(const actor::Actor& mon, const Dir dir)
                 << "Illegal direction parameter "
                 << "'" << (int)dir << "' "
                 << "given for monster '" << actor::name_a(mon) + "'"
-                << std::endl;
+                << "\n";
         PANIC;
 }
 #endif  // NDEBUG
@@ -496,7 +496,7 @@ static void sanity_check_mon_not_outside_map(const actor::Actor& mon)
                 << "Monster '" << actor::name_a(mon) << "' "
                 << "outside map, at "
                 << mon.m_pos.x << "," << mon.m_pos.y
-                << std::endl;
+                << "\n";
         PANIC;
 }
 #endif  // NDEBUG
@@ -523,18 +523,18 @@ static void sanity_check_mon_can_move_into_terrain(
                 << "Monster '" << mon_name << "' "
                 << "tried to move into terrain it cannot move into: "
                 << '"' << terrain_name << "'"
-                << std::endl;
+                << "\n";
 
         TRACE
                 << ("The following mobile terrains also exists at "
                     "target position:")
-                << std::endl;
+                << "\n";
 
         for (terrain::Terrain* mob : game_time::g_mobs) {
                 if (mob->pos() == target_pos) {
                         TRACE
                                 << mob->name(Article::a)
-                                << std::endl;
+                                << "\n";
                 }
         }
 
@@ -560,7 +560,7 @@ static void sanity_check_no_living_actor_at_target_pos(
                 << "Monster '" << mon_name_1 << "' "
                 << "tried to move into a position with monster "
                 << '"' << mon_name_2 << "'"
-                << std::endl;
+                << "\n";
 
         PANIC;
 }

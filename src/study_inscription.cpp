@@ -103,13 +103,13 @@ static void reveal_random_item(const std::vector<const item::Item*>& items)
 
         ASSERT(!item->data().is_identified);
 
-        TRACE << "Revealing info about '" << item->name(ItemNameType::plain) << "'" << std::endl;
+        TRACE << "Revealing info about '" << item->name(ItemNameType::plain) << "'" << "\n";
 
         msg_log::more_prompt();
 
         switch (item->data().type) {
         case ItemType::scroll: {
-                TRACE << "Item type is 'scroll'" << std::endl;
+                TRACE << "Item type is 'scroll'" << "\n";
 
                 ASSERT(!item->data().is_spell_domain_known);
 
@@ -117,7 +117,7 @@ static void reveal_random_item(const std::vector<const item::Item*>& items)
         } break;
 
         case ItemType::potion: {
-                TRACE << "Item type is 'potion'" << std::endl;
+                TRACE << "Item type is 'potion'" << "\n";
 
                 ASSERT(!item->data().is_alignment_known);
 
@@ -125,7 +125,7 @@ static void reveal_random_item(const std::vector<const item::Item*>& items)
         } break;
 
         default: {
-                TRACE << "Bad item type: " << item->name(ItemNameType::plain) << std::endl;
+                TRACE << "Bad item type: " << item->name(ItemNameType::plain) << "\n";
                 ASSERT(false);
         } break;
         }
@@ -163,11 +163,11 @@ void run()
         // forgotten spells.
         const std::vector<SpellId> forgotten_spells = get_all_forgotten_spells();
 
-        TRACE << "Found '" << forgotten_spells.size() << "' forgotten spells" << std::endl;
+        TRACE << "Found '" << forgotten_spells.size() << "' forgotten spells" << "\n";
 
         const bool should_recall_spell = (!forgotten_spells.empty() && rnd::fraction(3, 4));
 
-        TRACE << "Should recall spell: '" << should_recall_spell << "'" << std::endl;
+        TRACE << "Should recall spell: '" << should_recall_spell << "'" << "\n";
 
         // The chance to gain insight on an item increases the more items that
         // are carried.
@@ -180,15 +180,15 @@ void run()
         //
         const std::vector<const item::Item*> unknown_items = get_all_unknown_items();
 
-        TRACE << "Found '" << unknown_items.size() << "' unknown items" << std::endl;
+        TRACE << "Found '" << unknown_items.size() << "' unknown items" << "\n";
 
         const int pct_chance_to_reveal = (int)unknown_items.size() * 40;
 
-        TRACE << "Percent chance to reveal item: '" << pct_chance_to_reveal << "'" << std::endl;
+        TRACE << "Percent chance to reveal item: '" << pct_chance_to_reveal << "'" << "\n";
 
         const bool should_reveal_item = rnd::percent(pct_chance_to_reveal);
 
-        TRACE << "Should reveal item: '" << should_reveal_item << "'" << std::endl;
+        TRACE << "Should reveal item: '" << should_reveal_item << "'" << "\n";
 
         audio::play(audio::SfxId::study_inscription);
 

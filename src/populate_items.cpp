@@ -50,11 +50,11 @@ static int nr_items()
         TRACE
                 << "Base random range of number of items to spawn on floor: "
                 << range.min << "-" << range.max
-                << std::endl;
+                << "\n";
 
         int nr = range.roll();
 
-        TRACE << "Rolled '" << nr << "' number of items" << std::endl;
+        TRACE << "Rolled '" << nr << "' number of items" << "\n";
 
         if (player_bon::has_trait(Trait::treasure_hunter)) {
                 ++nr;
@@ -62,7 +62,7 @@ static int nr_items()
                 TRACE
                         << "Treasure Hunter increased number of items to "
                         << "'" << nr << "'."
-                        << std::endl;
+                        << "\n";
         }
 
         return nr;

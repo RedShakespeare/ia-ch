@@ -242,7 +242,7 @@ void MapBuilderDeepOneLair::handle_template_pos(const P& p, const char c)
 
         default:
         {
-                TRACE_ERROR_RELEASE << "Unhandled symbol " << c << std::endl;
+                TRACE_ERROR_RELEASE << "Unhandled symbol " << c << "\n";
                 PANIC;
         } break;
         }
@@ -338,7 +338,7 @@ void MapBuilderMagicPool::handle_template_pos(const P& p, const char c)
 
         default:
         {
-                TRACE_ERROR_RELEASE << "Unhandled symbol " << c << std::endl;
+                TRACE_ERROR_RELEASE << "Unhandled symbol " << c << "\n";
                 PANIC;
         } break;
         }
@@ -514,7 +514,7 @@ void MapBuilderIntroForest::handle_template_pos(const P& p, const char c)
 
         default:
         {
-                TRACE_ERROR_RELEASE << "Unhandled symbol " << c << std::endl;
+                TRACE_ERROR_RELEASE << "Unhandled symbol " << c << "\n";
                 PANIC;
         } break;
         }
@@ -618,7 +618,7 @@ void MapBuilderMiGoOutpost::handle_template_pos(const P& p, const char c)
 
         default:
         {
-                TRACE_ERROR_RELEASE << "Unhandled symbol " << c << std::endl;
+                TRACE_ERROR_RELEASE << "Unhandled symbol " << c << "\n";
                 PANIC;
         } break;
         }
@@ -755,7 +755,7 @@ void MapBuilderEgypt::handle_template_pos(const P& p, const char c)
 
         default:
         {
-                TRACE_ERROR_RELEASE << "Unhandled symbol " << c << std::endl;
+                TRACE_ERROR_RELEASE << "Unhandled symbol " << c << "\n";
                 PANIC;
         } break;
         }
@@ -873,7 +873,7 @@ void MapBuilderRatCave::handle_template_pos(const P& p, const char c)
 
         default:
         {
-                TRACE_ERROR_RELEASE << "Unhandled symbol " << c << std::endl;
+                TRACE_ERROR_RELEASE << "Unhandled symbol " << c << "\n";
                 PANIC;
         } break;
         }
@@ -935,7 +935,7 @@ void MapBuilderBoss::handle_template_pos(const P& p, const char c)
 
         default:
         {
-                TRACE_ERROR_RELEASE << "Unhandled symbol " << c << std::endl;
+                TRACE_ERROR_RELEASE << "Unhandled symbol " << c << "\n";
                 PANIC;
         } break;
         }
@@ -1044,7 +1044,7 @@ void MapBuilderTrapez::handle_template_pos(const P& p, const char c)
 
         default:
         {
-                TRACE_ERROR_RELEASE << "Unhandled symbol " << c << std::endl;
+                TRACE_ERROR_RELEASE << "Unhandled symbol " << c << "\n";
                 PANIC;
         } break;
         }

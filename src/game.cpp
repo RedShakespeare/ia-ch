@@ -613,7 +613,7 @@ void GameState::update()
 
         // Player is dead?
         if (map::g_player && !actor::is_alive(*map::g_player)) {
-                TRACE << "Player died" << std::endl;
+                TRACE << "Player died" << "\n";
 
                 audio::play(audio::SfxId::death);
 

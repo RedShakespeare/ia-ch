@@ -271,7 +271,7 @@ Actor* make(const std::string& id, const P& pos)
         if (data_result == std::end(g_data)) {
                 TRACE_ERROR_RELEASE
                         << "Undefined monster ID: "
-                        << "'" << id << "'" << std::endl;
+                        << "'" << id << "'" << "\n";
 
                 PANIC;
                 return nullptr;

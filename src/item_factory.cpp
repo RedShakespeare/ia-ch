@@ -526,7 +526,7 @@ Item* make(const Id item_id, const int nr_items)
                       << "non-stackable item: "
                       << (int)d->id << ", "
                       << r->name(ItemNameType::plain)
-                      << std::endl;
+                      << "\n";
 
                 ASSERT(false);
         }

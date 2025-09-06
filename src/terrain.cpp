@@ -3515,15 +3515,15 @@ void Tomb::bump(actor::Actor& actor_bumping)
 
         TRACE
                 << "Base chance to push lid is: 1 in "
-                << m_push_lid_one_in_n << std::endl;
+                << m_push_lid_one_in_n << "\n";
 
         TRACE
                 << "Bonus to roll: "
-                << bon << std::endl;
+                << bon << "\n";
 
         const int roll_tot = rnd::range(1, m_push_lid_one_in_n) + bon;
 
-        TRACE << "Roll + bonus = " << roll_tot << std::endl;
+        TRACE << "Roll + bonus = " << roll_tot << "\n";
 
         bool is_success = false;
 
@@ -3675,7 +3675,7 @@ std::string Tomb::get_random_allowed_mon_id() const
         TRACE
                 << "Allowed monster level range: "
                 << "'" << mon_lvl_range.str() << "'"
-                << std::endl;
+                << "\n";
 
         // Make a weighted monster ID bucket of non-Ghost monsters.
         WeightedItems<std::string> weighted_ids;
@@ -3720,7 +3720,7 @@ std::string Tomb::get_random_allowed_mon_id() const
                 TRACE
                         << "Possible monster IDs and weights (Ghosts not included):"
                         << mon_ids_debug_str
-                        << std::endl;
+                        << "\n";
         }
 #endif  // NDEBUG
 
@@ -3793,7 +3793,7 @@ std::string Tomb::get_random_allowed_mon_id() const
                 TRACE
                         << "Possible Ghost monsters to spawn:"
                         << mon_ids_debug_str
-                        << std::endl;
+                        << "\n";
         }
 #endif  // NDEBUG
 
@@ -3809,7 +3809,7 @@ std::string Tomb::get_random_allowed_mon_id() const
                 mon_id_to_spawn = ghost_id;
         }
 
-        TRACE << "Tomb monster ID to spawn: '" << mon_id_to_spawn << "'" << std::endl;
+        TRACE << "Tomb monster ID to spawn: '" << mon_id_to_spawn << "'" << "\n";
 
         TRACE_FUNC_END;
 
@@ -5320,7 +5320,7 @@ DidTriggerTrap Cocoon::trigger_trap(actor::Actor* const actor)
         }
         else if (rnd < 50) {
                 // Spiders
-                TRACE << "Attempting to spawn spiders" << std::endl;
+                TRACE << "Attempting to spawn spiders" << "\n";
                 std::vector<std::string> spawn_bucket;
 
                 for (const auto& it : actor::g_data) {
@@ -5338,7 +5338,7 @@ DidTriggerTrap Cocoon::trigger_trap(actor::Actor* const actor)
 
                 if (nr_candidates > 0) {
                         TRACE << "Spawn candidates found, attempting to place"
-                              << std::endl;
+                              << "\n";
 
                         msg_log::add("There are spiders inside!");
 

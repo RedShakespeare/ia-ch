@@ -474,17 +474,17 @@ bool recall_spell(const SpellId id)
 {
         TRACE_FUNC_BEGIN;
 
-        TRACE << "Trying to recall spell id '" << (int)id << "'" << std::endl;
+        TRACE << "Trying to recall spell id '" << (int)id << "'" << "\n";
 
         if (!is_spell_forgotten(id)) {
-                TRACE << "Spell not forgotten" << std::endl;
+                TRACE << "Spell not forgotten" << "\n";
 
                 TRACE_FUNC_END;
 
                 return false;
         }
 
-        TRACE << "Spell is forgotten, recalling" << std::endl;
+        TRACE << "Spell is forgotten, recalling" << "\n";
 
         std::unique_ptr<const Spell> spell(spells::make(id));
 
@@ -519,11 +519,11 @@ void incr_spell_skill(const SpellId id, const Verbose verbose)
         TRACE
                 << "Increasing spell skill for spell id: "
                 << (int)id
-                << std::endl;
+                << "\n";
 
         SpellSkill& skill = s_spell_skills[(size_t)id];
 
-        TRACE << "skill before: " << (int)skill << std::endl;
+        TRACE << "skill before: " << (int)skill << "\n";
 
         if (skill != SpellSkill::master) {
                 skill = (SpellSkill)((int)skill + 1);
@@ -540,7 +540,7 @@ void incr_spell_skill(const SpellId id, const Verbose verbose)
                         "!");
         }
 
-        TRACE << "skill after: " << (int)skill << std::endl;
+        TRACE << "skill after: " << (int)skill << "\n";
 }
 
 SpellSkill spell_skill(const SpellId id)

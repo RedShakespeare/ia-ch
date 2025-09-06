@@ -315,9 +315,9 @@ bool Trap::try_init_type(const TrapId id)
                 TRACE
                         << "Cannot place trap on terrain id: "
                         << (int)terrain_here->id()
-                        << std::endl
+                        << "\n"
                         << "Trap id: " << (int)id
-                        << std::endl;
+                        << "\n";
 
                 ASSERT(false);
 
@@ -390,7 +390,7 @@ void Trap::on_new_turn_hook()
 
                 TRACE
                         << "Number of turns until trigger: "
-                        << m_nr_turns_until_trigger << std::endl;
+                        << m_nr_turns_until_trigger << "\n";
 
                 if (m_nr_turns_until_trigger == 0) {
                         // NOTE: This will reset number of turns until triggered.
@@ -423,7 +423,7 @@ void Trap::trigger_start(const actor::Actor* actor)
                 << "'" << m_trap_impl->name(Article::a) << "', "
                 << "with trap implementation id "
                 << "'" << (int)m_trap_impl->type() << "'"
-                << std::endl;
+                << "\n";
 
         if (actor::is_player(actor)) {
                 // Reveal trap if triggered by player stepping on it.
@@ -1004,7 +1004,7 @@ void TrapSummonMon::trigger()
                 return;
         }
 
-        TRACE << "Finding summon candidates" << std::endl;
+        TRACE << "Finding summon candidates" << "\n";
         std::vector<std::string> summon_bucket;
 
         for (const auto& it : actor::g_data) {
@@ -1017,13 +1017,13 @@ void TrapSummonMon::trigger()
         }
 
         if (summon_bucket.empty()) {
-                TRACE << "No eligible candidates found" << std::endl;
+                TRACE << "No eligible candidates found" << "\n";
         }
         else {
                 // Eligible monsters found
                 const std::string id_to_summon = rnd::element(summon_bucket);
 
-                TRACE << "Actor id: " << id_to_summon << std::endl;
+                TRACE << "Actor id: " << id_to_summon << "\n";
 
                 const actor::MonSpawnResult summoned =
                         actor::spawn(m_pos, {id_to_summon})

@@ -106,7 +106,7 @@ void merge_regions(Array2<Region>& regions)
                       << "(" << idx_r.p0.x << ", " << idx_r.p0.y << ")"
                       << " to "
                       << "(" << idx_r.p1.x << ", " << idx_r.p1.y << ")"
-                      << std::endl;
+                      << "\n";
 
                 // NOTE: Region 0 is the top left region, region 1 is the bottom right
                 auto& region_0 = regions.at(idx_r.p0.x, idx_r.p0.y);

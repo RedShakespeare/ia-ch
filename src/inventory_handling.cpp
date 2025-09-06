@@ -67,7 +67,7 @@ static bool run_drop_query(
 
         if (!data.is_stackable || (item.m_nr_items <= 1)) {
                 // Not a stack
-                TRACE << "Item not stackable, or only one item" << std::endl;
+                TRACE << "Item not stackable, or only one item" << "\n";
 
                 item_drop::drop_item_from_inv(*map::g_player, inv_type, idx);
 
@@ -76,7 +76,7 @@ static bool run_drop_query(
                 return true;
         }
 
-        TRACE << "Item is stackable and more than one" << std::endl;
+        TRACE << "Item is stackable and more than one" << "\n";
 
         states::draw();
 
@@ -93,7 +93,7 @@ static bool run_drop_query(
         const int nr_to_drop = query::number(query_config, title);
 
         if (nr_to_drop <= 0) {
-                TRACE << "Nr to drop <= 0, nothing to be done" << std::endl;
+                TRACE << "Nr to drop <= 0, nothing to be done" << "\n";
 
                 TRACE_FUNC_END;
 

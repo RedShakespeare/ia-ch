@@ -331,7 +331,7 @@ static void mon_act(actor::Actor& mon)
 #ifndef NDEBUG
         // Sanity check - verify that monster is not outside the map
         if (!map::is_pos_inside_outer_walls(mon.m_pos)) {
-                TRACE << "Monster outside map" << std::endl;
+                TRACE << "Monster outside map" << "\n";
 
                 ASSERT(false);
         }
@@ -350,16 +350,16 @@ static void mon_act(actor::Actor& mon)
                               << "with name '"
                               << actor::name_a(*leader_leader)
                               << "'"
-                              << std::endl
+                              << "\n"
                               << "Monster is summoned?: "
                               << mon.m_properties.has(prop::Id::summoned)
-                              << std::endl
+                              << "\n"
                               << "Leader is summoned?: "
                               << mon.m_leader->m_properties.has(prop::Id::summoned)
-                              << std::endl
+                              << "\n"
                               << "Leader's leader is summoned?: "
                               << leader_leader->m_properties.has(prop::Id::summoned)
-                              << std::endl;
+                              << "\n";
 
                         ASSERT(false);
                 }

@@ -287,7 +287,7 @@ void go_to_nxt()
 {
         TRACE_FUNC_BEGIN;
 
-        TRACE << "Leaving dungeon level '" << map::g_dlvl << "'" << std::endl;
+        TRACE << "Leaving dungeon level '" << map::g_dlvl << "'" << "\n";
 
         minimap::clear();
 
@@ -352,18 +352,18 @@ void go_to_nxt()
                 s_estimated_avail_xp_terrain +
                 s_estimated_avail_xp_descend;
 
-        TRACE << "Estimated total XP available current run:" << std::endl;
-        TRACE << "Items    : " << s_estimated_avail_xp_items << std::endl;
-        TRACE << "Monsters : " << s_estimated_avail_xp_monsters << std::endl;
-        TRACE << "Terrain  : " << s_estimated_avail_xp_terrain << std::endl;
-        TRACE << "Descend  : " << s_estimated_avail_xp_descend << std::endl;
-        TRACE << "TOTAL    : " << estimated_avail_xp_tot << std::endl;
+        TRACE << "Estimated total XP available current run:" << "\n";
+        TRACE << "Items    : " << s_estimated_avail_xp_items << "\n";
+        TRACE << "Monsters : " << s_estimated_avail_xp_monsters << "\n";
+        TRACE << "Terrain  : " << s_estimated_avail_xp_terrain << "\n";
+        TRACE << "Descend  : " << s_estimated_avail_xp_descend << "\n";
+        TRACE << "TOTAL    : " << estimated_avail_xp_tot << "\n";
 #endif  // NDEBUG
 
         TRACE
                 << "Dungeon level '" << map::g_dlvl << "' ready"
-                << std::endl
-                << "Map type is: '" << (int)map_type << "'" << std::endl;
+                << "\n"
+                << "Map type is: '" << (int)map_type << "'" << "\n";
 
         TRACE_FUNC_END;
 }

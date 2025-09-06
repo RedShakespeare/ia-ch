@@ -198,7 +198,7 @@ void calc_chokepoint_data()
                                 std::cout << sym;
                         }
 
-                        std::cout << std::endl;
+                        std::cout << "\n";
                 }
 
                 ASSERT(false);
@@ -246,7 +246,7 @@ void calc_chokepoint_data()
                                 << d.player_side
                                 << "    d.stairs_side: "
                                 << d.stairs_side
-                                << std::endl;
+                                << "\n";
 
                         ASSERT(false);
 

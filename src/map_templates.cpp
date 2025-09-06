@@ -292,9 +292,9 @@ static void load_room_templates()
 
         TRACE << "Number of room templates loaded from template file: "
               << current_base_templ_idx
-              << std::endl
+              << "\n"
               << "Total variants: " << s_room_templates.size()
-              << std::endl;
+              << "\n";
 
         TRACE_FUNC_END;
 }
@@ -378,9 +378,9 @@ RoomTempl* random_room_templ(const P& max_dims)
         TRACE
                 << "Attempting to find valid room template, for max dimensions: "
                 << max_dims.x << "x" << max_dims.y
-                << std::endl
+                << "\n"
                 << "Number of candidates found: " << bucket.size()
-                << std::endl;
+                << "\n";
 
         if (bucket.empty()) {
                 return nullptr;

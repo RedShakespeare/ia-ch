@@ -557,7 +557,7 @@ void PropHandler::incr_prop_count(const Id id)
 #ifndef NDEBUG
         if (v < 0) {
                 TRACE << "Tried to increment property with current value "
-                      << v << std::endl;
+                      << v << "\n";
 
                 ASSERT(false);
         }
@@ -573,7 +573,7 @@ void PropHandler::decr_prop_count(const Id id)
 #ifndef NDEBUG
         if (v <= 0) {
                 TRACE << "Tried to decrement property with current value "
-                      << v << std::endl;
+                      << v << "\n";
 
                 ASSERT(false);
         }

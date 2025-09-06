@@ -18,20 +18,20 @@ static void on_assert_failed(
         const int line,
         const char* const func)
 {
-        std::cerr << std::endl
+        std::cerr << "\n"
                   << file << ", "
                   << line << ", "
                   << func << "():"
-                  << std::endl
-                  << std::endl
+                  << "\n"
+                  << "\n"
                   << "*** ASSERTION FAILED! ***"
-                  << std::endl
-                  << std::endl
+                  << "\n"
+                  << "\n"
                   << "Check that failed:"
-                  << std::endl
+                  << "\n"
                   << "\"" << check_str << "\""
-                  << std::endl
-                  << std::endl;
+                  << "\n"
+                  << "\n";
 
         assert(false);
 }

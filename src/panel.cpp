@@ -45,7 +45,7 @@ static void finalize_screen_dims()
                 << panels::w(Panel::screen)
                 << "x"
                 << panels::h(Panel::screen)
-                << std::endl;
+                << "\n";
 }
 
 static void set_game_state_panels(const P& max_gui_dims)
@@ -217,7 +217,7 @@ void init(const P& max_gui_dims)
 
         TRACE << "Maximum allowed GUI size: "
               << max_gui_dims.x << "x" << max_gui_dims.y
-              << std::endl;
+              << "\n";
 
         for (R& panel : s_panels) {
                 panel = {0, 0, 0, 0};

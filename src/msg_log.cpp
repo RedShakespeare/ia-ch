@@ -473,7 +473,7 @@ void add(
                         << "Message starts with space: \""
                         << str
                         << "\""
-                        << std::endl;
+                        << "\n";
 
                 ASSERT(false);
 

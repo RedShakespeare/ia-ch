@@ -103,7 +103,7 @@ static void put_templ_symbol_at(
                         << "Illegal template character \""
                         << c
                         << "\""
-                        << std::endl;
+                        << "\n";
 
                 // Release mode robustness: invalidate the map
                 mapgen::g_is_map_valid = false;

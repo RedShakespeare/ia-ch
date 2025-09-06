@@ -66,7 +66,7 @@ static int try_inscribe_existing_terrain(const int nr_to_try)
 {
         TerrainVectors terrains = find_terrains_can_inscribe();
 
-        TRACE << "Found '" << terrains.size() << "' types of terrain to inscribe" << std::endl;
+        TRACE << "Found '" << terrains.size() << "' types of terrain to inscribe" << "\n";
 
         if (terrains.empty()) {
                 return 0;
@@ -85,7 +85,7 @@ static int try_inscribe_existing_terrain(const int nr_to_try)
 
                 ASSERT(terrain->allow_inscribe());
 
-                TRACE << "Inscribing terrain '" << terrain->name(Article::a) << "'" << std::endl;
+                TRACE << "Inscribing terrain '" << terrain->name(Article::a) << "'" << "\n";
 
                 terrain->set_inscribed();
 
@@ -162,7 +162,7 @@ static int try_put_new_inscribed_terrain(const int nr_to_try)
 
                 map::set_terrain(terrain);
 
-                TRACE << "Placed terrain '" << terrain->name(Article::a) << "'" << std::endl;
+                TRACE << "Placed terrain '" << terrain->name(Article::a) << "'" << "\n";
 
                 terrain->set_inscribed();
 
@@ -190,7 +190,7 @@ void put_inscribed_terrain()
                 << "Attempting to include '"
                 << nr_inscribed_terrains_to_try
                 << "' number of inscribed terrains on the map"
-                << std::endl;
+                << "\n";
 
         if (nr_inscribed_terrains_to_try == 0) {
                 return;
@@ -210,7 +210,7 @@ void put_inscribed_terrain()
                 << "' existing terrains ('"
                 << nr_inscribed_terrains_to_try
                 << "' left to try)"
-                << std::endl;
+                << "\n";
 
         if (nr_inscribed_terrains_to_try == 0) {
                 // We managed to inscribe enough existing terrain.
@@ -223,6 +223,6 @@ void put_inscribed_terrain()
                 << "Placed '"
                 << nr_new_placed
                 << "' new inscribed terrains "
-                << std::endl;
+                << "\n";
 }
 }  // namespace mapgen

@@ -635,7 +635,7 @@ static void run_random_side_effect(actor::Actor& caster)
 
         const SpellSideEffect& side_effect_function = s_spell_side_effects.roll();
 
-        TRACE << "Running spell side effect" << std::endl;
+        TRACE << "Running spell side effect" << "\n";
 
         side_effect_function({caster, nearby_positions});
 }
@@ -1133,7 +1133,7 @@ void Spell::cast(
         // OK, we can try to cast
 
         if (actor::is_player(caster)) {
-                TRACE << "Player casting spell" << std::endl;
+                TRACE << "Player casting spell" << "\n";
 
                 const ShockSrc shock_src =
                         (spell_src == SpellSrc::learned)
@@ -1167,7 +1167,7 @@ void Spell::cast(
         }
         else {
                 // Caster is monster
-                TRACE << "Monster casting spell" << std::endl;
+                TRACE << "Monster casting spell" << "\n";
 
                 // Make sound if noisy - casting from scrolls is always noisy.
                 if (is_noisy(skill) || (spell_src == SpellSrc::manuscript)) {
@@ -1199,7 +1199,7 @@ void Spell::cast(
                                 << "'" << name() << "', "
                                 << "caster "
                                 << "'" << actor::name_a(*caster) << "'"
-                                << std::endl;
+                                << "\n";
 
                         apply_spell_cost(*caster, range.roll(), cost_type());
                 }
@@ -1218,7 +1218,7 @@ void Spell::cast(
                         << "'" << name() << "', "
                         << "caster "
                         << "'" << actor::name_a(*caster) << "'"
-                        << std::endl;
+                        << "\n";
 
                 // Here we run the actual casting of the spell itself:
                 run_effect(caster, skill, seen_targets);
@@ -4654,7 +4654,7 @@ void SpellSummon::run_effect(
         TRACE
                 << "Allowed monster level range: "
                 << "'" << mon_lvl_range.str() << "'"
-                << std::endl;
+                << "\n";
 
         std::vector<std::string> summon_bucket = make_summon_bucket(mon_lvl_range);
 
@@ -4662,20 +4662,20 @@ void SpellSummon::run_effect(
                 TRACE
                         << "No eligible monsters found, trying again with monsters allowed "
                            "from depth 0."
-                        << std::endl;
+                        << "\n";
 
                 mon_lvl_range.min = 0;
 
                 TRACE
                         << "Allowed monster dungeon level range: "
                         << "'" << mon_lvl_range.str() << "'"
-                        << std::endl;
+                        << "\n";
 
                 summon_bucket = make_summon_bucket(mon_lvl_range);
         }
 
         if (summon_bucket.empty()) {
-                TRACE << "No elligible monsters found for spawning" << std::endl;
+                TRACE << "No elligible monsters found for spawning" << "\n";
 
                 ASSERT(false);
 
@@ -4743,14 +4743,14 @@ std::vector<std::string> SpellSummon::make_summon_bucket(const Range& lvl_range)
         TRACE
                 << "Number of monsters allowed before specific filtering: "
                 << "'" << summon_bucket.size() << "'"
-                << std::endl;
+                << "\n";
 
         summon_bucket = m_impl->filter_allowed_ids(summon_bucket);
 
         TRACE
                 << "Number of monsters allowed after specific filtering: "
                 << "'" << summon_bucket.size() << "'"
-                << std::endl;
+                << "\n";
 
         return summon_bucket;
 }

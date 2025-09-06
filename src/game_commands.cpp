@@ -1124,7 +1124,7 @@ void handle(const GameCmd cmd)
                                 prop::g_data[i].name;
                 }
 
-                TRACE << msg << std::endl;
+                TRACE << msg << "\n";
 
                 const std::string query_str = "Apply property";
 
@@ -1427,7 +1427,7 @@ void handle(const GameCmd cmd)
                                 ")";
                 }
 
-                TRACE << str << std::endl;
+                TRACE << str << "\n";
         } break;
 
         case GameCmd::debug_f8: {
@@ -1490,7 +1490,7 @@ void handle(const GameCmd cmd)
                         }
                 }
 
-                TRACE << msg << std::endl;
+                TRACE << msg << "\n";
 
                 std::string query_str = "Summon monster id";
 

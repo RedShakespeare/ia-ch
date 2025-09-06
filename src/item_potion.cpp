@@ -356,7 +356,7 @@ void Potion::reveal_alignment() const
                 return;
         }
 
-        TRACE << "Potion alignment discovered" << std::endl;
+        TRACE << "Potion alignment discovered" << "\n";
 
         const std::string name_plural =
                 m_data->base_name_un_id.names[(size_t)ItemNameType::plural];

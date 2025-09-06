@@ -46,7 +46,7 @@ namespace map_builder
 {
 std::unique_ptr<MapBuilder> make(const MapType map_type)
 {
-        TRACE << "Making map of type '" << (int)map_type << "'" << std::endl;
+        TRACE << "Making map of type '" << (int)map_type << "'" << "\n";
 
         switch (map_type) {
         case MapType::deep_one_lair:
@@ -130,9 +130,9 @@ void MapBuilder::build()
 
         TRACE
                 << "Map built after " << nr_attempts << " attempt(s)."
-                << std::endl
+                << "\n"
                 << "Total time taken: " << duration << " ms"
-                << std::endl;
+                << "\n";
 #endif  // NDEBUG
 
         TRACE_FUNC_END;

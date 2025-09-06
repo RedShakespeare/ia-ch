@@ -130,7 +130,7 @@ static void write_file()
                         file << s_lines[i];
 
                         if (i != s_lines.size() - 1) {
-                                file << std::endl;
+                                file << "\n";
                         }
                 }
 

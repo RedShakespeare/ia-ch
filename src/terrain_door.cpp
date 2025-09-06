@@ -590,7 +590,7 @@ static std::vector<std::string> get_warded_door_summon_bucket()
                         << "Found '"
                         << summon_bucket.size()
                         << "' allowed monsters in narrow spawn range"
-                        << std::endl;
+                        << "\n";
 
                 return summon_bucket;
         }
@@ -604,7 +604,7 @@ static std::vector<std::string> get_warded_door_summon_bucket()
                 << "Found '"
                 << summon_bucket.size()
                 << "' allowed monsters in wide spawn range"
-                << std::endl;
+                << "\n";
 
         return summon_bucket;
 }
@@ -1323,7 +1323,7 @@ void Door::bump(actor::Actor& actor_bumping)
                         TRACE
                                 << "Player bumped into secret door, "
                                 << "with vision in position"
-                                << std::endl;
+                                << "\n";
 
                         msg_log::add(
                                 terrain::data(terrain::Id::wall)
@@ -1334,7 +1334,7 @@ void Door::bump(actor::Actor& actor_bumping)
                         TRACE
                                 << "Player bumped into secret door, "
                                 << "without vision in position"
-                                << std::endl;
+                                << "\n";
 
                         msg_log::add(
                                 terrain::data(terrain::Id::wall)
@@ -1568,7 +1568,7 @@ void Door::actor_try_close(actor::Actor& actor_trying)
                 TRACE
                         << "Door marked as currently being opened, checking if "
                            "opening actor still exists and is alive"
-                        << std::endl;
+                        << "\n";
 
                 bool is_opening_actor_alive = false;
 
@@ -1582,7 +1582,7 @@ void Door::actor_try_close(actor::Actor& actor_trying)
                 if (is_opening_actor_alive) {
                         TRACE
                                 << "Opening actor exists and is alive"
-                                << std::endl;
+                                << "\n";
 
                         if (is_player) {
                                 msg_log::add(
@@ -1595,7 +1595,7 @@ void Door::actor_try_close(actor::Actor& actor_trying)
                 else {
                         TRACE
                                 << "Opening actor no longer exists, or is dead"
-                                << std::endl;
+                                << "\n";
 
                         m_actor_currently_opening = nullptr;
                 }
@@ -1698,7 +1698,7 @@ void Door::actor_try_open(actor::Actor& actor_trying)
         const audio::SfxId sfx_door_open = get_open_sfx(m_type);
 
         if (m_is_stuck) {
-                TRACE << "Is stuck" << std::endl;
+                TRACE << "Is stuck" << "\n";
 
                 if (is_player) {
                         msg_log::add("The " + base_name_short() + " seems to be stuck.");
@@ -1706,12 +1706,12 @@ void Door::actor_try_open(actor::Actor& actor_trying)
         }
         else {
                 // Not stuck
-                TRACE << "Is not stuck" << std::endl;
+                TRACE << "Is not stuck" << "\n";
 
                 const bool tryer_can_see = actor_trying.m_properties.allow_see();
 
                 if (tryer_can_see) {
-                        TRACE << "Tryer can see, opening" << std::endl;
+                        TRACE << "Tryer can see, opening" << "\n";
                         m_is_open = true;
 
                         if (is_player) {
@@ -1733,7 +1733,7 @@ void Door::actor_try_open(actor::Actor& actor_trying)
                         if (rnd::coin_toss()) {
                                 TRACE
                                         << "Tryer is blind, but open succeeded anyway"
-                                        << std::endl;
+                                        << "\n";
 
                                 m_is_open = true;
 
@@ -1753,7 +1753,7 @@ void Door::actor_try_open(actor::Actor& actor_trying)
                         }
                         else {
                                 // Failed to open while blind
-                                TRACE << "Tryer is blind, and open failed" << std::endl;
+                                TRACE << "Tryer is blind, and open failed" << "\n";
 
                                 if (is_player) {
                                         communicate_player_fail_open_blind(
@@ -1773,10 +1773,10 @@ void Door::actor_try_open(actor::Actor& actor_trying)
         }
 
         if (m_is_open) {
-                TRACE << "Open was successful" << std::endl;
+                TRACE << "Open was successful" << "\n";
 
                 if (m_is_hidden) {
-                        TRACE << "Was secret, now revealing" << std::endl;
+                        TRACE << "Was secret, now revealing" << "\n";
 
                         reveal(terrain::PrintRevealMsg::if_seen);
                 }
@@ -1802,6 +1802,7 @@ void Door::actor_try_open(actor::Actor& actor_trying)
                 map::update_vision();
         }
 
+        TRACE_FUNC_END;
 }  // actor_try_open
 
 DidOpen Door::open(actor::Actor* const actor_opening)

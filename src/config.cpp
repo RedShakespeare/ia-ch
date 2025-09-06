@@ -166,7 +166,7 @@ static P parse_dims_from_font_name(const std::string& font_name)
         const bool is_name_ok = std::regex_search(font_name, match, pattern);
 
         if (!is_name_ok) {
-                TRACE << "Invalid font name: '" << font_name << "'" << std::endl;
+                TRACE << "Invalid font name: '" << font_name << "'" << "\n";
 
                 return {-1, -1};
         }
@@ -181,7 +181,7 @@ static void find_fonts_from_filesystem()
 {
         TRACE_FUNC_BEGIN;
 
-        TRACE << "Finding font images at '" << paths::fonts_dir() << "'" << std::endl;
+        TRACE << "Finding font images at '" << paths::fonts_dir() << "'" << "\n";
 
         for (const auto& entry : std::filesystem::directory_iterator(paths::fonts_dir())) {
                 if (!entry.is_regular_file()) {
@@ -229,7 +229,7 @@ static void find_fonts_from_filesystem()
                 TRACE
                         << "Found valid font '" << font_name << "'"
                         << " widh dimensions '" << dims.x << "x" << dims.y << "'"
-                        << std::endl;
+                        << "\n";
         }
 #endif  // NDEBUG
 
@@ -255,9 +255,9 @@ static void update_render_dims()
                 s_gui_cell_px_h = s_map_cell_px_h = font_dims.y;
         }
 
-        TRACE << "GUI cell size: " << s_gui_cell_px_w << "x" << s_gui_cell_px_h << std::endl;
+        TRACE << "GUI cell size: " << s_gui_cell_px_w << "x" << s_gui_cell_px_h << "\n";
 
-        TRACE << "Tile size: " << s_map_cell_px_w << "x" << s_map_cell_px_h << std::endl;
+        TRACE << "Tile size: " << s_map_cell_px_w << "x" << s_map_cell_px_h << "\n";
 
         TRACE_FUNC_END;
 }
@@ -282,7 +282,7 @@ static int calc_default_video_scale_factor(const P& native_res)
                 << "'" << native_res.x << "x" << native_res.y << "' "
                 << "(f = (x_resolution + 500) / 1000, "
                 << "limited to " << s_video_scale_factor_max << ")"
-                << std::endl;
+                << "\n";
 
         return f;
 }
@@ -369,7 +369,7 @@ static bool read_config_file()
         s_video_scale_factor = to_int(config["video_scale_factor"]);
 
         std::string video_scale_str = config["video_scale_factor"];
-        TRACE << "Read video_scale_factor: '" << video_scale_str << "'" << std::endl;
+        TRACE << "Read video_scale_factor: '" << video_scale_str << "'" << "\n";
 
         s_brightness_pct = to_int(config["brightness_pct"]);
         s_renderer_type = (RendererType)to_int(config["renderer_type"]);
@@ -386,7 +386,7 @@ static bool read_config_file()
                 TRACE
                         << "Font name in config file not found in available fonts "
                            "(removed from disk?), reverting to smallest font"
-                        << std::endl;
+                        << "\n";
 
                 s_font_name = s_font_image_names[0];
         }
@@ -917,7 +917,7 @@ void MasterVolumeOption::change(const OptionChangeCommand command) const
                 << "%, adjusted: "
                 << s_master_volume_pct_adjusted
                 << "%"
-                << std::endl;
+                << "\n";
 
         audio::set_music_volume(s_master_volume_pct_adjusted);
 
@@ -1035,7 +1035,7 @@ void AudioBufferSizeOption::change(const OptionChangeCommand command) const
         TRACE
                 << "Audio buffer size: "
                 << s_audio_buffer_size
-                << std::endl;
+                << "\n";
 
         io::init_sdl_audio();
 }

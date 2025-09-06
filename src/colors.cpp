@@ -137,7 +137,7 @@ static SDL_Color rgb_hex_str_to_sdl_color(const std::string& str)
                         << "Invalid rgb hex string: '"
                         << str
                         << "'"
-                        << std::endl;
+                        << "\n";
 
                 PANIC;
         }
@@ -178,7 +178,7 @@ static SDL_Color load_color_from_xml(
                         << (int)sdl_color.r << ", "
                         << (int)sdl_color.g << ", "
                         << (int)sdl_color.b
-                        << std::endl;
+                        << "\n";
 
                 return sdl_color;
         }
@@ -186,7 +186,7 @@ static SDL_Color load_color_from_xml(
         TRACE_ERROR_RELEASE
                 << "Expected color with ID "
                 << "'" << id << "' "
-                << "to be defined, but it was not found" << std::endl;
+                << "to be defined, but it was not found" << "\n";
 
         PANIC;
 
@@ -210,7 +210,7 @@ static SDL_Color load_gui_color_from_xml(
                         << "Loaded gui color - "
                         << "ID: \"" << id << "\", "
                         << "Color ID: \"" << color_id << "\""
-                        << std::endl;
+                        << "\n";
 
                 const auto color = colors::name_to_color(color_id);
 
@@ -220,7 +220,7 @@ static SDL_Color load_gui_color_from_xml(
         TRACE_ERROR_RELEASE
                 << "Expected GUI color with ID "
                 << "'" << id << "' "
-                << "to be defined, but it was not found" << std::endl;
+                << "to be defined, but it was not found" << "\n";
 
         PANIC;
 
@@ -450,7 +450,7 @@ Color name_to_color(const std::string& name)
         if (search == std::end(s_str_color_pairs)) {
                 TRACE_ERROR_RELEASE
                         << "No color defined for name: "
-                        << "'" << name << "'" << std::endl;
+                        << "'" << name << "'" << "\n";
 
                 PANIC;
 
@@ -476,7 +476,7 @@ std::string color_to_name(const Color& color)
                 TRACE << "No color name stored for color with RGB: "
                       << sdl_color.r << ", "
                       << sdl_color.g << ", "
-                      << sdl_color.b << std::endl;
+                      << sdl_color.b << "\n";
 
                 ASSERT(false);
 #endif  // NDEBUG

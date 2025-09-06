@@ -277,7 +277,7 @@ void Scroll::reveal_domain() const
                 return;
         }
 
-        TRACE << "Scroll domain discovered" << std::endl;
+        TRACE << "Scroll domain discovered" << "\n";
 
         const std::string name_plural =
                 m_data->base_name_un_id.names[(size_t)ItemNameType::plural];

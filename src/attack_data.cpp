@@ -402,7 +402,7 @@ RangedAttData::RangedAttData(
                 TRACE
                         << wpn.name(ItemNameType::plain, ItemNameInfo::none)
                         << " projectile not at aim position, setting minimum hit chance"
-                        << std::endl;
+                        << "\n";
 
                 hit_chance_tot = 0;
         }

@@ -249,7 +249,7 @@ static void bot_act()
 
         // If we are finished with the current run, go back to dlvl 1
         if (map::g_dlvl >= g_dlvl_last) {
-                TRACE << "Starting new run on first dungeon level" << std::endl;
+                TRACE << "Starting new run on first dungeon level" << "\n";
                 map_travel::init();
 
                 map::g_dlvl = 1;

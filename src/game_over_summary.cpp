@@ -327,7 +327,7 @@ void GameOverSummary::dump_to_file(const std::string& path) const
         file.open(path.c_str(), std::ios::trunc);
 
         for (const ColoredString& line : m_lines) {
-                file << line.str << std::endl;
+                file << line.str << "\n";
         }
 
         file.close();

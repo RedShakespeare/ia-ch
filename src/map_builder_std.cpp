@@ -41,7 +41,7 @@
 // -----------------------------------------------------------------------------
 static Array2<Region> init_regions()
 {
-        TRACE << "Init regions" << std::endl;
+        TRACE << "Init regions" << "\n";
 
         const int split_x_interval = map::w() / 3;
         const int split_y_interval = map::h() / 3;
@@ -138,7 +138,7 @@ bool MapBuilderStd::build_specific()
         // ---------------------------------------------------------------------
         // Make main rooms
         // ---------------------------------------------------------------------
-        TRACE << "Making main rooms" << std::endl;
+        TRACE << "Making main rooms" << "\n";
 
         for (int x = 0; x < 3; ++x) {
                 for (int y = 0; y < 3; ++y) {
@@ -237,7 +237,7 @@ bool MapBuilderStd::build_specific()
         // ---------------------------------------------------------------------
         // Run the pre-connect hook on all rooms
         // ---------------------------------------------------------------------
-        TRACE << "Running pre-connect for all rooms" << std::endl;
+        TRACE << "Running pre-connect for all rooms" << "\n";
 
         for (room::Room* const room : map::g_room_list) {
                 room->on_pre_connect(mapgen::g_door_proposals);
@@ -259,7 +259,7 @@ bool MapBuilderStd::build_specific()
         // ---------------------------------------------------------------------
         // Run the post-connect hook on all rooms
         // ---------------------------------------------------------------------
-        TRACE << "Running post-connect for all rooms" << std::endl;
+        TRACE << "Running post-connect for all rooms" << "\n";
 
         for (room::Room* const room : map::g_room_list) {
                 room->on_post_connect(mapgen::g_door_proposals);
@@ -283,7 +283,7 @@ bool MapBuilderStd::build_specific()
         // ---------------------------------------------------------------------
         // Run the affect surroundings hook on all rooms
         // ---------------------------------------------------------------------
-        TRACE << "Running affect surroundings for all rooms" << std::endl;
+        TRACE << "Running affect surroundings for all rooms" << "\n";
 
         // This is executed in random room order, since nearby rooms may create
         // overlapping areas of terrain, and it shouldn't depend on creation
@@ -342,7 +342,7 @@ bool MapBuilderStd::build_specific()
         TRACE
                 << "Found "
                 << "'" << map::g_chokepoint_data.size() << "' "
-                << "choke points" << std::endl;
+                << "choke points" << "\n";
 
         if (!mapgen::g_is_map_valid) {
                 return false;

@@ -607,7 +607,7 @@ void MenuPopupState::update()
                 TRACE
                         << "*m_menu_choice_result: "
                         << *m_menu_choice_result
-                        << std::endl;
+                        << "\n";
 
                 states::pop();
                 break;

@@ -530,7 +530,7 @@ void Actor::restore_shock(
 
 void Actor::incr_insanity()
 {
-        TRACE << "Increasing insanity" << std::endl;
+        TRACE << "Increasing insanity" << "\n";
 
         if (!config::is_bot_playing()) {
                 const int ins_incr = rnd::range(10, 15);

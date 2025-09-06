@@ -168,9 +168,9 @@ terrain::Trap* try_make_trap(const terrain::TrapId id, const P& pos)
         if (!t->can_have_trap()) {
                 TRACE
                         << "Cannot place trap on terrain id: "
-                        << (int)t->id() << std::endl
+                        << (int)t->id() << "\n"
                         << "Trap id: "
-                        << int(id) << std::endl;
+                        << int(id) << "\n";
 
                 ASSERT(false);
 

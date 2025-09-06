@@ -26,7 +26,7 @@ static std::vector<std::string> s_terrain_inscription_messages_reveal_knowledge;
 
 static std::vector<std::string> read_msg_file(const std::string& filename)
 {
-        TRACE << "Reading message file at: '" << filename << "'" << std::endl;
+        TRACE << "Reading message file at: '" << filename << "'" << "\n";
 
         std::ifstream msg_file(filename.c_str());
 
@@ -34,7 +34,7 @@ static std::vector<std::string> read_msg_file(const std::string& filename)
                 TRACE_ERROR_RELEASE
                         << "Unable to load message file: "
                         << filename
-                        << std::endl;
+                        << "\n";
 
                 PANIC;
 
@@ -46,7 +46,7 @@ static std::vector<std::string> read_msg_file(const std::string& filename)
 
         while (std::getline(msg_file, str)) {
                 if (!str.empty() && (str[0] != ' ') && (str[0] != '#')) {
-                        TRACE << str << std::endl;
+                        TRACE << str << "\n";
 
                         lines.push_back(str);
                 }

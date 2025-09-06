@@ -59,7 +59,7 @@ static SDL_Window* create_sdl_window(
         TRACE_FUNC_BEGIN;
 
         TRACE << "Attempting to create window with size: "
-              << px_dims.x << ", " << px_dims.y << std::endl;
+              << px_dims.x << ", " << px_dims.y << "\n";
 
         SDL_Window* window = nullptr;
 
@@ -78,9 +78,9 @@ static SDL_Window* create_sdl_window(
 
         if (!window) {
                 TRACE << "Failed to create window: "
-                      << std::endl
+                      << "\n"
                       << SDL_GetError()
-                      << std::endl;
+                      << "\n";
         }
 
         TRACE_FUNC_END;
@@ -135,7 +135,7 @@ static void update_rendering_offsets()
 
 static SDL_Window* init_window_fullscreen()
 {
-        TRACE << "Initializing with fullscreen" << std::endl;
+        TRACE << "Initializing with fullscreen" << "\n";
 
         const auto native_resolution = io::get_native_resolution();
 
@@ -147,7 +147,7 @@ static SDL_Window* init_window_fullscreen()
                 << "Fullscreen window size: "
                 << window_size.x << "x"
                 << window_size.y
-                << std::endl;
+                << "\n";
 
         panels::init(io::px_to_gui_coords(window_size));
 
@@ -171,12 +171,12 @@ static SDL_Window* init_window_windowed()
                 << "Window size: "
                 << window_size.x << "x"
                 << window_size.y
-                << std::endl;
+                << "\n";
 
         TRACE << "Window logical size: "
               << window_logical_size.x << "x"
               << window_logical_size.y
-              << std::endl;
+              << "\n";
 
         panels::init(io::px_to_gui_coords(window_logical_size));
 
@@ -207,7 +207,7 @@ void init_window()
                 << "Native resolution: "
                 << native_resolution.x << "x"
                 << native_resolution.y
-                << std::endl;
+                << "\n";
 
         if (config::is_fullscreen()) {
                 g_sdl_window = init_window_fullscreen();
@@ -228,9 +228,9 @@ void init_window()
         if (!g_sdl_window) {
                 TRACE_ERROR_RELEASE
                         << "Failed to set up window"
-                        << std::endl
+                        << "\n"
                         << SDL_GetError()
-                        << std::endl;
+                        << "\n";
 
                 PANIC;
         }
@@ -260,12 +260,12 @@ void on_window_resized()
         TRACE << "New window size: "
               << new_px_dims.x << "x"
               << new_px_dims.y
-              << std::endl;
+              << "\n";
 
         TRACE << "New logical window size: "
               << new_logical_px_dims.x << "x"
               << new_logical_px_dims.y
-              << std::endl;
+              << "\n";
 
         config::set_window_px_w(new_px_dims.x);
         config::set_window_px_h(new_px_dims.y);
@@ -354,9 +354,9 @@ P get_native_resolution()
         if (result != 0) {
                 TRACE_ERROR_RELEASE
                         << "Failed to read native resolution"
-                        << std::endl
+                        << "\n"
                         << SDL_GetError()
-                        << std::endl;
+                        << "\n";
 
                 PANIC;
         }

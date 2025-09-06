@@ -645,7 +645,7 @@ void move_player_to_nearest_allowed_pos()
         else {
                 // Valid cells exists
                 TRACE << "Sorting the allowed cells vector "
-                      << "(" << pos_bucket.size() << " cells)" << std::endl;
+                      << "(" << pos_bucket.size() << " cells)" << "\n";
 
                 IsCloserToPos is_closer_to_origin(map::g_player->m_pos);
 

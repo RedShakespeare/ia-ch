@@ -37,7 +37,7 @@ static bool ensure_writable_location(const std::string& path)
                 << "Creating directories and testing if directory is writable: '"
                 << path
                 << "'"
-                << std::endl;
+                << "\n";
 
         try {
                 const std::filesystem::path temp_file_path =
@@ -52,7 +52,7 @@ static bool ensure_writable_location(const std::string& path)
                         TRACE
                                 << "Unable to open temporary file "
                                 << temp_file_path
-                                << std::endl;
+                                << "\n";
 
                         return false;
                 }
@@ -63,7 +63,7 @@ static bool ensure_writable_location(const std::string& path)
 
                 // OK, we can write here!
 
-                TRACE << "Writing succeeded" << std::endl;
+                TRACE << "Writing succeeded" << "\n";
 
                 // Clean up
                 std::filesystem::remove(temp_file_path);
@@ -73,7 +73,7 @@ static bool ensure_writable_location(const std::string& path)
                 return true;
 
         } catch (const std::exception& e) {
-                TRACE_ERROR_RELEASE << "Error checking write access: " << e.what() << std::endl;
+                TRACE_ERROR_RELEASE << "Error checking write access: " << e.what() << "\n";
 
                 TRACE_FUNC_END;
 
@@ -162,17 +162,17 @@ void init()
                 << "Attempting to use path from "
                 << s_user_data_ini_file_name
                 << " for user data"
-                << std::endl;
+                << "\n";
 
         std::string user_dir = read_user_dir_from_ini_file();
 
         TRACE
                 << "User data path set from "
                 << s_user_data_ini_file_name
-                << ": '" << user_dir << "'" << std::endl;
+                << ": '" << user_dir << "'" << "\n";
 
         if (user_dir.empty()) {
-                TRACE << "Path from " << s_user_data_ini_file_name << " is empty" << std::endl;
+                TRACE << "Path from " << s_user_data_ini_file_name << " is empty" << "\n";
         }
         else {
                 const bool is_writable = ensure_writable_location(user_dir);
@@ -182,7 +182,7 @@ void init()
                                 << "Will use path from "
                                 << s_user_data_ini_file_name
                                 << " for user data"
-                                << std::endl;
+                                << "\n";
 
                         // TODO: This is hacky, but will not be needed if using std::filesystem.
                         user_dir += "/";
@@ -191,7 +191,7 @@ void init()
                         TRACE
                                 << "Could not write to path from "
                                 << s_user_data_ini_file_name
-                                << std::endl;
+                                << "\n";
 
                         add_error_msg_user_dir_not_writable(user_dir);
 
@@ -205,17 +205,17 @@ void init()
         if (user_dir.empty()) {
                 TRACE
                         << "Attempting to use path from SDL_GetPrefPath for user data"
-                        << std::endl;
+                        << "\n";
 
                 user_dir = io::sdl_pref_dir();
 
                 const bool is_writable = ensure_writable_location(user_dir);
 
                 if (is_writable) {
-                        TRACE << "Will use path from SDL_GetPrefPath for user data" << std::endl;
+                        TRACE << "Will use path from SDL_GetPrefPath for user data" << "\n";
                 }
                 else {
-                        TRACE << "Could not write to path from SDL_GetPrefPath" << std::endl;
+                        TRACE << "Could not write to path from SDL_GetPrefPath" << "\n";
 
                         user_dir = "";
                 }
@@ -227,14 +227,14 @@ void init()
         if (user_dir.empty()) {
                 TRACE
                         << "Attempting to use path in game directory for user data"
-                        << std::endl;
+                        << "\n";
 
                 user_dir = "user_data/";
 
                 const bool is_writable = ensure_writable_location(user_dir);
 
                 if (is_writable) {
-                        TRACE << "Will use path in game directory for user data" << std::endl;
+                        TRACE << "Will use path in game directory for user data" << "\n";
                 }
                 else {
                         // NOTE: We keep this directory set even if it's not possible to write here.

@@ -402,11 +402,11 @@ void erase_mob(
                 << "', not found in list of size '"
                 << g_mobs.size()
                 << "'"
-                << std::endl;
+                << "\n";
 
         TRACE
                 << "Terrain name: '" << terrain->name(Article::a) << "'"
-                << std::endl;
+                << "\n";
 
         ASSERT(false);
 }

@@ -945,7 +945,7 @@ void Shapeshifts::shapeshift(const Verbose verbose) const
                         << "'" << actor::name_a(*m_owner) << "'"
                         << " on terrain "
                         << "'" << map::g_terrain.at(m_owner->m_pos)->name(Article::a) << "'"
-                        << std::endl;
+                        << "\n";
 
                 ASSERT(false);
 
@@ -2496,7 +2496,7 @@ PropActResult Vortex::on_act()
 
         TRACE
                 << "Monster with vortex property attempting to pull player"
-                << std::endl;
+                << "\n";
 
         const auto delta = player_pos - m_owner->m_pos;
 
@@ -2525,11 +2525,11 @@ PropActResult Vortex::on_act()
         TRACE
                 << "Pos found to knockback player from: "
                 << knockback_from_pos.x << ", "
-                << knockback_from_pos.y << std::endl;
+                << knockback_from_pos.y << "\n";
 
         TRACE
                 << "Player pos: "
-                << player_pos.x << ", " << player_pos.y << std::endl;
+                << player_pos.x << ", " << player_pos.y << "\n";
 
         m_owner->make_player_aware_of_me();
 
@@ -2543,7 +2543,7 @@ PropActResult Vortex::on_act()
                 msg_log::add("A powerful wind is pulling me!");
         }
 
-        TRACE << "Attempt pull (knockback)" << std::endl;
+        TRACE << "Attempt pull (knockback)" << "\n";
 
         // TODO: Add sfx
         knockback::run(

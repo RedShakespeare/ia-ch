@@ -127,7 +127,7 @@ Color read_px_on_surface(const SDL_Surface& surface, const P& px_pos)
                 TRACE_ERROR_RELEASE
                         << "Unexpected bpp: "
                         << (int)surface.format->BytesPerPixel
-                        << std::endl;
+                        << "\n";
 
                 PANIC;
 
@@ -181,7 +181,7 @@ void put_px_on_surface(
                 TRACE_ERROR_RELEASE
                         << "Unexpected bpp: "
                         << (int)surface.format->BytesPerPixel
-                        << std::endl;
+                        << "\n";
 
                 PANIC;
                 break;

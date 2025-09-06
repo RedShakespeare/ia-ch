@@ -34,7 +34,7 @@ static std::vector<std::string> read_manual_file()
         if (!file.is_open()) {
                 TRACE_ERROR_RELEASE
                         << "Could not open manual file"
-                        << std::endl;
+                        << "\n";
 
                 PANIC;
         }

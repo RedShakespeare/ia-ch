@@ -64,16 +64,16 @@ static void load(const audio::SfxId sfx, const std::string& filename)
 
         const std::string file_rel_path = paths::audio_dir() + filename;
 
-        TRACE << "Loading audio file: " << file_rel_path << std::endl;
+        TRACE << "Loading audio file: " << file_rel_path << "\n";
 
         s_audio_chunks[(size_t)sfx] = Mix_LoadWAV(file_rel_path.c_str());
 
         if (!s_audio_chunks[(size_t)sfx]) {
                 TRACE
                         << "Problem loading audio file with name: "
-                        << filename << std::endl
+                        << filename << "\n"
                         << "Mix_GetError(): "
-                        << Mix_GetError() << std::endl;
+                        << Mix_GetError() << "\n";
 
                 ASSERT(false);
         }
@@ -89,7 +89,7 @@ static std::string get_audio_filename(const audio::SfxId id)
                 TRACE
                         << "Could not find an id string for audio with id number: "
                         << (int)id
-                        << std::endl;
+                        << "\n";
 
                 ASSERT(false);
         }
@@ -374,7 +374,7 @@ void play(const SfxId sfx, int vol_pct_tot, const int vol_pct_l)
                         << "Failed to set panning, "
                         << "l=" << vol_l << " "
                         << "r=" << vol_r
-                        << ": " << Mix_GetError() << std::endl;
+                        << ": " << Mix_GetError() << "\n";
         }
 
         auto* const chunk = s_audio_chunks[(size_t)sfx];

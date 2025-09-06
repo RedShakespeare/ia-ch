@@ -27,7 +27,7 @@ std::optional<std::string> read_git_sha1_str_from_file()
         if (!file.is_open()) {
                 TRACE << "Failed to open git sha1 file at "
                       << sha1_file_path
-                      << std::endl;
+                      << "\n";
 
                 return {};
         }

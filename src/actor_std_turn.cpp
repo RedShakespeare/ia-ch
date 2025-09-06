@@ -111,7 +111,7 @@ static void try_make_mon_join_other_mon(actor::Actor& mon)
                 << "' (" << &mon << ")"
                 << " adopted monster '" << actor::name_a(*leader)
                 << "' (" << leader << ") as leader"
-                << std::endl;
+                << "\n";
 }
 
 static int calc_player_turns_per_hp_regen_rate()
@@ -390,7 +390,7 @@ static void std_turn_common(actor::Actor& actor)
         const bool is_hp_above_max = (actor.m_hp > actor::max_hp(actor));
 
         if (is_hp_above_max && decr_this_turn) {
-                TRACE << actor.m_hp << std::endl;
+                TRACE << actor.m_hp << "\n";
 
                 --actor.m_hp;
         }

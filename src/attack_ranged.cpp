@@ -130,24 +130,24 @@ struct ProjectileFireData
         {
                 os
                         << "PROJECTILE FIRE DATA:"
-                        << std::endl
+                        << "\n"
                         << "ORIGIN: "
                         << "{"
                         << d.origin.x
                         << " ,"
                         << d.origin.y
                         << "}"
-                        << std::endl
+                        << "\n"
                         << "AIM POS: "
                         << "{"
                         << d.aim_pos.x
                         << " ,"
                         << d.aim_pos.y
                         << "}"
-                        << std::endl
+                        << "\n"
                         << "AIM LVL: "
                         << (int)d.aim_lvl
-                        << std::endl;
+                        << "\n";
 
                 os << "PATH: ";
 
@@ -160,14 +160,14 @@ struct ProjectileFireData
                                 << "} ";
                 }
 
-                os << std::endl;
+                os << "\n";
 
                 os
                         << "PROJECTILES:"
-                        << std::endl;
+                        << "\n";
 
                 for (const Projectile& proj : d.projectiles) {
-                        os << "    " << proj << std::endl;
+                        os << "    " << proj << "\n";
                 }
 
                 return os;

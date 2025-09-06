@@ -1037,7 +1037,7 @@ void EnterNameState::update()
 
                 d.name_a = d.name_the = m_current_str;
 
-                TRACE << "Player name: '" << d.name_a << "'" << std::endl;
+                TRACE << "Player name: '" << d.name_a << "'" << "\n";
 
                 states::pop();
 

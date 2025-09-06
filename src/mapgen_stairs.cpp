@@ -42,7 +42,7 @@ P make_stairs_at_random_pos()
         if (nr_ok_cells < min_nr_ok_cells_req) {
                 TRACE << "Nr available cells to place stairs too low "
                       << "(" << nr_ok_cells << "), discarding map"
-                      << std::endl;
+                      << "\n";
 
                 g_is_map_valid = false;
 
@@ -50,7 +50,7 @@ P make_stairs_at_random_pos()
         }
 
         TRACE << "Sorting the allowed cells vector "
-              << "(" << pos_bucket.size() << " cells)" << std::endl;
+              << "(" << pos_bucket.size() << " cells)" << "\n";
 
         Array2<bool> blocks_player(map::dims());
 
@@ -91,7 +91,7 @@ P make_stairs_at_random_pos()
                         }
                 });
 
-        TRACE << "Picking one of the furthest cells" << std::endl;
+        TRACE << "Picking one of the furthest cells" << "\n";
 
         const int cell_idx_range_size = std::max(1, nr_ok_cells / 5);
 
@@ -107,7 +107,7 @@ P make_stairs_at_random_pos()
 
         const P stairs_pos(pos_bucket[cell_idx]);
 
-        TRACE << "Spawning stairs at chosen cell" << std::endl;
+        TRACE << "Spawning stairs at chosen cell" << "\n";
 
         map::set_terrain(terrain::make(terrain::Id::stairs, stairs_pos));
 

@@ -42,7 +42,7 @@
 // -----------------------------------------------------------------------------
 static void destroy_armor(actor::Actor& actor, const item::Armor* const armor)
 {
-        TRACE << "Armor was destroyed" << std::endl;
+        TRACE << "Armor was destroyed" << "\n";
 
         if (actor::is_player(&actor)) {
                 const std::string armor_name =

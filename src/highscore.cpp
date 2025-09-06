@@ -59,18 +59,18 @@ static void write_file(std::vector<HighscoreEntry>& entries)
                 const std::string win_str =
                         (entry.is_win == IsWin::yes) ? "1" : "0";
 
-                f << entry.game_summary_file_path << std::endl;
-                f << win_str << std::endl;
-                f << entry.date << std::endl;
-                f << entry.name << std::endl;
-                f << entry.xp << std::endl;
-                f << entry.lvl << std::endl;
-                f << entry.dlvl << std::endl;
-                f << entry.turn_count << std::endl;
-                f << entry.ins << std::endl;
-                f << (int)entry.bg << std::endl;
-                f << (int)entry.player_occultist_domain << std::endl;
-                f << entry.is_latest_entry << std::endl;
+                f << entry.game_summary_file_path << "\n";
+                f << win_str << "\n";
+                f << entry.date << "\n";
+                f << entry.name << "\n";
+                f << entry.xp << "\n";
+                f << entry.lvl << "\n";
+                f << entry.dlvl << "\n";
+                f << entry.turn_count << "\n";
+                f << entry.ins << "\n";
+                f << (int)entry.bg << "\n";
+                f << (int)entry.player_occultist_domain << "\n";
+                f << entry.is_latest_entry << "\n";
         }
 }
 

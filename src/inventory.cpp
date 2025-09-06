@@ -377,7 +377,7 @@ item::Item* Inventory::remove_item_in_backpack_with_ptr(
                 }
         }
 
-        TRACE << "Parameter item not in backpack" << std::endl;
+        TRACE << "Parameter item not in backpack" << "\n";
         ASSERT(false);
 
         return nullptr;

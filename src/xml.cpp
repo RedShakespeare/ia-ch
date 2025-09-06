@@ -29,7 +29,7 @@ namespace xml
 {
 void load_file(const std::string& path, Doc& to_doc)
 {
-        TRACE << "Loading xml file at: " << path << std::endl;
+        TRACE << "Loading xml file at: " << path << "\n";
 
         const tinyxml2::XMLError load_result = to_doc.LoadFile(path.c_str());
 
@@ -37,10 +37,10 @@ void load_file(const std::string& path, Doc& to_doc)
                 TRACE_ERROR_RELEASE
                         << "Failed to find or read xml file at: "
                         << path
-                        << std::endl
+                        << "\n"
                         << "tinyxml2 reported error: "
                         << to_doc.ErrorName()
-                        << std::endl;
+                        << "\n";
 
                 PANIC;
         }
@@ -91,7 +91,7 @@ bool get_text_bool(const Element* const e)
                         << "xml element \""
                         << e->Value()
                         << "\", tinyxml2 reported error code: "
-                        << result << std::endl;
+                        << result << "\n";
 
                 PANIC;
         }
@@ -111,7 +111,7 @@ int get_text_int(const Element* const e)
                         << "xml element \""
                         << e->Value()
                         << "\", tinyxml2 reported error code: "
-                        << result << std::endl;
+                        << result << "\n";
 
                 PANIC;
         }
@@ -138,7 +138,7 @@ int get_attribute_int(const Element* const e, const std::string& name)
                         << "\", attribute \""
                         << name
                         << "\", tinyxml2 reported error code: "
-                        << result << std::endl;
+                        << result << "\n";
 
                 PANIC;
         }

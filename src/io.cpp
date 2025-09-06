@@ -48,7 +48,7 @@ static SDL_Surface* load_surface(const std::string& path)
                         << path
                         << "': "
                         << IMG_GetError()
-                        << std::endl;
+                        << "\n";
 
                 PANIC;
         }
@@ -100,7 +100,7 @@ static bool should_put_contour_at(
                                 << surface_px_pos.x
                                 << "x"
                                 << surface_px_pos.y
-                                << std::endl
+                                << "\n"
                                 << "(Background color is: "
                                 << (int)bg_color.r()
                                 << ","
@@ -108,7 +108,7 @@ static bool should_put_contour_at(
                                 << ","
                                 << (int)bg_color.b()
                                 << ")"
-                                << std::endl;
+                                << "\n";
 
                         PANIC;
                 }
@@ -197,7 +197,7 @@ static void verify_tile_colors(
                                 << x
                                 << "x"
                                 << y
-                                << std::endl;
+                                << "\n";
                         PANIC;
                 }
         }
@@ -226,7 +226,7 @@ static void verify_texture_size(
                         << expected_size.x
                         << "x"
                         << expected_size.y
-                        << std::endl;
+                        << "\n";
 
                 PANIC;
         }
@@ -243,7 +243,7 @@ static SDL_Texture* create_texture_from_surface(SDL_Surface& surface)
                 TRACE_ERROR_RELEASE
                         << "Failed to create texture from surface: "
                         << IMG_GetError()
-                        << std::endl;
+                        << "\n";
 
                 PANIC;
         }
@@ -304,7 +304,7 @@ static SDL_Renderer* create_renderer()
                 TRACE_ERROR_RELEASE
                         << "Failed to create SDL renderer: "
                         << SDL_GetError()
-                        << std::endl;
+                        << "\n";
 
                 PANIC;
         }
@@ -315,14 +315,14 @@ static SDL_Renderer* create_renderer()
                 TRACE_ERROR_RELEASE
                         << "Could not get RendererInfo: "
                         << SDL_GetError()
-                        << std::endl;
+                        << "\n";
 
                 PANIC;
         }
 
         TRACE
                 << "Created SDL Renderer with name: '" << info.name << "'"
-                << std::endl;
+                << "\n";
 
         std::string flags_str;
 
@@ -346,7 +346,7 @@ static SDL_Renderer* create_renderer()
                         flags_str, "SDL_RENDERER_TARGETTEXTURE");
         }
 
-        TRACE << "Flags: [" + flags_str + "]" << std::endl;
+        TRACE << "Flags: [" + flags_str + "]" << "\n";
 
         TRACE_FUNC_END;
 
@@ -383,7 +383,7 @@ static void load_font()
 
         const std::string img_path = paths::fonts_dir() + config::font_name();
 
-        TRACE << "Loading font image: " << img_path << std::endl;
+        TRACE << "Loading font image: " << img_path << "\n";
 
         SDL_Surface* const surface = load_surface(img_path);
 
@@ -412,7 +412,7 @@ static void load_tile(const gfx::TileId id, const P& cell_px_dims)
 {
         const std::string img_path = paths::tiles_dir() + gfx::tile_id_to_filename(id);
 
-        TRACE << "Loading tile image: " << img_path << std::endl;
+        TRACE << "Loading tile image: " << img_path << "\n";
 
         SDL_Surface* const surface = load_surface(img_path);
 
@@ -491,9 +491,9 @@ void init_sdl()
         if (SDL_Init(sdl_init_flags) == -1) {
                 TRACE_ERROR_RELEASE
                         << "Failed to init SDL"
-                        << std::endl
+                        << "\n"
                         << SDL_GetError()
-                        << std::endl;
+                        << "\n";
 
                 PANIC;
         }
@@ -505,9 +505,9 @@ void init_sdl()
         if (IMG_Init(sdl_img_flags) == -1) {
                 TRACE_ERROR_RELEASE
                         << "Failed to init SDL_image"
-                        << std::endl
+                        << "\n"
                         << SDL_GetError()
-                        << std::endl;
+                        << "\n";
 
                 PANIC;
         }
@@ -545,9 +545,9 @@ void init_sdl_audio()
         if (result == -1) {
                 TRACE_ERROR_RELEASE
                         << "Failed to init SDL_mixer"
-                        << std::endl
+                        << "\n"
                         << SDL_GetError()
-                        << std::endl;
+                        << "\n";
 
                 ASSERT(false);
         }
@@ -896,7 +896,7 @@ std::string sdl_pref_dir()
 
         SDL_free(path_ptr);
 
-        TRACE << "SDL_GetPrefPath returned path '" << path_str << "'" << std::endl;
+        TRACE << "SDL_GetPrefPath returned path '" << path_str << "'" << "\n";
 
         TRACE_FUNC_END;
 

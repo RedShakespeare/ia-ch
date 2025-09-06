@@ -218,7 +218,7 @@ void throw_item(
                 actor_throwing.m_pos,
                 item_thrown);
 
-        TRACE << "Calculating throwing path" << std::endl;
+        TRACE << "Calculating throwing path" << "\n";
 
         const auto path =
                 line_calc::calc_new_line(
@@ -228,7 +228,7 @@ void throw_item(
                         999,
                         false);
 
-        TRACE << "Throwing path size: " << path.size() << std::endl;
+        TRACE << "Throwing path size: " << path.size() << "\n";
 
         const auto& item_thrown_data = item_thrown.data();
 

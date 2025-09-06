@@ -115,7 +115,7 @@ namespace mapgen
 {
 void make_doors()
 {
-        TRACE << "Placing doors" << std::endl;
+        TRACE << "Placing doors" << "\n";
 
         for (int x = 0; x < map::w(); ++x) {
                 for (int y = 0; y < map::h(); ++y) {

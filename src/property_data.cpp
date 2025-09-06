@@ -127,7 +127,7 @@ static void add(prop::PropData& d)
                         << "' will not fit in panel of width '"
                         << panel_w
                         << "'"
-                        << std::endl;
+                        << "\n";
 
                 PANIC;
         }

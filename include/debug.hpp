@@ -40,11 +40,11 @@
 // NOTE: For release mode or test mode, the TRACE functionality never do anything. The if/else here
 // is a trick to support writing e.g.:
 //
-// TRACE << "foo" << std::endl;
+// TRACE << "foo" << "\n";
 //
 // ...which will be evaluated to:
 //
-// if (1) ; else std::cerr << "foo" << std::endl;
+// if (1) ; else std::cerr << "foo" << "\n";
 //
 #define TRACE \
         if (1) \
@@ -83,7 +83,7 @@
                 << __FILE__ << ", " \
                 << __LINE__ << ", " \
                 << __func__ << "() [BEGIN]" \
-                << std::endl
+                << "\n"
 
 #define TRACE_FUNC_END \
         std::cerr \
@@ -91,7 +91,7 @@
                 << __FILE__ << ", " \
                 << __LINE__ << ", " \
                 << __func__ << "() [END]" \
-                << std::endl
+                << "\n"
 
 #define PANIC ASSERT(false)
 

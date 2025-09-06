@@ -153,7 +153,7 @@ static void handle_window_event()
 {
         switch (s_sdl_event.window.event) {
         case SDL_WINDOWEVENT_SIZE_CHANGED: {
-                TRACE << "Window resized" << std::endl;
+                TRACE << "Window resized" << "\n";
 
                 if (!config::is_fullscreen()) {
                         s_is_window_resized = true;
@@ -161,14 +161,14 @@ static void handle_window_event()
         } break;
 
         case SDL_WINDOWEVENT_RESTORED: {
-                TRACE << "Window restored" << std::endl;
+                TRACE << "Window restored" << "\n";
         } break;
 
         case SDL_WINDOWEVENT_FOCUS_LOST: {
         } break;
 
         case SDL_WINDOWEVENT_FOCUS_GAINED: {
-                TRACE << "Window gained focus" << std::endl;
+                TRACE << "Window gained focus" << "\n";
 
                 states::draw();
                 io::update_screen();
@@ -178,7 +178,7 @@ static void handle_window_event()
         } break;
 
         case SDL_WINDOWEVENT_EXPOSED: {
-                TRACE << "Window exposed" << std::endl;
+                TRACE << "Window exposed" << "\n";
 
                 states::draw();
                 io::update_screen();
@@ -199,7 +199,7 @@ static void handle_quit_event()
 static void handle_keydown_enter_event()
 {
         if (s_input.is_alt_held) {
-                TRACE << "Alt-Enter pressed" << std::endl;
+                TRACE << "Alt-Enter pressed" << "\n";
 
                 config::set_fullscreen(!config::is_fullscreen());
 
@@ -393,7 +393,7 @@ static void handle_mousebutton_event()
         const uint8_t button = s_sdl_event.button.button;
 
         if ((clicks == 2) && (button == 1)) {
-                TRACE << "Left mouse button double-click" << std::endl;
+                TRACE << "Left mouse button double-click" << "\n";
 
                 if (config::is_double_click_toggle_fullscreen()) {
                         config::set_fullscreen(!config::is_fullscreen());
