@@ -210,6 +210,11 @@ InputData read_input()
         return d;
 }
 
+Dir controller_support_mode_dir_held()
+{
+        return Dir::END;
+}
+
 int graphics_cycle_nr(const GraphicsCycle)
 {
         return 0;
