@@ -1377,6 +1377,38 @@ int Spell::shock_value() const
 // -----------------------------------------------------------------------------
 // Aura of Decay
 // -----------------------------------------------------------------------------
+bool SpellAuraOfDecay::player_can_learn() const
+{
+        return true;
+}
+
+std::string SpellAuraOfDecay::name() const
+{
+        return "Aura of Decay";
+}
+
+SpellId SpellAuraOfDecay::id() const
+{
+        return SpellId::aura_of_decay;
+}
+
+SpellDomain SpellAuraOfDecay::domain() const
+{
+        return SpellDomain::invocation;
+}
+
+SpellShock SpellAuraOfDecay::shock_type() const
+{
+        return SpellShock::disturbing;
+}
+
+bool SpellAuraOfDecay::is_noisy(const SpellSkill skill) const
+{
+        (void)skill;
+
+        return true;
+}
+
 Range SpellAuraOfDecay::dmg_range(const SpellSkill skill) const
 {
         switch (skill) {
@@ -1485,127 +1517,55 @@ bool SpellAuraOfDecay::allow_mon_cast_now(
 // -----------------------------------------------------------------------------
 // Bolt spells
 // -----------------------------------------------------------------------------
-Range ForceBolt::damage(
+int SpellBolt::mon_cooldown() const
+{
+        return m_impl->mon_cooldown();
+}
+
+bool SpellBolt::player_can_learn() const
+{
+        return m_impl->player_can_learn();
+}
+
+std::string SpellBolt::name() const
+{
+        return m_impl->name();
+}
+
+SpellId SpellBolt::id() const
+{
+        return m_impl->id();
+}
+
+SpellDomain SpellBolt::domain() const
+{
+        return SpellDomain::invocation;
+}
+
+SpellShock SpellBolt::shock_type() const
+{
+        return SpellShock::mild;
+}
+
+std::vector<std::string> SpellBolt::descr_specific(const SpellSkill skill) const
+{
+        return m_impl->descr_specific(skill);
+}
+
+int SpellBolt::base_max_cost(
         const SpellSkill skill,
-        const actor::Actor& caster) const
+        const actor::Actor* const caster) const
 {
         (void)caster;
 
-        switch (skill) {
-        case SpellSkill::basic:
-                return {3, 4};  // Avg 3.5
-
-        case SpellSkill::expert:
-                return {5, 7};  // Avg 6.0
-
-        case SpellSkill::master:
-        case SpellSkill::transcendent:
-                return {9, 12};  // Avg 10.5
-        }
-
-        ASSERT(false);
-
-        return {1, 1};
+        return m_impl->base_max_cost(skill, caster);
 }
 
-std::vector<std::string> ForceBolt::descr_specific(const SpellSkill skill) const
+bool SpellBolt::is_noisy(const SpellSkill skill) const
 {
         (void)skill;
 
-        return {};
-}
-
-Range Darkbolt::damage(const SpellSkill skill, const actor::Actor& caster) const
-{
-        (void)caster;
-
-        switch (skill) {
-        case SpellSkill::basic:
-                return {4, 9};  // Avg 6.5
-
-        case SpellSkill::expert:
-                return {5, 11};  // Avg 8.0
-
-        case SpellSkill::master:
-        case SpellSkill::transcendent:
-                return {6, 13};  // Avg 9.5
-        }
-
-        ASSERT(false);
-
-        return {1, 1};
-}
-
-std::vector<std::string> Darkbolt::descr_specific(const SpellSkill skill) const
-{
-        std::vector<std::string> descr;
-
-        descr.emplace_back(
-                "A bolt of siphoned energy is hurled towards a target "
-                "with great force. "
-                "The conjured bolt has some will on its own - "
-                "once released it launches itself towards any creature "
-                "sensed as a threat, "
-                "precise control is therefore not possible.");
-
-        const auto dmg_range = damage(skill, *map::g_player);
-
-        std::string effect_str =
-                "The impact does " +
-                dmg_range.str() +
-                " damage.";
-
-        if (skill >= SpellSkill::master) {
-                effect_str += " The target is paralyzed and set aflame.";
-
-                if (skill == SpellSkill::transcendent) {
-                        effect_str +=
-                                " If the target is sufficiently far away from "
-                                "the caster, the bolt explodes on impact.";
-                }
-        }
-        else {
-                // <= Expert
-                effect_str += " The target is paralyzed.";
-        }
-
-        descr.push_back(effect_str);
-
-        return descr;
-}
-
-void Darkbolt::on_hit(
-        actor::Actor& actor_hit,
-        actor::Actor& caster,
-        const SpellSkill skill) const
-{
-        if (skill == SpellSkill::transcendent) {
-                const int dist = king_dist(caster.m_pos, actor_hit.m_pos);
-
-                if (dist > g_expl_std_radi) {
-                        explosion::run(actor_hit.m_pos, ExplType::expl);
-                }
-        }
-
-        if (!actor::is_alive(actor_hit)) {
-                return;
-        }
-
-        if (!actor_hit.m_properties.is_resisting_dmg(s_bolt_dmg_type, Verbose::no)) {
-                prop::Prop* paralyzed = prop::make(prop::Id::paralyzed);
-
-                paralyzed->set_duration(rnd::range(1, 2));
-
-                actor_hit.m_properties.apply(paralyzed);
-
-                if (skill >= SpellSkill::master) {
-                        prop::Prop* burning = prop::make(prop::Id::burning);
-
-                        burning->set_duration(rnd::range(2, 3));
-
-                        actor_hit.m_properties.apply(burning);
-                }
-        }
+        return true;
 }
 
 void SpellBolt::run_effect(
@@ -1780,9 +1740,259 @@ bool SpellBolt::allow_mon_cast_now(
         return !seen_targets.empty();
 }
 
+void ForceBolt::on_hit(
+        actor::Actor& actor_hit,
+        actor::Actor& caster,
+        const SpellSkill skill) const
+{
+        (void)actor_hit;
+        (void)caster;
+        (void)skill;
+}
+
+std::string ForceBolt::hit_msg_ending() const
+{
+        return "struck by a bolt!";
+}
+
+int ForceBolt::mon_cooldown() const
+{
+        return 3;
+}
+
+bool ForceBolt::player_can_learn() const
+{
+        return false;
+}
+
+std::string ForceBolt::name() const
+{
+        return "Force Bolt";
+}
+
+SpellId ForceBolt::id() const
+{
+        return SpellId::force_bolt;
+}
+
+int ForceBolt::base_max_cost(
+        const SpellSkill skill,
+        const actor::Actor* const caster) const
+{
+        (void)skill;
+        (void)caster;
+
+        return 2;
+}
+
+Range ForceBolt::damage(
+        const SpellSkill skill,
+        const actor::Actor& caster) const
+{
+        (void)caster;
+
+        switch (skill) {
+        case SpellSkill::basic:
+                return {3, 4};  // Avg 3.5
+
+        case SpellSkill::expert:
+                return {5, 7};  // Avg 6.0
+
+        case SpellSkill::master:
+        case SpellSkill::transcendent:
+                return {9, 12};  // Avg 10.5
+        }
+
+        ASSERT(false);
+
+        return {1, 1};
+}
+
+std::vector<std::string> ForceBolt::descr_specific(const SpellSkill skill) const
+{
+        (void)skill;
+
+        return {};
+}
+
+std::string Darkbolt::hit_msg_ending() const
+{
+        return "struck by a blast!";
+}
+
+int Darkbolt::mon_cooldown() const
+{
+        return 5;
+}
+
+bool Darkbolt::player_can_learn() const
+{
+        return true;
+}
+
+std::string Darkbolt::name() const
+{
+        return "Darkbolt";
+}
+
+SpellId Darkbolt::id() const
+{
+        return SpellId::darkbolt;
+}
+
+int Darkbolt::base_max_cost(
+        const SpellSkill skill,
+        const actor::Actor* const caster) const
+{
+        (void)skill;
+        (void)caster;
+
+        return 4;
+}
+
+Range Darkbolt::damage(const SpellSkill skill, const actor::Actor& caster) const
+{
+        (void)caster;
+
+        switch (skill) {
+        case SpellSkill::basic:
+                return {4, 9};  // Avg 6.5
+
+        case SpellSkill::expert:
+                return {5, 11};  // Avg 8.0
+
+        case SpellSkill::master:
+        case SpellSkill::transcendent:
+                return {6, 13};  // Avg 9.5
+        }
+
+        ASSERT(false);
+
+        return {1, 1};
+}
+
+std::vector<std::string> Darkbolt::descr_specific(const SpellSkill skill) const
+{
+        std::vector<std::string> descr;
+
+        descr.emplace_back(
+                "A bolt of siphoned energy is hurled towards a target "
+                "with great force. "
+                "The conjured bolt has some will on its own - "
+                "once released it launches itself towards any creature "
+                "sensed as a threat, "
+                "precise control is therefore not possible.");
+
+        const auto dmg_range = damage(skill, *map::g_player);
+
+        std::string effect_str =
+                "The impact does " +
+                dmg_range.str() +
+                " damage.";
+
+        if (skill >= SpellSkill::master) {
+                effect_str += " The target is paralyzed and set aflame.";
+
+                if (skill == SpellSkill::transcendent) {
+                        effect_str +=
+                                " If the target is sufficiently far away from "
+                                "the caster, the bolt explodes on impact.";
+                }
+        }
+        else {
+                // <= Expert
+                effect_str += " The target is paralyzed.";
+        }
+
+        descr.push_back(effect_str);
+
+        return descr;
+}
+
+void Darkbolt::on_hit(
+        actor::Actor& actor_hit,
+        actor::Actor& caster,
+        const SpellSkill skill) const
+{
+        if (skill == SpellSkill::transcendent) {
+                const int dist = king_dist(caster.m_pos, actor_hit.m_pos);
+
+                if (dist > g_expl_std_radi) {
+                        explosion::run(actor_hit.m_pos, ExplType::expl);
+                }
+        }
+
+        if (!actor::is_alive(actor_hit)) {
+                return;
+        }
+
+        if (!actor_hit.m_properties.is_resisting_dmg(s_bolt_dmg_type, Verbose::no)) {
+                prop::Prop* paralyzed = prop::make(prop::Id::paralyzed);
+
+                paralyzed->set_duration(rnd::range(1, 2));
+
+                actor_hit.m_properties.apply(paralyzed);
+
+                if (skill >= SpellSkill::master) {
+                        prop::Prop* burning = prop::make(prop::Id::burning);
+
+                        burning->set_duration(rnd::range(2, 3));
+
+                        actor_hit.m_properties.apply(burning);
+                }
+        }
+}
+
 // -----------------------------------------------------------------------------
 // Azathoths wrath
 // -----------------------------------------------------------------------------
+int SpellAzaGaze::mon_cooldown() const
+{
+        return 6;
+}
+
+bool SpellAzaGaze::player_can_learn() const
+{
+        return true;
+}
+
+std::string SpellAzaGaze::name() const
+{
+        return "Azathoth's Gaze";
+}
+
+SpellId SpellAzaGaze::id() const
+{
+        return SpellId::aza_gaze;
+}
+
+SpellDomain SpellAzaGaze::domain() const
+{
+        return SpellDomain::invocation;
+}
+
+SpellShock SpellAzaGaze::shock_type() const
+{
+        return SpellShock::disturbing;
+}
+
+int SpellAzaGaze::base_max_cost(
+        const SpellSkill skill,
+        const actor::Actor* const caster) const
+{
+        (void)skill;
+        (void)caster;
+
+        return 8;
+}
+
+bool SpellAzaGaze::is_noisy(const SpellSkill skill) const
+{
+        (void)skill;
+
+        return true;
+}
+
 Range SpellAzaGaze::dmg_range(const SpellSkill skill) const
 {
         switch (skill) {
@@ -1981,6 +2191,38 @@ bool SpellAzaGaze::allow_mon_cast_now(
 // -----------------------------------------------------------------------------
 // Cataclysm
 // -----------------------------------------------------------------------------
+bool SpellCataclysm::player_can_learn() const
+{
+        return true;
+}
+
+std::string SpellCataclysm::name() const
+{
+        return "Cataclysm";
+}
+
+SpellId SpellCataclysm::id() const
+{
+        return SpellId::cataclysm;
+}
+
+SpellDomain SpellCataclysm::domain() const
+{
+        return SpellDomain::invocation;
+}
+
+SpellShock SpellCataclysm::shock_type() const
+{
+        return SpellShock::disturbing;
+}
+
+bool SpellCataclysm::is_noisy(const SpellSkill skill) const
+{
+        (void)skill;
+
+        return true;
+}
+
 int SpellCataclysm::destruction_radi(const SpellSkill skill) const
 {
         return g_fov_radi_int + 1 + ((int)skill * 2);
@@ -2226,6 +2468,43 @@ bool SpellCataclysm::allow_mon_cast_now(
 // -----------------------------------------------------------------------------
 // Pestilence
 // -----------------------------------------------------------------------------
+int SpellPestilence::mon_cooldown() const
+{
+        return 21;
+}
+
+bool SpellPestilence::player_can_learn() const
+{
+        return true;
+}
+
+std::string SpellPestilence::name() const
+{
+        return "Pestilence";
+}
+
+SpellId SpellPestilence::id() const
+{
+        return SpellId::pestilence;
+}
+
+SpellDomain SpellPestilence::domain() const
+{
+        return SpellDomain::transmutation;
+}
+
+SpellShock SpellPestilence::shock_type() const
+{
+        return SpellShock::disturbing;
+}
+
+bool SpellPestilence::is_noisy(const SpellSkill skill) const
+{
+        (void)skill;
+
+        return true;
+}
+
 int SpellPestilence::nr_rats_summoned(SpellSkill skill) const
 {
         if (skill == SpellSkill::transcendent) {
@@ -2409,6 +2688,38 @@ bool SpellPestilence::allow_mon_cast_now(
 // -----------------------------------------------------------------------------
 // Spectral Weapons
 // -----------------------------------------------------------------------------
+bool SpellSpectralWeapons::player_can_learn() const
+{
+        return true;
+}
+
+std::string SpellSpectralWeapons::name() const
+{
+        return "Spectral Weapons";
+}
+
+SpellId SpellSpectralWeapons::id() const
+{
+        return SpellId::spectral_weapons;
+}
+
+SpellDomain SpellSpectralWeapons::domain() const
+{
+        return SpellDomain::transmutation;
+}
+
+SpellShock SpellSpectralWeapons::shock_type() const
+{
+        return SpellShock::mild;
+}
+
+bool SpellSpectralWeapons::is_noisy(const SpellSkill skill) const
+{
+        (void)skill;
+
+        return true;
+}
+
 int SpellSpectralWeapons::max_nr_weapons(const SpellSkill skill) const
 {
         return 2 + (int)skill;
@@ -2617,6 +2928,31 @@ std::vector<std::string> SpellSpectralWeapons::descr_specific(
 // -----------------------------------------------------------------------------
 // Control Object
 // -----------------------------------------------------------------------------
+bool SpellControlObject::player_can_learn() const
+{
+        return true;
+}
+
+std::string SpellControlObject::name() const
+{
+        return "Control Object";
+}
+
+SpellId SpellControlObject::id() const
+{
+        return SpellId::control_object;
+}
+
+SpellDomain SpellControlObject::domain() const
+{
+        return SpellDomain::transmutation;
+}
+
+SpellShock SpellControlObject::shock_type() const
+{
+        return SpellShock::mild;
+}
+
 int SpellControlObject::base_max_cost(
         const SpellSkill skill,
         const actor::Actor* const caster) const
@@ -2693,6 +3029,48 @@ bool SpellControlObject::is_noisy(const SpellSkill skill) const
 // -----------------------------------------------------------------------------
 // Exorcist Cleansing Fire
 // -----------------------------------------------------------------------------
+bool SpellCleansingFire::player_can_learn() const
+{
+        return true;
+}
+
+std::string SpellCleansingFire::name() const
+{
+        return "Cleansing Fire";
+}
+
+SpellId SpellCleansingFire::id() const
+{
+        return SpellId::cleansing_fire;
+}
+
+SpellDomain SpellCleansingFire::domain() const
+{
+        return SpellDomain::END;
+}
+
+SpellShock SpellCleansingFire::shock_type() const
+{
+        return SpellShock::disturbing;
+}
+
+int SpellCleansingFire::base_max_cost(
+        const SpellSkill skill,
+        const actor::Actor* const caster) const
+{
+        (void)skill;
+        (void)caster;
+
+        return 7;
+}
+
+bool SpellCleansingFire::is_noisy(const SpellSkill skill) const
+{
+        (void)skill;
+
+        return true;
+}
+
 Range SpellCleansingFire::burn_duration_range() const
 {
         return {3, 5};
@@ -2784,6 +3162,48 @@ std::vector<std::string> SpellCleansingFire::descr_specific(
 // -----------------------------------------------------------------------------
 // Exorcist Sanctuary
 // -----------------------------------------------------------------------------
+bool SpellSanctuary::player_can_learn() const
+{
+        return true;
+}
+
+std::string SpellSanctuary::name() const
+{
+        return "Sanctuary";
+}
+
+SpellId SpellSanctuary::id() const
+{
+        return SpellId::sanctuary;
+}
+
+SpellDomain SpellSanctuary::domain() const
+{
+        return SpellDomain::END;
+}
+
+SpellShock SpellSanctuary::shock_type() const
+{
+        return SpellShock::mild;
+}
+
+int SpellSanctuary::base_max_cost(
+        const SpellSkill skill,
+        const actor::Actor* const caster) const
+{
+        (void)skill;
+        (void)caster;
+
+        return 5;
+}
+
+bool SpellSanctuary::is_noisy(const SpellSkill skill) const
+{
+        (void)skill;
+
+        return false;
+}
+
 Range SpellSanctuary::duration(const SpellSkill skill) const
 {
         if (skill == SpellSkill::basic) {
@@ -2835,6 +3255,53 @@ std::vector<std::string> SpellSanctuary::descr_specific(
 // -----------------------------------------------------------------------------
 // Exorcist Purge
 // -----------------------------------------------------------------------------
+bool SpellPurge::player_can_learn() const
+{
+        return true;
+}
+
+std::string SpellPurge::name() const
+{
+        return "Purge";
+}
+
+SpellId SpellPurge::id() const
+{
+        return SpellId::purge;
+}
+
+SpellDomain SpellPurge::domain() const
+{
+        return SpellDomain::END;
+}
+
+bool SpellPurge::can_be_improved_with_skill() const
+{
+        return false;
+}
+
+SpellShock SpellPurge::shock_type() const
+{
+        return SpellShock::mild;
+}
+
+int SpellPurge::base_max_cost(
+        const SpellSkill skill,
+        const actor::Actor* const caster) const
+{
+        (void)skill;
+        (void)caster;
+
+        return 4;
+}
+
+bool SpellPurge::is_noisy(const SpellSkill skill) const
+{
+        (void)skill;
+
+        return true;
+}
+
 Range SpellPurge::dmg_range() const
 {
         return {5, 10};
@@ -2936,6 +3403,53 @@ std::vector<std::string> SpellPurge::descr_specific(
 // -----------------------------------------------------------------------------
 // Ghoul frenzy
 // -----------------------------------------------------------------------------
+bool SpellFrenzy::player_can_learn() const
+{
+        return true;
+}
+
+std::string SpellFrenzy::name() const
+{
+        return "Incite Frenzy";
+}
+
+SpellId SpellFrenzy::id() const
+{
+        return SpellId::frenzy;
+}
+
+SpellDomain SpellFrenzy::domain() const
+{
+        return SpellDomain::END;
+}
+
+bool SpellFrenzy::can_be_improved_with_skill() const
+{
+        return false;
+}
+
+SpellShock SpellFrenzy::shock_type() const
+{
+        return SpellShock::mild;
+}
+
+int SpellFrenzy::base_max_cost(
+        const SpellSkill skill,
+        const actor::Actor* const caster) const
+{
+        (void)skill;
+        (void)caster;
+
+        return 0;
+}
+
+bool SpellFrenzy::is_noisy(const SpellSkill skill) const
+{
+        (void)skill;
+
+        return false;
+}
+
 void SpellFrenzy::run_effect(
         actor::Actor* const caster,
         const SpellSkill skill,
@@ -2964,6 +3478,35 @@ std::vector<std::string> SpellFrenzy::descr_specific(
 // -----------------------------------------------------------------------------
 // Bless
 // -----------------------------------------------------------------------------
+bool SpellBless::player_can_learn() const
+{
+        return true;
+}
+
+std::string SpellBless::name() const
+{
+        return "Bless";
+}
+
+SpellId SpellBless::id() const
+{
+        return SpellId::bless;
+}
+
+SpellDomain SpellBless::domain() const
+{
+        // NOTE: This could perhaps be considered an enchantment spell, but the way the spell
+        // description is phrased, it sounds a lot more like transmutation.
+        return SpellDomain::transmutation;
+}
+
+bool SpellBless::is_noisy(const SpellSkill skill) const
+{
+        (void)skill;
+
+        return false;
+}
+
 Range SpellBless::duration_range(SpellSkill skill) const
 {
         switch (skill) {
@@ -3037,6 +3580,48 @@ std::vector<std::string> SpellBless::descr_specific(
 // -----------------------------------------------------------------------------
 // Light
 // -----------------------------------------------------------------------------
+bool SpellLight::player_can_learn() const
+{
+        return true;
+}
+
+std::string SpellLight::name() const
+{
+        return "Light";
+}
+
+SpellId SpellLight::id() const
+{
+        return SpellId::light;
+}
+
+SpellDomain SpellLight::domain() const
+{
+        return SpellDomain::transmutation;
+}
+
+SpellShock SpellLight::shock_type() const
+{
+        return SpellShock::mild;
+}
+
+int SpellLight::base_max_cost(
+        SpellSkill skill,
+        const actor::Actor* const caster) const
+{
+        (void)skill;
+        (void)caster;
+
+        return 5;
+}
+
+bool SpellLight::is_noisy(const SpellSkill skill) const
+{
+        (void)skill;
+
+        return false;
+}
+
 Range SpellLight::light_duration_range(const SpellSkill skill) const
 {
         switch (skill) {
@@ -3159,6 +3744,36 @@ std::vector<std::string> SpellLight::descr_specific(
 // -----------------------------------------------------------------------------
 // Invisibility
 // -----------------------------------------------------------------------------
+bool SpellInvis::player_can_learn() const
+{
+        return true;
+}
+
+std::string SpellInvis::name() const
+{
+        return "Invisibility";
+}
+
+SpellId SpellInvis::id() const
+{
+        return SpellId::invis;
+}
+
+SpellDomain SpellInvis::domain() const
+{
+        return SpellDomain::enchantment;
+}
+
+bool SpellInvis::is_tenebrous() const
+{
+        return true;
+}
+
+SpellShock SpellInvis::shock_type() const
+{
+        return SpellShock::mild;
+}
+
 int SpellInvis::base_max_cost(
         const SpellSkill skill,
         const actor::Actor* const caster) const
@@ -3247,6 +3862,43 @@ std::vector<std::string> SpellInvis::descr_specific(
 // -----------------------------------------------------------------------------
 // See Invisible
 // -----------------------------------------------------------------------------
+int SpellSeeInvis::mon_cooldown() const
+{
+        return 30;
+}
+
+bool SpellSeeInvis::player_can_learn() const
+{
+        return true;
+}
+
+std::string SpellSeeInvis::name() const
+{
+        return "See Invisible";
+}
+
+SpellId SpellSeeInvis::id() const
+{
+        return SpellId::see_invis;
+}
+
+SpellDomain SpellSeeInvis::domain() const
+{
+        return SpellDomain::clairvoyance;
+}
+
+SpellShock SpellSeeInvis::shock_type() const
+{
+        return SpellShock::mild;
+}
+
+bool SpellSeeInvis::is_noisy(const SpellSkill skill) const
+{
+        (void)skill;
+
+        return true;
+}
+
 int SpellSeeInvis::base_max_cost(
         const SpellSkill skill,
         const actor::Actor* const caster) const
@@ -3330,6 +3982,43 @@ bool SpellSeeInvis::allow_mon_cast_now(
 // -----------------------------------------------------------------------------
 // Spell Shield
 // -----------------------------------------------------------------------------
+int SpellSpellShield::mon_cooldown() const
+{
+        return 3;
+}
+
+bool SpellSpellShield::player_can_learn() const
+{
+        return true;
+}
+
+std::string SpellSpellShield::name() const
+{
+        return "Spell Shield";
+}
+
+SpellId SpellSpellShield::id() const
+{
+        return SpellId::spell_shield;
+}
+
+SpellDomain SpellSpellShield::domain() const
+{
+        return SpellDomain::enchantment;
+}
+
+SpellShock SpellSpellShield::shock_type() const
+{
+        return SpellShock::mild;
+}
+
+bool SpellSpellShield::is_noisy(const SpellSkill skill) const
+{
+        (void)skill;
+
+        return true;
+}
+
 int SpellSpellShield::base_max_cost(
         const SpellSkill skill,
         const actor::Actor* const caster) const
@@ -3380,6 +4069,38 @@ bool SpellSpellShield::allow_mon_cast_now(
 // -----------------------------------------------------------------------------
 // Haste
 // -----------------------------------------------------------------------------
+bool SpellHaste::player_can_learn() const
+{
+        return true;
+}
+
+std::string SpellHaste::name() const
+{
+        return "Haste";
+}
+
+SpellId SpellHaste::id() const
+{
+        return SpellId::haste;
+}
+
+SpellDomain SpellHaste::domain() const
+{
+        return SpellDomain::transmutation;
+}
+
+SpellShock SpellHaste::shock_type() const
+{
+        return SpellShock::mild;
+}
+
+bool SpellHaste::is_noisy(const SpellSkill skill) const
+{
+        (void)skill;
+
+        return false;
+}
+
 Range SpellHaste::duration_range(const SpellSkill skill) const
 {
         switch (skill) {
@@ -3453,6 +4174,38 @@ bool SpellHaste::allow_mon_cast_now(
 // -----------------------------------------------------------------------------
 // Premonition
 // -----------------------------------------------------------------------------
+bool SpellPremonition::player_can_learn() const
+{
+        return true;
+}
+
+std::string SpellPremonition::name() const
+{
+        return "Premonition";
+}
+
+SpellId SpellPremonition::id() const
+{
+        return SpellId::premonition;
+}
+
+SpellDomain SpellPremonition::domain() const
+{
+        return SpellDomain::clairvoyance;
+}
+
+SpellShock SpellPremonition::shock_type() const
+{
+        return SpellShock::mild;
+}
+
+bool SpellPremonition::is_noisy(const SpellSkill skill) const
+{
+        (void)skill;
+
+        return false;
+}
+
 Range SpellPremonition::duration_range(const SpellSkill skill) const
 {
         switch (skill) {
@@ -3528,6 +4281,38 @@ bool SpellPremonition::allow_mon_cast_now(
 // -----------------------------------------------------------------------------
 // Erudition
 // -----------------------------------------------------------------------------
+bool SpellErudition::player_can_learn() const
+{
+        return true;
+}
+
+std::string SpellErudition::name() const
+{
+        return "Erudition";
+}
+
+SpellId SpellErudition::id() const
+{
+        return SpellId::erudition;
+}
+
+SpellDomain SpellErudition::domain() const
+{
+        return SpellDomain::clairvoyance;
+}
+
+SpellShock SpellErudition::shock_type() const
+{
+        return SpellShock::disturbing;
+}
+
+bool SpellErudition::is_noisy(const SpellSkill skill) const
+{
+        (void)skill;
+
+        return false;
+}
+
 int SpellErudition::base_max_cost(
         const SpellSkill skill,
         const actor::Actor* const caster) const
@@ -3621,6 +4406,43 @@ std::vector<std::string> SpellErudition::descr_specific(
 // -----------------------------------------------------------------------------
 // Identify
 // -----------------------------------------------------------------------------
+bool SpellIdentify::player_can_learn() const
+{
+        return true;
+}
+
+std::string SpellIdentify::name() const
+{
+        return "Identify";
+}
+
+SpellId SpellIdentify::id() const
+{
+        return SpellId::identify;
+}
+
+SpellDomain SpellIdentify::domain() const
+{
+        return SpellDomain::clairvoyance;
+}
+
+bool SpellIdentify::is_tenebrous() const
+{
+        return true;
+}
+
+SpellShock SpellIdentify::shock_type() const
+{
+        return SpellShock::disturbing;
+}
+
+bool SpellIdentify::is_noisy(const SpellSkill skill) const
+{
+        (void)skill;
+
+        return false;
+}
+
 int SpellIdentify::base_max_cost(
         const SpellSkill skill,
         const actor::Actor* const caster) const
@@ -3705,6 +4527,53 @@ std::vector<std::string> SpellIdentify::descr_specific(
 // -----------------------------------------------------------------------------
 // Teleport
 // -----------------------------------------------------------------------------
+int SpellTeleport::mon_cooldown() const
+{
+        return 20;
+}
+
+bool SpellTeleport::player_can_learn() const
+{
+        return true;
+}
+
+std::string SpellTeleport::name() const
+{
+        return "Teleport";
+}
+
+SpellId SpellTeleport::id() const
+{
+        return SpellId::teleport;
+}
+
+SpellDomain SpellTeleport::domain() const
+{
+        return SpellDomain::transmutation;
+}
+
+SpellShock SpellTeleport::shock_type() const
+{
+        return SpellShock::disturbing;
+}
+
+int SpellTeleport::base_max_cost(
+        const SpellSkill skill,
+        const actor::Actor* const caster) const
+{
+        (void)skill;
+        (void)caster;
+
+        return 8;
+}
+
+bool SpellTeleport::is_noisy(const SpellSkill skill) const
+{
+        (void)skill;
+
+        return true;
+}
+
 int SpellTeleport::max_dist(const SpellSkill skill) const
 {
         switch (skill) {
@@ -3786,6 +4655,60 @@ std::vector<std::string> SpellTeleport::descr_specific(
 // -----------------------------------------------------------------------------
 // Knockback
 // -----------------------------------------------------------------------------
+int SpellKnockBack::mon_cooldown() const
+{
+        return 5;
+}
+
+bool SpellKnockBack::player_can_learn() const
+{
+        return false;
+}
+
+std::string SpellKnockBack::name() const
+{
+        return "Knockback";
+}
+
+SpellId SpellKnockBack::id() const
+{
+        return SpellId::knockback;
+}
+
+SpellDomain SpellKnockBack::domain() const
+{
+        return SpellDomain::END;
+}
+
+SpellShock SpellKnockBack::shock_type() const
+{
+        return SpellShock::mild;
+}
+
+std::vector<std::string> SpellKnockBack::descr_specific(const SpellSkill skill) const
+{
+        (void)skill;
+
+        return {};
+}
+
+int SpellKnockBack::base_max_cost(
+        const SpellSkill skill,
+        const actor::Actor* const caster) const
+{
+        (void)skill;
+        (void)caster;
+
+        return 8;
+}
+
+bool SpellKnockBack::is_noisy(const SpellSkill skill) const
+{
+        (void)skill;
+
+        return true;
+}
+
 void SpellKnockBack::run_effect(
         actor::Actor* const caster,
         const SpellSkill skill,
@@ -3872,9 +4795,41 @@ int SpellCurse::base_max_cost(
         return 3;
 }
 
+std::string SpellCurse::name() const
+{
+        return "Curse";
+}
+
+SpellId SpellCurse::id() const
+{
+        return SpellId::curse;
+}
+
+bool SpellCurse::player_can_learn() const
+{
+        return false;
+}
+
+SpellDomain SpellCurse::domain() const
+{
+        return SpellDomain::enchantment;
+}
+
+SpellShock SpellCurse::shock_type() const
+{
+        return SpellShock::mild;
+}
+
 int SpellCurse::mon_cooldown() const
 {
         return 10;
+}
+
+bool SpellCurse::is_noisy(const SpellSkill skill) const
+{
+        (void)skill;
+
+        return true;
 }
 
 void SpellCurse::run_effect(
@@ -3930,17 +4885,23 @@ void SpellCurse::run_effect(
                         id = prop::Id::doomed;
                 }
 
-                auto* const prop = prop::make(id);
+                prop::Prop* const prop = prop::make(id);
 
                 prop->set_duration(duration);
 
                 target->m_properties.apply(prop);
 
                 if (!actor::is_player(target)) {
-                        target->become_aware_player(
-                                actor::AwareSource::spell_victim);
+                        target->become_aware_player(actor::AwareSource::spell_victim);
                 }
         }
+}
+
+std::vector<std::string> SpellCurse::descr_specific(SpellSkill skill) const
+{
+        (void)skill;
+
+        return {};
 }
 
 bool SpellCurse::allow_mon_cast_now(
@@ -3963,6 +4924,44 @@ int SpellHealOthers::base_max_cost(
         (void)caster;
 
         return 6;
+}
+
+std::string SpellHealOthers::name() const
+{
+        return "Heal Others";
+}
+
+SpellId SpellHealOthers::id() const
+{
+        return SpellId::heal_others;
+}
+
+SpellDomain SpellHealOthers::domain() const
+{
+        return SpellDomain::enchantment;
+}
+
+SpellShock SpellHealOthers::shock_type() const
+{
+        return SpellShock::mild;
+}
+
+bool SpellHealOthers::player_can_learn() const
+{
+        return false;
+}
+
+std::vector<std::string> SpellHealOthers::descr_specific(SpellSkill skill) const
+{
+        (void)skill;
+        return {};
+}
+
+bool SpellHealOthers::is_noisy(const SpellSkill skill) const
+{
+        (void)skill;
+
+        return true;
 }
 
 int SpellHealOthers::mon_cooldown() const
@@ -4070,6 +5069,38 @@ Range SpellEnfeeble::duration_range(const SpellSkill skill) const
         ASSERT(false);
 
         return {1, 1};
+}
+
+SpellId SpellEnfeeble::id() const
+{
+        return SpellId::enfeeble;
+}
+
+SpellDomain SpellEnfeeble::domain() const
+{
+        return SpellDomain::enchantment;
+}
+
+SpellShock SpellEnfeeble::shock_type() const
+{
+        return SpellShock::mild;
+}
+
+bool SpellEnfeeble::player_can_learn() const
+{
+        return true;
+}
+
+bool SpellEnfeeble::is_noisy(const SpellSkill skill) const
+{
+        (void)skill;
+
+        return true;
+}
+
+std::string SpellEnfeeble::name() const
+{
+        return "Enfeeble";
 }
 
 int SpellEnfeeble::base_max_cost(
@@ -4184,6 +5215,38 @@ bool SpellEnfeeble::allow_mon_cast_now(
 // -----------------------------------------------------------------------------
 // Slow
 // -----------------------------------------------------------------------------
+std::string SpellSlow::name() const
+{
+        return "Slow";
+}
+
+SpellId SpellSlow::id() const
+{
+        return SpellId::slow;
+}
+
+SpellDomain SpellSlow::domain() const
+{
+        return SpellDomain::enchantment;
+}
+
+SpellShock SpellSlow::shock_type() const
+{
+        return SpellShock::mild;
+}
+
+bool SpellSlow::player_can_learn() const
+{
+        return true;
+}
+
+bool SpellSlow::is_noisy(const SpellSkill skill) const
+{
+        (void)skill;
+
+        return true;
+}
+
 Range SpellSlow::duration_range(const SpellSkill skill) const
 {
         switch (skill) {
@@ -4317,6 +5380,38 @@ bool SpellSlow::allow_mon_cast_now(
 // -----------------------------------------------------------------------------
 // Terrify
 // -----------------------------------------------------------------------------
+std::string SpellTerrify::name() const
+{
+        return "Terrify";
+}
+
+SpellId SpellTerrify::id() const
+{
+        return SpellId::terrify;
+}
+
+SpellDomain SpellTerrify::domain() const
+{
+        return SpellDomain::enchantment;
+}
+
+SpellShock SpellTerrify::shock_type() const
+{
+        return SpellShock::disturbing;
+}
+
+bool SpellTerrify::player_can_learn() const
+{
+        return true;
+}
+
+bool SpellTerrify::is_noisy(const SpellSkill skill) const
+{
+        (void)skill;
+
+        return true;
+}
+
 Range SpellTerrify::duration_range(SpellSkill skill) const
 {
         switch (skill) {
@@ -4442,6 +5537,60 @@ bool SpellTerrify::allow_mon_cast_now(
 // -----------------------------------------------------------------------------
 // Disease
 // -----------------------------------------------------------------------------
+int SpellDisease::mon_cooldown() const
+{
+        return 10;
+}
+
+bool SpellDisease::player_can_learn() const
+{
+        return false;
+}
+
+std::string SpellDisease::name() const
+{
+        return "Disease";
+}
+
+SpellId SpellDisease::id() const
+{
+        return SpellId::disease;
+}
+
+SpellDomain SpellDisease::domain() const
+{
+        return SpellDomain::END;
+}
+
+SpellShock SpellDisease::shock_type() const
+{
+        return SpellShock::disturbing;
+}
+
+std::vector<std::string> SpellDisease::descr_specific(const SpellSkill skill) const
+{
+        (void)skill;
+
+        return {};
+}
+
+int SpellDisease::base_max_cost(
+        const SpellSkill skill,
+        const actor::Actor* const caster) const
+{
+        (void)skill;
+        (void)caster;
+
+        return 7;
+}
+
+bool SpellDisease::is_noisy(const SpellSkill skill) const
+{
+        (void)skill;
+
+        return true;
+}
+
 void SpellDisease::run_effect(
         actor::Actor* const caster,
         const SpellSkill skill,
@@ -4505,6 +5654,55 @@ bool SpellDisease::allow_mon_cast_now(
 // -----------------------------------------------------------------------------
 // Blind
 // -----------------------------------------------------------------------------
+bool SpellBlind::player_can_learn() const
+{
+        return false;
+}
+
+std::string SpellBlind::name() const
+{
+        return "Blind";
+}
+
+SpellId SpellBlind::id() const
+{
+        return SpellId::blind;
+}
+
+SpellDomain SpellBlind::domain() const
+{
+        return SpellDomain::END;
+}
+
+SpellShock SpellBlind::shock_type() const
+{
+        return SpellShock::disturbing;
+}
+
+std::vector<std::string> SpellBlind::descr_specific(const SpellSkill skill) const
+{
+        (void)skill;
+
+        return {};
+}
+
+int SpellBlind::base_max_cost(
+        const SpellSkill skill,
+        const actor::Actor* const caster) const
+{
+        (void)skill;
+        (void)caster;
+
+        return 7;
+}
+
+bool SpellBlind::is_noisy(const SpellSkill skill) const
+{
+        (void)skill;
+
+        return true;
+}
+
 int SpellBlind::mon_cooldown() const
 {
         return 20;
@@ -4597,36 +5795,58 @@ std::vector<actor::Actor*> SpellBlind::find_actors_not_blind_resistant(
 // -----------------------------------------------------------------------------
 // Summon spells
 // -----------------------------------------------------------------------------
-std::vector<std::string> SummonWaterCreature::filter_allowed_ids(
-        const std::vector<std::string>& summon_bucket) const
+int SpellSummon::mon_cooldown() const
 {
-        // Return all creatures with the "water creature" property.
-        std::vector<std::string> result;
-
-        std::copy_if(
-                std::cbegin(summon_bucket),
-                std::cend(summon_bucket),
-                std::back_inserter(result),
-                [](const std::string& id) {
-                        const actor::ActorData& data = actor::g_data.at(id);
-
-                        return data.natural_props[(size_t)prop::Id::water_creature];
-                });
-
-        return result;
+        return 8;
 }
 
-std::vector<std::string> SummonTentacles::filter_allowed_ids(
-        const std::vector<std::string>& summon_bucket) const
+bool SpellSummon::player_can_learn() const
 {
-        (void)summon_bucket;
-
-        return {"MON_TENTACLE_CLUSTER"};
+        return false;
 }
 
-std::string SummonTentacles::appear_msg_override() const
+std::string SpellSummon::name() const
 {
-        return "Monstrous tentacles rise up from the ground!";
+        return "";
+}
+
+SpellId SpellSummon::id() const
+{
+        return m_impl->id();
+}
+
+SpellDomain SpellSummon::domain() const
+{
+        return SpellDomain::END;
+}
+
+SpellShock SpellSummon::shock_type() const
+{
+        return SpellShock::disturbing;
+}
+
+std::vector<std::string> SpellSummon::descr_specific(const SpellSkill skill) const
+{
+        (void)skill;
+
+        return {};
+}
+
+int SpellSummon::base_max_cost(
+        const SpellSkill skill,
+        const actor::Actor* const caster) const
+{
+        (void)skill;
+        (void)caster;
+
+        return 6;
+}
+
+bool SpellSummon::is_noisy(const SpellSkill skill) const
+{
+        (void)skill;
+
+        return true;
 }
 
 void SpellSummon::run_effect(
@@ -4808,9 +6028,115 @@ bool SpellSummon::allow_mon_cast_now(
         return false;
 }
 
+SpellId SummonRandom::id() const
+{
+        return SpellId::summon_random;
+}
+
+int SummonImpl::mon_cooldown() const
+{
+        return 8;
+}
+
+std::string SummonImpl::appear_msg_override() const
+{
+        return "";
+}
+
+std::vector<std::string> SummonRandom::filter_allowed_ids(
+        const std::vector<std::string>& summon_bucket) const
+{
+        // No specific filtering.
+        return summon_bucket;
+}
+
+SpellId SummonWaterCreature::id() const
+{
+        return SpellId::summon_water_creature;
+}
+
+std::vector<std::string> SummonWaterCreature::filter_allowed_ids(
+        const std::vector<std::string>& summon_bucket) const
+{
+        // Return all creatures with the "water creature" property.
+        std::vector<std::string> result;
+
+        std::copy_if(
+                std::cbegin(summon_bucket),
+                std::cend(summon_bucket),
+                std::back_inserter(result),
+                [](const std::string& id) {
+                        const actor::ActorData& data = actor::g_data.at(id);
+
+                        return data.natural_props[(size_t)prop::Id::water_creature];
+                });
+
+        return result;
+}
+
+SpellId SummonTentacles::id() const
+{
+        return SpellId::summon_tentacles;
+}
+
+int SummonTentacles::mon_cooldown() const
+{
+        return 3;
+}
+
+std::vector<std::string> SummonTentacles::filter_allowed_ids(
+        const std::vector<std::string>& summon_bucket) const
+{
+        (void)summon_bucket;
+
+        return {"MON_TENTACLE_CLUSTER"};
+}
+
+std::string SummonTentacles::appear_msg_override() const
+{
+        return "Monstrous tentacles rise up from the ground!";
+}
+
 // -----------------------------------------------------------------------------
 // Heal
 // -----------------------------------------------------------------------------
+int SpellHeal::mon_cooldown() const
+{
+        return 6;
+}
+
+bool SpellHeal::player_can_learn() const
+{
+        return true;
+}
+
+std::string SpellHeal::name() const
+{
+        return "Healing";
+}
+
+SpellId SpellHeal::id() const
+{
+        return SpellId::heal;
+}
+
+SpellDomain SpellHeal::domain() const
+{
+        return SpellDomain::enchantment;
+}
+
+SpellShock SpellHeal::shock_type() const
+{
+        return SpellShock::mild;
+}
+
+bool SpellHeal::is_noisy(const SpellSkill skill) const
+{
+        (void)skill;
+
+        return true;
+}
+
 int SpellHeal::nr_hp_restored(SpellSkill skill) const
 {
         return 8 + (int)skill * 4;
@@ -4915,6 +6241,60 @@ std::vector<std::string> SpellHeal::descr_specific(
 // -----------------------------------------------------------------------------
 // Mi-Go hypnosis
 // -----------------------------------------------------------------------------
+int SpellMiGoHypno::mon_cooldown() const
+{
+        return 5;
+}
+
+bool SpellMiGoHypno::player_can_learn() const
+{
+        return false;
+}
+
+std::string SpellMiGoHypno::name() const
+{
+        return "MiGo Hypnosis";
+}
+
+SpellId SpellMiGoHypno::id() const
+{
+        return SpellId::mi_go_hypno;
+}
+
+SpellDomain SpellMiGoHypno::domain() const
+{
+        return SpellDomain::END;
+}
+
+SpellShock SpellMiGoHypno::shock_type() const
+{
+        return SpellShock::mild;
+}
+
+std::vector<std::string> SpellMiGoHypno::descr_specific(const SpellSkill skill) const
+{
+        (void)skill;
+
+        return {};
+}
+
+int SpellMiGoHypno::base_max_cost(
+        const SpellSkill skill,
+        const actor::Actor* const caster) const
+{
+        (void)skill;
+        (void)caster;
+
+        return 7;
+}
+
+bool SpellMiGoHypno::is_noisy(const SpellSkill skill) const
+{
+        (void)skill;
+
+        return true;
+}
+
 void SpellMiGoHypno::run_effect(
         actor::Actor* const caster,
         const SpellSkill skill,
@@ -4977,6 +6357,60 @@ bool SpellMiGoHypno::allow_mon_cast_now(
 // -----------------------------------------------------------------------------
 // Immolation
 // -----------------------------------------------------------------------------
+int SpellBurn::mon_cooldown() const
+{
+        return 9;
+}
+
+bool SpellBurn::player_can_learn() const
+{
+        return false;
+}
+
+std::string SpellBurn::name() const
+{
+        return "Immolation";
+}
+
+SpellId SpellBurn::id() const
+{
+        return SpellId::burn;
+}
+
+SpellDomain SpellBurn::domain() const
+{
+        return SpellDomain::END;
+}
+
+SpellShock SpellBurn::shock_type() const
+{
+        return SpellShock::disturbing;
+}
+
+std::vector<std::string> SpellBurn::descr_specific(const SpellSkill skill) const
+{
+        (void)skill;
+
+        return {};
+}
+
+int SpellBurn::base_max_cost(
+        const SpellSkill skill,
+        const actor::Actor* const caster) const
+{
+        (void)skill;
+        (void)caster;
+
+        return 7;
+}
+
+bool SpellBurn::is_noisy(const SpellSkill skill) const
+{
+        (void)skill;
+
+        return true;
+}
+
 void SpellBurn::run_effect(
         actor::Actor* const caster,
         const SpellSkill skill,
@@ -5039,6 +6473,60 @@ bool SpellBurn::allow_mon_cast_now(
 // -----------------------------------------------------------------------------
 // Deafening
 // -----------------------------------------------------------------------------
+int SpellDeafen::mon_cooldown() const
+{
+        return 5;
+}
+
+bool SpellDeafen::player_can_learn() const
+{
+        return false;
+}
+
+std::string SpellDeafen::name() const
+{
+        return "Deafen";
+}
+
+SpellId SpellDeafen::id() const
+{
+        return SpellId::deafen;
+}
+
+SpellDomain SpellDeafen::domain() const
+{
+        return SpellDomain::END;
+}
+
+SpellShock SpellDeafen::shock_type() const
+{
+        return SpellShock::mild;
+}
+
+std::vector<std::string> SpellDeafen::descr_specific(const SpellSkill skill) const
+{
+        (void)skill;
+
+        return {};
+}
+
+int SpellDeafen::base_max_cost(
+        const SpellSkill skill,
+        const actor::Actor* const caster) const
+{
+        (void)skill;
+        (void)caster;
+
+        return 4;
+}
+
+bool SpellDeafen::is_noisy(const SpellSkill skill) const
+{
+        (void)skill;
+
+        return true;
+}
+
 void SpellDeafen::run_effect(
         actor::Actor* const caster,
         const SpellSkill skill,
@@ -5092,6 +6580,53 @@ bool SpellDeafen::allow_mon_cast_now(
 // -----------------------------------------------------------------------------
 // Transmutation
 // -----------------------------------------------------------------------------
+bool SpellTransmut::player_can_learn() const
+{
+        return true;
+}
+
+std::string SpellTransmut::name() const
+{
+        return "Transmutation";
+}
+
+SpellId SpellTransmut::id() const
+{
+        return SpellId::transmut;
+}
+
+SpellDomain SpellTransmut::domain() const
+{
+        return SpellDomain::transmutation;
+}
+
+bool SpellTransmut::is_tenebrous() const
+{
+        return true;
+}
+
+SpellShock SpellTransmut::shock_type() const
+{
+        return SpellShock::mild;
+}
+
+int SpellTransmut::base_max_cost(
+        const SpellSkill skill,
+        const actor::Actor* const caster) const
+{
+        (void)skill;
+        (void)caster;
+
+        return 4;
+}
+
+bool SpellTransmut::is_noisy(const SpellSkill skill) const
+{
+        (void)skill;
+
+        return false;
+}
+
 int SpellTransmut::skill_bon(const SpellSkill skill) const
 {
         return 10 * (int)skill;
@@ -5331,6 +6866,48 @@ std::vector<std::string> SpellTransmut::descr_specific(
 // -----------------------------------------------------------------------------
 // Blood Tempering
 // -----------------------------------------------------------------------------
+bool SpellBloodTempering::player_can_learn() const
+{
+        return true;
+}
+
+std::string SpellBloodTempering::name() const
+{
+        return "Blood Tempering";
+}
+
+SpellId SpellBloodTempering::id() const
+{
+        return SpellId::blood_tempering;
+}
+
+SpellDomain SpellBloodTempering::domain() const
+{
+        return SpellDomain::blood;
+}
+
+bool SpellBloodTempering::is_tenebrous() const
+{
+        return true;
+}
+
+SpellCostType SpellBloodTempering::cost_type() const
+{
+        return SpellCostType::hit_points;
+}
+
+SpellShock SpellBloodTempering::shock_type() const
+{
+        return SpellShock::disturbing;
+}
+
+bool SpellBloodTempering::is_noisy(const SpellSkill skill) const
+{
+        (void)skill;
+
+        return true;
+}
+
 Range SpellBloodTempering::duration_range(SpellSkill skill) const
 {
         Range duration_range;
@@ -5389,6 +6966,53 @@ std::vector<std::string> SpellBloodTempering::descr_specific(
 // -----------------------------------------------------------------------------
 // Thorns
 // -----------------------------------------------------------------------------
+bool SpellThorns::player_can_learn() const
+{
+        return true;
+}
+
+std::string SpellThorns::name() const
+{
+        return "Thorns";
+}
+
+SpellId SpellThorns::id() const
+{
+        return SpellId::thorns;
+}
+
+SpellDomain SpellThorns::domain() const
+{
+        return SpellDomain::blood;
+}
+
+SpellCostType SpellThorns::cost_type() const
+{
+        return SpellCostType::hit_points;
+}
+
+SpellShock SpellThorns::shock_type() const
+{
+        return SpellShock::mild;
+}
+
+int SpellThorns::base_max_cost(
+        const SpellSkill skill,
+        const actor::Actor* const caster) const
+{
+        (void)skill;
+        (void)caster;
+
+        return 4;
+}
+
+bool SpellThorns::is_noisy(const SpellSkill skill) const
+{
+        (void)skill;
+
+        return true;
+}
+
 Range SpellThorns::duration_range(const SpellSkill skill) const
 {
         Range duration_range;
@@ -5460,6 +7084,31 @@ std::vector<std::string> SpellThorns::descr_specific(
 // -----------------------------------------------------------------------------
 // Crimson Passage
 // -----------------------------------------------------------------------------
+bool SpellCrimsonPassage::player_can_learn() const
+{
+        return true;
+}
+
+std::string SpellCrimsonPassage::name() const
+{
+        return "Crimson Passage";
+}
+
+SpellId SpellCrimsonPassage::id() const
+{
+        return SpellId::crimson_passage;
+}
+
+SpellDomain SpellCrimsonPassage::domain() const
+{
+        return SpellDomain::blood;
+}
+
+SpellCostType SpellCrimsonPassage::cost_type() const
+{
+        return SpellCostType::hit_points;
+}
+
 bool SpellCrimsonPassage::is_noisy(SpellSkill skill) const
 {
         return (skill == SpellSkill::basic) ? true : false;
@@ -5555,6 +7204,53 @@ std::vector<std::string> SpellCrimsonPassage::descr_specific(
 // -----------------------------------------------------------------------------
 // Sacrifice Life
 // -----------------------------------------------------------------------------
+bool SpellSacrificeLife::player_can_learn() const
+{
+        return true;
+}
+
+std::string SpellSacrificeLife::name() const
+{
+        return "Sacrifice Life";
+}
+
+SpellId SpellSacrificeLife::id() const
+{
+        return SpellId::sacrifice_life;
+}
+
+SpellDomain SpellSacrificeLife::domain() const
+{
+        return SpellDomain::blood;
+}
+
+bool SpellSacrificeLife::is_tenebrous() const
+{
+        return true;
+}
+
+SpellShock SpellSacrificeLife::shock_type() const
+{
+        return SpellShock::severe;
+}
+
+int SpellSacrificeLife::base_max_cost(
+        const SpellSkill skill,
+        const actor::Actor* const caster) const
+{
+        (void)skill;
+        (void)caster;
+
+        return 0;
+}
+
+bool SpellSacrificeLife::is_noisy(const SpellSkill skill) const
+{
+        (void)skill;
+
+        return true;
+}
+
 int SpellSacrificeLife::nr_sp_per_hp(const SpellSkill skill) const
 {
         return 1 + (int)skill;
@@ -5618,6 +7314,48 @@ std::vector<std::string> SpellSacrificeLife::descr_specific(
 // -----------------------------------------------------------------------------
 // Shed Impurity
 // -----------------------------------------------------------------------------
+bool SpellShedImpurity::player_can_learn() const
+{
+        return true;
+}
+
+std::string SpellShedImpurity::name() const
+{
+        return "Shed Impurity";
+}
+
+SpellId SpellShedImpurity::id() const
+{
+        return SpellId::shed_impurity;
+}
+
+SpellDomain SpellShedImpurity::domain() const
+{
+        return SpellDomain::blood;
+}
+
+SpellShock SpellShedImpurity::shock_type() const
+{
+        return SpellShock::mild;
+}
+
+int SpellShedImpurity::base_max_cost(
+        const SpellSkill skill,
+        const actor::Actor* const caster) const
+{
+        (void)skill;
+        (void)caster;
+
+        return 0;
+}
+
+bool SpellShedImpurity::is_noisy(const SpellSkill skill) const
+{
+        (void)skill;
+
+        return false;
+}
+
 int SpellShedImpurity::get_min_hp_removed_for_bonus_effects() const
 {
         return 9;
