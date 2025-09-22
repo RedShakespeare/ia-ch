@@ -121,7 +121,7 @@ static int calc_player_turns_per_hp_regen_rate()
         int nr_turns_per_hp = 0;
 
         // Rapid Recoverer trait affects hp regen?
-        if (player_bon::has_trait(Trait::rapid_recoverer)) {
+        if (player_bon::has_trait(TraitId::rapid_recoverer)) {
                 nr_turns_per_hp = 3;
         }
         else {
@@ -139,7 +139,7 @@ static int calc_player_turns_per_hp_regen_rate()
                 nr_wounds = wound->nr_wounds();
         }
 
-        if (player_bon::has_trait(Trait::survivalist)) {
+        if (player_bon::has_trait(TraitId::survivalist)) {
                 nr_wounds /= 2;
         }
 
@@ -189,10 +189,10 @@ static Range calc_nr_turns_range_to_recharge_spell_shield()
 {
         Range range;
 
-        if (player_bon::has_trait(Trait::mighty_spirit)) {
+        if (player_bon::has_trait(TraitId::mighty_spirit)) {
                 range = {25, 50};
         }
-        else if (player_bon::has_trait(Trait::strong_spirit)) {
+        else if (player_bon::has_trait(TraitId::strong_spirit)) {
                 range = {75, 100};
         }
         else {
@@ -223,7 +223,7 @@ static void player_regen_spell_shield()
 
         // Spell shield not currently active.
 
-        if (!player_bon::has_trait(Trait::stout_spirit)) {
+        if (!player_bon::has_trait(TraitId::stout_spirit)) {
                 return;
         }
 
@@ -270,7 +270,7 @@ static void player_regen_meditative_focused()
 
         // Meditative focused not currently active.
 
-        if (!player_bon::has_trait(Trait::meditative)) {
+        if (!player_bon::has_trait(TraitId::meditative)) {
                 return;
         }
 
@@ -291,7 +291,7 @@ static void player_regen_meditative_focused()
                 }
 
                 const auto duration_range =
-                        player_bon::has_trait(Trait::sage)
+                        player_bon::has_trait(TraitId::sage)
                         ? Range(75, 100)
                         : Range(125, 150);
 
@@ -405,15 +405,15 @@ static void std_turn_common(actor::Actor& actor)
         int regen_sp_n_turns = 18;
 
         if (actor::is_player(&actor)) {
-                if (player_bon::has_trait(Trait::stout_spirit)) {
+                if (player_bon::has_trait(TraitId::stout_spirit)) {
                         regen_sp_n_turns -= 4;
                 }
 
-                if (player_bon::has_trait(Trait::strong_spirit)) {
+                if (player_bon::has_trait(TraitId::strong_spirit)) {
                         regen_sp_n_turns -= 4;
                 }
 
-                if (player_bon::has_trait(Trait::mighty_spirit)) {
+                if (player_bon::has_trait(TraitId::mighty_spirit)) {
                         regen_sp_n_turns -= 4;
                 }
         }

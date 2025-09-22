@@ -69,7 +69,6 @@ static void write_file(std::vector<HighscoreEntry>& entries)
                 f << entry.turn_count << "\n";
                 f << entry.ins << "\n";
                 f << (int)entry.bg << "\n";
-                f << (int)entry.player_occultist_domain << "\n";
                 f << entry.is_latest_entry << "\n";
         }
 }
@@ -125,9 +124,6 @@ static std::vector<HighscoreEntry> read_highscores_file()
 
                 getline(file, line);
                 e.bg = (Bg)to_int(line);
-
-                getline(file, line);
-                e.player_occultist_domain = (OccultistDomain)to_int(line);
 
                 getline(file, line);
                 e.is_latest_entry = to_int(line);
@@ -217,7 +213,6 @@ HighscoreEntry make_entry_from_current_session(
         e.ins = map::g_player->insanity();
         e.is_win = game::is_win();
         e.bg = player_bon::bg();
-        e.player_occultist_domain = player_bon::occultist_domain();
 
         return e;
 }
@@ -346,15 +341,7 @@ void BrowseHighscore::draw()
                 const auto& date = entry.date;
                 const auto& name = entry.name;
 
-                std::string bg_title;
-
-                if (entry.bg == Bg::occultist) {
-                        bg_title = player_bon::occultist_profession_title(
-                                entry.player_occultist_domain);
-                }
-                else {
-                        bg_title = player_bon::bg_title(entry.bg);
-                }
+                const std::string bg_title = player_bon::bg_title(entry.bg);
 
                 const auto lvl = std::to_string(entry.lvl);
                 const auto dlvl = std::to_string(entry.dlvl);

@@ -386,7 +386,7 @@ static AlertsMon is_melee_snd_alerting_mon(
         }
 
         if (actor::is_player(attacker) &&
-            player_bon::has_trait(Trait::silent)) {
+            player_bon::has_trait(TraitId::silent)) {
                 return AlertsMon::no;
         }
 
@@ -518,7 +518,7 @@ static void apply_melee_attack_props(
         // should be a good enough rule so that crippling strikes can
         // only be applied against monsters where it makes sense.
         if (actor::is_player(attacker) &&
-            player_bon::has_trait(Trait::crippling_strikes) &&
+            player_bon::has_trait(TraitId::crippling_strikes) &&
             defender.m_data->can_bleed &&
             // TODO: This prevents applying on Worm Masses, but it's
             // hacky, and only makes sense *right now*, there should be

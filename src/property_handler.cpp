@@ -39,15 +39,15 @@ static int calc_resist_chance_from_player_traits()
 {
         int resist_chance = 0;
 
-        if (player_bon::has_trait(Trait::tough)) {
+        if (player_bon::has_trait(TraitId::tough)) {
                 resist_chance += 10;
         }
 
-        if (player_bon::has_trait(Trait::rugged)) {
+        if (player_bon::has_trait(TraitId::rugged)) {
                 resist_chance += 10;
         }
 
-        if (player_bon::has_trait(Trait::resistant)) {
+        if (player_bon::has_trait(TraitId::resistant)) {
                 resist_chance += 25;
         }
 
@@ -258,7 +258,7 @@ void PropHandler::apply(
         prop->m_src = src;
 
         if (actor::is_player(m_owner) &&
-            player_bon::has_trait(Trait::resistant) &&
+            player_bon::has_trait(TraitId::resistant) &&
             is_player_resistance_traits_applicable(prop->id()) &&
             (prop->m_duration_mode != PropDurationMode::indefinite) &&
             (prop->m_nr_turns_left >= 4)) {
@@ -815,7 +815,7 @@ std::vector<ColoredString> PropHandler::property_names_short() const
 
         line.reserve(m_props.size());
 
-        const bool is_self_aware = player_bon::has_trait(Trait::self_aware);
+        const bool is_self_aware = player_bon::has_trait(TraitId::self_aware);
 
         for (const auto& prop : m_props) {
                 std::string name = prop->name_short();
@@ -855,7 +855,7 @@ std::vector<PropListEntry> PropHandler::property_names_and_descr() const
         list.reserve(m_props.size());
 
         const bool is_player = actor::is_player(m_owner);
-        const bool is_self_aware = player_bon::has_trait(Trait::self_aware);
+        const bool is_self_aware = player_bon::has_trait(TraitId::self_aware);
 
         for (const auto& prop : m_props) {
                 std::string name = prop->name();

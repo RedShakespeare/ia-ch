@@ -303,10 +303,10 @@ void try_sprain_player()
 
         int sprain_one_in_n = 0;
 
-        if (player_bon::has_trait(Trait::rugged)) {
+        if (player_bon::has_trait(TraitId::rugged)) {
                 sprain_one_in_n = 12;
         }
-        else if (player_bon::has_trait(Trait::tough)) {
+        else if (player_bon::has_trait(TraitId::tough)) {
                 sprain_one_in_n = 8;
         }
         else {

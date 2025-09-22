@@ -460,7 +460,7 @@ int MedicalBag::tot_suppl_for_action(const MedBagAction action) const
                 break;
         }
 
-        if (player_bon::has_trait(Trait::healer)) {
+        if (player_bon::has_trait(TraitId::healer)) {
                 cost /= 2;
         }
 
@@ -489,7 +489,7 @@ int MedicalBag::tot_turns_for_action(const MedBagAction action) const
                 break;
         }
 
-        if (player_bon::has_trait(Trait::healer)) {
+        if (player_bon::has_trait(TraitId::healer)) {
                 nr_turns /= 2;
         }
 
@@ -608,7 +608,7 @@ void Lantern::on_std_turn_in_inv_hook(const InvType inv_type)
                 return;
         }
 
-        if (!(player_bon::has_trait(Trait::elec_incl) &&
+        if (!(player_bon::has_trait(TraitId::elec_incl) &&
               ((game_time::turn_nr() % 2) == 0))) {
                 --m_nr_turns_left;
         }

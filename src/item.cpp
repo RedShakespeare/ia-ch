@@ -181,25 +181,25 @@ WpnDmg Item::melee_dmg(const actor::Actor* const attacker) const
 
         if (actor::is_player(attacker)) {
                 // Bonus damage from melee traits.
-                if (player_bon::has_trait(Trait::adept_melee)) {
+                if (player_bon::has_trait(TraitId::adept_melee)) {
                         incr_plus(wpn_dmg);
                 }
 
-                if (player_bon::has_trait(Trait::expert_melee)) {
+                if (player_bon::has_trait(TraitId::expert_melee)) {
                         incr_plus(wpn_dmg);
                 }
 
-                if (player_bon::has_trait(Trait::master_melee)) {
+                if (player_bon::has_trait(TraitId::master_melee)) {
                         incr_plus(wpn_dmg);
                 }
 
                 // TODO: This should be handled via the 'specific_dmg_mod' hook
                 if (id() == Id::player_ghoul_claw) {
-                        if (player_bon::has_trait(Trait::foul)) {
+                        if (player_bon::has_trait(TraitId::foul)) {
                                 wpn_dmg.set_plus(wpn_dmg.plus() + 1);
                         }
 
-                        if (player_bon::has_trait(Trait::toxic)) {
+                        if (player_bon::has_trait(TraitId::toxic)) {
                                 wpn_dmg.set_plus(wpn_dmg.plus() + 1);
                         }
                 }
@@ -208,7 +208,7 @@ WpnDmg Item::melee_dmg(const actor::Actor* const attacker) const
                 if (attacker && attacker->m_properties.has(prop::Id::moribund)) {
                         int moribund_bon = 3;
 
-                        if (player_bon::has_trait(Trait::enthusiasm)) {
+                        if (player_bon::has_trait(TraitId::enthusiasm)) {
                                 moribund_bon *= 2;
                         }
 
@@ -240,15 +240,15 @@ WpnDmg Item::ranged_dmg(const actor::Actor* const attacker) const
 
         if (actor::is_player(attacker)) {
                 // Bonus damage from ranged traits.
-                if (player_bon::has_trait(Trait::adept_marksman)) {
+                if (player_bon::has_trait(TraitId::adept_marksman)) {
                         incr_min_dmg(wpn_dmg);
                 }
 
-                if (player_bon::has_trait(Trait::expert_marksman)) {
+                if (player_bon::has_trait(TraitId::expert_marksman)) {
                         incr_min_dmg(wpn_dmg);
                 }
 
-                if (player_bon::has_trait(Trait::master_marksman)) {
+                if (player_bon::has_trait(TraitId::master_marksman)) {
                         incr_min_dmg(wpn_dmg);
                 }
         }
@@ -276,15 +276,15 @@ WpnDmg Item::thrown_dmg(const actor::Actor* const attacker) const
 
         if (actor::is_player(attacker)) {
                 // Bonus damage from ranged traits.
-                if (player_bon::has_trait(Trait::adept_marksman)) {
+                if (player_bon::has_trait(TraitId::adept_marksman)) {
                         incr_min_dmg(wpn_dmg);
                 }
 
-                if (player_bon::has_trait(Trait::expert_marksman)) {
+                if (player_bon::has_trait(TraitId::expert_marksman)) {
                         incr_min_dmg(wpn_dmg);
                 }
 
-                if (player_bon::has_trait(Trait::master_marksman)) {
+                if (player_bon::has_trait(TraitId::master_marksman)) {
                         incr_min_dmg(wpn_dmg);
                 }
         }

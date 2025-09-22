@@ -568,7 +568,7 @@ SpellSkill spell_skill(const SpellId id)
         // Focused + Sage skill bonus - max level is master.
         if ((skill < SpellSkill::master) &&
             properties.has(prop::Id::meditative_focused) &&
-            player_bon::has_trait(Trait::sage)) {
+            player_bon::has_trait(TraitId::sage)) {
                 skill = (SpellSkill)((int)skill + 1);
         }
 

@@ -19,7 +19,7 @@ struct ActorData;
 
 struct ColoredString;
 
-enum class Trait
+enum class TraitId
 {
         // Common (except some traits can be blocked for certain backgrounds)
         adept_melee,
@@ -56,6 +56,16 @@ enum class Trait
         strong_backed,
         undead_bane,
         elec_incl,
+
+        // Unique for Occultists
+        lesser_clairvoyance,
+        greater_clairvoyance,
+        lesser_enchantment,
+        greater_enchantment,
+        lesser_invocation,
+        greater_invocation,
+        lesser_transmutation,
+        greater_transmutation,
 
         // Unique for Exorcist
         cast_bless_i,
@@ -122,21 +132,22 @@ namespace player_bon
 {
 struct TraitLogEntry
 {
-        Trait trait_id {Trait::END};
+        TraitId trait_id {TraitId::END};
         int clvl {0};
         bool is_removal {false};
 };
 
 struct UnpickedTraitsData
 {
-        std::vector<Trait> traits_can_be_picked;
-        std::vector<Trait> traits_prereqs_not_met;
+        std::vector<TraitId> traits_can_be_picked;
+        std::vector<TraitId> traits_prereqs_not_met;
 };
 
 struct TraitPrereqData
 {
-        std::vector<Trait> traits;
         Bg bg;
+        int clvl {0};
+        std::vector<TraitId> traits;
 };
 
 void init();
@@ -149,39 +160,32 @@ std::vector<Bg> pickable_bgs();
 
 std::vector<OccultistDomain> pickable_occultist_domains();
 
-UnpickedTraitsData unpicked_traits(
-        Bg bg,
-        OccultistDomain occultist_domain);
+UnpickedTraitsData unpicked_traits(Bg bg);
 
-TraitPrereqData trait_prereqs(
-        Trait trait,
-        Bg bg,
-        OccultistDomain occultist_domain);
+TraitPrereqData trait_prereqs(TraitId trait, Bg bg);
 
-std::vector<Trait> traits_can_be_removed();
+std::vector<TraitId> traits_can_be_removed();
 
 Bg bg();
 
-OccultistDomain occultist_domain();
+OccultistDomain occultist_starting_domain();
 
 bool is_bg(Bg bg);
 
-bool has_trait(Trait id);
+bool has_trait(TraitId id);
 
-std::string trait_title(Trait id);
+std::string trait_title(TraitId id);
 
-std::string trait_descr(Trait id);
+std::string trait_descr(TraitId id);
 
 // Can provide extra information, such as how much spirit the player has, so
 // that this can be shown only when picking a new trait. Such information should
 // not be shown for example in the character description.
-std::string trait_descr_extra_when_picking(Trait id);
+std::string trait_descr_extra_when_picking(TraitId id);
 
 std::string bg_title(Bg id);
 
-std::string occultist_profession_title(OccultistDomain domain);
-
-SpellDomain occultist_to_spell_domain(OccultistDomain occultist_domain);
+SpellDomain occultist_domain_to_spell_domain(OccultistDomain occultist_domain);
 
 // NOTE: The string vector returned is not formatted. Each line still needs to
 // be formatted by the caller. The reason for using a vector instead of a string
@@ -192,9 +196,9 @@ std::string occultist_domain_descr(OccultistDomain domain);
 
 std::vector<TraitLogEntry> trait_log();
 
-void pick_trait(Trait id);
+void pick_trait(TraitId id);
 
-void remove_trait(Trait id);
+void remove_trait(TraitId id);
 
 void pick_bg(Bg bg);
 

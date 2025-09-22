@@ -284,7 +284,7 @@ static bool is_player_staggering_from_wounds()
 
         int min_nr_wounds_for_stagger = 3;
 
-        if (player_bon::has_trait(Trait::survivalist)) {
+        if (player_bon::has_trait(TraitId::survivalist)) {
                 min_nr_wounds_for_stagger *= 2;
         }
 

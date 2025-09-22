@@ -158,7 +158,7 @@ ConsumeItem Device::activate(actor::Actor* const actor)
         int max = 8;
 
         if (actor::is_player(actor) &&
-            player_bon::has_trait(Trait::elec_incl)) {
+            player_bon::has_trait(TraitId::elec_incl)) {
                 max += 2;
         }
 

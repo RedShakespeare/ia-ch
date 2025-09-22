@@ -162,7 +162,7 @@ void Rod::set_max_charge_turns_left()
 {
         m_nr_charge_turns_left = nr_turns_to_recharge();
 
-        if (player_bon::has_trait(Trait::elec_incl)) {
+        if (player_bon::has_trait(TraitId::elec_incl)) {
                 m_nr_charge_turns_left /= 2;
         }
 }

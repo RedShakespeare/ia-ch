@@ -104,7 +104,7 @@ static Array2<int> calc_player_vigilant_flood()
 
         auto& player = *map::g_player;
 
-        if (player_bon::has_trait(Trait::vigilant)) {
+        if (player_bon::has_trait(TraitId::vigilant)) {
                 const int d = 3;
 
                 const R area(
@@ -153,7 +153,7 @@ static bool can_detect_pos_by_vigilant(
         const P& pos,
         const Array2<int>& vigilant_flood)
 {
-        const bool is_vigilant = player_bon::has_trait(Trait::vigilant);
+        const bool is_vigilant = player_bon::has_trait(TraitId::vigilant);
 
         const bool dist_ok = is_within_vigilant_dist(pos, vigilant_flood);
 

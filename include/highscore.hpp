@@ -30,7 +30,6 @@ struct HighscoreEntry
         int ins {0};
         IsWin is_win {IsWin::no};
         Bg bg {Bg::END};
-        OccultistDomain player_occultist_domain {OccultistDomain::END};
         bool is_latest_entry {false};
 };
 

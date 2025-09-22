@@ -394,18 +394,7 @@ static void draw_name(const int y, const Panel panel)
 
 static void draw_class(const int y, const Panel panel)
 {
-        std::string bg_title;
-
-        const Bg bg = player_bon::bg();
-
-        if (bg == Bg::occultist) {
-                const OccultistDomain domain = player_bon::occultist_domain();
-
-                bg_title = player_bon::occultist_profession_title(domain);
-        }
-        else {
-                bg_title = player_bon::bg_title(bg);
-        }
+        const std::string bg_title = player_bon::bg_title(player_bon::bg());
 
         io::draw_text_center(
                 bg_title,

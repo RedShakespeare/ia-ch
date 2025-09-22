@@ -177,7 +177,7 @@ void PickBgState::update()
 
                 // Occultists also pick a domain
                 if (bg == Bg::occultist) {
-                        states::push(std::make_unique<PickOccultistState>());
+                        states::push(std::make_unique<PickOccultistBgState>());
                 }
         } break;
 
@@ -274,7 +274,7 @@ void PickBgState::draw()
 // -----------------------------------------------------------------------------
 // Pick occultist state
 // -----------------------------------------------------------------------------
-void PickOccultistState::on_start()
+void PickOccultistBgState::on_start()
 {
         m_domains = player_bon::pickable_occultist_domains();
 
@@ -283,7 +283,7 @@ void PickOccultistState::on_start()
                 panels::h(Panel::create_char_menu));
 }
 
-void PickOccultistState::update()
+void PickOccultistBgState::update()
 {
         const io::InputData input = io::read_input();
 
@@ -311,14 +311,14 @@ void PickOccultistState::update()
         }
 }
 
-void PickOccultistState::draw()
+void PickOccultistBgState::draw()
 {
         draw_box(panels::area(Panel::screen));
 
         const int screen_center_x = panels::center_x(Panel::screen);
 
         io::draw_text_center(
-                " What is your spell domain? ",
+                " Choose starting spells ",
                 Panel::screen,
                 {screen_center_x, 0},
                 colors::title(),
@@ -351,7 +351,7 @@ void PickOccultistState::draw()
                         color);
 
                 const SpellDomain spell_domain =
-                        player_bon::occultist_to_spell_domain(domain);
+                        player_bon::occultist_domain_to_spell_domain(domain);
 
                 str = spells::spell_domain_title(spell_domain);
 
@@ -372,8 +372,7 @@ void PickOccultistState::draw()
         // Description
         y = 0;
 
-        const std::string descr =
-                player_bon::occultist_domain_descr(domain_marked);
+        const std::string descr = player_bon::occultist_domain_descr(domain_marked);
 
         ASSERT(!descr.empty());
 
@@ -402,9 +401,7 @@ void PickOccultistState::draw()
 void PickTraitState::on_start()
 {
         const player_bon::UnpickedTraitsData unpicked_traits_data =
-                player_bon::unpicked_traits(
-                        player_bon::bg(),
-                        player_bon::occultist_domain());
+                player_bon::unpicked_traits(player_bon::bg());
 
         m_traits_avail = unpicked_traits_data.traits_can_be_picked;
         m_traits_unavail = unpicked_traits_data.traits_prereqs_not_met;
@@ -476,7 +473,7 @@ void PickTraitState::update()
         switch (action) {
         case MenuAction::selected: {
                 if (m_screen_mode == TraitScreenMode::pick_new) {
-                        const Trait trait = m_traits_avail[browser.y()];
+                        const TraitId trait = m_traits_avail[browser.y()];
 
                         const std::string name = player_bon::trait_title(trait);
 
@@ -570,7 +567,7 @@ void PickTraitState::draw()
 
         MenuBrowser* browser = nullptr;
 
-        std::vector<Trait>* traits = nullptr;
+        std::vector<TraitId>* traits = nullptr;
 
         if (m_screen_mode == TraitScreenMode::pick_new) {
                 browser = &m_browser_traits_avail;
@@ -584,7 +581,7 @@ void PickTraitState::draw()
 
         const int browser_y = browser->y();
 
-        const Trait trait_marked = traits->at(browser_y);
+        const TraitId trait_marked = traits->at(browser_y);
 
         const Range idx_range_shown = browser->range_shown();
 
@@ -592,7 +589,7 @@ void PickTraitState::draw()
 
         // Traits
         for (int i = idx_range_shown.min; i <= idx_range_shown.max; ++i) {
-                const Trait trait = traits->at(i);
+                const TraitId trait = traits->at(i);
 
                 const bool is_idx_marked = (browser_y == i);
 
@@ -643,25 +640,20 @@ void PickTraitState::draw()
 
         // Prerequisites
         const player_bon::TraitPrereqData prereq_data =
-                player_bon::trait_prereqs(
-                        trait_marked,
-                        player_bon::bg(),
-                        player_bon::occultist_domain());
+                player_bon::trait_prereqs(trait_marked, player_bon::bg());
 
         const int y0_prereqs = 10;
 
         y = y0_prereqs;
 
-        if (!prereq_data.traits.empty() || prereq_data.bg != Bg::END) {
+        if ((prereq_data.bg != Bg::END) ||
+            (prereq_data.clvl > 0) ||
+            !prereq_data.traits.empty()) {
                 int x = 0;
 
                 const std::string label = "Prerequisite(s):";
 
-                io::draw_text(
-                        label,
-                        Panel::create_char_descr,
-                        {x, y},
-                        colors::text());
+                io::draw_text(label, Panel::create_char_descr, {x, y}, colors::text());
 
                 x += (int)label.length() + 1;
 
@@ -670,7 +662,7 @@ void PickTraitState::draw()
 }
 
 void PickTraitState::draw_trait_menu_item(
-        const Trait trait,
+        const TraitId trait,
         const int y,
         const bool is_marked,
         const MenuBrowser& browser) const
@@ -738,23 +730,29 @@ void PickTraitState::draw_trait_prereq_info(
                         ? clr_prereq_ok
                         : clr_prereq_not_ok;
 
-                const std::string bg_title =
-                        player_bon::bg_title(prereq_data.bg);
+                const std::string bg_title = player_bon::bg_title(prereq_data.bg);
 
                 prereq_titles.emplace_back(bg_title, color);
         }
 
+        if (prereq_data.clvl > 0) {
+                const bool is_clvl_ok = game::clvl() >= prereq_data.clvl;
+
+                const auto& color = is_clvl_ok ? clr_prereq_ok : clr_prereq_not_ok;
+
+                const std::string clvl_prereq_str =
+                        "Character level " +
+                        std::to_string(prereq_data.clvl);
+
+                prereq_titles.emplace_back(clvl_prereq_str, color);
+        }
+
         for (const auto prereq_trait : prereq_data.traits) {
-                const bool is_picked =
-                        player_bon::has_trait(prereq_trait);
+                const bool is_picked = player_bon::has_trait(prereq_trait);
 
-                const auto& color =
-                        is_picked
-                        ? clr_prereq_ok
-                        : clr_prereq_not_ok;
+                const auto& color = is_picked ? clr_prereq_ok : clr_prereq_not_ok;
 
-                const std::string trait_title =
-                        player_bon::trait_title(prereq_trait);
+                const std::string trait_title = player_bon::trait_title(prereq_trait);
 
                 prereq_titles.emplace_back(trait_title, color);
         }
@@ -900,7 +898,7 @@ void RemoveTraitState::draw()
 
         const int browser_y = m_browser.y();
 
-        const Trait trait_marked = m_traits_can_be_removed.at(browser_y);
+        const TraitId trait_marked = m_traits_can_be_removed.at(browser_y);
 
         const Range idx_range_shown = m_browser.range_shown();
 
@@ -908,7 +906,7 @@ void RemoveTraitState::draw()
 
         // Traits
         for (int i = idx_range_shown.min; i <= idx_range_shown.max; ++i) {
-                const Trait trait = m_traits_can_be_removed[i];
+                const TraitId trait = m_traits_can_be_removed[i];
 
                 const bool is_idx_marked = (browser_y == i);
 
@@ -955,7 +953,7 @@ void RemoveTraitState::draw()
 }
 
 void RemoveTraitState::draw_trait_menu_item(
-        const Trait trait,
+        const TraitId trait,
         const int y,
         const bool is_marked,
         const MenuBrowser& browser) const

@@ -363,7 +363,7 @@ int Actor::nr_turns_to_be_aware(const int factor) const
 {
         int nr_turns = m_data->nr_turns_aware * factor;
 
-        if (player_bon::has_trait(Trait::elusive)) {
+        if (player_bon::has_trait(TraitId::elusive)) {
                 nr_turns = ((nr_turns + 1) / 2);
         }
 

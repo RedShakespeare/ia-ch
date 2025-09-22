@@ -71,17 +71,9 @@ static void collect_unique_monsters_killed(
         }
 }
 
-static void collect_background_title(
-        game_summary_data::GameSummaryData& d)
+static void collect_background_title(game_summary_data::GameSummaryData& d)
 {
-        if (player_bon::is_bg(Bg::occultist)) {
-                const OccultistDomain domain = player_bon::occultist_domain();
-
-                d.background_title = player_bon::occultist_profession_title(domain);
-        }
-        else {
-                d.background_title = player_bon::bg_title(player_bon::bg());
-        }
+        d.background_title = player_bon::bg_title(player_bon::bg());
 }
 
 // Convert a sorted list of item comparison elements to a list of item knowledge
@@ -287,9 +279,9 @@ static void collect_current_traits(
 {
         d.current_traits.clear();
 
-        for (size_t i = 0; i < (size_t)Trait::END; ++i) {
-                if (player_bon::has_trait((Trait)i)) {
-                        const auto trait = (Trait)i;
+        for (size_t i = 0; i < (size_t)TraitId::END; ++i) {
+                if (player_bon::has_trait((TraitId)i)) {
+                        const auto trait = (TraitId)i;
 
                         game_summary_data::TraitData trait_data;
                         trait_data.name = player_bon::trait_title(trait);

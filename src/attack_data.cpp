@@ -130,7 +130,7 @@ static bool is_player_undead_bane_bon(
 {
         return (
                 actor::is_player(attacker) &&
-                player_bon::has_trait(Trait::undead_bane) &&
+                player_bon::has_trait(TraitId::undead_bane) &&
                 defender_data.is_undead);
 }
 
@@ -249,11 +249,11 @@ MeleeAttData::MeleeAttData(
 
                 // Extra backstab damage from traits?
                 if (actor::is_player(attacker)) {
-                        if (player_bon::has_trait(Trait::vicious)) {
+                        if (player_bon::has_trait(TraitId::vicious)) {
                                 dmg_pct += 100;
                         }
 
-                        if (player_bon::has_trait(Trait::ruthless)) {
+                        if (player_bon::has_trait(TraitId::ruthless)) {
                                 dmg_pct += 100;
                         }
                 }
