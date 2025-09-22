@@ -134,7 +134,7 @@ void PlayerGhoulClaw::on_melee_hit(actor::Actor& actor_hit, const int dmg)
 
         if (!is_ethereal &&
             d.can_bleed &&
-            player_bon::has_trait(Trait::ravenous) &&
+            player_bon::has_trait(TraitId::ravenous) &&
             is_feed_needed &&
             rnd::one_in(6)) {
                 Snd snd(
@@ -153,13 +153,13 @@ void PlayerGhoulClaw::on_melee_hit(actor::Actor& actor_hit, const int dmg)
 
         if (actor::is_alive(actor_hit)) {
                 // Poison victim from Ghoul Toxic trait?
-                if (player_bon::has_trait(Trait::toxic) &&
+                if (player_bon::has_trait(TraitId::toxic) &&
                     rnd::fraction(3, 4)) {
                         actor_hit.m_properties.apply(prop::make(prop::Id::poisoned));
                 }
 
                 // Terrify victim from Ghoul Indomitable Fury trait?
-                if (player_bon::has_trait(Trait::indomitable_fury) &&
+                if (player_bon::has_trait(TraitId::indomitable_fury) &&
                     map::g_player->m_properties.has(prop::Id::frenzied)) {
                         actor_hit.m_properties.apply(prop::make(prop::Id::terrified));
                 }
@@ -175,7 +175,7 @@ void PlayerGhoulClaw::on_melee_kill(actor::Actor& actor_killed)
 
         const bool is_ethereal = actor_killed.m_properties.has(prop::Id::ethereal);
 
-        if (player_bon::has_trait(Trait::foul) &&
+        if (player_bon::has_trait(TraitId::foul) &&
             !is_ethereal &&
             d.can_leave_corpse &&
             rnd::one_in(3)) {
@@ -193,7 +193,7 @@ void ElectricGun::specific_dmg_mod(
         const actor::Actor* const actor) const
 {
         if (actor::is_player(actor) &&
-            player_bon::has_trait(Trait::elec_incl)) {
+            player_bon::has_trait(TraitId::elec_incl)) {
                 range.set_plus(range.plus() + 1);
         }
 }

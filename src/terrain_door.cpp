@@ -178,11 +178,11 @@ static int calc_player_bash_chance(
         destr_chance_pct = std::max(1, destr_chance_pct);
 
         if (dmg_type != DmgType::control_object_spell) {
-                if (player_bon::has_trait(Trait::tough)) {
+                if (player_bon::has_trait(TraitId::tough)) {
                         destr_chance_pct += 15;
                 }
 
-                if (player_bon::has_trait(Trait::rugged)) {
+                if (player_bon::has_trait(TraitId::rugged)) {
                         destr_chance_pct += 15;
                 }
 
@@ -324,7 +324,7 @@ static void communicate_player_open(
         const audio::SfxId sfx,
         const std::string& door_name)
 {
-        if (!player_bon::has_trait(Trait::silent)) {
+        if (!player_bon::has_trait(TraitId::silent)) {
                 Snd snd(
                         "",
                         sfx,
@@ -498,7 +498,7 @@ static void communicate_player_close(
         const audio::SfxId sfx,
         const std::string& door_name)
 {
-        if (!player_bon::has_trait(Trait::silent)) {
+        if (!player_bon::has_trait(TraitId::silent)) {
                 Snd snd(
                         "",
                         sfx,

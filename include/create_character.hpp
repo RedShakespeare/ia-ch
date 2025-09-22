@@ -60,7 +60,7 @@ private:
         std::vector<Bg> m_bgs {};
 };
 
-class PickOccultistState : public State
+class PickOccultistBgState : public State
 {
 public:
         void on_start() override;
@@ -106,7 +106,7 @@ private:
         void init_browsers();
 
         void draw_trait_menu_item(
-                Trait trait,
+                TraitId trait,
                 int y,
                 bool is_marked,
                 const MenuBrowser& browser) const;
@@ -119,8 +119,8 @@ private:
         MenuBrowser m_browser_traits_avail {};
         MenuBrowser m_browser_traits_unavail {};
 
-        std::vector<Trait> m_traits_avail {};
-        std::vector<Trait> m_traits_unavail {};
+        std::vector<TraitId> m_traits_avail {};
+        std::vector<TraitId> m_traits_unavail {};
 
         TraitScreenMode m_screen_mode {TraitScreenMode::pick_new};
 
@@ -148,14 +148,14 @@ private:
         void init_browser();
 
         void draw_trait_menu_item(
-                Trait trait,
+                TraitId trait,
                 int y,
                 bool is_marked,
                 const MenuBrowser& browser) const;
 
         MenuBrowser m_browser {};
 
-        std::vector<Trait> m_traits_can_be_removed {};
+        std::vector<TraitId> m_traits_can_be_removed {};
 };
 
 class EnterNameState : public State

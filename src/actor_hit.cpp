@@ -352,7 +352,7 @@ static void on_player_hit(
 
         // Ghoul trait Indomitable Fury grants immunity to wounds while frenzied
         const bool is_ghoul_resist_wound =
-                player_bon::has_trait(Trait::indomitable_fury) &&
+                player_bon::has_trait(TraitId::indomitable_fury) &&
                 map::g_player->m_properties.has(prop::Id::frenzied);
 
         const bool is_wounded =
@@ -438,7 +438,7 @@ void hit(
                 }
 
                 // Soaking up damage with fervor instead due to Prolonged Life?
-                if (actor::is_player(&actor) && player_bon::has_trait(Trait::prolonged_life)) {
+                if (actor::is_player(&actor) && player_bon::has_trait(TraitId::prolonged_life)) {
                         dmg = absorb_dmg_for_prolonged_life_exorcist(dmg);
 
                         if (dmg <= 0) {

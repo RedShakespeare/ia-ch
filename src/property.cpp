@@ -1253,7 +1253,7 @@ int Wound::ability_mod(const AbilityId ability) const
 {
         int nr_wounds_used = m_nr_wounds;
 
-        if (actor::is_player(m_owner) && player_bon::has_trait(Trait::survivalist)) {
+        if (actor::is_player(m_owner) && player_bon::has_trait(TraitId::survivalist)) {
                 nr_wounds_used /= 2;
         }
 
@@ -1271,7 +1271,7 @@ int Wound::max_hp_pct_mod() const
 {
         int nr_wounds_used = m_nr_wounds;
 
-        if (actor::is_player(m_owner) && player_bon::has_trait(Trait::survivalist)) {
+        if (actor::is_player(m_owner) && player_bon::has_trait(TraitId::survivalist)) {
                 nr_wounds_used /= 2;
         }
 
@@ -1328,7 +1328,7 @@ void Wound::on_more(const Prop& new_prop)
 
         int nr_wounds_fatal = 5;
 
-        if (actor::is_player(m_owner) && player_bon::has_trait(Trait::survivalist)) {
+        if (actor::is_player(m_owner) && player_bon::has_trait(TraitId::survivalist)) {
                 nr_wounds_fatal *= 2;
         }
 
@@ -1349,7 +1349,7 @@ PropEnded Flagellant::on_hit(
         (void)dmg_type;
         (void)attacker;
 
-        const bool has_memento_mori = player_bon::has_trait(Trait::memento_mori);
+        const bool has_memento_mori = player_bon::has_trait(TraitId::memento_mori);
 
         const int hp_threshold = has_memento_mori ? 8 : 6;
 
@@ -1358,7 +1358,7 @@ PropEnded Flagellant::on_hit(
 
                 Range duration(5, 7);
 
-                if (player_bon::has_trait(Trait::memento_mori)) {
+                if (player_bon::has_trait(TraitId::memento_mori)) {
                         duration.min += (duration.min / 2);
                         duration.max += (duration.max / 2);
                 }
@@ -1379,7 +1379,7 @@ int Moribund::ability_mod(AbilityId ability) const
 
         int melee_bonus = 30;
 
-        if (player_bon::has_trait(Trait::enthusiasm)) {
+        if (player_bon::has_trait(TraitId::enthusiasm)) {
                 melee_bonus *= 2;
         }
 
@@ -1390,7 +1390,7 @@ int Moribund::armor_points() const
 {
         int armor_bonus = 3;
 
-        if (player_bon::has_trait(Trait::enthusiasm)) {
+        if (player_bon::has_trait(TraitId::enthusiasm)) {
                 armor_bonus *= 2;
         }
 

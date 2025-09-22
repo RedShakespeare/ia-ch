@@ -319,7 +319,7 @@ static void make_for_player()
         case Bg::occultist:
                 make_for_player_occultist_common();
 
-                switch (player_bon::occultist_domain()) {
+                switch (player_bon::occultist_starting_domain()) {
                 case OccultistDomain::clairvoyant:
                         make_for_player_occultist_clairv();
                         break;
@@ -561,8 +561,7 @@ static void make_item_set_firearm(actor::Actor& actor)
                 inv.put_in_slot(SlotId::wpn, item, Verbose::no);
         } break;
 
-        default:
-        {
+        default: {
                 ASSERT(false);
         } break;
         }
@@ -604,11 +603,10 @@ static void make_item_set_zealot_spiked_mace(actor::Actor& actor)
 
 static void make_item_set_witches_eye(actor::Actor& actor)
 {
-        if (player_bon::is_bg(Bg::occultist) &&
-            (player_bon::occultist_domain() == OccultistDomain::clairvoyant)) {
-                // Player is clairvoyant occultist, and thus already has
-                // permanent magic searching - this does not work well with
-                // providing temporary magic searching - just discard the item.
+        if (player_bon::has_trait(TraitId::lesser_clairvoyance)) {
+                // Player has at least Lesser Clairvoyance, and thus already has permanent magic
+                // searching - this does not work well with providing temporary magic searching -
+                // just discard the item.
                 return;
         }
 

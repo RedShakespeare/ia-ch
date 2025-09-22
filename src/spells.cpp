@@ -678,7 +678,7 @@ static std::string get_skill_descr(
         }
 
         if (properties.has(prop::Id::meditative_focused) &&
-            player_bon::has_trait(Trait::sage)) {
+            player_bon::has_trait(TraitId::sage)) {
                 bon_words.emplace_back("focused");
         }
 
@@ -800,7 +800,7 @@ static bool should_give_regen_from_flagellant_trait(
 {
         return (
                 actor::is_player(&caster) &&
-                player_bon::has_trait(Trait::galvanization) &&
+                player_bon::has_trait(TraitId::galvanization) &&
                 (spell_domain == SpellDomain::blood) &&
                 (caster.m_hp < hp_before_casting));
 }
@@ -1276,7 +1276,7 @@ void Spell::on_resist(actor::Actor& target) const
                 target.m_properties.end_prop(prop::Id::r_spell);
         }
 
-        if (is_player && player_bon::has_trait(Trait::absorbtion)) {
+        if (is_player && player_bon::has_trait(TraitId::absorbtion)) {
                 actor::restore_sp(
                         *map::g_player,
                         rnd::range(1, 6),
@@ -1297,9 +1297,9 @@ std::vector<std::string> Spell::descr(
 
         if (spell_src == SpellSrc::learned) {
                 const std::string forgotten_hint_str =
-                        "A forgotten spell can be recalled again by "
-                        "gazing into a magic mirror, "
-                        "or by casting the spell from a manuscript.";
+                        "Forgotten spells can be recalled by "
+                        "studying inscribed objects "
+                        "or by casting them from a manuscript.";
 
                 if (player_spells::is_spell_forgotten(id())) {
                         lines.emplace_back(
@@ -2874,8 +2874,7 @@ void SpellPurge::run_effect(
                         terrain->hit(DmgType::pure, caster);
                 } break;
 
-                default:
-                {
+                default: {
                 } break;
                 }
         }
@@ -3426,18 +3425,13 @@ void SpellHaste::run_effect(
         caster->m_properties.apply(prop);
 }
 
-std::vector<std::string> SpellHaste::descr_specific(
-        const SpellSkill skill) const
+std::vector<std::string> SpellHaste::descr_specific(const SpellSkill skill) const
 {
         std::vector<std::string> descr;
 
-        descr.emplace_back(
-                "The caster moves faster relative to the world around them.");
+        descr.emplace_back("The caster moves faster relative to the world around them.");
 
-        descr.push_back(
-                "The spell lasts " +
-                duration_range(skill).str() +
-                " turns.");
+        descr.push_back("The spell lasts " + duration_range(skill).str() + " turns.");
 
         return descr;
 }
@@ -4422,23 +4416,16 @@ std::vector<std::string> SpellTerrify::descr_specific(
 
         std::vector<std::string> descr;
 
-        descr.emplace_back(
-                "Manifests an overpowering feeling of dread in the spell's "
-                "victims.");
+        descr.emplace_back("Manifests an overpowering feeling of dread in the spell's victims.");
 
         if (skill == SpellSkill::basic) {
-                descr.emplace_back(
-                        "Affects one random visible hostile creature.");
+                descr.emplace_back("Affects one random visible hostile creature.");
         }
         else {
-                descr.emplace_back(
-                        "Affects all visible hostile creatures.");
+                descr.emplace_back("Affects all visible hostile creatures.");
         }
 
-        descr.push_back(
-                "The spell lasts " +
-                duration_range(skill).str() +
-                " turns.");
+        descr.push_back("The spell lasts " + duration_range(skill).str() + " turns.");
 
         return descr;
 }
@@ -5638,7 +5625,7 @@ int SpellShedImpurity::get_min_hp_removed_for_bonus_effects() const
 
 int SpellShedImpurity::get_moribund_hp_limit() const
 {
-        return player_bon::has_trait(Trait::memento_mori) ? 8 : 6;
+        return player_bon::has_trait(TraitId::memento_mori) ? 8 : 6;
 }
 
 int SpellShedImpurity::calc_nr_hp_removed(const actor::Actor* const caster) const

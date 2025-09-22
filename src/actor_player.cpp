@@ -422,7 +422,7 @@ int Actor::carry_weight_lmt() const
 {
         int carry_weight_mod = 0;
 
-        if (player_bon::has_trait(Trait::strong_backed)) {
+        if (player_bon::has_trait(TraitId::strong_backed)) {
                 carry_weight_mod += 50;
         }
 
@@ -437,15 +437,15 @@ int Actor::shock_resistance(const ShockSrc shock_src) const
 {
         int res = 0;
 
-        if (player_bon::has_trait(Trait::cool_headed)) {
+        if (player_bon::has_trait(TraitId::cool_headed)) {
                 res += 20;
         }
 
-        if (player_bon::has_trait(Trait::courageous)) {
+        if (player_bon::has_trait(TraitId::courageous)) {
                 res += 20;
         }
 
-        if (player_bon::has_trait(Trait::fearless)) {
+        if (player_bon::has_trait(TraitId::fearless)) {
                 res += 10;
         }
 
@@ -668,7 +668,7 @@ void Actor::mon_feeling() const
                 };
 
                 // This message only makes sense if the player is fearful
-                if (!player_bon::has_trait(Trait::fearless) &&
+                if (!player_bon::has_trait(TraitId::fearless) &&
                     !m_properties.has(prop::Id::frenzied)) {
                         msg_bucket.emplace_back("I feel anxious.");
                 }

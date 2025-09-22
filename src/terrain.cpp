@@ -742,8 +742,7 @@ void Wall::hit(
                 map::update_vision();
         } break;
 
-        default:
-        {
+        default: {
         } break;
         }
 }
@@ -959,8 +958,7 @@ void Pillar::hit(
                 map::update_vision();
         } break;
 
-        default:
-        {
+        default: {
         } break;
         }
 }
@@ -1087,8 +1085,7 @@ void Petroglyph::hit(
                 map::update_vision();
         } break;
 
-        default:
-        {
+        default: {
         } break;
         }
 }
@@ -1424,8 +1421,7 @@ void Statue::hit(
                 map::update_vision();
         } break;
 
-        default:
-        {
+        default: {
         } break;
         }
 }
@@ -1589,8 +1585,7 @@ void Urn::hit(
                 map::update_vision();
         } break;
 
-        default:
-        {
+        default: {
         } break;
         }
 }
@@ -1956,7 +1951,7 @@ void Liquid::bump(actor::Actor& actor_bumping)
         }
 
         // Make a sound, unless player with Silent trait.
-        if (!player_bon::has_trait(Trait::silent) ||
+        if (!player_bon::has_trait(TraitId::silent) ||
             !actor::is_player(&actor_bumping)) {
                 const std::string msg =
                         actor::is_player(&actor_bumping)
@@ -2933,8 +2928,7 @@ void Brazier::hit(
                 map::update_vision();
         } break;
 
-        default:
-        {
+        default: {
         } break;
         }
 }
@@ -3290,7 +3284,7 @@ Tomb::Tomb(const P& p, const TerrainData* const data) :
 
         int incr_max_items_one_in = 12;
 
-        if (player_bon::has_trait(Trait::treasure_hunter)) {
+        if (player_bon::has_trait(TraitId::treasure_hunter)) {
                 incr_max_items_one_in /= 2;
         }
 
@@ -3503,10 +3497,10 @@ void Tomb::bump(actor::Actor& actor_bumping)
 
         int bon = 0;
 
-        if (player_bon::has_trait(Trait::rugged)) {
+        if (player_bon::has_trait(TraitId::rugged)) {
                 bon = 8;
         }
-        else if (player_bon::has_trait(Trait::tough)) {
+        else if (player_bon::has_trait(TraitId::tough)) {
                 bon = 4;
         }
         else {
@@ -3914,7 +3908,7 @@ Chest::Chest(const P& p, const TerrainData* const data) :
         int nr_items_max = 2;
         int incr_max_items_one_in = 12;
 
-        if (player_bon::has_trait(Trait::treasure_hunter)) {
+        if (player_bon::has_trait(TraitId::treasure_hunter)) {
                 incr_max_items_one_in /= 2;
         }
 
@@ -4105,10 +4099,10 @@ void Chest::on_player_kick()
 
         int open_one_in_n = 0;
 
-        if (player_bon::has_trait(Trait::rugged)) {
+        if (player_bon::has_trait(TraitId::rugged)) {
                 open_one_in_n = 2;
         }
-        else if (player_bon::has_trait(Trait::tough)) {
+        else if (player_bon::has_trait(TraitId::tough)) {
                 open_one_in_n = 3;
         }
         else {
@@ -4208,8 +4202,7 @@ Fountain::Fountain(const P& p, const TerrainData* const data) :
                 m_fountain_effect = (FountainEffect)rnd::range(min, max);
         } break;
 
-        default:
-        {
+        default: {
                 ASSERT(false);
         } break;
         }
@@ -4646,7 +4639,7 @@ Cabinet::Cabinet(const P& p, const TerrainData* const data) :
 
         int incr_max_items_one_in = 12;
 
-        if (player_bon::has_trait(Trait::treasure_hunter)) {
+        if (player_bon::has_trait(TraitId::treasure_hunter)) {
                 incr_max_items_one_in /= 2;
         }
 
@@ -4840,7 +4833,7 @@ Bookshelf::Bookshelf(const P& p, const TerrainData* const data) :
 
         int incr_max_items_one_in = 12;
 
-        if (player_bon::has_trait(Trait::treasure_hunter)) {
+        if (player_bon::has_trait(TraitId::treasure_hunter)) {
                 incr_max_items_one_in /= 2;
         }
 
@@ -5008,7 +5001,7 @@ AlchemistBench::AlchemistBench(const P& p, const TerrainData* const data) :
 
         int incr_max_items_one_in = 12;
 
-        if (player_bon::has_trait(Trait::treasure_hunter)) {
+        if (player_bon::has_trait(TraitId::treasure_hunter)) {
                 incr_max_items_one_in /= 2;
         }
 
@@ -5178,7 +5171,7 @@ Cocoon::Cocoon(const P& p, const TerrainData* const data) :
         }
         else {
                 const bool is_treasure_hunter =
-                        player_bon::has_trait(Trait::treasure_hunter);
+                        player_bon::has_trait(TraitId::treasure_hunter);
 
                 const Fraction fraction_empty(6, 10);
 

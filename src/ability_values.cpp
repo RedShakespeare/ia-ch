@@ -81,15 +81,15 @@ int AbilityValues::val(
                 case AbilityId::melee: {
                         ret += 60;
 
-                        if (player_bon::has_trait(Trait::adept_melee)) {
+                        if (player_bon::has_trait(TraitId::adept_melee)) {
                                 ret += 10;
                         }
 
-                        if (player_bon::has_trait(Trait::expert_melee)) {
+                        if (player_bon::has_trait(TraitId::expert_melee)) {
                                 ret += 10;
                         }
 
-                        if (player_bon::has_trait(Trait::master_melee)) {
+                        if (player_bon::has_trait(TraitId::master_melee)) {
                                 ret += 10;
                         }
                 } break;
@@ -97,15 +97,15 @@ int AbilityValues::val(
                 case AbilityId::ranged: {
                         ret += 70;
 
-                        if (player_bon::has_trait(Trait::adept_marksman)) {
+                        if (player_bon::has_trait(TraitId::adept_marksman)) {
                                 ret += 10;
                         }
 
-                        if (player_bon::has_trait(Trait::expert_marksman)) {
+                        if (player_bon::has_trait(TraitId::expert_marksman)) {
                                 ret += 10;
                         }
 
-                        if (player_bon::has_trait(Trait::master_marksman)) {
+                        if (player_bon::has_trait(TraitId::master_marksman)) {
                                 ret += 10;
                         }
 
@@ -115,11 +115,11 @@ int AbilityValues::val(
                 } break;
 
                 case AbilityId::dodging: {
-                        if (player_bon::has_trait(Trait::dexterous)) {
+                        if (player_bon::has_trait(TraitId::dexterous)) {
                                 ret += 25;
                         }
 
-                        if (player_bon::has_trait(Trait::lithe)) {
+                        if (player_bon::has_trait(TraitId::lithe)) {
                                 ret += 25;
                         }
                 } break;
@@ -131,11 +131,11 @@ int AbilityValues::val(
                                 ret -= 20;
                         }
 
-                        if (player_bon::has_trait(Trait::stealthy)) {
+                        if (player_bon::has_trait(TraitId::stealthy)) {
                                 ret += 45;
                         }
 
-                        if (player_bon::has_trait(Trait::imperceptible)) {
+                        if (player_bon::has_trait(TraitId::imperceptible)) {
                                 ret += 45;
                         }
                 } break;

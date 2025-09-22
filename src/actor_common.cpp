@@ -687,11 +687,11 @@ int armor_points(const actor::Actor& actor)
 
         if (is_player(&actor)) {
                 // Add armor from player traits.
-                if (player_bon::has_trait(Trait::thick_skinned)) {
+                if (player_bon::has_trait(TraitId::thick_skinned)) {
                         ++armor_points;
                 }
 
-                if (player_bon::has_trait(Trait::callous)) {
+                if (player_bon::has_trait(TraitId::callous)) {
                         ++armor_points;
                 }
         }

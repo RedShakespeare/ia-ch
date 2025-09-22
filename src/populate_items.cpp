@@ -56,7 +56,7 @@ static int nr_items()
 
         TRACE << "Rolled '" << nr << "' number of items" << "\n";
 
-        if (player_bon::has_trait(Trait::treasure_hunter)) {
+        if (player_bon::has_trait(TraitId::treasure_hunter)) {
                 ++nr;
 
                 TRACE
