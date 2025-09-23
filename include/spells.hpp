@@ -36,60 +36,102 @@ class Item;
 
 enum class SpellId
 {
-        // Available for player and monsters
-        aura_of_decay,
-        darkbolt,
-        aza_gaze,
-        enfeeble,
-        heal,
-        pestilence,
-        slow,
-        haste,
-        spell_shield,
-        teleport,
-        terrify,
+        //
+        // --- AVAILABLE FOR PLAYER AND MONSTERS ---
+        //
+
+        // Domain: Clairvoyance
         premonition,
 
-        // Player only
-        spectral_weapons,
-        bless,
-        erudition,
-        identify,
-        light,
-        cataclysm,
+        // Domain: Enchantment
+        enfeeble,
+        heal,
+        slow,
+        spell_shield,
+        terrify,
+
+        // Domain: Invocation
+        aura_of_decay,
+        aza_gaze,
+        darkbolt,
+
+        // Domain: Transmutation
         control_object,
-        invis,
-        see_invis,
-        transmut,
-        thorns,
-        sacrifice_life,
+        haste,
+        pestilence,
+        spectral_weapons,
+        teleport,
+
+        //
+        // --- PLAYER ONLY ---
+        //
+
+        // Domain: Blood
         blood_tempering,
         crimson_passage,
+        sacrifice_life,
+        thorns,
 
-        // Exorcist background
+        // Domain: Clairvoyance
+        erudition,
+        identify,
+        see_invis,
+
+        // Domain: Enchantment
+        invis,
+
+        // Domain: Invocation
+        cataclysm,
+
+        // Domain: Transmutation
+        bless,
+        light,
+        transmut,
+
+        //
+        // --- EXORCIST BACKGROUND ONLY ---
+        //
+
+        // (No domain)
         cleansing_fire,
-        sanctuary,
         purge,
+        sanctuary,
 
-        // Ghoul background
+        //
+        // --- GHOUL BACKGROUND ONLY ---
+        //
+
+        // (No domain)
         frenzy,
 
-        // Flagellant background
+        //
+        // --- FLAGELLANT BACKGROUND ONLY ---
+        //
+
+        // Domain: Blood
         shed_impurity,
 
-        // Monsters only
+        //
+        // --- MONSTERS ONLY ---
+        //
+
+        // Domain: Enchantment
         curse,
+        heal_others,
+
+        // Domain: Invocation
         force_bolt,
+
+        // (No domain)
+        blind,
         burn,
         deafen,
         disease,
-        blind,
         knockback,
         mi_go_hypno,
         summon_random,
-        summon_water_creature,
         summon_tentacles,
-        heal_others,
+        summon_water_creature,
 
         END
 };
