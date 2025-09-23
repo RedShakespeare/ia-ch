@@ -60,7 +60,7 @@ static bool s_traits_picked[(size_t)TraitId::END];
 static std::vector<player_bon::TraitLogEntry> s_trait_log;
 
 static auto s_player_bg = Bg::END;
-static auto s_player_occultist_domain = OccultistDomain::END;
+static auto s_player_occultist_domain = SpellDomain::END;
 
 static const int s_occultist_spell_upgrade_lvl_1 = 4;
 static const int s_occultist_spell_upgrade_lvl_2 = 8;
@@ -1016,7 +1016,7 @@ void init()
 {
         s_player_bg = Bg::END;
 
-        s_player_occultist_domain = OccultistDomain::END;
+        s_player_occultist_domain = SpellDomain::END;
 
         for (size_t i = 0; i < (size_t)TraitId::END; ++i) {
                 s_traits_picked[i] = false;
@@ -1052,7 +1052,7 @@ void load()
 {
         s_player_bg = (Bg)saving::get_int();
 
-        s_player_occultist_domain = (OccultistDomain)saving::get_int();
+        s_player_occultist_domain = (SpellDomain)saving::get_int();
 
         for (size_t i = 0; i < (size_t)TraitId::END; ++i) {
                 s_traits_picked[i] = saving::get_bool();
@@ -1099,32 +1099,6 @@ std::string bg_title(const Bg id)
         ASSERT(false);
 
         return "";
-}
-
-SpellDomain occultist_domain_to_spell_domain(const OccultistDomain occultist_domain)
-{
-        switch (occultist_domain) {
-        case OccultistDomain::clairvoyant:
-                return SpellDomain::clairvoyance;
-                break;
-
-        case OccultistDomain::enchanter:
-                return SpellDomain::enchantment;
-                break;
-
-        case OccultistDomain::invoker:
-                return SpellDomain::invocation;
-                break;
-
-        case OccultistDomain::transmuter:
-                return SpellDomain::transmutation;
-                break;
-
-        case OccultistDomain::END:
-                break;
-        }
-
-        return SpellDomain::END;
 }
 
 std::string trait_title(const TraitId id)
@@ -1290,12 +1264,12 @@ std::vector<ColoredString> bg_descr(const Bg id)
         return descr;
 }
 
-std::string occultist_domain_descr(const OccultistDomain domain)
+std::string occultist_domain_descr(const SpellDomain domain)
 {
         // TODO: Do not write spell names here, get them from the spell classes.
 
         switch (domain) {
-        case OccultistDomain::clairvoyant:
+        case SpellDomain::clairvoyance:
                 return (
                         "You have previously dabbled in the casting of "
                         "clairvoyance spells, "
@@ -1303,14 +1277,14 @@ std::string occultist_domain_descr(const OccultistDomain domain)
                         "Premonition (large evasion bonus) and "
                         "Identify (learn the true nature of items).");
 
-        case OccultistDomain::enchanter:
+        case SpellDomain::enchantment:
                 return (
                         "You have previously dabbled in the casting of "
                         "enchantment spells, "
                         "and have basic knowledge of "
                         "Terrify and Heal.");
 
-        case OccultistDomain::invoker:
+        case SpellDomain::invocation:
                 return (
                         "You have previously dabbled in the casting of "
                         "invocation spells, "
@@ -1318,7 +1292,7 @@ std::string occultist_domain_descr(const OccultistDomain domain)
                         "Darkbolt (fires bolts that damage and paralyze) and "
                         "Aura of Decay (damages nearby creatures over time).");
 
-        case OccultistDomain::transmuter:
+        case SpellDomain::transmutation:
                 return (
                         "You have previously dabbled in the casting of "
                         "transmutation spells, "
@@ -1326,7 +1300,8 @@ std::string occultist_domain_descr(const OccultistDomain domain)
                         "Haste (all actions are faster) and "
                         "Transmute (convert items into other items).");
 
-        case OccultistDomain::END:
+        case SpellDomain::blood:
+        case SpellDomain::END:
                 ASSERT(false);
                 break;
         }
@@ -1385,7 +1360,7 @@ Bg bg()
         return s_player_bg;
 }
 
-OccultistDomain occultist_starting_domain()
+SpellDomain occultist_starting_domain()
 {
         return s_player_occultist_domain;
 }
@@ -1425,34 +1400,22 @@ std::vector<Bg> pickable_bgs()
         return result;
 }
 
-std::vector<OccultistDomain> pickable_occultist_domains()
+std::vector<SpellDomain> pickable_occultist_domains()
 {
-        std::vector<OccultistDomain> result;
-
-        result.reserve((int)OccultistDomain::END);
-
-        for (int i = 0; i < (int)OccultistDomain::END; ++i) {
-                result.push_back((OccultistDomain)i);
-        }
+        std::vector<SpellDomain> result = {
+                SpellDomain::clairvoyance,
+                SpellDomain::enchantment,
+                SpellDomain::invocation,
+                SpellDomain::transmutation,
+        };
 
         // Sort lexicographically.
         std::sort(
                 std::begin(result),
                 std::end(result),
-                [](
-                        const OccultistDomain domain_1,
-                        const OccultistDomain domain_2) {
-                        const SpellDomain spell_domain_1 =
-                                occultist_domain_to_spell_domain(domain_1);
-
-                        const SpellDomain spell_domain_2 =
-                                occultist_domain_to_spell_domain(domain_2);
-
-                        const std::string str1 =
-                                spells::spell_domain_title(spell_domain_1);
-
-                        const std::string str2 =
-                                spells::spell_domain_title(spell_domain_2);
+                [](const SpellDomain domain_1, const SpellDomain domain_2) {
+                        const std::string str1 = spells::spell_domain_title(domain_1);
+                        const std::string str2 = spells::spell_domain_title(domain_2);
 
                         return str1 < str2;
                 });
@@ -1664,23 +1627,12 @@ void pick_bg(const Bg bg)
         TRACE_FUNC_END;
 }
 
-void pick_occultist_domain(const OccultistDomain domain)
+void pick_occultist_domain(const SpellDomain domain)
 {
-        ASSERT(domain != OccultistDomain::END);
+        ASSERT(domain != SpellDomain::blood);
+        ASSERT(domain != SpellDomain::END);
 
         s_player_occultist_domain = domain;
-
-        switch (domain) {
-        case OccultistDomain::clairvoyant:
-        case OccultistDomain::enchanter:
-        case OccultistDomain::invoker:
-        case OccultistDomain::transmuter: {
-        } break;
-
-        case OccultistDomain::END: {
-                ASSERT(false);
-        } break;
-        }
 }
 
 void on_player_gained_lvl(const int new_lvl)

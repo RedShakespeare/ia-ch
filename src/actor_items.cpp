@@ -320,23 +320,24 @@ static void make_for_player()
                 make_for_player_occultist_common();
 
                 switch (player_bon::occultist_starting_domain()) {
-                case OccultistDomain::clairvoyant:
+                case SpellDomain::clairvoyance:
                         make_for_player_occultist_clairv();
                         break;
 
-                case OccultistDomain::enchanter:
+                case SpellDomain::enchantment:
                         make_for_player_occultist_ench();
                         break;
 
-                case OccultistDomain::invoker:
+                case SpellDomain::invocation:
                         make_for_player_occultist_invoc();
                         break;
 
-                case OccultistDomain::transmuter:
+                case SpellDomain::transmutation:
                         make_for_player_occultist_transmut();
                         break;
 
-                case OccultistDomain::END:
+                case SpellDomain::blood:
+                case SpellDomain::END:
                         ASSERT(false);
                         break;
 

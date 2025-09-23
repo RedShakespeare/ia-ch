@@ -118,16 +118,6 @@ enum class Bg
         END
 };
 
-enum class OccultistDomain
-{
-        clairvoyant,
-        enchanter,
-        invoker,
-        transmuter,
-
-        END
-};
-
 namespace player_bon
 {
 struct TraitLogEntry
@@ -158,7 +148,7 @@ void load();
 
 std::vector<Bg> pickable_bgs();
 
-std::vector<OccultistDomain> pickable_occultist_domains();
+std::vector<SpellDomain> pickable_occultist_domains();
 
 UnpickedTraitsData unpicked_traits(Bg bg);
 
@@ -168,7 +158,7 @@ std::vector<TraitId> traits_can_be_removed();
 
 Bg bg();
 
-OccultistDomain occultist_starting_domain();
+SpellDomain occultist_starting_domain();
 
 bool is_bg(Bg bg);
 
@@ -185,14 +175,12 @@ std::string trait_descr_extra_when_picking(TraitId id);
 
 std::string bg_title(Bg id);
 
-SpellDomain occultist_domain_to_spell_domain(OccultistDomain occultist_domain);
-
 // NOTE: The string vector returned is not formatted. Each line still needs to
 // be formatted by the caller. The reason for using a vector instead of a string
 // is to separate the text into paragraphs.
 std::vector<ColoredString> bg_descr(Bg id);
 
-std::string occultist_domain_descr(OccultistDomain domain);
+std::string occultist_domain_descr(SpellDomain domain);
 
 std::vector<TraitLogEntry> trait_log();
 
@@ -202,7 +190,7 @@ void remove_trait(TraitId id);
 
 void pick_bg(Bg bg);
 
-void pick_occultist_domain(OccultistDomain domain);
+void pick_occultist_domain(SpellDomain domain);
 
 void on_player_gained_lvl(int new_lvl);
 
