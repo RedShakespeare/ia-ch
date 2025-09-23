@@ -77,7 +77,7 @@ public:
 private:
         MenuBrowser m_browser {};
 
-        std::vector<OccultistDomain> m_domains {};
+        std::vector<SpellDomain> m_domains {};
 };
 
 class PickTraitState : public State

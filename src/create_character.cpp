@@ -287,14 +287,11 @@ void PickOccultistBgState::update()
 {
         const io::InputData input = io::read_input();
 
-        const auto action =
-                m_browser.read(
-                        input,
-                        MenuInputMode::scrolling_and_letters);
+        const auto action = m_browser.read(input, MenuInputMode::scrolling_and_letters);
 
         switch (action) {
         case MenuAction::selected: {
-                const OccultistDomain domain = m_domains[m_browser.y()];
+                const SpellDomain domain = m_domains[m_browser.y()];
 
                 player_bon::pick_occultist_domain(domain);
 
@@ -328,10 +325,10 @@ void PickOccultistBgState::draw()
 
         int y = 0;
 
-        const OccultistDomain domain_marked = m_domains[m_browser.y()];
+        const SpellDomain domain_marked = m_domains[m_browser.y()];
 
         // Domains
-        for (OccultistDomain domain : m_domains) {
+        for (SpellDomain domain : m_domains) {
                 auto str =
                         std::string("(") +
                         m_browser.menu_keys()[y] +
@@ -350,10 +347,7 @@ void PickOccultistBgState::draw()
                         {0, y},
                         color);
 
-                const SpellDomain spell_domain =
-                        player_bon::occultist_domain_to_spell_domain(domain);
-
-                str = spells::spell_domain_title(spell_domain);
+                str = spells::spell_domain_title(domain);
 
                 color =
                         is_marked
