@@ -24,6 +24,7 @@
 ##############################
 # Fixes
 ##############################
+- Some sound effects may not played due to unsupported sample rate. Fixed by normalizing all audio files to 44100 Hz.
 
 ##############################
 # Modability, game data
