@@ -37,56 +37,48 @@ class Item;
 enum class SpellId
 {
         //
-        // --- AVAILABLE FOR PLAYER AND MONSTERS ---
+        // --- AVAILABLE FOR THE PLAYER (and possibly monsters)
         //
 
-        // Domain: Clairvoyance
-        premonition,
-
-        // Domain: Enchantment
-        enfeeble,
-        heal,
-        slow,
-        spell_shield,
-        terrify,
-
-        // Domain: Invocation
-        aura_of_decay,
+        // Domain: Channeling
         aza_gaze,
+        cataclysm,
         darkbolt,
 
-        // Domain: Transmutation
-        control_object,
-        haste,
+        // Domain: Corruption
+        aura_of_decay,
+        enfeeble,
         pestilence,
+
+        // Domain: Illusion
+        invis,
+        terrify,
+
+        // Domain: Mind
+        control_object,
+        erudition,
+        identify,
+        premonition,
+        see_invis,
         spectral_weapons,
+        transmut,
+
+        // Domain: Time
+        haste,
+        slow,
         teleport,
 
-        //
-        // --- PLAYER ONLY ---
-        //
+        // Domain: Warding
+        bless,
+        heal,
+        light,
+        spell_shield,
 
         // Domain: Blood
         blood_tempering,
         crimson_passage,
         sacrifice_life,
         thorns,
-
-        // Domain: Clairvoyance
-        erudition,
-        identify,
-        see_invis,
-
-        // Domain: Enchantment
-        invis,
-
-        // Domain: Invocation
-        cataclysm,
-
-        // Domain: Transmutation
-        bless,
-        light,
-        transmut,
 
         //
         // --- EXORCIST BACKGROUND ONLY ---
@@ -115,18 +107,14 @@ enum class SpellId
         // --- MONSTERS ONLY ---
         //
 
-        // Domain: Enchantment
-        curse,
-        heal_others,
-
-        // Domain: Invocation
-        force_bolt,
-
-        // (No domain)
+        // (Domain doesn't matter)
         blind,
         burn,
+        curse,
         deafen,
         disease,
+        force_bolt,
+        heal_others,
         knockback,
         mi_go_hypno,
         summon_random,
@@ -138,10 +126,13 @@ enum class SpellId
 
 enum class SpellDomain
 {
-        clairvoyance,
-        enchantment,
-        invocation,
-        transmutation,
+        channeling,
+        corruption,
+        illusion,
+        mind,
+        time,
+        warding,
+
         blood,
 
         END

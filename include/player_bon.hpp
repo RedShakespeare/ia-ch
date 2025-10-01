@@ -58,14 +58,18 @@ enum class TraitId
         elec_incl,
 
         // Unique for Occultists
-        lesser_clairvoyance,
-        greater_clairvoyance,
-        lesser_enchantment,
-        greater_enchantment,
-        lesser_invocation,
-        greater_invocation,
-        lesser_transmutation,
-        greater_transmutation,
+        adept_of_channeling,
+        master_of_channeling,
+        adept_of_corruption,
+        master_of_corruption,
+        adept_of_illusion,
+        master_of_illusion,
+        adept_of_the_mind,
+        master_of_the_mind,
+        adept_of_time,
+        master_of_time,
+        adept_of_warding,
+        master_of_warding,
 
         // Unique for Exorcist
         cast_bless_i,

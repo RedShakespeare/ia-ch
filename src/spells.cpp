@@ -120,10 +120,12 @@ static const std::unordered_map<std::string, SpellSkill> s_str_to_spell_skill_ma
 
 static const std::unordered_map<SpellDomain, ShockSrc> s_spell_domain_to_shock_type_map = {
         {SpellDomain::blood, ShockSrc::cast_intr_spell_blood},
-        {SpellDomain::clairvoyance, ShockSrc::cast_intr_spell_clairvoyance},
-        {SpellDomain::enchantment, ShockSrc::cast_intr_spell_enchantment},
-        {SpellDomain::invocation, ShockSrc::cast_intr_spell_invocation},
-        {SpellDomain::transmutation, ShockSrc::cast_intr_spell_transmutation},
+        {SpellDomain::channeling, ShockSrc::cast_intr_spell_channeling},
+        {SpellDomain::corruption, ShockSrc::cast_intr_spell_corruption},
+        {SpellDomain::illusion, ShockSrc::cast_intr_spell_illusion},
+        {SpellDomain::mind, ShockSrc::cast_intr_spell_mind},
+        {SpellDomain::time, ShockSrc::cast_intr_spell_time},
+        {SpellDomain::warding, ShockSrc::cast_intr_spell_warding},
         // NOTE: Not all spells belong to a domain:
         {SpellDomain::END, ShockSrc::cast_intr_spell_general}};
 
@@ -973,17 +975,23 @@ SpellSkill str_to_spell_skill_id(const std::string& str)
 std::string spell_domain_title(const SpellDomain domain)
 {
         switch (domain) {
-        case SpellDomain::clairvoyance:
-                return "Clairvoyance";
+        case SpellDomain::channeling:
+                return "Channeling";
 
-        case SpellDomain::enchantment:
-                return "Enchantment";
+        case SpellDomain::corruption:
+                return "Corruption";
 
-        case SpellDomain::invocation:
-                return "Invocation";
+        case SpellDomain::illusion:
+                return "Illusion";
 
-        case SpellDomain::transmutation:
-                return "Transmutation";
+        case SpellDomain::mind:
+                return "Mind";
+
+        case SpellDomain::time:
+                return "Time";
+
+        case SpellDomain::warding:
+                return "Warding";
 
         case SpellDomain::blood:
                 return "Blood";
@@ -1394,7 +1402,7 @@ SpellId SpellAuraOfDecay::id() const
 
 SpellDomain SpellAuraOfDecay::domain() const
 {
-        return SpellDomain::invocation;
+        return SpellDomain::corruption;
 }
 
 SpellShock SpellAuraOfDecay::shock_type() const
@@ -1539,7 +1547,7 @@ SpellId SpellBolt::id() const
 
 SpellDomain SpellBolt::domain() const
 {
-        return SpellDomain::invocation;
+        return SpellDomain::channeling;
 }
 
 SpellShock SpellBolt::shock_type() const
@@ -1968,7 +1976,7 @@ SpellId SpellAzaGaze::id() const
 
 SpellDomain SpellAzaGaze::domain() const
 {
-        return SpellDomain::invocation;
+        return SpellDomain::channeling;
 }
 
 SpellShock SpellAzaGaze::shock_type() const
@@ -2208,7 +2216,7 @@ SpellId SpellCataclysm::id() const
 
 SpellDomain SpellCataclysm::domain() const
 {
-        return SpellDomain::invocation;
+        return SpellDomain::channeling;
 }
 
 SpellShock SpellCataclysm::shock_type() const
@@ -2490,7 +2498,7 @@ SpellId SpellPestilence::id() const
 
 SpellDomain SpellPestilence::domain() const
 {
-        return SpellDomain::transmutation;
+        return SpellDomain::corruption;
 }
 
 SpellShock SpellPestilence::shock_type() const
@@ -2705,7 +2713,7 @@ SpellId SpellSpectralWeapons::id() const
 
 SpellDomain SpellSpectralWeapons::domain() const
 {
-        return SpellDomain::transmutation;
+        return SpellDomain::mind;
 }
 
 SpellShock SpellSpectralWeapons::shock_type() const
@@ -2945,7 +2953,7 @@ SpellId SpellControlObject::id() const
 
 SpellDomain SpellControlObject::domain() const
 {
-        return SpellDomain::transmutation;
+        return SpellDomain::mind;
 }
 
 SpellShock SpellControlObject::shock_type() const
@@ -3495,9 +3503,7 @@ SpellId SpellBless::id() const
 
 SpellDomain SpellBless::domain() const
 {
-        // NOTE: This could perhaps be considered an enchantment spell, but the way the spell
-        // description is phrased, it sounds a lot more like transmutation.
-        return SpellDomain::transmutation;
+        return SpellDomain::warding;
 }
 
 bool SpellBless::is_noisy(const SpellSkill skill) const
@@ -3597,7 +3603,7 @@ SpellId SpellLight::id() const
 
 SpellDomain SpellLight::domain() const
 {
-        return SpellDomain::transmutation;
+        return SpellDomain::warding;
 }
 
 SpellShock SpellLight::shock_type() const
@@ -3761,7 +3767,7 @@ SpellId SpellInvis::id() const
 
 SpellDomain SpellInvis::domain() const
 {
-        return SpellDomain::enchantment;
+        return SpellDomain::illusion;
 }
 
 bool SpellInvis::is_tenebrous() const
@@ -3884,7 +3890,7 @@ SpellId SpellSeeInvis::id() const
 
 SpellDomain SpellSeeInvis::domain() const
 {
-        return SpellDomain::clairvoyance;
+        return SpellDomain::mind;
 }
 
 SpellShock SpellSeeInvis::shock_type() const
@@ -4004,7 +4010,7 @@ SpellId SpellSpellShield::id() const
 
 SpellDomain SpellSpellShield::domain() const
 {
-        return SpellDomain::enchantment;
+        return SpellDomain::warding;
 }
 
 SpellShock SpellSpellShield::shock_type() const
@@ -4086,7 +4092,7 @@ SpellId SpellHaste::id() const
 
 SpellDomain SpellHaste::domain() const
 {
-        return SpellDomain::transmutation;
+        return SpellDomain::time;
 }
 
 SpellShock SpellHaste::shock_type() const
@@ -4191,7 +4197,7 @@ SpellId SpellPremonition::id() const
 
 SpellDomain SpellPremonition::domain() const
 {
-        return SpellDomain::clairvoyance;
+        return SpellDomain::mind;
 }
 
 SpellShock SpellPremonition::shock_type() const
@@ -4298,7 +4304,7 @@ SpellId SpellErudition::id() const
 
 SpellDomain SpellErudition::domain() const
 {
-        return SpellDomain::clairvoyance;
+        return SpellDomain::mind;
 }
 
 SpellShock SpellErudition::shock_type() const
@@ -4423,7 +4429,7 @@ SpellId SpellIdentify::id() const
 
 SpellDomain SpellIdentify::domain() const
 {
-        return SpellDomain::clairvoyance;
+        return SpellDomain::mind;
 }
 
 bool SpellIdentify::is_tenebrous() const
@@ -4549,7 +4555,7 @@ SpellId SpellTeleport::id() const
 
 SpellDomain SpellTeleport::domain() const
 {
-        return SpellDomain::transmutation;
+        return SpellDomain::time;
 }
 
 SpellShock SpellTeleport::shock_type() const
@@ -4812,7 +4818,7 @@ bool SpellCurse::player_can_learn() const
 
 SpellDomain SpellCurse::domain() const
 {
-        return SpellDomain::enchantment;
+        return SpellDomain::corruption;
 }
 
 SpellShock SpellCurse::shock_type() const
@@ -4938,7 +4944,7 @@ SpellId SpellHealOthers::id() const
 
 SpellDomain SpellHealOthers::domain() const
 {
-        return SpellDomain::enchantment;
+        return SpellDomain::END;
 }
 
 SpellShock SpellHealOthers::shock_type() const
@@ -5078,7 +5084,7 @@ SpellId SpellEnfeeble::id() const
 
 SpellDomain SpellEnfeeble::domain() const
 {
-        return SpellDomain::enchantment;
+        return SpellDomain::corruption;
 }
 
 SpellShock SpellEnfeeble::shock_type() const
@@ -5227,7 +5233,7 @@ SpellId SpellSlow::id() const
 
 SpellDomain SpellSlow::domain() const
 {
-        return SpellDomain::enchantment;
+        return SpellDomain::time;
 }
 
 SpellShock SpellSlow::shock_type() const
@@ -5392,7 +5398,7 @@ SpellId SpellTerrify::id() const
 
 SpellDomain SpellTerrify::domain() const
 {
-        return SpellDomain::enchantment;
+        return SpellDomain::illusion;
 }
 
 SpellShock SpellTerrify::shock_type() const
@@ -6122,7 +6128,7 @@ SpellId SpellHeal::id() const
 
 SpellDomain SpellHeal::domain() const
 {
-        return SpellDomain::enchantment;
+        return SpellDomain::warding;
 }
 
 SpellShock SpellHeal::shock_type() const
@@ -6597,7 +6603,7 @@ SpellId SpellTransmut::id() const
 
 SpellDomain SpellTransmut::domain() const
 {
-        return SpellDomain::transmutation;
+        return SpellDomain::mind;
 }
 
 bool SpellTransmut::is_tenebrous() const
