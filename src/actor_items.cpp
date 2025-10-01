@@ -62,10 +62,7 @@ static void make_for_player_exorcist()
 
         inv.put_in_slot(SlotId::wpn, hatchet, Verbose::no);
 
-        inv.put_in_slot(
-                SlotId::wpn_alt,
-                item::make(item::Id::revolver),
-                Verbose::no);
+        inv.put_in_slot(SlotId::wpn_alt, item::make(item::Id::revolver), Verbose::no);
 
         item::Item* revolver_bullets = item::make(item::Id::revolver_bullet);
 
@@ -92,15 +89,9 @@ static void make_for_player_flagellant()
 {
         Inventory& inv = map::g_player->m_inv;
 
-        inv.put_in_slot(
-                SlotId::head,
-                item::make(item::Id::torture_collar),
-                Verbose::no);
+        inv.put_in_slot(SlotId::head, item::make(item::Id::torture_collar), Verbose::no);
 
-        inv.put_in_slot(
-                SlotId::wpn,
-                item::make(item::Id::flagellant_whip),
-                Verbose::no);
+        inv.put_in_slot(SlotId::wpn, item::make(item::Id::flagellant_whip), Verbose::no);
 
         inv.put_in_backpack(item::make(item::Id::iron_spike, 6));
 
@@ -128,19 +119,41 @@ static void make_for_player_flagellant()
         learn_spell_player(SpellId::shed_impurity);
 }
 
-static void make_for_player_occultist_common()
+static void make_for_player_occultist_specific()
+{
+        switch (player_bon::occultist_starting_domain()) {
+        case SpellDomain::channeling:
+                break;
+
+        case SpellDomain::corruption:
+                break;
+
+        case SpellDomain::illusion:
+                break;
+
+        case SpellDomain::mind:
+                break;
+
+        case SpellDomain::time:
+                break;
+
+        case SpellDomain::warding:
+                break;
+
+        case SpellDomain::blood:
+        case SpellDomain::END:
+                ASSERT(false);
+                break;
+        }
+}
+
+static void make_for_player_occultist()
 {
         Inventory& inv = map::g_player->m_inv;
 
-        inv.put_in_slot(
-                SlotId::wpn,
-                item::make(item::Id::hatchet),
-                Verbose::no);
+        inv.put_in_slot(SlotId::wpn, item::make(item::Id::hatchet), Verbose::no);
 
-        inv.put_in_slot(
-                SlotId::wpn_alt,
-                item::make(item::Id::revolver),
-                Verbose::no);
+        inv.put_in_slot(SlotId::wpn_alt, item::make(item::Id::revolver), Verbose::no);
 
         item::Item* revolver_bullets = item::make(item::Id::revolver_bullet);
 
@@ -148,10 +161,7 @@ static void make_for_player_occultist_common()
 
         inv.put_in_backpack(revolver_bullets);
 
-        inv.put_in_slot(
-                SlotId::body,
-                item::make(item::Id::armor_leather_jacket),
-                Verbose::no);
+        inv.put_in_slot(SlotId::body, item::make(item::Id::armor_leather_jacket), Verbose::no);
 
         item::Item* spirit_pot = item::make(item::Id::potion_spirit);
 
@@ -172,36 +182,9 @@ static void make_for_player_occultist_common()
         inv.put_in_backpack(item::make(item::Id::molotov, 1));
         inv.put_in_backpack(item::make(item::Id::medical_bag));
         inv.put_in_backpack(item::make(item::Id::lantern));
-}
 
-static void make_for_player_occultist_transmut()
-{
-        learn_spell_player(SpellId::haste);
-        learn_spell_player(SpellId::transmut);
+        make_for_player_occultist_specific();
 }
-
-static void make_for_player_occultist_clairv()
-{
-        learn_spell_player(SpellId::premonition);
-        learn_spell_player(SpellId::identify);
-}
-
-static void make_for_player_occultist_ench()
-{
-        learn_spell_player(SpellId::terrify);
-        learn_spell_player(SpellId::heal);
-}
-
-static void make_for_player_occultist_invoc()
-{
-        learn_spell_player(SpellId::darkbolt);
-        learn_spell_player(SpellId::aura_of_decay);
-}
-
-// static void make_for_player_occultist_summon()
-// {
-//         learn_spell_player(SpellId::summon);
-// }
 
 static void make_for_player_rogue()
 {
@@ -211,10 +194,7 @@ static void make_for_player_rogue()
 
         inv.put_in_slot(SlotId::wpn, dagger, Verbose::no);
 
-        inv.put_in_slot(
-                SlotId::wpn_alt,
-                item::make(item::Id::revolver),
-                Verbose::no);
+        inv.put_in_slot(SlotId::wpn_alt, item::make(item::Id::revolver), Verbose::no);
 
         item::Item* revolver_bullets = item::make(item::Id::revolver_bullet);
 
@@ -222,10 +202,7 @@ static void make_for_player_rogue()
 
         inv.put_in_backpack(revolver_bullets);
 
-        inv.put_in_slot(
-                SlotId::body,
-                item::make(item::Id::armor_leather_jacket),
-                Verbose::no);
+        inv.put_in_slot(SlotId::body, item::make(item::Id::armor_leather_jacket), Verbose::no);
 
         inv.put_in_backpack(item::make(item::Id::iron_spike, 12));
 
@@ -248,8 +225,7 @@ static void make_for_player_rogue()
         inv.put_in_backpack(item::make(item::Id::medical_bag));
         inv.put_in_backpack(item::make(item::Id::lantern));
 
-        item::Item* const throwing_knives =
-                item::make(item::Id::thr_knife, 12);
+        item::Item* const throwing_knives = item::make(item::Id::thr_knife, 12);
 
         inv.put_in_backpack(throwing_knives);
 
@@ -260,24 +236,15 @@ static void make_for_player_war_vet()
 {
         Inventory& inv = map::g_player->m_inv;
 
-        inv.put_in_slot(
-                SlotId::wpn,
-                item::make(item::Id::machete),
-                Verbose::no);
+        inv.put_in_slot(SlotId::wpn, item::make(item::Id::machete), Verbose::no);
 
         for (int i = 0; i < 3; ++i) {
                 inv.put_in_backpack(item::make(item::Id::pistol_mag));
         }
 
-        inv.put_in_slot(
-                SlotId::wpn_alt,
-                item::make(item::Id::pistol),
-                Verbose::no);
+        inv.put_in_slot(SlotId::wpn_alt, item::make(item::Id::pistol), Verbose::no);
 
-        inv.put_in_slot(
-                SlotId::body,
-                item::make(item::Id::armor_flak_jacket),
-                Verbose::no);
+        inv.put_in_slot(SlotId::body, item::make(item::Id::armor_flak_jacket), Verbose::no);
 
         map::g_player->set_unarmed_wpn(
                 static_cast<item::Wpn*>(
@@ -317,31 +284,7 @@ static void make_for_player()
         } break;
 
         case Bg::occultist:
-                make_for_player_occultist_common();
-
-                switch (player_bon::occultist_starting_domain()) {
-                case SpellDomain::clairvoyance:
-                        make_for_player_occultist_clairv();
-                        break;
-
-                case SpellDomain::enchantment:
-                        make_for_player_occultist_ench();
-                        break;
-
-                case SpellDomain::invocation:
-                        make_for_player_occultist_invoc();
-                        break;
-
-                case SpellDomain::transmutation:
-                        make_for_player_occultist_transmut();
-                        break;
-
-                case SpellDomain::blood:
-                case SpellDomain::END:
-                        ASSERT(false);
-                        break;
-
-                }  // Occultist domain switch
+                make_for_player_occultist();
                 break;
 
         case Bg::rogue:
@@ -380,8 +323,7 @@ static void make_random_item_to_backpack(
                 // weighted choice, instead of randomly discarding items from
                 // the list (actor spawning already uses weights instead)
 
-                const int weight =
-                        item::g_data[(size_t)id].chance_to_incl_in_spawn_list;
+                const int weight = item::g_data[(size_t)id].chance_to_incl_in_spawn_list;
 
                 ASSERT(weight != 0);
 
@@ -604,7 +546,7 @@ static void make_item_set_zealot_spiked_mace(actor::Actor& actor)
 
 static void make_item_set_witches_eye(actor::Actor& actor)
 {
-        if (player_bon::has_trait(TraitId::lesser_clairvoyance)) {
+        if (player_bon::has_trait(TraitId::adept_of_the_mind)) {
                 // Player has at least Lesser Clairvoyance, and thus already has permanent magic
                 // searching - this does not work well with providing temporary magic searching -
                 // just discard the item.

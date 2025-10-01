@@ -451,10 +451,12 @@ int Actor::shock_resistance(const ShockSrc shock_src) const
 
         switch (shock_src) {
         case ShockSrc::use_strange_item:
-        case ShockSrc::cast_intr_spell_clairvoyance:
-        case ShockSrc::cast_intr_spell_enchantment:
-        case ShockSrc::cast_intr_spell_invocation:
-        case ShockSrc::cast_intr_spell_transmutation:
+        case ShockSrc::cast_intr_spell_channeling:
+        case ShockSrc::cast_intr_spell_corruption:
+        case ShockSrc::cast_intr_spell_illusion:
+        case ShockSrc::cast_intr_spell_mind:
+        case ShockSrc::cast_intr_spell_time:
+        case ShockSrc::cast_intr_spell_warding:
         case ShockSrc::cast_intr_spell_general:
                 if (player_bon::is_bg(Bg::occultist)) {
                         res += 50;

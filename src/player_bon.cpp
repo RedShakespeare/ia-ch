@@ -131,6 +131,19 @@ static std::string get_player_available_sp_str()
         return descr;
 }
 
+static void incr_spell_skills(const SpellDomain spell_domain)
+{
+        for (int i = 0; i < (int)SpellId::END; ++i) {
+                const auto id = (SpellId)i;
+
+                const std::unique_ptr<Spell> spell(spells::make(id));
+
+                if (spell->domain() == spell_domain) {
+                        player_spells::incr_spell_skill(id, Verbose::yes);
+                }
+        }
+}
+
 static TraitData& trait_data(const TraitId id)
 {
         ASSERT(id != TraitId::END);
@@ -563,18 +576,89 @@ static void update_trait_data()
         d.blocked_for_bgs = {Bg::ghoul};
         set_trait_data(d);
 
-        // --- Lesser Clairvoyance ---
-        d.id = TraitId::lesser_clairvoyance;
-        d.title = "Lesser Clairvoyance";
+        // -- Adept of Channeling ---
+        d.id = TraitId::adept_of_channeling;
+        d.title = "Adept of Channeling";
         d.descr =
-                "Specialize in detection and learning. "
-                "Clairvoyance spells are cast at a higher skill level. "
-                "Provides an intrinsic ability to detect "
+                "Specialize in the channeling of violent energy. "
+                "Channeling spells are cast at a higher skill level.";
+        d.bg_prereq = Bg::occultist;
+        d.clvl_prereq = s_occultist_spell_upgrade_lvl_1;
+        d.on_picked = []() { incr_spell_skills(SpellDomain::channeling); };
+        set_trait_data(d);
+
+        // -- Master of Channeling ---
+        d.id = TraitId::master_of_channeling;
+        d.title = "Master of Channeling";
+        d.descr =
+                "Attain mastery over the channeling of violent energy. "
+                "Channeling spells are cast at a higher skill level.";
+        d.bg_prereq = Bg::occultist;
+        d.trait_prereqs = {TraitId::adept_of_channeling};
+        d.clvl_prereq = s_occultist_spell_upgrade_lvl_2;
+        d.on_picked = []() { incr_spell_skills(SpellDomain::channeling); };
+        set_trait_data(d);
+
+        // -- Adept of Corruption ---
+        d.id = TraitId::adept_of_corruption;
+        d.title = "Adept of Corruption";
+        d.descr =
+                "Specialize in corruption and withering. "
+                "Corruption spells are cast at a higher skill level.";
+        d.bg_prereq = Bg::occultist;
+        d.clvl_prereq = s_occultist_spell_upgrade_lvl_1;
+        d.on_picked = []() { incr_spell_skills(SpellDomain::corruption); };
+        set_trait_data(d);
+
+        // -- Master of Corruption ---
+        d.id = TraitId::master_of_corruption;
+        d.title = "Master of Corruption";
+        d.descr =
+                "Attain mastery over corruption and withering. "
+                "Corruption spells are cast at a higher skill level.";
+        d.bg_prereq = Bg::occultist;
+        d.trait_prereqs = {TraitId::adept_of_corruption};
+        d.clvl_prereq = s_occultist_spell_upgrade_lvl_2;
+        d.on_picked = []() { incr_spell_skills(SpellDomain::corruption); };
+        set_trait_data(d);
+
+        // -- Adept of Illusion ---
+        d.id = TraitId::adept_of_illusion;
+        d.title = "Adept of Illusion";
+        d.descr =
+                "Specialize in the casting of illusions. "
+                "Illusion spells are cast at a higher skill level.";
+        d.bg_prereq = Bg::occultist;
+        d.clvl_prereq = s_occultist_spell_upgrade_lvl_1;
+        d.on_picked = []() { incr_spell_skills(SpellDomain::illusion); };
+        set_trait_data(d);
+
+        // -- Master of Illusion ---
+        d.id = TraitId::master_of_illusion;
+        d.title = "Master of Illusion";
+        d.descr =
+                "Attain mastery over the casting of illusions. "
+                "Illusion spells are cast at a higher skill level.";
+        d.bg_prereq = Bg::occultist;
+        d.trait_prereqs = {TraitId::adept_of_illusion};
+        d.clvl_prereq = s_occultist_spell_upgrade_lvl_2;
+        d.on_picked = []() { incr_spell_skills(SpellDomain::illusion); };
+        set_trait_data(d);
+
+        // -- Adept of The_mind ---
+        d.id = TraitId::adept_of_the_mind;
+        d.title = "Adept of the Mind";
+        d.descr =
+                "Specialize in knowledge, foresight, and will. "
+                "Mind spells are cast at a higher skill level, "
+                "and you gain an intrinsic ability to sense "
                 "doors, traps, stairs, "
-                "and other locations of interest in the surrounding area";
+                "and other locations of interest nearby.";
         d.bg_prereq = Bg::occultist;
         d.clvl_prereq = s_occultist_spell_upgrade_lvl_1;
         d.on_picked = []() {
+                incr_spell_skills(SpellDomain::mind);
+
                 auto* searching =
                         static_cast<prop::MagicSearching*>(
                                 prop::make(
@@ -592,18 +676,19 @@ static void update_trait_data()
         };
         set_trait_data(d);
 
-        // --- Greater Clairvoyance ---
-        d = trait_data(TraitId::lesser_clairvoyance);
-        d.id = TraitId::greater_clairvoyance;
-        d.title = "Greater Clairvoyance";
+        // -- Master of The_mind ---
+        d.id = TraitId::master_of_the_mind;
+        d.title = "Master of the Mind";
         d.descr =
-                "Specialize in detection and learning. "
-                "Clairvoyance spells are cast at a higher skill level. "
-                "Creatures and items are detected.";
+                "Attain mastery over knowledge, foresight, and will. "
+                "Mind spells are cast at a higher skill level, "
+                "and you also sense items and creatures.";
         d.bg_prereq = Bg::occultist;
-        d.trait_prereqs = {TraitId::lesser_clairvoyance};
+        d.trait_prereqs = {TraitId::adept_of_the_mind};
         d.clvl_prereq = s_occultist_spell_upgrade_lvl_2;
         d.on_picked = []() {
+                incr_spell_skills(SpellDomain::mind);
+
                 prop::Prop* const prop =
                         map::g_player->m_properties.prop(
                                 prop::Id::magic_searching);
@@ -617,61 +702,50 @@ static void update_trait_data()
         };
         set_trait_data(d);
 
-        // --- Lesser Enchantment ---
-        d.id = TraitId::lesser_enchantment;
-        d.title = "Lesser Enchantment";
+        // -- Adept of Time ---
+        d.id = TraitId::adept_of_time;
+        d.title = "Adept of Time";
         d.descr =
-                "Specialize in aiding, debilitating, entrancing, and beguiling. "
-                "Enchantment spells are cast at a higher skill level.";
+                "Specialize in the manipulation of time and causality. "
+                "Time spells are cast at a higher skill level.";
         d.bg_prereq = Bg::occultist;
         d.clvl_prereq = s_occultist_spell_upgrade_lvl_1;
+        d.on_picked = []() { incr_spell_skills(SpellDomain::time); };
         set_trait_data(d);
 
-        // --- Greater Enchantment ---
-        d = trait_data(TraitId::lesser_enchantment);
-        d.id = TraitId::greater_enchantment;
-        d.title = "Greater Enchantment";
-        d.bg_prereq = Bg::occultist;
-        d.trait_prereqs = {TraitId::lesser_enchantment};
-        d.clvl_prereq = s_occultist_spell_upgrade_lvl_2;
-        set_trait_data(d);
-
-        // --- Lesser Invocation ---
-        d.id = TraitId::lesser_invocation;
-        d.title = "Lesser Invocation";
+        // -- Master of Time ---
+        d.id = TraitId::master_of_time;
+        d.title = "Master of Time";
         d.descr =
-                "Specialize in channeling destructive powers. "
-                "Invocation spells are cast at a higher skill level.";
+                "Attain mastery over the manipulation of time and causality. "
+                "Time spells are cast at a higher skill level.";
+        d.bg_prereq = Bg::occultist;
+        d.trait_prereqs = {TraitId::adept_of_time};
+        d.clvl_prereq = s_occultist_spell_upgrade_lvl_2;
+        d.on_picked = []() { incr_spell_skills(SpellDomain::time); };
+        set_trait_data(d);
+
+        // -- Adept of Warding ---
+        d.id = TraitId::adept_of_warding;
+        d.title = "Adept of Warding";
+        d.descr =
+                "Specialize in protective magic. "
+                "Warding spells are cast at a higher skill level.";
         d.bg_prereq = Bg::occultist;
         d.clvl_prereq = s_occultist_spell_upgrade_lvl_1;
+        d.on_picked = []() { incr_spell_skills(SpellDomain::warding); };
         set_trait_data(d);
 
-        // --- Greater Invocation ---
-        d = trait_data(TraitId::lesser_invocation);
-        d.id = TraitId::greater_invocation;
-        d.title = "Greater Invocation";
-        d.bg_prereq = Bg::occultist;
-        d.trait_prereqs = {TraitId::lesser_invocation};
-        d.clvl_prereq = s_occultist_spell_upgrade_lvl_2;
-        set_trait_data(d);
-
-        // --- Lesser Transmutation ---
-        d.id = TraitId::lesser_transmutation;
-        d.title = "Lesser Transmutation";
+        // -- Master of Warding ---
+        d.id = TraitId::master_of_warding;
+        d.title = "Master of Warding";
         d.descr =
-                "Specialize in manipulating matter, energy, and time. "
-                "Transmutation spells are cast at a higher skill level.";
+                "Attain mastery over protective magic. "
+                "Warding spells are cast at a higher skill level.";
         d.bg_prereq = Bg::occultist;
-        d.clvl_prereq = s_occultist_spell_upgrade_lvl_1;
-        set_trait_data(d);
-
-        // --- Greater Transmutation ---
-        d = trait_data(TraitId::lesser_transmutation);
-        d.id = TraitId::greater_transmutation;
-        d.title = "Greater Transmutation";
-        d.bg_prereq = Bg::occultist;
-        d.trait_prereqs = {TraitId::lesser_transmutation};
+        d.trait_prereqs = {TraitId::adept_of_warding};
         d.clvl_prereq = s_occultist_spell_upgrade_lvl_2;
+        d.on_picked = []() { incr_spell_skills(SpellDomain::warding); };
         set_trait_data(d);
 
         // --- Cast Bless ---
@@ -986,20 +1060,6 @@ static bool is_trait_blocked_for_bg(const TraitId trait, const Bg bg)
         return is_blocked_for_bg;
 }
 
-static void incr_spell_skills(const SpellDomain spell_domain)
-{
-        for (int i = 0; i < (int)SpellId::END; ++i) {
-                const auto id = (SpellId)i;
-
-                const std::unique_ptr<Spell> spell(spells::make(id));
-
-                if (spell->player_can_learn() &&
-                    (spell->domain() == spell_domain)) {
-                        player_spells::incr_spell_skill(id, Verbose::yes);
-                }
-        }
-}
-
 static bool is_flagellant_spell_upgrade_clvl(const int clvl)
 {
         return (
@@ -1269,36 +1329,42 @@ std::string occultist_domain_descr(const SpellDomain domain)
         // TODO: Do not write spell names here, get them from the spell classes.
 
         switch (domain) {
-        case SpellDomain::clairvoyance:
+        case SpellDomain::channeling:
                 return (
-                        "You have previously dabbled in the casting of "
-                        "clairvoyance spells, "
+                        "You have previously dabbled in the channeling of violent energy, "
                         "and have basic knowledge of "
-                        "Premonition (large evasion bonus) and "
-                        "Identify (learn the true nature of items).");
+                        "TBD");
 
-        case SpellDomain::enchantment:
+        case SpellDomain::corruption:
                 return (
-                        "You have previously dabbled in the casting of "
-                        "enchantment spells, "
+                        "You have previously dabbled in spells that corrupt and wither, "
                         "and have basic knowledge of "
-                        "Terrify and Heal.");
+                        "TBD");
 
-        case SpellDomain::invocation:
+        case SpellDomain::illusion:
                 return (
-                        "You have previously dabbled in the casting of "
-                        "invocation spells, "
+                        "You have previously dabbled in the casting of illusions, "
                         "and have basic knowledge of "
-                        "Darkbolt (fires bolts that damage and paralyze) and "
-                        "Aura of Decay (damages nearby creatures over time).");
+                        "TBD");
 
-        case SpellDomain::transmutation:
+        case SpellDomain::mind:
                 return (
-                        "You have previously dabbled in the casting of "
-                        "transmutation spells, "
+                        "You have previously dabbled in disciplines of knowledge, foresight, "
+                        "and will, "
                         "and have basic knowledge of "
-                        "Haste (all actions are faster) and "
-                        "Transmute (convert items into other items).");
+                        "TBD");
+
+        case SpellDomain::time:
+                return (
+                        "You have previously dabbled in the manipulation of time and causality, "
+                        "and have basic knowledge of "
+                        "TBD");
+
+        case SpellDomain::warding:
+                return (
+                        "You have previously dabbled in protective magic, "
+                        "and have basic knowledge of "
+                        "TBD");
 
         case SpellDomain::blood:
         case SpellDomain::END:
@@ -1403,10 +1469,11 @@ std::vector<Bg> pickable_bgs()
 std::vector<SpellDomain> pickable_occultist_domains()
 {
         std::vector<SpellDomain> result = {
-                SpellDomain::clairvoyance,
-                SpellDomain::enchantment,
-                SpellDomain::invocation,
-                SpellDomain::transmutation,
+                SpellDomain::channeling,
+                SpellDomain::corruption,
+                SpellDomain::illusion,
+                SpellDomain::mind,
+                SpellDomain::time,
         };
 
         // Sort lexicographically.

@@ -4,10 +4,13 @@
 ##############################
 # Gameplay
 ##############################
+# Spells
+- Reworked the spell domains, the domains are now: Channeling, Corruption, Illusion, Mind, Time, Warding and Blood.
+
 # Backgrounds (classes) and traits
-- Occultists can pick traits to improve spell domains again, instead of getting automatic upgrades at level 4 and 8. This is reversion to how it worked prior to v20.0, but the spell domain traits now have level requirements (4 and 8 for "lesser" and "greater" casting, respectively).
+- Occultists can pick traits to improve spell domains again, instead of getting automatic spell upgrades. This is a reversion to how it worked prior to v20.0, but the spell domain traits now also have level requirements (4 and 8 for "lesser" and "greater" casting, respectively).
 - Occultists can still choose a spell domain at start, but this only affects starting spells.
-- The Clairvoyant ability to see hidden things is now granted by the Clairvoyance spell upgrade traits instead.
+- The previous Clairvoyant ability to see hidden things is now instead granted by the Mind spell traits.
 - Occultists also start with the Cool-headed trait.
 - Meditative now requires Strong Spirit instead of Stout Spirit (in addition to Cool-headed).
 

@@ -342,11 +342,13 @@ enum class ShockSrc
 
         use_strange_item,
 
-        cast_intr_spell_clairvoyance,
-        cast_intr_spell_enchantment,
-        cast_intr_spell_invocation,
-        cast_intr_spell_transmutation,
         cast_intr_spell_blood,
+        cast_intr_spell_channeling,
+        cast_intr_spell_corruption,
+        cast_intr_spell_illusion,
+        cast_intr_spell_mind,
+        cast_intr_spell_time,
+        cast_intr_spell_warding,
         // For misc spells that do not belong to a domain:
         cast_intr_spell_general,
 
