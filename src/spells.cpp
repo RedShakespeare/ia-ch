@@ -1385,11 +1385,6 @@ int Spell::shock_value() const
 // -----------------------------------------------------------------------------
 // Aura of Decay
 // -----------------------------------------------------------------------------
-bool SpellAuraOfDecay::player_can_learn() const
-{
-        return true;
-}
-
 std::string SpellAuraOfDecay::name() const
 {
         return "Aura of Decay";
@@ -1528,11 +1523,6 @@ bool SpellAuraOfDecay::allow_mon_cast_now(
 int SpellBolt::mon_cooldown() const
 {
         return m_impl->mon_cooldown();
-}
-
-bool SpellBolt::player_can_learn() const
-{
-        return m_impl->player_can_learn();
 }
 
 std::string SpellBolt::name() const
@@ -1768,11 +1758,6 @@ int ForceBolt::mon_cooldown() const
         return 3;
 }
 
-bool ForceBolt::player_can_learn() const
-{
-        return false;
-}
-
 std::string ForceBolt::name() const
 {
         return "Force Bolt";
@@ -1831,11 +1816,6 @@ std::string Darkbolt::hit_msg_ending() const
 int Darkbolt::mon_cooldown() const
 {
         return 5;
-}
-
-bool Darkbolt::player_can_learn() const
-{
-        return true;
 }
 
 std::string Darkbolt::name() const
@@ -1957,11 +1937,6 @@ void Darkbolt::on_hit(
 int SpellAzaGaze::mon_cooldown() const
 {
         return 6;
-}
-
-bool SpellAzaGaze::player_can_learn() const
-{
-        return true;
 }
 
 std::string SpellAzaGaze::name() const
@@ -2199,11 +2174,6 @@ bool SpellAzaGaze::allow_mon_cast_now(
 // -----------------------------------------------------------------------------
 // Cataclysm
 // -----------------------------------------------------------------------------
-bool SpellCataclysm::player_can_learn() const
-{
-        return true;
-}
-
 std::string SpellCataclysm::name() const
 {
         return "Cataclysm";
@@ -2481,11 +2451,6 @@ int SpellPestilence::mon_cooldown() const
         return 21;
 }
 
-bool SpellPestilence::player_can_learn() const
-{
-        return true;
-}
-
 std::string SpellPestilence::name() const
 {
         return "Pestilence";
@@ -2696,11 +2661,6 @@ bool SpellPestilence::allow_mon_cast_now(
 // -----------------------------------------------------------------------------
 // Spectral Weapons
 // -----------------------------------------------------------------------------
-bool SpellSpectralWeapons::player_can_learn() const
-{
-        return true;
-}
-
 std::string SpellSpectralWeapons::name() const
 {
         return "Spectral Weapons";
@@ -2936,11 +2896,6 @@ std::vector<std::string> SpellSpectralWeapons::descr_specific(
 // -----------------------------------------------------------------------------
 // Control Object
 // -----------------------------------------------------------------------------
-bool SpellControlObject::player_can_learn() const
-{
-        return true;
-}
-
 std::string SpellControlObject::name() const
 {
         return "Control Object";
@@ -3037,11 +2992,6 @@ bool SpellControlObject::is_noisy(const SpellSkill skill) const
 // -----------------------------------------------------------------------------
 // Exorcist Cleansing Fire
 // -----------------------------------------------------------------------------
-bool SpellCleansingFire::player_can_learn() const
-{
-        return true;
-}
-
 std::string SpellCleansingFire::name() const
 {
         return "Cleansing Fire";
@@ -3170,11 +3120,6 @@ std::vector<std::string> SpellCleansingFire::descr_specific(
 // -----------------------------------------------------------------------------
 // Exorcist Sanctuary
 // -----------------------------------------------------------------------------
-bool SpellSanctuary::player_can_learn() const
-{
-        return true;
-}
-
 std::string SpellSanctuary::name() const
 {
         return "Sanctuary";
@@ -3263,11 +3208,6 @@ std::vector<std::string> SpellSanctuary::descr_specific(
 // -----------------------------------------------------------------------------
 // Exorcist Purge
 // -----------------------------------------------------------------------------
-bool SpellPurge::player_can_learn() const
-{
-        return true;
-}
-
 std::string SpellPurge::name() const
 {
         return "Purge";
@@ -3411,11 +3351,6 @@ std::vector<std::string> SpellPurge::descr_specific(
 // -----------------------------------------------------------------------------
 // Ghoul frenzy
 // -----------------------------------------------------------------------------
-bool SpellFrenzy::player_can_learn() const
-{
-        return true;
-}
-
 std::string SpellFrenzy::name() const
 {
         return "Incite Frenzy";
@@ -3486,11 +3421,6 @@ std::vector<std::string> SpellFrenzy::descr_specific(
 // -----------------------------------------------------------------------------
 // Bless
 // -----------------------------------------------------------------------------
-bool SpellBless::player_can_learn() const
-{
-        return true;
-}
-
 std::string SpellBless::name() const
 {
         return "Bless";
@@ -3586,11 +3516,6 @@ std::vector<std::string> SpellBless::descr_specific(
 // -----------------------------------------------------------------------------
 // Light
 // -----------------------------------------------------------------------------
-bool SpellLight::player_can_learn() const
-{
-        return true;
-}
-
 std::string SpellLight::name() const
 {
         return "Light";
@@ -3750,11 +3675,6 @@ std::vector<std::string> SpellLight::descr_specific(
 // -----------------------------------------------------------------------------
 // Invisibility
 // -----------------------------------------------------------------------------
-bool SpellInvis::player_can_learn() const
-{
-        return true;
-}
-
 std::string SpellInvis::name() const
 {
         return "Invisibility";
@@ -3873,11 +3793,6 @@ int SpellSeeInvis::mon_cooldown() const
         return 30;
 }
 
-bool SpellSeeInvis::player_can_learn() const
-{
-        return true;
-}
-
 std::string SpellSeeInvis::name() const
 {
         return "See Invisible";
@@ -3993,11 +3908,6 @@ int SpellSpellShield::mon_cooldown() const
         return 3;
 }
 
-bool SpellSpellShield::player_can_learn() const
-{
-        return true;
-}
-
 std::string SpellSpellShield::name() const
 {
         return "Spell Shield";
@@ -4075,11 +3985,6 @@ bool SpellSpellShield::allow_mon_cast_now(
 // -----------------------------------------------------------------------------
 // Haste
 // -----------------------------------------------------------------------------
-bool SpellHaste::player_can_learn() const
-{
-        return true;
-}
-
 std::string SpellHaste::name() const
 {
         return "Haste";
@@ -4180,11 +4085,6 @@ bool SpellHaste::allow_mon_cast_now(
 // -----------------------------------------------------------------------------
 // Premonition
 // -----------------------------------------------------------------------------
-bool SpellPremonition::player_can_learn() const
-{
-        return true;
-}
-
 std::string SpellPremonition::name() const
 {
         return "Premonition";
@@ -4287,11 +4187,6 @@ bool SpellPremonition::allow_mon_cast_now(
 // -----------------------------------------------------------------------------
 // Erudition
 // -----------------------------------------------------------------------------
-bool SpellErudition::player_can_learn() const
-{
-        return true;
-}
-
 std::string SpellErudition::name() const
 {
         return "Erudition";
@@ -4412,11 +4307,6 @@ std::vector<std::string> SpellErudition::descr_specific(
 // -----------------------------------------------------------------------------
 // Identify
 // -----------------------------------------------------------------------------
-bool SpellIdentify::player_can_learn() const
-{
-        return true;
-}
-
 std::string SpellIdentify::name() const
 {
         return "Identify";
@@ -4536,11 +4426,6 @@ std::vector<std::string> SpellIdentify::descr_specific(
 int SpellTeleport::mon_cooldown() const
 {
         return 20;
-}
-
-bool SpellTeleport::player_can_learn() const
-{
-        return true;
 }
 
 std::string SpellTeleport::name() const
@@ -4664,11 +4549,6 @@ std::vector<std::string> SpellTeleport::descr_specific(
 int SpellKnockBack::mon_cooldown() const
 {
         return 5;
-}
-
-bool SpellKnockBack::player_can_learn() const
-{
-        return false;
 }
 
 std::string SpellKnockBack::name() const
@@ -4811,11 +4691,6 @@ SpellId SpellCurse::id() const
         return SpellId::curse;
 }
 
-bool SpellCurse::player_can_learn() const
-{
-        return false;
-}
-
 SpellDomain SpellCurse::domain() const
 {
         return SpellDomain::corruption;
@@ -4952,11 +4827,6 @@ SpellShock SpellHealOthers::shock_type() const
         return SpellShock::mild;
 }
 
-bool SpellHealOthers::player_can_learn() const
-{
-        return false;
-}
-
 std::vector<std::string> SpellHealOthers::descr_specific(SpellSkill skill) const
 {
         (void)skill;
@@ -5090,11 +4960,6 @@ SpellDomain SpellEnfeeble::domain() const
 SpellShock SpellEnfeeble::shock_type() const
 {
         return SpellShock::mild;
-}
-
-bool SpellEnfeeble::player_can_learn() const
-{
-        return true;
 }
 
 bool SpellEnfeeble::is_noisy(const SpellSkill skill) const
@@ -5239,11 +5104,6 @@ SpellDomain SpellSlow::domain() const
 SpellShock SpellSlow::shock_type() const
 {
         return SpellShock::mild;
-}
-
-bool SpellSlow::player_can_learn() const
-{
-        return true;
 }
 
 bool SpellSlow::is_noisy(const SpellSkill skill) const
@@ -5406,11 +5266,6 @@ SpellShock SpellTerrify::shock_type() const
         return SpellShock::disturbing;
 }
 
-bool SpellTerrify::player_can_learn() const
-{
-        return true;
-}
-
 bool SpellTerrify::is_noisy(const SpellSkill skill) const
 {
         (void)skill;
@@ -5548,11 +5403,6 @@ int SpellDisease::mon_cooldown() const
         return 10;
 }
 
-bool SpellDisease::player_can_learn() const
-{
-        return false;
-}
-
 std::string SpellDisease::name() const
 {
         return "Disease";
@@ -5660,11 +5510,6 @@ bool SpellDisease::allow_mon_cast_now(
 // -----------------------------------------------------------------------------
 // Blind
 // -----------------------------------------------------------------------------
-bool SpellBlind::player_can_learn() const
-{
-        return false;
-}
-
 std::string SpellBlind::name() const
 {
         return "Blind";
@@ -5804,11 +5649,6 @@ std::vector<actor::Actor*> SpellBlind::find_actors_not_blind_resistant(
 int SpellSummon::mon_cooldown() const
 {
         return 8;
-}
-
-bool SpellSummon::player_can_learn() const
-{
-        return false;
 }
 
 std::string SpellSummon::name() const
@@ -6111,11 +5951,6 @@ int SpellHeal::mon_cooldown() const
         return 6;
 }
 
-bool SpellHeal::player_can_learn() const
-{
-        return true;
-}
-
 std::string SpellHeal::name() const
 {
         return "Healing";
@@ -6252,11 +6087,6 @@ int SpellMiGoHypno::mon_cooldown() const
         return 5;
 }
 
-bool SpellMiGoHypno::player_can_learn() const
-{
-        return false;
-}
-
 std::string SpellMiGoHypno::name() const
 {
         return "MiGo Hypnosis";
@@ -6366,11 +6196,6 @@ bool SpellMiGoHypno::allow_mon_cast_now(
 int SpellBurn::mon_cooldown() const
 {
         return 9;
-}
-
-bool SpellBurn::player_can_learn() const
-{
-        return false;
 }
 
 std::string SpellBurn::name() const
@@ -6484,11 +6309,6 @@ int SpellDeafen::mon_cooldown() const
         return 5;
 }
 
-bool SpellDeafen::player_can_learn() const
-{
-        return false;
-}
-
 std::string SpellDeafen::name() const
 {
         return "Deafen";
@@ -6586,11 +6406,6 @@ bool SpellDeafen::allow_mon_cast_now(
 // -----------------------------------------------------------------------------
 // Transmutation
 // -----------------------------------------------------------------------------
-bool SpellTransmut::player_can_learn() const
-{
-        return true;
-}
-
 std::string SpellTransmut::name() const
 {
         return "Transmutation";
@@ -6872,11 +6687,6 @@ std::vector<std::string> SpellTransmut::descr_specific(
 // -----------------------------------------------------------------------------
 // Blood Tempering
 // -----------------------------------------------------------------------------
-bool SpellBloodTempering::player_can_learn() const
-{
-        return true;
-}
-
 std::string SpellBloodTempering::name() const
 {
         return "Blood Tempering";
@@ -6972,11 +6782,6 @@ std::vector<std::string> SpellBloodTempering::descr_specific(
 // -----------------------------------------------------------------------------
 // Thorns
 // -----------------------------------------------------------------------------
-bool SpellThorns::player_can_learn() const
-{
-        return true;
-}
-
 std::string SpellThorns::name() const
 {
         return "Thorns";
@@ -7090,11 +6895,6 @@ std::vector<std::string> SpellThorns::descr_specific(
 // -----------------------------------------------------------------------------
 // Crimson Passage
 // -----------------------------------------------------------------------------
-bool SpellCrimsonPassage::player_can_learn() const
-{
-        return true;
-}
-
 std::string SpellCrimsonPassage::name() const
 {
         return "Crimson Passage";
@@ -7210,11 +7010,6 @@ std::vector<std::string> SpellCrimsonPassage::descr_specific(
 // -----------------------------------------------------------------------------
 // Sacrifice Life
 // -----------------------------------------------------------------------------
-bool SpellSacrificeLife::player_can_learn() const
-{
-        return true;
-}
-
 std::string SpellSacrificeLife::name() const
 {
         return "Sacrifice Life";
@@ -7320,11 +7115,6 @@ std::vector<std::string> SpellSacrificeLife::descr_specific(
 // -----------------------------------------------------------------------------
 // Shed Impurity
 // -----------------------------------------------------------------------------
-bool SpellShedImpurity::player_can_learn() const
-{
-        return true;
-}
-
 std::string SpellShedImpurity::name() const
 {
         return "Shed Impurity";

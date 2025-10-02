@@ -218,8 +218,6 @@ public:
                 return 3;
         }
 
-        virtual bool player_can_learn() const = 0;
-
         virtual std::string name() const = 0;
 
         virtual SpellId id() const = 0;
@@ -289,8 +287,6 @@ public:
 
         SpellShock shock_type() const override;
 
-        bool player_can_learn() const override;
-
         std::vector<std::string> descr_specific(SpellSkill skill) const override;
 
         void run_effect(
@@ -322,8 +318,6 @@ public:
         SpellDomain domain() const override;
 
         SpellShock shock_type() const override;
-
-        bool player_can_learn() const override;
 
         std::vector<std::string> descr_specific(SpellSkill skill) const override;
 
@@ -359,8 +353,6 @@ public:
 
         SpellShock shock_type() const override;
 
-        bool player_can_learn() const override;
-
         std::vector<std::string> descr_specific(SpellSkill skill) const override;
 
         void run_effect(
@@ -395,8 +387,6 @@ public:
 
         SpellShock shock_type() const override;
 
-        bool player_can_learn() const override;
-
         std::vector<std::string> descr_specific(SpellSkill skill) const override;
 
         void run_effect(
@@ -422,8 +412,6 @@ public:
                 const std::vector<actor::Actor*>& seen_targets) const override;
 
         int mon_cooldown() const override;
-
-        bool player_can_learn() const override;
 
         std::string name() const override;
 
@@ -466,8 +454,6 @@ public:
 
         virtual int mon_cooldown() const = 0;
 
-        virtual bool player_can_learn() const = 0;
-
         virtual std::string name() const = 0;
 
         virtual SpellId id() const = 0;
@@ -492,8 +478,6 @@ public:
         std::string hit_msg_ending() const override;
 
         int mon_cooldown() const override;
-
-        bool player_can_learn() const override;
 
         std::string name() const override;
 
@@ -520,8 +504,6 @@ public:
 
         int mon_cooldown() const override;
 
-        bool player_can_learn() const override;
-
         std::string name() const override;
 
         SpellId id() const override;
@@ -542,8 +524,6 @@ public:
                 const std::vector<actor::Actor*>& seen_targets) const override;
 
         int mon_cooldown() const override;
-
-        bool player_can_learn() const override;
 
         std::string name() const override;
 
@@ -582,8 +562,6 @@ public:
                 const std::vector<actor::Actor*>& seen_targets) const override;
 
         int mon_cooldown() const override;
-
-        bool player_can_learn() const override;
 
         std::string name() const override;
 
@@ -635,8 +613,6 @@ public:
                 const actor::Actor& mon,
                 const std::vector<actor::Actor*>& seen_targets) const override;
 
-        bool player_can_learn() const override;
-
         std::string name() const override;
 
         SpellId id() const override;
@@ -675,8 +651,6 @@ public:
 
         int mon_cooldown() const override;
 
-        bool player_can_learn() const override;
-
         std::string name() const override;
 
         SpellId id() const override;
@@ -708,8 +682,6 @@ class SpellSpectralWeapons : public Spell
 {
 public:
         SpellSpectralWeapons() = default;
-
-        bool player_can_learn() const override;
 
         std::string name() const override;
 
@@ -746,8 +718,6 @@ class SpellControlObject : public Spell
 public:
         SpellControlObject() = default;
 
-        bool player_can_learn() const override;
-
         std::string name() const override;
 
         SpellId id() const override;
@@ -775,8 +745,6 @@ class SpellCleansingFire : public Spell
 {
 public:
         SpellCleansingFire() = default;
-
-        bool player_can_learn() const override;
 
         std::string name() const override;
 
@@ -806,8 +774,6 @@ class SpellSanctuary : public Spell
 public:
         SpellSanctuary() = default;
 
-        bool player_can_learn() const override;
-
         std::string name() const override;
 
         SpellId id() const override;
@@ -835,8 +801,6 @@ class SpellPurge : public Spell
 {
 public:
         SpellPurge() = default;
-
-        bool player_can_learn() const override;
 
         std::string name() const override;
 
@@ -870,8 +834,6 @@ class SpellFrenzy : public Spell
 public:
         SpellFrenzy() = default;
 
-        bool player_can_learn() const override;
-
         std::string name() const override;
 
         SpellId id() const override;
@@ -899,8 +861,6 @@ class SpellBless : public Spell
 {
 public:
         SpellBless() = default;
-
-        bool player_can_learn() const override;
 
         std::string name() const override;
 
@@ -932,8 +892,6 @@ class SpellTransmut : public Spell
 {
 public:
         SpellTransmut() = default;
-
-        bool player_can_learn() const override;
 
         std::string name() const override;
 
@@ -970,8 +928,6 @@ class SpellLight : public Spell
 {
 public:
         SpellLight() = default;
-
-        bool player_can_learn() const override;
 
         std::string name() const override;
 
@@ -1011,8 +967,6 @@ public:
 
         int mon_cooldown() const override;
 
-        bool player_can_learn() const override;
-
         std::string name() const override;
 
         SpellId id() const override;
@@ -1045,8 +999,6 @@ public:
 
         int mon_cooldown() const override;
 
-        bool player_can_learn() const override;
-
         std::string name() const override;
 
         SpellId id() const override;
@@ -1076,8 +1028,6 @@ class SpellInvis : public Spell
 {
 public:
         SpellInvis() = default;
-
-        bool player_can_learn() const override;
 
         std::string name() const override;
 
@@ -1115,8 +1065,6 @@ public:
 
         int mon_cooldown() const override;
 
-        bool player_can_learn() const override;
-
         std::string name() const override;
 
         SpellId id() const override;
@@ -1151,8 +1099,6 @@ public:
 
         int mon_cooldown() const override;
 
-        bool player_can_learn() const override;
-
         std::string name() const override;
 
         SpellId id() const override;
@@ -1185,8 +1131,6 @@ public:
 
         int mon_cooldown() const override;
 
-        bool player_can_learn() const override;
-
         std::string name() const override;
 
         SpellId id() const override;
@@ -1214,8 +1158,6 @@ class SpellPremonition : public Spell
 {
 public:
         SpellPremonition() = default;
-
-        bool player_can_learn() const override;
 
         std::string name() const override;
 
@@ -1249,8 +1191,6 @@ class SpellErudition : public Spell
 public:
         SpellErudition() = default;
 
-        bool player_can_learn() const override;
-
         std::string name() const override;
 
         SpellId id() const override;
@@ -1279,8 +1219,6 @@ class SpellIdentify : public Spell
 public:
         SpellIdentify() = default;
 
-        bool player_can_learn() const override;
-
         std::string name() const override;
 
         SpellId id() const override;
@@ -1308,8 +1246,6 @@ class SpellBloodTempering : public Spell
 {
 public:
         SpellBloodTempering() = default;
-
-        bool player_can_learn() const override;
 
         std::string name() const override;
 
@@ -1343,8 +1279,6 @@ class SpellThorns : public Spell
 public:
         SpellThorns() = default;
 
-        bool player_can_learn() const override;
-
         std::string name() const override;
 
         SpellId id() const override;
@@ -1376,8 +1310,6 @@ class SpellCrimsonPassage : public Spell
 public:
         SpellCrimsonPassage() = default;
 
-        bool player_can_learn() const override;
-
         std::string name() const override;
 
         SpellId id() const override;
@@ -1408,8 +1340,6 @@ class SpellSacrificeLife : public Spell
 public:
         SpellSacrificeLife() = default;
 
-        bool player_can_learn() const override;
-
         std::string name() const override;
 
         SpellId id() const override;
@@ -1439,8 +1369,6 @@ class SpellShedImpurity : public Spell
 {
 public:
         SpellShedImpurity() = default;
-
-        bool player_can_learn() const override;
 
         std::string name() const override;
 
@@ -1480,8 +1408,6 @@ public:
 
         int mon_cooldown() const override;
 
-        bool player_can_learn() const override;
-
         std::string name() const override;
 
         SpellId id() const override;
@@ -1513,8 +1439,6 @@ public:
                 const std::vector<actor::Actor*>& seen_targets) const override;
 
         int mon_cooldown() const override;
-
-        bool player_can_learn() const override;
 
         std::string name() const override;
 
@@ -1606,8 +1530,6 @@ public:
 
         int mon_cooldown() const override;
 
-        bool player_can_learn() const override;
-
         std::string name() const override;
 
         SpellId id() const override;
@@ -1651,8 +1573,6 @@ public:
 
         int mon_cooldown() const override;
 
-        bool player_can_learn() const override;
-
         std::string name() const override;
 
         SpellId id() const override;
@@ -1689,8 +1609,6 @@ public:
 
         int mon_cooldown() const override;
 
-        bool player_can_learn() const override;
-
         std::string name() const override;
 
         SpellId id() const override;
@@ -1723,8 +1641,6 @@ public:
 
         int mon_cooldown() const override;
 
-        bool player_can_learn() const override;
-
         std::string name() const override;
 
         SpellId id() const override;
@@ -1756,8 +1672,6 @@ public:
                 const std::vector<actor::Actor*>& seen_targets) const override;
 
         int mon_cooldown() const override;
-
-        bool player_can_learn() const override;
 
         std::string name() const override;
 
@@ -1798,8 +1712,6 @@ public:
         SpellDomain domain() const override;
 
         SpellShock shock_type() const override;
-
-        bool player_can_learn() const override;
 
         std::vector<std::string> descr_specific(SpellSkill skill) const override;
 
