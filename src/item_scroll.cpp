@@ -403,11 +403,9 @@ ConsumeItem Scroll::activate(actor::Actor* const actor)
 
         identify(Verbose::yes);
 
-        // Learn and recall spell.
-        if (spell->player_can_learn()) {
-                player_spells::learn_spell(id, Verbose::yes);
-                player_spells::recall_spell(id);
-        }
+        player_spells::learn_spell(id, Verbose::yes);
+
+        player_spells::recall_spell(id);
 
         TRACE_FUNC_END;
 

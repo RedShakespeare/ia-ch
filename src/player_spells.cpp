@@ -399,20 +399,8 @@ void learn_spell(const SpellId id, const Verbose verbose)
 
         Spell* const spell = spells::make(id);
 
-        const bool player_can_learn = spell->player_can_learn();
-
-        ASSERT(player_can_learn);
-
-        // Robustness for release mode
-        if (!player_can_learn) {
-                return;
-        }
-
         if (verbose == Verbose::yes) {
-                msg_log::add(
-                        "I can now cast " +
-                        spell->name() +
-                        " from memory.");
+                msg_log::add("I can now cast " + spell->name() + " from memory.");
         }
 
         s_learned_spells.push_back(spell);
@@ -440,8 +428,6 @@ void remove_learned_spell(const SpellId id)
         }
 
         const Spell* const spell = *spell_iterator;
-
-        ASSERT(spell->player_can_learn());
 
         delete spell;
 
