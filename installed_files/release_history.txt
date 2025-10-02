@@ -27,6 +27,7 @@
 ##############################
 # Fixes
 ##############################
+- Sneak chance was calculated wrong when the chance for success was rolled - only the sneak chance of the hiding actor had any effect, but search skill of the searching actor, distance, light and darkness was also supposed to affect the chance. The value presented when viewing the monster was correct, but the ACTUAL chance when rolling for success was wrong. This bug has existed since v21.0.0.
 - Some sound effects may not played due to unsupported sample rate. Fixed by normalizing all audio files to 44100 Hz.
 
 ##############################
