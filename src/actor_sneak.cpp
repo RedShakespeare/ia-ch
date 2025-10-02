@@ -74,8 +74,6 @@ namespace actor
 {
 int calc_total_sneak_ability(const SneakParameters& data)
 {
-        // NOTE: There is no need to cap the sneak value here, since there's
-        // always critical fails
         const int tot_value =
                 calc_sneak_skill_mod(data) +
                 calc_search_mod(data) +
@@ -88,9 +86,8 @@ int calc_total_sneak_ability(const SneakParameters& data)
 
 ActionResult roll_sneak(const SneakParameters& data)
 {
-        // NOTE: There is no need to cap the sneak value here, since there's
-        // always critical fails
-        const int tot_value = calc_sneak_skill_mod(data);
+        // NOTE: There is no need to cap the sneak value here, since there's always critical fails.
+        const int tot_value = calc_total_sneak_ability(data);
 
         const auto result = ability_roll::roll(tot_value);
 
