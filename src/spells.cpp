@@ -1177,21 +1177,19 @@ void Spell::cast(
                 // Caster is monster
                 TRACE << "Monster casting spell" << "\n";
 
-                // Make sound if noisy - casting from scrolls is always noisy.
-                if (is_noisy(skill) || (spell_src == SpellSrc::manuscript)) {
-                        const std::string spell_msg = generate_mon_cast_msg(*caster);
+                // Monsters always make noise when casting.
+                const std::string spell_msg = generate_mon_cast_msg(*caster);
 
-                        Snd snd(
-                                spell_msg,
-                                audio::SfxId::END,
-                                IgnoreMsgIfOriginSeen::no,
-                                caster->m_pos,
-                                caster,
-                                SndVol::low,
-                                AlertsMon::no);
+                Snd snd(
+                        spell_msg,
+                        audio::SfxId::END,
+                        IgnoreMsgIfOriginSeen::no,
+                        caster->m_pos,
+                        caster,
+                        SndVol::low,
+                        AlertsMon::no);
 
-                        snd.run();
-                }
+                snd.run();
         }
 
         bool allow_cast = true;
