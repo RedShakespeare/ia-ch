@@ -5037,10 +5037,6 @@ void SpellEnfeeble::run_effect(
                 prop->set_duration(duration);
 
                 target->m_properties.apply(prop);
-
-                if (!actor::is_player(target)) {
-                        target->become_aware_player(actor::AwareSource::spell_victim);
-                }
         }
 }
 
@@ -5192,11 +5188,6 @@ void SpellSlow::run_effect(
                 prop->set_duration(duration);
 
                 target->m_properties.apply(prop);
-
-                if (!actor::is_player(target)) {
-                        target->become_aware_player(
-                                actor::AwareSource::spell_victim);
-                }
         }
 }
 
@@ -5355,11 +5346,6 @@ void SpellTerrify::run_effect(
                 prop->set_duration(duration_range(skill).roll());
 
                 target->m_properties.apply(prop);
-
-                if (!actor::is_player(target)) {
-                        target->become_aware_player(
-                                actor::AwareSource::spell_victim);
-                }
         }
 }
 
@@ -5487,13 +5473,7 @@ void SpellDisease::run_effect(
                         "!");
         }
 
-        target->m_properties.apply(
-                prop::make(
-                        prop::Id::diseased));
-
-        if (!actor::is_player(target)) {
-                target->become_aware_player(actor::AwareSource::spell_victim);
-        }
+        target->m_properties.apply(prop::make(prop::Id::diseased));
 }
 
 bool SpellDisease::allow_mon_cast_now(
@@ -5608,10 +5588,6 @@ void SpellBlind::run_effect(
         prop->set_duration(3 + (int)skill);
 
         target->m_properties.apply(prop);
-
-        if (!actor::is_player(target)) {
-                target->become_aware_player(actor::AwareSource::spell_victim);
-        }
 }
 
 bool SpellBlind::allow_mon_cast_now(
@@ -6173,10 +6149,6 @@ void SpellMiGoHypno::run_effect(
                         msg_log::add("I feel dizzy.");
                 }
         }
-
-        if (!actor::is_player(target)) {
-                target->become_aware_player(actor::AwareSource::spell_victim);
-        }
 }
 
 bool SpellMiGoHypno::allow_mon_cast_now(
@@ -6386,10 +6358,6 @@ void SpellDeafen::run_effect(
         prop->set_duration(75 + (int)skill * 75);
 
         target->m_properties.apply(prop);
-
-        if (!actor::is_player(target)) {
-                target->become_aware_player(actor::AwareSource::spell_victim);
-        }
 }
 
 bool SpellDeafen::allow_mon_cast_now(
