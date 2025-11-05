@@ -6,7 +6,12 @@
 ##############################
 # Spells
 - Reworked the spell domains, the domains are now: Channeling, Corruption, Illusion, Mind, Time, Warding and Blood.
-- Some spells such as Enfeeble, Slow and Terrify no longer automatically makes the target creature aware of the caster - i.e. unless a spell casting sound is heard, they can be cast on a target without them becoming aware.
+- Added new spells, and made some previous monster-only spells available to the player.
+- Some spells that previously were noisy can now be cast silently.
+- Some spells no longer automatically makes the target creature aware of the caster - i.e. unless a spell casting sound is heard, they can be cast on a target without them becoming aware.
+
+# Status effects
+- Poison now occasionally makes the creature skip a turn. Poisoning no longer lowers evasion (only melee damage and melee hit chance).
 
 # Backgrounds (classes) and traits
 - Occultists can pick traits to improve spell domains again, instead of getting automatic spell upgrades. This is a reversion to how it worked prior to v20.0, but the spell domain traits now also have level requirements (4 and 8 for "lesser" and "greater" casting, respectively).
@@ -14,6 +19,9 @@
 - The previous Clairvoyant ability to see hidden things is now instead granted by the Mind spell traits.
 - Occultists also start with the Cool-headed trait.
 - Meditative now requires Strong Spirit instead of Stout Spirit (in addition to Cool-headed).
+
+# Other gameplay changes
+- All monsters (except Ghouls) now very slowly regenerate hit points.
 
 ##############################
 # User interface

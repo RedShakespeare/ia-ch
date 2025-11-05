@@ -415,9 +415,10 @@ static void init_data_list()
         d.name = "Poisoned";
         d.name_short = "Poisoned";
         d.descr =
-                "Slowly takes damage while health is above 50% of maximum hit points, "
+                "Takes damage over time while health is above 50% of maximum hit points, "
                 "hit points do not regenerate naturally, "
-                "-25% melee damage, -10% melee hit chance, -10% evasion. "
+                "-25% melee damage, -10% melee hit chance, "
+                "occasionally unable to act for a turn. "
                 "Poison duration stacks if more is applied.";
         d.msg_start_player = "I am poisoned!";
         d.msg_start_mon = "is poisoned.";

@@ -24,11 +24,11 @@ https://creativecommons.org/publicdomain/zero/1.0
 Attribution 3.0 Unported (CC BY 3.0)
 https://creativecommons.org/licenses/by/3.0
 
-Attribution 4.0 International (CC BY 4.0)
-https://creativecommons.org/licenses/by/4.0/
-
 Attribution-NonCommercial 3.0 Unported (CC BY-NC 3.0)
 https://creativecommons.org/licenses/by-nc/3.0
+
+Attribution 4.0 International (CC BY 4.0)
+https://creativecommons.org/licenses/by/4.0
 
 Sampling Plus 1.0
 https://creativecommons.org/licenses/sampling+/1.0
@@ -767,6 +767,20 @@ Source:              https://freesound.org/people/Jamius/sounds/41529/
 Author:              Jamius (username on freesound.org)
 Original title:      PotionDrinkLONG.wav
 License:             Attribution 3.0 Unported (CC BY 3.0)
+
+File:                sfx_curse_spell.ogg
+Source:              https://freesound.org/people/EminYILDIRIM/sounds/625751
+Author:              EminYILDIRIM (username on freesound.org)
+Original title:      Dark Spell Cast Loop
+License:             Attribution 4.0 International (CC BY 4.0)
+Changes made:        Cut most of the sound, changed tempo.
+
+File:                sfx_poison_spell.ogg
+Source:              https://freesound.org/people/EminYILDIRIM/sounds/559088/
+Author:              EminYILDIRIM (username on freesound.org)
+Original title:      Shadow Spell Dark Magic
+License:             Attribution 4.0 International (CC BY 4.0)
+Changes made:        Mainly cut parts of the sound.
 
 File:                sfx_ricochet.ogg
 Source:              https://freesound.org/people/cedarstudios/sounds/148840/

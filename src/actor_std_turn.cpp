@@ -116,8 +116,6 @@ static void try_make_mon_join_other_mon(actor::Actor& mon)
 
 static int calc_player_turns_per_hp_regen_rate()
 {
-        auto& player = *map::g_player;
-
         int nr_turns_per_hp = 0;
 
         // Rapid Recoverer trait affects hp regen?
@@ -131,10 +129,10 @@ static int calc_player_turns_per_hp_regen_rate()
         // Wounds affect hp regen?
         int nr_wounds = 0;
 
-        if (player.m_properties.has(prop::Id::wound)) {
+        if (map::g_player->m_properties.has(prop::Id::wound)) {
                 auto* const wound =
                         static_cast<prop::Wound*>(
-                                player.m_properties.prop(prop::Id::wound));
+                                map::g_player->m_properties.prop(prop::Id::wound));
 
                 nr_wounds = wound->nr_wounds();
         }
@@ -143,18 +141,18 @@ static int calc_player_turns_per_hp_regen_rate()
                 nr_wounds /= 2;
         }
 
-        const int wound_turns_penalty = nr_wounds * 4;
+        const int wound_turns_per_hp_penalty = nr_wounds * 4;
 
-        nr_turns_per_hp += wound_turns_penalty;
+        nr_turns_per_hp += wound_turns_per_hp_penalty;
 
         // Items affect hp regen?
-        for (const auto& slot : player.m_inv.m_slots) {
+        for (const InvSlot& slot : map::g_player->m_inv.m_slots) {
                 if (slot.item) {
                         nr_turns_per_hp += slot.item->hp_regen_change(InvType::slots);
                 }
         }
 
-        for (const auto* const item : player.m_inv.m_backpack) {
+        for (const item::Item* const item : map::g_player->m_inv.m_backpack) {
                 nr_turns_per_hp += item->hp_regen_change(InvType::backpack);
         }
 
@@ -163,26 +161,67 @@ static int calc_player_turns_per_hp_regen_rate()
         return nr_turns_per_hp;
 }
 
-static void player_regen_hp()
+static int calc_mon_turns_per_hp_regen_rate()
 {
-        auto& player = *map::g_player;
+        return 30;
+}
 
-        if ((player.m_hp >= actor::max_hp(player)) ||
-            (game_time::turn_nr() <= 1) ||
-            player.m_properties.has(prop::Id::poisoned) ||
-            player.m_properties.has(prop::Id::disabled_hp_regen) ||
-            (player_bon::bg() == Bg::ghoul)) {
+static void regen_hp(actor::Actor& actor)
+{
+        if (game_time::turn_nr() <= 1) {
                 return;
         }
 
-        const int nr_turns_per_hp = calc_player_turns_per_hp_regen_rate();
-        const int turn = game_time::turn_nr();
-
-        if ((turn % nr_turns_per_hp) != 0) {
+        if (!actor::is_alive(actor)) {
                 return;
         }
 
-        ++player.m_hp;
+        const bool is_below_max_hp = actor.m_hp >= actor::max_hp(actor);
+
+        if (is_below_max_hp) {
+                return;
+        }
+
+        const std::vector<prop::Id> props_preventing_regen = {
+                prop::Id::poisoned,
+                prop::Id::disabled_hp_regen,
+        };
+
+        const bool has_prop_preventing_regen =
+                std::any_of(
+                        std::cbegin(props_preventing_regen),
+                        std::cend(props_preventing_regen),
+                        [&actor](const prop::Id id) {
+                                return actor.m_properties.has(id);
+                        });
+
+        if (has_prop_preventing_regen) {
+                return;
+        }
+
+        // Well, if player Ghouls are not regenerating hit points, then neither should monster
+        // Ghouls?
+        const bool is_ghoul =
+                actor::is_player(&actor)
+                ? (player_bon::bg() == Bg::ghoul)
+                : actor.m_data->is_ghoul;
+
+        if (is_ghoul) {
+                return;
+        }
+
+        // OK, the actor can regenerate hit points. Check if it is time to regenerate now.
+
+        const int nr_turns_per_hp =
+                actor::is_player(&actor)
+                ? calc_player_turns_per_hp_regen_rate()
+                : calc_mon_turns_per_hp_regen_rate();
+
+        if ((game_time::turn_nr() % nr_turns_per_hp) != 0) {
+                return;
+        }
+
+        ++actor.m_hp;
 }
 
 static Range calc_nr_turns_range_to_recharge_spell_shield()
@@ -210,9 +249,7 @@ static Range calc_nr_turns_range_to_recharge_spell_shield()
 
 static void player_regen_spell_shield()
 {
-        auto& player = *map::g_player;
-
-        if (player.m_properties.has(prop::Id::r_spell)) {
+        if (map::g_player->m_properties.has(prop::Id::r_spell)) {
                 // Player already has spell resistance. Keep resetting the countdown to
                 // "uninitialized" while in this state, and do nothing else. This will trigger a
                 // reroll of the duration when the countdown can begin again.
@@ -234,11 +271,11 @@ static void player_regen_spell_shield()
 
                 if (actor::player_state::g_nr_turns_until_r_spell == 0) {
                         // Cooldown has finished
-                        auto* prop = prop::make(prop::Id::r_spell);
+                        prop::Prop* prop = prop::make(prop::Id::r_spell);
 
                         prop->set_indefinite();
 
-                        player.m_properties.apply(prop);
+                        map::g_player->m_properties.apply(prop);
                 }
 
                 actor::player_state::g_nr_turns_until_r_spell =
@@ -246,20 +283,17 @@ static void player_regen_spell_shield()
                                 .roll();
         }
 
-        if (!player.m_properties.has(prop::Id::r_spell) &&
+        if (!map::g_player->m_properties.has(prop::Id::r_spell) &&
             (actor::player_state::g_nr_turns_until_r_spell > 0)) {
-                // Spell resistance is in cooldown state, decrement number of
-                // remaining turns.
+                // Spell resistance is in cooldown state, decrement number of remaining turns.
                 --actor::player_state::g_nr_turns_until_r_spell;
         }
 }
 
 static void player_regen_meditative_focused()
 {
-        actor::Actor& player = *map::g_player;
-
-        if (player.m_properties.has(prop::Id::meditative_focused) ||
-            player.m_properties.has(prop::Id::frenzied)) {
+        if (map::g_player->m_properties.has(prop::Id::meditative_focused) ||
+            map::g_player->m_properties.has(prop::Id::frenzied)) {
                 // Player is already focused, or is frenzied. Keep resetting the countdown to
                 // "uninitialized" while in this state, and do nothing else. This will trigger a
                 // reroll of the duration when the countdown can begin again.
@@ -287,7 +321,7 @@ static void player_regen_meditative_focused()
 
                         prop->set_indefinite();
 
-                        player.m_properties.apply(prop);
+                        map::g_player->m_properties.apply(prop);
                 }
 
                 const auto duration_range =
@@ -298,25 +332,22 @@ static void player_regen_meditative_focused()
                 nr_turns_until_focused = duration_range.roll();
         }
 
-        if (!player.m_properties.has(prop::Id::meditative_focused) &&
+        if (!map::g_player->m_properties.has(prop::Id::meditative_focused) &&
             (nr_turns_until_focused > 0)) {
-                // Meditative focused is in cooldown state, decrement number of
-                // remaining turns.
+                // Meditative focused is in cooldown state, decrement number of remaining turns.
                 --nr_turns_until_focused;
         }
 }
 
 static void player_std_turn()
 {
-        const actor::Actor& player = *map::g_player;
-
 #ifndef NDEBUG
         // Disease and infection should not be active at the same time
-        ASSERT(!player.m_properties.has(prop::Id::diseased) ||
-               !player.m_properties.has(prop::Id::infected));
+        ASSERT(!map::g_player->m_properties.has(prop::Id::diseased) ||
+               !map::g_player->m_properties.has(prop::Id::infected));
 #endif  // NDEBUG
 
-        if (!actor::is_alive(player)) {
+        if (!actor::is_alive(*map::g_player)) {
                 return;
         }
 
@@ -332,7 +363,7 @@ static void player_std_turn()
                 }
         }
 
-        player_regen_hp();
+        regen_hp(*map::g_player);
 }
 
 static void mon_std_turn(actor::Actor& mon)
@@ -342,7 +373,7 @@ static void mon_std_turn(actor::Actor& mon)
         smell::put_smell_for_mon(mon);
 
         // Countdown all spell cooldowns
-        for (auto& spell : mon.m_mon_spells) {
+        for (actor::MonSpell& spell : mon.m_mon_spells) {
                 int& cooldown = spell.cooldown;
 
                 if (cooldown > 0) {
@@ -350,8 +381,8 @@ static void mon_std_turn(actor::Actor& mon)
                 }
         }
 
-        // NOTE: Monsters try to detect the player visually on standard turns,
-        // otherwise very fast monsters are much better at finding the player.
+        // NOTE: Monsters try to detect the player visually on standard turns, otherwise very fast
+        // monsters are much better at finding the player.
         const bool should_look =
                 actor::is_alive(mon) &&
                 mon.m_data->ai[(size_t)actor::AiId::looks] &&
@@ -362,6 +393,8 @@ static void mon_std_turn(actor::Actor& mon)
         if (should_look) {
                 ai::info::look(mon);
         }
+
+        regen_hp(mon);
 }
 
 static void std_turn_common(actor::Actor& actor)
@@ -378,9 +411,8 @@ static void std_turn_common(actor::Actor& actor)
         // Slowly decrease current HP/spirit if above max
         const int decr_above_max_n_turns = 7;
 
-        // Monsters decrement their HP every standard turn when above max (so
-        // that things draining max HP will have an affect faster), while the
-        // player can have HP above max longer.
+        // Monsters decrement their HP every standard turn when above max (so that things draining
+        // max HP will have an affect faster), while the player can have HP above max longer.
         bool decr_this_turn = true;
 
         if (actor::is_player(&actor)) {
@@ -420,8 +452,8 @@ static void std_turn_common(actor::Actor& actor)
         else {
                 // Is monster
 
-                // Monsters regen spirit very quickly, so spell casters
-                // doesn't suddenly get completely handicapped
+                // Monsters regen spirit very quickly, so spell casters doesn't suddenly get
+                // completely prevented from casting spells.
                 regen_sp_n_turns = 1;
         }
 

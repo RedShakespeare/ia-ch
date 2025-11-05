@@ -49,6 +49,7 @@ enum class SpellId
         aura_of_decay,
         enfeeble,
         pestilence,
+        poison,
 
         // Domain: Illusion
         invis,
@@ -295,6 +296,42 @@ public:
                 const std::vector<actor::Actor*>& seen_targets) const override;
 
 protected:
+        Range duration_range(SpellSkill skill) const;
+
+        int base_max_cost(SpellSkill skill, const actor::Actor* caster) const override;
+
+        bool is_noisy(SpellSkill skill) const override;
+};
+
+class SpellPoison : public Spell
+{
+public:
+        SpellPoison() = default;
+
+        bool allow_mon_cast_now(
+                const actor::Actor& mon,
+                const std::vector<actor::Actor*>& seen_targets) const override;
+
+        int mon_cooldown() const override;
+
+        std::string name() const override;
+
+        SpellId id() const override;
+
+        SpellDomain domain() const override;
+
+        SpellShock shock_type() const override;
+
+        std::vector<std::string> descr_specific(SpellSkill skill) const override;
+
+        void run_effect(
+                actor::Actor* caster,
+                SpellSkill skill,
+                const std::vector<actor::Actor*>& seen_targets) const override;
+
+protected:
+        Range duration_range(SpellSkill skill) const;
+
         int base_max_cost(SpellSkill skill, const actor::Actor* caster) const override;
 
         bool is_noisy(SpellSkill skill) const override;

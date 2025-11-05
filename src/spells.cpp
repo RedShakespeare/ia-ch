@@ -98,6 +98,7 @@ static const std::unordered_map<std::string, SpellId> s_str_to_spell_id_map = {
         {"SPELL_LIGHT", SpellId::light},
         {"SPELL_MI_GO_HYPNO", SpellId::mi_go_hypno},
         {"SPELL_PESTILENCE", SpellId::pestilence},
+        {"SPELL_POISON", SpellId::poison},
         {"SPELL_PREMONITION", SpellId::premonition},
         {"SPELL_PURGE", SpellId::purge},
         {"SPELL_SANCTUARY", SpellId::sanctuary},
@@ -106,8 +107,8 @@ static const std::unordered_map<std::string, SpellId> s_str_to_spell_id_map = {
         {"SPELL_SPECTRAL_WEAPONS", SpellId::spectral_weapons},
         {"SPELL_SPELL_SHIELD", SpellId::spell_shield},
         {"SPELL_SUMMON_RANDOM", SpellId::summon_random},
-        {"SPELL_SUMMON_WATER_CREATURE", SpellId::summon_water_creature},
         {"SPELL_SUMMON_TENTACLES", SpellId::summon_tentacles},
+        {"SPELL_SUMMON_WATER_CREATURE", SpellId::summon_water_creature},
         {"SPELL_TELEPORT", SpellId::teleport},
         {"SPELL_TERRIFY", SpellId::terrify},
         {"SPELL_TRANSMUT", SpellId::transmut}};
@@ -132,6 +133,9 @@ static const std::unordered_map<SpellDomain, ShockSrc> s_spell_domain_to_shock_t
 static const std::string s_spell_resist_msg = "The spell is resisted!";
 
 static const std::string s_spell_reflect_msg = "The spell is reflected!";
+
+static const std::string s_not_alerting_mon_descr =
+        "Casting this spell does not alert the victim to the caster's presence.";
 
 static DmgType s_bolt_dmg_type = DmgType::blunt;
 
@@ -816,6 +820,23 @@ static void apply_regen_from_flagellant_trait()
         map::g_player->m_properties.apply(regen);
 }
 
+static bool player_can_player_see_caster_and_any_target(
+        const actor::Actor& caster,
+        const std::vector<actor::Actor*>& targets)
+{
+        if (!actor::can_player_see_actor(caster)) {
+                return false;
+        }
+
+        return (
+                std::any_of(
+                        std::begin(targets),
+                        std::end(targets),
+                        [](const actor::Actor* const actor) {
+                                return actor::can_player_see_actor(*actor);
+                        }));
+}
+
 // -----------------------------------------------------------------------------
 // spells
 // -----------------------------------------------------------------------------
@@ -832,6 +853,9 @@ Spell* make(const SpellId spell_id)
 
         case SpellId::curse:
                 return new SpellCurse();
+
+        case SpellId::poison:
+                return new SpellPoison();
 
         case SpellId::slow:
                 return new SpellSlow();
@@ -1163,7 +1187,6 @@ void Spell::cast(
                         Snd snd(
                                 "",
                                 audio::SfxId::END,
-                                // audio::SfxId::spell_generic,
                                 IgnoreMsgIfOriginSeen::yes,
                                 caster->m_pos,
                                 caster,
@@ -1493,10 +1516,7 @@ std::vector<std::string> SpellAuraOfDecay::descr_specific(
                         "they may be destroyed immediately (2% chance).");
         }
 
-        descr.push_back(
-                "The spell lasts " +
-                duration_range(skill).str() +
-                " turns.");
+        descr.push_back("The spell lasts " + duration_range(skill).str() + " turns.");
 
         return descr;
 }
@@ -3195,10 +3215,7 @@ std::vector<std::string> SpellSanctuary::descr_specific(
                 "duration of the spell. The effect is interrupted if the "
                 "caster moves or performs a melee or ranged attack.");
 
-        descr.emplace_back(
-                "The spell lasts for " +
-                duration(skill).str() +
-                " turns.");
+        descr.emplace_back("The spell lasts " + duration(skill).str() + " turns.");
 
         return descr;
 }
@@ -3645,16 +3662,13 @@ std::vector<std::string> SpellLight::descr_specific(
 
         descr.emplace_back("Illuminates the area around the caster.");
 
-        descr.push_back(
-                "The spell lasts " +
-                light_duration_range(skill).str() +
-                " turns.");
+        descr.push_back("The spell lasts " + light_duration_range(skill).str() + " turns.");
 
         if (skill >= SpellSkill::master) {
                 descr.push_back(
                         "On casting, causes a blinding flash centered on the "
                         "caster (but not affecting the caster itself). "
-                        "The blinding effect lasts for " +
+                        "The blinding effect lasts " +
                         blind_duration_range(skill).str() +
                         " turns.");
         }
@@ -3775,10 +3789,7 @@ std::vector<std::string> SpellInvis::descr_specific(
                         "spells without breaking the invisibility.");
         }
 
-        descr.push_back(
-                "The spell lasts " +
-                duration_range(skill).str() +
-                " turns.");
+        descr.push_back("The spell lasts " + duration_range(skill).str() + " turns.");
 
         return descr;
 }
@@ -4165,10 +4176,7 @@ std::vector<std::string> SpellPremonition::descr_specific(
                 "making it extremely difficult for assailants to achieve a "
                 "succesful hit.");
 
-        descr.emplace_back(
-                "The spell lasts " +
-                duration_range(skill).str() +
-                " turns.");
+        descr.emplace_back("The spell lasts " + duration_range(skill).str() + " turns.");
 
         return descr;
 }
@@ -4708,7 +4716,16 @@ bool SpellCurse::is_noisy(const SpellSkill skill) const
 {
         (void)skill;
 
-        return true;
+        return false;
+}
+
+Range SpellCurse::duration_range(const SpellSkill skill) const
+{
+        Range duration_range;
+        duration_range.min = 15 * ((int)skill + 1);
+        duration_range.max = duration_range.min * 2;
+
+        return duration_range;
 }
 
 void SpellCurse::run_effect(
@@ -4716,11 +4733,7 @@ void SpellCurse::run_effect(
         const SpellSkill skill,
         const std::vector<actor::Actor*>& seen_targets) const
 {
-        Range duration_range;
-        duration_range.min = 15 * ((int)skill + 1);
-        duration_range.max = duration_range.min * 2;
-
-        const int duration = duration_range.roll();
+        const int duration = duration_range(skill).roll();
 
         if (seen_targets.empty()) {
                 return;
@@ -4737,9 +4750,13 @@ void SpellCurse::run_effect(
                 targets = seen_targets;
         }
 
+        if (player_can_player_see_caster_and_any_target(*caster, targets)) {
+                audio::play(audio::SfxId::curse_spell);
+        }
+
         draw_blast_at_seen_actors(targets, colors::magenta());
 
-        for (auto* const target : targets) {
+        for (actor::Actor* const target : targets) {
                 // Spell resistance?
                 if (target->m_properties.has(prop::Id::r_spell)) {
                         on_resist(*target);
@@ -4769,6 +4786,155 @@ void SpellCurse::run_effect(
                 prop->set_duration(duration);
 
                 target->m_properties.apply(prop);
+        }
+}
+
+std::vector<std::string> SpellCurse::descr_specific(SpellSkill skill) const
+{
+        std::vector<std::string> descr;
+
+        const prop::Id prop_id = (skill < SpellSkill::master) ? prop::Id::cursed : prop::Id::doomed;
+
+        const prop::PropData& prop_data = prop::g_data[(size_t)prop_id];
+
+        descr.emplace_back(
+                "The spell's victims are " +
+                text_format::first_to_lower(prop_data.name) +
+                " (" +
+                prop_data.descr +
+                ")");
+
+        descr.emplace_back(s_not_alerting_mon_descr);
+
+        if (skill == SpellSkill::basic) {
+                descr.emplace_back("Affects one random visible hostile creature.");
+        }
+        else {
+                descr.emplace_back("Affects all visible hostile creatures.");
+        }
+
+        descr.push_back("The spell lasts " + duration_range(skill).str() + " turns.");
+
+        return descr;
+}
+
+bool SpellCurse::allow_mon_cast_now(
+        const actor::Actor& mon,
+        const std::vector<actor::Actor*>& seen_targets) const
+{
+        (void)mon;
+
+        return !seen_targets.empty();
+}
+
+// -----------------------------------------------------------------------------
+// Poison
+// -----------------------------------------------------------------------------
+int SpellPoison::base_max_cost(
+        const SpellSkill skill,
+        const actor::Actor* const caster) const
+{
+        (void)skill;
+        (void)caster;
+
+        return 6;
+}
+
+std::string SpellPoison::name() const
+{
+        return "Poison";
+}
+
+SpellId SpellPoison::id() const
+{
+        return SpellId::poison;
+}
+
+SpellDomain SpellPoison::domain() const
+{
+        return SpellDomain::corruption;
+}
+
+SpellShock SpellPoison::shock_type() const
+{
+        return SpellShock::mild;
+}
+
+int SpellPoison::mon_cooldown() const
+{
+        return 3;
+}
+
+bool SpellPoison::is_noisy(const SpellSkill skill) const
+{
+        (void)skill;
+
+        return true;
+}
+
+Range SpellPoison::duration_range(const SpellSkill skill) const
+{
+        Range duration_range;
+        duration_range.min = 15 * ((int)skill + 1);
+        duration_range.max = duration_range.min * 2;
+
+        return duration_range;
+}
+
+void SpellPoison::run_effect(
+        actor::Actor* const caster,
+        const SpellSkill skill,
+        const std::vector<actor::Actor*>& seen_targets) const
+{
+        const int duration = duration_range(skill).roll();
+
+        if (seen_targets.empty()) {
+                return;
+        }
+
+        // There are targets available
+
+        std::vector<actor::Actor*> targets;
+
+        if (skill == SpellSkill::basic) {
+                targets = {rnd::element(seen_targets)};
+        }
+        else {
+                targets = seen_targets;
+        }
+
+        if (player_can_player_see_caster_and_any_target(*caster, targets)) {
+                audio::play(audio::SfxId::poison_spell);
+        }
+
+        draw_blast_at_seen_actors(targets, colors::magenta());
+
+        for (actor::Actor* const target : targets) {
+                // Spell resistance?
+                if (target->m_properties.has(prop::Id::r_spell)) {
+                        on_resist(*target);
+
+                        // Spell reflection?
+                        if (target->m_properties.has(prop::Id::spell_reflect)) {
+                                if (actor::can_player_see_actor(*target)) {
+                                        msg_log::add(s_spell_reflect_msg);
+                                }
+
+                                // Run effect with the target as caster, and the
+                                // caster as seen target instead.
+                                run_effect(target, skill, {caster});
+                        }
+
+                        continue;
+                }
+
+                auto id = prop::Id::poisoned;
+
+                prop::Prop* const prop = prop::make(id);
+
+                prop->set_duration(duration);
+
+                target->m_properties.apply(prop);
 
                 if (!actor::is_player(target)) {
                         target->become_aware_player(actor::AwareSource::spell_victim);
@@ -4776,14 +4942,32 @@ void SpellCurse::run_effect(
         }
 }
 
-std::vector<std::string> SpellCurse::descr_specific(SpellSkill skill) const
+std::vector<std::string> SpellPoison::descr_specific(SpellSkill skill) const
 {
-        (void)skill;
+        std::vector<std::string> descr;
 
-        return {};
+        const prop::PropData& prop_data = prop::g_data[(size_t)prop::Id::poisoned];
+
+        descr.emplace_back(
+                "The spell's victims are " +
+                text_format::first_to_lower(prop_data.name) +
+                " (" +
+                prop_data.descr +
+                ")");
+
+        if (skill == SpellSkill::basic) {
+                descr.emplace_back("Affects one random visible hostile creature.");
+        }
+        else {
+                descr.emplace_back("Affects all visible hostile creatures.");
+        }
+
+        descr.push_back("The spell lasts " + duration_range(skill).str() + " turns.");
+
+        return descr;
 }
 
-bool SpellCurse::allow_mon_cast_now(
+bool SpellPoison::allow_mon_cast_now(
         const actor::Actor& mon,
         const std::vector<actor::Actor*>& seen_targets) const
 {
@@ -4964,7 +5148,7 @@ bool SpellEnfeeble::is_noisy(const SpellSkill skill) const
 {
         (void)skill;
 
-        return true;
+        return false;
 }
 
 std::string SpellEnfeeble::name() const
@@ -5013,7 +5197,7 @@ void SpellEnfeeble::run_effect(
 
         draw_blast_at_seen_actors(targets, colors::magenta());
 
-        for (auto* const target : targets) {
+        for (actor::Actor* const target : targets) {
                 // Spell resistance?
                 if (target->m_properties.has(prop::Id::r_spell)) {
                         on_resist(*target);
@@ -5043,27 +5227,22 @@ void SpellEnfeeble::run_effect(
 std::vector<std::string> SpellEnfeeble::descr_specific(
         const SpellSkill skill) const
 {
-        (void)skill;
-
         std::vector<std::string> descr;
 
         descr.emplace_back(
                 "Physically enfeebles the spell's victims, causing them to "
                 "only do half damage in melee combat.");
 
+        descr.emplace_back(s_not_alerting_mon_descr);
+
         if (skill == SpellSkill::basic) {
-                descr.emplace_back(
-                        "Affects one random visible hostile creature.");
+                descr.emplace_back("Affects one random visible hostile creature.");
         }
         else {
-                descr.emplace_back(
-                        "Affects all visible hostile creatures.");
+                descr.emplace_back("Affects all visible hostile creatures.");
         }
 
-        descr.push_back(
-                "The spell lasts " +
-                duration_range(skill).str() +
-                " turns.");
+        descr.push_back("The spell lasts " + duration_range(skill).str() + " turns.");
 
         return descr;
 }
@@ -5164,7 +5343,7 @@ void SpellSlow::run_effect(
 
         draw_blast_at_seen_actors(targets, colors::magenta());
 
-        for (auto* const target : targets) {
+        for (actor::Actor* const target : targets) {
                 // Spell resistance?
                 if (target->m_properties.has(prop::Id::r_spell)) {
                         on_resist(*target);
@@ -5198,22 +5377,18 @@ std::vector<std::string> SpellSlow::descr_specific(
 
         std::vector<std::string> descr;
 
-        descr.emplace_back(
-                "Causes the spell's victims to move more slowly.");
+        descr.emplace_back("Causes the spell's victims to move more slowly.");
+
+        descr.emplace_back(s_not_alerting_mon_descr);
 
         if (skill == SpellSkill::basic) {
-                descr.emplace_back(
-                        "Affects one random visible hostile creature.");
+                descr.emplace_back("Affects one random visible hostile creature.");
         }
         else {
-                descr.emplace_back(
-                        "Affects all visible hostile creatures.");
+                descr.emplace_back("Affects all visible hostile creatures.");
         }
 
-        descr.push_back(
-                "The spell lasts " +
-                duration_range(skill).str() +
-                " turns.");
+        descr.push_back("The spell lasts " + duration_range(skill).str() + " turns.");
 
         return descr;
 }
@@ -5322,7 +5497,7 @@ void SpellTerrify::run_effect(
 
         draw_blast_at_seen_actors(targets, colors::magenta());
 
-        for (auto* const target : targets) {
+        for (actor::Actor* const target : targets) {
                 // Spell resistance?
                 if (target->m_properties.has(prop::Id::r_spell)) {
                         on_resist(*target);
@@ -6737,10 +6912,7 @@ std::vector<std::string> SpellBloodTempering::descr_specific(
                 "however other forms of damage such as fire is still "
                 "harmful).");
 
-        descr.emplace_back(
-                "The spell lasts for " +
-                duration_range(skill).str() +
-                " turns.");
+        descr.emplace_back("The spell lasts " + duration_range(skill).str() + " turns.");
 
         return descr;
 }
@@ -6837,8 +7009,7 @@ void SpellThorns::run_effect(
         caster->m_properties.apply(prop);
 }
 
-std::vector<std::string> SpellThorns::descr_specific(
-        SpellSkill skill) const
+std::vector<std::string> SpellThorns::descr_specific(SpellSkill skill) const
 {
         std::vector<std::string> descr;
 
@@ -6850,10 +7021,7 @@ std::vector<std::string> SpellThorns::descr_specific(
                 dmg_range(skill).str() +
                 " damage to the attacker.");
 
-        descr.emplace_back(
-                "The spell lasts for " +
-                duration_range(skill).str() +
-                " turns.");
+        descr.emplace_back("The spell lasts " + duration_range(skill).str() + " turns.");
 
         return descr;
 }
@@ -6883,7 +7051,7 @@ SpellCostType SpellCrimsonPassage::cost_type() const
 
 bool SpellCrimsonPassage::is_noisy(SpellSkill skill) const
 {
-        return (skill == SpellSkill::basic) ? true : false;
+        return (skill == SpellSkill::basic);
 }
 
 SpellShock SpellCrimsonPassage::shock_type() const
