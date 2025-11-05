@@ -571,6 +571,10 @@ public:
         int melee_dmg_penalty_pct() const override;
         int ability_mod(AbilityId ability) const override;
         PropEnded on_actor_turn() override;
+
+private:
+        void handle_damage() const;
+        void handle_skip_turn() const;
 };
 
 class Aiming : public Prop

@@ -1034,7 +1034,6 @@ int Poisoned::ability_mod(const AbilityId ability) const
 {
         switch (ability) {
         case AbilityId::melee:
-        case AbilityId::dodging:
                 return -10;
 
         default:
@@ -1048,26 +1047,35 @@ PropEnded Poisoned::on_actor_turn()
                 return PropEnded::no;
         }
 
-        int pct_chance = 10;
-        int dmg = rnd::range(1, 4);
+        handle_damage();
+        handle_skip_turn();
+
+        return PropEnded::no;
+}
+
+void Poisoned::handle_damage() const
+{
+        const int dmg_every_n_actor_turn = 3;
+
+        if ((m_nr_turns_active % dmg_every_n_actor_turn) != 0) {
+                return;
+        }
+
+        int dmg = rnd::range(1, 2);
 
         const int hp = m_owner->m_hp;
         const int max_hp = actor::max_hp(*m_owner);
         const int hp_threshold = (max_hp / 2);
 
         if (max_hp == 1) {
-                return PropEnded::no;
+                return;
         }
 
         // Poison never damages the creature so that HP is reduced below the treshold.
         dmg = std::min(dmg, hp - hp_threshold);
 
         if (dmg <= 0) {
-                return PropEnded::no;
-        }
-
-        if (!rnd::percent(pct_chance)) {
-                return PropEnded::no;
+                return;
         }
 
         if (actor::is_player(m_owner)) {
@@ -1086,8 +1094,41 @@ PropEnded Poisoned::on_actor_turn()
         }
 
         actor::hit(*m_owner, dmg, DmgType::pure, nullptr);
+}
 
-        return PropEnded::no;
+void Poisoned::handle_skip_turn() const
+{
+        const int paralyze_one_in_n = 7;
+
+        if (!rnd::one_in(paralyze_one_in_n)) {
+                return;
+        }
+
+        if (!m_owner->m_properties.allow_act()) {
+                // Actor already cannot act.
+                return;
+        }
+
+        if (actor::is_player(m_owner)) {
+                msg_log::add(
+                        "I am too sick from the poison to act.",
+                        colors::msg_bad(),
+                        MsgInterruptPlayer::yes);
+        }
+        else if (actor::can_player_see_actor(*m_owner)) {
+                // Is seen monster
+                const std::string actor_name_the =
+                        text_format::first_to_upper(
+                                actor::name_the(*m_owner));
+
+                msg_log::add(actor_name_the + " is too sick from the poison to act.");
+        }
+
+        prop::Prop* const paralyzed = prop::make(prop::Id::paralyzed);
+
+        paralyzed->set_duration(1);
+
+        m_owner->m_properties.apply(paralyzed, PropSrc::intr, false, Verbose::no);
 }
 
 int Aiming::ability_mod(const AbilityId ability) const
@@ -2797,9 +2838,34 @@ void AltersEnv::on_std_turn()
 
 void Regenerating::on_std_turn()
 {
-        if (!actor::is_alive(*m_owner) ||
-            m_owner->m_properties.has(prop::Id::burning) ||
-            m_owner->m_properties.has(prop::Id::disabled_hp_regen)) {
+        if (game_time::turn_nr() <= 1) {
+                return;
+        }
+
+        if (!actor::is_alive(*m_owner)) {
+                return;
+        }
+
+        const std::vector<prop::Id> props_preventing_regen = {
+                prop::Id::poisoned,
+                prop::Id::disabled_hp_regen,
+        };
+
+        const bool has_prop_preventing_regen =
+                std::any_of(
+                        std::cbegin(props_preventing_regen),
+                        std::cend(props_preventing_regen),
+                        [this](const prop::Id id) {
+                                return m_owner->m_properties.has(id);
+                        });
+
+        if (has_prop_preventing_regen) {
+                return;
+        }
+
+        const int regen_every_n_turns = 2;
+
+        if ((game_time::turn_nr() % regen_every_n_turns) != 0) {
                 return;
         }
 

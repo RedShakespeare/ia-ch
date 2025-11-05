@@ -126,6 +126,8 @@ static void make_for_player_occultist_specific()
                 break;
 
         case SpellDomain::corruption:
+                learn_spell_player(SpellId::curse);
+                learn_spell_player(SpellId::poison);
                 break;
 
         case SpellDomain::illusion:

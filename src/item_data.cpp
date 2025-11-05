@@ -1595,6 +1595,16 @@ void init()
         g_data[(size_t)d.id] = d;
 
         reset_data(d, ItemType::scroll);
+        d.id = Id::scroll_curse;
+        d.spell_cast_from_scroll = SpellId::curse;
+        g_data[(size_t)d.id] = d;
+
+        reset_data(d, ItemType::scroll);
+        d.id = Id::scroll_poison;
+        d.spell_cast_from_scroll = SpellId::poison;
+        g_data[(size_t)d.id] = d;
+
+        reset_data(d, ItemType::scroll);
         d.id = Id::scroll_slow;
         d.spell_cast_from_scroll = SpellId::slow;
         g_data[(size_t)d.id] = d;
