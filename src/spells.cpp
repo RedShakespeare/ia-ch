@@ -3123,14 +3123,10 @@ std::vector<std::string> SpellCleansingFire::descr_specific(
                 " turns, and scorches the ground around them with fire "
                 "(be careful with hitting adjacent creatures).");
 
-        if (skill == SpellSkill::basic) {
-                descr.emplace_back(
-                        "Affects one random visible hostile creature.");
-        }
-        else {
-                descr.emplace_back(
-                        "Affects all visible hostile creatures.");
-        }
+        descr.emplace_back(
+                skill == SpellSkill::basic
+                        ? "Affects one random visible hostile creature."
+                        : "Affects all visible hostile creatures.");
 
         return descr;
 }
@@ -4728,6 +4724,27 @@ Range SpellCurse::duration_range(const SpellSkill skill) const
         return duration_range;
 }
 
+int SpellCurse::pct_chance_doom(SpellSkill skill) const
+{
+        switch (skill) {
+        case SpellSkill::basic:
+                return 5;
+                break;
+
+        case SpellSkill::expert:
+                return 10;
+
+        case SpellSkill::master:
+        case SpellSkill::transcendent:
+                // Not applicable.
+                break;
+        }
+
+        ASSERT(false);
+
+        return 0;
+}
+
 void SpellCurse::run_effect(
         actor::Actor* const caster,
         const SpellSkill skill,
@@ -4750,8 +4767,16 @@ void SpellCurse::run_effect(
                 targets = seen_targets;
         }
 
+        auto prop_id = prop::Id::cursed;
+        auto sfx_id = audio::SfxId::curse_spell;
+
+        if ((skill >= SpellSkill::master) || rnd::percent(pct_chance_doom(skill))) {
+                prop_id = prop::Id::doomed;
+                sfx_id = audio::SfxId::doom_spell;
+        }
+
         if (player_can_player_see_caster_and_any_target(*caster, targets)) {
-                audio::play(audio::SfxId::curse_spell);
+                audio::play(sfx_id);
         }
 
         draw_blast_at_seen_actors(targets, colors::magenta());
@@ -4775,13 +4800,7 @@ void SpellCurse::run_effect(
                         continue;
                 }
 
-                auto id = prop::Id::cursed;
-
-                if (skill == SpellSkill::master) {
-                        id = prop::Id::doomed;
-                }
-
-                prop::Prop* const prop = prop::make(id);
+                prop::Prop* const prop = prop::make(prop_id);
 
                 prop->set_duration(duration);
 
@@ -4793,27 +4812,39 @@ std::vector<std::string> SpellCurse::descr_specific(SpellSkill skill) const
 {
         std::vector<std::string> descr;
 
-        const prop::Id prop_id = (skill < SpellSkill::master) ? prop::Id::cursed : prop::Id::doomed;
+        const bool is_below_master = skill < SpellSkill::master;
 
-        const prop::PropData& prop_data = prop::g_data[(size_t)prop_id];
+        const prop::PropData& cursed_data = prop::g_data[(size_t)prop::Id::cursed];
+        const prop::PropData& doomed_data = prop::g_data[(size_t)prop::Id::doomed];
+
+        const prop::PropData& main_prop_data = is_below_master ? cursed_data : doomed_data;
 
         descr.emplace_back(
                 "The spell's victims are " +
-                text_format::first_to_lower(prop_data.name) +
+                text_format::first_to_lower(main_prop_data.name) +
                 " (" +
-                prop_data.descr +
+                main_prop_data.descr +
                 ")");
+
+        if (is_below_master) {
+                descr.emplace_back(
+                        "With " +
+                        std::to_string(pct_chance_doom(skill)) +
+                        "% chance, the victims instead become " +
+                        text_format::first_to_lower(doomed_data.name) +
+                        " (" +
+                        doomed_data.descr +
+                        ")");
+        }
 
         descr.emplace_back(s_not_alerting_mon_descr);
 
-        if (skill == SpellSkill::basic) {
-                descr.emplace_back("Affects one random visible hostile creature.");
-        }
-        else {
-                descr.emplace_back("Affects all visible hostile creatures.");
-        }
+        descr.emplace_back(
+                skill == SpellSkill::basic
+                        ? "Affects one random visible hostile creature."
+                        : "Affects all visible hostile creatures.");
 
-        descr.push_back("The spell lasts " + duration_range(skill).str() + " turns.");
+        descr.emplace_back("The spell lasts " + duration_range(skill).str() + " turns.");
 
         return descr;
 }
@@ -4955,12 +4986,10 @@ std::vector<std::string> SpellPoison::descr_specific(SpellSkill skill) const
                 prop_data.descr +
                 ")");
 
-        if (skill == SpellSkill::basic) {
-                descr.emplace_back("Affects one random visible hostile creature.");
-        }
-        else {
-                descr.emplace_back("Affects all visible hostile creatures.");
-        }
+        descr.emplace_back(
+                skill == SpellSkill::basic
+                        ? "Affects one random visible hostile creature."
+                        : "Affects all visible hostile creatures.");
 
         descr.push_back("The spell lasts " + duration_range(skill).str() + " turns.");
 
@@ -5235,12 +5264,10 @@ std::vector<std::string> SpellEnfeeble::descr_specific(
 
         descr.emplace_back(s_not_alerting_mon_descr);
 
-        if (skill == SpellSkill::basic) {
-                descr.emplace_back("Affects one random visible hostile creature.");
-        }
-        else {
-                descr.emplace_back("Affects all visible hostile creatures.");
-        }
+        descr.emplace_back(
+                skill == SpellSkill::basic
+                        ? "Affects one random visible hostile creature."
+                        : "Affects all visible hostile creatures.");
 
         descr.push_back("The spell lasts " + duration_range(skill).str() + " turns.");
 
@@ -5381,12 +5408,10 @@ std::vector<std::string> SpellSlow::descr_specific(
 
         descr.emplace_back(s_not_alerting_mon_descr);
 
-        if (skill == SpellSkill::basic) {
-                descr.emplace_back("Affects one random visible hostile creature.");
-        }
-        else {
-                descr.emplace_back("Affects all visible hostile creatures.");
-        }
+        descr.emplace_back(
+                skill == SpellSkill::basic
+                        ? "Affects one random visible hostile creature."
+                        : "Affects all visible hostile creatures.");
 
         descr.push_back("The spell lasts " + duration_range(skill).str() + " turns.");
 
@@ -5533,12 +5558,10 @@ std::vector<std::string> SpellTerrify::descr_specific(
 
         descr.emplace_back("Manifests an overpowering feeling of dread in the spell's victims.");
 
-        if (skill == SpellSkill::basic) {
-                descr.emplace_back("Affects one random visible hostile creature.");
-        }
-        else {
-                descr.emplace_back("Affects all visible hostile creatures.");
-        }
+        descr.emplace_back(
+                skill == SpellSkill::basic
+                        ? "Affects one random visible hostile creature."
+                        : "Affects all visible hostile creatures.");
 
         descr.push_back("The spell lasts " + duration_range(skill).str() + " turns.");
 

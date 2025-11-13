@@ -37,6 +37,7 @@ enum class SfxId
         darkbolt_release,
         death,
         dog_snarl,
+        doom_spell,
         door_bang,
         door_bang_gate,
         door_bang_metal,

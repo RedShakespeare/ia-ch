@@ -300,6 +300,8 @@ protected:
 
         int base_max_cost(SpellSkill skill, const actor::Actor* caster) const override;
 
+        int pct_chance_doom(SpellSkill skill) const;
+
         bool is_noisy(SpellSkill skill) const override;
 };
 
