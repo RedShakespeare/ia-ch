@@ -16,7 +16,7 @@ TEST_CASE("Hit player with Prolonged Life trait")
 {
         test_utils::init_all();
 
-        player_bon::pick_trait(Trait::prolonged_life);
+        player_bon::pick_trait(TraitId::prolonged_life);
 
         map::g_player->m_inv.drop_all_non_intrinsic(map::g_player->m_pos);
 

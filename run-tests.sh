@@ -11,6 +11,6 @@ cd build
 # Define as "--use-colour=no" do disable colors
 color_opt=""
 
-./ia-test ${color_opt} -D 3 --abort $*
+./ia-test ${color_opt} -D 3 --abort "$*"
 
 cd ${root_dir}

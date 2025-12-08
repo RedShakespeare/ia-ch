@@ -222,12 +222,20 @@ public:
         bool is_resisting_dmg(DmgType dmg_type, Verbose verbose) const;
 
 private:
-        void print_resist_msg(const Prop& prop);
-        void print_start_msg(const Prop& prop);
+        void print_resist_msg(const Prop& prop) const;
+        void print_start_msg(const Prop& prop) const;
 
-        bool try_apply_more_on_existing_intr_prop(const Prop& new_prop, Verbose verbose);
+        void handle_resistance_trait_reducing_duration(Prop& prop) const;
 
-        bool is_resisting_prop(Id id) const;
+        bool handle_resisting_prop(const Prop& prop, Verbose verbose) const;
+
+        void set_prop_duration_on_more_applied(Prop& prop_to_update, const Prop& other_prop) const;
+
+        void handle_upgrade_of_existing_intr_prop(Prop& new_prop);
+
+        bool handle_apply_more_on_existing_intr_prop(const Prop& new_prop, Verbose verbose) const;
+
+        void handle_status_effects_hint(const Prop& prop) const;
 
         // A hook that prints messages, updates FOV, etc, and also calls the on_end() property hook.
         //
