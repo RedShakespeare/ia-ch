@@ -58,17 +58,17 @@ TEST_CASE("Saving and loading the game")
                 // Traits
                 game::incr_clvl_number();
 
-                player_bon::pick_trait(Trait::healer);
+                player_bon::pick_trait(TraitId::healer);
 
                 game::incr_clvl_number();
                 game::incr_clvl_number();
                 game::incr_clvl_number();
 
-                player_bon::pick_trait(Trait::resistant);
+                player_bon::pick_trait(TraitId::resistant);
 
                 game::incr_clvl_number();
 
-                player_bon::remove_trait(Trait::resistant);
+                player_bon::remove_trait(TraitId::resistant);
 
                 // Player inventory
                 auto& inv = map::g_player->m_inv;
@@ -263,27 +263,27 @@ TEST_CASE("Saving and loading the game")
                 REQUIRE(player_bon::bg() == Bg::rogue);
 
                 // Traits
-                REQUIRE(player_bon::has_trait(Trait::healer));
+                REQUIRE(player_bon::has_trait(TraitId::healer));
 
-                REQUIRE(!player_bon::has_trait(Trait::resistant));
+                REQUIRE(!player_bon::has_trait(TraitId::resistant));
 
-                REQUIRE(!player_bon::has_trait(Trait::vigilant));
+                REQUIRE(!player_bon::has_trait(TraitId::vigilant));
 
                 const auto trait_log = player_bon::trait_log();
 
                 REQUIRE(trait_log.size() == 4);
 
                 REQUIRE(trait_log[0].clvl == 0);
-                REQUIRE(trait_log[0].trait_id == Trait::stealthy);
+                REQUIRE(trait_log[0].trait_id == TraitId::stealthy);
 
                 REQUIRE(trait_log[1].clvl == 1);
-                REQUIRE(trait_log[1].trait_id == Trait::healer);
+                REQUIRE(trait_log[1].trait_id == TraitId::healer);
 
                 REQUIRE(trait_log[2].clvl == 4);
-                REQUIRE(trait_log[2].trait_id == Trait::resistant);
+                REQUIRE(trait_log[2].trait_id == TraitId::resistant);
 
                 REQUIRE(trait_log[3].clvl == 5);
-                REQUIRE(trait_log[3].trait_id == Trait::resistant);
+                REQUIRE(trait_log[3].trait_id == TraitId::resistant);
                 REQUIRE(trait_log[3].is_removal);
 
                 // Player inventory
@@ -381,8 +381,7 @@ TEST_CASE("Saving and loading the game")
                                         item_curse::Id::END);
                         } break;
 
-                        default:
-                        {
+                        default: {
                                 ASSERT(false);
                         } break;
                         }

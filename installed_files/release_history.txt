@@ -12,6 +12,7 @@
 
 # Status effects
 - Poison now occasionally makes the creature skip a turn. Poisoning no longer lowers evasion (only melee damage and melee hit chance).
+- "Doomed" is now considered an upgrade of "Cursed" - a creature cannot be both cursed and doomed simultaneously.
 
 # Backgrounds (classes) and traits
 - Occultists can pick traits to improve spell domains again, instead of getting automatic spell upgrades. This is a reversion to how it worked prior to v20.0, but the spell domain traits now also have level requirements (4 and 8 for "lesser" and "greater" casting, respectively).

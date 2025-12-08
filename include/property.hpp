@@ -139,9 +139,14 @@ public:
                 return m_nr_turns_left == 0;
         }
 
-        virtual PropAlignment alignment() const
+        PropAlignment alignment() const
         {
                 return m_data->alignment;
+        }
+
+        bool is_upgrade_of(const Id id)
+        {
+                return id == m_data->is_upgrade_of;
         }
 
         virtual void cycle_graphics() {}
@@ -1253,8 +1258,6 @@ public:
         RPhys() :
                 Prop(Id::r_phys) {}
 
-        void on_applied() override;
-        bool is_resisting_other_prop(Id prop_id) const override;
         DmgResistData is_resisting_dmg(DmgType dmg_type) const override;
 };
 

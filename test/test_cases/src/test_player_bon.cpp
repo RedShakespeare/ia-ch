@@ -12,9 +12,7 @@
 #include "player_bon.hpp"
 #include "test_utils.hpp"
 
-static bool can_be_removed(
-        const Trait id,
-        const std::vector<Trait> traits_can_be_removed)
+static bool can_be_removed(const TraitId id, const std::vector<TraitId> traits_can_be_removed)
 {
         const auto result =
                 std::find(
@@ -33,11 +31,11 @@ TEST_CASE("Get traits that can be removed")
 
         player_bon::set_all_traits_to_picked();
 
-        player_bon::remove_trait(Trait::master_marksman);
+        player_bon::remove_trait(TraitId::master_marksman);
 
         const auto traits_be_removed = player_bon::traits_can_be_removed();
 
-        REQUIRE(!can_be_removed(Trait::adept_marksman, traits_be_removed));
-        REQUIRE(can_be_removed(Trait::expert_marksman, traits_be_removed));
-        REQUIRE(!can_be_removed(Trait::master_marksman, traits_be_removed));
+        REQUIRE(!can_be_removed(TraitId::adept_marksman, traits_be_removed));
+        REQUIRE(can_be_removed(TraitId::expert_marksman, traits_be_removed));
+        REQUIRE(!can_be_removed(TraitId::master_marksman, traits_be_removed));
 }

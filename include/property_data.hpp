@@ -189,6 +189,7 @@ struct PropData
         DurationOnMoreBehavior duration_on_more {DurationOnMoreBehavior::longest};
         bool allow_test_on_bot {false};
         PropAlignment alignment {PropAlignment::neutral};
+        Id is_upgrade_of {Id::END};
 };
 
 extern PropData g_data[(size_t)Id::END];

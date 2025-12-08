@@ -2318,16 +2318,6 @@ void RSlow::on_applied()
                         PropEndAllowHistoricMsg::yes));
 }
 
-bool RPhys::is_resisting_other_prop(const prop::Id prop_id) const
-{
-        (void)prop_id;
-        return false;
-}
-
-void RPhys::on_applied()
-{
-}
-
 DmgResistData RPhys::is_resisting_dmg(const DmgType dmg_type) const
 {
         DmgResistData d;

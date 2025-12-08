@@ -841,6 +841,7 @@ static void init_data_list()
         d.allow_display_turns = true;
         d.allow_test_on_bot = true;
         d.alignment = prop::PropAlignment::bad;
+        d.is_upgrade_of = prop::Id::cursed;
         add(d);
 
         d.id = prop::Id::extra_skill;

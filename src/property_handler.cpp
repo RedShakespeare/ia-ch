@@ -248,6 +248,72 @@ void PropHandler::load()
         }
 }
 
+void PropHandler::handle_resistance_trait_reducing_duration(Prop& prop) const
+{
+        const bool is_temporary = prop.m_duration_mode != PropDurationMode::indefinite;
+        const bool is_significant_duration = prop.m_nr_turns_left >= 4;
+
+        if (actor::is_player(m_owner) &&
+            player_bon::has_trait(TraitId::resistant) &&
+            is_player_resistance_traits_applicable(prop.id()) &&
+            is_temporary &&
+            is_significant_duration) {
+                prop.m_nr_turns_left /= 2;
+        }
+}
+
+bool PropHandler::handle_resisting_prop(const Prop& prop, const Verbose verbose) const
+{
+        bool is_resisting = false;
+
+        // Check for guaranteed ("simple") resistance due to another property.
+        for (const auto& current_prop : m_props) {
+                if (current_prop->is_resisting_other_prop(prop.m_id)) {
+                        is_resisting = true;
+                        break;
+                }
+        }
+
+        if (!is_resisting) {
+                // Check percent based resist chance.
+
+                int resist_chance_pct = 0;
+
+                if (actor::is_player(m_owner) &&
+                    is_player_resistance_traits_applicable(prop.id())) {
+                        resist_chance_pct += calc_resist_chance_from_player_traits();
+                }
+
+                if (is_magic_carapace_applicable(prop.id())) {
+                        resist_chance_pct += resist_chance_from_magic_carapace(*m_owner);
+                }
+
+                is_resisting = rnd::percent(resist_chance_pct);
+        }
+
+        if (is_resisting) {
+                if ((verbose == Verbose::yes) && actor::is_alive(*m_owner)) {
+                        print_resist_msg(prop);
+                }
+        }
+
+        return is_resisting;
+}
+
+void PropHandler::handle_status_effects_hint(const Prop& prop) const
+{
+        // Display a hint about status effects.
+        //
+        // NOTE: Infection status effects are excluded since they have their own hint, and double
+        // popups should be avoided.
+        //
+        if (actor::is_player(m_owner) &&
+            !prop.name_short().empty() &&
+            (prop.id() != Id::infected)) {
+                hints::display(hints::Id::status_effects);
+        }
+}
+
 void PropHandler::apply(
         Prop* const prop,
         PropSrc src,
@@ -257,66 +323,43 @@ void PropHandler::apply(
         prop->m_owner = m_owner;
         prop->m_src = src;
 
-        if (actor::is_player(m_owner) &&
-            player_bon::has_trait(TraitId::resistant) &&
-            is_player_resistance_traits_applicable(prop->id()) &&
-            (prop->m_duration_mode != PropDurationMode::indefinite) &&
-            (prop->m_nr_turns_left >= 4)) {
-                prop->m_nr_turns_left /= 2;
-        }
+        handle_resistance_trait_reducing_duration(*prop);
 
-        std::shared_ptr<Prop> prop_shared(prop);
-
-        // Check if property is resisted
+        // Check if property is resisted.
         if (!force_effect) {
-                // Resisting due to another property?
-                bool is_resisting = is_resisting_prop(prop->m_id);
+                const bool did_resist = handle_resisting_prop(*prop, verbose);
 
-                if (!is_resisting) {
-                        // Percent based resist chance.
-                        int resist_chance_pct = 0;
-
-                        if (actor::is_player(m_owner) &&
-                            is_player_resistance_traits_applicable(prop->id())) {
-                                resist_chance_pct += calc_resist_chance_from_player_traits();
-                        }
-
-                        if (is_magic_carapace_applicable(prop->id())) {
-                                resist_chance_pct += resist_chance_from_magic_carapace(*m_owner);
-                        }
-
-                        is_resisting = rnd::percent(resist_chance_pct);
-                }
-
-                if (is_resisting) {
-                        if ((verbose == Verbose::yes) && actor::is_alive(*m_owner)) {
-                                print_resist_msg(*prop);
-                        }
-
+                if (did_resist) {
                         return;
                 }
         }
 
-        // The property can be applied
+        // The property can be applied.
 
         if (prop->m_src == PropSrc::intr) {
-                const bool did_apply_more = try_apply_more_on_existing_intr_prop(*prop, verbose);
+                // End any existing property which the new property upgrades, and set the duration
+                // of the new property to the longest of the old and new properties.
+                handle_upgrade_of_existing_intr_prop(*prop);
+
+                // Handle applying "more" of the same properrty on an existing property (if so
+                // discard the new property and update the duration of the old property).  This also
+                // handles the case when a current property is already an upgrade of the new
+                // property (similar behavior).
+                const bool did_apply_more =
+                        handle_apply_more_on_existing_intr_prop(*prop, verbose);
 
                 if (did_apply_more) {
-                        if (actor::is_player(m_owner) &&
-                            prop->m_data->force_interrupt_player_on_start) {
-                                map::g_player->interrupt_actions(ForceInterruptActions::yes);
-                        }
-
                         return;
                 }
         }
 
-        // The property should be applied individually
+        // The property should be applied individually.
 
         if ((verbose == Verbose::yes) && actor::is_alive(*m_owner)) {
                 print_start_msg(*prop);
         }
+
+        std::shared_ptr<Prop> prop_shared(prop);
 
         std::weak_ptr<Prop> prop_weak = prop_shared;
 
@@ -333,7 +376,7 @@ void PropHandler::apply(
 
         if ((prop->duration_mode() == PropDurationMode::indefinite) &&
             (actor::is_player(m_owner))) {
-                const auto& msg = prop->m_data->historic_msg_start_permanent;
+                const std::string& msg = prop->m_data->historic_msg_start_permanent;
 
                 if (!msg.empty()) {
                         game::add_history_event(msg);
@@ -351,20 +394,12 @@ void PropHandler::apply(
                 map::g_player->interrupt_actions(ForceInterruptActions::yes);
         }
 
-        // Display a hint about status effects.
-        //
-        // NOTE: Infection status effects are excepted since they have their own
-        // hint and double popups should be avoided.
-        //
-        if (actor::is_player(m_owner) &&
-            (verbose == Verbose::yes) &&
-            !prop->name_short().empty() &&
-            (prop->id() != Id::infected)) {
-                hints::display(hints::Id::status_effects);
+        if (verbose == Verbose::yes) {
+                handle_status_effects_hint(*prop);
         }
 }
 
-void PropHandler::print_resist_msg(const Prop& prop)
+void PropHandler::print_resist_msg(const Prop& prop) const
 {
         if (actor::is_player(m_owner)) {
                 const auto msg = prop.m_data->msg_res_player;
@@ -392,7 +427,7 @@ void PropHandler::print_resist_msg(const Prop& prop)
         }
 }
 
-void PropHandler::print_start_msg(const Prop& prop)
+void PropHandler::print_start_msg(const Prop& prop) const
 {
         if (actor::is_player(m_owner)) {
                 const auto msg = prop.m_data->msg_start_player;
@@ -424,20 +459,118 @@ void PropHandler::print_start_msg(const Prop& prop)
         }
 }
 
-bool PropHandler::try_apply_more_on_existing_intr_prop(
+void PropHandler::set_prop_duration_on_more_applied(
+        Prop& prop_to_update,
+        const Prop& other_prop) const
+{
+        // Set duration of the 'prop_to_update' based on the "more" behavior type of the property
+        // (typically using the longest duration of the two properties).
+
+        // NOTE: Dungeon level duration is always set to the longest duration, at least currently
+        // there is no need to ever do anything else.
+        prop_to_update.m_nr_dlvls_left = longest_dlvl_duration(prop_to_update, other_prop);
+
+        const bool prop_to_update_is_indefinite =
+                prop_to_update.m_duration_mode ==
+                PropDurationMode::indefinite;
+
+        const bool other_prop_is_indefinite =
+                other_prop.m_duration_mode ==
+                PropDurationMode::indefinite;
+
+        if (other_prop_is_indefinite) {
+                prop_to_update.m_nr_turns_left = -1;
+                prop_to_update.m_duration_mode = PropDurationMode::indefinite;
+        }
+        else if (!prop_to_update_is_indefinite) {
+                // Both the old and new property are temporary.
+
+                switch (prop_to_update.m_data->duration_on_more) {
+                case DurationOnMoreBehavior::longest:
+                        prop_to_update.m_nr_turns_left =
+                                longest_duration(prop_to_update, other_prop);
+                        break;
+
+                case DurationOnMoreBehavior::shortest:
+                        prop_to_update.m_nr_turns_left =
+                                shortest_duration(prop_to_update, other_prop);
+                        break;
+
+                case DurationOnMoreBehavior::stacked:
+                        prop_to_update.m_nr_turns_left =
+                                sum_durations(prop_to_update, other_prop);
+                        break;
+                }
+        }
+
+        prop_to_update.m_nr_turns_active = longest_turns_active(prop_to_update, other_prop);
+}
+
+void PropHandler::handle_upgrade_of_existing_intr_prop(Prop& new_prop)
+{
+        // Given that an existing property is found, that the new property is an upgrade of, this
+        // function does the following:
+        //
+        // * Sets the duration of the new property (typically to the longest duration of the old and
+        //   new property).
+        // * Removes the old property.
+        //
+        // It is then expected that the calling function proceeds to add the new property as if it
+        // was a new property that is added individually.
+        //
+
+        Prop* old_prop = nullptr;
+
+        for (const auto& prop : m_props) {
+                if (new_prop.is_upgrade_of(prop->id()) && (prop->m_src == PropSrc::intr)) {
+                        old_prop = prop.get();
+
+                        break;
+                }
+        }
+
+        if (!old_prop) {
+                return;
+        }
+
+        // The new property is an upgrade of an existing property.
+
+        set_prop_duration_on_more_applied(new_prop, *old_prop);
+
+        PropEndConfig prop_end_config;
+        prop_end_config.allow_end_hook = PropEndAllowCallEndHook::no;
+        prop_end_config.allow_historic_msg = PropEndAllowHistoricMsg::no;
+        prop_end_config.allow_msg = PropEndAllowMsg::no;
+
+        end_prop(old_prop->id(), prop_end_config);
+}
+
+bool PropHandler::handle_apply_more_on_existing_intr_prop(
         const Prop& new_prop,
-        const Verbose verbose)
+        const Verbose verbose) const
 {
         // NOTE: If an existing property exists which the new property shall be merged with, we keep
         // the OLD property object and discard the NEW one.
 
+        // NOTE: This function also handles the case where an existing property is already an
+        // upgrade of the new property (pretty much same behavior as when more of the same properrty
+        // is applied - discard the new property and update duration).
+
         Prop* old_prop = nullptr;
 
-        for (auto& prop : m_props) {
-                if ((new_prop.m_id == prop->m_id) && (prop->m_src == PropSrc::intr)) {
-                        old_prop = prop.get();
+        for (const auto& prop : m_props) {
+                if (prop->m_src == PropSrc::intr) {
+                        const bool is_same =
+                                new_prop.m_id == prop->m_id;
 
-                        break;
+                        const bool is_existing_prop_upgrade_of_new =
+                                prop->is_upgrade_of(new_prop.m_id);
+
+                        if (is_same || is_existing_prop_upgrade_of_new) {
+                                old_prop = prop.get();
+
+                                break;
+                        }
                 }
         }
 
@@ -447,44 +580,23 @@ bool PropHandler::try_apply_more_on_existing_intr_prop(
 
         // Found another intrinsic property of same type.
 
-        // NOTE: Dungeon level duration is always set to the longest duration, at least currently
-        // there is no need to ever do anything else.
-        old_prop->m_nr_dlvls_left = longest_dlvl_duration(*old_prop, new_prop);
+        const bool was_indefinite_before =
+                old_prop->m_duration_mode ==
+                PropDurationMode::indefinite;
 
-        const bool old_is_permanent = old_prop->m_nr_turns_left < 0;
-        const bool new_is_permanent = new_prop.m_nr_turns_left < 0;
+        set_prop_duration_on_more_applied(*old_prop, new_prop);
 
-        if (new_is_permanent) {
-                old_prop->m_nr_turns_left = -1;
-                old_prop->m_duration_mode = PropDurationMode::indefinite;
-        }
-        else if (!old_is_permanent) {
-                // Both the old and new property are temporary.
+        const bool is_indefinite_after =
+                old_prop->m_duration_mode ==
+                PropDurationMode::indefinite;
 
-                switch (old_prop->m_data->duration_on_more) {
-                case DurationOnMoreBehavior::longest:
-                        old_prop->m_nr_turns_left = longest_duration(*old_prop, new_prop);
-                        break;
-
-                case DurationOnMoreBehavior::shortest:
-                        old_prop->m_nr_turns_left = shortest_duration(*old_prop, new_prop);
-                        break;
-
-                case DurationOnMoreBehavior::stacked:
-                        old_prop->m_nr_turns_left = sum_durations(*old_prop, new_prop);
-                        break;
-                }
-        }
-
-        old_prop->m_nr_turns_active = longest_turns_active(*old_prop, new_prop);
-
-        if (verbose == Verbose::yes) {
+        if ((verbose == Verbose::yes) && actor::is_alive(*m_owner)) {
                 print_start_msg(*old_prop);
         }
 
         old_prop->on_more(new_prop);
 
-        if (actor::is_player(m_owner) && !old_is_permanent && new_is_permanent) {
+        if (actor::is_player(m_owner) && !was_indefinite_before && is_indefinite_after) {
                 // The property was temporary and became permanent, log a historic event for
                 // applying a permanent property.
                 const std::string& msg = old_prop->m_data->historic_msg_start_permanent;
@@ -492,6 +604,10 @@ bool PropHandler::try_apply_more_on_existing_intr_prop(
                 if (!msg.empty()) {
                         game::add_history_event(msg);
                 }
+        }
+
+        if (actor::is_player(m_owner) && old_prop->m_data->force_interrupt_player_on_start) {
+                map::g_player->interrupt_actions(ForceInterruptActions::yes);
         }
 
         return true;
@@ -504,11 +620,7 @@ void PropHandler::add_prop_from_equipped_item(
 {
         prop->m_item_applying = item;
 
-        apply(
-                prop,
-                PropSrc::inv,
-                true,
-                verbose);
+        apply(prop, PropSrc::inv, true, verbose);
 }
 
 Prop* PropHandler::prop(const Id id) const
@@ -895,17 +1007,6 @@ std::vector<PropListEntry> PropHandler::property_names_and_descr() const
         }
 
         return list;
-}
-
-bool PropHandler::is_resisting_prop(const Id id) const
-{
-        for (const auto& prop : m_props) {
-                if (prop->is_resisting_other_prop(id)) {
-                        return true;
-                }
-        }
-
-        return false;
 }
 
 bool PropHandler::is_resisting_dmg(
@@ -1357,11 +1458,10 @@ std::optional<Color> PropHandler::override_actor_color() const
                 if (new_color) {
                         color = new_color;
 
-                        // It's probably more likely that a color change due to
-                        // a bad property is critical information (e.g.
-                        // burning), so we stop searching and use this color. If
-                        // it's a good or neutral property that affected the
-                        // color, then we keep searching.
+                        // It's probably more likely that a color change due to a bad property is
+                        // critical information (e.g.  burning), so we stop searching and use this
+                        // color. If it's a good or neutral property that affected the color, then
+                        // we keep searching.
                         if (prop->alignment() == PropAlignment::bad) {
                                 break;
                         }
