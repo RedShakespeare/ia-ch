@@ -1048,7 +1048,6 @@ PropEnded Poisoned::on_actor_turn()
         }
 
         handle_damage();
-        handle_skip_turn();
 
         return PropEnded::no;
 }
@@ -1094,41 +1093,6 @@ void Poisoned::handle_damage() const
         }
 
         actor::hit(*m_owner, dmg, DmgType::pure, nullptr);
-}
-
-void Poisoned::handle_skip_turn() const
-{
-        const int paralyze_one_in_n = 7;
-
-        if (!rnd::one_in(paralyze_one_in_n)) {
-                return;
-        }
-
-        if (!m_owner->m_properties.allow_act()) {
-                // Actor already cannot act.
-                return;
-        }
-
-        if (actor::is_player(m_owner)) {
-                msg_log::add(
-                        "I am too sick from the poison to act.",
-                        colors::msg_bad(),
-                        MsgInterruptPlayer::yes);
-        }
-        else if (actor::can_player_see_actor(*m_owner)) {
-                // Is seen monster
-                const std::string actor_name_the =
-                        text_format::first_to_upper(
-                                actor::name_the(*m_owner));
-
-                msg_log::add(actor_name_the + " is too sick from the poison to act.");
-        }
-
-        prop::Prop* const paralyzed = prop::make(prop::Id::paralyzed);
-
-        paralyzed->set_duration(1);
-
-        m_owner->m_properties.apply(paralyzed, PropSrc::intr, false, Verbose::no);
 }
 
 int Aiming::ability_mod(const AbilityId ability) const
