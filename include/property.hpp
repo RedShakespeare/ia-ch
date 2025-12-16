@@ -579,7 +579,6 @@ public:
 
 private:
         void handle_damage() const;
-        void handle_skip_turn() const;
 };
 
 class Aiming : public Prop
