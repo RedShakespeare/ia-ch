@@ -130,8 +130,9 @@ static const std::unordered_map<SpellDomain, ShockSrc> s_spell_domain_to_shock_t
         // NOTE: Not all spells belong to a domain:
         {SpellDomain::END, ShockSrc::cast_intr_spell_general}};
 
-static const std::string s_spell_resist_msg = "The spell is resisted!";
-
+static const std::string s_spell_resist_msg_player = "I resist the spell!";
+// This assumes the message starts with "Monster Name":
+static const std::string s_spell_resist_msg_mon = "resists the spell!";
 static const std::string s_spell_reflect_msg = "The spell is reflected!";
 
 static const std::string s_not_alerting_mon_descr =
@@ -1291,7 +1292,19 @@ void Spell::on_resist(actor::Actor& target) const
         const bool player_see_target = actor::can_player_see_actor(target);
 
         if (player_see_target) {
-                msg_log::add(s_spell_resist_msg);
+                std::string resist_msg;
+
+                if (is_player) {
+                        resist_msg = s_spell_resist_msg_player;
+                }
+                else {
+                        const std::string mon_name =
+                                text_format::first_to_upper(actor::name_the(target));
+
+                        resist_msg = mon_name + " " + s_spell_resist_msg_mon;
+                }
+
+                msg_log::add(resist_msg);
 
                 if (is_player) {
                         audio::play(audio::SfxId::spell_shield_break);
