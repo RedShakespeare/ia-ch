@@ -559,6 +559,13 @@ Original title:      Steam Hiss.wav
 License:             Attribution 3.0 Unported (CC BY 3.0)
 Changes made:        Cut most of the sound and applied early fade-out
 
+File:                sfx_gnawing_torrent_impact.ogg
+Source:              https://www.freesound.org/people/CapsLok/sounds/181922
+Author:              CapsLok (username on freesound.org)
+Original title:      Crunchy Bites.wav
+License:             CC0 1.0 Universal (CC0 1.0)
+Changes made:        Cut most of the sound, applied several effects.
+
 File:                sfx_gong.ogg
 Source:              https://freesound.org/people/GowlerMusic/sounds/266566/
 Author:              GowlerMusic (username on freesound.org)

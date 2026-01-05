@@ -28,9 +28,8 @@ enum class Id
         r_breath,
         r_disease,
         r_shock,
-        // NOTE: The purpose of this is only to prevent blindness for "eyeless" monsters
-        // (e.g. constructs such as animated weapons), and is only intended as a natural property -
-        // not for e.g. gas masks.
+        // NOTE: The purpose of this is only to prevent blindness for "eyeless" monsters, and is
+        // only intended as a natural property - not for e.g. gas masks.
         r_blind,
         r_para,  // Mostly intended as a natural property for monsters
         r_spell,
@@ -49,7 +48,6 @@ enum class Id
         darkvision,
         poisoned,
         paralyzed,
-        delayed_by_liquid,  // Delayed for a turn due to bumping liquid terrain
         terrified,
         confused,
         hallucinating,
@@ -124,8 +122,9 @@ enum class Id
         descend,
         zuul_possess_priest,
         possessed_by_zuul,
-        shapeshifts,  // For the Shapeshifter monster
-        zealot_stop,  // The Zealot pauses and "gropes about"
+        delayed_by_liquid,  // Delayed for a turn due to bumping liquid terrain
+        shapeshifts,        // For the Shapeshifter monster
+        zealot_stop,        // The Zealot pauses and "gropes about"
         major_clapham_summon,
         allies_ghoul_player,
         spectral_wpn,

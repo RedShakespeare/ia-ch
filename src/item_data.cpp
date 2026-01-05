@@ -1625,6 +1625,11 @@ void init()
         g_data[(size_t)d.id] = d;
 
         reset_data(d, ItemType::scroll);
+        d.id = Id::scroll_gnawing_torrent;
+        d.spell_cast_from_scroll = SpellId::gnawing_torrent;
+        g_data[(size_t)d.id] = d;
+
+        reset_data(d, ItemType::scroll);
         d.id = Id::scroll_aza_gaze;
         d.spell_cast_from_scroll = SpellId::aza_gaze;
         g_data[(size_t)d.id] = d;

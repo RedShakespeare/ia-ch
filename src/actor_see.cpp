@@ -136,7 +136,7 @@ static std::vector<actor::Actor*> seen_actors_mon(const actor::Actor& mon)
         map_parsers::BlocksLos()
                 .run(blocked_los, los_rect, MapParseMode::overwrite);
 
-        for (auto* const other_actor : game_time::g_actors) {
+        for (actor::Actor* const other_actor : game_time::g_actors) {
                 if (other_actor == &mon) {
                         continue;
                 }
@@ -162,22 +162,19 @@ static std::vector<actor::Actor*> seen_foes_mon(const actor::Actor& mon)
 {
         std::vector<actor::Actor*> result;
 
-        const auto seen_actors = seen_actors_mon(mon);
+        const std::vector<actor::Actor*> seen_actors = seen_actors_mon(mon);
 
         result.reserve(std::size(seen_actors));
 
         for (auto* const other_actor : seen_actors) {
-                const bool is_hostile_to_player =
-                        !mon.is_actor_my_leader(map::g_player);
+                const bool is_hostile_to_player = !mon.is_actor_my_leader(map::g_player);
 
                 const bool is_other_hostile_to_player =
                         actor::is_player(other_actor)
                         ? false
                         : !other_actor->is_actor_my_leader(map::g_player);
 
-                const bool is_enemy =
-                        (is_hostile_to_player !=
-                         is_other_hostile_to_player);
+                const bool is_enemy = (is_hostile_to_player != is_other_hostile_to_player);
 
                 if (!is_enemy) {
                         continue;

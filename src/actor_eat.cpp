@@ -206,4 +206,21 @@ void heal_from_eating(actor::Actor& actor)
         }
 }
 
+bool is_edible_living_creature(const actor::Actor& actor)
+{
+        // Feeding on live monsters shall never be done for monsters such as Ghosts or Shadows, or
+        // "constructed" monsters (something like a robot, golem or statue).
+        //
+        // Checking that the monster is not Ethereal and that it can bleed should be a pretty good
+        // rule for this. We should NOT check if the monster can leave a corpse however, since some
+        // monsters such as Worms don't leave a corpse, and you SHOULD be able to feed on those.
+        //
+
+        const actor::ActorData& d = *actor.m_data;
+
+        const bool is_ethereal = actor.m_properties.has(prop::Id::ethereal);
+
+        return !is_ethereal && d.can_bleed;
+}
+
 }  // namespace actor

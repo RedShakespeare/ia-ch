@@ -123,6 +123,8 @@ static void make_for_player_occultist_specific()
 {
         switch (player_bon::occultist_starting_domain()) {
         case SpellDomain::channeling:
+                learn_spell_player(SpellId::darkbolt);
+                learn_spell_player(SpellId::gnawing_torrent);
                 break;
 
         case SpellDomain::corruption:

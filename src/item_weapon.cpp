@@ -109,22 +109,9 @@ void PlayerGhoulClaw::on_melee_hit(actor::Actor& actor_hit, const int dmg)
 {
         (void)dmg;
 
-        // TODO: If some "constructed" monster is added (something not made of
-        // flesh, e.g. a golem), then a Ghoul player would be able to feed from
-        // it, which would be a problem. In that case, there should probably be
-        // a field in the actor data called something like either
-        // "is_flesh_body", or "is_construct".
+        // Handle Ghoul feeding from Ravenous trait.
 
-        // Ghoul feeding from Ravenous trait?
-
-        // NOTE: Player should never feed on monsters such as Ghosts or Shadows.
-        // Checking that the monster is not Ethereal and that it can bleed
-        // should be a pretty good rule for this. We should NOT check if the
-        // monster can leave a corpse however, since some monsters such as
-        // Worms don't leave a corpse, and you SHOULD be able to feed on those.
-        const auto& d = *actor_hit.m_data;
-
-        const bool is_ethereal = actor_hit.m_properties.has(prop::Id::ethereal);
+        const bool is_edible_creature = actor::is_edible_living_creature(actor_hit);
 
         const bool is_hp_missing = (map::g_player->m_hp < actor::max_hp(*map::g_player));
 
@@ -132,8 +119,7 @@ void PlayerGhoulClaw::on_melee_hit(actor::Actor& actor_hit, const int dmg)
 
         const bool is_feed_needed = is_hp_missing || is_wounded;
 
-        if (!is_ethereal &&
-            d.can_bleed &&
+        if (is_edible_creature &&
             player_bon::has_trait(TraitId::ravenous) &&
             is_feed_needed &&
             rnd::one_in(6)) {
