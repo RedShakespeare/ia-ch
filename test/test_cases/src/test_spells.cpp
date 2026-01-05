@@ -265,12 +265,12 @@ TEST_CASE("Test spell shield")
 
                 REQUIRE(mon->m_properties.has(prop::Id::r_spell));
 
-                darkbolt->run_effect(map::g_player, SpellSkill::basic, {mon});
+                darkbolt->run_effect(map::g_player, SpellSkill::basic, {});
 
                 REQUIRE(mon->m_hp == actor::max_hp(*mon));
                 REQUIRE(!mon->m_properties.has(prop::Id::r_spell));
 
-                darkbolt->run_effect(map::g_player, SpellSkill::basic, {mon});
+                darkbolt->run_effect(map::g_player, SpellSkill::basic, {});
 
                 REQUIRE(mon->m_hp < actor::max_hp(*mon));
                 REQUIRE(!mon->m_properties.has(prop::Id::r_spell));
@@ -286,12 +286,12 @@ TEST_CASE("Test spell shield")
 
                 REQUIRE(mon->m_properties.has(prop::Id::r_spell));
 
-                darkbolt->run_effect(map::g_player, SpellSkill::basic, {mon});
+                darkbolt->run_effect(map::g_player, SpellSkill::basic, {});
 
                 REQUIRE(mon->m_hp == actor::max_hp(*mon));
                 REQUIRE(mon->m_properties.has(prop::Id::r_spell));
 
-                darkbolt->run_effect(map::g_player, SpellSkill::basic, {mon});
+                darkbolt->run_effect(map::g_player, SpellSkill::basic, {});
 
                 REQUIRE(mon->m_hp == actor::max_hp(*mon));
                 REQUIRE(mon->m_properties.has(prop::Id::r_spell));
@@ -300,9 +300,6 @@ TEST_CASE("Test spell shield")
 
 TEST_CASE("Test spell reflection hits correct creature")
 {
-        // Verify that a reflected Darkbolt hits the caster, and not the closest
-        // creature.
-
         test_utils::init_all();
 
         map::update_terrain(terrain::make(terrain::Id::floor, {10, 10}));
@@ -311,19 +308,21 @@ TEST_CASE("Test spell reflection hits correct creature")
 
         map::g_player->m_pos.set(10, 10);
 
-        auto* const mon_1 = actor::make("MON_ZOMBIE", {11, 10});
-        auto* const mon_2 = actor::make("MON_ZOMBIE", {12, 10});
+        actor::Actor* const mon_1 = actor::make("MON_ZOMBIE", {11, 10});
+        actor::Actor* const mon_2 = actor::make("MON_ZOMBIE", {12, 10});
 
-        map::update_vision();
+        mon_2->m_mon_aware_state.aware_counter = 999;
 
         map::g_player->m_properties.apply(prop::make(prop::Id::r_spell));
-
         map::g_player->m_properties.apply(prop::make(prop::Id::spell_reflect));
 
         // Cast darkbolt from monster 2 on the player.
         const auto* const darkbolt = spells::make(SpellId::darkbolt);
 
-        darkbolt->run_effect(mon_2, SpellSkill::basic, {map::g_player});
+        darkbolt->run_effect(mon_2, SpellSkill::basic, {});
+
+        // The player should be hit, ending spell shield.
+        REQUIRE(!map::g_player->m_properties.has(prop::Id::r_spell));
 
         // Only monster 2 should be hit (not the closest monster).
         REQUIRE(map::g_player->m_hp == actor::max_hp(*map::g_player));
@@ -333,7 +332,7 @@ TEST_CASE("Test spell reflection hits correct creature")
         actor::restore_hp(*mon_2, 999);
 
         // Cast darkbolt again, now it should hit the player (no spell shield).
-        darkbolt->run_effect(mon_2, SpellSkill::basic, {map::g_player});
+        darkbolt->run_effect(mon_2, SpellSkill::basic, {});
 
         REQUIRE(map::g_player->m_hp <= actor::max_hp(*map::g_player));
         REQUIRE(mon_1->m_hp == actor::max_hp(*mon_1));
@@ -342,9 +341,6 @@ TEST_CASE("Test spell reflection hits correct creature")
 
 TEST_CASE("Test reflected knockback spell blocked by caster spell shield")
 {
-        // Verify that if the caster has spell shield, a reflected knockback
-        // spell is blocked by the spell shield.
-
         test_utils::init_all();
 
         map::update_terrain(terrain::make(terrain::Id::floor, {9, 10}));
@@ -354,12 +350,11 @@ TEST_CASE("Test reflected knockback spell blocked by caster spell shield")
 
         map::g_player->m_pos.set(10, 10);
 
-        auto* const mon = actor::make("MON_ZOMBIE", {11, 10});
+        actor::Actor* const mon = actor::make("MON_ZOMBIE", {11, 10});
 
         map::update_vision();
 
         map::g_player->m_properties.apply(prop::make(prop::Id::r_spell));
-
         map::g_player->m_properties.apply(prop::make(prop::Id::spell_reflect));
 
         mon->m_properties.apply(prop::make(prop::Id::r_spell));

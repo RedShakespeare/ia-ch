@@ -144,6 +144,7 @@ enum class Id
         scroll_darkbolt,
         scroll_enfeeble,
         scroll_erudition,
+        scroll_gnawing_torrent,
         scroll_haste,
         scroll_heal,
         scroll_invis,

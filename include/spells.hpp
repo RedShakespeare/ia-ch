@@ -23,6 +23,11 @@ namespace actor
 class Actor;
 }  // namespace actor
 
+namespace audio
+{
+enum class SfxId;
+};  // namespace audio
+
 namespace terrain
 {
 enum class DidOpen;
@@ -44,6 +49,7 @@ enum class SpellId
         aza_gaze,
         cataclysm,
         darkbolt,
+        gnawing_torrent,
 
         // Domain: Corruption
         aura_of_decay,
@@ -482,7 +488,7 @@ class BoltImpl
 public:
         virtual ~BoltImpl() = default;
 
-        virtual Range damage(SpellSkill skill, const actor::Actor& caster) const = 0;
+        virtual Range damage(SpellSkill skill) const = 0;
 
         virtual void on_hit(
                 actor::Actor& actor_hit,
@@ -490,6 +496,8 @@ public:
                 SpellSkill skill) const = 0;
 
         virtual std::string hit_msg_ending() const = 0;
+
+        virtual audio::SfxId impact_sfx() const;
 
         virtual int mon_cooldown() const = 0;
 
@@ -500,6 +508,13 @@ public:
         virtual std::vector<std::string> descr_specific(SpellSkill skill) const = 0;
 
         virtual int base_max_cost(SpellSkill skill, const actor::Actor* caster) const = 0;
+
+        virtual int nr_projectiles(SpellSkill skill) const
+        {
+                (void)skill;
+
+                return 1;
+        }
 };
 
 class ForceBolt : public BoltImpl
@@ -507,7 +522,7 @@ class ForceBolt : public BoltImpl
 public:
         ForceBolt() = default;
 
-        Range damage(SpellSkill skill, const actor::Actor& caster) const override;
+        Range damage(SpellSkill skill) const override;
 
         void on_hit(
                 actor::Actor& actor_hit,
@@ -532,7 +547,7 @@ class Darkbolt : public BoltImpl
 public:
         Darkbolt() = default;
 
-        Range damage(SpellSkill skill, const actor::Actor& caster) const override;
+        Range damage(SpellSkill skill) const override;
 
         void on_hit(
                 actor::Actor& actor_hit,
@@ -550,6 +565,35 @@ public:
         std::vector<std::string> descr_specific(SpellSkill skill) const override;
 
         int base_max_cost(SpellSkill skill, const actor::Actor* caster) const override;
+};
+
+class GnawingTorrent : public BoltImpl
+{
+public:
+        GnawingTorrent() = default;
+
+        Range damage(SpellSkill skill) const override;
+
+        void on_hit(
+                actor::Actor& actor_hit,
+                actor::Actor& caster,
+                SpellSkill skill) const override;
+
+        std::string hit_msg_ending() const override;
+
+        audio::SfxId impact_sfx() const override;
+
+        int mon_cooldown() const override;
+
+        std::string name() const override;
+
+        SpellId id() const override;
+
+        std::vector<std::string> descr_specific(SpellSkill skill) const override;
+
+        int base_max_cost(SpellSkill skill, const actor::Actor* caster) const override;
+
+        int nr_projectiles(SpellSkill skill) const override;
 };
 
 class SpellBolt : public Spell
@@ -586,7 +630,13 @@ private:
 
         void draw_projectile_travel(
                 const actor::Actor& caster,
-                const actor::Actor& target) const;
+                const actor::Actor& target,
+                SpellSkill skill) const;
+
+        void run_bolt_on_target(
+                actor::Actor& caster,
+                actor::Actor& target,
+                SpellSkill skill) const;
 
         std::unique_ptr<BoltImpl> m_impl;
 };

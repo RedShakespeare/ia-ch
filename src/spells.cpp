@@ -19,6 +19,7 @@
 #include "actor.hpp"
 #include "actor_data.hpp"
 #include "actor_death.hpp"
+#include "actor_eat.hpp"
 #include "actor_factory.hpp"
 #include "actor_hit.hpp"
 #include "actor_player_state.hpp"
@@ -90,6 +91,7 @@ static const std::unordered_map<std::string, SpellId> s_str_to_spell_id_map = {
         {"SPELL_ERUDITION", SpellId::erudition},
         {"SPELL_FORCE_BOLT", SpellId::force_bolt},
         {"SPELL_FRENZY", SpellId::frenzy},
+        {"SPELL_GNAWING_TORRENT", SpellId::gnawing_torrent},
         {"SPELL_HASTE", SpellId::haste},
         {"SPELL_HEAL", SpellId::heal},
         {"SPELL_HEAL_OTHERS", SpellId::heal_others},
@@ -873,6 +875,9 @@ Spell* make(const SpellId spell_id)
         case SpellId::darkbolt:
                 return new SpellBolt(new Darkbolt);
 
+        case SpellId::gnawing_torrent:
+                return new SpellBolt(new GnawingTorrent);
+
         case SpellId::aza_gaze:
                 return new SpellAzaGaze();
 
@@ -1602,59 +1607,78 @@ void SpellBolt::run_effect(
         const SpellSkill skill,
         const std::vector<actor::Actor*>& seen_targets) const
 {
-        if (seen_targets.empty()) {
-                if (actor::is_player(caster)) {
-                        msg_log::add(
-                                "A dark sphere materializes, but quickly "
-                                "fizzles out.");
+        (void)seen_targets;
+
+        const int nr_projectiles = m_impl->nr_projectiles(skill);
+
+        for (int i = 0; i < nr_projectiles; ++i) {
+                map::update_vision();
+
+                const std::vector<actor::Actor*>& current_seen_targets = actor::seen_foes(*caster);
+
+                if (current_seen_targets.empty()) {
+                        if (actor::is_player(caster)) {
+                                msg_log::add(
+                                        "A dark sphere materializes, but quickly fizzles out.");
+                        }
+
+                        break;
                 }
 
-                return;
-        }
+                actor::Actor* const target =
+                        map::random_closest_actor(caster->m_pos, current_seen_targets);
 
+                run_bolt_on_target(*caster, *target, skill);
+
+                if (!actor::is_alive(*map::g_player)) {
+                        break;
+                }
+        }
+}
+
+void SpellBolt::run_bolt_on_target(
+        actor::Actor& caster,
+        actor::Actor& target,
+        SpellSkill skill) const
+{
         {
                 Snd snd(
                         "I hear something rushing through the air.",
                         audio::SfxId::darkbolt_release,
                         IgnoreMsgIfOriginSeen::yes,
-                        caster->m_pos,
-                        caster,
+                        caster.m_pos,
+                        &caster,
                         SndVol::low,
                         AlertsMon::yes);
 
                 snd.run();
         }
 
-        actor::Actor* const target =
-                map::random_closest_actor(
-                        caster->m_pos,
-                        seen_targets);
-
         // Spell resistance?
-        if (target->m_properties.has(prop::Id::r_spell)) {
-                on_resist(*target);
+        if (target.m_properties.has(prop::Id::r_spell)) {
+                on_resist(target);
 
                 // Spell reflection?
-                if (target->m_properties.has(prop::Id::spell_reflect)) {
-                        if (actor::can_player_see_actor(*target)) {
+                if (target.m_properties.has(prop::Id::spell_reflect)) {
+                        if (actor::can_player_see_actor(target)) {
                                 msg_log::add(s_spell_reflect_msg);
                         }
 
-                        // Run effect with the target as caster, and the caster as seen target.
-                        run_effect(target, skill, {caster});
+                        // Run a bolt with the target as caster, and the caster as target.
+                        run_bolt_on_target(target, caster, skill);
                 }
 
                 return;
         }
 
-        draw_projectile_travel(*caster, *target);
+        draw_projectile_travel(caster, target, skill);
 
         {
                 Snd snd(
                         "I hear an impact.",
-                        audio::SfxId::darkbolt_impact,
+                        m_impl->impact_sfx(),
                         IgnoreMsgIfOriginSeen::yes,
-                        target->m_pos,
+                        target.m_pos,
                         nullptr,
                         SndVol::low,
                         AlertsMon::yes);
@@ -1662,62 +1686,57 @@ void SpellBolt::run_effect(
                 snd.run();
         }
 
-        const P& target_p = target->m_pos;
+        const P& target_p = target.m_pos;
         const bool player_see_pos = map::g_seen.at(target_p);
-        const bool player_see_tgt = actor::can_player_see_actor(*target);
+        const bool player_see_tgt = actor::can_player_see_actor(target);
 
         if (player_see_tgt || player_see_pos) {
-                draw_blast_at_cells({target->m_pos}, colors::magenta());
+                draw_blast_at_cells({target.m_pos}, colors::magenta());
 
                 Color msg_clr = colors::msg_good();
 
                 std::string str_begin = "I am";
 
-                if (actor::is_player(target)) {
+                if (actor::is_player(&target)) {
                         msg_clr = colors::msg_bad();
                 }
                 else {
                         // Target is monster
                         const std::string name_the =
                                 player_see_tgt
-                                ? text_format::first_to_upper(actor::name_the(*target))
+                                ? text_format::first_to_upper(actor::name_the(target))
                                 : "It";
 
                         str_begin = name_the + " is";
 
-                        if (map::g_player->is_leader_of(target)) {
+                        if (map::g_player->is_leader_of(&target)) {
                                 msg_clr = colors::white();
                         }
                 }
 
-                const std::string hit_msg =
-                        str_begin +
-                        " " +
-                        m_impl->hit_msg_ending();
+                const std::string hit_msg = str_begin + " " + m_impl->hit_msg_ending();
 
                 msg_log::add(hit_msg, msg_clr);
         }
 
-        const auto dmg_range = m_impl->damage(skill, *caster);
+        const Range dmg_range = m_impl->damage(skill);
 
-        actor::hit(
-                *target,
-                dmg_range.roll(),
-                s_bolt_dmg_type,
-                caster,
-                AllowWound::no);
+        actor::hit(target, dmg_range.roll(), s_bolt_dmg_type, &caster, AllowWound::no);
 
-        m_impl->on_hit(*target, *caster, skill);
+        m_impl->on_hit(target, caster, skill);
 
-        if (!actor::is_player(target)) {
-                target->become_aware_player(actor::AwareSource::spell_victim);
+        if (!actor::is_player(&target)) {
+                target.become_aware_player(actor::AwareSource::spell_victim);
         }
 }
 
 void SpellBolt::draw_projectile_travel(
         const actor::Actor& caster,
-        const actor::Actor& target) const
+        const actor::Actor& target,
+        SpellSkill skill) const
 {
+        (void)skill;
+
         Array2<bool> blocked(map::dims());
 
         map_parsers::BlocksProjectiles()
@@ -1725,11 +1744,7 @@ void SpellBolt::draw_projectile_travel(
 
         const auto flood = floodfill(caster.m_pos, blocked);
 
-        const auto path =
-                pathfind_with_flood(
-                        caster.m_pos,
-                        target.m_pos,
-                        flood);
+        const auto path = pathfind_with_flood(caster.m_pos, target.m_pos, flood);
 
         if (!path.empty()) {
                 states::draw();
@@ -1755,7 +1770,13 @@ void SpellBolt::draw_projectile_travel(
 
                         io::update_screen();
 
-                        io::sleep(config::delay_projectile_draw());
+                        int delay = config::delay_projectile_draw();
+
+                        if (m_impl->nr_projectiles(skill) > 1) {
+                                delay /= 2;
+                        }
+
+                        io::sleep(delay);
                 }
         }
 }
@@ -1767,6 +1788,11 @@ bool SpellBolt::allow_mon_cast_now(
         (void)mon;
 
         return !seen_targets.empty();
+}
+
+audio::SfxId BoltImpl::impact_sfx() const
+{
+        return audio::SfxId::darkbolt_impact;
 }
 
 void ForceBolt::on_hit(
@@ -1809,12 +1835,8 @@ int ForceBolt::base_max_cost(
         return 2;
 }
 
-Range ForceBolt::damage(
-        const SpellSkill skill,
-        const actor::Actor& caster) const
+Range ForceBolt::damage(const SpellSkill skill) const
 {
-        (void)caster;
-
         switch (skill) {
         case SpellSkill::basic:
                 return {3, 4};  // Avg 3.5
@@ -1869,10 +1891,8 @@ int Darkbolt::base_max_cost(
         return 4;
 }
 
-Range Darkbolt::damage(const SpellSkill skill, const actor::Actor& caster) const
+Range Darkbolt::damage(const SpellSkill skill) const
 {
-        (void)caster;
-
         switch (skill) {
         case SpellSkill::basic:
                 return {4, 9};  // Avg 6.5
@@ -1902,12 +1922,9 @@ std::vector<std::string> Darkbolt::descr_specific(const SpellSkill skill) const
                 "sensed as a threat, "
                 "precise control is therefore not possible.");
 
-        const auto dmg_range = damage(skill, *map::g_player);
+        const auto dmg_range = damage(skill);
 
-        std::string effect_str =
-                "The impact does " +
-                dmg_range.str() +
-                " damage.";
+        std::string effect_str = "The impact does " + dmg_range.str() + " damage.";
 
         if (skill >= SpellSkill::master) {
                 effect_str += " The target is paralyzed and set aflame.";
@@ -1959,6 +1976,106 @@ void Darkbolt::on_hit(
 
                         actor_hit.m_properties.apply(burning);
                 }
+        }
+}
+
+void GnawingTorrent::on_hit(
+        actor::Actor& actor_hit,
+        actor::Actor& caster,
+        const SpellSkill skill) const
+{
+        (void)actor_hit;
+        (void)skill;
+
+        if (actor::is_edible_living_creature(actor_hit)) {
+                const auto allow_above_max =
+                        skill >= SpellSkill::master
+                        ? actor::AllowRestoreAboveMax::yes
+                        : actor::AllowRestoreAboveMax::no;
+
+                actor::restore_hp(caster, 1, allow_above_max, Verbose::no);
+        }
+}
+
+std::string GnawingTorrent::hit_msg_ending() const
+{
+        return "fed upon!";
+}
+
+audio::SfxId GnawingTorrent::impact_sfx() const
+{
+        return audio::SfxId::gnawing_torrent_impact;
+}
+
+int GnawingTorrent::mon_cooldown() const
+{
+        return 3;
+}
+
+std::string GnawingTorrent::name() const
+{
+        return "Gnawing Torrent";
+}
+
+SpellId GnawingTorrent::id() const
+{
+        return SpellId::gnawing_torrent;
+}
+
+int GnawingTorrent::base_max_cost(
+        const SpellSkill skill,
+        const actor::Actor* const caster) const
+{
+        (void)skill;
+        (void)caster;
+
+        return 4;
+}
+
+Range GnawingTorrent::damage(const SpellSkill skill) const
+{
+        (void)skill;
+
+        return {1, 4};
+}
+
+std::vector<std::string> GnawingTorrent::descr_specific(const SpellSkill skill) const
+{
+        std::vector<std::string> descr;
+
+        descr.emplace_back("Unleashes a stream of devouring energy upon the caster's victims.");
+
+        descr.emplace_back(
+                std::to_string(nr_projectiles(skill)) +
+                " projectiles are conjured, each doing " +
+                damage(skill).str() +
+                " damage.");
+
+        descr.emplace_back(
+                "Each impact also feeds life force back to the caster, restoring 1 hit point "
+                "(only if the target is a creature of flesh and blood, "
+                "it is not possible to feed on ethereal creatures for example).");
+
+        if (skill >= SpellSkill::master) {
+                descr.emplace_back("Can raise hit points above the normal maximum level.");
+        }
+
+        return descr;
+}
+
+int GnawingTorrent::nr_projectiles(const SpellSkill skill) const
+{
+        // Average damage from one casting, assuming 3/4/5/9 bolts with 1-4 damage per bolt:
+        // Basic:        7.5   (3-12)
+        // Expert:       10.0  (4-16)
+        // Master:       12.5  (5-20)
+        // Transcendent: 22.5  (9-36)
+
+        if (skill == SpellSkill::transcendent) {
+                return 9;
+        }
+        else {
+                return 3 + (int)skill;
         }
 }
 
@@ -3066,8 +3183,8 @@ Range SpellCleansingFire::burn_duration_range() const
 }
 
 void SpellCleansingFire::run_effect(
-        actor::Actor* caster,
-        SpellSkill skill,
+        actor::Actor* const caster,
+        const SpellSkill skill,
         const std::vector<actor::Actor*>& seen_targets) const
 {
         if (!caster) {
@@ -3195,8 +3312,8 @@ Range SpellSanctuary::duration(const SpellSkill skill) const
 }
 
 void SpellSanctuary::run_effect(
-        actor::Actor* caster,
-        SpellSkill skill,
+        actor::Actor* const caster,
+        const SpellSkill skill,
         const std::vector<actor::Actor*>& seen_targets) const
 {
         (void)seen_targets;
@@ -3285,8 +3402,8 @@ Range SpellPurge::fear_duration_range() const
 }
 
 void SpellPurge::run_effect(
-        actor::Actor* caster,
-        SpellSkill skill,
+        actor::Actor* const caster,
+        const SpellSkill skill,
         const std::vector<actor::Actor*>& seen_targets) const
 {
         (void)skill;
@@ -6922,8 +7039,8 @@ int SpellBloodTempering::base_max_cost(
 }
 
 void SpellBloodTempering::run_effect(
-        actor::Actor* caster,
-        SpellSkill skill,
+        actor::Actor* const caster,
+        const SpellSkill skill,
         const std::vector<actor::Actor*>& seen_targets) const
 {
         (void)seen_targets;
@@ -7030,8 +7147,8 @@ Range SpellThorns::dmg_range(const SpellSkill skill) const
 }
 
 void SpellThorns::run_effect(
-        actor::Actor* caster,
-        SpellSkill skill,
+        actor::Actor* const caster,
+        const SpellSkill skill,
         const std::vector<actor::Actor*>& seen_targets) const
 {
         (void)seen_targets;
@@ -7125,8 +7242,8 @@ int SpellCrimsonPassage::nr_steps_allowed(const SpellSkill skill) const
 }
 
 void SpellCrimsonPassage::run_effect(
-        actor::Actor* caster,
-        SpellSkill skill,
+        actor::Actor* const caster,
+        const SpellSkill skill,
         const std::vector<actor::Actor*>& seen_targets) const
 {
         (void)seen_targets;
@@ -7228,8 +7345,8 @@ int SpellSacrificeLife::nr_sp_per_hp(const SpellSkill skill) const
 }
 
 void SpellSacrificeLife::run_effect(
-        actor::Actor* caster,
-        SpellSkill skill,
+        actor::Actor* const caster,
+        const SpellSkill skill,
         const std::vector<actor::Actor*>& seen_targets) const
 {
         (void)seen_targets;
@@ -7338,8 +7455,8 @@ int SpellShedImpurity::calc_nr_hp_removed(const actor::Actor* const caster) cons
 }
 
 void SpellShedImpurity::run_effect(
-        actor::Actor* caster,
-        SpellSkill skill,
+        actor::Actor* const caster,
+        const SpellSkill skill,
         const std::vector<actor::Actor*>& seen_targets) const
 {
         (void)seen_targets;

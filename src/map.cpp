@@ -226,8 +226,7 @@ void reset(const P& dims)
 
         for (int x = 0; x < map_w; ++x) {
                 for (int y = 0; y < map_h; ++y) {
-                        auto* const wall =
-                                terrain::make(terrain::Id::wall, {x, y});
+                        terrain::Terrain* const wall = terrain::make(terrain::Id::wall, {x, y});
 
                         set_terrain(wall);
                 }
@@ -237,7 +236,7 @@ void reset(const P& dims)
         game_time::erase_all_mobs();
         game_time::reset_current_actor_idx();
 
-        for (auto* room : g_room_list) {
+        for (room::Room* room : g_room_list) {
                 delete room;
         }
 

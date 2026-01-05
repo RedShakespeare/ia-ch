@@ -59,6 +59,7 @@ enum class SfxId
         fountain_drink,
         gas,
         ghoul_growl,
+        gnawing_torrent_impact,
         gong,
         hiss,
         hit_corpse_break,

@@ -17,6 +17,9 @@ DidAction try_eat_corpse(actor::Actor& actor);
 
 void heal_from_eating(actor::Actor& actor);
 
+// Checks if creature can be eaten (not ethereal or "construct" etc, not a corpse).
+bool is_edible_living_creature(const actor::Actor& actor);
+
 }  // namespace actor
 
 #endif  // ACTOR_EAT_HPP
