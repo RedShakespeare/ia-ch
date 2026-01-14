@@ -357,9 +357,9 @@ Color Color::with_brightness(int pct) const
         const uint8_t current_g = m_sdl_color.g;
         const uint8_t current_b = m_sdl_color.b;
 
-        const uint8_t new_r = std::min(255, std::max(0, current_r * pct / 100));
-        const uint8_t new_g = std::min(255, std::max(0, current_g * pct / 100));
-        const uint8_t new_b = std::min(255, std::max(0, current_b * pct / 100));
+        const uint8_t new_r = std::min(255, std::max(0, (current_r * pct) / 100));
+        const uint8_t new_g = std::min(255, std::max(0, (current_g * pct) / 100));
+        const uint8_t new_b = std::min(255, std::max(0, (current_b * pct) / 100));
 
         return {new_r, new_g, new_b};
 }

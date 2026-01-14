@@ -1623,7 +1623,7 @@ void Hallucinating::apply_fake_actor_data() const
 
         for (actor::Actor* const actor : game_time::g_actors) {
                 if (!actor::is_player(actor)) {
-                        actor->m_mimic_data = rnd::element(allowed_data);
+                        actor->m_hallucination_mimic_data = rnd::element(allowed_data);
                 }
         }
 }
@@ -1632,7 +1632,7 @@ void Hallucinating::clear_fake_actor_data() const
 {
         for (actor::Actor* const actor : game_time::g_actors) {
                 if (!actor::is_player(actor)) {
-                        actor->m_mimic_data = nullptr;
+                        actor->m_hallucination_mimic_data = nullptr;
                 }
         }
 }
@@ -3224,11 +3224,11 @@ void ConfusesAdjacent::on_std_turn()
                 msg_log::add(msg);
         }
 
-        Prop* prop_confusd = prop::make(prop::Id::confused);
+        Prop* prop_confused = prop::make(prop::Id::confused);
 
-        prop_confusd->set_duration(rnd::range(8, 12));
+        prop_confused->set_duration(rnd::range(8, 12));
 
-        map::g_player->m_properties.apply(prop_confusd);
+        map::g_player->m_properties.apply(prop_confused);
 }
 
 void FrenzyPlayerOnSeen::on_player_see()

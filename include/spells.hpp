@@ -53,12 +53,22 @@ enum class SpellId
 
         // Domain: Corruption
         aura_of_decay,
+        curse,
         enfeeble,
         pestilence,
         poison,
 
         // Domain: Illusion
         invis,
+        // NOTE: The Mirror Images spell is NOT supported for monsters, because the player could
+        // just view the monster descriptions and see which ones are unusually hard to hit (the
+        // mirror images have extremely high dodge), which would just be annoying and ruins the
+        // whole aspect of making the images look like the caster.
+        //
+        // (A similar thing happens with hallucination, but in that case it's a different situation
+        // and more OK.)
+        //
+        mirror_images,
         terrify,
 
         // Domain: Mind
@@ -117,7 +127,6 @@ enum class SpellId
         // (Domain doesn't matter)
         blind,
         burn,
-        curse,
         deafen,
         disease,
         force_bolt,
@@ -765,6 +774,41 @@ private:
         Range duration_range(SpellSkill skill) const;
 
         void on_rat_summoned(actor::Actor* mon, SpellSkill skill) const;
+};
+
+class SpellMirrorImages : public Spell
+{
+public:
+        SpellMirrorImages() = default;
+
+        std::string name() const override;
+
+        SpellId id() const override;
+
+        SpellDomain domain() const override;
+
+        SpellShock shock_type() const override;
+
+        std::vector<std::string> descr_specific(SpellSkill skill) const override;
+
+        void run_effect(
+                actor::Actor* caster,
+                SpellSkill skill,
+                const std::vector<actor::Actor*>& seen_targets) const override;
+
+private:
+        int nr_mirror_images_summoned(SpellSkill skill) const;
+
+        int base_max_cost(SpellSkill skill, const actor::Actor* caster) const override;
+
+        bool is_noisy(SpellSkill skill) const override;
+
+        Range duration_range(SpellSkill skill) const;
+
+        void on_mirror_image_summoned(
+                actor::Actor* mon,
+                const actor::Actor* caster,
+                SpellSkill skill) const;
 };
 
 class SpellSpectralWeapons : public Spell

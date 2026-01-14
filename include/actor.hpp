@@ -292,7 +292,7 @@ public:
         AwareState m_mon_aware_state {};
         Actor* m_leader {nullptr};
         std::vector<MonSpell> m_mon_spells;
-        const ActorData* m_mimic_data {nullptr};  // Hallucination
+        const ActorData* m_hallucination_mimic_data {nullptr};  // When player hallucinating.
 
 private:
         // ==================================================

@@ -113,9 +113,13 @@ static Color color_monster(const actor::Actor& actor)
         // * The player is hallucinating another monster as a Lurking Ooze.
         // HACK: Handle via actor data instead:
         const std::string lurking_ooze_id = "MON_OOZE_LURKING";
-        if (
-                (!actor.m_mimic_data && (actor::id(actor) == lurking_ooze_id)) ||
-                (actor.m_mimic_data && (actor.m_mimic_data->id == lurking_ooze_id))) {
+
+        const actor::ActorData* actor_data =
+                actor.m_hallucination_mimic_data
+                ? actor.m_hallucination_mimic_data
+                : actor.m_data;
+
+        if (actor_data->id == lurking_ooze_id) {
                 return map::g_wall_color;
         }
 
@@ -125,12 +129,7 @@ static Color color_monster(const actor::Actor& actor)
                 return color_override.value();
         }
 
-        const actor::ActorData* const data =
-                actor.m_mimic_data
-                ? actor.m_mimic_data
-                : actor.m_data;
-
-        return data->color;
+        return actor_data->color;
 }
 
 static LightSize calc_light_size_player_specific()
@@ -292,8 +291,8 @@ gfx::TileId tile(const Actor& actor)
                 return gfx::TileId::corpse2;
         }
 
-        if (actor.m_mimic_data) {
-                return actor.m_mimic_data->tile;
+        if (actor.m_hallucination_mimic_data) {
+                return actor.m_hallucination_mimic_data->tile;
         }
 
         const auto tile_override = actor.m_properties.override_actor_tile();
@@ -344,8 +343,8 @@ char character(const Actor& actor)
                 return '&';
         }
 
-        if (actor.m_mimic_data) {
-                return actor.m_mimic_data->character;
+        if (actor.m_hallucination_mimic_data) {
+                return actor.m_hallucination_mimic_data->character;
         }
 
         const auto c_override = actor.m_properties.override_actor_character();
@@ -359,8 +358,8 @@ char character(const Actor& actor)
 
 std::string name_the(const Actor& actor)
 {
-        if (actor.m_mimic_data) {
-                return actor.m_mimic_data->name_the;
+        if (actor.m_hallucination_mimic_data) {
+                return actor.m_hallucination_mimic_data->name_the;
         }
 
         const auto name_override = actor.m_properties.override_actor_name_the();
@@ -374,8 +373,8 @@ std::string name_the(const Actor& actor)
 
 std::string name_a(const Actor& actor)
 {
-        if (actor.m_mimic_data) {
-                return actor.m_mimic_data->name_a;
+        if (actor.m_hallucination_mimic_data) {
+                return actor.m_hallucination_mimic_data->name_a;
         }
 
         const auto name_override = actor.m_properties.override_actor_name_a();
@@ -389,8 +388,8 @@ std::string name_a(const Actor& actor)
 
 std::string descr(const Actor& actor)
 {
-        if (actor.m_mimic_data) {
-                return actor.m_mimic_data->descr;
+        if (actor.m_hallucination_mimic_data) {
+                return actor.m_hallucination_mimic_data->descr;
         }
 
         const auto descr_override = actor.m_properties.override_actor_descr();
