@@ -133,6 +133,8 @@ static void make_for_player_occultist_specific()
                 break;
 
         case SpellDomain::illusion:
+                learn_spell_player(SpellId::mirror_images);
+                learn_spell_player(SpellId::terrify);
                 break;
 
         case SpellDomain::mind:

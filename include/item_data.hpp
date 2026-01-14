@@ -149,6 +149,7 @@ enum class Id
         scroll_heal,
         scroll_invis,
         scroll_light,
+        scroll_mirror_images,
         scroll_pestilence,
         scroll_poison,
         scroll_premonition,

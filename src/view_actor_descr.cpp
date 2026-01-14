@@ -501,38 +501,34 @@ static std::string auto_description_str(actor::Actor& actor)
 {
         std::string str;
 
-        const actor::ActorData& actor_data =
-                actor.m_mimic_data
-                ? *actor.m_mimic_data
-                : *actor.m_data;
+        const actor::ActorData* actor_data =
+                actor.m_hallucination_mimic_data
+                ? actor.m_hallucination_mimic_data
+                : actor.m_data;
 
         if (!actor.is_actor_my_leader(map::g_player)) {
-                text_format::append_with_space(
-                        str,
-                        get_melee_hit_chance_descr(actor));
+                text_format::append_with_space(str, get_melee_hit_chance_descr(actor));
         }
 
-        const bool* ai = actor_data.ai;
+        const bool* ai = actor_data->ai;
         const bool looks = ai[(size_t)actor::AiId::looks];
 
         if (!actor::is_aware_of_player(actor) &&
             !actor.is_actor_my_leader(map::g_player) &&
             looks) {
-                text_format::append_with_space(
-                        str,
-                        get_sneak_chance_descr(actor));
+                text_format::append_with_space(str, get_sneak_chance_descr(actor));
         }
 
-        if (actor_data.allow_speed_descr) {
-                text_format::append_with_space(
-                        str,
-                        get_mon_speed_descr(actor_data, actor));
+        if (actor_data->allow_speed_descr) {
+                // NOTE: Speed type is always shown with the real monster data and ignores
+                // hallucination (the player character would see how fast they move despite seeing
+                // the monster as something else).
+                text_format::append_with_space(str, get_mon_speed_descr(*actor.m_data, actor));
         }
 
         if (!actor.is_actor_my_leader(map::g_player)) {
                 text_format::append_with_space(
-                        str,
-                        get_mon_memory_turns_descr(actor_data, actor));
+                        str, get_mon_memory_turns_descr(*actor_data, actor));
         }
 
         if (!looks) {
@@ -551,29 +547,25 @@ static std::string auto_description_str(actor::Actor& actor)
                 str += ".";
         }
 
-        if (actor_data.is_undead) {
+        if (actor_data->is_undead) {
                 text_format::append_with_space(
                         str,
                         "{COLOR_MAGENTA}This creature is undead.{reset_color}");
         }
 
         if (!actor.is_actor_my_leader(map::g_player)) {
-                text_format::append_with_space(
-                        str,
-                        get_mon_shock_descr(actor_data, actor));
+                text_format::append_with_space(str, get_mon_shock_descr(*actor_data, actor));
         }
 
-        if (actor_data.allow_wielded_wpn_descr) {
-                text_format::append_with_space(
-                        str,
-                        get_mon_wielded_wpn_str(actor_data, actor));
+        if (actor_data->allow_wielded_wpn_descr) {
+                text_format::append_with_space(str, get_mon_wielded_wpn_str(*actor_data, actor));
         }
 
         text_format::append_with_space(
                 str,
                 get_mon_current_health_descr(actor));
 
-        const std::string natural_properties_descr = get_mon_natural_properties_descr(actor_data);
+        const std::string natural_properties_descr = get_mon_natural_properties_descr(*actor_data);
 
         if (!natural_properties_descr.empty()) {
                 if (!str.empty()) {
@@ -674,7 +666,9 @@ void ViewActorDescr::draw()
                 Text text;
 
                 text.set_w(panels::w(Panel::info_screen_content));
+
                 text.set_str(actor::descr(m_actor));
+
                 text.set_color(colors::text());
 
                 text.draw(Panel::info_screen_content, {0, y});
@@ -683,7 +677,14 @@ void ViewActorDescr::draw()
         }
 
         // Auto description
-        {
+        //
+        // HACK: Skip auto description for player mirror images allied to the player (should not
+        // print stuff like if they can visually detect other creatures).
+        //
+        // TODO: There should be a setting in the monster data instead to completely disable
+        // auto-description (currently there's settings for the wielded weapon and speed parts).
+        //
+        if ((m_actor.m_data->id != "MON_MIRROR_IMAGE") || m_actor.m_hallucination_mimic_data) {
                 const std::string auto_descr_str = auto_description_str(m_actor);
 
                 if (!auto_descr_str.empty()) {

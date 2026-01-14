@@ -12,6 +12,7 @@
 #include <vector>
 
 #include "actor.hpp"
+#include "actor_data.hpp"
 #include "actor_see.hpp"
 #include "array2.hpp"
 #include "colors.hpp"
@@ -371,20 +372,19 @@ static void draw_terrains()
 
                 if (config::text_mode_filled_walls()) {
                         if (draw_obj.character == '#') {
-                                // Any terrain with the '#' symbol is converted
-                                // to a filled rectangle instead.
+                                // Any terrain with the '#' symbol is converted to a filled
+                                // rectangle instead.
                                 //
-                                // NOTE: No other (static) terrain except WALLS
-                                // (or terrain imitating walls, such as hidden
-                                // doors) must use the '#' character!
+                                // NOTE: No other (static) terrain except WALLS (or terrain
+                                // imitating walls, such as hidden doors) must use the '#'
+                                // character!
                                 //
                                 draw_obj.character = io::g_filled_rect_char;
                         }
                         else if (t->id() == terrain::Id::grate) {
-                                // Since we are using filled rectangle as wall
-                                // symbol, then we can use the '#' character for
-                                // grates (looks good for this terrain, but
-                                // obviously not if walls are also using this).
+                                // Since we are using filled rectangle as wall symbol, then we can
+                                // use the '#' character for grates (looks good for this terrain,
+                                // but obviously not if walls are also using this).
                                 draw_obj.character = '#';
                         }
                 }
@@ -523,7 +523,11 @@ static void draw_living_seen_monster(const actor::Actor& mon)
                 }
         }
 
-        adapt_color_for_light_level(draw_obj.color, mon.m_pos);
+        // HACK: Do not adapt actor color if this is a Mirror Image allied to the player (looks bad
+        // with the colors that they use).
+        if (!((mon.m_data->id == "MON_MIRROR_IMAGE") && mon.is_actor_my_leader(map::g_player))) {
+                adapt_color_for_light_level(draw_obj.color, mon.m_pos);
+        }
 
         draw_obj.draw();
 }

@@ -1590,6 +1590,11 @@ void init()
         g_data[(size_t)d.id] = d;
 
         reset_data(d, ItemType::scroll);
+        d.id = Id::scroll_mirror_images;
+        d.spell_cast_from_scroll = SpellId::mirror_images;
+        g_data[(size_t)d.id] = d;
+
+        reset_data(d, ItemType::scroll);
         d.id = Id::scroll_enfeeble;
         d.spell_cast_from_scroll = SpellId::enfeeble;
         g_data[(size_t)d.id] = d;

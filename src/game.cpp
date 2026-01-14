@@ -316,7 +316,7 @@ void player_discover_monster(actor::Actor& actor)
                 return;
         }
 
-        if (actor.m_mimic_data) {
+        if (actor.m_hallucination_mimic_data) {
                 return;
         }
 

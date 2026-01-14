@@ -527,18 +527,34 @@ actor::Actor* random_closest_actor(
 
         ASSERT(dist_to_nearest != INT_MAX);
 
-        // Store all actors with distance equal to the nearest distance
+        // Store all actors with distance equal to the nearest distance.
+        //
+        // Always target mirror images first if present among the closest actors.
+        //
         std::vector<actor::Actor*> closest_actors;
+        std::vector<actor::Actor*> closest_mirror_images;
 
-        for (auto* actor : actors) {
+        for (actor::Actor* actor : actors) {
                 if (king_dist(c, actor->m_pos) == dist_to_nearest) {
-                        closest_actors.push_back(actor);
+                        if (actor->m_data->id == "MON_MIRROR_IMAGE") {
+                                closest_mirror_images.push_back(actor);
+                        }
+                        else {
+                                closest_actors.push_back(actor);
+                        }
                 }
         }
 
-        ASSERT(!closest_actors.empty());
+        ASSERT(!closest_actors.empty() || !closest_mirror_images.empty());
 
-        return rnd::element(closest_actors);
+        if (!closest_mirror_images.empty()) {
+                // Mirror images exist at the distance of the closest actor(s), force a random
+                // mirror image to be selected over any other creature type.
+                return rnd::element(closest_mirror_images);
+        }
+        else {
+                return rnd::element(closest_actors);
+        }
 }
 
 bool is_pos_inside_map(const P& pos)

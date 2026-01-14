@@ -12,6 +12,7 @@
 #include <iterator>
 #include <ostream>
 #include <string>
+#include <tuple>
 #include <unordered_map>
 #include <utility>
 #include <vector>
@@ -98,6 +99,7 @@ static const std::unordered_map<std::string, SpellId> s_str_to_spell_id_map = {
         {"SPELL_IDENTIFY", SpellId::identify},
         {"SPELL_KNOCKBACK", SpellId::knockback},
         {"SPELL_LIGHT", SpellId::light},
+        {"SPELL_MIRROR_IMAGE", SpellId::mirror_images},
         {"SPELL_MI_GO_HYPNO", SpellId::mi_go_hypno},
         {"SPELL_PESTILENCE", SpellId::pestilence},
         {"SPELL_POISON", SpellId::poison},
@@ -904,6 +906,9 @@ Spell* make(const SpellId spell_id)
 
         case SpellId::pestilence:
                 return new SpellPestilence();
+
+        case SpellId::mirror_images:
+                return new SpellMirrorImages();
 
         case SpellId::spectral_weapons:
                 return new SpellSpectralWeapons();
@@ -2682,7 +2687,7 @@ void SpellPestilence::on_rat_summoned(
 
         {
                 prop::Prop* prop = prop::make(prop::Id::waiting);
-                prop->set_duration(2);
+                prop->set_duration(1);
                 mon->m_properties.apply(prop);
         }
 
@@ -2691,11 +2696,7 @@ void SpellPestilence::on_rat_summoned(
 
                 prop->set_indefinite();
 
-                mon->m_properties.apply(
-                        prop,
-                        prop::PropSrc::intr,
-                        true,
-                        Verbose::no);
+                mon->m_properties.apply(prop, prop::PropSrc::intr, true, Verbose::no);
         }
 }
 
@@ -2717,40 +2718,58 @@ void SpellPestilence::run_effect(
                 // Caster is monster
                 actor::Actor* const caster_leader = caster->m_leader;
 
-                leader =
-                        caster_leader
-                        ? caster_leader
-                        : caster;
+                leader = caster_leader ? caster_leader : caster;
         }
 
-        const std::string id =
-                (skill == SpellSkill::transcendent)
-                ? "MON_TRANSCENDENT_RAT"
-                : "MON_RAT";
+        std::vector<std::pair<SpellSkill, std::string>> to_summon;
 
-        const actor::MonSpawnResult mon_summoned =
-                actor::spawn(
-                        caster->m_pos,
-                        {nr_mon, id},
-                        g_fov_radi_int,
-                        actor::SpawnScattered::yes)
-                        .make_aware_of_player()
-                        .set_leader(leader);
+        if (skill == SpellSkill::transcendent) {
+                // On transcendent level, spawn a bunch of normal rats as if on expert level, plus
+                // some magical "transcendent rats".
+                to_summon.emplace_back(SpellSkill::expert, "MON_RAT");
 
-        const bool is_any_seen_by_player =
-                std::any_of(
+                to_summon.emplace_back(SpellSkill::transcendent, "MON_TRANSCENDENT_RAT");
+        }
+        else {
+                to_summon.emplace_back(skill, "MON_RAT");
+        }
+
+        bool is_any_summoned = false;
+        bool is_any_seen_by_player = false;
+
+        for (const auto& summon_entry : to_summon) {
+                const SpellSkill skill_to_use = summon_entry.first;
+                const std::string id = summon_entry.second;
+
+                const actor::MonSpawnResult mon_summoned =
+                        actor::spawn(
+                                caster->m_pos,
+                                {nr_mon, id},
+                                g_fov_radi_int,
+                                actor::SpawnScattered::yes)
+                                .make_aware_of_player()
+                                .set_leader(leader);
+
+                is_any_summoned = !mon_summoned.monsters.empty() || is_any_summoned;
+
+                is_any_seen_by_player =
+                        std::any_of(
+                                std::begin(mon_summoned.monsters),
+                                std::end(mon_summoned.monsters),
+                                [](auto* const mon) {
+                                        return actor::can_player_see_actor(*mon);
+                                }) ||
+                        is_any_seen_by_player;
+
+                std::for_each(
                         std::begin(mon_summoned.monsters),
                         std::end(mon_summoned.monsters),
-                        [](auto* const mon) {
-                                return actor::can_player_see_actor(*mon);
+                        [skill_to_use, this](auto& mon) {
+                                on_rat_summoned(mon, skill_to_use);
                         });
+        }
 
-        std::for_each(
-                std::begin(mon_summoned.monsters),
-                std::end(mon_summoned.monsters),
-                [skill, this](auto& mon) { on_rat_summoned(mon, skill); });
-
-        if (mon_summoned.monsters.empty()) {
+        if (!is_any_summoned) {
                 return;
         }
 
@@ -2766,24 +2785,32 @@ std::vector<std::string> SpellPestilence::descr_specific(
 
         descr.emplace_back("A pack of rats appear around the caster.");
 
-        const size_t nr_mon = nr_rats_summoned(skill);
+        if (skill < SpellSkill::transcendent) {
+                // Normal description (basic/expert/master).
 
-        const std::string nr_and_duration_str =
-                "Summons " + std::to_string(nr_mon) + " rats. The rats exist for " +
-                duration_range(skill).str() +
-                " turns (their turns).";
+                const size_t nr_mon = nr_rats_summoned(skill);
 
-        descr.push_back(nr_and_duration_str);
+                const Range duration = duration_range(skill);
 
-        if (skill == SpellSkill::master) {
-                descr.emplace_back("The rats are Hasted (moves faster).");
-        }
-        else if (skill == SpellSkill::transcendent) {
                 descr.emplace_back(
-                        "The rats are ethereal (much harder to hit "
-                        "with attacks, can move through solid objects), "
+                        "Summons " +
+                        std::to_string(nr_mon) +
+                        " rats. They exist for " +
+                        duration.str() +
+                        " turns (their own turns).");
+
+                if (skill == SpellSkill::master) {
+                        descr.emplace_back("The rats are Hasted (moves faster).");
+                }
+        }
+        else {
+                // Transcendent description.
+
+                descr.emplace_back(
+                        "Some of the rats are ethereal "
+                        "(much harder to hit, can move through solid objects), "
                         "are immune to magic, can cast spells, and have "
-                        "+4 hit points and +3 maximum damage.");
+                        "extra hit points and damage.");
         }
 
         return descr;
@@ -2804,6 +2831,165 @@ bool SpellPestilence::allow_mon_cast_now(
         }
 
         return false;
+}
+
+// -----------------------------------------------------------------------------
+// Mirror Images
+// -----------------------------------------------------------------------------
+std::string SpellMirrorImages::name() const
+{
+        return "Mirror Images";
+}
+
+SpellId SpellMirrorImages::id() const
+{
+        return SpellId::mirror_images;
+}
+
+SpellDomain SpellMirrorImages::domain() const
+{
+        return SpellDomain::illusion;
+}
+
+SpellShock SpellMirrorImages::shock_type() const
+{
+        return SpellShock::mild;
+}
+
+bool SpellMirrorImages::is_noisy(const SpellSkill skill) const
+{
+        (void)skill;
+
+        return true;
+}
+
+int SpellMirrorImages::nr_mirror_images_summoned(SpellSkill skill) const
+{
+        if (skill == SpellSkill::transcendent) {
+                return 6;
+        }
+        else {
+                return 2 + (int)skill;
+        }
+}
+
+Range SpellMirrorImages::duration_range(const SpellSkill skill) const
+{
+        switch (skill) {
+        case SpellSkill::basic:
+                return {8, 12};
+
+        case SpellSkill::expert:
+                return {12, 16};
+
+        case SpellSkill::master:
+                return {16, 20};
+
+        case SpellSkill::transcendent:
+                return {40, 60};
+        }
+
+        ASSERT(false);
+
+        return {1, 1};
+}
+
+int SpellMirrorImages::base_max_cost(
+        const SpellSkill skill,
+        const actor::Actor* const caster) const
+{
+        (void)skill;
+        (void)caster;
+
+        return 5;
+}
+
+void SpellMirrorImages::on_mirror_image_summoned(
+        actor::Actor* const mon,
+        const actor::Actor* const caster,
+        const SpellSkill skill) const
+{
+        {
+                prop::Prop* prop = prop::make(prop::Id::summoned);
+                const int duration = duration_range(skill).roll();
+                prop->set_duration(duration);
+                mon->m_properties.apply(prop);
+        }
+
+        {
+                prop::Prop* prop = prop::make(prop::Id::waiting);
+                prop->set_duration(1);
+                mon->m_properties.apply(prop);
+        }
+}
+
+void SpellMirrorImages::run_effect(
+        actor::Actor* const caster,
+        const SpellSkill skill,
+        const std::vector<actor::Actor*>& seen_targets) const
+{
+        (void)seen_targets;
+
+        ASSERT(actor::is_player(caster));
+
+        const size_t nr_mon = nr_mirror_images_summoned(skill);
+
+        const std::string id = "MON_MIRROR_IMAGE";
+
+        const actor::MonSpawnResult mon_summoned =
+                actor::spawn(
+                        caster->m_pos,
+                        {nr_mon, id},
+                        g_fov_radi_int,
+                        actor::SpawnScattered::no)
+                        .make_aware_of_player()
+                        .set_leader(map::g_player);
+
+        std::for_each(
+                std::begin(mon_summoned.monsters),
+                std::end(mon_summoned.monsters),
+                [skill, caster, this](auto& mon) {
+                        on_mirror_image_summoned(mon, caster, skill);
+                });
+
+        if (mon_summoned.monsters.empty()) {
+                return;
+        }
+
+        draw_blast_at_seen_actors(mon_summoned.monsters, colors::magenta());
+
+        msg_log::add("Images appear!");
+}
+
+std::vector<std::string> SpellMirrorImages::descr_specific(
+        const SpellSkill skill) const
+{
+        std::vector<std::string> descr;
+
+        descr.emplace_back(
+                "Conjures illusory duplicates of the caster "
+                "to mislead enemies and draw their attacks.");
+
+        descr.emplace_back(
+                "The mirror images project a powerful magical presence, "
+                "causing attackers to prefer them over the caster. "
+                "As magical apparitions rather than living creatures, "
+                "they are extremely difficult to strike with conventional attacks. "
+                "They are immune to elemental damage and largely unaffected by physical "
+                "or mental afflictions.");
+
+        const size_t nr_mon = nr_mirror_images_summoned(skill);
+
+        const Range duration = duration_range(skill);
+
+        descr.emplace_back(
+                "Creates " +
+                std::to_string(nr_mon) +
+                " mirror images. They exist for " +
+                duration.str() +
+                " turns (their own turns).");
+
+        return descr;
 }
 
 // -----------------------------------------------------------------------------
