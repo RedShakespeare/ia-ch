@@ -2958,7 +2958,7 @@ void SpawnsZombiePartsOnDestroyed::try_spawn_zombie_parts() const
                 break;
 
         case 1:
-                id_to_spawn = "MON_CRAWLING_INTESTINES";
+                id_to_spawn = "MON_INTESTINAL_MASS";
 
                 spawn_msg =
                         "The intestines of " +

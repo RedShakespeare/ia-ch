@@ -416,7 +416,7 @@ static void side_effect_flay_human(const Context& context)
 
         actor::kill(*target_actor, IsDestroyed::yes, AllowGore::yes, AllowDropItems::yes);
 
-        actor::spawn(target_actor->m_pos, {"MON_CRAWLING_INTESTINES"});
+        actor::spawn(target_actor->m_pos, {"MON_INTESTINAL_MASS"});
 
         TRACE_FUNC_END;
 }
