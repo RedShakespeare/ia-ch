@@ -55,7 +55,7 @@ enum class TileId
         corpse2,
         corpse_mound,
         crawling_hand,
-        crawling_intestines,
+        intestinal_mass,
         croc_head_mummy,
         crowbar,
         crystal,

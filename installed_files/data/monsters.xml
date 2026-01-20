@@ -760,15 +760,15 @@ SPDX-License-Identifier: AGPL-3.0-or-later
     </monster>
 
     <!--************************************************************-->
-    <!-- MON_CRAWLING_INTESTINES -->
+    <!-- MON_INTESTINAL_MASS -->
     <!--************************************************************-->
-    <monster id="MON_CRAWLING_INTESTINES">
+    <monster id="MON_INTESTINAL_MASS">
         <text>
-            <name_a>Crawling Intestines</name_a>
-            <name_the>the Crawling Intestines</name_the>
+            <name_a>an Intestinal Mass</name_a>
+            <name_the>the Intestinal Mass</name_the>
             <corpse_name_a></corpse_name_a>
             <corpse_name_the></corpse_name_the>
-            <description>A writhing mass of crawling intestines.</description>
+            <description>A writhing, crawling mass of intestines.</description>
             <allow_wielded_weapon_description>false</allow_wielded_weapon_description>
             <allow_speed_description>true</allow_speed_description>
             <wary_message>starts groping and feeling around.</wary_message>
@@ -779,7 +779,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
         </text>
 
         <graphics>
-            <tile>TILE_CRAWLING_INTESTINES</tile>
+            <tile>TILE_INTESTINAL_MASS</tile>
             <character>z</character>
             <color>COLOR_LIGHT_RED</color>
         </graphics>
