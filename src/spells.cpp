@@ -407,18 +407,14 @@ static void side_effect_flay_human(const Context& context)
         print_side_effect_trigger_message();
 
         if (actor::can_player_see_actor(*target_actor)) {
-                const auto name =
+                const std::string name =
                         text_format::first_to_upper(
                                 actor::name_the(*target_actor));
 
                 msg_log::add(name + " is suddenly flayed alive!");
         }
 
-        actor::kill(
-                *target_actor,
-                IsDestroyed::yes,
-                AllowGore::yes,
-                AllowDropItems::yes);
+        actor::kill(*target_actor, IsDestroyed::yes, AllowGore::yes, AllowDropItems::yes);
 
         actor::spawn(target_actor->m_pos, {"MON_CRAWLING_INTESTINES"});
 
@@ -1529,7 +1525,7 @@ std::vector<std::string> SpellAuraOfDecay::descr_specific(
                 "distance of two moves take damage each standard turn.");
 
         descr.push_back(
-                "The spell does " +
+                "The spell deals " +
                 dmg_range(skill).str() +
                 " damage to each creature.");
 
@@ -1923,13 +1919,12 @@ std::vector<std::string> Darkbolt::descr_specific(const SpellSkill skill) const
                 "A bolt of siphoned energy is hurled towards a target "
                 "with great force. "
                 "The conjured bolt has some will on its own - "
-                "once released it launches itself towards any creature "
-                "sensed as a threat, "
+                "once released, it seeks creatures that pose a threat, "
                 "precise control is therefore not possible.");
 
-        const auto dmg_range = damage(skill);
+        const Range dmg_range = damage(skill);
 
-        std::string effect_str = "The impact does " + dmg_range.str() + " damage.";
+        std::string effect_str = "The impact deals " + dmg_range.str() + " damage.";
 
         if (skill >= SpellSkill::master) {
                 effect_str += " The target is paralyzed and set aflame.";
@@ -2052,14 +2047,14 @@ std::vector<std::string> GnawingTorrent::descr_specific(const SpellSkill skill) 
 
         descr.emplace_back(
                 std::to_string(nr_projectiles(skill)) +
-                " projectiles are conjured, each doing " +
+                " projectiles are conjured, each dealing " +
                 damage(skill).str() +
                 " damage.");
 
         descr.emplace_back(
-                "Each impact also feeds life force back to the caster, restoring 1 hit point "
-                "(only if the target is a creature of flesh and blood, "
-                "it is not possible to feed on ethereal creatures for example).");
+                "Each impact feeds life force back to the caster, restoring 1 hit point "
+                "(only against creatures of flesh and blood; "
+                "ethereal creatures cannot be fed upon for example).");
 
         if (skill >= SpellSkill::master) {
                 descr.emplace_back("Can raise hit points above the normal maximum level.");
@@ -2295,7 +2290,7 @@ std::vector<std::string> SpellAzaGaze::descr_specific(
                 "devastation.");
 
         descr.push_back(
-                "The spell does " +
+                "The spell deals " +
                 dmg_range(skill).str() +
                 " damage to each creature.");
 
@@ -2417,10 +2412,7 @@ void SpellCataclysm::run_effect(
         const bool is_player = actor::is_player(caster);
 
         if (actor::can_player_see_actor(*caster)) {
-                std::string caster_name =
-                        is_player
-                        ? "me"
-                        : actor::name_the(*caster);
+                std::string caster_name = is_player ? "me" : actor::name_the(*caster);
 
                 msg_log::add("Destruction rages around " + caster_name + "!");
         }
@@ -2906,7 +2898,6 @@ int SpellMirrorImages::base_max_cost(
 
 void SpellMirrorImages::on_mirror_image_summoned(
         actor::Actor* const mon,
-        const actor::Actor* const caster,
         const SpellSkill skill) const
 {
         {
@@ -2948,8 +2939,8 @@ void SpellMirrorImages::run_effect(
         std::for_each(
                 std::begin(mon_summoned.monsters),
                 std::end(mon_summoned.monsters),
-                [skill, caster, this](auto& mon) {
-                        on_mirror_image_summoned(mon, caster, skill);
+                [skill, this](auto& mon) {
+                        on_mirror_image_summoned(mon, skill);
                 });
 
         if (mon_summoned.monsters.empty()) {
@@ -5074,14 +5065,10 @@ void SpellCurse::run_effect(
 
         // There are targets available
 
-        std::vector<actor::Actor*> targets;
-
-        if (skill == SpellSkill::basic) {
-                targets = {rnd::element(seen_targets)};
-        }
-        else {
-                targets = seen_targets;
-        }
+        const std::vector<actor::Actor*> targets =
+                (skill == SpellSkill::basic)
+                ? std::vector {rnd::element(seen_targets)}
+                : seen_targets;
 
         auto prop_id = prop::Id::cursed;
         auto sfx_id = audio::SfxId::curse_spell;
@@ -5241,14 +5228,10 @@ void SpellPoison::run_effect(
 
         // There are targets available
 
-        std::vector<actor::Actor*> targets;
-
-        if (skill == SpellSkill::basic) {
-                targets = {rnd::element(seen_targets)};
-        }
-        else {
-                targets = seen_targets;
-        }
+        const std::vector<actor::Actor*> targets =
+                (skill == SpellSkill::basic)
+                ? std::vector {rnd::element(seen_targets)}
+                : seen_targets;
 
         if (player_can_player_see_caster_and_any_target(*caster, targets)) {
                 audio::play(audio::SfxId::poison_spell);
@@ -5531,14 +5514,10 @@ void SpellEnfeeble::run_effect(
 
         // There are targets available
 
-        std::vector<actor::Actor*> targets;
-
-        if (skill == SpellSkill::basic) {
-                targets = {rnd::element(seen_targets)};
-        }
-        else {
-                targets = seen_targets;
-        }
+        const std::vector<actor::Actor*> targets =
+                (skill == SpellSkill::basic)
+                ? std::vector {rnd::element(seen_targets)}
+                : seen_targets;
 
         draw_blast_at_seen_actors(targets, colors::magenta());
 
@@ -5675,14 +5654,10 @@ void SpellSlow::run_effect(
 
         // There are targets available
 
-        std::vector<actor::Actor*> targets;
-
-        if (skill == SpellSkill::basic) {
-                targets = {rnd::element(seen_targets)};
-        }
-        else {
-                targets = seen_targets;
-        }
+        const std::vector<actor::Actor*> targets =
+                (skill == SpellSkill::basic)
+                ? std::vector {rnd::element(seen_targets)}
+                : seen_targets;
 
         draw_blast_at_seen_actors(targets, colors::magenta());
 
@@ -5799,6 +5774,21 @@ Range SpellTerrify::duration_range(SpellSkill skill) const
         return {1, 1};
 }
 
+int SpellTerrify::faint_pct_chance(const SpellSkill skill) const
+{
+        if (skill == SpellSkill::transcendent) {
+                return 100;
+        }
+        else {
+                return 30 + ((int)skill * 20);
+        }
+}
+
+Range SpellTerrify::faint_duration_range() const
+{
+        return {2, 4};
+}
+
 int SpellTerrify::base_max_cost(
         const SpellSkill skill,
         const actor::Actor* const caster) const
@@ -5827,14 +5817,10 @@ void SpellTerrify::run_effect(
 
         // There are targets available
 
-        std::vector<actor::Actor*> targets;
-
-        if (skill == SpellSkill::basic) {
-                targets = {rnd::element(seen_targets)};
-        }
-        else {
-                targets = seen_targets;
-        }
+        const std::vector<actor::Actor*> targets =
+                (skill == SpellSkill::basic)
+                ? std::vector {rnd::element(seen_targets)}
+                : seen_targets;
 
         draw_blast_at_seen_actors(targets, colors::magenta());
 
@@ -5857,12 +5843,37 @@ void SpellTerrify::run_effect(
                         continue;
                 }
 
-                auto* const prop = prop::make(prop::Id::terrified);
+                terrify_target(*target, skill);
 
-                prop->set_duration(duration_range(skill).roll());
-
-                target->m_properties.apply(prop);
+                // NOTE: Since this fainting is supposed to be a side effect of the creature
+                // becoming terrified by a spell, it would look weird if they "reisted" the sleep
+                // due to sleep resistance. Therefore only try to apply the property if they are
+                // known to not have such resistance. Any other sources of resisting sleep would
+                // probably be fine, but not explicitly sleep resistance.
+                if (target->m_properties.has(prop::Id::terrified) &&
+                    !target->m_properties.has(prop::Id::r_sleep) &&
+                    rnd::percent(faint_pct_chance(skill))) {
+                        faint_target(*target);
+                }
         }
+}
+
+void SpellTerrify::terrify_target(actor::Actor& target, const SpellSkill skill) const
+{
+        prop::Prop* const terrified = prop::make(prop::Id::terrified);
+
+        terrified->set_duration(duration_range(skill).roll());
+
+        target.m_properties.apply(terrified);
+}
+
+void SpellTerrify::faint_target(actor::Actor& target) const
+{
+        prop::Prop* const fainted = prop::make(prop::Id::fainted);
+
+        fainted->set_duration(faint_duration_range().roll());
+
+        target.m_properties.apply(fainted);
 }
 
 std::vector<std::string> SpellTerrify::descr_specific(
@@ -5872,7 +5883,7 @@ std::vector<std::string> SpellTerrify::descr_specific(
 
         std::vector<std::string> descr;
 
-        descr.emplace_back("Manifests an overpowering feeling of dread in the spell's victims.");
+        descr.emplace_back("Inflicts a nightmare illusion that overwhelms its victims with dread.");
 
         descr.emplace_back(
                 skill == SpellSkill::basic
@@ -5880,6 +5891,23 @@ std::vector<std::string> SpellTerrify::descr_specific(
                         : "Affects all visible hostile creatures.");
 
         descr.push_back("The spell lasts " + duration_range(skill).str() + " turns.");
+
+        if (skill == SpellSkill::transcendent) {
+                descr.emplace_back("Affected creatures also faint.");
+        }
+        else {
+                const std::string creature_str =
+                        (skill == SpellSkill::basic)
+                        ? "creature"
+                        : "creatures";
+
+                descr.emplace_back(
+                        "Has a " +
+                        std::to_string(faint_pct_chance(skill)) +
+                        "% chance to also make affected " +
+                        creature_str +
+                        " faint.");
+        }
 
         return descr;
 }

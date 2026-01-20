@@ -454,6 +454,12 @@ protected:
         bool is_noisy(SpellSkill skill) const override;
 
         Range duration_range(SpellSkill skill) const;
+
+        int faint_pct_chance(SpellSkill skill) const;
+        Range faint_duration_range() const;
+
+        void terrify_target(actor::Actor& target, SpellSkill skill) const;
+        void faint_target(actor::Actor& target) const;
 };
 
 class SpellAuraOfDecay : public Spell
@@ -805,10 +811,7 @@ private:
 
         Range duration_range(SpellSkill skill) const;
 
-        void on_mirror_image_summoned(
-                actor::Actor* mon,
-                const actor::Actor* caster,
-                SpellSkill skill) const;
+        void on_mirror_image_summoned(actor::Actor* mon, SpellSkill skill) const;
 };
 
 class SpellSpectralWeapons : public Spell
