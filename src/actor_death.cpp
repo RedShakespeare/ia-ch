@@ -137,8 +137,7 @@ void kill(
                 return;
         }
 
-        ASSERT(actor.m_data->can_leave_corpse ||
-               (is_destroyed == IsDestroyed::yes));
+        ASSERT(actor.m_data->can_leave_corpse || (is_destroyed == IsDestroyed::yes));
 
         unset_actor_as_leader_and_target_for_all_mon(&actor);
 
