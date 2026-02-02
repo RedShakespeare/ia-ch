@@ -38,68 +38,133 @@
 // -----------------------------------------------------------------------------
 // private
 // -----------------------------------------------------------------------------
-// NOTE: This is the order that the properties will show up in the description.
-
-static const std::string s_cannot_be_harmed_by_start =
-        "They cannot be harmed by";
-
-static const std::pair<prop::Id, std::string> s_cannot_be_harmed_by_props[] = {
-        {prop::Id::r_phys, "{COLOR_GRAY}physical damage{reset_color}"},
-        {prop::Id::r_fire, "{COLOR_LIGHT_RED}fire{reset_color}"},
-        {prop::Id::r_elec, "{COLOR_YELLOW}electricity{reset_color}"},
-        {prop::Id::r_poison, "{COLOR_LIGHT_GREEN}poison{reset_color}"},
-        {prop::Id::r_disease, "{COLOR_GREEN}disease{reset_color}"},
-        {prop::Id::r_spell, "{COLOR_MAGENTA}magic{reset_color}"},
+enum class PropTextCategory
+{
+        cannot_be_harmed_by,
+        unaffected_by,
+        cannot_be,
+        cannot,
+        can,
+        custom
 };
 
-static const std::string s_unaffected_by_start =
-        "They are unaffected by";
+struct PropTextData
+{
+        PropTextCategory category;
 
-static const std::pair<prop::Id, std::string> s_unaffected_by_props[] = {
-        {prop::Id::r_fear, "fear"},
-        {prop::Id::r_conf, "confusion"},
+        // Property ID and sentence fragment (or a full sentence if "custom" category).
+        std::initializer_list<std::pair<prop::Id, std::string>> entries;
 };
 
-static const std::string s_cannot_be_start =
-        "They cannot be";
+// This is used for showing descriptions of a monster's "natural properties" (e.g. for a monster
+// that is naturally fire resistant, as opposed to a temporary effect). Not all types of properties
+// are included in the creature descriptions.
+//
+// The data is structured in categories that correspond to a beginning of a sentence, for example
+// "They cannot be harmed by", and in each such cateogry there is a list of properties and what text
+// should be written for that property (colors are supported).
+//
+// The result may be something like "They cannot be harmed by fire or poison".
+//
+// The structure of the data below also controls the order in which things will be listed (both the
+// order of the categories and the order of the properties within each category).
+//
+static const PropTextData s_prop_text_data[] = {
+        // --- Cannot be harmed by ... ---
+        {
+                PropTextCategory::cannot_be_harmed_by,
+                {
+                        {prop::Id::r_phys, "{COLOR_GRAY}physical damage{reset_color}"},
+                        {prop::Id::r_fire, "{COLOR_LIGHT_RED}fire{reset_color}"},
+                        {prop::Id::r_elec, "{COLOR_YELLOW}electricity{reset_color}"},
+                        {prop::Id::r_poison, "{COLOR_LIGHT_GREEN}poison{reset_color}"},
+                        {prop::Id::r_disease, "{COLOR_GREEN}disease{reset_color}"},
+                        {prop::Id::r_spell, "{COLOR_MAGENTA}magic{reset_color}"},
+                },
+        },
 
-static const std::pair<prop::Id, std::string> s_cannot_be_props[] = {
-        {prop::Id::r_slow, "slowed"},
-        {prop::Id::r_para, "paralyzed"},
+        // --- Unaffected by ... ---
+        {
+                PropTextCategory::unaffected_by,
+                {
+                        {prop::Id::r_fear, "fear"},
+                        {prop::Id::r_conf, "confusion"},
+                },
+        },
+
+        // --- Cannot be ... ---
+        {
+                PropTextCategory::cannot_be,
+                {
+                        {prop::Id::r_slow, "slowed"},
+                        {prop::Id::r_para, "paralyzed"},
+                },
+        },
+
+        // --- Cannot ... ---
+        {
+                PropTextCategory::cannot,
+                {
+                        {prop::Id::r_sleep, "faint"},
+                },
+        },
+
+        // --- Can ... ---
+        {
+                PropTextCategory::can,
+                {
+                        {prop::Id::darkvision, "see in darkness"},
+                },
+        },
+
+        // --- Fully custom sentences. ---
+        {
+                PropTextCategory::custom,
+                {
+                        {prop::Id::reduced_pierce_dmg,
+                         "Piercing attacks such as pistol shots or dagger strikes are very "
+                         "ineffective against them"},
+
+                        {prop::Id::radiant_self,
+                         "They emit light and can be seen in darkness"},
+
+                        {prop::Id::radiant_adjacent,
+                         "They emit light and can be seen in darkness"},
+
+                        {prop::Id::radiant_fov,
+                         "They emit light and can be seen in darkness"},
+
+                        {prop::Id::regenerating,
+                         "They regenerate health over time"},
+
+                        {prop::Id::explodes_on_death,
+                         "They explode on death"},
+
+                        {prop::Id::flammable,
+                         "They are very flammable, and will quickly ignite other nearby "
+                         "flammable creatures"},
+                },
+        },
 };
 
-static const std::string s_cannot_start =
-        "They cannot";
-
-static const std::pair<prop::Id, std::string> s_cannot_props[] = {
-        {prop::Id::r_sleep, "faint"},
-};
-
-static const std::string s_can_start =
-        "They can";
-
-static const std::pair<prop::Id, std::string> s_can_props[] = {
-        {prop::Id::darkvision, "see in darkness"},
-};
-
-static const std::pair<prop::Id, std::string> s_custom_props[] = {
-        {prop::Id::reduced_pierce_dmg,
-         "Piercing attacks such as pistol shots or dagger strikes are "
-         "very ineffective against them"},
-        {prop::Id::radiant_self,
-         "They emit light and can be seen in darkness"},
-        {prop::Id::radiant_adjacent,
-         "They emit light and can be seen in darkness"},
-        {prop::Id::radiant_fov,
-         "They emit light and can be seen in darkness"},
-        {prop::Id::regenerating,
-         "They regenerate health over time"},
-        {prop::Id::explodes_on_death,
-         "They explode on death"},
-        {prop::Id::flammable,
-         "They are very flammable, and will quickly ignite other nearby "
-         "flammable creatures"},
-};
+static std::string prop_text_category_prefix_str(PropTextCategory category)
+{
+        switch (category) {
+        case PropTextCategory::cannot_be_harmed_by:
+                return "They cannot be harmed by";
+        case PropTextCategory::unaffected_by:
+                return "They are unaffected by";
+        case PropTextCategory::cannot_be:
+                return "They cannot be";
+        case PropTextCategory::cannot:
+                return "They cannot";
+        case PropTextCategory::can:
+                return "They can";
+        case PropTextCategory::custom:
+                return "";
+        }
+        return "";
+}
 
 struct MonShockStrings
 {
@@ -371,127 +436,65 @@ static bool has_natural_property(
         return actor_data.natural_props[(size_t)id];
 }
 
-static void add_or_list_to_sentence(
+// Adds strings "foo", "bar", "baz" to "base string" as "base string foo, bar, or baz". Used for
+// building sentences like "[...] cannot be harmed by fire or poison".
+static void append_list_joined_with_or(
         std::string& base_str,
-        const std::vector<std::string>& names)
+        const std::vector<std::string>& strings)
 {
-        const size_t nr_names = names.size();
+        // This function should only ever be used to append to things with an actual base string
+        // (e.g. "They cannot be harmed by"):
+        ASSERT(!base_str.empty());
 
-        for (size_t i = 0; i < nr_names; ++i) {
-                if ((nr_names > 2) && (i > 0)) {
+        const size_t nr_strings = strings.size();
+
+        for (size_t i = 0; i < nr_strings; ++i) {
+                if ((nr_strings > 2) && (i > 0)) {
                         base_str += ",";
                 }
 
                 base_str += " ";
 
-                if ((nr_names >= 2) && (i == (nr_names - 1))) {
+                if ((nr_strings >= 2) && (i == (nr_strings - 1))) {
                         base_str += "or ";
                 }
 
-                base_str += names[i];
+                base_str += strings[i];
         }
 }
 
-static std::string get_mon_natural_properties_descr(
-        const actor::ActorData& actor_data)
+static std::string get_mon_natural_properties_descr(const actor::ActorData& actor_data)
 {
         std::string descr;
 
-        std::vector<std::string> cannot_be_harmed_by_names;
-        std::vector<std::string> unaffected_by_names;
-        std::vector<std::string> cannot_be_names;
-        std::vector<std::string> cannot_names;
-        std::vector<std::string> can_names;
-        std::vector<std::string> custom_entries;
+        for (const PropTextData& prop_text_data : s_prop_text_data) {
+                std::vector<std::string> applicable_strings;
 
-        for (const auto& p : s_cannot_be_harmed_by_props) {
-                if (has_natural_property(actor_data, p.first)) {
-                        cannot_be_harmed_by_names.push_back(p.second);
-                }
-        }
-
-        for (const auto& p : s_unaffected_by_props) {
-                if (has_natural_property(actor_data, p.first)) {
-                        unaffected_by_names.push_back(p.second);
-                }
-        }
-
-        for (const auto& p : s_cannot_be_props) {
-                if (has_natural_property(actor_data, p.first)) {
-                        cannot_be_names.push_back(p.second);
-                }
-        }
-
-        for (const auto& p : s_cannot_props) {
-                if (has_natural_property(actor_data, p.first)) {
-                        cannot_names.push_back(p.second);
-                }
-        }
-
-        for (const auto& p : s_can_props) {
-                if (has_natural_property(actor_data, p.first)) {
-                        can_names.push_back(p.second);
-                }
-        }
-
-        for (const auto& p : s_custom_props) {
-                if (has_natural_property(actor_data, p.first)) {
-                        custom_entries.push_back(p.second);
-                }
-        }
-
-        if (!cannot_be_harmed_by_names.empty()) {
-                descr += s_cannot_be_harmed_by_start;
-                add_or_list_to_sentence(descr, cannot_be_harmed_by_names);
-                descr += ".";
-        }
-
-        if (!unaffected_by_names.empty()) {
-                if (!descr.empty()) {
-                        descr += " ";
+                for (const auto& entry : prop_text_data.entries) {
+                        if (has_natural_property(actor_data, entry.first)) {
+                                applicable_strings.push_back(entry.second);
+                        }
                 }
 
-                descr += s_unaffected_by_start;
-                add_or_list_to_sentence(descr, unaffected_by_names);
-                descr += ".";
-        }
+                if (!applicable_strings.empty()) {
+                        if (prop_text_data.category == PropTextCategory::custom) {
+                                for (const std::string& str : applicable_strings) {
+                                        text_format::append_with_space(descr, str);
+                                        descr += ".";
+                                }
+                        }
+                        else {
+                                const std::string prefix =
+                                        prop_text_category_prefix_str(
+                                                prop_text_data.category);
 
-        if (!cannot_be_names.empty()) {
-                if (!descr.empty()) {
-                        descr += " ";
+                                text_format::append_with_space(descr, prefix);
+
+                                append_list_joined_with_or(descr, applicable_strings);
+
+                                descr += ".";
+                        }
                 }
-
-                descr += s_cannot_be_start;
-                add_or_list_to_sentence(descr, cannot_be_names);
-                descr += ".";
-        }
-
-        if (!cannot_names.empty()) {
-                if (!descr.empty()) {
-                        descr += " ";
-                }
-
-                descr += s_cannot_start;
-                add_or_list_to_sentence(descr, cannot_names);
-                descr += ".";
-        }
-
-        if (!can_names.empty()) {
-                if (!descr.empty()) {
-                        descr += " ";
-                }
-
-                descr += s_can_start;
-                add_or_list_to_sentence(descr, can_names);
-                descr += ".";
-        }
-
-        for (const std::string& entry : custom_entries) {
-                if (!descr.empty()) {
-                        descr += " ";
-                }
-
-                descr += entry + ".";
         }
 
         return descr;
