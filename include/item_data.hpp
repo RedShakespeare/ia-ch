@@ -161,6 +161,7 @@ enum class Id
         scroll_telep,
         scroll_terrify,
         scroll_thorns,
+        scroll_threat_projection,
         scroll_transmut,
 
         // Potions

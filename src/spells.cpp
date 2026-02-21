@@ -115,6 +115,7 @@ static const std::unordered_map<std::string, SpellId> s_str_to_spell_id_map = {
         {"SPELL_SUMMON_WATER_CREATURE", SpellId::summon_water_creature},
         {"SPELL_TELEPORT", SpellId::teleport},
         {"SPELL_TERRIFY", SpellId::terrify},
+        {"SPELL_THREAT_PROJECTION", SpellId::threat_projection},
         {"SPELL_TRANSMUT", SpellId::transmut}};
 
 static const std::unordered_map<std::string, SpellSkill> s_str_to_spell_skill_map = {
@@ -863,6 +864,9 @@ Spell* make(const SpellId spell_id)
 
         case SpellId::terrify:
                 return new SpellTerrify();
+
+        case SpellId::threat_projection:
+                return new SpellThreatProjection();
 
         case SpellId::disease:
                 return new SpellDisease();
@@ -5919,6 +5923,141 @@ bool SpellTerrify::allow_mon_cast_now(
         (void)mon;
 
         return !seen_targets.empty();
+}
+
+// -----------------------------------------------------------------------------
+// Threat Projection
+// -----------------------------------------------------------------------------
+std::string SpellThreatProjection::name() const
+{
+        return "Threat Projection";
+}
+
+SpellId SpellThreatProjection::id() const
+{
+        return SpellId::threat_projection;
+}
+
+SpellDomain SpellThreatProjection::domain() const
+{
+        return SpellDomain::illusion;
+}
+
+SpellShock SpellThreatProjection::shock_type() const
+{
+        return SpellShock::mild;
+}
+
+bool SpellThreatProjection::is_noisy(const SpellSkill skill) const
+{
+        (void)skill;
+
+        return true;
+}
+
+Range SpellThreatProjection::duration_range(SpellSkill skill) const
+{
+        switch (skill) {
+        case SpellSkill::basic:
+                return {3, 6};
+
+        case SpellSkill::expert:
+                return {6, 12};
+
+        case SpellSkill::master:
+                // NOTE: Same as the Horn of Malice.
+                return {8, 24};
+
+        case SpellSkill::transcendent:
+                return {16, 48};
+        }
+
+        ASSERT(false);
+
+        return {1, 1};
+}
+
+int SpellThreatProjection::base_max_cost(
+        const SpellSkill skill,
+        const actor::Actor* const caster) const
+{
+        (void)skill;
+        (void)caster;
+
+        return 7;
+}
+
+void SpellThreatProjection::run_effect(
+        actor::Actor* const caster,
+        const SpellSkill skill,
+        const std::vector<actor::Actor*>& seen_targets) const
+{
+        if (seen_targets.empty()) {
+                msg_log::add("The bugs on the ground all start to attack each other.");
+
+                return;
+        }
+
+        // There are targets available
+
+        const std::vector<actor::Actor*> targets =
+                (skill == SpellSkill::basic)
+                ? std::vector {rnd::element(seen_targets)}
+                : seen_targets;
+
+        draw_blast_at_seen_actors(targets, colors::magenta());
+
+        for (actor::Actor* const target : targets) {
+                // Spell resistance?
+                if (target->m_properties.has(prop::Id::r_spell)) {
+                        on_resist(*target);
+
+                        // Spell reflection?
+                        if (target->m_properties.has(prop::Id::spell_reflect)) {
+                                if (actor::can_player_see_actor(*target)) {
+                                        msg_log::add(s_spell_reflect_msg);
+                                }
+
+                                // Run effect with the target as caster, and the
+                                // caster as seen target instead.
+                                run_effect(target, skill, {caster});
+                        }
+
+                        continue;
+                }
+
+                conflict_target(*target, skill);
+        }
+}
+
+void SpellThreatProjection::conflict_target(actor::Actor& target, const SpellSkill skill) const
+{
+        prop::Prop* const conflicted = prop::make(prop::Id::conflict);
+
+        conflicted->set_duration(duration_range(skill).roll());
+
+        target.m_properties.apply(conflicted);
+}
+
+std::vector<std::string> SpellThreatProjection::descr_specific(
+        const SpellSkill skill) const
+{
+        (void)skill;
+
+        std::vector<std::string> descr;
+
+        descr.emplace_back(
+                "Distorts the perception of the spell's victims, causing "
+                "all other creatures to be misidentified as enemies.");
+
+        descr.emplace_back(
+                skill == SpellSkill::basic
+                        ? "Affects one random visible hostile creature."
+                        : "Affects all visible hostile creatures.");
+
+        descr.push_back("The spell lasts " + duration_range(skill).str() + " turns.");
+
+        return descr;
 }
 
 // -----------------------------------------------------------------------------

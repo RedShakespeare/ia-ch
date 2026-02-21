@@ -679,8 +679,14 @@ void TeleCtrlTalisman::on_removed_from_inv_hook()
 void HornOfMaliceHeard::run(actor::Actor& actor) const
 {
         if (!actor::is_player(&actor)) {
-                actor.m_properties.apply(
-                        prop::make(prop::Id::conflict));
+                prop::Prop* const conflicted = prop::make(prop::Id::conflict);
+
+                // NOTE: Same as the Threat Projection spell at master level.
+                Range duration_range(8, 24);
+
+                conflicted->set_duration(duration_range.roll());
+
+                actor.m_properties.apply(conflicted);
         }
 }
 
