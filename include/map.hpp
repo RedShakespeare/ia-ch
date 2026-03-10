@@ -151,8 +151,9 @@ void update_vision();
 
 void update_player_memory();
 
-// Sets a new terrain object and updates map information (e.g. which positions are blocked). This
-// should always be used when changing terrain while a map is played (e.g. on terrain destruction).
+// Sets a new terrain object and applies consequences (like calling hook functions). This should
+// always be used when changing terrain while a map is played (e.g. on terrain destruction or trap
+// creation).
 void update_terrain(terrain::Terrain* terrain);
 
 // This merely sets a new terrain object. It should mainly be used during map generation.

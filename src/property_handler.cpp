@@ -623,6 +623,24 @@ void PropHandler::add_prop_from_equipped_item(
         apply(prop, PropSrc::inv, true, verbose);
 }
 
+bool PropHandler::has(const Id id) const
+{
+        return m_prop_count_cache[(size_t)id] > 0;
+}
+
+bool PropHandler::has_any(const std::vector<Id>& ids) const
+{
+        const bool is_match =
+                std::find_if(
+                        std::cbegin(ids),
+                        std::cend(ids),
+                        [this](const prop::Id id) {
+                                return has(id);
+                        }) != std::end(ids);
+
+        return is_match;
+}
+
 Prop* PropHandler::prop(const Id id) const
 {
         if (has(id)) {

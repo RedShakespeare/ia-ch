@@ -104,8 +104,6 @@ public:
 
         bool can_move(const actor::Actor& actor) const override;
 
-        bool is_property_allowing_move(prop::Id id) const override;
-
         bool is_los_passable() const override;
 
         bool is_projectile_passable() const override;

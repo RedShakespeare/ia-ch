@@ -17,6 +17,7 @@
 #include "terrain.hpp"
 #include "terrain_data.hpp"
 #include "terrain_factory.hpp"
+#include "terrain_trap.hpp"
 
 // -----------------------------------------------------------------------------
 // Private
@@ -59,14 +60,17 @@ static void decorate_walls()
         }
 }
 
-static bool is_cave_floor(const P& p)
+static bool looks_like_cave_floor(const P& p)
 {
-        const auto& t = *map::g_terrain.at(p);
+        const terrain::Terrain* terrain_here = map::g_terrain.at(p);
 
-        // TODO: Consider traps mimicking cave floor
+        if (terrain_here->id() == terrain::Id::trap) {
+                // There is a trap here, check the imitated terrain instead.
+                terrain_here = static_cast<const terrain::Trap*>(terrain_here)->get_mimic_terrain();
+        }
 
-        if (t.id() == terrain::Id::floor) {
-                const auto* floor = static_cast<const terrain::Floor*>(&t);
+        if (terrain_here->id() == terrain::Id::floor) {
+                const auto* floor = static_cast<const terrain::Floor*>(terrain_here);
 
                 if (floor->m_type == terrain::FloorType::cave) {
                         return true;
@@ -110,7 +114,7 @@ static bool should_convert_wall_to_cave_mid_game(const P& p)
                         continue;
                 }
 
-                if (is_cave_floor(p_adj)) {
+                if (looks_like_cave_floor(p_adj)) {
                         is_adj_to_cave_floor = true;
 
                         break;

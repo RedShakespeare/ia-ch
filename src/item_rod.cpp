@@ -556,13 +556,7 @@ void Unbinding::run_effect()
                 prop::Id::nailed,
         };
 
-        const bool is_identified =
-                std::any_of(
-                        std::cbegin(props_ended),
-                        std::cend(props_ended),
-                        [](const prop::Id id) {
-                                return map::g_player->m_properties.has(id);
-                        });
+        const bool is_identified = map::g_player->m_properties.has_any(props_ended);
 
         std::for_each(
                 std::cbegin(props_ended),

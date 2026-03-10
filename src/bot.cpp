@@ -117,8 +117,7 @@ static void find_stair_path()
                                 blocked.at(x, y) = false;
                         } break;
 
-                        default:
-                        {
+                        default: {
                         } break;
                         }
                 }
@@ -367,8 +366,8 @@ static void bot_act()
                 map::g_player->m_properties.apply(prop);
         }
 
-        // End a random property (helps clearing out properties that cause
-        // spammy or interrupting effects like mind sapping).
+        // End a random property (helps clearing out properties that cause spammy or interrupting
+        // effects).
         if (rnd::one_in(100)) {
                 const auto id = (prop::Id)rnd::range(0, (int)prop::Id::END - 1);
 
@@ -389,8 +388,7 @@ static void bot_act()
                 return;
         }
 
-        // Run an explosion around the player (code exercise, and to avoid
-        // getting stuck).
+        // Run an explosion around the player (code exercise, and to avoid getting stuck).
         if (rnd::one_in(50)) {
                 explosion::run(map::g_player->m_pos, ExplType::expl);
 

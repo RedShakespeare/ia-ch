@@ -2322,7 +2322,7 @@ void init()
                 "grants protection against harmful spells "
                 "for 6-12 turns, or until a spell is blocked.",
 
-                "It also dispels all seen magic traps "
+                "It also dispels all seen sigils "
                 "(\"strange shape\" on the floor). "
                 "For each trap dispelled, 1-6 spirit points are gained, "
                 "which may raise spirit above maximum level."};

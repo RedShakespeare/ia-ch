@@ -114,11 +114,9 @@ public:
 
         void remove_props_for_item(const item::Item* item);
 
-        // Fast method for checking if a certain property id is applied
-        bool has(const Id id) const
-        {
-                return m_prop_count_cache[(size_t)id] > 0;
-        }
+        // Fast methods for checking if a certain property id is applied
+        bool has(Id id) const;
+        bool has_any(const std::vector<Id>& ids) const;
 
         Prop* prop(Id id) const;
 

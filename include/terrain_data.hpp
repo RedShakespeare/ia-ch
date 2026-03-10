@@ -97,12 +97,9 @@ struct MoveRules
 
         bool can_move(const actor::Actor& actor) const;
 
-        // Is this given property allowing movement into this terrain, when it
-        // normally wouldn't be?
-        bool is_property_allowing_move(prop::Id id) const;
-
         bool is_walkable {false};
         std::vector<prop::Id> props_allow_move;
+        std::vector<prop::Id> props_prevent_move;
 };
 
 struct TerrainData

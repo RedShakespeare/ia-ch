@@ -1159,7 +1159,7 @@ ConsumeItem BoneCharm::activate(actor::Actor* actor)
 
                 auto* const trap = static_cast<terrain::Trap*>(terrain);
 
-                if (!trap->is_magical()) {
+                if (!trap->is_sigil()) {
                         continue;
                 }
 

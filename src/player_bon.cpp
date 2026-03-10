@@ -1275,7 +1275,9 @@ std::vector<ColoredString> bg_descr(const Bg id)
                 put("+3 spirit points (in addition to \"Stout Spirit\").");
                 put("");
                 put("Starts with several Bone Charms, that can be used for "
-                    "gaining spell resistance or dispelling magic traps.");
+                    "gaining spell resistance or dispelling sigils "
+                    ""
+                    "(\"strange shape\" on the floor).");
 
                 put("");
                 put_trait(TraitId::stout_spirit);
@@ -1474,6 +1476,7 @@ std::vector<SpellDomain> pickable_occultist_domains()
                 SpellDomain::illusion,
                 SpellDomain::mind,
                 SpellDomain::time,
+                SpellDomain::warding,
         };
 
         // Sort lexicographically.

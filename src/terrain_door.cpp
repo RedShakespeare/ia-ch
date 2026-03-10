@@ -1009,27 +1009,6 @@ bool Door::can_move(const actor::Actor& actor) const
         return false;
 }
 
-bool Door::is_property_allowing_move(prop::Id id) const
-{
-        // Can move through all door types.
-        if ((id == prop::Id::ethereal) || (id == prop::Id::ooze)) {
-                return true;
-        }
-
-        // Small creatures can pass through gates
-        const bool is_gate = (m_type == DoorType::gate);
-
-        const bool is_small_creature =
-                (id == prop::Id::small_crawling) ||
-                (id == prop::Id::tiny_flying);
-
-        if (is_gate && is_small_creature) {
-                return true;
-        }
-
-        return false;
-}
-
 bool Door::is_los_passable() const
 {
         return m_is_open || (m_type == DoorType::gate);

@@ -328,12 +328,8 @@ void MindLeechSting::on_melee_hit(actor::Actor& actor_hit, const int dmg)
                 }
         }
         else {
-                // Player mind can be eaten
-                prop::Prop* prop_mind_sap = prop::make(prop::Id::mind_sap);
-
-                prop_mind_sap->set_indefinite();
-
-                map::g_player->m_properties.apply(prop_mind_sap);
+                // Player mind can be attacked.
+                map::g_player->incr_shock(12.0, ShockSrc::misc);
 
                 // Make the monster pause, so things don't get too crazy
                 auto* prop_waiting = prop::make(prop::Id::waiting);
@@ -637,7 +633,7 @@ void ZombieDust::on_ranged_hit(actor::Actor& actor_hit)
                 return;
         }
 
-        if (actor_hit.m_data->is_undead) {
+        if (actor_hit.m_properties.has(prop::Id::undead)) {
                 return;
         }
 

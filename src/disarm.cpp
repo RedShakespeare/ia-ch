@@ -83,7 +83,7 @@ static void try_disarm_terrain_at(const P& pos)
 
         // There is a known and seen trap here.
 
-        if (trap->is_magical()) {
+        if (trap->is_sigil()) {
                 msg_log::add("It cannot be removed through normal means.");
 
                 return;

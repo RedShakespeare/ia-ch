@@ -320,15 +320,15 @@ ConsumeItem Rejuvenator::run_effect()
 {
         msg_log::add("It repairs my body.");
 
-        std::vector<prop::Id> props_can_heal = {
+        const std::vector<prop::Id> props_can_heal = {
                 prop::Id::blind,
                 prop::Id::deaf,
                 prop::Id::poisoned,
                 prop::Id::infected,
                 prop::Id::diseased,
                 prop::Id::weakened,
-                prop::Id::hp_sap,
-                prop::Id::wound};
+                prop::Id::wound,
+        };
 
         for (prop::Id prop_id : props_can_heal) {
                 map::g_player->m_properties.end_prop(prop_id);

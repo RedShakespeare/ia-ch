@@ -3562,6 +3562,8 @@ void Tomb::player_loot()
 
 DidOpen Tomb::open(actor::Actor* const actor_opening)
 {
+        (void)actor_opening;
+
         if (m_is_open) {
                 return DidOpen::no;
         }
@@ -3588,17 +3590,15 @@ DidOpen Tomb::open(actor::Actor* const actor_opening)
                         }
                 }
 
-                trigger_trap(actor_opening);
+                trigger_trap();
 
                 return DidOpen::yes;
         }
 }
 
-DidTriggerTrap Tomb::trigger_trap(actor::Actor* const actor)
+void Tomb::trigger_trap()
 {
         TRACE_FUNC_BEGIN;
-
-        (void)actor;
 
         switch (m_trap_id) {
         case TombTrapId::monster: {
@@ -3623,8 +3623,6 @@ DidTriggerTrap Tomb::trigger_trap(actor::Actor* const actor)
         m_is_trait_known = true;
 
         TRACE_FUNC_END;
-
-        return DidTriggerTrap::yes;
 }
 
 void Tomb::trigger_trap_mon() const
@@ -5284,12 +5282,10 @@ void Cocoon::bump(actor::Actor& actor_bumping)
         game_time::tick();
 }
 
-DidTriggerTrap Cocoon::trigger_trap(actor::Actor* const actor)
+void Cocoon::trigger_trap()
 {
-        (void)actor;
-
         if (!m_is_trapped) {
-                return DidTriggerTrap::no;
+                return;
         }
 
         const int rnd = rnd::range(1, 100);
@@ -5300,7 +5296,7 @@ DidTriggerTrap Cocoon::trigger_trap(actor::Actor* const actor)
                 if (player_bon::is_bg(Bg::ghoul)) {
                         m_is_trapped = false;
 
-                        return DidTriggerTrap::no;
+                        return;
                 }
 
                 msg_log::add("There is a half-dissolved human body inside!");
@@ -5309,7 +5305,7 @@ DidTriggerTrap Cocoon::trigger_trap(actor::Actor* const actor)
 
                 m_is_trapped = false;
 
-                return DidTriggerTrap::yes;
+                return;
         }
         else if (rnd < 50) {
                 // Spiders
@@ -5345,12 +5341,8 @@ DidTriggerTrap Cocoon::trigger_trap(actor::Actor* const actor)
                                 .make_aware_of_player();
 
                         m_is_trapped = false;
-
-                        return DidTriggerTrap::yes;
                 }
         }
-
-        return DidTriggerTrap::no;
 }
 
 void Cocoon::player_loot()
@@ -5367,6 +5359,8 @@ void Cocoon::player_loot()
 
 DidOpen Cocoon::open(actor::Actor* const actor_opening)
 {
+        (void)actor_opening;
+
         if (m_is_open) {
                 return DidOpen::no;
         }
@@ -5378,7 +5372,7 @@ DidOpen Cocoon::open(actor::Actor* const actor_opening)
                         msg_log::add("The cocoon opens.");
                 }
 
-                trigger_trap(actor_opening);
+                trigger_trap();
 
                 return DidOpen::yes;
         }

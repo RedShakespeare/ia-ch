@@ -89,6 +89,7 @@ enum class SpellId
         // Domain: Warding
         bless,
         heal,
+        inscribe_boundary_sigil,
         light,
         spell_shield,
 
@@ -1035,10 +1036,7 @@ public:
 
         SpellDomain domain() const override;
 
-        SpellShock shock_type() const override
-        {
-                return SpellShock::mild;
-        }
+        SpellShock shock_type() const override;
 
         std::vector<std::string> descr_specific(SpellSkill skill) const override;
 
@@ -1050,6 +1048,34 @@ public:
         Range duration_range(SpellSkill skill) const;
 
 private:
+        int base_max_cost(SpellSkill skill, const actor::Actor* caster) const override;
+
+        bool is_noisy(SpellSkill skill) const override;
+};
+
+class SpellInscribeBoundarySigil : public Spell
+{
+public:
+        SpellInscribeBoundarySigil() = default;
+
+        std::string name() const override;
+
+        SpellId id() const override;
+
+        SpellDomain domain() const override;
+
+        SpellShock shock_type() const override;
+
+        std::vector<std::string> descr_specific(SpellSkill skill) const override;
+
+        void run_effect(
+                actor::Actor* caster,
+                SpellSkill skill,
+                const std::vector<actor::Actor*>& seen_targets) const override;
+
+private:
+        int pct_chance_fade(SpellSkill skill) const;
+
         int base_max_cost(SpellSkill skill, const actor::Actor* caster) const override;
 
         bool is_noisy(SpellSkill skill) const override;

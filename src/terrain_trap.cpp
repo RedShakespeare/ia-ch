@@ -70,24 +70,26 @@ static bool is_player_seeing_trap_trigger(
         }
 }
 
-static void communicate_magic_trap_trigger(
-        const actor::Actor& actor,
-        const P& pos,
-        const bool is_hidden)
+static void communicate_sigil_trigger(const terrain::Trap& trap, const actor::Actor& actor)
 {
         map::update_vision();
 
-        const bool can_player_see_trap = map::g_seen.at(pos);
+        const bool can_player_see_trap = map::g_seen.at(trap.pos());
 
         if (actor::is_player(&actor)) {
                 if (can_player_see_trap) {
-                        std::string msg = "A beam of light shoots out from";
+                        std::string msg = "A beam of light shoots out from ";
 
-                        if (!is_hidden) {
-                                msg += " a curious shape on";
+                        if (trap.is_hidden()) {
+                                msg += "the floor";
+                        }
+                        else {
+                                const std::string name = trap.name(Article::the);
+
+                                msg += name;
                         }
 
-                        msg += " the floor!";
+                        msg += "!";
 
                         msg_log::add(msg);
                 }
@@ -112,9 +114,9 @@ static void communicate_magic_trap_trigger(
 
         Snd snd(
                 "I hear an otherworldly blaze.",
-                audio::SfxId::magic_trap_trigger,
+                audio::SfxId::sigil_trigger,
                 IgnoreMsgIfOriginSeen::yes,
-                pos,
+                trap.pos(),
                 nullptr,
                 SndVol::low,
                 AlertsMon::no);
@@ -124,11 +126,53 @@ static void communicate_magic_trap_trigger(
         if (can_player_see_trap) {
                 const int flash_speed_pct = 15;
 
-                io::flash_at(pos, colors::yellow(), flash_speed_pct);
+                io::flash_at(trap.pos(), colors::yellow(), flash_speed_pct);
         }
 
         if (actor::is_player(&actor)) {
                 msg_log::more_prompt();
+        }
+}
+
+static void communicate_sigil_strained(const terrain::Trap& trap)
+{
+        map::update_vision();
+
+        if (map::g_seen.at(trap.pos()) && !trap.is_hidden()) {
+                const std::string name = text_format::first_to_upper(trap.name(Article::the));
+
+                msg_log::add(name + " wavers.");
+        }
+}
+
+static std::string sigil_fade_msg(const terrain::Trap& trap)
+{
+        const std::string name = text_format::first_to_upper(trap.name(Article::the));
+
+        return name + " fades out.";
+}
+
+static void communicate_sigil_destroyed(const terrain::Trap& trap)
+{
+        map::update_vision();
+
+        if (map::g_seen.at(trap.pos()) && !trap.is_hidden()) {
+                Snd snd(
+                        "",
+                        audio::SfxId::sigil_fade,
+                        IgnoreMsgIfOriginSeen::yes,
+                        trap.pos(),
+                        nullptr,
+                        SndVol::low,
+                        AlertsMon::no);
+
+                snd.run();
+
+                const int flash_speed_pct = 50;
+
+                io::flash_at(trap.pos(), colors::gray(), flash_speed_pct);
+
+                msg_log::add(sigil_fade_msg(trap));
         }
 }
 
@@ -197,20 +241,8 @@ static terrain::TrapImpl* make_trap_impl_from_id(
                 return new terrain::TrapSummonMon(pos, parent_trap);
                 break;
 
-        case terrain::TrapId::hp_sap:
-                return new terrain::TrapHpSap(pos, parent_trap);
-                break;
-
-        case terrain::TrapId::spi_sap:
-                return new terrain::TrapSpiSap(pos, parent_trap);
-                break;
-
         case terrain::TrapId::smoke:
                 return new terrain::TrapSmoke(pos, parent_trap);
-                break;
-
-        case terrain::TrapId::fire:
-                return new terrain::TrapFire(pos, parent_trap);
                 break;
 
         case terrain::TrapId::alarm:
@@ -245,7 +277,12 @@ static terrain::TrapImpl* make_trap_impl_from_id(
                 return new terrain::TrapUnlearnSpell(pos, parent_trap);
                 break;
 
+        case terrain::TrapId::boundary:
+                return new terrain::TrapBoundary(pos, parent_trap);
+                break;
+
         case terrain::TrapId::END_MECHANICAL:
+        case terrain::TrapId::END_OF_AUTO_SPAWNABLE_TRAPS:
         case terrain::TrapId::END:
         case terrain::TrapId::any:
                 break;
@@ -278,19 +315,32 @@ static terrain::TrapId get_random_id_to_spawn()
 {
         Range id_range;
 
-        // Spawn magic traps most of the time.
+        // Spawn sigils most of the time.
         if (rnd::one_in(3)) {
                 // "Mechanical" trap.
                 id_range.min = 0;
                 id_range.max = (int)terrain::TrapId::END_MECHANICAL - 1;
         }
         else {
-                // Magic trap.
+                // sigil.
                 id_range.min = (int)terrain::TrapId::END_MECHANICAL + 1;
-                id_range.max = (int)terrain::TrapId::END - 1;
+                id_range.max = (int)terrain::TrapId::END_OF_AUTO_SPAWNABLE_TRAPS - 1;
         }
 
         return (terrain::TrapId)id_range.roll();
+}
+
+static bool can_actor_trigger_mechanical_trap(const actor::Actor& actor)
+{
+        const prop::PropHandler& props = actor.m_properties;
+
+        return (
+                !props.has(prop::Id::ethereal) &&
+                !props.has(prop::Id::flying) &&
+                !props.has(prop::Id::tiny_flying) &&
+                !props.has(prop::Id::small_crawling) &&
+                // NOTE: Spiders never trigger "mechanical" traps, including webs.
+                !actor.m_data->is_spider);
 }
 
 // -----------------------------------------------------------------------------
@@ -306,8 +356,10 @@ Trap::~Trap()
 
 bool Trap::try_init_type(const TrapId id)
 {
-        ASSERT(id != TrapId::END_MECHANICAL);
-        ASSERT(id != TrapId::END);
+        ASSERT(
+                id != TrapId::END_MECHANICAL &&
+                id != TrapId::END_OF_AUTO_SPAWNABLE_TRAPS &&
+                id != TrapId::END);
 
         Terrain* const terrain_here = map::g_terrain.at(m_pos);
 
@@ -357,6 +409,18 @@ bool Trap::try_init_type(const TrapId id)
         }
 }
 
+void Trap::set_mimic_terrain(terrain::Terrain* const terrain)
+{
+        m_mimic_terrain = terrain;
+}
+
+const terrain::Terrain* Trap::get_mimic_terrain() const
+{
+        ASSERT(m_mimic_terrain);
+
+        return m_mimic_terrain;
+}
+
 void Trap::hit(
         DmgType dmg_type,
         actor::Actor* actor,
@@ -376,113 +440,43 @@ TrapId Trap::type() const
         return m_trap_impl->type();
 }
 
-bool Trap::is_magical() const
+bool Trap::is_sigil() const
 {
         ASSERT(m_trap_impl);
 
-        return m_trap_impl->is_magical();
+        return m_trap_impl->is_sigil();
 }
 
 void Trap::on_new_turn_hook()
 {
-        if (m_nr_turns_until_trigger > 0) {
-                --m_nr_turns_until_trigger;
-
-                TRACE
-                        << "Number of turns until trigger: "
-                        << m_nr_turns_until_trigger << "\n";
-
-                if (m_nr_turns_until_trigger == 0) {
-                        // NOTE: This will reset number of turns until triggered.
-
-                        // NOTE: Traps do not care about the actor in this function call, they only
-                        // consider the actor standing on the trap.
-
-                        trigger_trap(nullptr);
-                }
-        }
-}
-
-void Trap::trigger_start(const actor::Actor* actor)
-{
-        TRACE_FUNC_BEGIN;
-
-        if (!m_trap_impl) {
-                ASSERT(false);
-
-                return;
-        }
-
-        m_trigger_revealed_status =
-                m_is_hidden
-                ? TriggerRevealedStatus::triggered_hidden
-                : TriggerRevealedStatus::triggered_known;
-
-        TRACE
-                << "Start trigger for trap of type "
-                << "'" << m_trap_impl->name(Article::a) << "', "
-                << "with trap implementation id "
-                << "'" << (int)m_trap_impl->type() << "'"
-                << "\n";
-
-        if (actor::is_player(actor)) {
-                // Reveal trap if triggered by player stepping on it.
-                if (is_hidden()) {
-                        reveal(PrintRevealMsg::no);
-                }
-
-                actor::update_player_fov();
-
-                states::draw();
-        }
-
-        if (is_magical()) {
-                communicate_magic_trap_trigger(*actor, m_pos, is_hidden());
-        }
-        else if (type() != TrapId::web) {
-                communicate_mechanical_trap_trigger(*actor, m_pos);
-        }
-
-        // Get a randomized value for number of remaining turns.
-        const Range turns_range = m_trap_impl->nr_turns_range_to_trigger();
-
-        const int rnd_nr_turns = turns_range.roll();
-
-        // Set number of remaining turns to the randomized value if not set already, or if the new
-        // value will make it trigger sooner.
-        if ((m_nr_turns_until_trigger == -1) ||
-            (rnd_nr_turns < m_nr_turns_until_trigger)) {
-                m_nr_turns_until_trigger = rnd_nr_turns;
-        }
-
-        ASSERT(m_nr_turns_until_trigger >= 0);
-
-        // If number of remaining turns is zero, trigger immediately.
-        if (m_nr_turns_until_trigger == 0) {
-                // NOTE: This will reset number of turns until triggered.
-
-                // NOTE: Traps do not care about the actor in this function call, they only consider
-                // the actor standing on the trap.
-                trigger_trap(nullptr);
-        }
-
-        TRACE_FUNC_END;
 }
 
 AllowAction Trap::pre_bump(actor::Actor& actor_bumping)
 {
+        // Ask the player if they really want to step into the trap.
+
+        // This does not apply to monster creatures or to a confused player:
         if (!actor::is_player(&actor_bumping) ||
             actor_bumping.m_properties.has(prop::Id::confused)) {
                 return AllowAction::yes;
         }
 
-        const prop::PropHandler& props = actor_bumping.m_properties;
+        bool can_player_trigger_trap = false;
 
-        if (map::g_seen.at(m_pos) &&
-            !m_is_hidden &&
-            !props.has(prop::Id::ethereal) &&
-            !props.has(prop::Id::flying) &&
-            !props.has(prop::Id::tiny_flying)) {
+        if (is_sigil()) {
+                // Boundary Sigils are always placed by the player and only ever affects monsters.
+                can_player_trigger_trap = type() != TrapId::boundary;
+        }
+        else {
+                can_player_trigger_trap = can_actor_trigger_mechanical_trap(actor_bumping);
+        }
+
+        const bool should_query_player =
+                can_player_trigger_trap &&
+                map::g_seen.at(m_pos) &&
+                !m_is_hidden;
+
+        if (should_query_player) {
                 // The trap is known, and would be triggered by the player.
 
                 const std::string name_the = name(Article::the);
@@ -513,8 +507,7 @@ AllowAction Trap::pre_bump(actor::Actor& actor_bumping)
                 // The trap is hidden, or would not be triggered by the player - delegate the
                 // question to the mimicked terrain.
 
-                const AllowAction result =
-                        m_mimic_terrain->pre_bump(actor_bumping);
+                const AllowAction result = m_mimic_terrain->pre_bump(actor_bumping);
 
                 return result;
         }
@@ -522,44 +515,29 @@ AllowAction Trap::pre_bump(actor::Actor& actor_bumping)
 
 void Trap::bump(actor::Actor& actor_bumping)
 {
-        const actor::ActorData& d = *actor_bumping.m_data;
+        ASSERT(m_trap_impl);
 
-        const prop::PropHandler& props = actor_bumping.m_properties;
+        TRACE
+                << "Bumping trap of type "
+                << "'" << m_trap_impl->name(Article::a) << "', "
+                << "with trap implementation id "
+                << "'" << (int)m_trap_impl->type() << "'"
+                << "\n";
 
-        if (props.has(prop::Id::ethereal) ||
-            props.has(prop::Id::flying) ||
-            props.has(prop::Id::tiny_flying) ||
-            props.has(prop::Id::small_crawling) ||
-            d.is_spider) {
-                return;
-        }
+        actor::update_player_fov();
 
-        if (!actor::is_player(&actor_bumping)) {
-                // TODO: This seems to prevent the trap from triggering when the player kicks a
-                // monster into the trap in some cases? Perhaps when the monster has just stepped
-                // into sight of the player?  The problem can happen both when the monster is aware
-                // or unaware?
+        states::draw();
 
-                // Put some extra restrictions on monsters triggering traps.
-                if (!actor_bumping.m_ai_state.is_target_seen ||
-                    !actor::is_aware_of_player(actor_bumping) ||
-                    is_hidden()) {
-                        return;
-                }
-        }
-
-        trigger_start(&actor_bumping);
+        m_trap_impl->on_bumped(actor_bumping);
 }
 
 bool Trap::disarm()
 {
-        if (m_nr_turns_until_trigger != -1) {
-                msg_log::add("It cannot be disarmed now!");
+        const std::string disarm_msg = m_trap_impl->disarm_msg();
 
-                return false;
+        if (!disarm_msg.empty()) {
+                msg_log::add(disarm_msg);
         }
-
-        msg_log::add(m_trap_impl->disarm_msg());
 
         destroy();
 
@@ -570,11 +548,9 @@ void Trap::destroy()
 {
         ASSERT(m_mimic_terrain);
 
-        // Magical traps and webs simply "dissapear" (place their mimic
-        // terrain), and mechanical traps puts rubble.
+        if (is_sigil() || type() == TrapId::web) {
+                // Sigil or web - change the terrain here to the mimic terrain.
 
-        if (is_magical() || type() == TrapId::web) {
-                // Magical trap or wbb.
                 Terrain* const mimic_terrain = m_mimic_terrain;
 
                 m_mimic_terrain = nullptr;
@@ -583,30 +559,9 @@ void Trap::destroy()
                 map::update_terrain(mimic_terrain);
         }
         else {
-                // "Mechanical" trap
-                map::update_terrain(
-                        terrain::make(terrain::Id::rubble_low, m_pos));
+                // "Mechanical" trap (and not a web), just put rubble.
+                map::update_terrain(terrain::make(terrain::Id::rubble_low, m_pos));
         }
-}
-
-DidTriggerTrap Trap::trigger_trap(actor::Actor* actor)
-{
-        TRACE_FUNC_BEGIN;
-
-        (void)actor;
-
-        m_nr_turns_until_trigger = -1;
-
-        m_trap_impl->trigger();
-
-        // Traps are always destroyed after being triggered.
-
-        // NOTE: This deletes this terrain object!
-        destroy();
-
-        TRACE_FUNC_END;
-
-        return DidTriggerTrap::yes;
 }
 
 void Trap::reveal(const PrintRevealMsg print_reveal_msg)
@@ -650,10 +605,6 @@ void Trap::on_revealed_from_searching()
         if (type() != TrapId::web) {
                 game::incr_player_xp(g_xp_on_reveal_trap);
         }
-
-        // In case the trap was revealed after it had started triggering, set the trigger revealed
-        // status to state that it was triggered in known status.
-        m_trigger_revealed_status = TriggerRevealedStatus::triggered_known;
 }
 
 std::string Trap::name(const Article article) const
@@ -706,15 +657,162 @@ Material Trap::material() const
         }
 }
 
+void Trap::strain()
+{
+        m_trap_impl->strain();
+}
+
 // -----------------------------------------------------------------------------
-// Trap implementations
+// Trap Implementation base class
+// -----------------------------------------------------------------------------
+char TrapImpl::character() const
+{
+        return '^';
+}
+
+// -----------------------------------------------------------------------------
+// Mechanical trap base class
+// -----------------------------------------------------------------------------
+MechTrapImpl::MechTrapImpl(P pos, TrapId type, Trap* const base_trap) :
+        TrapImpl(pos, type, base_trap) {}
+
+gfx::TileId MechTrapImpl::tile() const
+{
+        return gfx::TileId::trap_general;
+}
+
+void MechTrapImpl::on_bumped(actor::Actor& actor_bumping)
+{
+        if (!can_actor_trigger_mechanical_trap(actor_bumping)) {
+                return;
+        }
+
+        if (!actor::is_player(&actor_bumping)) {
+                // TODO: This seems to prevent the trap from triggering when the player kicks a
+                // monster into the trap in some cases? Perhaps when the monster has just stepped
+                // into sight of the player? The problem can happen both when the monster is aware
+                // or unaware?
+
+                // Put some extra restrictions on monsters triggering traps. All of the following
+                // must also be fulfilled for a monster to trigger the trap:
+                //
+                // * They can see their target
+                // * They are aware of the player
+                // * Trap is not hidden
+                //
+                const bool allow_monster_trigger =
+                        actor_bumping.m_ai_state.is_target_seen &&
+                        actor::is_aware_of_player(actor_bumping) &&
+                        !m_base_trap->is_hidden();
+
+                if (!allow_monster_trigger) {
+                        return;
+                }
+        }
+
+        trigger(&actor_bumping);
+}
+
+void MechTrapImpl::trigger(actor::Actor* actor)
+{
+        TRACE_FUNC_BEGIN;
+
+        const WasKnownBeforeTrigger was_known_before =
+                m_base_trap->is_hidden()
+                ? WasKnownBeforeTrigger::no
+                : WasKnownBeforeTrigger::yes;
+
+        if (actor::is_player(actor)) {
+                m_base_trap->reveal(PrintRevealMsg::no);
+        }
+
+        if (type() != TrapId::web) {
+                communicate_mechanical_trap_trigger(*actor, m_pos);
+        }
+
+        run_trigger_effect(was_known_before);
+
+        // NOTE: This deletes this terrain object!
+        m_base_trap->destroy();
+
+        TRACE_FUNC_END;
+}
+
+std::string MechTrapImpl::disarm_msg() const
+{
+        return "I disarm a trap.";
+}
+
+// -----------------------------------------------------------------------------
+// Sigil base class
+// -----------------------------------------------------------------------------
+SigilImpl::SigilImpl(P pos, TrapId type, Trap* const base_trap) :
+        TrapImpl(pos, type, base_trap) {}
+
+std::string SigilImpl::name(const Article article) const
+{
+        std::string name = (article == Article::a) ? "a" : "the";
+
+        name += " Sigil";
+
+        return name;
+}
+
+gfx::TileId SigilImpl::tile() const
+{
+        return gfx::TileId::elder_sign;
+}
+
+char SigilImpl::character() const
+{
+        return '*';
+}
+
+Color SigilImpl::color() const
+{
+        return colors::light_red();
+}
+
+void SigilImpl::strain()
+{
+        if (rnd::percent(fade_chance_pct())) {
+                communicate_sigil_destroyed(*m_base_trap);
+
+                m_base_trap->destroy();
+
+                map::update_vision();
+        }
+        else {
+                communicate_sigil_strained(*m_base_trap);
+        }
+}
+
+std::string SigilImpl::disarm_msg() const
+{
+        return sigil_fade_msg(*m_base_trap);
+}
+
+// -----------------------------------------------------------------------------
+// Specific trap implementations
 // -----------------------------------------------------------------------------
 TrapDart::TrapDart(P pos, Trap* const base_trap) :
         MechTrapImpl(pos, TrapId::dart, base_trap),
-        m_is_poisoned((map::g_dlvl >= g_dlvl_harder_traps) && rnd::one_in(3)),
-
-        m_is_dart_origin_destroyed(false)
+        m_is_poisoned((map::g_dlvl >= g_dlvl_harder_traps) && rnd::one_in(3))
 {}
+
+std::string TrapDart::name(const Article article) const
+{
+        std::string name = (article == Article::a) ? "a" : "the";
+
+        name += " dart trap";
+
+        return name;
+}
+
+Color TrapDart::color() const
+{
+        return colors::white();
+}
 
 TrapPlacementValid TrapDart::on_place()
 {
@@ -770,8 +868,10 @@ TrapPlacementValid TrapDart::on_place()
         return trap_plament_valid;
 }
 
-void TrapDart::trigger()
+void TrapDart::run_trigger_effect(const WasKnownBeforeTrigger was_known_before)
 {
+        (void)was_known_before;
+
         TRACE_FUNC_BEGIN;
 
         ASSERT((m_dart_origin.x == m_pos.x) || (m_dart_origin.y == m_pos.y));
@@ -840,10 +940,22 @@ void TrapDart::trigger()
 
 TrapSpear::TrapSpear(P pos, Trap* const base_trap) :
         MechTrapImpl(pos, TrapId::spear, base_trap),
-        m_is_poisoned((map::g_dlvl >= g_dlvl_harder_traps) && rnd::one_in(4)),
-
-        m_is_spear_origin_destroyed(false)
+        m_is_poisoned((map::g_dlvl >= g_dlvl_harder_traps) && rnd::one_in(4))
 {}
+
+std::string TrapSpear::name(const Article article) const
+{
+        std::string name = (article == Article::a) ? "a" : "the";
+
+        name += " spear trap";
+
+        return name;
+}
+
+Color TrapSpear::color() const
+{
+        return colors::light_white();
+}
 
 TrapPlacementValid TrapSpear::on_place()
 {
@@ -879,8 +991,10 @@ TrapPlacementValid TrapSpear::on_place()
         return trap_plament_valid;
 }
 
-void TrapSpear::trigger()
+void TrapSpear::run_trigger_effect(const WasKnownBeforeTrigger was_known_before)
 {
+        (void)was_known_before;
+
         TRACE_FUNC_BEGIN;
 
         ASSERT(m_spear_origin.x == m_pos.x || m_spear_origin.y == m_pos.y);
@@ -930,8 +1044,27 @@ void TrapSpear::trigger()
         TRACE_FUNC_BEGIN;
 }
 
-void TrapBlindingFlash::trigger()
+TrapBlindingFlash::TrapBlindingFlash(P pos, Trap* const base_trap) :
+        MechTrapImpl(pos, TrapId::blinding, base_trap) {}
+
+std::string TrapBlindingFlash::name(const Article article) const
 {
+        std::string name = (article == Article::a) ? "a" : "the";
+
+        name += " blinding trap";
+
+        return name;
+}
+
+Color TrapBlindingFlash::color() const
+{
+        return colors::yellow();
+}
+
+void TrapBlindingFlash::run_trigger_effect(const WasKnownBeforeTrigger was_known_before)
+{
+        (void)was_known_before;
+
         TRACE_FUNC_BEGIN;
 
         if (map::g_seen.at(m_pos)) {
@@ -950,8 +1083,27 @@ void TrapBlindingFlash::trigger()
         TRACE_FUNC_END;
 }
 
-void TrapDeafening::trigger()
+TrapDeafening::TrapDeafening(P pos, Trap* const base_trap) :
+        MechTrapImpl(pos, TrapId::deafening, base_trap) {}
+
+std::string TrapDeafening::name(const Article article) const
 {
+        std::string name = (article == Article::a) ? "a" : "the";
+
+        name += " deafening trap";
+
+        return name;
+}
+
+Color TrapDeafening::color() const
+{
+        return colors::violet();
+}
+
+void TrapDeafening::run_trigger_effect(const WasKnownBeforeTrigger was_known_before)
+{
+        (void)was_known_before;
+
         TRACE_FUNC_BEGIN;
 
         if (map::g_seen.at(m_pos)) {
@@ -971,151 +1123,27 @@ void TrapDeafening::trigger()
         TRACE_FUNC_END;
 }
 
-void TrapTeleport::trigger()
+TrapSmoke::TrapSmoke(P pos, Trap* const base_trap) :
+        MechTrapImpl(pos, TrapId::smoke, base_trap) {}
+
+std::string TrapSmoke::name(const Article article) const
 {
-        TRACE_FUNC_BEGIN;
+        std::string name = (article == Article::a) ? "a" : "the";
 
-        actor::Actor* const actor_here = map::living_actor_at(m_pos);
+        name += " smoke trap";
 
-        ASSERT(actor_here);
-
-        if (!actor_here) {
-                // Should never happen.
-                ASSERT(false);
-                return;
-        }
-
-        teleport(*actor_here);
-
-        TRACE_FUNC_END;
+        return name;
 }
 
-void TrapSummonMon::trigger()
+Color TrapSmoke::color() const
 {
-        TRACE_FUNC_BEGIN;
-
-        actor::Actor* const actor_here = map::living_actor_at(m_pos);
-
-        ASSERT(actor_here);
-
-        if (!actor_here) {
-                // Should never happen.
-                ASSERT(false);
-                return;
-        }
-
-        TRACE << "Finding summon candidates" << "\n";
-        std::vector<std::string> summon_bucket;
-
-        for (const auto& it : actor::g_data) {
-                const actor::ActorData& data = it.second;
-
-                if (data.can_be_summoned_by_mon &&
-                    data.spawn_min_dlvl <= (map::g_dlvl + 2)) {
-                        summon_bucket.push_back(data.id);
-                }
-        }
-
-        if (summon_bucket.empty()) {
-                TRACE << "No eligible candidates found" << "\n";
-        }
-        else {
-                // Eligible monsters found
-                const std::string id_to_summon = rnd::element(summon_bucket);
-
-                TRACE << "Actor id: " << id_to_summon << "\n";
-
-                const actor::MonSpawnResult summoned =
-                        actor::spawn(m_pos, {id_to_summon})
-                                .make_aware_of_player();
-
-                std::for_each(
-                        std::begin(summoned.monsters),
-                        std::end(summoned.monsters),
-                        [](actor::Actor* const mon) {
-                                prop::Prop* prop_summoned = prop::make(prop::Id::summoned);
-
-                                prop_summoned->set_indefinite();
-
-                                mon->m_properties.apply(prop_summoned);
-
-                                prop::Prop* prop_waiting = prop::make(prop::Id::waiting);
-
-                                prop_waiting->set_duration(2);
-
-                                mon->m_properties.apply(prop_waiting);
-
-                                if (actor::can_player_see_actor(*mon)) {
-                                        states::draw();
-
-                                        const std::string name_a =
-                                                text_format::first_to_upper(
-                                                        actor::name_a(*mon));
-
-                                        msg_log::add(name_a + " appears!");
-                                }
-                        });
-        }
-
-        TRACE_FUNC_END;
+        return colors::gray();
 }
 
-void TrapHpSap::trigger()
+void TrapSmoke::run_trigger_effect(const WasKnownBeforeTrigger was_known_before)
 {
-        TRACE_FUNC_BEGIN;
+        (void)was_known_before;
 
-        actor::Actor* const actor_here = map::living_actor_at(m_pos);
-
-        ASSERT(actor_here);
-
-        if (!actor_here) {
-                // Should never happen.
-                ASSERT(false);
-                return;
-        }
-
-        auto* const hp_sap = static_cast<prop::HpSap*>(prop::make(prop::Id::hp_sap));
-
-        if (!actor::is_player(actor_here)) {
-                // This is a monster triggering the trap - drain half of the monsters hit points
-                // instead, so that this trap will actually have a tangible effect.
-                const int max_hp = actor::max_hp(*actor_here);
-
-                hp_sap->set_nr_drained(max_hp / 2);
-        }
-
-        hp_sap->set_indefinite();
-
-        actor_here->m_properties.apply(hp_sap);
-
-        TRACE_FUNC_END;
-}
-
-void TrapSpiSap::trigger()
-{
-        TRACE_FUNC_BEGIN;
-
-        actor::Actor* const actor_here = map::living_actor_at(m_pos);
-
-        ASSERT(actor_here);
-
-        if (!actor_here) {
-                // Should never happen.
-                ASSERT(false);
-                return;
-        }
-
-        prop::Prop* const sp_sap = prop::make(prop::Id::spi_sap);
-
-        sp_sap->set_indefinite();
-
-        actor_here->m_properties.apply(sp_sap);
-
-        TRACE_FUNC_END;
-}
-
-void TrapSmoke::trigger()
-{
         TRACE_FUNC_BEGIN;
 
         if (map::g_seen.at(m_pos)) {
@@ -1140,38 +1168,27 @@ void TrapSmoke::trigger()
         TRACE_FUNC_END;
 }
 
-void TrapFire::trigger()
+TrapAlarm::TrapAlarm(P pos, Trap* const base_trap) :
+        MechTrapImpl(pos, TrapId::alarm, base_trap) {}
+
+std::string TrapAlarm::name(const Article article) const
 {
-        TRACE_FUNC_BEGIN;
+        std::string name = (article == Article::a) ? "an" : "the";
 
-        if (map::g_seen.at(m_pos)) {
-                msg_log::add("Flames burst out from a vent in the floor!");
-        }
+        name += " alarm trap";
 
-        Snd snd(
-                "I hear a burst of flames.",
-                audio::SfxId::END,
-                IgnoreMsgIfOriginSeen::yes,
-                m_pos,
-                nullptr,
-                SndVol::low,
-                AlertsMon::yes);
-
-        snd.run();
-
-        explosion::run(
-                m_pos,
-                ExplType::apply_prop,
-                EmitExplSnd::no,
-                -1,
-                ExplExclCenter::no,
-                {prop::make(prop::Id::burning)});
-
-        TRACE_FUNC_END;
+        return name;
 }
 
-void TrapAlarm::trigger()
+Color TrapAlarm::color() const
 {
+        return colors::orange();
+}
+
+void TrapAlarm::run_trigger_effect(const WasKnownBeforeTrigger was_known_before)
+{
+        (void)was_known_before;
+
         TRACE_FUNC_BEGIN;
 
         Snd snd(
@@ -1188,7 +1205,34 @@ void TrapAlarm::trigger()
         TRACE_FUNC_END;
 }
 
-void TrapWeb::trigger()
+TrapWeb::TrapWeb(P pos, Trap* const base_trap) :
+        MechTrapImpl(pos, TrapId::web, base_trap) {}
+
+std::string TrapWeb::name(const Article article) const
+{
+        std::string name = (article == Article::a) ? "a" : "the";
+
+        name += " spider web";
+
+        return name;
+}
+
+Color TrapWeb::color() const
+{
+        return colors::light_white();
+}
+
+gfx::TileId TrapWeb::tile() const
+{
+        return gfx::TileId::web;
+}
+
+char TrapWeb::character() const
+{
+        return '*';
+}
+
+void TrapWeb::run_trigger_effect(const WasKnownBeforeTrigger was_known_before)
 {
         TRACE_FUNC_BEGIN;
 
@@ -1202,8 +1246,7 @@ void TrapWeb::trigger()
 
         // Machetes cut down spider webs - if the player has a machete and the trap was already
         // known, do not apply entanglement.
-        if (actor::is_player(actor_here) &&
-            (m_base_trap->trigger_revealed_status() == TriggerRevealedStatus::triggered_known)) {
+        if (actor::is_player(actor_here) && (was_known_before == WasKnownBeforeTrigger::yes)) {
                 item::Item* item = actor_here->m_inv.item_in_slot(SlotId::wpn);
 
                 if (item && (item->id() == item::Id::machete)) {
@@ -1266,59 +1309,166 @@ void TrapWeb::trigger()
         TRACE_FUNC_END;
 }
 
-void TrapSlow::trigger()
+std::string TrapWeb::disarm_msg() const
+{
+        return "I tear down a spider web.";
+}
+
+void TrapTeleport::on_bumped(actor::Actor& actor_bumping)
 {
         TRACE_FUNC_BEGIN;
 
-        actor::Actor* const actor_here = map::living_actor_at(m_pos);
-
-        ASSERT(actor_here);
-
-        if (!actor_here) {
-                // Should never happen.
-                ASSERT(false);
-                return;
+        if (actor::is_player(&actor_bumping)) {
+                m_base_trap->reveal(PrintRevealMsg::no);
         }
 
-        actor_here->m_properties.apply(prop::make(prop::Id::slowed));
+        communicate_sigil_trigger(*m_base_trap, actor_bumping);
+
+        // NOTE: For the teleport trap, we strain it before teleportin the player, so that they are
+        // aware that it's removed.
+        //
+        // NOTE: This deletes this terrain object!
+        //
+        strain();
+
+        teleport(actor_bumping);
 
         TRACE_FUNC_END;
 }
 
-void TrapHaste::trigger()
+int TrapTeleport::fade_chance_pct() const
+{
+        return 100;
+}
+
+void TrapSummonMon::on_bumped(actor::Actor& actor_bumping)
 {
         TRACE_FUNC_BEGIN;
 
-        actor::Actor* const actor_here = map::living_actor_at(m_pos);
-
-        ASSERT(actor_here);
-
-        if (!actor_here) {
-                // Should never happen.
-                ASSERT(false);
-                return;
+        if (actor::is_player(&actor_bumping)) {
+                m_base_trap->reveal(PrintRevealMsg::no);
         }
 
-        actor_here->m_properties.apply(prop::make(prop::Id::hasted));
+        communicate_sigil_trigger(*m_base_trap, actor_bumping);
+
+        TRACE << "Finding summon candidates" << "\n";
+        std::vector<std::string> summon_bucket;
+
+        for (const auto& it : actor::g_data) {
+                const actor::ActorData& data = it.second;
+
+                if (data.can_be_summoned_by_mon &&
+                    data.spawn_min_dlvl <= (map::g_dlvl + 2)) {
+                        summon_bucket.push_back(data.id);
+                }
+        }
+
+        if (summon_bucket.empty()) {
+                TRACE << "No eligible candidates found" << "\n";
+        }
+        else {
+                // Eligible monsters found
+                const std::string id_to_summon = rnd::element(summon_bucket);
+
+                TRACE << "Actor id: " << id_to_summon << "\n";
+
+                const actor::MonSpawnResult summoned =
+                        actor::spawn(m_pos, {id_to_summon})
+                                .make_aware_of_player();
+
+                std::for_each(
+                        std::begin(summoned.monsters),
+                        std::end(summoned.monsters),
+                        [](actor::Actor* const mon) {
+                                prop::Prop* prop_summoned = prop::make(prop::Id::summoned);
+
+                                prop_summoned->set_indefinite();
+
+                                mon->m_properties.apply(prop_summoned);
+
+                                prop::Prop* prop_waiting = prop::make(prop::Id::waiting);
+
+                                prop_waiting->set_duration(2);
+
+                                mon->m_properties.apply(prop_waiting);
+
+                                if (actor::can_player_see_actor(*mon)) {
+                                        states::draw();
+
+                                        const std::string name_a =
+                                                text_format::first_to_upper(
+                                                        actor::name_a(*mon));
+
+                                        msg_log::add(name_a + " appears!");
+                                }
+                        });
+        }
+
+        strain();
 
         TRACE_FUNC_END;
 }
 
-void TrapAlterEnv::trigger()
+int TrapSummonMon::fade_chance_pct() const
+{
+        return 100;
+}
+
+void TrapSlow::on_bumped(actor::Actor& actor_bumping)
 {
         TRACE_FUNC_BEGIN;
 
-        actor::Actor* const actor_here = map::living_actor_at(m_pos);
-
-        ASSERT(actor_here);
-
-        if (!actor_here) {
-                // Should never happen.
-                ASSERT(false);
-                return;
+        if (actor::is_player(&actor_bumping)) {
+                m_base_trap->reveal(PrintRevealMsg::no);
         }
 
-        if (is_player_seeing_trap_trigger(*actor_here, m_pos)) {
+        communicate_sigil_trigger(*m_base_trap, actor_bumping);
+
+        actor_bumping.m_properties.apply(prop::make(prop::Id::slowed));
+
+        strain();
+
+        TRACE_FUNC_END;
+}
+
+int TrapSlow::fade_chance_pct() const
+{
+        return 40;
+}
+
+void TrapHaste::on_bumped(actor::Actor& actor_bumping)
+{
+        TRACE_FUNC_BEGIN;
+
+        if (actor::is_player(&actor_bumping)) {
+                m_base_trap->reveal(PrintRevealMsg::no);
+        }
+
+        communicate_sigil_trigger(*m_base_trap, actor_bumping);
+
+        actor_bumping.m_properties.apply(prop::make(prop::Id::hasted));
+
+        strain();
+
+        TRACE_FUNC_END;
+}
+
+int TrapHaste::fade_chance_pct() const
+{
+        return 40;
+}
+
+void TrapAlterEnv::on_bumped(actor::Actor& actor_bumping)
+{
+        TRACE_FUNC_BEGIN;
+
+        if (actor::is_player(&actor_bumping)) {
+                m_base_trap->reveal(PrintRevealMsg::no);
+        }
+
+        communicate_sigil_trigger(*m_base_trap, actor_bumping);
+
+        if (is_player_seeing_trap_trigger(actor_bumping, m_pos)) {
                 msg_log::add("The surroundings change!");
         }
 
@@ -1326,65 +1476,78 @@ void TrapAlterEnv::trigger()
 
         prop::run_alter_env_effect(m_pos, change_one_in_n);
 
-        TRACE_FUNC_END;
-}
-
-void TrapCurse::trigger()
-{
-        TRACE_FUNC_BEGIN;
-
-        actor::Actor* const actor_here = map::living_actor_at(m_pos);
-
-        ASSERT(actor_here);
-
-        if (!actor_here) {
-                // Should never happen.
-                ASSERT(false);
-                return;
-        }
-
-        actor_here->m_properties.apply(prop::make(prop::Id::cursed));
+        strain();
 
         TRACE_FUNC_END;
 }
 
-void TrapBless::trigger()
+int TrapAlterEnv::fade_chance_pct() const
+{
+        return 40;
+}
+
+void TrapCurse::on_bumped(actor::Actor& actor_bumping)
 {
         TRACE_FUNC_BEGIN;
 
-        actor::Actor* const actor_here = map::living_actor_at(m_pos);
-
-        ASSERT(actor_here);
-
-        if (!actor_here) {
-                // Should never happen.
-                ASSERT(false);
-                return;
+        if (actor::is_player(&actor_bumping)) {
+                m_base_trap->reveal(PrintRevealMsg::no);
         }
 
-        actor_here->m_properties.apply(prop::make(prop::Id::blessed));
+        communicate_sigil_trigger(*m_base_trap, actor_bumping);
+
+        actor_bumping.m_properties.apply(prop::make(prop::Id::cursed));
+
+        strain();
 
         TRACE_FUNC_END;
 }
 
-void TrapUnlearnSpell::trigger()
+int TrapCurse::fade_chance_pct() const
+{
+        return 40;
+}
+
+void TrapBless::on_bumped(actor::Actor& actor_bumping)
 {
         TRACE_FUNC_BEGIN;
 
-        actor::Actor* const actor_here = map::living_actor_at(m_pos);
-
-        if (!actor_here) {
-                // Should never happen.
-                ASSERT(false);
-                return;
+        if (actor::is_player(&actor_bumping)) {
+                m_base_trap->reveal(PrintRevealMsg::no);
         }
 
-        if (actor::is_player(actor_here)) {
+        communicate_sigil_trigger(*m_base_trap, actor_bumping);
+
+        actor_bumping.m_properties.apply(prop::make(prop::Id::blessed));
+
+        strain();
+
+        TRACE_FUNC_END;
+}
+
+int TrapBless::fade_chance_pct() const
+{
+        return 40;
+}
+
+void TrapUnlearnSpell::on_bumped(actor::Actor& actor_bumping)
+{
+        TRACE_FUNC_BEGIN;
+
+        if (actor::is_player(&actor_bumping)) {
+                m_base_trap->reveal(PrintRevealMsg::no);
+        }
+
+        communicate_sigil_trigger(*m_base_trap, actor_bumping);
+
+        if (actor::is_player(&actor_bumping)) {
                 try_unlearn_for_player();
         }
         else {
-                try_unlearn_for_monster(*actor_here);
+                try_unlearn_for_monster(actor_bumping);
         }
+
+        strain();
 
         TRACE_FUNC_END;
 }
@@ -1465,6 +1628,37 @@ void TrapUnlearnSpell::try_unlearn_for_monster(actor::Actor& actor) const
         delete spells[idx].spell;
 
         spells.erase(std::begin(spells) + idx);
+}
+
+int TrapUnlearnSpell::fade_chance_pct() const
+{
+        return 60;
+}
+
+std::string TrapBoundary::name(const Article article) const
+{
+        std::string name = (article == Article::a) ? "a" : "the";
+
+        name += " Boundary Sigil";
+
+        return name;
+}
+
+Color TrapBoundary::color() const
+{
+        return colors::light_green();
+}
+
+int TrapBoundary::fade_chance_pct() const
+{
+        return m_pct_chance_fade;
+}
+
+void TrapBoundary::set_fade_chance_pct(const int value)
+{
+        ASSERT((value >= 0) && (value <= 100));
+
+        m_pct_chance_fade = value;
 }
 
 }  // namespace terrain

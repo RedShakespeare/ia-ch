@@ -187,13 +187,7 @@ static void regen_hp(actor::Actor& actor)
                 prop::Id::disabled_hp_regen,
         };
 
-        const bool has_prop_preventing_regen =
-                std::any_of(
-                        std::cbegin(props_preventing_regen),
-                        std::cend(props_preventing_regen),
-                        [&actor](const prop::Id id) {
-                                return actor.m_properties.has(id);
-                        });
+        const bool has_prop_preventing_regen = actor.m_properties.has_any(props_preventing_regen);
 
         if (has_prop_preventing_regen) {
                 return;

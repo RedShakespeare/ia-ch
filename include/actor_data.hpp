@@ -180,7 +180,6 @@ struct ActorData
         bool is_rat;
         bool is_canine;
         bool is_spider;
-        bool is_undead;
         bool is_ghost;
         bool is_ghoul;
         bool is_snake;

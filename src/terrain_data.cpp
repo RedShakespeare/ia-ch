@@ -589,6 +589,19 @@ static void init_data_list()
         add_to_list_and_reset(d);
 }
 
+static bool actor_has_any_of_properties(
+        const actor::Actor& actor,
+        const std::vector<prop::Id>& property_ids)
+{
+        const prop::PropHandler& actor_properties = actor.m_properties;
+
+        return (
+                std::any_of(
+                        std::cbegin(property_ids),
+                        std::cend(property_ids),
+                        [&](const prop::Id id) { return actor_properties.has(id); }));
+}
+
 // -----------------------------------------------------------------------------
 // terrain
 // -----------------------------------------------------------------------------
@@ -596,31 +609,20 @@ namespace terrain
 {
 bool MoveRules::can_move(const actor::Actor& actor) const
 {
+        // Check if a property prevents moving in to this terrain, regardless of whether it's
+        // normally walkable.
+        if (actor_has_any_of_properties(actor, props_prevent_move)) {
+                return false;
+        }
+
+        // No property preventing movement. If terrain is walkable any creature can pass.
+
         if (is_walkable) {
                 return true;
         }
 
-        // This terrain blocks walking, check if any property overrides this
-        // (e.g. flying)
-
-        const auto match =
-                std::find_if(
-                        std::begin(props_allow_move),
-                        std::end(props_allow_move),
-                        [&actor](const prop::Id id) {
-                                return actor.m_properties.has(id);
-                        });
-
-        return match != std::end(props_allow_move);
-}
-
-bool MoveRules::is_property_allowing_move(const prop::Id id) const
-{
-        return (
-                std::find(
-                        std::begin(props_allow_move),
-                        std::end(props_allow_move),
-                        id) != std::end(props_allow_move));
+        // This terrain blocks walking, check if any property overrides this (e.g. flying).
+        return actor_has_any_of_properties(actor, props_allow_move);
 }
 
 void init()

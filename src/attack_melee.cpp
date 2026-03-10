@@ -42,6 +42,7 @@
 #include "random.hpp"
 #include "sound.hpp"
 #include "terrain.hpp"
+#include "terrain_trap.hpp"
 #include "text_format.hpp"
 
 // -----------------------------------------------------------------------------
@@ -592,30 +593,26 @@ static void melee_hit_actor(
 
 static void bump_awareness_after_melee_attack(
         actor::Actor& attacker,
-        actor::Actor& defender,
-        const MeleeAttData& att_data)
+        actor::Actor& defender)
 {
         const bool attacker_is_player = actor::is_player(&attacker);
         const bool defender_is_player = actor::is_player(&defender);
 
         if (defender_is_player) {
                 // A monster attacked the player.
-                att_data.attacker->make_player_aware_of_me();
+                attacker.make_player_aware_of_me();
         }
         else {
                 // A monster was attacked (by player or another monster).
                 if (attacker_is_player ||
                     attacker.is_actor_my_leader(map::g_player)) {
-                        // The player (or a monster allied to the player)
-                        // attacked a monster. Make the defender monster aware
-                        // of the player.
-                        defender.become_aware_player(
-                                actor::AwareSource::attacked);
+                        // The player (or a monster allied to the player) attacked a monster. Make
+                        // the defender monster aware of the player.
+                        defender.become_aware_player(actor::AwareSource::attacked);
                 }
 
                 if (attacker_is_player) {
-                        // Player attacked monster, make player aware of the
-                        // monster.
+                        // Player attacked monster, make player aware of the monster.
                         defender.make_player_aware_of_me();
                 }
                 else {
@@ -623,9 +620,8 @@ static void bump_awareness_after_melee_attack(
 
                         if (actor::can_player_see_actor(attacker) ||
                             (actor::can_player_see_actor(defender))) {
-                                // Player saw either the attacker or the
-                                // defender. Bump player awareness of both
-                                // monsters.
+                                // Player saw either the attacker or the defender. Bump player
+                                // awareness of both monsters.
                                 attacker.make_player_aware_of_me();
                                 defender.make_player_aware_of_me();
                         }
@@ -717,7 +713,7 @@ static void attack_actor(
         }
 
         if (attacker) {
-                bump_awareness_after_melee_attack(*attacker, defender, att_data);
+                bump_awareness_after_melee_attack(*attacker, defender);
 
                 // Attacking ends cloaking and sanctuary.
                 attacker->m_properties.end_prop(prop::Id::cloaked);
@@ -839,6 +835,66 @@ static void do_melee_player_attacker(
         }
 }
 
+static bool handle_boundary_sigil_stops_attack(
+        actor::Actor* const attacker,
+        actor::Actor* const defender)
+{
+        if (!attacker || !defender) {
+                return false;
+        }
+
+        // There is an attacker and a defender.
+
+        terrain::Terrain* const terrain = map::g_terrain.at(defender->m_pos);
+
+        if (terrain->id() != terrain::Id::trap) {
+                return false;
+        }
+
+        auto* const trap = static_cast<terrain::Trap*>(terrain);
+
+        if (trap->type() != terrain::TrapId::boundary) {
+                return false;
+        }
+
+        // There is a boundary sigil at the defender position.
+
+        const std::vector<prop::Id> props_affected_by_sigil = {
+                prop::Id::outer_being,
+                prop::Id::summoned,
+                prop::Id::undead,
+        };
+
+        if (!attacker->m_properties.has_any(props_affected_by_sigil)) {
+                return false;
+        }
+
+        // The attacker is affected by boundary sigils - prevent the attack.
+
+        bump_awareness_after_melee_attack(*attacker, *defender);
+
+        if (actor::is_player_aware_of_me(*attacker)) {
+                const std::string name =
+                        actor::can_player_see_actor(*attacker)
+                        ? text_format::first_to_upper(actor::name_the(*attacker))
+                        : "It";
+
+                msg_log::add(name + " is stopped at the boundary.");
+        }
+
+        // Attacking ends cloaking and sanctuary.
+        attacker->m_properties.end_prop(prop::Id::cloaked);
+        attacker->m_properties.end_prop(prop::Id::sanctuary);
+
+        attacker->m_properties.on_melee_attack();
+
+        trap->strain();
+
+        game_time::tick();
+
+        return true;
+}
+
 // NOTE: This is also used when there is no attacker (e.g. spear traps).
 static void do_melee_non_player_attacker(
         actor::Actor* const attacker,
@@ -847,7 +903,7 @@ static void do_melee_non_player_attacker(
         item::Wpn& wpn)
 {
         if (attacker) {
-                // A monster attacked, bump monster awareness.
+                // A monster is attacking, bump monster awareness.
                 attacker->become_aware_player(actor::AwareSource::other);
         }
 
@@ -860,6 +916,14 @@ static void do_melee_non_player_attacker(
         }
 
         map::update_vision();
+
+        // TODO: If monsters will ever get long reach melee weapons, it might make sense to check
+        // this later instead, so that any sigils on the path to the defender can stop the attack.
+        const bool is_stopped_by_sigil = handle_boundary_sigil_stops_attack(attacker, defender);
+
+        if (is_stopped_by_sigil) {
+                return;
+        }
 
         attack_actor(attacker, origin, *defender, wpn);
 }

@@ -293,7 +293,6 @@ static void dump_attributes(xml::Element* attrib_e, actor::ActorData& data)
         data.is_rat = xml::has_child(attrib_e, "rat");
         data.is_canine = xml::has_child(attrib_e, "canine");
         data.is_spider = xml::has_child(attrib_e, "spider");
-        data.is_undead = xml::has_child(attrib_e, "undead");
         data.is_ghost = xml::has_child(attrib_e, "ghost");
         data.is_ghoul = xml::has_child(attrib_e, "ghoul");
         data.is_snake = xml::has_child(attrib_e, "snake");
@@ -766,7 +765,6 @@ void ActorData::reset()
         is_rat = false;
         is_canine = false;
         is_spider = false;
-        is_undead = false;
         is_ghost = false;
         is_ghoul = false;
         is_snake = false;

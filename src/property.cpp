@@ -61,6 +61,7 @@
 #include "terrain.hpp"
 #include "terrain_data.hpp"
 #include "terrain_factory.hpp"
+#include "terrain_trap.hpp"
 #include "text_format.hpp"
 
 // -----------------------------------------------------------------------------
@@ -106,6 +107,39 @@ static void curse_adjacent(const P& pos)
 
                 static_cast<terrain::Fountain*>(terrain)->curse();
         }
+}
+
+static void affect_move_dir_affected_by_boundary_sigils(const actor::Actor& actor, Dir& dir)
+{
+        ASSERT(dir != Dir::END);
+
+        if (dir == Dir::center || dir == Dir::END) {
+                return;
+        }
+
+        const P target_pos = actor.m_pos + dir_utils::offset(dir);
+
+        terrain::Terrain* const terrain = map::g_terrain.at(target_pos);
+
+        if (terrain->id() != terrain::Id::trap) {
+                return;
+        }
+
+        auto* const trap = static_cast<terrain::Trap*>(terrain);
+
+        if (trap->type() != terrain::TrapId::boundary) {
+                return;
+        }
+
+        dir = Dir::center;
+
+        if (actor::can_player_see_actor(actor)) {
+                const std::string name = text_format::first_to_upper(actor::name_the(actor));
+
+                msg_log::add(name + " is stopped at the boundary.");
+        }
+
+        trap->strain();
 }
 
 namespace prop
@@ -613,6 +647,27 @@ void ExtraHasted::on_applied()
                         PropEndAllowCallEndHook::no,
                         PropEndAllowMsg::no,
                         PropEndAllowHistoricMsg::yes));
+}
+
+PropEnded Undead::affect_move_dir(Dir& dir)
+{
+        affect_move_dir_affected_by_boundary_sigils(*m_owner, dir);
+
+        return PropEnded::no;
+}
+
+PropEnded OuterBeing::affect_move_dir(Dir& dir)
+{
+        affect_move_dir_affected_by_boundary_sigils(*m_owner, dir);
+
+        return PropEnded::no;
+}
+
+PropEnded Summoned::affect_move_dir(Dir& dir)
+{
+        affect_move_dir_affected_by_boundary_sigils(*m_owner, dir);
+
+        return PropEnded::no;
 }
 
 void Summoned::on_end()
@@ -1405,83 +1460,6 @@ int Moribund::armor_points() const
 int MagicCarapace::armor_points() const
 {
         return 3;
-}
-
-HpSap::HpSap() :
-        Prop(prop::Id::hp_sap),
-        m_nr_drained(rnd::range(1, 3)) {}
-
-void HpSap::save() const
-{
-        saving::put_int(m_nr_drained);
-}
-
-void HpSap::load()
-{
-        m_nr_drained = saving::get_int();
-}
-
-int HpSap::max_hp_mod() const
-{
-        return -m_nr_drained;
-}
-
-void HpSap::on_more(const Prop& new_prop)
-{
-        m_nr_drained += static_cast<const HpSap*>(&new_prop)->m_nr_drained;
-}
-
-void HpSap::set_nr_drained(const int value)
-{
-        m_nr_drained = value;
-}
-
-SpiSap::SpiSap() :
-        Prop(prop::Id::spi_sap),
-        m_nr_drained(1) {}
-
-void SpiSap::save() const
-{
-        saving::put_int(m_nr_drained);
-}
-
-void SpiSap::load()
-{
-        m_nr_drained = saving::get_int();
-}
-
-int SpiSap::max_sp_mod() const
-{
-        return -m_nr_drained;
-}
-
-void SpiSap::on_more(const Prop& new_prop)
-{
-        m_nr_drained += static_cast<const SpiSap*>(&new_prop)->m_nr_drained;
-}
-
-MindSap::MindSap() :
-        Prop(prop::Id::mind_sap),
-        m_nr_drained(rnd::range(1, 3)) {}
-
-void MindSap::save() const
-{
-        saving::put_int(m_nr_drained);
-}
-
-void MindSap::load()
-{
-        m_nr_drained = saving::get_int();
-}
-
-int MindSap::player_extra_min_shock() const
-{
-        return m_nr_drained;
-}
-
-void MindSap::on_more(const Prop& new_prop)
-{
-        m_nr_drained += static_cast<const MindSap*>(&new_prop)->m_nr_drained;
 }
 
 bool Confused::allow_read_absolute(const Verbose verbose) const
@@ -2806,12 +2784,8 @@ void Regenerating::on_std_turn()
         };
 
         const bool has_prop_preventing_regen =
-                std::any_of(
-                        std::cbegin(props_preventing_regen),
-                        std::cend(props_preventing_regen),
-                        [this](const prop::Id id) {
-                                return m_owner->m_properties.has(id);
-                        });
+                m_owner->m_properties.has_any(
+                        props_preventing_regen);
 
         if (has_prop_preventing_regen) {
                 return;

@@ -913,67 +913,6 @@ public:
         int armor_points() const override;
 };
 
-class HpSap : public Prop
-{
-public:
-        HpSap();
-
-        void save() const override;
-        void load() override;
-
-        std::string name_short() const override
-        {
-                return "Life Sapped(" + std::to_string(m_nr_drained) + ")";
-        }
-
-        void on_more(const Prop& new_prop) override;
-        int max_hp_mod() const override;
-        void set_nr_drained(int value);
-
-private:
-        int m_nr_drained;
-};
-
-class SpiSap : public Prop
-{
-public:
-        SpiSap();
-
-        void save() const override;
-        void load() override;
-
-        std::string name_short() const override
-        {
-                return "Spirit Sapped(" + std::to_string(m_nr_drained) + ")";
-        }
-
-        void on_more(const Prop& new_prop) override;
-        int max_sp_mod() const override;
-
-private:
-        int m_nr_drained;
-};
-
-class MindSap : public Prop
-{
-public:
-        MindSap();
-
-        void save() const override;
-        void load() override;
-
-        std::string name_short() const override
-        {
-                return "Mind Sapped(" + std::to_string(m_nr_drained) + "%)";
-        }
-
-        void on_more(const Prop& new_prop) override;
-        int player_extra_min_shock() const override;
-
-private:
-        int m_nr_drained;
-};
-
 class Waiting : public Prop
 {
 public:
@@ -1177,11 +1116,31 @@ public:
         void on_applied() override;
 };
 
+class Undead : public Prop
+{
+public:
+        Undead() :
+                Prop(Id::undead) {}
+
+        PropEnded affect_move_dir(Dir& dir) override;
+};
+
+class OuterBeing : public Prop
+{
+public:
+        OuterBeing() :
+                Prop(Id::outer_being) {}
+
+        PropEnded affect_move_dir(Dir& dir) override;
+};
+
 class Summoned : public Prop
 {
 public:
         Summoned() :
                 Prop(Id::summoned) {}
+
+        PropEnded affect_move_dir(Dir& dir) override;
 
         void on_end() override;
 };

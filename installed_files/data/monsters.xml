@@ -112,7 +112,6 @@ SPDX-License-Identifier: AGPL-3.0-or-later
             <size>MONSIZE_HUMANOID</size>
             <always_prevent_knockback>false</always_prevent_knockback>
             <humanoid/>
-            <undead/>
             <can_bleed>true</can_bleed>
             <can_leave_corpse>true</can_leave_corpse>
             <prioritize_destroying_corpse>false</prioritize_destroying_corpse>
@@ -126,6 +125,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
         </attacks>
 
         <properties>
+            <property>PROP_UNDEAD</property>
             <property>PROP_SPAWNS_ZOMBIE_PARTS_ON_DESTROYED</property>
             <property>PROP_DARKVISION</property>
             <property>PROP_R_DISEASE</property>
@@ -210,7 +210,6 @@ SPDX-License-Identifier: AGPL-3.0-or-later
             <size>MONSIZE_HUMANOID</size>
             <always_prevent_knockback>false</always_prevent_knockback>
             <humanoid/>
-            <undead/>
             <can_bleed>true</can_bleed>
             <can_leave_corpse>true</can_leave_corpse>
             <prioritize_destroying_corpse>true</prioritize_destroying_corpse>
@@ -224,6 +223,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
         </attacks>
 
         <properties>
+            <property>PROP_UNDEAD</property>
             <property>PROP_CORPSE_RISES</property>
             <property>PROP_SPAWNS_ZOMBIE_PARTS_ON_DESTROYED</property>
             <property>PROP_DARKVISION</property>
@@ -310,7 +310,6 @@ SPDX-License-Identifier: AGPL-3.0-or-later
             <size>MONSIZE_HUMANOID</size>
             <always_prevent_knockback>false</always_prevent_knockback>
             <humanoid/>
-            <undead/>
             <can_bleed>true</can_bleed>
             <can_leave_corpse>true</can_leave_corpse>
             <prioritize_destroying_corpse>true</prioritize_destroying_corpse>
@@ -324,6 +323,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
         </attacks>
 
         <properties>
+            <property>PROP_UNDEAD</property>
             <property>PROP_CORPSE_RISES</property>
             <property>PROP_SPAWNS_ZOMBIE_PARTS_ON_DESTROYED</property>
             <property>PROP_DARKVISION</property>
@@ -409,7 +409,6 @@ SPDX-License-Identifier: AGPL-3.0-or-later
             <size>MONSIZE_HUMANOID</size>
             <always_prevent_knockback>false</always_prevent_knockback>
             <humanoid/>
-            <undead/>
             <can_bleed>true</can_bleed>
             <can_leave_corpse>true</can_leave_corpse>
             <prioritize_destroying_corpse>true</prioritize_destroying_corpse>
@@ -426,6 +425,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
         </attacks>
 
         <properties>
+            <property>PROP_UNDEAD</property>
             <property>PROP_CORPSE_RISES</property>
             <property>PROP_SPAWNS_ZOMBIE_PARTS_ON_DESTROYED</property>
             <property>PROP_DARKVISION</property>
@@ -510,7 +510,6 @@ SPDX-License-Identifier: AGPL-3.0-or-later
             <size>MONSIZE_GIANT</size>
             <always_prevent_knockback>true</always_prevent_knockback>
             <humanoid/>
-            <undead/>
             <can_bleed>true</can_bleed>
             <can_leave_corpse>false</can_leave_corpse>
             <prioritize_destroying_corpse>false</prioritize_destroying_corpse>
@@ -527,6 +526,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
         </attacks>
 
         <properties>
+            <property>PROP_UNDEAD</property>
             <property>PROP_DARKVISION</property>
             <property>PROP_FLAMMABLE</property>
             <property>PROP_R_DISEASE</property>
@@ -609,7 +609,6 @@ SPDX-License-Identifier: AGPL-3.0-or-later
             <size>MONSIZE_HUMANOID</size>
             <always_prevent_knockback>false</always_prevent_knockback>
             <humanoid/>
-            <undead/>
             <can_bleed>true</can_bleed>
             <can_leave_corpse>true</can_leave_corpse>
             <prioritize_destroying_corpse>true</prioritize_destroying_corpse>
@@ -623,6 +622,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
         </attacks>
 
         <properties>
+            <property>PROP_UNDEAD</property>
             <property>PROP_MAJOR_CLAPHAM_SUMMON</property>
             <property>PROP_CORPSE_RISES</property>
             <property>PROP_SPAWNS_ZOMBIE_PARTS_ON_DESTROYED</property>
@@ -707,7 +707,6 @@ SPDX-License-Identifier: AGPL-3.0-or-later
             <size>MONSIZE_HUMANOID</size>
             <always_prevent_knockback>false</always_prevent_knockback>
             <humanoid/>
-            <undead/>
             <can_bleed>true</can_bleed>
             <can_leave_corpse>true</can_leave_corpse>
             <prioritize_destroying_corpse>true</prioritize_destroying_corpse>
@@ -721,6 +720,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
         </attacks>
 
         <properties>
+            <property>PROP_UNDEAD</property>
             <property>PROP_CORPSE_RISES</property>
             <property>PROP_SPAWNS_ZOMBIE_PARTS_ON_DESTROYED</property>
             <property>PROP_DARKVISION</property>
@@ -803,7 +803,6 @@ SPDX-License-Identifier: AGPL-3.0-or-later
             <can_bash_doors>false</can_bash_doors>
             <size>MONSIZE_FLOOR</size>
             <always_prevent_knockback>false</always_prevent_knockback>
-            <undead/>
             <can_bleed>true</can_bleed>
             <can_leave_corpse>false</can_leave_corpse>
             <prioritize_destroying_corpse>false</prioritize_destroying_corpse>
@@ -816,6 +815,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
         </attacks>
 
         <properties>
+            <property>PROP_UNDEAD</property>
             <property>PROP_SMALL_CRAWLING</property>
             <property>PROP_DARKVISION</property>
             <property>PROP_R_BLIND</property>
@@ -897,7 +897,6 @@ SPDX-License-Identifier: AGPL-3.0-or-later
             <can_bash_doors>false</can_bash_doors>
             <size>MONSIZE_FLOOR</size>
             <always_prevent_knockback>true</always_prevent_knockback>
-            <undead/>
             <can_bleed>true</can_bleed>
             <can_leave_corpse>false</can_leave_corpse>
             <prioritize_destroying_corpse>false</prioritize_destroying_corpse>
@@ -910,6 +909,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
         </attacks>
 
         <properties>
+            <property>PROP_UNDEAD</property>
             <property>PROP_SMALL_CRAWLING</property>
             <property>PROP_DARKVISION</property>
             <property>PROP_R_BLIND</property>
@@ -991,7 +991,6 @@ SPDX-License-Identifier: AGPL-3.0-or-later
             <can_bash_doors>false</can_bash_doors>
             <size>MONSIZE_FLOOR</size>
             <always_prevent_knockback>false</always_prevent_knockback>
-            <undead/>
             <can_bleed>true</can_bleed>
             <can_leave_corpse>false</can_leave_corpse>
             <prioritize_destroying_corpse>false</prioritize_destroying_corpse>
@@ -1008,6 +1007,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
         </spells>
 
         <properties>
+            <property>PROP_UNDEAD</property>
             <property>PROP_SMALL_CRAWLING</property>
             <property>PROP_DARKVISION</property>
             <property>PROP_R_BLIND</property>
@@ -1091,7 +1091,6 @@ SPDX-License-Identifier: AGPL-3.0-or-later
             <can_bash_doors>false</can_bash_doors>
             <size>MONSIZE_FLOOR</size>
             <always_prevent_knockback>false</always_prevent_knockback>
-            <undead/>
             <can_bleed>false</can_bleed>
             <can_leave_corpse>true</can_leave_corpse>
             <prioritize_destroying_corpse>false</prioritize_destroying_corpse>
@@ -1108,6 +1107,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
         </spells>
 
         <properties>
+            <property>PROP_UNDEAD</property>
             <property>PROP_DARKVISION</property>
             <property>PROP_FLYING</property>
             <property>PROP_R_BLIND</property>
@@ -1402,6 +1402,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
         </items>
 
         <properties>
+            <property>PROP_OUTER_BEING</property>
             <property>PROP_DARKVISION</property>
         </properties>
 
@@ -1703,6 +1704,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
         </attacks>
 
         <properties>
+            <property>PROP_OUTER_BEING</property>
             <property>PROP_DARKVISION</property>
         </properties>
 
@@ -1801,6 +1803,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
         </spells>
 
         <properties>
+            <property>PROP_OUTER_BEING</property>
             <property>PROP_DARKVISION</property>
             <property>PROP_R_FEAR</property>
         </properties>
@@ -1898,6 +1901,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
         </spells>
 
         <properties>
+            <property>PROP_OUTER_BEING</property>
             <property>PROP_DARKVISION</property>
             <property>PROP_R_FEAR</property>
         </properties>
@@ -2588,6 +2592,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
         </attacks>
 
         <properties>
+            <property>PROP_OUTER_BEING</property>
             <property>PROP_R_SLEEP</property>
             <property>PROP_R_BLIND</property>
             <property>PROP_LIGHT_SENSITIVE</property>
@@ -2782,6 +2787,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
         </spells>
 
         <properties>
+            <property>PROP_OUTER_BEING</property>
             <property>PROP_DARKVISION</property>
             <property>PROP_R_SPELL</property>
             <property>PROP_ETHEREAL</property>
@@ -4071,6 +4077,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
         </attacks>
 
         <properties>
+            <property>PROP_OUTER_BEING</property>
             <property>PROP_ZUUL_POSSESS_PRIEST</property>
             <property>PROP_R_FEAR</property>
             <property>PROP_DARKVISION</property>
@@ -4588,6 +4595,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
         </attacks>
 
         <properties>
+            <property>PROP_OUTER_BEING</property>
             <property>PROP_R_PHYS</property>
             <property>PROP_R_FIRE</property>
             <property>PROP_R_POISON</property>
@@ -4689,6 +4697,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
         </attacks>
 
         <properties>
+            <property>PROP_OUTER_BEING</property>
             <property>PROP_R_PHYS</property>
             <property>PROP_R_FIRE</property>
             <property>PROP_R_POISON</property>
@@ -4744,7 +4753,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
             <name_the>the Mind Leech</name_the>
             <corpse_name_a>a Mind Leech corpse</corpse_name_a>
             <corpse_name_the>the Mind Leech corpse</corpse_name_the>
-            <description>A tentacled alien creature, mysteriously floating through the air in a ghostly manner. They somehow sustain themselves on the brain activity of other beings. This will usually not kill the victim, but the experience is horrific beyond words. They only feed on sound minds however - a strange or chaotic mind will cause them great distress.</description>
+            <description>A tentacled otherwordly creature, mysteriously floating through the air in a ghostly manner. They somehow sustain themselves on the brain activity of other beings. This will usually not kill the victim, but the experience is horrific beyond words. They only feed on sound minds however - a strange or chaotic mind will cause them great distress.</description>
             <allow_wielded_weapon_description>false</allow_wielded_weapon_description>
             <allow_speed_description>true</allow_speed_description>
             <wary_message>seems disturbed.</wary_message>
@@ -4791,6 +4800,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
         </attacks>
 
         <properties>
+            <property>PROP_OUTER_BEING</property>
             <property>PROP_R_SLEEP</property>
             <property>PROP_R_BREATH</property>
             <property>PROP_R_DISEASE</property>
@@ -5092,6 +5102,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
         </attacks>
 
         <properties>
+            <property>PROP_OUTER_BEING</property>
             <property>PROP_R_SLEEP</property>
             <property>PROP_R_BLIND</property>
             <property>PROP_LIGHT_SENSITIVE</property>
@@ -5185,6 +5196,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
         </attacks>
 
         <properties>
+            <property>PROP_OUTER_BEING</property>
             <property>PROP_R_FEAR</property>
             <property>PROP_R_CONF</property>
             <property>PROP_R_SLEEP</property>
@@ -5451,7 +5463,6 @@ SPDX-License-Identifier: AGPL-3.0-or-later
             <can_bash_doors>false</can_bash_doors>
             <size>MONSIZE_HUMANOID</size>
             <always_prevent_knockback>false</always_prevent_knockback>
-            <undead/>
             <ghost/>
             <can_bleed>false</can_bleed>
             <can_leave_corpse>false</can_leave_corpse>
@@ -5466,6 +5477,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
         </attacks>
 
         <properties>
+            <property>PROP_UNDEAD</property>
             <property>PROP_R_FEAR</property>
             <property>PROP_R_CONF</property>
             <property>PROP_R_SLEEP</property>
@@ -5551,7 +5563,6 @@ SPDX-License-Identifier: AGPL-3.0-or-later
             <can_bash_doors>false</can_bash_doors>
             <size>MONSIZE_HUMANOID</size>
             <always_prevent_knockback>false</always_prevent_knockback>
-            <undead/>
             <ghost/>
             <can_bleed>false</can_bleed>
             <can_leave_corpse>false</can_leave_corpse>
@@ -5570,6 +5581,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
         </spells>
 
         <properties>
+            <property>PROP_UNDEAD</property>
             <property>PROP_R_FEAR</property>
             <property>PROP_R_CONF</property>
             <property>PROP_R_SLEEP</property>
@@ -5620,7 +5632,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
             <name_the>the Void Traveler</name_the>
             <corpse_name_a></corpse_name_a>
             <corpse_name_the></corpse_name_the>
-            <description>A nightmarish creature of humanoid shape. It has a hideous gangly physique and sickly pale skin. Its arms are as long as its body is tall, and it attacks with ripping claws. It can appear anywhere it desires at any time, and can also snatch teleporting creatures from their voyage and draw them to it.</description>
+            <description>A nightmarish creature of humanoid shape. It has a hideous gangly physique and sickly pale skin. Its arms are as long as its body is tall, and it attacks with ripping claws. It can seemingly appear anywhere at any time, and can also snatch teleporting creatures from their voyage and draw them to it.</description>
             <allow_wielded_weapon_description>false</allow_wielded_weapon_description>
             <allow_speed_description>true</allow_speed_description>
             <wary_message>looks wary.</wary_message>
@@ -5675,6 +5687,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
         </spells>
 
         <properties>
+            <property>PROP_OUTER_BEING</property>
             <property>PROP_TELEPORTS</property>
         </properties>
 
@@ -5720,7 +5733,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
             <name_the>the Elder Void Traveler</name_the>
             <corpse_name_a></corpse_name_a>
             <corpse_name_the></corpse_name_the>
-            <description>A nightmarish creature of humanoid shape. It has a hideous gangly physique and sickly pale skin. Its arms are as long as its body is tall, and it attacks with ripping claws. It can appear anywhere it desires at any time, and can also snatch teleporting creatures from their voyage and draw them to it. This ancient individual has learned the art of spellcasting.</description>
+            <description>A nightmarish creature of humanoid shape. It has a hideous gangly physique and sickly pale skin. Its arms are as long as its body is tall, and it attacks with ripping claws. It can seemingly appear anywhere at any time, and can also snatch teleporting creatures from their voyage and draw them to it. This ancient individual has learned the art of spellcasting.</description>
             <allow_wielded_weapon_description>false</allow_wielded_weapon_description>
             <allow_speed_description>true</allow_speed_description>
             <wary_message>looks wary.</wary_message>
@@ -5779,6 +5792,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
         </spells>
 
         <properties>
+            <property>PROP_OUTER_BEING</property>
             <property>PROP_TELEPORTS</property>
         </properties>
 
@@ -6249,6 +6263,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
         </attacks>
 
         <properties>
+            <property>PROP_OUTER_BEING</property>
             <property>PROP_DARKVISION</property>
             <property>PROP_FLYING</property>
         </properties>
@@ -6342,6 +6357,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
         </spells>
 
         <properties>
+            <property>PROP_OUTER_BEING</property>
             <property>PROP_ALTERS_ENVIRONMENT</property>
             <property>PROP_DARKVISION</property>
             <property>PROP_FLYING</property>
@@ -6609,7 +6625,6 @@ SPDX-License-Identifier: AGPL-3.0-or-later
             <size>MONSIZE_HUMANOID</size>
             <always_prevent_knockback>false</always_prevent_knockback>
             <humanoid/>
-            <undead/>
             <can_bleed>true</can_bleed>
             <can_leave_corpse>true</can_leave_corpse>
             <prioritize_destroying_corpse>false</prioritize_destroying_corpse>
@@ -6640,6 +6655,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
         </spells>
 
         <properties>
+            <property>PROP_UNDEAD</property>
             <property>PROP_DARKVISION</property>
             <property>PROP_R_SLEEP</property>
             <property>PROP_R_DISEASE</property>
@@ -6722,7 +6738,6 @@ SPDX-License-Identifier: AGPL-3.0-or-later
             <size>MONSIZE_HUMANOID</size>
             <always_prevent_knockback>false</always_prevent_knockback>
             <humanoid/>
-            <undead/>
             <can_bleed>true</can_bleed>
             <can_leave_corpse>true</can_leave_corpse>
             <prioritize_destroying_corpse>false</prioritize_destroying_corpse>
@@ -6735,6 +6750,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
         </attacks>
 
         <properties>
+            <property>PROP_UNDEAD</property>
             <property>PROP_DARKVISION</property>
             <property>PROP_R_SLEEP</property>
             <property>PROP_R_DISEASE</property>
@@ -6821,7 +6837,6 @@ SPDX-License-Identifier: AGPL-3.0-or-later
             <size>MONSIZE_HUMANOID</size>
             <always_prevent_knockback>false</always_prevent_knockback>
             <humanoid/>
-            <undead/>
             <can_bleed>true</can_bleed>
             <can_leave_corpse>true</can_leave_corpse>
             <prioritize_destroying_corpse>false</prioritize_destroying_corpse>
@@ -6841,6 +6856,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
         </attacks>
 
         <properties>
+            <property>PROP_UNDEAD</property>
             <property>PROP_SUMMONS_LOCUSTS</property>
             <property>PROP_DARKVISION</property>
             <property>PROP_R_SLEEP</property>
@@ -6937,7 +6953,6 @@ SPDX-License-Identifier: AGPL-3.0-or-later
             <size>MONSIZE_HUMANOID</size>
             <always_prevent_knockback>false</always_prevent_knockback>
             <humanoid/>
-            <undead/>
             <can_bleed>true</can_bleed>
             <can_leave_corpse>true</can_leave_corpse>
             <prioritize_destroying_corpse>false</prioritize_destroying_corpse>
@@ -6957,6 +6972,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
         </attacks>
 
         <properties>
+            <property>PROP_UNDEAD</property>
             <property>PROP_DARKVISION</property>
             <property>PROP_R_SLEEP</property>
             <property>PROP_R_DISEASE</property>
@@ -7838,6 +7854,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
         </attacks>
 
         <properties>
+            <property>PROP_OUTER_BEING</property>
             <property>PROP_VORTEX</property>
             <property>PROP_R_POISON</property>
             <property>PROP_R_FEAR</property>
@@ -7939,6 +7956,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
         </attacks>
 
         <properties>
+            <property>PROP_OUTER_BEING</property>
             <property>PROP_VORTEX</property>
             <property>PROP_R_FIRE</property>
             <property>PROP_R_POISON</property>
@@ -8041,6 +8059,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
         </attacks>
 
         <properties>
+            <property>PROP_OUTER_BEING</property>
             <property>PROP_VORTEX</property>
             <property>PROP_R_FIRE</property>
             <property>PROP_R_POISON</property>
@@ -8457,6 +8476,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
         </attacks>
 
         <properties>
+            <property>PROP_OUTER_BEING</property>
             <property>PROP_CORPSE_EATER</property>
             <property>PROP_VOMITS_OOZE</property>
             <property>PROP_R_POISON</property>
@@ -8971,6 +8991,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
         </attacks>
 
         <properties>
+            <property>PROP_OUTER_BEING</property>
             <property>PROP_R_FEAR</property>
             <property>PROP_DARKVISION</property>
             <property>PROP_FLYING</property>
@@ -9070,6 +9091,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
         </spells>
         
         <properties>
+            <property>PROP_OUTER_BEING</property>
             <property>PROP_RECLOAKS</property>
             <property>PROP_FLYING</property>
             <property>PROP_DARKVISION</property>
@@ -9179,6 +9201,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
         </spells>
         
         <properties>
+            <property>PROP_OUTER_BEING</property>
             <property>PROP_RECLOAKS</property>
             <property>PROP_FLYING</property>
             <property>PROP_DARKVISION</property>
@@ -9459,10 +9482,6 @@ SPDX-License-Identifier: AGPL-3.0-or-later
             <searching>0</searching>
             <can_open_doors>false</can_open_doors>
             <can_bash_doors>false</can_bash_doors>
-            <!--
-                NOTE: This is a problem if a small creature should cast Mirror Image. Assuming only
-                humanoid size creatures cast it for now.
-            -->
             <size>MONSIZE_HUMANOID</size>
             <always_prevent_knockback>false</always_prevent_knockback>
             <can_bleed>false</can_bleed>
@@ -9878,6 +9897,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
         </attacks>
 
         <properties>
+            <property>PROP_OUTER_BEING</property>
             <property>PROP_R_BREATH</property>
             <property>PROP_R_BLIND</property>
             <property>PROP_R_CONF</property>
@@ -10082,6 +10102,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
         </spells>
 
         <properties>
+            <property>PROP_OUTER_BEING</property>
             <property>PROP_R_FIRE</property>
             <property>PROP_R_SLEEP</property>
             <property>PROP_R_FEAR</property>
@@ -10179,6 +10200,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
         </attacks>
 
         <properties>
+            <property>PROP_OUTER_BEING</property>
             <property>PROP_SHAPESHIFTS</property>
         </properties>
 
@@ -10262,7 +10284,6 @@ SPDX-License-Identifier: AGPL-3.0-or-later
             <size>MONSIZE_HUMANOID</size>
             <always_prevent_knockback>true</always_prevent_knockback>
             <humanoid/>
-            <undead/>
             <can_bleed>true</can_bleed>
             <can_leave_corpse>false</can_leave_corpse>
             <prioritize_destroying_corpse>false</prioritize_destroying_corpse>
@@ -10291,6 +10312,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
         </spells>
 
         <properties>
+            <property>PROP_UNDEAD</property>
             <property>PROP_R_FIRE</property>
             <property>PROP_R_FEAR</property>
             <property>PROP_R_CONF</property>
@@ -10376,7 +10398,6 @@ SPDX-License-Identifier: AGPL-3.0-or-later
             <size>MONSIZE_HUMANOID</size>
             <always_prevent_knockback>true</always_prevent_knockback>
             <humanoid/>
-            <undead/>
             <can_bleed>true</can_bleed>
             <can_leave_corpse>true</can_leave_corpse>
             <prioritize_destroying_corpse>false</prioritize_destroying_corpse>
@@ -10393,6 +10414,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
         </items>
 
         <properties>
+            <property>PROP_UNDEAD</property>
             <property>PROP_R_FEAR</property>
             <property>PROP_R_BREATH</property>
             <property>PROP_R_DISEASE</property>
@@ -10472,7 +10494,6 @@ SPDX-License-Identifier: AGPL-3.0-or-later
             <size>MONSIZE_HUMANOID</size>
             <always_prevent_knockback>true</always_prevent_knockback>
             <humanoid/>
-            <undead/>
             <can_bleed>true</can_bleed>
             <can_leave_corpse>true</can_leave_corpse>
             <prioritize_destroying_corpse>false</prioritize_destroying_corpse>
@@ -10487,6 +10508,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
         </spells>
 
         <properties>
+            <property>PROP_UNDEAD</property>
             <property>PROP_R_FEAR</property>
             <property>PROP_R_BREATH</property>
             <property>PROP_R_DISEASE</property>

@@ -13,7 +13,13 @@
 
 # Status effects
 - "Doomed" is now considered an upgrade of "Cursed", a creature cannot be both cursed and doomed simultaneously.
+- Removed the health/spirit/mind "sap" status effects. The Mind Leech monster now (again) just directly causes shock when it attacks, and the "sapping" magical traps have been removed.
 - Poisoning no longer lowers evasion (only melee damage and melee hit chance).
+
+# Traps
+- Renamed "Magic traps" to "Sigils" and made more diverse behavior possible. For example "triggering" them can happen in other ways than by stepping on them, and they may not just have a one-time effect.
+- "Mechanical traps" (e.g. spear traps) now (again) always trigger immediately instead of having a delay.
+- Removed the fire trap and the magical traps that "sapped" hit points or spirit points.
 
 # Backgrounds (classes) and traits
 - Occultists can pick traits to improve spell domains again, instead of getting automatic spell upgrades. This is a reversion to how it worked prior to v20.0, but the spell domain traits now also have level requirements (4 and 8 for "lesser" and "greater" casting, respectively).

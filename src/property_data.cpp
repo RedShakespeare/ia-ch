@@ -104,6 +104,8 @@ static const std::unordered_map<std::string, prop::Id> s_str_to_prop_id_map = {
         {"PROP_VOMITS_OOZE", prop::Id::vomits_ooze},
         {"PROP_VORTEX", prop::Id::vortex},
         {"PROP_WATER_CREATURE", prop::Id::water_creature},
+        {"PROP_UNDEAD", prop::Id::undead},
+        {"PROP_OUTER_BEING", prop::Id::outer_being},
         {"PROP_WEAKENED", prop::Id::weakened},
         {"PROP_ZEALOT_STOP", prop::Id::zealot_stop},
         {"PROP_ZUUL_POSSESS_PRIEST", prop::Id::zuul_possess_priest},
@@ -669,45 +671,6 @@ static void init_data_list()
         d.alignment = prop::PropAlignment::bad;
         add(d);
 
-        d.id = prop::Id::hp_sap;
-        d.name = "Life Sapped";
-        d.descr = "Fewer hit points.";
-        d.msg_start_player = "My life force is sapped!";
-        d.msg_start_mon = "is sapped of life.";
-        d.msg_end_player = "My life force returns.";
-        d.msg_end_mon = "looks restored.";
-        d.msg_res_player = "I resist sapping.";
-        d.msg_res_mon = "resists sapping.";
-        d.allow_display_turns = false;
-        d.allow_test_on_bot = false;
-        d.alignment = prop::PropAlignment::bad;
-        add(d);
-
-        d.id = prop::Id::spi_sap;
-        d.name = "Spirit Sapped";
-        d.descr = "Fewer spirit points.";
-        d.msg_start_player = "My spirit is sapped!";
-        d.msg_start_mon = "is sapped of spirit.";
-        d.msg_end_player = "My spirit returns.";
-        d.msg_end_mon = "looks restored.";
-        d.msg_res_player = "I resist sapping.";
-        d.msg_res_mon = "resists sapping.";
-        d.allow_display_turns = false;
-        d.allow_test_on_bot = false;
-        d.alignment = prop::PropAlignment::bad;
-        add(d);
-
-        d.id = prop::Id::mind_sap;
-        d.name = "Mind Sapped";
-        d.descr = "Increased Shock.";
-        d.msg_start_player = "My mind is sapped!";
-        d.msg_end_player = "My mind returns.";
-        d.msg_res_player = "I resist sapping.";
-        d.allow_display_turns = false;
-        d.allow_test_on_bot = false;
-        d.alignment = prop::PropAlignment::bad;
-        add(d);
-
         d.id = prop::Id::infected;
         d.std_rnd_turns = Range(50, 100);
         d.name = "Infected";
@@ -1223,6 +1186,12 @@ static void init_data_list()
         add(d);
 
         d.id = prop::Id::water_creature;
+        add(d);
+
+        d.id = prop::Id::undead;
+        add(d);
+
+        d.id = prop::Id::outer_being;
         add(d);
 
         d.id = prop::Id::moves_through_earth;

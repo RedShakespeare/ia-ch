@@ -438,7 +438,7 @@ std::string Vitality::descr_identified() const
         return (
                 "This elixir fully restores all hit points, heals all "
                 "wounds, and cures blindness, deafness, poisoning, "
-                "infections, disease, weakening, and life sapping. "
+                "infections, disease and weakening. "
                 "Also, for some duration after consuming the potion, "
                 "+1 extra hit point is healed per turn, and there is "
                 "10% chance per turn to heal one wound.");
@@ -458,7 +458,6 @@ void Vitality::quaff_impl(actor::Actor& actor)
                 prop::Id::infected,
                 prop::Id::diseased,
                 prop::Id::weakened,
-                prop::Id::hp_sap,
                 prop::Id::wound};
 
         for (prop::Id prop_id : props_can_heal) {
@@ -490,7 +489,7 @@ std::string Spirit::real_name() const
 
 std::string Spirit::descr_identified() const
 {
-        return "Restores the spirit, and cures spirit sapping.";
+        return "Fully restores the spirit.";
 }
 
 PotionAlignment Spirit::alignment() const
@@ -500,17 +499,12 @@ PotionAlignment Spirit::alignment() const
 
 void Spirit::quaff_impl(actor::Actor& actor)
 {
-        actor.m_properties.end_prop(prop::Id::spi_sap);
-
         // SP is always restored at least up to maximum, but can go beyond
         const int sp_max = actor::max_sp(actor);
 
         const int sp_restored = std::max(10, sp_max - actor.m_sp);
 
-        actor::restore_sp(
-                actor,
-                sp_restored,
-                actor::AllowRestoreAboveMax::yes);
+        actor::restore_sp(actor, sp_restored, actor::AllowRestoreAboveMax::yes);
 
         if (actor::can_player_see_actor(actor)) {
                 identify(Verbose::yes);
@@ -665,9 +659,7 @@ std::string Fortitude::real_name() const
 
 std::string Fortitude::descr_identified() const
 {
-        return (
-                "Gives the consumer complete peace and clarity of "
-                "mind, and cures mind sapping.");
+        return "Gives the consumer complete peace and clarity of mind.";
 }
 
 PotionAlignment Fortitude::alignment() const
@@ -685,7 +677,6 @@ void Fortitude::quaff_impl(actor::Actor& actor)
 
         actor.m_properties.end_prop(prop::Id::frenzied);
         actor.m_properties.end_prop(prop::Id::hallucinating);
-        actor.m_properties.end_prop(prop::Id::mind_sap);
 
         if (actor::is_player(&actor)) {
                 const std::vector<const InsSympt*> sympts = insanity::active_sympts();
@@ -755,8 +746,7 @@ std::string Insight::real_name() const
 
 std::string Insight::descr_identified() const
 {
-        return (
-                "This strange concoction causes a sudden flash of intuition.");
+        return "This strange concoction causes a sudden flash of intuition.";
 }
 
 PotionAlignment Insight::alignment() const
@@ -801,8 +791,7 @@ std::string Curing::descr_identified() const
 {
         return (
                 "Restores 3 hit points, and cures blindness, deafness, "
-                "poisoning, infections, disease, weakening, and "
-                "life sapping.");
+                "poisoning, infections, disease and weakening.");
 }
 
 PotionAlignment Curing::alignment() const
@@ -819,7 +808,7 @@ void Curing::quaff_impl(actor::Actor& actor)
                 prop::Id::infected,
                 prop::Id::diseased,
                 prop::Id::weakened,
-                prop::Id::hp_sap};
+        };
 
         bool is_noticable = false;
 

@@ -215,13 +215,8 @@ static void try_auto_disarm()
 
                 const auto* const trap = static_cast<const terrain::Trap*>(terrain);
 
-                if (trap->is_magical()) {
-                        // Magical traps cannot be disarmed normally.
-                        continue;
-                }
-
-                if (trap->has_started_trigger()) {
-                        // A trap that has started triggering cannot be disarmed.
+                if (trap->is_sigil()) {
+                        // Sigils cannot be disarmed normally.
                         continue;
                 }
 

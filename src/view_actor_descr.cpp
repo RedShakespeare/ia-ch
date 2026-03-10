@@ -143,6 +143,13 @@ static const PropTextData s_prop_text_data[] = {
                         {prop::Id::flammable,
                          "They are very flammable, and will quickly ignite other nearby "
                          "flammable creatures"},
+
+                        {prop::Id::undead,
+                         "{COLOR_MAGENTA}This creature is undead{reset_color}"},
+
+                        {prop::Id::outer_being,
+                         "{COLOR_VIOLET}They are an Outer Being, not anchored to "
+                         "this reality{reset_color}"},
                 },
         },
 };
@@ -548,12 +555,6 @@ static std::string auto_description_str(actor::Actor& actor)
                 }
 
                 str += ".";
-        }
-
-        if (actor_data->is_undead) {
-                text_format::append_with_space(
-                        str,
-                        "{COLOR_MAGENTA}This creature is undead.{reset_color}");
         }
 
         if (!actor.is_actor_my_leader(map::g_player)) {

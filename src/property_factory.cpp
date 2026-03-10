@@ -82,6 +82,12 @@ Prop* make(const prop::Id id)
         case prop::Id::extra_hasted:
                 return new ExtraHasted();
 
+        case prop::Id::undead:
+                return new Undead();
+
+        case prop::Id::outer_being:
+                return new OuterBeing();
+
         case prop::Id::summoned:
                 return new Summoned();
 
@@ -339,15 +345,6 @@ Prop* make(const prop::Id id)
 
         case prop::Id::see_invis:
                 return new SeeInvis();
-
-        case prop::Id::hp_sap:
-                return new HpSap();
-
-        case prop::Id::spi_sap:
-                return new SpiSap();
-
-        case prop::Id::mind_sap:
-                return new MindSap();
 
         case prop::Id::hit_chance_penalty_curse:
                 return new HitChancePenaltyCurse();

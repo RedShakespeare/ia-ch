@@ -882,11 +882,25 @@ Original title:      SS BOOM 01.wav
 License:             Attribution 3.0 Unported (CC BY 3.0)
 Changes made:        Cut part of the sound and applied fade-out
 
-File:                sfx_magic_trap_trigger.ogg
+File:                sfx_sigil_trigger.ogg
 Source:              https://freesound.org/people/hykenfreak/sounds/331621/
 Author:              hykenfreak (username on freesound.org)
 Original title:      Flame Ignition
 License:             Attribution 4.0 International (CC BY 4.0)
+
+File:                sfx_sigil_fade.ogg
+Source:              https://freesound.org/people/hykenfreak/sounds/331621/
+Author:              hykenfreak (username on freesound.org)
+Original title:      Flame Ignition
+License:             Attribution 4.0 International (CC BY 4.0)
+Changes made:        Reversed the audio, various changes
+
+File:                sfx_sigil_waver.ogg
+Source:              https://freesound.org/people/hykenfreak/sounds/331621/
+Author:              hykenfreak (username on freesound.org)
+Original title:      Flame Ignition
+License:             Attribution 4.0 International (CC BY 4.0)
+Changes made:        Added echoes, various effects
 
 File:                sfx_mechanical_trap_trigger.ogg
 Source:              https://freesound.org/people/Yarmonics/sounds/441853/

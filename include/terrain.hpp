@@ -62,12 +62,6 @@ enum class BurnState
         has_burned
 };
 
-enum class DidTriggerTrap
-{
-        no,
-        yes
-};
-
 enum class DidOpen
 {
         no,
@@ -201,13 +195,6 @@ public:
         virtual bool can_move(const actor::Actor& actor) const
         {
                 return m_data->move_rules.can_move(actor);
-        }
-
-        // Is this given property allowing movement into this terrain, when it
-        // normally wouldn't be?
-        virtual bool is_property_allowing_move(prop::Id id) const
-        {
-                return m_data->move_rules.is_property_allowing_move(id);
         }
 
         virtual bool is_sound_passable() const
@@ -355,13 +342,6 @@ protected:
         virtual void on_new_turn_hook() {}
 
         void try_start_burning(Verbose verbose);
-
-        virtual DidTriggerTrap trigger_trap(actor::Actor* actor)
-        {
-                (void)actor;
-
-                return DidTriggerTrap::no;
-        }
 
         virtual void add_light_hook(Array2<bool>& light) const
         {
@@ -1213,7 +1193,7 @@ public:
                 int dmg) override;
 
 private:
-        DidTriggerTrap trigger_trap(actor::Actor* actor) override;
+        void trigger_trap();
 
         void trigger_trap_mon() const;
         std::string get_random_allowed_mon_id() const;
@@ -1469,7 +1449,7 @@ public:
 private:
         void player_loot();
 
-        DidTriggerTrap trigger_trap(actor::Actor* actor) override;
+        void trigger_trap();
 
         bool m_is_trapped;
         bool m_is_open;

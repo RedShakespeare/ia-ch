@@ -126,12 +126,12 @@ static int calc_ranged_dist_hit_mod(const int dist, const Range& effective_range
 
 static bool is_player_undead_bane_bon(
         const actor::Actor* const attacker,
-        const actor::ActorData& defender_data)
+        const actor::Actor& defender)
 {
         return (
                 actor::is_player(attacker) &&
                 player_bon::has_trait(TraitId::undead_bane) &&
-                defender_data.is_undead);
+                defender.m_properties.has(prop::Id::undead));
 }
 
 static bool is_reduced_pierce_dmg(const DmgType dmg_type, const actor::Actor& defender)
@@ -214,8 +214,7 @@ MeleeAttData::MeleeAttData(
                 state_mod += 25;
         }
 
-        const bool apply_undead_bane_bon =
-                is_player_undead_bane_bon(attacker, *defender->m_data);
+        const bool apply_undead_bane_bon = is_player_undead_bane_bon(attacker, *defender);
 
         const bool apply_ethereal_defender_pen =
                 defender->m_properties.has(prop::Id::ethereal) &&
@@ -382,8 +381,7 @@ RangedAttData::RangedAttData(
                 state_mod += 25;
         }
 
-        const bool apply_undead_bane_bon =
-                is_player_undead_bane_bon(attacker, *defender->m_data);
+        const bool apply_undead_bane_bon = is_player_undead_bane_bon(attacker, *defender);
 
         const bool apply_ethereal_defender_pen =
                 defender->m_properties.has(prop::Id::ethereal) &&
@@ -511,8 +509,7 @@ ThrowAttData::ThrowAttData(
                 state_mod += 25;
         }
 
-        const bool apply_undead_bane_bon =
-                is_player_undead_bane_bon(attacker, *defender->m_data);
+        const bool apply_undead_bane_bon = is_player_undead_bane_bon(attacker, *defender);
 
         const bool apply_ethereal_defender_pen =
                 defender->m_properties.has(prop::Id::ethereal) &&

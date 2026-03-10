@@ -1422,7 +1422,10 @@ void handle(const GameCmd cmd)
         case GameCmd::debug_f8: {
                 P p = map::g_player->m_pos;
 
-                for (int id_idx = 0; id_idx < (int)terrain::TrapId::END; ++id_idx) {
+                for (
+                        int id_idx = 0;
+                        id_idx < (int)terrain::TrapId::END_OF_AUTO_SPAWNABLE_TRAPS;
+                        ++id_idx) {
                         if ((terrain::TrapId)id_idx == terrain::TrapId::END_MECHANICAL) {
                                 continue;
                         }

@@ -352,12 +352,11 @@ void InsPhobiaDead::on_new_player_turn(
                 return;
         }
 
-        for (auto* const actor : seen_actors) {
-                if (actor->m_data->is_undead) {
+        for (const actor::Actor* const actor : seen_actors) {
+                if (actor->m_properties.has(prop::Id::undead)) {
                         msg_log::add("I am plagued by my phobia of the dead!");
 
-                        map::g_player->m_properties.apply(
-                                prop::make(prop::Id::terrified));
+                        map::g_player->m_properties.apply(prop::make(prop::Id::terrified));
 
                         break;
                 }

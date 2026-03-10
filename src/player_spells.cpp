@@ -180,7 +180,8 @@ static void draw_spell_menu_line(
 
         const std::string name = spell->name();
 
-        constexpr int cost_label_x = 23;
+        // TODO: Consider this position:
+        constexpr int cost_label_x = 30;
         constexpr int skill_label_x = cost_label_x + 10;
 
         int x = 0;

@@ -68,6 +68,7 @@
 #include "terrain_data.hpp"
 #include "terrain_door.hpp"
 #include "terrain_factory.hpp"
+#include "terrain_trap.hpp"
 #include "text_format.hpp"
 #include "viewport.hpp"
 #include "wpn_dmg.hpp"
@@ -383,14 +384,14 @@ static void side_effect_flay_human(const Context& context)
 
                 const prop::PropHandler& properties = actor->m_properties;
 
-                // NOTE: The target of the spell side effect may be the caster
-                // itself, if caster is a monster.
+                // NOTE: The target of the spell side effect may be the caster itself, if caster is
+                // a monster.
                 if (!actor::is_player(actor) &&
                     actor::is_alive(*actor) &&
                     actor_data->is_humanoid &&
                     actor_data->can_leave_corpse &&
                     (actor_data->mon_shock_lvl <= MonShockLvl::frightening) &&
-                    !actor_data->is_undead &&
+                    !actor->m_properties.has(prop::Id::undead) &&
                     !actor_data->is_unique &&
                     !properties.has(prop::Id::ethereal) &&
                     !properties.has(prop::Id::possessed_by_zuul) &&
@@ -927,6 +928,9 @@ Spell* make(const SpellId spell_id)
 
         case SpellId::frenzy:
                 return new SpellFrenzy();
+
+        case SpellId::inscribe_boundary_sigil:
+                return new SpellInscribeBoundarySigil();
 
         case SpellId::bless:
                 return new SpellBless();
@@ -3594,10 +3598,10 @@ void SpellPurge::run_effect(
                 return;
         }
 
-        for (const auto& d : dir_utils::g_dir_list) {
+        for (const P& d : dir_utils::g_dir_list) {
                 const auto p(caster->m_pos + d);
 
-                auto* const terrain = map::g_terrain.at(p);
+                terrain::Terrain* const terrain = map::g_terrain.at(p);
 
                 switch (terrain->id()) {
                 case terrain::Id::altar:
@@ -3616,10 +3620,10 @@ void SpellPurge::run_effect(
                 }
         }
 
-        for (auto* const actor : game_time::g_actors) {
+        for (actor::Actor* const actor : game_time::g_actors) {
                 if ((actor == caster) ||
                     !actor->m_pos.is_adjacent(caster->m_pos) ||
-                    !actor->m_data->is_undead) {
+                    !actor->m_properties.has(prop::Id::undead)) {
                         continue;
                 }
 
@@ -3765,6 +3769,11 @@ bool SpellBless::is_noisy(const SpellSkill skill) const
         return false;
 }
 
+SpellShock SpellBless::shock_type() const
+{
+        return SpellShock::mild;
+}
+
 Range SpellBless::duration_range(SpellSkill skill) const
 {
         switch (skill) {
@@ -3831,6 +3840,139 @@ std::vector<std::string> SpellBless::descr_specific(
         else {
                 descr.push_back("The spell lasts " + duration_range(skill).str() + " turns.");
         }
+
+        return descr;
+}
+
+// -----------------------------------------------------------------------------
+// Inscribe Boundary Sigil
+// -----------------------------------------------------------------------------
+std::string SpellInscribeBoundarySigil::name() const
+{
+        return "Inscribe Boundary Sigil";
+}
+
+SpellId SpellInscribeBoundarySigil::id() const
+{
+        return SpellId::inscribe_boundary_sigil;
+}
+
+SpellDomain SpellInscribeBoundarySigil::domain() const
+{
+        return SpellDomain::warding;
+}
+
+bool SpellInscribeBoundarySigil::is_noisy(const SpellSkill skill) const
+{
+        (void)skill;
+
+        return false;
+}
+
+SpellShock SpellInscribeBoundarySigil::shock_type() const
+{
+        return SpellShock::mild;
+}
+
+int SpellInscribeBoundarySigil::pct_chance_fade(const SpellSkill skill) const
+{
+        if (skill == SpellSkill::transcendent) {
+                return 5;
+        }
+        else {
+                return 60 - ((int)skill * 15);
+        }
+}
+
+int SpellInscribeBoundarySigil::base_max_cost(
+        const SpellSkill skill,
+        const actor::Actor* const caster) const
+{
+        (void)skill;
+        (void)caster;
+
+        return 5;
+}
+
+void SpellInscribeBoundarySigil::run_effect(
+        actor::Actor* const caster,
+        const SpellSkill skill,
+        const std::vector<actor::Actor*>& seen_targets) const
+{
+        (void)seen_targets;
+
+        const terrain::Terrain* terrain_here = map::g_terrain.at(caster->m_pos);
+
+        terrain::Id terrain_id_here = terrain_here->id();
+
+        if (terrain_id_here != terrain::Id::floor && terrain_id_here != terrain::Id::trap) {
+                msg_log::add("Nothing happens.");
+
+                return;
+        }
+
+        auto* const trap =
+                static_cast<terrain::Trap*>(
+                        terrain::make(terrain::Id::trap, caster->m_pos));
+
+        // Set up mimic terrain.
+
+        // If the terrain here is another trap (a sigil), then use its mimic terrain as a base.
+        if (terrain_id_here == terrain::Id::trap) {
+                terrain_here =
+                        static_cast<const terrain::Trap*>(terrain_here)
+                                ->get_mimic_terrain();
+
+                terrain_id_here = terrain_here->id();
+        }
+
+        terrain::Terrain* const mimic = terrain::make(terrain_id_here, caster->m_pos);
+
+        if (terrain_id_here == terrain::Id::floor) {
+                // The terrain to mimic is a floor, set correct floor type.
+                static_cast<terrain::Floor*>(mimic)->m_type =
+                        static_cast<const terrain::Floor*>(terrain_here)->m_type;
+        }
+
+        trap->set_mimic_terrain(mimic);
+
+        const bool is_trap_ok = trap->try_init_type(terrain::TrapId::boundary);
+
+        if (!is_trap_ok) {
+                // There shouldn't be any reason for this to happen.
+                ASSERT(false);
+
+                delete trap;
+
+                return;
+        }
+
+        auto* const boundary = static_cast<terrain::TrapBoundary*>(trap->trap_impl());
+
+        boundary->set_fade_chance_pct(pct_chance_fade(skill));
+
+        map::update_terrain(trap);
+
+        trap->reveal(terrain::PrintRevealMsg::no);
+}
+
+std::vector<std::string> SpellInscribeBoundarySigil::descr_specific(
+        const SpellSkill skill) const
+{
+        std::vector<std::string> descr;
+
+        descr.emplace_back(
+                "Inscribes a magical sigil upon the ground, "
+                "preventing Outer Beings, Undead and Summoned creatures "
+                "from moving into it or making melee attacks across its boundary.");
+
+        descr.emplace_back(
+                "Each attempt at such an action strains the sigil, "
+                "which may cause it to fade out with " +
+                std::to_string(pct_chance_fade(skill)) +
+                "% chance.");
+
+        descr.emplace_back("Can only be inscribed on floor, but may overwrite an existing sigil.");
 
         return descr;
 }
@@ -6662,7 +6804,6 @@ void SpellHeal::run_effect(
 
         if ((int)skill >= (int)SpellSkill::expert) {
                 caster->m_properties.end_prop(prop::Id::weakened);
-                caster->m_properties.end_prop(prop::Id::hp_sap);
                 caster->m_properties.end_prop(prop::Id::poisoned);
         }
 
@@ -6713,13 +6854,12 @@ std::vector<std::string> SpellHeal::descr_specific(
                 " hit points.");
 
         if (skill == SpellSkill::expert) {
-                descr.emplace_back(
-                        "Cures weakening, life sapping, and poisoning.");
+                descr.emplace_back("Cures weakening and poisoning.");
         }
         else if (skill >= SpellSkill::master) {
                 descr.emplace_back(
-                        "Cures weakening, life sapping, poisoning, "
-                        "infections, disease, blindness, and deafness.");
+                        "Cures weakening, poisoning, infections, disease, blindness "
+                        "and deafness.");
         }
 
         if (skill == SpellSkill::transcendent) {

@@ -100,8 +100,8 @@ enum class Id
         // ("cowardly monsters", e.g. Troglodytes).
         others_terrified_on_death,
 
-        // Properties describing the actors body or method of moving around.  These affect which
-        // terrain types the actor can move through, but may have other effects as well.
+        // Properties describing the actors body or method of moving around. These mainly affect
+        // which terrain types the actor can move through, but may have other effects as well.
         flying,
         tiny_flying,  // E.g. Locusts
         ethereal,
@@ -110,6 +110,11 @@ enum class Id
         burrowing,
         moves_through_earth,  // Moves through walls/rubble, but does not destroy it.
         water_creature,       // Not delayed by water, e.g. Water Hounds/Beasts, Leviathan.
+
+        // Misc additional properties describing what type of creature this is.
+        undead,       // Various interactions.
+        outer_being,  // Various interactions.
+        summoned,
 
         // Properties mostly used for AI control.
         waiting,  // Prevent acting - also used for player
@@ -131,10 +136,6 @@ enum class Id
         aiming,
         nailed,
         wound,
-        summoned,
-        hp_sap,
-        spi_sap,
-        mind_sap,
         hit_chance_penalty_curse,
         increased_shock_curse,
         cannot_read_curse,

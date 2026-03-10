@@ -68,7 +68,6 @@ enum class TollId
         // TODO: Consider these:
         // diseased
         // wounded
-        // mind_sapped
 
         END
 };

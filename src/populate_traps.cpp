@@ -163,12 +163,12 @@ void populate()
 
 terrain::Trap* try_make_trap(const terrain::TrapId id, const P& pos)
 {
-        const terrain::Terrain* const t = map::g_terrain.at(pos);
+        const terrain::Terrain* const terrain_here = map::g_terrain.at(pos);
 
-        if (!t->can_have_trap()) {
+        if (!terrain_here->can_have_trap()) {
                 TRACE
                         << "Cannot place trap on terrain id: "
-                        << (int)t->id() << "\n"
+                        << (int)terrain_here->id() << "\n"
                         << "Trap id: "
                         << int(id) << "\n";
 
@@ -177,11 +177,19 @@ terrain::Trap* try_make_trap(const terrain::TrapId id, const P& pos)
                 return nullptr;
         }
 
-        terrain::Terrain* const mimic = terrain::make(t->id(), pos);
-
         auto* const trap =
                 static_cast<terrain::Trap*>(
                         terrain::make(terrain::Id::trap, pos));
+
+        // Set up mimic terrain
+
+        terrain::Terrain* const mimic = terrain::make(terrain_here->id(), pos);
+
+        if (terrain_here->id() == terrain::Id::floor) {
+                // The terrain to mimic is a floor, set correct floor type.
+                static_cast<terrain::Floor*>(mimic)->m_type =
+                        static_cast<const terrain::Floor*>(terrain_here)->m_type;
+        }
 
         trap->set_mimic_terrain(mimic);
 

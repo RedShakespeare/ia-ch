@@ -519,8 +519,8 @@ void Healed::run_effect()
                 prop::Id::infected,
                 prop::Id::diseased,
                 prop::Id::weakened,
-                prop::Id::hp_sap,
-                prop::Id::wound};
+                prop::Id::wound,
+        };
 
         for (prop::Id prop_id : props_can_heal) {
                 map::g_player->m_properties.end_prop(prop_id);
