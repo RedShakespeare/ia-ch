@@ -137,6 +137,7 @@ enum class Id
         scroll_aza_gaze,
         scroll_bless,
         scroll_blood_temper,
+        scroll_inscribe_boundary_sigil,
         scroll_cataclysm,
         scroll_control_object,
         scroll_crimson_passage,
