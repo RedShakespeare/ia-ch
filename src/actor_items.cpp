@@ -144,6 +144,8 @@ static void make_for_player_occultist_specific()
                 break;
 
         case SpellDomain::warding:
+                learn_spell_player(SpellId::heal);
+                learn_spell_player(SpellId::inscribe_boundary_sigil);
                 break;
 
         case SpellDomain::blood:
