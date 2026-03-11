@@ -393,11 +393,7 @@ ConsumeItem Scroll::activate(actor::Actor* const actor)
 
         const auto seen_foes = actor::seen_foes(*map::g_player);
 
-        spell->cast(
-                map::g_player,
-                skill,
-                SpellSrc::manuscript,
-                seen_foes);
+        spell->cast(map::g_player, skill, SpellSrc::manuscript, seen_foes);
 
         msg_log::add(crumble_str);
 

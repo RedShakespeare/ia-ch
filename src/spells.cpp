@@ -3901,12 +3901,21 @@ void SpellInscribeBoundarySigil::run_effect(
 {
         (void)seen_targets;
 
+        // TODO: There should be a casting sound.
+
         const terrain::Terrain* terrain_here = map::g_terrain.at(caster->m_pos);
 
         terrain::Id terrain_id_here = terrain_here->id();
 
         if (terrain_id_here != terrain::Id::floor && terrain_id_here != terrain::Id::trap) {
-                msg_log::add("Nothing happens.");
+                if (map::g_player->m_properties.allow_see()) {
+                        msg_log::add("A symbol flickers briefly, but fails to bind here.");
+                }
+                else {
+                        // NOTE: Assuming that the player is casting an already known spell (not
+                        // possible to cast from Manuscripts while blind).
+                        msg_log::add("I sense that the sigil failed to bind here.");
+                }
 
                 return;
         }
