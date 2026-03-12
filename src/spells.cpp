@@ -7821,7 +7821,7 @@ bool SpellSacrificeLife::is_tenebrous() const
 
 SpellShock SpellSacrificeLife::shock_type() const
 {
-        return SpellShock::severe;
+        return SpellShock::disturbing;
 }
 
 int SpellSacrificeLife::base_max_cost(
