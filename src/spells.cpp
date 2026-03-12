@@ -3871,7 +3871,7 @@ bool SpellInscribeBoundarySigil::is_noisy(const SpellSkill skill) const
 
 SpellShock SpellInscribeBoundarySigil::shock_type() const
 {
-        return SpellShock::mild;
+        return SpellShock::disturbing;
 }
 
 int SpellInscribeBoundarySigil::pct_chance_fade(const SpellSkill skill) const
