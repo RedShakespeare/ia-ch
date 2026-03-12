@@ -226,6 +226,7 @@ static void update_trait_data()
         d.id = TraitId::courageous;
         d.title = "Courageous";
         d.trait_prereqs = {TraitId::cool_headed};
+        d.bg_prereq = Bg::war_vet;
         set_trait_data(d);
 
         // --- Dexterous ---

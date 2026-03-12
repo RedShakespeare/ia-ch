@@ -22,11 +22,11 @@
 - Removed the fire trap and the magical traps that "sapped" hit points or spirit points.
 
 # Backgrounds (classes) and traits
-- Occultists can pick traits to improve spell domains again, instead of getting automatic spell upgrades. This is a reversion to how it worked prior to v20.0, but the spell domain traits now also have level requirements (4 and 8 for "lesser" and "greater" casting, respectively).
-- Occultists can still choose a spell domain at start, but this only affects starting spells.
+- Occultists can pick traits to improve spell domains again, instead of getting automatic spell upgrades. This is a reversion to how it worked prior to v20.0, but the spell domain traits now also have level requirements (4 and 8 for "lesser" and "greater" casting, respectively). Occultists can still choose a spell domain at start, but this only affects starting spells.
 - The previous Clairvoyant ability to see hidden things is now instead granted by the Mind spell traits.
-- Occultists also start with the Cool-headed trait.
 - Meditative now requires Strong Spirit instead of Stout Spirit (in addition to Cool-headed).
+- Occultists also start with the Cool-headed trait.
+- Courageous (+20% shock resistance) is now (again) a unique trait for War Veterans.
 
 # Other gameplay changes
 - All monsters (except Ghouls) now very slowly regenerate hit points.
