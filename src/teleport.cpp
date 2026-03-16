@@ -56,12 +56,14 @@ static bool is_void_traveler_affecting_player_teleport(const actor::Actor& actor
                 (actor_id == "MON_VOID_TRAVELER") ||
                 (actor_id == "MON_ELDER_VOID_TRAVELER");
 
-        return (
+        const bool allow_affecting =
                 is_void_traveler &&
                 (actor.m_state == ActorState::alive) &&
                 actor.m_properties.allow_act() &&
                 !actor.is_actor_my_leader(map::g_player) &&
-                actor::is_aware_of_player(actor));
+                actor::is_aware_of_player(actor);
+
+        return allow_affecting;
 }
 
 static std::vector<P> get_free_positions_around_pos(
@@ -359,9 +361,7 @@ void teleport(
         // Hostile void travelers "intercept" players teleporting, and calls the player to them.
         const bool is_affected_by_void_traveler =
                 handle_void_traveler_affecting_player_teleport(
-                        actor,
-                        pos,
-                        blocked);
+                        actor, pos, blocked);
 
         // Leave current position.
         map::g_terrain.at(actor.m_pos)->on_leave(actor);
@@ -378,7 +378,9 @@ void teleport(
         if (actor::is_player(&actor)) {
                 actor.update_tmp_shock();
 
-                make_all_mon_not_seeing_player_unaware();
+                if (!is_affected_by_void_traveler) {
+                        make_all_mon_not_seeing_player_unaware();
+                }
         }
         else if (player_can_see_actor_before) {
                 const bool player_can_see_actor = actor::can_player_see_actor(actor);
