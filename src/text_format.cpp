@@ -209,9 +209,7 @@ std::string to_upper(const std::string& str)
         return result;
 }
 
-void append_with_space(
-        std::string& base_str,
-        const std::string& addition)
+void append_with_space(std::string& base_str, const std::string& addition)
 {
         if (!base_str.empty() && !addition.empty()) {
                 base_str += " ";
@@ -220,15 +218,38 @@ void append_with_space(
         base_str += addition;
 }
 
-void append_as_comma_list(
-        std::string& base_str,
-        const std::string& addition)
+void append_as_comma_list(std::string& base_str, const std::string& addition)
 {
         if (!base_str.empty() && !addition.empty()) {
                 base_str += ", ";
         }
 
         base_str += addition;
+}
+
+std::string make_comma_and_str(const std::vector<std::string>& strings)
+{
+        if (strings.empty()) {
+                return "";
+        }
+
+        const size_t nr_strings = strings.size();
+        const size_t last_idx = nr_strings - 1;
+
+        std::string result = strings[0];
+
+        // Loop from index 1 to the end and append strings with "," or "and".
+        for (size_t i = 1; i < nr_strings; ++i) {
+                if (i < last_idx) {
+                        result += ", " + strings[i];
+                }
+                else {
+                        // Hm, Oxford comma or not? ;-)
+                        result += " and " + strings[i];
+                }
+        }
+
+        return result;
 }
 
 std::string trim_leading_and_trailing_spaces(const std::string& str)

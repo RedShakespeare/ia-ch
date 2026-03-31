@@ -18,6 +18,11 @@
 class Spell;
 struct P;
 
+namespace prop
+{
+enum class Id;
+};
+
 namespace actor
 {
 class Actor;
@@ -88,6 +93,7 @@ enum class SpellId
 
         // Domain: Warding
         bless,
+        cancellation,
         heal,
         inscribe_boundary_sigil,
         light,
@@ -1048,6 +1054,67 @@ public:
         Range duration_range(SpellSkill skill) const;
 
 private:
+        int base_max_cost(SpellSkill skill, const actor::Actor* caster) const override;
+
+        bool is_noisy(SpellSkill skill) const override;
+};
+
+enum class CancelledPropIncludeInDescr
+{
+        no,
+        yes,
+};
+
+enum class CancelledPropAllowCancelPermanent
+{
+        no,
+        yes,
+};
+
+struct CancelledPropData
+{
+        prop::Id id;
+
+        // Include it in the lits of cancelled effects?
+        CancelledPropIncludeInDescr include_in_descr {
+                CancelledPropIncludeInDescr::yes};
+
+        CancelledPropAllowCancelPermanent allow_cancel_permanent_effect {
+                CancelledPropAllowCancelPermanent::no};
+};
+
+class SpellCancellation : public Spell
+{
+public:
+        SpellCancellation() = default;
+
+        std::string name() const override;
+
+        SpellId id() const override;
+
+        SpellDomain domain() const override;
+
+        SpellShock shock_type() const override;
+
+        std::vector<std::string> descr_specific(SpellSkill skill) const override;
+
+        void run_effect(
+                actor::Actor* caster,
+                SpellSkill skill,
+                const std::vector<actor::Actor*>& seen_targets) const override;
+
+private:
+        int max_dist(SpellSkill skill) const;
+
+        std::vector<CancelledPropData> negative_effect_types_cancelled() const;
+        std::vector<CancelledPropData> positive_effect_types_cancelled() const;
+
+        void run_effect_on_actor(actor::Actor& actor, actor::Actor& caster) const;
+        void cancel_negative_effects(actor::Actor& actor) const;
+        void cancel_positive_effects(actor::Actor& actor) const;
+        Range damage_for_vulnerable_creatures() const;
+        void do_damage_vulnerable_creature(actor::Actor& actor, actor::Actor& caster) const;
+
         int base_max_cost(SpellSkill skill, const actor::Actor* caster) const override;
 
         bool is_noisy(SpellSkill skill) const override;

@@ -467,7 +467,7 @@ static void update_trait_data()
         d.descr =
                 "When focused, spells are also cast at a higher skill level, "
                 "and the duration to regain the focused state is reduced to "
-                "75-100 turns.";
+                "75-100 turns";
         d.trait_prereqs = {TraitId::meditative};
         d.blocked_for_bgs = trait_data(TraitId::meditative).blocked_for_bgs;
         // TODO: Consider allowing it for Exorcists (and have third level spells for them, probably
@@ -477,12 +477,12 @@ static void update_trait_data()
         set_trait_data(d);
 
         // --- Absorption ---
-        d.id = TraitId::absorbtion;
+        d.id = TraitId::absorption;
         d.title = "Absorption";
         d.descr =
-                "1-6 spirit points are restored each time a spell is resisted "
-                "by spell resistance (granted by spirit traits, or the Spell "
-                "Shield spell)";
+                "1-6 spirit points are restored each time Spell Shield is ended "
+                "by a hostile spell "
+                "(Spell Shield is granted by spirit traits or the Spell Shield spell)";
         d.trait_prereqs = {TraitId::strong_spirit};
         set_trait_data(d);
 

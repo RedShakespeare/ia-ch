@@ -48,7 +48,7 @@ enum class TraitId
         mighty_spirit,
         meditative,
         sage,
-        absorbtion,
+        absorption,
         tough,
         rugged,
         thick_skinned,

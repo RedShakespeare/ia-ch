@@ -762,15 +762,16 @@ void PropHandler::on_prop_end(
         }
 }
 
-bool PropHandler::end_prop(
+template <typename Pred>
+bool PropHandler::end_prop_if(
         const Id id,
-        const PropEndConfig& prop_end_config)
+        const PropEndConfig& prop_end_config,
+        Pred&& pred)
 {
         for (auto it = std::begin(m_props); it != std::end(m_props); ++it) {
                 auto* const prop = it->get();
 
-                if ((prop->m_id == id) &&
-                    (prop->m_src == PropSrc::intr)) {
+                if ((prop->m_id == id) && pred(*prop)) {
                         auto moved_prop = std::move(*it);
 
                         m_props.erase(it);
@@ -784,6 +785,31 @@ bool PropHandler::end_prop(
         }
 
         return false;
+}
+
+bool PropHandler::end_prop(
+        const Id id,
+        const PropEndConfig& prop_end_config)
+{
+        return end_prop_if(
+                id,
+                prop_end_config,
+                [](const Prop& prop) {
+                        return prop.m_src == PropSrc::intr;
+                });
+}
+
+bool PropHandler::end_temporary_prop(
+        const Id id,
+        const PropEndConfig& prop_end_config)
+{
+        return end_prop_if(
+                id,
+                prop_end_config,
+                [](const Prop& prop) {
+                        return (prop.m_src == PropSrc::intr) &&
+                                (prop.duration_mode() != PropDurationMode::indefinite);
+                });
 }
 
 void PropHandler::on_placed()
@@ -913,17 +939,28 @@ void PropHandler::on_player_see()
         }
 }
 
-bool PropHandler::is_temporary_negative_prop(const Prop& prop) const
+bool PropHandler::is_temporary_prop(const Prop& prop) const
 {
         const auto id = prop.m_id;
 
+        // TODO: Why does this have to be checked? All natural properties are indefinite (see
+        // apply_natural_props_from_actor_data())? Feels like a leftover from something.
+        //
+        // This whole function (PropHandler::is_temporary_prop()) should probably just be replaced
+        // with an "is_indefinite() function on the Prop class).
+        //
         const bool is_natural_prop = m_owner->m_data->natural_props[(size_t)id];
 
         const bool is_temporary =
                 !is_natural_prop &&
                 (prop.m_duration_mode != PropDurationMode::indefinite);
 
-        return is_temporary && (prop.alignment() == PropAlignment::bad);
+        return is_temporary;
+}
+
+bool PropHandler::is_temporary_negative_prop(const Prop& prop) const
+{
+        return is_temporary_prop(prop) && (prop.alignment() == PropAlignment::bad);
 }
 
 bool PropHandler::has_temporary_negative_prop_mon() const
@@ -959,8 +996,17 @@ std::vector<ColoredString> PropHandler::property_names_short() const
                          PropDurationMode::indefinite);
 
                 if (is_indefinite) {
-                        if (prop->src() == PropSrc::intr) {
+                        switch (prop->src()) {
+                        case PropSrc::intr:
                                 name = text_format::to_upper(name);
+                                break;
+
+                        case PropSrc::inv:
+                                name = "*" + name + "*";
+                                break;
+
+                        case PropSrc::END:
+                                break;
                         }
                 }
                 else if (prop->m_nr_turns_left == 0) {
@@ -994,21 +1040,30 @@ std::vector<PropListEntry> PropHandler::property_names_and_descr() const
                         continue;
                 }
 
-                const bool is_intr = (prop->src() == PropSrc::intr);
+                if (is_player) {
+                        switch (prop->src()) {
+                        case PropSrc::intr: {
+                                const bool is_indefinite =
+                                        (prop->m_duration_mode ==
+                                         PropDurationMode::indefinite);
 
-                if (is_player && is_intr) {
-                        const bool is_indefinite =
-                                (prop->m_duration_mode ==
-                                 PropDurationMode::indefinite);
+                                if (is_indefinite) {
+                                        name += " (indefinite)";
+                                }
+                                else if (prop->m_nr_turns_left == 0) {
+                                        name += g_property_ending_suffix;
+                                }
+                                else if (is_self_aware && prop->allow_display_turns()) {
+                                        name += get_property_nr_turns_suffix(*prop);
+                                }
+                        } break;
 
-                        if (is_indefinite) {
-                                name += " (indefinite)";
-                        }
-                        else if (prop->m_nr_turns_left == 0) {
-                                name += g_property_ending_suffix;
-                        }
-                        else if (is_self_aware && prop->allow_display_turns()) {
-                                name += get_property_nr_turns_suffix(*prop);
+                        case PropSrc::inv: {
+                                name += " (from item)";
+                        } break;
+
+                        case PropSrc::END: {
+                        } break;
                         }
                 }
 

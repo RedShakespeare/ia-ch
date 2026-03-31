@@ -808,7 +808,7 @@ static void init_data_list()
 
         d.id = prop::Id::extra_skill;
         d.std_rnd_turns = Range(200, 300);
-        d.name = "Extra Skill";
+        d.name = "Heightened Skill";
         d.name_short = "Skill";
         d.descr = "+10% to hit chance, evasion, stealth, and searching.";
         d.msg_start_player = "I feel more skillful.";
@@ -1337,6 +1337,13 @@ void init()
 prop::Id str_to_prop_id(const std::string& str)
 {
         return s_str_to_prop_id_map.at(str);
+}
+
+std::string name(prop::Id id)
+{
+        ASSERT(id != prop::Id::END);
+
+        return g_data[(size_t)id].name;
 }
 
 std::string descr(prop::Id id)

@@ -313,7 +313,7 @@ static void draw_spell_descr(const Spell* const spell)
         lines.reserve(descr.size());
 
         for (const std::string& line : descr) {
-                lines.emplace_back(line, colors::light_white());
+                lines.emplace_back(line, colors::text());
         }
 
         if (!lines.empty()) {

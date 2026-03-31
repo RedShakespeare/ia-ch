@@ -120,14 +120,15 @@ public:
 
         Prop* prop(Id id) const;
 
+        // NOTE: These only ever ends INTRINSIC properties (never properties from worn items for
+        // example).
         bool end_prop(Id id, const PropEndConfig& config = {});
+        bool end_temporary_prop(Id id, const PropEndConfig& config = {});
 
         std::vector<ColoredString> property_names_short() const;
-
         std::vector<PropListEntry> property_names_and_descr() const;
 
-        std::vector<PropListEntry> temporary_negative_properties();
-
+        bool is_temporary_prop(const Prop& prop) const;
         bool is_temporary_negative_prop(const Prop& prop) const;
         bool has_temporary_negative_prop_mon() const;
 
@@ -220,6 +221,9 @@ public:
         bool is_resisting_dmg(DmgType dmg_type, Verbose verbose) const;
 
 private:
+        template <typename Pred>
+        bool end_prop_if(Id id, const PropEndConfig& prop_end_config, Pred&& pred);
+
         void print_resist_msg(const Prop& prop) const;
         void print_start_msg(const Prop& prop) const;
 

@@ -42,13 +42,20 @@ std::string first_to_lower(const std::string& str);
 std::string first_to_upper(const std::string& str);
 std::string to_upper(const std::string& str);
 
-void append_with_space(
-        std::string& base_str,
-        const std::string& addition);
+// Adds the addition string to the base string with a space between, unless the base string is
+// empty, then the string becomes only the addition.
+void append_with_space(std::string& base_str, const std::string& addition);
 
-void append_as_comma_list(
-        std::string& base_str,
-        const std::string& addition);
+// Adds the addition string to the base string with a comma and space, unless the base string is
+// empty, then the string becomes only the addition.
+void append_as_comma_list(std::string& base_str, const std::string& addition);
+
+// Builds a string of the entries separated with comma and the word "and".
+// Examples:
+// * ["foo"] becomes "foo".
+// * ["foo", "bar"] becomes "foo and bar".
+// * ["foo", "bar", "baz"] becomes "foo, bar and baz".
+std::string make_comma_and_str(const std::vector<std::string>& strings);
 
 std::string trim_leading_and_trailing_spaces(const std::string& str);
 

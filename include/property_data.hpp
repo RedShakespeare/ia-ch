@@ -30,6 +30,9 @@ enum class Id
         r_shock,
         // NOTE: The purpose of this is only to prevent blindness for "eyeless" monsters, and is
         // only intended as a natural property - not for e.g. gas masks.
+        //
+        // TODO: It would probably be better if this was "eyeless".
+        //
         r_blind,
         r_para,  // Mostly intended as a natural property for monsters
         r_spell,
@@ -197,6 +200,8 @@ extern PropData g_data[(size_t)Id::END];
 void init();
 
 Id str_to_prop_id(const std::string& str);
+
+std::string name(prop::Id id);
 
 std::string descr(Id id);
 

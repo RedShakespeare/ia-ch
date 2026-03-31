@@ -28,6 +28,9 @@
 - Occultists also start with the Cool-headed trait.
 - Meditative now requires Strong Spirit instead of Stout Spirit (in addition to Cool-headed).
 
+# Convenience / quality of life features
+- Status effects from worn items (e.g. Asbestos Suite) are now displayed within asterisks in the player stats panel (e.g. "*Fire Res*"), and with "(from item)" clarified in the player character description page (e.g. "Fire Resistance (from item)").
+
 # Other gameplay changes
 - All monsters (except Ghouls) now very slowly regenerate hit points.
 

@@ -203,8 +203,7 @@ static void on_equipable_backpack_item_selected(const size_t backpack_idx)
                         s_nr_turns_to_handle_armor;
         } break;
 
-        default:
-        {
+        default: {
                 ASSERT(false);
         } break;
         }

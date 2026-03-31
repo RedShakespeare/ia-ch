@@ -1630,6 +1630,11 @@ void init()
         g_data[(size_t)d.id] = d;
 
         reset_data(d, ItemType::scroll);
+        d.id = Id::scroll_cancellation;
+        d.spell_cast_from_scroll = SpellId::cancellation;
+        g_data[(size_t)d.id] = d;
+
+        reset_data(d, ItemType::scroll);
         d.id = Id::scroll_inscribe_boundary_sigil;
         d.spell_cast_from_scroll = SpellId::inscribe_boundary_sigil;
         g_data[(size_t)d.id] = d;

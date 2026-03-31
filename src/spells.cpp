@@ -656,7 +656,7 @@ static std::string get_noise_descr(const bool is_noisy)
         std::string str =
                 is_noisy
                 ? "Casting this spell requires making sounds."
-                : "This spell can be cast silently.";
+                : "The spell can be cast silently.";
 
         return str;
 }
@@ -840,6 +840,15 @@ static bool player_can_player_see_caster_and_any_target(
                         }));
 }
 
+static void give_player_sp_for_resist_with_absorption_trait()
+{
+        actor::restore_sp(
+                *map::g_player,
+                rnd::range(1, 6),
+                actor::AllowRestoreAboveMax::no,
+                Verbose::yes);
+}
+
 // -----------------------------------------------------------------------------
 // spells
 // -----------------------------------------------------------------------------
@@ -934,6 +943,9 @@ Spell* make(const SpellId spell_id)
 
         case SpellId::bless:
                 return new SpellBless();
+
+        case SpellId::cancellation:
+                return new SpellCancellation();
 
         case SpellId::mi_go_hypno:
                 return new SpellMiGoHypno();
@@ -1329,15 +1341,11 @@ void Spell::on_resist(actor::Actor& target) const
 
         // End spell resistance if not a natural property.
         if (!target.m_data->natural_props[(size_t)prop::Id::r_spell]) {
-                target.m_properties.end_prop(prop::Id::r_spell);
-        }
+                const bool is_ended = target.m_properties.end_prop(prop::Id::r_spell);
 
-        if (is_player && player_bon::has_trait(TraitId::absorbtion)) {
-                actor::restore_sp(
-                        *map::g_player,
-                        rnd::range(1, 6),
-                        actor::AllowRestoreAboveMax::no,
-                        Verbose::yes);
+                if (is_ended && is_player && player_bon::has_trait(TraitId::absorption)) {
+                        give_player_sp_for_resist_with_absorption_trait();
+                }
         }
 }
 
@@ -1530,7 +1538,7 @@ std::vector<std::string> SpellAuraOfDecay::descr_specific(
 
         descr.emplace_back(
                 "The caster exudes death and decay. Creatures within a "
-                "distance of two moves take damage each standard turn.");
+                "distance of two steps take damage each standard turn.");
 
         descr.push_back(
                 "The spell deals " +
@@ -2184,12 +2192,7 @@ void SpellAzaGaze::do_damage_on_target(
 {
         const int dmg = dmg_range(skill).roll();
 
-        actor::hit(
-                target,
-                dmg,
-                DmgType::explosion,
-                caster,
-                AllowWound::no);
+        actor::hit(target, dmg, DmgType::explosion, caster, AllowWound::no);
 }
 
 void SpellAzaGaze::apply_properties_on_target(
@@ -3664,7 +3667,7 @@ std::vector<std::string> SpellPurge::descr_specific(
                 "Destroys any altars, monoliths, gongs, or mirrors adjacent to the caster.");
 
         descr.emplace_back(
-                "All undead creatures adjacent to the caster (seen or not) are "
+                "All Undead creatures adjacent to the caster (seen or not) are "
                 "struck with " +
                 dmg_range().str() +
                 " damage, and become terrified for " +
@@ -3845,6 +3848,274 @@ std::vector<std::string> SpellBless::descr_specific(
 }
 
 // -----------------------------------------------------------------------------
+// Cancellation
+// -----------------------------------------------------------------------------
+std::string SpellCancellation::name() const
+{
+        return "Cancellation";
+}
+
+SpellId SpellCancellation::id() const
+{
+        return SpellId::cancellation;
+}
+
+SpellDomain SpellCancellation::domain() const
+{
+        return SpellDomain::warding;
+}
+
+bool SpellCancellation::is_noisy(const SpellSkill skill) const
+{
+        (void)skill;
+
+        return false;
+}
+
+SpellShock SpellCancellation::shock_type() const
+{
+        return SpellShock::mild;
+}
+
+int SpellCancellation::base_max_cost(
+        const SpellSkill skill,
+        const actor::Actor* const caster) const
+{
+        (void)skill;
+        (void)caster;
+
+        return 4;
+}
+
+int SpellCancellation::max_dist(SpellSkill skill) const
+{
+        return 3 + ((int)skill * 2);
+}
+
+Range SpellCancellation::damage_for_vulnerable_creatures() const
+{
+        return {1, 4};
+}
+
+std::vector<CancelledPropData> SpellCancellation::negative_effect_types_cancelled() const
+{
+        // NOTE: Do not overlap with the Heal spell. Keep it to more "magical" or mental effects,
+        // rather than physical/mundane things like poisoning.
+        return {
+                {prop::Id::cursed},
+                {prop::Id::doomed},
+                {prop::Id::slowed},
+                {prop::Id::terrified},
+                {prop::Id::confused},
+                {prop::Id::fainted},
+                {prop::Id::conflict},
+                {prop::Id::hallucinating},
+        };
+}
+
+std::vector<CancelledPropData> SpellCancellation::positive_effect_types_cancelled() const
+{
+        return {
+                {prop::Id::r_phys, CancelledPropIncludeInDescr::no},
+                {prop::Id::r_fire, CancelledPropIncludeInDescr::no},
+                {prop::Id::r_poison, CancelledPropIncludeInDescr::no},
+                {prop::Id::r_elec, CancelledPropIncludeInDescr::no},
+                {prop::Id::r_sleep, CancelledPropIncludeInDescr::no},
+                {prop::Id::r_fear, CancelledPropIncludeInDescr::no},
+                {prop::Id::r_slow, CancelledPropIncludeInDescr::no},
+                {prop::Id::r_conf, CancelledPropIncludeInDescr::no},
+
+                {prop::Id::r_spell,
+                 CancelledPropIncludeInDescr::no,
+                 CancelledPropAllowCancelPermanent::yes},
+
+                {prop::Id::blessed},
+                {prop::Id::hasted},
+                {prop::Id::extra_hasted, CancelledPropIncludeInDescr::no},
+                {prop::Id::frenzied},
+                {prop::Id::cloaked},
+                {prop::Id::invis},
+                {prop::Id::premonition},
+                {prop::Id::erudition},
+                {prop::Id::magic_carapace},
+                {prop::Id::extra_skill},
+        };
+}
+
+void SpellCancellation::run_effect(
+        actor::Actor* const caster,
+        const SpellSkill skill,
+        const std::vector<actor::Actor*>& seen_targets) const
+{
+        (void)seen_targets;
+
+        const int dist = max_dist(skill);
+
+        run_effect_on_actor(*caster, *caster);
+
+        if (!actor::is_alive(*map::g_player)) {
+                return;
+        }
+
+        for (actor::Actor* const actor : game_time::g_actors) {
+                if (actor == caster) {
+                        // Caster is handeled first, see above.
+                        continue;
+                }
+
+                if (!actor::is_alive(*actor)) {
+                        continue;
+                }
+
+                if (king_dist(caster->m_pos, actor->m_pos) > dist) {
+                        continue;
+                }
+
+                run_effect_on_actor(*actor, *caster);
+
+                if (!actor::is_alive(*map::g_player)) {
+                        break;
+                }
+        }
+}
+
+void SpellCancellation::run_effect_on_actor(actor::Actor& actor, actor::Actor& caster) const
+{
+        if (actor::is_player_aware_of_me(caster) && actor::can_player_see_actor(actor)) {
+                draw_blast_at_seen_actors({&actor}, colors::light_blue());
+        }
+
+        if (actor::is_in_same_group(&caster, &actor)) {
+                // Caster and current actor are allies.
+                cancel_negative_effects(actor);
+        }
+        else {
+                // Caster and current actor are enemies.
+                cancel_positive_effects(actor);
+
+                if (actor::is_alive(actor) && actor::is_alive(*map::g_player)) {
+                        do_damage_vulnerable_creature(actor, caster);
+                }
+        }
+}
+
+void SpellCancellation::cancel_negative_effects(actor::Actor& actor) const
+{
+        for (const CancelledPropData& data : negative_effect_types_cancelled()) {
+                if (data.allow_cancel_permanent_effect == CancelledPropAllowCancelPermanent::yes) {
+                        actor.m_properties.end_prop(data.id);
+                }
+                else {
+                        actor.m_properties.end_temporary_prop(data.id);
+                }
+
+                if (!actor::is_alive(actor) || !actor::is_alive(*map::g_player)) {
+                        return;
+                }
+        }
+}
+
+void SpellCancellation::cancel_positive_effects(actor::Actor& actor) const
+{
+        for (const CancelledPropData& data : positive_effect_types_cancelled()) {
+                bool did_end = false;
+
+                if (data.allow_cancel_permanent_effect == CancelledPropAllowCancelPermanent::yes) {
+                        did_end = actor.m_properties.end_prop(data.id);
+                }
+                else {
+                        did_end = actor.m_properties.end_temporary_prop(data.id);
+                }
+
+                if (did_end) {
+                        // The spell "pierces through" spell shield, but a player with the
+                        // absorption trait shall still receive spirit points (this is also
+                        // consistent with the absorption trait description).
+                        if (data.id == prop::Id::r_spell &&
+                            actor::is_player(&actor) &&
+                            player_bon::has_trait(TraitId::absorption)) {
+                                give_player_sp_for_resist_with_absorption_trait();
+                        }
+                }
+
+                if (!actor::is_alive(actor) || !actor::is_alive(*map::g_player)) {
+                        return;
+                }
+        }
+}
+
+void SpellCancellation::do_damage_vulnerable_creature(
+        actor::Actor& actor,
+        actor::Actor& caster) const
+{
+        const std::vector<prop::Id> vulnerable_props = {
+                prop::Id::outer_being,
+                prop::Id::undead,
+                prop::Id::summoned,
+        };
+
+        if (!actor.m_properties.has_any(vulnerable_props)) {
+                return;
+        }
+
+        const int dmg = damage_for_vulnerable_creatures().roll();
+
+        actor::hit(actor, dmg, DmgType::pure, &caster);
+
+        if (!actor::is_player(&actor)) {
+                actor.become_aware_player(actor::AwareSource::spell_victim);
+        }
+}
+
+std::vector<std::string> SpellCancellation::descr_specific(
+        const SpellSkill skill) const
+{
+        std::vector<std::string> descr = {
+                "Cancels temporary effects on nearby creatures. "
+                "Pierces through and removes Spell Shield."};
+
+        descr.push_back(
+                "Outer Beings, Undead or Summoned creatures also take " +
+                damage_for_vulnerable_creatures().str() +
+                " damage.");
+
+        descr.push_back(
+                "The spell has a maximum range of " +
+                std::to_string(max_dist(skill)) +
+                " steps, reaching through solid obstacles.");
+
+        auto to_names = [](const std::vector<CancelledPropData>& entries) {
+                std::vector<std::string> names;
+
+                for (const CancelledPropData& data : entries) {
+                        if (data.include_in_descr == CancelledPropIncludeInDescr::yes) {
+                                names.push_back(prop::name(data.id));
+                        }
+                }
+
+                return names;
+        };
+
+        const std::vector<std::string> negative_effect_names =
+                to_names(negative_effect_types_cancelled());
+
+        std::vector<std::string> positive_effect_names =
+                to_names(positive_effect_types_cancelled());
+
+        descr.push_back(
+                "Effects removed from enemies: All resistances, " +
+                text_format::make_comma_and_str(positive_effect_names) +
+                ".");
+
+        descr.push_back(
+                "From caster/allies: " +
+                text_format::make_comma_and_str(negative_effect_names) +
+                ".");
+
+        return descr;
+}
+
+// -----------------------------------------------------------------------------
 // Inscribe Boundary Sigil
 // -----------------------------------------------------------------------------
 std::string SpellInscribeBoundarySigil::name() const
@@ -3880,7 +4151,7 @@ int SpellInscribeBoundarySigil::pct_chance_fade(const SpellSkill skill) const
                 return 5;
         }
         else {
-                return 60 - ((int)skill * 15);
+                return 60 - ((int)skill * 20);
         }
 }
 
