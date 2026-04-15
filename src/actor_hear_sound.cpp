@@ -21,7 +21,7 @@
 namespace actor
 {
 void hear_sound_player(
-        const Snd& snd,
+        Snd& snd,
         const bool is_origin_seen_by_player,
         const Dir dir_to_origin,
         const int percent_audible_distance)
@@ -57,7 +57,7 @@ void hear_sound_player(
         snd.on_heard(*map::g_player);
 }
 
-void hear_sound_mon(Actor& actor, const Snd& snd)
+void hear_sound_mon(Actor& actor, Snd& snd)
 {
         if (is_player(&actor)) {
                 ASSERT(false);
@@ -71,8 +71,8 @@ void hear_sound_mon(Actor& actor, const Snd& snd)
 
         snd.on_heard(actor);
 
-        // NOTE: The monster may have become deaf through the sound callback
-        // above (e.g. from the Horn of Deafening artifact).
+        // NOTE: The monster may have become deaf through the sound callback above (for example due
+        // to some item that triggers an effect when a sound is heard).
         if (actor.m_properties.has(prop::Id::deaf)) {
                 return;
         }

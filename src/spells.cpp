@@ -742,9 +742,9 @@ static void end_properties_for_casting_spell(
         }
 }
 
-static std::string generate_mon_cast_msg(const actor::Actor& caster)
+static std::string generate_mon_cast_sound_msg(const actor::Actor& caster)
 {
-        std::string spell_msg = caster.m_data->spell_msg;
+        std::string spell_msg = caster.m_data->spell_msg_sound;
 
         if (spell_msg.empty()) {
                 return "";
@@ -756,6 +756,23 @@ static std::string generate_mon_cast_msg(const actor::Actor& caster)
                 is_mon_seen
                 ? text_format::first_to_upper(actor::name_the(caster))
                 : (caster.m_data->is_humanoid ? "Someone" : "Something");
+
+        spell_msg = mon_name + " " + spell_msg;
+
+        return spell_msg;
+}
+
+static std::string generate_mon_cast_visual_msg(const actor::Actor& caster)
+{
+        // NOTE: This assumes that the monster is seen.
+
+        std::string spell_msg = caster.m_data->spell_msg_visual;
+
+        if (spell_msg.empty()) {
+                return "";
+        }
+
+        const std::string mon_name = text_format::first_to_upper(actor::name_the(caster));
 
         spell_msg = mon_name + " " + spell_msg;
 
@@ -823,14 +840,8 @@ static void apply_regen_from_flagellant_trait()
         map::g_player->m_properties.apply(regen);
 }
 
-static bool player_can_player_see_caster_and_any_target(
-        const actor::Actor& caster,
-        const std::vector<actor::Actor*>& targets)
+static bool can_player_see_any_target(const std::vector<actor::Actor*>& targets)
 {
-        if (!actor::can_player_see_actor(caster)) {
-                return false;
-        }
-
         return (
                 std::any_of(
                         std::begin(targets),
@@ -838,6 +849,13 @@ static bool player_can_player_see_caster_and_any_target(
                         [](const actor::Actor* const actor) {
                                 return actor::can_player_see_actor(*actor);
                         }));
+}
+
+static bool can_player_see_caster_and_any_target(
+        const actor::Actor& caster,
+        const std::vector<actor::Actor*>& targets)
+{
+        return actor::can_player_see_actor(caster) && can_player_see_any_target(targets);
 }
 
 static void give_player_sp_for_resist_with_absorption_trait()
@@ -1191,8 +1209,12 @@ void Spell::cast(
 
         // OK, we can try to cast
 
+        PlayerAwareOfCast player_aware = PlayerAwareOfCast::no;
+
         if (actor::is_player(caster)) {
                 TRACE << "Player casting spell" << "\n";
+
+                player_aware = PlayerAwareOfCast::yes;
 
                 const ShockSrc shock_src =
                         (spell_src == SpellSrc::learned)
@@ -1227,19 +1249,42 @@ void Spell::cast(
                 // Caster is monster
                 TRACE << "Monster casting spell" << "\n";
 
-                // Monsters always make noise when casting.
-                const std::string spell_msg = generate_mon_cast_msg(*caster);
+                // If sound is noisy, print a sound message. Also if no sound was heard by the
+                // player and the monster is seen, print a "visual" message.
 
-                Snd snd(
-                        spell_msg,
-                        audio::SfxId::END,
-                        IgnoreMsgIfOriginSeen::no,
-                        caster->m_pos,
-                        caster,
-                        SndVol::low,
-                        AlertsMon::no);
+                bool did_player_hear_sound = false;
 
-                snd.run();
+                if (is_noisy(skill)) {
+                        Snd snd(
+                                generate_mon_cast_sound_msg(*caster),
+                                audio::SfxId::END,
+                                IgnoreMsgIfOriginSeen::no,
+                                caster->m_pos,
+                                caster,
+                                SndVol::low,
+                                AlertsMon::no);
+
+                        snd.run();
+
+                        did_player_hear_sound = snd.did_player_hear_sound();
+
+                        if (did_player_hear_sound) {
+                                player_aware = PlayerAwareOfCast::yes;
+                        }
+                }
+
+                if (actor::can_player_see_actor(*caster)) {
+                        player_aware = PlayerAwareOfCast::yes;
+
+                        if (!did_player_hear_sound) {
+                                const std::string visual_msg =
+                                        generate_mon_cast_visual_msg(*caster);
+
+                                if (!visual_msg.empty()) {
+                                        msg_log::add(generate_mon_cast_visual_msg(*caster));
+                                }
+                        }
+                }
         }
 
         bool allow_cast = true;
@@ -1277,7 +1322,7 @@ void Spell::cast(
                         << "\n";
 
                 // Here we run the actual casting of the spell itself:
-                run_effect(caster, skill, seen_targets);
+                run_effect(caster, skill, seen_targets, player_aware);
 
                 end_properties_for_casting_spell(*caster, id());
 
@@ -1511,9 +1556,11 @@ int SpellAuraOfDecay::base_max_cost(
 void SpellAuraOfDecay::run_effect(
         actor::Actor* const caster,
         const SpellSkill skill,
-        const std::vector<actor::Actor*>& seen_targets) const
+        const std::vector<actor::Actor*>& seen_targets,
+        PlayerAwareOfCast player_aware) const
 {
         (void)seen_targets;
+        (void)player_aware;
 
         auto* prop =
                 static_cast<prop::AuraOfDecay*>(
@@ -1622,9 +1669,11 @@ bool SpellBolt::is_noisy(const SpellSkill skill) const
 void SpellBolt::run_effect(
         actor::Actor* const caster,
         const SpellSkill skill,
-        const std::vector<actor::Actor*>& seen_targets) const
+        const std::vector<actor::Actor*>& seen_targets,
+        PlayerAwareOfCast player_aware) const
 {
         (void)seen_targets;
+        (void)player_aware;
 
         const int nr_projectiles = m_impl->nr_projectiles(skill);
 
@@ -1645,7 +1694,7 @@ void SpellBolt::run_effect(
                 actor::Actor* const target =
                         map::random_closest_actor(caster->m_pos, current_seen_targets);
 
-                run_bolt_on_target(*caster, *target, skill);
+                run_bolt_on_target(*caster, *target, skill, player_aware);
 
                 if (!actor::is_alive(*map::g_player)) {
                         break;
@@ -1656,19 +1705,22 @@ void SpellBolt::run_effect(
 void SpellBolt::run_bolt_on_target(
         actor::Actor& caster,
         actor::Actor& target,
-        SpellSkill skill) const
+        SpellSkill skill,
+        PlayerAwareOfCast player_aware) const
 {
-        {
-                Snd snd(
-                        "I hear something rushing through the air.",
-                        audio::SfxId::darkbolt_release,
-                        IgnoreMsgIfOriginSeen::yes,
-                        caster.m_pos,
-                        &caster,
-                        SndVol::low,
-                        AlertsMon::yes);
+        Snd release_snd(
+                "I hear something rushing through the air.",
+                audio::SfxId::darkbolt_release,
+                IgnoreMsgIfOriginSeen::yes,
+                caster.m_pos,
+                &caster,
+                SndVol::low,
+                AlertsMon::yes);
 
-                snd.run();
+        release_snd.run();
+
+        if (release_snd.did_player_hear_sound()) {
+                player_aware = PlayerAwareOfCast::yes;
         }
 
         // Spell resistance?
@@ -1682,26 +1734,26 @@ void SpellBolt::run_bolt_on_target(
                         }
 
                         // Run a bolt with the target as caster, and the caster as target.
-                        run_bolt_on_target(target, caster, skill);
+                        run_bolt_on_target(target, caster, skill, player_aware);
                 }
 
                 return;
         }
 
-        draw_projectile_travel(caster, target, skill);
-
-        {
-                Snd snd(
-                        "I hear an impact.",
-                        m_impl->impact_sfx(),
-                        IgnoreMsgIfOriginSeen::yes,
-                        target.m_pos,
-                        nullptr,
-                        SndVol::low,
-                        AlertsMon::yes);
-
-                snd.run();
+        if (player_aware == PlayerAwareOfCast::yes) {
+                draw_projectile_travel(caster, target, skill);
         }
+
+        Snd impact_snd(
+                "I hear an impact.",
+                m_impl->impact_sfx(),
+                IgnoreMsgIfOriginSeen::yes,
+                target.m_pos,
+                nullptr,
+                SndVol::low,
+                AlertsMon::yes);
+
+        impact_snd.run();
 
         const P& target_p = target.m_pos;
         const bool player_see_pos = map::g_seen.at(target_p);
@@ -2224,10 +2276,37 @@ void SpellAzaGaze::apply_properties_on_target(
         }
 }
 
+void SpellAzaGaze::run_effect(
+        actor::Actor* const caster,
+        const SpellSkill skill,
+        const std::vector<actor::Actor*>& seen_targets,
+        PlayerAwareOfCast player_aware) const
+{
+        Snd snd(
+                "An insane cacophony resounds through the air!",
+                audio::SfxId::aza_gaze,
+                IgnoreMsgIfOriginSeen::no,
+                caster->m_pos,
+                caster,
+                SndVol::high,
+                AlertsMon::no);
+
+        snd.run();
+
+        if (snd.did_player_hear_sound()) {
+                player_aware = PlayerAwareOfCast::yes;
+        }
+
+        for (actor::Actor* const target : seen_targets) {
+                run_effect_on_target(caster, *target, skill, player_aware);
+        }
+}
+
 void SpellAzaGaze::run_effect_on_target(
         actor::Actor* const caster,
         actor::Actor& target,
-        const SpellSkill skill) const
+        const SpellSkill skill,
+        PlayerAwareOfCast player_aware) const
 {
         // Spell resistance?
         if (target.m_properties.has(prop::Id::r_spell)) {
@@ -2240,10 +2319,35 @@ void SpellAzaGaze::run_effect_on_target(
                         }
 
                         // Run effect with the target as caster, and the caster as seen target.
-                        run_effect(&target, skill, {caster});
+                        run_effect(&target, skill, {caster}, player_aware);
                 }
 
                 return;
+        }
+
+        if (actor::can_player_see_actor(target)) {
+                Color msg_clr = colors::msg_good();
+
+                std::string hit_msg;
+
+                if (actor::is_player(&target)) {
+                        hit_msg = "I am";
+
+                        msg_clr = colors::msg_bad();
+                }
+                else {
+                        hit_msg = text_format::first_to_upper(actor::name_the(target)) + " is";
+
+                        if (map::g_player->is_leader_of(&target)) {
+                                msg_clr = colors::white();
+                        }
+                }
+
+                hit_msg += " wracked by chaos.";
+
+                msg_log::add(hit_msg, msg_clr);
+
+                draw_blast_at_cells({target.m_pos}, colors::light_red());
         }
 
         do_damage_on_target(target, skill, caster);
@@ -2264,29 +2368,6 @@ void SpellAzaGaze::run_effect_on_target(
                 AlertsMon::yes);
 
         snd.run();
-}
-
-void SpellAzaGaze::run_effect(
-        actor::Actor* const caster,
-        const SpellSkill skill,
-        const std::vector<actor::Actor*>& seen_targets) const
-{
-        Snd snd(
-                "An insane cacophony resounds through the air!",
-                audio::SfxId::aza_gaze,
-                IgnoreMsgIfOriginSeen::no,
-                caster->m_pos,
-                caster,
-                SndVol::high,
-                AlertsMon::no);
-
-        snd.run();
-
-        draw_blast_at_seen_actors(seen_targets, colors::light_red());
-
-        for (actor::Actor* const target : seen_targets) {
-                run_effect_on_target(caster, *target, skill);
-        }
 }
 
 std::vector<std::string> SpellAzaGaze::descr_specific(
@@ -2416,9 +2497,11 @@ int SpellCataclysm::base_max_cost(
 void SpellCataclysm::run_effect(
         actor::Actor* const caster,
         const SpellSkill skill,
-        const std::vector<actor::Actor*>& seen_targets) const
+        const std::vector<actor::Actor*>& seen_targets,
+        PlayerAwareOfCast player_aware) const
 {
         (void)seen_targets;
+        (void)player_aware;
 
         const bool is_player = actor::is_player(caster);
 
@@ -2706,9 +2789,11 @@ void SpellPestilence::on_rat_summoned(
 void SpellPestilence::run_effect(
         actor::Actor* const caster,
         const SpellSkill skill,
-        const std::vector<actor::Actor*>& seen_targets) const
+        const std::vector<actor::Actor*>& seen_targets,
+        PlayerAwareOfCast player_aware) const
 {
         (void)seen_targets;
+        (void)player_aware;
 
         const size_t nr_mon = nr_rats_summoned(skill);
 
@@ -2928,9 +3013,11 @@ void SpellMirrorImages::on_mirror_image_summoned(
 void SpellMirrorImages::run_effect(
         actor::Actor* const caster,
         const SpellSkill skill,
-        const std::vector<actor::Actor*>& seen_targets) const
+        const std::vector<actor::Actor*>& seen_targets,
+        PlayerAwareOfCast player_aware) const
 {
         (void)seen_targets;
+        (void)player_aware;
 
         ASSERT(actor::is_player(caster));
 
@@ -3120,11 +3207,13 @@ void SpellSpectralWeapons::on_mon_summoned(
 void SpellSpectralWeapons::run_effect(
         actor::Actor* const caster,
         const SpellSkill skill,
-        const std::vector<actor::Actor*>& seen_targets) const
+        const std::vector<actor::Actor*>& seen_targets,
+        PlayerAwareOfCast player_aware) const
 {
         TRACE_FUNC_BEGIN;
 
         (void)seen_targets;
+        (void)player_aware;
 
         if (!actor::is_player(caster)) {
                 TRACE_FUNC_END;
@@ -3278,9 +3367,11 @@ int SpellControlObject::max_dist(const SpellSkill skill) const
 void SpellControlObject::run_effect(
         actor::Actor* const caster,
         const SpellSkill skill,
-        const std::vector<actor::Actor*>& seen_targets) const
+        const std::vector<actor::Actor*>& seen_targets,
+        PlayerAwareOfCast player_aware) const
 {
         (void)seen_targets;
+        (void)player_aware;
 
         const auto origin = caster->m_pos;
 
@@ -3373,8 +3464,11 @@ Range SpellCleansingFire::burn_duration_range() const
 void SpellCleansingFire::run_effect(
         actor::Actor* const caster,
         const SpellSkill skill,
-        const std::vector<actor::Actor*>& seen_targets) const
+        const std::vector<actor::Actor*>& seen_targets,
+        PlayerAwareOfCast player_aware) const
 {
+        (void)player_aware;
+
         if (!caster) {
                 return;
         }
@@ -3398,25 +3492,14 @@ void SpellCleansingFire::run_effect(
                 if (actor->m_properties.has(prop::Id::r_spell)) {
                         on_resist(*actor);
 
-                        // Spell reflection?
-                        if (actor->m_properties.has(prop::Id::spell_reflect)) {
-                                if (actor::can_player_see_actor(*actor)) {
-                                        msg_log::add(s_spell_reflect_msg);
-                                }
-
-                                // Run effect with the target as caster, and the
-                                // caster as seen target instead.
-                                run_effect(actor, skill, {caster});
-                        }
-
                         continue;
                 }
 
                 for (const auto& d : dir_utils::g_dir_list) {
                         const auto p(actor->m_pos + d);
 
-                        // Hit the terrain with burning several times, to
-                        // increase the chance of it catching fire
+                        // Hit the terrain with burning several times, to increase the chance of it
+                        // catching fire.
                         for (int i = 0; i < 6; ++i) {
                                 map::g_terrain.at(p)->hit(DmgType::fire, nullptr);
                         }
@@ -3502,9 +3585,11 @@ Range SpellSanctuary::duration(const SpellSkill skill) const
 void SpellSanctuary::run_effect(
         actor::Actor* const caster,
         const SpellSkill skill,
-        const std::vector<actor::Actor*>& seen_targets) const
+        const std::vector<actor::Actor*>& seen_targets,
+        PlayerAwareOfCast player_aware) const
 {
         (void)seen_targets;
+        (void)player_aware;
 
         if (!caster) {
                 return;
@@ -3592,10 +3677,12 @@ Range SpellPurge::fear_duration_range() const
 void SpellPurge::run_effect(
         actor::Actor* const caster,
         const SpellSkill skill,
-        const std::vector<actor::Actor*>& seen_targets) const
+        const std::vector<actor::Actor*>& seen_targets,
+        PlayerAwareOfCast player_aware) const
 {
         (void)skill;
         (void)seen_targets;
+        (void)player_aware;
 
         if (!caster) {
                 return;
@@ -3725,12 +3812,14 @@ bool SpellFrenzy::is_noisy(const SpellSkill skill) const
 void SpellFrenzy::run_effect(
         actor::Actor* const caster,
         const SpellSkill skill,
-        const std::vector<actor::Actor*>& seen_targets) const
+        const std::vector<actor::Actor*>& seen_targets,
+        PlayerAwareOfCast player_aware) const
 {
         (void)skill;
         (void)seen_targets;
+        (void)player_aware;
 
-        auto* prop = prop::make(prop::Id::frenzied);
+        prop::Prop* prop = prop::make(prop::Id::frenzied);
 
         prop->set_duration(rnd::range(30, 40));
 
@@ -3812,11 +3901,13 @@ int SpellBless::base_max_cost(
 void SpellBless::run_effect(
         actor::Actor* const caster,
         const SpellSkill skill,
-        const std::vector<actor::Actor*>& seen_targets) const
+        const std::vector<actor::Actor*>& seen_targets,
+        PlayerAwareOfCast player_aware) const
 {
         (void)seen_targets;
+        (void)player_aware;
 
-        auto* prop = prop::make(prop::Id::blessed);
+        prop::Prop* prop = prop::make(prop::Id::blessed);
 
         if (skill == SpellSkill::transcendent) {
                 prop->set_indefinite();
@@ -3945,24 +4036,25 @@ std::vector<CancelledPropData> SpellCancellation::positive_effect_types_cancelle
 void SpellCancellation::run_effect(
         actor::Actor* const caster,
         const SpellSkill skill,
-        const std::vector<actor::Actor*>& seen_targets) const
+        const std::vector<actor::Actor*>& seen_targets,
+        PlayerAwareOfCast player_aware) const
 {
         (void)seen_targets;
+        (void)player_aware;
 
         const int dist = max_dist(skill);
 
-        run_effect_on_actor(*caster, *caster);
-
-        if (!actor::is_alive(*map::g_player)) {
-                return;
-        }
+        std::vector<actor::Actor*> affected_actors {caster};
 
         for (actor::Actor* const actor : game_time::g_actors) {
-                if (actor == caster) {
-                        // Caster is handeled first, see above.
-                        continue;
+                if ((actor != caster) &&
+                    actor::is_alive(*actor) &&
+                    (king_dist(caster->m_pos, actor->m_pos) > dist)) {
+                        affected_actors.push_back(actor);
                 }
+        }
 
+        for (actor::Actor* const actor : affected_actors) {
                 if (!actor::is_alive(*actor)) {
                         continue;
                 }
@@ -3979,12 +4071,10 @@ void SpellCancellation::run_effect(
         }
 }
 
-void SpellCancellation::run_effect_on_actor(actor::Actor& actor, actor::Actor& caster) const
+void SpellCancellation::run_effect_on_actor(
+        actor::Actor& actor,
+        actor::Actor& caster) const
 {
-        if (actor::is_player_aware_of_me(caster) && actor::can_player_see_actor(actor)) {
-                draw_blast_at_seen_actors({&actor}, colors::light_blue());
-        }
-
         if (actor::is_in_same_group(&caster, &actor)) {
                 // Caster and current actor are allies.
                 cancel_negative_effects(actor);
@@ -4056,6 +4146,12 @@ void SpellCancellation::do_damage_vulnerable_creature(
 
         if (!actor.m_properties.has_any(vulnerable_props)) {
                 return;
+        }
+
+        if (actor::can_player_see_actor(actor)) {
+                const std::string name = text_format::first_to_lower(actor::name_the(actor));
+
+                msg_log::add(name + " unravels.");
         }
 
         const int dmg = damage_for_vulnerable_creatures().roll();
@@ -4168,9 +4264,11 @@ int SpellInscribeBoundarySigil::base_max_cost(
 void SpellInscribeBoundarySigil::run_effect(
         actor::Actor* const caster,
         const SpellSkill skill,
-        const std::vector<actor::Actor*>& seen_targets) const
+        const std::vector<actor::Actor*>& seen_targets,
+        PlayerAwareOfCast player_aware) const
 {
         (void)seen_targets;
+        (void)player_aware;
 
         // TODO: There should be a casting sound.
 
@@ -4344,9 +4442,11 @@ Range SpellLight::burning_duration_range() const
 void SpellLight::run_effect(
         actor::Actor* const caster,
         const SpellSkill skill,
-        const std::vector<actor::Actor*>& seen_targets) const
+        const std::vector<actor::Actor*>& seen_targets,
+        PlayerAwareOfCast player_aware) const
 {
         (void)seen_targets;
+        (void)player_aware;
 
         prop::Prop* radiant = prop::make(prop::Id::radiant_fov);
 
@@ -4482,9 +4582,11 @@ bool SpellInvis::is_noisy(const SpellSkill skill) const
 void SpellInvis::run_effect(
         actor::Actor* const caster,
         const SpellSkill skill,
-        const std::vector<actor::Actor*>& seen_targets) const
+        const std::vector<actor::Actor*>& seen_targets,
+        PlayerAwareOfCast player_aware) const
 {
         (void)seen_targets;
+        (void)player_aware;
 
         const prop::Id prop_id =
                 (skill == SpellSkill::basic)
@@ -4593,9 +4695,11 @@ Range SpellSeeInvis::duration_range(SpellSkill skill) const
 void SpellSeeInvis::run_effect(
         actor::Actor* const caster,
         const SpellSkill skill,
-        const std::vector<actor::Actor*>& seen_targets) const
+        const std::vector<actor::Actor*>& seen_targets,
+        PlayerAwareOfCast player_aware) const
 {
         (void)seen_targets;
+        (void)player_aware;
 
         prop::Prop* prop = prop::make(prop::Id::see_invis);
 
@@ -4685,12 +4789,14 @@ int SpellSpellShield::base_max_cost(
 void SpellSpellShield::run_effect(
         actor::Actor* const caster,
         const SpellSkill skill,
-        const std::vector<actor::Actor*>& seen_targets) const
+        const std::vector<actor::Actor*>& seen_targets,
+        PlayerAwareOfCast player_aware) const
 {
         (void)skill;
         (void)seen_targets;
+        (void)player_aware;
 
-        auto* prop = prop::make(prop::Id::r_spell);
+        prop::Prop* prop = prop::make(prop::Id::r_spell);
 
         prop->set_indefinite();
 
@@ -4784,11 +4890,13 @@ int SpellHaste::base_max_cost(
 void SpellHaste::run_effect(
         actor::Actor* const caster,
         const SpellSkill skill,
-        const std::vector<actor::Actor*>& seen_targets) const
+        const std::vector<actor::Actor*>& seen_targets,
+        PlayerAwareOfCast player_aware) const
 {
         (void)seen_targets;
+        (void)player_aware;
 
-        auto* prop = prop::make(prop::Id::hasted);
+        prop::Prop* prop = prop::make(prop::Id::hasted);
 
         prop->set_duration(duration_range(skill).roll());
 
@@ -4884,11 +4992,13 @@ int SpellPremonition::base_max_cost(
 void SpellPremonition::run_effect(
         actor::Actor* const caster,
         const SpellSkill skill,
-        const std::vector<actor::Actor*>& seen_targets) const
+        const std::vector<actor::Actor*>& seen_targets,
+        PlayerAwareOfCast player_aware) const
 {
         (void)seen_targets;
+        (void)player_aware;
 
-        auto* prop = prop::make(prop::Id::premonition);
+        prop::Prop* prop = prop::make(prop::Id::premonition);
 
         prop->set_duration(duration_range(skill).roll());
 
@@ -4980,12 +5090,14 @@ Range SpellErudition::get_duration_range(SpellSkill skill) const
 void SpellErudition::run_effect(
         actor::Actor* const caster,
         const SpellSkill skill,
-        const std::vector<actor::Actor*>& seen_targets) const
+        const std::vector<actor::Actor*>& seen_targets,
+        PlayerAwareOfCast player_aware) const
 {
         (void)seen_targets;
+        (void)player_aware;
 
         {
-                auto* prop = prop::make(prop::Id::erudition);
+                prop::Prop* prop = prop::make(prop::Id::erudition);
 
                 prop->set_duration(get_duration_range(skill).roll());
 
@@ -5087,9 +5199,11 @@ int SpellIdentify::base_max_cost(
 void SpellIdentify::run_effect(
         actor::Actor* const caster,
         const SpellSkill skill,
-        const std::vector<actor::Actor*>& seen_targets) const
+        const std::vector<actor::Actor*>& seen_targets,
+        PlayerAwareOfCast player_aware) const
 {
         (void)seen_targets;
+        (void)player_aware;
 
         std::vector<ItemType> item_types_allowed;
 
@@ -5226,9 +5340,11 @@ int SpellTeleport::invis_duration(const SpellSkill skill) const
 void SpellTeleport::run_effect(
         actor::Actor* const caster,
         const SpellSkill skill,
-        const std::vector<actor::Actor*>& seen_targets) const
+        const std::vector<actor::Actor*>& seen_targets,
+        PlayerAwareOfCast player_aware) const
 {
         (void)seen_targets;
+        (void)player_aware;
 
         if (skill >= SpellSkill::master) {
                 auto* const invis = prop::make(prop::Id::invis);
@@ -5333,7 +5449,8 @@ bool SpellKnockBack::is_noisy(const SpellSkill skill) const
 void SpellKnockBack::run_effect(
         actor::Actor* const caster,
         const SpellSkill skill,
-        const std::vector<actor::Actor*>& seen_targets) const
+        const std::vector<actor::Actor*>& seen_targets,
+        PlayerAwareOfCast player_aware) const
 {
         (void)skill;
 
@@ -5356,7 +5473,7 @@ void SpellKnockBack::run_effect(
                         }
 
                         // Run effect with the target as caster, and the caster as seen target.
-                        run_effect(target, skill, {caster});
+                        run_effect(target, skill, {caster}, player_aware);
                 }
 
                 return;
@@ -5481,7 +5598,8 @@ int SpellCurse::pct_chance_doom(SpellSkill skill) const
 void SpellCurse::run_effect(
         actor::Actor* const caster,
         const SpellSkill skill,
-        const std::vector<actor::Actor*>& seen_targets) const
+        const std::vector<actor::Actor*>& seen_targets,
+        PlayerAwareOfCast player_aware) const
 {
         const int duration = duration_range(skill).roll();
 
@@ -5504,11 +5622,13 @@ void SpellCurse::run_effect(
                 sfx_id = audio::SfxId::doom_spell;
         }
 
-        if (player_can_player_see_caster_and_any_target(*caster, targets)) {
-                audio::play(sfx_id);
-        }
+        if (player_aware == PlayerAwareOfCast::yes) {
+                if (can_player_see_caster_and_any_target(*caster, targets)) {
+                        audio::play(sfx_id);
+                }
 
-        draw_blast_at_seen_actors(targets, colors::magenta());
+                draw_blast_at_seen_actors(targets, colors::magenta());
+        }
 
         for (actor::Actor* const target : targets) {
                 // Spell resistance?
@@ -5523,7 +5643,7 @@ void SpellCurse::run_effect(
 
                                 // Run effect with the target as caster, and the
                                 // caster as seen target instead.
-                                run_effect(target, skill, {caster});
+                                run_effect(target, skill, {caster}, player_aware);
                         }
 
                         continue;
@@ -5644,7 +5764,8 @@ Range SpellPoison::duration_range(const SpellSkill skill) const
 void SpellPoison::run_effect(
         actor::Actor* const caster,
         const SpellSkill skill,
-        const std::vector<actor::Actor*>& seen_targets) const
+        const std::vector<actor::Actor*>& seen_targets,
+        PlayerAwareOfCast player_aware) const
 {
         const int duration = duration_range(skill).roll();
 
@@ -5659,11 +5780,13 @@ void SpellPoison::run_effect(
                 ? std::vector {rnd::element(seen_targets)}
                 : seen_targets;
 
-        if (player_can_player_see_caster_and_any_target(*caster, targets)) {
-                audio::play(audio::SfxId::poison_spell);
-        }
+        if (player_aware == PlayerAwareOfCast::yes) {
+                if (can_player_see_caster_and_any_target(*caster, targets)) {
+                        audio::play(audio::SfxId::poison_spell);
+                }
 
-        draw_blast_at_seen_actors(targets, colors::magenta());
+                draw_blast_at_seen_actors(targets, colors::magenta());
+        }
 
         for (actor::Actor* const target : targets) {
                 // Spell resistance?
@@ -5678,7 +5801,7 @@ void SpellPoison::run_effect(
 
                                 // Run effect with the target as caster, and the
                                 // caster as seen target instead.
-                                run_effect(target, skill, {caster});
+                                run_effect(target, skill, {caster}, player_aware);
                         }
 
                         continue;
@@ -5831,9 +5954,11 @@ actor::Actor* SpellHealOthers::find_random_actor_to_heal(
 void SpellHealOthers::run_effect(
         actor::Actor* const caster,
         const SpellSkill skill,
-        const std::vector<actor::Actor*>& seen_targets) const
+        const std::vector<actor::Actor*>& seen_targets,
+        PlayerAwareOfCast player_aware) const
 {
         (void)seen_targets;
+        (void)player_aware;
 
         const int hp_healed = 8 + (int)skill * 4;
 
@@ -5844,8 +5969,6 @@ void SpellHealOthers::run_effect(
 
                 return;
         }
-
-        draw_blast_at_seen_actors({actor_to_heal}, colors::light_green());
 
         actor::restore_hp(*actor_to_heal, hp_healed);
 }
@@ -5928,7 +6051,8 @@ int SpellEnfeeble::mon_cooldown() const
 void SpellEnfeeble::run_effect(
         actor::Actor* const caster,
         const SpellSkill skill,
-        const std::vector<actor::Actor*>& seen_targets) const
+        const std::vector<actor::Actor*>& seen_targets,
+        PlayerAwareOfCast player_aware) const
 {
         const int duration = duration_range(skill).roll();
 
@@ -5945,7 +6069,9 @@ void SpellEnfeeble::run_effect(
                 ? std::vector {rnd::element(seen_targets)}
                 : seen_targets;
 
-        draw_blast_at_seen_actors(targets, colors::magenta());
+        if (player_aware == PlayerAwareOfCast::yes) {
+                draw_blast_at_seen_actors(targets, colors::magenta());
+        }
 
         for (actor::Actor* const target : targets) {
                 // Spell resistance?
@@ -5960,7 +6086,7 @@ void SpellEnfeeble::run_effect(
 
                                 // Run effect with the target as caster, and the
                                 // caster as seen target instead.
-                                run_effect(target, skill, {caster});
+                                run_effect(target, skill, {caster}, player_aware);
                         }
 
                         continue;
@@ -6068,7 +6194,8 @@ int SpellSlow::base_max_cost(
 void SpellSlow::run_effect(
         actor::Actor* const caster,
         const SpellSkill skill,
-        const std::vector<actor::Actor*>& seen_targets) const
+        const std::vector<actor::Actor*>& seen_targets,
+        PlayerAwareOfCast player_aware) const
 {
         const int duration = duration_range(skill).roll();
 
@@ -6085,7 +6212,9 @@ void SpellSlow::run_effect(
                 ? std::vector {rnd::element(seen_targets)}
                 : seen_targets;
 
-        draw_blast_at_seen_actors(targets, colors::magenta());
+        if (player_aware == PlayerAwareOfCast::yes) {
+                draw_blast_at_seen_actors(targets, colors::magenta());
+        }
 
         for (actor::Actor* const target : targets) {
                 // Spell resistance?
@@ -6100,7 +6229,7 @@ void SpellSlow::run_effect(
 
                                 // Run effect with the target as caster, and the
                                 // caster as seen target instead.
-                                run_effect(target, skill, {caster});
+                                run_effect(target, skill, {caster}, player_aware);
                         }
 
                         continue;
@@ -6233,7 +6362,8 @@ int SpellTerrify::mon_cooldown() const
 void SpellTerrify::run_effect(
         actor::Actor* const caster,
         const SpellSkill skill,
-        const std::vector<actor::Actor*>& seen_targets) const
+        const std::vector<actor::Actor*>& seen_targets,
+        PlayerAwareOfCast player_aware) const
 {
         if (seen_targets.empty()) {
                 msg_log::add("The bugs on the ground suddenly scatter away.");
@@ -6248,7 +6378,9 @@ void SpellTerrify::run_effect(
                 ? std::vector {rnd::element(seen_targets)}
                 : seen_targets;
 
-        draw_blast_at_seen_actors(targets, colors::magenta());
+        if (player_aware == PlayerAwareOfCast::yes) {
+                draw_blast_at_seen_actors(targets, colors::magenta());
+        }
 
         for (actor::Actor* const target : targets) {
                 // Spell resistance?
@@ -6263,7 +6395,7 @@ void SpellTerrify::run_effect(
 
                                 // Run effect with the target as caster, and the
                                 // caster as seen target instead.
-                                run_effect(target, skill, {caster});
+                                run_effect(target, skill, {caster}, player_aware);
                         }
 
                         continue;
@@ -6412,7 +6544,8 @@ int SpellThreatProjection::base_max_cost(
 void SpellThreatProjection::run_effect(
         actor::Actor* const caster,
         const SpellSkill skill,
-        const std::vector<actor::Actor*>& seen_targets) const
+        const std::vector<actor::Actor*>& seen_targets,
+        PlayerAwareOfCast player_aware) const
 {
         if (seen_targets.empty()) {
                 msg_log::add("The bugs on the ground all start to attack each other.");
@@ -6427,7 +6560,9 @@ void SpellThreatProjection::run_effect(
                 ? std::vector {rnd::element(seen_targets)}
                 : seen_targets;
 
-        draw_blast_at_seen_actors(targets, colors::magenta());
+        if (player_aware == PlayerAwareOfCast::yes) {
+                draw_blast_at_seen_actors(targets, colors::magenta());
+        }
 
         for (actor::Actor* const target : targets) {
                 // Spell resistance?
@@ -6442,7 +6577,7 @@ void SpellThreatProjection::run_effect(
 
                                 // Run effect with the target as caster, and the
                                 // caster as seen target instead.
-                                run_effect(target, skill, {caster});
+                                run_effect(target, skill, {caster}, player_aware);
                         }
 
                         continue;
@@ -6537,7 +6672,8 @@ bool SpellDisease::is_noisy(const SpellSkill skill) const
 void SpellDisease::run_effect(
         actor::Actor* const caster,
         const SpellSkill skill,
-        const std::vector<actor::Actor*>& seen_targets) const
+        const std::vector<actor::Actor*>& seen_targets,
+        PlayerAwareOfCast player_aware) const
 {
         actor::Actor* target = map::random_closest_actor(caster->m_pos, seen_targets);
 
@@ -6558,7 +6694,7 @@ void SpellDisease::run_effect(
                         }
 
                         // Run effect with the target as caster, and the caster as seen target.
-                        run_effect(target, skill, {caster});
+                        run_effect(target, skill, {caster}, player_aware);
                 }
 
                 return;
@@ -6643,7 +6779,8 @@ int SpellBlind::mon_cooldown() const
 void SpellBlind::run_effect(
         actor::Actor* const caster,
         const SpellSkill skill,
-        const std::vector<actor::Actor*>& seen_targets) const
+        const std::vector<actor::Actor*>& seen_targets,
+        PlayerAwareOfCast player_aware) const
 {
         const std::vector<actor::Actor*> seen_targets_not_blind_resistant =
                 find_actors_not_blind_resistant(seen_targets);
@@ -6654,6 +6791,8 @@ void SpellBlind::run_effect(
                         seen_targets_not_blind_resistant);
 
         if (!target) {
+                // TODO: Consider this if spell reflection is updated to work differently.
+
                 // NOTE: This is a legitimate case (e.g. player with spell reflection redirects the
                 // spell to a monster with blind resistance).
 
@@ -6671,7 +6810,7 @@ void SpellBlind::run_effect(
                         }
 
                         // Run effect with the target as caster, and the caster as seen target.
-                        run_effect(target, skill, {caster});
+                        run_effect(target, skill, {caster}, player_aware);
                 }
 
                 return;
@@ -6775,9 +6914,11 @@ bool SpellSummon::is_noisy(const SpellSkill skill) const
 void SpellSummon::run_effect(
         actor::Actor* const caster,
         const SpellSkill skill,
-        const std::vector<actor::Actor*>& seen_targets) const
+        const std::vector<actor::Actor*>& seen_targets,
+        PlayerAwareOfCast player_aware) const
 {
         (void)seen_targets;
+        (void)player_aware;
 
         Range mon_lvl_range = get_allowed_mon_lvl_range(skill);
 
@@ -6900,11 +7041,9 @@ void SpellSummon::summon(const std::string& id, actor::Actor* caster) const
                 std::begin(summoned.monsters),
                 std::end(summoned.monsters),
                 [](auto* const mon) {
-                        mon->m_properties.apply(
-                                prop::make(prop::Id::summoned));
+                        mon->m_properties.apply(prop::make(prop::Id::summoned));
 
-                        auto* prop_waiting =
-                                prop::make(prop::Id::waiting);
+                        prop::Prop* prop_waiting = prop::make(prop::Id::waiting);
 
                         prop_waiting->set_duration(2);
 
@@ -7078,9 +7217,11 @@ int SpellHeal::base_max_cost(
 void SpellHeal::run_effect(
         actor::Actor* const caster,
         const SpellSkill skill,
-        const std::vector<actor::Actor*>& seen_targets) const
+        const std::vector<actor::Actor*>& seen_targets,
+        PlayerAwareOfCast player_aware) const
 {
         (void)seen_targets;
+        (void)player_aware;
 
         if ((int)skill >= (int)SpellSkill::expert) {
                 caster->m_properties.end_prop(prop::Id::weakened);
@@ -7209,9 +7350,11 @@ bool SpellMiGoHypno::is_noisy(const SpellSkill skill) const
 void SpellMiGoHypno::run_effect(
         actor::Actor* const caster,
         const SpellSkill skill,
-        const std::vector<actor::Actor*>& seen_targets) const
+        const std::vector<actor::Actor*>& seen_targets,
+        PlayerAwareOfCast player_aware) const
 {
         (void)skill;
+        (void)player_aware;
 
         actor::Actor* target = map::random_closest_actor(caster->m_pos, seen_targets);
 
@@ -7232,7 +7375,7 @@ void SpellMiGoHypno::run_effect(
                         }
 
                         // Run effect with the target as caster, and the caster as seen target.
-                        run_effect(target, skill, {caster});
+                        run_effect(target, skill, {caster}, player_aware);
                 }
 
                 return;
@@ -7316,8 +7459,11 @@ bool SpellBurn::is_noisy(const SpellSkill skill) const
 void SpellBurn::run_effect(
         actor::Actor* const caster,
         const SpellSkill skill,
-        const std::vector<actor::Actor*>& seen_targets) const
+        const std::vector<actor::Actor*>& seen_targets,
+        PlayerAwareOfCast player_aware) const
 {
+        (void)player_aware;
+
         actor::Actor* target = map::random_closest_actor(caster->m_pos, seen_targets);
 
         if (!target) {
@@ -7337,7 +7483,7 @@ void SpellBurn::run_effect(
                         }
 
                         // Run effect with the target as caster, and the caster as seen target.
-                        run_effect(target, skill, {caster});
+                        run_effect(target, skill, {caster}, player_aware);
                 }
 
                 return;
@@ -7427,7 +7573,8 @@ bool SpellDeafen::is_noisy(const SpellSkill skill) const
 void SpellDeafen::run_effect(
         actor::Actor* const caster,
         const SpellSkill skill,
-        const std::vector<actor::Actor*>& seen_targets) const
+        const std::vector<actor::Actor*>& seen_targets,
+        PlayerAwareOfCast player_aware) const
 {
         actor::Actor* target = map::random_closest_actor(caster->m_pos, seen_targets);
 
@@ -7448,13 +7595,13 @@ void SpellDeafen::run_effect(
                         }
 
                         // Run effect with the target as caster, and the caster as seen target.
-                        run_effect(target, skill, {caster});
+                        run_effect(target, skill, {caster}, player_aware);
                 }
 
                 return;
         }
 
-        auto* prop = prop::make(prop::Id::deaf);
+        prop::Prop* prop = prop::make(prop::Id::deaf);
 
         prop->set_duration(75 + (int)skill * 75);
 
@@ -7542,10 +7689,12 @@ int SpellTransmut::chance_weapon(
 void SpellTransmut::run_effect(
         actor::Actor* const caster,
         const SpellSkill skill,
-        const std::vector<actor::Actor*>& seen_targets) const
+        const std::vector<actor::Actor*>& seen_targets,
+        PlayerAwareOfCast player_aware) const
 {
         (void)caster;
         (void)seen_targets;
+        (void)player_aware;
 
         const auto& p = map::g_player->m_pos;
 
@@ -7814,9 +7963,11 @@ int SpellBloodTempering::base_max_cost(
 void SpellBloodTempering::run_effect(
         actor::Actor* const caster,
         const SpellSkill skill,
-        const std::vector<actor::Actor*>& seen_targets) const
+        const std::vector<actor::Actor*>& seen_targets,
+        PlayerAwareOfCast player_aware) const
 {
         (void)seen_targets;
+        (void)player_aware;
 
         int nr_turns = duration_range(skill).roll();
 
@@ -7922,9 +8073,11 @@ Range SpellThorns::dmg_range(const SpellSkill skill) const
 void SpellThorns::run_effect(
         actor::Actor* const caster,
         const SpellSkill skill,
-        const std::vector<actor::Actor*>& seen_targets) const
+        const std::vector<actor::Actor*>& seen_targets,
+        PlayerAwareOfCast player_aware) const
 {
         (void)seen_targets;
+        (void)player_aware;
 
         auto* const prop = static_cast<prop::Thorns*>(prop::make(prop::Id::thorns));
 
@@ -8017,9 +8170,11 @@ int SpellCrimsonPassage::nr_steps_allowed(const SpellSkill skill) const
 void SpellCrimsonPassage::run_effect(
         actor::Actor* const caster,
         const SpellSkill skill,
-        const std::vector<actor::Actor*>& seen_targets) const
+        const std::vector<actor::Actor*>& seen_targets,
+        PlayerAwareOfCast player_aware) const
 {
         (void)seen_targets;
+        (void)player_aware;
 
         if (caster->m_properties.has(prop::Id::crimson_passage)) {
                 // Effect already active, cancel it instead.
@@ -8120,9 +8275,11 @@ int SpellSacrificeLife::nr_sp_per_hp(const SpellSkill skill) const
 void SpellSacrificeLife::run_effect(
         actor::Actor* const caster,
         const SpellSkill skill,
-        const std::vector<actor::Actor*>& seen_targets) const
+        const std::vector<actor::Actor*>& seen_targets,
+        PlayerAwareOfCast player_aware) const
 {
         (void)seen_targets;
+        (void)player_aware;
 
         const int hp = caster->m_hp;
 
@@ -8230,7 +8387,8 @@ int SpellShedImpurity::calc_nr_hp_removed(const actor::Actor* const caster) cons
 void SpellShedImpurity::run_effect(
         actor::Actor* const caster,
         const SpellSkill skill,
-        const std::vector<actor::Actor*>& seen_targets) const
+        const std::vector<actor::Actor*>& seen_targets,
+        PlayerAwareOfCast player_aware) const
 {
         (void)seen_targets;
 
@@ -8261,7 +8419,7 @@ void SpellShedImpurity::run_effect(
                 if (skill == SpellSkill::transcendent) {
                         std::unique_ptr<Spell> bless_spell(spells::make(SpellId::bless));
 
-                        bless_spell->run_effect(caster, SpellSkill::basic, {});
+                        bless_spell->run_effect(caster, SpellSkill::basic, {}, player_aware);
                 }
         }
 }

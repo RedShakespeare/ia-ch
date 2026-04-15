@@ -64,6 +64,8 @@ struct Projectile
         actor::Actor* actor_hit {nullptr};
         terrain::Terrain* terrain_hit {nullptr};
         bool is_seen_by_player {false};
+        bool did_player_see_attacker {false};
+        bool did_player_hear_fire_sound {false};
         io::MapDrawObj draw_obj;
         // Used for drawing a trail (e.g. a beam weapon):
         std::vector<io::MapDrawObj> drawn_trail;
@@ -743,8 +745,13 @@ static void update_projectile_states(ProjectileFireData& fire_data)
         advance_projectiles_on_path(fire_data);
 
         for (Projectile& projectile : fire_data.projectiles) {
-                if (projectile.is_dead ||
-                    (projectile.path_idx < 1)) {
+                // Always reset projectile seen status so they are not stuck as seen when multiple
+                // projectiles are fired.
+                projectile.is_seen_by_player = false;
+
+                // Only run the following updates (checking if the projectile hit something etc) for
+                // live projectiles that have travelled at least one step away from the shooter.
+                if (projectile.is_dead || (projectile.path_idx < 1)) {
                         continue;
                 }
 
@@ -760,10 +767,9 @@ static void update_projectile_states(ProjectileFireData& fire_data)
                                 fire_data.aim_lvl);
 
                 if (projectile.att_data->defender) {
-                        // The projectile is at a potential target to attack,
-                        // store information about an encountered actor.
-                        fire_data.actors_seen.push_back(
-                                projectile.att_data->defender);
+                        // The projectile is at a potential target to attack, store information
+                        // about an encountered actor.
+                        fire_data.actors_seen.push_back(projectile.att_data->defender);
                 }
 
                 const ActionResult att_result =
@@ -800,8 +806,7 @@ static void update_projectile_states(ProjectileFireData& fire_data)
                         continue;
                 }
 
-                projectile.terrain_hit =
-                        get_ground_blocking_projectile(projectile);
+                projectile.terrain_hit = get_ground_blocking_projectile(projectile);
 
                 if (projectile.terrain_hit) {
                         projectile.obstructed_in_path_idx = projectile.path_idx;
@@ -809,12 +814,10 @@ static void update_projectile_states(ProjectileFireData& fire_data)
                         const terrain::Id terrain_id = projectile.terrain_hit->id();
 
                         if (terrain_id == terrain::Id::liquid) {
-                                projectile.draw_obj.color =
-                                        projectile.terrain_hit->color();
+                                projectile.draw_obj.color = projectile.terrain_hit->color();
                         }
                         else {
-                                projectile.draw_obj.color =
-                                        colors::yellow();
+                                projectile.draw_obj.color = colors::yellow();
                         }
 
                         continue;
@@ -822,23 +825,23 @@ static void update_projectile_states(ProjectileFireData& fire_data)
         }
 }
 
-static void run_projectiles_messages_and_sounds(
-        const ProjectileFireData& fire_data)
+static void run_projectiles_messages_and_sounds(ProjectileFireData& fire_data)
 {
-        for (const Projectile& projectile : fire_data.projectiles) {
+        for (Projectile& projectile : fire_data.projectiles) {
                 if (projectile.is_dead) {
                         continue;
                 }
 
                 // Projectile entering the path this update?
                 if (projectile.path_idx == 0) {
-                        // NOTE: The initial attack sound(s) must NOT alert
-                        // monsters, since this would immediately make them
-                        // aware before any attack data is set. This would
-                        // result in the player not getting ranged attack
-                        // bonuses against unaware monsters.
-                        // An extra sound is run when the attack ends (without a
-                        // message or audio), which may alert monsters.
+                        // NOTE: The initial attack sound(s) must NOT alert monsters, since this
+                        // would immediately make them aware before any attack data is set. This
+                        // would result in the player not getting ranged attack bonuses against
+                        // unaware monsters.
+                        //
+                        // An extra sound is run when the attack ends (without a message or audio),
+                        // which may alert monsters.
+                        //
                         std::unique_ptr<Snd> snd =
                                 ranged_fire_snd(
                                         *projectile.att_data,
@@ -849,6 +852,10 @@ static void run_projectiles_messages_and_sounds(
                                 snd->set_alerts_mon(AlertsMon::no);
 
                                 snd->run();
+
+                                if (snd->did_player_hear_sound()) {
+                                        projectile.did_player_hear_fire_sound = true;
+                                }
                         }
 
                         continue;
@@ -892,9 +899,14 @@ static void draw_previous_trail(const std::vector<io::MapDrawObj>& draw_objs)
 
 static bool should_draw_projectile_as_travelling(const Projectile& projectile)
 {
+        const bool is_player_aware_of_attack =
+                projectile.did_player_see_attacker ||
+                projectile.did_player_hear_fire_sound;
+
         return (
                 !projectile.is_dead &&
                 projectile.is_seen_by_player &&
+                is_player_aware_of_attack &&
                 (projectile.path_idx >= 1) &&
                 (projectile.obstructed_in_path_idx < 0));
 }
@@ -907,9 +919,11 @@ static bool should_draw_projectile_as_hit(const Projectile& projectile)
                 (projectile.obstructed_in_path_idx >= 0));
 }
 
-static void draw_projectiles(ProjectileFireData& fire_data)
+static bool draw_projectiles(ProjectileFireData& fire_data)
 {
         states::draw();
+
+        bool did_draw = false;
 
         for (Projectile& projectile : fire_data.projectiles) {
                 projectile.draw_obj.pos = viewport::to_view_pos(projectile.pos);
@@ -923,6 +937,8 @@ static void draw_projectiles(ProjectileFireData& fire_data)
                         }
 
                         projectile.drawn_trail.push_back(projectile.draw_obj);
+
+                        did_draw = true;
                 }
                 else if (should_draw_projectile_as_hit(projectile)) {
                         // Draw projectile hit.
@@ -934,21 +950,14 @@ static void draw_projectiles(ProjectileFireData& fire_data)
                         projectile.draw_obj.character = '*';
 
                         draw_projectile(projectile);
+
+                        did_draw = true;
                 }
         }
 
         io::update_screen();
-}
 
-static bool is_any_projectile_seen(const std::vector<Projectile>& projectiles)
-{
-        return (
-                std::any_of(
-                        std::cbegin(projectiles),
-                        std::cend(projectiles),
-                        [](const Projectile& projectile) {
-                                return projectile.is_seen_by_player;
-                        }));
+        return did_draw;
 }
 
 static ProjectileFireData fire_projectiles(
@@ -968,12 +977,17 @@ static ProjectileFireData fire_projectiles(
                 *fire_data.projectiles[0].att_data,
                 *fire_data.wpn);
 
+        const bool can_player_see_attacker = attacker && actor::can_player_see_actor(*attacker);
+
+        for (Projectile& projectile : fire_data.projectiles) {
+                projectile.did_player_see_attacker = can_player_see_attacker;
+        }
+
         while (true) {
                 if (is_all_projectiles_dead(fire_data.projectiles)) {
-                        // Run a sound without message or audio, which can alert
-                        // monsters (the initial fire sound is not allowed to
-                        // alert monsters, since this would prevent ranged
-                        // attack bonuses against unaware monsters)
+                        // Run a sound without message or audio, which can alert monsters (the
+                        // initial fire sound is not allowed to alert monsters, since this would
+                        // prevent ranged attack bonuses against unaware monsters).
                         const RangedAttData& att_data = *fire_data.projectiles[0].att_data;
 
                         std::unique_ptr<Snd> snd =
@@ -997,13 +1011,12 @@ static ProjectileFireData fire_projectiles(
 
                 run_projectiles_messages_and_sounds(fire_data);
 
-                // NOTE: Here we draw the projectiles twice and sleep twice -
-                // each draw call will progress hit animations (the animation
-                // has two steps).
+                // NOTE: Here we draw the projectiles twice and sleep twice - each draw call will
+                // progress hit animations (the animation has two steps).
                 for (int i = 0; i <= 1; ++i) {
-                        draw_projectiles(fire_data);
+                        const bool did_draw = draw_projectiles(fire_data);
 
-                        if (is_any_projectile_seen(fire_data.projectiles)) {
+                        if (did_draw) {
                                 io::sleep(fire_data.animation_delay / 2);
                         }
                 }

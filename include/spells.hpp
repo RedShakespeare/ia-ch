@@ -21,7 +21,7 @@ struct P;
 namespace prop
 {
 enum class Id;
-};
+};  // namespace prop
 
 namespace actor
 {
@@ -185,6 +185,13 @@ enum class SpellShock
         severe
 };
 
+// Player saw or heard the spell being cast.
+enum class PlayerAwareOfCast
+{
+        no,
+        yes,
+};
+
 // Does the spell cost spirit or hit points to cast?
 enum class SpellCostType
 {
@@ -226,6 +233,12 @@ public:
                 SpellSkill skill,
                 SpellSrc spell_src,
                 const std::vector<actor::Actor*>& seen_targets) const;
+
+        virtual void run_effect(
+                actor::Actor* caster,
+                SpellSkill skill,
+                const std::vector<actor::Actor*>& seen_targets,
+                PlayerAwareOfCast player_aware) const = 0;
 
         virtual bool allow_mon_cast_now(
                 const actor::Actor& mon,
@@ -277,11 +290,6 @@ public:
 
         virtual SpellShock shock_type() const = 0;
 
-        virtual void run_effect(
-                actor::Actor* caster,
-                SpellSkill skill,
-                const std::vector<actor::Actor*>& seen_targets) const = 0;
-
 protected:
         virtual int base_max_cost(SpellSkill skill, const actor::Actor* caster) const = 0;
 
@@ -316,9 +324,10 @@ public:
         void run_effect(
                 actor::Actor* caster,
                 SpellSkill skill,
-                const std::vector<actor::Actor*>& seen_targets) const override;
+                const std::vector<actor::Actor*>& seen_targets,
+                PlayerAwareOfCast player_aware) const override;
 
-protected:
+private:
         Range duration_range(SpellSkill skill) const;
 
         int base_max_cost(SpellSkill skill, const actor::Actor* caster) const override;
@@ -352,9 +361,10 @@ public:
         void run_effect(
                 actor::Actor* caster,
                 SpellSkill skill,
-                const std::vector<actor::Actor*>& seen_targets) const override;
+                const std::vector<actor::Actor*>& seen_targets,
+                PlayerAwareOfCast player_aware) const override;
 
-protected:
+private:
         Range duration_range(SpellSkill skill) const;
 
         int base_max_cost(SpellSkill skill, const actor::Actor* caster) const override;
@@ -386,9 +396,10 @@ public:
         void run_effect(
                 actor::Actor* caster,
                 SpellSkill skill,
-                const std::vector<actor::Actor*>& seen_targets) const override;
+                const std::vector<actor::Actor*>& seen_targets,
+                PlayerAwareOfCast player_aware) const override;
 
-protected:
+private:
         Range duration_range(SpellSkill skill) const;
 
         int base_max_cost(SpellSkill skill, const actor::Actor* caster) const override;
@@ -420,9 +431,10 @@ public:
         void run_effect(
                 actor::Actor* caster,
                 SpellSkill skill,
-                const std::vector<actor::Actor*>& seen_targets) const override;
+                const std::vector<actor::Actor*>& seen_targets,
+                PlayerAwareOfCast player_aware) const override;
 
-protected:
+private:
         Range duration_range(SpellSkill skill) const;
 
         int base_max_cost(SpellSkill skill, const actor::Actor* caster) const override;
@@ -454,9 +466,10 @@ public:
         void run_effect(
                 actor::Actor* caster,
                 SpellSkill skill,
-                const std::vector<actor::Actor*>& seen_targets) const override;
+                const std::vector<actor::Actor*>& seen_targets,
+                PlayerAwareOfCast player_aware) const override;
 
-protected:
+private:
         int base_max_cost(SpellSkill skill, const actor::Actor* caster) const override;
 
         bool is_noisy(SpellSkill skill) const override;
@@ -488,9 +501,10 @@ public:
         void run_effect(
                 actor::Actor* caster,
                 SpellSkill skill,
-                const std::vector<actor::Actor*>& seen_targets) const override;
+                const std::vector<actor::Actor*>& seen_targets,
+                PlayerAwareOfCast player_aware) const override;
 
-protected:
+private:
         int base_max_cost(SpellSkill skill, const actor::Actor* caster) const override;
 
         bool is_noisy(SpellSkill skill) const override;
@@ -524,7 +538,8 @@ public:
         void run_effect(
                 actor::Actor* caster,
                 SpellSkill skill,
-                const std::vector<actor::Actor*>& seen_targets) const override;
+                const std::vector<actor::Actor*>& seen_targets,
+                PlayerAwareOfCast player_aware) const override;
 
 private:
         int base_max_cost(SpellSkill skill, const actor::Actor* caster) const override;
@@ -674,7 +689,8 @@ public:
         void run_effect(
                 actor::Actor* caster,
                 SpellSkill skill,
-                const std::vector<actor::Actor*>& seen_targets) const override;
+                const std::vector<actor::Actor*>& seen_targets,
+                PlayerAwareOfCast player_aware) const override;
 
 private:
         int base_max_cost(SpellSkill skill, const actor::Actor* caster) const override;
@@ -689,7 +705,8 @@ private:
         void run_bolt_on_target(
                 actor::Actor& caster,
                 actor::Actor& target,
-                SpellSkill skill) const;
+                SpellSkill skill,
+                PlayerAwareOfCast player_aware) const;
 
         std::unique_ptr<BoltImpl> m_impl;
 };
@@ -718,7 +735,8 @@ public:
         void run_effect(
                 actor::Actor* caster,
                 SpellSkill skill,
-                const std::vector<actor::Actor*>& seen_targets) const override;
+                const std::vector<actor::Actor*>& seen_targets,
+                PlayerAwareOfCast player_aware) const override;
 
 private:
         int base_max_cost(SpellSkill skill, const actor::Actor* caster) const override;
@@ -734,7 +752,8 @@ private:
         void run_effect_on_target(
                 actor::Actor* caster,
                 actor::Actor& target,
-                SpellSkill skill) const;
+                SpellSkill skill,
+                PlayerAwareOfCast player_aware) const;
 
         void do_damage_on_target(
                 actor::Actor& target,
@@ -768,7 +787,8 @@ public:
         void run_effect(
                 actor::Actor* caster,
                 SpellSkill skill,
-                const std::vector<actor::Actor*>& seen_targets) const override;
+                const std::vector<actor::Actor*>& seen_targets,
+                PlayerAwareOfCast player_aware) const override;
 
 private:
         int destruction_radi(SpellSkill skill) const;
@@ -806,7 +826,8 @@ public:
         void run_effect(
                 actor::Actor* caster,
                 SpellSkill skill,
-                const std::vector<actor::Actor*>& seen_targets) const override;
+                const std::vector<actor::Actor*>& seen_targets,
+                PlayerAwareOfCast player_aware) const override;
 
 private:
         int nr_rats_summoned(SpellSkill skill) const;
@@ -838,7 +859,8 @@ public:
         void run_effect(
                 actor::Actor* caster,
                 SpellSkill skill,
-                const std::vector<actor::Actor*>& seen_targets) const override;
+                const std::vector<actor::Actor*>& seen_targets,
+                PlayerAwareOfCast player_aware) const override;
 
 private:
         int nr_mirror_images_summoned(SpellSkill skill) const;
@@ -870,7 +892,8 @@ public:
         void run_effect(
                 actor::Actor* caster,
                 SpellSkill skill,
-                const std::vector<actor::Actor*>& seen_targets) const override;
+                const std::vector<actor::Actor*>& seen_targets,
+                PlayerAwareOfCast player_aware) const override;
 
 private:
         int base_max_cost(SpellSkill skill, const actor::Actor* caster) const override;
@@ -905,7 +928,8 @@ public:
         void run_effect(
                 actor::Actor* caster,
                 SpellSkill skill,
-                const std::vector<actor::Actor*>& seen_targets) const override;
+                const std::vector<actor::Actor*>& seen_targets,
+                PlayerAwareOfCast player_aware) const override;
 
 private:
         int base_max_cost(SpellSkill skill, const actor::Actor* caster) const override;
@@ -933,7 +957,8 @@ public:
         void run_effect(
                 actor::Actor* caster,
                 SpellSkill skill,
-                const std::vector<actor::Actor*>& seen_targets) const override;
+                const std::vector<actor::Actor*>& seen_targets,
+                PlayerAwareOfCast player_aware) const override;
 
 private:
         int base_max_cost(SpellSkill skill, const actor::Actor* caster) const override;
@@ -961,7 +986,8 @@ public:
         void run_effect(
                 actor::Actor* caster,
                 SpellSkill skill,
-                const std::vector<actor::Actor*>& seen_targets) const override;
+                const std::vector<actor::Actor*>& seen_targets,
+                PlayerAwareOfCast player_aware) const override;
 
 private:
         int base_max_cost(SpellSkill skill, const actor::Actor* caster) const override;
@@ -991,7 +1017,8 @@ public:
         void run_effect(
                 actor::Actor* caster,
                 SpellSkill skill,
-                const std::vector<actor::Actor*>& seen_targets) const override;
+                const std::vector<actor::Actor*>& seen_targets,
+                PlayerAwareOfCast player_aware) const override;
 
 private:
         int base_max_cost(SpellSkill skill, const actor::Actor* caster) const override;
@@ -1023,7 +1050,8 @@ public:
         void run_effect(
                 actor::Actor* caster,
                 SpellSkill skill,
-                const std::vector<actor::Actor*>& seen_targets) const override;
+                const std::vector<actor::Actor*>& seen_targets,
+                PlayerAwareOfCast player_aware) const override;
 
 private:
         int base_max_cost(SpellSkill skill, const actor::Actor* caster) const override;
@@ -1049,7 +1077,8 @@ public:
         void run_effect(
                 actor::Actor* caster,
                 SpellSkill skill,
-                const std::vector<actor::Actor*>& seen_targets) const override;
+                const std::vector<actor::Actor*>& seen_targets,
+                PlayerAwareOfCast player_aware) const override;
 
         Range duration_range(SpellSkill skill) const;
 
@@ -1101,7 +1130,8 @@ public:
         void run_effect(
                 actor::Actor* caster,
                 SpellSkill skill,
-                const std::vector<actor::Actor*>& seen_targets) const override;
+                const std::vector<actor::Actor*>& seen_targets,
+                PlayerAwareOfCast player_aware) const override;
 
 private:
         int max_dist(SpellSkill skill) const;
@@ -1138,7 +1168,8 @@ public:
         void run_effect(
                 actor::Actor* caster,
                 SpellSkill skill,
-                const std::vector<actor::Actor*>& seen_targets) const override;
+                const std::vector<actor::Actor*>& seen_targets,
+                PlayerAwareOfCast player_aware) const override;
 
 private:
         int pct_chance_fade(SpellSkill skill) const;
@@ -1168,7 +1199,8 @@ public:
         void run_effect(
                 actor::Actor* caster,
                 SpellSkill skill,
-                const std::vector<actor::Actor*>& seen_targets) const override;
+                const std::vector<actor::Actor*>& seen_targets,
+                PlayerAwareOfCast player_aware) const override;
 
 private:
         int skill_bon(SpellSkill skill) const;
@@ -1202,7 +1234,8 @@ public:
         void run_effect(
                 actor::Actor* caster,
                 SpellSkill skill,
-                const std::vector<actor::Actor*>& seen_targets) const override;
+                const std::vector<actor::Actor*>& seen_targets,
+                PlayerAwareOfCast player_aware) const override;
 
 private:
         Range light_duration_range(SpellSkill skill) const;
@@ -1240,7 +1273,8 @@ public:
         void run_effect(
                 actor::Actor* caster,
                 SpellSkill skill,
-                const std::vector<actor::Actor*>& seen_targets) const override;
+                const std::vector<actor::Actor*>& seen_targets,
+                PlayerAwareOfCast player_aware) const override;
 
 private:
         int base_max_cost(SpellSkill skill, const actor::Actor* caster) const override;
@@ -1272,7 +1306,8 @@ public:
         void run_effect(
                 actor::Actor* caster,
                 SpellSkill skill,
-                const std::vector<actor::Actor*>& seen_targets) const override;
+                const std::vector<actor::Actor*>& seen_targets,
+                PlayerAwareOfCast player_aware) const override;
 
 private:
         int invis_duration(SpellSkill skill) const;
@@ -1304,7 +1339,8 @@ public:
         void run_effect(
                 actor::Actor* caster,
                 SpellSkill skill,
-                const std::vector<actor::Actor*>& seen_targets) const override;
+                const std::vector<actor::Actor*>& seen_targets,
+                PlayerAwareOfCast player_aware) const override;
 
 private:
         Range duration_range(SpellSkill skill) const;
@@ -1338,7 +1374,8 @@ public:
         void run_effect(
                 actor::Actor* caster,
                 SpellSkill skill,
-                const std::vector<actor::Actor*>& seen_targets) const override;
+                const std::vector<actor::Actor*>& seen_targets,
+                PlayerAwareOfCast player_aware) const override;
 
 private:
         Range duration_range(SpellSkill skill) const;
@@ -1372,7 +1409,8 @@ public:
         void run_effect(
                 actor::Actor* caster,
                 SpellSkill skill,
-                const std::vector<actor::Actor*>& seen_targets) const override;
+                const std::vector<actor::Actor*>& seen_targets,
+                PlayerAwareOfCast player_aware) const override;
 
 private:
         int base_max_cost(SpellSkill skill, const actor::Actor* caster) const override;
@@ -1404,7 +1442,8 @@ public:
         void run_effect(
                 actor::Actor* caster,
                 SpellSkill skill,
-                const std::vector<actor::Actor*>& seen_targets) const override;
+                const std::vector<actor::Actor*>& seen_targets,
+                PlayerAwareOfCast player_aware) const override;
 
 private:
         Range duration_range(SpellSkill skill) const;
@@ -1432,7 +1471,8 @@ public:
         void run_effect(
                 actor::Actor* caster,
                 SpellSkill skill,
-                const std::vector<actor::Actor*>& seen_targets) const override;
+                const std::vector<actor::Actor*>& seen_targets,
+                PlayerAwareOfCast player_aware) const override;
 
         bool allow_mon_cast_now(
                 const actor::Actor& mon,
@@ -1464,7 +1504,8 @@ public:
         void run_effect(
                 actor::Actor* caster,
                 SpellSkill skill,
-                const std::vector<actor::Actor*>& seen_targets) const override;
+                const std::vector<actor::Actor*>& seen_targets,
+                PlayerAwareOfCast player_aware) const override;
 
 private:
         int base_max_cost(SpellSkill skill, const actor::Actor* caster) const override;
@@ -1494,7 +1535,8 @@ public:
         void run_effect(
                 actor::Actor* caster,
                 SpellSkill skill,
-                const std::vector<actor::Actor*>& seen_targets) const override;
+                const std::vector<actor::Actor*>& seen_targets,
+                PlayerAwareOfCast player_aware) const override;
 
 private:
         int base_max_cost(SpellSkill skill, const actor::Actor* caster) const override;
@@ -1524,7 +1566,8 @@ public:
         void run_effect(
                 actor::Actor* caster,
                 SpellSkill skill,
-                const std::vector<actor::Actor*>& seen_targets) const override;
+                const std::vector<actor::Actor*>& seen_targets,
+                PlayerAwareOfCast player_aware) const override;
 
 private:
         Range duration_range(SpellSkill skill) const;
@@ -1554,7 +1597,8 @@ public:
         void run_effect(
                 actor::Actor* caster,
                 SpellSkill skill,
-                const std::vector<actor::Actor*>& seen_targets) const override;
+                const std::vector<actor::Actor*>& seen_targets,
+                PlayerAwareOfCast player_aware) const override;
 
 private:
         Range duration_range(SpellSkill skill) const;
@@ -1585,7 +1629,8 @@ public:
         void run_effect(
                 actor::Actor* caster,
                 SpellSkill skill,
-                const std::vector<actor::Actor*>& seen_targets) const override;
+                const std::vector<actor::Actor*>& seen_targets,
+                PlayerAwareOfCast player_aware) const override;
 
 private:
         int nr_steps_allowed(SpellSkill skill) const;
@@ -1615,7 +1660,8 @@ public:
         void run_effect(
                 actor::Actor* caster,
                 SpellSkill skill,
-                const std::vector<actor::Actor*>& seen_targets) const override;
+                const std::vector<actor::Actor*>& seen_targets,
+                PlayerAwareOfCast player_aware) const override;
 
 private:
         int nr_sp_per_hp(SpellSkill skill) const;
@@ -1643,7 +1689,8 @@ public:
         void run_effect(
                 actor::Actor* caster,
                 SpellSkill skill,
-                const std::vector<actor::Actor*>& seen_targets) const override;
+                const std::vector<actor::Actor*>& seen_targets,
+                PlayerAwareOfCast player_aware) const override;
 
 private:
         int get_min_hp_removed_for_bonus_effects() const;
@@ -1681,7 +1728,8 @@ public:
         void run_effect(
                 actor::Actor* caster,
                 SpellSkill skill,
-                const std::vector<actor::Actor*>& seen_targets) const override;
+                const std::vector<actor::Actor*>& seen_targets,
+                PlayerAwareOfCast player_aware) const override;
 
 private:
         int base_max_cost(SpellSkill skill, const actor::Actor* caster) const override;
@@ -1713,7 +1761,8 @@ public:
         void run_effect(
                 actor::Actor* caster,
                 SpellSkill skill,
-                const std::vector<actor::Actor*>& seen_targets) const override;
+                const std::vector<actor::Actor*>& seen_targets,
+                PlayerAwareOfCast player_aware) const override;
 
 private:
         std::vector<actor::Actor*> find_actors_not_blind_resistant(
@@ -1803,7 +1852,8 @@ public:
         void run_effect(
                 actor::Actor* caster,
                 SpellSkill skill,
-                const std::vector<actor::Actor*>& seen_targets) const override;
+                const std::vector<actor::Actor*>& seen_targets,
+                PlayerAwareOfCast player_aware) const override;
 
 private:
         int base_max_cost(SpellSkill skill, const actor::Actor* caster) const override;
@@ -1846,7 +1896,8 @@ public:
         void run_effect(
                 actor::Actor* caster,
                 SpellSkill skill,
-                const std::vector<actor::Actor*>& seen_targets) const override;
+                const std::vector<actor::Actor*>& seen_targets,
+                PlayerAwareOfCast player_aware) const override;
 
 private:
         int nr_hp_restored(SpellSkill skill) const;
@@ -1882,7 +1933,8 @@ public:
         void run_effect(
                 actor::Actor* caster,
                 SpellSkill skill,
-                const std::vector<actor::Actor*>& seen_targets) const override;
+                const std::vector<actor::Actor*>& seen_targets,
+                PlayerAwareOfCast player_aware) const override;
 
 private:
         int base_max_cost(SpellSkill skill, const actor::Actor* caster) const override;
@@ -1914,7 +1966,8 @@ public:
         void run_effect(
                 actor::Actor* caster,
                 SpellSkill skill,
-                const std::vector<actor::Actor*>& seen_targets) const override;
+                const std::vector<actor::Actor*>& seen_targets,
+                PlayerAwareOfCast player_aware) const override;
 
 private:
         int base_max_cost(SpellSkill skill, const actor::Actor* caster) const override;
@@ -1946,7 +1999,8 @@ public:
         void run_effect(
                 actor::Actor* caster,
                 SpellSkill skill,
-                const std::vector<actor::Actor*>& seen_targets) const override;
+                const std::vector<actor::Actor*>& seen_targets,
+                PlayerAwareOfCast player_aware) const override;
 
 private:
         int base_max_cost(SpellSkill skill, const actor::Actor* caster) const override;
@@ -1978,9 +2032,10 @@ public:
         void run_effect(
                 actor::Actor* caster,
                 SpellSkill skill,
-                const std::vector<actor::Actor*>& seen_targets) const override;
+                const std::vector<actor::Actor*>& seen_targets,
+                PlayerAwareOfCast player_aware) const override;
 
-protected:
+private:
         std::vector<actor::Actor*> find_possible_actors_to_heal(const actor::Actor* caster) const;
 
         actor::Actor* find_random_actor_to_heal(const actor::Actor* caster) const;

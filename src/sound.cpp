@@ -179,8 +179,12 @@ void Snd::run()
         snd_emit::run(*this);
 }
 
-void Snd::on_heard(actor::Actor& actor) const
+void Snd::on_heard(actor::Actor& actor)
 {
+        if (actor::is_player(&actor)) {
+                m_did_player_hear_sound = true;
+        }
+
         if (m_snd_heard_effect) {
                 m_snd_heard_effect->run(actor);
         }
@@ -191,7 +195,7 @@ void Snd::on_heard(actor::Actor& actor) const
 // -----------------------------------------------------------------------------
 namespace snd_emit
 {
-void run(Snd snd)
+void run(Snd& snd)
 {
         ASSERT(snd.msg() != " ");
 

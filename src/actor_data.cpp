@@ -160,11 +160,17 @@ static void dump_text(xml::Element* text_e, actor::ActorData& data)
                 "use_cultist_messages",
                 data.use_cultist_aware_msg_mon_hidden);
 
-        data.spell_msg =
+        data.spell_msg_sound =
                 xml::get_text_str(
                         xml::first_child(
                                 text_e,
-                                "spell_message"));
+                                "spell_message_sound"));
+
+        data.spell_msg_visual =
+                xml::get_text_str(
+                        xml::first_child(
+                                text_e,
+                                "spell_message_visual"));
 
         auto* death_msg_e = xml::first_child(text_e, "death_message");
 
@@ -758,7 +764,8 @@ void ActorData::reset()
         smell_msg = "";
         aware_sfx_mon_seen = audio::SfxId::END;
         aware_sfx_mon_hidden = audio::SfxId::END;
-        spell_msg = "";
+        spell_msg_sound = "";
+        spell_msg_visual = "";
         erratic_move_pct = 0;
         mon_shock_lvl = MonShockLvl::none;
         is_humanoid = false;

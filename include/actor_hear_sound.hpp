@@ -16,12 +16,12 @@ namespace actor
 class Actor;
 
 void hear_sound_player(
-        const Snd& snd,
+        Snd& snd,
         bool is_origin_seen_by_player,
         Dir dir_to_origin,
         int percent_audible_distance);
 
-void hear_sound_mon(Actor& actor, const Snd& snd);
+void hear_sound_mon(Actor& actor, Snd& snd);
 
 }  // namespace actor
 

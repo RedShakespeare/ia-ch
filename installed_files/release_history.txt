@@ -10,6 +10,7 @@
 - Some spells that previously were noisy can now be cast silently.
 - Some spells no longer automatically makes the target creature aware of the caster - i.e. unless a spell casting sound is heard, they can be cast on a target without them becoming aware.
 - The Terrify spell also has a chance to make the victims faint.
+- Made monster and player spell casting consistent regarding noise; monsters also cast silent spells without makings sounds. If a casting is seen and not heard, a "visual" message is printed instead (e.g. "The Cultist makes gestures in the air").
 
 # Status effects
 - "Doomed" is now considered an upgrade of "Cursed", a creature cannot be both cursed and doomed simultaneously.
@@ -47,8 +48,9 @@
 ##############################
 # Fixes
 ##############################
-- Sneak chance was calculated wrong when the chance for success was rolled - only the sneak chance of the hiding actor had any effect, but search skill of the searching actor, distance, light and darkness was also supposed to affect the chance. The value presented when viewing the monster was correct, but the ACTUAL chance when rolling for success was wrong. This bug has existed since v21.0.0.
-- Some sound effects may not played due to unsupported sample rate. Fixed by normalizing all audio files to 44100 Hz.
+- Sneak chance was calculated wrong - only the sneak chance of the hiding actor had any effect, but search skill of the searching actor, distance, light and darkness were also supposed to affect the chance. The values presented when viewing monsters were correct, but the ACTUAL chances when rolling for success were wrong. This bug has existed since v21.0.0.
+- Animations for ranged attacks and spells now only appear when there is something indicating why it happened (for example the player character saw or heard the source).
+- Some sound effects may not have played due to unsupported sample rate. Fixed by normalizing all audio files to 44100 Hz.
 
 ##############################
 # Modability, game data

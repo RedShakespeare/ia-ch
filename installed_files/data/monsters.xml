@@ -20,7 +20,8 @@ SPDX-License-Identifier: AGPL-3.0-or-later
             <smell_message></smell_message>
             <aware_message_seen></aware_message_seen>
             <aware_message_hidden></aware_message_hidden>
-            <spell_message></spell_message>
+            <spell_message_sound></spell_message_sound>
+            <spell_message_visual></spell_message_visual>
         </text>
 
         <graphics>
@@ -83,7 +84,8 @@ SPDX-License-Identifier: AGPL-3.0-or-later
             <smell_message>There is a stench of decayed flesh here.</smell_message>
             <aware_message_seen>growls.</aware_message_seen>
             <aware_message_hidden>I hear a growling voice.</aware_message_hidden>
-            <spell_message></spell_message>
+            <spell_message_sound></spell_message_sound>
+            <spell_message_visual></spell_message_visual>
         </text>
 
         <graphics>
@@ -181,7 +183,8 @@ SPDX-License-Identifier: AGPL-3.0-or-later
             <smell_message>There is a stench of decayed flesh here.</smell_message>
             <aware_message_seen>growls.</aware_message_seen>
             <aware_message_hidden>I hear a growling voice.</aware_message_hidden>
-            <spell_message></spell_message>
+            <spell_message_sound></spell_message_sound>
+            <spell_message_visual></spell_message_visual>
         </text>
 
         <graphics>
@@ -281,7 +284,8 @@ SPDX-License-Identifier: AGPL-3.0-or-later
             <smell_message>There is a stench of decayed flesh here.</smell_message>
             <aware_message_seen>growls.</aware_message_seen>
             <aware_message_hidden>I hear the flapping of great wings.</aware_message_hidden>
-            <spell_message></spell_message>
+            <spell_message_sound></spell_message_sound>
+            <spell_message_visual></spell_message_visual>
         </text>
 
         <graphics>
@@ -380,7 +384,8 @@ SPDX-License-Identifier: AGPL-3.0-or-later
             <smell_message>There is a stench of decayed flesh here.</smell_message>
             <aware_message_seen></aware_message_seen>
             <aware_message_hidden></aware_message_hidden>
-            <spell_message></spell_message>
+            <spell_message_sound></spell_message_sound>
+            <spell_message_visual></spell_message_visual>
         </text>
 
         <graphics>
@@ -481,7 +486,8 @@ SPDX-License-Identifier: AGPL-3.0-or-later
             <smell_message>There is a stench of decayed flesh here.</smell_message>
             <aware_message_seen></aware_message_seen>
             <aware_message_hidden></aware_message_hidden>
-            <spell_message></spell_message>
+            <spell_message_sound></spell_message_sound>
+            <spell_message_visual></spell_message_visual>
         </text>
 
         <graphics>
@@ -580,7 +586,8 @@ SPDX-License-Identifier: AGPL-3.0-or-later
             <smell_message>There is a stench of decayed flesh here.</smell_message>
             <aware_message_seen></aware_message_seen>
             <aware_message_hidden></aware_message_hidden>
-            <spell_message></spell_message>
+            <spell_message_sound></spell_message_sound>
+            <spell_message_visual></spell_message_visual>
         </text>
 
         <graphics>
@@ -678,7 +685,8 @@ SPDX-License-Identifier: AGPL-3.0-or-later
             <smell_message>There is a stench of decayed flesh here.</smell_message>
             <aware_message_seen></aware_message_seen>
             <aware_message_hidden></aware_message_hidden>
-            <spell_message></spell_message>
+            <spell_message_sound></spell_message_sound>
+            <spell_message_visual></spell_message_visual>
         </text>
 
         <graphics>
@@ -775,7 +783,8 @@ SPDX-License-Identifier: AGPL-3.0-or-later
             <smell_message></smell_message>
             <aware_message_seen></aware_message_seen>
             <aware_message_hidden></aware_message_hidden>
-            <spell_message></spell_message>
+            <spell_message_sound></spell_message_sound>
+            <spell_message_visual></spell_message_visual>
         </text>
 
         <graphics>
@@ -869,7 +878,8 @@ SPDX-License-Identifier: AGPL-3.0-or-later
             <smell_message></smell_message>
             <aware_message_seen></aware_message_seen>
             <aware_message_hidden></aware_message_hidden>
-            <spell_message></spell_message>
+            <spell_message_sound></spell_message_sound>
+            <spell_message_visual></spell_message_visual>
         </text>
 
         <graphics>
@@ -963,7 +973,8 @@ SPDX-License-Identifier: AGPL-3.0-or-later
             <smell_message></smell_message>
             <aware_message_seen></aware_message_seen>
             <aware_message_hidden></aware_message_hidden>
-            <spell_message></spell_message>
+            <spell_message_sound></spell_message_sound>
+            <spell_message_visual></spell_message_visual>
         </text>
 
         <graphics>
@@ -1063,7 +1074,8 @@ SPDX-License-Identifier: AGPL-3.0-or-later
             <smell_message></smell_message>
             <aware_message_seen></aware_message_seen>
             <aware_message_hidden></aware_message_hidden>
-            <spell_message>spews forth a litany of curses.</spell_message>
+            <spell_message_sound>spews forth a litany of curses.</spell_message_sound>
+            <spell_message_visual>exhales a cloud of twisting curses.</spell_message_visual>
         </text>
 
         <graphics>
@@ -1165,7 +1177,8 @@ SPDX-License-Identifier: AGPL-3.0-or-later
             <smell_message></smell_message>
             <aware_message_seen use_cultist_messages="true"/>
             <aware_message_hidden use_cultist_messages="true"/>
-            <spell_message>mutters incantations.</spell_message>
+            <spell_message_sound>mutters incantations.</spell_message_sound>
+            <spell_message_visual>makes gestures in the air.</spell_message_visual>
         </text>
 
         <graphics>
@@ -1269,7 +1282,8 @@ SPDX-License-Identifier: AGPL-3.0-or-later
             <smell_message></smell_message>
             <aware_message_seen>screams in agony.</aware_message_seen>
             <aware_message_hidden>I hear a harrowing scream.</aware_message_hidden>
-            <spell_message>mutters incantations.</spell_message>
+            <spell_message_sound>mutters incantations.</spell_message_sound>
+            <spell_message_visual>makes gestures in the air.</spell_message_visual>
         </text>
 
         <graphics>
@@ -1362,7 +1376,8 @@ SPDX-License-Identifier: AGPL-3.0-or-later
             <smell_message></smell_message>
             <aware_message_seen></aware_message_seen>
             <aware_message_hidden></aware_message_hidden>
-            <spell_message>mutters incantations.</spell_message>
+            <spell_message_sound>mutters incantations.</spell_message_sound>
+            <spell_message_visual>makes gestures in the air.</spell_message_visual>
         </text>
 
         <graphics>
@@ -1455,7 +1470,8 @@ SPDX-License-Identifier: AGPL-3.0-or-later
             <smell_message></smell_message>
             <aware_message_seen>chortles in a croaking voice.</aware_message_seen>
             <aware_message_hidden>I hear a repulsive croaking voice.</aware_message_hidden>
-            <spell_message>croaks incantations.</spell_message>
+            <spell_message_sound>croaks incantations.</spell_message_sound>
+            <spell_message_visual>makes gestures in the air.</spell_message_visual>
         </text>
 
         <graphics>
@@ -1565,7 +1581,8 @@ SPDX-License-Identifier: AGPL-3.0-or-later
             <smell_message></smell_message>
             <aware_message_seen>titters in a loathsome voice.</aware_message_seen>
             <aware_message_hidden>I hear a loathsome titter.</aware_message_hidden>
-            <spell_message></spell_message>
+            <spell_message_sound></spell_message_sound>
+            <spell_message_visual></spell_message_visual>
         </text>
 
         <graphics>
@@ -1659,7 +1676,8 @@ SPDX-License-Identifier: AGPL-3.0-or-later
             <smell_message></smell_message>
             <aware_message_seen></aware_message_seen>
             <aware_message_hidden></aware_message_hidden>
-            <spell_message></spell_message>
+            <spell_message_sound></spell_message_sound>
+            <spell_message_visual></spell_message_visual>
         </text>
 
         <graphics>
@@ -1758,7 +1776,8 @@ SPDX-License-Identifier: AGPL-3.0-or-later
             <smell_message></smell_message>
             <aware_message_seen></aware_message_seen>
             <aware_message_hidden></aware_message_hidden>
-            <spell_message>fidgets madly.</spell_message>
+            <spell_message_sound>fidgets madly.</spell_message_sound>
+            <spell_message_visual>fidgets madly.</spell_message_visual>
         </text>
 
         <graphics>
@@ -1856,7 +1875,8 @@ SPDX-License-Identifier: AGPL-3.0-or-later
             <smell_message></smell_message>
             <aware_message_seen></aware_message_seen>
             <aware_message_hidden></aware_message_hidden>
-            <spell_message>chirps hideously.</spell_message>
+            <spell_message_sound>chirps hideously.</spell_message_sound>
+            <spell_message_visual>fidgets madly.</spell_message_visual>
         </text>
 
         <graphics>
@@ -1959,7 +1979,8 @@ SPDX-License-Identifier: AGPL-3.0-or-later
             <smell_message></smell_message>
             <aware_message_seen use_cultist_messages="true"/>
             <aware_message_hidden use_cultist_messages="true"/>
-            <spell_message>mutters incantations.</spell_message>
+            <spell_message_sound>mutters incantations.</spell_message_sound>
+            <spell_message_visual>makes gestures in the air.</spell_message_visual>
         </text>
 
         <graphics>
@@ -2062,7 +2083,8 @@ SPDX-License-Identifier: AGPL-3.0-or-later
             <smell_message></smell_message>
             <aware_message_seen use_cultist_messages="true"/>
             <aware_message_hidden use_cultist_messages="true"/>
-            <spell_message>mutters incantations.</spell_message>
+            <spell_message_sound>mutters incantations.</spell_message_sound>
+            <spell_message_visual>makes gestures in the air.</spell_message_visual>
         </text>
 
         <graphics>
@@ -2165,7 +2187,8 @@ SPDX-License-Identifier: AGPL-3.0-or-later
             <smell_message></smell_message>
             <aware_message_seen use_cultist_messages="true"/>
             <aware_message_hidden use_cultist_messages="true"/>
-            <spell_message>mutters incantations.</spell_message>
+            <spell_message_sound>mutters incantations.</spell_message_sound>
+            <spell_message_visual>makes gestures in the air.</spell_message_visual>
         </text>
 
         <graphics>
@@ -2272,7 +2295,8 @@ SPDX-License-Identifier: AGPL-3.0-or-later
             <smell_message></smell_message>
             <aware_message_seen></aware_message_seen>
             <aware_message_hidden></aware_message_hidden>
-            <spell_message></spell_message>
+            <spell_message_sound></spell_message_sound>
+            <spell_message_visual></spell_message_visual>
         </text>
 
         <graphics>
@@ -2365,7 +2389,8 @@ SPDX-License-Identifier: AGPL-3.0-or-later
             <smell_message></smell_message>
             <aware_message_seen></aware_message_seen>
             <aware_message_hidden></aware_message_hidden>
-            <spell_message></spell_message>
+            <spell_message_sound></spell_message_sound>
+            <spell_message_visual></spell_message_visual>
         </text>
 
         <graphics>
@@ -2458,7 +2483,8 @@ SPDX-License-Identifier: AGPL-3.0-or-later
             <smell_message></smell_message>
             <aware_message_seen></aware_message_seen>
             <aware_message_hidden></aware_message_hidden>
-            <spell_message></spell_message>
+            <spell_message_sound></spell_message_sound>
+            <spell_message_visual></spell_message_visual>
         </text>
 
         <graphics>
@@ -2551,7 +2577,8 @@ SPDX-License-Identifier: AGPL-3.0-or-later
             <smell_message></smell_message>
             <aware_message_seen></aware_message_seen>
             <aware_message_hidden></aware_message_hidden>
-            <spell_message></spell_message>
+            <spell_message_sound></spell_message_sound>
+            <spell_message_visual></spell_message_visual>
         </text>
 
         <graphics>
@@ -2649,7 +2676,8 @@ SPDX-License-Identifier: AGPL-3.0-or-later
             <smell_message></smell_message>
             <aware_message_seen></aware_message_seen>
             <aware_message_hidden></aware_message_hidden>
-            <spell_message>chatters.</spell_message>
+            <spell_message_sound>chatters.</spell_message_sound>
+            <spell_message_visual>makes gestures in the air.</spell_message_visual>
         </text>
 
         <graphics>
@@ -2741,7 +2769,8 @@ SPDX-License-Identifier: AGPL-3.0-or-later
             <smell_message></smell_message>
             <aware_message_seen></aware_message_seen>
             <aware_message_hidden></aware_message_hidden>
-            <spell_message>chatters.</spell_message>
+            <spell_message_sound>chatters.</spell_message_sound>
+            <spell_message_visual>makes gestures in the air.</spell_message_visual>
         </text>
 
         <graphics>
@@ -2836,7 +2865,8 @@ SPDX-License-Identifier: AGPL-3.0-or-later
             <smell_message></smell_message>
             <aware_message_seen></aware_message_seen>
             <aware_message_hidden></aware_message_hidden>
-            <spell_message></spell_message>
+            <spell_message_sound></spell_message_sound>
+            <spell_message_visual></spell_message_visual>
         </text>
 
         <graphics>
@@ -2931,7 +2961,8 @@ SPDX-License-Identifier: AGPL-3.0-or-later
             <smell_message></smell_message>
             <aware_message_seen>hisses.</aware_message_seen>
             <aware_message_hidden>I hear hissing.</aware_message_hidden>
-            <spell_message></spell_message>
+            <spell_message_sound></spell_message_sound>
+            <spell_message_visual></spell_message_visual>
         </text>
 
         <graphics>
@@ -3027,7 +3058,8 @@ SPDX-License-Identifier: AGPL-3.0-or-later
             <smell_message></smell_message>
             <aware_message_seen>hisses.</aware_message_seen>
             <aware_message_hidden>I hear hissing.</aware_message_hidden>
-            <spell_message></spell_message>
+            <spell_message_sound></spell_message_sound>
+            <spell_message_visual></spell_message_visual>
         </text>
 
         <graphics>
@@ -3127,7 +3159,8 @@ SPDX-License-Identifier: AGPL-3.0-or-later
             <smell_message></smell_message>
             <aware_message_seen>hisses.</aware_message_seen>
             <aware_message_hidden>I hear hissing.</aware_message_hidden>
-            <spell_message></spell_message>
+            <spell_message_sound></spell_message_sound>
+            <spell_message_visual></spell_message_visual>
         </text>
 
         <graphics>
@@ -3223,7 +3256,8 @@ SPDX-License-Identifier: AGPL-3.0-or-later
             <smell_message></smell_message>
             <aware_message_seen>snarls.</aware_message_seen>
             <aware_message_hidden>I hear a snarl.</aware_message_hidden>
-            <spell_message></spell_message>
+            <spell_message_sound></spell_message_sound>
+            <spell_message_visual></spell_message_visual>
         </text>
 
         <graphics>
@@ -3324,7 +3358,8 @@ SPDX-License-Identifier: AGPL-3.0-or-later
             <smell_message></smell_message>
             <aware_message_seen>snarls.</aware_message_seen>
             <aware_message_hidden>I hear a snarl.</aware_message_hidden>
-            <spell_message></spell_message>
+            <spell_message_sound></spell_message_sound>
+            <spell_message_visual></spell_message_visual>
         </text>
 
         <graphics>
@@ -3428,7 +3463,8 @@ SPDX-License-Identifier: AGPL-3.0-or-later
             <smell_message></smell_message>
             <aware_message_seen>snarls.</aware_message_seen>
             <aware_message_hidden>I hear a snarl.</aware_message_hidden>
-            <spell_message></spell_message>
+            <spell_message_sound></spell_message_sound>
+            <spell_message_visual></spell_message_visual>
         </text>
 
         <graphics>
@@ -3529,7 +3565,8 @@ SPDX-License-Identifier: AGPL-3.0-or-later
             <smell_message></smell_message>
             <aware_message_seen>snarls.</aware_message_seen>
             <aware_message_hidden>I hear a snarl.</aware_message_hidden>
-            <spell_message></spell_message>
+            <spell_message_sound></spell_message_sound>
+            <spell_message_visual></spell_message_visual>
         </text>
 
         <graphics>
@@ -3630,7 +3667,8 @@ SPDX-License-Identifier: AGPL-3.0-or-later
             <smell_message></smell_message>
             <aware_message_seen>snarls.</aware_message_seen>
             <aware_message_hidden>I hear a snarl.</aware_message_hidden>
-            <spell_message></spell_message>
+            <spell_message_sound></spell_message_sound>
+            <spell_message_visual></spell_message_visual>
         </text>
 
         <graphics>
@@ -3731,7 +3769,8 @@ SPDX-License-Identifier: AGPL-3.0-or-later
             <smell_message></smell_message>
             <aware_message_seen>snarls.</aware_message_seen>
             <aware_message_hidden>I hear a snarl.</aware_message_hidden>
-            <spell_message></spell_message>
+            <spell_message_sound></spell_message_sound>
+            <spell_message_visual></spell_message_visual>
         </text>
 
         <graphics>
@@ -3834,7 +3873,8 @@ SPDX-License-Identifier: AGPL-3.0-or-later
             <smell_message></smell_message>
             <aware_message_seen>snarls.</aware_message_seen>
             <aware_message_hidden>I hear a snarl.</aware_message_hidden>
-            <spell_message></spell_message>
+            <spell_message_sound></spell_message_sound>
+            <spell_message_visual></spell_message_visual>
         </text>
 
         <graphics>
@@ -3934,7 +3974,8 @@ SPDX-License-Identifier: AGPL-3.0-or-later
             <smell_message></smell_message>
             <aware_message_seen>snarls.</aware_message_seen>
             <aware_message_hidden>I hear a snarl.</aware_message_hidden>
-            <spell_message></spell_message>
+            <spell_message_sound></spell_message_sound>
+            <spell_message_visual></spell_message_visual>
         </text>
 
         <graphics>
@@ -4036,7 +4077,8 @@ SPDX-License-Identifier: AGPL-3.0-or-later
             <smell_message></smell_message>
             <aware_message_seen>snarls.</aware_message_seen>
             <aware_message_hidden>I hear a snarl.</aware_message_hidden>
-            <spell_message></spell_message>
+            <spell_message_sound></spell_message_sound>
+            <spell_message_visual></spell_message_visual>
         </text>
 
         <graphics>
@@ -4133,7 +4175,8 @@ SPDX-License-Identifier: AGPL-3.0-or-later
             <smell_message></smell_message>
             <aware_message_seen>speaks in a droning voice.</aware_message_seen>
             <aware_message_hidden>I hear a droning voice.</aware_message_hidden>
-            <spell_message>speaks incantations in a droning voice.</spell_message>
+            <spell_message_sound>speaks incantations in a droning voice.</spell_message_sound>
+            <spell_message_visual>weaves patterns with twitching, inhuman motions.</spell_message_visual>
         </text>
 
         <graphics>
@@ -4235,7 +4278,8 @@ SPDX-License-Identifier: AGPL-3.0-or-later
             <smell_message></smell_message>
             <aware_message_seen>speaks in a droning voice.</aware_message_seen>
             <aware_message_hidden>I hear a droning voice.</aware_message_hidden>
-            <spell_message>speaks incantations in a droning voice.</spell_message>
+            <spell_message_sound>speaks incantations in a droning voice.</spell_message_sound>
+            <spell_message_visual>weaves patterns with twitching, inhuman motions.</spell_message_visual>
         </text>
 
         <graphics>
@@ -4345,7 +4389,8 @@ SPDX-License-Identifier: AGPL-3.0-or-later
             <smell_message></smell_message>
             <aware_message_seen>speaks in a droning voice.</aware_message_seen>
             <aware_message_hidden></aware_message_hidden>
-            <spell_message>speaks incantations in a droning voice.</spell_message>
+            <spell_message_sound>speaks incantations in a droning voice.</spell_message_sound>
+            <spell_message_visual>weaves patterns with twitching, inhuman motions.</spell_message_visual>
         </text>
 
         <graphics>
@@ -4450,7 +4495,8 @@ SPDX-License-Identifier: AGPL-3.0-or-later
             <smell_message></smell_message>
             <aware_message_seen>speaks in a droning voice.</aware_message_seen>
             <aware_message_hidden>I hear a droning voice.</aware_message_hidden>
-            <spell_message>speaks incantations in a droning voice.</spell_message>
+            <spell_message_sound>speaks incantations in a droning voice.</spell_message_sound>
+            <spell_message_visual>weaves patterns with twitching, inhuman motions.</spell_message_visual>
         </text>
 
         <graphics>
@@ -4554,7 +4600,8 @@ SPDX-License-Identifier: AGPL-3.0-or-later
             <smell_message></smell_message>
             <aware_message_seen>makes shrill whistling sounds.</aware_message_seen>
             <aware_message_hidden>I hear a shrill whistling.</aware_message_hidden>
-            <spell_message></spell_message>
+            <spell_message_sound></spell_message_sound>
+            <spell_message_visual></spell_message_visual>
         </text>
 
         <graphics>
@@ -4656,7 +4703,8 @@ SPDX-License-Identifier: AGPL-3.0-or-later
             <smell_message></smell_message>
             <aware_message_seen>makes shrill whistling sounds.</aware_message_seen>
             <aware_message_hidden>I hear a shrill whistling.</aware_message_hidden>
-            <spell_message></spell_message>
+            <spell_message_sound></spell_message_sound>
+            <spell_message_visual></spell_message_visual>
         </text>
 
         <graphics>
@@ -4760,7 +4808,8 @@ SPDX-License-Identifier: AGPL-3.0-or-later
             <smell_message></smell_message>
             <aware_message_seen></aware_message_seen>
             <aware_message_hidden></aware_message_hidden>
-            <spell_message></spell_message>
+            <spell_message_sound></spell_message_sound>
+            <spell_message_visual></spell_message_visual>
         </text>
 
         <graphics>
@@ -4858,7 +4907,8 @@ SPDX-License-Identifier: AGPL-3.0-or-later
             <smell_message>It smells like an open grave here.</smell_message>
             <aware_message_seen>growls.</aware_message_seen>
             <aware_message_hidden>I hear a chilling growl.</aware_message_hidden>
-            <spell_message></spell_message>
+            <spell_message_sound></spell_message_sound>
+            <spell_message_visual></spell_message_visual>
         </text>
 
         <graphics>
@@ -4957,7 +5007,8 @@ SPDX-License-Identifier: AGPL-3.0-or-later
             <smell_message>It smells like an open grave here.</smell_message>
             <aware_message_seen>growls.</aware_message_seen>
             <aware_message_hidden>I hear a chilling growl.</aware_message_hidden>
-            <spell_message></spell_message>
+            <spell_message_sound></spell_message_sound>
+            <spell_message_visual></spell_message_visual>
         </text>
 
         <graphics>
@@ -5060,7 +5111,8 @@ SPDX-License-Identifier: AGPL-3.0-or-later
             <smell_message></smell_message>
             <aware_message_seen></aware_message_seen>
             <aware_message_hidden></aware_message_hidden>
-            <spell_message></spell_message>
+            <spell_message_sound></spell_message_sound>
+            <spell_message_visual></spell_message_visual>
             <death_message>fades.</death_message>
         </text>
 
@@ -5155,7 +5207,8 @@ SPDX-License-Identifier: AGPL-3.0-or-later
             <smell_message></smell_message>
             <aware_message_seen></aware_message_seen>
             <aware_message_hidden></aware_message_hidden>
-            <spell_message></spell_message>
+            <spell_message_sound></spell_message_sound>
+            <spell_message_visual></spell_message_visual>
         </text>
 
         <graphics>
@@ -5251,7 +5304,8 @@ SPDX-License-Identifier: AGPL-3.0-or-later
             <smell_message></smell_message>
             <aware_message_seen>snarls.</aware_message_seen>
             <aware_message_hidden>I hear snarling.</aware_message_hidden>
-            <spell_message></spell_message>
+            <spell_message_sound></spell_message_sound>
+            <spell_message_visual></spell_message_visual>
         </text>
 
         <graphics>
@@ -5343,7 +5397,8 @@ SPDX-License-Identifier: AGPL-3.0-or-later
             <smell_message></smell_message>
             <aware_message_seen></aware_message_seen>
             <aware_message_hidden></aware_message_hidden>
-            <spell_message></spell_message>
+            <spell_message_sound></spell_message_sound>
+            <spell_message_visual></spell_message_visual>
         </text>
 
         <graphics>
@@ -5434,7 +5489,8 @@ SPDX-License-Identifier: AGPL-3.0-or-later
             <smell_message></smell_message>
             <aware_message_seen></aware_message_seen>
             <aware_message_hidden></aware_message_hidden>
-            <spell_message></spell_message>
+            <spell_message_sound></spell_message_sound>
+            <spell_message_visual></spell_message_visual>
             <death_message>is put to rest.</death_message>
         </text>
 
@@ -5534,7 +5590,8 @@ SPDX-License-Identifier: AGPL-3.0-or-later
             <smell_message></smell_message>
             <aware_message_seen></aware_message_seen>
             <aware_message_hidden></aware_message_hidden>
-            <spell_message>speaks incantations in a deep hollow voice.</spell_message>
+            <spell_message_sound>speaks incantations in a deep hollow voice.</spell_message_sound>
+            <spell_message_visual>makes gestures in the air.</spell_message_visual>
             <death_message>is put to rest.</death_message>
         </text>
 
@@ -5639,7 +5696,8 @@ SPDX-License-Identifier: AGPL-3.0-or-later
             <smell_message></smell_message>
             <aware_message_seen></aware_message_seen>
             <aware_message_hidden></aware_message_hidden>
-            <spell_message>speaks incantations.</spell_message>
+            <spell_message_sound>speaks incantations.</spell_message_sound>
+            <spell_message_visual>makes gestures in the air.</spell_message_visual>
         </text>
 
         <graphics>
@@ -5740,7 +5798,8 @@ SPDX-License-Identifier: AGPL-3.0-or-later
             <smell_message></smell_message>
             <aware_message_seen></aware_message_seen>
             <aware_message_hidden></aware_message_hidden>
-            <spell_message>speaks incantations.</spell_message>
+            <spell_message_sound>speaks incantations.</spell_message_sound>
+            <spell_message_visual>makes gestures in the air.</spell_message_visual>
         </text>
 
         <graphics>
@@ -5845,7 +5904,8 @@ SPDX-License-Identifier: AGPL-3.0-or-later
             <smell_message></smell_message>
             <aware_message_seen></aware_message_seen>
             <aware_message_hidden>I hear the flapping of wings.</aware_message_hidden>
-            <spell_message></spell_message>
+            <spell_message_sound></spell_message_sound>
+            <spell_message_visual></spell_message_visual>
         </text>
 
         <graphics>
@@ -5938,7 +5998,8 @@ SPDX-License-Identifier: AGPL-3.0-or-later
             <smell_message></smell_message>
             <aware_message_seen></aware_message_seen>
             <aware_message_hidden>I hear the flapping of great wings.</aware_message_hidden>
-            <spell_message></spell_message>
+            <spell_message_sound></spell_message_sound>
+            <spell_message_visual></spell_message_visual>
         </text>
 
         <graphics>
@@ -6032,7 +6093,8 @@ SPDX-License-Identifier: AGPL-3.0-or-later
             <smell_message></smell_message>
             <aware_message_seen></aware_message_seen>
             <aware_message_hidden>I hear the flapping of great wings.</aware_message_hidden>
-            <spell_message></spell_message>
+            <spell_message_sound></spell_message_sound>
+            <spell_message_visual></spell_message_visual>
         </text>
 
         <graphics>
@@ -6126,7 +6188,8 @@ SPDX-License-Identifier: AGPL-3.0-or-later
             <smell_message></smell_message>
             <aware_message_seen></aware_message_seen>
             <aware_message_hidden>I hear the flapping of great wings.</aware_message_hidden>
-            <spell_message></spell_message>
+            <spell_message_sound></spell_message_sound>
+            <spell_message_visual></spell_message_visual>
         </text>
 
         <graphics>
@@ -6223,7 +6286,8 @@ SPDX-License-Identifier: AGPL-3.0-or-later
             <smell_message></smell_message>
             <aware_message_seen></aware_message_seen>
             <aware_message_hidden>I hear the flapping of great wings.</aware_message_hidden>
-            <spell_message></spell_message>
+            <spell_message_sound></spell_message_sound>
+            <spell_message_visual></spell_message_visual>
         </text>
 
         <graphics>
@@ -6318,7 +6382,8 @@ SPDX-License-Identifier: AGPL-3.0-or-later
             <smell_message></smell_message>
             <aware_message_seen></aware_message_seen>
             <aware_message_hidden></aware_message_hidden>
-            <spell_message></spell_message>
+            <spell_message_sound></spell_message_sound>
+            <spell_message_visual></spell_message_visual>
             <death_message>is destroyed.</death_message>
         </text>
 
@@ -6418,7 +6483,8 @@ SPDX-License-Identifier: AGPL-3.0-or-later
             <smell_message></smell_message>
             <aware_message_seen></aware_message_seen>
             <aware_message_hidden></aware_message_hidden>
-            <spell_message></spell_message>
+            <spell_message_sound></spell_message_sound>
+            <spell_message_visual></spell_message_visual>
         </text>
 
         <graphics>
@@ -6507,7 +6573,8 @@ SPDX-License-Identifier: AGPL-3.0-or-later
             <smell_message></smell_message>
             <aware_message_seen></aware_message_seen>
             <aware_message_hidden></aware_message_hidden>
-            <spell_message></spell_message>
+            <spell_message_sound></spell_message_sound>
+            <spell_message_visual></spell_message_visual>
         </text>
 
         <graphics>
@@ -6596,7 +6663,8 @@ SPDX-License-Identifier: AGPL-3.0-or-later
             <smell_message>There is a stench of decayed flesh here.</smell_message>
             <aware_message_seen>speaks in a hollow voice.</aware_message_seen>
             <aware_message_hidden>I hear a hollow voice.</aware_message_hidden>
-            <spell_message>speaks incantations in a hollow voice.</spell_message>
+            <spell_message_sound>speaks incantations in a hollow voice.</spell_message_sound>
+            <spell_message_visual>makes gestures in the air.</spell_message_visual>
         </text>
 
         <graphics>
@@ -6709,7 +6777,8 @@ SPDX-License-Identifier: AGPL-3.0-or-later
             <smell_message>There is a stench of decayed flesh here.</smell_message>
             <aware_message_seen>speaks in a hollow voice.</aware_message_seen>
             <aware_message_hidden>I hear a hollow voice.</aware_message_hidden>
-            <spell_message>speaks incantations in a hollow voice.</spell_message>
+            <spell_message_sound>speaks incantations in a hollow voice.</spell_message_sound>
+            <spell_message_visual>makes gestures in the air.</spell_message_visual>
         </text>
 
         <graphics>
@@ -6808,7 +6877,8 @@ SPDX-License-Identifier: AGPL-3.0-or-later
             <smell_message>There is a stench of decayed flesh here.</smell_message>
             <aware_message_seen>speaks in a hollow voice.</aware_message_seen>
             <aware_message_hidden>I hear a hollow voice.</aware_message_hidden>
-            <spell_message>speaks incantations in a hollow voice.</spell_message>
+            <spell_message_sound>speaks incantations in a hollow voice.</spell_message_sound>
+            <spell_message_visual>makes gestures in the air.</spell_message_visual>
         </text>
 
         <graphics>
@@ -6924,7 +6994,8 @@ SPDX-License-Identifier: AGPL-3.0-or-later
             <smell_message>There is a stench of decayed flesh here.</smell_message>
             <aware_message_seen>speaks in a hollow voice.</aware_message_seen>
             <aware_message_hidden>I hear a hollow voice.</aware_message_hidden>
-            <spell_message>speaks incantations in a hollow voice.</spell_message>
+            <spell_message_sound>speaks incantations in a hollow voice.</spell_message_sound>
+            <spell_message_visual>makes gestures in the air.</spell_message_visual>
         </text>
 
         <graphics>
@@ -7044,7 +7115,8 @@ SPDX-License-Identifier: AGPL-3.0-or-later
             <smell_message>There is a briny smell here.</smell_message>
             <aware_message_seen></aware_message_seen>
             <aware_message_hidden></aware_message_hidden>
-            <spell_message></spell_message>
+            <spell_message_sound></spell_message_sound>
+            <spell_message_visual></spell_message_visual>
         </text>
 
         <graphics>
@@ -7137,7 +7209,8 @@ SPDX-License-Identifier: AGPL-3.0-or-later
             <smell_message>There is a briny smell here.</smell_message>
             <aware_message_seen></aware_message_seen>
             <aware_message_hidden></aware_message_hidden>
-            <spell_message>speaks incantations.</spell_message>
+            <spell_message_sound>speaks incantations.</spell_message_sound>
+            <spell_message_visual>makes gestures in the air.</spell_message_visual>
         </text>
 
         <graphics>
@@ -7231,7 +7304,8 @@ SPDX-License-Identifier: AGPL-3.0-or-later
             <smell_message></smell_message>
             <aware_message_seen>howls.</aware_message_seen>
             <aware_message_hidden>I hear a beast howling.</aware_message_hidden>
-            <spell_message></spell_message>
+            <spell_message_sound></spell_message_sound>
+            <spell_message_visual></spell_message_visual>
         </text>
 
         <graphics>
@@ -7324,7 +7398,8 @@ SPDX-License-Identifier: AGPL-3.0-or-later
             <smell_message></smell_message>
             <aware_message_seen>shrieks.</aware_message_seen>
             <aware_message_hidden>I hear shrieking.</aware_message_hidden>
-            <spell_message></spell_message>
+            <spell_message_sound></spell_message_sound>
+            <spell_message_visual></spell_message_visual>
         </text>
 
         <graphics>
@@ -7420,7 +7495,8 @@ SPDX-License-Identifier: AGPL-3.0-or-later
             <smell_message></smell_message>
             <aware_message_seen>shrieks.</aware_message_seen>
             <aware_message_hidden>I hear shrieking.</aware_message_hidden>
-            <spell_message></spell_message>
+            <spell_message_sound></spell_message_sound>
+            <spell_message_visual></spell_message_visual>
         </text>
 
         <graphics>
@@ -7516,7 +7592,8 @@ SPDX-License-Identifier: AGPL-3.0-or-later
             <smell_message></smell_message>
             <aware_message_seen></aware_message_seen>
             <aware_message_hidden></aware_message_hidden>
-            <spell_message></spell_message>
+            <spell_message_sound></spell_message_sound>
+            <spell_message_visual></spell_message_visual>
         </text>
 
         <graphics>
@@ -7615,7 +7692,8 @@ SPDX-License-Identifier: AGPL-3.0-or-later
             <smell_message></smell_message>
             <aware_message_seen></aware_message_seen>
             <aware_message_hidden></aware_message_hidden>
-            <spell_message></spell_message>
+            <spell_message_sound></spell_message_sound>
+            <spell_message_visual></spell_message_visual>
         </text>
 
         <graphics>
@@ -7714,7 +7792,8 @@ SPDX-License-Identifier: AGPL-3.0-or-later
             <smell_message></smell_message>
             <aware_message_seen></aware_message_seen>
             <aware_message_hidden></aware_message_hidden>
-            <spell_message></spell_message>
+            <spell_message_sound></spell_message_sound>
+            <spell_message_visual></spell_message_visual>
         </text>
 
         <graphics>
@@ -7813,7 +7892,8 @@ SPDX-License-Identifier: AGPL-3.0-or-later
             <smell_message></smell_message>
             <aware_message_seen></aware_message_seen>
             <aware_message_hidden>I hear a howling wind.</aware_message_hidden>
-            <spell_message></spell_message>
+            <spell_message_sound></spell_message_sound>
+            <spell_message_visual></spell_message_visual>
         </text>
 
         <graphics>
@@ -7915,7 +7995,8 @@ SPDX-License-Identifier: AGPL-3.0-or-later
             <smell_message></smell_message>
             <aware_message_seen></aware_message_seen>
             <aware_message_hidden>I hear a howling wind.</aware_message_hidden>
-            <spell_message></spell_message>
+            <spell_message_sound></spell_message_sound>
+            <spell_message_visual></spell_message_visual>
         </text>
 
         <graphics>
@@ -8018,7 +8099,8 @@ SPDX-License-Identifier: AGPL-3.0-or-later
             <smell_message></smell_message>
             <aware_message_seen></aware_message_seen>
             <aware_message_hidden>I hear a howling wind.</aware_message_hidden>
-            <spell_message></spell_message>
+            <spell_message_sound></spell_message_sound>
+            <spell_message_visual></spell_message_visual>
         </text>
 
         <graphics>
@@ -8122,7 +8204,8 @@ SPDX-License-Identifier: AGPL-3.0-or-later
             <smell_message>It smells like filth and decrepitude here.</smell_message>
             <aware_message_seen>makes a gurgling noise.</aware_message_seen>
             <aware_message_hidden>I hear a gurgling noise.</aware_message_hidden>
-            <spell_message></spell_message>
+            <spell_message_sound></spell_message_sound>
+            <spell_message_visual></spell_message_visual>
             <death_message>disintegrates.</death_message>
         </text>
 
@@ -8228,7 +8311,8 @@ SPDX-License-Identifier: AGPL-3.0-or-later
             <smell_message>It smells like filth and decrepitude here.</smell_message>
             <aware_message_seen>makes a gurgling noise.</aware_message_seen>
             <aware_message_hidden>I hear a gurgling noise.</aware_message_hidden>
-            <spell_message></spell_message>
+            <spell_message_sound></spell_message_sound>
+            <spell_message_visual></spell_message_visual>
             <death_message>disintegrates.</death_message>
         </text>
 
@@ -8333,7 +8417,8 @@ SPDX-License-Identifier: AGPL-3.0-or-later
             <smell_message>It smells like filth and decrepitude here.</smell_message>
             <aware_message_seen>makes a gurgling noise.</aware_message_seen>
             <aware_message_hidden>I hear a gurgling noise.</aware_message_hidden>
-            <spell_message></spell_message>
+            <spell_message_sound></spell_message_sound>
+            <spell_message_visual></spell_message_visual>
             <death_message>disintegrates.</death_message>
         </text>
 
@@ -8439,7 +8524,8 @@ SPDX-License-Identifier: AGPL-3.0-or-later
             <smell_message>It smells like filth and decrepitude here.</smell_message>
             <aware_message_seen></aware_message_seen>
             <aware_message_hidden></aware_message_hidden>
-            <spell_message></spell_message>
+            <spell_message_sound></spell_message_sound>
+            <spell_message_visual></spell_message_visual>
         </text>
 
         <graphics>
@@ -8532,7 +8618,8 @@ SPDX-License-Identifier: AGPL-3.0-or-later
             <smell_message></smell_message>
             <aware_message_seen></aware_message_seen>
             <aware_message_hidden></aware_message_hidden>
-            <spell_message></spell_message>
+            <spell_message_sound></spell_message_sound>
+            <spell_message_visual></spell_message_visual>
             <death_message>disintegrates.</death_message>
         </text>
 
@@ -8637,7 +8724,8 @@ SPDX-License-Identifier: AGPL-3.0-or-later
             <smell_message></smell_message>
             <aware_message_seen></aware_message_seen>
             <aware_message_hidden></aware_message_hidden>
-            <spell_message></spell_message>
+            <spell_message_sound></spell_message_sound>
+            <spell_message_visual></spell_message_visual>
             <death_message>fades out.</death_message>
         </text>
 
@@ -8741,7 +8829,8 @@ SPDX-License-Identifier: AGPL-3.0-or-later
             <smell_message>The air is heavy with a fetid, viscous odor.</smell_message>
             <aware_message_seen></aware_message_seen>
             <aware_message_hidden></aware_message_hidden>
-            <spell_message>makes a roaring noise</spell_message>
+            <spell_message_sound>makes a roaring noise</spell_message_sound>
+            <spell_message_visual>pulses with arcane energy.</spell_message_visual>
         </text>
 
         <graphics>
@@ -8857,7 +8946,8 @@ SPDX-License-Identifier: AGPL-3.0-or-later
             <smell_message></smell_message>
             <aware_message_seen></aware_message_seen>
             <aware_message_hidden></aware_message_hidden>
-            <spell_message></spell_message>
+            <spell_message_sound></spell_message_sound>
+            <spell_message_visual></spell_message_visual>
         </text>
 
         <graphics>
@@ -8950,7 +9040,8 @@ SPDX-License-Identifier: AGPL-3.0-or-later
             <smell_message></smell_message>
             <aware_message_seen></aware_message_seen>
             <aware_message_hidden>I hear the flapping of great wings.</aware_message_hidden>
-            <spell_message></spell_message>
+            <spell_message_sound></spell_message_sound>
+            <spell_message_visual></spell_message_visual>
         </text>
 
         <graphics>
@@ -9047,7 +9138,8 @@ SPDX-License-Identifier: AGPL-3.0-or-later
             <smell_message></smell_message>
             <aware_message_seen></aware_message_seen>
             <aware_message_hidden></aware_message_hidden>
-            <spell_message>makes a piercing noise.</spell_message>
+            <spell_message_sound>makes a piercing noise.</spell_message_sound>
+            <spell_message_visual>weaves patterns in the air.</spell_message_visual>
         </text>
 
         <graphics>
@@ -9157,7 +9249,8 @@ SPDX-License-Identifier: AGPL-3.0-or-later
             <smell_message></smell_message>
             <aware_message_seen></aware_message_seen>
             <aware_message_hidden></aware_message_hidden>
-            <spell_message>makes a piercing noise.</spell_message>
+            <spell_message_sound>makes a piercing noise.</spell_message_sound>
+            <spell_message_visual>weaves patterns in the air.</spell_message_visual>
         </text>
 
         <graphics>
@@ -9265,7 +9358,8 @@ SPDX-License-Identifier: AGPL-3.0-or-later
             <smell_message></smell_message>
             <aware_message_seen>makes a deep buzzing sound.</aware_message_seen>
             <aware_message_hidden>I hear a deep buzzing sound.</aware_message_hidden>
-            <spell_message>makes buzzing sounds in peculiar frequencies.</spell_message>
+            <spell_message_sound>makes buzzing sounds in peculiar frequencies.</spell_message_sound>
+            <spell_message_visual>projects shifting patterns in the air.</spell_message_visual>
         </text>
 
         <graphics>
@@ -9364,7 +9458,8 @@ SPDX-License-Identifier: AGPL-3.0-or-later
             <smell_message></smell_message>
             <aware_message_seen></aware_message_seen>
             <aware_message_hidden></aware_message_hidden>
-            <spell_message></spell_message>
+            <spell_message_sound></spell_message_sound>
+            <spell_message_visual></spell_message_visual>
             <death_message>is destroyed.</death_message>
         </text>
 
@@ -9455,7 +9550,8 @@ SPDX-License-Identifier: AGPL-3.0-or-later
             <smell_message></smell_message>
             <aware_message_seen></aware_message_seen>
             <aware_message_hidden></aware_message_hidden>
-            <spell_message></spell_message>
+            <spell_message_sound></spell_message_sound>
+            <spell_message_visual></spell_message_visual>
             <death_message>fades.</death_message>
         </text>
 
@@ -9545,7 +9641,8 @@ SPDX-License-Identifier: AGPL-3.0-or-later
             <smell_message></smell_message>
             <aware_message_seen></aware_message_seen>
             <aware_message_hidden></aware_message_hidden>
-            <spell_message></spell_message>
+            <spell_message_sound></spell_message_sound>
+            <spell_message_visual></spell_message_visual>
             <death_message>is destroyed.</death_message>
         </text>
 
@@ -9647,7 +9744,8 @@ SPDX-License-Identifier: AGPL-3.0-or-later
             <smell_message></smell_message>
             <aware_message_seen></aware_message_seen>
             <aware_message_hidden></aware_message_hidden>
-            <spell_message></spell_message>
+            <spell_message_sound></spell_message_sound>
+            <spell_message_visual></spell_message_visual>
             <death_message>is destroyed.</death_message>
         </text>
 
@@ -9750,7 +9848,8 @@ SPDX-License-Identifier: AGPL-3.0-or-later
             <smell_message></smell_message>
             <aware_message_seen></aware_message_seen>
             <aware_message_hidden></aware_message_hidden>
-            <spell_message></spell_message>
+            <spell_message_sound></spell_message_sound>
+            <spell_message_visual></spell_message_visual>
             <death_message>is destroyed.</death_message>
         </text>
 
@@ -9856,7 +9955,8 @@ SPDX-License-Identifier: AGPL-3.0-or-later
             <smell_message></smell_message>
             <aware_message_seen></aware_message_seen>
             <aware_message_hidden></aware_message_hidden>
-            <spell_message></spell_message>
+            <spell_message_sound></spell_message_sound>
+            <spell_message_visual></spell_message_visual>
             <death_message>is destroyed.</death_message>
         </text>
 
@@ -9954,7 +10054,8 @@ SPDX-License-Identifier: AGPL-3.0-or-later
             <smell_message></smell_message>
             <aware_message_seen></aware_message_seen>
             <aware_message_hidden></aware_message_hidden>
-            <spell_message></spell_message>
+            <spell_message_sound></spell_message_sound>
+            <spell_message_visual></spell_message_visual>
         </text>
 
         <graphics>
@@ -10050,7 +10151,8 @@ SPDX-License-Identifier: AGPL-3.0-or-later
             <smell_message>It smells like death here.</smell_message>
             <aware_message_seen></aware_message_seen>
             <aware_message_hidden></aware_message_hidden>
-            <spell_message>speaks incantations in a deep hollow voice.</spell_message>
+            <spell_message_sound>speaks incantations in a deep hollow voice.</spell_message_sound>
+            <spell_message_visual>makes gestures in the air.</spell_message_visual>
         </text>
 
         <graphics>
@@ -10159,7 +10261,8 @@ SPDX-License-Identifier: AGPL-3.0-or-later
             <smell_message></smell_message>
             <aware_message_seen></aware_message_seen>
             <aware_message_hidden></aware_message_hidden>
-            <spell_message></spell_message>
+            <spell_message_sound></spell_message_sound>
+            <spell_message_visual></spell_message_visual>
         </text>
 
         <graphics>
@@ -10255,7 +10358,8 @@ SPDX-License-Identifier: AGPL-3.0-or-later
             <smell_message></smell_message>
             <aware_message_seen></aware_message_seen>
             <aware_message_hidden></aware_message_hidden>
-            <spell_message>speaks incantations in a deep hollow voice.</spell_message>
+            <spell_message_sound>speaks incantations in a deep hollow voice.</spell_message_sound>
+            <spell_message_visual>makes gestures in the air.</spell_message_visual>
         </text>
 
         <graphics>
@@ -10369,7 +10473,8 @@ SPDX-License-Identifier: AGPL-3.0-or-later
             <smell_message></smell_message>
             <aware_message_seen></aware_message_seen>
             <aware_message_hidden></aware_message_hidden>
-            <spell_message>mutters incantations.</spell_message>
+            <spell_message_sound>mutters incantations.</spell_message_sound>
+            <spell_message_visual>makes gestures in the air.</spell_message_visual>
         </text>
 
         <graphics>
@@ -10465,7 +10570,8 @@ SPDX-License-Identifier: AGPL-3.0-or-later
             <smell_message></smell_message>
             <aware_message_seen></aware_message_seen>
             <aware_message_hidden></aware_message_hidden>
-            <spell_message>mutters incantations.</spell_message>
+            <spell_message_sound>mutters incantations.</spell_message_sound>
+            <spell_message_visual>makes gestures in the air.</spell_message_visual>
         </text>
 
         <graphics>
@@ -10559,7 +10665,8 @@ SPDX-License-Identifier: AGPL-3.0-or-later
             <smell_message></smell_message>
             <aware_message_seen></aware_message_seen>
             <aware_message_hidden></aware_message_hidden>
-            <spell_message>mutters incantations.</spell_message>
+            <spell_message_sound>mutters incantations.</spell_message_sound>
+            <spell_message_visual>makes gestures in the air.</spell_message_visual>
         </text>
 
         <graphics>

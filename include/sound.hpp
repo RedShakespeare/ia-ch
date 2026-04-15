@@ -134,7 +134,12 @@ public:
                 m_msg += str;
         }
 
-        void on_heard(actor::Actor& actor) const;
+        void on_heard(actor::Actor& actor);
+
+        bool did_player_hear_sound() const
+        {
+                return m_did_player_hear_sound;
+        }
 
 private:
         std::string m_msg;
@@ -145,6 +150,7 @@ private:
         SndVol m_vol {SndVol::low};
         AlertsMon m_is_alerting_mon {AlertsMon::no};
         std::shared_ptr<SndHeardEffect> m_snd_heard_effect;
+        bool m_did_player_hear_sound {false};
 };
 
 // -----------------------------------------------------------------------------
@@ -152,7 +158,7 @@ private:
 // -----------------------------------------------------------------------------
 namespace snd_emit
 {
-void run(Snd snd);
+void run(Snd& snd);
 
 }  // namespace snd_emit
 

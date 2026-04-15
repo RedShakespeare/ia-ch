@@ -30,16 +30,6 @@ void draw_blast_at_cells(const std::vector<P>& positions, const Color& color)
 {
         TRACE_FUNC_BEGIN;
 
-        // if (!panels::is_valid())
-        // {
-        //         TRACE_FUNC_END;
-
-        //         return;
-        // }
-
-        // TODO: Consider if the "blast" animations should just be removed completely and replaced
-        // with the "flash" animations for everything instead.
-
         states::draw();
 
         for (const P& pos : positions) {
@@ -87,11 +77,6 @@ void draw_blast_at_seen_cells(
         const std::vector<P>& positions,
         const Color& color)
 {
-        // if (!panels::is_valid())
-        // {
-        //         return;
-        // }
-
         std::vector<P> positions_with_vision;
 
         for (const P& p : positions) {

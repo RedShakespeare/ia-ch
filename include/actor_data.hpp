@@ -172,7 +172,8 @@ struct ActorData
         bool use_cultist_aware_msg_mon_hidden;
         audio::SfxId aware_sfx_mon_seen;
         audio::SfxId aware_sfx_mon_hidden;
-        std::string spell_msg;
+        std::string spell_msg_sound;
+        std::string spell_msg_visual;
         std::string death_msg_override;
         int erratic_move_pct;
         MonShockLvl mon_shock_lvl;
