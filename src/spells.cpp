@@ -82,6 +82,7 @@ static const std::unordered_map<std::string, SpellId> s_str_to_spell_id_map = {
         {"SPELL_BLESS", SpellId::bless},
         {"SPELL_BLIND", SpellId::blind},
         {"SPELL_BURN", SpellId::burn},
+        {"SPELL_CANCELLATION", SpellId::cancellation},
         {"SPELL_CATACLYSM", SpellId::cataclysm},
         {"SPELL_CLEANSING_FIRE", SpellId::cleansing_fire},
         {"SPELL_CONTROL_OBJECT", SpellId::control_object},
@@ -91,6 +92,7 @@ static const std::unordered_map<std::string, SpellId> s_str_to_spell_id_map = {
         {"SPELL_DISEASE", SpellId::disease},
         {"SPELL_ENFEEBLE", SpellId::enfeeble},
         {"SPELL_ERUDITION", SpellId::erudition},
+        {"SPELL_EXPULSION", SpellId::expulsion},
         {"SPELL_FORCE_BOLT", SpellId::force_bolt},
         {"SPELL_FRENZY", SpellId::frenzy},
         {"SPELL_GNAWING_TORRENT", SpellId::gnawing_torrent},
@@ -1000,6 +1002,9 @@ Spell* make(const SpellId spell_id)
 
         case SpellId::erudition:
                 return new SpellErudition();
+
+        case SpellId::expulsion:
+                return new SpellExpulsion();
 
         case SpellId::identify:
                 return new SpellIdentify();
@@ -5365,10 +5370,7 @@ bool SpellTeleport::allow_mon_cast_now(
 {
         const bool is_low_hp = (mon.m_hp <= (actor::max_hp(mon) / 2));
 
-        return (
-                !seen_targets.empty() &&
-                is_low_hp &&
-                rnd::fraction(3, 4));
+        return !seen_targets.empty() && is_low_hp && rnd::fraction(3, 4);
 }
 
 std::vector<std::string> SpellTeleport::descr_specific(
@@ -5376,8 +5378,7 @@ std::vector<std::string> SpellTeleport::descr_specific(
 {
         std::vector<std::string> descr;
 
-        descr.emplace_back(
-                "Instantly moves the caster to a different position.");
+        descr.emplace_back("Instantly moves the caster to a different position.");
 
         descr.emplace_back(
                 "Maximum teleport distance is " +
@@ -5392,6 +5393,151 @@ std::vector<std::string> SpellTeleport::descr_specific(
         }
 
         return descr;
+}
+
+// -----------------------------------------------------------------------------
+// Expulsion
+// -----------------------------------------------------------------------------
+SpellId SpellExpulsion::id() const
+{
+        return SpellId::expulsion;
+}
+
+SpellDomain SpellExpulsion::domain() const
+{
+        return SpellDomain::time;
+}
+
+SpellShock SpellExpulsion::shock_type() const
+{
+        return SpellShock::mild;
+}
+
+bool SpellExpulsion::is_noisy(const SpellSkill skill) const
+{
+        (void)skill;
+
+        return true;
+}
+
+std::string SpellExpulsion::name() const
+{
+        return "Expulsion";
+}
+
+int SpellExpulsion::max_dist(SpellSkill skill) const
+{
+        switch (skill) {
+        case SpellSkill::basic:
+                return 15;
+
+        case SpellSkill::expert:
+                return 30;
+
+        case SpellSkill::master:
+                return 45;
+
+        case SpellSkill::transcendent:
+                return -1;
+        }
+
+        ASSERT(false);
+        return -1;
+}
+
+int SpellExpulsion::base_max_cost(
+        const SpellSkill skill,
+        const actor::Actor* const caster) const
+{
+        (void)caster;
+
+        return 6 - (int)skill;
+}
+
+void SpellExpulsion::run_effect(
+        actor::Actor* const caster,
+        const SpellSkill skill,
+        const std::vector<actor::Actor*>& seen_targets,
+        PlayerAwareOfCast player_aware) const
+{
+        if (seen_targets.empty()) {
+                if (actor::is_player(caster)) {
+                        msg_log::add("A momentary void opens and closes.");
+                }
+
+                return;
+        }
+
+        // There are targets available
+
+        const std::vector<actor::Actor*> targets =
+                (skill == SpellSkill::transcendent)
+                ? seen_targets
+                : std::vector {rnd::element(seen_targets)};
+
+        if (player_aware == PlayerAwareOfCast::yes) {
+                draw_blast_at_seen_actors(targets, colors::gray());
+        }
+
+        for (actor::Actor* const target : targets) {
+                // Spell resistance?
+                if (target->m_properties.has(prop::Id::r_spell)) {
+                        on_resist(*target);
+
+                        // Spell reflection?
+                        if (target->m_properties.has(prop::Id::spell_reflect)) {
+                                if (actor::can_player_see_actor(*target)) {
+                                        msg_log::add(s_spell_reflect_msg);
+                                }
+
+                                // Run effect with the target as caster, and the
+                                // caster as seen target instead.
+                                run_effect(target, skill, {caster}, player_aware);
+                        }
+
+                        continue;
+                }
+
+                teleport(*target, ShouldCtrlTele::never, max_dist(skill));
+
+                if (!actor::is_player(target)) {
+                        target->m_mon_aware_state.aware_counter = 0;
+                        target->m_mon_aware_state.wary_counter = 0;
+                }
+        }
+}
+
+std::vector<std::string> SpellExpulsion::descr_specific(
+        const SpellSkill skill) const
+{
+        std::vector<std::string> descr;
+
+        if (skill == SpellSkill::transcendent) {
+                descr.emplace_back("All visible hostile creatures are teleported away.");
+        }
+        else {
+                descr.emplace_back("One random visible hostile creature is teleported away.");
+        }
+
+        descr.emplace_back("Max distance is " + std::to_string(max_dist(skill)) + " steps.");
+
+        descr.emplace_back("The teleportation is forced; the target can never control it.");
+
+        return descr;
+}
+
+int SpellExpulsion::mon_cooldown() const
+{
+        return 30;
+}
+
+bool SpellExpulsion::allow_mon_cast_now(
+        const actor::Actor& mon,
+        const std::vector<actor::Actor*>& seen_targets) const
+{
+        const bool is_low_hp = (mon.m_hp <= (actor::max_hp(mon) / 2));
+
+        return !seen_targets.empty() && is_low_hp && rnd::fraction(3, 4);
 }
 
 // -----------------------------------------------------------------------------
@@ -6057,7 +6203,9 @@ void SpellEnfeeble::run_effect(
         const int duration = duration_range(skill).roll();
 
         if (seen_targets.empty()) {
-                msg_log::add("The bugs on the ground suddenly move very feebly.");
+                if (actor::is_player(caster)) {
+                        msg_log::add("The bugs on the ground suddenly move very feebly.");
+                }
 
                 return;
         }
@@ -6200,7 +6348,9 @@ void SpellSlow::run_effect(
         const int duration = duration_range(skill).roll();
 
         if (seen_targets.empty()) {
-                msg_log::add("The bugs on the ground suddenly move very slowly.");
+                if (actor::is_player(caster)) {
+                        msg_log::add("The bugs on the ground suddenly move very slowly.");
+                }
 
                 return;
         }
@@ -6366,7 +6516,9 @@ void SpellTerrify::run_effect(
         PlayerAwareOfCast player_aware) const
 {
         if (seen_targets.empty()) {
-                msg_log::add("The bugs on the ground suddenly scatter away.");
+                if (actor::is_player(caster)) {
+                        msg_log::add("The bugs on the ground suddenly scatter away.");
+                }
 
                 return;
         }
@@ -6548,7 +6700,9 @@ void SpellThreatProjection::run_effect(
         PlayerAwareOfCast player_aware) const
 {
         if (seen_targets.empty()) {
-                msg_log::add("The bugs on the ground all start to attack each other.");
+                if (actor::is_player(caster)) {
+                        msg_log::add("The bugs on the ground all start to attack each other.");
+                }
 
                 return;
         }

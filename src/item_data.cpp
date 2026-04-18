@@ -1720,6 +1720,11 @@ void init()
         g_data[(size_t)d.id] = d;
 
         reset_data(d, ItemType::scroll);
+        d.id = Id::scroll_expulsion;
+        d.spell_cast_from_scroll = SpellId::expulsion;
+        g_data[(size_t)d.id] = d;
+
+        reset_data(d, ItemType::scroll);
         d.id = Id::scroll_haste;
         d.spell_cast_from_scroll = SpellId::haste;
         g_data[(size_t)d.id] = d;

@@ -141,11 +141,10 @@ static void make_for_player_occultist_specific()
                 break;
 
         case SpellDomain::time:
+                learn_spell_player(SpellId::expulsion);
                 break;
 
         case SpellDomain::warding:
-                // TODO:
-                learn_spell_player(SpellId::cancellation);
                 learn_spell_player(SpellId::heal);
                 learn_spell_player(SpellId::inscribe_boundary_sigil);
                 break;
