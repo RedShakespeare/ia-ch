@@ -382,22 +382,30 @@ void teleport(
                         make_all_mon_not_seeing_player_unaware();
                 }
         }
-        else if (player_can_see_actor_before) {
-                const bool player_can_see_actor = actor::can_player_see_actor(actor);
-
-                if (!player_can_see_actor) {
-                        actor.m_mon_aware_state.player_aware_of_me_counter = 0;
+        else {
+                // A (hostile) monster that is teleported away leaves its group (no longer leader or
+                // follower of anything).
+                if (!actor.is_actor_my_leader(map::g_player)) {
+                        actor::disconnect_from_group(actor);
                 }
 
-                const std::string actor_name_the =
-                        text_format::first_to_upper(actor::name_the(actor));
+                if (player_can_see_actor_before) {
+                        const bool player_can_see_actor = actor::can_player_see_actor(actor);
 
-                const std::string msg_ending =
-                        player_can_see_actor
-                        ? common_text::g_mon_disappear_reappear
-                        : common_text::g_mon_disappear;
+                        if (!player_can_see_actor) {
+                                actor.m_mon_aware_state.player_aware_of_me_counter = 0;
+                        }
 
-                msg_log::add(actor_name_the + " " + msg_ending);
+                        const std::string actor_name_the =
+                                text_format::first_to_upper(actor::name_the(actor));
+
+                        const std::string msg_ending =
+                                player_can_see_actor
+                                ? common_text::g_mon_disappear_reappear
+                                : common_text::g_mon_disappear;
+
+                        msg_log::add(actor_name_the + " " + msg_ending);
+                }
         }
 
         actor::make_player_aware_seen_monsters();

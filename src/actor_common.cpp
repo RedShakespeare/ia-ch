@@ -752,4 +752,21 @@ int nr_other_actors_in_same_group(const actor::Actor* const actor)
         return nr_in_group;
 }
 
+void disconnect_from_group(actor::Actor& actor)
+{
+        TRACE << "Disconnecting '" << name_a(actor) << "' from group" << std::endl;
+
+        const bool has_leader_before = actor.m_leader;
+
+        actor.m_leader = nullptr;
+
+        for (actor::Actor* const other_actor : game_time::g_actors) {
+                if (other_actor->m_leader == &actor) {
+                        ASSERT(!has_leader_before);
+
+                        other_actor->m_leader = nullptr;
+                }
+        }
+}
+
 }  // namespace actor

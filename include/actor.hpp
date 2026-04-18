@@ -171,6 +171,7 @@ int armor_points(const actor::Actor& actor);
 bool is_in_same_group(const Actor* actor_1, const Actor* actor_2);
 std::vector<Actor*> other_actors_in_same_group(const actor::Actor* actor);
 int nr_other_actors_in_same_group(const actor::Actor* actor);
+void disconnect_from_group(actor::Actor& actor);
 
 // -----------------------------------------------------------------------------
 // Player specific functions
