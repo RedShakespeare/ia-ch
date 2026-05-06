@@ -128,8 +128,8 @@ static void make_for_player_occultist_specific()
                 break;
 
         case SpellDomain::corruption:
+                learn_spell_player(SpellId::aura_of_decay);
                 learn_spell_player(SpellId::curse);
-                learn_spell_player(SpellId::poison);
                 break;
 
         case SpellDomain::illusion:
@@ -141,6 +141,7 @@ static void make_for_player_occultist_specific()
                 break;
 
         case SpellDomain::time:
+                learn_spell_player(SpellId::temporal_echo);
                 learn_spell_player(SpellId::expulsion);
                 break;
 

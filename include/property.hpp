@@ -591,6 +591,23 @@ public:
         PropEnded on_hit(int dmg, DmgType dmg_type, actor::Actor* attacker) override;
 };
 
+class TemporalEcho : public Prop
+{
+public:
+        TemporalEcho() :
+                Prop(Id::temporal_echo) {}
+
+        PropEnded on_hit(int dmg, DmgType dmg_type, actor::Actor* attacker) override;
+
+        void on_end() override;
+
+        void set_percent_damage_dealt(int pct);
+
+private:
+        int m_dmg_taken {0};
+        int m_pct_dmg_dealt {100};
+};
+
 class Blind : public Prop
 {
 public:

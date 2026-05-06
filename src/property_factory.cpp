@@ -373,6 +373,9 @@ Prop* make(const prop::Id id)
         case prop::Id::crimson_passage:
                 return new CrimsonPassage();
 
+        case prop::Id::temporal_echo:
+                return new TemporalEcho();
+
         case prop::Id::END:
                 break;
         }

@@ -151,9 +151,9 @@ static void init_data_list()
         d.name_short = "Phys Res";
         d.descr = "Cannot be harmed by physical attacks.";
         d.msg_start_player = "I feel impervious to physical attacks.";
-        d.msg_start_mon = "looks tough as steel.";
+        d.msg_start_mon = "{} looks tough as steel.";
         d.msg_end_player = "I feel vulnerable to physical attacks.";
-        d.msg_end_mon = "looks less tough.";
+        d.msg_end_mon = "{} looks less tough.";
         d.allow_display_turns = true;
         d.allow_test_on_bot = true;
         d.alignment = prop::PropAlignment::good;
@@ -165,9 +165,9 @@ static void init_data_list()
         d.name_short = "Fire Res";
         d.descr = "Cannot be harmed by fire.";
         d.msg_start_player = "I feel resistant to fire.";
-        d.msg_start_mon = "is resistant to fire.";
+        d.msg_start_mon = "{} is resistant to fire.";
         d.msg_end_player = "I feel vulnerable to fire.";
-        d.msg_end_mon = "is vulnerable to fire.";
+        d.msg_end_mon = "{} is vulnerable to fire.";
         d.allow_display_turns = true;
         d.allow_test_on_bot = true;
         d.alignment = prop::PropAlignment::good;
@@ -179,9 +179,9 @@ static void init_data_list()
         d.name_short = "Poison Res";
         d.descr = "Cannot be harmed by poison.";
         d.msg_start_player = "I feel resistant to poison.";
-        d.msg_start_mon = "is resistant to poison.";
+        d.msg_start_mon = "{} is resistant to poison.";
         d.msg_end_player = "I feel vulnerable to poison.";
-        d.msg_end_mon = "is vulnerable to poison.";
+        d.msg_end_mon = "{} is vulnerable to poison.";
         d.allow_display_turns = true;
         d.allow_test_on_bot = true;
         d.alignment = prop::PropAlignment::good;
@@ -193,9 +193,9 @@ static void init_data_list()
         d.name_short = "Elec Res";
         d.descr = "Cannot be harmed by electricity.";
         d.msg_start_player = "I feel resistant to electricity.";
-        d.msg_start_mon = "is resistant to electricity.";
+        d.msg_start_mon = "{} is resistant to electricity.";
         d.msg_end_player = "I feel vulnerable to electricity.";
-        d.msg_end_mon = "is vulnerable to electricity.";
+        d.msg_end_mon = "{} is vulnerable to electricity.";
         d.allow_display_turns = true;
         d.allow_test_on_bot = true;
         d.alignment = prop::PropAlignment::good;
@@ -207,9 +207,9 @@ static void init_data_list()
         d.name_short = "Sleep Res";
         d.descr = "Cannot faint or become hypnotized.";
         d.msg_start_player = "I feel wide awake.";
-        d.msg_start_mon = "is wide awake.";
+        d.msg_start_mon = "{} is wide awake.";
         d.msg_end_player = "I feel less awake.";
-        d.msg_end_mon = "is less awake.";
+        d.msg_end_mon = "{} is less awake.";
         d.allow_display_turns = true;
         d.allow_test_on_bot = true;
         d.alignment = prop::PropAlignment::good;
@@ -221,9 +221,9 @@ static void init_data_list()
         d.name_short = "Fear Res";
         d.descr = "Unaffected by fear.";
         d.msg_start_player = "I cannot be swayed by fear.";
-        d.msg_start_mon = "is resistant to fear.";
+        d.msg_start_mon = "{} is resistant to fear.";
         d.msg_end_player = "I feel vulnerable to fear.";
-        d.msg_end_mon = "is vulnerable to fear.";
+        d.msg_end_mon = "{} is vulnerable to fear.";
         d.allow_display_turns = true;
         d.allow_test_on_bot = true;
         d.alignment = prop::PropAlignment::good;
@@ -247,9 +247,9 @@ static void init_data_list()
         d.name_short = "Conf Res";
         d.descr = "Cannot become confused.";
         d.msg_start_player = "I feel resistant to confusion.";
-        d.msg_start_mon = "is resistant to confusion.";
+        d.msg_start_mon = "{} is resistant to confusion.";
         d.msg_end_player = "I feel vulnerable to confusion.";
-        d.msg_end_mon = "is vulnerable to confusion.";
+        d.msg_end_mon = "{} is vulnerable to confusion.";
         d.allow_display_turns = true;
         d.allow_test_on_bot = true;
         d.alignment = prop::PropAlignment::good;
@@ -261,9 +261,9 @@ static void init_data_list()
         d.name_short = "Disease Res";
         d.descr = "Cannot become diseased.";
         d.msg_start_player = "I feel resistant to disease.";
-        d.msg_start_mon = "is resistant to disease.";
+        d.msg_start_mon = "{} is resistant to disease.";
         d.msg_end_player = "I feel vulnerable to disease.";
-        d.msg_end_mon = "is vulnerable to disease.";
+        d.msg_end_mon = "{} is vulnerable to disease.";
         d.allow_display_turns = true;
         d.allow_test_on_bot = true;
         d.alignment = prop::PropAlignment::good;
@@ -284,9 +284,9 @@ static void init_data_list()
         d.name_short = "Paralys Res";
         d.descr = "Cannot be paralyzed.";
         d.msg_start_player = "I feel more steady.";
-        d.msg_start_mon = "looks more steady.";
+        d.msg_start_mon = "{} looks more steady.";
         d.msg_end_player = "I feel less steady.";
-        d.msg_end_mon = "looks less steady.";
+        d.msg_end_mon = "{} looks less steady.";
         d.allow_display_turns = false;
         d.allow_test_on_bot = false;
         d.alignment = prop::PropAlignment::good;
@@ -296,7 +296,7 @@ static void init_data_list()
         d.std_rnd_turns = Range(50, 100);
         d.descr = "Cannot be harmed by constricted breathing.";
         d.msg_start_player = "I can breath without harm.";
-        d.msg_start_mon = "can breath without harm.";
+        d.msg_start_mon = "{} can breath without harm.";
         d.allow_display_turns = true;
         d.allow_test_on_bot = true;
         d.alignment = prop::PropAlignment::good;
@@ -307,9 +307,9 @@ static void init_data_list()
         d.name_short = "Spell Res";
         d.descr = "Cannot be affected by harmful spells.";
         d.msg_start_player = "I defy harmful spells!";
-        d.msg_start_mon = "is defying harmful spells.";
+        d.msg_start_mon = "{} is defying harmful spells.";
         d.msg_end_player = "I feel vulnerable to spells.";
-        d.msg_end_mon = "is vulnerable to spells.";
+        d.msg_end_mon = "{} is vulnerable to spells.";
         d.allow_test_on_bot = false;
         d.alignment = prop::PropAlignment::good;
         add(d);
@@ -320,9 +320,7 @@ static void init_data_list()
         d.name_short = "Shock Res";
         d.descr = "Unaffected by shocking events.";
         d.msg_start_player = "Nothing can disturb my mind!";
-        d.msg_start_mon = "";
         d.msg_end_player = "I feel susceptible to the horrors of this place again.";
-        d.msg_end_mon = "";
         d.allow_display_turns = true;
         d.allow_test_on_bot = true;
         d.alignment = prop::PropAlignment::good;
@@ -334,9 +332,9 @@ static void init_data_list()
         d.name_short = "Lgt Sens";
         d.descr = "Is vulnerable to light.";
         d.msg_start_player = "I feel vulnerable to light!";
-        d.msg_start_mon = "is vulnerable to light.";
+        d.msg_start_mon = "{} is vulnerable to light.";
         d.msg_end_player = "I no longer feel vulnerable to light.";
-        d.msg_end_mon = "no longer is vulnerable to light.";
+        d.msg_end_mon = "{} no longer is vulnerable to light.";
         d.allow_display_turns = true;
         d.alignment = prop::PropAlignment::bad;
         add(d);
@@ -347,9 +345,9 @@ static void init_data_list()
         d.name_short = "Blind";
         d.descr = "Cannot see, -20% hit chance, -50% chance to evade attacks.";
         d.msg_start_player = "I am blinded!";
-        d.msg_start_mon = "is blinded.";
+        d.msg_start_mon = "{} is blinded.";
         d.msg_end_player = "I can see again!";
-        d.msg_end_mon = "can see again.";
+        d.msg_end_mon = "{} can see again.";
         d.historic_msg_start_permanent = "Became permanently blind";
         d.historic_msg_end_permanent = "My sight came back";
         d.allow_display_turns = true;
@@ -363,9 +361,9 @@ static void init_data_list()
         d.name_short = "Deaf";
         d.descr = "Cannot hear sounds.";
         d.msg_start_player = "I am deaf!";
-        d.msg_start_mon = "stops reacting to any noise";
+        d.msg_start_mon = "{} stops reacting to any noise";
         d.msg_end_player = "I can hear again.";
-        d.msg_end_mon = "is reacting to noise again";
+        d.msg_end_mon = "{} is reacting to noise again";
         d.historic_msg_start_permanent = "Became permanently deaf";
         d.historic_msg_end_permanent = "My hearing came back";
         d.allow_display_turns = true;
@@ -381,11 +379,11 @@ static void init_data_list()
                 "Temporarily lost consciousness, will wake up if any damage "
                 "is taken or enough time passes.";
         d.msg_start_player = "I faint!";
-        d.msg_start_mon = "faints.";
+        d.msg_start_mon = "{} faints.";
         d.msg_end_player = "I am awake.";
-        d.msg_end_mon = "wakes up.";
+        d.msg_end_mon = "{} wakes up.";
         d.msg_res_player = "I resist fainting.";
-        d.msg_res_mon = "resists fainting.";
+        d.msg_res_mon = "{} resists fainting.";
         d.allow_display_turns = true;
         d.force_interrupt_player_on_start = true;
         d.allow_test_on_bot = true;
@@ -400,11 +398,11 @@ static void init_data_list()
                 "Takes damage each turn, 50% chance to fail when attempting to "
                 "read or cast spells.";
         d.msg_start_player = "I am Burning!";
-        d.msg_start_mon = "is burning.";
+        d.msg_start_mon = "{} is burning.";
         d.msg_end_player = "The flames are put out.";
-        d.msg_end_mon = "is no longer burning.";
+        d.msg_end_mon = "{} is no longer burning.";
         d.msg_res_player = "I resist burning.";
-        d.msg_res_mon = "resists burning.";
+        d.msg_res_mon = "{} resists burning.";
         d.allow_display_turns = true;
         d.force_interrupt_player_on_start = true;
         d.update_vision_on_toggled = true;
@@ -422,11 +420,11 @@ static void init_data_list()
                 "-25% melee damage, -10% melee hit chance. "
                 "Poison duration stacks if more is applied.";
         d.msg_start_player = "I am poisoned!";
-        d.msg_start_mon = "is poisoned.";
+        d.msg_start_mon = "{} is poisoned.";
         d.msg_end_player = "My body is cleansed from poisoning!";
-        d.msg_end_mon = "is cleansed from poisoning.";
+        d.msg_end_mon = "{} is cleansed from poisoning.";
         d.msg_res_player = "I resist poisoning.";
-        d.msg_res_mon = "resists poisoning.";
+        d.msg_res_mon = "{} resists poisoning.";
         d.allow_display_turns = true;
         d.duration_on_more = prop::DurationOnMoreBehavior::stacked;
         d.allow_test_on_bot = true;
@@ -439,11 +437,11 @@ static void init_data_list()
         d.name_short = "Paralyzed";
         d.descr = "Cannot move.";
         d.msg_start_player = "I am paralyzed!";
-        d.msg_start_mon = "is paralyzed.";
+        d.msg_start_mon = "{} is paralyzed.";
         d.msg_end_player = "I can move again!";
-        d.msg_end_mon = "can move again.";
+        d.msg_end_mon = "{} can move again.";
         d.msg_res_player = "I resist paralyzation.";
-        d.msg_res_mon = "resists paralyzation.";
+        d.msg_res_mon = "{} resists paralyzation.";
         d.allow_display_turns = true;
         d.force_interrupt_player_on_start = true;
         d.allow_test_on_bot = true;
@@ -464,11 +462,11 @@ static void init_data_list()
                 "Cannot perform melee attacks, -20% ranged hit chance, +20% "
                 "chance to evade attacks.";
         d.msg_start_player = "I am terrified!";
-        d.msg_start_mon = "looks terrified.";
+        d.msg_start_mon = "{} looks terrified.";
         d.msg_end_player = "I am no longer terrified!";
-        d.msg_end_mon = "is no longer terrified.";
+        d.msg_end_mon = "{} is no longer terrified.";
         d.msg_res_player = "I resist fear.";
-        d.msg_res_mon = "resists fear.";
+        d.msg_res_mon = "{} resists fear.";
         d.allow_display_turns = true;
         d.allow_test_on_bot = true;
         d.alignment = prop::PropAlignment::bad;
@@ -482,11 +480,11 @@ static void init_data_list()
                 "Occasionally moving in random directions, cannot read or "
                 "cast spells, cannot search for hidden doors or traps.";
         d.msg_start_player = "I am confused!";
-        d.msg_start_mon = "looks confused.";
+        d.msg_start_mon = "{} looks confused.";
         d.msg_end_player = "I come to my senses.";
-        d.msg_end_mon = "is no longer confused.";
+        d.msg_end_mon = "{} is no longer confused.";
         d.msg_res_player = "I manage to keep my head together.";
-        d.msg_res_mon = "resists confusion.";
+        d.msg_res_mon = "{} resists confusion.";
         d.allow_display_turns = true;
         d.allow_test_on_bot = true;
         d.alignment = prop::PropAlignment::bad;
@@ -498,11 +496,8 @@ static void init_data_list()
         d.name_short = "Halluc";
         d.descr = "The senses cannot always be trusted.";
         d.msg_start_player = "I am starting to doubt my senses.";
-        d.msg_start_mon = "";
         d.msg_end_player = "I feel more sure of my senses.";
-        d.msg_end_mon = "";
         d.msg_res_player = "I manage to maintain a grip on what is real.";
-        d.msg_res_mon = "";
         d.allow_display_turns = true;
         d.allow_test_on_bot = true;
         d.alignment = prop::PropAlignment::bad;
@@ -521,12 +516,7 @@ static void init_data_list()
                 "The addiction is too powerful and otherwordly to be cured by a "
                 "Potion of Fortitude.";
         d.msg_start_player = "That felt amazing!";
-        d.msg_start_mon = "";
-        d.msg_end_player =
-                "I suddenly realize that I no longer crave Astral Opium.";
-        d.msg_end_mon = "";
-        d.msg_res_player = "";
-        d.msg_res_mon = "";
+        d.msg_end_player = "I suddenly realize that I no longer crave Astral Opium.";
         d.allow_display_turns = false;
         d.allow_test_on_bot = false;
         d.alignment = prop::PropAlignment::bad;
@@ -578,11 +568,11 @@ static void init_data_list()
         d.name = "Stunned";
         d.name_short = "Stunned";
         d.msg_start_player = "I am stunned!";
-        d.msg_start_mon = "is stunned.";
+        d.msg_start_mon = "{} is stunned.";
         d.msg_end_player = "I am no longer stunned.";
-        d.msg_end_mon = "is no longer stunned.";
+        d.msg_end_mon = "{} is no longer stunned.";
         d.msg_res_player = "I resist stunning.";
-        d.msg_res_mon = "resists stunning.";
+        d.msg_res_mon = "{} resists stunning.";
         d.allow_display_turns = true;
         d.allow_test_on_bot = true;
         d.alignment = prop::PropAlignment::bad;
@@ -594,11 +584,11 @@ static void init_data_list()
         d.name_short = "Slowed";
         d.descr = "Moves slower.";
         d.msg_start_player = "Everything around me seems to speed up.";
-        d.msg_start_mon = "slows down.";
+        d.msg_start_mon = "{} slows down.";
         d.msg_end_player = "Everything around me seems to slow down.";
-        d.msg_end_mon = "speeds up.";
+        d.msg_end_mon = "{} speeds up.";
         d.msg_res_player = "I resist slowing.";
-        d.msg_res_mon = "resists slowing.";
+        d.msg_res_mon = "{} resists slowing.";
         d.historic_msg_start_permanent = "Became perpetually slowed";
         d.historic_msg_end_permanent = "My slowness ceased";
         d.allow_display_turns = true;
@@ -612,9 +602,9 @@ static void init_data_list()
         d.name_short = "Hasted";
         d.descr = "Moves faster.";
         d.msg_start_player = "Everything around me seems to slow down.";
-        d.msg_start_mon = "speeds up.";
+        d.msg_start_mon = "{} speeds up.";
         d.msg_end_player = "Everything around me seems to speed up.";
-        d.msg_end_mon = "slows down.";
+        d.msg_end_mon = "{} slows down.";
         d.historic_msg_start_permanent = "Became perpetually hasted";
         d.historic_msg_end_permanent = "My hastiness ceased";
         d.allow_display_turns = true;
@@ -636,7 +626,7 @@ static void init_data_list()
 
         d.id = prop::Id::summoned;
         d.std_rnd_turns = Range(80, 120);
-        d.msg_end_mon = "suddenly disappears.";
+        d.msg_end_mon = "{} suddenly disappears.";
         d.name = "Summoned";
         d.descr = "Was magically summoned here.";
         d.alignment = prop::PropAlignment::neutral;
@@ -647,9 +637,9 @@ static void init_data_list()
         d.descr =
                 "Fastened by a spike. Tearing it out will be rather painful.";
         d.msg_start_player = "I am fastened by a spike!";
-        d.msg_start_mon = "is fastened by a spike.";
+        d.msg_start_mon = "{} is fastened by a spike.";
         d.msg_end_player = "I tear free!";
-        d.msg_end_mon = "tears free!";
+        d.msg_end_mon = "{} tears free!";
         d.allow_display_turns = false;
         d.alignment = prop::PropAlignment::bad;
         add(d);
@@ -677,9 +667,9 @@ static void init_data_list()
         d.name_short = "Infected";
         d.descr = "A nasty infection that will get worse if left untreated.";
         d.msg_start_player = "I am infected!";
-        d.msg_start_mon = "is infected.";
+        d.msg_start_mon = "{} is infected.";
         d.msg_end_player = "My infection is cured!";
-        d.msg_end_mon = "is no longer infected.";
+        d.msg_end_mon = "{} is no longer infected.";
         d.allow_display_turns = false;
         // Never increase duration if more infection is applied:
         d.duration_on_more = prop::DurationOnMoreBehavior::shortest;
@@ -693,11 +683,11 @@ static void init_data_list()
         d.name_short = "Diseased";
         d.descr = "-50% maximum hit points.";
         d.msg_start_player = "I am diseased!";
-        d.msg_start_mon = "is diseased.";
+        d.msg_start_mon = "{} is diseased.";
         d.msg_end_player = "My disease is cured!";
-        d.msg_end_mon = "is no longer diseased.";
+        d.msg_end_mon = "{} is no longer diseased.";
         d.msg_res_player = "I resist disease.";
-        d.msg_res_mon = "resists disease.";
+        d.msg_res_mon = "{} resists disease.";
         d.historic_msg_start_permanent = "Caught a horrible disease";
         d.historic_msg_end_permanent = "Was cured from a horrible disease";
         d.allow_display_turns = true;
@@ -725,11 +715,11 @@ static void init_data_list()
                 "cannot bash doors or chests open, "
                 "knock heavy objects over, etc.";
         d.msg_start_player = "I feel weaker.";
-        d.msg_start_mon = "looks weaker.";
+        d.msg_start_mon = "{} looks weaker.";
         d.msg_end_player = "I feel stronger!";
-        d.msg_end_mon = "looks stronger!";
+        d.msg_end_mon = "{} looks stronger!";
         d.msg_res_player = "I resist weakness.";
-        d.msg_res_mon = "resists weakness.";
+        d.msg_res_mon = "{} resists weakness.";
         d.allow_display_turns = true;
         d.allow_test_on_bot = true;
         d.alignment = prop::PropAlignment::bad;
@@ -745,9 +735,9 @@ static void init_data_list()
                 "fear, and weakening, cannot read or cast spells, becomes "
                 "weakened when the frenzy ends.";
         d.msg_start_player = "I feel ferocious!!!";
-        d.msg_start_mon = "looks ferocious!";
+        d.msg_start_mon = "{} looks ferocious!";
         d.msg_end_player = "I calm down.";
-        d.msg_end_mon = "calms down a little.";
+        d.msg_end_mon = "{} calms down a little.";
         d.allow_display_turns = true;
         d.force_interrupt_player_on_start = true;
         d.allow_test_on_bot = true;
@@ -774,11 +764,11 @@ static void init_data_list()
         d.name_short = "Cursed";
         d.descr = "-10% to hit chance, evasion, stealth, and searching.";
         d.msg_start_player = "I feel misfortunate.";
-        d.msg_start_mon = "is cursed.";
+        d.msg_start_mon = "{} is cursed.";
         d.msg_end_player = "I feel more fortunate.";
-        d.msg_end_mon = "is no longer cursed.";
+        d.msg_end_mon = "{} is no longer cursed.";
         d.msg_res_player = "I resist misfortune.";
-        d.msg_res_mon = "resists misfortune.";
+        d.msg_res_mon = "{} resists misfortune.";
         d.historic_msg_start_permanent = "A perpetual curse was put upon me";
         d.historic_msg_end_permanent = "A terrible curse was lifted from me";
         d.allow_display_turns = true;
@@ -794,9 +784,9 @@ static void init_data_list()
                 "-20% to hit chance, evasion, stealth, and searching, "
                 "10% chance to fail when attempting to read or cast spells.";
         d.msg_start_player = "I feel doomed!";
-        d.msg_start_mon = "is doomed!";
+        d.msg_start_mon = "{} is doomed!";
         d.msg_end_player = "My doom does not feel so certain anymore.";
-        d.msg_end_mon = "is no longer doomed.";
+        d.msg_end_mon = "{} is no longer doomed.";
         d.msg_res_player = "I resist a great misfortune.";
         d.historic_msg_start_permanent = "My doom was written";
         d.historic_msg_end_permanent = "Hope returned again";
@@ -812,7 +802,7 @@ static void init_data_list()
         d.name_short = "Skill";
         d.descr = "+10% to hit chance, evasion, stealth, and searching.";
         d.msg_start_player = "I feel more skillful.";
-        d.msg_start_mon = "looks more skillful.";
+        d.msg_start_mon = "{} looks more skillful.";
         d.msg_end_player = "I feel less skillful.";
         d.msg_end_player = "looks less skillful.";
         d.allow_display_turns = true;
@@ -826,7 +816,7 @@ static void init_data_list()
         d.name_short = "Carapace";
         d.descr = "+3 armor points, +25% chance to resist burning.";
         d.msg_start_player = "A protective carapace forms around me.";
-        d.msg_start_mon = "is enveloped by a protective carapace.";
+        d.msg_start_mon = "{} is enveloped by a protective carapace.";
         d.msg_end_player = "My carapace cracks and crumbles away.";
         d.msg_end_player = "sheds a carapace.";
         d.allow_display_turns = true;
@@ -840,9 +830,9 @@ static void init_data_list()
         d.name_short = "Premonition";
         d.descr = "+75% chance to evade attacks.";
         d.msg_start_player = "I feel unassailable.";
-        d.msg_start_mon = "looks unassailable.";
+        d.msg_start_mon = "{} looks unassailable.";
         d.msg_end_player = "I feel more vulnerable.";
-        d.msg_end_mon = "looks like an easier target now.";
+        d.msg_end_mon = "{} looks like an easier target now.";
         d.allow_display_turns = true;
         d.allow_test_on_bot = true;
         d.alignment = prop::PropAlignment::good;
@@ -878,9 +868,9 @@ static void init_data_list()
         d.name_short = "Entangled";
         d.descr = "Entangled in something.";
         d.msg_start_player = "I am entangled!";
-        d.msg_start_mon = "is entangled.";
+        d.msg_start_mon = "{} is entangled.";
         d.msg_end_player = "I tear free!";
-        d.msg_end_mon = "tears free!";
+        d.msg_end_mon = "{} tears free!";
         d.allow_display_turns = false;
         d.force_interrupt_player_on_start = true;
         d.alignment = prop::PropAlignment::bad;
@@ -891,9 +881,9 @@ static void init_data_list()
         d.name_short = "Stuck";
         d.descr = "Stuck in something.";
         d.msg_start_player = "I am stuck!";
-        d.msg_start_mon = "is stuck.";
+        d.msg_start_mon = "{} is stuck.";
         d.msg_end_player = "I pull myself free!";
-        d.msg_end_mon = "pulls free!";
+        d.msg_end_mon = "{} pulls free!";
         d.allow_display_turns = false;
         d.force_interrupt_player_on_start = true;
         d.alignment = prop::PropAlignment::bad;
@@ -934,9 +924,8 @@ static void init_data_list()
         d.name_short = "Invisible";
         d.descr = "Cannot be detected by normal sight.";
         d.msg_start_player = "I am out of sight!";
-        d.msg_start_mon = "is out of sight!";
+        d.msg_start_mon = "{} is out of sight!";
         d.msg_end_player = "I am no longer invisible.";
-        d.msg_end_mon = "";
         d.allow_display_turns = true;
         d.update_vision_on_toggled = true;
         d.allow_test_on_bot = true;
@@ -951,9 +940,8 @@ static void init_data_list()
                 "Cannot be detected by normal sight, ends if attacking or "
                 "casting spells.";
         d.msg_start_player = "I am cloaked!";
-        d.msg_start_mon = "is cloaked!";
+        d.msg_start_mon = "{} is cloaked!";
         d.msg_end_player = "My cloak fades.";
-        d.msg_end_mon = "";
         d.allow_display_turns = true;
         d.update_vision_on_toggled = true;
         d.allow_test_on_bot = true;
@@ -969,9 +957,9 @@ static void init_data_list()
         d.name_short = "See Invis";
         d.descr = "Can see invisible creatures, cannot be blinded.";
         d.msg_start_player = "My eyes perceive the invisible.";
-        d.msg_start_mon = "seems very keen.";
+        d.msg_start_mon = "{} seems very keen.";
         d.msg_end_player = "My eyes can no longer perceive the invisible.";
-        d.msg_end_mon = "seems less keen.";
+        d.msg_end_mon = "{} seems less keen.";
         d.allow_display_turns = true;
         d.update_vision_on_toggled = true;
         d.allow_test_on_bot = true;
@@ -1019,8 +1007,8 @@ static void init_data_list()
         d.name_short = "Conflicted";
         d.descr = "Considers every creature as an enemy.";
         d.std_rnd_turns = Range(10, 20);
-        d.msg_start_mon = "Looks conflicted.";
-        d.msg_end_mon = "Looks more determined.";
+        d.msg_start_mon = "{} Looks conflicted.";
+        d.msg_end_mon = "{} Looks more determined.";
         d.allow_display_turns = false;
         d.alignment = prop::PropAlignment::bad;
         add(d);
@@ -1031,9 +1019,9 @@ static void init_data_list()
         d.name_short = "Decay Aura";
         d.descr = "Creatures within a distance of two moves take damage each standard turn.";
         d.msg_start_player = "Withering surrounds me.";
-        d.msg_start_mon = "appears to exude death and decay.";
+        d.msg_start_mon = "{} appears to exude death and decay.";
         d.msg_end_player = "The decay subsides.";
-        d.msg_end_mon = "no longer exudes decay.";
+        d.msg_end_mon = "{} no longer exudes decay.";
         d.allow_display_turns = true;
         d.allow_test_on_bot = true;
         d.alignment = prop::PropAlignment::good;
@@ -1078,9 +1066,9 @@ static void init_data_list()
         d.name_short = "Regenerating";
         d.descr = "+1 extra hit point regenerated per turn.";
         d.msg_start_player = "My body starts healing itself much faster.";
-        d.msg_start_mon = "starts regenerating damage very quickly.";
+        d.msg_start_mon = "{} starts regenerating damage very quickly.";
         d.msg_end_player = "My body heals itself slower now.";
-        d.msg_end_mon = "stops regenerating damage quickly.";
+        d.msg_end_mon = "{} stops regenerating damage quickly.";
         d.allow_display_turns = true;
         d.allow_test_on_bot = true;
         d.alignment = prop::PropAlignment::good;
@@ -1177,9 +1165,9 @@ static void init_data_list()
         d.name_short = "Burrowing";
         d.descr = "Can burrow through walls and rubble.";
         d.msg_start_player = "Earth and stone crumble away before me.";
-        d.msg_start_mon = "can move through earth.";
+        d.msg_start_mon = "{} can move through earth.";
         d.msg_end_player = "The earth is solid once more.";
-        d.msg_end_mon = "can no longer move through earth.";
+        d.msg_end_mon = "{} can no longer move through earth.";
         d.allow_display_turns = true;
         d.allow_test_on_bot = false;
         d.alignment = prop::PropAlignment::good;
@@ -1319,6 +1307,18 @@ static void init_data_list()
         d.allow_display_turns = true;
         d.allow_test_on_bot = true;
         d.alignment = prop::PropAlignment::good;
+        add(d);
+
+        d.id = prop::Id::temporal_echo;
+        d.name = "Temporal Echo";
+        d.name_short = "Echo";
+        d.descr = "All damage taken is dealt again when the effect ends.";
+        d.msg_start_player = "I am marked by a temporal echo.";
+        d.msg_start_mon = "{} is marked by a temporal echo.";
+        d.msg_end_player = "Time recurs!";
+        d.msg_end_mon = "Time recurs for {}.";
+        d.allow_test_on_bot = false;
+        d.alignment = prop::PropAlignment::bad;
         add(d);
 }
 

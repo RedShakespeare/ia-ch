@@ -151,6 +151,7 @@ enum class Id
         moribund,            // Flagellant low health bonuses
         thorns,              // From the Thorns spell
         crimson_passage,     // From the Crimson Passage spell
+        temporal_echo,       // From the Temporal Echo spell
 
         END
 };

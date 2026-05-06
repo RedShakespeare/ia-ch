@@ -1175,6 +1175,44 @@ PropEnded Aiming::on_hit(
         return PropEnded::yes;
 }
 
+PropEnded TemporalEcho::on_hit(
+        const int dmg,
+        const DmgType dmg_type,
+        actor::Actor* const attacker)
+{
+        (void)dmg_type;
+        (void)attacker;
+
+        m_dmg_taken += dmg;
+
+        return PropEnded::no;
+}
+
+void TemporalEcho::on_end()
+{
+        // Hit living creatures or copses, but not destroyed creatures.
+        if (m_owner->m_state == ActorState::destroyed) {
+                return;
+        }
+
+        if (m_dmg_taken <= 0) {
+                return;
+        }
+
+        const int dmg = std::max(1, (m_dmg_taken * m_pct_dmg_dealt) / 100);
+
+        draw_blast_at_seen_actors({m_owner}, colors::light_red());
+
+        actor::hit(*m_owner, dmg, DmgType::pure, nullptr);
+}
+
+void TemporalEcho::set_percent_damage_dealt(const int pct)
+{
+        ASSERT(pct > 0);
+
+        m_pct_dmg_dealt = pct;
+}
+
 int Terrified::ability_mod(const AbilityId ability) const
 {
         switch (ability) {
@@ -2205,7 +2243,7 @@ DmgResistData RElec::is_resisting_dmg(const DmgType dmg_type) const
 
         d.msg_resist_player = "I feel a faint tingle.";
 
-        d.msg_resist_mon = "seems unaffected.";
+        d.msg_resist_mon = "{} seems unaffected.";
 
         return d;
 }
@@ -2268,7 +2306,7 @@ DmgResistData RPhys::is_resisting_dmg(const DmgType dmg_type) const
 
         d.msg_resist_player = "I resist harm.";
 
-        d.msg_resist_mon = "seems unharmed.";
+        d.msg_resist_mon = "{} seems unharmed.";
 
         return d;
 }
@@ -2296,7 +2334,7 @@ DmgResistData RFire::is_resisting_dmg(const DmgType dmg_type) const
 
         d.msg_resist_player = "I feel warm.";
 
-        d.msg_resist_mon = "seems unaffected.";
+        d.msg_resist_mon = "{} seems unaffected.";
 
         return d;
 }

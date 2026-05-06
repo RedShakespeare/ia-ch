@@ -146,6 +146,19 @@ static int longest_turns_active(const prop::Prop& prop_1, const prop::Prop& prop
         return std::max(prop_1.nr_turns_active(), prop_2.nr_turns_active());
 }
 
+// Replaces "{}" with the actor name.
+// TODO: This can be removed if something like fmt is used.
+static void format_string_with_actor_name(std::string& str, const std::string& actor_name)
+{
+        const std::string token = "{}";
+
+        size_t pos = str.find(token);
+
+        if (pos != std::string::npos) {
+                str.replace(pos, token.size(), actor_name);
+        }
+}
+
 // -----------------------------------------------------------------------------
 // prop
 // -----------------------------------------------------------------------------
@@ -402,7 +415,7 @@ void PropHandler::apply(
 void PropHandler::print_resist_msg(const Prop& prop) const
 {
         if (actor::is_player(m_owner)) {
-                const auto msg = prop.m_data->msg_res_player;
+                const std::string msg = prop.m_data->msg_res_player;
 
                 if (!msg.empty()) {
                         msg_log::add(
@@ -414,14 +427,16 @@ void PropHandler::print_resist_msg(const Prop& prop) const
         else {
                 // Is a monster
                 if (actor::can_player_see_actor(*m_owner)) {
-                        const auto msg = prop.m_data->msg_res_mon;
+                        std::string msg = prop.m_data->msg_res_mon;
 
                         if (!msg.empty()) {
                                 const std::string monster_name =
                                         text_format::first_to_upper(
                                                 actor::name_the(*m_owner));
 
-                                msg_log::add(monster_name + " " + msg);
+                                format_string_with_actor_name(msg, monster_name);
+
+                                msg_log::add(msg);
                         }
                 }
         }
@@ -446,14 +461,16 @@ void PropHandler::print_start_msg(const Prop& prop) const
         else {
                 // Is monster
                 if (actor::can_player_see_actor(*m_owner)) {
-                        const auto msg = prop.m_data->msg_start_mon;
+                        std::string msg = prop.m_data->msg_start_mon;
 
                         if (!msg.empty()) {
                                 const std::string actor_name_the =
                                         text_format::first_to_upper(
                                                 actor::name_the(*m_owner));
 
-                                msg_log::add(actor_name_the + " " + msg);
+                                format_string_with_actor_name(msg, actor_name_the);
+
+                                msg_log::add(msg);
                         }
                 }
         }
@@ -726,7 +743,7 @@ void PropHandler::on_prop_end(
             (m_owner->m_state == ActorState::alive) &&
             m_prop_count_cache[(size_t)prop->m_id] == 0) {
                 if (actor::is_player(m_owner)) {
-                        const auto msg = prop->msg_end_player();
+                        const std::string msg = prop->msg_end_player();
 
                         if (!msg.empty()) {
                                 msg_log::add(msg);
@@ -734,14 +751,16 @@ void PropHandler::on_prop_end(
                 }
                 // Not player
                 else if (actor::can_player_see_actor(*m_owner)) {
-                        const auto msg = prop->m_data->msg_end_mon;
+                        std::string msg = prop->m_data->msg_end_mon;
 
                         if (!msg.empty()) {
                                 const std::string actor_name_the =
                                         text_format::first_to_upper(
                                                 actor::name_the(*m_owner));
 
-                                msg_log::add(actor_name_the + " " + msg);
+                                format_string_with_actor_name(msg, actor_name_the);
+
+                                msg_log::add(msg);
                         }
                 }
         }
@@ -1108,14 +1127,14 @@ bool PropHandler::is_resisting_dmg(
 
                                 const std::string mon_name =
                                         can_player_see_mon
-                                        ? text_format::first_to_upper(
-                                                  actor::name_the(*m_owner))
+                                        ? text_format::first_to_upper(actor::name_the(*m_owner))
                                         : "It";
 
-                                msg_log::add(
-                                        mon_name +
-                                        " " +
-                                        res_data.msg_resist_mon);
+                                std::string msg = res_data.msg_resist_mon;
+
+                                format_string_with_actor_name(msg, mon_name);
+
+                                msg_log::add(msg);
                         }
                 }
         }

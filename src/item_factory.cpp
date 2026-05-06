@@ -311,7 +311,8 @@ Item* make(const Id item_id, const int nr_items)
 
         case Id::scroll_aura_of_decay:
         case Id::scroll_cataclysm:
-        case Id::scroll_telep:
+        case Id::scroll_teleport:
+        case Id::scroll_temporal_echo:
         case Id::scroll_pestilence:
         case Id::scroll_mirror_images:
         case Id::scroll_enfeeble:

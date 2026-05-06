@@ -91,6 +91,7 @@ enum class SpellId
         haste,
         slow,
         teleport,
+        temporal_echo,
 
         // Domain: Warding
         bless,
@@ -406,6 +407,48 @@ private:
         int base_max_cost(SpellSkill skill, const actor::Actor* caster) const override;
 
         bool is_noisy(SpellSkill skill) const override;
+};
+
+class SpellTemporalEcho : public Spell
+{
+public:
+        SpellTemporalEcho() = default;
+
+        bool allow_mon_cast_now(
+                const actor::Actor& mon,
+                const std::vector<actor::Actor*>& seen_targets) const override;
+
+        int mon_cooldown() const override;
+
+        std::string name() const override;
+
+        SpellId id() const override;
+
+        SpellDomain domain() const override;
+
+        SpellShock shock_type() const override;
+
+        std::vector<std::string> descr_specific(SpellSkill skill) const override;
+
+        void run_effect(
+                actor::Actor* caster,
+                SpellSkill skill,
+                const std::vector<actor::Actor*>& seen_targets,
+                PlayerAwareOfCast player_aware) const override;
+
+private:
+        Range duration_range() const;
+
+        int base_max_cost(SpellSkill skill, const actor::Actor* caster) const override;
+
+        bool is_noisy(SpellSkill skill) const override;
+
+        int pct_damage_dealt(SpellSkill skill) const;
+
+        void apply_temporal_echo_effect(
+                actor::Actor& target,
+                SpellSkill skill,
+                int duration) const;
 };
 
 class SpellSlow : public Spell

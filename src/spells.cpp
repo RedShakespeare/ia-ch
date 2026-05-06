@@ -117,6 +117,7 @@ static const std::unordered_map<std::string, SpellId> s_str_to_spell_id_map = {
         {"SPELL_SUMMON_TENTACLES", SpellId::summon_tentacles},
         {"SPELL_SUMMON_WATER_CREATURE", SpellId::summon_water_creature},
         {"SPELL_TELEPORT", SpellId::teleport},
+        {"SPELL_TEMPORAL_ECHO", SpellId::temporal_echo},
         {"SPELL_TERRIFY", SpellId::terrify},
         {"SPELL_THREAT_PROJECTION", SpellId::threat_projection},
         {"SPELL_TRANSMUT", SpellId::transmut}};
@@ -931,6 +932,9 @@ Spell* make(const SpellId spell_id)
         case SpellId::teleport:
                 return new SpellTeleport();
 
+        case SpellId::temporal_echo:
+                return new SpellTemporalEcho();
+
         case SpellId::cataclysm:
                 return new SpellCataclysm();
 
@@ -1082,17 +1086,10 @@ std::string spell_domain_title(const SpellDomain domain)
 std::string skill_to_str(const SpellSkill skill)
 {
         switch (skill) {
-        case SpellSkill::basic:
-                return "basic";
-
-        case SpellSkill::expert:
-                return "expert";
-
-        case SpellSkill::master:
-                return "master";
-
-        case SpellSkill::transcendent:
-                return "transcendent";
+        case SpellSkill::basic:        return "basic";
+        case SpellSkill::expert:       return "expert";
+        case SpellSkill::master:       return "master";
+        case SpellSkill::transcendent: return "transcendent";
         }
 
         ASSERT(false);
@@ -1371,12 +1368,17 @@ void Spell::on_resist(actor::Actor& target) const
                 std::string resist_msg;
 
                 if (is_player) {
+                        // TODO: This should be "I resist a spell" instead of "the" spell, if the
+                        // player is unaware of the cast.
                         resist_msg = s_spell_resist_msg_player;
                 }
                 else {
                         const std::string mon_name =
-                                text_format::first_to_upper(actor::name_the(target));
+                                text_format::first_to_upper(
+                                        actor::name_the(target));
 
+                        // TODO: This should be "X resists a spell" instead of "the" spell, if the
+                        // player is unaware of the cast.
                         resist_msg = mon_name + " " + s_spell_resist_msg_mon;
                 }
 
@@ -1521,15 +1523,10 @@ bool SpellAuraOfDecay::is_noisy(const SpellSkill skill) const
 Range SpellAuraOfDecay::dmg_range(const SpellSkill skill) const
 {
         switch (skill) {
-        case SpellSkill::basic:
-                return {1, 1};  // Avg 1.0
-
-        case SpellSkill::expert:
-                return {1, 2};  // Avg 1.5
-
+        case SpellSkill::basic:        return {1, 1};  // Avg 1.0
+        case SpellSkill::expert:       return {1, 2};  // Avg 1.5
         case SpellSkill::master:
-        case SpellSkill::transcendent:
-                return {1, 3};  // Avg 2.0
+        case SpellSkill::transcendent: return {1, 3};  // Avg 2.0
         }
 
         ASSERT(false);
@@ -1912,15 +1909,10 @@ int ForceBolt::base_max_cost(
 Range ForceBolt::damage(const SpellSkill skill) const
 {
         switch (skill) {
-        case SpellSkill::basic:
-                return {3, 4};  // Avg 3.5
-
-        case SpellSkill::expert:
-                return {5, 7};  // Avg 6.0
-
+        case SpellSkill::basic:        return {3, 4};  // Avg 3.5
+        case SpellSkill::expert:       return {5, 7};  // Avg 6.0
         case SpellSkill::master:
-        case SpellSkill::transcendent:
-                return {9, 12};  // Avg 10.5
+        case SpellSkill::transcendent: return {9, 12};  // Avg 10.5
         }
 
         ASSERT(false);
@@ -1968,15 +1960,10 @@ int Darkbolt::base_max_cost(
 Range Darkbolt::damage(const SpellSkill skill) const
 {
         switch (skill) {
-        case SpellSkill::basic:
-                return {4, 9};  // Avg 6.5
-
-        case SpellSkill::expert:
-                return {5, 11};  // Avg 8.0
-
+        case SpellSkill::basic:        return {4, 9};   // Avg 6.5
+        case SpellSkill::expert:       return {5, 11};  // Avg 8.0
         case SpellSkill::master:
-        case SpellSkill::transcendent:
-                return {6, 13};  // Avg 9.5
+        case SpellSkill::transcendent: return {6, 13};  // Avg 9.5
         }
 
         ASSERT(false);
@@ -2200,15 +2187,10 @@ bool SpellAzaGaze::is_noisy(const SpellSkill skill) const
 Range SpellAzaGaze::dmg_range(const SpellSkill skill) const
 {
         switch (skill) {
-        case SpellSkill::basic:
-                return {2, 5};  // Avg 3.5
-
-        case SpellSkill::expert:
-                return {4, 8};  // Avg 6.0
-
+        case SpellSkill::basic:        return {2, 5};  // Avg 3.5
+        case SpellSkill::expert:       return {4, 8};  // Avg 6.0
         case SpellSkill::master:
-        case SpellSkill::transcendent:
-                return {6, 11};  // Avg 8.5
+        case SpellSkill::transcendent: return {6, 11};  // Avg 8.5
         }
 
         ASSERT(false);
@@ -2219,15 +2201,10 @@ Range SpellAzaGaze::dmg_range(const SpellSkill skill) const
 Range SpellAzaGaze::faint_duration_range(SpellSkill skill) const
 {
         switch (skill) {
-        case SpellSkill::basic:
-                return {2, 6};
-
-        case SpellSkill::expert:
-                return {3, 7};
-
+        case SpellSkill::basic:        return {2, 6};
+        case SpellSkill::expert:       return {3, 7};
         case SpellSkill::master:
-        case SpellSkill::transcendent:
-                return {4, 8};
+        case SpellSkill::transcendent: return {4, 8};
         }
 
         ASSERT(false);
@@ -2287,6 +2264,7 @@ void SpellAzaGaze::run_effect(
         const std::vector<actor::Actor*>& seen_targets,
         PlayerAwareOfCast player_aware) const
 {
+        // TODO: Test with deaf player reading manuscript and no seen targets.
         Snd snd(
                 "An insane cacophony resounds through the air!",
                 audio::SfxId::aza_gaze,
@@ -2454,13 +2432,10 @@ int SpellCataclysm::destruction_radi(const SpellSkill skill) const
 int SpellCataclysm::nr_destruction_sweeps(const SpellSkill skill) const
 {
         switch (skill) {
-        case SpellSkill::basic:
-                return 2;
-
+        case SpellSkill::basic:        return 2;
         case SpellSkill::expert:
         case SpellSkill::master:
-        case SpellSkill::transcendent:
-                return 3;
+        case SpellSkill::transcendent: return 3;
         }
 
         ASSERT(false);
@@ -2471,17 +2446,10 @@ int SpellCataclysm::nr_destruction_sweeps(const SpellSkill skill) const
 int SpellCataclysm::nr_explosions(const SpellSkill skill) const
 {
         switch (skill) {
-        case SpellSkill::basic:
-                return 6;
-
-        case SpellSkill::expert:
-                return 9;
-
-        case SpellSkill::master:
-                return 12;
-
-        case SpellSkill::transcendent:
-                return 20;
+        case SpellSkill::basic:        return 6;
+        case SpellSkill::expert:       return 9;
+        case SpellSkill::master:       return 12;
+        case SpellSkill::transcendent: return 20;
         }
 
         ASSERT(false);
@@ -2735,19 +2703,12 @@ int SpellPestilence::nr_rats_summoned(SpellSkill skill) const
 Range SpellPestilence::duration_range(const SpellSkill skill) const
 {
         switch (skill) {
-        case SpellSkill::basic:
-                return {8, 12};
-
-        case SpellSkill::expert:
-                return {12, 16};
-
-        case SpellSkill::master:
-                // NOTE: On master level, the rats are hasted, meaning they disappear twice as fast
-                // from the perspective of a normal speed player.
-                return {40, 60};
-
-        case SpellSkill::transcendent:
-                return {40, 60};
+        case SpellSkill::basic:        return {8, 12};
+        case SpellSkill::expert:       return {12, 16};
+        // NOTE: On master level, the rats are hasted, meaning they disappear twice as fast from
+        // the perspective of a normal speed player.
+        case SpellSkill::master:       return {40, 60};
+        case SpellSkill::transcendent: return {40, 60};
         }
 
         ASSERT(false);
@@ -2969,17 +2930,10 @@ int SpellMirrorImages::nr_mirror_images_summoned(SpellSkill skill) const
 Range SpellMirrorImages::duration_range(const SpellSkill skill) const
 {
         switch (skill) {
-        case SpellSkill::basic:
-                return {8, 12};
-
-        case SpellSkill::expert:
-                return {12, 16};
-
-        case SpellSkill::master:
-                return {16, 20};
-
-        case SpellSkill::transcendent:
-                return {40, 60};
+        case SpellSkill::basic:        return {8, 12};
+        case SpellSkill::expert:       return {12, 16};
+        case SpellSkill::master:       return {16, 20};
+        case SpellSkill::transcendent: return {40, 60};
         }
 
         ASSERT(false);
@@ -3124,17 +3078,12 @@ int SpellSpectralWeapons::max_nr_weapons(const SpellSkill skill) const
 Range SpellSpectralWeapons::duration_range(const SpellSkill skill) const
 {
         switch (skill) {
-        case SpellSkill::basic:
-                return {5, 10};
-
+        case SpellSkill::basic:        return {5, 10};
+        // NOTE: For balancing reasons, the transcendent level uses the same duration as the expert
+        // level.
         case SpellSkill::expert:
-        case SpellSkill::transcendent:
-                // NOTE: For balancing reasons, the transcendent level uses the
-                // same duration as the expert level.
-                return {10, 15};
-
-        case SpellSkill::master:
-                return {15, 20};
+        case SpellSkill::transcendent: return {10, 15};
+        case SpellSkill::master:       return {15, 20};
         }
 
         ASSERT(false);
@@ -3702,7 +3651,7 @@ void SpellPurge::run_effect(
                 case terrain::Id::altar:
                 case terrain::Id::monolith:
                 case terrain::Id::mirror:
-                case terrain::Id::gong: {
+                case terrain::Id::gong:     {
                         if (map::g_seen.at(p)) {
                                 draw_blast_at_cells({p}, colors::light_white());
                         }
@@ -3874,14 +3823,9 @@ SpellShock SpellBless::shock_type() const
 Range SpellBless::duration_range(SpellSkill skill) const
 {
         switch (skill) {
-        case SpellSkill::basic:
-                return {15, 30};
-
-        case SpellSkill::expert:
-                return {60, 120};
-
-        case SpellSkill::master:
-                return {150, 300};
+        case SpellSkill::basic:  return {15, 30};
+        case SpellSkill::expert: return {60, 120};
+        case SpellSkill::master: return {150, 300};
 
         case SpellSkill::transcendent:
                 // Unexpected, the spell should be indefinite
@@ -4046,6 +3990,9 @@ void SpellCancellation::run_effect(
 {
         (void)seen_targets;
         (void)player_aware;
+
+        // TODO: What does it look like when casting from an unknown manuscript with nothing to
+        // cancel and no vulnerable creatures?
 
         const int dist = max_dist(skill);
 
@@ -4275,6 +4222,9 @@ void SpellInscribeBoundarySigil::run_effect(
         (void)seen_targets;
         (void)player_aware;
 
+        // TODO: What does it look like when casting from an unknown manuscript (when a symbol can
+        // be inscribed and when it cannot)?
+
         // TODO: There should be a casting sound.
 
         const terrain::Terrain* terrain_here = map::g_terrain.at(caster->m_pos);
@@ -4403,15 +4353,10 @@ bool SpellLight::is_noisy(const SpellSkill skill) const
 Range SpellLight::light_duration_range(const SpellSkill skill) const
 {
         switch (skill) {
-        case SpellSkill::basic:
-                return {10, 20};
-
-        case SpellSkill::expert:
-                return {15, 30};
-
+        case SpellSkill::basic:        return {10, 20};
+        case SpellSkill::expert:       return {15, 30};
         case SpellSkill::master:
-        case SpellSkill::transcendent:
-                return {20, 40};
+        case SpellSkill::transcendent: return {20, 40};
         }
 
         ASSERT(false);
@@ -4427,11 +4372,8 @@ Range SpellLight::blind_duration_range(const SpellSkill skill) const
                 // Not expected, should not cause blinding at these levels.
                 break;
 
-        case SpellSkill::master:
-                return {1, 3};
-
-        case SpellSkill::transcendent:
-                return {3, 5};
+        case SpellSkill::master:       return {1, 3};
+        case SpellSkill::transcendent: return {3, 5};
         }
 
         ASSERT(false);
@@ -4559,17 +4501,10 @@ int SpellInvis::base_max_cost(
 Range SpellInvis::duration_range(SpellSkill skill) const
 {
         switch (skill) {
-        case SpellSkill::basic:
-                return {4, 6};
-
-        case SpellSkill::expert:
-                return {5, 7};
-
-        case SpellSkill::master:
-                return {6, 8};
-
-        case SpellSkill::transcendent:
-                return {8, 10};
+        case SpellSkill::basic:        return {4, 6};
+        case SpellSkill::expert:       return {5, 7};
+        case SpellSkill::master:       return {6, 8};
+        case SpellSkill::transcendent: return {8, 10};
         }
 
         ASSERT(false);
@@ -4678,14 +4613,9 @@ int SpellSeeInvis::base_max_cost(
 Range SpellSeeInvis::duration_range(SpellSkill skill) const
 {
         switch (skill) {
-        case SpellSkill::basic:
-                return {15, 30};
-
-        case SpellSkill::expert:
-                return {60, 120};
-
-        case SpellSkill::master:
-                return {250, 500};
+        case SpellSkill::basic:  return {15, 30};
+        case SpellSkill::expert: return {60, 120};
+        case SpellSkill::master: return {250, 500};
 
         case SpellSkill::transcendent:
                 // Unexpected, the spell should be indefinite
@@ -4801,6 +4731,9 @@ void SpellSpellShield::run_effect(
         (void)seen_targets;
         (void)player_aware;
 
+        // TODO: What does it look like when casting from Manuscript and permanent spell shield is
+        // already applied?
+
         prop::Prop* prop = prop::make(prop::Id::r_spell);
 
         prop->set_indefinite();
@@ -4864,17 +4797,10 @@ bool SpellHaste::is_noisy(const SpellSkill skill) const
 Range SpellHaste::duration_range(const SpellSkill skill) const
 {
         switch (skill) {
-        case SpellSkill::basic:
-                return {5, 10};
-
-        case SpellSkill::expert:
-                return {10, 20};
-
-        case SpellSkill::master:
-                return {15, 30};
-
-        case SpellSkill::transcendent:
-                return {300, 600};
+        case SpellSkill::basic:        return {5, 10};
+        case SpellSkill::expert:       return {10, 20};
+        case SpellSkill::master:       return {15, 30};
+        case SpellSkill::transcendent: return {300, 600};
         }
 
         ASSERT(false);
@@ -4966,17 +4892,10 @@ bool SpellPremonition::is_noisy(const SpellSkill skill) const
 Range SpellPremonition::duration_range(const SpellSkill skill) const
 {
         switch (skill) {
-        case SpellSkill::basic:
-                return {4, 8};
-
-        case SpellSkill::expert:
-                return {8, 16};
-
-        case SpellSkill::master:
-                return {12, 24};
-
-        case SpellSkill::transcendent:
-                return {20, 40};
+        case SpellSkill::basic:        return {4, 8};
+        case SpellSkill::expert:       return {8, 16};
+        case SpellSkill::master:       return {12, 24};
+        case SpellSkill::transcendent: return {20, 40};
         }
 
         ASSERT(false);
@@ -5076,15 +4995,10 @@ int SpellErudition::base_max_cost(
 Range SpellErudition::get_duration_range(SpellSkill skill) const
 {
         switch (skill) {
-        case SpellSkill::basic:
-                return {2, 4};
-
-        case SpellSkill::expert:
-                return {4, 8};
-
+        case SpellSkill::basic:        return {2, 4};
+        case SpellSkill::expert:       return {4, 8};
         case SpellSkill::master:
-        case SpellSkill::transcendent:
-                return {6, 12};
+        case SpellSkill::transcendent: return {6, 12};
         }
 
         ASSERT(false);
@@ -5210,6 +5124,8 @@ void SpellIdentify::run_effect(
         (void)seen_targets;
         (void)player_aware;
 
+        // TODO: Test with casting from unknown manuscript (with and without something to ID).
+
         std::vector<ItemType> item_types_allowed;
 
         if (skill != SpellSkill::master) {
@@ -5250,17 +5166,9 @@ std::vector<std::string> SpellIdentify::descr_specific(
         std::string identifies_str = "The spell can identify ";
 
         switch (skill) {
-        case SpellSkill::basic:
-                identifies_str += "Manuscripts";
-                break;
-
-        case SpellSkill::expert:
-                identifies_str += "Manuscripts and Potions";
-                break;
-
-        case SpellSkill::master:
-                identifies_str += "all items";
-                break;
+        case SpellSkill::basic:  identifies_str += "Manuscripts"; break;
+        case SpellSkill::expert: identifies_str += "Manuscripts and Potions"; break;
+        case SpellSkill::master: identifies_str += "all items"; break;
 
         case SpellSkill::transcendent:
                 ASSERT(false);
@@ -5322,15 +5230,10 @@ bool SpellTeleport::is_noisy(const SpellSkill skill) const
 int SpellTeleport::max_dist(const SpellSkill skill) const
 {
         switch (skill) {
-        case SpellSkill::basic:
-                return 5;
-
-        case SpellSkill::expert:
-                return 10;
-
+        case SpellSkill::basic:        return 5;
+        case SpellSkill::expert:       return 10;
         case SpellSkill::master:
-        case SpellSkill::transcendent:
-                return 15;
+        case SpellSkill::transcendent: return 15;
         }
 
         ASSERT(false);
@@ -5428,17 +5331,10 @@ std::string SpellExpulsion::name() const
 int SpellExpulsion::max_dist(SpellSkill skill) const
 {
         switch (skill) {
-        case SpellSkill::basic:
-                return 15;
-
-        case SpellSkill::expert:
-                return 30;
-
-        case SpellSkill::master:
-                return 45;
-
-        case SpellSkill::transcendent:
-                return -1;
+        case SpellSkill::basic:        return 15;
+        case SpellSkill::expert:       return 30;
+        case SpellSkill::master:       return 45;
+        case SpellSkill::transcendent: return -1;
         }
 
         ASSERT(false);
@@ -5723,13 +5619,8 @@ Range SpellCurse::duration_range(const SpellSkill skill) const
 int SpellCurse::pct_chance_doom(SpellSkill skill) const
 {
         switch (skill) {
-        case SpellSkill::basic:
-                return 5;
-                break;
-
-        case SpellSkill::expert:
-                return 10;
-
+        case SpellSkill::basic:  return 5;
+        case SpellSkill::expert: return 10;
         case SpellSkill::master:
         case SpellSkill::transcendent:
                 // Not applicable.
@@ -5750,6 +5641,10 @@ void SpellCurse::run_effect(
         const int duration = duration_range(skill).roll();
 
         if (seen_targets.empty()) {
+                if (actor::is_player(caster)) {
+                        // TODO: There needs to be a message here.
+                }
+
                 return;
         }
 
@@ -5916,6 +5811,10 @@ void SpellPoison::run_effect(
         const int duration = duration_range(skill).roll();
 
         if (seen_targets.empty()) {
+                if (actor::is_player(caster)) {
+                        // TODO: There needs to be a message here.
+                }
+
                 return;
         }
 
@@ -6134,17 +6033,10 @@ bool SpellHealOthers::allow_mon_cast_now(
 Range SpellEnfeeble::duration_range(const SpellSkill skill) const
 {
         switch (skill) {
-        case SpellSkill::basic:
-                return {8, 12};
-
-        case SpellSkill::expert:
-                return {10, 16};
-
-        case SpellSkill::master:
-                return {12, 20};
-
-        case SpellSkill::transcendent:
-                return {30, 50};
+        case SpellSkill::basic:        return {8, 12};
+        case SpellSkill::expert:       return {10, 16};
+        case SpellSkill::master:       return {12, 20};
+        case SpellSkill::transcendent: return {30, 50};
         }
 
         ASSERT(false);
@@ -6279,6 +6171,157 @@ bool SpellEnfeeble::allow_mon_cast_now(
 }
 
 // -----------------------------------------------------------------------------
+// Temporal Echo
+// -----------------------------------------------------------------------------
+int SpellTemporalEcho::pct_damage_dealt(const SpellSkill skill) const
+{
+        switch (skill) {
+        case SpellSkill::basic:        return 75;
+        case SpellSkill::expert:       return 100;
+        case SpellSkill::master:       return 125;
+        case SpellSkill::transcendent: return 200;
+        }
+
+        ASSERT(false);
+
+        return 100;
+}
+
+Range SpellTemporalEcho::duration_range() const
+{
+        return {5, 7};
+}
+
+SpellId SpellTemporalEcho::id() const
+{
+        return SpellId::temporal_echo;
+}
+
+SpellDomain SpellTemporalEcho::domain() const
+{
+        return SpellDomain::time;
+}
+
+SpellShock SpellTemporalEcho::shock_type() const
+{
+        return SpellShock::mild;
+}
+
+bool SpellTemporalEcho::is_noisy(const SpellSkill skill) const
+{
+        (void)skill;
+
+        return false;
+}
+
+std::string SpellTemporalEcho::name() const
+{
+        return "Temporal Echo";
+}
+
+int SpellTemporalEcho::base_max_cost(
+        const SpellSkill skill,
+        const actor::Actor* const caster) const
+{
+        (void)skill;
+        (void)caster;
+
+        return 4;
+}
+
+int SpellTemporalEcho::mon_cooldown() const
+{
+        return 10;
+}
+
+void SpellTemporalEcho::run_effect(
+        actor::Actor* const caster,
+        const SpellSkill skill,
+        const std::vector<actor::Actor*>& seen_targets,
+        PlayerAwareOfCast player_aware) const
+{
+        if (seen_targets.empty()) {
+                if (actor::is_player(caster)) {
+                        msg_log::add("There is a faint stutter in time.");
+                }
+
+                return;
+        }
+
+        // There are targets available
+
+        if (player_aware == PlayerAwareOfCast::yes) {
+                draw_blast_at_seen_actors(seen_targets, colors::magenta());
+        }
+
+        const int duration = duration_range().roll();
+
+        for (actor::Actor* const target : seen_targets) {
+                // Spell resistance?
+                if (target->m_properties.has(prop::Id::r_spell)) {
+                        on_resist(*target);
+
+                        // Spell reflection?
+                        if (target->m_properties.has(prop::Id::spell_reflect)) {
+                                if (actor::can_player_see_actor(*target)) {
+                                        msg_log::add(s_spell_reflect_msg);
+                                }
+
+                                // Run effect with the target as caster, and the
+                                // caster as seen target instead.
+                                run_effect(target, skill, {caster}, player_aware);
+                        }
+
+                        continue;
+                }
+
+                apply_temporal_echo_effect(*target, skill, duration);
+        }
+}
+
+void SpellTemporalEcho::apply_temporal_echo_effect(
+        actor::Actor& target,
+        const SpellSkill skill,
+        const int duration) const
+{
+        prop::Prop* const temporal_echo = prop::make(prop::Id::temporal_echo);
+
+        temporal_echo->set_duration(duration);
+
+        const int pct_dmg = pct_damage_dealt(skill);
+
+        static_cast<prop::TemporalEcho*>(temporal_echo)->set_percent_damage_dealt(pct_dmg);
+
+        target.m_properties.apply(temporal_echo);
+}
+
+std::vector<std::string> SpellTemporalEcho::descr_specific(
+        const SpellSkill skill) const
+{
+        std::vector<std::string> descr = {
+                "For all visible enemies, time is manipulated so that damage taken during a "
+                "brief period will recur when the effect ends."};
+
+        descr.push_back(
+                "The effect lasts for " +
+                duration_range().str() +
+                " turns (their turns). " +
+                std::to_string(pct_damage_dealt(skill)) +
+                "% of the damage taken during the effect is dealt again.");
+
+        return descr;
+}
+
+bool SpellTemporalEcho::allow_mon_cast_now(
+        const actor::Actor& mon,
+        const std::vector<actor::Actor*>& seen_targets) const
+{
+        (void)mon;
+
+        return !seen_targets.empty();
+}
+
+// -----------------------------------------------------------------------------
 // Slow
 // -----------------------------------------------------------------------------
 std::string SpellSlow::name() const
@@ -6311,17 +6354,10 @@ bool SpellSlow::is_noisy(const SpellSkill skill) const
 Range SpellSlow::duration_range(const SpellSkill skill) const
 {
         switch (skill) {
-        case SpellSkill::basic:
-                return {5, 10};
-
-        case SpellSkill::expert:
-                return {7, 12};
-
-        case SpellSkill::master:
-                return {9, 14};
-
-        case SpellSkill::transcendent:
-                return {30, 50};
+        case SpellSkill::basic:        return {5, 10};
+        case SpellSkill::expert:       return {7, 12};
+        case SpellSkill::master:       return {9, 14};
+        case SpellSkill::transcendent: return {30, 50};
         }
 
         ASSERT(false);
@@ -6461,17 +6497,10 @@ bool SpellTerrify::is_noisy(const SpellSkill skill) const
 Range SpellTerrify::duration_range(SpellSkill skill) const
 {
         switch (skill) {
-        case SpellSkill::basic:
-                return {6, 12};
-
-        case SpellSkill::expert:
-                return {12, 24};
-
-        case SpellSkill::master:
-                return {18, 36};
-
-        case SpellSkill::transcendent:
-                return {24, 48};
+        case SpellSkill::basic:        return {6, 12};
+        case SpellSkill::expert:       return {12, 24};
+        case SpellSkill::master:       return {18, 36};
+        case SpellSkill::transcendent: return {24, 48};
         }
 
         ASSERT(false);
@@ -6664,18 +6693,11 @@ bool SpellThreatProjection::is_noisy(const SpellSkill skill) const
 Range SpellThreatProjection::duration_range(SpellSkill skill) const
 {
         switch (skill) {
-        case SpellSkill::basic:
-                return {3, 6};
-
-        case SpellSkill::expert:
-                return {6, 12};
-
-        case SpellSkill::master:
-                // NOTE: Same as the Horn of Malice.
-                return {8, 24};
-
-        case SpellSkill::transcendent:
-                return {16, 48};
+        case SpellSkill::basic:        return {3, 6};
+        case SpellSkill::expert:       return {6, 12};
+        // NOTE: Same as the Horn of Malice:
+        case SpellSkill::master:       return {8, 24};
+        case SpellSkill::transcendent: return {16, 48};
         }
 
         ASSERT(false);
@@ -7376,6 +7398,9 @@ void SpellHeal::run_effect(
 {
         (void)seen_targets;
         (void)player_aware;
+
+        // TODO: What does it look like when casting from manuscript and already at full HP and
+        // there is nothing to cure?
 
         if ((int)skill >= (int)SpellSkill::expert) {
                 caster->m_properties.end_prop(prop::Id::weakened);
@@ -8206,17 +8231,10 @@ Range SpellThorns::duration_range(const SpellSkill skill) const
 Range SpellThorns::dmg_range(const SpellSkill skill) const
 {
         switch (skill) {
-        case SpellSkill::basic:
-                return {2, 4};  // Avg 3.0
-
-        case SpellSkill::expert:
-                return {3, 6};  // Avg 4.5
-
-        case SpellSkill::master:
-                return {4, 8};  // Avg 6.0
-
-        case SpellSkill::transcendent:
-                return {5, 10};  // Avg 7.5
+        case SpellSkill::basic:        return {2, 4};   // Avg 3.0
+        case SpellSkill::expert:       return {3, 6};   // Avg 4.5
+        case SpellSkill::master:       return {4, 8};   // Avg 6.0
+        case SpellSkill::transcendent: return {5, 10};  // Avg 7.5
         }
 
         ASSERT(false);

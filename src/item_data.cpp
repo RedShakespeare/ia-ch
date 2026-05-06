@@ -1580,8 +1580,13 @@ void init()
         g_data[(size_t)d.id] = d;
 
         reset_data(d, ItemType::scroll);
-        d.id = Id::scroll_telep;
+        d.id = Id::scroll_teleport;
         d.spell_cast_from_scroll = SpellId::teleport;
+        g_data[(size_t)d.id] = d;
+
+        reset_data(d, ItemType::scroll);
+        d.id = Id::scroll_temporal_echo;
+        d.spell_cast_from_scroll = SpellId::temporal_echo;
         g_data[(size_t)d.id] = d;
 
         reset_data(d, ItemType::scroll);
