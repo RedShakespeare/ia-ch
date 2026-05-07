@@ -26,7 +26,10 @@
 // -----------------------------------------------------------------------------
 // Public
 // -----------------------------------------------------------------------------
-void draw_blast_at_cells(const std::vector<P>& positions, const Color& color)
+void draw_blast_at_cells(
+        const std::vector<P>& positions,
+        const Color& color,
+        const int delay_div)
 {
         TRACE_FUNC_BEGIN;
 
@@ -48,7 +51,7 @@ void draw_blast_at_cells(const std::vector<P>& positions, const Color& color)
 
         io::update_screen();
 
-        io::sleep(config::delay_explosion() / 2);
+        io::sleep(config::delay_explosion() / delay_div);
 
         states::draw();
 
@@ -68,14 +71,15 @@ void draw_blast_at_cells(const std::vector<P>& positions, const Color& color)
 
         io::update_screen();
 
-        io::sleep(config::delay_explosion() / 2);
+        io::sleep(config::delay_explosion() / delay_div);
 
         TRACE_FUNC_END;
 }
 
 void draw_blast_at_seen_cells(
         const std::vector<P>& positions,
-        const Color& color)
+        const Color& color,
+        const int delay_div)
 {
         std::vector<P> positions_with_vision;
 
@@ -86,13 +90,14 @@ void draw_blast_at_seen_cells(
         }
 
         if (!positions_with_vision.empty()) {
-                draw_blast_at_cells(positions_with_vision, color);
+                draw_blast_at_cells(positions_with_vision, color, delay_div);
         }
 }
 
 void draw_blast_at_seen_actors(
         const std::vector<actor::Actor*>& actors,
-        const Color& color)
+        const Color& color,
+        const int delay_div)
 {
         // if (!panels::is_valid())
         // {
@@ -107,5 +112,5 @@ void draw_blast_at_seen_actors(
                 positions.push_back(actor->m_pos);
         }
 
-        draw_blast_at_seen_cells(positions, color);
+        draw_blast_at_seen_cells(positions, color, delay_div);
 }

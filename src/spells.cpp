@@ -1644,7 +1644,7 @@ SpellDomain SpellBolt::domain() const
 
 SpellShock SpellBolt::shock_type() const
 {
-        return SpellShock::mild;
+        return m_impl->shock_type();
 }
 
 std::vector<std::string> SpellBolt::descr_specific(const SpellSkill skill) const
@@ -1762,7 +1762,9 @@ void SpellBolt::run_bolt_on_target(
         const bool player_see_tgt = actor::can_player_see_actor(target);
 
         if (player_see_tgt || player_see_pos) {
-                draw_blast_at_cells({target.m_pos}, colors::magenta());
+                const int delay_div = (m_impl->nr_projectiles(skill) > 1) ? 4 : 2;
+
+                draw_blast_at_cells({target.m_pos}, colors::magenta(), delay_div);
 
                 Color msg_clr = colors::msg_good();
 
@@ -1859,6 +1861,11 @@ bool SpellBolt::allow_mon_cast_now(
         (void)mon;
 
         return !seen_targets.empty();
+}
+
+SpellShock BoltImpl::shock_type() const
+{
+        return SpellShock::mild;
 }
 
 audio::SfxId BoltImpl::impact_sfx() const
@@ -2039,6 +2046,47 @@ void Darkbolt::on_hit(
         }
 }
 
+int GnawingTorrent::base_max_cost(
+        const SpellSkill skill,
+        const actor::Actor* const caster) const
+{
+        (void)skill;
+        (void)caster;
+
+        return 4;
+}
+
+SpellShock GnawingTorrent::shock_type() const
+{
+        return SpellShock::disturbing;
+}
+
+Range GnawingTorrent::damage(const SpellSkill skill) const
+{
+        if (skill == SpellSkill::transcendent) {
+                return {1, 2};
+        }
+        else {
+                return {1, 1};
+        }
+}
+
+int GnawingTorrent::nr_projectiles(const SpellSkill skill) const
+{
+        // Damage with 5/7/9/11 bolts dealing 1 damage per bolt (1-2 for transcendent skill):
+        // Basic:        5
+        // Expert:       7
+        // Master:       9
+        // Transcendent: Average 16.5 (11-22)
+
+        return 5 + ((int)skill * 2);
+}
+
+int GnawingTorrent::mon_cooldown() const
+{
+        return 3;
+}
+
 void GnawingTorrent::on_hit(
         actor::Actor& actor_hit,
         actor::Actor& caster,
@@ -2048,12 +2096,7 @@ void GnawingTorrent::on_hit(
         (void)skill;
 
         if (actor::is_edible_living_creature(actor_hit)) {
-                const auto allow_above_max =
-                        skill >= SpellSkill::master
-                        ? actor::AllowRestoreAboveMax::yes
-                        : actor::AllowRestoreAboveMax::no;
-
-                actor::restore_hp(caster, 1, allow_above_max, Verbose::no);
+                actor::restore_hp(caster, 1, actor::AllowRestoreAboveMax::yes, Verbose::no);
         }
 }
 
@@ -2067,11 +2110,6 @@ audio::SfxId GnawingTorrent::impact_sfx() const
         return audio::SfxId::gnawing_torrent_impact;
 }
 
-int GnawingTorrent::mon_cooldown() const
-{
-        return 3;
-}
-
 std::string GnawingTorrent::name() const
 {
         return "Gnawing Torrent";
@@ -2080,23 +2118,6 @@ std::string GnawingTorrent::name() const
 SpellId GnawingTorrent::id() const
 {
         return SpellId::gnawing_torrent;
-}
-
-int GnawingTorrent::base_max_cost(
-        const SpellSkill skill,
-        const actor::Actor* const caster) const
-{
-        (void)skill;
-        (void)caster;
-
-        return 4;
-}
-
-Range GnawingTorrent::damage(const SpellSkill skill) const
-{
-        (void)skill;
-
-        return {1, 4};
 }
 
 std::vector<std::string> GnawingTorrent::descr_specific(const SpellSkill skill) const
@@ -2112,31 +2133,13 @@ std::vector<std::string> GnawingTorrent::descr_specific(const SpellSkill skill) 
                 " damage.");
 
         descr.emplace_back(
-                "Each impact feeds life force back to the caster, restoring 1 hit point "
+                "Each impact feeds life force back to the caster, providing 1 hit point "
                 "(only against creatures of flesh and blood; "
                 "ethereal creatures cannot be fed upon for example).");
 
-        if (skill >= SpellSkill::master) {
-                descr.emplace_back("Can raise hit points above the normal maximum level.");
-        }
+        descr.emplace_back("Hit points can be raised above the normal maximum level.");
 
         return descr;
-}
-
-int GnawingTorrent::nr_projectiles(const SpellSkill skill) const
-{
-        // Average damage from one casting, assuming 3/4/5/9 bolts with 1-4 damage per bolt:
-        // Basic:        7.5   (3-12)
-        // Expert:       10.0  (4-16)
-        // Master:       12.5  (5-20)
-        // Transcendent: 22.5  (9-36)
-
-        if (skill == SpellSkill::transcendent) {
-                return 9;
-        }
-        else {
-                return 3 + (int)skill;
-        }
 }
 
 // -----------------------------------------------------------------------------

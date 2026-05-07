@@ -600,6 +600,8 @@ class BoltImpl
 public:
         virtual ~BoltImpl() = default;
 
+        virtual SpellShock shock_type() const;
+
         virtual Range damage(SpellSkill skill) const = 0;
 
         virtual void on_hit(
@@ -683,6 +685,8 @@ class GnawingTorrent : public BoltImpl
 {
 public:
         GnawingTorrent() = default;
+
+        SpellShock shock_type() const override;
 
         Range damage(SpellSkill skill) const override;
 
