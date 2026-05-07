@@ -11,6 +11,7 @@
 - Some spells no longer automatically makes the target creature aware of the caster - i.e. unless a spell casting sound is heard, they can be cast on a target without them becoming aware.
 - The Terrify spell also has a chance to make the victims faint.
 - Made monster and player spell casting consistent regarding noise; monsters also cast silent spells without makings sounds. If a casting is seen and not heard, a "visual" message is printed instead (e.g. "The Cultist makes gestures in the air").
+- Spell shock cost is now shown in the spell casting menu.
 
 # Status effects
 - "Doomed" is now considered an upgrade of "Cursed", a creature cannot be both cursed and doomed simultaneously.

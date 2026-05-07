@@ -180,9 +180,9 @@ static void draw_spell_menu_line(
 
         const std::string name = spell->name();
 
-        // TODO: Consider this position:
         constexpr int cost_label_x = 30;
         constexpr int skill_label_x = cost_label_x + 10;
+        constexpr int shock_label_x = skill_label_x + 11;
 
         int x = 0;
 
@@ -255,11 +255,7 @@ static void draw_spell_menu_line(
                         ? colors::light_blue()
                         : colors::light_red();
 
-                io::draw_text(
-                        cost.str(),
-                        Panel::inventory_menu,
-                        {x, y},
-                        cost_color);
+                io::draw_text(cost.str(), Panel::inventory_menu, {x, y}, cost_color);
         }
 
         if (spell->can_be_improved_with_skill()) {
@@ -292,6 +288,28 @@ static void draw_spell_menu_line(
                         str = "IV";
                         break;
                 }
+
+                io::draw_text(
+                        str,
+                        Panel::inventory_menu,
+                        {x, y},
+                        colors::white());
+        }
+
+        if (spell->shock_type() != SpellShock::none) {
+                x = shock_label_x;
+
+                std::string str = "Shock: ";
+
+                io::draw_text(
+                        str,
+                        Panel::inventory_menu,
+                        {x, y},
+                        colors::dark_gray());
+
+                x += (int)str.size();
+
+                str = std::string((int)spell->shock_type(), '*');
 
                 io::draw_text(
                         str,
