@@ -12,6 +12,8 @@
 
 enum class SpellDomain;
 
+enum class SpellId;
+
 namespace actor
 {
 struct ActorData;
@@ -185,6 +187,8 @@ std::string bg_title(Bg id);
 std::vector<ColoredString> bg_descr(Bg id);
 
 std::string occultist_domain_descr(SpellDomain domain);
+
+std::vector<SpellId> occultist_domian_starting_spells(SpellDomain domain);
 
 std::vector<TraitLogEntry> trait_log();
 

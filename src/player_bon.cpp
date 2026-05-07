@@ -31,6 +31,7 @@
 #include "saving.hpp"
 #include "spells.hpp"
 #include "state.hpp"
+#include "text_format.hpp"
 
 // -----------------------------------------------------------------------------
 // Private
@@ -1328,45 +1329,59 @@ std::vector<ColoredString> bg_descr(const Bg id)
 
 std::string occultist_domain_descr(const SpellDomain domain)
 {
-        // TODO: Do not write spell names here, get them from the spell classes.
+        const std::vector<SpellId> spell_ids = occultist_domian_starting_spells(domain);
+
+        std::vector<std::string> spell_names;
+
+        for (const SpellId id : spell_ids) {
+                const Spell* const tmp_spell = spells::make(id);
+
+                spell_names.push_back(tmp_spell->name());
+
+                delete tmp_spell;
+        }
+
+        const std::string spell_list_str = text_format::make_comma_and_str(spell_names);
 
         switch (domain) {
         case SpellDomain::channeling:
                 return (
                         "You have previously dabbled in the channeling of violent energy, "
-                        "and have basic knowledge of "
-                        "TBD");
+                        "and have basic knowledge of " +
+                        spell_list_str + ".");
 
         case SpellDomain::corruption:
+                // NOTE: The phrasing here match the Corruption domain starting spells Aura of Decay
+                // and Curse:
                 return (
-                        "You have previously dabbled in spells that corrupt and wither, "
-                        "and have basic knowledge of "
-                        "TBD");
+                        "You have previously dabbled in spells that wither and corrupt, "
+                        "and have basic knowledge of " +
+                        spell_list_str + ".");
 
         case SpellDomain::illusion:
                 return (
                         "You have previously dabbled in the casting of illusions, "
-                        "and have basic knowledge of "
-                        "TBD");
+                        "and have basic knowledge of " +
+                        spell_list_str + ".");
 
         case SpellDomain::mind:
                 return (
-                        "You have previously dabbled in disciplines of knowledge, foresight, "
+                        "You have previously dabbled in disciplines of revelation, foresight, "
                         "and will, "
-                        "and have basic knowledge of "
-                        "TBD");
+                        "and have basic knowledge of " +
+                        spell_list_str + ".");
 
         case SpellDomain::time:
                 return (
                         "You have previously dabbled in the manipulation of time and causality, "
-                        "and have basic knowledge of "
-                        "TBD");
+                        "and have basic knowledge of " +
+                        spell_list_str + ".");
 
         case SpellDomain::warding:
                 return (
                         "You have previously dabbled in protective magic, "
-                        "and have basic knowledge of "
-                        "TBD");
+                        "and have basic knowledge of " +
+                        spell_list_str + ".");
 
         case SpellDomain::blood:
         case SpellDomain::END:
@@ -1375,6 +1390,36 @@ std::string occultist_domain_descr(const SpellDomain domain)
         }
 
         return "";
+}
+
+std::vector<SpellId> occultist_domian_starting_spells(const SpellDomain domain)
+{
+        switch (domain) {
+        case SpellDomain::channeling:
+                return {SpellId::darkbolt, SpellId::gnawing_torrent};
+
+        case SpellDomain::corruption:
+                return {SpellId::aura_of_decay, SpellId::curse};
+
+        case SpellDomain::illusion:
+                return {SpellId::mirror_images, SpellId::terrify};
+
+        case SpellDomain::mind:
+                return {SpellId::premonition, SpellId::control_object};
+
+        case SpellDomain::time:
+                return {SpellId::temporal_echo, SpellId::expulsion};
+
+        case SpellDomain::warding:
+                return {SpellId::heal, SpellId::inscribe_boundary_sigil};
+
+        case SpellDomain::blood:
+        case SpellDomain::END:
+                ASSERT(false);
+                break;
+        }
+
+        return {};
 }
 
 std::string trait_descr(const TraitId id)
@@ -1733,7 +1778,7 @@ void on_player_gained_lvl(const int new_lvl)
         case Bg::ghoul:
         case Bg::occultist:
         case Bg::rogue:
-        case Bg::war_vet: {
+        case Bg::war_vet:   {
         } break;
 
         case Bg::END: {

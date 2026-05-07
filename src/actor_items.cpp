@@ -119,44 +119,6 @@ static void make_for_player_flagellant()
         learn_spell_player(SpellId::shed_impurity);
 }
 
-static void make_for_player_occultist_specific()
-{
-        switch (player_bon::occultist_starting_domain()) {
-        case SpellDomain::channeling:
-                learn_spell_player(SpellId::darkbolt);
-                learn_spell_player(SpellId::gnawing_torrent);
-                break;
-
-        case SpellDomain::corruption:
-                learn_spell_player(SpellId::aura_of_decay);
-                learn_spell_player(SpellId::curse);
-                break;
-
-        case SpellDomain::illusion:
-                learn_spell_player(SpellId::mirror_images);
-                learn_spell_player(SpellId::terrify);
-                break;
-
-        case SpellDomain::mind:
-                break;
-
-        case SpellDomain::time:
-                learn_spell_player(SpellId::temporal_echo);
-                learn_spell_player(SpellId::expulsion);
-                break;
-
-        case SpellDomain::warding:
-                learn_spell_player(SpellId::heal);
-                learn_spell_player(SpellId::inscribe_boundary_sigil);
-                break;
-
-        case SpellDomain::blood:
-        case SpellDomain::END:
-                ASSERT(false);
-                break;
-        }
-}
-
 static void make_for_player_occultist()
 {
         Inventory& inv = map::g_player->m_inv;
@@ -193,7 +155,11 @@ static void make_for_player_occultist()
         inv.put_in_backpack(item::make(item::Id::medical_bag));
         inv.put_in_backpack(item::make(item::Id::lantern));
 
-        make_for_player_occultist_specific();
+        const SpellDomain domain = player_bon::occultist_starting_domain();
+
+        for (const SpellId id : player_bon::occultist_domian_starting_spells(domain)) {
+                learn_spell_player(id);
+        }
 }
 
 static void make_for_player_rogue()
